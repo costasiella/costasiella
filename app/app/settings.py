@@ -37,9 +37,13 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'costasiella.apps.CostasiellaConfig',
+
+    # 3rd party
     'graphene_django',
     'webpack_loader',
+    
+    # local apps
+    'costasiella.apps.CostasiellaConfig',
 ]
 
 MIDDLEWARE = [
