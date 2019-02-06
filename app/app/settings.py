@@ -25,7 +25,7 @@ SECRET_KEY = 'izf@@s$cv&6#26t8)vhu5!^@^u^%vukyxr&a4&&^cqu89-!xms'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -141,4 +141,3 @@ WEBPACK_LOADER = {
             'STATS_FILE': os.path.join(BASE_DIR, 'webpack-stats.dev.json'),
         }
 }
-
