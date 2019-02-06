@@ -15,9 +15,9 @@ class Query(graphene.ObjectType):
     def resolve_school_locations(self, info, **kwargs):
         print('user authenticated:')
         print(info.context.user.is_authenticated)
-        if not info.context.user.is_authenticated:
-            return SchoolLocation.objects.none()
-        else:
-            return SchoolLocation.objects.all()
+        # if not info.context.user.is_authenticated:
+            # return SchoolLocation.objects.none()
+        # else:
+            # return SchoolLocation.objects.all()
         ## return everything:
-        # return SchoolLocation.objects.all()
+        return SchoolLocation.objects.all()

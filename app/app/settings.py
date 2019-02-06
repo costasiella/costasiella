@@ -76,6 +76,12 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'app.wsgi.application'
 
+# Add GraphQL JWT Tokens
+AUTHENTICATION_BACKENDS = [
+    'graphql_jwt.backends.JSONWebTokenBackend',
+    'django.contrib.auth.backends.ModelBackend',
+]
+
 
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
@@ -134,7 +140,10 @@ STATIC_URL = '/static/'
 # Graphene settings
 
 GRAPHENE = {
- 'SCHEMA': 'src.schema.schema'
+    'SCHEMA': 'src.schema.schema',
+    'MIDDLEWARE': [
+        'graphql_jwt.middleware.JSONWebTokenMiddleware',
+    ],
 }
 
 # Webpack loader
