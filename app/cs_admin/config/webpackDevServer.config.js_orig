@@ -100,9 +100,5 @@ module.exports = function(proxy, allowedHost) {
       // https://github.com/facebook/create-react-app/issues/2272#issuecomment-302832432
       app.use(noopServiceWorkerMiddleware());
     },
-    // Allow CORS requests coming from port 8000 (Django web dev server)
-    headers: {
-        'Access-Control-Allow-Origin': '*'
-    },
   };
 };
