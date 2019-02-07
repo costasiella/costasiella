@@ -183,12 +183,10 @@ LOGIN_REDIRECT_URL = 'home'
 # Allauth configuration
 # https://django-allauth.readthedocs.io/en/latest/configuration.html
 
-ACCOUNT_EMAIL_REQUIRED = True # Users have to provide an email address when signing up
-ACCOUNT_UNIQUE_EMAIL = False # Multiple users can have the same email address (eg. useful for customers who share their email addrress with partners)
-ACCOUNT_EMAIL_VERIFICATION = "Mandatory" # Users have to verify their email address and can't login until it's verified
+ACCOUNT_USERNAME_REQUIRED = False # Don't use usernames
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_AUTHENTICATION_METHOD = 'email'  # Use email as the primary identifier
+ACCOUNT_EMAIL_VERIFICATION = "mandatory" # Make email verification mandatory to avoid junk email accounts
+ACCOUNT_EMAIL_SUBJECT_PREFIX = "" # Don't prefix the email subjects
 ACCOUNT_LOGIN_ATTEMPTS_LIMIT = 7
 ACCOUNT_LOGIN_ATTEMPTS_TIMEOUT = 900 # Lock out a user for 15 minutes after 7 invalid attempts to log in
-ACCOUNT_USERNAME_BLACKLIST = [
-    'admin'
-]
-ACCOUNT_USERNAME_MIN_LENGTH = 4 # At least 4 characters are required for the username
