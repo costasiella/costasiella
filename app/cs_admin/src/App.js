@@ -19,17 +19,17 @@ const client = new ApolloClient({
 
 class App extends Component {
   render() {
-  return (
-    <BrowserRouter>
-      <ApolloProvider client={client}>
-        <Switch>
-          <Route exact path="/" component={SchoolLocations} />
-          <Route component={NotFound} />
-        </Switch>
-      </ApolloProvider>
-    </BrowserRouter>
-  );
-  }
+    return (
+      <BrowserRouter>
+        <ApolloProvider client={client}>
+          <Switch>
+            <Route exact path="/" component={SchoolLocations} />
+            <Route component={NotFound} />
+          </Switch>
+        </ApolloProvider>
+      </BrowserRouter>
+    );
+    }
 }
 
 export default App;
