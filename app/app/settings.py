@@ -37,14 +37,20 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites', # django-allauth requirement
 
     # 3rd party
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
     'graphene_django',
     'webpack_loader',
     
     # local apps
     'costasiella.apps.CostasiellaConfig',
 ]
+
+SITE_ID = 1
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -63,8 +69,14 @@ MIDDLEWARE = [
 
 # Add GraphQL JWT Tokens
 AUTHENTICATION_BACKENDS = [
-    'graphql_jwt.backends.JSONWebTokenBackend',
+    # Needed to login by username in Django admin, regardless of `allauth`
     'django.contrib.auth.backends.ModelBackend',
+
+    # `allauth` specific authentication methods, such as login by e-mail
+    'allauth.account.auth_backends.AuthenticationBackend',
+
+    # graphql JWT authorization
+    'graphql_jwt.backends.JSONWebTokenBackend',
 ]
 
 ROOT_URLCONF = 'app.urls'
@@ -141,6 +153,10 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+# Email configuration
+
+EMAIL_HOST = 'localhost'
+EMAIL_PORT = 2525
 
 # Graphene settings
 
@@ -159,3 +175,20 @@ WEBPACK_LOADER = {
             'STATS_FILE': os.path.join(BASE_DIR, 'webpack-stats.dev.json'),
         }
 }
+
+# Where to go after login, well... let's just go home and take care of things from there :).
+
+LOGIN_REDIRECT_URL = 'home'
+
+# Allauth configuration
+# https://django-allauth.readthedocs.io/en/latest/configuration.html
+
+ACCOUNT_EMAIL_REQUIRED = True # Users have to provide an email address when signing up
+ACCOUNT_UNIQUE_EMAIL = False # Multiple users can have the same email address (eg. useful for customers who share their email addrress with partners)
+ACCOUNT_EMAIL_VERIFICATION = "Mandatory" # Users have to verify their email address and can't login until it's verified
+ACCOUNT_LOGIN_ATTEMPTS_LIMIT = 7
+ACCOUNT_LOGIN_ATTEMPTS_TIMEOUT = 900 # Lock out a user for 15 minutes after 7 invalid attempts to log in
+ACCOUNT_USERNAME_BLACKLIST = [
+    'admin'
+]
+ACCOUNT_USERNAME_MIN_LENGTH = 4 # At least 4 characters are required for the username
