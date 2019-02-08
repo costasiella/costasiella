@@ -183,7 +183,9 @@ LOGIN_REDIRECT_URL = 'home'
 # Allauth configuration
 # https://django-allauth.readthedocs.io/en/latest/configuration.html
 
+ACCOUNT_PRESERVE_USERNAME_CASING = False
 ACCOUNT_USERNAME_REQUIRED = False # Don't use usernames
+ACCOUNT_UNIQUE_EMAIL = True
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_AUTHENTICATION_METHOD = 'email'  # Use email as the primary identifier
 ACCOUNT_EMAIL_VERIFICATION = "mandatory" # Make email verification mandatory to avoid junk email accounts
