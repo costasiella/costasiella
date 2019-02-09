@@ -195,6 +195,7 @@ ACCOUNT_UNIQUE_EMAIL = True
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_AUTHENTICATION_METHOD = 'email'  # Use email as the primary identifier
 ACCOUNT_EMAIL_VERIFICATION = "mandatory" # Make email verification mandatory to avoid junk email accounts
+ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = True
 ACCOUNT_EMAIL_SUBJECT_PREFIX = "" # Don't prefix the email subjects
 ACCOUNT_LOGIN_ATTEMPTS_LIMIT = 7
 ACCOUNT_LOGIN_ATTEMPTS_TIMEOUT = 900 # Lock out a user for 15 minutes after 7 invalid attempts to log in
