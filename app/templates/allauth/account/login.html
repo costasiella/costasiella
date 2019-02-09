@@ -22,6 +22,9 @@
                     </div>
                     <h3>{% trans "Sign In" %}</h3>
                     <p>{% trans "Happy to see you again!" %}</p>
+                    <!--
+                      {{ form.as_p }}
+                    -->
                     <form class="login" method="POST" action="{% url 'account_login' %}">
                       {% csrf_token %}
                       {{ form.non_field_errors }}
