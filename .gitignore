@@ -6,3 +6,5 @@ app/app/__pycache__/
 app/webpack-stats\.dev\.json
 
 *.html~
+
+*.py~
