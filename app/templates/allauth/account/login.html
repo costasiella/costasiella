@@ -7,63 +7,46 @@
 {% block head_title %}{% trans "Sign In" %}{% endblock %}
 
 {% block content %}
-<div class="auth-wrapper">
-    <div class="container-fluid h-100">
-        <div class="row flex-row h-100 bg-white">
-            <div class="col-xl-8 col-lg-6 col-md-5 p-0 d-md-block d-lg-block d-sm-none d-none">
-                <div class="lavalite-bg" style="background-image: url('../img/auth/login-bg.jpg')">
-                    <div class="lavalite-overlay"></div>
-                </div>
-            </div>
-            <div class="col-xl-4 col-lg-6 col-md-7 my-auto p-0">
-                <div class="authentication-form mx-auto">
-                    <div class="logo-centered">
-                        <a href="../index.html"><img src="../src/img/brand.svg" alt=""></a>
-                    </div>
-                    <h3>{% trans "Sign In" %}</h3>
-                    <p>{% trans "Happy to see you again!" %}</p>
-                    <!--
-                      {{ form.as_p }}
-                    -->
-                    <form class="login" method="POST" action="{% url 'account_login' %}">
-                      {% csrf_token %}
-                      {{ form.non_field_errors }}
-                      <div class="form-group">
-                          {{ form.login|addcss:"form-control" }}
-                          <i class="ik ik-user"></i>
-                          {{ form.login.errors }}
-                      </div>
-                      <div class="form-group">
-                          {{ form.password|addcss:"form-control" }}
-                          <i class="ik ik-lock"></i>
-                          {{ from.password.errors }}
-                      </div>
-                      {{ from.remember }}
-                      <div class="row">
-                          <div class="col text-left">
-                              <label class="custom-control custom-checkbox">
-                                  <input type="checkbox" name="remember" id="id_remember" class="custom-control-input" value="option1">
-                                  <span class="custom-control-label">&nbsp; {% trans "Remember Me" %}</span>
-                              </label>
-                          </div>
-                          <div class="col text-right">
-                              <a href="{% url 'account_reset_password' %}">{% trans "Forgot Password?" %}</a>
-                          </div>
-                      </div>
-                      {% if redirect_field_value %}
-                      <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
-                      {% endif %}
 
-                      <button class="btn btn-theme" type="submit">{% trans "Sign In" %}</button>
-                    </form>
-                    <div class="register">
-                        <p>{% trans "Don't have an account?" %} <a href="{{ signup_url }}"><b>{% trans "Create an account" %}</b></a></p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+<h3>{% trans "Sign In" %}</h3>
+<p>{% trans "Happy to see you again!" %}</p>
+<!--
+  {{ form.as_p }}
+-->
+<form class="login" method="POST" action="{% url 'account_login' %}">
+  {% csrf_token %}
+  {{ form.non_field_errors }}
+  <div class="form-group">
+      {{ form.login|addcss:"form-control" }}
+      <i class="ik ik-user"></i>
+      {{ form.login.errors }}
+  </div>
+  <div class="form-group">
+      {{ form.password|addcss:"form-control" }}
+      <i class="ik ik-lock"></i>
+      {{ from.password.errors }}
+  </div>
+  {{ from.remember }}
+  <div class="row">
+      <div class="col text-left">
+          <label class="custom-control custom-checkbox">
+              <input type="checkbox" name="remember" id="id_remember" class="custom-control-input" value="option1">
+              <span class="custom-control-label">&nbsp; {% trans "Remember Me" %}</span>
+          </label>
+      </div>
+      <div class="col text-right">
+          <a href="{% url 'account_reset_password' %}">{% trans "Forgot Password?" %}</a>
+      </div>
+  </div>
+  {% if redirect_field_value %}
+  <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+  {% endif %}
+
+  <button class="btn btn-theme" type="submit">{% trans "Sign In" %}</button>
+</form>
+<div class="register">
+    <p>{% trans "Don't have an account?" %} <a href="{{ signup_url }}"><b>{% trans "Create an account" %}</b></a></p>
 </div>
-        
+
 
 {% endblock %}
