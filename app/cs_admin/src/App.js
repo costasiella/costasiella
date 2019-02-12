@@ -20,41 +20,7 @@ import './App.css'
 
 const client = new ApolloClient({
      uri: "http://localhost:8000/graphql/",
-    //  clientState: {
-    //   defaults: {
-    //     user: {},
-    //   },
-    //   typeDefs: `
-    //     user: {
-    //       id: Int,
-    //       isActive: Boolean,
-    //       firstName: String,
-    //       lastName: String,
-    //       email: String,
-    //       groups: [group]
-
-    //     },
-    //     groups: {
-    //       id: Int,
-    //       name: String,
-    //       permissions: [permisson]
-    //     },
-    //     permission: {
-    //       id: Int,
-    //       name: String,
-    //       codename: String
-    //     }
-    //   `,
-    //   resolvers: {
-    //     Mutation: {
-    //       updateUser: async (_, { user }, { cache, getCacheKey }) => {
-    //         await cache.writeData({ data: { user } });
-    //         return null;
-    //       },
-    //     },
-    //   },
-    // }
-});
+})
 
 
 const GET_USER = gql`
@@ -85,10 +51,10 @@ const GET_USER = gql`
 class App extends Component {
   
   componentWillMount() {
-    console.log('app will mount')
-    client.query({
-      query:GET_USER
-    }).then(response => console.log(response.data))
+    // console.log('app will mount')
+    // client.query({
+    //   query:GET_USER
+    // })
   }
 
   render() {

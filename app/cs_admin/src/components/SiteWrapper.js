@@ -2,7 +2,8 @@
 
 import * as React from "react";
 import { NavLink, withRouter } from "react-router-dom";
-
+import { Query } from "react-apollo";
+import gql from "graphql-tag";
 
 import {
   Site,
