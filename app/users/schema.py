@@ -45,20 +45,20 @@ class Mutation(graphene.ObjectType):
 
 
 class Query(graphene.AbstractType):
-    me = graphene.Field(UserType)
+    user = graphene.Field(UserType)
     users = graphene.List(UserType)
     group = graphene.List(GroupType, search=graphene.String())
     permission = graphene.List(PermissionType)
 
-    def resolve_users(self, info):
-        return get_user_model().objects.all()
-
-    def resolve_me(self, info):
+    def resolve_user(self, info):
         user = info.context.user
         if user.is_anonymous:
             raise Exception('Not logged in!')
 
         return user
+
+    def resolve_users(self, info):
+        return get_user_model().objects.all()
 
     def resolve_group(self, info, search=None):
         if search:
