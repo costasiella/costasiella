@@ -8,3 +8,5 @@ app/webpack-stats\.dev\.json
 *.html~
 
 *.py~
+
+app/costasiella/__pycache__/

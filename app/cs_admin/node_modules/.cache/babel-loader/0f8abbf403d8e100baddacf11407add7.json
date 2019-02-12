@@ -1,0 +1,1 @@
+{"ast":null,"code":"export function tryFunctionOrLogError(f) {\n  try {\n    return f();\n  } catch (e) {\n    if (console.error) {\n      console.error(e);\n    }\n  }\n}\nexport function graphQLResultHasError(result) {\n  return result.errors && result.errors.length;\n}","map":null,"metadata":{},"sourceType":"module"}

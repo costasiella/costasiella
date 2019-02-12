@@ -1,0 +1,1 @@
+{% extends "bootstrapadmin/base.html" %}

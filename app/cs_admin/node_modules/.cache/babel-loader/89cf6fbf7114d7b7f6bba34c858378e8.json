@@ -1,0 +1,1 @@
+{"ast":null,"code":"import zenObservable from 'zen-observable';\nvar Observable = zenObservable;\nexport default Observable;\nexport { Observable };","map":null,"metadata":{},"sourceType":"module"}
