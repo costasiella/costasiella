@@ -1,0 +1,9 @@
+# In your Django root execute the command below to create your database tables:
+
+./manage.py migrate
+
+Now start your server, visit your admin pages (e.g. http://localhost:8000/admin/) and follow these steps:
+
+Add a Site for your domain, matching settings.SITE_ID (django.contrib.sites app).
+For each OAuth based provider, add a Social App (socialaccount app).
+Fill in the site and the OAuth app credentials obtained from the provider.

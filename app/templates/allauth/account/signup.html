@@ -1,0 +1,59 @@
+{% extends "account/base.html" %}
+
+{% load i18n %}
+{% load addcss %}
+
+{% block head_title %}{% trans "Signup" %}{% endblock %}
+
+{% block content %}
+
+<h3>{% trans "Create an account" %}</h3>
+<p>{% trans "Join us today! It only takes a few steps" %}</p>
+<!--
+  {{ form.as_p }}
+-->
+<form class="signup" id="signup_form" method="post" action="{% url 'account_signup' %}">
+    {% csrf_token %}
+    {{ form.non_field_errors }}
+    <div class="form-group">
+        {{ form.first_name|addcss:"form-control" }}
+        <i class="ik ik-user"></i>
+        {{ form.first_name.errors }}
+    </div>
+    <div class="form-group">
+        {{ form.last_name|addcss:"form-control" }}
+        <i class="ik ik-user"></i>
+        {{ form.last_name.errors }}
+    </div>
+    <div class="form-group">
+        {{ form.email|addcss:"form-control" }}
+        <i class="ik ik-mail"></i>
+        {{ form.email.errors }}
+    </div>
+    <div class="form-group">
+        <input type="password" name="password1" placeholder={% trans "Password" %} required="" id="id_password1" class="form-control" aria-autocomplete="list">
+        <i class="ik ik-lock"></i>
+    </div>
+    <div class="form-group">
+        <input type="password" name="password2" placeholder={% trans "Password (again)" %}required="" id="id_password2" class="form-control">
+        <i class="ik ik-lock"></i>
+    </div>
+    <div class="row">
+        <div class="col-12 text-left">
+            {% trans "By signing up I agree to" %} <br>
+            <ul>
+                <li>The terms and conditions</li>
+                <li>The privacy policy</li>
+            </ul>
+        </div>
+    </div>
+    <div class="sign-btn text-center">
+        <button type="submit" class="btn btn-theme">{% trans "Create Account" %}</button>
+    </div>
+    
+</form>
+<div class="register">
+    <p>{% trans "Already have an account?" %} <a href="{{ login_url }}"><b>{% trans "Sign In" %}</b></a></p>
+</div>
+
+{% endblock %}

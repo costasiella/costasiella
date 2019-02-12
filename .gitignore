@@ -1,0 +1,10 @@
+
+app/app/__pycache__/
+
+*.pyc
+
+app/webpack-stats\.dev\.json
+
+*.html~
+
+*.py~
