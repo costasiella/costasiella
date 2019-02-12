@@ -4,13 +4,16 @@
 
 
 import React, { Component } from 'react'
-import {Route, Switch, BrowserRouter} from 'react-router-dom'
+import {Route, Switch, HashRouter} from 'react-router-dom'
 import { ApolloProvider } from "react-apollo";
 import ApolloClient from "apollo-boost";
 
 import SchoolLocations from './components/SchoolLocations'
-import NotFound from "./components/NotFound"
+import Error404 from "./components/Error404"
 import './App.css'
+
+/* Tabler css */
+import "tabler-react/dist/Tabler.css";
 
 const client = new ApolloClient({
      uri: "http://localhost:8000/graphql/"
@@ -20,14 +23,14 @@ const client = new ApolloClient({
 class App extends Component {
   render() {
     return (
-      <BrowserRouter>
+      <HashRouter>
         <ApolloProvider client={client}>
           <Switch>
             <Route exact path="/" component={SchoolLocations} />
-            <Route component={NotFound} />
+            <Route component={Error404} />
           </Switch>
         </ApolloProvider>
-      </BrowserRouter>
+      </HashRouter>
     );
     }
 }
