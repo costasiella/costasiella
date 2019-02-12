@@ -1,6 +1,8 @@
 import React from 'react'
-import { Query } from "react-apollo";
-import gql from "graphql-tag";
+import { Query } from "react-apollo"
+import gql from "graphql-tag"
+import { v4 } from "uuid"
+
 
 // @flow
 
@@ -13,6 +15,7 @@ import {
   Container,
   List,
   Form,
+  Table
 } from "tabler-react";
 import SiteWrapper from "./SiteWrapper"
 
@@ -30,7 +33,9 @@ const SchoolLocations = () => (
   <SiteWrapper>
     <div className="my-3 my-md-5">
       <Container>
-        <Page.Title className="mb-5">School</Page.Title>
+        <Page.Header title="School"
+                     subTitle="Locations"/>
+
         <Grid.Row>
           <Grid.Col md={3}>
             <div>
@@ -48,19 +53,36 @@ const SchoolLocations = () => (
           </Grid.Col>
           <Grid.Col md={9}>
           <Card>
-            <Card.Header>
+            {/* <Card.Header>
               <Card.Title>Locations</Card.Title>
-            </Card.Header>
+            </Card.Header> */}
             <Card.Body>
               <Query query={GET_LOCATIONS}>
                 {({ loading, error, data }) => {
                   if (loading) return <p>Loading...</p>
                   if (error) return <p>Error loading school locations :(</p>
-                  return data.schoolLocations.map(({ id, name }) => (
-                    <div key={id}>
-                      <p>{id}: {name}</p>
-                    </div>
-                  ))
+                  if (!data.schoolLocations.length) {
+                    return "no locations found."
+                  } else {
+                    return (
+                      <Table>
+                        <Table.Header>
+                          <Table.Row key={v4()}>
+                            <Table.ColHeader>Name</Table.ColHeader>
+                          </Table.Row>
+                        </Table.Header>
+                        <Table.Body>
+                           {data.schoolLocations.map(({ id, name }) => (
+                              <Table.Row key={v4()}>
+                                <Table.Col key={v4()}>
+                                  {name}
+                                </Table.Col>
+                              </Table.Row>
+                            ))}
+                        </Table.Body>
+                      </Table>
+                    )
+                  }
                 }}
               </Query>
             </Card.Body>
