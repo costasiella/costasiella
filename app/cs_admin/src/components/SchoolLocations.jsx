@@ -4,17 +4,20 @@ import gql from "graphql-tag";
 
 import SiteWrapper from "./SiteWrapper"
 
+const GET_LOCATIONS = gql`
+  {
+    schoolLocations {
+        id
+        name
+    }
+  }
+`
+
+
 const SchoolLocations = () => (
   <SiteWrapper>
     <Query
-      query={gql`
-        {
-          schoolLocations {
-              id
-              name
-          }
-        }
-      `}
+      query={GET_LOCATIONS}
     >
       {({ loading, error, data }) => {
         if (loading) return <p>Loading...</p>;

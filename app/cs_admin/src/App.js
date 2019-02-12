@@ -51,10 +51,9 @@ const GET_USER = gql`
 class App extends Component {
   
   componentWillMount() {
-    // console.log('app will mount')
-    // client.query({
-    //   query:GET_USER
-    // })
+    client.query({
+      query:GET_USER
+    })
   }
 
   render() {
@@ -68,8 +67,7 @@ class App extends Component {
           </Switch>
         </ApolloProvider>
       </HashRouter>
-    );
-    }
+    )};
 }
 
 export default App;
