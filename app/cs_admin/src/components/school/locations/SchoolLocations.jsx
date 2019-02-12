@@ -17,7 +17,7 @@ import {
   Form,
   Table
 } from "tabler-react";
-import SiteWrapper from "./SiteWrapper"
+import SiteWrapper from "../../SiteWrapper"
 
 const GET_LOCATIONS = gql`
   {

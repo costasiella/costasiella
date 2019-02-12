@@ -9,7 +9,7 @@ import { ApolloProvider } from "react-apollo";
 import ApolloClient from "apollo-boost";
 import gql from "graphql-tag";
 
-import SchoolLocations from './components/SchoolLocations'
+import SchoolLocations from './components/school/locations/SchoolLocations'
 import Error404 from "./components/Error404"
 
 // Tabler css 
