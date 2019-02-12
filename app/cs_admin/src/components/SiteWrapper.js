@@ -158,118 +158,118 @@ class SiteWrapper extends React.Component<Props, State> {
           
       
 
-            return <Site.Wrapper
-              headerProps={{
-                 href: "/",
-                 alt: "Costasiella",
-                 // imageURL: "./demo/brand/tabler.svg", // Set logo url here
-                 navItems: (
-                   <Nav.Item type="div" className="d-none d-md-flex">
-                     <Button
-                       icon="settings"
-                       href="https://github.com/tabler/tabler-react"
-                       target="_blank"
-                       outline
-                       size="sm"
-                       RootComponent="a"
-                       color="primary"
-                     >
-                       Settings
-                     </Button>
-                   </Nav.Item>
-                 ),
-                 // notificationsTray: {
-                 //   notificationsObjects,
-                 //   markAllAsRead: () =>
-                 //     this.setState(
-                 //       () => ({
-                 //         notificationsObjects: this.state.notificationsObjects.map(
-                 //           v => ({ ...v, unread: false })
-                 //         ),
-                 //       }),
-                 //       () =>
-                 //         setTimeout(
-                 //           () =>
-                 //             this.setState({
-                 //               notificationsObjects: this.state.notificationsObjects.map(
-                 //                 v => ({ ...v, unread: true })
-                 //               ),
-                 //             }),
-                 //           5000
-                 //         )
-                 //     ),
-                 //   unread: unreadCount,
-                 // },
-                 accountDropdown: {
-                  avatarURL: "",
-                  name: data.user.firstName + ' ' + data.user.lastName,
-                  description: "",
-                  options: [
-                    // { icon: "user", value: "Profile" },
-                    { icon: "lock", value: "Change password", to: "/accounts/password/change/" },
-                    { isDivider: true },
-                    { icon: "log-out", value: "Sign out", to: "/accounts/logout/" },
-                  ],
-                },
-               }}
-               navProps={{ itemsObjects: navBarItems }}
-               routerContextComponentType={withRouter(RouterContextProvider)}
-               footerProps={{
-                 // links: [
-                 //   <a href="#">First Link</a>,
-                 //   <a href="#">Second Link</a>,
-                 //   <a href="#">Third Link</a>,
-                 //   <a href="#">Fourth Link</a>,
-                 //   <a href="#">Five Link</a>,
-                 //   <a href="#">Sixth Link</a>,
-                 //   <a href="#">Seventh Link</a>,
-                 //   <a href="#">Eigth Link</a>,
-                 // ],
-                 // note:
-                 //   "Premium and Open Source dashboard template with responsive and high quality UI. For Free!",
-                 copyright: (
-                   <React.Fragment>
-                     Copyright © 2019.
-                     <a
-                       href="https://www.costasiella.com"
-                       target="_blank"
-                       rel="noopener noreferrer"
-                     >
-                       {" "}
-                       Edwin van de Ven.
-                     </a>{" "}
-                     All rights reserved.
-                   </React.Fragment>
-                 ),
-                 nav: (
-                   <React.Fragment>
-                     <Grid.Col auto={true}>
-                       {/* <List className="list-inline list-inline-dots mb-0">
-                         <List.Item className="list-inline-item">
-                           <a href="./docs/index.html">Documentation</a>
-                         </List.Item>
-                         <List.Item className="list-inline-item">
-                           <a href="./faq.html">FAQ</a>
-                         </List.Item>
-                       </List> */}
-                     </Grid.Col>
-                     <Grid.Col auto={true}>
-                       {/* <Button
-                         href="https://github.com/tabler/tabler-react"
-                         size="sm"
-                         outline
-                         color="primary"
-                         RootComponent="a"
-                       >
-                         Source code
-                       </Button> */}
-                     </Grid.Col>
-                   </React.Fragment>
-                 ),
-               }}
-             >
-               {this.props.children}
-             </Site.Wrapper>
+          return <Site.Wrapper
+            headerProps={{
+                href: "/",
+                alt: "Costasiella",
+                // imageURL: "./demo/brand/tabler.svg", // Set logo url here
+                navItems: (
+                  <Nav.Item type="div" className="d-none d-md-flex">
+                    <Button
+                      icon="settings"
+                      href="https://github.com/tabler/tabler-react"
+                      target="_blank"
+                      outline
+                      size="sm"
+                      RootComponent="a"
+                      color="primary"
+                    >
+                      Settings
+                    </Button>
+                  </Nav.Item>
+                ),
+                // notificationsTray: {
+                //   notificationsObjects,
+                //   markAllAsRead: () =>
+                //     this.setState(
+                //       () => ({
+                //         notificationsObjects: this.state.notificationsObjects.map(
+                //           v => ({ ...v, unread: false })
+                //         ),
+                //       }),
+                //       () =>
+                //         setTimeout(
+                //           () =>
+                //             this.setState({
+                //               notificationsObjects: this.state.notificationsObjects.map(
+                //                 v => ({ ...v, unread: true })
+                //               ),
+                //             }),
+                //           5000
+                //         )
+                //     ),
+                //   unread: unreadCount,
+                // },
+                accountDropdown: {
+                avatarURL: "",
+                name: data.user.firstName + ' ' + data.user.lastName,
+                description: "",
+                options: [
+                  // { icon: "user", value: "Profile" },
+                  { icon: "lock", value: "Change password", to: "/accounts/password/change/" },
+                  { isDivider: true },
+                  { icon: "log-out", value: "Sign out", to: "/accounts/logout/" },
+                ],
+              },
+              }}
+              navProps={{ itemsObjects: navBarItems }}
+              routerContextComponentType={withRouter(RouterContextProvider)}
+              footerProps={{
+                // links: [
+                //   <a href="#">First Link</a>,
+                //   <a href="#">Second Link</a>,
+                //   <a href="#">Third Link</a>,
+                //   <a href="#">Fourth Link</a>,
+                //   <a href="#">Five Link</a>,
+                //   <a href="#">Sixth Link</a>,
+                //   <a href="#">Seventh Link</a>,
+                //   <a href="#">Eigth Link</a>,
+                // ],
+                // note:
+                //   "Premium and Open Source dashboard template with responsive and high quality UI. For Free!",
+                copyright: (
+                  <React.Fragment>
+                    Copyright © 2019.
+                    <a
+                      href="https://www.costasiella.com"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {" "}
+                      Edwin van de Ven.
+                    </a>{" "}
+                    All rights reserved.
+                  </React.Fragment>
+                ),
+                nav: (
+                  <React.Fragment>
+                    <Grid.Col auto={true}>
+                      {/* <List className="list-inline list-inline-dots mb-0">
+                        <List.Item className="list-inline-item">
+                          <a href="./docs/index.html">Documentation</a>
+                        </List.Item>
+                        <List.Item className="list-inline-item">
+                          <a href="./faq.html">FAQ</a>
+                        </List.Item>
+                      </List> */}
+                    </Grid.Col>
+                    <Grid.Col auto={true}>
+                      {/* <Button
+                        href="https://github.com/tabler/tabler-react"
+                        size="sm"
+                        outline
+                        color="primary"
+                        RootComponent="a"
+                      >
+                        Source code
+                      </Button> */}
+                    </Grid.Col>
+                  </React.Fragment>
+                ),
+              }}
+            >
+              {this.props.children}
+            </Site.Wrapper>
           }}
         </Query>
     );
