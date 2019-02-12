@@ -58,9 +58,16 @@ class Query(graphene.AbstractType):
         return user
 
     def resolve_users(self, info):
+        user = info.context.user
+        if user.is_anonymous:
+            raise Exception('Not logged in!')
+
         return get_user_model().objects.all()
 
     def resolve_group(self, info, search=None):
+        user = info.context.user
+        if user.is_anonymous:
+            raise Exception('Not logged in!')
         if search:
             filter = (
                 Q(name__icontains=search)
@@ -71,6 +78,9 @@ class Query(graphene.AbstractType):
 
 
     def resolve_permission(self, info):
+        user = info.context.user
+        if user.is_anonymous:
+            raise Exception('Not logged in!')
         return Permission.objects.all()
         # user = info.context.user
         # if user.is_anonymous:
