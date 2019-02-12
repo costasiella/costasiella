@@ -145,7 +145,7 @@ class SiteWrapper extends React.Component<Props, State> {
                 outline
                 size="sm"
                 RootComponent="a"
-                link
+                color="primary"
               >
                 Settings
               </Button>
