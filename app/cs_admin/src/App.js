@@ -10,10 +10,13 @@ import ApolloClient from "apollo-boost";
 
 import SchoolLocations from './components/SchoolLocations'
 import Error404 from "./components/Error404"
+
+// Tabler css 
+import "tabler-react/dist/Tabler.css";
+// App css
 import './App.css'
 
-/* Tabler css */
-import "tabler-react/dist/Tabler.css";
+
 
 const client = new ApolloClient({
      uri: "http://localhost:8000/graphql/"
@@ -27,6 +30,7 @@ class App extends Component {
         <ApolloProvider client={client}>
           <Switch>
             <Route exact path="/" component={SchoolLocations} />
+            <Route exact path="/school" component={SchoolLocations} />
             <Route component={Error404} />
           </Switch>
         </ApolloProvider>
