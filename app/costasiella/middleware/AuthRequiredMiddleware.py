@@ -20,11 +20,15 @@ class AuthRequiredMiddleware:
             from django.urls import resolve
             current_url = resolve(request.path_info).url_name
             print('current_url')
-            print(current_url)
+            print(request.path)
+            print(request.get_full_path)
             if not current_url in excempt_urls:
                 from django.urls import reverse
                 from django.shortcuts import redirect
-                return redirect(reverse('account_login'))
+                from django.utils.http import urlencode
+                
+                login_url = reverse('account_login') + '?next=%s' % request.path
+                return redirect(login_url)
 
         response = self.get_response(request)
 

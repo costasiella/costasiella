@@ -13,7 +13,11 @@
 <!--
   {{ form.as_p }}
 -->
-<form class="login" method="POST" action="{% url 'account_login' %}">
+{% if request.GET.next %}
+<form class="login" name="login" action="{% url 'account_login' %}?next={{request.GET.next}}" method="POST" >
+{% else %}
+<form class="login" name="login" method="POST" action="{% url 'account_login' %}">
+{% endif %}
   {% csrf_token %}
   {{ form.non_field_errors }}
   <div class="form-group">
@@ -47,6 +51,18 @@
 <div class="register">
     <p>{% trans "Don't have an account?" %} <a href="{{ signup_url }}"><b>{% trans "Create an account" %}</b></a></p>
 </div>
+
+
+<script type="text/javascript">
+    /* Fix Hashrouter login redirects */
+    window.onload = function() {
+        if(window.location.hash) {
+          // Fragment exists
+          var hash = window.location.hash;
+          document.login.action = document.login.action + hash
+        }         
+    }
+</script>
 
 
 {% endblock %}
