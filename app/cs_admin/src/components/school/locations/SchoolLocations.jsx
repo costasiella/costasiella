@@ -33,11 +33,9 @@ const SchoolLocations = () => (
   <SiteWrapper>
     <div className="my-3 my-md-5">
       <Container>
-        <Page.Header title="School"
-                     subTitle="Locations"/>
-
         <Grid.Row>
           <Grid.Col md={3}>
+            <h3 className="page-title mb-5">School</h3>
             <div>
                 <List.Group transparent={true}>
                   <List.GroupItem
@@ -53,9 +51,9 @@ const SchoolLocations = () => (
           </Grid.Col>
           <Grid.Col md={9}>
           <Card>
-            {/* <Card.Header>
+            <Card.Header>
               <Card.Title>Locations</Card.Title>
-            </Card.Header> */}
+            </Card.Header>
             <Card.Body>
               <Query query={GET_LOCATIONS}>
                 {({ loading, error, data }) => {
