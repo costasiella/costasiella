@@ -27,6 +27,7 @@ const GET_LOCATIONS = gql`
     schoolLocations {
         id
         name
+        displayPublic
     }
   }
 `
@@ -63,13 +64,18 @@ const SchoolLocations = () => (
                         <Table.Header>
                           <Table.Row key={v4()}>
                             <Table.ColHeader>Name</Table.ColHeader>
+                            <Table.ColHeader>Public</Table.ColHeader>
                           </Table.Row>
                         </Table.Header>
                         <Table.Body>
-                           {data.schoolLocations.map(({ id, name }) => (
+                            {console.log(data.schoolLocations)}
+                            {data.schoolLocations.map(({ id, name, displayPublic }) => (
                               <Table.Row key={v4()}>
                                 <Table.Col key={v4()}>
                                   {name}
+                                </Table.Col>
+                                <Table.Col key={v4()}>
+                                  {(displayPublic) ? 'yep': 'nope'}
                                 </Table.Col>
                               </Table.Row>
                             ))}

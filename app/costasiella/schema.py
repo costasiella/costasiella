@@ -28,31 +28,31 @@ class Query(graphene.ObjectType):
             return SchoolLocation.objects.all().order_by('name')
 
         # Return only public non-archived locations
-        return SchoolLocation.objects.filter(public = True, archived = False).order_by('name')
+        return SchoolLocation.objects.filter(display_public = True, archived = False).order_by('name')
 
 
 class CreateSchoolLocation(graphene.Mutation):
     id = graphene.Int()
     name = graphene.String()
-    public = graphene.Boolean()
+    display_public = graphene.Boolean()
 
     class Arguments:
         name = graphene.String()
-        public = graphene.Boolean()
+        display_public = graphene.Boolean()
 
 
-    def mutate(self, info, name, public):
+    def mutate(self, info, name, display_public):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.add_schoollocation')
 
-        school_location = SchoolLocation(name=name, public=public)
+        school_location = SchoolLocation(name=name, display_public=display_public)
         school_location.save()
 
         return CreateSchoolLocation(
             id=school_location.id,
             # archived=school_location.archived,
             name=school_location.name,
-            public=school_location.public
+            display_public=school_location.display_public
         )
 
 
