@@ -40,6 +40,10 @@ class CreateSchoolLocation(graphene.Mutation):
         public = graphene.Boolean()
 
     def mutate(self, info, name, public):
+        user = info.context.user
+        if not user.has_perm('costasiella.add_schoollocation'):
+            raise Exception('Permission denied!')
+
         school_location = SchoolLocation(name=name, public=public)
         school_location.save()
 
