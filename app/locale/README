@@ -1,0 +1,5 @@
+To add a locale here (Django generates .po files), run the following command:
+
+django-admin makemessages -l <locale name>
+eg.
+django-admin makemessages -l <locale name> nl_NL
