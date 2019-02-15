@@ -29,3 +29,52 @@ class Query(graphene.ObjectType):
         # Return only public non-archived locations
         return SchoolLocation.objects.filter(public = True, archived = False).order_by('name')
 
+
+class CreateSchoolLocation(graphene.Mutation):
+    id = graphene.Int()
+    name = graphene.String()
+    public = graphene.Boolean()
+
+    class Arguments:
+        name = graphene.String()
+        public = graphene.Boolean()
+
+    def mutate(self, info, name, public):
+        school_location = SchoolLocation(name=name, public=public)
+        school_location.save()
+
+        return CreateSchoolLocation(
+            id=school_location.id,
+            # archived=school_location.archived,
+            name=school_location.name,
+            public=school_location.public
+        )
+
+
+class UpdateSchoolLocation(graphene.Mutation):
+    id = graphene.Int()
+    archived = graphene.Boolean()
+    name = graphene.String()
+    public = graphene.Boolean()
+
+    class Arguments:
+        id = graphene.Int()
+        archived = graphene.Boolean()
+        name = graphene.String()
+        public = graphene.Boolean()
+
+    def mutate(self, info, id, archived, name, public):
+        school_location = SchoolLocation(id=id, archived=archived, name=name, public=public)
+        school_location.save(force_update=True)
+
+        return UpdateSchoolLocation(
+            id=school_location.id,
+            archived=school_location.archived,
+            name=school_location.name,
+            public=school_location.public
+        )
+
+
+class Mutation(graphene.ObjectType):
+    create_school_location = CreateSchoolLocation.Field()
+    update_school_location = UpdateSchoolLocation.Field()
