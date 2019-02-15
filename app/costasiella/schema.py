@@ -72,7 +72,13 @@ class UpdateSchoolLocation(graphene.Mutation):
         if not user.has_perm('costasiella.change_schoollocation'):
             raise Exception('Permission denied!')
 
-        school_location = SchoolLocation(id=id, archived=archived, name=name, public=public)
+        school_location = SchoolLocation.objects.filter(id=id).first()
+        if not school_location:
+            raise Exception('Invalid School Location ID!')
+
+        school_location.archived = archived
+        school_location.name = name
+        school_location.public = public
         school_location.save(force_update=True)
 
         return UpdateSchoolLocation(
@@ -94,7 +100,10 @@ class DeleteSchoolLocation(graphene.Mutation):
         if not user.has_perm('costasiella.delete_schoollocation'):
             raise Exception('Permission denied!')
 
-        school_location = SchoolLocation.objects.get(id=id)
+        school_location = SchoolLocation.objects.filter(id=id).first()
+        if not school_location:
+            raise Exception('Invalid School Location ID!')
+
         school_location.delete()
 
         return DeleteSchoolLocation(
