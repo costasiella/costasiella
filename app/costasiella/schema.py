@@ -23,7 +23,7 @@ class Query(graphene.ObjectType):
         # else:
             # return SchoolLocation.objects.all()
         ## return everything:
-        if user.has_perm('view_schoollocation'):
+        if user.has_perm('costasiella.view_schoollocation'):
             return SchoolLocation.objects.all().order_by('name')
 
         # Return only public non-archived locations
