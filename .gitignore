@@ -10,3 +10,5 @@ app/webpack-stats\.dev\.json
 *.py~
 
 app/costasiella/__pycache__/
+
+*.js~
