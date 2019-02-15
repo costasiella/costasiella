@@ -18,8 +18,9 @@ import {
   Table
 } from "tabler-react";
 import SiteWrapper from "../../SiteWrapper"
-
 import HasPermissionWrapper from "../../HasPermissionWrapper"
+
+import SchoolMenu from "../SchoolMenu"
 
 const GET_LOCATIONS = gql`
   {
@@ -38,18 +39,7 @@ const SchoolLocations = () => (
         <Grid.Row>
           <Grid.Col md={3}>
             <h3 className="page-title mb-5">School</h3>
-            <div>
-                <List.Group transparent={true}>
-                  <List.GroupItem
-                    className="d-flex align-items-center"
-                    to="#/school/locations"
-                    icon="home"
-                    active
-                  >
-                    Locations
-                  </List.GroupItem>
-                </List.Group>
-              </div>
+            <SchoolMenu active_link='schoollocation'/>
           </Grid.Col>
           <Grid.Col md={9}>
           <Card>
