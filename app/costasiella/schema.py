@@ -2,8 +2,7 @@ import graphene
 from graphene_django import DjangoObjectType
 
 from .models import SchoolLocation
-from .modules.gql_tools import require_login_or_permission
-
+from .modules.gql_tools import require_login_and_permission
 
 
 class SchoolLocationType(DjangoObjectType):
@@ -44,7 +43,7 @@ class CreateSchoolLocation(graphene.Mutation):
 
     def mutate(self, info, name, public):
         user = info.context.user
-        require_login_or_permission(user, 'costasiella.add_schoollocation')
+        require_login_and_permission(user, 'costasiella.add_schoollocation')
 
         school_location = SchoolLocation(name=name, public=public)
         school_location.save()
