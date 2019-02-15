@@ -23,4 +23,9 @@ class Query(graphene.ObjectType):
         # else:
             # return SchoolLocation.objects.all()
         ## return everything:
-        return SchoolLocation.objects.all()
+        if user.has_perm('view_schoollocation'):
+            return SchoolLocation.objects.all().order_by('name')
+
+        # Return only public non-archived locations
+        return SchoolLocation.objects.filter(public = True, archived = False).order_by('name')
+

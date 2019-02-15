@@ -18,7 +18,16 @@ const SchoolMenu = ({active_link}) => (
             (active_link == 'schoollocation') ? schoollocation_active = true: schoollocation_active = false
         }
 
-        <HasPermissionWrapper 
+        <List.GroupItem
+            key={v4()}
+            className="d-flex align-items-center"
+            to="#/school/locations"
+            icon="home"
+            active={schoollocation_active}
+            >
+        Locations
+        </List.GroupItem>
+        {/* <HasPermissionWrapper 
             permission="view"
             resource="schoollocation">
             <List.GroupItem
@@ -30,7 +39,7 @@ const SchoolMenu = ({active_link}) => (
                 >
             Locations
             </List.GroupItem>
-        </HasPermissionWrapper>
+        </HasPermissionWrapper> */}
     </List.Group>
 );
 

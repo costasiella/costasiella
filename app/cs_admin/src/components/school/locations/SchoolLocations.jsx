@@ -55,8 +55,8 @@ const SchoolLocations = () => (
                 {({ loading, error, data }) => {
                   if (loading) return <p>Loading...</p>
                   if (error) return <p>Error loading school locations :(</p>
-                  if (!data.schoolLocations.length) {
-                    return "no locations found."
+                  if (!data.schoolLocations) {
+                    return "No locations found."
                   } else {
                     return (
                       <Table>
