@@ -2,6 +2,7 @@ import React from 'react'
 import { Query } from "react-apollo"
 import gql from "graphql-tag"
 import { v4 } from "uuid"
+import { withTranslation } from 'react-i18next'
 
 
 // @flow
@@ -33,13 +34,13 @@ const GET_LOCATIONS = gql`
 `
 
 
-const SchoolLocations = () => (
+const SchoolLocations = ({ t }) => (
   <SiteWrapper>
     <div className="my-3 my-md-5">
       <Container>
         <Grid.Row>
           <Grid.Col md={3}>
-            <h3 className="page-title mb-5">School</h3>
+            <h3 className="page-title mb-5">{t('school.page_title')}</h3>
             <SchoolMenu active_link='schoollocation'/>
           </Grid.Col>
           <Grid.Col md={9}>
@@ -48,7 +49,7 @@ const SchoolLocations = () => (
               <Card.Title>Locations</Card.Title>
               <HasPermissionWrapper permission="add"
                                     resource="schoollocation">
-                Add something                      
+                {t('school.button.location_add')}
               </HasPermissionWrapper>
             </Card.Header>
             <Card.Body>
@@ -94,4 +95,4 @@ const SchoolLocations = () => (
   </SiteWrapper>
 );
 
-export default SchoolLocations
+export default withTranslation()(SchoolLocations)
