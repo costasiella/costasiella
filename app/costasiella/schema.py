@@ -75,6 +75,23 @@ class UpdateSchoolLocation(graphene.Mutation):
         )
 
 
+class DeleteSchoolLocation(graphene.Mutation):
+    id = graphene.Int()
+
+    class Arguments:
+        id = graphene.Int()
+
+    def mutate(self, info, id):
+        school_location = SchoolLocation.objects.get(id=id)
+        school_location.delete()
+
+        return DeleteSchoolLocation(
+            # This returns None for the id if successful
+            id=school_location.id
+        )
+
+
 class Mutation(graphene.ObjectType):
     create_school_location = CreateSchoolLocation.Field()
     update_school_location = UpdateSchoolLocation.Field()
+    delete_school_location = DeleteSchoolLocation.Field()
