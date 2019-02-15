@@ -68,6 +68,10 @@ class UpdateSchoolLocation(graphene.Mutation):
         public = graphene.Boolean()
 
     def mutate(self, info, id, archived, name, public):
+        user = info.context.user
+        if not user.has_perm('costasiella.change_schoollocation'):
+            raise Exception('Permission denied!')
+
         school_location = SchoolLocation(id=id, archived=archived, name=name, public=public)
         school_location.save(force_update=True)
 
@@ -86,6 +90,10 @@ class DeleteSchoolLocation(graphene.Mutation):
         id = graphene.Int()
 
     def mutate(self, info, id):
+        user = info.context.user
+        if not user.has_perm('costasiella.delete_schoollocation'):
+            raise Exception('Permission denied!')
+
         school_location = SchoolLocation.objects.get(id=id)
         school_location.delete()
 
