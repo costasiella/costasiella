@@ -65,7 +65,7 @@ MIDDLEWARE = [
     'graphql_jwt.middleware.JSONWebTokenMiddleware',
 
     # local apps
-    'costasiella.middleware.AuthRequiredMiddleware'
+    # 'costasiella.middleware.AuthRequiredMiddleware'
 ]
 
 # Add GraphQL JWT Tokens
