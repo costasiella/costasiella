@@ -1,0 +1,17 @@
+{% load static %}
+{% load render_bundle from webpack_loader %}
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,300i,400,400i,500,500i,600,600i,700,700i&amp;subset=latin-ext">
+    <title>Costasiella</title>
+  </head>
+  <body>
+    <div id="root">
+    </div>
+      {% render_bundle 'main' %}
+  </body>
+</html>
+

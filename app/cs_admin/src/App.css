@@ -1,4 +1,20 @@
-.App {
+#root {
+  height: 100%;
+}
+
+/* Tabler changes */
+
+
+/* Make container behave like container-fluid ... not working yet */
+/* .container {
+  width: 100%;
+  padding-right: .75rem;
+  padding-left: .75rem;
+  margin-right: auto;
+  margin-left: auto;
+} */
+
+/* .App {
   text-align: center;
 }
 
@@ -29,4 +45,4 @@
   to {
     transform: rotate(360deg);
   }
-}
+} */

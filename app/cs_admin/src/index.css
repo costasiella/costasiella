@@ -1,4 +1,11 @@
+/* from tabler */
 body {
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif;
+}
+
+/* body {
   margin: 0;
   padding: 0;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
@@ -11,4 +18,4 @@ body {
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
-}
+} */
