@@ -163,7 +163,7 @@ class SiteWrapper extends React.Component<Props, State> {
             headerProps={{
                 href: "/",
                 alt: "Costasiella",
-                // imageURL: "./demo/brand/tabler.svg", // Set logo url here
+                imageURL: "/static/logo_stock_backend.svg", // Set logo url here
                 navItems: (
                   <Nav.Item type="div" className="d-none d-md-flex">
                     <Button
