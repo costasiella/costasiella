@@ -1,9 +1,11 @@
 // @flow
 
-import * as React from "react";
-import { NavLink, withRouter } from "react-router-dom";
-import { Query } from "react-apollo";
-import gql from "graphql-tag";
+import * as React from "react"
+import { NavLink, withRouter } from "react-router-dom"
+import { Query } from "react-apollo"
+
+
+import GET_USER from "../queries/system/get_user"
 
 import {
   Site,
@@ -118,29 +120,29 @@ const navBarItems: Array<navItem> = [
 // const accountDropdownProps = 
 
 
-const GET_USER = gql`
-  query {
-    user {
-    id
-    isActive
-    email
-    firstName
-    lastName
-    userPermissions {
-      id
-    }
-    groups {
-      id
-      name
-      permissions {
-        id
-        name
-        codename
-      }
-    }
-  }
-  }
-`
+// const GET_USER = gql`
+//   query {
+//     user {
+//     id
+//     isActive
+//     email
+//     firstName
+//     lastName
+//     userPermissions {
+//       id
+//     }
+//     groups {
+//       id
+//       name
+//       permissions {
+//         id
+//         name
+//         codename
+//       }
+//     }
+//   }
+//   }
+// `
 
 class SiteWrapper extends React.Component<Props, State> {
   state = {}  
@@ -155,7 +157,6 @@ class SiteWrapper extends React.Component<Props, State> {
           
           console.log('user data in site wrapper')
           console.log(data)
-          
       
 
           return <Site.Wrapper

@@ -19,6 +19,8 @@ import {
 } from "tabler-react";
 import SiteWrapper from "../../SiteWrapper"
 
+import HasPermissionWrapper from "../../HasPermissionWrapper"
+
 const GET_LOCATIONS = gql`
   {
     schoolLocations {
@@ -53,6 +55,10 @@ const SchoolLocations = () => (
           <Card>
             <Card.Header>
               <Card.Title>Locations</Card.Title>
+              <HasPermissionWrapper permission="add"
+                                    resource="schoollocation">
+                Add something                      
+              </HasPermissionWrapper>
             </Card.Header>
             <Card.Body>
               <Query query={GET_LOCATIONS}>
