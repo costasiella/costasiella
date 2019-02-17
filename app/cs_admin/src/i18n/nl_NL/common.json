@@ -1,8 +1,15 @@
 {
+    "add": "__STRING_NOT_TRANSLATED__",
+    "messages": {
+        "loading": "__STRING_NOT_TRANSLATED__"
+    },
+    "name": "__STRING_NOT_TRANSLATED__",
+    "public": "__STRING_NOT_TRANSLATED__",
     "school": {
-        "button": {
-            "location_add": "__STRING_NOT_TRANSLATED__"
-        },
-        "page_title": "__STRING_NOT_TRANSLATED__"
+        "locations": {
+            "empty_list": "__STRING_NOT_TRANSLATED__",
+            "error_loading": "__STRING_NOT_TRANSLATED__",
+            "title": "__STRING_NOT_TRANSLATED__"
+        }
     }
 }

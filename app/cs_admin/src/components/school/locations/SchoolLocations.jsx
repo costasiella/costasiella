@@ -44,22 +44,22 @@ const SchoolLocations = ({ t }) => (
           <Grid.Col md={9}>
           <Card>
             <Card.Header>
-              <Card.Title>Locations</Card.Title>
+              <Card.Title>{t('school.locations.title')}</Card.Title>
             </Card.Header>
             <Card.Body>
               <Query query={GET_LOCATIONS}>
                 {({ loading, error, data }) => {
-                  if (loading) return <p>Loading...</p>
-                  if (error) return <p>Error loading school locations :(</p>
+                  if (loading) return <p>{t('messages.loading')}</p>
+                  if (error) return <p>{t('school.locations.error_loading')}</p>
                   if (!data.schoolLocations) {
-                    return "No locations found."
+                    return t('school.locations.empty_list') //"No locations found."
                   } else {
                     return (
                       <Table>
                         <Table.Header>
                           <Table.Row key={v4()}>
-                            <Table.ColHeader>Name</Table.ColHeader>
-                            <Table.ColHeader>Public</Table.ColHeader>
+                            <Table.ColHeader>{t('name')}</Table.ColHeader>
+                            <Table.ColHeader>{t('public')}</Table.ColHeader>
                           </Table.Row>
                         </Table.Header>
                         <Table.Body>
@@ -87,7 +87,7 @@ const SchoolLocations = ({ t }) => (
             <HasPermissionWrapper permission="add"
                                   resource="schoollocation">
               <Button color="primary btn-block mb-6">
-                <Icon prefix="fe" name="plus-circle" /> {t('school.button.location_add')}
+                <Icon prefix="fe" name="plus-circle" /> {t('add')}
               </Button>
             </HasPermissionWrapper>
             <SchoolMenu active_link='schoollocation'/>

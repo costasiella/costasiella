@@ -1,14 +1,14 @@
 {
     "add": "Add",
     "messages": {
-        "loading": "Loading..."
+        "loading": "__STRING_NOT_TRANSLATED__"
     },
     "name": "Name",
     "public": "Public",
     "school": {
         "locations": {
             "empty_list": "No locations found",
-            "error_loading": "Error loading locations :(",
+            "error_loading": "__STRING_NOT_TRANSLATED__",
             "title": "Locations"
         }
     }
