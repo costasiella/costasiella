@@ -1,15 +1,12 @@
 {
-    "add": "Add",
-    "messages": {
-        "loading": "Loading..."
-    },
-    "name": "Name",
-    "public": "Public",
     "school": {
         "locations": {
-            "empty_list": "No locations found",
+            "title": "Locations",
             "error_loading": "Error loading locations :(",
-            "title": "Locations"
+            "empty_list": "No locations found",
+            "add": "Add Location"
         }
-    }
+    },
+    "name": "Name",
+    "public": "Public"
 }

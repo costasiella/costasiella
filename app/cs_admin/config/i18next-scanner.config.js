@@ -14,7 +14,7 @@ module.exports = {
         dest: './src/i18n',
         debug: true,
         removeUnusedKeys: true,
-        sort: true,
+        sort: false,
         func: {
             list: ['i18next.t', 'i18n.t', 't'],
             extensions: ['.js', '.jsx']

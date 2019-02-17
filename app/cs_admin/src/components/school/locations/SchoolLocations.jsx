@@ -11,6 +11,7 @@ import {
   Page,
   Grid,
   Icon,
+  Dimmer,
   Badge,
   Button,
   Card,
@@ -49,11 +50,18 @@ const SchoolLocations = ({ t }) => (
             <Card.Body>
               <Query query={GET_LOCATIONS}>
                 {({ loading, error, data }) => {
-                  if (loading) return <p>{t('messages.loading')}</p>
+                  // Loading
+                  if (loading) return (
+                    <Dimmer active={true}
+                            loader={true} />
+                  )
+                  // Error
                   if (error) return <p>{t('school.locations.error_loading')}</p>
+                  // Empty list
                   if (!data.schoolLocations) {
-                    return t('school.locations.empty_list') //"No locations found."
+                    return t('school.locations.empty_list')
                   } else {
+                    // Life's good! :)
                     return (
                       <Table>
                         <Table.Header>
@@ -87,7 +95,7 @@ const SchoolLocations = ({ t }) => (
             <HasPermissionWrapper permission="add"
                                   resource="schoollocation">
               <Button color="primary btn-block mb-6">
-                <Icon prefix="fe" name="plus-circle" /> {t('add')}
+                <Icon prefix="fe" name="plus-circle" /> {t('school.locations.add')}
               </Button>
             </HasPermissionWrapper>
             <SchoolMenu active_link='schoollocation'/>
