@@ -10,6 +10,7 @@ import { withTranslation } from 'react-i18next'
 import {
   Page,
   Grid,
+  Icon,
   Badge,
   Button,
   Card,
@@ -38,19 +39,12 @@ const SchoolLocations = ({ t }) => (
   <SiteWrapper>
     <div className="my-3 my-md-5">
       <Container>
+        <Page.Header title="School" />
         <Grid.Row>
-          <Grid.Col md={3}>
-            <h3 className="page-title mb-5">{t('school.page_title')}</h3>
-            <SchoolMenu active_link='schoollocation'/>
-          </Grid.Col>
           <Grid.Col md={9}>
           <Card>
             <Card.Header>
               <Card.Title>Locations</Card.Title>
-              <HasPermissionWrapper permission="add"
-                                    resource="schoollocation">
-                {t('school.button.location_add')}
-              </HasPermissionWrapper>
             </Card.Header>
             <Card.Body>
               <Query query={GET_LOCATIONS}>
@@ -88,6 +82,15 @@ const SchoolLocations = ({ t }) => (
               </Query>
             </Card.Body>
           </Card>
+          </Grid.Col>
+          <Grid.Col md={3}>
+            <HasPermissionWrapper permission="add"
+                                  resource="schoollocation">
+              <Button color="primary btn-block mb-6">
+                <Icon prefix="fe" name="plus-circle" /> {t('school.button.location_add')}
+              </Button>
+            </HasPermissionWrapper>
+            <SchoolMenu active_link='schoollocation'/>
           </Grid.Col>
         </Grid.Row>
       </Container>
