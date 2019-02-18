@@ -1,3 +1,5 @@
+from django.utils.translation import gettext as _
+
 import graphene
 from graphene_django import DjangoObjectType
 from graphql import GraphQLError
@@ -34,7 +36,7 @@ class Query(graphene.ObjectType):
         print('user authenticated:')
         print(user.is_authenticated)
         if user.is_anonymous:
-            raise Exception('Not logged in!')
+            raise Exception(_('Not logged in!'))
         # if not info.context.user.is_authenticated:
             # return SchoolLocation.objects.none()
         # else:
@@ -68,7 +70,7 @@ class CreateSchoolLocation(graphene.Mutation):
             errors.append(
                 ValidationErrorMessage(
                     field="name",
-                    message="Name is required"
+                    message=_("Name is required")
                 )
             )
 
