@@ -12,20 +12,15 @@ class SchoolLocationType(DjangoObjectType):
     class Meta:
         model = SchoolLocation
 
+
 class ValidationErrorMessage(graphene.ObjectType):
     field = graphene.String(required=True)
     message = graphene.String(required=True)
 
+
 class ValidationErrors(graphene.ObjectType):
 	validation_errors = graphene.List(ValidationErrorMessage)
     # error_message = graphene.String(required=True)
-
-class CreateSchoolLocationSuccess(graphene.ObjectType):
-	school_location = graphene.Field(SchoolLocationType, required=True)
-
-class CreateSchoolLocationPayload(graphene.Union):
-    class Meta:
-        types = (ValidationErrors, CreateSchoolLocationSuccess)
 
 
 class Query(graphene.ObjectType):
@@ -47,6 +42,15 @@ class Query(graphene.ObjectType):
 
         # Return only public non-archived locations
         return SchoolLocation.objects.filter(display_public = True, archived = False).order_by('name')
+
+
+class CreateSchoolLocationSuccess(graphene.ObjectType):
+	school_location = graphene.Field(SchoolLocationType, required=True)
+
+
+class CreateSchoolLocationPayload(graphene.Union):
+    class Meta:
+        types = (ValidationErrors, CreateSchoolLocationSuccess)
 
 
 class CreateSchoolLocation(graphene.Mutation):
@@ -103,6 +107,7 @@ mutation {
 }
 
 '''
+
 
 class UpdateSchoolLocation(graphene.Mutation):
     id = graphene.Int()
