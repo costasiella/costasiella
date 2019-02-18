@@ -6,9 +6,6 @@ from .models import SchoolLocation
 from .modules.gql_tools import require_login_and_permission
 
 
-
-
-
 class SchoolLocationType(DjangoObjectType):
     class Meta:
         model = SchoolLocation
@@ -78,20 +75,32 @@ class CreateSchoolLocation(graphene.Mutation):
             return ValidationErrors(
                 validation_errors = errors
             )
-        #     # raise GraphQLError('Name is required')
 
         school_location = SchoolLocation(name=name, display_public=display_public)
         school_location.save()
 
         return CreateSchoolLocationSuccess(school_location=school_location)
 
-        # return CreateSchoolLocation(
-        #     id=school_location.id,
-        #     # archived=school_location.archived,
-        #     name=school_location.name,
-        #     display_public=school_location.display_public,
-        # )
+''' Query like this:
+mutation {
+  createSchoolLocation(name:"", displayPublic:true) {
+    __typename
+    ... on CreateSchoolLocationSuccess {
+      schoolLocation {
+        id
+        name
+      }
+    }
+    ... on ValidationErrors {
+      validationErrors {
+        field
+        message
+      }
+    }
+  }
+}
 
+'''
 
 class UpdateSchoolLocation(graphene.Mutation):
     id = graphene.Int()
