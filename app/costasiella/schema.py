@@ -1,13 +1,32 @@
 import graphene
 from graphene_django import DjangoObjectType
+from graphql import GraphQLError
 
 from .models import SchoolLocation
 from .modules.gql_tools import require_login_and_permission
 
 
+
+
+
 class SchoolLocationType(DjangoObjectType):
     class Meta:
         model = SchoolLocation
+
+class ValidationErrorMessage(graphene.ObjectType):
+    field = graphene.String(required=True)
+    message = graphene.String(required=True)
+
+class ValidationErrors(graphene.ObjectType):
+	validation_errors = graphene.List(ValidationErrorMessage)
+    # error_message = graphene.String(required=True)
+
+class CreateSchoolLocationSuccess(graphene.ObjectType):
+	school_location = graphene.Field(SchoolLocationType, required=True)
+
+class CreateSchoolLocationPayload(graphene.Union):
+    class Meta:
+        types = (ValidationErrors, CreateSchoolLocationSuccess)
 
 
 class Query(graphene.ObjectType):
@@ -37,23 +56,41 @@ class CreateSchoolLocation(graphene.Mutation):
     display_public = graphene.Boolean()
 
     class Arguments:
-        name = graphene.String()
-        display_public = graphene.Boolean()
+        name = graphene.String(required=True)
+        display_public = graphene.Boolean(required=True)
 
+    Output = CreateSchoolLocationPayload
 
     def mutate(self, info, name, display_public):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.add_schoollocation')
 
+        errors = []
+        if not len(name):
+            print('validation error found')
+            errors.append(
+                ValidationErrorMessage(
+                    field="name",
+                    message="Name is required"
+                )
+            )
+
+            return ValidationErrors(
+                validation_errors = errors
+            )
+        #     # raise GraphQLError('Name is required')
+
         school_location = SchoolLocation(name=name, display_public=display_public)
         school_location.save()
 
-        return CreateSchoolLocation(
-            id=school_location.id,
-            # archived=school_location.archived,
-            name=school_location.name,
-            display_public=school_location.display_public
-        )
+        return CreateSchoolLocationSuccess(school_location=school_location)
+
+        # return CreateSchoolLocation(
+        #     id=school_location.id,
+        #     # archived=school_location.archived,
+        #     name=school_location.name,
+        #     display_public=school_location.display_public,
+        # )
 
 
 class UpdateSchoolLocation(graphene.Mutation):
