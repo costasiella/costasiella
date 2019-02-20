@@ -13,14 +13,14 @@ class SchoolLocationType(DjangoObjectType):
         model = SchoolLocation
 
 
-class ValidationErrorMessage(graphene.ObjectType):
-    field = graphene.String(required=True)
-    message = graphene.String(required=True)
+# class ValidationErrorMessage(graphene.ObjectType):
+#     field = graphene.String(required=True)
+#     message = graphene.String(required=True)
 
 
-class ValidationErrors(graphene.ObjectType):
-	validation_errors = graphene.List(ValidationErrorMessage)
-    # error_message = graphene.String(required=True)
+# class ValidationErrors(graphene.ObjectType):
+# 	validation_errors = graphene.List(ValidationErrorMessage)
+#     # error_message = graphene.String(required=True)
 
 
 class Query(graphene.ObjectType):
@@ -44,13 +44,13 @@ class Query(graphene.ObjectType):
         return SchoolLocation.objects.filter(display_public = True, archived = False).order_by('name')
 
 
-class CreateSchoolLocationSuccess(graphene.ObjectType):
-	school_location = graphene.Field(SchoolLocationType, required=True)
+# class CreateSchoolLocationSuccess(graphene.ObjectType):
+# 	school_location = graphene.Field(SchoolLocationType, required=True)
 
 
-class CreateSchoolLocationPayload(graphene.Union):
-    class Meta:
-        types = (ValidationErrors, CreateSchoolLocationSuccess)
+# class CreateSchoolLocationPayload(graphene.Union):
+#     class Meta:
+#         types = (ValidationErrors, CreateSchoolLocationSuccess)
 
 
 class CreateSchoolLocation(graphene.Mutation):
@@ -62,7 +62,7 @@ class CreateSchoolLocation(graphene.Mutation):
         name = graphene.String(required=True)
         display_public = graphene.Boolean(required=True)
 
-    Output = CreateSchoolLocationPayload
+    # Output = CreateSchoolLocationPayload
 
     def mutate(self, info, name, display_public):
         user = info.context.user
@@ -71,23 +71,29 @@ class CreateSchoolLocation(graphene.Mutation):
         errors = []
         if not len(name):
             print('validation error found')
-            errors.append(
-                ValidationErrorMessage(
-                    field="name",
-                    message=_("Name is required")
-                )
-            )
+            raise GraphQLError(_('Name is requires'))
+            # errors.append(
+            #     ValidationErrorMessage(
+            #         field="name",
+            #         message=_("Name is required")
+            #     )
+            # )
 
-            return ValidationErrors(
-                validation_errors = errors
-            )
+            # return ValidationErrors(
+            #     validation_errors = errors
+            # )
 
         school_location = SchoolLocation(name=name, display_public=display_public)
         school_location.save()
 
-        return CreateSchoolLocationSuccess(school_location=school_location)
+        # return CreateSchoolLocationSuccess(school_location=school_location)
+        return CreateSchoolLocation(
+            id=school_location.id,
+            name=school_location.name,
+            display_public=school_location.display_public
+        )
 
-''' Query like this:
+''' Query like this when enabling error output using union:
 mutation {
   createSchoolLocation(name:"", displayPublic:true) {
     __typename

@@ -26,7 +26,7 @@ import HasPermissionWrapper from "../../HasPermissionWrapper"
 
 import SchoolMenu from "../SchoolMenu"
 
-const GET_LOCATIONS = gql`
+export const GET_LOCATIONS_QUERY = gql`
   {
     schoolLocations {
         id
@@ -49,8 +49,8 @@ const SchoolLocations = ({ t, history }) => (
               <Card.Title>{t('school.locations.title')}</Card.Title>
             </Card.Header>
             <Card.Body>
-              <Query query={GET_LOCATIONS}>
-                {({ loading, error, data }) => {
+              <Query query={GET_LOCATIONS_QUERY}>
+                {({ loading, error, data, refetch }) => {
                   // Loading
                   if (loading) return (
                     <Dimmer active={true}
