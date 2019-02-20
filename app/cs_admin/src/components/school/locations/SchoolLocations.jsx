@@ -23,6 +23,7 @@ import {
 } from "tabler-react";
 import SiteWrapper from "../../SiteWrapper"
 import HasPermissionWrapper from "../../HasPermissionWrapper"
+import { confirmAlert } from 'react-confirm-alert'; // Import
 
 import SchoolMenu from "../SchoolMenu"
 
@@ -35,6 +36,29 @@ export const GET_LOCATIONS_QUERY = gql`
     }
   }
 `
+
+const onClickArchive = (t, id) => {
+  const options = {
+    title: t('please_confirm'),
+    message: t('school.locations.confirm_archive'),
+    buttons: [
+      {
+        label: t('yes'),
+        onClick: () => alert('Click Yes'),
+        class: 'btn btn-primary'
+      },
+      {
+        label: t('no'),
+        onClick: () => alert('Click No')
+      }
+    ],
+    childrenElement: () => <div />,
+    // customUI: ({ title, message, onClose }) => <div>Custom UI</div>,
+    willUnmount: () => {}
+  }
+
+  confirmAlert(options)
+}
 
 
 const SchoolLocations = ({ t, history }) => (
@@ -82,6 +106,12 @@ const SchoolLocations = ({ t, history }) => (
                                   {(displayPublic) ? 
                                     <Badge color="success">{t('yes')}</Badge>: 
                                     <Badge color="danger">{t('no')}</Badge>}
+                                </Table.Col>
+                                <Table.Col className="text-right" key={v4()}>
+                                  <Button className='btn-sm' color="secondary">{t('edit')}</Button>
+                                </Table.Col>
+                                <Table.Col className="text-right" key={v4()}>
+                                  <a className="icon" title={t('archive')} onClick={() => onClickArchive(t, id)}><Icon prefix="fa" name="inbox"></Icon></a>
                                 </Table.Col>
                               </Table.Row>
                             ))}

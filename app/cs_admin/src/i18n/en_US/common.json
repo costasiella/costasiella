@@ -6,7 +6,8 @@
             "empty_list": "No locations found",
             "add": "Add Location",
             "title_add": "New location",
-            "toast_add_success": "Added loadtion"
+            "toast_add_success": "Added loadtion",
+            "confirm_archive": "Do you with to move this location to the archive?"
         },
         "location": {
             "name": "Location name",
@@ -26,5 +27,8 @@
     "cancel": "Cancel",
     "toast_server_error": "Uh oh... the server returned an error",
     "yes": "Yes",
-    "no": "No"
+    "no": "No",
+    "edit": "Edit",
+    "archive": "Archive",
+    "please_confirm": "Please confirm"
 }

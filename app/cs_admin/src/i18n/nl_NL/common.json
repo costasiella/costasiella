@@ -8,7 +8,8 @@
             "title": "__STRING_NOT_TRANSLATED__",
             "add": "__STRING_NOT_TRANSLATED__",
             "title_add": "__STRING_NOT_TRANSLATED__",
-            "toast_add_success": "__STRING_NOT_TRANSLATED__"
+            "toast_add_success": "__STRING_NOT_TRANSLATED__",
+            "confirm_archive": "__STRING_NOT_TRANSLATED__"
         },
         "location": {
             "name": "__STRING_NOT_TRANSLATED__",
@@ -26,5 +27,8 @@
     "cancel": "__STRING_NOT_TRANSLATED__",
     "toast_server_error": "__STRING_NOT_TRANSLATED__",
     "yes": "__STRING_NOT_TRANSLATED__",
-    "no": "__STRING_NOT_TRANSLATED__"
+    "no": "__STRING_NOT_TRANSLATED__",
+    "edit": "__STRING_NOT_TRANSLATED__",
+    "archive": "__STRING_NOT_TRANSLATED__",
+    "please_confirm": "__STRING_NOT_TRANSLATED__"
 }
