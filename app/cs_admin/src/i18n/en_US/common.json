@@ -6,9 +6,20 @@
             "empty_list": "No locations found",
             "add": "Add Location",
             "title_add": "New location"
+        },
+        "location": {
+            "name": "Location name",
+            "public": "Pubic"
         }
     },
     "name": "Name",
     "public": "Public",
-    "back": "Back"
+    "back": "Back",
+    "save": "Save",
+    "form": {
+        "errors": {
+            "required": "This field is required",
+            "invalid_email_address": "Please enter a valid email address"
+        }
+    }
 }

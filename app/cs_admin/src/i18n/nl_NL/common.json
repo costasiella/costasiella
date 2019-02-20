@@ -8,7 +8,18 @@
             "title": "__STRING_NOT_TRANSLATED__",
             "add": "__STRING_NOT_TRANSLATED__",
             "title_add": "__STRING_NOT_TRANSLATED__"
+        },
+        "location": {
+            "name": "__STRING_NOT_TRANSLATED__",
+            "public": "__STRING_NOT_TRANSLATED__"
         }
     },
-    "back": "__STRING_NOT_TRANSLATED__"
+    "back": "__STRING_NOT_TRANSLATED__",
+    "save": "__STRING_NOT_TRANSLATED__",
+    "form": {
+        "errors": {
+            "required": "__STRING_NOT_TRANSLATED__",
+            "invalid_email_address": "__STRING_NOT_TRANSLATED__"
+        }
+    }
 }

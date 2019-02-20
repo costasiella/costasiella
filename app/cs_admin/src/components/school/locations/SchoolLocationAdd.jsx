@@ -4,6 +4,7 @@ import gql from "graphql-tag"
 import { v4 } from "uuid"
 import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
+import { Formik, Form, Field, ErrorMessage } from 'formik'
 
 
 // @flow
@@ -18,7 +19,7 @@ import {
   Card,
   Container,
   List,
-  Form,
+  Form as TablerForm,
   Table
 } from "tabler-react";
 import SiteWrapper from "../../SiteWrapper"
@@ -49,7 +50,77 @@ const SchoolLocationAdd = ({ t, history }) => (
               <Card.Title>{t('school.locations.title_add')}</Card.Title>
             </Card.Header>
             <Card.Body>
-                hello world!
+                <Formik
+                    initialValues={{ name: '', public: true }}
+                    validate={values => {
+                        let errors = {};
+                        if (!values.name) {
+                        errors.name = t('form.errors.required')
+                        } else if (
+                        !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(values.name)
+                        ) {
+                        errors.name = t('form.errors.invalid_email_address');
+                        }
+                        return errors;
+                    }}
+                    onSubmit={(values, { setSubmitting }) => {
+                        setTimeout(() => {
+                        alert(JSON.stringify(values, null, 2));
+                        setSubmitting(false);
+                        }, 400);
+                    }}
+                    >
+                    {({ isSubmitting, errors }) => (
+                        <Form>
+                            <TablerForm.Label>{t('school.location.name')}</TablerForm.Label>
+                            <Field type="text" 
+                                   name="name" 
+                                   className={(errors.name) ? "form-control is-invalid" : "form-control"} 
+                                   autoComplete="off" />
+                            <ErrorMessage name="name" component="span" className="invalid-feedback" />
+                            <Field type="checkbox" name="public" />
+                            <ErrorMessage name="public" component="div" />
+                            <button type="submit" disabled={isSubmitting}>
+                                Submit
+                            </button>
+                        </Form>
+                    )}
+                </Formik>
+                {/* <Formik
+                    initialValues={{ name: '', displayPublic: '' }}
+                    validate={values => {
+                        let errors = {};
+                        if (!values.name) {
+                        errors.name = 'Required';
+                        } else if (
+                        !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(values.email)
+                        ) {
+                        errors.name = 'Invalid email address';
+                        }
+                        return errors;
+                    }}
+                    onSubmit={(values, { setSubmitting }) => {
+                        setTimeout(() => {
+                        alert(JSON.stringify(values, null, 2));
+                        setSubmitting(false);
+                        }, 400);
+                    }}
+                    >
+                    {({ isSubmitting }) => (
+                    <Form>
+                        <TablerForm.Label>{t('school.location.name')}</TablerForm.Label>
+                        <Field className="form-control" type="text" name="name" />
+                        <ErrorMessage name="text" component="div" />
+                        <TablerForm.Label>{t('school.location.public')}</TablerForm.Label>
+                        <Field type="checkbox" name="displayPublic" />
+                        <ErrorMessage name="displayPublic" component="div" />
+                        <br/>
+                        <button className="btn btn-primary" type="submit" disabled={isSubmitting}>
+                            {t('save')}
+                        </button>
+                    </Form>
+                    )}
+                </Formik> */}
               {/* <Query query={GET_LOCATIONS}>
                 {({ loading, error, data }) => {
                   // Loading
@@ -91,6 +162,9 @@ const SchoolLocationAdd = ({ t, history }) => (
                 }}
               </Query> */}
             </Card.Body>
+            <Card.Footer>
+                
+            </Card.Footer>
           </Card>
           </Grid.Col>
           <Grid.Col md={3}>
