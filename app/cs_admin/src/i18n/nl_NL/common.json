@@ -6,7 +6,9 @@
             "empty_list": "__STRING_NOT_TRANSLATED__",
             "error_loading": "__STRING_NOT_TRANSLATED__",
             "title": "__STRING_NOT_TRANSLATED__",
-            "add": "__STRING_NOT_TRANSLATED__"
+            "add": "__STRING_NOT_TRANSLATED__",
+            "title_add": "__STRING_NOT_TRANSLATED__"
         }
-    }
+    },
+    "back": "__STRING_NOT_TRANSLATED__"
 }

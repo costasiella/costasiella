@@ -4,9 +4,11 @@
             "title": "Locations",
             "error_loading": "Error loading locations :(",
             "empty_list": "No locations found",
-            "add": "Add Location"
+            "add": "Add Location",
+            "title_add": "New location"
         }
     },
     "name": "Name",
-    "public": "Public"
+    "public": "Public",
+    "back": "Back"
 }

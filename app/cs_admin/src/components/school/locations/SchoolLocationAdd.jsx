@@ -37,7 +37,7 @@ const GET_LOCATIONS = gql`
 `
 
 
-const SchoolLocations = ({ t, history }) => (
+const SchoolLocationAdd = ({ t, history }) => (
   <SiteWrapper>
     <div className="my-3 my-md-5">
       <Container>
@@ -46,10 +46,11 @@ const SchoolLocations = ({ t, history }) => (
           <Grid.Col md={9}>
           <Card>
             <Card.Header>
-              <Card.Title>{t('school.locations.title')}</Card.Title>
+              <Card.Title>{t('school.locations.title_add')}</Card.Title>
             </Card.Header>
             <Card.Body>
-              <Query query={GET_LOCATIONS}>
+                hello world!
+              {/* <Query query={GET_LOCATIONS}>
                 {({ loading, error, data }) => {
                   // Loading
                   if (loading) return (
@@ -88,7 +89,7 @@ const SchoolLocations = ({ t, history }) => (
                     )
                   }
                 }}
-              </Query>
+              </Query> */}
             </Card.Body>
           </Card>
           </Grid.Col>
@@ -96,8 +97,8 @@ const SchoolLocations = ({ t, history }) => (
             <HasPermissionWrapper permission="add"
                                   resource="schoollocation">
               <Button color="primary btn-block mb-6"
-                      onClick={() => history.push("/school/locations/add")}>
-                <Icon prefix="fe" name="plus-circle" /> {t('school.locations.add')}
+                      onClick={() => history.push("/school/locations")}>
+                <Icon prefix="fe" name="chevrons-left" /> {t('back')}
               </Button>
             </HasPermissionWrapper>
             <SchoolMenu active_link='schoollocation'/>
@@ -108,4 +109,4 @@ const SchoolLocations = ({ t, history }) => (
   </SiteWrapper>
 );
 
-export default withTranslation()(withRouter(SchoolLocations))
+export default withTranslation()(withRouter(SchoolLocationAdd))
