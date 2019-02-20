@@ -24,5 +24,7 @@
     },
     "submit": "Submit",
     "cancel": "Cancel",
-    "toast_server_error": "Uh oh... the server returned an error"
+    "toast_server_error": "Uh oh... the server returned an error",
+    "yes": "Yes",
+    "no": "No"
 }

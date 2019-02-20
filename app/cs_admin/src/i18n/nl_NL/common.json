@@ -24,5 +24,7 @@
     },
     "submit": "__STRING_NOT_TRANSLATED__",
     "cancel": "__STRING_NOT_TRANSLATED__",
-    "toast_server_error": "__STRING_NOT_TRANSLATED__"
+    "toast_server_error": "__STRING_NOT_TRANSLATED__",
+    "yes": "__STRING_NOT_TRANSLATED__",
+    "no": "__STRING_NOT_TRANSLATED__"
 }

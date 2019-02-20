@@ -79,7 +79,9 @@ const SchoolLocations = ({ t, history }) => (
                                   {name}
                                 </Table.Col>
                                 <Table.Col key={v4()}>
-                                  {(displayPublic) ? 'yep': 'nope'}
+                                  {(displayPublic) ? 
+                                    <Badge color="success">{t('yes')}</Badge>: 
+                                    <Badge color="danger">{t('no')}</Badge>}
                                 </Table.Col>
                               </Table.Row>
                             ))}
