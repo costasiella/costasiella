@@ -9,7 +9,7 @@
         },
         "location": {
             "name": "Location name",
-            "public": "Pubic"
+            "public": "This is a public location"
         }
     },
     "name": "Name",
@@ -19,7 +19,7 @@
     "form": {
         "errors": {
             "required": "This field is required",
-            "invalid_email_address": "Please enter a valid email address"
+            "min_length_3": "Please input at least 3 characters"
         }
     }
 }

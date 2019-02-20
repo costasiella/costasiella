@@ -19,7 +19,7 @@
     "form": {
         "errors": {
             "required": "__STRING_NOT_TRANSLATED__",
-            "invalid_email_address": "__STRING_NOT_TRANSLATED__"
+            "min_length_3": "__STRING_NOT_TRANSLATED__"
         }
     }
 }

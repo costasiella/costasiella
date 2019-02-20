@@ -5,6 +5,7 @@ import { v4 } from "uuid"
 import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
 import { Formik, Form, Field, ErrorMessage } from 'formik'
+import validator from 'validator';
 
 
 // @flow
@@ -37,6 +38,7 @@ const GET_LOCATIONS = gql`
   }
 `
 
+const return_url = "/school/locations"
 
 const SchoolLocationAdd = ({ t, history }) => (
   <SiteWrapper>
@@ -49,43 +51,51 @@ const SchoolLocationAdd = ({ t, history }) => (
             <Card.Header>
               <Card.Title>{t('school.locations.title_add')}</Card.Title>
             </Card.Header>
-            <Card.Body>
-                <Formik
-                    initialValues={{ name: '', public: true }}
-                    validate={values => {
-                        let errors = {};
-                        if (!values.name) {
-                        errors.name = t('form.errors.required')
-                        } else if (
-                        !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(values.name)
-                        ) {
-                        errors.name = t('form.errors.invalid_email_address');
-                        }
-                        return errors;
-                    }}
-                    onSubmit={(values, { setSubmitting }) => {
-                        setTimeout(() => {
-                        alert(JSON.stringify(values, null, 2));
-                        setSubmitting(false);
-                        }, 400);
-                    }}
-                    >
-                    {({ isSubmitting, errors }) => (
-                        <Form>
-                            <TablerForm.Label>{t('school.location.name')}</TablerForm.Label>
-                            <Field type="text" 
-                                   name="name" 
-                                   className={(errors.name) ? "form-control is-invalid" : "form-control"} 
-                                   autoComplete="off" />
-                            <ErrorMessage name="name" component="span" className="invalid-feedback" />
-                            <Field type="checkbox" name="public" />
-                            <ErrorMessage name="public" component="div" />
-                            <button type="submit" disabled={isSubmitting}>
+            <Formik
+                initialValues={{ name: '', public: true }}
+                validate={values => {
+                    let errors = {};
+                    if (!values.name) {
+                    errors.name = t('form.errors.required')
+                    } else if 
+                        (!validator.isLength(values.name, {"min": 3})) {
+                            errors.name = t('form.errors.min_length_3');
+                    }
+                    return errors;
+                }}
+                onSubmit={(values, { setSubmitting }) => {
+                    setTimeout(() => {
+                    alert(JSON.stringify(values, null, 2));
+                    setSubmitting(false);
+                    }, 400);
+                }}
+                >
+                {({ isSubmitting, errors }) => (
+                    <Form>
+                        <Card.Body>
+                        <TablerForm.Label>{t('school.location.public')}</TablerForm.Label>
+                        <Field type="checkbox" name="public" checked/>
+                        <ErrorMessage name="public" component="div" />        
+                        <TablerForm.Label>{t('school.location.name')}</TablerForm.Label>
+                        <Field type="text" 
+                                name="name" 
+                                className={(errors.name) ? "form-control is-invalid" : "form-control"} 
+                                autoComplete="off" />
+                        <ErrorMessage name="name" component="span" className="invalid-feedback" />
+            
+                        </Card.Body>
+                        <Card.Footer>
+                            
+                            <button className="btn btn-primary pull-right" type="submit" disabled={isSubmitting}>
                                 Submit
                             </button>
-                        </Form>
-                    )}
-                </Formik>
+                            <button className="btn btn-link" onClick={() => history.push(return_url)}>
+                                Cancel
+                            </button>
+                        </Card.Footer>
+                    </Form>
+                )}
+            </Formik>
                 {/* <Formik
                     initialValues={{ name: '', displayPublic: '' }}
                     validate={values => {
@@ -161,17 +171,14 @@ const SchoolLocationAdd = ({ t, history }) => (
                   }
                 }}
               </Query> */}
-            </Card.Body>
-            <Card.Footer>
-                
-            </Card.Footer>
+            {/* </Card.Body> */}
           </Card>
           </Grid.Col>
           <Grid.Col md={3}>
             <HasPermissionWrapper permission="add"
                                   resource="schoollocation">
               <Button color="primary btn-block mb-6"
-                      onClick={() => history.push("/school/locations")}>
+                      onClick={() => history.push(return_url)}>
                 <Icon prefix="fe" name="chevrons-left" /> {t('back')}
               </Button>
             </HasPermissionWrapper>
