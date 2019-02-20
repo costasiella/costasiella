@@ -57,7 +57,7 @@ const SchoolLocationAdd = ({ t, history }) => (
             <Mutation mutation={ADD_LOCATION}> 
                 {(addLocation, { data }) => (
                     <Formik
-                        initialValues={{ name: '', displayPublic: true }}
+                        initialValues={{ name: '', displayPublic: false }}
                         validate={values => {
                             let errors = {};
                             if (!values.name) {
@@ -78,10 +78,13 @@ const SchoolLocationAdd = ({ t, history }) => (
                             .then(({ data }) => {
                                 console.log('got data', data);
                                 history.push(return_url)
-                                toast.success((t('Added location')), {
+                                toast.success((t('school.locations.toast_add_success')), {
                                     position: toast.POSITION.BOTTOM_RIGHT
                                   })
                               }).catch((error) => {
+                                toast.error((t('toast_server_error')) + ': ' +  error, {
+                                    position: toast.POSITION.BOTTOM_RIGHT
+                                  })
                                 console.log('there was an error sending the query', error);
                               })
                             
@@ -96,7 +99,7 @@ const SchoolLocationAdd = ({ t, history }) => (
                             <Form>
                                 <Card.Body>
                                     <TablerForm.Label>{t('school.location.public')}</TablerForm.Label>
-                                    <Field type="checkbox" name="displayPublic" checked/>
+                                    <Field type="checkbox" name="displayPublic"/>
                                     <ErrorMessage name="displayPublic" component="div" />        
                                     <TablerForm.Label>{t('school.location.name')}</TablerForm.Label>
                                     <Field type="text" 

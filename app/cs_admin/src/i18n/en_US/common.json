@@ -5,7 +5,8 @@
             "error_loading": "Error loading locations :(",
             "empty_list": "No locations found",
             "add": "Add Location",
-            "title_add": "New location"
+            "title_add": "New location",
+            "toast_add_success": "Added loadtion"
         },
         "location": {
             "name": "Location name",
@@ -15,7 +16,6 @@
     "name": "Name",
     "public": "Public",
     "back": "Back",
-    "save": "Save",
     "form": {
         "errors": {
             "required": "This field is required",
@@ -23,5 +23,6 @@
         }
     },
     "submit": "Submit",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "toast_server_error": "Uh oh... the server returned an error"
 }
