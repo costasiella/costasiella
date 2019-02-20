@@ -87,10 +87,10 @@ const SchoolLocationAdd = ({ t, history }) => (
                         <Card.Footer>
                             
                             <button className="btn btn-primary pull-right" type="submit" disabled={isSubmitting}>
-                                Submit
+                                {t('submit')}
                             </button>
                             <button className="btn btn-link" onClick={() => history.push(return_url)}>
-                                Cancel
+                                {t('cancel')}
                             </button>
                         </Card.Footer>
                     </Form>

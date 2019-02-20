@@ -21,5 +21,7 @@
             "required": "__STRING_NOT_TRANSLATED__",
             "min_length_3": "__STRING_NOT_TRANSLATED__"
         }
-    }
+    },
+    "submit": "__STRING_NOT_TRANSLATED__",
+    "cancel": "__STRING_NOT_TRANSLATED__"
 }

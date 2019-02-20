@@ -21,5 +21,7 @@
             "required": "This field is required",
             "min_length_3": "Please input at least 3 characters"
         }
-    }
+    },
+    "submit": "Submit",
+    "cancel": "Cancel"
 }
