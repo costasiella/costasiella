@@ -11,6 +11,7 @@ import gql from "graphql-tag";
 
 import SchoolLocations from './components/school/locations/SchoolLocations'
 import SchoolLocationAdd from './components/school/locations/SchoolLocationAdd'
+import SchoolLocationEdit from './components/school/locations/SchoolLocationEdit'
 import Error404 from "./components/Error404"
 
 // Tabler css 
@@ -66,6 +67,7 @@ class App extends Component {
             <Route exact path="/school" component={SchoolLocations} />
             <Route exact path="/school/locations" component={SchoolLocations} />
             <Route exact path="/school/locations/add" component={SchoolLocationAdd} />
+            <Route exact path="/school/locations/edit/:id" component={SchoolLocationEdit} />
             <Route component={Error404} />
           </Switch>
         </ApolloProvider>

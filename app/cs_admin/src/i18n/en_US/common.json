@@ -8,7 +8,8 @@
             "title_add": "New location",
             "toast_add_success": "Added loadtion",
             "confirm_archive": "Do you with to move this location to the archive?",
-            "empty_archive": "No locations have been archived yet."
+            "empty_archive": "No locations have been archived yet.",
+            "title_edit": "Edit location"
         },
         "location": {
             "name": "Location name",

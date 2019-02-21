@@ -25,6 +25,7 @@ class SchoolLocationType(DjangoObjectType):
 
 class Query(graphene.ObjectType):
     school_locations = graphene.List(SchoolLocationType, archived=graphene.Boolean(default_value=False))
+    school_location = graphene.Field(SchoolLocationType, id=graphene.ID())
 
     def resolve_school_locations(self, info, archived, **kwargs):
         user = info.context.user
@@ -43,6 +44,20 @@ class Query(graphene.ObjectType):
 
         # Return only public non-archived locations
         return SchoolLocation.objects.filter(display_public = True, archived = False).order_by('name')
+
+
+    def resolve_school_location(self, info, id):
+        user = info.context.user
+        print('user authenticated:')
+        print(user.is_authenticated)
+        if user.is_anonymous:
+            raise Exception(_('Not logged in!'))
+
+        if not user.has_perm('costasiella.view_schoollocation'):
+            raise Exception(_('Permission denied!'))
+
+        # Return only public non-archived locations
+        return SchoolLocation.objects.get(id=id)
 
 
 # class CreateSchoolLocationSuccess(graphene.ObjectType):

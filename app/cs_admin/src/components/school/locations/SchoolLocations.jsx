@@ -132,7 +132,11 @@ const SchoolLocations = ({ t, history, archived=false }) => (
                                       <Badge color="danger">{t('no')}</Badge>}
                                   </Table.Col>
                                   <Table.Col className="text-right" key={v4()}>
-                                    <Button className='btn-sm' color="secondary">{t('edit')}</Button>
+                                    <Button className='btn-sm' 
+                                            onClick={() => history.push("/school/locations/edit/" + id)}
+                                            color="secondary">
+                                      {t('edit')}
+                                    </Button>
                                   </Table.Col>
                                   <Table.Col className="text-right" key={v4()}>
                                     <a className="icon" title={t('archive')} onClick={() => onClickArchive(t, id)}><Icon prefix="fa" name="inbox"></Icon></a>
