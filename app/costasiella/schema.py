@@ -24,9 +24,9 @@ class SchoolLocationType(DjangoObjectType):
 
 
 class Query(graphene.ObjectType):
-    school_locations = graphene.List(SchoolLocationType)
+    school_locations = graphene.List(SchoolLocationType, archived=graphene.Boolean(default_value=False))
 
-    def resolve_school_locations(self, info, **kwargs):
+    def resolve_school_locations(self, info, archived, **kwargs):
         user = info.context.user
         print('user authenticated:')
         print(user.is_authenticated)
@@ -38,7 +38,8 @@ class Query(graphene.ObjectType):
             # return SchoolLocation.objects.all()
         ## return everything:
         if user.has_perm('costasiella.view_schoollocation'):
-            return SchoolLocation.objects.all().order_by('name')
+            print('user has view permission')
+            return SchoolLocation.objects.filter(archived = archived).order_by('name')
 
         # Return only public non-archived locations
         return SchoolLocation.objects.filter(display_public = True, archived = False).order_by('name')
@@ -149,30 +150,31 @@ class UpdateSchoolLocation(graphene.Mutation):
         )
 
 
-class DeleteSchoolLocation(graphene.Mutation):
-    id = graphene.Int()
+# class ArchiveSchoolLocation(graphene.Mutation):
+#     id = graphene.Int()
+#     archived = graphene.Boolean()
 
-    class Arguments:
-        id = graphene.Int()
+#     class Arguments:
+#         id = graphene.Int()
+#         archived = graphene.Boolean()
 
-    def mutate(self, info, id):
-        user = info.context.user
-        if not user.has_perm('costasiella.delete_schoollocation'):
-            raise Exception('Permission denied!')
+#     def mutate(self, info, id):
+#         user = info.context.user
+#         if not user.has_perm('costasiella.delete_schoollocation'):
+#             raise Exception('Permission denied!')
 
-        school_location = SchoolLocation.objects.filter(id=id).first()
-        if not school_location:
-            raise Exception('Invalid School Location ID!')
+#         school_location = SchoolLocation.objects.filter(id=id).first()
+#         if not school_location:
+#             raise Exception('Invalid School Location ID!')
 
-        school_location.delete()
+#         school_location.archived = archvied
 
-        return DeleteSchoolLocation(
-            # This returns None for the id if successful
-            id=school_location.id
-        )
+#         return ArchiveSchoolLocation(
+#             # This returns None for the id if successful
+#             id=school_location.id
+#         )
 
 
 class Mutation(graphene.ObjectType):
     create_school_location = CreateSchoolLocation.Field()
     update_school_location = UpdateSchoolLocation.Field()
-    delete_school_location = DeleteSchoolLocation.Field()
