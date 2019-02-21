@@ -87,12 +87,6 @@ const SchoolLocationAdd = ({ t, history }) => (
                                   })
                                 console.log('there was an error sending the query', error);
                               })
-                            
-                            // setSubmitting(false)
-                            // setTimeout(() => {
-                            // alert(JSON.stringify(values, null, 2));
-                            // setSubmitting(false);
-                            // }, 400);
                         }}
                         >
                         {({ isSubmitting, errors }) => (
