@@ -26,6 +26,7 @@ import HasPermissionWrapper from "../../HasPermissionWrapper"
 import { confirmAlert } from 'react-confirm-alert'; // Import
 
 import SchoolMenu from "../SchoolMenu"
+import SchoolLocationsCard from "./SchoolLocationsCard"
 
 export const GET_LOCATIONS_QUERY = gql`
   query SchoolLocations($archived: Boolean!) {
@@ -73,35 +74,45 @@ const SchoolLocations = ({ t, history, archived=false }) => (
              {({ loading, error, data, refetch }) => {
                 // Loading
                 if (loading) return (
-                  <Dimmer active={true}
-                          loader={true} />
+                  <SchoolLocationsCard>
+                    <Dimmer active={true}
+                            loadder={true}>
+                    </Dimmer>
+                  </SchoolLocationsCard>
                 )
                 // Error
-                if (error) return <p>{t('school.locations.error_loading')}</p>
+                if (error) return (
+                  <SchoolLocationsCard>
+                    <p>{t('school.locations.error_loading')}</p>
+                  </SchoolLocationsCard>
+                )
+                const headerOptions = <Card.Options>
+                  <Button color={(!archived) ? 'primary': 'secondary'}  
+                          size="sm"
+                          onClick={() => {archived=false; refetch({archived});}}>
+                    {t('current')}
+                  </Button>
+                  <Button color={(archived) ? 'primary': 'secondary'} 
+                          size="sm" 
+                          className="ml-2" 
+                          onClick={() => {archived=true; refetch({archived});}}>
+                    {t('archive')}
+                  </Button>
+                </Card.Options>
+                
                 // Empty list
-                if (!data.schoolLocations) {
-                  return t('school.locations.empty_list')
-                } else {                      // Life's good! :)
+                if (!data.schoolLocations.length) { return (
+                  <SchoolLocationsCard header_content={headerOptions}>
+                    <p>
+                    {(!archived) ? t('school.locations.empty_list') : t("school.locations.empty_archive")}
+                    </p>
+                   
+                  </SchoolLocationsCard>
+                )} else {   
+                // Life's good! :)
                 return (
-                  <Card>
-                    <Card.Header>
-                      <Card.Title>{t('school.locations.title')}</Card.Title>
-                      <Card.Options>
-                        <Button color={(!archived) ? 'primary': 'secondary'}  
-                                size="sm"
-                                onClick={() => {archived=false; refetch({archived});}}>
-                          {t('current')}
-                        </Button>
-                        <Button color={(archived) ? 'primary': 'secondary'} 
-                                size="sm" 
-                                className="ml-2" 
-                                onClick={() => {archived=true; refetch({archived});}}>
-                          {t('archive')}
-                        </Button>
-                      </Card.Options>
-                    </Card.Header>
-                    <Card.Body>
-                        <Table>
+                  <SchoolLocationsCard header_content={headerOptions}>
+                    <Table>
                           <Table.Header>
                             <Table.Row key={v4()}>
                               <Table.ColHeader>{t('name')}</Table.ColHeader>
@@ -130,8 +141,7 @@ const SchoolLocations = ({ t, history, archived=false }) => (
                               ))}
                           </Table.Body>
                         </Table>
-                </Card.Body>
-              </Card>
+                  </SchoolLocationsCard>
                 )}}
              }
             </Query>

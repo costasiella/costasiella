@@ -3,11 +3,12 @@
         "locations": {
             "title": "Locations",
             "error_loading": "Error loading locations :(",
-            "empty_list": "No locations found",
+            "empty_list": "No locations found, click the Add button to add your first location.",
             "add": "Add Location",
             "title_add": "New location",
             "toast_add_success": "Added loadtion",
-            "confirm_archive": "Do you with to move this location to the archive?"
+            "confirm_archive": "Do you with to move this location to the archive?",
+            "empty_archive": "No locations have been archived yet."
         },
         "location": {
             "name": "Location name",
