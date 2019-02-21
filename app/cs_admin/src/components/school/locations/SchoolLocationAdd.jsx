@@ -73,7 +73,7 @@ const SchoolLocationAdd = ({ t, history }) => (
                                 name: values.name, 
                                 displayPublic: values.displayPublic
                             }, refetchQueries: [
-                                {query: GET_LOCATIONS_QUERY}
+                                {query: GET_LOCATIONS_QUERY, variables: {"archived": false }}
                             ]})
                             .then(({ data }) => {
                                 console.log('got data', data);
