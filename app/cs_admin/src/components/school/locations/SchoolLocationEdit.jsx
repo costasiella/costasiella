@@ -31,16 +31,14 @@ import HasPermissionWrapper from "../../HasPermissionWrapper"
 import SchoolMenu from "../SchoolMenu"
 
 const UPDATE_LOCATION = gql`
-    mutation UpdateSchoolLocation($name: String!, $displayPublic:Boolean!) {
-        updateSchoolLocation(name: $name, displayPublic: $displayPublic) {
+    mutation UpdateSchoolLocation($id: ID!, $name: String!, $displayPublic:Boolean!) {
+        updateSchoolLocation(id: $id, name: $name, displayPublic: $displayPublic) {
         id
         name
         displayPublic
         }
     }
 `;
-
-const return_url = "/school/locations"
 
 
 class SchoolLocationEdit extends Component {
@@ -49,15 +47,13 @@ class SchoolLocationEdit extends Component {
     console.log("School location edit props:")
     console.log(props)
   }
-  
-
-
 
   render() {
     const t = this.props.t
     const match = this.props.match
     const history = this.props.history
     const id = match.params.id
+    const return_url = "/school/locations"
 
     return (
       <SiteWrapper>
@@ -87,7 +83,7 @@ class SchoolLocationEdit extends Component {
 
                     return (
                       
-                      <Mutation mutation={UPDATE_LOCATION}> 
+                      <Mutation mutation={UPDATE_LOCATION} onCompleted={() => history.push(return_url)}> 
                       {(updateLocation, { data }) => (
                           <Formik
                               initialValues={{ name: initialData.name, displayPublic: initialData.displayPublic }}
@@ -103,6 +99,7 @@ class SchoolLocationEdit extends Component {
                               }}
                               onSubmit={(values, { setSubmitting }) => {
                                   updateLocation({ variables: {
+                                      id: match.params.id,
                                       name: values.name, 
                                       displayPublic: values.displayPublic
                                   }, refetchQueries: [
@@ -111,7 +108,7 @@ class SchoolLocationEdit extends Component {
                                   .then(({ data }) => {
                                       console.log('got data', data);
                                       history.push(return_url)
-                                      toast.success((t('school.locations.toast_add_success')), {
+                                      toast.success((t('school.locations.toast_edit_success')), {
                                           position: toast.POSITION.BOTTOM_RIGHT
                                         })
                                     }).catch((error) => {
@@ -139,7 +136,7 @@ class SchoolLocationEdit extends Component {
                                           <button className="btn btn-primary pull-right" type="submit" disabled={isSubmitting}>
                                               {t('submit')}
                                           </button>
-                                          <button className="btn btn-link" onClick={() => history.push(return_url)}>
+                                          <button className="btn btn-link">
                                               {t('cancel')}
                                           </button>
                                       </Card.Footer>
