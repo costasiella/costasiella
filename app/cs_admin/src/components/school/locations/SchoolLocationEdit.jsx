@@ -1,6 +1,6 @@
 import React from 'react'
-import { Query, Mutation } from "react-apollo";
 import gql from "graphql-tag"
+import { Query, Mutation } from "react-apollo";
 import { v4 } from "uuid"
 import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
@@ -8,7 +8,7 @@ import { Formik, Form, Field, ErrorMessage } from 'formik'
 import validator from 'validator';
 import { toast } from 'react-toastify';
 
-import { GET_LOCATIONS_QUERY } from './SchoolLocations'
+import { GET_LOCATIONS_QUERY } from './queries'
 
 // @flow
 

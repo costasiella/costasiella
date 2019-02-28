@@ -28,16 +28,8 @@ import { confirmAlert } from 'react-confirm-alert'; // Import
 import SchoolMenu from "../SchoolMenu"
 import SchoolLocationsCard from "./SchoolLocationsCard"
 
-export const GET_LOCATIONS_QUERY = gql`
-  query SchoolLocations($archived: Boolean!) {
-    schoolLocations(archived:$archived) {
-      id
-      name
-      displayPublic
-      archived
-    }
-  }
-`
+import { GET_LOCATIONS_QUERY } from "./queries"
+
 
 const onClickArchive = (t, id) => {
   const options = {

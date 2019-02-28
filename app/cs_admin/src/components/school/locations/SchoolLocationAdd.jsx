@@ -8,7 +8,7 @@ import { Formik, Form, Field, ErrorMessage } from 'formik'
 import validator from 'validator';
 import { toast } from 'react-toastify';
 
-import { GET_LOCATIONS_QUERY } from './SchoolLocations'
+import { GET_LOCATIONS_QUERY } from './queries'
 
 // @flow
 
