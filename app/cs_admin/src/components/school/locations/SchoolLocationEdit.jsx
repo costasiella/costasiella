@@ -107,8 +107,9 @@ class SchoolLocationEdit extends Component {
 
                                   updateLocation({ variables: {
                                       id: match.params.id,
-                                      name: values.name, 
-                                      displayPublic: (values.displayPublic === 'true') ? true : false
+                                      name: values.name,
+                                      displayPublic: values.displayPublic 
+                                      // displayPublic: (values.displayPublic === 'true') ? true : false
                                   }, refetchQueries: [
                                       {query: GET_LOCATIONS_QUERY, variables: {"archived": false }}
                                   ]})
@@ -126,19 +127,11 @@ class SchoolLocationEdit extends Component {
                                     })
                               }}
                               >
-                              {({ isSubmitting, errors, initialValues }) => (
+                              {({ isSubmitting, errors, initialValues, values }) => (
                                   <Form>
                                       <Card.Body>
                                           <TablerForm.Label>{t('school.location.public')}</TablerForm.Label>
-                                          {/* <Field type="checkbox" name="displayPublic" /> */}
-                                          <Field
-                                            name="displayPublic" 
-                                            className="form-control"
-                                            component="select" 
-                                            placeholder="Your Gender">   
-                                              <option value="true">Yes</option>
-                                              <option value="false">No</option>
-                                          </Field>
+                                          <Field type="checkbox" name="displayPublic" checked={values.displayPublic} />
 
                                           <ErrorMessage name="displayPublic" component="div" />        
                                           <TablerForm.Label>{t('school.location.name')}</TablerForm.Label>
