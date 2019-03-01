@@ -151,11 +151,6 @@ class UpdateSchoolLocation(graphene.Mutation):
         if not school_location:
             raise Exception('Invalid School Location ID!')
 
-        print('mutate vars')
-        print(id)
-        print(name)
-        print(display_public)
-
         school_location.name = name
         school_location.display_public = display_public
         school_location.save(force_update=True)

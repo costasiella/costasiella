@@ -127,12 +127,11 @@ class SchoolLocationEdit extends Component {
                                     })
                               }}
                               >
-                              {({ isSubmitting, errors, initialValues, values }) => (
+                              {({ isSubmitting, errors, values }) => (
                                   <Form>
                                       <Card.Body>
                                           <TablerForm.Label>{t('school.location.public')}</TablerForm.Label>
                                           <Field type="checkbox" name="displayPublic" checked={values.displayPublic} />
-
                                           <ErrorMessage name="displayPublic" component="div" />        
                                           <TablerForm.Label>{t('school.location.name')}</TablerForm.Label>
                                           <Field type="text" 
