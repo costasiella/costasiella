@@ -54,7 +54,7 @@ const SchoolLocationAdd = ({ t, history }) => (
             <Card.Header>
               <Card.Title>{t('school.locations.title_add')}</Card.Title>
             </Card.Header>
-            <Mutation mutation={ADD_LOCATION}> 
+            <Mutation mutation={ADD_LOCATION} onCompleted={() => history.push(return_url)}> 
                 {(addLocation, { data }) => (
                     <Formik
                         initialValues={{ name: '', displayPublic: false }}
@@ -77,7 +77,6 @@ const SchoolLocationAdd = ({ t, history }) => (
                             ]})
                             .then(({ data }) => {
                                 console.log('got data', data);
-                                history.push(return_url)
                                 toast.success((t('school.locations.toast_add_success')), {
                                     position: toast.POSITION.BOTTOM_RIGHT
                                   })
