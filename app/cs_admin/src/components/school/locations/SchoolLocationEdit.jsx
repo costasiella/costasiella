@@ -84,7 +84,7 @@ class SchoolLocationEdit extends Component {
 
                     return (
                       
-                      <Mutation mutation={UPDATE_LOCATION}> 
+                      <Mutation mutation={UPDATE_LOCATION} onCompleted={() => history.push(return_url)}> 
                       {(updateLocation, { data }) => (
                           <Formik
                               initialValues={{ 
@@ -115,7 +115,6 @@ class SchoolLocationEdit extends Component {
                                   ]})
                                   .then(({ data }) => {
                                       console.log('got data', data)
-                                      history.push(return_url)
                                       toast.success((t('school.locations.toast_edit_success')), {
                                           position: toast.POSITION.BOTTOM_RIGHT
                                         })
