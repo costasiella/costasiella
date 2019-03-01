@@ -9,7 +9,8 @@
             "toast_add_success": "Added loadtion",
             "confirm_archive": "Do you with to move this location to the archive?",
             "empty_archive": "No locations have been archived yet.",
-            "title_edit": "Edit location"
+            "title_edit": "Edit location",
+            "toast_edit_success": "Saved location"
         },
         "location": {
             "name": "Location name",
