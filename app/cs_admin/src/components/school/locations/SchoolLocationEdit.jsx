@@ -30,6 +30,7 @@ import HasPermissionWrapper from "../../HasPermissionWrapper"
 
 import SchoolMenu from "../SchoolMenu"
 
+
 const UPDATE_LOCATION = gql`
     mutation UpdateSchoolLocation($id: ID!, $name: String!, $displayPublic:Boolean!) {
         updateSchoolLocation(id: $id, name: $name, displayPublic: $displayPublic) {
@@ -86,7 +87,10 @@ class SchoolLocationEdit extends Component {
                       <Mutation mutation={UPDATE_LOCATION} onCompleted={() => history.push(return_url)}> 
                       {(updateLocation, { data }) => (
                           <Formik
-                              initialValues={{ name: initialData.name, displayPublic: initialData.displayPublic }}
+                              initialValues={{ 
+                                name: initialData.name, 
+                                displayPublic: initialData.displayPublic 
+                              }}
                               validate={values => {
                                   let errors = {};
                                   if (!values.name) {
@@ -98,10 +102,13 @@ class SchoolLocationEdit extends Component {
                                   return errors;
                               }}
                               onSubmit={(values, { setSubmitting }) => {
+                                  console.log('submit values:')
+                                  console.log(values)
+
                                   updateLocation({ variables: {
                                       id: match.params.id,
                                       name: values.name, 
-                                      displayPublic: values.displayPublic
+                                      displayPublic: (values.displayPublic === 'true') ? true : false
                                   }, refetchQueries: [
                                       {query: GET_LOCATIONS_QUERY, variables: {"archived": false }}
                                   ]})
@@ -123,7 +130,16 @@ class SchoolLocationEdit extends Component {
                                   <Form>
                                       <Card.Body>
                                           <TablerForm.Label>{t('school.location.public')}</TablerForm.Label>
-                                          <Field type="checkbox" name="displayPublic" checked={initialValues.displayPublic} />
+                                          {/* <Field type="checkbox" name="displayPublic" /> */}
+                                          <Field
+                                            name="displayPublic" 
+                                            className="form-control"
+                                            component="select" 
+                                            placeholder="Your Gender">   
+                                              <option value="true">Yes</option>
+                                              <option value="false">No</option>
+                                          </Field>
+
                                           <ErrorMessage name="displayPublic" component="div" />        
                                           <TablerForm.Label>{t('school.location.name')}</TablerForm.Label>
                                           <Field type="text" 

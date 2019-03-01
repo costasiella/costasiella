@@ -134,14 +134,15 @@ mutation {
 class UpdateSchoolLocation(graphene.Mutation):
     id = graphene.ID()
     name = graphene.String()
-    displayPublic = graphene.Boolean()
+    display_public = graphene.Boolean()
 
     class Arguments:
         id = graphene.ID()
         name = graphene.String()
-        displayPublic = graphene.Boolean()
+        display_public = graphene.Boolean()
 
-    def mutate(self, info, id, name, displayPublic):
+
+    def mutate(self, info, id, name, display_public):
         user = info.context.user
         if not user.has_perm('costasiella.change_schoollocation'):
             raise Exception('Permission denied!')
@@ -150,14 +151,19 @@ class UpdateSchoolLocation(graphene.Mutation):
         if not school_location:
             raise Exception('Invalid School Location ID!')
 
+        print('mutate vars')
+        print(id)
+        print(name)
+        print(display_public)
+
         school_location.name = name
-        school_location.displayPublic = displayPublic
+        school_location.display_public = display_public
         school_location.save(force_update=True)
 
         return UpdateSchoolLocation(
             id=school_location.id,
             name=school_location.name,
-            displayPublic=school_location.displayPublic
+            display_public=school_location.display_public
         )
 
 
