@@ -3,7 +3,9 @@
 import * as React from "react"
 import { NavLink, withRouter } from "react-router-dom"
 import { Query } from "react-apollo"
-
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css'
+import 'react-confirm-alert/src/react-confirm-alert.css'
 
 import GET_USER from "../queries/system/get_user"
 
@@ -270,6 +272,7 @@ class SiteWrapper extends React.Component<Props, State> {
               }}
             >
               {this.props.children}
+              <ToastContainer autoClose={5000}/>
             </Site.Wrapper>
           }}
         </Query>

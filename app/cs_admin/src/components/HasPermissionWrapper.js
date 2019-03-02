@@ -46,9 +46,6 @@ class HasPermissionWrapper extends Component {
   
 
   render() {
-    
-    
-
     return (
       <Query query={GET_USER} >
 

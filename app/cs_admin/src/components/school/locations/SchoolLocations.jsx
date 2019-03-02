@@ -1,7 +1,9 @@
 import React from 'react'
-import { Query } from "react-apollo"
+import { Query, Mutation } from "react-apollo"
 import gql from "graphql-tag"
 import { v4 } from "uuid"
+import { withTranslation } from 'react-i18next'
+import { withRouter } from "react-router"
 
 
 // @flow
@@ -9,6 +11,8 @@ import { v4 } from "uuid"
 import {
   Page,
   Grid,
+  Icon,
+  Dimmer,
   Badge,
   Button,
   Card,
@@ -19,74 +23,171 @@ import {
 } from "tabler-react";
 import SiteWrapper from "../../SiteWrapper"
 import HasPermissionWrapper from "../../HasPermissionWrapper"
+import { confirmAlert } from 'react-confirm-alert'; // Import
+import { toast } from 'react-toastify'
 
 import SchoolMenu from "../SchoolMenu"
+import SchoolLocationsCard from "./SchoolLocationsCard"
 
-const GET_LOCATIONS = gql`
-  {
-    schoolLocations {
-        id
-        name
-        displayPublic
+import { GET_LOCATIONS_QUERY } from "./queries"
+
+const ARCHIVE_LOCATION = gql`
+    mutation ArchiveSchoolLocation($id: ID!, $archived: Boolean!) {
+        archiveSchoolLocation(id: $id, archived: $archived) {
+          id
+          archived
+        }
     }
-  }
 `
 
 
-const SchoolLocations = () => (
+const onClickArchive = (t, id) => {
+  const options = {
+    title: t('please_confirm'),
+    message: t('school.locations.confirm_archive'),
+    buttons: [
+      {
+        label: t('yes'),
+        onClick: () => alert('Click Yes'),
+        class: 'btn btn-primary'
+      },
+      {
+        label: t('no'),
+        onClick: () => alert('Click No')
+      }
+    ],
+    childrenElement: () => <div />,
+    // customUI: ({ title, message, onClose }) => <div>Custom UI</div>,
+    willUnmount: () => {}
+  }
+
+  confirmAlert(options)
+}
+
+
+const SchoolLocations = ({ t, history, archived=false }) => (
   <SiteWrapper>
     <div className="my-3 my-md-5">
       <Container>
+        <Page.Header title="School" />
         <Grid.Row>
-          <Grid.Col md={3}>
-            <h3 className="page-title mb-5">School</h3>
-            <SchoolMenu active_link='schoollocation'/>
-          </Grid.Col>
           <Grid.Col md={9}>
-          <Card>
-            <Card.Header>
-              <Card.Title>Locations</Card.Title>
-              <HasPermissionWrapper permission="add"
-                                    resource="schoollocation">
-                Add something                      
-              </HasPermissionWrapper>
-            </Card.Header>
-            <Card.Body>
-              <Query query={GET_LOCATIONS}>
-                {({ loading, error, data }) => {
-                  if (loading) return <p>Loading...</p>
-                  if (error) return <p>Error loading school locations :(</p>
-                  if (!data.schoolLocations) {
-                    return "No locations found."
-                  } else {
-                    return (
-                      <Table>
-                        <Table.Header>
-                          <Table.Row key={v4()}>
-                            <Table.ColHeader>Name</Table.ColHeader>
-                            <Table.ColHeader>Public</Table.ColHeader>
-                          </Table.Row>
-                        </Table.Header>
-                        <Table.Body>
-                            {console.log(data.schoolLocations)}
-                            {data.schoolLocations.map(({ id, name, displayPublic }) => (
-                              <Table.Row key={v4()}>
-                                <Table.Col key={v4()}>
-                                  {name}
-                                </Table.Col>
-                                <Table.Col key={v4()}>
-                                  {(displayPublic) ? 'yep': 'nope'}
-                                </Table.Col>
-                              </Table.Row>
-                            ))}
-                        </Table.Body>
-                      </Table>
-                    )
-                  }
-                }}
-              </Query>
-            </Card.Body>
-          </Card>
+            <Query query={GET_LOCATIONS_QUERY} variables={{ archived }}>
+             {({ loading, error, data, refetch }) => {
+                // Loading
+                if (loading) return (
+                  <SchoolLocationsCard>
+                    <Dimmer active={true}
+                            loadder={true}>
+                    </Dimmer>
+                  </SchoolLocationsCard>
+                )
+                // Error
+                if (error) return (
+                  <SchoolLocationsCard>
+                    <p>{t('school.locations.error_loading')}</p>
+                  </SchoolLocationsCard>
+                )
+                const headerOptions = <Card.Options>
+                  <Button color={(!archived) ? 'primary': 'secondary'}  
+                          size="sm"
+                          onClick={() => {archived=false; refetch({archived});}}>
+                    {t('current')}
+                  </Button>
+                  <Button color={(archived) ? 'primary': 'secondary'} 
+                          size="sm" 
+                          className="ml-2" 
+                          onClick={() => {archived=true; refetch({archived});}}>
+                    {t('archive')}
+                  </Button>
+                </Card.Options>
+                
+                // Empty list
+                if (!data.schoolLocations.length) { return (
+                  <SchoolLocationsCard header_content={headerOptions}>
+                    <p>
+                    {(!archived) ? t('school.locations.empty_list') : t("school.locations.empty_archive")}
+                    </p>
+                   
+                  </SchoolLocationsCard>
+                )} else {   
+                // Life's good! :)
+                return (
+                  <SchoolLocationsCard header_content={headerOptions}>
+                    <Table>
+                          <Table.Header>
+                            <Table.Row key={v4()}>
+                              <Table.ColHeader>{t('name')}</Table.ColHeader>
+                              <Table.ColHeader>{t('public')}</Table.ColHeader>
+                            </Table.Row>
+                          </Table.Header>
+                          <Table.Body>
+                              {console.log(data.schoolLocations)}
+                              {data.schoolLocations.map(({ id, name, displayPublic }) => (
+                                <Table.Row key={v4()}>
+                                  <Table.Col key={v4()}>
+                                    {name}
+                                  </Table.Col>
+                                  <Table.Col key={v4()}>
+                                    {(displayPublic) ? 
+                                      <Badge color="success">{t('yes')}</Badge>: 
+                                      <Badge color="danger">{t('no')}</Badge>}
+                                  </Table.Col>
+                                  <Table.Col className="text-right" key={v4()}>
+                                    <Button className='btn-sm' 
+                                            onClick={() => history.push("/school/locations/edit/" + id)}
+                                            color="secondary">
+                                      {t('edit')}
+                                    </Button>
+                                  </Table.Col>
+                                  <Mutation mutation={ARCHIVE_LOCATION} key={v4()}>
+                                    {(archiveLocation, { data }) => (
+                                      <Table.Col className="text-right" key={v4()}>
+                                        <a className="icon" 
+                                           title={t('archive')} 
+                                           onClick={() => {
+                                             console.log("clicked archived")
+                                             archiveLocation({ variables: {
+                                              id,
+                                              archived: !archived
+                                        }, refetchQueries: [
+                                            {query: GET_LOCATIONS_QUERY, variables: {"archived": archived }}
+                                        ]}).then(({ data }) => {
+                                          console.log('got data', data);
+                                          toast.success(
+                                            (archived) ? t('unarchived'): t('archived'), {
+                                              position: toast.POSITION.BOTTOM_RIGHT
+                                            })
+                                        }).catch((error) => {
+                                          toast.error((t('toast_server_error')) + ': ' +  error, {
+                                              position: toast.POSITION.BOTTOM_RIGHT
+                                            })
+                                          console.log('there was an error sending the query', error);
+                                        })
+                                        }}>
+                                          <Icon prefix="fa" name="inbox" />
+                                        </a>
+                                      </Table.Col>
+                                    )}
+                                  </Mutation>
+                                </Table.Row>
+                              ))}
+                          </Table.Body>
+                        </Table>
+                  </SchoolLocationsCard>
+                )}}
+             }
+            </Query>
+          </Grid.Col>
+          <Grid.Col md={3}>
+            <HasPermissionWrapper permission="add"
+                                  resource="schoollocation">
+              <Button color="primary btn-block mb-6"
+                      onClick={() => history.push("/school/locations/add")}>
+                <Icon prefix="fe" name="plus-circle" /> {t('school.locations.add')}
+              </Button>
+            </HasPermissionWrapper>
+            <SchoolMenu active_link='schoollocation'/>
           </Grid.Col>
         </Grid.Row>
       </Container>
@@ -94,4 +195,4 @@ const SchoolLocations = () => (
   </SiteWrapper>
 );
 
-export default SchoolLocations
+export default withTranslation()(withRouter(SchoolLocations))

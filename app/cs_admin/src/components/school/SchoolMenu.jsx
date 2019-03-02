@@ -11,11 +11,13 @@ import {
 import HasPermissionWrapper from "../HasPermissionWrapper"
 
 let schoollocation_active
+let schoolclasstypes_active
 
 const SchoolMenu = ({active_link}) => (
     <List.Group transparent={true}>
         {
             (active_link == 'schoollocation') ? schoollocation_active = true: schoollocation_active = false
+            (active_link == 'schoolclasstypes') ? schoolclasstypes_active = true: schoolclasstypes_active = false
         }
 
         <List.GroupItem
@@ -26,6 +28,15 @@ const SchoolMenu = ({active_link}) => (
             active={schoollocation_active}
             >
         Locations
+        </List.GroupItem>
+        <List.GroupItem
+            key={v4()}
+            className="d-flex align-items-center"
+            to="#/school/classtypes"
+            icon="book-open"
+            active={schoolclasstypes_active}
+            >
+        Class types
         </List.GroupItem>
         {/* <HasPermissionWrapper 
             permission="view"
