@@ -1,5 +1,5 @@
 import React from 'react'
-import { Query } from "react-apollo"
+import { Query, Mutation } from "react-apollo"
 import gql from "graphql-tag"
 import { v4 } from "uuid"
 import { withTranslation } from 'react-i18next'
@@ -24,11 +24,21 @@ import {
 import SiteWrapper from "../../SiteWrapper"
 import HasPermissionWrapper from "../../HasPermissionWrapper"
 import { confirmAlert } from 'react-confirm-alert'; // Import
+import { toast } from 'react-toastify'
 
 import SchoolMenu from "../SchoolMenu"
 import SchoolLocationsCard from "./SchoolLocationsCard"
 
 import { GET_LOCATIONS_QUERY } from "./queries"
+
+const ARCHIVE_LOCATION = gql`
+    mutation ArchiveSchoolLocation($id: ID!, $archived: Boolean!) {
+        archiveSchoolLocation(id: $id, archived: $archived) {
+          id
+          archived
+        }
+    }
+`
 
 
 const onClickArchive = (t, id) => {
@@ -130,9 +140,36 @@ const SchoolLocations = ({ t, history, archived=false }) => (
                                       {t('edit')}
                                     </Button>
                                   </Table.Col>
-                                  <Table.Col className="text-right" key={v4()}>
-                                    <a className="icon" title={t('archive')} onClick={() => onClickArchive(t, id)}><Icon prefix="fa" name="inbox"></Icon></a>
-                                  </Table.Col>
+                                  <Mutation mutation={ARCHIVE_LOCATION} key={v4()}>
+                                    {(archiveLocation, { data }) => (
+                                      <Table.Col className="text-right" key={v4()}>
+                                        <a className="icon" 
+                                           title={t('archive')} 
+                                           onClick={() => {
+                                             console.log("clicked archived")
+                                             archiveLocation({ variables: {
+                                              id,
+                                              archived: !archived
+                                        }, refetchQueries: [
+                                            {query: GET_LOCATIONS_QUERY, variables: {"archived": archived }}
+                                        ]}).then(({ data }) => {
+                                          console.log('got data', data);
+                                          toast.success(
+                                            (archived) ? t('unarchived'): t('archived'), {
+                                              position: toast.POSITION.BOTTOM_RIGHT
+                                            })
+                                        }).catch((error) => {
+                                          toast.error((t('toast_server_error')) + ': ' +  error, {
+                                              position: toast.POSITION.BOTTOM_RIGHT
+                                            })
+                                          console.log('there was an error sending the query', error);
+                                        })
+                                        }}>
+                                          <Icon prefix="fa" name="inbox" />
+                                        </a>
+                                      </Table.Col>
+                                    )}
+                                  </Mutation>
                                 </Table.Row>
                               ))}
                           </Table.Body>

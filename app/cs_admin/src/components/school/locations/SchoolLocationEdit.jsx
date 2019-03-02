@@ -5,8 +5,8 @@ import { v4 } from "uuid"
 import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
 import { Formik, Form, Field, ErrorMessage } from 'formik'
-import validator from 'validator';
-import { toast } from 'react-toastify';
+import validator from 'validator'
+import { toast } from 'react-toastify'
 
 import { GET_LOCATIONS_QUERY, GET_LOCATION_QUERY } from './queries'
 
@@ -39,7 +39,7 @@ const UPDATE_LOCATION = gql`
         displayPublic
         }
     }
-`;
+`
 
 
 class SchoolLocationEdit extends Component {

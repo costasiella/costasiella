@@ -173,7 +173,7 @@ class ArchiveSchoolLocation(graphene.Mutation):
 
     def mutate(self, info, id, archived):
         user = info.context.user
-        if not user.has_perm('costasiella.change_schoollocation'):
+        if not user.has_perm('costasiella.delete_schoollocation'):
             raise Exception('Permission denied!')
 
         school_location = SchoolLocation.objects.filter(id=id).first()
@@ -187,31 +187,6 @@ class ArchiveSchoolLocation(graphene.Mutation):
             id=school_location.id,
             archived=school_location.archived
         )
-
-
-# class ArchiveSchoolLocation(graphene.Mutation):
-#     id = graphene.Int()
-#     archived = graphene.Boolean()
-
-#     class Arguments:
-#         id = graphene.Int()
-#         archived = graphene.Boolean()
-
-#     def mutate(self, info, id):
-#         user = info.context.user
-#         if not user.has_perm('costasiella.delete_schoollocation'):
-#             raise Exception('Permission denied!')
-
-#         school_location = SchoolLocation.objects.filter(id=id).first()
-#         if not school_location:
-#             raise Exception('Invalid School Location ID!')
-
-#         school_location.archived = archvied
-
-#         return ArchiveSchoolLocation(
-#             # This returns None for the id if successful
-#             id=school_location.id
-#         )
 
 
 class Mutation(graphene.ObjectType):
