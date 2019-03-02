@@ -272,7 +272,7 @@ class SiteWrapper extends React.Component<Props, State> {
               }}
             >
               {this.props.children}
-              <ToastContainer autoClose={25000}/>
+              <ToastContainer autoClose={5000}/>
             </Site.Wrapper>
           }}
         </Query>
