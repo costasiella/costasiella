@@ -1,0 +1,8 @@
+Requirements:
+npm install -g i18next-scanner
+
+ 
+Usage:
+i18next-scanner.sh has to be run from the scripts directory. All files are configures with the paths relative to it for i18next scanner.
+
+In case all your translations have been overwritten... you ran it from the wrong directory.

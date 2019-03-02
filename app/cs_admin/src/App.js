@@ -4,35 +4,78 @@
 
 
 import React, { Component } from 'react'
-import {Route, Switch, BrowserRouter} from 'react-router-dom'
+import {Route, Switch, HashRouter} from 'react-router-dom'
 import { ApolloProvider } from "react-apollo";
 import ApolloClient from "apollo-boost";
+import gql from "graphql-tag";
 
-import SchoolLocations from './components/SchoolLocations'
-import NotFound from "./components/NotFound"
+import SchoolLocations from './components/school/locations/SchoolLocations'
+import SchoolLocationAdd from './components/school/locations/SchoolLocationAdd'
+import SchoolLocationEdit from './components/school/locations/SchoolLocationEdit'
+import Error404 from "./components/Error404"
+
+// Tabler css 
+import "tabler-react/dist/Tabler.css";
+// App css
 import './App.css'
 
+
 const client = new ApolloClient({
-     uri: "http://localhost:8000/graphql/"
-});
+     uri: "http://localhost:8000/graphql/",
+})
+
+
+const GET_USER = gql`
+  query {
+    user {
+    id
+    isActive
+    email
+    firstName
+    lastName
+    userPermissions {
+      id
+    }
+    groups {
+      id
+      name
+      permissions {
+        id
+        name
+        codename
+      }
+    }
+  }
+}
+`
 
 
 class App extends Component {
+  
+  componentWillMount() {
+    client.query({
+      query:GET_USER
+    })
+  }
+
   render() {
     return (
-      <BrowserRouter>
+      <HashRouter>
         <ApolloProvider client={client}>
           <Switch>
             <Route exact path="/" component={SchoolLocations} />
-            <Route component={NotFound} />
+            <Route exact path="/school" component={SchoolLocations} />
+            <Route exact path="/school/locations" component={SchoolLocations} />
+            <Route exact path="/school/locations/add" component={SchoolLocationAdd} />
+            <Route exact path="/school/locations/edit/:id" component={SchoolLocationEdit} />
+            <Route component={Error404} />
           </Switch>
         </ApolloProvider>
-      </BrowserRouter>
-    );
-    }
+      </HashRouter>
+    )};
 }
 
-export default App;
+export default App
 
 
 

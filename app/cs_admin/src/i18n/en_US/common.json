@@ -1,0 +1,40 @@
+{
+    "school": {
+        "locations": {
+            "title": "Locations",
+            "error_loading": "Error loading locations :(",
+            "empty_list": "No locations found, click the Add button to add your first location.",
+            "add": "Add Location",
+            "title_add": "New location",
+            "toast_add_success": "Added loadtion",
+            "confirm_archive": "Do you with to move this location to the archive?",
+            "empty_archive": "No locations have been archived yet.",
+            "title_edit": "Edit location",
+            "toast_edit_success": "Saved location"
+        },
+        "location": {
+            "name": "Location name",
+            "public": "This is a public location"
+        }
+    },
+    "name": "Name",
+    "public": "Public",
+    "back": "Back",
+    "form": {
+        "errors": {
+            "required": "This field is required",
+            "min_length_3": "Please input at least 3 characters"
+        }
+    },
+    "submit": "Submit",
+    "cancel": "Cancel",
+    "toast_server_error": "Uh oh... the server returned an error",
+    "yes": "Yes",
+    "no": "No",
+    "edit": "Edit",
+    "archive": "Archive",
+    "please_confirm": "Please confirm",
+    "current": "Current",
+    "unarchived": "Moved to current",
+    "archived": "Moved to archive"
+}

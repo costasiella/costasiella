@@ -17,18 +17,17 @@ from django.contrib import admin
 from django.urls import include, path
 from django.views.generic import TemplateView
 from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.decorators import login_required
 
 from graphene_django.views import GraphQLView
 
 urlpatterns = [
-    path('', TemplateView.as_view(template_name="index.html"), name="home"),
+    path('', login_required(TemplateView.as_view(template_name="backend.html")), name="home"),
     path('admin/', admin.site.urls),
     path('accounts/', include('allauth.urls')),
     # path('graphql/', GraphQLView.as_view(graphiql=True)),
-    path('graphql/', csrf_exempt(GraphQLView.as_view(graphiql=True))),
+    path('graphql/', csrf_exempt(GraphQLView.as_view(graphiql=True)), name="api_graphql"),
 ]
-
-
 
 
 
