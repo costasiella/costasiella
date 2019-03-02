@@ -36,5 +36,6 @@
     "please_confirm": "Please confirm",
     "current": "Current",
     "unarchived": "Moved to current",
-    "archived": "Moved to archive"
+    "archived": "Moved to archive",
+    "unarchive_to_edit": "Unarchive to edit"
 }

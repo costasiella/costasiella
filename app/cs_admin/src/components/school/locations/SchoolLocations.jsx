@@ -134,11 +134,14 @@ const SchoolLocations = ({ t, history, archived=false }) => (
                                       <Badge color="danger">{t('no')}</Badge>}
                                   </Table.Col>
                                   <Table.Col className="text-right" key={v4()}>
-                                    <Button className='btn-sm' 
-                                            onClick={() => history.push("/school/locations/edit/" + id)}
-                                            color="secondary">
-                                      {t('edit')}
-                                    </Button>
+                                    {(archived) ? 
+                                      <span className='text-muted'>{t('unarchive_to_edit')}</span> :
+                                      <Button className='btn-sm' 
+                                              onClick={() => history.push("/school/locations/edit/" + id)}
+                                              color="secondary">
+                                        {t('edit')}
+                                      </Button>
+                                    }
                                   </Table.Col>
                                   <Mutation mutation={ARCHIVE_LOCATION} key={v4()}>
                                     {(archiveLocation, { data }) => (
