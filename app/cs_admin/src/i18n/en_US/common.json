@@ -3,7 +3,7 @@
         "locations": {
             "title": "Locations",
             "error_loading": "Error loading locations :(",
-            "empty_list": "No locations found, click the Add button to add your first location.",
+            "empty_list": "No locations found, click the Add button to add a location.",
             "add": "Add Location",
             "title_add": "New location",
             "toast_add_success": "Added loadtion",
