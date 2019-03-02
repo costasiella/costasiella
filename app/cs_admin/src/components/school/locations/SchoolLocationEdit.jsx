@@ -4,7 +4,7 @@ import { Query, Mutation } from "react-apollo";
 import { v4 } from "uuid"
 import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
-import { Formik, Form, Field, ErrorMessage } from 'formik'
+import { Formik, Form as FoForm, Field, ErrorMessage } from 'formik'
 import validator from 'validator'
 import { toast } from 'react-toastify'
 
@@ -22,7 +22,7 @@ import {
   Card,
   Container,
   List,
-  Form as TablerForm,
+  Form,
   Table
 } from "tabler-react";
 import SiteWrapper from "../../SiteWrapper"
@@ -127,17 +127,27 @@ class SchoolLocationEdit extends Component {
                               }}
                               >
                               {({ isSubmitting, errors, values }) => (
-                                  <Form>
+                                  <FoForm>
                                       <Card.Body>
-                                          <TablerForm.Label>{t('school.location.public')}</TablerForm.Label>
-                                          <Field type="checkbox" name="displayPublic" checked={values.displayPublic} />
-                                          <ErrorMessage name="displayPublic" component="div" />        
-                                          <TablerForm.Label>{t('school.location.name')}</TablerForm.Label>
-                                          <Field type="text" 
-                                                 name="name" 
-                                                 className={(errors.name) ? "form-control is-invalid" : "form-control"} 
-                                                 autoComplete="off" />
-                                          <ErrorMessage name="name" component="span" className="invalid-feedback" />
+                                          <Form.Group>
+                                            <Form.Label className="custom-switch">
+                                              <Field 
+                                                className="custom-switch-input"
+                                                type="checkbox" 
+                                                name="displayPublic" 
+                                                checked={values.displayPublic} />
+                                              <span className="custom-switch-indicator" ></span>
+                                              <span className="custom-switch-description">{t('school.location.public')}</span>
+                                            </Form.Label>
+                                            <ErrorMessage name="displayPublic" component="div" />   
+                                          </Form.Group>     
+                                          <Form.Group label={t('school.location.name')} >
+                                            <Field type="text" 
+                                                  name="name" 
+                                                  className={(errors.name) ? "form-control is-invalid" : "form-control"} 
+                                                  autoComplete="off" />
+                                            <ErrorMessage name="name" component="span" className="invalid-feedback" />
+                                          </Form.Group>
                                       </Card.Body>
                                       <Card.Footer>
                                           <button className="btn btn-primary pull-right" type="submit" disabled={isSubmitting}>
@@ -151,7 +161,7 @@ class SchoolLocationEdit extends Component {
                                               {t('cancel')}
                                           </button>
                                       </Card.Footer>
-                                  </Form>
+                                  </FoForm>
                               )}
                           </Formik>
                       )}

@@ -4,7 +4,7 @@ import gql from "graphql-tag"
 import { v4 } from "uuid"
 import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
-import { Formik, Form, Field, ErrorMessage } from 'formik'
+import { Formik, Form as FoForm, Field, ErrorMessage } from 'formik'
 import validator from 'validator';
 import { toast } from 'react-toastify';
 
@@ -22,9 +22,9 @@ import {
   Card,
   Container,
   List,
-  Form as TablerForm,
+  Form,
   Table
-} from "tabler-react";
+} from "tabler-react"
 import SiteWrapper from "../../SiteWrapper"
 import HasPermissionWrapper from "../../HasPermissionWrapper"
 
@@ -57,7 +57,7 @@ const SchoolLocationAdd = ({ t, history }) => (
             <Mutation mutation={ADD_LOCATION} onCompleted={() => history.push(return_url)}> 
                 {(addLocation, { data }) => (
                     <Formik
-                        initialValues={{ name: '', displayPublic: false }}
+                        initialValues={{ name: '', displayPublic: true }}
                         validate={values => {
                             let errors = {};
                             if (!values.name) {
@@ -88,18 +88,33 @@ const SchoolLocationAdd = ({ t, history }) => (
                               })
                         }}
                         >
-                        {({ isSubmitting, errors }) => (
-                            <Form>
+                        {({ isSubmitting, errors, values }) => (
+                            <FoForm>
                                 <Card.Body>
-                                    <TablerForm.Label>{t('school.location.public')}</TablerForm.Label>
-                                    <Field type="checkbox" name="displayPublic"/>
-                                    <ErrorMessage name="displayPublic" component="div" />        
-                                    <TablerForm.Label>{t('school.location.name')}</TablerForm.Label>
-                                    <Field type="text" 
-                                            name="name" 
-                                            className={(errors.name) ? "form-control is-invalid" : "form-control"} 
-                                            autoComplete="off" />
-                                    <ErrorMessage name="name" component="span" className="invalid-feedback" />
+                                    {/* <Form.Group label={t('school.location.public')}>
+                                      <Field type="checkbox" name="displayPublic" checked={values.displayPublic} />
+                                      <ErrorMessage name="displayPublic" component="div" />        
+                                    </Form.Group> */}
+                                    <Form.Group>
+                                      <Form.Label className="custom-switch">
+                                        <Field 
+                                          className="custom-switch-input"
+                                          type="checkbox" 
+                                          name="displayPublic" 
+                                          checked={values.displayPublic} />
+                                        <span className="custom-switch-indicator" ></span>
+                                        <span className="custom-switch-description">{t('school.location.public')}</span>
+                                      </Form.Label>
+                                      <ErrorMessage name="displayPublic" component="div" />   
+                                    </Form.Group>    
+
+                                    <Form.Group label={t('school.location.name')}>
+                                      <Field type="text" 
+                                              name="name" 
+                                              className={(errors.name) ? "form-control is-invalid" : "form-control"} 
+                                              autoComplete="off" />
+                                      <ErrorMessage name="name" component="span" className="invalid-feedback" />
+                                    </Form.Group>
                                 </Card.Body>
                                 <Card.Footer>
                                     <button className="btn btn-primary pull-right" type="submit" disabled={isSubmitting}>
@@ -109,7 +124,7 @@ const SchoolLocationAdd = ({ t, history }) => (
                                         {t('cancel')}
                                     </button>
                                 </Card.Footer>
-                            </Form>
+                            </FoForm>
                         )}
                     </Formik>
                 )}
