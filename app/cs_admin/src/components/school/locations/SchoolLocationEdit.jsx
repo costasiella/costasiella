@@ -150,16 +150,21 @@ class SchoolLocationEdit extends Component {
                                           </Form.Group>
                                       </Card.Body>
                                       <Card.Footer>
-                                          <button className="btn btn-primary pull-right" type="submit" disabled={isSubmitting}>
-                                              {t('submit')}
-                                          </button>
-                                          <button 
+                                          <Button 
+                                            className="pull-right"
+                                            color="primary"
+                                            disabled={isSubmitting}
+                                            type="submit"
+                                          >
+                                            {t('submit')}
+                                          </Button>
+                                          <Button
                                             type="button" 
-                                            className="btn btn-link" 
+                                            color="link" 
                                             onClick={() => history.push(return_url)}
                                           >
                                               {t('cancel')}
-                                          </button>
+                                          </Button>
                                       </Card.Footer>
                                   </FoForm>
                               )}

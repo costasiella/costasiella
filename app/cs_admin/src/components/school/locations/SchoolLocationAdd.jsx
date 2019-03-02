@@ -117,12 +117,17 @@ const SchoolLocationAdd = ({ t, history }) => (
                                     </Form.Group>
                                 </Card.Body>
                                 <Card.Footer>
-                                    <button className="btn btn-primary pull-right" type="submit" disabled={isSubmitting}>
-                                        {t('submit')}
-                                    </button>
-                                    <button className="btn btn-link" onClick={() => history.push(return_url)}>
+                                    <Button 
+                                      color="primary"
+                                      className="pull-right" 
+                                      type="submit" 
+                                      disabled={isSubmitting}
+                                    >
+                                      {t('submit')}
+                                    </Button>
+                                    <Button color="link" onClick={() => history.push(return_url)}>
                                         {t('cancel')}
-                                    </button>
+                                    </Button>
                                 </Card.Footer>
                             </FoForm>
                         )}
