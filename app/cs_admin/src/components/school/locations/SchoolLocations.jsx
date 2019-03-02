@@ -122,7 +122,6 @@ const SchoolLocations = ({ t, history, archived=false }) => (
                             </Table.Row>
                           </Table.Header>
                           <Table.Body>
-                              {console.log(data.schoolLocations)}
                               {data.schoolLocations.map(({ id, name, displayPublic }) => (
                                 <Table.Row key={v4()}>
                                   <Table.Col key={v4()}>
