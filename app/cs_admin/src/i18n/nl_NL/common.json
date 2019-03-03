@@ -37,5 +37,7 @@
     "current": "__STRING_NOT_TRANSLATED__",
     "unarchived": "__STRING_NOT_TRANSLATED__",
     "archived": "__STRING_NOT_TRANSLATED__",
-    "unarchive_to_edit": "__STRING_NOT_TRANSLATED__"
+    "unarchive_to_edit": "__STRING_NOT_TRANSLATED__",
+    "form_field_min_len_3": "__STRING_NOT_TRANSLATED__",
+    "form_field_required": "__STRING_NOT_TRANSLATED__"
 }

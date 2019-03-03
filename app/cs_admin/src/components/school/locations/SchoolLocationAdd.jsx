@@ -1,14 +1,14 @@
 import React from 'react'
 import { Mutation } from "react-apollo";
 import gql from "graphql-tag"
-import { v4 } from "uuid"
 import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
 import { Formik, Form as FoForm, Field, ErrorMessage } from 'formik'
-import validator from 'validator';
-import { toast } from 'react-toastify';
+import { toast } from 'react-toastify'
+
 
 import { GET_LOCATIONS_QUERY } from './queries'
+import { LOCATION_SCHEMA } from './yupSchema'
 
 // @flow
 
@@ -58,16 +58,7 @@ const SchoolLocationAdd = ({ t, history }) => (
                 {(addLocation, { data }) => (
                     <Formik
                         initialValues={{ name: '', displayPublic: true }}
-                        validate={values => {
-                            let errors = {};
-                            if (!values.name) {
-                            errors.name = t('form.errors.required')
-                            } else if 
-                                (!validator.isLength(values.name, {"min": 3})) {
-                                    errors.name = t('form.errors.min_length_3');
-                            }
-                            return errors;
-                        }}
+                        validationSchema={LOCATION_SCHEMA}
                         onSubmit={(values, { setSubmitting }) => {
                             addLocation({ variables: {
                                 name: values.name, 

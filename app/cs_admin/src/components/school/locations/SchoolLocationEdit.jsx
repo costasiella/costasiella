@@ -9,6 +9,7 @@ import validator from 'validator'
 import { toast } from 'react-toastify'
 
 import { GET_LOCATIONS_QUERY, GET_LOCATION_QUERY } from './queries'
+import { LOCATION_SCHEMA } from './yupSchema'
 
 // @flow
 
@@ -91,16 +92,7 @@ class SchoolLocationEdit extends Component {
                                 name: initialData.name, 
                                 displayPublic: initialData.displayPublic 
                               }}
-                              validate={values => {
-                                  let errors = {};
-                                  if (!values.name) {
-                                  errors.name = t('form.errors.required')
-                                  } else if 
-                                      (!validator.isLength(values.name, {"min": 3})) {
-                                          errors.name = t('form.errors.min_length_3');
-                                  }
-                                  return errors;
-                              }}
+                              validationSchema={LOCATION_SCHEMA}
                               onSubmit={(values, { setSubmitting }) => {
                                   console.log('submit values:')
                                   console.log(values)
