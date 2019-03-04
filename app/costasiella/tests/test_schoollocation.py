@@ -14,33 +14,61 @@ from .. import models
 
 class GQLSchoolLocation(TestCase):
     # https://docs.djangoproject.com/en/2.1/topics/testing/overview/
-    def test_query_one(self):
-        # This is the test method.
-        # Let's assume that there's a user object "my_test_user" that was already setup        
-        query = '''
-query SchoolLocation($id: ID!) {
-    schoolLocation(id: $id) {
-        id
-        name
-        archived
-        displayPublic
-    }
-}
-        '''
-        admin_user = AdminFactory.create()
-        # print('admin:')
-        # print(admin_user)
-        location = SchoolLocationFactory.create()
-        print ('location:')
-        print(location)
-        print(location.id)
+    def setUp(self):
+        # This is run before every test
+        self.admin_user = AdminFactory.create()
 
-        executed = execute_test_client_api_query(query, admin_user, variables={"id": 1})
-        print(executed)
+
+    def test_query_one(self):
+        """ Query one location """   
+        query = '''
+query getSchoolLocation($id: ID!) {
+    schoolLocation(id:$id) {
+      id
+      name
+      displayPublic
+      archived
+    }
+  }
+        '''
+        location = SchoolLocationFactory.create()
+        executed = execute_test_client_api_query(query, self.admin_user, variables={"id": location.id})
         data = executed.get('data')
         self.assertEqual(data['schoolLocation']['name'], location.name)
         self.assertEqual(data['schoolLocation']['archived'], location.archived)
         self.assertEqual(data['schoolLocation']['displayPublic'], location.display_public)
+
+
+    def test_create_location(self):
+        """ Create a location """
+        query = '''
+mutation CreateSchoolLocation($name: String!, $displayPublic:Boolean!) {
+    createSchoolLocation(name: $name, displayPublic: $displayPublic) {
+        schoolLocation {
+            id
+            archived
+            name
+            displayPublic
+        }
+    }
+}
+        '''
+
+        variables = {
+            "name": "New location",
+            "displayPublic": True
+        }
+
+        executed = execute_test_client_api_query(
+            query, 
+            self.admin_user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['createSchoolLocation']['schoolLocation']['name'], variables['name'])
+        self.assertEqual(data['createSchoolLocation']['schoolLocation']['archived'], False)
+        self.assertEqual(data['createSchoolLocation']['schoolLocation']['displayPublic'], variables['displayPublic'])
+
 
 # class GQL_school_location(TestCase):
 

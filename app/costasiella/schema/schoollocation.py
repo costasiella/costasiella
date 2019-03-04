@@ -71,9 +71,7 @@ class SchoolLocationQuery(graphene.ObjectType):
 
 
 class CreateSchoolLocation(graphene.Mutation):
-    id = graphene.Int()
-    name = graphene.String()
-    display_public = graphene.Boolean()
+    school_location = graphene.Field(SchoolLocationType)
 
     class Arguments:
         name = graphene.String(required=True)
@@ -104,11 +102,8 @@ class CreateSchoolLocation(graphene.Mutation):
         school_location.save()
 
         # return CreateSchoolLocationSuccess(school_location=school_location)
-        return CreateSchoolLocation(
-            id=school_location.id,
-            name=school_location.name,
-            display_public=school_location.display_public
-        )
+        return CreateSchoolLocation(school_location=school_location)
+
 
 ''' Query like this when enabling error output using union:
 mutation {
@@ -133,9 +128,7 @@ mutation {
 
 
 class UpdateSchoolLocation(graphene.Mutation):
-    id = graphene.ID()
-    name = graphene.String()
-    display_public = graphene.Boolean()
+    school_location = graphene.Field(SchoolLocationType)
 
     class Arguments:
         id = graphene.ID()
@@ -156,16 +149,11 @@ class UpdateSchoolLocation(graphene.Mutation):
         school_location.display_public = display_public
         school_location.save(force_update=True)
 
-        return UpdateSchoolLocation(
-            id=school_location.id,
-            name=school_location.name,
-            display_public=school_location.display_public
-        )
+        return UpdateSchoolLocation(school_location=school_location)
 
 
 class ArchiveSchoolLocation(graphene.Mutation):
-    id = graphene.ID()
-    archived = graphene.Boolean()
+    school_location = graphene.Field(SchoolLocationType)
 
     class Arguments:
         id = graphene.ID()
@@ -184,10 +172,7 @@ class ArchiveSchoolLocation(graphene.Mutation):
         school_location.archived = archived
         school_location.save(force_update=True)
 
-        return ArchiveSchoolLocation(
-            id=school_location.id,
-            archived=school_location.archived
-        )
+        return ArchiveSchoolLocation(school_location=school_location)
 
 
 class SchoolLocationMutation(graphene.ObjectType):
