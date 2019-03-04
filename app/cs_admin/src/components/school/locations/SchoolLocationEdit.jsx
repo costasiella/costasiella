@@ -35,9 +35,11 @@ import SchoolMenu from "../SchoolMenu"
 const UPDATE_LOCATION = gql`
     mutation UpdateSchoolLocation($id: ID!, $name: String!, $displayPublic:Boolean!) {
         updateSchoolLocation(id: $id, name: $name, displayPublic: $displayPublic) {
-        id
-        name
-        displayPublic
+          schoolLocation {
+            id
+            name
+            displayPublic
+          }
         }
     }
 `

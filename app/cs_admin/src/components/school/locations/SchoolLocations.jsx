@@ -34,8 +34,10 @@ import { GET_LOCATIONS_QUERY } from "./queries"
 const ARCHIVE_LOCATION = gql`
     mutation ArchiveSchoolLocation($id: ID!, $archived: Boolean!) {
         archiveSchoolLocation(id: $id, archived: $archived) {
-          id
-          archived
+          schoolLocation {
+            id
+            archived
+          }
         }
     }
 `
