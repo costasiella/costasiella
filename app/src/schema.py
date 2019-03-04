@@ -1,15 +1,14 @@
 import graphene
 import graphql_jwt
 
-import costasiella.schema
-import users.schema
+import costasiella.schema as cs_schema
 
 
-class Query(costasiella.schema.Query, users.schema.Query, graphene.ObjectType):
+class Query(cs_schema.Query, graphene.ObjectType):
     pass
 
 
-class Mutations(users.schema.Mutation, costasiella.schema.Mutation, graphene.ObjectType):
+class Mutations(cs_schema.Mutation, graphene.ObjectType):
     token_auth = graphql_jwt.ObtainJSONWebToken.Field()
     verify_token = graphql_jwt.Verify.Field()
     refresh_token = graphql_jwt.Refresh.Field()

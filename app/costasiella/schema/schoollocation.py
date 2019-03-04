@@ -4,8 +4,8 @@ import graphene
 from graphene_django import DjangoObjectType
 from graphql import GraphQLError
 
-from .models import SchoolLocation
-from .modules.gql_tools import require_login_and_permission
+from ..models import SchoolLocation
+from ..modules.gql_tools import require_login_and_permission
 
 
 class SchoolLocationType(DjangoObjectType):
@@ -23,7 +23,7 @@ class SchoolLocationType(DjangoObjectType):
 #     # error_message = graphene.String(required=True)
 
 
-class Query(graphene.ObjectType):
+class SchoolLocationQuery(graphene.ObjectType):
     school_locations = graphene.List(SchoolLocationType, archived=graphene.Boolean(default_value=False))
     school_location = graphene.Field(SchoolLocationType, id=graphene.ID())
 
@@ -189,7 +189,7 @@ class ArchiveSchoolLocation(graphene.Mutation):
         )
 
 
-class Mutation(graphene.ObjectType):
+class SchoolLocationMutation(graphene.ObjectType):
     archive_school_location = ArchiveSchoolLocation.Field()
     create_school_location = CreateSchoolLocation.Field()
     update_school_location = UpdateSchoolLocation.Field()

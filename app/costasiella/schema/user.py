@@ -41,11 +41,11 @@ class CreateUser(graphene.Mutation):
         return CreateUser(user=user)
 
 
-class Mutation(graphene.ObjectType):
+class UserMutation(graphene.ObjectType):
     create_user = CreateUser.Field()
 
 
-class Query(graphene.AbstractType):
+class UserQuery(graphene.AbstractType):
     user = graphene.Field(UserType)
     users = graphene.List(UserType)
     group = graphene.List(GroupType, search=graphene.String())
