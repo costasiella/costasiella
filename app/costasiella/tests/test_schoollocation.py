@@ -12,29 +12,7 @@ from .. import models
 # https://stackoverflow.com/questions/45493295/testing-graphene-django
 
 
-
-
-class APITest(TestCase):
-    def test_accounts_queries(self):
-        # This is the test method.
-        # Let's assume that there's a user object "my_test_user" that was already setup        
-        query = '''
-{
-  user {
-    id
-    firstName
-    lastName
-  }
-}
-        '''
-        admin_user = AdminFactory.create()
-        executed = execute_test_client_api_query(query, admin_user)
-        data = executed.get('data')
-        self.assertEqual(data['user']['firstName'], admin_user.first_name)
-        self.assertEqual(data['user']['lastName'], admin_user.last_name)
-
-
-class TestSchoolLocation(TestCase):
+class GQLSchoolLocation(TestCase):
     # https://docs.djangoproject.com/en/2.1/topics/testing/overview/
     def test_query_one(self):
         # This is the test method.
