@@ -1,35 +1,17 @@
-import graphene
 from django.contrib.auth import get_user_model
-from django.test import RequestFactory, TestCase
+from django.test import TestCase
 from graphene.test import Client
 
 # Create your tests here.
 from .factories import AdminFactory, SchoolLocationFactory
+from .helpers import execute_test_client_api_query
 from .. import models
-from .. import schema as cs_schema
-
-
-# Create schema object
-schema = graphene.Schema(
-    query=cs_schema.Query,
-    mutation=cs_schema.Mutation
-)
 
 ## Use django client?
 # https://www.sam.today/blog/testing-graphql-with-graphene-django/
 # https://stackoverflow.com/questions/45493295/testing-graphene-django
 
 
-def execute_test_client_api_query(query, user=None, variables=None, **kwargs):
-    """
-    Returns the results of executing a graphQL query using the graphene test client.  This is a helper method for our tests
-    """
-    request_factory = RequestFactory()
-    context = request_factory.get('/graphql/')
-    context.user = user
-    client = Client(schema)
-    executed = client.execute(query, context=context, variables=variables, **kwargs)
-    return executed
 
 
 class APITest(TestCase):
