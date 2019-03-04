@@ -20,7 +20,7 @@ class GQL_users(TestCase):
 
     def test_create(self):
         """
-        create a SchoolLocation using GQL
+        create a user
         """
         client = Client(schema)
         executed = client.execute(
@@ -44,3 +44,22 @@ class GQL_users(TestCase):
                 }
             }
         }
+
+
+#     def test_tokenAuth(self):
+#         """
+#         Get user token
+#         """
+#         client = Client(schema)
+#         executed = client.execute(
+# '''
+# mutation TokenAuth($username: String!, $password: String!) {
+#     tokenAuth(username: $username, password: $password) {
+#         token
+#     }
+# }
+# ''', variables={'username': admin_email, 'password': admin_password })
+#         print(executed)
+#         # token = executed['data']['tokenAuth']['token']
+#         # print(token)
+#         # assert len(token) > 0
