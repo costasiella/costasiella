@@ -50,6 +50,7 @@ class SchoolLocationQuery(graphene.ObjectType):
         user = info.context.user
         print('user authenticated:')
         print(user.is_authenticated)
+        print(user.first_name)
         if user.is_anonymous:
             raise Exception(_('Not logged in!'))
 
