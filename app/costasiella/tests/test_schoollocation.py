@@ -2,13 +2,14 @@
 import graphql
 
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import Permission
 from django.test import TestCase
 from graphene.test import Client
 
 # Create your tests here.
 from django.contrib.auth.models import AnonymousUser
 
-from .factories import AdminFactory, SchoolLocationFactory
+from .factories import AdminFactory, RegularUserFactory, SchoolLocationFactory
 from .helpers import execute_test_client_api_query
 from .. import models
 
@@ -49,7 +50,7 @@ query getSchoolLocation($id: ID!) {
         self.assertEqual(data['schoolLocation']['displayPublic'], location.display_public)
 
 
-    def test_query_one_anon_permission_denied(self):
+    def test_query_one_anon_user(self):
         """ Deny permission for anon users Query one location """   
         query = '''
 query getSchoolLocation($id: ID!) {
@@ -65,6 +66,52 @@ query getSchoolLocation($id: ID!) {
         executed = execute_test_client_api_query(query, self.anon_user, variables={"id": location.id})
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Not logged in!')
+
+
+    def test_query_one_permission_denied(self):
+        """ Permission denied message when user lacks authorization """   
+        query = '''
+query getSchoolLocation($id: ID!) {
+    schoolLocation(id:$id) {
+      id
+      name
+      displayPublic
+      archived
+    }
+  }
+        '''
+        # Create regular user
+        user = RegularUserFactory.create()
+        location = SchoolLocationFactory.create()
+
+        executed = execute_test_client_api_query(query, user, variables={"id": location.id})
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
+
+
+    def test_query_one_permission_granted(self):
+        """ Respond with data when user has permission """   
+        query = '''
+query getSchoolLocation($id: ID!) {
+    schoolLocation(id:$id) {
+      id
+      name
+      displayPublic
+      archived
+    }
+  }
+        '''
+        # Create regular user
+        user = RegularUserFactory.create()
+        permission = Permission.objects.get(codename='view_schoollocation')
+        user.user_permissions.add(permission)
+        user.save()
+
+        location = SchoolLocationFactory.create()
+
+        executed = execute_test_client_api_query(query, user, variables={"id": location.id})
+        data = executed.get('data')
+        self.assertEqual(data['schoolLocation']['name'], location.name)
 
 
     def test_create_location(self):

@@ -26,3 +26,17 @@ class AdminFactory(factory.DjangoModelFactory):
     is_superuser = True
     is_staff = True
     is_active = True
+
+
+class RegularUserFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = get_user_model()
+    # FACTORY_FOR = get_user_model()
+
+    email = 'user@costasiellla.com'
+    username = 'user'
+    first_name = 'user'
+    last_name = 'regular user'
+    password = factory.PostGenerationMethodCall('set_password', 'CSUser!1#')
+
+    is_active = True
