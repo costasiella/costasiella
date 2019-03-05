@@ -101,3 +101,31 @@ mutation UpdateSchoolLocation($id: ID!, $name: String!, $displayPublic:Boolean!)
         self.assertEqual(data['updateSchoolLocation']['schoolLocation']['name'], variables['name'])
         self.assertEqual(data['updateSchoolLocation']['schoolLocation']['archived'], False)
         self.assertEqual(data['updateSchoolLocation']['schoolLocation']['displayPublic'], variables['displayPublic'])
+
+
+    def test_archive_location(self):
+        """ Archive a location """
+        query = '''
+mutation ArchiveSchoolLocation($id: ID!, $archived: Boolean!) {
+    archiveSchoolLocation(id: $id, archived: $archived) {
+        schoolLocation {
+        id
+        archived
+        }
+    }
+}
+        '''
+        location = SchoolLocationFactory.create()
+
+        variables = {
+            "id": location.id,
+            "archived": True
+        }
+
+        executed = execute_test_client_api_query(
+            query, 
+            self.admin_user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['archiveSchoolLocation']['schoolLocation']['archived'], variables['archived'])
