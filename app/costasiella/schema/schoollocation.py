@@ -6,7 +6,9 @@ from graphql import GraphQLError
 
 from ..models import SchoolLocation
 from ..modules.gql_tools import require_login_and_permission
+from ..modules.messages import Messages
 
+m = Messages()
 
 class SchoolLocationType(DjangoObjectType):
     class Meta:
@@ -32,7 +34,7 @@ class SchoolLocationQuery(graphene.ObjectType):
         print('user authenticated:')
         print(user.is_authenticated)
         if user.is_anonymous:
-            raise Exception(_('Not logged in!'))
+            raise Exception(m.user_not_logged_in)
         # if not info.context.user.is_authenticated:
             # return SchoolLocation.objects.none()
         # else:
@@ -50,12 +52,9 @@ class SchoolLocationQuery(graphene.ObjectType):
         user = info.context.user
         print('user authenticated:')
         print(user.is_authenticated)
-        print(user.first_name)
-        if user.is_anonymous:
-            raise Exception(_('Not logged in!'))
-
-        if not user.has_perm('costasiella.view_schoollocation'):
-            raise Exception(_('Permission denied!'))
+        print(user)
+        print(user.is_anonymous)
+        require_login_and_permission(user, 'costasiella.view_schoollocation')
 
         # Return only public non-archived locations
         return SchoolLocation.objects.get(id=id)
@@ -86,7 +85,7 @@ class CreateSchoolLocation(graphene.Mutation):
         errors = []
         if not len(name):
             print('validation error found')
-            raise GraphQLError(_('Name is requires'))
+            raise GraphQLError(_('Name is required'))
             # errors.append(
             #     ValidationErrorMessage(
             #         field="name",
@@ -138,8 +137,7 @@ class UpdateSchoolLocation(graphene.Mutation):
 
     def mutate(self, info, id, name, display_public):
         user = info.context.user
-        if not user.has_perm('costasiella.change_schoollocation'):
-            raise Exception('Permission denied!')
+        require_login_and_permission(user, 'costasiella.change_schoollocation')
 
         school_location = SchoolLocation.objects.filter(id=id).first()
         if not school_location:
@@ -162,8 +160,7 @@ class ArchiveSchoolLocation(graphene.Mutation):
 
     def mutate(self, info, id, archived):
         user = info.context.user
-        if not user.has_perm('costasiella.delete_schoollocation'):
-            raise Exception('Permission denied!')
+        require_login_and_permission(user, 'costasiella.delete_schoollocation')
 
         school_location = SchoolLocation.objects.filter(id=id).first()
         if not school_location:

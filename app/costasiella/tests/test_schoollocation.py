@@ -1,8 +1,13 @@
+# from graphql.error.located_error import GraphQLLocatedError
+import graphql
+
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 from graphene.test import Client
 
 # Create your tests here.
+from django.contrib.auth.models import AnonymousUser
+
 from .factories import AdminFactory, SchoolLocationFactory
 from .helpers import execute_test_client_api_query
 from .. import models
@@ -17,6 +22,11 @@ class GQLSchoolLocation(TestCase):
     def setUp(self):
         # This is run before every test
         self.admin_user = AdminFactory.create()
+        self.anon_user = AnonymousUser()
+
+    def tearDown(self):
+        # This is run after every test
+        pass
 
 
     def test_query_one(self):
@@ -37,6 +47,24 @@ query getSchoolLocation($id: ID!) {
         self.assertEqual(data['schoolLocation']['name'], location.name)
         self.assertEqual(data['schoolLocation']['archived'], location.archived)
         self.assertEqual(data['schoolLocation']['displayPublic'], location.display_public)
+
+
+    def test_query_one_anon_permission_denied(self):
+        """ Deny permission for anon users Query one location """   
+        query = '''
+query getSchoolLocation($id: ID!) {
+    schoolLocation(id:$id) {
+      id
+      name
+      displayPublic
+      archived
+    }
+  }
+        '''
+        location = SchoolLocationFactory.create()
+        executed = execute_test_client_api_query(query, self.anon_user, variables={"id": location.id})
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
     def test_create_location(self):
