@@ -70,32 +70,34 @@ mutation CreateSchoolLocation($name: String!, $displayPublic:Boolean!) {
         self.assertEqual(data['createSchoolLocation']['schoolLocation']['displayPublic'], variables['displayPublic'])
 
 
-# class GQL_school_location(TestCase):
+    def test_update_location(self):
+        """ Update a location """
+        query = '''
+mutation UpdateSchoolLocation($id: ID!, $name: String!, $displayPublic:Boolean!) {
+    updateSchoolLocation(id: $id, name: $name, displayPublic: $displayPublic) {
+        schoolLocation {
+        id
+        archived
+        name
+        displayPublic
+        }
+    }
+}
+        '''
+        location = SchoolLocationFactory.create()
 
-#     def test_create(self):
-#         """
-#         create a SchoolLocation using GQL
-#         """
-#         class MockUser:
-#             is_authenticated = True
+        variables = {
+            "id": location.id,
+            "name": "Updated name",
+            "displayPublic": False
+        }
 
-#         client = Client(schema)
-#         executed = client.execute(
-# '''
-#     mutation CreateSchoolLocation($name: String!, $displayPublic:Boolean!) {
-#         createSchoolLocation(name: $name, displayPublic: $displayPublic) {
-#         id
-#         name
-#         displayPublic
-#         }
-#     }
-# ''',
-# variables={'name': 'test', 'displayPublic': True},
-# info={
-#     'context': {
-#         'user': MockUser()
-#         }
-#     }
-# )
-#         print(executed)
-#         assert 1 == 1
+        executed = execute_test_client_api_query(
+            query, 
+            self.admin_user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['updateSchoolLocation']['schoolLocation']['name'], variables['name'])
+        self.assertEqual(data['updateSchoolLocation']['schoolLocation']['archived'], False)
+        self.assertEqual(data['updateSchoolLocation']['schoolLocation']['displayPublic'], variables['displayPublic'])
