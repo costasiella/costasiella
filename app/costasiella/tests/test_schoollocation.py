@@ -30,6 +30,30 @@ class GQLSchoolLocation(TestCase):
         pass
 
 
+    def test_query(self):
+        """ Query list of locations """
+        query = '''
+  query SchoolLocations($archived: Boolean!) {
+    schoolLocations(archived:$archived) {
+      id
+      name
+      displayPublic
+      archived
+    }
+  }
+        '''
+        location = SchoolLocationFactory.create()
+        variables = {
+            'archived': False
+        }
+
+        executed = execute_test_client_api_query(query, self.admin_user, variables=variables)
+        data = executed.get('data')
+        self.assertEqual(data['schoolLocations'][0]['name'], location.name)
+        self.assertEqual(data['schoolLocations'][0]['archived'], location.archived)
+        self.assertEqual(data['schoolLocations'][0]['displayPublic'], location.display_public)
+
+
     def test_query_one(self):
         """ Query one location """   
         query = '''
