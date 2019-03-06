@@ -54,6 +54,28 @@ class GQLSchoolLocation(TestCase):
         self.assertEqual(data['schoolLocations'][0]['displayPublic'], location.display_public)
 
 
+    def test_query_anon_user(self):
+        """ Query list of locations """
+        query = '''
+  query SchoolLocations($archived: Boolean!) {
+    schoolLocations(archived:$archived) {
+      id
+      name
+      displayPublic
+      archived
+    }
+  }
+        '''
+        location = SchoolLocationFactory.create()
+        variables = {
+            'archived': False
+        }
+
+        executed = execute_test_client_api_query(query, self.anon_user, variables=variables)
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
+
+
     def test_query_one(self):
         """ Query one location """   
         query = '''
