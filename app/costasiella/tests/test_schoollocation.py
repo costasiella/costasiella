@@ -54,6 +54,81 @@ class GQLSchoolLocation(TestCase):
         self.assertEqual(data['schoolLocations'][0]['displayPublic'], location.display_public)
 
 
+    def test_query_permision_denied(self):
+        """ Query list of locations """
+        query = '''
+  query SchoolLocations($archived: Boolean!) {
+    schoolLocations(archived:$archived) {
+      id
+      name
+      displayPublic
+      archived
+    }
+  }
+        '''
+        location = SchoolLocationFactory.create()
+        non_public_location = SchoolLocationFactory.build()
+        non_public_location.display_public = False
+        non_public_location.save()
+
+        variables = {
+            'archived': False
+        }
+
+        # Create regular user
+        user = RegularUserFactory.create()
+        executed = execute_test_client_api_query(query, user, variables=variables)
+        data = executed.get('data')
+
+        # Public locations only
+        non_public_found = False
+        for l in data['schoolLocations']:
+            if not l['displayPublic']:
+                non_public_found = True
+
+        self.assertEqual(non_public_found, False)
+
+
+    def test_query_permision_granted(self):
+        """ Query list of locations """
+        query = '''
+  query SchoolLocations($archived: Boolean!) {
+    schoolLocations(archived:$archived) {
+      id
+      name
+      displayPublic
+      archived
+    }
+  }
+        '''
+        location = SchoolLocationFactory.create()
+        non_public_location = SchoolLocationFactory.build()
+        non_public_location.display_public = False
+        non_public_location.save()
+
+        variables = {
+            'archived': False
+        }
+
+        # Create regular user
+        user = RegularUserFactory.create()
+        permission = Permission.objects.get(codename='view_schoollocation')
+        user.user_permissions.add(permission)
+        user.save()
+
+        executed = execute_test_client_api_query(query, user, variables=variables)
+        data = executed.get('data')
+
+        # List all locations, including non public
+        non_public_found = False
+        for l in data['schoolLocations']:
+            if not l['displayPublic']:
+                non_public_found = True
+
+        # Assert non public locations are listed
+        self.assertEqual(non_public_found, True)
+
+
     def test_query_anon_user(self):
         """ Query list of locations """
         query = '''
