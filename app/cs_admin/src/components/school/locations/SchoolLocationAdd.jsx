@@ -34,9 +34,11 @@ import SchoolMenu from "../SchoolMenu"
 const ADD_LOCATION = gql`
     mutation CreateSchoolLocation($name: String!, $displayPublic:Boolean!) {
         createSchoolLocation(name: $name, displayPublic: $displayPublic) {
-        id
-        name
-        displayPublic
+          schoolLocation {
+            id
+            name
+            displayPublic
+          }
         }
     }
 `;
