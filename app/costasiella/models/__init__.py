@@ -1,2 +1,2 @@
-from .school_location import SchoolLocation, SchoolLocationForm
+from .school_location import SchoolLocation
 
