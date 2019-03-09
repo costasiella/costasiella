@@ -74,7 +74,7 @@ class CreateSchoolClasstype(graphene.Mutation):
 
         if link:
             if not validators.url(link, public=True):
-                raise GraphQLError(_('Invalid URL'))
+                raise GraphQLError(_('Invalid URL, make sure it starts with "http"'))
 
 
         school_classtype = SchoolClasstype(
