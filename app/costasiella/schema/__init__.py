@@ -1,7 +1,7 @@
 import graphene
 import graphql_jwt
 
-from .schoolclasstype import SchoolClasstypeQuery
+from .schoolclasstype import SchoolClasstypeQuery, SchoolClasstypeMutation
 from .schoollocation import SchoolLocationQuery, SchoolLocationMutation
 from .user import UserQuery, UserMutation
 
@@ -13,7 +13,8 @@ class Query(SchoolClasstypeQuery,
     pass
 
 
-class Mutation(SchoolLocationMutation, 
+class Mutation(SchoolClasstypeMutation,
+               SchoolLocationMutation, 
                UserMutation, 
                graphene.ObjectType):
     token_auth = graphql_jwt.ObtainJSONWebToken.Field()

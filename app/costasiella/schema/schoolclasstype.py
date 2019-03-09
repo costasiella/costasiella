@@ -4,6 +4,8 @@ import graphene
 from graphene_django import DjangoObjectType
 from graphql import GraphQLError
 
+import validators
+
 from ..models import SchoolClasstype
 from ..modules.gql_tools import require_login_and_permission
 from ..modules.messages import Messages
@@ -46,43 +48,45 @@ class SchoolClasstypeQuery(graphene.ObjectType):
         print(user.is_anonymous)
         require_login_and_permission(user, 'costasiella.view_schoolclasstype')
 
-        # Return only public non-archived locations
+        # Return only public non-archived classtypes
         return SchoolClasstype.objects.get(id=id)
 
 
-# class CreateSchoolLocation(graphene.Mutation):
-#     school_location = graphene.Field(SchoolLocationType)
+class CreateSchoolClasstype(graphene.Mutation):
+    school_classtype = graphene.Field(SchoolClasstypeType)
 
-#     class Arguments:
-#         name = graphene.String(required=True)
-#         display_public = graphene.Boolean(required=True)
+    class Arguments:
+        name = graphene.String(required=True)
+        description = graphene.String()
+        display_public = graphene.Boolean(required=True)
+        link = graphene.String()
 
-#     # Output = CreateSchoolLocationPayload
+    # Output = CreateSchoolLocationPayload
 
-#     def mutate(self, info, name, display_public):
-#         user = info.context.user
-#         require_login_and_permission(user, 'costasiella.add_schoollocation')
+    def mutate(self, info, name, description, display_public, link):
+        user = info.context.user
+        require_login_and_permission(user, 'costasiella.add_schoolclasstype')
 
-#         errors = []
-#         if not len(name):
-#             print('validation error found')
-#             raise GraphQLError(_('Name is required'))
-#             # errors.append(
-#             #     ValidationErrorMessage(
-#             #         field="name",
-#             #         message=_("Name is required")
-#             #     )
-#             # )
+        # Validate input
+        if not len(name):
+            print('validation error found')
+            raise GraphQLError(_('Name is required'))
 
-#             # return ValidationErrors(
-#             #     validation_errors = errors
-#             # )
+        if link:
+            if not validators.url(link, public=True):
+                raise GraphQLError(_('Invalid URL'))
 
-#         school_location = SchoolLocation(name=name, display_public=display_public)
-#         school_location.save()
 
-#         # return CreateSchoolLocationSuccess(school_location=school_location)
-#         return CreateSchoolLocation(school_location=school_location)
+        school_classtype = SchoolClasstype(
+            name=name, 
+            description=description,
+            display_public=display_public,
+            link=link
+        )
+        school_classtype.save()
+
+        # return CreateSchoolLocationSuccess(school_location=school_location)
+        return CreateSchoolClasstype(school_classtype = school_classtype)
 
 
 # ''' Query like this when enabling error output using union:
@@ -153,7 +157,7 @@ class SchoolClasstypeQuery(graphene.ObjectType):
 #         return ArchiveSchoolLocation(school_location=school_location)
 
 
-# class SchoolLocationMutation(graphene.ObjectType):
+class SchoolClasstypeMutation(graphene.ObjectType):
 #     archive_school_location = ArchiveSchoolLocation.Field()
-#     create_school_location = CreateSchoolLocation.Field()
+    create_school_classtype = CreateSchoolClasstype.Field()
 #     update_school_location = UpdateSchoolLocation.Field()
