@@ -6,7 +6,7 @@
             "empty_list": "No locations found, click the Add button to add a location.",
             "add": "Add Location",
             "title_add": "New location",
-            "toast_add_success": "Added loadtion",
+            "toast_add_success": "Added location",
             "confirm_archive": "Do you with to move this location to the archive?",
             "empty_archive": "No locations have been archived yet.",
             "title_edit": "Edit location",
