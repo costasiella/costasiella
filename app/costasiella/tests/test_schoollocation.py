@@ -401,7 +401,6 @@ mutation ArchiveSchoolLocation($id: ID!, $archived: Boolean!) {
             variables=variables
         )
         data = executed.get('data')
-        print(data)
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Permission denied!')
 
@@ -443,3 +442,54 @@ mutation ArchiveSchoolLocation($id: ID!, $archived: Boolean!) {
         data = executed.get('data')
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Not logged in!')
+
+
+    def test_archive_location_permission_granted(self):
+        """ Allow archiving locations for users with permissions """
+        query = self.location_archive_mutation
+
+        location = f.SchoolLocationFactory.create()
+        variables = {
+            "id": location.id,
+            "archived": True
+        }
+
+        # Create regular user
+        user = f.RegularUserFactory.create()
+        permission = Permission.objects.get(codename=self.permission_delete)
+        user.user_permissions.add(permission)
+        user.save()
+
+        executed = execute_test_client_api_query(
+            query, 
+            user,
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['archiveSchoolLocation']['schoolLocation']['archived'], variables['archived'])
+
+
+    def test_archive_location_permission_denied(self):
+        """ Check archive location permission denied error message """
+        query = self.location_archive_mutation
+
+        location = f.SchoolLocationFactory.create()
+        variables = {
+            "id": location.id,
+            "archived": True
+        }
+
+        # Create regular user
+        user = f.RegularUserFactory.create()
+
+        executed = execute_test_client_api_query(
+            query, 
+            user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        print(data)
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
+
+        
