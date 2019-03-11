@@ -13,10 +13,6 @@ from . import factories as f
 from .helpers import execute_test_client_api_query
 from .. import models
 
-## Use django client?
-# https://www.sam.today/blog/testing-graphql-with-graphene-django/
-# https://stackoverflow.com/questions/45493295/testing-graphene-django
-
 
 class GQLSchoolLocation(TestCase):
     # https://docs.djangoproject.com/en/2.1/topics/testing/overview/
@@ -24,6 +20,11 @@ class GQLSchoolLocation(TestCase):
         # This is run before every test
         self.admin_user = f.AdminFactory.create()
         self.anon_user = AnonymousUser()
+
+        self.permission_view = 'view_schoollocation'
+        self.permission_add = 'add_schoollocation'
+        self.permission_change = 'change_schoollocation'
+        self.permission_delete = 'delete_schoollocation'
 
         self.locations_query = '''
 query SchoolLocations($archived: Boolean!) {
@@ -259,6 +260,55 @@ mutation ArchiveSchoolLocation($id: ID!, $archived: Boolean!) {
         data = executed.get('data')
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Not logged in!')
+
+
+    def test_create_location_permission_granted(self):
+        """ Allow creating locations for users with permissions """
+        query = self.location_create_mutation
+
+        variables = {
+            "name": "New location",
+            "displayPublic": True
+        }
+
+        # Create regular user
+        user = f.RegularUserFactory.create()
+        permission = Permission.objects.get(codename=self.permission_add)
+        user.user_permissions.add(permission)
+        user.save()
+
+        executed = execute_test_client_api_query(
+            query, 
+            user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['createSchoolLocation']['schoolLocation']['name'], variables['name'])
+        self.assertEqual(data['createSchoolLocation']['schoolLocation']['archived'], False)
+        self.assertEqual(data['createSchoolLocation']['schoolLocation']['displayPublic'], variables['displayPublic'])
+
+
+    def test_create_location_permission_denied(self):
+        """ Check create location permission denied error message """
+        query = self.location_create_mutation
+
+        variables = {
+            "name": "New location",
+            "displayPublic": True
+        }
+
+        # Create regular user
+        user = f.RegularUserFactory.create()
+
+        executed = execute_test_client_api_query(
+            query, 
+            user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        print(data)
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
     def test_update_location(self):

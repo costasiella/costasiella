@@ -13,10 +13,6 @@ from . import factories as f
 from .helpers import execute_test_client_api_query
 from .. import models
 
-## Use django client?
-# https://www.sam.today/blog/testing-graphql-with-graphene-django/
-# https://stackoverflow.com/questions/45493295/testing-graphene-django
-
 
 class GQLSchoolClasstype(TestCase):
     # https://docs.djangoproject.com/en/2.1/topics/testing/overview/
