@@ -56,39 +56,40 @@ query SchoolClasstypes($archived: Boolean!) {
         self.assertEqual(data['schoolClasstypes'][0]['displayPublic'], classtype.display_public)
 
 
-  #   def test_query_permision_denied(self):
-  #       """ Query list of locations """
-  #       query = '''
-  # query SchoolLocations($archived: Boolean!) {
-  #   schoolLocations(archived:$archived) {
-  #     id
-  #     name
-  #     displayPublic
-  #     archived
-  #   }
-  # }
-  #       '''
-  #       location = SchoolLocationFactory.create()
-  #       non_public_location = SchoolLocationFactory.build()
-  #       non_public_location.display_public = False
-  #       non_public_location.save()
+    def test_query_permision_denied(self):
+        """ Query list of classtypes """
+        query = '''
+query SchoolClasstypes($archived: Boolean!) {
+  schoolClasstypes(archived: $archived) {
+    id
+    name
+    archived
+    displayPublic
+    description
+  }
+}
+        '''
+        classtype = f.SchoolClasstypeFactory.create()
+        non_public_location = f.SchoolClasstypeFactory.build()
+        non_public_location.display_public = False
+        non_public_location.save()
 
-  #       variables = {
-  #           'archived': False
-  #       }
+        variables = {
+            'archived': False
+        }
 
-  #       # Create regular user
-  #       user = RegularUserFactory.create()
-  #       executed = execute_test_client_api_query(query, user, variables=variables)
-  #       data = executed.get('data')
+        # Create regular user
+        user = f.RegularUserFactory.create()
+        executed = execute_test_client_api_query(query, user, variables=variables)
+        data = executed.get('data')
 
-  #       # Public locations only
-  #       non_public_found = False
-  #       for l in data['schoolLocations']:
-  #           if not l['displayPublic']:
-  #               non_public_found = True
+        # Public locations only
+        non_public_found = False
+        for l in data['schoolClasstypes']:
+            if not l['displayPublic']:
+                non_public_found = True
 
-  #       self.assertEqual(non_public_found, False)
+        self.assertEqual(non_public_found, False)
 
 
   #   def test_query_permision_granted(self):
