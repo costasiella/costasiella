@@ -9,9 +9,7 @@ from graphene.test import Client
 # Create your tests here.
 from django.contrib.auth.models import AnonymousUser
 
-from .factories import AdminFactory, 
-                       RegularUserFactory, 
-                       SchoolLocationFactory
+from . import factories as f
 from .helpers import execute_test_client_api_query
 from .. import models
 
@@ -24,7 +22,7 @@ class GQLSchoolClasstype(TestCase):
     # https://docs.djangoproject.com/en/2.1/topics/testing/overview/
     def setUp(self):
         # This is run before every test
-        self.admin_user = AdminFactory.create()
+        self.admin_user = f.AdminFactory.create()
         self.anon_user = AnonymousUser()
 
     def tearDown(self):
@@ -35,122 +33,124 @@ class GQLSchoolClasstype(TestCase):
     def test_query(self):
         """ Query list of classtypes """
         query = '''
-  query SchoolClasstypes($archived: Boolean!) {
-    schoolLocations(archived:$archived) {
-      id
-      name
-      displayPublic
-      archived
-    }
+query SchoolClasstypes($archived: Boolean!) {
+  schoolClasstypes(archived: $archived) {
+    id
+    name
+    archived
+    displayPublic
+    description
   }
+}
         '''
-        location = SchoolLocationFactory.create()
+        classtype = f.SchoolClasstypeFactory.create()
         variables = {
             'archived': False
         }
 
         executed = execute_test_client_api_query(query, self.admin_user, variables=variables)
         data = executed.get('data')
-        self.assertEqual(data['schoolLocations'][0]['name'], location.name)
-        self.assertEqual(data['schoolLocations'][0]['archived'], location.archived)
-        self.assertEqual(data['schoolLocations'][0]['displayPublic'], location.display_public)
+        self.assertEqual(data['schoolClasstypes'][0]['name'], classtype.name)
+        self.assertEqual(data['schoolClasstypes'][0]['archived'], classtype.archived)
+        self.assertEqual(data['schoolClasstypes'][0]['description'], classtype.description)
+        self.assertEqual(data['schoolClasstypes'][0]['displayPublic'], classtype.display_public)
 
 
-    def test_query_permision_denied(self):
-        """ Query list of locations """
-        query = '''
-  query SchoolLocations($archived: Boolean!) {
-    schoolLocations(archived:$archived) {
-      id
-      name
-      displayPublic
-      archived
-    }
-  }
-        '''
-        location = SchoolLocationFactory.create()
-        non_public_location = SchoolLocationFactory.build()
-        non_public_location.display_public = False
-        non_public_location.save()
+  #   def test_query_permision_denied(self):
+  #       """ Query list of locations """
+  #       query = '''
+  # query SchoolLocations($archived: Boolean!) {
+  #   schoolLocations(archived:$archived) {
+  #     id
+  #     name
+  #     displayPublic
+  #     archived
+  #   }
+  # }
+  #       '''
+  #       location = SchoolLocationFactory.create()
+  #       non_public_location = SchoolLocationFactory.build()
+  #       non_public_location.display_public = False
+  #       non_public_location.save()
 
-        variables = {
-            'archived': False
-        }
+  #       variables = {
+  #           'archived': False
+  #       }
 
-        # Create regular user
-        user = RegularUserFactory.create()
-        executed = execute_test_client_api_query(query, user, variables=variables)
-        data = executed.get('data')
+  #       # Create regular user
+  #       user = RegularUserFactory.create()
+  #       executed = execute_test_client_api_query(query, user, variables=variables)
+  #       data = executed.get('data')
 
-        # Public locations only
-        non_public_found = False
-        for l in data['schoolLocations']:
-            if not l['displayPublic']:
-                non_public_found = True
+  #       # Public locations only
+  #       non_public_found = False
+  #       for l in data['schoolLocations']:
+  #           if not l['displayPublic']:
+  #               non_public_found = True
 
-        self.assertEqual(non_public_found, False)
-
-
-    def test_query_permision_granted(self):
-        """ Query list of locations """
-        query = '''
-  query SchoolLocations($archived: Boolean!) {
-    schoolLocations(archived:$archived) {
-      id
-      name
-      displayPublic
-      archived
-    }
-  }
-        '''
-        location = SchoolLocationFactory.create()
-        non_public_location = SchoolLocationFactory.build()
-        non_public_location.display_public = False
-        non_public_location.save()
-
-        variables = {
-            'archived': False
-        }
-
-        # Create regular user
-        user = RegularUserFactory.create()
-        permission = Permission.objects.get(codename='view_schoollocation')
-        user.user_permissions.add(permission)
-        user.save()
-
-        executed = execute_test_client_api_query(query, user, variables=variables)
-        data = executed.get('data')
-
-        # List all locations, including non public
-        non_public_found = False
-        for l in data['schoolLocations']:
-            if not l['displayPublic']:
-                non_public_found = True
-
-        # Assert non public locations are listed
-        self.assertEqual(non_public_found, True)
+  #       self.assertEqual(non_public_found, False)
 
 
-    def test_query_anon_user(self):
-        """ Query list of locations """
-        query = '''
-  query SchoolLocations($archived: Boolean!) {
-    schoolLocations(archived:$archived) {
-      id
-      name
-      displayPublic
-      archived
-    }
-  }
-        '''
-        location = SchoolLocationFactory.create()
-        variables = {
-            'archived': False
-        }
+  #   def test_query_permision_granted(self):
+  #       """ Query list of locations """
+  #       query = '''
+  # query SchoolLocations($archived: Boolean!) {
+  #   schoolLocations(archived:$archived) {
+  #     id
+  #     name
+  #     displayPublic
+  #     archived
+  #   }
+  # }
+  #       '''
+  #       location = SchoolLocationFactory.create()
+  #       non_public_location = SchoolLocationFactory.build()
+  #       non_public_location.display_public = False
+  #       non_public_location.save()
 
-        executed = execute_test_client_api_query(query, self.anon_user, variables=variables)
-        errors = executed.get('errors')
-        self.assertEqual(errors[0]['message'], 'Not logged in!')
+  #       variables = {
+  #           'archived': False
+  #       }
+
+  #       # Create regular user
+  #       user = RegularUserFactory.create()
+  #       permission = Permission.objects.get(codename='view_schoollocation')
+  #       user.user_permissions.add(permission)
+  #       user.save()
+
+  #       executed = execute_test_client_api_query(query, user, variables=variables)
+  #       data = executed.get('data')
+
+  #       # List all locations, including non public
+  #       non_public_found = False
+  #       for l in data['schoolLocations']:
+  #           if not l['displayPublic']:
+  #               non_public_found = True
+
+  #       # Assert non public locations are listed
+  #       self.assertEqual(non_public_found, True)
+
+
+  #   def test_query_anon_user(self):
+  #       """ Query list of locations """
+  #       query = '''
+  # query SchoolLocations($archived: Boolean!) {
+  #   schoolLocations(archived:$archived) {
+  #     id
+  #     name
+  #     displayPublic
+  #     archived
+  #   }
+  # }
+  #       '''
+  #       location = SchoolLocationFactory.create()
+  #       variables = {
+  #           'archived': False
+  #       }
+
+  #       executed = execute_test_client_api_query(query, self.anon_user, variables=variables)
+  #       errors = executed.get('errors')
+  #       self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
 #     def test_query_one(self):
