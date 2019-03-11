@@ -21,7 +21,7 @@ class SchoolClasstypeQuery(graphene.ObjectType):
     school_classtypes = graphene.List(SchoolClasstypeType, archived=graphene.Boolean(default_value=False))
     school_classtype = graphene.Field(SchoolClasstypeType, id=graphene.ID())
 
-    def resolve_school_classtypess(self, info, archived, **kwargs):
+    def resolve_school_classtypes(self, info, archived, **kwargs):
         user = info.context.user
         print('user authenticated:')
         print(user.is_authenticated)

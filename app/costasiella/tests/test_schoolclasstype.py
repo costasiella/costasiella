@@ -20,7 +20,7 @@ from .. import models
 # https://stackoverflow.com/questions/45493295/testing-graphene-django
 
 
-class GQLSchoolLocation(TestCase):
+class GQLSchoolClasstype(TestCase):
     # https://docs.djangoproject.com/en/2.1/topics/testing/overview/
     def setUp(self):
         # This is run before every test
@@ -33,9 +33,9 @@ class GQLSchoolLocation(TestCase):
 
 
     def test_query(self):
-        """ Query list of locations """
+        """ Query list of classtypes """
         query = '''
-  query SchoolLocations($archived: Boolean!) {
+  query SchoolClasstypes($archived: Boolean!) {
     schoolLocations(archived:$archived) {
       id
       name
