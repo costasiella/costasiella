@@ -47,6 +47,19 @@ query getSchoolLocation($id: ID!) {
   }
 '''
 
+        self.location_create_mutation = ''' 
+mutation CreateSchoolLocation($name: String!, $displayPublic:Boolean!) {
+    createSchoolLocation(name: $name, displayPublic: $displayPublic) {
+        schoolLocation {
+            id
+            archived
+            name
+            displayPublic
+        }
+    }
+}
+'''
+
     def tearDown(self):
         # This is run after every test
         pass
@@ -187,18 +200,7 @@ query getSchoolLocation($id: ID!) {
 
     def test_create_location(self):
         """ Create a location """
-        query = '''
-mutation CreateSchoolLocation($name: String!, $displayPublic:Boolean!) {
-    createSchoolLocation(name: $name, displayPublic: $displayPublic) {
-        schoolLocation {
-            id
-            archived
-            name
-            displayPublic
-        }
-    }
-}
-        '''
+        query = self.location_create_mutation
 
         variables = {
             "name": "New location",
@@ -214,6 +216,25 @@ mutation CreateSchoolLocation($name: String!, $displayPublic:Boolean!) {
         self.assertEqual(data['createSchoolLocation']['schoolLocation']['name'], variables['name'])
         self.assertEqual(data['createSchoolLocation']['schoolLocation']['archived'], False)
         self.assertEqual(data['createSchoolLocation']['schoolLocation']['displayPublic'], variables['displayPublic'])
+
+
+    def test_create_location_anon_user(self):
+        """ Don't allow creating locations for non-logged in users """
+        query = self.location_create_mutation
+
+        variables = {
+            "name": "New location",
+            "displayPublic": True
+        }
+
+        executed = execute_test_client_api_query(
+            query, 
+            self.anon_user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
     def test_update_location(self):
