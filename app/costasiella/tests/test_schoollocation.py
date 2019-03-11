@@ -60,6 +60,19 @@ mutation CreateSchoolLocation($name: String!, $displayPublic:Boolean!) {
 }
 '''
 
+        self.location_update_mutation = '''
+mutation UpdateSchoolLocation($id: ID!, $name: String!, $displayPublic:Boolean!) {
+    updateSchoolLocation(id: $id, name: $name, displayPublic: $displayPublic) {
+        schoolLocation {
+        id
+        archived
+        name
+        displayPublic
+        }
+    }
+}
+'''
+
     def tearDown(self):
         # This is run after every test
         pass
@@ -239,18 +252,7 @@ mutation CreateSchoolLocation($name: String!, $displayPublic:Boolean!) {
 
     def test_update_location(self):
         """ Update a location """
-        query = '''
-mutation UpdateSchoolLocation($id: ID!, $name: String!, $displayPublic:Boolean!) {
-    updateSchoolLocation(id: $id, name: $name, displayPublic: $displayPublic) {
-        schoolLocation {
-        id
-        archived
-        name
-        displayPublic
-        }
-    }
-}
-        '''
+        query = self.location_update_mutation
         location = f.SchoolLocationFactory.create()
 
         variables = {
@@ -268,6 +270,27 @@ mutation UpdateSchoolLocation($id: ID!, $name: String!, $displayPublic:Boolean!)
         self.assertEqual(data['updateSchoolLocation']['schoolLocation']['name'], variables['name'])
         self.assertEqual(data['updateSchoolLocation']['schoolLocation']['archived'], False)
         self.assertEqual(data['updateSchoolLocation']['schoolLocation']['displayPublic'], variables['displayPublic'])
+
+
+    def test_update_location_anon_user(self):
+        """ Don't allow updating locations for non-logged in users """
+        query = self.location_update_mutation
+
+        location = f.SchoolLocationFactory.create()
+        variables = {
+            "id": location.id,
+            "name": "Updated name",
+            "displayPublic": False
+        }
+
+        executed = execute_test_client_api_query(
+            query, 
+            self.anon_user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
     def test_archive_location(self):
