@@ -22,6 +22,9 @@ class GQLSchoolClasstype(TestCase):
         self.anon_user = AnonymousUser()
 
         self.permission_view = 'view_schoolclasstype'
+        self.permission_add = 'add_schoolclasstype'
+        self.permission_change = 'change_schoolclasstype'
+        self.permission_delete = 'delete_schoolclasstype'
         
 
         self.classtypes_query = '''
@@ -249,6 +252,27 @@ mutation CreateSchoolClasstype($name: String!, $description:String, $displayPubl
         self.assertEqual(data['createSchoolClasstype']['schoolClasstype']['displayPublic'], variables['displayPublic'])
         self.assertEqual(data['createSchoolClasstype']['schoolClasstype']['link'], variables['link'])
 
+
+    def test_create_classtype_anon_user(self):
+        """ Create a classtype with anonymous user, check error message """
+        query = self.classtype_create_mutation
+
+        variables = {
+            "name": "New location",
+            "description": "Classtype description",
+            "displayPublic": True,
+            "link": "https://www.costasiella.com"
+        }
+
+        executed = execute_test_client_api_query(
+            query, 
+            self.anon_user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 #     def test_update_location(self):
 #         """ Update a location """
