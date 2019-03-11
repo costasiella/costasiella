@@ -73,6 +73,17 @@ mutation UpdateSchoolLocation($id: ID!, $name: String!, $displayPublic:Boolean!)
 }
 '''
 
+        self.location_archive_mutation = '''
+mutation ArchiveSchoolLocation($id: ID!, $archived: Boolean!) {
+    archiveSchoolLocation(id: $id, archived: $archived) {
+        schoolLocation {
+        id
+        archived
+        }
+    }
+}
+'''
+
     def tearDown(self):
         # This is run after every test
         pass
@@ -295,16 +306,7 @@ mutation UpdateSchoolLocation($id: ID!, $name: String!, $displayPublic:Boolean!)
 
     def test_archive_location(self):
         """ Archive a location """
-        query = '''
-mutation ArchiveSchoolLocation($id: ID!, $archived: Boolean!) {
-    archiveSchoolLocation(id: $id, archived: $archived) {
-        schoolLocation {
-        id
-        archived
-        }
-    }
-}
-        '''
+        query = self.location_archive_mutation
         location = f.SchoolLocationFactory.create()
 
         variables = {
@@ -319,3 +321,23 @@ mutation ArchiveSchoolLocation($id: ID!, $archived: Boolean!) {
         )
         data = executed.get('data')
         self.assertEqual(data['archiveSchoolLocation']['schoolLocation']['archived'], variables['archived'])
+
+
+    def test_archive_location_anon_user(self):
+        """ Archive a location """
+        query = self.location_archive_mutation
+        location = f.SchoolLocationFactory.create()
+
+        variables = {
+            "id": location.id,
+            "archived": True
+        }
+
+        executed = execute_test_client_api_query(
+            query, 
+            self.anon_user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
