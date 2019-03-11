@@ -9,7 +9,7 @@ from graphene.test import Client
 # Create your tests here.
 from django.contrib.auth.models import AnonymousUser
 
-from .factories import AdminFactory, RegularUserFactory, SchoolLocationFactory
+from . import factories as f
 from .helpers import execute_test_client_api_query
 from .. import models
 
@@ -22,8 +22,30 @@ class GQLSchoolLocation(TestCase):
     # https://docs.djangoproject.com/en/2.1/topics/testing/overview/
     def setUp(self):
         # This is run before every test
-        self.admin_user = AdminFactory.create()
+        self.admin_user = f.AdminFactory.create()
         self.anon_user = AnonymousUser()
+
+        self.locations_query = '''
+query SchoolLocations($archived: Boolean!) {
+    schoolLocations(archived:$archived) {
+      id
+      name
+      displayPublic
+      archived
+    }
+  }
+'''
+
+        self.location_query = '''
+query getSchoolLocation($id: ID!) {
+    schoolLocation(id:$id) {
+      id
+      name
+      displayPublic
+      archived
+    }
+  }
+'''
 
     def tearDown(self):
         # This is run after every test
@@ -32,17 +54,8 @@ class GQLSchoolLocation(TestCase):
 
     def test_query(self):
         """ Query list of locations """
-        query = '''
-  query SchoolLocations($archived: Boolean!) {
-    schoolLocations(archived:$archived) {
-      id
-      name
-      displayPublic
-      archived
-    }
-  }
-        '''
-        location = SchoolLocationFactory.create()
+        query = self.locations_query
+        location = f.SchoolLocationFactory.create()
         variables = {
             'archived': False
         }
@@ -56,18 +69,9 @@ class GQLSchoolLocation(TestCase):
 
     def test_query_permision_denied(self):
         """ Query list of locations """
-        query = '''
-  query SchoolLocations($archived: Boolean!) {
-    schoolLocations(archived:$archived) {
-      id
-      name
-      displayPublic
-      archived
-    }
-  }
-        '''
-        location = SchoolLocationFactory.create()
-        non_public_location = SchoolLocationFactory.build()
+        query = self.locations_query
+        location = f.SchoolLocationFactory.create()
+        non_public_location = f.SchoolLocationFactory.build()
         non_public_location.display_public = False
         non_public_location.save()
 
@@ -76,7 +80,7 @@ class GQLSchoolLocation(TestCase):
         }
 
         # Create regular user
-        user = RegularUserFactory.create()
+        user = f.RegularUserFactory.create()
         executed = execute_test_client_api_query(query, user, variables=variables)
         data = executed.get('data')
 
@@ -91,18 +95,9 @@ class GQLSchoolLocation(TestCase):
 
     def test_query_permision_granted(self):
         """ Query list of locations """
-        query = '''
-  query SchoolLocations($archived: Boolean!) {
-    schoolLocations(archived:$archived) {
-      id
-      name
-      displayPublic
-      archived
-    }
-  }
-        '''
-        location = SchoolLocationFactory.create()
-        non_public_location = SchoolLocationFactory.build()
+        query = self.locations_query
+        location = f.SchoolLocationFactory.create()
+        non_public_location = f.SchoolLocationFactory.build()
         non_public_location.display_public = False
         non_public_location.save()
 
@@ -111,7 +106,7 @@ class GQLSchoolLocation(TestCase):
         }
 
         # Create regular user
-        user = RegularUserFactory.create()
+        user = f.RegularUserFactory.create()
         permission = Permission.objects.get(codename='view_schoollocation')
         user.user_permissions.add(permission)
         user.save()
@@ -131,17 +126,8 @@ class GQLSchoolLocation(TestCase):
 
     def test_query_anon_user(self):
         """ Query list of locations """
-        query = '''
-  query SchoolLocations($archived: Boolean!) {
-    schoolLocations(archived:$archived) {
-      id
-      name
-      displayPublic
-      archived
-    }
-  }
-        '''
-        location = SchoolLocationFactory.create()
+        query = self.locations_query
+        location = f.SchoolLocationFactory.create()
         variables = {
             'archived': False
         }
@@ -153,17 +139,8 @@ class GQLSchoolLocation(TestCase):
 
     def test_query_one(self):
         """ Query one location """   
-        query = '''
-query getSchoolLocation($id: ID!) {
-    schoolLocation(id:$id) {
-      id
-      name
-      displayPublic
-      archived
-    }
-  }
-        '''
-        location = SchoolLocationFactory.create()
+        query = self.location_query
+        location = f.SchoolLocationFactory.create()
         executed = execute_test_client_api_query(query, self.admin_user, variables={"id": location.id})
         data = executed.get('data')
         self.assertEqual(data['schoolLocation']['name'], location.name)
@@ -173,17 +150,8 @@ query getSchoolLocation($id: ID!) {
 
     def test_query_one_anon_user(self):
         """ Deny permission for anon users Query one location """   
-        query = '''
-query getSchoolLocation($id: ID!) {
-    schoolLocation(id:$id) {
-      id
-      name
-      displayPublic
-      archived
-    }
-  }
-        '''
-        location = SchoolLocationFactory.create()
+        query = self.location_query
+        location = f.SchoolLocationFactory.create()
         executed = execute_test_client_api_query(query, self.anon_user, variables={"id": location.id})
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Not logged in!')
@@ -191,19 +159,10 @@ query getSchoolLocation($id: ID!) {
 
     def test_query_one_permission_denied(self):
         """ Permission denied message when user lacks authorization """   
-        query = '''
-query getSchoolLocation($id: ID!) {
-    schoolLocation(id:$id) {
-      id
-      name
-      displayPublic
-      archived
-    }
-  }
-        '''
+        query = self.location_query
         # Create regular user
-        user = RegularUserFactory.create()
-        location = SchoolLocationFactory.create()
+        user = f.RegularUserFactory.create()
+        location = f.SchoolLocationFactory.create()
 
         executed = execute_test_client_api_query(query, user, variables={"id": location.id})
         errors = executed.get('errors')
@@ -212,23 +171,14 @@ query getSchoolLocation($id: ID!) {
 
     def test_query_one_permission_granted(self):
         """ Respond with data when user has permission """   
-        query = '''
-query getSchoolLocation($id: ID!) {
-    schoolLocation(id:$id) {
-      id
-      name
-      displayPublic
-      archived
-    }
-  }
-        '''
+        query = self.location_query
         # Create regular user
-        user = RegularUserFactory.create()
+        user = f.RegularUserFactory.create()
         permission = Permission.objects.get(codename='view_schoollocation')
         user.user_permissions.add(permission)
         user.save()
 
-        location = SchoolLocationFactory.create()
+        location = f.SchoolLocationFactory.create()
 
         executed = execute_test_client_api_query(query, user, variables={"id": location.id})
         data = executed.get('data')
@@ -280,7 +230,7 @@ mutation UpdateSchoolLocation($id: ID!, $name: String!, $displayPublic:Boolean!)
     }
 }
         '''
-        location = SchoolLocationFactory.create()
+        location = f.SchoolLocationFactory.create()
 
         variables = {
             "id": location.id,
@@ -311,7 +261,7 @@ mutation ArchiveSchoolLocation($id: ID!, $archived: Boolean!) {
     }
 }
         '''
-        location = SchoolLocationFactory.create()
+        location = f.SchoolLocationFactory.create()
 
         variables = {
             "id": location.id,
