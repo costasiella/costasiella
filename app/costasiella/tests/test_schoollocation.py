@@ -306,7 +306,6 @@ mutation ArchiveSchoolLocation($id: ID!, $archived: Boolean!) {
             variables=variables
         )
         data = executed.get('data')
-        print(data)
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Permission denied!')
 
@@ -352,6 +351,59 @@ mutation ArchiveSchoolLocation($id: ID!, $archived: Boolean!) {
         data = executed.get('data')
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Not logged in!')
+
+
+    def test_update_location_permission_granted(self):
+        """ Allow updating locations for users with permissions """
+        query = self.location_update_mutation
+
+        location = f.SchoolLocationFactory.create()
+        variables = {
+            "id": location.id,
+            "name": "Updated name",
+            "displayPublic": False
+        }
+
+        # Create regular user
+        user = f.RegularUserFactory.create()
+        permission = Permission.objects.get(codename=self.permission_change)
+        user.user_permissions.add(permission)
+        user.save()
+
+        executed = execute_test_client_api_query(
+            query, 
+            user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['updateSchoolLocation']['schoolLocation']['name'], variables['name'])
+        self.assertEqual(data['updateSchoolLocation']['schoolLocation']['archived'], False)
+        self.assertEqual(data['updateSchoolLocation']['schoolLocation']['displayPublic'], variables['displayPublic'])
+
+
+    def test_update_location_permission_denied(self):
+        """ Check update location permission denied error message """
+        query = self.location_update_mutation
+
+        location = f.SchoolLocationFactory.create()
+        variables = {
+            "id": location.id,
+            "name": "Updated name",
+            "displayPublic": False
+        }
+
+        # Create regular user
+        user = f.RegularUserFactory.create()
+
+        executed = execute_test_client_api_query(
+            query, 
+            user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        print(data)
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
     def test_archive_location(self):
