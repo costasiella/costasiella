@@ -36,6 +36,21 @@ query SchoolClasstypes($archived: Boolean!) {
 }
         '''
 
+        self.classtype_create_mutation = '''
+mutation CreateSchoolClasstype($name: String!, $description:String, $displayPublic: Boolean!, $link:String) {
+  createSchoolClasstype(name: $name, description: $description, displayPublic: $displayPublic, link:$link) {
+    schoolClasstype {
+      id
+      archived
+      name
+      description
+      displayPublic
+      link
+    }
+  }
+}
+'''
+
     def tearDown(self):
         # This is run after every test
         pass
@@ -115,7 +130,7 @@ query SchoolClasstypes($archived: Boolean!) {
 
 
     def test_query_anon_user(self):
-        """ Query list of locations """
+        """ Query list of classtypes as anon user """
         query = self.classtypes_query
         classtype = f.SchoolClasstypeFactory.create()
         variables = {
@@ -211,35 +226,28 @@ query SchoolClasstypes($archived: Boolean!) {
 #         self.assertEqual(data['schoolLocation']['name'], location.name)
 
 
-#     def test_create_location(self):
-#         """ Create a location """
-#         query = '''
-# mutation CreateSchoolLocation($name: String!, $displayPublic:Boolean!) {
-#     createSchoolLocation(name: $name, displayPublic: $displayPublic) {
-#         schoolLocation {
-#             id
-#             archived
-#             name
-#             displayPublic
-#         }
-#     }
-# }
-#         '''
+    def test_create_classtype(self):
+        """ Create a classtype """
+        query = self.classtype_create_mutation
 
-#         variables = {
-#             "name": "New location",
-#             "displayPublic": True
-#         }
+        variables = {
+            "name": "New location",
+            "description": "Classtype description",
+            "displayPublic": True,
+            "link": "https://www.costasiella.com"
+        }
 
-#         executed = execute_test_client_api_query(
-#             query, 
-#             self.admin_user, 
-#             variables=variables
-#         )
-#         data = executed.get('data')
-#         self.assertEqual(data['createSchoolLocation']['schoolLocation']['name'], variables['name'])
-#         self.assertEqual(data['createSchoolLocation']['schoolLocation']['archived'], False)
-#         self.assertEqual(data['createSchoolLocation']['schoolLocation']['displayPublic'], variables['displayPublic'])
+        executed = execute_test_client_api_query(
+            query, 
+            self.admin_user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['createSchoolClasstype']['schoolClasstype']['name'], variables['name'])
+        self.assertEqual(data['createSchoolClasstype']['schoolClasstype']['archived'], False)
+        self.assertEqual(data['createSchoolClasstype']['schoolClasstype']['description'], variables['description'])
+        self.assertEqual(data['createSchoolClasstype']['schoolClasstype']['displayPublic'], variables['displayPublic'])
+        self.assertEqual(data['createSchoolClasstype']['schoolClasstype']['link'], variables['link'])
 
 
 #     def test_update_location(self):

@@ -488,8 +488,6 @@ mutation ArchiveSchoolLocation($id: ID!, $archived: Boolean!) {
             variables=variables
         )
         data = executed.get('data')
-        print(data)
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Permission denied!')
 
-        
