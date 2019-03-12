@@ -17,6 +17,8 @@ import {
   Button,
   Card,
   Container,
+  List,
+  Form,
   Table
 } from "tabler-react";
 import SiteWrapper from "../../SiteWrapper"
@@ -27,7 +29,7 @@ import { toast } from 'react-toastify'
 import ContentCard from "../../general/ContentCard"
 import SchoolMenu from "../SchoolMenu"
 
-import { GET_LOCATIONS_QUERY } from "./queries"
+import { GET_CLASSTYPES_QUERY } from "./queries"
 
 const ARCHIVE_LOCATION = gql`
     mutation ArchiveSchoolLocation($id: ID!, $archived: Boolean!) {
