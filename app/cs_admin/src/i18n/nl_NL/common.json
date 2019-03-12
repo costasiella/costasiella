@@ -59,5 +59,10 @@
     "form_field_required": "__STRING_NOT_TRANSLATED__",
     "description": "__STRING_NOT_TRANSLATED__",
     "loading_with_dots": "__STRING_NOT_TRANSLATED__",
-    "error_sad_smiley": "__STRING_NOT_TRANSLATED__"
+    "error_sad_smiley": "__STRING_NOT_TRANSLATED__",
+    "yup": {
+        "url": "__STRING_NOT_TRANSLATED__",
+        "min_len_3": "__STRING_NOT_TRANSLATED__",
+        "field_required": "__STRING_NOT_TRANSLATED__"
+    }
 }

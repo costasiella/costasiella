@@ -59,5 +59,10 @@
     "form_field_required": "This field is required",
     "description": "Description",
     "loading_with_dots": "Loading...",
-    "error_sad_smiley": "Error :("
+    "error_sad_smiley": "Error :(",
+    "yup": {
+        "url": "Enter an address starting with http:// or https://",
+        "min_len_3": "Please enter at least 3 characters",
+        "field_required": "This field is required"
+    }
 }
