@@ -59,11 +59,11 @@ class CreateSchoolClasstype(graphene.Mutation):
         name = graphene.String(required=True)
         description = graphene.String()
         display_public = graphene.Boolean(required=True)
-        link = graphene.String()
+        url_website = graphene.String()
 
     # Output = CreateSchoolLocationPayload
 
-    def mutate(self, info, name, description, display_public, link):
+    def mutate(self, info, name, description, display_public, url_website):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.add_schoolclasstype')
 
@@ -72,8 +72,8 @@ class CreateSchoolClasstype(graphene.Mutation):
             print('validation error found')
             raise GraphQLError(_('Name is required'))
 
-        if link:
-            if not validators.url(link, public=True):
+        if url_website:
+            if not validators.url(url_website, public=True):
                 raise GraphQLError(_('Invalid URL, make sure it starts with "http"'))
 
 
@@ -81,7 +81,7 @@ class CreateSchoolClasstype(graphene.Mutation):
             name=name, 
             description=description,
             display_public=display_public,
-            link=link
+            url_website=url_website
         )
         school_classtype.save()
 
@@ -99,20 +99,21 @@ class UpdateSchoolClasstype(graphene.Mutation):
         display_public = graphene.Boolean()
         url_website = graphene.String()
 
-
-    def mutate(self, info, id, name, display_public):
+    def mutate(self, info, id, name, description=None, display_public=False, url_website=None):
         user = info.context.user
-        require_login_and_permission(user, 'costasiella.change_schoollocation')
+        require_login_and_permission(user, 'costasiella.change_schoolclasstype')
 
-        school_location = SchoolLocation.objects.filter(id=id).first()
-        if not school_location:
-            raise Exception('Invalid School Location ID!')
+        school_classtype = SchoolClasstype.objects.filter(id=id).first()
+        if not school_classtype:
+            raise Exception('Invalid School Classtype ID!')
 
-        school_location.name = name
-        school_location.display_public = display_public
-        school_location.save(force_update=True)
+        school_classtype.name = name
+        school_classtype.description = description
+        school_classtype.display_public = display_public
+        school_classtype.url_website = url_website
+        school_classtype.save(force_update=True)
 
-        return UpdateSchoolLocation(school_location=school_location)
+        return UpdateSchoolClasstype(school_classtype=school_classtype)
 
 
 # class ArchiveSchoolLocation(graphene.Mutation):
@@ -140,4 +141,4 @@ class UpdateSchoolClasstype(graphene.Mutation):
 class SchoolClasstypeMutation(graphene.ObjectType):
 #     archive_school_location = ArchiveSchoolLocation.Field()
     create_school_classtype = CreateSchoolClasstype.Field()
-#     update_school_location = UpdateSchoolLocation.Field()
+    update_school_classtype = UpdateSchoolClasstype.Field()
