@@ -103,7 +103,7 @@ const SchoolClasstypes = ({ t, history, archived=false }) => (
                 </Card.Options>
                 
                 // Empty list
-                if (!data.schoolLocations.length) { return (
+                if (!data.schoolClasstypes.length) { return (
                   <ContentCard cardTitle={t('school.classtypes.title')}
                                header_content={headerOptions}>
                     <p>
@@ -124,7 +124,7 @@ const SchoolClasstypes = ({ t, history, archived=false }) => (
                             </Table.Row>
                           </Table.Header>
                           <Table.Body>
-                              {data.schoolLocations.map(({ id, name, displayPublic }) => (
+                              {data.schoolClasstypes.map(({ id, name, displayPublic }) => (
                                 <Table.Row key={v4()}>
                                   <Table.Col key={v4()}>
                                     {name}
