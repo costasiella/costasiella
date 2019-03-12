@@ -1,30 +1,26 @@
+// @flow
+
 import React, {Component } from 'react'
 import gql from "graphql-tag"
 import { Query, Mutation } from "react-apollo";
-import { v4 } from "uuid"
 import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
 import { Formik, Form as FoForm, Field, ErrorMessage } from 'formik'
-import validator from 'validator'
 import { toast } from 'react-toastify'
 
 import { GET_LOCATIONS_QUERY, GET_LOCATION_QUERY } from './queries'
 import { LOCATION_SCHEMA } from './yupSchema'
 
-// @flow
+
 
 import {
   Page,
   Grid,
   Icon,
-  Dimmer,
-  Badge,
   Button,
   Card,
   Container,
-  List,
-  Form,
-  Table
+  Form
 } from "tabler-react";
 import SiteWrapper from "../../SiteWrapper"
 import HasPermissionWrapper from "../../HasPermissionWrapper"
