@@ -23,15 +23,10 @@ class SchoolClasstypeQuery(graphene.ObjectType):
 
     def resolve_school_classtypes(self, info, archived, **kwargs):
         user = info.context.user
-        print('user authenticated:')
-        print(user.is_authenticated)
         if user.is_anonymous:
             raise Exception(m.user_not_logged_in)
-        # if not info.context.user.is_authenticated:
-            # return SchoolLocation.objects.none()
-        # else:
-            # return SchoolLocation.objects.all()
-        ## return everything:
+
+        # Has permission: return everything
         if user.has_perm('costasiella.view_schoolclasstype'):
             print('user has view permission')
             return SchoolClasstype.objects.filter(archived = archived).order_by('name')
@@ -42,10 +37,6 @@ class SchoolClasstypeQuery(graphene.ObjectType):
 
     def resolve_school_classtype(self, info, id):
         user = info.context.user
-        print('user authenticated:')
-        print(user.is_authenticated)
-        print(user)
-        print(user.is_anonymous)
         require_login_and_permission(user, 'costasiella.view_schoolclasstype')
 
         # Return only public non-archived classtypes

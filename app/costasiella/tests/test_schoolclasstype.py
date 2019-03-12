@@ -39,16 +39,44 @@ query SchoolClasstypes($archived: Boolean!) {
 }
         '''
 
+        self.classtype_query = '''
+query getSchoolClasstype($id: ID!) {
+    schoolClasstype(id:$id) {
+      id
+      archived
+      name
+      description
+      displayPublic
+      urlWebsite
+    }
+  }
+'''
+
         self.classtype_create_mutation = '''
-mutation CreateSchoolClasstype($name: String!, $description:String, $displayPublic: Boolean!, $link:String) {
-  createSchoolClasstype(name: $name, description: $description, displayPublic: $displayPublic, link:$link) {
+mutation CreateSchoolClasstype($name: String!, $description:String, $displayPublic: Boolean!, $urlWebsite:String) {
+  createSchoolClasstype(name: $name, description: $description, displayPublic: $displayPublic, urlWebsite:$urlWebsite) {
     schoolClasstype {
       id
       archived
       name
       description
       displayPublic
-      link
+      urlWebsite
+    }
+  }
+}
+'''
+
+        self.classtype_update_mutation = '''
+mutation UpdateSchoolClasstype($id: ID!, $name: String!, $description:String, $displayPublic: Boolean, $urlWebsite:String) {
+  updateSchoolClasstype(id: $id, name: $name, description: $description, displayPublic: $displayPublic, urlWebsite:$urlWebsite) {
+    schoolClasstype {
+      id
+      archived
+      name
+      description
+      displayPublic
+      urlWebsite
     }
   }
 }
@@ -76,7 +104,7 @@ mutation CreateSchoolClasstype($name: String!, $description:String, $displayPubl
 
 
     def test_query_permision_denied(self):
-        """ Query list of classtypes """
+        """ Query list of classtypes as user without permissions """
         query = self.classtypes_query
         classtype = f.SchoolClasstypeFactory.create()
         non_public_classtype = f.SchoolClasstypeFactory.build()
@@ -102,7 +130,7 @@ mutation CreateSchoolClasstype($name: String!, $description:String, $displayPubl
 
 
     def test_query_permision_granted(self):
-        """ Query list of classtypes """
+        """ Query list of classtypes with view permission """
         query = self.classtypes_query
         classtype = f.SchoolClasstypeFactory.create()
         non_public_classtype = f.SchoolClasstypeFactory.build()
@@ -145,24 +173,18 @@ mutation CreateSchoolClasstype($name: String!, $description:String, $displayPubl
         self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
-#     def test_query_one(self):
-#         """ Query one location """   
-#         query = '''
-# query getSchoolLocation($id: ID!) {
-#     schoolLocation(id:$id) {
-#       id
-#       name
-#       displayPublic
-#       archived
-#     }
-#   }
-#         '''
-#         location = SchoolLocationFactory.create()
-#         executed = execute_test_client_api_query(query, self.admin_user, variables={"id": location.id})
-#         data = executed.get('data')
-#         self.assertEqual(data['schoolLocation']['name'], location.name)
-#         self.assertEqual(data['schoolLocation']['archived'], location.archived)
-#         self.assertEqual(data['schoolLocation']['displayPublic'], location.display_public)
+    def test_query_one(self):
+        """ Query one location """   
+        query = self.classtype_query
+        classtype = f.SchoolClasstypeFactory.create()
+        executed = execute_test_client_api_query(query, self.admin_user, variables={"id": classtype.id})
+        data = executed.get('data')
+        print(data)
+        self.assertEqual(data['schoolClasstype']['name'], classtype.name)
+        self.assertEqual(data['schoolClasstype']['archived'], classtype.archived)
+        self.assertEqual(data['schoolClasstype']['description'], classtype.description)
+        self.assertEqual(data['schoolClasstype']['displayPublic'], classtype.display_public)
+        self.assertEqual(data['schoolClasstype']['urlWebsite'], classtype.url_website)
 
 
 #     def test_query_one_anon_user(self):
@@ -237,7 +259,7 @@ mutation CreateSchoolClasstype($name: String!, $description:String, $displayPubl
             "name": "New location",
             "description": "Classtype description",
             "displayPublic": True,
-            "link": "https://www.costasiella.com"
+            "urlWebsite": "https://www.costasiella.com"
         }
 
         executed = execute_test_client_api_query(
@@ -250,7 +272,7 @@ mutation CreateSchoolClasstype($name: String!, $description:String, $displayPubl
         self.assertEqual(data['createSchoolClasstype']['schoolClasstype']['archived'], False)
         self.assertEqual(data['createSchoolClasstype']['schoolClasstype']['description'], variables['description'])
         self.assertEqual(data['createSchoolClasstype']['schoolClasstype']['displayPublic'], variables['displayPublic'])
-        self.assertEqual(data['createSchoolClasstype']['schoolClasstype']['link'], variables['link'])
+        self.assertEqual(data['createSchoolClasstype']['schoolClasstype']['urlWebsite'], variables['urlWebsite'])
 
 
     def test_create_classtype_anon_user(self):
@@ -261,7 +283,7 @@ mutation CreateSchoolClasstype($name: String!, $description:String, $displayPubl
             "name": "New location",
             "description": "Classtype description",
             "displayPublic": True,
-            "link": "https://www.costasiella.com"
+            "urlWebsite": "https://www.costasiella.com"
         }
 
         executed = execute_test_client_api_query(
@@ -282,7 +304,7 @@ mutation CreateSchoolClasstype($name: String!, $description:String, $displayPubl
             "name": "New location",
             "description": "Classtype description",
             "displayPublic": True,
-            "link": "https://www.costasiella.com"
+            "urlWebsite": "https://www.costasiella.com"
         }
 
         # Create regular user
@@ -301,7 +323,7 @@ mutation CreateSchoolClasstype($name: String!, $description:String, $displayPubl
         self.assertEqual(data['createSchoolClasstype']['schoolClasstype']['archived'], False)
         self.assertEqual(data['createSchoolClasstype']['schoolClasstype']['description'], variables['description'])
         self.assertEqual(data['createSchoolClasstype']['schoolClasstype']['displayPublic'], variables['displayPublic'])
-        self.assertEqual(data['createSchoolClasstype']['schoolClasstype']['link'], variables['link'])
+        self.assertEqual(data['createSchoolClasstype']['schoolClasstype']['urlWebsite'], variables['urlWebsite'])
 
 
     def test_create_classtype_permission_denied(self):
@@ -312,7 +334,7 @@ mutation CreateSchoolClasstype($name: String!, $description:String, $displayPubl
             "name": "New location",
             "description": "Classtype description",
             "displayPublic": True,
-            "link": "https://www.costasiella.com"
+            "urlWebsite": "https://www.costasiella.com"
         }
 
         # Create regular user

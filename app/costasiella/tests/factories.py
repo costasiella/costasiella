@@ -20,7 +20,7 @@ class SchoolClasstypeFactory(factory.DjangoModelFactory):
     display_public = True
     name = "First classtype"
     description = "Classtype description"
-    link = "http://www.costasiella.com"
+    url_website = "http://www.costasiella.com"
 
 
 class AdminFactory(factory.DjangoModelFactory):
