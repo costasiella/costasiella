@@ -66,7 +66,7 @@ const SchoolClasstypeAdd = ({ t, history }) => (
                                 name: values.name, 
                                 description: values.description,
                                 displayPublic: values.displayPublic,
-                                link: values.link
+                                urlWebsite: values.urlWebsite
                             }, refetchQueries: [
                                 {query: GET_CLASSTYPES_QUERY, variables: {"archived": false }}
                             ]})
@@ -117,12 +117,12 @@ const SchoolClasstypeAdd = ({ t, history }) => (
                                              autoComplete="off" />
                                       <ErrorMessage name="description" component="span" className="invalid-feedback" />
                                     </Form.Group>
-                                    <Form.Group label={t('school.classtype.link')}>
+                                    <Form.Group label={t('school.classtype.url_website')}>
                                       <Field type="text" 
-                                             name="link" 
-                                             className={(errors.link) ? "form-control is-invalid" : "form-control"} 
+                                             name="urlWebsite" 
+                                             className={(errors.urlWebsite) ? "form-control is-invalid" : "form-control"} 
                                              autoComplete="off" />
-                                      <ErrorMessage name="link" component="span" className="invalid-feedback" />
+                                      <ErrorMessage name="urlWebsite" component="span" className="invalid-feedback" />
                                     </Form.Group>
                                 </Card.Body>
                                 <Card.Footer>

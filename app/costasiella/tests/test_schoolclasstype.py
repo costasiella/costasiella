@@ -404,7 +404,6 @@ mutation UpdateSchoolClasstype($id: ID!, $name: String!, $description:String, $d
         self.assertEqual(data['updateSchoolClasstype']['schoolClasstype']['urlWebsite'], variables['urlWebsite'])
 
 
-
     def test_update_classtype_permission_denied(self):
         """ Update a classtype as user without permissions """
         query = self.classtype_update_mutation

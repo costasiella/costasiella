@@ -20,16 +20,18 @@
             "title_add": "Add class type",
             "toast_add_success": "Added class type",
             "confirm_archive": "Do you wish to move this class type to the archive?",
-            "title": "Classtypes",
-            "error_loading": "Error loading classtypes :(",
+            "title": "Class types",
+            "error_loading": "Error loading class types :(",
             "empty_list": "No class types found, click the Add button to add a class type",
             "empty_archive": "No class types have been archived yet.",
-            "add": "Add class type"
+            "add": "Add class type",
+            "title_edit": "Edit class type",
+            "toast_edit_success": "Saved class type"
         },
         "classtype": {
             "public": "This is a public class type",
             "name": "Class type name",
-            "link": "Link to website"
+            "url_website": "Link to description on website"
         }
     },
     "name": "Name",
@@ -55,5 +57,7 @@
     "unarchive_to_edit": "Unarchive to edit",
     "form_field_min_len_3": "Please enter at least 3 characters",
     "form_field_required": "This field is required",
-    "description": "Description"
+    "description": "Description",
+    "loading_with_dots": "Loading...",
+    "error_sad_smiley": "Error :("
 }

@@ -86,9 +86,9 @@ class UpdateSchoolClasstype(graphene.Mutation):
     class Arguments:
         id = graphene.ID()
         name = graphene.String()
-        description = graphene.String()
-        display_public = graphene.Boolean()
-        url_website = graphene.String()
+        description = graphene.String(required=False)
+        display_public = graphene.Boolean(required=False)
+        url_website = graphene.String(required=False)
 
     def mutate(self, info, id, name, description=None, display_public=False, url_website=None):
         user = info.context.user

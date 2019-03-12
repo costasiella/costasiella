@@ -1,15 +1,13 @@
 import React, {Component } from 'react'
 import gql from "graphql-tag"
 import { Query, Mutation } from "react-apollo";
-import { v4 } from "uuid"
 import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
 import { Formik, Form as FoForm, Field, ErrorMessage } from 'formik'
-import validator from 'validator'
 import { toast } from 'react-toastify'
 
 import { GET_CLASSTYPES_QUERY, GET_CLASSTYPE_QUERY } from './queries'
-import { LOCATION_SCHEMA } from './yupSchema'
+import { CLASSTYPE_SCHEMA } from './yupSchema'
 
 // @flow
 
@@ -17,14 +15,10 @@ import {
   Page,
   Grid,
   Icon,
-  Dimmer,
-  Badge,
   Button,
   Card,
   Container,
-  List,
   Form,
-  Table
 } from "tabler-react";
 import SiteWrapper from "../../SiteWrapper"
 import HasPermissionWrapper from "../../HasPermissionWrapper"
@@ -32,23 +26,26 @@ import HasPermissionWrapper from "../../HasPermissionWrapper"
 import SchoolMenu from "../SchoolMenu"
 
 
-const UPDATE_LOCATION = gql`
-    mutation UpdateSchoolLocation($id: ID!, $name: String!, $displayPublic:Boolean!) {
-        updateSchoolLocation(id: $id, name: $name, displayPublic: $displayPublic) {
-          schoolLocation {
-            id
-            name
-            displayPublic
-          }
-        }
+const UPDATE_CLASSTYPE = gql`
+  mutation UpdateSchoolClasstype($id: ID!, $name: String!, $description:String, $displayPublic: Boolean, $urlWebsite:String) {
+    updateSchoolClasstype(id: $id, name: $name, description: $description, displayPublic: $displayPublic, urlWebsite:$urlWebsite) {
+      schoolClasstype {
+        id
+        archived
+        name
+        description
+        displayPublic
+        urlWebsite
+      }
     }
+  }
 `
 
 
-class SchoolLocationEdit extends Component {
+class SchoolClasstypeEdit extends Component {
   constructor(props) {
     super(props)
-    console.log("School location edit props:")
+    console.log("School classtype edit props:")
     console.log(props)
   }
 
@@ -57,7 +54,7 @@ class SchoolLocationEdit extends Component {
     const match = this.props.match
     const history = this.props.history
     const id = match.params.id
-    const return_url = "/school/locations"
+    const return_url = "/school/classtypes"
 
     return (
       <SiteWrapper>
@@ -68,33 +65,35 @@ class SchoolLocationEdit extends Component {
               <Grid.Col md={9}>
               <Card>
                 <Card.Header>
-                  <Card.Title>{t('school.locations.title_edit')}</Card.Title>
+                  <Card.Title>{t('school.classtypes.title_edit')}</Card.Title>
                   {console.log(match.params.id)}
                 </Card.Header>
-                <Query query={GET_LOCATION_QUERY} variables={{ id }} >
+                <Query query={GET_CLASSTYPE_QUERY} variables={{ id }} >
                 {({ loading, error, data, refetch }) => {
                     // Loading
-                    if (loading) return <p>Loading... </p>
+                    if (loading) return <p>{t('loading_with_dots')}</p>
                     // Error
                     if (error) {
                       console.log(error)
-                      return <p>Error :(</p>
+                      return <p>{t('error_sad_smiley')}</p>
                     }
                     
-                    const initialData = data.schoolLocation;
+                    const initialData = data.schoolClasstype
                     console.log('query data')
                     console.log(data)
 
                     return (
                       
-                      <Mutation mutation={UPDATE_LOCATION} onCompleted={() => history.push(return_url)}> 
+                      <Mutation mutation={UPDATE_CLASSTYPE} onCompleted={() => history.push(return_url)}> 
                       {(updateLocation, { data }) => (
                           <Formik
                               initialValues={{ 
                                 name: initialData.name, 
-                                displayPublic: initialData.displayPublic 
+                                description: initialData.description,
+                                displayPublic: initialData.displayPublic,
+                                urlWebsite: initialData.urlWebsite
                               }}
-                              validationSchema={LOCATION_SCHEMA}
+                              validationSchema={CLASSTYPE_SCHEMA}
                               onSubmit={(values, { setSubmitting }) => {
                                   console.log('submit values:')
                                   console.log(values)
@@ -102,14 +101,16 @@ class SchoolLocationEdit extends Component {
                                   updateLocation({ variables: {
                                       id: match.params.id,
                                       name: values.name,
-                                      displayPublic: values.displayPublic 
+                                      description: (values.description) ? values.description: '',
+                                      displayPublic: values.displayPublic,
+                                      urlWebsite: (values.urlWebsite) ? values.urlWebsite: ''
                                       // displayPublic: (values.displayPublic === 'true') ? true : false
                                   }, refetchQueries: [
-                                      {query: GET_LOCATIONS_QUERY, variables: {"archived": false }}
+                                      {query: GET_CLASSTYPES_QUERY, variables: {"archived": false }}
                                   ]})
                                   .then(({ data }) => {
                                       console.log('got data', data)
-                                      toast.success((t('school.locations.toast_edit_success')), {
+                                      toast.success((t('school.classtypes.toast_edit_success')), {
                                           position: toast.POSITION.BOTTOM_RIGHT
                                         })
                                     }).catch((error) => {
@@ -117,6 +118,7 @@ class SchoolLocationEdit extends Component {
                                           position: toast.POSITION.BOTTOM_RIGHT
                                         })
                                       console.log('there was an error sending the query', error);
+                                      setSubmitting(false)
                                     })
                               }}
                               >
@@ -141,6 +143,21 @@ class SchoolLocationEdit extends Component {
                                                   className={(errors.name) ? "form-control is-invalid" : "form-control"} 
                                                   autoComplete="off" />
                                             <ErrorMessage name="name" component="span" className="invalid-feedback" />
+                                          </Form.Group>
+                                          <Form.Group label={t('description')}>
+                                            <Field type="text" 
+                                                   component="textarea"
+                                                   name="description" 
+                                                   className={(errors.description) ? "form-control is-invalid" : "form-control"} 
+                                                   autoComplete="off" />
+                                            <ErrorMessage name="description" component="span" className="invalid-feedback" />
+                                          </Form.Group>
+                                          <Form.Group label={t('school.classtype.url_website')}>
+                                            <Field type="text" 
+                                                  name="urlWebsite" 
+                                                  className={(errors.urlWebsite) ? "form-control is-invalid" : "form-control"} 
+                                                  autoComplete="off" />
+                                            <ErrorMessage name="urlWebsite" component="span" className="invalid-feedback" />
                                           </Form.Group>
                                       </Card.Body>
                                       <Card.Footer>
@@ -187,110 +204,4 @@ class SchoolLocationEdit extends Component {
   }
 
 
-// const SchoolLocationEdit = ({ t, history, match }) => (
-  // <SiteWrapper>
-  //   <div className="my-3 my-md-5">
-  //     <Container>
-  //       <Page.Header title="School" />
-  //       <Grid.Row>
-  //         <Grid.Col md={9}>
-  //         <Card>
-  //           <Card.Header>
-  //             <Card.Title>{t('school.locations.title_edit')}</Card.Title>
-  //             {console.log(match.params.id)}
-  //           </Card.Header>
-  //           <Query query={GET_LOCATION_QUERY} variables={{ match.params.id }} >
-  //            {({ loading, error, data, refetch }) => {
-  //               // Loading
-  //               if (loading) return <p>Loading... </p>
-  //               // Error
-  //               if (error) {
-  //                 console.log(error)
-  //                 return <p>Error :(</p>
-  //               }
-                
-  //               const initialData = data;
-  //               return (
-                  
-  //                 <Mutation mutation={UPDATE_LOCATION}> 
-  //                 {(updateLocation, { data }) => (
-  //                     <Formik
-  //                         initialValues={{ name: initialData.name, displayPublic: initialData.displayPublic }}
-  //                         validate={values => {
-  //                             let errors = {};
-  //                             if (!values.name) {
-  //                             errors.name = t('form.errors.required')
-  //                             } else if 
-  //                                 (!validator.isLength(values.name, {"min": 3})) {
-  //                                     errors.name = t('form.errors.min_length_3');
-  //                             }
-  //                             return errors;
-  //                         }}
-  //                         onSubmit={(values, { setSubmitting }) => {
-  //                             updateLocation({ variables: {
-  //                                 name: values.name, 
-  //                                 displayPublic: values.displayPublic
-  //                             }, refetchQueries: [
-  //                                 {query: GET_LOCATIONS_QUERY, variables: {"archived": false }}
-  //                             ]})
-  //                             .then(({ data }) => {
-  //                                 console.log('got data', data);
-  //                                 history.push(return_url)
-  //                                 toast.success((t('school.locations.toast_add_success')), {
-  //                                     position: toast.POSITION.BOTTOM_RIGHT
-  //                                   })
-  //                               }).catch((error) => {
-  //                                 toast.error((t('toast_server_error')) + ': ' +  error, {
-  //                                     position: toast.POSITION.BOTTOM_RIGHT
-  //                                   })
-  //                                 console.log('there was an error sending the query', error);
-  //                               })
-  //                         }}
-  //                         >
-  //                         {({ isSubmitting, errors }) => (
-  //                             <Form>
-  //                                 <Card.Body>
-  //                                     <TablerForm.Label>{t('school.location.public')}</TablerForm.Label>
-  //                                     <Field type="checkbox" name="displayPublic"/>
-  //                                     <ErrorMessage name="displayPublic" component="div" />        
-  //                                     <TablerForm.Label>{t('school.location.name')}</TablerForm.Label>
-  //                                     <Field type="text" 
-  //                                             name="name" 
-  //                                             className={(errors.name) ? "form-control is-invalid" : "form-control"} 
-  //                                             autoComplete="off" />
-  //                                     <ErrorMessage name="name" component="span" className="invalid-feedback" />
-  //                                 </Card.Body>
-  //                                 <Card.Footer>
-  //                                     <button className="btn btn-primary pull-right" type="submit" disabled={isSubmitting}>
-  //                                         {t('submit')}
-  //                                     </button>
-  //                                     <button className="btn btn-link" onClick={() => history.push(return_url)}>
-  //                                         {t('cancel')}
-  //                                     </button>
-  //                                 </Card.Footer>
-  //                             </Form>
-  //                         )}
-  //                     </Formik>
-  //                 )}
-  //                 </Mutation>
-  //                 )}}
-  //           </Query>
-  //         </Card>
-  //         </Grid.Col>
-  //         <Grid.Col md={3}>
-  //           <HasPermissionWrapper permission="add"
-  //                                 resource="schoollocation">
-  //             <Button color="primary btn-block mb-6"
-  //                     onClick={() => history.push(return_url)}>
-  //               <Icon prefix="fe" name="chevrons-left" /> {t('back')}
-  //             </Button>
-  //           </HasPermissionWrapper>
-  //           <SchoolMenu active_link='schoollocation'/>
-  //         </Grid.Col>
-  //       </Grid.Row>
-  //     </Container>
-  //   </div>
-  // </SiteWrapper>
-// );
-
-export default withTranslation()(withRouter(SchoolLocationEdit))
+export default withTranslation()(withRouter(SchoolClasstypeEdit))

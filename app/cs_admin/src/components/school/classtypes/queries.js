@@ -12,13 +12,15 @@ query SchoolClasstypes($archived: Boolean!) {
 }
 `
 
-// export const GET_LOCATION_QUERY = gql`
-//   query SchoolLocation($id: ID!) {
-//     schoolLocation(id:$id) {
-//       id
-//       name
-//       displayPublic
-//       archived
-//     }
-//   }
-// `
+export const GET_CLASSTYPE_QUERY = gql`
+query getSchoolClasstype($id: ID!) {
+  schoolClasstype(id:$id) {
+    id
+    archived
+    name
+    description
+    displayPublic
+    urlWebsite
+  }
+}
+`
