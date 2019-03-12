@@ -1,9 +1,10 @@
+// @flow
+
 import React from 'react'
 // import { Query } from "react-apollo"
 // import gql from "graphql-tag"
 import { v4 } from "uuid"
 
-// @flow
 
 import {
   List
@@ -15,8 +16,8 @@ let schoolclasstypes_active
 
 const SchoolMenu = ({active_link}) => (
     <List.Group transparent={true}>
-        {(active_link == 'schoollocations') ? schoollocations_active = true: schoollocations_active = false}
-        {(active_link == 'schoolclasstypes') ? schoolclasstypes_active = true: schoolclasstypes_active = false}
+        {(active_link === 'schoollocations') ? schoollocations_active = true: schoollocations_active = false}
+        {(active_link === 'schoolclasstypes') ? schoolclasstypes_active = true: schoolclasstypes_active = false}
 
         <List.GroupItem
             key={v4()}

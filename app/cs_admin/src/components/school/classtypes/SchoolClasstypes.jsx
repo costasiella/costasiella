@@ -1,12 +1,11 @@
+// @flow
+
 import React from 'react'
 import { Query, Mutation } from "react-apollo"
 import gql from "graphql-tag"
 import { v4 } from "uuid"
 import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
-
-
-// @flow
 
 import {
   Page,
@@ -21,7 +20,7 @@ import {
 } from "tabler-react";
 import SiteWrapper from "../../SiteWrapper"
 import HasPermissionWrapper from "../../HasPermissionWrapper"
-import { confirmAlert } from 'react-confirm-alert'; // Import
+// import { confirmAlert } from 'react-confirm-alert'; // Import
 import { toast } from 'react-toastify'
 
 import ContentCard from "../../general/ContentCard"
@@ -41,28 +40,28 @@ const ARCHIVE_CLASSTYPE = gql`
 `
 
 
-const onClickArchive = (t, id) => {
-  const options = {
-    title: t('please_confirm'),
-    message: t('school.classtypes.confirm_archive'),
-    buttons: [
-      {
-        label: t('yes'),
-        onClick: () => alert('Click Yes'),
-        class: 'btn btn-primary'
-      },
-      {
-        label: t('no'),
-        onClick: () => alert('Click No')
-      }
-    ],
-    childrenElement: () => <div />,
-    // customUI: ({ title, message, onClose }) => <div>Custom UI</div>,
-    willUnmount: () => {}
-  }
+// const onClickArchive = (t, id) => {
+//   const options = {
+//     title: t('please_confirm'),
+//     message: t('school.classtypes.confirm_archive'),
+//     buttons: [
+//       {
+//         label: t('yes'),
+//         onClick: () => alert('Click Yes'),
+//         class: 'btn btn-primary'
+//       },
+//       {
+//         label: t('no'),
+//         onClick: () => alert('Click No')
+//       }
+//     ],
+//     childrenElement: () => <div />,
+//     // customUI: ({ title, message, onClose }) => <div>Custom UI</div>,
+//     willUnmount: () => {}
+//   }
 
-  confirmAlert(options)
-}
+//   confirmAlert(options)
+// }
 
 
 const SchoolClasstypes = ({ t, history, archived=false }) => (
@@ -153,7 +152,7 @@ const SchoolClasstypes = ({ t, history, archived=false }) => (
                                   <Mutation mutation={ARCHIVE_CLASSTYPE} key={v4()}>
                                     {(archiveLocation, { data }) => (
                                       <Table.Col className="text-right" key={v4()}>
-                                        <a className="icon" 
+                                        <button className="icon btn btn-link btn-sm" 
                                            title={t('archive')} 
                                            onClick={() => {
                                              console.log("clicked archived")
@@ -176,7 +175,7 @@ const SchoolClasstypes = ({ t, history, archived=false }) => (
                                         })
                                         }}>
                                           <Icon prefix="fa" name="inbox" />
-                                        </a>
+                                        </button>
                                       </Table.Col>
                                     )}
                                   </Mutation>

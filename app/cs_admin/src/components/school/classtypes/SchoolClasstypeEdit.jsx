@@ -1,3 +1,5 @@
+// @flow
+
 import React, {Component } from 'react'
 import gql from "graphql-tag"
 import { Query, Mutation } from "react-apollo";
@@ -8,8 +10,6 @@ import { toast } from 'react-toastify'
 
 import { GET_CLASSTYPES_QUERY, GET_CLASSTYPE_QUERY } from './queries'
 import { CLASSTYPE_SCHEMA } from './yupSchema'
-
-// @flow
 
 import {
   Page,
