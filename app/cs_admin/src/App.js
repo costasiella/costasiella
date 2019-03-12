@@ -68,6 +68,9 @@ class App extends Component {
             <Route exact path="/school/locations" component={SchoolLocations} />
             <Route exact path="/school/locations/add" component={SchoolLocationAdd} />
             <Route exact path="/school/locations/edit/:id" component={SchoolLocationEdit} />
+            <Route exact path="/school/classtypes" component={SchoolClasstypes} />
+            <Route exact path="/school/classtypes/add" component={SchoolClasstypeAdd} />
+            <Route exact path="/school/classtypes/edit/:id" component={SchoolClasstypeEdit} />
             <Route component={Error404} />
           </Switch>
         </ApolloProvider>

@@ -17,8 +17,6 @@ import {
   Button,
   Card,
   Container,
-  List,
-  Form,
   Table
 } from "tabler-react";
 import SiteWrapper from "../../SiteWrapper"
@@ -31,7 +29,7 @@ import SchoolMenu from "../SchoolMenu"
 
 import { GET_CLASSTYPES_QUERY } from "./queries"
 
-const ARCHIVE_LOCATION = gql`
+const ARCHIVE_CLASSTYPE = gql`
     mutation ArchiveSchoolLocation($id: ID!, $archived: Boolean!) {
         archiveSchoolLocation(id: $id, archived: $archived) {
           schoolLocation {
@@ -46,7 +44,7 @@ const ARCHIVE_LOCATION = gql`
 const onClickArchive = (t, id) => {
   const options = {
     title: t('please_confirm'),
-    message: t('school.locations.confirm_archive'),
+    message: t('school.classtypes.confirm_archive'),
     buttons: [
       {
         label: t('yes'),
@@ -74,11 +72,11 @@ const SchoolLocations = ({ t, history, archived=false }) => (
         <Page.Header title="School" />
         <Grid.Row>
           <Grid.Col md={9}>
-            <Query query={GET_LOCATIONS_QUERY} variables={{ archived }}>
+            <Query query={GET_CLASSTYPES_QUERY} variables={{ archived }}>
              {({ loading, error, data, refetch }) => {
                 // Loading
                 if (loading) return (
-                  <ContentCard cardTitle={t('school.locations.title')}>
+                  <ContentCard cardTitle={t('school.classtypes.title')}>
                     <Dimmer active={true}
                             loadder={true}>
                     </Dimmer>
@@ -86,8 +84,8 @@ const SchoolLocations = ({ t, history, archived=false }) => (
                 )
                 // Error
                 if (error) return (
-                  <ContentCard cardTitle={t('school.locations.title')}>
-                    <p>{t('school.locations.error_loading')}</p>
+                  <ContentCard cardTitle={t('school.classtypes.title')}>
+                    <p>{t('school.classtypes.error_loading')}</p>
                   </ContentCard>
                 )
                 const headerOptions = <Card.Options>
@@ -106,17 +104,17 @@ const SchoolLocations = ({ t, history, archived=false }) => (
                 
                 // Empty list
                 if (!data.schoolLocations.length) { return (
-                  <ContentCard cardTitle={t('school.locations.title')}
+                  <ContentCard cardTitle={t('school.classtypes.title')}
                                header_content={headerOptions}>
                     <p>
-                    {(!archived) ? t('school.locations.empty_list') : t("school.locations.empty_archive")}
+                    {(!archived) ? t('school.classtypes.empty_list') : t("school.classtypes.empty_archive")}
                     </p>
                    
                   </ContentCard>
                 )} else {   
                 // Life's good! :)
                 return (
-                  <ContentCard cardTitle={t('school.locations.title')}
+                  <ContentCard cardTitle={t('school.classtypes.title')}
                                header_content={headerOptions}>
                     <Table>
                           <Table.Header>
@@ -140,13 +138,13 @@ const SchoolLocations = ({ t, history, archived=false }) => (
                                     {(archived) ? 
                                       <span className='text-muted'>{t('unarchive_to_edit')}</span> :
                                       <Button className='btn-sm' 
-                                              onClick={() => history.push("/school/locations/edit/" + id)}
+                                              onClick={() => history.push("/school/classtypes/edit/" + id)}
                                               color="secondary">
                                         {t('edit')}
                                       </Button>
                                     }
                                   </Table.Col>
-                                  <Mutation mutation={ARCHIVE_LOCATION} key={v4()}>
+                                  <Mutation mutation={ARCHIVE_CLASSTYPE} key={v4()}>
                                     {(archiveLocation, { data }) => (
                                       <Table.Col className="text-right" key={v4()}>
                                         <a className="icon" 
@@ -157,7 +155,7 @@ const SchoolLocations = ({ t, history, archived=false }) => (
                                               id,
                                               archived: !archived
                                         }, refetchQueries: [
-                                            {query: GET_LOCATIONS_QUERY, variables: {"archived": archived }}
+                                            {query: GET_CLASSTYPES_QUERY, variables: {"archived": archived }}
                                         ]}).then(({ data }) => {
                                           console.log('got data', data);
                                           toast.success(
@@ -187,13 +185,13 @@ const SchoolLocations = ({ t, history, archived=false }) => (
           </Grid.Col>
           <Grid.Col md={3}>
             <HasPermissionWrapper permission="add"
-                                  resource="schoollocation">
+                                  resource="schoolclasstype">
               <Button color="primary btn-block mb-6"
-                      onClick={() => history.push("/school/locations/add")}>
-                <Icon prefix="fe" name="plus-circle" /> {t('school.locations.add')}
+                      onClick={() => history.push("/school/classtypes/add")}>
+                <Icon prefix="fe" name="plus-circle" /> {t('school.classtypes.add')}
               </Button>
             </HasPermissionWrapper>
-            <SchoolMenu active_link='schoollocation'/>
+            <SchoolMenu active_link='schoolclasstype'/>
           </Grid.Col>
         </Grid.Row>
       </Container>
