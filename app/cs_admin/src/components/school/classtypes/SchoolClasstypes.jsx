@@ -191,7 +191,7 @@ const SchoolClasstypes = ({ t, history, archived=false }) => (
                 <Icon prefix="fe" name="plus-circle" /> {t('school.classtypes.add')}
               </Button>
             </HasPermissionWrapper>
-            <SchoolMenu active_link='schoolclasstype'/>
+            <SchoolMenu active_link='schoolclasstypes'/>
           </Grid.Col>
         </Grid.Row>
       </Container>
