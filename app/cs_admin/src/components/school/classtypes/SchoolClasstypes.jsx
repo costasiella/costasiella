@@ -121,10 +121,11 @@ const SchoolClasstypes = ({ t, history, archived=false }) => (
                             <Table.Row key={v4()}>
                               <Table.ColHeader>{t('name')}</Table.ColHeader>
                               <Table.ColHeader>{t('public')}</Table.ColHeader>
+                              <Table.ColHeader>{t('description')}</Table.ColHeader>
                             </Table.Row>
                           </Table.Header>
                           <Table.Body>
-                              {data.schoolClasstypes.map(({ id, name, displayPublic }) => (
+                              {data.schoolClasstypes.map(({ id, name, description, displayPublic }) => (
                                 <Table.Row key={v4()}>
                                   <Table.Col key={v4()}>
                                     {name}
@@ -133,6 +134,11 @@ const SchoolClasstypes = ({ t, history, archived=false }) => (
                                     {(displayPublic) ? 
                                       <Badge color="success">{t('yes')}</Badge>: 
                                       <Badge color="danger">{t('no')}</Badge>}
+                                  </Table.Col>
+                                  <Table.Col key={v4()}>
+                                    <span title={description}>
+                                      {description}
+                                    </span>
                                   </Table.Col>
                                   <Table.Col className="text-right" key={v4()}>
                                     {(archived) ? 
