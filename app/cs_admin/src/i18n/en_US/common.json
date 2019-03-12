@@ -17,14 +17,14 @@
             "public": "This is a public location"
         },
         "classtypes": {
-            "title_add": "Add location",
-            "toast_add_success": "Added location",
+            "title_add": "Add class type",
+            "toast_add_success": "Added classtype",
             "confirm_archive": "Do you wish to move this class type to the archive?",
             "title": "Classtypes",
             "error_loading": "Error loading classtypes :(",
             "empty_list": "No class types found, click the Add button to add a class type",
             "empty_archive": "No class types have been archived yet.",
-            "add": "Add classtype"
+            "add": "Add class type"
         }
     },
     "name": "Name",
