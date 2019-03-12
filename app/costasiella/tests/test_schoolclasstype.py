@@ -372,6 +372,64 @@ mutation UpdateSchoolClasstype($id: ID!, $name: String!, $description:String, $d
         self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
+    def test_update_classtype_permission_granted(self):
+        """ Update a classtype as user with permission """
+        query = self.classtype_update_mutation
+        classtype = f.SchoolClasstypeFactory.create()
+
+        variables = {
+            "id": classtype.id,
+            "name": "New classtype",
+            "description": "Classtype description",
+            "displayPublic": True,
+            "urlWebsite": "https://www.costasiella.com"
+        }
+
+        user = f.RegularUserFactory.create()
+        permission = Permission.objects.get(codename=self.permission_change)
+        user.user_permissions.add(permission)
+        user.save()
+
+        executed = execute_test_client_api_query(
+            query, 
+            user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['updateSchoolClasstype']['schoolClasstype']['id'], str(classtype.id))
+        self.assertEqual(data['updateSchoolClasstype']['schoolClasstype']['name'], variables['name'])
+        self.assertEqual(data['updateSchoolClasstype']['schoolClasstype']['archived'], False)
+        self.assertEqual(data['updateSchoolClasstype']['schoolClasstype']['description'], variables['description'])
+        self.assertEqual(data['updateSchoolClasstype']['schoolClasstype']['displayPublic'], variables['displayPublic'])
+        self.assertEqual(data['updateSchoolClasstype']['schoolClasstype']['urlWebsite'], variables['urlWebsite'])
+
+
+
+    def test_update_classtype_permission_denied(self):
+        """ Update a classtype as user without permissions """
+        query = self.classtype_update_mutation
+        classtype = f.SchoolClasstypeFactory.create()
+
+        variables = {
+            "id": classtype.id,
+            "name": "New classtype",
+            "description": "Classtype description",
+            "displayPublic": True,
+            "urlWebsite": "https://www.costasiella.com"
+        }
+
+        user = f.RegularUserFactory.create()
+
+        executed = execute_test_client_api_query(
+            query, 
+            user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
+
+
 #     def test_archive_location(self):
 #         """ Archive a location """
 #         query = '''
