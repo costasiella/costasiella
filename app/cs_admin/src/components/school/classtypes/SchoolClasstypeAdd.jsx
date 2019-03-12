@@ -7,7 +7,7 @@ import { Formik, Form as FoForm, Field, ErrorMessage } from 'formik'
 import { toast } from 'react-toastify'
 
 
-import { GET_LOCATIONS_QUERY } from './queries'
+import { GET_CLASSTYPES_QUERY } from './queries'
 import { LOCATION_SCHEMA } from './yupSchema'
 
 // @flow
@@ -16,14 +16,10 @@ import {
   Page,
   Grid,
   Icon,
-  Dimmer,
-  Badge,
   Button,
   Card,
   Container,
-  List,
   Form,
-  Table
 } from "tabler-react"
 import SiteWrapper from "../../SiteWrapper"
 import HasPermissionWrapper from "../../HasPermissionWrapper"
@@ -31,7 +27,7 @@ import HasPermissionWrapper from "../../HasPermissionWrapper"
 import SchoolMenu from "../SchoolMenu"
 
 
-const ADD_LOCATION = gql`
+const ADD_CLASSTYPE = gql`
     mutation CreateSchoolLocation($name: String!, $displayPublic:Boolean!) {
         createSchoolLocation(name: $name, displayPublic: $displayPublic) {
           schoolLocation {
@@ -43,7 +39,7 @@ const ADD_LOCATION = gql`
     }
 `;
 
-const return_url = "/school/locations"
+const return_url = "/school/classtypes"
 
 const SchoolLocationAdd = ({ t, history }) => (
   <SiteWrapper>
@@ -54,9 +50,9 @@ const SchoolLocationAdd = ({ t, history }) => (
           <Grid.Col md={9}>
           <Card>
             <Card.Header>
-              <Card.Title>{t('school.locations.title_add')}</Card.Title>
+              <Card.Title>{t('school.classtypes.title_add')}</Card.Title>
             </Card.Header>
-            <Mutation mutation={ADD_LOCATION} onCompleted={() => history.push(return_url)}> 
+            <Mutation mutation={ADD_CLASSTYPE} onCompleted={() => history.push(return_url)}> 
                 {(addLocation, { data }) => (
                     <Formik
                         initialValues={{ name: '', displayPublic: true }}
@@ -66,11 +62,11 @@ const SchoolLocationAdd = ({ t, history }) => (
                                 name: values.name, 
                                 displayPublic: values.displayPublic
                             }, refetchQueries: [
-                                {query: GET_LOCATIONS_QUERY, variables: {"archived": false }}
+                                {query: GET_CLASSTYPES_QUERY, variables: {"archived": false }}
                             ]})
                             .then(({ data }) => {
                                 console.log('got data', data);
-                                toast.success((t('school.locations.toast_add_success')), {
+                                toast.success((t('school.classtypes.toast_add_success')), {
                                     position: toast.POSITION.BOTTOM_RIGHT
                                   })
                               }).catch((error) => {

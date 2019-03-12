@@ -12,6 +12,9 @@ import gql from "graphql-tag";
 import SchoolLocations from './components/school/locations/SchoolLocations'
 import SchoolLocationAdd from './components/school/locations/SchoolLocationAdd'
 import SchoolLocationEdit from './components/school/locations/SchoolLocationEdit'
+import SchoolClasstypes from './components/school/classtypes/SchoolClasstypes'
+import SchoolClasstypeAdd from './components/school/classtypes/SchoolClasstypeAdd'
+// import SchoolClasstypeEdit from './components/school/classtypes/SchoolClasstypeEdit'
 import Error404 from "./components/Error404"
 
 // Tabler css 
@@ -70,7 +73,7 @@ class App extends Component {
             <Route exact path="/school/locations/edit/:id" component={SchoolLocationEdit} />
             <Route exact path="/school/classtypes" component={SchoolClasstypes} />
             <Route exact path="/school/classtypes/add" component={SchoolClasstypeAdd} />
-            <Route exact path="/school/classtypes/edit/:id" component={SchoolClasstypeEdit} />
+            {/* <Route exact path="/school/classtypes/edit/:id" component={SchoolClasstypeEdit} /> */}
             <Route component={Error404} />
           </Switch>
         </ApolloProvider>
