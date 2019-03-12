@@ -89,50 +89,30 @@ class CreateSchoolClasstype(graphene.Mutation):
         return CreateSchoolClasstype(school_classtype = school_classtype)
 
 
-# ''' Query like this when enabling error output using union:
-# mutation {
-#   createSchoolLocation(name:"", displayPublic:true) {
-#     __typename
-#     ... on CreateSchoolLocationSuccess {
-#       schoolLocation {
-#         id
-#         name
-#       }
-#     }
-#     ... on ValidationErrors {
-#       validationErrors {
-#         field
-#         message
-#       }
-#     }
-#   }
-# }
+class UpdateSchoolClasstype(graphene.Mutation):
+    school_classtype = graphene.Field(SchoolClasstypeType)
 
-# '''
+    class Arguments:
+        id = graphene.ID()
+        name = graphene.String()
+        description = graphene.String()
+        display_public = graphene.Boolean()
+        url_website = graphene.String()
 
 
-# class UpdateSchoolLocation(graphene.Mutation):
-#     school_location = graphene.Field(SchoolLocationType)
+    def mutate(self, info, id, name, display_public):
+        user = info.context.user
+        require_login_and_permission(user, 'costasiella.change_schoollocation')
 
-#     class Arguments:
-#         id = graphene.ID()
-#         name = graphene.String()
-#         display_public = graphene.Boolean()
+        school_location = SchoolLocation.objects.filter(id=id).first()
+        if not school_location:
+            raise Exception('Invalid School Location ID!')
 
+        school_location.name = name
+        school_location.display_public = display_public
+        school_location.save(force_update=True)
 
-#     def mutate(self, info, id, name, display_public):
-#         user = info.context.user
-#         require_login_and_permission(user, 'costasiella.change_schoollocation')
-
-#         school_location = SchoolLocation.objects.filter(id=id).first()
-#         if not school_location:
-#             raise Exception('Invalid School Location ID!')
-
-#         school_location.name = name
-#         school_location.display_public = display_public
-#         school_location.save(force_update=True)
-
-#         return UpdateSchoolLocation(school_location=school_location)
+        return UpdateSchoolLocation(school_location=school_location)
 
 
 # class ArchiveSchoolLocation(graphene.Mutation):
