@@ -322,37 +322,54 @@ mutation UpdateSchoolClasstype($id: ID!, $name: String!, $description:String, $d
         self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
-#     def test_update_location(self):
-#         """ Update a location """
-#         query = '''
-# mutation UpdateSchoolLocation($id: ID!, $name: String!, $displayPublic:Boolean!) {
-#     updateSchoolLocation(id: $id, name: $name, displayPublic: $displayPublic) {
-#         schoolLocation {
-#         id
-#         archived
-#         name
-#         displayPublic
-#         }
-#     }
-# }
-#         '''
-#         location = SchoolLocationFactory.create()
+    def test_update_classtype(self):
+        """ Update a classtype as admin user """
+        query = self.classtype_update_mutation
+        classtype = f.SchoolClasstypeFactory.create()
 
-#         variables = {
-#             "id": location.id,
-#             "name": "Updated name",
-#             "displayPublic": False
-#         }
+        variables = {
+            "id": classtype.id,
+            "name": "New classtype",
+            "description": "Classtype description",
+            "displayPublic": True,
+            "urlWebsite": "https://www.costasiella.com"
+        }
 
-#         executed = execute_test_client_api_query(
-#             query, 
-#             self.admin_user, 
-#             variables=variables
-#         )
-#         data = executed.get('data')
-#         self.assertEqual(data['updateSchoolLocation']['schoolLocation']['name'], variables['name'])
-#         self.assertEqual(data['updateSchoolLocation']['schoolLocation']['archived'], False)
-#         self.assertEqual(data['updateSchoolLocation']['schoolLocation']['displayPublic'], variables['displayPublic'])
+        executed = execute_test_client_api_query(
+            query, 
+            self.admin_user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['updateSchoolClasstype']['schoolClasstype']['id'], str(classtype.id))
+        self.assertEqual(data['updateSchoolClasstype']['schoolClasstype']['name'], variables['name'])
+        self.assertEqual(data['updateSchoolClasstype']['schoolClasstype']['archived'], False)
+        self.assertEqual(data['updateSchoolClasstype']['schoolClasstype']['description'], variables['description'])
+        self.assertEqual(data['updateSchoolClasstype']['schoolClasstype']['displayPublic'], variables['displayPublic'])
+        self.assertEqual(data['updateSchoolClasstype']['schoolClasstype']['urlWebsite'], variables['urlWebsite'])
+
+
+    def test_update_classtype_anon_user(self):
+        """ Update a classtype as anonymous user """
+        query = self.classtype_update_mutation
+        classtype = f.SchoolClasstypeFactory.create()
+
+        variables = {
+            "id": classtype.id,
+            "name": "New classtype",
+            "description": "Classtype description",
+            "displayPublic": True,
+            "urlWebsite": "https://www.costasiella.com"
+        }
+
+        executed = execute_test_client_api_query(
+            query, 
+            self.anon_user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
 #     def test_archive_location(self):
