@@ -187,22 +187,13 @@ mutation UpdateSchoolClasstype($id: ID!, $name: String!, $description:String, $d
         self.assertEqual(data['schoolClasstype']['urlWebsite'], classtype.url_website)
 
 
-#     def test_query_one_anon_user(self):
-#         """ Deny permission for anon users Query one location """   
-#         query = '''
-# query getSchoolLocation($id: ID!) {
-#     schoolLocation(id:$id) {
-#       id
-#       name
-#       displayPublic
-#       archived
-#     }
-#   }
-#         '''
-#         location = SchoolLocationFactory.create()
-#         executed = execute_test_client_api_query(query, self.anon_user, variables={"id": location.id})
-#         errors = executed.get('errors')
-#         self.assertEqual(errors[0]['message'], 'Not logged in!')
+    def test_query_one_anon_user(self):
+        """ Deny permission for anon users Query one classtype """   
+        query = self.classtype_query
+        classtype = f.SchoolClasstypeFactory.create()
+        executed = execute_test_client_api_query(query, self.anon_user, variables={"id": classtype.id})
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
 #     def test_query_one_permission_denied(self):
