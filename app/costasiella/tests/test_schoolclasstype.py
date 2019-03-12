@@ -270,9 +270,62 @@ mutation CreateSchoolClasstype($name: String!, $description:String, $displayPubl
             variables=variables
         )
         data = executed.get('data')
-        data = executed.get('data')
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Not logged in!')
+
+
+    def test_create_classtype_permission_granted(self):
+        """ Create a classtype with a user having the add permission """
+        query = self.classtype_create_mutation
+
+        variables = {
+            "name": "New location",
+            "description": "Classtype description",
+            "displayPublic": True,
+            "link": "https://www.costasiella.com"
+        }
+
+        # Create regular user
+        user = f.RegularUserFactory.create()
+        permission = Permission.objects.get(codename=self.permission_add)
+        user.user_permissions.add(permission)
+        user.save()
+
+        executed = execute_test_client_api_query(
+            query, 
+            user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['createSchoolClasstype']['schoolClasstype']['name'], variables['name'])
+        self.assertEqual(data['createSchoolClasstype']['schoolClasstype']['archived'], False)
+        self.assertEqual(data['createSchoolClasstype']['schoolClasstype']['description'], variables['description'])
+        self.assertEqual(data['createSchoolClasstype']['schoolClasstype']['displayPublic'], variables['displayPublic'])
+        self.assertEqual(data['createSchoolClasstype']['schoolClasstype']['link'], variables['link'])
+
+
+    def test_create_classtype_permission_denied(self):
+        """ Create a classtype with a user not having the add permission """
+        query = self.classtype_create_mutation
+
+        variables = {
+            "name": "New location",
+            "description": "Classtype description",
+            "displayPublic": True,
+            "link": "https://www.costasiella.com"
+        }
+
+        # Create regular user
+        user = f.RegularUserFactory.create()
+
+        executed = execute_test_client_api_query(
+            query, 
+            user, 
+            variables=variables
+        )
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
+
 
 #     def test_update_location(self):
 #         """ Update a location """
