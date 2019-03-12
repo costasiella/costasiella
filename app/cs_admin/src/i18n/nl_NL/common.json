@@ -27,6 +27,11 @@
             "empty_list": "__STRING_NOT_TRANSLATED__",
             "empty_archive": "__STRING_NOT_TRANSLATED__",
             "add": "__STRING_NOT_TRANSLATED__"
+        },
+        "classtype": {
+            "public": "__STRING_NOT_TRANSLATED__",
+            "name": "__STRING_NOT_TRANSLATED__",
+            "link": "__STRING_NOT_TRANSLATED__"
         }
     },
     "back": "__STRING_NOT_TRANSLATED__",

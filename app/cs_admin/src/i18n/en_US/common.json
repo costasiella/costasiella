@@ -18,13 +18,18 @@
         },
         "classtypes": {
             "title_add": "Add class type",
-            "toast_add_success": "Added classtype",
+            "toast_add_success": "Added class type",
             "confirm_archive": "Do you wish to move this class type to the archive?",
             "title": "Classtypes",
             "error_loading": "Error loading classtypes :(",
             "empty_list": "No class types found, click the Add button to add a class type",
             "empty_archive": "No class types have been archived yet.",
             "add": "Add class type"
+        },
+        "classtype": {
+            "public": "This is a public class type",
+            "name": "Class type name",
+            "link": "Link to website"
         }
     },
     "name": "Name",

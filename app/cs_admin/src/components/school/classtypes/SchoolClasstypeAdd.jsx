@@ -10,7 +10,7 @@ import { toast } from 'react-toastify'
 
 
 import { GET_CLASSTYPES_QUERY } from './queries'
-import { LOCATION_SCHEMA } from './yupSchema'
+import { CLASSTYPE_SCHEMA } from './yupSchema'
 
 
 import {
@@ -29,20 +29,23 @@ import SchoolMenu from "../SchoolMenu"
 
 
 const ADD_CLASSTYPE = gql`
-    mutation CreateSchoolLocation($name: String!, $displayPublic:Boolean!) {
-        createSchoolLocation(name: $name, displayPublic: $displayPublic) {
-          schoolLocation {
-            id
-            name
-            displayPublic
-          }
-        }
+mutation CreateSchoolClasstype($name: String!, $description:String, $displayPublic: Boolean!, $link:String) {
+  createSchoolClasstype(name: $name, description: $description, displayPublic: $displayPublic, link:$link) {
+    schoolClasstype {
+      id
+      archived
+      name
+      description
+      displayPublic
+      link
     }
-`;
+  }
+}
+`
 
 const return_url = "/school/classtypes"
 
-const SchoolLocationAdd = ({ t, history }) => (
+const SchoolClasstypeAdd = ({ t, history }) => (
   <SiteWrapper>
     <div className="my-3 my-md-5">
       <Container>
@@ -54,14 +57,16 @@ const SchoolLocationAdd = ({ t, history }) => (
               <Card.Title>{t('school.classtypes.title_add')}</Card.Title>
             </Card.Header>
             <Mutation mutation={ADD_CLASSTYPE} onCompleted={() => history.push(return_url)}> 
-                {(addLocation, { data }) => (
+                {(addClasstype, { data }) => (
                     <Formik
-                        initialValues={{ name: '', displayPublic: true }}
-                        validationSchema={LOCATION_SCHEMA}
+                        initialValues={{ name: '', description: '', displayPublic: true, link: '' }}
+                        validationSchema={CLASSTYPE_SCHEMA}
                         onSubmit={(values, { setSubmitting }) => {
-                            addLocation({ variables: {
+                            addClasstype({ variables: {
                                 name: values.name, 
-                                displayPublic: values.displayPublic
+                                description: values.description,
+                                displayPublic: values.displayPublic,
+                                link: values.link
                             }, refetchQueries: [
                                 {query: GET_CLASSTYPES_QUERY, variables: {"archived": false }}
                             ]})
@@ -93,17 +98,31 @@ const SchoolLocationAdd = ({ t, history }) => (
                                           name="displayPublic" 
                                           checked={values.displayPublic} />
                                         <span className="custom-switch-indicator" ></span>
-                                        <span className="custom-switch-description">{t('school.location.public')}</span>
+                                        <span className="custom-switch-description">{t('school.classtype.public')}</span>
                                       </Form.Label>
                                       <ErrorMessage name="displayPublic" component="div" />   
                                     </Form.Group>    
-
-                                    <Form.Group label={t('school.location.name')}>
+                                    <Form.Group label={t('school.classtype.name')}>
                                       <Field type="text" 
                                               name="name" 
                                               className={(errors.name) ? "form-control is-invalid" : "form-control"} 
                                               autoComplete="off" />
                                       <ErrorMessage name="name" component="span" className="invalid-feedback" />
+                                    </Form.Group>
+                                    <Form.Group label={t('description')}>
+                                      <Field type="text" 
+                                             component="textarea"
+                                             name="description" 
+                                             className={(errors.description) ? "form-control is-invalid" : "form-control"} 
+                                             autoComplete="off" />
+                                      <ErrorMessage name="description" component="span" className="invalid-feedback" />
+                                    </Form.Group>
+                                    <Form.Group label={t('school.classtype.link')}>
+                                      <Field type="text" 
+                                             name="link" 
+                                             className={(errors.link) ? "form-control is-invalid" : "form-control"} 
+                                             autoComplete="off" />
+                                      <ErrorMessage name="link" component="span" className="invalid-feedback" />
                                     </Form.Group>
                                 </Card.Body>
                                 <Card.Footer>
@@ -142,4 +161,4 @@ const SchoolLocationAdd = ({ t, history }) => (
   </SiteWrapper>
 );
 
-export default withTranslation()(withRouter(SchoolLocationAdd))
+export default withTranslation()(withRouter(SchoolClasstypeAdd))

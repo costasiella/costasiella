@@ -120,8 +120,8 @@ const SchoolClasstypes = ({ t, history, archived=false }) => (
                           <Table.Header>
                             <Table.Row key={v4()}>
                               <Table.ColHeader>{t('name')}</Table.ColHeader>
-                              <Table.ColHeader>{t('public')}</Table.ColHeader>
                               <Table.ColHeader>{t('description')}</Table.ColHeader>
+                              <Table.ColHeader>{t('public')}</Table.ColHeader>
                             </Table.Row>
                           </Table.Header>
                           <Table.Body>
@@ -131,14 +131,14 @@ const SchoolClasstypes = ({ t, history, archived=false }) => (
                                     {name}
                                   </Table.Col>
                                   <Table.Col key={v4()}>
-                                    {(displayPublic) ? 
-                                      <Badge color="success">{t('yes')}</Badge>: 
-                                      <Badge color="danger">{t('no')}</Badge>}
-                                  </Table.Col>
-                                  <Table.Col key={v4()}>
                                     <span title={description}>
                                       {description}
                                     </span>
+                                  </Table.Col>
+                                  <Table.Col key={v4()}>
+                                    {(displayPublic) ? 
+                                      <Badge color="success">{t('yes')}</Badge>: 
+                                      <Badge color="danger">{t('no')}</Badge>}
                                   </Table.Col>
                                   <Table.Col className="text-right" key={v4()}>
                                     {(archived) ? 
