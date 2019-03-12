@@ -196,50 +196,32 @@ mutation UpdateSchoolClasstype($id: ID!, $name: String!, $description:String, $d
         self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
-#     def test_query_one_permission_denied(self):
-#         """ Permission denied message when user lacks authorization """   
-#         query = '''
-# query getSchoolLocation($id: ID!) {
-#     schoolLocation(id:$id) {
-#       id
-#       name
-#       displayPublic
-#       archived
-#     }
-#   }
-#         '''
-#         # Create regular user
-#         user = RegularUserFactory.create()
-#         location = SchoolLocationFactory.create()
+    def test_query_one_permission_denied(self):
+        """ Permission denied message when user lacks authorization """   
+        query = self.classtype_query
+        
+        user = f.RegularUserFactory.create()
+        classtype = f.SchoolClasstypeFactory.create()
 
-#         executed = execute_test_client_api_query(query, user, variables={"id": location.id})
-#         errors = executed.get('errors')
-#         self.assertEqual(errors[0]['message'], 'Permission denied!')
+        executed = execute_test_client_api_query(query, user, variables={"id": classtype.id})
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
-#     def test_query_one_permission_granted(self):
-#         """ Respond with data when user has permission """   
-#         query = '''
-# query getSchoolLocation($id: ID!) {
-#     schoolLocation(id:$id) {
-#       id
-#       name
-#       displayPublic
-#       archived
-#     }
-#   }
-#         '''
-#         # Create regular user
-#         user = RegularUserFactory.create()
-#         permission = Permission.objects.get(codename='view_schoollocation')
-#         user.user_permissions.add(permission)
-#         user.save()
+    def test_query_one_permission_granted(self):
+        """ Respond with data when user has permission """   
+        query = self.classtype_query
+        # Create regular user
+        user = f.RegularUserFactory.create()
+        permission = Permission.objects.get(codename='view_schoolclasstype')
+        user.user_permissions.add(permission)
+        user.save()
 
-#         location = SchoolLocationFactory.create()
+        classtype = f.SchoolClasstypeFactory.create()
 
-#         executed = execute_test_client_api_query(query, user, variables={"id": location.id})
-#         data = executed.get('data')
-#         self.assertEqual(data['schoolLocation']['name'], location.name)
+        executed = execute_test_client_api_query(query, user, variables={"id": classtype.id})
+        data = executed.get('data')
+        self.assertEqual(data['schoolClasstype']['name'], classtype.name)
 
 
     def test_create_classtype(self):
