@@ -65,7 +65,7 @@ const onClickArchive = (t, id) => {
 }
 
 
-const SchoolLocations = ({ t, history, archived=false }) => (
+const SchoolClasstypes = ({ t, history, archived=false }) => (
   <SiteWrapper>
     <div className="my-3 my-md-5">
       <Container>
@@ -199,4 +199,4 @@ const SchoolLocations = ({ t, history, archived=false }) => (
   </SiteWrapper>
 );
 
-export default withTranslation()(withRouter(SchoolLocations))
+export default withTranslation()(withRouter(SchoolClasstypes))

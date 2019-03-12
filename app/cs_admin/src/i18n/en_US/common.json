@@ -7,7 +7,7 @@
             "add": "Add Location",
             "title_add": "New location",
             "toast_add_success": "Added location",
-            "confirm_archive": "Do you with to move this location to the archive?",
+            "confirm_archive": "Do you wish to move this location to the archive?",
             "empty_archive": "No locations have been archived yet.",
             "title_edit": "Edit location",
             "toast_edit_success": "Saved location"
@@ -15,6 +15,16 @@
         "location": {
             "name": "Location name",
             "public": "This is a public location"
+        },
+        "classtypes": {
+            "title_add": "Add location",
+            "toast_add_success": "Added location",
+            "confirm_archive": "Do you wish to move this class type to the archive?",
+            "title": "Classtypes",
+            "error_loading": "Error loading classtypes :(",
+            "empty_list": "No class types found, click the Add button to add a class type",
+            "empty_archive": "No class types have been archived yet.",
+            "add": "Add classtype"
         }
     },
     "name": "Name",
