@@ -73,7 +73,7 @@ const SchoolLocations = ({ t, history, archived=false }) => (
         <Grid.Row>
           <Grid.Col md={9}>
             <Query query={GET_LOCATIONS_QUERY} variables={{ archived }}>
-             {({ loading, error, data, refetch }) => {
+             {({ loading, error, data: {schoolLocations: locations}, refetch }) => {
                 // Loading
                 if (loading) return (
                   <ContentCard cardTitle={t('school.locations.title')}>
@@ -103,7 +103,7 @@ const SchoolLocations = ({ t, history, archived=false }) => (
                 </Card.Options>
                 
                 // Empty list
-                if (!data.schoolLocations.edges.length) { return (
+                if (!locations.edges.length) { return (
                   <ContentCard cardTitle={t('school.locations.title')}
                                header_content={headerOptions}>
                     <p>
@@ -115,7 +115,10 @@ const SchoolLocations = ({ t, history, archived=false }) => (
                 // Life's good! :)
                 return (
                   <ContentCard cardTitle={t('school.locations.title')}
-                               header_content={headerOptions}>
+                               header_content={headerOptions}
+
+                               
+                               >
                     <Table>
                           <Table.Header>
                             <Table.Row key={v4()}>
@@ -124,7 +127,7 @@ const SchoolLocations = ({ t, history, archived=false }) => (
                             </Table.Row>
                           </Table.Header>
                           <Table.Body>
-                              {data.schoolLocations.edges.map(({ node }) => (
+                              {locations.edges.map(({ node }) => (
                                 <Table.Row key={v4()}>
                                   <Table.Col key={v4()}>
                                     {node.name}
