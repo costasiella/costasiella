@@ -103,7 +103,7 @@ const SchoolLocations = ({ t, history, archived=false }) => (
                 </Card.Options>
                 
                 // Empty list
-                if (!data.schoolLocations.length) { return (
+                if (!data.schoolLocations.edges.length) { return (
                   <ContentCard cardTitle={t('school.locations.title')}
                                header_content={headerOptions}>
                     <p>
@@ -124,21 +124,21 @@ const SchoolLocations = ({ t, history, archived=false }) => (
                             </Table.Row>
                           </Table.Header>
                           <Table.Body>
-                              {data.schoolLocations.map(({ id, name, displayPublic }) => (
+                              {data.schoolLocations.edges.map(({ node }) => (
                                 <Table.Row key={v4()}>
                                   <Table.Col key={v4()}>
-                                    {name}
+                                    {node.name}
                                   </Table.Col>
                                   <Table.Col key={v4()}>
-                                    {(displayPublic) ? 
+                                    {(node.displayPublic) ? 
                                       <Badge color="success">{t('yes')}</Badge>: 
                                       <Badge color="danger">{t('no')}</Badge>}
                                   </Table.Col>
                                   <Table.Col className="text-right" key={v4()}>
-                                    {(archived) ? 
+                                    {(node.archived) ? 
                                       <span className='text-muted'>{t('unarchive_to_edit')}</span> :
                                       <Button className='btn-sm' 
-                                              onClick={() => history.push("/school/locations/edit/" + id)}
+                                              onClick={() => history.push("/school/locations/edit/" + node.id)}
                                               color="secondary">
                                         {t('edit')}
                                       </Button>
@@ -152,6 +152,7 @@ const SchoolLocations = ({ t, history, archived=false }) => (
                                            href=""
                                            onClick={() => {
                                              console.log("clicked archived")
+                                             let id = node.id
                                              archiveLocation({ variables: {
                                               id,
                                               archived: !archived
