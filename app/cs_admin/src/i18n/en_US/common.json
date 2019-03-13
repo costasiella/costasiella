@@ -57,5 +57,6 @@
         "min_len_3": "Please enter at least 3 characters",
         "field_required": "This field is required"
     },
-    "load_more": "Load more..."
+    "load_more": "Load more...",
+    "loaded_all": "Displaying all items"
 }

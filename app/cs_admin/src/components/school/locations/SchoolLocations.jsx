@@ -104,7 +104,7 @@ const SchoolLocations = ({ t, history, archived=false }) => (
                 // Empty list
                 if (!locations.edges.length) { return (
                   <ContentCard cardTitle={t('school.locations.title')}
-                               header_content={headerOptions}>
+                               headerContent={headerOptions}>
                     <p>
                     {(!archived) ? t('school.locations.empty_list') : t("school.locations.empty_archive")}
                     </p>
@@ -114,7 +114,7 @@ const SchoolLocations = ({ t, history, archived=false }) => (
                 // Life's good! :)
                 return (
                   <ContentCard cardTitle={t('school.locations.title')}
-                               header_content={headerOptions}
+                               headerContent={headerOptions}
                                pageInfo={locations.pageInfo}
                                onLoadMore={() => {
 

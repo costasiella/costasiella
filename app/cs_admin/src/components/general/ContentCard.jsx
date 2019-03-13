@@ -52,13 +52,14 @@ class ContentCard extends Component {
           </Card.Body>
           <Card.Footer>
             {(!pageInfo) ? '':
-              <Button 
-                disabled={!pageInfo.hasNextPage}
-                link
-                onClick={onLoadMore} 
-                >
-                {t('load_more')}
-              </Button>
+              (pageInfo.hasNextPage) ? 
+                <Button 
+                  link
+                  onClick={onLoadMore} 
+                  >
+                  {t('load_more')}
+                </Button>
+               : t('loaded_all')
             }
           </Card.Footer>
         </Card>

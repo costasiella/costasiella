@@ -57,5 +57,6 @@
         "min_len_3": "__STRING_NOT_TRANSLATED__",
         "field_required": "__STRING_NOT_TRANSLATED__"
     },
-    "load_more": "__STRING_NOT_TRANSLATED__"
+    "load_more": "__STRING_NOT_TRANSLATED__",
+    "loaded_all": "__STRING_NOT_TRANSLATED__"
 }
