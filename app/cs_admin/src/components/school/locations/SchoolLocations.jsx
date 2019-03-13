@@ -30,14 +30,14 @@ import SchoolMenu from "../SchoolMenu"
 import { GET_LOCATIONS_QUERY } from "./queries"
 
 const ARCHIVE_LOCATION = gql`
-    mutation ArchiveSchoolLocation($id: ID!, $archived: Boolean!) {
-        archiveSchoolLocation(id: $id, archived: $archived) {
-          schoolLocation {
-            id
-            archived
-          }
-        }
+  mutation ArchiveSchoolLocation($input: ArchiveSchoolLocationInput!) {
+    archiveSchoolLocation(input: $input) {
+      schoolLocation {
+        id
+        archived
+      }
     }
+  }
 `
 
 
@@ -193,8 +193,10 @@ const SchoolLocations = ({ t, history, archived=false }) => (
                                              console.log("clicked archived")
                                              let id = node.id
                                              archiveLocation({ variables: {
-                                              id,
-                                              archived: !archived
+                                               input: {
+                                                id,
+                                                archived: !archived
+                                               }
                                         }, refetchQueries: [
                                             {query: GET_LOCATIONS_QUERY, variables: {"archived": archived }}
                                         ]}).then(({ data }) => {

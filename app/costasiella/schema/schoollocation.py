@@ -1,14 +1,12 @@
 from django.utils.translation import gettext as _
 
-# To convert relay node id to real id
-from collections import namedtuple
-from graphql_relay.node.node import from_global_id
-
 
 import graphene
 from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
 from graphql import GraphQLError
+
+from .gql_tools import get_rid
 
 from ..models import SchoolLocation
 from ..modules.gql_tools import require_login_and_permission
@@ -141,9 +139,9 @@ class CreateSchoolLocation(graphene.relay.ClientIDMutation):
 
 class UpdateSchoolLocation(graphene.relay.ClientIDMutation):
     class Input:
-        id = graphene.ID()
-        name = graphene.String()
-        display_public = graphene.Boolean()
+        id = graphene.ID(required=True)
+        name = graphene.String(required=True)
+        display_public = graphene.Boolean(required=True)
         
     school_location = graphene.Field(SchoolLocationNode)
 
@@ -152,8 +150,7 @@ class UpdateSchoolLocation(graphene.relay.ClientIDMutation):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.change_schoollocation')
 
-        Rid = namedtuple('Rid', 'name id')
-        rid = Rid(*from_global_id(input['id']))
+        rid = get_rid(input['id'])
 
         school_location = SchoolLocation.objects.filter(id=rid.id).first()
         if not school_location:
@@ -166,29 +163,32 @@ class UpdateSchoolLocation(graphene.relay.ClientIDMutation):
         return UpdateSchoolLocation(school_location=school_location)
 
 
-# class ArchiveSchoolLocation(graphene.Mutation):
-#     school_location = graphene.Field(SchoolLocationType)
+class ArchiveSchoolLocation(graphene.relay.ClientIDMutation):
+    class Input:
+        id = graphene.ID(required=True)
+        archived = graphene.Boolean(required=True)
 
-#     class Arguments:
-#         id = graphene.ID()
-#         archived = graphene.Boolean()
+    school_location = graphene.Field(SchoolLocationNode)
 
+    @classmethod
+    def mutate_and_get_payload(self, root, info, **input):
+        user = info.context.user
+        require_login_and_permission(user, 'costasiella.delete_schoollocation')
 
-#     def mutate(self, info, id, archived):
-#         user = info.context.user
-#         require_login_and_permission(user, 'costasiella.delete_schoollocation')
+        rid = get_rid(input['id'])
+        print(rid)
 
-#         school_location = SchoolLocation.objects.filter(id=id).first()
-#         if not school_location:
-#             raise Exception('Invalid School Location ID!')
+        school_location = SchoolLocation.objects.filter(id=rid.id).first()
+        if not school_location:
+            raise Exception('Invalid School Location ID!')
 
-#         school_location.archived = archived
-#         school_location.save(force_update=True)
+        school_location.archived = input['archived']
+        school_location.save(force_update=True)
 
-#         return ArchiveSchoolLocation(school_location=school_location)
+        return ArchiveSchoolLocation(school_location=school_location)
 
 
 class SchoolLocationMutation(graphene.ObjectType):
-#     archive_school_location = ArchiveSchoolLocation.Field()
+    archive_school_location = ArchiveSchoolLocation.Field()
     create_school_location = CreateSchoolLocation.Field()
     update_school_location = UpdateSchoolLocation.Field()
