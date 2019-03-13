@@ -88,8 +88,6 @@ class CreateSchoolLocation(graphene.relay.ClientIDMutation):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.add_schoollocation')
 
-        print(input)
-
         errors = []
         if not len(input['name']):
             print('validation error found')
@@ -137,28 +135,28 @@ class CreateSchoolLocation(graphene.relay.ClientIDMutation):
 # '''
 
 
-# class UpdateSchoolLocation(graphene.Mutation):
-#     school_location = graphene.Field(SchoolLocationType)
+class UpdateSchoolLocation(graphene.relay.ClientIDMutation):
+    class Input:
+        id = graphene.ID()
+        name = graphene.String()
+        display_public = graphene.Boolean()
+        
+    school_location = graphene.Field(SchoolLocationNode)
 
-#     class Arguments:
-#         id = graphene.ID()
-#         name = graphene.String()
-#         display_public = graphene.Boolean()
+    @classmethod
+    def mutate_and_get_payload(self, root, info, **input):
+        user = info.context.user
+        require_login_and_permission(user, 'costasiella.change_schoollocation')
 
+        school_location = SchoolLocation.objects.filter(id=id).first()
+        if not school_location:
+            raise Exception('Invalid School Location ID!')
 
-#     def mutate(self, info, id, name, display_public):
-#         user = info.context.user
-#         require_login_and_permission(user, 'costasiella.change_schoollocation')
+        school_location.name = input['name']
+        school_location.display_public = input['display_public']
+        school_location.save(force_update=True)
 
-#         school_location = SchoolLocation.objects.filter(id=id).first()
-#         if not school_location:
-#             raise Exception('Invalid School Location ID!')
-
-#         school_location.name = name
-#         school_location.display_public = display_public
-#         school_location.save(force_update=True)
-
-#         return UpdateSchoolLocation(school_location=school_location)
+        return UpdateSchoolLocation(school_location=school_location)
 
 
 # class ArchiveSchoolLocation(graphene.Mutation):
