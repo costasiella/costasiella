@@ -6,17 +6,17 @@ import GET_USER from '../queries/system/get_user'
 class HasPermissionWrapper extends Component {
   constructor(props) {
     super(props)
-    console.log("HasPermissionWrapper props:")
-    console.log(props)
+    // console.log("HasPermissionWrapper props:")
+    // console.log(props)
   }
 
 
   all_permissions(user) {
-    console.log('all_permissions here')
+    // console.log('all_permissions here')
     const permissions = {}
     const groups = user.groups
     for (let i in groups) {
-      console.log(i)
+      // console.log(i)
       for (let p in groups[i].permissions) {
         let codename = groups[i].permissions[p].codename
         // codename has format <permission>_<resource>
@@ -53,10 +53,10 @@ class HasPermissionWrapper extends Component {
           if (loading) return <p>Loading...</p>
           if (error) return <p>Error loading user... :(</p>
           
-          console.log(data)
+          // console.log(data)
           const permissions = this.all_permissions(data.user)
-          console.log('permissions:')
-          console.log(permissions)
+          // console.log('permissions:')
+          // console.log(permissions)
 
           if (this.check_permission(permissions, this.props.permission, this.props.resource)) {
             return this.props.children

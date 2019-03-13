@@ -73,7 +73,7 @@ const SchoolLocations = ({ t, history, archived=false }) => (
         <Grid.Row>
           <Grid.Col md={9}>
             <Query query={GET_LOCATIONS_QUERY} variables={{ archived }}>
-             {({ loading, error, data: {schoolLocations: locations}, refetch }) => {
+             {({ loading, error, data: {schoolLocations: locations}, refetch, fetchMore }) => {
                 // Loading
                 if (loading) return (
                   <ContentCard cardTitle={t('school.locations.title')}>
@@ -116,7 +116,30 @@ const SchoolLocations = ({ t, history, archived=false }) => (
                 return (
                   <ContentCard cardTitle={t('school.locations.title')}
                                header_content={headerOptions}
-
+                               onLoadMore={() => {
+                                console.log(locations.pageInfo.endCursor)
+                                fetchMore({
+                                  variables: {
+                                    cursor: locations.pageInfo.endCursor
+                                  },
+                                  updateQuery: (previousResult, { fetchMoreResult }) => {
+                                    const newEdges = fetchMoreResult.locations.edges;
+                                    const pageInfo = fetchMoreResult.locations.pageInfo;
+                      
+                                    return newEdges.length
+                                      ? {
+                                          // Put the new locations at the end of the list and update `pageInfo`
+                                          // so we have the new `endCursor` and `hasNextPage` values
+                                          locations: {
+                                            __typename: previousResult.locations.__typename,
+                                            edges: [...previousResult.locations.edges, ...newEdges],
+                                            pageInfo
+                                          }
+                                        }
+                                      : previousResult;
+                                  }
+                                })
+                              }} 
                                
                                >
                     <Table>
