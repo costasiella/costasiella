@@ -2,6 +2,7 @@ from django.utils.translation import gettext as _
 
 import graphene
 from graphene_django import DjangoObjectType
+from graphene_django.filter import DjangoFilterConnectionField
 from graphql import GraphQLError
 
 from ..models import SchoolLocation
@@ -10,9 +11,11 @@ from ..modules.messages import Messages
 
 m = Messages()
 
-class SchoolLocationType(DjangoObjectType):
+class SchoolLocationNode(DjangoObjectType):
     class Meta:
         model = SchoolLocation
+        filter_fields = ['archived']
+        interfaces = (graphene.relay.Node, )
 
 
 # class ValidationErrorMessage(graphene.ObjectType):
@@ -26,10 +29,12 @@ class SchoolLocationType(DjangoObjectType):
 
 
 class SchoolLocationQuery(graphene.ObjectType):
-    school_locations = graphene.List(SchoolLocationType, archived=graphene.Boolean(default_value=False))
-    school_location = graphene.Field(SchoolLocationType, id=graphene.ID())
+    # school_locations = graphene.List(SchoolLocationType, archived=graphene.Boolean(default_value=False))
+    # school_location = graphene.Field(SchoolLocationType, id=graphene.ID())
+    school_locations = DjangoFilterConnectionField(SchoolLocationNode)
+    school_location = graphene.relay.Node.Field(SchoolLocationNode)
 
-    def resolve_school_locations(self, info, archived, **kwargs):
+    def resolve_school_locations(self, info, archived=False, **kwargs):
         user = info.context.user
         print('user authenticated:')
         print(user.is_authenticated)
@@ -60,119 +65,119 @@ class SchoolLocationQuery(graphene.ObjectType):
         return SchoolLocation.objects.get(id=id)
 
 
-# class CreateSchoolLocationSuccess(graphene.ObjectType):
-# 	school_location = graphene.Field(SchoolLocationType, required=True)
+# # class CreateSchoolLocationSuccess(graphene.ObjectType):
+# # 	school_location = graphene.Field(SchoolLocationType, required=True)
 
 
-# class CreateSchoolLocationPayload(graphene.Union):
-#     class Meta:
-#         types = (ValidationErrors, CreateSchoolLocationSuccess)
+# # class CreateSchoolLocationPayload(graphene.Union):
+# #     class Meta:
+# #         types = (ValidationErrors, CreateSchoolLocationSuccess)
 
 
-class CreateSchoolLocation(graphene.Mutation):
-    school_location = graphene.Field(SchoolLocationType)
+# class CreateSchoolLocation(graphene.Mutation):
+#     school_location = graphene.Field(SchoolLocationType)
 
-    class Arguments:
-        name = graphene.String(required=True)
-        display_public = graphene.Boolean(required=True)
+#     class Arguments:
+#         name = graphene.String(required=True)
+#         display_public = graphene.Boolean(required=True)
 
-    # Output = CreateSchoolLocationPayload
+#     # Output = CreateSchoolLocationPayload
 
-    def mutate(self, info, name, display_public):
-        user = info.context.user
-        require_login_and_permission(user, 'costasiella.add_schoollocation')
+#     def mutate(self, info, name, display_public):
+#         user = info.context.user
+#         require_login_and_permission(user, 'costasiella.add_schoollocation')
 
-        errors = []
-        if not len(name):
-            print('validation error found')
-            raise GraphQLError(_('Name is required'))
-            # errors.append(
-            #     ValidationErrorMessage(
-            #         field="name",
-            #         message=_("Name is required")
-            #     )
-            # )
+#         errors = []
+#         if not len(name):
+#             print('validation error found')
+#             raise GraphQLError(_('Name is required'))
+#             # errors.append(
+#             #     ValidationErrorMessage(
+#             #         field="name",
+#             #         message=_("Name is required")
+#             #     )
+#             # )
 
-            # return ValidationErrors(
-            #     validation_errors = errors
-            # )
+#             # return ValidationErrors(
+#             #     validation_errors = errors
+#             # )
 
-        school_location = SchoolLocation(name=name, display_public=display_public)
-        school_location.save()
+#         school_location = SchoolLocation(name=name, display_public=display_public)
+#         school_location.save()
 
-        # return CreateSchoolLocationSuccess(school_location=school_location)
-        return CreateSchoolLocation(school_location=school_location)
-
-
-''' Query like this when enabling error output using union:
-mutation {
-  createSchoolLocation(name:"", displayPublic:true) {
-    __typename
-    ... on CreateSchoolLocationSuccess {
-      schoolLocation {
-        id
-        name
-      }
-    }
-    ... on ValidationErrors {
-      validationErrors {
-        field
-        message
-      }
-    }
-  }
-}
-
-'''
+#         # return CreateSchoolLocationSuccess(school_location=school_location)
+#         return CreateSchoolLocation(school_location=school_location)
 
 
-class UpdateSchoolLocation(graphene.Mutation):
-    school_location = graphene.Field(SchoolLocationType)
+# ''' Query like this when enabling error output using union:
+# mutation {
+#   createSchoolLocation(name:"", displayPublic:true) {
+#     __typename
+#     ... on CreateSchoolLocationSuccess {
+#       schoolLocation {
+#         id
+#         name
+#       }
+#     }
+#     ... on ValidationErrors {
+#       validationErrors {
+#         field
+#         message
+#       }
+#     }
+#   }
+# }
 
-    class Arguments:
-        id = graphene.ID()
-        name = graphene.String()
-        display_public = graphene.Boolean()
-
-
-    def mutate(self, info, id, name, display_public):
-        user = info.context.user
-        require_login_and_permission(user, 'costasiella.change_schoollocation')
-
-        school_location = SchoolLocation.objects.filter(id=id).first()
-        if not school_location:
-            raise Exception('Invalid School Location ID!')
-
-        school_location.name = name
-        school_location.display_public = display_public
-        school_location.save(force_update=True)
-
-        return UpdateSchoolLocation(school_location=school_location)
+# '''
 
 
-class ArchiveSchoolLocation(graphene.Mutation):
-    school_location = graphene.Field(SchoolLocationType)
+# class UpdateSchoolLocation(graphene.Mutation):
+#     school_location = graphene.Field(SchoolLocationType)
 
-    class Arguments:
-        id = graphene.ID()
-        archived = graphene.Boolean()
-
-
-    def mutate(self, info, id, archived):
-        user = info.context.user
-        require_login_and_permission(user, 'costasiella.delete_schoollocation')
-
-        school_location = SchoolLocation.objects.filter(id=id).first()
-        if not school_location:
-            raise Exception('Invalid School Location ID!')
-
-        school_location.archived = archived
-        school_location.save(force_update=True)
-
-        return ArchiveSchoolLocation(school_location=school_location)
+#     class Arguments:
+#         id = graphene.ID()
+#         name = graphene.String()
+#         display_public = graphene.Boolean()
 
 
-class SchoolLocationMutation(graphene.ObjectType):
-    archive_school_location = ArchiveSchoolLocation.Field()
-    create_school_location = CreateSchoolLocation.Field()
-    update_school_location = UpdateSchoolLocation.Field()
+#     def mutate(self, info, id, name, display_public):
+#         user = info.context.user
+#         require_login_and_permission(user, 'costasiella.change_schoollocation')
+
+#         school_location = SchoolLocation.objects.filter(id=id).first()
+#         if not school_location:
+#             raise Exception('Invalid School Location ID!')
+
+#         school_location.name = name
+#         school_location.display_public = display_public
+#         school_location.save(force_update=True)
+
+#         return UpdateSchoolLocation(school_location=school_location)
+
+
+# class ArchiveSchoolLocation(graphene.Mutation):
+#     school_location = graphene.Field(SchoolLocationType)
+
+#     class Arguments:
+#         id = graphene.ID()
+#         archived = graphene.Boolean()
+
+
+#     def mutate(self, info, id, archived):
+#         user = info.context.user
+#         require_login_and_permission(user, 'costasiella.delete_schoollocation')
+
+#         school_location = SchoolLocation.objects.filter(id=id).first()
+#         if not school_location:
+#             raise Exception('Invalid School Location ID!')
+
+#         school_location.archived = archived
+#         school_location.save(force_update=True)
+
+#         return ArchiveSchoolLocation(school_location=school_location)
+
+
+# class SchoolLocationMutation(graphene.ObjectType):
+#     archive_school_location = ArchiveSchoolLocation.Field()
+#     create_school_location = CreateSchoolLocation.Field()
+#     update_school_location = UpdateSchoolLocation.Field()
