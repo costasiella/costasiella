@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Component } from 'react'
 import { withTranslation } from 'react-i18next'
 
 import {
@@ -6,33 +6,114 @@ import {
     Card,
   } from "tabler-react"
 
-const ContentCard = ({ t, cardTitle, headerContent, page, pageInfo, onLoadPrevious, onLoadNext, children}) => (
-    <Card>
-      <Card.Header>
-        <Card.Title>{cardTitle}</Card.Title>
-        {headerContent}
-      </Card.Header>
-      <Card.Body>
-        {children}
-      </Card.Body>
-      <Card.Footer>
-        <div className="pull-right">{t("page")} {page}</div>
-        {console.log('pageInfo in CC')}
-        {console.log(pageInfo)}
-        {
-          (!pageInfo) ? "" :
-            <div>
-              <Button onClick={onLoadPrevious} disabled={!pageInfo.hasPreviousPage}>
-                What came before...?
-              </Button>
-              <Button onClick={onLoadNext} disabled={!pageInfo.hasNextPage}>
-                What's next...?
-              </Button>
-            </div>
-        }
 
-      </Card.Footer>
-    </Card>
-  )
+class ContentCard extends Component {
+    componentDidMount() {
+      window.addEventListener("scroll", this.handleOnScroll);
+    }
+  
+    componentWillUnmount() {
+      window.removeEventListener("scroll", this.handleOnScroll);
+    }
+
+    handleOnScroll = () => {
+      // http://stackoverflow.com/questions/9439725/javascript-how-to-detect-if-browser-window-is-scrolled-to-bottom
+      var scrollTop =
+        (document.documentElement && document.documentElement.scrollTop) ||
+        document.body.scrollTop;
+      var scrollHeight =
+        (document.documentElement && document.documentElement.scrollHeight) ||
+        document.body.scrollHeight;
+      var clientHeight =
+        document.documentElement.clientHeight || window.innerHeight;
+      var scrolledToBottom = Math.ceil(scrollTop + clientHeight) >= scrollHeight;
+      if (scrolledToBottom) {
+        this.props.onLoadMore()
+      }
+    }
+
+    render() {
+      const t = this.props.t
+      const cardTitle = this.props.cardTitle
+      const headerContent = this.props.headerContent
+      const onLoadMore = this.props.onLoadMore
+      const pageInfo = this.props.pageInfo
+      const children = this.props.children
+
+
+      return(
+        <Card>
+          <Card.Header>
+            <Card.Title>{cardTitle}</Card.Title>
+            {headerContent}
+          </Card.Header>
+          <Card.Body>
+            {children}
+          </Card.Body>
+          <Card.Footer>
+            {(!pageInfo) ? '':
+              <Button 
+                disabled={!pageInfo.hasNextPage}
+                link
+                onClick={onLoadMore} 
+                >
+                {t('load_more')}
+              </Button>
+            }
+          </Card.Footer>
+        </Card>
+      )
+    }
+}
+
+// const ContentCard = ({ t, cardTitle, headerContent, pageInfo, onLoadMore, children}) => (
+//     <Card>
+//       <Card.Header>
+//         <Card.Title>{cardTitle}</Card.Title>
+//         {headerContent}
+//       </Card.Header>
+//       <Card.Body>
+//         {children}
+//       </Card.Body>
+//       <Card.Footer>
+//         {(!pageInfo) ? '':
+//           <Button onClick={onLoadMore} disabled={!pageInfo.hasNextPage}>
+//             What's next...?
+//           </Button>
+//         }
+//       </Card.Footer>
+//     </Card>
+//   )
   
   export default withTranslation()(ContentCard)
+
+
+
+  // class SchoolLocatons extends Component {
+  //   componentDidMount() {
+  //     window.addEventListener("scroll", this.handleOnScroll);
+  //   }
+  
+  //   componentWillUnmount() {
+  //     window.removeEventListener("scroll", this.handleOnScroll);
+  //   }
+  
+  //   handleOnScroll = () => {
+  //     // http://stackoverflow.com/questions/9439725/javascript-how-to-detect-if-browser-window-is-scrolled-to-bottom
+  //     var scrollTop =
+  //       (document.documentElement && document.documentElement.scrollTop) ||
+  //       document.body.scrollTop;
+  //     var scrollHeight =
+  //       (document.documentElement && document.documentElement.scrollHeight) ||
+  //       document.body.scrollHeight;
+  //     var clientHeight =
+  //       document.documentElement.clientHeight || window.innerHeight;
+  //     var scrolledToBottom = Math.ceil(scrollTop + clientHeight) >= scrollHeight;
+  //     if (scrolledToBottom) {
+  //       this.props.onLoadMore()
+  //     }
+  //   }
+    
+  
+  // }
+  
