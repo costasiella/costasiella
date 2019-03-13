@@ -29,16 +29,17 @@ import SchoolMenu from "../SchoolMenu"
 
 
 const ADD_LOCATION = gql`
-    mutation CreateSchoolLocation($name: String!, $displayPublic:Boolean!) {
-        createSchoolLocation(name: $name, displayPublic: $displayPublic) {
-          schoolLocation {
-            id
-            name
-            displayPublic
-          }
-        }
+  mutation CreateSchoolLocation($input: CreateSchoolLocationInput!) {
+    createSchoolLocation(input: $input) {
+      schoolLocation {
+        id
+        archived
+        displayPublic
+        name
+      }
     }
-`;
+  }
+`
 
 const return_url = "/school/locations"
 
@@ -60,8 +61,10 @@ const SchoolLocationAdd = ({ t, history }) => (
                         validationSchema={LOCATION_SCHEMA}
                         onSubmit={(values, { setSubmitting }) => {
                             addLocation({ variables: {
+                              input: {
                                 name: values.name, 
                                 displayPublic: values.displayPublic
+                              }
                             }, refetchQueries: [
                                 {query: GET_LOCATIONS_QUERY, variables: {"archived": false }}
                             ]})
