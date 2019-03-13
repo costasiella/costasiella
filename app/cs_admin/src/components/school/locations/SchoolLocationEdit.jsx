@@ -29,15 +29,15 @@ import SchoolMenu from "../SchoolMenu"
 
 
 const UPDATE_LOCATION = gql`
-    mutation UpdateSchoolLocation($id: ID!, $name: String!, $displayPublic:Boolean!) {
-        updateSchoolLocation(id: $id, name: $name, displayPublic: $displayPublic) {
-          schoolLocation {
-            id
-            name
-            displayPublic
-          }
-        }
+  mutation UpdateSchoolLocation($input: UpdateSchoolLocationInput!) {
+    updateSchoolLocation(input: $input) {
+      schoolLocation {
+        id
+        name
+        displayPublic
+      }
     }
+  }
 `
 
 
@@ -96,10 +96,11 @@ class SchoolLocationEdit extends Component {
                                   console.log(values)
 
                                   updateLocation({ variables: {
+                                    input: {
                                       id: match.params.id,
                                       name: values.name,
                                       displayPublic: values.displayPublic 
-                                      // displayPublic: (values.displayPublic === 'true') ? true : false
+                                    }
                                   }, refetchQueries: [
                                       {query: GET_LOCATIONS_QUERY, variables: {"archived": false }}
                                   ]})

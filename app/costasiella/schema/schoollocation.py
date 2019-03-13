@@ -1,5 +1,10 @@
 from django.utils.translation import gettext as _
 
+# To convert relay node id to real id
+from collections import namedtuple
+from graphql_relay.node.node import from_global_id
+
+
 import graphene
 from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
@@ -134,7 +139,6 @@ class CreateSchoolLocation(graphene.relay.ClientIDMutation):
 
 # '''
 
-
 class UpdateSchoolLocation(graphene.relay.ClientIDMutation):
     class Input:
         id = graphene.ID()
@@ -148,7 +152,10 @@ class UpdateSchoolLocation(graphene.relay.ClientIDMutation):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.change_schoollocation')
 
-        school_location = SchoolLocation.objects.filter(id=id).first()
+        Rid = namedtuple('Rid', 'name id')
+        rid = Rid(*from_global_id(input['id']))
+
+        school_location = SchoolLocation.objects.filter(id=rid.id).first()
         if not school_location:
             raise Exception('Invalid School Location ID!')
 
@@ -184,4 +191,4 @@ class UpdateSchoolLocation(graphene.relay.ClientIDMutation):
 class SchoolLocationMutation(graphene.ObjectType):
 #     archive_school_location = ArchiveSchoolLocation.Field()
     create_school_location = CreateSchoolLocation.Field()
-#     update_school_location = UpdateSchoolLocation.Field()
+    update_school_location = UpdateSchoolLocation.Field()
