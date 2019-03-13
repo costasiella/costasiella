@@ -1,8 +1,8 @@
 import gql from "graphql-tag"
 
 export const GET_LOCATIONS_QUERY = gql`
-  query SchoolLocations($archived: Boolean) {
-    schoolLocations(first: 1, archived: $archived) {
+  query SchoolLocations($after: String, $before: String, $archived: Boolean) {
+    schoolLocations(first: 2, before: $before, after: $after, archived: $archived) {
       pageInfo {
         startCursor
         endCursor

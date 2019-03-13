@@ -64,6 +64,8 @@ const ARCHIVE_LOCATION = gql`
 //   confirmAlert(options)
 // }
 
+let locationsPage = 0
+
 
 const SchoolLocations = ({ t, history, archived=false }) => (
   <SiteWrapper>
@@ -116,23 +118,72 @@ const SchoolLocations = ({ t, history, archived=false }) => (
                 return (
                   <ContentCard cardTitle={t('school.locations.title')}
                                header_content={headerOptions}
-                               onLoadMore={() => {
-                                console.log(locations.pageInfo.endCursor)
+                               page={locationsPage}
+                               pageInfo={locations.pageInfo}
+                               onLoadPrevious={() => {
+                                console.log(locations)
+                                console.log(locations.pageInfo.startCursor)
                                 fetchMore({
                                   variables: {
-                                    cursor: locations.pageInfo.endCursor
+                                    before: locations.pageInfo.startCursor
                                   },
                                   updateQuery: (previousResult, { fetchMoreResult }) => {
-                                    const newEdges = fetchMoreResult.locations.edges;
-                                    const pageInfo = fetchMoreResult.locations.pageInfo;
+                                    locationsPage -= 1
+
+                                    console.log('previousResult')
+                                    console.log(previousResult)
+                                    console.log('fetchMoreResult')
+                                    console.log(fetchMoreResult)
+
+                                    const newEdges = fetchMoreResult.schoolLocations.edges
+                                    const pageInfo = fetchMoreResult.schoolLocations.pageInfo
+
+                                    console.log('new edges')
+                                    console.log(newEdges)
                       
                                     return newEdges.length
                                       ? {
                                           // Put the new locations at the end of the list and update `pageInfo`
                                           // so we have the new `endCursor` and `hasNextPage` values
-                                          locations: {
-                                            __typename: previousResult.locations.__typename,
-                                            edges: [...previousResult.locations.edges, ...newEdges],
+                                          schoolLocations: {
+                                            __typename: previousResult.schoolLocations.__typename,
+                                            edges: [ ...newEdges ],
+                                            pageInfo
+                                          }
+                                        }
+                                      : previousResult;
+                                  }
+                                })
+                              }} 
+                               onLoadNext={() => {
+                                locationsPage += 1
+                                console.log(locations)
+                                console.log(locations.pageInfo.endCursor)
+                                fetchMore({
+                                  variables: {
+                                    after: locations.pageInfo.endCursor
+                                  },
+                                  updateQuery: (previousResult, { fetchMoreResult }) => {
+                                    console.log('previousResult')
+                                    console.log(previousResult)
+                                    console.log('fetchMoreResult')
+                                    console.log(fetchMoreResult)
+
+                                    const newEdges = fetchMoreResult.schoolLocations.edges
+                                    const pageInfo = fetchMoreResult.schoolLocations.pageInfo
+
+                                    console.log('new edges')
+                                    console.log(newEdges)
+                                    console.log('new pi')
+                                    console.log(pageInfo)
+                      
+                                    return newEdges.length
+                                      ? {
+                                          // Put the new locations at the end of the list and update `pageInfo`
+                                          // so we have the new `endCursor` and `hasNextPage` values
+                                          schoolLocations: {
+                                            __typename: previousResult.schoolLocations.__typename,
+                                            edges: [ ...newEdges ],
                                             pageInfo
                                           }
                                         }

@@ -1,11 +1,12 @@
 import React from 'react'
+import { withTranslation } from 'react-i18next'
 
 import {
     Button,
     Card,
   } from "tabler-react"
 
-const ContentCard = ({ t, cardTitle, headerContent, onLoadMore, children}) => (
+const ContentCard = ({ t, cardTitle, headerContent, page, pageInfo, onLoadPrevious, onLoadNext, children}) => (
     <Card>
       <Card.Header>
         <Card.Title>{cardTitle}</Card.Title>
@@ -15,11 +16,23 @@ const ContentCard = ({ t, cardTitle, headerContent, onLoadMore, children}) => (
         {children}
       </Card.Body>
       <Card.Footer>
-        <Button onClick={onLoadMore}>
-          Gimme more...
-        </Button>
+        <div className="pull-right">{t("page")} {page}</div>
+        {console.log('pageInfo in CC')}
+        {console.log(pageInfo)}
+        {
+          (!pageInfo) ? "" :
+            <div>
+              <Button onClick={onLoadPrevious} disabled={!pageInfo.hasPreviousPage}>
+                What came before...?
+              </Button>
+              <Button onClick={onLoadNext} disabled={!pageInfo.hasNextPage}>
+                What's next...?
+              </Button>
+            </div>
+        }
+
       </Card.Footer>
     </Card>
   )
   
-  export default ContentCard
+  export default withTranslation()(ContentCard)
