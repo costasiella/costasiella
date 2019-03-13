@@ -20,6 +20,19 @@ class SchoolLocationNode(DjangoObjectType):
         filter_fields = ['archived']
         interfaces = (graphene.relay.Node, )
 
+    @classmethod
+    def get_node(self, info, id):
+        print("info:")
+        print(info)
+        user = info.context.user
+        print('user authenticated:')
+        print(user.is_authenticated)
+        print(user)
+        print(user.is_anonymous)
+        require_login_and_permission(user, 'costasiella.view_schoollocation')
+
+        # Return only public non-archived locations
+        return self._meta.model.objects.get(id=id)
 
 # class ValidationErrorMessage(graphene.ObjectType):
 #     field = graphene.String(required=True)
@@ -56,16 +69,16 @@ class SchoolLocationQuery(graphene.ObjectType):
         return SchoolLocation.objects.filter(display_public = True, archived = False).order_by('name')
 
 
-    def resolve_school_location(self, info, id):
-        user = info.context.user
-        print('user authenticated:')
-        print(user.is_authenticated)
-        print(user)
-        print(user.is_anonymous)
-        require_login_and_permission(user, 'costasiella.view_schoollocation')
+    # def resolve_school_location(self, info, id):
+    #     user = info.context.user
+    #     print('user authenticated:')
+    #     print(user.is_authenticated)
+    #     print(user)
+    #     print(user.is_anonymous)
+    #     require_login_and_permission(user, 'costasiella.view_schoollocation')
 
-        # Return only public non-archived locations
-        return SchoolLocation.objects.get(id=id)
+    #     # Return only public non-archived locations
+    #     return SchoolLocation.objects.get(id=id)
 
 
 # # class CreateSchoolLocationSuccess(graphene.ObjectType):
@@ -176,7 +189,6 @@ class ArchiveSchoolLocation(graphene.relay.ClientIDMutation):
         require_login_and_permission(user, 'costasiella.delete_schoollocation')
 
         rid = get_rid(input['id'])
-        print(rid)
 
         school_location = SchoolLocation.objects.filter(id=rid.id).first()
         if not school_location:
