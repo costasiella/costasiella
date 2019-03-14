@@ -18,6 +18,7 @@ query SchoolClasstypes($after: String, $before: String, $archived: Boolean) {
         description
         urlWebsite
         urlImage
+        urlImageThumbnailSmall
       }
     }
   }

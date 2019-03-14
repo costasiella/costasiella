@@ -12,17 +12,26 @@ from ..models import SchoolClasstype
 from ..modules.gql_tools import require_login_and_permission
 from ..modules.messages import Messages
 
+from sorl.thumbnail import get_thumbnail
+
 m = Messages()
 
 class SchoolClasstypeNodeInterface(graphene.Interface):
     id = graphene.GlobalID()
     url_image = graphene.String()
+    url_image_thumbnail_small = graphene.String()
 
 
 class SchoolClasstypeNode(DjangoObjectType):
     def resolve_url_image(self, info):
         if self.image:
             return self.image.url
+        else:
+            return ''
+
+    def resolve_url_image_thumbnail_small(self, info):
+        if self.image:
+            return get_thumbnail(self.image, '75x75', crop='center', quality=99).url
         else:
             return ''
     

@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'graphene_django',
     'webpack_loader',
+    'sorl.thumbnail',
     
     # local apps
     'costasiella.apps.CostasiellaConfig',

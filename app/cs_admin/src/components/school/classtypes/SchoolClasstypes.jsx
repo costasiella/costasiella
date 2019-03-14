@@ -49,7 +49,6 @@ const SchoolClasstypes = ({ t, history, archived=false }) => (
             <Query query={GET_CLASSTYPES_QUERY} variables={{ archived }}>
             {({ loading, error, data: {schoolClasstypes: classtypes}, refetch, fetchMore }) => {
                 // Loading
-                console.log(classtypes)
                 if (loading) return (
                   <ContentCard cardTitle={t('school.classtypes.title')}>
                     <Dimmer active={true}
@@ -128,7 +127,7 @@ const SchoolClasstypes = ({ t, history, archived=false }) => (
                               {classtypes.edges.map(({ node }) => (
                                 <Table.Row key={v4()}>
                                   <Table.Col key={v4()}>
-                                    <img src={node.urlImage} />
+                                    <img src={node.urlImageThumbnailSmall} />
                                   </Table.Col>
                                   <Table.Col key={v4()}>
                                     {node.name}
