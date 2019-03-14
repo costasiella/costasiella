@@ -1,6 +1,5 @@
 from django.utils.translation import gettext as _
 
-
 import graphene
 from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
@@ -45,8 +44,6 @@ class SchoolLocationNode(DjangoObjectType):
 
 
 class SchoolLocationQuery(graphene.ObjectType):
-    # school_locations = graphene.List(SchoolLocationType, archived=graphene.Boolean(default_value=False))
-    # school_location = graphene.Field(SchoolLocationType, id=graphene.ID())
     school_locations = DjangoFilterConnectionField(SchoolLocationNode)
     school_location = graphene.relay.Node.Field(SchoolLocationNode)
 

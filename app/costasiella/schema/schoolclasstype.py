@@ -2,8 +2,10 @@ from django.utils.translation import gettext as _
 
 import graphene
 from graphene_django import DjangoObjectType
+from graphene_django.filter import DjangoFilterConnectionField
 from graphql import GraphQLError
 
+from .gql_tools import get_rid
 import validators
 
 from ..models import SchoolClasstype
@@ -12,14 +14,26 @@ from ..modules.messages import Messages
 
 m = Messages()
 
-class SchoolClasstypeType(DjangoObjectType):
+class SchoolClasstypeNode(DjangoObjectType):
     class Meta:
         model = SchoolClasstype
+        filter_fields = ['archived']
+        interfaces = (graphene.relay.Node, )
+
+    @classmethod
+    def get_node(self, info, id):
+        user = info.context.user
+        require_login_and_permission(user, 'costasiella.view_schoolclasstype')
+
+        # Return only public non-archived classtypes
+        return self._meta.model.objects.get(id=id)
 
 
 class SchoolClasstypeQuery(graphene.ObjectType):
-    school_classtypes = graphene.List(SchoolClasstypeType, archived=graphene.Boolean(default_value=False))
-    school_classtype = graphene.Field(SchoolClasstypeType, id=graphene.ID())
+    # school_classtypes = graphene.List(SchoolClasstypeType, archived=graphene.Boolean(default_value=False))
+    # school_classtype = graphene.Field(SchoolClasstypeType, id=graphene.ID())
+    school_locations = DjangoFilterConnectionField(SchoolClasstypeNode)
+    school_location = graphene.relay.Node.Field(SchoolClasstypeNode)
 
     def resolve_school_classtypes(self, info, archived, **kwargs):
         user = info.context.user
@@ -35,26 +49,17 @@ class SchoolClasstypeQuery(graphene.ObjectType):
         return SchoolClasstype.objects.filter(display_public = True, archived = False).order_by('name')
 
 
-    def resolve_school_classtype(self, info, id):
-        user = info.context.user
-        require_login_and_permission(user, 'costasiella.view_schoolclasstype')
-
-        # Return only public non-archived classtypes
-        return SchoolClasstype.objects.get(id=id)
-
-
-class CreateSchoolClasstype(graphene.Mutation):
-    school_classtype = graphene.Field(SchoolClasstypeType)
-
-    class Arguments:
+class CreateSchoolClasstype(graphene.relay.ClientIDMutation):
+    class Input:
         name = graphene.String(required=True)
-        description = graphene.String()
-        display_public = graphene.Boolean(required=True)
-        url_website = graphene.String()
+        description = graphene.String(required=False, default=None)
+        display_public = graphene.Boolean(required=True, default=True)
+        url_website = graphene.String(required=False, default=None)
 
-    # Output = CreateSchoolLocationPayload
+    school_classtype = graphene.Field(SchoolClasstypeNode)
 
-    def mutate(self, info, name, description, display_public, url_website):
+    @classmethod
+    def mutate_and_get_payload(self, root, info, **input):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.add_schoolclasstype')
 
@@ -69,28 +74,29 @@ class CreateSchoolClasstype(graphene.Mutation):
 
 
         school_classtype = SchoolClasstype(
-            name=name, 
-            description=description,
-            display_public=display_public,
-            url_website=url_website
+            name=input['name'], 
+            description=input['description'],
+            display_public=input['display_public'],
+            url_website=input['url_website']
         )
         school_classtype.save()
 
-        # return CreateSchoolLocationSuccess(school_location=school_location)
         return CreateSchoolClasstype(school_classtype = school_classtype)
 
 
-class UpdateSchoolClasstype(graphene.Mutation):
-    school_classtype = graphene.Field(SchoolClasstypeType)
-
-    class Arguments:
+class UpdateSchoolClasstype(graphene.relay.ClientIDMutation):
+    class Input:
         id = graphene.ID()
-        name = graphene.String()
-        description = graphene.String(required=False)
-        display_public = graphene.Boolean(required=False)
-        url_website = graphene.String(required=False)
+        name = graphene.String(required=True)
+        description = graphene.String(required=False, default=None)
+        display_public = graphene.Boolean(required=True, default=True)
+        url_website = graphene.String(required=False, default=None)
 
-    def mutate(self, info, id, name, description=None, display_public=False, url_website=None):
+    school_classtype = graphene.Field(SchoolClasstypeNode)
+
+    # def mutate(self, info, id, name, description=None, display_public=False, url_website=None):
+    @classmethod
+    def mutate_and_get_payload(self, root, info, **input):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.change_schoolclasstype')
 
@@ -98,10 +104,10 @@ class UpdateSchoolClasstype(graphene.Mutation):
         if not school_classtype:
             raise Exception('Invalid School Classtype ID!')
 
-        school_classtype.name = name
-        school_classtype.description = description
-        school_classtype.display_public = display_public
-        school_classtype.url_website = url_website
+        school_classtype.name = input['name']
+        school_classtype.description = input['description']
+        school_classtype.display_public = input['display_public']
+        school_classtype.url_website = input['url_website']
         school_classtype.save(force_update=True)
 
         return UpdateSchoolClasstype(school_classtype=school_classtype)
