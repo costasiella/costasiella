@@ -87,14 +87,14 @@ query getSchoolLocation($id: ID!) {
 '''
 
         self.location_archive_mutation = '''
-mutation ArchiveSchoolLocation($id: ID!, $archived: Boolean!) {
-    archiveSchoolLocation(id: $id, archived: $archived) {
-        schoolLocation {
+  mutation ArchiveSchoolLocation($input: ArchiveSchoolLocationInput!) {
+    archiveSchoolLocation(input: $input) {
+      schoolLocation {
         id
         archived
-        }
+      }
     }
-}
+  }
 '''
 
     def tearDown(self):
@@ -478,89 +478,95 @@ mutation ArchiveSchoolLocation($id: ID!, $archived: Boolean!) {
         self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
-    # def test_archive_location(self):
-    #     """ Archive a location """
-    #     query = self.location_archive_mutation
-    #     location = f.SchoolLocationFactory.create()
+    def test_archive_location(self):
+        """ Archive a location """
+        query = self.location_archive_mutation
+        location = f.SchoolLocationFactory.create()
 
-    #     variables = {
-    #         "id": location.id,
-    #         "archived": True
-    #     }
+        variables = {
+            "input": {
+                "id": self.get_node_id_of_first_location(),
+                "archived": True
+            }
+        }
 
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         self.admin_user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['archiveSchoolLocation']['schoolLocation']['archived'], variables['archived'])
-
-
-    # def test_archive_location_anon_user(self):
-    #     """ Archive a location """
-    #     query = self.location_archive_mutation
-    #     location = f.SchoolLocationFactory.create()
-
-    #     variables = {
-    #         "id": location.id,
-    #         "archived": True
-    #     }
-
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         self.anon_user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
+        executed = execute_test_client_api_query(
+            query, 
+            self.admin_user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['archiveSchoolLocation']['schoolLocation']['archived'], variables['input']['archived'])
 
 
-    # def test_archive_location_permission_granted(self):
-    #     """ Allow archiving locations for users with permissions """
-    #     query = self.location_archive_mutation
+    def test_archive_location_anon_user(self):
+        """ Archive a location """
+        query = self.location_archive_mutation
+        location = f.SchoolLocationFactory.create()
 
-    #     location = f.SchoolLocationFactory.create()
-    #     variables = {
-    #         "id": location.id,
-    #         "archived": True
-    #     }
+        variables = {
+            "input": {
+                "id": self.get_node_id_of_first_location(),
+                "archived": True
+            }
+        }
 
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename=self.permission_delete)
-    #     user.user_permissions.add(permission)
-    #     user.save()
-
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['archiveSchoolLocation']['schoolLocation']['archived'], variables['archived'])
+        executed = execute_test_client_api_query(
+            query, 
+            self.anon_user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
-    # def test_archive_location_permission_denied(self):
-    #     """ Check archive location permission denied error message """
-    #     query = self.location_archive_mutation
+    def test_archive_location_permission_granted(self):
+        """ Allow archiving locations for users with permissions """
+        query = self.location_archive_mutation
 
-    #     location = f.SchoolLocationFactory.create()
-    #     variables = {
-    #         "id": location.id,
-    #         "archived": True
-    #     }
+        location = f.SchoolLocationFactory.create()
+        variables = {
+            "input": {
+                "id": self.get_node_id_of_first_location(),
+                "archived": True
+            }
+        }
+        # Create regular user
+        user = f.RegularUserFactory.create()
+        permission = Permission.objects.get(codename=self.permission_delete)
+        user.user_permissions.add(permission)
+        user.save()
 
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
+        executed = execute_test_client_api_query(
+            query, 
+            user,
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['archiveSchoolLocation']['schoolLocation']['archived'], variables['input']['archived'])
 
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
+
+    def test_archive_location_permission_denied(self):
+        """ Check archive location permission denied error message """
+        query = self.location_archive_mutation
+
+        location = f.SchoolLocationFactory.create()
+        variables = {
+            "input": {
+                "id": self.get_node_id_of_first_location(),
+                "archived": True
+            }
+        }
+        # Create regular user
+        user = f.RegularUserFactory.create()
+
+        executed = execute_test_client_api_query(
+            query, 
+            user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
 
