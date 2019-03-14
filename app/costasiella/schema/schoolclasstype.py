@@ -30,8 +30,6 @@ class SchoolClasstypeNode(DjangoObjectType):
 
 
 class SchoolClasstypeQuery(graphene.ObjectType):
-    # school_classtypes = graphene.List(SchoolClasstypeType, archived=graphene.Boolean(default_value=False))
-    # school_classtype = graphene.Field(SchoolClasstypeType, id=graphene.ID())
     school_classtypes = DjangoFilterConnectionField(SchoolClasstypeNode)
     school_classtype = graphene.relay.Node.Field(SchoolClasstypeNode)
 
@@ -52,9 +50,9 @@ class SchoolClasstypeQuery(graphene.ObjectType):
 class CreateSchoolClasstype(graphene.relay.ClientIDMutation):
     class Input:
         name = graphene.String(required=True)
-        description = graphene.String(required=False, default=None)
-        display_public = graphene.Boolean(required=True, default=True)
-        url_website = graphene.String(required=False, default=None)
+        description = graphene.String(required=False, default_value="")
+        display_public = graphene.Boolean(required=True, default_value=True)
+        url_website = graphene.String(required=False, default_value="")
 
     school_classtype = graphene.Field(SchoolClasstypeNode)
 
@@ -64,20 +62,20 @@ class CreateSchoolClasstype(graphene.relay.ClientIDMutation):
         require_login_and_permission(user, 'costasiella.add_schoolclasstype')
 
         # Validate input
-        if not len(name):
+        if not len(input['name']):
             print('validation error found')
             raise GraphQLError(_('Name is required'))
 
+        url_website = input['url_website']
         if url_website:
             if not validators.url(url_website, public=True):
                 raise GraphQLError(_('Invalid URL, make sure it starts with "http"'))
-
 
         school_classtype = SchoolClasstype(
             name=input['name'], 
             description=input['description'],
             display_public=input['display_public'],
-            url_website=input['url_website']
+            url_website=url_website
         )
         school_classtype.save()
 
@@ -88,9 +86,9 @@ class UpdateSchoolClasstype(graphene.relay.ClientIDMutation):
     class Input:
         id = graphene.ID()
         name = graphene.String(required=True)
-        description = graphene.String(required=False, default=None)
-        display_public = graphene.Boolean(required=True, default=True)
-        url_website = graphene.String(required=False, default=None)
+        description = graphene.String(required=False, default_value="")
+        display_public = graphene.Boolean(required=True, default_value=True)
+        url_website = graphene.String(required=False, default_value="")
 
     school_classtype = graphene.Field(SchoolClasstypeNode)
 
@@ -104,10 +102,16 @@ class UpdateSchoolClasstype(graphene.relay.ClientIDMutation):
         if not school_classtype:
             raise Exception('Invalid School Classtype ID!')
 
+        url_website = input['url_website']
+        if url_website:
+            if not validators.url(url_website, public=True):
+                raise GraphQLError(_('Invalid URL, make sure it starts with "http"'))
+            else:
+                school_classtype.url_website = url_website
+
         school_classtype.name = input['name']
         school_classtype.description = input['description']
         school_classtype.display_public = input['display_public']
-        school_classtype.url_website = input['url_website']
         school_classtype.save(force_update=True)
 
         return UpdateSchoolClasstype(school_classtype=school_classtype)

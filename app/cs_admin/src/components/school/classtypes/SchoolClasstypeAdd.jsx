@@ -29,15 +29,15 @@ import SchoolMenu from "../SchoolMenu"
 
 
 const ADD_CLASSTYPE = gql`
-mutation CreateSchoolClasstype($name: String!, $description:String, $displayPublic: Boolean!, $link:String) {
-  createSchoolClasstype(name: $name, description: $description, displayPublic: $displayPublic, link:$link) {
+mutation CreateSchoolClasstype($input: CreateSchoolClasstypeInput!) {
+  createSchoolClasstype(input: $input) {
     schoolClasstype {
       id
       archived
       name
       description
       displayPublic
-      link
+      urlWebsite
     }
   }
 }
@@ -63,10 +63,12 @@ const SchoolClasstypeAdd = ({ t, history }) => (
                         validationSchema={CLASSTYPE_SCHEMA}
                         onSubmit={(values, { setSubmitting }) => {
                             addClasstype({ variables: {
+                              input: {
                                 name: values.name, 
                                 description: values.description,
                                 displayPublic: values.displayPublic,
                                 urlWebsite: values.urlWebsite
+                              }
                             }, refetchQueries: [
                                 {query: GET_CLASSTYPES_QUERY, variables: {"archived": false }}
                             ]})
