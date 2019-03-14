@@ -28,16 +28,27 @@ class GQLSchoolClasstype(TestCase):
         
 
         self.classtypes_query = '''
-query SchoolClasstypes($archived: Boolean!) {
-  schoolClasstypes(archived: $archived) {
-    id
-    name
-    archived
-    displayPublic
-    description
+query SchoolClasstypes($after: String, $before: String, $archived: Boolean) {
+  schoolClasstypes(first: 15, before: $before, after: $after, archived: $archived) {
+    pageInfo {
+      startCursor
+      endCursor
+      hasNextPage
+      hasPreviousPage
+    }
+    edges {
+      node {
+        id
+        archived
+        displayPublic
+        name
+        description
+        urlWebsite
+      }
+    }
   }
 }
-        '''
+'''
 
         self.classtype_query = '''
 query getSchoolClasstype($id: ID!) {
@@ -92,15 +103,16 @@ mutation UpdateSchoolClasstype($id: ID!, $name: String!, $description:String, $d
         query = self.classtypes_query
         classtype = f.SchoolClasstypeFactory.create()
         variables = {
-            'archived': False
+            "archived": False
         }
 
         executed = execute_test_client_api_query(query, self.admin_user, variables=variables)
         data = executed.get('data')
-        self.assertEqual(data['schoolClasstypes'][0]['name'], classtype.name)
-        self.assertEqual(data['schoolClasstypes'][0]['archived'], classtype.archived)
-        self.assertEqual(data['schoolClasstypes'][0]['description'], classtype.description)
-        self.assertEqual(data['schoolClasstypes'][0]['displayPublic'], classtype.display_public)
+        item = data['schoolClasstypes']['edges'][0]['node']
+        self.assertEqual(item['name'], classtype.name)
+        self.assertEqual(item['archived'], classtype.archived)
+        self.assertEqual(item['description'], classtype.description)
+        self.assertEqual(item['displayPublic'], classtype.display_public)
 
 
     def test_query_permision_denied(self):
@@ -122,8 +134,8 @@ mutation UpdateSchoolClasstype($id: ID!, $name: String!, $description:String, $d
 
         # Public classtypes only
         non_public_found = False
-        for l in data['schoolClasstypes']:
-            if not l['displayPublic']:
+        for item in data['schoolClasstypes']['edges']:
+            if not item['node']['displayPublic']:
                 non_public_found = True
 
         self.assertEqual(non_public_found, False)
@@ -152,8 +164,8 @@ mutation UpdateSchoolClasstype($id: ID!, $name: String!, $description:String, $d
 
         # List all locations, including non public
         non_public_found = False
-        for l in data['schoolClasstypes']:
-            if not l['displayPublic']:
+        for item in data['schoolClasstypes']['edges']:
+            if not item['node']['displayPublic']:
                 non_public_found = True
 
         # Assert non public locations are listed
@@ -173,279 +185,66 @@ mutation UpdateSchoolClasstype($id: ID!, $name: String!, $description:String, $d
         self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
-    def test_query_one(self):
-        """ Query one location """   
-        query = self.classtype_query
-        classtype = f.SchoolClasstypeFactory.create()
-        executed = execute_test_client_api_query(query, self.admin_user, variables={"id": classtype.id})
-        data = executed.get('data')
-        print(data)
-        self.assertEqual(data['schoolClasstype']['name'], classtype.name)
-        self.assertEqual(data['schoolClasstype']['archived'], classtype.archived)
-        self.assertEqual(data['schoolClasstype']['description'], classtype.description)
-        self.assertEqual(data['schoolClasstype']['displayPublic'], classtype.display_public)
-        self.assertEqual(data['schoolClasstype']['urlWebsite'], classtype.url_website)
+#     def test_query_one(self):
+#         """ Query one location """   
+#         query = self.classtype_query
+#         classtype = f.SchoolClasstypeFactory.create()
+#         executed = execute_test_client_api_query(query, self.admin_user, variables={"id": classtype.id})
+#         data = executed.get('data')
+#         print(data)
+#         self.assertEqual(data['schoolClasstype']['name'], classtype.name)
+#         self.assertEqual(data['schoolClasstype']['archived'], classtype.archived)
+#         self.assertEqual(data['schoolClasstype']['description'], classtype.description)
+#         self.assertEqual(data['schoolClasstype']['displayPublic'], classtype.display_public)
+#         self.assertEqual(data['schoolClasstype']['urlWebsite'], classtype.url_website)
 
 
-    def test_query_one_anon_user(self):
-        """ Deny permission for anon users Query one classtype """   
-        query = self.classtype_query
-        classtype = f.SchoolClasstypeFactory.create()
-        executed = execute_test_client_api_query(query, self.anon_user, variables={"id": classtype.id})
-        errors = executed.get('errors')
-        self.assertEqual(errors[0]['message'], 'Not logged in!')
+#     def test_query_one_anon_user(self):
+#         """ Deny permission for anon users Query one classtype """   
+#         query = self.classtype_query
+#         classtype = f.SchoolClasstypeFactory.create()
+#         executed = execute_test_client_api_query(query, self.anon_user, variables={"id": classtype.id})
+#         errors = executed.get('errors')
+#         self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
-    def test_query_one_permission_denied(self):
-        """ Permission denied message when user lacks authorization """   
-        query = self.classtype_query
+#     def test_query_one_permission_denied(self):
+#         """ Permission denied message when user lacks authorization """   
+#         query = self.classtype_query
         
-        user = f.RegularUserFactory.create()
-        classtype = f.SchoolClasstypeFactory.create()
+#         user = f.RegularUserFactory.create()
+#         classtype = f.SchoolClasstypeFactory.create()
 
-        executed = execute_test_client_api_query(query, user, variables={"id": classtype.id})
-        errors = executed.get('errors')
-        self.assertEqual(errors[0]['message'], 'Permission denied!')
-
-
-    def test_query_one_permission_granted(self):
-        """ Respond with data when user has permission """   
-        query = self.classtype_query
-        # Create regular user
-        user = f.RegularUserFactory.create()
-        permission = Permission.objects.get(codename='view_schoolclasstype')
-        user.user_permissions.add(permission)
-        user.save()
-
-        classtype = f.SchoolClasstypeFactory.create()
-
-        executed = execute_test_client_api_query(query, user, variables={"id": classtype.id})
-        data = executed.get('data')
-        self.assertEqual(data['schoolClasstype']['name'], classtype.name)
+#         executed = execute_test_client_api_query(query, user, variables={"id": classtype.id})
+#         errors = executed.get('errors')
+#         self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
-    def test_create_classtype(self):
-        """ Create a classtype """
-        query = self.classtype_create_mutation
+#     def test_query_one_permission_granted(self):
+#         """ Respond with data when user has permission """   
+#         query = self.classtype_query
+#         # Create regular user
+#         user = f.RegularUserFactory.create()
+#         permission = Permission.objects.get(codename='view_schoolclasstype')
+#         user.user_permissions.add(permission)
+#         user.save()
 
-        variables = {
-            "name": "New location",
-            "description": "Classtype description",
-            "displayPublic": True,
-            "urlWebsite": "https://www.costasiella.com"
-        }
+#         classtype = f.SchoolClasstypeFactory.create()
 
-        executed = execute_test_client_api_query(
-            query, 
-            self.admin_user, 
-            variables=variables
-        )
-        data = executed.get('data')
-        self.assertEqual(data['createSchoolClasstype']['schoolClasstype']['name'], variables['name'])
-        self.assertEqual(data['createSchoolClasstype']['schoolClasstype']['archived'], False)
-        self.assertEqual(data['createSchoolClasstype']['schoolClasstype']['description'], variables['description'])
-        self.assertEqual(data['createSchoolClasstype']['schoolClasstype']['displayPublic'], variables['displayPublic'])
-        self.assertEqual(data['createSchoolClasstype']['schoolClasstype']['urlWebsite'], variables['urlWebsite'])
+#         executed = execute_test_client_api_query(query, user, variables={"id": classtype.id})
+#         data = executed.get('data')
+#         self.assertEqual(data['schoolClasstype']['name'], classtype.name)
 
 
-    def test_create_classtype_anon_user(self):
-        """ Create a classtype with anonymous user, check error message """
-        query = self.classtype_create_mutation
-
-        variables = {
-            "name": "New location",
-            "description": "Classtype description",
-            "displayPublic": True,
-            "urlWebsite": "https://www.costasiella.com"
-        }
-
-        executed = execute_test_client_api_query(
-            query, 
-            self.anon_user, 
-            variables=variables
-        )
-        data = executed.get('data')
-        errors = executed.get('errors')
-        self.assertEqual(errors[0]['message'], 'Not logged in!')
-
-
-    def test_create_classtype_permission_granted(self):
-        """ Create a classtype with a user having the add permission """
-        query = self.classtype_create_mutation
-
-        variables = {
-            "name": "New location",
-            "description": "Classtype description",
-            "displayPublic": True,
-            "urlWebsite": "https://www.costasiella.com"
-        }
-
-        # Create regular user
-        user = f.RegularUserFactory.create()
-        permission = Permission.objects.get(codename=self.permission_add)
-        user.user_permissions.add(permission)
-        user.save()
-
-        executed = execute_test_client_api_query(
-            query, 
-            user, 
-            variables=variables
-        )
-        data = executed.get('data')
-        self.assertEqual(data['createSchoolClasstype']['schoolClasstype']['name'], variables['name'])
-        self.assertEqual(data['createSchoolClasstype']['schoolClasstype']['archived'], False)
-        self.assertEqual(data['createSchoolClasstype']['schoolClasstype']['description'], variables['description'])
-        self.assertEqual(data['createSchoolClasstype']['schoolClasstype']['displayPublic'], variables['displayPublic'])
-        self.assertEqual(data['createSchoolClasstype']['schoolClasstype']['urlWebsite'], variables['urlWebsite'])
-
-
-    def test_create_classtype_permission_denied(self):
-        """ Create a classtype with a user not having the add permission """
-        query = self.classtype_create_mutation
-
-        variables = {
-            "name": "New location",
-            "description": "Classtype description",
-            "displayPublic": True,
-            "urlWebsite": "https://www.costasiella.com"
-        }
-
-        # Create regular user
-        user = f.RegularUserFactory.create()
-
-        executed = execute_test_client_api_query(
-            query, 
-            user, 
-            variables=variables
-        )
-        errors = executed.get('errors')
-        self.assertEqual(errors[0]['message'], 'Permission denied!')
-
-
-    def test_update_classtype(self):
-        """ Update a classtype as admin user """
-        query = self.classtype_update_mutation
-        classtype = f.SchoolClasstypeFactory.create()
-
-        variables = {
-            "id": classtype.id,
-            "name": "New classtype",
-            "description": "Classtype description",
-            "displayPublic": True,
-            "urlWebsite": "https://www.costasiella.com"
-        }
-
-        executed = execute_test_client_api_query(
-            query, 
-            self.admin_user, 
-            variables=variables
-        )
-        data = executed.get('data')
-        self.assertEqual(data['updateSchoolClasstype']['schoolClasstype']['id'], str(classtype.id))
-        self.assertEqual(data['updateSchoolClasstype']['schoolClasstype']['name'], variables['name'])
-        self.assertEqual(data['updateSchoolClasstype']['schoolClasstype']['archived'], False)
-        self.assertEqual(data['updateSchoolClasstype']['schoolClasstype']['description'], variables['description'])
-        self.assertEqual(data['updateSchoolClasstype']['schoolClasstype']['displayPublic'], variables['displayPublic'])
-        self.assertEqual(data['updateSchoolClasstype']['schoolClasstype']['urlWebsite'], variables['urlWebsite'])
-
-
-    def test_update_classtype_anon_user(self):
-        """ Update a classtype as anonymous user """
-        query = self.classtype_update_mutation
-        classtype = f.SchoolClasstypeFactory.create()
-
-        variables = {
-            "id": classtype.id,
-            "name": "New classtype",
-            "description": "Classtype description",
-            "displayPublic": True,
-            "urlWebsite": "https://www.costasiella.com"
-        }
-
-        executed = execute_test_client_api_query(
-            query, 
-            self.anon_user, 
-            variables=variables
-        )
-        data = executed.get('data')
-        errors = executed.get('errors')
-        self.assertEqual(errors[0]['message'], 'Not logged in!')
-
-
-    def test_update_classtype_permission_granted(self):
-        """ Update a classtype as user with permission """
-        query = self.classtype_update_mutation
-        classtype = f.SchoolClasstypeFactory.create()
-
-        variables = {
-            "id": classtype.id,
-            "name": "New classtype",
-            "description": "Classtype description",
-            "displayPublic": True,
-            "urlWebsite": "https://www.costasiella.com"
-        }
-
-        user = f.RegularUserFactory.create()
-        permission = Permission.objects.get(codename=self.permission_change)
-        user.user_permissions.add(permission)
-        user.save()
-
-        executed = execute_test_client_api_query(
-            query, 
-            user, 
-            variables=variables
-        )
-        data = executed.get('data')
-        self.assertEqual(data['updateSchoolClasstype']['schoolClasstype']['id'], str(classtype.id))
-        self.assertEqual(data['updateSchoolClasstype']['schoolClasstype']['name'], variables['name'])
-        self.assertEqual(data['updateSchoolClasstype']['schoolClasstype']['archived'], False)
-        self.assertEqual(data['updateSchoolClasstype']['schoolClasstype']['description'], variables['description'])
-        self.assertEqual(data['updateSchoolClasstype']['schoolClasstype']['displayPublic'], variables['displayPublic'])
-        self.assertEqual(data['updateSchoolClasstype']['schoolClasstype']['urlWebsite'], variables['urlWebsite'])
-
-
-    def test_update_classtype_permission_denied(self):
-        """ Update a classtype as user without permissions """
-        query = self.classtype_update_mutation
-        classtype = f.SchoolClasstypeFactory.create()
-
-        variables = {
-            "id": classtype.id,
-            "name": "New classtype",
-            "description": "Classtype description",
-            "displayPublic": True,
-            "urlWebsite": "https://www.costasiella.com"
-        }
-
-        user = f.RegularUserFactory.create()
-
-        executed = execute_test_client_api_query(
-            query, 
-            user, 
-            variables=variables
-        )
-        data = executed.get('data')
-        errors = executed.get('errors')
-        self.assertEqual(errors[0]['message'], 'Permission denied!')
-
-
-#     def test_archive_location(self):
-#         """ Archive a location """
-#         query = '''
-# mutation ArchiveSchoolLocation($id: ID!, $archived: Boolean!) {
-#     archiveSchoolLocation(id: $id, archived: $archived) {
-#         schoolLocation {
-#         id
-#         archived
-#         }
-#     }
-# }
-#         '''
-#         location = SchoolLocationFactory.create()
+#     def test_create_classtype(self):
+#         """ Create a classtype """
+#         query = self.classtype_create_mutation
 
 #         variables = {
-#             "id": location.id,
-#             "archived": True
+#             "name": "New location",
+#             "description": "Classtype description",
+#             "displayPublic": True,
+#             "urlWebsite": "https://www.costasiella.com"
 #         }
 
 #         executed = execute_test_client_api_query(
@@ -454,4 +253,217 @@ mutation UpdateSchoolClasstype($id: ID!, $name: String!, $description:String, $d
 #             variables=variables
 #         )
 #         data = executed.get('data')
-#         self.assertEqual(data['archiveSchoolLocation']['schoolLocation']['archived'], variables['archived'])
+#         self.assertEqual(data['createSchoolClasstype']['schoolClasstype']['name'], variables['name'])
+#         self.assertEqual(data['createSchoolClasstype']['schoolClasstype']['archived'], False)
+#         self.assertEqual(data['createSchoolClasstype']['schoolClasstype']['description'], variables['description'])
+#         self.assertEqual(data['createSchoolClasstype']['schoolClasstype']['displayPublic'], variables['displayPublic'])
+#         self.assertEqual(data['createSchoolClasstype']['schoolClasstype']['urlWebsite'], variables['urlWebsite'])
+
+
+#     def test_create_classtype_anon_user(self):
+#         """ Create a classtype with anonymous user, check error message """
+#         query = self.classtype_create_mutation
+
+#         variables = {
+#             "name": "New location",
+#             "description": "Classtype description",
+#             "displayPublic": True,
+#             "urlWebsite": "https://www.costasiella.com"
+#         }
+
+#         executed = execute_test_client_api_query(
+#             query, 
+#             self.anon_user, 
+#             variables=variables
+#         )
+#         data = executed.get('data')
+#         errors = executed.get('errors')
+#         self.assertEqual(errors[0]['message'], 'Not logged in!')
+
+
+#     def test_create_classtype_permission_granted(self):
+#         """ Create a classtype with a user having the add permission """
+#         query = self.classtype_create_mutation
+
+#         variables = {
+#             "name": "New location",
+#             "description": "Classtype description",
+#             "displayPublic": True,
+#             "urlWebsite": "https://www.costasiella.com"
+#         }
+
+#         # Create regular user
+#         user = f.RegularUserFactory.create()
+#         permission = Permission.objects.get(codename=self.permission_add)
+#         user.user_permissions.add(permission)
+#         user.save()
+
+#         executed = execute_test_client_api_query(
+#             query, 
+#             user, 
+#             variables=variables
+#         )
+#         data = executed.get('data')
+#         self.assertEqual(data['createSchoolClasstype']['schoolClasstype']['name'], variables['name'])
+#         self.assertEqual(data['createSchoolClasstype']['schoolClasstype']['archived'], False)
+#         self.assertEqual(data['createSchoolClasstype']['schoolClasstype']['description'], variables['description'])
+#         self.assertEqual(data['createSchoolClasstype']['schoolClasstype']['displayPublic'], variables['displayPublic'])
+#         self.assertEqual(data['createSchoolClasstype']['schoolClasstype']['urlWebsite'], variables['urlWebsite'])
+
+
+#     def test_create_classtype_permission_denied(self):
+#         """ Create a classtype with a user not having the add permission """
+#         query = self.classtype_create_mutation
+
+#         variables = {
+#             "name": "New location",
+#             "description": "Classtype description",
+#             "displayPublic": True,
+#             "urlWebsite": "https://www.costasiella.com"
+#         }
+
+#         # Create regular user
+#         user = f.RegularUserFactory.create()
+
+#         executed = execute_test_client_api_query(
+#             query, 
+#             user, 
+#             variables=variables
+#         )
+#         errors = executed.get('errors')
+#         self.assertEqual(errors[0]['message'], 'Permission denied!')
+
+
+#     def test_update_classtype(self):
+#         """ Update a classtype as admin user """
+#         query = self.classtype_update_mutation
+#         classtype = f.SchoolClasstypeFactory.create()
+
+#         variables = {
+#             "id": classtype.id,
+#             "name": "New classtype",
+#             "description": "Classtype description",
+#             "displayPublic": True,
+#             "urlWebsite": "https://www.costasiella.com"
+#         }
+
+#         executed = execute_test_client_api_query(
+#             query, 
+#             self.admin_user, 
+#             variables=variables
+#         )
+#         data = executed.get('data')
+#         self.assertEqual(data['updateSchoolClasstype']['schoolClasstype']['id'], str(classtype.id))
+#         self.assertEqual(data['updateSchoolClasstype']['schoolClasstype']['name'], variables['name'])
+#         self.assertEqual(data['updateSchoolClasstype']['schoolClasstype']['archived'], False)
+#         self.assertEqual(data['updateSchoolClasstype']['schoolClasstype']['description'], variables['description'])
+#         self.assertEqual(data['updateSchoolClasstype']['schoolClasstype']['displayPublic'], variables['displayPublic'])
+#         self.assertEqual(data['updateSchoolClasstype']['schoolClasstype']['urlWebsite'], variables['urlWebsite'])
+
+
+#     def test_update_classtype_anon_user(self):
+#         """ Update a classtype as anonymous user """
+#         query = self.classtype_update_mutation
+#         classtype = f.SchoolClasstypeFactory.create()
+
+#         variables = {
+#             "id": classtype.id,
+#             "name": "New classtype",
+#             "description": "Classtype description",
+#             "displayPublic": True,
+#             "urlWebsite": "https://www.costasiella.com"
+#         }
+
+#         executed = execute_test_client_api_query(
+#             query, 
+#             self.anon_user, 
+#             variables=variables
+#         )
+#         data = executed.get('data')
+#         errors = executed.get('errors')
+#         self.assertEqual(errors[0]['message'], 'Not logged in!')
+
+
+#     def test_update_classtype_permission_granted(self):
+#         """ Update a classtype as user with permission """
+#         query = self.classtype_update_mutation
+#         classtype = f.SchoolClasstypeFactory.create()
+
+#         variables = {
+#             "id": classtype.id,
+#             "name": "New classtype",
+#             "description": "Classtype description",
+#             "displayPublic": True,
+#             "urlWebsite": "https://www.costasiella.com"
+#         }
+
+#         user = f.RegularUserFactory.create()
+#         permission = Permission.objects.get(codename=self.permission_change)
+#         user.user_permissions.add(permission)
+#         user.save()
+
+#         executed = execute_test_client_api_query(
+#             query, 
+#             user, 
+#             variables=variables
+#         )
+#         data = executed.get('data')
+#         self.assertEqual(data['updateSchoolClasstype']['schoolClasstype']['id'], str(classtype.id))
+#         self.assertEqual(data['updateSchoolClasstype']['schoolClasstype']['name'], variables['name'])
+#         self.assertEqual(data['updateSchoolClasstype']['schoolClasstype']['archived'], False)
+#         self.assertEqual(data['updateSchoolClasstype']['schoolClasstype']['description'], variables['description'])
+#         self.assertEqual(data['updateSchoolClasstype']['schoolClasstype']['displayPublic'], variables['displayPublic'])
+#         self.assertEqual(data['updateSchoolClasstype']['schoolClasstype']['urlWebsite'], variables['urlWebsite'])
+
+
+#     def test_update_classtype_permission_denied(self):
+#         """ Update a classtype as user without permissions """
+#         query = self.classtype_update_mutation
+#         classtype = f.SchoolClasstypeFactory.create()
+
+#         variables = {
+#             "id": classtype.id,
+#             "name": "New classtype",
+#             "description": "Classtype description",
+#             "displayPublic": True,
+#             "urlWebsite": "https://www.costasiella.com"
+#         }
+
+#         user = f.RegularUserFactory.create()
+
+#         executed = execute_test_client_api_query(
+#             query, 
+#             user, 
+#             variables=variables
+#         )
+#         data = executed.get('data')
+#         errors = executed.get('errors')
+#         self.assertEqual(errors[0]['message'], 'Permission denied!')
+
+
+# #     def test_archive_location(self):
+# #         """ Archive a location """
+# #         query = '''
+# # mutation ArchiveSchoolLocation($id: ID!, $archived: Boolean!) {
+# #     archiveSchoolLocation(id: $id, archived: $archived) {
+# #         schoolLocation {
+# #         id
+# #         archived
+# #         }
+# #     }
+# # }
+# #         '''
+# #         location = SchoolLocationFactory.create()
+
+# #         variables = {
+# #             "id": location.id,
+# #             "archived": True
+# #         }
+
+# #         executed = execute_test_client_api_query(
+# #             query, 
+# #             self.admin_user, 
+# #             variables=variables
+# #         )
+# #         data = executed.get('data')
+# #         self.assertEqual(data['archiveSchoolLocation']['schoolLocation']['archived'], variables['archived'])
