@@ -10,8 +10,8 @@ class SchoolClasstype(models.Model):
     display_public = models.BooleanField(default=True)
     name = models.CharField(max_length=255)
     description = models.TextField()
-    link = models.URLField()
-    image = models.ImageField(upload_to='uploads/')
+    url_website = models.URLField()
+    image = models.ImageField(default=None, upload_to='uploads/')
     
     def __str__(self):
         return self.name

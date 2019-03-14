@@ -9,7 +9,18 @@ class SchoolLocationFactory(factory.DjangoModelFactory):
 
     archived = False
     display_public = True
-    name = 'First location'
+    name = "First location"
+
+
+class SchoolClasstypeFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.SchoolClasstype
+
+    archived = False
+    display_public = True
+    name = "First classtype"
+    description = "Classtype description"
+    url_website = "http://www.costasiella.com"
 
 
 class AdminFactory(factory.DjangoModelFactory):

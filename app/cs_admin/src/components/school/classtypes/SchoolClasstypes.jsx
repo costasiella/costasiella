@@ -7,7 +7,6 @@ import { v4 } from "uuid"
 import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
 
-
 import {
   Page,
   Grid,
@@ -27,55 +26,31 @@ import { toast } from 'react-toastify'
 import ContentCard from "../../general/ContentCard"
 import SchoolMenu from "../SchoolMenu"
 
-import { GET_LOCATIONS_QUERY } from "./queries"
+import { GET_CLASSTYPES_QUERY } from "./queries"
 
-const ARCHIVE_LOCATION = gql`
-  mutation ArchiveSchoolLocation($input: ArchiveSchoolLocationInput!) {
-    archiveSchoolLocation(input: $input) {
-      schoolLocation {
-        id
-        archived
-      }
+const ARCHIVE_CLASSTYPE = gql`
+    mutation ArchiveSchoolClasstype($input: ArchiveSchoolClasstypeInput!) {
+        archiveSchoolClasstype(input: $input) {
+          schoolClasstype {
+            id
+            archived
+          }
+        }
     }
-  }
 `
 
-
-// const onClickArchive = (t, id) => {
-//   const options = {
-//     title: t('please_confirm'),
-//     message: t('school.locations.confirm_archive'),
-//     buttons: [
-//       {
-//         label: t('yes'),
-//         onClick: () => alert('Click Yes'),
-//         class: 'btn btn-primary'
-//       },
-//       {
-//         label: t('no'),
-//         onClick: () => alert('Click No')
-//       }
-//     ],
-//     childrenElement: () => <div />,
-//     // customUI: ({ title, message, onClose }) => <div>Custom UI</div>,
-//     willUnmount: () => {}
-//   }
-
-//   confirmAlert(options)
-// }
-
-const SchoolLocations = ({ t, history, archived=false }) => (
+const SchoolClasstypes = ({ t, history, archived=false }) => (
   <SiteWrapper>
     <div className="my-3 my-md-5">
       <Container>
         <Page.Header title="School" />
         <Grid.Row>
           <Grid.Col md={9}>
-            <Query query={GET_LOCATIONS_QUERY} variables={{ archived }}>
-             {({ loading, error, data: {schoolLocations: locations}, refetch, fetchMore }) => {
+            <Query query={GET_CLASSTYPES_QUERY} variables={{ archived }}>
+            {({ loading, error, data: {schoolClasstypes: classtypes}, refetch, fetchMore }) => {
                 // Loading
                 if (loading) return (
-                  <ContentCard cardTitle={t('school.locations.title')}>
+                  <ContentCard cardTitle={t('school.classtypes.title')}>
                     <Dimmer active={true}
                             loadder={true}>
                     </Dimmer>
@@ -83,8 +58,8 @@ const SchoolLocations = ({ t, history, archived=false }) => (
                 )
                 // Error
                 if (error) return (
-                  <ContentCard cardTitle={t('school.locations.title')}>
-                    <p>{t('school.locations.error_loading')}</p>
+                  <ContentCard cardTitle={t('school.classtypes.title')}>
+                    <p>{t('school.classtypes.error_loading')}</p>
                   </ContentCard>
                 )
                 const headerOptions = <Card.Options>
@@ -102,36 +77,36 @@ const SchoolLocations = ({ t, history, archived=false }) => (
                 </Card.Options>
                 
                 // Empty list
-                if (!locations.edges.length) { return (
-                  <ContentCard cardTitle={t('school.locations.title')}
+                if (!classtypes.edges.length) { return (
+                  <ContentCard cardTitle={t('school.classtypes.title')}
                                headerContent={headerOptions}>
                     <p>
-                    {(!archived) ? t('school.locations.empty_list') : t("school.locations.empty_archive")}
+                    {(!archived) ? t('school.classtypes.empty_list') : t("school.classtypes.empty_archive")}
                     </p>
                    
                   </ContentCard>
                 )} else {   
                 // Life's good! :)
                 return (
-                  <ContentCard cardTitle={t('school.locations.title')}
+                  <ContentCard cardTitle={t('school.classtypes.title')}
                                headerContent={headerOptions}
-                               pageInfo={locations.pageInfo}
+                               pageInfo={classtypes.pageInfo}
                                onLoadMore={() => {
                                 fetchMore({
                                   variables: {
-                                    after: locations.pageInfo.endCursor
+                                    after: classtypes.pageInfo.endCursor
                                   },
                                   updateQuery: (previousResult, { fetchMoreResult }) => {
-                                    const newEdges = fetchMoreResult.schoolLocations.edges
-                                    const pageInfo = fetchMoreResult.schoolLocations.pageInfo
+                                    const newEdges = fetchMoreResult.schoolClasstypes.edges
+                                    const pageInfo = fetchMoreResult.schoolClasstypes.pageInfo
 
                                     return newEdges.length
                                       ? {
                                           // Put the new locations at the end of the list and update `pageInfo`
                                           // so we have the new `endCursor` and `hasNextPage` values
-                                          schoolLocations: {
-                                            __typename: previousResult.schoolLocations.__typename,
-                                            edges: [ ...previousResult.schoolLocations.edges, ...newEdges ],
+                                          schoolClasstypes: {
+                                            __typename: previousResult.schoolClasstypes.__typename,
+                                            edges: [ ...previousResult.schoolClasstypes.edges, ...newEdges ],
                                             pageInfo
                                           }
                                         }
@@ -143,14 +118,20 @@ const SchoolLocations = ({ t, history, archived=false }) => (
                           <Table.Header>
                             <Table.Row key={v4()}>
                               <Table.ColHeader>{t('name')}</Table.ColHeader>
+                              <Table.ColHeader>{t('description')}</Table.ColHeader>
                               <Table.ColHeader>{t('public')}</Table.ColHeader>
                             </Table.Row>
                           </Table.Header>
                           <Table.Body>
-                              {locations.edges.map(({ node }) => (
+                              {classtypes.edges.map(({ node }) => (
                                 <Table.Row key={v4()}>
                                   <Table.Col key={v4()}>
                                     {node.name}
+                                  </Table.Col>
+                                  <Table.Col key={v4()}>
+                                    <span title={node.description}>
+                                      {node.description}
+                                    </span>
                                   </Table.Col>
                                   <Table.Col key={v4()}>
                                     {(node.displayPublic) ? 
@@ -158,21 +139,20 @@ const SchoolLocations = ({ t, history, archived=false }) => (
                                       <Badge color="danger">{t('no')}</Badge>}
                                   </Table.Col>
                                   <Table.Col className="text-right" key={v4()}>
-                                    {(node.archived) ? 
+                                    {(archived) ? 
                                       <span className='text-muted'>{t('unarchive_to_edit')}</span> :
                                       <Button className='btn-sm' 
-                                              onClick={() => history.push("/school/locations/edit/" + node.id)}
+                                              onClick={() => history.push("/school/classtypes/edit/" + node.id)}
                                               color="secondary">
                                         {t('edit')}
                                       </Button>
                                     }
                                   </Table.Col>
-                                  <Mutation mutation={ARCHIVE_LOCATION} key={v4()}>
+                                  <Mutation mutation={ARCHIVE_CLASSTYPE} key={v4()}>
                                     {(archiveLocation, { data }) => (
                                       <Table.Col className="text-right" key={v4()}>
                                         <button className="icon btn btn-link btn-sm" 
                                            title={t('archive')} 
-                                           href=""
                                            onClick={() => {
                                              console.log("clicked archived")
                                              let id = node.id
@@ -182,7 +162,7 @@ const SchoolLocations = ({ t, history, archived=false }) => (
                                                 archived: !archived
                                                }
                                         }, refetchQueries: [
-                                            {query: GET_LOCATIONS_QUERY, variables: {"archived": archived }}
+                                            {query: GET_CLASSTYPES_QUERY, variables: {"archived": archived }}
                                         ]}).then(({ data }) => {
                                           console.log('got data', data);
                                           toast.success(
@@ -212,13 +192,13 @@ const SchoolLocations = ({ t, history, archived=false }) => (
           </Grid.Col>
           <Grid.Col md={3}>
             <HasPermissionWrapper permission="add"
-                                  resource="schoollocation">
+                                  resource="schoolclasstype">
               <Button color="primary btn-block mb-6"
-                      onClick={() => history.push("/school/locations/add")}>
-                <Icon prefix="fe" name="plus-circle" /> {t('school.locations.add')}
+                      onClick={() => history.push("/school/classtypes/add")}>
+                <Icon prefix="fe" name="plus-circle" /> {t('school.classtypes.add')}
               </Button>
             </HasPermissionWrapper>
-            <SchoolMenu active_link='schoollocations'/>
+            <SchoolMenu active_link='schoolclasstypes'/>
           </Grid.Col>
         </Grid.Row>
       </Container>
@@ -226,4 +206,4 @@ const SchoolLocations = ({ t, history, archived=false }) => (
   </SiteWrapper>
 );
 
-export default withTranslation()(withRouter(SchoolLocations))
+export default withTranslation()(withRouter(SchoolClasstypes))

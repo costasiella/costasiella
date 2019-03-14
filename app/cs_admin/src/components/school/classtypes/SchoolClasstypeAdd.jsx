@@ -9,8 +9,8 @@ import { Formik, Form as FoForm, Field, ErrorMessage } from 'formik'
 import { toast } from 'react-toastify'
 
 
-import { GET_LOCATIONS_QUERY } from './queries'
-import { LOCATION_SCHEMA } from './yupSchema'
+import { GET_CLASSTYPES_QUERY } from './queries'
+import { CLASSTYPE_SCHEMA } from './yupSchema'
 
 
 import {
@@ -28,22 +28,24 @@ import HasPermissionWrapper from "../../HasPermissionWrapper"
 import SchoolMenu from "../SchoolMenu"
 
 
-const ADD_LOCATION = gql`
-  mutation CreateSchoolLocation($input: CreateSchoolLocationInput!) {
-    createSchoolLocation(input: $input) {
-      schoolLocation {
-        id
-        archived
-        displayPublic
-        name
-      }
+const ADD_CLASSTYPE = gql`
+mutation CreateSchoolClasstype($input: CreateSchoolClasstypeInput!) {
+  createSchoolClasstype(input: $input) {
+    schoolClasstype {
+      id
+      archived
+      name
+      description
+      displayPublic
+      urlWebsite
     }
   }
+}
 `
 
-const return_url = "/school/locations"
+const return_url = "/school/classtypes"
 
-const SchoolLocationAdd = ({ t, history }) => (
+const SchoolClasstypeAdd = ({ t, history }) => (
   <SiteWrapper>
     <div className="my-3 my-md-5">
       <Container>
@@ -52,25 +54,27 @@ const SchoolLocationAdd = ({ t, history }) => (
           <Grid.Col md={9}>
           <Card>
             <Card.Header>
-              <Card.Title>{t('school.locations.title_add')}</Card.Title>
+              <Card.Title>{t('school.classtypes.title_add')}</Card.Title>
             </Card.Header>
-            <Mutation mutation={ADD_LOCATION} onCompleted={() => history.push(return_url)}> 
-                {(addLocation, { data }) => (
+            <Mutation mutation={ADD_CLASSTYPE} onCompleted={() => history.push(return_url)}> 
+                {(addClasstype, { data }) => (
                     <Formik
-                        initialValues={{ name: '', displayPublic: true }}
-                        validationSchema={LOCATION_SCHEMA}
+                        initialValues={{ name: '', description: '', displayPublic: true, link: '' }}
+                        validationSchema={CLASSTYPE_SCHEMA}
                         onSubmit={(values, { setSubmitting }) => {
-                            addLocation({ variables: {
+                            addClasstype({ variables: {
                               input: {
                                 name: values.name, 
-                                displayPublic: values.displayPublic
+                                description: values.description,
+                                displayPublic: values.displayPublic,
+                                urlWebsite: values.urlWebsite
                               }
                             }, refetchQueries: [
-                                {query: GET_LOCATIONS_QUERY, variables: {"archived": false }}
+                                {query: GET_CLASSTYPES_QUERY, variables: {"archived": false }}
                             ]})
                             .then(({ data }) => {
                                 console.log('got data', data);
-                                toast.success((t('school.locations.toast_add_success')), {
+                                toast.success((t('school.classtypes.toast_add_success')), {
                                     position: toast.POSITION.BOTTOM_RIGHT
                                   })
                               }).catch((error) => {
@@ -97,17 +101,31 @@ const SchoolLocationAdd = ({ t, history }) => (
                                           name="displayPublic" 
                                           checked={values.displayPublic} />
                                         <span className="custom-switch-indicator" ></span>
-                                        <span className="custom-switch-description">{t('school.location.public')}</span>
+                                        <span className="custom-switch-description">{t('school.classtype.public')}</span>
                                       </Form.Label>
                                       <ErrorMessage name="displayPublic" component="div" />   
                                     </Form.Group>    
-
-                                    <Form.Group label={t('school.location.name')}>
+                                    <Form.Group label={t('school.classtype.name')}>
                                       <Field type="text" 
                                               name="name" 
                                               className={(errors.name) ? "form-control is-invalid" : "form-control"} 
                                               autoComplete="off" />
                                       <ErrorMessage name="name" component="span" className="invalid-feedback" />
+                                    </Form.Group>
+                                    <Form.Group label={t('description')}>
+                                      <Field type="text" 
+                                             component="textarea"
+                                             name="description" 
+                                             className={(errors.description) ? "form-control is-invalid" : "form-control"} 
+                                             autoComplete="off" />
+                                      <ErrorMessage name="description" component="span" className="invalid-feedback" />
+                                    </Form.Group>
+                                    <Form.Group label={t('school.classtype.url_website')}>
+                                      <Field type="text" 
+                                             name="urlWebsite" 
+                                             className={(errors.urlWebsite) ? "form-control is-invalid" : "form-control"} 
+                                             autoComplete="off" />
+                                      <ErrorMessage name="urlWebsite" component="span" className="invalid-feedback" />
                                     </Form.Group>
                                 </Card.Body>
                                 <Card.Footer>
@@ -146,4 +164,4 @@ const SchoolLocationAdd = ({ t, history }) => (
   </SiteWrapper>
 );
 
-export default withTranslation()(withRouter(SchoolLocationAdd))
+export default withTranslation()(withRouter(SchoolClasstypeAdd))
