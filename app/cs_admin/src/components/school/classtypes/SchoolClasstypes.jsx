@@ -127,7 +127,7 @@ const SchoolClasstypes = ({ t, history, archived=false }) => (
                               {classtypes.edges.map(({ node }) => (
                                 <Table.Row key={v4()}>
                                   <Table.Col key={v4()}>
-                                    <img src={node.urlImageThumbnailSmall} />
+                                    <img src={node.urlImageThumbnailSmall} alt="" />
                                   </Table.Col>
                                   <Table.Col key={v4()}>
                                     {node.name}

@@ -5,7 +5,6 @@ import gql from "graphql-tag"
 import { Query, Mutation } from "react-apollo";
 import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
-import { Formik, Form as FoForm, Field, ErrorMessage } from 'formik'
 import { toast } from 'react-toastify'
 
 import { GET_CLASSTYPES_QUERY, GET_CLASSTYPE_QUERY } from './queries'
@@ -24,7 +23,6 @@ import SiteWrapper from "../../SiteWrapper"
 import HasPermissionWrapper from "../../HasPermissionWrapper"
 
 import SchoolMenu from "../SchoolMenu"
-import { format } from 'path';
 
 
 const UPDATE_CLASSTYPE_IMAGE = gql`
@@ -87,7 +85,7 @@ class SchoolClasstypeEditImage extends Component {
       ]})
       .then(({ data }) => {
           console.log('got data', data)
-          toast.success((t('school.classtypes.toast_edit_success')), {
+          toast.success((t('school.classtypes.toast_image_save_success')), {
               position: toast.POSITION.BOTTOM_RIGHT
             })
         }).catch((error) => {
@@ -116,6 +114,7 @@ class SchoolClasstypeEditImage extends Component {
   //       reader.readAsDataURL(file);
   //     }
   //   }
+
 
   render() {
     const t = this.props.t
@@ -155,10 +154,10 @@ class SchoolClasstypeEditImage extends Component {
                         {(uploadImage, { data }) => (
                           // <Form onSubmit={(event) => this.onSubmit(event)}>
                           
-                            <Form onSubmit={(event) => this.onSubmit(event, initialData.id, uploadImage)}>
+                            <Form autoComplete="off" onSubmit={(event) => this.onSubmit(event, initialData.id, uploadImage)}>
                               <Card.Body>
                                 <div className="form-group">
-                                  <label class="form-label">{t('choose_image')}</label>
+                                  <label className="form-label">{t('choose_image')}</label>
                                   <div className="custom-file">
                                     <input type="file" ref={this.fileInput} className="custom-file-input" />
                                     <label className="custom-file-label" style={customFileInputLabelStyle}>
