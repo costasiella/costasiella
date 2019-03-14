@@ -38,6 +38,7 @@ mutation CreateSchoolClasstype($input: CreateSchoolClasstypeInput!) {
       description
       displayPublic
       urlWebsite
+      image
     }
   }
 }
@@ -62,13 +63,17 @@ const SchoolClasstypeAdd = ({ t, history }) => (
                         initialValues={{ name: '', description: '', displayPublic: true, link: '' }}
                         validationSchema={CLASSTYPE_SCHEMA}
                         onSubmit={(values, { setSubmitting }) => {
+                            console.log(values.image)
+
                             addClasstype({ variables: {
                               input: {
                                 name: values.name, 
                                 description: values.description,
                                 displayPublic: values.displayPublic,
-                                urlWebsite: values.urlWebsite
-                              }
+                                urlWebsite: values.urlWebsite,
+                                image: values.image
+                              },
+                              // file: values.image
                             }, refetchQueries: [
                                 {query: GET_CLASSTYPES_QUERY, variables: {"archived": false }}
                             ]})
@@ -86,7 +91,7 @@ const SchoolClasstypeAdd = ({ t, history }) => (
                               })
                         }}
                         >
-                        {({ isSubmitting, errors, values }) => (
+                        {({ isSubmitting, setFieldValue, errors, values }) => (
                             <FoForm>
                                 <Card.Body>
                                     {/* <Form.Group label={t('school.location.public')}>
@@ -126,6 +131,13 @@ const SchoolClasstypeAdd = ({ t, history }) => (
                                              className={(errors.urlWebsite) ? "form-control is-invalid" : "form-control"} 
                                              autoComplete="off" />
                                       <ErrorMessage name="urlWebsite" component="span" className="invalid-feedback" />
+                                    </Form.Group>
+                                    <Form.Group label={t('school.classtype.image')}>
+                                      <Field type="file" 
+                                             name="image" 
+                                             className={(errors.file) ? "form-control is-invalid" : "form-control"} 
+                                             autoComplete="off" />
+                                      <ErrorMessage name="file" component="span" className="invalid-feedback" />
                                     </Form.Group>
                                 </Card.Body>
                                 <Card.Footer>

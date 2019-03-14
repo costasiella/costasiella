@@ -85,7 +85,7 @@ class SchoolClasstypeEdit extends Component {
                     return (
                       
                       <Mutation mutation={UPDATE_CLASSTYPE} onCompleted={() => history.push(return_url)}> 
-                      {(updateLocation, { data }) => (
+                      {(updateClasstype, { data }) => (
                           <Formik
                               initialValues={{ 
                                 name: initialData.name, 
@@ -98,7 +98,7 @@ class SchoolClasstypeEdit extends Component {
                                   console.log('submit values:')
                                   console.log(values)
 
-                                  updateLocation({ variables: {
+                                  updateClasstype({ variables: {
                                     input: {
                                       id: match.params.id,
                                       name: values.name,

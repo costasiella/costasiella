@@ -75,7 +75,7 @@ class CreateSchoolClasstype(graphene.relay.ClientIDMutation):
             name=input['name'], 
             description=input['description'],
             display_public=input['display_public'],
-            url_website=url_website
+            url_website=url_website,
         )
         school_classtype.save()
 
@@ -117,6 +117,25 @@ class UpdateSchoolClasstype(graphene.relay.ClientIDMutation):
         return UpdateSchoolClasstype(school_classtype=classtype)
 
 
+class UploadSchoolCLasstypeImage(graphene.relay.ClientIDMutation):
+    class Input:
+        pass
+        # nothing needed for uploading file
+
+    success = graphene.String()
+
+    @classmethod
+    def mutate_and_get_payload(cls, root, info, **input):
+        # When using it in Django, context will be the request
+        files = info.context.FILES
+        # Or, if used in Flask, context will be the flask global request
+        # files = context.files
+
+        # do something with files
+
+        return UploadFile(success=True)
+
+
 class ArchiveSchoolClasstype(graphene.relay.ClientIDMutation):
     class Input:
         id = graphene.ID(required=True)
@@ -144,3 +163,4 @@ class SchoolClasstypeMutation(graphene.ObjectType):
     archive_school_classtype = ArchiveSchoolClasstype.Field()
     create_school_classtype = CreateSchoolClasstype.Field()
     update_school_classtype = UpdateSchoolClasstype.Field()
+    upload_school_classtype_image = UploadSchoolCLasstypeImage.Field()

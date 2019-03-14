@@ -141,11 +141,18 @@ const SchoolClasstypes = ({ t, history, archived=false }) => (
                                   <Table.Col className="text-right" key={v4()}>
                                     {(archived) ? 
                                       <span className='text-muted'>{t('unarchive_to_edit')}</span> :
-                                      <Button className='btn-sm' 
-                                              onClick={() => history.push("/school/classtypes/edit/" + node.id)}
-                                              color="secondary">
-                                        {t('edit')}
-                                      </Button>
+                                      <div>
+                                        <Button className='btn-sm' 
+                                                onClick={() => history.push("/school/classtypes/edit/" + node.id)}
+                                                color="secondary">
+                                          {t('edit')}
+                                        </Button>
+                                        <Button className='btn-sm' 
+                                                onClick={() => history.push("/school/classtypes/edit_image/" + node.id)}
+                                                color="secondary">
+                                          {t('image')}
+                                        </Button>
+                                      </div>
                                     }
                                   </Table.Col>
                                   <Mutation mutation={ARCHIVE_CLASSTYPE} key={v4()}>
