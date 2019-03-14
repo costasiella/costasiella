@@ -161,6 +161,11 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "assets", "logos", "stock"),
 ]
 
+# Media files (User uploads)
+# https://docs.djangoproject.com/en/2.1/topics/files/
+MEDIA_ROOT = '/home/edwin/Development/costasiella/app/costasiella/media'
+MEDIA_URL = '/media/'
+
 # Email configuration
 
 EMAIL_HOST = 'localhost'

@@ -150,13 +150,15 @@ class UploadSchoolClasstypeImage(graphene.relay.ClientIDMutation):
         (image_type, image_file) = b64_enc_image.split(',')
         # print(image_type)
 
-        # print('current image')
-        # img = classtype.image
-        # print(img.name)
-        # print(img.url)
-
-        classtype.image = base64_file(data=b64_enc_image, name="image <3")
+        
+        classtype.image = base64_file(data=b64_enc_image)
         classtype.save(force_update=True)
+
+        print('new image')
+        img = classtype.image
+        print(img.name)
+        print(img.path)
+        print(img.url)
 
         return UpdateSchoolClasstype(school_classtype=classtype)
 

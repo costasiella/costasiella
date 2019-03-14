@@ -11,7 +11,7 @@ class SchoolClasstype(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField()
     url_website = models.URLField()
-    image = models.ImageField(default=None, upload_to='costasiella/uploads/school_classtype_images')
+    image = models.ImageField(default=None, upload_to='costasiella/media/school_classtype_images')
     
     def __str__(self):
         return self.name
