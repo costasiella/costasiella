@@ -44,6 +44,13 @@ mutation UploadSchoolClasstypeImage($input: UploadSchoolClasstypeImageInput!) {
 `
 
 
+const customFileInputLabelStyle = {
+  whiteSpace: "nowrap",
+  display: "block",
+  overflow: "hidden"
+}
+
+
 class SchoolClasstypeEditImage extends Component {
   constructor(props) {
     super(props)
@@ -147,15 +154,38 @@ class SchoolClasstypeEditImage extends Component {
                       <Mutation mutation={UPDATE_CLASSTYPE_IMAGE} onCompleted={() => history.push(return_url)}> 
                         {(uploadImage, { data }) => (
                           // <Form onSubmit={(event) => this.onSubmit(event)}>
-                          <Form onSubmit={(event) => this.onSubmit(event, initialData.id, uploadImage)}>
-                            {/* <Form.FileInput ref={this.fileInput} name="fileInput"  /> */}
-                            <input type="file"
-                                   ref={this.fileInput}
-                                   onChange={this.previewFile}
-                            />
-                            {/* <img ref={this.fileInputPreview} src="" height="200" alt="Image preview..."></img> */}
-                            <Button type='submit' value='Submit'>Submit</Button>
-                          </Form>
+                          
+                            <Form onSubmit={(event) => this.onSubmit(event, initialData.id, uploadImage)}>
+                              <Card.Body>
+                                <div className="form-group">
+                                  <label class="form-label">{t('choose_image')}</label>
+                                  <div className="custom-file">
+                                    <input type="file" ref={this.fileInput} className="custom-file-input" />
+                                    <label className="custom-file-label" style={customFileInputLabelStyle}>
+                                      {t("custom_file_input_label")}
+                                    </label>
+                                  </div>
+                                </div>
+                              </Card.Body>
+                              <Card.Footer>
+                                <Button 
+                                  className="pull-right"
+                                  color="primary"
+                                  type="submit"
+                                >
+                                  {t('submit')}
+                                </Button>
+                                <Button
+                                  type="button" 
+                                  color="link" 
+                                  onClick={() => history.push(return_url)}
+                                >
+                                    {t('cancel')}
+                                </Button>
+                                {/* <Button type='submit' value='Submit'>{t('submit')}</Button> */}
+                              </Card.Footer>
+                              {/* <img ref={this.fileInputPreview} src="" height="200" alt="Image preview..."></img> */}
+                            </Form>
                         )}
                       </Mutation>
                     )

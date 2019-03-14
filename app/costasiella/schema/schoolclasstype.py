@@ -31,7 +31,7 @@ class SchoolClasstypeNode(DjangoObjectType):
 
     def resolve_url_image_thumbnail_small(self, info):
         if self.image:
-            return get_thumbnail(self.image, '75x75', crop='center', quality=99).url
+            return get_thumbnail(self.image, '50x50', crop='center', quality=99).url
         else:
             return ''
     

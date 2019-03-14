@@ -209,3 +209,7 @@ ACCOUNT_LOGIN_ATTEMPTS_LIMIT = 7
 ACCOUNT_LOGIN_ATTEMPTS_TIMEOUT = 900 # Lock out a user for 15 minutes after 7 invalid attempts to log in
 ACCOUNT_SIGNUP_FORM_CLASS = 'costasiella.forms.SignupForm'
 ACCOUNT_LOGIN_ON_PASSWORD_RESET = True # Log in users after password reset instead of showing a "done" page.
+
+
+# Allow Base64 encoded uploads of up to 5MB
+DATA_UPLOAD_MAX_MEMORY_SIZE = 5242880

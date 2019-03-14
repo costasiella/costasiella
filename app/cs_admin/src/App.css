@@ -2,47 +2,10 @@
   height: 100%;
 }
 
-/* Tabler changes */
-
-
-/* Make container behave like container-fluid ... not working yet */
-/* .container {
-  width: 100%;
-  padding-right: .75rem;
-  padding-left: .75rem;
-  margin-right: auto;
-  margin-left: auto;
-} */
-
-/* .App {
-  text-align: center;
+/* Tabler changes begin */
+table .btn {
+  margin-left: 4px;
 }
 
-.App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 40vmin;
-}
+/* Tabler changes end */
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-} */
