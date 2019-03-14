@@ -134,7 +134,7 @@ class ArchiveSchoolClasstype(graphene.relay.ClientIDMutation):
         if not classtype:
             raise Exception('Invalid School Classtype ID!')
 
-        classtype.archived = archived
+        classtype.archived = input['archived']
         classtype.save(force_update=True)
 
         return ArchiveSchoolClasstype(school_classtype=classtype)
