@@ -79,7 +79,7 @@ const SchoolClasstypes = ({ t, history, archived=false }) => (
                 // Empty list
                 if (!classtypes.edges.length) { return (
                   <ContentCard cardTitle={t('school.classtypes.title')}
-                               header_content={headerOptions}>
+                               headerContent={headerOptions}>
                     <p>
                     {(!archived) ? t('school.classtypes.empty_list') : t("school.classtypes.empty_archive")}
                     </p>
@@ -89,7 +89,31 @@ const SchoolClasstypes = ({ t, history, archived=false }) => (
                 // Life's good! :)
                 return (
                   <ContentCard cardTitle={t('school.classtypes.title')}
-                               headerContent={headerOptions}>
+                               headerContent={headerOptions}
+                               pageInfo={classtypes.pageInfo}
+                               onLoadMore={() => {
+                                fetchMore({
+                                  variables: {
+                                    after: classtypes.pageInfo.endCursor
+                                  },
+                                  updateQuery: (previousResult, { fetchMoreResult }) => {
+                                    const newEdges = fetchMoreResult.schoolClasstypes.edges
+                                    const pageInfo = fetchMoreResult.schoolClasstypes.pageInfo
+
+                                    return newEdges.length
+                                      ? {
+                                          // Put the new locations at the end of the list and update `pageInfo`
+                                          // so we have the new `endCursor` and `hasNextPage` values
+                                          schoolClasstypes: {
+                                            __typename: previousResult.schoolClasstypes.__typename,
+                                            edges: [ ...previousResult.schoolClasstypes.edges, ...newEdges ],
+                                            pageInfo
+                                          }
+                                        }
+                                      : previousResult
+                                  }
+                                })
+                              }} >
                     <Table>
                           <Table.Header>
                             <Table.Row key={v4()}>

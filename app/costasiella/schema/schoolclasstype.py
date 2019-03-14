@@ -117,7 +117,7 @@ class UpdateSchoolClasstype(graphene.relay.ClientIDMutation):
         return UpdateSchoolClasstype(school_classtype=classtype)
 
 
-class ArchiveSchoolClasstype(graphene.Mutation):
+class ArchiveSchoolClasstype(graphene.relay.ClientIDMutation):
     class Input:
         id = graphene.ID(required=True)
         archived = graphene.Boolean(required=True)
