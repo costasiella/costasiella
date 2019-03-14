@@ -110,7 +110,7 @@ mutation ArchiveSchoolClasstype($input: ArchiveSchoolClasstypeInput!) {
 
 
     def get_node_id_of_first_classtype(self):
-        # query locations to get node id easily
+        # query classtypes to get node id easily
         variables = {
             'archived': False
         }
@@ -183,13 +183,13 @@ mutation ArchiveSchoolClasstype($input: ArchiveSchoolClasstypeInput!) {
         executed = execute_test_client_api_query(query, user, variables=variables)
         data = executed.get('data')
 
-        # List all locations, including non public
+        # List all classtypes, including non public
         non_public_found = False
         for item in data['schoolClasstypes']['edges']:
             if not item['node']['displayPublic']:
                 non_public_found = True
 
-        # Assert non public locations are listed
+        # Assert non public classtypes are listed
         self.assertEqual(non_public_found, True)
 
 
@@ -207,13 +207,13 @@ mutation ArchiveSchoolClasstype($input: ArchiveSchoolClasstypeInput!) {
 
 
     def test_query_one(self):
-        """ Query one location """   
+        """ Query one classtype """   
         classtype = f.SchoolClasstypeFactory.create()
 
-        # First query locations to get node id easily
+        # First query classtypes to get node id easily
         node_id = self.get_node_id_of_first_classtype()
 
-        # Now query single location and check
+        # Now query single classtype and check
         query = self.classtype_query
         executed = execute_test_client_api_query(query, self.admin_user, variables={"id": node_id})
         data = executed.get('data')
@@ -271,7 +271,7 @@ mutation ArchiveSchoolClasstype($input: ArchiveSchoolClasstypeInput!) {
 
         variables = {
             "input": {
-                "name": "New location",
+                "name": "New classtype",
                 "description": "Classtype description",
                 "displayPublic": True,
                 "urlWebsite": "https://www.costasiella.com"
@@ -297,7 +297,7 @@ mutation ArchiveSchoolClasstype($input: ArchiveSchoolClasstypeInput!) {
 
         variables = {
             "input": {
-                "name": "New location",
+                "name": "New classtype",
                 "description": "Classtype description",
                 "displayPublic": True,
                 "urlWebsite": "https://www.costasiella.com"
@@ -320,7 +320,7 @@ mutation ArchiveSchoolClasstype($input: ArchiveSchoolClasstypeInput!) {
 
         variables = {
             "input": {
-                "name": "New location",
+                "name": "New classtype",
                 "description": "Classtype description",
                 "displayPublic": True,
                 "urlWebsite": "https://www.costasiella.com"
@@ -352,7 +352,7 @@ mutation ArchiveSchoolClasstype($input: ArchiveSchoolClasstypeInput!) {
 
         variables = {
             "input": {
-                "name": "New location",
+                "name": "New classtype",
                 "description": "Classtype description",
                 "displayPublic": True,
                 "urlWebsite": "https://www.costasiella.com"
@@ -484,29 +484,96 @@ mutation ArchiveSchoolClasstype($input: ArchiveSchoolClasstypeInput!) {
         self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
-# #     def test_archive_location(self):
-# #         """ Archive a location """
-# #         query = '''
-# # mutation ArchiveSchoolLocation($id: ID!, $archived: Boolean!) {
-# #     archiveSchoolLocation(id: $id, archived: $archived) {
-# #         schoolLocation {
-# #         id
-# #         archived
-# #         }
-# #     }
-# # }
-# #         '''
-# #         location = SchoolLocationFactory.create()
+    def test_archive_classtype(self):
+        """ Archive a classtype """
+        query = self.classtype_archive_mutation
+        classtype = f.SchoolClasstypeFactory.create()
 
-# #         variables = {
-# #             "id": location.id,
-# #             "archived": True
-# #         }
+        variables = {
+            "input": {
+                "id": self.get_node_id_of_first_classtype(),
+                "archived": True
+            }
+        }
 
-# #         executed = execute_test_client_api_query(
-# #             query, 
-# #             self.admin_user, 
-# #             variables=variables
-# #         )
-# #         data = executed.get('data')
-# #         self.assertEqual(data['archiveSchoolLocation']['schoolLocation']['archived'], variables['archived'])
+        executed = execute_test_client_api_query(
+            query, 
+            self.admin_user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['archiveSchoolClasstype']['schoolClasstype']['archived'], variables['input']['archived'])
+
+
+    def test_archive_classtype_anon_user(self):
+        """ Archive a classtype """
+        query = self.classtype_archive_mutation
+        classtype = f.SchoolClasstypeFactory.create()
+
+        variables = {
+            "input": {
+                "id": self.get_node_id_of_first_classtype(),
+                "archived": True
+            }
+        }
+
+        executed = execute_test_client_api_query(
+            query, 
+            self.anon_user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
+
+
+    def test_archive_classtype_permission_granted(self):
+        """ Allow archiving classtypes for users with permissions """
+        query = self.classtype_archive_mutation
+
+        classtype = f.SchoolClasstypeFactory.create()
+        variables = {
+            "input": {
+                "id": self.get_node_id_of_first_classtype(),
+                "archived": True
+            }
+        }
+        # Create regular user
+        user = f.RegularUserFactory.create()
+        permission = Permission.objects.get(codename=self.permission_delete)
+        user.user_permissions.add(permission)
+        user.save()
+
+        executed = execute_test_client_api_query(
+            query, 
+            user,
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['archiveSchoolClasstype']['schoolClasstype']['archived'], variables['input']['archived'])
+
+
+    def test_archive_classtype_permission_denied(self):
+        """ Check archive classtype permission denied error message """
+        query = self.classtype_archive_mutation
+
+        classtype = f.SchoolClasstypeFactory.create()
+        variables = {
+            "input": {
+                "id": self.get_node_id_of_first_classtype(),
+                "archived": True
+            }
+        }
+        # Create regular user
+        user = f.RegularUserFactory.create()
+
+        executed = execute_test_client_api_query(
+            query, 
+            user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
+
+
