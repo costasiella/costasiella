@@ -203,12 +203,7 @@ query getSchoolLocation($id: ID!) {
         location = f.SchoolLocationFactory.create()
 
         # First query locations to get node id easily
-        variables = {
-            'archived': False
-        }
-        executed = execute_test_client_api_query(self.locations_query, self.admin_user, variables=variables)
-        data = executed.get('data')
-        node_id = data['schoolLocations']['edges'][0]['node']['id']
+        node_id = self.get_node_id_of_first_location()
 
         # Now query single location and check
         query = self.location_query
@@ -224,12 +219,7 @@ query getSchoolLocation($id: ID!) {
         location = f.SchoolLocationFactory.create()
 
         # First query locations to get node id easily
-        variables = {
-            'archived': False
-        }
-        executed = execute_test_client_api_query(self.locations_query, self.admin_user, variables=variables)
-        data = executed.get('data')
-        node_id = data['schoolLocations']['edges'][0]['node']['id']
+        node_id = self.get_node_id_of_first_location()
 
         # Now query single location and check
         query = self.location_query
@@ -245,12 +235,7 @@ query getSchoolLocation($id: ID!) {
         location = f.SchoolLocationFactory.create()
 
         # First query locations to get node id easily
-        variables = {
-            'archived': False
-        }
-        executed = execute_test_client_api_query(self.locations_query, self.admin_user, variables=variables)
-        data = executed.get('data')
-        node_id = data['schoolLocations']['edges'][0]['node']['id']
+        node_id = self.get_node_id_of_first_location()
 
         # Now query single location and check
         query = self.location_query
@@ -268,12 +253,7 @@ query getSchoolLocation($id: ID!) {
         location = f.SchoolLocationFactory.create()
 
         # First query locations to get node id easily
-        variables = {
-            'archived': False
-        }
-        executed = execute_test_client_api_query(self.locations_query, self.admin_user, variables=variables)
-        data = executed.get('data')
-        node_id = data['schoolLocations']['edges'][0]['node']['id']
+        node_id = self.get_node_id_of_first_location()
 
         # Now query single location and check   
         query = self.location_query
