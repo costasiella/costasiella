@@ -92,15 +92,14 @@ class UpdateSchoolClasstype(graphene.relay.ClientIDMutation):
 
     school_classtype = graphene.Field(SchoolClasstypeNode)
 
-    # def mutate(self, info, id, name, description=None, display_public=False, url_website=None):
     @classmethod
     def mutate_and_get_payload(self, root, info, **input):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.change_schoolclasstype')
 
         rid = get_rid(input['id'])
-        school_classtype = SchoolClasstype.objects.filter(id=rid.id).first()
-        if not school_classtype:
+        classtype = SchoolClasstype.objects.filter(id=rid.id).first()
+        if not classtype:
             raise Exception('Invalid School Classtype ID!')
 
         url_website = input['url_website']
@@ -108,39 +107,40 @@ class UpdateSchoolClasstype(graphene.relay.ClientIDMutation):
             if not validators.url(url_website, public=True):
                 raise GraphQLError(_('Invalid URL, make sure it starts with "http"'))
             else:
-                school_classtype.url_website = url_website
+                classtype.url_website = url_website
 
-        school_classtype.name = input['name']
-        school_classtype.description = input['description']
-        school_classtype.display_public = input['display_public']
-        school_classtype.save(force_update=True)
+        classtype.name = input['name']
+        classtype.description = input['description']
+        classtype.display_public = input['display_public']
+        classtype.save(force_update=True)
 
-        return UpdateSchoolClasstype(school_classtype=school_classtype)
-
-
-# class ArchiveSchoolLocation(graphene.Mutation):
-#     school_location = graphene.Field(SchoolLocationType)
-
-#     class Arguments:
-#         id = graphene.ID()
-#         archived = graphene.Boolean()
+        return UpdateSchoolClasstype(school_classtype=classtype)
 
 
-#     def mutate(self, info, id, archived):
-#         user = info.context.user
-#         require_login_and_permission(user, 'costasiella.delete_schoollocation')
+class ArchiveSchoolClasstype(graphene.Mutation):
+    class Input:
+        id = graphene.ID(required=True)
+        archived = graphene.Boolean(required=True)
 
-#         school_location = SchoolLocation.objects.filter(id=id).first()
-#         if not school_location:
-#             raise Exception('Invalid School Location ID!')
+    school_classtype = graphene.Field(SchoolClasstypeNode)
 
-#         school_location.archived = archived
-#         school_location.save(force_update=True)
+    @classmethod
+    def mutate_and_get_payload(self, root, info, **input):
+        user = info.context.user
+        require_login_and_permission(user, 'costasiella.delete_schoolclasstype')
 
-#         return ArchiveSchoolLocation(school_location=school_location)
+        rid = get_rid(input['id'])
+        classtype = SchoolClasstype.objects.filter(id=rid.id).first()
+        if not classtype:
+            raise Exception('Invalid School Classtype ID!')
+
+        classtype.archived = archived
+        classtype.save(force_update=True)
+
+        return ArchiveSchoolClasstype(school_classtype=classtype)
 
 
 class SchoolClasstypeMutation(graphene.ObjectType):
-#     archive_school_location = ArchiveSchoolLocation.Field()
+    archive_school_classtype = ArchiveSchoolClasstype.Field()
     create_school_classtype = CreateSchoolClasstype.Field()
     update_school_classtype = UpdateSchoolClasstype.Field()

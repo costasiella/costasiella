@@ -29,40 +29,15 @@ import SchoolMenu from "../SchoolMenu"
 import { GET_CLASSTYPES_QUERY } from "./queries"
 
 const ARCHIVE_CLASSTYPE = gql`
-    mutation ArchiveSchoolLocation($id: ID!, $archived: Boolean!) {
-        archiveSchoolLocation(id: $id, archived: $archived) {
-          schoolLocation {
+    mutation ArchiveSchoolClasstype($input: ArchiveSchoolClasstypeInput!) {
+        archiveSchoolClasstype(input: $input) {
+          schoolClasstype {
             id
             archived
           }
         }
     }
 `
-
-
-// const onClickArchive = (t, id) => {
-//   const options = {
-//     title: t('please_confirm'),
-//     message: t('school.classtypes.confirm_archive'),
-//     buttons: [
-//       {
-//         label: t('yes'),
-//         onClick: () => alert('Click Yes'),
-//         class: 'btn btn-primary'
-//       },
-//       {
-//         label: t('no'),
-//         onClick: () => alert('Click No')
-//       }
-//     ],
-//     childrenElement: () => <div />,
-//     // customUI: ({ title, message, onClose }) => <div>Custom UI</div>,
-//     willUnmount: () => {}
-//   }
-
-//   confirmAlert(options)
-// }
-
 
 const SchoolClasstypes = ({ t, history, archived=false }) => (
   <SiteWrapper>
