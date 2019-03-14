@@ -247,30 +247,29 @@ mutation ArchiveSchoolLocation($id: ID!, $archived: Boolean!) {
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Permission denied!')
 
-        # query = self.location_query
-        # # Create regular user
-        # user = f.RegularUserFactory.create()
-        # location = f.SchoolLocationFactory.create()
 
-        # executed = execute_test_client_api_query(query, user, variables={"id": location.id})
-        # errors = executed.get('errors')
-        # self.assertEqual(errors[0]['message'], 'Permission denied!')
+    def test_query_one_permission_granted(self):
+        """ Respond with data when user has permission """   
+        user = f.RegularUserFactory.create()
+        permission = Permission.objects.get(codename='view_schoollocation')
+        user.user_permissions.add(permission)
+        user.save()
+        location = f.SchoolLocationFactory.create()
 
+        # First query locations to get node id easily
+        variables = {
+            'archived': False
+        }
+        executed = execute_test_client_api_query(self.locations_query, self.admin_user, variables=variables)
+        data = executed.get('data')
+        node_id = data['schoolLocations']['edges'][0]['node']['id']
 
-    # def test_query_one_permission_granted(self):
-    #     """ Respond with data when user has permission """   
-    #     query = self.location_query
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename='view_schoollocation')
-    #     user.user_permissions.add(permission)
-    #     user.save()
+        # Now query single location and check   
+        query = self.location_query
+        executed = execute_test_client_api_query(query, user, variables={"id": node_id})
+        data = executed.get('data')
+        self.assertEqual(data['schoolLocation']['name'], location.name)
 
-    #     location = f.SchoolLocationFactory.create()
-
-    #     executed = execute_test_client_api_query(query, user, variables={"id": location.id})
-    #     data = executed.get('data')
-    #     self.assertEqual(data['schoolLocation']['name'], location.name)
 
 
     # def test_create_location(self):
