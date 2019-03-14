@@ -17,6 +17,7 @@ query SchoolClasstypes($after: String, $before: String, $archived: Boolean) {
         name
         description
         urlWebsite
+        urlImage
       }
     }
   }
@@ -32,7 +33,7 @@ query getSchoolClasstype($id: ID!) {
     description
     displayPublic
     urlWebsite
-    image
+    urlImage
   }
 }
 `

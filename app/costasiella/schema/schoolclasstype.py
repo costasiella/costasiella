@@ -14,11 +14,22 @@ from ..modules.messages import Messages
 
 m = Messages()
 
+class SchoolClasstypeNodeInterface(graphene.Interface):
+    id = graphene.GlobalID()
+    url_image = graphene.String()
+
+
 class SchoolClasstypeNode(DjangoObjectType):
+    def resolve_url_image(self, info):
+        if self.image:
+            return self.image.url
+        else:
+            return ''
+    
     class Meta:
         model = SchoolClasstype
         filter_fields = ['archived']
-        interfaces = (graphene.relay.Node, )
+        interfaces = (graphene.relay.Node, SchoolClasstypeNodeInterface)
 
     @classmethod
     def get_node(self, info, id):
