@@ -227,16 +227,34 @@ mutation ArchiveSchoolLocation($id: ID!, $archived: Boolean!) {
         self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
-    # def test_query_one_permission_denied(self):
-    #     """ Permission denied message when user lacks authorization """   
-    #     query = self.location_query
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     location = f.SchoolLocationFactory.create()
+    def test_query_one_permission_denied(self):
+        """ Permission denied message when user lacks authorization """   
+        # Create regular user
+        user = f.RegularUserFactory.create()
+        location = f.SchoolLocationFactory.create()
 
-    #     executed = execute_test_client_api_query(query, user, variables={"id": location.id})
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
+        # First query locations to get node id easily
+        variables = {
+            'archived': False
+        }
+        executed = execute_test_client_api_query(self.locations_query, self.admin_user, variables=variables)
+        data = executed.get('data')
+        node_id = data['schoolLocations']['edges'][0]['node']['id']
+
+        # Now query single location and check
+        query = self.location_query
+        executed = execute_test_client_api_query(query, user, variables={"id": node_id})
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
+
+        # query = self.location_query
+        # # Create regular user
+        # user = f.RegularUserFactory.create()
+        # location = f.SchoolLocationFactory.create()
+
+        # executed = execute_test_client_api_query(query, user, variables={"id": location.id})
+        # errors = executed.get('errors')
+        # self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
     # def test_query_one_permission_granted(self):
