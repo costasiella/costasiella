@@ -24,21 +24,23 @@ import SiteWrapper from "../../SiteWrapper"
 import HasPermissionWrapper from "../../HasPermissionWrapper"
 
 import SchoolMenu from "../SchoolMenu"
+import { format } from 'path';
 
 
-const UPDATE_CLASSTYPE = gql`
-  mutation UploadSchoolCLasstypeImage($input: UpdateSchoolClasstypeInput!) {
-    updateSchoolClasstype(input: $input) {
-      schoolClasstype {
-        id
-        archived
-        name
-        description
-        displayPublic
-        urlWebsite
-      }
+const UPDATE_CLASSTYPE_IMAGE = gql`
+mutation UploadSchoolClasstypeImage($input: UploadSchoolClasstypeImageInput!) {
+  uploadSchoolClasstypeImage(input: $input) {
+    schoolClasstype {
+      id
+      archived
+      name
+      description
+      displayPublic
+      urlWebsite
+      image
     }
   }
+}
 `
 
 
@@ -48,14 +50,65 @@ class SchoolClasstypeEditImage extends Component {
     console.log("School classtype image edit props:")
     console.log(props)
     this.fileInput = React.createRef()
+    // this.fileInputPreview = React.createRef()
   }
 
-  onSubmit(e) {
+  onSubmit(e, id, uploadImage) {
     e.preventDefault()
+    const t = this.props.t
+    console.log(id)
+
     console.log(e.target.name + 'clicked')
-    console.log(e.value)
-    console.log(this.fileInput.current.files[0])
+
+    var file = this.fileInput.current.files[0]
+    console.log(file)
+    let reader = new FileReader()
+
+    // console.log(reader.readAsDataURL(file))
+
+    reader.onload = function(reader_event) {
+      console.log(reader_event.target.result)
+      let b64_enc_image = reader_event.target.result
+
+      uploadImage({ variables: {
+        input: {
+          id: id,
+          image: b64_enc_image
+        }
+      }, refetchQueries: [
+          {query: GET_CLASSTYPES_QUERY, variables: {"archived": false }}
+      ]})
+      .then(({ data }) => {
+          console.log('got data', data)
+          toast.success((t('school.classtypes.toast_edit_success')), {
+              position: toast.POSITION.BOTTOM_RIGHT
+            })
+        }).catch((error) => {
+          toast.error((t('toast_server_error')) + ': ' +  error, {
+              position: toast.POSITION.BOTTOM_RIGHT
+            })
+          console.log('there was an error sending the query', error);
+        })
+      
+    }
+    reader.readAsDataURL(file)
+
+
   }
+
+  // previewFile() {
+  //     var preview = this.ref.fileInputPreview.current
+  //     var file    = this.fileInput.current.files[0]
+  //     var reader  = new FileReader();
+    
+  //     reader.addEventListener("load", function () {
+  //       preview.src = reader.result;
+  //     }, false);
+    
+  //     if (file) {
+  //       reader.readAsDataURL(file);
+  //     }
+  //   }
 
   render() {
     const t = this.props.t
@@ -91,14 +144,22 @@ class SchoolClasstypeEditImage extends Component {
                     console.log(data)
 
                     return (
-                      <Form onSubmit={(event) => this.onSubmit(event)}>
-                        {/* <Form.FileInput ref={this.fileInput} name="fileInput"  /> */}
-                        <input type="file"
-                               ref={this.fileInput}
-                        />
-                        <Button type='submit' value='Submit'>Submit</Button>
-                      </Form>
-                      )}}
+                      <Mutation mutation={UPDATE_CLASSTYPE_IMAGE} onCompleted={() => history.push(return_url)}> 
+                        {(uploadImage, { data }) => (
+                          // <Form onSubmit={(event) => this.onSubmit(event)}>
+                          <Form onSubmit={(event) => this.onSubmit(event, initialData.id, uploadImage)}>
+                            {/* <Form.FileInput ref={this.fileInput} name="fileInput"  /> */}
+                            <input type="file"
+                                   ref={this.fileInput}
+                                   onChange={this.previewFile}
+                            />
+                            {/* <img ref={this.fileInputPreview} src="" height="200" alt="Image preview..."></img> */}
+                            <Button type='submit' value='Submit'>Submit</Button>
+                          </Form>
+                        )}
+                      </Mutation>
+                    )
+                  }}
                 </Query>
               </Card>
               </Grid.Col>

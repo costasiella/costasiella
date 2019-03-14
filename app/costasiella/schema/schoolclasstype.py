@@ -84,7 +84,7 @@ class CreateSchoolClasstype(graphene.relay.ClientIDMutation):
 
 class UpdateSchoolClasstype(graphene.relay.ClientIDMutation):
     class Input:
-        id = graphene.ID()
+        id = graphene.ID(required=True)
         name = graphene.String(required=True)
         description = graphene.String(required=False, default_value="")
         display_public = graphene.Boolean(required=True, default_value=True)
@@ -117,23 +117,48 @@ class UpdateSchoolClasstype(graphene.relay.ClientIDMutation):
         return UpdateSchoolClasstype(school_classtype=classtype)
 
 
-class UploadSchoolCLasstypeImage(graphene.relay.ClientIDMutation):
+class UploadSchoolClasstypeImage(graphene.relay.ClientIDMutation):
     class Input:
-        pass
-        # nothing needed for uploading file
+        id = graphene.ID(required=True)
+        image = graphene.String(required=True)
 
-    success = graphene.String()
+
+    school_classtype = graphene.Field(SchoolClasstypeNode)
 
     @classmethod
-    def mutate_and_get_payload(cls, root, info, **input):
-        # When using it in Django, context will be the request
-        files = info.context.FILES
-        # Or, if used in Flask, context will be the flask global request
-        # files = context.files
+    def mutate_and_get_payload(self, root, info, **input):
+        user = info.context.user
+        require_login_and_permission(user, 'costasiella.change_schoolclasstype')
 
-        # do something with files
+        import base64
+        from django.core.files.base import ContentFile
 
-        return UploadFile(success=True)
+        def base64_file(data, name=None):
+            _format, _img_str = data.split(';base64,')
+            _name, ext = _format.split('/')
+            if not name:
+                name = _name.split(":")[-1]
+            return ContentFile(base64.b64decode(_img_str), name='{}.{}'.format(name, ext))
+
+        rid = get_rid(input['id'])
+        classtype = SchoolClasstype.objects.filter(id=rid.id).first()
+        if not classtype:
+            raise Exception('Invalid School Classtype ID!')
+
+        b64_enc_image = input['image']
+        # print(b64_enc_image)
+        (image_type, image_file) = b64_enc_image.split(',')
+        # print(image_type)
+
+        # print('current image')
+        # img = classtype.image
+        # print(img.name)
+        # print(img.url)
+
+        classtype.image = base64_file(data=b64_enc_image, name="image <3")
+        classtype.save(force_update=True)
+
+        return UpdateSchoolClasstype(school_classtype=classtype)
 
 
 class ArchiveSchoolClasstype(graphene.relay.ClientIDMutation):
@@ -163,4 +188,4 @@ class SchoolClasstypeMutation(graphene.ObjectType):
     archive_school_classtype = ArchiveSchoolClasstype.Field()
     create_school_classtype = CreateSchoolClasstype.Field()
     update_school_classtype = UpdateSchoolClasstype.Field()
-    upload_school_classtype_image = UploadSchoolCLasstypeImage.Field()
+    upload_school_classtype_image = UploadSchoolClasstypeImage.Field()

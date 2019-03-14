@@ -85,7 +85,7 @@ class SchoolClasstypeEdit extends Component {
                     return (
                       
                       <Mutation mutation={UPDATE_CLASSTYPE} onCompleted={() => history.push(return_url)}> 
-                      {(updateClasstype, { data }) => (
+                        {(updateClasstype, { data }) => (
                           <Formik
                               initialValues={{ 
                                 name: initialData.name, 

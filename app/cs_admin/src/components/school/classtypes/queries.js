@@ -32,6 +32,7 @@ query getSchoolClasstype($id: ID!) {
     description
     displayPublic
     urlWebsite
+    image
   }
 }
 `
