@@ -3,7 +3,6 @@ import graphql_jwt
 
 from .schoolclasstype import SchoolClasstypeQuery, SchoolClasstypeMutation
 from .schoollocation import SchoolLocationQuery, SchoolLocationMutation
-# from .schoollocation import SchoolLocationQuery
 from .user import UserQuery, UserMutation
 
 
