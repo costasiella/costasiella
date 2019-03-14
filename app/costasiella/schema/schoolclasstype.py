@@ -98,7 +98,8 @@ class UpdateSchoolClasstype(graphene.relay.ClientIDMutation):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.change_schoolclasstype')
 
-        school_classtype = SchoolClasstype.objects.filter(id=id).first()
+        rid = get_rid(input['id'])
+        school_classtype = SchoolClasstype.objects.filter(id=rid.id).first()
         if not school_classtype:
             raise Exception('Invalid School Classtype ID!')
 

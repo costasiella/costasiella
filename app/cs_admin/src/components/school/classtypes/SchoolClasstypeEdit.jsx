@@ -27,8 +27,8 @@ import SchoolMenu from "../SchoolMenu"
 
 
 const UPDATE_CLASSTYPE = gql`
-  mutation UpdateSchoolClasstype($id: ID!, $name: String!, $description:String, $displayPublic: Boolean, $urlWebsite:String) {
-    updateSchoolClasstype(id: $id, name: $name, description: $description, displayPublic: $displayPublic, urlWebsite:$urlWebsite) {
+  mutation UpdateSchoolClasstype($input: UpdateSchoolClasstypeInput!) {
+    updateSchoolClasstype(input: $input) {
       schoolClasstype {
         id
         archived
@@ -99,12 +99,13 @@ class SchoolClasstypeEdit extends Component {
                                   console.log(values)
 
                                   updateLocation({ variables: {
+                                    input: {
                                       id: match.params.id,
                                       name: values.name,
                                       description: (values.description) ? values.description: '',
                                       displayPublic: values.displayPublic,
                                       urlWebsite: (values.urlWebsite) ? values.urlWebsite: ''
-                                      // displayPublic: (values.displayPublic === 'true') ? true : false
+                                    }
                                   }, refetchQueries: [
                                       {query: GET_CLASSTYPES_QUERY, variables: {"archived": false }}
                                   ]})
