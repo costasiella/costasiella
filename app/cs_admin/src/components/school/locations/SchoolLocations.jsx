@@ -117,28 +117,14 @@ const SchoolLocations = ({ t, history, archived=false }) => (
                                headerContent={headerOptions}
                                pageInfo={locations.pageInfo}
                                onLoadMore={() => {
-
-                                console.log('values oln:')
-                                console.log(locations)
-                                console.log(locations.pageInfo.endCursor)
                                 fetchMore({
                                   variables: {
                                     after: locations.pageInfo.endCursor
                                   },
                                   updateQuery: (previousResult, { fetchMoreResult }) => {
-                                    console.log('previousResult')
-                                    console.log(previousResult)
-                                    console.log('fetchMoreResult')
-                                    console.log(fetchMoreResult)
-
                                     const newEdges = fetchMoreResult.schoolLocations.edges
                                     const pageInfo = fetchMoreResult.schoolLocations.pageInfo
 
-                                    console.log('new edges')
-                                    console.log(newEdges)
-                                    console.log('new pi')
-                                    console.log(pageInfo)
-                      
                                     return newEdges.length
                                       ? {
                                           // Put the new locations at the end of the list and update `pageInfo`
@@ -152,9 +138,7 @@ const SchoolLocations = ({ t, history, archived=false }) => (
                                       : previousResult
                                   }
                                 })
-                              }} 
-                               
-                               >
+                              }} >
                     <Table>
                           <Table.Header>
                             <Table.Row key={v4()}>

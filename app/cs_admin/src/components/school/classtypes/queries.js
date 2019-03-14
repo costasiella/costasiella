@@ -1,13 +1,24 @@
 import gql from "graphql-tag"
 
 export const GET_CLASSTYPES_QUERY = gql`
-query SchoolClasstypes($archived: Boolean!) {
-  schoolClasstypes(archived: $archived) {
-    id
-    name
-    archived
-    displayPublic
-    description
+query SchoolClasstypes($after: String, $before: String, $archived: Boolean) {
+  schoolClasstypes(first: 15, before: $before, after: $after, archived: $archived) {
+    pageInfo {
+      startCursor
+      endCursor
+      hasNextPage
+      hasPreviousPage
+    }
+    edges {
+      node {
+        id
+        archived
+        displayPublic
+        name
+        description
+        urlWebsite
+      }
+    }
   }
 }
 `

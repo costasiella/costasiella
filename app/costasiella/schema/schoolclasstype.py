@@ -32,8 +32,8 @@ class SchoolClasstypeNode(DjangoObjectType):
 class SchoolClasstypeQuery(graphene.ObjectType):
     # school_classtypes = graphene.List(SchoolClasstypeType, archived=graphene.Boolean(default_value=False))
     # school_classtype = graphene.Field(SchoolClasstypeType, id=graphene.ID())
-    school_locations = DjangoFilterConnectionField(SchoolClasstypeNode)
-    school_location = graphene.relay.Node.Field(SchoolClasstypeNode)
+    school_classtypes = DjangoFilterConnectionField(SchoolClasstypeNode)
+    school_classtype = graphene.relay.Node.Field(SchoolClasstypeNode)
 
     def resolve_school_classtypes(self, info, archived, **kwargs):
         user = info.context.user

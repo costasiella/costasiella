@@ -72,7 +72,7 @@ const SchoolClasstypes = ({ t, history, archived=false }) => (
         <Grid.Row>
           <Grid.Col md={9}>
             <Query query={GET_CLASSTYPES_QUERY} variables={{ archived }}>
-             {({ loading, error, data, refetch }) => {
+            {({ loading, error, data: {schoolClasstypes: classtypes}, refetch, fetchMore }) => {
                 // Loading
                 if (loading) return (
                   <ContentCard cardTitle={t('school.classtypes.title')}>
@@ -102,7 +102,7 @@ const SchoolClasstypes = ({ t, history, archived=false }) => (
                 </Card.Options>
                 
                 // Empty list
-                if (!data.schoolClasstypes.length) { return (
+                if (!classtypes.edges.length) { return (
                   <ContentCard cardTitle={t('school.classtypes.title')}
                                header_content={headerOptions}>
                     <p>
@@ -114,7 +114,7 @@ const SchoolClasstypes = ({ t, history, archived=false }) => (
                 // Life's good! :)
                 return (
                   <ContentCard cardTitle={t('school.classtypes.title')}
-                               header_content={headerOptions}>
+                               headerContent={headerOptions}>
                     <Table>
                           <Table.Header>
                             <Table.Row key={v4()}>
@@ -124,18 +124,18 @@ const SchoolClasstypes = ({ t, history, archived=false }) => (
                             </Table.Row>
                           </Table.Header>
                           <Table.Body>
-                              {data.schoolClasstypes.map(({ id, name, description, displayPublic }) => (
+                              {classtypes.edges.map(({ node }) => (
                                 <Table.Row key={v4()}>
                                   <Table.Col key={v4()}>
-                                    {name}
+                                    {node.name}
                                   </Table.Col>
                                   <Table.Col key={v4()}>
-                                    <span title={description}>
-                                      {description}
+                                    <span title={node.description}>
+                                      {node.description}
                                     </span>
                                   </Table.Col>
                                   <Table.Col key={v4()}>
-                                    {(displayPublic) ? 
+                                    {(node.displayPublic) ? 
                                       <Badge color="success">{t('yes')}</Badge>: 
                                       <Badge color="danger">{t('no')}</Badge>}
                                   </Table.Col>
@@ -143,7 +143,7 @@ const SchoolClasstypes = ({ t, history, archived=false }) => (
                                     {(archived) ? 
                                       <span className='text-muted'>{t('unarchive_to_edit')}</span> :
                                       <Button className='btn-sm' 
-                                              onClick={() => history.push("/school/classtypes/edit/" + id)}
+                                              onClick={() => history.push("/school/classtypes/edit/" + node.id)}
                                               color="secondary">
                                         {t('edit')}
                                       </Button>
@@ -156,9 +156,12 @@ const SchoolClasstypes = ({ t, history, archived=false }) => (
                                            title={t('archive')} 
                                            onClick={() => {
                                              console.log("clicked archived")
+                                             let id = node.id
                                              archiveLocation({ variables: {
-                                              id,
-                                              archived: !archived
+                                               input: {
+                                                id,
+                                                archived: !archived
+                                               }
                                         }, refetchQueries: [
                                             {query: GET_CLASSTYPES_QUERY, variables: {"archived": archived }}
                                         ]}).then(({ data }) => {
