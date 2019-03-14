@@ -371,111 +371,117 @@ mutation ArchiveSchoolClasstype($input: ArchiveSchoolClasstypeInput!) {
         self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
-#     def test_update_classtype(self):
-#         """ Update a classtype as admin user """
-#         query = self.classtype_update_mutation
-#         classtype = f.SchoolClasstypeFactory.create()
+    def test_update_classtype(self):
+        """ Update a classtype as admin user """
+        query = self.classtype_update_mutation
+        classtype = f.SchoolClasstypeFactory.create()
 
-#         variables = {
-#             "id": classtype.id,
-#             "name": "New classtype",
-#             "description": "Classtype description",
-#             "displayPublic": True,
-#             "urlWebsite": "https://www.costasiella.com"
-#         }
+        variables = {
+            "input": {
+                "id": self.get_node_id_of_first_classtype(),
+                "name": "New classtype",
+                "description": "Classtype description",
+                "displayPublic": True,
+                "urlWebsite": "https://www.costasiella.com"
+            }
+        }
 
-#         executed = execute_test_client_api_query(
-#             query, 
-#             self.admin_user, 
-#             variables=variables
-#         )
-#         data = executed.get('data')
-#         self.assertEqual(data['updateSchoolClasstype']['schoolClasstype']['id'], str(classtype.id))
-#         self.assertEqual(data['updateSchoolClasstype']['schoolClasstype']['name'], variables['name'])
-#         self.assertEqual(data['updateSchoolClasstype']['schoolClasstype']['archived'], False)
-#         self.assertEqual(data['updateSchoolClasstype']['schoolClasstype']['description'], variables['description'])
-#         self.assertEqual(data['updateSchoolClasstype']['schoolClasstype']['displayPublic'], variables['displayPublic'])
-#         self.assertEqual(data['updateSchoolClasstype']['schoolClasstype']['urlWebsite'], variables['urlWebsite'])
-
-
-#     def test_update_classtype_anon_user(self):
-#         """ Update a classtype as anonymous user """
-#         query = self.classtype_update_mutation
-#         classtype = f.SchoolClasstypeFactory.create()
-
-#         variables = {
-#             "id": classtype.id,
-#             "name": "New classtype",
-#             "description": "Classtype description",
-#             "displayPublic": True,
-#             "urlWebsite": "https://www.costasiella.com"
-#         }
-
-#         executed = execute_test_client_api_query(
-#             query, 
-#             self.anon_user, 
-#             variables=variables
-#         )
-#         data = executed.get('data')
-#         errors = executed.get('errors')
-#         self.assertEqual(errors[0]['message'], 'Not logged in!')
+        executed = execute_test_client_api_query(
+            query, 
+            self.admin_user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['updateSchoolClasstype']['schoolClasstype']['name'], variables['input']['name'])
+        self.assertEqual(data['updateSchoolClasstype']['schoolClasstype']['archived'], False)
+        self.assertEqual(data['updateSchoolClasstype']['schoolClasstype']['description'], variables['input']['description'])
+        self.assertEqual(data['updateSchoolClasstype']['schoolClasstype']['displayPublic'], variables['input']['displayPublic'])
+        self.assertEqual(data['updateSchoolClasstype']['schoolClasstype']['urlWebsite'], variables['input']['urlWebsite'])
 
 
-#     def test_update_classtype_permission_granted(self):
-#         """ Update a classtype as user with permission """
-#         query = self.classtype_update_mutation
-#         classtype = f.SchoolClasstypeFactory.create()
+    def test_update_classtype_anon_user(self):
+        """ Update a classtype as anonymous user """
+        query = self.classtype_update_mutation
+        classtype = f.SchoolClasstypeFactory.create()
 
-#         variables = {
-#             "id": classtype.id,
-#             "name": "New classtype",
-#             "description": "Classtype description",
-#             "displayPublic": True,
-#             "urlWebsite": "https://www.costasiella.com"
-#         }
+        variables = {
+            "input": {
+                "id": self.get_node_id_of_first_classtype(),
+                "name": "New classtype",
+                "description": "Classtype description",
+                "displayPublic": True,
+                "urlWebsite": "https://www.costasiella.com"
+            }
+        }
 
-#         user = f.RegularUserFactory.create()
-#         permission = Permission.objects.get(codename=self.permission_change)
-#         user.user_permissions.add(permission)
-#         user.save()
-
-#         executed = execute_test_client_api_query(
-#             query, 
-#             user, 
-#             variables=variables
-#         )
-#         data = executed.get('data')
-#         self.assertEqual(data['updateSchoolClasstype']['schoolClasstype']['id'], str(classtype.id))
-#         self.assertEqual(data['updateSchoolClasstype']['schoolClasstype']['name'], variables['name'])
-#         self.assertEqual(data['updateSchoolClasstype']['schoolClasstype']['archived'], False)
-#         self.assertEqual(data['updateSchoolClasstype']['schoolClasstype']['description'], variables['description'])
-#         self.assertEqual(data['updateSchoolClasstype']['schoolClasstype']['displayPublic'], variables['displayPublic'])
-#         self.assertEqual(data['updateSchoolClasstype']['schoolClasstype']['urlWebsite'], variables['urlWebsite'])
+        executed = execute_test_client_api_query(
+            query, 
+            self.anon_user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
-#     def test_update_classtype_permission_denied(self):
-#         """ Update a classtype as user without permissions """
-#         query = self.classtype_update_mutation
-#         classtype = f.SchoolClasstypeFactory.create()
+    def test_update_classtype_permission_granted(self):
+        """ Update a classtype as user with permission """
+        query = self.classtype_update_mutation
+        classtype = f.SchoolClasstypeFactory.create()
 
-#         variables = {
-#             "id": classtype.id,
-#             "name": "New classtype",
-#             "description": "Classtype description",
-#             "displayPublic": True,
-#             "urlWebsite": "https://www.costasiella.com"
-#         }
+        variables = {
+            "input": {
+                "id": self.get_node_id_of_first_classtype(),
+                "name": "New classtype",
+                "description": "Classtype description",
+                "displayPublic": True,
+                "urlWebsite": "https://www.costasiella.com"
+            }
+        }
 
-#         user = f.RegularUserFactory.create()
+        user = f.RegularUserFactory.create()
+        permission = Permission.objects.get(codename=self.permission_change)
+        user.user_permissions.add(permission)
+        user.save()
 
-#         executed = execute_test_client_api_query(
-#             query, 
-#             user, 
-#             variables=variables
-#         )
-#         data = executed.get('data')
-#         errors = executed.get('errors')
-#         self.assertEqual(errors[0]['message'], 'Permission denied!')
+        executed = execute_test_client_api_query(
+            query, 
+            user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['updateSchoolClasstype']['schoolClasstype']['name'], variables['input']['name'])
+        self.assertEqual(data['updateSchoolClasstype']['schoolClasstype']['archived'], False)
+        self.assertEqual(data['updateSchoolClasstype']['schoolClasstype']['description'], variables['input']['description'])
+        self.assertEqual(data['updateSchoolClasstype']['schoolClasstype']['displayPublic'], variables['input']['displayPublic'])
+        self.assertEqual(data['updateSchoolClasstype']['schoolClasstype']['urlWebsite'], variables['input']['urlWebsite'])
+
+
+    def test_update_classtype_permission_denied(self):
+        """ Update a classtype as user without permissions """
+        query = self.classtype_update_mutation
+        classtype = f.SchoolClasstypeFactory.create()
+
+        variables = {
+            "input": {
+                "id": self.get_node_id_of_first_classtype(),
+                "name": "New classtype",
+                "description": "Classtype description",
+                "displayPublic": True,
+                "urlWebsite": "https://www.costasiella.com"
+            }
+        }
+
+        user = f.RegularUserFactory.create()
+
+        executed = execute_test_client_api_query(
+            query, 
+            user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
 # #     def test_archive_location(self):

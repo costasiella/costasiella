@@ -33,6 +33,7 @@ class SchoolLocationNode(DjangoObjectType):
         # Return only public non-archived locations
         return self._meta.model.objects.get(id=id)
 
+
 # class ValidationErrorMessage(graphene.ObjectType):
 #     field = graphene.String(required=True)
 #     message = graphene.String(required=True)
