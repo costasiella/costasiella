@@ -113,7 +113,8 @@ class SchoolLocationEdit extends Component {
                                       toast.error((t('toast_server_error')) + ': ' +  error, {
                                           position: toast.POSITION.BOTTOM_RIGHT
                                         })
-                                      console.log('there was an error sending the query', error);
+                                      console.log('there was an error sending the query', error)
+                                      setSubmitting(false)
                                     })
                               }}
                               >
