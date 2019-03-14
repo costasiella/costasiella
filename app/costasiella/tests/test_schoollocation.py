@@ -16,6 +16,7 @@ from .. import models
 from .. import schema
 
 
+
 class GQLSchoolLocation(TestCase):
     # https://docs.djangoproject.com/en/2.1/topics/testing/overview/
     def setUp(self):
@@ -74,16 +75,15 @@ query getSchoolLocation($id: ID!) {
 '''
 
         self.location_update_mutation = '''
-mutation UpdateSchoolLocation($id: ID!, $name: String!, $displayPublic:Boolean!) {
-    updateSchoolLocation(id: $id, name: $name, displayPublic: $displayPublic) {
-        schoolLocation {
+  mutation UpdateSchoolLocation($input: UpdateSchoolLocationInput!) {
+    updateSchoolLocation(input: $input) {
+      schoolLocation {
         id
-        archived
         name
         displayPublic
-        }
+      }
     }
-}
+  }
 '''
 
         self.location_archive_mutation = '''
@@ -100,6 +100,17 @@ mutation ArchiveSchoolLocation($id: ID!, $archived: Boolean!) {
     def tearDown(self):
         # This is run after every test
         pass
+
+
+    def get_node_id_of_first_location(self):
+        # query locations to get node id easily
+        variables = {
+            'archived': False
+        }
+        executed = execute_test_client_api_query(self.locations_query, self.admin_user, variables=variables)
+        data = executed.get('data')
+        
+        return data['schoolLocations']['edges'][0]['node']['id']
 
 
     def test_query(self):
@@ -318,18 +329,18 @@ mutation ArchiveSchoolLocation($id: ID!, $archived: Boolean!) {
         """ Allow creating locations for users with permissions """
         query = self.location_create_mutation
 
+        # Create regular user
+        user = f.RegularUserFactory.create()
+        permission = Permission.objects.get(codename=self.permission_add)
+        user.user_permissions.add(permission)
+        user.save()
+
         variables = {
             "input": {
                 "name": "New location",
                 "displayPublic": True
             }
         }
-
-        # Create regular user
-        user = f.RegularUserFactory.create()
-        permission = Permission.objects.get(codename=self.permission_add)
-        user.user_permissions.add(permission)
-        user.save()
 
         executed = execute_test_client_api_query(
             query, 
@@ -366,99 +377,105 @@ mutation ArchiveSchoolLocation($id: ID!, $archived: Boolean!) {
         self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
-    # def test_update_location(self):
-    #     """ Update a location """
-    #     query = self.location_update_mutation
-    #     location = f.SchoolLocationFactory.create()
+    def test_update_location(self):
+        """ Update a location """
+        query = self.location_update_mutation
+        location = f.SchoolLocationFactory.create()
 
-    #     variables = {
-    #         "id": location.id,
-    #         "name": "Updated name",
-    #         "displayPublic": False
-    #     }
+        variables = {
+            "input": {
+                "id": self.get_node_id_of_first_location(),
+                "name": "Updated name",
+                "displayPublic": False
+            }
+        }
 
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         self.admin_user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['updateSchoolLocation']['schoolLocation']['name'], variables['name'])
-    #     self.assertEqual(data['updateSchoolLocation']['schoolLocation']['archived'], False)
-    #     self.assertEqual(data['updateSchoolLocation']['schoolLocation']['displayPublic'], variables['displayPublic'])
-
-
-    # def test_update_location_anon_user(self):
-    #     """ Don't allow updating locations for non-logged in users """
-    #     query = self.location_update_mutation
-
-    #     location = f.SchoolLocationFactory.create()
-    #     variables = {
-    #         "id": location.id,
-    #         "name": "Updated name",
-    #         "displayPublic": False
-    #     }
-
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         self.anon_user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
+        executed = execute_test_client_api_query(
+            query, 
+            self.admin_user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['updateSchoolLocation']['schoolLocation']['name'], variables['input']['name'])
+        self.assertEqual(data['updateSchoolLocation']['schoolLocation']['displayPublic'], variables['input']['displayPublic'])
 
 
-    # def test_update_location_permission_granted(self):
-    #     """ Allow updating locations for users with permissions """
-    #     query = self.location_update_mutation
+    def test_update_location_anon_user(self):
+        """ Don't allow updating locations for non-logged in users """
+        query = self.location_update_mutation
+        location = f.SchoolLocationFactory.create()
 
-    #     location = f.SchoolLocationFactory.create()
-    #     variables = {
-    #         "id": location.id,
-    #         "name": "Updated name",
-    #         "displayPublic": False
-    #     }
+        variables = {
+            "input": {
+                "id": self.get_node_id_of_first_location(),
+                "name": "Updated name",
+                "displayPublic": False
+            }
+        }
 
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename=self.permission_change)
-    #     user.user_permissions.add(permission)
-    #     user.save()
-
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['updateSchoolLocation']['schoolLocation']['name'], variables['name'])
-    #     self.assertEqual(data['updateSchoolLocation']['schoolLocation']['archived'], False)
-    #     self.assertEqual(data['updateSchoolLocation']['schoolLocation']['displayPublic'], variables['displayPublic'])
+        executed = execute_test_client_api_query(
+            query, 
+            self.anon_user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
-    # def test_update_location_permission_denied(self):
-    #     """ Check update location permission denied error message """
-    #     query = self.location_update_mutation
+    def test_update_location_permission_granted(self):
+        """ Allow updating locations for users with permissions """
+        query = self.location_update_mutation
 
-    #     location = f.SchoolLocationFactory.create()
-    #     variables = {
-    #         "id": location.id,
-    #         "name": "Updated name",
-    #         "displayPublic": False
-    #     }
+        location = f.SchoolLocationFactory.create()
+        variables = {
+            "input": {
+                "id": self.get_node_id_of_first_location(),
+                "name": "Updated name",
+                "displayPublic": False
+            }
+        }
 
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
+        # Create regular user
+        user = f.RegularUserFactory.create()
+        permission = Permission.objects.get(codename=self.permission_change)
+        user.user_permissions.add(permission)
+        user.save()
 
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
+        executed = execute_test_client_api_query(
+            query, 
+            user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['updateSchoolLocation']['schoolLocation']['name'], variables['input']['name'])
+        self.assertEqual(data['updateSchoolLocation']['schoolLocation']['displayPublic'], variables['input']['displayPublic'])
+
+
+    def test_update_location_permission_denied(self):
+        """ Check update location permission denied error message """
+        query = self.location_update_mutation
+        location = f.SchoolLocationFactory.create()
+
+        variables = {
+            "input": {
+                "id": self.get_node_id_of_first_location(),
+                "name": "Updated name",
+                "displayPublic": False
+            }
+        }
+
+        # Create regular user
+        user = f.RegularUserFactory.create()
+
+        executed = execute_test_client_api_query(
+            query, 
+            user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
     # def test_archive_location(self):
