@@ -132,13 +132,6 @@ const SchoolClasstypeAdd = ({ t, history }) => (
                                              autoComplete="off" />
                                       <ErrorMessage name="urlWebsite" component="span" className="invalid-feedback" />
                                     </Form.Group>
-                                    <Form.Group label={t('school.classtype.image')}>
-                                      <Field type="file" 
-                                             name="image" 
-                                             className={(errors.file) ? "form-control is-invalid" : "form-control"} 
-                                             autoComplete="off" />
-                                      <ErrorMessage name="file" component="span" className="invalid-feedback" />
-                                    </Form.Group>
                                 </Card.Body>
                                 <Card.Footer>
                                     <Button 
