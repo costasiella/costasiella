@@ -8,6 +8,9 @@ import { withRouter } from "react-router"
 import { Formik, Form as FoForm, Field, ErrorMessage } from 'formik'
 import { toast } from 'react-toastify'
 
+import { Editor } from '@tinymce/tinymce-react'
+import { tinymceBasicConf } from "../../../plugin_config/tinymce"
+
 import { GET_CLASSTYPES_QUERY, GET_CLASSTYPE_QUERY } from './queries'
 import { CLASSTYPE_SCHEMA } from './yupSchema'
 
@@ -22,9 +25,6 @@ import {
 } from "tabler-react";
 import SiteWrapper from "../../SiteWrapper"
 import HasPermissionWrapper from "../../HasPermissionWrapper"
-
-import { Editor } from '@tinymce/tinymce-react'
-import { tinymceBasicConf } from "../../../plugin_config/tinymce"
 
 import SchoolMenu from "../SchoolMenu"
 
@@ -50,14 +50,6 @@ class SchoolClasstypeEdit extends Component {
     super(props)
     console.log("School classtype edit props:")
     console.log(props)
-
-    this.state = { description_content: '' };
-  }
-
-  handleEditorChange = (e, values) => {
-    console.log('Content was updated:', e.target.getContent())
-    values.description = e.target.getContent()
-    console.log('Formik Values:', values)
   }
 
 
@@ -135,7 +127,7 @@ class SchoolClasstypeEdit extends Component {
                                     })
                               }}
                               >
-                              {({ isSubmitting, errors, values, handleChange, handleBlur }) => (
+                              {({ isSubmitting, errors, values, setFieldValue, handleBlur }) => (
                                   <FoForm>
                                       {console.log(values)}
                                       <Card.Body>
@@ -160,11 +152,10 @@ class SchoolClasstypeEdit extends Component {
                                           </Form.Group>
                                           <Form.Group label={t('description')}>
                                             <Editor
-                                              // initialValue="<p>This is the initial content of the editor</p>"
                                               textareaName="description"
                                               initialValue={values.description}
                                               init={tinymceBasicConf}
-                                              onChange={(e) => {this.handleEditorChange(e, values)}}
+                                              onChange={(e) => setFieldValue("description", e.target.getContent())}
                                               onBlur={handleBlur}
                                             />
                                             <ErrorMessage name="description" component="span" className="invalid-feedback" />
