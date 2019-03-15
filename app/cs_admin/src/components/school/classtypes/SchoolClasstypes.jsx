@@ -119,7 +119,7 @@ const SchoolClasstypes = ({ t, history, archived=false }) => (
                             <Table.Row key={v4()}>
                               <Table.ColHeader>{t('')}</Table.ColHeader>
                               <Table.ColHeader>{t('name')}</Table.ColHeader>
-                              <Table.ColHeader>{t('description')}</Table.ColHeader>
+                              {/* <Table.ColHeader>{t('description')}</Table.ColHeader> */}
                               <Table.ColHeader>{t('public')}</Table.ColHeader>
                             </Table.Row>
                           </Table.Header>
@@ -132,11 +132,11 @@ const SchoolClasstypes = ({ t, history, archived=false }) => (
                                   <Table.Col key={v4()}>
                                     {node.name}
                                   </Table.Col>
-                                  <Table.Col key={v4()}>
+                                  {/* <Table.Col key={v4()}>
                                     <span title={node.description}>
                                       {node.description}
                                     </span>
-                                  </Table.Col>
+                                  </Table.Col> */}
                                   <Table.Col key={v4()}>
                                     {(node.displayPublic) ? 
                                       <Badge color="success">{t('yes')}</Badge>: 

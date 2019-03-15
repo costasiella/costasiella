@@ -23,6 +23,9 @@ import {
 import SiteWrapper from "../../SiteWrapper"
 import HasPermissionWrapper from "../../HasPermissionWrapper"
 
+import { Editor } from '@tinymce/tinymce-react'
+import { tinymceBasicConf } from "../../../plugin_config/tinymce"
+
 import SchoolMenu from "../SchoolMenu"
 
 
@@ -47,7 +50,16 @@ class SchoolClasstypeEdit extends Component {
     super(props)
     console.log("School classtype edit props:")
     console.log(props)
+
+    this.state = { description_content: '' };
   }
+
+  handleEditorChange = (e, values) => {
+    console.log('Content was updated:', e.target.getContent())
+    values.description = e.target.getContent()
+    console.log('Formik Values:', values)
+  }
+
 
   render() {
     const t = this.props.t
@@ -123,8 +135,9 @@ class SchoolClasstypeEdit extends Component {
                                     })
                               }}
                               >
-                              {({ isSubmitting, errors, values }) => (
+                              {({ isSubmitting, errors, values, handleChange, handleBlur }) => (
                                   <FoForm>
+                                      {console.log(values)}
                                       <Card.Body>
                                           <Form.Group>
                                             <Form.Label className="custom-switch">
@@ -134,11 +147,11 @@ class SchoolClasstypeEdit extends Component {
                                                 name="displayPublic" 
                                                 checked={values.displayPublic} />
                                               <span className="custom-switch-indicator" ></span>
-                                              <span className="custom-switch-description">{t('school.location.public')}</span>
+                                              <span className="custom-switch-description">{t('school.classtype.public')}</span>
                                             </Form.Label>
                                             <ErrorMessage name="displayPublic" component="div" />   
                                           </Form.Group>     
-                                          <Form.Group label={t('school.location.name')} >
+                                          <Form.Group label={t('school.classtype.name')} >
                                             <Field type="text" 
                                                   name="name" 
                                                   className={(errors.name) ? "form-control is-invalid" : "form-control"} 
@@ -146,11 +159,14 @@ class SchoolClasstypeEdit extends Component {
                                             <ErrorMessage name="name" component="span" className="invalid-feedback" />
                                           </Form.Group>
                                           <Form.Group label={t('description')}>
-                                            <Field type="text" 
-                                                   component="textarea"
-                                                   name="description" 
-                                                   className={(errors.description) ? "form-control is-invalid" : "form-control"} 
-                                                   autoComplete="off" />
+                                            <Editor
+                                              // initialValue="<p>This is the initial content of the editor</p>"
+                                              textareaName="description"
+                                              initialValue={values.description}
+                                              init={tinymceBasicConf}
+                                              onChange={(e) => {this.handleEditorChange(e, values)}}
+                                              onBlur={handleBlur}
+                                            />
                                             <ErrorMessage name="description" component="span" className="invalid-feedback" />
                                           </Form.Group>
                                           <Form.Group label={t('school.classtype.url_website')}>
