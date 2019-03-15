@@ -127,7 +127,7 @@ class SchoolClasstypeEdit extends Component {
                                     })
                               }}
                               >
-                              {({ isSubmitting, errors, values, setFieldValue, handleBlur }) => (
+                              {({ isSubmitting, errors, values, setFieldValue, setFieldTouched }) => (
                                   <FoForm>
                                       {console.log(values)}
                                       <Card.Body>
@@ -156,7 +156,7 @@ class SchoolClasstypeEdit extends Component {
                                               initialValue={values.description}
                                               init={tinymceBasicConf}
                                               onChange={(e) => setFieldValue("description", e.target.getContent())}
-                                              onBlur={handleBlur}
+                                              onBlur={() => setFieldTouched("description", true)}
                                             />
                                             <ErrorMessage name="description" component="span" className="invalid-feedback" />
                                           </Form.Group>
