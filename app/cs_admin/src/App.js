@@ -9,6 +9,8 @@ import { ApolloProvider } from "react-apollo";
 import ApolloClient from "apollo-boost";
 import gql from "graphql-tag";
 
+import HomeHome from './components/home/home/HomeHome'
+
 import FinanceHome from './components/finance/home/FinanceHome'
 
 import SchoolHome from './components/school/home/SchoolHome'
@@ -70,7 +72,7 @@ class App extends Component {
       <HashRouter>
         <ApolloProvider client={client}>
           <Switch>
-            <Route exact path="/" component={SchoolLocations} />
+            <Route exact path="/" component={HomeHome} />
             <Route exact path="/finance" component={FinanceHome} />
             <Route exact path="/school" component={SchoolHome} />
             <Route exact path="/school/locations" component={SchoolLocations} />
