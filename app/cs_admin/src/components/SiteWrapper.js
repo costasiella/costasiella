@@ -116,6 +116,12 @@ const navBarItems: Array<navItem> = [
     icon: "book",
     LinkComponent: withRouter(NavLink),
   },
+  {
+    value: "Finance",
+    to: "/finance",
+    icon: "dollar-sign",
+    LinkComponent: withRouter(NavLink),
+  },
 ];
 
 // const accountDropdownProps = 
