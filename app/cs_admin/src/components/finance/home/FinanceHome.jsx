@@ -15,6 +15,8 @@ import {
 import SiteWrapper from "../../SiteWrapper"
 import HasPermissionWrapper from "../../HasPermissionWrapper"
 
+import FinanceMenu from "../FinanceMenu"
+
 
 class FinanceHome extends Component {
   constructor(props) {
@@ -47,8 +49,7 @@ class FinanceHome extends Component {
               </Card>
               </Grid.Col>
               <Grid.Col md={3}>
-                menu here :)
-                {/* <SchoolMenu active_link='schoollocation'/> */}
+                <FinanceMenu active_link='glaccounts'/>
               </Grid.Col>
             </Grid.Row>
           </Container>

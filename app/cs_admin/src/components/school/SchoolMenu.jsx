@@ -1,10 +1,8 @@
 // @flow
 
 import React from 'react'
-// import { Query } from "react-apollo"
-// import gql from "graphql-tag"
 import { v4 } from "uuid"
-
+import { withTranslation } from 'react-i18next'
 
 import {
   List
