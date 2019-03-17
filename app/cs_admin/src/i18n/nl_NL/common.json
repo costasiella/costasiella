@@ -86,5 +86,11 @@
         }
     },
     "custom_file_input_label": "__STRING_NOT_TRANSLATED__",
-    "custom_file_input_inner_label": "__STRING_NOT_TRANSLATED__"
+    "custom_file_input_inner_label": "__STRING_NOT_TRANSLATED__",
+    "system": {
+        "user": {
+            "error_loading": "__STRING_NOT_TRANSLATED__"
+        }
+    },
+    "settings": "__STRING_NOT_TRANSLATED__"
 }

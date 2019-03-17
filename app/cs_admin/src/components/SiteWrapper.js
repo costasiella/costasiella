@@ -1,6 +1,7 @@
 // @flow
 
 import * as React from "react"
+import { withTranslation } from 'react-i18next'
 import { NavLink, withRouter } from "react-router-dom"
 import { Query } from "react-apollo"
 import { ToastContainer } from 'react-toastify';
@@ -14,6 +15,7 @@ import {
   Nav,
   Grid,
   Button,
+  // Page,
   RouterContextProvider,
 } from "tabler-react";
 
@@ -124,32 +126,79 @@ const navBarItems: Array<navItem> = [
   },
 ];
 
-// const accountDropdownProps = 
+
+const allPermissions = (user) => {
+  // console.log('all_permissions here')
+  const permissions = {}
+  console.log(user)
+  const groups = user.groups
+  console.log(groups)
+  for (let i in groups) {
+    // console.log(i)
+    for (let p in groups[i].permissions) {
+      let codename = groups[i].permissions[p].codename
+      // codename has format <permission>_<resource>
+      let codename_split = codename.split('_')
+      
+      if (!(codename_split[1] in permissions)) {
+        permissions[codename_split[1]] = new Set()
+      }
+      permissions[codename_split[1]].add(codename_split[0])
+    }
+  }
+
+  return permissions
+}
+
+const check_permission = (permissions, permission, resource) => {
+  let you_shall_not_pass = true
+
+  if (resource in permissions) {
+    if (permissions[resource].has(permission)) {
+      console.log('found permission')
+      you_shall_not_pass = false
+    }
+  }
+  
+  return !you_shall_not_pass
+}
 
 
-// const GET_USER = gql`
-//   query {
-//     user {
-//     id
-//     isActive
-//     email
-//     firstName
-//     lastName
-//     userPermissions {
-//       id
-//     }
-//     groups {
-//       id
-//       name
-//       permissions {
-//         id
-//         name
-//         codename
-//       }
-//     }
-//   }
-//   }
-// `
+const getNavBarItems = (user) => {
+  let items: Array<navItem> = []
+  let permissions = allPermissions(user)
+
+  items.push({
+    value: "Home",
+    to: "/",
+    icon: "home",
+    LinkComponent: withRouter(NavLink),
+    useExact: true,
+  })
+
+
+  if ((check_permission(permissions, 'view', 'schoollocation')) || 
+      (check_permission(permissions, 'view', 'schoolclasstype'))) {
+    items.push({
+      value: "School",
+      to: "/school",
+      icon: "book",
+      LinkComponent: withRouter(NavLink),
+    })
+  }
+
+  //TODO   add permissions check for finance
+  items.push({
+    value: "Finance",
+    to: "/finance",
+    icon: "dollar-sign",
+    LinkComponent: withRouter(NavLink),
+  })
+
+
+  return items
+
+}
 
 class SiteWrapper extends React.Component<Props, State> {
   state = {}  
@@ -158,14 +207,12 @@ class SiteWrapper extends React.Component<Props, State> {
     return (
       <Query query={GET_USER} >
         {({ loading, error, data }) => {
-          if (loading) return <p>Loading...</p>;
-          if (error) return <p>Error loading user... :(</p>; 
-          
+          if (loading) return <p>{this.props.t('loading_with_dots')}</p>;
+          if (error) return <p>{this.props.t('system.user.error_loading')}</p>; 
           
           console.log('user data in site wrapper')
           console.log(data)
       
-
           return <Site.Wrapper
             headerProps={{
                 href: "/",
@@ -182,7 +229,7 @@ class SiteWrapper extends React.Component<Props, State> {
                       RootComponent="a"
                       color="primary"
                     >
-                      Settings
+                      {this.props.t('settings')}
                     </Button>
                   </Nav.Item>
                 ),
@@ -220,7 +267,8 @@ class SiteWrapper extends React.Component<Props, State> {
                 ],
               },
               }}
-              navProps={{ itemsObjects: navBarItems }}
+              // navProps={{ itemsObjects: navBarItems }}
+              navProps={{ itemsObjects: getNavBarItems(data.user) }}
               routerContextComponentType={withRouter(RouterContextProvider)}
               footerProps={{
                 // links: [
@@ -285,4 +333,4 @@ class SiteWrapper extends React.Component<Props, State> {
   }
 }
 
-export default SiteWrapper;
+export default withTranslation()(SiteWrapper)

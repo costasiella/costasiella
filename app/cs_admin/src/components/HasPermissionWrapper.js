@@ -33,15 +33,15 @@ class HasPermissionWrapper extends Component {
   }
 
   check_permission(permissions, permission, resource) {
-    let has_permission = false
+    let you_shall_not_pass = true
 
     if (resource in permissions) {
       if (permissions[resource].has(permission)) {
-        has_permission = true
+        you_shall_not_pass = true
       }
     }
     
-    return has_permission
+    return !you_shall_not_pass
   }
   
 

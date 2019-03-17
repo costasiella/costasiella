@@ -17,4 +17,3 @@ class SchoolClasstype(models.Model):
     def __str__(self):
         return self.name
     
-from django import forms
