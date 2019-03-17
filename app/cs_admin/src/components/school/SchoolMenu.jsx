@@ -12,7 +12,7 @@ import HasPermissionWrapper from "../HasPermissionWrapper"
 let schoollocations_active
 let schoolclasstypes_active
 
-const SchoolMenu = ({active_link}) => (
+const SchoolMenu = ({ t, active_link }) => (
     <List.Group transparent={true}>
         {(active_link === 'schoollocations') ? schoollocations_active = true: schoollocations_active = false}
         {(active_link === 'schoolclasstypes') ? schoolclasstypes_active = true: schoolclasstypes_active = false}
@@ -24,7 +24,7 @@ const SchoolMenu = ({active_link}) => (
             icon="home"
             active={schoollocations_active}
             >
-        Locations
+            {t('school.menu.locations')}
         </List.GroupItem>
         <List.GroupItem
             key={v4()}
@@ -33,7 +33,7 @@ const SchoolMenu = ({active_link}) => (
             icon="book-open"
             active={schoolclasstypes_active}
             >
-        Class types
+            {t('school.menu.classtypes')}
         </List.GroupItem>
         {/* <HasPermissionWrapper 
             permission="view"
@@ -51,4 +51,4 @@ const SchoolMenu = ({active_link}) => (
     </List.Group>
 );
 
-export default SchoolMenu
+export default withTranslation()(SchoolMenu)
