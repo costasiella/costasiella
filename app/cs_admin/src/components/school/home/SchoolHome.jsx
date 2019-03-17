@@ -11,6 +11,7 @@ import {
   Button,
   Card,
   Container,
+  StampCard
 } from "tabler-react";
 import SiteWrapper from "../../SiteWrapper"
 import HasPermissionWrapper from "../../HasPermissionWrapper"
@@ -39,14 +40,18 @@ class SchoolHome extends Component {
             <Page.Header title={t("school.page_header")} />
             <Grid.Row>
               <Grid.Col md={9}>
-              <Card>
-                <Card.Header>
-                  <Card.Title>{t('school.home.title')}</Card.Title>
-                </Card.Header>
-                <Card.Body>
-                    Hello world!
-                </Card.Body>
-              </Card>
+                <Grid.Row>
+                  <Grid.Col md={4} lg={4}>
+                    <div onClick={() => history.push('/school/locations')}>
+                      <StampCard header={t('school.locations.title')} footer={t('')} color="blue" icon="home" />
+                    </div>
+                  </Grid.Col>
+                  <Grid.Col md={4} lg={4}>
+                    <div onClick={() => history.push('/school/classtypes')}>
+                      <StampCard header={t('school.classtypes.title')} footer={t('')} color="blue" icon="book-open" />
+                    </div>
+                  </Grid.Col>
+                </Grid.Row>
               </Grid.Col>
               <Grid.Col md={3}>
                 <SchoolMenu />

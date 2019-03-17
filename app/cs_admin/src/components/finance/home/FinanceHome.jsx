@@ -11,6 +11,7 @@ import {
   Button,
   Card,
   Container,
+  StampCard
 } from "tabler-react";
 import SiteWrapper from "../../SiteWrapper"
 import HasPermissionWrapper from "../../HasPermissionWrapper"
@@ -39,14 +40,18 @@ class FinanceHome extends Component {
             <Page.Header title={t("finance.page_header")} />
             <Grid.Row>
               <Grid.Col md={9}>
-              <Card>
-                <Card.Header>
-                  <Card.Title>{t('finance.home.title')}</Card.Title>
-                </Card.Header>
-                <Card.Body>
-                    Hello world!
-                </Card.Body>
-              </Card>
+                <Grid.Row>
+                  <Grid.Col md={4} lg={4}>
+                    <div onClick={() => history.push('/finance/glaccounts')}>
+                      <StampCard header={t('finance.glaccounts.title')} footer={t('')} color="blue" icon="book" />
+                    </div>
+                  </Grid.Col>
+                  <Grid.Col md={4} lg={4}>
+                    <div onClick={() => history.push('/finance/costcenters')}>
+                      <StampCard header={t('finance.costcenters.title')} footer={t('')} color="blue" icon="compass" />
+                    </div>
+                  </Grid.Col>
+                </Grid.Row>
               </Grid.Col>
               <Grid.Col md={3}>
                 <FinanceMenu />

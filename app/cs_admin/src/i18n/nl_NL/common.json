@@ -38,9 +38,6 @@
             "url_website": "__STRING_NOT_TRANSLATED__"
         },
         "page_header": "__STRING_NOT_TRANSLATED__",
-        "home": {
-            "title": "__STRING_NOT_TRANSLATED__"
-        },
         "menu": {
             "locations": "__STRING_NOT_TRANSLATED__",
             "classtypes": "__STRING_NOT_TRANSLATED__"
@@ -75,7 +72,10 @@
             "costcenters": "__STRING_NOT_TRANSLATED__"
         },
         "page_header": "__STRING_NOT_TRANSLATED__",
-        "home": {
+        "glaccounts": {
+            "title": "__STRING_NOT_TRANSLATED__"
+        },
+        "costcenters": {
             "title": "__STRING_NOT_TRANSLATED__"
         }
     },

@@ -36,9 +36,6 @@
             "url_website": "Link to description on website"
         },
         "page_header": "School",
-        "home": {
-            "title": "School"
-        },
         "menu": {
             "locations": "Locations",
             "classtypes": "Class types"
@@ -71,12 +68,15 @@
     "loaded_all": "Displaying all items",
     "finance": {
         "menu": {
-            "glaccounts": "G/A accounts",
+            "glaccounts": "G/L Accounts",
             "costcenters": "Costcenters"
         },
         "page_header": "Finance",
-        "home": {
-            "title": "Home"
+        "glaccounts": {
+            "title": "General ledger accounts"
+        },
+        "costcenters": {
+            "title": "Costcenters"
         }
     },
     "home": {
