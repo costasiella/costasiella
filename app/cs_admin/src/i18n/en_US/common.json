@@ -19,19 +19,29 @@
         "classtypes": {
             "title_add": "Add class type",
             "toast_add_success": "Added class type",
-            "confirm_archive": "Do you wish to move this class type to the archive?",
             "title": "Class types",
             "error_loading": "Error loading class types :(",
             "empty_list": "No class types found, click the Add button to add a class type",
             "empty_archive": "No class types have been archived yet.",
             "add": "Add class type",
             "title_edit": "Edit class type",
-            "toast_edit_success": "Saved class type"
+            "toast_edit_success": "Saved class type",
+            "toast_image_save_success": "Saved image",
+            "edit_image": "Edit image",
+            "image": "Image"
         },
         "classtype": {
             "public": "This is a public class type",
             "name": "Class type name",
             "url_website": "Link to description on website"
+        },
+        "page_header": "School",
+        "home": {
+            "title": "School"
+        },
+        "menu": {
+            "locations": "Locations",
+            "classtypes": "Class types"
         }
     },
     "name": "Name",
@@ -58,5 +68,23 @@
         "field_required": "This field is required"
     },
     "load_more": "Load more...",
-    "loaded_all": "Displaying all items"
+    "loaded_all": "Displaying all items",
+    "finance": {
+        "menu": {
+            "glaccounts": "G/A accounts",
+            "costcenters": "Costcenters"
+        },
+        "page_header": "Finance",
+        "home": {
+            "title": "Home"
+        }
+    },
+    "home": {
+        "page_header": "Home",
+        "home": {
+            "title": "Home"
+        }
+    },
+    "custom_file_input_label": "File input",
+    "custom_file_input_inner_label": "Choose file"
 }

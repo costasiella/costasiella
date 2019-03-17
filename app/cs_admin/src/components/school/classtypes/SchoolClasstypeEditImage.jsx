@@ -132,7 +132,7 @@ class SchoolClasstypeEditImage extends Component {
               <Grid.Col md={9}>
               <Card>
                 <Card.Header>
-                  <Card.Title>{t('edit_ct_image')}</Card.Title>
+                  <Card.Title>{t('school.classtypes.edit_image')}</Card.Title>
                   {console.log(match.params.id)}
                 </Card.Header>
                 <Query query={GET_CLASSTYPE_QUERY} variables={{ id }} >
@@ -157,11 +157,11 @@ class SchoolClasstypeEditImage extends Component {
                             <Form autoComplete="off" onSubmit={(event) => this.onSubmit(event, initialData.id, uploadImage)}>
                               <Card.Body>
                                 <div className="form-group">
-                                  <label className="form-label">{t('choose_image')}</label>
+                                  <label className="form-label">{t('custom_file_input_label')}</label>
                                   <div className="custom-file">
                                     <input type="file" ref={this.fileInput} className="custom-file-input" />
                                     <label className="custom-file-label" style={customFileInputLabelStyle}>
-                                      {t("custom_file_input_label")}
+                                      {t("custom_file_input_inner_label")}
                                     </label>
                                   </div>
                                 </div>

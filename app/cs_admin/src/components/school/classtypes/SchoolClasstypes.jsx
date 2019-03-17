@@ -154,7 +154,7 @@ const SchoolClasstypes = ({ t, history, archived=false }) => (
                                         <Button className='btn-sm' 
                                                 onClick={() => history.push("/school/classtypes/edit_image/" + node.id)}
                                                 color="secondary">
-                                          {t('image')}
+                                          {t('school.classtypes.image')}
                                         </Button>
                                       </div>
                                     }
