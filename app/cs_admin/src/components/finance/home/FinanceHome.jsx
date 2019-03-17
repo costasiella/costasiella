@@ -49,7 +49,7 @@ class FinanceHome extends Component {
               </Card>
               </Grid.Col>
               <Grid.Col md={3}>
-                <FinanceMenu active_link='glaccounts'/>
+                <FinanceMenu />
               </Grid.Col>
             </Grid.Row>
           </Container>
