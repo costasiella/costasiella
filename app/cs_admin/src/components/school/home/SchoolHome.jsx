@@ -43,12 +43,12 @@ class SchoolHome extends Component {
                 <Grid.Row>
                   <Grid.Col md={4} lg={4}>
                     <div onClick={() => history.push('/school/locations')}>
-                      <StampCard header={t('school.locations.title')} footer={t('')} color="blue" icon="home" />
+                      <StampCard header={<small>{t('school.locations.title')}</small>} footer={t('')} color="blue" icon="home" />
                     </div>
                   </Grid.Col>
                   <Grid.Col md={4} lg={4}>
                     <div onClick={() => history.push('/school/classtypes')}>
-                      <StampCard header={t('school.classtypes.title')} footer={t('')} color="blue" icon="book-open" />
+                      <StampCard header={<small>{t('school.classtypes.title')}</small>} footer={t('')} color="blue" icon="book-open" />
                     </div>
                   </Grid.Col>
                 </Grid.Row>
