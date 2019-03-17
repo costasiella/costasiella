@@ -117,8 +117,9 @@ const SchoolClasstypes = ({ t, history, archived=false }) => (
                     <Table>
                           <Table.Header>
                             <Table.Row key={v4()}>
+                              <Table.ColHeader>{t('')}</Table.ColHeader>
                               <Table.ColHeader>{t('name')}</Table.ColHeader>
-                              <Table.ColHeader>{t('description')}</Table.ColHeader>
+                              {/* <Table.ColHeader>{t('description')}</Table.ColHeader> */}
                               <Table.ColHeader>{t('public')}</Table.ColHeader>
                             </Table.Row>
                           </Table.Header>
@@ -126,13 +127,16 @@ const SchoolClasstypes = ({ t, history, archived=false }) => (
                               {classtypes.edges.map(({ node }) => (
                                 <Table.Row key={v4()}>
                                   <Table.Col key={v4()}>
-                                    {node.name}
+                                    <img src={node.urlImageThumbnailSmall} alt="" />
                                   </Table.Col>
                                   <Table.Col key={v4()}>
+                                    {node.name}
+                                  </Table.Col>
+                                  {/* <Table.Col key={v4()}>
                                     <span title={node.description}>
                                       {node.description}
                                     </span>
-                                  </Table.Col>
+                                  </Table.Col> */}
                                   <Table.Col key={v4()}>
                                     {(node.displayPublic) ? 
                                       <Badge color="success">{t('yes')}</Badge>: 
@@ -141,11 +145,18 @@ const SchoolClasstypes = ({ t, history, archived=false }) => (
                                   <Table.Col className="text-right" key={v4()}>
                                     {(archived) ? 
                                       <span className='text-muted'>{t('unarchive_to_edit')}</span> :
-                                      <Button className='btn-sm' 
-                                              onClick={() => history.push("/school/classtypes/edit/" + node.id)}
-                                              color="secondary">
-                                        {t('edit')}
-                                      </Button>
+                                      <div>
+                                        <Button className='btn-sm' 
+                                                onClick={() => history.push("/school/classtypes/edit/" + node.id)}
+                                                color="secondary">
+                                          {t('edit')}
+                                        </Button>
+                                        <Button className='btn-sm' 
+                                                onClick={() => history.push("/school/classtypes/edit_image/" + node.id)}
+                                                color="secondary">
+                                          {t('image')}
+                                        </Button>
+                                      </div>
                                     }
                                   </Table.Col>
                                   <Mutation mutation={ARCHIVE_CLASSTYPE} key={v4()}>

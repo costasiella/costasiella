@@ -8,6 +8,9 @@ import { withRouter } from "react-router"
 import { Formik, Form as FoForm, Field, ErrorMessage } from 'formik'
 import { toast } from 'react-toastify'
 
+import { Editor } from '@tinymce/tinymce-react'
+import { tinymceBasicConf } from "../../../plugin_config/tinymce"
+
 import { GET_CLASSTYPES_QUERY, GET_CLASSTYPE_QUERY } from './queries'
 import { CLASSTYPE_SCHEMA } from './yupSchema'
 
@@ -49,6 +52,7 @@ class SchoolClasstypeEdit extends Component {
     console.log(props)
   }
 
+
   render() {
     const t = this.props.t
     const match = this.props.match
@@ -85,7 +89,7 @@ class SchoolClasstypeEdit extends Component {
                     return (
                       
                       <Mutation mutation={UPDATE_CLASSTYPE} onCompleted={() => history.push(return_url)}> 
-                      {(updateLocation, { data }) => (
+                        {(updateClasstype, { data }) => (
                           <Formik
                               initialValues={{ 
                                 name: initialData.name, 
@@ -98,7 +102,7 @@ class SchoolClasstypeEdit extends Component {
                                   console.log('submit values:')
                                   console.log(values)
 
-                                  updateLocation({ variables: {
+                                  updateClasstype({ variables: {
                                     input: {
                                       id: match.params.id,
                                       name: values.name,
@@ -123,8 +127,9 @@ class SchoolClasstypeEdit extends Component {
                                     })
                               }}
                               >
-                              {({ isSubmitting, errors, values }) => (
+                              {({ isSubmitting, errors, values, setFieldValue, setFieldTouched }) => (
                                   <FoForm>
+                                      {console.log(values)}
                                       <Card.Body>
                                           <Form.Group>
                                             <Form.Label className="custom-switch">
@@ -134,11 +139,11 @@ class SchoolClasstypeEdit extends Component {
                                                 name="displayPublic" 
                                                 checked={values.displayPublic} />
                                               <span className="custom-switch-indicator" ></span>
-                                              <span className="custom-switch-description">{t('school.location.public')}</span>
+                                              <span className="custom-switch-description">{t('school.classtype.public')}</span>
                                             </Form.Label>
                                             <ErrorMessage name="displayPublic" component="div" />   
                                           </Form.Group>     
-                                          <Form.Group label={t('school.location.name')} >
+                                          <Form.Group label={t('school.classtype.name')} >
                                             <Field type="text" 
                                                   name="name" 
                                                   className={(errors.name) ? "form-control is-invalid" : "form-control"} 
@@ -146,11 +151,13 @@ class SchoolClasstypeEdit extends Component {
                                             <ErrorMessage name="name" component="span" className="invalid-feedback" />
                                           </Form.Group>
                                           <Form.Group label={t('description')}>
-                                            <Field type="text" 
-                                                   component="textarea"
-                                                   name="description" 
-                                                   className={(errors.description) ? "form-control is-invalid" : "form-control"} 
-                                                   autoComplete="off" />
+                                            <Editor
+                                              textareaName="description"
+                                              initialValue={values.description}
+                                              init={tinymceBasicConf}
+                                              onChange={(e) => setFieldValue("description", e.target.getContent())}
+                                              onBlur={() => setFieldTouched("description", true)}
+                                            />
                                             <ErrorMessage name="description" component="span" className="invalid-feedback" />
                                           </Form.Group>
                                           <Form.Group label={t('school.classtype.url_website')}>

@@ -12,13 +12,33 @@ from ..models import SchoolClasstype
 from ..modules.gql_tools import require_login_and_permission
 from ..modules.messages import Messages
 
+from sorl.thumbnail import get_thumbnail
+
 m = Messages()
 
+class SchoolClasstypeNodeInterface(graphene.Interface):
+    id = graphene.GlobalID()
+    url_image = graphene.String()
+    url_image_thumbnail_small = graphene.String()
+
+
 class SchoolClasstypeNode(DjangoObjectType):
+    def resolve_url_image(self, info):
+        if self.image:
+            return self.image.url
+        else:
+            return ''
+
+    def resolve_url_image_thumbnail_small(self, info):
+        if self.image:
+            return get_thumbnail(self.image, '50x50', crop='center', quality=99).url
+        else:
+            return ''
+    
     class Meta:
         model = SchoolClasstype
         filter_fields = ['archived']
-        interfaces = (graphene.relay.Node, )
+        interfaces = (graphene.relay.Node, SchoolClasstypeNodeInterface)
 
     @classmethod
     def get_node(self, info, id):
@@ -75,7 +95,7 @@ class CreateSchoolClasstype(graphene.relay.ClientIDMutation):
             name=input['name'], 
             description=input['description'],
             display_public=input['display_public'],
-            url_website=url_website
+            url_website=url_website,
         )
         school_classtype.save()
 
@@ -84,7 +104,7 @@ class CreateSchoolClasstype(graphene.relay.ClientIDMutation):
 
 class UpdateSchoolClasstype(graphene.relay.ClientIDMutation):
     class Input:
-        id = graphene.ID()
+        id = graphene.ID(required=True)
         name = graphene.String(required=True)
         description = graphene.String(required=False, default_value="")
         display_public = graphene.Boolean(required=True, default_value=True)
@@ -117,6 +137,52 @@ class UpdateSchoolClasstype(graphene.relay.ClientIDMutation):
         return UpdateSchoolClasstype(school_classtype=classtype)
 
 
+class UploadSchoolClasstypeImage(graphene.relay.ClientIDMutation):
+    class Input:
+        id = graphene.ID(required=True)
+        image = graphene.String(required=True)
+
+
+    school_classtype = graphene.Field(SchoolClasstypeNode)
+
+    @classmethod
+    def mutate_and_get_payload(self, root, info, **input):
+        user = info.context.user
+        require_login_and_permission(user, 'costasiella.change_schoolclasstype')
+
+        import base64
+        from django.core.files.base import ContentFile
+
+        def base64_file(data, name=None):
+            _format, _img_str = data.split(';base64,')
+            _name, ext = _format.split('/')
+            if not name:
+                name = _name.split(":")[-1]
+            return ContentFile(base64.b64decode(_img_str), name='{}.{}'.format(name, ext))
+
+        rid = get_rid(input['id'])
+        classtype = SchoolClasstype.objects.filter(id=rid.id).first()
+        if not classtype:
+            raise Exception('Invalid School Classtype ID!')
+
+        b64_enc_image = input['image']
+        # print(b64_enc_image)
+        (image_type, image_file) = b64_enc_image.split(',')
+        # print(image_type)
+
+        
+        classtype.image = base64_file(data=b64_enc_image)
+        classtype.save(force_update=True)
+
+        print('new image')
+        img = classtype.image
+        print(img.name)
+        print(img.path)
+        print(img.url)
+
+        return UpdateSchoolClasstype(school_classtype=classtype)
+
+
 class ArchiveSchoolClasstype(graphene.relay.ClientIDMutation):
     class Input:
         id = graphene.ID(required=True)
@@ -144,3 +210,4 @@ class SchoolClasstypeMutation(graphene.ObjectType):
     archive_school_classtype = ArchiveSchoolClasstype.Field()
     create_school_classtype = CreateSchoolClasstype.Field()
     update_school_classtype = UpdateSchoolClasstype.Field()
+    upload_school_classtype_image = UploadSchoolClasstypeImage.Field()

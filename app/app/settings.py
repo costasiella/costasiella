@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'graphene_django',
     'webpack_loader',
+    'sorl.thumbnail',
     
     # local apps
     'costasiella.apps.CostasiellaConfig',
@@ -158,8 +159,14 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "assets", "bootstrapadmin"),
+    os.path.join(BASE_DIR, "assets"),
     os.path.join(BASE_DIR, "assets", "logos", "stock"),
 ]
+
+# Media files (User uploads)
+# https://docs.djangoproject.com/en/2.1/topics/files/
+MEDIA_ROOT = '/home/edwin/Development/costasiella/app/costasiella/media'
+MEDIA_URL = '/media/'
 
 # Email configuration
 
@@ -203,3 +210,7 @@ ACCOUNT_LOGIN_ATTEMPTS_LIMIT = 7
 ACCOUNT_LOGIN_ATTEMPTS_TIMEOUT = 900 # Lock out a user for 15 minutes after 7 invalid attempts to log in
 ACCOUNT_SIGNUP_FORM_CLASS = 'costasiella.forms.SignupForm'
 ACCOUNT_LOGIN_ON_PASSWORD_RESET = True # Log in users after password reset instead of showing a "done" page.
+
+
+# Allow Base64 encoded uploads of up to 5MB
+DATA_UPLOAD_MAX_MEMORY_SIZE = 5242880

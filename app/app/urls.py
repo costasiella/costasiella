@@ -21,21 +21,16 @@ from django.contrib.auth.decorators import login_required
 
 from graphene_django.views import GraphQLView
 
+## Development only
+from django.conf import settings
+from django.conf.urls.static import static
+
+
+
 urlpatterns = [
     path('', login_required(TemplateView.as_view(template_name="backend.html")), name="home"),
     path('admin/', admin.site.urls),
     path('accounts/', include('allauth.urls')),
     # path('graphql/', GraphQLView.as_view(graphiql=True)),
     path('graphql/', csrf_exempt(GraphQLView.as_view(graphiql=True)), name="api_graphql"),
-]
-
-
-
-# from django.conf.urls import url
-# from django.contrib import admin
-# from django.views.generic import TemplateView
-
-# urlpatterns = [
-    # url(r'^admin/', admin.site.urls),
-    # url(r'^', TemplateView.as_view(template_name="index.html")),
-# ]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) # Development only

@@ -1,6 +1,7 @@
 import uuid
 
 from django.db import models
+from sorl.thumbnail import ImageField
 
 # Create your models here.
 
@@ -11,8 +12,8 @@ class SchoolClasstype(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField()
     url_website = models.URLField()
-    image = models.ImageField(default=None, upload_to='uploads/')
-    
+    image = ImageField(upload_to='school_classtype_images', default=None)
+
     def __str__(self):
         return self.name
     

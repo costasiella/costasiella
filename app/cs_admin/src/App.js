@@ -15,6 +15,7 @@ import SchoolLocationEdit from './components/school/locations/SchoolLocationEdit
 import SchoolClasstypes from './components/school/classtypes/SchoolClasstypes'
 import SchoolClasstypeAdd from './components/school/classtypes/SchoolClasstypeAdd'
 import SchoolClasstypeEdit from './components/school/classtypes/SchoolClasstypeEdit'
+import SchoolClasstypeEditImage from './components/school/classtypes/SchoolClasstypeEditImage'
 import Error404 from "./components/Error404"
 
 // Tabler css 
@@ -74,6 +75,7 @@ class App extends Component {
             <Route exact path="/school/classtypes" component={SchoolClasstypes} />
             <Route exact path="/school/classtypes/add" component={SchoolClasstypeAdd} />
             <Route exact path="/school/classtypes/edit/:id" component={SchoolClasstypeEdit} />
+            <Route exact path="/school/classtypes/edit_image/:id" component={SchoolClasstypeEditImage} />
             <Route component={Error404} />
           </Switch>
         </ApolloProvider>
