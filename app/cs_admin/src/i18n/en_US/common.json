@@ -80,7 +80,9 @@
             "code": "Code",
             "add": "Add G/L Account",
             "title_add": "Add general ledger account",
-            "toast_add_success": "Saved G/L Account"
+            "toast_add_success": "Saved G/L Account",
+            "title_edit": "Edit general ledger account",
+            "toast_edit_success": "Saved G/L Account"
         },
         "costcenters": {
             "title": "Costcenters"
