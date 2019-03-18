@@ -25,14 +25,14 @@ import HasPermissionWrapper from "../../HasPermissionWrapper"
 import { toast } from 'react-toastify'
 
 import ContentCard from "../../general/ContentCard"
-import SchoolMenu from "../SchoolMenu"
+import FinanceMenu from "../FinanceMenu"
 
 import { GET_GLACCOUNTS_QUERY } from "./queries"
 
 const ARCHIVE_GLACCOUNT = gql`
-  mutation ArchiveFinanceGLAccount($input: ArchiveSchoolLocationInput!) {
-    archiveSchoolLocation(input: $input) {
-      schoolLocation {
+  mutation ArchiveFinanceGLAccount($input: ArchiveFinanceGLAccountInput!) {
+    archiveFinanceGLAccount(input: $input) {
+      financeGlaccount {
         id
         archived
       }
@@ -41,41 +41,18 @@ const ARCHIVE_GLACCOUNT = gql`
 `
 
 
-// const onClickArchive = (t, id) => {
-//   const options = {
-//     title: t('please_confirm'),
-//     message: t('school.locations.confirm_archive'),
-//     buttons: [
-//       {
-//         label: t('yes'),
-//         onClick: () => alert('Click Yes'),
-//         class: 'btn btn-primary'
-//       },
-//       {
-//         label: t('no'),
-//         onClick: () => alert('Click No')
-//       }
-//     ],
-//     childrenElement: () => <div />,
-//     // customUI: ({ title, message, onClose }) => <div>Custom UI</div>,
-//     willUnmount: () => {}
-//   }
-
-//   confirmAlert(options)
-// }
-
-const SchoolLocations = ({ t, history, archived=false }) => (
+const FinanceGLAccounts = ({ t, history, archived=false }) => (
   <SiteWrapper>
     <div className="my-3 my-md-5">
       <Container>
         <Page.Header title="School" />
         <Grid.Row>
           <Grid.Col md={9}>
-            <Query query={GET_LOCATIONS_QUERY} variables={{ archived }}>
-             {({ loading, error, data: {schoolLocations: locations}, refetch, fetchMore }) => {
+            <Query query={GET_GLACCOUNTS_QUERY} variables={{ archived }}>
+             {({ loading, error, data: {financeGlaccounts: glaccounts}, refetch, fetchMore }) => {
                 // Loading
                 if (loading) return (
-                  <ContentCard cardTitle={t('school.locations.title')}>
+                  <ContentCard cardTitle={t('finance.glaccounts.title')}>
                     <Dimmer active={true}
                             loadder={true}>
                     </Dimmer>
@@ -83,8 +60,8 @@ const SchoolLocations = ({ t, history, archived=false }) => (
                 )
                 // Error
                 if (error) return (
-                  <ContentCard cardTitle={t('school.locations.title')}>
-                    <p>{t('school.locations.error_loading')}</p>
+                  <ContentCard cardTitle={t('finance.glaccounts.title')}>
+                    <p>{t('finance.glaccounts.error_loading')}</p>
                   </ContentCard>
                 )
                 const headerOptions = <Card.Options>
@@ -102,36 +79,36 @@ const SchoolLocations = ({ t, history, archived=false }) => (
                 </Card.Options>
                 
                 // Empty list
-                if (!locations.edges.length) { return (
-                  <ContentCard cardTitle={t('school.locations.title')}
+                if (!glaccounts.edges.length) { return (
+                  <ContentCard cardTitle={t('finance.glaccounts.title')}
                                headerContent={headerOptions}>
                     <p>
-                    {(!archived) ? t('school.locations.empty_list') : t("school.locations.empty_archive")}
+                    {(!archived) ? t('finance.glaccounts.empty_list') : t("finance.glaccounts.empty_archive")}
                     </p>
                    
                   </ContentCard>
                 )} else {   
                 // Life's good! :)
                 return (
-                  <ContentCard cardTitle={t('school.locations.title')}
+                  <ContentCard cardTitle={t('finance.glaccounts.title')}
                                headerContent={headerOptions}
-                               pageInfo={locations.pageInfo}
+                               pageInfo={glaccounts.pageInfo}
                                onLoadMore={() => {
                                 fetchMore({
                                   variables: {
-                                    after: locations.pageInfo.endCursor
+                                    after: glaccounts.pageInfo.endCursor
                                   },
                                   updateQuery: (previousResult, { fetchMoreResult }) => {
-                                    const newEdges = fetchMoreResult.schoolLocations.edges
-                                    const pageInfo = fetchMoreResult.schoolLocations.pageInfo
+                                    const newEdges = fetchMoreResult.financeGlaccounts.edges
+                                    const pageInfo = fetchMoreResult.financeGlaccounts.pageInfo
 
                                     return newEdges.length
                                       ? {
-                                          // Put the new locations at the end of the list and update `pageInfo`
+                                          // Put the new glaccounts at the end of the list and update `pageInfo`
                                           // so we have the new `endCursor` and `hasNextPage` values
-                                          schoolLocations: {
-                                            __typename: previousResult.schoolLocations.__typename,
-                                            edges: [ ...previousResult.schoolLocations.edges, ...newEdges ],
+                                          financeGlaccounts: {
+                                            __typename: previousResult.financeGlaccounts.__typename,
+                                            edges: [ ...previousResult.financeGlaccounts.edges, ...newEdges ],
                                             pageInfo
                                           }
                                         }
@@ -143,32 +120,30 @@ const SchoolLocations = ({ t, history, archived=false }) => (
                           <Table.Header>
                             <Table.Row key={v4()}>
                               <Table.ColHeader>{t('name')}</Table.ColHeader>
-                              <Table.ColHeader>{t('public')}</Table.ColHeader>
+                              <Table.ColHeader>{t('finance.glaccounts.code')}</Table.ColHeader>
                             </Table.Row>
                           </Table.Header>
                           <Table.Body>
-                              {locations.edges.map(({ node }) => (
+                              {glaccounts.edges.map(({ node }) => (
                                 <Table.Row key={v4()}>
                                   <Table.Col key={v4()}>
                                     {node.name}
                                   </Table.Col>
                                   <Table.Col key={v4()}>
-                                    {(node.displayPublic) ? 
-                                      <Badge color="success">{t('yes')}</Badge>: 
-                                      <Badge color="danger">{t('no')}</Badge>}
+                                    {node.code}
                                   </Table.Col>
                                   <Table.Col className="text-right" key={v4()}>
                                     {(node.archived) ? 
                                       <span className='text-muted'>{t('unarchive_to_edit')}</span> :
                                       <Button className='btn-sm' 
-                                              onClick={() => history.push("/school/locations/edit/" + node.id)}
+                                              onClick={() => history.push("/school/glaccounts/edit/" + node.id)}
                                               color="secondary">
                                         {t('edit')}
                                       </Button>
                                     }
                                   </Table.Col>
-                                  <Mutation mutation={ARCHIVE_LOCATION} key={v4()}>
-                                    {(archiveLocation, { data }) => (
+                                  <Mutation mutation={ARCHIVE_GLACCOUNT} key={v4()}>
+                                    {(archiveGlaccount, { data }) => (
                                       <Table.Col className="text-right" key={v4()}>
                                         <button className="icon btn btn-link btn-sm" 
                                            title={t('archive')} 
@@ -176,13 +151,13 @@ const SchoolLocations = ({ t, history, archived=false }) => (
                                            onClick={() => {
                                              console.log("clicked archived")
                                              let id = node.id
-                                             archiveLocation({ variables: {
+                                             archiveGlaccount({ variables: {
                                                input: {
                                                 id,
                                                 archived: !archived
                                                }
                                         }, refetchQueries: [
-                                            {query: GET_LOCATIONS_QUERY, variables: {"archived": archived }}
+                                            {query: GET_GLACCOUNTS_QUERY, variables: {"archived": archived }}
                                         ]}).then(({ data }) => {
                                           console.log('got data', data);
                                           toast.success(
@@ -212,13 +187,13 @@ const SchoolLocations = ({ t, history, archived=false }) => (
           </Grid.Col>
           <Grid.Col md={3}>
             <HasPermissionWrapper permission="add"
-                                  resource="schoollocation">
+                                  resource="financeglaccount">
               <Button color="primary btn-block mb-6"
-                      onClick={() => history.push("/school/locations/add")}>
-                <Icon prefix="fe" name="plus-circle" /> {t('school.locations.add')}
+                      onClick={() => history.push("/school/glaccounts/add")}>
+                <Icon prefix="fe" name="plus-circle" /> {t('finance.glaccounts.add')}
               </Button>
             </HasPermissionWrapper>
-            <SchoolMenu active_link='schoollocations'/>
+            <FinanceMenu active_link='glaccounts'/>
           </Grid.Col>
         </Grid.Row>
       </Container>
@@ -226,4 +201,4 @@ const SchoolLocations = ({ t, history, archived=false }) => (
   </SiteWrapper>
 );
 
-export default withTranslation()(withRouter(SchoolLocations))
+export default withTranslation()(withRouter(FinanceGLAccounts))

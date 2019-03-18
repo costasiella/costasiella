@@ -12,6 +12,7 @@ import gql from "graphql-tag";
 import HomeHome from './components/home/home/HomeHome'
 
 import FinanceHome from './components/finance/home/FinanceHome'
+import FinanceGLAccounts from './components/finance/glaccounts/FinanceGLAccounts'
 
 import SchoolHome from './components/school/home/SchoolHome'
 import SchoolLocations from './components/school/locations/SchoolLocations'
@@ -74,6 +75,7 @@ class App extends Component {
           <Switch>
             <Route exact path="/" component={HomeHome} />
             <Route exact path="/finance" component={FinanceHome} />
+            <Route exact path="/finance/glaccounts" component={FinanceGLAccounts} />
             <Route exact path="/school" component={SchoolHome} />
             <Route exact path="/school/locations" component={SchoolLocations} />
             <Route exact path="/school/locations/add" component={SchoolLocationAdd} />
