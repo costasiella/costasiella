@@ -1,19 +1,23 @@
 import graphene
 import graphql_jwt
 
+from .financeglaccount import FinanceGLAccountQuery, FinanceGLAccountMutation
+
 from .schoolclasstype import SchoolClasstypeQuery, SchoolClasstypeMutation
 from .schoollocation import SchoolLocationQuery, SchoolLocationMutation
 from .user import UserQuery, UserMutation
 
 
-class Query(SchoolClasstypeQuery,
+class Query(FinanceGLAccountQuery,
+            SchoolClasstypeQuery,
             SchoolLocationQuery, 
             UserQuery, 
             graphene.ObjectType):
     node = graphene.relay.Node.Field()
 
 
-class Mutation(SchoolClasstypeMutation,
+class Mutation(FinanceGLAccountMutation,
+               SchoolClasstypeMutation,
                SchoolLocationMutation, 
                UserMutation, 
                graphene.ObjectType):
