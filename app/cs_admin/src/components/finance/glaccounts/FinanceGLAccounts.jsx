@@ -45,7 +45,7 @@ const FinanceGLAccounts = ({ t, history, archived=false }) => (
   <SiteWrapper>
     <div className="my-3 my-md-5">
       <Container>
-        <Page.Header title="School" />
+        <Page.Header title={t("finance.title")} />
         <Grid.Row>
           <Grid.Col md={9}>
             <Query query={GET_GLACCOUNTS_QUERY} variables={{ archived }}>
