@@ -9,7 +9,7 @@ import { Formik, Form as FoForm, Field, ErrorMessage } from 'formik'
 import { toast } from 'react-toastify'
 
 
-import { GET_LOCATIONS_QUERY } from './queries'
+import { GET_GLACCOUNTS_QUERY } from './queries'
 import { GLACCOUNT_SCHEMA } from './yupSchema'
 
 
@@ -25,7 +25,7 @@ import {
 import SiteWrapper from "../../SiteWrapper"
 import HasPermissionWrapper from "../../HasPermissionWrapper"
 
-import SchoolMenu from "../SchoolMenu"
+import FinanceMenu from '../FinanceMenu'
 
 
 const ADD_GLACCOUNT = gql`
@@ -41,7 +41,7 @@ const ADD_GLACCOUNT = gql`
   }
 `
 
-const return_url = "/school/locations"
+const return_url = "/finance/glaccounts"
 
 const FinanceGLAccountAdd = ({ t, history }) => (
   <SiteWrapper>
@@ -52,9 +52,9 @@ const FinanceGLAccountAdd = ({ t, history }) => (
           <Grid.Col md={9}>
           <Card>
             <Card.Header>
-              <Card.Title>{t('school.locations.title_add')}</Card.Title>
+              <Card.Title>{t('finance.glaccounts.title_add')}</Card.Title>
             </Card.Header>
-            <Mutation mutation={ADD_LOCATION} onCompleted={() => history.push(return_url)}> 
+            <Mutation mutation={ADD_GLACCOUNT} onCompleted={() => history.push(return_url)}> 
                 {(addLocation, { data }) => (
                     <Formik
                         initialValues={{ name: '', code: '' }}
@@ -70,7 +70,7 @@ const FinanceGLAccountAdd = ({ t, history }) => (
                             ]})
                             .then(({ data }) => {
                                 console.log('got data', data);
-                                toast.success((t('school.locations.toast_add_success')), {
+                                toast.success((t('finance.glaccounts.toast_add_success')), {
                                     position: toast.POSITION.BOTTOM_RIGHT
                                   })
                               }).catch((error) => {
@@ -82,28 +82,22 @@ const FinanceGLAccountAdd = ({ t, history }) => (
                               })
                         }}
                         >
-                        {({ isSubmitting, errors, values }) => (
+                        {({ isSubmitting, errors }) => (
                             <FoForm>
                                 <Card.Body>
-                                    <Form.Group>
-                                      <Form.Label className="custom-switch">
-                                        <Field 
-                                          className="custom-switch-input"
-                                          type="checkbox" 
-                                          name="displayPublic" 
-                                          checked={values.displayPublic} />
-                                        <span className="custom-switch-indicator" ></span>
-                                        <span className="custom-switch-description">{t('school.location.public')}</span>
-                                      </Form.Label>
-                                      <ErrorMessage name="displayPublic" component="div" />   
-                                    </Form.Group>    
-
-                                    <Form.Group label={t('school.location.name')}>
+                                    <Form.Group label={t('name')}>
                                       <Field type="text" 
                                               name="name" 
                                               className={(errors.name) ? "form-control is-invalid" : "form-control"} 
                                               autoComplete="off" />
                                       <ErrorMessage name="name" component="span" className="invalid-feedback" />
+                                    </Form.Group>
+                                    <Form.Group label={t('finance.glaccounts.code')}>
+                                      <Field type="text" 
+                                              name="code" 
+                                              className={(errors.code) ? "form-control is-invalid" : "form-control"} 
+                                              autoComplete="off" />
+                                      <ErrorMessage name="code" component="span" className="invalid-feedback" />
                                     </Form.Group>
                                 </Card.Body>
                                 <Card.Footer>
@@ -128,13 +122,13 @@ const FinanceGLAccountAdd = ({ t, history }) => (
           </Grid.Col>
           <Grid.Col md={3}>
             <HasPermissionWrapper permission="add"
-                                  resource="schoollocation">
+                                  resource="financeglaccount">
               <Button color="primary btn-block mb-6"
                       onClick={() => history.push(return_url)}>
                 <Icon prefix="fe" name="chevrons-left" /> {t('back')}
               </Button>
             </HasPermissionWrapper>
-            <SchoolMenu active_link='schoollocation'/>
+            <FinanceMenu active_link='glaccounts'/>
           </Grid.Col>
         </Grid.Row>
       </Container>

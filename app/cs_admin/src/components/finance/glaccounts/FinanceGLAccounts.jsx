@@ -189,7 +189,7 @@ const FinanceGLAccounts = ({ t, history, archived=false }) => (
             <HasPermissionWrapper permission="add"
                                   resource="financeglaccount">
               <Button color="primary btn-block mb-6"
-                      onClick={() => history.push("/school/glaccounts/add")}>
+                      onClick={() => history.push("/finance/glaccounts/add")}>
                 <Icon prefix="fe" name="plus-circle" /> {t('finance.glaccounts.add')}
               </Button>
             </HasPermissionWrapper>
