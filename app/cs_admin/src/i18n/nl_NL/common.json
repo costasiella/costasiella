@@ -73,11 +73,17 @@
         },
         "page_header": "__STRING_NOT_TRANSLATED__",
         "glaccounts": {
-            "title": "__STRING_NOT_TRANSLATED__"
+            "title": "__STRING_NOT_TRANSLATED__",
+            "error_loading": "__STRING_NOT_TRANSLATED__",
+            "empty_list": "__STRING_NOT_TRANSLATED__",
+            "empty_archive": "__STRING_NOT_TRANSLATED__",
+            "code": "__STRING_NOT_TRANSLATED__",
+            "add": "__STRING_NOT_TRANSLATED__"
         },
         "costcenters": {
             "title": "__STRING_NOT_TRANSLATED__"
-        }
+        },
+        "title": "__STRING_NOT_TRANSLATED__"
     },
     "home": {
         "page_header": "__STRING_NOT_TRANSLATED__",

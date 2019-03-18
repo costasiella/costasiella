@@ -73,11 +73,17 @@
         },
         "page_header": "Finance",
         "glaccounts": {
-            "title": "General ledger accounts"
+            "title": "General ledger accounts",
+            "error_loading": "Error loading general ledger accounts :(",
+            "empty_list": "No accounts found, click the Add button to add an account.",
+            "empty_archive": "No accounts have been archived yet.",
+            "code": "Code",
+            "add": "Add G/L Account"
         },
         "costcenters": {
             "title": "Costcenters"
-        }
+        },
+        "title": "Finance"
     },
     "home": {
         "page_header": "Home",
