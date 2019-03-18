@@ -78,7 +78,9 @@
             "empty_list": "No accounts found, click the Add button to add an account.",
             "empty_archive": "No accounts have been archived yet.",
             "code": "Code",
-            "add": "Add G/L Account"
+            "add": "Add G/L Account",
+            "title_add": "Add general ledger account",
+            "toast_add_success": "Saved G/L Account"
         },
         "costcenters": {
             "title": "Costcenters"
