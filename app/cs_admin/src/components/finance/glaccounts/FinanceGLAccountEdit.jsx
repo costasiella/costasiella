@@ -8,8 +8,8 @@ import { withRouter } from "react-router"
 import { Formik, Form as FoForm, Field, ErrorMessage } from 'formik'
 import { toast } from 'react-toastify'
 
-import { GET_LOCATIONS_QUERY, GET_LOCATION_QUERY } from './queries'
-import { LOCATION_SCHEMA } from './yupSchema'
+import { GET_GLACCOUNTS_QUERY, GET_GLACCOUNT_QUERY } from './queries'
+import { GLACCOUNT_SCHEMA } from './yupSchema'
 
 
 
@@ -25,26 +25,26 @@ import {
 import SiteWrapper from "../../SiteWrapper"
 import HasPermissionWrapper from "../../HasPermissionWrapper"
 
-import SchoolMenu from "../SchoolMenu"
+import FinanceMenu from "../FinanceMenu"
 
 
-const UPDATE_LOCATION = gql`
-  mutation UpdateSchoolLocation($input: UpdateSchoolLocationInput!) {
-    updateSchoolLocation(input: $input) {
-      schoolLocation {
+const UPDATE_GLACCOUNT = gql`
+  mutation UpdateFinanceGLAccount($input: UpdateFinanceGLAccountInput!) {
+    updateFinanceGlaccount(input: $input) {
+      financeGlaccount {
         id
         name
-        displayPublic
+        code
       }
     }
   }
 `
 
 
-class SchoolLocationEdit extends Component {
+class FinanceGLAccountEdit extends Component {
   constructor(props) {
     super(props)
-    console.log("School location edit props:")
+    console.log("finance glaccount edit props:")
     console.log(props)
   }
 
@@ -53,60 +53,60 @@ class SchoolLocationEdit extends Component {
     const match = this.props.match
     const history = this.props.history
     const id = match.params.id
-    const return_url = "/school/locations"
+    const return_url = "/finance/glaccounts"
 
     return (
       <SiteWrapper>
         <div className="my-3 my-md-5">
           <Container>
-            <Page.Header title="School" />
+            <Page.Header title={t('finance.glaccounts.title')} />
             <Grid.Row>
               <Grid.Col md={9}>
               <Card>
                 <Card.Header>
-                  <Card.Title>{t('school.locations.title_edit')}</Card.Title>
+                  <Card.Title>{t('finance.glaccounts.title_edit')}</Card.Title>
                   {console.log(match.params.id)}
                 </Card.Header>
-                <Query query={GET_LOCATION_QUERY} variables={{ id }} >
+                <Query query={GET_GLACCOUNT_QUERY} variables={{ id }} >
                 {({ loading, error, data, refetch }) => {
                     // Loading
-                    if (loading) return <p>Loading... </p>
+                    if (loading) return <p>{t('loading_with_dots')}</p>
                     // Error
                     if (error) {
                       console.log(error)
-                      return <p>Error :(</p>
+                    return <p>{t('error_sad_smiley')}</p>
                     }
                     
-                    const initialData = data.schoolLocation;
+                    const initialData = data.financeGlaccount;
                     console.log('query data')
                     console.log(data)
 
                     return (
                       
-                      <Mutation mutation={UPDATE_LOCATION} onCompleted={() => history.push(return_url)}> 
-                      {(updateLocation, { data }) => (
+                      <Mutation mutation={UPDATE_GLACCOUNT} onCompleted={() => history.push(return_url)}> 
+                      {(updateGlaccount, { data }) => (
                           <Formik
                               initialValues={{ 
                                 name: initialData.name, 
-                                displayPublic: initialData.displayPublic 
+                                code: initialData.code
                               }}
-                              validationSchema={LOCATION_SCHEMA}
+                              validationSchema={GLACCOUNT_SCHEMA}
                               onSubmit={(values, { setSubmitting }) => {
                                   console.log('submit values:')
                                   console.log(values)
 
-                                  updateLocation({ variables: {
+                                  updateGlaccount({ variables: {
                                     input: {
                                       id: match.params.id,
                                       name: values.name,
-                                      displayPublic: values.displayPublic 
+                                      code: values.code
                                     }
                                   }, refetchQueries: [
-                                      {query: GET_LOCATIONS_QUERY, variables: {"archived": false }}
+                                      {query: GET_GLACCOUNTS_QUERY, variables: {"archived": false }}
                                   ]})
                                   .then(({ data }) => {
                                       console.log('got data', data)
-                                      toast.success((t('school.locations.toast_edit_success')), {
+                                      toast.success((t('finance.glaccounts.toast_edit_success')), {
                                           position: toast.POSITION.BOTTOM_RIGHT
                                         })
                                     }).catch((error) => {
@@ -121,25 +121,20 @@ class SchoolLocationEdit extends Component {
                               {({ isSubmitting, errors, values }) => (
                                   <FoForm>
                                       <Card.Body>
-                                          <Form.Group>
-                                            <Form.Label className="custom-switch">
-                                              <Field 
-                                                className="custom-switch-input"
-                                                type="checkbox" 
-                                                name="displayPublic" 
-                                                checked={values.displayPublic} />
-                                              <span className="custom-switch-indicator" ></span>
-                                              <span className="custom-switch-description">{t('school.location.public')}</span>
-                                            </Form.Label>
-                                            <ErrorMessage name="displayPublic" component="div" />   
-                                          </Form.Group>     
-                                          <Form.Group label={t('school.location.name')} >
-                                            <Field type="text" 
+                                        <Form.Group label={t('name')}>
+                                          <Field type="text" 
                                                   name="name" 
                                                   className={(errors.name) ? "form-control is-invalid" : "form-control"} 
                                                   autoComplete="off" />
-                                            <ErrorMessage name="name" component="span" className="invalid-feedback" />
-                                          </Form.Group>
+                                          <ErrorMessage name="name" component="span" className="invalid-feedback" />
+                                        </Form.Group>
+                                        <Form.Group label={t('finance.glaccounts.code')}>
+                                          <Field type="text" 
+                                                  name="code" 
+                                                  className={(errors.code) ? "form-control is-invalid" : "form-control"} 
+                                                  autoComplete="off" />
+                                          <ErrorMessage name="code" component="span" className="invalid-feedback" />
+                                        </Form.Group>
                                       </Card.Body>
                                       <Card.Footer>
                                           <Button 
@@ -169,13 +164,13 @@ class SchoolLocationEdit extends Component {
               </Grid.Col>
               <Grid.Col md={3}>
                 <HasPermissionWrapper permission="add"
-                                      resource="schoollocation">
+                                      resource="financeglaccount">
                   <Button color="primary btn-block mb-6"
                           onClick={() => history.push(return_url)}>
                     <Icon prefix="fe" name="chevrons-left" /> {t('back')}
                   </Button>
                 </HasPermissionWrapper>
-                <SchoolMenu active_link='schoollocation'/>
+                <FinanceMenu active_link='glaccounts'/>
               </Grid.Col>
             </Grid.Row>
           </Container>
@@ -185,4 +180,4 @@ class SchoolLocationEdit extends Component {
   }
 
 
-export default withTranslation()(withRouter(SchoolLocationEdit))
+export default withTranslation()(withRouter(FinanceGLAccountEdit))

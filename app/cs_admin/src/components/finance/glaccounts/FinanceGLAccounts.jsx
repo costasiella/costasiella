@@ -136,7 +136,7 @@ const FinanceGLAccounts = ({ t, history, archived=false }) => (
                                     {(node.archived) ? 
                                       <span className='text-muted'>{t('unarchive_to_edit')}</span> :
                                       <Button className='btn-sm' 
-                                              onClick={() => history.push("/school/glaccounts/edit/" + node.id)}
+                                              onClick={() => history.push("/finance/glaccounts/edit/" + node.id)}
                                               color="secondary">
                                         {t('edit')}
                                       </Button>
