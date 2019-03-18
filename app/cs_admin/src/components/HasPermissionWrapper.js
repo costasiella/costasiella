@@ -37,7 +37,7 @@ class HasPermissionWrapper extends Component {
 
     if (resource in permissions) {
       if (permissions[resource].has(permission)) {
-        you_shall_not_pass = true
+        you_shall_not_pass = false
       }
     }
     
