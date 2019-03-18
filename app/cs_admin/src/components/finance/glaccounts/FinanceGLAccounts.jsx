@@ -31,7 +31,7 @@ import { GET_GLACCOUNTS_QUERY } from "./queries"
 
 const ARCHIVE_GLACCOUNT = gql`
   mutation ArchiveFinanceGLAccount($input: ArchiveFinanceGLAccountInput!) {
-    archiveFinanceGLAccount(input: $input) {
+    archiveFinanceGlaccount(input: $input) {
       financeGlaccount {
         id
         archived
