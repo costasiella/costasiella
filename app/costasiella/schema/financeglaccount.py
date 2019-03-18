@@ -7,7 +7,7 @@ from graphql import GraphQLError
 
 from .gql_tools import get_rid
 
-from ..models import FinanceGlAccount
+from ..models import FinanceGLAccount
 from ..modules.gql_tools import require_login_and_permission
 from ..modules.messages import Messages
 
@@ -45,6 +45,7 @@ class FinanceGLAccountQuery(graphene.ObjectType):
 class CreateFinanceGLAccount(graphene.relay.ClientIDMutation):
     class Input:
         name = graphene.String(required=True)
+        code = graphene.String(required=False, default_value="")
 
     finance_glaccount = graphene.Field(FinanceGLAccountNode)
 
@@ -58,9 +59,12 @@ class CreateFinanceGLAccount(graphene.relay.ClientIDMutation):
             print('validation error found')
             raise GraphQLError(_('Name is required'))
 
-        finance_glaccount = FinanceGlAccount(
+        finance_glaccount = FinanceGLAccount(
             name=input['name'], 
         )
+        if input['code']:
+            finance_glaccount.code = input['code']
+
         finance_glaccount.save()
 
         return CreateFinanceGLAccount(finance_glaccount=finance_glaccount)
@@ -70,6 +74,7 @@ class UpdateFinanceGLAccount(graphene.relay.ClientIDMutation):
     class Input:
         id = graphene.ID(required=True)
         name = graphene.String(required=True)
+        code = graphene.String(default_value="")
         
     finance_glaccount = graphene.Field(FinanceGLAccountNode)
 
@@ -80,11 +85,13 @@ class UpdateFinanceGLAccount(graphene.relay.ClientIDMutation):
 
         rid = get_rid(input['id'])
 
-        finance_glaccount = FinanceGlAccount.objects.filter(id=rid.id).first()
+        finance_glaccount = FinanceGLAccount.objects.filter(id=rid.id).first()
         if not finance_glaccount:
             raise Exception('Invalid Finance GLAccount ID!')
 
         finance_glaccount.name = input['name']
+        if input['code']:
+            finance_glaccount.code = input['code']
         finance_glaccount.save(force_update=True)
 
         return UpdateFinanceGLAccount(finance_glaccount=finance_glaccount)
