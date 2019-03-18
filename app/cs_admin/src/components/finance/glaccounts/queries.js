@@ -21,12 +21,12 @@ export const GET_GLACCOUNTS_QUERY = gql`
   }
 `
 
-export const GET_LOCATION_QUERY = gql`
-  query SchoolLocation($id: ID!) {
-    schoolLocation(id:$id) {
+export const GET_GLACCOUNT_QUERY = gql`
+  query FinanceGLAccount($id: ID!) {
+    financeGlaccount(id:$id) {
       id
       name
-      displayPublic
+      code
       archived
     }
   }
