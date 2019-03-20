@@ -4,6 +4,15 @@ from .. import models
 from django.contrib.auth import get_user_model
 
 
+class FinanceCostCenterFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.FinanceCostCenter
+
+    archived = False
+    name = "First cost center"
+    code = "9000"
+
+
 class FinanceGLAccountFactory(factory.DjangoModelFactory):
     class Meta:
         model = models.FinanceGLAccount
