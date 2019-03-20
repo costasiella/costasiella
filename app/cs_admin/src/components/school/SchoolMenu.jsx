@@ -9,13 +9,17 @@ import {
 } from "tabler-react";
 import HasPermissionWrapper from "../HasPermissionWrapper"
 
-let schoollocations_active
+
 let schoolclasstypes_active
+let schooldiscoveries_active
+let schoollocations_active
 
 const SchoolMenu = ({ t, active_link }) => (
     <List.Group transparent={true}>
-        {(active_link === 'schoollocations') ? schoollocations_active = true: schoollocations_active = false}
         {(active_link === 'schoolclasstypes') ? schoolclasstypes_active = true: schoolclasstypes_active = false}
+        {(active_link === 'schooldiscoveries') ? schooldiscoveries_active = true: schooldiscoveries_active = false}
+        {(active_link === 'schoollocations') ? schoollocations_active = true: schoollocations_active = false}
+        
 
         <List.GroupItem
             key={v4()}
@@ -34,6 +38,15 @@ const SchoolMenu = ({ t, active_link }) => (
             active={schoolclasstypes_active}
             >
             {t('school.menu.classtypes')}
+        </List.GroupItem>
+        <List.GroupItem
+            key={v4()}
+            className="d-flex align-items-center"
+            to="#/school/discoveries"
+            icon="compass"
+            active={schooldiscoveries_active}
+            >
+            {t('school.menu.discoveries')}
         </List.GroupItem>
         {/* <HasPermissionWrapper 
             permission="view"
