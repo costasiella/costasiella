@@ -92,7 +92,9 @@
             "empty_list": "No cost centers found, click the Add button to add a cost center",
             "empty_archive": "No costcenters have been archived yet",
             "code": "Code",
-            "add": "Add Cost center"
+            "add": "Add Cost center",
+            "title_edit": "Edit Cost center",
+            "toast_edit_success": "Saved Cost center"
         },
         "title": "Finance"
     },
