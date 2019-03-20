@@ -330,7 +330,7 @@ class GQLFinanceGLAccount(TestCase):
         query = self.glaccount_update_mutation
         glaccount = f.FinanceGLAccountFactory.create()
         variables = self.variables_update
-        variables['input']['id'] = self.get_node_id_of_first_glaccount(),
+        variables['input']['id'] = self.get_node_id_of_first_glaccount()
 
         executed = execute_test_client_api_query(
             query, 
@@ -342,82 +342,64 @@ class GQLFinanceGLAccount(TestCase):
         self.assertEqual(data['updateFinanceGlaccount']['financeGlaccount']['code'], variables['input']['code'])
 
 
-    # def test_update_location_anon_user(self):
-    #     """ Don't allow updating locations for non-logged in users """
-    #     query = self.location_update_mutation
-    #     location = f.SchoolLocationFactory.create()
+    def test_update_glaccount_anon_user(self):
+        """ Don't allow updating glaccounts for non-logged in users """
+        query = self.glaccount_update_mutation
+        glaccount = f.FinanceGLAccountFactory.create()
+        variables = self.variables_update
+        variables['input']['id'] = self.get_node_id_of_first_glaccount()
 
-    #     variables = {
-    #         "input": {
-    #             "id": self.get_node_id_of_first_location(),
-    #             "name": "Updated name",
-    #             "displayPublic": False
-    #         }
-    #     }
-
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         self.anon_user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
+        executed = execute_test_client_api_query(
+            query, 
+            self.anon_user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
-    # def test_update_location_permission_granted(self):
-    #     """ Allow updating locations for users with permissions """
-    #     query = self.location_update_mutation
+    def test_update_glaccount_permission_granted(self):
+        """ Allow updating glaccounts for users with permissions """
+        query = self.glaccount_update_mutation
+        glaccount = f.FinanceGLAccountFactory.create()
+        variables = self.variables_update
+        variables['input']['id'] = self.get_node_id_of_first_glaccount()
 
-    #     location = f.SchoolLocationFactory.create()
-    #     variables = {
-    #         "input": {
-    #             "id": self.get_node_id_of_first_location(),
-    #             "name": "Updated name",
-    #             "displayPublic": False
-    #         }
-    #     }
+        # Create regular user
+        user = f.RegularUserFactory.create()
+        permission = Permission.objects.get(codename=self.permission_change)
+        user.user_permissions.add(permission)
+        user.save()
 
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename=self.permission_change)
-    #     user.user_permissions.add(permission)
-    #     user.save()
-
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['updateSchoolLocation']['schoolLocation']['name'], variables['input']['name'])
-    #     self.assertEqual(data['updateSchoolLocation']['schoolLocation']['displayPublic'], variables['input']['displayPublic'])
+        executed = execute_test_client_api_query(
+            query, 
+            user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['updateFinanceGlaccount']['financeGlaccount']['name'], variables['input']['name'])
+        self.assertEqual(data['updateFinanceGlaccount']['financeGlaccount']['code'], variables['input']['code'])
 
 
-    # def test_update_location_permission_denied(self):
-    #     """ Check update location permission denied error message """
-    #     query = self.location_update_mutation
-    #     location = f.SchoolLocationFactory.create()
+    def test_update_glaccount_permission_denied(self):
+        """ Check update glaccount permission denied error message """
+        query = self.glaccount_update_mutation
+        glaccount = f.FinanceGLAccountFactory.create()
+        variables = self.variables_update
+        variables['input']['id'] = self.get_node_id_of_first_glaccount()
+        
+        # Create regular user
+        user = f.RegularUserFactory.create()
 
-    #     variables = {
-    #         "input": {
-    #             "id": self.get_node_id_of_first_location(),
-    #             "name": "Updated name",
-    #             "displayPublic": False
-    #         }
-    #     }
-
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
+        executed = execute_test_client_api_query(
+            query, 
+            user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
     # def test_archive_location(self):
