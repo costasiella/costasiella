@@ -30,7 +30,7 @@ import FinanceMenu from '../FinanceMenu'
 
 const ADD_COSTCENTER = gql`
   mutation CreateFinanceCostCenter($input:CreateFinanceCostCenterInput!) {
-    createFinanceCostCenter(input: $input) {
+    createFinanceCostcenter(input: $input) {
       financeCostcenter{
         id
         archived

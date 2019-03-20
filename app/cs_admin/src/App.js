@@ -13,6 +13,7 @@ import HomeHome from './components/home/home/HomeHome'
 
 import FinanceHome from './components/finance/home/FinanceHome'
 import FinanceCostCenters from './components/finance/costcenters/FinanceCostCenters'
+import FinanceCostCenterAdd from './components/finance/costcenters/FinanceCostCenterAdd'
 import FinanceGLAccounts from './components/finance/glaccounts/FinanceGLAccounts'
 import FinanceGLAccountAdd from './components/finance/glaccounts/FinanceGLAccountAdd'
 import FinanceGLAccountEdit from './components/finance/glaccounts/FinanceGLAccountEdit'
@@ -79,6 +80,7 @@ class App extends Component {
             <Route exact path="/" component={HomeHome} />
             <Route exact path="/finance" component={FinanceHome} />
             <Route exact path="/finance/costcenters" component={FinanceCostCenters} />
+            <Route exact path="/finance/costcenters/add" component={FinanceCostCenterAdd} />
             <Route exact path="/finance/glaccounts" component={FinanceGLAccounts} />
             <Route exact path="/finance/glaccounts/add" component={FinanceGLAccountAdd} />
             <Route exact path="/finance/glaccounts/edit/:id" component={FinanceGLAccountEdit} />
