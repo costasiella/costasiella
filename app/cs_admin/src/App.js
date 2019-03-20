@@ -21,6 +21,7 @@ import FinanceGLAccountEdit from './components/finance/glaccounts/FinanceGLAccou
 
 import SchoolHome from './components/school/home/SchoolHome'
 import SchoolDiscoveries from './components/school/discovery/SchoolDiscoveries'
+import SchoolDiscoveryAdd from './components/school/discovery/SchoolDiscoveryAdd'
 import SchoolClasstypes from './components/school/classtypes/SchoolClasstypes'
 import SchoolClasstypeAdd from './components/school/classtypes/SchoolClasstypeAdd'
 import SchoolClasstypeEdit from './components/school/classtypes/SchoolClasstypeEdit'
@@ -90,6 +91,7 @@ class App extends Component {
             <Route exact path="/finance/glaccounts/edit/:id" component={FinanceGLAccountEdit} />
             <Route exact path="/school" component={SchoolHome} />
             <Route exact path="/school/discoveries" component={SchoolDiscoveries} />
+            <Route exact path="/school/discoveries/add" component={SchoolDiscoveryAdd} />
             <Route exact path="/school/classtypes" component={SchoolClasstypes} />
             <Route exact path="/school/classtypes/add" component={SchoolClasstypeAdd} />
             <Route exact path="/school/classtypes/edit/:id" component={SchoolClasstypeEdit} />
