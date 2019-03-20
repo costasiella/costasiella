@@ -43,6 +43,12 @@ class GQLFinanceGLAccount(TestCase):
             }
         }
 
+        self.variables_archive = {
+            "input": {
+                "archived": True
+            }
+        }
+
         self.glaccounts_query = '''
   query FinanceGLAccounts($after: String, $before: String, $archived: Boolean) {
     financeGlaccounts(first: 15, before: $before, after: $after, archived: $archived) {
@@ -388,7 +394,7 @@ class GQLFinanceGLAccount(TestCase):
         glaccount = f.FinanceGLAccountFactory.create()
         variables = self.variables_update
         variables['input']['id'] = self.get_node_id_of_first_glaccount()
-        
+
         # Create regular user
         user = f.RegularUserFactory.create()
 
@@ -402,95 +408,78 @@ class GQLFinanceGLAccount(TestCase):
         self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
-    # def test_archive_location(self):
-    #     """ Archive a location """
-    #     query = self.location_archive_mutation
-    #     location = f.SchoolLocationFactory.create()
+    def test_archive_glaccount(self):
+        """ Archive a glaccount """
+        query = self.glaccount_archive_mutation
+        glaccount = f.FinanceGLAccountFactory.create()
+        variables = self.variables_archive
+        variables['input']['id'] = self.get_node_id_of_first_glaccount()
 
-    #     variables = {
-    #         "input": {
-    #             "id": self.get_node_id_of_first_location(),
-    #             "archived": True
-    #         }
-    #     }
-
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         self.admin_user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['archiveSchoolLocation']['schoolLocation']['archived'], variables['input']['archived'])
+        executed = execute_test_client_api_query(
+            query, 
+            self.admin_user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        print(data)
+        self.assertEqual(data['archiveFinanceGlaccount']['financeGlaccount']['archived'], variables['input']['archived'])
 
 
-    # def test_archive_location_anon_user(self):
-    #     """ Archive a location """
-    #     query = self.location_archive_mutation
-    #     location = f.SchoolLocationFactory.create()
+    def test_archive_glaccount_anon_user(self):
+        """ Archive glaccount denied for anon user """
+        query = self.glaccount_archive_mutation
+        glaccount = f.FinanceGLAccountFactory.create()
+        variables = self.variables_archive
+        variables['input']['id'] = self.get_node_id_of_first_glaccount()
 
-    #     variables = {
-    #         "input": {
-    #             "id": self.get_node_id_of_first_location(),
-    #             "archived": True
-    #         }
-    #     }
-
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         self.anon_user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
+        executed = execute_test_client_api_query(
+            query, 
+            self.anon_user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
-    # def test_archive_location_permission_granted(self):
-    #     """ Allow archiving locations for users with permissions """
-    #     query = self.location_archive_mutation
+    def test_archive_glaccount_permission_granted(self):
+        """ Allow archiving glaccounts for users with permissions """
+        query = self.glaccount_archive_mutation
+        glaccount = f.FinanceGLAccountFactory.create()
+        variables = self.variables_archive
+        variables['input']['id'] = self.get_node_id_of_first_glaccount()
 
-    #     location = f.SchoolLocationFactory.create()
-    #     variables = {
-    #         "input": {
-    #             "id": self.get_node_id_of_first_location(),
-    #             "archived": True
-    #         }
-    #     }
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename=self.permission_delete)
-    #     user.user_permissions.add(permission)
-    #     user.save()
+        # Create regular user
+        user = f.RegularUserFactory.create()
+        permission = Permission.objects.get(codename=self.permission_delete)
+        user.user_permissions.add(permission)
+        user.save()
 
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['archiveSchoolLocation']['schoolLocation']['archived'], variables['input']['archived'])
+        executed = execute_test_client_api_query(
+            query, 
+            user,
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['archiveFinanceGlaccount']['financeGlaccount']['archived'], variables['input']['archived'])
 
 
-    # def test_archive_location_permission_denied(self):
-    #     """ Check archive location permission denied error message """
-    #     query = self.location_archive_mutation
+    def test_archive_glaccount_permission_denied(self):
+        """ Check archive glaccount permission denied error message """
+        query = self.glaccount_archive_mutation
+        glaccount = f.FinanceGLAccountFactory.create()
+        variables = self.variables_archive
+        variables['input']['id'] = self.get_node_id_of_first_glaccount()
+        
+        # Create regular user
+        user = f.RegularUserFactory.create()
 
-    #     location = f.SchoolLocationFactory.create()
-    #     variables = {
-    #         "input": {
-    #             "id": self.get_node_id_of_first_location(),
-    #             "archived": True
-    #         }
-    #     }
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
+        executed = execute_test_client_api_query(
+            query, 
+            user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
 
