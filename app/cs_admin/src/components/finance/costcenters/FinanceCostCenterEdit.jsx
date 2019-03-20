@@ -8,8 +8,8 @@ import { withRouter } from "react-router"
 import { Formik, Form as FoForm, Field, ErrorMessage } from 'formik'
 import { toast } from 'react-toastify'
 
-import { GET_GLACCOUNTS_QUERY, GET_GLACCOUNT_QUERY } from './queries'
-import { GLACCOUNT_SCHEMA } from './yupSchema'
+import { GET_COSTCENTERS_QUERY, GET_COSTCENTER_QUERY } from './queries'
+import { COSTCENTER_SCHEMA } from './yupSchema'
 
 
 
@@ -28,10 +28,10 @@ import HasPermissionWrapper from "../../HasPermissionWrapper"
 import FinanceMenu from "../FinanceMenu"
 
 
-const UPDATE_GLACCOUNT = gql`
-  mutation UpdateFinanceGLAccount($input: UpdateFinanceGLAccountInput!) {
-    updateFinanceGlaccount(input: $input) {
-      financeGlaccount {
+const UPDATE_COSTCENTER = gql`
+  mutation UpdateFinanceCostCenter($input: UpdateFinanceCostCenterInput!) {
+    updateFinanceCostcenter(input: $input) {
+      financeCostcenter {
         id
         name
         code
@@ -41,10 +41,10 @@ const UPDATE_GLACCOUNT = gql`
 `
 
 
-class FinanceGLAccountEdit extends Component {
+class FinanceCostCenterEdit extends Component {
   constructor(props) {
     super(props)
-    console.log("finance glaccount edit props:")
+    console.log("finance costcenter edit props:")
     console.log(props)
   }
 
@@ -53,21 +53,21 @@ class FinanceGLAccountEdit extends Component {
     const match = this.props.match
     const history = this.props.history
     const id = match.params.id
-    const return_url = "/finance/glaccounts"
+    const return_url = "/finance/costcenters"
 
     return (
       <SiteWrapper>
         <div className="my-3 my-md-5">
           <Container>
-            <Page.Header title={t('finance.glaccounts.title')} />
+            <Page.Header title={t('finance.costcenters.title')} />
             <Grid.Row>
               <Grid.Col md={9}>
               <Card>
                 <Card.Header>
-                  <Card.Title>{t('finance.glaccounts.title_edit')}</Card.Title>
+                  <Card.Title>{t('finance.costcenters.title_edit')}</Card.Title>
                   {console.log(match.params.id)}
                 </Card.Header>
-                <Query query={GET_GLACCOUNT_QUERY} variables={{ id }} >
+                <Query query={GET_COSTCENTER_QUERY} variables={{ id }} >
                 {({ loading, error, data, refetch }) => {
                     // Loading
                     if (loading) return <p>{t('loading_with_dots')}</p>
@@ -77,20 +77,20 @@ class FinanceGLAccountEdit extends Component {
                     return <p>{t('error_sad_smiley')}</p>
                     }
                     
-                    const initialData = data.financeGlaccount;
+                    const initialData = data.financeCostcenter;
                     console.log('query data')
                     console.log(data)
 
                     return (
                       
-                      <Mutation mutation={UPDATE_GLACCOUNT} onCompleted={() => history.push(return_url)}> 
+                      <Mutation mutation={UPDATE_COSTCENTER} onCompleted={() => history.push(return_url)}> 
                       {(updateGlaccount, { data }) => (
                           <Formik
                               initialValues={{ 
                                 name: initialData.name, 
                                 code: initialData.code
                               }}
-                              validationSchema={GLACCOUNT_SCHEMA}
+                              validationSchema={COSTCENTER_SCHEMA}
                               onSubmit={(values, { setSubmitting }) => {
                                   console.log('submit values:')
                                   console.log(values)
@@ -102,11 +102,11 @@ class FinanceGLAccountEdit extends Component {
                                       code: values.code
                                     }
                                   }, refetchQueries: [
-                                      {query: GET_GLACCOUNTS_QUERY, variables: {"archived": false }}
+                                      {query: GET_COSTCENTERS_QUERY, variables: {"archived": false }}
                                   ]})
                                   .then(({ data }) => {
                                       console.log('got data', data)
-                                      toast.success((t('finance.glaccounts.toast_edit_success')), {
+                                      toast.success((t('finance.costcenters.toast_edit_success')), {
                                           position: toast.POSITION.BOTTOM_RIGHT
                                         })
                                     }).catch((error) => {
@@ -128,7 +128,7 @@ class FinanceGLAccountEdit extends Component {
                                                   autoComplete="off" />
                                           <ErrorMessage name="name" component="span" className="invalid-feedback" />
                                         </Form.Group>
-                                        <Form.Group label={t('finance.glaccounts.code')}>
+                                        <Form.Group label={t('finance.costcenters.code')}>
                                           <Field type="text" 
                                                   name="code" 
                                                   className={(errors.code) ? "form-control is-invalid" : "form-control"} 
@@ -163,14 +163,14 @@ class FinanceGLAccountEdit extends Component {
               </Card>
               </Grid.Col>
               <Grid.Col md={3}>
-                <HasPermissionWrapper permission="add"
-                                      resource="financeglaccount">
+                <HasPermissionWrapper permission="change"
+                                      resource="financecostcenter">
                   <Button color="primary btn-block mb-6"
                           onClick={() => history.push(return_url)}>
                     <Icon prefix="fe" name="chevrons-left" /> {t('back')}
                   </Button>
                 </HasPermissionWrapper>
-                <FinanceMenu active_link='glaccounts'/>
+                <FinanceMenu active_link='costcenters'/>
               </Grid.Col>
             </Grid.Row>
           </Container>
@@ -180,4 +180,4 @@ class FinanceGLAccountEdit extends Component {
   }
 
 
-export default withTranslation()(withRouter(FinanceGLAccountEdit))
+export default withTranslation()(withRouter(FinanceCostCenterEdit))

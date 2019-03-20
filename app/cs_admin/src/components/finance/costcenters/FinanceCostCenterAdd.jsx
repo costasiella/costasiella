@@ -92,7 +92,7 @@ const FinanceCostCenterAdd = ({ t, history }) => (
                                               autoComplete="off" />
                                       <ErrorMessage name="name" component="span" className="invalid-feedback" />
                                     </Form.Group>
-                                    <Form.Group label={t('finance.glaccounts.code')}>
+                                    <Form.Group label={t('finance.costcenters.code')}>
                                       <Field type="text" 
                                               name="code" 
                                               className={(errors.code) ? "form-control is-invalid" : "form-control"} 

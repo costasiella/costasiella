@@ -21,9 +21,9 @@ export const GET_COSTCENTERS_QUERY = gql`
   }
 `
 
-export const GET_GLACCOUNT_QUERY = gql`
-  query FinanceGLAccount($id: ID!) {
-    financeGlaccount(id:$id) {
+export const GET_COSTCENTER_QUERY = gql`
+  query FinanceCostcenter($id: ID!) {
+    financeCostcenter(id:$id) {
       id
       name
       code

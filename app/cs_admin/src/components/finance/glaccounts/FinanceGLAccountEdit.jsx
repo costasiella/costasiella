@@ -163,7 +163,7 @@ class FinanceGLAccountEdit extends Component {
               </Card>
               </Grid.Col>
               <Grid.Col md={3}>
-                <HasPermissionWrapper permission="add"
+                <HasPermissionWrapper permission="change"
                                       resource="financeglaccount">
                   <Button color="primary btn-block mb-6"
                           onClick={() => history.push(return_url)}>
