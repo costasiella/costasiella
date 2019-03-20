@@ -27,9 +27,9 @@ import { toast } from 'react-toastify'
 import ContentCard from "../../general/ContentCard"
 import FinanceMenu from "../FinanceMenu"
 
-import { GET_GLACCOUNTS_QUERY } from "./queries"
+import { GET_COSTCENTERS_QUERY } from "./queries"
 
-const ARCHIVE_GLACCOUNT = gql`
+const ARCHIVE_COSTCENTER = gql`
   mutation ArchiveFinanceGLAccount($input: ArchiveFinanceGLAccountInput!) {
     archiveFinanceGlaccount(input: $input) {
       financeGlaccount {
@@ -41,18 +41,18 @@ const ARCHIVE_GLACCOUNT = gql`
 `
 
 
-const FinanceGLAccounts = ({ t, history, archived=false }) => (
+const FinanceCostCenters = ({ t, history, archived=false }) => (
   <SiteWrapper>
     <div className="my-3 my-md-5">
       <Container>
         <Page.Header title={t("finance.title")} />
         <Grid.Row>
           <Grid.Col md={9}>
-            <Query query={GET_GLACCOUNTS_QUERY} variables={{ archived }}>
-             {({ loading, error, data: {financeGlaccounts: glaccounts}, refetch, fetchMore }) => {
+            <Query query={GET_COSTCENTERS_QUERY} variables={{ archived }}>
+             {({ loading, error, data: {financeCostcenters: costcenters}, refetch, fetchMore }) => {
                 // Loading
                 if (loading) return (
-                  <ContentCard cardTitle={t('finance.glaccounts.title')}>
+                  <ContentCard cardTitle={t('finance.costcenters.title')}>
                     <Dimmer active={true}
                             loadder={true}>
                     </Dimmer>
@@ -60,8 +60,8 @@ const FinanceGLAccounts = ({ t, history, archived=false }) => (
                 )
                 // Error
                 if (error) return (
-                  <ContentCard cardTitle={t('finance.glaccounts.title')}>
-                    <p>{t('finance.glaccounts.error_loading')}</p>
+                  <ContentCard cardTitle={t('finance.costcenters.title')}>
+                    <p>{t('finance.costcenters.error_loading')}</p>
                   </ContentCard>
                 )
                 const headerOptions = <Card.Options>
@@ -79,24 +79,24 @@ const FinanceGLAccounts = ({ t, history, archived=false }) => (
                 </Card.Options>
                 
                 // Empty list
-                if (!glaccounts.edges.length) { return (
-                  <ContentCard cardTitle={t('finance.glaccounts.title')}
+                if (!costcenters.edges.length) { return (
+                  <ContentCard cardTitle={t('finance.costcenters.title')}
                                headerContent={headerOptions}>
                     <p>
-                    {(!archived) ? t('finance.glaccounts.empty_list') : t("finance.glaccounts.empty_archive")}
+                    {(!archived) ? t('finance.costcenters.empty_list') : t("finance.costcenters.empty_archive")}
                     </p>
                    
                   </ContentCard>
                 )} else {   
                 // Life's good! :)
                 return (
-                  <ContentCard cardTitle={t('finance.glaccounts.title')}
+                  <ContentCard cardTitle={t('finance.costcenters.title')}
                                headerContent={headerOptions}
-                               pageInfo={glaccounts.pageInfo}
+                               pageInfo={costcenters.pageInfo}
                                onLoadMore={() => {
                                 fetchMore({
                                   variables: {
-                                    after: glaccounts.pageInfo.endCursor
+                                    after: costcenters.pageInfo.endCursor
                                   },
                                   updateQuery: (previousResult, { fetchMoreResult }) => {
                                     const newEdges = fetchMoreResult.financeGlaccounts.edges
@@ -104,7 +104,7 @@ const FinanceGLAccounts = ({ t, history, archived=false }) => (
 
                                     return newEdges.length
                                       ? {
-                                          // Put the new glaccounts at the end of the list and update `pageInfo`
+                                          // Put the new costcenters at the end of the list and update `pageInfo`
                                           // so we have the new `endCursor` and `hasNextPage` values
                                           financeGlaccounts: {
                                             __typename: previousResult.financeGlaccounts.__typename,
@@ -120,11 +120,11 @@ const FinanceGLAccounts = ({ t, history, archived=false }) => (
                           <Table.Header>
                             <Table.Row key={v4()}>
                               <Table.ColHeader>{t('name')}</Table.ColHeader>
-                              <Table.ColHeader>{t('finance.glaccounts.code')}</Table.ColHeader>
+                              <Table.ColHeader>{t('finance.costcenters.code')}</Table.ColHeader>
                             </Table.Row>
                           </Table.Header>
                           <Table.Body>
-                              {glaccounts.edges.map(({ node }) => (
+                              {costcenters.edges.map(({ node }) => (
                                 <Table.Row key={v4()}>
                                   <Table.Col key={v4()}>
                                     {node.name}
@@ -136,14 +136,14 @@ const FinanceGLAccounts = ({ t, history, archived=false }) => (
                                     {(node.archived) ? 
                                       <span className='text-muted'>{t('unarchive_to_edit')}</span> :
                                       <Button className='btn-sm' 
-                                              onClick={() => history.push("/finance/glaccounts/edit/" + node.id)}
+                                              onClick={() => history.push("/finance/costcenters/edit/" + node.id)}
                                               color="secondary">
                                         {t('edit')}
                                       </Button>
                                     }
                                   </Table.Col>
-                                  <Mutation mutation={ARCHIVE_GLACCOUNT} key={v4()}>
-                                    {(archiveGlaccount, { data }) => (
+                                  <Mutation mutation={ARCHIVE_COSTCENTER} key={v4()}>
+                                    {(archiveCostcenter, { data }) => (
                                       <Table.Col className="text-right" key={v4()}>
                                         <button className="icon btn btn-link btn-sm" 
                                            title={t('archive')} 
@@ -151,13 +151,13 @@ const FinanceGLAccounts = ({ t, history, archived=false }) => (
                                            onClick={() => {
                                              console.log("clicked archived")
                                              let id = node.id
-                                             archiveGlaccount({ variables: {
+                                             archiveCostcenter({ variables: {
                                                input: {
                                                 id,
                                                 archived: !archived
                                                }
                                         }, refetchQueries: [
-                                            {query: GET_GLACCOUNTS_QUERY, variables: {"archived": archived }}
+                                            {query: GET_COSTCENTERS_QUERY, variables: {"archived": archived }}
                                         ]}).then(({ data }) => {
                                           console.log('got data', data);
                                           toast.success(
@@ -189,11 +189,11 @@ const FinanceGLAccounts = ({ t, history, archived=false }) => (
             <HasPermissionWrapper permission="add"
                                   resource="financeglaccount">
               <Button color="primary btn-block mb-6"
-                      onClick={() => history.push("/finance/glaccounts/add")}>
-                <Icon prefix="fe" name="plus-circle" /> {t('finance.glaccounts.add')}
+                      onClick={() => history.push("/finance/costcenters/add")}>
+                <Icon prefix="fe" name="plus-circle" /> {t('finance.costcenters.add')}
               </Button>
             </HasPermissionWrapper>
-            <FinanceMenu active_link='glaccounts'/>
+            <FinanceMenu active_link='costcenters'/>
           </Grid.Col>
         </Grid.Row>
       </Container>
@@ -201,4 +201,4 @@ const FinanceGLAccounts = ({ t, history, archived=false }) => (
   </SiteWrapper>
 );
 
-export default withTranslation()(withRouter(FinanceGLAccounts))
+export default withTranslation()(withRouter(FinanceCostCenters))

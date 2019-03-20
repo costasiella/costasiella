@@ -1,8 +1,8 @@
 import gql from "graphql-tag"
 
-export const GET_GLACCOUNTS_QUERY = gql`
-  query FinanceGLAccounts($after: String, $before: String, $archived: Boolean) {
-    financeGlaccounts(first: 15, before: $before, after: $after, archived: $archived) {
+export const GET_COSTCENTERS_QUERY = gql`
+  query FinanceCostCenters($after: String, $before: String, $archived: Boolean) {
+    financeCostcenters(first: 15, before: $before, after: $after, archived: $archived) {
       pageInfo {
         startCursor
         endCursor
