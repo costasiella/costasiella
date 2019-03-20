@@ -29,6 +29,13 @@ class GQLFinanceGLAccount(TestCase):
         self.permission_change = 'change_financeglaccount'
         self.permission_delete = 'delete_financeglaccount'
 
+        self.variables_create = {
+            "input": {
+                "name": "New glaccount",
+                "code" : "8000"
+            }
+        }
+
         self.glaccounts_query = '''
   query FinanceGLAccounts($after: String, $before: String, $archived: Boolean) {
     financeGlaccounts(first: 15, before: $before, after: $after, archived: $archived) {
@@ -240,99 +247,75 @@ class GQLFinanceGLAccount(TestCase):
         self.assertEqual(data['financeGlaccount']['name'], glaccount.name)
 
 
-    # def test_create_location(self):
-    #     """ Create a location """
-    #     query = self.location_create_mutation
+    def test_create_glaccount(self):
+        """ Create a glaccount """
+        query = self.glaccount_create_mutation
+        variables = self.variables_create
 
-    #     variables = {
-    #         "input": {
-    #             "name": "New location",
-    #             "displayPublic": True
-    #         }
-    #     }
-
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         self.admin_user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['createSchoolLocation']['schoolLocation']['name'], variables['input']['name'])
-    #     self.assertEqual(data['createSchoolLocation']['schoolLocation']['archived'], False)
-    #     self.assertEqual(data['createSchoolLocation']['schoolLocation']['displayPublic'], variables['input']['displayPublic'])
+        executed = execute_test_client_api_query(
+            query, 
+            self.admin_user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['createFinanceGlaccount']['financeGlaccount']['name'], variables['input']['name'])
+        self.assertEqual(data['createFinanceGlaccount']['financeGlaccount']['archived'], False)
+        self.assertEqual(data['createFinanceGlaccount']['financeGlaccount']['code'], variables['input']['code'])
 
 
-    # def test_create_location_anon_user(self):
-    #     """ Don't allow creating locations for non-logged in users """
-    #     query = self.location_create_mutation
+    def test_create_glaccount_anon_user(self):
+        """ Don't allow creating glaccounts for non-logged in users """
+        query = self.glaccount_create_mutation
+        variables = self.variables_create
 
-    #     variables = {
-    #         "input": {
-    #             "name": "New location",
-    #             "displayPublic": True
-    #         }
-    #     }
-
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         self.anon_user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
+        executed = execute_test_client_api_query(
+            query, 
+            self.anon_user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
-    # def test_create_location_permission_granted(self):
-    #     """ Allow creating locations for users with permissions """
-    #     query = self.location_create_mutation
+    def test_create_location_permission_granted(self):
+        """ Allow creating glaccounts for users with permissions """
+        query = self.glaccount_create_mutation
+        variables = self.variables_create
 
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename=self.permission_add)
-    #     user.user_permissions.add(permission)
-    #     user.save()
+        # Create regular user
+        user = f.RegularUserFactory.create()
+        permission = Permission.objects.get(codename=self.permission_add)
+        user.user_permissions.add(permission)
+        user.save()
 
-    #     variables = {
-    #         "input": {
-    #             "name": "New location",
-    #             "displayPublic": True
-    #         }
-    #     }
-
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['createSchoolLocation']['schoolLocation']['name'], variables['input']['name'])
-    #     self.assertEqual(data['createSchoolLocation']['schoolLocation']['archived'], False)
-    #     self.assertEqual(data['createSchoolLocation']['schoolLocation']['displayPublic'], variables['input']['displayPublic'])
+        executed = execute_test_client_api_query(
+            query, 
+            user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['createFinanceGlaccount']['financeGlaccount']['name'], variables['input']['name'])
+        self.assertEqual(data['createFinanceGlaccount']['financeGlaccount']['archived'], False)
+        self.assertEqual(data['createFinanceGlaccount']['financeGlaccount']['code'], variables['input']['code'])
 
 
-    # def test_create_location_permission_denied(self):
-    #     """ Check create location permission denied error message """
-    #     query = self.location_create_mutation
-        
-    #     variables = {
-    #         "input": {
-    #             "name": "New location",
-    #             "displayPublic": True
-    #         }
-    #     }
+    def test_create_glaccount_permission_denied(self):
+        """ Check create glaccount permission denied error message """
+        query = self.glaccount_create_mutation
+        variables = self.variables_create
 
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
+        # Create regular user
+        user = f.RegularUserFactory.create()
 
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
+        executed = execute_test_client_api_query(
+            query, 
+            user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
     # def test_update_location(self):
