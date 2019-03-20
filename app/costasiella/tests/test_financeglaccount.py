@@ -180,68 +180,64 @@ class GQLFinanceGLAccount(TestCase):
         self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
-    # def test_query_one(self):
-    #     """ Query one location """   
-    #     location = f.SchoolLocationFactory.create()
+    def test_query_one(self):
+        """ Query one glaccount as admin """   
+        glaccount = f.FinanceGLAccountFactory.create()
 
-    #     # First query locations to get node id easily
-    #     node_id = self.get_node_id_of_first_location()
+        # First query glaccounts to get node id easily
+        node_id = self.get_node_id_of_first_glaccount()
 
-    #     # Now query single location and check
-    #     query = self.location_query
-    #     executed = execute_test_client_api_query(query, self.admin_user, variables={"id": node_id})
-    #     data = executed.get('data')
-    #     self.assertEqual(data['schoolLocation']['name'], location.name)
-    #     self.assertEqual(data['schoolLocation']['archived'], location.archived)
-    #     self.assertEqual(data['schoolLocation']['displayPublic'], location.display_public)
-
-
-    # def test_query_one_anon_user(self):
-    #     """ Deny permission for anon users Query one location """   
-    #     location = f.SchoolLocationFactory.create()
-
-    #     # First query locations to get node id easily
-    #     node_id = self.get_node_id_of_first_location()
-
-    #     # Now query single location and check
-    #     query = self.location_query
-    #     executed = execute_test_client_api_query(query, self.anon_user, variables={"id": node_id})
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
+        # Now query single glaccount and check
+        executed = execute_test_client_api_query(self.glaccount_query, self.admin_user, variables={"id": node_id})
+        data = executed.get('data')
+        self.assertEqual(data['financeGlaccount']['name'], glaccount.name)
+        self.assertEqual(data['financeGlaccount']['archived'], glaccount.archived)
+        self.assertEqual(data['financeGlaccount']['code'], glaccount.code)
 
 
-    # def test_query_one_permission_denied(self):
-    #     """ Permission denied message when user lacks authorization """   
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     location = f.SchoolLocationFactory.create()
+    def test_query_one_anon_user(self):
+        """ Deny permission for anon users Query one glacount """   
+        glaccount = f.FinanceGLAccountFactory.create()
 
-    #     # First query locations to get node id easily
-    #     node_id = self.get_node_id_of_first_location()
+        # First query glaccounts to get node id easily
+        node_id = self.get_node_id_of_first_glaccount()
 
-    #     # Now query single location and check
-    #     query = self.location_query
-    #     executed = execute_test_client_api_query(query, user, variables={"id": node_id})
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
+        # Now query single glaccount and check
+        executed = execute_test_client_api_query(self.glaccount_query, self.anon_user, variables={"id": node_id})
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
-    # def test_query_one_permission_granted(self):
-    #     """ Respond with data when user has permission """   
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename='view_schoollocation')
-    #     user.user_permissions.add(permission)
-    #     user.save()
-    #     location = f.SchoolLocationFactory.create()
+    def test_query_one_permission_denied(self):
+        """ Permission denied message when user lacks authorization """   
+        # Create regular user
+        user = f.RegularUserFactory.create()
+        glaccount = f.FinanceGLAccountFactory.create()
 
-    #     # First query locations to get node id easily
-    #     node_id = self.get_node_id_of_first_location()
+        # First query glaccounts to get node id easily
+        node_id = self.get_node_id_of_first_glaccount()
 
-    #     # Now query single location and check   
-    #     query = self.location_query
-    #     executed = execute_test_client_api_query(query, user, variables={"id": node_id})
-    #     data = executed.get('data')
-    #     self.assertEqual(data['schoolLocation']['name'], location.name)
+        # Now query single glaccount and check
+        executed = execute_test_client_api_query(self.glaccount_query, user, variables={"id": node_id})
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
+
+
+    def test_query_one_permission_granted(self):
+        """ Respond with data when user has permission """   
+        user = f.RegularUserFactory.create()
+        permission = Permission.objects.get(codename='view_financeglaccount')
+        user.user_permissions.add(permission)
+        user.save()
+        glaccount = f.FinanceGLAccountFactory.create()
+
+        # First query glaccounts to get node id easily
+        node_id = self.get_node_id_of_first_glaccount()
+
+        # Now query single location and check   
+        executed = execute_test_client_api_query(self.glaccount_query, user, variables={"id": node_id})
+        data = executed.get('data')
+        self.assertEqual(data['financeGlaccount']['name'], glaccount.name)
 
 
     # def test_create_location(self):
