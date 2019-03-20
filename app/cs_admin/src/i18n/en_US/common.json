@@ -39,7 +39,7 @@
         "menu": {
             "locations": "Locations",
             "classtypes": "Class types",
-            "discoveries": "__STRING_NOT_TRANSLATED__"
+            "discoveries": "Discovery"
         },
         "discoveries": {
             "title": "Discovery",
