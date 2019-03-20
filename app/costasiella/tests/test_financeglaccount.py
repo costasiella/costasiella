@@ -36,6 +36,13 @@ class GQLFinanceGLAccount(TestCase):
             }
         }
 
+        self.variables_update = {
+            "input": {
+                "name": "Updated glaccount",
+                "code" : "9000"
+            }
+        }
+
         self.glaccounts_query = '''
   query FinanceGLAccounts($after: String, $before: String, $archived: Boolean) {
     financeGlaccounts(first: 15, before: $before, after: $after, archived: $archived) {
@@ -318,27 +325,21 @@ class GQLFinanceGLAccount(TestCase):
         self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
-    # def test_update_location(self):
-    #     """ Update a location """
-    #     query = self.location_update_mutation
-    #     location = f.SchoolLocationFactory.create()
+    def test_update_glaccount(self):
+        """ Update a glaccount """
+        query = self.glaccount_update_mutation
+        glaccount = f.FinanceGLAccountFactory.create()
+        variables = self.variables_update
+        variables['input']['id'] = self.get_node_id_of_first_glaccount(),
 
-    #     variables = {
-    #         "input": {
-    #             "id": self.get_node_id_of_first_location(),
-    #             "name": "Updated name",
-    #             "displayPublic": False
-    #         }
-    #     }
-
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         self.admin_user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['updateSchoolLocation']['schoolLocation']['name'], variables['input']['name'])
-    #     self.assertEqual(data['updateSchoolLocation']['schoolLocation']['displayPublic'], variables['input']['displayPublic'])
+        executed = execute_test_client_api_query(
+            query, 
+            self.admin_user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['updateFinanceGlaccount']['financeGlaccount']['name'], variables['input']['name'])
+        self.assertEqual(data['updateFinanceGlaccount']['financeGlaccount']['code'], variables['input']['code'])
 
 
     # def test_update_location_anon_user(self):
