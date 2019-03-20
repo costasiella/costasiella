@@ -128,74 +128,56 @@ class GQLFinanceGLAccount(TestCase):
         self.assertEqual(data['financeGlaccounts']['edges'][0]['node']['code'], glaccount.code)
 
 
-    # def test_query_permision_denied(self):
-    #     """ Query list of locations """
-    #     query = self.locations_query
-    #     location = f.SchoolLocationFactory.create()
-    #     non_public_location = f.SchoolLocationFactory.build()
-    #     non_public_location.display_public = False
-    #     non_public_location.save()
+    def test_query_permision_denied(self):
+        """ Query list of glaccounts - check permission denied """
+        query = self.glaccounts_query
+        glaccount = f.FinanceGLAccountFactory.create()
+        variables = {
+            'archived': False
+        }
 
-    #     variables = {
-    #         'archived': False
-    #     }
+        # Create regular user
+        user = f.RegularUserFactory.create()
+        executed = execute_test_client_api_query(query, user, variables=variables)
+        errors = executed.get('errors')
 
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     executed = execute_test_client_api_query(query, user, variables=variables)
-    #     data = executed.get('data')
-
-    #     # Public locations only
-    #     non_public_found = False
-    #     for item in data['schoolLocations']['edges']:
-    #         if not item['node']['displayPublic']:
-    #             non_public_found = True
-
-    #     self.assertEqual(non_public_found, False)
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
-    # def test_query_permision_granted(self):
-    #     """ Query list of locations """
-    #     query = self.locations_query
-    #     location = f.SchoolLocationFactory.create()
-    #     non_public_location = f.SchoolLocationFactory.build()
-    #     non_public_location.display_public = False
-    #     non_public_location.save()
+    def test_query_permision_granted(self):
+        """ Query list of glaccounts with view permission """
+        query = self.glaccounts_query
+        glaccount = f.FinanceGLAccountFactory.create()
+        variables = {
+            'archived': False
+        }
 
-    #     variables = {
-    #         'archived': False
-    #     }
+        # Create regular user
+        user = f.RegularUserFactory.create()
+        permission = Permission.objects.get(codename='view_financeglaccount')
+        user.user_permissions.add(permission)
+        user.save()
 
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename='view_schoollocation')
-    #     user.user_permissions.add(permission)
-    #     user.save()
+        executed = execute_test_client_api_query(query, user, variables=variables)
+        data = executed.get('data')
 
-    #     executed = execute_test_client_api_query(query, user, variables=variables)
-    #     data = executed.get('data')
-
-    #     # List all locations, including non public
-    #     non_public_found = False
-    #     for item in data['schoolLocations']['edges']:
-    #         if not item['node']['displayPublic']:
-    #             non_public_found = True
-
-    #     # Assert non public locations are listed
-    #     self.assertEqual(non_public_found, True)
+        # List all glaccounts
+        self.assertEqual(data['financeGlaccounts']['edges'][0]['node']['name'], glaccount.name)
+        self.assertEqual(data['financeGlaccounts']['edges'][0]['node']['archived'], glaccount.archived)
+        self.assertEqual(data['financeGlaccounts']['edges'][0]['node']['code'], glaccount.code)
 
 
-    # def test_query_anon_user(self):
-    #     """ Query list of locations """
-    #     query = self.locations_query
-    #     location = f.SchoolLocationFactory.create()
-    #     variables = {
-    #         'archived': False
-    #     }
+    def test_query_anon_user(self):
+        """ Query list of glaccounts - anon user """
+        query = self.glaccounts_query
+        glaccount = f.FinanceGLAccountFactory.create()
+        variables = {
+            'archived': False
+        }
 
-    #     executed = execute_test_client_api_query(query, self.anon_user, variables=variables)
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
+        executed = execute_test_client_api_query(query, self.anon_user, variables=variables)
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
     # def test_query_one(self):

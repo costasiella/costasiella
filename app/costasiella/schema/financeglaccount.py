@@ -34,12 +34,13 @@ class FinanceGLAccountQuery(graphene.ObjectType):
 
     def resolve_finance_glaccounts(self, info, archived=False, **kwargs):
         user = info.context.user
+        require_login_and_permission(user, 'costasiella.view_financeglaccount')
 
         ## return everything:
-        if user.has_perm('costasiella.view_financeglaccount'):
-            return FinanceGLAccount.objects.filter(archived = archived).order_by('name')
+        # if user.has_perm('costasiella.view_financeglaccount'):
+        return FinanceGLAccount.objects.filter(archived = archived).order_by('name')
 
-        return None
+        # return None
 
 
 class CreateFinanceGLAccount(graphene.relay.ClientIDMutation):
