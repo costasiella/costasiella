@@ -115,7 +115,7 @@ class GQLFinanceGLAccount(TestCase):
 
     def test_query(self):
         """ Query list of glaccounts """
-        query = self.glacounts_query
+        query = self.glaccounts_query
         glaccount = f.FinanceGLAccountFactory.create()
         variables = {
             'archived': False
@@ -123,9 +123,9 @@ class GQLFinanceGLAccount(TestCase):
 
         executed = execute_test_client_api_query(query, self.admin_user, variables=variables)
         data = executed.get('data')
-        self.assertEqual(data['schoolLocations']['edges'][0]['node']['name'], location.name)
-        self.assertEqual(data['schoolLocations']['edges'][0]['node']['archived'], location.archived)
-        self.assertEqual(data['schoolLocations']['edges'][0]['node']['displayPublic'], location.display_public)
+        self.assertEqual(data['financeGlaccounts']['edges'][0]['node']['name'], glaccount.name)
+        self.assertEqual(data['financeGlaccounts']['edges'][0]['node']['archived'], glaccount.archived)
+        self.assertEqual(data['financeGlaccounts']['edges'][0]['node']['code'], glaccount.code)
 
 
     # def test_query_permision_denied(self):
