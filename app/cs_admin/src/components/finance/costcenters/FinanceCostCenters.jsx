@@ -30,9 +30,9 @@ import FinanceMenu from "../FinanceMenu"
 import { GET_COSTCENTERS_QUERY } from "./queries"
 
 const ARCHIVE_COSTCENTER = gql`
-  mutation ArchiveFinanceGLAccount($input: ArchiveFinanceGLAccountInput!) {
-    archiveFinanceGlaccount(input: $input) {
-      financeGlaccount {
+  mutation ArchiveFinanceCostCenter($input: ArchiveFinanceCostCenterInput!) {
+    archiveFinanceCostcenter(input: $input) {
+      financeCostcenter {
         id
         archived
       }

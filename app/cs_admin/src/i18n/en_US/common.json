@@ -69,7 +69,7 @@
     "finance": {
         "menu": {
             "glaccounts": "G/L Accounts",
-            "costcenters": "Costcenters"
+            "costcenters": "Cost centers"
         },
         "page_header": "Finance",
         "glaccounts": {
@@ -85,7 +85,14 @@
             "toast_edit_success": "Saved G/L Account"
         },
         "costcenters": {
-            "title": "Costcenters"
+            "title": "Cost centers",
+            "title_add": "Add cost center",
+            "toast_add_success": "Saved cost center",
+            "error_loading": "Error loading cost centers :(",
+            "empty_list": "No cost centers found, click the Add button to add a cost center",
+            "empty_archive": "No costcenters have been archived yet",
+            "code": "Code",
+            "add": "Add Cost center"
         },
         "title": "Finance"
     },
