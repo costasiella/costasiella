@@ -38,8 +38,19 @@
         "page_header": "School",
         "menu": {
             "locations": "Locations",
-            "classtypes": "Class types"
-        }
+            "classtypes": "Class types",
+            "discoveries": "__STRING_NOT_TRANSLATED__"
+        },
+        "discoveries": {
+            "title": "Discovery",
+            "error_loading": "Error loading ways of discovery :(",
+            "add": "Add discovery",
+            "title_add": "Add discovery",
+            "toast_add_success": "Saved discovery",
+            "empty_list": "No ways of discovery found, click the Add button to add the first",
+            "empty_archive": "No ways of discovery have been archived yet."
+        },
+        "page_title": "School"
     },
     "name": "Name",
     "public": "Public",

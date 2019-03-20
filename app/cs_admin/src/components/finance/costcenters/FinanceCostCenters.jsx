@@ -99,16 +99,16 @@ const FinanceCostCenters = ({ t, history, archived=false }) => (
                                     after: costcenters.pageInfo.endCursor
                                   },
                                   updateQuery: (previousResult, { fetchMoreResult }) => {
-                                    const newEdges = fetchMoreResult.financeGlaccounts.edges
-                                    const pageInfo = fetchMoreResult.financeGlaccounts.pageInfo
+                                    const newEdges = fetchMoreResult.financeCostcenters.edges
+                                    const pageInfo = fetchMoreResult.financeCostcenters.pageInfo
 
                                     return newEdges.length
                                       ? {
                                           // Put the new costcenters at the end of the list and update `pageInfo`
                                           // so we have the new `endCursor` and `hasNextPage` values
-                                          financeGlaccounts: {
-                                            __typename: previousResult.financeGlaccounts.__typename,
-                                            edges: [ ...previousResult.financeGlaccounts.edges, ...newEdges ],
+                                          financeCostcenters: {
+                                            __typename: previousResult.financeCostcenters.__typename,
+                                            edges: [ ...previousResult.financeCostcenters.edges, ...newEdges ],
                                             pageInfo
                                           }
                                         }

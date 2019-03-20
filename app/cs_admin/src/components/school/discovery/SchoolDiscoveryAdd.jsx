@@ -46,7 +46,7 @@ const SchoolDiscoveryAdd = ({ t, history }) => (
   <SiteWrapper>
     <div className="my-3 my-md-5">
       <Container>
-        <Page.Header title={t('school.title')} />
+        <Page.Header title={t('school.page_title')} />
         <Grid.Row>
           <Grid.Col md={9}>
           <Card>

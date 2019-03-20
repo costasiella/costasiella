@@ -45,7 +45,7 @@ const FinanceCostCenters = ({ t, history, archived=false }) => (
   <SiteWrapper>
     <div className="my-3 my-md-5">
       <Container>
-        <Page.Header title={t("finance.title")} />
+        <Page.Header title={t("school.page_title")} />
         <Grid.Row>
           <Grid.Col md={9}>
             <Query query={GET_DISCOVERIES_QUERY} variables={{ archived }}>
@@ -80,17 +80,17 @@ const FinanceCostCenters = ({ t, history, archived=false }) => (
                 
                 // Empty list
                 if (!discoveries.edges.length) { return (
-                  <ContentCard cardTitle={t('finance.discoveries.title')}
+                  <ContentCard cardTitle={t('school.discoveries.title')}
                                headerContent={headerOptions}>
                     <p>
-                    {(!archived) ? t('finance.discoveries.empty_list') : t("finance.discoveries.empty_archive")}
+                    {(!archived) ? t('school.discoveries.empty_list') : t("school.discoveries.empty_archive")}
                     </p>
                    
                   </ContentCard>
                 )} else {   
                 // Life's good! :)
                 return (
-                  <ContentCard cardTitle={t('finance.discoveries.title')}
+                  <ContentCard cardTitle={t('school.discoveries.title')}
                                headerContent={headerOptions}
                                pageInfo={discoveries.pageInfo}
                                onLoadMore={() => {
@@ -99,16 +99,16 @@ const FinanceCostCenters = ({ t, history, archived=false }) => (
                                     after: discoveries.pageInfo.endCursor
                                   },
                                   updateQuery: (previousResult, { fetchMoreResult }) => {
-                                    const newEdges = fetchMoreResult.financeGlaccounts.edges
-                                    const pageInfo = fetchMoreResult.financeGlaccounts.pageInfo
+                                    const newEdges = fetchMoreResult.schoolDiscoveries.edges
+                                    const pageInfo = fetchMoreResult.schoolDiscoveries.pageInfo
 
                                     return newEdges.length
                                       ? {
                                           // Put the new discoveries at the end of the list and update `pageInfo`
                                           // so we have the new `endCursor` and `hasNextPage` values
-                                          financeGlaccounts: {
-                                            __typename: previousResult.financeGlaccounts.__typename,
-                                            edges: [ ...previousResult.financeGlaccounts.edges, ...newEdges ],
+                                          schoolDiscoveries: {
+                                            __typename: previousResult.schoolDiscoveries.__typename,
+                                            edges: [ ...previousResult.schoolDiscoveries.edges, ...newEdges ],
                                             pageInfo
                                           }
                                         }
