@@ -5,12 +5,14 @@ from .financeglaccount import FinanceGLAccountQuery, FinanceGLAccountMutation
 from .financecostcenter import FinanceCostCenterQuery, FinanceCostCenterMutation
 
 from .schoolclasstype import SchoolClasstypeQuery, SchoolClasstypeMutation
+from .schooldiscovery import SchoolDiscoveryQuery, SchoolDiscoveryMutation
 from .schoollocation import SchoolLocationQuery, SchoolLocationMutation
 from .user import UserQuery, UserMutation
 
 
 class Query(FinanceCostCenterQuery,
             FinanceGLAccountQuery,
+            SchoolDiscoveryQuery,
             SchoolClasstypeQuery,
             SchoolLocationQuery, 
             UserQuery, 
@@ -20,6 +22,7 @@ class Query(FinanceCostCenterQuery,
 
 class Mutation(FinanceCostCenterMutation,
                FinanceGLAccountMutation,
+               SchoolDiscoveryMutation,
                SchoolClasstypeMutation,
                SchoolLocationMutation, 
                UserMutation, 
