@@ -3,6 +3,16 @@ import factory
 from .. import models
 from django.contrib.auth import get_user_model
 
+
+class FinanceGLAccountFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.FinanceGLAccount
+
+    archived = False
+    name = "First glaccount"
+    code = "8000"
+
+
 class SchoolLocationFactory(factory.DjangoModelFactory):
     class Meta:
         model = models.SchoolLocation
