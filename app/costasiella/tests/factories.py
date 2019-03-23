@@ -22,15 +22,6 @@ class FinanceGLAccountFactory(factory.DjangoModelFactory):
     code = "8000"
 
 
-class SchoolLocationFactory(factory.DjangoModelFactory):
-    class Meta:
-        model = models.SchoolLocation
-
-    archived = False
-    display_public = True
-    name = "First location"
-
-
 class SchoolClasstypeFactory(factory.DjangoModelFactory):
     class Meta:
         model = models.SchoolClasstype
@@ -40,6 +31,23 @@ class SchoolClasstypeFactory(factory.DjangoModelFactory):
     name = "First classtype"
     description = "Classtype description"
     url_website = "http://www.costasiella.com"
+
+
+class SchoolDiscoveryFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.SchoolDiscovery
+
+    archived = False
+    name = "First discovery"
+
+
+class SchoolLocationFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.SchoolLocation
+
+    archived = False
+    display_public = True
+    name = "First location"
 
 
 class AdminFactory(factory.DjangoModelFactory):
