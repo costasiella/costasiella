@@ -51,6 +51,11 @@ class SchoolHome extends Component {
                       <StampCard header={<small>{t('school.classtypes.title')}</small>} footer={t('')} color="blue" icon="book-open" />
                     </div>
                   </Grid.Col>
+                  <Grid.Col md={4} lg={4}>
+                    <div onClick={() => history.push('/school/discoveries')}>
+                      <StampCard header={<small>{t('school.discoveries.title')}</small>} footer={t('')} color="blue" icon="compass" />
+                    </div>
+                  </Grid.Col>
                 </Grid.Row>
               </Grid.Col>
               <Grid.Col md={3}>
