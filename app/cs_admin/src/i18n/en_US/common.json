@@ -48,7 +48,9 @@
             "title_add": "Add discovery",
             "toast_add_success": "Saved discovery",
             "empty_list": "No ways of discovery found, click the Add button to add the first",
-            "empty_archive": "No ways of discovery have been archived yet."
+            "empty_archive": "No ways of discovery have been archived yet.",
+            "title_edit": "Edit discovery",
+            "toast_edit_success": "Saved discovery"
         },
         "page_title": "School"
     },
