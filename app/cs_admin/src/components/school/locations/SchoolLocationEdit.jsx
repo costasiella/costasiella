@@ -70,11 +70,11 @@ class SchoolLocationEdit extends Component {
                 <Query query={GET_LOCATION_QUERY} variables={{ id }} >
                 {({ loading, error, data, refetch }) => {
                     // Loading
-                    if (loading) return <p>Loading... </p>
+                    if (loading) return <p>{t('loading_with_dots')}</p>
                     // Error
                     if (error) {
                       console.log(error)
-                      return <p>Error :(</p>
+                      return <p>{t('error_sad_smiley')}</p>
                     }
                     
                     const initialData = data.schoolLocation;

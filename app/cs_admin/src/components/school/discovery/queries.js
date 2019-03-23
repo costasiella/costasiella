@@ -25,7 +25,6 @@ export const GET_DISCOVERY_QUERY = gql`
     schoolDiscovery(id:$id) {
       id
       name
-      code
       archived
     }
   }

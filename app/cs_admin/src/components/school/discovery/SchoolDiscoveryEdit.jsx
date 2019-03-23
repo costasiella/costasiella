@@ -8,8 +8,8 @@ import { withRouter } from "react-router"
 import { Formik, Form as FoForm, Field, ErrorMessage } from 'formik'
 import { toast } from 'react-toastify'
 
-import { GET_COSTCENTERS_QUERY, GET_COSTCENTER_QUERY } from './queries'
-import { COSTCENTER_SCHEMA } from './yupSchema'
+import { GET_DISCOVERIES_QUERY, GET_DISCOVERY_QUERY } from './queries'
+import { DISCOVERY_SCHEMA } from './yupSchema'
 
 
 
@@ -25,26 +25,25 @@ import {
 import SiteWrapper from "../../SiteWrapper"
 import HasPermissionWrapper from "../../HasPermissionWrapper"
 
-import FinanceMenu from "../FinanceMenu"
+import SchoolMenu from "../SchoolMenu"
 
 
-const UPDATE_COSTCENTER = gql`
-  mutation UpdateFinanceCostCenter($input: UpdateFinanceCostCenterInput!) {
-    updateFinanceCostcenter(input: $input) {
-      financeCostcenter {
+const UPDATE_DISCOVERY = gql`
+  mutation UpdateSchoolDiscovery($input: UpdateSchoolDiscoveryInput!) {
+    updateSchoolDiscovery(input: $input) {
+      schoolDiscovery {
         id
         name
-        code
       }
     }
   }
 `
 
 
-class FinanceCostCenterEdit extends Component {
+class SchoolDiscoveryEdit extends Component {
   constructor(props) {
     super(props)
-    console.log("finance costcenter edit props:")
+    console.log("School discovery edit props:")
     console.log(props)
   }
 
@@ -53,60 +52,58 @@ class FinanceCostCenterEdit extends Component {
     const match = this.props.match
     const history = this.props.history
     const id = match.params.id
-    const return_url = "/finance/costcenters"
+    const return_url = "/school/discoveries"
 
     return (
       <SiteWrapper>
         <div className="my-3 my-md-5">
           <Container>
-            <Page.Header title={t('finance.costcenters.title')} />
+            <Page.Header title="School" />
             <Grid.Row>
               <Grid.Col md={9}>
               <Card>
                 <Card.Header>
-                  <Card.Title>{t('finance.costcenters.title_edit')}</Card.Title>
+                  <Card.Title>{t('school.discoveries.title_edit')}</Card.Title>
                   {console.log(match.params.id)}
                 </Card.Header>
-                <Query query={GET_COSTCENTER_QUERY} variables={{ id }} >
+                <Query query={GET_DISCOVERY_QUERY} variables={{ id }} >
                 {({ loading, error, data, refetch }) => {
                     // Loading
                     if (loading) return <p>{t('loading_with_dots')}</p>
                     // Error
                     if (error) {
                       console.log(error)
-                    return <p>{t('error_sad_smiley')}</p>
+                      return <p>{t('error_sad_smiley')}</p>
                     }
                     
-                    const initialData = data.financeCostcenter;
+                    const initialData = data.schoolDiscovery;
                     console.log('query data')
                     console.log(data)
 
                     return (
                       
-                      <Mutation mutation={UPDATE_COSTCENTER} onCompleted={() => history.push(return_url)}> 
-                      {(updateGlaccount, { data }) => (
+                      <Mutation mutation={UPDATE_DISCOVERY} onCompleted={() => history.push(return_url)}> 
+                      {(updateDiscovery, { data }) => (
                           <Formik
                               initialValues={{ 
                                 name: initialData.name, 
-                                code: initialData.code
                               }}
-                              validationSchema={COSTCENTER_SCHEMA}
+                              validationSchema={DISCOVERY_SCHEMA}
                               onSubmit={(values, { setSubmitting }) => {
                                   console.log('submit values:')
                                   console.log(values)
 
-                                  updateGlaccount({ variables: {
+                                  updateDiscovery({ variables: {
                                     input: {
                                       id: match.params.id,
                                       name: values.name,
-                                      code: values.code
                                     }
                                   }, refetchQueries: [
-                                      {query: GET_COSTCENTERS_QUERY, variables: {"archived": false }}
+                                      {query: GET_DISCOVERIES_QUERY, variables: {"archived": false }}
                                   ]})
                                   .then(({ data }) => {
                                       console.log('got data', data)
-                                      toast.success((t('finance.costcenters.toast_edit_success')), {
+                                      toast.success((t('school.discoveries.toast_edit_success')), {
                                           position: toast.POSITION.BOTTOM_RIGHT
                                         })
                                     }).catch((error) => {
@@ -120,21 +117,14 @@ class FinanceCostCenterEdit extends Component {
                               >
                               {({ isSubmitting, errors, values }) => (
                                   <FoForm>
-                                      <Card.Body>
-                                        <Form.Group label={t('name')}>
-                                          <Field type="text" 
+                                      <Card.Body>    
+                                          <Form.Group label={t('school.location.name')} >
+                                            <Field type="text" 
                                                   name="name" 
                                                   className={(errors.name) ? "form-control is-invalid" : "form-control"} 
                                                   autoComplete="off" />
-                                          <ErrorMessage name="name" component="span" className="invalid-feedback" />
-                                        </Form.Group>
-                                        <Form.Group label={t('finance.costcenters.code')}>
-                                          <Field type="text" 
-                                                  name="code" 
-                                                  className={(errors.code) ? "form-control is-invalid" : "form-control"} 
-                                                  autoComplete="off" />
-                                          <ErrorMessage name="code" component="span" className="invalid-feedback" />
-                                        </Form.Group>
+                                            <ErrorMessage name="name" component="span" className="invalid-feedback" />
+                                          </Form.Group>
                                       </Card.Body>
                                       <Card.Footer>
                                           <Button 
@@ -164,13 +154,13 @@ class FinanceCostCenterEdit extends Component {
               </Grid.Col>
               <Grid.Col md={3}>
                 <HasPermissionWrapper permission="change"
-                                      resource="financecostcenter">
+                                      resource="schooldiscovery">
                   <Button color="primary btn-block mb-6"
                           onClick={() => history.push(return_url)}>
                     <Icon prefix="fe" name="chevrons-left" /> {t('back')}
                   </Button>
                 </HasPermissionWrapper>
-                <FinanceMenu active_link='costcenters'/>
+                <SchoolMenu active_link='schooldiscoveries'/>
               </Grid.Col>
             </Grid.Row>
           </Container>
@@ -180,4 +170,4 @@ class FinanceCostCenterEdit extends Component {
   }
 
 
-export default withTranslation()(withRouter(FinanceCostCenterEdit))
+export default withTranslation()(withRouter(SchoolDiscoveryEdit))
