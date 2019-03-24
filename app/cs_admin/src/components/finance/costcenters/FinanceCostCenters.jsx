@@ -7,6 +7,7 @@ import { v4 } from "uuid"
 import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
 
+
 import {
   Page,
   Grid,
@@ -24,33 +25,34 @@ import HasPermissionWrapper from "../../HasPermissionWrapper"
 import { toast } from 'react-toastify'
 
 import ContentCard from "../../general/ContentCard"
-import SchoolMenu from "../SchoolMenu"
+import FinanceMenu from "../FinanceMenu"
 
-import { GET_CLASSTYPES_QUERY } from "./queries"
+import { GET_COSTCENTERS_QUERY } from "./queries"
 
-const ARCHIVE_CLASSTYPE = gql`
-    mutation ArchiveSchoolClasstype($input: ArchiveSchoolClasstypeInput!) {
-        archiveSchoolClasstype(input: $input) {
-          schoolClasstype {
-            id
-            archived
-          }
-        }
+const ARCHIVE_COSTCENTER = gql`
+  mutation ArchiveFinanceCostCenter($input: ArchiveFinanceCostCenterInput!) {
+    archiveFinanceCostcenter(input: $input) {
+      financeCostcenter {
+        id
+        archived
+      }
     }
+  }
 `
 
-const SchoolClasstypes = ({ t, history, archived=false }) => (
+
+const FinanceCostCenters = ({ t, history, archived=false }) => (
   <SiteWrapper>
     <div className="my-3 my-md-5">
       <Container>
-        <Page.Header title="School" />
+        <Page.Header title={t("finance.title")} />
         <Grid.Row>
           <Grid.Col md={9}>
-            <Query query={GET_CLASSTYPES_QUERY} variables={{ archived }}>
-            {({ loading, error, data: {schoolClasstypes: classtypes}, refetch, fetchMore }) => {
+            <Query query={GET_COSTCENTERS_QUERY} variables={{ archived }}>
+             {({ loading, error, data: {financeCostcenters: costcenters}, refetch, fetchMore }) => {
                 // Loading
                 if (loading) return (
-                  <ContentCard cardTitle={t('school.classtypes.title')}>
+                  <ContentCard cardTitle={t('finance.costcenters.title')}>
                     <Dimmer active={true}
                             loadder={true}>
                     </Dimmer>
@@ -58,8 +60,8 @@ const SchoolClasstypes = ({ t, history, archived=false }) => (
                 )
                 // Error
                 if (error) return (
-                  <ContentCard cardTitle={t('school.classtypes.title')}>
-                    <p>{t('school.classtypes.error_loading')}</p>
+                  <ContentCard cardTitle={t('finance.costcenters.title')}>
+                    <p>{t('finance.costcenters.error_loading')}</p>
                   </ContentCard>
                 )
                 const headerOptions = <Card.Options>
@@ -77,36 +79,36 @@ const SchoolClasstypes = ({ t, history, archived=false }) => (
                 </Card.Options>
                 
                 // Empty list
-                if (!classtypes.edges.length) { return (
-                  <ContentCard cardTitle={t('school.classtypes.title')}
+                if (!costcenters.edges.length) { return (
+                  <ContentCard cardTitle={t('finance.costcenters.title')}
                                headerContent={headerOptions}>
                     <p>
-                    {(!archived) ? t('school.classtypes.empty_list') : t("school.classtypes.empty_archive")}
+                    {(!archived) ? t('finance.costcenters.empty_list') : t("finance.costcenters.empty_archive")}
                     </p>
                    
                   </ContentCard>
                 )} else {   
                 // Life's good! :)
                 return (
-                  <ContentCard cardTitle={t('school.classtypes.title')}
+                  <ContentCard cardTitle={t('finance.costcenters.title')}
                                headerContent={headerOptions}
-                               pageInfo={classtypes.pageInfo}
+                               pageInfo={costcenters.pageInfo}
                                onLoadMore={() => {
                                 fetchMore({
                                   variables: {
-                                    after: classtypes.pageInfo.endCursor
+                                    after: costcenters.pageInfo.endCursor
                                   },
                                   updateQuery: (previousResult, { fetchMoreResult }) => {
-                                    const newEdges = fetchMoreResult.schoolClasstypes.edges
-                                    const pageInfo = fetchMoreResult.schoolClasstypes.pageInfo
+                                    const newEdges = fetchMoreResult.financeCostcenters.edges
+                                    const pageInfo = fetchMoreResult.financeCostcenters.pageInfo
 
                                     return newEdges.length
                                       ? {
-                                          // Put the new locations at the end of the list and update `pageInfo`
+                                          // Put the new costcenters at the end of the list and update `pageInfo`
                                           // so we have the new `endCursor` and `hasNextPage` values
-                                          schoolClasstypes: {
-                                            __typename: previousResult.schoolClasstypes.__typename,
-                                            edges: [ ...previousResult.schoolClasstypes.edges, ...newEdges ],
+                                          financeCostcenters: {
+                                            __typename: previousResult.financeCostcenters.__typename,
+                                            edges: [ ...previousResult.financeCostcenters.edges, ...newEdges ],
                                             pageInfo
                                           }
                                         }
@@ -117,63 +119,45 @@ const SchoolClasstypes = ({ t, history, archived=false }) => (
                     <Table>
                           <Table.Header>
                             <Table.Row key={v4()}>
-                              <Table.ColHeader>{t('')}</Table.ColHeader>
                               <Table.ColHeader>{t('name')}</Table.ColHeader>
-                              {/* <Table.ColHeader>{t('description')}</Table.ColHeader> */}
-                              <Table.ColHeader>{t('public')}</Table.ColHeader>
+                              <Table.ColHeader>{t('finance.costcenters.code')}</Table.ColHeader>
                             </Table.Row>
                           </Table.Header>
                           <Table.Body>
-                              {classtypes.edges.map(({ node }) => (
+                              {costcenters.edges.map(({ node }) => (
                                 <Table.Row key={v4()}>
-                                  <Table.Col key={v4()}>
-                                    <img src={node.urlImageThumbnailSmall} alt="" />
-                                  </Table.Col>
                                   <Table.Col key={v4()}>
                                     {node.name}
                                   </Table.Col>
-                                  {/* <Table.Col key={v4()}>
-                                    <span title={node.description}>
-                                      {node.description}
-                                    </span>
-                                  </Table.Col> */}
                                   <Table.Col key={v4()}>
-                                    {(node.displayPublic) ? 
-                                      <Badge color="success">{t('yes')}</Badge>: 
-                                      <Badge color="danger">{t('no')}</Badge>}
+                                    {node.code}
                                   </Table.Col>
                                   <Table.Col className="text-right" key={v4()}>
-                                    {(archived) ? 
+                                    {(node.archived) ? 
                                       <span className='text-muted'>{t('unarchive_to_edit')}</span> :
-                                      <div>
-                                        <Button className='btn-sm' 
-                                                onClick={() => history.push("/school/classtypes/edit/" + node.id)}
-                                                color="secondary">
-                                          {t('edit')}
-                                        </Button>
-                                        <Button className='btn-sm' 
-                                                onClick={() => history.push("/school/classtypes/edit_image/" + node.id)}
-                                                color="secondary">
-                                          {t('school.classtypes.image')}
-                                        </Button>
-                                      </div>
+                                      <Button className='btn-sm' 
+                                              onClick={() => history.push("/finance/costcenters/edit/" + node.id)}
+                                              color="secondary">
+                                        {t('edit')}
+                                      </Button>
                                     }
                                   </Table.Col>
-                                  <Mutation mutation={ARCHIVE_CLASSTYPE} key={v4()}>
-                                    {(archiveLocation, { data }) => (
+                                  <Mutation mutation={ARCHIVE_COSTCENTER} key={v4()}>
+                                    {(archiveCostcenter, { data }) => (
                                       <Table.Col className="text-right" key={v4()}>
                                         <button className="icon btn btn-link btn-sm" 
                                            title={t('archive')} 
+                                           href=""
                                            onClick={() => {
                                              console.log("clicked archived")
                                              let id = node.id
-                                             archiveLocation({ variables: {
+                                             archiveCostcenter({ variables: {
                                                input: {
                                                 id,
                                                 archived: !archived
                                                }
                                         }, refetchQueries: [
-                                            {query: GET_CLASSTYPES_QUERY, variables: {"archived": archived }}
+                                            {query: GET_COSTCENTERS_QUERY, variables: {"archived": archived }}
                                         ]}).then(({ data }) => {
                                           console.log('got data', data);
                                           toast.success(
@@ -203,13 +187,13 @@ const SchoolClasstypes = ({ t, history, archived=false }) => (
           </Grid.Col>
           <Grid.Col md={3}>
             <HasPermissionWrapper permission="add"
-                                  resource="schoolclasstype">
+                                  resource="financeglaccount">
               <Button color="primary btn-block mb-6"
-                      onClick={() => history.push("/school/classtypes/add")}>
-                <Icon prefix="fe" name="plus-circle" /> {t('school.classtypes.add')}
+                      onClick={() => history.push("/finance/costcenters/add")}>
+                <Icon prefix="fe" name="plus-circle" /> {t('finance.costcenters.add')}
               </Button>
             </HasPermissionWrapper>
-            <SchoolMenu active_link='schoolclasstypes'/>
+            <FinanceMenu active_link='costcenters'/>
           </Grid.Col>
         </Grid.Row>
       </Container>
@@ -217,4 +201,4 @@ const SchoolClasstypes = ({ t, history, archived=false }) => (
   </SiteWrapper>
 );
 
-export default withTranslation()(withRouter(SchoolClasstypes))
+export default withTranslation()(withRouter(FinanceCostCenters))

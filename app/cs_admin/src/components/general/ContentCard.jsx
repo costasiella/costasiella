@@ -36,7 +36,7 @@ class ContentCard extends Component {
       const t = this.props.t
       const cardTitle = this.props.cardTitle
       const headerContent = this.props.headerContent
-      const onLoadMore = this.props.onLoadMore
+      const onLoadMore = this.props.onLoadMore 
       const pageInfo = this.props.pageInfo
       const children = this.props.children
 
@@ -67,26 +67,11 @@ class ContentCard extends Component {
     }
 }
 
-// const ContentCard = ({ t, cardTitle, headerContent, pageInfo, onLoadMore, children}) => (
-//     <Card>
-//       <Card.Header>
-//         <Card.Title>{cardTitle}</Card.Title>
-//         {headerContent}
-//       </Card.Header>
-//       <Card.Body>
-//         {children}
-//       </Card.Body>
-//       <Card.Footer>
-//         {(!pageInfo) ? '':
-//           <Button onClick={onLoadMore} disabled={!pageInfo.hasNextPage}>
-//             What's next...?
-//           </Button>
-//         }
-//       </Card.Footer>
-//     </Card>
-//   )
+ContentCard.defaultProps = {
+  onLoadMore: f=>f
+}
   
-  export default withTranslation()(ContentCard)
+export default withTranslation()(ContentCard)
 
 
 

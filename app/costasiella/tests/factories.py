@@ -3,13 +3,23 @@ import factory
 from .. import models
 from django.contrib.auth import get_user_model
 
-class SchoolLocationFactory(factory.DjangoModelFactory):
+
+class FinanceCostCenterFactory(factory.DjangoModelFactory):
     class Meta:
-        model = models.SchoolLocation
+        model = models.FinanceCostCenter
 
     archived = False
-    display_public = True
-    name = "First location"
+    name = "First cost center"
+    code = "9000"
+
+
+class FinanceGLAccountFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.FinanceGLAccount
+
+    archived = False
+    name = "First glaccount"
+    code = "8000"
 
 
 class SchoolClasstypeFactory(factory.DjangoModelFactory):
@@ -21,6 +31,23 @@ class SchoolClasstypeFactory(factory.DjangoModelFactory):
     name = "First classtype"
     description = "Classtype description"
     url_website = "http://www.costasiella.com"
+
+
+class SchoolDiscoveryFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.SchoolDiscovery
+
+    archived = False
+    name = "First discovery"
+
+
+class SchoolLocationFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.SchoolLocation
+
+    archived = False
+    display_public = True
+    name = "First location"
 
 
 class AdminFactory(factory.DjangoModelFactory):

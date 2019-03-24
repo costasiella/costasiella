@@ -58,6 +58,10 @@ class SchoolClasstypeEditImage extends Component {
     // this.fileInputPreview = React.createRef()
   }
 
+  state = {
+    fileName: "",
+  }
+
   onSubmit(e, id, uploadImage) {
     e.preventDefault()
     const t = this.props.t
@@ -97,8 +101,6 @@ class SchoolClasstypeEditImage extends Component {
       
     }
     reader.readAsDataURL(file)
-
-
   }
 
   // previewFile() {
@@ -115,6 +117,11 @@ class SchoolClasstypeEditImage extends Component {
   //     }
   //   }
 
+  _handleOnChange = (event) => {
+    console.log('on change triggered')
+    this.setState({ fileName: event.target.files[0].name });
+  }
+
 
   render() {
     const t = this.props.t
@@ -122,6 +129,7 @@ class SchoolClasstypeEditImage extends Component {
     const history = this.props.history
     const id = match.params.id
     const return_url = "/school/classtypes"
+    const fileInputLabel = this.state.fileName || t("custom_file_input_inner_label")
 
     return (
       <SiteWrapper>
@@ -132,7 +140,7 @@ class SchoolClasstypeEditImage extends Component {
               <Grid.Col md={9}>
               <Card>
                 <Card.Header>
-                  <Card.Title>{t('edit_ct_image')}</Card.Title>
+                  <Card.Title>{t('school.classtypes.edit_image')}</Card.Title>
                   {console.log(match.params.id)}
                 </Card.Header>
                 <Query query={GET_CLASSTYPE_QUERY} variables={{ id }} >
@@ -156,15 +164,14 @@ class SchoolClasstypeEditImage extends Component {
                           
                             <Form autoComplete="off" onSubmit={(event) => this.onSubmit(event, initialData.id, uploadImage)}>
                               <Card.Body>
-                                <div className="form-group">
-                                  <label className="form-label">{t('choose_image')}</label>
+                                <Form.Group label={t('custom_file_input_label')}>
                                   <div className="custom-file">
-                                    <input type="file" ref={this.fileInput} className="custom-file-input" />
+                                    <input type="file" ref={this.fileInput} className="custom-file-input" onChange={this._handleOnChange} />
                                     <label className="custom-file-label" style={customFileInputLabelStyle}>
-                                      {t("custom_file_input_label")}
+                                      {fileInputLabel}
                                     </label>
                                   </div>
-                                </div>
+                                </Form.Group>
                               </Card.Body>
                               <Card.Footer>
                                 <Button 
@@ -181,9 +188,7 @@ class SchoolClasstypeEditImage extends Component {
                                 >
                                     {t('cancel')}
                                 </Button>
-                                {/* <Button type='submit' value='Submit'>{t('submit')}</Button> */}
                               </Card.Footer>
-                              {/* <img ref={this.fileInputPreview} src="" height="200" alt="Image preview..."></img> */}
                             </Form>
                         )}
                       </Mutation>

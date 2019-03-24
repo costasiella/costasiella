@@ -4,10 +4,8 @@ from django.db import models
 
 # Create your models here.
 
-class SchoolLocation(models.Model):
-    # id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+class SchoolDiscovery(models.Model):
     archived = models.BooleanField(default=False)
-    display_public = models.BooleanField(default=True)
     name = models.CharField(max_length=255)
 
     def __str__(self):

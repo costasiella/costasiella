@@ -7,6 +7,7 @@ import { v4 } from "uuid"
 import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
 
+
 import {
   Page,
   Grid,
@@ -24,33 +25,34 @@ import HasPermissionWrapper from "../../HasPermissionWrapper"
 import { toast } from 'react-toastify'
 
 import ContentCard from "../../general/ContentCard"
-import SchoolMenu from "../SchoolMenu"
+import FinanceMenu from "../FinanceMenu"
 
-import { GET_CLASSTYPES_QUERY } from "./queries"
+import { GET_GLACCOUNTS_QUERY } from "./queries"
 
-const ARCHIVE_CLASSTYPE = gql`
-    mutation ArchiveSchoolClasstype($input: ArchiveSchoolClasstypeInput!) {
-        archiveSchoolClasstype(input: $input) {
-          schoolClasstype {
-            id
-            archived
-          }
-        }
+const ARCHIVE_GLACCOUNT = gql`
+  mutation ArchiveFinanceGLAccount($input: ArchiveFinanceGLAccountInput!) {
+    archiveFinanceGlaccount(input: $input) {
+      financeGlaccount {
+        id
+        archived
+      }
     }
+  }
 `
 
-const SchoolClasstypes = ({ t, history, archived=false }) => (
+
+const FinanceGLAccounts = ({ t, history, archived=false }) => (
   <SiteWrapper>
     <div className="my-3 my-md-5">
       <Container>
-        <Page.Header title="School" />
+        <Page.Header title={t("finance.title")} />
         <Grid.Row>
           <Grid.Col md={9}>
-            <Query query={GET_CLASSTYPES_QUERY} variables={{ archived }}>
-            {({ loading, error, data: {schoolClasstypes: classtypes}, refetch, fetchMore }) => {
+            <Query query={GET_GLACCOUNTS_QUERY} variables={{ archived }}>
+             {({ loading, error, data: {financeGlaccounts: glaccounts}, refetch, fetchMore }) => {
                 // Loading
                 if (loading) return (
-                  <ContentCard cardTitle={t('school.classtypes.title')}>
+                  <ContentCard cardTitle={t('finance.glaccounts.title')}>
                     <Dimmer active={true}
                             loadder={true}>
                     </Dimmer>
@@ -58,8 +60,8 @@ const SchoolClasstypes = ({ t, history, archived=false }) => (
                 )
                 // Error
                 if (error) return (
-                  <ContentCard cardTitle={t('school.classtypes.title')}>
-                    <p>{t('school.classtypes.error_loading')}</p>
+                  <ContentCard cardTitle={t('finance.glaccounts.title')}>
+                    <p>{t('finance.glaccounts.error_loading')}</p>
                   </ContentCard>
                 )
                 const headerOptions = <Card.Options>
@@ -77,36 +79,36 @@ const SchoolClasstypes = ({ t, history, archived=false }) => (
                 </Card.Options>
                 
                 // Empty list
-                if (!classtypes.edges.length) { return (
-                  <ContentCard cardTitle={t('school.classtypes.title')}
+                if (!glaccounts.edges.length) { return (
+                  <ContentCard cardTitle={t('finance.glaccounts.title')}
                                headerContent={headerOptions}>
                     <p>
-                    {(!archived) ? t('school.classtypes.empty_list') : t("school.classtypes.empty_archive")}
+                    {(!archived) ? t('finance.glaccounts.empty_list') : t("finance.glaccounts.empty_archive")}
                     </p>
                    
                   </ContentCard>
                 )} else {   
                 // Life's good! :)
                 return (
-                  <ContentCard cardTitle={t('school.classtypes.title')}
+                  <ContentCard cardTitle={t('finance.glaccounts.title')}
                                headerContent={headerOptions}
-                               pageInfo={classtypes.pageInfo}
+                               pageInfo={glaccounts.pageInfo}
                                onLoadMore={() => {
                                 fetchMore({
                                   variables: {
-                                    after: classtypes.pageInfo.endCursor
+                                    after: glaccounts.pageInfo.endCursor
                                   },
                                   updateQuery: (previousResult, { fetchMoreResult }) => {
-                                    const newEdges = fetchMoreResult.schoolClasstypes.edges
-                                    const pageInfo = fetchMoreResult.schoolClasstypes.pageInfo
+                                    const newEdges = fetchMoreResult.financeGlaccounts.edges
+                                    const pageInfo = fetchMoreResult.financeGlaccounts.pageInfo
 
                                     return newEdges.length
                                       ? {
-                                          // Put the new locations at the end of the list and update `pageInfo`
+                                          // Put the new glaccounts at the end of the list and update `pageInfo`
                                           // so we have the new `endCursor` and `hasNextPage` values
-                                          schoolClasstypes: {
-                                            __typename: previousResult.schoolClasstypes.__typename,
-                                            edges: [ ...previousResult.schoolClasstypes.edges, ...newEdges ],
+                                          financeGlaccounts: {
+                                            __typename: previousResult.financeGlaccounts.__typename,
+                                            edges: [ ...previousResult.financeGlaccounts.edges, ...newEdges ],
                                             pageInfo
                                           }
                                         }
@@ -117,63 +119,45 @@ const SchoolClasstypes = ({ t, history, archived=false }) => (
                     <Table>
                           <Table.Header>
                             <Table.Row key={v4()}>
-                              <Table.ColHeader>{t('')}</Table.ColHeader>
                               <Table.ColHeader>{t('name')}</Table.ColHeader>
-                              {/* <Table.ColHeader>{t('description')}</Table.ColHeader> */}
-                              <Table.ColHeader>{t('public')}</Table.ColHeader>
+                              <Table.ColHeader>{t('finance.glaccounts.code')}</Table.ColHeader>
                             </Table.Row>
                           </Table.Header>
                           <Table.Body>
-                              {classtypes.edges.map(({ node }) => (
+                              {glaccounts.edges.map(({ node }) => (
                                 <Table.Row key={v4()}>
-                                  <Table.Col key={v4()}>
-                                    <img src={node.urlImageThumbnailSmall} alt="" />
-                                  </Table.Col>
                                   <Table.Col key={v4()}>
                                     {node.name}
                                   </Table.Col>
-                                  {/* <Table.Col key={v4()}>
-                                    <span title={node.description}>
-                                      {node.description}
-                                    </span>
-                                  </Table.Col> */}
                                   <Table.Col key={v4()}>
-                                    {(node.displayPublic) ? 
-                                      <Badge color="success">{t('yes')}</Badge>: 
-                                      <Badge color="danger">{t('no')}</Badge>}
+                                    {node.code}
                                   </Table.Col>
                                   <Table.Col className="text-right" key={v4()}>
-                                    {(archived) ? 
+                                    {(node.archived) ? 
                                       <span className='text-muted'>{t('unarchive_to_edit')}</span> :
-                                      <div>
-                                        <Button className='btn-sm' 
-                                                onClick={() => history.push("/school/classtypes/edit/" + node.id)}
-                                                color="secondary">
-                                          {t('edit')}
-                                        </Button>
-                                        <Button className='btn-sm' 
-                                                onClick={() => history.push("/school/classtypes/edit_image/" + node.id)}
-                                                color="secondary">
-                                          {t('school.classtypes.image')}
-                                        </Button>
-                                      </div>
+                                      <Button className='btn-sm' 
+                                              onClick={() => history.push("/finance/glaccounts/edit/" + node.id)}
+                                              color="secondary">
+                                        {t('edit')}
+                                      </Button>
                                     }
                                   </Table.Col>
-                                  <Mutation mutation={ARCHIVE_CLASSTYPE} key={v4()}>
-                                    {(archiveLocation, { data }) => (
+                                  <Mutation mutation={ARCHIVE_GLACCOUNT} key={v4()}>
+                                    {(archiveGlaccount, { data }) => (
                                       <Table.Col className="text-right" key={v4()}>
                                         <button className="icon btn btn-link btn-sm" 
                                            title={t('archive')} 
+                                           href=""
                                            onClick={() => {
                                              console.log("clicked archived")
                                              let id = node.id
-                                             archiveLocation({ variables: {
+                                             archiveGlaccount({ variables: {
                                                input: {
                                                 id,
                                                 archived: !archived
                                                }
                                         }, refetchQueries: [
-                                            {query: GET_CLASSTYPES_QUERY, variables: {"archived": archived }}
+                                            {query: GET_GLACCOUNTS_QUERY, variables: {"archived": archived }}
                                         ]}).then(({ data }) => {
                                           console.log('got data', data);
                                           toast.success(
@@ -203,13 +187,13 @@ const SchoolClasstypes = ({ t, history, archived=false }) => (
           </Grid.Col>
           <Grid.Col md={3}>
             <HasPermissionWrapper permission="add"
-                                  resource="schoolclasstype">
+                                  resource="financeglaccount">
               <Button color="primary btn-block mb-6"
-                      onClick={() => history.push("/school/classtypes/add")}>
-                <Icon prefix="fe" name="plus-circle" /> {t('school.classtypes.add')}
+                      onClick={() => history.push("/finance/glaccounts/add")}>
+                <Icon prefix="fe" name="plus-circle" /> {t('finance.glaccounts.add')}
               </Button>
             </HasPermissionWrapper>
-            <SchoolMenu active_link='schoolclasstypes'/>
+            <FinanceMenu active_link='glaccounts'/>
           </Grid.Col>
         </Grid.Row>
       </Container>
@@ -217,4 +201,4 @@ const SchoolClasstypes = ({ t, history, archived=false }) => (
   </SiteWrapper>
 );
 
-export default withTranslation()(withRouter(SchoolClasstypes))
+export default withTranslation()(withRouter(FinanceGLAccounts))
