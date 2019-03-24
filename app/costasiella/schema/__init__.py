@@ -1,8 +1,9 @@
 import graphene
 import graphql_jwt
 
-from .financeglaccount import FinanceGLAccountQuery, FinanceGLAccountMutation
 from .financecostcenter import FinanceCostCenterQuery, FinanceCostCenterMutation
+from .financeglaccount import FinanceGLAccountQuery, FinanceGLAccountMutation
+from .financetaxrate import FinanceTaxRateQuery, FinanceTaxRateMutation
 
 from .schoolclasstype import SchoolClasstypeQuery, SchoolClasstypeMutation
 from .schooldiscovery import SchoolDiscoveryQuery, SchoolDiscoveryMutation
@@ -12,6 +13,7 @@ from .user import UserQuery, UserMutation
 
 class Query(FinanceCostCenterQuery,
             FinanceGLAccountQuery,
+            FinanceTaxRateQuery,
             SchoolDiscoveryQuery,
             SchoolClasstypeQuery,
             SchoolLocationQuery, 
@@ -22,6 +24,7 @@ class Query(FinanceCostCenterQuery,
 
 class Mutation(FinanceCostCenterMutation,
                FinanceGLAccountMutation,
+               FinanceTaxRateMutation,
                SchoolDiscoveryMutation,
                SchoolClasstypeMutation,
                SchoolLocationMutation, 
