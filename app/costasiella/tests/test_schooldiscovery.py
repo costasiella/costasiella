@@ -21,15 +21,33 @@ class GQLSchoolDiscovery(TestCase):
         self.admin_user = f.AdminFactory.create()
         self.anon_user = AnonymousUser()
 
-        self.permission_view = 'view_schoolclasstype'
-        self.permission_add = 'add_schoolclasstype'
-        self.permission_change = 'change_schoolclasstype'
-        self.permission_delete = 'delete_schoolclasstype'
-        
+        self.permission_view = 'view_schooldiscovery'
+        self.permission_add = 'add_schooldiscovery'
+        self.permission_change = 'change_schooldiscovery'
+        self.permission_delete = 'delete_schooldiscovery'
 
-        self.classtypes_query = '''
-query SchoolClasstypes($after: String, $before: String, $archived: Boolean) {
-  schoolClasstypes(first: 15, before: $before, after: $after, archived: $archived) {
+        self.variables_create = {
+            "input": {
+                "name": "New discovery",
+            }
+        }
+        
+        self.variables_update = {
+            "input": {
+                "name": "Updated discovery",
+            }
+        }
+
+        self.variables_archive = {
+            "input": {
+                "archived": True
+            }
+        }
+
+
+        self.discoveries_query = '''
+query SchoolDiscoveries($after: String, $before: String, $archived: Boolean) {
+  schoolDiscoveries(first: 15, before: $before, after: $after, archived: $archived) {
     pageInfo {
       startCursor
       endCursor
@@ -40,63 +58,51 @@ query SchoolClasstypes($after: String, $before: String, $archived: Boolean) {
       node {
         id
         archived
-        displayPublic
         name
-        description
-        urlWebsite
       }
     }
   }
 }
 '''
 
-        self.classtype_query = '''
-query getSchoolClasstype($id: ID!) {
-    schoolClasstype(id:$id) {
+        self.discovery_query = '''
+query getSchoolDiscovery($id: ID!) {
+    schoolDiscovery(id:$id) {
       id
       archived
       name
-      description
-      displayPublic
-      urlWebsite
     }
   }
 '''
 
-        self.classtype_create_mutation = '''
-mutation CreateSchoolClasstype($input: CreateSchoolClasstypeInput!) {
-  createSchoolClasstype(input: $input) {
-    schoolClasstype {
+        self.discovery_create_mutation = '''
+mutation CreateSchoolDiscovery($input: CreateSchoolDiscoveryInput!) {
+  createSchoolDiscovery(input: $input) {
+    schoolDiscovery {
       id
       archived
       name
-      description
-      displayPublic
-      urlWebsite
     }
   }
 }
 '''
 
-        self.classtype_update_mutation = '''
-  mutation UpdateSchoolClasstype($input: UpdateSchoolClasstypeInput!) {
-    updateSchoolClasstype(input: $input) {
-      schoolClasstype {
+        self.discovery_update_mutation = '''
+  mutation UpdateSchoolDiscovery($input: UpdateSchoolDiscoveryInput!) {
+    updateSchoolDiscovery(input: $input) {
+      schoolDiscovery {
         id
         archived
         name
-        description
-        displayPublic
-        urlWebsite
       }
     }
   }
 '''
 
-        self.classtype_archive_mutation = '''
-mutation ArchiveSchoolClasstype($input: ArchiveSchoolClasstypeInput!) {
-    archiveSchoolClasstype(input: $input) {
-        schoolClasstype {
+        self.discovery_archive_mutation = '''
+mutation ArchiveSchoolDiscovery($input: ArchiveSchoolDiscoveryInput!) {
+    archiveSchoolDiscovery(input: $input) {
+        schoolDiscovery {
         id
         archived
         }
@@ -109,40 +115,38 @@ mutation ArchiveSchoolClasstype($input: ArchiveSchoolClasstypeInput!) {
         pass
 
 
-    def get_node_id_of_first_classtype(self):
-        # query classtypes to get node id easily
+    def get_node_id_of_first_discovery(self):
+        # query discoveries to get node id easily
         variables = {
             'archived': False
         }
-        executed = execute_test_client_api_query(self.classtypes_query, self.admin_user, variables=variables)
+        executed = execute_test_client_api_query(self.discoveries_query, self.admin_user, variables=variables)
         data = executed.get('data')
         
-        return data['schoolClasstypes']['edges'][0]['node']['id']
+        return data['schoolDiscoveries']['edges'][0]['node']['id']
 
     def test_query(self):
-        """ Query list of classtypes """
-        query = self.classtypes_query
-        classtype = f.SchoolClasstypeFactory.create()
+        """ Query list of discoveries """
+        query = self.discoveries_query
+        discovery = f.SchoolDiscoveryFactory.create()
         variables = {
             "archived": False
         }
 
         executed = execute_test_client_api_query(query, self.admin_user, variables=variables)
         data = executed.get('data')
-        item = data['schoolClasstypes']['edges'][0]['node']
-        self.assertEqual(item['name'], classtype.name)
-        self.assertEqual(item['archived'], classtype.archived)
-        self.assertEqual(item['description'], classtype.description)
-        self.assertEqual(item['displayPublic'], classtype.display_public)
+        item = data['schoolDiscoveries']['edges'][0]['node']
+        self.assertEqual(item['name'], discovery.name)
+
 
 
     def test_query_permision_denied(self):
-        """ Query list of classtypes as user without permissions """
-        query = self.classtypes_query
-        classtype = f.SchoolClasstypeFactory.create()
-        non_public_classtype = f.SchoolClasstypeFactory.build()
-        non_public_classtype.display_public = False
-        non_public_classtype.save()
+        """ Query list of discoveries as user without permissions """
+        query = self.discoveries_query
+        discovery = f.SchoolDiscoveryFactory.create()
+        non_public_discovery = f.SchoolDiscoveryFactory.build()
+        non_public_discovery.display_public = False
+        non_public_discovery.save()
 
         variables = {
             'archived': False
@@ -151,24 +155,18 @@ mutation ArchiveSchoolClasstype($input: ArchiveSchoolClasstypeInput!) {
         # Create regular user
         user = f.RegularUserFactory.create()
         executed = execute_test_client_api_query(query, user, variables=variables)
-        data = executed.get('data')
+        errors = executed.get('errors')
 
-        # Public classtypes only
-        non_public_found = False
-        for item in data['schoolClasstypes']['edges']:
-            if not item['node']['displayPublic']:
-                non_public_found = True
-
-        self.assertEqual(non_public_found, False)
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
     def test_query_permision_granted(self):
-        """ Query list of classtypes with view permission """
-        query = self.classtypes_query
-        classtype = f.SchoolClasstypeFactory.create()
-        non_public_classtype = f.SchoolClasstypeFactory.build()
-        non_public_classtype.display_public = False
-        non_public_classtype.save()
+        """ Query list of discoveries with view permission """
+        query = self.discoveries_query
+        discovery = f.SchoolDiscoveryFactory.create()
+        non_public_discovery = f.SchoolDiscoveryFactory.build()
+        non_public_discovery.display_public = False
+        non_public_discovery.save()
 
         variables = {
             'archived': False
@@ -182,21 +180,14 @@ mutation ArchiveSchoolClasstype($input: ArchiveSchoolClasstypeInput!) {
 
         executed = execute_test_client_api_query(query, user, variables=variables)
         data = executed.get('data')
-
-        # List all classtypes, including non public
-        non_public_found = False
-        for item in data['schoolClasstypes']['edges']:
-            if not item['node']['displayPublic']:
-                non_public_found = True
-
-        # Assert non public classtypes are listed
-        self.assertEqual(non_public_found, True)
+        item = data['schoolDiscoveries']['edges'][0]['node']
+        self.assertEqual(item['name'], discovery.name)
 
 
     def test_query_anon_user(self):
-        """ Query list of classtypes as anon user """
-        query = self.classtypes_query
-        classtype = f.SchoolClasstypeFactory.create()
+        """ Query list of discoveries as anon user """
+        query = self.discoveries_query
+        discovery = f.SchoolDiscoveryFactory.create()
         variables = {
             'archived': False
         }
@@ -207,29 +198,26 @@ mutation ArchiveSchoolClasstype($input: ArchiveSchoolClasstypeInput!) {
 
 
     def test_query_one(self):
-        """ Query one classtype """   
-        classtype = f.SchoolClasstypeFactory.create()
+        """ Query one discovery """   
+        discovery = f.SchoolDiscoveryFactory.create()
 
-        # First query classtypes to get node id easily
-        node_id = self.get_node_id_of_first_classtype()
+        # First query discoveries to get node id easily
+        node_id = self.get_node_id_of_first_discovery()
 
-        # Now query single classtype and check
-        query = self.classtype_query
+        # Now query single discovery and check
+        query = self.discovery_query
         executed = execute_test_client_api_query(query, self.admin_user, variables={"id": node_id})
         data = executed.get('data')
         print(data)
-        self.assertEqual(data['schoolClasstype']['name'], classtype.name)
-        self.assertEqual(data['schoolClasstype']['archived'], classtype.archived)
-        self.assertEqual(data['schoolClasstype']['description'], classtype.description)
-        self.assertEqual(data['schoolClasstype']['displayPublic'], classtype.display_public)
-        self.assertEqual(data['schoolClasstype']['urlWebsite'], classtype.url_website)
+        self.assertEqual(data['schoolDiscovery']['name'], discovery.name)
+        self.assertEqual(data['schoolDiscovery']['archived'], discovery.archived)
 
 
     def test_query_one_anon_user(self):
-        """ Deny permission for anon users Query one classtype """   
-        query = self.classtype_query
-        classtype = f.SchoolClasstypeFactory.create()
-        node_id = self.get_node_id_of_first_classtype()
+        """ Deny permission for anon users Query one discovery """   
+        query = self.discovery_query
+        discovery = f.SchoolDiscoveryFactory.create()
+        node_id = self.get_node_id_of_first_discovery()
         executed = execute_test_client_api_query(query, self.anon_user, variables={"id": node_id})
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Not logged in!')
@@ -237,11 +225,11 @@ mutation ArchiveSchoolClasstype($input: ArchiveSchoolClasstypeInput!) {
 
     def test_query_one_permission_denied(self):
         """ Permission denied message when user lacks authorization """   
-        query = self.classtype_query
+        query = self.discovery_query
         
         user = f.RegularUserFactory.create()
-        classtype = f.SchoolClasstypeFactory.create()
-        node_id = self.get_node_id_of_first_classtype()
+        discovery = f.SchoolDiscoveryFactory.create()
+        node_id = self.get_node_id_of_first_discovery()
 
         executed = execute_test_client_api_query(query, user, variables={"id": node_id})
         errors = executed.get('errors')
@@ -250,33 +238,25 @@ mutation ArchiveSchoolClasstype($input: ArchiveSchoolClasstypeInput!) {
 
     def test_query_one_permission_granted(self):
         """ Respond with data when user has permission """   
-        query = self.classtype_query
+        query = self.discovery_query
         # Create regular user
         user = f.RegularUserFactory.create()
-        permission = Permission.objects.get(codename='view_schoolclasstype')
+        permission = Permission.objects.get(codename='view_schooldiscovery')
         user.user_permissions.add(permission)
         user.save()
 
-        classtype = f.SchoolClasstypeFactory.create()
-        node_id = self.get_node_id_of_first_classtype()
+        discovery = f.SchoolDiscoveryFactory.create()
+        node_id = self.get_node_id_of_first_discovery()
 
         executed = execute_test_client_api_query(query, user, variables={"id": node_id})
         data = executed.get('data')
-        self.assertEqual(data['schoolClasstype']['name'], classtype.name)
+        self.assertEqual(data['schoolDiscovery']['name'], discovery.name)
 
 
-    def test_create_classtype(self):
-        """ Create a classtype """
-        query = self.classtype_create_mutation
-
-        variables = {
-            "input": {
-                "name": "New classtype",
-                "description": "Classtype description",
-                "displayPublic": True,
-                "urlWebsite": "https://www.costasiella.com"
-            }
-        }
+    def test_create_discovery(self):
+        """ Create a discovery """
+        query = self.discovery_create_mutation
+        variables = self.variables_create
 
         executed = execute_test_client_api_query(
             query, 
@@ -284,48 +264,28 @@ mutation ArchiveSchoolClasstype($input: ArchiveSchoolClasstypeInput!) {
             variables=variables
         )
         data = executed.get('data')
-        self.assertEqual(data['createSchoolClasstype']['schoolClasstype']['name'], variables['input']['name'])
-        self.assertEqual(data['createSchoolClasstype']['schoolClasstype']['archived'], False)
-        self.assertEqual(data['createSchoolClasstype']['schoolClasstype']['description'], variables['input']['description'])
-        self.assertEqual(data['createSchoolClasstype']['schoolClasstype']['displayPublic'], variables['input']['displayPublic'])
-        self.assertEqual(data['createSchoolClasstype']['schoolClasstype']['urlWebsite'], variables['input']['urlWebsite'])
+        self.assertEqual(data['createSchoolDiscovery']['schoolDiscovery']['name'], variables['input']['name'])
+        self.assertEqual(data['createSchoolDiscovery']['schoolDiscovery']['archived'], False)
 
 
-    def test_create_classtype_anon_user(self):
-        """ Create a classtype with anonymous user, check error message """
-        query = self.classtype_create_mutation
-
-        variables = {
-            "input": {
-                "name": "New classtype",
-                "description": "Classtype description",
-                "displayPublic": True,
-                "urlWebsite": "https://www.costasiella.com"
-            }
-        }
+    def test_create_discovery_anon_user(self):
+        """ Create a discovery with anonymous user, check error message """
+        query = self.discovery_create_mutation
 
         executed = execute_test_client_api_query(
             query, 
             self.anon_user, 
-            variables=variables
+            variables=self.variables_create
         )
         data = executed.get('data')
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
-    def test_create_classtype_permission_granted(self):
-        """ Create a classtype with a user having the add permission """
-        query = self.classtype_create_mutation
-
-        variables = {
-            "input": {
-                "name": "New classtype",
-                "description": "Classtype description",
-                "displayPublic": True,
-                "urlWebsite": "https://www.costasiella.com"
-            }
-        }
+    def test_create_discovery_permission_granted(self):
+        """ Create a discovery with a user having the add permission """
+        query = self.discovery_create_mutation
+        variables = self.variables_create
 
         # Create regular user
         user = f.RegularUserFactory.create()
@@ -339,25 +299,13 @@ mutation ArchiveSchoolClasstype($input: ArchiveSchoolClasstypeInput!) {
             variables=variables
         )
         data = executed.get('data')
-        self.assertEqual(data['createSchoolClasstype']['schoolClasstype']['name'], variables['input']['name'])
-        self.assertEqual(data['createSchoolClasstype']['schoolClasstype']['archived'], False)
-        self.assertEqual(data['createSchoolClasstype']['schoolClasstype']['description'], variables['input']['description'])
-        self.assertEqual(data['createSchoolClasstype']['schoolClasstype']['displayPublic'], variables['input']['displayPublic'])
-        self.assertEqual(data['createSchoolClasstype']['schoolClasstype']['urlWebsite'], variables['input']['urlWebsite'])
+        self.assertEqual(data['createSchoolDiscovery']['schoolDiscovery']['name'], variables['input']['name'])
+        self.assertEqual(data['createSchoolDiscovery']['schoolDiscovery']['archived'], False)
 
 
-    def test_create_classtype_permission_denied(self):
-        """ Create a classtype with a user not having the add permission """
-        query = self.classtype_create_mutation
-
-        variables = {
-            "input": {
-                "name": "New classtype",
-                "description": "Classtype description",
-                "displayPublic": True,
-                "urlWebsite": "https://www.costasiella.com"
-            }
-        }
+    def test_create_discovery_permission_denied(self):
+        """ Create a discovery with a user not having the add permission """
+        query = self.discovery_create_mutation
 
         # Create regular user
         user = f.RegularUserFactory.create()
@@ -365,26 +313,19 @@ mutation ArchiveSchoolClasstype($input: ArchiveSchoolClasstypeInput!) {
         executed = execute_test_client_api_query(
             query, 
             user, 
-            variables=variables
+            variables=self.variables_create
         )
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
-    def test_update_classtype(self):
-        """ Update a classtype as admin user """
-        query = self.classtype_update_mutation
-        classtype = f.SchoolClasstypeFactory.create()
+    def test_update_discovery(self):
+        """ Update a discovery as admin user """
+        query = self.discovery_update_mutation
+        discovery = f.SchoolDiscoveryFactory.create()
+        variables = self.variables_update
+        variables['input']['id'] = self.get_node_id_of_first_discovery()
 
-        variables = {
-            "input": {
-                "id": self.get_node_id_of_first_classtype(),
-                "name": "New classtype",
-                "description": "Classtype description",
-                "displayPublic": True,
-                "urlWebsite": "https://www.costasiella.com"
-            }
-        }
 
         executed = execute_test_client_api_query(
             query, 
@@ -392,27 +333,16 @@ mutation ArchiveSchoolClasstype($input: ArchiveSchoolClasstypeInput!) {
             variables=variables
         )
         data = executed.get('data')
-        self.assertEqual(data['updateSchoolClasstype']['schoolClasstype']['name'], variables['input']['name'])
-        self.assertEqual(data['updateSchoolClasstype']['schoolClasstype']['archived'], False)
-        self.assertEqual(data['updateSchoolClasstype']['schoolClasstype']['description'], variables['input']['description'])
-        self.assertEqual(data['updateSchoolClasstype']['schoolClasstype']['displayPublic'], variables['input']['displayPublic'])
-        self.assertEqual(data['updateSchoolClasstype']['schoolClasstype']['urlWebsite'], variables['input']['urlWebsite'])
+        self.assertEqual(data['updateSchoolDiscovery']['schoolDiscovery']['name'], variables['input']['name'])
+        self.assertEqual(data['updateSchoolDiscovery']['schoolDiscovery']['archived'], False)
 
 
-    def test_update_classtype_anon_user(self):
-        """ Update a classtype as anonymous user """
-        query = self.classtype_update_mutation
-        classtype = f.SchoolClasstypeFactory.create()
-
-        variables = {
-            "input": {
-                "id": self.get_node_id_of_first_classtype(),
-                "name": "New classtype",
-                "description": "Classtype description",
-                "displayPublic": True,
-                "urlWebsite": "https://www.costasiella.com"
-            }
-        }
+    def test_update_discovery_anon_user(self):
+        """ Update a discovery as anonymous user """
+        query = self.discovery_update_mutation
+        discovery = f.SchoolDiscoveryFactory.create()
+        variables = self.variables_update
+        variables['input']['id'] = self.get_node_id_of_first_discovery()
 
         executed = execute_test_client_api_query(
             query, 
@@ -424,20 +354,12 @@ mutation ArchiveSchoolClasstype($input: ArchiveSchoolClasstypeInput!) {
         self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
-    def test_update_classtype_permission_granted(self):
-        """ Update a classtype as user with permission """
-        query = self.classtype_update_mutation
-        classtype = f.SchoolClasstypeFactory.create()
-
-        variables = {
-            "input": {
-                "id": self.get_node_id_of_first_classtype(),
-                "name": "New classtype",
-                "description": "Classtype description",
-                "displayPublic": True,
-                "urlWebsite": "https://www.costasiella.com"
-            }
-        }
+    def test_update_discovery_permission_granted(self):
+        """ Update a discovery as user with permission """
+        query = self.discovery_update_mutation
+        discovery = f.SchoolDiscoveryFactory.create()
+        variables = self.variables_update
+        variables['input']['id'] = self.get_node_id_of_first_discovery()
 
         user = f.RegularUserFactory.create()
         permission = Permission.objects.get(codename=self.permission_change)
@@ -450,27 +372,16 @@ mutation ArchiveSchoolClasstype($input: ArchiveSchoolClasstypeInput!) {
             variables=variables
         )
         data = executed.get('data')
-        self.assertEqual(data['updateSchoolClasstype']['schoolClasstype']['name'], variables['input']['name'])
-        self.assertEqual(data['updateSchoolClasstype']['schoolClasstype']['archived'], False)
-        self.assertEqual(data['updateSchoolClasstype']['schoolClasstype']['description'], variables['input']['description'])
-        self.assertEqual(data['updateSchoolClasstype']['schoolClasstype']['displayPublic'], variables['input']['displayPublic'])
-        self.assertEqual(data['updateSchoolClasstype']['schoolClasstype']['urlWebsite'], variables['input']['urlWebsite'])
+        self.assertEqual(data['updateSchoolDiscovery']['schoolDiscovery']['name'], variables['input']['name'])
+        self.assertEqual(data['updateSchoolDiscovery']['schoolDiscovery']['archived'], False)
 
 
-    def test_update_classtype_permission_denied(self):
-        """ Update a classtype as user without permissions """
-        query = self.classtype_update_mutation
-        classtype = f.SchoolClasstypeFactory.create()
-
-        variables = {
-            "input": {
-                "id": self.get_node_id_of_first_classtype(),
-                "name": "New classtype",
-                "description": "Classtype description",
-                "displayPublic": True,
-                "urlWebsite": "https://www.costasiella.com"
-            }
-        }
+    def test_update_discovery_permission_denied(self):
+        """ Update a discovery as user without permissions """
+        query = self.discovery_update_mutation
+        discovery = f.SchoolDiscoveryFactory.create()
+        variables = self.variables_update
+        variables['input']['id'] = self.get_node_id_of_first_discovery()
 
         user = f.RegularUserFactory.create()
 
@@ -484,17 +395,12 @@ mutation ArchiveSchoolClasstype($input: ArchiveSchoolClasstypeInput!) {
         self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
-    def test_archive_classtype(self):
-        """ Archive a classtype """
-        query = self.classtype_archive_mutation
-        classtype = f.SchoolClasstypeFactory.create()
-
-        variables = {
-            "input": {
-                "id": self.get_node_id_of_first_classtype(),
-                "archived": True
-            }
-        }
+    def test_archive_discovery(self):
+        """ Archive a discovery """
+        query = self.discovery_archive_mutation
+        discovery = f.SchoolDiscoveryFactory.create()
+        variables = self.variables_archive
+        variables['input']['id'] = self.get_node_id_of_first_discovery()
 
         executed = execute_test_client_api_query(
             query, 
@@ -502,20 +408,15 @@ mutation ArchiveSchoolClasstype($input: ArchiveSchoolClasstypeInput!) {
             variables=variables
         )
         data = executed.get('data')
-        self.assertEqual(data['archiveSchoolClasstype']['schoolClasstype']['archived'], variables['input']['archived'])
+        self.assertEqual(data['archiveSchoolDiscovery']['schoolDiscovery']['archived'], variables['input']['archived'])
 
 
-    def test_archive_classtype_anon_user(self):
-        """ Archive a classtype """
-        query = self.classtype_archive_mutation
-        classtype = f.SchoolClasstypeFactory.create()
-
-        variables = {
-            "input": {
-                "id": self.get_node_id_of_first_classtype(),
-                "archived": True
-            }
-        }
+    def test_archive_discovery_anon_user(self):
+        """ Archive a discovery """
+        query = self.discovery_archive_mutation
+        discovery = f.SchoolDiscoveryFactory.create()
+        variables = self.variables_archive
+        variables['input']['id'] = self.get_node_id_of_first_discovery()
 
         executed = execute_test_client_api_query(
             query, 
@@ -527,17 +428,13 @@ mutation ArchiveSchoolClasstype($input: ArchiveSchoolClasstypeInput!) {
         self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
-    def test_archive_classtype_permission_granted(self):
-        """ Allow archiving classtypes for users with permissions """
-        query = self.classtype_archive_mutation
+    def test_archive_discovery_permission_granted(self):
+        """ Allow archiving discoveries for users with permissions """
+        query = self.discovery_archive_mutation
+        discovery = f.SchoolDiscoveryFactory.create()
+        variables = self.variables_archive
+        variables['input']['id'] = self.get_node_id_of_first_discovery()
 
-        classtype = f.SchoolClasstypeFactory.create()
-        variables = {
-            "input": {
-                "id": self.get_node_id_of_first_classtype(),
-                "archived": True
-            }
-        }
         # Create regular user
         user = f.RegularUserFactory.create()
         permission = Permission.objects.get(codename=self.permission_delete)
@@ -550,20 +447,16 @@ mutation ArchiveSchoolClasstype($input: ArchiveSchoolClasstypeInput!) {
             variables=variables
         )
         data = executed.get('data')
-        self.assertEqual(data['archiveSchoolClasstype']['schoolClasstype']['archived'], variables['input']['archived'])
+        self.assertEqual(data['archiveSchoolDiscovery']['schoolDiscovery']['archived'], variables['input']['archived'])
 
 
-    def test_archive_classtype_permission_denied(self):
-        """ Check archive classtype permission denied error message """
-        query = self.classtype_archive_mutation
+    def test_archive_discovery_permission_denied(self):
+        """ Check archive discovery permission denied error message """
+        query = self.discovery_archive_mutation
+        discovery = f.SchoolDiscoveryFactory.create()
+        variables = self.variables_archive
+        variables['input']['id'] = self.get_node_id_of_first_discovery()
 
-        classtype = f.SchoolClasstypeFactory.create()
-        variables = {
-            "input": {
-                "id": self.get_node_id_of_first_classtype(),
-                "archived": True
-            }
-        }
         # Create regular user
         user = f.RegularUserFactory.create()
 
