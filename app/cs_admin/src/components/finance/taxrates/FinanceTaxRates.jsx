@@ -31,8 +31,8 @@ import { GET_TAXRATES_QUERY } from "./queries"
 
 const ARCHIVE_TAXRATE = gql`
   mutation ArchiveFinanceTaxRate($input: ArchiveFinanceTaxRateInput!) {
-    archiveFinanceTaxRate(input: $input) {
-      financeTaxRate {
+    archiveFinanceTaxrate(input: $input) {
+      financeTaxrate {
         id
         archived
       }
@@ -150,7 +150,7 @@ const FinanceTaxRates = ({ t, history, archived=false }) => (
                                       </Button>
                                     }
                                   </Table.Col>
-                                  <Mutation mutation={ARCHIVE_COSTCENTER} key={v4()}>
+                                  <Mutation mutation={ARCHIVE_TAXRATE} key={v4()}>
                                     {(archiveTaxrate, { data }) => (
                                       <Table.Col className="text-right" key={v4()}>
                                         <button className="icon btn btn-link btn-sm" 
