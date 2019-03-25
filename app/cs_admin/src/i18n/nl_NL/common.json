@@ -82,7 +82,8 @@
     "finance": {
         "menu": {
             "glaccounts": "__STRING_NOT_TRANSLATED__",
-            "costcenters": "__STRING_NOT_TRANSLATED__"
+            "costcenters": "__STRING_NOT_TRANSLATED__",
+            "taxrates": "__STRING_NOT_TRANSLATED__"
         },
         "page_header": "__STRING_NOT_TRANSLATED__",
         "glaccounts": {
@@ -109,7 +110,17 @@
             "title_edit": "__STRING_NOT_TRANSLATED__",
             "toast_edit_success": "__STRING_NOT_TRANSLATED__"
         },
-        "title": "__STRING_NOT_TRANSLATED__"
+        "title": "__STRING_NOT_TRANSLATED__",
+        "taxrates": {
+            "title": "__STRING_NOT_TRANSLATED__",
+            "error_loading": "__STRING_NOT_TRANSLATED__",
+            "empty_list": "__STRING_NOT_TRANSLATED__",
+            "empty_archive": "__STRING_NOT_TRANSLATED__",
+            "percentage": "__STRING_NOT_TRANSLATED__",
+            "rateType": "__STRING_NOT_TRANSLATED__",
+            "code": "__STRING_NOT_TRANSLATED__",
+            "add": "__STRING_NOT_TRANSLATED__"
+        }
     },
     "home": {
         "page_header": "__STRING_NOT_TRANSLATED__",

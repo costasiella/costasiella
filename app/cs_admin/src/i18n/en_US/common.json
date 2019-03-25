@@ -82,7 +82,8 @@
     "finance": {
         "menu": {
             "glaccounts": "G/L Accounts",
-            "costcenters": "Cost centers"
+            "costcenters": "Cost centers",
+            "taxrates": "Tax rates"
         },
         "page_header": "Finance",
         "glaccounts": {
@@ -109,7 +110,17 @@
             "title_edit": "Edit Cost center",
             "toast_edit_success": "Saved Cost center"
         },
-        "title": "Finance"
+        "title": "Finance",
+        "taxrates": {
+            "title": "Tax rates",
+            "error_loading": "Error loading tax rates :(",
+            "empty_list": "No tax rates found, click the Add button to add a tax rate",
+            "empty_archive": "No tax rates have been archived yet",
+            "percentage": "Percentage",
+            "rateType": "Type",
+            "code": "Code",
+            "add": "Add tax rate"
+        }
     },
     "home": {
         "page_header": "Home",
