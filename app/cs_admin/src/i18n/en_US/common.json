@@ -75,7 +75,8 @@
     "yup": {
         "url": "Enter an address starting with http:// or https://",
         "min_len_3": "Please enter at least 3 characters",
-        "field_required": "This field is required"
+        "field_required": "This field is required",
+        "field_has_to_be_number": "Please input a number"
     },
     "load_more": "Load more...",
     "loaded_all": "Displaying all items",
@@ -119,7 +120,13 @@
             "percentage": "Percentage",
             "rateType": "Type",
             "code": "Code",
-            "add": "Add tax rate"
+            "add": "Add tax rate",
+            "title_add": "Add tax rate",
+            "toast_add_success": "Saved tax rate",
+            "including": "Including",
+            "excluding": "Excluding",
+            "title_edit": "Edit tax rate",
+            "toast_edit_success": "Saved tax rate"
         }
     },
     "home": {
