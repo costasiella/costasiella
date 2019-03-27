@@ -22,6 +22,17 @@ class FinanceGLAccountFactory(factory.DjangoModelFactory):
     code = "8000"
 
 
+class FinanceTaxRateFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.FinanceTaxRate
+
+    archived = False
+    name = "BTW 21%"
+    percentage = 21
+    rate_type = "IN"
+    code = "8000"
+
+
 class SchoolClasstypeFactory(factory.DjangoModelFactory):
     class Meta:
         model = models.SchoolClasstype
