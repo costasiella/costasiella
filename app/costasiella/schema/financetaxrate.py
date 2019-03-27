@@ -104,8 +104,6 @@ class UpdateFinanceTaxRate(graphene.relay.ClientIDMutation):
         if not validators.between(input['percentage'], 0, 100):
             raise GraphQLError(_('Percentage has to be between 0 and 100'))
 
-        print(input['rateType'])
-
         finance_taxrate.name = input['name']
         finance_taxrate.percentage = input['percentage']
         finance_taxrate.rate_type = input['rateType']

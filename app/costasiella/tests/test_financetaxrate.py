@@ -32,7 +32,7 @@ class GQLFinanceTaxRate(TestCase):
         self.variables_create = {
             "input": {
                 "name": "BTW 21%",
-                "percentage": "21",
+                "percentage": 21,
                 "rateType": "IN",
                 "code" : "8000"
             }
@@ -41,7 +41,7 @@ class GQLFinanceTaxRate(TestCase):
         self.variables_update = {
             "input": {
                 "name": "BTW 9%",
-                "percentage": "9",
+                "percentage": 9,
                 "rateType": "IN",
                 "code" : "9000"
             }
@@ -279,152 +279,160 @@ class GQLFinanceTaxRate(TestCase):
         self.assertEqual(data['financeTaxrate']['name'], taxrate.name)
 
 
-    # def test_create_taxrate(self):
-    #     """ Create a taxrate """
-    #     query = self.taxrate_create_mutation
-    #     variables = self.variables_create
+    def test_create_taxrate(self):
+        """ Create a taxrate """
+        query = self.taxrate_create_mutation
+        variables = self.variables_create
 
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         self.admin_user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['createFinanceTaxrate']['financeTaxrate']['name'], variables['input']['name'])
-    #     self.assertEqual(data['createFinanceTaxrate']['financeTaxrate']['archived'], False)
-    #     self.assertEqual(data['createFinanceTaxrate']['financeTaxrate']['code'], variables['input']['code'])
-
-
-    # def test_create_taxrate_anon_user(self):
-    #     """ Don't allow creating taxrates for non-logged in users """
-    #     query = self.taxrate_create_mutation
-    #     variables = self.variables_create
-
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         self.anon_user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
+        executed = execute_test_client_api_query(
+            query, 
+            self.admin_user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['createFinanceTaxrate']['financeTaxrate']['name'], variables['input']['name'])
+        self.assertEqual(data['createFinanceTaxrate']['financeTaxrate']['archived'], False)
+        self.assertEqual(data['createFinanceTaxrate']['financeTaxrate']['percentage'], variables['input']['percentage'])
+        self.assertEqual(data['createFinanceTaxrate']['financeTaxrate']['rateType'], variables['input']['rateType'])
+        self.assertEqual(data['createFinanceTaxrate']['financeTaxrate']['code'], variables['input']['code'])
 
 
-    # def test_create_location_permission_granted(self):
-    #     """ Allow creating taxrates for users with permissions """
-    #     query = self.taxrate_create_mutation
-    #     variables = self.variables_create
+    def test_create_taxrate_anon_user(self):
+        """ Don't allow creating taxrates for non-logged in users """
+        query = self.taxrate_create_mutation
+        variables = self.variables_create
 
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename=self.permission_add)
-    #     user.user_permissions.add(permission)
-    #     user.save()
-
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['createFinanceTaxrate']['financeTaxrate']['name'], variables['input']['name'])
-    #     self.assertEqual(data['createFinanceTaxrate']['financeTaxrate']['archived'], False)
-    #     self.assertEqual(data['createFinanceTaxrate']['financeTaxrate']['code'], variables['input']['code'])
+        executed = execute_test_client_api_query(
+            query, 
+            self.anon_user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
-    # def test_create_taxrate_permission_denied(self):
-    #     """ Check create taxrate permission denied error message """
-    #     query = self.taxrate_create_mutation
-    #     variables = self.variables_create
+    def test_create_location_permission_granted(self):
+        """ Allow creating taxrates for users with permissions """
+        query = self.taxrate_create_mutation
+        variables = self.variables_create
 
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
+        # Create regular user
+        user = f.RegularUserFactory.create()
+        permission = Permission.objects.get(codename=self.permission_add)
+        user.user_permissions.add(permission)
+        user.save()
 
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
-
-
-    # def test_update_taxrate(self):
-    #     """ Update a taxrate """
-    #     query = self.taxrate_update_mutation
-    #     taxrate = f.FinanceTaxRateFactory.create()
-    #     variables = self.variables_update
-    #     variables['input']['id'] = self.get_node_id_of_first_taxrate()
-
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         self.admin_user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['updateFinanceTaxrate']['financeTaxrate']['name'], variables['input']['name'])
-    #     self.assertEqual(data['updateFinanceTaxrate']['financeTaxrate']['code'], variables['input']['code'])
+        executed = execute_test_client_api_query(
+            query, 
+            user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['createFinanceTaxrate']['financeTaxrate']['name'], variables['input']['name'])
+        self.assertEqual(data['createFinanceTaxrate']['financeTaxrate']['archived'], False)
+        self.assertEqual(data['createFinanceTaxrate']['financeTaxrate']['percentage'], variables['input']['percentage'])
+        self.assertEqual(data['createFinanceTaxrate']['financeTaxrate']['rateType'], variables['input']['rateType'])
+        self.assertEqual(data['createFinanceTaxrate']['financeTaxrate']['code'], variables['input']['code'])
 
 
-    # def test_update_taxrate_anon_user(self):
-    #     """ Don't allow updating taxrates for non-logged in users """
-    #     query = self.taxrate_update_mutation
-    #     taxrate = f.FinanceTaxRateFactory.create()
-    #     variables = self.variables_update
-    #     variables['input']['id'] = self.get_node_id_of_first_taxrate()
+    def test_create_taxrate_permission_denied(self):
+        """ Check create taxrate permission denied error message """
+        query = self.taxrate_create_mutation
+        variables = self.variables_create
 
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         self.anon_user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
+        # Create regular user
+        user = f.RegularUserFactory.create()
 
-
-    # def test_update_taxrate_permission_granted(self):
-    #     """ Allow updating taxrates for users with permissions """
-    #     query = self.taxrate_update_mutation
-    #     taxrate = f.FinanceTaxRateFactory.create()
-    #     variables = self.variables_update
-    #     variables['input']['id'] = self.get_node_id_of_first_taxrate()
-
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename=self.permission_change)
-    #     user.user_permissions.add(permission)
-    #     user.save()
-
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['updateFinanceTaxrate']['financeTaxrate']['name'], variables['input']['name'])
-    #     self.assertEqual(data['updateFinanceTaxrate']['financeTaxrate']['code'], variables['input']['code'])
+        executed = execute_test_client_api_query(
+            query, 
+            user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
-    # def test_update_taxrate_permission_denied(self):
-    #     """ Check update taxrate permission denied error message """
-    #     query = self.taxrate_update_mutation
-    #     taxrate = f.FinanceTaxRateFactory.create()
-    #     variables = self.variables_update
-    #     variables['input']['id'] = self.get_node_id_of_first_taxrate()
+    def test_update_taxrate(self):
+        """ Update a taxrate """
+        query = self.taxrate_update_mutation
+        taxrate = f.FinanceTaxRateFactory.create()
+        variables = self.variables_update
+        variables['input']['id'] = self.get_node_id_of_first_taxrate()
 
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
+        executed = execute_test_client_api_query(
+            query, 
+            self.admin_user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['updateFinanceTaxrate']['financeTaxrate']['name'], variables['input']['name'])
+        self.assertEqual(data['updateFinanceTaxrate']['financeTaxrate']['percentage'], variables['input']['percentage'])
+        self.assertEqual(data['updateFinanceTaxrate']['financeTaxrate']['rateType'], variables['input']['rateType'])
+        self.assertEqual(data['updateFinanceTaxrate']['financeTaxrate']['code'], variables['input']['code'])
 
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
+
+    def test_update_taxrate_anon_user(self):
+        """ Don't allow updating taxrates for non-logged in users """
+        query = self.taxrate_update_mutation
+        taxrate = f.FinanceTaxRateFactory.create()
+        variables = self.variables_update
+        variables['input']['id'] = self.get_node_id_of_first_taxrate()
+
+        executed = execute_test_client_api_query(
+            query, 
+            self.anon_user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
+
+
+    def test_update_taxrate_permission_granted(self):
+        """ Allow updating taxrates for users with permissions """
+        query = self.taxrate_update_mutation
+        taxrate = f.FinanceTaxRateFactory.create()
+        variables = self.variables_update
+        variables['input']['id'] = self.get_node_id_of_first_taxrate()
+
+        # Create regular user
+        user = f.RegularUserFactory.create()
+        permission = Permission.objects.get(codename=self.permission_change)
+        user.user_permissions.add(permission)
+        user.save()
+
+        executed = execute_test_client_api_query(
+            query, 
+            user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['updateFinanceTaxrate']['financeTaxrate']['name'], variables['input']['name'])
+        self.assertEqual(data['updateFinanceTaxrate']['financeTaxrate']['percentage'], variables['input']['percentage'])
+        self.assertEqual(data['updateFinanceTaxrate']['financeTaxrate']['rateType'], variables['input']['rateType'])
+        self.assertEqual(data['updateFinanceTaxrate']['financeTaxrate']['code'], variables['input']['code'])
+
+
+    def test_update_taxrate_permission_denied(self):
+        """ Check update taxrate permission denied error message """
+        query = self.taxrate_update_mutation
+        taxrate = f.FinanceTaxRateFactory.create()
+        variables = self.variables_update
+        variables['input']['id'] = self.get_node_id_of_first_taxrate()
+
+        # Create regular user
+        user = f.RegularUserFactory.create()
+
+        executed = execute_test_client_api_query(
+            query, 
+            user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
     # def test_archive_taxrate(self):
