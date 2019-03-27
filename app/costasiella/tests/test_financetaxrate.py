@@ -435,78 +435,78 @@ class GQLFinanceTaxRate(TestCase):
         self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
-    # def test_archive_taxrate(self):
-    #     """ Archive a taxrate """
-    #     query = self.taxrate_archive_mutation
-    #     taxrate = f.FinanceTaxRateFactory.create()
-    #     variables = self.variables_archive
-    #     variables['input']['id'] = self.get_node_id_of_first_taxrate()
+    def test_archive_taxrate(self):
+        """ Archive a taxrate """
+        query = self.taxrate_archive_mutation
+        taxrate = f.FinanceTaxRateFactory.create()
+        variables = self.variables_archive
+        variables['input']['id'] = self.get_node_id_of_first_taxrate()
 
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         self.admin_user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     print(data)
-    #     self.assertEqual(data['archiveFinanceTaxrate']['financeTaxrate']['archived'], variables['input']['archived'])
-
-
-    # def test_archive_taxrate_anon_user(self):
-    #     """ Archive taxrate denied for anon user """
-    #     query = self.taxrate_archive_mutation
-    #     taxrate = f.FinanceTaxRateFactory.create()
-    #     variables = self.variables_archive
-    #     variables['input']['id'] = self.get_node_id_of_first_taxrate()
-
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         self.anon_user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
+        executed = execute_test_client_api_query(
+            query, 
+            self.admin_user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        print(data)
+        self.assertEqual(data['archiveFinanceTaxrate']['financeTaxrate']['archived'], variables['input']['archived'])
 
 
-    # def test_archive_taxrate_permission_granted(self):
-    #     """ Allow archiving taxrates for users with permissions """
-    #     query = self.taxrate_archive_mutation
-    #     taxrate = f.FinanceTaxRateFactory.create()
-    #     variables = self.variables_archive
-    #     variables['input']['id'] = self.get_node_id_of_first_taxrate()
+    def test_archive_taxrate_anon_user(self):
+        """ Archive taxrate denied for anon user """
+        query = self.taxrate_archive_mutation
+        taxrate = f.FinanceTaxRateFactory.create()
+        variables = self.variables_archive
+        variables['input']['id'] = self.get_node_id_of_first_taxrate()
 
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename=self.permission_delete)
-    #     user.user_permissions.add(permission)
-    #     user.save()
-
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['archiveFinanceTaxrate']['financeTaxrate']['archived'], variables['input']['archived'])
+        executed = execute_test_client_api_query(
+            query, 
+            self.anon_user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
-    # def test_archive_taxrate_permission_denied(self):
-    #     """ Check archive taxrate permission denied error message """
-    #     query = self.taxrate_archive_mutation
-    #     taxrate = f.FinanceTaxRateFactory.create()
-    #     variables = self.variables_archive
-    #     variables['input']['id'] = self.get_node_id_of_first_taxrate()
+    def test_archive_taxrate_permission_granted(self):
+        """ Allow archiving taxrates for users with permissions """
+        query = self.taxrate_archive_mutation
+        taxrate = f.FinanceTaxRateFactory.create()
+        variables = self.variables_archive
+        variables['input']['id'] = self.get_node_id_of_first_taxrate()
+
+        # Create regular user
+        user = f.RegularUserFactory.create()
+        permission = Permission.objects.get(codename=self.permission_delete)
+        user.user_permissions.add(permission)
+        user.save()
+
+        executed = execute_test_client_api_query(
+            query, 
+            user,
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['archiveFinanceTaxrate']['financeTaxrate']['archived'], variables['input']['archived'])
+
+
+    def test_archive_taxrate_permission_denied(self):
+        """ Check archive taxrate permission denied error message """
+        query = self.taxrate_archive_mutation
+        taxrate = f.FinanceTaxRateFactory.create()
+        variables = self.variables_archive
+        variables['input']['id'] = self.get_node_id_of_first_taxrate()
         
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
+        # Create regular user
+        user = f.RegularUserFactory.create()
 
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
+        executed = execute_test_client_api_query(
+            query, 
+            user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
 
