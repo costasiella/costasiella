@@ -20,6 +20,7 @@ import FinanceGLAccountAdd from './components/finance/glaccounts/FinanceGLAccoun
 import FinanceGLAccountEdit from './components/finance/glaccounts/FinanceGLAccountEdit'
 import FinanceTaxRates from './components/finance/taxrates/FinanceTaxRates'
 import FinanceTaxRatesAdd from './components/finance/taxrates/FinanceTaxRateAdd'
+import FinanceTaxRatesEdit from './components/finance/taxrates/FinanceTaxRateEdit'
 
 import SchoolHome from './components/school/home/SchoolHome'
 import SchoolDiscoveries from './components/school/discovery/SchoolDiscoveries'
@@ -94,6 +95,7 @@ class App extends Component {
             <Route exact path="/finance/glaccounts/edit/:id" component={FinanceGLAccountEdit} />
             <Route exact path="/finance/taxrates" component={FinanceTaxRates} />
             <Route exact path="/finance/taxrates/add" component={FinanceTaxRatesAdd} />
+            <Route exact path="/finance/taxrates/edit/:id" component={FinanceTaxRatesEdit} />
             <Route exact path="/school" component={SchoolHome} />
             <Route exact path="/school/discoveries" component={SchoolDiscoveries} />
             <Route exact path="/school/discoveries/add" component={SchoolDiscoveryAdd} /> 

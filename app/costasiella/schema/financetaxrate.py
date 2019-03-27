@@ -46,6 +46,7 @@ class CreateFinanceTaxRate(graphene.relay.ClientIDMutation):
     class Input:
         name = graphene.String(required=True)
         percentage = graphene.Int(required=True)
+        rateType = graphene.String(required=True)
         code = graphene.String(required=False, default_value="")
 
     finance_taxrate = graphene.Field(FinanceTaxRateNode)
@@ -68,7 +69,8 @@ class CreateFinanceTaxRate(graphene.relay.ClientIDMutation):
 
         finance_taxrate = FinanceTaxRate(
             name=input['name'], 
-            percentage=input['percentage']
+            percentage=input['percentage'],
+            rate_type=input['rateType']
         )
         if input['code']:
             finance_taxrate.code = input['code']
@@ -83,6 +85,7 @@ class UpdateFinanceTaxRate(graphene.relay.ClientIDMutation):
         id = graphene.ID(required=True)
         name = graphene.String(required=True)
         percentage = graphene.Int(required=True)
+        rateType = graphene.String(required=True)
         code = graphene.String(default_value="")
         
     finance_taxrate = graphene.Field(FinanceTaxRateNode)
@@ -101,8 +104,11 @@ class UpdateFinanceTaxRate(graphene.relay.ClientIDMutation):
         if not validators.between(input['percentage'], 0, 100):
             raise GraphQLError(_('Percentage has to be between 0 and 100'))
 
+        print(input['rateType'])
+
         finance_taxrate.name = input['name']
         finance_taxrate.percentage = input['percentage']
+        finance_taxrate.rate_type = input['rateType']
         if input['code']:
             finance_taxrate.code = input['code']
         finance_taxrate.save(force_update=True)
