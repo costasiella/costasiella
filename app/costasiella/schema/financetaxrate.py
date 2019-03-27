@@ -61,8 +61,8 @@ class CreateFinanceTaxRate(graphene.relay.ClientIDMutation):
             print('validation error found')
             raise GraphQLError(_('Name is required'))
 
-        if not input['percentage']:
-            raise GraphQLError(_('Percentage is required'))
+        # if not input['percentage'] and not input['percentage'] == 0:
+        #     raise GraphQLError(_('Percentage is required'))
 
         if not validators.between(input['percentage'], 0, 100):
             raise GraphQLError(_('Percentage has to be between 0 and 100'))
