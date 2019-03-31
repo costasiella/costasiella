@@ -24,6 +24,8 @@ import HasPermissionWrapper from "../../HasPermissionWrapper"
 // import { confirmAlert } from 'react-confirm-alert'; // Import
 import { toast } from 'react-toastify'
 
+import BooleanBadge from "../../ui/BooleanBadge"
+
 import ContentCard from "../../general/ContentCard"
 import SchoolMenu from "../SchoolMenu"
 
@@ -120,6 +122,10 @@ const SchoolMemberships = ({ t, history, archived=false }) => (
                           <Table.Header>
                             <Table.Row key={v4()}>
                               <Table.ColHeader>{t('name')}</Table.ColHeader>
+                              <Table.ColHeader>{t('public')}</Table.ColHeader>
+                              <Table.ColHeader>{t('shop')}</Table.ColHeader>
+                              <Table.ColHeader>{t('price')}</Table.ColHeader>
+                              <Table.ColHeader>{t('validity')}</Table.ColHeader>
                             </Table.Row>
                           </Table.Header>
                           <Table.Body>
@@ -127,6 +133,20 @@ const SchoolMemberships = ({ t, history, archived=false }) => (
                                 <Table.Row key={v4()}>
                                   <Table.Col key={v4()}>
                                     {node.name}
+                                  </Table.Col>
+                                  <Table.Col key={v4()}>
+                                    <BooleanBadge value={node.displayPublic} />
+                                  </Table.Col>
+                                  <Table.Col key={v4()}>
+                                    <BooleanBadge value={node.displayShop} />
+                                  </Table.Col>
+                                  <Table.Col key={v4()}>
+                                    {node.price} <br />
+                                    {node.financeTaxRate.name}
+                                  </Table.Col>
+                                  <Table.Col key={v4()}>
+                                    {node.validity} <br />
+                                    {node.validityUnit}
                                   </Table.Col>
                                   <Table.Col className="text-right" key={v4()}>
                                     {(node.archived) ? 
