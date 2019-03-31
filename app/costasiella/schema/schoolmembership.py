@@ -8,7 +8,7 @@ from graphql import GraphQLError
 from .gql_tools import get_rid
 import validators
 
-from ..models import SchoolMembership
+from ..models import SchoolMembership, FinanceCostCenter, FinanceGLAccount, FinanceTaxRate 
 from ..modules.gql_tools import require_login_and_permission
 from ..modules.messages import Messages
 
@@ -28,61 +28,78 @@ class SchoolMembershipNode(DjangoObjectType):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.view_schoolmembership')
 
-        # Return only public non-archived classtypes
+        # Return only public non-archived memberships
         return self._meta.model.objects.get(id=id)
 
 
 class SchoolMembershipQuery(graphene.ObjectType):
-    school_classtypes = DjangoFilterConnectionField(SchoolMembershipNode)
-    school_classtype = graphene.relay.Node.Field(SchoolMembershipNode)
+    school_memberships = DjangoFilterConnectionField(SchoolMembershipNode)
+    school_membership = graphene.relay.Node.Field(SchoolMembershipNode)
 
-    def resolve_school_classtypes(self, info, archived, **kwargs):
+
+    def resolve_school_memberships(self, info, archived, **kwargs):
         user = info.context.user
-        if user.is_anonymous:
-            raise Exception(m.user_not_logged_in)
+        require_login_and_permission(user, 'costasiella.view_schoolmembership')
 
-        # Has permission: return everything
-        if user.has_perm('costasiella.view_schoolmembership'):
-            print('user has view permission')
-            return SchoolMembership.objects.filter(archived = archived).order_by('name')
-
-        # Return only public non-archived locations
-        return SchoolMembership.objects.filter(display_public = True, archived = False).order_by('name')
+        ## return everything:
+        # if user.has_perm('costasiella.view_schoolmembership'):
+        return SchoolMembership.objects.filter(archived = archived).order_by('name')
 
 
 class CreateSchoolMembership(graphene.relay.ClientIDMutation):
     class Input:
+        display_public = graphene.Boolean(required=True, default_value=True)
+        display_shop = graphene.Boolean(required=True, default_value=True)
         name = graphene.String(required=True)
         description = graphene.String(required=False, default_value="")
-        display_public = graphene.Boolean(required=True, default_value=True)
-        url_website = graphene.String(required=False, default_value="")
+        price = graphene.Float(rquired=True, default_value=0)
+        finance_tax_rate = graphene.ID(required=True)
+        validity = graphene.Int(required=True, default_value=1)
+        validity_unit = graphene.String(required=True)
+        terms_and_conditions = graphene.String(required=False)
+        finance_glaccount = graphene.ID(required=False)
+        finance_costcenter = graphene.ID(required=False)
 
-    school_classtype = graphene.Field(SchoolMembershipNode)
+
+    school_membership = graphene.Field(SchoolMembershipNode)
 
     @classmethod
     def mutate_and_get_payload(self, root, info, **input):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.add_schoolmembership')
 
+        print(input)
+
         # Validate input
         if not len(input['name']):
             print('validation error found')
             raise GraphQLError(_('Name is required'))
 
-        url_website = input['url_website']
-        if url_website:
-            if not validators.url(url_website, public=True):
-                raise GraphQLError(_('Invalid URL, make sure it starts with "http"'))
 
-        school_classtype = SchoolMembership(
+        rid = get_rid(input['finance_tax_rate'])
+        finance_tax_rate = FinanceTaxRate.objects.filter(id=rid.id).first()
+
+        rid = get_rid(input['finance_glaccount'])
+        finance_glaccount= FinanceGLAccount.objects.filter(id=rid.id).first()
+        rid = get_rid(input['finance_costcenter'])
+        finance_costcenter= FinanceCostCenter.objects.filter(id=rid.id).first()
+
+        school_membership = SchoolMembership(
+            display_public=input['display_public'],
+            display_shop=input['display_shop'],
             name=input['name'], 
             description=input['description'],
-            display_public=input['display_public'],
-            url_website=url_website,
+            price=input['price'],
+            finance_tax_rate=finance_tax_rate,
+            validity=input['validity'],
+            validity_unit=input['validity_unit'],
+            terms_and_conditions=input['terms_and_conditions'],
+            finance_glaccount=finance_glaccount,
+            finance_costcenter=finance_costcenter
         )
-        school_classtype.save()
+        school_membership.save()
 
-        return CreateSchoolMembership(school_classtype = school_classtype)
+        return CreateSchoolMembership(school_membership = school_membership)
 
 
 class UpdateSchoolMembership(graphene.relay.ClientIDMutation):
@@ -93,7 +110,7 @@ class UpdateSchoolMembership(graphene.relay.ClientIDMutation):
         display_public = graphene.Boolean(required=True, default_value=True)
         url_website = graphene.String(required=False, default_value="")
 
-    school_classtype = graphene.Field(SchoolMembershipNode)
+    school_membership = graphene.Field(SchoolMembershipNode)
 
     @classmethod
     def mutate_and_get_payload(self, root, info, **input):
@@ -101,8 +118,8 @@ class UpdateSchoolMembership(graphene.relay.ClientIDMutation):
         require_login_and_permission(user, 'costasiella.change_schoolmembership')
 
         rid = get_rid(input['id'])
-        classtype = SchoolMembership.objects.filter(id=rid.id).first()
-        if not classtype:
+        membership = SchoolMembership.objects.filter(id=rid.id).first()
+        if not membership:
             raise Exception('Invalid School Membership ID!')
 
         url_website = input['url_website']
@@ -110,14 +127,14 @@ class UpdateSchoolMembership(graphene.relay.ClientIDMutation):
             if not validators.url(url_website, public=True):
                 raise GraphQLError(_('Invalid URL, make sure it starts with "http"'))
             else:
-                classtype.url_website = url_website
+                membership.url_website = url_website
 
-        classtype.name = input['name']
-        classtype.description = input['description']
-        classtype.display_public = input['display_public']
-        classtype.save(force_update=True)
+        membership.name = input['name']
+        membership.description = input['description']
+        membership.display_public = input['display_public']
+        membership.save(force_update=True)
 
-        return UpdateSchoolMembership(school_classtype=classtype)
+        return UpdateSchoolMembership(school_membership=membership)
 
 
 class UploadSchoolMembershipImage(graphene.relay.ClientIDMutation):
@@ -126,7 +143,7 @@ class UploadSchoolMembershipImage(graphene.relay.ClientIDMutation):
         image = graphene.String(required=True)
 
 
-    school_classtype = graphene.Field(SchoolMembershipNode)
+    school_membership = graphene.Field(SchoolMembershipNode)
 
     @classmethod
     def mutate_and_get_payload(self, root, info, **input):
@@ -144,8 +161,8 @@ class UploadSchoolMembershipImage(graphene.relay.ClientIDMutation):
             return ContentFile(base64.b64decode(_img_str), name='{}.{}'.format(name, ext))
 
         rid = get_rid(input['id'])
-        classtype = SchoolMembership.objects.filter(id=rid.id).first()
-        if not classtype:
+        membership = SchoolMembership.objects.filter(id=rid.id).first()
+        if not membership:
             raise Exception('Invalid School Membership ID!')
 
         b64_enc_image = input['image']
@@ -154,16 +171,16 @@ class UploadSchoolMembershipImage(graphene.relay.ClientIDMutation):
         # print(image_type)
 
         
-        classtype.image = base64_file(data=b64_enc_image)
-        classtype.save(force_update=True)
+        membership.image = base64_file(data=b64_enc_image)
+        membership.save(force_update=True)
 
         print('new image')
-        img = classtype.image
+        img = membership.image
         print(img.name)
         print(img.path)
         print(img.url)
 
-        return UpdateSchoolMembership(school_classtype=classtype)
+        return UpdateSchoolMembership(school_membership=membership)
 
 
 class ArchiveSchoolMembership(graphene.relay.ClientIDMutation):
@@ -171,7 +188,7 @@ class ArchiveSchoolMembership(graphene.relay.ClientIDMutation):
         id = graphene.ID(required=True)
         archived = graphene.Boolean(required=True)
 
-    school_classtype = graphene.Field(SchoolMembershipNode)
+    school_membership = graphene.Field(SchoolMembershipNode)
 
     @classmethod
     def mutate_and_get_payload(self, root, info, **input):
@@ -179,18 +196,18 @@ class ArchiveSchoolMembership(graphene.relay.ClientIDMutation):
         require_login_and_permission(user, 'costasiella.delete_schoolmembership')
 
         rid = get_rid(input['id'])
-        classtype = SchoolMembership.objects.filter(id=rid.id).first()
-        if not classtype:
+        membership = SchoolMembership.objects.filter(id=rid.id).first()
+        if not membership:
             raise Exception('Invalid School Membership ID!')
 
-        classtype.archived = input['archived']
-        classtype.save(force_update=True)
+        membership.archived = input['archived']
+        membership.save(force_update=True)
 
-        return ArchiveSchoolMembership(school_classtype=classtype)
+        return ArchiveSchoolMembership(school_membership=membership)
 
 
 class SchoolMembershipMutation(graphene.ObjectType):
-    archive_school_classtype = ArchiveSchoolMembership.Field()
-    create_school_classtype = CreateSchoolMembership.Field()
-    update_school_classtype = UpdateSchoolMembership.Field()
-    upload_school_classtype_image = UploadSchoolMembershipImage.Field()
+    # archive_school_membership = ArchiveSchoolMembership.Field()
+    create_school_membership = CreateSchoolMembership.Field()
+    # update_school_membership = UpdateSchoolMembership.Field()
+    # upload_school_membership_image = UploadSchoolMembershipImage.Field()
