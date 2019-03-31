@@ -33,11 +33,30 @@ import { truncate } from 'fs';
 
 
 const CREATE_MEMBERSHIP = gql`
-  mutation UpdateSchoolDiscovery($input: UpdateSchoolDiscoveryInput!) {
-    updateSchoolDiscovery(input: $input) {
-      schoolDiscovery {
+  mutation CreateMembership($input: CreateSchoolMembershipInput!) {
+    createSchoolMembership(input: $input) {
+      schoolMembership {
         id
+        displayPublic
+        displayShop
         name
+        description
+        price
+        financeTaxRate {
+          id
+          name
+        }
+        validity
+        validityUnit
+        termsAndConditions
+        financeGlaccount {
+          id
+          name
+        }
+        financeCostcenter {
+          id
+          name
+        }
       }
     }
   }
@@ -95,7 +114,7 @@ class SchoolMembershipAdd extends Component {
                                 name: "",
                                 description: "",
                                 price: "",
-                                financeTaxrate: "",
+                                financeTaxRate: "",
                                 termsAndConditions: "",
                                 financeGlaccount: "",
                                 financeCostcenter: ""
@@ -187,8 +206,8 @@ class SchoolMembershipAdd extends Component {
                                         </Form.Group>
                                         <Form.Group label={t('school.membership.taxrate')}>
                                           <Field component="select" 
-                                                 name="financeTaxrate" 
-                                                 className={(errors.financeTaxrate) ? "form-control is-invalid" : "form-control"} 
+                                                 name="financeTaxRate" 
+                                                 className={(errors.financeTaxRate) ? "form-control is-invalid" : "form-control"} 
                                                  autoComplete="off">
                                             {console.log("query data in membership add:")}
                                             {console.log(inputData)}
@@ -197,7 +216,25 @@ class SchoolMembershipAdd extends Component {
                                               <option value={node.id} key={v4()}>{node.name} ({node.percentage}% {node.rateType})</option>
                                             )}
                                           </Field>
-                                          <ErrorMessage name="financeTaxrate" component="span" className="invalid-feedback" />
+                                          <ErrorMessage name="financeTaxRate" component="span" className="invalid-feedback" />
+                                        </Form.Group>
+                                        <Form.Group label={t('school.membership.validity')}>
+                                          <Field type="text" 
+                                                name="validity" 
+                                                className={(errors.validity) ? "form-control is-invalid" : "form-control"} 
+                                                autoComplete="off" />
+                                          <ErrorMessage name="validity" component="span" className="invalid-feedback" />
+                                        </Form.Group>
+                                        <Form.Group label={t('school.membership.validity_unit')}>
+                                          <Field component="select" 
+                                                 name="validityUnit" 
+                                                 className={(errors.validityUnit) ? "form-control is-invalid" : "form-control"} 
+                                                 autoComplete="off">
+                                            <option value="DAYS" key={v4()}>{t('validity.days')}</option>
+                                            <option value="WEEKS" key={v4()}>{t('validity.weeks')}</option>
+                                            <option value="MONTHS" key={v4()}>{t('validity.months')}</option>
+                                          </Field>
+                                          <ErrorMessage name="validityUnit" component="span" className="invalid-feedback" />
                                         </Form.Group>
                                         <Form.Group label={t('school.membership.terms_and_conditions')}>
                                           <Editor
