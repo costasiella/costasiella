@@ -61,7 +61,8 @@
             "error_loading": "Error loading memberships :(",
             "empty_list": "No memberships found, click the Add button to add a membership",
             "empty_archive": "No memberships have been archived yet.",
-            "add": "Add membership"
+            "add": "Add membership",
+            "validity": "Validity"
         },
         "membership": {
             "public": "This is a public membership",

@@ -126,7 +126,7 @@ const SchoolMemberships = ({ t, history, archived=false }) => (
                               <Table.ColHeader>{t('public')}</Table.ColHeader>
                               <Table.ColHeader>{t('shop')}</Table.ColHeader>
                               <Table.ColHeader>{t('price')}</Table.ColHeader>
-                              <Table.ColHeader>{t('validity')}</Table.ColHeader>
+                              <Table.ColHeader>{t('school.memberships.validity')}</Table.ColHeader>
                             </Table.Row>
                           </Table.Header>
                           <Table.Body>
