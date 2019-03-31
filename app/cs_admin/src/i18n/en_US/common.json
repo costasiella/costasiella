@@ -39,7 +39,8 @@
         "menu": {
             "locations": "Locations",
             "classtypes": "Class types",
-            "discoveries": "Discovery"
+            "discoveries": "Discovery",
+            "memberships": "Memberships"
         },
         "discoveries": {
             "title": "Discovery",
@@ -52,7 +53,28 @@
             "title_edit": "Edit discovery",
             "toast_edit_success": "Saved discovery"
         },
-        "page_title": "School"
+        "page_title": "School",
+        "memberships": {
+            "title": "Memberships",
+            "title_add": "Add membership",
+            "toast_add_success": "Added membership",
+            "error_loading": "Error loading memberships :(",
+            "empty_list": "No memberships found, click the Add button to add a membership",
+            "empty_archive": "No memberships have been archived yet.",
+            "add": "Add membership"
+        },
+        "membership": {
+            "public": "This is a public membership",
+            "shop": "Show this membership in the shop",
+            "name": "Name",
+            "price": "Price",
+            "taxrate": "Tax rate",
+            "validity": "Validity",
+            "validity_unit": "Validity in",
+            "terms_and_conditions": "Terms and conditions",
+            "glaccount": "General Ledger account",
+            "costcenter": "Cost center"
+        }
     },
     "name": "Name",
     "public": "Public",
@@ -142,5 +164,13 @@
             "error_loading": "Error loading user... :("
         }
     },
-    "settings": "Settings"
+    "settings": "Settings",
+    "validity": {
+        "days": "Days",
+        "weeks": "Weeks",
+        "months": "Months",
+        "years": "Years"
+    },
+    "shop": "Shop",
+    "price": "Price"
 }

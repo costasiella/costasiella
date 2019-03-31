@@ -113,8 +113,10 @@ class SchoolMembershipAdd extends Component {
                                 displayShop: true,
                                 name: "",
                                 description: "",
-                                price: "",
+                                price: 0,
                                 financeTaxRate: "",
+                                validity: 1,
+                                validityUnit: "MONTHS",
                                 termsAndConditions: "",
                                 financeGlaccount: "",
                                 financeCostcenter: ""
@@ -132,6 +134,8 @@ class SchoolMembershipAdd extends Component {
                                       description: values.description,
                                       price: values.price,
                                       financeTaxrate: values.financeTaxrate,
+                                      validity: values.validity,
+                                      validityUnit: values.validityUnit,
                                       termsAndConditions: values.termsAndConditions,
                                       financeGlaccount: values.financeGlaccount,
                                       financeCostcenter: values.financeCostcenter
