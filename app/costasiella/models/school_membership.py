@@ -24,8 +24,8 @@ class SchoolMembership(models.Model):
     validity = models.PositiveIntegerField()
     validity_unit = models.CharField(max_length=10, choices=VALIDITY_UNITS, default="DAYS")
     terms_and_conditions = models.TextField()
-    finance_glaccount = models.ForeignKey(FinanceGLAccount, on_delete=models.CASCADE)
-    finance_costcenter = models.ForeignKey(FinanceCostCenter, on_delete=models.CASCADE)
+    finance_glaccount = models.ForeignKey(FinanceGLAccount, on_delete=models.CASCADE, null=True)
+    finance_costcenter = models.ForeignKey(FinanceCostCenter, on_delete=models.CASCADE, null=True)
 
     def __str__(self):
         return self.name

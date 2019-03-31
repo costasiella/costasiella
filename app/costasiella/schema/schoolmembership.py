@@ -37,19 +37,21 @@ def validate_create_update_input(input, update=False):
     
     # Check GLAccount
     if 'finance_glaccount' in input:
-        rid = get_rid(input['finance_glaccount'])
-        finance_glaccount= FinanceGLAccount.objects.filter(id=rid.id).first()
-        result['finance_glaccount'] = finance_glaccount
-        if not finance_glaccount:
-            raise Exception(_('Invalid Finance GLAccount ID!'))
+        if input['finance_glaccount']: 
+            rid = get_rid(input['finance_glaccount'])
+            finance_glaccount= FinanceGLAccount.objects.filter(id=rid.id).first()
+            result['finance_glaccount'] = finance_glaccount
+            if not finance_glaccount:
+                raise Exception(_('Invalid Finance GLAccount ID!'))
 
     # Check Costcenter
     if 'finance_costcenter' in input:
-        rid = get_rid(input['finance_costcenter'])
-        finance_costcenter= FinanceCostCenter.objects.filter(id=rid.id).first()
-        result['finance_costcenter'] = finance_costcenter
-        if not finance_costcenter:
-            raise Exception(_('Invalid Finance Costcenter ID!'))
+        if input['finance_costcenter']:
+            rid = get_rid(input['finance_costcenter'])
+            finance_costcenter= FinanceCostCenter.objects.filter(id=rid.id).first()
+            result['finance_costcenter'] = finance_costcenter
+            if not finance_costcenter:
+                raise Exception(_('Invalid Finance Costcenter ID!'))
 
 
     return result
@@ -94,9 +96,9 @@ class CreateSchoolMembership(graphene.relay.ClientIDMutation):
         finance_tax_rate = graphene.ID(required=True)
         validity = graphene.Int(required=True, default_value=1)
         validity_unit = graphene.String(required=True)
-        terms_and_conditions = graphene.String(required=False)
-        finance_glaccount = graphene.ID(required=False)
-        finance_costcenter = graphene.ID(required=False)
+        terms_and_conditions = graphene.String(required=False, default_value="")
+        finance_glaccount = graphene.ID(required=False, default_value="")
+        finance_costcenter = graphene.ID(required=False, default_value="")
 
     school_membership = graphene.Field(SchoolMembershipNode)
 
@@ -120,9 +122,14 @@ class CreateSchoolMembership(graphene.relay.ClientIDMutation):
             validity=input['validity'],
             validity_unit=input['validity_unit'],
             terms_and_conditions=input['terms_and_conditions'],
-            finance_glaccount=result['finance_glaccount'],
-            finance_costcenter=result['finance_costcenter'],
         )
+
+        if 'finance_glaccount' in result:
+            school_membership.finance_glaccount = result['finance_glaccount']
+
+        if 'finance_costcenter' in result:
+            school_membership.finance_costcenter = result['finance_costcenter']
+
         school_membership.save()
 
         return CreateSchoolMembership(school_membership = school_membership)

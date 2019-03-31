@@ -29,7 +29,6 @@ import SiteWrapper from "../../SiteWrapper"
 import HasPermissionWrapper from "../../HasPermissionWrapper"
 
 import SchoolMenu from "../SchoolMenu"
-import { truncate } from 'fs';
 
 
 const CREATE_MEMBERSHIP = gql`
@@ -133,7 +132,7 @@ class SchoolMembershipAdd extends Component {
                                       name: values.name,
                                       description: values.description,
                                       price: values.price,
-                                      financeTaxrate: values.financeTaxrate,
+                                      financeTaxRate: values.financeTaxRate,
                                       validity: values.validity,
                                       validityUnit: values.validityUnit,
                                       termsAndConditions: values.termsAndConditions,
