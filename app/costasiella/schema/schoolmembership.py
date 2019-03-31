@@ -240,4 +240,3 @@ class SchoolMembershipMutation(graphene.ObjectType):
     archive_school_membership = ArchiveSchoolMembership.Field()
     create_school_membership = CreateSchoolMembership.Field()
     # update_school_membership = UpdateSchoolMembership.Field()
-    # upload_school_membership_image = UploadSchoolMembershipImage.Field()
