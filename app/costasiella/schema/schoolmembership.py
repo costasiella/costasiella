@@ -17,6 +17,44 @@ from sorl.thumbnail import get_thumbnail
 m = Messages()
 
 
+def validate_create_update_input(input, update=False):
+    """
+    Validate input
+    """ 
+    result = {}
+    
+    if not len(input['name']):
+        print('validation error found')
+        raise GraphQLError(_('Name is required'))
+
+    # Fetch & check tax rate
+    rid = get_rid(input['finance_tax_rate'])
+    finance_tax_rate = FinanceTaxRate.objects.filter(id=rid.id).first()
+    result['finance_tax_rate'] = finance_tax_rate
+    if not finance_tax_rate:
+        raise Exception(_('Invalid Finance Tax Rate ID!'))
+
+    
+    # Check GLAccount
+    if 'finance_glaccount' in input:
+        rid = get_rid(input['finance_glaccount'])
+        finance_glaccount= FinanceGLAccount.objects.filter(id=rid.id).first()
+        result['finance_glaccount'] = finance_glaccount
+        if not finance_glaccount:
+            raise Exception(_('Invalid Finance GLAccount ID!'))
+
+    # Check Costcenter
+    if 'finance_costcenter' in input:
+        rid = get_rid(input['finance_costcenter'])
+        finance_costcenter= FinanceCostCenter.objects.filter(id=rid.id).first()
+        result['finance_costcenter'] = finance_costcenter
+        if not finance_costcenter:
+            raise Exception(_('Invalid Finance Costcenter ID!'))
+
+
+    return result
+
+
 class SchoolMembershipNode(DjangoObjectType):   
     class Meta:
         model = SchoolMembership
@@ -71,18 +109,7 @@ class CreateSchoolMembership(graphene.relay.ClientIDMutation):
         print(input)
 
         # Validate input
-        if not len(input['name']):
-            print('validation error found')
-            raise GraphQLError(_('Name is required'))
-
-
-        rid = get_rid(input['finance_tax_rate'])
-        finance_tax_rate = FinanceTaxRate.objects.filter(id=rid.id).first()
-
-        rid = get_rid(input['finance_glaccount'])
-        finance_glaccount= FinanceGLAccount.objects.filter(id=rid.id).first()
-        rid = get_rid(input['finance_costcenter'])
-        finance_costcenter= FinanceCostCenter.objects.filter(id=rid.id).first()
+        result = validate_create_update_input(input, update=False)
 
         school_membership = SchoolMembership(
             display_public=input['display_public'],
@@ -90,12 +117,12 @@ class CreateSchoolMembership(graphene.relay.ClientIDMutation):
             name=input['name'], 
             description=input['description'],
             price=input['price'],
-            finance_tax_rate=finance_tax_rate,
+            finance_tax_rate=result['finance_tax_rate'],
             validity=input['validity'],
             validity_unit=input['validity_unit'],
             terms_and_conditions=input['terms_and_conditions'],
-            finance_glaccount=finance_glaccount,
-            finance_costcenter=finance_costcenter
+            finance_glaccount=result['finance_glaccount'],
+            finance_costcenter=result['finance_costcenter'],
         )
         school_membership.save()
 
