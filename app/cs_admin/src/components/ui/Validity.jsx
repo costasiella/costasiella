@@ -19,6 +19,9 @@ class Validity extends Component {
         case "MONTHS":
             return t('validity.months')
             break
+        case "YEARS":
+            return t('validity.years')
+            break
         default:
             return ""
             break
