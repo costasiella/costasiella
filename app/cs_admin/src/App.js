@@ -33,6 +33,7 @@ import SchoolClasstypeEditImage from './components/school/classtypes/SchoolClass
 import SchoolLocations from './components/school/locations/SchoolLocations'
 import SchoolLocationAdd from './components/school/locations/SchoolLocationAdd'
 import SchoolLocationEdit from './components/school/locations/SchoolLocationEdit'
+import SchoolMemberships from './components/school/memberships/SchoolMemberships'
 
 import Error404 from "./components/Error404"
 
@@ -107,6 +108,7 @@ class App extends Component {
             <Route exact path="/school/locations" component={SchoolLocations} />
             <Route exact path="/school/locations/add" component={SchoolLocationAdd} />
             <Route exact path="/school/locations/edit/:id" component={SchoolLocationEdit} />
+            <Route exact path="/school/memberships" component={SchoolMemberships} />
 
             <Route component={Error404} />
           </Switch>
