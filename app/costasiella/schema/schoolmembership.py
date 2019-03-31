@@ -98,15 +98,12 @@ class CreateSchoolMembership(graphene.relay.ClientIDMutation):
         finance_glaccount = graphene.ID(required=False)
         finance_costcenter = graphene.ID(required=False)
 
-
     school_membership = graphene.Field(SchoolMembershipNode)
 
     @classmethod
     def mutate_and_get_payload(self, root, info, **input):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.add_schoolmembership')
-
-        print(input)
 
         # Validate input
         result = validate_create_update_input(input, update=False)

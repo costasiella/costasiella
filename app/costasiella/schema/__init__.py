@@ -8,7 +8,7 @@ from .financetaxrate import FinanceTaxRateQuery, FinanceTaxRateMutation
 from .schoolclasstype import SchoolClasstypeQuery, SchoolClasstypeMutation
 from .schooldiscovery import SchoolDiscoveryQuery, SchoolDiscoveryMutation
 from .schoollocation import SchoolLocationQuery, SchoolLocationMutation
-from .schoolmembership import SchoolMembershipMutation
+from .schoolmembership import SchoolMembershipQuery, SchoolMembershipMutation
 from .user import UserQuery, UserMutation
 
 
@@ -18,6 +18,7 @@ class Query(FinanceCostCenterQuery,
             SchoolDiscoveryQuery,
             SchoolClasstypeQuery,
             SchoolLocationQuery, 
+            SchoolMembershipQuery,
             UserQuery, 
             graphene.ObjectType):
     node = graphene.relay.Node.Field()
