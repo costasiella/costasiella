@@ -25,6 +25,7 @@ import HasPermissionWrapper from "../../HasPermissionWrapper"
 import { toast } from 'react-toastify'
 
 import BooleanBadge from "../../ui/BooleanBadge"
+import Validity from "../../ui/Validity"
 
 import ContentCard from "../../general/ContentCard"
 import SchoolMenu from "../SchoolMenu"
@@ -142,11 +143,13 @@ const SchoolMemberships = ({ t, history, archived=false }) => (
                                   </Table.Col>
                                   <Table.Col key={v4()}>
                                     {node.price} <br />
-                                    {node.financeTaxRate.name}
+                                    <span className="text-muted">{node.financeTaxRate.name}</span>
                                   </Table.Col>
                                   <Table.Col key={v4()}>
                                     {node.validity} <br />
-                                    {node.validityUnit}
+                                    <span className="text-muted">
+                                      <Validity validity={node.validityUnit} />
+                                    </span>
                                   </Table.Col>
                                   <Table.Col className="text-right" key={v4()}>
                                     {(node.archived) ? 
