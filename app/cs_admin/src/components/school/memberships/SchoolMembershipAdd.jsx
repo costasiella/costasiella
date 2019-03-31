@@ -29,6 +29,7 @@ import SiteWrapper from "../../SiteWrapper"
 import HasPermissionWrapper from "../../HasPermissionWrapper"
 
 import SchoolMenu from "../SchoolMenu"
+import { truncate } from 'fs';
 
 
 const CREATE_MEMBERSHIP = gql`
@@ -89,7 +90,15 @@ class SchoolMembershipAdd extends Component {
                       {(createMembership, { data }) => (
                           <Formik
                               initialValues={{ 
-                                name: "", 
+                                displayPublic: true,
+                                displayShop: true,
+                                name: "",
+                                description: "",
+                                price: "",
+                                financeTaxrate: "",
+                                termsAndConditions: "",
+                                financeGlaccount: "",
+                                financeCostcenter: ""
                               }}
                               validationSchema={MEMBERSHIP_SCHEMA}
                               onSubmit={(values, { setSubmitting }) => {
@@ -101,7 +110,12 @@ class SchoolMembershipAdd extends Component {
                                       displayPublic: values.displayPublic,
                                       displayShop: values.displayShop,
                                       name: values.name,
-                                      description: values.description
+                                      description: values.description,
+                                      price: values.price,
+                                      financeTaxrate: values.financeTaxrate,
+                                      termsAndConditions: values.termsAndConditions,
+                                      financeGlaccount: values.financeGlaccount,
+                                      financeCostcenter: values.financeCostcenter
                                     }
                                   }, refetchQueries: [
                                       {query: GET_MEMBERSHIPS_QUERY, variables: {"archived": false }}
@@ -178,6 +192,7 @@ class SchoolMembershipAdd extends Component {
                                                  autoComplete="off">
                                             {console.log("query data in membership add:")}
                                             {console.log(inputData)}
+                                            <option value="" key={v4()}></option>
                                             {inputData.financeTaxrates.edges.map(({ node }) =>
                                               <option value={node.id} key={v4()}>{node.name} ({node.percentage}% {node.rateType})</option>
                                             )}
@@ -199,6 +214,7 @@ class SchoolMembershipAdd extends Component {
                                                  name="financeGlaccount" 
                                                  className={(errors.financeGlaccount) ? "form-control is-invalid" : "form-control"} 
                                                  autoComplete="off">
+                                            <option value="" key={v4()}></option>
                                             {inputData.financeGlaccounts.edges.map(({ node }) =>
                                               <option value={node.id} key={v4()}>{node.name} ({node.code})</option>
                                             )}
@@ -210,6 +226,7 @@ class SchoolMembershipAdd extends Component {
                                                  name="financeCostcenter" 
                                                  className={(errors.financeCostcenter) ? "form-control is-invalid" : "form-control"} 
                                                  autoComplete="off">
+                                            <option value="" key={v4()}></option>
                                             {inputData.financeCostcenters.edges.map(({ node }) =>
                                               <option value={node.id} key={v4()}>{node.name} ({node.code})</option>
                                             )}

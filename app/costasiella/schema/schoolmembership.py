@@ -105,6 +105,8 @@ class CreateSchoolMembership(graphene.relay.ClientIDMutation):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.add_schoolmembership')
 
+        print(input)
+
         # Validate input
         result = validate_create_update_input(input, update=False)
 
