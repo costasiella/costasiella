@@ -34,7 +34,6 @@ def validate_create_update_input(input, update=False):
     if not finance_tax_rate:
         raise Exception(_('Invalid Finance Tax Rate ID!'))
 
-    
     # Check GLAccount
     if 'finance_glaccount' in input:
         if input['finance_glaccount']: 
@@ -106,8 +105,6 @@ class CreateSchoolMembership(graphene.relay.ClientIDMutation):
     def mutate_and_get_payload(self, root, info, **input):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.add_schoolmembership')
-
-        print(input)
 
         # Validate input
         result = validate_create_update_input(input, update=False)
