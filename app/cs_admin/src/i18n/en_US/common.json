@@ -62,7 +62,8 @@
             "empty_list": "No memberships found, click the Add button to add a membership",
             "empty_archive": "No memberships have been archived yet.",
             "add": "Add membership",
-            "validity": "Validity"
+            "validity": "Validity",
+            "toast_edit_success": "Saved membership"
         },
         "membership": {
             "public": "This is a public membership",
@@ -173,5 +174,10 @@
         "years": "Years"
     },
     "shop": "Shop",
-    "price": "Price"
+    "price": "Price",
+    "forms": {
+        "select": {
+            "please_select": "Please select..."
+        }
+    }
 }

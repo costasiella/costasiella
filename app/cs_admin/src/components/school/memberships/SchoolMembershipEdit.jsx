@@ -103,12 +103,12 @@ class SchoolMembershipEdit extends Component {
                     const initialData = data
 
                     let initialGlaccount = ""
-                    if (!initialData.schoolMembership.financeGlaccount == null) {
+                    if (initialData.schoolMembership.financeGlaccount) {
                       initialGlaccount =  initialData.schoolMembership.financeGlaccount.id
                     } 
 
                     let initialCostcenter = ""
-                    if (!initialData.schoolMembership.financeCostcenter == null) {
+                    if (initialData.schoolMembership.financeCostcenter) {
                       initialCostcenter =  initialData.schoolMembership.financeCostcenter.id
                     } 
 
@@ -224,7 +224,6 @@ class SchoolMembershipEdit extends Component {
                                                  name="financeTaxRate" 
                                                  className={(errors.financeTaxRate) ? "form-control is-invalid" : "form-control"} 
                                                  autoComplete="off">
-                                            <option value="" key={v4()}></option>
                                             {initialData.financeTaxrates.edges.map(({ node }) =>
                                               <option value={node.id} key={v4()}>{node.name} ({node.percentage}% {node.rateType})</option>
                                             )}

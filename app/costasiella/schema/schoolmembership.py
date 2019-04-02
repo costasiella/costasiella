@@ -162,9 +162,6 @@ class UpdateSchoolMembership(graphene.relay.ClientIDMutation):
 
         result = validate_create_update_input(input, update=True)
 
-        print(result['finance_tax_rate'])
-
-
         membership.display_public=input['display_public']
         membership.display_shop=input['display_shop']
         membership.name=input['name']
