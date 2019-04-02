@@ -76,7 +76,7 @@ class SchoolDiscoveryEdit extends Component {
                       return <p>{t('error_sad_smiley')}</p>
                     }
                     
-                    const initialData = data.schoolDiscovery;
+                    const initialData = data.schoolDiscovery
                     console.log('query data')
                     console.log(data)
 

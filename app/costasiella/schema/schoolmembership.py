@@ -162,14 +162,17 @@ class UpdateSchoolMembership(graphene.relay.ClientIDMutation):
 
         result = validate_create_update_input(input, update=True)
 
-        membership.display_public=input['display_public'],
-        membership.display_shop=input['display_shop'],
-        membership.name=input['name'], 
-        membership.description=input['description'],
-        membership.price=input['price'],
-        membership.finance_tax_rate=result['finance_tax_rate'],
-        membership.validity=input['validity'],
-        membership.validity_unit=input['validity_unit'],
+        print(result['finance_tax_rate'])
+
+
+        membership.display_public=input['display_public']
+        membership.display_shop=input['display_shop']
+        membership.name=input['name']
+        membership.description=input['description']
+        membership.price=input['price']
+        membership.finance_tax_rate=result['finance_tax_rate']
+        membership.validity=input['validity']
+        membership.validity_unit=input['validity_unit']
         membership.terms_and_conditions=input['terms_and_conditions']
 
         if 'finance_glaccount' in result:

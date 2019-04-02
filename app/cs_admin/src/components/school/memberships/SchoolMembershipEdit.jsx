@@ -12,7 +12,7 @@ import { v4 } from "uuid"
 import { Editor } from '@tinymce/tinymce-react'
 import { tinymceBasicConf } from "../../../plugin_config/tinymce"
 
-import { GET_MEMBERSHIPS_QUERY, GET_INPUT_VALUES_QUERY } from './queries'
+import { GET_MEMBERSHIPS_QUERY, GET_MEMBERSHIP_QUERY } from './queries'
 import { MEMBERSHIP_SCHEMA } from './yupSchema'
 
 
@@ -32,40 +32,40 @@ import SchoolMenu from "../SchoolMenu"
 
 
 const UPDATE_MEMBERSHIP = gql`
-  mutation UpdateMembership($input: UpdateSchoolMembershipInput!) {
+  mutation UpdateSchoolMembership($input: UpdateSchoolMembershipInput!) {
     updateSchoolMembership(input: $input) {
-      schoolMembership {
-        id
-        displayPublic
-        displayShop
-        name
-        description
-        price
-        financeTaxRate {
+        schoolMembership {
           id
+          displayPublic
+          displayShop
           name
+          description
+          price
+          financeTaxRate {
+            id
+            name
+          }
+          validity
+          validityUnit
+          termsAndConditions
+          financeGlaccount {
+            id
+            name
+          }
+          financeCostcenter {
+            id
+            name
+          }
         }
-        validity
-        validityUnit
-        termsAndConditions
-        financeGlaccount {
-          id
-          name
-        }
-        financeCostcenter {
-          id
-          name
-        }
-      }
     }
   }
 `
 
 
-class SchoolMembershipAdd extends Component {
+class SchoolMembershipEdit extends Component {
   constructor(props) {
     super(props)
-    console.log("School membership add props:")
+    console.log("School membership edit props:")
     console.log(props)
   }
 
@@ -88,7 +88,7 @@ class SchoolMembershipAdd extends Component {
                   <Card.Title>{t('school.memberships.title_add')}</Card.Title>
                   {console.log(match.params.id)}
                 </Card.Header>
-                <Query query={GET_INPUT_VALUES_QUERY} variables={{ id }} >
+                <Query query={GET_MEMBERSHIP_QUERY} variables={{ "id": id, "archived": false}} >
                 {({ loading, error, data, refetch }) => {
                     // Loading
                     if (loading) return <p>{t('loading_with_dots')}</p>
@@ -100,25 +100,36 @@ class SchoolMembershipAdd extends Component {
                     
                     console.log('query data')
                     console.log(data)
-                    const inputData = data
+                    const initialData = data
+
+                    let initialGlaccount = ""
+                    if (!initialData.schoolMembership.financeGlaccount == null) {
+                      initialGlaccount =  initialData.schoolMembership.financeGlaccount.id
+                    } 
+
+                    let initialCostcenter = ""
+                    if (!initialData.schoolMembership.financeCostcenter == null) {
+                      initialCostcenter =  initialData.schoolMembership.financeCostcenter.id
+                    } 
+
 
                     return (
                       
-                      <Mutation mutation={CREATE_MEMBERSHIP} onCompleted={() => history.push(return_url)}> 
+                      <Mutation mutation={UPDATE_MEMBERSHIP} onCompleted={() => history.push(return_url)}> 
                       {(createMembership, { data }) => (
                           <Formik
                               initialValues={{ 
-                                displayPublic: true,
-                                displayShop: true,
-                                name: "",
-                                description: "",
-                                price: 0,
-                                financeTaxRate: "",
-                                validity: 1,
-                                validityUnit: "MONTHS",
-                                termsAndConditions: "",
-                                financeGlaccount: "",
-                                financeCostcenter: ""
+                                displayPublic: initialData.schoolMembership.displayPublic,
+                                displayShop: initialData.schoolMembership.displayShop,
+                                name: initialData.schoolMembership.name,
+                                description: initialData.schoolMembership.description,
+                                price: initialData.schoolMembership.price,
+                                financeTaxRate: initialData.schoolMembership.financeTaxRate.id,
+                                validity: initialData.schoolMembership.validity,
+                                validityUnit: initialData.schoolMembership.validityUnit,
+                                termsAndConditions: initialData.schoolMembership.termsAndConditions,
+                                financeGlaccount:  initialGlaccount,
+                                financeCostcenter: initialCostcenter
                               }}
                               validationSchema={MEMBERSHIP_SCHEMA}
                               onSubmit={(values, { setSubmitting }) => {
@@ -127,6 +138,7 @@ class SchoolMembershipAdd extends Component {
 
                                   createMembership({ variables: {
                                     input: {
+                                      id: match.params.id,
                                       displayPublic: values.displayPublic,
                                       displayShop: values.displayShop,
                                       name: values.name,
@@ -144,7 +156,7 @@ class SchoolMembershipAdd extends Component {
                                   ]})
                                   .then(({ data }) => {
                                       console.log('got data', data)
-                                      toast.success((t('school.memberships.toast_add_success')), {
+                                      toast.success((t('school.memberships.toast_edit_success')), {
                                           position: toast.POSITION.BOTTOM_RIGHT
                                         })
                                     }).catch((error) => {
@@ -212,10 +224,8 @@ class SchoolMembershipAdd extends Component {
                                                  name="financeTaxRate" 
                                                  className={(errors.financeTaxRate) ? "form-control is-invalid" : "form-control"} 
                                                  autoComplete="off">
-                                            {console.log("query data in membership add:")}
-                                            {console.log(inputData)}
                                             <option value="" key={v4()}></option>
-                                            {inputData.financeTaxrates.edges.map(({ node }) =>
+                                            {initialData.financeTaxrates.edges.map(({ node }) =>
                                               <option value={node.id} key={v4()}>{node.name} ({node.percentage}% {node.rateType})</option>
                                             )}
                                           </Field>
@@ -255,7 +265,7 @@ class SchoolMembershipAdd extends Component {
                                                  className={(errors.financeGlaccount) ? "form-control is-invalid" : "form-control"} 
                                                  autoComplete="off">
                                             <option value="" key={v4()}></option>
-                                            {inputData.financeGlaccounts.edges.map(({ node }) =>
+                                            {initialData.financeGlaccounts.edges.map(({ node }) =>
                                               <option value={node.id} key={v4()}>{node.name} ({node.code})</option>
                                             )}
                                           </Field>
@@ -267,7 +277,7 @@ class SchoolMembershipAdd extends Component {
                                                  className={(errors.financeCostcenter) ? "form-control is-invalid" : "form-control"} 
                                                  autoComplete="off">
                                             <option value="" key={v4()}></option>
-                                            {inputData.financeCostcenters.edges.map(({ node }) =>
+                                            {initialData.financeCostcenters.edges.map(({ node }) =>
                                               <option value={node.id} key={v4()}>{node.name} ({node.code})</option>
                                             )}
                                           </Field>
@@ -301,7 +311,7 @@ class SchoolMembershipAdd extends Component {
               </Card>
               </Grid.Col>
               <Grid.Col md={3}>
-                <HasPermissionWrapper permission="add"
+                <HasPermissionWrapper permission="change"
                                       resource="schoolmembership">
                   <Button color="primary btn-block mb-6"
                           onClick={() => history.push(return_url)}>
@@ -318,4 +328,4 @@ class SchoolMembershipAdd extends Component {
   }
 
 
-export default withTranslation()(withRouter(SchoolMembershipAdd))
+export default withTranslation()(withRouter(SchoolMembershipEdit))
