@@ -85,7 +85,7 @@ class SchoolMembershipEdit extends Component {
               <Grid.Col md={9}>
               <Card>
                 <Card.Header>
-                  <Card.Title>{t('school.memberships.title_add')}</Card.Title>
+                  <Card.Title>{t('school.memberships.title_edit')}</Card.Title>
                   {console.log(match.params.id)}
                 </Card.Header>
                 <Query query={GET_MEMBERSHIP_QUERY} variables={{ "id": id, "archived": false}} >

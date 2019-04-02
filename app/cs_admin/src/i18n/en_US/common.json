@@ -63,7 +63,8 @@
             "empty_archive": "No memberships have been archived yet.",
             "add": "Add membership",
             "validity": "Validity",
-            "toast_edit_success": "Saved membership"
+            "toast_edit_success": "Saved membership",
+            "title_edit": "Edit membership"
         },
         "membership": {
             "public": "This is a public membership",
@@ -174,10 +175,5 @@
         "years": "Years"
     },
     "shop": "Shop",
-    "price": "Price",
-    "forms": {
-        "select": {
-            "please_select": "Please select..."
-        }
-    }
+    "price": "Price"
 }

@@ -65,7 +65,8 @@
             "empty_archive": "__STRING_NOT_TRANSLATED__",
             "add": "__STRING_NOT_TRANSLATED__",
             "validity": "__STRING_NOT_TRANSLATED__",
-            "toast_edit_success": "__STRING_NOT_TRANSLATED__"
+            "toast_edit_success": "__STRING_NOT_TRANSLATED__",
+            "title_edit": "__STRING_NOT_TRANSLATED__"
         },
         "membership": {
             "public": "__STRING_NOT_TRANSLATED__",
@@ -174,10 +175,5 @@
         "years": "__STRING_NOT_TRANSLATED__"
     },
     "shop": "__STRING_NOT_TRANSLATED__",
-    "price": "__STRING_NOT_TRANSLATED__",
-    "forms": {
-        "select": {
-            "please_select": "__STRING_NOT_TRANSLATED__"
-        }
-    }
+    "price": "__STRING_NOT_TRANSLATED__"
 }
