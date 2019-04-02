@@ -112,9 +112,7 @@ class SchoolMembershipEdit extends Component {
                       initialCostcenter =  initialData.schoolMembership.financeCostcenter.id
                     } 
 
-
                     return (
-                      
                       <Mutation mutation={UPDATE_MEMBERSHIP} onCompleted={() => history.push(return_url)}> 
                       {(createMembership, { data }) => (
                           <Formik
