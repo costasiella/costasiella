@@ -61,6 +61,24 @@ class SchoolLocationFactory(factory.DjangoModelFactory):
     name = "First location"
 
 
+class SchoolMembershipFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.SchoolLocation
+
+    archived = False
+    display_public = True
+    display_shop = True
+    name = "First membership"
+    description = "The first one..."
+    price = 12.50
+    finance_tax_rate = FinanceTaxRateFactory.create()
+    validity = 1
+    validity_unit = "MONTHS"
+    terms_and_conditions = "T and C here"
+    finance_glaccount = FinanceGLAccountFactory.create()
+    finance_costcenter = FinanceCostCenterFactory.create()
+
+
 class AdminFactory(factory.DjangoModelFactory):
     class Meta:
         model = get_user_model()
