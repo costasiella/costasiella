@@ -63,7 +63,7 @@ class SchoolLocationFactory(factory.DjangoModelFactory):
 
 class SchoolMembershipFactory(factory.DjangoModelFactory):
     class Meta:
-        model = models.SchoolLocation
+        model = models.SchoolMembership
 
     archived = False
     display_public = True
@@ -71,12 +71,12 @@ class SchoolMembershipFactory(factory.DjangoModelFactory):
     name = "First membership"
     description = "The first one..."
     price = 12.50
-    finance_tax_rate = FinanceTaxRateFactory.create()
+    finance_tax_rate = factory.SubFactory(FinanceTaxRateFactory)
     validity = 1
     validity_unit = "MONTHS"
     terms_and_conditions = "T and C here"
-    finance_glaccount = FinanceGLAccountFactory.create()
-    finance_costcenter = FinanceCostCenterFactory.create()
+    # finance_glaccount = FinanceGLAccountFactory.create()
+    # finance_costcenter = FinanceCostCenterFactory.create()
 
 
 class AdminFactory(factory.DjangoModelFactory):
