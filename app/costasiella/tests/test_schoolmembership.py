@@ -188,63 +188,69 @@ class GQLSchoolMembership(TestCase):
           to_global_id("FinanceGLAccountNode", membership.finance_glaccount.pk))
         self.assertEqual(data['schoolMemberships']['edges'][0]['node']['financeCostcenter']['id'], 
           to_global_id("FinanceCostCenterNode", membership.finance_costcenter.pk))
-        
-        
 
 
+    def test_query_permision_denied(self):
+        """ Query list of memberships - check permission denied """
+        query = self.memberships_query
+        membership = f.SchoolMembershipFactory.create()
+        variables = {
+            'archived': False
+        }
 
-    # def test_query_permision_denied(self):
-    #     """ Query list of memberships - check permission denied """
-    #     query = self.memberships_query
-    #     memberships = f.SchoolMembershipFactory.create()
-    #     variables = {
-    #         'archived': False
-    #     }
+        # Create regular user
+        user = f.RegularUserFactory.create()
+        executed = execute_test_client_api_query(query, user, variables=variables)
+        errors = executed.get('errors')
 
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     executed = execute_test_client_api_query(query, user, variables=variables)
-    #     errors = executed.get('errors')
-
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
-
-
-    # def test_query_permision_granted(self):
-    #     """ Query list of memberships with view permission """
-    #     query = self.memberships_query
-    #     memberships = f.SchoolMembershipFactory.create()
-    #     variables = {
-    #         'archived': False
-    #     }
-
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename='view_schoolmembership')
-    #     user.user_permissions.add(permission)
-    #     user.save()
-
-    #     executed = execute_test_client_api_query(query, user, variables=variables)
-    #     data = executed.get('data')
-
-    #     # List all memberships
-    #     self.assertEqual(data['schoolMemberships']['edges'][0]['node']['name'], memberships.name)
-    #     self.assertEqual(data['schoolMemberships']['edges'][0]['node']['archived'], memberships.archived)
-    #     self.assertEqual(data['schoolMemberships']['edges'][0]['node']['percentage'], memberships.percentage)
-    #     self.assertEqual(data['schoolMemberships']['edges'][0]['node']['rateType'], memberships.rate_type)
-    #     self.assertEqual(data['schoolMemberships']['edges'][0]['node']['code'], memberships.code)
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
-    # def test_query_anon_user(self):
-    #     """ Query list of memberships - anon user """
-    #     query = self.memberships_query
-    #     memberships = f.SchoolMembershipFactory.create()
-    #     variables = {
-    #         'archived': False
-    #     }
+    def test_query_permision_granted(self):
+        """ Query list of memberships with view permission """
+        query = self.memberships_query
+        membership = f.SchoolMembershipFactory.create()
+        variables = {
+            'archived': False
+        }
 
-    #     executed = execute_test_client_api_query(query, self.anon_user, variables=variables)
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
+        # Create regular user
+        user = f.RegularUserFactory.create()
+        permission = Permission.objects.get(codename='view_schoolmembership')
+        user.user_permissions.add(permission)
+        user.save()
+
+        executed = execute_test_client_api_query(query, user, variables=variables)
+        data = executed.get('data')
+
+        # List all memberships
+        self.assertEqual(data['schoolMemberships']['edges'][0]['node']['archived'], membership.archived)
+        self.assertEqual(data['schoolMemberships']['edges'][0]['node']['displayPublic'], membership.display_public)
+        self.assertEqual(data['schoolMemberships']['edges'][0]['node']['displayShop'], membership.display_shop)
+        self.assertEqual(data['schoolMemberships']['edges'][0]['node']['name'], membership.name)
+        self.assertEqual(data['schoolMemberships']['edges'][0]['node']['description'], membership.description)
+        self.assertEqual(data['schoolMemberships']['edges'][0]['node']['price'], membership.price)
+        self.assertEqual(data['schoolMemberships']['edges'][0]['node']['financeTaxRate']['id'], 
+          to_global_id("FinanceTaxRateNode", membership.finance_tax_rate.pk))
+        self.assertEqual(data['schoolMemberships']['edges'][0]['node']['validity'], membership.validity)
+        self.assertEqual(data['schoolMemberships']['edges'][0]['node']['validityUnit'], membership.validity_unit)
+        self.assertEqual(data['schoolMemberships']['edges'][0]['node']['financeGlaccount']['id'], 
+          to_global_id("FinanceGLAccountNode", membership.finance_glaccount.pk))
+        self.assertEqual(data['schoolMemberships']['edges'][0]['node']['financeCostcenter']['id'], 
+          to_global_id("FinanceCostCenterNode", membership.finance_costcenter.pk))
+
+
+    def test_query_anon_user(self):
+        """ Query list of memberships - anon user """
+        query = self.memberships_query
+        membership = f.SchoolMembershipFactory.create()
+        variables = {
+            'archived': False
+        }
+
+        executed = execute_test_client_api_query(query, self.anon_user, variables=variables)
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
     # def test_query_one(self):
