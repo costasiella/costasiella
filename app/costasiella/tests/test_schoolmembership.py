@@ -93,18 +93,83 @@ class GQLSchoolMembership(TestCase):
   }
 '''
 
-#         self.membership_query = '''
-#   query SchoolMembership($id: ID!) {
-#     schoolMembership(id:$id) {
-#       id
-#       archived
-#       name
-#       percentage
-#       rateType
-#       code
-#     }
-#   }
-# '''
+        self.membership_query = '''
+  query SchoolMembership($id: ID!, $after: String, $before: String, $archived: Boolean!) {
+    schoolMembership(id:$id) {
+      id
+      archived
+      displayPublic
+      displayShop
+      name
+      description
+      price
+      financeTaxRate {
+        id
+        name
+      }
+      validity
+      validityUnit
+      termsAndConditions
+      financeGlaccount {
+        id 
+        name
+      }
+      financeCostcenter {
+        id
+        name
+      }
+    }
+    financeTaxrates(first: 15, before: $before, after: $after, archived: $archived) {
+      pageInfo {
+        startCursor
+        endCursor
+        hasNextPage
+        hasPreviousPage
+      }
+      edges {
+        node {
+          id
+          archived
+          name
+          percentage
+          rateType
+        }
+      }
+    }
+    financeGlaccounts(first: 15, before: $before, after: $after, archived: $archived) {
+      pageInfo {
+        startCursor
+        endCursor
+        hasNextPage
+        hasPreviousPage
+      }
+      edges {
+        node {
+          id
+          archived
+          name
+          code
+        }
+      }
+    }
+    financeCostcenters(first: 15, before: $before, after: $after, archived: $archived) {
+      pageInfo {
+        startCursor
+        endCursor
+        hasNextPage
+        hasPreviousPage
+      }
+      edges {
+        node {
+          id
+          archived
+          name
+          code
+        }
+      }
+    }
+  }
+'''
 
 #         self.memberships_create_mutation = ''' 
 #   mutation CreateFinanceTaxRate($input:CreateFinanceTaxRateInput!) {
@@ -150,17 +215,6 @@ class GQLSchoolMembership(TestCase):
     def tearDown(self):
         # This is run after every test
         pass
-
-
-    def get_node_id_of_first_membership(self):
-        # query memberships to get node id easily
-        variables = {
-            'archived': False
-        }
-        executed = execute_test_client_api_query(self.memberships_query, self.admin_user, variables=variables)
-        data = executed.get('data')
-        
-        return data['schoolMemberships']['edges'][0]['node']['id']
 
 
     def test_query(self):
@@ -253,66 +307,94 @@ class GQLSchoolMembership(TestCase):
         self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
-    # def test_query_one(self):
-    #     """ Query one memberships as admin """   
-    #     memberships = f.SchoolMembershipFactory.create()
+    def test_query_one(self):
+        """ Query one memberships as admin """   
+        membership = f.SchoolMembershipFactory.create()
 
-    #     # First query memberships to get node id easily
-    #     node_id = self.get_node_id_of_first_memberships()
+        # Get node id
+        node_id = to_global_id("SchoolMembershipNode", membership.pk)
 
-    #     # Now query single memberships and check
-    #     executed = execute_test_client_api_query(self.memberships_query, self.admin_user, variables={"id": node_id})
-    #     data = executed.get('data')
-    #     self.assertEqual(data['schoolMembership']['name'], memberships.name)
-    #     self.assertEqual(data['schoolMembership']['archived'], memberships.archived)
-    #     self.assertEqual(data['schoolMembership']['percentage'], memberships.percentage)
-    #     self.assertEqual(data['schoolMembership']['rateType'], memberships.rate_type)
-    #     self.assertEqual(data['schoolMembership']['code'], memberships.code)
+        variables = {
+          "id": node_id,
+          "archived": False
+        }
+
+        # Now query single memberships and check
+        executed = execute_test_client_api_query(self.membership_query, self.admin_user, variables=variables)
+        data = executed.get('data')
+        self.assertEqual(data['schoolMembership']['displayPublic'], membership.display_public)
+        self.assertEqual(data['schoolMembership']['displayShop'], membership.display_shop)
+        self.assertEqual(data['schoolMembership']['archived'], membership.archived)
+        self.assertEqual(data['schoolMembership']['name'], membership.name)
+        self.assertEqual(data['schoolMembership']['price'], membership.price)
+        self.assertEqual(data['schoolMembership']['financeTaxRate']['id'], 
+          to_global_id("FinanceTaxRateNode", membership.finance_tax_rate.pk))
+        self.assertEqual(data['schoolMembership']['validity'], membership.validity)
+        self.assertEqual(data['schoolMembership']['validityUnit'], membership.validity_unit)
+        self.assertEqual(data['schoolMembership']['financeGlaccount']['id'], 
+          to_global_id("FinanceGLAccountNode", membership.finance_glaccount.pk))
+        self.assertEqual(data['schoolMembership']['financeCostcenter']['id'], 
+          to_global_id("FinanceCostCenterNode", membership.finance_costcenter.pk))
+        
+
+    def test_query_one_anon_user(self):
+        """ Deny permission for anon users Query one membership """   
+        membership = f.SchoolMembershipFactory.create()
+
+        # Get node id
+        node_id = to_global_id("SchoolMembershipNode", membership.pk)
+        
+        variables = {
+          "id": node_id,
+          "archived": False
+        }
+
+        # Now query single memberships and check
+        executed = execute_test_client_api_query(self.membership_query, self.anon_user, variables=variables)
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
-    # def test_query_one_anon_user(self):
-    #     """ Deny permission for anon users Query one membership """   
-    #     memberships = f.SchoolMembershipFactory.create()
+    def test_query_one_permission_denied(self):
+        """ Permission denied message when user lacks authorization """   
+        # Create regular user
+        user = f.RegularUserFactory.create()
+        membership = f.SchoolMembershipFactory.create()
 
-    #     # First query memberships to get node id easily
-    #     node_id = self.get_node_id_of_first_memberships()
+        # Get node id
+        node_id = to_global_id("SchoolMembershipNode", membership.pk)
+        
+        variables = {
+          "id": node_id,
+          "archived": False
+        }
 
-    #     # Now query single memberships and check
-    #     executed = execute_test_client_api_query(self.memberships_query, self.anon_user, variables={"id": node_id})
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
-
-
-    # def test_query_one_permission_denied(self):
-    #     """ Permission denied message when user lacks authorization """   
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     memberships = f.SchoolMembershipFactory.create()
-
-    #     # First query memberships to get node id easily
-    #     node_id = self.get_node_id_of_first_memberships()
-
-    #     # Now query single memberships and check
-    #     executed = execute_test_client_api_query(self.memberships_query, user, variables={"id": node_id})
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
+        # Now query single memberships and check
+        executed = execute_test_client_api_query(self.membership_query, user, variables=variables)
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
-    # def test_query_one_permission_granted(self):
-    #     """ Respond with data when user has permission """   
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename='view_schoolmembership')
-    #     user.user_permissions.add(permission)
-    #     user.save()
-    #     memberships = f.SchoolMembershipFactory.create()
+    def test_query_one_permission_granted(self):
+        """ Respond with data when user has permission """   
+        user = f.RegularUserFactory.create()
+        permission = Permission.objects.get(codename='view_schoolmembership')
+        user.user_permissions.add(permission)
+        user.save()
+        membership = f.SchoolMembershipFactory.create()
 
-    #     # First query memberships to get node id easily
-    #     node_id = self.get_node_id_of_first_memberships()
+        # Get node id
+        node_id = to_global_id("SchoolMembershipNode", membership.pk)
+        
+        variables = {
+          "id": node_id,
+          "archived": False
+        }
 
-    #     # Now query single location and check   
-    #     executed = execute_test_client_api_query(self.memberships_query, user, variables={"id": node_id})
-    #     data = executed.get('data')
-    #     self.assertEqual(data['schoolMembership']['name'], memberships.name)
+        # Now query single location and check   
+        executed = execute_test_client_api_query(self.membership_query, user, variables=variables)
+        data = executed.get('data')
+        self.assertEqual(data['schoolMembership']['name'], membership.name)
 
 
     # def test_create_memberships(self):
