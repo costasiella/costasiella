@@ -75,8 +75,8 @@ class SchoolMembershipFactory(factory.DjangoModelFactory):
     validity = 1
     validity_unit = "MONTHS"
     terms_and_conditions = "T and C here"
-    # finance_glaccount = FinanceGLAccountFactory.create()
-    # finance_costcenter = FinanceCostCenterFactory.create()
+    finance_glaccount = factory.SubFactory(FinanceGLAccountFactory)
+    finance_costcenter = factory.SubFactory(FinanceCostCenterFactory)
 
 
 class AdminFactory(factory.DjangoModelFactory):

@@ -15,7 +15,7 @@ from .helpers import execute_test_client_api_query
 from .. import models
 from .. import schema
 
-from ..schema.schoolmembership import SchoolMembershipNode
+from graphql_relay import to_global_id
 
 
 class GQLSchoolMembership(TestCase):
@@ -169,18 +169,10 @@ class GQLSchoolMembership(TestCase):
         membership = f.SchoolMembershipFactory.create()
         variables = {
             'archived': False
-        }
-
-        # Get global ID of membership node
-        from graphql_relay import to_global_id
-        print(to_global_id(SchoolMembershipNode._meta.name, membership.pk))
-        
+        }      
 
         executed = execute_test_client_api_query(query, self.admin_user, variables=variables)
-        print(executed)
         data = executed.get('data')
-
-        print(data)
 
         self.assertEqual(data['schoolMemberships']['edges'][0]['node']['archived'], membership.archived)
         self.assertEqual(data['schoolMemberships']['edges'][0]['node']['displayPublic'], membership.display_public)
@@ -188,6 +180,15 @@ class GQLSchoolMembership(TestCase):
         self.assertEqual(data['schoolMemberships']['edges'][0]['node']['name'], membership.name)
         self.assertEqual(data['schoolMemberships']['edges'][0]['node']['description'], membership.description)
         self.assertEqual(data['schoolMemberships']['edges'][0]['node']['price'], membership.price)
+        self.assertEqual(data['schoolMemberships']['edges'][0]['node']['financeTaxRate']['id'], 
+          to_global_id("FinanceTaxRateNode", membership.finance_tax_rate.pk))
+        self.assertEqual(data['schoolMemberships']['edges'][0]['node']['validity'], membership.validity)
+        self.assertEqual(data['schoolMemberships']['edges'][0]['node']['validityUnit'], membership.validity_unit)
+        self.assertEqual(data['schoolMemberships']['edges'][0]['node']['financeGlaccount']['id'], 
+          to_global_id("FinanceGLAccountNode", membership.finance_glaccount.pk))
+        self.assertEqual(data['schoolMemberships']['edges'][0]['node']['financeCostcenter']['id'], 
+          to_global_id("FinanceCostCenterNode", membership.finance_costcenter.pk))
+        
         
 
 
