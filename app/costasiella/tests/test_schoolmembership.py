@@ -30,7 +30,6 @@ class GQLSchoolMembership(TestCase):
         self.permission_change = 'change_schoolmembership'
         self.permission_delete = 'delete_schoolmembership'
 
-
         self.finance_tax_rate = f.FinanceTaxRateFactory.create()
         self.finance_glaccount = f.FinanceGLAccountFactory.create()
         self.finance_costcenter = f.FinanceCostCenterFactory.create()
@@ -53,10 +52,17 @@ class GQLSchoolMembership(TestCase):
 
         self.variables_update = {
             "input": {
-                "name": "BTW 9%",
-                "percentage": 9,
-                "rateType": "IN",
-                "code" : "9000"
+                "displayPublic": True,
+                "displayShop": True,
+                "name": "Updated membership",
+                "description": "Description",
+                "price": 12.50,
+                "financeTaxRate": to_global_id("FinanceTaxRateNode", self.finance_tax_rate.pk),
+                "validity": 1,
+                "validityUnit": "MONTHS",
+                "termsAndConditions": "T and C",
+                "financeGlaccount": to_global_id("FinanceGLAccountNode", self.finance_glaccount.pk),
+                "financeCostcenter": to_global_id("FinanceCostCenterNode", self.finance_costcenter.pk),
             }
         }
 
@@ -183,7 +189,7 @@ class GQLSchoolMembership(TestCase):
   }
 '''
 
-        self.memberships_create_mutation = ''' 
+        self.membership_create_mutation = ''' 
   mutation CreateMembership($input: CreateSchoolMembershipInput!) {
     createSchoolMembership(input: $input) {
       schoolMembership {
@@ -214,31 +220,47 @@ class GQLSchoolMembership(TestCase):
   }
 '''
 
-#         self.memberships_update_mutation = '''
-#   mutation UpdateSchoolMembership($input: UpdateFinanceTaxRateInput!) {
-#     updateSchoolMembership(input: $input) {
-#       schoolMembership {
-#         id
-#         archived
-#         name
-#         percentage
-#         rateType
-#         code
-#       }
-#     }
-#   }
-# '''
+        self.membership_update_mutation = '''
+  mutation UpdateSchoolMembership($input: UpdateSchoolMembershipInput!) {
+    updateSchoolMembership(input: $input) {
+        schoolMembership {
+          id
+          archived
+          displayPublic
+          displayShop
+          name
+          description
+          price
+          financeTaxRate {
+            id
+            name
+          }
+          validity
+          validityUnit
+          termsAndConditions
+          financeGlaccount {
+            id
+            name
+          }
+          financeCostcenter {
+            id
+            name
+          }
+        }
+    }
+  }
+'''
 
-#         self.memberships_archive_mutation = '''
-#   mutation ArchiveFinanceTaxRate($input: ArchiveFinanceTaxRateInput!) {
-#     archiveSchoolMembership(input: $input) {
-#       schoolMembership {
-#         id
-#         archived
-#       }
-#     }
-#   }
-# '''
+        self.membership_archive_mutation = '''
+  mutation ArchiveSchoolMembership($input: ArchiveSchoolMembershipInput!) {
+    archiveSchoolMembership(input: $input) {
+      schoolMembership {
+        id
+        archived
+      }
+    }
+  }
+'''
 
     def tearDown(self):
         # This is run after every test
@@ -427,7 +449,7 @@ class GQLSchoolMembership(TestCase):
 
     def test_create_memberships(self):
         """ Create a memberships """
-        query = self.memberships_create_mutation
+        query = self.membership_create_mutation
         variables = self.variables_create
 
         executed = execute_test_client_api_query(
@@ -452,7 +474,7 @@ class GQLSchoolMembership(TestCase):
 
     def test_create_memberships_anon_user(self):
         """ Don't allow creating memberships for non-logged in users """
-        query = self.memberships_create_mutation
+        query = self.membership_create_mutation
         variables = self.variables_create
 
         executed = execute_test_client_api_query(
@@ -467,7 +489,7 @@ class GQLSchoolMembership(TestCase):
 
     def test_create_location_permission_granted(self):
         """ Allow creating memberships for users with permissions """
-        query = self.memberships_create_mutation
+        query = self.membership_create_mutation
         variables = self.variables_create
 
         # Create regular user
@@ -498,7 +520,7 @@ class GQLSchoolMembership(TestCase):
 
     def test_create_memberships_permission_denied(self):
         """ Check create memberships permission denied error message """
-        query = self.memberships_create_mutation
+        query = self.membership_create_mutation
         variables = self.variables_create
 
         # Create regular user
@@ -514,159 +536,176 @@ class GQLSchoolMembership(TestCase):
         self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
-    # def test_update_memberships(self):
-    #     """ Update a memberships """
-    #     query = self.memberships_update_mutation
-    #     memberships = f.SchoolMembershipFactory.create()
-    #     variables = self.variables_update
-    #     variables['input']['id'] = self.get_node_id_of_first_memberships()
+    def test_update_memberships(self):
+        """ Update a memberships """
+        query = self.membership_update_mutation
+        membership = f.SchoolMembershipFactory.create()
 
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         self.admin_user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['updateSchoolMembership']['schoolMembership']['name'], variables['input']['name'])
-    #     self.assertEqual(data['updateSchoolMembership']['schoolMembership']['percentage'], variables['input']['percentage'])
-    #     self.assertEqual(data['updateSchoolMembership']['schoolMembership']['rateType'], variables['input']['rateType'])
-    #     self.assertEqual(data['updateSchoolMembership']['schoolMembership']['code'], variables['input']['code'])
+        variables = self.variables_update
+        variables['input']['id'] = to_global_id("SchoolMembershipNode", membership.pk)
 
-
-    # def test_update_memberships_anon_user(self):
-    #     """ Don't allow updating memberships for non-logged in users """
-    #     query = self.memberships_update_mutation
-    #     memberships = f.SchoolMembershipFactory.create()
-    #     variables = self.variables_update
-    #     variables['input']['id'] = self.get_node_id_of_first_memberships()
-
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         self.anon_user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
+        executed = execute_test_client_api_query(
+            query, 
+            self.admin_user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['updateSchoolMembership']['schoolMembership']['displayPublic'], variables['input']['displayPublic'])
+        self.assertEqual(data['updateSchoolMembership']['schoolMembership']['displayShop'], variables['input']['displayShop'])
+        self.assertEqual(data['updateSchoolMembership']['schoolMembership']['archived'], False)
+        self.assertEqual(data['updateSchoolMembership']['schoolMembership']['name'], variables['input']['name'])
+        self.assertEqual(data['updateSchoolMembership']['schoolMembership']['description'], variables['input']['description'])
+        self.assertEqual(data['updateSchoolMembership']['schoolMembership']['price'], variables['input']['price'])
+        self.assertEqual(data['updateSchoolMembership']['schoolMembership']['financeTaxRate']['id'], variables['input']['financeTaxRate'])
+        self.assertEqual(data['updateSchoolMembership']['schoolMembership']['validity'], variables['input']['validity'])
+        self.assertEqual(data['updateSchoolMembership']['schoolMembership']['validityUnit'], variables['input']['validityUnit'])
+        self.assertEqual(data['updateSchoolMembership']['schoolMembership']['termsAndConditions'], variables['input']['termsAndConditions'])
+        self.assertEqual(data['updateSchoolMembership']['schoolMembership']['financeGlaccount']['id'], variables['input']['financeGlaccount'])
+        self.assertEqual(data['updateSchoolMembership']['schoolMembership']['financeCostcenter']['id'], variables['input']['financeCostcenter'])
 
 
-    # def test_update_memberships_permission_granted(self):
-    #     """ Allow updating memberships for users with permissions """
-    #     query = self.memberships_update_mutation
-    #     memberships = f.SchoolMembershipFactory.create()
-    #     variables = self.variables_update
-    #     variables['input']['id'] = self.get_node_id_of_first_memberships()
+    def test_update_memberships_anon_user(self):
+        """ Don't allow updating memberships for non-logged in users """
+        query = self.membership_update_mutation
+        membership = f.SchoolMembershipFactory.create()
+        variables = self.variables_update
+        variables['input']['id'] = to_global_id("SchoolMembershipNode", membership.pk)
 
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename=self.permission_change)
-    #     user.user_permissions.add(permission)
-    #     user.save()
-
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['updateSchoolMembership']['schoolMembership']['name'], variables['input']['name'])
-    #     self.assertEqual(data['updateSchoolMembership']['schoolMembership']['percentage'], variables['input']['percentage'])
-    #     self.assertEqual(data['updateSchoolMembership']['schoolMembership']['rateType'], variables['input']['rateType'])
-    #     self.assertEqual(data['updateSchoolMembership']['schoolMembership']['code'], variables['input']['code'])
+        executed = execute_test_client_api_query(
+            query, 
+            self.anon_user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
-    # def test_update_memberships_permission_denied(self):
-    #     """ Check update memberships permission denied error message """
-    #     query = self.memberships_update_mutation
-    #     memberships = f.SchoolMembershipFactory.create()
-    #     variables = self.variables_update
-    #     variables['input']['id'] = self.get_node_id_of_first_memberships()
+    def test_update_memberships_permission_granted(self):
+        """ Allow updating memberships for users with permissions """
+        query = self.membership_update_mutation
+        membership = f.SchoolMembershipFactory.create()
+        variables = self.variables_update
+        variables['input']['id'] = to_global_id("SchoolMembershipNode", membership.pk)
 
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
+        # Create regular user
+        user = f.RegularUserFactory.create()
+        permission = Permission.objects.get(codename=self.permission_change)
+        user.user_permissions.add(permission)
+        user.save()
 
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
-
-
-    # def test_archive_memberships(self):
-    #     """ Archive a memberships """
-    #     query = self.memberships_archive_mutation
-    #     memberships = f.SchoolMembershipFactory.create()
-    #     variables = self.variables_archive
-    #     variables['input']['id'] = self.get_node_id_of_first_memberships()
-
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         self.admin_user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     print(data)
-    #     self.assertEqual(data['archiveSchoolMembership']['schoolMembership']['archived'], variables['input']['archived'])
+        executed = execute_test_client_api_query(
+            query, 
+            user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['updateSchoolMembership']['schoolMembership']['displayPublic'], variables['input']['displayPublic'])
+        self.assertEqual(data['updateSchoolMembership']['schoolMembership']['displayShop'], variables['input']['displayShop'])
+        self.assertEqual(data['updateSchoolMembership']['schoolMembership']['archived'], False)
+        self.assertEqual(data['updateSchoolMembership']['schoolMembership']['name'], variables['input']['name'])
+        self.assertEqual(data['updateSchoolMembership']['schoolMembership']['description'], variables['input']['description'])
+        self.assertEqual(data['updateSchoolMembership']['schoolMembership']['price'], variables['input']['price'])
+        self.assertEqual(data['updateSchoolMembership']['schoolMembership']['financeTaxRate']['id'], variables['input']['financeTaxRate'])
+        self.assertEqual(data['updateSchoolMembership']['schoolMembership']['validity'], variables['input']['validity'])
+        self.assertEqual(data['updateSchoolMembership']['schoolMembership']['validityUnit'], variables['input']['validityUnit'])
+        self.assertEqual(data['updateSchoolMembership']['schoolMembership']['termsAndConditions'], variables['input']['termsAndConditions'])
+        self.assertEqual(data['updateSchoolMembership']['schoolMembership']['financeGlaccount']['id'], variables['input']['financeGlaccount'])
+        self.assertEqual(data['updateSchoolMembership']['schoolMembership']['financeCostcenter']['id'], variables['input']['financeCostcenter'])
 
 
-    # def test_archive_memberships_anon_user(self):
-    #     """ Archive memberships denied for anon user """
-    #     query = self.memberships_archive_mutation
-    #     memberships = f.SchoolMembershipFactory.create()
-    #     variables = self.variables_archive
-    #     variables['input']['id'] = self.get_node_id_of_first_memberships()
+    def test_update_memberships_permission_denied(self):
+        """ Check update memberships permission denied error message """
+        query = self.membership_update_mutation
+        membership = f.SchoolMembershipFactory.create()
+        variables = self.variables_update
+        variables['input']['id'] = to_global_id("SchoolMembershipNode", membership.pk)
 
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         self.anon_user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
+        # Create regular user
+        user = f.RegularUserFactory.create()
 
-
-    # def test_archive_memberships_permission_granted(self):
-    #     """ Allow archiving memberships for users with permissions """
-    #     query = self.memberships_archive_mutation
-    #     memberships = f.SchoolMembershipFactory.create()
-    #     variables = self.variables_archive
-    #     variables['input']['id'] = self.get_node_id_of_first_memberships()
-
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename=self.permission_delete)
-    #     user.user_permissions.add(permission)
-    #     user.save()
-
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['archiveSchoolMembership']['schoolMembership']['archived'], variables['input']['archived'])
+        executed = execute_test_client_api_query(
+            query, 
+            user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
-    # def test_archive_memberships_permission_denied(self):
-    #     """ Check archive memberships permission denied error message """
-    #     query = self.memberships_archive_mutation
-    #     memberships = f.SchoolMembershipFactory.create()
-    #     variables = self.variables_archive
-    #     variables['input']['id'] = self.get_node_id_of_first_memberships()
+    def test_archive_memberships(self):
+        """ Archive a memberships """
+        query = self.membership_archive_mutation
+        membership = f.SchoolMembershipFactory.create()
+        variables = self.variables_archive
+        variables['input']['id'] = to_global_id("SchoolMembershipNode", membership.pk)
+
+        executed = execute_test_client_api_query(
+            query, 
+            self.admin_user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        print(data)
+        self.assertEqual(data['archiveSchoolMembership']['schoolMembership']['archived'], variables['input']['archived'])
+
+
+    def test_archive_memberships_anon_user(self):
+        """ Archive memberships denied for anon user """
+        query = self.membership_archive_mutation
+        membership = f.SchoolMembershipFactory.create()
+        variables = self.variables_archive
+        variables['input']['id'] = to_global_id("SchoolMembershipNode", membership.pk)
+
+        executed = execute_test_client_api_query(
+            query, 
+            self.anon_user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
+
+
+    def test_archive_memberships_permission_granted(self):
+        """ Allow archiving memberships for users with permissions """
+        query = self.membership_archive_mutation
+        membership = f.SchoolMembershipFactory.create()
+        variables = self.variables_archive
+        variables['input']['id'] = to_global_id("SchoolMembershipNode", membership.pk)
+
+        # Create regular user
+        user = f.RegularUserFactory.create()
+        permission = Permission.objects.get(codename=self.permission_delete)
+        user.user_permissions.add(permission)
+        user.save()
+
+        executed = execute_test_client_api_query(
+            query, 
+            user,
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['archiveSchoolMembership']['schoolMembership']['archived'], variables['input']['archived'])
+
+
+    def test_archive_memberships_permission_denied(self):
+        """ Check archive memberships permission denied error message """
+        query = self.membership_archive_mutation
+        membership = f.SchoolMembershipFactory.create()
+        variables = self.variables_archive
+        variables['input']['id'] = to_global_id("SchoolMembershipNode", membership.pk)
         
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
+        # Create regular user
+        user = f.RegularUserFactory.create()
 
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
+        executed = execute_test_client_api_query(
+            query, 
+            user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
 
