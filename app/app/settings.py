@@ -218,17 +218,21 @@ DATA_UPLOAD_MAX_MEMORY_SIZE = 5242880
 
 
 # Constance configuration
+# https://django-constance.readthedocs.io/en/latest/
 CONSTANCE_REDIS_CONNECTION = {
     'host': 'localhost',
     'port': 6379,
     'db': 0,
 }
 
+# Change this prefix to something unique when running multiple Costasiella instances on one server
+CONSTANCE_REDIS_PREFIX = 'constance:costasiella:'
+
+# Constance keys and grouping in admin
 CONSTANCE_CONFIG = {
     'CURRENCY': ('EUR', 'Currency'),
     'CURRENCY_SYMBOL': ('€', 'Currency symbol'),
 }
-
 
 CONSTANCE_CONFIG_FIELDSETS = {
     'Finance options': (
