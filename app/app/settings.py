@@ -228,3 +228,11 @@ CONSTANCE_CONFIG = {
     'CURRENCY': ('EUR', 'Currency'),
     'CURRENCY_SYMBOL': ('€', 'Currency symbol'),
 }
+
+
+CONSTANCE_CONFIG_FIELDSETS = {
+    'Finance options': (
+        'CURRENCY', 
+        'CURRENCY_SYMBOL'
+    ),
+}
