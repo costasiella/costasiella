@@ -18,6 +18,9 @@ import FinanceCostCenterEdit from './components/finance/costcenters/FinanceCostC
 import FinanceGLAccounts from './components/finance/glaccounts/FinanceGLAccounts'
 import FinanceGLAccountAdd from './components/finance/glaccounts/FinanceGLAccountAdd'
 import FinanceGLAccountEdit from './components/finance/glaccounts/FinanceGLAccountEdit'
+import FinanceTaxRates from './components/finance/taxrates/FinanceTaxRates'
+import FinanceTaxRatesAdd from './components/finance/taxrates/FinanceTaxRateAdd'
+import FinanceTaxRatesEdit from './components/finance/taxrates/FinanceTaxRateEdit'
 
 import SchoolHome from './components/school/home/SchoolHome'
 import SchoolDiscoveries from './components/school/discovery/SchoolDiscoveries'
@@ -30,6 +33,9 @@ import SchoolClasstypeEditImage from './components/school/classtypes/SchoolClass
 import SchoolLocations from './components/school/locations/SchoolLocations'
 import SchoolLocationAdd from './components/school/locations/SchoolLocationAdd'
 import SchoolLocationEdit from './components/school/locations/SchoolLocationEdit'
+import SchoolMemberships from './components/school/memberships/SchoolMemberships'
+import SchoolMembershipAdd from './components/school/memberships/SchoolMembershipAdd'
+import SchoolMembershipEdit from './components/school/memberships/SchoolMembershipEdit'
 
 import Error404 from "./components/Error404"
 
@@ -90,6 +96,9 @@ class App extends Component {
             <Route exact path="/finance/glaccounts" component={FinanceGLAccounts} />
             <Route exact path="/finance/glaccounts/add" component={FinanceGLAccountAdd} />
             <Route exact path="/finance/glaccounts/edit/:id" component={FinanceGLAccountEdit} />
+            <Route exact path="/finance/taxrates" component={FinanceTaxRates} />
+            <Route exact path="/finance/taxrates/add" component={FinanceTaxRatesAdd} />
+            <Route exact path="/finance/taxrates/edit/:id" component={FinanceTaxRatesEdit} />
             <Route exact path="/school" component={SchoolHome} />
             <Route exact path="/school/discoveries" component={SchoolDiscoveries} />
             <Route exact path="/school/discoveries/add" component={SchoolDiscoveryAdd} /> 
@@ -101,6 +110,9 @@ class App extends Component {
             <Route exact path="/school/locations" component={SchoolLocations} />
             <Route exact path="/school/locations/add" component={SchoolLocationAdd} />
             <Route exact path="/school/locations/edit/:id" component={SchoolLocationEdit} />
+            <Route exact path="/school/memberships" component={SchoolMemberships} />
+            <Route exact path="/school/memberships/add" component={SchoolMembershipAdd} />
+            <Route exact path="/school/memberships/edit/:id" component={SchoolMembershipEdit} />
 
             <Route component={Error404} />
           </Switch>

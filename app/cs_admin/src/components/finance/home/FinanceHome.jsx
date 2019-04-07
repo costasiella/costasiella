@@ -51,6 +51,11 @@ class FinanceHome extends Component {
                       <StampCard header={<small>{t('finance.costcenters.title')}</small>} footer={t('')} color="blue" icon="compass" />
                     </div>
                   </Grid.Col>
+                  <Grid.Col md={4} lg={4}>
+                    <div onClick={() => history.push('/finance/taxrates')}>
+                      <StampCard header={<small>{t('finance.taxrates.title')}</small>} footer={t('')} color="blue" icon="briefcase" />
+                    </div>
+                  </Grid.Col>
                 </Grid.Row>
               </Grid.Col>
               <Grid.Col md={3}>

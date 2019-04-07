@@ -22,6 +22,17 @@ class FinanceGLAccountFactory(factory.DjangoModelFactory):
     code = "8000"
 
 
+class FinanceTaxRateFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.FinanceTaxRate
+
+    archived = False
+    name = "BTW 21%"
+    percentage = 21
+    rate_type = "IN"
+    code = "8000"
+
+
 class SchoolClasstypeFactory(factory.DjangoModelFactory):
     class Meta:
         model = models.SchoolClasstype
@@ -48,6 +59,24 @@ class SchoolLocationFactory(factory.DjangoModelFactory):
     archived = False
     display_public = True
     name = "First location"
+
+
+class SchoolMembershipFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.SchoolMembership
+
+    archived = False
+    display_public = True
+    display_shop = True
+    name = "First membership"
+    description = "The first one..."
+    price = 12.50
+    finance_tax_rate = factory.SubFactory(FinanceTaxRateFactory)
+    validity = 1
+    validity_unit = "MONTHS"
+    terms_and_conditions = "T and C here"
+    finance_glaccount = factory.SubFactory(FinanceGLAccountFactory)
+    finance_costcenter = factory.SubFactory(FinanceCostCenterFactory)
 
 
 class AdminFactory(factory.DjangoModelFactory):
