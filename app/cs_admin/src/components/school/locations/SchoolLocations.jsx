@@ -1,3 +1,5 @@
+// @flow
+
 import React from 'react'
 import { Query, Mutation } from "react-apollo"
 import gql from "graphql-tag"
@@ -5,8 +7,6 @@ import { v4 } from "uuid"
 import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
 
-
-// @flow
 
 import {
   Page,
@@ -17,53 +17,52 @@ import {
   Button,
   Card,
   Container,
-  List,
-  Form,
   Table
 } from "tabler-react";
 import SiteWrapper from "../../SiteWrapper"
 import HasPermissionWrapper from "../../HasPermissionWrapper"
-import { confirmAlert } from 'react-confirm-alert'; // Import
+// import { confirmAlert } from 'react-confirm-alert'; // Import
 import { toast } from 'react-toastify'
 
+import ContentCard from "../../general/ContentCard"
 import SchoolMenu from "../SchoolMenu"
-import SchoolLocationsCard from "./SchoolLocationsCard"
 
 import { GET_LOCATIONS_QUERY } from "./queries"
 
 const ARCHIVE_LOCATION = gql`
-    mutation ArchiveSchoolLocation($id: ID!, $archived: Boolean!) {
-        archiveSchoolLocation(id: $id, archived: $archived) {
-          id
-          archived
-        }
+  mutation ArchiveSchoolLocation($input: ArchiveSchoolLocationInput!) {
+    archiveSchoolLocation(input: $input) {
+      schoolLocation {
+        id
+        archived
+      }
     }
+  }
 `
 
 
-const onClickArchive = (t, id) => {
-  const options = {
-    title: t('please_confirm'),
-    message: t('school.locations.confirm_archive'),
-    buttons: [
-      {
-        label: t('yes'),
-        onClick: () => alert('Click Yes'),
-        class: 'btn btn-primary'
-      },
-      {
-        label: t('no'),
-        onClick: () => alert('Click No')
-      }
-    ],
-    childrenElement: () => <div />,
-    // customUI: ({ title, message, onClose }) => <div>Custom UI</div>,
-    willUnmount: () => {}
-  }
+// const onClickArchive = (t, id) => {
+//   const options = {
+//     title: t('please_confirm'),
+//     message: t('school.locations.confirm_archive'),
+//     buttons: [
+//       {
+//         label: t('yes'),
+//         onClick: () => alert('Click Yes'),
+//         class: 'btn btn-primary'
+//       },
+//       {
+//         label: t('no'),
+//         onClick: () => alert('Click No')
+//       }
+//     ],
+//     childrenElement: () => <div />,
+//     // customUI: ({ title, message, onClose }) => <div>Custom UI</div>,
+//     willUnmount: () => {}
+//   }
 
-  confirmAlert(options)
-}
-
+//   confirmAlert(options)
+// }
 
 const SchoolLocations = ({ t, history, archived=false }) => (
   <SiteWrapper>
@@ -73,20 +72,20 @@ const SchoolLocations = ({ t, history, archived=false }) => (
         <Grid.Row>
           <Grid.Col md={9}>
             <Query query={GET_LOCATIONS_QUERY} variables={{ archived }}>
-             {({ loading, error, data, refetch }) => {
+             {({ loading, error, data: {schoolLocations: locations}, refetch, fetchMore }) => {
                 // Loading
                 if (loading) return (
-                  <SchoolLocationsCard>
+                  <ContentCard cardTitle={t('school.locations.title')}>
                     <Dimmer active={true}
                             loadder={true}>
                     </Dimmer>
-                  </SchoolLocationsCard>
+                  </ContentCard>
                 )
                 // Error
                 if (error) return (
-                  <SchoolLocationsCard>
+                  <ContentCard cardTitle={t('school.locations.title')}>
                     <p>{t('school.locations.error_loading')}</p>
-                  </SchoolLocationsCard>
+                  </ContentCard>
                 )
                 const headerOptions = <Card.Options>
                   <Button color={(!archived) ? 'primary': 'secondary'}  
@@ -103,17 +102,43 @@ const SchoolLocations = ({ t, history, archived=false }) => (
                 </Card.Options>
                 
                 // Empty list
-                if (!data.schoolLocations.length) { return (
-                  <SchoolLocationsCard header_content={headerOptions}>
+                if (!locations.edges.length) { return (
+                  <ContentCard cardTitle={t('school.locations.title')}
+                               headerContent={headerOptions}>
                     <p>
                     {(!archived) ? t('school.locations.empty_list') : t("school.locations.empty_archive")}
                     </p>
                    
-                  </SchoolLocationsCard>
+                  </ContentCard>
                 )} else {   
                 // Life's good! :)
                 return (
-                  <SchoolLocationsCard header_content={headerOptions}>
+                  <ContentCard cardTitle={t('school.locations.title')}
+                               headerContent={headerOptions}
+                               pageInfo={locations.pageInfo}
+                               onLoadMore={() => {
+                                fetchMore({
+                                  variables: {
+                                    after: locations.pageInfo.endCursor
+                                  },
+                                  updateQuery: (previousResult, { fetchMoreResult }) => {
+                                    const newEdges = fetchMoreResult.schoolLocations.edges
+                                    const pageInfo = fetchMoreResult.schoolLocations.pageInfo
+
+                                    return newEdges.length
+                                      ? {
+                                          // Put the new locations at the end of the list and update `pageInfo`
+                                          // so we have the new `endCursor` and `hasNextPage` values
+                                          schoolLocations: {
+                                            __typename: previousResult.schoolLocations.__typename,
+                                            edges: [ ...previousResult.schoolLocations.edges, ...newEdges ],
+                                            pageInfo
+                                          }
+                                        }
+                                      : previousResult
+                                  }
+                                })
+                              }} >
                     <Table>
                           <Table.Header>
                             <Table.Row key={v4()}>
@@ -122,34 +147,40 @@ const SchoolLocations = ({ t, history, archived=false }) => (
                             </Table.Row>
                           </Table.Header>
                           <Table.Body>
-                              {console.log(data.schoolLocations)}
-                              {data.schoolLocations.map(({ id, name, displayPublic }) => (
+                              {locations.edges.map(({ node }) => (
                                 <Table.Row key={v4()}>
                                   <Table.Col key={v4()}>
-                                    {name}
+                                    {node.name}
                                   </Table.Col>
                                   <Table.Col key={v4()}>
-                                    {(displayPublic) ? 
+                                    {(node.displayPublic) ? 
                                       <Badge color="success">{t('yes')}</Badge>: 
                                       <Badge color="danger">{t('no')}</Badge>}
                                   </Table.Col>
                                   <Table.Col className="text-right" key={v4()}>
-                                    <Button className='btn-sm' 
-                                            onClick={() => history.push("/school/locations/edit/" + id)}
-                                            color="secondary">
-                                      {t('edit')}
-                                    </Button>
+                                    {(node.archived) ? 
+                                      <span className='text-muted'>{t('unarchive_to_edit')}</span> :
+                                      <Button className='btn-sm' 
+                                              onClick={() => history.push("/school/locations/edit/" + node.id)}
+                                              color="secondary">
+                                        {t('edit')}
+                                      </Button>
+                                    }
                                   </Table.Col>
                                   <Mutation mutation={ARCHIVE_LOCATION} key={v4()}>
                                     {(archiveLocation, { data }) => (
                                       <Table.Col className="text-right" key={v4()}>
-                                        <a className="icon" 
+                                        <button className="icon btn btn-link btn-sm" 
                                            title={t('archive')} 
+                                           href=""
                                            onClick={() => {
                                              console.log("clicked archived")
+                                             let id = node.id
                                              archiveLocation({ variables: {
-                                              id,
-                                              archived: !archived
+                                               input: {
+                                                id,
+                                                archived: !archived
+                                               }
                                         }, refetchQueries: [
                                             {query: GET_LOCATIONS_QUERY, variables: {"archived": archived }}
                                         ]}).then(({ data }) => {
@@ -166,7 +197,7 @@ const SchoolLocations = ({ t, history, archived=false }) => (
                                         })
                                         }}>
                                           <Icon prefix="fa" name="inbox" />
-                                        </a>
+                                        </button>
                                       </Table.Col>
                                     )}
                                   </Mutation>
@@ -174,7 +205,7 @@ const SchoolLocations = ({ t, history, archived=false }) => (
                               ))}
                           </Table.Body>
                         </Table>
-                  </SchoolLocationsCard>
+                  </ContentCard>
                 )}}
              }
             </Query>
@@ -187,7 +218,7 @@ const SchoolLocations = ({ t, history, archived=false }) => (
                 <Icon prefix="fe" name="plus-circle" /> {t('school.locations.add')}
               </Button>
             </HasPermissionWrapper>
-            <SchoolMenu active_link='schoollocation'/>
+            <SchoolMenu active_link='schoollocations'/>
           </Grid.Col>
         </Grid.Row>
       </Container>

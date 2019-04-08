@@ -1,30 +1,27 @@
+// @flow
+
 import React from 'react'
 import { Mutation } from "react-apollo";
 import gql from "graphql-tag"
-import { v4 } from "uuid"
 import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
-import { Formik, Form, Field, ErrorMessage } from 'formik'
-import validator from 'validator';
-import { toast } from 'react-toastify';
+import { Formik, Form as FoForm, Field, ErrorMessage } from 'formik'
+import { toast } from 'react-toastify'
+
 
 import { GET_LOCATIONS_QUERY } from './queries'
+import { LOCATION_SCHEMA } from './yupSchema'
 
-// @flow
 
 import {
   Page,
   Grid,
   Icon,
-  Dimmer,
-  Badge,
   Button,
   Card,
   Container,
-  List,
-  Form as TablerForm,
-  Table
-} from "tabler-react";
+  Form,
+} from "tabler-react"
 import SiteWrapper from "../../SiteWrapper"
 import HasPermissionWrapper from "../../HasPermissionWrapper"
 
@@ -32,14 +29,17 @@ import SchoolMenu from "../SchoolMenu"
 
 
 const ADD_LOCATION = gql`
-    mutation CreateSchoolLocation($name: String!, $displayPublic:Boolean!) {
-        createSchoolLocation(name: $name, displayPublic: $displayPublic) {
+  mutation CreateSchoolLocation($input: CreateSchoolLocationInput!) {
+    createSchoolLocation(input: $input) {
+      schoolLocation {
         id
-        name
+        archived
         displayPublic
-        }
+        name
+      }
     }
-`;
+  }
+`
 
 const return_url = "/school/locations"
 
@@ -57,21 +57,14 @@ const SchoolLocationAdd = ({ t, history }) => (
             <Mutation mutation={ADD_LOCATION} onCompleted={() => history.push(return_url)}> 
                 {(addLocation, { data }) => (
                     <Formik
-                        initialValues={{ name: '', displayPublic: false }}
-                        validate={values => {
-                            let errors = {};
-                            if (!values.name) {
-                            errors.name = t('form.errors.required')
-                            } else if 
-                                (!validator.isLength(values.name, {"min": 3})) {
-                                    errors.name = t('form.errors.min_length_3');
-                            }
-                            return errors;
-                        }}
+                        initialValues={{ name: '', displayPublic: true }}
+                        validationSchema={LOCATION_SCHEMA}
                         onSubmit={(values, { setSubmitting }) => {
                             addLocation({ variables: {
+                              input: {
                                 name: values.name, 
                                 displayPublic: values.displayPublic
+                              }
                             }, refetchQueries: [
                                 {query: GET_LOCATIONS_QUERY, variables: {"archived": false }}
                             ]})
@@ -84,32 +77,53 @@ const SchoolLocationAdd = ({ t, history }) => (
                                 toast.error((t('toast_server_error')) + ': ' +  error, {
                                     position: toast.POSITION.BOTTOM_RIGHT
                                   })
-                                console.log('there was an error sending the query', error);
+                                console.log('there was an error sending the query', error)
+                                setSubmitting(false)
                               })
                         }}
                         >
-                        {({ isSubmitting, errors }) => (
-                            <Form>
+                        {({ isSubmitting, errors, values }) => (
+                            <FoForm>
                                 <Card.Body>
-                                    <TablerForm.Label>{t('school.location.public')}</TablerForm.Label>
-                                    <Field type="checkbox" name="displayPublic"/>
-                                    <ErrorMessage name="displayPublic" component="div" />        
-                                    <TablerForm.Label>{t('school.location.name')}</TablerForm.Label>
-                                    <Field type="text" 
-                                            name="name" 
-                                            className={(errors.name) ? "form-control is-invalid" : "form-control"} 
-                                            autoComplete="off" />
-                                    <ErrorMessage name="name" component="span" className="invalid-feedback" />
+                                    {/* <Form.Group label={t('school.location.public')}>
+                                      <Field type="checkbox" name="displayPublic" checked={values.displayPublic} />
+                                      <ErrorMessage name="displayPublic" component="div" />        
+                                    </Form.Group> */}
+                                    <Form.Group>
+                                      <Form.Label className="custom-switch">
+                                        <Field 
+                                          className="custom-switch-input"
+                                          type="checkbox" 
+                                          name="displayPublic" 
+                                          checked={values.displayPublic} />
+                                        <span className="custom-switch-indicator" ></span>
+                                        <span className="custom-switch-description">{t('school.location.public')}</span>
+                                      </Form.Label>
+                                      <ErrorMessage name="displayPublic" component="div" />   
+                                    </Form.Group>    
+
+                                    <Form.Group label={t('school.location.name')}>
+                                      <Field type="text" 
+                                              name="name" 
+                                              className={(errors.name) ? "form-control is-invalid" : "form-control"} 
+                                              autoComplete="off" />
+                                      <ErrorMessage name="name" component="span" className="invalid-feedback" />
+                                    </Form.Group>
                                 </Card.Body>
                                 <Card.Footer>
-                                    <button className="btn btn-primary pull-right" type="submit" disabled={isSubmitting}>
-                                        {t('submit')}
-                                    </button>
-                                    <button className="btn btn-link" onClick={() => history.push(return_url)}>
+                                    <Button 
+                                      color="primary"
+                                      className="pull-right" 
+                                      type="submit" 
+                                      disabled={isSubmitting}
+                                    >
+                                      {t('submit')}
+                                    </Button>
+                                    <Button color="link" onClick={() => history.push(return_url)}>
                                         {t('cancel')}
-                                    </button>
+                                    </Button>
                                 </Card.Footer>
-                            </Form>
+                            </FoForm>
                         )}
                     </Formik>
                 )}

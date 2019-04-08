@@ -1,33 +1,36 @@
-import React from 'react'
-import { Query } from "react-apollo"
-import gql from "graphql-tag"
-import { v4 } from "uuid"
-
 // @flow
+
+import React from 'react'
+import { v4 } from "uuid"
+import { withTranslation } from 'react-i18next'
 
 import {
   List
 } from "tabler-react";
 import HasPermissionWrapper from "../HasPermissionWrapper"
 
-let schoollocation_active
-let schoolclasstypes_active
 
-const SchoolMenu = ({active_link}) => (
+let schoolclasstypes_active
+let schooldiscoveries_active
+let schoollocations_active
+let schoolmemberships_active
+
+const SchoolMenu = ({ t, active_link }) => (
     <List.Group transparent={true}>
-        {
-            (active_link == 'schoollocation') ? schoollocation_active = true: schoollocation_active = false
-            (active_link == 'schoolclasstypes') ? schoolclasstypes_active = true: schoolclasstypes_active = false
-        }
+        {(active_link === 'schoolclasstypes') ? schoolclasstypes_active = true: schoolclasstypes_active = false}
+        {(active_link === 'schooldiscoveries') ? schooldiscoveries_active = true: schooldiscoveries_active = false}
+        {(active_link === 'schoollocations') ? schoollocations_active = true: schoollocations_active = false}
+        {(active_link === 'schoolmembershipss') ? schoolmemberships_active = true: schoolmemberships_active = false}
+        
 
         <List.GroupItem
             key={v4()}
             className="d-flex align-items-center"
             to="#/school/locations"
             icon="home"
-            active={schoollocation_active}
+            active={schoollocations_active}
             >
-        Locations
+            {t('school.menu.locations')}
         </List.GroupItem>
         <List.GroupItem
             key={v4()}
@@ -36,7 +39,25 @@ const SchoolMenu = ({active_link}) => (
             icon="book-open"
             active={schoolclasstypes_active}
             >
-        Class types
+            {t('school.menu.classtypes')}
+        </List.GroupItem>
+        <List.GroupItem
+            key={v4()}
+            className="d-flex align-items-center"
+            to="#/school/discoveries"
+            icon="compass"
+            active={schooldiscoveries_active}
+            >
+            {t('school.menu.discoveries')}
+        </List.GroupItem>
+        <List.GroupItem
+            key={v4()}
+            className="d-flex align-items-center"
+            to="#/school/memberships"
+            icon="clipboard"
+            active={schoolmemberships_active}
+            >
+            {t('school.menu.memberships')}
         </List.GroupItem>
         {/* <HasPermissionWrapper 
             permission="view"
@@ -54,4 +75,4 @@ const SchoolMenu = ({active_link}) => (
     </List.Group>
 );
 
-export default SchoolMenu
+export default withTranslation()(SchoolMenu)
