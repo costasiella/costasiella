@@ -14,3 +14,5 @@ app/costasiella/__pycache__/
 *.js~
 
 *.yml~
+
+*.md~
