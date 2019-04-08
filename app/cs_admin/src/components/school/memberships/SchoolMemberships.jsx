@@ -142,13 +142,13 @@ const SchoolMemberships = ({ t, history, archived=false }) => (
                                     <BooleanBadge value={node.displayShop} />
                                   </Table.Col>
                                   <Table.Col key={v4()}>
-                                    {node.price} <br />
+                                    {node.priceDisplay} <br />
                                     <span className="text-muted">{node.financeTaxRate.name}</span>
                                   </Table.Col>
                                   <Table.Col key={v4()}>
                                     {node.validity} <br />
                                     <span className="text-muted">
-                                      <Validity validity={node.validityUnit} />
+                                      {node.validityUnitDisplay}
                                     </span>
                                   </Table.Col>
                                   <Table.Col className="text-right" key={v4()}>

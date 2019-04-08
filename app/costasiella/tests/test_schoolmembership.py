@@ -1,6 +1,5 @@
 # from graphql.error.located_error import GraphQLLocatedError
 import graphql
-import base64
 
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Permission
@@ -14,6 +13,8 @@ from . import factories as f
 from .helpers import execute_test_client_api_query
 from .. import models
 from .. import schema
+from ..modules.finance_tools import display_float_as_amount
+from ..modules.validity_tools import display_validity_unit
 
 from graphql_relay import to_global_id
 
@@ -90,12 +91,14 @@ class GQLSchoolMembership(TestCase):
           name
           description
           price
+          priceDisplay
           financeTaxRate {
             id
             name
           }
           validity
           validityUnit
+          validityUnitDisplay
           termsAndConditions
           financeGlaccount {
             id 
@@ -121,12 +124,14 @@ class GQLSchoolMembership(TestCase):
       name
       description
       price
+      priceDisplay
       financeTaxRate {
         id
         name
       }
       validity
       validityUnit
+      validityUnitDisplay
       termsAndConditions
       financeGlaccount {
         id 
@@ -284,10 +289,12 @@ class GQLSchoolMembership(TestCase):
         self.assertEqual(data['schoolMemberships']['edges'][0]['node']['name'], membership.name)
         self.assertEqual(data['schoolMemberships']['edges'][0]['node']['description'], membership.description)
         self.assertEqual(data['schoolMemberships']['edges'][0]['node']['price'], membership.price)
+        self.assertEqual(data['schoolMemberships']['edges'][0]['node']['priceDisplay'], display_float_as_amount(membership.price))
         self.assertEqual(data['schoolMemberships']['edges'][0]['node']['financeTaxRate']['id'], 
           to_global_id("FinanceTaxRateNode", membership.finance_tax_rate.pk))
         self.assertEqual(data['schoolMemberships']['edges'][0]['node']['validity'], membership.validity)
         self.assertEqual(data['schoolMemberships']['edges'][0]['node']['validityUnit'], membership.validity_unit)
+        self.assertEqual(data['schoolMemberships']['edges'][0]['node']['validityUnitDisplay'], display_validity_unit(membership.validity_unit))
         self.assertEqual(data['schoolMemberships']['edges'][0]['node']['financeGlaccount']['id'], 
           to_global_id("FinanceGLAccountNode", membership.finance_glaccount.pk))
         self.assertEqual(data['schoolMemberships']['edges'][0]['node']['financeCostcenter']['id'], 
@@ -334,10 +341,12 @@ class GQLSchoolMembership(TestCase):
         self.assertEqual(data['schoolMemberships']['edges'][0]['node']['name'], membership.name)
         self.assertEqual(data['schoolMemberships']['edges'][0]['node']['description'], membership.description)
         self.assertEqual(data['schoolMemberships']['edges'][0]['node']['price'], membership.price)
+        self.assertEqual(data['schoolMemberships']['edges'][0]['node']['priceDisplay'], display_float_as_amount(membership.price))
         self.assertEqual(data['schoolMemberships']['edges'][0]['node']['financeTaxRate']['id'], 
           to_global_id("FinanceTaxRateNode", membership.finance_tax_rate.pk))
         self.assertEqual(data['schoolMemberships']['edges'][0]['node']['validity'], membership.validity)
         self.assertEqual(data['schoolMemberships']['edges'][0]['node']['validityUnit'], membership.validity_unit)
+        self.assertEqual(data['schoolMemberships']['edges'][0]['node']['validityUnitDisplay'], display_validity_unit(membership.validity_unit))
         self.assertEqual(data['schoolMemberships']['edges'][0]['node']['financeGlaccount']['id'], 
           to_global_id("FinanceGLAccountNode", membership.finance_glaccount.pk))
         self.assertEqual(data['schoolMemberships']['edges'][0]['node']['financeCostcenter']['id'], 
@@ -377,10 +386,12 @@ class GQLSchoolMembership(TestCase):
         self.assertEqual(data['schoolMembership']['archived'], membership.archived)
         self.assertEqual(data['schoolMembership']['name'], membership.name)
         self.assertEqual(data['schoolMembership']['price'], membership.price)
+        self.assertEqual(data['schoolMembership']['priceDisplay'], display_float_as_amount(membership.price))
         self.assertEqual(data['schoolMembership']['financeTaxRate']['id'], 
           to_global_id("FinanceTaxRateNode", membership.finance_tax_rate.pk))
         self.assertEqual(data['schoolMembership']['validity'], membership.validity)
         self.assertEqual(data['schoolMembership']['validityUnit'], membership.validity_unit)
+        self.assertEqual(data['schoolMembership']['validityUnitDisplay'], display_validity_unit(membership.validity_unit))
         self.assertEqual(data['schoolMembership']['financeGlaccount']['id'], 
           to_global_id("FinanceGLAccountNode", membership.finance_glaccount.pk))
         self.assertEqual(data['schoolMembership']['financeCostcenter']['id'], 
