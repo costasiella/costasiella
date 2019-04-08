@@ -109,16 +109,28 @@ WSGI_APPLICATION = 'app.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'costasiella',
-        'USER': 'user',
-        'PASSWORD': 'password',
-        'HOST': 'localhost',
-        'PORT': 3306
+if 'TRAVIS' in os.environ:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': 'test',
+            'USER': 'root',
+            'PASSWORD': '',
+            'HOST': '127.0.0.1',
+            # 'PORT': 3306
+        }
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': 'costasiella',
+            'USER': 'user',
+            'PASSWORD': 'password',
+            'HOST': 'localhost',
+            'PORT': 3306
+        }
+    }
 
 
 # Password validation
