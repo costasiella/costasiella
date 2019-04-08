@@ -18,12 +18,14 @@ export const GET_MEMBERSHIPS_QUERY = gql`
           name
           description
           price
+          priceDisplay
           financeTaxRate {
             id
             name
           }
           validity
           validityUnit
+          validityUnitDisplay
           termsAndConditions
           financeGlaccount {
             id 
