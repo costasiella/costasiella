@@ -5,7 +5,6 @@ services:
   - mysql
   - redis-server
 env: 
-  - DJANGO=2.2 DB=mysql
   - TRAVIS=true
 # command to install dependencies
 install:
