@@ -29,12 +29,12 @@ import BooleanBadge from "../../ui/BooleanBadge"
 import ContentCard from "../../general/ContentCard"
 import SchoolMenu from "../SchoolMenu"
 
-import { GET_CLASSPASS_QUERY } from "./queries"
+import { GET_CLASSPASSES_QUERY } from "./queries"
 
 const ARCHIVE_CLASSPASS = gql`
-  mutation ArchiveSchoolClasscard($input: ArchiveSchoolClasscardInput!) {
-    archiveSchoolClasscard(input: $input) {
-      schoolClasscard {
+  mutation ArchiveSchoolClasspass($input: ArchiveSchoolClasspassInput!) {
+    archiveSchoolClasspass(input: $input) {
+      schoolClasspass {
         id
         archived
       }
@@ -50,11 +50,11 @@ const SchoolClasspasses = ({ t, history, archived=false }) => (
         <Page.Header title={t("school.page_title")} />
         <Grid.Row>
           <Grid.Col md={9}>
-            <Query query={GET_CLASSCARDS_QUERY} variables={{ archived }}>
-             {({ loading, error, data: {schoolClasscards: classcards}, refetch, fetchMore }) => {
+            <Query query={GET_CLASSPASSES_QUERY} variables={{ archived }}>
+             {({ loading, error, data: {schoolClasspasses: classpasses}, refetch, fetchMore }) => {
                 // Loading
                 if (loading) return (
-                  <ContentCard cardTitle={t('school.classcards.title')}>
+                  <ContentCard cardTitle={t('school.classpasses.title')}>
                     <Dimmer active={true}
                             loadder={true}>
                     </Dimmer>
@@ -62,8 +62,8 @@ const SchoolClasspasses = ({ t, history, archived=false }) => (
                 )
                 // Error
                 if (error) return (
-                  <ContentCard cardTitle={t('school.classcards.title')}>
-                    <p>{t('school.classcards.error_loading')}</p>
+                  <ContentCard cardTitle={t('school.classpasses.title')}>
+                    <p>{t('school.classpasses.error_loading')}</p>
                   </ContentCard>
                 )
                 const headerOptions = <Card.Options>
@@ -81,36 +81,36 @@ const SchoolClasspasses = ({ t, history, archived=false }) => (
                 </Card.Options>
                 
                 // Empty list
-                if (!classcards.edges.length) { return (
-                  <ContentCard cardTitle={t('school.classcards.title')}
+                if (!classpasses.edges.length) { return (
+                  <ContentCard cardTitle={t('school.classpasses.title')}
                                headerContent={headerOptions}>
                     <p>
-                    {(!archived) ? t('school.classcards.empty_list') : t("school.classcards.empty_archive")}
+                    {(!archived) ? t('school.classpasses.empty_list') : t("school.classpasses.empty_archive")}
                     </p>
                    
                   </ContentCard>
                 )} else {   
                 // Life's good! :)
                 return (
-                  <ContentCard cardTitle={t('school.classcards.title')}
+                  <ContentCard cardTitle={t('school.classpasses.title')}
                                headerContent={headerOptions}
-                               pageInfo={classcards.pageInfo}
+                               pageInfo={classpasses.pageInfo}
                                onLoadMore={() => {
                                 fetchMore({
                                   variables: {
-                                    after: classcards.pageInfo.endCursor
+                                    after: classpasses.pageInfo.endCursor
                                   },
                                   updateQuery: (previousResult, { fetchMoreResult }) => {
-                                    const newEdges = fetchMoreResult.schoolClasscards.edges
-                                    const pageInfo = fetchMoreResult.schoolClasscards.pageInfo
+                                    const newEdges = fetchMoreResult.schoolClasspasses.edges
+                                    const pageInfo = fetchMoreResult.schoolClasspasses.pageInfo
 
                                     return newEdges.length
                                       ? {
                                           // Put the new memberships at the end of the list and update `pageInfo`
                                           // so we have the new `endCursor` and `hasNextPage` values
                                           schoolMemberships: {
-                                            __typename: previousResult.schoolClasscards.__typename,
-                                            edges: [ ...previousResult.schoolClasscards.edges, ...newEdges ],
+                                            __typename: previousResult.schoolClasspasses.__typename,
+                                            edges: [ ...previousResult.schoolClasspasses.edges, ...newEdges ],
                                             pageInfo
                                           }
                                         }
@@ -125,11 +125,11 @@ const SchoolClasspasses = ({ t, history, archived=false }) => (
                               <Table.ColHeader>{t('public')}</Table.ColHeader>
                               <Table.ColHeader>{t('shop')}</Table.ColHeader>
                               <Table.ColHeader>{t('price')}</Table.ColHeader>
-                              <Table.ColHeader>{t('school.classcards.validity')}</Table.ColHeader>
+                              <Table.ColHeader>{t('school.classpasses.validity')}</Table.ColHeader>
                             </Table.Row>
                           </Table.Header>
                           <Table.Body>
-                              {classcards.edges.map(({ node }) => (
+                              {classpasses.edges.map(({ node }) => (
                                 <Table.Row key={v4()}>
                                   <Table.Col key={v4()}>
                                     {node.name}
@@ -154,14 +154,14 @@ const SchoolClasspasses = ({ t, history, archived=false }) => (
                                     {(node.archived) ? 
                                       <span className='text-muted'>{t('unarchive_to_edit')}</span> :
                                       <Button className='btn-sm' 
-                                              onClick={() => history.push("/school/classcards/edit/" + node.id)}
+                                              onClick={() => history.push("/school/classpasses/edit/" + node.id)}
                                               color="secondary">
                                         {t('edit')}
                                       </Button>
                                     }
                                   </Table.Col>
-                                  <Mutation mutation={ARCHIVE_CLASSCARD} key={v4()}>
-                                    {(archiveClasscard, { data }) => (
+                                  <Mutation mutation={ARCHIVE_CLASSPASS} key={v4()}>
+                                    {(archiveClasspasses, { data }) => (
                                       <Table.Col className="text-right" key={v4()}>
                                         <button className="icon btn btn-link btn-sm" 
                                            title={t('archive')} 
@@ -169,13 +169,13 @@ const SchoolClasspasses = ({ t, history, archived=false }) => (
                                            onClick={() => {
                                              console.log("clicked archived")
                                              let id = node.id
-                                             archiveClasscard({ variables: {
+                                             archiveClasspasses({ variables: {
                                                input: {
                                                 id,
                                                 archived: !archived
                                                }
                                         }, refetchQueries: [
-                                            {query: GET_CLASSCARDS_QUERY, variables: {"archived": archived }}
+                                            {query: GET_CLASSPASSES_QUERY, variables: {"archived": archived }}
                                         ]}).then(({ data }) => {
                                           console.log('got data', data);
                                           toast.success(
@@ -205,13 +205,13 @@ const SchoolClasspasses = ({ t, history, archived=false }) => (
           </Grid.Col>
           <Grid.Col md={3}>
             <HasPermissionWrapper permission="add"
-                                  resource="schoolclasscard">
+                                  resource="schoolclasspass">
               <Button color="primary btn-block mb-6"
-                      onClick={() => history.push("/school/classcards/add")}>
-                <Icon prefix="fe" name="plus-circle" /> {t('school.classcards.add')}
+                      onClick={() => history.push("/school/classpasses/add")}>
+                <Icon prefix="fe" name="plus-circle" /> {t('school.classpasses.add')}
               </Button>
             </HasPermissionWrapper>
-            <SchoolMenu active_link='schoolclasscards'/>
+            <SchoolMenu active_link='schoolclasspasses'/>
           </Grid.Col>
         </Grid.Row>
       </Container>
@@ -219,4 +219,4 @@ const SchoolClasspasses = ({ t, history, archived=false }) => (
   </SiteWrapper>
 );
 
-export default withTranslation()(withRouter(SchoolClasscards))
+export default withTranslation()(withRouter(SchoolClasspasses))

@@ -72,7 +72,7 @@ class SchoolClasspassNodeInterface(graphene.Interface):
 
 class SchoolClasspassNode(DjangoObjectType):   
     class Meta:
-        model = SchoolClaspass
+        model = SchoolClasspass
         filter_fields = ['archived']
         interfaces = (graphene.relay.Node, SchoolClasspassNodeInterface)
 
