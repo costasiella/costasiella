@@ -8,7 +8,7 @@ from .finance_taxrate import FinanceTaxRate
 from .school_membership import SchoolMembership
 
 
-class SchoolClasscard(models.Model):
+class SchoolClasspass(models.Model):
     VALIDITY_UNITS = (
         ("DAYS", _("Days")),
         ("WEEKS", _("Weeks")),

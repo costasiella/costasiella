@@ -5,7 +5,7 @@ from .financecostcenter import FinanceCostCenterQuery, FinanceCostCenterMutation
 from .financeglaccount import FinanceGLAccountQuery, FinanceGLAccountMutation
 from .financetaxrate import FinanceTaxRateQuery, FinanceTaxRateMutation
 
-from .schoolclasscard import SchoolClasscardQuery, SchoolClasscardMutation
+from .schoolclasspass import SchoolClasspassQuery, SchoolClasspassMutation
 from .schoolclasstype import SchoolClasstypeQuery, SchoolClasstypeMutation
 from .schooldiscovery import SchoolDiscoveryQuery, SchoolDiscoveryMutation
 from .schoollocation import SchoolLocationQuery, SchoolLocationMutation
@@ -16,7 +16,7 @@ from .user import UserQuery, UserMutation
 class Query(FinanceCostCenterQuery,
             FinanceGLAccountQuery,
             FinanceTaxRateQuery,
-            SchoolClasscardQuery,
+            SchoolClasspassQuery,
             SchoolClasstypeQuery,
             SchoolDiscoveryQuery,
             SchoolLocationQuery, 
@@ -29,7 +29,7 @@ class Query(FinanceCostCenterQuery,
 class Mutation(FinanceCostCenterMutation,
                FinanceGLAccountMutation,
                FinanceTaxRateMutation,
-               SchoolClasscardMutation,
+               SchoolClasspassMutation,
                SchoolClasstypeMutation,
                SchoolDiscoveryMutation,
                SchoolLocationMutation,
