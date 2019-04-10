@@ -43,18 +43,18 @@ const ARCHIVE_CLASSCARD = gql`
 `
 
 
-const SchoolMemberships = ({ t, history, archived=false }) => (
+const SchoolClasscards = ({ t, history, archived=false }) => (
   <SiteWrapper>
     <div className="my-3 my-md-5">
       <Container>
         <Page.Header title={t("school.page_title")} />
         <Grid.Row>
           <Grid.Col md={9}>
-            <Query query={GET_MEMBERSHIPS_QUERY} variables={{ archived }}>
-             {({ loading, error, data: {schoolMemberships: memberships}, refetch, fetchMore }) => {
+            <Query query={GET_CLASSCARDS_QUERY} variables={{ archived }}>
+             {({ loading, error, data: {schoolClasscards: classcards}, refetch, fetchMore }) => {
                 // Loading
                 if (loading) return (
-                  <ContentCard cardTitle={t('school.memberships.title')}>
+                  <ContentCard cardTitle={t('school.classcards.title')}>
                     <Dimmer active={true}
                             loadder={true}>
                     </Dimmer>
@@ -62,8 +62,8 @@ const SchoolMemberships = ({ t, history, archived=false }) => (
                 )
                 // Error
                 if (error) return (
-                  <ContentCard cardTitle={t('school.memberships.title')}>
-                    <p>{t('school.memberships.error_loading')}</p>
+                  <ContentCard cardTitle={t('school.classcards.title')}>
+                    <p>{t('school.classcards.error_loading')}</p>
                   </ContentCard>
                 )
                 const headerOptions = <Card.Options>
@@ -82,35 +82,35 @@ const SchoolMemberships = ({ t, history, archived=false }) => (
                 
                 // Empty list
                 if (!memberships.edges.length) { return (
-                  <ContentCard cardTitle={t('school.memberships.title')}
+                  <ContentCard cardTitle={t('school.classcards.title')}
                                headerContent={headerOptions}>
                     <p>
-                    {(!archived) ? t('school.memberships.empty_list') : t("school.memberships.empty_archive")}
+                    {(!archived) ? t('school.classcards.empty_list') : t("school.classcards.empty_archive")}
                     </p>
                    
                   </ContentCard>
                 )} else {   
                 // Life's good! :)
                 return (
-                  <ContentCard cardTitle={t('school.memberships.title')}
+                  <ContentCard cardTitle={t('school.classcards.title')}
                                headerContent={headerOptions}
-                               pageInfo={memberships.pageInfo}
+                               pageInfo={classcards.pageInfo}
                                onLoadMore={() => {
                                 fetchMore({
                                   variables: {
-                                    after: memberships.pageInfo.endCursor
+                                    after: classcards.pageInfo.endCursor
                                   },
                                   updateQuery: (previousResult, { fetchMoreResult }) => {
-                                    const newEdges = fetchMoreResult.schoolMemberships.edges
-                                    const pageInfo = fetchMoreResult.schoolMemberships.pageInfo
+                                    const newEdges = fetchMoreResult.schoolClasscards.edges
+                                    const pageInfo = fetchMoreResult.schoolClasscards.pageInfo
 
                                     return newEdges.length
                                       ? {
                                           // Put the new memberships at the end of the list and update `pageInfo`
                                           // so we have the new `endCursor` and `hasNextPage` values
                                           schoolMemberships: {
-                                            __typename: previousResult.schoolMemberships.__typename,
-                                            edges: [ ...previousResult.schoolMemberships.edges, ...newEdges ],
+                                            __typename: previousResult.schoolClasscards.__typename,
+                                            edges: [ ...previousResult.schoolClasscards.edges, ...newEdges ],
                                             pageInfo
                                           }
                                         }
@@ -125,7 +125,7 @@ const SchoolMemberships = ({ t, history, archived=false }) => (
                               <Table.ColHeader>{t('public')}</Table.ColHeader>
                               <Table.ColHeader>{t('shop')}</Table.ColHeader>
                               <Table.ColHeader>{t('price')}</Table.ColHeader>
-                              <Table.ColHeader>{t('school.memberships.validity')}</Table.ColHeader>
+                              <Table.ColHeader>{t('school.classcards.validity')}</Table.ColHeader>
                             </Table.Row>
                           </Table.Header>
                           <Table.Body>
@@ -154,14 +154,14 @@ const SchoolMemberships = ({ t, history, archived=false }) => (
                                     {(node.archived) ? 
                                       <span className='text-muted'>{t('unarchive_to_edit')}</span> :
                                       <Button className='btn-sm' 
-                                              onClick={() => history.push("/school/memberships/edit/" + node.id)}
+                                              onClick={() => history.push("/school/classcards/edit/" + node.id)}
                                               color="secondary">
                                         {t('edit')}
                                       </Button>
                                     }
                                   </Table.Col>
-                                  <Mutation mutation={ARCHIVE_MEMBERSHIP} key={v4()}>
-                                    {(archiveMembership, { data }) => (
+                                  <Mutation mutation={ARCHIVE_CLASSCARD} key={v4()}>
+                                    {(archiveClasscard, { data }) => (
                                       <Table.Col className="text-right" key={v4()}>
                                         <button className="icon btn btn-link btn-sm" 
                                            title={t('archive')} 
@@ -169,13 +169,13 @@ const SchoolMemberships = ({ t, history, archived=false }) => (
                                            onClick={() => {
                                              console.log("clicked archived")
                                              let id = node.id
-                                             archiveMembership({ variables: {
+                                             archiveClasscard({ variables: {
                                                input: {
                                                 id,
                                                 archived: !archived
                                                }
                                         }, refetchQueries: [
-                                            {query: GET_MEMBERSHIPS_QUERY, variables: {"archived": archived }}
+                                            {query: GET_CLASSCARDS_QUERY, variables: {"archived": archived }}
                                         ]}).then(({ data }) => {
                                           console.log('got data', data);
                                           toast.success(
@@ -205,13 +205,13 @@ const SchoolMemberships = ({ t, history, archived=false }) => (
           </Grid.Col>
           <Grid.Col md={3}>
             <HasPermissionWrapper permission="add"
-                                  resource="schoolmembership">
+                                  resource="schoolclasscard">
               <Button color="primary btn-block mb-6"
-                      onClick={() => history.push("/school/memberships/add")}>
-                <Icon prefix="fe" name="plus-circle" /> {t('school.memberships.add')}
+                      onClick={() => history.push("/school/classcards/add")}>
+                <Icon prefix="fe" name="plus-circle" /> {t('school.classcards.add')}
               </Button>
             </HasPermissionWrapper>
-            <SchoolMenu active_link='schoolmemberships'/>
+            <SchoolMenu active_link='schoolclasscards'/>
           </Grid.Col>
         </Grid.Row>
       </Container>
@@ -219,4 +219,4 @@ const SchoolMemberships = ({ t, history, archived=false }) => (
   </SiteWrapper>
 );
 
-export default withTranslation()(withRouter(SchoolMemberships))
+export default withTranslation()(withRouter(SchoolClasscards))
