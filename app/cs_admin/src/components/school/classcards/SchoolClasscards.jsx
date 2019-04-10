@@ -81,7 +81,7 @@ const SchoolClasscards = ({ t, history, archived=false }) => (
                 </Card.Options>
                 
                 // Empty list
-                if (!memberships.edges.length) { return (
+                if (!classcards.edges.length) { return (
                   <ContentCard cardTitle={t('school.classcards.title')}
                                headerContent={headerOptions}>
                     <p>
@@ -129,7 +129,7 @@ const SchoolClasscards = ({ t, history, archived=false }) => (
                             </Table.Row>
                           </Table.Header>
                           <Table.Body>
-                              {memberships.edges.map(({ node }) => (
+                              {classcards.edges.map(({ node }) => (
                                 <Table.Row key={v4()}>
                                   <Table.Col key={v4()}>
                                     {node.name}

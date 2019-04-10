@@ -23,7 +23,7 @@ import FinanceTaxRatesAdd from './components/finance/taxrates/FinanceTaxRateAdd'
 import FinanceTaxRatesEdit from './components/finance/taxrates/FinanceTaxRateEdit'
 
 import SchoolHome from './components/school/home/SchoolHome'
-import SchoolClasscards from './components/school/classtypes/SchoolClasscards'
+import SchoolClasscards from './components/school/classcards/SchoolClasscards'
 import SchoolClasstypes from './components/school/classtypes/SchoolClasstypes'
 import SchoolClasstypeAdd from './components/school/classtypes/SchoolClasstypeAdd'
 import SchoolClasstypeEdit from './components/school/classtypes/SchoolClasstypeEdit'
