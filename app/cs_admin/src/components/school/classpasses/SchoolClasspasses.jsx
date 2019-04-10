@@ -29,9 +29,9 @@ import BooleanBadge from "../../ui/BooleanBadge"
 import ContentCard from "../../general/ContentCard"
 import SchoolMenu from "../SchoolMenu"
 
-import { GET_CLASSCARDS_QUERY } from "./queries"
+import { GET_CLASSPASS_QUERY } from "./queries"
 
-const ARCHIVE_CLASSCARD = gql`
+const ARCHIVE_CLASSPASS = gql`
   mutation ArchiveSchoolClasscard($input: ArchiveSchoolClasscardInput!) {
     archiveSchoolClasscard(input: $input) {
       schoolClasscard {
@@ -43,7 +43,7 @@ const ARCHIVE_CLASSCARD = gql`
 `
 
 
-const SchoolClasscards = ({ t, history, archived=false }) => (
+const SchoolClasspasses = ({ t, history, archived=false }) => (
   <SiteWrapper>
     <div className="my-3 my-md-5">
       <Container>

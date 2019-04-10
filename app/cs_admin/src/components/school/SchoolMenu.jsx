@@ -10,7 +10,7 @@ import {
 import HasPermissionWrapper from "../HasPermissionWrapper"
 
 
-let schoolclasscards_active
+let schoolclasspasses_active
 let schoolclasstypes_active
 let schooldiscoveries_active
 let schoollocations_active
@@ -18,7 +18,7 @@ let schoolmemberships_active
 
 const SchoolMenu = ({ t, active_link }) => (
     <List.Group transparent={true}>
-        {(active_link === 'schoolclasscards') ? schoolclasscards_active = true: schoolclasscards_active = false}
+        {(active_link === 'schoolclasspasses') ? schoolclasspasses_active = true: schoolclasspasses_active = false}
         {(active_link === 'schoolclasstypes') ? schoolclasstypes_active = true: schoolclasstypes_active = false}
         {(active_link === 'schooldiscoveries') ? schooldiscoveries_active = true: schooldiscoveries_active = false}
         {(active_link === 'schoollocations') ? schoollocations_active = true: schoollocations_active = false}
@@ -64,11 +64,11 @@ const SchoolMenu = ({ t, active_link }) => (
         <List.GroupItem
             key={v4()}
             className="d-flex align-items-center"
-            to="#/school/classcards"
-            icon="clipboard"
-            active={schoolclasscards_active}
+            to="#/school/classpasses"
+            icon="credit-card"
+            active={schoolclasspasses_active}
             >
-            {t('school.menu.classcards')}
+            {t('school.menu.classpasses')}
         </List.GroupItem>
         {/* <HasPermissionWrapper 
             permission="view"

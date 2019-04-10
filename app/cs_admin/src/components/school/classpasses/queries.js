@@ -1,8 +1,8 @@
 import gql from "graphql-tag"
 
-export const GET_CLASSCARDS_QUERY = gql`
-  query SchoolClasscards($after: String, $before: String, $archived: Boolean) {
-    schoolClasscards(first: 15, before: $before, after: $after, archived: $archived) {
+export const GET_CLASSPASSES_QUERY = gql`
+  query SchoolClasspasses($after: String, $before: String, $archived: Boolean) {
+    schoolClasspasses(first: 15, before: $before, after: $after, archived: $archived) {
       pageInfo {
         startCursor
         endCursor
@@ -47,9 +47,9 @@ export const GET_CLASSCARDS_QUERY = gql`
   }
 `
 
-export const GET_CLASSCARD_QUERY = gql`
-  query SchoolClasscard($id: ID!, $after: String, $before: String, $archived: Boolean!) {
-    schoolClasscard(id:$id) {
+export const GET_CLASSPASS_QUERY = gql`
+  query SchoolClasspass($id: ID!, $after: String, $before: String, $archived: Boolean!) {
+    schoolClasspass(id:$id) {
       id
       archived
       displayPublic
