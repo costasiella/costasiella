@@ -23,13 +23,14 @@ import FinanceTaxRatesAdd from './components/finance/taxrates/FinanceTaxRateAdd'
 import FinanceTaxRatesEdit from './components/finance/taxrates/FinanceTaxRateEdit'
 
 import SchoolHome from './components/school/home/SchoolHome'
-import SchoolDiscoveries from './components/school/discovery/SchoolDiscoveries'
-import SchoolDiscoveryAdd from './components/school/discovery/SchoolDiscoveryAdd'
-import SchoolDiscoveryEdit from './components/school/discovery/SchoolDiscoveryEdit'
+import SchoolClasscards from './components/school/classtypes/SchoolClasscards'
 import SchoolClasstypes from './components/school/classtypes/SchoolClasstypes'
 import SchoolClasstypeAdd from './components/school/classtypes/SchoolClasstypeAdd'
 import SchoolClasstypeEdit from './components/school/classtypes/SchoolClasstypeEdit'
 import SchoolClasstypeEditImage from './components/school/classtypes/SchoolClasstypeEditImage'
+import SchoolDiscoveries from './components/school/discovery/SchoolDiscoveries'
+import SchoolDiscoveryAdd from './components/school/discovery/SchoolDiscoveryAdd'
+import SchoolDiscoveryEdit from './components/school/discovery/SchoolDiscoveryEdit'
 import SchoolLocations from './components/school/locations/SchoolLocations'
 import SchoolLocationAdd from './components/school/locations/SchoolLocationAdd'
 import SchoolLocationEdit from './components/school/locations/SchoolLocationEdit'
@@ -100,13 +101,14 @@ class App extends Component {
             <Route exact path="/finance/taxrates/add" component={FinanceTaxRatesAdd} />
             <Route exact path="/finance/taxrates/edit/:id" component={FinanceTaxRatesEdit} />
             <Route exact path="/school" component={SchoolHome} />
-            <Route exact path="/school/discoveries" component={SchoolDiscoveries} />
-            <Route exact path="/school/discoveries/add" component={SchoolDiscoveryAdd} /> 
-            <Route exact path="/school/discoveries/edit/:id" component={SchoolDiscoveryEdit} /> 
+            <Route exact path="/school/classcards" component={SchoolClasscards} />
             <Route exact path="/school/classtypes" component={SchoolClasstypes} />
             <Route exact path="/school/classtypes/add" component={SchoolClasstypeAdd} />
             <Route exact path="/school/classtypes/edit/:id" component={SchoolClasstypeEdit} />
             <Route exact path="/school/classtypes/edit_image/:id" component={SchoolClasstypeEditImage} />
+            <Route exact path="/school/discoveries" component={SchoolDiscoveries} />
+            <Route exact path="/school/discoveries/add" component={SchoolDiscoveryAdd} /> 
+            <Route exact path="/school/discoveries/edit/:id" component={SchoolDiscoveryEdit} /> 
             <Route exact path="/school/locations" component={SchoolLocations} />
             <Route exact path="/school/locations/add" component={SchoolLocationAdd} />
             <Route exact path="/school/locations/edit/:id" component={SchoolLocationEdit} />
