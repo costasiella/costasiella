@@ -31,10 +31,10 @@ import HasPermissionWrapper from "../../HasPermissionWrapper"
 import SchoolMenu from "../SchoolMenu"
 
 
-const CREATE_MEMBERSHIP = gql`
-  mutation CreateMembership($input: CreateSchoolMembershipInput!) {
-    createSchoolMembership(input: $input) {
-      schoolMembership {
+const CREATE_CLASSPASS = gql`
+  mutation CreateClasspass($input: CreateSchoolClasspassInput!) {
+    createSchoolClasspass(input: $input) {
+      schoolClasspass {
         id
         displayPublic
         displayShop
@@ -47,7 +47,13 @@ const CREATE_MEMBERSHIP = gql`
         }
         validity
         validityUnit
-        termsAndConditions
+        classes
+        unlimited
+        schoolMembership {
+          id
+          name
+        }
+        quickStatsAmount
         financeGlaccount {
           id
           name
@@ -62,7 +68,7 @@ const CREATE_MEMBERSHIP = gql`
 `
 
 
-class SchoolMembershipAdd extends Component {
+class SchoolClasspassAdd extends Component {
   constructor(props) {
     super(props)
     console.log("School membership add props:")
@@ -318,4 +324,4 @@ class SchoolMembershipAdd extends Component {
   }
 
 
-export default withTranslation()(withRouter(SchoolMembershipAdd))
+export default withTranslation()(withRouter(SchoolClasspassAdd))
