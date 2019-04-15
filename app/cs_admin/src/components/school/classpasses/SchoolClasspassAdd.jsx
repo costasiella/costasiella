@@ -276,7 +276,7 @@ class SchoolClasspassAdd extends Component {
                                                  name="schoolMembership" 
                                                  className={(errors.schoolMembership) ? "form-control is-invalid" : "form-control"} 
                                                  autoComplete="off">
-                                            <option value="" key={v4()}></option>
+                                            <option value="" key={v4()}>{t("general.membership_not_required")}</option>
                                             {inputData.schoolMemberships.edges.map(({ node }) =>
                                               <option value={node.id} key={v4()}>{node.name} ({node.code})</option>
                                             )}

@@ -26,11 +26,12 @@ class GQLSchoolClasspass(TestCase):
         self.admin_user = f.AdminFactory.create()
         self.anon_user = AnonymousUser()
 
-        self.permission_view = 'view_schoolmembership'
-        self.permission_add = 'add_schoolmembership'
-        self.permission_change = 'change_schoolmembership'
-        self.permission_delete = 'delete_schoolmembership'
+        self.permission_view = 'view_schoolclasspass'
+        self.permission_add = 'add_schoolclasspass'
+        self.permission_change = 'change_schoolclasspass'
+        self.permission_delete = 'delete_schoolclasspass'
 
+        self.school_membership = f.SchoolMembershipFactory.create()
         self.finance_tax_rate = f.FinanceTaxRateFactory.create()
         self.finance_glaccount = f.FinanceGLAccountFactory.create()
         self.finance_costcenter = f.FinanceCostCenterFactory.create()
@@ -39,13 +40,15 @@ class GQLSchoolClasspass(TestCase):
             "input": {
                 "displayPublic": True,
                 "displayShop": True,
-                "name": "First membership",
+                "name": "First classpass",
                 "description": "Description",
-                "price": 12.50,
+                "price": 125,
                 "financeTaxRate": to_global_id("FinanceTaxRateNode", self.finance_tax_rate.pk),
                 "validity": 1,
                 "validityUnit": "MONTHS",
-                "termsAndConditions": "T and C",
+                "classes": 10,
+                "unlimited": False,
+                "schoolMembership": to_global_id("SchoolMembershipNode", self.school_membership.pk),
                 "financeGlaccount": to_global_id("FinanceGLAccountNode", self.finance_glaccount.pk),
                 "financeCostcenter": to_global_id("FinanceCostCenterNode", self.finance_costcenter.pk),
             }
@@ -55,7 +58,7 @@ class GQLSchoolClasspass(TestCase):
             "input": {
                 "displayPublic": True,
                 "displayShop": True,
-                "name": "Updated membership",
+                "name": "Updated classpass",
                 "description": "Description",
                 "price": 12.50,
                 "financeTaxRate": to_global_id("FinanceTaxRateNode", self.finance_tax_rate.pk),
@@ -73,9 +76,9 @@ class GQLSchoolClasspass(TestCase):
             }
         }
 
-        self.memberships_query = '''
-  query SchoolMemberships($after: String, $before: String, $archived: Boolean) {
-    schoolMemberships(first: 15, before: $before, after: $after, archived: $archived) {
+        self.classpasses_query = '''
+  query SchoolClasspasses($after: String, $before: String, $archived: Boolean) {
+    schoolClasspasses(first: 15, before: $before, after: $after, archived: $archived) {
       pageInfo {
         startCursor
         endCursor
@@ -99,7 +102,13 @@ class GQLSchoolClasspass(TestCase):
           validity
           validityUnit
           validityUnitDisplay
-          termsAndConditions
+          classes
+          unlimited
+          schoolMembership {
+            id
+            name
+          }
+          quickStatsAmount
           financeGlaccount {
             id 
             name
@@ -114,9 +123,9 @@ class GQLSchoolClasspass(TestCase):
   }
 '''
 
-        self.membership_query = '''
-  query SchoolMembership($id: ID!, $after: String, $before: String, $archived: Boolean!) {
-    schoolMembership(id:$id) {
+        self.classpass_query = '''
+  query SchoolClasspass($id: ID!, $after: String, $before: String, $archived: Boolean!) {
+    schoolClasspass(id:$id) {
       id
       archived
       displayPublic
@@ -194,10 +203,10 @@ class GQLSchoolClasspass(TestCase):
   }
 '''
 
-        self.membership_create_mutation = ''' 
-  mutation CreateMembership($input: CreateSchoolMembershipInput!) {
-    createSchoolMembership(input: $input) {
-      schoolMembership {
+        self.classpass_create_mutation = ''' 
+  mutation CreateClasspass($input: CreateSchoolClasspassInput!) {
+    createSchoolClasspass(input: $input) {
+      schoolClasspass {
         id
         archived
         displayPublic
@@ -225,10 +234,10 @@ class GQLSchoolClasspass(TestCase):
   }
 '''
 
-        self.membership_update_mutation = '''
-  mutation UpdateSchoolMembership($input: UpdateSchoolMembershipInput!) {
-    updateSchoolMembership(input: $input) {
-        schoolMembership {
+        self.classpass_update_mutation = '''
+  mutation UpdateSchoolClasspass($input: UpdateSchoolClasspassInput!) {
+    updateSchoolClasspass(input: $input) {
+        schoolClasspass {
           id
           archived
           displayPublic
@@ -256,10 +265,10 @@ class GQLSchoolClasspass(TestCase):
   }
 '''
 
-        self.membership_archive_mutation = '''
-  mutation ArchiveSchoolMembership($input: ArchiveSchoolMembershipInput!) {
-    archiveSchoolMembership(input: $input) {
-      schoolMembership {
+        self.classpass_archive_mutation = '''
+  mutation ArchiveSchoolClasspass($input: ArchiveSchoolClasspassInput!) {
+    archiveSchoolClasspass(input: $input) {
+      schoolClasspass {
         id
         archived
       }
@@ -273,9 +282,9 @@ class GQLSchoolClasspass(TestCase):
 
 
     def test_query(self):
-        """ Query list of memberships """
-        query = self.memberships_query
-        membership = f.SchoolMembershipFactory.create()
+        """ Query list of classpasses """
+        query = self.classpasses_query
+        classpass = f.SchoolClasspassFactory.create()
         variables = {
             'archived': False
         }      
@@ -283,440 +292,444 @@ class GQLSchoolClasspass(TestCase):
         executed = execute_test_client_api_query(query, self.admin_user, variables=variables)
         data = executed.get('data')
 
-        self.assertEqual(data['schoolMemberships']['edges'][0]['node']['archived'], membership.archived)
-        self.assertEqual(data['schoolMemberships']['edges'][0]['node']['displayPublic'], membership.display_public)
-        self.assertEqual(data['schoolMemberships']['edges'][0]['node']['displayShop'], membership.display_shop)
-        self.assertEqual(data['schoolMemberships']['edges'][0]['node']['name'], membership.name)
-        self.assertEqual(data['schoolMemberships']['edges'][0]['node']['description'], membership.description)
-        self.assertEqual(data['schoolMemberships']['edges'][0]['node']['price'], membership.price)
-        self.assertEqual(data['schoolMemberships']['edges'][0]['node']['priceDisplay'], display_float_as_amount(membership.price))
-        self.assertEqual(data['schoolMemberships']['edges'][0]['node']['financeTaxRate']['id'], 
-          to_global_id("FinanceTaxRateNode", membership.finance_tax_rate.pk))
-        self.assertEqual(data['schoolMemberships']['edges'][0]['node']['validity'], membership.validity)
-        self.assertEqual(data['schoolMemberships']['edges'][0]['node']['validityUnit'], membership.validity_unit)
-        self.assertEqual(data['schoolMemberships']['edges'][0]['node']['validityUnitDisplay'], display_validity_unit(membership.validity_unit))
-        self.assertEqual(data['schoolMemberships']['edges'][0]['node']['financeGlaccount']['id'], 
-          to_global_id("FinanceGLAccountNode", membership.finance_glaccount.pk))
-        self.assertEqual(data['schoolMemberships']['edges'][0]['node']['financeCostcenter']['id'], 
-          to_global_id("FinanceCostCenterNode", membership.finance_costcenter.pk))
+        self.assertEqual(data['schoolClasspasses']['edges'][0]['node']['archived'], classpass.archived)
+        self.assertEqual(data['schoolClasspasses']['edges'][0]['node']['displayPublic'], classpass.display_public)
+        self.assertEqual(data['schoolClasspasses']['edges'][0]['node']['displayShop'], classpass.display_shop)
+        self.assertEqual(data['schoolClasspasses']['edges'][0]['node']['name'], classpass.name)
+        self.assertEqual(data['schoolClasspasses']['edges'][0]['node']['description'], classpass.description)
+        self.assertEqual(data['schoolClasspasses']['edges'][0]['node']['price'], classpass.price)
+        self.assertEqual(data['schoolClasspasses']['edges'][0]['node']['priceDisplay'], display_float_as_amount(classpass.price))
+        self.assertEqual(data['schoolClasspasses']['edges'][0]['node']['financeTaxRate']['id'], 
+          to_global_id("FinanceTaxRateNode", classpass.finance_tax_rate.pk))
+        self.assertEqual(data['schoolClasspasses']['edges'][0]['node']['validityUnit'], classpass.validity_unit)
+        self.assertEqual(data['schoolClasspasses']['edges'][0]['node']['validityUnitDisplay'], display_validity_unit(classpass.validity_unit))
+        self.assertEqual(data['schoolClasspasses']['edges'][0]['node']['classes'], classpass.classes)
+        self.assertEqual(data['schoolClasspasses']['edges'][0]['node']['unlimited'], classpass.unlimited)
+        self.assertEqual(data['schoolClasspasses']['edges'][0]['node']['schoolMembership']['id'], 
+          to_global_id("SchoolMembershipNode", classpass.school_membership.pk))
+        self.assertEqual(data['schoolClasspasses']['edges'][0]['node']['quickStatsAmount'], classpass.quick_stats_amount)
+        self.assertEqual(data['schoolClasspasses']['edges'][0]['node']['financeGlaccount']['id'], 
+          to_global_id("FinanceGLAccountNode", classpass.finance_glaccount.pk))
+        self.assertEqual(data['schoolClasspasses']['edges'][0]['node']['financeCostcenter']['id'], 
+          to_global_id("FinanceCostCenterNode", classpass.finance_costcenter.pk))
 
 
-    def test_query_permision_denied(self):
-        """ Query list of memberships - check permission denied """
-        query = self.memberships_query
-        membership = f.SchoolMembershipFactory.create()
-        variables = {
-            'archived': False
-        }
+    # def test_query_permision_denied(self):
+    #     """ Query list of classpasses - check permission denied """
+    #     query = self.classpasses_query
+    #     classpass = f.SchoolClasspassFactory.create()
+    #     variables = {
+    #         'archived': False
+    #     }
 
-        # Create regular user
-        user = f.RegularUserFactory.create()
-        executed = execute_test_client_api_query(query, user, variables=variables)
-        errors = executed.get('errors')
+    #     # Create regular user
+    #     user = f.RegularUserFactory.create()
+    #     executed = execute_test_client_api_query(query, user, variables=variables)
+    #     errors = executed.get('errors')
 
-        self.assertEqual(errors[0]['message'], 'Permission denied!')
-
-
-    def test_query_permision_granted(self):
-        """ Query list of memberships with view permission """
-        query = self.memberships_query
-        membership = f.SchoolMembershipFactory.create()
-        variables = {
-            'archived': False
-        }
-
-        # Create regular user
-        user = f.RegularUserFactory.create()
-        permission = Permission.objects.get(codename='view_schoolmembership')
-        user.user_permissions.add(permission)
-        user.save()
-
-        executed = execute_test_client_api_query(query, user, variables=variables)
-        data = executed.get('data')
-
-        # List all memberships
-        self.assertEqual(data['schoolMemberships']['edges'][0]['node']['archived'], membership.archived)
-        self.assertEqual(data['schoolMemberships']['edges'][0]['node']['displayPublic'], membership.display_public)
-        self.assertEqual(data['schoolMemberships']['edges'][0]['node']['displayShop'], membership.display_shop)
-        self.assertEqual(data['schoolMemberships']['edges'][0]['node']['name'], membership.name)
-        self.assertEqual(data['schoolMemberships']['edges'][0]['node']['description'], membership.description)
-        self.assertEqual(data['schoolMemberships']['edges'][0]['node']['price'], membership.price)
-        self.assertEqual(data['schoolMemberships']['edges'][0]['node']['priceDisplay'], display_float_as_amount(membership.price))
-        self.assertEqual(data['schoolMemberships']['edges'][0]['node']['financeTaxRate']['id'], 
-          to_global_id("FinanceTaxRateNode", membership.finance_tax_rate.pk))
-        self.assertEqual(data['schoolMemberships']['edges'][0]['node']['validity'], membership.validity)
-        self.assertEqual(data['schoolMemberships']['edges'][0]['node']['validityUnit'], membership.validity_unit)
-        self.assertEqual(data['schoolMemberships']['edges'][0]['node']['validityUnitDisplay'], display_validity_unit(membership.validity_unit))
-        self.assertEqual(data['schoolMemberships']['edges'][0]['node']['financeGlaccount']['id'], 
-          to_global_id("FinanceGLAccountNode", membership.finance_glaccount.pk))
-        self.assertEqual(data['schoolMemberships']['edges'][0]['node']['financeCostcenter']['id'], 
-          to_global_id("FinanceCostCenterNode", membership.finance_costcenter.pk))
+    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
-    def test_query_anon_user(self):
-        """ Query list of memberships - anon user """
-        query = self.memberships_query
-        membership = f.SchoolMembershipFactory.create()
-        variables = {
-            'archived': False
-        }
+    # def test_query_permision_granted(self):
+    #     """ Query list of classpasses with view permission """
+    #     query = self.classpasses_query
+    #     classpass = f.SchoolClasspassFactory.create()
+    #     variables = {
+    #         'archived': False
+    #     }
 
-        executed = execute_test_client_api_query(query, self.anon_user, variables=variables)
-        errors = executed.get('errors')
-        self.assertEqual(errors[0]['message'], 'Not logged in!')
+    #     # Create regular user
+    #     user = f.RegularUserFactory.create()
+    #     permission = Permission.objects.get(codename='view_schoolclasspass')
+    #     user.user_permissions.add(permission)
+    #     user.save()
+
+    #     executed = execute_test_client_api_query(query, user, variables=variables)
+    #     data = executed.get('data')
+
+    #     # List all classpasses
+    #     self.assertEqual(data['schoolClasspasses']['edges'][0]['node']['archived'], classpass.archived)
+    #     self.assertEqual(data['schoolClasspasses']['edges'][0]['node']['displayPublic'], classpass.display_public)
+    #     self.assertEqual(data['schoolClasspasses']['edges'][0]['node']['displayShop'], classpass.display_shop)
+    #     self.assertEqual(data['schoolClasspasses']['edges'][0]['node']['name'], classpass.name)
+    #     self.assertEqual(data['schoolClasspasses']['edges'][0]['node']['description'], classpass.description)
+    #     self.assertEqual(data['schoolClasspasses']['edges'][0]['node']['price'], classpass.price)
+    #     self.assertEqual(data['schoolClasspasses']['edges'][0]['node']['priceDisplay'], display_float_as_amount(classpass.price))
+    #     self.assertEqual(data['schoolClasspasses']['edges'][0]['node']['financeTaxRate']['id'], 
+    #       to_global_id("FinanceTaxRateNode", classpass.finance_tax_rate.pk))
+    #     self.assertEqual(data['schoolClasspasses']['edges'][0]['node']['validity'], classpass.validity)
+    #     self.assertEqual(data['schoolClasspasses']['edges'][0]['node']['validityUnit'], classpass.validity_unit)
+    #     self.assertEqual(data['schoolClasspasses']['edges'][0]['node']['validityUnitDisplay'], display_validity_unit(classpass.validity_unit))
+    #     self.assertEqual(data['schoolClasspasses']['edges'][0]['node']['financeGlaccount']['id'], 
+    #       to_global_id("FinanceGLAccountNode", classpass.finance_glaccount.pk))
+    #     self.assertEqual(data['schoolClasspasses']['edges'][0]['node']['financeCostcenter']['id'], 
+    #       to_global_id("FinanceCostCenterNode", classpass.finance_costcenter.pk))
 
 
-    def test_query_one(self):
-        """ Query one memberships as admin """   
-        membership = f.SchoolMembershipFactory.create()
+    # def test_query_anon_user(self):
+    #     """ Query list of classpasses - anon user """
+    #     query = self.classpasses_query
+    #     classpass = f.SchoolClasspassFactory.create()
+    #     variables = {
+    #         'archived': False
+    #     }
 
-        # Get node id
-        node_id = to_global_id("SchoolMembershipNode", membership.pk)
+    #     executed = execute_test_client_api_query(query, self.anon_user, variables=variables)
+    #     errors = executed.get('errors')
+    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
 
-        variables = {
-          "id": node_id,
-          "archived": False
-        }
 
-        # Now query single memberships and check
-        executed = execute_test_client_api_query(self.membership_query, self.admin_user, variables=variables)
-        data = executed.get('data')
-        self.assertEqual(data['schoolMembership']['displayPublic'], membership.display_public)
-        self.assertEqual(data['schoolMembership']['displayShop'], membership.display_shop)
-        self.assertEqual(data['schoolMembership']['archived'], membership.archived)
-        self.assertEqual(data['schoolMembership']['name'], membership.name)
-        self.assertEqual(data['schoolMembership']['price'], membership.price)
-        self.assertEqual(data['schoolMembership']['priceDisplay'], display_float_as_amount(membership.price))
-        self.assertEqual(data['schoolMembership']['financeTaxRate']['id'], 
-          to_global_id("FinanceTaxRateNode", membership.finance_tax_rate.pk))
-        self.assertEqual(data['schoolMembership']['validity'], membership.validity)
-        self.assertEqual(data['schoolMembership']['validityUnit'], membership.validity_unit)
-        self.assertEqual(data['schoolMembership']['validityUnitDisplay'], display_validity_unit(membership.validity_unit))
-        self.assertEqual(data['schoolMembership']['financeGlaccount']['id'], 
-          to_global_id("FinanceGLAccountNode", membership.finance_glaccount.pk))
-        self.assertEqual(data['schoolMembership']['financeCostcenter']['id'], 
-          to_global_id("FinanceCostCenterNode", membership.finance_costcenter.pk))
+    # def test_query_one(self):
+    #     """ Query one classpasses as admin """   
+    #     classpass = f.SchoolClasspassFactory.create()
+
+    #     # Get node id
+    #     node_id = to_global_id("SchoolClasspassNode", classpass.pk)
+
+    #     variables = {
+    #       "id": node_id,
+    #       "archived": False
+    #     }
+
+    #     # Now query single classpasses and check
+    #     executed = execute_test_client_api_query(self.classpass_query, self.admin_user, variables=variables)
+    #     data = executed.get('data')
+    #     self.assertEqual(data['schoolClasspass']['displayPublic'], classpass.display_public)
+    #     self.assertEqual(data['schoolClasspass']['displayShop'], classpass.display_shop)
+    #     self.assertEqual(data['schoolClasspass']['archived'], classpass.archived)
+    #     self.assertEqual(data['schoolClasspass']['name'], classpass.name)
+    #     self.assertEqual(data['schoolClasspass']['price'], classpass.price)
+    #     self.assertEqual(data['schoolClasspass']['priceDisplay'], display_float_as_amount(classpass.price))
+    #     self.assertEqual(data['schoolClasspass']['financeTaxRate']['id'], 
+    #       to_global_id("FinanceTaxRateNode", classpass.finance_tax_rate.pk))
+    #     self.assertEqual(data['schoolClasspass']['validity'], classpass.validity)
+    #     self.assertEqual(data['schoolClasspass']['validityUnit'], classpass.validity_unit)
+    #     self.assertEqual(data['schoolClasspass']['validityUnitDisplay'], display_validity_unit(classpass.validity_unit))
+    #     self.assertEqual(data['schoolClasspass']['financeGlaccount']['id'], 
+    #       to_global_id("FinanceGLAccountNode", classpass.finance_glaccount.pk))
+    #     self.assertEqual(data['schoolClasspass']['financeCostcenter']['id'], 
+    #       to_global_id("FinanceCostCenterNode", classpass.finance_costcenter.pk))
         
 
-    def test_query_one_anon_user(self):
-        """ Deny permission for anon users Query one membership """   
-        membership = f.SchoolMembershipFactory.create()
+    # def test_query_one_anon_user(self):
+    #     """ Deny permission for anon users Query one classpass """   
+    #     classpass = f.SchoolClasspassFactory.create()
 
-        # Get node id
-        node_id = to_global_id("SchoolMembershipNode", membership.pk)
+    #     # Get node id
+    #     node_id = to_global_id("SchoolClasspassNode", classpass.pk)
         
-        variables = {
-          "id": node_id,
-          "archived": False
-        }
+    #     variables = {
+    #       "id": node_id,
+    #       "archived": False
+    #     }
 
-        # Now query single memberships and check
-        executed = execute_test_client_api_query(self.membership_query, self.anon_user, variables=variables)
-        errors = executed.get('errors')
-        self.assertEqual(errors[0]['message'], 'Not logged in!')
+    #     # Now query single classpasses and check
+    #     executed = execute_test_client_api_query(self.classpass_query, self.anon_user, variables=variables)
+    #     errors = executed.get('errors')
+    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
-    def test_query_one_permission_denied(self):
-        """ Permission denied message when user lacks authorization """   
-        # Create regular user
-        user = f.RegularUserFactory.create()
-        membership = f.SchoolMembershipFactory.create()
+    # def test_query_one_permission_denied(self):
+    #     """ Permission denied message when user lacks authorization """   
+    #     # Create regular user
+    #     user = f.RegularUserFactory.create()
+    #     classpass = f.SchoolClasspassFactory.create()
 
-        # Get node id
-        node_id = to_global_id("SchoolMembershipNode", membership.pk)
+    #     # Get node id
+    #     node_id = to_global_id("SchoolClasspassNode", classpass.pk)
         
-        variables = {
-          "id": node_id,
-          "archived": False
-        }
+    #     variables = {
+    #       "id": node_id,
+    #       "archived": False
+    #     }
 
-        # Now query single memberships and check
-        executed = execute_test_client_api_query(self.membership_query, user, variables=variables)
-        errors = executed.get('errors')
-        self.assertEqual(errors[0]['message'], 'Permission denied!')
+    #     # Now query single classpasses and check
+    #     executed = execute_test_client_api_query(self.classpass_query, user, variables=variables)
+    #     errors = executed.get('errors')
+    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
-    def test_query_one_permission_granted(self):
-        """ Respond with data when user has permission """   
-        user = f.RegularUserFactory.create()
-        permission = Permission.objects.get(codename='view_schoolmembership')
-        user.user_permissions.add(permission)
-        user.save()
-        membership = f.SchoolMembershipFactory.create()
+    # def test_query_one_permission_granted(self):
+    #     """ Respond with data when user has permission """   
+    #     user = f.RegularUserFactory.create()
+    #     permission = Permission.objects.get(codename='view_schoolclasspass')
+    #     user.user_permissions.add(permission)
+    #     user.save()
+    #     classpass = f.SchoolClasspassFactory.create()
 
-        # Get node id
-        node_id = to_global_id("SchoolMembershipNode", membership.pk)
+    #     # Get node id
+    #     node_id = to_global_id("SchoolClasspassNode", classpass.pk)
         
-        variables = {
-          "id": node_id,
-          "archived": False
-        }
+    #     variables = {
+    #       "id": node_id,
+    #       "archived": False
+    #     }
 
-        # Now query single location and check   
-        executed = execute_test_client_api_query(self.membership_query, user, variables=variables)
-        data = executed.get('data')
-        self.assertEqual(data['schoolMembership']['name'], membership.name)
-
-
-    def test_create_memberships(self):
-        """ Create a memberships """
-        query = self.membership_create_mutation
-        variables = self.variables_create
-
-        executed = execute_test_client_api_query(
-            query, 
-            self.admin_user, 
-            variables=variables
-        )
-        data = executed.get('data')
-        self.assertEqual(data['createSchoolMembership']['schoolMembership']['displayPublic'], variables['input']['displayPublic'])
-        self.assertEqual(data['createSchoolMembership']['schoolMembership']['displayShop'], variables['input']['displayShop'])
-        self.assertEqual(data['createSchoolMembership']['schoolMembership']['archived'], False)
-        self.assertEqual(data['createSchoolMembership']['schoolMembership']['name'], variables['input']['name'])
-        self.assertEqual(data['createSchoolMembership']['schoolMembership']['description'], variables['input']['description'])
-        self.assertEqual(data['createSchoolMembership']['schoolMembership']['price'], variables['input']['price'])
-        self.assertEqual(data['createSchoolMembership']['schoolMembership']['financeTaxRate']['id'], variables['input']['financeTaxRate'])
-        self.assertEqual(data['createSchoolMembership']['schoolMembership']['validity'], variables['input']['validity'])
-        self.assertEqual(data['createSchoolMembership']['schoolMembership']['validityUnit'], variables['input']['validityUnit'])
-        self.assertEqual(data['createSchoolMembership']['schoolMembership']['termsAndConditions'], variables['input']['termsAndConditions'])
-        self.assertEqual(data['createSchoolMembership']['schoolMembership']['financeGlaccount']['id'], variables['input']['financeGlaccount'])
-        self.assertEqual(data['createSchoolMembership']['schoolMembership']['financeCostcenter']['id'], variables['input']['financeCostcenter'])
+    #     # Now query single location and check   
+    #     executed = execute_test_client_api_query(self.classpass_query, user, variables=variables)
+    #     data = executed.get('data')
+    #     self.assertEqual(data['schoolClasspass']['name'], classpass.name)
 
 
-    def test_create_memberships_anon_user(self):
-        """ Don't allow creating memberships for non-logged in users """
-        query = self.membership_create_mutation
-        variables = self.variables_create
+    # def test_create_classpasses(self):
+    #     """ Create a classpasses """
+    #     query = self.classpass_create_mutation
+    #     variables = self.variables_create
 
-        executed = execute_test_client_api_query(
-            query, 
-            self.anon_user, 
-            variables=variables
-        )
-        data = executed.get('data')
-        errors = executed.get('errors')
-        self.assertEqual(errors[0]['message'], 'Not logged in!')
-
-
-    def test_create_location_permission_granted(self):
-        """ Allow creating memberships for users with permissions """
-        query = self.membership_create_mutation
-        variables = self.variables_create
-
-        # Create regular user
-        user = f.RegularUserFactory.create()
-        permission = Permission.objects.get(codename=self.permission_add)
-        user.user_permissions.add(permission)
-        user.save()
-
-        executed = execute_test_client_api_query(
-            query, 
-            user, 
-            variables=variables
-        )
-        data = executed.get('data')
-        self.assertEqual(data['createSchoolMembership']['schoolMembership']['displayPublic'], variables['input']['displayPublic'])
-        self.assertEqual(data['createSchoolMembership']['schoolMembership']['displayShop'], variables['input']['displayShop'])
-        self.assertEqual(data['createSchoolMembership']['schoolMembership']['archived'], False)
-        self.assertEqual(data['createSchoolMembership']['schoolMembership']['name'], variables['input']['name'])
-        self.assertEqual(data['createSchoolMembership']['schoolMembership']['description'], variables['input']['description'])
-        self.assertEqual(data['createSchoolMembership']['schoolMembership']['price'], variables['input']['price'])
-        self.assertEqual(data['createSchoolMembership']['schoolMembership']['financeTaxRate']['id'], variables['input']['financeTaxRate'])
-        self.assertEqual(data['createSchoolMembership']['schoolMembership']['validity'], variables['input']['validity'])
-        self.assertEqual(data['createSchoolMembership']['schoolMembership']['validityUnit'], variables['input']['validityUnit'])
-        self.assertEqual(data['createSchoolMembership']['schoolMembership']['termsAndConditions'], variables['input']['termsAndConditions'])
-        self.assertEqual(data['createSchoolMembership']['schoolMembership']['financeGlaccount']['id'], variables['input']['financeGlaccount'])
-        self.assertEqual(data['createSchoolMembership']['schoolMembership']['financeCostcenter']['id'], variables['input']['financeCostcenter'])
+    #     executed = execute_test_client_api_query(
+    #         query, 
+    #         self.admin_user, 
+    #         variables=variables
+    #     )
+    #     data = executed.get('data')
+    #     self.assertEqual(data['createSchoolClasspass']['schoolClasspass']['displayPublic'], variables['input']['displayPublic'])
+    #     self.assertEqual(data['createSchoolClasspass']['schoolClasspass']['displayShop'], variables['input']['displayShop'])
+    #     self.assertEqual(data['createSchoolClasspass']['schoolClasspass']['archived'], False)
+    #     self.assertEqual(data['createSchoolClasspass']['schoolClasspass']['name'], variables['input']['name'])
+    #     self.assertEqual(data['createSchoolClasspass']['schoolClasspass']['description'], variables['input']['description'])
+    #     self.assertEqual(data['createSchoolClasspass']['schoolClasspass']['price'], variables['input']['price'])
+    #     self.assertEqual(data['createSchoolClasspass']['schoolClasspass']['financeTaxRate']['id'], variables['input']['financeTaxRate'])
+    #     self.assertEqual(data['createSchoolClasspass']['schoolClasspass']['validity'], variables['input']['validity'])
+    #     self.assertEqual(data['createSchoolClasspass']['schoolClasspass']['validityUnit'], variables['input']['validityUnit'])
+    #     self.assertEqual(data['createSchoolClasspass']['schoolClasspass']['termsAndConditions'], variables['input']['termsAndConditions'])
+    #     self.assertEqual(data['createSchoolClasspass']['schoolClasspass']['financeGlaccount']['id'], variables['input']['financeGlaccount'])
+    #     self.assertEqual(data['createSchoolClasspass']['schoolClasspass']['financeCostcenter']['id'], variables['input']['financeCostcenter'])
 
 
-    def test_create_memberships_permission_denied(self):
-        """ Check create memberships permission denied error message """
-        query = self.membership_create_mutation
-        variables = self.variables_create
+    # def test_create_classpasses_anon_user(self):
+    #     """ Don't allow creating classpasses for non-logged in users """
+    #     query = self.classpass_create_mutation
+    #     variables = self.variables_create
 
-        # Create regular user
-        user = f.RegularUserFactory.create()
-
-        executed = execute_test_client_api_query(
-            query, 
-            user, 
-            variables=variables
-        )
-        data = executed.get('data')
-        errors = executed.get('errors')
-        self.assertEqual(errors[0]['message'], 'Permission denied!')
+    #     executed = execute_test_client_api_query(
+    #         query, 
+    #         self.anon_user, 
+    #         variables=variables
+    #     )
+    #     data = executed.get('data')
+    #     errors = executed.get('errors')
+    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
-    def test_update_memberships(self):
-        """ Update a memberships """
-        query = self.membership_update_mutation
-        membership = f.SchoolMembershipFactory.create()
+    # def test_create_location_permission_granted(self):
+    #     """ Allow creating classpasses for users with permissions """
+    #     query = self.classpass_create_mutation
+    #     variables = self.variables_create
 
-        variables = self.variables_update
-        variables['input']['id'] = to_global_id("SchoolMembershipNode", membership.pk)
+    #     # Create regular user
+    #     user = f.RegularUserFactory.create()
+    #     permission = Permission.objects.get(codename=self.permission_add)
+    #     user.user_permissions.add(permission)
+    #     user.save()
 
-        executed = execute_test_client_api_query(
-            query, 
-            self.admin_user, 
-            variables=variables
-        )
-        data = executed.get('data')
-        self.assertEqual(data['updateSchoolMembership']['schoolMembership']['displayPublic'], variables['input']['displayPublic'])
-        self.assertEqual(data['updateSchoolMembership']['schoolMembership']['displayShop'], variables['input']['displayShop'])
-        self.assertEqual(data['updateSchoolMembership']['schoolMembership']['archived'], False)
-        self.assertEqual(data['updateSchoolMembership']['schoolMembership']['name'], variables['input']['name'])
-        self.assertEqual(data['updateSchoolMembership']['schoolMembership']['description'], variables['input']['description'])
-        self.assertEqual(data['updateSchoolMembership']['schoolMembership']['price'], variables['input']['price'])
-        self.assertEqual(data['updateSchoolMembership']['schoolMembership']['financeTaxRate']['id'], variables['input']['financeTaxRate'])
-        self.assertEqual(data['updateSchoolMembership']['schoolMembership']['validity'], variables['input']['validity'])
-        self.assertEqual(data['updateSchoolMembership']['schoolMembership']['validityUnit'], variables['input']['validityUnit'])
-        self.assertEqual(data['updateSchoolMembership']['schoolMembership']['termsAndConditions'], variables['input']['termsAndConditions'])
-        self.assertEqual(data['updateSchoolMembership']['schoolMembership']['financeGlaccount']['id'], variables['input']['financeGlaccount'])
-        self.assertEqual(data['updateSchoolMembership']['schoolMembership']['financeCostcenter']['id'], variables['input']['financeCostcenter'])
-
-
-    def test_update_memberships_anon_user(self):
-        """ Don't allow updating memberships for non-logged in users """
-        query = self.membership_update_mutation
-        membership = f.SchoolMembershipFactory.create()
-        variables = self.variables_update
-        variables['input']['id'] = to_global_id("SchoolMembershipNode", membership.pk)
-
-        executed = execute_test_client_api_query(
-            query, 
-            self.anon_user, 
-            variables=variables
-        )
-        data = executed.get('data')
-        errors = executed.get('errors')
-        self.assertEqual(errors[0]['message'], 'Not logged in!')
+    #     executed = execute_test_client_api_query(
+    #         query, 
+    #         user, 
+    #         variables=variables
+    #     )
+    #     data = executed.get('data')
+    #     self.assertEqual(data['createSchoolClasspass']['schoolClasspass']['displayPublic'], variables['input']['displayPublic'])
+    #     self.assertEqual(data['createSchoolClasspass']['schoolClasspass']['displayShop'], variables['input']['displayShop'])
+    #     self.assertEqual(data['createSchoolClasspass']['schoolClasspass']['archived'], False)
+    #     self.assertEqual(data['createSchoolClasspass']['schoolClasspass']['name'], variables['input']['name'])
+    #     self.assertEqual(data['createSchoolClasspass']['schoolClasspass']['description'], variables['input']['description'])
+    #     self.assertEqual(data['createSchoolClasspass']['schoolClasspass']['price'], variables['input']['price'])
+    #     self.assertEqual(data['createSchoolClasspass']['schoolClasspass']['financeTaxRate']['id'], variables['input']['financeTaxRate'])
+    #     self.assertEqual(data['createSchoolClasspass']['schoolClasspass']['validity'], variables['input']['validity'])
+    #     self.assertEqual(data['createSchoolClasspass']['schoolClasspass']['validityUnit'], variables['input']['validityUnit'])
+    #     self.assertEqual(data['createSchoolClasspass']['schoolClasspass']['termsAndConditions'], variables['input']['termsAndConditions'])
+    #     self.assertEqual(data['createSchoolClasspass']['schoolClasspass']['financeGlaccount']['id'], variables['input']['financeGlaccount'])
+    #     self.assertEqual(data['createSchoolClasspass']['schoolClasspass']['financeCostcenter']['id'], variables['input']['financeCostcenter'])
 
 
-    def test_update_memberships_permission_granted(self):
-        """ Allow updating memberships for users with permissions """
-        query = self.membership_update_mutation
-        membership = f.SchoolMembershipFactory.create()
-        variables = self.variables_update
-        variables['input']['id'] = to_global_id("SchoolMembershipNode", membership.pk)
+    # def test_create_classpasses_permission_denied(self):
+    #     """ Check create classpasses permission denied error message """
+    #     query = self.classpass_create_mutation
+    #     variables = self.variables_create
 
-        # Create regular user
-        user = f.RegularUserFactory.create()
-        permission = Permission.objects.get(codename=self.permission_change)
-        user.user_permissions.add(permission)
-        user.save()
+    #     # Create regular user
+    #     user = f.RegularUserFactory.create()
 
-        executed = execute_test_client_api_query(
-            query, 
-            user, 
-            variables=variables
-        )
-        data = executed.get('data')
-        self.assertEqual(data['updateSchoolMembership']['schoolMembership']['displayPublic'], variables['input']['displayPublic'])
-        self.assertEqual(data['updateSchoolMembership']['schoolMembership']['displayShop'], variables['input']['displayShop'])
-        self.assertEqual(data['updateSchoolMembership']['schoolMembership']['archived'], False)
-        self.assertEqual(data['updateSchoolMembership']['schoolMembership']['name'], variables['input']['name'])
-        self.assertEqual(data['updateSchoolMembership']['schoolMembership']['description'], variables['input']['description'])
-        self.assertEqual(data['updateSchoolMembership']['schoolMembership']['price'], variables['input']['price'])
-        self.assertEqual(data['updateSchoolMembership']['schoolMembership']['financeTaxRate']['id'], variables['input']['financeTaxRate'])
-        self.assertEqual(data['updateSchoolMembership']['schoolMembership']['validity'], variables['input']['validity'])
-        self.assertEqual(data['updateSchoolMembership']['schoolMembership']['validityUnit'], variables['input']['validityUnit'])
-        self.assertEqual(data['updateSchoolMembership']['schoolMembership']['termsAndConditions'], variables['input']['termsAndConditions'])
-        self.assertEqual(data['updateSchoolMembership']['schoolMembership']['financeGlaccount']['id'], variables['input']['financeGlaccount'])
-        self.assertEqual(data['updateSchoolMembership']['schoolMembership']['financeCostcenter']['id'], variables['input']['financeCostcenter'])
+    #     executed = execute_test_client_api_query(
+    #         query, 
+    #         user, 
+    #         variables=variables
+    #     )
+    #     data = executed.get('data')
+    #     errors = executed.get('errors')
+    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
-    def test_update_memberships_permission_denied(self):
-        """ Check update memberships permission denied error message """
-        query = self.membership_update_mutation
-        membership = f.SchoolMembershipFactory.create()
-        variables = self.variables_update
-        variables['input']['id'] = to_global_id("SchoolMembershipNode", membership.pk)
+    # def test_update_classpasses(self):
+    #     """ Update a classpasses """
+    #     query = self.classpass_update_mutation
+    #     classpass = f.SchoolClasspassFactory.create()
 
-        # Create regular user
-        user = f.RegularUserFactory.create()
+    #     variables = self.variables_update
+    #     variables['input']['id'] = to_global_id("SchoolClasspassNode", classpass.pk)
 
-        executed = execute_test_client_api_query(
-            query, 
-            user, 
-            variables=variables
-        )
-        data = executed.get('data')
-        errors = executed.get('errors')
-        self.assertEqual(errors[0]['message'], 'Permission denied!')
-
-
-    def test_archive_memberships(self):
-        """ Archive a memberships """
-        query = self.membership_archive_mutation
-        membership = f.SchoolMembershipFactory.create()
-        variables = self.variables_archive
-        variables['input']['id'] = to_global_id("SchoolMembershipNode", membership.pk)
-
-        executed = execute_test_client_api_query(
-            query, 
-            self.admin_user, 
-            variables=variables
-        )
-        data = executed.get('data')
-        print(data)
-        self.assertEqual(data['archiveSchoolMembership']['schoolMembership']['archived'], variables['input']['archived'])
+    #     executed = execute_test_client_api_query(
+    #         query, 
+    #         self.admin_user, 
+    #         variables=variables
+    #     )
+    #     data = executed.get('data')
+    #     self.assertEqual(data['updateSchoolClasspass']['schoolClasspass']['displayPublic'], variables['input']['displayPublic'])
+    #     self.assertEqual(data['updateSchoolClasspass']['schoolClasspass']['displayShop'], variables['input']['displayShop'])
+    #     self.assertEqual(data['updateSchoolClasspass']['schoolClasspass']['archived'], False)
+    #     self.assertEqual(data['updateSchoolClasspass']['schoolClasspass']['name'], variables['input']['name'])
+    #     self.assertEqual(data['updateSchoolClasspass']['schoolClasspass']['description'], variables['input']['description'])
+    #     self.assertEqual(data['updateSchoolClasspass']['schoolClasspass']['price'], variables['input']['price'])
+    #     self.assertEqual(data['updateSchoolClasspass']['schoolClasspass']['financeTaxRate']['id'], variables['input']['financeTaxRate'])
+    #     self.assertEqual(data['updateSchoolClasspass']['schoolClasspass']['validity'], variables['input']['validity'])
+    #     self.assertEqual(data['updateSchoolClasspass']['schoolClasspass']['validityUnit'], variables['input']['validityUnit'])
+    #     self.assertEqual(data['updateSchoolClasspass']['schoolClasspass']['termsAndConditions'], variables['input']['termsAndConditions'])
+    #     self.assertEqual(data['updateSchoolClasspass']['schoolClasspass']['financeGlaccount']['id'], variables['input']['financeGlaccount'])
+    #     self.assertEqual(data['updateSchoolClasspass']['schoolClasspass']['financeCostcenter']['id'], variables['input']['financeCostcenter'])
 
 
-    def test_archive_memberships_anon_user(self):
-        """ Archive memberships denied for anon user """
-        query = self.membership_archive_mutation
-        membership = f.SchoolMembershipFactory.create()
-        variables = self.variables_archive
-        variables['input']['id'] = to_global_id("SchoolMembershipNode", membership.pk)
+    # def test_update_classpasses_anon_user(self):
+    #     """ Don't allow updating classpasses for non-logged in users """
+    #     query = self.classpass_update_mutation
+    #     classpass = f.SchoolClasspassFactory.create()
+    #     variables = self.variables_update
+    #     variables['input']['id'] = to_global_id("SchoolClasspassNode", classpass.pk)
 
-        executed = execute_test_client_api_query(
-            query, 
-            self.anon_user, 
-            variables=variables
-        )
-        data = executed.get('data')
-        errors = executed.get('errors')
-        self.assertEqual(errors[0]['message'], 'Not logged in!')
-
-
-    def test_archive_memberships_permission_granted(self):
-        """ Allow archiving memberships for users with permissions """
-        query = self.membership_archive_mutation
-        membership = f.SchoolMembershipFactory.create()
-        variables = self.variables_archive
-        variables['input']['id'] = to_global_id("SchoolMembershipNode", membership.pk)
-
-        # Create regular user
-        user = f.RegularUserFactory.create()
-        permission = Permission.objects.get(codename=self.permission_delete)
-        user.user_permissions.add(permission)
-        user.save()
-
-        executed = execute_test_client_api_query(
-            query, 
-            user,
-            variables=variables
-        )
-        data = executed.get('data')
-        self.assertEqual(data['archiveSchoolMembership']['schoolMembership']['archived'], variables['input']['archived'])
+    #     executed = execute_test_client_api_query(
+    #         query, 
+    #         self.anon_user, 
+    #         variables=variables
+    #     )
+    #     data = executed.get('data')
+    #     errors = executed.get('errors')
+    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
-    def test_archive_memberships_permission_denied(self):
-        """ Check archive memberships permission denied error message """
-        query = self.membership_archive_mutation
-        membership = f.SchoolMembershipFactory.create()
-        variables = self.variables_archive
-        variables['input']['id'] = to_global_id("SchoolMembershipNode", membership.pk)
+    # def test_update_classpasses_permission_granted(self):
+    #     """ Allow updating classpasses for users with permissions """
+    #     query = self.classpass_update_mutation
+    #     classpass = f.SchoolClasspassFactory.create()
+    #     variables = self.variables_update
+    #     variables['input']['id'] = to_global_id("SchoolClasspassNode", classpass.pk)
+
+    #     # Create regular user
+    #     user = f.RegularUserFactory.create()
+    #     permission = Permission.objects.get(codename=self.permission_change)
+    #     user.user_permissions.add(permission)
+    #     user.save()
+
+    #     executed = execute_test_client_api_query(
+    #         query, 
+    #         user, 
+    #         variables=variables
+    #     )
+    #     data = executed.get('data')
+    #     self.assertEqual(data['updateSchoolClasspass']['schoolClasspass']['displayPublic'], variables['input']['displayPublic'])
+    #     self.assertEqual(data['updateSchoolClasspass']['schoolClasspass']['displayShop'], variables['input']['displayShop'])
+    #     self.assertEqual(data['updateSchoolClasspass']['schoolClasspass']['archived'], False)
+    #     self.assertEqual(data['updateSchoolClasspass']['schoolClasspass']['name'], variables['input']['name'])
+    #     self.assertEqual(data['updateSchoolClasspass']['schoolClasspass']['description'], variables['input']['description'])
+    #     self.assertEqual(data['updateSchoolClasspass']['schoolClasspass']['price'], variables['input']['price'])
+    #     self.assertEqual(data['updateSchoolClasspass']['schoolClasspass']['financeTaxRate']['id'], variables['input']['financeTaxRate'])
+    #     self.assertEqual(data['updateSchoolClasspass']['schoolClasspass']['validity'], variables['input']['validity'])
+    #     self.assertEqual(data['updateSchoolClasspass']['schoolClasspass']['validityUnit'], variables['input']['validityUnit'])
+    #     self.assertEqual(data['updateSchoolClasspass']['schoolClasspass']['termsAndConditions'], variables['input']['termsAndConditions'])
+    #     self.assertEqual(data['updateSchoolClasspass']['schoolClasspass']['financeGlaccount']['id'], variables['input']['financeGlaccount'])
+    #     self.assertEqual(data['updateSchoolClasspass']['schoolClasspass']['financeCostcenter']['id'], variables['input']['financeCostcenter'])
+
+
+    # def test_update_classpasses_permission_denied(self):
+    #     """ Check update classpasses permission denied error message """
+    #     query = self.classpass_update_mutation
+    #     classpass = f.SchoolClasspassFactory.create()
+    #     variables = self.variables_update
+    #     variables['input']['id'] = to_global_id("SchoolClasspassNode", classpass.pk)
+
+    #     # Create regular user
+    #     user = f.RegularUserFactory.create()
+
+    #     executed = execute_test_client_api_query(
+    #         query, 
+    #         user, 
+    #         variables=variables
+    #     )
+    #     data = executed.get('data')
+    #     errors = executed.get('errors')
+    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
+
+
+    # def test_archive_classpasses(self):
+    #     """ Archive a classpasses """
+    #     query = self.classpass_archive_mutation
+    #     classpass = f.SchoolClasspassFactory.create()
+    #     variables = self.variables_archive
+    #     variables['input']['id'] = to_global_id("SchoolClasspassNode", classpass.pk)
+
+    #     executed = execute_test_client_api_query(
+    #         query, 
+    #         self.admin_user, 
+    #         variables=variables
+    #     )
+    #     data = executed.get('data')
+    #     print(data)
+    #     self.assertEqual(data['archiveSchoolClasspass']['schoolClasspass']['archived'], variables['input']['archived'])
+
+
+    # def test_archive_classpasses_anon_user(self):
+    #     """ Archive classpasses denied for anon user """
+    #     query = self.classpass_archive_mutation
+    #     classpass = f.SchoolClasspassFactory.create()
+    #     variables = self.variables_archive
+    #     variables['input']['id'] = to_global_id("SchoolClasspassNode", classpass.pk)
+
+    #     executed = execute_test_client_api_query(
+    #         query, 
+    #         self.anon_user, 
+    #         variables=variables
+    #     )
+    #     data = executed.get('data')
+    #     errors = executed.get('errors')
+    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
+
+
+    # def test_archive_classpasses_permission_granted(self):
+    #     """ Allow archiving classpasses for users with permissions """
+    #     query = self.classpass_archive_mutation
+    #     classpass = f.SchoolClasspassFactory.create()
+    #     variables = self.variables_archive
+    #     variables['input']['id'] = to_global_id("SchoolClasspassNode", classpass.pk)
+
+    #     # Create regular user
+    #     user = f.RegularUserFactory.create()
+    #     permission = Permission.objects.get(codename=self.permission_delete)
+    #     user.user_permissions.add(permission)
+    #     user.save()
+
+    #     executed = execute_test_client_api_query(
+    #         query, 
+    #         user,
+    #         variables=variables
+    #     )
+    #     data = executed.get('data')
+    #     self.assertEqual(data['archiveSchoolClasspass']['schoolClasspass']['archived'], variables['input']['archived'])
+
+
+    # def test_archive_classpasses_permission_denied(self):
+    #     """ Check archive classpasses permission denied error message """
+    #     query = self.classpass_archive_mutation
+    #     classpass = f.SchoolClasspassFactory.create()
+    #     variables = self.variables_archive
+    #     variables['input']['id'] = to_global_id("SchoolClasspassNode", classpass.pk)
         
-        # Create regular user
-        user = f.RegularUserFactory.create()
+    #     # Create regular user
+    #     user = f.RegularUserFactory.create()
 
-        executed = execute_test_client_api_query(
-            query, 
-            user, 
-            variables=variables
-        )
-        data = executed.get('data')
-        errors = executed.get('errors')
-        self.assertEqual(errors[0]['message'], 'Permission denied!')
+    #     executed = execute_test_client_api_query(
+    #         query, 
+    #         user, 
+    #         variables=variables
+    #     )
+    #     data = executed.get('data')
+    #     errors = executed.get('errors')
+    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
 

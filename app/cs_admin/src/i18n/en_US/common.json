@@ -207,6 +207,7 @@
     "price": "Price",
     "general": {
         "classes": "Classes",
-        "unlimited": "Unlimited"
+        "unlimited": "Unlimited",
+        "membership_not_required": "Membership not required"
     }
 }

@@ -207,6 +207,7 @@
     "price": "__STRING_NOT_TRANSLATED__",
     "general": {
         "classes": "__STRING_NOT_TRANSLATED__",
-        "unlimited": "__STRING_NOT_TRANSLATED__"
+        "unlimited": "__STRING_NOT_TRANSLATED__",
+        "membership_not_required": "__STRING_NOT_TRANSLATED__"
     }
 }

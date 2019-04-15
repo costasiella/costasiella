@@ -94,8 +94,8 @@ class SchoolClasspassFactory(factory.DjangoModelFactory):
     validity_unit = "MONTHS"
     classes = 10
     unlimited = False
-    schoolMembership = factory.SubFactory(SchoolMembershipFactory)
-    quickStatsAmount = 12.5
+    school_membership = factory.SubFactory(SchoolMembershipFactory)
+    quick_stats_amount = 12.5
     finance_glaccount = factory.SubFactory(FinanceGLAccountFactory)
     finance_costcenter = factory.SubFactory(FinanceCostCenterFactory)
 
