@@ -79,6 +79,27 @@ class SchoolMembershipFactory(factory.DjangoModelFactory):
     finance_costcenter = factory.SubFactory(FinanceCostCenterFactory)
 
 
+class SchoolClasspassFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.SchoolClasspass
+
+    archived = False
+    display_public = True
+    display_shop = True
+    name = "First class pass"
+    description = "The first one..."
+    price = 125
+    finance_tax_rate = factory.SubFactory(FinanceTaxRateFactory)
+    validity = 1
+    validity_unit = "MONTHS"
+    classes = 10
+    unlimited = False
+    school_membership = factory.SubFactory(SchoolMembershipFactory)
+    quick_stats_amount = 12.5
+    finance_glaccount = factory.SubFactory(FinanceGLAccountFactory)
+    finance_costcenter = factory.SubFactory(FinanceCostCenterFactory)
+
+
 class AdminFactory(factory.DjangoModelFactory):
     class Meta:
         model = get_user_model()
