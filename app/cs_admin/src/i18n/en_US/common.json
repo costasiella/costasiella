@@ -204,5 +204,9 @@
         "years": "Years"
     },
     "shop": "Shop",
-    "price": "Price"
+    "price": "Price",
+    "general": {
+        "classes": "Classes",
+        "unlimited": "Unlimited"
+    }
 }

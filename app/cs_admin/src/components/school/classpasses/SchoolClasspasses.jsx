@@ -124,6 +124,7 @@ const SchoolClasspasses = ({ t, history, archived=false }) => (
                               <Table.ColHeader>{t('name')}</Table.ColHeader>
                               <Table.ColHeader>{t('public')}</Table.ColHeader>
                               <Table.ColHeader>{t('shop')}</Table.ColHeader>
+                              <Table.ColHeader>{t('general.classes')}</Table.ColHeader>
                               <Table.ColHeader>{t('price')}</Table.ColHeader>
                               <Table.ColHeader>{t('school.classpasses.validity')}</Table.ColHeader>
                             </Table.Row>
@@ -139,6 +140,9 @@ const SchoolClasspasses = ({ t, history, archived=false }) => (
                                   </Table.Col>
                                   <Table.Col key={v4()}>
                                     <BooleanBadge value={node.displayShop} />
+                                  </Table.Col>
+                                  <Table.Col key={v4()}>
+                                    {(node.unlimited) ? t('general.unlimited') : node.classes }
                                   </Table.Col>
                                   <Table.Col key={v4()}>
                                     {node.priceDisplay} <br />

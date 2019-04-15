@@ -298,13 +298,16 @@ class SchoolClasspassEdit extends Component {
                                       </Field>
                                       <ErrorMessage name="schoolMembership" component="span" className="invalid-feedback" />
                                     </Form.Group> 
-                                    <Form.Group label={t('school.classpass.quickStatsAmount')}>
-                                      <Field type="text" 
-                                             name="quickStatsAmount" 
-                                             className={(errors.quickStatsAmount) ? "form-control is-invalid" : "form-control"} 
-                                             autoComplete="off" />
-                                      <ErrorMessage name="quickStatsAmount" component="span" className="invalid-feedback" />
-                                    </Form.Group>
+                                    { (values.unlimited) ? 
+                                          <Form.Group label={t('school.classpass.quickStatsAmount')}>
+                                            <Field type="text" 
+                                                  name="quickStatsAmount" 
+                                                  className={(errors.quickStatsAmount) ? "form-control is-invalid" : "form-control"} 
+                                                  autoComplete="off" />
+                                            <ErrorMessage name="quickStatsAmount" component="span" className="invalid-feedback" />
+                                          </Form.Group>
+                                          : ""
+                                    }
                                     <Form.Group label={t('school.classpass.glaccount')}>
                                       <Field component="select" 
                                              name="financeGlaccount" 
