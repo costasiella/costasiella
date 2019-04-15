@@ -12,7 +12,7 @@ import { v4 } from "uuid"
 import { Editor } from '@tinymce/tinymce-react'
 import { tinymceBasicConf } from "../../../plugin_config/tinymce"
 
-import { GET_MEMBERSHIPS_QUERY, GET_INPUT_VALUES_QUERY } from './queries'
+import { GET_INPUT_VALUES_QUERY } from './queries'
 import { MEMBERSHIP_SCHEMA } from './yupSchema'
 
 
