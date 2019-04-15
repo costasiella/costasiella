@@ -99,7 +99,7 @@ class SchoolClasspassQuery(graphene.ObjectType):
 
     def resolve_school_classpasses(self, info, archived, **kwargs):
         user = info.context.user
-        require_login()
+        require_login(user)
         # Has permission: return everything
         if user.has_perm('costasiella.view_schoolclasspass'):
             print('user has view permission')
