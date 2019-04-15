@@ -12,8 +12,8 @@ import { v4 } from "uuid"
 import { Editor } from '@tinymce/tinymce-react'
 import { tinymceBasicConf } from "../../../plugin_config/tinymce"
 
-import { GET_INPUT_VALUES_QUERY } from './queries'
-import { MEMBERSHIP_SCHEMA } from './yupSchema'
+import { GET_CLASSPASSES_QUERY, GET_INPUT_VALUES_QUERY } from './queries'
+import { CLASSPASS_SCHEMA } from './yupSchema'
 
 
 import {
@@ -94,7 +94,7 @@ class SchoolClasspassAdd extends Component {
                   <Card.Title>{t('school.classpasses.title_add')}</Card.Title>
                   {console.log(match.params.id)}
                 </Card.Header>
-                <Query query={GET_INPUT_VALUES_QUERY} variables={{ id }} >
+                <Query query={GET_INPUT_VALUES_QUERY} variables={{ id, archived: false }} >
                 {({ loading, error, data, refetch }) => {
                     // Loading
                     if (loading) return <p>{t('loading_with_dots')}</p>
@@ -110,7 +110,7 @@ class SchoolClasspassAdd extends Component {
 
                     return (
                       
-                      <Mutation mutation={CREATE_MEMBERSHIP} onCompleted={() => history.push(return_url)}> 
+                      <Mutation mutation={CREATE_CLASSPASS} onCompleted={() => history.push(return_url)}> 
                       {(createMembership, { data }) => (
                           <Formik
                               initialValues={{ 
@@ -129,7 +129,7 @@ class SchoolClasspassAdd extends Component {
                                 financeGlaccount: "",
                                 financeCostcenter: ""
                               }}
-                              validationSchema={MEMBERSHIP_SCHEMA}
+                              validationSchema={CLASSPASS_SCHEMA}
                               onSubmit={(values, { setSubmitting }) => {
                                   console.log('submit values:')
                                   console.log(values)

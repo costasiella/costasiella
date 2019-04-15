@@ -24,6 +24,7 @@ import FinanceTaxRatesEdit from './components/finance/taxrates/FinanceTaxRateEdi
 
 import SchoolHome from './components/school/home/SchoolHome'
 import SchoolClasspasses from './components/school/classpasses/SchoolClasspasses'
+import SchoolClasspassAdd from './components/school/classpasses/SchoolClasspassAdd'
 import SchoolClasstypes from './components/school/classtypes/SchoolClasstypes'
 import SchoolClasstypeAdd from './components/school/classtypes/SchoolClasstypeAdd'
 import SchoolClasstypeEdit from './components/school/classtypes/SchoolClasstypeEdit'
@@ -102,6 +103,7 @@ class App extends Component {
             <Route exact path="/finance/taxrates/edit/:id" component={FinanceTaxRatesEdit} />
             <Route exact path="/school" component={SchoolHome} />
             <Route exact path="/school/classpasses" component={SchoolClasspasses} />
+            <Route exact path="/school/classpasses/add" component={SchoolClasspassAdd} />
             <Route exact path="/school/classtypes" component={SchoolClasstypes} />
             <Route exact path="/school/classtypes/add" component={SchoolClasstypeAdd} />
             <Route exact path="/school/classtypes/edit/:id" component={SchoolClasstypeEdit} />
