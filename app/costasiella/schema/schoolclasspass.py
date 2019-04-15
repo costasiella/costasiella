@@ -188,7 +188,6 @@ class UpdateSchoolClasspass(graphene.relay.ClientIDMutation):
     def mutate_and_get_payload(self, root, info, **input):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.change_schoolclasspass')
-
     
         rid = get_rid(input['id'])
         classpass = SchoolClasspass.objects.filter(id=rid.id).first()
