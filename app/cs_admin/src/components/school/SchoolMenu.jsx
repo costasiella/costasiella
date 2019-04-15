@@ -22,7 +22,7 @@ const SchoolMenu = ({ t, active_link }) => (
         {(active_link === 'schoolclasstypes') ? schoolclasstypes_active = true: schoolclasstypes_active = false}
         {(active_link === 'schooldiscoveries') ? schooldiscoveries_active = true: schooldiscoveries_active = false}
         {(active_link === 'schoollocations') ? schoollocations_active = true: schoollocations_active = false}
-        {(active_link === 'schoolmembershipss') ? schoolmemberships_active = true: schoolmemberships_active = false}
+        {(active_link === 'schoolmemberships') ? schoolmemberships_active = true: schoolmemberships_active = false}
         
 
         <List.GroupItem
