@@ -14,5 +14,9 @@ export const CLASSPASS_SCHEMA = Yup.object().shape({
     .required(t('yup.field_required')),
   validityUnit: Yup.string()
     .required(t('yup.field_required')),
+  classes: Yup.number()
+    .positive(t('yup.positive_number_required')),
+  quickStatsAmount: Yup.number()
+    .positive(t('yup.positive_number_required')),
 })
 
