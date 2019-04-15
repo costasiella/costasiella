@@ -251,13 +251,6 @@ class SchoolClasspassAdd extends Component {
                                           </Field>
                                           <ErrorMessage name="validityUnit" component="span" className="invalid-feedback" />
                                         </Form.Group>
-                                        <Form.Group label={t('school.classpass.classes')}>
-                                          <Field type="text" 
-                                                 name="classes" 
-                                                 className={(errors.classes) ? "form-control is-invalid" : "form-control"} 
-                                                 autoComplete="off" />
-                                          <ErrorMessage name="classes" component="span" className="invalid-feedback" />
-                                        </Form.Group>
                                         <Form.Group>
                                           <Form.Label className="custom-switch">
                                               <Field 
@@ -269,7 +262,15 @@ class SchoolClasspassAdd extends Component {
                                               <span className="custom-switch-description">{t('school.classpass.unlimited')}</span>
                                             </Form.Label>
                                           <ErrorMessage name="unlimited" component="div" />   
-                                        </Form.Group>   
+                                        </Form.Group>  
+                                        { (values.unlimited) ? "" :
+                                        <Form.Group label={t('school.classpass.classes')}>
+                                          <Field type="text" 
+                                                 name="classes" 
+                                                 className={(errors.classes) ? "form-control is-invalid" : "form-control"} 
+                                                 autoComplete="off" />
+                                          <ErrorMessage name="classes" component="span" className="invalid-feedback" />
+                                        </Form.Group> } 
                                         <Form.Group label={t('school.classpass.membership')}>
                                           <Field component="select" 
                                                  name="schoolMembership" 
