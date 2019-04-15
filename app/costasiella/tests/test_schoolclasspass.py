@@ -49,6 +49,7 @@ class GQLSchoolClasspass(TestCase):
                 "classes": 10,
                 "unlimited": False,
                 "schoolMembership": to_global_id("SchoolMembershipNode", self.school_membership.pk),
+                "quickStatsAmount": 12.5,
                 "financeGlaccount": to_global_id("FinanceGLAccountNode", self.finance_glaccount.pk),
                 "financeCostcenter": to_global_id("FinanceCostCenterNode", self.finance_costcenter.pk),
             }
@@ -241,7 +242,13 @@ class GQLSchoolClasspass(TestCase):
         }
         validity
         validityUnit
-        termsAndConditions
+        classes
+        unlimited
+        schoolMembership {
+          id
+          name
+        }
+        quickStatsAmount
         financeGlaccount {
           id
           name
@@ -502,93 +509,99 @@ class GQLSchoolClasspass(TestCase):
         self.assertEqual(data['schoolClasspass']['name'], classpass.name)
 
 
-    # def test_create_classpasses(self):
-    #     """ Create a classpasses """
-    #     query = self.classpass_create_mutation
-    #     variables = self.variables_create
+    def test_create_classpasses(self):
+        """ Create a classpasses """
+        query = self.classpass_create_mutation
+        variables = self.variables_create
 
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         self.admin_user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['createSchoolClasspass']['schoolClasspass']['displayPublic'], variables['input']['displayPublic'])
-    #     self.assertEqual(data['createSchoolClasspass']['schoolClasspass']['displayShop'], variables['input']['displayShop'])
-    #     self.assertEqual(data['createSchoolClasspass']['schoolClasspass']['archived'], False)
-    #     self.assertEqual(data['createSchoolClasspass']['schoolClasspass']['name'], variables['input']['name'])
-    #     self.assertEqual(data['createSchoolClasspass']['schoolClasspass']['description'], variables['input']['description'])
-    #     self.assertEqual(data['createSchoolClasspass']['schoolClasspass']['price'], variables['input']['price'])
-    #     self.assertEqual(data['createSchoolClasspass']['schoolClasspass']['financeTaxRate']['id'], variables['input']['financeTaxRate'])
-    #     self.assertEqual(data['createSchoolClasspass']['schoolClasspass']['validity'], variables['input']['validity'])
-    #     self.assertEqual(data['createSchoolClasspass']['schoolClasspass']['validityUnit'], variables['input']['validityUnit'])
-    #     self.assertEqual(data['createSchoolClasspass']['schoolClasspass']['termsAndConditions'], variables['input']['termsAndConditions'])
-    #     self.assertEqual(data['createSchoolClasspass']['schoolClasspass']['financeGlaccount']['id'], variables['input']['financeGlaccount'])
-    #     self.assertEqual(data['createSchoolClasspass']['schoolClasspass']['financeCostcenter']['id'], variables['input']['financeCostcenter'])
-
-
-    # def test_create_classpasses_anon_user(self):
-    #     """ Don't allow creating classpasses for non-logged in users """
-    #     query = self.classpass_create_mutation
-    #     variables = self.variables_create
-
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         self.anon_user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
+        executed = execute_test_client_api_query(
+            query, 
+            self.admin_user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['createSchoolClasspass']['schoolClasspass']['displayPublic'], variables['input']['displayPublic'])
+        self.assertEqual(data['createSchoolClasspass']['schoolClasspass']['displayShop'], variables['input']['displayShop'])
+        self.assertEqual(data['createSchoolClasspass']['schoolClasspass']['archived'], False)
+        self.assertEqual(data['createSchoolClasspass']['schoolClasspass']['name'], variables['input']['name'])
+        self.assertEqual(data['createSchoolClasspass']['schoolClasspass']['description'], variables['input']['description'])
+        self.assertEqual(data['createSchoolClasspass']['schoolClasspass']['price'], variables['input']['price'])
+        self.assertEqual(data['createSchoolClasspass']['schoolClasspass']['financeTaxRate']['id'], variables['input']['financeTaxRate'])
+        self.assertEqual(data['createSchoolClasspass']['schoolClasspass']['validity'], variables['input']['validity'])
+        self.assertEqual(data['createSchoolClasspass']['schoolClasspass']['validityUnit'], variables['input']['validityUnit'])
+        self.assertEqual(data['createSchoolClasspass']['schoolClasspass']['classes'], variables['input']['classes'])
+        self.assertEqual(data['createSchoolClasspass']['schoolClasspass']['unlimited'], variables['input']['unlimited'])
+        self.assertEqual(data['createSchoolClasspass']['schoolClasspass']['schoolMembership']['id'], variables['input']['schoolMembership'])
+        self.assertEqual(data['createSchoolClasspass']['schoolClasspass']['quickStatsAmount'], variables['input']['quickStatsAmount'])
+        self.assertEqual(data['createSchoolClasspass']['schoolClasspass']['financeGlaccount']['id'], variables['input']['financeGlaccount'])
+        self.assertEqual(data['createSchoolClasspass']['schoolClasspass']['financeCostcenter']['id'], variables['input']['financeCostcenter'])
 
 
-    # def test_create_location_permission_granted(self):
-    #     """ Allow creating classpasses for users with permissions """
-    #     query = self.classpass_create_mutation
-    #     variables = self.variables_create
+    def test_create_classpasses_anon_user(self):
+        """ Don't allow creating classpasses for non-logged in users """
+        query = self.classpass_create_mutation
+        variables = self.variables_create
 
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename=self.permission_add)
-    #     user.user_permissions.add(permission)
-    #     user.save()
-
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['createSchoolClasspass']['schoolClasspass']['displayPublic'], variables['input']['displayPublic'])
-    #     self.assertEqual(data['createSchoolClasspass']['schoolClasspass']['displayShop'], variables['input']['displayShop'])
-    #     self.assertEqual(data['createSchoolClasspass']['schoolClasspass']['archived'], False)
-    #     self.assertEqual(data['createSchoolClasspass']['schoolClasspass']['name'], variables['input']['name'])
-    #     self.assertEqual(data['createSchoolClasspass']['schoolClasspass']['description'], variables['input']['description'])
-    #     self.assertEqual(data['createSchoolClasspass']['schoolClasspass']['price'], variables['input']['price'])
-    #     self.assertEqual(data['createSchoolClasspass']['schoolClasspass']['financeTaxRate']['id'], variables['input']['financeTaxRate'])
-    #     self.assertEqual(data['createSchoolClasspass']['schoolClasspass']['validity'], variables['input']['validity'])
-    #     self.assertEqual(data['createSchoolClasspass']['schoolClasspass']['validityUnit'], variables['input']['validityUnit'])
-    #     self.assertEqual(data['createSchoolClasspass']['schoolClasspass']['termsAndConditions'], variables['input']['termsAndConditions'])
-    #     self.assertEqual(data['createSchoolClasspass']['schoolClasspass']['financeGlaccount']['id'], variables['input']['financeGlaccount'])
-    #     self.assertEqual(data['createSchoolClasspass']['schoolClasspass']['financeCostcenter']['id'], variables['input']['financeCostcenter'])
+        executed = execute_test_client_api_query(
+            query, 
+            self.anon_user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
-    # def test_create_classpasses_permission_denied(self):
-    #     """ Check create classpasses permission denied error message """
-    #     query = self.classpass_create_mutation
-    #     variables = self.variables_create
+    def test_create_location_permission_granted(self):
+        """ Allow creating classpasses for users with permissions """
+        query = self.classpass_create_mutation
+        variables = self.variables_create
 
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
+        # Create regular user
+        user = f.RegularUserFactory.create()
+        permission = Permission.objects.get(codename=self.permission_add)
+        user.user_permissions.add(permission)
+        user.save()
 
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
+        executed = execute_test_client_api_query(
+            query, 
+            user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['createSchoolClasspass']['schoolClasspass']['displayPublic'], variables['input']['displayPublic'])
+        self.assertEqual(data['createSchoolClasspass']['schoolClasspass']['displayShop'], variables['input']['displayShop'])
+        self.assertEqual(data['createSchoolClasspass']['schoolClasspass']['archived'], False)
+        self.assertEqual(data['createSchoolClasspass']['schoolClasspass']['name'], variables['input']['name'])
+        self.assertEqual(data['createSchoolClasspass']['schoolClasspass']['description'], variables['input']['description'])
+        self.assertEqual(data['createSchoolClasspass']['schoolClasspass']['price'], variables['input']['price'])
+        self.assertEqual(data['createSchoolClasspass']['schoolClasspass']['financeTaxRate']['id'], variables['input']['financeTaxRate'])
+        self.assertEqual(data['createSchoolClasspass']['schoolClasspass']['validity'], variables['input']['validity'])
+        self.assertEqual(data['createSchoolClasspass']['schoolClasspass']['validityUnit'], variables['input']['validityUnit'])
+        self.assertEqual(data['createSchoolClasspass']['schoolClasspass']['classes'], variables['input']['classes'])
+        self.assertEqual(data['createSchoolClasspass']['schoolClasspass']['unlimited'], variables['input']['unlimited'])
+        self.assertEqual(data['createSchoolClasspass']['schoolClasspass']['schoolMembership']['id'], variables['input']['schoolMembership'])
+        self.assertEqual(data['createSchoolClasspass']['schoolClasspass']['quickStatsAmount'], variables['input']['quickStatsAmount'])
+        self.assertEqual(data['createSchoolClasspass']['schoolClasspass']['financeGlaccount']['id'], variables['input']['financeGlaccount'])
+        self.assertEqual(data['createSchoolClasspass']['schoolClasspass']['financeCostcenter']['id'], variables['input']['financeCostcenter'])
+
+
+    def test_create_classpasses_permission_denied(self):
+        """ Check create classpasses permission denied error message """
+        query = self.classpass_create_mutation
+        variables = self.variables_create
+
+        # Create regular user
+        user = f.RegularUserFactory.create()
+
+        executed = execute_test_client_api_query(
+            query, 
+            user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
     # def test_update_classpasses(self):
