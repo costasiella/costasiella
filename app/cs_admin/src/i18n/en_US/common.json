@@ -99,7 +99,7 @@
             "taxrate": "Tax rate",
             "validity": "Validity",
             "validity_unit": "Validity in",
-            "unlimited": "Unlimited",
+            "unlimited": "Unlimited classes",
             "classes": "Classes",
             "membership": "Membership",
             "quickStatsAmount": "Quick stats amount",
@@ -208,6 +208,7 @@
     "general": {
         "classes": "Classes",
         "unlimited": "Unlimited",
-        "membership_not_required": "Membership not required"
+        "membership_not_required": "Membership not required",
+        "groups": "Groups"
     }
 }

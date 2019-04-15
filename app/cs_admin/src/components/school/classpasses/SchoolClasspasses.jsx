@@ -27,6 +27,7 @@ import { toast } from 'react-toastify'
 import BooleanBadge from "../../ui/BooleanBadge"
 
 import ContentCard from "../../general/ContentCard"
+import CardHeaderSeparator from "../../general/CardHeaderSeparator"
 import SchoolMenu from "../SchoolMenu"
 
 import { GET_CLASSPASSES_QUERY } from "./queries"
@@ -67,6 +68,15 @@ const SchoolClasspasses = ({ t, history, archived=false }) => (
                   </ContentCard>
                 )
                 const headerOptions = <Card.Options>
+                  
+                  <Button color='secondary'  
+                          size="sm"
+                          icon="folder"
+                          // onClick={() => {archived=false; refetch({archived});}}>
+                          >
+                    {t('general.groups')}
+                  </Button>
+                  <CardHeaderSeparator />
                   <Button color={(!archived) ? 'primary': 'secondary'}  
                           size="sm"
                           onClick={() => {archived=false; refetch({archived});}}>
