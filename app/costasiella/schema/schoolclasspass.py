@@ -164,55 +164,63 @@ class CreateSchoolClasspass(graphene.relay.ClientIDMutation):
         return CreateSchoolClasspass(school_classpass = classpass)
 
 
-# class UpdateSchoolMembership(graphene.relay.ClientIDMutation):
-#     class Input:
-#         id = graphene.ID(required=True)
-#         display_public = graphene.Boolean(required=True, default_value=True)
-#         display_shop = graphene.Boolean(required=True, default_value=True)
-#         name = graphene.String(required=True)
-#         description = graphene.String(required=False, default_value="")
-#         price = graphene.Float(rquired=True, default_value=0)
-#         finance_tax_rate = graphene.ID(required=True)
-#         validity = graphene.Int(required=True, default_value=1)
-#         validity_unit = graphene.String(required=True)
-#         terms_and_conditions = graphene.String(required=False, default_value="")
-#         finance_glaccount = graphene.ID(required=False, default_value="")
-#         finance_costcenter = graphene.ID(required=False, default_value="")
+class UpdateSchoolMembership(graphene.relay.ClientIDMutation):
+    class Input:
+        id = graphene.ID(required=True)
+        display_public = graphene.Boolean(required=True, default_value=True)
+        display_shop = graphene.Boolean(required=True, default_value=True)
+        name = graphene.String(required=True)
+        description = graphene.String(required=False, default_value="")
+        price = graphene.Float(required=True, default_value=0)
+        finance_tax_rate = graphene.ID(required=True)
+        validity = graphene.Int(required=True, default_value=1)
+        validity_unit = graphene.String(required=True)
+        classes = graphene.Int(required=True, default_value=1)
+        unlimited = graphene.Boolean(required=True, default_value=False)
+        school_membership = graphene.ID(required=False, default_value="")
+        quick_stats_amount = graphene.Float(required=False, default_value=0)
+        finance_glaccount = graphene.ID(required=False, default_value="")
+        finance_costcenter = graphene.ID(required=False, default_value="")
 
-#     school_membership = graphene.Field(SchoolMembershipNode)
+    school_classpass = graphene.Field(SchoolClasspassNode)
 
-#     @classmethod
-#     def mutate_and_get_payload(self, root, info, **input):
-#         user = info.context.user
-#         require_login_and_permission(user, 'costasiella.change_schoolclasspass')
+    @classmethod
+    def mutate_and_get_payload(self, root, info, **input):
+        user = info.context.user
+        require_login_and_permission(user, 'costasiella.change_schoolclasspass')
 
     
-#         rid = get_rid(input['id'])
-#         membership = SchoolMembership.objects.filter(id=rid.id).first()
-#         if not membership:
-#             raise Exception('Invalid School Membership ID!')
+        rid = get_rid(input['id'])
+        classpass = SchoolClasspass.objects.filter(id=rid.id).first()
+        if not classpass:
+            raise Exception('Invalid School Class pass ID!')
 
-#         result = validate_create_update_input(input, update=True)
+        result = validate_create_update_input(input, update=True)
 
-#         membership.display_public=input['display_public']
-#         membership.display_shop=input['display_shop']
-#         membership.name=input['name']
-#         membership.description=input['description']
-#         membership.price=input['price']
-#         membership.finance_tax_rate=result['finance_tax_rate']
-#         membership.validity=input['validity']
-#         membership.validity_unit=input['validity_unit']
-#         membership.terms_and_conditions=input['terms_and_conditions']
+        classpass.display_public=input['display_public']
+        classpass.display_shop=input['display_shop']
+        classpass.name=input['name']
+        classpass.description=input['description']
+        classpass.price=input['price']
+        classpass.finance_tax_rate=result['finance_tax_rate']
+        classpass.validity=input['validity']
+        classpass.validity_unit=input['validity_unit']
+        classpass.classes=input['classes']
+        classpass.unlimited=input['unlimited']
+        classpass.quick_stats_amount=input['quick_stats_amount']
 
-#         if 'finance_glaccount' in result:
-#             membership.finance_glaccount = result['finance_glaccount']
+        if 'school_membership' in result:
+            classpass.school_membership = result['school_membership']
 
-#         if 'finance_costcenter' in result:
-#             membership.finance_costcenter = result['finance_costcenter']
+        if 'finance_glaccount' in result:
+            classpass.finance_glaccount = result['finance_glaccount']
 
-#         membership.save(force_update=True)
+        if 'finance_costcenter' in result:
+            classpass.finance_costcenter = result['finance_costcenter']
 
-#         return UpdateSchoolMembership(school_membership=membership)
+        classpass.save(force_update=True)
+
+        return UpdateSchoolClasspass(school_classpass=classpass)
 
 
 class ArchiveSchoolClasspass(graphene.relay.ClientIDMutation):
@@ -241,4 +249,4 @@ class ArchiveSchoolClasspass(graphene.relay.ClientIDMutation):
 class SchoolClasspassMutation(graphene.ObjectType):
     archive_school_classpass = ArchiveSchoolClasspass.Field()
     create_school_classpass = CreateSchoolClasspass.Field()
-    # update_school_membership = UpdateSchoolMembership.Field()
+    update_school_classpass = UpdateSchoolClasspass.Field()
