@@ -164,7 +164,7 @@ class CreateSchoolClasspass(graphene.relay.ClientIDMutation):
         return CreateSchoolClasspass(school_classpass = classpass)
 
 
-class UpdateSchoolMembership(graphene.relay.ClientIDMutation):
+class UpdateSchoolClasspass(graphene.relay.ClientIDMutation):
     class Input:
         id = graphene.ID(required=True)
         display_public = graphene.Boolean(required=True, default_value=True)
