@@ -61,11 +61,14 @@ class GQLSchoolClasspass(TestCase):
                 "displayShop": True,
                 "name": "Updated classpass",
                 "description": "Description",
-                "price": 12.50,
+                "price": 125,
                 "financeTaxRate": to_global_id("FinanceTaxRateNode", self.finance_tax_rate.pk),
                 "validity": 1,
                 "validityUnit": "MONTHS",
-                "termsAndConditions": "T and C",
+                "classes": 10,
+                "unlimited": False,
+                "schoolMembership": to_global_id("SchoolMembershipNode", self.school_membership.pk),
+                "quickStatsAmount": 12.5,
                 "financeGlaccount": to_global_id("FinanceGLAccountNode", self.finance_glaccount.pk),
                 "financeCostcenter": to_global_id("FinanceCostCenterNode", self.finance_costcenter.pk),
             }
@@ -265,30 +268,36 @@ class GQLSchoolClasspass(TestCase):
         self.classpass_update_mutation = '''
   mutation UpdateSchoolClasspass($input: UpdateSchoolClasspassInput!) {
     updateSchoolClasspass(input: $input) {
-        schoolClasspass {
+      schoolClasspass {
+        id
+        archived
+        displayPublic
+        displayShop
+        name
+        description
+        price
+        financeTaxRate {
           id
-          archived
-          displayPublic
-          displayShop
           name
-          description
-          price
-          financeTaxRate {
-            id
-            name
-          }
-          validity
-          validityUnit
-          termsAndConditions
-          financeGlaccount {
-            id
-            name
-          }
-          financeCostcenter {
-            id
-            name
-          }
         }
+        validity
+        validityUnit
+        classes
+        unlimited
+        schoolMembership {
+          id
+          name
+        }
+        quickStatsAmount
+        financeGlaccount {
+          id
+          name
+        }
+        financeCostcenter {
+          id
+          name
+        }
+      }
     }
   }
 '''
@@ -604,102 +613,109 @@ class GQLSchoolClasspass(TestCase):
         self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
-    # def test_update_classpasses(self):
-    #     """ Update a classpasses """
-    #     query = self.classpass_update_mutation
-    #     classpass = f.SchoolClasspassFactory.create()
+    def test_update_classpasses(self):
+        """ Update a classpasses """
+        query = self.classpass_update_mutation
+        classpass = f.SchoolClasspassFactory.create()
 
-    #     variables = self.variables_update
-    #     variables['input']['id'] = to_global_id("SchoolClasspassNode", classpass.pk)
+        variables = self.variables_update
+        variables['input']['id'] = to_global_id("SchoolClasspassNode", classpass.pk)
 
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         self.admin_user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['updateSchoolClasspass']['schoolClasspass']['displayPublic'], variables['input']['displayPublic'])
-    #     self.assertEqual(data['updateSchoolClasspass']['schoolClasspass']['displayShop'], variables['input']['displayShop'])
-    #     self.assertEqual(data['updateSchoolClasspass']['schoolClasspass']['archived'], False)
-    #     self.assertEqual(data['updateSchoolClasspass']['schoolClasspass']['name'], variables['input']['name'])
-    #     self.assertEqual(data['updateSchoolClasspass']['schoolClasspass']['description'], variables['input']['description'])
-    #     self.assertEqual(data['updateSchoolClasspass']['schoolClasspass']['price'], variables['input']['price'])
-    #     self.assertEqual(data['updateSchoolClasspass']['schoolClasspass']['financeTaxRate']['id'], variables['input']['financeTaxRate'])
-    #     self.assertEqual(data['updateSchoolClasspass']['schoolClasspass']['validity'], variables['input']['validity'])
-    #     self.assertEqual(data['updateSchoolClasspass']['schoolClasspass']['validityUnit'], variables['input']['validityUnit'])
-    #     self.assertEqual(data['updateSchoolClasspass']['schoolClasspass']['termsAndConditions'], variables['input']['termsAndConditions'])
-    #     self.assertEqual(data['updateSchoolClasspass']['schoolClasspass']['financeGlaccount']['id'], variables['input']['financeGlaccount'])
-    #     self.assertEqual(data['updateSchoolClasspass']['schoolClasspass']['financeCostcenter']['id'], variables['input']['financeCostcenter'])
+        executed = execute_test_client_api_query(
+            query, 
+            self.admin_user, 
+            variables=variables
+        )
+        data = executed.get('data')
 
-
-    # def test_update_classpasses_anon_user(self):
-    #     """ Don't allow updating classpasses for non-logged in users """
-    #     query = self.classpass_update_mutation
-    #     classpass = f.SchoolClasspassFactory.create()
-    #     variables = self.variables_update
-    #     variables['input']['id'] = to_global_id("SchoolClasspassNode", classpass.pk)
-
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         self.anon_user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
+        self.assertEqual(data['updateSchoolClasspass']['schoolClasspass']['displayPublic'], variables['input']['displayPublic'])
+        self.assertEqual(data['updateSchoolClasspass']['schoolClasspass']['displayShop'], variables['input']['displayShop'])
+        self.assertEqual(data['updateSchoolClasspass']['schoolClasspass']['archived'], False)
+        self.assertEqual(data['updateSchoolClasspass']['schoolClasspass']['name'], variables['input']['name'])
+        self.assertEqual(data['updateSchoolClasspass']['schoolClasspass']['description'], variables['input']['description'])
+        self.assertEqual(data['updateSchoolClasspass']['schoolClasspass']['price'], variables['input']['price'])
+        self.assertEqual(data['updateSchoolClasspass']['schoolClasspass']['financeTaxRate']['id'], variables['input']['financeTaxRate'])
+        self.assertEqual(data['updateSchoolClasspass']['schoolClasspass']['validity'], variables['input']['validity'])
+        self.assertEqual(data['updateSchoolClasspass']['schoolClasspass']['validityUnit'], variables['input']['validityUnit'])
+        self.assertEqual(data['updateSchoolClasspass']['schoolClasspass']['classes'], variables['input']['classes'])
+        self.assertEqual(data['updateSchoolClasspass']['schoolClasspass']['unlimited'], variables['input']['unlimited'])
+        self.assertEqual(data['updateSchoolClasspass']['schoolClasspass']['schoolMembership']['id'], variables['input']['schoolMembership'])
+        self.assertEqual(data['updateSchoolClasspass']['schoolClasspass']['quickStatsAmount'], variables['input']['quickStatsAmount'])
+        self.assertEqual(data['updateSchoolClasspass']['schoolClasspass']['financeGlaccount']['id'], variables['input']['financeGlaccount'])
+        self.assertEqual(data['updateSchoolClasspass']['schoolClasspass']['financeCostcenter']['id'], variables['input']['financeCostcenter'])
 
 
-    # def test_update_classpasses_permission_granted(self):
-    #     """ Allow updating classpasses for users with permissions """
-    #     query = self.classpass_update_mutation
-    #     classpass = f.SchoolClasspassFactory.create()
-    #     variables = self.variables_update
-    #     variables['input']['id'] = to_global_id("SchoolClasspassNode", classpass.pk)
+    def test_update_classpasses_anon_user(self):
+        """ Don't allow updating classpasses for non-logged in users """
+        query = self.classpass_update_mutation
+        classpass = f.SchoolClasspassFactory.create()
+        variables = self.variables_update
+        variables['input']['id'] = to_global_id("SchoolClasspassNode", classpass.pk)
 
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename=self.permission_change)
-    #     user.user_permissions.add(permission)
-    #     user.save()
-
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['updateSchoolClasspass']['schoolClasspass']['displayPublic'], variables['input']['displayPublic'])
-    #     self.assertEqual(data['updateSchoolClasspass']['schoolClasspass']['displayShop'], variables['input']['displayShop'])
-    #     self.assertEqual(data['updateSchoolClasspass']['schoolClasspass']['archived'], False)
-    #     self.assertEqual(data['updateSchoolClasspass']['schoolClasspass']['name'], variables['input']['name'])
-    #     self.assertEqual(data['updateSchoolClasspass']['schoolClasspass']['description'], variables['input']['description'])
-    #     self.assertEqual(data['updateSchoolClasspass']['schoolClasspass']['price'], variables['input']['price'])
-    #     self.assertEqual(data['updateSchoolClasspass']['schoolClasspass']['financeTaxRate']['id'], variables['input']['financeTaxRate'])
-    #     self.assertEqual(data['updateSchoolClasspass']['schoolClasspass']['validity'], variables['input']['validity'])
-    #     self.assertEqual(data['updateSchoolClasspass']['schoolClasspass']['validityUnit'], variables['input']['validityUnit'])
-    #     self.assertEqual(data['updateSchoolClasspass']['schoolClasspass']['termsAndConditions'], variables['input']['termsAndConditions'])
-    #     self.assertEqual(data['updateSchoolClasspass']['schoolClasspass']['financeGlaccount']['id'], variables['input']['financeGlaccount'])
-    #     self.assertEqual(data['updateSchoolClasspass']['schoolClasspass']['financeCostcenter']['id'], variables['input']['financeCostcenter'])
+        executed = execute_test_client_api_query(
+            query, 
+            self.anon_user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
-    # def test_update_classpasses_permission_denied(self):
-    #     """ Check update classpasses permission denied error message """
-    #     query = self.classpass_update_mutation
-    #     classpass = f.SchoolClasspassFactory.create()
-    #     variables = self.variables_update
-    #     variables['input']['id'] = to_global_id("SchoolClasspassNode", classpass.pk)
+    def test_update_classpasses_permission_granted(self):
+        """ Allow updating classpasses for users with permissions """
+        query = self.classpass_update_mutation
+        classpass = f.SchoolClasspassFactory.create()
+        variables = self.variables_update
+        variables['input']['id'] = to_global_id("SchoolClasspassNode", classpass.pk)
 
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
+        # Create regular user
+        user = f.RegularUserFactory.create()
+        permission = Permission.objects.get(codename=self.permission_change)
+        user.user_permissions.add(permission)
+        user.save()
 
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
+        executed = execute_test_client_api_query(
+            query, 
+            user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['updateSchoolClasspass']['schoolClasspass']['displayPublic'], variables['input']['displayPublic'])
+        self.assertEqual(data['updateSchoolClasspass']['schoolClasspass']['displayShop'], variables['input']['displayShop'])
+        self.assertEqual(data['updateSchoolClasspass']['schoolClasspass']['archived'], False)
+        self.assertEqual(data['updateSchoolClasspass']['schoolClasspass']['name'], variables['input']['name'])
+        self.assertEqual(data['updateSchoolClasspass']['schoolClasspass']['description'], variables['input']['description'])
+        self.assertEqual(data['updateSchoolClasspass']['schoolClasspass']['price'], variables['input']['price'])
+        self.assertEqual(data['updateSchoolClasspass']['schoolClasspass']['financeTaxRate']['id'], variables['input']['financeTaxRate'])
+        self.assertEqual(data['updateSchoolClasspass']['schoolClasspass']['validity'], variables['input']['validity'])
+        self.assertEqual(data['updateSchoolClasspass']['schoolClasspass']['validityUnit'], variables['input']['validityUnit'])
+        self.assertEqual(data['updateSchoolClasspass']['schoolClasspass']['classes'], variables['input']['classes'])
+        self.assertEqual(data['updateSchoolClasspass']['schoolClasspass']['unlimited'], variables['input']['unlimited'])
+        self.assertEqual(data['updateSchoolClasspass']['schoolClasspass']['schoolMembership']['id'], variables['input']['schoolMembership'])
+        self.assertEqual(data['updateSchoolClasspass']['schoolClasspass']['quickStatsAmount'], variables['input']['quickStatsAmount'])
+        self.assertEqual(data['updateSchoolClasspass']['schoolClasspass']['financeGlaccount']['id'], variables['input']['financeGlaccount'])
+        self.assertEqual(data['updateSchoolClasspass']['schoolClasspass']['financeCostcenter']['id'], variables['input']['financeCostcenter'])
+
+
+    def test_update_classpasses_permission_denied(self):
+        """ Check update classpasses permission denied error message """
+        query = self.classpass_update_mutation
+        classpass = f.SchoolClasspassFactory.create()
+        variables = self.variables_update
+        variables['input']['id'] = to_global_id("SchoolClasspassNode", classpass.pk)
+
+        # Create regular user
+        user = f.RegularUserFactory.create()
+
+        executed = execute_test_client_api_query(
+            query, 
+            user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
     # def test_archive_classpasses(self):
