@@ -5,11 +5,10 @@ from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
 from graphql import GraphQLError
 
-from .gql_tools import get_rid
 import validators
 
 from ..models import SchoolClasspass, SchoolMembership, FinanceCostCenter, FinanceGLAccount, FinanceTaxRate 
-from ..modules.gql_tools import require_login_and_permission
+from ..modules.gql_tools import require_login, require_login_and_permission, get_rid
 from ..modules.messages import Messages
 
 
@@ -100,6 +99,7 @@ class SchoolClasspassQuery(graphene.ObjectType):
 
     def resolve_school_classpasses(self, info, archived, **kwargs):
         user = info.context.user
+        require_login()
         # Has permission: return everything
         if user.has_perm('costasiella.view_schoolclasspass'):
             print('user has view permission')

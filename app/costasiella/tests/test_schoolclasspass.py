@@ -314,69 +314,74 @@ class GQLSchoolClasspass(TestCase):
           to_global_id("FinanceCostCenterNode", classpass.finance_costcenter.pk))
 
 
-    # def test_query_permision_denied(self):
-    #     """ Query list of classpasses - check permission denied """
-    #     query = self.classpasses_query
-    #     classpass = f.SchoolClasspassFactory.create()
-    #     variables = {
-    #         'archived': False
-    #     }
+    def test_query_permision_denied(self):
+        """ Query list of classpasses - check permission denied """
+        query = self.classpasses_query
+        classpass = f.SchoolClasspassFactory.create()
+        non_public = f.SchoolClasspassFactory.create()
+        non_public.display_public = False
+        non_public.save()
 
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     executed = execute_test_client_api_query(query, user, variables=variables)
-    #     errors = executed.get('errors')
+        variables = {
+            'archived': False
+        }
 
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
+        # Create regular user
+        user = f.RegularUserFactory.create()
+        executed = execute_test_client_api_query(query, user, variables=variables)
+        data = executed.get('data')
 
+        # Public class only
+        non_public_found = False
+        for item in data['schoolClasspasses']['edges']:
+            if not item['node']['displayPublic']:
+                non_public_found = True
 
-    # def test_query_permision_granted(self):
-    #     """ Query list of classpasses with view permission """
-    #     query = self.classpasses_query
-    #     classpass = f.SchoolClasspassFactory.create()
-    #     variables = {
-    #         'archived': False
-    #     }
-
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename='view_schoolclasspass')
-    #     user.user_permissions.add(permission)
-    #     user.save()
-
-    #     executed = execute_test_client_api_query(query, user, variables=variables)
-    #     data = executed.get('data')
-
-    #     # List all classpasses
-    #     self.assertEqual(data['schoolClasspasses']['edges'][0]['node']['archived'], classpass.archived)
-    #     self.assertEqual(data['schoolClasspasses']['edges'][0]['node']['displayPublic'], classpass.display_public)
-    #     self.assertEqual(data['schoolClasspasses']['edges'][0]['node']['displayShop'], classpass.display_shop)
-    #     self.assertEqual(data['schoolClasspasses']['edges'][0]['node']['name'], classpass.name)
-    #     self.assertEqual(data['schoolClasspasses']['edges'][0]['node']['description'], classpass.description)
-    #     self.assertEqual(data['schoolClasspasses']['edges'][0]['node']['price'], classpass.price)
-    #     self.assertEqual(data['schoolClasspasses']['edges'][0]['node']['priceDisplay'], display_float_as_amount(classpass.price))
-    #     self.assertEqual(data['schoolClasspasses']['edges'][0]['node']['financeTaxRate']['id'], 
-    #       to_global_id("FinanceTaxRateNode", classpass.finance_tax_rate.pk))
-    #     self.assertEqual(data['schoolClasspasses']['edges'][0]['node']['validity'], classpass.validity)
-    #     self.assertEqual(data['schoolClasspasses']['edges'][0]['node']['validityUnit'], classpass.validity_unit)
-    #     self.assertEqual(data['schoolClasspasses']['edges'][0]['node']['validityUnitDisplay'], display_validity_unit(classpass.validity_unit))
-    #     self.assertEqual(data['schoolClasspasses']['edges'][0]['node']['financeGlaccount']['id'], 
-    #       to_global_id("FinanceGLAccountNode", classpass.finance_glaccount.pk))
-    #     self.assertEqual(data['schoolClasspasses']['edges'][0]['node']['financeCostcenter']['id'], 
-    #       to_global_id("FinanceCostCenterNode", classpass.finance_costcenter.pk))
+        self.assertEqual(non_public_found, False)
 
 
-    # def test_query_anon_user(self):
-    #     """ Query list of classpasses - anon user """
-    #     query = self.classpasses_query
-    #     classpass = f.SchoolClasspassFactory.create()
-    #     variables = {
-    #         'archived': False
-    #     }
+    def test_query_permision_granted(self):
+        """ Query list of classpasses with view permission """
+        query = self.classpasses_query
+        classpass = f.SchoolClasspassFactory.create()
+        non_public = f.SchoolClasspassFactory.create()
+        non_public.display_public = False
+        non_public.save()
 
-    #     executed = execute_test_client_api_query(query, self.anon_user, variables=variables)
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
+        variables = {
+            'archived': False
+        }
+
+        # Create regular user
+        user = f.RegularUserFactory.create()
+        permission = Permission.objects.get(codename='view_schoolclasspass')
+        user.user_permissions.add(permission)
+        user.save()
+
+        executed = execute_test_client_api_query(query, user, variables=variables)
+        data = executed.get('data')
+
+        # List all class passes, including non public
+        non_public_found = False
+        for item in data['schoolClasspasses']['edges']:
+            if not item['node']['displayPublic']:
+                non_public_found = True
+
+        # Assert non public classtypes are listed
+        self.assertEqual(non_public_found, True)
+
+
+    def test_query_anon_user(self):
+        """ Query list of classpasses - anon user """
+        query = self.classpasses_query
+        classpass = f.SchoolClasspassFactory.create()
+        variables = {
+            'archived': False
+        }
+
+        executed = execute_test_client_api_query(query, self.anon_user, variables=variables)
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
     # def test_query_one(self):
