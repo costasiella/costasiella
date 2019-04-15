@@ -1,3 +1,5 @@
+from .custom_user import CustomUser
+
 from .finance_costcenter import FinanceCostCenter
 from .finance_glaccount import FinanceGLAccount
 from .finance_taxrate import FinanceTaxRate
