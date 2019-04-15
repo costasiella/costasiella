@@ -105,7 +105,7 @@ class App extends Component {
             <Route exact path="/school" component={SchoolHome} />
             <Route exact path="/school/classpasses" component={SchoolClasspasses} />
             <Route exact path="/school/classpasses/add" component={SchoolClasspassAdd} />
-            <Route exact path="/school/classpasses/edit/:id" component={SchoolClasspassAdd} />
+            <Route exact path="/school/classpasses/edit/:id" component={SchoolClasspassEdit} />
             <Route exact path="/school/classtypes" component={SchoolClasstypes} />
             <Route exact path="/school/classtypes/add" component={SchoolClasstypeAdd} />
             <Route exact path="/school/classtypes/edit/:id" component={SchoolClasstypeEdit} />

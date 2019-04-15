@@ -108,6 +108,11 @@ class SchoolClasspassEdit extends Component {
                     console.log(data)
                     const initialData = data
 
+                    let initialMembership = ""
+                    if (initialData.schoolClasspass.schoolMembership) {
+                      initialMembership = initialData.schoolClasspass.schoolMembership.id
+                    }
+
                     let initialGlaccount = ""
                     if (initialData.schoolClasspass.financeGlaccount) {
                       initialGlaccount =  initialData.schoolClasspass.financeGlaccount.id
@@ -133,7 +138,7 @@ class SchoolClasspassEdit extends Component {
                                 validityUnit: initialData.schoolClasspass.validityUnit,
                                 classes: initialData.schoolClasspass.classes,
                                 unlimited: initialData.schoolClasspass.unlimited,
-                                schoolMembership: initialData.schoolClasspass.SchoolMembership.id,
+                                schoolMembership: initialMembership,
                                 quickStatsAmount: initialData.schoolClasspass.quickStatsAmount,
                                 financeGlaccount:  initialGlaccount,
                                 financeCostcenter: initialCostcenter
@@ -235,9 +240,9 @@ class SchoolClasspassEdit extends Component {
                                              className={(errors.financeTaxRate) ? "form-control is-invalid" : "form-control"} 
                                              autoComplete="off">
                                         {console.log("query data in classpass add:")}
-                                        {console.log(inputData)}
+                                        {console.log(initialData)}
                                         <option value="" key={v4()}></option>
-                                        {inputData.financeTaxrates.edges.map(({ node }) =>
+                                        {initialData.financeTaxrates.edges.map(({ node }) =>
                                           <option value={node.id} key={v4()}>{node.name} ({node.percentage}% {node.rateType})</option>
                                         )}
                                       </Field>
@@ -287,7 +292,7 @@ class SchoolClasspassEdit extends Component {
                                              className={(errors.schoolMembership) ? "form-control is-invalid" : "form-control"} 
                                              autoComplete="off">
                                         <option value="" key={v4()}></option>
-                                        {inputData.schoolMemberships.edges.map(({ node }) =>
+                                        {initialData.schoolMemberships.edges.map(({ node }) =>
                                           <option value={node.id} key={v4()}>{node.name} ({node.code})</option>
                                         )}
                                       </Field>
@@ -306,7 +311,7 @@ class SchoolClasspassEdit extends Component {
                                              className={(errors.financeGlaccount) ? "form-control is-invalid" : "form-control"} 
                                              autoComplete="off">
                                         <option value="" key={v4()}></option>
-                                        {inputData.financeGlaccounts.edges.map(({ node }) =>
+                                        {initialData.financeGlaccounts.edges.map(({ node }) =>
                                           <option value={node.id} key={v4()}>{node.name} ({node.code})</option>
                                         )}
                                       </Field>
@@ -318,7 +323,7 @@ class SchoolClasspassEdit extends Component {
                                              className={(errors.financeCostcenter) ? "form-control is-invalid" : "form-control"} 
                                              autoComplete="off">
                                         <option value="" key={v4()}></option>
-                                        {inputData.financeCostcenters.edges.map(({ node }) =>
+                                        {initialData.financeCostcenters.edges.map(({ node }) =>
                                           <option value={node.id} key={v4()}>{node.name} ({node.code})</option>
                                         )}
                                       </Field>

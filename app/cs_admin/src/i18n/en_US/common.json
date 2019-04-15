@@ -87,7 +87,9 @@
             "empty_list": "No class passes found, click the Add button to add a class pass",
             "empty_archive": "No class passes have been archived yet.",
             "validity": "Validity",
-            "add": "Add class pass"
+            "add": "Add class pass",
+            "title_edit": "Edit class pass",
+            "toast_edit_success": "Saved class pass"
         },
         "classpass": {
             "public": "This is a public pass",
