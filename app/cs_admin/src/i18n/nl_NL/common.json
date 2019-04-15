@@ -42,7 +42,8 @@
             "locations": "__STRING_NOT_TRANSLATED__",
             "classtypes": "__STRING_NOT_TRANSLATED__",
             "discoveries": "__STRING_NOT_TRANSLATED__",
-            "memberships": "__STRING_NOT_TRANSLATED__"
+            "memberships": "__STRING_NOT_TRANSLATED__",
+            "classpasses": "__STRING_NOT_TRANSLATED__"
         },
         "discoveries": {
             "title": "__STRING_NOT_TRANSLATED__",
@@ -79,6 +80,31 @@
             "terms_and_conditions": "__STRING_NOT_TRANSLATED__",
             "glaccount": "__STRING_NOT_TRANSLATED__",
             "costcenter": "__STRING_NOT_TRANSLATED__"
+        },
+        "classpasses": {
+            "title_add": "__STRING_NOT_TRANSLATED__",
+            "toast_add_success": "__STRING_NOT_TRANSLATED__",
+            "title": "__STRING_NOT_TRANSLATED__",
+            "error_loading": "__STRING_NOT_TRANSLATED__",
+            "empty_list": "__STRING_NOT_TRANSLATED__",
+            "empty_archive": "__STRING_NOT_TRANSLATED__",
+            "validity": "__STRING_NOT_TRANSLATED__",
+            "add": "__STRING_NOT_TRANSLATED__"
+        },
+        "classpass": {
+            "public": "__STRING_NOT_TRANSLATED__",
+            "shop": "__STRING_NOT_TRANSLATED__",
+            "name": "__STRING_NOT_TRANSLATED__",
+            "price": "__STRING_NOT_TRANSLATED__",
+            "taxrate": "__STRING_NOT_TRANSLATED__",
+            "validity": "__STRING_NOT_TRANSLATED__",
+            "validity_unit": "__STRING_NOT_TRANSLATED__",
+            "unlimited": "__STRING_NOT_TRANSLATED__",
+            "classes": "__STRING_NOT_TRANSLATED__",
+            "membership": "__STRING_NOT_TRANSLATED__",
+            "quickStatsAmount": "__STRING_NOT_TRANSLATED__",
+            "glaccount": "__STRING_NOT_TRANSLATED__",
+            "costcenter": "__STRING_NOT_TRANSLATED__"
         }
     },
     "back": "__STRING_NOT_TRANSLATED__",
@@ -101,7 +127,8 @@
         "url": "__STRING_NOT_TRANSLATED__",
         "min_len_3": "__STRING_NOT_TRANSLATED__",
         "field_required": "__STRING_NOT_TRANSLATED__",
-        "field_has_to_be_number": "__STRING_NOT_TRANSLATED__"
+        "field_has_to_be_number": "__STRING_NOT_TRANSLATED__",
+        "positive_number_required": "__STRING_NOT_TRANSLATED__"
     },
     "load_more": "__STRING_NOT_TRANSLATED__",
     "loaded_all": "__STRING_NOT_TRANSLATED__",

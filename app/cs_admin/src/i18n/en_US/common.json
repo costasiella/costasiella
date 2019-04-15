@@ -40,7 +40,8 @@
             "locations": "Locations",
             "classtypes": "Class types",
             "discoveries": "Discovery",
-            "memberships": "Memberships"
+            "memberships": "Memberships",
+            "classpasses": "Class passes"
         },
         "discoveries": {
             "title": "Discovery",
@@ -77,6 +78,31 @@
             "terms_and_conditions": "Terms and conditions",
             "glaccount": "General Ledger account",
             "costcenter": "Cost center"
+        },
+        "classpasses": {
+            "title_add": "Add class pass",
+            "toast_add_success": "Added class pass",
+            "title": "Class passes",
+            "error_loading": "Error loading class passes :(",
+            "empty_list": "No class passes found, click the Add button to add a class pass",
+            "empty_archive": "No class passes have been archived yet.",
+            "validity": "Validity",
+            "add": "Add class pass"
+        },
+        "classpass": {
+            "public": "This is a public pass",
+            "shop": "Show this pass in the shop",
+            "name": "Name",
+            "price": "Price",
+            "taxrate": "Tax rate",
+            "validity": "Validity",
+            "validity_unit": "Validity in",
+            "unlimited": "Unlimited",
+            "classes": "Classes",
+            "membership": "Membership",
+            "quickStatsAmount": "Quick stats amount",
+            "glaccount": "General Ledger account",
+            "costcenter": "Cost center"
         }
     },
     "name": "Name",
@@ -101,7 +127,8 @@
         "url": "Enter an address starting with http:// or https://",
         "min_len_3": "Please enter at least 3 characters",
         "field_required": "This field is required",
-        "field_has_to_be_number": "Please input a number"
+        "field_has_to_be_number": "Please input a number",
+        "positive_number_required": "Please input a positive number"
     },
     "load_more": "Load more...",
     "loaded_all": "Displaying all items",
