@@ -71,7 +71,7 @@ const CREATE_CLASSPASS = gql`
 class SchoolClasspassAdd extends Component {
   constructor(props) {
     super(props)
-    console.log("School membership add props:")
+    console.log("School classpass add props:")
     console.log(props)
   }
 
@@ -80,7 +80,7 @@ class SchoolClasspassAdd extends Component {
     const match = this.props.match
     const history = this.props.history
     const id = match.params.id
-    const return_url = "/school/memberships"
+    const return_url = "/school/classpasses"
 
     return (
       <SiteWrapper>
@@ -91,7 +91,7 @@ class SchoolClasspassAdd extends Component {
               <Grid.Col md={9}>
               <Card>
                 <Card.Header>
-                  <Card.Title>{t('school.memberships.title_add')}</Card.Title>
+                  <Card.Title>{t('school.classpasses.title_add')}</Card.Title>
                   {console.log(match.params.id)}
                 </Card.Header>
                 <Query query={GET_INPUT_VALUES_QUERY} variables={{ id }} >
@@ -122,7 +122,10 @@ class SchoolClasspassAdd extends Component {
                                 financeTaxRate: "",
                                 validity: 1,
                                 validityUnit: "MONTHS",
-                                termsAndConditions: "",
+                                classes: 1,
+                                unlimited: false,
+                                schoolMembership: "",
+                                quickStatsAmount: 0,
                                 financeGlaccount: "",
                                 financeCostcenter: ""
                               }}
@@ -141,16 +144,19 @@ class SchoolClasspassAdd extends Component {
                                       financeTaxRate: values.financeTaxRate,
                                       validity: values.validity,
                                       validityUnit: values.validityUnit,
-                                      termsAndConditions: values.termsAndConditions,
+                                      classes: values.classes,
+                                      unlimited: values.unlimited,
+                                      schoolMembership: values.schoolMembership,
+                                      quickStatsAmount: values.quickStatsAmount,
                                       financeGlaccount: values.financeGlaccount,
                                       financeCostcenter: values.financeCostcenter
                                     }
                                   }, refetchQueries: [
-                                      {query: GET_MEMBERSHIPS_QUERY, variables: {"archived": false }}
+                                      {query: GET_CLASSPASSES_QUERY, variables: {"archived": false }}
                                   ]})
                                   .then(({ data }) => {
                                       console.log('got data', data)
-                                      toast.success((t('school.memberships.toast_add_success')), {
+                                      toast.success((t('school.classpasses.toast_add_success')), {
                                           position: toast.POSITION.BOTTOM_RIGHT
                                         })
                                     }).catch((error) => {
@@ -173,7 +179,7 @@ class SchoolClasspassAdd extends Component {
                                                 name="displayPublic" 
                                                 checked={values.displayPublic} />
                                               <span className="custom-switch-indicator" ></span>
-                                              <span className="custom-switch-description">{t('school.membership.public')}</span>
+                                              <span className="custom-switch-description">{t('school.classpass.public')}</span>
                                             </Form.Label>
                                           <ErrorMessage name="displayPublic" component="div" />   
                                         </Form.Group>      
@@ -185,11 +191,11 @@ class SchoolClasspassAdd extends Component {
                                                 name="displayShop" 
                                                 checked={values.displayShop} />
                                               <span className="custom-switch-indicator" ></span>
-                                              <span className="custom-switch-description">{t('school.membership.shop')}</span>
+                                              <span className="custom-switch-description">{t('school.classpass.shop')}</span>
                                             </Form.Label>
                                           <ErrorMessage name="displayShop" component="div" />   
                                         </Form.Group>      
-                                        <Form.Group label={t('school.membership.name')} >
+                                        <Form.Group label={t('school.classpass.name')} >
                                           <Field type="text" 
                                                 name="name" 
                                                 className={(errors.name) ? "form-control is-invalid" : "form-control"} 
@@ -206,19 +212,19 @@ class SchoolClasspassAdd extends Component {
                                             />
                                           <ErrorMessage name="description" component="span" className="invalid-feedback" />
                                         </Form.Group>
-                                        <Form.Group label={t('school.membership.price')}>
+                                        <Form.Group label={t('school.classpass.price')}>
                                           <Field type="text" 
                                                 name="price" 
                                                 className={(errors.price) ? "form-control is-invalid" : "form-control"} 
                                                 autoComplete="off" />
                                           <ErrorMessage name="price" component="span" className="invalid-feedback" />
                                         </Form.Group>
-                                        <Form.Group label={t('school.membership.taxrate')}>
+                                        <Form.Group label={t('school.classpass.taxrate')}>
                                           <Field component="select" 
                                                  name="financeTaxRate" 
                                                  className={(errors.financeTaxRate) ? "form-control is-invalid" : "form-control"} 
                                                  autoComplete="off">
-                                            {console.log("query data in membership add:")}
+                                            {console.log("query data in classpass add:")}
                                             {console.log(inputData)}
                                             <option value="" key={v4()}></option>
                                             {inputData.financeTaxrates.edges.map(({ node }) =>
@@ -227,14 +233,14 @@ class SchoolClasspassAdd extends Component {
                                           </Field>
                                           <ErrorMessage name="financeTaxRate" component="span" className="invalid-feedback" />
                                         </Form.Group>
-                                        <Form.Group label={t('school.membership.validity')}>
+                                        <Form.Group label={t('school.classpass.validity')}>
                                           <Field type="text" 
                                                 name="validity" 
                                                 className={(errors.validity) ? "form-control is-invalid" : "form-control"} 
                                                 autoComplete="off" />
                                           <ErrorMessage name="validity" component="span" className="invalid-feedback" />
                                         </Form.Group>
-                                        <Form.Group label={t('school.membership.validity_unit')}>
+                                        <Form.Group label={t('school.classpass.validity_unit')}>
                                           <Field component="select" 
                                                  name="validityUnit" 
                                                  className={(errors.validityUnit) ? "form-control is-invalid" : "form-control"} 
@@ -245,17 +251,45 @@ class SchoolClasspassAdd extends Component {
                                           </Field>
                                           <ErrorMessage name="validityUnit" component="span" className="invalid-feedback" />
                                         </Form.Group>
-                                        <Form.Group label={t('school.membership.terms_and_conditions')}>
-                                          <Editor
-                                              textareaName="termsAndConditions"
-                                              initialValue={values.termsAndConditions}
-                                              init={tinymceBasicConf}
-                                              onChange={(e) => setFieldValue("termsAndConditions", e.target.getContent())}
-                                              onBlur={() => setFieldTouched("termsAndConditions", true)}
-                                            />
-                                          <ErrorMessage name="termsAndConditions" component="span" className="invalid-feedback" />
+                                        <Form.Group label={t('school.classpass.classes')}>
+                                          <Field type="text" 
+                                                 name="classes" 
+                                                 className={(errors.classes) ? "form-control is-invalid" : "form-control"} 
+                                                 autoComplete="off" />
+                                          <ErrorMessage name="classes" component="span" className="invalid-feedback" />
                                         </Form.Group>
-                                        <Form.Group label={t('school.membership.glaccount')}>
+                                        <Form.Group>
+                                          <Form.Label className="custom-switch">
+                                              <Field 
+                                                className="custom-switch-input"
+                                                type="checkbox" 
+                                                name="unlimited" 
+                                                checked={values.unlimied} />
+                                              <span className="custom-switch-indicator" ></span>
+                                              <span className="custom-switch-description">{t('school.classpass.unlimited')}</span>
+                                            </Form.Label>
+                                          <ErrorMessage name="unlimited" component="div" />   
+                                        </Form.Group>   
+                                        <Form.Group label={t('school.classpass.membership')}>
+                                          <Field component="select" 
+                                                 name="schoolMembership" 
+                                                 className={(errors.schoolMembership) ? "form-control is-invalid" : "form-control"} 
+                                                 autoComplete="off">
+                                            <option value="" key={v4()}></option>
+                                            {inputData.schoolMemberships.edges.map(({ node }) =>
+                                              <option value={node.id} key={v4()}>{node.name} ({node.code})</option>
+                                            )}
+                                          </Field>
+                                          <ErrorMessage name="schoolMembership" component="span" className="invalid-feedback" />
+                                        </Form.Group> 
+                                        <Form.Group label={t('school.classpass.quickStatsAmount')}>
+                                          <Field type="text" 
+                                                 name="quickStatsAmount" 
+                                                 className={(errors.quickStatsAmount) ? "form-control is-invalid" : "form-control"} 
+                                                 autoComplete="off" />
+                                          <ErrorMessage name="quickStatsAmount" component="span" className="invalid-feedback" />
+                                        </Form.Group>
+                                        <Form.Group label={t('school.classpass.glaccount')}>
                                           <Field component="select" 
                                                  name="financeGlaccount" 
                                                  className={(errors.financeGlaccount) ? "form-control is-invalid" : "form-control"} 
@@ -267,7 +301,7 @@ class SchoolClasspassAdd extends Component {
                                           </Field>
                                           <ErrorMessage name="financeGlaccount" component="span" className="invalid-feedback" />
                                         </Form.Group>
-                                        <Form.Group label={t('school.membership.costcenter')}>
+                                        <Form.Group label={t('school.classpass.costcenter')}>
                                           <Field component="select" 
                                                  name="financeCostcenter" 
                                                  className={(errors.financeCostcenter) ? "form-control is-invalid" : "form-control"} 
@@ -308,13 +342,13 @@ class SchoolClasspassAdd extends Component {
               </Grid.Col>
               <Grid.Col md={3}>
                 <HasPermissionWrapper permission="add"
-                                      resource="schoolmembership">
+                                      resource="schoolclasspass">
                   <Button color="primary btn-block mb-6"
                           onClick={() => history.push(return_url)}>
                     <Icon prefix="fe" name="chevrons-left" /> {t('back')}
                   </Button>
                 </HasPermissionWrapper>
-                <SchoolMenu active_link='schoolmemberships'/>
+                <SchoolMenu active_link='schoolclasspasses'/>
               </Grid.Col>
             </Grid.Row>
           </Container>
