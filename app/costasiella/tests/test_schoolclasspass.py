@@ -718,78 +718,78 @@ class GQLSchoolClasspass(TestCase):
         self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
-    # def test_archive_classpasses(self):
-    #     """ Archive a classpasses """
-    #     query = self.classpass_archive_mutation
-    #     classpass = f.SchoolClasspassFactory.create()
-    #     variables = self.variables_archive
-    #     variables['input']['id'] = to_global_id("SchoolClasspassNode", classpass.pk)
+    def test_archive_classpasses(self):
+        """ Archive a classpasses """
+        query = self.classpass_archive_mutation
+        classpass = f.SchoolClasspassFactory.create()
+        variables = self.variables_archive
+        variables['input']['id'] = to_global_id("SchoolClasspassNode", classpass.pk)
 
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         self.admin_user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     print(data)
-    #     self.assertEqual(data['archiveSchoolClasspass']['schoolClasspass']['archived'], variables['input']['archived'])
-
-
-    # def test_archive_classpasses_anon_user(self):
-    #     """ Archive classpasses denied for anon user """
-    #     query = self.classpass_archive_mutation
-    #     classpass = f.SchoolClasspassFactory.create()
-    #     variables = self.variables_archive
-    #     variables['input']['id'] = to_global_id("SchoolClasspassNode", classpass.pk)
-
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         self.anon_user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
+        executed = execute_test_client_api_query(
+            query, 
+            self.admin_user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        print(data)
+        self.assertEqual(data['archiveSchoolClasspass']['schoolClasspass']['archived'], variables['input']['archived'])
 
 
-    # def test_archive_classpasses_permission_granted(self):
-    #     """ Allow archiving classpasses for users with permissions """
-    #     query = self.classpass_archive_mutation
-    #     classpass = f.SchoolClasspassFactory.create()
-    #     variables = self.variables_archive
-    #     variables['input']['id'] = to_global_id("SchoolClasspassNode", classpass.pk)
+    def test_archive_classpasses_anon_user(self):
+        """ Archive classpasses denied for anon user """
+        query = self.classpass_archive_mutation
+        classpass = f.SchoolClasspassFactory.create()
+        variables = self.variables_archive
+        variables['input']['id'] = to_global_id("SchoolClasspassNode", classpass.pk)
 
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename=self.permission_delete)
-    #     user.user_permissions.add(permission)
-    #     user.save()
-
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['archiveSchoolClasspass']['schoolClasspass']['archived'], variables['input']['archived'])
+        executed = execute_test_client_api_query(
+            query, 
+            self.anon_user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
-    # def test_archive_classpasses_permission_denied(self):
-    #     """ Check archive classpasses permission denied error message """
-    #     query = self.classpass_archive_mutation
-    #     classpass = f.SchoolClasspassFactory.create()
-    #     variables = self.variables_archive
-    #     variables['input']['id'] = to_global_id("SchoolClasspassNode", classpass.pk)
+    def test_archive_classpasses_permission_granted(self):
+        """ Allow archiving classpasses for users with permissions """
+        query = self.classpass_archive_mutation
+        classpass = f.SchoolClasspassFactory.create()
+        variables = self.variables_archive
+        variables['input']['id'] = to_global_id("SchoolClasspassNode", classpass.pk)
+
+        # Create regular user
+        user = f.RegularUserFactory.create()
+        permission = Permission.objects.get(codename=self.permission_delete)
+        user.user_permissions.add(permission)
+        user.save()
+
+        executed = execute_test_client_api_query(
+            query, 
+            user,
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['archiveSchoolClasspass']['schoolClasspass']['archived'], variables['input']['archived'])
+
+
+    def test_archive_classpasses_permission_denied(self):
+        """ Check archive classpasses permission denied error message """
+        query = self.classpass_archive_mutation
+        classpass = f.SchoolClasspassFactory.create()
+        variables = self.variables_archive
+        variables['input']['id'] = to_global_id("SchoolClasspassNode", classpass.pk)
         
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
+        # Create regular user
+        user = f.RegularUserFactory.create()
 
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
+        executed = execute_test_client_api_query(
+            query, 
+            user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
 
