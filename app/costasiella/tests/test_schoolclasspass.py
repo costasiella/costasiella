@@ -141,7 +141,13 @@ class GQLSchoolClasspass(TestCase):
       validity
       validityUnit
       validityUnitDisplay
-      termsAndConditions
+      classes
+      unlimited
+      schoolMembership {
+        id
+        name
+      }
+      quickStatsAmount
       financeGlaccount {
         id 
         name
@@ -149,6 +155,21 @@ class GQLSchoolClasspass(TestCase):
       financeCostcenter {
         id
         name
+      }
+    }
+    schoolMemberships(first: 15, before: $before, after: $after, archived: $archived) {
+      pageInfo {
+        startCursor
+        endCursor
+        hasNextPage
+        hasPreviousPage
+      }
+      edges {
+        node {
+          id
+          archived
+          name
+        }
       }
     }
     financeTaxrates(first: 15, before: $before, after: $after, archived: $archived) {
@@ -384,96 +405,101 @@ class GQLSchoolClasspass(TestCase):
         self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
-    # def test_query_one(self):
-    #     """ Query one classpasses as admin """   
-    #     classpass = f.SchoolClasspassFactory.create()
+    def test_query_one(self):
+        """ Query one classpasses as admin """   
+        classpass = f.SchoolClasspassFactory.create()
 
-    #     # Get node id
-    #     node_id = to_global_id("SchoolClasspassNode", classpass.pk)
+        # Get node id
+        node_id = to_global_id("SchoolClasspassNode", classpass.pk)
 
-    #     variables = {
-    #       "id": node_id,
-    #       "archived": False
-    #     }
+        variables = {
+          "id": node_id,
+          "archived": False
+        }
 
-    #     # Now query single classpasses and check
-    #     executed = execute_test_client_api_query(self.classpass_query, self.admin_user, variables=variables)
-    #     data = executed.get('data')
-    #     self.assertEqual(data['schoolClasspass']['displayPublic'], classpass.display_public)
-    #     self.assertEqual(data['schoolClasspass']['displayShop'], classpass.display_shop)
-    #     self.assertEqual(data['schoolClasspass']['archived'], classpass.archived)
-    #     self.assertEqual(data['schoolClasspass']['name'], classpass.name)
-    #     self.assertEqual(data['schoolClasspass']['price'], classpass.price)
-    #     self.assertEqual(data['schoolClasspass']['priceDisplay'], display_float_as_amount(classpass.price))
-    #     self.assertEqual(data['schoolClasspass']['financeTaxRate']['id'], 
-    #       to_global_id("FinanceTaxRateNode", classpass.finance_tax_rate.pk))
-    #     self.assertEqual(data['schoolClasspass']['validity'], classpass.validity)
-    #     self.assertEqual(data['schoolClasspass']['validityUnit'], classpass.validity_unit)
-    #     self.assertEqual(data['schoolClasspass']['validityUnitDisplay'], display_validity_unit(classpass.validity_unit))
-    #     self.assertEqual(data['schoolClasspass']['financeGlaccount']['id'], 
-    #       to_global_id("FinanceGLAccountNode", classpass.finance_glaccount.pk))
-    #     self.assertEqual(data['schoolClasspass']['financeCostcenter']['id'], 
-    #       to_global_id("FinanceCostCenterNode", classpass.finance_costcenter.pk))
+        # Now query single classpasses and check
+        executed = execute_test_client_api_query(self.classpass_query, self.admin_user, variables=variables)
+        data = executed.get('data')
+        self.assertEqual(data['schoolClasspass']['archived'], classpass.archived)
+        self.assertEqual(data['schoolClasspass']['displayPublic'], classpass.display_public)
+        self.assertEqual(data['schoolClasspass']['displayShop'], classpass.display_shop)
+        self.assertEqual(data['schoolClasspass']['name'], classpass.name)
+        self.assertEqual(data['schoolClasspass']['description'], classpass.description)
+        self.assertEqual(data['schoolClasspass']['price'], classpass.price)
+        self.assertEqual(data['schoolClasspass']['priceDisplay'], display_float_as_amount(classpass.price))
+        self.assertEqual(data['schoolClasspass']['financeTaxRate']['id'], 
+          to_global_id("FinanceTaxRateNode", classpass.finance_tax_rate.pk))
+        self.assertEqual(data['schoolClasspass']['validityUnit'], classpass.validity_unit)
+        self.assertEqual(data['schoolClasspass']['validityUnitDisplay'], display_validity_unit(classpass.validity_unit))
+        self.assertEqual(data['schoolClasspass']['classes'], classpass.classes)
+        self.assertEqual(data['schoolClasspass']['unlimited'], classpass.unlimited)
+        self.assertEqual(data['schoolClasspass']['schoolMembership']['id'], 
+          to_global_id("SchoolMembershipNode", classpass.school_membership.pk))
+        self.assertEqual(data['schoolClasspass']['quickStatsAmount'], classpass.quick_stats_amount)
+        self.assertEqual(data['schoolClasspass']['financeGlaccount']['id'], 
+          to_global_id("FinanceGLAccountNode", classpass.finance_glaccount.pk))
+        self.assertEqual(data['schoolClasspass']['financeCostcenter']['id'], 
+          to_global_id("FinanceCostCenterNode", classpass.finance_costcenter.pk))
         
 
-    # def test_query_one_anon_user(self):
-    #     """ Deny permission for anon users Query one classpass """   
-    #     classpass = f.SchoolClasspassFactory.create()
+    def test_query_one_anon_user(self):
+        """ Deny permission for anon users Query one classpass """   
+        classpass = f.SchoolClasspassFactory.create()
 
-    #     # Get node id
-    #     node_id = to_global_id("SchoolClasspassNode", classpass.pk)
+        # Get node id
+        node_id = to_global_id("SchoolClasspassNode", classpass.pk)
         
-    #     variables = {
-    #       "id": node_id,
-    #       "archived": False
-    #     }
+        variables = {
+          "id": node_id,
+          "archived": False
+        }
 
-    #     # Now query single classpasses and check
-    #     executed = execute_test_client_api_query(self.classpass_query, self.anon_user, variables=variables)
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
+        # Now query single classpasses and check
+        executed = execute_test_client_api_query(self.classpass_query, self.anon_user, variables=variables)
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
-    # def test_query_one_permission_denied(self):
-    #     """ Permission denied message when user lacks authorization """   
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     classpass = f.SchoolClasspassFactory.create()
+    def test_query_one_permission_denied(self):
+        """ Permission denied message when user lacks authorization """   
+        # Create regular user
+        user = f.RegularUserFactory.create()
+        classpass = f.SchoolClasspassFactory.create()
 
-    #     # Get node id
-    #     node_id = to_global_id("SchoolClasspassNode", classpass.pk)
+        # Get node id
+        node_id = to_global_id("SchoolClasspassNode", classpass.pk)
         
-    #     variables = {
-    #       "id": node_id,
-    #       "archived": False
-    #     }
+        variables = {
+          "id": node_id,
+          "archived": False
+        }
 
-    #     # Now query single classpasses and check
-    #     executed = execute_test_client_api_query(self.classpass_query, user, variables=variables)
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
+        # Now query single classpasses and check
+        executed = execute_test_client_api_query(self.classpass_query, user, variables=variables)
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
-    # def test_query_one_permission_granted(self):
-    #     """ Respond with data when user has permission """   
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename='view_schoolclasspass')
-    #     user.user_permissions.add(permission)
-    #     user.save()
-    #     classpass = f.SchoolClasspassFactory.create()
+    def test_query_one_permission_granted(self):
+        """ Respond with data when user has permission """   
+        user = f.RegularUserFactory.create()
+        permission = Permission.objects.get(codename='view_schoolclasspass')
+        user.user_permissions.add(permission)
+        user.save()
+        classpass = f.SchoolClasspassFactory.create()
 
-    #     # Get node id
-    #     node_id = to_global_id("SchoolClasspassNode", classpass.pk)
+        # Get node id
+        node_id = to_global_id("SchoolClasspassNode", classpass.pk)
         
-    #     variables = {
-    #       "id": node_id,
-    #       "archived": False
-    #     }
+        variables = {
+          "id": node_id,
+          "archived": False
+        }
 
-    #     # Now query single location and check   
-    #     executed = execute_test_client_api_query(self.classpass_query, user, variables=variables)
-    #     data = executed.get('data')
-    #     self.assertEqual(data['schoolClasspass']['name'], classpass.name)
+        # Now query single location and check   
+        executed = execute_test_client_api_query(self.classpass_query, user, variables=variables)
+        data = executed.get('data')
+        self.assertEqual(data['schoolClasspass']['name'], classpass.name)
 
 
     # def test_create_classpasses(self):
