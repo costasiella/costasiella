@@ -215,30 +215,30 @@ class CreateSchoolClasspass(graphene.relay.ClientIDMutation):
 #         return UpdateSchoolMembership(school_membership=membership)
 
 
-# class ArchiveSchoolMembership(graphene.relay.ClientIDMutation):
-#     class Input:
-#         id = graphene.ID(required=True)
-#         archived = graphene.Boolean(required=True)
+class ArchiveSchoolClasspass(graphene.relay.ClientIDMutation):
+    class Input:
+        id = graphene.ID(required=True)
+        archived = graphene.Boolean(required=True)
 
-#     school_membership = graphene.Field(SchoolMembershipNode)
+    school_classpass = graphene.Field(SchoolClasspassNode)
 
-#     @classmethod
-#     def mutate_and_get_payload(self, root, info, **input):
-#         user = info.context.user
-#         require_login_and_permission(user, 'costasiella.delete_schoolclasspass')
+    @classmethod
+    def mutate_and_get_payload(self, root, info, **input):
+        user = info.context.user
+        require_login_and_permission(user, 'costasiella.delete_schoolclasspass')
 
-#         rid = get_rid(input['id'])
-#         membership = SchoolMembership.objects.filter(id=rid.id).first()
-#         if not membership:
-#             raise Exception('Invalid School Membership ID!')
+        rid = get_rid(input['id'])
+        classpass = SchoolClasspass.objects.filter(id=rid.id).first()
+        if not classpass:
+            raise Exception('Invalid School Classpass ID!')
 
-#         membership.archived = input['archived']
-#         membership.save(force_update=True)
+        classpass.archived = input['archived']
+        classpass.save(force_update=True)
 
-#         return ArchiveSchoolMembership(school_membership=membership)
+        return ArchiveSchoolClasspass(school_classpass=classpass)
 
 
 class SchoolClasspassMutation(graphene.ObjectType):
-    # archive_school_membership = ArchiveSchoolMembership.Field()
+    archive_school_membership = ArchiveSchoolMembership.Field()
     create_school_classpass = CreateSchoolClasspass.Field()
     # update_school_membership = UpdateSchoolMembership.Field()
