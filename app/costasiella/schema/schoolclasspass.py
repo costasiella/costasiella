@@ -239,6 +239,6 @@ class ArchiveSchoolClasspass(graphene.relay.ClientIDMutation):
 
 
 class SchoolClasspassMutation(graphene.ObjectType):
-    archive_school_membership = ArchiveSchoolMembership.Field()
+    archive_school_classpass = ArchiveSchoolClasspass.Field()
     create_school_classpass = CreateSchoolClasspass.Field()
     # update_school_membership = UpdateSchoolMembership.Field()
