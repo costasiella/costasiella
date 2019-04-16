@@ -91,11 +91,11 @@ class OrganizationMembershipAdd extends Component {
                 <Query query={GET_INPUT_VALUES_QUERY} variables={{ id }} >
                 {({ loading, error, data, refetch }) => {
                     // Loading
-                    if (loading) return <p>{t('loading_with_dots')}</p>
+                    if (loading) return <p>{t('general.loading_with_dots')}</p>
                     // Error
                     if (error) {
                       console.log(error)
-                      return <p>{t('error_sad_smiley')}</p>
+                      return <p>{t('general.error_sad_smiley')}</p>
                     }
                     
                     console.log('query data')
@@ -148,7 +148,7 @@ class OrganizationMembershipAdd extends Component {
                                           position: toast.POSITION.BOTTOM_RIGHT
                                         })
                                     }).catch((error) => {
-                                      toast.error((t('toast_server_error')) + ': ' +  error, {
+                                      toast.error((t('general.toast_server_error')) + ': ' +  error, {
                                           position: toast.POSITION.BOTTOM_RIGHT
                                         })
                                       console.log('there was an error sending the query', error)
@@ -183,14 +183,14 @@ class OrganizationMembershipAdd extends Component {
                                             </Form.Label>
                                           <ErrorMessage name="displayShop" component="div" />   
                                         </Form.Group>      
-                                        <Form.Group label={t('organization.membership.name')} >
+                                        <Form.Group label={t('general.name')} >
                                           <Field type="text" 
                                                 name="name" 
                                                 className={(errors.name) ? "form-control is-invalid" : "form-control"} 
                                                 autoComplete="off" />
                                           <ErrorMessage name="name" component="span" className="invalid-feedback" />
                                         </Form.Group>
-                                        <Form.Group label={t('description')}>
+                                        <Form.Group label={t('general.description')}>
                                           <Editor
                                               textareaName="description"
                                               initialValue={values.description}
@@ -200,14 +200,14 @@ class OrganizationMembershipAdd extends Component {
                                             />
                                           <ErrorMessage name="description" component="span" className="invalid-feedback" />
                                         </Form.Group>
-                                        <Form.Group label={t('organization.membership.price')}>
+                                        <Form.Group label={t('general.price')}>
                                           <Field type="text" 
                                                 name="price" 
                                                 className={(errors.price) ? "form-control is-invalid" : "form-control"} 
                                                 autoComplete="off" />
                                           <ErrorMessage name="price" component="span" className="invalid-feedback" />
                                         </Form.Group>
-                                        <Form.Group label={t('organization.membership.taxrate')}>
+                                        <Form.Group label={t('general.taxrate')}>
                                           <Field component="select" 
                                                  name="financeTaxRate" 
                                                  className={(errors.financeTaxRate) ? "form-control is-invalid" : "form-control"} 
@@ -221,25 +221,25 @@ class OrganizationMembershipAdd extends Component {
                                           </Field>
                                           <ErrorMessage name="financeTaxRate" component="span" className="invalid-feedback" />
                                         </Form.Group>
-                                        <Form.Group label={t('organization.membership.validity')}>
+                                        <Form.Group label={t('general.validity')}>
                                           <Field type="text" 
                                                 name="validity" 
                                                 className={(errors.validity) ? "form-control is-invalid" : "form-control"} 
                                                 autoComplete="off" />
                                           <ErrorMessage name="validity" component="span" className="invalid-feedback" />
                                         </Form.Group>
-                                        <Form.Group label={t('organization.membership.validity_unit')}>
+                                        <Form.Group label={t('general.validity_unit')}>
                                           <Field component="select" 
                                                  name="validityUnit" 
                                                  className={(errors.validityUnit) ? "form-control is-invalid" : "form-control"} 
                                                  autoComplete="off">
-                                            <option value="DAYS" key={v4()}>{t('validity.days')}</option>
-                                            <option value="WEEKS" key={v4()}>{t('validity.weeks')}</option>
-                                            <option value="MONTHS" key={v4()}>{t('validity.months')}</option>
+                                            <option value="DAYS" key={v4()}>{t('general.validity.days')}</option>
+                                            <option value="WEEKS" key={v4()}>{t('general.validity.weeks')}</option>
+                                            <option value="MONTHS" key={v4()}>{t('general.validity.months')}</option>
                                           </Field>
                                           <ErrorMessage name="validityUnit" component="span" className="invalid-feedback" />
                                         </Form.Group>
-                                        <Form.Group label={t('organization.membership.terms_and_conditions')}>
+                                        <Form.Group label={t('general.terms_and_conditions')}>
                                           <Editor
                                               textareaName="termsAndConditions"
                                               initialValue={values.termsAndConditions}
@@ -249,7 +249,7 @@ class OrganizationMembershipAdd extends Component {
                                             />
                                           <ErrorMessage name="termsAndConditions" component="span" className="invalid-feedback" />
                                         </Form.Group>
-                                        <Form.Group label={t('organization.membership.glaccount')}>
+                                        <Form.Group label={t('general.glaccount')}>
                                           <Field component="select" 
                                                  name="financeGlaccount" 
                                                  className={(errors.financeGlaccount) ? "form-control is-invalid" : "form-control"} 
@@ -261,7 +261,7 @@ class OrganizationMembershipAdd extends Component {
                                           </Field>
                                           <ErrorMessage name="financeGlaccount" component="span" className="invalid-feedback" />
                                         </Form.Group>
-                                        <Form.Group label={t('organization.membership.costcenter')}>
+                                        <Form.Group label={t('general.costcenter')}>
                                           <Field component="select" 
                                                  name="financeCostcenter" 
                                                  className={(errors.financeCostcenter) ? "form-control is-invalid" : "form-control"} 
@@ -281,14 +281,14 @@ class OrganizationMembershipAdd extends Component {
                                             disabled={isSubmitting}
                                             type="submit"
                                           >
-                                            {t('submit')}
+                                            {t('general.submit')}
                                           </Button>
                                           <Button
                                             type="button" 
                                             color="link" 
                                             onClick={() => history.push(return_url)}
                                           >
-                                              {t('cancel')}
+                                              {t('general.cancel')}
                                           </Button>
                                       </Card.Footer>
                                   </FoForm>
@@ -305,7 +305,7 @@ class OrganizationMembershipAdd extends Component {
                                       resource="organizationmembership">
                   <Button color="primary btn-block mb-6"
                           onClick={() => history.push(return_url)}>
-                    <Icon prefix="fe" name="chevrons-left" /> {t('back')}
+                    <Icon prefix="fe" name="chevrons-left" /> {t('general.back')}
                   </Button>
                 </HasPermissionWrapper>
                 <OrganizationMenu active_link='organizationmemberships'/>
