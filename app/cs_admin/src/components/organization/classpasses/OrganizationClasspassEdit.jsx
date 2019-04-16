@@ -28,13 +28,13 @@ import {
 import SiteWrapper from "../../SiteWrapper"
 import HasPermissionWrapper from "../../HasPermissionWrapper"
 
-import SchoolMenu from "../SchoolMenu"
+import OrganizationMenu from "../OrganizationMenu"
 
 
 const UPDATE_CLASSPASS = gql`
-  mutation UpdateSchoolClasspass($input: UpdateSchoolClasspassInput!) {
-    updateSchoolClasspass(input: $input) {
-      schoolClasspass {
+  mutation UpdateOrganizationClasspass($input: UpdateOrganizationClasspassInput!) {
+    updateOrganizationClasspass(input: $input) {
+      organizationClasspass {
         id
         displayPublic
         displayShop
@@ -49,7 +49,7 @@ const UPDATE_CLASSPASS = gql`
         validityUnit
         classes
         unlimited
-        schoolMembership {
+        organizationMembership {
           id
           name
         }
@@ -68,10 +68,10 @@ const UPDATE_CLASSPASS = gql`
 `
 
 
-class SchoolClasspassEdit extends Component {
+class OrganizationClasspassEdit extends Component {
   constructor(props) {
     super(props)
-    console.log("School classpass edit props:")
+    console.log("Organization classpass edit props:")
     console.log(props)
   }
 
@@ -80,18 +80,18 @@ class SchoolClasspassEdit extends Component {
     const match = this.props.match
     const history = this.props.history
     const id = match.params.id
-    const return_url = "/school/classpasses"
+    const return_url = "/organization/classpasses"
 
     return (
       <SiteWrapper>
         <div className="my-3 my-md-5">
           <Container>
-            <Page.Header title="School" />
+            <Page.Header title="Organization" />
             <Grid.Row>
               <Grid.Col md={9}>
               <Card>
                 <Card.Header>
-                  <Card.Title>{t('school.classpasses.title_edit')}</Card.Title>
+                  <Card.Title>{t('organization.classpasses.title_edit')}</Card.Title>
                   {console.log(match.params.id)}
                 </Card.Header>
                 <Query query={GET_CLASSPASS_QUERY} variables={{ "id": id, "archived": false}} >
@@ -109,18 +109,18 @@ class SchoolClasspassEdit extends Component {
                     const initialData = data
 
                     let initialMembership = ""
-                    if (initialData.schoolClasspass.schoolMembership) {
-                      initialMembership = initialData.schoolClasspass.schoolMembership.id
+                    if (initialData.organizationClasspass.organizationMembership) {
+                      initialMembership = initialData.organizationClasspass.organizationMembership.id
                     }
 
                     let initialGlaccount = ""
-                    if (initialData.schoolClasspass.financeGlaccount) {
-                      initialGlaccount =  initialData.schoolClasspass.financeGlaccount.id
+                    if (initialData.organizationClasspass.financeGlaccount) {
+                      initialGlaccount =  initialData.organizationClasspass.financeGlaccount.id
                     } 
 
                     let initialCostcenter = ""
-                    if (initialData.schoolClasspass.financeCostcenter) {
-                      initialCostcenter =  initialData.schoolClasspass.financeCostcenter.id
+                    if (initialData.organizationClasspass.financeCostcenter) {
+                      initialCostcenter =  initialData.organizationClasspass.financeCostcenter.id
                     } 
 
                     return (
@@ -128,18 +128,18 @@ class SchoolClasspassEdit extends Component {
                       {(createClasspass, { data }) => (
                           <Formik
                               initialValues={{ 
-                                displayPublic: initialData.schoolClasspass.displayPublic,
-                                displayShop: initialData.schoolClasspass.displayShop,
-                                name: initialData.schoolClasspass.name,
-                                description: initialData.schoolClasspass.description,
-                                price: initialData.schoolClasspass.price,
-                                financeTaxRate: initialData.schoolClasspass.financeTaxRate.id,
-                                validity: initialData.schoolClasspass.validity,
-                                validityUnit: initialData.schoolClasspass.validityUnit,
-                                classes: initialData.schoolClasspass.classes,
-                                unlimited: initialData.schoolClasspass.unlimited,
-                                schoolMembership: initialMembership,
-                                quickStatsAmount: initialData.schoolClasspass.quickStatsAmount,
+                                displayPublic: initialData.organizationClasspass.displayPublic,
+                                displayShop: initialData.organizationClasspass.displayShop,
+                                name: initialData.organizationClasspass.name,
+                                description: initialData.organizationClasspass.description,
+                                price: initialData.organizationClasspass.price,
+                                financeTaxRate: initialData.organizationClasspass.financeTaxRate.id,
+                                validity: initialData.organizationClasspass.validity,
+                                validityUnit: initialData.organizationClasspass.validityUnit,
+                                classes: initialData.organizationClasspass.classes,
+                                unlimited: initialData.organizationClasspass.unlimited,
+                                organizationMembership: initialMembership,
+                                quickStatsAmount: initialData.organizationClasspass.quickStatsAmount,
                                 financeGlaccount:  initialGlaccount,
                                 financeCostcenter: initialCostcenter
                               }}
@@ -161,7 +161,7 @@ class SchoolClasspassEdit extends Component {
                                       validityUnit: values.validityUnit,
                                       classes: values.classes,
                                       unlimited: values.unlimited,
-                                      schoolMembership: values.schoolMembership,
+                                      organizationMembership: values.organizationMembership,
                                       quickStatsAmount: values.quickStatsAmount,
                                       financeGlaccount: values.financeGlaccount,
                                       financeCostcenter: values.financeCostcenter
@@ -171,7 +171,7 @@ class SchoolClasspassEdit extends Component {
                                   ]})
                                   .then(({ data }) => {
                                       console.log('got data', data)
-                                      toast.success((t('school.classpasses.toast_edit_success')), {
+                                      toast.success((t('organization.classpasses.toast_edit_success')), {
                                           position: toast.POSITION.BOTTOM_RIGHT
                                         })
                                     }).catch((error) => {
@@ -194,7 +194,7 @@ class SchoolClasspassEdit extends Component {
                                             name="displayPublic" 
                                             checked={values.displayPublic} />
                                           <span className="custom-switch-indicator" ></span>
-                                          <span className="custom-switch-description">{t('school.classpass.public')}</span>
+                                          <span className="custom-switch-description">{t('organization.classpass.public')}</span>
                                         </Form.Label>
                                       <ErrorMessage name="displayPublic" component="div" />   
                                     </Form.Group>      
@@ -206,11 +206,11 @@ class SchoolClasspassEdit extends Component {
                                             name="displayShop" 
                                             checked={values.displayShop} />
                                           <span className="custom-switch-indicator" ></span>
-                                          <span className="custom-switch-description">{t('school.classpass.shop')}</span>
+                                          <span className="custom-switch-description">{t('organization.classpass.shop')}</span>
                                         </Form.Label>
                                       <ErrorMessage name="displayShop" component="div" />   
                                     </Form.Group>      
-                                    <Form.Group label={t('school.classpass.name')} >
+                                    <Form.Group label={t('organization.classpass.name')} >
                                       <Field type="text" 
                                             name="name" 
                                             className={(errors.name) ? "form-control is-invalid" : "form-control"} 
@@ -227,14 +227,14 @@ class SchoolClasspassEdit extends Component {
                                         />
                                       <ErrorMessage name="description" component="span" className="invalid-feedback" />
                                     </Form.Group>
-                                    <Form.Group label={t('school.classpass.price')}>
+                                    <Form.Group label={t('organization.classpass.price')}>
                                       <Field type="text" 
                                             name="price" 
                                             className={(errors.price) ? "form-control is-invalid" : "form-control"} 
                                             autoComplete="off" />
                                       <ErrorMessage name="price" component="span" className="invalid-feedback" />
                                     </Form.Group>
-                                    <Form.Group label={t('school.classpass.taxrate')}>
+                                    <Form.Group label={t('organization.classpass.taxrate')}>
                                       <Field component="select" 
                                              name="financeTaxRate" 
                                              className={(errors.financeTaxRate) ? "form-control is-invalid" : "form-control"} 
@@ -248,14 +248,14 @@ class SchoolClasspassEdit extends Component {
                                       </Field>
                                       <ErrorMessage name="financeTaxRate" component="span" className="invalid-feedback" />
                                     </Form.Group>
-                                    <Form.Group label={t('school.classpass.validity')}>
+                                    <Form.Group label={t('organization.classpass.validity')}>
                                       <Field type="text" 
                                             name="validity" 
                                             className={(errors.validity) ? "form-control is-invalid" : "form-control"} 
                                             autoComplete="off" />
                                       <ErrorMessage name="validity" component="span" className="invalid-feedback" />
                                     </Form.Group>
-                                    <Form.Group label={t('school.classpass.validity_unit')}>
+                                    <Form.Group label={t('organization.classpass.validity_unit')}>
                                       <Field component="select" 
                                              name="validityUnit" 
                                              className={(errors.validityUnit) ? "form-control is-invalid" : "form-control"} 
@@ -274,32 +274,32 @@ class SchoolClasspassEdit extends Component {
                                             name="unlimited" 
                                             checked={values.unlimied} />
                                           <span className="custom-switch-indicator" ></span>
-                                          <span className="custom-switch-description">{t('school.classpass.unlimited')}</span>
+                                          <span className="custom-switch-description">{t('organization.classpass.unlimited')}</span>
                                         </Form.Label>
                                       <ErrorMessage name="unlimited" component="div" />   
                                     </Form.Group>  
                                     { (values.unlimited) ? "" :
-                                    <Form.Group label={t('school.classpass.classes')}>
+                                    <Form.Group label={t('organization.classpass.classes')}>
                                       <Field type="text" 
                                              name="classes" 
                                              className={(errors.classes) ? "form-control is-invalid" : "form-control"} 
                                              autoComplete="off" />
                                       <ErrorMessage name="classes" component="span" className="invalid-feedback" />
                                     </Form.Group> } 
-                                    <Form.Group label={t('school.classpass.membership')}>
+                                    <Form.Group label={t('organization.classpass.membership')}>
                                       <Field component="select" 
-                                             name="schoolMembership" 
-                                             className={(errors.schoolMembership) ? "form-control is-invalid" : "form-control"} 
+                                             name="organizationMembership" 
+                                             className={(errors.organizationMembership) ? "form-control is-invalid" : "form-control"} 
                                              autoComplete="off">
                                         <option value="" key={v4()}>{t("general.membership_not_required")}</option>
-                                        {initialData.schoolMemberships.edges.map(({ node }) =>
+                                        {initialData.organizationMemberships.edges.map(({ node }) =>
                                           <option value={node.id} key={v4()}>{node.name} ({node.code})</option>
                                         )}
                                       </Field>
-                                      <ErrorMessage name="schoolMembership" component="span" className="invalid-feedback" />
+                                      <ErrorMessage name="organizationMembership" component="span" className="invalid-feedback" />
                                     </Form.Group> 
                                     { (values.unlimited) ? 
-                                          <Form.Group label={t('school.classpass.quickStatsAmount')}>
+                                          <Form.Group label={t('organization.classpass.quickStatsAmount')}>
                                             <Field type="text" 
                                                   name="quickStatsAmount" 
                                                   className={(errors.quickStatsAmount) ? "form-control is-invalid" : "form-control"} 
@@ -308,7 +308,7 @@ class SchoolClasspassEdit extends Component {
                                           </Form.Group>
                                           : ""
                                     }
-                                    <Form.Group label={t('school.classpass.glaccount')}>
+                                    <Form.Group label={t('organization.classpass.glaccount')}>
                                       <Field component="select" 
                                              name="financeGlaccount" 
                                              className={(errors.financeGlaccount) ? "form-control is-invalid" : "form-control"} 
@@ -320,7 +320,7 @@ class SchoolClasspassEdit extends Component {
                                       </Field>
                                       <ErrorMessage name="financeGlaccount" component="span" className="invalid-feedback" />
                                     </Form.Group>
-                                    <Form.Group label={t('school.classpass.costcenter')}>
+                                    <Form.Group label={t('organization.classpass.costcenter')}>
                                       <Field component="select" 
                                              name="financeCostcenter" 
                                              className={(errors.financeCostcenter) ? "form-control is-invalid" : "form-control"} 
@@ -361,13 +361,13 @@ class SchoolClasspassEdit extends Component {
               </Grid.Col>
               <Grid.Col md={3}>
                 <HasPermissionWrapper permission="change"
-                                      resource="schoolclasspass">
+                                      resource="organizationclasspass">
                   <Button color="primary btn-block mb-6"
                           onClick={() => history.push(return_url)}>
                     <Icon prefix="fe" name="chevrons-left" /> {t('back')}
                   </Button>
                 </HasPermissionWrapper>
-                <SchoolMenu active_link='schoolclasspasses'/>
+                <OrganizationMenu active_link='organizationclasspasses'/>
               </Grid.Col>
             </Grid.Row>
           </Container>
@@ -377,4 +377,4 @@ class SchoolClasspassEdit extends Component {
   }
 
 
-export default withTranslation()(withRouter(SchoolClasspassEdit))
+export default withTranslation()(withRouter(OrganizationClasspassEdit))

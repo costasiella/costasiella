@@ -28,13 +28,13 @@ import {
 import SiteWrapper from "../../SiteWrapper"
 import HasPermissionWrapper from "../../HasPermissionWrapper"
 
-import SchoolMenu from "../SchoolMenu"
+import OrganizationMenu from "../OrganizationMenu"
 
 
 const UPDATE_MEMBERSHIP = gql`
-  mutation UpdateSchoolMembership($input: UpdateSchoolMembershipInput!) {
-    updateSchoolMembership(input: $input) {
-        schoolMembership {
+  mutation UpdateOrganizationMembership($input: UpdateOrganizationMembershipInput!) {
+    updateOrganizationMembership(input: $input) {
+        organizationMembership {
           id
           displayPublic
           displayShop
@@ -62,10 +62,10 @@ const UPDATE_MEMBERSHIP = gql`
 `
 
 
-class SchoolMembershipEdit extends Component {
+class OrganizationMembershipEdit extends Component {
   constructor(props) {
     super(props)
-    console.log("School membership edit props:")
+    console.log("Organization membership edit props:")
     console.log(props)
   }
 
@@ -74,18 +74,18 @@ class SchoolMembershipEdit extends Component {
     const match = this.props.match
     const history = this.props.history
     const id = match.params.id
-    const return_url = "/school/memberships"
+    const return_url = "/organization/memberships"
 
     return (
       <SiteWrapper>
         <div className="my-3 my-md-5">
           <Container>
-            <Page.Header title="School" />
+            <Page.Header title="Organization" />
             <Grid.Row>
               <Grid.Col md={9}>
               <Card>
                 <Card.Header>
-                  <Card.Title>{t('school.memberships.title_edit')}</Card.Title>
+                  <Card.Title>{t('organization.memberships.title_edit')}</Card.Title>
                   {console.log(match.params.id)}
                 </Card.Header>
                 <Query query={GET_MEMBERSHIP_QUERY} variables={{ "id": id, "archived": false}} >
@@ -103,13 +103,13 @@ class SchoolMembershipEdit extends Component {
                     const initialData = data
 
                     let initialGlaccount = ""
-                    if (initialData.schoolMembership.financeGlaccount) {
-                      initialGlaccount =  initialData.schoolMembership.financeGlaccount.id
+                    if (initialData.organizationMembership.financeGlaccount) {
+                      initialGlaccount =  initialData.organizationMembership.financeGlaccount.id
                     } 
 
                     let initialCostcenter = ""
-                    if (initialData.schoolMembership.financeCostcenter) {
-                      initialCostcenter =  initialData.schoolMembership.financeCostcenter.id
+                    if (initialData.organizationMembership.financeCostcenter) {
+                      initialCostcenter =  initialData.organizationMembership.financeCostcenter.id
                     } 
 
                     return (
@@ -117,15 +117,15 @@ class SchoolMembershipEdit extends Component {
                       {(createMembership, { data }) => (
                           <Formik
                               initialValues={{ 
-                                displayPublic: initialData.schoolMembership.displayPublic,
-                                displayShop: initialData.schoolMembership.displayShop,
-                                name: initialData.schoolMembership.name,
-                                description: initialData.schoolMembership.description,
-                                price: initialData.schoolMembership.price,
-                                financeTaxRate: initialData.schoolMembership.financeTaxRate.id,
-                                validity: initialData.schoolMembership.validity,
-                                validityUnit: initialData.schoolMembership.validityUnit,
-                                termsAndConditions: initialData.schoolMembership.termsAndConditions,
+                                displayPublic: initialData.organizationMembership.displayPublic,
+                                displayShop: initialData.organizationMembership.displayShop,
+                                name: initialData.organizationMembership.name,
+                                description: initialData.organizationMembership.description,
+                                price: initialData.organizationMembership.price,
+                                financeTaxRate: initialData.organizationMembership.financeTaxRate.id,
+                                validity: initialData.organizationMembership.validity,
+                                validityUnit: initialData.organizationMembership.validityUnit,
+                                termsAndConditions: initialData.organizationMembership.termsAndConditions,
                                 financeGlaccount:  initialGlaccount,
                                 financeCostcenter: initialCostcenter
                               }}
@@ -154,7 +154,7 @@ class SchoolMembershipEdit extends Component {
                                   ]})
                                   .then(({ data }) => {
                                       console.log('got data', data)
-                                      toast.success((t('school.memberships.toast_edit_success')), {
+                                      toast.success((t('organization.memberships.toast_edit_success')), {
                                           position: toast.POSITION.BOTTOM_RIGHT
                                         })
                                     }).catch((error) => {
@@ -177,7 +177,7 @@ class SchoolMembershipEdit extends Component {
                                                 name="displayPublic" 
                                                 checked={values.displayPublic} />
                                               <span className="custom-switch-indicator" ></span>
-                                              <span className="custom-switch-description">{t('school.membership.public')}</span>
+                                              <span className="custom-switch-description">{t('organization.membership.public')}</span>
                                             </Form.Label>
                                           <ErrorMessage name="displayPublic" component="div" />   
                                         </Form.Group>      
@@ -189,11 +189,11 @@ class SchoolMembershipEdit extends Component {
                                                 name="displayShop" 
                                                 checked={values.displayShop} />
                                               <span className="custom-switch-indicator" ></span>
-                                              <span className="custom-switch-description">{t('school.membership.shop')}</span>
+                                              <span className="custom-switch-description">{t('organization.membership.shop')}</span>
                                             </Form.Label>
                                           <ErrorMessage name="displayShop" component="div" />   
                                         </Form.Group>      
-                                        <Form.Group label={t('school.membership.name')} >
+                                        <Form.Group label={t('organization.membership.name')} >
                                           <Field type="text" 
                                                 name="name" 
                                                 className={(errors.name) ? "form-control is-invalid" : "form-control"} 
@@ -210,14 +210,14 @@ class SchoolMembershipEdit extends Component {
                                             />
                                           <ErrorMessage name="description" component="span" className="invalid-feedback" />
                                         </Form.Group>
-                                        <Form.Group label={t('school.membership.price')}>
+                                        <Form.Group label={t('organization.membership.price')}>
                                           <Field type="text" 
                                                 name="price" 
                                                 className={(errors.price) ? "form-control is-invalid" : "form-control"} 
                                                 autoComplete="off" />
                                           <ErrorMessage name="price" component="span" className="invalid-feedback" />
                                         </Form.Group>
-                                        <Form.Group label={t('school.membership.taxrate')}>
+                                        <Form.Group label={t('organization.membership.taxrate')}>
                                           <Field component="select" 
                                                  name="financeTaxRate" 
                                                  className={(errors.financeTaxRate) ? "form-control is-invalid" : "form-control"} 
@@ -228,14 +228,14 @@ class SchoolMembershipEdit extends Component {
                                           </Field>
                                           <ErrorMessage name="financeTaxRate" component="span" className="invalid-feedback" />
                                         </Form.Group>
-                                        <Form.Group label={t('school.membership.validity')}>
+                                        <Form.Group label={t('organization.membership.validity')}>
                                           <Field type="text" 
                                                 name="validity" 
                                                 className={(errors.validity) ? "form-control is-invalid" : "form-control"} 
                                                 autoComplete="off" />
                                           <ErrorMessage name="validity" component="span" className="invalid-feedback" />
                                         </Form.Group>
-                                        <Form.Group label={t('school.membership.validity_unit')}>
+                                        <Form.Group label={t('organization.membership.validity_unit')}>
                                           <Field component="select" 
                                                  name="validityUnit" 
                                                  className={(errors.validityUnit) ? "form-control is-invalid" : "form-control"} 
@@ -246,7 +246,7 @@ class SchoolMembershipEdit extends Component {
                                           </Field>
                                           <ErrorMessage name="validityUnit" component="span" className="invalid-feedback" />
                                         </Form.Group>
-                                        <Form.Group label={t('school.membership.terms_and_conditions')}>
+                                        <Form.Group label={t('organization.membership.terms_and_conditions')}>
                                           <Editor
                                               textareaName="termsAndConditions"
                                               initialValue={values.termsAndConditions}
@@ -256,7 +256,7 @@ class SchoolMembershipEdit extends Component {
                                             />
                                           <ErrorMessage name="termsAndConditions" component="span" className="invalid-feedback" />
                                         </Form.Group>
-                                        <Form.Group label={t('school.membership.glaccount')}>
+                                        <Form.Group label={t('organization.membership.glaccount')}>
                                           <Field component="select" 
                                                  name="financeGlaccount" 
                                                  className={(errors.financeGlaccount) ? "form-control is-invalid" : "form-control"} 
@@ -268,7 +268,7 @@ class SchoolMembershipEdit extends Component {
                                           </Field>
                                           <ErrorMessage name="financeGlaccount" component="span" className="invalid-feedback" />
                                         </Form.Group>
-                                        <Form.Group label={t('school.membership.costcenter')}>
+                                        <Form.Group label={t('organization.membership.costcenter')}>
                                           <Field component="select" 
                                                  name="financeCostcenter" 
                                                  className={(errors.financeCostcenter) ? "form-control is-invalid" : "form-control"} 
@@ -309,13 +309,13 @@ class SchoolMembershipEdit extends Component {
               </Grid.Col>
               <Grid.Col md={3}>
                 <HasPermissionWrapper permission="change"
-                                      resource="schoolmembership">
+                                      resource="organizationmembership">
                   <Button color="primary btn-block mb-6"
                           onClick={() => history.push(return_url)}>
                     <Icon prefix="fe" name="chevrons-left" /> {t('back')}
                   </Button>
                 </HasPermissionWrapper>
-                <SchoolMenu active_link='schoolmemberships'/>
+                <OrganizationMenu active_link='organizationmemberships'/>
               </Grid.Col>
             </Grid.Row>
           </Container>
@@ -325,4 +325,4 @@ class SchoolMembershipEdit extends Component {
   }
 
 
-export default withTranslation()(withRouter(SchoolMembershipEdit))
+export default withTranslation()(withRouter(OrganizationMembershipEdit))

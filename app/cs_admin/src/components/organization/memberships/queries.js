@@ -1,8 +1,8 @@
 import gql from "graphql-tag"
 
 export const GET_MEMBERSHIPS_QUERY = gql`
-  query SchoolMemberships($after: String, $before: String, $archived: Boolean) {
-    schoolMemberships(first: 15, before: $before, after: $after, archived: $archived) {
+  query OrganizationMemberships($after: String, $before: String, $archived: Boolean) {
+    organizationMemberships(first: 15, before: $before, after: $after, archived: $archived) {
       pageInfo {
         startCursor
         endCursor
@@ -42,8 +42,8 @@ export const GET_MEMBERSHIPS_QUERY = gql`
 `
 
 export const GET_MEMBERSHIP_QUERY = gql`
-  query SchoolMembership($id: ID!, $after: String, $before: String, $archived: Boolean!) {
-    schoolMembership(id:$id) {
+  query OrganizationMembership($id: ID!, $after: String, $before: String, $archived: Boolean!) {
+    organizationMembership(id:$id) {
       id
       archived
       displayPublic

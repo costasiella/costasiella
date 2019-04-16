@@ -1,8 +1,8 @@
 import gql from "graphql-tag"
 
 export const GET_CLASSPASSES_QUERY = gql`
-  query SchoolClasspasses($after: String, $before: String, $archived: Boolean) {
-    schoolClasspasses(first: 15, before: $before, after: $after, archived: $archived) {
+  query OrganizationClasspasses($after: String, $before: String, $archived: Boolean) {
+    organizationClasspasses(first: 15, before: $before, after: $after, archived: $archived) {
       pageInfo {
         startCursor
         endCursor
@@ -28,7 +28,7 @@ export const GET_CLASSPASSES_QUERY = gql`
           validityUnitDisplay
           classes
           unlimited
-          schoolMembership {
+          organizationMembership {
             id
             name
           }
@@ -48,8 +48,8 @@ export const GET_CLASSPASSES_QUERY = gql`
 `
 
 export const GET_CLASSPASS_QUERY = gql`
-  query SchoolClasspass($id: ID!, $after: String, $before: String, $archived: Boolean!) {
-    schoolClasspass(id:$id) {
+  query OrganizationClasspass($id: ID!, $after: String, $before: String, $archived: Boolean!) {
+    organizationClasspass(id:$id) {
       id
       archived
       displayPublic
@@ -67,7 +67,7 @@ export const GET_CLASSPASS_QUERY = gql`
       validityUnitDisplay
       classes
       unlimited
-      schoolMembership {
+      organizationMembership {
         id
         name
       }
@@ -81,7 +81,7 @@ export const GET_CLASSPASS_QUERY = gql`
         name
       }
     }
-    schoolMemberships(first: 15, before: $before, after: $after, archived: $archived) {
+    organizationMemberships(first: 15, before: $before, after: $after, archived: $archived) {
       pageInfo {
         startCursor
         endCursor
@@ -150,7 +150,7 @@ export const GET_CLASSPASS_QUERY = gql`
 
 export const GET_INPUT_VALUES_QUERY = gql`
   query InputValues($after: String, $before: String, $archived: Boolean) {
-    schoolMemberships(first: 15, before: $before, after: $after, archived: $archived) {
+    organizationMemberships(first: 15, before: $before, after: $after, archived: $archived) {
       pageInfo {
         startCursor
         endCursor

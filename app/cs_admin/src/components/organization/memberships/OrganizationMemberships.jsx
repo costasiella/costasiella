@@ -28,14 +28,14 @@ import BooleanBadge from "../../ui/BooleanBadge"
 import Validity from "../../ui/Validity"
 
 import ContentCard from "../../general/ContentCard"
-import SchoolMenu from "../SchoolMenu"
+import OrganizationMenu from "../OrganizationMenu"
 
 import { GET_MEMBERSHIPS_QUERY } from "./queries"
 
 const ARCHIVE_MEMBERSHIP = gql`
-  mutation ArchiveSchoolMembership($input: ArchiveSchoolMembershipInput!) {
-    archiveSchoolMembership(input: $input) {
-      schoolMembership {
+  mutation ArchiveOrganizationMembership($input: ArchiveOrganizationMembershipInput!) {
+    archiveOrganizationMembership(input: $input) {
+      organizationMembership {
         id
         archived
       }
@@ -44,18 +44,18 @@ const ARCHIVE_MEMBERSHIP = gql`
 `
 
 
-const SchoolMemberships = ({ t, history, archived=false }) => (
+const OrganizationMemberships = ({ t, history, archived=false }) => (
   <SiteWrapper>
     <div className="my-3 my-md-5">
       <Container>
-        <Page.Header title={t("school.page_title")} />
+        <Page.Header title={t("organization.page_title")} />
         <Grid.Row>
           <Grid.Col md={9}>
             <Query query={GET_MEMBERSHIPS_QUERY} variables={{ archived }}>
-             {({ loading, error, data: {schoolMemberships: memberships}, refetch, fetchMore }) => {
+             {({ loading, error, data: {organizationMemberships: memberships}, refetch, fetchMore }) => {
                 // Loading
                 if (loading) return (
-                  <ContentCard cardTitle={t('school.memberships.title')}>
+                  <ContentCard cardTitle={t('organization.memberships.title')}>
                     <Dimmer active={true}
                             loadder={true}>
                     </Dimmer>
@@ -63,8 +63,8 @@ const SchoolMemberships = ({ t, history, archived=false }) => (
                 )
                 // Error
                 if (error) return (
-                  <ContentCard cardTitle={t('school.memberships.title')}>
-                    <p>{t('school.memberships.error_loading')}</p>
+                  <ContentCard cardTitle={t('organization.memberships.title')}>
+                    <p>{t('organization.memberships.error_loading')}</p>
                   </ContentCard>
                 )
                 const headerOptions = <Card.Options>
@@ -83,17 +83,17 @@ const SchoolMemberships = ({ t, history, archived=false }) => (
                 
                 // Empty list
                 if (!memberships.edges.length) { return (
-                  <ContentCard cardTitle={t('school.memberships.title')}
+                  <ContentCard cardTitle={t('organization.memberships.title')}
                                headerContent={headerOptions}>
                     <p>
-                    {(!archived) ? t('school.memberships.empty_list') : t("school.memberships.empty_archive")}
+                    {(!archived) ? t('organization.memberships.empty_list') : t("organization.memberships.empty_archive")}
                     </p>
                    
                   </ContentCard>
                 )} else {   
                 // Life's good! :)
                 return (
-                  <ContentCard cardTitle={t('school.memberships.title')}
+                  <ContentCard cardTitle={t('organization.memberships.title')}
                                headerContent={headerOptions}
                                pageInfo={memberships.pageInfo}
                                onLoadMore={() => {
@@ -102,16 +102,16 @@ const SchoolMemberships = ({ t, history, archived=false }) => (
                                     after: memberships.pageInfo.endCursor
                                   },
                                   updateQuery: (previousResult, { fetchMoreResult }) => {
-                                    const newEdges = fetchMoreResult.schoolMemberships.edges
-                                    const pageInfo = fetchMoreResult.schoolMemberships.pageInfo
+                                    const newEdges = fetchMoreResult.organizationMemberships.edges
+                                    const pageInfo = fetchMoreResult.organizationMemberships.pageInfo
 
                                     return newEdges.length
                                       ? {
                                           // Put the new memberships at the end of the list and update `pageInfo`
                                           // so we have the new `endCursor` and `hasNextPage` values
-                                          schoolMemberships: {
-                                            __typename: previousResult.schoolMemberships.__typename,
-                                            edges: [ ...previousResult.schoolMemberships.edges, ...newEdges ],
+                                          organizationMemberships: {
+                                            __typename: previousResult.organizationMemberships.__typename,
+                                            edges: [ ...previousResult.organizationMemberships.edges, ...newEdges ],
                                             pageInfo
                                           }
                                         }
@@ -126,7 +126,7 @@ const SchoolMemberships = ({ t, history, archived=false }) => (
                               <Table.ColHeader>{t('public')}</Table.ColHeader>
                               <Table.ColHeader>{t('shop')}</Table.ColHeader>
                               <Table.ColHeader>{t('price')}</Table.ColHeader>
-                              <Table.ColHeader>{t('school.memberships.validity')}</Table.ColHeader>
+                              <Table.ColHeader>{t('organization.memberships.validity')}</Table.ColHeader>
                             </Table.Row>
                           </Table.Header>
                           <Table.Body>
@@ -155,7 +155,7 @@ const SchoolMemberships = ({ t, history, archived=false }) => (
                                     {(node.archived) ? 
                                       <span className='text-muted'>{t('unarchive_to_edit')}</span> :
                                       <Button className='btn-sm' 
-                                              onClick={() => history.push("/school/memberships/edit/" + node.id)}
+                                              onClick={() => history.push("/organization/memberships/edit/" + node.id)}
                                               color="secondary">
                                         {t('edit')}
                                       </Button>
@@ -206,13 +206,13 @@ const SchoolMemberships = ({ t, history, archived=false }) => (
           </Grid.Col>
           <Grid.Col md={3}>
             <HasPermissionWrapper permission="add"
-                                  resource="schoolmembership">
+                                  resource="organizationmembership">
               <Button color="primary btn-block mb-6"
-                      onClick={() => history.push("/school/memberships/add")}>
-                <Icon prefix="fe" name="plus-circle" /> {t('school.memberships.add')}
+                      onClick={() => history.push("/organization/memberships/add")}>
+                <Icon prefix="fe" name="plus-circle" /> {t('organization.memberships.add')}
               </Button>
             </HasPermissionWrapper>
-            <SchoolMenu active_link='schoolmemberships'/>
+            <OrganizationMenu active_link='organizationmemberships'/>
           </Grid.Col>
         </Grid.Row>
       </Container>
@@ -220,4 +220,4 @@ const SchoolMemberships = ({ t, history, archived=false }) => (
   </SiteWrapper>
 );
 
-export default withTranslation()(withRouter(SchoolMemberships))
+export default withTranslation()(withRouter(OrganizationMemberships))
