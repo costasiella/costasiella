@@ -17,21 +17,21 @@ from .. import schema
 
 
 
-class GQLSchoolLocation(TestCase):
+class GQLOrganizationLocation(TestCase):
     # https://docs.djangoproject.com/en/2.1/topics/testing/overview/
     def setUp(self):
         # This is run before every test
         self.admin_user = f.AdminFactory.create()
         self.anon_user = AnonymousUser()
 
-        self.permission_view = 'view_schoollocation'
-        self.permission_add = 'add_schoollocation'
-        self.permission_change = 'change_schoollocation'
-        self.permission_delete = 'delete_schoollocation'
+        self.permission_view = 'view_organizationlocation'
+        self.permission_add = 'add_organizationlocation'
+        self.permission_change = 'change_organizationlocation'
+        self.permission_delete = 'delete_organizationlocation'
 
         self.locations_query = '''
-  query SchoolLocations($after: String, $before: String, $archived: Boolean) {
-    schoolLocations(first: 15, before: $before, after: $after, archived: $archived) {
+  query OrganizationLocations($after: String, $before: String, $archived: Boolean) {
+    organizationLocations(first: 15, before: $before, after: $after, archived: $archived) {
       pageInfo {
         startCursor
         endCursor
@@ -51,8 +51,8 @@ class GQLSchoolLocation(TestCase):
 '''
 
         self.location_query = '''
-query getSchoolLocation($id: ID!) {
-    schoolLocation(id:$id) {
+query getOrganizationLocation($id: ID!) {
+    organizationLocation(id:$id) {
       id
       name
       displayPublic
@@ -62,9 +62,9 @@ query getSchoolLocation($id: ID!) {
 '''
 
         self.location_create_mutation = ''' 
-  mutation CreateSchoolLocation($input: CreateSchoolLocationInput!) {
-    createSchoolLocation(input: $input) {
-      schoolLocation {
+  mutation CreateOrganizationLocation($input: CreateOrganizationLocationInput!) {
+    createOrganizationLocation(input: $input) {
+      organizationLocation {
         id
         archived
         displayPublic
@@ -75,9 +75,9 @@ query getSchoolLocation($id: ID!) {
 '''
 
         self.location_update_mutation = '''
-  mutation UpdateSchoolLocation($input: UpdateSchoolLocationInput!) {
-    updateSchoolLocation(input: $input) {
-      schoolLocation {
+  mutation UpdateOrganizationLocation($input: UpdateOrganizationLocationInput!) {
+    updateOrganizationLocation(input: $input) {
+      organizationLocation {
         id
         name
         displayPublic
@@ -87,9 +87,9 @@ query getSchoolLocation($id: ID!) {
 '''
 
         self.location_archive_mutation = '''
-  mutation ArchiveSchoolLocation($input: ArchiveSchoolLocationInput!) {
-    archiveSchoolLocation(input: $input) {
-      schoolLocation {
+  mutation ArchiveOrganizationLocation($input: ArchiveOrganizationLocationInput!) {
+    archiveOrganizationLocation(input: $input) {
+      organizationLocation {
         id
         archived
       }
@@ -110,29 +110,29 @@ query getSchoolLocation($id: ID!) {
         executed = execute_test_client_api_query(self.locations_query, self.admin_user, variables=variables)
         data = executed.get('data')
         
-        return data['schoolLocations']['edges'][0]['node']['id']
+        return data['organizationLocations']['edges'][0]['node']['id']
 
 
     def test_query(self):
         """ Query list of locations """
         query = self.locations_query
-        location = f.SchoolLocationFactory.create()
+        location = f.OrganizationLocationFactory.create()
         variables = {
             'archived': False
         }
 
         executed = execute_test_client_api_query(query, self.admin_user, variables=variables)
         data = executed.get('data')
-        self.assertEqual(data['schoolLocations']['edges'][0]['node']['name'], location.name)
-        self.assertEqual(data['schoolLocations']['edges'][0]['node']['archived'], location.archived)
-        self.assertEqual(data['schoolLocations']['edges'][0]['node']['displayPublic'], location.display_public)
+        self.assertEqual(data['organizationLocations']['edges'][0]['node']['name'], location.name)
+        self.assertEqual(data['organizationLocations']['edges'][0]['node']['archived'], location.archived)
+        self.assertEqual(data['organizationLocations']['edges'][0]['node']['displayPublic'], location.display_public)
 
 
     def test_query_permision_denied(self):
         """ Query list of locations """
         query = self.locations_query
-        location = f.SchoolLocationFactory.create()
-        non_public_location = f.SchoolLocationFactory.build()
+        location = f.OrganizationLocationFactory.create()
+        non_public_location = f.OrganizationLocationFactory.build()
         non_public_location.display_public = False
         non_public_location.save()
 
@@ -147,7 +147,7 @@ query getSchoolLocation($id: ID!) {
 
         # Public locations only
         non_public_found = False
-        for item in data['schoolLocations']['edges']:
+        for item in data['organizationLocations']['edges']:
             if not item['node']['displayPublic']:
                 non_public_found = True
 
@@ -157,8 +157,8 @@ query getSchoolLocation($id: ID!) {
     def test_query_permision_granted(self):
         """ Query list of locations """
         query = self.locations_query
-        location = f.SchoolLocationFactory.create()
-        non_public_location = f.SchoolLocationFactory.build()
+        location = f.OrganizationLocationFactory.create()
+        non_public_location = f.OrganizationLocationFactory.build()
         non_public_location.display_public = False
         non_public_location.save()
 
@@ -168,7 +168,7 @@ query getSchoolLocation($id: ID!) {
 
         # Create regular user
         user = f.RegularUserFactory.create()
-        permission = Permission.objects.get(codename='view_schoollocation')
+        permission = Permission.objects.get(codename='view_organizationlocation')
         user.user_permissions.add(permission)
         user.save()
 
@@ -177,7 +177,7 @@ query getSchoolLocation($id: ID!) {
 
         # List all locations, including non public
         non_public_found = False
-        for item in data['schoolLocations']['edges']:
+        for item in data['organizationLocations']['edges']:
             if not item['node']['displayPublic']:
                 non_public_found = True
 
@@ -188,7 +188,7 @@ query getSchoolLocation($id: ID!) {
     def test_query_anon_user(self):
         """ Query list of locations """
         query = self.locations_query
-        location = f.SchoolLocationFactory.create()
+        location = f.OrganizationLocationFactory.create()
         variables = {
             'archived': False
         }
@@ -200,7 +200,7 @@ query getSchoolLocation($id: ID!) {
 
     def test_query_one(self):
         """ Query one location """   
-        location = f.SchoolLocationFactory.create()
+        location = f.OrganizationLocationFactory.create()
 
         # First query locations to get node id easily
         node_id = self.get_node_id_of_first_location()
@@ -209,14 +209,14 @@ query getSchoolLocation($id: ID!) {
         query = self.location_query
         executed = execute_test_client_api_query(query, self.admin_user, variables={"id": node_id})
         data = executed.get('data')
-        self.assertEqual(data['schoolLocation']['name'], location.name)
-        self.assertEqual(data['schoolLocation']['archived'], location.archived)
-        self.assertEqual(data['schoolLocation']['displayPublic'], location.display_public)
+        self.assertEqual(data['organizationLocation']['name'], location.name)
+        self.assertEqual(data['organizationLocation']['archived'], location.archived)
+        self.assertEqual(data['organizationLocation']['displayPublic'], location.display_public)
 
 
     def test_query_one_anon_user(self):
         """ Deny permission for anon users Query one location """   
-        location = f.SchoolLocationFactory.create()
+        location = f.OrganizationLocationFactory.create()
 
         # First query locations to get node id easily
         node_id = self.get_node_id_of_first_location()
@@ -232,7 +232,7 @@ query getSchoolLocation($id: ID!) {
         """ Permission denied message when user lacks authorization """   
         # Create regular user
         user = f.RegularUserFactory.create()
-        location = f.SchoolLocationFactory.create()
+        location = f.OrganizationLocationFactory.create()
 
         # First query locations to get node id easily
         node_id = self.get_node_id_of_first_location()
@@ -247,10 +247,10 @@ query getSchoolLocation($id: ID!) {
     def test_query_one_permission_granted(self):
         """ Respond with data when user has permission """   
         user = f.RegularUserFactory.create()
-        permission = Permission.objects.get(codename='view_schoollocation')
+        permission = Permission.objects.get(codename='view_organizationlocation')
         user.user_permissions.add(permission)
         user.save()
-        location = f.SchoolLocationFactory.create()
+        location = f.OrganizationLocationFactory.create()
 
         # First query locations to get node id easily
         node_id = self.get_node_id_of_first_location()
@@ -259,7 +259,7 @@ query getSchoolLocation($id: ID!) {
         query = self.location_query
         executed = execute_test_client_api_query(query, user, variables={"id": node_id})
         data = executed.get('data')
-        self.assertEqual(data['schoolLocation']['name'], location.name)
+        self.assertEqual(data['organizationLocation']['name'], location.name)
 
 
     def test_create_location(self):
@@ -279,9 +279,9 @@ query getSchoolLocation($id: ID!) {
             variables=variables
         )
         data = executed.get('data')
-        self.assertEqual(data['createSchoolLocation']['schoolLocation']['name'], variables['input']['name'])
-        self.assertEqual(data['createSchoolLocation']['schoolLocation']['archived'], False)
-        self.assertEqual(data['createSchoolLocation']['schoolLocation']['displayPublic'], variables['input']['displayPublic'])
+        self.assertEqual(data['createOrganizationLocation']['organizationLocation']['name'], variables['input']['name'])
+        self.assertEqual(data['createOrganizationLocation']['organizationLocation']['archived'], False)
+        self.assertEqual(data['createOrganizationLocation']['organizationLocation']['displayPublic'], variables['input']['displayPublic'])
 
 
     def test_create_location_anon_user(self):
@@ -328,9 +328,9 @@ query getSchoolLocation($id: ID!) {
             variables=variables
         )
         data = executed.get('data')
-        self.assertEqual(data['createSchoolLocation']['schoolLocation']['name'], variables['input']['name'])
-        self.assertEqual(data['createSchoolLocation']['schoolLocation']['archived'], False)
-        self.assertEqual(data['createSchoolLocation']['schoolLocation']['displayPublic'], variables['input']['displayPublic'])
+        self.assertEqual(data['createOrganizationLocation']['organizationLocation']['name'], variables['input']['name'])
+        self.assertEqual(data['createOrganizationLocation']['organizationLocation']['archived'], False)
+        self.assertEqual(data['createOrganizationLocation']['organizationLocation']['displayPublic'], variables['input']['displayPublic'])
 
 
     def test_create_location_permission_denied(self):
@@ -360,7 +360,7 @@ query getSchoolLocation($id: ID!) {
     def test_update_location(self):
         """ Update a location """
         query = self.location_update_mutation
-        location = f.SchoolLocationFactory.create()
+        location = f.OrganizationLocationFactory.create()
 
         variables = {
             "input": {
@@ -376,14 +376,14 @@ query getSchoolLocation($id: ID!) {
             variables=variables
         )
         data = executed.get('data')
-        self.assertEqual(data['updateSchoolLocation']['schoolLocation']['name'], variables['input']['name'])
-        self.assertEqual(data['updateSchoolLocation']['schoolLocation']['displayPublic'], variables['input']['displayPublic'])
+        self.assertEqual(data['updateOrganizationLocation']['organizationLocation']['name'], variables['input']['name'])
+        self.assertEqual(data['updateOrganizationLocation']['organizationLocation']['displayPublic'], variables['input']['displayPublic'])
 
 
     def test_update_location_anon_user(self):
         """ Don't allow updating locations for non-logged in users """
         query = self.location_update_mutation
-        location = f.SchoolLocationFactory.create()
+        location = f.OrganizationLocationFactory.create()
 
         variables = {
             "input": {
@@ -407,7 +407,7 @@ query getSchoolLocation($id: ID!) {
         """ Allow updating locations for users with permissions """
         query = self.location_update_mutation
 
-        location = f.SchoolLocationFactory.create()
+        location = f.OrganizationLocationFactory.create()
         variables = {
             "input": {
                 "id": self.get_node_id_of_first_location(),
@@ -428,14 +428,14 @@ query getSchoolLocation($id: ID!) {
             variables=variables
         )
         data = executed.get('data')
-        self.assertEqual(data['updateSchoolLocation']['schoolLocation']['name'], variables['input']['name'])
-        self.assertEqual(data['updateSchoolLocation']['schoolLocation']['displayPublic'], variables['input']['displayPublic'])
+        self.assertEqual(data['updateOrganizationLocation']['organizationLocation']['name'], variables['input']['name'])
+        self.assertEqual(data['updateOrganizationLocation']['organizationLocation']['displayPublic'], variables['input']['displayPublic'])
 
 
     def test_update_location_permission_denied(self):
         """ Check update location permission denied error message """
         query = self.location_update_mutation
-        location = f.SchoolLocationFactory.create()
+        location = f.OrganizationLocationFactory.create()
 
         variables = {
             "input": {
@@ -461,7 +461,7 @@ query getSchoolLocation($id: ID!) {
     def test_archive_location(self):
         """ Archive a location """
         query = self.location_archive_mutation
-        location = f.SchoolLocationFactory.create()
+        location = f.OrganizationLocationFactory.create()
 
         variables = {
             "input": {
@@ -476,13 +476,13 @@ query getSchoolLocation($id: ID!) {
             variables=variables
         )
         data = executed.get('data')
-        self.assertEqual(data['archiveSchoolLocation']['schoolLocation']['archived'], variables['input']['archived'])
+        self.assertEqual(data['archiveOrganizationLocation']['organizationLocation']['archived'], variables['input']['archived'])
 
 
     def test_archive_location_anon_user(self):
         """ Archive a location """
         query = self.location_archive_mutation
-        location = f.SchoolLocationFactory.create()
+        location = f.OrganizationLocationFactory.create()
 
         variables = {
             "input": {
@@ -505,7 +505,7 @@ query getSchoolLocation($id: ID!) {
         """ Allow archiving locations for users with permissions """
         query = self.location_archive_mutation
 
-        location = f.SchoolLocationFactory.create()
+        location = f.OrganizationLocationFactory.create()
         variables = {
             "input": {
                 "id": self.get_node_id_of_first_location(),
@@ -524,14 +524,14 @@ query getSchoolLocation($id: ID!) {
             variables=variables
         )
         data = executed.get('data')
-        self.assertEqual(data['archiveSchoolLocation']['schoolLocation']['archived'], variables['input']['archived'])
+        self.assertEqual(data['archiveOrganizationLocation']['organizationLocation']['archived'], variables['input']['archived'])
 
 
     def test_archive_location_permission_denied(self):
         """ Check archive location permission denied error message """
         query = self.location_archive_mutation
 
-        location = f.SchoolLocationFactory.create()
+        location = f.OrganizationLocationFactory.create()
         variables = {
             "input": {
                 "id": self.get_node_id_of_first_location(),
