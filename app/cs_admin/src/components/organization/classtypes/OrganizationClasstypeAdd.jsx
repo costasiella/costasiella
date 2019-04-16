@@ -27,13 +27,13 @@ import {
 import SiteWrapper from "../../SiteWrapper"
 import HasPermissionWrapper from "../../HasPermissionWrapper"
 
-import SchoolMenu from "../SchoolMenu"
+import OrganizationMenu from "../OrganizationMenu"
 
 
 const ADD_CLASSTYPE = gql`
-mutation CreateSchoolClasstype($input: CreateSchoolClasstypeInput!) {
-  createSchoolClasstype(input: $input) {
-    schoolClasstype {
+mutation CreateOrganizationClasstype($input: CreateOrganizationClasstypeInput!) {
+  createOrganizationClasstype(input: $input) {
+    organizationClasstype {
       id
       archived
       name
@@ -46,13 +46,13 @@ mutation CreateSchoolClasstype($input: CreateSchoolClasstypeInput!) {
 }
 `
 
-const return_url = "/school/classtypes"
+const return_url = "/organization/classtypes"
 
 
-class SchoolClasstypeAdd extends Component {
+class OrganizationClasstypeAdd extends Component {
   constructor(props) {
     super(props)
-    console.log("School classtype add props:")
+    console.log("Organization classtype add props:")
     console.log(props)
   }
 
@@ -60,18 +60,18 @@ class SchoolClasstypeAdd extends Component {
     const t = this.props.t
     const match = this.props.match
     const history = this.props.history
-    const return_url = "/school/classtypes"
+    const return_url = "/organization/classtypes"
 
     return(
     <SiteWrapper>
       <div className="my-3 my-md-5">
         <Container>
-          <Page.Header title="School" />
+          <Page.Header title="Organization" />
           <Grid.Row>
             <Grid.Col md={9}>
             <Card>
               <Card.Header>
-                <Card.Title>{t('school.classtypes.title_add')}</Card.Title>
+                <Card.Title>{t('organization.classtypes.title_add')}</Card.Title>
               </Card.Header>
               <Mutation mutation={ADD_CLASSTYPE} onCompleted={() => history.push(return_url)}> 
                   {(addClasstype, { data }) => (
@@ -93,7 +93,7 @@ class SchoolClasstypeAdd extends Component {
                               ]})
                               .then(({ data }) => {
                                   console.log('got data', data);
-                                  toast.success((t('school.classtypes.toast_add_success')), {
+                                  toast.success((t('organization.classtypes.toast_add_success')), {
                                       position: toast.POSITION.BOTTOM_RIGHT
                                     })
                                 }).catch((error) => {
@@ -118,11 +118,11 @@ class SchoolClasstypeAdd extends Component {
                                             name="displayPublic" 
                                             checked={values.displayPublic} />
                                           <span className="custom-switch-indicator" ></span>
-                                          <span className="custom-switch-description">{t('school.classtype.public')}</span>
+                                          <span className="custom-switch-description">{t('organization.classtype.public')}</span>
                                         </Form.Label>
                                         <ErrorMessage name="displayPublic" component="div" />   
                                       </Form.Group>    
-                                      <Form.Group label={t('school.classtype.name')}>
+                                      <Form.Group label={t('organization.classtype.name')}>
                                         <Field type="text" 
                                                 name="name" 
                                                 className={(errors.name) ? "form-control is-invalid" : "form-control"} 
@@ -139,7 +139,7 @@ class SchoolClasstypeAdd extends Component {
                                           />
                                         <ErrorMessage name="description" component="span" className="invalid-feedback" />
                                       </Form.Group>
-                                      <Form.Group label={t('school.classtype.url_website')}>
+                                      <Form.Group label={t('organization.classtype.url_website')}>
                                         <Field type="text" 
                                               name="urlWebsite" 
                                               className={(errors.urlWebsite) ? "form-control is-invalid" : "form-control"} 
@@ -169,13 +169,13 @@ class SchoolClasstypeAdd extends Component {
             </Grid.Col>
             <Grid.Col md={3}>
               <HasPermissionWrapper permission="add"
-                                    resource="schoollocation">
+                                    resource="organizationlocation">
                 <Button color="primary btn-block mb-6"
                         onClick={() => history.push(return_url)}>
                   <Icon prefix="fe" name="chevrons-left" /> {t('back')}
                 </Button>
               </HasPermissionWrapper>
-              <SchoolMenu active_link='schoollocation'/>
+              <OrganizationMenu active_link='organizationlocation'/>
             </Grid.Col>
           </Grid.Row>
         </Container>
@@ -186,16 +186,16 @@ class SchoolClasstypeAdd extends Component {
 }
 
 
-// const SchoolClasstypeAdd = ({ t, history }) => (
+// const OrganizationClasstypeAdd = ({ t, history }) => (
 //   <SiteWrapper>
 //     <div className="my-3 my-md-5">
 //       <Container>
-//         <Page.Header title="School" />
+//         <Page.Header title="Organization" />
 //         <Grid.Row>
 //           <Grid.Col md={9}>
 //           <Card>
 //             <Card.Header>
-//               <Card.Title>{t('school.classtypes.title_add')}</Card.Title>
+//               <Card.Title>{t('organization.classtypes.title_add')}</Card.Title>
 //             </Card.Header>
 //             <Mutation mutation={ADD_CLASSTYPE} onCompleted={() => history.push(return_url)}> 
 //                 {(addClasstype, { data }) => (
@@ -221,7 +221,7 @@ class SchoolClasstypeAdd extends Component {
 //                             // ]})
 //                             // .then(({ data }) => {
 //                             //     console.log('got data', data);
-//                             //     toast.success((t('school.classtypes.toast_add_success')), {
+//                             //     toast.success((t('organization.classtypes.toast_add_success')), {
 //                             //         position: toast.POSITION.BOTTOM_RIGHT
 //                             //       })
 //                             //   }).catch((error) => {
@@ -246,11 +246,11 @@ class SchoolClasstypeAdd extends Component {
 //                                           name="displayPublic" 
 //                                           checked={values.displayPublic} />
 //                                         <span className="custom-switch-indicator" ></span>
-//                                         <span className="custom-switch-description">{t('school.classtype.public')}</span>
+//                                         <span className="custom-switch-description">{t('organization.classtype.public')}</span>
 //                                       </Form.Label>
 //                                       <ErrorMessage name="displayPublic" component="div" />   
 //                                     </Form.Group>    
-//                                     <Form.Group label={t('school.classtype.name')}>
+//                                     <Form.Group label={t('organization.classtype.name')}>
 //                                       <Field type="text" 
 //                                               name="name" 
 //                                               className={(errors.name) ? "form-control is-invalid" : "form-control"} 
@@ -278,7 +278,7 @@ class SchoolClasstypeAdd extends Component {
 //                                         />
 //                                       <ErrorMessage name="description" component="span" className="invalid-feedback" />
 //                                     </Form.Group>
-//                                     <Form.Group label={t('school.classtype.url_website')}>
+//                                     <Form.Group label={t('organization.classtype.url_website')}>
 //                                       <Field type="text" 
 //                                              name="urlWebsite" 
 //                                              className={(errors.urlWebsite) ? "form-control is-invalid" : "form-control"} 
@@ -308,13 +308,13 @@ class SchoolClasstypeAdd extends Component {
 //           </Grid.Col>
 //           <Grid.Col md={3}>
 //             <HasPermissionWrapper permission="add"
-//                                   resource="schoollocation">
+//                                   resource="organizationlocation">
 //               <Button color="primary btn-block mb-6"
 //                       onClick={() => history.push(return_url)}>
 //                 <Icon prefix="fe" name="chevrons-left" /> {t('back')}
 //               </Button>
 //             </HasPermissionWrapper>
-//             <SchoolMenu active_link='schoollocation'/>
+//             <OrganizationMenu active_link='organizationlocation'/>
 //           </Grid.Col>
 //         </Grid.Row>
 //       </Container>
@@ -322,4 +322,4 @@ class SchoolClasstypeAdd extends Component {
 //   </SiteWrapper>
 // );
 
-export default withTranslation()(withRouter(SchoolClasstypeAdd))
+export default withTranslation()(withRouter(OrganizationClasstypeAdd))

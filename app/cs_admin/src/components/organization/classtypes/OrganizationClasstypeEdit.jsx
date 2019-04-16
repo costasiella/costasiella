@@ -26,13 +26,13 @@ import {
 import SiteWrapper from "../../SiteWrapper"
 import HasPermissionWrapper from "../../HasPermissionWrapper"
 
-import SchoolMenu from "../SchoolMenu"
+import OrganizationMenu from "../OrganizationMenu"
 
 
 const UPDATE_CLASSTYPE = gql`
-  mutation UpdateSchoolClasstype($input: UpdateSchoolClasstypeInput!) {
-    updateSchoolClasstype(input: $input) {
-      schoolClasstype {
+  mutation UpdateOrganizationClasstype($input: UpdateOrganizationClasstypeInput!) {
+    updateOrganizationClasstype(input: $input) {
+      organizationClasstype {
         id
         archived
         name
@@ -45,10 +45,10 @@ const UPDATE_CLASSTYPE = gql`
 `
 
 
-class SchoolClasstypeEdit extends Component {
+class OrganizationClasstypeEdit extends Component {
   constructor(props) {
     super(props)
-    console.log("School classtype edit props:")
+    console.log("Organization classtype edit props:")
     console.log(props)
   }
 
@@ -58,18 +58,18 @@ class SchoolClasstypeEdit extends Component {
     const match = this.props.match
     const history = this.props.history
     const id = match.params.id
-    const return_url = "/school/classtypes"
+    const return_url = "/organization/classtypes"
 
     return (
       <SiteWrapper>
         <div className="my-3 my-md-5">
           <Container>
-            <Page.Header title="School" />
+            <Page.Header title="Organization" />
             <Grid.Row>
               <Grid.Col md={9}>
               <Card>
                 <Card.Header>
-                  <Card.Title>{t('school.classtypes.title_edit')}</Card.Title>
+                  <Card.Title>{t('organization.classtypes.title_edit')}</Card.Title>
                   {console.log(match.params.id)}
                 </Card.Header>
                 <Query query={GET_CLASSTYPE_QUERY} variables={{ id }} >
@@ -82,7 +82,7 @@ class SchoolClasstypeEdit extends Component {
                       return <p>{t('error_sad_smiley')}</p>
                     }
                     
-                    const initialData = data.schoolClasstype
+                    const initialData = data.organizationClasstype
                     console.log('query data')
                     console.log(data)
 
@@ -115,7 +115,7 @@ class SchoolClasstypeEdit extends Component {
                                   ]})
                                   .then(({ data }) => {
                                       console.log('got data', data)
-                                      toast.success((t('school.classtypes.toast_edit_success')), {
+                                      toast.success((t('organization.classtypes.toast_edit_success')), {
                                           position: toast.POSITION.BOTTOM_RIGHT
                                         })
                                     }).catch((error) => {
@@ -139,11 +139,11 @@ class SchoolClasstypeEdit extends Component {
                                                 name="displayPublic" 
                                                 checked={values.displayPublic} />
                                               <span className="custom-switch-indicator" ></span>
-                                              <span className="custom-switch-description">{t('school.classtype.public')}</span>
+                                              <span className="custom-switch-description">{t('organization.classtype.public')}</span>
                                             </Form.Label>
                                             <ErrorMessage name="displayPublic" component="div" />   
                                           </Form.Group>     
-                                          <Form.Group label={t('school.classtype.name')} >
+                                          <Form.Group label={t('organization.classtype.name')} >
                                             <Field type="text" 
                                                   name="name" 
                                                   className={(errors.name) ? "form-control is-invalid" : "form-control"} 
@@ -160,7 +160,7 @@ class SchoolClasstypeEdit extends Component {
                                             />
                                             <ErrorMessage name="description" component="span" className="invalid-feedback" />
                                           </Form.Group>
-                                          <Form.Group label={t('school.classtype.url_website')}>
+                                          <Form.Group label={t('organization.classtype.url_website')}>
                                             <Field type="text" 
                                                   name="urlWebsite" 
                                                   className={(errors.urlWebsite) ? "form-control is-invalid" : "form-control"} 
@@ -196,13 +196,13 @@ class SchoolClasstypeEdit extends Component {
               </Grid.Col>
               <Grid.Col md={3}>
                 <HasPermissionWrapper permission="add"
-                                      resource="schoollocation">
+                                      resource="organizationlocation">
                   <Button color="primary btn-block mb-6"
                           onClick={() => history.push(return_url)}>
                     <Icon prefix="fe" name="chevrons-left" /> {t('back')}
                   </Button>
                 </HasPermissionWrapper>
-                <SchoolMenu active_link='schoollocation'/>
+                <OrganizationMenu active_link='organizationlocation'/>
               </Grid.Col>
             </Grid.Row>
           </Container>
@@ -212,4 +212,4 @@ class SchoolClasstypeEdit extends Component {
   }
 
 
-export default withTranslation()(withRouter(SchoolClasstypeEdit))
+export default withTranslation()(withRouter(OrganizationClasstypeEdit))

@@ -24,14 +24,14 @@ import HasPermissionWrapper from "../../HasPermissionWrapper"
 import { toast } from 'react-toastify'
 
 import ContentCard from "../../general/ContentCard"
-import SchoolMenu from "../SchoolMenu"
+import OrganizationMenu from "../OrganizationMenu"
 
 import { GET_CLASSTYPES_QUERY } from "./queries"
 
 const ARCHIVE_CLASSTYPE = gql`
-    mutation ArchiveSchoolClasstype($input: ArchiveSchoolClasstypeInput!) {
-        archiveSchoolClasstype(input: $input) {
-          schoolClasstype {
+    mutation ArchiveOrganizationClasstype($input: ArchiveOrganizationClasstypeInput!) {
+        archiveOrganizationClasstype(input: $input) {
+          organizationClasstype {
             id
             archived
           }
@@ -39,18 +39,18 @@ const ARCHIVE_CLASSTYPE = gql`
     }
 `
 
-const SchoolClasstypes = ({ t, history, archived=false }) => (
+const OrganizationClasstypes = ({ t, history, archived=false }) => (
   <SiteWrapper>
     <div className="my-3 my-md-5">
       <Container>
-        <Page.Header title="School" />
+        <Page.Header title="Organization" />
         <Grid.Row>
           <Grid.Col md={9}>
             <Query query={GET_CLASSTYPES_QUERY} variables={{ archived }}>
-            {({ loading, error, data: {schoolClasstypes: classtypes}, refetch, fetchMore }) => {
+            {({ loading, error, data: {organizationClasstypes: classtypes}, refetch, fetchMore }) => {
                 // Loading
                 if (loading) return (
-                  <ContentCard cardTitle={t('school.classtypes.title')}>
+                  <ContentCard cardTitle={t('organization.classtypes.title')}>
                     <Dimmer active={true}
                             loadder={true}>
                     </Dimmer>
@@ -58,8 +58,8 @@ const SchoolClasstypes = ({ t, history, archived=false }) => (
                 )
                 // Error
                 if (error) return (
-                  <ContentCard cardTitle={t('school.classtypes.title')}>
-                    <p>{t('school.classtypes.error_loading')}</p>
+                  <ContentCard cardTitle={t('organization.classtypes.title')}>
+                    <p>{t('organization.classtypes.error_loading')}</p>
                   </ContentCard>
                 )
                 const headerOptions = <Card.Options>
@@ -78,17 +78,17 @@ const SchoolClasstypes = ({ t, history, archived=false }) => (
                 
                 // Empty list
                 if (!classtypes.edges.length) { return (
-                  <ContentCard cardTitle={t('school.classtypes.title')}
+                  <ContentCard cardTitle={t('organization.classtypes.title')}
                                headerContent={headerOptions}>
                     <p>
-                    {(!archived) ? t('school.classtypes.empty_list') : t("school.classtypes.empty_archive")}
+                    {(!archived) ? t('organization.classtypes.empty_list') : t("organization.classtypes.empty_archive")}
                     </p>
                    
                   </ContentCard>
                 )} else {   
                 // Life's good! :)
                 return (
-                  <ContentCard cardTitle={t('school.classtypes.title')}
+                  <ContentCard cardTitle={t('organization.classtypes.title')}
                                headerContent={headerOptions}
                                pageInfo={classtypes.pageInfo}
                                onLoadMore={() => {
@@ -97,16 +97,16 @@ const SchoolClasstypes = ({ t, history, archived=false }) => (
                                     after: classtypes.pageInfo.endCursor
                                   },
                                   updateQuery: (previousResult, { fetchMoreResult }) => {
-                                    const newEdges = fetchMoreResult.schoolClasstypes.edges
-                                    const pageInfo = fetchMoreResult.schoolClasstypes.pageInfo
+                                    const newEdges = fetchMoreResult.organizationClasstypes.edges
+                                    const pageInfo = fetchMoreResult.organizationClasstypes.pageInfo
 
                                     return newEdges.length
                                       ? {
                                           // Put the new locations at the end of the list and update `pageInfo`
                                           // so we have the new `endCursor` and `hasNextPage` values
-                                          schoolClasstypes: {
-                                            __typename: previousResult.schoolClasstypes.__typename,
-                                            edges: [ ...previousResult.schoolClasstypes.edges, ...newEdges ],
+                                          organizationClasstypes: {
+                                            __typename: previousResult.organizationClasstypes.__typename,
+                                            edges: [ ...previousResult.organizationClasstypes.edges, ...newEdges ],
                                             pageInfo
                                           }
                                         }
@@ -147,14 +147,14 @@ const SchoolClasstypes = ({ t, history, archived=false }) => (
                                       <span className='text-muted'>{t('unarchive_to_edit')}</span> :
                                       <div>
                                         <Button className='btn-sm' 
-                                                onClick={() => history.push("/school/classtypes/edit/" + node.id)}
+                                                onClick={() => history.push("/organization/classtypes/edit/" + node.id)}
                                                 color="secondary">
                                           {t('edit')}
                                         </Button>
                                         <Button className='btn-sm' 
-                                                onClick={() => history.push("/school/classtypes/edit_image/" + node.id)}
+                                                onClick={() => history.push("/organization/classtypes/edit_image/" + node.id)}
                                                 color="secondary">
-                                          {t('school.classtypes.image')}
+                                          {t('organization.classtypes.image')}
                                         </Button>
                                       </div>
                                     }
@@ -203,13 +203,13 @@ const SchoolClasstypes = ({ t, history, archived=false }) => (
           </Grid.Col>
           <Grid.Col md={3}>
             <HasPermissionWrapper permission="add"
-                                  resource="schoolclasstype">
+                                  resource="organizationclasstype">
               <Button color="primary btn-block mb-6"
-                      onClick={() => history.push("/school/classtypes/add")}>
-                <Icon prefix="fe" name="plus-circle" /> {t('school.classtypes.add')}
+                      onClick={() => history.push("/organization/classtypes/add")}>
+                <Icon prefix="fe" name="plus-circle" /> {t('organization.classtypes.add')}
               </Button>
             </HasPermissionWrapper>
-            <SchoolMenu active_link='schoolclasstypes'/>
+            <OrganizationMenu active_link='organizationclasstypes'/>
           </Grid.Col>
         </Grid.Row>
       </Container>
@@ -217,4 +217,4 @@ const SchoolClasstypes = ({ t, history, archived=false }) => (
   </SiteWrapper>
 );
 
-export default withTranslation()(withRouter(SchoolClasstypes))
+export default withTranslation()(withRouter(OrganizationClasstypes))

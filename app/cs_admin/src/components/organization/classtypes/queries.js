@@ -1,8 +1,8 @@
 import gql from "graphql-tag"
 
 export const GET_CLASSTYPES_QUERY = gql`
-query SchoolClasstypes($after: String, $before: String, $archived: Boolean) {
-  schoolClasstypes(first: 15, before: $before, after: $after, archived: $archived) {
+query OrganizationClasstypes($after: String, $before: String, $archived: Boolean) {
+  organizationClasstypes(first: 15, before: $before, after: $after, archived: $archived) {
     pageInfo {
       startCursor
       endCursor
@@ -26,8 +26,8 @@ query SchoolClasstypes($after: String, $before: String, $archived: Boolean) {
 `
 
 export const GET_CLASSTYPE_QUERY = gql`
-query getSchoolClasstype($id: ID!) {
-  schoolClasstype(id:$id) {
+query getOrganizationClasstype($id: ID!) {
+  organizationClasstype(id:$id) {
     id
     archived
     name
