@@ -41,7 +41,7 @@ const ARCHIVE_CLASSPASS_GROUP = gql`
 `
 
 
-const SchoolClasspassGroups = ({ t, history, archived=false }) => (
+const SchoolClasspassesGroups = ({ t, history, archived=false }) => (
   <SiteWrapper>
     <div className="my-3 my-md-5">
       <Container>
@@ -189,7 +189,7 @@ const SchoolClasspassGroups = ({ t, history, archived=false }) => (
                 <Icon prefix="fe" name="plus-circle" /> {t('school.classpass_groups.add')}
               </Button>
             </HasPermissionWrapper>
-            <SchoolMenu active_link='schoolclasspasses'/>
+            <SchoolMenu active_link=''/>
           </Grid.Col>
         </Grid.Row>
       </Container>

@@ -20,7 +20,7 @@ export const GET_CLASSPASS_GROUPS_QUERY = gql`
   }
 `
 
-export const GET_CLASSPASS_GROUPS_QUERY = gql`
+export const GET_CLASSPASS_GROUP_QUERY = gql`
   query SchoolClasspassGroup($id: ID!) {
     schoolClasspassGroup(id:$id) {
       id

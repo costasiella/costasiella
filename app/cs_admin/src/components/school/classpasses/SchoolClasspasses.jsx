@@ -6,6 +6,7 @@ import gql from "graphql-tag"
 import { v4 } from "uuid"
 import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
+import { Link } from 'react-router-dom'
 
 
 import {
@@ -69,13 +70,15 @@ const SchoolClasspasses = ({ t, history, archived=false }) => (
                 )
                 const headerOptions = <Card.Options>
                   
-                  <Button color='secondary'  
-                          size="sm"
-                          icon="folder"
-                          // onClick={() => {archived=false; refetch({archived});}}>
-                          >
-                    {t('general.groups')}
-                  </Button>
+                  <Link to="/school/classpasses/groups">
+                    <Button color='secondary'  
+                            size="sm"
+                            icon="folder"
+                            // onClick={() => {archived=false; refetch({archived});}}>
+                            >
+                      {t('general.groups')}
+                    </Button>
+                  </Link>
                   <CardHeaderSeparator />
                   <Button color={(!archived) ? 'primary': 'secondary'}  
                           size="sm"
