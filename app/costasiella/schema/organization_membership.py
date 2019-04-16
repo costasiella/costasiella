@@ -7,7 +7,7 @@ from graphql import GraphQLError
 
 import validators
 
-from ..models import SchoolMembership, FinanceCostCenter, FinanceGLAccount, FinanceTaxRate 
+from ..models import OrganizationMembership, FinanceCostCenter, FinanceGLAccount, FinanceTaxRate 
 from ..modules.gql_tools import require_login_and_permission, get_rid
 from ..modules.messages import Messages
 
@@ -55,17 +55,17 @@ def validate_create_update_input(input, update=False):
     return result
 
 
-class SchoolMembershipNodeInterface(graphene.Interface):
+class OrganizationMembershipNodeInterface(graphene.Interface):
     id = graphene.GlobalID()
     price_display = graphene.String()
     validity_unit_display = graphene.String()
 
 
-class SchoolMembershipNode(DjangoObjectType):   
+class OrganizationMembershipNode(DjangoObjectType):   
     class Meta:
-        model = SchoolMembership
+        model = OrganizationMembership
         filter_fields = ['archived']
-        interfaces = (graphene.relay.Node, SchoolMembershipNodeInterface)
+        interfaces = (graphene.relay.Node, OrganizationMembershipNodeInterface)
 
     def resolve_price_display(self, info):
         from ..modules.finance_tools import display_float_as_amount
@@ -78,27 +78,27 @@ class SchoolMembershipNode(DjangoObjectType):
     @classmethod
     def get_node(self, info, id):
         user = info.context.user
-        require_login_and_permission(user, 'costasiella.view_schoolmembership')
+        require_login_and_permission(user, 'costasiella.view_organizationmembership')
 
         # Return only public non-archived memberships
         return self._meta.model.objects.get(id=id)
 
 
-class SchoolMembershipQuery(graphene.ObjectType):
-    school_memberships = DjangoFilterConnectionField(SchoolMembershipNode)
-    school_membership = graphene.relay.Node.Field(SchoolMembershipNode)
+class OrganizationMembershipQuery(graphene.ObjectType):
+    organization_memberships = DjangoFilterConnectionField(OrganizationMembershipNode)
+    organization_membership = graphene.relay.Node.Field(OrganizationMembershipNode)
 
 
-    def resolve_school_memberships(self, info, archived, **kwargs):
+    def resolve_organization_memberships(self, info, archived, **kwargs):
         user = info.context.user
-        require_login_and_permission(user, 'costasiella.view_schoolmembership')
+        require_login_and_permission(user, 'costasiella.view_organizationmembership')
 
         ## return everything:
-        # if user.has_perm('costasiella.view_schoolmembership'):
-        return SchoolMembership.objects.filter(archived = archived).order_by('name')
+        # if user.has_perm('costasiella.view_organizationmembership'):
+        return OrganizationMembership.objects.filter(archived = archived).order_by('name')
 
 
-class CreateSchoolMembership(graphene.relay.ClientIDMutation):
+class CreateOrganizationMembership(graphene.relay.ClientIDMutation):
     class Input:
         display_public = graphene.Boolean(required=True, default_value=True)
         display_shop = graphene.Boolean(required=True, default_value=True)
@@ -112,17 +112,17 @@ class CreateSchoolMembership(graphene.relay.ClientIDMutation):
         finance_glaccount = graphene.ID(required=False, default_value="")
         finance_costcenter = graphene.ID(required=False, default_value="")
 
-    school_membership = graphene.Field(SchoolMembershipNode)
+    organization_membership = graphene.Field(OrganizationMembershipNode)
 
     @classmethod
     def mutate_and_get_payload(self, root, info, **input):
         user = info.context.user
-        require_login_and_permission(user, 'costasiella.add_schoolmembership')
+        require_login_and_permission(user, 'costasiella.add_organizationmembership')
 
         # Validate input
         result = validate_create_update_input(input, update=False)
 
-        membership = SchoolMembership(
+        membership = OrganizationMembership(
             display_public=input['display_public'],
             display_shop=input['display_shop'],
             name=input['name'], 
@@ -142,10 +142,10 @@ class CreateSchoolMembership(graphene.relay.ClientIDMutation):
 
         membership.save()
 
-        return CreateSchoolMembership(school_membership = membership)
+        return CreateOrganizationMembership(organization_membership = membership)
 
 
-class UpdateSchoolMembership(graphene.relay.ClientIDMutation):
+class UpdateOrganizationMembership(graphene.relay.ClientIDMutation):
     class Input:
         id = graphene.ID(required=True)
         display_public = graphene.Boolean(required=True, default_value=True)
@@ -160,18 +160,18 @@ class UpdateSchoolMembership(graphene.relay.ClientIDMutation):
         finance_glaccount = graphene.ID(required=False, default_value="")
         finance_costcenter = graphene.ID(required=False, default_value="")
 
-    school_membership = graphene.Field(SchoolMembershipNode)
+    organization_membership = graphene.Field(OrganizationMembershipNode)
 
     @classmethod
     def mutate_and_get_payload(self, root, info, **input):
         user = info.context.user
-        require_login_and_permission(user, 'costasiella.change_schoolmembership')
+        require_login_and_permission(user, 'costasiella.change_organizationmembership')
 
     
         rid = get_rid(input['id'])
-        membership = SchoolMembership.objects.filter(id=rid.id).first()
+        membership = OrganizationMembership.objects.filter(id=rid.id).first()
         if not membership:
-            raise Exception('Invalid School Membership ID!')
+            raise Exception('Invalid Organization Membership ID!')
 
         result = validate_create_update_input(input, update=True)
 
@@ -193,33 +193,33 @@ class UpdateSchoolMembership(graphene.relay.ClientIDMutation):
 
         membership.save(force_update=True)
 
-        return UpdateSchoolMembership(school_membership=membership)
+        return UpdateOrganizationMembership(organization_membership=membership)
 
 
-class ArchiveSchoolMembership(graphene.relay.ClientIDMutation):
+class ArchiveOrganizationMembership(graphene.relay.ClientIDMutation):
     class Input:
         id = graphene.ID(required=True)
         archived = graphene.Boolean(required=True)
 
-    school_membership = graphene.Field(SchoolMembershipNode)
+    organization_membership = graphene.Field(OrganizationMembershipNode)
 
     @classmethod
     def mutate_and_get_payload(self, root, info, **input):
         user = info.context.user
-        require_login_and_permission(user, 'costasiella.delete_schoolmembership')
+        require_login_and_permission(user, 'costasiella.delete_organizationmembership')
 
         rid = get_rid(input['id'])
-        membership = SchoolMembership.objects.filter(id=rid.id).first()
+        membership = OrganizationMembership.objects.filter(id=rid.id).first()
         if not membership:
-            raise Exception('Invalid School Membership ID!')
+            raise Exception('Invalid Organization Membership ID!')
 
         membership.archived = input['archived']
         membership.save(force_update=True)
 
-        return ArchiveSchoolMembership(school_membership=membership)
+        return ArchiveOrganizationMembership(organization_membership=membership)
 
 
-class SchoolMembershipMutation(graphene.ObjectType):
-    archive_school_membership = ArchiveSchoolMembership.Field()
-    create_school_membership = CreateSchoolMembership.Field()
-    update_school_membership = UpdateSchoolMembership.Field()
+class OrganizationMembershipMutation(graphene.ObjectType):
+    archive_organization_membership = ArchiveOrganizationMembership.Field()
+    create_organization_membership = CreateOrganizationMembership.Field()
+    update_organization_membership = UpdateOrganizationMembership.Field()

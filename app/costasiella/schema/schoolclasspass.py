@@ -7,7 +7,7 @@ from graphql import GraphQLError
 
 import validators
 
-from ..models import SchoolClasspass, SchoolMembership, FinanceCostCenter, FinanceGLAccount, FinanceTaxRate 
+from ..models import OrganizationClasspass, OrganizationMembership, FinanceCostCenter, FinanceGLAccount, FinanceTaxRate 
 from ..modules.gql_tools import require_login, require_login_and_permission, get_rid
 from ..modules.messages import Messages
 
@@ -32,14 +32,14 @@ def validate_create_update_input(input, update=False):
     if not finance_tax_rate:
         raise Exception(_('Invalid Finance Tax Rate ID!'))
 
-    # Check SchoolMembership
-    if 'school_membership' in input:
-        if input['school_membership']:
-            rid = get_rid(input['school_membership'])
-            school_membership = SchoolMembership.objects.filter(id=rid.id).first()
-            result['school_membership'] = school_membership
-            if not school_membership:
-                raise Exception(_('Invalid School Membership ID!'))            
+    # Check OrganizationMembership
+    if 'organization_membership' in input:
+        if input['organization_membership']:
+            rid = get_rid(input['organization_membership'])
+            organization_membership = OrganizationMembership.objects.filter(id=rid.id).first()
+            result['organization_membership'] = organization_membership
+            if not organization_membership:
+                raise Exception(_('Invalid Organization Membership ID!'))            
 
     # Check GLAccount
     if 'finance_glaccount' in input:
@@ -63,17 +63,17 @@ def validate_create_update_input(input, update=False):
     return result
 
 
-class SchoolClasspassNodeInterface(graphene.Interface):
+class OrganizationClasspassNodeInterface(graphene.Interface):
     id = graphene.GlobalID()
     price_display = graphene.String()
     validity_unit_display = graphene.String()
 
 
-class SchoolClasspassNode(DjangoObjectType):   
+class OrganizationClasspassNode(DjangoObjectType):   
     class Meta:
-        model = SchoolClasspass
+        model = OrganizationClasspass
         filter_fields = ['archived']
-        interfaces = (graphene.relay.Node, SchoolClasspassNodeInterface)
+        interfaces = (graphene.relay.Node, OrganizationClasspassNodeInterface)
 
     def resolve_price_display(self, info):
         from ..modules.finance_tools import display_float_as_amount
@@ -86,30 +86,30 @@ class SchoolClasspassNode(DjangoObjectType):
     @classmethod
     def get_node(self, info, id):
         user = info.context.user
-        require_login_and_permission(user, 'costasiella.view_schoolclasspass')
+        require_login_and_permission(user, 'costasiella.view_organizationclasspass')
 
         # Return only public non-archived memberships
         return self._meta.model.objects.get(id=id)
 
 
-class SchoolClasspassQuery(graphene.ObjectType):
-    school_classpasses = DjangoFilterConnectionField(SchoolClasspassNode)
-    school_classpass = graphene.relay.Node.Field(SchoolClasspassNode)
+class OrganizationClasspassQuery(graphene.ObjectType):
+    organization_classpasses = DjangoFilterConnectionField(OrganizationClasspassNode)
+    organization_classpass = graphene.relay.Node.Field(OrganizationClasspassNode)
 
 
-    def resolve_school_classpasses(self, info, archived, **kwargs):
+    def resolve_organization_classpasses(self, info, archived, **kwargs):
         user = info.context.user
         require_login(user)
         # Has permission: return everything
-        if user.has_perm('costasiella.view_schoolclasspass'):
+        if user.has_perm('costasiella.view_organizationclasspass'):
             print('user has view permission')
-            return SchoolClasspass.objects.filter(archived = archived).order_by('name')
+            return OrganizationClasspass.objects.filter(archived = archived).order_by('name')
 
         # Return only public non-archived locations
-        return SchoolClasspass.objects.filter(display_public = True, archived = False).order_by('name')
+        return OrganizationClasspass.objects.filter(display_public = True, archived = False).order_by('name')
 
 
-class CreateSchoolClasspass(graphene.relay.ClientIDMutation):
+class CreateOrganizationClasspass(graphene.relay.ClientIDMutation):
     class Input:
         display_public = graphene.Boolean(required=True, default_value=True)
         display_shop = graphene.Boolean(required=True, default_value=True)
@@ -121,22 +121,22 @@ class CreateSchoolClasspass(graphene.relay.ClientIDMutation):
         validity_unit = graphene.String(required=True)
         classes = graphene.Int(required=True, default_value=1)
         unlimited = graphene.Boolean(required=True, default_value=False)
-        school_membership = graphene.ID(required=False, default_value="")
+        organization_membership = graphene.ID(required=False, default_value="")
         quick_stats_amount = graphene.Float(required=False, default_value=0)
         finance_glaccount = graphene.ID(required=False, default_value="")
         finance_costcenter = graphene.ID(required=False, default_value="")
 
-    school_classpass = graphene.Field(SchoolClasspassNode)
+    organization_classpass = graphene.Field(OrganizationClasspassNode)
 
     @classmethod
     def mutate_and_get_payload(self, root, info, **input):
         user = info.context.user
-        require_login_and_permission(user, 'costasiella.add_schoolclasspass')
+        require_login_and_permission(user, 'costasiella.add_organizationclasspass')
 
         # Validate input
         result = validate_create_update_input(input, update=False)
 
-        classpass = SchoolClasspass(
+        classpass = OrganizationClasspass(
             display_public=input['display_public'],
             display_shop=input['display_shop'],
             name=input['name'], 
@@ -150,8 +150,8 @@ class CreateSchoolClasspass(graphene.relay.ClientIDMutation):
             quick_stats_amount=input.get('quick_stats_amount', None)
         )
 
-        if 'school_membership' in result:
-            classpass.school_membership = result['school_membership']
+        if 'organization_membership' in result:
+            classpass.organization_membership = result['organization_membership']
 
         if 'finance_glaccount' in result:
             classpass.finance_glaccount = result['finance_glaccount']
@@ -161,10 +161,10 @@ class CreateSchoolClasspass(graphene.relay.ClientIDMutation):
 
         classpass.save()
 
-        return CreateSchoolClasspass(school_classpass = classpass)
+        return CreateOrganizationClasspass(organization_classpass = classpass)
 
 
-class UpdateSchoolClasspass(graphene.relay.ClientIDMutation):
+class UpdateOrganizationClasspass(graphene.relay.ClientIDMutation):
     class Input:
         id = graphene.ID(required=True)
         display_public = graphene.Boolean(required=True, default_value=True)
@@ -177,22 +177,22 @@ class UpdateSchoolClasspass(graphene.relay.ClientIDMutation):
         validity_unit = graphene.String(required=True)
         classes = graphene.Int(required=True, default_value=1)
         unlimited = graphene.Boolean(required=True, default_value=False)
-        school_membership = graphene.ID(required=False, default_value="")
+        organization_membership = graphene.ID(required=False, default_value="")
         quick_stats_amount = graphene.Float(required=False, default_value=0)
         finance_glaccount = graphene.ID(required=False, default_value="")
         finance_costcenter = graphene.ID(required=False, default_value="")
 
-    school_classpass = graphene.Field(SchoolClasspassNode)
+    organization_classpass = graphene.Field(OrganizationClasspassNode)
 
     @classmethod
     def mutate_and_get_payload(self, root, info, **input):
         user = info.context.user
-        require_login_and_permission(user, 'costasiella.change_schoolclasspass')
+        require_login_and_permission(user, 'costasiella.change_organizationclasspass')
     
         rid = get_rid(input['id'])
-        classpass = SchoolClasspass.objects.filter(id=rid.id).first()
+        classpass = OrganizationClasspass.objects.filter(id=rid.id).first()
         if not classpass:
-            raise Exception('Invalid School Class pass ID!')
+            raise Exception('Invalid Organization Class pass ID!')
 
         result = validate_create_update_input(input, update=True)
 
@@ -208,8 +208,8 @@ class UpdateSchoolClasspass(graphene.relay.ClientIDMutation):
         classpass.unlimited=input['unlimited']
         classpass.quick_stats_amount=input['quick_stats_amount']
 
-        if 'school_membership' in result:
-            classpass.school_membership = result['school_membership']
+        if 'organization_membership' in result:
+            classpass.organization_membership = result['organization_membership']
 
         if 'finance_glaccount' in result:
             classpass.finance_glaccount = result['finance_glaccount']
@@ -219,33 +219,33 @@ class UpdateSchoolClasspass(graphene.relay.ClientIDMutation):
 
         classpass.save(force_update=True)
 
-        return UpdateSchoolClasspass(school_classpass=classpass)
+        return UpdateOrganizationClasspass(organization_classpass=classpass)
 
 
-class ArchiveSchoolClasspass(graphene.relay.ClientIDMutation):
+class ArchiveOrganizationClasspass(graphene.relay.ClientIDMutation):
     class Input:
         id = graphene.ID(required=True)
         archived = graphene.Boolean(required=True)
 
-    school_classpass = graphene.Field(SchoolClasspassNode)
+    organization_classpass = graphene.Field(OrganizationClasspassNode)
 
     @classmethod
     def mutate_and_get_payload(self, root, info, **input):
         user = info.context.user
-        require_login_and_permission(user, 'costasiella.delete_schoolclasspass')
+        require_login_and_permission(user, 'costasiella.delete_organizationclasspass')
 
         rid = get_rid(input['id'])
-        classpass = SchoolClasspass.objects.filter(id=rid.id).first()
+        classpass = OrganizationClasspass.objects.filter(id=rid.id).first()
         if not classpass:
-            raise Exception('Invalid School Classpass ID!')
+            raise Exception('Invalid Organization Classpass ID!')
 
         classpass.archived = input['archived']
         classpass.save(force_update=True)
 
-        return ArchiveSchoolClasspass(school_classpass=classpass)
+        return ArchiveOrganizationClasspass(organization_classpass=classpass)
 
 
-class SchoolClasspassMutation(graphene.ObjectType):
-    archive_school_classpass = ArchiveSchoolClasspass.Field()
-    create_school_classpass = CreateSchoolClasspass.Field()
-    update_school_classpass = UpdateSchoolClasspass.Field()
+class OrganizationClasspassMutation(graphene.ObjectType):
+    archive_organization_classpass = ArchiveOrganizationClasspass.Field()
+    create_organization_classpass = CreateOrganizationClasspass.Field()
+    update_organization_classpass = UpdateOrganizationClasspass.Field()
