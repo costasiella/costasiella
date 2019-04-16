@@ -164,12 +164,12 @@ const check_permission = (permissions, permission, resource) => {
 }
 
 
-const getNavBarItems = (user) => {
+const getNavBarItems = (t, user) => {
   let items: Array<navItem> = []
   let permissions = allPermissions(user)
 
   items.push({
-    value: "Home",
+    value: t("main_menu.home"),
     to: "/",
     icon: "home",
     LinkComponent: withRouter(NavLink),
@@ -182,7 +182,7 @@ const getNavBarItems = (user) => {
     (check_permission(permissions, 'view', 'financetaxrate')) 
   ){
     items.push({
-      value: "Finance",
+      value: t("main_menu.finance"),
       to: "/finance",
       icon: "dollar-sign",
       LinkComponent: withRouter(NavLink),
@@ -197,7 +197,7 @@ const getNavBarItems = (user) => {
     (check_permission(permissions, 'view', 'schoolmembership')) 
    ){
   items.push({
-    value: "Organization",
+    value: t("main_menu.organization"),
     to: "/school",
     icon: "feather",
     LinkComponent: withRouter(NavLink),
@@ -277,7 +277,7 @@ class SiteWrapper extends React.Component<Props, State> {
               },
               }}
               // navProps={{ itemsObjects: navBarItems }}
-              navProps={{ itemsObjects: getNavBarItems(data.user) }}
+              navProps={{ itemsObjects: getNavBarItems(this.props.t, data.user) }}
               routerContextComponentType={withRouter(RouterContextProvider)}
               footerProps={{
                 // links: [
