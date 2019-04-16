@@ -57,8 +57,6 @@ class CreateSchoolClasspassGroup(graphene.relay.ClientIDMutation):
         school_classpass_group = SchoolClasspassGroup(
             name=input['name'], 
         )
-        if input['code']:
-            school_classpass_group.code = input['code']
 
         school_classpass_group.save()
 
@@ -84,8 +82,6 @@ class UpdateSchoolClasspassGroup(graphene.relay.ClientIDMutation):
             raise Exception('Invalid School Classpass Group ID!')
 
         school_classpass_group.name = input['name']
-        if input['code']:
-            school_classpass_group.code = input['code']
         school_classpass_group.save(force_update=True)
 
         return UpdateSchoolClasspassGroup(school_classpass_group=school_classpass_group)
