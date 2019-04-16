@@ -240,9 +240,9 @@ class OrganizationMembershipEdit extends Component {
                                                  name="validityUnit" 
                                                  className={(errors.validityUnit) ? "form-control is-invalid" : "form-control"} 
                                                  autoComplete="off">
-                                            <option value="DAYS" key={v4()}>{t('general.validity.days')}</option>
-                                            <option value="WEEKS" key={v4()}>{t('general.validity.weeks')}</option>
-                                            <option value="MONTHS" key={v4()}>{t('general.validity.months')}</option>
+                                            <option value="DAYS" key={v4()}>{t('validity.days')}</option>
+                                            <option value="WEEKS" key={v4()}>{t('validity.weeks')}</option>
+                                            <option value="MONTHS" key={v4()}>{t('validity.months')}</option>
                                           </Field>
                                           <ErrorMessage name="validityUnit" component="span" className="invalid-feedback" />
                                         </Form.Group>
