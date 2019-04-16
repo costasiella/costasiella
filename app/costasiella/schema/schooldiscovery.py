@@ -106,7 +106,7 @@ class ArchiveSchoolDiscovery(graphene.relay.ClientIDMutation):
 
         school_discovery = SchoolDiscovery.objects.filter(id=rid.id).first()
         if not school_discovery:
-            raise Exception('Invalid Finance GLAccount ID!')
+            raise Exception('Invalid School Discovery ID!')
 
         school_discovery.archived = input['archived']
         school_discovery.save(force_update=True)

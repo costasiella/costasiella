@@ -32,9 +32,9 @@ import SchoolMenu from "../SchoolMenu"
 import { GET_CLASSPASS_GROUPS_QUERY } from "./queries"
 
 const ARCHIVE_CLASSPASS_GROUP = gql`
-  mutation ArchiveSchoolDiscovery($input: ArchiveSchoolDiscoveryInput!) {
-    archiveSchoolDiscovery(input: $input) {
-      schoolDiscovery {
+  mutation ArchiveClasspassGroup($input: ArchiveSchoolClasspassGroupInput!) {
+    archiveSchoolClasspassGroup(input: $input) {
+      schoolClasspassGroup {
         id
         archived
       }
