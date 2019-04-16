@@ -114,7 +114,7 @@ const navBarItems: Array<navItem> = [
   // },
   {
     value: "School",
-    to: "/school",
+    to: "/organization",
     icon: "book",
     LinkComponent: withRouter(NavLink),
   },
@@ -190,15 +190,15 @@ const getNavBarItems = (t, user) => {
   }
 
   if (
-    (check_permission(permissions, 'view', 'schoolclasspass')) || 
-    (check_permission(permissions, 'view', 'schoolclasstype')) ||
-    (check_permission(permissions, 'view', 'schooldiscovery')) ||
-    (check_permission(permissions, 'view', 'schoollocation')) ||
-    (check_permission(permissions, 'view', 'schoolmembership')) 
+    (check_permission(permissions, 'view', 'organizationclasspass')) || 
+    (check_permission(permissions, 'view', 'organizationclasstype')) ||
+    (check_permission(permissions, 'view', 'organizationdiscovery')) ||
+    (check_permission(permissions, 'view', 'organizationlocation')) ||
+    (check_permission(permissions, 'view', 'organizationmembership')) 
    ){
   items.push({
     value: t("main_menu.organization"),
-    to: "/school",
+    to: "/organization",
     icon: "feather",
     LinkComponent: withRouter(NavLink),
   })

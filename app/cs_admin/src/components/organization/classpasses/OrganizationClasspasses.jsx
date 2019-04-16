@@ -134,12 +134,12 @@ const OrganizationClasspasses = ({ t, history, archived=false }) => (
                     <Table>
                           <Table.Header>
                             <Table.Row key={v4()}>
-                              <Table.ColHeader>{t('name')}</Table.ColHeader>
-                              <Table.ColHeader>{t('public')}</Table.ColHeader>
-                              <Table.ColHeader>{t('shop')}</Table.ColHeader>
+                              <Table.ColHeader>{t('general.name')}</Table.ColHeader>
+                              <Table.ColHeader>{t('general.public')}</Table.ColHeader>
+                              <Table.ColHeader>{t('general.shop')}</Table.ColHeader>
                               <Table.ColHeader>{t('general.classes')}</Table.ColHeader>
-                              <Table.ColHeader>{t('price')}</Table.ColHeader>
-                              <Table.ColHeader>{t('organization.classpasses.validity')}</Table.ColHeader>
+                              <Table.ColHeader>{t('general.price')}</Table.ColHeader>
+                              <Table.ColHeader>{t('general.validity')}</Table.ColHeader>
                             </Table.Row>
                           </Table.Header>
                           <Table.Body>
@@ -169,7 +169,7 @@ const OrganizationClasspasses = ({ t, history, archived=false }) => (
                                   </Table.Col>
                                   <Table.Col className="text-right" key={v4()}>
                                     {(node.archived) ? 
-                                      <span className='text-muted'>{t('unarchive_to_edit')}</span> :
+                                      <span className='text-muted'>{t('general.unarchive_to_edit')}</span> :
                                       <Button className='btn-sm' 
                                               onClick={() => history.push("/organization/classpasses/edit/" + node.id)}
                                               color="secondary">
@@ -181,7 +181,7 @@ const OrganizationClasspasses = ({ t, history, archived=false }) => (
                                     {(archiveClasspasses, { data }) => (
                                       <Table.Col className="text-right" key={v4()}>
                                         <button className="icon btn btn-link btn-sm" 
-                                           title={t('archive')} 
+                                           title={t('general.archive')} 
                                            href=""
                                            onClick={() => {
                                              console.log("clicked archived")
@@ -196,11 +196,11 @@ const OrganizationClasspasses = ({ t, history, archived=false }) => (
                                         ]}).then(({ data }) => {
                                           console.log('got data', data);
                                           toast.success(
-                                            (archived) ? t('unarchived'): t('archived'), {
+                                            (archived) ? t('general.unarchived'): t('general.archived'), {
                                               position: toast.POSITION.BOTTOM_RIGHT
                                             })
                                         }).catch((error) => {
-                                          toast.error((t('toast_server_error')) + ': ' +  error, {
+                                          toast.error((t('general.toast_server_error')) + ': ' +  error, {
                                               position: toast.POSITION.BOTTOM_RIGHT
                                             })
                                           console.log('there was an error sending the query', error);
