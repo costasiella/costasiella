@@ -22,26 +22,26 @@ import FinanceTaxRates from './components/finance/taxrates/FinanceTaxRates'
 import FinanceTaxRatesAdd from './components/finance/taxrates/FinanceTaxRateAdd'
 import FinanceTaxRatesEdit from './components/finance/taxrates/FinanceTaxRateEdit'
 
-import SchoolHome from './components/school/home/SchoolHome'
-import SchoolClasspasses from './components/school/classpasses/SchoolClasspasses'
-import SchoolClasspassAdd from './components/school/classpasses/SchoolClasspassAdd'
-import SchoolClasspassEdit from './components/school/classpasses/SchoolClasspassEdit'
-import SchoolClasspassesGroups from './components/school/classpassesgroups/SchoolClasspassesGroups'
-import SchoolClasspassesGroupAdd from './components/school/classpassesgroups/SchoolClasspassesGroupAdd'
-import SchoolClasspassesGroupEdit from './components/school/classpassesgroups/SchoolClasspassesGroupEdit'
-import SchoolClasstypes from './components/school/classtypes/SchoolClasstypes'
-import SchoolClasstypeAdd from './components/school/classtypes/SchoolClasstypeAdd'
-import SchoolClasstypeEdit from './components/school/classtypes/SchoolClasstypeEdit'
-import SchoolClasstypeEditImage from './components/school/classtypes/SchoolClasstypeEditImage'
-import SchoolDiscoveries from './components/school/discovery/SchoolDiscoveries'
-import SchoolDiscoveryAdd from './components/school/discovery/SchoolDiscoveryAdd'
-import SchoolDiscoveryEdit from './components/school/discovery/SchoolDiscoveryEdit'
-import SchoolLocations from './components/school/locations/SchoolLocations'
-import SchoolLocationAdd from './components/school/locations/SchoolLocationAdd'
-import SchoolLocationEdit from './components/school/locations/SchoolLocationEdit'
-import SchoolMemberships from './components/school/memberships/SchoolMemberships'
-import SchoolMembershipAdd from './components/school/memberships/SchoolMembershipAdd'
-import SchoolMembershipEdit from './components/school/memberships/SchoolMembershipEdit'
+import SchoolHome from './components/organization/home/OrganizationHome'
+// import SchoolClasspasses from './components/school/classpasses/SchoolClasspasses'
+// import SchoolClasspassAdd from './components/school/classpasses/SchoolClasspassAdd'
+// import SchoolClasspassEdit from './components/school/classpasses/SchoolClasspassEdit'
+// import SchoolClasspassesGroups from './components/school/classpassesgroups/SchoolClasspassesGroups'
+// import SchoolClasspassesGroupAdd from './components/school/classpassesgroups/SchoolClasspassesGroupAdd'
+// import SchoolClasspassesGroupEdit from './components/school/classpassesgroups/SchoolClasspassesGroupEdit'
+// import SchoolClasstypes from './components/school/classtypes/SchoolClasstypes'
+// import SchoolClasstypeAdd from './components/school/classtypes/SchoolClasstypeAdd'
+// import SchoolClasstypeEdit from './components/school/classtypes/SchoolClasstypeEdit'
+// import SchoolClasstypeEditImage from './components/school/classtypes/SchoolClasstypeEditImage'
+// import SchoolDiscoveries from './components/school/discovery/SchoolDiscoveries'
+// import SchoolDiscoveryAdd from './components/school/discovery/SchoolDiscoveryAdd'
+// import SchoolDiscoveryEdit from './components/school/discovery/SchoolDiscoveryEdit'
+// import SchoolLocations from './components/school/locations/SchoolLocations'
+// import SchoolLocationAdd from './components/school/locations/SchoolLocationAdd'
+// import SchoolLocationEdit from './components/school/locations/SchoolLocationEdit'
+// import SchoolMemberships from './components/school/memberships/SchoolMemberships'
+// import SchoolMembershipAdd from './components/school/memberships/SchoolMembershipAdd'
+// import SchoolMembershipEdit from './components/school/memberships/SchoolMembershipEdit'
 
 import Error404 from "./components/Error404"
 
@@ -106,7 +106,7 @@ class App extends Component {
             <Route exact path="/finance/taxrates/add" component={FinanceTaxRatesAdd} />
             <Route exact path="/finance/taxrates/edit/:id" component={FinanceTaxRatesEdit} />
             <Route exact path="/school" component={SchoolHome} />
-            <Route exact path="/school/classpasses" component={SchoolClasspasses} />
+            {/* <Route exact path="/school/classpasses" component={SchoolClasspasses} />
             <Route exact path="/school/classpasses/add" component={SchoolClasspassAdd} />
             <Route exact path="/school/classpasses/edit/:id" component={SchoolClasspassEdit} />
             <Route exact path="/school/classpasses/groups" component={SchoolClasspassesGroups} />
@@ -124,7 +124,7 @@ class App extends Component {
             <Route exact path="/school/locations/edit/:id" component={SchoolLocationEdit} />
             <Route exact path="/school/memberships" component={SchoolMemberships} />
             <Route exact path="/school/memberships/add" component={SchoolMembershipAdd} />
-            <Route exact path="/school/memberships/edit/:id" component={SchoolMembershipEdit} />
+            <Route exact path="/school/memberships/edit/:id" component={SchoolMembershipEdit} /> */}
 
             <Route component={Error404} />
           </Switch>
