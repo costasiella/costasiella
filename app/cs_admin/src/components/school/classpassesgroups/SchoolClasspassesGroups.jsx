@@ -197,7 +197,7 @@ const SchoolClasspassesGroups = ({ t, history, archived=false }) => (
             <HasPermissionWrapper permission="add"
                                   resource="schoolclasspassgroup">
               <Button color="primary btn-block mb-6"
-                      onClick={() => history.push("/school/classpass_groups/add")}>
+                      onClick={() => history.push("/school/classpasses/groups/add")}>
                 <Icon prefix="fe" name="plus-circle" /> {t('school.classpass_groups.add')}
               </Button>
             </HasPermissionWrapper>

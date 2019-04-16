@@ -9,8 +9,8 @@ import { Formik, Form as FoForm, Field, ErrorMessage } from 'formik'
 import { toast } from 'react-toastify'
 
 
-import { GET_DISCOVERIES_QUERY } from './queries'
-import { DISCOVERY_SCHEMA } from './yupSchema'
+import { GET_CLASSPASS_GROUPS_QUERY } from './queries'
+import { CLASSPASS_GROUP_SCHEMA } from './yupSchema'
 
 
 import {
@@ -28,10 +28,10 @@ import HasPermissionWrapper from "../../HasPermissionWrapper"
 import SchoolMenu from '../SchoolMenu'
 
 
-const ADD_DISCOVERY = gql`
-  mutation CreateSchoolDiscovery($input:CreateSchoolDiscoveryInput!) {
-    createSchoolDiscovery(input: $input) {
-      schoolDiscovery{
+const ADD_CLASSPASS_GROUP = gql`
+  mutation CreateSchoolClasspassGroup($input:CreateSchoolClasspassGroupInput!) {
+    createSchoolClasspassGroup(input: $input) {
+      schoolClasspassGroup{
         id
         archived
         name
@@ -40,9 +40,9 @@ const ADD_DISCOVERY = gql`
   }
 `
 
-const return_url = "/school/discoveries"
+const return_url = "/school/classpasses/groups"
 
-const SchoolDiscoveryAdd = ({ t, history }) => (
+const SchoolClasspassGroupAdd = ({ t, history }) => (
   <SiteWrapper>
     <div className="my-3 my-md-5">
       <Container>
@@ -51,24 +51,24 @@ const SchoolDiscoveryAdd = ({ t, history }) => (
           <Grid.Col md={9}>
           <Card>
             <Card.Header>
-              <Card.Title>{t('school.discoveries.title_add')}</Card.Title>
+              <Card.Title>{t('school.classpass_groups.title_add')}</Card.Title>
             </Card.Header>
-            <Mutation mutation={ADD_DISCOVERY} onCompleted={() => history.push(return_url)}> 
+            <Mutation mutation={ADD_CLASSPASS_GROUP} onCompleted={() => history.push(return_url)}> 
                 {(addLocation, { data }) => (
                     <Formik
                         initialValues={{ name: '', code: '' }}
-                        validationSchema={DISCOVERY_SCHEMA}
+                        validationSchema={CLASSPASS_GROUP_SCHEMA}
                         onSubmit={(values, { setSubmitting }) => {
                             addLocation({ variables: {
                               input: {
                                 name: values.name, 
                               }
                             }, refetchQueries: [
-                                {query: GET_DISCOVERIES_QUERY, variables: {"archived": false }}
+                                {query: GET_CLASSPASS_GROUPS_QUERY, variables: {"archived": false }}
                             ]})
                             .then(({ data }) => {
                                 console.log('got data', data);
-                                toast.success((t('school.discoveries.toast_add_success')), {
+                                toast.success((t('school.classpass_groups.toast_add_success')), {
                                     position: toast.POSITION.BOTTOM_RIGHT
                                   })
                               }).catch((error) => {
@@ -113,13 +113,13 @@ const SchoolDiscoveryAdd = ({ t, history }) => (
           </Grid.Col>
           <Grid.Col md={3}>
             <HasPermissionWrapper permission="add"
-                                  resource="schooldiscovery">
+                                  resource="schoolclasspassgroup">
               <Button color="primary btn-block mb-6"
                       onClick={() => history.push(return_url)}>
                 <Icon prefix="fe" name="chevrons-left" /> {t('back')}
               </Button>
             </HasPermissionWrapper>
-            <SchoolMenu active_link='schooldiscoveries'/>
+            <SchoolMenu active_link=''/>
           </Grid.Col>
         </Grid.Row>
       </Container>
@@ -127,4 +127,4 @@ const SchoolDiscoveryAdd = ({ t, history }) => (
   </SiteWrapper>
 )
 
-export default withTranslation()(withRouter(SchoolDiscoveryAdd))
+export default withTranslation()(withRouter(SchoolClasspassGroupAdd))
