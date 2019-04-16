@@ -12,4 +12,4 @@ class AccountAdmin(UserAdmin):
     model = get_user_model()
     list_display = ['email', ]
 
-admin.site.register(Account, AccountAdmin)
+admin.site.register(get_user_model(), AccountAdmin)
