@@ -169,13 +169,13 @@ class OrganizationClasstypeAdd extends Component {
             </Grid.Col>
             <Grid.Col md={3}>
               <HasPermissionWrapper permission="add"
-                                    resource="organizationlocation">
+                                    resource="organizationclasstype">
                 <Button color="primary btn-block mb-6"
                         onClick={() => history.push(return_url)}>
                   <Icon prefix="fe" name="chevrons-left" /> {t('general.back')}
                 </Button>
               </HasPermissionWrapper>
-              <OrganizationMenu active_link='organizationlocation'/>
+              <OrganizationMenu active_link='classtypes'/>
             </Grid.Col>
           </Grid.Row>
         </Container>
