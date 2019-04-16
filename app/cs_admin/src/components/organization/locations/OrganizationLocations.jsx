@@ -40,30 +40,6 @@ const ARCHIVE_LOCATION = gql`
   }
 `
 
-
-// const onClickArchive = (t, id) => {
-//   const options = {
-//     title: t('please_confirm'),
-//     message: t('organization.locations.confirm_archive'),
-//     buttons: [
-//       {
-//         label: t('yes'),
-//         onClick: () => alert('Click Yes'),
-//         class: 'btn btn-primary'
-//       },
-//       {
-//         label: t('no'),
-//         onClick: () => alert('Click No')
-//       }
-//     ],
-//     childrenElement: () => <div />,
-//     // customUI: ({ title, message, onClose }) => <div>Custom UI</div>,
-//     willUnmount: () => {}
-//   }
-
-//   confirmAlert(options)
-// }
-
 const OrganizationLocations = ({ t, history, archived=false }) => (
   <SiteWrapper>
     <div className="my-3 my-md-5">

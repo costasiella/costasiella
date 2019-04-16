@@ -1,205 +1,188 @@
 {
     "finance": {
-        "title": "__STRING_NOT_TRANSLATED__",
+        "title": "Finance",
         "costcenters": {
-            "title_add": "__STRING_NOT_TRANSLATED__",
-            "toast_add_success": "__STRING_NOT_TRANSLATED__",
-            "title": "__STRING_NOT_TRANSLATED__",
-            "title_edit": "__STRING_NOT_TRANSLATED__",
-            "toast_edit_success": "__STRING_NOT_TRANSLATED__",
-            "error_loading": "__STRING_NOT_TRANSLATED__",
-            "empty_list": "__STRING_NOT_TRANSLATED__",
-            "empty_archive": "__STRING_NOT_TRANSLATED__",
-            "add": "__STRING_NOT_TRANSLATED__"
+            "title_add": "Add cost center",
+            "toast_add_success": "Added cost center",
+            "title": "Cost centers",
+            "title_edit": "Edit cost center",
+            "toast_edit_success": "Saved cost center",
+            "error_loading": "Error loading cost centers :(",
+            "empty_list": "No cost centers found",
+            "empty_archive": "Cost center archive is empty",
+            "add": "Add cost center"
         },
-        "code": "__STRING_NOT_TRANSLATED__",
+        "code": "Accounting code",
         "glaccounts": {
-            "title": "__STRING_NOT_TRANSLATED__",
-            "title_add": "__STRING_NOT_TRANSLATED__",
-            "toast_add_success": "__STRING_NOT_TRANSLATED__",
-            "title_edit": "__STRING_NOT_TRANSLATED__",
-            "toast_edit_success": "__STRING_NOT_TRANSLATED__",
-            "error_loading": "__STRING_NOT_TRANSLATED__",
-            "empty_list": "__STRING_NOT_TRANSLATED__",
-            "empty_archive": "__STRING_NOT_TRANSLATED__",
-            "add": "__STRING_NOT_TRANSLATED__"
+            "title": "General ledger accounts",
+            "title_add": "Add general ledger account",
+            "toast_add_success": "Added G/L account",
+            "title_edit": "Edit General ledger account",
+            "toast_edit_success": "Saved G/L account",
+            "error_loading": "Error loading general ledger accounts :(",
+            "empty_list": "No general ledger accounts found",
+            "empty_archive": "General ledger archive is empty",
+            "add": "Add G/L account"
         },
         "taxrates": {
-            "title": "__STRING_NOT_TRANSLATED__",
-            "title_add": "__STRING_NOT_TRANSLATED__",
-            "toast_add_success": "__STRING_NOT_TRANSLATED__",
-            "percentage": "__STRING_NOT_TRANSLATED__",
-            "rateType": "__STRING_NOT_TRANSLATED__",
-            "including": "__STRING_NOT_TRANSLATED__",
-            "excluding": "__STRING_NOT_TRANSLATED__",
-            "title_edit": "__STRING_NOT_TRANSLATED__",
-            "toast_edit_success": "__STRING_NOT_TRANSLATED__",
-            "error_loading": "__STRING_NOT_TRANSLATED__",
-            "empty_list": "__STRING_NOT_TRANSLATED__",
-            "empty_archive": "__STRING_NOT_TRANSLATED__",
-            "add": "__STRING_NOT_TRANSLATED__"
-        },
-        "page_header": "__STRING_NOT_TRANSLATED__"
+            "title": "Tax rates",
+            "title_add": "Add tax rate",
+            "toast_add_success": "Added tax rate",
+            "percentage": "Percentage",
+            "rateType": "Tax rate type",
+            "including": "Including",
+            "excluding": "Excluding",
+            "title_edit": "Edit tax rate type",
+            "toast_edit_success": "Saved tax rate type",
+            "error_loading": "Error loading tax rates :(",
+            "empty_list": "No tax rates found",
+            "empty_archive": "Tax rate archive is empty",
+            "add": "Add tax rate"
+        }
     },
     "general": {
-        "toast_server_error": "__STRING_NOT_TRANSLATED__",
-        "name": "__STRING_NOT_TRANSLATED__",
-        "submit": "__STRING_NOT_TRANSLATED__",
-        "cancel": "__STRING_NOT_TRANSLATED__",
-        "back": "__STRING_NOT_TRANSLATED__",
-        "loading_with_dots": "__STRING_NOT_TRANSLATED__",
-        "error_sad_smiley": "__STRING_NOT_TRANSLATED__",
-        "current": "__STRING_NOT_TRANSLATED__",
-        "archive": "__STRING_NOT_TRANSLATED__",
-        "unarchive_to_edit": "__STRING_NOT_TRANSLATED__",
-        "edit": "__STRING_NOT_TRANSLATED__",
-        "unarchived": "__STRING_NOT_TRANSLATED__",
-        "archived": "__STRING_NOT_TRANSLATED__",
-        "load_more": "__STRING_NOT_TRANSLATED__",
-        "loaded_all": "__STRING_NOT_TRANSLATED__",
-        "description": "__STRING_NOT_TRANSLATED__",
-        "price": "__STRING_NOT_TRANSLATED__",
-        "taxrate": "__STRING_NOT_TRANSLATED__",
-        "validity": "__STRING_NOT_TRANSLATED__",
-        "validity_unit": "__STRING_NOT_TRANSLATED__",
-        "unlimited": "__STRING_NOT_TRANSLATED__",
-        "classes": "__STRING_NOT_TRANSLATED__",
-        "membership": "__STRING_NOT_TRANSLATED__",
-        "membership_not_required": "__STRING_NOT_TRANSLATED__",
-        "quickStatsAmount": "__STRING_NOT_TRANSLATED__",
-        "glaccount": "__STRING_NOT_TRANSLATED__",
-        "costcenter": "__STRING_NOT_TRANSLATED__",
-        "groups": "__STRING_NOT_TRANSLATED__",
-        "public": "__STRING_NOT_TRANSLATED__",
-        "shop": "__STRING_NOT_TRANSLATED__",
-        "custom_file_input_inner_label": "__STRING_NOT_TRANSLATED__",
-        "custom_file_input_label": "__STRING_NOT_TRANSLATED__",
-        "yes": "__STRING_NOT_TRANSLATED__",
-        "no": "__STRING_NOT_TRANSLATED__",
-        "terms_and_conditions": "__STRING_NOT_TRANSLATED__"
+        "toast_server_error": "Uh oh... the server returned an error",
+        "name": "Name",
+        "submit": "Save",
+        "cancel": "Cancel",
+        "back": "Back",
+        "loading_with_dots": "Loading...",
+        "error_sad_smiley": "Error :(",
+        "current": "Current",
+        "archive": "Archive",
+        "unarchive_to_edit": "Unarchive to edit",
+        "edit": "Edit",
+        "unarchived": "Moved to current",
+        "archived": "Moved to archive",
+        "load_more": "Load more",
+        "loaded_all": "Displaying all items",
+        "description": "Description",
+        "price": "Price",
+        "taxrate": "Tax rate",
+        "validity": "Validity",
+        "validity_unit": "Validity in",
+        "unlimited": "Unlimited",
+        "classes": "Classes",
+        "membership": "Membership",
+        "membership_not_required": "Membership not required",
+        "quickStatsAmount": "Quick stats amount",
+        "glaccount": "General ledger account",
+        "costcenter": "Costcenter",
+        "groups": "Groups",
+        "public": "Public",
+        "shop": "Shop",
+        "custom_file_input_inner_label": "Choose file...",
+        "custom_file_input_label": "Select a file",
+        "yes": "Yes",
+        "no": "No",
+        "terms_and_conditions": "Terms and conditions",
+        "settings": "Settings"
     },
     "yup": {
-        "min_len_3": "__STRING_NOT_TRANSLATED__",
-        "field_required": "__STRING_NOT_TRANSLATED__",
-        "field_has_to_be_number": "__STRING_NOT_TRANSLATED__",
-        "positive_number_required": "__STRING_NOT_TRANSLATED__",
-        "url": "__STRING_NOT_TRANSLATED__"
+        "min_len_3": "Please input at least 3 characters",
+        "field_required": "This field is required",
+        "field_has_to_be_number": "Please input a number",
+        "positive_number_required": "Please input a number above 0",
+        "url": "Please input a valid url starting with http:// or https://"
     },
     "home": {
-        "page_header": "__STRING_NOT_TRANSLATED__",
-        "home": {
-            "title": "__STRING_NOT_TRANSLATED__"
-        }
+        "title": "Home"
     },
     "organization": {
         "classpasses": {
-            "title_add": "__STRING_NOT_TRANSLATED__",
-            "toast_add_success": "__STRING_NOT_TRANSLATED__",
-            "title_edit": "__STRING_NOT_TRANSLATED__",
-            "toast_edit_success": "__STRING_NOT_TRANSLATED__",
-            "title": "__STRING_NOT_TRANSLATED__",
-            "error_loading": "__STRING_NOT_TRANSLATED__",
-            "empty_list": "__STRING_NOT_TRANSLATED__",
-            "empty_archive": "__STRING_NOT_TRANSLATED__",
-            "add": "__STRING_NOT_TRANSLATED__"
+            "title_add": "Add class pass",
+            "toast_add_success": "Added class pass",
+            "title_edit": "Edit class pass",
+            "toast_edit_success": "Saved class pass",
+            "title": "Class passes",
+            "error_loading": "Error loading class passes :(",
+            "empty_list": "No class passes found",
+            "empty_archive": "Class pass archive is empty",
+            "add": "Add class pass"
         },
         "classpass": {
-            "public": "__STRING_NOT_TRANSLATED__",
-            "shop": "__STRING_NOT_TRANSLATED__"
+            "public": "This is a public pass",
+            "shop": "Show this pass in the shop"
         },
-        "page_title": "__STRING_NOT_TRANSLATED__",
         "classpass_groups": {
-            "title_add": "__STRING_NOT_TRANSLATED__",
-            "toast_add_success": "__STRING_NOT_TRANSLATED__",
-            "title_edit": "__STRING_NOT_TRANSLATED__",
-            "toast_edit_success": "__STRING_NOT_TRANSLATED__",
-            "title": "__STRING_NOT_TRANSLATED__",
-            "error_loading": "__STRING_NOT_TRANSLATED__",
-            "empty_list": "__STRING_NOT_TRANSLATED__",
-            "empty_archive": "__STRING_NOT_TRANSLATED__",
-            "add": "__STRING_NOT_TRANSLATED__"
+            "title_add": "Add class pass group",
+            "toast_add_success": "Added class pass group",
+            "title_edit": "Edit class pass group",
+            "toast_edit_success": "Saved class pass group",
+            "title": "Class pass groups",
+            "error_loading": "Error loading class pass groups :(",
+            "empty_list": "No class pass groups found",
+            "empty_archive": "Class pass groups archive is empty",
+            "add": "Add class pass group"
         },
         "classtypes": {
-            "title_add": "__STRING_NOT_TRANSLATED__",
-            "toast_add_success": "__STRING_NOT_TRANSLATED__",
-            "title_edit": "__STRING_NOT_TRANSLATED__",
-            "toast_edit_success": "__STRING_NOT_TRANSLATED__",
-            "toast_image_save_success": "__STRING_NOT_TRANSLATED__",
-            "edit_image": "__STRING_NOT_TRANSLATED__",
-            "title": "__STRING_NOT_TRANSLATED__",
-            "error_loading": "__STRING_NOT_TRANSLATED__",
-            "empty_list": "__STRING_NOT_TRANSLATED__",
-            "empty_archive": "__STRING_NOT_TRANSLATED__",
-            "image": "__STRING_NOT_TRANSLATED__",
-            "add": "__STRING_NOT_TRANSLATED__"
+            "title_add": "Add class type",
+            "toast_add_success": "Added class type",
+            "title_edit": "Edit class type",
+            "toast_edit_success": "Saved class type",
+            "toast_image_save_success": "Saved class type image",
+            "edit_image": "Edit class type image",
+            "title": "Class types",
+            "error_loading": "Error loading class types :(",
+            "empty_list": "No class types found",
+            "empty_archive": "Class types archive is empty",
+            "add": "Add class type"
         },
         "classtype": {
-            "public": "__STRING_NOT_TRANSLATED__",
-            "url_website": "__STRING_NOT_TRANSLATED__"
+            "public": "This is a public class type",
+            "url_website": "Link to description on website"
         },
         "discoveries": {
-            "title": "__STRING_NOT_TRANSLATED__",
-            "error_loading": "__STRING_NOT_TRANSLATED__",
-            "empty_list": "__STRING_NOT_TRANSLATED__",
-            "empty_archive": "__STRING_NOT_TRANSLATED__",
-            "add": "__STRING_NOT_TRANSLATED__",
-            "title_add": "__STRING_NOT_TRANSLATED__",
-            "toast_add_success": "__STRING_NOT_TRANSLATED__",
-            "title_edit": "__STRING_NOT_TRANSLATED__",
-            "toast_edit_success": "__STRING_NOT_TRANSLATED__"
+            "title": "Discovery",
+            "error_loading": "Error loading discovery types :(",
+            "empty_list": "No discovery types found",
+            "empty_archive": "Discovery types archive is empty",
+            "add": "Add discovery type",
+            "title_add": "Add discovery type",
+            "toast_add_success": "Saved discovery type",
+            "title_edit": "Edit discovery type",
+            "toast_edit_success": "Saved discovery type"
         },
-        "page_header": "__STRING_NOT_TRANSLATED__",
         "locations": {
-            "title": "__STRING_NOT_TRANSLATED__",
-            "title_add": "__STRING_NOT_TRANSLATED__",
-            "toast_add_success": "__STRING_NOT_TRANSLATED__",
-            "title_edit": "__STRING_NOT_TRANSLATED__",
-            "toast_edit_success": "__STRING_NOT_TRANSLATED__",
-            "confirm_archive": "__STRING_NOT_TRANSLATED__",
-            "error_loading": "__STRING_NOT_TRANSLATED__",
-            "empty_list": "__STRING_NOT_TRANSLATED__",
-            "empty_archive": "__STRING_NOT_TRANSLATED__",
-            "add": "__STRING_NOT_TRANSLATED__"
+            "title": "Locations",
+            "title_add": "Add location",
+            "toast_add_success": "Added location",
+            "title_edit": "Edit location",
+            "toast_edit_success": "Saved location",
+            "error_loading": "Error loading locations :(",
+            "empty_list": "No locations found",
+            "empty_archive": "Locations archive is empty",
+            "add": "Add location"
         },
         "memberships": {
-            "title": "__STRING_NOT_TRANSLATED__",
-            "title_add": "__STRING_NOT_TRANSLATED__",
-            "toast_add_success": "__STRING_NOT_TRANSLATED__",
-            "title_edit": "__STRING_NOT_TRANSLATED__",
-            "toast_edit_success": "__STRING_NOT_TRANSLATED__",
-            "error_loading": "__STRING_NOT_TRANSLATED__",
-            "empty_list": "__STRING_NOT_TRANSLATED__",
-            "empty_archive": "__STRING_NOT_TRANSLATED__",
-            "add": "__STRING_NOT_TRANSLATED__"
+            "title": "Memberships",
+            "title_add": "Add membership",
+            "toast_add_success": "Added membership",
+            "title_edit": "Edit membership",
+            "toast_edit_success": "Saved memberhsip",
+            "error_loading": "Error loading memberships :(",
+            "empty_list": "No memberships found",
+            "empty_archive": "Memberships archive is empty",
+            "add": "Add membership"
         },
         "location": {
-            "public": "__STRING_NOT_TRANSLATED__"
+            "public": "This is a public location"
         },
         "membership": {
-            "public": "__STRING_NOT_TRANSLATED__",
-            "shop": "__STRING_NOT_TRANSLATED__"
-        }
+            "public": "This is a public membership",
+            "shop": "Show this membership in the shop"
+        },
+        "title": "organization"
     },
     "validity": {
-        "days": "__STRING_NOT_TRANSLATED__",
-        "weeks": "__STRING_NOT_TRANSLATED__",
-        "months": "__STRING_NOT_TRANSLATED__",
-        "years": "__STRING_NOT_TRANSLATED__"
+        "days": "Days",
+        "weeks": "Weeks",
+        "months": "Months",
+        "years": "Years"
     },
-    "edit": "__STRING_NOT_TRANSLATED__",
-    "please_confirm": "__STRING_NOT_TRANSLATED__",
-    "yes": "__STRING_NOT_TRANSLATED__",
-    "no": "__STRING_NOT_TRANSLATED__",
-    "main_menu": {
-        "home": "__STRING_NOT_TRANSLATED__",
-        "finance": "__STRING_NOT_TRANSLATED__",
-        "organization": "__STRING_NOT_TRANSLATED__"
-    },
-    "loading_with_dots": "__STRING_NOT_TRANSLATED__",
     "system": {
         "user": {
-            "error_loading": "__STRING_NOT_TRANSLATED__"
+            "error_loading": "Error loading user :("
         }
-    },
-    "settings": "__STRING_NOT_TRANSLATED__"
+    }
 }

@@ -48,7 +48,7 @@ const OrganizationMemberships = ({ t, history, archived=false }) => (
   <SiteWrapper>
     <div className="my-3 my-md-5">
       <Container>
-        <Page.Header title={t("organization.page_title")} />
+        <Page.Header title={t("organization.title")} />
         <Grid.Row>
           <Grid.Col md={9}>
             <Query query={GET_MEMBERSHIPS_QUERY} variables={{ archived }}>

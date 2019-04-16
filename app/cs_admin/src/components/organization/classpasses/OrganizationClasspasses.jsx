@@ -49,7 +49,7 @@ const OrganizationClasspasses = ({ t, history, archived=false }) => (
   <SiteWrapper>
     <div className="my-3 my-md-5">
       <Container>
-        <Page.Header title={t("organization.page_title")} />
+        <Page.Header title={t("organization.title")} />
         <Grid.Row>
           <Grid.Col md={9}>
             <Query query={GET_CLASSPASSES_QUERY} variables={{ archived }}>
@@ -173,7 +173,7 @@ const OrganizationClasspasses = ({ t, history, archived=false }) => (
                                       <Button className='btn-sm' 
                                               onClick={() => history.push("/organization/classpasses/edit/" + node.id)}
                                               color="secondary">
-                                        {t('edit')}
+                                        {t('general.edit')}
                                       </Button>
                                     }
                                   </Table.Col>

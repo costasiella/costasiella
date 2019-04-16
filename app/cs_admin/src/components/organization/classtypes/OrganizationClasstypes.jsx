@@ -148,7 +148,7 @@ const OrganizationClasstypes = ({ t, history, archived=false }) => (
                                         <Button className='btn-sm' 
                                                 onClick={() => history.push("/organization/classtypes/edit_image/" + node.id)}
                                                 color="secondary">
-                                          {t('organization.classtypes.image')}
+                                          {t('organization.classtypes.edit_image')}
                                         </Button>
                                       </div>
                                     }

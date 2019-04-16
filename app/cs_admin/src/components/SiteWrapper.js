@@ -169,7 +169,7 @@ const getNavBarItems = (t, user) => {
   let permissions = allPermissions(user)
 
   items.push({
-    value: t("main_menu.home"),
+    value: t("home.title"),
     to: "/",
     icon: "home",
     LinkComponent: withRouter(NavLink),
@@ -182,7 +182,7 @@ const getNavBarItems = (t, user) => {
     (check_permission(permissions, 'view', 'financetaxrate')) 
   ){
     items.push({
-      value: t("main_menu.finance"),
+      value: t("finance.title"),
       to: "/finance",
       icon: "dollar-sign",
       LinkComponent: withRouter(NavLink),
@@ -197,7 +197,7 @@ const getNavBarItems = (t, user) => {
     (check_permission(permissions, 'view', 'organizationmembership')) 
    ){
   items.push({
-    value: t("main_menu.organization"),
+    value: t("organization.title"),
     to: "/organization",
     icon: "feather",
     LinkComponent: withRouter(NavLink),
@@ -216,7 +216,7 @@ class SiteWrapper extends React.Component<Props, State> {
     return (
       <Query query={GET_USER} >
         {({ loading, error, data }) => {
-          if (loading) return <p>{this.props.t('loading_with_dots')}</p>;
+          if (loading) return <p>{this.props.t('general.loading_with_dots')}</p>;
           if (error) return <p>{this.props.t('system.user.error_loading')}</p>; 
           
           console.log('user data in site wrapper')
@@ -238,7 +238,7 @@ class SiteWrapper extends React.Component<Props, State> {
                       RootComponent="a"
                       color="primary"
                     >
-                      {this.props.t('settings')}
+                      {this.props.t('general.settings')}
                     </Button>
                   </Nav.Item>
                 ),
