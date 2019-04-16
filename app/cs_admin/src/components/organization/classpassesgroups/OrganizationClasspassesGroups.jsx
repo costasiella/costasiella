@@ -27,14 +27,14 @@ import { toast } from 'react-toastify'
 
 import ContentCard from "../../general/ContentCard"
 import CardHeaderSeparator from "../../general/CardHeaderSeparator"
-import SchoolMenu from "../SchoolMenu"
+import OrganizationMenu from "../OrganizationMenu"
 
 import { GET_CLASSPASS_GROUPS_QUERY } from "./queries"
 
 const ARCHIVE_CLASSPASS_GROUP = gql`
-  mutation ArchiveClasspassGroup($input: ArchiveSchoolClasspassGroupInput!) {
-    archiveSchoolClasspassGroup(input: $input) {
-      schoolClasspassGroup {
+  mutation ArchiveClasspassGroup($input: ArchiveOrganizationClasspassGroupInput!) {
+    archiveOrganizationClasspassGroup(input: $input) {
+      organizationClasspassGroup {
         id
         archived
       }
@@ -43,18 +43,18 @@ const ARCHIVE_CLASSPASS_GROUP = gql`
 `
 
 
-const SchoolClasspassesGroups = ({ t, history, archived=false }) => (
+const OrganizationClasspassesGroups = ({ t, history, archived=false }) => (
   <SiteWrapper>
     <div className="my-3 my-md-5">
       <Container>
-        <Page.Header title={t("school.page_title")} />
+        <Page.Header title={t("organization.page_title")} />
         <Grid.Row>
           <Grid.Col md={9}>
             <Query query={GET_CLASSPASS_GROUPS_QUERY} variables={{ archived }}>
-             {({ loading, error, data: {schoolClasspassGroups: classpass_groups}, refetch, fetchMore }) => {
+             {({ loading, error, data: {organizationClasspassGroups: classpass_groups}, refetch, fetchMore }) => {
                 // Loading
                 if (loading) return (
-                  <ContentCard cardTitle={t('school.classpass_groups.title')}>
+                  <ContentCard cardTitle={t('organization.classpass_groups.title')}>
                     <Dimmer active={true}
                             loadder={true}>
                     </Dimmer>
@@ -62,18 +62,18 @@ const SchoolClasspassesGroups = ({ t, history, archived=false }) => (
                 )
                 // Error
                 if (error) return (
-                  <ContentCard cardTitle={t('school.classpass_groups.title')}>
-                    <p>{t('school.classpass_groups.error_loading')}</p>
+                  <ContentCard cardTitle={t('organization.classpass_groups.title')}>
+                    <p>{t('organization.classpass_groups.error_loading')}</p>
                   </ContentCard>
                 )
                 const headerOptions = <Card.Options>
-                  <Link to="/school/classpasses">
+                  <Link to="/organization/classpasses">
                     <Button color='secondary'  
                             size="sm"
                             icon="credit-card"
                             // onClick={() => {archived=false; refetch({archived});}}>
                             >
-                      {t('school.classpasses.title')}
+                      {t('organization.classpasses.title')}
                     </Button>
                   </Link>
                   <CardHeaderSeparator />
@@ -92,17 +92,17 @@ const SchoolClasspassesGroups = ({ t, history, archived=false }) => (
                 
                 // Empty list
                 if (!classpass_groups.edges.length) { return (
-                  <ContentCard cardTitle={t('school.classpass_groups.title')}
+                  <ContentCard cardTitle={t('organization.classpass_groups.title')}
                                headerContent={headerOptions}>
                     <p>
-                    {(!archived) ? t('school.classpass_groups.empty_list') : t("school.classpass_groups.empty_archive")}
+                    {(!archived) ? t('organization.classpass_groups.empty_list') : t("organization.classpass_groups.empty_archive")}
                     </p>
                    
                   </ContentCard>
                 )} else {   
                 // Life's good! :)
                 return (
-                  <ContentCard cardTitle={t('school.classpass_groups.title')}
+                  <ContentCard cardTitle={t('organization.classpass_groups.title')}
                                headerContent={headerOptions}
                                pageInfo={classpass_groups.pageInfo}
                                onLoadMore={() => {
@@ -111,16 +111,16 @@ const SchoolClasspassesGroups = ({ t, history, archived=false }) => (
                                     after: classpass_groups.pageInfo.endCursor
                                   },
                                   updateQuery: (previousResult, { fetchMoreResult }) => {
-                                    const newEdges = fetchMoreResult.schoolClasspassGroups.edges
-                                    const pageInfo = fetchMoreResult.schoolClasspassGroups.pageInfo
+                                    const newEdges = fetchMoreResult.organizationClasspassGroups.edges
+                                    const pageInfo = fetchMoreResult.organizationClasspassGroups.pageInfo
 
                                     return newEdges.length
                                       ? {
                                           // Put the new classpass_groups at the end of the list and update `pageInfo`
                                           // so we have the new `endCursor` and `hasNextPage` values
-                                          schoolClasspassGroups: {
-                                            __typename: previousResult.schoolClasspassGroups.__typename,
-                                            edges: [ ...previousResult.schoolClasspassGroups.edges, ...newEdges ],
+                                          organizationClasspassGroups: {
+                                            __typename: previousResult.organizationClasspassGroups.__typename,
+                                            edges: [ ...previousResult.organizationClasspassGroups.edges, ...newEdges ],
                                             pageInfo
                                           }
                                         }
@@ -144,7 +144,7 @@ const SchoolClasspassesGroups = ({ t, history, archived=false }) => (
                                     {(node.archived) ? 
                                       <span className='text-muted'>{t('unarchive_to_edit')}</span> :
                                       <Button className='btn-sm' 
-                                              onClick={() => history.push("/school/classpasses/groups/edit/" + node.id)}
+                                              onClick={() => history.push("/organization/classpasses/groups/edit/" + node.id)}
                                               color="secondary">
                                         {t('edit')}
                                       </Button>
@@ -195,13 +195,13 @@ const SchoolClasspassesGroups = ({ t, history, archived=false }) => (
           </Grid.Col>
           <Grid.Col md={3}>
             <HasPermissionWrapper permission="add"
-                                  resource="schoolclasspassgroup">
+                                  resource="organizationclasspassgroup">
               <Button color="primary btn-block mb-6"
-                      onClick={() => history.push("/school/classpasses/groups/add")}>
-                <Icon prefix="fe" name="plus-circle" /> {t('school.classpass_groups.add')}
+                      onClick={() => history.push("/organization/classpasses/groups/add")}>
+                <Icon prefix="fe" name="plus-circle" /> {t('organization.classpass_groups.add')}
               </Button>
             </HasPermissionWrapper>
-            <SchoolMenu active_link=''/>
+            <OrganizationMenu active_link=''/>
           </Grid.Col>
         </Grid.Row>
       </Container>
@@ -209,4 +209,4 @@ const SchoolClasspassesGroups = ({ t, history, archived=false }) => (
   </SiteWrapper>
 )
 
-export default withTranslation()(withRouter(SchoolClasspassesGroups))
+export default withTranslation()(withRouter(OrganizationClasspassesGroups))

@@ -1,8 +1,8 @@
 import gql from "graphql-tag"
 
 export const GET_CLASSPASS_GROUPS_QUERY = gql`
-  query SchoolClasspassGroups($after: String, $before: String, $archived: Boolean) {
-    schoolClasspassGroups(first: 15, before: $before, after: $after, archived: $archived) {
+  query OrganizationClasspassGroups($after: String, $before: String, $archived: Boolean) {
+    organizationClasspassGroups(first: 15, before: $before, after: $after, archived: $archived) {
       pageInfo {
         startCursor
         endCursor
@@ -21,8 +21,8 @@ export const GET_CLASSPASS_GROUPS_QUERY = gql`
 `
 
 export const GET_CLASSPASS_GROUP_QUERY = gql`
-  query SchoolClasspassGroup($id: ID!) {
-    schoolClasspassGroup(id:$id) {
+  query OrganizationClasspassGroup($id: ID!) {
+    organizationClasspassGroup(id:$id) {
       id
       name
       archived

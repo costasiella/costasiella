@@ -25,13 +25,13 @@ import {
 import SiteWrapper from "../../SiteWrapper"
 import HasPermissionWrapper from "../../HasPermissionWrapper"
 
-import SchoolMenu from "../SchoolMenu"
+import OrganizationMenu from "../OrganizationMenu"
 
 
 const UPDATE_CLASSPASS_GROUP = gql`
-  mutation UpdateSchoolClasspassGroup($input: UpdateSchoolClasspassGroupInput!) {
-    updateSchoolClasspassGroup(input: $input) {
-      schoolClasspassGroup {
+  mutation UpdateOrganizationClasspassGroup($input: UpdateOrganizationClasspassGroupInput!) {
+    updateOrganizationClasspassGroup(input: $input) {
+      organizationClasspassGroup {
         id
         name
       }
@@ -40,10 +40,10 @@ const UPDATE_CLASSPASS_GROUP = gql`
 `
 
 
-class SchoolClasspassGroupEdit extends Component {
+class OrganizationClasspassGroupEdit extends Component {
   constructor(props) {
     super(props)
-    console.log("School classpassgroup edit props:")
+    console.log("Organization classpassgroup edit props:")
     console.log(props)
   }
 
@@ -52,18 +52,18 @@ class SchoolClasspassGroupEdit extends Component {
     const match = this.props.match
     const history = this.props.history
     const id = match.params.id
-    const return_url = "/school/classpasses/groups"
+    const return_url = "/organization/classpasses/groups"
 
     return (
       <SiteWrapper>
         <div className="my-3 my-md-5">
           <Container>
-            <Page.Header title="School" />
+            <Page.Header title="Organization" />
             <Grid.Row>
               <Grid.Col md={9}>
               <Card>
                 <Card.Header>
-                  <Card.Title>{t('school.classpass_groups.title_edit')}</Card.Title>
+                  <Card.Title>{t('organization.classpass_groups.title_edit')}</Card.Title>
                   {console.log(match.params.id)}
                 </Card.Header>
                 <Query query={GET_CLASSPASS_GROUP_QUERY} variables={{ id }} >
@@ -76,7 +76,7 @@ class SchoolClasspassGroupEdit extends Component {
                       return <p>{t('error_sad_smiley')}</p>
                     }
                     
-                    const initialData = data.schoolClasspassGroup;
+                    const initialData = data.organizationClasspassGroup;
                     console.log('query data')
                     console.log(data)
 
@@ -103,7 +103,7 @@ class SchoolClasspassGroupEdit extends Component {
                                   ]})
                                   .then(({ data }) => {
                                       console.log('got data', data)
-                                      toast.success((t('school.classpass_groups.toast_edit_success')), {
+                                      toast.success((t('organization.classpass_groups.toast_edit_success')), {
                                           position: toast.POSITION.BOTTOM_RIGHT
                                         })
                                     }).catch((error) => {
@@ -118,7 +118,7 @@ class SchoolClasspassGroupEdit extends Component {
                               {({ isSubmitting, errors, values }) => (
                                   <FoForm>
                                       <Card.Body>    
-                                          <Form.Group label={t('school.classpass.name')} >
+                                          <Form.Group label={t('organization.classpass.name')} >
                                             <Field type="text" 
                                                   name="name" 
                                                   className={(errors.name) ? "form-control is-invalid" : "form-control"} 
@@ -154,13 +154,13 @@ class SchoolClasspassGroupEdit extends Component {
               </Grid.Col>
               <Grid.Col md={3}>
                 <HasPermissionWrapper permission="change"
-                                      resource="schoolclasspassgroup">
+                                      resource="organizationclasspassgroup">
                   <Button color="primary btn-block mb-6"
                           onClick={() => history.push(return_url)}>
                     <Icon prefix="fe" name="chevrons-left" /> {t('back')}
                   </Button>
                 </HasPermissionWrapper>
-                <SchoolMenu active_link=''/>
+                <OrganizationMenu active_link=''/>
               </Grid.Col>
             </Grid.Row>
           </Container>
@@ -170,4 +170,4 @@ class SchoolClasspassGroupEdit extends Component {
   }
 
 
-export default withTranslation()(withRouter(SchoolClasspassGroupEdit))
+export default withTranslation()(withRouter(OrganizationClasspassGroupEdit))
