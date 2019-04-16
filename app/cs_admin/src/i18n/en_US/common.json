@@ -52,7 +52,8 @@
             "empty_list": "No ways of discovery found, click the Add button to add the first",
             "empty_archive": "No ways of discovery have been archived yet.",
             "title_edit": "Edit discovery",
-            "toast_edit_success": "Saved discovery"
+            "toast_edit_success": "Saved discovery",
+            "name": "Name"
         },
         "page_title": "School",
         "memberships": {
@@ -99,12 +100,23 @@
             "taxrate": "Tax rate",
             "validity": "Validity",
             "validity_unit": "Validity in",
-            "unlimited": "Unlimited",
+            "unlimited": "Unlimited classes",
             "classes": "Classes",
             "membership": "Membership",
             "quickStatsAmount": "Quick stats amount",
             "glaccount": "General Ledger account",
             "costcenter": "Cost center"
+        },
+        "classpass_groups": {
+            "title_add": "Add class passes group",
+            "toast_add_success": "Added class passes group",
+            "title_edit": "Edit class passes group",
+            "toast_edit_success": "Saved class passes group",
+            "title": "Class passes groups",
+            "error_loading": "Error loading class passes groups :(",
+            "empty_list": "No groups have been created yet, click the Add button to add a group",
+            "empty_archive": "No groups have been archived yet",
+            "add": "Add class passes group"
         }
     },
     "name": "Name",
@@ -208,6 +220,7 @@
     "general": {
         "classes": "Classes",
         "unlimited": "Unlimited",
-        "membership_not_required": "Membership not required"
+        "membership_not_required": "Membership not required",
+        "groups": "Groups"
     }
 }

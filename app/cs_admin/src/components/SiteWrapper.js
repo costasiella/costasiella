@@ -177,8 +177,13 @@ const getNavBarItems = (user) => {
   })
 
 
-  if ((check_permission(permissions, 'view', 'schoollocation')) || 
-      (check_permission(permissions, 'view', 'schoolclasstype'))) {
+  if (
+      (check_permission(permissions, 'view', 'schoolclasspass')) || 
+      (check_permission(permissions, 'view', 'schoolclasstype')) ||
+      (check_permission(permissions, 'view', 'schooldiscovery')) ||
+      (check_permission(permissions, 'view', 'schoollocation')) ||
+      (check_permission(permissions, 'view', 'schoolmembership')) 
+     ){
     items.push({
       value: "School",
       to: "/school",
@@ -187,14 +192,18 @@ const getNavBarItems = (user) => {
     })
   }
 
-  //TODO   add permissions check for finance
-  items.push({
-    value: "Finance",
-    to: "/finance",
-    icon: "dollar-sign",
-    LinkComponent: withRouter(NavLink),
-  })
-
+  if (
+    (check_permission(permissions, 'view', 'financecostcenter')) ||
+    (check_permission(permissions, 'view', 'financeglaccount')) ||
+    (check_permission(permissions, 'view', 'financetaxrate')) 
+  ){
+    items.push({
+      value: "Finance",
+      to: "/finance",
+      icon: "dollar-sign",
+      LinkComponent: withRouter(NavLink),
+    })
+  }
 
   return items
 

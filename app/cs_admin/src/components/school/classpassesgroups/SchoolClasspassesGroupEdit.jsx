@@ -8,8 +8,8 @@ import { withRouter } from "react-router"
 import { Formik, Form as FoForm, Field, ErrorMessage } from 'formik'
 import { toast } from 'react-toastify'
 
-import { GET_DISCOVERIES_QUERY, GET_DISCOVERY_QUERY } from './queries'
-import { DISCOVERY_SCHEMA } from './yupSchema'
+import { GET_CLASSPASS_GROUPS_QUERY, GET_CLASSPASS_GROUP_QUERY } from './queries'
+import { CLASSPASS_GROUP_SCHEMA } from './yupSchema'
 
 
 
@@ -28,10 +28,10 @@ import HasPermissionWrapper from "../../HasPermissionWrapper"
 import SchoolMenu from "../SchoolMenu"
 
 
-const UPDATE_DISCOVERY = gql`
-  mutation UpdateSchoolDiscovery($input: UpdateSchoolDiscoveryInput!) {
-    updateSchoolDiscovery(input: $input) {
-      schoolDiscovery {
+const UPDATE_CLASSPASS_GROUP = gql`
+  mutation UpdateSchoolClasspassGroup($input: UpdateSchoolClasspassGroupInput!) {
+    updateSchoolClasspassGroup(input: $input) {
+      schoolClasspassGroup {
         id
         name
       }
@@ -40,10 +40,10 @@ const UPDATE_DISCOVERY = gql`
 `
 
 
-class SchoolDiscoveryEdit extends Component {
+class SchoolClasspassGroupEdit extends Component {
   constructor(props) {
     super(props)
-    console.log("School discovery edit props:")
+    console.log("School classpassgroup edit props:")
     console.log(props)
   }
 
@@ -52,7 +52,7 @@ class SchoolDiscoveryEdit extends Component {
     const match = this.props.match
     const history = this.props.history
     const id = match.params.id
-    const return_url = "/school/discoveries"
+    const return_url = "/school/classpasses/groups"
 
     return (
       <SiteWrapper>
@@ -63,10 +63,10 @@ class SchoolDiscoveryEdit extends Component {
               <Grid.Col md={9}>
               <Card>
                 <Card.Header>
-                  <Card.Title>{t('school.discoveries.title_edit')}</Card.Title>
+                  <Card.Title>{t('school.classpass_groups.title_edit')}</Card.Title>
                   {console.log(match.params.id)}
                 </Card.Header>
-                <Query query={GET_DISCOVERY_QUERY} variables={{ id }} >
+                <Query query={GET_CLASSPASS_GROUP_QUERY} variables={{ id }} >
                 {({ loading, error, data, refetch }) => {
                     // Loading
                     if (loading) return <p>{t('loading_with_dots')}</p>
@@ -76,34 +76,34 @@ class SchoolDiscoveryEdit extends Component {
                       return <p>{t('error_sad_smiley')}</p>
                     }
                     
-                    const initialData = data.schoolDiscovery;
+                    const initialData = data.schoolClasspassGroup;
                     console.log('query data')
                     console.log(data)
 
                     return (
                       
-                      <Mutation mutation={UPDATE_DISCOVERY} onCompleted={() => history.push(return_url)}> 
-                      {(updateDiscovery, { data }) => (
+                      <Mutation mutation={UPDATE_CLASSPASS_GROUP} onCompleted={() => history.push(return_url)}> 
+                      {(updateClasspassGroup, { data }) => (
                           <Formik
                               initialValues={{ 
                                 name: initialData.name, 
                               }}
-                              validationSchema={DISCOVERY_SCHEMA}
+                              validationSchema={CLASSPASS_GROUP_SCHEMA}
                               onSubmit={(values, { setSubmitting }) => {
                                   console.log('submit values:')
                                   console.log(values)
 
-                                  updateDiscovery({ variables: {
+                                  updateClasspassGroup({ variables: {
                                     input: {
                                       id: match.params.id,
                                       name: values.name,
                                     }
                                   }, refetchQueries: [
-                                      {query: GET_DISCOVERIES_QUERY, variables: {"archived": false }}
+                                      {query: GET_CLASSPASS_GROUPS_QUERY, variables: {"archived": false }}
                                   ]})
                                   .then(({ data }) => {
                                       console.log('got data', data)
-                                      toast.success((t('school.discoveries.toast_edit_success')), {
+                                      toast.success((t('school.classpass_groups.toast_edit_success')), {
                                           position: toast.POSITION.BOTTOM_RIGHT
                                         })
                                     }).catch((error) => {
@@ -118,7 +118,7 @@ class SchoolDiscoveryEdit extends Component {
                               {({ isSubmitting, errors, values }) => (
                                   <FoForm>
                                       <Card.Body>    
-                                          <Form.Group label={t('school.discoveries.name')} >
+                                          <Form.Group label={t('school.classpass.name')} >
                                             <Field type="text" 
                                                   name="name" 
                                                   className={(errors.name) ? "form-control is-invalid" : "form-control"} 
@@ -154,13 +154,13 @@ class SchoolDiscoveryEdit extends Component {
               </Grid.Col>
               <Grid.Col md={3}>
                 <HasPermissionWrapper permission="change"
-                                      resource="schooldiscovery">
+                                      resource="schoolclasspassgroup">
                   <Button color="primary btn-block mb-6"
                           onClick={() => history.push(return_url)}>
                     <Icon prefix="fe" name="chevrons-left" /> {t('back')}
                   </Button>
                 </HasPermissionWrapper>
-                <SchoolMenu active_link='schooldiscoveries'/>
+                <SchoolMenu active_link=''/>
               </Grid.Col>
             </Grid.Row>
           </Container>
@@ -170,4 +170,4 @@ class SchoolDiscoveryEdit extends Component {
   }
 
 
-export default withTranslation()(withRouter(SchoolDiscoveryEdit))
+export default withTranslation()(withRouter(SchoolClasspassGroupEdit))
