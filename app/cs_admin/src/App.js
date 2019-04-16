@@ -26,25 +26,22 @@ import OrganizationHome from './components/organization/home/OrganizationHome'
 import OrganizationClasspasses from './components/organization/classpasses/OrganizationClasspasses'
 import OrganizationClasspassAdd from './components/organization/classpasses/OrganizationClasspassAdd'
 import OrganizationClasspassEdit from './components/organization/classpasses/OrganizationClasspassEdit'
-// import OrganizationClasspasses from './components/organization/classpasses/OrganizationClasspasses'
-// import OrganizationClasspassAdd from './components/organization/classpasses/OrganizationClasspassAdd'
-// import OrganizationClasspassEdit from './components/organization/classpasses/OrganizationClasspassEdit'
-// import OrganizationClasspassesGroups from './components/organization/classpassesgroups/OrganizationClasspassesGroups'
-// import OrganizationClasspassesGroupAdd from './components/organization/classpassesgroups/OrganizationClasspassesGroupAdd'
-// import OrganizationClasspassesGroupEdit from './components/organization/classpassesgroups/OrganizationClasspassesGroupEdit'
-// import OrganizationClasstypes from './components/organization/classtypes/OrganizationClasstypes'
-// import OrganizationClasstypeAdd from './components/organization/classtypes/OrganizationClasstypeAdd'
-// import OrganizationClasstypeEdit from './components/organization/classtypes/OrganizationClasstypeEdit'
-// import OrganizationClasstypeEditImage from './components/organization/classtypes/OrganizationClasstypeEditImage'
-// import OrganizationDiscoveries from './components/organization/discovery/OrganizationDiscoveries'
-// import OrganizationDiscoveryAdd from './components/organization/discovery/OrganizationDiscoveryAdd'
-// import OrganizationDiscoveryEdit from './components/organization/discovery/OrganizationDiscoveryEdit'
-// import OrganizationLocations from './components/organization/locations/OrganizationLocations'
-// import OrganizationLocationAdd from './components/organization/locations/OrganizationLocationAdd'
-// import OrganizationLocationEdit from './components/organization/locations/OrganizationLocationEdit'
-// import OrganizationMemberships from './components/organization/memberships/OrganizationMemberships'
-// import OrganizationMembershipAdd from './components/organization/memberships/OrganizationMembershipAdd'
-// import OrganizationMembershipEdit from './components/organization/memberships/OrganizationMembershipEdit'
+import OrganizationClasspassesGroups from './components/organization/classpassesgroups/OrganizationClasspassesGroups'
+import OrganizationClasspassesGroupAdd from './components/organization/classpassesgroups/OrganizationClasspassesGroupAdd'
+import OrganizationClasspassesGroupEdit from './components/organization/classpassesgroups/OrganizationClasspassesGroupEdit'
+import OrganizationClasstypes from './components/organization/classtypes/OrganizationClasstypes'
+import OrganizationClasstypeAdd from './components/organization/classtypes/OrganizationClasstypeAdd'
+import OrganizationClasstypeEdit from './components/organization/classtypes/OrganizationClasstypeEdit'
+import OrganizationClasstypeEditImage from './components/organization/classtypes/OrganizationClasstypeEditImage'
+import OrganizationDiscoveries from './components/organization/discovery/OrganizationDiscoveries'
+import OrganizationDiscoveryAdd from './components/organization/discovery/OrganizationDiscoveryAdd'
+import OrganizationDiscoveryEdit from './components/organization/discovery/OrganizationDiscoveryEdit'
+import OrganizationLocations from './components/organization/locations/OrganizationLocations'
+import OrganizationLocationAdd from './components/organization/locations/OrganizationLocationAdd'
+import OrganizationLocationEdit from './components/organization/locations/OrganizationLocationEdit'
+import OrganizationMemberships from './components/organization/memberships/OrganizationMemberships'
+import OrganizationMembershipAdd from './components/organization/memberships/OrganizationMembershipAdd'
+import OrganizationMembershipEdit from './components/organization/memberships/OrganizationMembershipEdit'
 
 import Error404 from "./components/Error404"
 
@@ -111,10 +108,8 @@ class App extends Component {
             <Route exact path="/organization" component={OrganizationHome} />
             <Route exact path="/organization/classpasses" component={OrganizationClasspasses} />
             <Route exact path="/organization/classpasses/add" component={OrganizationClasspassAdd} />
-            <Route exact path="/organization/classpasses/edit/:id" component={OrganizationClasspassEdit} />
-
-    
-            {/* <Route exact path="/organization/classpasses/groups" component={OrganizationClasspassesGroups} />
+            <Route exact path="/organization/classpasses/edit/:id" component={OrganizationClasspassEdit} />    
+            <Route exact path="/organization/classpasses/groups" component={OrganizationClasspassesGroups} />
             <Route exact path="/organization/classpasses/groups/add" component={OrganizationClasspassesGroupAdd} />
             <Route exact path="/organization/classpasses/groups/edit/:id" component={OrganizationClasspassesGroupEdit} />
             <Route exact path="/organization/classtypes" component={OrganizationClasstypes} />
@@ -129,7 +124,7 @@ class App extends Component {
             <Route exact path="/organization/locations/edit/:id" component={OrganizationLocationEdit} />
             <Route exact path="/organization/memberships" component={OrganizationMemberships} />
             <Route exact path="/organization/memberships/add" component={OrganizationMembershipAdd} />
-            <Route exact path="/organization/memberships/edit/:id" component={OrganizationMembershipEdit} />  */}
+            <Route exact path="/organization/memberships/edit/:id" component={OrganizationMembershipEdit} /> 
 
             <Route component={Error404} />
           </Switch>
