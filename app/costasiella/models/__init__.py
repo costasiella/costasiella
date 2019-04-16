@@ -4,12 +4,12 @@ from .finance_costcenter import FinanceCostCenter
 from .finance_glaccount import FinanceGLAccount
 from .finance_taxrate import FinanceTaxRate
 
-from .school_classpass import SchoolClasspass
-from .school_classpass_group import SchoolClasspassGroup
-from .school_classpass_group_classpass import SchoolClasspassGroupClasspass
-from .school_classtype import SchoolClasstype
-from .school_discovery import SchoolDiscovery
-from .school_location import SchoolLocation
-from .school_membership import SchoolMembership
+from .organization_classpass import OrganizationClasspass
+from .organization_classpass_group import OrganizationClasspassGroup
+from .organization_classpass_group_classpass import OrganizationClasspassGroupClasspass
+from .organization_classtype import OrganizationClasstype
+from .organization_discovery import OrganizationDiscovery
+from .organization_location import OrganizationLocation
+from .organization_membership import OrganizationMembership
 
 
