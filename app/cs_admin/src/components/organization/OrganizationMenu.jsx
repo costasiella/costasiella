@@ -32,7 +32,7 @@ const OrganizationMenu = ({ t, active_link }) => (
             icon="home"
             active={locations_active}
             >
-            {t('organization.menu.locations')}
+            {t('organization.locations.title')}
         </List.GroupItem>
         <List.GroupItem
             key={v4()}
@@ -41,7 +41,7 @@ const OrganizationMenu = ({ t, active_link }) => (
             icon="book-open"
             active={classtypes_active}
             >
-            {t('organization.menu.classtypes')}
+            {t('organization.classtypes.title')}
         </List.GroupItem>
         <List.GroupItem
             key={v4()}
@@ -50,7 +50,7 @@ const OrganizationMenu = ({ t, active_link }) => (
             icon="compass"
             active={discoveries_active}
             >
-            {t('organization.menu.discoveries')}
+            {t('organization.discoveries.title')}
         </List.GroupItem>
         <List.GroupItem
             key={v4()}
@@ -59,7 +59,7 @@ const OrganizationMenu = ({ t, active_link }) => (
             icon="clipboard"
             active={memberships_active}
             >
-            {t('organization.menu.memberships')}
+            {t('organization.memberships.title')}
         </List.GroupItem>
         <List.GroupItem
             key={v4()}
@@ -68,7 +68,7 @@ const OrganizationMenu = ({ t, active_link }) => (
             icon="credit-card"
             active={classpasses_active}
             >
-            {t('organization.menu.classpasses')}
+            {t('organization.classpasses.title')}
         </List.GroupItem>
         {/* <HasPermissionWrapper 
             permission="view"
