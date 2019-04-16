@@ -25,14 +25,14 @@ import HasPermissionWrapper from "../../HasPermissionWrapper"
 import { toast } from 'react-toastify'
 
 import ContentCard from "../../general/ContentCard"
-import SchoolMenu from "../SchoolMenu"
+import OrganizationMenu from "../OrganizationMenu"
 
 import { GET_DISCOVERIES_QUERY } from "./queries"
 
 const ARCHIVE_DISCOVERY = gql`
-  mutation ArchiveSchoolDiscovery($input: ArchiveSchoolDiscoveryInput!) {
-    archiveSchoolDiscovery(input: $input) {
-      schoolDiscovery {
+  mutation ArchiveOrganizationDiscovery($input: ArchiveOrganizationDiscoveryInput!) {
+    archiveOrganizationDiscovery(input: $input) {
+      organizationDiscovery {
         id
         archived
       }
@@ -45,14 +45,14 @@ const FinanceCostCenters = ({ t, history, archived=false }) => (
   <SiteWrapper>
     <div className="my-3 my-md-5">
       <Container>
-        <Page.Header title={t("school.page_title")} />
+        <Page.Header title={t("organization.page_title")} />
         <Grid.Row>
           <Grid.Col md={9}>
             <Query query={GET_DISCOVERIES_QUERY} variables={{ archived }}>
-             {({ loading, error, data: {schoolDiscoveries: discoveries}, refetch, fetchMore }) => {
+             {({ loading, error, data: {organizationDiscoveries: discoveries}, refetch, fetchMore }) => {
                 // Loading
                 if (loading) return (
-                  <ContentCard cardTitle={t('school.discoveries.title')}>
+                  <ContentCard cardTitle={t('organization.discoveries.title')}>
                     <Dimmer active={true}
                             loadder={true}>
                     </Dimmer>
@@ -60,8 +60,8 @@ const FinanceCostCenters = ({ t, history, archived=false }) => (
                 )
                 // Error
                 if (error) return (
-                  <ContentCard cardTitle={t('school.discoveries.title')}>
-                    <p>{t('school.discoveries.error_loading')}</p>
+                  <ContentCard cardTitle={t('organization.discoveries.title')}>
+                    <p>{t('organization.discoveries.error_loading')}</p>
                   </ContentCard>
                 )
                 const headerOptions = <Card.Options>
@@ -80,17 +80,17 @@ const FinanceCostCenters = ({ t, history, archived=false }) => (
                 
                 // Empty list
                 if (!discoveries.edges.length) { return (
-                  <ContentCard cardTitle={t('school.discoveries.title')}
+                  <ContentCard cardTitle={t('organization.discoveries.title')}
                                headerContent={headerOptions}>
                     <p>
-                    {(!archived) ? t('school.discoveries.empty_list') : t("school.discoveries.empty_archive")}
+                    {(!archived) ? t('organization.discoveries.empty_list') : t("organization.discoveries.empty_archive")}
                     </p>
                    
                   </ContentCard>
                 )} else {   
                 // Life's good! :)
                 return (
-                  <ContentCard cardTitle={t('school.discoveries.title')}
+                  <ContentCard cardTitle={t('organization.discoveries.title')}
                                headerContent={headerOptions}
                                pageInfo={discoveries.pageInfo}
                                onLoadMore={() => {
@@ -99,16 +99,16 @@ const FinanceCostCenters = ({ t, history, archived=false }) => (
                                     after: discoveries.pageInfo.endCursor
                                   },
                                   updateQuery: (previousResult, { fetchMoreResult }) => {
-                                    const newEdges = fetchMoreResult.schoolDiscoveries.edges
-                                    const pageInfo = fetchMoreResult.schoolDiscoveries.pageInfo
+                                    const newEdges = fetchMoreResult.organizationDiscoveries.edges
+                                    const pageInfo = fetchMoreResult.organizationDiscoveries.pageInfo
 
                                     return newEdges.length
                                       ? {
                                           // Put the new discoveries at the end of the list and update `pageInfo`
                                           // so we have the new `endCursor` and `hasNextPage` values
-                                          schoolDiscoveries: {
-                                            __typename: previousResult.schoolDiscoveries.__typename,
-                                            edges: [ ...previousResult.schoolDiscoveries.edges, ...newEdges ],
+                                          organizationDiscoveries: {
+                                            __typename: previousResult.organizationDiscoveries.__typename,
+                                            edges: [ ...previousResult.organizationDiscoveries.edges, ...newEdges ],
                                             pageInfo
                                           }
                                         }
@@ -132,7 +132,7 @@ const FinanceCostCenters = ({ t, history, archived=false }) => (
                                     {(node.archived) ? 
                                       <span className='text-muted'>{t('unarchive_to_edit')}</span> :
                                       <Button className='btn-sm' 
-                                              onClick={() => history.push("/school/discoveries/edit/" + node.id)}
+                                              onClick={() => history.push("/organization/discoveries/edit/" + node.id)}
                                               color="secondary">
                                         {t('edit')}
                                       </Button>
@@ -183,13 +183,13 @@ const FinanceCostCenters = ({ t, history, archived=false }) => (
           </Grid.Col>
           <Grid.Col md={3}>
             <HasPermissionWrapper permission="add"
-                                  resource="schooldiscovery">
+                                  resource="organizationdiscovery">
               <Button color="primary btn-block mb-6"
-                      onClick={() => history.push("/school/discoveries/add")}>
-                <Icon prefix="fe" name="plus-circle" /> {t('school.discoveries.add')}
+                      onClick={() => history.push("/organization/discoveries/add")}>
+                <Icon prefix="fe" name="plus-circle" /> {t('organization.discoveries.add')}
               </Button>
             </HasPermissionWrapper>
-            <SchoolMenu active_link='schooldiscoveries'/>
+            <OrganizationMenu active_link='organizationdiscoveries'/>
           </Grid.Col>
         </Grid.Row>
       </Container>

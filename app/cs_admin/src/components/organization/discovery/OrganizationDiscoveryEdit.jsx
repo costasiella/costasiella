@@ -25,13 +25,13 @@ import {
 import SiteWrapper from "../../SiteWrapper"
 import HasPermissionWrapper from "../../HasPermissionWrapper"
 
-import SchoolMenu from "../SchoolMenu"
+import OrganizationMenu from "../OrganizationMenu"
 
 
 const UPDATE_DISCOVERY = gql`
-  mutation UpdateSchoolDiscovery($input: UpdateSchoolDiscoveryInput!) {
-    updateSchoolDiscovery(input: $input) {
-      schoolDiscovery {
+  mutation UpdateOrganizationDiscovery($input: UpdateOrganizationDiscoveryInput!) {
+    updateOrganizationDiscovery(input: $input) {
+      organizationDiscovery {
         id
         name
       }
@@ -40,10 +40,10 @@ const UPDATE_DISCOVERY = gql`
 `
 
 
-class SchoolDiscoveryEdit extends Component {
+class OrganizationDiscoveryEdit extends Component {
   constructor(props) {
     super(props)
-    console.log("School discovery edit props:")
+    console.log("Organization discovery edit props:")
     console.log(props)
   }
 
@@ -52,18 +52,18 @@ class SchoolDiscoveryEdit extends Component {
     const match = this.props.match
     const history = this.props.history
     const id = match.params.id
-    const return_url = "/school/discoveries"
+    const return_url = "/organization/discoveries"
 
     return (
       <SiteWrapper>
         <div className="my-3 my-md-5">
           <Container>
-            <Page.Header title="School" />
+            <Page.Header title="Organization" />
             <Grid.Row>
               <Grid.Col md={9}>
               <Card>
                 <Card.Header>
-                  <Card.Title>{t('school.discoveries.title_edit')}</Card.Title>
+                  <Card.Title>{t('organization.discoveries.title_edit')}</Card.Title>
                   {console.log(match.params.id)}
                 </Card.Header>
                 <Query query={GET_DISCOVERY_QUERY} variables={{ id }} >
@@ -76,7 +76,7 @@ class SchoolDiscoveryEdit extends Component {
                       return <p>{t('error_sad_smiley')}</p>
                     }
                     
-                    const initialData = data.schoolDiscovery;
+                    const initialData = data.organizationDiscovery;
                     console.log('query data')
                     console.log(data)
 
@@ -103,7 +103,7 @@ class SchoolDiscoveryEdit extends Component {
                                   ]})
                                   .then(({ data }) => {
                                       console.log('got data', data)
-                                      toast.success((t('school.discoveries.toast_edit_success')), {
+                                      toast.success((t('organization.discoveries.toast_edit_success')), {
                                           position: toast.POSITION.BOTTOM_RIGHT
                                         })
                                     }).catch((error) => {
@@ -118,7 +118,7 @@ class SchoolDiscoveryEdit extends Component {
                               {({ isSubmitting, errors, values }) => (
                                   <FoForm>
                                       <Card.Body>    
-                                          <Form.Group label={t('school.discoveries.name')} >
+                                          <Form.Group label={t('organization.discoveries.name')} >
                                             <Field type="text" 
                                                   name="name" 
                                                   className={(errors.name) ? "form-control is-invalid" : "form-control"} 
@@ -154,13 +154,13 @@ class SchoolDiscoveryEdit extends Component {
               </Grid.Col>
               <Grid.Col md={3}>
                 <HasPermissionWrapper permission="change"
-                                      resource="schooldiscovery">
+                                      resource="organizationdiscovery">
                   <Button color="primary btn-block mb-6"
                           onClick={() => history.push(return_url)}>
                     <Icon prefix="fe" name="chevrons-left" /> {t('back')}
                   </Button>
                 </HasPermissionWrapper>
-                <SchoolMenu active_link='schooldiscoveries'/>
+                <OrganizationMenu active_link='organizationdiscoveries'/>
               </Grid.Col>
             </Grid.Row>
           </Container>
@@ -170,4 +170,4 @@ class SchoolDiscoveryEdit extends Component {
   }
 
 
-export default withTranslation()(withRouter(SchoolDiscoveryEdit))
+export default withTranslation()(withRouter(OrganizationDiscoveryEdit))
