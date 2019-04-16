@@ -172,7 +172,7 @@
             "public": "This is a public membership",
             "shop": "Show this membership in the shop"
         },
-        "title": "organization"
+        "title": "Organization"
     },
     "validity": {
         "days": "Days",
