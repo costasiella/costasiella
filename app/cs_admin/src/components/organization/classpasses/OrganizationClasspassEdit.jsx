@@ -97,11 +97,11 @@ class OrganizationClasspassEdit extends Component {
                 <Query query={GET_CLASSPASS_QUERY} variables={{ "id": id, "archived": false}} >
                 {({ loading, error, data, refetch }) => {
                     // Loading
-                    if (loading) return <p>{t('loading_with_dots')}</p>
+                    if (loading) return <p>{t('general.loading_with_dots')}</p>
                     // Error
                     if (error) {
                       console.log(error)
-                      return <p>{t('error_sad_smiley')}</p>
+                      return <p>{t('general.error_sad_smiley')}</p>
                     }
                     
                     console.log('query data')
@@ -175,7 +175,7 @@ class OrganizationClasspassEdit extends Component {
                                           position: toast.POSITION.BOTTOM_RIGHT
                                         })
                                     }).catch((error) => {
-                                      toast.error((t('toast_server_error')) + ': ' +  error, {
+                                      toast.error((t('general.toast_server_error')) + ': ' +  error, {
                                           position: toast.POSITION.BOTTOM_RIGHT
                                         })
                                       console.log('there was an error sending the query', error)
@@ -210,14 +210,14 @@ class OrganizationClasspassEdit extends Component {
                                         </Form.Label>
                                       <ErrorMessage name="displayShop" component="div" />   
                                     </Form.Group>      
-                                    <Form.Group label={t('organization.classpass.name')} >
+                                    <Form.Group label={t('general.name')} >
                                       <Field type="text" 
                                             name="name" 
                                             className={(errors.name) ? "form-control is-invalid" : "form-control"} 
                                             autoComplete="off" />
                                       <ErrorMessage name="name" component="span" className="invalid-feedback" />
                                     </Form.Group>
-                                    <Form.Group label={t('description')}>
+                                    <Form.Group label={t('general.description')}>
                                       <Editor
                                           textareaName="description"
                                           initialValue={values.description}
@@ -227,14 +227,14 @@ class OrganizationClasspassEdit extends Component {
                                         />
                                       <ErrorMessage name="description" component="span" className="invalid-feedback" />
                                     </Form.Group>
-                                    <Form.Group label={t('organization.classpass.price')}>
+                                    <Form.Group label={t('general.price')}>
                                       <Field type="text" 
                                             name="price" 
                                             className={(errors.price) ? "form-control is-invalid" : "form-control"} 
                                             autoComplete="off" />
                                       <ErrorMessage name="price" component="span" className="invalid-feedback" />
                                     </Form.Group>
-                                    <Form.Group label={t('organization.classpass.taxrate')}>
+                                    <Form.Group label={t('general.taxrate')}>
                                       <Field component="select" 
                                              name="financeTaxRate" 
                                              className={(errors.financeTaxRate) ? "form-control is-invalid" : "form-control"} 
@@ -248,21 +248,21 @@ class OrganizationClasspassEdit extends Component {
                                       </Field>
                                       <ErrorMessage name="financeTaxRate" component="span" className="invalid-feedback" />
                                     </Form.Group>
-                                    <Form.Group label={t('organization.classpass.validity')}>
+                                    <Form.Group label={t('general.validity')}>
                                       <Field type="text" 
                                             name="validity" 
                                             className={(errors.validity) ? "form-control is-invalid" : "form-control"} 
                                             autoComplete="off" />
                                       <ErrorMessage name="validity" component="span" className="invalid-feedback" />
                                     </Form.Group>
-                                    <Form.Group label={t('organization.classpass.validity_unit')}>
+                                    <Form.Group label={t('general.validity_unit')}>
                                       <Field component="select" 
                                              name="validityUnit" 
                                              className={(errors.validityUnit) ? "form-control is-invalid" : "form-control"} 
                                              autoComplete="off">
-                                        <option value="DAYS" key={v4()}>{t('validity.days')}</option>
-                                        <option value="WEEKS" key={v4()}>{t('validity.weeks')}</option>
-                                        <option value="MONTHS" key={v4()}>{t('validity.months')}</option>
+                                        <option value="DAYS" key={v4()}>{t('general.validity.days')}</option>
+                                        <option value="WEEKS" key={v4()}>{t('general.validity.weeks')}</option>
+                                        <option value="MONTHS" key={v4()}>{t('general.validity.months')}</option>
                                       </Field>
                                       <ErrorMessage name="validityUnit" component="span" className="invalid-feedback" />
                                     </Form.Group>
@@ -274,19 +274,19 @@ class OrganizationClasspassEdit extends Component {
                                             name="unlimited" 
                                             checked={values.unlimied} />
                                           <span className="custom-switch-indicator" ></span>
-                                          <span className="custom-switch-description">{t('organization.classpass.unlimited')}</span>
+                                          <span className="custom-switch-description">{t('general.unlimited')}</span>
                                         </Form.Label>
                                       <ErrorMessage name="unlimited" component="div" />   
                                     </Form.Group>  
                                     { (values.unlimited) ? "" :
-                                    <Form.Group label={t('organization.classpass.classes')}>
+                                    <Form.Group label={t('general.classes')}>
                                       <Field type="text" 
                                              name="classes" 
                                              className={(errors.classes) ? "form-control is-invalid" : "form-control"} 
                                              autoComplete="off" />
                                       <ErrorMessage name="classes" component="span" className="invalid-feedback" />
                                     </Form.Group> } 
-                                    <Form.Group label={t('organization.classpass.membership')}>
+                                    <Form.Group label={t('general.membership')}>
                                       <Field component="select" 
                                              name="organizationMembership" 
                                              className={(errors.organizationMembership) ? "form-control is-invalid" : "form-control"} 
@@ -299,7 +299,7 @@ class OrganizationClasspassEdit extends Component {
                                       <ErrorMessage name="organizationMembership" component="span" className="invalid-feedback" />
                                     </Form.Group> 
                                     { (values.unlimited) ? 
-                                          <Form.Group label={t('organization.classpass.quickStatsAmount')}>
+                                          <Form.Group label={t('general.quickStatsAmount')}>
                                             <Field type="text" 
                                                   name="quickStatsAmount" 
                                                   className={(errors.quickStatsAmount) ? "form-control is-invalid" : "form-control"} 
@@ -308,7 +308,7 @@ class OrganizationClasspassEdit extends Component {
                                           </Form.Group>
                                           : ""
                                     }
-                                    <Form.Group label={t('organization.classpass.glaccount')}>
+                                    <Form.Group label={t('general.glaccount')}>
                                       <Field component="select" 
                                              name="financeGlaccount" 
                                              className={(errors.financeGlaccount) ? "form-control is-invalid" : "form-control"} 
@@ -320,7 +320,7 @@ class OrganizationClasspassEdit extends Component {
                                       </Field>
                                       <ErrorMessage name="financeGlaccount" component="span" className="invalid-feedback" />
                                     </Form.Group>
-                                    <Form.Group label={t('organization.classpass.costcenter')}>
+                                    <Form.Group label={t('general.costcenter')}>
                                       <Field component="select" 
                                              name="financeCostcenter" 
                                              className={(errors.financeCostcenter) ? "form-control is-invalid" : "form-control"} 
@@ -340,14 +340,14 @@ class OrganizationClasspassEdit extends Component {
                                         disabled={isSubmitting}
                                         type="submit"
                                       >
-                                        {t('submit')}
+                                        {t('general.submit')}
                                       </Button>
                                       <Button
                                         type="button" 
                                         color="link" 
                                         onClick={() => history.push(return_url)}
                                       >
-                                          {t('cancel')}
+                                          {t('general.cancel')}
                                       </Button>
                                   </Card.Footer>
                                 </FoForm>
@@ -364,7 +364,7 @@ class OrganizationClasspassEdit extends Component {
                                       resource="organizationclasspass">
                   <Button color="primary btn-block mb-6"
                           onClick={() => history.push(return_url)}>
-                    <Icon prefix="fe" name="chevrons-left" /> {t('back')}
+                    <Icon prefix="fe" name="chevrons-left" /> {t('general.back')}
                   </Button>
                 </HasPermissionWrapper>
                 <OrganizationMenu active_link='organizationclasspasses'/>
