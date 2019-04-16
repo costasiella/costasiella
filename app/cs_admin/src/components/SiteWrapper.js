@@ -176,22 +176,6 @@ const getNavBarItems = (user) => {
     useExact: true,
   })
 
-
-  if (
-      (check_permission(permissions, 'view', 'schoolclasspass')) || 
-      (check_permission(permissions, 'view', 'schoolclasstype')) ||
-      (check_permission(permissions, 'view', 'schooldiscovery')) ||
-      (check_permission(permissions, 'view', 'schoollocation')) ||
-      (check_permission(permissions, 'view', 'schoolmembership')) 
-     ){
-    items.push({
-      value: "School",
-      to: "/school",
-      icon: "book",
-      LinkComponent: withRouter(NavLink),
-    })
-  }
-
   if (
     (check_permission(permissions, 'view', 'financecostcenter')) ||
     (check_permission(permissions, 'view', 'financeglaccount')) ||
@@ -204,6 +188,22 @@ const getNavBarItems = (user) => {
       LinkComponent: withRouter(NavLink),
     })
   }
+
+  if (
+    (check_permission(permissions, 'view', 'schoolclasspass')) || 
+    (check_permission(permissions, 'view', 'schoolclasstype')) ||
+    (check_permission(permissions, 'view', 'schooldiscovery')) ||
+    (check_permission(permissions, 'view', 'schoollocation')) ||
+    (check_permission(permissions, 'view', 'schoolmembership')) 
+   ){
+  items.push({
+    value: "Organization",
+    to: "/school",
+    icon: "feather",
+    LinkComponent: withRouter(NavLink),
+  })
+}
+
 
   return items
 
