@@ -144,7 +144,7 @@ const SchoolClasspassesGroups = ({ t, history, archived=false }) => (
                                     {(node.archived) ? 
                                       <span className='text-muted'>{t('unarchive_to_edit')}</span> :
                                       <Button className='btn-sm' 
-                                              onClick={() => history.push("/school/classpass_groups/edit/" + node.id)}
+                                              onClick={() => history.push("/school/classpasses/groups/edit/" + node.id)}
                                               color="secondary">
                                         {t('edit')}
                                       </Button>
