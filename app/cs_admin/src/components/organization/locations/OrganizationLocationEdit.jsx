@@ -168,14 +168,14 @@ class OrganizationLocationEdit extends Component {
               </Card>
               </Grid.Col>
               <Grid.Col md={3}>
-                <HasPermissionWrapper permission="add"
+                <HasPermissionWrapper permission="change"
                                       resource="organizationlocation">
                   <Button color="primary btn-block mb-6"
                           onClick={() => history.push(return_url)}>
                     <Icon prefix="fe" name="chevrons-left" /> {t('general.back')}
                   </Button>
                 </HasPermissionWrapper>
-                <OrganizationMenu active_link='organizationlocation'/>
+                <OrganizationMenu active_link='locations'/>
               </Grid.Col>
             </Grid.Row>
           </Container>

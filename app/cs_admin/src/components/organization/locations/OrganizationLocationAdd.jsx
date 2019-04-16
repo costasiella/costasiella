@@ -134,7 +134,7 @@ const OrganizationLocationAdd = ({ t, history }) => (
                 <Icon prefix="fe" name="chevrons-left" /> {t('general.back')}
               </Button>
             </HasPermissionWrapper>
-            <OrganizationMenu active_link='organizationlocation'/>
+            <OrganizationMenu active_link='locations'/>
           </Grid.Col>
         </Grid.Row>
       </Container>
