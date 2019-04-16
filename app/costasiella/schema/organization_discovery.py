@@ -5,116 +5,116 @@ from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
 from graphql import GraphQLError
 
-from ..models import SchoolDiscovery
+from ..models import OrganizationDiscovery
 from ..modules.gql_tools import require_login_and_permission, get_rid
 from ..modules.messages import Messages
 
 m = Messages()
 
 
-class SchoolDiscoveryNode(DjangoObjectType):
+class OrganizationDiscoveryNode(DjangoObjectType):
     class Meta:
-        model = SchoolDiscovery
+        model = OrganizationDiscovery
         filter_fields = ['archived']
         interfaces = (graphene.relay.Node, )
 
     @classmethod
     def get_node(self, info, id):
         user = info.context.user
-        require_login_and_permission(user, 'costasiella.view_schooldiscovery')
+        require_login_and_permission(user, 'costasiella.view_organizationdiscovery')
 
         return self._meta.model.objects.get(id=id)
 
 
-class SchoolDiscoveryQuery(graphene.ObjectType):
-    school_discoveries = DjangoFilterConnectionField(SchoolDiscoveryNode)
-    school_discovery = graphene.relay.Node.Field(SchoolDiscoveryNode)
+class OrganizationDiscoveryQuery(graphene.ObjectType):
+    organization_discoveries = DjangoFilterConnectionField(OrganizationDiscoveryNode)
+    organization_discovery = graphene.relay.Node.Field(OrganizationDiscoveryNode)
 
-    def resolve_school_discoveries(self, info, archived=False, **kwargs):
+    def resolve_organization_discoveries(self, info, archived=False, **kwargs):
         user = info.context.user
-        require_login_and_permission(user, 'costasiella.view_schooldiscovery')
+        require_login_and_permission(user, 'costasiella.view_organizationdiscovery')
 
         ## return everything:
-        # if user.has_perm('costasiella.view_schooldiscovery'):
-        return SchoolDiscovery.objects.filter(archived = archived).order_by('name')
+        # if user.has_perm('costasiella.view_organizationdiscovery'):
+        return OrganizationDiscovery.objects.filter(archived = archived).order_by('name')
 
         # return None
 
 
-class CreateSchoolDiscovery(graphene.relay.ClientIDMutation):
+class CreateOrganizationDiscovery(graphene.relay.ClientIDMutation):
     class Input:
         name = graphene.String(required=True)
 
-    school_discovery = graphene.Field(SchoolDiscoveryNode)
+    organization_discovery = graphene.Field(OrganizationDiscoveryNode)
 
     @classmethod
     def mutate_and_get_payload(self, root, info, **input):
         user = info.context.user
-        require_login_and_permission(user, 'costasiella.add_schooldiscovery')
+        require_login_and_permission(user, 'costasiella.add_organizationdiscovery')
 
         errors = []
         if not len(input['name']):
             print('validation error found')
             raise GraphQLError(_('Name is required'))
 
-        school_discovery = SchoolDiscovery(
+        organization_discovery = OrganizationDiscovery(
             name=input['name'], 
         )
 
-        school_discovery.save()
+        organization_discovery.save()
 
-        return CreateSchoolDiscovery(school_discovery=school_discovery)
+        return CreateOrganizationDiscovery(organization_discovery=organization_discovery)
 
 
-class UpdateSchoolDiscovery(graphene.relay.ClientIDMutation):
+class UpdateOrganizationDiscovery(graphene.relay.ClientIDMutation):
     class Input:
         id = graphene.ID(required=True)
         name = graphene.String(required=True)
         
-    school_discovery = graphene.Field(SchoolDiscoveryNode)
+    organization_discovery = graphene.Field(OrganizationDiscoveryNode)
 
     @classmethod
     def mutate_and_get_payload(self, root, info, **input):
         user = info.context.user
-        require_login_and_permission(user, 'costasiella.change_schooldiscovery')
+        require_login_and_permission(user, 'costasiella.change_organizationdiscovery')
 
         rid = get_rid(input['id'])
 
-        school_discovery = SchoolDiscovery.objects.filter(id=rid.id).first()
-        if not school_discovery:
-            raise Exception('Invalid School Discovery ID!')
+        organization_discovery = OrganizationDiscovery.objects.filter(id=rid.id).first()
+        if not organization_discovery:
+            raise Exception('Invalid Organization Discovery ID!')
 
-        school_discovery.name = input['name']
-        school_discovery.save(force_update=True)
+        organization_discovery.name = input['name']
+        organization_discovery.save(force_update=True)
 
-        return UpdateSchoolDiscovery(school_discovery=school_discovery)
+        return UpdateOrganizationDiscovery(organization_discovery=organization_discovery)
 
 
-class ArchiveSchoolDiscovery(graphene.relay.ClientIDMutation):
+class ArchiveOrganizationDiscovery(graphene.relay.ClientIDMutation):
     class Input:
         id = graphene.ID(required=True)
         archived = graphene.Boolean(required=True)
 
-    school_discovery = graphene.Field(SchoolDiscoveryNode)
+    organization_discovery = graphene.Field(OrganizationDiscoveryNode)
 
     @classmethod
     def mutate_and_get_payload(self, root, info, **input):
         user = info.context.user
-        require_login_and_permission(user, 'costasiella.delete_schooldiscovery')
+        require_login_and_permission(user, 'costasiella.delete_organizationdiscovery')
 
         rid = get_rid(input['id'])
 
-        school_discovery = SchoolDiscovery.objects.filter(id=rid.id).first()
-        if not school_discovery:
-            raise Exception('Invalid School Discovery ID!')
+        organization_discovery = OrganizationDiscovery.objects.filter(id=rid.id).first()
+        if not organization_discovery:
+            raise Exception('Invalid Organization Discovery ID!')
 
-        school_discovery.archived = input['archived']
-        school_discovery.save(force_update=True)
+        organization_discovery.archived = input['archived']
+        organization_discovery.save(force_update=True)
 
-        return ArchiveSchoolDiscovery(school_discovery=school_discovery)
+        return ArchiveOrganizationDiscovery(organization_discovery=organization_discovery)
 
 
-class SchoolDiscoveryMutation(graphene.ObjectType):
-    archive_school_discovery = ArchiveSchoolDiscovery.Field()
-    create_school_discovery = CreateSchoolDiscovery.Field()
-    update_school_discovery = UpdateSchoolDiscovery.Field()
+class OrganizationDiscoveryMutation(graphene.ObjectType):
+    archive_organization_discovery = ArchiveOrganizationDiscovery.Field()
+    create_organization_discovery = CreateOrganizationDiscovery.Field()
+    update_organization_discovery = UpdateOrganizationDiscovery.Field()

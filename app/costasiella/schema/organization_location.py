@@ -5,15 +5,15 @@ from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
 from graphql import GraphQLError
 
-from ..models import SchoolLocation
+from ..models import OrganizationLocation
 from ..modules.gql_tools import require_login_and_permission, get_rid
 from ..modules.messages import Messages
 
 m = Messages()
 
-class SchoolLocationNode(DjangoObjectType):
+class OrganizationLocationNode(DjangoObjectType):
     class Meta:
-        model = SchoolLocation
+        model = OrganizationLocation
         filter_fields = ['archived']
         interfaces = (graphene.relay.Node, )
 
@@ -26,7 +26,7 @@ class SchoolLocationNode(DjangoObjectType):
         print(user.is_authenticated)
         print(user)
         print(user.is_anonymous)
-        require_login_and_permission(user, 'costasiella.view_schoollocation')
+        require_login_and_permission(user, 'costasiella.view_organizationlocation')
 
         # Return only public non-archived locations
         return self._meta.model.objects.get(id=id)
@@ -42,63 +42,63 @@ class SchoolLocationNode(DjangoObjectType):
 #     # error_message = graphene.String(required=True)
 
 
-class SchoolLocationQuery(graphene.ObjectType):
-    school_locations = DjangoFilterConnectionField(SchoolLocationNode)
-    school_location = graphene.relay.Node.Field(SchoolLocationNode)
+class OrganizationLocationQuery(graphene.ObjectType):
+    organization_locations = DjangoFilterConnectionField(OrganizationLocationNode)
+    organization_location = graphene.relay.Node.Field(OrganizationLocationNode)
 
-    def resolve_school_locations(self, info, archived=False, **kwargs):
+    def resolve_organization_locations(self, info, archived=False, **kwargs):
         user = info.context.user
         print('user authenticated:')
         print(user.is_authenticated)
         if user.is_anonymous:
             raise Exception(m.user_not_logged_in)
         # if not info.context.user.is_authenticated:
-            # return SchoolLocation.objects.none()
+            # return OrganizationLocation.objects.none()
         # else:
-            # return SchoolLocation.objects.all()
+            # return OrganizationLocation.objects.all()
         ## return everything:
-        if user.has_perm('costasiella.view_schoollocation'):
+        if user.has_perm('costasiella.view_organizationlocation'):
             print('user has view permission')
-            return SchoolLocation.objects.filter(archived = archived).order_by('name')
+            return OrganizationLocation.objects.filter(archived = archived).order_by('name')
 
         # Return only public non-archived locations
-        return SchoolLocation.objects.filter(display_public = True, archived = False).order_by('name')
+        return OrganizationLocation.objects.filter(display_public = True, archived = False).order_by('name')
 
 
-    # def resolve_school_location(self, info, id):
+    # def resolve_organization_location(self, info, id):
     #     user = info.context.user
     #     print('user authenticated:')
     #     print(user.is_authenticated)
     #     print(user)
     #     print(user.is_anonymous)
-    #     require_login_and_permission(user, 'costasiella.view_schoollocation')
+    #     require_login_and_permission(user, 'costasiella.view_organizationlocation')
 
     #     # Return only public non-archived locations
-    #     return SchoolLocation.objects.get(id=id)
+    #     return OrganizationLocation.objects.get(id=id)
 
 
-# # class CreateSchoolLocationSuccess(graphene.ObjectType):
-# # 	school_location = graphene.Field(SchoolLocationType, required=True)
+# # class CreateOrganizationLocationSuccess(graphene.ObjectType):
+# # 	organization_location = graphene.Field(OrganizationLocationType, required=True)
 
 
-# # class CreateSchoolLocationPayload(graphene.Union):
+# # class CreateOrganizationLocationPayload(graphene.Union):
 # #     class Meta:
-# #         types = (ValidationErrors, CreateSchoolLocationSuccess)
+# #         types = (ValidationErrors, CreateOrganizationLocationSuccess)
 
 
-class CreateSchoolLocation(graphene.relay.ClientIDMutation):
+class CreateOrganizationLocation(graphene.relay.ClientIDMutation):
     class Input:
         name = graphene.String(required=True)
         display_public = graphene.Boolean(required=True)
 
-    school_location = graphene.Field(SchoolLocationNode)
+    organization_location = graphene.Field(OrganizationLocationNode)
 
-    # Output = CreateSchoolLocationPayload
+    # Output = CreateOrganizationLocationPayload
 
     @classmethod
     def mutate_and_get_payload(self, root, info, **input):
         user = info.context.user
-        require_login_and_permission(user, 'costasiella.add_schoollocation')
+        require_login_and_permission(user, 'costasiella.add_organizationlocation')
 
         errors = []
         if not len(input['name']):
@@ -115,22 +115,22 @@ class CreateSchoolLocation(graphene.relay.ClientIDMutation):
             #     validation_errors = errors
             # )
 
-        school_location = SchoolLocation(
+        organization_location = OrganizationLocation(
             name=input['name'], 
             display_public=input['display_public']
         )
-        school_location.save()
+        organization_location.save()
 
-        # return CreateSchoolLocationSuccess(school_location=school_location)
-        return CreateSchoolLocation(school_location=school_location)
+        # return CreateOrganizationLocationSuccess(organization_location=organization_location)
+        return CreateOrganizationLocation(organization_location=organization_location)
 
 
 # ''' Query like this when enabling error output using union:
 # mutation {
-#   createSchoolLocation(name:"", displayPublic:true) {
+#   createOrganizationLocation(name:"", displayPublic:true) {
 #     __typename
-#     ... on CreateSchoolLocationSuccess {
-#       schoolLocation {
+#     ... on CreateOrganizationLocationSuccess {
+#       organizationLocation {
 #         id
 #         name
 #       }
@@ -146,57 +146,57 @@ class CreateSchoolLocation(graphene.relay.ClientIDMutation):
 
 # '''
 
-class UpdateSchoolLocation(graphene.relay.ClientIDMutation):
+class UpdateOrganizationLocation(graphene.relay.ClientIDMutation):
     class Input:
         id = graphene.ID(required=True)
         name = graphene.String(required=True)
         display_public = graphene.Boolean(required=True)
         
-    school_location = graphene.Field(SchoolLocationNode)
+    organization_location = graphene.Field(OrganizationLocationNode)
 
     @classmethod
     def mutate_and_get_payload(self, root, info, **input):
         user = info.context.user
-        require_login_and_permission(user, 'costasiella.change_schoollocation')
+        require_login_and_permission(user, 'costasiella.change_organizationlocation')
 
         rid = get_rid(input['id'])
 
-        school_location = SchoolLocation.objects.filter(id=rid.id).first()
-        if not school_location:
-            raise Exception('Invalid School Location ID!')
+        organization_location = OrganizationLocation.objects.filter(id=rid.id).first()
+        if not organization_location:
+            raise Exception('Invalid Organization Location ID!')
 
-        school_location.name = input['name']
-        school_location.display_public = input['display_public']
-        school_location.save(force_update=True)
+        organization_location.name = input['name']
+        organization_location.display_public = input['display_public']
+        organization_location.save(force_update=True)
 
-        return UpdateSchoolLocation(school_location=school_location)
+        return UpdateOrganizationLocation(organization_location=organization_location)
 
 
-class ArchiveSchoolLocation(graphene.relay.ClientIDMutation):
+class ArchiveOrganizationLocation(graphene.relay.ClientIDMutation):
     class Input:
         id = graphene.ID(required=True)
         archived = graphene.Boolean(required=True)
 
-    school_location = graphene.Field(SchoolLocationNode)
+    organization_location = graphene.Field(OrganizationLocationNode)
 
     @classmethod
     def mutate_and_get_payload(self, root, info, **input):
         user = info.context.user
-        require_login_and_permission(user, 'costasiella.delete_schoollocation')
+        require_login_and_permission(user, 'costasiella.delete_organizationlocation')
 
         rid = get_rid(input['id'])
 
-        school_location = SchoolLocation.objects.filter(id=rid.id).first()
-        if not school_location:
-            raise Exception('Invalid School Location ID!')
+        organization_location = OrganizationLocation.objects.filter(id=rid.id).first()
+        if not organization_location:
+            raise Exception('Invalid Organization Location ID!')
 
-        school_location.archived = input['archived']
-        school_location.save(force_update=True)
+        organization_location.archived = input['archived']
+        organization_location.save(force_update=True)
 
-        return ArchiveSchoolLocation(school_location=school_location)
+        return ArchiveOrganizationLocation(organization_location=organization_location)
 
 
-class SchoolLocationMutation(graphene.ObjectType):
-    archive_school_location = ArchiveSchoolLocation.Field()
-    create_school_location = CreateSchoolLocation.Field()
-    update_school_location = UpdateSchoolLocation.Field()
+class OrganizationLocationMutation(graphene.ObjectType):
+    archive_organization_location = ArchiveOrganizationLocation.Field()
+    create_organization_location = CreateOrganizationLocation.Field()
+    update_organization_location = UpdateOrganizationLocation.Field()
