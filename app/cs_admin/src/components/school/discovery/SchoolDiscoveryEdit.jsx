@@ -118,7 +118,7 @@ class SchoolDiscoveryEdit extends Component {
                               {({ isSubmitting, errors, values }) => (
                                   <FoForm>
                                       <Card.Body>    
-                                          <Form.Group label={t('school.discovery.name')} >
+                                          <Form.Group label={t('school.discoveries.name')} >
                                             <Field type="text" 
                                                   name="name" 
                                                   className={(errors.name) ? "form-control is-invalid" : "form-control"} 
