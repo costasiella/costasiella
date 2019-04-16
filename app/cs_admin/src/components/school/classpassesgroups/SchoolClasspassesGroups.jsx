@@ -6,6 +6,7 @@ import gql from "graphql-tag"
 import { v4 } from "uuid"
 import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
+import { Link } from 'react-router-dom'
 
 
 import {
@@ -25,6 +26,7 @@ import HasPermissionWrapper from "../../HasPermissionWrapper"
 import { toast } from 'react-toastify'
 
 import ContentCard from "../../general/ContentCard"
+import CardHeaderSeparator from "../../general/CardHeaderSeparator"
 import SchoolMenu from "../SchoolMenu"
 
 import { GET_CLASSPASS_GROUPS_QUERY } from "./queries"
@@ -65,6 +67,16 @@ const SchoolClasspassesGroups = ({ t, history, archived=false }) => (
                   </ContentCard>
                 )
                 const headerOptions = <Card.Options>
+                  <Link to="/school/classpasses">
+                    <Button color='secondary'  
+                            size="sm"
+                            icon="credit-card"
+                            // onClick={() => {archived=false; refetch({archived});}}>
+                            >
+                      {t('school.classpasses.title')}
+                    </Button>
+                  </Link>
+                  <CardHeaderSeparator />
                   <Button color={(!archived) ? 'primary': 'secondary'}  
                           size="sm"
                           onClick={() => {archived=false; refetch({archived});}}>
