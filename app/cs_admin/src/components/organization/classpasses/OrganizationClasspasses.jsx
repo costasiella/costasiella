@@ -83,13 +83,13 @@ const OrganizationClasspasses = ({ t, history, archived=false }) => (
                   <Button color={(!archived) ? 'primary': 'secondary'}  
                           size="sm"
                           onClick={() => {archived=false; refetch({archived});}}>
-                    {t('current')}
+                    {t('general.current')}
                   </Button>
                   <Button color={(archived) ? 'primary': 'secondary'} 
                           size="sm" 
                           className="ml-2" 
                           onClick={() => {archived=true; refetch({archived});}}>
-                    {t('archive')}
+                    {t('general.archive')}
                   </Button>
                 </Card.Options>
                 
