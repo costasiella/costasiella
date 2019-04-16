@@ -1,8 +1,8 @@
 import gql from "graphql-tag"
 
 export const GET_LOCATIONS_QUERY = gql`
-  query SchoolLocations($after: String, $before: String, $archived: Boolean) {
-    schoolLocations(first: 15, before: $before, after: $after, archived: $archived) {
+  query OrganizationLocations($after: String, $before: String, $archived: Boolean) {
+    organizationLocations(first: 15, before: $before, after: $after, archived: $archived) {
       pageInfo {
         startCursor
         endCursor
@@ -22,8 +22,8 @@ export const GET_LOCATIONS_QUERY = gql`
 `
 
 export const GET_LOCATION_QUERY = gql`
-  query SchoolLocation($id: ID!) {
-    schoolLocation(id:$id) {
+  query OrganizationLocation($id: ID!) {
+    organizationLocation(id:$id) {
       id
       name
       displayPublic

@@ -25,13 +25,13 @@ import {
 import SiteWrapper from "../../SiteWrapper"
 import HasPermissionWrapper from "../../HasPermissionWrapper"
 
-import SchoolMenu from "../SchoolMenu"
+import OrganizationMenu from "../OrganizationMenu"
 
 
 const ADD_LOCATION = gql`
-  mutation CreateSchoolLocation($input: CreateSchoolLocationInput!) {
-    createSchoolLocation(input: $input) {
-      schoolLocation {
+  mutation CreateOrganizationLocation($input: CreateOrganizationLocationInput!) {
+    createOrganizationLocation(input: $input) {
+      organizationLocation {
         id
         archived
         displayPublic
@@ -41,18 +41,18 @@ const ADD_LOCATION = gql`
   }
 `
 
-const return_url = "/school/locations"
+const return_url = "/organization/locations"
 
-const SchoolLocationAdd = ({ t, history }) => (
+const OrganizationLocationAdd = ({ t, history }) => (
   <SiteWrapper>
     <div className="my-3 my-md-5">
       <Container>
-        <Page.Header title="School" />
+        <Page.Header title="Organization" />
         <Grid.Row>
           <Grid.Col md={9}>
           <Card>
             <Card.Header>
-              <Card.Title>{t('school.locations.title_add')}</Card.Title>
+              <Card.Title>{t('organization.locations.title_add')}</Card.Title>
             </Card.Header>
             <Mutation mutation={ADD_LOCATION} onCompleted={() => history.push(return_url)}> 
                 {(addLocation, { data }) => (
@@ -70,7 +70,7 @@ const SchoolLocationAdd = ({ t, history }) => (
                             ]})
                             .then(({ data }) => {
                                 console.log('got data', data);
-                                toast.success((t('school.locations.toast_add_success')), {
+                                toast.success((t('organization.locations.toast_add_success')), {
                                     position: toast.POSITION.BOTTOM_RIGHT
                                   })
                               }).catch((error) => {
@@ -85,7 +85,7 @@ const SchoolLocationAdd = ({ t, history }) => (
                         {({ isSubmitting, errors, values }) => (
                             <FoForm>
                                 <Card.Body>
-                                    {/* <Form.Group label={t('school.location.public')}>
+                                    {/* <Form.Group label={t('organization.location.public')}>
                                       <Field type="checkbox" name="displayPublic" checked={values.displayPublic} />
                                       <ErrorMessage name="displayPublic" component="div" />        
                                     </Form.Group> */}
@@ -97,12 +97,12 @@ const SchoolLocationAdd = ({ t, history }) => (
                                           name="displayPublic" 
                                           checked={values.displayPublic} />
                                         <span className="custom-switch-indicator" ></span>
-                                        <span className="custom-switch-description">{t('school.location.public')}</span>
+                                        <span className="custom-switch-description">{t('organization.location.public')}</span>
                                       </Form.Label>
                                       <ErrorMessage name="displayPublic" component="div" />   
                                     </Form.Group>    
 
-                                    <Form.Group label={t('school.location.name')}>
+                                    <Form.Group label={t('organization.location.name')}>
                                       <Field type="text" 
                                               name="name" 
                                               className={(errors.name) ? "form-control is-invalid" : "form-control"} 
@@ -132,13 +132,13 @@ const SchoolLocationAdd = ({ t, history }) => (
           </Grid.Col>
           <Grid.Col md={3}>
             <HasPermissionWrapper permission="add"
-                                  resource="schoollocation">
+                                  resource="organizationlocation">
               <Button color="primary btn-block mb-6"
                       onClick={() => history.push(return_url)}>
                 <Icon prefix="fe" name="chevrons-left" /> {t('back')}
               </Button>
             </HasPermissionWrapper>
-            <SchoolMenu active_link='schoollocation'/>
+            <OrganizationMenu active_link='organizationlocation'/>
           </Grid.Col>
         </Grid.Row>
       </Container>
@@ -146,4 +146,4 @@ const SchoolLocationAdd = ({ t, history }) => (
   </SiteWrapper>
 );
 
-export default withTranslation()(withRouter(SchoolLocationAdd))
+export default withTranslation()(withRouter(OrganizationLocationAdd))

@@ -25,13 +25,13 @@ import {
 import SiteWrapper from "../../SiteWrapper"
 import HasPermissionWrapper from "../../HasPermissionWrapper"
 
-import SchoolMenu from "../SchoolMenu"
+import OrganizationMenu from "../OrganizationMenu"
 
 
 const UPDATE_LOCATION = gql`
-  mutation UpdateSchoolLocation($input: UpdateSchoolLocationInput!) {
-    updateSchoolLocation(input: $input) {
-      schoolLocation {
+  mutation UpdateOrganizationLocation($input: UpdateOrganizationLocationInput!) {
+    updateOrganizationLocation(input: $input) {
+      organizationLocation {
         id
         name
         displayPublic
@@ -41,10 +41,10 @@ const UPDATE_LOCATION = gql`
 `
 
 
-class SchoolLocationEdit extends Component {
+class OrganizationLocationEdit extends Component {
   constructor(props) {
     super(props)
-    console.log("School location edit props:")
+    console.log("Organization location edit props:")
     console.log(props)
   }
 
@@ -53,18 +53,18 @@ class SchoolLocationEdit extends Component {
     const match = this.props.match
     const history = this.props.history
     const id = match.params.id
-    const return_url = "/school/locations"
+    const return_url = "/organization/locations"
 
     return (
       <SiteWrapper>
         <div className="my-3 my-md-5">
           <Container>
-            <Page.Header title="School" />
+            <Page.Header title="Organization" />
             <Grid.Row>
               <Grid.Col md={9}>
               <Card>
                 <Card.Header>
-                  <Card.Title>{t('school.locations.title_edit')}</Card.Title>
+                  <Card.Title>{t('organization.locations.title_edit')}</Card.Title>
                   {console.log(match.params.id)}
                 </Card.Header>
                 <Query query={GET_LOCATION_QUERY} variables={{ id }} >
@@ -77,7 +77,7 @@ class SchoolLocationEdit extends Component {
                       return <p>{t('error_sad_smiley')}</p>
                     }
                     
-                    const initialData = data.schoolLocation;
+                    const initialData = data.organizationLocation;
                     console.log('query data')
                     console.log(data)
 
@@ -106,7 +106,7 @@ class SchoolLocationEdit extends Component {
                                   ]})
                                   .then(({ data }) => {
                                       console.log('got data', data)
-                                      toast.success((t('school.locations.toast_edit_success')), {
+                                      toast.success((t('organization.locations.toast_edit_success')), {
                                           position: toast.POSITION.BOTTOM_RIGHT
                                         })
                                     }).catch((error) => {
@@ -129,11 +129,11 @@ class SchoolLocationEdit extends Component {
                                                 name="displayPublic" 
                                                 checked={values.displayPublic} />
                                               <span className="custom-switch-indicator" ></span>
-                                              <span className="custom-switch-description">{t('school.location.public')}</span>
+                                              <span className="custom-switch-description">{t('organization.location.public')}</span>
                                             </Form.Label>
                                             <ErrorMessage name="displayPublic" component="div" />   
                                           </Form.Group>     
-                                          <Form.Group label={t('school.location.name')} >
+                                          <Form.Group label={t('organization.location.name')} >
                                             <Field type="text" 
                                                   name="name" 
                                                   className={(errors.name) ? "form-control is-invalid" : "form-control"} 
@@ -169,13 +169,13 @@ class SchoolLocationEdit extends Component {
               </Grid.Col>
               <Grid.Col md={3}>
                 <HasPermissionWrapper permission="add"
-                                      resource="schoollocation">
+                                      resource="organizationlocation">
                   <Button color="primary btn-block mb-6"
                           onClick={() => history.push(return_url)}>
                     <Icon prefix="fe" name="chevrons-left" /> {t('back')}
                   </Button>
                 </HasPermissionWrapper>
-                <SchoolMenu active_link='schoollocation'/>
+                <OrganizationMenu active_link='organizationlocation'/>
               </Grid.Col>
             </Grid.Row>
           </Container>
@@ -185,4 +185,4 @@ class SchoolLocationEdit extends Component {
   }
 
 
-export default withTranslation()(withRouter(SchoolLocationEdit))
+export default withTranslation()(withRouter(OrganizationLocationEdit))

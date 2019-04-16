@@ -25,14 +25,14 @@ import HasPermissionWrapper from "../../HasPermissionWrapper"
 import { toast } from 'react-toastify'
 
 import ContentCard from "../../general/ContentCard"
-import SchoolMenu from "../SchoolMenu"
+import OrganizationMenu from "../OrganizationMenu"
 
 import { GET_LOCATIONS_QUERY } from "./queries"
 
 const ARCHIVE_LOCATION = gql`
-  mutation ArchiveSchoolLocation($input: ArchiveSchoolLocationInput!) {
-    archiveSchoolLocation(input: $input) {
-      schoolLocation {
+  mutation ArchiveOrganizationLocation($input: ArchiveOrganizationLocationInput!) {
+    archiveOrganizationLocation(input: $input) {
+      organizationLocation {
         id
         archived
       }
@@ -44,7 +44,7 @@ const ARCHIVE_LOCATION = gql`
 // const onClickArchive = (t, id) => {
 //   const options = {
 //     title: t('please_confirm'),
-//     message: t('school.locations.confirm_archive'),
+//     message: t('organization.locations.confirm_archive'),
 //     buttons: [
 //       {
 //         label: t('yes'),
@@ -64,18 +64,18 @@ const ARCHIVE_LOCATION = gql`
 //   confirmAlert(options)
 // }
 
-const SchoolLocations = ({ t, history, archived=false }) => (
+const OrganizationLocations = ({ t, history, archived=false }) => (
   <SiteWrapper>
     <div className="my-3 my-md-5">
       <Container>
-        <Page.Header title="School" />
+        <Page.Header title="Organization" />
         <Grid.Row>
           <Grid.Col md={9}>
             <Query query={GET_LOCATIONS_QUERY} variables={{ archived }}>
-             {({ loading, error, data: {schoolLocations: locations}, refetch, fetchMore }) => {
+             {({ loading, error, data: {organizationLocations: locations}, refetch, fetchMore }) => {
                 // Loading
                 if (loading) return (
-                  <ContentCard cardTitle={t('school.locations.title')}>
+                  <ContentCard cardTitle={t('organization.locations.title')}>
                     <Dimmer active={true}
                             loadder={true}>
                     </Dimmer>
@@ -83,8 +83,8 @@ const SchoolLocations = ({ t, history, archived=false }) => (
                 )
                 // Error
                 if (error) return (
-                  <ContentCard cardTitle={t('school.locations.title')}>
-                    <p>{t('school.locations.error_loading')}</p>
+                  <ContentCard cardTitle={t('organization.locations.title')}>
+                    <p>{t('organization.locations.error_loading')}</p>
                   </ContentCard>
                 )
                 const headerOptions = <Card.Options>
@@ -103,17 +103,17 @@ const SchoolLocations = ({ t, history, archived=false }) => (
                 
                 // Empty list
                 if (!locations.edges.length) { return (
-                  <ContentCard cardTitle={t('school.locations.title')}
+                  <ContentCard cardTitle={t('organization.locations.title')}
                                headerContent={headerOptions}>
                     <p>
-                    {(!archived) ? t('school.locations.empty_list') : t("school.locations.empty_archive")}
+                    {(!archived) ? t('organization.locations.empty_list') : t("organization.locations.empty_archive")}
                     </p>
                    
                   </ContentCard>
                 )} else {   
                 // Life's good! :)
                 return (
-                  <ContentCard cardTitle={t('school.locations.title')}
+                  <ContentCard cardTitle={t('organization.locations.title')}
                                headerContent={headerOptions}
                                pageInfo={locations.pageInfo}
                                onLoadMore={() => {
@@ -122,16 +122,16 @@ const SchoolLocations = ({ t, history, archived=false }) => (
                                     after: locations.pageInfo.endCursor
                                   },
                                   updateQuery: (previousResult, { fetchMoreResult }) => {
-                                    const newEdges = fetchMoreResult.schoolLocations.edges
-                                    const pageInfo = fetchMoreResult.schoolLocations.pageInfo
+                                    const newEdges = fetchMoreResult.organizationLocations.edges
+                                    const pageInfo = fetchMoreResult.organizationLocations.pageInfo
 
                                     return newEdges.length
                                       ? {
                                           // Put the new locations at the end of the list and update `pageInfo`
                                           // so we have the new `endCursor` and `hasNextPage` values
-                                          schoolLocations: {
-                                            __typename: previousResult.schoolLocations.__typename,
-                                            edges: [ ...previousResult.schoolLocations.edges, ...newEdges ],
+                                          organizationLocations: {
+                                            __typename: previousResult.organizationLocations.__typename,
+                                            edges: [ ...previousResult.organizationLocations.edges, ...newEdges ],
                                             pageInfo
                                           }
                                         }
@@ -161,7 +161,7 @@ const SchoolLocations = ({ t, history, archived=false }) => (
                                     {(node.archived) ? 
                                       <span className='text-muted'>{t('unarchive_to_edit')}</span> :
                                       <Button className='btn-sm' 
-                                              onClick={() => history.push("/school/locations/edit/" + node.id)}
+                                              onClick={() => history.push("/organization/locations/edit/" + node.id)}
                                               color="secondary">
                                         {t('edit')}
                                       </Button>
@@ -212,13 +212,13 @@ const SchoolLocations = ({ t, history, archived=false }) => (
           </Grid.Col>
           <Grid.Col md={3}>
             <HasPermissionWrapper permission="add"
-                                  resource="schoollocation">
+                                  resource="organizationlocation">
               <Button color="primary btn-block mb-6"
-                      onClick={() => history.push("/school/locations/add")}>
-                <Icon prefix="fe" name="plus-circle" /> {t('school.locations.add')}
+                      onClick={() => history.push("/organization/locations/add")}>
+                <Icon prefix="fe" name="plus-circle" /> {t('organization.locations.add')}
               </Button>
             </HasPermissionWrapper>
-            <SchoolMenu active_link='schoollocations'/>
+            <OrganizationMenu active_link='organizationlocations'/>
           </Grid.Col>
         </Grid.Row>
       </Container>
@@ -226,4 +226,4 @@ const SchoolLocations = ({ t, history, archived=false }) => (
   </SiteWrapper>
 );
 
-export default withTranslation()(withRouter(SchoolLocations))
+export default withTranslation()(withRouter(OrganizationLocations))
