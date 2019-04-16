@@ -66,13 +66,13 @@ const OrganizationClasstypes = ({ t, history, archived=false }) => (
                   <Button color={(!archived) ? 'primary': 'secondary'}  
                           size="sm"
                           onClick={() => {archived=false; refetch({archived});}}>
-                    {t('current')}
+                    {t('general.current')}
                   </Button>
                   <Button color={(archived) ? 'primary': 'secondary'} 
                           size="sm" 
                           className="ml-2" 
                           onClick={() => {archived=true; refetch({archived});}}>
-                    {t('archive')}
+                    {t('general.archive')}
                   </Button>
                 </Card.Options>
                 
@@ -118,9 +118,8 @@ const OrganizationClasstypes = ({ t, history, archived=false }) => (
                           <Table.Header>
                             <Table.Row key={v4()}>
                               <Table.ColHeader>{t('')}</Table.ColHeader>
-                              <Table.ColHeader>{t('name')}</Table.ColHeader>
-                              {/* <Table.ColHeader>{t('description')}</Table.ColHeader> */}
-                              <Table.ColHeader>{t('public')}</Table.ColHeader>
+                              <Table.ColHeader>{t('general.name')}</Table.ColHeader>
+                              <Table.ColHeader>{t('general.public')}</Table.ColHeader>
                             </Table.Row>
                           </Table.Header>
                           <Table.Body>
@@ -132,24 +131,19 @@ const OrganizationClasstypes = ({ t, history, archived=false }) => (
                                   <Table.Col key={v4()}>
                                     {node.name}
                                   </Table.Col>
-                                  {/* <Table.Col key={v4()}>
-                                    <span title={node.description}>
-                                      {node.description}
-                                    </span>
-                                  </Table.Col> */}
                                   <Table.Col key={v4()}>
                                     {(node.displayPublic) ? 
-                                      <Badge color="success">{t('yes')}</Badge>: 
-                                      <Badge color="danger">{t('no')}</Badge>}
+                                      <Badge color="success">{t('general.yes')}</Badge>: 
+                                      <Badge color="danger">{t('general.no')}</Badge>}
                                   </Table.Col>
                                   <Table.Col className="text-right" key={v4()}>
                                     {(archived) ? 
-                                      <span className='text-muted'>{t('unarchive_to_edit')}</span> :
+                                      <span className='text-muted'>{t('general.unarchive_to_edit')}</span> :
                                       <div>
                                         <Button className='btn-sm' 
                                                 onClick={() => history.push("/organization/classtypes/edit/" + node.id)}
                                                 color="secondary">
-                                          {t('edit')}
+                                          {t('general.edit')}
                                         </Button>
                                         <Button className='btn-sm' 
                                                 onClick={() => history.push("/organization/classtypes/edit_image/" + node.id)}
@@ -163,7 +157,7 @@ const OrganizationClasstypes = ({ t, history, archived=false }) => (
                                     {(archiveLocation, { data }) => (
                                       <Table.Col className="text-right" key={v4()}>
                                         <button className="icon btn btn-link btn-sm" 
-                                           title={t('archive')} 
+                                           title={t('general.archive')} 
                                            onClick={() => {
                                              console.log("clicked archived")
                                              let id = node.id
@@ -177,11 +171,11 @@ const OrganizationClasstypes = ({ t, history, archived=false }) => (
                                         ]}).then(({ data }) => {
                                           console.log('got data', data);
                                           toast.success(
-                                            (archived) ? t('unarchived'): t('archived'), {
+                                            (archived) ? t('general.unarchived'): t('general.archived'), {
                                               position: toast.POSITION.BOTTOM_RIGHT
                                             })
                                         }).catch((error) => {
-                                          toast.error((t('toast_server_error')) + ': ' +  error, {
+                                          toast.error((t('general.toast_server_error')) + ': ' +  error, {
                                               position: toast.POSITION.BOTTOM_RIGHT
                                             })
                                           console.log('there was an error sending the query', error);
