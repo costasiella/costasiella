@@ -100,6 +100,14 @@ class SchoolClasspassFactory(factory.DjangoModelFactory):
     finance_costcenter = factory.SubFactory(FinanceCostCenterFactory)
 
 
+class SchoolClasspassGroupFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.SchoolClasspassGroup
+
+    archived = False
+    name = "First class pass"
+
+
 class AdminFactory(factory.DjangoModelFactory):
     class Meta:
         model = get_user_model()
