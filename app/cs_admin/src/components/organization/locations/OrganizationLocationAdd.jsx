@@ -74,7 +74,7 @@ const OrganizationLocationAdd = ({ t, history }) => (
                                     position: toast.POSITION.BOTTOM_RIGHT
                                   })
                               }).catch((error) => {
-                                toast.error((t('toast_server_error')) + ': ' +  error, {
+                                toast.error((t('general.toast_server_error')) + ': ' +  error, {
                                     position: toast.POSITION.BOTTOM_RIGHT
                                   })
                                 console.log('there was an error sending the query', error)
@@ -85,10 +85,6 @@ const OrganizationLocationAdd = ({ t, history }) => (
                         {({ isSubmitting, errors, values }) => (
                             <FoForm>
                                 <Card.Body>
-                                    {/* <Form.Group label={t('organization.location.public')}>
-                                      <Field type="checkbox" name="displayPublic" checked={values.displayPublic} />
-                                      <ErrorMessage name="displayPublic" component="div" />        
-                                    </Form.Group> */}
                                     <Form.Group>
                                       <Form.Label className="custom-switch">
                                         <Field 
@@ -102,7 +98,7 @@ const OrganizationLocationAdd = ({ t, history }) => (
                                       <ErrorMessage name="displayPublic" component="div" />   
                                     </Form.Group>    
 
-                                    <Form.Group label={t('organization.location.name')}>
+                                    <Form.Group label={t('general.name')}>
                                       <Field type="text" 
                                               name="name" 
                                               className={(errors.name) ? "form-control is-invalid" : "form-control"} 
@@ -117,10 +113,10 @@ const OrganizationLocationAdd = ({ t, history }) => (
                                       type="submit" 
                                       disabled={isSubmitting}
                                     >
-                                      {t('submit')}
+                                      {t('general.submit')}
                                     </Button>
                                     <Button color="link" onClick={() => history.push(return_url)}>
-                                        {t('cancel')}
+                                        {t('general.cancel')}
                                     </Button>
                                 </Card.Footer>
                             </FoForm>
@@ -135,7 +131,7 @@ const OrganizationLocationAdd = ({ t, history }) => (
                                   resource="organizationlocation">
               <Button color="primary btn-block mb-6"
                       onClick={() => history.push(return_url)}>
-                <Icon prefix="fe" name="chevrons-left" /> {t('back')}
+                <Icon prefix="fe" name="chevrons-left" /> {t('general.back')}
               </Button>
             </HasPermissionWrapper>
             <OrganizationMenu active_link='organizationlocation'/>
