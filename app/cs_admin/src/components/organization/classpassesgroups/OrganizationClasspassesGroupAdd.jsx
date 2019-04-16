@@ -70,7 +70,7 @@ const OrganizationClasspassGroupAdd = ({ t, history }) => (
                                     position: toast.POSITION.BOTTOM_RIGHT
                                   })
                               }).catch((error) => {
-                                toast.error((t('toast_server_error')) + ': ' +  error, {
+                                toast.error((t('general.toast_server_error')) + ': ' +  error, {
                                     position: toast.POSITION.BOTTOM_RIGHT
                                   })
                                 console.log('there was an error sending the query', error)
@@ -81,7 +81,7 @@ const OrganizationClasspassGroupAdd = ({ t, history }) => (
                         {({ isSubmitting, errors }) => (
                             <FoForm>
                                 <Card.Body>
-                                    <Form.Group label={t('name')}>
+                                    <Form.Group label={t('general.name')}>
                                       <Field type="text" 
                                               name="name" 
                                               className={(errors.name) ? "form-control is-invalid" : "form-control"} 
@@ -96,10 +96,10 @@ const OrganizationClasspassGroupAdd = ({ t, history }) => (
                                       type="submit" 
                                       disabled={isSubmitting}
                                     >
-                                      {t('submit')}
+                                      {t('general.submit')}
                                     </Button>
                                     <Button color="link" onClick={() => history.push(return_url)}>
-                                        {t('cancel')}
+                                        {t('general.cancel')}
                                     </Button>
                                 </Card.Footer>
                             </FoForm>
@@ -114,7 +114,7 @@ const OrganizationClasspassGroupAdd = ({ t, history }) => (
                                   resource="organizationclasspassgroup">
               <Button color="primary btn-block mb-6"
                       onClick={() => history.push(return_url)}>
-                <Icon prefix="fe" name="chevrons-left" /> {t('back')}
+                <Icon prefix="fe" name="chevrons-left" /> {t('general.back')}
               </Button>
             </HasPermissionWrapper>
             <OrganizationMenu active_link=''/>
