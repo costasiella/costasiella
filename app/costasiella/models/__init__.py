@@ -1,4 +1,4 @@
-from .custom_user import CustomUser
+from .account import Account
 
 from .finance_costcenter import FinanceCostCenter
 from .finance_glaccount import FinanceGLAccount
