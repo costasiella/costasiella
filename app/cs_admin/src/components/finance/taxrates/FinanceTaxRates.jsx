@@ -68,13 +68,13 @@ const FinanceTaxRates = ({ t, history, archived=false }) => (
                   <Button color={(!archived) ? 'primary': 'secondary'}  
                           size="sm"
                           onClick={() => {archived=false; refetch({archived});}}>
-                    {t('current')}
+                    {t('general.current')}
                   </Button>
                   <Button color={(archived) ? 'primary': 'secondary'} 
                           size="sm" 
                           className="ml-2" 
                           onClick={() => {archived=true; refetch({archived});}}>
-                    {t('archive')}
+                    {t('general.archive')}
                   </Button>
                 </Card.Options>
                 
@@ -119,10 +119,10 @@ const FinanceTaxRates = ({ t, history, archived=false }) => (
                     <Table>
                           <Table.Header>
                             <Table.Row key={v4()}>
-                              <Table.ColHeader>{t('name')}</Table.ColHeader>
+                              <Table.ColHeader>{t('general.name')}</Table.ColHeader>
                               <Table.ColHeader>{t('finance.taxrates.percentage')}</Table.ColHeader>
                               <Table.ColHeader>{t('finance.taxrates.rateType')}</Table.ColHeader>
-                              <Table.ColHeader>{t('finance.taxrates.code')}</Table.ColHeader>
+                              <Table.ColHeader>{t('finance.code')}</Table.ColHeader>
                             </Table.Row>
                           </Table.Header>
                           <Table.Body>
@@ -142,11 +142,11 @@ const FinanceTaxRates = ({ t, history, archived=false }) => (
                                   </Table.Col>
                                   <Table.Col className="text-right" key={v4()}>
                                     {(node.archived) ? 
-                                      <span className='text-muted'>{t('unarchive_to_edit')}</span> :
+                                      <span className='text-muted'>{t('general.unarchive_to_edit')}</span> :
                                       <Button className='btn-sm' 
                                               onClick={() => history.push("/finance/taxrates/edit/" + node.id)}
                                               color="secondary">
-                                        {t('edit')}
+                                        {t('general.edit')}
                                       </Button>
                                     }
                                   </Table.Col>
@@ -154,7 +154,7 @@ const FinanceTaxRates = ({ t, history, archived=false }) => (
                                     {(archiveTaxrate, { data }) => (
                                       <Table.Col className="text-right" key={v4()}>
                                         <button className="icon btn btn-link btn-sm" 
-                                           title={t('archive')} 
+                                           title={t('general.archive')} 
                                            href=""
                                            onClick={() => {
                                              console.log("clicked archived")
@@ -169,11 +169,11 @@ const FinanceTaxRates = ({ t, history, archived=false }) => (
                                         ]}).then(({ data }) => {
                                           console.log('got data', data);
                                           toast.success(
-                                            (archived) ? t('unarchived'): t('archived'), {
+                                            (archived) ? t('general.unarchived'): t('general.archived'), {
                                               position: toast.POSITION.BOTTOM_RIGHT
                                             })
                                         }).catch((error) => {
-                                          toast.error((t('toast_server_error')) + ': ' +  error, {
+                                          toast.error((t('general.toast_server_error')) + ': ' +  error, {
                                               position: toast.POSITION.BOTTOM_RIGHT
                                             })
                                           console.log('there was an error sending the query', error);

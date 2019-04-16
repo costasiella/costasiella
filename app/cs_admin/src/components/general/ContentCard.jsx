@@ -57,9 +57,9 @@ class ContentCard extends Component {
                   link
                   onClick={onLoadMore} 
                   >
-                  {t('load_more')}
+                  {t('general.load_more')}
                 </Button>
-               : t('loaded_all')
+               : t('general.loaded_all')
             }
           </Card.Footer>
         </Card>
