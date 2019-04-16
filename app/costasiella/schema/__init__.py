@@ -6,6 +6,7 @@ from .financeglaccount import FinanceGLAccountQuery, FinanceGLAccountMutation
 from .financetaxrate import FinanceTaxRateQuery, FinanceTaxRateMutation
 
 from .schoolclasspass import SchoolClasspassQuery, SchoolClasspassMutation
+from .schoolclasspassgroup import SchoolClasspassGroupQuery, SchoolClasspassGroupMutation
 from .schoolclasstype import SchoolClasstypeQuery, SchoolClasstypeMutation
 from .schooldiscovery import SchoolDiscoveryQuery, SchoolDiscoveryMutation
 from .schoollocation import SchoolLocationQuery, SchoolLocationMutation
@@ -17,6 +18,7 @@ class Query(FinanceCostCenterQuery,
             FinanceGLAccountQuery,
             FinanceTaxRateQuery,
             SchoolClasspassQuery,
+            SchoolClasspassGroupQuery,
             SchoolClasstypeQuery,
             SchoolDiscoveryQuery,
             SchoolLocationQuery, 
@@ -30,6 +32,7 @@ class Mutation(FinanceCostCenterMutation,
                FinanceGLAccountMutation,
                FinanceTaxRateMutation,
                SchoolClasspassMutation,
+               SchoolClasspassGroupMutation,
                SchoolClasstypeMutation,
                SchoolDiscoveryMutation,
                SchoolLocationMutation,
