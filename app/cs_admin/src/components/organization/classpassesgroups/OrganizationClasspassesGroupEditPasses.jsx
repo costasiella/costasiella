@@ -6,7 +6,6 @@ import { v4 } from "uuid"
 import { Query, Mutation } from "react-apollo";
 import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
-import { Formik, Form as FoForm, Field, ErrorMessage } from 'formik'
 import { toast } from 'react-toastify'
 
 import { GET_CLASSPASS_GROUP_PASSES_QUERY } from './queries'
@@ -19,7 +18,6 @@ import {
   Button,
   Card,
   Container,
-  Form,
   Table,
 } from "tabler-react";
 import SiteWrapper from "../../SiteWrapper"
@@ -42,6 +40,16 @@ const ADD_CARD_TO_GROUP = gql`
           name
         }
       }
+    }
+  }
+`
+
+
+const DELETE_CARD_FROM_GROUP = gql`
+  mutation DeleteCardFromGroup($input: DeleteOrganizationClasspassGroupClasspassInput!) {
+    deleteOrganizationClasspassGroupClasspass(input:$input) {
+      deletedOrganizationClasspassGroupClasspassId
+      ok
     }
   }
 `
@@ -88,10 +96,10 @@ class OrganizationClasspassGroupEditPasses extends Component {
                       const passes = data.organizationClasspasses
                       const group = data.organizationClasspassGroup
 
-                      let group_passes = []
+                      let group_passes = {}
                       if (group.organizationClasspasses.edges) {
                         group.organizationClasspasses.edges.map(({ node}) => (
-                          group_passes.push(node.id)
+                          group_passes[node.id] = true
                         ))
                       }
 
@@ -114,10 +122,12 @@ class OrganizationClasspassGroupEditPasses extends Component {
                                       <Table.Col key={v4()}>
                                         {node.name}
                                       </Table.Col>
-                                      {(!node.id in group_passes) ?
+                                      {console.log((node.id in group_passes))}
+                                      {(!(node.id in group_passes)) ?
+                                        // Add
                                         <Mutation mutation={ADD_CARD_TO_GROUP} key={v4()}>
                                           {(AddCardToGroup, { data }) => (
-                                            <Table.Col className="text-right" key={v4()}>
+                                            <Table.Col className="text-right text-green" key={v4()}>
                                               <button className="icon btn btn-link btn-sm" 
                                                 title={t('general.add_to_group')} 
                                                 href=""
@@ -144,12 +154,49 @@ class OrganizationClasspassGroupEditPasses extends Component {
                                                 console.log('there was an error sending the query', error);
                                               })
                                               }}>
-                                                <Icon prefix="fa" name="plus-circle" />
+                                                <Icon prefix="fa" name="plus-circle" /> { ' ' }
+                                                {t('general.add_to_group')} 
                                               </button>
                                             </Table.Col>
                                           )}
                                         </Mutation> :
-                                        "delete" 
+                                        // Delete
+                                        <Mutation mutation={DELETE_CARD_FROM_GROUP} key={v4()}>
+                                          {(DeleteCardFromGroup, { data }) => (
+                                            <Table.Col className="text-right text-red" key={v4()}>
+                                              <button className="icon btn btn-link btn-sm" 
+                                                title={t('general.delete_from_group')} 
+                                                href=""
+                                                onClick={() => {
+                                                  console.log("clicked delete")
+                                                  console.log(node.id)
+                                                  let pass_id = node.id
+                                                  let group_id = this.props.match.params.id
+                                                  DeleteCardFromGroup({ variables: {
+                                                    input: {
+                                                      organizationClasspass: pass_id,
+                                                      organizationClasspassGroup: group_id
+                                                    }
+                                              }, refetchQueries: [
+                                                  {query: GET_CLASSPASS_GROUP_PASSES_QUERY, variables: {"id": group_id, "archived": false }}
+                                              ]}).then(({ data }) => {
+                                                console.log('got data', data);
+                                                toast.success(t('general.deleted_from_group'), {
+                                                  position: toast.POSITION.BOTTOM_RIGHT
+                                                })
+                                              }).catch((error) => {
+                                                toast.error((t('general.toast_server_error')) + ': ' +  error, {
+                                                    position: toast.POSITION.BOTTOM_RIGHT
+                                                  })
+                                                console.log('there was an error sending the query', error);
+                                              })
+                                              }}>
+                                                <Icon prefix="fa" name="minus-circle" /> { ' ' }
+                                                {t('general.delete_from_group')}
+                                              </button>
+                                            </Table.Col>
+                                          )}
+                                        </Mutation> 
                                         }
                                     </Table.Row>
                                   ))}
@@ -157,73 +204,7 @@ class OrganizationClasspassGroupEditPasses extends Component {
                             </Table>
                           </Card.Body>
                               
-                        
-                        // <Mutation mutation={UPDATE_CLASSPASS_GROUP} onCompleted={() => history.push(return_url)}> 
-                        // {(updateClasspassGroup, { data }) => (
-                        //     <Formik
-                        //         initialValues={{ 
-                        //           name: initialData.name, 
-                        //         }}
-                        //         validationSchema={CLASSPASS_GROUP_SCHEMA}
-                        //         onSubmit={(values, { setSubmitting }) => {
-                        //             console.log('submit values:')
-                        //             console.log(values)
-
-                        //             updateClasspassGroup({ variables: {
-                        //               input: {
-                        //                 id: match.params.id,
-                        //                 name: values.name,
-                        //               }
-                        //             }, refetchQueries: [
-                        //                 {query: GET_CLASSPASS_GROUPS_QUERY, variables: {"archived": false }}
-                        //             ]})
-                        //             .then(({ data }) => {
-                        //                 console.log('got data', data)
-                        //                 toast.success((t('organization.classpass_groups.toast_edit_success')), {
-                        //                     position: toast.POSITION.BOTTOM_RIGHT
-                        //                   })
-                        //               }).catch((error) => {
-                        //                 toast.error((t('general.toast_server_error')) + ': ' +  error, {
-                        //                     position: toast.POSITION.BOTTOM_RIGHT
-                        //                   })
-                        //                 console.log('there was an error sending the query', error)
-                        //                 setSubmitting(false)
-                        //               })
-                        //         }}
-                        //         >
-                        //         {({ isSubmitting, errors, values }) => (
-                        //             <FoForm>
-                        //                 <Card.Body>    
-                        //                     <Form.Group label={t('general.name')} >
-                        //                       <Field type="text" 
-                        //                             name="name" 
-                        //                             className={(errors.name) ? "form-control is-invalid" : "form-control"} 
-                        //                             autoComplete="off" />
-                        //                       <ErrorMessage name="name" component="span" className="invalid-feedback" />
-                        //                     </Form.Group>
-                        //                 </Card.Body>
-                        //                 <Card.Footer>
-                        //                     <Button 
-                        //                       className="pull-right"
-                        //                       color="primary"
-                        //                       disabled={isSubmitting}
-                        //                       type="submit"
-                        //                     >
-                        //                       {t('general.submit')}
-                        //                     </Button>
-                        //                     <Button
-                        //                       type="button" 
-                        //                       color="link" 
-                        //                       onClick={() => history.push(return_url)}
-                        //                     >
-                        //                         {t('general.cancel')}
-                        //                     </Button>
-                        //                 </Card.Footer>
-                        //             </FoForm>
-                        //         )}
-                        //     </Formik>
-                        // )}
-                        // </Mutation>
+                     
                         )}}
                   </Query>
                 </Card>
