@@ -105,7 +105,7 @@
             "empty_archive": "Class pass archive is empty",
             "add": "Add class pass",
             "groups": {
-                "edit_passes": "Manage passes"
+                "edit_passes": "Passes in group"
             }
         },
         "classpass": {
