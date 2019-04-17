@@ -128,7 +128,7 @@ const OrganizationClasspassesGroups = ({ t, history, archived=false }) => (
                                   }
                                 })
                               }} >
-                    <Table>
+                        <Table>
                           <Table.Header>
                             <Table.Row key={v4()}>
                               <Table.ColHeader>{t('general.name')}</Table.ColHeader>
@@ -150,9 +150,9 @@ const OrganizationClasspassesGroups = ({ t, history, archived=false }) => (
                                           {t('general.edit')}
                                         </Button>
                                         <Button className='btn-sm' 
-                                                onClick={() => history.push("/organization/classpasses/groups/edit_groups" + node.id)}
+                                                onClick={() => history.push("/organization/classpasses/groups/edit/passes/" + node.id)}
                                                 color="secondary">
-                                          {t('organization.classpasses.groups.edit_passes_in_group')}
+                                          {t('organization.classpasses.groups.edit_passes')}
                                         </Button>
                                       </span>
                                     }

@@ -29,6 +29,7 @@ import OrganizationClasspassEdit from './components/organization/classpasses/Org
 import OrganizationClasspassesGroups from './components/organization/classpassesgroups/OrganizationClasspassesGroups'
 import OrganizationClasspassesGroupAdd from './components/organization/classpassesgroups/OrganizationClasspassesGroupAdd'
 import OrganizationClasspassesGroupEdit from './components/organization/classpassesgroups/OrganizationClasspassesGroupEdit'
+import OrganizationClasspassesGroupEditPasses from './components/organization/classpassesgroups/OrganizationClasspassesGroupEditPasses'
 import OrganizationClasstypes from './components/organization/classtypes/OrganizationClasstypes'
 import OrganizationClasstypeAdd from './components/organization/classtypes/OrganizationClasstypeAdd'
 import OrganizationClasstypeEdit from './components/organization/classtypes/OrganizationClasstypeEdit'
@@ -112,6 +113,7 @@ class App extends Component {
             <Route exact path="/organization/classpasses/groups" component={OrganizationClasspassesGroups} />
             <Route exact path="/organization/classpasses/groups/add" component={OrganizationClasspassesGroupAdd} />
             <Route exact path="/organization/classpasses/groups/edit/:id" component={OrganizationClasspassesGroupEdit} />
+            <Route exact path="/organization/classpasses/groups/edit/passes/:id" component={OrganizationClasspassesGroupEditPasses} />
             <Route exact path="/organization/classtypes" component={OrganizationClasstypes} />
             <Route exact path="/organization/classtypes/add" component={OrganizationClasstypeAdd} />
             <Route exact path="/organization/classtypes/edit/:id" component={OrganizationClasstypeEdit} />
