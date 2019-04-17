@@ -76,7 +76,12 @@
         "yes": "Yes",
         "no": "No",
         "terms_and_conditions": "Terms and conditions",
-        "settings": "Settings"
+        "settings": "Settings",
+        "add_to_group": "Add to group",
+        "added_to_group": "Added to group",
+        "delete_from_group": "Delete from group",
+        "deleted_from_group": "Deleted from group",
+        "group": "Group"
     },
     "yup": {
         "min_len_3": "Please input at least 3 characters",
@@ -98,7 +103,10 @@
             "error_loading": "Error loading class passes :(",
             "empty_list": "No class passes found",
             "empty_archive": "Class pass archive is empty",
-            "add": "Add class pass"
+            "add": "Add class pass",
+            "groups": {
+                "edit_passes": "Manage passes"
+            }
         },
         "classpass": {
             "public": "This is a public pass",
@@ -172,7 +180,10 @@
             "public": "This is a public membership",
             "shop": "Show this membership in the shop"
         },
-        "title": "Organization"
+        "title": "Organization",
+        "classpass_group_classpasses": {
+            "title_edit": "Edit passes in group"
+        }
     },
     "validity": {
         "days": "Days",

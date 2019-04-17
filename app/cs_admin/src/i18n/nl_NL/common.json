@@ -76,7 +76,12 @@
         "yes": "__STRING_NOT_TRANSLATED__",
         "no": "__STRING_NOT_TRANSLATED__",
         "terms_and_conditions": "__STRING_NOT_TRANSLATED__",
-        "settings": "__STRING_NOT_TRANSLATED__"
+        "settings": "__STRING_NOT_TRANSLATED__",
+        "add_to_group": "__STRING_NOT_TRANSLATED__",
+        "added_to_group": "__STRING_NOT_TRANSLATED__",
+        "delete_from_group": "__STRING_NOT_TRANSLATED__",
+        "deleted_from_group": "__STRING_NOT_TRANSLATED__",
+        "group": "__STRING_NOT_TRANSLATED__"
     },
     "yup": {
         "min_len_3": "__STRING_NOT_TRANSLATED__",
@@ -98,7 +103,10 @@
             "error_loading": "__STRING_NOT_TRANSLATED__",
             "empty_list": "__STRING_NOT_TRANSLATED__",
             "empty_archive": "__STRING_NOT_TRANSLATED__",
-            "add": "__STRING_NOT_TRANSLATED__"
+            "add": "__STRING_NOT_TRANSLATED__",
+            "groups": {
+                "edit_passes": "__STRING_NOT_TRANSLATED__"
+            }
         },
         "classpass": {
             "public": "__STRING_NOT_TRANSLATED__",
@@ -172,7 +180,10 @@
             "public": "__STRING_NOT_TRANSLATED__",
             "shop": "__STRING_NOT_TRANSLATED__"
         },
-        "title": "__STRING_NOT_TRANSLATED__"
+        "title": "__STRING_NOT_TRANSLATED__",
+        "classpass_group_classpasses": {
+            "title_edit": "__STRING_NOT_TRANSLATED__"
+        }
     },
     "validity": {
         "days": "__STRING_NOT_TRANSLATED__",

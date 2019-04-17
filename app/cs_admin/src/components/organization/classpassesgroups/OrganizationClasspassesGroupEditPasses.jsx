@@ -12,6 +12,7 @@ import { GET_CLASSPASS_GROUP_PASSES_QUERY } from './queries'
 
 
 import {
+  Alert,
   Page,
   Grid,
   Icon,
@@ -79,7 +80,6 @@ class OrganizationClasspassGroupEditPasses extends Component {
                 <Card>
                   <Card.Header>
                     <Card.Title>{t('organization.classpass_group_classpasses.title_edit')}</Card.Title>
-                    {console.log(match.params.id)}
                   </Card.Header>
                   <Query query={GET_CLASSPASS_GROUP_PASSES_QUERY} variables={{ id, archived: false }} >
                     {({ loading, error, data, refetch }) => {
@@ -110,6 +110,9 @@ class OrganizationClasspassGroupEditPasses extends Component {
 
                         (!passes.edges) ? "" : 
                           <Card.Body>
+                            <Alert type="primary">
+                              <strong>{t('general.group')}</strong> {group.name}
+                            </Alert>
                             <Table>
                               <Table.Header>
                                 <Table.Row key={v4()}>
