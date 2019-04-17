@@ -113,12 +113,19 @@ class OrganizationClasspassGroupEditPasses extends Component {
                             <Table>
                               <Table.Header>
                                 <Table.Row key={v4()}>
+                                  <Table.ColHeader>{t('')}</Table.ColHeader>
                                   <Table.ColHeader>{t('general.name')}</Table.ColHeader>
+                                  <Table.ColHeader>{t('')}</Table.ColHeader>
                                 </Table.Row>
                               </Table.Header>
                               <Table.Body>
                                   {passes.edges.map(({ node }) => (
                                     <Table.Row key={v4()}>
+                                      <Table.Col key={v4()}>
+                                        {(node.id in group_passes) ? 
+                                          <Icon name="check-circle" className="text-green" /> : <Icon name="x-circle" className="text-red" />
+                                        }
+                                      </Table.Col>
                                       <Table.Col key={v4()}>
                                         {node.name}
                                       </Table.Col>
@@ -128,7 +135,8 @@ class OrganizationClasspassGroupEditPasses extends Component {
                                         <Mutation mutation={ADD_CARD_TO_GROUP} key={v4()}>
                                           {(AddCardToGroup, { data }) => (
                                             <Table.Col className="text-right text-green" key={v4()}>
-                                              <button className="icon btn btn-link btn-sm" 
+                                              <Button color="link"
+                                                size="sm"
                                                 title={t('general.add_to_group')} 
                                                 href=""
                                                 onClick={() => {
@@ -154,9 +162,9 @@ class OrganizationClasspassGroupEditPasses extends Component {
                                                 console.log('there was an error sending the query', error);
                                               })
                                               }}>
-                                                <Icon prefix="fa" name="plus-circle" /> { ' ' }
+                                                <Icon prefix="fe" name="plus-circle" /> { ' ' }
                                                 {t('general.add_to_group')} 
-                                              </button>
+                                              </Button>
                                             </Table.Col>
                                           )}
                                         </Mutation> :
@@ -164,7 +172,8 @@ class OrganizationClasspassGroupEditPasses extends Component {
                                         <Mutation mutation={DELETE_CARD_FROM_GROUP} key={v4()}>
                                           {(DeleteCardFromGroup, { data }) => (
                                             <Table.Col className="text-right text-red" key={v4()}>
-                                              <button className="icon btn btn-link btn-sm" 
+                                              <Button color="link"
+                                                size="sm"
                                                 title={t('general.delete_from_group')} 
                                                 href=""
                                                 onClick={() => {
@@ -191,9 +200,9 @@ class OrganizationClasspassGroupEditPasses extends Component {
                                                 console.log('there was an error sending the query', error);
                                               })
                                               }}>
-                                                <Icon prefix="fa" name="minus-circle" /> { ' ' }
+                                                <Icon prefix="fe" name="minus-circle" /> { ' ' }
                                                 {t('general.delete_from_group')}
-                                              </button>
+                                              </Button>
                                             </Table.Col>
                                           )}
                                         </Mutation> 
