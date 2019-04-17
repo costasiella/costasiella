@@ -7,6 +7,7 @@ from .finance_taxrate import FinanceTaxRateQuery, FinanceTaxRateMutation
 
 from .organization_classpass import OrganizationClasspassQuery, OrganizationClasspassMutation
 from .organization_classpass_group import OrganizationClasspassGroupQuery, OrganizationClasspassGroupMutation
+from .organization_classpass_group_classpass import OrganizationClasspassGroupClasspassMutation
 from .organization_classtype import OrganizationClasstypeQuery, OrganizationClasstypeMutation
 from .organization_discovery import OrganizationDiscoveryQuery, OrganizationDiscoveryMutation
 from .organization_location import OrganizationLocationQuery, OrganizationLocationMutation
@@ -33,6 +34,7 @@ class Mutation(FinanceCostCenterMutation,
                FinanceTaxRateMutation,
                OrganizationClasspassMutation,
                OrganizationClasspassGroupMutation,
+               OrganizationClasspassGroupClasspassMutation,
                OrganizationClasstypeMutation,
                OrganizationDiscoveryMutation,
                OrganizationLocationMutation,
