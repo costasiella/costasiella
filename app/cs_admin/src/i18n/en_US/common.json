@@ -79,8 +79,8 @@
         "settings": "Settings",
         "add_to_group": "Add to group",
         "added_to_group": "Added to group",
-        "delete_from_group": "Delete from group",
-        "deleted_from_group": "Deleted from group",
+        "delete_from_group": "Remove from group",
+        "deleted_from_group": "Removed from group",
         "group": "Group"
     },
     "yup": {
