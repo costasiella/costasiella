@@ -143,11 +143,18 @@ const OrganizationClasspassesGroups = ({ t, history, archived=false }) => (
                                   <Table.Col className="text-right" key={v4()}>
                                     {(node.archived) ? 
                                       <span className='text-muted'>{t('general.unarchive_to_edit')}</span> :
-                                      <Button className='btn-sm' 
-                                              onClick={() => history.push("/organization/classpasses/groups/edit/" + node.id)}
-                                              color="secondary">
-                                        {t('general.edit')}
-                                      </Button>
+                                      <span>
+                                        <Button className='btn-sm' 
+                                                onClick={() => history.push("/organization/classpasses/groups/edit/" + node.id)}
+                                                color="secondary">
+                                          {t('general.edit')}
+                                        </Button>
+                                        <Button className='btn-sm' 
+                                                onClick={() => history.push("/organization/classpasses/groups/edit_groups" + node.id)}
+                                                color="secondary">
+                                          {t('organization.classpasses.groups.edit_passes_in_group')}
+                                        </Button>
+                                      </span>
                                     }
                                   </Table.Col>
                                   <Mutation mutation={ARCHIVE_CLASSPASS_GROUP} key={v4()}>
