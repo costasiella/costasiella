@@ -10,8 +10,6 @@ import { Formik, Form as FoForm, Field, ErrorMessage } from 'formik'
 import { toast } from 'react-toastify'
 
 import { GET_CLASSPASS_GROUP_PASSES_QUERY } from './queries'
-import { CLASSPASS_GROUP_SCHEMA } from './yupSchema'
-
 
 
 import {
@@ -30,12 +28,19 @@ import HasPermissionWrapper from "../../HasPermissionWrapper"
 import OrganizationMenu from "../OrganizationMenu"
 
 //TODO: Add and delete group pass mutations
-const UPDATE_CLASSPASS_GROUP = gql`
-  mutation UpdateOrganizationClasspassGroup($input: UpdateOrganizationClasspassGroupInput!) {
-    updateOrganizationClasspassGroup(input: $input) {
-      organizationClasspassGroup {
+const ADD_CARD_TO_GROUP = gql`
+  mutation AddCardToGroup($input: CreateOrganizationClasspassGroupClasspassInput!) {
+    createOrganizationClasspassGroupClasspass(input:$input) {
+      organizationClasspassGroupClasspass {
         id
-        name
+        organizationClasspass {
+          id
+          name
+        }
+        organizationClasspassGroup {
+          id
+          name
+        }
       }
     }
   }
@@ -83,6 +88,16 @@ class OrganizationClasspassGroupEditPasses extends Component {
                       const passes = data.organizationClasspasses
                       const group = data.organizationClasspassGroup
 
+                      let group_passes = []
+                      if (group.organizationClasspasses.edges) {
+                        group.organizationClasspasses.edges.map(({ node}) => (
+                          group_passes.push(node.id)
+                        ))
+                      }
+
+                      console.log("group_passes")
+                      console.log(group_passes)
+
                       return (
 
                         (!passes.edges) ? "" : 
@@ -99,40 +114,43 @@ class OrganizationClasspassGroupEditPasses extends Component {
                                       <Table.Col key={v4()}>
                                         {node.name}
                                       </Table.Col>
-                                      {/* <Mutation mutation={ARCHIVE_CLASSPASS_GROUP} key={v4()}>
-                                        {(archiveCostcenter, { data }) => (
-                                          <Table.Col className="text-right" key={v4()}>
-                                            <button className="icon btn btn-link btn-sm" 
-                                              title={t('general.archive')} 
-                                              href=""
-                                              onClick={() => {
-                                                console.log("clicked archived")
-                                                let id = node.id
-                                                archiveCostcenter({ variables: {
-                                                  input: {
-                                                    id,
-                                                    archived: !archived
-                                                  }
-                                            }, refetchQueries: [
-                                                {query: GET_CLASSPASS_GROUPS_QUERY, variables: {"archived": archived }}
-                                            ]}).then(({ data }) => {
-                                              console.log('got data', data);
-                                              toast.success(
-                                                (archived) ? t('general.unarchived'): t('general.archived'), {
+                                      {(!node.id in group_passes) ?
+                                        <Mutation mutation={ADD_CARD_TO_GROUP} key={v4()}>
+                                          {(AddCardToGroup, { data }) => (
+                                            <Table.Col className="text-right" key={v4()}>
+                                              <button className="icon btn btn-link btn-sm" 
+                                                title={t('general.add_to_group')} 
+                                                href=""
+                                                onClick={() => {
+                                                  console.log("clicked add")
+                                                  let pass_id = node.id
+                                                  let group_id = this.props.match.params.id
+                                                  AddCardToGroup({ variables: {
+                                                    input: {
+                                                      organizationClasspass: pass_id,
+                                                      organizationClasspassGroup: group_id
+                                                    }
+                                              }, refetchQueries: [
+                                                  {query: GET_CLASSPASS_GROUP_PASSES_QUERY, variables: {"id": group_id, "archived": false }}
+                                              ]}).then(({ data }) => {
+                                                console.log('got data', data);
+                                                toast.success(t('general.added_to_group'), {
                                                   position: toast.POSITION.BOTTOM_RIGHT
                                                 })
-                                            }).catch((error) => {
-                                              toast.error((t('general.toast_server_error')) + ': ' +  error, {
-                                                  position: toast.POSITION.BOTTOM_RIGHT
-                                                })
-                                              console.log('there was an error sending the query', error);
-                                            })
-                                            }}>
-                                              <Icon prefix="fa" name="inbox" />
-                                            </button>
-                                          </Table.Col>
-                                        )}
-                                      </Mutation> */}
+                                              }).catch((error) => {
+                                                toast.error((t('general.toast_server_error')) + ': ' +  error, {
+                                                    position: toast.POSITION.BOTTOM_RIGHT
+                                                  })
+                                                console.log('there was an error sending the query', error);
+                                              })
+                                              }}>
+                                                <Icon prefix="fa" name="plus-circle" />
+                                              </button>
+                                            </Table.Col>
+                                          )}
+                                        </Mutation> :
+                                        "delete" 
+                                        }
                                     </Table.Row>
                                   ))}
                               </Table.Body>
