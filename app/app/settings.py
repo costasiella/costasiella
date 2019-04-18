@@ -209,7 +209,7 @@ WEBPACK_LOADER = {
 LOGIN_REDIRECT_URL = 'home'
 
 # Custom user model
-AUTH_USER_MODEL = 'costasiella.CustomUser'
+AUTH_USER_MODEL = 'costasiella.Account'
 
 # Allauth configuration
 # https://django-allauth.readthedocs.io/en/latest/configuration.html

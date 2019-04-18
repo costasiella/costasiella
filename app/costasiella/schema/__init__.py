@@ -1,28 +1,31 @@
 import graphene
 import graphql_jwt
 
-from .financecostcenter import FinanceCostCenterQuery, FinanceCostCenterMutation
-from .financeglaccount import FinanceGLAccountQuery, FinanceGLAccountMutation
-from .financetaxrate import FinanceTaxRateQuery, FinanceTaxRateMutation
+from .finance_costcenter import FinanceCostCenterQuery, FinanceCostCenterMutation
+from .finance_glaccount import FinanceGLAccountQuery, FinanceGLAccountMutation
+from .finance_taxrate import FinanceTaxRateQuery, FinanceTaxRateMutation
 
-from .schoolclasspass import SchoolClasspassQuery, SchoolClasspassMutation
-from .schoolclasspassgroup import SchoolClasspassGroupQuery, SchoolClasspassGroupMutation
-from .schoolclasstype import SchoolClasstypeQuery, SchoolClasstypeMutation
-from .schooldiscovery import SchoolDiscoveryQuery, SchoolDiscoveryMutation
-from .schoollocation import SchoolLocationQuery, SchoolLocationMutation
-from .schoolmembership import SchoolMembershipQuery, SchoolMembershipMutation
+from .organization_classpass import OrganizationClasspassQuery, OrganizationClasspassMutation
+from .organization_classpass_group import OrganizationClasspassGroupQuery, OrganizationClasspassGroupMutation
+from .organization_classpass_group_classpass import OrganizationClasspassGroupClasspassMutation
+from .organization_classtype import OrganizationClasstypeQuery, OrganizationClasstypeMutation
+from .organization_discovery import OrganizationDiscoveryQuery, OrganizationDiscoveryMutation
+from .organization_location import OrganizationLocationQuery, OrganizationLocationMutation
+from .organization_level import OrganizationLevelQuery, OrganizationLevelMutation
+from .organization_membership import OrganizationMembershipQuery, OrganizationMembershipMutation
 from .user import UserQuery, UserMutation
 
 
 class Query(FinanceCostCenterQuery,
             FinanceGLAccountQuery,
             FinanceTaxRateQuery,
-            SchoolClasspassQuery,
-            SchoolClasspassGroupQuery,
-            SchoolClasstypeQuery,
-            SchoolDiscoveryQuery,
-            SchoolLocationQuery, 
-            SchoolMembershipQuery,
+            OrganizationClasspassQuery,
+            OrganizationClasspassGroupQuery,
+            OrganizationClasstypeQuery,
+            OrganizationDiscoveryQuery,
+            OrganizationLocationQuery, 
+            OrganizationLevelQuery, 
+            OrganizationMembershipQuery,
             UserQuery, 
             graphene.ObjectType):
     node = graphene.relay.Node.Field()
@@ -31,12 +34,14 @@ class Query(FinanceCostCenterQuery,
 class Mutation(FinanceCostCenterMutation,
                FinanceGLAccountMutation,
                FinanceTaxRateMutation,
-               SchoolClasspassMutation,
-               SchoolClasspassGroupMutation,
-               SchoolClasstypeMutation,
-               SchoolDiscoveryMutation,
-               SchoolLocationMutation,
-               SchoolMembershipMutation, 
+               OrganizationClasspassMutation,
+               OrganizationClasspassGroupMutation,
+               OrganizationClasspassGroupClasspassMutation,
+               OrganizationClasstypeMutation,
+               OrganizationDiscoveryMutation,
+               OrganizationLocationMutation,
+               OrganizationLevelMutation,
+               OrganizationMembershipMutation, 
                UserMutation, 
                graphene.ObjectType):
     token_auth = graphql_jwt.ObtainJSONWebToken.Field()

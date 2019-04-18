@@ -1,226 +1,210 @@
 {
-    "school": {
-        "locations": {
-            "title": "Locations",
-            "error_loading": "Error loading locations :(",
-            "empty_list": "No locations found, click the Add button to add a location.",
-            "add": "Add location",
-            "title_add": "Add location",
-            "toast_add_success": "Added location",
-            "confirm_archive": "Do you wish to move this location to the archive?",
-            "empty_archive": "No locations have been archived yet.",
-            "title_edit": "Edit location",
-            "toast_edit_success": "Saved location"
+    "finance": {
+        "title": "Finance",
+        "costcenters": {
+            "title_add": "Add cost center",
+            "toast_add_success": "Added cost center",
+            "title": "Cost centers",
+            "title_edit": "Edit cost center",
+            "toast_edit_success": "Saved cost center",
+            "error_loading": "Error loading cost centers :(",
+            "empty_list": "No cost centers found",
+            "empty_archive": "Cost center archive is empty",
+            "add": "Add cost center"
         },
-        "location": {
-            "name": "Location name",
-            "public": "This is a public location"
+        "code": "Accounting code",
+        "glaccounts": {
+            "title": "General ledger accounts",
+            "title_add": "Add general ledger account",
+            "toast_add_success": "Added G/L account",
+            "title_edit": "Edit General ledger account",
+            "toast_edit_success": "Saved G/L account",
+            "error_loading": "Error loading general ledger accounts :(",
+            "empty_list": "No general ledger accounts found",
+            "empty_archive": "General ledger archive is empty",
+            "add": "Add G/L account"
+        },
+        "taxrates": {
+            "title": "Tax rates",
+            "title_add": "Add tax rate",
+            "toast_add_success": "Added tax rate",
+            "percentage": "Percentage",
+            "rateType": "Tax rate type",
+            "including": "Including",
+            "excluding": "Excluding",
+            "title_edit": "Edit tax rate type",
+            "toast_edit_success": "Saved tax rate type",
+            "error_loading": "Error loading tax rates :(",
+            "empty_list": "No tax rates found",
+            "empty_archive": "Tax rate archive is empty",
+            "add": "Add tax rate"
+        }
+    },
+    "general": {
+        "toast_server_error": "Uh oh... the server returned an error",
+        "name": "Name",
+        "submit": "Save",
+        "cancel": "Cancel",
+        "back": "Back",
+        "loading_with_dots": "Loading...",
+        "error_sad_smiley": "Error :(",
+        "current": "Current",
+        "archive": "Archive",
+        "unarchive_to_edit": "Unarchive to edit",
+        "edit": "Edit",
+        "unarchived": "Moved to current",
+        "archived": "Moved to archive",
+        "load_more": "Load more",
+        "loaded_all": "Displaying all items",
+        "description": "Description",
+        "price": "Price",
+        "taxrate": "Tax rate",
+        "validity": "Validity",
+        "validity_unit": "Validity in",
+        "unlimited": "Unlimited",
+        "classes": "Classes",
+        "membership": "Membership",
+        "membership_not_required": "Membership not required",
+        "quickStatsAmount": "Quick stats amount",
+        "glaccount": "General ledger account",
+        "costcenter": "Costcenter",
+        "groups": "Groups",
+        "public": "Public",
+        "shop": "Shop",
+        "custom_file_input_inner_label": "Choose file...",
+        "custom_file_input_label": "Select a file",
+        "yes": "Yes",
+        "no": "No",
+        "terms_and_conditions": "Terms and conditions",
+        "settings": "Settings",
+        "add_to_group": "Add to group",
+        "added_to_group": "Added to group",
+        "delete_from_group": "Remove from group",
+        "deleted_from_group": "Removed from group",
+        "group": "Group"
+    },
+    "yup": {
+        "min_len_3": "Please input at least 3 characters",
+        "field_required": "This field is required",
+        "field_has_to_be_number": "Please input a number",
+        "positive_number_required": "Please input a number above 0",
+        "url": "Please input a valid url starting with http:// or https://"
+    },
+    "home": {
+        "title": "Home"
+    },
+    "organization": {
+        "classpasses": {
+            "title_add": "Add class pass",
+            "toast_add_success": "Added class pass",
+            "title_edit": "Edit class pass",
+            "toast_edit_success": "Saved class pass",
+            "title": "Class passes",
+            "error_loading": "Error loading class passes :(",
+            "empty_list": "No class passes found",
+            "empty_archive": "Class pass archive is empty",
+            "add": "Add class pass",
+            "groups": {
+                "edit_passes": "Passes in group"
+            }
+        },
+        "classpass": {
+            "public": "This is a public pass",
+            "shop": "Show this pass in the shop"
+        },
+        "classpass_groups": {
+            "title_add": "Add class pass group",
+            "toast_add_success": "Added class pass group",
+            "title_edit": "Edit class pass group",
+            "toast_edit_success": "Saved class pass group",
+            "title": "Class pass groups",
+            "error_loading": "Error loading class pass groups :(",
+            "empty_list": "No class pass groups found",
+            "empty_archive": "Class pass groups archive is empty",
+            "add": "Add class pass group"
         },
         "classtypes": {
             "title_add": "Add class type",
             "toast_add_success": "Added class type",
-            "title": "Class types",
-            "error_loading": "Error loading class types :(",
-            "empty_list": "No class types found, click the Add button to add a class type",
-            "empty_archive": "No class types have been archived yet.",
-            "add": "Add class type",
             "title_edit": "Edit class type",
             "toast_edit_success": "Saved class type",
-            "toast_image_save_success": "Saved image",
-            "edit_image": "Edit image",
-            "image": "Image"
+            "toast_image_save_success": "Saved class type image",
+            "edit_image": "Edit class type image",
+            "title": "Class types",
+            "error_loading": "Error loading class types :(",
+            "empty_list": "No class types found",
+            "empty_archive": "Class types archive is empty",
+            "add": "Add class type"
         },
         "classtype": {
             "public": "This is a public class type",
-            "name": "Class type name",
             "url_website": "Link to description on website"
-        },
-        "page_header": "School",
-        "menu": {
-            "locations": "Locations",
-            "classtypes": "Class types",
-            "discoveries": "Discovery",
-            "memberships": "Memberships",
-            "classpasses": "Class passes"
         },
         "discoveries": {
             "title": "Discovery",
-            "error_loading": "Error loading ways of discovery :(",
-            "add": "Add discovery",
-            "title_add": "Add discovery",
-            "toast_add_success": "Saved discovery",
-            "empty_list": "No ways of discovery found, click the Add button to add the first",
-            "empty_archive": "No ways of discovery have been archived yet.",
-            "title_edit": "Edit discovery",
-            "toast_edit_success": "Saved discovery",
-            "name": "Name"
+            "error_loading": "Error loading discovery types :(",
+            "empty_list": "No discovery types found",
+            "empty_archive": "Discovery types archive is empty",
+            "add": "Add discovery type",
+            "title_add": "Add discovery type",
+            "toast_add_success": "Saved discovery type",
+            "title_edit": "Edit discovery type",
+            "toast_edit_success": "Saved discovery type"
         },
-        "page_title": "School",
+        "locations": {
+            "title": "Locations",
+            "title_add": "Add location",
+            "toast_add_success": "Added location",
+            "title_edit": "Edit location",
+            "toast_edit_success": "Saved location",
+            "error_loading": "Error loading locations :(",
+            "empty_list": "No locations found",
+            "empty_archive": "Locations archive is empty",
+            "add": "Add location"
+        },
         "memberships": {
             "title": "Memberships",
             "title_add": "Add membership",
             "toast_add_success": "Added membership",
+            "title_edit": "Edit membership",
+            "toast_edit_success": "Saved memberhsip",
             "error_loading": "Error loading memberships :(",
-            "empty_list": "No memberships found, click the Add button to add a membership",
-            "empty_archive": "No memberships have been archived yet.",
-            "add": "Add membership",
-            "validity": "Validity",
-            "toast_edit_success": "Saved membership",
-            "title_edit": "Edit membership"
+            "empty_list": "No memberships found",
+            "empty_archive": "Memberships archive is empty",
+            "add": "Add membership"
+        },
+        "location": {
+            "public": "This is a public location"
         },
         "membership": {
             "public": "This is a public membership",
-            "shop": "Show this membership in the shop",
-            "name": "Name",
-            "price": "Price",
-            "taxrate": "Tax rate",
-            "validity": "Validity",
-            "validity_unit": "Validity in",
-            "terms_and_conditions": "Terms and conditions",
-            "glaccount": "General Ledger account",
-            "costcenter": "Cost center"
+            "shop": "Show this membership in the shop"
         },
-        "classpasses": {
-            "title_add": "Add class pass",
-            "toast_add_success": "Added class pass",
-            "title": "Class passes",
-            "error_loading": "Error loading class passes :(",
-            "empty_list": "No class passes found, click the Add button to add a class pass",
-            "empty_archive": "No class passes have been archived yet.",
-            "validity": "Validity",
-            "add": "Add class pass",
-            "title_edit": "Edit class pass",
-            "toast_edit_success": "Saved class pass"
+        "title": "Organization",
+        "classpass_group_classpasses": {
+            "title_edit": "Edit passes in group"
         },
-        "classpass": {
-            "public": "This is a public pass",
-            "shop": "Show this pass in the shop",
-            "name": "Name",
-            "price": "Price",
-            "taxrate": "Tax rate",
-            "validity": "Validity",
-            "validity_unit": "Validity in",
-            "unlimited": "Unlimited classes",
-            "classes": "Classes",
-            "membership": "Membership",
-            "quickStatsAmount": "Quick stats amount",
-            "glaccount": "General Ledger account",
-            "costcenter": "Cost center"
-        },
-        "classpass_groups": {
-            "title_add": "Add class passes group",
-            "toast_add_success": "Added class passes group",
-            "title_edit": "Edit class passes group",
-            "toast_edit_success": "Saved class passes group",
-            "title": "Class passes groups",
-            "error_loading": "Error loading class passes groups :(",
-            "empty_list": "No groups have been created yet, click the Add button to add a group",
-            "empty_archive": "No groups have been archived yet",
-            "add": "Add class passes group"
+        "levels": {
+            "title": "Levels",
+            "title_add": "Add level",
+            "toast_add_success": "Added level",
+            "title_edit": "Edit level",
+            "toast_edit_success": "Saved level",
+            "error_loading": "Error loading levels :(",
+            "empty_list": "No levels found",
+            "empty_archive": "Levels archive is empty",
+            "add": "Add level"
         }
     },
-    "name": "Name",
-    "public": "Public",
-    "back": "Back",
-    "submit": "Submit",
-    "cancel": "Cancel",
-    "toast_server_error": "Uh oh... the server returned an error",
-    "yes": "Yes",
-    "no": "No",
-    "edit": "Edit",
-    "archive": "Archive",
-    "please_confirm": "Please confirm",
-    "current": "Current",
-    "unarchived": "Moved to current",
-    "archived": "Moved to archive",
-    "unarchive_to_edit": "Unarchive to edit",
-    "description": "Description",
-    "loading_with_dots": "Loading...",
-    "error_sad_smiley": "Error :(",
-    "yup": {
-        "url": "Enter an address starting with http:// or https://",
-        "min_len_3": "Please enter at least 3 characters",
-        "field_required": "This field is required",
-        "field_has_to_be_number": "Please input a number",
-        "positive_number_required": "Please input a positive number"
-    },
-    "load_more": "Load more...",
-    "loaded_all": "Displaying all items",
-    "finance": {
-        "menu": {
-            "glaccounts": "G/L Accounts",
-            "costcenters": "Cost centers",
-            "taxrates": "Tax rates"
-        },
-        "page_header": "Finance",
-        "glaccounts": {
-            "title": "General ledger accounts",
-            "error_loading": "Error loading general ledger accounts :(",
-            "empty_list": "No accounts found, click the Add button to add an account.",
-            "empty_archive": "No accounts have been archived yet.",
-            "code": "Code",
-            "add": "Add G/L Account",
-            "title_add": "Add general ledger account",
-            "toast_add_success": "Saved G/L Account",
-            "title_edit": "Edit general ledger account",
-            "toast_edit_success": "Saved G/L Account"
-        },
-        "costcenters": {
-            "title": "Cost centers",
-            "title_add": "Add cost center",
-            "toast_add_success": "Saved cost center",
-            "error_loading": "Error loading cost centers :(",
-            "empty_list": "No cost centers found, click the Add button to add a cost center",
-            "empty_archive": "No costcenters have been archived yet",
-            "code": "Code",
-            "add": "Add Cost center",
-            "title_edit": "Edit Cost center",
-            "toast_edit_success": "Saved Cost center"
-        },
-        "title": "Finance",
-        "taxrates": {
-            "title": "Tax rates",
-            "error_loading": "Error loading tax rates :(",
-            "empty_list": "No tax rates found, click the Add button to add a tax rate",
-            "empty_archive": "No tax rates have been archived yet",
-            "percentage": "Percentage",
-            "rateType": "Type",
-            "code": "Code",
-            "add": "Add tax rate",
-            "title_add": "Add tax rate",
-            "toast_add_success": "Saved tax rate",
-            "including": "Including",
-            "excluding": "Excluding",
-            "title_edit": "Edit tax rate",
-            "toast_edit_success": "Saved tax rate"
-        }
-    },
-    "home": {
-        "page_header": "Home",
-        "home": {
-            "title": "Home"
-        }
-    },
-    "custom_file_input_label": "File input",
-    "custom_file_input_inner_label": "Choose file",
-    "system": {
-        "user": {
-            "error_loading": "Error loading user... :("
-        }
-    },
-    "settings": "Settings",
     "validity": {
         "days": "Days",
         "weeks": "Weeks",
         "months": "Months",
         "years": "Years"
     },
-    "shop": "Shop",
-    "price": "Price",
-    "general": {
-        "classes": "Classes",
-        "unlimited": "Unlimited",
-        "membership_not_required": "Membership not required",
-        "groups": "Groups"
+    "system": {
+        "user": {
+            "error_loading": "Error loading user :("
+        }
     }
 }

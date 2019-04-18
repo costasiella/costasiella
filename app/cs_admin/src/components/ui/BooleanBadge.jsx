@@ -9,8 +9,8 @@ import {
 
 const BooleanBadge = ({ t, value }) => (
     (value) ?
-        <Badge color="success">{t('yes')}</Badge> :
-        <Badge color="danger">{t('no')}</Badge> 
+        <Badge color="success">{t('general.yes')}</Badge> :
+        <Badge color="danger">{t('general.no')}</Badge> 
 )
 
 export default withTranslation()(BooleanBadge)

@@ -4,13 +4,12 @@ from django.contrib.auth.admin import UserAdmin
 
 # Register your models here.
 
-from .forms import CustomUserCreationForm, CustomUserChangeForm
-from .models import CustomUser
+from .forms import AccountCreationForm, AccountChangeForm
 
-class CustomUserAdmin(UserAdmin):
-    add_form = CustomUserCreationForm
-    form = CustomUserChangeForm
-    model = CustomUser
+class AccountAdmin(UserAdmin):
+    add_form = AccountCreationForm
+    form = AccountChangeForm
+    model = get_user_model()
     list_display = ['email', ]
 
-admin.site.register(CustomUser, CustomUserAdmin)
+admin.site.register(get_user_model(), AccountAdmin)

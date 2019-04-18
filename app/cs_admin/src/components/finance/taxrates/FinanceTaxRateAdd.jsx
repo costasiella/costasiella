@@ -78,7 +78,7 @@ const FinanceTaxRateAdd = ({ t, history }) => (
                                     position: toast.POSITION.BOTTOM_RIGHT
                                   })
                               }).catch((error) => {
-                                toast.error((t('toast_server_error')) + ': ' +  error, {
+                                toast.error((t('general.toast_server_error')) + ': ' +  error, {
                                     position: toast.POSITION.BOTTOM_RIGHT
                                   })
                                 console.log('there was an error sending the query', error)
@@ -89,7 +89,7 @@ const FinanceTaxRateAdd = ({ t, history }) => (
                         {({ isSubmitting, errors }) => (
                             <FoForm>
                                 <Card.Body>
-                                    <Form.Group label={t('name')}>
+                                    <Form.Group label={t('general.name')}>
                                       <Field type="text" 
                                               name="name" 
                                               className={(errors.name) ? "form-control is-invalid" : "form-control"} 
@@ -113,7 +113,7 @@ const FinanceTaxRateAdd = ({ t, history }) => (
                                       </Field>
                                       <ErrorMessage name="rateType" component="span" className="invalid-feedback" />
                                     </Form.Group>
-                                    <Form.Group label={t('finance.taxrates.code')}>
+                                    <Form.Group label={t('finance.code')}>
                                       <Field type="text" 
                                               name="code" 
                                               className={(errors.code) ? "form-control is-invalid" : "form-control"} 
@@ -128,10 +128,10 @@ const FinanceTaxRateAdd = ({ t, history }) => (
                                       type="submit" 
                                       disabled={isSubmitting}
                                     >
-                                      {t('submit')}
+                                      {t('general.submit')}
                                     </Button>
                                     <Button color="link" onClick={() => history.push(return_url)}>
-                                        {t('cancel')}
+                                        {t('general.cancel')}
                                     </Button>
                                 </Card.Footer>
                             </FoForm>
@@ -146,7 +146,7 @@ const FinanceTaxRateAdd = ({ t, history }) => (
                                   resource="financetaxrate">
               <Button color="primary btn-block mb-6"
                       onClick={() => history.push(return_url)}>
-                <Icon prefix="fe" name="chevrons-left" /> {t('back')}
+                <Icon prefix="fe" name="chevrons-left" /> {t('general.back')}
               </Button>
             </HasPermissionWrapper>
             <FinanceMenu active_link='taxrates'/>

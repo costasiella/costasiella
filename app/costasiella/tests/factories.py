@@ -33,9 +33,9 @@ class FinanceTaxRateFactory(factory.DjangoModelFactory):
     code = "8000"
 
 
-class SchoolClasstypeFactory(factory.DjangoModelFactory):
+class OrganizationClasstypeFactory(factory.DjangoModelFactory):
     class Meta:
-        model = models.SchoolClasstype
+        model = models.OrganizationClasstype
 
     archived = False
     display_public = True
@@ -44,26 +44,34 @@ class SchoolClasstypeFactory(factory.DjangoModelFactory):
     url_website = "http://www.costasiella.com"
 
 
-class SchoolDiscoveryFactory(factory.DjangoModelFactory):
+class OrganizationDiscoveryFactory(factory.DjangoModelFactory):
     class Meta:
-        model = models.SchoolDiscovery
+        model = models.OrganizationDiscovery
 
     archived = False
     name = "First discovery"
 
 
-class SchoolLocationFactory(factory.DjangoModelFactory):
+class OrganizationLocationFactory(factory.DjangoModelFactory):
     class Meta:
-        model = models.SchoolLocation
+        model = models.OrganizationLocation
 
     archived = False
     display_public = True
     name = "First location"
 
 
-class SchoolMembershipFactory(factory.DjangoModelFactory):
+class OrganizationLevelFactory(factory.DjangoModelFactory):
     class Meta:
-        model = models.SchoolMembership
+        model = models.OrganizationLevel
+
+    archived = False
+    name = "First level"
+
+
+class OrganizationMembershipFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.OrganizationMembership
 
     archived = False
     display_public = True
@@ -79,9 +87,9 @@ class SchoolMembershipFactory(factory.DjangoModelFactory):
     finance_costcenter = factory.SubFactory(FinanceCostCenterFactory)
 
 
-class SchoolClasspassFactory(factory.DjangoModelFactory):
+class OrganizationClasspassFactory(factory.DjangoModelFactory):
     class Meta:
-        model = models.SchoolClasspass
+        model = models.OrganizationClasspass
 
     archived = False
     display_public = True
@@ -94,18 +102,26 @@ class SchoolClasspassFactory(factory.DjangoModelFactory):
     validity_unit = "MONTHS"
     classes = 10
     unlimited = False
-    school_membership = factory.SubFactory(SchoolMembershipFactory)
+    organization_membership = factory.SubFactory(OrganizationMembershipFactory)
     quick_stats_amount = 12.5
     finance_glaccount = factory.SubFactory(FinanceGLAccountFactory)
     finance_costcenter = factory.SubFactory(FinanceCostCenterFactory)
 
 
-class SchoolClasspassGroupFactory(factory.DjangoModelFactory):
+class OrganizationClasspassGroupFactory(factory.DjangoModelFactory):
     class Meta:
-        model = models.SchoolClasspassGroup
+        model = models.OrganizationClasspassGroup
 
     archived = False
     name = "First class pass"
+
+
+class OrganizationClasspassGroupClasspassFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.OrganizationClasspassGroupClasspass
+
+    organization_classpass_group = factory.SubFactory(OrganizationClasspassGroupFactory)
+    organization_classpass = factory.SubFactory(OrganizationClasspassFactory)
 
 
 class AdminFactory(factory.DjangoModelFactory):

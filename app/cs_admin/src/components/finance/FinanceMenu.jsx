@@ -28,7 +28,7 @@ const FinanceMenu = ({ t, active_link }) => (
             icon="book"
             active={glaccounts_active}
             >
-            {t('finance.menu.glaccounts')}
+            {t('finance.glaccounts.title')}
         </List.GroupItem>
         <List.GroupItem
             key={v4()}
@@ -37,7 +37,7 @@ const FinanceMenu = ({ t, active_link }) => (
             icon="compass"
             active={costcenters_active}
             >
-            {t('finance.menu.costcenters')}
+            {t('finance.costcenters.title')}
         </List.GroupItem>
         <List.GroupItem
             key={v4()}
@@ -46,7 +46,7 @@ const FinanceMenu = ({ t, active_link }) => (
             icon="briefcase"
             active={taxrates_active}
             >
-            {t('finance.menu.taxrates')}
+            {t('finance.taxrates.title')}
         </List.GroupItem>
     </List.Group>
 );

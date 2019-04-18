@@ -36,12 +36,12 @@ class HomeHome extends Component {
       <SiteWrapper>
         <div className="my-3 my-md-5">
           <Container>
-            <Page.Header title={t("home.page_header")} />
+            <Page.Header title={t("home.title")} />
             <Grid.Row>
               <Grid.Col md={9}>
               <Card>
                 <Card.Header>
-                  <Card.Title>{t('home.home.title')}</Card.Title>
+                  <Card.Title>{t('home.title')}</Card.Title>
                 </Card.Header>
                 <Card.Body>
                     Hello world!

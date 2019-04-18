@@ -114,7 +114,7 @@ const navBarItems: Array<navItem> = [
   // },
   {
     value: "School",
-    to: "/school",
+    to: "/organization",
     icon: "book",
     LinkComponent: withRouter(NavLink),
   },
@@ -164,33 +164,17 @@ const check_permission = (permissions, permission, resource) => {
 }
 
 
-const getNavBarItems = (user) => {
+const getNavBarItems = (t, user) => {
   let items: Array<navItem> = []
   let permissions = allPermissions(user)
 
   items.push({
-    value: "Home",
+    value: t("home.title"),
     to: "/",
     icon: "home",
     LinkComponent: withRouter(NavLink),
     useExact: true,
   })
-
-
-  if (
-      (check_permission(permissions, 'view', 'schoolclasspass')) || 
-      (check_permission(permissions, 'view', 'schoolclasstype')) ||
-      (check_permission(permissions, 'view', 'schooldiscovery')) ||
-      (check_permission(permissions, 'view', 'schoollocation')) ||
-      (check_permission(permissions, 'view', 'schoolmembership')) 
-     ){
-    items.push({
-      value: "School",
-      to: "/school",
-      icon: "book",
-      LinkComponent: withRouter(NavLink),
-    })
-  }
 
   if (
     (check_permission(permissions, 'view', 'financecostcenter')) ||
@@ -198,12 +182,28 @@ const getNavBarItems = (user) => {
     (check_permission(permissions, 'view', 'financetaxrate')) 
   ){
     items.push({
-      value: "Finance",
+      value: t("finance.title"),
       to: "/finance",
       icon: "dollar-sign",
       LinkComponent: withRouter(NavLink),
     })
   }
+
+  if (
+    (check_permission(permissions, 'view', 'organizationclasspass')) || 
+    (check_permission(permissions, 'view', 'organizationclasstype')) ||
+    (check_permission(permissions, 'view', 'organizationdiscovery')) ||
+    (check_permission(permissions, 'view', 'organizationlocation')) ||
+    (check_permission(permissions, 'view', 'organizationmembership')) 
+   ){
+  items.push({
+    value: t("organization.title"),
+    to: "/organization",
+    icon: "feather",
+    LinkComponent: withRouter(NavLink),
+  })
+}
+
 
   return items
 
@@ -216,7 +216,7 @@ class SiteWrapper extends React.Component<Props, State> {
     return (
       <Query query={GET_USER} >
         {({ loading, error, data }) => {
-          if (loading) return <p>{this.props.t('loading_with_dots')}</p>;
+          if (loading) return <p>{this.props.t('general.loading_with_dots')}</p>;
           if (error) return <p>{this.props.t('system.user.error_loading')}</p>; 
           
           console.log('user data in site wrapper')
@@ -238,7 +238,7 @@ class SiteWrapper extends React.Component<Props, State> {
                       RootComponent="a"
                       color="primary"
                     >
-                      {this.props.t('settings')}
+                      {this.props.t('general.settings')}
                     </Button>
                   </Nav.Item>
                 ),
@@ -277,7 +277,7 @@ class SiteWrapper extends React.Component<Props, State> {
               },
               }}
               // navProps={{ itemsObjects: navBarItems }}
-              navProps={{ itemsObjects: getNavBarItems(data.user) }}
+              navProps={{ itemsObjects: getNavBarItems(this.props.t, data.user) }}
               routerContextComponentType={withRouter(RouterContextProvider)}
               footerProps={{
                 // links: [
