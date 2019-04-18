@@ -103,55 +103,61 @@ class GQLOrganizationClasspassGroupClasspass(TestCase):
         )
 
 
-    # def test_create_classpassgroupclasspass_anon_user(self):
-    #     """ Create a classpassgroupclasspass with anonymous user, check error message """
-    #     query = self.classpassgroupclasspass_create_mutation
+    def test_create_classpassgroupclasspass_anon_user(self):
+        """ Create a classpassgroupclasspass with anonymous user, check error message """
+        query = self.classpassgroupclasspass_create_mutation
 
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         self.anon_user, 
-    #         variables=self.variables_create
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
-
-
-    # def test_create_classpassgroupclasspass_permission_granted(self):
-    #     """ Create a classpassgroupclasspass with a user having the add permission """
-    #     query = self.classpassgroupclasspass_create_mutation
-    #     variables = self.variables_create
-
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename=self.permission_add)
-    #     user.user_permissions.add(permission)
-    #     user.save()
-
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['createOrganizationClasspassGroupClasspass']['organizationClasspassGroupClasspass']['name'], variables['input']['name'])
-    #     self.assertEqual(data['createOrganizationClasspassGroupClasspass']['organizationClasspassGroupClasspass']['archived'], False)
+        executed = execute_test_client_api_query(
+            query, 
+            self.anon_user, 
+            variables=self.variables_create
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
-    # def test_create_classpassgroupclasspass_permission_denied(self):
-    #     """ Create a classpassgroupclasspass with a user not having the add permission """
-    #     query = self.classpassgroupclasspass_create_mutation
+    def test_create_classpassgroupclasspass_permission_granted(self):
+        """ Create a classpassgroupclasspass with a user having the add permission """
+        query = self.classpassgroupclasspass_create_mutation
+        variables = self.variables_create
 
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
+        # Create regular user
+        user = f.RegularUserFactory.create()
+        permission = Permission.objects.get(codename=self.permission_add)
+        user.user_permissions.add(permission)
+        user.save()
 
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         user, 
-    #         variables=self.variables_create
-    #     )
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
+        executed = execute_test_client_api_query(
+            query, 
+            user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(
+          data['createOrganizationClasspassGroupClasspass']['organizationClasspassGroupClasspass']['organizationClasspass']['id'], 
+          self.classpass_id
+        )
+        self.assertEqual(
+          data['createOrganizationClasspassGroupClasspass']['organizationClasspassGroupClasspass']['organizationClasspassGroup']['id'], 
+          self.group_id
+        )
+
+
+    def test_create_classpassgroupclasspass_permission_denied(self):
+        """ Create a classpassgroupclasspass with a user not having the add permission """
+        query = self.classpassgroupclasspass_create_mutation
+
+        # Create regular user
+        user = f.RegularUserFactory.create()
+
+        executed = execute_test_client_api_query(
+            query, 
+            user, 
+            variables=self.variables_create
+        )
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
     # def test_archive_classpassgroupclasspass(self):
