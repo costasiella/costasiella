@@ -11,6 +11,7 @@ from .organization_classpass_group_classpass import OrganizationClasspassGroupCl
 from .organization_classtype import OrganizationClasstypeQuery, OrganizationClasstypeMutation
 from .organization_discovery import OrganizationDiscoveryQuery, OrganizationDiscoveryMutation
 from .organization_location import OrganizationLocationQuery, OrganizationLocationMutation
+from .organization_location_room import OrganizationLocationRoomQuery, OrganizationLocationRoomMutation
 from .organization_level import OrganizationLevelQuery, OrganizationLevelMutation
 from .organization_membership import OrganizationMembershipQuery, OrganizationMembershipMutation
 from .user import UserQuery, UserMutation
@@ -24,6 +25,7 @@ class Query(FinanceCostCenterQuery,
             OrganizationClasstypeQuery,
             OrganizationDiscoveryQuery,
             OrganizationLocationQuery, 
+            OrganizationLocationRoomQuery, 
             OrganizationLevelQuery, 
             OrganizationMembershipQuery,
             UserQuery, 
@@ -40,6 +42,7 @@ class Mutation(FinanceCostCenterMutation,
                OrganizationClasstypeMutation,
                OrganizationDiscoveryMutation,
                OrganizationLocationMutation,
+               OrganizationLocationRoomMutation,
                OrganizationLevelMutation,
                OrganizationMembershipMutation, 
                UserMutation, 
