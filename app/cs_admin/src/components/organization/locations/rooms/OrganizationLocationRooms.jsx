@@ -33,9 +33,9 @@ import OrganizationMenu from "../../OrganizationMenu"
 import { GET_LOCATION_ROOMS_QUERY } from "./queries"
 
 const ARCHIVE_LOCATION_ROOM = gql`
-  mutation ArchiveOrganizationLocationsRooms($input: ArchiveOrganizationLocationsRoomsInput!) {
-    archiveOrganizationLocationsRooms(input: $input) {
-      organizationLocationsRooms {
+  mutation ArchiveOrganizationLocationRoom($input: ArchiveOrganizationLocationRoomInput!) {
+    archiveOrganizationLocationRoom(input: $input) {
+      organizationLocationRoom {
         id
         archived
       }
@@ -177,7 +177,7 @@ const OrganizationLocationsRooms = ({ t, history, match, archived=false }) => (
                                       }, refetchQueries: [
                                           { 
                                             query: GET_LOCATION_ROOMS_QUERY, 
-                                            variables: {"archived": archived, organizationLocation: this.props.match.params.location_id }
+                                            variables: {"archived": archived, organizationLocation: match.params.location_id }
                                           }
                                       ]}).then(({ data }) => {
                                         console.log('got data', data);
