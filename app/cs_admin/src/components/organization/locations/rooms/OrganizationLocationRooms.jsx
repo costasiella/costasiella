@@ -211,7 +211,7 @@ const OrganizationLocationsRooms = ({ t, history, match, archived=false }) => (
             <HasPermissionWrapper permission="add"
                                   resource="organizationlocationroom">
               <Button color="primary btn-block mb-6"
-                      onClick={() => history.push("/organization/locations/room/add/" + match.params.location_id)}>
+                      onClick={() => history.push("/organization/locations/rooms/add/" + match.params.location_id)}>
                 <Icon prefix="fe" name="plus-circle" /> {t('organization.location_rooms.add')}
               </Button>
             </HasPermissionWrapper>

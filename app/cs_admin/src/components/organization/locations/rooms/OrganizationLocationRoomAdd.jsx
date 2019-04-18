@@ -9,7 +9,7 @@ import { Formik, Form as FoForm, Field, ErrorMessage } from 'formik'
 import { toast } from 'react-toastify'
 
 
-import { GET_LOCATIONS_QUERY } from './queries'
+import { GET_LOCATION_ROOMS_QUERY } from './queries'
 import { LOCATION_ROOM_SCHEMA } from './yupSchema'
 
 
@@ -22,10 +22,10 @@ import {
   Container,
   Form,
 } from "tabler-react"
-import SiteWrapper from "../../SiteWrapper"
-import HasPermissionWrapper from "../../HasPermissionWrapper"
+import SiteWrapper from "../../../SiteWrapper"
+import HasPermissionWrapper from "../../../HasPermissionWrapper"
 
-import OrganizationMenu from "../OrganizationMenu"
+import OrganizationMenu from "../../OrganizationMenu"
 
 
 const ADD_LOCATION_ROOM = gql`
@@ -45,9 +45,9 @@ const ADD_LOCATION_ROOM = gql`
   }
 `
 
-const return_url = "/organization/locations"
+const return_url = "/organization/locations/rooms/"
 
-const OrganizationLocationRoomAdd = ({ t, history }) => (
+const OrganizationLocationRoomAdd = ({ t, history, match }) => (
   <SiteWrapper>
     <div className="my-3 my-md-5">
       <Container>
@@ -58,7 +58,7 @@ const OrganizationLocationRoomAdd = ({ t, history }) => (
             <Card.Header>
               <Card.Title>{t('organization.location_rooms.title_add')}</Card.Title>
             </Card.Header>
-            <Mutation mutation={ADD_LOCATION_ROOM} onCompleted={() => history.push(return_url)}> 
+            <Mutation mutation={ADD_LOCATION_ROOM} onCompleted={() => history.push(return_url + match.params.location_id)}> 
                 {(addLocation, { data }) => (
                     <Formik
                         initialValues={{ name: '', displayPublic: true }}
@@ -66,11 +66,13 @@ const OrganizationLocationRoomAdd = ({ t, history }) => (
                         onSubmit={(values, { setSubmitting }) => {
                             addLocation({ variables: {
                               input: {
+                                organizationLocation: match.params.location_id,
                                 name: values.name, 
                                 displayPublic: values.displayPublic
                               }
                             }, refetchQueries: [
-                                {query: GET_LOCATIONS_QUERY, variables: {"archived": false }}
+                                {query: GET_LOCATION_ROOMS_QUERY,
+                                 variables: {"archived": false, "organizationLocation": match.params.location_id }}
                             ]})
                             .then(({ data }) => {
                                 console.log('got data', data);
@@ -97,7 +99,7 @@ const OrganizationLocationRoomAdd = ({ t, history }) => (
                                           name="displayPublic" 
                                           checked={values.displayPublic} />
                                         <span className="custom-switch-indicator" ></span>
-                                        <span className="custom-switch-description">{t('organization.location.public')}</span>
+                                        <span className="custom-switch-description">{t('organization.location_room.public')}</span>
                                       </Form.Label>
                                       <ErrorMessage name="displayPublic" component="div" />   
                                     </Form.Group>    
@@ -119,7 +121,7 @@ const OrganizationLocationRoomAdd = ({ t, history }) => (
                                     >
                                       {t('general.submit')}
                                     </Button>
-                                    <Button color="link" onClick={() => history.push(return_url)}>
+                                    <Button color="link" onClick={() => history.push(return_url + match.params.location_id)}>
                                         {t('general.cancel')}
                                     </Button>
                                 </Card.Footer>
@@ -132,9 +134,9 @@ const OrganizationLocationRoomAdd = ({ t, history }) => (
           </Grid.Col>
           <Grid.Col md={3}>
             <HasPermissionWrapper permission="add"
-                                  resource="organizationlocation">
+                                  resource="organizationlocationroom">
               <Button color="primary btn-block mb-6"
-                      onClick={() => history.push(return_url)}>
+                      onClick={() => history.push(return_url + match.params.location_id)}>
                 <Icon prefix="fe" name="chevrons-left" /> {t('general.back')}
               </Button>
             </HasPermissionWrapper>

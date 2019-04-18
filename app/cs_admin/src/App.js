@@ -41,6 +41,7 @@ import OrganizationLocations from './components/organization/locations/Organizat
 import OrganizationLocationAdd from './components/organization/locations/OrganizationLocationAdd'
 import OrganizationLocationEdit from './components/organization/locations/OrganizationLocationEdit'
 import OrganizationLocationRooms from './components/organization/locations/rooms/OrganizationLocationRooms'
+import OrganizationLocationRoomAdd from './components/organization/locations/rooms/OrganizationLocationRoomAdd'
 import OrganizationLevels from './components/organization/levels/OrganizationLevels'
 import OrganizationLevelAdd from './components/organization/levels/OrganizationLevelAdd'
 import OrganizationLevelEdit from './components/organization/levels/OrganizationLevelEdit'
@@ -132,6 +133,7 @@ class App extends Component {
             <Route exact path="/organization/locations/add" component={OrganizationLocationAdd} />
             <Route exact path="/organization/locations/edit/:id" component={OrganizationLocationEdit} />
             <Route exact path="/organization/locations/rooms/:location_id" component={OrganizationLocationRooms} />
+            <Route exact path="/organization/locations/rooms/add/:location_id" component={OrganizationLocationRoomAdd} />
             <Route exact path="/organization/memberships" component={OrganizationMemberships} />
             <Route exact path="/organization/memberships/add" component={OrganizationMembershipAdd} />
             <Route exact path="/organization/memberships/edit/:id" component={OrganizationMembershipEdit} /> 
