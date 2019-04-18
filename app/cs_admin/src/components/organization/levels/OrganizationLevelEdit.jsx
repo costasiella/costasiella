@@ -5,7 +5,7 @@ import gql from "graphql-tag"
 import { Query, Mutation } from "react-apollo";
 import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
-import { Formik, Form as FoForm, Field, ErrorMessage } from 'formik'
+import { Formik } from 'formik'
 import { toast } from 'react-toastify'
 
 import { GET_LEVELS_QUERY, GET_LEVEL_QUERY } from './queries'
@@ -19,8 +19,7 @@ import {
   Icon,
   Button,
   Card,
-  Container,
-  Form
+  Container
 } from "tabler-react";
 import SiteWrapper from "../../SiteWrapper"
 import HasPermissionWrapper from "../../HasPermissionWrapper"
