@@ -1,7 +1,7 @@
 import gql from "graphql-tag"
 
 export const GET_LEVELS_QUERY = gql`
-  query SchoolLevels($after: String, $before: String, $archived: Boolean) {
+  query OrganizationLevels($after: String, $before: String, $archived: Boolean) {
     organizationLevels(first: 15, before: $before, after: $after, archived: $archived) {
       pageInfo {
         startCursor

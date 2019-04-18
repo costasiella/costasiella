@@ -1,7 +1,7 @@
 import gql from "graphql-tag"
 
 export const GET_DISCOVERIES_QUERY = gql`
-  query SchoolDiscoveries($after: String, $before: String, $archived: Boolean) {
+  query OrganizationDiscoveries($after: String, $before: String, $archived: Boolean) {
     organizationDiscoveries(first: 15, before: $before, after: $after, archived: $archived) {
       pageInfo {
         startCursor

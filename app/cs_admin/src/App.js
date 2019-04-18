@@ -40,6 +40,9 @@ import OrganizationDiscoveryEdit from './components/organization/discovery/Organ
 import OrganizationLocations from './components/organization/locations/OrganizationLocations'
 import OrganizationLocationAdd from './components/organization/locations/OrganizationLocationAdd'
 import OrganizationLocationEdit from './components/organization/locations/OrganizationLocationEdit'
+import OrganizationLevels from './components/organization/levels/OrganizationLevels'
+import OrganizationLevelAdd from './components/organization/levels/OrganizationLevelAdd'
+import OrganizationLevelEdit from './components/organization/levels/OrganizationLevelEdit'
 import OrganizationMemberships from './components/organization/memberships/OrganizationMemberships'
 import OrganizationMembershipAdd from './components/organization/memberships/OrganizationMembershipAdd'
 import OrganizationMembershipEdit from './components/organization/memberships/OrganizationMembershipEdit'
@@ -121,6 +124,9 @@ class App extends Component {
             <Route exact path="/organization/discoveries" component={OrganizationDiscoveries} />
             <Route exact path="/organization/discoveries/add" component={OrganizationDiscoveryAdd} /> 
             <Route exact path="/organization/discoveries/edit/:id" component={OrganizationDiscoveryEdit} /> 
+            <Route exact path="/organization/levels" component={OrganizationLevels} />
+            <Route exact path="/organization/levels/add" component={OrganizationLevelAdd} />
+            <Route exact path="/organization/levels/edit/:id" component={OrganizationLevelEdit} />
             <Route exact path="/organization/locations" component={OrganizationLocations} />
             <Route exact path="/organization/locations/add" component={OrganizationLocationAdd} />
             <Route exact path="/organization/locations/edit/:id" component={OrganizationLocationEdit} />
