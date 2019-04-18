@@ -108,6 +108,14 @@ class OrganizationClasspassGroupFactory(factory.DjangoModelFactory):
     name = "First class pass"
 
 
+class OrganizationClasspassGroupClasspassFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.OrganizationClasspassGroupClasspass
+
+    organization_classpass_group = factory.SubFactory(OrganizationClasspassGroupFactory)
+    organization_classpass = factory.SubFactory(OrganizationClasspassFactory)
+
+
 class AdminFactory(factory.DjangoModelFactory):
     class Meta:
         model = get_user_model()

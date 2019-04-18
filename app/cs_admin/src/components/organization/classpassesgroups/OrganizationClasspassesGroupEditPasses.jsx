@@ -49,7 +49,6 @@ const ADD_CARD_TO_GROUP = gql`
 const DELETE_CARD_FROM_GROUP = gql`
   mutation DeleteCardFromGroup($input: DeleteOrganizationClasspassGroupClasspassInput!) {
     deleteOrganizationClasspassGroupClasspass(input:$input) {
-      deletedOrganizationClasspassGroupClasspassId
       ok
     }
   }

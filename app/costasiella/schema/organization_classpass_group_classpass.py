@@ -83,22 +83,15 @@ class DeleteOrganizationClasspassGroupClasspass(graphene.relay.ClientIDMutation)
         organization_classpass_group = OrganizationClasspassGroup.objects.get(pk=rid_group.id)
         organization_classpass = OrganizationClasspass.objects.get(pk=rid_pass.id)
 
-        # organization_classpass_group_classpass = OrganizationClasspassGroupClasspass.objects.filter(id=rid.id).first()
-        # if not organization_classpass_group_classpass:
-        #     raise Exception('Invalid Organization Classpass Group Classpass ID!')
-
         organization_classpass_group_classpass = OrganizationClasspassGroupClasspass.objects.filter(
             organization_classpass_group = organization_classpass_group,
             organization_classpass = organization_classpass
         ).first()
 
-        print(organization_classpass_group_classpass)
 
-        # print(organization_classpass_group_classpass)
         ok = organization_classpass_group_classpass.delete()
 
         return DeleteOrganizationClasspassGroupClasspass(
-            deleted_organization_classpass_group_classpass_id = organization_classpass_group_classpass.pk, 
             ok=ok
         )
 

@@ -25,9 +25,12 @@ class GQLOrganizationClasspassGroupClasspass(TestCase):
 
         self.classpass = f.OrganizationClasspassFactory.create()
         self.group = f.OrganizationClasspassGroupFactory.create()
+        self.group_classpass = f.OrganizationClasspassGroupClasspassFactory.create()
+
         self.classpass_id = to_global_id('OrganizationClasspassNode', self.classpass.pk)
         self.group_id = to_global_id('OrganizationClasspassGroupNode', self.group.pk)
 
+        
         self.permission_view = 'view_organizationclasspassgroupclasspass'
         self.permission_add = 'add_organizationclasspassgroupclasspass'
         self.permission_change = 'change_organizationclasspassgroupclasspass'
@@ -43,10 +46,10 @@ class GQLOrganizationClasspassGroupClasspass(TestCase):
 
         self.variables_delete = {
             "input": {
-                "archived": True
+                "organizationClasspass": to_global_id('OrganizationClasspassNode', self.group_classpass.organization_classpass.pk),
+                "organizationClasspassGroup": to_global_id('OrganizationClasspassGroupNode', self.group_classpass.organization_classpass_group.pk)
             }
         }
-
 
 
         self.classpassgroupclasspass_create_mutation = '''
@@ -70,7 +73,6 @@ class GQLOrganizationClasspassGroupClasspass(TestCase):
         self.classpassgroupclasspass_delete_mutation = '''
   mutation DeleteCardFromGroup($input: DeleteOrganizationClasspassGroupClasspassInput!) {
     deleteOrganizationClasspassGroupClasspass(input:$input) {
-      deletedOrganizationClasspassGroupClasspassId
       ok
     }
   }
@@ -160,78 +162,77 @@ class GQLOrganizationClasspassGroupClasspass(TestCase):
         self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
-    # def test_archive_classpassgroupclasspass(self):
-    #     """ Archive a classpassgroupclasspass """
-    #     query = self.classpassgroupclasspass_archive_mutation
-    #     classpassgroupclasspass = f.OrganizationClasspassGroupClasspassFactory.create()
-    #     variables = self.variables_archive
-    #     variables['input']['id'] = to_global_id("OrganizationClasspassGroupClasspassNode", classpassgroupclasspass.pk)
+    def test_delete_classpassgroupclasspass(self):
+        """ Delete a classpassgroupclasspass """
+        query = self.classpassgroupclasspass_delete_mutation
+        variables = self.variables_delete
 
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         self.admin_user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['archiveOrganizationClasspassGroupClasspass']['organizationClasspassGroupClasspass']['archived'], variables['input']['archived'])
+        executed = execute_test_client_api_query(
+            query, 
+            self.admin_user, 
+            variables=variables
+        )
+        data = executed.get('data')
 
+        self.assertEqual(data['deleteOrganizationClasspassGroupClasspass']['ok'], True)
 
-    # def test_archive_classpassgroupclasspass_anon_user(self):
-    #     """ Archive a classpassgroupclasspass """
-    #     query = self.classpassgroupclasspass_archive_mutation
-    #     classpassgroupclasspass = f.OrganizationClasspassGroupClasspassFactory.create()
-    #     variables = self.variables_archive
-    #     variables['input']['id'] = to_global_id("OrganizationClasspassGroupClasspassNode", classpassgroupclasspass.pk)
-
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         self.anon_user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
+        exists = models.OrganizationClasspassGroupClasspass.objects.exists()
+        self.assertEqual(exists, False)
 
 
-    # def test_archive_classpassgroupclasspass_permission_granted(self):
-    #     """ Allow archiving classpassgroupclasspasss for users with permissions """
-    #     query = self.classpassgroupclasspass_archive_mutation
-    #     classpassgroupclasspass = f.OrganizationClasspassGroupClasspassFactory.create()
-    #     variables = self.variables_archive
-    #     variables['input']['id'] = to_global_id("OrganizationClasspassGroupClasspassNode", classpassgroupclasspass.pk)
+    def test_delete_classpassgroupclasspass_anon_user(self):
+        """ Delete a classpassgroupclasspass """
+        query = self.classpassgroupclasspass_delete_mutation
+        variables = self.variables_delete
 
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename=self.permission_delete)
-    #     user.user_permissions.add(permission)
-    #     user.save()
-
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['archiveOrganizationClasspassGroupClasspass']['organizationClasspassGroupClasspass']['archived'], variables['input']['archived'])
+        executed = execute_test_client_api_query(
+            query, 
+            self.anon_user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
-    # def test_archive_classpassgroupclasspass_permission_denied(self):
-    #     """ Check archive classpassgroupclasspass permission denied error message """
-    #     query = self.classpassgroupclasspass_archive_mutation
-    #     classpassgroupclasspass = f.OrganizationClasspassGroupClasspassFactory.create()
-    #     variables = self.variables_archive
-    #     variables['input']['id'] = to_global_id("OrganizationClasspassGroupClasspassNode", classpassgroupclasspass.pk)
+    def test_delete_classpassgroupclasspass_permission_granted(self):
+        """ Allow archiving classpassgroupclasspasss for users with permissions """
+        query = self.classpassgroupclasspass_delete_mutation
+        variables = self.variables_delete
 
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
+        # Create regular user
+        user = f.RegularUserFactory.create()
+        permission = Permission.objects.get(codename=self.permission_delete)
+        user.user_permissions.add(permission)
+        user.save()
 
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
+        executed = execute_test_client_api_query(
+            query, 
+            user,
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['deleteOrganizationClasspassGroupClasspass']['ok'], True)
+
+        exists = models.OrganizationClasspassGroupClasspass.objects.exists()
+        self.assertEqual(exists, False)
+
+
+    def test_delete_classpassgroupclasspass_permission_denied(self):
+        """ Check delete classpassgroupclasspass permission denied error message """
+        query = self.classpassgroupclasspass_delete_mutation
+        variables = self.variables_delete
+
+        # Create regular user
+        user = f.RegularUserFactory.create()
+
+        executed = execute_test_client_api_query(
+            query, 
+            user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
