@@ -136,11 +136,18 @@ const OrganizationLocations = ({ t, history, archived=false }) => (
                                   <Table.Col className="text-right" key={v4()}>
                                     {(node.archived) ? 
                                       <span className='text-muted'>{t('general.unarchive_to_edit')}</span> :
-                                      <Button className='btn-sm' 
-                                              onClick={() => history.push("/organization/locations/edit/" + node.id)}
-                                              color="secondary">
-                                        {t('general.edit')}
-                                      </Button>
+                                      <div>
+                                        <Button className='btn-sm' 
+                                                onClick={() => history.push("/organization/locations/edit/" + node.id)}
+                                                color="secondary">
+                                          {t('general.edit')}
+                                        </Button>
+                                        <Button className='btn-sm' 
+                                                onClick={() => history.push("/organization/locations/rooms/" + node.id)}
+                                                color="secondary">
+                                          {t('general.rooms')}
+                                        </Button>
+                                      </div>
                                     }
                                   </Table.Col>
                                   <Mutation mutation={ARCHIVE_LOCATION} key={v4()}>

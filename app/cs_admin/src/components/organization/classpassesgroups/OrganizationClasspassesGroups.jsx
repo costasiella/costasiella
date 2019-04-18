@@ -70,7 +70,7 @@ const OrganizationClasspassesGroups = ({ t, history, archived=false }) => (
                   <Link to="/organization/classpasses">
                     <Button color='secondary'  
                             size="sm"
-                            icon="credit-card"
+                            icon="arrow-left"
                             // onClick={() => {archived=false; refetch({archived});}}>
                             >
                       {t('organization.classpasses.title')}

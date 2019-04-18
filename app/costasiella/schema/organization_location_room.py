@@ -14,7 +14,7 @@ m = Messages()
 class OrganizationLocationRoomNode(DjangoObjectType):
     class Meta:
         model = OrganizationLocationRoom
-        filter_fields = ['archived']
+        filter_fields = ['archived', 'organization_location']
         interfaces = (graphene.relay.Node, )
 
     @classmethod
@@ -30,20 +30,19 @@ class OrganizationLocationRoomQuery(graphene.ObjectType):
     organization_location_rooms = DjangoFilterConnectionField(OrganizationLocationRoomNode)
     organization_location_room = graphene.relay.Node.Field(OrganizationLocationRoomNode)
 
-    def resolve_organization_locations(self, info, id, archived=False, **kwargs):
+    def resolve_organization_location_rooms(self, info, organization_location, archived=False, **kwargs):
         user = info.context.user
         if user.is_anonymous:
             raise Exception(m.user_not_logged_in)
-        # if not info.context.user.is_authenticated:
-            # return OrganizationLocation.objects.none()
-        # else:
-            # return OrganizationLocation.objects.all()
+
+        rid = get_rid(organization_location)
+
         ## return everything:
         if user.has_perm('costasiella.view_organizationlocationroom'):
-            return OrganizationLocationRoom.objects.filter(organization_location=id, archived = archived).order_by('name')
+            return OrganizationLocationRoom.objects.filter(organization_location = rid.id, archived = archived).order_by('name')
 
         # Return only public non-archived locations
-        return OrganizationLocation.objects.filter(organization_location=id, display_public = True, archived = False).order_by('name')
+        return OrganizationLocationRoom.objects.filter(organization_location = rid.id, display_public = True, archived = False).order_by('name')
 
 
 class CreateOrganizationLocationRoom(graphene.relay.ClientIDMutation):
