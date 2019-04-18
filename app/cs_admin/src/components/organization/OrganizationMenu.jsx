@@ -14,6 +14,7 @@ let classpasses_active
 let classtypes_active
 let discoveries_active
 let locations_active
+let levels_active
 let memberships_active
 
 const OrganizationMenu = ({ t, active_link }) => (
@@ -22,6 +23,7 @@ const OrganizationMenu = ({ t, active_link }) => (
         {(active_link === 'classtypes') ? classtypes_active = true: classtypes_active = false}
         {(active_link === 'discoveries') ? discoveries_active = true: discoveries_active = false}
         {(active_link === 'locations') ? locations_active = true: locations_active = false}
+        {(active_link === 'levels') ? locations_active = true: locations_active = false}
         {(active_link === 'memberships') ? memberships_active = true: memberships_active = false}
         
 
@@ -33,6 +35,15 @@ const OrganizationMenu = ({ t, active_link }) => (
             active={locations_active}
             >
             {t('organization.locations.title')}
+        </List.GroupItem>
+        <List.GroupItem
+            key={v4()}
+            className="d-flex align-items-center"
+            to="#/organization/levels"
+            icon="tag"
+            active={levels_active}
+            >
+            {t('organization.levels.title')}
         </List.GroupItem>
         <List.GroupItem
             key={v4()}

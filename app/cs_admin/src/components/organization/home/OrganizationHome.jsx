@@ -44,6 +44,11 @@ class OrganizationHome extends Component {
                     </div>
                   </Grid.Col>
                   <Grid.Col md={4} lg={4}>
+                    <div onClick={() => history.push('/organization/levels')}>
+                      <StampCard header={<small>{t('organization.levels.title')}</small>} footer={t('')} color="blue" icon="tag" />
+                    </div>
+                  </Grid.Col>
+                  <Grid.Col md={4} lg={4}>
                     <div onClick={() => history.push('/organization/classtypes')}>
                       <StampCard header={<small>{t('organization.classtypes.title')}</small>} footer={t('')} color="blue" icon="book-open" />
                     </div>
