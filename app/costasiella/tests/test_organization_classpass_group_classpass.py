@@ -235,4 +235,3 @@ class GQLOrganizationClasspassGroupClasspass(TestCase):
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Permission denied!')
 
-
