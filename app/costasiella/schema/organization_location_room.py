@@ -27,8 +27,8 @@ class OrganizationLocationRoomNode(DjangoObjectType):
 
 
 class OrganizationLocationRoomQuery(graphene.ObjectType):
-    organization_locations = DjangoFilterConnectionField(OrganizationLocationNode)
-    organization_location = graphene.relay.Node.Field(OrganizationLocationNode)
+    organization_location_rooms = DjangoFilterConnectionField(OrganizationLocationRoomNode)
+    organization_location_room = graphene.relay.Node.Field(OrganizationLocationRoomNode)
 
     def resolve_organization_locations(self, info, id, archived=False, **kwargs):
         user = info.context.user
@@ -46,7 +46,7 @@ class OrganizationLocationRoomQuery(graphene.ObjectType):
         return OrganizationLocation.objects.filter(organization_location=id, display_public = True, archived = False).order_by('name')
 
 
-class CreateOrganizationRoomLocation(graphene.relay.ClientIDMutation):
+class CreateOrganizationLocationRoom(graphene.relay.ClientIDMutation):
     class Input:
         organization_location = graphene.ID(required=True)
         name = graphene.String(required=True)
