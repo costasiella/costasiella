@@ -23,7 +23,7 @@ const OrganizationMenu = ({ t, active_link }) => (
         {(active_link === 'classtypes') ? classtypes_active = true: classtypes_active = false}
         {(active_link === 'discoveries') ? discoveries_active = true: discoveries_active = false}
         {(active_link === 'locations') ? locations_active = true: locations_active = false}
-        {(active_link === 'levels') ? locations_active = true: locations_active = false}
+        {(active_link === 'levels') ? levels_active = true: levels_active = false}
         {(active_link === 'memberships') ? memberships_active = true: memberships_active = false}
         
 
