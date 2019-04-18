@@ -11,6 +11,7 @@ from .organization_classtype import OrganizationClasstype
 from .organization_discovery import OrganizationDiscovery
 from .organization_level import OrganizationLevel
 from .organization_location import OrganizationLocation
+from .organization_location_room import OrganizationLocationRoom
 from .organization_membership import OrganizationMembership
 
 
