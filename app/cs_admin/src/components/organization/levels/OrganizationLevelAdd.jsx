@@ -5,12 +5,13 @@ import { Mutation } from "react-apollo";
 import gql from "graphql-tag"
 import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
-import { Formik, Form as FoForm, Field, ErrorMessage } from 'formik'
+import { Formik } from 'formik'
 import { toast } from 'react-toastify'
 
 
 import { GET_LEVELS_QUERY } from './queries'
 import { LEVEL_SCHEMA } from './yupSchema'
+import OrganizationLevelForm from './OrganizationLevelForm'
 
 
 import {
@@ -81,30 +82,11 @@ const OrganizationLevelAdd = ({ t, history }) => (
                         }}
                         >
                         {({ isSubmitting, errors }) => (
-                            <FoForm>
-                                <Card.Body>
-                                    <Form.Group label={t('general.name')}>
-                                      <Field type="text" 
-                                              name="name" 
-                                              className={(errors.name) ? "form-control is-invalid" : "form-control"} 
-                                              autoComplete="off" />
-                                      <ErrorMessage name="name" component="span" className="invalid-feedback" />
-                                    </Form.Group>
-                                </Card.Body>
-                                <Card.Footer>
-                                    <Button 
-                                      color="primary"
-                                      className="pull-right" 
-                                      type="submit" 
-                                      disabled={isSubmitting}
-                                    >
-                                      {t('general.submit')}
-                                    </Button>
-                                    <Button color="link" onClick={() => history.push(return_url)}>
-                                        {t('general.cancel')}
-                                    </Button>
-                                </Card.Footer>
-                            </FoForm>
+                            <OrganizationLevelForm 
+                              isSubmitting={isSubmitting}
+                              errors={errors}
+                              return_url={return_url}
+                            />
                         )}
                     </Formik>
                 )}

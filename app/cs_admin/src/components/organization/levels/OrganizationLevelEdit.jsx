@@ -10,7 +10,7 @@ import { toast } from 'react-toastify'
 
 import { GET_LEVELS_QUERY, GET_LEVEL_QUERY } from './queries'
 import { LEVEL_SCHEMA } from './yupSchema'
-
+import OrganizationLevelForm from './OrganizationLevelForm'
 
 
 import {
@@ -115,35 +115,12 @@ class OrganizationLevelEdit extends Component {
                                     })
                               }}
                               >
-                              {({ isSubmitting, errors, values }) => (
-                                  <FoForm>
-                                      <Card.Body>    
-                                          <Form.Group label={t('general.name')} >
-                                            <Field type="text" 
-                                                  name="name" 
-                                                  className={(errors.name) ? "form-control is-invalid" : "form-control"} 
-                                                  autoComplete="off" />
-                                            <ErrorMessage name="name" component="span" className="invalid-feedback" />
-                                          </Form.Group>
-                                      </Card.Body>
-                                      <Card.Footer>
-                                          <Button 
-                                            className="pull-right"
-                                            color="primary"
-                                            disabled={isSubmitting}
-                                            type="submit"
-                                          >
-                                            {t('general.submit')}
-                                          </Button>
-                                          <Button
-                                            type="button" 
-                                            color="link" 
-                                            onClick={() => history.push(return_url)}
-                                          >
-                                              {t('general.cancel')}
-                                          </Button>
-                                      </Card.Footer>
-                                  </FoForm>
+                              {({ isSubmitting, errors }) => (
+                                <OrganizationLevelForm 
+                                  isSubmitting={isSubmitting}
+                                  errors={errors}
+                                  return_url={return_url}
+                                />
                               )}
                           </Formik>
                       )}
