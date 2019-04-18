@@ -183,6 +183,17 @@
         "title": "Organization",
         "classpass_group_classpasses": {
             "title_edit": "Edit passes in group"
+        },
+        "levels": {
+            "title": "Levels",
+            "title_add": "Add level",
+            "toast_add_success": "Added level",
+            "title_edit": "Edit level",
+            "toast_edit_success": "Saved level",
+            "error_loading": "Error loading levels :(",
+            "empty_list": "No levels found",
+            "empty_archive": "Levels archive is empty",
+            "add": "Add level"
         }
     },
     "validity": {
