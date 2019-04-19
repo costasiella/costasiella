@@ -47,7 +47,14 @@ const OrganizationLocationsRooms = ({ t, history, match, archived=false }) => (
   <SiteWrapper>
     <div className="my-3 my-md-5">
       <Container>
-        <Page.Header title={t("organization.title")} />
+        <Page.Header title={t("organization.title")}>
+          <div className="page-options d-flex">
+            <Link to="/organization/locations" 
+                  className='btn btn-outline-secondary btn-sm'>
+                <Icon prefix="fe" name="arrow-left" /> {t('general.back_to')} {t('organization.locations.title')}
+            </Link>
+          </div>
+        </Page.Header>
         <Grid.Row>
           <Grid.Col md={9}>
             <Query query={GET_LOCATION_ROOMS_QUERY} variables={{ archived, organizationLocation: match.params.location_id }}>
@@ -67,15 +74,6 @@ const OrganizationLocationsRooms = ({ t, history, match, archived=false }) => (
                   </ContentCard>
                 )
                 const headerOptions = <Card.Options>
-                  <Link to="/organization/locations">
-                    <Button color='secondary'  
-                            size="sm"
-                            icon="arrow-left"
-                            >
-                      {t('organization.locations.title')}
-                    </Button>
-                  </Link>
-                  <CardHeaderSeparator />
                   <Button color={(!archived) ? 'primary': 'secondary'}  
                           size="sm"
                           onClick={() => {archived=false; refetch({archived});}}>

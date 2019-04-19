@@ -47,7 +47,14 @@ const OrganizationClasspassesGroups = ({ t, history, archived=false }) => (
   <SiteWrapper>
     <div className="my-3 my-md-5">
       <Container>
-        <Page.Header title={t("organization.title")} />
+        <Page.Header title={t("organization.title")}>
+          <div className="page-options d-flex">
+            <Link to="/organization/classpasses" 
+                  className='btn btn-outline-secondary btn-sm'>
+                <Icon prefix="fe" name="arrow-left" /> {t('general.back_to')} {t('organization.locations.title')}
+            </Link>
+          </div>
+        </Page.Header>
         <Grid.Row>
           <Grid.Col md={9}>
             <Query query={GET_CLASSPASS_GROUPS_QUERY} variables={{ archived }}>
@@ -67,8 +74,8 @@ const OrganizationClasspassesGroups = ({ t, history, archived=false }) => (
                   </ContentCard>
                 )
                 const headerOptions = <Card.Options>
-                  <Link to="/organization/classpasses">
-                    <Button color='secondary'  
+                  {/* <Link to="/organization/classpasses">
+                    <Button color='link'  
                             size="sm"
                             icon="arrow-left"
                             // onClick={() => {archived=false; refetch({archived});}}>
@@ -76,7 +83,7 @@ const OrganizationClasspassesGroups = ({ t, history, archived=false }) => (
                       {t('organization.classpasses.title')}
                     </Button>
                   </Link>
-                  <CardHeaderSeparator />
+                  <CardHeaderSeparator /> */}
                   <Button color={(!archived) ? 'primary': 'secondary'}  
                           size="sm"
                           onClick={() => {archived=false; refetch({archived});}}>
