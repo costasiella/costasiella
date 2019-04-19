@@ -205,7 +205,9 @@
             "empty_list": "No rooms found for this location",
             "empty_archive": "No rooms have been archived yet for this location",
             "add": "Add room",
-            "error_loading": "Error loading rooms :("
+            "error_loading": "Error loading rooms :(",
+            "title_edit": "Edit room",
+            "toast_edit_success": "Saved room"
         },
         "location_room": {
             "public": "This is a public room"
