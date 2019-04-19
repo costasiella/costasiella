@@ -51,7 +51,7 @@ const OrganizationClasspassesGroups = ({ t, history, archived=false }) => (
           <div className="page-options d-flex">
             <Link to="/organization/classpasses" 
                   className='btn btn-outline-secondary btn-sm'>
-                <Icon prefix="fe" name="arrow-left" /> {t('general.back_to')} {t('organization.locations.title')}
+                <Icon prefix="fe" name="arrow-left" /> {t('general.back_to')} {t('organization.classpasses.title')}
             </Link>
           </div>
         </Page.Header>
