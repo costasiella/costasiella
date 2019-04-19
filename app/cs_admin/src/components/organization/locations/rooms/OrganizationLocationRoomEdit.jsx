@@ -84,7 +84,7 @@ class OrganizationLocationRoomEdit extends Component {
 
                     return (
                       
-                      <Mutation mutation={UPDATE_LOCATION} onCompleted={() => history.push(return_url)}> 
+                      <Mutation mutation={UPDATE_LOCATION_ROOM} onCompleted={() => history.push(return_url)}> 
                       {(updateLocation, { data }) => (
                           <Formik
                               initialValues={{ 
@@ -107,7 +107,7 @@ class OrganizationLocationRoomEdit extends Component {
                                   ]})
                                   .then(({ data }) => {
                                       console.log('got data', data)
-                                      toast.success((t('organization.locations.toast_edit_success')), {
+                                      toast.success((t('organization.location_rooms.toast_edit_success')), {
                                           position: toast.POSITION.BOTTOM_RIGHT
                                         })
                                     }).catch((error) => {
@@ -120,46 +120,12 @@ class OrganizationLocationRoomEdit extends Component {
                               }}
                               >
                               {({ isSubmitting, errors, values }) => (
-                                  <FoForm>
-                                      <Card.Body>
-                                          <Form.Group>
-                                            <Form.Label className="custom-switch">
-                                              <Field 
-                                                className="custom-switch-input"
-                                                type="checkbox" 
-                                                name="displayPublic" 
-                                                checked={values.displayPublic} />
-                                              <span className="custom-switch-indicator" ></span>
-                                              <span className="custom-switch-description">{t('organization.location.public')}</span>
-                                            </Form.Label>
-                                            <ErrorMessage name="displayPublic" component="div" />   
-                                          </Form.Group>     
-                                          <Form.Group label={t('general.name')} >
-                                            <Field type="text" 
-                                                  name="name" 
-                                                  className={(errors.name) ? "form-control is-invalid" : "form-control"} 
-                                                  autoComplete="off" />
-                                            <ErrorMessage name="name" component="span" className="invalid-feedback" />
-                                          </Form.Group>
-                                      </Card.Body>
-                                      <Card.Footer>
-                                          <Button 
-                                            className="pull-right"
-                                            color="primary"
-                                            disabled={isSubmitting}
-                                            type="submit"
-                                          >
-                                            {t('general.submit')}
-                                          </Button>
-                                          <Button
-                                            type="button" 
-                                            color="link" 
-                                            onClick={() => history.push(return_url)}
-                                          >
-                                              {t('general.cancel')}
-                                          </Button>
-                                      </Card.Footer>
-                                  </FoForm>
+                                <OrganizationLocationRoomForm
+                                isSubmitting={isSubmitting}
+                                errors={errors}
+                                values={values}
+                                return_url={return_url}
+                                />
                               )}
                           </Formik>
                       )}
@@ -170,7 +136,7 @@ class OrganizationLocationRoomEdit extends Component {
               </Grid.Col>
               <Grid.Col md={3}>
                 <HasPermissionWrapper permission="change"
-                                      resource="organizationlocation">
+                                      resource="organizationlocationroom">
                   <Button color="primary btn-block mb-6"
                           onClick={() => history.push(return_url)}>
                     <Icon prefix="fe" name="chevrons-left" /> {t('general.back')}
