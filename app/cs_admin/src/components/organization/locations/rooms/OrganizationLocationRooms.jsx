@@ -69,8 +69,8 @@ const OrganizationLocationsRooms = ({ t, history, match, archived=false }) => (
                 )
                 // Error
                 if (error) return (
-                  <ContentCard cardTitle={t('organization.location_roomstitle')}>
-                    <p>{t('organization.location_roomserror_loading')}</p>
+                  <ContentCard cardTitle={t('organization.location_rooms.title')}>
+                    <p>{t('organization.location_rooms.error_loading')}</p>
                   </ContentCard>
                 )
                 const headerOptions = <Card.Options>

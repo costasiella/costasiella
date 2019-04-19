@@ -81,7 +81,10 @@
         "added_to_group": "__STRING_NOT_TRANSLATED__",
         "delete_from_group": "__STRING_NOT_TRANSLATED__",
         "deleted_from_group": "__STRING_NOT_TRANSLATED__",
-        "group": "__STRING_NOT_TRANSLATED__"
+        "group": "__STRING_NOT_TRANSLATED__",
+        "back_to": "__STRING_NOT_TRANSLATED__",
+        "rooms": "__STRING_NOT_TRANSLATED__",
+        "location": "__STRING_NOT_TRANSLATED__"
     },
     "yup": {
         "min_len_3": "__STRING_NOT_TRANSLATED__",
@@ -194,6 +197,18 @@
             "empty_list": "__STRING_NOT_TRANSLATED__",
             "empty_archive": "__STRING_NOT_TRANSLATED__",
             "add": "__STRING_NOT_TRANSLATED__"
+        },
+        "location_rooms": {
+            "title_add": "__STRING_NOT_TRANSLATED__",
+            "toast_add_success": "__STRING_NOT_TRANSLATED__",
+            "title": "__STRING_NOT_TRANSLATED__",
+            "empty_list": "__STRING_NOT_TRANSLATED__",
+            "empty_archive": "__STRING_NOT_TRANSLATED__",
+            "add": "__STRING_NOT_TRANSLATED__",
+            "error_loading": "__STRING_NOT_TRANSLATED__"
+        },
+        "location_room": {
+            "public": "__STRING_NOT_TRANSLATED__"
         }
     },
     "validity": {

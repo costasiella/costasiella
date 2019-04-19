@@ -81,7 +81,10 @@
         "added_to_group": "Added to group",
         "delete_from_group": "Remove from group",
         "deleted_from_group": "Removed from group",
-        "group": "Group"
+        "group": "Group",
+        "back_to": "Back to",
+        "rooms": "Rooms",
+        "location": "Location"
     },
     "yup": {
         "min_len_3": "Please input at least 3 characters",
@@ -194,6 +197,18 @@
             "empty_list": "No levels found",
             "empty_archive": "Levels archive is empty",
             "add": "Add level"
+        },
+        "location_rooms": {
+            "title_add": "Add a room to this location",
+            "toast_add_success": "Added room",
+            "title": "Location rooms",
+            "empty_list": "No rooms found for this location",
+            "empty_archive": "No rooms have been archived yet for this location",
+            "add": "Add room",
+            "error_loading": "Error loading rooms :("
+        },
+        "location_room": {
+            "public": "This is a public room"
         }
     },
     "validity": {
