@@ -9,9 +9,8 @@ import { Formik, Form as FoForm, Field, ErrorMessage } from 'formik'
 import { toast } from 'react-toastify'
 
 import { GET_LOCATION_ROOMS_QUERY, GET_LOCATION_ROOM_QUERY } from './queries'
-import { LOCATION_SCHEMA } from './yupSchema'
-
-
+import { LOCATION_ROOM_SCHEMA } from './yupSchema'
+import OrganizationLocationRoomForm from './OrganizationLocationRoomForm'
 
 import {
   Page,
@@ -22,17 +21,21 @@ import {
   Container,
   Form
 } from "tabler-react";
-import SiteWrapper from "../../SiteWrapper"
-import HasPermissionWrapper from "../../HasPermissionWrapper"
+import SiteWrapper from "../../../SiteWrapper"
+import HasPermissionWrapper from "../../../HasPermissionWrapper"
 
-import OrganizationMenu from "../OrganizationMenu"
+import OrganizationMenu from "../../OrganizationMenu"
 
 
 const UPDATE_LOCATION_ROOM = gql`
-  mutation UpdateOrganizationLocation($input: UpdateOrganizationLocationInput!) {
-    updateOrganizationLocation(input: $input) {
-      organizationLocation {
+  mutation UpdateOrganizationLocationRoom($input: UpdateOrganizationLocationRoomInput!) {
+    updateOrganizationLocationRoom(input: $input) {
+      organizationLocationRoom {
         id
+        organizationLocation {
+          id
+          name
+        }
         name
         displayPublic
       }
@@ -91,7 +94,7 @@ class OrganizationLocationRoomEdit extends Component {
                                 name: initialData.name, 
                                 displayPublic: initialData.displayPublic 
                               }}
-                              validationSchema={LOCATION_SCHEMA}
+                              validationSchema={LOCATION_ROOM_SCHEMA}
                               onSubmit={(values, { setSubmitting }) => {
                                   console.log('submit values:')
                                   console.log(values)
@@ -103,7 +106,8 @@ class OrganizationLocationRoomEdit extends Component {
                                       displayPublic: values.displayPublic 
                                     }
                                   }, refetchQueries: [
-                                      {query: GET_LOCATIONS_QUERY, variables: {"archived": false }}
+                                    {query: GET_LOCATION_ROOMS_QUERY,
+                                      variables: {"archived": false, "organizationLocation": match.params.location_id }}
                                   ]})
                                   .then(({ data }) => {
                                       console.log('got data', data)

@@ -152,7 +152,7 @@ const OrganizationLocationsRooms = ({ t, history, match, archived=false }) => (
                                   {(node.archived) ? 
                                     <span className='text-muted'>{t('general.unarchive_to_edit')}</span> :
                                     <Button className='btn-sm' 
-                                            onClick={() => history.push("/organization/locations/rooms/edit/" + node.id)}
+                                            onClick={() => history.push("/organization/locations/rooms/edit/" + match.params.location_id + '/' + node.id)}
                                             color="secondary">
                                       {t('general.edit')}
                                     </Button>
