@@ -8,7 +8,7 @@ import { withRouter } from "react-router"
 import { Formik, Form as FoForm, Field, ErrorMessage } from 'formik'
 import { toast } from 'react-toastify'
 
-import { GET_LOCATIONS_QUERY, GET_LOCATION_QUERY } from './queries'
+import { GET_LOCATION_ROOMS_QUERY, GET_LOCATION_ROOM_QUERY } from './queries'
 import { LOCATION_SCHEMA } from './yupSchema'
 
 
@@ -28,7 +28,7 @@ import HasPermissionWrapper from "../../HasPermissionWrapper"
 import OrganizationMenu from "../OrganizationMenu"
 
 
-const UPDATE_LOCATION = gql`
+const UPDATE_LOCATION_ROOM = gql`
   mutation UpdateOrganizationLocation($input: UpdateOrganizationLocationInput!) {
     updateOrganizationLocation(input: $input) {
       organizationLocation {
@@ -41,10 +41,10 @@ const UPDATE_LOCATION = gql`
 `
 
 
-class OrganizationLocationEdit extends Component {
+class OrganizationLocationRoomEdit extends Component {
   constructor(props) {
     super(props)
-    console.log("Organization location edit props:")
+    console.log("Organization location room edit props:")
     console.log(props)
   }
 
@@ -53,7 +53,8 @@ class OrganizationLocationEdit extends Component {
     const match = this.props.match
     const history = this.props.history
     const id = match.params.id
-    const return_url = "/organization/locations"
+    const location_id = match.params.location_id
+    const return_url = "/organization/locations/rooms/" + location_id
 
     return (
       <SiteWrapper>
@@ -64,10 +65,10 @@ class OrganizationLocationEdit extends Component {
               <Grid.Col md={9}>
               <Card>
                 <Card.Header>
-                  <Card.Title>{t('organization.locations.title_edit')}</Card.Title>
+                  <Card.Title>{t('organization.location_rooms.title_edit')}</Card.Title>
                   {console.log(match.params.id)}
                 </Card.Header>
-                <Query query={GET_LOCATION_QUERY} variables={{ id }} >
+                <Query query={GET_LOCATION_ROOM_QUERY} variables={{ id }} >
                 {({ loading, error, data, refetch }) => {
                     // Loading
                     if (loading) return <p>{t('general.loading_with_dots')}</p>
@@ -77,7 +78,7 @@ class OrganizationLocationEdit extends Component {
                       return <p>{t('general.error_sad_smiley')}</p>
                     }
                     
-                    const initialData = data.organizationLocation;
+                    const initialData = data.organizationLocationRoom;
                     console.log('query data')
                     console.log(data)
 
@@ -185,4 +186,4 @@ class OrganizationLocationEdit extends Component {
   }
 
 
-export default withTranslation()(withRouter(OrganizationLocationEdit))
+export default withTranslation()(withRouter(OrganizationLocationRoomEdit))

@@ -11,7 +11,7 @@ import { toast } from 'react-toastify'
 
 import { GET_LOCATION_ROOMS_QUERY } from './queries'
 import { LOCATION_ROOM_SCHEMA } from './yupSchema'
-
+import OrganizationLocationRoomForm from './OrganizationLocationRoomForm'
 
 import {
   Page,
@@ -89,43 +89,12 @@ const OrganizationLocationRoomAdd = ({ t, history, match }) => (
                         }}
                         >
                         {({ isSubmitting, errors, values }) => (
-                            <FoForm>
-                                <Card.Body>
-                                    <Form.Group>
-                                      <Form.Label className="custom-switch">
-                                        <Field 
-                                          className="custom-switch-input"
-                                          type="checkbox" 
-                                          name="displayPublic" 
-                                          checked={values.displayPublic} />
-                                        <span className="custom-switch-indicator" ></span>
-                                        <span className="custom-switch-description">{t('organization.location_room.public')}</span>
-                                      </Form.Label>
-                                      <ErrorMessage name="displayPublic" component="div" />   
-                                    </Form.Group>    
-
-                                    <Form.Group label={t('general.name')}>
-                                      <Field type="text" 
-                                              name="name" 
-                                              className={(errors.name) ? "form-control is-invalid" : "form-control"} 
-                                              autoComplete="off" />
-                                      <ErrorMessage name="name" component="span" className="invalid-feedback" />
-                                    </Form.Group>
-                                </Card.Body>
-                                <Card.Footer>
-                                    <Button 
-                                      color="primary"
-                                      className="pull-right" 
-                                      type="submit" 
-                                      disabled={isSubmitting}
-                                    >
-                                      {t('general.submit')}
-                                    </Button>
-                                    <Button color="link" onClick={() => history.push(return_url + match.params.location_id)}>
-                                        {t('general.cancel')}
-                                    </Button>
-                                </Card.Footer>
-                            </FoForm>
+                          <OrganizationLocationRoomForm
+                            isSubmitting={isSubmitting}
+                            errors={errors}
+                            values={values}
+                            return_url={return_url}
+                            />
                         )}
                     </Formik>
                 )}

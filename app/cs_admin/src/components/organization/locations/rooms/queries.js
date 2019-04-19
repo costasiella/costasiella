@@ -29,10 +29,14 @@ export const GET_LOCATION_ROOMS_QUERY = gql`
   }
 `
 
-export const GET_LOCATION_QUERY = gql`
-  query OrganizationLocation($id: ID!) {
-    organizationLocation(id:$id) {
+export const GET_LOCATION_ROOM_QUERY = gql`
+  query OrganizationLocationRoom($id: ID!) {
+    organizationLocationRoom(id:$id) {
       id
+      organizationLocation {
+        id
+        name
+      }
       name
       displayPublic
       archived
