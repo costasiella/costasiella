@@ -61,6 +61,16 @@ class OrganizationLocationFactory(factory.DjangoModelFactory):
     name = "First location"
 
 
+class OrganizationLocationRoomFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.OrganizationLocationRoom
+
+    organization_location = factory.SubFactory(OrganizationLocationFactory)
+    archived = False
+    display_public = True
+    name = "First location"
+
+
 class OrganizationLevelFactory(factory.DjangoModelFactory):
     class Meta:
         model = models.OrganizationLevel
