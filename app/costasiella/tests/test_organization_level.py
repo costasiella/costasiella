@@ -124,6 +124,7 @@ mutation ArchiveOrganizationLevel($input: ArchiveOrganizationLevelInput!) {
         data = executed.get('data')
         
         return data['organizationLevels']['edges'][0]['node']['id']
+        
 
     def test_query(self):
         """ Query list of levels """

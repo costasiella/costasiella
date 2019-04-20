@@ -68,7 +68,7 @@ class OrganizationLocationRoomFactory(factory.DjangoModelFactory):
     organization_location = factory.SubFactory(OrganizationLocationFactory)
     archived = False
     display_public = True
-    name = "First location"
+    name = "First location room"
 
 
 class OrganizationLevelFactory(factory.DjangoModelFactory):
