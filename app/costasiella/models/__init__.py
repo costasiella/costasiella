@@ -13,5 +13,6 @@ from .organization_level import OrganizationLevel
 from .organization_location import OrganizationLocation
 from .organization_location_room import OrganizationLocationRoom
 from .organization_membership import OrganizationMembership
+from .organization_subscription import OrganizationSubscription
 
 
