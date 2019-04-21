@@ -56,25 +56,12 @@ def validate_create_update_input(input, update=False):
     return result
 
 
-class OrganizationSubscriptionNodeInterface(graphene.Interface):
-    id = graphene.GlobalID()
-    price_display = graphene.String()
-    validity_unit_display = graphene.String()
-
-
 class OrganizationSubscriptionNode(DjangoObjectType):   
     class Meta:
         model = OrganizationSubscription
         filter_fields = ['archived']
-        interfaces = (graphene.relay.Node, OrganizationSubscriptionNodeInterface)
+        interfaces = (graphene.relay.Node)
 
-    def resolve_price_display(self, info):
-        from ..modules.finance_tools import display_float_as_amount
-        return display_float_as_amount(self.price)
-
-    def resolve_validity_unit_display(self, info):
-        from ..modules.validity_tools import display_validity_unit
-        return display_validity_unit(self.validity_unit)
 
     @classmethod
     def get_node(self, info, id):
