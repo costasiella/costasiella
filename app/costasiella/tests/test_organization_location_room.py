@@ -174,35 +174,37 @@ class GQLOrganizationLocationRoom(TestCase):
         self.assertEqual(non_public_found, False)
 
 
-    # def test_query_permision_granted(self):
-    #     """ Query list of locations """
-    #     query = self.location_rooms_query
-    #     location = f.OrganizationLocationRoomFactory.create()
-    #     non_public_location = f.OrganizationLocationRoomFactory.build()
-    #     non_public_location.display_public = False
-    #     non_public_location.save()
+    def test_query_permision_granted(self):
+        """ Query list of locations """
+        query = self.location_rooms_query
+        location_room = f.OrganizationLocationRoomFactory.create()
+        non_public_location_room = f.OrganizationLocationRoomFactory.build()
+        non_public_location_room.organization_location = location_room.organization_location
+        non_public_location_room.display_public = False
+        non_public_location_room.save()
 
-    #     variables = {
-    #         'archived': False
-    #     }
+        variables = {
+            'organizationLocation': to_global_id('OrganizationLocationNode', location_room.organization_location.pk),
+            'archived': False
+        }
 
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename='view_organizationlocation')
-    #     user.user_permissions.add(permission)
-    #     user.save()
+        # Create regular user
+        user = f.RegularUserFactory.create()
+        permission = Permission.objects.get(codename='view_organizationlocationroom')
+        user.user_permissions.add(permission)
+        user.save()
 
-    #     executed = execute_test_client_api_query(query, user, variables=variables)
-    #     data = executed.get('data')
+        executed = execute_test_client_api_query(query, user, variables=variables)
+        data = executed.get('data')
 
-    #     # List all locations, including non public
-    #     non_public_found = False
-    #     for item in data['organizationLocationRooms']['edges']:
-    #         if not item['node']['displayPublic']:
-    #             non_public_found = True
+        # List all locations, including non public
+        non_public_found = False
+        for item in data['organizationLocationRooms']['edges']:
+            if not item['node']['displayPublic']:
+                non_public_found = True
 
-    #     # Assert non public locations are listed
-    #     self.assertEqual(non_public_found, True)
+        # Assert non public locations are listed
+        self.assertEqual(non_public_found, True)
 
 
     # def test_query_anon_user(self):
