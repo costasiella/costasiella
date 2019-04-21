@@ -146,35 +146,37 @@ class GQLOrganizationLocationRoom(TestCase):
         self.assertEqual(data['organizationLocationRooms']['edges'][0]['node']['displayPublic'], location_room.display_public)
 
 
-    # def test_query_permision_denied(self):
-    #     """ Query list of locations """
-    #     query = self.locations_query
-    #     location = f.OrganizationLocationRoomFactory.create()
-    #     non_public_location = f.OrganizationLocationRoomFactory.build()
-    #     non_public_location.display_public = False
-    #     non_public_location.save()
+    def test_query_permision_denied(self):
+        """ Query list of locations """
+        query = self.location_rooms_query
+        location_room = f.OrganizationLocationRoomFactory.create()
+        non_public_location_room = f.OrganizationLocationRoomFactory.build()
+        non_public_location_room.organization_location = location_room.organization_location
+        non_public_location_room.display_public = False
+        non_public_location_room.save()
 
-    #     variables = {
-    #         'archived': False
-    #     }
+        variables = {
+            'organizationLocation': to_global_id('OrganizationLocationNode', location_room.organization_location.pk),
+            'archived': False
+        }
 
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     executed = execute_test_client_api_query(query, user, variables=variables)
-    #     data = executed.get('data')
+        # Create regular user
+        user = f.RegularUserFactory.create()
+        executed = execute_test_client_api_query(query, user, variables=variables)
+        data = executed.get('data')
 
-    #     # Public locations only
-    #     non_public_found = False
-    #     for item in data['organizationLocationRooms']['edges']:
-    #         if not item['node']['displayPublic']:
-    #             non_public_found = True
+        # Public locations only
+        non_public_found = False
+        for item in data['organizationLocationRooms']['edges']:
+            if not item['node']['displayPublic']:
+                non_public_found = True
 
-    #     self.assertEqual(non_public_found, False)
+        self.assertEqual(non_public_found, False)
 
 
     # def test_query_permision_granted(self):
     #     """ Query list of locations """
-    #     query = self.locations_query
+    #     query = self.location_rooms_query
     #     location = f.OrganizationLocationRoomFactory.create()
     #     non_public_location = f.OrganizationLocationRoomFactory.build()
     #     non_public_location.display_public = False
@@ -205,7 +207,7 @@ class GQLOrganizationLocationRoom(TestCase):
 
     # def test_query_anon_user(self):
     #     """ Query list of locations """
-    #     query = self.locations_query
+    #     query = self.location_rooms_query
     #     location = f.OrganizationLocationRoomFactory.create()
     #     variables = {
     #         'archived': False
