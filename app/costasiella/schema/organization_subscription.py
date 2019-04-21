@@ -125,12 +125,16 @@ class CreateOrganizationSubscription(graphene.relay.ClientIDMutation):
             display_shop=input['display_shop'],
             name=input['name'], 
             description=input['description'],
-            price=input['price'],
-            finance_tax_rate=result['finance_tax_rate'],
-            validity=input['validity'],
-            validity_unit=input['validity_unit'],
+            sort_order=input['sort_order'],
+            min_duration=input['min_duration'],
             classes=input['classes'],
+            subscription_unit=input['subscription_unit'],
+            reconciliation_classes=input['reconciliation_classes'],
+            credit_validity=input['credit_validity'],
+            validity_unit=input['validity_unit'],
             unlimited=input['unlimited'],
+            terms_and_conditions=input['terms_and_conditions'],
+            registration_fee=input['registration_fee'],
             quick_stats_amount=input.get('quick_stats_amount', None)
         )
 
@@ -155,16 +159,19 @@ class UpdateOrganizationSubscription(graphene.relay.ClientIDMutation):
         display_shop = graphene.Boolean(required=True, default_value=True)
         name = graphene.String(required=True)
         description = graphene.String(required=False, default_value="")
-        price = graphene.Float(required=True, default_value=0)
-        finance_tax_rate = graphene.ID(required=True)
-        validity = graphene.Int(required=True, default_value=1)
-        validity_unit = graphene.String(required=True)
+        sort_order = graphene.Int(required=True, default_value=1)
+        min_duration = graphene.Int(required=True, default_value=1)
         classes = graphene.Int(required=True, default_value=1)
+        subscription_unit = graphene.String(required=True)
+        reconciliation_classes = graphene.Int(required=False, default_value=0)
+        credit_validity = graphene.Int(required=False, default_value=0)
         unlimited = graphene.Boolean(required=True, default_value=False)
+        terms_and_conditions = graphene.String(required=False, default_value="")
+        registration_fee = graphene.Float(required=False, default_value=0)
         organization_membership = graphene.ID(required=False, default_value="")
         quick_stats_amount = graphene.Float(required=False, default_value=0)
         finance_glaccount = graphene.ID(required=False, default_value="")
-        finance_costcenter = graphene.ID(required=False, default_value="")
+        finance_costcenter = graphene.ID(required=False, default_value="")   
 
     organization_subscription = graphene.Field(OrganizationSubscriptionNode)
 
@@ -184,12 +191,15 @@ class UpdateOrganizationSubscription(graphene.relay.ClientIDMutation):
         subscription.display_shop=input['display_shop']
         subscription.name=input['name']
         subscription.description=input['description']
-        subscription.price=input['price']
-        subscription.finance_tax_rate=result['finance_tax_rate']
-        subscription.validity=input['validity']
-        subscription.validity_unit=input['validity_unit']
+        subscription.sort_order=input['sort_order']
+        subscription.min_duration=input['min_duration']
         subscription.classes=input['classes']
+        subscription.subscription_unit=input['subscription_unit']
+        subscription.reconciliation_classes=input['reconciliation_classes']
+        subscription.credit_validity=input['credit_validity']
         subscription.unlimited=input['unlimited']
+        subscription.terms_and_conditions=input['terms_and_conditions']
+        subscription.registration_fee=input['registration_fee']      
         subscription.quick_stats_amount=input['quick_stats_amount']
 
         if 'organization_membership' in result:
