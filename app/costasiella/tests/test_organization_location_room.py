@@ -72,16 +72,20 @@ class GQLOrganizationLocationRoom(TestCase):
   }
 '''
 
-#         self.location_query = '''
-# query getOrganizationLocationRoom($id: ID!) {
-#     organizationLocationRoom(id:$id) {
-#       id
-#       name
-#       displayPublic
-#       archived
-#     }
-#   }
-# '''
+        self.location_room_query = '''
+  query OrganizationLocationRoom($id: ID!) {
+    organizationLocationRoom(id:$id) {
+      id
+      organizationLocation {
+        id
+        name
+      }
+      name
+      displayPublic
+      archived
+    }
+  }
+'''
 
 #         self.location_create_mutation = ''' 
 #   mutation CreateOrganizationLocationRoom($input: CreateOrganizationLocationRoomInput!) {
@@ -223,18 +227,20 @@ class GQLOrganizationLocationRoom(TestCase):
 
     def test_query_one(self):
         """ Query one location room """   
-        location = f.OrganizationLocationRoomFactory.create()
+        location_room = f.OrganizationLocationRoomFactory.create()
 
         # First query locations to get node id easily
-        node_id = self.get_node_id_of_first_location()
+        node_id = to_global_id('OrganizationLocationRoomNode', location_room.pk)
 
         # Now query single location and check
-        query = self.location_query
+        query = self.location_room_query
         executed = execute_test_client_api_query(query, self.admin_user, variables={"id": node_id})
         data = executed.get('data')
-        self.assertEqual(data['organizationLocationRoom']['name'], location.name)
-        self.assertEqual(data['organizationLocationRoom']['archived'], location.archived)
-        self.assertEqual(data['organizationLocationRoom']['displayPublic'], location.display_public)
+        self.assertEqual(data['organizationLocationRoom']['organizationLocation']['id'], 
+          to_global_id('OrganizationLocationNode', location_room.organization_location.pk))
+        self.assertEqual(data['organizationLocationRoom']['name'], location_room.name)
+        self.assertEqual(data['organizationLocationRoom']['archived'], location_room.archived)
+        self.assertEqual(data['organizationLocationRoom']['displayPublic'], location_room.display_public)
 
 
     # def test_query_one_anon_user(self):
@@ -245,7 +251,7 @@ class GQLOrganizationLocationRoom(TestCase):
     #     node_id = self.get_node_id_of_first_location()
 
     #     # Now query single location and check
-    #     query = self.location_query
+    #     query = self.location_room_query
     #     executed = execute_test_client_api_query(query, self.anon_user, variables={"id": node_id})
     #     errors = executed.get('errors')
     #     self.assertEqual(errors[0]['message'], 'Not logged in!')
@@ -261,7 +267,7 @@ class GQLOrganizationLocationRoom(TestCase):
     #     node_id = self.get_node_id_of_first_location()
 
     #     # Now query single location and check
-    #     query = self.location_query
+    #     query = self.location_room_query
     #     executed = execute_test_client_api_query(query, user, variables={"id": node_id})
     #     errors = executed.get('errors')
     #     self.assertEqual(errors[0]['message'], 'Permission denied!')
@@ -279,7 +285,7 @@ class GQLOrganizationLocationRoom(TestCase):
     #     node_id = self.get_node_id_of_first_location()
 
     #     # Now query single location and check   
-    #     query = self.location_query
+    #     query = self.location_room_query
     #     executed = execute_test_client_api_query(query, user, variables={"id": node_id})
     #     data = executed.get('data')
     #     self.assertEqual(data['organizationLocationRoom']['name'], location.name)
