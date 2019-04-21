@@ -147,7 +147,7 @@ class GQLOrganizationLocationRoom(TestCase):
 
 
     def test_query_permision_denied(self):
-        """ Query list of locations """
+        """ Query list of location rooms """
         query = self.location_rooms_query
         location_room = f.OrganizationLocationRoomFactory.create()
         non_public_location_room = f.OrganizationLocationRoomFactory.build()
@@ -175,7 +175,7 @@ class GQLOrganizationLocationRoom(TestCase):
 
 
     def test_query_permision_granted(self):
-        """ Query list of locations """
+        """ Query list of location rooms """
         query = self.location_rooms_query
         location_room = f.OrganizationLocationRoomFactory.create()
         non_public_location_room = f.OrganizationLocationRoomFactory.build()
@@ -208,33 +208,33 @@ class GQLOrganizationLocationRoom(TestCase):
 
 
     def test_query_anon_user(self):
-        """ Query list of locations """
+        """ Query list of location rooms """
         query = self.location_rooms_query
         location_room = f.OrganizationLocationRoomFactory.create()
         variables = {
             'organizationLocation': to_global_id('OrganizationLocationNode', location_room.organization_location.pk),
             'archived': False
         }
-        
+
         executed = execute_test_client_api_query(query, self.anon_user, variables=variables)
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
-    # def test_query_one(self):
-    #     """ Query one location """   
-    #     location = f.OrganizationLocationRoomFactory.create()
+    def test_query_one(self):
+        """ Query one location room """   
+        location = f.OrganizationLocationRoomFactory.create()
 
-    #     # First query locations to get node id easily
-    #     node_id = self.get_node_id_of_first_location()
+        # First query locations to get node id easily
+        node_id = self.get_node_id_of_first_location()
 
-    #     # Now query single location and check
-    #     query = self.location_query
-    #     executed = execute_test_client_api_query(query, self.admin_user, variables={"id": node_id})
-    #     data = executed.get('data')
-    #     self.assertEqual(data['organizationLocationRoom']['name'], location.name)
-    #     self.assertEqual(data['organizationLocationRoom']['archived'], location.archived)
-    #     self.assertEqual(data['organizationLocationRoom']['displayPublic'], location.display_public)
+        # Now query single location and check
+        query = self.location_query
+        executed = execute_test_client_api_query(query, self.admin_user, variables={"id": node_id})
+        data = executed.get('data')
+        self.assertEqual(data['organizationLocationRoom']['name'], location.name)
+        self.assertEqual(data['organizationLocationRoom']['archived'], location.archived)
+        self.assertEqual(data['organizationLocationRoom']['displayPublic'], location.display_public)
 
 
     # def test_query_one_anon_user(self):
