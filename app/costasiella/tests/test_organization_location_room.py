@@ -31,6 +31,7 @@ class GQLOrganizationLocationRoom(TestCase):
         self.permission_delete = 'delete_organizationlocationroom'
 
         self.organization_location = f.OrganizationLocationFactory.create()
+        self.organization_location_room = f.OrganizationLocationRoomFactory.create()
 
         self.variables_create = {
             "input": {
@@ -40,7 +41,13 @@ class GQLOrganizationLocationRoom(TestCase):
             }
         }
 
-        
+        self.variables_update = {
+            "input": {
+                "id": to_global_id('OrganizationLocationRoomNode', self.organization_location_room.pk),
+                "displayPublic": True,
+                "name": "Updated room",
+            }
+        }
 
         self.location_rooms_query = '''
   query OrganizationLocationRooms($after: String, $before: String, $organizationLocation: ID!, $archived: Boolean!) {
@@ -103,17 +110,21 @@ class GQLOrganizationLocationRoom(TestCase):
   }
 '''
 
-#         self.location_update_mutation = '''
-#   mutation UpdateOrganizationLocationRoom($input: UpdateOrganizationLocationRoomInput!) {
-#     updateOrganizationLocationRoom(input: $input) {
-#       organizationLocationRoom {
-#         id
-#         name
-#         displayPublic
-#       }
-#     }
-#   }
-# '''
+        self.location_room_update_mutation = '''
+  mutation UpdateOrganizationLocationRoom($input: UpdateOrganizationLocationRoomInput!) {
+    updateOrganizationLocationRoom(input: $input) {
+      organizationLocationRoom {
+        id
+        organizationLocation {
+          id
+          name
+        }
+        name
+        displayPublic
+      }
+    }
+  }
+'''
 
 #         self.location_archive_mutation = '''
 #   mutation ArchiveOrganizationLocationRoom($input: ArchiveOrganizationLocationRoomInput!) {
@@ -373,105 +384,74 @@ class GQLOrganizationLocationRoom(TestCase):
         self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
-    # def test_update_location(self):
-    #     """ Update a location """
-    #     query = self.location_update_mutation
-    #     location = f.OrganizationLocationRoomFactory.create()
+    def test_update_location_room(self):
+        """ Update a location room """
+        query = self.location_room_update_mutation
+        variables = self.variables_update
 
-    #     variables = {
-    #         "input": {
-    #             "id": self.get_node_id_of_first_location(),
-    #             "name": "Updated name",
-    #             "displayPublic": False
-    #         }
-    #     }
+        executed = execute_test_client_api_query(
+            query, 
+            self.admin_user, 
+            variables=variables
+        )
 
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         self.admin_user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['updateOrganizationLocationRoom']['organizationLocationRoom']['name'], variables['input']['name'])
-    #     self.assertEqual(data['updateOrganizationLocationRoom']['organizationLocationRoom']['displayPublic'], variables['input']['displayPublic'])
+        data = executed.get('data')
+        self.assertEqual(data['updateOrganizationLocationRoom']['organizationLocationRoom']['name'], variables['input']['name'])
+        self.assertEqual(data['updateOrganizationLocationRoom']['organizationLocationRoom']['displayPublic'], variables['input']['displayPublic'])
 
 
-    # def test_update_location_anon_user(self):
-    #     """ Don't allow updating locations for non-logged in users """
-    #     query = self.location_update_mutation
-    #     location = f.OrganizationLocationRoomFactory.create()
+    def test_update_location_room_anon_user(self):
+        """ Don't allow updating location rooms for non-logged in users """
+        query = self.location_room_update_mutation
+        variables = self.variables_update
 
-    #     variables = {
-    #         "input": {
-    #             "id": self.get_node_id_of_first_location(),
-    #             "name": "Updated name",
-    #             "displayPublic": False
-    #         }
-    #     }
-
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         self.anon_user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
+        executed = execute_test_client_api_query(
+            query, 
+            self.anon_user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
-    # def test_update_location_permission_granted(self):
-    #     """ Allow updating locations for users with permissions """
-    #     query = self.location_update_mutation
+    def test_update_location_room_permission_granted(self):
+        """ Allow updating location rooms for users with permissions """
+        query = self.location_room_update_mutation
+        variables = self.variables_update
 
-    #     location = f.OrganizationLocationRoomFactory.create()
-    #     variables = {
-    #         "input": {
-    #             "id": self.get_node_id_of_first_location(),
-    #             "name": "Updated name",
-    #             "displayPublic": False
-    #         }
-    #     }
+        # Create regular user
+        user = f.RegularUserFactory.create()
+        permission = Permission.objects.get(codename=self.permission_change)
+        user.user_permissions.add(permission)
+        user.save()
 
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename=self.permission_change)
-    #     user.user_permissions.add(permission)
-    #     user.save()
-
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['updateOrganizationLocationRoom']['organizationLocationRoom']['name'], variables['input']['name'])
-    #     self.assertEqual(data['updateOrganizationLocationRoom']['organizationLocationRoom']['displayPublic'], variables['input']['displayPublic'])
+        executed = execute_test_client_api_query(
+            query, 
+            user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['updateOrganizationLocationRoom']['organizationLocationRoom']['name'], variables['input']['name'])
+        self.assertEqual(data['updateOrganizationLocationRoom']['organizationLocationRoom']['displayPublic'], variables['input']['displayPublic'])
 
 
-    # def test_update_location_permission_denied(self):
-    #     """ Check update location permission denied error message """
-    #     query = self.location_update_mutation
-    #     location = f.OrganizationLocationRoomFactory.create()
+    def test_update_location_room_permission_denied(self):
+        """ Check update location room permission denied error message """
+        query = self.location_room_update_mutation
+        variables = self.variables_update
 
-    #     variables = {
-    #         "input": {
-    #             "id": self.get_node_id_of_first_location(),
-    #             "name": "Updated name",
-    #             "displayPublic": False
-    #         }
-    #     }
+        # Create regular user
+        user = f.RegularUserFactory.create()
 
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
+        executed = execute_test_client_api_query(
+            query, 
+            user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
     # def test_archive_location(self):
