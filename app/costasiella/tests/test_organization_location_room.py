@@ -207,17 +207,18 @@ class GQLOrganizationLocationRoom(TestCase):
         self.assertEqual(non_public_found, True)
 
 
-    # def test_query_anon_user(self):
-    #     """ Query list of locations """
-    #     query = self.location_rooms_query
-    #     location = f.OrganizationLocationRoomFactory.create()
-    #     variables = {
-    #         'archived': False
-    #     }
-
-    #     executed = execute_test_client_api_query(query, self.anon_user, variables=variables)
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
+    def test_query_anon_user(self):
+        """ Query list of locations """
+        query = self.location_rooms_query
+        location_room = f.OrganizationLocationRoomFactory.create()
+        variables = {
+            'organizationLocation': to_global_id('OrganizationLocationNode', location_room.organization_location.pk),
+            'archived': False
+        }
+        
+        executed = execute_test_client_api_query(query, self.anon_user, variables=variables)
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
     # def test_query_one(self):
