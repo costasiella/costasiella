@@ -55,12 +55,21 @@ def validate_create_update_input(input, update=False):
 
     return result
 
+class OrganizationSubscriptionNodeInterface(graphene.Interface):
+    id = graphene.GlobalID()
+    subscription_unit_display = graphene.String()
+
 
 class OrganizationSubscriptionNode(DjangoObjectType):   
     class Meta:
         model = OrganizationSubscription
         filter_fields = ['archived']
-        interfaces = (graphene.relay.Node, )
+        interfaces = (graphene.relay.Node, OrganizationSubscriptionNodeInterface)
+
+
+    def resolve_subscription_unit_display(self, info):
+        from ..modules.validity_tools import display_subscription_unit
+        return display_subscription_unit(self.subscription_unit)
 
 
     @classmethod
