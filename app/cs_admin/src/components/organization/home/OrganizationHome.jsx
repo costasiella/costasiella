@@ -13,7 +13,7 @@ import {
 import SiteWrapper from "../../SiteWrapper"
 import HasPermissionWrapper from "../../HasPermissionWrapper"
 
-import SchoolMenu from "../OrganizationMenu"
+import OrganizationMenu from "../OrganizationMenu"
 
 
 class OrganizationHome extends Component {
@@ -76,7 +76,7 @@ class OrganizationHome extends Component {
                 </Grid.Row>
               </Grid.Col>
               <Grid.Col md={3}>
-                <SchoolMenu />
+                <OrganizationMenu />
               </Grid.Col>
             </Grid.Row>
           </Container>
