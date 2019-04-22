@@ -74,7 +74,6 @@ class OrganizationSubscriptionAdd extends Component {
 
   render() {
     const t = this.props.t
-    const match = this.props.match
     const history = this.props.history
     const return_url = "/organization/subscriptions"
 
@@ -88,10 +87,9 @@ class OrganizationSubscriptionAdd extends Component {
               <Card>
                 <Card.Header>
                   <Card.Title>{t('organization.subscriptions.title_add')}</Card.Title>
-                  {console.log(match.params.id)}
                 </Card.Header>
                 <Query query={GET_INPUT_VALUES_QUERY} variables = {{archived: false}} >
-                {({ loading, error, data, refetch }) => {
+                  {({ loading, error, data, refetch }) => {
                     // Loading
                     if (loading) return <p>{t('general.loading_with_dots')}</p>
                     // Error
@@ -151,7 +149,7 @@ class OrganizationSubscriptionAdd extends Component {
                                       financeCostcenter: values.financeCostcenter
                                     }
                                   }, refetchQueries: [
-                                      {query: GET_SUBSCRIPTIONS_QUERY, variables: {"archived": false }}
+                                      // {query: GET_SUBSCRIPTIONS_QUERY, variables: {archived: false }}
                                   ]})
                                   .then(({ data }) => {
                                       console.log('got data', data)
