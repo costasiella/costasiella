@@ -40,14 +40,20 @@ const CREATE_SUBSCRIPTION = gql`
         displayShop
         name
         description
-        price
-        financeTaxRate {
+        sortOrder
+        minDuration
+        classes
+        subscriptionUnit
+        subscriptionUnitDisplay
+        reconciliationClasses
+        creditValidity
+        unlimited
+        termsAndConditions
+        organizationMembership {
           id
           name
         }
-        validity
-        validityUnit
-        termsAndConditions
+        quickStatsAmount
         financeGlaccount {
           id
           name
@@ -73,7 +79,6 @@ class OrganizationSubscriptionAdd extends Component {
     const t = this.props.t
     const match = this.props.match
     const history = this.props.history
-    const id = match.params.id
     const return_url = "/organization/subscriptions"
 
     return (
@@ -88,7 +93,7 @@ class OrganizationSubscriptionAdd extends Component {
                   <Card.Title>{t('organization.subscriptions.title_add')}</Card.Title>
                   {console.log(match.params.id)}
                 </Card.Header>
-                <Query query={GET_INPUT_VALUES_QUERY} variables={{ id }} >
+                <Query query={GET_INPUT_VALUES_QUERY} variables = {{archived: false}} >
                 {({ loading, error, data, refetch }) => {
                     // Loading
                     if (loading) return <p>{t('general.loading_with_dots')}</p>
@@ -112,11 +117,16 @@ class OrganizationSubscriptionAdd extends Component {
                                 displayShop: true,
                                 name: "",
                                 description: "",
-                                price: 0,
-                                financeTaxRate: "",
-                                validity: 1,
-                                validityUnit: "MONTHS",
+                                sortOrder: 0,
+                                minDuration: 1,
+                                classes: 1,
+                                subscriptionUnit: "WEEK",
+                                reconciliationClasses: 0,
+                                creditValidity: 1,
+                                unlimited: false,
                                 termsAndConditions: "",
+                                organizationMembership: "",
+                                quickStatsAmount: 0,
                                 financeGlaccount: "",
                                 financeCostcenter: ""
                               }}
@@ -131,11 +141,15 @@ class OrganizationSubscriptionAdd extends Component {
                                       displayShop: values.displayShop,
                                       name: values.name,
                                       description: values.description,
-                                      price: values.price,
-                                      financeTaxRate: values.financeTaxRate,
-                                      validity: values.validity,
-                                      validityUnit: values.validityUnit,
+                                      sortOrder: values.sortOrder,
+                                      minDuration: values.minDuration,
+                                      classes: values.classes,
+                                      subscriptionUnit: values.subscriptionUnit,
+                                      reconciliationClasses: values.reconciliationClasses,
+                                      creditValidity: values.creditValidity,
+                                      unlimited: values.unlimited,
                                       termsAndConditions: values.termsAndConditions,
+                                      quickStatsAmount: values.quickStatsAmount,
                                       financeGlaccount: values.financeGlaccount,
                                       financeCostcenter: values.financeCostcenter
                                     }
@@ -200,45 +214,70 @@ class OrganizationSubscriptionAdd extends Component {
                                             />
                                           <ErrorMessage name="description" component="span" className="invalid-feedback" />
                                         </Form.Group>
-                                        <Form.Group label={t('general.price')}>
+                                        <Form.Group label={t('general.sort_order')}>
                                           <Field type="text" 
-                                                name="price" 
-                                                className={(errors.price) ? "form-control is-invalid" : "form-control"} 
+                                                name="sortOrder" 
+                                                className={(errors.sortOrder) ? "form-control is-invalid" : "form-control"} 
                                                 autoComplete="off" />
-                                          <ErrorMessage name="price" component="span" className="invalid-feedback" />
+                                          <ErrorMessage name="sortOrder" component="span" className="invalid-feedback" />
                                         </Form.Group>
-                                        <Form.Group label={t('general.taxrate')}>
-                                          <Field component="select" 
-                                                 name="financeTaxRate" 
-                                                 className={(errors.financeTaxRate) ? "form-control is-invalid" : "form-control"} 
-                                                 autoComplete="off">
-                                            {console.log("query data in subscription add:")}
-                                            {console.log(inputData)}
-                                            <option value="" key={v4()}></option>
-                                            {inputData.financeTaxrates.edges.map(({ node }) =>
-                                              <option value={node.id} key={v4()}>{node.name} ({node.percentage}% {node.rateType})</option>
-                                            )}
-                                          </Field>
-                                          <ErrorMessage name="financeTaxRate" component="span" className="invalid-feedback" />
-                                        </Form.Group>
-                                        <Form.Group label={t('general.validity')}>
+                                        <Form.Group label={t('general.min_duration')}>
                                           <Field type="text" 
-                                                name="validity" 
-                                                className={(errors.validity) ? "form-control is-invalid" : "form-control"} 
+                                                name="minDuration" 
+                                                className={(errors.minDuration) ? "form-control is-invalid" : "form-control"} 
                                                 autoComplete="off" />
-                                          <ErrorMessage name="validity" component="span" className="invalid-feedback" />
+                                          <ErrorMessage name="minDuration" component="span" className="invalid-feedback" />
                                         </Form.Group>
-                                        <Form.Group label={t('general.validity_unit')}>
-                                          <Field component="select" 
-                                                 name="validityUnit" 
-                                                 className={(errors.validityUnit) ? "form-control is-invalid" : "form-control"} 
-                                                 autoComplete="off">
-                                            <option value="DAYS" key={v4()}>{t('validity.days')}</option>
-                                            <option value="WEEKS" key={v4()}>{t('validity.weeks')}</option>
-                                            <option value="MONTHS" key={v4()}>{t('validity.months')}</option>
-                                          </Field>
-                                          <ErrorMessage name="validityUnit" component="span" className="invalid-feedback" />
-                                        </Form.Group>
+                                        <Form.Group>
+                                          <Form.Label className="custom-switch">
+                                              <Field 
+                                                className="custom-switch-input"
+                                                type="checkbox" 
+                                                name="unlimited" 
+                                                checked={values.unlimied} />
+                                              <span className="custom-switch-indicator" ></span>
+                                              <span className="custom-switch-description">{t('general.unlimited')}</span>
+                                            </Form.Label>
+                                          <ErrorMessage name="unlimited" component="div" />   
+                                        </Form.Group>  
+                                        {/* Show if unlimited */}
+                                        { (values.unlimited) ? 
+                                          <Form.Group label={t('general.quickStatsAmount')}>
+                                            <Field type="text" 
+                                                  name="quickStatsAmount" 
+                                                  className={(errors.quickStatsAmount) ? "form-control is-invalid" : "form-control"} 
+                                                  autoComplete="off" />
+                                            <ErrorMessage name="quickStatsAmount" component="span" className="invalid-feedback" />
+                                          </Form.Group>
+                                          : 
+                                          // Show if not unlimited
+                                          <span>
+                                            <Form.Group label={t('general.classes')}>
+                                              <Field type="text" 
+                                                    name="classes" 
+                                                    className={(errors.classes) ? "form-control is-invalid" : "form-control"} 
+                                                    autoComplete="off" />
+                                              <ErrorMessage name="classes" component="span" className="invalid-feedback" />
+                                            </Form.Group> 
+                                            <Form.Group label={t('general.subscription_unit')}>
+                                              <Field component="select" 
+                                                    name="subscriptionUnit" 
+                                                    className={(errors.subscriptionUnit) ? "form-control is-invalid" : "form-control"} 
+                                                    autoComplete="off">
+                                                <option value="WEEK" key={v4()}>{t('subscription_unit.week')}</option>
+                                                <option value="MONTH" key={v4()}>{t('subscription_init.month')}</option>
+                                              </Field>
+                                              <ErrorMessage name="subscriptionUnit" component="span" className="invalid-feedback" />
+                                            </Form.Group>
+                                            <Form.Group label={t('general.credit_validity')}>
+                                              <Field type="text" 
+                                                    name="creditValidity" 
+                                                    className={(errors.creditValidity) ? "form-control is-invalid" : "form-control"} 
+                                                    autoComplete="off" />
+                                              <ErrorMessage name="creditValidity" component="span" className="invalid-feedback" />
+                                            </Form.Group>
+                                          </span>
+                                        } 
                                         <Form.Group label={t('general.terms_and_conditions')}>
                                           <Editor
                                               textareaName="termsAndConditions"
@@ -249,6 +288,18 @@ class OrganizationSubscriptionAdd extends Component {
                                             />
                                           <ErrorMessage name="termsAndConditions" component="span" className="invalid-feedback" />
                                         </Form.Group>
+                                        <Form.Group label={t('general.membership')}>
+                                          <Field component="select" 
+                                                 name="organizationMembership" 
+                                                 className={(errors.organizationMembership) ? "form-control is-invalid" : "form-control"} 
+                                                 autoComplete="off">
+                                            <option value="" key={v4()}>{t("general.membership_not_required")}</option>
+                                            {inputData.organizationMemberships.edges.map(({ node }) =>
+                                              <option value={node.id} key={v4()}>{node.name} ({node.code})</option>
+                                            )}
+                                          </Field>
+                                          <ErrorMessage name="organizationMembership" component="span" className="invalid-feedback" />
+                                        </Form.Group> 
                                         <Form.Group label={t('general.glaccount')}>
                                           <Field component="select" 
                                                  name="financeGlaccount" 

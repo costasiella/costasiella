@@ -104,7 +104,7 @@ class CreateOrganizationSubscription(graphene.relay.ClientIDMutation):
         display_shop = graphene.Boolean(required=True, default_value=True)
         name = graphene.String(required=True)
         description = graphene.String(required=False, default_value="")
-        sort_order = graphene.Int(required=True, default_value=1)
+        sort_order = graphene.Int(required=True, default_value=0)
         min_duration = graphene.Int(required=True, default_value=1)
         classes = graphene.Int(required=True, default_value=1)
         subscription_unit = graphene.String(required=True)
