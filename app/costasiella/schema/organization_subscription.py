@@ -131,7 +131,6 @@ class CreateOrganizationSubscription(graphene.relay.ClientIDMutation):
             subscription_unit=input['subscription_unit'],
             reconciliation_classes=input['reconciliation_classes'],
             credit_validity=input['credit_validity'],
-            validity_unit=input['validity_unit'],
             unlimited=input['unlimited'],
             terms_and_conditions=input['terms_and_conditions'],
             registration_fee=input['registration_fee'],
