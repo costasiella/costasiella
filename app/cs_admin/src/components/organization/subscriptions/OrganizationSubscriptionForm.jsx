@@ -1,34 +1,20 @@
 // @flow
 
-import React, {Component } from 'react'
-import gql from "graphql-tag"
-import { Query, Mutation } from "react-apollo";
+import React from 'react'
 import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
-import { Formik, Form as FoForm, Field, ErrorMessage } from 'formik'
-import { toast } from 'react-toastify'
+import { Form as FoForm, Field, ErrorMessage } from 'formik'
 import { v4 } from "uuid"
 
 import { Editor } from '@tinymce/tinymce-react'
 import { tinymceBasicConf } from "../../../plugin_config/tinymce"
 
-import { GET_SUBSCRIPTIONS_QUERY, GET_INPUT_VALUES_QUERY } from './queries'
-import { SUBSCRIPTION_SCHEMA } from './yupSchema'
-
 
 import {
-  Page,
-  Grid,
-  Icon,
   Button,
   Card,
-  Container,
   Form
 } from "tabler-react";
-import SiteWrapper from "../../SiteWrapper"
-import HasPermissionWrapper from "../../HasPermissionWrapper"
-
-import OrganizationMenu from "../OrganizationMenu"
 
 
 const OrganizationSubscriptionForm = ({ t, history, inputData, isSubmitting, setFieldValue, setFieldTouched, errors, values, return_url }) => (
