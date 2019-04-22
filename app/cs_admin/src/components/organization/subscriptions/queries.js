@@ -55,14 +55,21 @@ export const GET_SUBSCRIPTION_QUERY = gql`
       displayShop
       name
       description
-      price
-      financeTaxRate {
+      sortOrder
+      minDuration
+      classes
+      subscriptionUnit
+      subscriptionUnitDisplay
+      reconciliationClasses
+      creditValidity
+      unlimited
+      termsAndConditions
+      registrationFee
+      organizationMembership {
         id
         name
       }
-      validity
-      validityUnit
-      termsAndConditions
+      quickStatsAmount
       financeGlaccount {
         id 
         name
@@ -72,7 +79,7 @@ export const GET_SUBSCRIPTION_QUERY = gql`
         name
       }
     }
-    financeTaxrates(first: 15, before: $before, after: $after, archived: $archived) {
+    organizationMemberships(first: 15, before: $before, after: $after, archived: $archived) {
       pageInfo {
         startCursor
         endCursor
@@ -84,8 +91,6 @@ export const GET_SUBSCRIPTION_QUERY = gql`
           id
           archived
           name
-          percentage
-          rateType
         }
       }
     }

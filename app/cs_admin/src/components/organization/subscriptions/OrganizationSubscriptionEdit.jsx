@@ -5,15 +5,12 @@ import gql from "graphql-tag"
 import { Query, Mutation } from "react-apollo";
 import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
-import { Formik, Form as FoForm, Field, ErrorMessage } from 'formik'
+import { Formik } from 'formik'
 import { toast } from 'react-toastify'
-import { v4 } from "uuid"
-
-import { Editor } from '@tinymce/tinymce-react'
-import { tinymceBasicConf } from "../../../plugin_config/tinymce"
 
 import { GET_SUBSCRIPTIONS_QUERY, GET_SUBSCRIPTION_QUERY } from './queries'
 import { SUBSCRIPTION_SCHEMA } from './yupSchema'
+import OrganizationSubscriptionForm from './OrganizationSubscriptionForm'
 
 
 import {
@@ -23,7 +20,6 @@ import {
   Button,
   Card,
   Container,
-  Form
 } from "tabler-react";
 import SiteWrapper from "../../SiteWrapper"
 import HasPermissionWrapper from "../../HasPermissionWrapper"
@@ -34,29 +30,35 @@ import OrganizationMenu from "../OrganizationMenu"
 const UPDATE_SUBSCRIPTION = gql`
   mutation UpdateOrganizationSubscription($input: UpdateOrganizationSubscriptionInput!) {
     updateOrganizationSubscription(input: $input) {
-        organizationSubscription {
+      organizationSubscription {
+        id
+        displayPublic
+        displayShop
+        name
+        description
+        sortOrder
+        minDuration
+        classes
+        subscriptionUnit
+        subscriptionUnitDisplay
+        reconciliationClasses
+        creditValidity
+        unlimited
+        termsAndConditions
+        organizationMembership {
           id
-          displayPublic
-          displayShop
           name
-          description
-          price
-          financeTaxRate {
-            id
-            name
-          }
-          validity
-          validityUnit
-          termsAndConditions
-          financeGlaccount {
-            id
-            name
-          }
-          financeCostcenter {
-            id
-            name
-          }
         }
+        quickStatsAmount
+        financeGlaccount {
+          id
+          name
+        }
+        financeCostcenter {
+          id
+          name
+        }
+      }
     }
   }
 `
@@ -89,7 +91,7 @@ class OrganizationSubscriptionEdit extends Component {
                   {console.log(match.params.id)}
                 </Card.Header>
                 <Query query={GET_SUBSCRIPTION_QUERY} variables={{ "id": id, "archived": false}} >
-                {({ loading, error, data, refetch }) => {
+                  {({ loading, error, data, refetch }) => {
                     // Loading
                     if (loading) return <p>{t('general.loading_with_dots')}</p>
                     // Error
@@ -101,6 +103,11 @@ class OrganizationSubscriptionEdit extends Component {
                     console.log('query data')
                     console.log(data)
                     const initialData = data
+
+                    let initialMembership = ""
+                    if (initialData.organizationSubscription.organizationMembership) {
+                      initialMembership =  initialData.organizationSubscription.organizationMembership.id
+                    } 
 
                     let initialGlaccount = ""
                     if (initialData.organizationSubscription.financeGlaccount) {
@@ -121,11 +128,16 @@ class OrganizationSubscriptionEdit extends Component {
                                 displayShop: initialData.organizationSubscription.displayShop,
                                 name: initialData.organizationSubscription.name,
                                 description: initialData.organizationSubscription.description,
-                                price: initialData.organizationSubscription.price,
-                                financeTaxRate: initialData.organizationSubscription.financeTaxRate.id,
-                                validity: initialData.organizationSubscription.validity,
-                                validityUnit: initialData.organizationSubscription.validityUnit,
+                                sortOrder: initialData.organizationSubscription.sortOrder,
+                                minDuration: initialData.organizationSubscription.minDuration,
+                                classes: initialData.organizationSubscription.classes,
+                                subscriptionUnit: initialData.organizationSubscription.subscriptionUnit,
+                                reconciliationClasses: initialData.organizationSubscription.reconciliationClasses,
+                                creditValidity: initialData.organizationSubscription.creditValidity,
+                                unlimited: initialData.organizationSubscription.unlimited,
                                 termsAndConditions: initialData.organizationSubscription.termsAndConditions,
+                                organizationMembership: initialMembership,
+                                quickStatsAmount: initialData.organizationSubscription.quickStatsAmount,
                                 financeGlaccount:  initialGlaccount,
                                 financeCostcenter: initialCostcenter
                               }}
@@ -141,11 +153,15 @@ class OrganizationSubscriptionEdit extends Component {
                                       displayShop: values.displayShop,
                                       name: values.name,
                                       description: values.description,
-                                      price: values.price,
-                                      financeTaxRate: values.financeTaxRate,
-                                      validity: values.validity,
-                                      validityUnit: values.validityUnit,
+                                      sortOrder: values.sortOrder,
+                                      minDuration: values.minDuration,
+                                      classes: values.classes,
+                                      subscriptionUnit: values.subscriptionUnit,
+                                      reconciliationClasses: values.reconciliationClasses,
+                                      creditValidity: values.creditValidity,
+                                      unlimited: values.unlimited,
                                       termsAndConditions: values.termsAndConditions,
+                                      quickStatsAmount: values.quickStatsAmount,
                                       financeGlaccount: values.financeGlaccount,
                                       financeCostcenter: values.financeCostcenter
                                     }
@@ -167,138 +183,15 @@ class OrganizationSubscriptionEdit extends Component {
                               }}
                               >
                               {({ isSubmitting, setFieldValue, setFieldTouched, errors, values }) => (
-                                  <FoForm>
-                                      <Card.Body> 
-                                        <Form.Group>
-                                          <Form.Label className="custom-switch">
-                                              <Field 
-                                                className="custom-switch-input"
-                                                type="checkbox" 
-                                                name="displayPublic" 
-                                                checked={values.displayPublic} />
-                                              <span className="custom-switch-indicator" ></span>
-                                              <span className="custom-switch-description">{t('organization.subscription.public')}</span>
-                                            </Form.Label>
-                                          <ErrorMessage name="displayPublic" component="div" />   
-                                        </Form.Group>      
-                                        <Form.Group>
-                                          <Form.Label className="custom-switch">
-                                              <Field 
-                                                className="custom-switch-input"
-                                                type="checkbox" 
-                                                name="displayShop" 
-                                                checked={values.displayShop} />
-                                              <span className="custom-switch-indicator" ></span>
-                                              <span className="custom-switch-description">{t('organization.subscription.shop')}</span>
-                                            </Form.Label>
-                                          <ErrorMessage name="displayShop" component="div" />   
-                                        </Form.Group>      
-                                        <Form.Group label={t('general.name')} >
-                                          <Field type="text" 
-                                                name="name" 
-                                                className={(errors.name) ? "form-control is-invalid" : "form-control"} 
-                                                autoComplete="off" />
-                                          <ErrorMessage name="name" component="span" className="invalid-feedback" />
-                                        </Form.Group>
-                                        <Form.Group label={t('general.description')}>
-                                          <Editor
-                                              textareaName="description"
-                                              initialValue={values.description}
-                                              init={tinymceBasicConf}
-                                              onChange={(e) => setFieldValue("description", e.target.getContent())}
-                                              onBlur={() => setFieldTouched("description", true)}
-                                            />
-                                          <ErrorMessage name="description" component="span" className="invalid-feedback" />
-                                        </Form.Group>
-                                        <Form.Group label={t('general.price')}>
-                                          <Field type="text" 
-                                                name="price" 
-                                                className={(errors.price) ? "form-control is-invalid" : "form-control"} 
-                                                autoComplete="off" />
-                                          <ErrorMessage name="price" component="span" className="invalid-feedback" />
-                                        </Form.Group>
-                                        <Form.Group label={t('general.taxrate')}>
-                                          <Field component="select" 
-                                                 name="financeTaxRate" 
-                                                 className={(errors.financeTaxRate) ? "form-control is-invalid" : "form-control"} 
-                                                 autoComplete="off">
-                                            {initialData.financeTaxrates.edges.map(({ node }) =>
-                                              <option value={node.id} key={v4()}>{node.name} ({node.percentage}% {node.rateType})</option>
-                                            )}
-                                          </Field>
-                                          <ErrorMessage name="financeTaxRate" component="span" className="invalid-feedback" />
-                                        </Form.Group>
-                                        <Form.Group label={t('general.validity')}>
-                                          <Field type="text" 
-                                                name="validity" 
-                                                className={(errors.validity) ? "form-control is-invalid" : "form-control"} 
-                                                autoComplete="off" />
-                                          <ErrorMessage name="validity" component="span" className="invalid-feedback" />
-                                        </Form.Group>
-                                        <Form.Group label={t('general.validity_unit')}>
-                                          <Field component="select" 
-                                                 name="validityUnit" 
-                                                 className={(errors.validityUnit) ? "form-control is-invalid" : "form-control"} 
-                                                 autoComplete="off">
-                                            <option value="DAYS" key={v4()}>{t('validity.days')}</option>
-                                            <option value="WEEKS" key={v4()}>{t('validity.weeks')}</option>
-                                            <option value="MONTHS" key={v4()}>{t('validity.months')}</option>
-                                          </Field>
-                                          <ErrorMessage name="validityUnit" component="span" className="invalid-feedback" />
-                                        </Form.Group>
-                                        <Form.Group label={t('general.terms_and_conditions')}>
-                                          <Editor
-                                              textareaName="termsAndConditions"
-                                              initialValue={values.termsAndConditions}
-                                              init={tinymceBasicConf}
-                                              onChange={(e) => setFieldValue("termsAndConditions", e.target.getContent())}
-                                              onBlur={() => setFieldTouched("termsAndConditions", true)}
-                                            />
-                                          <ErrorMessage name="termsAndConditions" component="span" className="invalid-feedback" />
-                                        </Form.Group>
-                                        <Form.Group label={t('general.glaccount')}>
-                                          <Field component="select" 
-                                                 name="financeGlaccount" 
-                                                 className={(errors.financeGlaccount) ? "form-control is-invalid" : "form-control"} 
-                                                 autoComplete="off">
-                                            <option value="" key={v4()}></option>
-                                            {initialData.financeGlaccounts.edges.map(({ node }) =>
-                                              <option value={node.id} key={v4()}>{node.name} ({node.code})</option>
-                                            )}
-                                          </Field>
-                                          <ErrorMessage name="financeGlaccount" component="span" className="invalid-feedback" />
-                                        </Form.Group>
-                                        <Form.Group label={t('general.costcenter')}>
-                                          <Field component="select" 
-                                                 name="financeCostcenter" 
-                                                 className={(errors.financeCostcenter) ? "form-control is-invalid" : "form-control"} 
-                                                 autoComplete="off">
-                                            <option value="" key={v4()}></option>
-                                            {initialData.financeCostcenters.edges.map(({ node }) =>
-                                              <option value={node.id} key={v4()}>{node.name} ({node.code})</option>
-                                            )}
-                                          </Field>
-                                          <ErrorMessage name="financeCostcenter" component="span" className="invalid-feedback" />
-                                        </Form.Group>
-                                      </Card.Body>
-                                      <Card.Footer>
-                                          <Button 
-                                            className="pull-right"
-                                            color="primary"
-                                            disabled={isSubmitting}
-                                            type="submit"
-                                          >
-                                            {t('general.submit')}
-                                          </Button>
-                                          <Button
-                                            type="button" 
-                                            color="link" 
-                                            onClick={() => history.push(return_url)}
-                                          >
-                                              {t('general.cancel')}
-                                          </Button>
-                                      </Card.Footer>
-                                  </FoForm>
+                                <OrganizationSubscriptionForm
+                                  inputData={initialData}
+                                  isSubmitting={isSubmitting}
+                                  setFieldValue={setFieldValue}
+                                  setFieldTouched={setFieldTouched}
+                                  errors={errors}
+                                  values={values}
+                                  return_url={return_url}
+                                />
                               )}
                           </Formik>
                       )}

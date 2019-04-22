@@ -51,6 +51,7 @@ import OrganizationMembershipAdd from './components/organization/memberships/Org
 import OrganizationMembershipEdit from './components/organization/memberships/OrganizationMembershipEdit'
 import OrganizationSubscriptions from './components/organization/subscriptions/OrganizationSubscriptions'
 import OrganizationSubscriptionAdd from './components/organization/subscriptions/OrganizationSubscriptionAdd'
+import OrganizationSubscriptionEdit from './components/organization/subscriptions/OrganizationSubscriptionEdit'
 
 
 import Error404 from "./components/Error404"
@@ -144,6 +145,7 @@ class App extends Component {
             <Route exact path="/organization/memberships/edit/:id" component={OrganizationMembershipEdit} /> 
             <Route exact path="/organization/subscriptions" component={OrganizationSubscriptions} />
             <Route exact path="/organization/subscriptions/add" component={OrganizationSubscriptionAdd} />
+            <Route exact path="/organization/subscriptions/edit/:id" component={OrganizationSubscriptionEdit} />
 
             <Route component={Error404} />
           </Switch>
