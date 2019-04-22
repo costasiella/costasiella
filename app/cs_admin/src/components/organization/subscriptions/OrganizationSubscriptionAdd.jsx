@@ -5,12 +5,9 @@ import gql from "graphql-tag"
 import { Query, Mutation } from "react-apollo";
 import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
-import { Formik, Form as FoForm, Field, ErrorMessage } from 'formik'
+import { Formik } from 'formik'
 import { toast } from 'react-toastify'
-import { v4 } from "uuid"
 
-import { Editor } from '@tinymce/tinymce-react'
-import { tinymceBasicConf } from "../../../plugin_config/tinymce"
 
 import { GET_SUBSCRIPTIONS_QUERY, GET_INPUT_VALUES_QUERY } from './queries'
 import { SUBSCRIPTION_SCHEMA } from './yupSchema'
@@ -24,7 +21,6 @@ import {
   Button,
   Card,
   Container,
-  Form
 } from "tabler-react";
 import SiteWrapper from "../../SiteWrapper"
 import HasPermissionWrapper from "../../HasPermissionWrapper"
