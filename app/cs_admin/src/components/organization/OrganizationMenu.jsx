@@ -26,7 +26,7 @@ const OrganizationMenu = ({ t, active_link }) => (
         {(active_link === 'locations') ? locations_active = true: locations_active = false}
         {(active_link === 'levels') ? levels_active = true: levels_active = false}
         {(active_link === 'memberships') ? memberships_active = true: memberships_active = false}
-        {(active_link === 'subscriptions') ? memberships_active = true: memberships_active = false}
+        {(active_link === 'subscriptions') ? subscriptions_active = true: subscriptions_active = false}
         
 
         <List.GroupItem

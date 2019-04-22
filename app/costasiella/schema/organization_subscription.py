@@ -82,7 +82,7 @@ class OrganizationSubscriptionNode(DjangoObjectType):
 
 
 class OrganizationSubscriptionQuery(graphene.ObjectType):
-    organization_subscriptiones = DjangoFilterConnectionField(OrganizationSubscriptionNode)
+    organization_subscriptions = DjangoFilterConnectionField(OrganizationSubscriptionNode)
     organization_subscription = graphene.relay.Node.Field(OrganizationSubscriptionNode)
 
 

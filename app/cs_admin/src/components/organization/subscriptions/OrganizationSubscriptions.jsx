@@ -143,7 +143,7 @@ const OrganizationSubscriptions = ({ t, history, archived=false }) => (
                                       (node.unlimited) ? t("general.unlimited"):
                                       <div>
                                         {node.classes} <br />
-                                        <span className="text-muted">{node.subscriptionUnitDisplay}</span>
+                                        <span className="text-muted"> {t("general.a")} {node.subscriptionUnitDisplay}</span>
                                       </div>
                                     }
                                   </Table.Col>

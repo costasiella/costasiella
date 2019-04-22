@@ -17,16 +17,21 @@ export const GET_SUBSCRIPTIONS_QUERY = gql`
           displayShop
           name
           description
-          price
-          priceDisplay
-          financeTaxRate {
+          sortOrder
+          minDuration
+          classes
+          subscriptionUnit
+          subscriptionUnitDisplay
+          reconciliationClasses
+          creditValidity
+          unlimited
+          termsAndConditions
+          registrationFee
+          organizationMembership {
             id
             name
           }
-          validity
-          validityUnit
-          validityUnitDisplay
-          termsAndConditions
+          quickStatsAmount
           financeGlaccount {
             id 
             name
