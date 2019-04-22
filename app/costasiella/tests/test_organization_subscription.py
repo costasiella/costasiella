@@ -61,8 +61,8 @@ class GQLOrganizationSubscription(TestCase):
             "input": {
                 "displayPublic": True,
                 "displayShop": True,
-                "name": "First subscription",
-                "description": "Description",
+                "name": "Updated subscription",
+                "description": "Updated description",
                 "sortOrder": 125,
                 "minDuration": 3,
                 "classes": 1,
@@ -594,109 +594,98 @@ class GQLOrganizationSubscription(TestCase):
         self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
-    # def test_update_subscriptions(self):
-    #     """ Update a subscriptions """
-    #     query = self.subscription_update_mutation
-    #     subscription = f.OrganizationSubscriptionFactory.create()
+    def test_update_subscriptions(self):
+        """ Update a subscriptions """
+        query = self.subscription_update_mutation
+        subscription = f.OrganizationSubscriptionFactory.create()
 
-    #     variables = self.variables_update
-    #     variables['input']['id'] = to_global_id("OrganizationSubscriptionNode", subscription.pk)
+        variables = self.variables_update
+        variables['input']['id'] = to_global_id("OrganizationSubscriptionNode", subscription.pk)
 
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         self.admin_user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
+        executed = execute_test_client_api_query(
+            query, 
+            self.admin_user, 
+            variables=variables
+        )
+        data = executed.get('data')
 
-    #     self.assertEqual(data['updateOrganizationSubscription']['organizationSubscription']['displayPublic'], variables['input']['displayPublic'])
-    #     self.assertEqual(data['updateOrganizationSubscription']['organizationSubscription']['displayShop'], variables['input']['displayShop'])
-    #     self.assertEqual(data['updateOrganizationSubscription']['organizationSubscription']['archived'], False)
-    #     self.assertEqual(data['updateOrganizationSubscription']['organizationSubscription']['name'], variables['input']['name'])
-    #     self.assertEqual(data['updateOrganizationSubscription']['organizationSubscription']['description'], variables['input']['description'])
-    #     self.assertEqual(data['updateOrganizationSubscription']['organizationSubscription']['price'], variables['input']['price'])
-    #     self.assertEqual(data['updateOrganizationSubscription']['organizationSubscription']['financeTaxRate']['id'], variables['input']['financeTaxRate'])
-    #     self.assertEqual(data['updateOrganizationSubscription']['organizationSubscription']['validity'], variables['input']['validity'])
-    #     self.assertEqual(data['updateOrganizationSubscription']['organizationSubscription']['validityUnit'], variables['input']['validityUnit'])
-    #     self.assertEqual(data['updateOrganizationSubscription']['organizationSubscription']['classes'], variables['input']['classes'])
-    #     self.assertEqual(data['updateOrganizationSubscription']['organizationSubscription']['unlimited'], variables['input']['unlimited'])
-    #     self.assertEqual(data['updateOrganizationSubscription']['organizationSubscription']['organizationMembership']['id'], variables['input']['organizationMembership'])
-    #     self.assertEqual(data['updateOrganizationSubscription']['organizationSubscription']['quickStatsAmount'], variables['input']['quickStatsAmount'])
-    #     self.assertEqual(data['updateOrganizationSubscription']['organizationSubscription']['financeGlaccount']['id'], variables['input']['financeGlaccount'])
-    #     self.assertEqual(data['updateOrganizationSubscription']['organizationSubscription']['financeCostcenter']['id'], variables['input']['financeCostcenter'])
-
-
-    # def test_update_subscriptions_anon_user(self):
-    #     """ Don't allow updating subscriptions for non-logged in users """
-    #     query = self.subscription_update_mutation
-    #     subscription = f.OrganizationSubscriptionFactory.create()
-    #     variables = self.variables_update
-    #     variables['input']['id'] = to_global_id("OrganizationSubscriptionNode", subscription.pk)
-
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         self.anon_user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
+        self.assertEqual(data['updateOrganizationSubscription']['organizationSubscription']['displayPublic'], variables['input']['displayPublic'])
+        self.assertEqual(data['updateOrganizationSubscription']['organizationSubscription']['displayShop'], variables['input']['displayShop'])
+        self.assertEqual(data['updateOrganizationSubscription']['organizationSubscription']['archived'], False)
+        self.assertEqual(data['updateOrganizationSubscription']['organizationSubscription']['name'], variables['input']['name'])
+        self.assertEqual(data['updateOrganizationSubscription']['organizationSubscription']['description'], variables['input']['description'])
+        self.assertEqual(data['updateOrganizationSubscription']['organizationSubscription']['sortOrder'], variables['input']['sortOrder'])
+        self.assertEqual(data['updateOrganizationSubscription']['organizationSubscription']['minDuration'], variables['input']['minDuration'])
+        self.assertEqual(data['updateOrganizationSubscription']['organizationSubscription']['classes'], variables['input']['classes'])
+        self.assertEqual(data['updateOrganizationSubscription']['organizationSubscription']['subscriptionUnit'], variables['input']['subscriptionUnit'])
+        self.assertEqual(data['updateOrganizationSubscription']['organizationSubscription']['reconciliationClasses'], variables['input']['reconciliationClasses'])
+        self.assertEqual(data['updateOrganizationSubscription']['organizationSubscription']['creditValidity'], variables['input']['creditValidity'])
+        self.assertEqual(data['updateOrganizationSubscription']['organizationSubscription']['unlimited'], variables['input']['unlimited'])
+        self.assertEqual(data['updateOrganizationSubscription']['organizationSubscription']['organizationMembership']['id'], variables['input']['organizationMembership'])
+        self.assertEqual(data['updateOrganizationSubscription']['organizationSubscription']['quickStatsAmount'], variables['input']['quickStatsAmount'])
+        self.assertEqual(data['updateOrganizationSubscription']['organizationSubscription']['financeGlaccount']['id'], variables['input']['financeGlaccount'])
+        self.assertEqual(data['updateOrganizationSubscription']['organizationSubscription']['financeCostcenter']['id'], variables['input']['financeCostcenter'])
 
 
-    # def test_update_subscriptions_permission_granted(self):
-    #     """ Allow updating subscriptions for users with permissions """
-    #     query = self.subscription_update_mutation
-    #     subscription = f.OrganizationSubscriptionFactory.create()
-    #     variables = self.variables_update
-    #     variables['input']['id'] = to_global_id("OrganizationSubscriptionNode", subscription.pk)
+    def test_update_subscriptions_anon_user(self):
+        """ Don't allow updating subscriptions for non-logged in users """
+        query = self.subscription_update_mutation
+        subscription = f.OrganizationSubscriptionFactory.create()
+        variables = self.variables_update
+        variables['input']['id'] = to_global_id("OrganizationSubscriptionNode", subscription.pk)
 
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename=self.permission_change)
-    #     user.user_permissions.add(permission)
-    #     user.save()
-
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['updateOrganizationSubscription']['organizationSubscription']['displayPublic'], variables['input']['displayPublic'])
-    #     self.assertEqual(data['updateOrganizationSubscription']['organizationSubscription']['displayShop'], variables['input']['displayShop'])
-    #     self.assertEqual(data['updateOrganizationSubscription']['organizationSubscription']['archived'], False)
-    #     self.assertEqual(data['updateOrganizationSubscription']['organizationSubscription']['name'], variables['input']['name'])
-    #     self.assertEqual(data['updateOrganizationSubscription']['organizationSubscription']['description'], variables['input']['description'])
-    #     self.assertEqual(data['updateOrganizationSubscription']['organizationSubscription']['price'], variables['input']['price'])
-    #     self.assertEqual(data['updateOrganizationSubscription']['organizationSubscription']['financeTaxRate']['id'], variables['input']['financeTaxRate'])
-    #     self.assertEqual(data['updateOrganizationSubscription']['organizationSubscription']['validity'], variables['input']['validity'])
-    #     self.assertEqual(data['updateOrganizationSubscription']['organizationSubscription']['validityUnit'], variables['input']['validityUnit'])
-    #     self.assertEqual(data['updateOrganizationSubscription']['organizationSubscription']['classes'], variables['input']['classes'])
-    #     self.assertEqual(data['updateOrganizationSubscription']['organizationSubscription']['unlimited'], variables['input']['unlimited'])
-    #     self.assertEqual(data['updateOrganizationSubscription']['organizationSubscription']['organizationMembership']['id'], variables['input']['organizationMembership'])
-    #     self.assertEqual(data['updateOrganizationSubscription']['organizationSubscription']['quickStatsAmount'], variables['input']['quickStatsAmount'])
-    #     self.assertEqual(data['updateOrganizationSubscription']['organizationSubscription']['financeGlaccount']['id'], variables['input']['financeGlaccount'])
-    #     self.assertEqual(data['updateOrganizationSubscription']['organizationSubscription']['financeCostcenter']['id'], variables['input']['financeCostcenter'])
+        executed = execute_test_client_api_query(
+            query, 
+            self.anon_user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
-    # def test_update_subscriptions_permission_denied(self):
-    #     """ Check update subscriptions permission denied error message """
-    #     query = self.subscription_update_mutation
-    #     subscription = f.OrganizationSubscriptionFactory.create()
-    #     variables = self.variables_update
-    #     variables['input']['id'] = to_global_id("OrganizationSubscriptionNode", subscription.pk)
+    def test_update_subscriptions_permission_granted(self):
+        """ Allow updating subscriptions for users with permissions """
+        query = self.subscription_update_mutation
+        subscription = f.OrganizationSubscriptionFactory.create()
+        variables = self.variables_update
+        variables['input']['id'] = to_global_id("OrganizationSubscriptionNode", subscription.pk)
 
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
+        # Create regular user
+        user = f.RegularUserFactory.create()
+        permission = Permission.objects.get(codename=self.permission_change)
+        user.user_permissions.add(permission)
+        user.save()
 
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
+        executed = execute_test_client_api_query(
+            query, 
+            user, 
+            variables=variables
+        )
+        data = executed.get('data')
+  
+        self.assertEqual(data['updateOrganizationSubscription']['organizationSubscription']['name'], variables['input']['name'])
+        self.assertEqual(data['updateOrganizationSubscription']['organizationSubscription']['description'], variables['input']['description'])
+
+
+    def test_update_subscriptions_permission_denied(self):
+        """ Check update subscriptions permission denied error message """
+        query = self.subscription_update_mutation
+        subscription = f.OrganizationSubscriptionFactory.create()
+        variables = self.variables_update
+        variables['input']['id'] = to_global_id("OrganizationSubscriptionNode", subscription.pk)
+
+        # Create regular user
+        user = f.RegularUserFactory.create()
+
+        executed = execute_test_client_api_query(
+            query, 
+            user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
     # def test_archive_subscriptions(self):
