@@ -13,7 +13,6 @@ import {
   Grid,
   Icon,
   Dimmer,
-  Badge,
   Button,
   Card,
   Container,
@@ -21,11 +20,9 @@ import {
 } from "tabler-react";
 import SiteWrapper from "../../SiteWrapper"
 import HasPermissionWrapper from "../../HasPermissionWrapper"
-// import { confirmAlert } from 'react-confirm-alert'; // Import
 import { toast } from 'react-toastify'
 
 import BooleanBadge from "../../ui/BooleanBadge"
-import Validity from "../../ui/Validity"
 
 import ContentCard from "../../general/ContentCard"
 import OrganizationMenu from "../OrganizationMenu"
@@ -125,8 +122,8 @@ const OrganizationSubscriptions = ({ t, history, archived=false }) => (
                               <Table.ColHeader>{t('general.name')}</Table.ColHeader>
                               <Table.ColHeader>{t('general.public')}</Table.ColHeader>
                               <Table.ColHeader>{t('general.shop')}</Table.ColHeader>
+                              <Table.ColHeader>{t('general.classes')}</Table.ColHeader>
                               <Table.ColHeader>{t('general.price')}</Table.ColHeader>
-                              <Table.ColHeader>{t('general.validity')}</Table.ColHeader>
                             </Table.Row>
                           </Table.Header>
                           <Table.Body>
@@ -142,14 +139,16 @@ const OrganizationSubscriptions = ({ t, history, archived=false }) => (
                                     <BooleanBadge value={node.displayShop} />
                                   </Table.Col>
                                   <Table.Col key={v4()}>
-                                    {node.priceDisplay} <br />
-                                    <span className="text-muted">{node.financeTaxRate.name}</span>
+                                    {
+                                      (node.unlimited) ? t("general.unlimited"):
+                                      <div>
+                                        {node.classes} <br />
+                                        <span className="text-muted">{node.subscriptionUnitDisplay}</span>
+                                      </div>
+                                    }
                                   </Table.Col>
-                                  <Table.Col key={v4()}>
-                                    {node.validity} <br />
-                                    <span className="text-muted">
-                                      {node.validityUnitDisplay}
-                                    </span>
+                                  <Table.Col className="text-right" key={v4()}>
+                                    price here...
                                   </Table.Col>
                                   <Table.Col className="text-right" key={v4()}>
                                     {(node.archived) ? 
