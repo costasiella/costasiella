@@ -88,14 +88,7 @@ const OrganizationSubscriptionForm = ({ t, history, inputData, isSubmitting, set
         <ErrorMessage name="unlimited" component="div" />   
       </Form.Group>  
       {/* Show if unlimited */}
-      { (values.unlimited) ? 
-        <Form.Group label={t('general.quickStatsAmount')}>
-          <Field type="text" 
-                name="quickStatsAmount" 
-                className={(errors.quickStatsAmount) ? "form-control is-invalid" : "form-control"} 
-                autoComplete="off" />
-          <ErrorMessage name="quickStatsAmount" component="span" className="invalid-feedback" />
-        </Form.Group>
+      { (values.unlimited) ? ""
         : 
         // Show if not unlimited
         <span>
@@ -125,6 +118,13 @@ const OrganizationSubscriptionForm = ({ t, history, inputData, isSubmitting, set
           </Form.Group>
         </span>
       } 
+      <Form.Group label={t('general.quickStatsAmount')}>
+        <Field type="text" 
+              name="quickStatsAmount" 
+              className={(errors.quickStatsAmount) ? "form-control is-invalid" : "form-control"} 
+              autoComplete="off" />
+        <ErrorMessage name="quickStatsAmount" component="span" className="invalid-feedback" />
+      </Form.Group>
       <Form.Group label={t('general.terms_and_conditions')}>
         <Editor
             textareaName="termsAndConditions"
