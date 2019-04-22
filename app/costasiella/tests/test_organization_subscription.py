@@ -410,101 +410,105 @@ class GQLOrganizationSubscription(TestCase):
         self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
-    # def test_query_one(self):
-    #     """ Query one subscriptions as admin """   
-    #     subscription = f.OrganizationSubscriptionFactory.create()
+    def test_query_one(self):
+        """ Query one subscriptions as admin """   
+        subscription = f.OrganizationSubscriptionFactory.create()
 
-    #     # Get node id
-    #     node_id = to_global_id("OrganizationSubscriptionNode", subscription.pk)
+        # Get node id
+        node_id = to_global_id("OrganizationSubscriptionNode", subscription.pk)
 
-    #     variables = {
-    #       "id": node_id,
-    #       "archived": False
-    #     }
+        variables = {
+          "id": node_id,
+          "archived": False
+        }
 
-    #     # Now query single subscriptions and check
-    #     executed = execute_test_client_api_query(self.subscription_query, self.admin_user, variables=variables)
-    #     data = executed.get('data')
-    #     self.assertEqual(data['organizationSubscription']['archived'], subscription.archived)
-    #     self.assertEqual(data['organizationSubscription']['displayPublic'], subscription.display_public)
-    #     self.assertEqual(data['organizationSubscription']['displayShop'], subscription.display_shop)
-    #     self.assertEqual(data['organizationSubscription']['name'], subscription.name)
-    #     self.assertEqual(data['organizationSubscription']['description'], subscription.description)
-    #     self.assertEqual(data['organizationSubscription']['price'], subscription.price)
-    #     self.assertEqual(data['organizationSubscription']['priceDisplay'], display_float_as_amount(subscription.price))
-    #     self.assertEqual(data['organizationSubscription']['financeTaxRate']['id'], 
-    #       to_global_id("FinanceTaxRateNode", subscription.finance_tax_rate.pk))
-    #     self.assertEqual(data['organizationSubscription']['validityUnit'], subscription.validity_unit)
-    #     self.assertEqual(data['organizationSubscription']['validityUnitDisplay'], display_validity_unit(subscription.validity_unit))
-    #     self.assertEqual(data['organizationSubscription']['classes'], subscription.classes)
-    #     self.assertEqual(data['organizationSubscription']['unlimited'], subscription.unlimited)
-    #     self.assertEqual(data['organizationSubscription']['organizationMembership']['id'], 
-    #       to_global_id("OrganizationMembershipNode", subscription.organization_membership.pk))
-    #     self.assertEqual(data['organizationSubscription']['quickStatsAmount'], subscription.quick_stats_amount)
-    #     self.assertEqual(data['organizationSubscription']['financeGlaccount']['id'], 
-    #       to_global_id("FinanceGLAccountNode", subscription.finance_glaccount.pk))
-    #     self.assertEqual(data['organizationSubscription']['financeCostcenter']['id'], 
-    #       to_global_id("FinanceCostCenterNode", subscription.finance_costcenter.pk))
+        # Now query single subscriptions and check
+        executed = execute_test_client_api_query(self.subscription_query, self.admin_user, variables=variables)
+        data = executed.get('data')
+
+        self.assertEqual(data['organizationSubscription']['archived'], subscription.archived)
+        self.assertEqual(data['organizationSubscription']['displayPublic'], subscription.display_public)
+        self.assertEqual(data['organizationSubscription']['displayShop'], subscription.display_shop)
+        self.assertEqual(data['organizationSubscription']['name'], subscription.name)
+        self.assertEqual(data['organizationSubscription']['description'], subscription.description)
+        self.assertEqual(data['organizationSubscription']['sortOrder'], subscription.sort_order)
+        self.assertEqual(data['organizationSubscription']['minDuration'], subscription.min_duration)
+        self.assertEqual(data['organizationSubscription']['classes'], subscription.classes)
+        self.assertEqual(data['organizationSubscription']['subscriptionUnit'], subscription.subscription_unit)
+        self.assertEqual(
+          data['organizationSubscription']['subscriptionUnitDisplay'], 
+          display_subscription_unit(subscription.subscription_unit)
+        )
+        self.assertEqual(data['organizationSubscription']['reconciliationClasses'], subscription.reconciliation_classes)
+        self.assertEqual(data['organizationSubscription']['creditValidity'], subscription.credit_validity)
+        self.assertEqual(data['organizationSubscription']['unlimited'], subscription.unlimited)
+        self.assertEqual(data['organizationSubscription']['organizationMembership']['id'], 
+          to_global_id("OrganizationMembershipNode", subscription.organization_membership.pk))
+        self.assertEqual(data['organizationSubscription']['quickStatsAmount'], subscription.quick_stats_amount)
+        self.assertEqual(data['organizationSubscription']['financeGlaccount']['id'], 
+          to_global_id("FinanceGLAccountNode", subscription.finance_glaccount.pk))
+        self.assertEqual(data['organizationSubscription']['financeCostcenter']['id'], 
+          to_global_id("FinanceCostCenterNode", subscription.finance_costcenter.pk))
         
 
-    # def test_query_one_anon_user(self):
-    #     """ Deny permission for anon users Query one subscription """   
-    #     subscription = f.OrganizationSubscriptionFactory.create()
+    def test_query_one_anon_user(self):
+        """ Deny permission for anon users Query one subscription """   
+        subscription = f.OrganizationSubscriptionFactory.create()
 
-    #     # Get node id
-    #     node_id = to_global_id("OrganizationSubscriptionNode", subscription.pk)
+        # Get node id
+        node_id = to_global_id("OrganizationSubscriptionNode", subscription.pk)
         
-    #     variables = {
-    #       "id": node_id,
-    #       "archived": False
-    #     }
+        variables = {
+          "id": node_id,
+          "archived": False
+        }
 
-    #     # Now query single subscriptions and check
-    #     executed = execute_test_client_api_query(self.subscription_query, self.anon_user, variables=variables)
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
+        # Now query single subscriptions and check
+        executed = execute_test_client_api_query(self.subscription_query, self.anon_user, variables=variables)
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
-    # def test_query_one_permission_denied(self):
-    #     """ Permission denied message when user lacks authorization """   
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     subscription = f.OrganizationSubscriptionFactory.create()
+    def test_query_one_permission_denied(self):
+        """ Permission denied message when user lacks authorization """   
+        # Create regular user
+        user = f.RegularUserFactory.create()
+        subscription = f.OrganizationSubscriptionFactory.create()
 
-    #     # Get node id
-    #     node_id = to_global_id("OrganizationSubscriptionNode", subscription.pk)
+        # Get node id
+        node_id = to_global_id("OrganizationSubscriptionNode", subscription.pk)
         
-    #     variables = {
-    #       "id": node_id,
-    #       "archived": False
-    #     }
+        variables = {
+          "id": node_id,
+          "archived": False
+        }
 
-    #     # Now query single subscriptions and check
-    #     executed = execute_test_client_api_query(self.subscription_query, user, variables=variables)
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
+        # Now query single subscriptions and check
+        executed = execute_test_client_api_query(self.subscription_query, user, variables=variables)
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
-    # def test_query_one_permission_granted(self):
-    #     """ Respond with data when user has permission """   
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename='view_organizationsubscription')
-    #     user.user_permissions.add(permission)
-    #     user.save()
-    #     subscription = f.OrganizationSubscriptionFactory.create()
+    def test_query_one_permission_granted(self):
+        """ Respond with data when user has permission """   
+        user = f.RegularUserFactory.create()
+        permission = Permission.objects.get(codename=self.permission_view)
+        user.user_permissions.add(permission)
+        user.save()
+        subscription = f.OrganizationSubscriptionFactory.create()
 
-    #     # Get node id
-    #     node_id = to_global_id("OrganizationSubscriptionNode", subscription.pk)
+        # Get node id
+        node_id = to_global_id("OrganizationSubscriptionNode", subscription.pk)
         
-    #     variables = {
-    #       "id": node_id,
-    #       "archived": False
-    #     }
+        variables = {
+          "id": node_id,
+          "archived": False
+        }
 
-    #     # Now query single location and check   
-    #     executed = execute_test_client_api_query(self.subscription_query, user, variables=variables)
-    #     data = executed.get('data')
-    #     self.assertEqual(data['organizationSubscription']['name'], subscription.name)
+        # Now query single location and check   
+        executed = execute_test_client_api_query(self.subscription_query, user, variables=variables)
+        data = executed.get('data')
+        self.assertEqual(data['organizationSubscription']['name'], subscription.name)
 
 
     # def test_create_subscriptions(self):
