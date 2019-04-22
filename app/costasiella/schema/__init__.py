@@ -14,7 +14,7 @@ from .organization_location import OrganizationLocationQuery, OrganizationLocati
 from .organization_location_room import OrganizationLocationRoomQuery, OrganizationLocationRoomMutation
 from .organization_level import OrganizationLevelQuery, OrganizationLevelMutation
 from .organization_membership import OrganizationMembershipQuery, OrganizationMembershipMutation
-from .organization_subscription import OrganizationSubscriptionQuery, OrganizationSubcriptionMutation
+from .organization_subscription import OrganizationSubscriptionQuery, OrganizationSubscriptionMutation
 from .user import UserQuery, UserMutation
 
 

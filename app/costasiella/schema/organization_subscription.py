@@ -60,7 +60,7 @@ class OrganizationSubscriptionNode(DjangoObjectType):
     class Meta:
         model = OrganizationSubscription
         filter_fields = ['archived']
-        interfaces = (graphene.relay.Node)
+        interfaces = (graphene.relay.Node, )
 
 
     @classmethod
