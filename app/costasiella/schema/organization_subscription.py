@@ -86,7 +86,7 @@ class OrganizationSubscriptionQuery(graphene.ObjectType):
     organization_subscription = graphene.relay.Node.Field(OrganizationSubscriptionNode)
 
 
-    def resolve_organization_subscriptiones(self, info, archived, **kwargs):
+    def resolve_organization_subscriptions(self, info, archived, **kwargs):
         user = info.context.user
         require_login(user)
         # Has permission: return everything

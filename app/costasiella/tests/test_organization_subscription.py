@@ -340,74 +340,74 @@ class GQLOrganizationSubscription(TestCase):
           to_global_id("FinanceCostCenterNode", subscription.finance_costcenter.pk))
 
 
-    # def test_query_permision_denied(self):
-    #     """ Query list of subscriptions - check permission denied """
-    #     query = self.subscriptions_query
-    #     subscription = f.OrganizationSubscriptionFactory.create()
-    #     non_public = f.OrganizationSubscriptionFactory.create()
-    #     non_public.display_public = False
-    #     non_public.save()
+    def test_query_permision_denied(self):
+        """ Query list of subscriptions - check permission denied """
+        query = self.subscriptions_query
+        subscription = f.OrganizationSubscriptionFactory.create()
+        non_public = f.OrganizationSubscriptionFactory.create()
+        non_public.display_public = False
+        non_public.save()
 
-    #     variables = {
-    #         'archived': False
-    #     }
+        variables = {
+            'archived': False
+        }
 
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     executed = execute_test_client_api_query(query, user, variables=variables)
-    #     data = executed.get('data')
+        # Create regular user
+        user = f.RegularUserFactory.create()
+        executed = execute_test_client_api_query(query, user, variables=variables)
+        data = executed.get('data')
 
-    #     # Public class only
-    #     non_public_found = False
-    #     for item in data['organizationSubscriptions']['edges']:
-    #         if not item['node']['displayPublic']:
-    #             non_public_found = True
+        # Public class only
+        non_public_found = False
+        for item in data['organizationSubscriptions']['edges']:
+            if not item['node']['displayPublic']:
+                non_public_found = True
 
-    #     self.assertEqual(non_public_found, False)
-
-
-    # def test_query_permision_granted(self):
-    #     """ Query list of subscriptions with view permission """
-    #     query = self.subscriptions_query
-    #     subscription = f.OrganizationSubscriptionFactory.create()
-    #     non_public = f.OrganizationSubscriptionFactory.create()
-    #     non_public.display_public = False
-    #     non_public.save()
-
-    #     variables = {
-    #         'archived': False
-    #     }
-
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename='view_organizationsubscription')
-    #     user.user_permissions.add(permission)
-    #     user.save()
-
-    #     executed = execute_test_client_api_query(query, user, variables=variables)
-    #     data = executed.get('data')
-
-    #     # List all class passes, including non public
-    #     non_public_found = False
-    #     for item in data['organizationSubscriptions']['edges']:
-    #         if not item['node']['displayPublic']:
-    #             non_public_found = True
-
-    #     # Assert non public classtypes are listed
-    #     self.assertEqual(non_public_found, True)
+        self.assertEqual(non_public_found, False)
 
 
-    # def test_query_anon_user(self):
-    #     """ Query list of subscriptions - anon user """
-    #     query = self.subscriptions_query
-    #     subscription = f.OrganizationSubscriptionFactory.create()
-    #     variables = {
-    #         'archived': False
-    #     }
+    def test_query_permision_granted(self):
+        """ Query list of subscriptions with view permission """
+        query = self.subscriptions_query
+        subscription = f.OrganizationSubscriptionFactory.create()
+        non_public = f.OrganizationSubscriptionFactory.create()
+        non_public.display_public = False
+        non_public.save()
 
-    #     executed = execute_test_client_api_query(query, self.anon_user, variables=variables)
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
+        variables = {
+            'archived': False
+        }
+
+        # Create regular user
+        user = f.RegularUserFactory.create()
+        permission = Permission.objects.get(codename=self.permission_view)
+        user.user_permissions.add(permission)
+        user.save()
+
+        executed = execute_test_client_api_query(query, user, variables=variables)
+        data = executed.get('data')
+
+        # List all class passes, including non public
+        non_public_found = False
+        for item in data['organizationSubscriptions']['edges']:
+            if not item['node']['displayPublic']:
+                non_public_found = True
+
+        # Assert non public classtypes are listed
+        self.assertEqual(non_public_found, True)
+
+
+    def test_query_anon_user(self):
+        """ Query list of subscriptions - anon user """
+        query = self.subscriptions_query
+        subscription = f.OrganizationSubscriptionFactory.create()
+        variables = {
+            'archived': False
+        }
+
+        executed = execute_test_client_api_query(query, self.anon_user, variables=variables)
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
     # def test_query_one(self):
