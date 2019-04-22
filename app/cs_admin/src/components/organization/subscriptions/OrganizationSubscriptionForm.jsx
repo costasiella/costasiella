@@ -112,7 +112,7 @@ const OrganizationSubscriptionForm = ({ t, history, inputData, isSubmitting, set
                   className={(errors.subscriptionUnit) ? "form-control is-invalid" : "form-control"} 
                   autoComplete="off">
               <option value="WEEK" key={v4()}>{t('subscription_unit.week')}</option>
-              <option value="MONTH" key={v4()}>{t('subscription_init.month')}</option>
+              <option value="MONTH" key={v4()}>{t('subscription_unit.month')}</option>
             </Field>
             <ErrorMessage name="subscriptionUnit" component="span" className="invalid-feedback" />
           </Form.Group>

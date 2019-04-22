@@ -84,7 +84,12 @@
         "group": "Group",
         "back_to": "Back to",
         "rooms": "Rooms",
-        "location": "Location"
+        "location": "Location",
+        "sort_order": "Sort order",
+        "min_duration": "Minimum duration",
+        "subscription_unit": "Subscription unit",
+        "credit_validity": "Credit validity",
+        "a": "a"
     },
     "yup": {
         "min_len_3": "Please input at least 3 characters",
@@ -211,6 +216,21 @@
         },
         "location_room": {
             "public": "This is a public room"
+        },
+        "subscriptions": {
+            "title": "Subscriptions",
+            "title_add": "Add subscription",
+            "toast_add_success": "Added subscription",
+            "title_edit": "Edit subscription",
+            "toast_edit_success": "Saved subscription",
+            "error_loading": "Error loading subscriptions :(",
+            "empty_list": "No subscriptions found",
+            "empty_archive": "No subscriptions have been archived yet",
+            "add": "Add subscription"
+        },
+        "subscription": {
+            "public": "This is a public subscription",
+            "shop": "Show this subscription in the shop"
         }
     },
     "validity": {
@@ -223,5 +243,9 @@
         "user": {
             "error_loading": "Error loading user :("
         }
+    },
+    "subscription_unit": {
+        "week": "Week",
+        "month": "Month"
     }
 }
