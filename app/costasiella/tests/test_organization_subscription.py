@@ -688,78 +688,78 @@ class GQLOrganizationSubscription(TestCase):
         self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
-    # def test_archive_subscriptions(self):
-    #     """ Archive a subscriptions """
-    #     query = self.subscription_archive_mutation
-    #     subscription = f.OrganizationSubscriptionFactory.create()
-    #     variables = self.variables_archive
-    #     variables['input']['id'] = to_global_id("OrganizationSubscriptionNode", subscription.pk)
+    def test_archive_subscriptions(self):
+        """ Archive a subscriptions """
+        query = self.subscription_archive_mutation
+        subscription = f.OrganizationSubscriptionFactory.create()
+        variables = self.variables_archive
+        variables['input']['id'] = to_global_id("OrganizationSubscriptionNode", subscription.pk)
 
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         self.admin_user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     print(data)
-    #     self.assertEqual(data['archiveOrganizationSubscription']['organizationSubscription']['archived'], variables['input']['archived'])
-
-
-    # def test_archive_subscriptions_anon_user(self):
-    #     """ Archive subscriptions denied for anon user """
-    #     query = self.subscription_archive_mutation
-    #     subscription = f.OrganizationSubscriptionFactory.create()
-    #     variables = self.variables_archive
-    #     variables['input']['id'] = to_global_id("OrganizationSubscriptionNode", subscription.pk)
-
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         self.anon_user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
+        executed = execute_test_client_api_query(
+            query, 
+            self.admin_user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        print(data)
+        self.assertEqual(data['archiveOrganizationSubscription']['organizationSubscription']['archived'], variables['input']['archived'])
 
 
-    # def test_archive_subscriptions_permission_granted(self):
-    #     """ Allow archiving subscriptions for users with permissions """
-    #     query = self.subscription_archive_mutation
-    #     subscription = f.OrganizationSubscriptionFactory.create()
-    #     variables = self.variables_archive
-    #     variables['input']['id'] = to_global_id("OrganizationSubscriptionNode", subscription.pk)
+    def test_archive_subscriptions_anon_user(self):
+        """ Archive subscriptions denied for anon user """
+        query = self.subscription_archive_mutation
+        subscription = f.OrganizationSubscriptionFactory.create()
+        variables = self.variables_archive
+        variables['input']['id'] = to_global_id("OrganizationSubscriptionNode", subscription.pk)
 
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename=self.permission_delete)
-    #     user.user_permissions.add(permission)
-    #     user.save()
-
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['archiveOrganizationSubscription']['organizationSubscription']['archived'], variables['input']['archived'])
+        executed = execute_test_client_api_query(
+            query, 
+            self.anon_user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
-    # def test_archive_subscriptions_permission_denied(self):
-    #     """ Check archive subscriptions permission denied error message """
-    #     query = self.subscription_archive_mutation
-    #     subscription = f.OrganizationSubscriptionFactory.create()
-    #     variables = self.variables_archive
-    #     variables['input']['id'] = to_global_id("OrganizationSubscriptionNode", subscription.pk)
+    def test_archive_subscriptions_permission_granted(self):
+        """ Allow archiving subscriptions for users with permissions """
+        query = self.subscription_archive_mutation
+        subscription = f.OrganizationSubscriptionFactory.create()
+        variables = self.variables_archive
+        variables['input']['id'] = to_global_id("OrganizationSubscriptionNode", subscription.pk)
+
+        # Create regular user
+        user = f.RegularUserFactory.create()
+        permission = Permission.objects.get(codename=self.permission_delete)
+        user.user_permissions.add(permission)
+        user.save()
+
+        executed = execute_test_client_api_query(
+            query, 
+            user,
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['archiveOrganizationSubscription']['organizationSubscription']['archived'], variables['input']['archived'])
+
+
+    def test_archive_subscriptions_permission_denied(self):
+        """ Check archive subscriptions permission denied error message """
+        query = self.subscription_archive_mutation
+        subscription = f.OrganizationSubscriptionFactory.create()
+        variables = self.variables_archive
+        variables['input']['id'] = to_global_id("OrganizationSubscriptionNode", subscription.pk)
         
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
+        # Create regular user
+        user = f.RegularUserFactory.create()
 
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
+        executed = execute_test_client_api_query(
+            query, 
+            user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
 
