@@ -49,7 +49,7 @@ import OrganizationLevelEdit from './components/organization/levels/Organization
 import OrganizationMemberships from './components/organization/memberships/OrganizationMemberships'
 import OrganizationMembershipAdd from './components/organization/memberships/OrganizationMembershipAdd'
 import OrganizationMembershipEdit from './components/organization/memberships/OrganizationMembershipEdit'
-import OrganizationSubscriptions from './components/organization/memberships/OrganizationSubscriptions'
+import OrganizationSubscriptions from './components/organization/subscriptions/OrganizationSubscriptions'
 
 
 import Error404 from "./components/Error404"

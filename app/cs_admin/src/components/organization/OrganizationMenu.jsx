@@ -16,6 +16,7 @@ let discoveries_active
 let locations_active
 let levels_active
 let memberships_active
+let subscriptions_active
 
 const OrganizationMenu = ({ t, active_link }) => (
     <List.Group transparent={true}>
@@ -25,6 +26,7 @@ const OrganizationMenu = ({ t, active_link }) => (
         {(active_link === 'locations') ? locations_active = true: locations_active = false}
         {(active_link === 'levels') ? levels_active = true: levels_active = false}
         {(active_link === 'memberships') ? memberships_active = true: memberships_active = false}
+        {(active_link === 'subscriptions') ? memberships_active = true: memberships_active = false}
         
 
         <List.GroupItem
@@ -80,6 +82,15 @@ const OrganizationMenu = ({ t, active_link }) => (
             active={classpasses_active}
             >
             {t('organization.classpasses.title')}
+        </List.GroupItem>
+        <List.GroupItem
+            key={v4()}
+            className="d-flex align-items-center"
+            to="#/organization/subscriptions"
+            icon="edit"
+            active={subscriptions_active}
+            >
+            {t('organization.subscriptions.title')}
         </List.GroupItem>
         {/* <HasPermissionWrapper 
             permission="view"
