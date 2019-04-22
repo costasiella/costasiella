@@ -14,6 +14,7 @@ from .organization_location import OrganizationLocationQuery, OrganizationLocati
 from .organization_location_room import OrganizationLocationRoomQuery, OrganizationLocationRoomMutation
 from .organization_level import OrganizationLevelQuery, OrganizationLevelMutation
 from .organization_membership import OrganizationMembershipQuery, OrganizationMembershipMutation
+from .organization_subscription import OrganizationSubscriptionQuery, OrganizationSubcriptionMutation
 from .user import UserQuery, UserMutation
 
 
@@ -28,6 +29,7 @@ class Query(FinanceCostCenterQuery,
             OrganizationLocationRoomQuery, 
             OrganizationLevelQuery, 
             OrganizationMembershipQuery,
+            OrganizationSubscriptionQuery,
             UserQuery, 
             graphene.ObjectType):
     node = graphene.relay.Node.Field()
@@ -45,6 +47,7 @@ class Mutation(FinanceCostCenterMutation,
                OrganizationLocationRoomMutation,
                OrganizationLevelMutation,
                OrganizationMembershipMutation, 
+               OrganizationSubscriptionMutation, 
                UserMutation, 
                graphene.ObjectType):
     token_auth = graphql_jwt.ObtainJSONWebToken.Field()
