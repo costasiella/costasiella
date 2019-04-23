@@ -8,8 +8,8 @@ import { withRouter } from "react-router"
 import { Formik, Form as FoForm, Field, ErrorMessage } from 'formik'
 import { toast } from 'react-toastify'
 
-import { GET_CLASSPASS_GROUPS_QUERY } from './queries'
-import { CLASSPASS_GROUP_SCHEMA } from './yupSchema'
+import { GET_SUBSCRIPTION_GROUPS_QUERY } from './queries'
+import { SUBSCRIPTION_GROUP_SCHEMA } from './yupSchema'
 
 import {
   Page,
@@ -26,10 +26,10 @@ import HasPermissionWrapper from "../../HasPermissionWrapper"
 import OrganizationMenu from '../OrganizationMenu'
 
 
-const ADD_CLASSPASS_GROUP = gql`
-  mutation CreateOrganizationClasspassGroup($input:CreateOrganizationClasspassGroupInput!) {
-    createOrganizationClasspassGroup(input: $input) {
-      organizationClasspassGroup{
+const ADD_SUBSCRIPTION_GROUP = gql`
+  mutation CreateOrganizationSubscriptionGroup($input:CreateOrganizationSubscriptionGroupInput!) {
+    createOrganizationSubscriptionGroup(input: $input) {
+      organizationSubscriptionGroup{
         id
         archived
         name
@@ -38,9 +38,9 @@ const ADD_CLASSPASS_GROUP = gql`
   }
 `
 
-const return_url = "/organization/classpasses/groups"
+const return_url = "/organization/subscriptions/groups"
 
-const OrganizationClasspassGroupAdd = ({ t, history }) => (
+const OrganizationSubscriptionGroupAdd = ({ t, history }) => (
   <SiteWrapper>
     <div className="my-3 my-md-5">
       <Container>
@@ -49,24 +49,24 @@ const OrganizationClasspassGroupAdd = ({ t, history }) => (
           <Grid.Col md={9}>
           <Card>
             <Card.Header>
-              <Card.Title>{t('organization.classpass_groups.title_add')}</Card.Title>
+              <Card.Title>{t('organization.subscription_groups.title_add')}</Card.Title>
             </Card.Header>
-            <Mutation mutation={ADD_CLASSPASS_GROUP} onCompleted={() => history.push(return_url)}> 
+            <Mutation mutation={ADD_SUBSCRIPTION_GROUP} onCompleted={() => history.push(return_url)}> 
                 {(addLocation, { data }) => (
                     <Formik
                         initialValues={{ name: '', code: '' }}
-                        validationSchema={CLASSPASS_GROUP_SCHEMA}
+                        validationSchema={SUBSCRIPTION_GROUP_SCHEMA}
                         onSubmit={(values, { setSubmitting }) => {
                             addLocation({ variables: {
                               input: {
                                 name: values.name, 
                               }
                             }, refetchQueries: [
-                                {query: GET_CLASSPASS_GROUPS_QUERY, variables: {"archived": false }}
+                                {query: GET_SUBSCRIPTION_GROUPS_QUERY, variables: {"archived": false }}
                             ]})
                             .then(({ data }) => {
                                 console.log('got data', data);
-                                toast.success((t('organization.classpass_groups.toast_add_success')), {
+                                toast.success((t('organization.subscription_groups.toast_add_success')), {
                                     position: toast.POSITION.BOTTOM_RIGHT
                                   })
                               }).catch((error) => {
@@ -111,7 +111,7 @@ const OrganizationClasspassGroupAdd = ({ t, history }) => (
           </Grid.Col>
           <Grid.Col md={3}>
             <HasPermissionWrapper permission="add"
-                                  resource="organizationclasspassgroup">
+                                  resource="organizationsubscriptiongroup">
               <Button color="primary btn-block mb-6"
                       onClick={() => history.push(return_url)}>
                 <Icon prefix="fe" name="chevrons-left" /> {t('general.back')}
@@ -125,4 +125,4 @@ const OrganizationClasspassGroupAdd = ({ t, history }) => (
   </SiteWrapper>
 )
 
-export default withTranslation()(withRouter(OrganizationClasspassGroupAdd))
+export default withTranslation()(withRouter(OrganizationSubscriptionGroupAdd))

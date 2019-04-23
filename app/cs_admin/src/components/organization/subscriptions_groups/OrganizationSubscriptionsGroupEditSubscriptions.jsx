@@ -58,7 +58,7 @@ const DELETE_CARD_FROM_GROUP = gql`
 class OrganizationSubscriptionGroupEditPasses extends Component {
   constructor(props) {
     super(props)
-    console.log("Organization subscriptongroup edit props:")
+    console.log("Organization subscriptiongroup edit props:")
     console.log(props)
   }
 
@@ -78,7 +78,7 @@ class OrganizationSubscriptionGroupEditPasses extends Component {
               <Grid.Col md={9}>
                 <Card>
                   <Card.Header>
-                    <Card.Title>{t('organization.subscripton_group_subscriptions.title_edit')}</Card.Title>
+                    <Card.Title>{t('organization.subscription_group_subscriptions.title_edit')}</Card.Title>
                   </Card.Header>
                   <Query query={GET_SUBSCRIPTION_GROUP_PASSES_QUERY} variables={{ id, archived: false }} >
                     {({ loading, error, data, refetch }) => {
@@ -222,7 +222,7 @@ class OrganizationSubscriptionGroupEditPasses extends Component {
               </Grid.Col>
               <Grid.Col md={3}>
                 <HasPermissionWrapper permission="change"
-                                      resource="organizationsubscriptongroup">
+                                      resource="organizationsubscriptiongroup">
                   <Button color="primary btn-block mb-6"
                           onClick={() => history.push(return_url)}>
                     <Icon prefix="fe" name="chevrons-left" /> {t('general.back')}

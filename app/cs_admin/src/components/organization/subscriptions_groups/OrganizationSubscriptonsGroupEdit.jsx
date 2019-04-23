@@ -43,7 +43,7 @@ const UPDATE_SUBSCRIPTION_GROUP = gql`
 class OrganizationSubscriptionGroupEdit extends Component {
   constructor(props) {
     super(props)
-    console.log("Organization subscriptongroup edit props:")
+    console.log("Organization subscriptiongroup edit props:")
     console.log(props)
   }
 
@@ -63,7 +63,7 @@ class OrganizationSubscriptionGroupEdit extends Component {
               <Grid.Col md={9}>
               <Card>
                 <Card.Header>
-                  <Card.Title>{t('organization.subscripton_groups.title_edit')}</Card.Title>
+                  <Card.Title>{t('organization.subscription_groups.title_edit')}</Card.Title>
                   {console.log(match.params.id)}
                 </Card.Header>
                 <Query query={GET_SUBSCRIPTION_GROUP_QUERY} variables={{ id }} >
@@ -103,7 +103,7 @@ class OrganizationSubscriptionGroupEdit extends Component {
                                   ]})
                                   .then(({ data }) => {
                                       console.log('got data', data)
-                                      toast.success((t('organization.subscripton_groups.toast_edit_success')), {
+                                      toast.success((t('organization.subscription_groups.toast_edit_success')), {
                                           position: toast.POSITION.BOTTOM_RIGHT
                                         })
                                     }).catch((error) => {
@@ -154,7 +154,7 @@ class OrganizationSubscriptionGroupEdit extends Component {
               </Grid.Col>
               <Grid.Col md={3}>
                 <HasPermissionWrapper permission="change"
-                                      resource="organizationsubscriptongroup">
+                                      resource="organizationsubscriptiongroup">
                   <Button color="primary btn-block mb-6"
                           onClick={() => history.push(return_url)}>
                     <Icon prefix="fe" name="chevrons-left" /> {t('general.back')}

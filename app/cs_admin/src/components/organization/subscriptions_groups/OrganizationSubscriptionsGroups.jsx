@@ -58,10 +58,10 @@ const OrganizationSubscriptionsGroups = ({ t, history, archived=false }) => (
         <Grid.Row>
           <Grid.Col md={9}>
             <Query query={GET_SUBSCRIPTION_GROUPS_QUERY} variables={{ archived }}>
-             {({ loading, error, data: {organizationSubscriptionGroups: subscripton_groups}, refetch, fetchMore }) => {
+             {({ loading, error, data: {organizationSubscriptionGroups: subscription_groups}, refetch, fetchMore }) => {
                 // Loading
                 if (loading) return (
-                  <ContentCard cardTitle={t('organization.subscripton_groups.title')}>
+                  <ContentCard cardTitle={t('organization.subscription_groups.title')}>
                     <Dimmer active={true}
                             loadder={true}>
                     </Dimmer>
@@ -69,8 +69,8 @@ const OrganizationSubscriptionsGroups = ({ t, history, archived=false }) => (
                 )
                 // Error
                 if (error) return (
-                  <ContentCard cardTitle={t('organization.subscripton_groups.title')}>
-                    <p>{t('organization.subscripton_groups.error_loading')}</p>
+                  <ContentCard cardTitle={t('organization.subscription_groups.title')}>
+                    <p>{t('organization.subscription_groups.error_loading')}</p>
                   </ContentCard>
                 )
                 const headerOptions = <Card.Options>
@@ -88,24 +88,24 @@ const OrganizationSubscriptionsGroups = ({ t, history, archived=false }) => (
                 </Card.Options>
                 
                 // Empty list
-                if (!subscripton_groups.edges.length) { return (
-                  <ContentCard cardTitle={t('organization.subscripton_groups.title')}
+                if (!subscription_groups.edges.length) { return (
+                  <ContentCard cardTitle={t('organization.subscription_groups.title')}
                                headerContent={headerOptions}>
                     <p>
-                    {(!archived) ? t('organization.subscripton_groups.empty_list') : t("organization.subscripton_groups.empty_archive")}
+                    {(!archived) ? t('organization.subscription_groups.empty_list') : t("organization.subscription_groups.empty_archive")}
                     </p>
                    
                   </ContentCard>
                 )} else {   
                 // Life's good! :)
                 return (
-                  <ContentCard cardTitle={t('organization.subscripton_groups.title')}
+                  <ContentCard cardTitle={t('organization.subscription_groups.title')}
                                headerContent={headerOptions}
-                               pageInfo={subscripton_groups.pageInfo}
+                               pageInfo={subscription_groups.pageInfo}
                                onLoadMore={() => {
                                 fetchMore({
                                   variables: {
-                                    after: subscripton_groups.pageInfo.endCursor
+                                    after: subscription_groups.pageInfo.endCursor
                                   },
                                   updateQuery: (previousResult, { fetchMoreResult }) => {
                                     const newEdges = fetchMoreResult.organizationSubscriptionGroups.edges
@@ -113,7 +113,7 @@ const OrganizationSubscriptionsGroups = ({ t, history, archived=false }) => (
 
                                     return newEdges.length
                                       ? {
-                                          // Put the new subscripton_groups at the end of the list and update `pageInfo`
+                                          // Put the new subscription_groups at the end of the list and update `pageInfo`
                                           // so we have the new `endCursor` and `hasNextPage` values
                                           organizationSubscriptionGroups: {
                                             __typename: previousResult.organizationSubscriptionGroups.__typename,
@@ -132,7 +132,7 @@ const OrganizationSubscriptionsGroups = ({ t, history, archived=false }) => (
                             </Table.Row>
                           </Table.Header>
                           <Table.Body>
-                              {subscripton_groups.edges.map(({ node }) => (
+                              {subscription_groups.edges.map(({ node }) => (
                                 <Table.Row key={v4()}>
                                   <Table.Col key={v4()}>
                                     {node.name}
@@ -199,10 +199,10 @@ const OrganizationSubscriptionsGroups = ({ t, history, archived=false }) => (
           </Grid.Col>
           <Grid.Col md={3}>
             <HasPermissionWrapper permission="add"
-                                  resource="organizationsubscriptongroup">
+                                  resource="organizationsubscriptiongroup">
               <Button color="primary btn-block mb-6"
                       onClick={() => history.push("/organization/subscriptions/groups/add")}>
-                <Icon prefix="fe" name="plus-circle" /> {t('organization.subscripton_groups.add')}
+                <Icon prefix="fe" name="plus-circle" /> {t('organization.subscription_groups.add')}
               </Button>
             </HasPermissionWrapper>
             <OrganizationMenu active_link=''/>
