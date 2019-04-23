@@ -16,52 +16,52 @@ from .. import models
 from graphql_relay import to_global_id
 
 
-class GQLOrganizationClasspassGroupClasspass(TestCase):
+class GQLOrganizationSubscriptionGroupSubscription(TestCase):
     # https://docs.djangoproject.com/en/2.1/topics/testing/overview/
     def setUp(self):
         # This is run before every test
         self.admin_user = f.AdminFactory.create()
         self.anon_user = AnonymousUser()
 
-        self.classpass = f.OrganizationClasspassFactory.create()
-        self.group = f.OrganizationClasspassGroupFactory.create()
-        self.group_classpass = f.OrganizationClasspassGroupClasspassFactory.create()
+        self.subscription = f.OrganizationSubscriptionFactory.create()
+        self.group = f.OrganizationSubscriptionGroupFactory.create()
+        self.group_subscription = f.OrganizationSubscriptionGroupSubscriptionFactory.create()
 
-        self.classpass_id = to_global_id('OrganizationClasspassNode', self.classpass.pk)
-        self.group_id = to_global_id('OrganizationClasspassGroupNode', self.group.pk)
+        self.subscription_id = to_global_id('OrganizationSubscriptionNode', self.subscription.pk)
+        self.group_id = to_global_id('OrganizationSubscriptionGroupNode', self.group.pk)
 
         
-        self.permission_view = 'view_organizationclasspassgroupclasspass'
-        self.permission_add = 'add_organizationclasspassgroupclasspass'
-        self.permission_change = 'change_organizationclasspassgroupclasspass'
-        self.permission_delete = 'delete_organizationclasspassgroupclasspass'
+        self.permission_view = 'view_organizationsubscriptiongroupsubscription'
+        self.permission_add = 'add_organizationsubscriptiongroupsubscription'
+        self.permission_change = 'change_organizationsubscriptiongroupsubscription'
+        self.permission_delete = 'delete_organizationsubscriptiongroupsubscription'
 
         self.variables_create = {
             "input": {
-                "organizationClasspass": self.classpass_id,
-                "organizationClasspassGroup": self.group_id
+                "organizationSubscription": self.subscription_id,
+                "organizationSubscriptionGroup": self.group_id
             }
         }
         
 
         self.variables_delete = {
             "input": {
-                "organizationClasspass": to_global_id('OrganizationClasspassNode', self.group_classpass.organization_classpass.pk),
-                "organizationClasspassGroup": to_global_id('OrganizationClasspassGroupNode', self.group_classpass.organization_classpass_group.pk)
+                "organizationSubscription": to_global_id('OrganizationSubscriptionNode', self.group_subscription.organization_subscription.pk),
+                "organizationSubscriptionGroup": to_global_id('OrganizationSubscriptionGroupNode', self.group_subscription.organization_subscription_group.pk)
             }
         }
 
 
-        self.classpassgroupclasspass_create_mutation = '''
-  mutation AddCardToGroup($input: CreateOrganizationClasspassGroupClasspassInput!) {
-    createOrganizationClasspassGroupClasspass(input:$input) {
-      organizationClasspassGroupClasspass {
+        self.subscriptiongroupsubscription_create_mutation = '''
+  mutation AddCardToGroup($input: CreateOrganizationSubscriptionGroupSubscriptionInput!) {
+    createOrganizationSubscriptionGroupSubscription(input:$input) {
+      organizationSubscriptionGroupSubscription {
         id
-        organizationClasspass {
+        organizationSubscription {
           id
           name
         }
-        organizationClasspassGroup {
+        organizationSubscriptionGroup {
           id
           name
         }
@@ -70,9 +70,9 @@ class GQLOrganizationClasspassGroupClasspass(TestCase):
   }
 '''
 
-        self.classpassgroupclasspass_delete_mutation = '''
-  mutation DeleteCardFromGroup($input: DeleteOrganizationClasspassGroupClasspassInput!) {
-    deleteOrganizationClasspassGroupClasspass(input:$input) {
+        self.subscriptiongroupsubscription_delete_mutation = '''
+  mutation DeleteCardFromGroup($input: DeleteOrganizationSubscriptionGroupSubscriptionInput!) {
+    deleteOrganizationSubscriptionGroupSubscription(input:$input) {
       ok
     }
   }
@@ -83,9 +83,9 @@ class GQLOrganizationClasspassGroupClasspass(TestCase):
         pass
 
 
-    def test_create_classpassgroupclasspass(self):
-        """ Create a classpassgroupclasspass """
-        query = self.classpassgroupclasspass_create_mutation
+    def test_create_subscriptiongroupsubscription(self):
+        """ Create a subscriptiongroupsubscription """
+        query = self.subscriptiongroupsubscription_create_mutation
         variables = self.variables_create
 
         executed = execute_test_client_api_query(
@@ -96,18 +96,18 @@ class GQLOrganizationClasspassGroupClasspass(TestCase):
         data = executed.get('data')
 
         self.assertEqual(
-          data['createOrganizationClasspassGroupClasspass']['organizationClasspassGroupClasspass']['organizationClasspass']['id'], 
-          self.classpass_id
+          data['createOrganizationSubscriptionGroupSubscription']['organizationSubscriptionGroupSubscription']['organizationSubscription']['id'], 
+          self.subscription_id
         )
         self.assertEqual(
-          data['createOrganizationClasspassGroupClasspass']['organizationClasspassGroupClasspass']['organizationClasspassGroup']['id'], 
+          data['createOrganizationSubscriptionGroupSubscription']['organizationSubscriptionGroupSubscription']['organizationSubscriptionGroup']['id'], 
           self.group_id
         )
 
 
-    def test_create_classpassgroupclasspass_anon_user(self):
-        """ Create a classpassgroupclasspass with anonymous user, check error message """
-        query = self.classpassgroupclasspass_create_mutation
+    def test_create_subscriptiongroupsubscription_anon_user(self):
+        """ Create a subscriptiongroupsubscription with anonymous user, check error message """
+        query = self.subscriptiongroupsubscription_create_mutation
 
         executed = execute_test_client_api_query(
             query, 
@@ -119,9 +119,9 @@ class GQLOrganizationClasspassGroupClasspass(TestCase):
         self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
-    def test_create_classpassgroupclasspass_permission_granted(self):
-        """ Create a classpassgroupclasspass with a user having the add permission """
-        query = self.classpassgroupclasspass_create_mutation
+    def test_create_subscriptiongroupsubscription_permission_granted(self):
+        """ Create a subscriptiongroupsubscription with a user having the add permission """
+        query = self.subscriptiongroupsubscription_create_mutation
         variables = self.variables_create
 
         # Create regular user
@@ -137,18 +137,18 @@ class GQLOrganizationClasspassGroupClasspass(TestCase):
         )
         data = executed.get('data')
         self.assertEqual(
-          data['createOrganizationClasspassGroupClasspass']['organizationClasspassGroupClasspass']['organizationClasspass']['id'], 
-          self.classpass_id
+          data['createOrganizationSubscriptionGroupSubscription']['organizationSubscriptionGroupSubscription']['organizationSubscription']['id'], 
+          self.subscription_id
         )
         self.assertEqual(
-          data['createOrganizationClasspassGroupClasspass']['organizationClasspassGroupClasspass']['organizationClasspassGroup']['id'], 
+          data['createOrganizationSubscriptionGroupSubscription']['organizationSubscriptionGroupSubscription']['organizationSubscriptionGroup']['id'], 
           self.group_id
         )
 
 
-    def test_create_classpassgroupclasspass_permission_denied(self):
-        """ Create a classpassgroupclasspass with a user not having the add permission """
-        query = self.classpassgroupclasspass_create_mutation
+    def test_create_subscriptiongroupsubscription_permission_denied(self):
+        """ Create a subscriptiongroupsubscription with a user not having the add permission """
+        query = self.subscriptiongroupsubscription_create_mutation
 
         # Create regular user
         user = f.RegularUserFactory.create()
@@ -162,9 +162,9 @@ class GQLOrganizationClasspassGroupClasspass(TestCase):
         self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
-    def test_delete_classpassgroupclasspass(self):
-        """ Delete a classpassgroupclasspass """
-        query = self.classpassgroupclasspass_delete_mutation
+    def test_delete_subscriptiongroupsubscription(self):
+        """ Delete a subscriptiongroupsubscription """
+        query = self.subscriptiongroupsubscription_delete_mutation
         variables = self.variables_delete
 
         executed = execute_test_client_api_query(
@@ -174,15 +174,15 @@ class GQLOrganizationClasspassGroupClasspass(TestCase):
         )
         data = executed.get('data')
 
-        self.assertEqual(data['deleteOrganizationClasspassGroupClasspass']['ok'], True)
+        self.assertEqual(data['deleteOrganizationSubscriptionGroupSubscription']['ok'], True)
 
-        exists = models.OrganizationClasspassGroupClasspass.objects.exists()
+        exists = models.OrganizationSubscriptionGroupSubscription.objects.exists()
         self.assertEqual(exists, False)
 
 
-    def test_delete_classpassgroupclasspass_anon_user(self):
-        """ Delete a classpassgroupclasspass """
-        query = self.classpassgroupclasspass_delete_mutation
+    def test_delete_subscriptiongroupsubscription_anon_user(self):
+        """ Delete a subscriptiongroupsubscription """
+        query = self.subscriptiongroupsubscription_delete_mutation
         variables = self.variables_delete
 
         executed = execute_test_client_api_query(
@@ -195,9 +195,9 @@ class GQLOrganizationClasspassGroupClasspass(TestCase):
         self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
-    def test_delete_classpassgroupclasspass_permission_granted(self):
-        """ Allow archiving classpassgroupclasspasss for users with permissions """
-        query = self.classpassgroupclasspass_delete_mutation
+    def test_delete_subscriptiongroupsubscription_permission_granted(self):
+        """ Allow archiving subscriptiongroupsubscriptions for users with permissions """
+        query = self.subscriptiongroupsubscription_delete_mutation
         variables = self.variables_delete
 
         # Create regular user
@@ -212,15 +212,15 @@ class GQLOrganizationClasspassGroupClasspass(TestCase):
             variables=variables
         )
         data = executed.get('data')
-        self.assertEqual(data['deleteOrganizationClasspassGroupClasspass']['ok'], True)
+        self.assertEqual(data['deleteOrganizationSubscriptionGroupSubscription']['ok'], True)
 
-        exists = models.OrganizationClasspassGroupClasspass.objects.exists()
+        exists = models.OrganizationSubscriptionGroupSubscription.objects.exists()
         self.assertEqual(exists, False)
 
 
-    def test_delete_classpassgroupclasspass_permission_denied(self):
-        """ Check delete classpassgroupclasspass permission denied error message """
-        query = self.classpassgroupclasspass_delete_mutation
+    def test_delete_subscriptiongroupsubscription_permission_denied(self):
+        """ Check delete subscriptiongroupsubscription permission denied error message """
+        query = self.subscriptiongroupsubscription_delete_mutation
         variables = self.variables_delete
 
         # Create regular user

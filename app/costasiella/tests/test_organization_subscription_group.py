@@ -23,20 +23,20 @@ class GQLOrganizationSubscriptionGroup(TestCase):
         self.admin_user = f.AdminFactory.create()
         self.anon_user = AnonymousUser()
 
-        self.permission_view = 'view_organizationclasspassgroup'
-        self.permission_add = 'add_organizationclasspassgroup'
-        self.permission_change = 'change_organizationclasspassgroup'
-        self.permission_delete = 'delete_organizationclasspassgroup'
+        self.permission_view = 'view_organizationsubscriptiongroup'
+        self.permission_add = 'add_organizationsubscriptiongroup'
+        self.permission_change = 'change_organizationsubscriptiongroup'
+        self.permission_delete = 'delete_organizationsubscriptiongroup'
 
         self.variables_create = {
             "input": {
-                "name": "New classpassgroup",
+                "name": "New subscriptiongroup",
             }
         }
         
         self.variables_update = {
             "input": {
-                "name": "Updated classpassgroup",
+                "name": "Updated subscriptiongroup",
             }
         }
 
@@ -47,7 +47,7 @@ class GQLOrganizationSubscriptionGroup(TestCase):
         }
 
 
-        self.classpassgroups_query = '''
+        self.subscriptiongroups_query = '''
 query OrganizationSubscriptionGroups($after: String, $before: String, $archived: Boolean) {
   organizationSubscriptionGroups(first: 15, before: $before, after: $after, archived: $archived) {
     pageInfo {
@@ -67,7 +67,7 @@ query OrganizationSubscriptionGroups($after: String, $before: String, $archived:
 }
 '''
 
-        self.classpassgroup_query = '''
+        self.subscriptiongroup_query = '''
 query getOrganizationSubscriptionGroup($id: ID!) {
     organizationSubscriptionGroup(id:$id) {
       id
@@ -77,7 +77,7 @@ query getOrganizationSubscriptionGroup($id: ID!) {
   }
 '''
 
-        self.classpassgroup_create_mutation = '''
+        self.subscriptiongroup_create_mutation = '''
 mutation CreateOrganizationSubscriptionGroup($input: CreateOrganizationSubscriptionGroupInput!) {
   createOrganizationSubscriptionGroup(input: $input) {
     organizationSubscriptionGroup {
@@ -89,7 +89,7 @@ mutation CreateOrganizationSubscriptionGroup($input: CreateOrganizationSubscript
 }
 '''
 
-        self.classpassgroup_update_mutation = '''
+        self.subscriptiongroup_update_mutation = '''
   mutation UpdateOrganizationSubscriptionGroup($input: UpdateOrganizationSubscriptionGroupInput!) {
     updateOrganizationSubscriptionGroup(input: $input) {
       organizationSubscriptionGroup {
@@ -101,7 +101,7 @@ mutation CreateOrganizationSubscriptionGroup($input: CreateOrganizationSubscript
   }
 '''
 
-        self.classpassgroup_archive_mutation = '''
+        self.subscriptiongroup_archive_mutation = '''
 mutation ArchiveOrganizationSubscriptionGroup($input: ArchiveOrganizationSubscriptionGroupInput!) {
     archiveOrganizationSubscriptionGroup(input: $input) {
         organizationSubscriptionGroup {
@@ -118,9 +118,9 @@ mutation ArchiveOrganizationSubscriptionGroup($input: ArchiveOrganizationSubscri
 
 
     def test_query(self):
-        """ Query list of classpassgroups """
-        query = self.classpassgroups_query
-        classpassgroup = f.OrganizationSubscriptionGroupFactory.create()
+        """ Query list of subscriptiongroups """
+        query = self.subscriptiongroups_query
+        subscriptiongroup = f.OrganizationSubscriptionGroupFactory.create()
         variables = {
             "archived": False
         }
@@ -128,14 +128,14 @@ mutation ArchiveOrganizationSubscriptionGroup($input: ArchiveOrganizationSubscri
         executed = execute_test_client_api_query(query, self.admin_user, variables=variables)
         data = executed.get('data')
         item = data['organizationSubscriptionGroups']['edges'][0]['node']
-        self.assertEqual(item['name'], classpassgroup.name)
+        self.assertEqual(item['name'], subscriptiongroup.name)
 
 
 
     def test_query_permision_denied(self):
-        """ Query list of classpassgroups as user without permissions """
-        query = self.classpassgroups_query
-        classpassgroup = f.OrganizationSubscriptionGroupFactory.create()
+        """ Query list of subscriptiongroups as user without permissions """
+        query = self.subscriptiongroups_query
+        subscriptiongroup = f.OrganizationSubscriptionGroupFactory.create()
 
         variables = {
             'archived': False
@@ -150,9 +150,9 @@ mutation ArchiveOrganizationSubscriptionGroup($input: ArchiveOrganizationSubscri
 
 
     def test_query_permision_granted(self):
-        """ Query list of classpassgroups with view permission """
-        query = self.classpassgroups_query
-        classpassgroup = f.OrganizationSubscriptionGroupFactory.create()
+        """ Query list of subscriptiongroups with view permission """
+        query = self.subscriptiongroups_query
+        subscriptiongroup = f.OrganizationSubscriptionGroupFactory.create()
 
         variables = {
             'archived': False
@@ -167,13 +167,13 @@ mutation ArchiveOrganizationSubscriptionGroup($input: ArchiveOrganizationSubscri
         executed = execute_test_client_api_query(query, user, variables=variables)
         data = executed.get('data')
         item = data['organizationSubscriptionGroups']['edges'][0]['node']
-        self.assertEqual(item['name'], classpassgroup.name)
+        self.assertEqual(item['name'], subscriptiongroup.name)
 
 
     def test_query_anon_user(self):
-        """ Query list of classpassgroups as anon user """
-        query = self.classpassgroups_query
-        classpassgroup = f.OrganizationSubscriptionGroupFactory.create()
+        """ Query list of subscriptiongroups as anon user """
+        query = self.subscriptiongroups_query
+        subscriptiongroup = f.OrganizationSubscriptionGroupFactory.create()
         variables = {
             'archived': False
         }
@@ -184,26 +184,26 @@ mutation ArchiveOrganizationSubscriptionGroup($input: ArchiveOrganizationSubscri
 
 
     def test_query_one(self):
-        """ Query one classpassgroup """   
-        classpassgroup = f.OrganizationSubscriptionGroupFactory.create()
+        """ Query one subscriptiongroup """   
+        subscriptiongroup = f.OrganizationSubscriptionGroupFactory.create()
 
-        # First query classpassgroups to get node id easily
-        node_id = to_global_id("OrganizationSubscriptionGroupNode", classpassgroup.pk)
+        # First query subscriptiongroups to get node id easily
+        node_id = to_global_id("OrganizationSubscriptionGroupNode", subscriptiongroup.pk)
 
-        # Now query single classpassgroup and check
-        query = self.classpassgroup_query
+        # Now query single subscriptiongroup and check
+        query = self.subscriptiongroup_query
         executed = execute_test_client_api_query(query, self.admin_user, variables={"id": node_id})
         data = executed.get('data')
         print(data)
-        self.assertEqual(data['organizationSubscriptionGroup']['name'], classpassgroup.name)
-        self.assertEqual(data['organizationSubscriptionGroup']['archived'], classpassgroup.archived)
+        self.assertEqual(data['organizationSubscriptionGroup']['name'], subscriptiongroup.name)
+        self.assertEqual(data['organizationSubscriptionGroup']['archived'], subscriptiongroup.archived)
 
 
     def test_query_one_anon_user(self):
-        """ Deny permission for anon users Query one classpassgroup """   
-        query = self.classpassgroup_query
-        classpassgroup = f.OrganizationSubscriptionGroupFactory.create()
-        node_id = to_global_id("OrganizationSubscriptionGroupNode", classpassgroup.pk)
+        """ Deny permission for anon users Query one subscriptiongroup """   
+        query = self.subscriptiongroup_query
+        subscriptiongroup = f.OrganizationSubscriptionGroupFactory.create()
+        node_id = to_global_id("OrganizationSubscriptionGroupNode", subscriptiongroup.pk)
         executed = execute_test_client_api_query(query, self.anon_user, variables={"id": node_id})
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Not logged in!')
@@ -211,11 +211,11 @@ mutation ArchiveOrganizationSubscriptionGroup($input: ArchiveOrganizationSubscri
 
     def test_query_one_permission_denied(self):
         """ Permission denied message when user lacks authorization """   
-        query = self.classpassgroup_query
+        query = self.subscriptiongroup_query
         
         user = f.RegularUserFactory.create()
-        classpassgroup = f.OrganizationSubscriptionGroupFactory.create()
-        node_id = to_global_id("OrganizationSubscriptionGroupNode", classpassgroup.pk)
+        subscriptiongroup = f.OrganizationSubscriptionGroupFactory.create()
+        node_id = to_global_id("OrganizationSubscriptionGroupNode", subscriptiongroup.pk)
 
         executed = execute_test_client_api_query(query, user, variables={"id": node_id})
         errors = executed.get('errors')
@@ -224,24 +224,24 @@ mutation ArchiveOrganizationSubscriptionGroup($input: ArchiveOrganizationSubscri
 
     def test_query_one_permission_granted(self):
         """ Respond with data when user has permission """   
-        query = self.classpassgroup_query
+        query = self.subscriptiongroup_query
         # Create regular user
         user = f.RegularUserFactory.create()
-        permission = Permission.objects.get(codename='view_organizationclasspassgroup')
+        permission = Permission.objects.get(codename='view_organizationsubscriptiongroup')
         user.user_permissions.add(permission)
         user.save()
 
-        classpassgroup = f.OrganizationSubscriptionGroupFactory.create()
-        node_id = to_global_id("OrganizationSubscriptionGroupNode", classpassgroup.pk)
+        subscriptiongroup = f.OrganizationSubscriptionGroupFactory.create()
+        node_id = to_global_id("OrganizationSubscriptionGroupNode", subscriptiongroup.pk)
 
         executed = execute_test_client_api_query(query, user, variables={"id": node_id})
         data = executed.get('data')
-        self.assertEqual(data['organizationSubscriptionGroup']['name'], classpassgroup.name)
+        self.assertEqual(data['organizationSubscriptionGroup']['name'], subscriptiongroup.name)
 
 
-    def test_create_classpassgroup(self):
-        """ Create a classpassgroup """
-        query = self.classpassgroup_create_mutation
+    def test_create_subscriptiongroup(self):
+        """ Create a subscriptiongroup """
+        query = self.subscriptiongroup_create_mutation
         variables = self.variables_create
 
         executed = execute_test_client_api_query(
@@ -254,9 +254,9 @@ mutation ArchiveOrganizationSubscriptionGroup($input: ArchiveOrganizationSubscri
         self.assertEqual(data['createOrganizationSubscriptionGroup']['organizationSubscriptionGroup']['archived'], False)
 
 
-    def test_create_classpassgroup_anon_user(self):
-        """ Create a classpassgroup with anonymous user, check error message """
-        query = self.classpassgroup_create_mutation
+    def test_create_subscriptiongroup_anon_user(self):
+        """ Create a subscriptiongroup with anonymous user, check error message """
+        query = self.subscriptiongroup_create_mutation
 
         executed = execute_test_client_api_query(
             query, 
@@ -268,9 +268,9 @@ mutation ArchiveOrganizationSubscriptionGroup($input: ArchiveOrganizationSubscri
         self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
-    def test_create_classpassgroup_permission_granted(self):
-        """ Create a classpassgroup with a user having the add permission """
-        query = self.classpassgroup_create_mutation
+    def test_create_subscriptiongroup_permission_granted(self):
+        """ Create a subscriptiongroup with a user having the add permission """
+        query = self.subscriptiongroup_create_mutation
         variables = self.variables_create
 
         # Create regular user
@@ -289,9 +289,9 @@ mutation ArchiveOrganizationSubscriptionGroup($input: ArchiveOrganizationSubscri
         self.assertEqual(data['createOrganizationSubscriptionGroup']['organizationSubscriptionGroup']['archived'], False)
 
 
-    def test_create_classpassgroup_permission_denied(self):
-        """ Create a classpassgroup with a user not having the add permission """
-        query = self.classpassgroup_create_mutation
+    def test_create_subscriptiongroup_permission_denied(self):
+        """ Create a subscriptiongroup with a user not having the add permission """
+        query = self.subscriptiongroup_create_mutation
 
         # Create regular user
         user = f.RegularUserFactory.create()
@@ -305,12 +305,12 @@ mutation ArchiveOrganizationSubscriptionGroup($input: ArchiveOrganizationSubscri
         self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
-    def test_update_classpassgroup(self):
-        """ Update a classpassgroup as admin user """
-        query = self.classpassgroup_update_mutation
-        classpassgroup = f.OrganizationSubscriptionGroupFactory.create()
+    def test_update_subscriptiongroup(self):
+        """ Update a subscriptiongroup as admin user """
+        query = self.subscriptiongroup_update_mutation
+        subscriptiongroup = f.OrganizationSubscriptionGroupFactory.create()
         variables = self.variables_update
-        variables['input']['id'] = to_global_id("OrganizationSubscriptionGroupNode", classpassgroup.pk)
+        variables['input']['id'] = to_global_id("OrganizationSubscriptionGroupNode", subscriptiongroup.pk)
         
 
         executed = execute_test_client_api_query(
@@ -323,12 +323,12 @@ mutation ArchiveOrganizationSubscriptionGroup($input: ArchiveOrganizationSubscri
         self.assertEqual(data['updateOrganizationSubscriptionGroup']['organizationSubscriptionGroup']['archived'], False)
 
 
-    def test_update_classpassgroup_anon_user(self):
-        """ Update a classpassgroup as anonymous user """
-        query = self.classpassgroup_update_mutation
-        classpassgroup = f.OrganizationSubscriptionGroupFactory.create()
+    def test_update_subscriptiongroup_anon_user(self):
+        """ Update a subscriptiongroup as anonymous user """
+        query = self.subscriptiongroup_update_mutation
+        subscriptiongroup = f.OrganizationSubscriptionGroupFactory.create()
         variables = self.variables_update
-        variables['input']['id'] = to_global_id("OrganizationSubscriptionGroupNode", classpassgroup.pk)
+        variables['input']['id'] = to_global_id("OrganizationSubscriptionGroupNode", subscriptiongroup.pk)
 
         executed = execute_test_client_api_query(
             query, 
@@ -340,12 +340,12 @@ mutation ArchiveOrganizationSubscriptionGroup($input: ArchiveOrganizationSubscri
         self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
-    def test_update_classpassgroup_permission_granted(self):
-        """ Update a classpassgroup as user with permission """
-        query = self.classpassgroup_update_mutation
-        classpassgroup = f.OrganizationSubscriptionGroupFactory.create()
+    def test_update_subscriptiongroup_permission_granted(self):
+        """ Update a subscriptiongroup as user with permission """
+        query = self.subscriptiongroup_update_mutation
+        subscriptiongroup = f.OrganizationSubscriptionGroupFactory.create()
         variables = self.variables_update
-        variables['input']['id'] = to_global_id("OrganizationSubscriptionGroupNode", classpassgroup.pk)
+        variables['input']['id'] = to_global_id("OrganizationSubscriptionGroupNode", subscriptiongroup.pk)
 
         user = f.RegularUserFactory.create()
         permission = Permission.objects.get(codename=self.permission_change)
@@ -362,12 +362,12 @@ mutation ArchiveOrganizationSubscriptionGroup($input: ArchiveOrganizationSubscri
         self.assertEqual(data['updateOrganizationSubscriptionGroup']['organizationSubscriptionGroup']['archived'], False)
 
 
-    def test_update_classpassgroup_permission_denied(self):
-        """ Update a classpassgroup as user without permissions """
-        query = self.classpassgroup_update_mutation
-        classpassgroup = f.OrganizationSubscriptionGroupFactory.create()
+    def test_update_subscriptiongroup_permission_denied(self):
+        """ Update a subscriptiongroup as user without permissions """
+        query = self.subscriptiongroup_update_mutation
+        subscriptiongroup = f.OrganizationSubscriptionGroupFactory.create()
         variables = self.variables_update
-        variables['input']['id'] = to_global_id("OrganizationSubscriptionGroupNode", classpassgroup.pk)
+        variables['input']['id'] = to_global_id("OrganizationSubscriptionGroupNode", subscriptiongroup.pk)
 
         user = f.RegularUserFactory.create()
 
@@ -381,12 +381,12 @@ mutation ArchiveOrganizationSubscriptionGroup($input: ArchiveOrganizationSubscri
         self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
-    def test_archive_classpassgroup(self):
-        """ Archive a classpassgroup """
-        query = self.classpassgroup_archive_mutation
-        classpassgroup = f.OrganizationSubscriptionGroupFactory.create()
+    def test_archive_subscriptiongroup(self):
+        """ Archive a subscriptiongroup """
+        query = self.subscriptiongroup_archive_mutation
+        subscriptiongroup = f.OrganizationSubscriptionGroupFactory.create()
         variables = self.variables_archive
-        variables['input']['id'] = to_global_id("OrganizationSubscriptionGroupNode", classpassgroup.pk)
+        variables['input']['id'] = to_global_id("OrganizationSubscriptionGroupNode", subscriptiongroup.pk)
 
         executed = execute_test_client_api_query(
             query, 
@@ -397,12 +397,12 @@ mutation ArchiveOrganizationSubscriptionGroup($input: ArchiveOrganizationSubscri
         self.assertEqual(data['archiveOrganizationSubscriptionGroup']['organizationSubscriptionGroup']['archived'], variables['input']['archived'])
 
 
-    def test_archive_classpassgroup_anon_user(self):
-        """ Archive a classpassgroup """
-        query = self.classpassgroup_archive_mutation
-        classpassgroup = f.OrganizationSubscriptionGroupFactory.create()
+    def test_archive_subscriptiongroup_anon_user(self):
+        """ Archive a subscriptiongroup """
+        query = self.subscriptiongroup_archive_mutation
+        subscriptiongroup = f.OrganizationSubscriptionGroupFactory.create()
         variables = self.variables_archive
-        variables['input']['id'] = to_global_id("OrganizationSubscriptionGroupNode", classpassgroup.pk)
+        variables['input']['id'] = to_global_id("OrganizationSubscriptionGroupNode", subscriptiongroup.pk)
 
         executed = execute_test_client_api_query(
             query, 
@@ -414,12 +414,12 @@ mutation ArchiveOrganizationSubscriptionGroup($input: ArchiveOrganizationSubscri
         self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
-    def test_archive_classpassgroup_permission_granted(self):
-        """ Allow archiving classpassgroups for users with permissions """
-        query = self.classpassgroup_archive_mutation
-        classpassgroup = f.OrganizationSubscriptionGroupFactory.create()
+    def test_archive_subscriptiongroup_permission_granted(self):
+        """ Allow archiving subscriptiongroups for users with permissions """
+        query = self.subscriptiongroup_archive_mutation
+        subscriptiongroup = f.OrganizationSubscriptionGroupFactory.create()
         variables = self.variables_archive
-        variables['input']['id'] = to_global_id("OrganizationSubscriptionGroupNode", classpassgroup.pk)
+        variables['input']['id'] = to_global_id("OrganizationSubscriptionGroupNode", subscriptiongroup.pk)
 
         # Create regular user
         user = f.RegularUserFactory.create()
@@ -436,12 +436,12 @@ mutation ArchiveOrganizationSubscriptionGroup($input: ArchiveOrganizationSubscri
         self.assertEqual(data['archiveOrganizationSubscriptionGroup']['organizationSubscriptionGroup']['archived'], variables['input']['archived'])
 
 
-    def test_archive_classpassgroup_permission_denied(self):
-        """ Check archive classpassgroup permission denied error message """
-        query = self.classpassgroup_archive_mutation
-        classpassgroup = f.OrganizationSubscriptionGroupFactory.create()
+    def test_archive_subscriptiongroup_permission_denied(self):
+        """ Check archive subscriptiongroup permission denied error message """
+        query = self.subscriptiongroup_archive_mutation
+        subscriptiongroup = f.OrganizationSubscriptionGroupFactory.create()
         variables = self.variables_archive
-        variables['input']['id'] = to_global_id("OrganizationSubscriptionGroupNode", classpassgroup.pk)
+        variables['input']['id'] = to_global_id("OrganizationSubscriptionGroupNode", subscriptiongroup.pk)
 
         # Create regular user
         user = f.RegularUserFactory.create()
