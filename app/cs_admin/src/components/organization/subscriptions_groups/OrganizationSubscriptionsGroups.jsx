@@ -147,9 +147,9 @@ const OrganizationSubscriptionsGroups = ({ t, history, archived=false }) => (
                                           {t('general.edit')}
                                         </Button>
                                         <Button className='btn-sm' 
-                                                onClick={() => history.push("/organization/subscriptions/groups/edit/passes/" + node.id)}
+                                                onClick={() => history.push("/organization/subscriptions/groups/edit/subscriptions/" + node.id)}
                                                 color="secondary">
-                                          {t('organization.subscriptions.groups.edit_passes')}
+                                          {t('organization.subscriptions.groups.edit_subscriptions')}
                                         </Button>
                                       </span>
                                     }

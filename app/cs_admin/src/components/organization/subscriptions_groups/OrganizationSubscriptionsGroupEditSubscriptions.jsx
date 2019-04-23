@@ -55,7 +55,7 @@ const DELETE_CARD_FROM_GROUP = gql`
 `
 
 
-class OrganizationSubscriptionGroupEditPasses extends Component {
+class OrganizationSubscriptionGroupEditSubscriptions extends Component {
   constructor(props) {
     super(props)
     console.log("Organization subscriptiongroup edit props:")
@@ -92,22 +92,22 @@ class OrganizationSubscriptionGroupEditPasses extends Component {
                       
                       console.log('query data')
                       console.log(data)
-                      const passes = data.organizationSubscriptions
+                      const subscriptions = data.organizationSubscriptions
                       const group = data.organizationSubscriptionGroup
 
-                      let group_passes = {}
+                      let group_subscriptions = {}
                       if (group.organizationSubscriptions.edges) {
                         group.organizationSubscriptions.edges.map(({ node}) => (
-                          group_passes[node.id] = true
+                          group_subscriptions[node.id] = true
                         ))
                       }
 
-                      console.log("group_passes")
-                      console.log(group_passes)
+                      console.log("group_subscriptions")
+                      console.log(group_subscriptions)
 
                       return (
 
-                        (!passes.edges) ? "" : 
+                        (!subscriptions.edges) ? "" : 
                           <Card.Body>
                             <Alert type="primary">
                               <strong>{t('general.group')}</strong> {group.name}
@@ -121,18 +121,18 @@ class OrganizationSubscriptionGroupEditPasses extends Component {
                                 </Table.Row>
                               </Table.Header>
                               <Table.Body>
-                                  {passes.edges.map(({ node }) => (
+                                  {subscriptions.edges.map(({ node }) => (
                                     <Table.Row key={v4()}>
                                       <Table.Col key={v4()}>
-                                        {(node.id in group_passes) ? 
+                                        {(node.id in group_subscriptions) ? 
                                           <Icon name="check-circle" className="text-green" /> : <Icon name="x-circle" className="text-red" />
                                         }
                                       </Table.Col>
                                       <Table.Col key={v4()}>
                                         {node.name}
                                       </Table.Col>
-                                      {console.log((node.id in group_passes))}
-                                      {(!(node.id in group_passes)) ?
+                                      {console.log((node.id in group_subscriptions))}
+                                      {(!(node.id in group_subscriptions)) ?
                                         // Add
                                         <Mutation mutation={ADD_CARD_TO_GROUP} key={v4()}>
                                           {(AddCardToGroup, { data }) => (
@@ -238,4 +238,4 @@ class OrganizationSubscriptionGroupEditPasses extends Component {
   }
 
 
-export default withTranslation()(withRouter(OrganizationSubscriptionGroupEditPasses))
+export default withTranslation()(withRouter(OrganizationSubscriptionGroupEditSubscriptions))
