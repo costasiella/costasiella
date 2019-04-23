@@ -54,6 +54,7 @@ import OrganizationSubscriptionAdd from './components/organization/subscriptions
 import OrganizationSubscriptionEdit from './components/organization/subscriptions/OrganizationSubscriptionEdit'
 import OrganizationSubscriptionsGroups from './components/organization/subscriptions_groups/OrganizationSubscriptionsGroups'
 import OrganizationSubscriptionsGroupAdd from './components/organization/subscriptions_groups/OrganizationSubscriptionsGroupAdd'
+import OrganizationSubscriptionsGroupEdit from './components/organization/subscriptions_groups/OrganizationSubscriptionsGroupEdit'
 
 
 import Error404 from "./components/Error404"
@@ -150,6 +151,7 @@ class App extends Component {
             <Route exact path="/organization/subscriptions/edit/:id" component={OrganizationSubscriptionEdit} />
             <Route exact path="/organization/subscriptions/groups" component={OrganizationSubscriptionsGroups} />
             <Route exact path="/organization/subscriptions/groups/add" component={OrganizationSubscriptionsGroupAdd} />
+            <Route exact path="/organization/subscriptions/groups/edit/:id" component={OrganizationSubscriptionsGroupEdit} />
 
             <Route component={Error404} />
           </Switch>
