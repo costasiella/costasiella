@@ -29,9 +29,9 @@ import OrganizationMenu from "../OrganizationMenu"
 
 
 const UPDATE_SUBSCRIPTION_GROUP = gql`
-  mutation UpdateOrganizationClasspassGroup($input: UpdateOrganizationClasspassGroupInput!) {
-    updateOrganizationClasspassGroup(input: $input) {
-      organizationClasspassGroup {
+  mutation UpdateOrganizationSubscriptionGroup($input: UpdateOrganizationSubscriptionGroupInput!) {
+    updateOrganizationSubscriptionGroup(input: $input) {
+      organizationSubscriptionGroup {
         id
         name
       }
@@ -40,7 +40,7 @@ const UPDATE_SUBSCRIPTION_GROUP = gql`
 `
 
 
-class OrganizationClasspassGroupEdit extends Component {
+class OrganizationSubscriptionGroupEdit extends Component {
   constructor(props) {
     super(props)
     console.log("Organization subscriptongroup edit props:")
@@ -76,14 +76,14 @@ class OrganizationClasspassGroupEdit extends Component {
                       return <p>{t('general.error_sad_smiley')}</p>
                     }
                     
-                    const initialData = data.organizationClasspassGroup;
+                    const initialData = data.organizationSubscriptionGroup;
                     console.log('query data')
                     console.log(data)
 
                     return (
                       
                       <Mutation mutation={UPDATE_SUBSCRIPTION_GROUP} onCompleted={() => history.push(return_url)}> 
-                      {(updateClasspassGroup, { data }) => (
+                      {(updateSubscriptionGroup, { data }) => (
                           <Formik
                               initialValues={{ 
                                 name: initialData.name, 
@@ -93,7 +93,7 @@ class OrganizationClasspassGroupEdit extends Component {
                                   console.log('submit values:')
                                   console.log(values)
 
-                                  updateClasspassGroup({ variables: {
+                                  updateSubscriptionGroup({ variables: {
                                     input: {
                                       id: match.params.id,
                                       name: values.name,
@@ -170,4 +170,4 @@ class OrganizationClasspassGroupEdit extends Component {
   }
 
 
-export default withTranslation()(withRouter(OrganizationClasspassGroupEdit))
+export default withTranslation()(withRouter(OrganizationSubscriptionGroupEdit))

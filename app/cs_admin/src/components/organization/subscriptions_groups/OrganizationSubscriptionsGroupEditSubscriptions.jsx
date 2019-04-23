@@ -28,15 +28,15 @@ import OrganizationMenu from "../OrganizationMenu"
 
 //TODO: Add and delete group pass mutations
 const ADD_CARD_TO_GROUP = gql`
-  mutation AddCardToGroup($input: CreateOrganizationClasspassGroupClasspassInput!) {
-    createOrganizationClasspassGroupClasspass(input:$input) {
-      organizationClasspassGroupClasspass {
+  mutation AddCardToGroup($input: CreateOrganizationSubscriptionGroupSubscriptionInput!) {
+    createOrganizationSubscriptionGroupSubscription(input:$input) {
+      organizationSubscriptionGroupSubscription {
         id
-        organizationClasspass {
+        organizationSubscription {
           id
           name
         }
-        organizationClasspassGroup {
+        organizationSubscriptionGroup {
           id
           name
         }
@@ -47,15 +47,15 @@ const ADD_CARD_TO_GROUP = gql`
 
 
 const DELETE_CARD_FROM_GROUP = gql`
-  mutation DeleteCardFromGroup($input: DeleteOrganizationClasspassGroupClasspassInput!) {
-    deleteOrganizationClasspassGroupClasspass(input:$input) {
+  mutation DeleteCardFromGroup($input: DeleteOrganizationSubscriptionGroupSubscriptionInput!) {
+    deleteOrganizationSubscriptionGroupSubscription(input:$input) {
       ok
     }
   }
 `
 
 
-class OrganizationClasspassGroupEditPasses extends Component {
+class OrganizationSubscriptionGroupEditPasses extends Component {
   constructor(props) {
     super(props)
     console.log("Organization subscriptongroup edit props:")
@@ -93,7 +93,7 @@ class OrganizationClasspassGroupEditPasses extends Component {
                       console.log('query data')
                       console.log(data)
                       const passes = data.organizationSubscriptions
-                      const group = data.organizationClasspassGroup
+                      const group = data.organizationSubscriptionGroup
 
                       let group_passes = {}
                       if (group.organizationSubscriptions.edges) {
@@ -147,8 +147,8 @@ class OrganizationClasspassGroupEditPasses extends Component {
                                                   let group_id = this.props.match.params.id
                                                   AddCardToGroup({ variables: {
                                                     input: {
-                                                      organizationClasspass: pass_id,
-                                                      organizationClasspassGroup: group_id
+                                                      organizationSubscription: pass_id,
+                                                      organizationSubscriptionGroup: group_id
                                                     }
                                               }, refetchQueries: [
                                                   {query: GET_SUBSCRIPTION_GROUP_PASSES_QUERY, variables: {"id": group_id, "archived": false }}
@@ -185,8 +185,8 @@ class OrganizationClasspassGroupEditPasses extends Component {
                                                   let group_id = this.props.match.params.id
                                                   DeleteCardFromGroup({ variables: {
                                                     input: {
-                                                      organizationClasspass: pass_id,
-                                                      organizationClasspassGroup: group_id
+                                                      organizationSubscription: pass_id,
+                                                      organizationSubscriptionGroup: group_id
                                                     }
                                               }, refetchQueries: [
                                                   {query: GET_SUBSCRIPTION_GROUP_PASSES_QUERY, variables: {"id": group_id, "archived": false }}
@@ -238,4 +238,4 @@ class OrganizationClasspassGroupEditPasses extends Component {
   }
 
 
-export default withTranslation()(withRouter(OrganizationClasspassGroupEditPasses))
+export default withTranslation()(withRouter(OrganizationSubscriptionGroupEditPasses))

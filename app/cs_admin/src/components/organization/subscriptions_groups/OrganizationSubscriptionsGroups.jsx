@@ -32,9 +32,9 @@ import OrganizationMenu from "../OrganizationMenu"
 import { GET_SUBSCRIPTION_GROUPS_QUERY } from "./queries"
 
 const ARCHIVE_SUBSCRIPTION_GROUP = gql`
-  mutation ArchiveClasspassGroup($input: ArchiveOrganizationClasspassGroupInput!) {
-    archiveOrganizationClasspassGroup(input: $input) {
-      organizationClasspassGroup {
+  mutation ArchiveSubscriptionGroup($input: ArchiveOrganizationSubscriptionGroupInput!) {
+    archiveOrganizationSubscriptionGroup(input: $input) {
+      organizationSubscriptionGroup {
         id
         archived
       }
@@ -58,7 +58,7 @@ const OrganizationSubscriptionsGroups = ({ t, history, archived=false }) => (
         <Grid.Row>
           <Grid.Col md={9}>
             <Query query={GET_SUBSCRIPTION_GROUPS_QUERY} variables={{ archived }}>
-             {({ loading, error, data: {organizationClasspassGroups: subscripton_groups}, refetch, fetchMore }) => {
+             {({ loading, error, data: {organizationSubscriptionGroups: subscripton_groups}, refetch, fetchMore }) => {
                 // Loading
                 if (loading) return (
                   <ContentCard cardTitle={t('organization.subscripton_groups.title')}>
@@ -74,16 +74,6 @@ const OrganizationSubscriptionsGroups = ({ t, history, archived=false }) => (
                   </ContentCard>
                 )
                 const headerOptions = <Card.Options>
-                  {/* <Link to="/organization/subscriptions">
-                    <Button color='link'  
-                            size="sm"
-                            icon="arrow-left"
-                            // onClick={() => {archived=false; refetch({archived});}}>
-                            >
-                      {t('organization.subscriptions.title')}
-                    </Button>
-                  </Link>
-                  <CardHeaderSeparator /> */}
                   <Button color={(!archived) ? 'primary': 'secondary'}  
                           size="sm"
                           onClick={() => {archived=false; refetch({archived});}}>
@@ -118,16 +108,16 @@ const OrganizationSubscriptionsGroups = ({ t, history, archived=false }) => (
                                     after: subscripton_groups.pageInfo.endCursor
                                   },
                                   updateQuery: (previousResult, { fetchMoreResult }) => {
-                                    const newEdges = fetchMoreResult.organizationClasspassGroups.edges
-                                    const pageInfo = fetchMoreResult.organizationClasspassGroups.pageInfo
+                                    const newEdges = fetchMoreResult.organizationSubscriptionGroups.edges
+                                    const pageInfo = fetchMoreResult.organizationSubscriptionGroups.pageInfo
 
                                     return newEdges.length
                                       ? {
                                           // Put the new subscripton_groups at the end of the list and update `pageInfo`
                                           // so we have the new `endCursor` and `hasNextPage` values
-                                          organizationClasspassGroups: {
-                                            __typename: previousResult.organizationClasspassGroups.__typename,
-                                            edges: [ ...previousResult.organizationClasspassGroups.edges, ...newEdges ],
+                                          organizationSubscriptionGroups: {
+                                            __typename: previousResult.organizationSubscriptionGroups.__typename,
+                                            edges: [ ...previousResult.organizationSubscriptionGroups.edges, ...newEdges ],
                                             pageInfo
                                           }
                                         }
