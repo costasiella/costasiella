@@ -8,7 +8,7 @@ import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
 import { toast } from 'react-toastify'
 
-import { GET_CLASSPASS_GROUP_PASSES_QUERY } from './queries'
+import { GET_SUBSCRIPTION_GROUP_PASSES_QUERY } from './queries'
 
 
 import {
@@ -58,7 +58,7 @@ const DELETE_CARD_FROM_GROUP = gql`
 class OrganizationClasspassGroupEditPasses extends Component {
   constructor(props) {
     super(props)
-    console.log("Organization classpassgroup edit props:")
+    console.log("Organization subscriptongroup edit props:")
     console.log(props)
   }
 
@@ -67,7 +67,7 @@ class OrganizationClasspassGroupEditPasses extends Component {
     const match = this.props.match
     const history = this.props.history
     const id = match.params.id 
-    const return_url = "/organization/classpasses/groups"
+    const return_url = "/organization/subscriptions/groups"
 
     return (
       <SiteWrapper>
@@ -78,9 +78,9 @@ class OrganizationClasspassGroupEditPasses extends Component {
               <Grid.Col md={9}>
                 <Card>
                   <Card.Header>
-                    <Card.Title>{t('organization.classpass_group_classpasses.title_edit')}</Card.Title>
+                    <Card.Title>{t('organization.subscripton_group_subscriptions.title_edit')}</Card.Title>
                   </Card.Header>
-                  <Query query={GET_CLASSPASS_GROUP_PASSES_QUERY} variables={{ id, archived: false }} >
+                  <Query query={GET_SUBSCRIPTION_GROUP_PASSES_QUERY} variables={{ id, archived: false }} >
                     {({ loading, error, data, refetch }) => {
                       // Loading
                       if (loading) return <p>{t('general.loading_with_dots')}</p>
@@ -92,12 +92,12 @@ class OrganizationClasspassGroupEditPasses extends Component {
                       
                       console.log('query data')
                       console.log(data)
-                      const passes = data.organizationClasspasses
+                      const passes = data.organizationSubscriptions
                       const group = data.organizationClasspassGroup
 
                       let group_passes = {}
-                      if (group.organizationClasspasses.edges) {
-                        group.organizationClasspasses.edges.map(({ node}) => (
+                      if (group.organizationSubscriptions.edges) {
+                        group.organizationSubscriptions.edges.map(({ node}) => (
                           group_passes[node.id] = true
                         ))
                       }
@@ -151,7 +151,7 @@ class OrganizationClasspassGroupEditPasses extends Component {
                                                       organizationClasspassGroup: group_id
                                                     }
                                               }, refetchQueries: [
-                                                  {query: GET_CLASSPASS_GROUP_PASSES_QUERY, variables: {"id": group_id, "archived": false }}
+                                                  {query: GET_SUBSCRIPTION_GROUP_PASSES_QUERY, variables: {"id": group_id, "archived": false }}
                                               ]}).then(({ data }) => {
                                                 console.log('got data', data);
                                                 toast.success(t('general.added_to_group'), {
@@ -189,7 +189,7 @@ class OrganizationClasspassGroupEditPasses extends Component {
                                                       organizationClasspassGroup: group_id
                                                     }
                                               }, refetchQueries: [
-                                                  {query: GET_CLASSPASS_GROUP_PASSES_QUERY, variables: {"id": group_id, "archived": false }}
+                                                  {query: GET_SUBSCRIPTION_GROUP_PASSES_QUERY, variables: {"id": group_id, "archived": false }}
                                               ]}).then(({ data }) => {
                                                 console.log('got data', data);
                                                 toast.success(t('general.deleted_from_group'), {
@@ -222,7 +222,7 @@ class OrganizationClasspassGroupEditPasses extends Component {
               </Grid.Col>
               <Grid.Col md={3}>
                 <HasPermissionWrapper permission="change"
-                                      resource="organizationclasspassgroup">
+                                      resource="organizationsubscriptongroup">
                   <Button color="primary btn-block mb-6"
                           onClick={() => history.push(return_url)}>
                     <Icon prefix="fe" name="chevrons-left" /> {t('general.back')}

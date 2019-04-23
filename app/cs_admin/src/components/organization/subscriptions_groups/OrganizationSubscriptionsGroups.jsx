@@ -29,9 +29,9 @@ import ContentCard from "../../general/ContentCard"
 import CardHeaderSeparator from "../../general/CardHeaderSeparator"
 import OrganizationMenu from "../OrganizationMenu"
 
-import { GET_CLASSPASS_GROUPS_QUERY } from "./queries"
+import { GET_SUBSCRIPTION_GROUPS_QUERY } from "./queries"
 
-const ARCHIVE_CLASSPASS_GROUP = gql`
+const ARCHIVE_SUBSCRIPTION_GROUP = gql`
   mutation ArchiveClasspassGroup($input: ArchiveOrganizationClasspassGroupInput!) {
     archiveOrganizationClasspassGroup(input: $input) {
       organizationClasspassGroup {
@@ -43,25 +43,25 @@ const ARCHIVE_CLASSPASS_GROUP = gql`
 `
 
 
-const OrganizationClasspassesGroups = ({ t, history, archived=false }) => (
+const OrganizationSubscriptionsGroups = ({ t, history, archived=false }) => (
   <SiteWrapper>
     <div className="my-3 my-md-5">
       <Container>
         <Page.Header title={t("organization.title")}>
           <div className="page-options d-flex">
-            <Link to="/organization/classpasses" 
+            <Link to="/organization/subscriptions" 
                   className='btn btn-outline-secondary btn-sm'>
-                <Icon prefix="fe" name="arrow-left" /> {t('general.back_to')} {t('organization.classpasses.title')}
+                <Icon prefix="fe" name="arrow-left" /> {t('general.back_to')} {t('organization.subscriptions.title')}
             </Link>
           </div>
         </Page.Header>
         <Grid.Row>
           <Grid.Col md={9}>
-            <Query query={GET_CLASSPASS_GROUPS_QUERY} variables={{ archived }}>
-             {({ loading, error, data: {organizationClasspassGroups: classpass_groups}, refetch, fetchMore }) => {
+            <Query query={GET_SUBSCRIPTION_GROUPS_QUERY} variables={{ archived }}>
+             {({ loading, error, data: {organizationClasspassGroups: subscripton_groups}, refetch, fetchMore }) => {
                 // Loading
                 if (loading) return (
-                  <ContentCard cardTitle={t('organization.classpass_groups.title')}>
+                  <ContentCard cardTitle={t('organization.subscripton_groups.title')}>
                     <Dimmer active={true}
                             loadder={true}>
                     </Dimmer>
@@ -69,18 +69,18 @@ const OrganizationClasspassesGroups = ({ t, history, archived=false }) => (
                 )
                 // Error
                 if (error) return (
-                  <ContentCard cardTitle={t('organization.classpass_groups.title')}>
-                    <p>{t('organization.classpass_groups.error_loading')}</p>
+                  <ContentCard cardTitle={t('organization.subscripton_groups.title')}>
+                    <p>{t('organization.subscripton_groups.error_loading')}</p>
                   </ContentCard>
                 )
                 const headerOptions = <Card.Options>
-                  {/* <Link to="/organization/classpasses">
+                  {/* <Link to="/organization/subscriptions">
                     <Button color='link'  
                             size="sm"
                             icon="arrow-left"
                             // onClick={() => {archived=false; refetch({archived});}}>
                             >
-                      {t('organization.classpasses.title')}
+                      {t('organization.subscriptions.title')}
                     </Button>
                   </Link>
                   <CardHeaderSeparator /> */}
@@ -98,24 +98,24 @@ const OrganizationClasspassesGroups = ({ t, history, archived=false }) => (
                 </Card.Options>
                 
                 // Empty list
-                if (!classpass_groups.edges.length) { return (
-                  <ContentCard cardTitle={t('organization.classpass_groups.title')}
+                if (!subscripton_groups.edges.length) { return (
+                  <ContentCard cardTitle={t('organization.subscripton_groups.title')}
                                headerContent={headerOptions}>
                     <p>
-                    {(!archived) ? t('organization.classpass_groups.empty_list') : t("organization.classpass_groups.empty_archive")}
+                    {(!archived) ? t('organization.subscripton_groups.empty_list') : t("organization.subscripton_groups.empty_archive")}
                     </p>
                    
                   </ContentCard>
                 )} else {   
                 // Life's good! :)
                 return (
-                  <ContentCard cardTitle={t('organization.classpass_groups.title')}
+                  <ContentCard cardTitle={t('organization.subscripton_groups.title')}
                                headerContent={headerOptions}
-                               pageInfo={classpass_groups.pageInfo}
+                               pageInfo={subscripton_groups.pageInfo}
                                onLoadMore={() => {
                                 fetchMore({
                                   variables: {
-                                    after: classpass_groups.pageInfo.endCursor
+                                    after: subscripton_groups.pageInfo.endCursor
                                   },
                                   updateQuery: (previousResult, { fetchMoreResult }) => {
                                     const newEdges = fetchMoreResult.organizationClasspassGroups.edges
@@ -123,7 +123,7 @@ const OrganizationClasspassesGroups = ({ t, history, archived=false }) => (
 
                                     return newEdges.length
                                       ? {
-                                          // Put the new classpass_groups at the end of the list and update `pageInfo`
+                                          // Put the new subscripton_groups at the end of the list and update `pageInfo`
                                           // so we have the new `endCursor` and `hasNextPage` values
                                           organizationClasspassGroups: {
                                             __typename: previousResult.organizationClasspassGroups.__typename,
@@ -142,7 +142,7 @@ const OrganizationClasspassesGroups = ({ t, history, archived=false }) => (
                             </Table.Row>
                           </Table.Header>
                           <Table.Body>
-                              {classpass_groups.edges.map(({ node }) => (
+                              {subscripton_groups.edges.map(({ node }) => (
                                 <Table.Row key={v4()}>
                                   <Table.Col key={v4()}>
                                     {node.name}
@@ -152,19 +152,19 @@ const OrganizationClasspassesGroups = ({ t, history, archived=false }) => (
                                       <span className='text-muted'>{t('general.unarchive_to_edit')}</span> :
                                       <span>
                                         <Button className='btn-sm' 
-                                                onClick={() => history.push("/organization/classpasses/groups/edit/" + node.id)}
+                                                onClick={() => history.push("/organization/subscriptions/groups/edit/" + node.id)}
                                                 color="secondary">
                                           {t('general.edit')}
                                         </Button>
                                         <Button className='btn-sm' 
-                                                onClick={() => history.push("/organization/classpasses/groups/edit/passes/" + node.id)}
+                                                onClick={() => history.push("/organization/subscriptions/groups/edit/passes/" + node.id)}
                                                 color="secondary">
-                                          {t('organization.classpasses.groups.edit_passes')}
+                                          {t('organization.subscriptions.groups.edit_passes')}
                                         </Button>
                                       </span>
                                     }
                                   </Table.Col>
-                                  <Mutation mutation={ARCHIVE_CLASSPASS_GROUP} key={v4()}>
+                                  <Mutation mutation={ARCHIVE_SUBSCRIPTION_GROUP} key={v4()}>
                                     {(archiveCostcenter, { data }) => (
                                       <Table.Col className="text-right" key={v4()}>
                                         <button className="icon btn btn-link btn-sm" 
@@ -179,7 +179,7 @@ const OrganizationClasspassesGroups = ({ t, history, archived=false }) => (
                                                 archived: !archived
                                                }
                                         }, refetchQueries: [
-                                            {query: GET_CLASSPASS_GROUPS_QUERY, variables: {"archived": archived }}
+                                            {query: GET_SUBSCRIPTION_GROUPS_QUERY, variables: {"archived": archived }}
                                         ]}).then(({ data }) => {
                                           console.log('got data', data);
                                           toast.success(
@@ -209,10 +209,10 @@ const OrganizationClasspassesGroups = ({ t, history, archived=false }) => (
           </Grid.Col>
           <Grid.Col md={3}>
             <HasPermissionWrapper permission="add"
-                                  resource="organizationclasspassgroup">
+                                  resource="organizationsubscriptongroup">
               <Button color="primary btn-block mb-6"
-                      onClick={() => history.push("/organization/classpasses/groups/add")}>
-                <Icon prefix="fe" name="plus-circle" /> {t('organization.classpass_groups.add')}
+                      onClick={() => history.push("/organization/subscriptions/groups/add")}>
+                <Icon prefix="fe" name="plus-circle" /> {t('organization.subscripton_groups.add')}
               </Button>
             </HasPermissionWrapper>
             <OrganizationMenu active_link=''/>
@@ -223,4 +223,4 @@ const OrganizationClasspassesGroups = ({ t, history, archived=false }) => (
   </SiteWrapper>
 )
 
-export default withTranslation()(withRouter(OrganizationClasspassesGroups))
+export default withTranslation()(withRouter(OrganizationSubscriptionsGroups))

@@ -8,8 +8,8 @@ import { withRouter } from "react-router"
 import { Formik, Form as FoForm, Field, ErrorMessage } from 'formik'
 import { toast } from 'react-toastify'
 
-import { GET_CLASSPASS_GROUPS_QUERY, GET_CLASSPASS_GROUP_QUERY } from './queries'
-import { CLASSPASS_GROUP_SCHEMA } from './yupSchema'
+import { GET_SUBSCRIPTION_GROUPS_QUERY, GET_SUBSCRIPTION_GROUP_QUERY } from './queries'
+import { SUBSCRIPTION_GROUP_SCHEMA } from './yupSchema'
 
 
 
@@ -28,7 +28,7 @@ import HasPermissionWrapper from "../../HasPermissionWrapper"
 import OrganizationMenu from "../OrganizationMenu"
 
 
-const UPDATE_CLASSPASS_GROUP = gql`
+const UPDATE_SUBSCRIPTION_GROUP = gql`
   mutation UpdateOrganizationClasspassGroup($input: UpdateOrganizationClasspassGroupInput!) {
     updateOrganizationClasspassGroup(input: $input) {
       organizationClasspassGroup {
@@ -43,7 +43,7 @@ const UPDATE_CLASSPASS_GROUP = gql`
 class OrganizationClasspassGroupEdit extends Component {
   constructor(props) {
     super(props)
-    console.log("Organization classpassgroup edit props:")
+    console.log("Organization subscriptongroup edit props:")
     console.log(props)
   }
 
@@ -52,7 +52,7 @@ class OrganizationClasspassGroupEdit extends Component {
     const match = this.props.match
     const history = this.props.history
     const id = match.params.id
-    const return_url = "/organization/classpasses/groups"
+    const return_url = "/organization/subscriptions/groups"
 
     return (
       <SiteWrapper>
@@ -63,10 +63,10 @@ class OrganizationClasspassGroupEdit extends Component {
               <Grid.Col md={9}>
               <Card>
                 <Card.Header>
-                  <Card.Title>{t('organization.classpass_groups.title_edit')}</Card.Title>
+                  <Card.Title>{t('organization.subscripton_groups.title_edit')}</Card.Title>
                   {console.log(match.params.id)}
                 </Card.Header>
-                <Query query={GET_CLASSPASS_GROUP_QUERY} variables={{ id }} >
+                <Query query={GET_SUBSCRIPTION_GROUP_QUERY} variables={{ id }} >
                 {({ loading, error, data, refetch }) => {
                     // Loading
                     if (loading) return <p>{t('general.loading_with_dots')}</p>
@@ -82,13 +82,13 @@ class OrganizationClasspassGroupEdit extends Component {
 
                     return (
                       
-                      <Mutation mutation={UPDATE_CLASSPASS_GROUP} onCompleted={() => history.push(return_url)}> 
+                      <Mutation mutation={UPDATE_SUBSCRIPTION_GROUP} onCompleted={() => history.push(return_url)}> 
                       {(updateClasspassGroup, { data }) => (
                           <Formik
                               initialValues={{ 
                                 name: initialData.name, 
                               }}
-                              validationSchema={CLASSPASS_GROUP_SCHEMA}
+                              validationSchema={SUBSCRIPTION_GROUP_SCHEMA}
                               onSubmit={(values, { setSubmitting }) => {
                                   console.log('submit values:')
                                   console.log(values)
@@ -99,11 +99,11 @@ class OrganizationClasspassGroupEdit extends Component {
                                       name: values.name,
                                     }
                                   }, refetchQueries: [
-                                      {query: GET_CLASSPASS_GROUPS_QUERY, variables: {"archived": false }}
+                                      {query: GET_SUBSCRIPTION_GROUPS_QUERY, variables: {"archived": false }}
                                   ]})
                                   .then(({ data }) => {
                                       console.log('got data', data)
-                                      toast.success((t('organization.classpass_groups.toast_edit_success')), {
+                                      toast.success((t('organization.subscripton_groups.toast_edit_success')), {
                                           position: toast.POSITION.BOTTOM_RIGHT
                                         })
                                     }).catch((error) => {
@@ -154,7 +154,7 @@ class OrganizationClasspassGroupEdit extends Component {
               </Grid.Col>
               <Grid.Col md={3}>
                 <HasPermissionWrapper permission="change"
-                                      resource="organizationclasspassgroup">
+                                      resource="organizationsubscriptongroup">
                   <Button color="primary btn-block mb-6"
                           onClick={() => history.push(return_url)}>
                     <Icon prefix="fe" name="chevrons-left" /> {t('general.back')}
