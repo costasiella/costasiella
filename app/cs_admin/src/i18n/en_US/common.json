@@ -226,11 +226,28 @@
             "error_loading": "Error loading subscriptions :(",
             "empty_list": "No subscriptions found",
             "empty_archive": "No subscriptions have been archived yet",
-            "add": "Add subscription"
+            "add": "Add subscription",
+            "groups": {
+                "edit_subscriptions": "Subscriptions in group"
+            }
         },
         "subscription": {
             "public": "This is a public subscription",
             "shop": "Show this subscription in the shop"
+        },
+        "subscription_groups": {
+            "title_add": "Add subscriptions group",
+            "toast_add_success": "Added subscriptions group",
+            "title_edit": "Edit subscriptions group",
+            "toast_edit_success": "Saved subscriptions group",
+            "title": "Subscription groups",
+            "error_loading": "Error loading subscription groups :(",
+            "empty_list": "No subscription groups found",
+            "empty_archive": "No subscription groups have been archived yet",
+            "add": "Add subscription group"
+        },
+        "subscription_group_subscriptions": {
+            "title_edit": "Edit subscriptions in group"
         }
     },
     "validity": {

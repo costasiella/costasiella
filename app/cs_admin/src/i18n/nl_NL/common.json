@@ -226,11 +226,28 @@
             "error_loading": "__STRING_NOT_TRANSLATED__",
             "empty_list": "__STRING_NOT_TRANSLATED__",
             "empty_archive": "__STRING_NOT_TRANSLATED__",
-            "add": "__STRING_NOT_TRANSLATED__"
+            "add": "__STRING_NOT_TRANSLATED__",
+            "groups": {
+                "edit_subscriptions": "__STRING_NOT_TRANSLATED__"
+            }
         },
         "subscription": {
             "public": "__STRING_NOT_TRANSLATED__",
             "shop": "__STRING_NOT_TRANSLATED__"
+        },
+        "subscription_groups": {
+            "title_add": "__STRING_NOT_TRANSLATED__",
+            "toast_add_success": "__STRING_NOT_TRANSLATED__",
+            "title_edit": "__STRING_NOT_TRANSLATED__",
+            "toast_edit_success": "__STRING_NOT_TRANSLATED__",
+            "title": "__STRING_NOT_TRANSLATED__",
+            "error_loading": "__STRING_NOT_TRANSLATED__",
+            "empty_list": "__STRING_NOT_TRANSLATED__",
+            "empty_archive": "__STRING_NOT_TRANSLATED__",
+            "add": "__STRING_NOT_TRANSLATED__"
+        },
+        "subscription_group_subscriptions": {
+            "title_edit": "__STRING_NOT_TRANSLATED__"
         }
     },
     "validity": {
