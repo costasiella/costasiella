@@ -118,6 +118,22 @@ class OrganizationClasspassFactory(factory.DjangoModelFactory):
     finance_costcenter = factory.SubFactory(FinanceCostCenterFactory)
 
 
+class OrganizationClasspassGroupFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.OrganizationClasspassGroup
+
+    archived = False
+    name = "First class pass group"
+
+
+class OrganizationClasspassGroupClasspassFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.OrganizationClasspassGroupClasspass
+
+    organization_classpass_group = factory.SubFactory(OrganizationClasspassGroupFactory)
+    organization_classpass = factory.SubFactory(OrganizationClasspassFactory)
+
+
 class OrganizationSubscriptionFactory(factory.DjangoModelFactory):
     class Meta:
         model = models.OrganizationSubscription
@@ -141,20 +157,20 @@ class OrganizationSubscriptionFactory(factory.DjangoModelFactory):
     finance_costcenter = factory.SubFactory(FinanceCostCenterFactory)
 
 
-class OrganizationClasspassGroupFactory(factory.DjangoModelFactory):
+class OrganizationSubscriptionGroupFactory(factory.DjangoModelFactory):
     class Meta:
-        model = models.OrganizationClasspassGroup
+        model = models.OrganizationSubscriptionGroup
 
     archived = False
-    name = "First class pass"
+    name = "First subscription group"
 
 
-class OrganizationClasspassGroupClasspassFactory(factory.DjangoModelFactory):
+class OrganizationSubscriptionGroupSubscriptionFactory(factory.DjangoModelFactory):
     class Meta:
-        model = models.OrganizationClasspassGroupClasspass
+        model = models.OrganizationSubscriptionGroupSubscription
 
-    organization_classpass_group = factory.SubFactory(OrganizationClasspassGroupFactory)
-    organization_classpass = factory.SubFactory(OrganizationClasspassFactory)
+    organization_subscription_group = factory.SubFactory(OrganizationSubscriptionGroupFactory)
+    organization_subscription = factory.SubFactory(OrganizationSubscriptionFactory)
 
 
 class AdminFactory(factory.DjangoModelFactory):
