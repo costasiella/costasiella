@@ -123,7 +123,7 @@ class OrganizationClasspassGroupFactory(factory.DjangoModelFactory):
         model = models.OrganizationClasspassGroup
 
     archived = False
-    name = "First class pass"
+    name = "First class pass group"
 
 
 class OrganizationClasspassGroupClasspassFactory(factory.DjangoModelFactory):
@@ -132,6 +132,45 @@ class OrganizationClasspassGroupClasspassFactory(factory.DjangoModelFactory):
 
     organization_classpass_group = factory.SubFactory(OrganizationClasspassGroupFactory)
     organization_classpass = factory.SubFactory(OrganizationClasspassFactory)
+
+
+class OrganizationSubscriptionFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.OrganizationSubscription
+
+    archived = False
+    display_public = True
+    display_shop = True
+    name = "First class pass"
+    description = "The first one..."
+    sort_order = 1
+    min_duration = 1
+    classes = 1
+    subscription_unit = "WEEK"
+    credit_validity = 1
+    reconciliation_classes = 1
+    registration_fee = 20
+    unlimited = False
+    organization_membership = factory.SubFactory(OrganizationMembershipFactory)
+    quick_stats_amount = 12.5
+    finance_glaccount = factory.SubFactory(FinanceGLAccountFactory)
+    finance_costcenter = factory.SubFactory(FinanceCostCenterFactory)
+
+
+class OrganizationSubscriptionGroupFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.OrganizationSubscriptionGroup
+
+    archived = False
+    name = "First subscription group"
+
+
+class OrganizationSubscriptionGroupSubscriptionFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.OrganizationSubscriptionGroupSubscription
+
+    organization_subscription_group = factory.SubFactory(OrganizationSubscriptionGroupFactory)
+    organization_subscription = factory.SubFactory(OrganizationSubscriptionFactory)
 
 
 class AdminFactory(factory.DjangoModelFactory):

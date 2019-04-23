@@ -26,10 +26,10 @@ import OrganizationHome from './components/organization/home/OrganizationHome'
 import OrganizationClasspasses from './components/organization/classpasses/OrganizationClasspasses'
 import OrganizationClasspassAdd from './components/organization/classpasses/OrganizationClasspassAdd'
 import OrganizationClasspassEdit from './components/organization/classpasses/OrganizationClasspassEdit'
-import OrganizationClasspassesGroups from './components/organization/classpassesgroups/OrganizationClasspassesGroups'
-import OrganizationClasspassesGroupAdd from './components/organization/classpassesgroups/OrganizationClasspassesGroupAdd'
-import OrganizationClasspassesGroupEdit from './components/organization/classpassesgroups/OrganizationClasspassesGroupEdit'
-import OrganizationClasspassesGroupEditPasses from './components/organization/classpassesgroups/OrganizationClasspassesGroupEditPasses'
+import OrganizationClasspassesGroups from './components/organization/classpasses_groups/OrganizationClasspassesGroups'
+import OrganizationClasspassesGroupAdd from './components/organization/classpasses_groups/OrganizationClasspassesGroupAdd'
+import OrganizationClasspassesGroupEdit from './components/organization/classpasses_groups/OrganizationClasspassesGroupEdit'
+import OrganizationClasspassesGroupEditPasses from './components/organization/classpasses_groups/OrganizationClasspassesGroupEditPasses'
 import OrganizationClasstypes from './components/organization/classtypes/OrganizationClasstypes'
 import OrganizationClasstypeAdd from './components/organization/classtypes/OrganizationClasstypeAdd'
 import OrganizationClasstypeEdit from './components/organization/classtypes/OrganizationClasstypeEdit'
@@ -49,6 +49,14 @@ import OrganizationLevelEdit from './components/organization/levels/Organization
 import OrganizationMemberships from './components/organization/memberships/OrganizationMemberships'
 import OrganizationMembershipAdd from './components/organization/memberships/OrganizationMembershipAdd'
 import OrganizationMembershipEdit from './components/organization/memberships/OrganizationMembershipEdit'
+import OrganizationSubscriptions from './components/organization/subscriptions/OrganizationSubscriptions'
+import OrganizationSubscriptionAdd from './components/organization/subscriptions/OrganizationSubscriptionAdd'
+import OrganizationSubscriptionEdit from './components/organization/subscriptions/OrganizationSubscriptionEdit'
+import OrganizationSubscriptionsGroups from './components/organization/subscriptions_groups/OrganizationSubscriptionsGroups'
+import OrganizationSubscriptionsGroupAdd from './components/organization/subscriptions_groups/OrganizationSubscriptionsGroupAdd'
+import OrganizationSubscriptionsGroupEdit from './components/organization/subscriptions_groups/OrganizationSubscriptionsGroupEdit'
+import OrganizationSubscriptionsGroupEditSubscriptions from './components/organization/subscriptions_groups/OrganizationSubscriptionsGroupEditSubscriptions'
+
 
 import Error404 from "./components/Error404"
 
@@ -139,6 +147,13 @@ class App extends Component {
             <Route exact path="/organization/memberships" component={OrganizationMemberships} />
             <Route exact path="/organization/memberships/add" component={OrganizationMembershipAdd} />
             <Route exact path="/organization/memberships/edit/:id" component={OrganizationMembershipEdit} /> 
+            <Route exact path="/organization/subscriptions" component={OrganizationSubscriptions} />
+            <Route exact path="/organization/subscriptions/add" component={OrganizationSubscriptionAdd} />
+            <Route exact path="/organization/subscriptions/edit/:id" component={OrganizationSubscriptionEdit} />
+            <Route exact path="/organization/subscriptions/groups" component={OrganizationSubscriptionsGroups} />
+            <Route exact path="/organization/subscriptions/groups/add" component={OrganizationSubscriptionsGroupAdd} />
+            <Route exact path="/organization/subscriptions/groups/edit/:id" component={OrganizationSubscriptionsGroupEdit} />
+            <Route exact path="/organization/subscriptions/groups/edit/subscriptions/:id" component={OrganizationSubscriptionsGroupEditSubscriptions} />
 
             <Route component={Error404} />
           </Switch>

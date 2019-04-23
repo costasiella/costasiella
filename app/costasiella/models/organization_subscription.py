@@ -1,0 +1,38 @@
+from django.utils.translation import gettext as _
+
+from django.db import models
+
+from .finance_costcenter import FinanceCostCenter
+from .finance_glaccount import FinanceGLAccount
+from .finance_taxrate import FinanceTaxRate
+from .organization_membership import OrganizationMembership
+
+
+class OrganizationSubscription(models.Model):
+    SUBSCRIPTION_UNITS = (
+        ("WEEK", _("Week")),
+        ("MONTH", _("Month"))
+    )
+
+    archived = models.BooleanField(default=False)
+    display_public = models.BooleanField(default=True)
+    display_shop = models.BooleanField(default=True)
+    name = models.CharField(max_length=255)
+    description = models.CharField(max_length=255)
+    sort_order = models.PositiveIntegerField(default=0)
+    min_duration = models.PositiveIntegerField()
+    classes = models.PositiveIntegerField()
+    subscription_unit = models.CharField(max_length=10, choices=SUBSCRIPTION_UNITS, default="DAYS")
+    reconciliation_classes = models.PositiveSmallIntegerField(default=0)
+    credit_validity = models.PositiveIntegerField(default=1)
+    unlimited = models.BooleanField(default=False)
+    terms_and_conditions = models.TextField()
+    registration_fee = models.DecimalField(max_digits=10, decimal_places=2)
+    organization_membership = models.ForeignKey(OrganizationMembership, on_delete=models.CASCADE, null=True)
+    quick_stats_amount = models.DecimalField(default=0, max_digits=10, decimal_places=2)
+    finance_glaccount = models.ForeignKey(FinanceGLAccount, on_delete=models.CASCADE, null=True)
+    finance_costcenter = models.ForeignKey(FinanceCostCenter, on_delete=models.CASCADE, null=True)
+
+    def __str__(self):
+        return self.name
+    

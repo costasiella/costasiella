@@ -84,7 +84,12 @@
         "group": "Group",
         "back_to": "Back to",
         "rooms": "Rooms",
-        "location": "Location"
+        "location": "Location",
+        "sort_order": "Sort order",
+        "min_duration": "Minimum duration",
+        "subscription_unit": "Subscription unit",
+        "credit_validity": "Credit validity",
+        "a": "a"
     },
     "yup": {
         "min_len_3": "Please input at least 3 characters",
@@ -211,6 +216,38 @@
         },
         "location_room": {
             "public": "This is a public room"
+        },
+        "subscriptions": {
+            "title": "Subscriptions",
+            "title_add": "Add subscription",
+            "toast_add_success": "Added subscription",
+            "title_edit": "Edit subscription",
+            "toast_edit_success": "Saved subscription",
+            "error_loading": "Error loading subscriptions :(",
+            "empty_list": "No subscriptions found",
+            "empty_archive": "No subscriptions have been archived yet",
+            "add": "Add subscription",
+            "groups": {
+                "edit_subscriptions": "Subscriptions in group"
+            }
+        },
+        "subscription": {
+            "public": "This is a public subscription",
+            "shop": "Show this subscription in the shop"
+        },
+        "subscription_groups": {
+            "title_add": "Add subscriptions group",
+            "toast_add_success": "Added subscriptions group",
+            "title_edit": "Edit subscriptions group",
+            "toast_edit_success": "Saved subscriptions group",
+            "title": "Subscription groups",
+            "error_loading": "Error loading subscription groups :(",
+            "empty_list": "No subscription groups found",
+            "empty_archive": "No subscription groups have been archived yet",
+            "add": "Add subscription group"
+        },
+        "subscription_group_subscriptions": {
+            "title_edit": "Edit subscriptions in group"
         }
     },
     "validity": {
@@ -223,5 +260,9 @@
         "user": {
             "error_loading": "Error loading user :("
         }
+    },
+    "subscription_unit": {
+        "week": "Week",
+        "month": "Month"
     }
 }
