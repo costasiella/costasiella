@@ -21,11 +21,12 @@ def validate_create_update_input(input, update=False):
     result = {}
 
     # Fetch & check organization subscription
-    rid = get_rid(input['organization_subscription'])
-    organization_subscription = OrganizationSubscription.objects.filter(id=rid.id).first()
-    result['organization_subscription'] = organization_subscription
-    if not organization_subscription:
-        raise Exception(_('Invalid Organization Subscription ID!'))
+    if not update:
+        rid = get_rid(input['organization_subscription'])
+        organization_subscription = OrganizationSubscription.objects.filter(id=rid.id).first()
+        result['organization_subscription'] = organization_subscription
+        if not organization_subscription:
+            raise Exception(_('Invalid Organization Subscription ID!'))
     
 
     # Fetch & check tax rate
@@ -117,8 +118,10 @@ class CreateOrganizationSubscriptionPrice(graphene.relay.ClientIDMutation):
 class UpdateOrganizationSubscriptionPrice(graphene.relay.ClientIDMutation):
     class Input:
         id = graphene.ID(required=True)
-        name = graphene.String(required=True)
-        display_public = graphene.Boolean(required=True)
+        price = graphene.Float(required=True, default_value=0)
+        finance_tax_rate = graphene.ID(required=True)
+        date_start = graphene.types.datetime.Date(required=True)
+        date_end = graphene.types.datetime.Date(required=False, default_value=None)
         
     organization_subscription_price = graphene.Field(OrganizationSubscriptionPriceNode)
 
@@ -128,13 +131,16 @@ class UpdateOrganizationSubscriptionPrice(graphene.relay.ClientIDMutation):
         require_login_and_permission(user, 'costasiella.change_organizationsubscriptionprice')
 
         rid = get_rid(input['id'])
-
         organization_subscription_price = OrganizationSubscriptionPrice.objects.filter(id=rid.id).first()
         if not organization_subscription_price:
-            raise Exception('Invalid Organization Subscription Room ID!')
+            raise Exception('Invalid Organization Subscription ID!')
 
-        organization_subscription_price.name = input['name']
-        organization_subscription_price.display_public = input['display_public']
+        result = validate_create_update_input(input, update=True)
+
+        organization_subscription_price.price = input['price']
+        organization_subscription_price.finance_tax_rate = result['finance_tax_rate']
+        organization_subscription_price.date_start = result['date_start']
+        organization_subscription_price.date_end = result['date_end']
         organization_subscription_price.save(force_update=True)
 
         return UpdateOrganizationSubscriptionPrice(organization_subscription_price=organization_subscription_price)
@@ -156,7 +162,7 @@ class ArchiveOrganizationSubscriptionPrice(graphene.relay.ClientIDMutation):
 
         organization_subscription_price = OrganizationSubscriptionPrice.objects.filter(id=rid.id).first()
         if not organization_subscription_price:
-            raise Exception('Invalid Organization Subscription Room ID!')
+            raise Exception('Invalid Organization Subscription ID!')
 
         organization_subscription_price.archived = input['archived']
         organization_subscription_price.save(force_update=True)
