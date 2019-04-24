@@ -113,6 +113,8 @@ class CreateOrganizationSubscriptionPrice(graphene.relay.ClientIDMutation):
 
         result = validate_create_update_input(input, update=False)
 
+        print(input)
+
         organization_subscription_price = OrganizationSubscriptionPrice(
             organization_subscription = result['organization_subscription'],
             price = input['price'],

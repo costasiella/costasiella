@@ -1,7 +1,7 @@
 // @flow
 
 import React from 'react'
-import { Mutation } from "react-apollo";
+import { Query, Mutation } from "react-apollo";
 import gql from "graphql-tag"
 import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
@@ -9,7 +9,7 @@ import { Formik, Form as FoForm, Field, ErrorMessage } from 'formik'
 import { toast } from 'react-toastify'
 
 
-import { GET_SUBSCRIPTION_PRICES_QUERY } from './queries'
+import { GET_SUBSCRIPTION_PRICES_QUERY, GET_INPUT_VALUES_QUERY } from './queries'
 import { SUBSCRIPTION_PRICE_SCHEMA } from './yupSchema'
 import OrganizationSubscriptionPriceForm from './OrganizationSubscriptionPriceForm'
 
@@ -62,49 +62,66 @@ const OrganizationSubscriptionPriceAdd = ({ t, history, match }) => (
             <Card.Header>
               <Card.Title>{t('organization.subscription_prices.title_add')}</Card.Title>
             </Card.Header>
-            <Mutation mutation={ADD_SUBSCRIPTION_PRICE} onCompleted={() => history.push(return_url + match.params.subscription_id)}> 
-                {(addLocation, { data }) => (
-                    <Formik
-                        initialValues={{ name: '', displayPublic: true }}
-                        validationSchema={SUBSCRIPTION_PRICE_SCHEMA}
-                        onSubmit={(values, { setSubmitting }) => {
-                            addLocation({ variables: {
-                              input: {
-                                organizationSubscription: match.params.subscription_id,
-                                price: values.price,
-                                financeTaxRate: values.financeTaxRate,
-                                dateStart: values.dateStart
-                              }
-                            }, refetchQueries: [
-                                {query: GET_SUBSCRIPTION_PRICES_QUERY,
-                                 variables: {"organizationSubscription": match.params.subscription_id }}
-                            ]})
-                            .then(({ data }) => {
-                                console.log('got data', data);
-                                toast.success((t('organization.subscription_prices.toast_add_success')), {
-                                    position: toast.POSITION.BOTTOM_RIGHT
-                                  })
-                              }).catch((error) => {
-                                toast.error((t('general.toast_server_error')) + ': ' +  error, {
-                                    position: toast.POSITION.BOTTOM_RIGHT
-                                  })
-                                console.log('there was an error sending the query', error)
-                                setSubmitting(false)
-                              })
-                        }}
-                        >
-                        {({ isSubmitting, errors, values }) => (
-                          <OrganizationSubscriptionPriceForm
-                            inputData={inputData}
-                            isSubmitting={isSubmitting}
-                            errors={errors}
-                            values={values}
-                            return_url={return_url}
-                            />
-                        )}
-                    </Formik>
-                )}
-                </Mutation>
+            <Query query={GET_INPUT_VALUES_QUERY} variables={{ archived: false }} >
+              {({ loading, error, data, refetch }) => {
+                  // Loading
+                  if (loading) return <p>{t('general.loading_with_dots')}</p>
+                  // Error
+                  if (error) {
+                    console.log(error)
+                    return <p>{t('general.error_sad_smiley')}</p>
+                  }
+                  
+                  console.log('query data')
+                  console.log(data)
+                  const inputData = data
+
+                  return (
+                    <Mutation mutation={ADD_SUBSCRIPTION_PRICE} onCompleted={() => history.push(return_url + match.params.subscription_id)}> 
+                      {(addSubscription, { data }) => (
+                          <Formik
+                              initialValues={{ name: '', displayPublic: true }}
+                              validationSchema={SUBSCRIPTION_PRICE_SCHEMA}
+                              onSubmit={(values, { setSubmitting }) => {
+                                  addSubscription({ variables: {
+                                    input: {
+                                      organizationSubscription: match.params.subscription_id,
+                                      price: values.price,
+                                      financeTaxRate: values.financeTaxRate,
+                                      dateStart: values.dateStart
+                                    }
+                                  }, refetchQueries: [
+                                      {query: GET_SUBSCRIPTION_PRICES_QUERY,
+                                      variables: {"organizationSubscription": match.params.subscription_id }}
+                                  ]})
+                                  .then(({ data }) => {
+                                      console.log('got data', data);
+                                      toast.success((t('organization.subscription_prices.toast_add_success')), {
+                                          position: toast.POSITION.BOTTOM_RIGHT
+                                        })
+                                    }).catch((error) => {
+                                      toast.error((t('general.toast_server_error')) + ': ' +  error, {
+                                          position: toast.POSITION.BOTTOM_RIGHT
+                                        })
+                                      console.log('there was an error sending the query', error)
+                                      setSubmitting(false)
+                                    })
+                              }}
+                              >
+                              {({ isSubmitting, errors, values }) => (
+                                <OrganizationSubscriptionPriceForm
+                                  inputData={inputData}
+                                  isSubmitting={isSubmitting}
+                                  errors={errors}
+                                  values={values}
+                                  return_url={return_url}
+                                  />
+                              )}
+                          </Formik>
+                      )}
+                    </Mutation>
+                  )}}
+                </Query>
           </Card>
           </Grid.Col>
           <Grid.Col md={3}>

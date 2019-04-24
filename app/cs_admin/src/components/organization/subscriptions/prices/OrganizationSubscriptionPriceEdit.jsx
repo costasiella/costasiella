@@ -10,7 +10,7 @@ import { toast } from 'react-toastify'
 
 import { GET_SUBSCRIPTION_PRICES_QUERY, GET_SUBSCRIPTION_PRICE_QUERY } from './queries'
 import { SUBSCRIPTION_PRICE_SCHEMA } from './yupSchema'
-import OrganizationSubscriptionPriceForm from './OrganizationSubscriptionPricesForm'
+import OrganizationSubscriptionPriceForm from './OrganizationSubscriptionPriceForm'
 
 import {
   Page,
