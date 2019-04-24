@@ -12,8 +12,12 @@ import {
   Form,
 } from "tabler-react"
 
+import DatePicker from "react-datepicker"
 
-const OrganizationSubscriptionPriceForm = ({ t, history, match, inputData, isSubmitting, errors, values, return_url }) => (
+
+const OrganizationSubscriptionPriceForm = (
+  { t, history, match, inputData, isSubmitting, errors, values, setFieldTouched, setFieldValue, return_url }
+  ) => (
   <FoForm>
     <Card.Body>
       <Form.Group label={t('general.price')}>
@@ -38,26 +42,16 @@ const OrganizationSubscriptionPriceForm = ({ t, history, match, inputData, isSub
         <ErrorMessage name="financeTaxRate" component="span" className="invalid-feedback" />
       </Form.Group>
       <Form.Group label={t('general.date_start')}>
-      <Form.DatePicker
-        defaultDate={new Date()}
-        format="dd/mm/yyyy"
-        maxYear={2022}
-        minYear={1897}
-        monthLabels={[
-          'January',
-          'February',
-          'March',
-          'April',
-          'May',
-          'June',
-          'July',
-          'August',
-          'September',
-          'October',
-          'November',
-          'December'
-        ]}
-      />
+        <DatePicker 
+          locale='nl-NL'
+          selected={values.dateStart}
+          className="form-control"
+          onChange={(date) => { 
+            let res = date.split('T')
+            setFieldValue("dateStart", res[0])
+          }}
+          onBlur={() => setFieldTouched("dateStart", true)}
+        />
         {/* <Field type="text" 
                name="dateStart" 
                className={(errors.dateStart) ? "form-control is-invalid" : "form-control"} 

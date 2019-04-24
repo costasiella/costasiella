@@ -63,9 +63,15 @@ import OrganizationSubscriptionPriceAdd from './components/organization/subscrip
 import Error404 from "./components/Error404"
 
 // Tabler css 
-import "tabler-react/dist/Tabler.css";
+import "tabler-react/dist/Tabler.css"
+// React-datepicker css
+import "react-datepicker/dist/react-datepicker.css"
 // App css
 import './App.css'
+
+import { registerLocale } from 'react-datepicker';
+import nlNL from 'date-fns/locale/nl-NL';
+registerLocale('nl-NL', nlNL);
 
 
 const client = new ApolloClient({

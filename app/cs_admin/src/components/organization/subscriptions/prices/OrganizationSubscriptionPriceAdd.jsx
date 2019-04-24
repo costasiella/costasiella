@@ -108,10 +108,12 @@ const OrganizationSubscriptionPriceAdd = ({ t, history, match }) => (
                                     })
                               }}
                               >
-                              {({ isSubmitting, errors, values }) => (
+                              {({ isSubmitting, errors, values, setFieldTouched, setFieldValue }) => (
                                 <OrganizationSubscriptionPriceForm
                                   inputData={inputData}
                                   isSubmitting={isSubmitting}
+                                  setFieldTouched={setFieldTouched}
+                                  setFieldValue={setFieldValue}
                                   errors={errors}
                                   values={values}
                                   return_url={return_url}
