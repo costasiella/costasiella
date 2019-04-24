@@ -16,9 +16,13 @@ export const GET_SUBSCRIPTION_PRICES_QUERY = gql`
             id
             name
           }
-          archived,
-          displayPublic
-          name
+          price
+          financeTaxrate {
+            id
+            name
+          }
+          dateStart
+          dateEnd
         }
       }
     }
@@ -37,9 +41,13 @@ export const GET_SUBSCRIPTION_PRICE_QUERY = gql`
         id
         name
       }
-      name
-      displayPublic
-      archived
+      price
+      financeTaxrate {
+        id
+        name
+      }
+      dateStart
+      dateEnd
     }
   }
 `
