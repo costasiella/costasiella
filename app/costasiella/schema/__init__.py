@@ -17,6 +17,7 @@ from .organization_membership import OrganizationMembershipQuery, OrganizationMe
 from .organization_subscription import OrganizationSubscriptionQuery, OrganizationSubscriptionMutation
 from .organization_subscription_group import OrganizationSubscriptionGroupQuery, OrganizationSubscriptionGroupMutation
 from .organization_subscription_group_subscription import OrganizationSubscriptionGroupSubscriptionMutation
+from .organization_subscription_price import OrganizationSubscriptionPriceQuery, OrganizationSubscriptionPriceMutation
 from .user import UserQuery, UserMutation
 
 
@@ -33,6 +34,7 @@ class Query(FinanceCostCenterQuery,
             OrganizationMembershipQuery,
             OrganizationSubscriptionQuery,
             OrganizationSubscriptionGroupQuery,
+            OrganizationSubscriptionPriceQuery,
             UserQuery, 
             graphene.ObjectType):
     node = graphene.relay.Node.Field()
@@ -53,6 +55,7 @@ class Mutation(FinanceCostCenterMutation,
                OrganizationSubscriptionMutation, 
                OrganizationSubscriptionGroupMutation, 
                OrganizationSubscriptionGroupSubscriptionMutation, 
+               OrganizationSubscriptionPriceMutation, 
                UserMutation, 
                graphene.ObjectType):
     token_auth = graphql_jwt.ObtainJSONWebToken.Field()

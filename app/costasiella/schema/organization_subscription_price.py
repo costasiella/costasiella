@@ -1,20 +1,68 @@
 from django.utils.translation import gettext as _
 
+import datetime
 import graphene
 from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
 from graphql import GraphQLError
 
-from ..models import OrganizationSubscription, OrganizationSubscriptionPrice
+from ..models import OrganizationSubscription, OrganizationSubscriptionPrice, FinanceTaxRate
 from ..modules.gql_tools import require_login_and_permission, get_rid
+from ..modules.date_tools import last_day_month
 from ..modules.messages import Messages
 
 m = Messages()
 
+
+def validate_create_update_input(input, update=False):
+    """
+    Validate input
+    """ 
+    result = {}
+
+    # Fetch & check organization subscription
+    rid = get_rid(input['organization_subscription'])
+    organization_subscription = OrganizationSubscription.objects.filter(id=rid.id).first()
+    result['organization_subscription'] = organization_subscription
+    if not organization_subscription:
+        raise Exception(_('Invalid Organization Subscription ID!'))
+    
+
+    # Fetch & check tax rate
+    rid = get_rid(input['finance_tax_rate'])
+    finance_tax_rate = FinanceTaxRate.objects.filter(id=rid.id).first()
+    result['finance_tax_rate'] = finance_tax_rate
+    if not finance_tax_rate:
+        raise Exception(_('Invalid Finance Tax Rate ID!'))
+
+    # Check date_end > date_start, if date_end and make sure date start and end align
+    # with start & end of a month
+    if not input['date_start']:
+        raise Exception(_('dateStart is required!'))
+
+    result['date_start'] = datetime.date(
+        input['date_start'].year,
+        input['date_start'].month,
+        1
+    )
+
+    if input['date_end']:
+        result['date_end'] = datetime.date(
+            input['date_end'].year,
+            input['date_end'].month,
+            last_day_month(input['date_end'])
+        )
+        if result['date_start'] > result['date_end']:
+            raise Exception(_('dateStart has to be > dateEnd!'))
+
+
+    return result
+
+
 class OrganizationSubscriptionPriceNode(DjangoObjectType):
     class Meta:
         model = OrganizationSubscriptionPrice
-        filter_fields = ['archived', 'organization_subscription']
+        filter_fields = ['organization_subscription']
         interfaces = (graphene.relay.Node, )
 
     @classmethod
@@ -26,53 +74,44 @@ class OrganizationSubscriptionPriceNode(DjangoObjectType):
 
 
 class OrganizationSubscriptionPriceQuery(graphene.ObjectType):
-    organization_subscription_rooms = DjangoFilterConnectionField(OrganizationSubscriptionPriceNode)
-    organization_subscription_room = graphene.relay.Node.Field(OrganizationSubscriptionPriceNode)
+    organization_subscription_prices = DjangoFilterConnectionField(OrganizationSubscriptionPriceNode)
+    organization_subscription_price = graphene.relay.Node.Field(OrganizationSubscriptionPriceNode)
 
-    def resolve_organization_subscription_rooms(self, info, organization_subscription, archived=False, **kwargs):
+    def resolve_organization_subscription_prices(self, info, organization_subscription, archived=False, **kwargs):
         user = info.context.user
-        if user.is_anonymous:
-            raise Exception(m.user_not_logged_in)
+        require_login_and_permission(user, 'costasiella.view_organizationsubscriptionprice')
 
         rid = get_rid(organization_subscription)
-
-        ## return everything:
-        if user.has_perm('costasiella.view_organizationsubscriptionprice'):
-            return OrganizationSubscriptionPrice.objects.filter(organization_subscription = rid.id, archived = archived).order_by('name')
-
-        # Return only public non-archived prices
-        return OrganizationSubscriptionPrice.objects.filter(organization_subscription = rid.id, display_public = True, archived = False).order_by('name')
+        return OrganizationSubscriptionPrice.objects.filter(organization_subscription = rid.id, archived = archived).order_by('name')
 
 
 class CreateOrganizationSubscriptionPrice(graphene.relay.ClientIDMutation):
     class Input:
         organization_subscription = graphene.ID(required=True)
-        name = graphene.String(required=True)
-        display_public = graphene.Boolean(required=True)
+        price = graphene.Float(required=True, default_value=0)
+        finance_tax_rate = graphene.ID(required=True)
+        date_start = graphene.types.datetime.Date(required=True)
+        date_end = graphene.types.datetime.Date(required=False, default_value=None)
+        
 
-    organization_subscription_room = graphene.Field(OrganizationSubscriptionPriceNode)
+    organization_subscription_price = graphene.Field(OrganizationSubscriptionPriceNode)
 
     @classmethod
     def mutate_and_get_payload(self, root, info, **input):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.add_organizationsubscriptionprice')
 
-        if not len(input['name']):
-            raise GraphQLError(_('Name is required'))
+        result = validate_create_update_input(input, update=False)
 
-        rid = get_rid(input['organization_subscription'])
-        organization_subscription = OrganizationSubscription.objects.filter(id=rid.id).first()
-        if not organization_subscription:
-            raise Exception('Invalid Organization Subscription ID!')
-
-        organization_subscription_room = OrganizationSubscriptionPrice(
-            organization_subscription = organization_subscription,
-            name=input['name'], 
-            display_public=input['display_public']
+        organization_subscription_price = OrganizationSubscriptionPrice(
+            organization_subscription = result['organization_subscription'],
+            price = input['price'],
+            finance_tax_rate = result['finance_tax_rate'],
+            date_start = result['date_start'],
+            date_end = result['date_end']
         )
-        organization_subscription_room.save()
 
-        return CreateOrganizationSubscriptionPrice(organization_subscription_room=organization_subscription_room)
+        return CreateOrganizationSubscriptionPrice(organization_subscription_price=organization_subscription_price)
 
 
 class UpdateOrganizationSubscriptionPrice(graphene.relay.ClientIDMutation):
@@ -81,7 +120,7 @@ class UpdateOrganizationSubscriptionPrice(graphene.relay.ClientIDMutation):
         name = graphene.String(required=True)
         display_public = graphene.Boolean(required=True)
         
-    organization_subscription_room = graphene.Field(OrganizationSubscriptionPriceNode)
+    organization_subscription_price = graphene.Field(OrganizationSubscriptionPriceNode)
 
     @classmethod
     def mutate_and_get_payload(self, root, info, **input):
@@ -90,15 +129,15 @@ class UpdateOrganizationSubscriptionPrice(graphene.relay.ClientIDMutation):
 
         rid = get_rid(input['id'])
 
-        organization_subscription_room = OrganizationSubscriptionPrice.objects.filter(id=rid.id).first()
-        if not organization_subscription_room:
+        organization_subscription_price = OrganizationSubscriptionPrice.objects.filter(id=rid.id).first()
+        if not organization_subscription_price:
             raise Exception('Invalid Organization Subscription Room ID!')
 
-        organization_subscription_room.name = input['name']
-        organization_subscription_room.display_public = input['display_public']
-        organization_subscription_room.save(force_update=True)
+        organization_subscription_price.name = input['name']
+        organization_subscription_price.display_public = input['display_public']
+        organization_subscription_price.save(force_update=True)
 
-        return UpdateOrganizationSubscriptionPrice(organization_subscription_room=organization_subscription_room)
+        return UpdateOrganizationSubscriptionPrice(organization_subscription_price=organization_subscription_price)
 
 
 class ArchiveOrganizationSubscriptionPrice(graphene.relay.ClientIDMutation):
@@ -106,7 +145,7 @@ class ArchiveOrganizationSubscriptionPrice(graphene.relay.ClientIDMutation):
         id = graphene.ID(required=True)
         archived = graphene.Boolean(required=True)
 
-    organization_subscription_room = graphene.Field(OrganizationSubscriptionPriceNode)
+    organization_subscription_price = graphene.Field(OrganizationSubscriptionPriceNode)
 
     @classmethod
     def mutate_and_get_payload(self, root, info, **input):
@@ -115,18 +154,18 @@ class ArchiveOrganizationSubscriptionPrice(graphene.relay.ClientIDMutation):
 
         rid = get_rid(input['id'])
 
-        organization_subscription_room = OrganizationSubscriptionPrice.objects.filter(id=rid.id).first()
-        if not organization_subscription_room:
+        organization_subscription_price = OrganizationSubscriptionPrice.objects.filter(id=rid.id).first()
+        if not organization_subscription_price:
             raise Exception('Invalid Organization Subscription Room ID!')
 
-        organization_subscription_room.archived = input['archived']
-        organization_subscription_room.save(force_update=True)
+        organization_subscription_price.archived = input['archived']
+        organization_subscription_price.save(force_update=True)
 
-        return ArchiveOrganizationSubscriptionPrice(organization_subscription_room=organization_subscription_room)
+        return ArchiveOrganizationSubscriptionPrice(organization_subscription_price=organization_subscription_price)
 
 
 class OrganizationSubscriptionPriceMutation(graphene.ObjectType):
-    archive_organization_subscription_room = ArchiveOrganizationSubscriptionPrice.Field()
-    create_organization_subscription_room = CreateOrganizationSubscriptionPrice.Field()
-    update_organization_subscription_room = UpdateOrganizationSubscriptionPrice.Field()
+    archive_organization_subscription_price = ArchiveOrganizationSubscriptionPrice.Field()
+    create_organization_subscription_price = CreateOrganizationSubscriptionPrice.Field()
+    update_organization_subscription_price = UpdateOrganizationSubscriptionPrice.Field()
     
