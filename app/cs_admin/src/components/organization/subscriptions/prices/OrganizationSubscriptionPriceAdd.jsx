@@ -80,15 +80,24 @@ const OrganizationSubscriptionPriceAdd = ({ t, history, match }) => (
                     <Mutation mutation={ADD_SUBSCRIPTION_PRICE} onCompleted={() => history.push(return_url + match.params.subscription_id)}> 
                       {(addSubscription, { data }) => (
                           <Formik
-                              initialValues={{ name: '', displayPublic: true }}
+                              initialValues={{ price: "", dateStart: new Date() }}
                               validationSchema={SUBSCRIPTION_PRICE_SCHEMA}
                               onSubmit={(values, { setSubmitting }) => {
+
+                                  let dateEnd
+                                  if (values.dateEnd) {
+                                    dateEnd = values.dateEnd.toISOString().split('T')[0]
+                                  } else {
+                                    dateEnd = values.dateEnd
+                                  }
+
                                   addSubscription({ variables: {
                                     input: {
                                       organizationSubscription: match.params.subscription_id,
                                       price: values.price,
                                       financeTaxRate: values.financeTaxRate,
-                                      dateStart: values.dateStart
+                                      dateStart: values.dateStart.toISOString().split('T')[0],
+                                      dateEnd: dateEnd
                                     }
                                   }, refetchQueries: [
                                       {query: GET_SUBSCRIPTION_PRICES_QUERY,
@@ -117,7 +126,7 @@ const OrganizationSubscriptionPriceAdd = ({ t, history, match }) => (
                                   errors={errors}
                                   values={values}
                                   return_url={return_url}
-                                  />
+                                />
                               )}
                           </Formik>
                       )}

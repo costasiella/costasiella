@@ -47,14 +47,15 @@ def validate_create_update_input(input, update=False):
         1
     )
 
-    if input['date_end']:
-        result['date_end'] = datetime.date(
-            input['date_end'].year,
-            input['date_end'].month,
-            last_day_month(input['date_end'])
-        )
-        if result['date_start'] > result['date_end']:
-            raise Exception(_('dateStart has to be > dateEnd!'))
+    if 'date_end' in input:
+        if input['date_end']:
+            result['date_end'] = datetime.date(
+                input['date_end'].year,
+                input['date_end'].month,
+                last_day_month(input['date_end'])
+            )
+            if result['date_start'] > result['date_end']:
+                raise Exception(_('dateStart has to be > dateEnd!'))
 
 
     return result
@@ -111,19 +112,21 @@ class CreateOrganizationSubscriptionPrice(graphene.relay.ClientIDMutation):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.add_organizationsubscriptionprice')
 
-        result = validate_create_update_input(input, update=False)
-
         print(input)
+        result = validate_create_update_input(input, update=False)
+        print('validated')
 
         organization_subscription_price = OrganizationSubscriptionPrice(
             organization_subscription = result['organization_subscription'],
             price = input['price'],
             finance_tax_rate = result['finance_tax_rate'],
             date_start = result['date_start'],
-            date_end = result['date_end']
+            date_end = result.get('date_end', None)
         )
+        
 
         organization_subscription_price.save()
+        print('hmm not yet')
 
         return CreateOrganizationSubscriptionPrice(organization_subscription_price=organization_subscription_price)
 

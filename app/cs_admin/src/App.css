@@ -9,3 +9,10 @@ table .btn {
 
 /* Tabler changes end */
 
+/* React datepicker changes begin */
+.react-datepicker-wrapper, 
+.react-datepicker__input-container {
+  width: 100% !important;
+}
+
+/* React datepicker changes end */

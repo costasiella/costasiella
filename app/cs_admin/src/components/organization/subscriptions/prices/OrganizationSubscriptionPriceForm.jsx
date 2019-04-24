@@ -13,6 +13,7 @@ import {
 } from "tabler-react"
 
 import DatePicker from "react-datepicker"
+import CSDatePicker from "../../../ui/CSDatePicker"
 
 
 const OrganizationSubscriptionPriceForm = (
@@ -42,27 +43,19 @@ const OrganizationSubscriptionPriceForm = (
         <ErrorMessage name="financeTaxRate" component="span" className="invalid-feedback" />
       </Form.Group>
       <Form.Group label={t('general.date_start')}>
-        <DatePicker 
-          locale='nl-NL'
+        <CSDatePicker 
           selected={values.dateStart}
-          className="form-control"
-          onChange={(date) => { 
-            let res = date.split('T')
-            setFieldValue("dateStart", res[0])
-          }}
+          onChange={(date) => setFieldValue("dateStart", date)}
           onBlur={() => setFieldTouched("dateStart", true)}
         />
-        {/* <Field type="text" 
-               name="dateStart" 
-               className={(errors.dateStart) ? "form-control is-invalid" : "form-control"} 
-               autoComplete="off" /> */}
         <ErrorMessage name="dateStart" component="span" className="invalid-feedback" />
       </Form.Group>
       <Form.Group label={t('general.date_end')}>
-        <Field type="text" 
-               name="dateEnd" 
-               className={(errors.dateEnd) ? "form-control is-invalid" : "form-control"} 
-               autoComplete="off" />
+        <CSDatePicker 
+          selected={values.dateEnd}
+          onChange={(date) => setFieldValue("dateEnd", date)}
+          onBlur={() => setFieldTouched("dateEnd", true)}
+        />
         <ErrorMessage name="dateEnd" component="span" className="invalid-feedback" />
       </Form.Group>
     </Card.Body>

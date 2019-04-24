@@ -69,9 +69,12 @@ import "react-datepicker/dist/react-datepicker.css"
 // App css
 import './App.css'
 
-import { registerLocale } from 'react-datepicker';
-import nlNL from 'date-fns/locale/nl-NL';
-registerLocale('nl-NL', nlNL);
+
+// Register "nl" locale for react-datepicker
+// https://reactdatepicker.com/#example-17
+import { registerLocale } from "react-datepicker"
+import nl from 'date-fns/locale/nl';
+registerLocale('nl', nl);
 
 
 const client = new ApolloClient({

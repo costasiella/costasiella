@@ -89,7 +89,11 @@
         "min_duration": "__STRING_NOT_TRANSLATED__",
         "subscription_unit": "__STRING_NOT_TRANSLATED__",
         "credit_validity": "__STRING_NOT_TRANSLATED__",
-        "a": "__STRING_NOT_TRANSLATED__"
+        "a": "__STRING_NOT_TRANSLATED__",
+        "edit_price": "__STRING_NOT_TRANSLATED__",
+        "date_start": "__STRING_NOT_TRANSLATED__",
+        "date_end": "__STRING_NOT_TRANSLATED__",
+        "today": "__STRING_NOT_TRANSLATED__"
     },
     "yup": {
         "min_len_3": "__STRING_NOT_TRANSLATED__",
@@ -248,6 +252,17 @@
         },
         "subscription_group_subscriptions": {
             "title_edit": "__STRING_NOT_TRANSLATED__"
+        },
+        "subscription_prices": {
+            "title_add": "__STRING_NOT_TRANSLATED__",
+            "toast_add_success": "__STRING_NOT_TRANSLATED__",
+            "title_edit": "__STRING_NOT_TRANSLATED__",
+            "toast_edit_success": "__STRING_NOT_TRANSLATED__",
+            "title": "__STRING_NOT_TRANSLATED__",
+            "error_loading": "__STRING_NOT_TRANSLATED__",
+            "empty_list": "__STRING_NOT_TRANSLATED__",
+            "empty_archive": "__STRING_NOT_TRANSLATED__",
+            "add": "__STRING_NOT_TRANSLATED__"
         }
     },
     "validity": {
@@ -259,10 +274,14 @@
     "system": {
         "user": {
             "error_loading": "__STRING_NOT_TRANSLATED__"
-        }
+        },
+        "date_format": "__STRING_NOT_TRANSLATED__"
     },
     "subscription_unit": {
         "week": "__STRING_NOT_TRANSLATED__",
         "month": "__STRING_NOT_TRANSLATED__"
+    },
+    "datepicker": {
+        "placeholder": "__STRING_NOT_TRANSLATED__"
     }
 }
