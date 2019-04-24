@@ -157,32 +157,32 @@ class UpdateOrganizationSubscriptionPrice(graphene.relay.ClientIDMutation):
         return UpdateOrganizationSubscriptionPrice(organization_subscription_price=organization_subscription_price)
 
 
-class ArchiveOrganizationSubscriptionPrice(graphene.relay.ClientIDMutation):
-    class Input:
-        id = graphene.ID(required=True)
-        archived = graphene.Boolean(required=True)
+# class ArchiveOrganizationSubscriptionPrice(graphene.relay.ClientIDMutation):
+#     class Input:
+#         id = graphene.ID(required=True)
+#         archived = graphene.Boolean(required=True)
 
-    organization_subscription_price = graphene.Field(OrganizationSubscriptionPriceNode)
+#     organization_subscription_price = graphene.Field(OrganizationSubscriptionPriceNode)
 
-    @classmethod
-    def mutate_and_get_payload(self, root, info, **input):
-        user = info.context.user
-        require_login_and_permission(user, 'costasiella.delete_organizationsubscriptionprice')
+#     @classmethod
+#     def mutate_and_get_payload(self, root, info, **input):
+#         user = info.context.user
+#         require_login_and_permission(user, 'costasiella.delete_organizationsubscriptionprice')
 
-        rid = get_rid(input['id'])
+#         rid = get_rid(input['id'])
 
-        organization_subscription_price = OrganizationSubscriptionPrice.objects.filter(id=rid.id).first()
-        if not organization_subscription_price:
-            raise Exception('Invalid Organization Subscription ID!')
+#         organization_subscription_price = OrganizationSubscriptionPrice.objects.filter(id=rid.id).first()
+#         if not organization_subscription_price:
+#             raise Exception('Invalid Organization Subscription ID!')
 
-        organization_subscription_price.archived = input['archived']
-        organization_subscription_price.save(force_update=True)
+#         organization_subscription_price.archived = input['archived']
+#         organization_subscription_price.save(force_update=True)
 
-        return ArchiveOrganizationSubscriptionPrice(organization_subscription_price=organization_subscription_price)
+#         return ArchiveOrganizationSubscriptionPrice(organization_subscription_price=organization_subscription_price)
 
 
 class OrganizationSubscriptionPriceMutation(graphene.ObjectType):
-    archive_organization_subscription_price = ArchiveOrganizationSubscriptionPrice.Field()
+    # archive_organization_subscription_price = ArchiveOrganizationSubscriptionPrice.Field()
     create_organization_subscription_price = CreateOrganizationSubscriptionPrice.Field()
     update_organization_subscription_price = UpdateOrganizationSubscriptionPrice.Field()
     
