@@ -23,11 +23,9 @@ import {
 } from "tabler-react";
 import SiteWrapper from "../../../SiteWrapper"
 import HasPermissionWrapper from "../../../HasPermissionWrapper"
-// import { confirmAlert } from 'react-confirm-alert'; // Import
 import { toast } from 'react-toastify'
 
 import ContentCard from "../../../general/ContentCard"
-import CardHeaderSeparator from "../../../general/CardHeaderSeparator"
 import OrganizationMenu from "../../OrganizationMenu"
 
 import { GET_SUBSCRIPTION_PRICES_QUERY } from "./queries"
