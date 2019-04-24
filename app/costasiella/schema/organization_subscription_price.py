@@ -78,12 +78,12 @@ class OrganizationSubscriptionPriceQuery(graphene.ObjectType):
     organization_subscription_prices = DjangoFilterConnectionField(OrganizationSubscriptionPriceNode)
     organization_subscription_price = graphene.relay.Node.Field(OrganizationSubscriptionPriceNode)
 
-    def resolve_organization_subscription_prices(self, info, organization_subscription, archived=False, **kwargs):
+    def resolve_organization_subscription_prices(self, info, organization_subscription, **kwargs):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.view_organizationsubscriptionprice')
 
         rid = get_rid(organization_subscription)
-        return OrganizationSubscriptionPrice.objects.filter(organization_subscription = rid.id, archived = archived).order_by('name')
+        return OrganizationSubscriptionPrice.objects.filter(organization_subscription = rid.id).order_by('date_start')
 
 
 class CreateOrganizationSubscriptionPrice(graphene.relay.ClientIDMutation):

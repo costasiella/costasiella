@@ -27,6 +27,7 @@ import { toast } from 'react-toastify'
 
 import ContentCard from "../../../general/ContentCard"
 import OrganizationMenu from "../../OrganizationMenu"
+import AlertInfo from "../../../ui/AlertInfo"
 
 import { GET_SUBSCRIPTION_PRICES_QUERY } from "./queries"
 
@@ -89,6 +90,7 @@ const OrganizationSubscriptionsPrices = ({ t, history, match, archived=false }) 
                 if (!subscription_prices.edges.length) { return (
                   <ContentCard cardTitle={t('organization.subscription_prices.title')}
                                headerContent={headerOptions}>
+                    <AlertInfo title='general.subscription' message={subscription.name} />
                     <p>
                     {(!archived) ? t('organization.subscription_prices.empty_list') : t("organization.subscription_prices.empty_archive")}
                     </p>
@@ -124,9 +126,7 @@ const OrganizationSubscriptionsPrices = ({ t, history, match, archived=false }) 
                                 })
                               }} >
                     <div>
-                      <Alert type="primary">
-                        <strong>{t('general.subscription')}</strong> {subscription.name}
-                      </Alert>
+                      <AlertInfo title='general.subscription' message={subscription.name} />
 
                       <Table>
                         <Table.Header>

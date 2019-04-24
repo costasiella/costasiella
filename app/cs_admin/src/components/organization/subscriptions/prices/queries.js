@@ -1,8 +1,8 @@
 import gql from "graphql-tag"
 
 export const GET_SUBSCRIPTION_PRICES_QUERY = gql`
-  query OrganizationSubscriptionPrices($after: String, $before: String, $organizationSubscription: ID!, $archived: Boolean!) {
-    organizationSubscriptionPrices(first: 15, before: $before, after: $after, organizationSubscription: $organizationSubscription, archived: $archived) {
+  query OrganizationSubscriptionPrices($after: String, $before: String, $organizationSubscription: ID!) {
+    organizationSubscriptionPrices(first: 15, before: $before, after: $after, organizationSubscription: $organizationSubscription) {
       pageInfo {
         startCursor
         endCursor
@@ -17,7 +17,7 @@ export const GET_SUBSCRIPTION_PRICES_QUERY = gql`
             name
           }
           price
-          financeTaxrate {
+          financeTaxRate {
             id
             name
           }
@@ -42,7 +42,7 @@ export const GET_SUBSCRIPTION_PRICE_QUERY = gql`
         name
       }
       price
-      financeTaxrate {
+      financeTaxRate {
         id
         name
       }
