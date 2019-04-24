@@ -17,6 +17,7 @@ export const GET_SUBSCRIPTION_PRICES_QUERY = gql`
             name
           }
           price
+          priceDisplay
           financeTaxRate {
             id
             name
@@ -42,6 +43,7 @@ export const GET_SUBSCRIPTION_PRICE_QUERY = gql`
         name
       }
       price
+      priceDisplay
       financeTaxRate {
         id
         name

@@ -60,11 +60,20 @@ def validate_create_update_input(input, update=False):
     return result
 
 
+class OrganizationSubscriptionPriceNodeInterface(graphene.Interface):
+    id = graphene.GlobalID()
+    price_display = graphene.String()
+
+
 class OrganizationSubscriptionPriceNode(DjangoObjectType):
     class Meta:
         model = OrganizationSubscriptionPrice
         filter_fields = ['organization_subscription']
-        interfaces = (graphene.relay.Node, )
+        interfaces = (graphene.relay.Node, OrganizationSubscriptionPriceNodeInterface)
+
+    def resolve_price_display(self, info):
+        from ..modules.finance_tools import display_float_as_amount
+        return display_float_as_amount(self.price)
 
     @classmethod
     def get_node(self, info, id):
@@ -83,7 +92,7 @@ class OrganizationSubscriptionPriceQuery(graphene.ObjectType):
         require_login_and_permission(user, 'costasiella.view_organizationsubscriptionprice')
 
         rid = get_rid(organization_subscription)
-        return OrganizationSubscriptionPrice.objects.filter(organization_subscription = rid.id).order_by('date_start')
+        return OrganizationSubscriptionPrice.objects.filter(organization_subscription=rid.id)
 
 
 class CreateOrganizationSubscriptionPrice(graphene.relay.ClientIDMutation):
@@ -111,6 +120,8 @@ class CreateOrganizationSubscriptionPrice(graphene.relay.ClientIDMutation):
             date_start = result['date_start'],
             date_end = result['date_end']
         )
+
+        organization_subscription_price.save()
 
         return CreateOrganizationSubscriptionPrice(organization_subscription_price=organization_subscription_price)
 

@@ -131,20 +131,23 @@ const OrganizationSubscriptionsPrices = ({ t, history, match, archived=false }) 
                       <Table>
                         <Table.Header>
                           <Table.Row key={v4()}>
-                            <Table.ColHeader>{t('general.name')}</Table.ColHeader>
-                            <Table.ColHeader>{t('general.public')}</Table.ColHeader>
+                            <Table.ColHeader>{t('general.date_start')}</Table.ColHeader>
+                            <Table.ColHeader>{t('general.date_end')}</Table.ColHeader>
+                            <Table.ColHeader>{t('general.price')}</Table.ColHeader>
+                            <Table.ColHeader></Table.ColHeader>
                           </Table.Row>
                         </Table.Header>
                         <Table.Body>
                             {subscription_prices.edges.map(({ node }) => (
                               <Table.Row key={v4()}>
                                 <Table.Col key={v4()}>
-                                  {node.name}
+                                  {node.dateStart}
                                 </Table.Col>
                                 <Table.Col key={v4()}>
-                                  {(node.displayPublic) ? 
-                                    <Badge color="success">{t('general.yes')}</Badge>: 
-                                    <Badge color="danger">{t('general.no')}</Badge>}
+                                  {node.dateEnd}
+                                </Table.Col>
+                                <Table.Col key={v4()}>
+                                  {node.priceDisplay}
                                 </Table.Col>
                                 <Table.Col className="text-right" key={v4()}>
                                   {(node.archived) ? 
