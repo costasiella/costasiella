@@ -13,9 +13,32 @@ import {
 } from "tabler-react"
 
 
-const OrganizationSubscriptionPriceForm = ({ t, history, match, isSubmitting, errors, values, return_url }) => (
+const OrganizationSubscriptionPriceForm = ({ t, history, match, inputData, isSubmitting, errors, values, return_url }) => (
   <FoForm>
       <Card.Body>
+
+       <Form.Group label={t('general.price')}>
+        <Field type="text" 
+              name="price" 
+              className={(errors.price) ? "form-control is-invalid" : "form-control"} 
+              autoComplete="off" />
+        <ErrorMessage name="price" component="span" className="invalid-feedback" />
+      </Form.Group>
+      <Form.Group label={t('general.taxrate')}>
+        <Field component="select" 
+                name="financeTaxRate" 
+                className={(errors.financeTaxRate) ? "form-control is-invalid" : "form-control"} 
+                autoComplete="off">
+          {console.log("query data in classpass add:")}
+          {console.log(inputData)}
+          <option value="" key={v4()}></option>
+          {inputData.financeTaxrates.edges.map(({ node }) =>
+            <option value={node.id} key={v4()}>{node.name} ({node.percentage}% {node.rateType})</option>
+          )}
+        </Field>
+        <ErrorMessage name="financeTaxRate" component="span" className="invalid-feedback" />
+      </Form.Group>
+
           <Form.Group>
             <Form.Label className="custom-switch">
               <Field 

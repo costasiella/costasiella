@@ -37,15 +37,19 @@ const ADD_SUBSCRIPTION_PRICE = gql`
           id
           name
         }
-        archived
-        displayPublic
-        name
+        price
+        financeTaxRate {
+          id
+          name
+        }
+        dateStart
+        dateEnd
       }
     }
   }
 `
 
-const return_url = "/organization/locations/rooms/"
+const return_url = "/organization/subscriptions/prices/"
 
 const OrganizationSubscriptionPriceAdd = ({ t, history, match }) => (
   <SiteWrapper>
@@ -58,7 +62,7 @@ const OrganizationSubscriptionPriceAdd = ({ t, history, match }) => (
             <Card.Header>
               <Card.Title>{t('organization.subscription_prices.title_add')}</Card.Title>
             </Card.Header>
-            <Mutation mutation={ADD_SUBSCRIPTION_PRICE} onCompleted={() => history.push(return_url + match.params.location_id)}> 
+            <Mutation mutation={ADD_SUBSCRIPTION_PRICE} onCompleted={() => history.push(return_url + match.params.subscription_id)}> 
                 {(addLocation, { data }) => (
                     <Formik
                         initialValues={{ name: '', displayPublic: true }}
@@ -66,13 +70,14 @@ const OrganizationSubscriptionPriceAdd = ({ t, history, match }) => (
                         onSubmit={(values, { setSubmitting }) => {
                             addLocation({ variables: {
                               input: {
-                                organizationSubscription: match.params.location_id,
-                                name: values.name, 
-                                displayPublic: values.displayPublic
+                                organizationSubscription: match.params.subscription_id,
+                                price: values.price,
+                                financeTaxRate: values.financeTaxRate,
+                                dateStart: values.dateStart
                               }
                             }, refetchQueries: [
                                 {query: GET_SUBSCRIPTION_PRICES_QUERY,
-                                 variables: {"archived": false, "organizationSubscription": match.params.location_id }}
+                                 variables: {"organizationSubscription": match.params.subscription_id }}
                             ]})
                             .then(({ data }) => {
                                 console.log('got data', data);
@@ -90,6 +95,7 @@ const OrganizationSubscriptionPriceAdd = ({ t, history, match }) => (
                         >
                         {({ isSubmitting, errors, values }) => (
                           <OrganizationSubscriptionPriceForm
+                            inputData={inputData}
                             isSubmitting={isSubmitting}
                             errors={errors}
                             values={values}
@@ -103,13 +109,13 @@ const OrganizationSubscriptionPriceAdd = ({ t, history, match }) => (
           </Grid.Col>
           <Grid.Col md={3}>
             <HasPermissionWrapper permission="add"
-                                  resource="organizationlocationroom">
+                                  resource="organizationsubscriptionprice">
               <Button color="primary btn-block mb-6"
-                      onClick={() => history.push(return_url + match.params.location_id)}>
+                      onClick={() => history.push(return_url + match.params.subscription_id)}>
                 <Icon prefix="fe" name="chevrons-left" /> {t('general.back')}
               </Button>
             </HasPermissionWrapper>
-            <OrganizationMenu active_link='locations'/>
+            <OrganizationMenu active_link='subscriptions'/>
           </Grid.Col>
         </Grid.Row>
       </Container>

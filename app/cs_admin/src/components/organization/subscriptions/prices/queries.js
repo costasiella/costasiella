@@ -53,3 +53,26 @@ export const GET_SUBSCRIPTION_PRICE_QUERY = gql`
     }
   }
 `
+
+
+export const GET_INPUT_VALUES_QUERY = gql`
+  query InputValues($after: String, $before: String, $archived: Boolean) {
+    financeTaxrates(first: 15, before: $before, after: $after, archived: $archived) {
+      pageInfo {
+        startCursor
+        endCursor
+        hasNextPage
+        hasPreviousPage
+      }
+      edges {
+        node {
+          id
+          archived
+          name
+          percentage
+          rateType
+        }
+      }
+    }
+  }
+`
