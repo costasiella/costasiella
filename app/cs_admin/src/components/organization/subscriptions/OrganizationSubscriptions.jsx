@@ -156,7 +156,12 @@ const OrganizationSubscriptions = ({ t, history, archived=false }) => (
                                     }
                                   </Table.Col>
                                   <Table.Col className="text-right" key={v4()}>
-                                    price here...
+                                    price here... <br />
+                                    <Link to={"/organization/subscriptions/prices/" + node.id}
+                                          className='btn btn-link btn-sm'>
+                                        {/* <Icon prefix="fe" name="dollar-sign" />  */}
+                                        {t('general.edit_price')}
+                                    </Link>
                                   </Table.Col>
                                   <Table.Col className="text-right" key={v4()}>
                                     {(node.archived) ? 
