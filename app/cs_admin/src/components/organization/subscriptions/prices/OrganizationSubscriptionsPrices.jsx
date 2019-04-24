@@ -10,14 +10,11 @@ import { Link } from 'react-router-dom'
 
 
 import {
-  Alert,
   Page,
   Grid,
   Icon,
   Dimmer,
-  Badge,
   Button,
-  Card,
   Container,
   Table
 } from "tabler-react";
