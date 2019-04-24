@@ -9,7 +9,7 @@ import {
 
 const AlertInfo = ({ t, title, message }) => (
   <Alert type="primary">
-      <strong>{t(title)}</strong> {message}
+      <strong>{title}</strong> {message}
   </Alert> 
 )
 

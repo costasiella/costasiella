@@ -31,6 +31,17 @@ import AlertInfo from "../../../ui/AlertInfo"
 
 import { GET_SUBSCRIPTION_PRICES_QUERY } from "./queries"
 
+const DELETE_SUBSCRIPTION_PRICE = gql`
+  mutation ArchiveOrganizationSubscription($input: ArchiveOrganizationSubscriptionInput!) {
+    archiveOrganizationSubscription(input: $input) {
+      organizationSubscription {
+        id
+        archived
+      }
+    }
+  }
+`
+
 
 const OrganizationSubscriptionsPrices = ({ t, history, match, archived=false }) => (
   <SiteWrapper>
@@ -46,7 +57,7 @@ const OrganizationSubscriptionsPrices = ({ t, history, match, archived=false }) 
         </Page.Header>
         <Grid.Row>
           <Grid.Col md={9}>
-            <Query query={GET_SUBSCRIPTION_PRICES_QUERY} variables={{ archived, organizationSubscription: match.params.subscription_id }}>
+            <Query query={GET_SUBSCRIPTION_PRICES_QUERY} variables={{ organizationSubscription: match.params.subscription_id }}>
              {({ loading, error, data: {organizationSubscriptionPrices: subscription_prices, organizationSubscription: subscription}, refetch, fetchMore }) => {
                 // Loading
                 if (loading) return (
@@ -104,7 +115,7 @@ const OrganizationSubscriptionsPrices = ({ t, history, match, archived=false }) 
                                 })
                               }} >
                     <div>
-                      <AlertInfo title='general.subscription' message={subscription.name} />
+                      <AlertInfo title={t('general.subscription')} message={subscription.name} />
 
                       <Table>
                         <Table.Header>
@@ -138,6 +149,41 @@ const OrganizationSubscriptionsPrices = ({ t, history, match, archived=false }) 
                                     </Button>
                                   }
                                 </Table.Col>
+                                <Mutation mutation={DELETE_SUBSCRIPTION_PRICE} key={v4()}>
+                                    {(deleteSubscriptionPrice, { data }) => (
+                                      <Table.Col className="text-right" key={v4()}>
+                                        <button className="icon btn btn-link btn-sm" 
+                                           title={t('general.delete')} 
+                                           href=""
+                                           onClick={() => {
+                                             console.log("clicked delete")
+                                             let id = node.id
+                                             deleteSubscriptionPrice({ variables: {
+                                               input: {
+                                                id
+                                               }
+                                        }, refetchQueries: [
+                                            {query: GET_SUBSCRIPTION_PRICES_QUERY, variables: { organizationSubscription: match.params.subscription_id }}
+                                        ]}).then(({ data }) => {
+                                          console.log('got data', data);
+                                          toast.success(
+                                            (archived) ? t('general.unarchived'): t('general.archived'), {
+                                              position: toast.POSITION.BOTTOM_RIGHT
+                                            })
+                                        }).catch((error) => {
+                                          toast.error((t('general.toast_server_error')) + ': ' +  error, {
+                                              position: toast.POSITION.BOTTOM_RIGHT
+                                            })
+                                          console.log('there was an error sending the query', error);
+                                        })
+                                        }}>
+                                          <span class="text-red">
+                                            <Icon prefix="fe" name="trash-2" />
+                                          </span>
+                                        </button>
+                                      </Table.Col>
+                                    )}
+                                  </Mutation>
                               </Table.Row>
                             ))}
                         </Table.Body>

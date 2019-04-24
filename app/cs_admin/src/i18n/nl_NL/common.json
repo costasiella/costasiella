@@ -93,14 +93,16 @@
         "edit_price": "__STRING_NOT_TRANSLATED__",
         "date_start": "__STRING_NOT_TRANSLATED__",
         "date_end": "__STRING_NOT_TRANSLATED__",
-        "today": "__STRING_NOT_TRANSLATED__"
+        "today": "__STRING_NOT_TRANSLATED__",
+        "subscription": "__STRING_NOT_TRANSLATED__"
     },
     "yup": {
         "min_len_3": "__STRING_NOT_TRANSLATED__",
         "field_required": "__STRING_NOT_TRANSLATED__",
         "field_has_to_be_number": "__STRING_NOT_TRANSLATED__",
         "positive_number_required": "__STRING_NOT_TRANSLATED__",
-        "url": "__STRING_NOT_TRANSLATED__"
+        "url": "__STRING_NOT_TRANSLATED__",
+        "max_decimal_number": "__STRING_NOT_TRANSLATED__"
     },
     "home": {
         "title": "__STRING_NOT_TRANSLATED__"
