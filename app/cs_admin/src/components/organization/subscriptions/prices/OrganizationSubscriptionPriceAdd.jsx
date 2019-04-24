@@ -33,7 +33,7 @@ const ADD_SUBSCRIPTION_PRICE = gql`
     createOrganizationSubscriptionPrice(input: $input) {
       organizationSubscriptionPrice {
         id
-        organizationLocation {
+        organizationSubscription {
           id
           name
         }
@@ -56,7 +56,7 @@ const OrganizationSubscriptionPriceAdd = ({ t, history, match }) => (
           <Grid.Col md={9}>
           <Card>
             <Card.Header>
-              <Card.Title>{t('organization.location_rooms.title_add')}</Card.Title>
+              <Card.Title>{t('organization.subscription_prices.title_add')}</Card.Title>
             </Card.Header>
             <Mutation mutation={ADD_SUBSCRIPTION_PRICE} onCompleted={() => history.push(return_url + match.params.location_id)}> 
                 {(addLocation, { data }) => (
@@ -66,17 +66,17 @@ const OrganizationSubscriptionPriceAdd = ({ t, history, match }) => (
                         onSubmit={(values, { setSubmitting }) => {
                             addLocation({ variables: {
                               input: {
-                                organizationLocation: match.params.location_id,
+                                organizationSubscription: match.params.location_id,
                                 name: values.name, 
                                 displayPublic: values.displayPublic
                               }
                             }, refetchQueries: [
                                 {query: GET_SUBSCRIPTION_PRICES_QUERY,
-                                 variables: {"archived": false, "organizationLocation": match.params.location_id }}
+                                 variables: {"archived": false, "organizationSubscription": match.params.location_id }}
                             ]})
                             .then(({ data }) => {
                                 console.log('got data', data);
-                                toast.success((t('organization.location_rooms.toast_add_success')), {
+                                toast.success((t('organization.subscription_prices.toast_add_success')), {
                                     position: toast.POSITION.BOTTOM_RIGHT
                                   })
                               }).catch((error) => {

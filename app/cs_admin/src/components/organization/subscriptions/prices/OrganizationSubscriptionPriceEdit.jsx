@@ -32,7 +32,7 @@ const UPDATE_SUBSCRIPTION_PRICE = gql`
     updateOrganizationSubscriptionPrice(input: $input) {
       organizationSubscriptionPrice {
         id
-        organizationLocation {
+        organizationSubscription {
           id
           name
         }
@@ -68,7 +68,7 @@ class OrganizationSubscriptionPriceEdit extends Component {
               <Grid.Col md={9}>
               <Card>
                 <Card.Header>
-                  <Card.Title>{t('organization.location_rooms.title_edit')}</Card.Title>
+                  <Card.Title>{t('organization.subscription_prices.title_edit')}</Card.Title>
                   {console.log(match.params.id)}
                 </Card.Header>
                 <Query query={GET_SUBSCRIPTION_PRICE_QUERY} variables={{ id }} >
@@ -107,11 +107,11 @@ class OrganizationSubscriptionPriceEdit extends Component {
                                     }
                                   }, refetchQueries: [
                                     {query: GET_SUBSCRIPTION_PRICES_QUERY,
-                                      variables: {"archived": false, "organizationLocation": match.params.location_id }}
+                                      variables: {"archived": false, "organizationSubscription": match.params.location_id }}
                                   ]})
                                   .then(({ data }) => {
                                       console.log('got data', data)
-                                      toast.success((t('organization.location_rooms.toast_edit_success')), {
+                                      toast.success((t('organization.subscription_prices.toast_edit_success')), {
                                           position: toast.POSITION.BOTTOM_RIGHT
                                         })
                                     }).catch((error) => {

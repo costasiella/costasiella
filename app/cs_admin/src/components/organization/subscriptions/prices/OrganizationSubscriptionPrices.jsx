@@ -43,25 +43,25 @@ const ARCHIVE_SUBSCRIPTION_PRICE = gql`
   }
 `
 
-const OrganizationLocationsRooms = ({ t, history, match, archived=false }) => (
+const OrganizationSubscriptionsPrices = ({ t, history, match, archived=false }) => (
   <SiteWrapper>
     <div className="my-3 my-md-5">
       <Container>
         <Page.Header title={t("organization.title")}>
           <div className="page-options d-flex">
-            <Link to="/organization/locations" 
+            <Link to="/organization/subscriptions" 
                   className='btn btn-outline-secondary btn-sm'>
-                <Icon prefix="fe" name="arrow-left" /> {t('general.back_to')} {t('organization.locations.title')}
+                <Icon prefix="fe" name="arrow-left" /> {t('general.back_to')} {t('organization.subscriptions.title')}
             </Link>
           </div>
         </Page.Header>
         <Grid.Row>
           <Grid.Col md={9}>
-            <Query query={GET_SUBSCRIPTION_PRICES_QUERY} variables={{ archived, organizationLocation: match.params.location_id }}>
-             {({ loading, error, data: {organizationSubscriptionPrices: location_rooms, organizationLocation: location}, refetch, fetchMore }) => {
+            <Query query={GET_SUBSCRIPTION_PRICES_QUERY} variables={{ archived, organizationSubscription: match.params.subscription_id }}>
+             {({ loading, error, data: {organizationSubscriptionPrices: subscription_prices, organizationSubscription: subscription}, refetch, fetchMore }) => {
                 // Loading
                 if (loading) return (
-                  <ContentCard cardTitle={t('organization.location_rooms.title')}>
+                  <ContentCard cardTitle={t('organization.subscription_prices.title')}>
                     <Dimmer active={true}
                             loadder={true}>
                     </Dimmer>
@@ -69,8 +69,8 @@ const OrganizationLocationsRooms = ({ t, history, match, archived=false }) => (
                 )
                 // Error
                 if (error) return (
-                  <ContentCard cardTitle={t('organization.location_rooms.title')}>
-                    <p>{t('organization.location_rooms.error_loading')}</p>
+                  <ContentCard cardTitle={t('organization.subscription_prices.title')}>
+                    <p>{t('organization.subscription_prices.error_loading')}</p>
                   </ContentCard>
                 )
                 const headerOptions = <Card.Options>
@@ -88,36 +88,36 @@ const OrganizationLocationsRooms = ({ t, history, match, archived=false }) => (
                 </Card.Options>
 
                 // Empty list
-                if (!location_rooms.edges.length) { return (
-                  <ContentCard cardTitle={t('organization.location_rooms.title')}
+                if (!subscription_prices.edges.length) { return (
+                  <ContentCard cardTitle={t('organization.subscription_prices.title')}
                                headerContent={headerOptions}>
                     <p>
-                    {(!archived) ? t('organization.location_rooms.empty_list') : t("organization.location_rooms.empty_archive")}
+                    {(!archived) ? t('organization.subscription_prices.empty_list') : t("organization.subscription_prices.empty_archive")}
                     </p>
                    
                   </ContentCard>
                 )} else {   
                 // Life's good! :)
                 return (
-                  <ContentCard cardTitle={t('organization.location_rooms.title')}
+                  <ContentCard cardTitle={t('organization.subscription_prices.title')}
                                headerContent={headerOptions}
-                               pageInfo={location_rooms.pageInfo}
+                               pageInfo={subscription_prices.pageInfo}
                                onLoadMore={() => {
                                 fetchMore({
                                   variables: {
-                                    after: location_rooms.pageInfo.endCursor
+                                    after: subscription_prices.pageInfo.endCursor
                                   },
                                   updateQuery: (previousResult, { fetchMoreResult }) => {
-                                    const newEdges = fetchMoreResult.organizationLocationsRooms.edges
-                                    const pageInfo = fetchMoreResult.organizationLocationsRooms.pageInfo
+                                    const newEdges = fetchMoreResult.organizationSubscriptionsPrices.edges
+                                    const pageInfo = fetchMoreResult.organizationSubscriptionsPrices.pageInfo
 
                                     return newEdges.length
                                       ? {
-                                          // Put the new locations at the end of the list and update `pageInfo`
+                                          // Put the new subscriptions at the end of the list and update `pageInfo`
                                           // so we have the new `endCursor` and `hasNextPage` values
-                                          organizationLocationsRooms: {
-                                            __typename: previousResult.organizationLocationsRooms.__typename,
-                                            edges: [ ...previousResult.organizationLocationsRooms.edges, ...newEdges ],
+                                          organizationSubscriptionsPrices: {
+                                            __typename: previousResult.organizationSubscriptionsPrices.__typename,
+                                            edges: [ ...previousResult.organizationSubscriptionsPrices.edges, ...newEdges ],
                                             pageInfo
                                           }
                                         }
@@ -127,7 +127,7 @@ const OrganizationLocationsRooms = ({ t, history, match, archived=false }) => (
                               }} >
                     <div>
                       <Alert type="primary">
-                        <strong>{t('general.location')}</strong> {location.name}
+                        <strong>{t('general.subscription')}</strong> {subscription.name}
                       </Alert>
 
                       <Table>
@@ -138,7 +138,7 @@ const OrganizationLocationsRooms = ({ t, history, match, archived=false }) => (
                           </Table.Row>
                         </Table.Header>
                         <Table.Body>
-                            {location_rooms.edges.map(({ node }) => (
+                            {subscription_prices.edges.map(({ node }) => (
                               <Table.Row key={v4()}>
                                 <Table.Col key={v4()}>
                                   {node.name}
@@ -152,14 +152,14 @@ const OrganizationLocationsRooms = ({ t, history, match, archived=false }) => (
                                   {(node.archived) ? 
                                     <span className='text-muted'>{t('general.unarchive_to_edit')}</span> :
                                     <Button className='btn-sm' 
-                                            onClick={() => history.push("/organization/locations/rooms/edit/" + match.params.location_id + '/' + node.id)}
+                                            onClick={() => history.push("/organization/subscriptions/prices/edit/" + match.params.subscription_id + '/' + node.id)}
                                             color="secondary">
                                       {t('general.edit')}
                                     </Button>
                                   }
                                 </Table.Col>
                                 <Mutation mutation={ARCHIVE_SUBSCRIPTION_PRICE} key={v4()}>
-                                  {(archiveLocationsRoom, { data }) => (
+                                  {(archiveSubscriptionsPrice, { data }) => (
                                     <Table.Col className="text-right" key={v4()}>
                                       <button className="icon btn btn-link btn-sm" 
                                           title={t('general.archive')} 
@@ -167,7 +167,7 @@ const OrganizationLocationsRooms = ({ t, history, match, archived=false }) => (
                                           onClick={() => {
                                             console.log("clicked archived")
                                             let id = node.id
-                                            archiveLocationsRoom({ variables: {
+                                            archiveSubscriptionsPrice({ variables: {
                                               input: {
                                               id,
                                               archived: !archived
@@ -175,7 +175,7 @@ const OrganizationLocationsRooms = ({ t, history, match, archived=false }) => (
                                       }, refetchQueries: [
                                           { 
                                             query: GET_SUBSCRIPTION_PRICES_QUERY, 
-                                            variables: {"archived": archived, organizationLocation: match.params.location_id }
+                                            variables: {"archived": archived, organizationSubscription: match.params.subscription_id }
                                           }
                                       ]}).then(({ data }) => {
                                         console.log('got data', data);
@@ -207,13 +207,13 @@ const OrganizationLocationsRooms = ({ t, history, match, archived=false }) => (
           </Grid.Col>
           <Grid.Col md={3}>
             <HasPermissionWrapper permission="add"
-                                  resource="organizationlocationroom">
+                                  resource="organizationsubscriptionprice">
               <Button color="primary btn-block mb-6"
-                      onClick={() => history.push("/organization/locations/rooms/add/" + match.params.location_id)}>
-                <Icon prefix="fe" name="plus-circle" /> {t('organization.location_rooms.add')}
+                      onClick={() => history.push("/organization/subscriptions/prices/add/" + match.params.subscription_id)}>
+                <Icon prefix="fe" name="plus-circle" /> {t('organization.subscription_prices.add')}
               </Button>
             </HasPermissionWrapper>
-            <OrganizationMenu active_link='locations'/>
+            <OrganizationMenu active_link='subscriptions'/>
           </Grid.Col>
         </Grid.Row>
       </Container>
@@ -221,4 +221,4 @@ const OrganizationLocationsRooms = ({ t, history, match, archived=false }) => (
   </SiteWrapper>
 );
 
-export default withTranslation()(withRouter(OrganizationLocationsRooms))
+export default withTranslation()(withRouter(OrganizationSubscriptionsPrices))
