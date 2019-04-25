@@ -21,6 +21,7 @@ import {
 import SiteWrapper from "../../../SiteWrapper"
 import HasPermissionWrapper from "../../../HasPermissionWrapper"
 import { toast } from 'react-toastify'
+import { confirmAlert } from 'react-confirm-alert'
 
 import ContentCard from "../../../general/ContentCard"
 import OrganizationMenu from "../../OrganizationMenu"
@@ -29,15 +30,64 @@ import AlertInfo from "../../../ui/AlertInfo"
 import { GET_SUBSCRIPTION_PRICES_QUERY } from "./queries"
 
 const DELETE_SUBSCRIPTION_PRICE = gql`
-  mutation ArchiveOrganizationSubscription($input: ArchiveOrganizationSubscriptionInput!) {
-    archiveOrganizationSubscription(input: $input) {
-      organizationSubscription {
-        id
-        archived
-      }
+  mutation DeleteOrganizationSubscriptionPrice($input: DeleteOrganizationSubscriptionPriceInput!) {
+    deleteOrganizationSubscriptionPrice(input: $input) {
+      ok
     }
   }
 `
+
+
+const confirmDelete = (t, match, deleteSubscriptionPrice, id) => {
+  console.log("clicked delete")
+  confirmAlert({
+    customUI: ({ onClose }) => {
+      return (
+        <div className='custom-ui'>
+          <h1>{t('general.confirm_delete')}</h1>
+          <p>Are you sure you want to delete this price?</p>
+          <button
+            className="btn btn-secondary"
+            onClick={() => {
+              this.handleClickDelete();
+              onClose();
+            }}
+          >
+            Yes, delete it
+          </button>
+          <button className="btn btn-link" onClick={onClose}>No, keep it</button>
+        </div>
+      );
+    },
+    buttons: [
+      {
+        label: 'Yes',
+        onClick: () => alert('Click Yes')
+      },
+      {
+        label: 'No',
+      }
+    ]
+  })
+  // deleteSubscriptionPrice({ variables: {
+  //   input: {
+  //   id
+  //   }
+  // }, refetchQueries: [
+  //     {query: GET_SUBSCRIPTION_PRICES_QUERY, variables: { organizationSubscription: match.params.subscription_id }}
+  // ]}).then(({ data }) => {
+  //   console.log('got data', data);
+  //   toast.success(
+  //     t('general.deleted'), {
+  //       position: toast.POSITION.BOTTOM_RIGHT
+  //     })
+  // }).catch((error) => {
+  //   toast.error((t('general.toast_server_error')) + ': ' +  error, {
+  //       position: toast.POSITION.BOTTOM_RIGHT
+  //     })
+  //   console.log('there was an error sending the query', error);
+  // })
+}
 
 
 const OrganizationSubscriptionsPrices = ({ t, history, match, archived=false }) => (
@@ -152,28 +202,8 @@ const OrganizationSubscriptionsPrices = ({ t, history, match, archived=false }) 
                                         <button className="icon btn btn-link btn-sm" 
                                            title={t('general.delete')} 
                                            href=""
-                                           onClick={() => {
-                                             console.log("clicked delete")
-                                             let id = node.id
-                                             deleteSubscriptionPrice({ variables: {
-                                               input: {
-                                                id
-                                               }
-                                        }, refetchQueries: [
-                                            {query: GET_SUBSCRIPTION_PRICES_QUERY, variables: { organizationSubscription: match.params.subscription_id }}
-                                        ]}).then(({ data }) => {
-                                          console.log('got data', data);
-                                          toast.success(
-                                            (archived) ? t('general.unarchived'): t('general.archived'), {
-                                              position: toast.POSITION.BOTTOM_RIGHT
-                                            })
-                                        }).catch((error) => {
-                                          toast.error((t('general.toast_server_error')) + ': ' +  error, {
-                                              position: toast.POSITION.BOTTOM_RIGHT
-                                            })
-                                          console.log('there was an error sending the query', error);
-                                        })
-                                        }}>
+                                           onClick={() => {confirmDelete(t, match, deleteSubscriptionPrice, node.id)}}
+                                        >
                                           <span class="text-red">
                                             <Icon prefix="fe" name="trash-2" />
                                           </span>

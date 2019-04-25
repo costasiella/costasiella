@@ -183,7 +183,7 @@ class DeleteOrganizationSubscriptionPrice(graphene.relay.ClientIDMutation):
 
         ok = organization_subscription_price.delete()
 
-        return ArchiveOrganizationSubscriptionPrice(ok=ok)
+        return DeleteOrganizationSubscriptionPrice(ok=ok)
 
 
 class OrganizationSubscriptionPriceMutation(graphene.ObjectType):
