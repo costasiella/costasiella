@@ -56,7 +56,7 @@ const confirmDelete = (t, match, deleteSubscriptionPrice, node) => {
           </p>
           <button className="btn btn-link pull-right" onClick={onClose}>{t('general.confirm_delete_no')}</button>
           <button
-            className="btn btn-secondary"
+            className="btn btn-danger"
             onClick={() => {
             deleteSubscriptionPrice({ variables: {
                 input: {
@@ -79,7 +79,7 @@ const confirmDelete = (t, match, deleteSubscriptionPrice, node) => {
               onClose()
             }}
           >
-            {t('general.confirm_delete_yes')}
+            <Icon name="trash-2" /> {t('general.confirm_delete_yes')}
           </button>
           
         </div>
