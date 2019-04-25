@@ -94,7 +94,11 @@
         "date_start": "__STRING_NOT_TRANSLATED__",
         "date_end": "__STRING_NOT_TRANSLATED__",
         "today": "__STRING_NOT_TRANSLATED__",
-        "subscription": "__STRING_NOT_TRANSLATED__"
+        "subscription": "__STRING_NOT_TRANSLATED__",
+        "confirm_delete": "__STRING_NOT_TRANSLATED__",
+        "delete": "__STRING_NOT_TRANSLATED__",
+        "confirm_delete_yes": "__STRING_NOT_TRANSLATED__",
+        "confirm_delete_no": "__STRING_NOT_TRANSLATED__"
     },
     "yup": {
         "min_len_3": "__STRING_NOT_TRANSLATED__",
@@ -264,7 +268,9 @@
             "error_loading": "__STRING_NOT_TRANSLATED__",
             "empty_list": "__STRING_NOT_TRANSLATED__",
             "empty_archive": "__STRING_NOT_TRANSLATED__",
-            "add": "__STRING_NOT_TRANSLATED__"
+            "add": "__STRING_NOT_TRANSLATED__",
+            "delete_confirm_msg": "__STRING_NOT_TRANSLATED__",
+            "deleted": "__STRING_NOT_TRANSLATED__"
         }
     },
     "validity": {

@@ -94,7 +94,11 @@
         "date_start": "Start date",
         "date_end": "End date",
         "today": "Today",
-        "subscription": "Subscription"
+        "subscription": "Subscription",
+        "confirm_delete": "Confirm delete",
+        "delete": "Delete",
+        "confirm_delete_yes": "Yes, Delete it",
+        "confirm_delete_no": "No, Keep it"
     },
     "yup": {
         "min_len_3": "Please input at least 3 characters",
@@ -264,7 +268,9 @@
             "error_loading": "Error loading subscription prices :(",
             "empty_list": "No subscription prices found",
             "empty_archive": "No subscription prices have been archived yet",
-            "add": "Add subscription price"
+            "add": "Add subscription price",
+            "delete_confirm_msg": "Are you sure you want to delete this price?",
+            "deleted": "Deleted subscription price"
         }
     },
     "validity": {
