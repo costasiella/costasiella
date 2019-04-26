@@ -36,8 +36,13 @@ const UPDATE_SUBSCRIPTION_PRICE = gql`
           id
           name
         }
-        name
-        displayPublic
+        price
+        financeTaxRate {
+          id
+          name
+        }
+        dateStart
+        dateEnd
       }
     }
   }

@@ -125,7 +125,7 @@ const OrganizationSubscriptionsPrices = ({ t, history, match, archived=false }) 
                 if (!subscription_prices.edges.length) { return (
                   <ContentCard cardTitle={t('organization.subscription_prices.title')}
                                headerContent={headerOptions}>
-                    <AlertInfo title='general.subscription' message={subscription.name} />
+                    <AlertInfo title={t('general.subscription')} message={subscription.name} />
                     <p>
                     {(!archived) ? t('organization.subscription_prices.empty_list') : t("organization.subscription_prices.empty_archive")}
                     </p>
