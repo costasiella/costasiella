@@ -30,6 +30,8 @@ import AlertInfo from "../../../ui/AlertInfo"
 import { GET_SUBSCRIPTION_PRICES_QUERY } from "./queries"
 import { GET_SUBSCRIPTIONS_QUERY } from "../queries"
 
+import moment from 'moment'
+
 const DELETE_SUBSCRIPTION_PRICE = gql`
   mutation DeleteOrganizationSubscriptionPrice($input: DeleteOrganizationSubscriptionPriceInput!) {
     deleteOrganizationSubscriptionPrice(input: $input) {
@@ -178,7 +180,8 @@ const OrganizationSubscriptionsPrices = ({ t, history, match, archived=false }) 
                             {subscription_prices.edges.map(({ node }) => (
                               <Table.Row key={v4()}>
                                 <Table.Col key={v4()}>
-                                  {node.dateStart}
+                                  
+                                  {moment(node.dateStart).format('LL')}
                                 </Table.Col>
                                 <Table.Col key={v4()}>
                                   {node.dateEnd}

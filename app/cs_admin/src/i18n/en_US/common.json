@@ -285,7 +285,7 @@
         "user": {
             "error_loading": "Error loading user :("
         },
-        "date_format": "dd-MM-yyyy"
+        "date_format_datepicker": "MMMM d, yyyy"
     },
     "subscription_unit": {
         "week": "Week",
