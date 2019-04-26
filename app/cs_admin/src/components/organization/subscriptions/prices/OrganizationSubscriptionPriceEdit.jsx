@@ -9,6 +9,8 @@ import { Formik } from 'formik'
 import { toast } from 'react-toastify'
 
 import { GET_SUBSCRIPTION_PRICES_QUERY, GET_SUBSCRIPTION_PRICE_QUERY } from './queries'
+import { GET_SUBSCRIPTIONS_QUERY } from '../queries'
+
 import { SUBSCRIPTION_PRICE_SCHEMA } from './yupSchema'
 import OrganizationSubscriptionPriceForm from './OrganizationSubscriptionPriceForm'
 import { dateToLocalISO } from '../../../../tools/date_tools'
@@ -131,8 +133,8 @@ class OrganizationSubscriptionPriceEdit extends Component {
                                       dateEnd: dateEnd,
                                     }
                                   }, refetchQueries: [
-                                    {query: GET_SUBSCRIPTION_PRICES_QUERY,
-                                      variables: { organizationSubscription: match.params.subscription_id }}
+                                    {query: GET_SUBSCRIPTION_PRICES_QUERY, variables: { organizationSubscription: match.params.subscription_id }},
+                                    {query: GET_SUBSCRIPTIONS_QUERY, variables: { "archived": false }}
                                   ]})
                                   .then(({ data }) => {
                                       console.log('got data', data)

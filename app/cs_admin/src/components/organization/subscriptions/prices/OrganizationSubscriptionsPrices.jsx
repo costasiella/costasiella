@@ -28,6 +28,7 @@ import OrganizationMenu from "../../OrganizationMenu"
 import AlertInfo from "../../../ui/AlertInfo"
 
 import { GET_SUBSCRIPTION_PRICES_QUERY } from "./queries"
+import { GET_SUBSCRIPTIONS_QUERY } from "../queries"
 
 const DELETE_SUBSCRIPTION_PRICE = gql`
   mutation DeleteOrganizationSubscriptionPrice($input: DeleteOrganizationSubscriptionPriceInput!) {
@@ -63,7 +64,8 @@ const confirmDelete = (t, match, deleteSubscriptionPrice, node) => {
                 id
                 }
               }, refetchQueries: [
-                  {query: GET_SUBSCRIPTION_PRICES_QUERY, variables: { organizationSubscription: match.params.subscription_id }}
+                  {query: GET_SUBSCRIPTION_PRICES_QUERY, variables: { organizationSubscription: match.params.subscription_id }},
+                  {query: GET_SUBSCRIPTIONS_QUERY, variables: {archived: false}},
               ]}).then(({ data }) => {
                 console.log('got data', data);
                 toast.success(
