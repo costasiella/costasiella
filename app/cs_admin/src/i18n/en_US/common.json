@@ -98,7 +98,8 @@
         "confirm_delete": "Confirm delete",
         "delete": "Delete",
         "confirm_delete_yes": "Yes, Delete it",
-        "confirm_delete_no": "No, Keep it"
+        "confirm_delete_no": "No, Keep it",
+        "please_select": "Please select..."
     },
     "yup": {
         "min_len_3": "Please input at least 3 characters",
@@ -106,7 +107,8 @@
         "field_has_to_be_number": "Please input a number",
         "positive_number_required": "Please input a number above 0",
         "url": "Please input a valid url starting with http:// or https://",
-        "max_decimal_number": "Please enter a number of 18 digits and 20 decimals or below"
+        "max_decimal_number": "Please enter a number of 18 digits and 20 decimals or below",
+        "type_error_number": "Please input a number"
     },
     "home": {
         "title": "Home"

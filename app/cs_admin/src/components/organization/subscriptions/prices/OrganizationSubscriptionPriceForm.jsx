@@ -12,12 +12,11 @@ import {
   Form,
 } from "tabler-react"
 
-import DatePicker from "react-datepicker"
 import CSDatePicker from "../../../ui/CSDatePicker"
 
 
 const OrganizationSubscriptionPriceForm = (
-  { t, history, match, inputData, isSubmitting, errors, values, setFieldTouched, setFieldValue, return_url }
+  { t, history, inputData, isSubmitting, errors, values, setFieldTouched, setFieldValue, return_url }
   ) => (
   <FoForm>
     <Card.Body>
@@ -35,7 +34,7 @@ const OrganizationSubscriptionPriceForm = (
                 autoComplete="off">
           {console.log("query data in classpass add:")}
           {console.log(inputData)}
-          <option value="" key={v4()}></option>
+          <option value="" key={v4()}>{t('general.please_select')}</option>
           {inputData.financeTaxrates.edges.map(({ node }) =>
             <option value={node.id} key={v4()}>{node.name} ({node.percentage}% {node.rateType})</option>
           )}

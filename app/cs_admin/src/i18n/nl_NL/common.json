@@ -98,7 +98,8 @@
         "confirm_delete": "__STRING_NOT_TRANSLATED__",
         "delete": "__STRING_NOT_TRANSLATED__",
         "confirm_delete_yes": "__STRING_NOT_TRANSLATED__",
-        "confirm_delete_no": "__STRING_NOT_TRANSLATED__"
+        "confirm_delete_no": "__STRING_NOT_TRANSLATED__",
+        "please_select": "__STRING_NOT_TRANSLATED__"
     },
     "yup": {
         "min_len_3": "__STRING_NOT_TRANSLATED__",
@@ -106,7 +107,8 @@
         "field_has_to_be_number": "__STRING_NOT_TRANSLATED__",
         "positive_number_required": "__STRING_NOT_TRANSLATED__",
         "url": "__STRING_NOT_TRANSLATED__",
-        "max_decimal_number": "__STRING_NOT_TRANSLATED__"
+        "max_decimal_number": "__STRING_NOT_TRANSLATED__",
+        "type_error_number": "__STRING_NOT_TRANSLATED__"
     },
     "home": {
         "title": "__STRING_NOT_TRANSLATED__"
