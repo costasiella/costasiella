@@ -156,7 +156,7 @@ class UpdateOrganizationSubscriptionPrice(graphene.relay.ClientIDMutation):
         organization_subscription_price.price = input['price']
         organization_subscription_price.finance_tax_rate = result['finance_tax_rate']
         organization_subscription_price.date_start = result['date_start']
-        organization_subscription_price.date_end = result['date_end']
+        organization_subscription_price.date_end = result.get('date_end', None)
         organization_subscription_price.save(force_update=True)
 
         return UpdateOrganizationSubscriptionPrice(organization_subscription_price=organization_subscription_price)

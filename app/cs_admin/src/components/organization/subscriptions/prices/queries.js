@@ -35,7 +35,7 @@ export const GET_SUBSCRIPTION_PRICES_QUERY = gql`
 `
 
 export const GET_SUBSCRIPTION_PRICE_QUERY = gql`
-  query OrganizationSubscriptionPrice($id: ID!) {
+  query OrganizationSubscriptionPrice($id: ID!, $after: String, $before: String, $archived: Boolean!) {
     organizationSubscriptionPrice(id:$id) {
       id
       organizationSubscription {
@@ -50,6 +50,23 @@ export const GET_SUBSCRIPTION_PRICE_QUERY = gql`
       }
       dateStart
       dateEnd
+    }
+    financeTaxrates(first: 15, before: $before, after: $after, archived: $archived) {
+      pageInfo {
+        startCursor
+        endCursor
+        hasNextPage
+        hasPreviousPage
+      }
+      edges {
+        node {
+          id
+          archived
+          name
+          percentage
+          rateType
+        }
+      }
     }
   }
 `

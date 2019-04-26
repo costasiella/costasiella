@@ -61,8 +61,8 @@ class OrganizationSubscriptionPriceEdit extends Component {
     const match = this.props.match
     const history = this.props.history
     const id = match.params.id
-    const location_id = match.params.location_id
-    const return_url = "/organization/locations/rooms/" + location_id
+    const subscription_id = match.params.subscription_id
+    const return_url = "/organization/subscriptions/prices/" + subscription_id
 
     return (
       <SiteWrapper>
@@ -76,7 +76,7 @@ class OrganizationSubscriptionPriceEdit extends Component {
                   <Card.Title>{t('organization.subscription_prices.title_edit')}</Card.Title>
                   {console.log(match.params.id)}
                 </Card.Header>
-                <Query query={GET_SUBSCRIPTION_PRICE_QUERY} variables={{ id }} >
+                <Query query={GET_SUBSCRIPTION_PRICE_QUERY} variables={{ id, archived: false }} >
                 {({ loading, error, data, refetch }) => {
                     // Loading
                     if (loading) return <p>{t('general.loading_with_dots')}</p>
@@ -86,9 +86,10 @@ class OrganizationSubscriptionPriceEdit extends Component {
                       return <p>{t('general.error_sad_smiley')}</p>
                     }
                     
-                    const initialData = data.organizationSubscriptionPrice;
+                    const initialData = data.organizationSubscriptionPrice
                     console.log('query data')
                     console.log(data)
+                    const inputData = data
 
                     return (
                       
@@ -96,23 +97,42 @@ class OrganizationSubscriptionPriceEdit extends Component {
                       {(updateLocation, { data }) => (
                           <Formik
                               initialValues={{ 
-                                name: initialData.name, 
-                                displayPublic: initialData.displayPublic 
+                                price: initialData.price, 
+                                financeTaxRate: initialData.financeTaxRate,
+                                dateStart: initialData.dateStart,
+                                dateEnd: initialData.End,
                               }}
                               validationSchema={SUBSCRIPTION_PRICE_SCHEMA}
                               onSubmit={(values, { setSubmitting }) => {
                                   console.log('submit values:')
                                   console.log(values)
 
+                                  let dateEnd
+                                  if (values.dateEnd) {
+                                    dateEnd = values.dateEnd.toISOString().split('T')[0]
+                                  } else {
+                                    dateEnd = values.dateEnd
+                                  }
+
+                                  let dateStart
+                                  if (values.dateStart instanceof Date) {
+                                    dateStart = values.dateStart.toISOString().split('T')[0]
+                                  } else {
+                                    // Input hasn't changed and DatePicket hasn't made a Date object out of it
+                                    dateStart = values.dateStart
+                                  }
+
                                   updateLocation({ variables: {
                                     input: {
                                       id: match.params.id,
-                                      name: values.name,
-                                      displayPublic: values.displayPublic 
+                                      price: values.price,
+                                      financeTaxRate: values.financeTaxRate,
+                                      dateStart: dateStart,
+                                      dateEnd: dateEnd,
                                     }
                                   }, refetchQueries: [
                                     {query: GET_SUBSCRIPTION_PRICES_QUERY,
-                                      variables: {"archived": false, "organizationSubscription": match.params.location_id }}
+                                      variables: {"organizationSubscription": match.params.subscription_id}}
                                   ]})
                                   .then(({ data }) => {
                                       console.log('got data', data)
@@ -128,12 +148,15 @@ class OrganizationSubscriptionPriceEdit extends Component {
                                     })
                               }}
                               >
-                              {({ isSubmitting, errors, values }) => (
+                              {({ isSubmitting, errors, values, setFieldTouched, setFieldValue }) => (
                                 <OrganizationSubscriptionPriceForm
-                                isSubmitting={isSubmitting}
-                                errors={errors}
-                                values={values}
-                                return_url={return_url}
+                                  inputData={inputData}
+                                  isSubmitting={isSubmitting}
+                                  setFieldTouched={setFieldTouched}
+                                  setFieldValue={setFieldValue}
+                                  errors={errors}
+                                  values={values}
+                                  return_url={return_url}
                                 />
                               )}
                           </Formik>
