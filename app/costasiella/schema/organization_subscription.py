@@ -1,10 +1,14 @@
 from django.utils.translation import gettext as _
+from django.utils import timezone
+from django.db.models import Q
+
 
 import graphene
 from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
 from graphql import GraphQLError
 
+import datetime
 import validators
 
 from ..models import OrganizationSubscription, OrganizationMembership, FinanceCostCenter, FinanceGLAccount, FinanceTaxRate 
@@ -58,6 +62,8 @@ def validate_create_update_input(input, update=False):
 class OrganizationSubscriptionNodeInterface(graphene.Interface):
     id = graphene.GlobalID()
     subscription_unit_display = graphene.String()
+    price_today = graphene.Float()
+    price_today_display = graphene.String()
 
 
 class OrganizationSubscriptionNode(DjangoObjectType):   
@@ -70,6 +76,39 @@ class OrganizationSubscriptionNode(DjangoObjectType):
     def resolve_subscription_unit_display(self, info):
         from ..modules.validity_tools import display_subscription_unit
         return display_subscription_unit(self.subscription_unit)
+
+    def resolve_price_today_display(self, info):
+        from ..modules.finance_tools import display_float_as_amount
+        
+        now = timezone.now()
+        today = datetime.date(now.year, now.month, now.day)
+
+        query_set = self.organizationsubscriptionprice_set.filter(
+            Q(date_start__lte = today) & 
+            (Q(date_end__gte = today) | Q(date_end__isnull = True))
+        )
+        
+        if query_set.exists():
+            price_today = query_set.first().price
+        else:
+            return None
+
+        return display_float_as_amount(price_today)
+
+
+    def resolve_price_today(self, info):
+        now = timezone.now()
+        today = datetime.date(now.year, now.month, now.day)
+
+        query_set = self.organizationsubscriptionprice_set.filter(
+            Q(date_start__lte = today) & 
+            (Q(date_end__gte = today) | Q(date_end__isnull = True))
+        )
+        
+        if query_set.exists():
+            return query_set.first().price
+        else:
+            return None
 
 
     @classmethod
