@@ -41,8 +41,6 @@ def validate_create_update_input(input, update=False):
     if not input['date_start']:
         raise Exception(_('dateStart is required!'))
 
-    print(input)
-
     result['date_start'] = datetime.date(
         input['date_start'].year,
         input['date_start'].month,

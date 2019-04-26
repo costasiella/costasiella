@@ -79,15 +79,13 @@ class OrganizationSubscriptionNode(DjangoObjectType):
 
 
     def resolve_price_today_display(self, info):
-        now = timezone.now()
-        today = datetime.date(now.year, now.month, now.day)
+        today = timezone.now().date()
 
         return self.get_price_on_date(today, display=True)
 
 
     def resolve_price_today(self, info):
-        now = timezone.now()
-        today = datetime.date(now.year, now.month, now.day)
+        today = timezone.now().date()
 
         return self.get_price_on_date(today)
 

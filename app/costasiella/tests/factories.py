@@ -1,7 +1,12 @@
+from django.utils import timezone
+from django.contrib.auth import get_user_model
+
+import datetime
 import factory
 
 from .. import models
-from django.contrib.auth import get_user_model
+from ..modules.date_tools import last_day_month
+
 
 
 class FinanceCostCenterFactory(factory.DjangoModelFactory):
@@ -155,6 +160,17 @@ class OrganizationSubscriptionFactory(factory.DjangoModelFactory):
     quick_stats_amount = 12.5
     finance_glaccount = factory.SubFactory(FinanceGLAccountFactory)
     finance_costcenter = factory.SubFactory(FinanceCostCenterFactory)
+
+
+class OrganizationSubscriptionPriceFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.OrganizationSubscriptionPrice
+
+    organization_subscription = factory.SubFactory(OrganizationSubscriptionFactory)
+    price = 12345
+    finance_tax_rate = factory.SubFactory(FinanceTaxRateFactory)
+    date_start = '2010-01-01'
+    date_end = '2099-12-31'
 
 
 class OrganizationSubscriptionGroupFactory(factory.DjangoModelFactory):
