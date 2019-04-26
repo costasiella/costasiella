@@ -131,7 +131,7 @@ const OrganizationSubscriptions = ({ t, history, archived=false }) => (
                               <Table.ColHeader>{t('general.public')}</Table.ColHeader>
                               <Table.ColHeader>{t('general.shop')}</Table.ColHeader>
                               <Table.ColHeader>{t('general.classes')}</Table.ColHeader>
-                              <Table.ColHeader>{t('general.price')}</Table.ColHeader>
+                              <Table.ColHeader><span className="pull-right">{t('general.price')}</span></Table.ColHeader>
                             </Table.Row>
                           </Table.Header>
                           <Table.Body>
@@ -156,7 +156,7 @@ const OrganizationSubscriptions = ({ t, history, archived=false }) => (
                                     }
                                   </Table.Col>
                                   <Table.Col className="text-right" key={v4()}>
-                                    price here... <br />
+                                    {node.priceTodayDisplay} <br />
                                     <Link to={"/organization/subscriptions/prices/" + node.id}
                                           className='btn btn-link btn-sm'>
                                         {/* <Icon prefix="fe" name="dollar-sign" />  */}
