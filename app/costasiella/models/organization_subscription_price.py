@@ -12,6 +12,9 @@ class OrganizationSubscriptionPrice(models.Model):
     finance_tax_rate = models.ForeignKey(FinanceTaxRate, on_delete=models.CASCADE)
     date_start = models.DateField()
     date_end = models.DateField(null=True)
+
+    class Meta:
+        ordering = ['-date_start']
     
     def __str__(self):
         return self.organization_subscription.name + ' ' + self.date_start + ' - ' + self.price

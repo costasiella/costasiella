@@ -71,7 +71,11 @@ class OrganizationSubscriptionPriceNodeInterface(graphene.Interface):
 class OrganizationSubscriptionPriceNode(DjangoObjectType):
     class Meta:
         model = OrganizationSubscriptionPrice
-        filter_fields = ['organization_subscription']
+        filter_fields = {
+            'organization_subscription': ['exact'],
+            'date_start': ['lte'],
+            'date_end': ['gte', 'isnull']
+        }
         interfaces = (graphene.relay.Node, OrganizationSubscriptionPriceNodeInterface)
 
     def resolve_price_display(self, info):
@@ -95,7 +99,7 @@ class OrganizationSubscriptionPriceQuery(graphene.ObjectType):
         require_login_and_permission(user, 'costasiella.view_organizationsubscriptionprice')
 
         rid = get_rid(organization_subscription)
-        return OrganizationSubscriptionPrice.objects.filter(organization_subscription=rid.id)
+        return OrganizationSubscriptionPrice.objects.filter(organization_subscription=rid.id).order_by('-date_start')
 
 
 class CreateOrganizationSubscriptionPrice(graphene.relay.ClientIDMutation):
