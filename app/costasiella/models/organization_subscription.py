@@ -1,4 +1,5 @@
 from django.utils.translation import gettext as _
+from django.db.models import Q
 
 from django.db import models
 
@@ -32,6 +33,19 @@ class OrganizationSubscription(models.Model):
     quick_stats_amount = models.DecimalField(default=0, max_digits=20, decimal_places=2)
     finance_glaccount = models.ForeignKey(FinanceGLAccount, on_delete=models.CASCADE, null=True)
     finance_costcenter = models.ForeignKey(FinanceCostCenter, on_delete=models.CASCADE, null=True)
+
+
+    def get_price_on_date(self, date):
+        query_set = self.organizationsubscriptionprice_set.filter(
+            Q(date_start__lte = date) & 
+            (Q(date_end__gte = date) | Q(date_end__isnull = True))
+        )
+        
+        if query_set.exists():
+            return query_set.first().price
+        else:
+            return None
+
 
     def __str__(self):
         return self.name

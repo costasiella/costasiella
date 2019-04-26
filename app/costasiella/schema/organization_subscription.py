@@ -59,6 +59,7 @@ def validate_create_update_input(input, update=False):
 
     return result
 
+
 class OrganizationSubscriptionNodeInterface(graphene.Interface):
     id = graphene.GlobalID()
     subscription_unit_display = graphene.String()
@@ -83,14 +84,8 @@ class OrganizationSubscriptionNode(DjangoObjectType):
         now = timezone.now()
         today = datetime.date(now.year, now.month, now.day)
 
-        query_set = self.organizationsubscriptionprice_set.filter(
-            Q(date_start__lte = today) & 
-            (Q(date_end__gte = today) | Q(date_end__isnull = True))
-        )
-        
-        if query_set.exists():
-            price_today = query_set.first().price
-        else:
+        price_today = self.get_price_on_date(today)
+        if not price_today:
             return None
 
         return display_float_as_amount(price_today)
@@ -100,15 +95,7 @@ class OrganizationSubscriptionNode(DjangoObjectType):
         now = timezone.now()
         today = datetime.date(now.year, now.month, now.day)
 
-        query_set = self.organizationsubscriptionprice_set.filter(
-            Q(date_start__lte = today) & 
-            (Q(date_end__gte = today) | Q(date_end__isnull = True))
-        )
-        
-        if query_set.exists():
-            return query_set.first().price
-        else:
-            return None
+        return self.get_price_on_date(today)
 
 
     @classmethod
