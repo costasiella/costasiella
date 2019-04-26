@@ -12,6 +12,7 @@ import { toast } from 'react-toastify'
 import { GET_SUBSCRIPTION_PRICES_QUERY, GET_INPUT_VALUES_QUERY } from './queries'
 import { SUBSCRIPTION_PRICE_SCHEMA } from './yupSchema'
 import OrganizationSubscriptionPriceForm from './OrganizationSubscriptionPriceForm'
+import { dateToLocalISO } from '../../../../tools/date_tools'
 
 import {
   Page,
@@ -86,7 +87,7 @@ const OrganizationSubscriptionPriceAdd = ({ t, history, match }) => (
 
                                   let dateEnd
                                   if (values.dateEnd) {
-                                    dateEnd = values.dateEnd.toISOString().split('T')[0]
+                                    dateEnd = dateToLocalISO(values.dateEnd)
                                   } else {
                                     dateEnd = values.dateEnd
                                   }
@@ -96,7 +97,7 @@ const OrganizationSubscriptionPriceAdd = ({ t, history, match }) => (
                                       organizationSubscription: match.params.subscription_id,
                                       price: values.price,
                                       financeTaxRate: values.financeTaxRate,
-                                      dateStart: values.dateStart.toISOString().split('T')[0],
+                                      dateStart: dateToLocalISO(values.dateStart),
                                       dateEnd: dateEnd
                                     }
                                   }, refetchQueries: [

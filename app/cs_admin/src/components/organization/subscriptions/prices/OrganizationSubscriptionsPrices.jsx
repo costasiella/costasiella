@@ -203,7 +203,7 @@ const OrganizationSubscriptionsPrices = ({ t, history, match, archived=false }) 
                                            href=""
                                            onClick={() => {confirmDelete(t, match, deleteSubscriptionPrice, node)}}
                                         >
-                                          <span class="text-red">
+                                          <span className="text-red">
                                             <Icon prefix="fe" name="trash-2" />
                                           </span>
                                         </button>

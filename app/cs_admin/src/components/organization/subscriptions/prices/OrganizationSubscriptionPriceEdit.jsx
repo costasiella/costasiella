@@ -11,6 +11,7 @@ import { toast } from 'react-toastify'
 import { GET_SUBSCRIPTION_PRICES_QUERY, GET_SUBSCRIPTION_PRICE_QUERY } from './queries'
 import { SUBSCRIPTION_PRICE_SCHEMA } from './yupSchema'
 import OrganizationSubscriptionPriceForm from './OrganizationSubscriptionPriceForm'
+import { dateToLocalISO } from '../../../../tools/date_tools'
 
 import {
   Page,
@@ -108,14 +109,14 @@ class OrganizationSubscriptionPriceEdit extends Component {
 
                                   let dateEnd
                                   if (values.dateEnd) {
-                                    dateEnd = values.dateEnd.toISOString().split('T')[0]
+                                    dateEnd = dateToLocalISO(values.dateEnd)
                                   } else {
                                     dateEnd = values.dateEnd
                                   }
 
                                   let dateStart
                                   if (values.dateStart instanceof Date) {
-                                    dateStart = values.dateStart.toISOString().split('T')[0]
+                                    dateStart = dateToLocalISO(values.dateStart)
                                   } else {
                                     // Input hasn't changed and DatePicket hasn't made a Date object out of it
                                     dateStart = values.dateStart
