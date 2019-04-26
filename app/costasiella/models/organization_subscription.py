@@ -8,6 +8,8 @@ from .finance_glaccount import FinanceGLAccount
 from .finance_taxrate import FinanceTaxRate
 from .organization_membership import OrganizationMembership
 
+from ..modules.finance_tools import display_float_as_amount
+
 
 class OrganizationSubscription(models.Model):
     SUBSCRIPTION_UNITS = (
@@ -35,14 +37,18 @@ class OrganizationSubscription(models.Model):
     finance_costcenter = models.ForeignKey(FinanceCostCenter, on_delete=models.CASCADE, null=True)
 
 
-    def get_price_on_date(self, date):
+    def get_price_on_date(self, date, display=False):
         query_set = self.organizationsubscriptionprice_set.filter(
             Q(date_start__lte = date) & 
             (Q(date_end__gte = date) | Q(date_end__isnull = True))
         )
         
         if query_set.exists():
-            return query_set.first().price
+            price = query_set.first().price
+            if display:
+                return display_float_as_amount(price)
+            else:
+                return price
         else:
             return None
 

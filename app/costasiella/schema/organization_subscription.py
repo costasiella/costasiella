@@ -1,6 +1,5 @@
 from django.utils.translation import gettext as _
 from django.utils import timezone
-from django.db.models import Q
 
 
 import graphene
@@ -14,6 +13,7 @@ import validators
 from ..models import OrganizationSubscription, OrganizationMembership, FinanceCostCenter, FinanceGLAccount, FinanceTaxRate 
 from ..modules.gql_tools import require_login, require_login_and_permission, get_rid
 from ..modules.messages import Messages
+from ..modules.validity_tools import display_subscription_unit
 
 
 m = Messages()
@@ -75,20 +75,14 @@ class OrganizationSubscriptionNode(DjangoObjectType):
 
 
     def resolve_subscription_unit_display(self, info):
-        from ..modules.validity_tools import display_subscription_unit
         return display_subscription_unit(self.subscription_unit)
 
+
     def resolve_price_today_display(self, info):
-        from ..modules.finance_tools import display_float_as_amount
-        
         now = timezone.now()
         today = datetime.date(now.year, now.month, now.day)
 
-        price_today = self.get_price_on_date(today)
-        if not price_today:
-            return None
-
-        return display_float_as_amount(price_today)
+        return self.get_price_on_date(today, display=True)
 
 
     def resolve_price_today(self, info):
