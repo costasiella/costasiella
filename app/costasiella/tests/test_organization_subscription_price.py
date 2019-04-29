@@ -180,65 +180,42 @@ class GQLOrganizationSubscriptionPrice(TestCase):
         self.assertEqual(data['organizationSubscriptionPrices']['edges'][0]['node']['dateEnd'], self.organization_subscription_price.date_end)
 
 
-    # def test_query_permision_denied(self):
-    #     """ Query list of location rooms """
-    #     query = self.subscription_prices_query
-    #     subscription_price = f.OrganizationSubscriptionPriceFactory.create()
-    #     non_public_subscription_price = f.OrganizationSubscriptionPriceFactory.build()
-    #     non_public_subscription_price.organization_subscription = subscription_price.organization_subscription
-    #     non_public_subscription_price.display_public = False
-    #     non_public_subscription_price.save()
+    def test_query_permision_denied(self):
+        """ Query list of location rooms """
+        query = self.subscription_prices_query
 
-    #     variables = {
-    #         'organizationSubscription': to_global_id('OrganizationSubscriptionNode', subscription_price.organization_subscription.pk),
-    #         'archived': False
-    #     }
+        variables = {
+            'organizationSubscription': to_global_id('OrganizationSubscriptionNode', self.organization_subscription_price.organization_subscription.pk),
+            'archived': False
+        }
 
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     executed = execute_test_client_api_query(query, user, variables=variables)
-    #     data = executed.get('data')
+        # Create regular user
+        user = f.RegularUserFactory.create()
+        executed = execute_test_client_api_query(query, user, variables=variables)
+        errors = executed.get('errors')
 
-    #     # Public locations only
-    #     non_public_found = False
-    #     for item in data['organizationSubscriptionPrices']['edges']:
-    #         if not item['node']['displayPublic']:
-    #             non_public_found = True
-
-    #     self.assertEqual(non_public_found, False)
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
-    # def test_query_permision_granted(self):
-    #     """ Query list of location rooms """
-    #     query = self.subscription_prices_query
-    #     subscription_price = f.OrganizationSubscriptionPriceFactory.create()
-    #     non_public_subscription_price = f.OrganizationSubscriptionPriceFactory.build()
-    #     non_public_subscription_price.organization_subscription = subscription_price.organization_subscription
-    #     non_public_subscription_price.display_public = False
-    #     non_public_subscription_price.save()
+    def test_query_permision_granted(self):
+        """ Query list of location rooms """
+        query = self.subscription_prices_query
 
-    #     variables = {
-    #         'organizationSubscription': to_global_id('OrganizationSubscriptionNode', subscription_price.organization_subscription.pk),
-    #         'archived': False
-    #     }
+        variables = {
+            'organizationSubscription': to_global_id('OrganizationSubscriptionNode', self.organization_subscription_price.organization_subscription.pk),
+            'archived': False
+        }
 
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename='view_organizationsubscriptionprice')
-    #     user.user_permissions.add(permission)
-    #     user.save()
+        # Create regular user
+        user = f.RegularUserFactory.create()
+        permission = Permission.objects.get(codename='view_organizationsubscriptionprice')
+        user.user_permissions.add(permission)
+        user.save()
 
-    #     executed = execute_test_client_api_query(query, user, variables=variables)
-    #     data = executed.get('data')
+        executed = execute_test_client_api_query(query, user, variables=variables)
+        data = executed.get('data')
 
-    #     # List all locations, including non public
-    #     non_public_found = False
-    #     for item in data['organizationSubscriptionPrices']['edges']:
-    #         if not item['node']['displayPublic']:
-    #             non_public_found = True
-
-    #     # Assert non public locations are listed
-    #     self.assertEqual(non_public_found, True)
+        self.assertEqual(data['organizationSubscriptionPrices']['edges'][0]['node']['price'], self.organization_subscription_price.price)
 
 
     # def test_query_anon_user(self):
