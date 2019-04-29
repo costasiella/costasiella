@@ -218,18 +218,17 @@ class GQLOrganizationSubscriptionPrice(TestCase):
         self.assertEqual(data['organizationSubscriptionPrices']['edges'][0]['node']['price'], self.organization_subscription_price.price)
 
 
-    # def test_query_anon_user(self):
-    #     """ Query list of location rooms """
-    #     query = self.subscription_prices_query
-    #     subscription_price = f.OrganizationSubscriptionPriceFactory.create()
-    #     variables = {
-    #         'organizationSubscription': to_global_id('OrganizationSubscriptionNode', subscription_price.organization_subscription.pk),
-    #         'archived': False
-    #     }
+    def test_query_anon_user(self):
+        """ Query list of location rooms """
+        query = self.subscription_prices_query
+        variables = {
+            'organizationSubscription': to_global_id('OrganizationSubscriptionNode', self.organization_subscription_price.organization_subscription.pk),
+            'archived': False
+        }
 
-    #     executed = execute_test_client_api_query(query, self.anon_user, variables=variables)
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
+        executed = execute_test_client_api_query(query, self.anon_user, variables=variables)
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
     # def test_query_one(self):
