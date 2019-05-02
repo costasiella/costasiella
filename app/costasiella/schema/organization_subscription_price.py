@@ -116,10 +116,7 @@ class CreateOrganizationSubscriptionPrice(graphene.relay.ClientIDMutation):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.add_organizationsubscriptionprice')
 
-        print(input)
         result = validate_create_update_input(input, update=False)
-        print('validated')
-
         organization_subscription_price = OrganizationSubscriptionPrice(
             organization_subscription = result['organization_subscription'],
             price = input['price'],
@@ -130,7 +127,6 @@ class CreateOrganizationSubscriptionPrice(graphene.relay.ClientIDMutation):
         
 
         organization_subscription_price.save()
-        print('hmm not yet')
 
         return CreateOrganizationSubscriptionPrice(organization_subscription_price=organization_subscription_price)
 
