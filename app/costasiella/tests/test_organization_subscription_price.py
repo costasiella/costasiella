@@ -36,9 +36,9 @@ class GQLOrganizationSubscriptionPrice(TestCase):
 
         self.variables_create = {
             "input": {
-                "organizationSubscription": to_global_id('OrganizationSubscriptionNode', self.organization_subscription.id),
+                "organizationSubscription": to_global_id('OrganizationSubscriptionNode', self.organization_subscription.pk),
                 "price": 10,
-                "financeTaxRate": to_global_id('FinanceTaxRateNode', self.finance_tax_rate.id),
+                "financeTaxRate": to_global_id('FinanceTaxRateNode', self.finance_tax_rate.pk),
                 "dateStart": '2019-01-01',
                 "dateEnd": '2019-12-31',
             }
@@ -48,16 +48,15 @@ class GQLOrganizationSubscriptionPrice(TestCase):
             "input": {
                 "id": to_global_id('OrganizationSubscriptionPriceNode', self.organization_subscription_price.pk),
                 "price": 1466,
-                "financeTaxRate": to_global_id('FinanceTaxRateNode', self.finance_tax_rate.id),
+                "financeTaxRate": to_global_id('FinanceTaxRateNode', self.finance_tax_rate.pk),
                 "dateStart": '2024-01-01',
                 "dateEnd": '2024-12-31',
             }
         }
 
-        self.variables_archive = {
+        self.variables_delete = {
             "input": {
                 "id": to_global_id('OrganizationSubscriptionPriceNode', self.organization_subscription_price.pk),
-                "archived": True,
             }
         }
 
@@ -175,12 +174,9 @@ class GQLOrganizationSubscriptionPrice(TestCase):
 '''
 
         self.subscription_price_delete_mutation = '''
-  mutation ArchiveOrganizationSubscriptionPrice($input: ArchiveOrganizationSubscriptionPriceInput!) {
-    archiveOrganizationSubscriptionPrice(input: $input) {
-      organizationSubscriptionPrice {
-        id
-        archived
-      }
+  mutation DeleteOrganizationSubscriptionPrice($input: DeleteOrganizationSubscriptionPriceInput!) {
+    deleteOrganizationSubscriptionPrice(input: $input) {
+      ok
     }
   }
 '''
@@ -489,69 +485,73 @@ class GQLOrganizationSubscriptionPrice(TestCase):
         self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
-    # def test_archive_subscription_price(self):
-    #     """ Archive a location room"""
-    #     query = self.subscription_price_archive_mutation
-    #     variables = self.variables_archive
+    def test_delete_subscription_price(self):
+        """ Delete a subscription price """
+        query = self.subscription_price_delete_mutation
+        variables = self.variables_delete
 
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         self.admin_user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['archiveOrganizationSubscriptionPrice']['organizationSubscriptionPrice']['archived'], variables['input']['archived'])
-
-
-    # def test_archive_subscription_price_anon_user(self):
-    #     """ Archive a location room """
-    #     query = self.subscription_price_archive_mutation
-    #     variables = self.variables_archive
-
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         self.anon_user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
-
-
-    # def test_archive_subscription_price_permission_granted(self):
-    #     """ Allow archiving locations for users with permissions """
-    #     query = self.subscription_price_archive_mutation
-    #     variables = self.variables_archive
-
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename=self.permission_delete)
-    #     user.user_permissions.add(permission)
-    #     user.save()
-
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['archiveOrganizationSubscriptionPrice']['organizationSubscriptionPrice']['archived'], variables['input']['archived'])
-
-
-    # def test_archive_subscription_price_permission_denied(self):
-    #     """ Check archive location room permission denied error message """
-    #     query = self.subscription_price_archive_mutation
-    #     variables = self.variables_archive
+        executed = execute_test_client_api_query(
+            query, 
+            self.admin_user, 
+            variables=variables
+        )
+        data = executed.get('data')
         
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
+        self.assertEqual(data['deleteOrganizationSubscriptionPrice']['ok'], True)
 
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
+        exists = models.OrganizationSubscriptionPrice.objects.exists()
+        self.assertEqual(exists, False)
+
+
+    def test_delete_subscription_price_anon_user(self):
+        """ Delete a subscription pricem """
+        query = self.subscription_price_delete_mutation
+        variables = self.variables_delete
+
+        executed = execute_test_client_api_query(
+            query, 
+            self.anon_user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
+
+
+    def test_delete_subscription_price_permission_granted(self):
+        """ Allow deleting subscription prices for users with permissions """
+        query = self.subscription_price_delete_mutation
+        variables = self.variables_delete
+
+        # Create regular user
+        user = f.RegularUserFactory.create()
+        permission = Permission.objects.get(codename=self.permission_delete)
+        user.user_permissions.add(permission)
+        user.save()
+
+        executed = execute_test_client_api_query(
+            query, 
+            user,
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['deleteOrganizationSubscriptionPrice']['ok'], True)
+
+
+    def test_delete_subscription_price_permission_denied(self):
+        """ Check delete subscription price permission denied error message """
+        query = self.subscription_price_delete_mutation
+        variables = self.variables_delete
+        
+        # Create regular user
+        user = f.RegularUserFactory.create()
+
+        executed = execute_test_client_api_query(
+            query, 
+            user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
 
