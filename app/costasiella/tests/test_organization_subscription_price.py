@@ -94,16 +94,38 @@ class GQLOrganizationSubscriptionPrice(TestCase):
 '''
 
         self.subscription_price_query = '''
-  query OrganizationSubscriptionPrice($id: ID!) {
+  query OrganizationSubscriptionPrice($id: ID!, $after: String, $before: String, $archived: Boolean!) {
     organizationSubscriptionPrice(id:$id) {
       id
       organizationSubscription {
         id
         name
       }
-      name
-      displayPublic
-      archived
+      price
+      priceDisplay
+      financeTaxRate {
+        id
+        name
+      }
+      dateStart
+      dateEnd
+    }
+    financeTaxrates(first: 15, before: $before, after: $after, archived: $archived) {
+      pageInfo {
+        startCursor
+        endCursor
+        hasNextPage
+        hasPreviousPage
+      }
+      edges {
+        node {
+          id
+          archived
+          name
+          percentage
+          rateType
+        }
+      }
     }
   }
 '''
@@ -157,96 +179,99 @@ class GQLOrganizationSubscriptionPrice(TestCase):
         pass
 
 
-    def test_query(self):
-        """ Query list of locations """
-        query = self.subscription_prices_query
+    # def test_query(self):
+    #     """ Query list of locations """
+    #     query = self.subscription_prices_query
+
+    #     variables = {
+    #         'organizationSubscription': to_global_id('OrganizationSubscriptionNode', self.organization_subscription_price.organization_subscription.pk),
+    #         'archived': False
+    #     }
+
+    #     executed = execute_test_client_api_query(query, self.admin_user, variables=variables)
+    #     data = executed.get('data')
+
+    #     self.assertEqual(
+    #         data['organizationSubscriptionPrices']['edges'][0]['node']['organizationSubscription']['id'], 
+    #         variables['organizationSubscription']
+    #     )
+    #     self.assertEqual(data['organizationSubscriptionPrices']['edges'][0]['node']['price'], self.organization_subscription_price.price)
+    #     self.assertEqual(data['organizationSubscriptionPrices']['edges'][0]['node']['financeTaxRate']['id'], 
+    #       to_global_id('FinanceTaxRateNode', self.organization_subscription_price.finance_tax_rate.pk))
+    #     self.assertEqual(data['organizationSubscriptionPrices']['edges'][0]['node']['dateStart'], self.organization_subscription_price.date_start)
+    #     self.assertEqual(data['organizationSubscriptionPrices']['edges'][0]['node']['dateEnd'], self.organization_subscription_price.date_end)
+
+
+    # def test_query_permision_denied(self):
+    #     """ Query list of location rooms """
+    #     query = self.subscription_prices_query
+
+    #     variables = {
+    #         'organizationSubscription': to_global_id('OrganizationSubscriptionNode', self.organization_subscription_price.organization_subscription.pk),
+    #         'archived': False
+    #     }
+
+    #     # Create regular user
+    #     user = f.RegularUserFactory.create()
+    #     executed = execute_test_client_api_query(query, user, variables=variables)
+    #     errors = executed.get('errors')
+
+    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
+
+
+    # def test_query_permision_granted(self):
+    #     """ Query list of location rooms """
+    #     query = self.subscription_prices_query
+
+    #     variables = {
+    #         'organizationSubscription': to_global_id('OrganizationSubscriptionNode', self.organization_subscription_price.organization_subscription.pk),
+    #         'archived': False
+    #     }
+
+    #     # Create regular user
+    #     user = f.RegularUserFactory.create()
+    #     permission = Permission.objects.get(codename='view_organizationsubscriptionprice')
+    #     user.user_permissions.add(permission)
+    #     user.save()
+
+    #     executed = execute_test_client_api_query(query, user, variables=variables)
+    #     data = executed.get('data')
+
+    #     self.assertEqual(data['organizationSubscriptionPrices']['edges'][0]['node']['price'], self.organization_subscription_price.price)
+
+
+    # def test_query_anon_user(self):
+    #     """ Query list of location rooms """
+    #     query = self.subscription_prices_query
+    #     variables = {
+    #         'organizationSubscription': to_global_id('OrganizationSubscriptionNode', self.organization_subscription_price.organization_subscription.pk),
+    #         'archived': False
+    #     }
+
+    #     executed = execute_test_client_api_query(query, self.anon_user, variables=variables)
+    #     errors = executed.get('errors')
+    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
+
+
+    def test_query_one(self):
+        """ Query one subscription price """   
+        query = self.subscription_price_query
 
         variables = {
-            'organizationSubscription': to_global_id('OrganizationSubscriptionNode', self.organization_subscription_price.organization_subscription.pk),
-            'archived': False
+          "id": to_global_id('OrganizationSubscriptionPriceNode', self.organization_subscription_price.id),
+          "archived": False # Used for tax rates
         }
-
+       
         executed = execute_test_client_api_query(query, self.admin_user, variables=variables)
         data = executed.get('data')
 
-        self.assertEqual(
-            data['organizationSubscriptionPrices']['edges'][0]['node']['organizationSubscription']['id'], 
-            variables['organizationSubscription']
-        )
-        self.assertEqual(data['organizationSubscriptionPrices']['edges'][0]['node']['price'], self.organization_subscription_price.price)
-        self.assertEqual(data['organizationSubscriptionPrices']['edges'][0]['node']['financeTaxRate']['id'], 
-          to_global_id('FinanceTaxRateNode', self.organization_subscription_price.finance_tax_rate.pk))
-        self.assertEqual(data['organizationSubscriptionPrices']['edges'][0]['node']['dateStart'], self.organization_subscription_price.date_start)
-        self.assertEqual(data['organizationSubscriptionPrices']['edges'][0]['node']['dateEnd'], self.organization_subscription_price.date_end)
-
-
-    def test_query_permision_denied(self):
-        """ Query list of location rooms """
-        query = self.subscription_prices_query
-
-        variables = {
-            'organizationSubscription': to_global_id('OrganizationSubscriptionNode', self.organization_subscription_price.organization_subscription.pk),
-            'archived': False
-        }
-
-        # Create regular user
-        user = f.RegularUserFactory.create()
-        executed = execute_test_client_api_query(query, user, variables=variables)
-        errors = executed.get('errors')
-
-        self.assertEqual(errors[0]['message'], 'Permission denied!')
-
-
-    def test_query_permision_granted(self):
-        """ Query list of location rooms """
-        query = self.subscription_prices_query
-
-        variables = {
-            'organizationSubscription': to_global_id('OrganizationSubscriptionNode', self.organization_subscription_price.organization_subscription.pk),
-            'archived': False
-        }
-
-        # Create regular user
-        user = f.RegularUserFactory.create()
-        permission = Permission.objects.get(codename='view_organizationsubscriptionprice')
-        user.user_permissions.add(permission)
-        user.save()
-
-        executed = execute_test_client_api_query(query, user, variables=variables)
-        data = executed.get('data')
-
-        self.assertEqual(data['organizationSubscriptionPrices']['edges'][0]['node']['price'], self.organization_subscription_price.price)
-
-
-    def test_query_anon_user(self):
-        """ Query list of location rooms """
-        query = self.subscription_prices_query
-        variables = {
-            'organizationSubscription': to_global_id('OrganizationSubscriptionNode', self.organization_subscription_price.organization_subscription.pk),
-            'archived': False
-        }
-
-        executed = execute_test_client_api_query(query, self.anon_user, variables=variables)
-        errors = executed.get('errors')
-        self.assertEqual(errors[0]['message'], 'Not logged in!')
-
-
-    # def test_query_one(self):
-    #     """ Query one location room """   
-    #     subscription_price = f.OrganizationSubscriptionPriceFactory.create()
-
-    #     # First query locations to get node id easily
-    #     node_id = to_global_id('OrganizationSubscriptionPriceNode', subscription_price.pk)
-
-    #     # Now query single location and check
-    #     query = self.subscription_price_query
-    #     executed = execute_test_client_api_query(query, self.admin_user, variables={"id": node_id})
-    #     data = executed.get('data')
-    #     self.assertEqual(data['organizationSubscriptionPrice']['organizationSubscription']['id'], 
-    #       to_global_id('OrganizationSubscriptionNode', subscription_price.organization_subscription.pk))
-    #     self.assertEqual(data['organizationSubscriptionPrice']['name'], subscription_price.name)
-    #     self.assertEqual(data['organizationSubscriptionPrice']['archived'], subscription_price.archived)
-    #     self.assertEqual(data['organizationSubscriptionPrice']['displayPublic'], subscription_price.display_public)
+        self.assertEqual(data['organizationSubscriptionPrice']['organizationSubscription']['id'], 
+          to_global_id('OrganizationSubscriptionNode', self.organization_subscription_price.organization_subscription.pk))
+        self.assertEqual(data['organizationSubscriptionPrice']['price'], self.organization_subscription_price.price)
+        self.assertEqual(data['organizationSubscriptionPrice']['financeTaxRate']['id'], 
+          to_global_id('FinanceTaxRateNode', self.organization_subscription_price.finance_tax_rate.id))
+        self.assertEqual(data['organizationSubscriptionPrice']['dateStart'], self.organization_subscription_price.date_start)
+        self.assertEqual(data['organizationSubscriptionPrice']['dateEnd'], self.organization_subscription_price.date_end)
 
 
     # def test_query_one_anon_user(self):
