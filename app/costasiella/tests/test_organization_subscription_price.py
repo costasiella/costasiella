@@ -274,52 +274,55 @@ class GQLOrganizationSubscriptionPrice(TestCase):
         self.assertEqual(data['organizationSubscriptionPrice']['dateEnd'], self.organization_subscription_price.date_end)
 
 
-    # def test_query_one_anon_user(self):
-    #     """ Deny permission for anon users Query one location room """   
-    #     subscription_price = f.OrganizationSubscriptionPriceFactory.create()
+    def test_query_one_anon_user(self):
+        """ Deny permission for anon users Query one subscription price """   
+        query = self.subscription_price_query
 
-    #     # First query locations to get node id easily
-    #     node_id = to_global_id('OrganizationSubscriptionPriceNode', subscription_price.pk)
-
-    #     # Now query single location and check
-    #     query = self.subscription_price_query
-    #     executed = execute_test_client_api_query(query, self.anon_user, variables={"id": node_id})
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
-
-
-    # def test_query_one_permission_denied(self):
-    #     """ Permission denied message when user lacks authorization """   
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     subscription_price = f.OrganizationSubscriptionPriceFactory.create()
-
-    #     # First query locations to get node id easily
-    #     node_id = to_global_id('OrganizationSubscriptionPriceNode', subscription_price.pk)
-
-    #     # Now query single location and check
-    #     query = self.subscription_price_query
-    #     executed = execute_test_client_api_query(query, user, variables={"id": node_id})
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
+        variables = {
+          "id": to_global_id('OrganizationSubscriptionPriceNode', self.organization_subscription_price.id),
+          "archived": False # Used for tax rates
+        }
+       
+        executed = execute_test_client_api_query(query, self.anon_user, variables=variables)
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
-    # def test_query_one_permission_granted(self):
-    #     """ Respond with data when user has permission """   
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename='view_organizationsubscriptionprice')
-    #     user.user_permissions.add(permission)
-    #     user.save()
-    #     subscription_price = f.OrganizationSubscriptionPriceFactory.create()
+    def test_query_one_permission_denied(self):
+        """ Permission denied message when user lacks authorization """   
+        # Create regular user
+        user = f.RegularUserFactory.create()
+        query = self.subscription_price_query
 
-    #     # First query locations to get node id easily
-    #     node_id = to_global_id('OrganizationSubscriptionPriceNode', subscription_price.pk)
+        variables = {
+          "id": to_global_id('OrganizationSubscriptionPriceNode', self.organization_subscription_price.id),
+          "archived": False # Used for tax rates
+        }
+       
+        # Now query single subscription price and check
+        executed = execute_test_client_api_query(query, user, variables=variables)
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
 
-    #     # Now query single location and check   
-    #     query = self.subscription_price_query
-    #     executed = execute_test_client_api_query(query, user, variables={"id": node_id})
-    #     data = executed.get('data')
-    #     self.assertEqual(data['organizationSubscriptionPrice']['name'], subscription_price.name)
+
+    def test_query_one_permission_granted(self):
+        """ Respond with data when user has permission """   
+        user = f.RegularUserFactory.create()
+        permission = Permission.objects.get(codename='view_organizationsubscriptionprice')
+        user.user_permissions.add(permission)
+        user.save()
+        
+        query = self.subscription_price_query
+
+        variables = {
+          "id": to_global_id('OrganizationSubscriptionPriceNode', self.organization_subscription_price.id),
+          "archived": False # Used for tax rates
+        }
+       
+        # Now query single subscription price and check
+        executed = execute_test_client_api_query(query, user, variables=variables)
+        data = executed.get('data')
+        self.assertEqual(data['organizationSubscriptionPrice']['price'], self.organization_subscription_price.price)
 
 
     # def test_create_subscription_price(self):
