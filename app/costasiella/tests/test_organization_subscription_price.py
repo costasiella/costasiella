@@ -47,8 +47,10 @@ class GQLOrganizationSubscriptionPrice(TestCase):
         self.variables_update = {
             "input": {
                 "id": to_global_id('OrganizationSubscriptionPriceNode', self.organization_subscription_price.pk),
-                "displayPublic": True,
-                "name": "Updated room",
+                "price": 1466,
+                "financeTaxRate": to_global_id('FinanceTaxRateNode', self.finance_tax_rate.id),
+                "dateStart": '2024-01-01',
+                "dateEnd": '2024-12-31',
             }
         }
 
@@ -160,14 +162,19 @@ class GQLOrganizationSubscriptionPrice(TestCase):
           id
           name
         }
-        name
-        displayPublic
+        price
+        financeTaxRate {
+          id
+          name
+        }
+        dateStart
+        dateEnd
       }
     }
   }
 '''
 
-        self.subscription_price_archive_mutation = '''
+        self.subscription_price_delete_mutation = '''
   mutation ArchiveOrganizationSubscriptionPrice($input: ArchiveOrganizationSubscriptionPriceInput!) {
     archiveOrganizationSubscriptionPrice(input: $input) {
       organizationSubscriptionPrice {
@@ -410,74 +417,76 @@ class GQLOrganizationSubscriptionPrice(TestCase):
         self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
-    # def test_update_subscription_price(self):
-    #     """ Update a location room """
-    #     query = self.subscription_price_update_mutation
-    #     variables = self.variables_update
+    def test_update_subscription_price(self):
+        """ Update a subscription price """
+        query = self.subscription_price_update_mutation
+        variables = self.variables_update
 
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         self.admin_user, 
-    #         variables=variables
-    #     )
+        executed = execute_test_client_api_query(
+            query, 
+            self.admin_user, 
+            variables=variables
+        )
 
-    #     data = executed.get('data')
-    #     self.assertEqual(data['updateOrganizationSubscriptionPrice']['organizationSubscriptionPrice']['name'], variables['input']['name'])
-    #     self.assertEqual(data['updateOrganizationSubscriptionPrice']['organizationSubscriptionPrice']['displayPublic'], variables['input']['displayPublic'])
-
-
-    # def test_update_subscription_price_anon_user(self):
-    #     """ Don't allow updating location rooms for non-logged in users """
-    #     query = self.subscription_price_update_mutation
-    #     variables = self.variables_update
-
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         self.anon_user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
+        data = executed.get('data')
+        self.assertEqual(data['updateOrganizationSubscriptionPrice']['organizationSubscriptionPrice']['price'], variables['input']['price'])
+        self.assertEqual(data['updateOrganizationSubscriptionPrice']['organizationSubscriptionPrice']['financeTaxRate']['id'], 
+          variables['input']['financeTaxRate'])
+        self.assertEqual(data['updateOrganizationSubscriptionPrice']['organizationSubscriptionPrice']['dateStart'], variables['input']['dateStart'])
+        self.assertEqual(data['updateOrganizationSubscriptionPrice']['organizationSubscriptionPrice']['dateEnd'], variables['input']['dateEnd'])
 
 
-    # def test_update_subscription_price_permission_granted(self):
-    #     """ Allow updating location rooms for users with permissions """
-    #     query = self.subscription_price_update_mutation
-    #     variables = self.variables_update
+    def test_update_subscription_price_anon_user(self):
+        """ Don't allow updating subscription prices for non-logged in users """
+        query = self.subscription_price_update_mutation
+        variables = self.variables_update
 
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename=self.permission_change)
-    #     user.user_permissions.add(permission)
-    #     user.save()
-
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['updateOrganizationSubscriptionPrice']['organizationSubscriptionPrice']['name'], variables['input']['name'])
-    #     self.assertEqual(data['updateOrganizationSubscriptionPrice']['organizationSubscriptionPrice']['displayPublic'], variables['input']['displayPublic'])
+        executed = execute_test_client_api_query(
+            query, 
+            self.anon_user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
-    # def test_update_subscription_price_permission_denied(self):
-    #     """ Check update location room permission denied error message """
-    #     query = self.subscription_price_update_mutation
-    #     variables = self.variables_update
+    def test_update_subscription_price_permission_granted(self):
+        """ Allow updating subscription prices for users with permissions """
+        query = self.subscription_price_update_mutation
+        variables = self.variables_update
 
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
+        # Create regular user
+        user = f.RegularUserFactory.create()
+        permission = Permission.objects.get(codename=self.permission_change)
+        user.user_permissions.add(permission)
+        user.save()
 
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
+        executed = execute_test_client_api_query(
+            query, 
+            user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['updateOrganizationSubscriptionPrice']['organizationSubscriptionPrice']['price'], variables['input']['price'])
+
+
+    def test_update_subscription_price_permission_denied(self):
+        """ Check update subscription price permission denied error message """
+        query = self.subscription_price_update_mutation
+        variables = self.variables_update
+
+        # Create regular user
+        user = f.RegularUserFactory.create()
+
+        executed = execute_test_client_api_query(
+            query, 
+            user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
     # def test_archive_subscription_price(self):
