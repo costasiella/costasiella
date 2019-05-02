@@ -36,9 +36,9 @@ class GQLOrganizationSubscriptionPrice(TestCase):
 
         self.variables_create = {
             "input": {
-                "organizationSubscription": to_global_id('OrganizationSubscriptionNode', self.organization_subscription.pk),
+                "organizationSubscription": to_global_id('OrganizationSubscriptionNode', self.organization_subscription.id),
                 "price": 10,
-                "financeTaxRate": to_global_id('FinanceTaxRateNode', self.finance_tax_rate.pk),
+                "financeTaxRate": to_global_id('FinanceTaxRateNode', self.finance_tax_rate.id),
                 "dateStart": '2019-01-01',
                 "dateEnd": '2019-12-31',
             }
@@ -139,9 +139,13 @@ class GQLOrganizationSubscriptionPrice(TestCase):
           id
           name
         }
-        archived
-        displayPublic
-        name
+        price
+        financeTaxRate {
+          id
+          name
+        }
+        dateStart
+        dateEnd
       }
     }
   }
@@ -179,78 +183,78 @@ class GQLOrganizationSubscriptionPrice(TestCase):
         pass
 
 
-    # def test_query(self):
-    #     """ Query list of locations """
-    #     query = self.subscription_prices_query
+    def test_query(self):
+        """ Query list of locations """
+        query = self.subscription_prices_query
 
-    #     variables = {
-    #         'organizationSubscription': to_global_id('OrganizationSubscriptionNode', self.organization_subscription_price.organization_subscription.pk),
-    #         'archived': False
-    #     }
+        variables = {
+            'organizationSubscription': to_global_id('OrganizationSubscriptionNode', self.organization_subscription_price.organization_subscription.pk),
+            'archived': False
+        }
 
-    #     executed = execute_test_client_api_query(query, self.admin_user, variables=variables)
-    #     data = executed.get('data')
+        executed = execute_test_client_api_query(query, self.admin_user, variables=variables)
+        data = executed.get('data')
 
-    #     self.assertEqual(
-    #         data['organizationSubscriptionPrices']['edges'][0]['node']['organizationSubscription']['id'], 
-    #         variables['organizationSubscription']
-    #     )
-    #     self.assertEqual(data['organizationSubscriptionPrices']['edges'][0]['node']['price'], self.organization_subscription_price.price)
-    #     self.assertEqual(data['organizationSubscriptionPrices']['edges'][0]['node']['financeTaxRate']['id'], 
-    #       to_global_id('FinanceTaxRateNode', self.organization_subscription_price.finance_tax_rate.pk))
-    #     self.assertEqual(data['organizationSubscriptionPrices']['edges'][0]['node']['dateStart'], self.organization_subscription_price.date_start)
-    #     self.assertEqual(data['organizationSubscriptionPrices']['edges'][0]['node']['dateEnd'], self.organization_subscription_price.date_end)
-
-
-    # def test_query_permision_denied(self):
-    #     """ Query list of location rooms """
-    #     query = self.subscription_prices_query
-
-    #     variables = {
-    #         'organizationSubscription': to_global_id('OrganizationSubscriptionNode', self.organization_subscription_price.organization_subscription.pk),
-    #         'archived': False
-    #     }
-
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     executed = execute_test_client_api_query(query, user, variables=variables)
-    #     errors = executed.get('errors')
-
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
+        self.assertEqual(
+            data['organizationSubscriptionPrices']['edges'][0]['node']['organizationSubscription']['id'], 
+            variables['organizationSubscription']
+        )
+        self.assertEqual(data['organizationSubscriptionPrices']['edges'][0]['node']['price'], self.organization_subscription_price.price)
+        self.assertEqual(data['organizationSubscriptionPrices']['edges'][0]['node']['financeTaxRate']['id'], 
+          to_global_id('FinanceTaxRateNode', self.organization_subscription_price.finance_tax_rate.pk))
+        self.assertEqual(data['organizationSubscriptionPrices']['edges'][0]['node']['dateStart'], self.organization_subscription_price.date_start)
+        self.assertEqual(data['organizationSubscriptionPrices']['edges'][0]['node']['dateEnd'], self.organization_subscription_price.date_end)
 
 
-    # def test_query_permision_granted(self):
-    #     """ Query list of location rooms """
-    #     query = self.subscription_prices_query
+    def test_query_permision_denied(self):
+        """ Query list of location rooms """
+        query = self.subscription_prices_query
 
-    #     variables = {
-    #         'organizationSubscription': to_global_id('OrganizationSubscriptionNode', self.organization_subscription_price.organization_subscription.pk),
-    #         'archived': False
-    #     }
+        variables = {
+            'organizationSubscription': to_global_id('OrganizationSubscriptionNode', self.organization_subscription_price.organization_subscription.pk),
+            'archived': False
+        }
 
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename='view_organizationsubscriptionprice')
-    #     user.user_permissions.add(permission)
-    #     user.save()
+        # Create regular user
+        user = f.RegularUserFactory.create()
+        executed = execute_test_client_api_query(query, user, variables=variables)
+        errors = executed.get('errors')
 
-    #     executed = execute_test_client_api_query(query, user, variables=variables)
-    #     data = executed.get('data')
-
-    #     self.assertEqual(data['organizationSubscriptionPrices']['edges'][0]['node']['price'], self.organization_subscription_price.price)
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
-    # def test_query_anon_user(self):
-    #     """ Query list of location rooms """
-    #     query = self.subscription_prices_query
-    #     variables = {
-    #         'organizationSubscription': to_global_id('OrganizationSubscriptionNode', self.organization_subscription_price.organization_subscription.pk),
-    #         'archived': False
-    #     }
+    def test_query_permision_granted(self):
+        """ Query list of location rooms """
+        query = self.subscription_prices_query
 
-    #     executed = execute_test_client_api_query(query, self.anon_user, variables=variables)
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
+        variables = {
+            'organizationSubscription': to_global_id('OrganizationSubscriptionNode', self.organization_subscription_price.organization_subscription.pk),
+            'archived': False
+        }
+
+        # Create regular user
+        user = f.RegularUserFactory.create()
+        permission = Permission.objects.get(codename='view_organizationsubscriptionprice')
+        user.user_permissions.add(permission)
+        user.save()
+
+        executed = execute_test_client_api_query(query, user, variables=variables)
+        data = executed.get('data')
+
+        self.assertEqual(data['organizationSubscriptionPrices']['edges'][0]['node']['price'], self.organization_subscription_price.price)
+
+
+    def test_query_anon_user(self):
+        """ Query list of location rooms """
+        query = self.subscription_prices_query
+        variables = {
+            'organizationSubscription': to_global_id('OrganizationSubscriptionNode', self.organization_subscription_price.organization_subscription.pk),
+            'archived': False
+        }
+
+        executed = execute_test_client_api_query(query, self.anon_user, variables=variables)
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
     def test_query_one(self):
@@ -325,83 +329,85 @@ class GQLOrganizationSubscriptionPrice(TestCase):
         self.assertEqual(data['organizationSubscriptionPrice']['price'], self.organization_subscription_price.price)
 
 
-    # def test_create_subscription_price(self):
-    #     """ Create a location room """
-    #     query = self.subscription_price_create_mutation
-    #     variables = self.variables_create
+    def test_create_subscription_price(self):
+        """ Create a subscription price """
+        query = self.subscription_price_create_mutation
+        variables = self.variables_create
 
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         self.admin_user, 
-    #         variables=variables
-    #     )
+        executed = execute_test_client_api_query(
+            query, 
+            self.admin_user, 
+            variables=variables
+        )
 
-    #     data = executed.get('data')
-    #     self.assertEqual(
-    #       data['createOrganizationSubscriptionPrice']['organizationSubscriptionPrice']['organizationSubscription']['id'], 
-    #       variables['input']['organizationSubscription'])
-    #     self.assertEqual(data['createOrganizationSubscriptionPrice']['organizationSubscriptionPrice']['name'], variables['input']['name'])
-    #     self.assertEqual(data['createOrganizationSubscriptionPrice']['organizationSubscriptionPrice']['archived'], False)
-    #     self.assertEqual(data['createOrganizationSubscriptionPrice']['organizationSubscriptionPrice']['displayPublic'], variables['input']['displayPublic'])
+        print("################## create output###########")
+        errors = executed.get('errors')
+        print(errors)
 
-
-    # def test_create_subscription_price_anon_user(self):
-    #     """ Don't allow creating locations rooms for non-logged in users """
-    #     query = self.subscription_price_create_mutation
-    #     variables = self.variables_create
-
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         self.anon_user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
+        data = executed.get('data')
+        print(data)
+        self.assertEqual(
+          data['createOrganizationSubscriptionPrice']['organizationSubscriptionPrice']['organizationSubscription']['id'], 
+          variables['input']['organizationSubscription'])
+        self.assertEqual(data['createOrganizationSubscriptionPrice']['organizationSubscriptionPrice']['price'], variables['input']['price'])
+        self.assertEqual(data['createOrganizationSubscriptionPrice']['organizationSubscriptionPrice']['financeTaxRate']['id'], 
+          variables['input']['financeTaxRate'])
+        self.assertEqual(data['createOrganizationSubscriptionPrice']['organizationSubscriptionPrice']['dateStart'], variables['input']['dateStart'])
+        self.assertEqual(data['createOrganizationSubscriptionPrice']['organizationSubscriptionPrice']['dateEnd'], variables['input']['dateEnd'])
 
 
-    # def test_create_subscription_price_permission_granted(self):
-    #     """ Allow creating location rooms for users with permissions """
-    #     query = self.subscription_price_create_mutation
+    def test_create_subscription_price_anon_user(self):
+        """ Don't allow creating subscription prices for non-logged in users """
+        query = self.subscription_price_create_mutation
+        variables = self.variables_create
 
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename=self.permission_add)
-    #     user.user_permissions.add(permission)
-    #     user.save()
-
-    #     variables = self.variables_create
-
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(
-    #       data['createOrganizationSubscriptionPrice']['organizationSubscriptionPrice']['organizationSubscription']['id'], 
-    #       variables['input']['organizationSubscription'])
-    #     self.assertEqual(data['createOrganizationSubscriptionPrice']['organizationSubscriptionPrice']['name'], variables['input']['name'])
-    #     self.assertEqual(data['createOrganizationSubscriptionPrice']['organizationSubscriptionPrice']['archived'], False)
-    #     self.assertEqual(data['createOrganizationSubscriptionPrice']['organizationSubscriptionPrice']['displayPublic'], variables['input']['displayPublic'])
+        executed = execute_test_client_api_query(
+            query, 
+            self.anon_user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
-    # def test_create_subscription_price_permission_denied(self):
-    #     """ Check create location room permission denied error message """
-    #     query = self.subscription_price_create_mutation
-    #     variables = self.variables_create
+    def test_create_subscription_price_permission_granted(self):
+        """ Allow creating subscription prices for users with permissions """
+        query = self.subscription_price_create_mutation
 
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
+        # Create regular user
+        user = f.RegularUserFactory.create()
+        permission = Permission.objects.get(codename=self.permission_add)
+        user.user_permissions.add(permission)
+        user.save()
 
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
+        variables = self.variables_create
+
+        executed = execute_test_client_api_query(
+            query, 
+            user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['createOrganizationSubscriptionPrice']['organizationSubscriptionPrice']['price'], variables['input']['price'])
+
+
+    def test_create_subscription_price_permission_denied(self):
+        """ Check create subscription price permission denied error message """
+        query = self.subscription_price_create_mutation
+        variables = self.variables_create
+
+        # Create regular user
+        user = f.RegularUserFactory.create()
+
+        executed = execute_test_client_api_query(
+            query, 
+            user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
     # def test_update_subscription_price(self):
