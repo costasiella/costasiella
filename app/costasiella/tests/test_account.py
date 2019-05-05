@@ -23,13 +23,13 @@ class GQLAccount(TestCase):
 
     def test_query_user(self):
         # This is the test method.
-        # Let's assume that there's a user object "my_test_user" that was already setup        
         query = '''
 {
   account {
     id
     firstName
     lastName
+    email
   }
 }
         '''
@@ -38,3 +38,4 @@ class GQLAccount(TestCase):
         data = executed.get('data')
         self.assertEqual(data['account']['firstName'], admin_user.first_name)
         self.assertEqual(data['account']['lastName'], admin_user.last_name)
+        self.assertEqual(data['account']['email'], admin_user.email)
