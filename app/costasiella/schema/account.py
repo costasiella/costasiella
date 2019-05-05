@@ -24,14 +24,36 @@ class AccountNode(DjangoObjectType):
         return self._meta.model.objects.get(id=id)
 
 
-class GroupType(DjangoObjectType):
+class GroupNode(DjangoObjectType):
     class Meta:
         model = Group
+        filter_fields = ['name']
+        interfaces = (graphene.relay.Node, )
+
+    @classmethod
+    def get_node(self, info, id):
+        user = info.context.user
+        require_login_and_permission(user, 'costasiella.view_group')
+
+        return self._meta.model.objects.get(id=id)
 
 
-class PermissionType(DjangoObjectType):
+class PermissionNode(DjangoObjectType):
     class Meta:
         model = Permission
+        filter_fields = ['name']
+        interfaces = (graphene.relay.Node, )
+
+    @classmethod
+    def get_node(self, info, id):
+        user = info.context.user
+        require_login_and_permission(user, 'costasiella.view_permission')
+
+        return self._meta.model.objects.get(id=id)
+
+# class PermissionType(DjangoObjectType):
+#     class Meta:
+#         model = Permission
 
 
 class CreateAccount(graphene.Mutation):
@@ -57,18 +79,13 @@ class AccountMutation(graphene.ObjectType):
 
 
 class AccountQuery(graphene.AbstractType):
-    # account = graphene.Field(AccountNode)
     account = graphene.relay.Node.Field(AccountNode)
     accounts = DjangoFilterConnectionField(AccountNode)
-    # group = graphene.List(GroupType, search=graphene.String())
-    # permission = graphene.List(PermissionType)
+    group = graphene.relay.Node.Field(GroupNode)
+    groups = DjangoFilterConnectionField(GroupNode)
+    permission = graphene.relay.Node.Field(PermissionNode)
+    permissions = DjangoFilterConnectionField(PermissionNode)
 
-    def resolve_account(self, info):
-        user = info.context.user
-        if user.is_anonymous:
-            raise Exception('Not logged in!')
-
-        return user
 
     def resolve_accounts(self, info, trashed=False, **kwargs):
         user = info.context.user
@@ -76,24 +93,31 @@ class AccountQuery(graphene.AbstractType):
 
         return get_user_model().objects.filter(trashed=trashed).order_by('first_name')
 
-    def resolve_group(self, info, search=None):
+
+    def resolve_groups(self, info, search=None):
         user = info.context.user
-        if user.is_anonymous:
-            raise Exception('Not logged in!')
-        if search:
-            filter = (
-                Q(name__icontains=search)
-            )
-            return Groups.objects.filter(filter)
+        require_login_and_permission(user, 'costasiella.view_group')
+        # if search:
+        #     filter = (
+        #         Q(name__icontains=search)
+        #     )
+        #     return Groups.objects.filter(filter)
 
         return Group.objects.all()
 
 
-    def resolve_permission(self, info):
+    def resolve_permissions(self, info):
         user = info.context.user
-        if user.is_anonymous:
-            raise Exception('Not logged in!')
+        require_login_and_permission(user, 'costasiella.view_permission')
+
         return Permission.objects.all()
+
+
+    # def resolve_permission(self, info):
+    #     user = info.context.user
+    #     if user.is_anonymous:
+    #         raise Exception('Not logged in!')
+    #     return Permission.objects.all()
         # user = info.context.user
         # if user.is_anonymous:
         #     raise Exception('Not logged in!')
