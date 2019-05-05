@@ -94,14 +94,9 @@ class AccountQuery(graphene.AbstractType):
         return get_user_model().objects.filter(trashed=trashed).order_by('first_name')
 
 
-    def resolve_groups(self, info, search=None):
+    def resolve_groups(self, info):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.view_group')
-        # if search:
-        #     filter = (
-        #         Q(name__icontains=search)
-        #     )
-        #     return Groups.objects.filter(filter)
 
         return Group.objects.all()
 
@@ -111,17 +106,4 @@ class AccountQuery(graphene.AbstractType):
         require_login_and_permission(user, 'costasiella.view_permission')
 
         return Permission.objects.all()
-
-
-    # def resolve_permission(self, info):
-    #     user = info.context.user
-    #     if user.is_anonymous:
-    #         raise Exception('Not logged in!')
-    #     return Permission.objects.all()
-        # user = info.context.user
-        # if user.is_anonymous:
-        #     raise Exception('Not logged in!')
-        # if user:
-        #     return Permission.objects.filter(user=user)
-
         
