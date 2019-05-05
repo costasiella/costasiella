@@ -6,7 +6,7 @@ import graphene
 from graphene_django import DjangoObjectType
 
 
-class UserType(DjangoObjectType):
+class AccountType(DjangoObjectType):
     class Meta:
         model = get_user_model()
 
@@ -21,8 +21,8 @@ class PermissionType(DjangoObjectType):
         model = Permission
 
 
-class CreateUser(graphene.Mutation):
-    user = graphene.Field(UserType)
+class CreateAccount(graphene.Mutation):
+    user = graphene.Field(AccountType)
 
     class Arguments:
         email = graphene.String(required=True)
@@ -36,16 +36,16 @@ class CreateUser(graphene.Mutation):
         user.set_password(password)
         user.save()
 
-        return CreateUser(user=user)
+        return CreateAccount(user=user)
 
 
-class UserMutation(graphene.ObjectType):
-    create_user = CreateUser.Field()
+class AccountMutation(graphene.ObjectType):
+    create_user = CreateAccount.Field()
 
 
-class UserQuery(graphene.AbstractType):
-    user = graphene.Field(UserType)
-    users = graphene.List(UserType)
+class AccountQuery(graphene.AbstractType):
+    user = graphene.Field(AccountType)
+    users = graphene.List(AccountType)
     group = graphene.List(GroupType, search=graphene.String())
     permission = graphene.List(PermissionType)
 
