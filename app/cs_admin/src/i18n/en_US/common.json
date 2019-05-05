@@ -293,5 +293,8 @@
     },
     "datepicker": {
         "placeholder": "Click to select a date"
+    },
+    "relations": {
+        "title": "Relations"
     }
 }

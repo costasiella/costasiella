@@ -285,7 +285,7 @@
         "user": {
             "error_loading": "__STRING_NOT_TRANSLATED__"
         },
-        "date_format": "__STRING_NOT_TRANSLATED__"
+        "date_format_datepicker": "__STRING_NOT_TRANSLATED__"
     },
     "subscription_unit": {
         "week": "__STRING_NOT_TRANSLATED__",
@@ -293,5 +293,8 @@
     },
     "datepicker": {
         "placeholder": "__STRING_NOT_TRANSLATED__"
+    },
+    "relations": {
+        "title": "__STRING_NOT_TRANSLATED__"
     }
 }
