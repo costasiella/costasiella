@@ -6,6 +6,8 @@ import graphene
 from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
 
+from allauth.account.models import EmailAddress
+
 from ..modules.gql_tools import require_login_and_permission, get_rid
 
 
@@ -61,26 +63,67 @@ class PermissionNode(DjangoObjectType):
 #         model = Permission
 
 
-class CreateAccount(graphene.Mutation):
-    user = graphene.Field(AccountNode)
+# class CreateAccount(graphene.Mutation):
+#     user = graphene.Field(AccountNode)
 
-    class Arguments:
+#     class Arguments:
+#         email = graphene.String(required=True)
+#         password = graphene.String(required=True)
+
+#     # def mutate(self, info, username, password, email):
+#     def mutate(self, info, password, email):
+#         user = get_user_model()(
+#             email=email,
+#         )
+#         user.set_password(password)
+#         user.save()
+
+#         return CreateAccount(user=user)
+
+class CreateAccount(graphene.relay.ClientIDMutation):
+    class Input:
+        first_name = graphene.String(required=True)
+        last_name = graphene.String(required=True)
         email = graphene.String(required=True)
-        password = graphene.String(required=True)
 
-    # def mutate(self, info, username, password, email):
-    def mutate(self, info, password, email):
-        user = get_user_model()(
-            email=email,
+    account = graphene.Field(AccountNode)
+
+    @classmethod
+    def mutate_and_get_payload(self, root, info, **input):
+        user = info.context.user
+        require_login_and_permission(user, 'costasiella.add_account')
+
+        # verify email unique
+        query_set = get_user_model().objects.filter(
+            email = input['email']
         )
-        user.set_password(password)
-        user.save()
 
-        return CreateAccount(user=user)
+        # Don't insert duplicate records in the DB. If this records exist, fetch and return it
+        # if query_set.exists():
+        #     raise Exception('Email address already exists')
+
+        account = get_user_model()(
+            first_name = input['first_name'],
+            last_name = input['last_name'],
+            email = input['email'],
+            username = input['email']
+        )
+        account.save()
+
+        # Insert Allauth email address
+        email_address = EmailAddress(
+            user = account,
+            email = account.email,
+            verified = True,
+            primary = True
+        )
+        email_address.save()
+
+        return CreateAccount(account=account)
 
 
 class AccountMutation(graphene.ObjectType):
-    create_user = CreateAccount.Field()
+    create_account = CreateAccount.Field()
 
 
 class AccountQuery(graphene.AbstractType):
