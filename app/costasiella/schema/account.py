@@ -1,3 +1,5 @@
+from django.utils.translation import gettext as _
+
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group, Permission
 from django.db.models import Q
@@ -98,9 +100,9 @@ class CreateAccount(graphene.relay.ClientIDMutation):
             email = input['email']
         )
 
-        # Don't insert duplicate records in the DB. If this records exist, fetch and return it
-        # if query_set.exists():
-        #     raise Exception('Email address already exists')
+        #Don't insert duplicate records in the DB. If this records exist, fetch and return it
+        if query_set.exists():
+            raise Exception(_('An account is already registered with this e-mail address'))
 
         account = get_user_model()(
             first_name = input['first_name'],
@@ -110,7 +112,7 @@ class CreateAccount(graphene.relay.ClientIDMutation):
         )
         account.save()
 
-        # Insert Allauth email address
+        # Insert Allauth email address 
         email_address = EmailAddress(
             user = account,
             email = account.email,
