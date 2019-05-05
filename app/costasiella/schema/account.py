@@ -9,6 +9,11 @@ from graphene_django.filter import DjangoFilterConnectionField
 from ..modules.gql_tools import require_login_and_permission, get_rid
 
 
+class UserType(DjangoObjectType):
+    class Meta:
+        model = get_user_model()
+
+
 class AccountNode(DjangoObjectType):
     class Meta:
         model = get_user_model()
@@ -79,12 +84,21 @@ class AccountMutation(graphene.ObjectType):
 
 
 class AccountQuery(graphene.AbstractType):
+    user = graphene.Field(UserType)
     account = graphene.relay.Node.Field(AccountNode)
     accounts = DjangoFilterConnectionField(AccountNode)
     group = graphene.relay.Node.Field(GroupNode)
     groups = DjangoFilterConnectionField(GroupNode)
     permission = graphene.relay.Node.Field(PermissionNode)
     permissions = DjangoFilterConnectionField(PermissionNode)
+
+
+    def resolve_user(self, info):
+        user = info.context.user
+        if user.is_anonymous:
+            raise Exception('Not logged in!')
+
+        return user
 
 
     def resolve_accounts(self, info, trashed=False, **kwargs):

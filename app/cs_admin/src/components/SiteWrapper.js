@@ -9,6 +9,7 @@ import 'react-toastify/dist/ReactToastify.css'
 import 'react-confirm-alert/src/react-confirm-alert.css'
 
 import GET_USER from "../queries/system/get_user"
+import { get_all_permissions } from "../tools/user_tools"
 
 import {
   Site,
@@ -127,29 +128,6 @@ const navBarItems: Array<navItem> = [
 ];
 
 
-const allPermissions = (user) => {
-  // console.log('all_permissions here')
-  const permissions = {}
-  console.log(user)
-  const groups = user.groups
-  console.log(groups)
-  for (let i in groups) {
-    // console.log(i)
-    for (let p in groups[i].permissions) {
-      let codename = groups[i].permissions[p].codename
-      // codename has format <permission>_<resource>
-      let codename_split = codename.split('_')
-      
-      if (!(codename_split[1] in permissions)) {
-        permissions[codename_split[1]] = new Set()
-      }
-      permissions[codename_split[1]].add(codename_split[0])
-    }
-  }
-
-  return permissions
-}
-
 const check_permission = (permissions, permission, resource) => {
   let you_shall_not_pass = true
 
@@ -166,7 +144,7 @@ const check_permission = (permissions, permission, resource) => {
 
 const getNavBarItems = (t, user) => {
   let items: Array<navItem> = []
-  let permissions = allPermissions(user)
+  let permissions = get_all_permissions(user)
 
   items.push({
     value: t("home.title"),
