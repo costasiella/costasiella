@@ -64,6 +64,8 @@ import OrganizationSubscriptionsPrices from './components/organization/subscript
 import OrganizationSubscriptionPriceAdd from './components/organization/subscriptions/prices/OrganizationSubscriptionPriceAdd'
 import OrganizationSubscriptionPriceEdit from './components/organization/subscriptions/prices/OrganizationSubscriptionPriceEdit'
 
+import RelationsHome from './components/relations/home/RelationsHome'
+
 import Error404 from "./components/Error404"
 
 // Tabler css 
@@ -173,6 +175,7 @@ class App extends Component {
             <Route exact path="/organization/subscriptions/prices/:subscription_id" component={OrganizationSubscriptionsPrices} />
             <Route exact path="/organization/subscriptions/prices/add/:subscription_id" component={OrganizationSubscriptionPriceAdd} />
             <Route exact path="/organization/subscriptions/prices/edit/:subscription_id/:id" component={OrganizationSubscriptionPriceEdit} />
+            <Route exact path="/relations" component={RelationsHome} />
 
             <Route component={Error404} />
           </Switch>
