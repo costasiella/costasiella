@@ -67,13 +67,13 @@ const RelationsAccounts = ({ t, history, trashed=false }) => (
                   <Button color={(!trashed) ? 'primary': 'secondary'}  
                           size="sm"
                           onClick={() => {trashed=false; refetch({trashed});}}>
-                    {t('general.current')}
+                    {t('general.active')}
                   </Button>
                   <Button color={(trashed) ? 'primary': 'secondary'} 
                           size="sm" 
                           className="ml-2" 
                           onClick={() => {trashed=true; refetch({trashed});}}>
-                    {t('general.archive')}
+                    {t('general.deleted')}
                   </Button>
                 </Card.Options>
                 
