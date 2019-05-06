@@ -65,6 +65,7 @@ import OrganizationSubscriptionPriceAdd from './components/organization/subscrip
 import OrganizationSubscriptionPriceEdit from './components/organization/subscriptions/prices/OrganizationSubscriptionPriceEdit'
 
 import RelationsHome from './components/relations/home/RelationsHome'
+import RelationsAccounts from './components/relations/accounts/RelationsAccounts'
 
 import Error404 from "./components/Error404"
 
@@ -176,6 +177,7 @@ class App extends Component {
             <Route exact path="/organization/subscriptions/prices/add/:subscription_id" component={OrganizationSubscriptionPriceAdd} />
             <Route exact path="/organization/subscriptions/prices/edit/:subscription_id/:id" component={OrganizationSubscriptionPriceEdit} />
             <Route exact path="/relations" component={RelationsHome} />
+            <Route exact path="/relations/accounts" component={RelationsAccounts} />
 
             <Route component={Error404} />
           </Switch>
