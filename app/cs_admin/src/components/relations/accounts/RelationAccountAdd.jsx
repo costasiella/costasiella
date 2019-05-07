@@ -9,8 +9,8 @@ import { Formik, Form as FoForm, Field, ErrorMessage } from 'formik'
 import { toast } from 'react-toastify'
 
 
-import { GET_DISCOVERIES_QUERY } from './queries'
-import { DISCOVERY_SCHEMA } from './yupSchema'
+import { GET_ACCOUNTS_QUERY } from './queries'
+import { ACCOUNT_SCHEMA } from './yupSchema'
 
 
 import {
