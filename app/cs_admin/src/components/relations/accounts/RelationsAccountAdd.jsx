@@ -69,7 +69,7 @@ const RelationsAccountAdd = ({ t, history }) => (
                                 email: values.email
                               }
                             }, refetchQueries: [
-                                {query: GET_ACCOUNTS_QUERY, variables: {"trashed": false }}
+                                {query: GET_ACCOUNTS_QUERY, variables: {"isActive": false }}
                             ]})
                             .then(({ data }) => {
                                 console.log('got data', data);

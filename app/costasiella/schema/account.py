@@ -21,7 +21,7 @@ class UserType(DjangoObjectType):
 class AccountNode(DjangoObjectType):
     class Meta:
         model = get_user_model()
-        filter_fields = ['isActive']
+        filter_fields = ['is_active']
         interfaces = (graphene.relay.Node, )
 
     @classmethod

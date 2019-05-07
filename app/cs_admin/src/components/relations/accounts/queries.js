@@ -1,8 +1,8 @@
 import gql from "graphql-tag"
 
 export const GET_ACCOUNTS_QUERY = gql`
-  query Accounts($trashed: Boolean!) {
-    accounts(trashed: $trashed) {
+  query Accounts($isActive: Boolean!) {
+    accounts(isActive: $isActive) {
       pageInfo {
         hasNextPage
         hasPreviousPage
@@ -15,7 +15,7 @@ export const GET_ACCOUNTS_QUERY = gql`
           firstName
           lastName
           email
-          trashed
+          isActive
         }
       }
     }

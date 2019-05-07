@@ -29,25 +29,25 @@ import RelationsMenu from "../RelationsMenu"
 import { GET_ACCOUNTS_QUERY } from "./queries"
 
 const TRASH_ACCOUNT = gql`
-  mutation ArchiveOrganizationDiscovery($input: ArchiveOrganizationDiscoveryInput!) {
+  mutation DeactivateAccount($input: DeactivateAccountInput!) {
     archiveOrganizationDiscovery(input: $input) {
-      organizationDiscovery {
+      account {
         id
-        trashed
+        isActive
       }
     }
   }
 `
 
 
-const RelationsAccounts = ({ t, history, trashed=false }) => (
+const RelationsAccounts = ({ t, history, isActive=true }) => (
   <SiteWrapper>
     <div className="my-3 my-md-5">
       <Container>
         <Page.Header title={t("relations.title")} />
         <Grid.Row>
           <Grid.Col md={9}>
-            <Query query={GET_ACCOUNTS_QUERY} variables={{ trashed }}>
+            <Query query={GET_ACCOUNTS_QUERY} variables={{ isActive }}>
              {({ loading, error, data: {accounts: accounts}, refetch, fetchMore }) => {
                 // Loading
                 if (loading) return (
@@ -64,15 +64,15 @@ const RelationsAccounts = ({ t, history, trashed=false }) => (
                   </ContentCard>
                 )
                 const headerOptions = <Card.Options>
-                  <Button color={(!trashed) ? 'primary': 'secondary'}  
+                  <Button color={(isActive) ? 'primary': 'secondary'}  
                           size="sm"
-                          onClick={() => {trashed=false; refetch({trashed});}}>
+                          onClick={() => {isActive=true; refetch({isActive});}}>
                     {t('general.active')}
                   </Button>
-                  <Button color={(trashed) ? 'primary': 'secondary'} 
+                  <Button color={(!isActive) ? 'primary': 'secondary'} 
                           size="sm" 
                           className="ml-2" 
-                          onClick={() => {trashed=true; refetch({trashed});}}>
+                          onClick={() => {isActive=false; refetch({isActive});}}>
                     {t('general.deleted')}
                   </Button>
                 </Card.Options>
@@ -82,7 +82,7 @@ const RelationsAccounts = ({ t, history, trashed=false }) => (
                   <ContentCard cardTitle={t('relations.accounts.title')}
                                headerContent={headerOptions}>
                     <p>
-                    {(!trashed) ? t('relations.accounts.empty_list') : t("relations.accounts.empty_archive")}
+                    {(!isActive) ? t('relations.accounts.empty_list') : t("relations.accounts.empty_archive")}
                     </p>
                    
                   </ContentCard>
@@ -132,7 +132,7 @@ const RelationsAccounts = ({ t, history, trashed=false }) => (
                                     {node.email}
                                   </Table.Col>
                                   <Table.Col className="text-right" key={v4()}>
-                                    {(node.trashed) ? 
+                                    {(!node.isActive) ? 
                                       <span className='text-muted'>{t('general.unarchive_to_edit')}</span> :
                                       <Button className='btn-sm' 
                                               onClick={() => history.push("/organization/accounts/edit/" + node.id)}
@@ -148,19 +148,19 @@ const RelationsAccounts = ({ t, history, trashed=false }) => (
                                            title={t('general.archive')} 
                                            href=""
                                            onClick={() => {
-                                             console.log("clicked trashed")
+                                             console.log("clicked isActive")
                                              let id = node.id
                                              archiveCostcenter({ variables: {
                                                input: {
                                                 id,
-                                                trashed: !trashed
+                                                isActive: !isActive
                                                }
                                         }, refetchQueries: [
-                                            {query: GET_ACCOUNTS_QUERY, variables: {"trashed": trashed }}
+                                            {query: GET_ACCOUNTS_QUERY, variables: {"isActive": isActive }}
                                         ]}).then(({ data }) => {
                                           console.log('got data', data);
                                           toast.success(
-                                            (trashed) ? t('general.untrashed'): t('general.trashed'), {
+                                            (isActive) ? t('general.unisActive'): t('general.isActive'), {
                                               position: toast.POSITION.BOTTOM_RIGHT
                                             })
                                         }).catch((error) => {
