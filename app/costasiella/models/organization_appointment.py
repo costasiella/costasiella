@@ -1,7 +1,7 @@
 from django.utils.translation import gettext as _
 
 from django.db import models
-
+from sorl.thumbnail import ImageField
 
 class OrganizationAppointment(models.Model):
     archived = models.BooleanField(default=False)
