@@ -28,7 +28,12 @@ class ContentCard extends Component {
         document.documentElement.clientHeight || window.innerHeight;
       var scrolledToBottom = Math.ceil(scrollTop + clientHeight) >= scrollHeight;
       if (scrolledToBottom) {
-        this.props.onLoadMore()
+        const pageInfo = this.props.pageInfo
+        if (pageInfo) {
+          if (pageInfo.hasNextPage) {
+            this.props.onLoadMore()
+          }
+        }
       }
     }
 
