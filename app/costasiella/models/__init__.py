@@ -4,6 +4,7 @@ from .finance_costcenter import FinanceCostCenter
 from .finance_glaccount import FinanceGLAccount
 from .finance_taxrate import FinanceTaxRate
 
+from .organization_appointment import OrganizationAppointment
 from .organization_classpass import OrganizationClasspass
 from .organization_classpass_group import OrganizationClasspassGroup
 from .organization_classpass_group_classpass import OrganizationClasspassGroupClasspass

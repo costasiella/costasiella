@@ -7,6 +7,7 @@ from .finance_costcenter import FinanceCostCenterQuery, FinanceCostCenterMutatio
 from .finance_glaccount import FinanceGLAccountQuery, FinanceGLAccountMutation
 from .finance_taxrate import FinanceTaxRateQuery, FinanceTaxRateMutation
 
+from .organization_appointment import OrganizationAppointmentQuery, OrganizationAppointmentMutation
 from .organization_classpass import OrganizationClasspassQuery, OrganizationClasspassMutation
 from .organization_classpass_group import OrganizationClasspassGroupQuery, OrganizationClasspassGroupMutation
 from .organization_classpass_group_classpass import OrganizationClasspassGroupClasspassMutation
@@ -27,6 +28,7 @@ class Query(AccountQuery,
             FinanceCostCenterQuery,
             FinanceGLAccountQuery,
             FinanceTaxRateQuery,
+            OrganizationAppointmentQuery,
             OrganizationClasspassQuery,
             OrganizationClasspassGroupQuery,
             OrganizationClasstypeQuery,
@@ -46,6 +48,7 @@ class Mutation(AccountMutation,
                FinanceCostCenterMutation,
                FinanceGLAccountMutation,
                FinanceTaxRateMutation,
+               OrganizationAppointmentMutation,
                OrganizationClasspassMutation,
                OrganizationClasspassGroupMutation,
                OrganizationClasspassGroupClasspassMutation,
