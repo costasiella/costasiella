@@ -188,7 +188,7 @@ const RelationsAccounts = ({ t, history, trashed=false }) => (
             <HasPermissionWrapper permission="add"
                                   resource="account">
               <Button color="primary btn-block mb-6"
-                      onClick={() => history.push("/organization/accounts/add")}>
+                      onClick={() => history.push("/relations/accounts/add")}>
                 <Icon prefix="fe" name="plus-circle" /> {t('relations.accounts.add')}
               </Button>
             </HasPermissionWrapper>

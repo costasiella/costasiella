@@ -25,50 +25,53 @@ import {
 import SiteWrapper from "../../SiteWrapper"
 import HasPermissionWrapper from "../../HasPermissionWrapper"
 
-import OrganizationMenu from '../OrganizationMenu'
+import RelationsMenu from '../RelationsMenu'
 
 
-const ADD_DISCOVERY = gql`
-  mutation CreateOrganizationDiscovery($input:CreateOrganizationDiscoveryInput!) {
-    createOrganizationDiscovery(input: $input) {
-      organizationDiscovery{
+const ADD_ACCOUNT = gql`
+  mutation CreateAccount($input:CreateAccountInput!) {
+    createAccount(input: $input) {
+      account {
         id
-        archived
-        name
+        firstName
+        lastName
+        email
       }
     }
   }
 `
 
-const return_url = "/organization/discoveries"
+const return_url = "/relations/accounts"
 
-const OrganizationDiscoveryAdd = ({ t, history }) => (
+const RelationsAccountAdd = ({ t, history }) => (
   <SiteWrapper>
     <div className="my-3 my-md-5">
       <Container>
-        <Page.Header title={t('organization.title')} />
+        <Page.Header title={t('relations.title')} />
         <Grid.Row>
           <Grid.Col md={9}>
           <Card>
             <Card.Header>
-              <Card.Title>{t('organization.discoveries.title_add')}</Card.Title>
+              <Card.Title>{t('relations.accounts.title_add')}</Card.Title>
             </Card.Header>
-            <Mutation mutation={ADD_DISCOVERY} onCompleted={() => history.push(return_url)}> 
-                {(addLocation, { data }) => (
+            <Mutation mutation={ADD_ACCOUNT} onCompleted={() => history.push(return_url)}> 
+                {(addAccount, { data }) => (
                     <Formik
                         initialValues={{ name: '', code: '' }}
-                        validationSchema={DISCOVERY_SCHEMA}
+                        validationSchema={ACCOUNT_SCHEMA}
                         onSubmit={(values, { setSubmitting }) => {
-                            addLocation({ variables: {
+                            addAccount({ variables: {
                               input: {
-                                name: values.name, 
+                                firstName: values.firstName,
+                                lastName: values.lastName,
+                                email: values.email
                               }
                             }, refetchQueries: [
-                                {query: GET_DISCOVERIES_QUERY, variables: {"archived": false }}
+                                {query: GET_ACCOUNTS_QUERY, variables: {"trashed": false }}
                             ]})
                             .then(({ data }) => {
                                 console.log('got data', data);
-                                toast.success((t('organization.discoveries.toast_add_success')), {
+                                toast.success((t('relations.accounts.toast_add_success')), {
                                     position: toast.POSITION.BOTTOM_RIGHT
                                   })
                               }).catch((error) => {
@@ -83,12 +86,26 @@ const OrganizationDiscoveryAdd = ({ t, history }) => (
                         {({ isSubmitting, errors }) => (
                             <FoForm>
                                 <Card.Body>
-                                    <Form.Group label={t('general.name')}>
+                                    <Form.Group label={t('general.first_name')}>
                                       <Field type="text" 
-                                              name="name" 
-                                              className={(errors.name) ? "form-control is-invalid" : "form-control"} 
+                                              name="firstName" 
+                                              className={(errors.firstName) ? "form-control is-invalid" : "form-control"} 
                                               autoComplete="off" />
-                                      <ErrorMessage name="name" component="span" className="invalid-feedback" />
+                                      <ErrorMessage name="firstName" component="span" className="invalid-feedback" />
+                                    </Form.Group>
+                                    <Form.Group label={t('general.last_name')}>
+                                      <Field type="text" 
+                                              name="lastName" 
+                                              className={(errors.lastName) ? "form-control is-invalid" : "form-control"} 
+                                              autoComplete="off" />
+                                      <ErrorMessage name="lastName" component="span" className="invalid-feedback" />
+                                    </Form.Group>
+                                    <Form.Group label={t('general.email')}>
+                                      <Field type="text" 
+                                              name="email" 
+                                              className={(errors.email) ? "form-control is-invalid" : "form-control"} 
+                                              autoComplete="off" />
+                                      <ErrorMessage name="email" component="span" className="invalid-feedback" />
                                     </Form.Group>
                                 </Card.Body>
                                 <Card.Footer>
@@ -113,13 +130,13 @@ const OrganizationDiscoveryAdd = ({ t, history }) => (
           </Grid.Col>
           <Grid.Col md={3}>
             <HasPermissionWrapper permission="add"
-                                  resource="organizationdiscovery">
+                                  resource="account">
               <Button color="primary btn-block mb-6"
                       onClick={() => history.push(return_url)}>
                 <Icon prefix="fe" name="chevrons-left" /> {t('general.back')}
               </Button>
             </HasPermissionWrapper>
-            <OrganizationMenu active_link='discoveries'/>
+            <RelationsMenu active_link='accounts'/>
           </Grid.Col>
         </Grid.Row>
       </Container>
@@ -127,4 +144,4 @@ const OrganizationDiscoveryAdd = ({ t, history }) => (
   </SiteWrapper>
 )
 
-export default withTranslation()(withRouter(OrganizationDiscoveryAdd))
+export default withTranslation()(withRouter(RelationsAccountAdd))
