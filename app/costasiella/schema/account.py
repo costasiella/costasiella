@@ -21,7 +21,7 @@ class UserType(DjangoObjectType):
 class AccountNode(DjangoObjectType):
     class Meta:
         model = get_user_model()
-        filter_fields = ['trashed']
+        filter_fields = ['isActive']
         interfaces = (graphene.relay.Node, )
 
     @classmethod
@@ -146,11 +146,11 @@ class AccountQuery(graphene.AbstractType):
         return user
 
 
-    def resolve_accounts(self, info, trashed=False, **kwargs):
+    def resolve_accounts(self, info, is_active=False, **kwargs):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.view_account')
 
-        return get_user_model().objects.filter(trashed=trashed).order_by('first_name')
+        return get_user_model().objects.filter(is_active=is_active).order_by('first_name')
 
 
     def resolve_groups(self, info):
