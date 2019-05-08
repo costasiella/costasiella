@@ -160,9 +160,6 @@ class DeleteAccount(graphene.relay.ClientIDMutation):
         require_login_and_permission(user, 'costasiella.delete_account')
 
         rid = get_rid(input['id'])
-        print(input)
-        print(rid.id)
-
         account = get_user_model().objects.filter(id=rid.id).first()
         if not account:
             raise Exception('Invalid Account ID!')

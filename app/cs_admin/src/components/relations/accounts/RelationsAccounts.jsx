@@ -28,6 +28,7 @@ import RelationsMenu from "../RelationsMenu"
 
 import { GET_ACCOUNTS_QUERY } from "./queries"
 
+
 const UPDATE_ACCOUNT_ACTIVE = gql`
   mutation UpdateAccountActive($input: UpdateAccountActiveInput!) {
     updateAccountActive(input: $input) {
@@ -49,9 +50,7 @@ const DELETE_ACCOUNT = gql`
 `
 
 
-const confirmDelete = (t, msgConfirm, msgDescription, msgSuccess, deleteFunction, functionVariables, id) => {
-  console.log("clicked delete")
-
+const confirm = ({t, msgConfirm, msgDescription, msgSuccess, deleteFunction, functionVariables}) => {
   confirmAlert({
     customUI: ({ onClose }) => {
       return (
@@ -81,7 +80,6 @@ const confirmDelete = (t, msgConfirm, msgDescription, msgSuccess, deleteFunction
           >
             <Icon name="trash-2" /> {t('general.confirm_delete_yes')}
           </button>
-          
         </div>
       )
     }
@@ -237,52 +235,25 @@ const RelationsAccounts = ({ t, history, isActive=true }) => (
                                               title={t('general.delete')} 
                                               href=""
                                               onClick={() => {
-                                                let id = node.id
                                                 let msgDescription = <p>
                                                   {node.first_name} {node.last_name}
                                                 </p>
 
-                                                let variables = { variables: {
+                                                confirm({
+                                                  t:t,
+                                                  msgConfirm: t("relations.accounts.delete_confirm_msg"),
+                                                  msgDescription: msgDescription,
+                                                  msgSuccess: t('relations.accounts.deleted'),
+                                                  deleteFunction: deleteAccount,
+                                                  functionVariables: { variables: {
                                                     input: {
-                                                    id
+                                                      id: node.id
                                                     }
                                                   }, refetchQueries: [
                                                     {query: GET_ACCOUNTS_QUERY, variables: {"isActive": false }}
-                                                  ]
-                                                }
-                                                
-                                                confirmDelete(
-                                                  t, 
-                                                  t("relations.accounts.delete_confirm_msg"),
-                                                  msgDescription,
-                                                  t('relations.accounts.deleted'),
-                                                  deleteAccount,
-                                                  variables,
-                                                  id
-                                                )}
-
-                                            //     console.log("clicked delete")
-                                            //     let id = node.id
-                                            //     deleteAccount({ variables: {
-                                            //       input: {
-                                            //         id,
-                                            //         isActive: !isActive
-                                            //       }
-                                            // }, refetchQueries: [
-                                            //     {query: GET_ACCOUNTS_QUERY, variables: {"isActive": false }}
-                                            // ]}).then(({ data }) => {
-                                            //   console.log('got data', data);
-                                            //   toast.success(t('relations.accounts.deleted'), {
-                                            //       position: toast.POSITION.BOTTOM_RIGHT
-                                            //     })
-                                            // }).catch((error) => {
-                                            //   toast.error(t('general.toast_server_error') + ': ' +  error, {
-                                            //       position: toast.POSITION.BOTTOM_RIGHT
-                                            //     })
-                                            //   console.log('there was an error sending the query', error);
-                                            // })
-                                            // }
-                                            }>
+                                                  ]}
+                                                })
+                                            }}>
                                               <span className="text-red"><Icon prefix="fe" name="trash-2" /></span>
                                             </button>
                                           </Table.Col>
