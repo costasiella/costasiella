@@ -235,14 +235,10 @@ const RelationsAccounts = ({ t, history, isActive=true }) => (
                                               title={t('general.delete')} 
                                               href=""
                                               onClick={() => {
-                                                let msgDescription = <p>
-                                                  {node.first_name} {node.last_name}
-                                                </p>
-
                                                 confirm({
-                                                  t:t,
+                                                  t: t,
                                                   msgConfirm: t("relations.accounts.delete_confirm_msg"),
-                                                  msgDescription: msgDescription,
+                                                  msgDescription: <p>{node.first_name} {node.last_name}</p>,
                                                   msgSuccess: t('relations.accounts.deleted'),
                                                   deleteFunction: deleteAccount,
                                                   functionVariables: { variables: {
