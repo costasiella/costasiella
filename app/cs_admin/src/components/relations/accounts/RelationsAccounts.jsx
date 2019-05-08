@@ -28,9 +28,9 @@ import RelationsMenu from "../RelationsMenu"
 
 import { GET_ACCOUNTS_QUERY } from "./queries"
 
-const TRASH_ACCOUNT = gql`
-  mutation DeactivateAccount($input: DeactivateAccountInput!) {
-    archiveOrganizationDiscovery(input: $input) {
+const UPDATE_ACCOUNT_ACTIVE = gql`
+  mutation UpdateAccountActive($input: UpdateAccountActiveInput!) {
+    updateAccountActive(input: $input) {
       account {
         id
         isActive
@@ -141,8 +141,8 @@ const RelationsAccounts = ({ t, history, isActive=true }) => (
                                       </Button>
                                     }
                                   </Table.Col>
-                                  <Mutation mutation={TRASH_ACCOUNT} key={v4()}>
-                                    {(archiveCostcenter, { data }) => (
+                                  <Mutation mutation={UPDATE_ACCOUNT_ACTIVE} key={v4()}>
+                                    {(updateAccountActive, { data }) => (
                                       <Table.Col className="text-right" key={v4()}>
                                         <button className="icon btn btn-link btn-sm" 
                                            title={t('general.archive')} 
@@ -150,7 +150,7 @@ const RelationsAccounts = ({ t, history, isActive=true }) => (
                                            onClick={() => {
                                              console.log("clicked isActive")
                                              let id = node.id
-                                             archiveCostcenter({ variables: {
+                                             updateAccountActive({ variables: {
                                                input: {
                                                 id,
                                                 isActive: !isActive
@@ -170,11 +170,16 @@ const RelationsAccounts = ({ t, history, isActive=true }) => (
                                           console.log('there was an error sending the query', error);
                                         })
                                         }}>
-                                          <Icon prefix="fe" name="trash-2" />
+                                          {
+                                            (node.isActive) ?
+                                              <Icon prefix="fe" name="trash-2" /> :
+                                              t("general.restore")
+                                          }
                                         </button>
                                       </Table.Col>
                                     )}
                                   </Mutation>
+                                  
                                 </Table.Row>
                               ))}
                           </Table.Body>

@@ -124,8 +124,90 @@ class CreateAccount(graphene.relay.ClientIDMutation):
         return CreateAccount(account=account)
 
 
+class UpdateAccountActive(graphene.relay.ClientIDMutation):
+    class Input:
+        id = graphene.ID(required=True)
+        is_active = graphene.Boolean(required=True)
+
+    account = graphene.Field(AccountNode)
+
+    @classmethod
+    def mutate_and_get_payload(self, root, info, **input):
+        user = info.context.user
+        require_login_and_permission(user, 'costasiella.delete_account')
+
+        rid = get_rid(input['id'])
+
+        account = get_user_model().objects.filter(id=rid.id).first()
+        if not account:
+            raise Exception('Invalid Account ID!')
+
+        account.is_active = input['is_active']
+        account.save(force_update=True)
+
+        return UpdateAccountActive(account=account)
+
+
+class DeleteAccount(graphene.relay.ClientIDMutation):
+    class Input:
+        id = graphene.ID(required=True)
+        is_active = graphene.Boolean(required=True)
+
+    ok = graphene.Boolean()
+
+    @classmethod
+    def mutate_and_get_payload(self, root, info, **input):
+        user = info.context.user
+        require_login_and_permission(user, 'costasiella.delete_account')
+
+        rid = get_rid(input['id'])
+
+        account = get_user_model().objects.filter(id=rid.id).first()
+        if not account:
+            raise Exception('Invalid Account ID!')
+
+        ok = account.delete()
+
+        return DeleteAccount(ok=ok)
+
+
+# class DeleteOrganizationClasspassGroupClasspass(graphene.relay.ClientIDMutation):
+#     class Input:
+#         # id = graphene.ID(required=True)
+#         organization_classpass_group = graphene.ID(required=True)
+#         organization_classpass = graphene.ID(required=True)
+
+#     ok = graphene.Boolean()
+#     deleted_organization_classpass_group_classpass_id = graphene.ID()
+
+#     @classmethod
+#     def mutate_and_get_payload(self, root, info, **input):
+#         user = info.context.user
+#         require_login_and_permission(user, 'costasiella.delete_organizationclasspassgroupclasspass')
+
+#         # rid = get_rid(input['id'])
+#         rid_group = get_rid(input['organization_classpass_group'])
+#         rid_pass = get_rid(input['organization_classpass'])
+
+#         organization_classpass_group = OrganizationClasspassGroup.objects.get(pk=rid_group.id)
+#         organization_classpass = OrganizationClasspass.objects.get(pk=rid_pass.id)
+
+#         organization_classpass_group_classpass = OrganizationClasspassGroupClasspass.objects.filter(
+#             organization_classpass_group = organization_classpass_group,
+#             organization_classpass = organization_classpass
+#         ).first()
+
+
+#         ok = organization_classpass_group_classpass.delete()
+
+#         return DeleteOrganizationClasspassGroupClasspass(
+#             ok=ok
+#         )
+
+
 class AccountMutation(graphene.ObjectType):
     create_account = CreateAccount.Field()
+    update_account_active = UpdateAccountActive.Field()
 
 
 class AccountQuery(graphene.AbstractType):
@@ -150,7 +232,7 @@ class AccountQuery(graphene.AbstractType):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.view_account')
 
-        return get_user_model().objects.filter(is_active=is_active).order_by('first_name')
+        return get_user_model().objects.filter(is_active=is_active, is_superuser=False).order_by('first_name')
 
 
     def resolve_groups(self, info):
