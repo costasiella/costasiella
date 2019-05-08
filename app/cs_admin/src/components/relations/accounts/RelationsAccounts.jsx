@@ -20,7 +20,7 @@ import {
 } from "tabler-react";
 import SiteWrapper from "../../SiteWrapper"
 import HasPermissionWrapper from "../../HasPermissionWrapper"
-// import { confirmAlert } from 'react-confirm-alert'; // Import
+import { confirmAlert } from 'react-confirm-alert'
 import { toast } from 'react-toastify'
 
 import ContentCard from "../../general/ContentCard"
@@ -38,6 +38,55 @@ const UPDATE_ACCOUNT_ACTIVE = gql`
     }
   }
 `
+
+
+const DELETE_ACCOUNT = gql`
+  mutation DeleteAccount($input: DeleteAccountInput!) {
+    deleteAccount(input: $input) {
+      ok
+    }
+  }
+`
+
+
+const confirmDelete = (t, msgConfirm, msgDescription, msgSuccess, deleteFunction, functionVariables, id) => {
+  console.log("clicked delete")
+
+  confirmAlert({
+    customUI: ({ onClose }) => {
+      return (
+        <div className='custom-ui'>
+          <h1>{t('general.confirm_delete')}</h1>
+          {msgConfirm}
+          {msgDescription}
+          <button className="btn btn-link pull-right" onClick={onClose}>{t('general.confirm_delete_no')}</button>
+          <button
+            className="btn btn-danger"
+            onClick={() => {
+              deleteFunction(functionVariables)
+                .then(({ data }) => {
+                  console.log('got data', data);
+                  toast.success(
+                    msgSuccess, {
+                      position: toast.POSITION.BOTTOM_RIGHT
+                    })
+                }).catch((error) => {
+                  toast.error((t('general.toast_server_error')) + ': ' +  error, {
+                      position: toast.POSITION.BOTTOM_RIGHT
+                    })
+                  console.log('there was an error sending the query', error);
+                })
+              onClose()
+            }}
+          >
+            <Icon name="trash-2" /> {t('general.confirm_delete_yes')}
+          </button>
+          
+        </div>
+      )
+    }
+  })
+}
 
 
 const RelationsAccounts = ({ t, history, isActive=true }) => (
@@ -179,7 +228,67 @@ const RelationsAccounts = ({ t, history, isActive=true }) => (
                                       </Table.Col>
                                     )}
                                   </Mutation>
-                                  
+                                  {
+                                    (node.isActive) ? '' :
+                                      <Mutation mutation={DELETE_ACCOUNT} key={v4()}>
+                                        {(deleteAccount, { data }) => (
+                                          <Table.Col className="text-right" key={v4()}>
+                                            <button className="icon btn btn-link btn-sm" 
+                                              title={t('general.delete')} 
+                                              href=""
+                                              onClick={() => {
+                                                let id = node.id
+                                                let msgDescription = <p>
+                                                  {node.first_name} {node.last_name}
+                                                </p>
+
+                                                let variables = { variables: {
+                                                    input: {
+                                                    id
+                                                    }
+                                                  }, refetchQueries: [
+                                                    {query: GET_ACCOUNTS_QUERY, variables: {"isActive": false }}
+                                                  ]
+                                                }
+                                                
+                                                confirmDelete(
+                                                  t, 
+                                                  t("relations.accounts.delete_confirm_msg"),
+                                                  msgDescription,
+                                                  t('relations.accounts.deleted'),
+                                                  deleteAccount,
+                                                  variables,
+                                                  id
+                                                )}
+
+                                            //     console.log("clicked delete")
+                                            //     let id = node.id
+                                            //     deleteAccount({ variables: {
+                                            //       input: {
+                                            //         id,
+                                            //         isActive: !isActive
+                                            //       }
+                                            // }, refetchQueries: [
+                                            //     {query: GET_ACCOUNTS_QUERY, variables: {"isActive": false }}
+                                            // ]}).then(({ data }) => {
+                                            //   console.log('got data', data);
+                                            //   toast.success(t('relations.accounts.deleted'), {
+                                            //       position: toast.POSITION.BOTTOM_RIGHT
+                                            //     })
+                                            // }).catch((error) => {
+                                            //   toast.error(t('general.toast_server_error') + ': ' +  error, {
+                                            //       position: toast.POSITION.BOTTOM_RIGHT
+                                            //     })
+                                            //   console.log('there was an error sending the query', error);
+                                            // })
+                                            // }
+                                            }>
+                                              <span className="text-red"><Icon prefix="fe" name="trash-2" /></span>
+                                            </button>
+                                          </Table.Col>
+                                        )}
+                                      </Mutation>
+                                  }
                                 </Table.Row>
                               ))}
                           </Table.Body>
