@@ -9,6 +9,7 @@ import {
   Header,
   Icon,
   Media,
+  Text,
   SocialNetworksList,
 } from "tabler-react"
 
@@ -23,9 +24,10 @@ const ProfileCardSmall = ({ t, value, user }) => (
         <Media.Body>
           <h4 className="m-0">{user.firstName + " " + user.lastName}</h4>
           <p className="text-muted mb-0">
-            <a href={"mailto:" + user.email}>
-              <Icon name="mail" /> {user.email}
-            </a>
+            <Text.Small>
+            <Icon name="mail" />  <a href={"mailto:" + user.email}>{user.email}</a> <br/>
+            <Icon name="phone" /> user phone nr here...
+            </Text.Small>
           </p>
           {/* <SocialNetworksList
             items={[
