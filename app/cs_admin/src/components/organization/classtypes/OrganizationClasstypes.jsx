@@ -8,6 +8,7 @@ import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
 
 import {
+  Avatar,
   Page,
   Grid,
   Icon,
@@ -126,7 +127,7 @@ const OrganizationClasstypes = ({ t, history, archived=false }) => (
                               {classtypes.edges.map(({ node }) => (
                                 <Table.Row key={v4()}>
                                   <Table.Col key={v4()}>
-                                    <img src={node.urlImageThumbnailSmall} alt="" />
+                                    <Avatar size="lg" imageURL={node.urlImageThumbnailSmall} />
                                   </Table.Col>
                                   <Table.Col key={v4()}>
                                     {node.name}
