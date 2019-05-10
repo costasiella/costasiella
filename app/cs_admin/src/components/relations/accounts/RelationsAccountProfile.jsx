@@ -8,10 +8,8 @@ import { withRouter } from "react-router"
 import { Formik, Form as FoForm, Field, ErrorMessage } from 'formik'
 import { toast } from 'react-toastify'
 
-import { GET_DISCOVERIES_QUERY, GET_DISCOVERY_QUERY } from './queries'
+import { GET_ACCOUNTS_QUERY, GET_ACCOUNTS_QUERY } from './queries'
 import { DISCOVERY_SCHEMA } from './yupSchema'
-
-
 
 import {
   Page,
@@ -84,8 +82,8 @@ class RelationsAccountProfile extends Component {
                             <Card.Title>{t('organization.accounts.profile')}</Card.Title>
                             {console.log(match.params.id)}
                           </Card.Header>
-                        <Mutation mutation={UPDATE_DISCOVERY} onCompleted={() => history.push(return_url)}> 
-                         {(updateDiscovery, { data }) => (
+                        <Mutation mutation={UPDATE_ACCOUNT} onCompleted={() => history.push(return_url)}> 
+                         {(updateAccount, { data }) => (
                           <Formik
                             initialValues={{ 
                               name: initialData.name, 
@@ -95,13 +93,15 @@ class RelationsAccountProfile extends Component {
                                 console.log('submit values:')
                                 console.log(values)
 
-                                updateDiscovery({ variables: {
+                                updateAccount({ variables: {
                                   input: {
                                     id: match.params.id,
-                                    name: values.name,
+                                    firstName: values.firstName,
+                                    lastName: values.lastName,
+                                    email: values.email
                                   }
                                 }, refetchQueries: [
-                                    {query: GET_DISCOVERIES_QUERY, variables: {"archived": false }}
+                                    {query: GET_ACCOUNTS_QUERY, variables: {"archived": false }}
                                 ]})
                                 .then(({ data }) => {
                                     console.log('got data', data)
