@@ -122,6 +122,50 @@ class CreateAccount(graphene.relay.ClientIDMutation):
         email_address.save()
 
         return CreateAccount(account=account)
+#         return CreateAccount(user=user)
+
+
+class UpdateAccount(graphene.relay.ClientIDMutation):
+    class Input:
+        id = graphene.ID(required=True)
+        first_name = graphene.String(required=True)
+        last_name = graphene.String(required=True)
+        email = graphene.String(required=True)
+
+    account = graphene.Field(AccountNode)
+
+    @classmethod
+    def mutate_and_get_payload(self, root, info, **input):
+        user = info.context.user
+        require_login_and_permission(user, 'costasiella.change_account')
+
+        rid = get_rid(input['id'])
+        account = get_user_model().objects.filter(id=rid.id).first()
+        if not account:
+            raise Exception('Invalid Account ID!')
+
+        # verify email unique
+        query_set = get_user_model().objects.filter(
+            ~Q(pk=account.pk),
+            Q(email=input['email'])
+        )
+
+        #Don't insert duplicate emails into the DB.
+        if query_set.exists():
+            raise Exception(_('Unable to save, an account is already registered with this e-mail address'))
+
+        account.first_name = input['first_name']
+        account.last_name = input['last_name']
+        account.email = input['email']
+        account.username = input['email']
+        account.save()
+
+        # Update Allauth email address 
+        email_address = EmailAddress.objects.filter(user=account).first()
+        email_address.email = account.email
+        email_address.save()
+
+        return UpdateAccount(account=account)
 
 
 class UpdateAccountActive(graphene.relay.ClientIDMutation):
@@ -171,6 +215,7 @@ class DeleteAccount(graphene.relay.ClientIDMutation):
 
 class AccountMutation(graphene.ObjectType):
     create_account = CreateAccount.Field()
+    update_account = UpdateAccount.Field()
     update_account_active = UpdateAccountActive.Field()
     delete_account = DeleteAccount.Field()
 
