@@ -317,7 +317,7 @@
             "add": "Add account",
             "profile": "Profile",
             "toast_edit_success": "Saved profile",
-            "deactivated": "Deactivated acount",
+            "deactivated": "Moved account to deleted",
             "restored": "Restored account"
         }
     }
