@@ -76,7 +76,7 @@ class RelationsAccountProfile extends Component {
 
                   return (
                     <div>
-                      <Page.Header title={t('')} />
+                      <Page.Header title={initialData.firstName + " " + initialData.lastName} />
                       <Grid.Row>
                         <Grid.Col md={9}>
                         <Card>
