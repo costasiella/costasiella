@@ -87,7 +87,7 @@ class RelationsAccountProfile extends Component {
                             <Card.Title>{t('relations.accounts.profile')}</Card.Title>
                             {console.log(match.params.id)}
                           </Card.Header>
-                        <Mutation mutation={UPDATE_ACCOUNT} onCompleted={() => history.push(return_url)}> 
+                        <Mutation mutation={UPDATE_ACCOUNT}> 
                          {(updateAccount, { data }) => (
                           <Formik
                             initialValues={{ 
@@ -115,6 +115,7 @@ class RelationsAccountProfile extends Component {
                                     toast.success((t('relations.accounts.toast_edit_success')), {
                                         position: toast.POSITION.BOTTOM_RIGHT
                                       })
+                                    setSubmitting(false)
                                   }).catch((error) => {
                                     toast.error((t('general.toast_server_error')) + ': ' +  error, {
                                         position: toast.POSITION.BOTTOM_RIGHT
@@ -129,7 +130,6 @@ class RelationsAccountProfile extends Component {
                                 isSubmitting={isSubmitting}
                                 errors={errors}
                                 values={values}
-                                return_url={return_url}
                               />
                                 // <FoForm>
                                 //     <Card.Body>    

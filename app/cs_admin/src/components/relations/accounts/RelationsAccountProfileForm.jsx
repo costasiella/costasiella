@@ -41,15 +41,16 @@ const RelationsAccountProfileForm = ({ t, history, isSubmitting, errors, return_
       <Card.Footer>
           <Button 
             color="primary"
-            className="pull-right" 
+            // className="pull-right" 
             type="submit" 
             disabled={isSubmitting}
           >
             {t('general.submit')}
           </Button>
-          <Button color="link" onClick={() => history.push(return_url)}>
+          
+          {/* <Button color="link" onClick={() => history.push(return_url)}>
               {t('general.cancel')}
-          </Button>
+          </Button> */}
       </Card.Footer>
   </FoForm>
 )
