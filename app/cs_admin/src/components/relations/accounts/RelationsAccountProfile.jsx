@@ -22,6 +22,7 @@ import {
 } from "tabler-react";
 import SiteWrapper from "../../SiteWrapper"
 import HasPermissionWrapper from "../../HasPermissionWrapper"
+import ProfileCardSmall from "../../ui/ProfileCardSmall"
 
 import RelationsAccountProfileForm from "./RelationsAccountProfileForm"
 
@@ -163,6 +164,7 @@ class RelationsAccountProfile extends Component {
                     </Card>
                     </Grid.Col>                                    
                     <Grid.Col md={3}>
+                      <ProfileCardSmall user={initialData}/>
                       <HasPermissionWrapper permission="change"
                                             resource="organizationdiscovery">
                         <Button color="primary btn-block mb-6"
