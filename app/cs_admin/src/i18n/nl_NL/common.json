@@ -99,7 +99,14 @@
         "delete": "__STRING_NOT_TRANSLATED__",
         "confirm_delete_yes": "__STRING_NOT_TRANSLATED__",
         "confirm_delete_no": "__STRING_NOT_TRANSLATED__",
-        "please_select": "__STRING_NOT_TRANSLATED__"
+        "please_select": "__STRING_NOT_TRANSLATED__",
+        "first_name": "__STRING_NOT_TRANSLATED__",
+        "last_name": "__STRING_NOT_TRANSLATED__",
+        "email": "__STRING_NOT_TRANSLATED__",
+        "active": "__STRING_NOT_TRANSLATED__",
+        "deleted": "__STRING_NOT_TRANSLATED__",
+        "restore": "__STRING_NOT_TRANSLATED__",
+        "deactivate": "__STRING_NOT_TRANSLATED__"
     },
     "yup": {
         "min_len_3": "__STRING_NOT_TRANSLATED__",
@@ -108,7 +115,9 @@
         "positive_number_required": "__STRING_NOT_TRANSLATED__",
         "url": "__STRING_NOT_TRANSLATED__",
         "max_decimal_number": "__STRING_NOT_TRANSLATED__",
-        "type_error_number": "__STRING_NOT_TRANSLATED__"
+        "type_error_number": "__STRING_NOT_TRANSLATED__",
+        "min_len_2": "__STRING_NOT_TRANSLATED__",
+        "email": "__STRING_NOT_TRANSLATED__"
     },
     "home": {
         "title": "__STRING_NOT_TRANSLATED__"
@@ -295,6 +304,21 @@
         "placeholder": "__STRING_NOT_TRANSLATED__"
     },
     "relations": {
-        "title": "__STRING_NOT_TRANSLATED__"
+        "title": "__STRING_NOT_TRANSLATED__",
+        "accounts": {
+            "title_add": "__STRING_NOT_TRANSLATED__",
+            "toast_add_success": "__STRING_NOT_TRANSLATED__",
+            "title": "__STRING_NOT_TRANSLATED__",
+            "error_loading": "__STRING_NOT_TRANSLATED__",
+            "empty_list": "__STRING_NOT_TRANSLATED__",
+            "empty_archive": "__STRING_NOT_TRANSLATED__",
+            "delete_confirm_msg": "__STRING_NOT_TRANSLATED__",
+            "deleted": "__STRING_NOT_TRANSLATED__",
+            "add": "__STRING_NOT_TRANSLATED__",
+            "profile": "__STRING_NOT_TRANSLATED__",
+            "toast_edit_success": "__STRING_NOT_TRANSLATED__",
+            "deactivated": "__STRING_NOT_TRANSLATED__",
+            "restored": "__STRING_NOT_TRANSLATED__"
+        }
     }
 }

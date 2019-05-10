@@ -99,7 +99,14 @@
         "delete": "Delete",
         "confirm_delete_yes": "Yes, Delete it",
         "confirm_delete_no": "No, Keep it",
-        "please_select": "Please select..."
+        "please_select": "Please select...",
+        "first_name": "First name",
+        "last_name": "Last name",
+        "email": "Email",
+        "active": "Active",
+        "deleted": "Deleted",
+        "restore": "Restore",
+        "deactivate": "Deactivate"
     },
     "yup": {
         "min_len_3": "Please input at least 3 characters",
@@ -108,7 +115,9 @@
         "positive_number_required": "Please input a number above 0",
         "url": "Please input a valid url starting with http:// or https://",
         "max_decimal_number": "Please enter a number of 18 digits and 20 decimals or below",
-        "type_error_number": "Please input a number"
+        "type_error_number": "Please input a number",
+        "min_len_2": "Please input at least 2 characters",
+        "email": "Please input a valid email address"
     },
     "home": {
         "title": "Home"
@@ -295,6 +304,21 @@
         "placeholder": "Click to select a date"
     },
     "relations": {
-        "title": "Relations"
+        "title": "Relations",
+        "accounts": {
+            "title_add": "Add account",
+            "toast_add_success": "Created account",
+            "title": "Accounts",
+            "error_loading": "Error loading accounts :(",
+            "empty_list": "No accounts found",
+            "empty_archive": "No accounts have been deleted yet",
+            "delete_confirm_msg": "Are you sure you want to delete this account and all associated data?",
+            "deleted": "Deleted account",
+            "add": "Add account",
+            "profile": "Profile",
+            "toast_edit_success": "Saved profile",
+            "deactivated": "Deactivated acount",
+            "restored": "Restored account"
+        }
     }
 }

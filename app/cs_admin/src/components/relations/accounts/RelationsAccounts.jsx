@@ -192,7 +192,7 @@ const RelationsAccounts = ({ t, history, isActive=true }) => (
                                     {(updateAccountActive, { data }) => (
                                       <Table.Col className="text-right" key={v4()}>
                                         <button className="icon btn btn-link btn-sm" 
-                                           title={t('general.archive')} 
+                                           title={t('general.deactivate')} 
                                            href=""
                                            onClick={() => {
                                              console.log("clicked isActive")
@@ -207,7 +207,7 @@ const RelationsAccounts = ({ t, history, isActive=true }) => (
                                         ]}).then(({ data }) => {
                                           console.log('got data', data);
                                           toast.success(
-                                            (isActive) ? t('general.unisActive'): t('general.isActive'), {
+                                            (isActive) ? t('relations.accounts.deactivated'): t('relations.accounts.restored'), {
                                               position: toast.POSITION.BOTTOM_RIGHT
                                             })
                                         }).catch((error) => {

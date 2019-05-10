@@ -84,7 +84,7 @@ class RelationsAccountProfile extends Component {
                         <Grid.Col md={9}>
                         <Card>
                           <Card.Header>
-                            <Card.Title>{t('organization.accounts.profile')}</Card.Title>
+                            <Card.Title>{t('relations.accounts.profile')}</Card.Title>
                             {console.log(match.params.id)}
                           </Card.Header>
                         <Mutation mutation={UPDATE_ACCOUNT} onCompleted={() => history.push(return_url)}> 
@@ -112,7 +112,7 @@ class RelationsAccountProfile extends Component {
                                 ]})
                                 .then(({ data }) => {
                                     console.log('got data', data)
-                                    toast.success((t('organization.accounts.toast_edit_success')), {
+                                    toast.success((t('relations.accounts.toast_edit_success')), {
                                         position: toast.POSITION.BOTTOM_RIGHT
                                       })
                                   }).catch((error) => {
