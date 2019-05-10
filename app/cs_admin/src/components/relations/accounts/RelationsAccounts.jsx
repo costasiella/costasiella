@@ -182,7 +182,7 @@ const RelationsAccounts = ({ t, history, isActive=true }) => (
                                     {(!node.isActive) ? 
                                       <span className='text-muted'>{t('general.unarchive_to_edit')}</span> :
                                       <Button className='btn-sm' 
-                                              onClick={() => history.push("/organization/accounts/edit/" + node.id)}
+                                              onClick={() => history.push("/relations/accounts/" + node.id + "/profile")}
                                               color="secondary">
                                         {t('general.edit')}
                                       </Button>

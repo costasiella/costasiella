@@ -13,7 +13,7 @@ import {
 } from "tabler-react"
 
 
-const RelationsAccountForm = ({ t, history, isSubmitting, errors, return_url }) => (
+const RelationsAccountProfileForm = ({ t, history, isSubmitting, errors, return_url }) => (
   <FoForm>
       <Card.Body>
           <Form.Group label={t('general.first_name')}>
@@ -54,4 +54,4 @@ const RelationsAccountForm = ({ t, history, isSubmitting, errors, return_url }) 
   </FoForm>
 )
 
-export default withTranslation()(withRouter(RelationsAccountForm))
+export default withTranslation()(withRouter(RelationsAccountProfileForm))

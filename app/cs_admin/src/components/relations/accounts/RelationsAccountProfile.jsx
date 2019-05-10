@@ -8,8 +8,8 @@ import { withRouter } from "react-router"
 import { Formik, Form as FoForm, Field, ErrorMessage } from 'formik'
 import { toast } from 'react-toastify'
 
-import { GET_ACCOUNTS_QUERY, GET_ACCOUNTS_QUERY } from './queries'
-import { DISCOVERY_SCHEMA } from './yupSchema'
+import { GET_ACCOUNTS_QUERY, GET_ACCOUNT_QUERY } from './queries'
+import { ACCOUNT_SCHEMA } from './yupSchema'
 
 import {
   Page,
@@ -23,7 +23,9 @@ import {
 import SiteWrapper from "../../SiteWrapper"
 import HasPermissionWrapper from "../../HasPermissionWrapper"
 
-import OrganizationMenu from "../OrganizationMenu"
+import RelationsAccountProfileForm from "./RelationsAccountProfileForm"
+
+// import OrganizationMenu from "../OrganizationMenu"
 
 
 const UPDATE_ACCOUNT = gql`
@@ -86,9 +88,11 @@ class RelationsAccountProfile extends Component {
                          {(updateAccount, { data }) => (
                           <Formik
                             initialValues={{ 
-                              name: initialData.name, 
+                              firstName: initialData.firstName, 
+                              lastName: initialData.lastName, 
+                              email: initialData.email 
                             }}
-                            validationSchema={DISCOVERY_SCHEMA}
+                            validationSchema={ACCOUNT_SCHEMA}
                             onSubmit={(values, { setSubmitting }) => {
                                 console.log('submit values:')
                                 console.log(values)
@@ -105,7 +109,7 @@ class RelationsAccountProfile extends Component {
                                 ]})
                                 .then(({ data }) => {
                                     console.log('got data', data)
-                                    toast.success((t('organization.discoveries.toast_edit_success')), {
+                                    toast.success((t('organization.accounts.toast_edit_success')), {
                                         position: toast.POSITION.BOTTOM_RIGHT
                                       })
                                   }).catch((error) => {
@@ -118,34 +122,40 @@ class RelationsAccountProfile extends Component {
                             }}
                             >
                             {({ isSubmitting, errors, values }) => (
-                                <FoForm>
-                                    <Card.Body>    
-                                        <Form.Group label={t('general.name')} >
-                                          <Field type="text" 
-                                                name="name" 
-                                                className={(errors.name) ? "form-control is-invalid" : "form-control"} 
-                                                autoComplete="off" />
-                                          <ErrorMessage name="name" component="span" className="invalid-feedback" />
-                                        </Form.Group>
-                                    </Card.Body>
-                                    <Card.Footer>
-                                        <Button 
-                                          className="pull-right"
-                                          color="primary"
-                                          disabled={isSubmitting}
-                                          type="submit"
-                                        >
-                                          {t('general.submit')}
-                                        </Button>
-                                        <Button
-                                          type="button" 
-                                          color="link" 
-                                          onClick={() => history.push(return_url)}
-                                        >
-                                            {t('general.cancel')}
-                                        </Button>
-                                    </Card.Footer>
-                                </FoForm>
+                              <RelationsAccountProfileForm
+                                isSubmitting={isSubmitting}
+                                errors={errors}
+                                values={values}
+                                return_url={return_url}
+                              />
+                                // <FoForm>
+                                //     <Card.Body>    
+                                //         <Form.Group label={t('general.name')} >
+                                //           <Field type="text" 
+                                //                 name="name" 
+                                //                 className={(errors.name) ? "form-control is-invalid" : "form-control"} 
+                                //                 autoComplete="off" />
+                                //           <ErrorMessage name="name" component="span" className="invalid-feedback" />
+                                //         </Form.Group>
+                                //     </Card.Body>
+                                //     <Card.Footer>
+                                //         <Button 
+                                //           className="pull-right"
+                                //           color="primary"
+                                //           disabled={isSubmitting}
+                                //           type="submit"
+                                //         >
+                                //           {t('general.submit')}
+                                //         </Button>
+                                //         <Button
+                                //           type="button" 
+                                //           color="link" 
+                                //           onClick={() => history.push(return_url)}
+                                //         >
+                                //             {t('general.cancel')}
+                                //         </Button>
+                                //     </Card.Footer>
+                                // </FoForm>
                             )}
                           </Formik>
                         )}
@@ -160,7 +170,7 @@ class RelationsAccountProfile extends Component {
                           <Icon prefix="fe" name="chevrons-left" /> {t('general.back')}
                         </Button>
                       </HasPermissionWrapper>
-                      <OrganizationMenu active_link='discoveries'/>
+                      {/* <OrganizationMenu active_link='discoveries'/> */}
                     </Grid.Col>
                   </Grid.Row>
                 </div>

@@ -26,8 +26,8 @@ export const GET_ACCOUNT_QUERY = gql`
   query Account($id: ID!) {
     account(id:$id) {
       id
-      first_name
-      last_name
+      firstName
+      lastName
       email
       isActive
     }
