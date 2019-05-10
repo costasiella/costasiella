@@ -5,7 +5,7 @@ import gql from "graphql-tag"
 import { Query, Mutation } from "react-apollo";
 import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
-import { Formik, Form as FoForm, Field, ErrorMessage } from 'formik'
+import { Formik } from 'formik'
 import { toast } from 'react-toastify'
 
 import { GET_ACCOUNTS_QUERY, GET_ACCOUNT_QUERY } from './queries'
@@ -17,13 +17,13 @@ import {
   Icon,
   Button,
   Card,
-  Container,
-  Form
+  Container
 } from "tabler-react";
 import SiteWrapper from "../../SiteWrapper"
 import HasPermissionWrapper from "../../HasPermissionWrapper"
 import ProfileCardSmall from "../../ui/ProfileCardSmall"
 
+import RelationsAccountsBack from "./RelationsAccountsBack"
 import RelationsAccountProfileForm from "./RelationsAccountProfileForm"
 
 // import OrganizationMenu from "../OrganizationMenu"
@@ -77,7 +77,9 @@ class RelationsAccountProfile extends Component {
 
                   return (
                     <div>
-                      <Page.Header title={initialData.firstName + " " + initialData.lastName} />
+                      <Page.Header title={initialData.firstName + " " + initialData.lastName}>
+                        <RelationsAccountsBack />
+                      </Page.Header>
                       <Grid.Row>
                         <Grid.Col md={9}>
                         <Card>
@@ -165,13 +167,6 @@ class RelationsAccountProfile extends Component {
                     </Grid.Col>                                    
                     <Grid.Col md={3}>
                       <ProfileCardSmall user={initialData}/>
-                      <HasPermissionWrapper permission="change"
-                                            resource="organizationdiscovery">
-                        <Button color="primary btn-block mb-6"
-                                onClick={() => history.push(return_url)}>
-                          <Icon prefix="fe" name="chevrons-left" /> {t('general.back')}
-                        </Button>
-                      </HasPermissionWrapper>
                       {/* <OrganizationMenu active_link='discoveries'/> */}
                     </Grid.Col>
                   </Grid.Row>
