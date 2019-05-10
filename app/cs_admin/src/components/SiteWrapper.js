@@ -174,7 +174,7 @@ class SiteWrapper extends React.Component<Props, State> {
                 //   unread: unreadCount,
                 // },
                 accountDropdown: {
-                avatarURL: "",
+                avatarURL: "#",
                 name: data.user.firstName + ' ' + data.user.lastName,
                 description: "",
                 options: [
