@@ -13,6 +13,7 @@ export const GET_SUBSCRIPTIONS_QUERY = gql`
         node {
           id
           archived
+          priceTodayDisplay
           displayPublic
           displayShop
           name

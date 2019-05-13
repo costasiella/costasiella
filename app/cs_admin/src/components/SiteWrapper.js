@@ -9,6 +9,7 @@ import 'react-toastify/dist/ReactToastify.css'
 import 'react-confirm-alert/src/react-confirm-alert.css'
 
 import GET_USER from "../queries/system/get_user"
+import { get_all_permissions } from "../tools/user_tools"
 
 import {
   Site,
@@ -46,109 +47,6 @@ type navItem = {|
   +useExact?: boolean,
 |};
 
-const navBarItems: Array<navItem> = [
-  {
-    value: "Home",
-    to: "/",
-    icon: "home",
-    LinkComponent: withRouter(NavLink),
-    useExact: true,
-  },
-  // {
-  //   value: "Interface",
-  //   icon: "box",
-  //   subItems: [
-  //     {
-  //       value: "Cards Design",
-  //       to: "/cards",
-  //       LinkComponent: withRouter(NavLink),
-  //     },
-  //     { value: "Charts", to: "/charts", LinkComponent: withRouter(NavLink) },
-  //     {
-  //       value: "Pricing Cards",
-  //       to: "/pricing-cards",
-  //       LinkComponent: withRouter(NavLink),
-  //     },
-  //   ],
-  // },
-  // {
-  //   value: "Components",
-  //   icon: "calendar",
-  //   subItems: [
-  //     { value: "Maps", to: "/maps", LinkComponent: withRouter(NavLink) },
-  //     { value: "Icons", to: "/icons", LinkComponent: withRouter(NavLink) },
-  //     { value: "Store", to: "/store", LinkComponent: withRouter(NavLink) },
-  //     { value: "Blog", to: "/blog", LinkComponent: withRouter(NavLink) },
-  //   ],
-  // },
-  // {
-  //   value: "Pages",
-  //   icon: "file",
-  //   subItems: [
-  //     { value: "Profile", to: "/profile", LinkComponent: withRouter(NavLink) },
-  //     { value: "Login", to: "/login", LinkComponent: withRouter(NavLink) },
-  //     {
-  //       value: "Register",
-  //       to: "/register",
-  //       LinkComponent: withRouter(NavLink),
-  //     },
-  //     {
-  //       value: "Forgot password",
-  //       to: "/forgot-password",
-  //       LinkComponent: withRouter(NavLink),
-  //     },
-  //     { value: "400 error", to: "/400", LinkComponent: withRouter(NavLink) },
-  //     { value: "401 error", to: "/401", LinkComponent: withRouter(NavLink) },
-  //     { value: "403 error", to: "/403", LinkComponent: withRouter(NavLink) },
-  //     { value: "404 error", to: "/404", LinkComponent: withRouter(NavLink) },
-  //     { value: "500 error", to: "/500", LinkComponent: withRouter(NavLink) },
-  //     { value: "503 error", to: "/503", LinkComponent: withRouter(NavLink) },
-  //     { value: "Email", to: "/email", LinkComponent: withRouter(NavLink) },
-  //     {
-  //       value: "Empty page",
-  //       to: "/empty-page",
-  //       LinkComponent: withRouter(NavLink),
-  //     },
-  //     { value: "RTL", to: "/rtl", LinkComponent: withRouter(NavLink) },
-  //   ],
-  // },
-  {
-    value: "School",
-    to: "/organization",
-    icon: "book",
-    LinkComponent: withRouter(NavLink),
-  },
-  {
-    value: "Finance",
-    to: "/finance",
-    icon: "dollar-sign",
-    LinkComponent: withRouter(NavLink),
-  },
-];
-
-
-const allPermissions = (user) => {
-  // console.log('all_permissions here')
-  const permissions = {}
-  console.log(user)
-  const groups = user.groups
-  console.log(groups)
-  for (let i in groups) {
-    // console.log(i)
-    for (let p in groups[i].permissions) {
-      let codename = groups[i].permissions[p].codename
-      // codename has format <permission>_<resource>
-      let codename_split = codename.split('_')
-      
-      if (!(codename_split[1] in permissions)) {
-        permissions[codename_split[1]] = new Set()
-      }
-      permissions[codename_split[1]].add(codename_split[0])
-    }
-  }
-
-  return permissions
-}
 
 const check_permission = (permissions, permission, resource) => {
   let you_shall_not_pass = true
@@ -166,7 +64,7 @@ const check_permission = (permissions, permission, resource) => {
 
 const getNavBarItems = (t, user) => {
   let items: Array<navItem> = []
-  let permissions = allPermissions(user)
+  let permissions = get_all_permissions(user)
 
   items.push({
     value: t("home.title"),
@@ -175,6 +73,17 @@ const getNavBarItems = (t, user) => {
     LinkComponent: withRouter(NavLink),
     useExact: true,
   })
+
+  if (
+    (check_permission(permissions, 'view', 'account'))
+  ){
+    items.push({
+      value: t("relations.title"),
+      to: "/relations",
+      icon: "users",
+      LinkComponent: withRouter(NavLink),
+    })
+  }
 
   if (
     (check_permission(permissions, 'view', 'financecostcenter')) ||
@@ -265,7 +174,7 @@ class SiteWrapper extends React.Component<Props, State> {
                 //   unread: unreadCount,
                 // },
                 accountDropdown: {
-                avatarURL: "",
+                avatarURL: "#",
                 name: data.user.firstName + ' ' + data.user.lastName,
                 description: "",
                 options: [

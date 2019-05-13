@@ -19,22 +19,23 @@ admin_email = 'admin@costasiella.com'
 admin_password = 'CSAdmin1#'
 
 
-class GQLUsers(TestCase):
+class GQLAccount(TestCase):
 
     def test_query_user(self):
         # This is the test method.
-        # Let's assume that there's a user object "my_test_user" that was already setup        
         query = '''
 {
-  user {
+  account {
     id
     firstName
     lastName
+    email
   }
 }
         '''
         admin_user = AdminFactory.create()
         executed = execute_test_client_api_query(query, admin_user)
         data = executed.get('data')
-        self.assertEqual(data['user']['firstName'], admin_user.first_name)
-        self.assertEqual(data['user']['lastName'], admin_user.last_name)
+        self.assertEqual(data['account']['firstName'], admin_user.first_name)
+        self.assertEqual(data['account']['lastName'], admin_user.last_name)
+        self.assertEqual(data['account']['email'], admin_user.email)

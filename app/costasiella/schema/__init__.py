@@ -1,10 +1,13 @@
 import graphene
 import graphql_jwt
 
+from .account import AccountQuery, AccountMutation
+
 from .finance_costcenter import FinanceCostCenterQuery, FinanceCostCenterMutation
 from .finance_glaccount import FinanceGLAccountQuery, FinanceGLAccountMutation
 from .finance_taxrate import FinanceTaxRateQuery, FinanceTaxRateMutation
 
+from .organization_appointment import OrganizationAppointmentQuery, OrganizationAppointmentMutation
 from .organization_classpass import OrganizationClasspassQuery, OrganizationClasspassMutation
 from .organization_classpass_group import OrganizationClasspassGroupQuery, OrganizationClasspassGroupMutation
 from .organization_classpass_group_classpass import OrganizationClasspassGroupClasspassMutation
@@ -17,12 +20,15 @@ from .organization_membership import OrganizationMembershipQuery, OrganizationMe
 from .organization_subscription import OrganizationSubscriptionQuery, OrganizationSubscriptionMutation
 from .organization_subscription_group import OrganizationSubscriptionGroupQuery, OrganizationSubscriptionGroupMutation
 from .organization_subscription_group_subscription import OrganizationSubscriptionGroupSubscriptionMutation
-from .user import UserQuery, UserMutation
+from .organization_subscription_price import OrganizationSubscriptionPriceQuery, OrganizationSubscriptionPriceMutation
 
 
-class Query(FinanceCostCenterQuery,
+
+class Query(AccountQuery,
+            FinanceCostCenterQuery,
             FinanceGLAccountQuery,
             FinanceTaxRateQuery,
+            OrganizationAppointmentQuery,
             OrganizationClasspassQuery,
             OrganizationClasspassGroupQuery,
             OrganizationClasstypeQuery,
@@ -33,14 +39,16 @@ class Query(FinanceCostCenterQuery,
             OrganizationMembershipQuery,
             OrganizationSubscriptionQuery,
             OrganizationSubscriptionGroupQuery,
-            UserQuery, 
+            OrganizationSubscriptionPriceQuery,
             graphene.ObjectType):
     node = graphene.relay.Node.Field()
 
 
-class Mutation(FinanceCostCenterMutation,
+class Mutation(AccountMutation,
+               FinanceCostCenterMutation,
                FinanceGLAccountMutation,
                FinanceTaxRateMutation,
+               OrganizationAppointmentMutation,
                OrganizationClasspassMutation,
                OrganizationClasspassGroupMutation,
                OrganizationClasspassGroupClasspassMutation,
@@ -53,7 +61,7 @@ class Mutation(FinanceCostCenterMutation,
                OrganizationSubscriptionMutation, 
                OrganizationSubscriptionGroupMutation, 
                OrganizationSubscriptionGroupSubscriptionMutation, 
-               UserMutation, 
+               OrganizationSubscriptionPriceMutation, 
                graphene.ObjectType):
     token_auth = graphql_jwt.ObtainJSONWebToken.Field()
     verify_token = graphql_jwt.Verify.Field()

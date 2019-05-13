@@ -1,15 +1,19 @@
 from django.utils.translation import gettext as _
+from django.utils import timezone
+
 
 import graphene
 from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
 from graphql import GraphQLError
 
+import datetime
 import validators
 
 from ..models import OrganizationSubscription, OrganizationMembership, FinanceCostCenter, FinanceGLAccount, FinanceTaxRate 
 from ..modules.gql_tools import require_login, require_login_and_permission, get_rid
 from ..modules.messages import Messages
+from ..modules.validity_tools import display_subscription_unit
 
 
 m = Messages()
@@ -55,9 +59,12 @@ def validate_create_update_input(input, update=False):
 
     return result
 
+
 class OrganizationSubscriptionNodeInterface(graphene.Interface):
     id = graphene.GlobalID()
     subscription_unit_display = graphene.String()
+    price_today = graphene.Float()
+    price_today_display = graphene.String()
 
 
 class OrganizationSubscriptionNode(DjangoObjectType):   
@@ -68,8 +75,19 @@ class OrganizationSubscriptionNode(DjangoObjectType):
 
 
     def resolve_subscription_unit_display(self, info):
-        from ..modules.validity_tools import display_subscription_unit
         return display_subscription_unit(self.subscription_unit)
+
+
+    def resolve_price_today_display(self, info):
+        today = timezone.now().date()
+
+        return self.get_price_on_date(today, display=True)
+
+
+    def resolve_price_today(self, info):
+        today = timezone.now().date()
+
+        return self.get_price_on_date(today)
 
 
     @classmethod

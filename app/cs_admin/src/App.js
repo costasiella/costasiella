@@ -5,9 +5,13 @@
 
 import React, { Component } from 'react'
 import {Route, Switch, HashRouter} from 'react-router-dom'
-import { ApolloProvider } from "react-apollo";
-import ApolloClient from "apollo-boost";
-import gql from "graphql-tag";
+import { ApolloProvider } from "react-apollo"
+import ApolloClient from "apollo-boost"
+import gql from "graphql-tag"
+
+// Import moment locale
+import moment from 'moment'
+import 'moment/locale/nl'
 
 import HomeHome from './components/home/home/HomeHome'
 
@@ -56,15 +60,30 @@ import OrganizationSubscriptionsGroups from './components/organization/subscript
 import OrganizationSubscriptionsGroupAdd from './components/organization/subscriptions_groups/OrganizationSubscriptionsGroupAdd'
 import OrganizationSubscriptionsGroupEdit from './components/organization/subscriptions_groups/OrganizationSubscriptionsGroupEdit'
 import OrganizationSubscriptionsGroupEditSubscriptions from './components/organization/subscriptions_groups/OrganizationSubscriptionsGroupEditSubscriptions'
+import OrganizationSubscriptionsPrices from './components/organization/subscriptions/prices/OrganizationSubscriptionsPrices'
+import OrganizationSubscriptionPriceAdd from './components/organization/subscriptions/prices/OrganizationSubscriptionPriceAdd'
+import OrganizationSubscriptionPriceEdit from './components/organization/subscriptions/prices/OrganizationSubscriptionPriceEdit'
+
+import RelationsHome from './components/relations/home/RelationsHome'
+import RelationsAccounts from './components/relations/accounts/RelationsAccounts'
+import RelationsAccountAdd from './components/relations/accounts/RelationsAccountAdd'
+import RelationsAccountProfile from './components/relations/accounts/RelationsAccountProfile'
 
 
 import Error404 from "./components/Error404"
 
 // Tabler css 
-import "tabler-react/dist/Tabler.css";
+import "tabler-react/dist/Tabler.css"
+// React-datepicker css
+import "react-datepicker/dist/react-datepicker.css"
 // App css
 import './App.css'
 
+// Register "nl" locale for react-datepicker
+// https://reactdatepicker.com/#example-17
+import { registerLocale } from "react-datepicker"
+import nl from 'date-fns/locale/nl';
+registerLocale('nl', nl);
 
 const client = new ApolloClient({
      uri: "http://localhost:8000/graphql/",
@@ -105,6 +124,9 @@ class App extends Component {
   }
 
   render() {
+    // Register "NL" locale for moment
+    moment.locale('en-US')
+
     return (
       <HashRouter>
         <ApolloProvider client={client}>
@@ -154,6 +176,13 @@ class App extends Component {
             <Route exact path="/organization/subscriptions/groups/add" component={OrganizationSubscriptionsGroupAdd} />
             <Route exact path="/organization/subscriptions/groups/edit/:id" component={OrganizationSubscriptionsGroupEdit} />
             <Route exact path="/organization/subscriptions/groups/edit/subscriptions/:id" component={OrganizationSubscriptionsGroupEditSubscriptions} />
+            <Route exact path="/organization/subscriptions/prices/:subscription_id" component={OrganizationSubscriptionsPrices} />
+            <Route exact path="/organization/subscriptions/prices/add/:subscription_id" component={OrganizationSubscriptionPriceAdd} />
+            <Route exact path="/organization/subscriptions/prices/edit/:subscription_id/:id" component={OrganizationSubscriptionPriceEdit} />
+            <Route exact path="/relations" component={RelationsHome} />
+            <Route exact path="/relations/accounts" component={RelationsAccounts} />
+            <Route exact path="/relations/accounts/add" component={RelationsAccountAdd} />
+            <Route exact path="/relations/accounts/:id/profile" component={RelationsAccountProfile} />
 
             <Route component={Error404} />
           </Switch>

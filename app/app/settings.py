@@ -217,6 +217,7 @@ AUTH_USER_MODEL = 'costasiella.Account'
 ACCOUNT_PRESERVE_USERNAME_CASING = False
 ACCOUNT_USERNAME_REQUIRED = False # Don't use usernames
 ACCOUNT_UNIQUE_EMAIL = True
+ACCOUNT_USER_MODEL_USERNAME_FIELD = None
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_AUTHENTICATION_METHOD = 'email'  # Use email as the primary identifier
 ACCOUNT_EMAIL_VERIFICATION = "mandatory" # Make email verification mandatory to avoid junk email accounts
