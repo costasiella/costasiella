@@ -91,7 +91,7 @@ class BaseEncryptedField(models.Field):
 
     def to_python(self, value):
         """
-        Descript value from DB is encrypted
+        Descript value from DB if encrypted, else do nothing
         """
         # if isinstance(self.crypt.primary_key, keyczar.keys.RsaPublicKey):
         #     retval = value
@@ -175,10 +175,10 @@ class EncryptedTextField(BaseEncryptedField):
     def get_internal_type(self):
         return 'TextField'
 
-    def formfield(self, **kwargs):
-        defaults = {'widget': forms.Textarea}
-        defaults.update(kwargs)
-        return super(EncryptedTextField, self).formfield(**defaults)
+    # def formfield(self, **kwargs):
+    #     defaults = {'widget': forms.Textarea}
+    #     defaults.update(kwargs)
+    #     return super(EncryptedTextField, self).formfield(**defaults)
 
 
 class EncryptedCharField(BaseEncryptedField):
@@ -188,7 +188,7 @@ class EncryptedCharField(BaseEncryptedField):
     def get_internal_type(self):
         return 'CharField'
 
-    def formfield(self, **kwargs):
-        defaults = {'max_length': self.max_length}
-        defaults.update(kwargs)
-        return super(EncryptedCharField, self).formfield(**defaults)
+    # def formfield(self, **kwargs):
+    #     defaults = {'max_length': self.max_length}
+    #     defaults.update(kwargs)
+    #     return super(EncryptedCharField, self).formfield(**defaults)
