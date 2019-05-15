@@ -46,7 +46,6 @@ class BaseEncryptedField(models.Field):
             url=vault_url,
             token=vault_token
         )
-        
 
         # Encrypted size is larger than unencrypted
         self.unencrypted_length = max_length = kwargs.get('max_length', None)
@@ -127,7 +126,9 @@ class BaseEncryptedField(models.Field):
                     name=self.vault_transit_key,
                     plaintext=base64.urlsafe_b64encode('hi its me hvac').decode('ascii'),
             )
-            ciphertext = encrypt_data_response['data']['ciphertext']
+            value = encrypt_data_response['data']['ciphertext'] # (ciphertext)
+
+        return value
 
         # if value and not value.startswith(self.prefix):
         #     # We need to encode a unicode string into a byte string, first.
