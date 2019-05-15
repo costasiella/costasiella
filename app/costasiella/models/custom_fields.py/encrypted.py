@@ -58,29 +58,32 @@ class BaseEncryptedField(models.Field):
         # difference (except for length checking) between varchar and text in PG.
         return len(self.prefix) + len(self.crypt.Encrypt('x' * unencrypted_length))
 
-    def get_crypt_class(self):
-        """
-        Get the Keyczar class to use.
-        The class can be customized with the ENCRYPTED_FIELD_MODE setting. By default,
-        this setting is DECRYPT_AND_ENCRYPT. Set this to ENCRYPT to disable decryption.
-        This is necessary if you are only providing public keys to Keyczar.
-        Returns:
-            keyczar.Encrypter if ENCRYPTED_FIELD_MODE is ENCRYPT.
-            keyczar.Crypter if ENCRYPTED_FIELD_MODE is DECRYPT_AND_ENCRYPT.
-        Override this method to customize the type of Keyczar class returned.
-        """
-        crypt_type = getattr(settings, 'ENCRYPTED_FIELD_MODE', 'DECRYPT_AND_ENCRYPT')
-        if crypt_type == 'ENCRYPT':
-            crypt_class_name = 'Encrypter'
-        elif crypt_type == 'DECRYPT_AND_ENCRYPT':
-            crypt_class_name = 'Crypter'
-        else:
-            raise ImproperlyConfigured(
-                'ENCRYPTED_FIELD_MODE must be either DECRYPT_AND_ENCRYPT '
-                'or ENCRYPT, not %s.' % crypt_type)
-        return getattr(keyczar, crypt_class_name)
+    # def get_crypt_class(self):
+    #     """
+    #     Get the Keyczar class to use.
+    #     The class can be customized with the ENCRYPTED_FIELD_MODE setting. By default,
+    #     this setting is DECRYPT_AND_ENCRYPT. Set this to ENCRYPT to disable decryption.
+    #     This is necessary if you are only providing public keys to Keyczar.
+    #     Returns:
+    #         keyczar.Encrypter if ENCRYPTED_FIELD_MODE is ENCRYPT.
+    #         keyczar.Crypter if ENCRYPTED_FIELD_MODE is DECRYPT_AND_ENCRYPT.
+    #     Override this method to customize the type of Keyczar class returned.
+    #     """
+    #     crypt_type = getattr(settings, 'ENCRYPTED_FIELD_MODE', 'DECRYPT_AND_ENCRYPT')
+    #     if crypt_type == 'ENCRYPT':
+    #         crypt_class_name = 'Encrypter'
+    #     elif crypt_type == 'DECRYPT_AND_ENCRYPT':
+    #         crypt_class_name = 'Crypter'
+    #     else:
+    #         raise ImproperlyConfigured(
+    #             'ENCRYPTED_FIELD_MODE must be either DECRYPT_AND_ENCRYPT '
+    #             'or ENCRYPT, not %s.' % crypt_type)
+    #     return getattr(keyczar, crypt_class_name)
 
     def to_python(self, value):
+        """
+        Descript value from DB is encrypted
+        """
         if isinstance(self.crypt.primary_key, keyczar.keys.RsaPublicKey):
             retval = value
         elif value and (value.startswith(self.prefix)):
@@ -94,12 +97,12 @@ class BaseEncryptedField(models.Field):
             retval = value
         return retval
 
-    if django.VERSION < (2, ):
-        def from_db_value(self, value, expression, connection, context):
-            return self.to_python(value)
-    else:
-        def from_db_value(self, value, expression, connection):  # type: ignore
-            return self.to_python(value)
+    # if django.VERSION < (2, ):
+    #     def from_db_value(self, value, expression, connection, context):
+    #         return self.to_python(value)
+    # else:
+    def from_db_value(self, value, expression, connection):  # type: ignore
+        return self.to_python(value)
 
     def get_db_prep_value(self, value, connection, prepared=False):
         if value and not value.startswith(self.prefix):
