@@ -256,3 +256,10 @@ CONSTANCE_CONFIG_FIELDSETS = {
         'CURRENCY_SYMBOL'
     ),
 }
+
+
+# Vault configuration
+# https://www.vaultproject.io/
+
+VAULT_URL = 'http://localhost:8200'
+VAULT_TOKEN = 's.PLq7PoxfziND5gIWlTdVDG6u'
