@@ -16,6 +16,12 @@ except ImportError:
                       'You can obtain hvac from https://hvac.readthedocs.io/.')
 
 
+
+# >>> var = base64.urlsafe_b64encode('plaintext'.encode()).decode('utf8')
+# >>> base64.urlsafe_b64decode(var).decode('utf-8')
+# 'plaintext'
+
+
 class EncryptionWarning(RuntimeWarning):
     pass
 
@@ -31,7 +37,7 @@ class BaseEncryptedField(models.Field):
         # self.crypt = crypt_class.Read(settings.ENCRYPTED_FIELD_KEYS_DIR)
         vault_url = getattr(settings, 'VAULT_URL', None)
         vault_token = getattr(settings, 'VAULT_TOKEN', None)
-        vault_transit_key = getattr(settings, 'VAULT_TRANSIT', None)
+        self.vault_transit_key = getattr(settings, 'VAULT_TRANSIT', None)
 
         if not vault_url:
             raise ImproperlyConfigured('You must set the settings.VAULT_URL')
@@ -39,7 +45,7 @@ class BaseEncryptedField(models.Field):
         if not vault_token:
             raise ImproperlyConfigured('You must set the settings.VAULT_TOKEN')
 
-        if not vault_transit_key:
+        if not self.vault_transit_key:
             raise ImproperlyConfigured('You must set the settings.VAULT_TRANSIT_KEY')
         
         self.client = hvac.Client(
@@ -87,15 +93,23 @@ class BaseEncryptedField(models.Field):
         """
         Descript value from DB is encrypted
         """
-        if isinstance(self.crypt.primary_key, keyczar.keys.RsaPublicKey):
-            retval = value
-        elif value and (value.startswith(self.prefix)):
-            if hasattr(self.crypt, 'Decrypt'):
-                retval = self.crypt.Decrypt(value[len(self.prefix):])
-                if six.PY2 and retval:
-                    retval = retval.decode('utf-8')
-            else:
-                retval = value
+        # if isinstance(self.crypt.primary_key, keyczar.keys.RsaPublicKey):
+        #     retval = value
+        if value and (value.startswith(self.prefix)):
+            decrypt_data_response = self.client.secrets.transit.decrypt_data(
+                name=self.vault_transit_key,
+                ciphertext=value,
+            )
+            plaintext = decrypt_data_response['data']['plaintext']
+            print(plaintext)
+
+            retval = base64.urlsafe_b64decode(plaintext).decode('utf-8')
+            # if hasattr(self.crypt, 'Decrypt'):
+            #     retval = self.crypt.Decrypt(value[len(self.prefix):])
+            #     if six.PY2 and retval:
+            #         retval = retval.decode('utf-8')
+            # else:
+            #     retval = value
         else:
             retval = value
         return retval
@@ -111,7 +125,7 @@ class BaseEncryptedField(models.Field):
         if value and not value.startswith(self.prefix):
             # We need to encode to base64 first, Vault transit 
             # expects a base64 encoded string
-            plaintext = base64.urlsafe_b64encode(value).decode('ascii')
+            # plaintext = base64.urlsafe_b64encode(value).decode('ascii')
 
             # Truncated encrypted content is unreadable,
             # so truncate before encryption
@@ -124,9 +138,12 @@ class BaseEncryptedField(models.Field):
 
             encrypt_data_response = self.client.secrets.transit.encrypt_data(
                     name=self.vault_transit_key,
-                    plaintext=base64.urlsafe_b64encode('hi its me hvac').decode('ascii'),
+                    plaintext=base64.urlsafe_b64encode(plaintext.encode()).decode('ascii'),
             )
+            print(encrypt_data_response)
+
             value = encrypt_data_response['data']['ciphertext'] # (ciphertext)
+            print(value)
 
         return value
 
