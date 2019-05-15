@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 import warnings
+import base64
 
 import django
-import six
+# import six
 from django import forms
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
@@ -28,6 +29,20 @@ class BaseEncryptedField(models.Field):
         #                                'setting to your Keyczar keys directory.')
         # crypt_class = self.get_crypt_class()
         # self.crypt = crypt_class.Read(settings.ENCRYPTED_FIELD_KEYS_DIR)
+        vault_url = getattr(settings, 'VAULT_URL', None)
+        vault_token = getattr(settings, 'VAULT_TOKEN', None)
+
+        if not vault_url:
+            raise ImproperlyConfigured('You must set the settings.VAULT_URL')
+
+        if not vault_token:
+            raise ImproperlyConfigured('You must set the settings.VAULT_TOKEN')
+        
+        self.client = hvac.Client(
+            url=vault_url,
+            token=vault_token
+        )
+        
 
         # Encrypted size is larger than unencrypted
         self.unencrypted_length = max_length = kwargs.get('max_length', None)
