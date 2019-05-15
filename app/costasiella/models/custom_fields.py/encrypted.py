@@ -31,12 +31,16 @@ class BaseEncryptedField(models.Field):
         # self.crypt = crypt_class.Read(settings.ENCRYPTED_FIELD_KEYS_DIR)
         vault_url = getattr(settings, 'VAULT_URL', None)
         vault_token = getattr(settings, 'VAULT_TOKEN', None)
+        vault_transit_key = getattr(settings, 'VAULT_TRANSIT', None)
 
         if not vault_url:
             raise ImproperlyConfigured('You must set the settings.VAULT_URL')
 
         if not vault_token:
             raise ImproperlyConfigured('You must set the settings.VAULT_TOKEN')
+
+        if not vault_transit_key:
+            raise ImproperlyConfigured('You must set the settings.VAULT_TRANSIT_KEY')
         
         self.client = hvac.Client(
             url=vault_url,
@@ -106,22 +110,42 @@ class BaseEncryptedField(models.Field):
 
     def get_db_prep_value(self, value, connection, prepared=False):
         if value and not value.startswith(self.prefix):
-            # We need to encode a unicode string into a byte string, first.
-            # keyczar expects a bytestring, not a unicode string.
-            if six.PY2:
-                if type(value) == six.types.UnicodeType:
-                    value = value.encode('utf-8')
+            # We need to encode to base64 first, Vault transit 
+            # expects a base64 encoded string
+            plaintext = base64.urlsafe_b64encode(value).decode('ascii')
+
             # Truncated encrypted content is unreadable,
             # so truncate before encryption
             max_length = self.unencrypted_length
-            if max_length and len(value) > max_length:
+            if max_length and len(plaintext) > max_length:
                 warnings.warn("Truncating field %s from %d to %d bytes" % (
-                    self.name, len(value), max_length), EncryptionWarning
+                    self.name, len(plaintext), max_length), EncryptionWarning
                 )
-                value = value[:max_length]
+                plaintext = plaintext[:max_length]
 
-            value = self.prefix + self.crypt.Encrypt(value)
-        return value
+            encrypt_data_response = self.client.secrets.transit.encrypt_data(
+                    name=self.vault_transit_key,
+                    plaintext=base64.urlsafe_b64encode('hi its me hvac').decode('ascii'),
+            )
+            ciphertext = encrypt_data_response['data']['ciphertext']
+
+        # if value and not value.startswith(self.prefix):
+        #     # We need to encode a unicode string into a byte string, first.
+        #     # keyczar expects a bytestring, not a unicode string.
+        #     if six.PY2:
+        #         if type(value) == six.types.UnicodeType:
+        #             value = value.encode('utf-8')
+        #     # Truncated encrypted content is unreadable,
+        #     # so truncate before encryption
+        #     max_length = self.unencrypted_length
+        #     if max_length and len(value) > max_length:
+        #         warnings.warn("Truncating field %s from %d to %d bytes" % (
+        #             self.name, len(value), max_length), EncryptionWarning
+        #         )
+        #         value = value[:max_length]
+
+        #     value = self.prefix + self.crypt.Encrypt(value)
+        # return value
 
     def deconstruct(self):
         name, path, args, kwargs = super(BaseEncryptedField, self).deconstruct()

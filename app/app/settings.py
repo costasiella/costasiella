@@ -263,3 +263,4 @@ CONSTANCE_CONFIG_FIELDSETS = {
 
 VAULT_URL = 'http://localhost:8200'
 VAULT_TOKEN = 's.PLq7PoxfziND5gIWlTdVDG6u'
+VAULT_TRANSIT_KEY = 'costasiella'
