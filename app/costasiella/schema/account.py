@@ -12,9 +12,9 @@ from graphene_django.filter import DjangoFilterConnectionField
 from allauth.account.models import EmailAddress
 
 from ..modules.gql_tools import require_login_and_permission, get_rid
-from ..modules.encrypted_fields import EncryptedCharField
+from ..modules.encrypted_fields import EncryptedTextField
 
-@convert_django_field.register(EncryptedCharField)
+@convert_django_field.register(EncryptedTextField)
 def convert_json_field_to_string(field, registry=None):
     return graphene.String()
 

@@ -53,21 +53,24 @@ class BaseEncryptedField(models.Field):
             token=vault_token
         )
 
-        # Encrypted size is larger than unencrypted
-        self.unencrypted_length = max_length = kwargs.get('max_length', None)
-        if max_length:
-            kwargs['max_length'] = self.calculate_crypt_max_length(max_length)
+        # # Encrypted size is larger than unencrypted
+        # self.unencrypted_length = max_length = kwargs.get('max_length', None)
+        # if max_length:
+        #     kwargs['max_length'] = self.calculate_crypt_max_length(max_length)
 
         super(BaseEncryptedField, self).__init__(*args, **kwargs)
 
-    def calculate_crypt_max_length(self, unencrypted_length):
-        # TODO: Re-examine if this logic will actually make a large-enough
-        # max-length for unicode strings that have non-ascii characters in them.
-        # For PostGreSQL we might as well always use textfield since there is little
-        # difference (except for length checking) between varchar and text in PG.
+    # def calculate_crypt_max_length(self, unencrypted_length):
+    #     # TODO: Re-examine if this logic will actually make a large-enough
+    #     # max-length for unicode strings that have non-ascii characters in them.
+    #     # UTF-8 Characters can use 1 - 4 bytes for a character. 
+    #     # In general a textfield might be preferrable, as the encrypted value can be 
+    #     # much longer then the plain text. 
+    #     # For PostGreSQL we might as well always use textfield since there is little
+    #     # difference (except for length checking) between varchar and text in PG.
         
-        # return len(self.prefix) + len(self.crypt.Encrypt('x' * unencrypted_length))
-        return len(self.prefix) + self.unencrypted_length
+    #     # return len(self.prefix) + len(self.crypt.Encrypt('x' * unencrypted_length))
+    #     return len(self.prefix) + self.unencrypted_length
 
     # def get_crypt_class(self):
     #     """
@@ -91,9 +94,10 @@ class BaseEncryptedField(models.Field):
     #             'or ENCRYPT, not %s.' % crypt_type)
     #     return getattr(keyczar, crypt_class_name)
 
+
     def to_python(self, value):
         """
-        Descript value from DB if encrypted, else do nothing
+        Decrypt value from DB if encrypted, else do nothing
         """
         # if isinstance(self.crypt.primary_key, keyczar.keys.RsaPublicKey):
         #     retval = value
@@ -132,12 +136,12 @@ class BaseEncryptedField(models.Field):
 
             # Truncated encrypted content is unreadable,
             # so truncate before encryption
-            max_length = self.unencrypted_length
-            if max_length and len(plaintext) > max_length:
-                warnings.warn("Truncating field %s from %d to %d bytes" % (
-                    self.name, len(plaintext), max_length), EncryptionWarning
-                )
-                plaintext = plaintext[:max_length]
+            # max_length = self.unencrypted_length
+            # if max_length and len(plaintext) > max_length:
+            #     warnings.warn("Truncating field %s from %d to %d bytes" % (
+            #         self.name, len(plaintext), max_length), EncryptionWarning
+            #     )
+            #     plaintext = plaintext[:max_length]
 
             encrypt_data_response = self.client.secrets.transit.encrypt_data(
                     name=self.vault_transit_key,
