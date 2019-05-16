@@ -131,6 +131,7 @@ class UpdateAccount(graphene.relay.ClientIDMutation):
         first_name = graphene.String(required=True)
         last_name = graphene.String(required=True)
         email = graphene.String(required=True)
+        address = graphene.String(requires=False, default_value=None)
 
     account = graphene.Field(AccountNode)
 
@@ -153,6 +154,43 @@ class UpdateAccount(graphene.relay.ClientIDMutation):
         #Don't insert duplicate emails into the DB.
         if query_set.exists():
             raise Exception(_('Unable to save, an account is already registered with this e-mail address'))
+
+
+        ################
+        # import base64
+        # import hvac
+        # from django.conf import settings
+
+        # vault_url = getattr(settings, 'VAULT_URL', None)
+        # vault_token = getattr(settings, 'VAULT_TOKEN', None)
+        # self.vault_transit_key = getattr(settings, 'VAULT_TRANSIT_KEY', None)
+
+        # if not vault_url:
+        #     raise Exception('You must set the settings.VAULT_URL')
+
+        # if not vault_token:
+        #     raise Exception('You must set the settings.VAULT_TOKEN')
+
+        # if not self.vault_transit_key:
+        #     raise Exception('You must set the settings.VAULT_TRANSIT_KEY')
+        
+        # self.client = hvac.Client(
+        #     url=vault_url,
+        #     token=vault_token
+        # )
+
+        # plaintext = input['address']
+
+        # encrypt_data_response = self.client.secrets.transit.encrypt_data(
+        #     name=self.vault_transit_key,
+        #     plaintext=base64.urlsafe_b64encode(plaintext.encode()).decode('ascii'),
+        # )
+        # print(encrypt_data_response)
+
+        # value = encrypt_data_response['data']['ciphertext'] # (ciphertext)
+        # print(value)
+
+        #################
 
         account.first_name = input['first_name']
         account.last_name = input['last_name']

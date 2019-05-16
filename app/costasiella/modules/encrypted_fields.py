@@ -37,7 +37,7 @@ class BaseEncryptedField(models.Field):
         # self.crypt = crypt_class.Read(settings.ENCRYPTED_FIELD_KEYS_DIR)
         vault_url = getattr(settings, 'VAULT_URL', None)
         vault_token = getattr(settings, 'VAULT_TOKEN', None)
-        self.vault_transit_key = getattr(settings, 'VAULT_TRANSIT', None)
+        self.vault_transit_key = getattr(settings, 'VAULT_TRANSIT_KEY', None)
 
         if not vault_url:
             raise ImproperlyConfigured('You must set the settings.VAULT_URL')
@@ -65,7 +65,9 @@ class BaseEncryptedField(models.Field):
         # max-length for unicode strings that have non-ascii characters in them.
         # For PostGreSQL we might as well always use textfield since there is little
         # difference (except for length checking) between varchar and text in PG.
-        return len(self.prefix) + len(self.crypt.Encrypt('x' * unencrypted_length))
+        
+        # return len(self.prefix) + len(self.crypt.Encrypt('x' * unencrypted_length))
+        return len(self.prefix) + self.unencrypted_length
 
     # def get_crypt_class(self):
     #     """

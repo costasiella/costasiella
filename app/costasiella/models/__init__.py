@@ -18,4 +18,3 @@ from .organization_subscription import OrganizationSubscription
 from .organization_subscription_group import OrganizationSubscriptionGroup
 from .organization_subscription_group_subscription import OrganizationSubscriptionGroupSubscription
 from .organization_subscription_price import OrganizationSubscriptionPrice
-
