@@ -128,6 +128,7 @@ class BaseEncryptedField(models.Field):
             # We need to encode to base64 first, Vault transit 
             # expects a base64 encoded string
             # plaintext = base64.urlsafe_b64encode(value).decode('ascii')
+            plaintext = value
 
             # Truncated encrypted content is unreadable,
             # so truncate before encryption

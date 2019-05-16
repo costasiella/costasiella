@@ -5,12 +5,18 @@ from django.contrib.auth.models import Group, Permission
 from django.db.models import Q
 
 import graphene
+from graphene_django.converter import convert_django_field
 from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
 
 from allauth.account.models import EmailAddress
 
 from ..modules.gql_tools import require_login_and_permission, get_rid
+from ..modules.encrypted_fields import EncryptedCharField
+
+@convert_django_field.register(EncryptedCharField)
+def convert_json_field_to_string(field, registry=None):
+    return graphene.String()
 
 
 class UserType(DjangoObjectType):
@@ -156,46 +162,11 @@ class UpdateAccount(graphene.relay.ClientIDMutation):
             raise Exception(_('Unable to save, an account is already registered with this e-mail address'))
 
 
-        ################
-        # import base64
-        # import hvac
-        # from django.conf import settings
-
-        # vault_url = getattr(settings, 'VAULT_URL', None)
-        # vault_token = getattr(settings, 'VAULT_TOKEN', None)
-        # self.vault_transit_key = getattr(settings, 'VAULT_TRANSIT_KEY', None)
-
-        # if not vault_url:
-        #     raise Exception('You must set the settings.VAULT_URL')
-
-        # if not vault_token:
-        #     raise Exception('You must set the settings.VAULT_TOKEN')
-
-        # if not self.vault_transit_key:
-        #     raise Exception('You must set the settings.VAULT_TRANSIT_KEY')
-        
-        # self.client = hvac.Client(
-        #     url=vault_url,
-        #     token=vault_token
-        # )
-
-        # plaintext = input['address']
-
-        # encrypt_data_response = self.client.secrets.transit.encrypt_data(
-        #     name=self.vault_transit_key,
-        #     plaintext=base64.urlsafe_b64encode(plaintext.encode()).decode('ascii'),
-        # )
-        # print(encrypt_data_response)
-
-        # value = encrypt_data_response['data']['ciphertext'] # (ciphertext)
-        # print(value)
-
-        #################
-
         account.first_name = input['first_name']
         account.last_name = input['last_name']
         account.email = input['email']
         account.username = input['email']
+        account.address = input['address']
         account.save()
 
         # Update Allauth email address 
