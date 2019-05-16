@@ -6,8 +6,16 @@ from ..modules.encrypted_fields import EncryptedTextField
 class Account(AbstractUser):
     # add additional fields in here
     # teacher and employee will use OneToOne fields. An account can optionally be a teacher or employee.
+    # Editable parameter docs
+    # https://docs.djangoproject.com/en/2.2/ref/models/fields/#editable
 
-    address = EncryptedTextField(max_length=255, default="")
+    full_name = models.CharField(max_length=255, default="", editable=False)
+    address = EncryptedTextField(default="")
 
     def __str__(self):
         return self.email
+
+    def save(self, *args, **kwargs):
+        name = [self.first_name, self.last_name]
+        self.full_name = " ".join(name)
+        super(Account, self).save(*args, **kwargs)

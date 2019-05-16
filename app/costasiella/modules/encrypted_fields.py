@@ -174,7 +174,6 @@ class BaseEncryptedField(models.Field):
 
     def deconstruct(self):
         name, path, args, kwargs = super(BaseEncryptedField, self).deconstruct()
-        kwargs['max_length'] = self.unencrypted_length
         return name, path, args, kwargs
 
 

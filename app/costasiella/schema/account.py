@@ -166,7 +166,9 @@ class UpdateAccount(graphene.relay.ClientIDMutation):
         account.last_name = input['last_name']
         account.email = input['email']
         account.username = input['email']
-        account.address = input['address']
+        # Only update these fields if input has been passed
+        if input['address']:
+            account.address = input['address']
         account.save()
 
         # Update Allauth email address 
