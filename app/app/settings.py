@@ -211,6 +211,12 @@ LOGIN_REDIRECT_URL = 'home'
 # Custom user model
 AUTH_USER_MODEL = 'costasiella.Account'
 
+# Use the Argon2 hasher for improved security
+PASSWORD_HASHERS = [
+    'django.contrib.auth.hashers.Argon2PasswordHasher',
+    'django.contrib.auth.hashers.PBKDF2PasswordHasher',
+]
+
 # Allauth configuration
 # https://django-allauth.readthedocs.io/en/latest/configuration.html
 
