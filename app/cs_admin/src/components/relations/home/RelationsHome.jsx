@@ -13,7 +13,7 @@ import {
 import SiteWrapper from "../../SiteWrapper"
 import HasPermissionWrapper from "../../HasPermissionWrapper"
 
-// import RelationMenu from "../RelationMenu"
+import RelationsMenu from "../RelationsMenu"
 
 
 class RelationsHome extends Component {
@@ -45,7 +45,7 @@ class RelationsHome extends Component {
                 </Grid.Row>
               </Grid.Col>
               <Grid.Col md={3}>
-                {/* <RelationMenu /> */}
+                <RelationsMenu />
               </Grid.Col>
             </Grid.Row>
           </Container>
