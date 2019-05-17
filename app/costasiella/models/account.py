@@ -11,6 +11,7 @@ class Account(AbstractUser):
 
     full_name = models.CharField(max_length=255, default="", editable=False)
     address = EncryptedTextField(default="")
+    date_of_birth = EncryptedTextField(data_type="date", default="")
 
     def __str__(self):
         return self.email

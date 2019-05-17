@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import warnings
+import datetime
 import base64
 
 import django
@@ -29,7 +30,7 @@ class EncryptionWarning(RuntimeWarning):
 class BaseEncryptedField(models.Field):
     prefix = 'vault'
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, data_type="string", *args, **kwargs):
         # if not getattr(settings, 'ENCRYPTED_FIELD_KEYS_DIR', None):
         #     raise ImproperlyConfigured('You must set the settings.ENCRYPTED_FIELD_KEYS_DIR '
         #                                'setting to your Keyczar keys directory.')
@@ -57,6 +58,7 @@ class BaseEncryptedField(models.Field):
         # self.unencrypted_length = max_length = kwargs.get('max_length', None)
         # if max_length:
         #     kwargs['max_length'] = self.calculate_crypt_max_length(max_length)
+        self.data_type = data_type
 
         super(BaseEncryptedField, self).__init__(*args, **kwargs)
 
@@ -97,25 +99,26 @@ class BaseEncryptedField(models.Field):
 
     def to_python(self, value):
         """
-        Decrypt value from DB if encrypted, else do nothing
+        Decrypt value from DB if encrypted, else return value
         """
         # if isinstance(self.crypt.primary_key, keyczar.keys.RsaPublicKey):
         #     retval = value
-        if value and (value.startswith(self.prefix)):
-            decrypt_data_response = self.client.secrets.transit.decrypt_data(
-                name=self.vault_transit_key,
-                ciphertext=value,
-            )
-            plaintext = decrypt_data_response['data']['plaintext']
-            print(plaintext)
+        if value and not isinstance(value, datetime.date): 
+            if (value.startswith(self.prefix)):
+                # Decrypt
+                decrypt_data_response = self.client.secrets.transit.decrypt_data(
+                    name=self.vault_transit_key,
+                    ciphertext=value,
+                )
+                plaintext = decrypt_data_response['data']['plaintext']
+                print(plaintext)
 
-            retval = base64.urlsafe_b64decode(plaintext).decode('utf-8')
-            # if hasattr(self.crypt, 'Decrypt'):
-            #     retval = self.crypt.Decrypt(value[len(self.prefix):])
-            #     if six.PY2 and retval:
-            #         retval = retval.decode('utf-8')
-            # else:
-            #     retval = value
+                retval = base64.urlsafe_b64decode(plaintext).decode('utf-8')
+                if self.data_type == 'date':
+                    # Transform return value into datetime.date
+                    [year, month, day] = retval.split('-')
+                    retval = datetime.date(int(year), int(month), int(day))
+                
         else:
             retval = value
         return retval
@@ -128,11 +131,16 @@ class BaseEncryptedField(models.Field):
         return self.to_python(value)
 
     def get_db_prep_value(self, value, connection, prepared=False):
-        if value and not value.startswith(self.prefix):
-            # We need to encode to base64 first, Vault transit 
-            # expects a base64 encoded string
-            # plaintext = base64.urlsafe_b64encode(value).decode('ascii')
-            plaintext = value
+        # if value and not value.startswith(self.prefix):
+        if value:
+            if self.data_type == 'date':
+                plaintext = str(value) # convert to string first
+            else:
+                plaintext = value
+
+            if plaintext.startswith(self.prefix):
+                # Just in case, make sure we never double encrypt
+                return value
 
             # Truncated encrypted content is unreadable,
             # so truncate before encryption

@@ -138,6 +138,7 @@ class UpdateAccount(graphene.relay.ClientIDMutation):
         last_name = graphene.String(required=True)
         email = graphene.String(required=True)
         address = graphene.String(requires=False, default_value="")
+        date_of_birth = graphene.types.datetime.Date(required=False, default_value="")
 
     account = graphene.Field(AccountNode)
 
@@ -151,6 +152,9 @@ class UpdateAccount(graphene.relay.ClientIDMutation):
         if not account:
             raise Exception('Invalid Account ID!')
 
+        print(account.date_of_birth)
+        print(type(account.date_of_birth))
+
         # verify email unique
         query_set = get_user_model().objects.filter(
             ~Q(pk=account.pk),
@@ -161,7 +165,6 @@ class UpdateAccount(graphene.relay.ClientIDMutation):
         if query_set.exists():
             raise Exception(_('Unable to save, an account is already registered with this e-mail address'))
 
-
         account.first_name = input['first_name']
         account.last_name = input['last_name']
         account.email = input['email']
@@ -169,6 +172,8 @@ class UpdateAccount(graphene.relay.ClientIDMutation):
         # Only update these fields if input has been passed
         if input['address']:
             account.address = input['address']
+        if input['date_of_birth']:
+            account.date_of_birth = input['date_of_birth']
         account.save()
 
         # Update Allauth email address 
