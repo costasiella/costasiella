@@ -179,7 +179,6 @@ def validate_create_update_input(account, input, update=False):
     return result
 
 
-
 class UpdateAccount(graphene.relay.ClientIDMutation):
     class Input:
         id = graphene.ID(required=True)
