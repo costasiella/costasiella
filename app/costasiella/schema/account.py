@@ -1,5 +1,6 @@
 from django.utils.translation import gettext as _
 
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group, Permission
 from django.db.models import Q
@@ -159,6 +160,15 @@ def validate_create_update_input(account, input, update=False):
         if not input['gender'] in genders:
             raise Exception(_("Please specify gender as M, F or X (for other)"))
 
+    # Verify country code
+    if input['country']:
+        country_codes = []
+        for country in settings.ISO_COUNTRY_CODES:
+            country_codes.append([country['Code']])
+        
+        if not input['country'] in country_codes:
+            raise Exception(_("Please specify the country as ISO country code, eg. 'NL'"))
+    
     # # Fetch & check tax rate
     # rid = get_rid(input['finance_tax_rate'])
     # finance_tax_rate = FinanceTaxRate.objects.filter(id=rid.id).first()
