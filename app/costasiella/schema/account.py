@@ -131,6 +131,55 @@ class CreateAccount(graphene.relay.ClientIDMutation):
 #         return CreateAccount(user=user)
 
 
+def validate_create_update_input(account, input, update=False):
+    """
+    Validate input
+    """ 
+    # result = {}
+
+    # verify email unique
+    query_set = get_user_model().objects.filter(
+        ~Q(pk=account.pk),
+        Q(email=input['email'])
+    )
+
+    #Don't insert duplicate emails into the DB.
+    if query_set.exists():
+        raise Exception(_('Unable to save, an account is already registered with this e-mail address'))
+
+    genders = [
+        'M', 'F', 'X'
+    ]
+    
+    if not len(input['name']):
+        print('validation error found')
+        raise Exception(_('Name is required'))
+
+    if input['gender']:
+        if not input['gender'] in genders:
+            raise Exception(_("Please specify gender as M, F or X (for other)"))
+
+    # # Fetch & check tax rate
+    # rid = get_rid(input['finance_tax_rate'])
+    # finance_tax_rate = FinanceTaxRate.objects.filter(id=rid.id).first()
+    # result['finance_tax_rate'] = finance_tax_rate
+    # if not finance_tax_rate:
+    #     raise Exception(_('Invalid Finance Tax Rate ID!'))
+
+    # # Check OrganizationMembership
+    # if 'organization_membership' in input:
+    #     if input['organization_membership']:
+    #         rid = get_rid(input['organization_membership'])
+    #         organization_membership = OrganizationMembership.objects.filter(id=rid.id).first()
+    #         result['organization_membership'] = organization_membership
+    #         if not organization_membership:
+    #             raise Exception(_('Invalid Organization Membership ID!'))            
+
+
+    return result
+
+
+
 class UpdateAccount(graphene.relay.ClientIDMutation):
     class Input:
         id = graphene.ID(required=True)
@@ -159,18 +208,7 @@ class UpdateAccount(graphene.relay.ClientIDMutation):
         if not account:
             raise Exception('Invalid Account ID!')
 
-        print(account.date_of_birth)
-        print(type(account.date_of_birth))
-
-        # verify email unique
-        query_set = get_user_model().objects.filter(
-            ~Q(pk=account.pk),
-            Q(email=input['email'])
-        )
-
-        #Don't insert duplicate emails into the DB.
-        if query_set.exists():
-            raise Exception(_('Unable to save, an account is already registered with this e-mail address'))
+        validate_create_update_input(account, input, update=True)
 
         account.first_name = input['first_name']
         account.last_name = input['last_name']
@@ -179,6 +217,20 @@ class UpdateAccount(graphene.relay.ClientIDMutation):
         # Only update these fields if input has been passed
         if input['address']:
             account.address = input['address']
+        if input['postcode']:
+            account.address = input['postcode']
+        if input['city']:
+            account.address = input['city']
+        if input['country']:
+            account.address = input['country']
+        if input['phone']:
+            account.address = input['phone']
+        if input['mobile']:
+            account.address = input['mobile']
+        if input['emergency']:
+            account.address = input['emergency']
+        if input['gender']:
+            account.gender = input['gender']
         if input['date_of_birth']:
             account.date_of_birth = input['date_of_birth']
         account.save()
