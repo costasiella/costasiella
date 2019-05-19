@@ -138,6 +138,13 @@ class UpdateAccount(graphene.relay.ClientIDMutation):
         last_name = graphene.String(required=True)
         email = graphene.String(required=True)
         address = graphene.String(requires=False, default_value="")
+        postcode = graphene.String(requires=False, default_value="")
+        city = graphene.String(requires=False, default_value="")
+        country = graphene.String(requires=False, default_value="")
+        phone = graphene.String(requires=False, default_value="")
+        mobile = graphene.String(requires=False, default_value="")
+        emergency = graphene.String(requires=False, default_value="")
+        gender = graphene.String(requires=False, default_value="")
         date_of_birth = graphene.types.datetime.Date(required=False, default_value="")
 
     account = graphene.Field(AccountNode)
