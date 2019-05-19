@@ -10,8 +10,15 @@ class Account(AbstractUser):
     # https://docs.djangoproject.com/en/2.2/ref/models/fields/#editable
 
     full_name = models.CharField(max_length=255, default="", editable=False)
-    address = EncryptedTextField(default="")
+    gender = EncryptedTextField(default="")
     date_of_birth = EncryptedTextField(data_type="date", default="")
+    address = EncryptedTextField(default="")
+    postcode = EncryptedTextField(default="")
+    city = EncryptedTextField(default="")
+    country = EncryptedTextField(default="")
+    phone = EncryptedTextField(default="")
+    mobile = EncryptedTextField(default="")
+    emergency = EncryptedTextField(default="")
 
     def __str__(self):
         return self.email
