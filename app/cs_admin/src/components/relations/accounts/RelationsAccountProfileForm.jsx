@@ -73,6 +73,15 @@ const RelationsAccountProfileForm = ({ t, history, isSubmitting, errors, values,
               <ErrorMessage name="email" component="span" className="invalid-feedback" />
             </Form.Group>
           </Grid.Col>
+          <Grid.Col>
+            <Form.Group label={t('relations.accounts.emergency')}>
+              <Field type="text" 
+                     name="emergency" 
+                     className={(errors.emergency) ? "form-control is-invalid" : "form-control"} 
+                     autoComplete="off" />
+              <ErrorMessage name="emergency" component="span" className="invalid-feedback" />
+            </Form.Group>
+          </Grid.Col>
         </Grid.Row>
       </Card.Body>
       <Card.Footer>

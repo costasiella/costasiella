@@ -227,17 +227,17 @@ class UpdateAccount(graphene.relay.ClientIDMutation):
         if input['address']:
             account.address = input['address']
         if input['postcode']:
-            account.address = input['postcode']
+            account.postcode = input['postcode']
         if input['city']:
-            account.address = input['city']
+            account.city = input['city']
         if input['country']:
-            account.address = input['country']
+            account.country = input['country']
         if input['phone']:
-            account.address = input['phone']
+            account.phone = input['phone']
         if input['mobile']:
-            account.address = input['mobile']
+            account.mobile = input['mobile']
         if input['emergency']:
-            account.address = input['emergency']
+            account.emergency = input['emergency']
         if input['gender']:
             account.gender = input['gender']
         if input['date_of_birth']:
