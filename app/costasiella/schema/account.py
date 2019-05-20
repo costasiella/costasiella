@@ -160,7 +160,9 @@ def validate_create_update_input(account, input, update=False):
     if input['country']:
         country_codes = []
         for country in settings.ISO_COUNTRY_CODES:
-            country_codes.append([country['Code']])
+            country_codes.append(country['Code'])
+
+        print(country_codes)
         
         if not input['country'] in country_codes:
             raise Exception(_("Please specify the country as ISO country code, eg. 'NL'"))

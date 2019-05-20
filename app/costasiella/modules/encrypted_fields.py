@@ -111,7 +111,7 @@ class BaseEncryptedField(models.Field):
                     ciphertext=value,
                 )
                 plaintext = decrypt_data_response['data']['plaintext']
-                print(plaintext)
+                # print(plaintext)
 
                 retval = base64.urlsafe_b64decode(plaintext).decode('utf-8')
                 if self.data_type == 'date':
@@ -155,10 +155,10 @@ class BaseEncryptedField(models.Field):
                     name=self.vault_transit_key,
                     plaintext=base64.urlsafe_b64encode(plaintext.encode()).decode('ascii'),
             )
-            print(encrypt_data_response)
+            # print(encrypt_data_response)
 
             value = encrypt_data_response['data']['ciphertext'] # (ciphertext)
-            print(value)
+            # print(value)
 
         return value
 
