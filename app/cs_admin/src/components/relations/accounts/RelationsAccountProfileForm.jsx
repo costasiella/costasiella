@@ -83,6 +83,26 @@ const RelationsAccountProfileForm = ({ t, history, isSubmitting, errors, values,
             </Form.Group>
           </Grid.Col>
         </Grid.Row>
+        <Grid.Row>
+          <Grid.Col>
+            <Form.Group label={t('general.phone')}>
+              <Field type="text" 
+                      name="phone" 
+                      className={(errors.phone) ? "form-control is-invalid" : "form-control"} 
+                      autoComplete="off" />
+              <ErrorMessage name="phone" component="span" className="invalid-feedback" />
+            </Form.Group>
+          </Grid.Col>
+          <Grid.Col>
+            <Form.Group label={t('general.mobile')}>
+              <Field type="text" 
+                     name="mobile" 
+                     className={(errors.mobile) ? "form-control is-invalid" : "form-control"} 
+                     autoComplete="off" />
+              <ErrorMessage name="mobile" component="span" className="invalid-feedback" />
+            </Form.Group>
+          </Grid.Col>
+        </Grid.Row>
       </Card.Body>
       <Card.Footer>
           <Button 
