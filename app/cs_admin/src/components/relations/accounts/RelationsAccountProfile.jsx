@@ -76,6 +76,13 @@ class RelationsAccountProfile extends Component {
                   console.log('query data')
                   console.log(data)
 
+                  // DatePicker doesn't like a string as an initial value
+                  // This makes it a happy DatePicker :)
+                  let dateOfBirth = ""
+                  if (initialData.dateOfBirth) {
+                    dateOfBirth = new Date(initialData.dateOfBirth)
+                  }
+
                   return (
                     <div>
                       <Page.Header title={initialData.firstName + " " + initialData.lastName}>
@@ -95,7 +102,7 @@ class RelationsAccountProfile extends Component {
                               firstName: initialData.firstName, 
                               lastName: initialData.lastName, 
                               email: initialData.email,
-                              dateOfBirth: initialData.dateOfBirth 
+                              dateOfBirth: dateOfBirth
                             }}
                             validationSchema={ACCOUNT_SCHEMA}
                             onSubmit={(values, { setSubmitting }) => {
