@@ -151,10 +151,6 @@ def validate_create_update_input(account, input, update=False):
     genders = [
         'M', 'F', 'X'
     ]
-    
-    if not len(input['name']):
-        print('validation error found')
-        raise Exception(_('Name is required'))
 
     if input['gender']:
         if not input['gender'] in genders:
@@ -186,7 +182,7 @@ def validate_create_update_input(account, input, update=False):
     #             raise Exception(_('Invalid Organization Membership ID!'))            
 
 
-    return result
+    # return result
 
 
 class UpdateAccount(graphene.relay.ClientIDMutation):
@@ -212,12 +208,16 @@ class UpdateAccount(graphene.relay.ClientIDMutation):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.change_account')
 
+        print(input)
+
         rid = get_rid(input['id'])
         account = get_user_model().objects.filter(id=rid.id).first()
         if not account:
             raise Exception('Invalid Account ID!')
 
         validate_create_update_input(account, input, update=True)
+
+        
 
         account.first_name = input['first_name']
         account.last_name = input['last_name']

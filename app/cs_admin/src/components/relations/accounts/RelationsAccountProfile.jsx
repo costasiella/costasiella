@@ -95,7 +95,7 @@ class RelationsAccountProfile extends Component {
                               firstName: initialData.firstName, 
                               lastName: initialData.lastName, 
                               email: initialData.email,
-                              dateOfBirth: initdialData.dateOfBirth 
+                              dateOfBirth: initialData.dateOfBirth 
                             }}
                             validationSchema={ACCOUNT_SCHEMA}
                             onSubmit={(values, { setSubmitting }) => {
@@ -104,7 +104,7 @@ class RelationsAccountProfile extends Component {
 
                                 let dateOfBirth
                                 if (values.dateOfBirth) {
-                                  dateOfBirth = dateToLocalISO(values.dateEnd)
+                                  dateOfBirth = dateToLocalISO(values.dateOfBirth)
                                 } else {
                                   dateOfBirth = values.dateOfBirth
                                 }
@@ -118,7 +118,7 @@ class RelationsAccountProfile extends Component {
                                     dateOfBirth: dateOfBirth,
                                   }
                                 }, refetchQueries: [
-                                    {query: GET_ACCOUNTS_QUERY, variables: {"archived": false }}
+                                    {query: GET_ACCOUNTS_QUERY, variables: {"isActive": true }}
                                 ]})
                                 .then(({ data }) => {
                                     console.log('got data', data)
