@@ -102,12 +102,20 @@ class RelationsAccountProfile extends Component {
                                 console.log('submit values:')
                                 console.log(values)
 
+                                let dateOfBirth
+                                if (values.dateOfBirth) {
+                                  dateOfBirth = dateToLocalISO(values.dateEnd)
+                                } else {
+                                  dateOfBirth = values.dateOfBirth
+                                }
+
                                 updateAccount({ variables: {
                                   input: {
                                     id: match.params.id,
                                     firstName: values.firstName,
                                     lastName: values.lastName,
-                                    email: values.email
+                                    email: values.email,
+                                    dateOfBirth: dateOfBirth,
                                   }
                                 }, refetchQueries: [
                                     {query: GET_ACCOUNTS_QUERY, variables: {"archived": false }}
