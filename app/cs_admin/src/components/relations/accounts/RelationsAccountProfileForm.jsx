@@ -54,6 +54,7 @@ const RelationsAccountProfileForm = ({ t, history, isSubmitting, errors, values,
                     name="gender" 
                     className={(errors.organizationMembership) ? "form-control is-invalid" : "form-control"} 
                     autoComplete="off">
+                <option value=""></option>
                 <option value="F">{t("genders.female")}</option>
                 <option value="M">{t("genders.male")}</option>
                 <option value="X">{t("genders.other")}</option>
