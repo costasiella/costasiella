@@ -107,6 +107,9 @@ class RelationsAccountProfile extends Component {
                               emergency: initialData.emergency,
                               phone: initialData.phone,
                               mobile: initialData.mobile,
+                              address: initialData.address,
+                              postcode: initialData.postcode,
+                              city: initialData.city,
                             }}
                             validationSchema={ACCOUNT_SCHEMA}
                             onSubmit={(values, { setSubmitting }) => {
@@ -131,6 +134,9 @@ class RelationsAccountProfile extends Component {
                                     emergency: values.emergency,
                                     phone: values.phone,
                                     mobile: values.mobile,
+                                    address: values.address,
+                                    postcode: values.postcode,
+                                    city: values.city,
                                   }
                                 }, refetchQueries: [
                                     // Refetch list

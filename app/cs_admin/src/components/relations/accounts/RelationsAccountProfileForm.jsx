@@ -103,6 +103,46 @@ const RelationsAccountProfileForm = ({ t, history, isSubmitting, errors, values,
             </Form.Group>
           </Grid.Col>
         </Grid.Row>
+        <Grid.Row>
+          <Grid.Col>
+            <Form.Group label={t('general.address')}>
+              <Field type="text" 
+                      name="address" 
+                      className={(errors.address) ? "form-control is-invalid" : "form-control"} 
+                      autoComplete="off" />
+              <ErrorMessage name="address" component="span" className="invalid-feedback" />
+            </Form.Group>
+          </Grid.Col>
+          <Grid.Col>
+            <Form.Group label={t('general.postcode')}>
+              <Field type="text" 
+                     name="postcode" 
+                     className={(errors.postcode) ? "form-control is-invalid" : "form-control"} 
+                     autoComplete="off" />
+              <ErrorMessage name="postcode" component="span" className="invalid-feedback" />
+            </Form.Group>
+          </Grid.Col>
+        </Grid.Row>
+        <Grid.Row>
+          <Grid.Col>
+            <Form.Group label={t('general.city')}>
+              <Field type="text" 
+                      name="city" 
+                      className={(errors.city) ? "form-control is-invalid" : "form-control"} 
+                      autoComplete="off" />
+              <ErrorMessage name="city" component="span" className="invalid-feedback" />
+            </Form.Group>
+          </Grid.Col>
+          <Grid.Col>
+            {/* <Form.Group label={t('general.postcode')}>
+              <Field type="text" 
+                     name="postcode" 
+                     className={(errors.postcode) ? "form-control is-invalid" : "form-control"} 
+                     autoComplete="off" />
+              <ErrorMessage name="postcode" component="span" className="invalid-feedback" />
+            </Form.Group> */}
+          </Grid.Col>
+        </Grid.Row>
       </Card.Body>
       <Card.Footer>
           <Button 
