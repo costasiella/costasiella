@@ -14,7 +14,9 @@ import {
 } from "tabler-react"
 
 
-const RelationsAccountProfileForm = ({ t, history, isSubmitting, errors, return_url }) => (
+import CSDatePicker from "../../ui/CSDatePicker"
+
+const RelationsAccountProfileForm = ({ t, history, isSubmitting, errors, values, return_url, setFieldTouched, setFieldValue }) => (
   <FoForm>
       <Card.Body>
         <Grid.Row>
@@ -34,6 +36,18 @@ const RelationsAccountProfileForm = ({ t, history, isSubmitting, errors, return_
                       className={(errors.lastName) ? "form-control is-invalid" : "form-control"} 
                       autoComplete="off" />
               <ErrorMessage name="lastName" component="span" className="invalid-feedback" />
+            </Form.Group>
+          </Grid.Col>
+        </Grid.Row>
+        <Grid.Row>
+          <Grid.Col>
+            <Form.Group label={t('general.date_of_birth')}>
+              <CSDatePicker 
+                selected={values.dateOfBirth}
+                onChange={(date) => setFieldValue("dateOfBirth", date)}
+                onBlur={() => setFieldTouched("dateOfBirth", true)}
+              />
+              <ErrorMessage name="dateOfBirth" component="span" className="invalid-feedback" />
             </Form.Group>
           </Grid.Col>
         </Grid.Row>

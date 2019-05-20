@@ -29,6 +29,15 @@ export const GET_ACCOUNT_QUERY = gql`
       firstName
       lastName
       email
+      dateOfBirth
+      gender
+      address
+      postcode
+      city
+      country
+      phone
+      mobile
+      emergency
       isActive
     }
   }

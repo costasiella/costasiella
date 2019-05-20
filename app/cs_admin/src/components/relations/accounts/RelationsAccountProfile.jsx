@@ -21,6 +21,7 @@ import {
 } from "tabler-react";
 import SiteWrapper from "../../SiteWrapper"
 import HasPermissionWrapper from "../../HasPermissionWrapper"
+import { dateToLocalISO } from '../../../tools/date_tools'
 import ProfileCardSmall from "../../ui/ProfileCardSmall"
 
 import RelationsAccountsBack from "./RelationsAccountsBack"
@@ -93,7 +94,8 @@ class RelationsAccountProfile extends Component {
                             initialValues={{ 
                               firstName: initialData.firstName, 
                               lastName: initialData.lastName, 
-                              email: initialData.email 
+                              email: initialData.email,
+                              dateOfBirth: initdialData.dateOfBirth 
                             }}
                             validationSchema={ACCOUNT_SCHEMA}
                             onSubmit={(values, { setSubmitting }) => {
@@ -125,9 +127,11 @@ class RelationsAccountProfile extends Component {
                                   })
                             }}
                             >
-                            {({ isSubmitting, errors, values }) => (
+                            {({ isSubmitting, errors, values, setFieldTouched, setFieldValue }) => (
                               <RelationsAccountProfileForm
                                 isSubmitting={isSubmitting}
+                                setFieldTouched={setFieldTouched}
+                                setFieldValue={setFieldValue}
                                 errors={errors}
                                 values={values}
                               />
