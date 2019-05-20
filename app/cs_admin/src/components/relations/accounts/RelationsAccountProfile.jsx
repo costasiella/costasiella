@@ -118,7 +118,10 @@ class RelationsAccountProfile extends Component {
                                     dateOfBirth: dateOfBirth,
                                   }
                                 }, refetchQueries: [
-                                    {query: GET_ACCOUNTS_QUERY, variables: {"isActive": true }}
+                                    // Refetch list
+                                    {query: GET_ACCOUNTS_QUERY, variables: {"isActive": true }},
+                                    // Refresh local cached results for this account
+                                    {query: GET_ACCOUNT_QUERY, variables: {"id": match.params.id}}
                                 ]})
                                 .then(({ data }) => {
                                     console.log('got data', data)
