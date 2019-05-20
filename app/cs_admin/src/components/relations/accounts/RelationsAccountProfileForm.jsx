@@ -38,8 +38,6 @@ const RelationsAccountProfileForm = ({ t, history, isSubmitting, errors, values,
               <ErrorMessage name="lastName" component="span" className="invalid-feedback" />
             </Form.Group>
           </Grid.Col>
-        </Grid.Row>
-        <Grid.Row>
           <Grid.Col>
             <Form.Group label={t('general.date_of_birth')}>
               <CSDatePicker 
