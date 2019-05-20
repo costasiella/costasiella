@@ -23,32 +23,32 @@ const ProfileCardSmall = ({ t, value, user, avatarSize='md' }) => (
         }
         <Media.Body>
           <h4 className="mb-2">{user.firstName + " " + user.lastName}</h4>
-          <p className="text-muted mb-0">
-          <SocialNetworksList className="mb-0 mt-2">
+          <div className="text-muted mb-0">
+            <SocialNetworksList className="mb-0 mt-2">
 
-            <List.Item inline>
-              <Tooltip content="user.phone here" placement="top">
-                <span>
-                  <Icon prefix="fe" name="phone" />
-                </span>
-              </Tooltip>
-            </List.Item>
-            <List.Item inline>
-              <Tooltip content="user.mobile here" placement="top">
-                <span>
-                  <Icon prefix="fe" name="smartphone" />
-                </span>
-              </Tooltip>
-            </List.Item>
-            <List.Item inline>
-              <Tooltip content={user.email} placement="top">
-                <a href={"mailto:" + user.email}>
-                  <Icon prefix="fe" name="mail" />
-                </a>
-              </Tooltip>
-            </List.Item>
+              <List.Item inline>
+                <Tooltip content="user.phone here" placement="top">
+                  <span>
+                    <Icon prefix="fe" name="phone" />
+                  </span>
+                </Tooltip>
+              </List.Item>
+              <List.Item inline>
+                <Tooltip content="user.mobile here" placement="top">
+                  <span>
+                    <Icon prefix="fe" name="smartphone" />
+                  </span>
+                </Tooltip>
+              </List.Item>
+              <List.Item inline>
+                <Tooltip content={user.email} placement="top">
+                  <a href={"mailto:" + user.email}>
+                    <Icon prefix="fe" name="mail" />
+                  </a>
+                </Tooltip>
+              </List.Item>
 
-          </SocialNetworksList>
+            </SocialNetworksList>
             {/* items={[
               <a href={"mailto:" + user.email}
                  title={user.email}>
@@ -68,7 +68,7 @@ const ProfileCardSmall = ({ t, value, user, avatarSize='md' }) => (
               <Icon name="phone" /> user phone nr here... <br />
               <Icon name="smartphone" /> user mobile nr here...
             </Text.Small> */}
-          </p>
+          </div>
           {/* <SocialNetworksList
             items={[
               <a href="http://www.twitter.com">

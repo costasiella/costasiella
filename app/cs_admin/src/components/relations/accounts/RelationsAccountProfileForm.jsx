@@ -50,6 +50,19 @@ const RelationsAccountProfileForm = ({ t, history, isSubmitting, errors, values,
               <ErrorMessage name="dateOfBirth" component="span" className="invalid-feedback" />
             </Form.Group>
           </Grid.Col>
+          <Grid.Col>
+            <Form.Group label={t('general.gender')}>
+              <Field component="select" 
+                    name="gender" 
+                    className={(errors.organizationMembership) ? "form-control is-invalid" : "form-control"} 
+                    autoComplete="off">
+                <option value="F">{t("genders.female")}</option>
+                <option value="M">{t("genders.male")}</option>
+                <option value="X">{t("genders.other")}</option>
+              </Field>
+              <ErrorMessage name="gender" component="span" className="invalid-feedback" />
+            </Form.Group> 
+          </Grid.Col>
         </Grid.Row>
         <Form.Group label={t('general.email')}>
           <Field type="text" 
