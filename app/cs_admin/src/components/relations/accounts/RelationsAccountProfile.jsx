@@ -102,7 +102,8 @@ class RelationsAccountProfile extends Component {
                               firstName: initialData.firstName, 
                               lastName: initialData.lastName, 
                               email: initialData.email,
-                              dateOfBirth: dateOfBirth
+                              dateOfBirth: dateOfBirth,
+                              gender: initialData.gender,
                             }}
                             validationSchema={ACCOUNT_SCHEMA}
                             onSubmit={(values, { setSubmitting }) => {
@@ -123,6 +124,7 @@ class RelationsAccountProfile extends Component {
                                     lastName: values.lastName,
                                     email: values.email,
                                     dateOfBirth: dateOfBirth,
+                                    gender: values.gender
                                   }
                                 }, refetchQueries: [
                                     // Refetch list

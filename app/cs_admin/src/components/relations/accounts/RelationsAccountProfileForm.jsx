@@ -63,13 +63,17 @@ const RelationsAccountProfileForm = ({ t, history, isSubmitting, errors, values,
             </Form.Group> 
           </Grid.Col>
         </Grid.Row>
-        <Form.Group label={t('general.email')}>
-          <Field type="text" 
-                  name="email" 
-                  className={(errors.email) ? "form-control is-invalid" : "form-control"} 
-                  autoComplete="off" />
-          <ErrorMessage name="email" component="span" className="invalid-feedback" />
-        </Form.Group>
+        <Grid.Row>
+          <Grid.Col>
+            <Form.Group label={t('general.email')}>
+              <Field type="text" 
+                      name="email" 
+                      className={(errors.email) ? "form-control is-invalid" : "form-control"} 
+                      autoComplete="off" />
+              <ErrorMessage name="email" component="span" className="invalid-feedback" />
+            </Form.Group>
+          </Grid.Col>
+        </Grid.Row>
       </Card.Body>
       <Card.Footer>
           <Button 
