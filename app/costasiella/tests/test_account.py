@@ -1,6 +1,7 @@
 import graphene
 from django.test import TestCase
 from graphene.test import Client
+from django.contrib.auth.models import AnonymousUser
 
 # Create your tests here.
 from .factories import AdminUserFactory
@@ -15,30 +16,6 @@ schema = graphene.Schema(
     mutation=cs_schema.Mutation
 )
 
-# admin_email = 'admin@costasiella.com'
-# admin_password = 'CSAdmin1#'
-
-
-# class GQLAccount(TestCase):
-
-#     def test_query_user(self):
-#         # This is the test method.
-#         query = '''
-# {
-#   account {
-#     id
-#     firstName
-#     lastName
-#     email
-#   }
-# }
-#         '''
-#         admin_user = AdminUserFactory.create()
-#         executed = execute_test_client_api_query(query, admin_user)
-#         data = executed.get('data')
-#         self.assertEqual(data['account']['firstName'], admin_user.first_name)
-#         self.assertEqual(data['account']['lastName'], admin_user.last_name)
-#         self.assertEqual(data['account']['email'], admin_user.email)
 
 class GQLAccount(TestCase):
     # https://docs.djangoproject.com/en/2.1/topics/testing/overview/
@@ -145,30 +122,17 @@ class GQLAccount(TestCase):
         pass
 
 
-    def get_node_id_of_first_costcenter(self):
-        # query costcenters to get node id easily
-        variables = {
-            'archived': False
-        }
-        executed = execute_test_client_api_query(self.costcenters_query, self.admin_user, variables=variables)
-        data = executed.get('data')
-        
-        return data['financeCostcenters']['edges'][0]['node']['id']
-
-
     def test_query(self):
         """ Query list of costcenters """
         query = self.costcenters_query
-        costcenter = f.FinanceCostCenterFactory.create()
         variables = {
-            'archived': False
+            'isActive': True
         }
 
         executed = execute_test_client_api_query(query, self.admin_user, variables=variables)
         data = executed.get('data')
-        self.assertEqual(data['financeCostcenters']['edges'][0]['node']['name'], costcenter.name)
-        self.assertEqual(data['financeCostcenters']['edges'][0]['node']['archived'], costcenter.archived)
-        self.assertEqual(data['financeCostcenters']['edges'][0]['node']['code'], costcenter.code)
+        self.assertEqual(data['accounts']['edges'][0]['node']['firstName'], self.admin_user.first_name)
+        self.assertEqual(data['accounts']['edges'][0]['node']['archived'], self.admin_user.isActive)
 
 
     # def test_query_permision_denied(self):
