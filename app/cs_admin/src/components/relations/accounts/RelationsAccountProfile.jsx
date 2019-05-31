@@ -21,6 +21,7 @@ import {
 } from "tabler-react";
 import SiteWrapper from "../../SiteWrapper"
 import HasPermissionWrapper from "../../HasPermissionWrapper"
+import { dateToLocalISO } from '../../../tools/date_tools'
 import ProfileCardSmall from "../../ui/ProfileCardSmall"
 
 import RelationsAccountsBack from "./RelationsAccountsBack"
@@ -75,6 +76,13 @@ class RelationsAccountProfile extends Component {
                   console.log('query data')
                   console.log(data)
 
+                  // DatePicker doesn't like a string as an initial value
+                  // This makes it a happy DatePicker :)
+                  let dateOfBirth = ""
+                  if (initialData.dateOfBirth) {
+                    dateOfBirth = new Date(initialData.dateOfBirth)
+                  }
+
                   return (
                     <div>
                       <Page.Header title={initialData.firstName + " " + initialData.lastName}>
@@ -93,22 +101,50 @@ class RelationsAccountProfile extends Component {
                             initialValues={{ 
                               firstName: initialData.firstName, 
                               lastName: initialData.lastName, 
-                              email: initialData.email 
+                              email: initialData.email,
+                              dateOfBirth: dateOfBirth,
+                              gender: initialData.gender,
+                              emergency: initialData.emergency,
+                              phone: initialData.phone,
+                              mobile: initialData.mobile,
+                              address: initialData.address,
+                              postcode: initialData.postcode,
+                              city: initialData.city,
+                              country: initialData.country,
                             }}
                             validationSchema={ACCOUNT_SCHEMA}
                             onSubmit={(values, { setSubmitting }) => {
                                 console.log('submit values:')
                                 console.log(values)
 
+                                let dateOfBirth
+                                if (values.dateOfBirth) {
+                                  dateOfBirth = dateToLocalISO(values.dateOfBirth)
+                                } else {
+                                  dateOfBirth = values.dateOfBirth
+                                }
+
                                 updateAccount({ variables: {
                                   input: {
                                     id: match.params.id,
                                     firstName: values.firstName,
                                     lastName: values.lastName,
-                                    email: values.email
+                                    email: values.email,
+                                    dateOfBirth: dateOfBirth,
+                                    gender: values.gender,
+                                    emergency: values.emergency,
+                                    phone: values.phone,
+                                    mobile: values.mobile,
+                                    address: values.address,
+                                    postcode: values.postcode,
+                                    city: values.city,
+                                    country: values.country
                                   }
                                 }, refetchQueries: [
-                                    {query: GET_ACCOUNTS_QUERY, variables: {"archived": false }}
+                                    // Refetch list
+                                    {query: GET_ACCOUNTS_QUERY, variables: {"isActive": true }},
+                                    // Refresh local cached results for this account
+                                    {query: GET_ACCOUNT_QUERY, variables: {"id": match.params.id}}
                                 ]})
                                 .then(({ data }) => {
                                     console.log('got data', data)
@@ -125,9 +161,11 @@ class RelationsAccountProfile extends Component {
                                   })
                             }}
                             >
-                            {({ isSubmitting, errors, values }) => (
+                            {({ isSubmitting, errors, values, setFieldTouched, setFieldValue }) => (
                               <RelationsAccountProfileForm
                                 isSubmitting={isSubmitting}
+                                setFieldTouched={setFieldTouched}
+                                setFieldValue={setFieldValue}
                                 errors={errors}
                                 values={values}
                               />

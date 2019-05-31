@@ -1,16 +1,23 @@
 from django.utils.translation import gettext as _
 
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group, Permission
 from django.db.models import Q
 
 import graphene
+from graphene_django.converter import convert_django_field
 from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
 
 from allauth.account.models import EmailAddress
 
 from ..modules.gql_tools import require_login_and_permission, get_rid
+from ..modules.encrypted_fields import EncryptedTextField
+
+@convert_django_field.register(EncryptedTextField)
+def convert_json_field_to_string(field, registry=None):
+    return graphene.String()
 
 
 class UserType(DjangoObjectType):
@@ -125,12 +132,74 @@ class CreateAccount(graphene.relay.ClientIDMutation):
 #         return CreateAccount(user=user)
 
 
+def validate_create_update_input(account, input, update=False):
+    """
+    Validate input
+    """ 
+    # result = {}
+
+    # verify email unique
+    query_set = get_user_model().objects.filter(
+        ~Q(pk=account.pk),
+        Q(email=input['email'])
+    )
+
+    #Don't insert duplicate emails into the DB.
+    if query_set.exists():
+        raise Exception(_('Unable to save, an account is already registered with this e-mail address'))
+
+    genders = [
+        'M', 'F', 'X'
+    ]
+
+    if input['gender']:
+        if not input['gender'] in genders:
+            raise Exception(_("Please specify gender as M, F or X (for other)"))
+
+    # Verify country code
+    if input['country']:
+        country_codes = []
+        for country in settings.ISO_COUNTRY_CODES:
+            country_codes.append(country['Code'])
+        
+        if not input['country'] in country_codes:
+            raise Exception(_("Please specify the country as ISO country code, eg. 'NL'"))
+    
+    # # Fetch & check tax rate
+    # rid = get_rid(input['finance_tax_rate'])
+    # finance_tax_rate = FinanceTaxRate.objects.filter(id=rid.id).first()
+    # result['finance_tax_rate'] = finance_tax_rate
+    # if not finance_tax_rate:
+    #     raise Exception(_('Invalid Finance Tax Rate ID!'))
+
+    # # Check OrganizationMembership
+    # if 'organization_membership' in input:
+    #     if input['organization_membership']:
+    #         rid = get_rid(input['organization_membership'])
+    #         organization_membership = OrganizationMembership.objects.filter(id=rid.id).first()
+    #         result['organization_membership'] = organization_membership
+    #         if not organization_membership:
+    #             raise Exception(_('Invalid Organization Membership ID!'))            
+
+
+    # return result
+
+
 class UpdateAccount(graphene.relay.ClientIDMutation):
     class Input:
         id = graphene.ID(required=True)
         first_name = graphene.String(required=True)
         last_name = graphene.String(required=True)
         email = graphene.String(required=True)
+        address = graphene.String(requires=False, default_value="")
+        postcode = graphene.String(requires=False, default_value="")
+        city = graphene.String(requires=False, default_value="")
+        country = graphene.String(requires=False, default_value="")
+        phone = graphene.String(requires=False, default_value="")
+        mobile = graphene.String(requires=False, default_value="")
+        emergency = graphene.String(requires=False, default_value="")
+        gender = graphene.String(requires=False, default_value="")
+        date_of_birth = graphene.types.datetime.Date(required=False, default_value="")
 
     account = graphene.Field(AccountNode)
 
@@ -139,25 +208,40 @@ class UpdateAccount(graphene.relay.ClientIDMutation):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.change_account')
 
+        print(input)
+
         rid = get_rid(input['id'])
         account = get_user_model().objects.filter(id=rid.id).first()
         if not account:
             raise Exception('Invalid Account ID!')
 
-        # verify email unique
-        query_set = get_user_model().objects.filter(
-            ~Q(pk=account.pk),
-            Q(email=input['email'])
-        )
+        validate_create_update_input(account, input, update=True)
 
-        #Don't insert duplicate emails into the DB.
-        if query_set.exists():
-            raise Exception(_('Unable to save, an account is already registered with this e-mail address'))
+        
 
         account.first_name = input['first_name']
         account.last_name = input['last_name']
         account.email = input['email']
         account.username = input['email']
+        # Only update these fields if input has been passed
+        if input['address']:
+            account.address = input['address']
+        if input['postcode']:
+            account.postcode = input['postcode']
+        if input['city']:
+            account.city = input['city']
+        if input['country']:
+            account.country = input['country']
+        if input['phone']:
+            account.phone = input['phone']
+        if input['mobile']:
+            account.mobile = input['mobile']
+        if input['emergency']:
+            account.emergency = input['emergency']
+        if input['gender']:
+            account.gender = input['gender']
+        if input['date_of_birth']:
+            account.date_of_birth = input['date_of_birth']
         account.save()
 
         # Update Allauth email address 
