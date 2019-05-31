@@ -47,10 +47,10 @@ class GQLAccount(TestCase):
         self.admin_user = f.AdminUserFactory.create()
         self.anon_user = AnonymousUser()
 
-        self.permission_view = 'view_financecostcenter'
-        self.permission_add = 'add_financecostcenter'
-        self.permission_change = 'change_financecostcenter'
-        self.permission_delete = 'delete_financecostcenter'
+        self.permission_view = 'view_account'
+        self.permission_add = 'add_account'
+        self.permission_change = 'change_account'
+        self.permission_delete = 'delete_account'
 
         self.variables_create = {
             "input": {
@@ -197,7 +197,7 @@ class GQLAccount(TestCase):
 
     #     # Create regular user
     #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename='view_financecostcenter')
+    #     permission = Permission.objects.get(codename='view_account')
     #     user.user_permissions.add(permission)
     #     user.save()
 
@@ -269,7 +269,7 @@ class GQLAccount(TestCase):
     # def test_query_one_permission_granted(self):
     #     """ Respond with data when user has permission """   
     #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename='view_financecostcenter')
+    #     permission = Permission.objects.get(codename='view_account')
     #     user.user_permissions.add(permission)
     #     user.save()
     #     costcenter = f.FinanceCostCenterFactory.create()
