@@ -3,7 +3,7 @@ from django.test import TestCase
 from graphene.test import Client
 
 # Create your tests here.
-from .factories import AdminFactory
+from .factories import AdminUserFactory
 from .helpers import execute_test_client_api_query
 from .. import models
 from .. import schema as cs_schema
@@ -33,7 +33,7 @@ class GQLAccount(TestCase):
   }
 }
         '''
-        admin_user = AdminFactory.create()
+        admin_user = AdminUserFactory.create()
         executed = execute_test_client_api_query(query, admin_user)
         data = executed.get('data')
         self.assertEqual(data['account']['firstName'], admin_user.first_name)

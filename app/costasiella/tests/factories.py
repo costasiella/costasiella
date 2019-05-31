@@ -189,7 +189,7 @@ class OrganizationSubscriptionGroupSubscriptionFactory(factory.DjangoModelFactor
     organization_subscription = factory.SubFactory(OrganizationSubscriptionFactory)
 
 
-class AdminFactory(factory.DjangoModelFactory):
+class AdminUserFactory(factory.DjangoModelFactory):
     class Meta:
         model = get_user_model()
     # FACTORY_FOR = get_user_model()
