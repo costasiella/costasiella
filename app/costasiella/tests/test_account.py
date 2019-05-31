@@ -50,20 +50,21 @@ class GQLAccount(TestCase):
         }
 
         self.costcenters_query = '''
-  query FinanceCostCenters($after: String, $before: String, $archived: Boolean) {
-    financeCostcenters(first: 15, before: $before, after: $after, archived: $archived) {
+  query Accounts($isActive: Boolean!) {
+    accounts(isActive: $isActive) {
       pageInfo {
-        startCursor
-        endCursor
         hasNextPage
         hasPreviousPage
+        startCursor
+        endCursor
       }
       edges {
         node {
-          id,
-          archived,
-          name,
-          code
+          id
+          firstName
+          lastName
+          email
+          isActive
         }
       }
     }
