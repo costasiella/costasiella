@@ -4,17 +4,12 @@ from graphene.test import Client
 from django.contrib.auth.models import AnonymousUser
 
 # Create your tests here.
-from .factories import AdminUserFactory
+from . import factories as f
 from .helpers import execute_test_client_api_query
 from .. import models
-from .. import schema as cs_schema
+from .. import schema
 
-
-# Create schema object
-schema = graphene.Schema(
-    query=cs_schema.Query,
-    mutation=cs_schema.Mutation
-)
+from .factories import AdminUserFactory
 
 
 class GQLAccount(TestCase):
