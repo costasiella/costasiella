@@ -121,14 +121,22 @@ class GQLAccount(TestCase):
     def test_query(self):
         """ Query list of accounts """
         query = self.accounts_query
+        account = f.RegularUserFactory()
+
         variables = {
             'isActive': True
         }
 
         executed = execute_test_client_api_query(query, self.admin_user, variables=variables)
         data = executed.get('data')
-        self.assertEqual(data['accounts']['edges'][0]['node']['firstName'], self.admin_user.first_name)
-        self.assertEqual(data['accounts']['edges'][0]['node']['archived'], self.admin_user.isActive)
+
+        print(data)
+        self.assertEqual(len(data['accounts']['edges']), 1) # Ensure the Admin super use isn't listed
+        self.assertEqual(data['accounts']['edges'][0]['node']['isActive'], account.is_active)
+        self.assertEqual(data['accounts']['edges'][0]['node']['firstName'], account.first_name)
+        self.assertEqual(data['accounts']['edges'][0]['node']['lastName'], account.last_name)
+        self.assertEqual(data['accounts']['edges'][0]['node']['email'], account.email)
+        
 
 
     # def test_query_permision_denied(self):

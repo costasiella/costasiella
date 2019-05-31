@@ -326,7 +326,10 @@ class AccountQuery(graphene.AbstractType):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.view_account')
 
-        return get_user_model().objects.filter(is_active=is_active, is_superuser=False).order_by('first_name')
+        return get_user_model().objects.filter(
+            is_active=is_active, 
+            is_superuser=False
+        ).order_by('first_name')
 
 
     def resolve_groups(self, info):
