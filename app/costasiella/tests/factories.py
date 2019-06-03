@@ -211,9 +211,10 @@ class RegularUserFactory(factory.DjangoModelFactory):
     # FACTORY_FOR = get_user_model()
 
     email = 'user@costasiellla.com'
-    username = 'user'
+    username = 'regular_user'
     first_name = 'user'
     last_name = 'regular user'
-    password = factory.PostGenerationMethodCall('set_password', 'CSUser!1#')
+    password = factory.PostGenerationMethodCall('set_password', 'CSUser1#')
 
     is_active = True
+

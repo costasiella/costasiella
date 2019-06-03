@@ -1,7 +1,9 @@
 import graphene
-from django.test import TestCase
+import os
+from django.test import TransactionTestCase
 from graphene.test import Client
 from django.contrib.auth.models import AnonymousUser
+from django.contrib.auth import get_user_model
 
 # Create your tests here.
 from . import factories as f
@@ -12,7 +14,7 @@ from .. import schema
 from .factories import AdminUserFactory
 
 
-class GQLAccount(TestCase):
+class GQLAccount(TransactionTestCase):
     # https://docs.djangoproject.com/en/2.1/topics/testing/overview/
     def setUp(self):
         # This is run before every test
@@ -115,7 +117,9 @@ class GQLAccount(TestCase):
 
     def tearDown(self):
         # This is run after every test
-        pass
+        # pass
+        # Clean up accounts in costasiella_account table
+        get_user_model().objects.all().delete()
 
 
     def test_query(self):
@@ -130,35 +134,33 @@ class GQLAccount(TestCase):
         executed = execute_test_client_api_query(query, self.admin_user, variables=variables)
         data = executed.get('data')
 
-        print(data)
         self.assertEqual(len(data['accounts']['edges']), 1) # Ensure the Admin super use isn't listed
         self.assertEqual(data['accounts']['edges'][0]['node']['isActive'], account.is_active)
         self.assertEqual(data['accounts']['edges'][0]['node']['firstName'], account.first_name)
         self.assertEqual(data['accounts']['edges'][0]['node']['lastName'], account.last_name)
         self.assertEqual(data['accounts']['edges'][0]['node']['email'], account.email)
+
+
+    def test_query_permision_denied(self):
+        """ Query list of accounts - check permission denied """
+        query = self.accounts_query
+        account = f.RegularUserFactory()
         
+        variables = {
+            'isActive': True
+        }
 
+        # User created account
+        executed = execute_test_client_api_query(query, account, variables=variables)
+        errors = executed.get('errors')
 
-    # def test_query_permision_denied(self):
-    #     """ Query list of accounts - check permission denied """
-    #     query = self.accounts_query
-    #     account = f.FinanceCostCenterFactory.create()
-    #     variables = {
-    #         'archived': False
-    #     }
-
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     executed = execute_test_client_api_query(query, user, variables=variables)
-    #     errors = executed.get('errors')
-
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
     # def test_query_permision_granted(self):
     #     """ Query list of accounts with view permission """
     #     query = self.accounts_query
-    #     account = f.FinanceCostCenterFactory.create()
+    #     account = f.RegularUserFactory.create()
     #     variables = {
     #         'archived': False
     #     }
@@ -181,7 +183,7 @@ class GQLAccount(TestCase):
     # def test_query_anon_user(self):
     #     """ Query list of accounts - anon user """
     #     query = self.accounts_query
-    #     account = f.FinanceCostCenterFactory.create()
+    #     account = f.RegularUserFactory.create()
     #     variables = {
     #         'archived': False
     #     }
@@ -193,7 +195,7 @@ class GQLAccount(TestCase):
 
     # def test_query_one(self):
     #     """ Query one account as admin """   
-    #     account = f.FinanceCostCenterFactory.create()
+    #     account = f.RegularUserFactory.create()
 
     #     # First query accounts to get node id easily
     #     node_id = self.get_node_id_of_first_account()
@@ -208,7 +210,7 @@ class GQLAccount(TestCase):
 
     # def test_query_one_anon_user(self):
     #     """ Deny permission for anon users Query one glacount """   
-    #     account = f.FinanceCostCenterFactory.create()
+    #     account = f.RegularUserFactory.create()
 
     #     # First query accounts to get node id easily
     #     node_id = self.get_node_id_of_first_account()
@@ -223,7 +225,7 @@ class GQLAccount(TestCase):
     #     """ Permission denied message when user lacks authorization """   
     #     # Create regular user
     #     user = f.RegularUserFactory.create()
-    #     account = f.FinanceCostCenterFactory.create()
+    #     account = f.RegularUserFactory.create()
 
     #     # First query accounts to get node id easily
     #     node_id = self.get_node_id_of_first_account()
@@ -240,7 +242,7 @@ class GQLAccount(TestCase):
     #     permission = Permission.objects.get(codename='view_account')
     #     user.user_permissions.add(permission)
     #     user.save()
-    #     account = f.FinanceCostCenterFactory.create()
+    #     account = f.RegularUserFactory.create()
 
     #     # First query accounts to get node id easily
     #     node_id = self.get_node_id_of_first_account()
@@ -325,7 +327,7 @@ class GQLAccount(TestCase):
     # def test_update_account(self):
     #     """ Update a account """
     #     query = self.account_update_mutation
-    #     account = f.FinanceCostCenterFactory.create()
+    #     account = f.RegularUserFactory.create()
     #     variables = self.variables_update
     #     variables['input']['id'] = self.get_node_id_of_first_account()
 
@@ -342,7 +344,7 @@ class GQLAccount(TestCase):
     # def test_update_account_anon_user(self):
     #     """ Don't allow updating accounts for non-logged in users """
     #     query = self.account_update_mutation
-    #     account = f.FinanceCostCenterFactory.create()
+    #     account = f.RegularUserFactory.create()
     #     variables = self.variables_update
     #     variables['input']['id'] = self.get_node_id_of_first_account()
 
@@ -359,7 +361,7 @@ class GQLAccount(TestCase):
     # def test_update_account_permission_granted(self):
     #     """ Allow updating accounts for users with permissions """
     #     query = self.account_update_mutation
-    #     account = f.FinanceCostCenterFactory.create()
+    #     account = f.RegularUserFactory.create()
     #     variables = self.variables_update
     #     variables['input']['id'] = self.get_node_id_of_first_account()
 
@@ -382,7 +384,7 @@ class GQLAccount(TestCase):
     # def test_update_account_permission_denied(self):
     #     """ Check update account permission denied error message """
     #     query = self.account_update_mutation
-    #     account = f.FinanceCostCenterFactory.create()
+    #     account = f.RegularUserFactory.create()
     #     variables = self.variables_update
     #     variables['input']['id'] = self.get_node_id_of_first_account()
 
@@ -402,7 +404,7 @@ class GQLAccount(TestCase):
     # def test_archive_account(self):
     #     """ Archive a account """
     #     query = self.account_archive_mutation
-    #     account = f.FinanceCostCenterFactory.create()
+    #     account = f.RegularUserFactory.create()
     #     variables = self.variables_archive
     #     variables['input']['id'] = self.get_node_id_of_first_account()
 
@@ -419,7 +421,7 @@ class GQLAccount(TestCase):
     # def test_archive_account_anon_user(self):
     #     """ Archive account denied for anon user """
     #     query = self.account_archive_mutation
-    #     account = f.FinanceCostCenterFactory.create()
+    #     account = f.RegularUserFactory.create()
     #     variables = self.variables_archive
     #     variables['input']['id'] = self.get_node_id_of_first_account()
 
@@ -436,7 +438,7 @@ class GQLAccount(TestCase):
     # def test_archive_account_permission_granted(self):
     #     """ Allow archiving accounts for users with permissions """
     #     query = self.account_archive_mutation
-    #     account = f.FinanceCostCenterFactory.create()
+    #     account = f.RegularUserFactory.create()
     #     variables = self.variables_archive
     #     variables['input']['id'] = self.get_node_id_of_first_account()
 
@@ -458,7 +460,7 @@ class GQLAccount(TestCase):
     # def test_archive_account_permission_denied(self):
     #     """ Check archive account permission denied error message """
     #     query = self.account_archive_mutation
-    #     account = f.FinanceCostCenterFactory.create()
+    #     account = f.RegularUserFactory.create()
     #     variables = self.variables_archive
     #     variables['input']['id'] = self.get_node_id_of_first_account()
         

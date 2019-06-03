@@ -16,3 +16,5 @@ app/costasiella/__pycache__/
 *.yml~
 
 *.md~
+
+app/\.vscode/
