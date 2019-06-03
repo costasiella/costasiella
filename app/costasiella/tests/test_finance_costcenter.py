@@ -3,12 +3,11 @@ import graphql
 import base64
 
 from django.contrib.auth import get_user_model
-from django.contrib.auth.models import Permission
 from django.test import TestCase
 from graphene.test import Client
 
 # Create your tests here.
-from django.contrib.auth.models import AnonymousUser
+from django.contrib.auth.models import AnonymousUser, Permission
 
 from . import factories as f
 from .helpers import execute_test_client_api_query

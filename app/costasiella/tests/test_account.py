@@ -2,7 +2,7 @@ import graphene
 import os
 from django.test import TransactionTestCase
 from graphene.test import Client
-from django.contrib.auth.models import AnonymousUser
+from django.contrib.auth.models import AnonymousUser, Permission
 from django.contrib.auth import get_user_model
 
 # Create your tests here.
@@ -25,6 +25,10 @@ class GQLAccount(TransactionTestCase):
         self.permission_add = 'add_account'
         self.permission_change = 'change_account'
         self.permission_delete = 'delete_account'
+
+        self.variables_query_list = {
+            "isActive": True
+        }
 
         self.variables_create = {
             "input": {
@@ -127,11 +131,7 @@ class GQLAccount(TransactionTestCase):
         query = self.accounts_query
         account = f.RegularUserFactory()
 
-        variables = {
-            'isActive': True
-        }
-
-        executed = execute_test_client_api_query(query, self.admin_user, variables=variables)
+        executed = execute_test_client_api_query(query, self.admin_user, variables=self.variables_query_list)
         data = executed.get('data')
 
         self.assertEqual(len(data['accounts']['edges']), 1) # Ensure the Admin super use isn't listed
@@ -146,51 +146,40 @@ class GQLAccount(TransactionTestCase):
         query = self.accounts_query
         account = f.RegularUserFactory()
         
-        variables = {
-            'isActive': True
-        }
-
         # User created account
-        executed = execute_test_client_api_query(query, account, variables=variables)
+        executed = execute_test_client_api_query(query, account, variables=self.variables_query_list)
         errors = executed.get('errors')
 
         self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
-    # def test_query_permision_granted(self):
-    #     """ Query list of accounts with view permission """
-    #     query = self.accounts_query
-    #     account = f.RegularUserFactory.create()
-    #     variables = {
-    #         'archived': False
-    #     }
+    def test_query_permision_granted(self):
+        """ Query list of accounts with view permission """
+        query = self.accounts_query
+        account = f.RegularUserFactory.create()
 
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename='view_account')
-    #     user.user_permissions.add(permission)
-    #     user.save()
+        # Create regular user
+        permission = Permission.objects.get(codename='view_account')
+        account.user_permissions.add(permission)
+        account.save()
 
-    #     executed = execute_test_client_api_query(query, user, variables=variables)
-    #     data = executed.get('data')
+        executed = execute_test_client_api_query(query, account, variables=self.variables_query_list)
+        data = executed.get('data')
 
-    #     # List all accounts
-    #     self.assertEqual(data['financeCostcenters']['edges'][0]['node']['name'], account.name)
-    #     self.assertEqual(data['financeCostcenters']['edges'][0]['node']['archived'], account.archived)
-    #     self.assertEqual(data['financeCostcenters']['edges'][0]['node']['code'], account.code)
+        # List all accounts
+        self.assertEqual(data['accounts']['edges'][0]['node']['isActive'], account.is_active)
+        self.assertEqual(data['accounts']['edges'][0]['node']['firstName'], account.first_name)
+        self.assertEqual(data['accounts']['edges'][0]['node']['lastName'], account.last_name)
+        self.assertEqual(data['accounts']['edges'][0]['node']['email'], account.email)
 
 
-    # def test_query_anon_user(self):
-    #     """ Query list of accounts - anon user """
-    #     query = self.accounts_query
-    #     account = f.RegularUserFactory.create()
-    #     variables = {
-    #         'archived': False
-    #     }
+    def test_query_anon_user(self):
+        """ Query list of accounts - anon user """
+        query = self.accounts_query
 
-    #     executed = execute_test_client_api_query(query, self.anon_user, variables=variables)
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
+        executed = execute_test_client_api_query(query, self.anon_user, variables=self.variables_query_list)
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
     # def test_query_one(self):
