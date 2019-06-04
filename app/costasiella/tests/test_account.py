@@ -221,21 +221,19 @@ class GQLAccount(TransactionTestCase):
         self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
-    # def test_query_one_permission_granted(self):
-    #     """ Respond with data when user has permission """   
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename='view_account')
-    #     user.user_permissions.add(permission)
-    #     user.save()
-    #     account = f.RegularUserFactory.create()
+    def test_query_one_permission_granted(self):
+        """ Respond with data when user has permission """   
+        account = f.RegularUserFactory.create()
+        permission = Permission.objects.get(codename='view_account')
+        account.user_permissions.add(permission)
+        account.save()
 
-    #     # First query accounts to get node id easily
-    #     node_id = self.get_node_id_of_first_account()
+        node_id = to_global_id('AccountNode', account.pk)
 
-    #     # Now query single location and check   
-    #     executed = execute_test_client_api_query(self.account_query, user, variables={"id": node_id})
-    #     data = executed.get('data')
-    #     self.assertEqual(data['financeCostcenter']['name'], account.name)
+        # Now query single location and check   
+        executed = execute_test_client_api_query(self.account_query, account, variables={"id": node_id})
+        data = executed.get('data')
+        self.assertEqual(data['account']['firstName'], account.first_name)
 
 
     # def test_create_account(self):
