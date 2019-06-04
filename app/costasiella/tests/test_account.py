@@ -358,47 +358,46 @@ class GQLAccount(TransactionTestCase):
         self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
-    # def test_update_account_permission_granted(self):
-    #     """ Allow updating accounts for users with permissions """
-    #     query = self.account_update_mutation
-    #     account = f.RegularUserFactory.create()
-    #     variables = self.variables_update
-    #     variables['input']['id'] = self.get_node_id_of_first_account()
+    def test_update_account_permission_granted(self):
+        """ Allow updating accounts for users with permissions """
+        query = self.account_update_mutation
 
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename=self.permission_change)
-    #     user.user_permissions.add(permission)
-    #     user.save()
+        email = f.AllAuthEmailAddress.create()
+        account = email.user
+        variables = self.variables_update
+        variables['input']['id'] = to_global_id('AccountNode', account.pk)
 
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['updateFinanceCostcenter']['financeCostcenter']['name'], variables['input']['name'])
-    #     self.assertEqual(data['updateFinanceCostcenter']['financeCostcenter']['code'], variables['input']['code'])
+        # Create regular user
+        permission = Permission.objects.get(codename=self.permission_change)
+        account.user_permissions.add(permission)
+        account.save()
+
+        executed = execute_test_client_api_query(
+            query, 
+            account, 
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['updateAccount']['account']['firstName'], variables['input']['firstName'])
 
 
-    # def test_update_account_permission_denied(self):
-    #     """ Check update account permission denied error message """
-    #     query = self.account_update_mutation
-    #     account = f.RegularUserFactory.create()
-    #     variables = self.variables_update
-    #     variables['input']['id'] = self.get_node_id_of_first_account()
+    def test_update_account_permission_denied(self):
+        """ Check update account permission denied error message """
+        query = self.account_update_mutation
 
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
+        email = f.AllAuthEmailAddress.create()
+        account = email.user
+        variables = self.variables_update
+        variables['input']['id'] = to_global_id('AccountNode', account.pk)
 
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
+        executed = execute_test_client_api_query(
+            query, 
+            account, 
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
     # def test_archive_account(self):
