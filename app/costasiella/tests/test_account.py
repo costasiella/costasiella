@@ -14,6 +14,9 @@ from .. import schema
 
 from .factories import AdminUserFactory
 
+# Allauth model
+from allauth.account.models import EmailAddress
+
 
 class GQLAccount(TransactionTestCase):
     # https://docs.djangoproject.com/en/2.1/topics/testing/overview/
@@ -41,8 +44,9 @@ class GQLAccount(TransactionTestCase):
 
         self.variables_update = {
             "input": {
-                "name": "Updated account",
-                "code" : "9000"
+                "firstName": "Updated",
+                "lastName": "User",
+                "email" : "updated72609QXF@user.nl"
             }
         }
 
@@ -99,17 +103,18 @@ class GQLAccount(TransactionTestCase):
   }
 '''
 
-#         self.account_update_mutation = '''
-#   mutation UpdateFinanceCostCenter($input: UpdateFinanceCostCenterInput!) {
-#     updateFinanceCostcenter(input: $input) {
-#       financeCostcenter {
-#         id
-#         name
-#         code
-#       }
-#     }
-#   }
-# '''
+        self.account_update_mutation = '''
+  mutation UpdateAccount($input:UpdateAccountInput!) {
+    updateAccount(input: $input) {
+      account {
+        id
+        firstName
+        lastName
+        email
+      }
+    }
+  }
+'''
 
 #         self.account_archive_mutation = '''
 #   mutation ArchiveFinanceCostCenter($input: ArchiveFinanceCostCenterInput!) {
@@ -253,6 +258,12 @@ class GQLAccount(TransactionTestCase):
         self.assertEqual(data['createAccount']['account']['lastName'], variables['input']['lastName'])
         self.assertEqual(data['createAccount']['account']['email'], variables['input']['email'])
 
+        # Check Allauth record
+        self.assertEqual(
+          EmailAddress.objects.filter(email=variables['input']['email']).exists(),
+          True
+        )
+
 
     def test_create_account_anon_user(self):
         """ Don't allow creating accounts for non-logged in users """
@@ -307,21 +318,24 @@ class GQLAccount(TransactionTestCase):
         self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
-    # def test_update_account(self):
-    #     """ Update a account """
-    #     query = self.account_update_mutation
-    #     account = f.RegularUserFactory.create()
-    #     variables = self.variables_update
-    #     variables['input']['id'] = self.get_node_id_of_first_account()
+    def test_update_account(self):
+        """ Update a account """
+        query = self.account_update_mutation
+        account = f.RegularUserFactory.create()
+        variables = self.variables_update
+        variables['input']['id'] = to_global_id('AccountNode', account.pk)
 
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         self.admin_user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['updateFinanceCostcenter']['financeCostcenter']['name'], variables['input']['name'])
-    #     self.assertEqual(data['updateFinanceCostcenter']['financeCostcenter']['code'], variables['input']['code'])
+        executed = execute_test_client_api_query(
+            query, 
+            self.admin_user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        print(data)
+
+        self.assertEqual(data['updateAccount']['account']['firstName'], variables['input']['firstName'])
+        self.assertEqual(data['updateAccount']['account']['lastName'], variables['input']['lastName'])
+        self.assertEqual(data['updateAccount']['account']['email'], variables['input']['email'])
 
 
     # def test_update_account_anon_user(self):

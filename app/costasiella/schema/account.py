@@ -144,10 +144,11 @@ def validate_create_update_input(account, input, update=False):
         Q(email=input['email'])
     )
 
-    #Don't insert duplicate emails into the DB.
+    # Don't insert duplicate emails into the DB.
     if query_set.exists():
         raise Exception(_('Unable to save, an account is already registered with this e-mail address'))
 
+    # Verify gender
     genders = [
         'M', 'F', 'X'
     ]
@@ -215,9 +216,12 @@ class UpdateAccount(graphene.relay.ClientIDMutation):
         if not account:
             raise Exception('Invalid Account ID!')
 
+        print("##########################")
+        print("Account found:")
+        print(account)
+
         validate_create_update_input(account, input, update=True)
 
-        
 
         account.first_name = input['first_name']
         account.last_name = input['last_name']
