@@ -321,7 +321,7 @@ class GQLAccount(TransactionTestCase):
     def test_update_account(self):
         """ Update a account """
         query = self.account_update_mutation
-        
+
         email = f.AllAuthEmailAddress.create()
         account = email.user
         variables = self.variables_update
@@ -339,21 +339,23 @@ class GQLAccount(TransactionTestCase):
         self.assertEqual(data['updateAccount']['account']['email'], variables['input']['email'])
 
 
-    # def test_update_account_anon_user(self):
-    #     """ Don't allow updating accounts for non-logged in users """
-    #     query = self.account_update_mutation
-    #     account = f.RegularUserFactory.create()
-    #     variables = self.variables_update
-    #     variables['input']['id'] = self.get_node_id_of_first_account()
+    def test_update_account_anon_user(self):
+        """ Don't allow updating accounts for non-logged in users """
+        query = self.account_update_mutation
 
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         self.anon_user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
+        email = f.AllAuthEmailAddress.create()
+        account = email.user
+        variables = self.variables_update
+        variables['input']['id'] = to_global_id('AccountNode', account.pk)
+
+        executed = execute_test_client_api_query(
+            query, 
+            self.anon_user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
     # def test_update_account_permission_granted(self):
