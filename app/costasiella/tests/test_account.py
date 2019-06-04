@@ -33,8 +33,9 @@ class GQLAccount(TransactionTestCase):
 
         self.variables_create = {
             "input": {
-                "name": "New account",
-                "code" : "8000"
+                "firstName": "New",
+                "lastName": "User",
+                "email" : "new72609QXF@user.nl"
             }
         }
 
@@ -85,18 +86,18 @@ class GQLAccount(TransactionTestCase):
   }
 '''
 
-#         self.account_create_mutation = ''' 
-#   mutation CreateFinanceCostCenter($input:CreateFinanceCostCenterInput!) {
-#     createFinanceCostcenter(input: $input) {
-#       financeCostcenter{
-#         id
-#         archived
-#         name
-#         code
-#       }
-#     }
-#   }
-# '''
+        self.account_create_mutation = ''' 
+  mutation CreateAccount($input:CreateAccountInput!) {
+    createAccount(input: $input) {
+      account {
+        id
+        firstName
+        lastName
+        email
+      }
+    }
+  }
+'''
 
 #         self.account_update_mutation = '''
 #   mutation UpdateFinanceCostCenter($input: UpdateFinanceCostCenterInput!) {
@@ -236,20 +237,23 @@ class GQLAccount(TransactionTestCase):
         self.assertEqual(data['account']['firstName'], account.first_name)
 
 
-    # def test_create_account(self):
-    #     """ Create a account """
-    #     query = self.account_create_mutation
-    #     variables = self.variables_create
+    def test_create_account(self):
+        """ Create a account """
+        query = self.account_create_mutation
+        variables = self.variables_create
 
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         self.admin_user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['createFinanceCostcenter']['financeCostcenter']['name'], variables['input']['name'])
-    #     self.assertEqual(data['createFinanceCostcenter']['financeCostcenter']['archived'], False)
-    #     self.assertEqual(data['createFinanceCostcenter']['financeCostcenter']['code'], variables['input']['code'])
+        executed = execute_test_client_api_query(
+            query, 
+            self.admin_user, 
+            variables=variables
+        )
+        data = executed.get('data')
+
+        print(data)
+
+        self.assertEqual(data['createAccount']['account']['firstName'], variables['input']['firstName'])
+        self.assertEqual(data['createAccount']['account']['lastName'], variables['input']['lastName'])
+        self.assertEqual(data['createAccount']['account']['email'], variables['input']['email'])
 
 
     # def test_create_account_anon_user(self):
