@@ -6,6 +6,7 @@ from django.contrib.auth.models import AnonymousUser, Permission
 from django.contrib.auth import get_user_model
 
 # Create your tests here.
+from graphql_relay import to_global_id
 from . import factories as f
 from .helpers import execute_test_client_api_query
 from .. import models
@@ -73,12 +74,13 @@ class GQLAccount(TransactionTestCase):
 '''
 
         self.account_query = '''
-  query FinanceCostCenter($id: ID!) {
-    financeCostcenter(id:$id) {
+  query Account($id: ID!) {
+    account(id:$id) {
       id
-      name
-      code
-      archived
+      firstName
+      lastName
+      email
+      isActive
     }
   }
 '''
@@ -182,19 +184,20 @@ class GQLAccount(TransactionTestCase):
         self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
-    # def test_query_one(self):
-    #     """ Query one account as admin """   
-    #     account = f.RegularUserFactory.create()
+    def test_query_one(self):
+        """ Query one account as admin """   
+        account = f.RegularUserFactory.create()
 
-    #     # First query accounts to get node id easily
-    #     node_id = self.get_node_id_of_first_account()
+        # First query accounts to get node id easily
+        node_id = to_global_id('AccountNode', account.pk),
 
-    #     # Now query single account and check
-    #     executed = execute_test_client_api_query(self.account_query, self.admin_user, variables={"id": node_id})
-    #     data = executed.get('data')
-    #     self.assertEqual(data['financeCostcenter']['name'], account.name)
-    #     self.assertEqual(data['financeCostcenter']['archived'], account.archived)
-    #     self.assertEqual(data['financeCostcenter']['code'], account.code)
+        # Now query single account and check
+        executed = execute_test_client_api_query(self.account_query, self.admin_user, variables={"id": node_id})
+        data = executed.get('data')
+        self.assertEqual(data['account']['firstName'], account.first_name)
+        self.assertEqual(data['account']['lastName'], account.last_name)
+        self.assertEqual(data['account']['email'], account.email)
+        self.assertEqual(data['account']['isActive'], account.is_active)
 
 
     # def test_query_one_anon_user(self):
