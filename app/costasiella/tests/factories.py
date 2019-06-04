@@ -4,7 +4,10 @@ from django.contrib.auth import get_user_model
 import datetime
 import factory
 
+# Models
+from allauth.account.models import EmailAddress
 from .. import models
+
 from ..modules.date_tools import last_day_month
 
 
@@ -218,3 +221,13 @@ class RegularUserFactory(factory.DjangoModelFactory):
 
     is_active = True
 
+
+class AllAuthEmailAddress(factory.DjangoModelFactory):
+    class Meta:
+        model = EmailAddress
+
+    user = factory.SubFactory(RegularUserFactory)
+    email = 'user@costasiella.com'
+    verified = True
+    primary = True
+    

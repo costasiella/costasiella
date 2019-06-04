@@ -321,7 +321,9 @@ class GQLAccount(TransactionTestCase):
     def test_update_account(self):
         """ Update a account """
         query = self.account_update_mutation
-        account = f.RegularUserFactory.create()
+        
+        email = f.AllAuthEmailAddress.create()
+        account = email.user
         variables = self.variables_update
         variables['input']['id'] = to_global_id('AccountNode', account.pk)
 
@@ -331,7 +333,6 @@ class GQLAccount(TransactionTestCase):
             variables=variables
         )
         data = executed.get('data')
-        print(data)
 
         self.assertEqual(data['updateAccount']['account']['firstName'], variables['input']['firstName'])
         self.assertEqual(data['updateAccount']['account']['lastName'], variables['input']['lastName'])
