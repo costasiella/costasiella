@@ -187,9 +187,7 @@ class GQLAccount(TransactionTestCase):
     def test_query_one(self):
         """ Query one account as admin """   
         account = f.RegularUserFactory.create()
-
-        # First query accounts to get node id easily
-        node_id = to_global_id('AccountNode', account.pk),
+        node_id = to_global_id('AccountNode', account.pk)
 
         # Now query single account and check
         executed = execute_test_client_api_query(self.account_query, self.admin_user, variables={"id": node_id})
@@ -200,17 +198,15 @@ class GQLAccount(TransactionTestCase):
         self.assertEqual(data['account']['isActive'], account.is_active)
 
 
-    # def test_query_one_anon_user(self):
-    #     """ Deny permission for anon users Query one glacount """   
-    #     account = f.RegularUserFactory.create()
+    def test_query_one_anon_user(self):
+        """ Deny permission for anon users Query one glacount """   
+        account = f.RegularUserFactory.create()
+        node_id = to_global_id('AccountNode', account.pk)
 
-    #     # First query accounts to get node id easily
-    #     node_id = self.get_node_id_of_first_account()
-
-    #     # Now query single account and check
-    #     executed = execute_test_client_api_query(self.account_query, self.anon_user, variables={"id": node_id})
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
+        # Now query single account and check
+        executed = execute_test_client_api_query(self.account_query, self.anon_user, variables={"id": node_id})
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
     # def test_query_one_permission_denied(self):
