@@ -209,19 +209,16 @@ class GQLAccount(TransactionTestCase):
         self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
-    # def test_query_one_permission_denied(self):
-    #     """ Permission denied message when user lacks authorization """   
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     account = f.RegularUserFactory.create()
+    def test_query_one_permission_denied(self):
+        """ Permission denied message when user lacks authorization """   
+        # Create regular user
+        account = f.RegularUserFactory.create()
+        node_id = to_global_id('AccountNode', account.pk)
 
-    #     # First query accounts to get node id easily
-    #     node_id = self.get_node_id_of_first_account()
-
-    #     # Now query single account and check
-    #     executed = execute_test_client_api_query(self.account_query, user, variables={"id": node_id})
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
+        # Now query single account and check
+        executed = execute_test_client_api_query(self.account_query, account, variables={"id": node_id})
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
     # def test_query_one_permission_granted(self):
