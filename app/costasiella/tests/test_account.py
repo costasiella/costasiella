@@ -249,66 +249,62 @@ class GQLAccount(TransactionTestCase):
         )
         data = executed.get('data')
 
-        print(data)
-
         self.assertEqual(data['createAccount']['account']['firstName'], variables['input']['firstName'])
         self.assertEqual(data['createAccount']['account']['lastName'], variables['input']['lastName'])
         self.assertEqual(data['createAccount']['account']['email'], variables['input']['email'])
 
 
-    # def test_create_account_anon_user(self):
-    #     """ Don't allow creating accounts for non-logged in users """
-    #     query = self.account_create_mutation
-    #     variables = self.variables_create
+    def test_create_account_anon_user(self):
+        """ Don't allow creating accounts for non-logged in users """
+        query = self.account_create_mutation
+        variables = self.variables_create
 
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         self.anon_user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
-
-
-    # def test_create_location_permission_granted(self):
-    #     """ Allow creating accounts for users with permissions """
-    #     query = self.account_create_mutation
-    #     variables = self.variables_create
-
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename=self.permission_add)
-    #     user.user_permissions.add(permission)
-    #     user.save()
-
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['createFinanceCostcenter']['financeCostcenter']['name'], variables['input']['name'])
-    #     self.assertEqual(data['createFinanceCostcenter']['financeCostcenter']['archived'], False)
-    #     self.assertEqual(data['createFinanceCostcenter']['financeCostcenter']['code'], variables['input']['code'])
+        executed = execute_test_client_api_query(
+            query, 
+            self.anon_user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
-    # def test_create_account_permission_denied(self):
-    #     """ Check create account permission denied error message """
-    #     query = self.account_create_mutation
-    #     variables = self.variables_create
+    def test_create_location_permission_granted(self):
+        """ Allow creating accounts for users with permissions """
+        query = self.account_create_mutation
+        variables = self.variables_create
 
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
+        # Create regular user
+        user = f.RegularUserFactory.create()
+        permission = Permission.objects.get(codename=self.permission_add)
+        user.user_permissions.add(permission)
+        user.save()
 
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
+        executed = execute_test_client_api_query(
+            query, 
+            user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['createAccount']['account']['firstName'], variables['input']['firstName'])
+
+
+    def test_create_account_permission_denied(self):
+        """ Check create account permission denied error message """
+        query = self.account_create_mutation
+        variables = self.variables_create
+
+        # Create regular user
+        user = f.RegularUserFactory.create()
+
+        executed = execute_test_client_api_query(
+            query, 
+            user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
     # def test_update_account(self):
