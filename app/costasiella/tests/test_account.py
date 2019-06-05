@@ -429,61 +429,60 @@ class GQLAccount(TransactionTestCase):
         self.assertEqual(data['updateAccountActive']['account']['isActive'], variables['input']['isActive'])
 
 
-    # def test_update_account_active_anon_user(self):
-    #     """ Archive account denied for anon user """
-    #     query = self.account_update_active_mutation
-    #     account = f.RegularUserFactory.create()
-    #     variables = self.variables_update_active
-    #     variables['input']['id'] = to_global_id('AccountNode', account.pk)
+    def test_update_account_active_anon_user(self):
+        """ Archive account denied for anon user """
+        query = self.account_update_active_mutation
 
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         self.anon_user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
+        account = f.RegularUserFactory.create()
+        variables = self.variables_update_active
+        variables['input']['id'] = to_global_id('AccountNode', account.pk)
 
-
-    # def test_update_account_active_permission_granted(self):
-    #     """ Allow archiving accounts for users with permissions """
-    #     query = self.account_update_active_mutation
-    #     account = f.RegularUserFactory.create()
-    #     variables = self.variables_update_active
-    #     variables['input']['id'] = to_global_id('AccountNode', account.pk)
-
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename=self.permission_delete)
-    #     user.user_permissions.add(permission)
-    #     user.save()
-
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['archiveFinanceCostcenter']['financeCostcenter']['archived'], variables['input']['archived'])
+        executed = execute_test_client_api_query(
+            query, 
+            self.anon_user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
-    # def test_update_account_active_permission_denied(self):
-    #     """ Check archive account permission denied error message """
-    #     query = self.account_update_active_mutation
-    #     account = f.RegularUserFactory.create()
-    #     variables = self.variables_update_active
-    #     variables['input']['id'] = to_global_id('AccountNode', account.pk)
-        
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
+    def test_update_account_active_permission_granted(self):
+        """ Allow archiving accounts for users with permissions """
+        query = self.account_update_active_mutation
 
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
+        account = f.RegularUserFactory.create()
+        variables = self.variables_update_active
+        variables['input']['id'] = to_global_id('AccountNode', account.pk)
+
+        # Grant permissions
+        permission = Permission.objects.get(codename=self.permission_delete)
+        account.user_permissions.add(permission)
+        account.save()
+
+        executed = execute_test_client_api_query(
+            query, 
+            account,
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['updateAccountActive']['account']['isActive'], variables['input']['isActive'])
+
+
+    def test_update_account_active_permission_denied(self):
+        """ Check archive account permission denied error message """
+        query = self.account_update_active_mutation
+
+        account = f.RegularUserFactory.create()
+        variables = self.variables_update_active
+        variables['input']['id'] = to_global_id('AccountNode', account.pk)
+
+        executed = execute_test_client_api_query(
+            query, 
+            account, 
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
 
