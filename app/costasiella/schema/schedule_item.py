@@ -78,18 +78,26 @@ class CreateScheduleItem(graphene.relay.ClientIDMutation):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.add_scheduleitem')
 
-        
-        # if not len(input['name']):
-        #     print('validation error found')
-        #     raise GraphQLError(_('Name is required'))
+        result = validate_create_update_input(input)
 
         schedule_item = ScheduleItem(
             schedule_item_type=input['schedule_item_type'], 
             frequency_type=input['frequency_type'], 
-            frequency_interval=input['frequency_interval'], 
-            
+            frequency_interval=input['frequency_interval'],
+            date_start=input['date_start'],
+            time_start=input['time_start'],
+            time_end=input['time_end'],   
         )
 
+        # Optional fields
+        if input['date_end']:
+            schedule_item.date_end = input['date_end']
+
+        # Fields requiring additional validation
+        if result['organization_location_room']:
+            schedule_item.organization_location_room = result['organization_location_room']
+
+        # ALl done, save it :).
         schedule_item.save()
 
         return CreateScheduleItem(schedule_item=schedule_item)
