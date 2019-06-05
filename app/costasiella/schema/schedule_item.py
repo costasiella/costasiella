@@ -10,6 +10,7 @@ from graphql_relay import to_global_id
 from ..models import ScheduleItem, OrganizationLocationRoom
 from ..modules.gql_tools import require_login_and_permission, get_rid
 from ..modules.messages import Messages
+from .organization_location_room import OrganizationLocationRoomNode
 
 m = Messages()
 
@@ -34,6 +35,7 @@ class ScheduleItemNode(DjangoObjectType):
 class ScheduleClassType(graphene.ObjectType):
     id = graphene.ID
     date = graphene.types.datetime.Date()
+    organization_location_room = graphene.Field(OrganizationLocationRoomNode)
     time_start = graphene.types.datetime.Time()
     time_end = graphene.types.datetime.Time()
 
@@ -67,6 +69,7 @@ class ScheduleClassesDayType(graphene.ObjectType):
             classes_list.append(
                 ScheduleClassType(
                     date=self.date,
+                    organization_location_room=item.organization_location_room,
                     time_start=item.time_start,
                     time_end=item.time_end
                 )
