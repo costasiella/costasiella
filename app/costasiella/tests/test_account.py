@@ -127,6 +127,14 @@ class GQLAccount(TransactionTestCase):
   }
   '''
 
+        self.account_delete_mutation = '''
+  mutation DeleteAccount($input: DeleteAccountInput!) {
+    deleteAccount(input: $input) {
+      ok
+    }
+  }
+  '''
+
 #         self.account_update_active_mutation = '''
 #   mutation ArchiveFinanceCostCenter($input: ArchiveFinanceCostCenterInput!) {
 #     archiveFinanceCostcenter(input: $input) {
