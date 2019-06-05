@@ -5,7 +5,7 @@ from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
 from graphql import GraphQLError
 
-from ..models import ScheduleItem
+from ..models import ScheduleItem, OrganizationLocationRoom
 from ..modules.gql_tools import require_login_and_permission, get_rid
 from ..modules.messages import Messages
 
@@ -41,6 +41,25 @@ class ScheduleItemQuery(graphene.ObjectType):
         # return None
 
 
+def validate_create_update_input(input, update=False):
+    """
+    Validate input
+    """ 
+    result = {}
+
+    # Check OrganizationLocationRoom
+    if 'organization_location_room' in input:
+        if input['organization_location_room']:
+            rid = get_rid(input['organization_location_room'])
+            organization_location_room = OrganizationLocationRoom.objects.filter(id=rid.id).first()
+            result['organization_location_room'] = organization_location_room
+            if not organization_location_room:
+                raise Exception(_('Invalid Organization Location Room ID!'))            
+
+
+    return result
+
+
 class CreateScheduleItem(graphene.relay.ClientIDMutation):
     class Input:
         schedule_item_type = graphene.String(required=True)
@@ -68,6 +87,7 @@ class CreateScheduleItem(graphene.relay.ClientIDMutation):
             schedule_item_type=input['schedule_item_type'], 
             frequency_type=input['frequency_type'], 
             frequency_interval=input['frequency_interval'], 
+            
         )
 
         schedule_item.save()
