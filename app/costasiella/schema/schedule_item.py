@@ -33,7 +33,7 @@ class ScheduleItemNode(DjangoObjectType):
 
 # ScheduleClassType
 class ScheduleClassType(graphene.ObjectType):
-    id = graphene.ID
+    schedule_item_id = graphene.ID()
     date = graphene.types.datetime.Date()
     organization_location_room = graphene.Field(OrganizationLocationRoomNode)
     time_start = graphene.types.datetime.Time()
@@ -69,6 +69,7 @@ class ScheduleClassesDayType(graphene.ObjectType):
         for item in schedule_items:
             classes_list.append(
                 ScheduleClassType(
+                    schedule_item_id=to_global_id('ScheduleItemNode', item.pk),
                     date=self.date,
                     organization_location_room=item.organization_location_room,
                     time_start=item.time_start,
