@@ -50,9 +50,9 @@ class GQLAccount(TransactionTestCase):
             }
         }
 
-        self.variables_archive = {
+        self.variables_update_active = {
             "input": {
-                "archived": True
+                "isActive": False
             }
         }
 
@@ -116,7 +116,18 @@ class GQLAccount(TransactionTestCase):
   }
 '''
 
-#         self.account_archive_mutation = '''
+        self.account_update_active_mutation = '''
+  mutation UpdateAccountActive($input: UpdateAccountActiveInput!) {
+    updateAccountActive(input: $input) {
+      account {
+        id
+        isActive
+      }
+    }
+  }
+  '''
+
+#         self.account_update_active_mutation = '''
 #   mutation ArchiveFinanceCostCenter($input: ArchiveFinanceCostCenterInput!) {
 #     archiveFinanceCostcenter(input: $input) {
 #       financeCostcenter {
@@ -400,29 +411,30 @@ class GQLAccount(TransactionTestCase):
         self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
-    # def test_archive_account(self):
-    #     """ Archive a account """
-    #     query = self.account_archive_mutation
-    #     account = f.RegularUserFactory.create()
-    #     variables = self.variables_archive
-    #     variables['input']['id'] = self.get_node_id_of_first_account()
+    def test_update_account_active(self):
+        """ Change active status of an account """
+        query = self.account_update_active_mutation
 
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         self.admin_user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     print(data)
-    #     self.assertEqual(data['archiveFinanceCostcenter']['financeCostcenter']['archived'], variables['input']['archived'])
+        account = f.RegularUserFactory.create()
+        variables = self.variables_update_active
+        variables['input']['id'] = to_global_id('AccountNode', account.pk)
+
+        executed = execute_test_client_api_query(
+            query, 
+            self.admin_user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        print(data)
+        self.assertEqual(data['updateAccountActive']['account']['isActive'], variables['input']['isActive'])
 
 
-    # def test_archive_account_anon_user(self):
+    # def test_update_account_active_anon_user(self):
     #     """ Archive account denied for anon user """
-    #     query = self.account_archive_mutation
+    #     query = self.account_update_active_mutation
     #     account = f.RegularUserFactory.create()
-    #     variables = self.variables_archive
-    #     variables['input']['id'] = self.get_node_id_of_first_account()
+    #     variables = self.variables_update_active
+    #     variables['input']['id'] = to_global_id('AccountNode', account.pk)
 
     #     executed = execute_test_client_api_query(
     #         query, 
@@ -434,12 +446,12 @@ class GQLAccount(TransactionTestCase):
     #     self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
-    # def test_archive_account_permission_granted(self):
+    # def test_update_account_active_permission_granted(self):
     #     """ Allow archiving accounts for users with permissions """
-    #     query = self.account_archive_mutation
+    #     query = self.account_update_active_mutation
     #     account = f.RegularUserFactory.create()
-    #     variables = self.variables_archive
-    #     variables['input']['id'] = self.get_node_id_of_first_account()
+    #     variables = self.variables_update_active
+    #     variables['input']['id'] = to_global_id('AccountNode', account.pk)
 
     #     # Create regular user
     #     user = f.RegularUserFactory.create()
@@ -456,12 +468,12 @@ class GQLAccount(TransactionTestCase):
     #     self.assertEqual(data['archiveFinanceCostcenter']['financeCostcenter']['archived'], variables['input']['archived'])
 
 
-    # def test_archive_account_permission_denied(self):
+    # def test_update_account_active_permission_denied(self):
     #     """ Check archive account permission denied error message """
-    #     query = self.account_archive_mutation
+    #     query = self.account_update_active_mutation
     #     account = f.RegularUserFactory.create()
-    #     variables = self.variables_archive
-    #     variables['input']['id'] = self.get_node_id_of_first_account()
+    #     variables = self.variables_update_active
+    #     variables['input']['id'] = to_global_id('AccountNode', account.pk)
         
     #     # Create regular user
     #     user = f.RegularUserFactory.create()
