@@ -15,7 +15,7 @@ m = Messages()
 class ScheduleItemNode(DjangoObjectType):
     class Meta:
         model = ScheduleItem
-        filter_fields = ['schedule_type']
+        filter_fields = ['schedule_item_type']
         interfaces = (graphene.relay.Node, )
 
     @classmethod

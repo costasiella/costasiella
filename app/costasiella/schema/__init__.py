@@ -22,6 +22,8 @@ from .organization_subscription_group import OrganizationSubscriptionGroupQuery,
 from .organization_subscription_group_subscription import OrganizationSubscriptionGroupSubscriptionMutation
 from .organization_subscription_price import OrganizationSubscriptionPriceQuery, OrganizationSubscriptionPriceMutation
 
+from .schedule_item import ScheduleItemQuery, ScheduleItemMutation
+
 
 
 class Query(AccountQuery,
@@ -40,6 +42,7 @@ class Query(AccountQuery,
             OrganizationSubscriptionQuery,
             OrganizationSubscriptionGroupQuery,
             OrganizationSubscriptionPriceQuery,
+            ScheduleItemQuery,
             graphene.ObjectType):
     node = graphene.relay.Node.Field()
 
@@ -62,6 +65,7 @@ class Mutation(AccountMutation,
                OrganizationSubscriptionGroupMutation, 
                OrganizationSubscriptionGroupSubscriptionMutation, 
                OrganizationSubscriptionPriceMutation, 
+               ScheduleItemMutation,
                graphene.ObjectType):
     token_auth = graphql_jwt.ObtainJSONWebToken.Field()
     verify_token = graphql_jwt.Verify.Field()
