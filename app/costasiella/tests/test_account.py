@@ -56,6 +56,10 @@ class GQLAccount(TransactionTestCase):
             }
         }
 
+        self.variables_delete = {
+            "input": {}
+        }
+
         self.accounts_query = '''
   query Accounts($after: String, $before: String, $isActive: Boolean!) {
     accounts(first: 15, before: $before, after: $after, isActive: $isActive) {
@@ -135,16 +139,6 @@ class GQLAccount(TransactionTestCase):
   }
   '''
 
-#         self.account_update_active_mutation = '''
-#   mutation ArchiveFinanceCostCenter($input: ArchiveFinanceCostCenterInput!) {
-#     archiveFinanceCostcenter(input: $input) {
-#       financeCostcenter {
-#         id
-#         archived
-#       }
-#     }
-#   }
-# '''
 
     def tearDown(self):
         # This is run after every test
@@ -438,7 +432,7 @@ class GQLAccount(TransactionTestCase):
 
 
     def test_update_account_active_anon_user(self):
-        """ Archive account denied for anon user """
+        """ Update account active status denied for anon user """
         query = self.account_update_active_mutation
 
         account = f.RegularUserFactory.create()
@@ -456,7 +450,7 @@ class GQLAccount(TransactionTestCase):
 
 
     def test_update_account_active_permission_granted(self):
-        """ Allow archiving accounts for users with permissions """
+        """ Allow update account status for users with permissions """
         query = self.account_update_active_mutation
 
         account = f.RegularUserFactory.create()
@@ -478,7 +472,7 @@ class GQLAccount(TransactionTestCase):
 
 
     def test_update_account_active_permission_denied(self):
-        """ Check archive account permission denied error message """
+        """ Check update account status permission denied error message """
         query = self.account_update_active_mutation
 
         account = f.RegularUserFactory.create()
@@ -494,3 +488,78 @@ class GQLAccount(TransactionTestCase):
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Permission denied!')
 
+
+    def test_delete_account(self):
+        """ Delete account """
+        query = self.account_delete_mutation
+
+        account = f.RegularUserFactory.create()
+        variables = self.variables_delete
+        variables['input']['id'] = to_global_id('AccountNode', account.pk)
+
+        executed = execute_test_client_api_query(
+            query, 
+            self.admin_user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        print(data)
+        self.assertEqual(data['deleteAccount']['ok'], True)
+
+
+    def test_delete_account_anon_user(self):
+        """ Delete account denied for anon user """
+        query = self.account_delete_mutation
+
+        account = f.RegularUserFactory.create()
+        variables = self.variables_delete
+        variables['input']['id'] = to_global_id('AccountNode', account.pk)
+
+        executed = execute_test_client_api_query(
+            query, 
+            self.anon_user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
+
+
+    def test_delete_account_permission_granted(self):
+        """ Allow deleting accounts for users with permissions """
+        query = self.account_delete_mutation
+
+        account = f.RegularUserFactory.create()
+        variables = self.variables_delete
+        variables['input']['id'] = to_global_id('AccountNode', account.pk)
+
+        # Grant permissions
+        permission = Permission.objects.get(codename=self.permission_delete)
+        account.user_permissions.add(permission)
+        account.save()
+
+        executed = execute_test_client_api_query(
+            query, 
+            account,
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['deleteAccount']['ok'], True)
+
+
+    def test_delete_account_permission_denied(self):
+        """ Check delete account permission denied error message """
+        query = self.account_delete_mutation
+
+        account = f.RegularUserFactory.create()
+        variables = self.variables_delete
+        variables['input']['id'] = to_global_id('AccountNode', account.pk)
+
+        executed = execute_test_client_api_query(
+            query, 
+            account, 
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
