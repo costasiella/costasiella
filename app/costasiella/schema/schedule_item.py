@@ -35,10 +35,7 @@ class ScheduleItemQuery(graphene.ObjectType):
         require_login_and_permission(user, 'costasiella.view_scheduleitem')
 
         ## return everything:
-        # if user.has_perm('costasiella.view_scheduleitem'):
         return ScheduleItem.objects.filter(archived = archived).order_by('name')
-
-        # return None
 
 
 def validate_create_update_input(input, update=False):
