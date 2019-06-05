@@ -1,4 +1,5 @@
 from django.utils.translation import gettext as _
+from django.db.models import Q
 
 import graphene
 from graphene_django import DjangoObjectType
@@ -29,23 +30,49 @@ class ScheduleItemNode(DjangoObjectType):
         return self._meta.model.objects.get(id=id)
 
 
+# ScheduleClassType
+class ScheduleClassType(graphene.ObjectType):
+    id = graphene.ID
+    date = graphene.types.datetime.Date()
+    time_start = graphene.types.datetime.Time()
+    time_end = graphene.types.datetime.Time()
 
-# # ScheduleClassesType
-# class ScheduleClassesType(graphene.ObjectType):
-    
 
 # ScheduleClassDayType
 class ScheduleClassesDayType(graphene.ObjectType):
     date = graphene.types.datetime.Date()
-    # classes = graphene.List(ScheduleClassType
+    classes = graphene.List(ScheduleClassType)
 
+    def resolve_classes(self, info):
 
-# # ScheduleClassType
-# class ScheduleClassType(graphene.ObjectType):
-#     id = graphene.ID
-#     date = graphene.types.datetime.Date()
-#     time_start = graphene.types.datetime.Time()
-#     time_end = graphene.types.datetime.Time()
+        iso_week_day = self.date.isoweekday()
+
+        ## Query classes table for self.date
+        # Query for specific classes
+        # (Q(schedule_item__schedule_item_type = 'CLASS') & \
+        #  Q(schedule_item__frequency_type = 'SPECIFIC') & \
+        #  Q(schedule_item__date_start = self.date)) | \
+        
+        # Query for recurring classes
+        schedule_items = ScheduleItem.objects.filter(
+            Q(schedule_item_type = 'CLASS') & \
+            Q(frequency_type = 'WEEKLY') &
+            Q(frequency_interval = iso_week_day) &
+            Q(date_start__lte = self.date) & 
+            (Q(date_end__gte = self.date) | Q(date_end__isnull = True ))
+        )
+
+        classes_list = []
+        for item in schedule_items:
+            classes_list.append(
+                ScheduleClassType(
+                    date=self.date,
+                    time_start=item.time_start,
+                    time_end=item.time_end
+                )
+            )
+    
+        return classes_list
 
 
 class ScheduleItemQuery(graphene.ObjectType):
@@ -75,7 +102,7 @@ class ScheduleItemQuery(graphene.ObjectType):
         delta = datetime.timedelta(days=1)
         date = date_from
         return_list = []
-        while date < date_until:
+        while date <= date_until:
             day = ScheduleClassesDayType()
             day.date = date
 
