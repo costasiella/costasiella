@@ -2,17 +2,19 @@ from django.utils.translation import gettext as _
 
 from django.db import models
 
+
+from .organization_location_room import OrganizationLocationRoom
+
 # from .finance_costcenter import FinanceCostCenter
 # from .finance_glaccount import FinanceGLAccount
 # from .finance_taxrate import FinanceTaxRate
 # Create your models here.
 
 class Schedule(models.Model):
-    # VALIDITY_UNITS = (
-    #     ("DAYS", _("Days")),
-    #     ("WEEKS", _("Weeks")),
-    #     ("MONTHS", _("Months"))
-    # )
+
+    SCHEDULE_TYPES = (
+        ("CLASS", _("Class"))
+    )
 
     FREQUENCY_TYPES = (
         ('SPECIFIC', _("Specific")),
@@ -31,8 +33,14 @@ class Schedule(models.Model):
         (7, _("Sunday")),
     )
 
+    schedule_type = models.Charfield(choices=SCHEDULE_TYPES)
+    frequency_type = models.CharField(choices=FREQUENCY_TYPES)
+    frequency_interval = models.CharField(choices=FREQUENCY_INTERVAL_OPTIONS)
+    organization_location_room = models.ForeignKey(OrganizationLocationRoom, on_delete=models.CASCADE)
     date_start = models.DateField()
     date_end = models.DateField(null=True)
+    time_start = models.TimeField()
+    time_end = models.TimeField()
 
     # archived = models.BooleanField(default=False)
     # display_public = models.BooleanField(default=True)
