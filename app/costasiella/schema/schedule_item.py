@@ -4,6 +4,7 @@ import graphene
 from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
 from graphql import GraphQLError
+from graphql_relay import to_global_id
 
 from ..models import ScheduleItem, OrganizationLocationRoom
 from ..modules.gql_tools import require_login_and_permission, get_rid
@@ -12,6 +13,7 @@ from ..modules.messages import Messages
 m = Messages()
 
 import datetime
+
 
 class ScheduleItemNode(DjangoObjectType):
     class Meta:
@@ -27,10 +29,33 @@ class ScheduleItemNode(DjangoObjectType):
         return self._meta.model.objects.get(id=id)
 
 
+
+# # ScheduleClassesType
+# class ScheduleClassesType(graphene.ObjectType):
+    
+
+# ScheduleClassDayType
+class ScheduleClassesDayType(graphene.ObjectType):
+    date = graphene.types.datetime.Date()
+    # classes = graphene.List(ScheduleClassType
+
+
+# # ScheduleClassType
+# class ScheduleClassType(graphene.ObjectType):
+#     id = graphene.ID
+#     date = graphene.types.datetime.Date()
+#     time_start = graphene.types.datetime.Time()
+#     time_end = graphene.types.datetime.Time()
+
+
 class ScheduleItemQuery(graphene.ObjectType):
     schedule_items = DjangoFilterConnectionField(ScheduleItemNode)
     # schedule_items = graphene.Field(ScheduleItemNode)
     schedule_item = graphene.relay.Node.Field(ScheduleItemNode)
+    schedule_classes = graphene.List(ScheduleClassesDayType,
+        date_from=graphene.types.datetime.Date(), 
+        date_until=graphene.types.datetime.Date()
+    )
 
     def resolve_schedule_items(self, info, **kwargs):
         user = info.context.user
@@ -38,6 +63,23 @@ class ScheduleItemQuery(graphene.ObjectType):
 
         ## return everything:
         return ScheduleItem.objects.filter()
+
+
+    def resolve_schedule_classes(self, 
+                                 info, 
+                                 date_from=graphene.types.datetime.Date(), 
+                                 date_until=graphene.types.datetime.Date()):
+        delta = datetime.timedelta(days=1)
+        date = date_from
+        return_list = []
+        while date < date_until:
+            day = ScheduleClassesDayType()
+            day.date = date
+
+            return_list.append(day)
+            date += delta
+
+        return return_list
 
 
 def validate_create_update_input(input, update=False):
