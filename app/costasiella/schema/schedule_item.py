@@ -69,6 +69,9 @@ class ScheduleItemQuery(graphene.ObjectType):
                                  info, 
                                  date_from=graphene.types.datetime.Date(), 
                                  date_until=graphene.types.datetime.Date()):
+
+        #TODO: Check if time between dates <= 7 days
+
         delta = datetime.timedelta(days=1)
         date = date_from
         return_list = []
