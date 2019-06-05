@@ -209,7 +209,7 @@ class UpdateAccount(graphene.relay.ClientIDMutation):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.change_account')
 
-        print(input)
+        # print(input)
 
         rid = get_rid(input['id'])
         account = get_user_model().objects.filter(id=rid.id).first()
