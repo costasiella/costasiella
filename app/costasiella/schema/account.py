@@ -144,25 +144,6 @@ def validate_create_update_input(account, input, update=False):
         
         if not input['country'] in country_codes:
             raise Exception(_("Please specify the country as ISO country code, eg. 'NL'"))
-    
-    # # Fetch & check tax rate
-    # rid = get_rid(input['finance_tax_rate'])
-    # finance_tax_rate = FinanceTaxRate.objects.filter(id=rid.id).first()
-    # result['finance_tax_rate'] = finance_tax_rate
-    # if not finance_tax_rate:
-    #     raise Exception(_('Invalid Finance Tax Rate ID!'))
-
-    # # Check OrganizationMembership
-    # if 'organization_membership' in input:
-    #     if input['organization_membership']:
-    #         rid = get_rid(input['organization_membership'])
-    #         organization_membership = OrganizationMembership.objects.filter(id=rid.id).first()
-    #         result['organization_membership'] = organization_membership
-    #         if not organization_membership:
-    #             raise Exception(_('Invalid Organization Membership ID!'))            
-
-
-    # return result
 
 
 class UpdateAccount(graphene.relay.ClientIDMutation):
