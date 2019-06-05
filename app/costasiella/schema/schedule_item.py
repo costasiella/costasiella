@@ -11,6 +11,7 @@ from ..modules.messages import Messages
 
 m = Messages()
 
+import datetime
 
 class ScheduleItemNode(DjangoObjectType):
     class Meta:
@@ -28,14 +29,15 @@ class ScheduleItemNode(DjangoObjectType):
 
 class ScheduleItemQuery(graphene.ObjectType):
     schedule_items = DjangoFilterConnectionField(ScheduleItemNode)
+    # schedule_items = graphene.Field(ScheduleItemNode)
     schedule_item = graphene.relay.Node.Field(ScheduleItemNode)
 
-    def resolve_schedule_items(self, info, archived=False, **kwargs):
+    def resolve_schedule_items(self, info, **kwargs):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.view_scheduleitem')
 
         ## return everything:
-        return ScheduleItem.objects.filter(archived = archived).order_by('name')
+        return ScheduleItem.objects.filter()
 
 
 def validate_create_update_input(input, update=False):
@@ -77,6 +79,8 @@ class CreateScheduleItem(graphene.relay.ClientIDMutation):
 
         result = validate_create_update_input(input)
 
+        print(input)
+
         schedule_item = ScheduleItem(
             schedule_item_type=input['schedule_item_type'], 
             frequency_type=input['frequency_type'], 
@@ -87,8 +91,9 @@ class CreateScheduleItem(graphene.relay.ClientIDMutation):
         )
 
         # Optional fields
-        if input['date_end']:
-            schedule_item.date_end = input['date_end']
+        date_end = input.get('date_end', None)
+        if date_end:
+            schedule_item.date_end = date_end
 
         # Fields requiring additional validation
         if result['organization_location_room']:

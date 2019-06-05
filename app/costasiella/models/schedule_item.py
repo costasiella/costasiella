@@ -39,14 +39,14 @@ class ScheduleItem(models.Model):
     frequency_interval = models.PositiveSmallIntegerField(choices=FREQUENCY_INTERVAL_OPTIONS)
     organization_location_room = models.ForeignKey(OrganizationLocationRoom, on_delete=models.CASCADE)
     date_start = models.DateField()
-    date_end = models.DateField(null=True)
+    date_end = models.DateField(default=None, null=True, blank=True)
     time_start = models.TimeField()
     time_end = models.TimeField()
     public = models.BooleanField(default=False)
 
 
     def __str__(self):
-        return self.name
+        return self.schedule_item_type + ' [' + str(self.date_start) + ']'
     
 
 
