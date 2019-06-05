@@ -19,4 +19,4 @@ from .organization_subscription_group import OrganizationSubscriptionGroup
 from .organization_subscription_group_subscription import OrganizationSubscriptionGroupSubscription
 from .organization_subscription_price import OrganizationSubscriptionPrice
 
-from .schedule import Schedule
+from .schedule_item import ScheduleItem

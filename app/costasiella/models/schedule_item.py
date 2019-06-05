@@ -10,9 +10,9 @@ from .organization_location_room import OrganizationLocationRoom
 # from .finance_taxrate import FinanceTaxRate
 # Create your models here.
 
-class Schedule(models.Model):
+class ScheduleItem(models.Model):
 
-    SCHEDULE_TYPES = (
+    SCHEDULE_ITEM_TYPES = (
         ('CLASS', _("Class")),
         ('APPOINTMENT', _("Appointment"))
     )
@@ -34,7 +34,7 @@ class Schedule(models.Model):
         (7, _("Sunday")),
     )
 
-    schedule_type = models.CharField(max_length=50, choices=SCHEDULE_TYPES)
+    schedule_item_type = models.CharField(max_length=50, choices=SCHEDULE_ITEM_TYPES)
     frequency_type = models.CharField(max_length=50, choices=FREQUENCY_TYPES)
     frequency_interval = models.PositiveSmallIntegerField(choices=FREQUENCY_INTERVAL_OPTIONS)
     organization_location_room = models.ForeignKey(OrganizationLocationRoom, on_delete=models.CASCADE)
@@ -44,18 +44,6 @@ class Schedule(models.Model):
     time_end = models.TimeField()
     public = models.BooleanField(default=False)
 
-    # archived = models.BooleanField(default=False)
-    # display_public = models.BooleanField(default=True)
-    # display_shop = models.BooleanField(default=True)
-    # name = models.CharField(max_length=255)
-    # description = models.CharField(max_length=255)
-    # price = models.DecimalField(max_digits=20, decimal_places=2)
-    # finance_tax_rate = models.ForeignKey(FinanceTaxRate, on_delete=models.CASCADE)
-    # validity = models.PositiveIntegerField()
-    # validity_unit = models.CharField(max_length=10, choices=VALIDITY_UNITS, default="DAYS")
-    # terms_and_conditions = models.TextField()
-    # finance_glaccount = models.ForeignKey(FinanceGLAccount, on_delete=models.CASCADE, null=True)
-    # finance_costcenter = models.ForeignKey(FinanceCostCenter, on_delete=models.CASCADE, null=True)
 
     def __str__(self):
         return self.name
