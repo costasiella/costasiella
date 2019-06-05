@@ -216,10 +216,6 @@ class UpdateAccount(graphene.relay.ClientIDMutation):
         if not account:
             raise Exception('Invalid Account ID!')
 
-        print("##########################")
-        print("Account found:")
-        print(account)
-
         validate_create_update_input(account, input, update=True)
 
 
