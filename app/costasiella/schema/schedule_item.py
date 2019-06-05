@@ -43,11 +43,15 @@ class ScheduleClassType(graphene.ObjectType):
 # ScheduleClassDayType
 class ScheduleClassesDayType(graphene.ObjectType):
     date = graphene.types.datetime.Date()
+    iso_week_day = graphene.Int()
     classes = graphene.List(ScheduleClassType)
 
-    def resolve_classes(self, info):
+    def resolve_iso_week_day(self, info):
+        return self.date.isoweekday()
 
-        iso_week_day = self.date.isoweekday()
+
+    def resolve_classes(self, info):
+        iso_week_day = self.resolve_iso_week_day(info)
 
         ## Query classes table for self.date
         # Query for specific classes
