@@ -41,6 +41,7 @@ class Schedule(models.Model):
     date_end = models.DateField(null=True)
     time_start = models.TimeField()
     time_end = models.TimeField()
+    public = models.BooleanField(default=False)
 
     # archived = models.BooleanField(default=False)
     # display_public = models.BooleanField(default=True)
