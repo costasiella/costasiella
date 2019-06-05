@@ -67,27 +67,6 @@ class PermissionNode(DjangoObjectType):
 
         return self._meta.model.objects.get(id=id)
 
-# class PermissionType(DjangoObjectType):
-#     class Meta:
-#         model = Permission
-
-
-# class CreateAccount(graphene.Mutation):
-#     user = graphene.Field(AccountNode)
-
-#     class Arguments:
-#         email = graphene.String(required=True)
-#         password = graphene.String(required=True)
-
-#     # def mutate(self, info, username, password, email):
-#     def mutate(self, info, password, email):
-#         user = get_user_model()(
-#             email=email,
-#         )
-#         user.set_password(password)
-#         user.save()
-
-#         return CreateAccount(user=user)
 
 class CreateAccount(graphene.relay.ClientIDMutation):
     class Input:
