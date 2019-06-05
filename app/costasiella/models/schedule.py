@@ -13,7 +13,8 @@ from .organization_location_room import OrganizationLocationRoom
 class Schedule(models.Model):
 
     SCHEDULE_TYPES = (
-        ("CLASS", _("Class"))
+        ('CLASS', _("Class")),
+        ('APPOINTMENT', _("Appointment"))
     )
 
     FREQUENCY_TYPES = (
@@ -33,9 +34,9 @@ class Schedule(models.Model):
         (7, _("Sunday")),
     )
 
-    schedule_type = models.Charfield(choices=SCHEDULE_TYPES)
-    frequency_type = models.CharField(choices=FREQUENCY_TYPES)
-    frequency_interval = models.CharField(choices=FREQUENCY_INTERVAL_OPTIONS)
+    schedule_type = models.CharField(max_length=50, choices=SCHEDULE_TYPES)
+    frequency_type = models.CharField(max_length=50, choices=FREQUENCY_TYPES)
+    frequency_interval = models.PositiveSmallIntegerField(choices=FREQUENCY_INTERVAL_OPTIONS)
     organization_location_room = models.ForeignKey(OrganizationLocationRoom, on_delete=models.CASCADE)
     date_start = models.DateField()
     date_end = models.DateField(null=True)
