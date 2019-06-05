@@ -30,13 +30,13 @@ class ScheduleItemQuery(graphene.ObjectType):
     schedule_items = DjangoFilterConnectionField(ScheduleItemNode)
     schedule_item = graphene.relay.Node.Field(ScheduleItemNode)
 
-    def resolve_organization_levels(self, info, archived=False, **kwargs):
+    def resolve_schedule_items(self, info, archived=False, **kwargs):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.view_scheduleitem')
 
         ## return everything:
-        # if user.has_perm('costasiella.view_organizationlevel'):
-        return OrganizationLevel.objects.filter(archived = archived).order_by('name')
+        # if user.has_perm('costasiella.view_scheduleitem'):
+        return ScheduleItem.objects.filter(archived = archived).order_by('name')
 
         # return None
 
@@ -95,55 +95,55 @@ class CreateScheduleItem(graphene.relay.ClientIDMutation):
         return CreateScheduleItem(schedule_item=schedule_item)
 
 
-class UpdateOrganizationLevel(graphene.relay.ClientIDMutation):
+class UpdateScheduleItem(graphene.relay.ClientIDMutation):
     class Input:
         id = graphene.ID(required=True)
         name = graphene.String(required=True)
         
-    organization_level = graphene.Field(OrganizationLevelNode)
+    schedule_item = graphene.Field(ScheduleItemNode)
 
     @classmethod
     def mutate_and_get_payload(self, root, info, **input):
         user = info.context.user
-        require_login_and_permission(user, 'costasiella.change_organizationlevel')
+        require_login_and_permission(user, 'costasiella.change_scheduleitem')
 
         rid = get_rid(input['id'])
 
-        organization_level = OrganizationLevel.objects.filter(id=rid.id).first()
-        if not organization_level:
+        schedule_item = ScheduleItem.objects.filter(id=rid.id).first()
+        if not schedule_item:
             raise Exception('Invalid Organization Level ID!')
 
-        organization_level.name = input['name']
-        organization_level.save(force_update=True)
+        schedule_item.name = input['name']
+        schedule_item.save(force_update=True)
 
-        return UpdateOrganizationLevel(organization_level=organization_level)
+        return UpdateScheduleItem(schedule_item=schedule_item)
 
 
-class ArchiveOrganizationLevel(graphene.relay.ClientIDMutation):
+class ArchiveScheduleItem(graphene.relay.ClientIDMutation):
     class Input:
         id = graphene.ID(required=True)
         archived = graphene.Boolean(required=True)
 
-    organization_level = graphene.Field(OrganizationLevelNode)
+    schedule_item = graphene.Field(ScheduleItemNode)
 
     @classmethod
     def mutate_and_get_payload(self, root, info, **input):
         user = info.context.user
-        require_login_and_permission(user, 'costasiella.delete_organizationlevel')
+        require_login_and_permission(user, 'costasiella.delete_scheduleitem')
 
         rid = get_rid(input['id'])
 
-        organization_level = OrganizationLevel.objects.filter(id=rid.id).first()
-        if not organization_level:
+        schedule_item = ScheduleItem.objects.filter(id=rid.id).first()
+        if not schedule_item:
             raise Exception('Invalid Organization Level ID!')
 
-        organization_level.archived = input['archived']
-        organization_level.save(force_update=True)
+        schedule_item.archived = input['archived']
+        schedule_item.save(force_update=True)
 
-        return ArchiveOrganizationLevel(organization_level=organization_level)
+        return ArchiveScheduleItem(schedule_item=schedule_item)
 
 
-class OrganizationLevelMutation(graphene.ObjectType):
-    archive_organization_level = ArchiveOrganizationLevel.Field()
-    create_organization_level = CreateOrganizationLevel.Field()
-    update_organization_level = UpdateOrganizationLevel.Field()
+class ScheduleItemMutation(graphene.ObjectType):
+    archive_schedule_item = ArchiveScheduleItem.Field()
+    create_schedule_item = CreateScheduleItem.Field()
+    update_schedule_item = UpdateScheduleItem.Field()
