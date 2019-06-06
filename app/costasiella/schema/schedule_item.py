@@ -84,11 +84,25 @@ class ScheduleClassesDayType(graphene.ObjectType):
         return classes_list
 
 
+def validate_schedule_classes_query_date_input(date_from, date_until):
+    """
+    Check if date_until >= date_start
+    Check if delta between dates <= 7 days
+    """
+    if date_until < date_from:
+        raise Exception(_("dateUntil has to be bigger then dateFrom"))
+
+    days_between = (date_until - date_from).days
+    if days_between > 7:
+        raise Exception(_("dateFrom and dateUntil can't be more then 7 days apart"))   
+
+
 class ScheduleItemQuery(graphene.ObjectType):
     schedule_items = DjangoFilterConnectionField(ScheduleItemNode)
     # schedule_items = graphene.Field(ScheduleItemNode)
     schedule_item = graphene.relay.Node.Field(ScheduleItemNode)
-    schedule_classes = graphene.List(ScheduleClassesDayType,
+    schedule_classes = graphene.List(
+        ScheduleClassesDayType,
         date_from=graphene.types.datetime.Date(), 
         date_until=graphene.types.datetime.Date()
     )
@@ -106,7 +120,7 @@ class ScheduleItemQuery(graphene.ObjectType):
                                  date_from=graphene.types.datetime.Date(), 
                                  date_until=graphene.types.datetime.Date()):
 
-        #TODO: Check if time between dates <= 7 days
+        validate_schedule_classes_query_date_input(date_from, date_until)
 
         delta = datetime.timedelta(days=1)
         date = date_from
