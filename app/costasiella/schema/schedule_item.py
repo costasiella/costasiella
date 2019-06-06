@@ -62,11 +62,21 @@ class ScheduleClassesDayType(graphene.ObjectType):
         # Query for recurring classes
         schedule_items = ScheduleItem.objects.filter(
             Q(schedule_item_type = 'CLASS') & \
-            # Weekly classes
-            Q(frequency_type = 'WEEKLY') &
-            Q(frequency_interval = iso_week_day) &
-            Q(date_start__lte = self.date) & 
-            (Q(date_end__gte = self.date) | Q(date_end__isnull = True ))
+            (
+                # Classes on this day (Specific)
+                (
+                    Q(frequency_type = 'SPECIFIC') & \
+                    Q(date_start = self.date)
+                ) |
+                # Weekly classes
+                ( 
+                    Q(frequency_type = 'WEEKLY') &
+                    Q(frequency_interval = iso_week_day) &
+                    Q(date_start__lte = self.date) & 
+                    (Q(date_end__gte = self.date) | Q(date_end__isnull = True ))
+                )
+            )
+
         )
 
         classes_list = []
