@@ -13,10 +13,10 @@ from .organization_location_room import OrganizationLocationRoom
 class ScheduleItem(models.Model):
     class Meta:
         permissions = [
-            ('view_schedule_class', _("Can view schedule class")),
-            ('add_schedule_class', _("Can add schedule class")),
-            ('change_schedule_class', _("Can change schedule class")),
-            ('delete_schedule_class', _("Can delete schedule class")),
+            ('view_scheduleclass', _("Can view schedule class")),
+            ('add_scheduleclass', _("Can add schedule class")),
+            ('change_scheduleclass', _("Can change schedule class")),
+            ('delete_scheduleclass', _("Can delete schedule class")),
         ]
 
     SCHEDULE_ITEM_TYPES = (

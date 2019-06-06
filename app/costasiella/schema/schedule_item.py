@@ -122,6 +122,8 @@ class ScheduleItemQuery(graphene.ObjectType):
                                  info, 
                                  date_from=graphene.types.datetime.Date(), 
                                  date_until=graphene.types.datetime.Date()):
+        user = info.context.user
+        require_login_and_permission(user, 'costasiella.view_scheduleclass')
 
         validate_schedule_classes_query_date_input(date_from, date_until)
 
@@ -172,7 +174,7 @@ class CreateScheduleClass(graphene.relay.ClientIDMutation):
     @classmethod
     def mutate_and_get_payload(self, root, info, **input):
         user = info.context.user
-        require_login_and_permission(user, 'costasiella.add_scheduleitem')
+        require_login_and_permission(user, 'costasiella.add_scheduleclass')
 
         result = validate_schedule_class_create_update_input(input)
 
