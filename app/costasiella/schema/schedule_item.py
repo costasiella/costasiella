@@ -34,6 +34,7 @@ class ScheduleItemNode(DjangoObjectType):
 # ScheduleClassType
 class ScheduleClassType(graphene.ObjectType):
     schedule_item_id = graphene.ID()
+    frequency_type = graphene.String()
     date = graphene.types.datetime.Date()
     organization_location_room = graphene.Field(OrganizationLocationRoomNode)
     time_start = graphene.types.datetime.Time()
@@ -48,7 +49,6 @@ class ScheduleClassesDayType(graphene.ObjectType):
 
     def resolve_iso_week_day(self, info):
         return self.date.isoweekday()
-
 
     def resolve_classes(self, info):
         iso_week_day = self.resolve_iso_week_day(info)
@@ -75,6 +75,7 @@ class ScheduleClassesDayType(graphene.ObjectType):
                 ScheduleClassType(
                     schedule_item_id=to_global_id('ScheduleItemNode', item.pk),
                     date=self.date,
+                    frequency_type=item.frequency_type,
                     organization_location_room=item.organization_location_room,
                     time_start=item.time_start,
                     time_end=item.time_end
@@ -99,7 +100,6 @@ def validate_schedule_classes_query_date_input(date_from, date_until):
 
 class ScheduleItemQuery(graphene.ObjectType):
     schedule_items = DjangoFilterConnectionField(ScheduleItemNode)
-    # schedule_items = graphene.Field(ScheduleItemNode)
     schedule_item = graphene.relay.Node.Field(ScheduleItemNode)
     schedule_classes = graphene.List(
         ScheduleClassesDayType,
