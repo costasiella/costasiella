@@ -11,6 +11,13 @@ from .organization_location_room import OrganizationLocationRoom
 # Create your models here.
 
 class ScheduleItem(models.Model):
+    class Meta:
+        permissions = [
+            ('view_schedule_class', _("Can view schedule class")),
+            ('add_schedule_class', _("Can add schedule class")),
+            ('change_schedule_class', _("Can change schedule class")),
+            ('delete_schedule_class', _("Can delete schedule class")),
+        ]
 
     SCHEDULE_ITEM_TYPES = (
         ('CLASS', _("Class")),
@@ -39,11 +46,10 @@ class ScheduleItem(models.Model):
     frequency_interval = models.PositiveSmallIntegerField(choices=FREQUENCY_INTERVAL_OPTIONS)
     organization_location_room = models.ForeignKey(OrganizationLocationRoom, on_delete=models.CASCADE)
     date_start = models.DateField()
-    date_end = models.DateField(default=None, null=True, blank=True)
+    date_end = models.DateField(default=None, null=True)
     time_start = models.TimeField()
     time_end = models.TimeField()
     public = models.BooleanField(default=False)
-
 
     def __str__(self):
         return self.schedule_item_type + ' [' + str(self.date_start) + ']'
