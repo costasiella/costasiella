@@ -135,6 +135,70 @@ class ScheduleItemQuery(graphene.ObjectType):
         return return_list
 
 
+def validate_schedule_class_create_update_input(input, update=False):
+    """
+    Validate input
+    """ 
+    result = {}
+
+    # Check OrganizationLocationRoom
+    if 'organization_location_room' in input:
+        if input['organization_location_room']:
+            rid = get_rid(input['organization_location_room'])
+            organization_location_room = OrganizationLocationRoom.objects.filter(id=rid.id).first()
+            result['organization_location_room'] = organization_location_room
+            if not organization_location_room:
+                raise Exception(_('Invalid Organization Location Room ID!'))            
+
+
+    return result
+
+
+class CreateScheduleClass(graphene.relay.ClientIDMutation):
+    class Input:
+        frequency_type = graphene.String(required=True)
+        frequency_interval = graphene.Int(required=True)
+        organization_location_room = graphene.ID(required=True)
+        date_start = graphene.types.datetime.Date(required=True)
+        date_end = graphene.types.datetime.Date(required=False, default_value=None)
+        time_start = graphene.types.datetime.Time(required=True)
+        time_end = graphene.types.datetime.Time(required=True)
+
+    schedule_item = graphene.Field(ScheduleItemNode)
+
+    @classmethod
+    def mutate_and_get_payload(self, root, info, **input):
+        user = info.context.user
+        require_login_and_permission(user, 'costasiella.add_scheduleitem')
+
+        result = validate_schedule_class_create_update_input(input)
+
+        print(input)
+
+        schedule_item = ScheduleItem(
+            schedule_item_type="CLASS", 
+            frequency_type=input['frequency_type'], 
+            frequency_interval=input['frequency_interval'],
+            date_start=input['date_start'],
+            time_start=input['time_start'],
+            time_end=input['time_end'],   
+        )
+
+        # Optional fields
+        date_end = input.get('date_end', None)
+        if date_end:
+            schedule_item.date_end = date_end
+
+        # Fields requiring additional validation
+        if result['organization_location_room']:
+            schedule_item.organization_location_room = result['organization_location_room']
+
+        # ALl done, save it :).
+        schedule_item.save()
+
+        return CreateScheduleItem(schedule_item=schedule_item)
+
+
 def validate_create_update_input(input, update=False):
     """
     Validate input
@@ -251,4 +315,5 @@ class ArchiveScheduleItem(graphene.relay.ClientIDMutation):
 class ScheduleItemMutation(graphene.ObjectType):
     archive_schedule_item = ArchiveScheduleItem.Field()
     create_schedule_item = CreateScheduleItem.Field()
+    create_schedule_class = CreateScheduleClass.Field()
     update_schedule_item = UpdateScheduleItem.Field()
