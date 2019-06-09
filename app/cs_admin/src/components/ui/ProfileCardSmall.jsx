@@ -26,20 +26,31 @@ const ProfileCardSmall = ({ t, value, user, avatarSize='md' }) => (
           <div className="text-muted mb-0">
             <SocialNetworksList className="mb-0 mt-2">
 
-              <List.Item inline>
-                <Tooltip content="user.phone here" placement="top">
-                  <span>
-                    <Icon prefix="fe" name="phone" />
-                  </span>
-                </Tooltip>
-              </List.Item>
-              <List.Item inline>
-                <Tooltip content="user.mobile here" placement="top">
-                  <span>
-                    <Icon prefix="fe" name="smartphone" />
-                  </span>
-                </Tooltip>
-              </List.Item>
+              {
+                (user.phone) ? 
+                  <List.Item inline>
+                    <Tooltip content={user.phone} placement="top">
+                      <span>
+                        <Icon prefix="fe" name="phone" />
+                      </span>
+                    </Tooltip>
+                  </List.Item>
+                // No phone number found
+                : ""
+              }
+              {
+                (user.mobile) ?
+                  <List.Item inline>
+                    <Tooltip content={user.mobile} placement="top">
+                      <span>
+                        <Icon prefix="fe" name="smartphone" />
+                      </span>
+                    </Tooltip>
+                  </List.Item> 
+                  // No mobile number found
+                  : ""
+              }
+
               <List.Item inline>
                 <Tooltip content={user.email} placement="top">
                   <a href={"mailto:" + user.email}>
