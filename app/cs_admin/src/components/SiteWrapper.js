@@ -74,6 +74,7 @@ const getNavBarItems = (t, user) => {
     useExact: true,
   })
 
+  // Relations
   if (
     (check_permission(permissions, 'view', 'account'))
   ){
@@ -85,6 +86,19 @@ const getNavBarItems = (t, user) => {
     })
   }
 
+  // Schedule
+  if (
+    (check_permission(permissions, 'view', 'scheduleclass'))
+  ){
+    items.push({
+      value: t("schedule.title"),
+      to: "/schedule",
+      icon: "calendar",
+      LinkComponent: withRouter(NavLink),
+    })
+  }
+
+  // Finance
   if (
     (check_permission(permissions, 'view', 'financecostcenter')) ||
     (check_permission(permissions, 'view', 'financeglaccount')) ||
@@ -98,6 +112,7 @@ const getNavBarItems = (t, user) => {
     })
   }
 
+  // Organization
   if (
     (check_permission(permissions, 'view', 'organizationclasspass')) || 
     (check_permission(permissions, 'view', 'organizationclasstype')) ||
