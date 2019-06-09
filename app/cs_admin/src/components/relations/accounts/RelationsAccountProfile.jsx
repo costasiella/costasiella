@@ -28,6 +28,7 @@ import RelationsAccountsBack from "./RelationsAccountsBack"
 import RelationsAccountProfileForm from "./RelationsAccountProfileForm"
 
 // import OrganizationMenu from "../OrganizationMenu"
+import ProfileMenu from "./ProfileMenu"
 
 
 const UPDATE_ACCOUNT = gql`
@@ -205,7 +206,10 @@ class RelationsAccountProfile extends Component {
                     </Grid.Col>                                    
                     <Grid.Col md={3}>
                       <ProfileCardSmall user={initialData}/>
-                      {/* <OrganizationMenu active_link='discoveries'/> */}
+                      <ProfileMenu 
+                        active_link='profile'
+                        account_id={id}
+                      /> 
                     </Grid.Col>
                   </Grid.Row>
                 </div>
