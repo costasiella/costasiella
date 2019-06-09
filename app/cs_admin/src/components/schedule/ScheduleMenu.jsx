@@ -22,11 +22,11 @@ const ScheduleMenu = ({ t, active_link }) => (
             className="d-flex align-items-center"
             to="#/schedule/classes"
             icon="book-open"
-            active={glaccounts_active}
+            active={classes_active}
             >
             {t('schedule.classes.title')}
         </List.GroupItem>
     </List.Group>
 );
 
-export default withTranslation()(ScheduleeMenu)
+export default withTranslation()(ScheduleMenu)
