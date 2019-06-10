@@ -36,7 +36,7 @@ class FinancePaymentMethodQuery(graphene.ObjectType):
 
         ## return everything:
         # if user.has_perm('costasiella.view_financepaymentmethod'):
-        return FinancePaymentMethod.objects.filter(archived = archived).order_by('name')
+        return FinancePaymentMethod.objects.filter(archived = archived).order_by('-system_method', 'name')
 
         # return None
 
