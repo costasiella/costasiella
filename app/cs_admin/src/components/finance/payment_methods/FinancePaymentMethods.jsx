@@ -187,9 +187,9 @@ const FinancePaymentMethods = ({ t, history, archived=false }) => (
           </Grid.Col>
           <Grid.Col md={3}>
             <HasPermissionWrapper permission="add"
-                                  resource="financeglaccount">
+                                  resource="financepaymentmethod">
               <Button color="primary btn-block mb-6"
-                      onClick={() => history.push("/finance/payment_methods/add")}>
+                      onClick={() => history.push("/finance/paymentmethods/add")}>
                 <Icon prefix="fe" name="plus-circle" /> {t('finance.payment_methods.add')}
               </Button>
             </HasPermissionWrapper>

@@ -10,7 +10,7 @@ import { toast } from 'react-toastify'
 
 
 import { GET_PAYMENT_METHODS_QUERY } from './queries'
-import { COSTCENTER_SCHEMA } from './yupSchema'
+import { PAYMENT_METHOD_SCHEMA } from './yupSchema'
 
 
 import {
@@ -26,12 +26,12 @@ import SiteWrapper from "../../SiteWrapper"
 import HasPermissionWrapper from "../../HasPermissionWrapper"
 
 import FinanceMenu from '../FinanceMenu'
+import FinancePaymentMethodForm from './FinancePaymentMethodForm'
 
-
-const ADD_COSTCENTER = gql`
-  mutation CreateFinanceCostCenter($input:CreateFinanceCostCenterInput!) {
-    createFinanceCostcenter(input: $input) {
-      financeCostcenter{
+const ADD_PAYMENT_METHOD = gql`
+  mutation CreateFinancePaymentMethod($input:CreateFinancePaymentMethodInput!) {
+    createFinancePaymentMethod(input: $input) {
+      financePaymentMethod{
         id
         archived
         name
@@ -41,9 +41,9 @@ const ADD_COSTCENTER = gql`
   }
 `
 
-const return_url = "/finance/costcenters"
+const return_url = "/finance/paymentmethods"
 
-const FinanceCostCenterAdd = ({ t, history }) => (
+const FinancePaymentMethodAdd = ({ t, history }) => (
   <SiteWrapper>
     <div className="my-3 my-md-5">
       <Container>
@@ -52,13 +52,13 @@ const FinanceCostCenterAdd = ({ t, history }) => (
           <Grid.Col md={9}>
           <Card>
             <Card.Header>
-              <Card.Title>{t('finance.costcenters.title_add')}</Card.Title>
+              <Card.Title>{t('finance.payment_methods.title_add')}</Card.Title>
             </Card.Header>
-            <Mutation mutation={ADD_COSTCENTER} onCompleted={() => history.push(return_url)}> 
+            <Mutation mutation={ADD_PAYMENT_METHOD} onCompleted={() => history.push(return_url)}> 
                 {(addLocation, { data }) => (
                     <Formik
                         initialValues={{ name: '', code: '' }}
-                        validationSchema={COSTCENTER_SCHEMA}
+                        validationSchema={PAYMENT_METHOD_SCHEMA}
                         onSubmit={(values, { setSubmitting }) => {
                             addLocation({ variables: {
                               input: {
@@ -70,7 +70,7 @@ const FinanceCostCenterAdd = ({ t, history }) => (
                             ]})
                             .then(({ data }) => {
                                 console.log('got data', data);
-                                toast.success((t('finance.costcenters.toast_add_success')), {
+                                toast.success((t('finance.payment_methods.toast_add_success')), {
                                     position: toast.POSITION.BOTTOM_RIGHT
                                   })
                               }).catch((error) => {
@@ -83,37 +83,42 @@ const FinanceCostCenterAdd = ({ t, history }) => (
                         }}
                         >
                         {({ isSubmitting, errors }) => (
-                            <FoForm>
-                                <Card.Body>
-                                    <Form.Group label={t('general.name')}>
-                                      <Field type="text" 
-                                              name="name" 
-                                              className={(errors.name) ? "form-control is-invalid" : "form-control"} 
-                                              autoComplete="off" />
-                                      <ErrorMessage name="name" component="span" className="invalid-feedback" />
-                                    </Form.Group>
-                                    <Form.Group label={t('finance.code')}>
-                                      <Field type="text" 
-                                              name="code" 
-                                              className={(errors.code) ? "form-control is-invalid" : "form-control"} 
-                                              autoComplete="off" />
-                                      <ErrorMessage name="code" component="span" className="invalid-feedback" />
-                                    </Form.Group>
-                                </Card.Body>
-                                <Card.Footer>
-                                    <Button 
-                                      color="primary"
-                                      className="pull-right" 
-                                      type="submit" 
-                                      disabled={isSubmitting}
-                                    >
-                                      {t('general.submit')}
-                                    </Button>
-                                    <Button color="link" onClick={() => history.push(return_url)}>
-                                        {t('general.cancel')}
-                                    </Button>
-                                </Card.Footer>
-                            </FoForm>
+                            <FinancePaymentMethodForm
+                              isSubmitting={isSubmitting}
+                              errors={errors}
+                              return_url={return_url}
+                            />
+                            // <FoForm>
+                            //     <Card.Body>
+                            //         <Form.Group label={t('general.name')}>
+                            //           <Field type="text" 
+                            //                   name="name" 
+                            //                   className={(errors.name) ? "form-control is-invalid" : "form-control"} 
+                            //                   autoComplete="off" />
+                            //           <ErrorMessage name="name" component="span" className="invalid-feedback" />
+                            //         </Form.Group>
+                            //         <Form.Group label={t('finance.code')}>
+                            //           <Field type="text" 
+                            //                   name="code" 
+                            //                   className={(errors.code) ? "form-control is-invalid" : "form-control"} 
+                            //                   autoComplete="off" />
+                            //           <ErrorMessage name="code" component="span" className="invalid-feedback" />
+                            //         </Form.Group>
+                            //     </Card.Body>
+                            //     <Card.Footer>
+                            //         <Button 
+                            //           color="primary"
+                            //           className="pull-right" 
+                            //           type="submit" 
+                            //           disabled={isSubmitting}
+                            //         >
+                            //           {t('general.submit')}
+                            //         </Button>
+                            //         <Button color="link" onClick={() => history.push(return_url)}>
+                            //             {t('general.cancel')}
+                            //         </Button>
+                            //     </Card.Footer>
+                            // </FoForm>
                         )}
                     </Formik>
                 )}
@@ -122,13 +127,13 @@ const FinanceCostCenterAdd = ({ t, history }) => (
           </Grid.Col>
           <Grid.Col md={3}>
             <HasPermissionWrapper permission="add"
-                                  resource="financecostcenter">
+                                  resource="financepaymentmethod">
               <Button color="primary btn-block mb-6"
                       onClick={() => history.push(return_url)}>
                 <Icon prefix="fe" name="chevrons-left" /> {t('general.back')}
               </Button>
             </HasPermissionWrapper>
-            <FinanceMenu active_link='costcenters'/>
+            <FinanceMenu active_link='payment_methods'/>
           </Grid.Col>
         </Grid.Row>
       </Container>
@@ -136,4 +141,4 @@ const FinanceCostCenterAdd = ({ t, history }) => (
   </SiteWrapper>
 )
 
-export default withTranslation()(withRouter(FinanceCostCenterAdd))
+export default withTranslation()(withRouter(FinancePaymentMethodAdd))
