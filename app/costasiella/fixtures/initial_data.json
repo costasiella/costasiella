@@ -5,7 +5,7 @@
     "fields": {
       "archived": false,
       "system_method": true,
-      "name": "Direct debit"
+      "name": "Mollie"
     }
   },
   {
