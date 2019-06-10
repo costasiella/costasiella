@@ -2,6 +2,7 @@ from .account import Account
 
 from .finance_costcenter import FinanceCostCenter
 from .finance_glaccount import FinanceGLAccount
+from .finance_payment_method import FinancePaymentMethod
 from .finance_taxrate import FinanceTaxRate
 
 from .organization_appointment import OrganizationAppointment
