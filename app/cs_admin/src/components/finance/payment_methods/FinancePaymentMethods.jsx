@@ -136,7 +136,7 @@ const FinancePaymentMethods = ({ t, history, archived=false }) => (
                                     {(node.archived) ? 
                                       <span className='text-muted'>{t('general.unarchive_to_edit')}</span> :
                                       <Button className='btn-sm' 
-                                              onClick={() => history.push("/finance/payment_methods/edit/" + node.id)}
+                                              onClick={() => history.push("/finance/paymentmethods/edit/" + node.id)}
                                               color="secondary">
                                         {t('general.edit')}
                                       </Button>
