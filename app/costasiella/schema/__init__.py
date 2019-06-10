@@ -26,7 +26,6 @@ from .organization_subscription_price import OrganizationSubscriptionPriceQuery,
 from .schedule_item import ScheduleItemQuery, ScheduleItemMutation
 
 
-
 class Query(AccountQuery,
             FinanceCostCenterQuery,
             FinanceGLAccountQuery,
