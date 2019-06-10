@@ -5,6 +5,7 @@ from .account import AccountQuery, AccountMutation
 
 from .finance_costcenter import FinanceCostCenterQuery, FinanceCostCenterMutation
 from .finance_glaccount import FinanceGLAccountQuery, FinanceGLAccountMutation
+from .finance_payment_method import FinancePaymentMethodQuery, FinancePaymentMethodMutation
 from .finance_taxrate import FinanceTaxRateQuery, FinanceTaxRateMutation
 
 from .organization_appointment import OrganizationAppointmentQuery, OrganizationAppointmentMutation
@@ -29,6 +30,7 @@ from .schedule_item import ScheduleItemQuery, ScheduleItemMutation
 class Query(AccountQuery,
             FinanceCostCenterQuery,
             FinanceGLAccountQuery,
+            FinancePaymentMethodQuery,
             FinanceTaxRateQuery,
             OrganizationAppointmentQuery,
             OrganizationClasspassQuery,
@@ -50,6 +52,7 @@ class Query(AccountQuery,
 class Mutation(AccountMutation,
                FinanceCostCenterMutation,
                FinanceGLAccountMutation,
+               FinancePaymentMethodMutation,
                FinanceTaxRateMutation,
                OrganizationAppointmentMutation,
                OrganizationClasspassMutation,
