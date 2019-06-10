@@ -142,40 +142,43 @@ const FinancePaymentMethods = ({ t, history, archived=false }) => (
                                       </Button>
                                     }
                                   </Table.Col>
-                                  <Mutation mutation={ARCHIVE_PAYMENT_METHOD} key={v4()}>
-                                    {(archiveCostcenter, { data }) => (
-                                      <Table.Col className="text-right" key={v4()}>
-                                        <button className="icon btn btn-link btn-sm" 
-                                           title={t('general.archive')} 
-                                           href=""
-                                           onClick={() => {
-                                             console.log("clicked archived")
-                                             let id = node.id
-                                             archiveCostcenter({ variables: {
-                                               input: {
-                                                id,
-                                                archived: !archived
-                                               }
-                                        }, refetchQueries: [
-                                            {query: GET_PAYMENT_METHODS_QUERY, variables: {"archived": archived }}
-                                        ]}).then(({ data }) => {
-                                          console.log('got data', data);
-                                          toast.success(
-                                            (archived) ? t('general.unarchived'): t('general.archived'), {
-                                              position: toast.POSITION.BOTTOM_RIGHT
-                                            })
-                                        }).catch((error) => {
-                                          toast.error((t('general.toast_server_error')) + ': ' +  error, {
-                                              position: toast.POSITION.BOTTOM_RIGHT
-                                            })
-                                          console.log('there was an error sending the query', error);
-                                        })
-                                        }}>
-                                          <Icon prefix="fa" name="inbox" />
-                                        </button>
-                                      </Table.Col>
-                                    )}
-                                  </Mutation>
+                                  {(node.systemMethod) ? 
+                                    <Table.Col></Table.Col> :
+                                    <Mutation mutation={ARCHIVE_PAYMENT_METHOD} key={v4()}>
+                                      {(archivePaymentMethod, { data }) => (
+                                        <Table.Col className="text-right" key={v4()}>
+                                          <button className="icon btn btn-link btn-sm" 
+                                            title={t('general.archive')} 
+                                            href=""
+                                            onClick={() => {
+                                              console.log("clicked archived")
+                                              let id = node.id
+                                              archivePaymentMethod({ variables: {
+                                                input: {
+                                                  id,
+                                                  archived: !archived
+                                                }
+                                          }, refetchQueries: [
+                                              {query: GET_PAYMENT_METHODS_QUERY, variables: {"archived": archived }}
+                                          ]}).then(({ data }) => {
+                                            console.log('got data', data);
+                                            toast.success(
+                                              (archived) ? t('general.unarchived'): t('general.archived'), {
+                                                position: toast.POSITION.BOTTOM_RIGHT
+                                              })
+                                          }).catch((error) => {
+                                            toast.error((t('general.toast_server_error')) + ': ' +  error, {
+                                                position: toast.POSITION.BOTTOM_RIGHT
+                                              })
+                                            console.log('there was an error sending the query', error);
+                                          })
+                                          }}>
+                                            <Icon prefix="fa" name="inbox" />
+                                          </button>
+                                        </Table.Col>
+                                      )}
+                                    </Mutation>
+                                  }
                                 </Table.Row>
                               ))}
                           </Table.Body>

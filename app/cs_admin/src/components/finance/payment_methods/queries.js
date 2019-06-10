@@ -11,9 +11,10 @@ export const GET_PAYMENT_METHODS_QUERY = gql`
       }
       edges {
         node {
-          id,
-          archived,
-          name,
+          id
+          archived
+          systemMethod
+          name
           code
         }
       }
