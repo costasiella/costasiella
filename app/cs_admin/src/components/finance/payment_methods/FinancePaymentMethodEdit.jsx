@@ -123,6 +123,7 @@ class FinancePaymentMethodEdit extends Component {
                                     isSubmitting={isSubmitting}
                                     errors={errors}
                                     values={values}
+                                    return_url={return_url}
                                   />
                                   // <FoForm>
                                   //     <Card.Body>

@@ -4,6 +4,7 @@ import React from 'react'
 import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
 import { Form as FoForm, Field, ErrorMessage } from 'formik'
+import { Link } from 'react-router-dom'
 
 
 import {
@@ -40,9 +41,13 @@ const FinancePaymentMethodForm = ({ t, history, isSubmitting, errors, values, re
           >
             {t('general.submit')}
           </Button>
-          <Button color="link" onClick={() => history.push(return_url)}>
-              {t('general.cancel')}
-          </Button>
+          <Link to={return_url}>
+            <Button 
+              type="button" 
+              color="link">
+                {t('general.cancel')}
+            </Button>
+          </Link>
       </Card.Footer>
   </FoForm>
 )
