@@ -54,7 +54,7 @@ class ScheduleClassesDayType(graphene.ObjectType):
         iso_week_day = self.resolve_iso_week_day(info)
 
         ## Query classes table for self.date
-        schedule_items = ScheduleItem.objects.filter(
+        schedule_items = ScheduleItem.objects.select_related('organization_location_room__organization_location').filter(
             Q(schedule_item_type = 'CLASS') & \
             (
                 # Classes on this day (Specific)
