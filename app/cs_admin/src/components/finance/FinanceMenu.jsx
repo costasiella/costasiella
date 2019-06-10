@@ -13,12 +13,14 @@ import HasPermissionWrapper from "../HasPermissionWrapper"
 let costcenters_active
 let glaccounts_active
 let taxrates_active
+let payment_methods_active
 
 const FinanceMenu = ({ t, active_link }) => (
     <List.Group transparent={true}>
         {(active_link === 'costcenters') ? costcenters_active = true: costcenters_active = false}
         {(active_link === 'glaccounts') ? glaccounts_active = true: glaccounts_active = false}
         {(active_link === 'taxrates') ? taxrates_active = true: taxrates_active = false}
+        {(active_link === 'payment_methods') ? payment_methods_active = true: payment_methods_active = false}
         
 
         <List.GroupItem
@@ -47,6 +49,15 @@ const FinanceMenu = ({ t, active_link }) => (
             active={taxrates_active}
             >
             {t('finance.taxrates.title')}
+        </List.GroupItem>
+        <List.GroupItem
+            key={v4()}
+            className="d-flex align-items-center"
+            to="#/finance/paymentmethods"
+            icon="credit-card"
+            active={payment_methods_active}
+            >
+            {t('finance.payment_methods.title')}
         </List.GroupItem>
     </List.Group>
 );
