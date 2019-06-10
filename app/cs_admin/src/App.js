@@ -22,6 +22,7 @@ import FinanceCostCenterEdit from './components/finance/costcenters/FinanceCostC
 import FinanceGLAccounts from './components/finance/glaccounts/FinanceGLAccounts'
 import FinanceGLAccountAdd from './components/finance/glaccounts/FinanceGLAccountAdd'
 import FinanceGLAccountEdit from './components/finance/glaccounts/FinanceGLAccountEdit'
+import FinancePaymentMethods from './components/finance/payment_methods/FinancePaymentMethods'
 import FinanceTaxRates from './components/finance/taxrates/FinanceTaxRates'
 import FinanceTaxRatesAdd from './components/finance/taxrates/FinanceTaxRateAdd'
 import FinanceTaxRatesEdit from './components/finance/taxrates/FinanceTaxRateEdit'
@@ -128,6 +129,7 @@ class App extends Component {
             <Route exact path="/finance/glaccounts" component={FinanceGLAccounts} />
             <Route exact path="/finance/glaccounts/add" component={FinanceGLAccountAdd} />
             <Route exact path="/finance/glaccounts/edit/:id" component={FinanceGLAccountEdit} />
+            <Route exact path="/finance/paymentmethods" component={FinancePaymentMethods} />
             <Route exact path="/finance/taxrates" component={FinanceTaxRates} />
             <Route exact path="/finance/taxrates/add" component={FinanceTaxRatesAdd} />
             <Route exact path="/finance/taxrates/edit/:id" component={FinanceTaxRatesEdit} />
