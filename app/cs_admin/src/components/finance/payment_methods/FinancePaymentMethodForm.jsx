@@ -13,7 +13,7 @@ import {
 } from "tabler-react"
 
 
-const FinancePaymentMethodForm = ({ t, history, isSubmitting, errors, return_url }) => (
+const FinancePaymentMethodForm = ({ t, history, isSubmitting, errors, values, return_url }) => (
   <FoForm>
       <Card.Body>
           <Form.Group label={t('general.name')}>
