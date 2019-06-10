@@ -19,6 +19,8 @@ class Account(AbstractUser):
     phone = EncryptedTextField(default="")
     mobile = EncryptedTextField(default="")
     emergency = EncryptedTextField(default="")
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.email
