@@ -5,6 +5,7 @@ import base64
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 from graphene.test import Client
+from graphql_relay import to_global_id
 
 # Create your tests here.
 from django.contrib.auth.models import AnonymousUser, Permission
@@ -13,7 +14,6 @@ from . import factories as f
 from .helpers import execute_test_client_api_query
 from .. import models
 from .. import schema
-
 
 
 class GQLFinancePaymentMethod(TestCase):
@@ -124,21 +124,11 @@ class GQLFinancePaymentMethod(TestCase):
         pass
 
 
-    def get_node_id_of_first_paymentmethod(self):
-        # query paymentmethods to get node id easily
-        variables = {
-            'archived': False
-        }
-        executed = execute_test_client_api_query(self.paymentmethods_query, self.admin_user, variables=variables)
-        data = executed.get('data')
-        
-        return data['financePaymentMethods']['edges'][0]['node']['id']
-
-
     def test_query(self):
         """ Query list of paymentmethods """
         query = self.paymentmethods_query
-        paymentmethod = f.FinancePaymentMethodFactory.create()
+        # The payment method "Cash" from the fixtures will be listed first
+        paymentmethod = models.FinancePaymentMethod.objects.get(pk=101)
         variables = {
             'archived': False
         }
@@ -154,7 +144,6 @@ class GQLFinancePaymentMethod(TestCase):
     def test_query_permision_denied(self):
         """ Query list of paymentmethods - check permission denied """
         query = self.paymentmethods_query
-        paymentmethod = f.FinancePaymentMethodFactory.create()
         variables = {
             'archived': False
         }
@@ -170,7 +159,8 @@ class GQLFinancePaymentMethod(TestCase):
     def test_query_permision_granted(self):
         """ Query list of paymentmethods with view permission """
         query = self.paymentmethods_query
-        paymentmethod = f.FinancePaymentMethodFactory.create()
+        # The payment method "Cash" from the fixtures will be listed first
+        paymentmethod = models.FinancePaymentMethod.objects.get(pk=101)
         variables = {
             'archived': False
         }
@@ -205,10 +195,9 @@ class GQLFinancePaymentMethod(TestCase):
 
     def test_query_one(self):
         """ Query one paymentmethod as admin """   
-        paymentmethod = f.FinancePaymentMethodFactory.create()
-
-        # First query paymentmethods to get node id easily
-        node_id = self.get_node_id_of_first_paymentmethod()
+        # The payment method "Cash" from the fixtures
+        paymentmethod = models.FinancePaymentMethod.objects.get(pk=101)
+        node_id = to_global_id('FinancePaymentMethodNode', 101)
 
         # Now query single paymentmethod and check
         executed = execute_test_client_api_query(self.paymentmethod_query, self.admin_user, variables={"id": node_id})
@@ -220,10 +209,8 @@ class GQLFinancePaymentMethod(TestCase):
 
     def test_query_one_anon_user(self):
         """ Deny permission for anon users Query one glacount """   
-        paymentmethod = f.FinancePaymentMethodFactory.create()
-
-        # First query paymentmethods to get node id easily
-        node_id = self.get_node_id_of_first_paymentmethod()
+        paymentmethod = models.FinancePaymentMethod.objects.get(pk=101)
+        node_id = to_global_id('FinancePaymentMethodNode', 101)
 
         # Now query single paymentmethod and check
         executed = execute_test_client_api_query(self.paymentmethod_query, self.anon_user, variables={"id": node_id})
@@ -235,10 +222,7 @@ class GQLFinancePaymentMethod(TestCase):
         """ Permission denied message when user lacks authorization """   
         # Create regular user
         user = f.RegularUserFactory.create()
-        paymentmethod = f.FinancePaymentMethodFactory.create()
-
-        # First query paymentmethods to get node id easily
-        node_id = self.get_node_id_of_first_paymentmethod()
+        node_id = to_global_id('FinancePaymentMethodNode', 101)
 
         # Now query single paymentmethod and check
         executed = execute_test_client_api_query(self.paymentmethod_query, user, variables={"id": node_id})
@@ -252,10 +236,9 @@ class GQLFinancePaymentMethod(TestCase):
         permission = Permission.objects.get(codename='view_financepaymentmethod')
         user.user_permissions.add(permission)
         user.save()
-        paymentmethod = f.FinancePaymentMethodFactory.create()
-
-        # First query paymentmethods to get node id easily
-        node_id = self.get_node_id_of_first_paymentmethod()
+        # Payment method Cash from fixtures
+        paymentmethod = models.FinancePaymentMethod.objects.get(pk=101)
+        node_id = to_global_id('FinancePaymentMethodNode', 101)
 
         # Now query single location and check   
         executed = execute_test_client_api_query(self.paymentmethod_query, user, variables={"id": node_id})
@@ -464,6 +447,9 @@ class GQLFinancePaymentMethod(TestCase):
             variables=variables
         )
         data = executed.get('data')
+        print("##########################@@@@@@@@@@@@@@@@@@@@@@@@@@$$$$$$$$$$$$$$$$$$$")
+        print(data)
+
         self.assertEqual(data['archiveFinancePaymentMethod']['financePaymentMethod']['archived'], variables['input']['archived'])
 
 
