@@ -3,8 +3,9 @@ from django.utils.translation import gettext as _
 from django.db import models
 
 
-from .organization_location_room import OrganizationLocationRoom
 from .organization_classtype import OrganizationClasstype
+from .organization_location_room import OrganizationLocationRoom
+from .organization_level import OrganizationLevel
 
 # Create your models here.
 
@@ -44,6 +45,7 @@ class ScheduleItem(models.Model):
     frequency_interval = models.PositiveSmallIntegerField(choices=FREQUENCY_INTERVAL_OPTIONS)
     organization_location_room = models.ForeignKey(OrganizationLocationRoom, on_delete=models.CASCADE)
     organization_classtype = models.ForeignKey(OrganizationClasstype, on_delete=models.CASCADE, null=True)
+    organization_level = models.ForeignKey(OrganizationLevel, on_delete=models.CASCADE, null=True)
     date_start = models.DateField()
     date_end = models.DateField(default=None, null=True)
     time_start = models.TimeField()
