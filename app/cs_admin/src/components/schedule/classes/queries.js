@@ -10,6 +10,10 @@ export const GET_CLASSES_QUERY = gql`
         organizationLocationRoom {
           id
           name
+          organizationLocation {
+            id
+            name
+          }
         }
         timeStart
         timeEnd
