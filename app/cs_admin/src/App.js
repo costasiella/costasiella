@@ -73,6 +73,7 @@ import RelationsAccountAdd from './components/relations/accounts/RelationsAccoun
 import RelationsAccountProfile from './components/relations/accounts/RelationsAccountProfile'
 
 import ScheduleHome from './components/schedule/home/ScheduleHome'
+import ScheduleClasses from './components/schedule/classes/ScheduleClasses'
 
 
 import Error404 from "./components/Error404"
@@ -179,6 +180,7 @@ class App extends Component {
             <Route exact path="/relations/accounts/add" component={RelationsAccountAdd} />
             <Route exact path="/relations/accounts/:id/profile" component={RelationsAccountProfile} />
             <Route exact path="/schedule" component={ScheduleHome} />
+            <Route exact path="/schedule/classes" component={ScheduleClasses} />
 
             <Route component={Error404} />
           </Switch>

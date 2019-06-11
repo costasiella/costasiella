@@ -1,20 +1,18 @@
 import gql from "graphql-tag"
 
-export const GET_LEVELS_QUERY = gql`
-  query OrganizationLevels($after: String, $before: String, $archived: Boolean) {
-    organizationLevels(first: 15, before: $before, after: $after, archived: $archived) {
-      pageInfo {
-        startCursor
-        endCursor
-        hasNextPage
-        hasPreviousPage
-      }
-      edges {
-        node {
+export const GET_CLASSES_QUERY = gql`
+  query ScheduleClasses($dateFrom: Date!, $dateUntil:Date!) {
+    scheduleClasses(dateFrom:$dateFrom, dateUntil: $dateUntil) {
+      date
+      classes {
+        scheduleItemId
+        date
+        organizationLocationRoom {
           id
-          archived
           name
         }
+        timeStart
+        timeEnd
       }
     }
   }

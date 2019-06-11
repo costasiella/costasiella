@@ -97,7 +97,7 @@ def validate_schedule_classes_query_date_input(date_from, date_until):
         raise Exception(_("dateUntil has to be bigger then dateFrom"))
 
     days_between = (date_until - date_from).days
-    if days_between > 7:
+    if days_between > 6:
         raise Exception(_("dateFrom and dateUntil can't be more then 7 days apart"))   
 
 
