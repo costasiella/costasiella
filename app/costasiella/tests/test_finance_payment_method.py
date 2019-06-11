@@ -322,7 +322,7 @@ class GQLFinancePaymentMethod(TestCase):
         query = self.paymentmethod_update_mutation
         paymentmethod = f.FinancePaymentMethodFactory.create()
         variables = self.variables_update
-        variables['input']['id'] = self.get_node_id_of_first_paymentmethod()
+        variables['input']['id'] = to_global_id('FinancePaymentMethodNode', paymentmethod.pk)
 
         executed = execute_test_client_api_query(
             query, 
@@ -339,7 +339,7 @@ class GQLFinancePaymentMethod(TestCase):
         query = self.paymentmethod_update_mutation
         paymentmethod = f.FinancePaymentMethodFactory.create()
         variables = self.variables_update
-        variables['input']['id'] = self.get_node_id_of_first_paymentmethod()
+        variables['input']['id'] = to_global_id('FinancePaymentMethodNode', paymentmethod.pk)
 
         executed = execute_test_client_api_query(
             query, 
@@ -356,7 +356,7 @@ class GQLFinancePaymentMethod(TestCase):
         query = self.paymentmethod_update_mutation
         paymentmethod = f.FinancePaymentMethodFactory.create()
         variables = self.variables_update
-        variables['input']['id'] = self.get_node_id_of_first_paymentmethod()
+        variables['input']['id'] = to_global_id('FinancePaymentMethodNode', paymentmethod.pk)
 
         # Create regular user
         user = f.RegularUserFactory.create()
@@ -379,7 +379,7 @@ class GQLFinancePaymentMethod(TestCase):
         query = self.paymentmethod_update_mutation
         paymentmethod = f.FinancePaymentMethodFactory.create()
         variables = self.variables_update
-        variables['input']['id'] = self.get_node_id_of_first_paymentmethod()
+        variables['input']['id'] = to_global_id('FinancePaymentMethodNode', paymentmethod.pk)
 
         # Create regular user
         user = f.RegularUserFactory.create()
@@ -399,7 +399,7 @@ class GQLFinancePaymentMethod(TestCase):
         query = self.paymentmethod_archive_mutation
         paymentmethod = f.FinancePaymentMethodFactory.create()
         variables = self.variables_archive
-        variables['input']['id'] = self.get_node_id_of_first_paymentmethod()
+        variables['input']['id'] = to_global_id('FinancePaymentMethodNode', paymentmethod.pk)
 
         executed = execute_test_client_api_query(
             query, 
@@ -407,7 +407,6 @@ class GQLFinancePaymentMethod(TestCase):
             variables=variables
         )
         data = executed.get('data')
-        print(data)
         self.assertEqual(data['archiveFinancePaymentMethod']['financePaymentMethod']['archived'], variables['input']['archived'])
 
 
@@ -416,7 +415,7 @@ class GQLFinancePaymentMethod(TestCase):
         query = self.paymentmethod_archive_mutation
         paymentmethod = f.FinancePaymentMethodFactory.create()
         variables = self.variables_archive
-        variables['input']['id'] = self.get_node_id_of_first_paymentmethod()
+        variables['input']['id'] = to_global_id('FinancePaymentMethodNode', paymentmethod.pk)
 
         executed = execute_test_client_api_query(
             query, 
@@ -433,7 +432,7 @@ class GQLFinancePaymentMethod(TestCase):
         query = self.paymentmethod_archive_mutation
         paymentmethod = f.FinancePaymentMethodFactory.create()
         variables = self.variables_archive
-        variables['input']['id'] = self.get_node_id_of_first_paymentmethod()
+        variables['input']['id'] = to_global_id('FinancePaymentMethodNode', paymentmethod.pk)
 
         # Create regular user
         user = f.RegularUserFactory.create()
@@ -447,9 +446,6 @@ class GQLFinancePaymentMethod(TestCase):
             variables=variables
         )
         data = executed.get('data')
-        print("##########################@@@@@@@@@@@@@@@@@@@@@@@@@@$$$$$$$$$$$$$$$$$$$")
-        print(data)
-
         self.assertEqual(data['archiveFinancePaymentMethod']['financePaymentMethod']['archived'], variables['input']['archived'])
 
 
@@ -458,7 +454,7 @@ class GQLFinancePaymentMethod(TestCase):
         query = self.paymentmethod_archive_mutation
         paymentmethod = f.FinancePaymentMethodFactory.create()
         variables = self.variables_archive
-        variables['input']['id'] = self.get_node_id_of_first_paymentmethod()
+        variables['input']['id'] = to_global_id('FinancePaymentMethodNode', paymentmethod.pk)
         
         # Create regular user
         user = f.RegularUserFactory.create()
