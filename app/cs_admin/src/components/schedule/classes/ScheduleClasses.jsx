@@ -23,6 +23,7 @@ import HasPermissionWrapper from "../../HasPermissionWrapper"
 // import { confirmAlert } from 'react-confirm-alert'; // Import
 import { toast } from 'react-toastify'
 
+import BooleanBadge from "../../ui/BooleanBadge"
 import ContentCard from "../../general/ContentCard"
 import ScheduleMenu from "../ScheduleMenu"
 
@@ -107,6 +108,7 @@ const ScheduleClasses = ({ t, history }) => (
                               <Table.ColHeader>{t('general.location')}</Table.ColHeader>
                               <Table.ColHeader>{t('general.time')}</Table.ColHeader>
                               <Table.ColHeader>{t('general.class')}</Table.ColHeader>
+                              <Table.ColHeader>{t('general.public')}</Table.ColHeader>
                             </Table.Row>
                           </Table.Header>
                           <Table.Body>
@@ -132,6 +134,10 @@ const ScheduleClasses = ({ t, history }) => (
                                 <Table.Col>
                                   {/* Type */}
                                   {organizationClasstype.name}
+                                </Table.Col>
+                                <Table.Col>
+                                  {/* Public */}
+                                  <BooleanBadge value={displayPublic} />
                                 </Table.Col>
                               </Table.Row>
                             ))}
