@@ -117,6 +117,7 @@ const ScheduleClasses = ({ t, history }) => (
                                   <span className="text-muted"> &bull; {organizationLocationRoom.name}</span>
                                 </Table.Col>
                                 <Table.Col>
+                                  {/* Start & end time */}
                                   {moment(date + ' ' + timeStart).format('LT')} {' - '}
                                   {moment(date + ' ' + timeEnd).format('LT')}
                                 </Table.Col>
