@@ -410,6 +410,24 @@ class GQLFinancePaymentMethod(TestCase):
         self.assertEqual(data['archiveFinancePaymentMethod']['financePaymentMethod']['archived'], variables['input']['archived'])
 
 
+    def test_unable_to_archive_system_paymentmethod(self):
+        """ Test that we can't archive a sytem payment method """
+        query = self.paymentmethod_archive_mutation
+        # This is the "Cash" system payment method from the fixtures
+        paymentmethod = models.FinancePaymentMethod.objects.get(pk=101)
+        variables = self.variables_archive
+        variables['input']['id'] = to_global_id('FinancePaymentMethodNode', paymentmethod.pk)
+
+        executed = execute_test_client_api_query(
+            query, 
+            self.admin_user, 
+            variables=variables
+        )
+
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Unable to archive, this is a system method!')
+
+
     def test_archive_paymentmethod_anon_user(self):
         """ Archive paymentmethod denied for anon user """
         query = self.paymentmethod_archive_mutation

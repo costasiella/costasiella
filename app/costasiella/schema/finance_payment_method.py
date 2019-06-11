@@ -116,7 +116,7 @@ class ArchiveFinancePaymentMethod(graphene.relay.ClientIDMutation):
             raise Exception(_('Invalid Finance Payment Method ID!'))
 
         if finance_payment_method.system_method:
-            raise Exception(_('Unable to archive, this is a system method'))
+            raise Exception(_('Unable to archive, this is a system method!'))
 
         finance_payment_method.archived = input['archived']
         finance_payment_method.save(force_update=True)
