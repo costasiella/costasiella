@@ -104,22 +104,34 @@ const ScheduleClasses = ({ t, history }) => (
                         <Table>
                           <Table.Header>
                             <Table.Row key={v4()}>
-                              <Table.ColHeader>{t('Location')}</Table.ColHeader>
-                              <Table.ColHeader>{t('Time')}</Table.ColHeader>
+                              <Table.ColHeader>{t('general.location')}</Table.ColHeader>
+                              <Table.ColHeader>{t('general.time')}</Table.ColHeader>
+                              <Table.ColHeader>{t('general.class')}</Table.ColHeader>
                             </Table.Row>
                           </Table.Header>
                           <Table.Body>
-                            {classes.map(({ scheduleItemID, date, organizationLocationRoom, timeStart, timeEnd }) => (
+                            {classes.map((
+                              { scheduleItemID, 
+                                date, 
+                                organizationLocationRoom, 
+                                organizationClasstype, 
+                                timeStart, 
+                                timeEnd,
+                                displayPublic }) => (
                               <Table.Row key={v4()}>
+                                <Table.Col>
+                                  {/* Start & end time */}
+                                  {moment(date + ' ' + timeStart).format('LT')} {' - '}
+                                  {moment(date + ' ' + timeEnd).format('LT')}
+                                </Table.Col>
                                 <Table.Col>
                                   {/* Location */}
                                   {organizationLocationRoom.organizationLocation.name} {' '}
                                   <span className="text-muted"> &bull; {organizationLocationRoom.name}</span>
                                 </Table.Col>
                                 <Table.Col>
-                                  {/* Start & end time */}
-                                  {moment(date + ' ' + timeStart).format('LT')} {' - '}
-                                  {moment(date + ' ' + timeEnd).format('LT')}
+                                  {/* Type */}
+                                  {organizationClasstype.name}
                                 </Table.Col>
                               </Table.Row>
                             ))}

@@ -48,7 +48,7 @@ class ScheduleItem(models.Model):
     date_end = models.DateField(default=None, null=True)
     time_start = models.TimeField()
     time_end = models.TimeField()
-    public = models.BooleanField(default=False)
+    display_public = models.BooleanField(default=False)
 
     def __str__(self):
         return self.schedule_item_type + ' [' + str(self.date_start) + ']'

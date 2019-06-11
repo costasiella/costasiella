@@ -10,6 +10,7 @@ from graphql_relay import to_global_id
 from ..models import ScheduleItem, OrganizationClasstype, OrganizationLocationRoom
 from ..modules.gql_tools import require_login_and_permission, get_rid
 from ..modules.messages import Messages
+from .organization_classtype import OrganizationClasstypeNode
 from .organization_location_room import OrganizationLocationRoomNode
 
 
@@ -38,8 +39,10 @@ class ScheduleClassType(graphene.ObjectType):
     frequency_type = graphene.String()
     date = graphene.types.datetime.Date()
     organization_location_room = graphene.Field(OrganizationLocationRoomNode)
+    organization_classtype = graphene.Field(OrganizationClasstypeNode)
     time_start = graphene.types.datetime.Time()
     time_end = graphene.types.datetime.Time()
+    display_public = graphene.Boolean()
 
 
 # ScheduleClassDayType
@@ -81,8 +84,10 @@ class ScheduleClassesDayType(graphene.ObjectType):
                     date=self.date,
                     frequency_type=item.frequency_type,
                     organization_location_room=item.organization_location_room,
+                    organization_classtype=item.organization_classtype,
                     time_start=item.time_start,
-                    time_end=item.time_end
+                    time_end=item.time_end,
+                    display_public=item.display_public
                 )
             )
     
@@ -179,7 +184,7 @@ class CreateScheduleClass(graphene.relay.ClientIDMutation):
         date_end = graphene.types.datetime.Date(required=False, default_value=None)
         time_start = graphene.types.datetime.Time(required=True)
         time_end = graphene.types.datetime.Time(required=True)
-        public = graphene.types.Boolean(required=True, default_value=False)
+        display_public = graphene.Boolean(required=True, default_value=False)
 
     schedule_item = graphene.Field(ScheduleItemNode)
 
@@ -199,7 +204,7 @@ class CreateScheduleClass(graphene.relay.ClientIDMutation):
             date_start=input['date_start'],
             time_start=input['time_start'],
             time_end=input['time_end'],   
-            public=input['public']
+            display_public=input['display_public']
         )
 
         # Optional fields

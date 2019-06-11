@@ -15,8 +15,13 @@ export const GET_CLASSES_QUERY = gql`
             name
           }
         }
+        organizationClasstype {
+          id
+          name
+        }
         timeStart
         timeEnd
+        displayPublic
       }
     }
   }
