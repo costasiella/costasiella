@@ -7,10 +7,11 @@ from graphene_django.filter import DjangoFilterConnectionField
 from graphql import GraphQLError
 from graphql_relay import to_global_id
 
-from ..models import ScheduleItem, OrganizationLocationRoom
+from ..models import ScheduleItem, OrganizationClasstype, OrganizationLocationRoom
 from ..modules.gql_tools import require_login_and_permission, get_rid
 from ..modules.messages import Messages
 from .organization_location_room import OrganizationLocationRoomNode
+
 
 m = Messages()
 
@@ -155,6 +156,15 @@ def validate_schedule_class_create_update_input(input, update=False):
             if not organization_location_room:
                 raise Exception(_('Invalid Organization Location Room ID!'))            
 
+    # Check OrganizationClasstype
+    if 'organization_classtype' in input:
+        if input['organization_classtype']:
+            rid = get_rid(input['organization_classtype'])
+            organization_classtype = OrganizationClasstype.objects.get(id=rid.id)
+            result['organization_classtype'] = organization_classtype
+            if not organization_classtype:
+                raise Exception(_('Invalid Organization Classtype ID!'))            
+
 
     return result
 
@@ -164,10 +174,12 @@ class CreateScheduleClass(graphene.relay.ClientIDMutation):
         frequency_type = graphene.String(required=True)
         frequency_interval = graphene.Int(required=True)
         organization_location_room = graphene.ID(required=True)
+        organization_classtype = graphene.ID(required=True)
         date_start = graphene.types.datetime.Date(required=True)
         date_end = graphene.types.datetime.Date(required=False, default_value=None)
         time_start = graphene.types.datetime.Time(required=True)
         time_end = graphene.types.datetime.Time(required=True)
+        public = graphene.types.Boolean(required=True, default_value=False)
 
     schedule_item = graphene.Field(ScheduleItemNode)
 
@@ -187,6 +199,7 @@ class CreateScheduleClass(graphene.relay.ClientIDMutation):
             date_start=input['date_start'],
             time_start=input['time_start'],
             time_end=input['time_end'],   
+            public=input['public']
         )
 
         # Optional fields
@@ -197,6 +210,9 @@ class CreateScheduleClass(graphene.relay.ClientIDMutation):
         # Fields requiring additional validation
         if result['organization_location_room']:
             schedule_item.organization_location_room = result['organization_location_room']
+
+        if result['organization_classtype']:
+            schedule_item.organization_classtype = result['organization_classtype']
 
         # ALl done, save it :).
         schedule_item.save()
@@ -218,6 +234,15 @@ def validate_create_update_input(input, update=False):
             result['organization_location_room'] = organization_location_room
             if not organization_location_room:
                 raise Exception(_('Invalid Organization Location Room ID!'))            
+
+    # Check OrganizationClasstype
+    if 'organization_classtype' in input:
+        if input['organization_classtype']:
+            rid = get_rid(input['organization_classtype'])
+            organization_classtype = OrganizationClasstype.objects.get(id=rid.id)
+            result['organization_classtype'] = organization_classtype
+            if not organization_classtype:
+                raise Exception(_('Invalid Organization Classtype ID!'))  
 
 
     return result
