@@ -91,15 +91,37 @@ const ScheduleClasses = ({ t, history }) => (
                 return (
                   schedule_classes.map(({ date, classes }) => (
                   <div key={v4()}>
-                    <h4>
+                    {/* <h4>
                       {moment(date).format("dddd")} {' '}
                       <small>
                         {moment(date).format("LL")} 
                       </small>
-                    </h4>
+                    </h4> */}
                     <Card>
+                      <Card.Header>
+                        <Card.Title>
+                          <b>{moment(date).format("dddd")}</b> {' '}
+                      {/* <small> */}
+                          <span className="text-muted">
+                            {moment(date).format("LL")} 
+                          </span>
+                      {/* </small> */}
+                      {/* </h4> */}
+                        </Card.Title>
+                      </Card.Header>
                       <Card.Body>
-                        classes here
+                        <Table>
+                          <Table.Header>
+                            <Table.Row key={v4()}>
+                              <Table.ColHeader>{t('Location')}</Table.ColHeader>
+                              <Table.ColHeader>{t('Time')}</Table.ColHeader>
+                            </Table.Row>
+                          </Table.Header>
+                        
+                          {classes.map(({ scheduleItemID, date, organizationLocationRoom, timeStart, timeEnd }) => (
+                            <div key={v4()}>test</div>
+                          ))}
+                        </Table>
                       </Card.Body>
                     </Card>
                   </div>
