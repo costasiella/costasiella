@@ -97,6 +97,11 @@ const ScheduleClasses = ({ t, history }) => (
                         {moment(date).format("LL")} 
                       </small>
                     </h4>
+                    <Card>
+                      <Card.Body>
+                        classes here
+                      </Card.Body>
+                    </Card>
                   </div>
                   ))
 
