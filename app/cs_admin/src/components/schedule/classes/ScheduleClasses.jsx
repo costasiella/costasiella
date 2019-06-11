@@ -102,47 +102,49 @@ const ScheduleClasses = ({ t, history }) => (
                         </Card.Title>
                       </Card.Header>
                       <Card.Body>
-                        <Table>
-                          <Table.Header>
-                            <Table.Row key={v4()}>
-                              <Table.ColHeader>{t('general.location')}</Table.ColHeader>
-                              <Table.ColHeader>{t('general.time')}</Table.ColHeader>
-                              <Table.ColHeader>{t('general.class')}</Table.ColHeader>
-                              <Table.ColHeader>{t('general.public')}</Table.ColHeader>
-                            </Table.Row>
-                          </Table.Header>
-                          <Table.Body>
-                            {classes.map((
-                              { scheduleItemID, 
-                                date, 
-                                organizationLocationRoom, 
-                                organizationClasstype, 
-                                timeStart, 
-                                timeEnd,
-                                displayPublic }) => (
+                        {!(classes.length) ? t('schedule.classes.empty_list') :
+                          <Table>
+                            <Table.Header>
                               <Table.Row key={v4()}>
-                                <Table.Col>
-                                  {/* Start & end time */}
-                                  {moment(date + ' ' + timeStart).format('LT')} {' - '}
-                                  {moment(date + ' ' + timeEnd).format('LT')}
-                                </Table.Col>
-                                <Table.Col>
-                                  {/* Location */}
-                                  {organizationLocationRoom.organizationLocation.name} {' '}
-                                  <span className="text-muted"> &bull; {organizationLocationRoom.name}</span>
-                                </Table.Col>
-                                <Table.Col>
-                                  {/* Type */}
-                                  {organizationClasstype.name}
-                                </Table.Col>
-                                <Table.Col>
-                                  {/* Public */}
-                                  <BooleanBadge value={displayPublic} />
-                                </Table.Col>
+                                <Table.ColHeader>{t('general.location')}</Table.ColHeader>
+                                <Table.ColHeader>{t('general.time')}</Table.ColHeader>
+                                <Table.ColHeader>{t('general.class')}</Table.ColHeader>
+                                <Table.ColHeader>{t('general.public')}</Table.ColHeader>
                               </Table.Row>
-                            ))}
-                          </Table.Body>
-                        </Table>
+                            </Table.Header>
+                            <Table.Body>
+                              {classes.map((
+                                { scheduleItemID, 
+                                  date, 
+                                  organizationLocationRoom, 
+                                  organizationClasstype, 
+                                  timeStart, 
+                                  timeEnd,
+                                  displayPublic }) => (
+                                <Table.Row key={v4()}>
+                                  <Table.Col>
+                                    {/* Start & end time */}
+                                    {moment(date + ' ' + timeStart).format('LT')} {' - '}
+                                    {moment(date + ' ' + timeEnd).format('LT')}
+                                  </Table.Col>
+                                  <Table.Col>
+                                    {/* Location */}
+                                    {organizationLocationRoom.organizationLocation.name} {' '}
+                                    <span className="text-muted"> &bull; {organizationLocationRoom.name}</span>
+                                  </Table.Col>
+                                  <Table.Col>
+                                    {/* Type */}
+                                    {organizationClasstype.name}
+                                  </Table.Col>
+                                  <Table.Col>
+                                    {/* Public */}
+                                    <BooleanBadge value={displayPublic} />
+                                  </Table.Col>
+                                </Table.Row>
+                              ))}
+                            </Table.Body>
+                          </Table>
+                        }
                       </Card.Body>
                     </Card>
                   </div>
