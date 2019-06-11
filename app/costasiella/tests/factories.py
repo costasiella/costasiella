@@ -30,6 +30,16 @@ class FinanceGLAccountFactory(factory.DjangoModelFactory):
     code = "8000"
 
 
+class FinancePaymentMethodFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.FinancePaymentMethod
+
+    archived = False
+    system_method = False
+    name = "First user defined payment method"
+    code = "123456"
+
+
 class FinanceTaxRateFactory(factory.DjangoModelFactory):
     class Meta:
         model = models.FinanceTaxRate
