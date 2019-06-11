@@ -41,7 +41,7 @@ const ARCHIVE_LEVEL = gql`
 `
 
 
-const OrganizationLevels = ({ t, history, archived=false }) => (
+const FinanceCostCenters = ({ t, history, archived=false }) => (
   <SiteWrapper>
     <div className="my-3 my-md-5">
       <Container>
@@ -197,4 +197,4 @@ const OrganizationLevels = ({ t, history, archived=false }) => (
   </SiteWrapper>
 );
 
-export default withTranslation()(withRouter(OrganizationLevels))
+export default withTranslation()(withRouter(FinanceCostCenters))
