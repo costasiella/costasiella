@@ -1,6 +1,7 @@
-import React from 'react'
+import React, { Component } from 'react'
 import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
+import { v4 } from "uuid"
 
 import {
     Button,
@@ -23,7 +24,7 @@ const ScheduleClassForm = ({ t, history, inputData, isSubmitting, setFieldValue,
               name="displayPublic" 
               checked={values.displayPublic} />
               <span className="custom-switch-indicator" ></span>
-              <span className="custom-switch-description">{t('organization.classtype.public')}</span>
+              <span className="custom-switch-description">{t('schedule.classes.public')}</span>
           </Form.Label>
           <ErrorMessage name="displayPublic" component="div" />   
         </Form.Group>  
@@ -54,14 +55,14 @@ const ScheduleClassForm = ({ t, history, inputData, isSubmitting, setFieldValue,
             <ErrorMessage name="frequencyType" component="span" className="invalid-feedback" />
           </Form.Group>
         }
-        <Form.Group label={t('general.membership')}>
+        <Form.Group label={t('general.location')}>
           <Field component="select" 
                 name="organizationLocationRoom" 
                 className={(errors.organizationLocationRoom) ? "form-control is-invalid" : "form-control"} 
                 autoComplete="off">
             <option value="" key={v4()}>{t("general.please_select")}</option>
             {inputData.organizationLocationRooms.edges.map(({ node }) =>
-              <option value={node.id} key={v4()}>{node.organizationLocation.name} - {node.name})</option>
+              <option value={node.id} key={v4()}>{node.organizationLocation.name} - {node.name}</option>
             )}
           </Field>
           <ErrorMessage name="organizationMembership" component="span" className="invalid-feedback" />

@@ -1,6 +1,6 @@
 // @flow
 
-import React, {Component } from 'react'
+import React, { Component } from 'react'
 import gql from "graphql-tag"
 import { Query, Mutation } from "react-apollo";
 import { withTranslation } from 'react-i18next'

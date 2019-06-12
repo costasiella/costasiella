@@ -1,7 +1,7 @@
 // @flow
 
-import React from 'react'
-import { Mutation } from "react-apollo";
+import React, { Component } from 'react'
+import { Query, Mutation } from "react-apollo";
 import gql from "graphql-tag"
 import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
@@ -9,7 +9,7 @@ import { Formik } from 'formik'
 import { toast } from 'react-toastify'
 
 
-import { GET_CLASSES_QUERY } from './queries'
+import { GET_CLASSES_QUERY, GET_INPUT_VALUES_QUERY } from './queries'
 import { CLASS_SCHEMA } from './yupSchema'
 import ScheduleClassForm from './ScheduleClassForm'
 
@@ -26,7 +26,7 @@ import {
 import SiteWrapper from "../../SiteWrapper"
 import HasPermissionWrapper from "../../HasPermissionWrapper"
 
-import OrganizationMenu from '../OrganizationMenu'
+import ScheduleMenu from '../ScheduleMenu'
 
 
 const CREATE_CLASS = gql`
@@ -117,7 +117,7 @@ class ScheduleClassAdd extends Component {
                                 timeStart: "",
                                 timeEnd: "",
                               }}
-                              validationSchema={SUBSCRIPTION_SCHEMA}
+                              validationSchema={CLASS_SCHEMA}
                               onSubmit={(values, { setSubmitting }) => {
                                   console.log('submit values:')
                                   console.log(values)
@@ -140,7 +140,7 @@ class ScheduleClassAdd extends Component {
                                       timeEnd: values.timeEnd
                                     }
                                   }, refetchQueries: [
-                                      {query: GET_SUBSCRIPTIONS_QUERY, variables: {archived: false }}
+                                      {query: GET_CLASSES_QUERY, variables: {archived: false }}
                                   ]})
                                   .then(({ data }) => {
                                       console.log('got data', data)
@@ -176,13 +176,13 @@ class ScheduleClassAdd extends Component {
               </Grid.Col>
               <Grid.Col md={3}>
                 <HasPermissionWrapper permission="add"
-                                      resource="organizationsubscription">
+                                      resource="scheduleclass">
                   <Button color="primary btn-block mb-6"
                           onClick={() => history.push(return_url)}>
                     <Icon prefix="fe" name="chevrons-left" /> {t('general.back')}
                   </Button>
                 </HasPermissionWrapper>
-                <OrganizationMenu active_link='subscriptions'/>
+                <ScheduleMenu active_link='classes'/>
               </Grid.Col>
             </Grid.Row>
           </Container>
