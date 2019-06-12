@@ -125,7 +125,10 @@
         "address": "Address",
         "postcode": "Postcode",
         "city": "City",
-        "country": "Country"
+        "country": "Country",
+        "time": "Time",
+        "class": "Class",
+        "actions": "Actions"
     },
     "yup": {
         "min_len_3": "Please input at least 3 characters",
@@ -349,7 +352,11 @@
     "schedule": {
         "title": "Schedule",
         "classes": {
-            "title": "Classes"
+            "title": "Classes",
+            "error_loading": "Error loading classes :(",
+            "empty_list": "No classes found on this day",
+            "add": "Add class",
+            "all_classes_in_series": "All classes"
         }
     },
     "countries": {

@@ -125,7 +125,10 @@
         "address": "__STRING_NOT_TRANSLATED__",
         "postcode": "__STRING_NOT_TRANSLATED__",
         "city": "__STRING_NOT_TRANSLATED__",
-        "country": "__STRING_NOT_TRANSLATED__"
+        "country": "__STRING_NOT_TRANSLATED__",
+        "time": "__STRING_NOT_TRANSLATED__",
+        "class": "__STRING_NOT_TRANSLATED__",
+        "actions": "__STRING_NOT_TRANSLATED__"
     },
     "yup": {
         "min_len_3": "__STRING_NOT_TRANSLATED__",
@@ -349,7 +352,11 @@
     "schedule": {
         "title": "__STRING_NOT_TRANSLATED__",
         "classes": {
-            "title": "__STRING_NOT_TRANSLATED__"
+            "title": "__STRING_NOT_TRANSLATED__",
+            "error_loading": "__STRING_NOT_TRANSLATED__",
+            "empty_list": "__STRING_NOT_TRANSLATED__",
+            "add": "__STRING_NOT_TRANSLATED__",
+            "all_classes_in_series": "__STRING_NOT_TRANSLATED__"
         }
     },
     "countries": {

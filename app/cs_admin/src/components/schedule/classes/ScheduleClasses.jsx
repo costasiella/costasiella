@@ -6,6 +6,7 @@ import gql from "graphql-tag"
 import { v4 } from "uuid"
 import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
+import { Link } from 'react-router-dom'
 
 
 import {
@@ -23,7 +24,6 @@ import SiteWrapper from "../../SiteWrapper"
 import HasPermissionWrapper from "../../HasPermissionWrapper"
 // import { confirmAlert } from 'react-confirm-alert'; // Import
 import { toast } from 'react-toastify'
-import { get_all_permissions, has_permission } from "../../../tools/user_tools"
 
 import BooleanBadge from "../../ui/BooleanBadge"
 import ContentCard from "../../general/ContentCard"
@@ -42,33 +42,6 @@ dateUntil.setDate(dateUntil.getDate() + 6)
 console.log(dateFrom)
 console.log(dateUntil)
 
-
-function getScheduleActionItems(t, user, scheduleItemId) {
-    let items = []
-    let permissions = get_all_permissions(user)
-  
-    items.push({
-      value: t("general.edit"),
-      to: "/#/schedule/classes/edit/" + scheduleItemId,
-      icon: "edit-2",
-      // LinkComponent: withRouter(NavLink),
-      useExact: true,
-    })
-  
-    // Relations
-    // if (
-    //   (has_permission(permissions, 'view', 'account'))
-    // ){
-    //   items.push({
-    //     value: t("relations.title"),
-    //     to: "/relations",
-    //     icon: "users",
-    //     LinkComponent: withRouter(NavLink),
-    //   })
-    // }
-
-    return items
-  }
 
 const ScheduleClasses = ({ t, history }) => (
   <SiteWrapper>
@@ -178,12 +151,25 @@ const ScheduleClasses = ({ t, history }) => (
                                   </Table.Col>
                                   <Table.Col>
                                     <Dropdown
-                                      triggerContent="Menu"
-                                      itemsObject={getScheduleActionItems(t, user, scheduleItemId)}
-                                      >
-
-
-                                    </Dropdown>
+                                      className="pull-right"
+                                      type="button"
+                                      toggle
+                                      color="secondary btn-sm"
+                                      triggerContent={t("general.actions")}
+                                      items={[
+                                        <Dropdown.Item>Dropdown Link</Dropdown.Item>,
+                                        <HasPermissionWrapper permission="change" resource="scheduleclass">
+                                          <Dropdown.ItemDivider />
+                                          <Dropdown.Item
+                                            badge={t('schedule.classes.all_classes_in_series')}
+                                            badgeType="secondary"
+                                            icon="edit-2"
+                                            onClick={() => history.push('/schedule/classes/edit/' + scheduleItemId)}>
+                                              {t("general.edit")}
+                                          </Dropdown.Item>
+                                        </HasPermissionWrapper>
+                                      ]}
+                                    />
                                   </Table.Col>
                                 </Table.Row>
                               ))}
