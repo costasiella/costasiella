@@ -23,6 +23,7 @@ import SiteWrapper from "../../SiteWrapper"
 import HasPermissionWrapper from "../../HasPermissionWrapper"
 // import { confirmAlert } from 'react-confirm-alert'; // Import
 import { toast } from 'react-toastify'
+import { get_all_permissions, has_permission } from "../../../tools/user_tools"
 
 import BooleanBadge from "../../ui/BooleanBadge"
 import ContentCard from "../../general/ContentCard"
@@ -42,10 +43,32 @@ console.log(dateFrom)
 console.log(dateUntil)
 
 
-function getScheduleActionItems(t, user) {
+function getScheduleActionItems(t, user, scheduleItemId) {
+    let items = []
+    let permissions = get_all_permissions(user)
+  
+    items.push({
+      value: t("general.edit"),
+      to: "/#/schedule/classes/edit/" + scheduleItemId,
+      icon: "edit-2",
+      // LinkComponent: withRouter(NavLink),
+      useExact: true,
+    })
+  
+    // Relations
+    // if (
+    //   (has_permission(permissions, 'view', 'account'))
+    // ){
+    //   items.push({
+    //     value: t("relations.title"),
+    //     to: "/relations",
+    //     icon: "users",
+    //     LinkComponent: withRouter(NavLink),
+    //   })
+    // }
 
-}
-
+    return items
+  }
 
 const ScheduleClasses = ({ t, history }) => (
   <SiteWrapper>
@@ -123,7 +146,7 @@ const ScheduleClasses = ({ t, history }) => (
                             </Table.Header>
                             <Table.Body>
                               {classes.map((
-                                { scheduleItemID, 
+                                { scheduleItemId, 
                                   date, 
                                   organizationLocationRoom, 
                                   organizationClasstype, 
@@ -156,7 +179,7 @@ const ScheduleClasses = ({ t, history }) => (
                                   <Table.Col>
                                     <Dropdown
                                       triggerContent="Menu"
-                                      itemsObjects={getScheduleActionItems(t, user)}
+                                      itemsObject={getScheduleActionItems(t, user, scheduleItemId)}
                                       >
 
 
@@ -171,73 +194,6 @@ const ScheduleClasses = ({ t, history }) => (
                     </Card>
                   </div>
                   ))
-
-                  
-
-
-                  // <ContentCard cardTitle={t('schedule.classes.title')}
-                  //              headerContent={headerOptions} >
-                  //   <Table>
-                  //         <Table.Header>
-                  //           <Table.Row key={v4()}>
-                  //             <Table.ColHeader>{t('general.name')}</Table.ColHeader>
-                  //           </Table.Row>
-                  //         </Table.Header>
-                  //         <Table.Body>
-                  //             {schedule_classes.map(({ date, classes }) => (
-                  //               <Table.Row key={v4()}>
-                  //                 <Table.Col key={v4()}>
-                  //                   {node.name}
-                  //                 </Table.Col>
-                  //                 <Table.Col className="text-right" key={v4()}>
-                  //                   {(node.archived) ? 
-                  //                     <span className='text-muted'>{t('general.unarchive_to_edit')}</span> :
-                  //                     <Button className='btn-sm' 
-                  //                             onClick={() => history.push("/organization/classes/edit/" + node.id)}
-                  //                             color="secondary">
-                  //                       {t('general.edit')}
-                  //                     </Button>
-                  //                   }
-                  //                 </Table.Col>
-                  //                 {/* <Mutation mutation={ARCHIVE_LEVEL} key={v4()}>
-                  //                   {(archiveCostcenter, { data }) => (
-                  //                     <Table.Col className="text-right" key={v4()}>
-                  //                       <button className="icon btn btn-link btn-sm" 
-                  //                          title={t('general.archive')} 
-                  //                          href=""
-                  //                          onClick={() => {
-                  //                            console.log("clicked archived")
-                  //                            let id = node.id
-                  //                            archiveCostcenter({ variables: {
-                  //                              input: {
-                  //                               id,
-                  //                               archived: !archived
-                  //                              }
-                  //                       }, refetchQueries: [
-                  //                           {query: GET_CLASSES_QUERY, variables: {"archived": archived }}
-                  //                       ]}).then(({ data }) => {
-                  //                         console.log('got data', data);
-                  //                         toast.success(
-                  //                           (archived) ? t('general.unarchived'): t('general.archived'), {
-                  //                             position: toast.POSITION.BOTTOM_RIGHT
-                  //                           })
-                  //                       }).catch((error) => {
-                  //                         toast.error((t('general.toast_server_error')) + ': ' +  error, {
-                  //                             position: toast.POSITION.BOTTOM_RIGHT
-                  //                           })
-                  //                         console.log('there was an error sending the query', error);
-                  //                       })
-                  //                       }}>
-                  //                         <Icon prefix="fa" name="inbox" />
-                  //                       </button>
-                  //                     </Table.Col>
-                  //                   )}
-                  //                 </Mutation> */}
-                  //               </Table.Row>
-                  //             ))}
-                  //         </Table.Body>
-                  //       </Table>
-                  // </ContentCard>
                 )}}
              }
             </Query>
