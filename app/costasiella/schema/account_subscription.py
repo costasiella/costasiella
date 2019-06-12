@@ -80,17 +80,14 @@ class AccountSubscriptionQuery(graphene.ObjectType):
 
 class CreateAccountSubscription(graphene.relay.ClientIDMutation):
     class Input:
-        display_public = graphene.Boolean(required=True, default_value=True)
-        display_shop = graphene.Boolean(required=True, default_value=True)
-        name = graphene.String(required=True)
-        description = graphene.String(required=False, default_value="")
-        price = graphene.Float(required=True, default_value=0)
-        finance_tax_rate = graphene.ID(required=True)
-        validity = graphene.Int(required=True, default_value=1)
-        validity_unit = graphene.String(required=True)
-        terms_and_conditions = graphene.String(required=False, default_value="")
-        finance_glaccount = graphene.ID(required=False, default_value="")
-        finance_costcenter = graphene.ID(required=False, default_value="")
+        account = graphene.ID(required=True)
+        organization_subscription = graphene.ID(required=True)
+        finance_payment_method = graphene.ID(required=False, default_value="")
+        date_start = graphene.types.datetime.Date(required=True)
+        date_end = graphene.types.datetime.Date(required=False, default_value=None)
+        note = graphene.String(required=False, default_value="")
+        registration_fee_paid = graphene.Boolean(required=False, default_value=False)        
+        
 
     account_subscription = graphene.Field(AccountSubscriptionNode)
 
