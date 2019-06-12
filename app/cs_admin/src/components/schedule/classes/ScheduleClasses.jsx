@@ -22,7 +22,7 @@ import {
 } from "tabler-react";
 import SiteWrapper from "../../SiteWrapper"
 import HasPermissionWrapper from "../../HasPermissionWrapper"
-// import { confirmAlert } from 'react-confirm-alert'; // Import
+import { confirmAlert } from 'react-confirm-alert'
 import { toast } from 'react-toastify'
 
 import BooleanBadge from "../../ui/BooleanBadge"
@@ -31,8 +31,54 @@ import ScheduleMenu from "../ScheduleMenu"
 
 import { GET_CLASSES_QUERY } from "./queries"
 
-
 import moment from 'moment'
+
+
+const DELETE_SCHEDULE_CLASS = gql`
+  mutation DeleteScheduleClass($input: DeleteScheduleClassInput!) {
+    deleteScheduleClass(input: $input) {
+      ok
+    }
+  }
+`
+
+
+const confirm_delete = ({t, msgConfirm, msgDescription, msgSuccess, deleteFunction, functionVariables}) => {
+  confirmAlert({
+    customUI: ({ onClose }) => {
+      return (
+        <div className='custom-ui'>
+          <h1>{t('general.confirm_delete')}</h1>
+          {msgConfirm}
+          {msgDescription}
+          <button className="btn btn-link pull-right" onClick={onClose}>{t('general.confirm_delete_no')}</button>
+          <button
+            className="btn btn-danger"
+            onClick={() => {
+              deleteFunction(functionVariables)
+                .then(({ data }) => {
+                  console.log('got data', data);
+                  toast.success(
+                    msgSuccess, {
+                      position: toast.POSITION.BOTTOM_RIGHT
+                    })
+                }).catch((error) => {
+                  toast.error((t('general.toast_server_error')) + ': ' +  error, {
+                      position: toast.POSITION.BOTTOM_RIGHT
+                    })
+                  console.log('there was an error sending the query', error);
+                })
+              onClose()
+            }}
+          >
+            <Icon name="trash-2" /> {t('general.confirm_delete_yes')}
+          </button>
+        </div>
+      )
+    }
+  })
+}
+
 
 
 // Set some initial values for dates
@@ -167,6 +213,41 @@ const ScheduleClasses = ({ t, history }) => (
                                             onClick={() => history.push('/schedule/classes/edit/' + scheduleItemId)}>
                                               {t("general.edit")}
                                           </Dropdown.Item>
+                                        </HasPermissionWrapper>,
+                                        <HasPermissionWrapper permission="delete" resource="scheduleclass">
+                                          <Dropdown.ItemDivider />
+                                          <Mutation mutation={DELETE_SCHEDULE_CLASS} key={v4()}>
+                                            {(deleteScheduleClass, { data }) => (
+                                                <Dropdown.Item
+                                                  icon="trash-2"
+                                                  onClick={() => {
+                                                    confirm_delete({
+                                                      t: t,
+                                                      msgConfirm: t("schedule.classes.delete_confirm_msg"),
+                                                      msgDescription: <p>
+                                                        {moment(date + ' ' + timeStart).format('LT')} {' - '}
+                                                        {moment(date + ' ' + timeEnd).format('LT')} {' '} @ {' '}
+                                                        {organizationLocationRoom.organizationLocation.name} {' '}
+                                                        {organizationLocationRoom.name}
+                                                        {organizationClasstype.Name}
+                                                         </p>,
+                                                      msgSuccess: t('schedule.classes.deleted'),
+                                                      deleteFunction: deleteScheduleClass,
+                                                      functionVariables: { variables: {
+                                                        input: {
+                                                          id: scheduleItemId
+                                                        }
+                                                      }, refetchQueries: [
+                                                        { query: GET_CLASSES_QUERY, variables: { 
+                                                            dateFrom: moment(dateFrom).format('YYYY-MM-DD'), 
+                                                            dateUntil: moment(dateUntil).format('YYYY-MM-DD')}}
+                                                      ]}
+                                                    })
+                                                }}>
+                                                {t("general.delete")}
+                                                </Dropdown.Item>
+                                            )}
+                                          </Mutation>
                                         </HasPermissionWrapper>
                                       ]}
                                     />

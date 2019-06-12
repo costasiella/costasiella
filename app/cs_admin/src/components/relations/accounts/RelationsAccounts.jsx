@@ -50,7 +50,7 @@ const DELETE_ACCOUNT = gql`
 `
 
 
-const confirm = ({t, msgConfirm, msgDescription, msgSuccess, deleteFunction, functionVariables}) => {
+const confirm_delete = ({t, msgConfirm, msgDescription, msgSuccess, deleteFunction, functionVariables}) => {
   confirmAlert({
     customUI: ({ onClose }) => {
       return (
@@ -235,7 +235,7 @@ const RelationsAccounts = ({ t, history, isActive=true }) => (
                                               title={t('general.delete')} 
                                               href=""
                                               onClick={() => {
-                                                confirm({
+                                                confirm_delete({
                                                   t: t,
                                                   msgConfirm: t("relations.accounts.delete_confirm_msg"),
                                                   msgDescription: <p>{node.first_name} {node.last_name}</p>,
