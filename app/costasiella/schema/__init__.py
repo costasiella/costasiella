@@ -2,6 +2,7 @@ import graphene
 import graphql_jwt
 
 from .account import AccountQuery, AccountMutation
+from .account_subscription import AccountSubscriptionQuery, AccountSubscriptionMutation
 
 from .finance_costcenter import FinanceCostCenterQuery, FinanceCostCenterMutation
 from .finance_glaccount import FinanceGLAccountQuery, FinanceGLAccountMutation
@@ -27,6 +28,7 @@ from .schedule_item import ScheduleItemQuery, ScheduleItemMutation
 
 
 class Query(AccountQuery,
+            AccountSubscriptionQuery,
             FinanceCostCenterQuery,
             FinanceGLAccountQuery,
             FinancePaymentMethodQuery,
@@ -49,6 +51,7 @@ class Query(AccountQuery,
 
 
 class Mutation(AccountMutation,
+               AccountSubscriptionQuery,
                FinanceCostCenterMutation,
                FinanceGLAccountMutation,
                FinancePaymentMethodMutation,
