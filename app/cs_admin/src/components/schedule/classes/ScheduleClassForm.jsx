@@ -44,6 +44,7 @@ const ScheduleClassForm = ({ t, history, inputData, isSubmitting, setFieldValue,
                   name="frequencyType" 
                   className={(errors.frequencyType) ? "form-control is-invalid" : "form-control"} 
                   autoComplete="off">
+              <option value="" key={v4()}>{t("general.please_select")}</option>
               <option value="1" key={v4()}>{t('general.monday')}</option>
               <option value="2" key={v4()}>{t('general.tuesday')}</option>
               <option value="3" key={v4()}>{t('general.wednesday')}</option>
@@ -66,6 +67,18 @@ const ScheduleClassForm = ({ t, history, inputData, isSubmitting, setFieldValue,
             )}
           </Field>
           <ErrorMessage name="organizationMembership" component="span" className="invalid-feedback" />
+        </Form.Group> 
+        <Form.Group label={t('general.level')}>
+          <Field component="select" 
+                name="organizationLevel" 
+                className={(errors.organizationLevels) ? "form-control is-invalid" : "form-control"} 
+                autoComplete="off">
+            <option value="" key={v4()}>{t("Not set")}</option>
+            {inputData.organizationLevels.edges.map(({ node }) =>
+              <option value={node.id} key={v4()}>{node.name}</option>
+            )}
+          </Field>
+          <ErrorMessage name="organizationLevels" component="span" className="invalid-feedback" />
         </Form.Group> 
         <Form.Group label={t('general.note')}>
           <Editor

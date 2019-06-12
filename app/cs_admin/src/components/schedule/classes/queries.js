@@ -101,6 +101,21 @@ export const GET_INPUT_VALUES_QUERY = gql`
         }
       }
     }
+    organizationLevels(first: 100, before: $before, after: $after, archived: $archived) {
+      pageInfo {
+        startCursor
+        endCursor
+        hasNextPage
+        hasPreviousPage
+      }
+      edges {
+        node {
+          id
+          archived
+          name
+        }
+      }
+    }
     financePaymentMethods(first: 100, before: $before, after: $after, archived: $archived) {
       pageInfo {
         startCursor
