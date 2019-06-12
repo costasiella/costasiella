@@ -13,9 +13,9 @@ class AccountSubscription(models.Model):
 
     account = models.ForeignKey(Account, on_delete=models.CASCADE)
     organization_subscription = models.ForeignKey(OrganizationSubscription, on_delete=models.CASCADE)
+    finance_payment_method = models.ForeignKey(FinancePaymentMethod, on_delete=models.CASCADE, null=True)
     date_start = models.DateField()
     date_end = models.DateField(null=True)
-    finance_payment_method = models.ForeignKey(FinancePaymentMethod, on_delete=models.CASCADE)
     note = models.TextField(default="")
     registration_fee_paid = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True, editable=False)
