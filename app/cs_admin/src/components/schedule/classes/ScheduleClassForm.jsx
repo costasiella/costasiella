@@ -58,30 +58,36 @@ const ScheduleClassForm = ({ t, history, inputData, isSubmitting, setFieldValue,
             <ErrorMessage name="frequencyType" component="span" className="invalid-feedback" />
           </Form.Group>
         }
-        <Form.Group label={t('general.location')}>
-          <Field component="select" 
-                name="organizationLocationRoom" 
-                className={(errors.organizationLocationRoom) ? "form-control is-invalid" : "form-control"} 
-                autoComplete="off">
-            <option value="" key={v4()}>{t("general.please_select")}</option>
-            {inputData.organizationLocationRooms.edges.map(({ node }) =>
-              <option value={node.id} key={v4()}>{node.organizationLocation.name} - {node.name}</option>
-            )}
-          </Field>
-          <ErrorMessage name="organizationLocationRoom" component="span" className="invalid-feedback" />
-        </Form.Group> 
-        <Form.Group label={t('general.level')}>
-          <Field component="select" 
-                name="organizationLevel" 
-                className={(errors.organizationLevels) ? "form-control is-invalid" : "form-control"} 
-                autoComplete="off">
-            <option value="" key={v4()}>{t("general.not_set")}</option>
-            {inputData.organizationLevels.edges.map(({ node }) =>
-              <option value={node.id} key={v4()}>{node.name}</option>
-            )}
-          </Field>
-          <ErrorMessage name="organizationLevels" component="span" className="invalid-feedback" />
-        </Form.Group> 
+        <Grid.Row>
+          <Grid.Col>
+            <Form.Group label={t('general.location')}>
+              <Field component="select" 
+                    name="organizationLocationRoom" 
+                    className={(errors.organizationLocationRoom) ? "form-control is-invalid" : "form-control"} 
+                    autoComplete="off">
+                <option value="" key={v4()}>{t("general.please_select")}</option>
+                {inputData.organizationLocationRooms.edges.map(({ node }) =>
+                  <option value={node.id} key={v4()}>{node.organizationLocation.name} - {node.name}</option>
+                )}
+              </Field>
+              <ErrorMessage name="organizationLocationRoom" component="span" className="invalid-feedback" />
+            </Form.Group> 
+          </Grid.Col>
+          <Grid.Col>
+            <Form.Group label={t('general.level')}>
+              <Field component="select" 
+                    name="organizationLevel" 
+                    className={(errors.organizationLevels) ? "form-control is-invalid" : "form-control"} 
+                    autoComplete="off">
+                <option value="" key={v4()}>{t("")}</option>
+                {inputData.organizationLevels.edges.map(({ node }) =>
+                  <option value={node.id} key={v4()}>{node.name}</option>
+                )}
+              </Field>
+              <ErrorMessage name="organizationLevels" component="span" className="invalid-feedback" />
+            </Form.Group> 
+          </Grid.Col>
+        </Grid.Row>
         <Grid.Row>
           <Grid.Col>
             <Form.Group label={(values.frequencyType == "SPECIFIC") ? t('general.date') : t('general.date_start')}>
