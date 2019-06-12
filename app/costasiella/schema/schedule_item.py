@@ -7,10 +7,11 @@ from graphene_django.filter import DjangoFilterConnectionField
 from graphql import GraphQLError
 from graphql_relay import to_global_id
 
-from ..models import ScheduleItem, OrganizationClasstype, OrganizationLocationRoom
+from ..models import ScheduleItem, OrganizationClasstype, OrganizationLevel, OrganizationLocationRoom
 from ..modules.gql_tools import require_login_and_permission, get_rid
 from ..modules.messages import Messages
 from .organization_classtype import OrganizationClasstypeNode
+from .organization_level import OrganizationLevelNode
 from .organization_location_room import OrganizationLocationRoomNode
 
 
@@ -40,6 +41,7 @@ class ScheduleClassType(graphene.ObjectType):
     date = graphene.types.datetime.Date()
     organization_location_room = graphene.Field(OrganizationLocationRoomNode)
     organization_classtype = graphene.Field(OrganizationClasstypeNode)
+    organization_level = graphene.Field(OrganizationLevelNode)
     time_start = graphene.types.datetime.Time()
     time_end = graphene.types.datetime.Time()
     display_public = graphene.Boolean()
@@ -85,6 +87,7 @@ class ScheduleClassesDayType(graphene.ObjectType):
                     frequency_type=item.frequency_type,
                     organization_location_room=item.organization_location_room,
                     organization_classtype=item.organization_classtype,
+                    organization_level=item.organization_level,
                     time_start=item.time_start,
                     time_end=item.time_end,
                     display_public=item.display_public
@@ -170,6 +173,15 @@ def validate_schedule_class_create_update_input(input, update=False):
             if not organization_classtype:
                 raise Exception(_('Invalid Organization Classtype ID!'))            
 
+    # Check OrganizationLevel
+    if 'organization_level' in input:
+        if input['organization_level']:
+            rid = get_rid(input['organization_level'])
+            organization_level = OrganizationLevel.objects.get(id=rid.id)
+            result['organization_level'] = organization_level
+            if not organization_level:
+                raise Exception(_('Invalid Organization Level ID!'))            
+
 
     return result
 
@@ -218,6 +230,9 @@ class CreateScheduleClass(graphene.relay.ClientIDMutation):
 
         if result['organization_classtype']:
             schedule_item.organization_classtype = result['organization_classtype']
+
+        if result['organization_level']:
+            schedule_item.organization_level = result['organization_level']
 
         # ALl done, save it :).
         schedule_item.save()
