@@ -4,6 +4,7 @@ from django.db import models
 
 from .account import Account
 from .organization_subscription import OrganizationSubscription
+from .finance_payment_method import FinancePaymentMethod
 
 class AccountSubscription(AbstractUser):
     # add additional fields in here
@@ -15,6 +16,7 @@ class AccountSubscription(AbstractUser):
     organization_subscription = models.ForeignKey(OrganizationSubscription, on_delete=models.CASCADE)
     date_start = models.DateField()
     date_end = models.DateField(null=True)
+    finance_payment_method = models.ForeignKey(FinancePaymentMethod, on_delete=models.CASCADE)
     note = models.TextField(default="")
     registration_fee_paid = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True, editable=False)
