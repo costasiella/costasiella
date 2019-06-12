@@ -336,7 +336,7 @@
     },
     "datepicker": {
         "placeholder": "Click to select a date",
-        "placeholder_time": "__STRING_NOT_TRANSLATED__"
+        "placeholder_time": "Click to select a time"
     },
     "relations": {
         "title": "Relations",

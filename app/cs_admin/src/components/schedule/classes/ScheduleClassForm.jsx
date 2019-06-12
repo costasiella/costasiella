@@ -14,6 +14,7 @@ import { Form as FoForm, Field, ErrorMessage } from 'formik'
 import { Editor } from '@tinymce/tinymce-react'
 import { tinymceBasicConf } from "../../../plugin_config/tinymce"
 import CSDatePicker from "../../ui/CSDatePicker"
+import CSTimePicker from "../../ui/CSTimePicker"
 
 const ScheduleClassForm = ({ t, history, inputData, isSubmitting, setFieldValue, setFieldTouched, errors, values, return_url }) => (
     <FoForm>
@@ -112,6 +113,18 @@ const ScheduleClassForm = ({ t, history, inputData, isSubmitting, setFieldValue,
               </Form.Group>
             </Grid.Col>
           }
+        </Grid.Row>
+        <Grid.Row>
+          <Grid.Col>
+           <Form.Group label={t('general.time_start')}>
+              <CSTimePicker 
+                selected={values.timeStart}
+                onChange={(date) => setFieldValue("timeStart", date)}
+                onBlur={() => setFieldTouched("timeStart", true)}
+              />
+              <ErrorMessage name="timeStart" component="span" className="invalid-feedback" />
+            </Form.Group>
+          </Grid.Col>
         </Grid.Row>
         <Form.Group label={t('general.note')}>
           <Editor
