@@ -192,6 +192,7 @@ class CreateScheduleClass(graphene.relay.ClientIDMutation):
         frequency_interval = graphene.Int(required=True)
         organization_location_room = graphene.ID(required=True)
         organization_classtype = graphene.ID(required=True)
+        organization_level = graphene.ID(required=True)
         date_start = graphene.types.datetime.Date(required=True)
         date_end = graphene.types.datetime.Date(required=False, default_value=None)
         time_start = graphene.types.datetime.Time(required=True)
