@@ -49,50 +49,36 @@ def validate_create_update_input(input, update=False):
     return result
 
 
-class OrganizationMembershipNodeInterface(graphene.Interface):
-    id = graphene.GlobalID()
-    price_display = graphene.String()
-    validity_unit_display = graphene.String()
-
-
-class OrganizationMembershipNode(DjangoObjectType):   
+class AccountSubscriptionNode(DjangoObjectType):   
     class Meta:
-        model = OrganizationMembership
-        filter_fields = ['archived']
-        interfaces = (graphene.relay.Node, OrganizationMembershipNodeInterface)
-
-    def resolve_price_display(self, info):
-        from ..modules.finance_tools import display_float_as_amount
-        return display_float_as_amount(self.price)
-
-    def resolve_validity_unit_display(self, info):
-        from ..modules.validity_tools import display_validity_unit
-        return display_validity_unit(self.validity_unit)
+        model = AccountSubscription
+        filter_fields = ['account', 'date_start', 'date_end']
+        interfaces = (graphene.relay.Node, )
 
     @classmethod
     def get_node(self, info, id):
         user = info.context.user
-        require_login_and_permission(user, 'costasiella.view_organizationmembership')
+        require_login_and_permission(user, 'costasiella.view_accountsubscription')
 
-        # Return only public non-archived memberships
         return self._meta.model.objects.get(id=id)
 
 
-class OrganizationMembershipQuery(graphene.ObjectType):
-    organization_memberships = DjangoFilterConnectionField(OrganizationMembershipNode)
-    organization_membership = graphene.relay.Node.Field(OrganizationMembershipNode)
+class AccountSubscriptionQuery(graphene.ObjectType):
+    account_subscriptions = DjangoFilterConnectionField(AccountSubscriptionNode)
+    account_subscription = graphene.relay.Node.Field(AccountSubscriptionNode)
 
 
-    def resolve_organization_memberships(self, info, archived, **kwargs):
+    def resolve_account_subscriptions(self, info, account, **kwargs):
         user = info.context.user
-        require_login_and_permission(user, 'costasiella.view_organizationmembership')
+        require_login_and_permission(user, 'costasiella.view_accountsubscription')
+
+        rid = get_rid(account)
 
         ## return everything:
-        # if user.has_perm('costasiella.view_organizationmembership'):
-        return OrganizationMembership.objects.filter(archived = archived).order_by('name')
+        return AccountSubscription.objects.filter(account=rid.id).order_by('date_start')
 
 
-class CreateOrganizationMembership(graphene.relay.ClientIDMutation):
+class CreateAccountSubscription(graphene.relay.ClientIDMutation):
     class Input:
         display_public = graphene.Boolean(required=True, default_value=True)
         display_shop = graphene.Boolean(required=True, default_value=True)
@@ -106,17 +92,17 @@ class CreateOrganizationMembership(graphene.relay.ClientIDMutation):
         finance_glaccount = graphene.ID(required=False, default_value="")
         finance_costcenter = graphene.ID(required=False, default_value="")
 
-    organization_membership = graphene.Field(OrganizationMembershipNode)
+    account_subscription = graphene.Field(AccountSubscriptionNode)
 
     @classmethod
     def mutate_and_get_payload(self, root, info, **input):
         user = info.context.user
-        require_login_and_permission(user, 'costasiella.add_organizationmembership')
+        require_login_and_permission(user, 'costasiella.add_accountsubscription')
 
         # Validate input
         result = validate_create_update_input(input, update=False)
 
-        membership = OrganizationMembership(
+        membership = AccountSubscription(
             display_public=input['display_public'],
             display_shop=input['display_shop'],
             name=input['name'], 
@@ -136,10 +122,10 @@ class CreateOrganizationMembership(graphene.relay.ClientIDMutation):
 
         membership.save()
 
-        return CreateOrganizationMembership(organization_membership = membership)
+        return CreateAccountSubscription(account_subscription = membership)
 
 
-class UpdateOrganizationMembership(graphene.relay.ClientIDMutation):
+class UpdateAccountSubscription(graphene.relay.ClientIDMutation):
     class Input:
         id = graphene.ID(required=True)
         display_public = graphene.Boolean(required=True, default_value=True)
@@ -154,16 +140,16 @@ class UpdateOrganizationMembership(graphene.relay.ClientIDMutation):
         finance_glaccount = graphene.ID(required=False, default_value="")
         finance_costcenter = graphene.ID(required=False, default_value="")
 
-    organization_membership = graphene.Field(OrganizationMembershipNode)
+    account_subscription = graphene.Field(AccountSubscriptionNode)
 
     @classmethod
     def mutate_and_get_payload(self, root, info, **input):
         user = info.context.user
-        require_login_and_permission(user, 'costasiella.change_organizationmembership')
+        require_login_and_permission(user, 'costasiella.change_accountsubscription')
 
     
         rid = get_rid(input['id'])
-        membership = OrganizationMembership.objects.filter(id=rid.id).first()
+        membership = AccountSubscription.objects.filter(id=rid.id).first()
         if not membership:
             raise Exception('Invalid Organization Membership ID!')
 
@@ -187,33 +173,33 @@ class UpdateOrganizationMembership(graphene.relay.ClientIDMutation):
 
         membership.save(force_update=True)
 
-        return UpdateOrganizationMembership(organization_membership=membership)
+        return UpdateAccountSubscription(account_subscription=membership)
 
 
-class ArchiveOrganizationMembership(graphene.relay.ClientIDMutation):
+class ArchiveAccountSubscription(graphene.relay.ClientIDMutation):
     class Input:
         id = graphene.ID(required=True)
         archived = graphene.Boolean(required=True)
 
-    organization_membership = graphene.Field(OrganizationMembershipNode)
+    account_subscription = graphene.Field(AccountSubscriptionNode)
 
     @classmethod
     def mutate_and_get_payload(self, root, info, **input):
         user = info.context.user
-        require_login_and_permission(user, 'costasiella.delete_organizationmembership')
+        require_login_and_permission(user, 'costasiella.delete_accountsubscription')
 
         rid = get_rid(input['id'])
-        membership = OrganizationMembership.objects.filter(id=rid.id).first()
+        membership = AccountSubscription.objects.filter(id=rid.id).first()
         if not membership:
             raise Exception('Invalid Organization Membership ID!')
 
         membership.archived = input['archived']
         membership.save(force_update=True)
 
-        return ArchiveOrganizationMembership(organization_membership=membership)
+        return ArchiveAccountSubscription(account_subscription=membership)
 
 
-class OrganizationMembershipMutation(graphene.ObjectType):
-    archive_organization_membership = ArchiveOrganizationMembership.Field()
-    create_organization_membership = CreateOrganizationMembership.Field()
-    update_organization_membership = UpdateOrganizationMembership.Field()
+class AccountSubscriptionMutation(graphene.ObjectType):
+    archive_account_subscription = ArchiveAccountSubscription.Field()
+    create_account_subscription = CreateAccountSubscription.Field()
+    update_account_subscription = UpdateAccountSubscription.Field()
