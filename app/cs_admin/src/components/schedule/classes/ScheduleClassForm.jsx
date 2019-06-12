@@ -9,7 +9,7 @@ import {
   } from "tabler-react"
   import { Form as FoForm, Field, ErrorMessage } from 'formik'
 
-const OrganizationLevelForm = ({ t, history, isSubmitting, errors, return_url }) => (
+const ScheduleClassForm = ({ t, history, isSubmitting, errors, return_url }) => (
     <FoForm>
         <Card.Body>
             <Form.Group label={t('general.name')}>
@@ -37,4 +37,4 @@ const OrganizationLevelForm = ({ t, history, isSubmitting, errors, return_url })
 )
   
   
-  export default withTranslation()(withRouter(OrganizationLevelForm))
+  export default withTranslation()(withRouter(ScheduleClassForm))
