@@ -219,6 +219,8 @@ const ScheduleClasses = ({ t, history }) => (
                                           <Mutation mutation={DELETE_SCHEDULE_CLASS} key={v4()}>
                                             {(deleteScheduleClass, { data }) => (
                                                 <Dropdown.Item
+                                                  badge={t('schedule.classes.all_classes_in_series')}
+                                                  badgeType="danger"
                                                   icon="trash-2"
                                                   onClick={() => {
                                                     confirm_delete({
