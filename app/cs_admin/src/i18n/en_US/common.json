@@ -128,7 +128,18 @@
         "country": "Country",
         "time": "Time",
         "class": "Class",
-        "actions": "Actions"
+        "actions": "Actions",
+        "monday": "Monday",
+        "tuesday": "Tuesday",
+        "wednesday": "Wednesday",
+        "thursday": "Thursday",
+        "friday": "Friday",
+        "saturday": "Saturday",
+        "sunday": "Sunday",
+        "level": "Level",
+        "date": "Date",
+        "note": "Note",
+        "not_set": "Not set"
     },
     "yup": {
         "min_len_3": "Please input at least 3 characters",
@@ -316,14 +327,16 @@
         "user": {
             "error_loading": "Error loading user :("
         },
-        "date_format_datepicker": "MMMM d, yyyy"
+        "datepicker_dateformat": "MMMM d, yyyy",
+        "datepicker_timeformat": "h:mm aa"
     },
     "subscription_unit": {
         "week": "Week",
         "month": "Month"
     },
     "datepicker": {
-        "placeholder": "Click to select a date"
+        "placeholder": "Click to select a date",
+        "placeholder_time": "__STRING_NOT_TRANSLATED__"
     },
     "relations": {
         "title": "Relations",
@@ -358,7 +371,15 @@
             "add": "Add class",
             "all_classes_in_series": "All classes",
             "delete_confirm_msg": "Are you sure you wish to delete this class and all associated data?",
-            "deleted": "Class deleted"
+            "deleted": "Class deleted",
+            "title_add": "Add class",
+            "toast_add_success": "Added class",
+            "public": "This is a public class",
+            "frequencyType": "Recurring",
+            "select_specific": "Once",
+            "select_weekly": "Weekly",
+            "frequencyInterval": "Week day",
+            "placeholder_enddate": "Click to select a date or leave empty for no enddate"
         }
     },
     "countries": {

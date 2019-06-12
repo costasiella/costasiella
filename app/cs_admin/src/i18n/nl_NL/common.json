@@ -128,7 +128,18 @@
         "country": "__STRING_NOT_TRANSLATED__",
         "time": "__STRING_NOT_TRANSLATED__",
         "class": "__STRING_NOT_TRANSLATED__",
-        "actions": "__STRING_NOT_TRANSLATED__"
+        "actions": "__STRING_NOT_TRANSLATED__",
+        "monday": "__STRING_NOT_TRANSLATED__",
+        "tuesday": "__STRING_NOT_TRANSLATED__",
+        "wednesday": "__STRING_NOT_TRANSLATED__",
+        "thursday": "__STRING_NOT_TRANSLATED__",
+        "friday": "__STRING_NOT_TRANSLATED__",
+        "saturday": "__STRING_NOT_TRANSLATED__",
+        "sunday": "__STRING_NOT_TRANSLATED__",
+        "level": "__STRING_NOT_TRANSLATED__",
+        "date": "__STRING_NOT_TRANSLATED__",
+        "note": "__STRING_NOT_TRANSLATED__",
+        "not_set": "__STRING_NOT_TRANSLATED__"
     },
     "yup": {
         "min_len_3": "__STRING_NOT_TRANSLATED__",
@@ -316,14 +327,16 @@
         "user": {
             "error_loading": "__STRING_NOT_TRANSLATED__"
         },
-        "date_format_datepicker": "__STRING_NOT_TRANSLATED__"
+        "datepicker_dateformat": "__STRING_NOT_TRANSLATED__",
+        "datepicker_timeformat": "__STRING_NOT_TRANSLATED__"
     },
     "subscription_unit": {
         "week": "__STRING_NOT_TRANSLATED__",
         "month": "__STRING_NOT_TRANSLATED__"
     },
     "datepicker": {
-        "placeholder": "__STRING_NOT_TRANSLATED__"
+        "placeholder": "__STRING_NOT_TRANSLATED__",
+        "placeholder_time": "__STRING_NOT_TRANSLATED__"
     },
     "relations": {
         "title": "__STRING_NOT_TRANSLATED__",
@@ -358,7 +371,15 @@
             "add": "__STRING_NOT_TRANSLATED__",
             "all_classes_in_series": "__STRING_NOT_TRANSLATED__",
             "delete_confirm_msg": "__STRING_NOT_TRANSLATED__",
-            "deleted": "__STRING_NOT_TRANSLATED__"
+            "deleted": "__STRING_NOT_TRANSLATED__",
+            "title_add": "__STRING_NOT_TRANSLATED__",
+            "toast_add_success": "__STRING_NOT_TRANSLATED__",
+            "public": "__STRING_NOT_TRANSLATED__",
+            "frequencyType": "__STRING_NOT_TRANSLATED__",
+            "select_specific": "__STRING_NOT_TRANSLATED__",
+            "select_weekly": "__STRING_NOT_TRANSLATED__",
+            "frequencyInterval": "__STRING_NOT_TRANSLATED__",
+            "placeholder_enddate": "__STRING_NOT_TRANSLATED__"
         }
     },
     "countries": {

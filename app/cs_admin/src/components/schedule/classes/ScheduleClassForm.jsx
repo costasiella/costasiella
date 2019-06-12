@@ -75,7 +75,7 @@ const ScheduleClassForm = ({ t, history, inputData, isSubmitting, setFieldValue,
                 name="organizationLevel" 
                 className={(errors.organizationLevels) ? "form-control is-invalid" : "form-control"} 
                 autoComplete="off">
-            <option value="" key={v4()}>{t("Not set")}</option>
+            <option value="" key={v4()}>{t("general.not_set")}</option>
             {inputData.organizationLevels.edges.map(({ node }) =>
               <option value={node.id} key={v4()}>{node.name}</option>
             )}
