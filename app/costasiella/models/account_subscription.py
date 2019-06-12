@@ -1,4 +1,3 @@
-from django.contrib.auth.models import AbstractUser
 from django.db import models
 
 
@@ -6,7 +5,7 @@ from .account import Account
 from .organization_subscription import OrganizationSubscription
 from .finance_payment_method import FinancePaymentMethod
 
-class AccountSubscription(AbstractUser):
+class AccountSubscription(models.Model):
     # add additional fields in here
     # teacher and employee will use OneToOne fields. An account can optionally be a teacher or employee.
     # Editable parameter docs
@@ -23,4 +22,4 @@ class AccountSubscription(AbstractUser):
     updated_at = models.DateTimeField(auto_now=True, editable=False)
 
     def __str__(self):
-        return self.organization_subscription.name
+        return self.organization_subscription.name + ' [' + unicode(date_start) + ']'

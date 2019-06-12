@@ -1,4 +1,5 @@
 from .account import Account
+from .account_subscription import AccountSubscription
 
 from .finance_costcenter import FinanceCostCenter
 from .finance_glaccount import FinanceGLAccount
