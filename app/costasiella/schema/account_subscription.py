@@ -99,43 +99,36 @@ class CreateAccountSubscription(graphene.relay.ClientIDMutation):
         # Validate input
         result = validate_create_update_input(input, update=False)
 
-        membership = AccountSubscription(
-            display_public=input['display_public'],
-            display_shop=input['display_shop'],
-            name=input['name'], 
-            description=input['description'],
-            price=input['price'],
-            finance_tax_rate=result['finance_tax_rate'],
-            validity=input['validity'],
-            validity_unit=input['validity_unit'],
-            terms_and_conditions=input['terms_and_conditions'],
+        account_subscription = AccountSubscription(
+            account=input['account'],
+            organization_subscription=input['organization_subscription'],
+            date_start=input['date_start'], 
+            date_end=input['date_end'], 
+            note=input['note'], 
         )
 
-        if 'finance_glaccount' in result:
-            membership.finance_glaccount = result['finance_glaccount']
+        if 'registration_fee_paid' in input:
+            account_subscription.registration_fee_paid = input['registration_fee_paid']
 
-        if 'finance_costcenter' in result:
-            membership.finance_costcenter = result['finance_costcenter']
+        if 'finance_payment_method' in result:
+            account_subscription.finance_payment_method = result['finance_payment_method']
 
-        membership.save()
+        account_subscription.save()
 
-        return CreateAccountSubscription(account_subscription = membership)
+        return CreateAccountSubscription(account_subscription = account_subscription)
 
 
 class UpdateAccountSubscription(graphene.relay.ClientIDMutation):
     class Input:
         id = graphene.ID(required=True)
-        display_public = graphene.Boolean(required=True, default_value=True)
-        display_shop = graphene.Boolean(required=True, default_value=True)
-        name = graphene.String(required=True)
-        description = graphene.String(required=False, default_value="")
-        price = graphene.Float(rquired=True, default_value=0)
-        finance_tax_rate = graphene.ID(required=True)
-        validity = graphene.Int(required=True, default_value=1)
-        validity_unit = graphene.String(required=True)
-        terms_and_conditions = graphene.String(required=False, default_value="")
-        finance_glaccount = graphene.ID(required=False, default_value="")
-        finance_costcenter = graphene.ID(required=False, default_value="")
+        account = graphene.ID(required=True)
+        organization_subscription = graphene.ID(required=True)
+        finance_payment_method = graphene.ID(required=False, default_value="")
+        date_start = graphene.types.datetime.Date(required=True)
+        date_end = graphene.types.datetime.Date(required=False, default_value=None)
+        note = graphene.String(required=False, default_value="")
+        registration_fee_paid = graphene.Boolean(required=False, default_value=False)        
+        
 
     account_subscription = graphene.Field(AccountSubscriptionNode)
 
@@ -146,39 +139,35 @@ class UpdateAccountSubscription(graphene.relay.ClientIDMutation):
 
     
         rid = get_rid(input['id'])
-        membership = AccountSubscription.objects.filter(id=rid.id).first()
-        if not membership:
-            raise Exception('Invalid Organization Membership ID!')
+        account_subscription = AccountSubscription.objects.filter(id=rid.id).first()
+        if not account_subscription:
+            raise Exception('Invalid Account Subscription ID!')
 
         result = validate_create_update_input(input, update=True)
 
-        membership.display_public=input['display_public']
-        membership.display_shop=input['display_shop']
-        membership.name=input['name']
-        membership.description=input['description']
-        membership.price=input['price']
-        membership.finance_tax_rate=result['finance_tax_rate']
-        membership.validity=input['validity']
-        membership.validity_unit=input['validity_unit']
-        membership.terms_and_conditions=input['terms_and_conditions']
+        account_subscription.account=input['account']
+        account_subscription.organization_subscription=input['organization_subscription']
+        account_subscription.date_start=input['date_start']
+        account_subscription.date_end=input['date_end']
+        account_subscription.note=result['note']
+        account_subscription.registration_fee_paid=result['registration_fee_paid']
 
-        if 'finance_glaccount' in result:
-            membership.finance_glaccount = result['finance_glaccount']
+        if 'registration_fee_paid' in input:
+            account_subscription.registration_fee_paid = input['registration_fee_paid']
 
-        if 'finance_costcenter' in result:
-            membership.finance_costcenter = result['finance_costcenter']
+        if 'finance_payment_method' in result:
+            account_subscription.finance_payment_method = result['finance_payment_method']
 
-        membership.save(force_update=True)
+        account_subscription.save(force_update=True)
 
-        return UpdateAccountSubscription(account_subscription=membership)
+        return UpdateAccountSubscription(account_subscription=account_subscription)
 
 
-class ArchiveAccountSubscription(graphene.relay.ClientIDMutation):
+class DeleteAccountSubscription(graphene.relay.ClientIDMutation):
     class Input:
         id = graphene.ID(required=True)
-        archived = graphene.Boolean(required=True)
 
-    account_subscription = graphene.Field(AccountSubscriptionNode)
+    ok = graphene.Boolean()
 
     @classmethod
     def mutate_and_get_payload(self, root, info, **input):
@@ -186,17 +175,16 @@ class ArchiveAccountSubscription(graphene.relay.ClientIDMutation):
         require_login_and_permission(user, 'costasiella.delete_accountsubscription')
 
         rid = get_rid(input['id'])
-        membership = AccountSubscription.objects.filter(id=rid.id).first()
-        if not membership:
-            raise Exception('Invalid Organization Membership ID!')
+        account_subscription = AccountSubscription.objects.filter(id=rid.id).first()
+        if not account_subscription:
+            raise Exception('Invalid Account Subscription ID!')
 
-        membership.archived = input['archived']
-        membership.save(force_update=True)
+        ok = account_subscription.delete()
 
-        return ArchiveAccountSubscription(account_subscription=membership)
+        return DeleteAccountSubscription(ok=ok)
 
 
 class AccountSubscriptionMutation(graphene.ObjectType):
-    archive_account_subscription = ArchiveAccountSubscription.Field()
     create_account_subscription = CreateAccountSubscription.Field()
+    delete_account_subscription = DeleteAccountSubscription.Field()
     update_account_subscription = UpdateAccountSubscription.Field()
