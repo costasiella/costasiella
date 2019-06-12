@@ -9,6 +9,7 @@ import { withRouter } from "react-router"
 
 
 import {
+  Dropdown,
   Page,
   Grid,
   Icon,
@@ -32,11 +33,18 @@ import { GET_CLASSES_QUERY } from "./queries"
 
 import moment from 'moment'
 
+
+// Set some initial values for dates
 let dateFrom = new Date()
 let dateUntil = new Date()
 dateUntil.setDate(dateUntil.getDate() + 6)
 console.log(dateFrom)
 console.log(dateUntil)
+
+
+function getScheduleActionItems(t, user) {
+
+}
 
 
 const ScheduleClasses = ({ t, history }) => (
@@ -50,7 +58,7 @@ const ScheduleClasses = ({ t, history }) => (
               { dateFrom: moment(dateFrom).format('YYYY-MM-DD'), 
                 dateUntil: moment(dateUntil).format('YYYY-MM-DD')}
             }>
-             {({ loading, error, data: {scheduleClasses: schedule_classes}, refetch }) => {
+             {({ loading, error, data: {scheduleClasses: schedule_classes, user:user}, refetch }) => {
                 // Loading
                 if (loading) return (
                   <ContentCard cardTitle={t('schedule.classes.title')}>
@@ -110,6 +118,7 @@ const ScheduleClasses = ({ t, history }) => (
                                 <Table.ColHeader>{t('general.location')}</Table.ColHeader>
                                 <Table.ColHeader>{t('general.class')}</Table.ColHeader>
                                 <Table.ColHeader>{t('general.public')}</Table.ColHeader>
+                                <Table.ColHeader></Table.ColHeader>
                               </Table.Row>
                             </Table.Header>
                             <Table.Body>
@@ -143,6 +152,15 @@ const ScheduleClasses = ({ t, history }) => (
                                   <Table.Col>
                                     {/* Public */}
                                     <BooleanBadge value={displayPublic} />
+                                  </Table.Col>
+                                  <Table.Col>
+                                    <Dropdown
+                                      triggerContent="Menu"
+                                      itemsObjects={getScheduleActionItems(t, user)}
+                                      >
+
+
+                                    </Dropdown>
                                   </Table.Col>
                                 </Table.Row>
                               ))}

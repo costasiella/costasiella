@@ -9,7 +9,7 @@ import 'react-toastify/dist/ReactToastify.css'
 import 'react-confirm-alert/src/react-confirm-alert.css'
 
 import GET_USER from "../queries/system/get_user"
-import { get_all_permissions } from "../tools/user_tools"
+import { get_all_permissions, has_permission } from "../tools/user_tools"
 
 import {
   Site,
@@ -48,20 +48,6 @@ type navItem = {|
 |};
 
 
-const check_permission = (permissions, permission, resource) => {
-  let you_shall_not_pass = true
-
-  if (resource in permissions) {
-    if (permissions[resource].has(permission)) {
-      console.log('found permission')
-      you_shall_not_pass = false
-    }
-  }
-  
-  return !you_shall_not_pass
-}
-
-
 const getNavBarItems = (t, user) => {
   let items: Array<navItem> = []
   let permissions = get_all_permissions(user)
@@ -76,7 +62,7 @@ const getNavBarItems = (t, user) => {
 
   // Relations
   if (
-    (check_permission(permissions, 'view', 'account'))
+    (has_permission(permissions, 'view', 'account'))
   ){
     items.push({
       value: t("relations.title"),
@@ -88,7 +74,7 @@ const getNavBarItems = (t, user) => {
 
   // Schedule
   if (
-    (check_permission(permissions, 'view', 'scheduleclass'))
+    (has_permission(permissions, 'view', 'scheduleclass'))
   ){
     items.push({
       value: t("schedule.title"),
@@ -100,9 +86,9 @@ const getNavBarItems = (t, user) => {
 
   // Finance
   if (
-    (check_permission(permissions, 'view', 'financecostcenter')) ||
-    (check_permission(permissions, 'view', 'financeglaccount')) ||
-    (check_permission(permissions, 'view', 'financetaxrate')) 
+    (has_permission(permissions, 'view', 'financecostcenter')) ||
+    (has_permission(permissions, 'view', 'financeglaccount')) ||
+    (has_permission(permissions, 'view', 'financetaxrate')) 
   ){
     items.push({
       value: t("finance.title"),
@@ -114,11 +100,11 @@ const getNavBarItems = (t, user) => {
 
   // Organization
   if (
-    (check_permission(permissions, 'view', 'organizationclasspass')) || 
-    (check_permission(permissions, 'view', 'organizationclasstype')) ||
-    (check_permission(permissions, 'view', 'organizationdiscovery')) ||
-    (check_permission(permissions, 'view', 'organizationlocation')) ||
-    (check_permission(permissions, 'view', 'organizationmembership')) 
+    (has_permission(permissions, 'view', 'organizationclasspass')) || 
+    (has_permission(permissions, 'view', 'organizationclasstype')) ||
+    (has_permission(permissions, 'view', 'organizationdiscovery')) ||
+    (has_permission(permissions, 'view', 'organizationlocation')) ||
+    (has_permission(permissions, 'view', 'organizationmembership')) 
    ){
   items.push({
     value: t("organization.title"),
@@ -218,15 +204,15 @@ class SiteWrapper extends React.Component<Props, State> {
                 //   "Premium and Open Source dashboard template with responsive and high quality UI. For Free!",
                 copyright: (
                   <React.Fragment>
-                    Copyright © 2019.
+                    Copyleft © 2019.
                     <a
                       href="https://www.costasiella.com"
                       target="_blank"
                       rel="noopener noreferrer"
                     >
                       {" "}
-                      Edwin van de Ven.
-                    </a>{" "}
+                      Edwin van de Ven
+                    </a>{". "}
                     All rights reserved.
                   </React.Fragment>
                 ),

@@ -28,3 +28,17 @@ export function get_all_permissions(user) {
     
     return permissions
 }
+
+
+export const has_permission = (permissions, permission, resource) => {
+  let you_shall_not_pass = true
+
+  if (resource in permissions) {
+    if (permissions[resource].has(permission)) {
+      console.log('found permission')
+      you_shall_not_pass = false
+    }
+  }
+  
+  return !you_shall_not_pass
+}
