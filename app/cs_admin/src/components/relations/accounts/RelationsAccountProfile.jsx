@@ -170,34 +170,6 @@ class RelationsAccountProfile extends Component {
                                 errors={errors}
                                 values={values}
                               />
-                                // <FoForm>
-                                //     <Card.Body>    
-                                //         <Form.Group label={t('general.name')} >
-                                //           <Field type="text" 
-                                //                 name="name" 
-                                //                 className={(errors.name) ? "form-control is-invalid" : "form-control"} 
-                                //                 autoComplete="off" />
-                                //           <ErrorMessage name="name" component="span" className="invalid-feedback" />
-                                //         </Form.Group>
-                                //     </Card.Body>
-                                //     <Card.Footer>
-                                //         <Button 
-                                //           className="pull-right"
-                                //           color="primary"
-                                //           disabled={isSubmitting}
-                                //           type="submit"
-                                //         >
-                                //           {t('general.submit')}
-                                //         </Button>
-                                //         <Button
-                                //           type="button" 
-                                //           color="link" 
-                                //           onClick={() => history.push(return_url)}
-                                //         >
-                                //             {t('general.cancel')}
-                                //         </Button>
-                                //     </Card.Footer>
-                                // </FoForm>
                             )}
                           </Formik>
                         )}
