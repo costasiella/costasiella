@@ -356,7 +356,9 @@
             "error_loading": "__STRING_NOT_TRANSLATED__",
             "empty_list": "__STRING_NOT_TRANSLATED__",
             "add": "__STRING_NOT_TRANSLATED__",
-            "all_classes_in_series": "__STRING_NOT_TRANSLATED__"
+            "all_classes_in_series": "__STRING_NOT_TRANSLATED__",
+            "delete_confirm_msg": "__STRING_NOT_TRANSLATED__",
+            "deleted": "__STRING_NOT_TRANSLATED__"
         }
     },
     "countries": {
