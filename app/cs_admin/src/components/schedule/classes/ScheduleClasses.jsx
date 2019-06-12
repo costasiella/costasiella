@@ -106,8 +106,8 @@ const ScheduleClasses = ({ t, history }) => (
                           <Table>
                             <Table.Header>
                               <Table.Row key={v4()}>
-                                <Table.ColHeader>{t('general.location')}</Table.ColHeader>
                                 <Table.ColHeader>{t('general.time')}</Table.ColHeader>
+                                <Table.ColHeader>{t('general.location')}</Table.ColHeader>
                                 <Table.ColHeader>{t('general.class')}</Table.ColHeader>
                                 <Table.ColHeader>{t('general.public')}</Table.ColHeader>
                               </Table.Row>
@@ -118,6 +118,7 @@ const ScheduleClasses = ({ t, history }) => (
                                   date, 
                                   organizationLocationRoom, 
                                   organizationClasstype, 
+                                  organizationLevel,
                                   timeStart, 
                                   timeEnd,
                                   displayPublic }) => (
@@ -133,8 +134,11 @@ const ScheduleClasses = ({ t, history }) => (
                                     <span className="text-muted"> &bull; {organizationLocationRoom.name}</span>
                                   </Table.Col>
                                   <Table.Col>
-                                    {/* Type */}
-                                    {organizationClasstype.name}
+                                    {/* Type and level */}
+                                    {organizationClasstype.name} <br />
+                                    <span className="text-muted">
+                                      {organizationLevel.name}
+                                    </span>
                                   </Table.Col>
                                   <Table.Col>
                                     {/* Public */}

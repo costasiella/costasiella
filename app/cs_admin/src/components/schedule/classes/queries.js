@@ -19,6 +19,10 @@ export const GET_CLASSES_QUERY = gql`
           id
           name
         }
+        organizationLevel {
+          id
+          name
+        }
         timeStart
         timeEnd
         displayPublic
