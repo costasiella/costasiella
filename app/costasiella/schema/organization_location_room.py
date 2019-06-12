@@ -30,19 +30,17 @@ class OrganizationLocationRoomQuery(graphene.ObjectType):
     organization_location_rooms = DjangoFilterConnectionField(OrganizationLocationRoomNode)
     organization_location_room = graphene.relay.Node.Field(OrganizationLocationRoomNode)
 
-    def resolve_organization_location_rooms(self, info, organization_location, archived=False, **kwargs):
+    def resolve_organization_location_rooms(self, info, archived=False, **kwargs):
         user = info.context.user
         if user.is_anonymous:
             raise Exception(m.user_not_logged_in)
 
-        rid = get_rid(organization_location)
+            ## return everything:
+            if user.has_perm('costasiella.view_organizationlocationroom'):
+                return OrganizationLocationRoom.objects.filter(archived = archived).order_by('name')
 
-        ## return everything:
-        if user.has_perm('costasiella.view_organizationlocationroom'):
-            return OrganizationLocationRoom.objects.filter(organization_location = rid.id, archived = archived).order_by('name')
-
-        # Return only public non-archived locations
-        return OrganizationLocationRoom.objects.filter(organization_location = rid.id, display_public = True, archived = False).order_by('name')
+            # Return only public non-archived locations
+            return OrganizationLocationRoom.objects.filter(display_public = True, archived = False).order_by('name')
 
 
 class CreateOrganizationLocationRoom(graphene.relay.ClientIDMutation):

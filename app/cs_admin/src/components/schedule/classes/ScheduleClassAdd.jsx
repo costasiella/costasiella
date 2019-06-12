@@ -85,7 +85,7 @@ class ScheduleClassAdd extends Component {
               <Grid.Col md={9}>
               <Card>
                 <Card.Header>
-                  <Card.Title>{t('organization.subscriptions.title_add')}</Card.Title>
+                  <Card.Title>{t('schedule.classes.title_add')}</Card.Title>
                 </Card.Header>
                 <Query query={GET_INPUT_VALUES_QUERY} variables = {{archived: false}} >
                   {({ loading, error, data, refetch }) => {
@@ -108,51 +108,43 @@ class ScheduleClassAdd extends Component {
                           <Formik
                               initialValues={{ 
                                 displayPublic: true,
-                                displayShop: true,
-                                name: "",
-                                description: "",
-                                sortOrder: 0,
-                                minDuration: 1,
-                                classes: 1,
-                                subscriptionUnit: "WEEK",
-                                reconciliationClasses: 0,
-                                creditValidity: 1,
-                                unlimited: false,
-                                termsAndConditions: "",
-                                organizationMembership: "",
-                                quickStatsAmount: 0,
-                                financeGlaccount: "",
-                                financeCostcenter: ""
+                                frequencyType: "WEEKLY",
+                                frequencyInterval: "",
+                                organizationLocationRoom: "",
+                                organizationClasstype: "",
+                                dateStart: "",
+                                dateEnd: "",
+                                timeStart: "",
+                                timeEnd: "",
                               }}
                               validationSchema={SUBSCRIPTION_SCHEMA}
                               onSubmit={(values, { setSubmitting }) => {
                                   console.log('submit values:')
                                   console.log(values)
 
+                                  let frequencyInterval = values.frequencyInterval
+                                  if (values.frequencyType == 'SPECIFIC')
+                                    frequencyInterval = 0
+
                                   createSubscription({ variables: {
                                     input: {
+                                      scheduleItemType: "CLASS",
                                       displayPublic: values.displayPublic,
-                                      displayShop: values.displayShop,
-                                      name: values.name,
-                                      description: values.description,
-                                      sortOrder: values.sortOrder,
-                                      minDuration: values.minDuration,
-                                      classes: values.classes,
-                                      subscriptionUnit: values.subscriptionUnit,
-                                      reconciliationClasses: values.reconciliationClasses,
-                                      creditValidity: values.creditValidity,
-                                      unlimited: values.unlimited,
-                                      termsAndConditions: values.termsAndConditions,
-                                      quickStatsAmount: values.quickStatsAmount,
-                                      financeGlaccount: values.financeGlaccount,
-                                      financeCostcenter: values.financeCostcenter
+                                      frequencyType: values.frequencyType,
+                                      frequencyInterval: frequencyInterval,
+                                      organizationLocationRoom: values.organizationLocationRoom,
+                                      organizationClasstype: values.organizationClasstype,
+                                      dateStart: values.dateStart,
+                                      dateEnd: values.dateEnd,
+                                      timeStart: values.timeStart,
+                                      timeEnd: values.timeEnd
                                     }
                                   }, refetchQueries: [
-                                      // {query: GET_SUBSCRIPTIONS_QUERY, variables: {archived: false }}
+                                      {query: GET_SUBSCRIPTIONS_QUERY, variables: {archived: false }}
                                   ]})
                                   .then(({ data }) => {
                                       console.log('got data', data)
-                                      toast.success((t('organization.subscriptions.toast_add_success')), {
+                                      toast.success((t('schedule.classes.toast_add_success')), {
                                           position: toast.POSITION.BOTTOM_RIGHT
                                         })
                                     }).catch((error) => {
@@ -165,7 +157,7 @@ class ScheduleClassAdd extends Component {
                               }}
                               >
                               {({ isSubmitting, setFieldValue, setFieldTouched, errors, values }) => (
-                                <OrganizationSubscriptionForm
+                                <ScheduleClassForm
                                   inputData={inputData}
                                   isSubmitting={isSubmitting}
                                   setFieldValue={setFieldValue}
