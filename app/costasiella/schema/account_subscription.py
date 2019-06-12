@@ -100,8 +100,8 @@ class CreateAccountSubscription(graphene.relay.ClientIDMutation):
         result = validate_create_update_input(input, update=False)
 
         account_subscription = AccountSubscription(
-            account=input['account'],
-            organization_subscription=input['organization_subscription'],
+            account=result['account'],
+            organization_subscription=result['organization_subscription'],
             date_start=input['date_start'], 
             date_end=input['date_end'], 
             note=input['note'], 

@@ -51,7 +51,7 @@ class Query(AccountQuery,
 
 
 class Mutation(AccountMutation,
-               AccountSubscriptionQuery,
+               AccountSubscriptionMutation,
                FinanceCostCenterMutation,
                FinanceGLAccountMutation,
                FinancePaymentMethodMutation,
