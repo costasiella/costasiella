@@ -114,7 +114,9 @@ class ScheduleClassAdd extends Component {
                                 organizationLocationRoom: "",
                                 organizationClasstype: "",
                                 organizationLevel: "",
-                                dateStart: new Date()
+                                dateStart: new Date(),
+                                timeStart: new Date(),
+                                timeEnd: new Date(),
                               }}
                               validationSchema={CLASS_SCHEMA}
                               onSubmit={(values, { setSubmitting }) => {
@@ -164,17 +166,24 @@ class ScheduleClassAdd extends Component {
                                     })
                               }}
                               >
-                              {({ isSubmitting, setFieldValue, setFieldTouched, errors, values }) => (
-                                <ScheduleClassForm
-                                  inputData={inputData}
-                                  isSubmitting={isSubmitting}
-                                  setFieldValue={setFieldValue}
-                                  setFieldTouched={setFieldTouched}
-                                  errors={errors}
-                                  values={values}
-                                  return_url={return_url}
-                                />
-                              )}
+                              {({ isSubmitting, setFieldValue, setFieldTouched, errors, values, touched }) => (
+                                  <ScheduleClassForm
+                                    inputData={inputData}
+                                    isSubmitting={isSubmitting}
+                                    setFieldValue={setFieldValue}
+                                    setFieldTouched={setFieldTouched}
+                                    errors={errors}
+                                    values={values}
+                                    touched={touched}
+                                    return_url={return_url}
+                                  >
+                                    {console.log('########## v & e')}
+                                    {console.log(values)}
+                                    {console.log(errors)}
+                                    {console.log(touched)}
+                                  </ScheduleClassForm>
+                                )
+                              }
                           </Formik>
                       )}
                       </Mutation>

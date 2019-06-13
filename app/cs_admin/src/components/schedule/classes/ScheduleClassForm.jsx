@@ -16,7 +16,7 @@ import { tinymceBasicConf } from "../../../plugin_config/tinymce"
 import CSDatePicker from "../../ui/CSDatePicker"
 import CSTimePicker from "../../ui/CSTimePicker"
 
-const ScheduleClassForm = ({ t, history, inputData, isSubmitting, setFieldValue, setFieldTouched, errors, values, return_url }) => (
+const ScheduleClassForm = ({ t, history, inputData, isSubmitting, setFieldValue, setFieldTouched, errors, values, touched, return_url }) => (
     <FoForm>
       <Card.Body>
         <Form.Group>
@@ -106,7 +106,10 @@ const ScheduleClassForm = ({ t, history, inputData, isSubmitting, setFieldValue,
             <Form.Group label={(values.frequencyType == "SPECIFIC") ? t('general.date') : t('general.date_start')}>
               <CSDatePicker 
                 selected={values.dateStart}
-                onChange={(date) => setFieldValue("dateStart", date)}
+                onChange={(date) => {
+                  setFieldValue("dateStart", date)
+                  setFieldTouched("dateEnd", true)
+                }}
                 onBlur={() => setFieldTouched("dateStart", true)}
               />
               <ErrorMessage name="dateStart" component="span" className="invalid-feedback" />
@@ -117,7 +120,10 @@ const ScheduleClassForm = ({ t, history, inputData, isSubmitting, setFieldValue,
               <Form.Group label={t('general.date_end')}>
                 <CSDatePicker 
                   selected={values.dateEnd}
-                  onChange={(date) => setFieldValue("dateEnd", date)}
+                  onChange={(date) => {
+                    setFieldValue("dateEnd", date)
+                    setFieldTouched("dateEnd", true)
+                  }}
                   onBlur={() => setFieldTouched("dateEnd", true)}
                   placeholderText={t('schedule.classes.placeholder_enddate')}
                 />
@@ -130,20 +136,31 @@ const ScheduleClassForm = ({ t, history, inputData, isSubmitting, setFieldValue,
           <Grid.Col>
            <Form.Group label={t('general.time_start')}>
               <CSTimePicker 
+                className={(errors.timeStart) ? "form-control is-invalid" : "form-control"} 
                 selected={values.timeStart}
                 onChange={(date) => setFieldValue("timeStart", date)}
                 onBlur={() => setFieldTouched("timeStart", true)}
+                clearable={false}
               />
+              {/* {errors.timeStart}
+              {errors.timeStart && touched.timeStart ? (
+                <span className="invalid-feedback">{errors.timeStart} - hacky thingy</span>
+              ) : null} */}
               <ErrorMessage name="timeStart" component="span" className="invalid-feedback" />
             </Form.Group>
           </Grid.Col>
           <Grid.Col>
            <Form.Group label={t('general.time_end')}>
               <CSTimePicker 
+                className={(errors.timeEnd) ? "form-control is-invalid" : "form-control"} 
                 selected={values.timeEnd}
                 onChange={(date) => setFieldValue("timeEnd", date)}
                 onBlur={() => setFieldTouched("timeEnd", true)}
+                clearable={false}
               />
+              {/* {errors.timeEnd && touched.timeEnd ? (
+                <span className="invalid-feedback">{errors.timeEnd} - hacky thingy</span>
+              ) : null} */}
               <ErrorMessage name="timeEnd" component="span" className="invalid-feedback" />
             </Form.Group>
           </Grid.Col>

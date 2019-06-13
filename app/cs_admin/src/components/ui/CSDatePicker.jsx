@@ -2,14 +2,14 @@ import React from 'react'
 import DatePicker from "react-datepicker"
 import { withTranslation } from 'react-i18next'
 
-const CSDatePicker = ({t, selected, onChange=f=>f, onBlur=f=>f, placeholderText=""}) =>
+const CSDatePicker = ({t, selected, onChange=f=>f, onBlur=f=>f, className="form-control", placeholderText=""}) =>
     <DatePicker 
         todayButton={t('general.today')}
         dateFormat={t('system.datepicker_dateformat')}
         selected={selected}
         placeholderText={(placeholderText) ? placeholderText : t('datepicker.placeholder')}
         isClearable={true}
-        className="form-control"
+        className={className}
         showMonthDropdown
         showYearDropdown
         dropdownMode="select"

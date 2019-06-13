@@ -11,7 +11,9 @@ export const CLASS_SCHEMA = Yup.object().shape({
     dateStart: Yup.date()
       .required(t('yup.field_required')),
     timeStart: Yup.date()
+      .typeError(t('yup.time_required'))
       .required(t('yup.field_required')),
-    timeEnd: Yup.string()
+    timeEnd: Yup.date()
+      .typeError(t('yup.time_required'))
       .required(t('yup.field_required')),
   })
