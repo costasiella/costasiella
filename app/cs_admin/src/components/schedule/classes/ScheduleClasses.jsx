@@ -47,7 +47,7 @@ const confirm_delete = ({t, msgConfirm, msgDescription, msgSuccess, deleteFuncti
   confirmAlert({
     customUI: ({ onClose }) => {
       return (
-        <div className='custom-ui'>
+        <div key={v4()} className='custom-ui'>
           <h1>{t('general.confirm_delete')}</h1>
           {msgConfirm}
           {msgDescription}
@@ -188,7 +188,7 @@ const ScheduleClasses = ({ t, history }) => (
                                     {/* Type and level */}
                                     {organizationClasstype.name} <br />
                                     <span className="text-muted">
-                                      {organizationLevel.name}
+                                      {(organizationLevel) ? organizationLevel.name: ""}
                                     </span>
                                   </Table.Col>
                                   <Table.Col>
@@ -197,16 +197,18 @@ const ScheduleClasses = ({ t, history }) => (
                                   </Table.Col>
                                   <Table.Col>
                                     <Dropdown
+                                      key={v4()}
                                       className="pull-right"
                                       type="button"
                                       toggle
                                       color="secondary btn-sm"
                                       triggerContent={t("general.actions")}
                                       items={[
-                                        <Dropdown.Item>Dropdown Link</Dropdown.Item>,
-                                        <HasPermissionWrapper permission="change" resource="scheduleclass">
-                                          <Dropdown.ItemDivider />
+                                        <Dropdown.Item key={v4()}>Dropdown Link</Dropdown.Item>,
+                                        <HasPermissionWrapper key={v4()} permission="change" resource="scheduleclass">
+                                          <Dropdown.ItemDivider key={v4()} />
                                           <Dropdown.Item
+                                            key={v4()}
                                             badge={t('schedule.classes.all_classes_in_series')}
                                             badgeType="secondary"
                                             icon="edit-2"
@@ -214,11 +216,12 @@ const ScheduleClasses = ({ t, history }) => (
                                               {t("general.edit")}
                                           </Dropdown.Item>
                                         </HasPermissionWrapper>,
-                                        <HasPermissionWrapper permission="delete" resource="scheduleclass">
-                                          <Dropdown.ItemDivider />
+                                        <HasPermissionWrapper key={v4()} permission="delete" resource="scheduleclass">
+                                          <Dropdown.ItemDivider key={v4()} />
                                           <Mutation mutation={DELETE_SCHEDULE_CLASS} key={v4()}>
                                             {(deleteScheduleClass, { data }) => (
                                                 <Dropdown.Item
+                                                  key={v4()}
                                                   badge={t('schedule.classes.all_classes_in_series')}
                                                   badgeType="danger"
                                                   icon="trash-2"
@@ -226,7 +229,7 @@ const ScheduleClasses = ({ t, history }) => (
                                                     confirm_delete({
                                                       t: t,
                                                       msgConfirm: t("schedule.classes.delete_confirm_msg"),
-                                                      msgDescription: <p>
+                                                      msgDescription: <p key={v4()}>
                                                         {moment(date + ' ' + timeStart).format('LT')} {' - '}
                                                         {moment(date + ' ' + timeEnd).format('LT')} {' '} @ {' '}
                                                         {organizationLocationRoom.organizationLocation.name} {' '}

@@ -7,3 +7,13 @@ export function dateToLocalISO(date) {
         return date
     }
 }
+
+
+export function dateToLocalISOTime(date) {
+    if (date instanceof Date) {
+        return date.getHours() + ':' + 
+               date.getMinutes()
+    } else {
+        return date
+    }
+}

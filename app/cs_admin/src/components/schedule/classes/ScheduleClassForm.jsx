@@ -44,8 +44,8 @@ const ScheduleClassForm = ({ t, history, inputData, isSubmitting, setFieldValue,
         { (values.frequencyType == "SPECIFIC") ? "" :
           <Form.Group label={t('schedule.classes.frequencyInterval')}>
             <Field component="select" 
-                  name="frequencyType" 
-                  className={(errors.frequencyType) ? "form-control is-invalid" : "form-control"} 
+                  name="frequencyInterval" 
+                  className={(errors.frequencyInterval) ? "form-control is-invalid" : "form-control"} 
                   autoComplete="off">
               <option value="" key={v4()}>{t("general.please_select")}</option>
               <option value="1" key={v4()}>{t('general.monday')}</option>
@@ -56,7 +56,7 @@ const ScheduleClassForm = ({ t, history, inputData, isSubmitting, setFieldValue,
               <option value="6" key={v4()}>{t('general.saturday')}</option>
               <option value="7" key={v4()}>{t('general.sunday')}</option>
             </Field>
-            <ErrorMessage name="frequencyType" component="span" className="invalid-feedback" />
+            <ErrorMessage name="frequencyInterval" component="span" className="invalid-feedback" />
           </Form.Group>
         }
         <Grid.Row>
@@ -89,6 +89,18 @@ const ScheduleClassForm = ({ t, history, inputData, isSubmitting, setFieldValue,
             </Form.Group> 
           </Grid.Col>
         </Grid.Row>
+        <Form.Group label={t('general.class')}>
+          <Field component="select" 
+                name="organizationClasstype" 
+                className={(errors.organizationClasstype) ? "form-control is-invalid" : "form-control"} 
+                autoComplete="off">
+            <option value="" key={v4()}>{t("general.please_select")}</option>
+            {inputData.organizationClasstypes.edges.map(({ node }) =>
+              <option value={node.id} key={v4()}>{node.name}</option>
+            )}
+          </Field>
+          <ErrorMessage name="organizationClasstype" component="span" className="invalid-feedback" />
+        </Form.Group> 
         <Grid.Row>
           <Grid.Col>
             <Form.Group label={(values.frequencyType == "SPECIFIC") ? t('general.date') : t('general.date_start')}>
@@ -146,13 +158,6 @@ const ScheduleClassForm = ({ t, history, inputData, isSubmitting, setFieldValue,
             />
           <ErrorMessage name="note" component="span" className="invalid-feedback" />
         </Form.Group>
-        {/* <Form.Group label={t('general.name')}>
-          <Field type="text" 
-                  name="name" 
-                  className={(errors.name) ? "form-control is-invalid" : "form-control"} 
-                  autoComplete="off" />
-          <ErrorMessage name="name" component="span" className="invalid-feedback" />
-        </Form.Group> */}
       </Card.Body>
       <Card.Footer>
         <Button 

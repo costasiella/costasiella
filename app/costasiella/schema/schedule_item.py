@@ -176,6 +176,7 @@ def validate_schedule_class_create_update_input(input, update=False):
     # Check OrganizationLevel
     if 'organization_level' in input:
         if input['organization_level']:
+            print('processing')
             rid = get_rid(input['organization_level'])
             organization_level = OrganizationLevel.objects.get(id=rid.id)
             result['organization_level'] = organization_level
@@ -192,7 +193,7 @@ class CreateScheduleClass(graphene.relay.ClientIDMutation):
         frequency_interval = graphene.Int(required=True)
         organization_location_room = graphene.ID(required=True)
         organization_classtype = graphene.ID(required=True)
-        organization_level = graphene.ID(required=True)
+        organization_level = graphene.ID(required=False, default_value=None)
         date_start = graphene.types.datetime.Date(required=True)
         date_end = graphene.types.datetime.Date(required=False, default_value=None)
         time_start = graphene.types.datetime.Time(required=True)
@@ -232,7 +233,7 @@ class CreateScheduleClass(graphene.relay.ClientIDMutation):
         if result['organization_classtype']:
             schedule_item.organization_classtype = result['organization_classtype']
 
-        if result['organization_level']:
+        if 'organization_level' in result:
             schedule_item.organization_level = result['organization_level']
 
         # ALl done, save it :).

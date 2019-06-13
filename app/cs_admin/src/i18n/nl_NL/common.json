@@ -139,7 +139,8 @@
         "level": "__STRING_NOT_TRANSLATED__",
         "date": "__STRING_NOT_TRANSLATED__",
         "note": "__STRING_NOT_TRANSLATED__",
-        "not_set": "__STRING_NOT_TRANSLATED__"
+        "time_start": "__STRING_NOT_TRANSLATED__",
+        "time_end": "__STRING_NOT_TRANSLATED__"
     },
     "yup": {
         "min_len_3": "__STRING_NOT_TRANSLATED__",

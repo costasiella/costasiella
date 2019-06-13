@@ -25,7 +25,7 @@ import {
 } from "tabler-react"
 import SiteWrapper from "../../SiteWrapper"
 import HasPermissionWrapper from "../../HasPermissionWrapper"
-import { dateToLocalISO } from '../../../tools/date_tools'
+import { dateToLocalISO, dateToLocalISOTime } from '../../../tools/date_tools'
 
 import ScheduleMenu from '../ScheduleMenu'
 
@@ -121,9 +121,9 @@ class ScheduleClassAdd extends Component {
                                   console.log('submit values:')
                                   console.log(values)
 
-                                  let frequencyInterval = values.frequencyInterval
-                                  if (values.frequencyType == 'SPECIFIC')
-                                    frequencyInterval = 0
+                                  // let frequencyInterval = values.frequencyInterval
+                                  // if (values.frequencyType == 'SPECIFIC')
+                                  //   frequencyInterval = 0
 
                                   let dateEnd
                                     if (values.dateEnd) {
@@ -132,19 +132,20 @@ class ScheduleClassAdd extends Component {
                                       dateEnd = values.dateEnd
                                     }
 
+                                  
+
                                   createSubscription({ variables: {
                                     input: {
-                                      scheduleItemType: "CLASS",
                                       displayPublic: values.displayPublic,
                                       frequencyType: values.frequencyType,
-                                      frequencyInterval: frequencyInterval,
+                                      frequencyInterval: values.frequencyInterval,
                                       organizationLocationRoom: values.organizationLocationRoom,
                                       organizationClasstype: values.organizationClasstype,
                                       organizationLevel: values.organizationLevel,
                                       dateStart: dateToLocalISO(values.dateStart),
                                       dateEnd: dateEnd,
-                                      timeStart: values.timeStart,
-                                      timeEnd: values.timeEnd
+                                      timeStart: dateToLocalISOTime(values.timeStart),
+                                      timeEnd: dateToLocalISOTime(values.timeEnd)
                                     }
                                   }, refetchQueries: [
                                       {query: GET_CLASSES_QUERY, variables: {archived: false }}

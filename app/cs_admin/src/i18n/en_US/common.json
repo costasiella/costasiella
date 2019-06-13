@@ -139,7 +139,8 @@
         "level": "Level",
         "date": "Date",
         "note": "Note",
-        "not_set": "Not set"
+        "time_start": "Time start",
+        "time_end": "Time end"
     },
     "yup": {
         "min_len_3": "Please input at least 3 characters",
