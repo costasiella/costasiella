@@ -123,9 +123,9 @@ class ScheduleClassAdd extends Component {
                                   console.log('submit values:')
                                   console.log(values)
 
-                                  // let frequencyInterval = values.frequencyInterval
-                                  // if (values.frequencyType == 'SPECIFIC')
-                                  //   frequencyInterval = 0
+                                  let frequencyInterval = values.frequencyInterval
+                                  if (values.frequencyType == 'SPECIFIC')
+                                    frequencyInterval = 0
 
                                   let dateEnd
                                     if (values.dateEnd) {
@@ -140,7 +140,7 @@ class ScheduleClassAdd extends Component {
                                     input: {
                                       displayPublic: values.displayPublic,
                                       frequencyType: values.frequencyType,
-                                      frequencyInterval: values.frequencyInterval,
+                                      frequencyInterval: frequencyInterval,
                                       organizationLocationRoom: values.organizationLocationRoom,
                                       organizationClasstype: values.organizationClasstype,
                                       organizationLevel: values.organizationLevel,
