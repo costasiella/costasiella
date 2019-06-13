@@ -125,6 +125,16 @@ const ScheduleClassForm = ({ t, history, inputData, isSubmitting, setFieldValue,
               <ErrorMessage name="timeStart" component="span" className="invalid-feedback" />
             </Form.Group>
           </Grid.Col>
+          <Grid.Col>
+           <Form.Group label={t('general.time_end')}>
+              <CSTimePicker 
+                selected={values.timeEnd}
+                onChange={(date) => setFieldValue("timeEnd", date)}
+                onBlur={() => setFieldTouched("timeEnd", true)}
+              />
+              <ErrorMessage name="timeEnd" component="span" className="invalid-feedback" />
+            </Form.Group>
+          </Grid.Col>
         </Grid.Row>
         <Form.Group label={t('general.note')}>
           <Editor

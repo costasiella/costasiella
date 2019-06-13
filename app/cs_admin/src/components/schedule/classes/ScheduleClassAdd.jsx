@@ -25,6 +25,7 @@ import {
 } from "tabler-react"
 import SiteWrapper from "../../SiteWrapper"
 import HasPermissionWrapper from "../../HasPermissionWrapper"
+import { dateToLocalISO } from '../../../tools/date_tools'
 
 import ScheduleMenu from '../ScheduleMenu'
 
@@ -113,10 +114,7 @@ class ScheduleClassAdd extends Component {
                                 organizationLocationRoom: "",
                                 organizationClasstype: "",
                                 organizationLevel: "",
-                                dateStart: "",
-                                dateEnd: "",
-                                timeStart: "",
-                                timeEnd: "",
+                                dateStart: new Date()
                               }}
                               validationSchema={CLASS_SCHEMA}
                               onSubmit={(values, { setSubmitting }) => {
@@ -127,6 +125,13 @@ class ScheduleClassAdd extends Component {
                                   if (values.frequencyType == 'SPECIFIC')
                                     frequencyInterval = 0
 
+                                  let dateEnd
+                                    if (values.dateEnd) {
+                                      dateEnd = dateToLocalISO(values.dateEnd)
+                                    } else {
+                                      dateEnd = values.dateEnd
+                                    }
+
                                   createSubscription({ variables: {
                                     input: {
                                       scheduleItemType: "CLASS",
@@ -136,8 +141,8 @@ class ScheduleClassAdd extends Component {
                                       organizationLocationRoom: values.organizationLocationRoom,
                                       organizationClasstype: values.organizationClasstype,
                                       organizationLevel: values.organizationLevel,
-                                      dateStart: values.dateStart,
-                                      dateEnd: values.dateEnd,
+                                      dateStart: dateToLocalISO(values.dateStart),
+                                      dateEnd: dateEnd,
                                       timeStart: values.timeStart,
                                       timeEnd: values.timeEnd
                                     }
