@@ -102,7 +102,7 @@ class OrganizationSubscriptionPriceEdit extends Component {
                                 price: initialData.price, 
                                 financeTaxRate: initialData.financeTaxRate.id,
                                 dateStart: initialData.dateStart,
-                                dateEnd: initialData.End,
+                                dateEnd: initialData.dateEnd,
                               }}
                               validationSchema={SUBSCRIPTION_PRICE_SCHEMA}
                               onSubmit={(values, { setSubmitting }) => {
@@ -111,7 +111,11 @@ class OrganizationSubscriptionPriceEdit extends Component {
 
                                   let dateEnd
                                   if (values.dateEnd) {
-                                    dateEnd = dateToLocalISO(values.dateEnd)
+                                    if (values.dateEnd instanceof Date) {
+                                      dateEnd = dateToLocalISO(values.dateEnd)
+                                    } else {
+                                      dateEnd = values.dateEnd
+                                    }
                                   } else {
                                     dateEnd = values.dateEnd
                                   }
