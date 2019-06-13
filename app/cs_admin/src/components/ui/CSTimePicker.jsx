@@ -11,6 +11,7 @@ const CSTimePicker = ({t, selected, onChange=f=>f, onBlur=f=>f, placeholderText=
         isClearable={true}
         showTimeSelect
         showTimeSelectOnly
+        timeIntervals={15}
         className="form-control"
         dropdownMode="select"
         onChange={(date) => onChange(date)}
