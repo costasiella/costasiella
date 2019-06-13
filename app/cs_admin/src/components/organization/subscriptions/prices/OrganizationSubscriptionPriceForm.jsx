@@ -50,8 +50,6 @@ const OrganizationSubscriptionPriceForm = (
         <ErrorMessage name="dateStart" component="span" className="invalid-feedback" />
       </Form.Group>
       <Form.Group label={t('general.date_end')}>
-        {console.log('values in form')}
-        {console.log(values)}
         <CSDatePicker 
           selected={values.dateEnd}
           onChange={(date) => setFieldValue("dateEnd", date)}
