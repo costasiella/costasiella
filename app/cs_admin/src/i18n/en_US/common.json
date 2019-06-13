@@ -140,7 +140,8 @@
         "date": "Date",
         "note": "Note",
         "time_start": "Time start",
-        "time_end": "Time end"
+        "time_end": "Time end",
+        "once": "Once"
     },
     "yup": {
         "min_len_3": "Please input at least 3 characters",
@@ -151,7 +152,8 @@
         "max_decimal_number": "Please enter a number of 18 digits and 20 decimals or below",
         "type_error_number": "Please input a number",
         "min_len_2": "Please input at least 2 characters",
-        "email": "Please input a valid email address"
+        "email": "Please input a valid email address",
+        "time_required": "Please select a time"
     },
     "home": {
         "title": "Home"

@@ -6,6 +6,7 @@ export const GET_CLASSES_QUERY = gql`
       date
       classes {
         scheduleItemId
+        frequencyType
         date
         organizationLocationRoom {
           id

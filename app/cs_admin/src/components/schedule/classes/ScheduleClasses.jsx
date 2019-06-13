@@ -10,6 +10,7 @@ import { Link } from 'react-router-dom'
 
 
 import {
+  Badge,
   Dropdown,
   Page,
   Grid,
@@ -166,6 +167,7 @@ const ScheduleClasses = ({ t, history }) => (
                             <Table.Body>
                               {classes.map((
                                 { scheduleItemId, 
+                                  frequencyType,
                                   date, 
                                   organizationLocationRoom, 
                                   organizationClasstype, 
@@ -177,7 +179,8 @@ const ScheduleClasses = ({ t, history }) => (
                                   <Table.Col>
                                     {/* Start & end time */}
                                     {moment(date + ' ' + timeStart).format('LT')} {' - '}
-                                    {moment(date + ' ' + timeEnd).format('LT')}
+                                    {moment(date + ' ' + timeEnd).format('LT')} { ' ' }
+                                    {(frequencyType === 'SPECIFIC') ? <Badge color="primary">{t('general.once')}</Badge> : null }
                                   </Table.Col>
                                   <Table.Col>
                                     {/* Location */}

@@ -140,7 +140,8 @@
         "date": "__STRING_NOT_TRANSLATED__",
         "note": "__STRING_NOT_TRANSLATED__",
         "time_start": "__STRING_NOT_TRANSLATED__",
-        "time_end": "__STRING_NOT_TRANSLATED__"
+        "time_end": "__STRING_NOT_TRANSLATED__",
+        "once": "__STRING_NOT_TRANSLATED__"
     },
     "yup": {
         "min_len_3": "__STRING_NOT_TRANSLATED__",
@@ -151,7 +152,8 @@
         "max_decimal_number": "__STRING_NOT_TRANSLATED__",
         "type_error_number": "__STRING_NOT_TRANSLATED__",
         "min_len_2": "__STRING_NOT_TRANSLATED__",
-        "email": "__STRING_NOT_TRANSLATED__"
+        "email": "__STRING_NOT_TRANSLATED__",
+        "time_required": "__STRING_NOT_TRANSLATED__"
     },
     "home": {
         "title": "__STRING_NOT_TRANSLATED__"
