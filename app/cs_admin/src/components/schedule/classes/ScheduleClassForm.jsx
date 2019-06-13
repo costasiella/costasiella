@@ -105,6 +105,7 @@ const ScheduleClassForm = ({ t, history, inputData, isSubmitting, setFieldValue,
           <Grid.Col>
             <Form.Group label={(values.frequencyType == "SPECIFIC") ? t('general.date') : t('general.date_start')}>
               <CSDatePicker 
+                className={(errors.dateStart) ? "form-control is-invalid" : "form-control"} 
                 selected={values.dateStart}
                 onChange={(date) => {
                   setFieldValue("dateStart", date)
@@ -158,9 +159,6 @@ const ScheduleClassForm = ({ t, history, inputData, isSubmitting, setFieldValue,
                 onBlur={() => setFieldTouched("timeEnd", true)}
                 clearable={false}
               />
-              {/* {errors.timeEnd && touched.timeEnd ? (
-                <span className="invalid-feedback">{errors.timeEnd} - hacky thingy</span>
-              ) : null} */}
               <ErrorMessage name="timeEnd" component="span" className="invalid-feedback" />
             </Form.Group>
           </Grid.Col>
