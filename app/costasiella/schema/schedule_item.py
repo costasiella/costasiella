@@ -277,27 +277,36 @@ class UpdateScheduleClass(graphene.relay.ClientIDMutation):
         if not schedule_item:
             raise Exception('Invalid Schedule Item ID!')
 
-        schedule_item.frequency_type = input['frequency_type'], 
-        schedule_item.frequency_interval=input['frequency_interval'],
-        schedule_item.date_start=input['date_start'],
-        schedule_item.time_start=input['time_start'],
-        schedule_item.time_end=input['time_end'],   
+        schedule_item.frequency_type = input['frequency_type']
+        schedule_item.frequency_interval=input['frequency_interval']
+        schedule_item.date_start=input['date_start']
+        schedule_item.time_start=input['time_start']
+        schedule_item.time_end=input['time_end']
         schedule_item.display_public=input['display_public']
+
 
         # Optional fields
         date_end = input.get('date_end', None)
         if date_end:
             schedule_item.date_end = date_end
 
+
         # Fields requiring additional validation
         if result['organization_location_room']:
             schedule_item.organization_location_room = result['organization_location_room']
 
+        print('room')
+
         if result['organization_classtype']:
             schedule_item.organization_classtype = result['organization_classtype']
 
+        print('classtype')
+
         if 'organization_level' in result:
             schedule_item.organization_level = result['organization_level']
+
+        print('level')
+        print(schedule_item)
 
         # ALl done, save it :).
         schedule_item.save()
