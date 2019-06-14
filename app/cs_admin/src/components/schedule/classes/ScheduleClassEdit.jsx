@@ -74,13 +74,14 @@ class ScheduleClassEdit extends Component {
 
   render() {
     const t = this.props.t
+    const match = this.props.match
     const history = this.props.history
+    const id = match.params.id
     const return_url = "/schedule/classes"
 
     return (
       <SiteWrapper>
         <div className="my-3 my-md-5">
-
           <Query query={GET_INPUT_VALUES_QUERY} variables = {{archived: false}} >
             {({ loading, error, data, refetch }) => {
               // Loading
@@ -102,6 +103,7 @@ class ScheduleClassEdit extends Component {
               console.log('query data')
               console.log(data)
               const inputData = data
+              const initialValues = data.scheduleItem
 
               return (
                 <Container>
@@ -112,19 +114,20 @@ class ScheduleClassEdit extends Component {
                         <Card.Header>
                           <Card.Title>{t('schedule.classes.title_add')}</Card.Title>
                         </Card.Header>
-                        <Mutation mutation={CREATE_CLASS} onCompleted={() => history.push(return_url)}> 
-                  {(createSubscription, { data }) => (
+                        <Mutation mutation={UPDATE_CLASS} onCompleted={() => history.push(return_url)}> 
+                  {(updateSubscription, { data }) => (
                     <Formik
                       initialValues={{ 
-                        displayPublic: true,
-                        frequencyType: "WEEKLY",
-                        frequencyInterval: "",
-                        organizationLocationRoom: "",
-                        organizationClasstype: "",
-                        organizationLevel: "",
-                        dateStart: new Date(),
-                        timeStart: new Date(),
-                        timeEnd: new Date(),
+                        displayPublic: initialValues.displayPublic,
+                        frequencyType: initialValues.frequencyType,
+                        frequencyInterval: initialValues.frequencyInterval,
+                        organizationLocationRoom: initialValues.organizationLocationRoom.id,
+                        organizationClasstype: initialValues.organizationClasstype.id,
+                        organizationLevel: initialValues.organizationLevel.id,
+                        dateStart: initialValues.dateStart,
+                        dateEnd: initialValues.dateEnd,
+                        timeStart: initialValues.timeStart,
+                        timeEnd: initialValues.timeEnd,
                       }}
                       validationSchema={CLASS_SCHEMA}
                       onSubmit={(values, { setSubmitting }) => {
@@ -144,8 +147,9 @@ class ScheduleClassEdit extends Component {
 
                           
 
-                          createSubscription({ variables: {
+                          updateSubscription({ variables: {
                             input: {
+                              id: id,
                               displayPublic: values.displayPublic,
                               frequencyType: values.frequencyType,
                               frequencyInterval: frequencyInterval,
@@ -196,20 +200,20 @@ class ScheduleClassEdit extends Component {
                     )}
                   </Mutation>
                 </Card>
-                    </Grid.Col>
-                      <Grid.Col md={3}>
-                        <HasPermissionWrapper permission="add"
-                                              resource="scheduleclass">
-                          <Button color="primary btn-block mb-6"
-                                  onClick={() => history.push(return_url)}>
-                            <Icon prefix="fe" name="chevrons-left" /> {t('general.back')}
-                          </Button>
-                        </HasPermissionWrapper>
-                        <ScheduleMenu active_link='classes'/>
-                      </Grid.Col>
-                    </Grid.Row>
-                  </Container>
-            )}}
+              </Grid.Col>
+              <Grid.Col md={3}>
+                <HasPermissionWrapper permission="add"
+                                      resource="scheduleclass">
+                  <Button color="primary btn-block mb-6"
+                          onClick={() => history.push(return_url)}>
+                    <Icon prefix="fe" name="chevrons-left" /> {t('general.back')}
+                  </Button>
+                </HasPermissionWrapper>
+                <ScheduleMenu active_link='classes'/>
+              </Grid.Col>
+            </Grid.Row>
+          </Container>
+          )}}
           </Query>
         </div>
     </SiteWrapper>
