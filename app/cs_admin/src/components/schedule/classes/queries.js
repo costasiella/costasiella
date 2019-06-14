@@ -57,11 +57,83 @@ export const GET_CLASSES_QUERY = gql`
 `
 
 export const GET_CLASS_QUERY = gql`
-  query SchoolLevel($id: ID!) {
-    organizationLevel(id:$id) {
+  query ScheduleItem($id: ID!) {
+    scheduleItem(id:$id) {
       id
-      name
-      archived
+      frequencyType
+      frequencyInterval
+      organizationLocationRoom
+      organizationClasstype
+      organizationLevel
+      dateStart
+      dateEnd
+      timeStart
+      timeEnd
+      displayPlublic
+    }
+    organizationLocationRooms(first: 100, before: $before, after: $after, archived: $archived) {
+      pageInfo {
+        startCursor
+        endCursor
+        hasNextPage
+        hasPreviousPage
+      }
+      edges {
+        node {
+          id
+          archived
+          name
+          organizationLocation {
+            id
+            name
+          }
+        }
+      }
+    }
+    organizationClasstypes(first: 100, before: $before, after: $after, archived: $archived) {
+      pageInfo {
+        startCursor
+        endCursor
+        hasNextPage
+        hasPreviousPage
+      }
+      edges {
+        node {
+          id
+          archived
+          name
+        }
+      }
+    }
+    organizationLevels(first: 100, before: $before, after: $after, archived: $archived) {
+      pageInfo {
+        startCursor
+        endCursor
+        hasNextPage
+        hasPreviousPage
+      }
+      edges {
+        node {
+          id
+          archived
+          name
+        }
+      }
+    }
+    financePaymentMethods(first: 100, before: $before, after: $after, archived: $archived) {
+      pageInfo {
+        startCursor
+        endCursor
+        hasNextPage
+        hasPreviousPage
+      }
+      edges {
+        node {
+          id
+          archived
+          name
+        }
+      }
     }
   }
 `
