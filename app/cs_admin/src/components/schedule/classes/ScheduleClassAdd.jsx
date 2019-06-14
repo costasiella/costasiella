@@ -84,11 +84,19 @@ class ScheduleClassAdd extends Component {
           <Query query={GET_INPUT_VALUES_QUERY} variables = {{archived: false}} >
             {({ loading, error, data, refetch }) => {
               // Loading
-              if (loading) return <p>{t('general.loading_with_dots')}</p>
+              if (loading) return (
+                <Container>
+                  <p>{t('general.loading_with_dots')}</p>
+                </Container>
+              )
               // Error
               if (error) {
                 console.log(error)
-                return <p>{t('general.error_sad_smiley')}</p>
+                return (
+                  <Container>
+                    <p>{t('general.error_sad_smiley')}</p>
+                  </Container>
+                )
               }
               
               console.log('query data')

@@ -99,11 +99,19 @@ const ScheduleClasses = ({ t, history }) => (
       }>
         {({ loading, error, data: {scheduleClasses: schedule_classes, user:user}, refetch }) => {
           // Loading
-          if (loading) return <p>{t('general.loading_with_dots')}</p>
+          if (loading) return (
+            <Container>
+              <p>{t('general.loading_with_dots')}</p>
+            </Container>
+          )
           // Error
           if (error) {
             console.log(error)
-            return <p>{t('general.error_sad_smiley')}</p>
+            return (
+              <Container>
+                <p>{t('general.error_sad_smiley')}</p>
+              </Container>
+            )
           }
           const headerOptions = <Card.Options>
             {/* <Button color={(!archived) ? 'primary': 'secondary'}  
