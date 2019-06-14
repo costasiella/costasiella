@@ -105,6 +105,11 @@ class ScheduleClassEdit extends Component {
               const inputData = data
               const initialValues = data.scheduleItem
 
+              let initialLevelID = null
+              if (initialValues.organizationLevel) {
+                initialLevelID = initialValues.organizationLevel.id
+              }
+
               return (
                 <Container>
                   <Page.Header title={t("schedule.title")} />
@@ -123,7 +128,7 @@ class ScheduleClassEdit extends Component {
                         frequencyInterval: initialValues.frequencyInterval,
                         organizationLocationRoom: initialValues.organizationLocationRoom.id,
                         organizationClasstype: initialValues.organizationClasstype.id,
-                        organizationLevel: initialValues.organizationLevel.id,
+                        organizationLevel: initialLevelID,
                         dateStart: initialValues.dateStart,
                         dateEnd: initialValues.dateEnd,
                         timeStart: initialValues.timeStart,
