@@ -57,7 +57,7 @@ export const GET_CLASSES_QUERY = gql`
 `
 
 export const GET_CLASS_QUERY = gql`
-  query ScheduleItem($id: ID!) {
+  query ScheduleItem($id: ID!, $before: String, $after: String, $archived: Boolean!) {
     scheduleItem(id:$id) {
       id
       frequencyType
@@ -78,7 +78,7 @@ export const GET_CLASS_QUERY = gql`
       dateEnd
       timeStart
       timeEnd
-      displayPlublic
+      displayPublic
     }
     organizationLocationRooms(first: 100, before: $before, after: $after, archived: $archived) {
       pageInfo {

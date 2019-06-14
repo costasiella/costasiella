@@ -82,7 +82,7 @@ class ScheduleClassEdit extends Component {
     return (
       <SiteWrapper>
         <div className="my-3 my-md-5">
-          <Query query={GET_CLASS_QUERY} variables = {{id: id}} >
+          <Query query={GET_CLASS_QUERY} variables = {{id: id, archived: false}} >
             {({ loading, error, data, refetch }) => {
               // Loading
               if (loading) return (
