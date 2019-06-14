@@ -68,7 +68,7 @@ const UPDATE_CLASS = gql`
 class ScheduleClassEdit extends Component {
   constructor(props) {
     super(props)
-    console.log("Schedule class add add props:")
+    console.log("Schedule class edit add props:")
     console.log(props)
   }
 
@@ -112,7 +112,7 @@ class ScheduleClassEdit extends Component {
                     <Grid.Col md={9}>
                       <Card>
                         <Card.Header>
-                          <Card.Title>{t('schedule.classes.title_add')}</Card.Title>
+                          <Card.Title>{t('schedule.classes.title_edit')}</Card.Title>
                         </Card.Header>
                         <Mutation mutation={UPDATE_CLASS} onCompleted={() => history.push(return_url)}> 
                   {(updateSubscription, { data }) => (
@@ -166,7 +166,7 @@ class ScheduleClassEdit extends Component {
                           ]})
                           .then(({ data }) => {
                               console.log('got data', data)
-                              toast.success((t('schedule.classes.toast_add_success')), {
+                              toast.success((t('schedule.classes.toast_edit_success')), {
                                   position: toast.POSITION.BOTTOM_RIGHT
                                 })
                             }).catch((error) => {
@@ -202,7 +202,7 @@ class ScheduleClassEdit extends Component {
                 </Card>
               </Grid.Col>
               <Grid.Col md={3}>
-                <HasPermissionWrapper permission="add"
+                <HasPermissionWrapper permission="change"
                                       resource="scheduleclass">
                   <Button color="primary btn-block mb-6"
                           onClick={() => history.push(return_url)}>
