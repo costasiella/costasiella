@@ -62,9 +62,18 @@ export const GET_CLASS_QUERY = gql`
       id
       frequencyType
       frequencyInterval
-      organizationLocationRoom
-      organizationClasstype
-      organizationLevel
+      organizationLocationRoom {
+        id
+        name
+      }
+      organizationClasstype {
+        id
+        name
+      }
+      organizationLevel {
+        id
+        name
+      }
       dateStart
       dateEnd
       timeStart
