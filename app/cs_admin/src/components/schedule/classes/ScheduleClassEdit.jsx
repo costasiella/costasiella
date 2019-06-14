@@ -31,7 +31,7 @@ import ScheduleMenu from '../ScheduleMenu'
 
 
 const UPDATE_CLASS = gql`
-  mutation UpdateScheduleClass($input:CreateScheduleClassInput!) {
+  mutation UpdateScheduleClass($input:UpdateScheduleClassInput!) {
     updateScheduleClass(input: $input) {
       scheduleItem {
         id
@@ -113,8 +113,6 @@ class ScheduleClassEdit extends Component {
               const initialTimeStart = TimeStringToJSDateOBJ(initialValues.timeStart)
               const initialTimeEnd = TimeStringToJSDateOBJ(initialValues.timeEnd)
               
-
-
               return (
                 <Container>
                   <Page.Header title={t("schedule.title")} />
@@ -125,7 +123,7 @@ class ScheduleClassEdit extends Component {
                           <Card.Title>{t('schedule.classes.title_edit')}</Card.Title>
                         </Card.Header>
                         <Mutation mutation={UPDATE_CLASS} onCompleted={() => history.push(return_url)}> 
-                  {(updateSubscription, { data }) => (
+                  {(updateScheduleClass, { data }) => (
                     <Formik
                       initialValues={{ 
                         displayPublic: initialValues.displayPublic,
@@ -153,11 +151,9 @@ class ScheduleClassEdit extends Component {
                               dateEnd = dateToLocalISO(values.dateEnd)
                             } else {
                               dateEnd = values.dateEnd
-                            }
+                            }  
 
-                          
-
-                          updateSubscription({ variables: {
+                          updateScheduleClass({ variables: {
                             input: {
                               id: id,
                               displayPublic: values.displayPublic,

@@ -21,6 +21,10 @@ import datetime
 
 
 class ScheduleItemNode(DjangoObjectType):
+    # Disable output like "A_3" by graphene automatically converting model choices
+    # to an Enum field
+    frequency_interval = graphene.Field(graphene.Int, source='frequency_interval')
+
     class Meta:
         model = ScheduleItem
         filter_fields = ['schedule_item_type']
@@ -448,5 +452,6 @@ class ScheduleItemMutation(graphene.ObjectType):
     # archive_schedule_item = ArchiveScheduleItem.Field()
     create_schedule_item = CreateScheduleItem.Field()
     create_schedule_class = CreateScheduleClass.Field()
+    update_schedule_class = UpdateScheduleClass.Field()
     delete_schedule_class = DeleteScheduleClass.Field()
     update_schedule_item = UpdateScheduleItem.Field()
