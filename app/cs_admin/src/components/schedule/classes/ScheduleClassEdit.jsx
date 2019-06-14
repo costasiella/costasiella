@@ -9,7 +9,7 @@ import { Formik } from 'formik'
 import { toast } from 'react-toastify'
 
 
-import { GET_CLASSES_QUERY, GET_INPUT_VALUES_QUERY } from './queries'
+import { GET_CLASSES_QUERY, GET_CLASS_QUERY } from './queries'
 import { CLASS_SCHEMA } from './yupSchema'
 import ScheduleClassForm from './ScheduleClassForm'
 
@@ -82,7 +82,7 @@ class ScheduleClassEdit extends Component {
     return (
       <SiteWrapper>
         <div className="my-3 my-md-5">
-          <Query query={GET_INPUT_VALUES_QUERY} variables = {{archived: false}} >
+          <Query query={GET_CLASS_QUERY} variables = {{id: id}} >
             {({ loading, error, data, refetch }) => {
               // Loading
               if (loading) return (
