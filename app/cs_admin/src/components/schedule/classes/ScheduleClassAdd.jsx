@@ -80,129 +80,129 @@ class ScheduleClassAdd extends Component {
     return (
       <SiteWrapper>
         <div className="my-3 my-md-5">
-          <Container>
-            <Page.Header title={t("schedule.title")} />
-            <Grid.Row>
-              <Grid.Col md={9}>
-              <Card>
-                <Card.Header>
-                  <Card.Title>{t('schedule.classes.title_add')}</Card.Title>
-                </Card.Header>
-                <Query query={GET_INPUT_VALUES_QUERY} variables = {{archived: false}} >
-                  {({ loading, error, data, refetch }) => {
-                    // Loading
-                    if (loading) return <p>{t('general.loading_with_dots')}</p>
-                    // Error
-                    if (error) {
-                      console.log(error)
-                      return <p>{t('general.error_sad_smiley')}</p>
-                    }
-                    
-                    console.log('query data')
-                    console.log(data)
-                    const inputData = data
 
-                    return (
-                      
-                      <Mutation mutation={CREATE_CLASS} onCompleted={() => history.push(return_url)}> 
-                      {(createSubscription, { data }) => (
-                          <Formik
-                              initialValues={{ 
-                                displayPublic: true,
-                                frequencyType: "WEEKLY",
-                                frequencyInterval: "",
-                                organizationLocationRoom: "",
-                                organizationClasstype: "",
-                                organizationLevel: "",
-                                dateStart: new Date(),
-                                timeStart: new Date(),
-                                timeEnd: new Date(),
-                              }}
-                              validationSchema={CLASS_SCHEMA}
-                              onSubmit={(values, { setSubmitting }) => {
-                                  console.log('submit values:')
-                                  console.log(values)
+          <Query query={GET_INPUT_VALUES_QUERY} variables = {{archived: false}} >
+            {({ loading, error, data, refetch }) => {
+              // Loading
+              if (loading) return <p>{t('general.loading_with_dots')}</p>
+              // Error
+              if (error) {
+                console.log(error)
+                return <p>{t('general.error_sad_smiley')}</p>
+              }
+              
+              console.log('query data')
+              console.log(data)
+              const inputData = data
 
-                                  let frequencyInterval = values.frequencyInterval
-                                  if (values.frequencyType == 'SPECIFIC')
-                                    frequencyInterval = 0
+              return (
+                <Container>
+                  <Page.Header title={t("schedule.title")} />
+                  <Grid.Row>
+                    <Grid.Col md={9}>
+                      <Card>
+                        <Card.Header>
+                          <Card.Title>{t('schedule.classes.title_add')}</Card.Title>
+                        </Card.Header>
+                        <Mutation mutation={CREATE_CLASS} onCompleted={() => history.push(return_url)}> 
+                  {(createSubscription, { data }) => (
+                    <Formik
+                      initialValues={{ 
+                        displayPublic: true,
+                        frequencyType: "WEEKLY",
+                        frequencyInterval: "",
+                        organizationLocationRoom: "",
+                        organizationClasstype: "",
+                        organizationLevel: "",
+                        dateStart: new Date(),
+                        timeStart: new Date(),
+                        timeEnd: new Date(),
+                      }}
+                      validationSchema={CLASS_SCHEMA}
+                      onSubmit={(values, { setSubmitting }) => {
+                          console.log('submit values:')
+                          console.log(values)
 
-                                  let dateEnd
-                                    if (values.dateEnd) {
-                                      dateEnd = dateToLocalISO(values.dateEnd)
-                                    } else {
-                                      dateEnd = values.dateEnd
-                                    }
+                          let frequencyInterval = values.frequencyInterval
+                          if (values.frequencyType == 'SPECIFIC')
+                            frequencyInterval = 0
 
-                                  
+                          let dateEnd
+                            if (values.dateEnd) {
+                              dateEnd = dateToLocalISO(values.dateEnd)
+                            } else {
+                              dateEnd = values.dateEnd
+                            }
 
-                                  createSubscription({ variables: {
-                                    input: {
-                                      displayPublic: values.displayPublic,
-                                      frequencyType: values.frequencyType,
-                                      frequencyInterval: frequencyInterval,
-                                      organizationLocationRoom: values.organizationLocationRoom,
-                                      organizationClasstype: values.organizationClasstype,
-                                      organizationLevel: values.organizationLevel,
-                                      dateStart: dateToLocalISO(values.dateStart),
-                                      dateEnd: dateEnd,
-                                      timeStart: dateToLocalISOTime(values.timeStart),
-                                      timeEnd: dateToLocalISOTime(values.timeEnd)
-                                    }
-                                  }, refetchQueries: [
-                                      {query: GET_CLASSES_QUERY, variables: {archived: false }}
-                                  ]})
-                                  .then(({ data }) => {
-                                      console.log('got data', data)
-                                      toast.success((t('schedule.classes.toast_add_success')), {
-                                          position: toast.POSITION.BOTTOM_RIGHT
-                                        })
-                                    }).catch((error) => {
-                                      toast.error((t('general.toast_server_error')) + ': ' +  error, {
-                                          position: toast.POSITION.BOTTOM_RIGHT
-                                        })
-                                      console.log('there was an error sending the query', error)
-                                      setSubmitting(false)
-                                    })
-                              }}
-                              >
-                              {({ isSubmitting, setFieldValue, setFieldTouched, errors, values, touched }) => (
-                                  <ScheduleClassForm
-                                    inputData={inputData}
-                                    isSubmitting={isSubmitting}
-                                    setFieldValue={setFieldValue}
-                                    setFieldTouched={setFieldTouched}
-                                    errors={errors}
-                                    values={values}
-                                    touched={touched}
-                                    return_url={return_url}
-                                  >
-                                    {console.log('########## v & e')}
-                                    {console.log(values)}
-                                    {console.log(errors)}
-                                    {console.log(touched)}
-                                  </ScheduleClassForm>
-                                )
-                              }
-                          </Formik>
-                      )}
-                      </Mutation>
-                      )}}
-                </Query>
-              </Card>
-              </Grid.Col>
-              <Grid.Col md={3}>
-                <HasPermissionWrapper permission="add"
-                                      resource="scheduleclass">
-                  <Button color="primary btn-block mb-6"
-                          onClick={() => history.push(return_url)}>
-                    <Icon prefix="fe" name="chevrons-left" /> {t('general.back')}
-                  </Button>
-                </HasPermissionWrapper>
-                <ScheduleMenu active_link='classes'/>
-              </Grid.Col>
-            </Grid.Row>
-          </Container>
+                          
+
+                          createSubscription({ variables: {
+                            input: {
+                              displayPublic: values.displayPublic,
+                              frequencyType: values.frequencyType,
+                              frequencyInterval: frequencyInterval,
+                              organizationLocationRoom: values.organizationLocationRoom,
+                              organizationClasstype: values.organizationClasstype,
+                              organizationLevel: values.organizationLevel,
+                              dateStart: dateToLocalISO(values.dateStart),
+                              dateEnd: dateEnd,
+                              timeStart: dateToLocalISOTime(values.timeStart),
+                              timeEnd: dateToLocalISOTime(values.timeEnd)
+                            }
+                          }, refetchQueries: [
+                              {query: GET_CLASSES_QUERY, variables: {archived: false }}
+                          ]})
+                          .then(({ data }) => {
+                              console.log('got data', data)
+                              toast.success((t('schedule.classes.toast_add_success')), {
+                                  position: toast.POSITION.BOTTOM_RIGHT
+                                })
+                            }).catch((error) => {
+                              toast.error((t('general.toast_server_error')) + ': ' +  error, {
+                                  position: toast.POSITION.BOTTOM_RIGHT
+                                })
+                              console.log('there was an error sending the query', error)
+                              setSubmitting(false)
+                            })
+                      }}
+                      >
+                      {({ isSubmitting, setFieldValue, setFieldTouched, errors, values, touched }) => (
+                            <ScheduleClassForm
+                              inputData={inputData}
+                              isSubmitting={isSubmitting}
+                              setFieldValue={setFieldValue}
+                              setFieldTouched={setFieldTouched}
+                              errors={errors}
+                              values={values}
+                              touched={touched}
+                              return_url={return_url}
+                            >
+                              {console.log('########## v & e')}
+                              {console.log(values)}
+                              {console.log(errors)}
+                              {console.log(touched)}
+                            </ScheduleClassForm>
+                          )
+                        }
+                    </Formik>
+                    )}
+                  </Mutation>
+                </Card>
+                    </Grid.Col>
+                      <Grid.Col md={3}>
+                        <HasPermissionWrapper permission="add"
+                                              resource="scheduleclass">
+                          <Button color="primary btn-block mb-6"
+                                  onClick={() => history.push(return_url)}>
+                            <Icon prefix="fe" name="chevrons-left" /> {t('general.back')}
+                          </Button>
+                        </HasPermissionWrapper>
+                        <ScheduleMenu active_link='classes'/>
+                      </Grid.Col>
+                    </Grid.Row>
+                  </Container>
+            )}}
+          </Query>
         </div>
     </SiteWrapper>
     )}
