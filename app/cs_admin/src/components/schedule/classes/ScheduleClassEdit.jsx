@@ -25,7 +25,7 @@ import {
 } from "tabler-react"
 import SiteWrapper from "../../SiteWrapper"
 import HasPermissionWrapper from "../../HasPermissionWrapper"
-import { dateToLocalISO, dateToLocalISOTime } from '../../../tools/date_tools'
+import { dateToLocalISO, dateToLocalISOTime, TimeStringToJSDateOBJ } from '../../../tools/date_tools'
 
 import ScheduleMenu from '../ScheduleMenu'
 
@@ -110,6 +110,11 @@ class ScheduleClassEdit extends Component {
                 initialLevelID = initialValues.organizationLevel.id
               }
 
+              const initialTimeStart = TimeStringToJSDateOBJ(initialValues.timeStart)
+              const initialTimeEnd = TimeStringToJSDateOBJ(initialValues.timeEnd)
+              
+
+
               return (
                 <Container>
                   <Page.Header title={t("schedule.title")} />
@@ -131,8 +136,8 @@ class ScheduleClassEdit extends Component {
                         organizationLevel: initialLevelID,
                         dateStart: initialValues.dateStart,
                         dateEnd: initialValues.dateEnd,
-                        timeStart: initialValues.timeStart,
-                        timeEnd: initialValues.timeEnd,
+                        timeStart: initialTimeStart,
+                        timeEnd: initialTimeEnd,
                       }}
                       validationSchema={CLASS_SCHEMA}
                       onSubmit={(values, { setSubmitting }) => {
