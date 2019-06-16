@@ -29,6 +29,7 @@ import confirm_delete from "../../../../tools/confirm_delete"
 
 import ContentCard from "../../../general/ContentCard"
 import ProfileMenu from "../ProfileMenu"
+import ProfileCardSmall from "../../../ui/ProfileCardSmall"
 
 import { GET_ACCOUNT_SUBSCRIPTIONS_QUERY } from "./queries"
 
@@ -156,6 +157,7 @@ const AccountSubscriptions = ({ t, history, match, archived=false }) => (
                   </ContentCard>
                 </Grid.Col>
                 <Grid.Col md={3}>
+                  <ProfileCardSmall user={account}/>
                   <HasPermissionWrapper permission="add"
                                         resource="organizationsubscription">
                    <Button color="primary btn-block mb-6"

@@ -123,7 +123,7 @@ export const GET_SUBSCRIPTION_QUERY = gql`
 `
 
 export const GET_INPUT_VALUES_QUERY = gql`
-  query SubscriptionInputValues($after: String, $before: String, $archived: Boolean!, accountId: ID!) {
+  query SubscriptionInputValues($after: String, $before: String, $archived: Boolean!, $accountId: ID!) {
     organizationSubscriptions(first: 100, before: $before, after: $after, archived: $archived) {
       pageInfo {
         startCursor
