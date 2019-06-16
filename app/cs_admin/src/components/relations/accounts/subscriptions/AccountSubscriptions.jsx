@@ -32,7 +32,7 @@ import ProfileMenu from "../ProfileMenu"
 import { GET_ACCOUNT_SUBSCRIPTIONS_QUERY } from "./queries"
 
 const DELETE_ACCOUNT_SUBSCRIPTION = gql`
-  mutation ArchiveOrganizationSubscription($input: ArchiveOrganizationSubscriptionInput!) {
+  mutation DeleteAccountSubscription($input: ArchiveOrganizationSubscriptionInput!) {
     archiveOrganizationSubscription(input: $input) {
       organizationSubscription {
         id
@@ -91,7 +91,77 @@ const AccountSubscriptions = ({ t, history, match, archived=false }) => (
                       })
                     }} 
                   >
-                    
+                    <Table>
+                      <Table.Header>
+                        <Table.Row key={v4()}>
+                          <Table.ColHeader>{t('general.name')}</Table.ColHeader>
+                          <Table.ColHeader>{t('general.date_start')}</Table.ColHeader>
+                          <Table.ColHeader>{t('general.date_end')}</Table.ColHeader>
+                          <Table.ColHeader>{t('general.payment_method')}</Table.ColHeader>
+                          <Table.ColHeader></Table.ColHeader> 
+                        </Table.Row>
+                      </Table.Header>
+                      <Table.Body>
+                          {accountSubscriptions.edges.map(({ node }) => (
+                            <Table.Row key={v4()}>
+                              <Table.Col key={v4()}>
+                                {node.organizationSubscription.name}
+                              </Table.Col>
+                              <Table.Col key={v4()}>
+                                {node.dateStart}
+                              </Table.Col>
+                              <Table.Col key={v4()}>
+                                {node.dateEnd}
+                              </Table.Col>
+                              <Table.Col key={v4()}>
+                                {(node.financePaymentMethod) ? node.financePaymentMethod.name : ""}
+                              </Table.Col>
+                              <Table.Col className="text-right" key={v4()}>
+                                <Link to={"/relations/accounts/" + match.params.id + "/subscriptions/edit/" + node.id}>
+                                  <Button className='btn-sm' 
+                                          color="secondary">
+                                    {t('general.edit')}
+                                  </Button>
+                                </Link>
+                              </Table.Col>
+                              {/* <Mutation mutation={ARCHIVE_COSTCENTER} key={v4()}>
+                                {(archiveCostcenter, { data }) => (
+                                  <Table.Col className="text-right" key={v4()}>
+                                    <button className="icon btn btn-link btn-sm" 
+                                        title={t('general.archive')} 
+                                        href=""
+                                        onClick={() => {
+                                          console.log("clicked archived")
+                                          let id = node.id
+                                          archiveCostcenter({ variables: {
+                                            input: {
+                                            id,
+                                            archived: !archived
+                                            }
+                                    }, refetchQueries: [
+                                        {query: GET_COSTCENTERS_QUERY, variables: {"archived": archived }}
+                                    ]}).then(({ data }) => {
+                                      console.log('got data', data);
+                                      toast.success(
+                                        (archived) ? t('general.unarchived'): t('general.archived'), {
+                                          position: toast.POSITION.BOTTOM_RIGHT
+                                        })
+                                    }).catch((error) => {
+                                      toast.error((t('general.toast_server_error')) + ': ' +  error, {
+                                          position: toast.POSITION.BOTTOM_RIGHT
+                                        })
+                                      console.log('there was an error sending the query', error);
+                                    })
+                                    }}>
+                                      <Icon prefix="fa" name="inbox" />
+                                    </button>
+                                  </Table.Col>
+                                )}
+                              </Mutation> */}
+                            </Table.Row>
+                          ))}
+                      </Table.Body>
+                    </Table>
                   </ContentCard>
                 </Grid.Col>
                 <Grid.Col md={3}>
