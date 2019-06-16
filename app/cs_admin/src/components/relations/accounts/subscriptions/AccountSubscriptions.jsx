@@ -47,7 +47,7 @@ const AccountSubscriptions = ({ t, history, match, archived=false }) => (
   <SiteWrapper>
     <div className="my-3 my-md-5">
       <Query query={GET_ACCOUNT_SUBSCRIPTIONS_QUERY} variables={{ archived: archived, accountId: match.params.id }}> 
-        {({ loading, error, data, refetch }) => {
+        {({ loading, error, data, refetch, fetchMore }) => {
           // Loading
           if (loading) return <p>{t('general.loading_with_dots')}</p>
           // Error
@@ -57,12 +57,42 @@ const AccountSubscriptions = ({ t, history, match, archived=false }) => (
           }
 
           const account = data.account
+          const accountSubscriptions = data.accountSubscriptions
 
           return (
             <Container>
               <Page.Header title={account.firstName + " " + account.lastName} />
               <Grid.Row>
                 <Grid.Col md={9}>
+                  <ContentCard 
+                    cardTitle={t('relations.accounts.subscriptions')}
+                    pageInfo={accountSubscriptions.pageInfo}
+                    onLoadMore={() => {
+                      fetchMore({
+                        variables: {
+                          after: accountSubscriptions.pageInfo.endCursor
+                        },
+                        updateQuery: (previousResult, { fetchMoreResult }) => {
+                          const newEdges = fetchMoreResult.accountSubscriptions.edges
+                          const pageInfo = fetchMoreResult.accountSubscriptions.pageInfo
+
+                          return newEdges.length
+                            ? {
+                                // Put the new accountSubscriptions at the end of the list and update `pageInfo`
+                                // so we have the new `endCursor` and `hasNextPage` values
+                                accountSubscriptions: {
+                                  __typename: previousResult.accountSubscriptions.__typename,
+                                  edges: [ ...previousResult.accountSubscriptions.edges, ...newEdges ],
+                                  pageInfo
+                                }
+                              }
+                            : previousResult
+                        }
+                      })
+                    }} 
+                  >
+                    
+                  </ContentCard>
                 </Grid.Col>
                 <Grid.Col md={3}>
                   <HasPermissionWrapper permission="add"

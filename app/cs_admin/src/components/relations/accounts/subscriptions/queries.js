@@ -1,8 +1,8 @@
 import gql from "graphql-tag"
 
 export const GET_ACCOUNT_SUBSCRIPTIONS_QUERY = gql`
-  query AccountSubscriptions($after: String, $before: String, $accountId: ID!, $archived: Boolean!) {
-    organizationSubscriptions(first: 15, before: $before, after: $after, archived: $archived) {
+  query AccountSubscriptions($after: String, $before: String, $accountId: ID!) {
+    accountSubscriptions(first: 15, before: $before, after: $after, account: $accountId) {
       pageInfo {
         startCursor
         endCursor
@@ -12,35 +12,18 @@ export const GET_ACCOUNT_SUBSCRIPTIONS_QUERY = gql`
       edges {
         node {
           id
-          archived
-          priceTodayDisplay
-          displayPublic
-          displayShop
-          name
-          description
-          sortOrder
-          minDuration
-          classes
-          subscriptionUnit
-          subscriptionUnitDisplay
-          reconciliationClasses
-          creditValidity
-          unlimited
-          termsAndConditions
-          registrationFee
-          organizationMembership {
+          organizationSubscription {
             id
             name
           }
-          quickStatsAmount
-          financeGlaccount {
-            id 
-            name
-          }
-          financeCostcenter {
+          financePaymentMethod {
             id
             name
           }
+          dateStart
+          dateEnd
+          registrationFeePaid
+          createdAt
         }
       }
     }

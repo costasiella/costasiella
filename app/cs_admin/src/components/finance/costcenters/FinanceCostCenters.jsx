@@ -115,7 +115,8 @@ const FinanceCostCenters = ({ t, history, archived=false }) => (
                                       : previousResult
                                   }
                                 })
-                              }} >
+                              }} 
+                    >
                     <Table>
                           <Table.Header>
                             <Table.Row key={v4()}>
