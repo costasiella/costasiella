@@ -25,6 +25,7 @@ import { toast } from 'react-toastify'
 
 import BooleanBadge from "../../../ui/BooleanBadge"
 import RelationsAccountsBack from "../RelationsAccountsBack"
+import confirm_delete from "../../../../tools/confirm_delete"
 
 import ContentCard from "../../../general/ContentCard"
 import ProfileMenu from "../ProfileMenu"
@@ -32,15 +33,49 @@ import ProfileMenu from "../ProfileMenu"
 import { GET_ACCOUNT_SUBSCRIPTIONS_QUERY } from "./queries"
 
 const DELETE_ACCOUNT_SUBSCRIPTION = gql`
-  mutation DeleteAccountSubscription($input: ArchiveOrganizationSubscriptionInput!) {
-    archiveOrganizationSubscription(input: $input) {
-      organizationSubscription {
-        id
-        archived
-      }
+  mutation DeleteAccountSubscription($input: DeleteAccountSubscriptionInput!) {
+    deleteAccountSubscriptin(input: $input) {
+      ok
     }
   }
 `
+
+
+// const confirm_delete = ({t, msgConfirm, msgDescription, msgSuccess, deleteFunction, functionVariables}) => {
+//   confirmAlert({
+//     customUI: ({ onClose }) => {
+//       return (
+//         <div className='custom-ui'>
+//           <h1>{t('general.confirm_delete')}</h1>
+//           {msgConfirm}
+//           {msgDescription}
+//           <button className="btn btn-link pull-right" onClick={onClose}>{t('general.confirm_delete_no')}</button>
+//           <button
+//             className="btn btn-danger"
+//             onClick={() => {
+//               deleteFunction(functionVariables)
+//                 .then(({ data }) => {
+//                   console.log('got data', data);
+//                   toast.success(
+//                     msgSuccess, {
+//                       position: toast.POSITION.BOTTOM_RIGHT
+//                     })
+//                 }).catch((error) => {
+//                   toast.error((t('general.toast_server_error')) + ': ' +  error, {
+//                       position: toast.POSITION.BOTTOM_RIGHT
+//                     })
+//                   console.log('there was an error sending the query', error);
+//                 })
+//               onClose()
+//             }}
+//           >
+//             <Icon name="trash-2" /> {t('general.confirm_delete_yes')}
+//           </button>
+//         </div>
+//       )
+//     }
+//   })
+// }
 
 
 const AccountSubscriptions = ({ t, history, match, archived=false }) => (
@@ -124,40 +159,33 @@ const AccountSubscriptions = ({ t, history, match, archived=false }) => (
                                   </Button>
                                 </Link>
                               </Table.Col>
-                              {/* <Mutation mutation={ARCHIVE_COSTCENTER} key={v4()}>
-                                {(archiveCostcenter, { data }) => (
+                              <Mutation mutation={DELETE_ACCOUNT_SUBSCRIPTION} key={v4()}>
+                                {(deleteAccountSubscription, { data }) => (
                                   <Table.Col className="text-right" key={v4()}>
                                     <button className="icon btn btn-link btn-sm" 
-                                        title={t('general.archive')} 
-                                        href=""
-                                        onClick={() => {
-                                          console.log("clicked archived")
-                                          let id = node.id
-                                          archiveCostcenter({ variables: {
+                                      title={t('general.delete')} 
+                                      href=""
+                                      onClick={() => {
+                                        confirm_delete({
+                                          t: t,
+                                          msgConfirm: t("relations.accounts.subscriptions_delete_confirm_msg"),
+                                          msgDescription: <p>{node.organizationSubscription.name} {node.dateStart}</p>,
+                                          msgSuccess: t('relations.accounts.subscription_deleted'),
+                                          deleteFunction: deleteAccountSubscription,
+                                          functionVariables: { variables: {
                                             input: {
-                                            id,
-                                            archived: !archived
+                                              id: node.id
                                             }
-                                    }, refetchQueries: [
-                                        {query: GET_COSTCENTERS_QUERY, variables: {"archived": archived }}
-                                    ]}).then(({ data }) => {
-                                      console.log('got data', data);
-                                      toast.success(
-                                        (archived) ? t('general.unarchived'): t('general.archived'), {
-                                          position: toast.POSITION.BOTTOM_RIGHT
+                                          }, refetchQueries: [
+                                            {query: GET_ACCOUNT_SUBSCRIPTIONS_QUERY, variables: { archived: archived, accountId: match.params.id }} 
+                                          ]}
                                         })
-                                    }).catch((error) => {
-                                      toast.error((t('general.toast_server_error')) + ': ' +  error, {
-                                          position: toast.POSITION.BOTTOM_RIGHT
-                                        })
-                                      console.log('there was an error sending the query', error);
-                                    })
                                     }}>
-                                      <Icon prefix="fa" name="inbox" />
+                                      <span className="text-red"><Icon prefix="fe" name="trash-2" /></span>
                                     </button>
                                   </Table.Col>
                                 )}
-                              </Mutation> */}
+                              </Mutation>
                             </Table.Row>
                           ))}
                       </Table.Body>
