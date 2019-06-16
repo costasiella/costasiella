@@ -19,17 +19,17 @@ import {
   Container,
   Table
 } from "tabler-react";
-import SiteWrapper from "../../SiteWrapper"
-import HasPermissionWrapper from "../../HasPermissionWrapper"
+import SiteWrapper from "../../../SiteWrapper"
+import HasPermissionWrapper from "../../../HasPermissionWrapper"
 import { toast } from 'react-toastify'
 
-import BooleanBadge from "../../ui/BooleanBadge"
+import BooleanBadge from "../../../ui/BooleanBadge"
 import RelationsAccountsBack from "../RelationsAccountsBack"
 
-import ContentCard from "../../general/ContentCard"
+import ContentCard from "../../../general/ContentCard"
 import ProfileMenu from "../ProfileMenu"
 
-import { GET_SUBSCRIPTIONS_QUERY } from "./queries"
+import { GET_ACCOUNT_SUBSCRIPTIONS_QUERY } from "./queries"
 
 const DELETE_ACCOUNT_SUBSCRIPTION = gql`
   mutation ArchiveOrganizationSubscription($input: ArchiveOrganizationSubscriptionInput!) {
@@ -43,10 +43,10 @@ const DELETE_ACCOUNT_SUBSCRIPTION = gql`
 `
 
 
-const AccountSubscriptions = ({ t, history, archived=false }) => (
+const AccountSubscriptions = ({ t, history, match, archived=false }) => (
   <SiteWrapper>
     <div className="my-3 my-md-5">
-      <Query query={GET_SUBSCRIPTIONS_QUERY} variables={{ archived }}> 
+      <Query query={GET_ACCOUNT_SUBSCRIPTIONS_QUERY} variables={{ archived: archived, accountId: match.params.id }}> 
         {({ loading, error, data, refetch }) => {
           // Loading
           if (loading) return <p>{t('general.loading_with_dots')}</p>
@@ -56,9 +56,11 @@ const AccountSubscriptions = ({ t, history, archived=false }) => (
             return <p>{t('general.error_sad_smiley')}</p>
           }
 
+          const account = data.account
+
           return (
             <Container>
-              <Page.Header title={t("organization.title")} />
+              <Page.Header title={account.firstName + " " + account.lastName} />
               <Grid.Row>
                 <Grid.Col md={9}>
                 </Grid.Col>
@@ -70,7 +72,10 @@ const AccountSubscriptions = ({ t, history, archived=false }) => (
                      <Icon prefix="fe" name="plus-circle" /> {t('organization.subscriptions.add')}
                    </Button>
                   </HasPermissionWrapper>
-                  <ProfileMenu active_link='subscriptions'/>
+                  <ProfileMenu 
+                    active_link='subscriptions' 
+                    account_id={match.params.id}
+                  />
                 </Grid.Col>
               </Grid.Row>
             </Container>

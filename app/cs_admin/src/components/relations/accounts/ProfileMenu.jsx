@@ -11,11 +11,13 @@ import HasPermissionWrapper from "../../HasPermissionWrapper"
 
 
 let profile_active
+let subscriptions_active
 
 
 const ProfileMenu = ({ t, account_id, active_link }) => (
     <List.Group transparent={true}>
         {(active_link === 'profile') ? profile_active = true: profile_active = false}
+        {(active_link === 'subscriptions') ? subscriptions_active = true: subscriptions_active = false}
         
 
         <List.GroupItem
@@ -27,19 +29,19 @@ const ProfileMenu = ({ t, account_id, active_link }) => (
             >
             {t('relations.accounts.profile')}
         </List.GroupItem>
-        {/* <HasPermissionWrapper 
+        <HasPermissionWrapper 
             permission="view"
-            resource="organizationlocation">
+            resource="accountsubscription">
             <List.GroupItem
                 key={v4()}
                 className="d-flex align-items-center"
-                to="#/organization/locations"
-                icon="home"
-                active={location_active}
+                to={"#/relations/accounts/" + account_id + "/subscriptions"}
+                icon="edit"
+                active={subscriptions_active}
                 >
-            Locations
+            {t('relations.accounts.subscriptions')}
             </List.GroupItem>
-        </HasPermissionWrapper> */}
+        </HasPermissionWrapper>
     </List.Group>
 );
 

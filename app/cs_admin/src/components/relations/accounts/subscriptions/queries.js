@@ -1,7 +1,7 @@
 import gql from "graphql-tag"
 
 export const GET_ACCOUNT_SUBSCRIPTIONS_QUERY = gql`
-  query AccountSubscriptions($after: String, $before: String, $accountId: ID!) {
+  query AccountSubscriptions($after: String, $before: String, $accountId: ID!, $archived: Boolean!) {
     organizationSubscriptions(first: 15, before: $before, after: $after, archived: $archived) {
       pageInfo {
         startCursor
@@ -43,22 +43,22 @@ export const GET_ACCOUNT_SUBSCRIPTIONS_QUERY = gql`
           }
         }
       }
-      account(id:$accountId) {
-        id
-        firstName
-        lastName
-        email
-        dateOfBirth
-        gender
-        address
-        postcode
-        city
-        country
-        phone
-        mobile
-        emergency
-        isActive
-      }
+    }
+    account(id:$accountId) {
+      id
+      firstName
+      lastName
+      email
+      dateOfBirth
+      gender
+      address
+      postcode
+      city
+      country
+      phone
+      mobile
+      emergency
+      isActive
     }
   }
 `
