@@ -201,4 +201,4 @@ class OrganizationSubscriptionAdd extends Component {
   }
 
 
-export default withTranslation()(withRouter(OrganizationSubscriptionAdd))
+export default withTranslation()(withRouter(AccountSubscriptionAdd))
