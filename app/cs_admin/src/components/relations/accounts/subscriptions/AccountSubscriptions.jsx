@@ -34,7 +34,7 @@ import { GET_ACCOUNT_SUBSCRIPTIONS_QUERY } from "./queries"
 
 const DELETE_ACCOUNT_SUBSCRIPTION = gql`
   mutation DeleteAccountSubscription($input: DeleteAccountSubscriptionInput!) {
-    deleteAccountSubscriptin(input: $input) {
+    deleteAccountSubscription(input: $input) {
       ok
     }
   }
