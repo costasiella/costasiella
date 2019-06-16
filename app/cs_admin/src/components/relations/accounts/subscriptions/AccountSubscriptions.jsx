@@ -60,7 +60,9 @@ const AccountSubscriptions = ({ t, history, match, archived=false }) => (
 
           return (
             <Container>
-              <Page.Header title={account.firstName + " " + account.lastName} />
+              <Page.Header title={account.firstName + " " + account.lastName} >
+                <RelationsAccountsBack />
+              </Page.Header>
               <Grid.Row>
                 <Grid.Col md={9}>
                   <ContentCard 

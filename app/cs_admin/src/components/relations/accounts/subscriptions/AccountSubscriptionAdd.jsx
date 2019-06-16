@@ -90,8 +90,6 @@ class OrganizationSubscriptionAdd extends Component {
               return <p>{t('general.error_sad_smiley')}</p>
             }
             
-
-
             console.log('query data')
             console.log(data)
             const inputData = data
@@ -103,7 +101,7 @@ class OrganizationSubscriptionAdd extends Component {
                   <Grid.Col md={9}>
                   <Card>
                     <Card.Header>
-                      <Card.Title>{t('organization.subscriptions.title_add')}</Card.Title>
+                      <Card.Title>{t('relations.account.subscriptions_title_add')}</Card.Title>
                     </Card.Header>
                       <Mutation mutation={CREATE_SUBSCRIPTION} onCompleted={() => history.push(return_url)}> 
                       {(createSubscription, { data }) => (
