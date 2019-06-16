@@ -161,11 +161,13 @@ const AccountSubscriptions = ({ t, history, match, archived=false }) => (
                 <Grid.Col md={3}>
                   <ProfileCardSmall user={account}/>
                   <HasPermissionWrapper permission="add"
-                                        resource="organizationsubscription">
-                   <Button color="primary btn-block mb-6"
-                           onClick={() => history.push("/organization/subscriptions/add")}>
-                     <Icon prefix="fe" name="plus-circle" /> {t('organization.subscriptions.add')}
-                   </Button>
+                                        resource="accountsubscription">
+                    <Link to={"/relations/accounts/" + match.params.id + "/subscriptions/add"}>
+                      <Button color="primary btn-block mb-6">
+                              {/* //  onClick={() => history.push("/organization/subscriptions/add")}> */}
+                        <Icon prefix="fe" name="plus-circle" /> {t('relations.accounts.subscription_add')}
+                      </Button>
+                    </Link>
                   </HasPermissionWrapper>
                   <ProfileMenu 
                     active_link='subscriptions' 
