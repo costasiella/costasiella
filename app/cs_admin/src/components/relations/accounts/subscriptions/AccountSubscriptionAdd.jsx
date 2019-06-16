@@ -80,30 +80,31 @@ class OrganizationSubscriptionAdd extends Component {
     return (
       <SiteWrapper>
         <div className="my-3 my-md-5">
-          <Container>
-            <Page.Header title="Organization" />
-            <Grid.Row>
-              <Grid.Col md={9}>
-              <Card>
-                <Card.Header>
-                  <Card.Title>{t('organization.subscriptions.title_add')}</Card.Title>
-                </Card.Header>
-                <Query query={GET_INPUT_VALUES_QUERY} variables = {{archived: false}} >
-                  {({ loading, error, data, refetch }) => {
-                    // Loading
-                    if (loading) return <p>{t('general.loading_with_dots')}</p>
-                    // Error
-                    if (error) {
-                      console.log(error)
-                      return <p>{t('general.error_sad_smiley')}</p>
-                    }
-                    
-                    console.log('query data')
-                    console.log(data)
-                    const inputData = data
+        <Query query={GET_INPUT_VALUES_QUERY} variables = {{archived: false}} >
+          {({ loading, error, data, refetch }) => {
+            // Loading
+            if (loading) return <p>{t('general.loading_with_dots')}</p>
+            // Error
+            if (error) {
+              console.log(error)
+              return <p>{t('general.error_sad_smiley')}</p>
+            }
+            
 
-                    return (
-                      
+
+            console.log('query data')
+            console.log(data)
+            const inputData = data
+
+            return (
+              <Container>
+               <Page.Header title="Organization" />
+               <Grid.Row>
+                  <Grid.Col md={9}>
+                  <Card>
+                    <Card.Header>
+                      <Card.Title>{t('organization.subscriptions.title_add')}</Card.Title>
+                    </Card.Header>
                       <Mutation mutation={CREATE_SUBSCRIPTION} onCompleted={() => history.push(return_url)}> 
                       {(createSubscription, { data }) => (
                           <Formik
@@ -179,22 +180,22 @@ class OrganizationSubscriptionAdd extends Component {
                           </Formik>
                       )}
                       </Mutation>
-                      )}}
-                </Query>
-              </Card>
-              </Grid.Col>
-              <Grid.Col md={3}>
-                <HasPermissionWrapper permission="add"
-                                      resource="organizationsubscription">
-                  <Button color="primary btn-block mb-6"
-                          onClick={() => history.push(return_url)}>
-                    <Icon prefix="fe" name="chevrons-left" /> {t('general.back')}
-                  </Button>
-                </HasPermissionWrapper>
-                <OrganizationMenu active_link='subscriptions'/>
-              </Grid.Col>
-            </Grid.Row>
-          </Container>
+                    </Card>
+                  </Grid.Col>
+                  <Grid.Col md={3}>
+                    <HasPermissionWrapper permission="add"
+                                          resource="organizationsubscription">
+                      <Button color="primary btn-block mb-6"
+                              onClick={() => history.push(return_url)}>
+                        <Icon prefix="fe" name="chevrons-left" /> {t('general.back')}
+                      </Button>
+                    </HasPermissionWrapper>
+                    <OrganizationMenu active_link='subscriptions'/>
+                  </Grid.Col>
+                </Grid.Row>
+              </Container>
+            )}}
+          </Query>
         </div>
     </SiteWrapper>
     )}
