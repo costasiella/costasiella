@@ -39,7 +39,7 @@ export const GET_ACCOUNT_SUBSCRIPTIONS_QUERY = gql`
   }
 `
 
-export const GET_SUBSCRIPTION_QUERY = gql`
+export const GET_ACCOUNT_SUBSCRIPTION_QUERY = gql`
   query AccountSubscription($id: ID!, $accountId: ID!, $after: String, $before: String, $archived: Boolean!) {
     accountSubscription(id:$id) {
       id
@@ -72,7 +72,7 @@ export const GET_SUBSCRIPTION_QUERY = gql`
         }
       }
     }
-    financePaymentMethods(first: 15, before: $before, after: $after, archived: $archived) {
+    financePaymentMethods(first: 100, before: $before, after: $after, archived: $archived) {
       pageInfo {
         startCursor
         endCursor
@@ -98,7 +98,6 @@ export const GET_SUBSCRIPTION_QUERY = gql`
       isActive
     }
   }
-  }
 `
 
 export const GET_INPUT_VALUES_QUERY = gql`
@@ -118,7 +117,7 @@ export const GET_INPUT_VALUES_QUERY = gql`
         }
       }
     }
-    financePaymentMethods(first: 15, before: $before, after: $after, archived: $archived) {
+    financePaymentMethods(first: 100, before: $before, after: $after, archived: $archived) {
       pageInfo {
         startCursor
         endCursor

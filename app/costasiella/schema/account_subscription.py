@@ -103,14 +103,17 @@ class CreateAccountSubscription(graphene.relay.ClientIDMutation):
             account=result['account'],
             organization_subscription=result['organization_subscription'],
             date_start=input['date_start'], 
-            note=input['note'], 
         )
 
         if 'registration_fee_paid' in input:
             account_subscription.registration_fee_paid = input['registration_fee_paid']
 
         if 'date_end' in input:
-            account_subscription.date_end = input['date_end']
+            if input['date_end']: # check if date_end actually has a value
+                account_subscription.date_end = input['date_end']
+
+        if 'note' in input:
+            account_subscription.note = input['note']
 
         if 'finance_payment_method' in result:
             account_subscription.finance_payment_method = result['finance_payment_method']
@@ -147,21 +150,24 @@ class UpdateAccountSubscription(graphene.relay.ClientIDMutation):
 
         result = validate_create_update_input(input, update=True)
 
-        account_subscription.account=input['account']
-        account_subscription.organization_subscription=input['organization_subscription']
+        account_subscription.account=result['account']
+        account_subscription.organization_subscription=result['organization_subscription']
         account_subscription.date_start=input['date_start']
-        account_subscription.note=result['note']
-        account_subscription.registration_fee_paid=result['registration_fee_paid']
 
         if 'registration_fee_paid' in input:
             account_subscription.registration_fee_paid = input['registration_fee_paid']
 
         if 'date_end' in input:
+            # Allow None as a value to be able to NULL date_end
             account_subscription.date_end = input['date_end']
+
+        if 'note' in input:
+            account_subscription.note = input['note']
 
         if 'finance_payment_method' in result:
             account_subscription.finance_payment_method = result['finance_payment_method']
 
+        
         account_subscription.save(force_update=True)
 
         return UpdateAccountSubscription(account_subscription=account_subscription)

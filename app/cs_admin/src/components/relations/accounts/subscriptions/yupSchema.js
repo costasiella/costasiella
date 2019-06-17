@@ -8,7 +8,8 @@ export const SUBSCRIPTION_SCHEMA = Yup.object().shape({
   financePaymentMethod: Yup.string(),
   dateStart: Yup.date()
     .required(t('yup.field_required')),
-  dateEnd: Yup.date(),
+  dateEnd: Yup.date()
+    .nullable(),
   registrationFeePaid: Yup.boolean(),
   note: Yup.string(),
 })
