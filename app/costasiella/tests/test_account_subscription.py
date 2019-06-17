@@ -89,16 +89,69 @@ class GQLAccountSubscription(TestCase):
   }
 '''
 
-#         self.subscription_query = '''
-#   query AccountSubscription($id: ID!) {
-#     accountSubscription(id:$id) {
-#       id
-#       name
-#       code
-#       archived
-#     }
-#   }
-# '''
+        self.subscription_query = '''
+  query AccountSubscription($id: ID!, $accountId: ID!, $after: String, $before: String, $archived: Boolean!) {
+    accountSubscription(id:$id) {
+      id
+      account {
+          id
+      }
+      organizationSubscription {
+        id
+        name
+      }
+      financePaymentMethod {
+        id
+        name
+      }
+      dateStart
+      dateEnd
+      note
+      registrationFeePaid
+      createdAt
+    }
+    organizationSubscriptions(first: 100, before: $before, after: $after, archived: $archived) {
+      pageInfo {
+        startCursor
+        endCursor
+        hasNextPage
+        hasPreviousPage
+      }
+      edges {
+        node {
+          id
+          archived
+          name
+        }
+      }
+    }
+    financePaymentMethods(first: 100, before: $before, after: $after, archived: $archived) {
+      pageInfo {
+        startCursor
+        endCursor
+        hasNextPage
+        hasPreviousPage
+      }
+      edges {
+        node {
+          id
+          archived
+          name
+          code
+        }
+      }
+    }
+    account(id:$accountId) {
+      id
+      firstName
+      lastName
+      email
+      phone
+      mobile
+      isActive
+    }
+  }
+'''
 
 #         self.subscription_create_mutation = ''' 
 #   mutation CreateAccountSubscription($input:CreateAccountSubscriptionInput!) {
@@ -229,19 +282,35 @@ class GQLAccountSubscription(TestCase):
         self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
-    # def test_query_one(self):
-    #     """ Query one subscription as admin """   
-    #     subscription = f.AccountSubscriptionFactory.create()
+    def test_query_one(self):
+        """ Query one account subscription as admin """   
+        subscription = f.AccountSubscriptionFactory.create()
+        
+        variables = {
+            "id": to_global_id("AccountSubscriptionNode", subscription.id),
+            "accountId": to_global_id("AccountNode", subscription.account.id),
+            "archived": False,
+        }
 
-    #     # First query subscriptions to get node id easily
-    #     node_id = self.get_node_id_of_first_subscription()
-
-    #     # Now query single subscription and check
-    #     executed = execute_test_client_api_query(self.subscription_query, self.admin_user, variables={"id": node_id})
-    #     data = executed.get('data')
-    #     self.assertEqual(data['accountSubscription']['name'], subscription.name)
-    #     self.assertEqual(data['accountSubscription']['archived'], subscription.archived)
-    #     self.assertEqual(data['accountSubscription']['code'], subscription.code)
+        # Now query single subscription and check
+        executed = execute_test_client_api_query(self.subscription_query, self.admin_user, variables=variables)
+        data = executed.get('data')
+        self.assertEqual(
+            data['accountSubscription']['account']['id'], 
+            to_global_id('AccountNode', subscription.account.id)
+        )
+        self.assertEqual(
+            data['accountSubscription']['organizationSubscription']['id'], 
+            to_global_id('OrganizationSubscriptionNode', subscription.organization_subscription.id)
+        )
+        self.assertEqual(
+            data['accountSubscription']['financePaymentMethod']['id'], 
+            to_global_id('FinancePaymentMethodNode', subscription.finance_payment_method.id)
+        )
+        self.assertEqual(data['accountSubscription']['dateStart'], str(subscription.date_start))
+        self.assertEqual(data['accountSubscription']['dateEnd'], subscription.date_end)
+        self.assertEqual(data['accountSubscription']['note'], subscription.note)
+        self.assertEqual(data['accountSubscription']['registrationFeePaid'], subscription.registration_fee_paid)
 
 
     # def test_query_one_anon_user(self):
