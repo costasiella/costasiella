@@ -202,19 +202,6 @@ class OrganizationSubscriptionGroupSubscriptionFactory(factory.DjangoModelFactor
     organization_subscription = factory.SubFactory(OrganizationSubscriptionFactory)
 
 
-class AccountSubscriptionFactory(factory.DjangoModelFactory):
-    class Meta:
-        model = models.AccountSubscription
-
-    account = factory.SubFactory(RegularUserFactory)
-    organization_subscription = factory.SubFactory(OrganizationSubscriptionFactory)
-    finance_payment_method = factory.SubFactory(FinancePaymentMethodFactory)
-    date_start = datetime.date(2019, 1, 1)
-    date_end = None
-    note = "Subscription note here"
-    registration_fee_paid = False
-
-
 class AdminUserFactory(factory.DjangoModelFactory):
     class Meta:
         model = get_user_model()
@@ -253,4 +240,17 @@ class AllAuthEmailAddress(factory.DjangoModelFactory):
     email = 'user@costasiella.com'
     verified = True
     primary = True
+    
+
+class AccountSubscriptionFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.AccountSubscription
+
+    account = factory.SubFactory(RegularUserFactory)
+    organization_subscription = factory.SubFactory(OrganizationSubscriptionFactory)
+    finance_payment_method = factory.SubFactory(FinancePaymentMethodFactory)
+    date_start = datetime.date(2019, 1, 1)
+    date_end = None
+    note = "Subscription note here"
+    registration_fee_paid = False
     
