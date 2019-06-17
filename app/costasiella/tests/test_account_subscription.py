@@ -313,49 +313,62 @@ class GQLAccountSubscription(TestCase):
         self.assertEqual(data['accountSubscription']['registrationFeePaid'], subscription.registration_fee_paid)
 
 
-    # def test_query_one_anon_user(self):
-    #     """ Deny permission for anon users Query one glacount """   
-    #     subscription = f.AccountSubscriptionFactory.create()
+    def test_query_one_anon_user(self):
+        """ Deny permission for anon users Query one account subscription """   
+        subscription = f.AccountSubscriptionFactory.create()
 
-    #     # First query subscriptions to get node id easily
-    #     node_id = self.get_node_id_of_first_subscription()
+        variables = {
+            "id": to_global_id("AccountSubscriptionNode", subscription.id),
+            "accountId": to_global_id("AccountNode", subscription.account.id),
+            "archived": False,
+        }
 
-    #     # Now query single subscription and check
-    #     executed = execute_test_client_api_query(self.subscription_query, self.anon_user, variables={"id": node_id})
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
-
-
-    # def test_query_one_permission_denied(self):
-    #     """ Permission denied message when user lacks authorization """   
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     subscription = f.AccountSubscriptionFactory.create()
-
-    #     # First query subscriptions to get node id easily
-    #     node_id = self.get_node_id_of_first_subscription()
-
-    #     # Now query single subscription and check
-    #     executed = execute_test_client_api_query(self.subscription_query, user, variables={"id": node_id})
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
+        # Now query single subscription and check
+        executed = execute_test_client_api_query(self.subscription_query, self.anon_user, variables=variables)
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
-    # def test_query_one_permission_granted(self):
-    #     """ Respond with data when user has permission """   
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename='view_accountsubscription')
-    #     user.user_permissions.add(permission)
-    #     user.save()
-    #     subscription = f.AccountSubscriptionFactory.create()
+    def test_query_one_permission_denied(self):
+        """ Permission denied message when user lacks authorization """   
+        # Create regular user
+        subscription = f.AccountSubscriptionFactory.create()
+        user = subscription.account
 
-    #     # First query subscriptions to get node id easily
-    #     node_id = self.get_node_id_of_first_subscription()
+        variables = {
+            "id": to_global_id("AccountSubscriptionNode", subscription.id),
+            "accountId": to_global_id("AccountNode", subscription.account.id),
+            "archived": False,
+        }
 
-    #     # Now query single location and check   
-    #     executed = execute_test_client_api_query(self.subscription_query, user, variables={"id": node_id})
-    #     data = executed.get('data')
-    #     self.assertEqual(data['accountSubscription']['name'], subscription.name)
+        # Now query single subscription and check
+        executed = execute_test_client_api_query(self.subscription_query, user, variables=variables)
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
+
+
+    def test_query_one_permission_granted(self):
+        """ Respond with data when user has permission """   
+        subscription = f.AccountSubscriptionFactory.create()
+        user = subscription.account
+        permission = Permission.objects.get(codename='view_accountsubscription')
+        user.user_permissions.add(permission)
+        user.save()
+        
+
+        variables = {
+            "id": to_global_id("AccountSubscriptionNode", subscription.id),
+            "accountId": to_global_id("AccountNode", subscription.account.id),
+            "archived": False,
+        }
+
+        # Now query single subscription and check   
+        executed = execute_test_client_api_query(self.subscription_query, user, variables=variables)
+        data = executed.get('data')
+        self.assertEqual(
+            data['accountSubscription']['organizationSubscription']['id'], 
+            to_global_id('OrganizationSubscriptionNode', subscription.organization_subscription.id)
+        )
 
 
     # def test_create_subscription(self):
