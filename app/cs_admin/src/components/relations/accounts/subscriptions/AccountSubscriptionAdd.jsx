@@ -106,7 +106,6 @@ class AccountSubscriptionAdd extends Component {
                                 organizationSubscription: "",
                                 financePaymentMethod: "",
                                 dateStart: new Date(),
-                                dateEnd: "",
                                 note: "",
                                 registrationFeePaid: false
                               }}

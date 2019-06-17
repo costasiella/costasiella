@@ -117,7 +117,7 @@ class CreateAccountSubscription(graphene.relay.ClientIDMutation):
 
         account_subscription.save()
 
-        return CreateAccountSubscription(account_subscription = account_subscription)
+        return CreateAccountSubscription(account_subscription=account_subscription)
 
 
 class UpdateAccountSubscription(graphene.relay.ClientIDMutation):
