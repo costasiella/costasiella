@@ -44,7 +44,6 @@ class OrganizationLocationRoomQuery(graphene.ObjectType):
         return OrganizationLocationRoom.objects.filter(display_public = True, archived = False).order_by('name')
             
 
-
 class CreateOrganizationLocationRoom(graphene.relay.ClientIDMutation):
     class Input:
         organization_location = graphene.ID(required=True)
