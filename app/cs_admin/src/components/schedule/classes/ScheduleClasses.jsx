@@ -83,9 +83,9 @@ const confirm_delete = ({t, msgConfirm, msgDescription, msgSuccess, deleteFuncti
 
 
 // Set some initial values for dates
-let dateFrom = new Date()
-let dateUntil = new Date()
-dateUntil.setDate(dateUntil.getDate() + 6)
+let dateFrom = moment()
+let dateUntil = moment().add(6, 'days')
+// dateUntil.setDate(dateUntil.getDate() + 6)
 console.log(dateFrom)
 console.log(dateUntil)
 
@@ -139,7 +139,57 @@ const ScheduleClasses = ({ t, history }) => (
           // Life's good! :)
           return (
             <Container>
-              <Page.Header title={t("schedule.title")} />
+              <Page.Header title={t("schedule.title")}>
+                <div className="page-options d-flex">
+                  <Button.List>
+                    <Button 
+                      icon="chevron-left"
+                      color="secondary"
+                      onClick={ () => {
+                        let nextWeekFrom = moment(dateFrom).subtract(7, 'days')
+                        let nextWeekUntil = moment(nextWeekFrom).add(6, 'days')
+                        
+                        refetch({ 
+                            dateFrom: moment(nextWeekFrom).format('YYYY-MM-DD'), 
+                            dateUntil: moment(nextWeekUntil).format('YYYY-MM-DD')
+                        })
+
+                        dateFrom = nextWeekFrom
+                        dateUntil = nextWeekUntil
+                    }} />
+                    <Button 
+                      icon="clock"
+                      color="secondary"
+                      onClick={ () => {
+                        let currentWeekFrom = moment()
+                        let currentWeekUntil = moment(currentWeekFrom).add(6, 'days')
+                        
+                        refetch({ 
+                            dateFrom: moment(currentWeekFrom).format('YYYY-MM-DD'), 
+                            dateUntil: moment(currentWeekUntil).format('YYYY-MM-DD')
+                        })
+
+                        dateFrom = currentWeekFrom
+                        dateUntil = currentWeekUntil
+                    }} />
+                    <Button 
+                      icon="chevron-right"
+                      color="secondary"
+                      onClick={ () => {
+                        let nextWeekFrom = moment(dateFrom).add(7, 'days')
+                        let nextWeekUntil = moment(nextWeekFrom).add(6, 'days')
+                        
+                        refetch({ 
+                            dateFrom: moment(nextWeekFrom).format('YYYY-MM-DD'), 
+                            dateUntil: moment(nextWeekUntil).format('YYYY-MM-DD')
+                        })
+                        
+                        dateFrom = nextWeekFrom
+                        dateUntil = nextWeekUntil
+                    }} />
+                  </Button.List>
+                </div>
+              </Page.Header>
               <Grid.Row>
                 <Grid.Col md={9}>
                   {
