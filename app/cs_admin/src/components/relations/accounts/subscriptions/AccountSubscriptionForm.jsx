@@ -22,18 +22,6 @@ import {
 const AccountSubscriptionForm = ({ t, history, inputData, isSubmitting, setFieldValue, setFieldTouched, errors, values, return_url }) => (
   <FoForm>
     <Card.Body> 
-      <Form.Group>
-        <Form.Label className="custom-switch">
-            <Field 
-              className="custom-switch-input"
-              type="checkbox" 
-              name="registrationFeePaid" 
-              checked={values.registrationFeePaid} />
-            <span className="custom-switch-indicator" ></span>
-            <span className="custom-switch-description">{t('relations.account.subscription_registration_fee_paid')}</span>
-          </Form.Label>
-        <ErrorMessage name="registrationFeePaid" component="div" />   
-      </Form.Group>     
       <Grid.Row>
         <Grid.Col>
           <Form.Group label={t('general.subscription')}>
@@ -41,15 +29,28 @@ const AccountSubscriptionForm = ({ t, history, inputData, isSubmitting, setField
                   name="organizationSubscription" 
                   className={(errors.organizationSubscription) ? "form-control is-invalid" : "form-control"} 
                   autoComplete="off">
-              <option value="" key={v4()}></option>
-              {inputData.organizationSubscription.edges.map(({ node }) =>
+              <option value="" key={v4()}>{t('general.please_select')}</option>
+              {inputData.organizationSubscriptions.edges.map(({ node }) =>
                 <option value={node.id} key={v4()}>{node.name}</option>
               )}
             </Field>
             <ErrorMessage name="organizationSubscription" component="span" className="invalid-feedback" />
           </Form.Group>
         </Grid.Col>
-
+        <Grid.Col>
+          <Form.Group label={t('general.payment_method')}>
+            <Field component="select" 
+                  name="financePaymentMethod" 
+                  className={(errors.financePaymentMethod) ? "form-control is-invalid" : "form-control"} 
+                  autoComplete="off">
+              <option value="" key={v4()}></option>
+              {inputData.financePaymentMethods.edges.map(({ node }) =>
+                <option value={node.id} key={v4()}>{node.name}</option>
+              )}
+            </Field>
+            <ErrorMessage name="financePaymentMethod" component="span" className="invalid-feedback" />
+          </Form.Group>
+        </Grid.Col>
       </Grid.Row> 
       <Grid.Row>
           <Grid.Col>
@@ -93,6 +94,18 @@ const AccountSubscriptionForm = ({ t, history, inputData, isSubmitting, setField
           />
         <ErrorMessage name="note" component="span" className="invalid-feedback" />
       </Form.Group>
+      <Form.Group>
+        <Form.Label className="custom-switch">
+            <Field 
+              className="custom-switch-input"
+              type="checkbox" 
+              name="registrationFeePaid" 
+              checked={values.registrationFeePaid} />
+            <span className="custom-switch-indicator" ></span>
+            <span className="custom-switch-description">{t('relations.account.subscription_registration_fee_paid')}</span>
+          </Form.Label>
+        <ErrorMessage name="registrationFeePaid" component="div" />   
+      </Form.Group> 
     </Card.Body>
     <Card.Footer>
         <Button 

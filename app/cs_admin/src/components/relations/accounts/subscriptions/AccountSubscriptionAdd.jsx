@@ -24,6 +24,7 @@ import {
 } from "tabler-react";
 import SiteWrapper from "../../../SiteWrapper"
 import HasPermissionWrapper from "../../../HasPermissionWrapper"
+import { dateToLocalISO } from '../../../../tools/date_tools'
 
 import ProfileMenu from "../ProfileMenu"
 
@@ -75,7 +76,7 @@ class AccountSubscriptionAdd extends Component {
     return (
       <SiteWrapper>
         <div className="my-3 my-md-5">
-        <Query query={GET_INPUT_VALUES_QUERY} variables = {{archived: false}} >
+        <Query query={GET_INPUT_VALUES_QUERY} variables = {{archived: false, accountId: account_id}} >
           {({ loading, error, data, refetch }) => {
             // Loading
             if (loading) return <p>{t('general.loading_with_dots')}</p>
@@ -88,10 +89,11 @@ class AccountSubscriptionAdd extends Component {
             console.log('query data')
             console.log(data)
             const inputData = data
+            const account = data.account
 
             return (
               <Container>
-               <Page.Header title="Organization" />
+               <Page.Header title={account.firstName + " " + account.lastName} />
                <Grid.Row>
                   <Grid.Col md={9}>
                   <Card>
@@ -114,21 +116,26 @@ class AccountSubscriptionAdd extends Component {
                                   console.log('submit values:')
                                   console.log(values)
 
-                                  let dateStart
+                                  
                                   let dateEnd
+                                  if (values.dateEnd) {
+                                    dateEnd = dateToLocalISO(values.dateEnd)
+                                  } else {
+                                    dateEnd = values.dateEnd
+                                  }
 
                                   createSubscription({ variables: {
                                     input: {
                                       account: account_id, 
                                       organizationSubscription: values.organizationSubscription,
                                       financePaymentMethod: values.financePaymentMethod,
-                                      dateStart: dateStart,
+                                      dateStart: dateToLocalISO(values.dateStart),
                                       dateEnd: dateEnd,
-                                      note: values.Note,
+                                      note: values.note,
                                       registrationFeePaid: values.registrationFeePaid
                                     }
                                   }, refetchQueries: [
-                                      // {query: GET_SUBSCRIPTIONS_QUERY, variables: {archived: false }}
+                                      // {query: GET_SUBSCRIPTIONS_QUERY, variables: {archived: false, accountId: account_id}}
                                   ]})
                                   .then(({ data }) => {
                                       console.log('got data', data)
