@@ -34,7 +34,6 @@ const CREATE_ACCOUNT_SUBSCRIPTION = gql`
     createAccountSubscription(input: $input) {
       accountSubscription {
         id
-        displayPublic
         account {
           id
           firstName
@@ -104,17 +103,18 @@ class AccountSubscriptionAdd extends Component {
                       {(createSubscription, { data }) => (
                           <Formik
                               initialValues={{ 
-                                organizationSubscription: null,
-                                financePaymentMethod: null,
+                                organizationSubscription: "",
+                                financePaymentMethod: "",
                                 dateStart: new Date(),
                                 dateEnd: "",
                                 note: "",
                                 registrationFeePaid: false
                               }}
                               validationSchema={SUBSCRIPTION_SCHEMA}
-                              onSubmit={(values, { setSubmitting }) => {
+                              onSubmit={(values, { setSubmitting }, errors) => {
                                   console.log('submit values:')
                                   console.log(values)
+                                  console.log(errors)
 
                                   
                                   let dateEnd
@@ -160,7 +160,9 @@ class AccountSubscriptionAdd extends Component {
                                   errors={errors}
                                   values={values}
                                   return_url={return_url}
-                                />
+                                >
+                                  {console.log(errors)}
+                                </AccountSubscriptionForm>
                               )}
                           </Formik>
                       )}

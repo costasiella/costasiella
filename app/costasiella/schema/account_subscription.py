@@ -103,12 +103,14 @@ class CreateAccountSubscription(graphene.relay.ClientIDMutation):
             account=result['account'],
             organization_subscription=result['organization_subscription'],
             date_start=input['date_start'], 
-            date_end=input['date_end'], 
             note=input['note'], 
         )
 
         if 'registration_fee_paid' in input:
             account_subscription.registration_fee_paid = input['registration_fee_paid']
+
+        if 'date_end' in input:
+            account_subscription.date_end = input['date_end']
 
         if 'finance_payment_method' in result:
             account_subscription.finance_payment_method = result['finance_payment_method']
@@ -148,12 +150,14 @@ class UpdateAccountSubscription(graphene.relay.ClientIDMutation):
         account_subscription.account=input['account']
         account_subscription.organization_subscription=input['organization_subscription']
         account_subscription.date_start=input['date_start']
-        account_subscription.date_end=input['date_end']
         account_subscription.note=result['note']
         account_subscription.registration_fee_paid=result['registration_fee_paid']
 
         if 'registration_fee_paid' in input:
             account_subscription.registration_fee_paid = input['registration_fee_paid']
+
+        if 'date_end' in input:
+            account_subscription.date_end = input['date_end']
 
         if 'finance_payment_method' in result:
             account_subscription.finance_payment_method = result['finance_payment_method']
