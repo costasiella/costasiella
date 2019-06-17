@@ -71,6 +71,7 @@ class GQLAccountSubscription(TestCase):
           }
           dateStart
           dateEnd
+          note
           registrationFeePaid
           createdAt
         }
@@ -169,62 +170,63 @@ class GQLAccountSubscription(TestCase):
             data['accountSubscriptions']['edges'][0]['node']['financePaymentMethod']['id'], 
             to_global_id("FinancePaymentMethodNode", subscription.finance_payment_method.id)
         )
-        self.assertEqual(data['accountSubscriptions']['edges'][0]['node']['dateStart'], subscription.date_start)
-        self.assertEqual(data['accountSubscriptions']['edges'][0]['node']['dateEnd'], subscription.date_end)
+        self.assertEqual(data['accountSubscriptions']['edges'][0]['node']['dateStart'], str(subscription.date_start))
+        self.assertEqual(data['accountSubscriptions']['edges'][0]['node']['dateEnd'], subscription.date_end) # Factory is set to None so no string conversion required
         self.assertEqual(data['accountSubscriptions']['edges'][0]['node']['note'], subscription.note)
         self.assertEqual(data['accountSubscriptions']['edges'][0]['node']['registrationFeePaid'], subscription.registration_fee_paid)
 
 
-    # def test_query_permision_denied(self):
-    #     """ Query list of subscriptions - check permission denied """
-    #     query = self.subscriptions_query
-    #     subscription = f.AccountSubscriptionFactory.create()
-    #     variables = {
-    #         'archived': False
-    #     }
+    def test_query_permision_denied(self):
+        """ Query list of account subscriptions - check permission denied """
+        query = self.subscriptions_query
+        subscription = f.AccountSubscriptionFactory.create()
+        variables = {
+            'accountId': to_global_id('AccountSubscriptionNode', subscription.account.id)
+        }
 
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     executed = execute_test_client_api_query(query, user, variables=variables)
-    #     errors = executed.get('errors')
+        # Create regular user
+        user = get_user_model().objects.get(pk=subscription.account.id)
+        executed = execute_test_client_api_query(query, user, variables=variables)
+        errors = executed.get('errors')
 
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
-
-
-    # def test_query_permision_granted(self):
-    #     """ Query list of subscriptions with view permission """
-    #     query = self.subscriptions_query
-    #     subscription = f.AccountSubscriptionFactory.create()
-    #     variables = {
-    #         'archived': False
-    #     }
-
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename='view_accountsubscription')
-    #     user.user_permissions.add(permission)
-    #     user.save()
-
-    #     executed = execute_test_client_api_query(query, user, variables=variables)
-    #     data = executed.get('data')
-
-    #     # List all subscriptions
-    #     self.assertEqual(data['accountSubscriptions']['edges'][0]['node']['name'], subscription.name)
-    #     self.assertEqual(data['accountSubscriptions']['edges'][0]['node']['archived'], subscription.archived)
-    #     self.assertEqual(data['accountSubscriptions']['edges'][0]['node']['code'], subscription.code)
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
-    # def test_query_anon_user(self):
-    #     """ Query list of subscriptions - anon user """
-    #     query = self.subscriptions_query
-    #     subscription = f.AccountSubscriptionFactory.create()
-    #     variables = {
-    #         'archived': False
-    #     }
+    def test_query_permision_granted(self):
+        """ Query list of account subscriptions with view permission """
+        query = self.subscriptions_query
+        subscription = f.AccountSubscriptionFactory.create()
+        variables = {
+            'accountId': to_global_id('AccountSubscriptionNode', subscription.account.id)
+        }
 
-    #     executed = execute_test_client_api_query(query, self.anon_user, variables=variables)
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
+        # Create regular user
+        user = get_user_model().objects.get(pk=subscription.account.id)
+        permission = Permission.objects.get(codename='view_accountsubscription')
+        user.user_permissions.add(permission)
+        user.save()
+
+        executed = execute_test_client_api_query(query, user, variables=variables)
+        data = executed.get('data')
+
+        # List all subscriptions
+        self.assertEqual(
+            data['accountSubscriptions']['edges'][0]['node']['organizationSubscription']['id'], 
+            to_global_id("OrganizationSubscriptionNode", subscription.organization_subscription.id)
+        )
+
+
+    def test_query_anon_user(self):
+        """ Query list of account subscriptions - anon user """
+        query = self.subscriptions_query
+        subscription = f.AccountSubscriptionFactory.create()
+        variables = {
+            'accountId': to_global_id('AccountSubscriptionNode', subscription.account.id)
+        }
+
+        executed = execute_test_client_api_query(query, self.anon_user, variables=variables)
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
     # def test_query_one(self):
