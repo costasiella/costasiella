@@ -45,7 +45,7 @@ const DELETE_ACCOUNT_SUBSCRIPTION = gql`
 const AccountSubscriptions = ({ t, history, match, archived=false }) => (
   <SiteWrapper>
     <div className="my-3 my-md-5">
-      <Query query={GET_ACCOUNT_SUBSCRIPTIONS_QUERY} variables={{ archived: archived, accountId: match.params.id }}> 
+      <Query query={GET_ACCOUNT_SUBSCRIPTIONS_QUERY} variables={{ archived: archived, accountId: match.params.account_id }}> 
         {({ loading, error, data, refetch, fetchMore }) => {
           // Loading
           if (loading) return <p>{t('general.loading_with_dots')}</p>
@@ -118,7 +118,7 @@ const AccountSubscriptions = ({ t, history, match, archived=false }) => (
                                 {(node.financePaymentMethod) ? node.financePaymentMethod.name : ""}
                               </Table.Col>
                               <Table.Col className="text-right" key={v4()}>
-                                <Link to={"/relations/accounts/" + match.params.id + "/subscriptions/edit/" + node.id}>
+                                <Link to={"/relations/accounts/" + match.params.account_id + "/subscriptions/edit/" + node.id}>
                                   <Button className='btn-sm' 
                                           color="secondary">
                                     {t('general.edit')}
@@ -140,10 +140,10 @@ const AccountSubscriptions = ({ t, history, match, archived=false }) => (
                                           deleteFunction: deleteAccountSubscription,
                                           functionVariables: { variables: {
                                             input: {
-                                              id: node.id
+                                              id: node.account_id
                                             }
                                           }, refetchQueries: [
-                                            {query: GET_ACCOUNT_SUBSCRIPTIONS_QUERY, variables: { archived: archived, accountId: match.params.id }} 
+                                            {query: GET_ACCOUNT_SUBSCRIPTIONS_QUERY, variables: { archived: archived, accountId: match.params.account_id }} 
                                           ]}
                                         })
                                     }}>
@@ -162,7 +162,7 @@ const AccountSubscriptions = ({ t, history, match, archived=false }) => (
                   <ProfileCardSmall user={account}/>
                   <HasPermissionWrapper permission="add"
                                         resource="accountsubscription">
-                    <Link to={"/relations/accounts/" + match.params.id + "/subscriptions/add"}>
+                    <Link to={"/relations/accounts/" + match.params.account_id + "/subscriptions/add"}>
                       <Button color="primary btn-block mb-6">
                               {/* //  onClick={() => history.push("/organization/subscriptions/add")}> */}
                         <Icon prefix="fe" name="plus-circle" /> {t('relations.accounts.subscription_add')}
@@ -171,7 +171,7 @@ const AccountSubscriptions = ({ t, history, match, archived=false }) => (
                   </HasPermissionWrapper>
                   <ProfileMenu 
                     active_link='subscriptions' 
-                    account_id={match.params.id}
+                    account_id={match.params.account_id}
                   />
                 </Grid.Col>
               </Grid.Row>

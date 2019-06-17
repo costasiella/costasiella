@@ -5,6 +5,8 @@ import gql from "graphql-tag"
 import { Query, Mutation } from "react-apollo";
 import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
+import { Link } from 'react-router-dom'
+
 import { Formik } from 'formik'
 import { toast } from 'react-toastify'
 
@@ -20,10 +22,10 @@ import {
   Card,
   Container,
 } from "tabler-react";
-import SiteWrapper from "../../SiteWrapper"
-import HasPermissionWrapper from "../../HasPermissionWrapper"
+import SiteWrapper from "../../../SiteWrapper"
+import HasPermissionWrapper from "../../../HasPermissionWrapper"
 
-import OrganizationMenu from "../OrganizationMenu"
+import ProfileMenu from "../ProfileMenu"
 
 
 const CREATE_ACCOUNT_SUBSCRIPTION = gql`
@@ -96,7 +98,7 @@ class AccountSubscriptionAdd extends Component {
                     <Card.Header>
                       <Card.Title>{t('relations.account.subscriptions_title_add')}</Card.Title>
                     </Card.Header>
-                      <Mutation mutation={CREATE_SUBSCRIPTION} onCompleted={() => history.push(return_url)}> 
+                      <Mutation mutation={CREATE_ACCOUNT_SUBSCRIPTION} onCompleted={() => history.push(return_url)}> 
                       {(createSubscription, { data }) => (
                           <Formik
                               initialValues={{ 
@@ -111,6 +113,9 @@ class AccountSubscriptionAdd extends Component {
                               onSubmit={(values, { setSubmitting }) => {
                                   console.log('submit values:')
                                   console.log(values)
+
+                                  let dateStart
+                                  let dateEnd
 
                                   createSubscription({ variables: {
                                     input: {
@@ -164,7 +169,7 @@ class AccountSubscriptionAdd extends Component {
                         </Button>
                       </Link>
                     </HasPermissionWrapper>
-                    <OrganizationMenu active_link='subscriptions'/>
+                    <ProfileMenu active_link='subscriptions'/>
                   </Grid.Col>
                 </Grid.Row>
               </Container>
