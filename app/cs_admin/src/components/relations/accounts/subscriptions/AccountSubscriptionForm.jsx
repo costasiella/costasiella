@@ -102,7 +102,7 @@ const AccountSubscriptionForm = ({ t, history, inputData, isSubmitting, setField
               name="registrationFeePaid" 
               checked={values.registrationFeePaid} />
             <span className="custom-switch-indicator" ></span>
-            <span className="custom-switch-description">{t('relations.account.subscription_registration_fee_paid')}</span>
+            <span className="custom-switch-description">{t('relations.account.subscriptions.registration_fee_paid')}</span>
           </Form.Label>
         <ErrorMessage name="registrationFeePaid" component="div" />   
       </Form.Group> 

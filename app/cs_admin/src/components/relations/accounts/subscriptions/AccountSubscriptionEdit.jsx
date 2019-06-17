@@ -104,7 +104,7 @@ class AccountSubscriptionEdit extends Component {
                   <Grid.Col md={9}>
                   <Card>
                     <Card.Header>
-                      <Card.Title>{t('relations.account.subscriptions_title_edit')}</Card.Title>
+                      <Card.Title>{t('relations.account.subscriptions.title_edit')}</Card.Title>
                     </Card.Header>
                       <Mutation mutation={UPDATE_ACCOUNT_SUBSCRIPTION} onCompleted={() => history.push(return_url)}> 
                       {(createSubscription, { data }) => (
@@ -147,7 +147,7 @@ class AccountSubscriptionEdit extends Component {
                                   ]})
                                   .then(({ data }) => {
                                       console.log('got data', data)
-                                      toast.success((t('relations.account.subscriptions_toast_edit_success')), {
+                                      toast.success((t('relations.account.subscriptions.toast_edit_success')), {
                                           position: toast.POSITION.BOTTOM_RIGHT
                                         })
                                     }).catch((error) => {

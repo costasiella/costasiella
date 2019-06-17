@@ -39,7 +39,7 @@ const ProfileMenu = ({ t, account_id, active_link }) => (
                 icon="edit"
                 active={subscriptions_active}
                 >
-            {t('relations.accounts.subscriptions')}
+            {t('relations.account.subscriptions.title')}
             </List.GroupItem>
         </HasPermissionWrapper>
     </List.Group>

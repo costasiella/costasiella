@@ -141,7 +141,8 @@
         "note": "Note",
         "time_start": "Time start",
         "time_end": "Time end",
-        "once": "Once"
+        "once": "Once",
+        "payment_method": "Payment method"
     },
     "yup": {
         "min_len_3": "Please input at least 3 characters",
@@ -316,7 +317,7 @@
             "empty_list": "No subscription prices found",
             "empty_archive": "No subscription prices have been archived yet",
             "add": "Add subscription price",
-            "delete_confirm_msg": "Are you sure you want to delete this price?",
+            "delete_confirm_msg": "Are you sure you wish to delete this price?",
             "deleted": "Deleted subscription price"
         }
     },
@@ -350,7 +351,7 @@
             "error_loading": "Error loading accounts :(",
             "empty_list": "No accounts found",
             "empty_archive": "No accounts have been deleted yet",
-            "delete_confirm_msg": "Are you sure you want to delete this account and all associated data?",
+            "delete_confirm_msg": "Are you sure you wish to delete this account and all associated data?",
             "deleted": "Deleted account",
             "add": "Add account",
             "profile": "Profile",
@@ -358,6 +359,19 @@
             "deactivated": "Moved account to deleted",
             "restored": "Restored account",
             "emergency": "Emergency"
+        },
+        "account": {
+            "subscriptions": {
+                "title": "Subscriptions",
+                "title_add": "Add subscription",
+                "toast_add_success": "Added subscription",
+                "toast_edit_success": "Saved subscription",
+                "delete_confirm_msg": "Are you sure you with to delete this subscription and all associated data?",
+                "deleted": "Deleted subscription",
+                "add": "Add subscription",
+                "title_edit": "Edit subscription",
+                "registration_fee_paid": "Registration fee paid"
+            }
         }
     },
     "genders": {
@@ -369,7 +383,6 @@
         "title": "Schedule",
         "classes": {
             "title": "Classes",
-            "error_loading": "Error loading classes :(",
             "empty_list": "No classes found on this day",
             "add": "Add class",
             "all_classes_in_series": "All classes",
@@ -382,7 +395,9 @@
             "select_specific": "Once",
             "select_weekly": "Weekly",
             "frequencyInterval": "Week day",
-            "placeholder_enddate": "Click to select a date or leave empty for no enddate"
+            "placeholder_enddate": "Click to select a date or leave empty for no enddate",
+            "title_edit": "Edit class",
+            "toast_edit_success": "Saved class"
         }
     },
     "countries": {

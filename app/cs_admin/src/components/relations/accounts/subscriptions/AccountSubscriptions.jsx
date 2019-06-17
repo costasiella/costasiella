@@ -66,7 +66,7 @@ const AccountSubscriptions = ({ t, history, match, archived=false }) => (
               <Grid.Row>
                 <Grid.Col md={9}>
                   <ContentCard 
-                    cardTitle={t('relations.accounts.subscriptions')}
+                    cardTitle={t('relations.account.subscriptions.title')}
                     pageInfo={accountSubscriptions.pageInfo}
                     onLoadMore={() => {
                       fetchMore({
@@ -134,9 +134,9 @@ const AccountSubscriptions = ({ t, history, match, archived=false }) => (
                                       onClick={() => {
                                         confirm_delete({
                                           t: t,
-                                          msgConfirm: t("relations.accounts.subscriptions_delete_confirm_msg"),
+                                          msgConfirm: t("relations.account.subscriptions.delete_confirm_msg"),
                                           msgDescription: <p>{node.organizationSubscription.name} {node.dateStart}</p>,
-                                          msgSuccess: t('relations.accounts.subscription_deleted'),
+                                          msgSuccess: t('relations.account.subscriptions.deleted'),
                                           deleteFunction: deleteAccountSubscription,
                                           functionVariables: { variables: {
                                             input: {
@@ -165,7 +165,7 @@ const AccountSubscriptions = ({ t, history, match, archived=false }) => (
                     <Link to={"/relations/accounts/" + match.params.account_id + "/subscriptions/add"}>
                       <Button color="primary btn-block mb-6">
                               {/* //  onClick={() => history.push("/organization/subscriptions/add")}> */}
-                        <Icon prefix="fe" name="plus-circle" /> {t('relations.accounts.subscription_add')}
+                        <Icon prefix="fe" name="plus-circle" /> {t('relations.account.subscriptions.add')}
                       </Button>
                     </Link>
                   </HasPermissionWrapper>

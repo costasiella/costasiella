@@ -141,7 +141,8 @@
         "note": "__STRING_NOT_TRANSLATED__",
         "time_start": "__STRING_NOT_TRANSLATED__",
         "time_end": "__STRING_NOT_TRANSLATED__",
-        "once": "__STRING_NOT_TRANSLATED__"
+        "once": "__STRING_NOT_TRANSLATED__",
+        "payment_method": "__STRING_NOT_TRANSLATED__"
     },
     "yup": {
         "min_len_3": "__STRING_NOT_TRANSLATED__",
@@ -358,6 +359,19 @@
             "deactivated": "__STRING_NOT_TRANSLATED__",
             "restored": "__STRING_NOT_TRANSLATED__",
             "emergency": "__STRING_NOT_TRANSLATED__"
+        },
+        "account": {
+            "subscriptions": {
+                "title": "__STRING_NOT_TRANSLATED__",
+                "title_add": "__STRING_NOT_TRANSLATED__",
+                "toast_add_success": "__STRING_NOT_TRANSLATED__",
+                "toast_edit_success": "__STRING_NOT_TRANSLATED__",
+                "delete_confirm_msg": "__STRING_NOT_TRANSLATED__",
+                "deleted": "__STRING_NOT_TRANSLATED__",
+                "add": "__STRING_NOT_TRANSLATED__",
+                "title_edit": "__STRING_NOT_TRANSLATED__",
+                "registration_fee_paid": "__STRING_NOT_TRANSLATED__"
+            }
         }
     },
     "genders": {
@@ -369,7 +383,6 @@
         "title": "__STRING_NOT_TRANSLATED__",
         "classes": {
             "title": "__STRING_NOT_TRANSLATED__",
-            "error_loading": "__STRING_NOT_TRANSLATED__",
             "empty_list": "__STRING_NOT_TRANSLATED__",
             "add": "__STRING_NOT_TRANSLATED__",
             "all_classes_in_series": "__STRING_NOT_TRANSLATED__",
@@ -382,7 +395,9 @@
             "select_specific": "__STRING_NOT_TRANSLATED__",
             "select_weekly": "__STRING_NOT_TRANSLATED__",
             "frequencyInterval": "__STRING_NOT_TRANSLATED__",
-            "placeholder_enddate": "__STRING_NOT_TRANSLATED__"
+            "placeholder_enddate": "__STRING_NOT_TRANSLATED__",
+            "title_edit": "__STRING_NOT_TRANSLATED__",
+            "toast_edit_success": "__STRING_NOT_TRANSLATED__"
         }
     },
     "countries": {
