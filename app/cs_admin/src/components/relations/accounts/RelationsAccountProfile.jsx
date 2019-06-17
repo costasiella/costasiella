@@ -56,14 +56,14 @@ class RelationsAccountProfile extends Component {
     const t = this.props.t
     const match = this.props.match
     const history = this.props.history
-    const id = match.params.id
+    const account_id = match.params.account_id
     const return_url = "/relations/accounts"
 
     return (
       <SiteWrapper>
         <div className="my-3 my-md-5">
           <Container>
-            <Query query={GET_ACCOUNT_QUERY} variables={{ id }} >
+            <Query query={GET_ACCOUNT_QUERY} variables={{ id: account_id }} >
               {({ loading, error, data, refetch }) => {
                   // Loading
                   if (loading) return <p>{t('general.loading_with_dots')}</p>
@@ -94,7 +94,7 @@ class RelationsAccountProfile extends Component {
                         <Card>
                           <Card.Header>
                             <Card.Title>{t('relations.accounts.profile')}</Card.Title>
-                            {console.log(match.params.id)}
+                            {console.log(match.params.account_id)}
                           </Card.Header>
                         <Mutation mutation={UPDATE_ACCOUNT}> 
                          {(updateAccount, { data }) => (
@@ -127,7 +127,7 @@ class RelationsAccountProfile extends Component {
 
                                 updateAccount({ variables: {
                                   input: {
-                                    id: match.params.id,
+                                    id: match.params.account_id,
                                     firstName: values.firstName,
                                     lastName: values.lastName,
                                     email: values.email,
@@ -145,7 +145,7 @@ class RelationsAccountProfile extends Component {
                                     // Refetch list
                                     {query: GET_ACCOUNTS_QUERY, variables: {"isActive": true }},
                                     // Refresh local cached results for this account
-                                    {query: GET_ACCOUNT_QUERY, variables: {"id": match.params.id}}
+                                    {query: GET_ACCOUNT_QUERY, variables: {"id": match.params.account_id}}
                                 ]})
                                 .then(({ data }) => {
                                     console.log('got data', data)
@@ -180,7 +180,7 @@ class RelationsAccountProfile extends Component {
                       <ProfileCardSmall user={initialData}/>
                       <ProfileMenu 
                         active_link='profile'
-                        account_id={id}
+                        account_id={account_id}
                       /> 
                     </Grid.Col>
                   </Grid.Row>
