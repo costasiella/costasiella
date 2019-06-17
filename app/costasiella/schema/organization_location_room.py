@@ -32,15 +32,17 @@ class OrganizationLocationRoomQuery(graphene.ObjectType):
 
     def resolve_organization_location_rooms(self, info, archived=False, **kwargs):
         user = info.context.user
+
         if user.is_anonymous:
             raise Exception(m.user_not_logged_in)
 
-            ## return everything:
-            if user.has_perm('costasiella.view_organizationlocationroom'):
-                return OrganizationLocationRoom.objects.filter(archived = archived).order_by('name')
+        ## return everything:
+        if user.has_perm('costasiella.view_organizationlocationroom'):
+            return OrganizationLocationRoom.objects.filter(archived = archived).order_by('name')
 
-            # Return only public non-archived locations
-            return OrganizationLocationRoom.objects.filter(display_public = True, archived = False).order_by('name')
+        # Return only public non-archived rooms
+        return OrganizationLocationRoom.objects.filter(display_public = True, archived = False).order_by('name')
+            
 
 
 class CreateOrganizationLocationRoom(graphene.relay.ClientIDMutation):
