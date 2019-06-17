@@ -28,54 +28,49 @@ import HasPermissionWrapper from "../../HasPermissionWrapper"
 import OrganizationMenu from "../OrganizationMenu"
 
 
-const CREATE_SUBSCRIPTION = gql`
-  mutation CreateSubscription($input: CreateOrganizationSubscriptionInput!) {
-    createOrganizationSubscription(input: $input) {
-      organizationSubscription {
+const CREATE_ACCOUNT_SUBSCRIPTION = gql`
+  mutation CreateAccountSubscription($input: CreateAccountSubscriptionInput!) {
+    createAccountSubscription(input: $input) {
+      accountSubscription {
         id
         displayPublic
-        displayShop
-        name
-        description
-        sortOrder
-        minDuration
-        classes
-        subscriptionUnit
-        subscriptionUnitDisplay
-        reconciliationClasses
-        creditValidity
-        unlimited
-        termsAndConditions
-        organizationMembership {
+        account {
+          id
+          firstName
+          lastName
+          email
+        }
+        organizationSubscription {
           id
           name
         }
-        quickStatsAmount
-        financeGlaccount {
+        financePaymentMethod {
           id
           name
         }
-        financeCostcenter {
-          id
-          name
-        }
+        dateStart
+        dateEnd
+        note
+        registrationFeePaid        
       }
     }
   }
 `
 
 
-class OrganizationSubscriptionAdd extends Component {
+class AccountSubscriptionAdd extends Component {
   constructor(props) {
     super(props)
-    console.log("Organization subscription add props:")
+    console.log("Account subscription add props:")
     console.log(props)
   }
 
   render() {
     const t = this.props.t
     const history = this.props.history
-    const return_url = "/organization/subscriptions"
+    const match = this.props.match
+    const account_id = match.params.account_id
+    const return_url = "/relations/accounts/" + account_id + "/subscriptions"
 
     return (
       <SiteWrapper>
@@ -107,22 +102,12 @@ class OrganizationSubscriptionAdd extends Component {
                       {(createSubscription, { data }) => (
                           <Formik
                               initialValues={{ 
-                                displayPublic: true,
-                                displayShop: true,
-                                name: "",
-                                description: "",
-                                sortOrder: 0,
-                                minDuration: 1,
-                                classes: 1,
-                                subscriptionUnit: "WEEK",
-                                reconciliationClasses: 0,
-                                creditValidity: 1,
-                                unlimited: false,
-                                termsAndConditions: "",
-                                organizationMembership: "",
-                                quickStatsAmount: 0,
-                                financeGlaccount: "",
-                                financeCostcenter: ""
+                                organizationSubscription: null,
+                                financePaymentMethod: null,
+                                dateStart: new Date(),
+                                dateEnd: "",
+                                note: "",
+                                registrationFeePaid: false
                               }}
                               validationSchema={SUBSCRIPTION_SCHEMA}
                               onSubmit={(values, { setSubmitting }) => {
@@ -131,28 +116,20 @@ class OrganizationSubscriptionAdd extends Component {
 
                                   createSubscription({ variables: {
                                     input: {
-                                      displayPublic: values.displayPublic,
-                                      displayShop: values.displayShop,
-                                      name: values.name,
-                                      description: values.description,
-                                      sortOrder: values.sortOrder,
-                                      minDuration: values.minDuration,
-                                      classes: values.classes,
-                                      subscriptionUnit: values.subscriptionUnit,
-                                      reconciliationClasses: values.reconciliationClasses,
-                                      creditValidity: values.creditValidity,
-                                      unlimited: values.unlimited,
-                                      termsAndConditions: values.termsAndConditions,
-                                      quickStatsAmount: values.quickStatsAmount,
-                                      financeGlaccount: values.financeGlaccount,
-                                      financeCostcenter: values.financeCostcenter
+                                      account: account_id, 
+                                      organizationSubscription: values.organizationSubscription,
+                                      financePaymentMethod: values.financePaymentMethod,
+                                      dateStart: dateStart,
+                                      dateEnd: dateEnd,
+                                      note: values.Note,
+                                      registrationFeePaid: values.registrationFeePaid
                                     }
                                   }, refetchQueries: [
                                       // {query: GET_SUBSCRIPTIONS_QUERY, variables: {archived: false }}
                                   ]})
                                   .then(({ data }) => {
                                       console.log('got data', data)
-                                      toast.success((t('organization.subscriptions.toast_add_success')), {
+                                      toast.success((t('relations.account.subscriptions_toast_add_success')), {
                                           position: toast.POSITION.BOTTOM_RIGHT
                                         })
                                     }).catch((error) => {
@@ -182,11 +159,12 @@ class OrganizationSubscriptionAdd extends Component {
                   </Grid.Col>
                   <Grid.Col md={3}>
                     <HasPermissionWrapper permission="add"
-                                          resource="organizationsubscription">
-                      <Button color="primary btn-block mb-6"
-                              onClick={() => history.push(return_url)}>
-                        <Icon prefix="fe" name="chevrons-left" /> {t('general.back')}
-                      </Button>
+                                          resource="accountsubscription">
+                      <Link to={return_url}>
+                        <Button color="primary btn-block mb-6">
+                          <Icon prefix="fe" name="chevrons-left" /> {t('general.back')}
+                        </Button>
+                      </Link>
                     </HasPermissionWrapper>
                     <OrganizationMenu active_link='subscriptions'/>
                   </Grid.Col>
