@@ -72,6 +72,7 @@ import RelationsAccounts from './components/relations/accounts/RelationsAccounts
 import RelationsAccountAdd from './components/relations/accounts/RelationsAccountAdd'
 import RelationsAccountProfile from './components/relations/accounts/RelationsAccountProfile'
 import AccountSubscriptions from './components/relations/accounts/subscriptions/AccountSubscriptions'
+import AccountSubscriptionAdd from './components/relations/accounts/subscriptions/AccountSubscriptionAdd'
 
 import ScheduleHome from './components/schedule/home/ScheduleHome'
 import ScheduleClasses from './components/schedule/classes/ScheduleClasses'
@@ -183,6 +184,7 @@ class App extends Component {
             <Route exact path="/relations/accounts/add" component={RelationsAccountAdd} />
             <Route exact path="/relations/accounts/:account_id/profile" component={RelationsAccountProfile} />
             <Route exact path="/relations/accounts/:account_id/subscriptions" component={AccountSubscriptions} />
+            <Route exact path="/relations/accounts/:account_id/subscriptions/add" component={AccountSubscriptionAdd} />
             <Route exact path="/schedule" component={ScheduleHome} />
             <Route exact path="/schedule/classes" component={ScheduleClasses} />
             <Route exact path="/schedule/classes/add" component={ScheduleClassAdd} />
