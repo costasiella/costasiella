@@ -181,8 +181,8 @@ class App extends Component {
             <Route exact path="/relations" component={RelationsHome} />
             <Route exact path="/relations/accounts" component={RelationsAccounts} />
             <Route exact path="/relations/accounts/add" component={RelationsAccountAdd} />
-            <Route exact path="/relations/accounts/:id/profile" component={RelationsAccountProfile} />
-            <Route exact path="/relations/accounts/:id/subscriptions" component={AccountSubscriptions} />
+            <Route exact path="/relations/accounts/:account_id/profile" component={RelationsAccountProfile} />
+            <Route exact path="/relations/accounts/:account_id/subscriptions" component={AccountSubscriptions} />
             <Route exact path="/schedule" component={ScheduleHome} />
             <Route exact path="/schedule/classes" component={ScheduleClasses} />
             <Route exact path="/schedule/classes/add" component={ScheduleClassAdd} />
