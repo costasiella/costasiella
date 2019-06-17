@@ -138,9 +138,6 @@ class ScheduleItemQuery(graphene.ObjectType):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.view_scheduleclass')
 
-        print(date_from)
-        print(date_until)
-
         validate_schedule_classes_query_date_input(date_from, date_until)
 
         delta = datetime.timedelta(days=1)
