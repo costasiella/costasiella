@@ -31,8 +31,10 @@ class GQLAccountSubscription(TestCase):
 
         self.variables_create = {
             "input": {
-                "name": "New subscription",
-                "code" : "8000"
+                "dateStart": "2019-01-01",
+                "dateEnd": "2019-12-31",
+                "note": "creation note",
+                "registrationFeePaid": True
             }
         }
 
@@ -153,18 +155,33 @@ class GQLAccountSubscription(TestCase):
   }
 '''
 
-#         self.subscription_create_mutation = ''' 
-#   mutation CreateAccountSubscription($input:CreateAccountSubscriptionInput!) {
-#     createAccountSubscription(input: $input) {
-#       accountSubscription{
-#         id
-#         archived
-#         name
-#         code
-#       }
-#     }
-#   }
-# '''
+        self.subscription_create_mutation = ''' 
+  mutation CreateAccountSubscription($input: CreateAccountSubscriptionInput!) {
+    createAccountSubscription(input: $input) {
+      accountSubscription {
+        id
+        account {
+          id
+          firstName
+          lastName
+          email
+        }
+        organizationSubscription {
+          id
+          name
+        }
+        financePaymentMethod {
+          id
+          name
+        }
+        dateStart
+        dateEnd
+        note
+        registrationFeePaid        
+      }
+    }
+  }
+'''
 
 #         self.subscription_update_mutation = '''
 #   mutation UpdateAccountSubscription($input: UpdateAccountSubscriptionInput!) {
@@ -192,17 +209,6 @@ class GQLAccountSubscription(TestCase):
     def tearDown(self):
         # This is run after every test
         pass
-
-
-    # def get_node_id_of_first_subscription(self):
-    #     # query subscriptions to get node id easily
-    #     variables = {
-    #         'archived': False
-    #     }
-    #     executed = execute_test_client_api_query(self.subscriptions_query, self.admin_user, variables=variables)
-    #     data = executed.get('data')
-        
-    #     return data['accountSubscriptions']['edges'][0]['node']['id']
 
 
     def test_query(self):
@@ -371,20 +377,41 @@ class GQLAccountSubscription(TestCase):
         )
 
 
-    # def test_create_subscription(self):
-    #     """ Create a subscription """
-    #     query = self.subscription_create_mutation
-    #     variables = self.variables_create
+    def test_create_subscription(self):
+        """ Create a subscription """
+        query = self.subscription_create_mutation
 
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         self.admin_user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['createAccountSubscription']['accountSubscription']['name'], variables['input']['name'])
-    #     self.assertEqual(data['createAccountSubscription']['accountSubscription']['archived'], False)
-    #     self.assertEqual(data['createAccountSubscription']['accountSubscription']['code'], variables['input']['code'])
+        account = f.RegularUserFactory.create()
+        organization_subscription = f.OrganizationSubscriptionFactory.create()
+        finance_payment_method = f.FinancePaymentMethodFactory.create()
+        variables = self.variables_create
+        variables['input']['account'] = to_global_id('AccountNode', account.id)
+        variables['input']['organizationSubscription'] = to_global_id('OrganizationSubscriptionNode', organization_subscription.id)
+        variables['input']['financePaymentMethod'] = to_global_id('FinancePaymentMethodNode', finance_payment_method.id)
+
+        executed = execute_test_client_api_query(
+            query, 
+            self.admin_user, 
+            variables=variables
+        )
+        data = executed.get('data')
+
+        self.assertEqual(
+            data['createAccountSubscription']['accountSubscription']['account']['id'], 
+            variables['input']['account']
+        )
+        self.assertEqual(
+            data['createAccountSubscription']['accountSubscription']['organizationSubscription']['id'], 
+            variables['input']['organizationSubscription']
+        )
+        self.assertEqual(
+            data['createAccountSubscription']['accountSubscription']['financePaymentMethod']['id'], 
+            variables['input']['financePaymentMethod']
+        )
+        self.assertEqual(data['createAccountSubscription']['accountSubscription']['dateStart'], variables['input']['dateStart'])
+        self.assertEqual(data['createAccountSubscription']['accountSubscription']['dateEnd'], variables['input']['dateEnd'])
+        self.assertEqual(data['createAccountSubscription']['accountSubscription']['note'], variables['input']['note'])
+        self.assertEqual(data['createAccountSubscription']['accountSubscription']['registrationFeePaid'], variables['input']['registrationFeePaid'])
 
 
     # def test_create_subscription_anon_user(self):
