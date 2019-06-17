@@ -140,7 +140,7 @@ const AccountSubscriptions = ({ t, history, match, archived=false }) => (
                                           deleteFunction: deleteAccountSubscription,
                                           functionVariables: { variables: {
                                             input: {
-                                              id: node.account_id
+                                              id: node.id
                                             }
                                           }, refetchQueries: [
                                             {query: GET_ACCOUNT_SUBSCRIPTIONS_QUERY, variables: { archived: archived, accountId: match.params.account_id }} 
