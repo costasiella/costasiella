@@ -8,11 +8,9 @@ import { withRouter } from "react-router"
 import { Formik } from 'formik'
 import { toast } from 'react-toastify'
 
-
 import { GET_ACCOUNT_SUBSCRIPTIONS_QUERY, GET_INPUT_VALUES_QUERY } from './queries'
 import { SUBSCRIPTION_SCHEMA } from './yupSchema'
-import OrganizationSubscriptionForm from './OrganizationSubscriptionForm'
-
+import AccountSubscriptionForm from './AccountSubscriptionForm'
 
 import {
   Page,
@@ -142,7 +140,7 @@ class AccountSubscriptionAdd extends Component {
                               }}
                               >
                               {({ isSubmitting, setFieldValue, setFieldTouched, errors, values }) => (
-                                <OrganizationSubscriptionForm
+                                <AccountSubscriptionForm
                                   inputData={inputData}
                                   isSubmitting={isSubmitting}
                                   setFieldValue={setFieldValue}
