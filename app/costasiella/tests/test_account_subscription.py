@@ -40,8 +40,10 @@ class GQLAccountSubscription(TestCase):
 
         self.variables_update = {
             "input": {
-                "name": "Updated subscription",
-                "code" : "9000"
+                "dateStart": "2017-01-01",
+                "dateEnd": "2020-12-31",
+                "note": "Update note",
+                "registrationFeePaid": True
             }
         }
 
@@ -183,17 +185,33 @@ class GQLAccountSubscription(TestCase):
   }
 '''
 
-#         self.subscription_update_mutation = '''
-#   mutation UpdateAccountSubscription($input: UpdateAccountSubscriptionInput!) {
-#     updateAccountSubscription(input: $input) {
-#       accountSubscription {
-#         id
-#         name
-#         code
-#       }
-#     }
-#   }
-# '''
+        self.subscription_update_mutation = '''
+  mutation UpdateAccountSubscription($input: UpdateAccountSubscriptionInput!) {
+    updateAccountSubscription(input: $input) {
+      accountSubscription {
+        id
+        account {
+          id
+          firstName
+          lastName
+          email
+        }
+        organizationSubscription {
+          id
+          name
+        }
+        financePaymentMethod {
+          id
+          name
+        }
+        dateStart
+        dateEnd
+        note
+        registrationFeePaid        
+      }
+    }
+  }
+'''
 
 #         self.subscription_archive_mutation = '''
 #   mutation ArchiveAccountSubscription($input: ArchiveAccountSubscriptionInput!) {
@@ -490,81 +508,105 @@ class GQLAccountSubscription(TestCase):
         self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
-    # def test_update_subscription(self):
-    #     """ Update a subscription """
-    #     query = self.subscription_update_mutation
-    #     subscription = f.AccountSubscriptionFactory.create()
-    #     variables = self.variables_update
-    #     variables['input']['id'] = self.get_node_id_of_first_subscription()
+    def test_update_subscription(self):
+        """ Update a subscription """
+        query = self.subscription_update_mutation
+        subscription = f.AccountSubscriptionFactory.create()
+        organization_subscription = f.OrganizationSubscriptionFactory.create()
+        finance_payment_method = f.FinancePaymentMethodFactory.create()
+        variables = self.variables_update
+        variables['input']['id'] = to_global_id('AccountSubscriptionNode', subscription.id)
+        variables['input']['organizationSubscription'] = to_global_id('OrganizationSubscriptionNode', organization_subscription.id)
+        variables['input']['financePaymentMethod'] = to_global_id('FinancePaymentMethodNode', finance_payment_method.id)
 
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         self.admin_user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['updateAccountSubscription']['accountSubscription']['name'], variables['input']['name'])
-    #     self.assertEqual(data['updateAccountSubscription']['accountSubscription']['code'], variables['input']['code'])
+        executed = execute_test_client_api_query(
+            query, 
+            self.admin_user, 
+            variables=variables
+        )
+        data = executed.get('data')
 
-
-    # def test_update_subscription_anon_user(self):
-    #     """ Don't allow updating subscriptions for non-logged in users """
-    #     query = self.subscription_update_mutation
-    #     subscription = f.AccountSubscriptionFactory.create()
-    #     variables = self.variables_update
-    #     variables['input']['id'] = self.get_node_id_of_first_subscription()
-
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         self.anon_user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
+        self.assertEqual(
+          data['updateAccountSubscription']['accountSubscription']['organizationSubscription']['id'], 
+          variables['input']['organizationSubscription']
+        )
+        self.assertEqual(
+          data['updateAccountSubscription']['accountSubscription']['financePaymentMethod']['id'], 
+          variables['input']['financePaymentMethod']
+        )
+        self.assertEqual(data['updateAccountSubscription']['accountSubscription']['dateStart'], variables['input']['dateStart'])
+        self.assertEqual(data['updateAccountSubscription']['accountSubscription']['dateEnd'], variables['input']['dateEnd'])
+        self.assertEqual(data['updateAccountSubscription']['accountSubscription']['note'], variables['input']['note'])
+        self.assertEqual(data['updateAccountSubscription']['accountSubscription']['registrationFeePaid'], variables['input']['registrationFeePaid'])
 
 
-    # def test_update_subscription_permission_granted(self):
-    #     """ Allow updating subscriptions for users with permissions """
-    #     query = self.subscription_update_mutation
-    #     subscription = f.AccountSubscriptionFactory.create()
-    #     variables = self.variables_update
-    #     variables['input']['id'] = self.get_node_id_of_first_subscription()
+    def test_update_subscription_anon_user(self):
+        """ Don't allow updating subscriptions for non-logged in users """
+        query = self.subscription_update_mutation
+        subscription = f.AccountSubscriptionFactory.create()
+        organization_subscription = f.OrganizationSubscriptionFactory.create()
+        finance_payment_method = f.FinancePaymentMethodFactory.create()
+        variables = self.variables_update
+        variables['input']['id'] = to_global_id('AccountSubscriptionNode', subscription.id)
+        variables['input']['organizationSubscription'] = to_global_id('OrganizationSubscriptionNode', organization_subscription.id)
+        variables['input']['financePaymentMethod'] = to_global_id('FinancePaymentMethodNode', finance_payment_method.id)
 
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename=self.permission_change)
-    #     user.user_permissions.add(permission)
-    #     user.save()
-
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['updateAccountSubscription']['accountSubscription']['name'], variables['input']['name'])
-    #     self.assertEqual(data['updateAccountSubscription']['accountSubscription']['code'], variables['input']['code'])
+        executed = execute_test_client_api_query(
+            query, 
+            self.anon_user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
-    # def test_update_subscription_permission_denied(self):
-    #     """ Check update subscription permission denied error message """
-    #     query = self.subscription_update_mutation
-    #     subscription = f.AccountSubscriptionFactory.create()
-    #     variables = self.variables_update
-    #     variables['input']['id'] = self.get_node_id_of_first_subscription()
+    def test_update_subscription_permission_granted(self):
+        """ Allow updating subscriptions for users with permissions """
+        query = self.subscription_update_mutation
+        subscription = f.AccountSubscriptionFactory.create()
+        organization_subscription = f.OrganizationSubscriptionFactory.create()
+        finance_payment_method = f.FinancePaymentMethodFactory.create()
+        variables = self.variables_update
+        variables['input']['id'] = to_global_id('AccountSubscriptionNode', subscription.id)
+        variables['input']['organizationSubscription'] = to_global_id('OrganizationSubscriptionNode', organization_subscription.id)
+        variables['input']['financePaymentMethod'] = to_global_id('FinancePaymentMethodNode', finance_payment_method.id)
 
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
+        user = subscription.account
+        permission = Permission.objects.get(codename=self.permission_change)
+        user.user_permissions.add(permission)
+        user.save()
 
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
+        executed = execute_test_client_api_query(
+            query, 
+            user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['updateAccountSubscription']['accountSubscription']['dateStart'], variables['input']['dateStart'])
+
+
+    def test_update_subscription_permission_denied(self):
+        """ Check update subscription permission denied error message """
+        query = self.subscription_update_mutation
+        subscription = f.AccountSubscriptionFactory.create()
+        organization_subscription = f.OrganizationSubscriptionFactory.create()
+        finance_payment_method = f.FinancePaymentMethodFactory.create()
+        variables = self.variables_update
+        variables['input']['id'] = to_global_id('AccountSubscriptionNode', subscription.id)
+        variables['input']['organizationSubscription'] = to_global_id('OrganizationSubscriptionNode', organization_subscription.id)
+        variables['input']['financePaymentMethod'] = to_global_id('FinancePaymentMethodNode', finance_payment_method.id)
+
+        user = subscription.account
+
+        executed = execute_test_client_api_query(
+            query, 
+            user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
     # def test_archive_subscription(self):

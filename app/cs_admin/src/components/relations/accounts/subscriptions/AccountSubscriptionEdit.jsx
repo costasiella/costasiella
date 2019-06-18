@@ -107,7 +107,7 @@ class AccountSubscriptionEdit extends Component {
                       <Card.Title>{t('relations.account.subscriptions.title_edit')}</Card.Title>
                     </Card.Header>
                       <Mutation mutation={UPDATE_ACCOUNT_SUBSCRIPTION} onCompleted={() => history.push(return_url)}> 
-                      {(createSubscription, { data }) => (
+                      {(updateSubscription, { data }) => (
                           <Formik
                               initialValues={{ 
                                 organizationSubscription: initialdata.organizationSubscription.id,
@@ -131,10 +131,9 @@ class AccountSubscriptionEdit extends Component {
                                     dateEnd = values.dateEnd
                                   }
 
-                                  createSubscription({ variables: {
+                                  updateSubscription({ variables: {
                                     input: {
                                       id: id,
-                                      account: account_id, 
                                       organizationSubscription: values.organizationSubscription,
                                       financePaymentMethod: values.financePaymentMethod,
                                       dateStart: dateToLocalISO(values.dateStart),

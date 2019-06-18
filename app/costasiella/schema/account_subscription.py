@@ -23,17 +23,19 @@ def validate_create_update_input(input, update=False):
     result = {}
 
     # Fetch & check account
-    rid = get_rid(input['account'])
-    account = Account.objects.filter(id=rid.id).first()
-    result['account'] = account
-    if not account:
-        raise Exception(_('Invalid Account ID!'))
+    if not update:
+        # Create only
+        rid = get_rid(input['account'])
+        account = Account.objects.filter(id=rid.id).first()
+        result['account'] = account
+        if not account:
+            raise Exception(_('Invalid Account ID!'))
 
     # Fetch & check organization subscription
     rid = get_rid(input['organization_subscription'])
     organization_subscription = OrganizationSubscription.objects.get(pk=rid.id)
     result['organization_subscription'] = organization_subscription
-    if not account:
+    if not organization_subscription:
         raise Exception(_('Invalid Organization Subscription ID!'))
 
     # Check finance payment method
@@ -126,7 +128,6 @@ class CreateAccountSubscription(graphene.relay.ClientIDMutation):
 class UpdateAccountSubscription(graphene.relay.ClientIDMutation):
     class Input:
         id = graphene.ID(required=True)
-        account = graphene.ID(required=True)
         organization_subscription = graphene.ID(required=True)
         finance_payment_method = graphene.ID(required=False, default_value="")
         date_start = graphene.types.datetime.Date(required=True)
@@ -134,7 +135,6 @@ class UpdateAccountSubscription(graphene.relay.ClientIDMutation):
         note = graphene.String(required=False, default_value="")
         registration_fee_paid = graphene.Boolean(required=False, default_value=False)        
         
-
     account_subscription = graphene.Field(AccountSubscriptionNode)
 
     @classmethod
@@ -150,7 +150,6 @@ class UpdateAccountSubscription(graphene.relay.ClientIDMutation):
 
         result = validate_create_update_input(input, update=True)
 
-        account_subscription.account=result['account']
         account_subscription.organization_subscription=result['organization_subscription']
         account_subscription.date_start=input['date_start']
 
