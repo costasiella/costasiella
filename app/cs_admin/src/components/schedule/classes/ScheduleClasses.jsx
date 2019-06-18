@@ -23,8 +23,10 @@ import {
 } from "tabler-react";
 import SiteWrapper from "../../SiteWrapper"
 import HasPermissionWrapper from "../../HasPermissionWrapper"
+import CSDatePicker from "../../ui/CSDatePicker"
 import { confirmAlert } from 'react-confirm-alert'
 import { toast } from 'react-toastify'
+
 
 import BooleanBadge from "../../ui/BooleanBadge"
 import ContentCard from "../../general/ContentCard"
@@ -141,7 +143,25 @@ const ScheduleClasses = ({ t, history }) => (
             <Container>
               <Page.Header title={t("schedule.title")}>
                 <div className="page-options d-flex">
-                  <Button.List>
+                  <CSDatePicker 
+                    className="form-control schedule-classes-csdatepicker mr-4"
+                    selected={new Date(dateFrom)}
+                    isClearable={false}
+                    onChange={(date) => {
+                      let nextWeekFrom = moment(date)
+                      let nextWeekUntil = moment(nextWeekFrom).add(6, 'days')
+
+                      refetch({ 
+                        dateFrom: moment(nextWeekFrom).format('YYYY-MM-DD'), 
+                        dateUntil: moment(nextWeekUntil).format('YYYY-MM-DD')
+                      })
+
+                      dateFrom = nextWeekFrom
+                      dateUntil = nextWeekUntil
+                    }}
+                    placeholderText={t('schedule.classes.go_to_date')}
+                  />
+                  <Button.List className="schedule-classes-page-options-btn-list">
                     <Button 
                       icon="chevron-left"
                       color="secondary"
