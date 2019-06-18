@@ -254,3 +254,20 @@ class AccountSubscriptionFactory(factory.DjangoModelFactory):
     note = "Subscription note here"
     registration_fee_paid = False
     
+
+class SchedulePublicWeeklyClassFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.ScheduleItem
+
+    schedule_item_type = "CLASS"
+    frequency_type = "WEEKLY"
+    frequency_interval = 1 # Monday
+    organization_location_room = factory.SubFactory(OrganizationLocationRoomFactory)
+    organization_classtype = factory.SubFactory(OrganizationClasstypeFactory)
+    organization_level = factory.SubFactory(OrganizationLevelFactory)
+    date_start = datetime.date(2014, 1, 1)
+    date_end = datetime.date(2099, 12, 31)
+    time_start = datetime.time(6, 0)
+    time_end = datetime.time(9, 0)
+    display_public = True
+    
