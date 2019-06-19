@@ -58,8 +58,16 @@ class GQLScheduleClass(TestCase):
 
         self.variables_update = {
             "input": {
-                "name": "Updated scheduleclass",
-                "code" : "987"
+                "frequencyType": "WEEKLY",
+                "frequencyInterval": 1, # Monday,
+                "organizationLocationRoom": to_global_id('OrganizationLocationRoomNode', self.organization_location_room.id),
+                "organizationClasstype": to_global_id('OrganizationClasstypeNode', self.organization_classtype.id),
+                "organizationLevel": to_global_id('OrganizationLevelNode', self.organization_level.id),
+                "dateStart": "1999-01-01",
+                "dateEnd": "2999-12-31",
+                "timeStart": "16:00:00",
+                "timeEnd": "17:30:00",
+                "displayPublic": True
             }
         }
 
@@ -162,17 +170,39 @@ class GQLScheduleClass(TestCase):
   }
 '''
 
-#         self.scheduleclass_update_mutation = '''
-#   mutation UpdateScheduleClass($input: UpdateScheduleClassInput!) {
-#     updateScheduleClass(input: $input) {
-#       scheduleClass {
-#         id
-#         name
-#         code
-#       }
-#     }
-#   }
-# '''
+        self.scheduleclass_update_mutation = '''
+  mutation UpdateScheduleClass($input:UpdateScheduleClassInput!) {
+    updateScheduleClass(input: $input) {
+      scheduleItem {
+        id
+        scheduleItemType
+        frequencyType
+        frequencyInterval
+        organizationLocationRoom {
+          id
+          name
+          organizationLocation {
+            id
+            name
+          }
+        }
+        organizationClasstype {
+          id
+          name
+        }
+        organizationLevel {
+          id
+          name
+        }
+        dateStart
+        dateEnd
+        timeStart
+        timeEnd
+        displayPublic
+      }
+    }
+  }
+'''
 
 #         self.scheduleclass_archive_mutation = '''
 #   mutation ArchiveScheduleClass($input: ArchiveScheduleClassInput!) {
