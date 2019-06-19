@@ -32,14 +32,14 @@ class GQLScheduleClass(TestCase):
 
         self.variables_create = {
             "input": {
-                "name": "New paymentmethod",
+                "name": "New scheduleclass",
                 "code" : "123"
             }
         }
 
         self.variables_update = {
             "input": {
-                "name": "Updated paymentmethod",
+                "name": "Updated scheduleclass",
                 "code" : "987"
             }
         }
@@ -50,9 +50,9 @@ class GQLScheduleClass(TestCase):
             }
         }
 
-        self.paymentmethods_query = '''
-  query FinancePaymentMethods($after: String, $before: String, $archived: Boolean) {
-    financePaymentMethods(first: 15, before: $before, after: $after, archived: $archived) {
+        self.scheduleclasss_query = '''
+  query ScheduleClasss($after: String, $before: String, $archived: Boolean) {
+    scheduleClasses(first: 15, before: $before, after: $after, archived: $archived) {
       pageInfo {
         startCursor
         endCursor
@@ -72,9 +72,9 @@ class GQLScheduleClass(TestCase):
   }
 '''
 
-        self.paymentmethod_query = '''
-  query FinancePaymentMethod($id: ID!) {
-    financePaymentMethod(id:$id) {
+        self.scheduleclass_query = '''
+  query ScheduleClass($id: ID!) {
+    scheduleClass(id:$id) {
       id
       name
       code
@@ -83,10 +83,10 @@ class GQLScheduleClass(TestCase):
   }
 '''
 
-        self.paymentmethod_create_mutation = ''' 
-  mutation CreateFinancePaymentMethod($input:CreateFinancePaymentMethodInput!) {
-    createFinancePaymentMethod(input: $input) {
-      financePaymentMethod{
+        self.scheduleclass_create_mutation = ''' 
+  mutation CreateScheduleClass($input:CreateScheduleClassInput!) {
+    createScheduleClass(input: $input) {
+      scheduleClass{
         id
         archived
         name
@@ -96,10 +96,10 @@ class GQLScheduleClass(TestCase):
   }
 '''
 
-        self.paymentmethod_update_mutation = '''
-  mutation UpdateFinancePaymentMethod($input: UpdateFinancePaymentMethodInput!) {
-    updateFinancePaymentMethod(input: $input) {
-      financePaymentMethod {
+        self.scheduleclass_update_mutation = '''
+  mutation UpdateScheduleClass($input: UpdateScheduleClassInput!) {
+    updateScheduleClass(input: $input) {
+      scheduleClass {
         id
         name
         code
@@ -108,10 +108,10 @@ class GQLScheduleClass(TestCase):
   }
 '''
 
-        self.paymentmethod_archive_mutation = '''
-  mutation ArchiveFinancePaymentMethod($input: ArchiveFinancePaymentMethodInput!) {
-    archiveFinancePaymentMethod(input: $input) {
-      financePaymentMethod {
+        self.scheduleclass_archive_mutation = '''
+  mutation ArchiveScheduleClass($input: ArchiveScheduleClassInput!) {
+    archiveScheduleClass(input: $input) {
+      scheduleClass {
         id
         archived
       }
@@ -125,25 +125,25 @@ class GQLScheduleClass(TestCase):
 
 
     def test_query(self):
-        """ Query list of paymentmethods """
-        query = self.paymentmethods_query
+        """ Query list of scheduleclasss """
+        query = self.scheduleclasss_query
         # The payment method "Cash" from the fixtures will be listed first
-        paymentmethod = models.FinancePaymentMethod.objects.get(pk=101)
+        scheduleclass = models.ScheduleItem.objects.get(pk=101)
         variables = {
             'archived': False
         }
 
         executed = execute_test_client_api_query(query, self.admin_user, variables=variables)
         data = executed.get('data')
-        self.assertEqual(data['financePaymentMethods']['edges'][0]['node']['name'], paymentmethod.name)
-        self.assertEqual(data['financePaymentMethods']['edges'][0]['node']['archived'], paymentmethod.archived)
-        self.assertEqual(data['financePaymentMethods']['edges'][0]['node']['systemMethod'], paymentmethod.system_method)
-        self.assertEqual(data['financePaymentMethods']['edges'][0]['node']['code'], paymentmethod.code)
+        self.assertEqual(data['scheduleClasses']['edges'][0]['node']['name'], scheduleclass.name)
+        self.assertEqual(data['scheduleClasses']['edges'][0]['node']['archived'], scheduleclass.archived)
+        self.assertEqual(data['scheduleClasses']['edges'][0]['node']['systemMethod'], scheduleclass.system_method)
+        self.assertEqual(data['scheduleClasses']['edges'][0]['node']['code'], scheduleclass.code)
 
 
     def test_query_permision_denied(self):
-        """ Query list of paymentmethods - check permission denied """
-        query = self.paymentmethods_query
+        """ Query list of scheduleclasss - check permission denied """
+        query = self.scheduleclasss_query
         variables = {
             'archived': False
         }
@@ -157,10 +157,10 @@ class GQLScheduleClass(TestCase):
 
 
     def test_query_permision_granted(self):
-        """ Query list of paymentmethods with view permission """
-        query = self.paymentmethods_query
+        """ Query list of scheduleclasss with view permission """
+        query = self.scheduleclasss_query
         # The payment method "Cash" from the fixtures will be listed first
-        paymentmethod = models.FinancePaymentMethod.objects.get(pk=101)
+        scheduleclass = models.ScheduleItem.objects.get(pk=101)
         variables = {
             'archived': False
         }
@@ -174,16 +174,16 @@ class GQLScheduleClass(TestCase):
         executed = execute_test_client_api_query(query, user, variables=variables)
         data = executed.get('data')
 
-        # List all paymentmethods
-        self.assertEqual(data['financePaymentMethods']['edges'][0]['node']['name'], paymentmethod.name)
-        self.assertEqual(data['financePaymentMethods']['edges'][0]['node']['archived'], paymentmethod.archived)
-        self.assertEqual(data['financePaymentMethods']['edges'][0]['node']['code'], paymentmethod.code)
+        # List all scheduleclasss
+        self.assertEqual(data['scheduleClasses']['edges'][0]['node']['name'], scheduleclass.name)
+        self.assertEqual(data['scheduleClasses']['edges'][0]['node']['archived'], scheduleclass.archived)
+        self.assertEqual(data['scheduleClasses']['edges'][0]['node']['code'], scheduleclass.code)
 
 
     def test_query_anon_user(self):
-        """ Query list of paymentmethods - anon user """
-        query = self.paymentmethods_query
-        paymentmethod = f.FinancePaymentMethodFactory.create()
+        """ Query list of scheduleclasss - anon user """
+        query = self.scheduleclasss_query
+        scheduleclass = f.SchedulePublicWeeklyClassFactory.create()
         variables = {
             'archived': False
         }
@@ -194,26 +194,26 @@ class GQLScheduleClass(TestCase):
 
 
     def test_query_one(self):
-        """ Query one paymentmethod as admin """   
+        """ Query one scheduleclass as admin """   
         # The payment method "Cash" from the fixtures
-        paymentmethod = models.FinancePaymentMethod.objects.get(pk=101)
-        node_id = to_global_id('FinancePaymentMethodNode', 101)
+        scheduleclass = models.ScheduleItem.objects.get(pk=101)
+        node_id = to_global_id('ScheduleItemNode', 101)
 
-        # Now query single paymentmethod and check
-        executed = execute_test_client_api_query(self.paymentmethod_query, self.admin_user, variables={"id": node_id})
+        # Now query single scheduleclass and check
+        executed = execute_test_client_api_query(self.scheduleclass_query, self.admin_user, variables={"id": node_id})
         data = executed.get('data')
-        self.assertEqual(data['financePaymentMethod']['name'], paymentmethod.name)
-        self.assertEqual(data['financePaymentMethod']['archived'], paymentmethod.archived)
-        self.assertEqual(data['financePaymentMethod']['code'], paymentmethod.code)
+        self.assertEqual(data['scheduleClass']['name'], scheduleclass.name)
+        self.assertEqual(data['scheduleClass']['archived'], scheduleclass.archived)
+        self.assertEqual(data['scheduleClass']['code'], scheduleclass.code)
 
 
     def test_query_one_anon_user(self):
         """ Deny permission for anon users Query one glacount """   
-        paymentmethod = models.FinancePaymentMethod.objects.get(pk=101)
-        node_id = to_global_id('FinancePaymentMethodNode', 101)
+        scheduleclass = models.ScheduleItem.objects.get(pk=101)
+        node_id = to_global_id('ScheduleItemNode', 101)
 
-        # Now query single paymentmethod and check
-        executed = execute_test_client_api_query(self.paymentmethod_query, self.anon_user, variables={"id": node_id})
+        # Now query single scheduleclass and check
+        executed = execute_test_client_api_query(self.scheduleclass_query, self.anon_user, variables={"id": node_id})
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Not logged in!')
 
@@ -222,10 +222,10 @@ class GQLScheduleClass(TestCase):
         """ Permission denied message when user lacks authorization """   
         # Create regular user
         user = f.RegularUserFactory.create()
-        node_id = to_global_id('FinancePaymentMethodNode', 101)
+        node_id = to_global_id('ScheduleItemNode', 101)
 
-        # Now query single paymentmethod and check
-        executed = execute_test_client_api_query(self.paymentmethod_query, user, variables={"id": node_id})
+        # Now query single scheduleclass and check
+        executed = execute_test_client_api_query(self.scheduleclass_query, user, variables={"id": node_id})
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Permission denied!')
 
@@ -237,18 +237,18 @@ class GQLScheduleClass(TestCase):
         user.user_permissions.add(permission)
         user.save()
         # Payment method Cash from fixtures
-        paymentmethod = models.FinancePaymentMethod.objects.get(pk=101)
-        node_id = to_global_id('FinancePaymentMethodNode', 101)
+        scheduleclass = models.ScheduleItem.objects.get(pk=101)
+        node_id = to_global_id('ScheduleItemNode', 101)
 
         # Now query single location and check   
-        executed = execute_test_client_api_query(self.paymentmethod_query, user, variables={"id": node_id})
+        executed = execute_test_client_api_query(self.scheduleclass_query, user, variables={"id": node_id})
         data = executed.get('data')
-        self.assertEqual(data['financePaymentMethod']['name'], paymentmethod.name)
+        self.assertEqual(data['scheduleClass']['name'], scheduleclass.name)
 
 
-    def test_create_paymentmethod(self):
-        """ Create a paymentmethod """
-        query = self.paymentmethod_create_mutation
+    def test_create_scheduleclass(self):
+        """ Create a scheduleclass """
+        query = self.scheduleclass_create_mutation
         variables = self.variables_create
 
         executed = execute_test_client_api_query(
@@ -257,14 +257,14 @@ class GQLScheduleClass(TestCase):
             variables=variables
         )
         data = executed.get('data')
-        self.assertEqual(data['createFinancePaymentMethod']['financePaymentMethod']['name'], variables['input']['name'])
-        self.assertEqual(data['createFinancePaymentMethod']['financePaymentMethod']['archived'], False)
-        self.assertEqual(data['createFinancePaymentMethod']['financePaymentMethod']['code'], variables['input']['code'])
+        self.assertEqual(data['createScheduleClass']['scheduleClass']['name'], variables['input']['name'])
+        self.assertEqual(data['createScheduleClass']['scheduleClass']['archived'], False)
+        self.assertEqual(data['createScheduleClass']['scheduleClass']['code'], variables['input']['code'])
 
 
-    def test_create_paymentmethod_anon_user(self):
-        """ Don't allow creating paymentmethods for non-logged in users """
-        query = self.paymentmethod_create_mutation
+    def test_create_scheduleclass_anon_user(self):
+        """ Don't allow creating scheduleclasss for non-logged in users """
+        query = self.scheduleclass_create_mutation
         variables = self.variables_create
 
         executed = execute_test_client_api_query(
@@ -278,8 +278,8 @@ class GQLScheduleClass(TestCase):
 
 
     def test_create_location_permission_granted(self):
-        """ Allow creating paymentmethods for users with permissions """
-        query = self.paymentmethod_create_mutation
+        """ Allow creating scheduleclasss for users with permissions """
+        query = self.scheduleclass_create_mutation
         variables = self.variables_create
 
         # Create regular user
@@ -294,14 +294,14 @@ class GQLScheduleClass(TestCase):
             variables=variables
         )
         data = executed.get('data')
-        self.assertEqual(data['createFinancePaymentMethod']['financePaymentMethod']['name'], variables['input']['name'])
-        self.assertEqual(data['createFinancePaymentMethod']['financePaymentMethod']['archived'], False)
-        self.assertEqual(data['createFinancePaymentMethod']['financePaymentMethod']['code'], variables['input']['code'])
+        self.assertEqual(data['createScheduleClass']['scheduleClass']['name'], variables['input']['name'])
+        self.assertEqual(data['createScheduleClass']['scheduleClass']['archived'], False)
+        self.assertEqual(data['createScheduleClass']['scheduleClass']['code'], variables['input']['code'])
 
 
-    def test_create_paymentmethod_permission_denied(self):
-        """ Check create paymentmethod permission denied error message """
-        query = self.paymentmethod_create_mutation
+    def test_create_scheduleclass_permission_denied(self):
+        """ Check create scheduleclass permission denied error message """
+        query = self.scheduleclass_create_mutation
         variables = self.variables_create
 
         # Create regular user
@@ -317,12 +317,12 @@ class GQLScheduleClass(TestCase):
         self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
-    def test_update_paymentmethod(self):
-        """ Update a paymentmethod """
-        query = self.paymentmethod_update_mutation
-        paymentmethod = f.FinancePaymentMethodFactory.create()
+    def test_update_scheduleclass(self):
+        """ Update a scheduleclass """
+        query = self.scheduleclass_update_mutation
+        scheduleclass = f.SchedulePublicWeeklyClassFactory.create()
         variables = self.variables_update
-        variables['input']['id'] = to_global_id('FinancePaymentMethodNode', paymentmethod.pk)
+        variables['input']['id'] = to_global_id('ScheduleItemNode', scheduleclass.pk)
 
         executed = execute_test_client_api_query(
             query, 
@@ -330,16 +330,16 @@ class GQLScheduleClass(TestCase):
             variables=variables
         )
         data = executed.get('data')
-        self.assertEqual(data['updateFinancePaymentMethod']['financePaymentMethod']['name'], variables['input']['name'])
-        self.assertEqual(data['updateFinancePaymentMethod']['financePaymentMethod']['code'], variables['input']['code'])
+        self.assertEqual(data['updateScheduleClass']['scheduleClass']['name'], variables['input']['name'])
+        self.assertEqual(data['updateScheduleClass']['scheduleClass']['code'], variables['input']['code'])
 
 
-    def test_update_paymentmethod_anon_user(self):
-        """ Don't allow updating paymentmethods for non-logged in users """
-        query = self.paymentmethod_update_mutation
-        paymentmethod = f.FinancePaymentMethodFactory.create()
+    def test_update_scheduleclass_anon_user(self):
+        """ Don't allow updating scheduleclasss for non-logged in users """
+        query = self.scheduleclass_update_mutation
+        scheduleclass = f.SchedulePublicWeeklyClassFactory.create()
         variables = self.variables_update
-        variables['input']['id'] = to_global_id('FinancePaymentMethodNode', paymentmethod.pk)
+        variables['input']['id'] = to_global_id('ScheduleItemNode', scheduleclass.pk)
 
         executed = execute_test_client_api_query(
             query, 
@@ -351,12 +351,12 @@ class GQLScheduleClass(TestCase):
         self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
-    def test_update_paymentmethod_permission_granted(self):
-        """ Allow updating paymentmethods for users with permissions """
-        query = self.paymentmethod_update_mutation
-        paymentmethod = f.FinancePaymentMethodFactory.create()
+    def test_update_scheduleclass_permission_granted(self):
+        """ Allow updating scheduleclasss for users with permissions """
+        query = self.scheduleclass_update_mutation
+        scheduleclass = f.SchedulePublicWeeklyClassFactory.create()
         variables = self.variables_update
-        variables['input']['id'] = to_global_id('FinancePaymentMethodNode', paymentmethod.pk)
+        variables['input']['id'] = to_global_id('ScheduleItemNode', scheduleclass.pk)
 
         # Create regular user
         user = f.RegularUserFactory.create()
@@ -370,16 +370,16 @@ class GQLScheduleClass(TestCase):
             variables=variables
         )
         data = executed.get('data')
-        self.assertEqual(data['updateFinancePaymentMethod']['financePaymentMethod']['name'], variables['input']['name'])
-        self.assertEqual(data['updateFinancePaymentMethod']['financePaymentMethod']['code'], variables['input']['code'])
+        self.assertEqual(data['updateScheduleClass']['scheduleClass']['name'], variables['input']['name'])
+        self.assertEqual(data['updateScheduleClass']['scheduleClass']['code'], variables['input']['code'])
 
 
-    def test_update_paymentmethod_permission_denied(self):
-        """ Check update paymentmethod permission denied error message """
-        query = self.paymentmethod_update_mutation
-        paymentmethod = f.FinancePaymentMethodFactory.create()
+    def test_update_scheduleclass_permission_denied(self):
+        """ Check update scheduleclass permission denied error message """
+        query = self.scheduleclass_update_mutation
+        scheduleclass = f.SchedulePublicWeeklyClassFactory.create()
         variables = self.variables_update
-        variables['input']['id'] = to_global_id('FinancePaymentMethodNode', paymentmethod.pk)
+        variables['input']['id'] = to_global_id('ScheduleItemNode', scheduleclass.pk)
 
         # Create regular user
         user = f.RegularUserFactory.create()
@@ -394,12 +394,12 @@ class GQLScheduleClass(TestCase):
         self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
-    def test_archive_paymentmethod(self):
-        """ Archive a paymentmethod """
-        query = self.paymentmethod_archive_mutation
-        paymentmethod = f.FinancePaymentMethodFactory.create()
+    def test_archive_scheduleclass(self):
+        """ Archive a scheduleclass """
+        query = self.scheduleclass_archive_mutation
+        scheduleclass = f.SchedulePublicWeeklyClassFactory.create()
         variables = self.variables_archive
-        variables['input']['id'] = to_global_id('FinancePaymentMethodNode', paymentmethod.pk)
+        variables['input']['id'] = to_global_id('ScheduleItemNode', scheduleclass.pk)
 
         executed = execute_test_client_api_query(
             query, 
@@ -407,16 +407,16 @@ class GQLScheduleClass(TestCase):
             variables=variables
         )
         data = executed.get('data')
-        self.assertEqual(data['archiveFinancePaymentMethod']['financePaymentMethod']['archived'], variables['input']['archived'])
+        self.assertEqual(data['archiveScheduleClass']['scheduleClass']['archived'], variables['input']['archived'])
 
 
-    def test_unable_to_archive_system_paymentmethod(self):
+    def test_unable_to_archive_system_scheduleclass(self):
         """ Test that we can't archive a sytem payment method """
-        query = self.paymentmethod_archive_mutation
+        query = self.scheduleclass_archive_mutation
         # This is the "Cash" system payment method from the fixtures
-        paymentmethod = models.FinancePaymentMethod.objects.get(pk=101)
+        scheduleclass = models.ScheduleItem.objects.get(pk=101)
         variables = self.variables_archive
-        variables['input']['id'] = to_global_id('FinancePaymentMethodNode', paymentmethod.pk)
+        variables['input']['id'] = to_global_id('ScheduleItemNode', scheduleclass.pk)
 
         executed = execute_test_client_api_query(
             query, 
@@ -428,12 +428,12 @@ class GQLScheduleClass(TestCase):
         self.assertEqual(errors[0]['message'], 'Unable to archive, this is a system method!')
 
 
-    def test_archive_paymentmethod_anon_user(self):
-        """ Archive paymentmethod denied for anon user """
-        query = self.paymentmethod_archive_mutation
-        paymentmethod = f.FinancePaymentMethodFactory.create()
+    def test_archive_scheduleclass_anon_user(self):
+        """ Archive scheduleclass denied for anon user """
+        query = self.scheduleclass_archive_mutation
+        scheduleclass = f.SchedulePublicWeeklyClassFactory.create()
         variables = self.variables_archive
-        variables['input']['id'] = to_global_id('FinancePaymentMethodNode', paymentmethod.pk)
+        variables['input']['id'] = to_global_id('ScheduleItemNode', scheduleclass.pk)
 
         executed = execute_test_client_api_query(
             query, 
@@ -445,12 +445,12 @@ class GQLScheduleClass(TestCase):
         self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
-    def test_archive_paymentmethod_permission_granted(self):
-        """ Allow archiving paymentmethods for users with permissions """
-        query = self.paymentmethod_archive_mutation
-        paymentmethod = f.FinancePaymentMethodFactory.create()
+    def test_archive_scheduleclass_permission_granted(self):
+        """ Allow archiving scheduleclasss for users with permissions """
+        query = self.scheduleclass_archive_mutation
+        scheduleclass = f.SchedulePublicWeeklyClassFactory.create()
         variables = self.variables_archive
-        variables['input']['id'] = to_global_id('FinancePaymentMethodNode', paymentmethod.pk)
+        variables['input']['id'] = to_global_id('ScheduleItemNode', scheduleclass.pk)
 
         # Create regular user
         user = f.RegularUserFactory.create()
@@ -464,15 +464,15 @@ class GQLScheduleClass(TestCase):
             variables=variables
         )
         data = executed.get('data')
-        self.assertEqual(data['archiveFinancePaymentMethod']['financePaymentMethod']['archived'], variables['input']['archived'])
+        self.assertEqual(data['archiveScheduleClass']['scheduleClass']['archived'], variables['input']['archived'])
 
 
-    def test_archive_paymentmethod_permission_denied(self):
-        """ Check archive paymentmethod permission denied error message """
-        query = self.paymentmethod_archive_mutation
-        paymentmethod = f.FinancePaymentMethodFactory.create()
+    def test_archive_scheduleclass_permission_denied(self):
+        """ Check archive scheduleclass permission denied error message """
+        query = self.scheduleclass_archive_mutation
+        scheduleclass = f.SchedulePublicWeeklyClassFactory.create()
         variables = self.variables_archive
-        variables['input']['id'] = to_global_id('FinancePaymentMethodNode', paymentmethod.pk)
+        variables['input']['id'] = to_global_id('ScheduleItemNode', scheduleclass.pk)
         
         # Create regular user
         user = f.RegularUserFactory.create()
