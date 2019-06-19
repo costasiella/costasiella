@@ -272,9 +272,6 @@ class UpdateScheduleClass(graphene.relay.ClientIDMutation):
         require_login_and_permission(user, 'costasiella.add_scheduleclass')
 
         result = validate_schedule_class_create_update_input(input)
-
-        print(input)
-
         rid = get_rid(input['id'])
 
         schedule_item = ScheduleItem.objects.get(pk=rid.id)

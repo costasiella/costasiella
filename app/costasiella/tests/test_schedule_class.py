@@ -495,21 +495,30 @@ class GQLScheduleClass(TestCase):
         self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
-    # def test_update_scheduleclass(self):
-    #     """ Update a scheduleclass """
-    #     query = self.scheduleclass_update_mutation
-    #     scheduleclass = f.SchedulePublicWeeklyClassFactory.create()
-    #     variables = self.variables_update
-    #     variables['input']['id'] = to_global_id('ScheduleItemNode', scheduleclass.pk)
+    def test_update_scheduleclass(self):
+        """ Update a scheduleclass """
+        query = self.scheduleclass_update_mutation
+        scheduleclass = f.SchedulePublicWeeklyClassFactory.create()
+        variables = self.variables_update
+        variables['input']['id'] = to_global_id('ScheduleItemNode', scheduleclass.pk)
 
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         self.admin_user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['updateScheduleClass']['scheduleClass']['name'], variables['input']['name'])
-    #     self.assertEqual(data['updateScheduleClass']['scheduleClass']['code'], variables['input']['code'])
+        executed = execute_test_client_api_query(
+            query, 
+            self.admin_user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['updateScheduleClass']['scheduleItem']['id'], variables['input']['id'])
+        self.assertEqual(data['updateScheduleClass']['scheduleItem']['frequencyType'], variables['input']['frequencyType'])
+        self.assertEqual(data['updateScheduleClass']['scheduleItem']['frequencyInterval'], variables['input']['frequencyInterval'])
+        self.assertEqual(data['updateScheduleClass']['scheduleItem']['organizationLocationRoom']['id'], variables['input']['organizationLocationRoom'])
+        self.assertEqual(data['updateScheduleClass']['scheduleItem']['organizationClasstype']['id'], variables['input']['organizationClasstype'])
+        self.assertEqual(data['updateScheduleClass']['scheduleItem']['organizationLevel']['id'], variables['input']['organizationLevel'])
+        self.assertEqual(data['updateScheduleClass']['scheduleItem']['dateStart'], variables['input']['dateStart'])
+        self.assertEqual(data['updateScheduleClass']['scheduleItem']['dateEnd'], variables['input']['dateEnd'])
+        self.assertEqual(data['updateScheduleClass']['scheduleItem']['timeStart'], variables['input']['timeStart'])
+        self.assertEqual(data['updateScheduleClass']['scheduleItem']['timeEnd'], variables['input']['timeEnd'])
+        self.assertEqual(data['updateScheduleClass']['scheduleItem']['displayPublic'], variables['input']['displayPublic'])
 
 
     # def test_update_scheduleclass_anon_user(self):
