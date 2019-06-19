@@ -89,16 +89,32 @@ class GQLScheduleClass(TestCase):
   }
 '''
 
-#         self.scheduleclass_query = '''
-#   query ScheduleClass($id: ID!) {
-#     scheduleClass(id:$id) {
-#       id
-#       name
-#       code
-#       archived
-#     }
-#   }
-# '''
+        self.scheduleclass_query = '''
+  query ScheduleItem($id: ID!, $before: String, $after: String, $archived: Boolean!) {
+    scheduleItem(id:$id) {
+      id
+      frequencyType
+      frequencyInterval
+      organizationLocationRoom {
+        id
+        name
+      }
+      organizationClasstype {
+        id
+        name
+      }
+      organizationLevel {
+        id
+        name
+      }
+      dateStart
+      dateEnd
+      timeStart
+      timeEnd
+      displayPublic
+    }
+  }
+'''
 
 #         self.scheduleclass_create_mutation = ''' 
 #   mutation CreateScheduleClass($input:CreateScheduleClassInput!) {
