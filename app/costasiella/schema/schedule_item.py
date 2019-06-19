@@ -269,7 +269,7 @@ class UpdateScheduleClass(graphene.relay.ClientIDMutation):
     @classmethod
     def mutate_and_get_payload(self, root, info, **input):
         user = info.context.user
-        require_login_and_permission(user, 'costasiella.add_scheduleclass')
+        require_login_and_permission(user, 'costasiella.change_scheduleclass')
 
         result = validate_schedule_class_create_update_input(input)
         rid = get_rid(input['id'])
@@ -294,23 +294,15 @@ class UpdateScheduleClass(graphene.relay.ClientIDMutation):
         if date_end:
             schedule_item.date_end = date_end
 
-
         # Fields requiring additional validation
         if result['organization_location_room']:
             schedule_item.organization_location_room = result['organization_location_room']
 
-        print('room')
-
         if result['organization_classtype']:
             schedule_item.organization_classtype = result['organization_classtype']
 
-        print('classtype')
-
         if 'organization_level' in result:
             schedule_item.organization_level = result['organization_level']
-
-        print('level')
-        print(schedule_item)
 
         # ALl done, save it :).
         schedule_item.save()
