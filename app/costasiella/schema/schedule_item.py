@@ -281,6 +281,9 @@ class UpdateScheduleClass(graphene.relay.ClientIDMutation):
         if not schedule_item:
             raise Exception('Invalid Schedule Item ID!')
 
+        if schedule_item.frequency_type == "WEEKLY" and input['frequency_type'] == 'SPECIFIC':
+            raise Exception('Unable to change weekly class into one time class')
+
         schedule_item.frequency_type = input['frequency_type']
         schedule_item.frequency_interval=input['frequency_interval']
         schedule_item.date_start=input['date_start']

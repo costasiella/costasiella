@@ -59,7 +59,7 @@ class GQLScheduleClass(TestCase):
         self.variables_update = {
             "input": {
                 "frequencyType": "WEEKLY",
-                "frequencyInterval": 1, # Monday,
+                "frequencyInterval": 2, # Tuesday,
                 "organizationLocationRoom": to_global_id('OrganizationLocationRoomNode', self.organization_location_room.id),
                 "organizationClasstype": to_global_id('OrganizationClasstypeNode', self.organization_classtype.id),
                 "organizationLevel": to_global_id('OrganizationLevelNode', self.organization_level.id),
