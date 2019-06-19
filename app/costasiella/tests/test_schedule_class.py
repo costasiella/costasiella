@@ -411,59 +411,58 @@ class GQLScheduleClass(TestCase):
         self.assertEqual(data['createScheduleClass']['scheduleItem']['displayPublic'], variables['input']['displayPublic'])
 
 
-    # def test_create_scheduleclass_anon_user(self):
-    #     """ Don't allow creating scheduleclasses for non-logged in users """
-    #     query = self.scheduleclass_create_mutation
-    #     variables = self.variables_create
+    def test_create_scheduleclass_anon_user(self):
+        """ Don't allow creating scheduleclasses for non-logged in users """
+        query = self.scheduleclass_create_mutation
+        variables = self.variables_create
 
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         self.anon_user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
-
-
-    # def test_create_location_permission_granted(self):
-    #     """ Allow creating scheduleclasses for users with permissions """
-    #     query = self.scheduleclass_create_mutation
-    #     variables = self.variables_create
-
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename=self.permission_add)
-    #     user.user_permissions.add(permission)
-    #     user.save()
-
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['createScheduleClass']['scheduleClass']['name'], variables['input']['name'])
-    #     self.assertEqual(data['createScheduleClass']['scheduleClass']['archived'], False)
-    #     self.assertEqual(data['createScheduleClass']['scheduleClass']['code'], variables['input']['code'])
+        executed = execute_test_client_api_query(
+            query, 
+            self.anon_user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
-    # def test_create_scheduleclass_permission_denied(self):
-    #     """ Check create scheduleclass permission denied error message """
-    #     query = self.scheduleclass_create_mutation
-    #     variables = self.variables_create
+    def test_create_location_permission_granted(self):
+        """ Allow creating scheduleclasses for users with permissions """
+        query = self.scheduleclass_create_mutation
+        variables = self.variables_create
 
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
+        # Create regular user
+        user = f.RegularUserFactory.create()
+        permission = Permission.objects.get(codename=self.permission_add)
+        user.user_permissions.add(permission)
+        user.save()
 
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
+        executed = execute_test_client_api_query(
+            query, 
+            user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['createScheduleClass']['scheduleItem']['frequencyType'], variables['input']['frequencyType'])
+        self.assertEqual(data['createScheduleClass']['scheduleItem']['frequencyInterval'], variables['input']['frequencyInterval'])
+
+
+    def test_create_scheduleclass_permission_denied(self):
+        """ Check create scheduleclass permission denied error message """
+        query = self.scheduleclass_create_mutation
+        variables = self.variables_create
+
+        # Create regular user
+        user = f.RegularUserFactory.create()
+
+        executed = execute_test_client_api_query(
+            query, 
+            user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
     # def test_update_scheduleclass(self):
