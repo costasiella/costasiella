@@ -17,7 +17,19 @@ def require_permission(user, permission):
 def require_login_and_permission(user, permission):
     require_login(user)
     require_permission(user, permission)
+
+def require_login_and_one_of_permissions(user, permissions):
+    require_login(user)
     
+    has_permission = False
+    for p in permissions:
+        if user.has_perm(p):
+            has_permission = True
+            break
+
+    if not has_permission:
+        raise Exception(m.user_permission_denied)
+
 
 # To convert relay node id to real id
 def get_rid(global_id):

@@ -313,43 +313,46 @@ class GQLScheduleClass(TestCase):
         self.assertEqual(data['scheduleItem']['displayPublic'], schedule_class.display_public)
 
 
-    # def test_query_one_anon_user(self):
-    #     """ Deny permission for anon users Query one glacount """   
-    #     schedule_class = f.SchedulePublicWeeklyClassFactory.create()
-    #     node_id = to_global_id('ScheduleItemNode', 101)
+    def test_query_one_anon_user(self):
+        """ Deny permission for anon users Query one glacount """   
+        schedule_class = f.SchedulePublicWeeklyClassFactory.create()
+        node_id = to_global_id('ScheduleItemNode', schedule_class.id)
 
-    #     # Now query single scheduleclass and check
-    #     executed = execute_test_client_api_query(self.scheduleclass_query, self.anon_user, variables={"id": node_id})
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
-
-
-    # def test_query_one_permission_denied(self):
-    #     """ Permission denied message when user lacks authorization """   
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     node_id = to_global_id('ScheduleItemNode', 101)
-
-    #     # Now query single scheduleclass and check
-    #     executed = execute_test_client_api_query(self.scheduleclass_query, user, variables={"id": node_id})
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
+        # Now query single scheduleclass and check
+        executed = execute_test_client_api_query(self.scheduleclass_query, self.anon_user, variables={"id": node_id})
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
-    # def test_query_one_permission_granted(self):
-    #     """ Respond with data when user has permission """   
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename='view_scheduleclass')
-    #     user.user_permissions.add(permission)
-    #     user.save()
-    #     # Payment method Cash from fixtures
-    #     schedule_class = f.SchedulePublicWeeklyClassFactory.create()
-    #     node_id = to_global_id('ScheduleItemNode', 101)
+    def test_query_one_permission_denied(self):
+        """ Permission denied message when user lacks authorization """   
+        # Create regular user
+        user = f.RegularUserFactory.create()
 
-    #     # Now query single location and check   
-    #     executed = execute_test_client_api_query(self.scheduleclass_query, user, variables={"id": node_id})
-    #     data = executed.get('data')
-    #     self.assertEqual(data['scheduleClass']['name'], scheduleclass.name)
+        schedule_class = f.SchedulePublicWeeklyClassFactory.create()
+        node_id = to_global_id('ScheduleItemNode', schedule_class.id)
+
+        # Now query single scheduleclass and check
+        executed = execute_test_client_api_query(self.scheduleclass_query, user, variables={"id": node_id})
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
+
+
+    def test_query_one_permission_granted(self):
+        """ Respond with data when user has permission """   
+        user = f.RegularUserFactory.create()
+        permission = Permission.objects.get(codename='view_scheduleclass')
+        user.user_permissions.add(permission)
+        user.save()
+        
+        schedule_class = f.SchedulePublicWeeklyClassFactory.create()
+        node_id = to_global_id('ScheduleItemNode', schedule_class.id)
+
+        # Now query single location and check   
+        executed = execute_test_client_api_query(self.scheduleclass_query, user, variables={"id": node_id})
+        print(executed)
+        data = executed.get('data')
+        self.assertEqual(data['scheduleItem']['id'], node_id)
 
 
     # def test_create_scheduleclass(self):

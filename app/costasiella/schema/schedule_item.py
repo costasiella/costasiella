@@ -8,7 +8,7 @@ from graphql import GraphQLError
 from graphql_relay import to_global_id
 
 from ..models import ScheduleItem, OrganizationClasstype, OrganizationLevel, OrganizationLocationRoom
-from ..modules.gql_tools import require_login_and_permission, get_rid
+from ..modules.gql_tools import require_login_and_permission, require_login_and_one_of_permissions, get_rid
 from ..modules.messages import Messages
 from .organization_classtype import OrganizationClasstypeNode
 from .organization_level import OrganizationLevelNode
@@ -33,7 +33,11 @@ class ScheduleItemNode(DjangoObjectType):
     @classmethod
     def get_node(self, info, id):
         user = info.context.user
-        require_login_and_permission(user, 'costasiella.view_scheduleitem')
+        permissions = [
+            'costasiella.view_scheduleitem',
+            'costasiella.view_scheduleclass'
+        ]
+        require_login_and_one_of_permissions(user, permissions)
 
         return self._meta.model.objects.get(id=id)
 
