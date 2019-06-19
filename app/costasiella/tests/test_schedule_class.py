@@ -90,7 +90,7 @@ class GQLScheduleClass(TestCase):
 '''
 
         self.scheduleclass_query = '''
-  query ScheduleItem($id: ID!, $before: String, $after: String, $archived: Boolean!) {
+  query ScheduleItem($id: ID!) {
     scheduleItem(id:$id) {
       id
       frequencyType
@@ -155,6 +155,44 @@ class GQLScheduleClass(TestCase):
     def tearDown(self):
         # This is run after every test
         pass
+
+
+    def test_query_input_validation_error_dateUntil_smaller_then_dateFrom(self):
+        """ Query list of scheduleclasses 
+        An error message should be returned if dateUntil < dateFrom
+        """
+        query = self.scheduleclasses_query
+        
+        schedule_class = f.SchedulePublicWeeklyClassFactory.create()
+        a_monday = datetime.date(2019, 6, 17)
+        variables = {
+            'dateFrom': str(a_monday),
+            'dateUntil': str(a_monday - datetime.timedelta(days=6))
+        }
+
+        executed = execute_test_client_api_query(query, self.admin_user, variables=variables)
+        errors = executed.get('errors')       
+
+        self.assertEqual(errors[0]['message'], 'dateUntil has to be bigger then dateFrom')
+
+
+    def test_query_input_validation_error_date_input_max_7_days_apart(self):
+        """ Query list of scheduleclasses 
+        An error message should be returned if dates apart > 7 days
+        """
+        query = self.scheduleclasses_query
+        
+        schedule_class = f.SchedulePublicWeeklyClassFactory.create()
+        a_monday = datetime.date(2019, 6, 17)
+        variables = {
+            'dateFrom': str(a_monday),
+            'dateUntil': str(a_monday + datetime.timedelta(days=31))
+        }
+
+        executed = execute_test_client_api_query(query, self.admin_user, variables=variables)
+        errors = executed.get('errors')
+
+        self.assertEqual(errors[0]['message'], "dateFrom and dateUntil can't be more then 7 days apart")
 
 
     def test_query(self):
@@ -237,30 +275,47 @@ class GQLScheduleClass(TestCase):
     def test_query_anon_user(self):
         """ Query list of scheduleclasses - anon user """
         query = self.scheduleclasses_query
-        scheduleclass = f.SchedulePublicWeeklyClassFactory.create()
+        schedule_class = f.SchedulePublicWeeklyClassFactory.create()
 
         executed = execute_test_client_api_query(query, self.anon_user, variables=self.variables_query_list)
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
-    # def test_query_one(self):
-    #     """ Query one scheduleclass as admin """   
-    #     # The payment method "Cash" from the fixtures
-    #     scheduleclass = models.ScheduleItem.objects.get(pk=101)
-    #     node_id = to_global_id('ScheduleItemNode', 101)
+    def test_query_one(self):
+        """ Query one schedule_item as admin """   
+        schedule_class = f.SchedulePublicWeeklyClassFactory.create()
+        node_id = to_global_id('ScheduleItemNode', schedule_class.id)
 
-    #     # Now query single scheduleclass and check
-    #     executed = execute_test_client_api_query(self.scheduleclass_query, self.admin_user, variables={"id": node_id})
-    #     data = executed.get('data')
-    #     self.assertEqual(data['scheduleClass']['name'], scheduleclass.name)
-    #     self.assertEqual(data['scheduleClass']['archived'], scheduleclass.archived)
-    #     self.assertEqual(data['scheduleClass']['code'], scheduleclass.code)
+        # Now query single schedule item and check
+        executed = execute_test_client_api_query(self.scheduleclass_query, self.admin_user, variables={"id": node_id})
+        data = executed.get('data')
+
+        self.assertEqual(data['scheduleItem']['id'], node_id)
+        self.assertEqual(data['scheduleItem']['frequencyType'], schedule_class.frequency_type)
+        self.assertEqual(data['scheduleItem']['frequencyInterval'], schedule_class.frequency_interval)
+        self.assertEqual(
+          data['scheduleItem']['organizationLocationRoom']['id'], 
+          to_global_id('OrganizationLocationRoomNode', schedule_class.organization_location_room.id)
+        )
+        self.assertEqual(
+          data['scheduleItem']['organizationClasstype']['id'], 
+          to_global_id('OrganizationClasstypeNode', schedule_class.organization_classtype.id)
+        )
+        self.assertEqual(
+          data['scheduleItem']['organizationLevel']['id'], 
+          to_global_id('OrganizationLevelNode', schedule_class.organization_level.id)
+        )
+        self.assertEqual(data['scheduleItem']['dateStart'], str(schedule_class.date_start))
+        self.assertEqual(data['scheduleItem']['dateEnd'], str(schedule_class.date_end))
+        self.assertEqual(data['scheduleItem']['timeStart'], str(schedule_class.time_start))
+        self.assertEqual(data['scheduleItem']['timeEnd'], str(schedule_class.time_end))
+        self.assertEqual(data['scheduleItem']['displayPublic'], schedule_class.display_public)
 
 
     # def test_query_one_anon_user(self):
     #     """ Deny permission for anon users Query one glacount """   
-    #     scheduleclass = models.ScheduleItem.objects.get(pk=101)
+    #     schedule_class = f.SchedulePublicWeeklyClassFactory.create()
     #     node_id = to_global_id('ScheduleItemNode', 101)
 
     #     # Now query single scheduleclass and check
@@ -288,7 +343,7 @@ class GQLScheduleClass(TestCase):
     #     user.user_permissions.add(permission)
     #     user.save()
     #     # Payment method Cash from fixtures
-    #     scheduleclass = models.ScheduleItem.objects.get(pk=101)
+    #     schedule_class = f.SchedulePublicWeeklyClassFactory.create()
     #     node_id = to_global_id('ScheduleItemNode', 101)
 
     #     # Now query single location and check   
@@ -465,7 +520,7 @@ class GQLScheduleClass(TestCase):
     #     """ Test that we can't archive a sytem payment method """
     #     query = self.scheduleclass_archive_mutation
     #     # This is the "Cash" system payment method from the fixtures
-    #     scheduleclass = models.ScheduleItem.objects.get(pk=101)
+    #     schedule_class = f.SchedulePublicWeeklyClassFactory.create()
     #     variables = self.variables_archive
     #     variables['input']['id'] = to_global_id('ScheduleItemNode', scheduleclass.pk)
 
