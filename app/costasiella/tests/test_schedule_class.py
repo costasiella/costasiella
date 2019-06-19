@@ -37,10 +37,20 @@ class GQLScheduleClass(TestCase):
             'dateUntil': str(a_monday + datetime.timedelta(days=6))
         }
 
+        self.organization_location_room = f.OrganizationLocationRoomFactory.create()
+
         self.variables_create = {
             "input": {
-                "name": "New scheduleclass",
-                "code" : "123"
+                "frequencyType": "WEEKLY",
+                "frequencyInterval": "1", # Monday,
+                "organizationLocationRoom": to_global_id('OrganizationLocationRoomNode', self.organization_location_room.id),
+                "organizationClasstype": to_global_id('OrganizationClasstypeNode', self.organization_classtype.id),
+                "organizationLevel": to_global_id('OrganizationLevelNode', self.organization_level.id),
+                "dateStart": "2019-01-01",
+                "dateEnd": "2999-12-31",
+                "timeStart": "11:00",
+                "timeStart": "12:30",
+                "displayPublic": True
             }
         }
 
@@ -116,18 +126,39 @@ class GQLScheduleClass(TestCase):
   }
 '''
 
-#         self.scheduleclass_create_mutation = ''' 
-#   mutation CreateScheduleClass($input:CreateScheduleClassInput!) {
-#     createScheduleClass(input: $input) {
-#       scheduleClass{
-#         id
-#         archived
-#         name
-#         code
-#       }
-#     }
-#   }
-# '''
+        self.scheduleclass_create_mutation = ''' 
+  mutation CreateScheduleClass($input:CreateScheduleClassInput!) {
+    createScheduleClass(input: $input) {
+      scheduleItem {
+        id
+        scheduleItemType
+        frequencyType
+        frequencyInterval
+        organizationLocationRoom {
+          id
+          name
+          organizationLocation {
+            id
+            name
+          }
+        }
+        organizationClasstype {
+          id
+          name
+        }
+        organizationLevel {
+          id
+          name
+        }
+        dateStart
+        dateEnd
+        timeStart
+        timeEnd
+        displayPublic
+      }
+    }
+  }
+'''
 
 #         self.scheduleclass_update_mutation = '''
 #   mutation UpdateScheduleClass($input: UpdateScheduleClassInput!) {
