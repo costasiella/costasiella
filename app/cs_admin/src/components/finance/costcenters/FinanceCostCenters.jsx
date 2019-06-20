@@ -68,13 +68,13 @@ const FinanceCostCenters = ({ t, history, archived=false }) => (
                   <Button color={(!archived) ? 'primary': 'secondary'}  
                           size="sm"
                           onClick={() => {archived=false; refetch({archived});}}>
-                    {t('current')}
+                    {t('general.current')}
                   </Button>
                   <Button color={(archived) ? 'primary': 'secondary'} 
                           size="sm" 
                           className="ml-2" 
                           onClick={() => {archived=true; refetch({archived});}}>
-                    {t('archive')}
+                    {t('general.archive')}
                   </Button>
                 </Card.Options>
                 
@@ -115,71 +115,72 @@ const FinanceCostCenters = ({ t, history, archived=false }) => (
                                       : previousResult
                                   }
                                 })
-                              }} >
+                              }} 
+                    >
                     <Table>
-                          <Table.Header>
+                      <Table.Header>
+                        <Table.Row key={v4()}>
+                          <Table.ColHeader>{t('general.name')}</Table.ColHeader>
+                          <Table.ColHeader>{t('finance.code')}</Table.ColHeader>
+                        </Table.Row>
+                      </Table.Header>
+                      <Table.Body>
+                          {costcenters.edges.map(({ node }) => (
                             <Table.Row key={v4()}>
-                              <Table.ColHeader>{t('name')}</Table.ColHeader>
-                              <Table.ColHeader>{t('finance.costcenters.code')}</Table.ColHeader>
-                            </Table.Row>
-                          </Table.Header>
-                          <Table.Body>
-                              {costcenters.edges.map(({ node }) => (
-                                <Table.Row key={v4()}>
-                                  <Table.Col key={v4()}>
-                                    {node.name}
-                                  </Table.Col>
-                                  <Table.Col key={v4()}>
-                                    {node.code}
-                                  </Table.Col>
+                              <Table.Col key={v4()}>
+                                {node.name}
+                              </Table.Col>
+                              <Table.Col key={v4()}>
+                                {node.code}
+                              </Table.Col>
+                              <Table.Col className="text-right" key={v4()}>
+                                {(node.archived) ? 
+                                  <span className='text-muted'>{t('general.unarchive_to_edit')}</span> :
+                                  <Button className='btn-sm' 
+                                          onClick={() => history.push("/finance/costcenters/edit/" + node.id)}
+                                          color="secondary">
+                                    {t('general.edit')}
+                                  </Button>
+                                }
+                              </Table.Col>
+                              <Mutation mutation={ARCHIVE_COSTCENTER} key={v4()}>
+                                {(archiveCostcenter, { data }) => (
                                   <Table.Col className="text-right" key={v4()}>
-                                    {(node.archived) ? 
-                                      <span className='text-muted'>{t('unarchive_to_edit')}</span> :
-                                      <Button className='btn-sm' 
-                                              onClick={() => history.push("/finance/costcenters/edit/" + node.id)}
-                                              color="secondary">
-                                        {t('edit')}
-                                      </Button>
-                                    }
-                                  </Table.Col>
-                                  <Mutation mutation={ARCHIVE_COSTCENTER} key={v4()}>
-                                    {(archiveCostcenter, { data }) => (
-                                      <Table.Col className="text-right" key={v4()}>
-                                        <button className="icon btn btn-link btn-sm" 
-                                           title={t('archive')} 
-                                           href=""
-                                           onClick={() => {
-                                             console.log("clicked archived")
-                                             let id = node.id
-                                             archiveCostcenter({ variables: {
-                                               input: {
-                                                id,
-                                                archived: !archived
-                                               }
-                                        }, refetchQueries: [
-                                            {query: GET_COSTCENTERS_QUERY, variables: {"archived": archived }}
-                                        ]}).then(({ data }) => {
-                                          console.log('got data', data);
-                                          toast.success(
-                                            (archived) ? t('unarchived'): t('archived'), {
-                                              position: toast.POSITION.BOTTOM_RIGHT
-                                            })
-                                        }).catch((error) => {
-                                          toast.error((t('toast_server_error')) + ': ' +  error, {
-                                              position: toast.POSITION.BOTTOM_RIGHT
-                                            })
-                                          console.log('there was an error sending the query', error);
+                                    <button className="icon btn btn-link btn-sm" 
+                                        title={t('general.archive')} 
+                                        href=""
+                                        onClick={() => {
+                                          console.log("clicked archived")
+                                          let id = node.id
+                                          archiveCostcenter({ variables: {
+                                            input: {
+                                            id,
+                                            archived: !archived
+                                            }
+                                    }, refetchQueries: [
+                                        {query: GET_COSTCENTERS_QUERY, variables: {"archived": archived }}
+                                    ]}).then(({ data }) => {
+                                      console.log('got data', data);
+                                      toast.success(
+                                        (archived) ? t('general.unarchived'): t('general.archived'), {
+                                          position: toast.POSITION.BOTTOM_RIGHT
                                         })
-                                        }}>
-                                          <Icon prefix="fa" name="inbox" />
-                                        </button>
-                                      </Table.Col>
-                                    )}
-                                  </Mutation>
-                                </Table.Row>
-                              ))}
-                          </Table.Body>
-                        </Table>
+                                    }).catch((error) => {
+                                      toast.error((t('general.toast_server_error')) + ': ' +  error, {
+                                          position: toast.POSITION.BOTTOM_RIGHT
+                                        })
+                                      console.log('there was an error sending the query', error);
+                                    })
+                                    }}>
+                                      <Icon prefix="fa" name="inbox" />
+                                    </button>
+                                  </Table.Col>
+                                )}
+                              </Mutation>
+                            </Table.Row>
+                          ))}
+                      </Table.Body>
+                    </Table>
                   </ContentCard>
                 )}}
              }

@@ -1,0 +1,38 @@
+[
+  {
+    "model": "costasiella.FinancePaymentMethod",
+    "pk": 100,
+    "fields": {
+      "archived": false,
+      "system_method": true,
+      "name": "Mollie"
+    }
+  },
+  {
+    "model": "costasiella.FinancePaymentMethod",
+    "pk": 101,
+    "fields": {
+      "archived": false,
+      "system_method": true,
+      "name": "Cash"
+    }
+  },
+  {
+    "model": "costasiella.FinancePaymentMethod",
+    "pk": 102,
+    "fields": {
+      "archived": false,
+      "system_method": true,
+      "name": "Wire transfer"
+    }
+  },
+  {
+    "model": "costasiella.FinancePaymentMethod",
+    "pk": 103,
+    "fields": {
+      "archived": false,
+      "system_method": true,
+      "name": "Direct debit"
+    }
+  }
+]

@@ -1,5 +1,24 @@
 from django import forms
+from django.contrib.auth.forms import UserCreationForm, UserChangeForm
+from django.contrib.auth import get_user_model
 from django.utils.translation import gettext as _
+
+from .models import Account
+
+
+class AccountCreationForm(UserCreationForm):
+
+    class Meta(UserCreationForm):
+        model = get_user_model()
+        fields = ('email',)
+
+
+class AccountChangeForm(UserChangeForm):
+
+    class Meta:
+        model = get_user_model()
+        fields = ('email',)
+
 
 class SignupForm(forms.Form):
     first_name = forms.CharField(

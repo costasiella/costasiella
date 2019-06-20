@@ -28,7 +28,12 @@ class ContentCard extends Component {
         document.documentElement.clientHeight || window.innerHeight;
       var scrolledToBottom = Math.ceil(scrollTop + clientHeight) >= scrollHeight;
       if (scrolledToBottom) {
-        this.props.onLoadMore()
+        const pageInfo = this.props.pageInfo
+        if (pageInfo) {
+          if (pageInfo.hasNextPage) {
+            this.props.onLoadMore()
+          }
+        }
       }
     }
 
@@ -57,9 +62,9 @@ class ContentCard extends Component {
                   link
                   onClick={onLoadMore} 
                   >
-                  {t('load_more')}
+                  {t('general.load_more')}
                 </Button>
-               : t('loaded_all')
+               : t('general.loaded_all')
             }
           </Card.Footer>
         </Card>
@@ -72,34 +77,3 @@ ContentCard.defaultProps = {
 }
   
 export default withTranslation()(ContentCard)
-
-
-
-  // class SchoolLocatons extends Component {
-  //   componentDidMount() {
-  //     window.addEventListener("scroll", this.handleOnScroll);
-  //   }
-  
-  //   componentWillUnmount() {
-  //     window.removeEventListener("scroll", this.handleOnScroll);
-  //   }
-  
-  //   handleOnScroll = () => {
-  //     // http://stackoverflow.com/questions/9439725/javascript-how-to-detect-if-browser-window-is-scrolled-to-bottom
-  //     var scrollTop =
-  //       (document.documentElement && document.documentElement.scrollTop) ||
-  //       document.body.scrollTop;
-  //     var scrollHeight =
-  //       (document.documentElement && document.documentElement.scrollHeight) ||
-  //       document.body.scrollHeight;
-  //     var clientHeight =
-  //       document.documentElement.clientHeight || window.innerHeight;
-  //     var scrolledToBottom = Math.ceil(scrollTop + clientHeight) >= scrollHeight;
-  //     if (scrolledToBottom) {
-  //       this.props.onLoadMore()
-  //     }
-  //   }
-    
-  
-  // }
-  
