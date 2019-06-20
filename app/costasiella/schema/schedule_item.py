@@ -217,8 +217,6 @@ class CreateScheduleClass(graphene.relay.ClientIDMutation):
 
         result = validate_schedule_class_create_update_input(input)
 
-        print(input)
-
         schedule_item = ScheduleItem(
             schedule_item_type="CLASS", 
             frequency_type=input['frequency_type'], 
