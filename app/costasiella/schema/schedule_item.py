@@ -59,13 +59,20 @@ class ScheduleClassType(graphene.ObjectType):
 class ScheduleClassesDayType(graphene.ObjectType):
     date = graphene.types.datetime.Date()
     iso_week_day = graphene.Int()
+    order_by = graphene.String()
     classes = graphene.List(ScheduleClassType)
 
     def resolve_iso_week_day(self, info):
         return self.date.isoweekday()
 
+    def resolve_order_by(self, info):       
+        return self.order_by
+
     def resolve_classes(self, info):
         iso_week_day = self.resolve_iso_week_day(info)
+        sorting = self.order_by
+        if not sorting:
+            sorting = "location"
 
         ## Query classes table for self.date
         schedule_items = ScheduleItem.objects.select_related('organization_location_room__organization_location').filter(
@@ -85,6 +92,16 @@ class ScheduleClassesDayType(graphene.ObjectType):
                 )
             )
         )
+
+        if sorting == "location":
+            # Location | Location room | Start time
+            schedule_items = schedule_items.order_by(
+                'organization_location_room__organization_location__name',
+                'organization_location_room__name',
+                'time_start'
+            )
+            # Start time | Location | Location room
+
 
         classes_list = []
         for item in schedule_items:
