@@ -149,7 +149,7 @@ class OrganizationSubscriptionAdd extends Component {
                                       financeCostcenter: values.financeCostcenter
                                     }
                                   }, refetchQueries: [
-                                      // {query: GET_SUBSCRIPTIONS_QUERY, variables: {archived: false }}
+                                      {query: GET_SUBSCRIPTIONS_QUERY, variables: {archived: false }}
                                   ]})
                                   .then(({ data }) => {
                                       console.log('got data', data)
