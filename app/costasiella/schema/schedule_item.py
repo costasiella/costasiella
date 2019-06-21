@@ -71,7 +71,7 @@ class ScheduleClassesDayType(graphene.ObjectType):
     def resolve_classes(self, info):
         iso_week_day = self.resolve_iso_week_day(info)
         sorting = self.order_by
-        if not sorting:
+        if not sorting: # Default to sort by location, then time
             sorting = "location"
 
         ## Query classes table for self.date
@@ -100,7 +100,13 @@ class ScheduleClassesDayType(graphene.ObjectType):
                 'organization_location_room__name',
                 'time_start'
             )
+        else:
             # Start time | Location | Location room
+            schedule_items = schedule_items.order_by(
+                'time_start',
+                'organization_location_room__organization_location__name',
+                'organization_location_room__name',
+            )
 
 
         classes_list = []
@@ -134,15 +140,13 @@ def validate_schedule_classes_query_date_input(date_from, date_until, order_by):
     if days_between > 6:
         raise Exception(_("dateFrom and dateUntil can't be more then 7 days apart")) 
     
-    # if order_by:
-    #     sort_options = [
-    #         'location',
-    #         'starttime'
-    #     ]  
-    #     if order_by not in sort_options:
-    #         raise Exception(_("orderBy can only be 'location' or 'starttime'")) 
-    #     else: 
-    #         request.session['schedule_classes_order_by'] = order_by
+    if order_by:
+        sort_options = [
+            'location',
+            'starttime'
+        ]  
+        if order_by not in sort_options:
+            raise Exception(_("orderBy can only be 'location' or 'starttime'")) 
 
 
 class ScheduleItemQuery(graphene.ObjectType):
@@ -151,7 +155,8 @@ class ScheduleItemQuery(graphene.ObjectType):
     schedule_classes = graphene.List(
         ScheduleClassesDayType,
         date_from=graphene.types.datetime.Date(), 
-        date_until=graphene.types.datetime.Date()
+        date_until=graphene.types.datetime.Date(),
+        order_by=graphene.String()
     )
 
     def resolve_schedule_items(self, info, **kwargs):
@@ -166,7 +171,8 @@ class ScheduleItemQuery(graphene.ObjectType):
                                  info, 
                                  date_from=graphene.types.datetime.Date(), 
                                  date_until=graphene.types.datetime.Date(),
-                                 order_by=graphene.String()):
+                                 order_by=None
+                                 ):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.view_scheduleclass')
 
@@ -178,6 +184,9 @@ class ScheduleItemQuery(graphene.ObjectType):
         while date <= date_until:
             day = ScheduleClassesDayType()
             day.date = date
+
+            if order_by:
+                day.order_by = order_by
 
             return_list.append(day)
             date += delta

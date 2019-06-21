@@ -1,8 +1,8 @@
 import gql from "graphql-tag"
 
 export const GET_CLASSES_QUERY = gql`
-  query ScheduleClasses($dateFrom: Date!, $dateUntil:Date!) {
-    scheduleClasses(dateFrom:$dateFrom, dateUntil: $dateUntil) {
+  query ScheduleClasses($dateFrom: Date!, $dateUntil:Date!, $orderBy: String) {
+    scheduleClasses(dateFrom:$dateFrom, dateUntil: $dateUntil, orderBy: $orderBy) {
       date
       classes {
         scheduleItemId
