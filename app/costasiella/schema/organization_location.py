@@ -5,7 +5,7 @@ from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
 from graphql import GraphQLError
 
-from ..models import OrganizationLocation
+from ..models import OrganizationLocation, OrganizationLocationRoom
 from ..modules.gql_tools import require_login_and_permission, get_rid
 from ..modules.messages import Messages
 
@@ -120,6 +120,14 @@ class CreateOrganizationLocation(graphene.relay.ClientIDMutation):
             display_public=input['display_public']
         )
         organization_location.save()
+
+        # Insert default room when creating a location
+        default_room = OrganizationLocationRoom(
+            organization_location = organization_location,
+            display_public = organization_location.display_public, # mimic parent object
+            name = _("Room 1")
+        )
+        default_room.save()
 
         # return CreateOrganizationLocationSuccess(organization_location=organization_location)
         return CreateOrganizationLocation(organization_location=organization_location)
