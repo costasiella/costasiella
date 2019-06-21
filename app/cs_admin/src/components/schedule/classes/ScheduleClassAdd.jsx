@@ -7,7 +7,7 @@ import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
 import { Formik } from 'formik'
 import { toast } from 'react-toastify'
-
+import moment from 'moment'
 
 import { GET_CLASSES_QUERY, GET_INPUT_VALUES_QUERY } from './queries'
 import { CLASS_SCHEMA } from './yupSchema'
@@ -76,6 +76,14 @@ class ScheduleClassAdd extends Component {
     const t = this.props.t
     const history = this.props.history
     const return_url = "/schedule/classes"
+    // Schedule reload vars
+    const schedule_date = this.props.match.params.schedule_date
+    const schedule_date_from = moment(schedule_date)
+    const schedule_date_until = moment(schedule_date_from).add(6, 'days')
+    const schedule_reload_variables = { 
+        dateFrom: moment(schedule_date_from).format('YYYY-MM-DD'), 
+        dateUntil: moment(schedule_date_until).format('YYYY-MM-DD')
+    }
 
     return (
       <SiteWrapper>
@@ -118,7 +126,7 @@ class ScheduleClassAdd extends Component {
                       initialValues={{ 
                         displayPublic: true,
                         frequencyType: "WEEKLY",
-                        frequencyInterval: "",
+                        frequencyInterval: 1,
                         organizationLocationRoom: "",
                         organizationClasstype: "",
                         organizationLevel: "",
@@ -141,9 +149,7 @@ class ScheduleClassAdd extends Component {
                             } else {
                               dateEnd = values.dateEnd
                             }
-
                           
-
                           createSubscription({ variables: {
                             input: {
                               displayPublic: values.displayPublic,
@@ -158,7 +164,7 @@ class ScheduleClassAdd extends Component {
                               timeEnd: dateToLocalISOTime(values.timeEnd)
                             }
                           }, refetchQueries: [
-                              {query: GET_CLASSES_QUERY, variables: {archived: false }}
+                              {query: GET_CLASSES_QUERY, variables: schedule_reload_variables}
                           ]})
                           .then(({ data }) => {
                               console.log('got data', data)

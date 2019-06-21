@@ -346,7 +346,7 @@ const ScheduleClasses = ({ t, history }) => (
                 <HasPermissionWrapper permission="add"
                                       resource="scheduleclass">
                   <Button color="primary btn-block mb-6"
-                          onClick={() => history.push("/schedule/classes/add")}>
+                          onClick={() => history.push("/schedule/classes/add/" + moment(dateFrom).format('YYYY-MM-DD'))}>
                     <Icon prefix="fe" name="plus-circle" /> {t('schedule.classes.add')}
                   </Button>
                 </HasPermissionWrapper>

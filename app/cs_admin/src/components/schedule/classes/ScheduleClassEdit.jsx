@@ -79,6 +79,15 @@ class ScheduleClassEdit extends Component {
     const id = match.params.id
     const return_url = "/schedule/classes"
 
+    // Schedule reload vars
+    const schedule_date = this.props.match.params.schedule_date
+    const schedule_date_from = moment(schedule_date)
+    const schedule_date_until = moment(schedule_date_from).add(6, 'days')
+    const schedule_reload_variables = { 
+        dateFrom: moment(schedule_date_from).format('YYYY-MM-DD'), 
+        dateUntil: moment(schedule_date_until).format('YYYY-MM-DD')
+    }
+
     return (
       <SiteWrapper>
         <div className="my-3 my-md-5">
@@ -168,7 +177,7 @@ class ScheduleClassEdit extends Component {
                               timeEnd: dateToLocalISOTime(values.timeEnd)
                             }
                           }, refetchQueries: [
-                              {query: GET_CLASSES_QUERY, variables: {archived: false }}
+                              {query: GET_CLASSES_QUERY, variables: schedule_reload_variables}
                           ]})
                           .then(({ data }) => {
                               console.log('got data', data)
