@@ -103,11 +103,7 @@ function get_query_variables() {
 const ScheduleClasses = ({ t, history }) => (
   <SiteWrapper>
     <div className="my-3 my-md-5">
-      <Query query={GET_CLASSES_QUERY} variables={get_query_variables()
-        
-        // { dateFrom: localStorage.getItem(CSLS.SCHEDULE_CLASSES_DATE_FROM), 
-        //   dateUntil: localStorage.getItem(CSLS.SCHEDULE_CLASSES_DATE_UNTIL)}
-      }>
+      <Query query={GET_CLASSES_QUERY} variables={get_query_variables()}>
         {({ loading, error, data: {scheduleClasses: schedule_classes, user:user}, refetch }) => {
           // Loading
           if (loading) return (
