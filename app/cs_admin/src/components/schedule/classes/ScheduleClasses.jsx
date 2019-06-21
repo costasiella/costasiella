@@ -27,6 +27,8 @@ import CSDatePicker from "../../ui/CSDatePicker"
 import { confirmAlert } from 'react-confirm-alert'
 import { toast } from 'react-toastify'
 
+import CSLS from "../../../tools/cs_local_storage"
+
 
 import BooleanBadge from "../../ui/BooleanBadge"
 import ContentCard from "../../general/ContentCard"
@@ -83,21 +85,28 @@ const confirm_delete = ({t, msgConfirm, msgDescription, msgSuccess, deleteFuncti
 }
 
 
+// Set some initial values for dates, if not found
+if (!localStorage.getItem(CSLS.SCHEDULE_CLASSES_DATE_FROM)) {
+  console.log('date from not found...')
+  localStorage.setItem(CSLS.SCHEDULE_CLASSES_DATE_FROM, moment().format('YYYY-MM-DD')) 
+  localStorage.setItem(CSLS.SCHEDULE_CLASSES_DATE_UNTIL, moment().add(6, 'days').format('YYYY-MM-DD')) 
+} 
 
-// Set some initial values for dates
-let dateFrom = moment()
-let dateUntil = moment().add(6, 'days')
-// dateUntil.setDate(dateUntil.getDate() + 6)
-console.log(dateFrom)
-console.log(dateUntil)
+function get_query_variables() {
+  return {
+    dateFrom: localStorage.getItem(CSLS.SCHEDULE_CLASSES_DATE_FROM), 
+    dateUntil: localStorage.getItem(CSLS.SCHEDULE_CLASSES_DATE_UNTIL)
+  }
+}
 
 
 const ScheduleClasses = ({ t, history }) => (
   <SiteWrapper>
     <div className="my-3 my-md-5">
-      <Query query={GET_CLASSES_QUERY} variables={
-        { dateFrom: moment(dateFrom).format('YYYY-MM-DD'), 
-          dateUntil: moment(dateUntil).format('YYYY-MM-DD')}
+      <Query query={GET_CLASSES_QUERY} variables={get_query_variables()
+        
+        // { dateFrom: localStorage.getItem(CSLS.SCHEDULE_CLASSES_DATE_FROM), 
+        //   dateUntil: localStorage.getItem(CSLS.SCHEDULE_CLASSES_DATE_UNTIL)}
       }>
         {({ loading, error, data: {scheduleClasses: schedule_classes, user:user}, refetch }) => {
           // Loading
@@ -145,19 +154,18 @@ const ScheduleClasses = ({ t, history }) => (
                 <div className="page-options d-flex">
                   <CSDatePicker 
                     className="form-control schedule-classes-csdatepicker mr-4"
-                    selected={new Date(dateFrom)}
+                    selected={new Date(localStorage.getItem(CSLS.SCHEDULE_CLASSES_DATE_FROM))}
                     isClearable={false}
                     onChange={(date) => {
                       let nextWeekFrom = moment(date)
                       let nextWeekUntil = moment(nextWeekFrom).add(6, 'days')
 
-                      refetch({ 
-                        dateFrom: moment(nextWeekFrom).format('YYYY-MM-DD'), 
-                        dateUntil: moment(nextWeekUntil).format('YYYY-MM-DD')
-                      })
+                      localStorage.setItem(CSLS.SCHEDULE_CLASSES_DATE_FROM, nextWeekFrom.format('YYYY-MM-DD')) 
+                      localStorage.setItem(CSLS.SCHEDULE_CLASSES_DATE_UNTIL, nextWeekUntil.format('YYYY-MM-DD')) 
 
-                      dateFrom = nextWeekFrom
-                      dateUntil = nextWeekUntil
+                      console.log(get_query_variables())
+
+                      refetch(get_query_variables())
                     }}
                     placeholderText={t('schedule.classes.go_to_date')}
                   />
@@ -166,16 +174,13 @@ const ScheduleClasses = ({ t, history }) => (
                       icon="chevron-left"
                       color="secondary"
                       onClick={ () => {
-                        let nextWeekFrom = moment(dateFrom).subtract(7, 'days')
+                        let nextWeekFrom = moment(localStorage.getItem(CSLS.SCHEDULE_CLASSES_DATE_FROM)).subtract(7, 'days')
                         let nextWeekUntil = moment(nextWeekFrom).add(6, 'days')
                         
-                        refetch({ 
-                            dateFrom: moment(nextWeekFrom).format('YYYY-MM-DD'), 
-                            dateUntil: moment(nextWeekUntil).format('YYYY-MM-DD')
-                        })
+                        localStorage.setItem(CSLS.SCHEDULE_CLASSES_DATE_FROM, nextWeekFrom.format('YYYY-MM-DD')) 
+                        localStorage.setItem(CSLS.SCHEDULE_CLASSES_DATE_UNTIL, nextWeekUntil.format('YYYY-MM-DD')) 
 
-                        dateFrom = nextWeekFrom
-                        dateUntil = nextWeekUntil
+                        refetch(get_query_variables())
                     }} />
                     <Button 
                       icon="clock"
@@ -183,29 +188,23 @@ const ScheduleClasses = ({ t, history }) => (
                       onClick={ () => {
                         let currentWeekFrom = moment()
                         let currentWeekUntil = moment(currentWeekFrom).add(6, 'days')
-                        
-                        refetch({ 
-                            dateFrom: moment(currentWeekFrom).format('YYYY-MM-DD'), 
-                            dateUntil: moment(currentWeekUntil).format('YYYY-MM-DD')
-                        })
 
-                        dateFrom = currentWeekFrom
-                        dateUntil = currentWeekUntil
+                        localStorage.setItem(CSLS.SCHEDULE_CLASSES_DATE_FROM, currentWeekFrom.format('YYYY-MM-DD')) 
+                        localStorage.setItem(CSLS.SCHEDULE_CLASSES_DATE_UNTIL, currentWeekUntil.format('YYYY-MM-DD')) 
+                        
+                        refetch(get_query_variables())
                     }} />
                     <Button 
                       icon="chevron-right"
                       color="secondary"
                       onClick={ () => {
-                        let nextWeekFrom = moment(dateFrom).add(7, 'days')
+                        let nextWeekFrom = moment(localStorage.getItem(CSLS.SCHEDULE_CLASSES_DATE_FROM)).add(7, 'days')
                         let nextWeekUntil = moment(nextWeekFrom).add(6, 'days')
                         
-                        refetch({ 
-                            dateFrom: moment(nextWeekFrom).format('YYYY-MM-DD'), 
-                            dateUntil: moment(nextWeekUntil).format('YYYY-MM-DD')
-                        })
-                        
-                        dateFrom = nextWeekFrom
-                        dateUntil = nextWeekUntil
+                        localStorage.setItem(CSLS.SCHEDULE_CLASSES_DATE_FROM, nextWeekFrom.format('YYYY-MM-DD')) 
+                        localStorage.setItem(CSLS.SCHEDULE_CLASSES_DATE_UNTIL, nextWeekUntil.format('YYYY-MM-DD')) 
+
+                        refetch(get_query_variables())
                     }} />
                   </Button.List>
                 </div>
@@ -287,7 +286,7 @@ const ScheduleClasses = ({ t, history }) => (
                                               badge={t('schedule.classes.all_classes_in_series')}
                                               badgeType="secondary"
                                               icon="edit-2"
-                                              onClick={() => history.push('/schedule/classes/edit/' + scheduleItemId + '/' + moment(dateFrom).format('YYYY-MM-DD'))}>
+                                              onClick={() => history.push('/schedule/classes/edit/' + scheduleItemId)}>
                                                 {t("general.edit")}
                                             </Dropdown.Item>
                                           </HasPermissionWrapper>,
@@ -318,9 +317,7 @@ const ScheduleClasses = ({ t, history }) => (
                                                             id: scheduleItemId
                                                           }
                                                         }, refetchQueries: [
-                                                          { query: GET_CLASSES_QUERY, variables: { 
-                                                              dateFrom: moment(dateFrom).format('YYYY-MM-DD'), 
-                                                              dateUntil: moment(dateUntil).format('YYYY-MM-DD')}}
+                                                          { query: GET_CLASSES_QUERY, variables: get_query_variables() }
                                                         ]}
                                                       })
                                                   }}>
@@ -346,7 +343,7 @@ const ScheduleClasses = ({ t, history }) => (
                 <HasPermissionWrapper permission="add"
                                       resource="scheduleclass">
                   <Button color="primary btn-block mb-6"
-                          onClick={() => history.push("/schedule/classes/add/" + moment(dateFrom).format('YYYY-MM-DD'))}>
+                          onClick={() => history.push("/schedule/classes/add")}>
                     <Icon prefix="fe" name="plus-circle" /> {t('schedule.classes.add')}
                   </Button>
                 </HasPermissionWrapper>

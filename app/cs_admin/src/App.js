@@ -189,8 +189,8 @@ class App extends Component {
             <Route exact path="/relations/accounts/:account_id/subscriptions/edit/:id" component={AccountSubscriptionEdit} />
             <Route exact path="/schedule" component={ScheduleHome} />
             <Route exact path="/schedule/classes" component={ScheduleClasses} />
-            <Route exact path="/schedule/classes/add/:schedule_date" component={ScheduleClassAdd} />
-            <Route exact path="/schedule/classes/edit/:id/:schedule_date" component={ScheduleClassEdit} />
+            <Route exact path="/schedule/classes/add/" component={ScheduleClassAdd} />
+            <Route exact path="/schedule/classes/edit/:id/" component={ScheduleClassEdit} />
 
             <Route component={Error404} />
           </Switch>

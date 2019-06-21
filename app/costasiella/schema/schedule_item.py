@@ -122,7 +122,7 @@ class ScheduleClassesDayType(graphene.ObjectType):
         return classes_list
 
 
-def validate_schedule_classes_query_date_input(date_from, date_until):
+def validate_schedule_classes_query_date_input(date_from, date_until, order_by):
     """
     Check if date_until >= date_start
     Check if delta between dates <= 7 days
@@ -132,7 +132,17 @@ def validate_schedule_classes_query_date_input(date_from, date_until):
 
     days_between = (date_until - date_from).days
     if days_between > 6:
-        raise Exception(_("dateFrom and dateUntil can't be more then 7 days apart"))   
+        raise Exception(_("dateFrom and dateUntil can't be more then 7 days apart")) 
+    
+    # if order_by:
+    #     sort_options = [
+    #         'location',
+    #         'starttime'
+    #     ]  
+    #     if order_by not in sort_options:
+    #         raise Exception(_("orderBy can only be 'location' or 'starttime'")) 
+    #     else: 
+    #         request.session['schedule_classes_order_by'] = order_by
 
 
 class ScheduleItemQuery(graphene.ObjectType):
@@ -155,11 +165,12 @@ class ScheduleItemQuery(graphene.ObjectType):
     def resolve_schedule_classes(self, 
                                  info, 
                                  date_from=graphene.types.datetime.Date(), 
-                                 date_until=graphene.types.datetime.Date()):
+                                 date_until=graphene.types.datetime.Date(),
+                                 order_by=graphene.String()):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.view_scheduleclass')
 
-        validate_schedule_classes_query_date_input(date_from, date_until)
+        validate_schedule_classes_query_date_input(date_from, date_until, order_by)
 
         delta = datetime.timedelta(days=1)
         date = date_from
