@@ -7,10 +7,10 @@ import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
 import { Formik } from 'formik'
 import { toast } from 'react-toastify'
-import moment from 'moment'
 
 
 import { GET_CLASSES_QUERY, GET_CLASS_QUERY } from './queries'
+import { get_list_query_variables } from './tools'
 import { CLASS_SCHEMA } from './yupSchema'
 import ScheduleClassForm from './ScheduleClassForm'
 
@@ -79,15 +79,6 @@ class ScheduleClassEdit extends Component {
     const history = this.props.history
     const id = match.params.id
     const return_url = "/schedule/classes"
-
-    // Schedule reload vars
-    const schedule_date = this.props.match.params.schedule_date
-    const schedule_date_from = moment(schedule_date)
-    const schedule_date_until = moment(schedule_date_from).add(6, 'days')
-    const schedule_reload_variables = { 
-        dateFrom: moment(schedule_date_from).format('YYYY-MM-DD'), 
-        dateUntil: moment(schedule_date_until).format('YYYY-MM-DD')
-    }
 
     return (
       <SiteWrapper>
@@ -178,7 +169,7 @@ class ScheduleClassEdit extends Component {
                               timeEnd: dateToLocalISOTime(values.timeEnd)
                             }
                           }, refetchQueries: [
-                              {query: GET_CLASSES_QUERY, variables: schedule_reload_variables}
+                              {query: GET_CLASSES_QUERY, variables: get_list_query_variables()}
                           ]})
                           .then(({ data }) => {
                               console.log('got data', data)

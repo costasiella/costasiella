@@ -35,6 +35,7 @@ import ContentCard from "../../general/ContentCard"
 import ScheduleMenu from "../ScheduleMenu"
 
 import { GET_CLASSES_QUERY } from "./queries"
+import { get_list_query_variables } from './tools'
 
 import moment from 'moment'
 
@@ -87,23 +88,16 @@ const confirm_delete = ({t, msgConfirm, msgDescription, msgSuccess, deleteFuncti
 
 // Set some initial values for dates, if not found
 if (!localStorage.getItem(CSLS.SCHEDULE_CLASSES_DATE_FROM)) {
-  console.log('date from not found...')
+  console.log('date from not found... defaulting to today...')
   localStorage.setItem(CSLS.SCHEDULE_CLASSES_DATE_FROM, moment().format('YYYY-MM-DD')) 
   localStorage.setItem(CSLS.SCHEDULE_CLASSES_DATE_UNTIL, moment().add(6, 'days').format('YYYY-MM-DD')) 
 } 
-
-function get_query_variables() {
-  return {
-    dateFrom: localStorage.getItem(CSLS.SCHEDULE_CLASSES_DATE_FROM), 
-    dateUntil: localStorage.getItem(CSLS.SCHEDULE_CLASSES_DATE_UNTIL)
-  }
-}
 
 
 const ScheduleClasses = ({ t, history }) => (
   <SiteWrapper>
     <div className="my-3 my-md-5">
-      <Query query={GET_CLASSES_QUERY} variables={get_query_variables()}>
+      <Query query={GET_CLASSES_QUERY} variables={get_list_query_variables()}>
         {({ loading, error, data: {scheduleClasses: schedule_classes, user:user}, refetch }) => {
           // Loading
           if (loading) return (
@@ -159,9 +153,9 @@ const ScheduleClasses = ({ t, history }) => (
                       localStorage.setItem(CSLS.SCHEDULE_CLASSES_DATE_FROM, nextWeekFrom.format('YYYY-MM-DD')) 
                       localStorage.setItem(CSLS.SCHEDULE_CLASSES_DATE_UNTIL, nextWeekUntil.format('YYYY-MM-DD')) 
 
-                      console.log(get_query_variables())
+                      console.log(get_list_query_variables())
 
-                      refetch(get_query_variables())
+                      refetch(get_list_query_variables())
                     }}
                     placeholderText={t('schedule.classes.go_to_date')}
                   />
@@ -176,7 +170,7 @@ const ScheduleClasses = ({ t, history }) => (
                         localStorage.setItem(CSLS.SCHEDULE_CLASSES_DATE_FROM, nextWeekFrom.format('YYYY-MM-DD')) 
                         localStorage.setItem(CSLS.SCHEDULE_CLASSES_DATE_UNTIL, nextWeekUntil.format('YYYY-MM-DD')) 
 
-                        refetch(get_query_variables())
+                        refetch(get_list_query_variables())
                     }} />
                     <Button 
                       icon="clock"
@@ -188,7 +182,7 @@ const ScheduleClasses = ({ t, history }) => (
                         localStorage.setItem(CSLS.SCHEDULE_CLASSES_DATE_FROM, currentWeekFrom.format('YYYY-MM-DD')) 
                         localStorage.setItem(CSLS.SCHEDULE_CLASSES_DATE_UNTIL, currentWeekUntil.format('YYYY-MM-DD')) 
                         
-                        refetch(get_query_variables())
+                        refetch(get_list_query_variables())
                     }} />
                     <Button 
                       icon="chevron-right"
@@ -200,7 +194,7 @@ const ScheduleClasses = ({ t, history }) => (
                         localStorage.setItem(CSLS.SCHEDULE_CLASSES_DATE_FROM, nextWeekFrom.format('YYYY-MM-DD')) 
                         localStorage.setItem(CSLS.SCHEDULE_CLASSES_DATE_UNTIL, nextWeekUntil.format('YYYY-MM-DD')) 
 
-                        refetch(get_query_variables())
+                        refetch(get_list_query_variables())
                     }} />
                   </Button.List>
                 </div>
@@ -313,7 +307,7 @@ const ScheduleClasses = ({ t, history }) => (
                                                             id: scheduleItemId
                                                           }
                                                         }, refetchQueries: [
-                                                          { query: GET_CLASSES_QUERY, variables: get_query_variables() }
+                                                          { query: GET_CLASSES_QUERY, variables: get_list_query_variables() }
                                                         ]}
                                                       })
                                                   }}>
