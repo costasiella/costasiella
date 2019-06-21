@@ -7,6 +7,7 @@ import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
 import { Formik } from 'formik'
 import { toast } from 'react-toastify'
+import moment from 'moment'
 
 
 import { GET_CLASSES_QUERY, GET_CLASS_QUERY } from './queries'
