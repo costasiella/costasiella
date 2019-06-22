@@ -108,7 +108,6 @@ class ScheduleClassesDayType(graphene.ObjectType):
                 'organization_location_room__name',
             )
 
-
         classes_list = []
         for item in schedule_items:
             classes_list.append(

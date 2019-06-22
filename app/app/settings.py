@@ -268,7 +268,7 @@ CONSTANCE_CONFIG_FIELDSETS = {
 # https://www.vaultproject.io/
 
 VAULT_URL = 'http://localhost:8200'
-VAULT_TOKEN = 's.fEQibSfUvWo0Sd5e1HlNTKZz'
+VAULT_TOKEN = 's.1sdwA5BB4suwDCMDvJ4stugu'
 VAULT_TRANSIT_KEY = 'costasiella'
 
 # Graphene configuration
