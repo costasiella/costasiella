@@ -53,6 +53,22 @@ export const GET_CLASSES_QUERY = gql`
         }
       }
     }
+    organizationLocations(first: 100, archived: false) {
+      pageInfo {
+        startCursor
+        endCursor
+        hasNextPage
+        hasPreviousPage
+      }
+      edges {
+        node {
+          id,
+          archived,
+          displayPublic,
+          name
+        }
+      }
+    }
   }
 `
 
