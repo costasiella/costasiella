@@ -91,13 +91,11 @@ class ScheduleClassesDayType(graphene.ObjectType):
                 )
             )
         
-
         # Filter locations
         if self.filter_id_organization_location:
             schedule_filter &= \
                 Q(organization_location_room__organization_location__id = self.filter_id_organization_location)
             
-
         ## Query classes table for self.date
         schedule_items = ScheduleItem.objects.select_related('organization_location_room__organization_location').filter(
             schedule_filter
@@ -163,7 +161,6 @@ def validate_schedule_classes_query_date_input(date_from,
         if order_by not in sort_options:
             raise Exception(_("orderBy can only be 'location' or 'starttime'")) 
 
-    print(organization_location)
     if organization_location:
         rid = get_rid(organization_location)
         organization_location_id = rid.id
@@ -219,7 +216,8 @@ class ScheduleItemQuery(graphene.ObjectType):
                 day.order_by = order_by
 
             if 'organization_location_id' in validation_result:
-                day.filter_id_organization_location = validation_result['organization_location_id']
+                day.filter_id_organization_location = \
+                    validation_result['organization_location_id']
 
             return_list.append(day)
             date += delta
