@@ -19,7 +19,7 @@ import {
   Button,
   Card,
   Container,
-  Table
+  Table,
 } from "tabler-react";
 import SiteWrapper from "../../SiteWrapper"
 import HasPermissionWrapper from "../../HasPermissionWrapper"
@@ -142,30 +142,35 @@ const ScheduleClasses = ({ t, history }) => (
             <Container>
               <Page.Header title={t("schedule.title")}>
                 <div className="page-options d-flex">
-                  <Button 
-                    icon="home"
-                    className="mr-2"
-                    color={
-                      ((localStorage.getItem(CSLS.SCHEDULE_CLASSES_ORDER_BY) === "location") || (!localStorage.getItem(CSLS.SCHEDULE_CLASSES_ORDER_BY))) ?
-                      "azure" : "secondary"
-                    }
-                    onClick={() => {
-                      localStorage.setItem(CSLS.SCHEDULE_CLASSES_ORDER_BY, "location")
-                      refetch(get_list_query_variables())
-                    }}
-                  />
-                  <Button 
-                    icon="clock"
-                    className="mr-2"
-                    color={
-                      (localStorage.getItem(CSLS.SCHEDULE_CLASSES_ORDER_BY) === "starttime") ?
-                      "azure" : "secondary"
-                    }
-                    onClick={() => {
-                      localStorage.setItem(CSLS.SCHEDULE_CLASSES_ORDER_BY, "starttime")
-                      refetch(get_list_query_variables())
-                    }}
-                  />
+                  <span title={t("schedule.classes.tooltip_sort_by_location")}>
+                    <Button 
+                      icon="home"
+                      tooltip="text"
+                      className="mr-2"
+                      color={
+                        ((localStorage.getItem(CSLS.SCHEDULE_CLASSES_ORDER_BY) === "location") || (!localStorage.getItem(CSLS.SCHEDULE_CLASSES_ORDER_BY))) ?
+                        "azure" : "secondary"
+                      }
+                      onClick={() => {
+                        localStorage.setItem(CSLS.SCHEDULE_CLASSES_ORDER_BY, "location")
+                        refetch(get_list_query_variables())
+                      }}
+                    />
+                  </span>
+                  <span title={t("schedule.classes.tooltip_sort_by_starttime")}>
+                    <Button 
+                      icon="clock"
+                      className="mr-2"
+                      color={
+                        (localStorage.getItem(CSLS.SCHEDULE_CLASSES_ORDER_BY) === "starttime") ?
+                        "azure" : "secondary"
+                      }
+                      onClick={() => {
+                        localStorage.setItem(CSLS.SCHEDULE_CLASSES_ORDER_BY, "starttime")
+                        refetch(get_list_query_variables())
+                      }}
+                    />
+                  </span>
                   <CSDatePicker 
                     className="form-control schedule-classes-csdatepicker mr-2"
                     selected={new Date(localStorage.getItem(CSLS.SCHEDULE_CLASSES_DATE_FROM))}
