@@ -60,6 +60,7 @@ class ScheduleClassesDayType(graphene.ObjectType):
     date = graphene.types.datetime.Date()
     iso_week_day = graphene.Int()
     order_by = graphene.String()
+    filter_id_organization_location= graphene.String()
     classes = graphene.List(ScheduleClassType)
 
     def resolve_iso_week_day(self, info):
@@ -74,9 +75,7 @@ class ScheduleClassesDayType(graphene.ObjectType):
         if not sorting: # Default to sort by location, then time
             sorting = "location"
 
-        ## Query classes table for self.date
-        schedule_items = ScheduleItem.objects.select_related('organization_location_room__organization_location').filter(
-            Q(schedule_item_type = 'CLASS') & \
+        schedule_filter = Q(schedule_item_type = 'CLASS') & \
             (
                 # Classes on this day (Specific)
                 (
@@ -91,8 +90,20 @@ class ScheduleClassesDayType(graphene.ObjectType):
                     (Q(date_end__gte = self.date) | Q(date_end__isnull = True ))
                 )
             )
+        
+
+        # Filter locations
+        if self.filter_id_organization_location:
+            schedule_filter &= \
+                Q(organization_location_room__organization_location__id = self.filter_id_organization_location)
+            
+
+        ## Query classes table for self.date
+        schedule_items = ScheduleItem.objects.select_related('organization_location_room__organization_location').filter(
+            schedule_filter
         )
 
+        # Set sorting
         if sorting == "location":
             # Location | Location room | Start time
             schedule_items = schedule_items.order_by(
@@ -127,11 +138,16 @@ class ScheduleClassesDayType(graphene.ObjectType):
         return classes_list
 
 
-def validate_schedule_classes_query_date_input(date_from, date_until, order_by):
+def validate_schedule_classes_query_date_input(date_from, 
+                                               date_until, 
+                                               order_by, 
+                                               organization_location):
     """
     Check if date_until >= date_start
     Check if delta between dates <= 7 days
     """
+    result = {}
+
     if date_until < date_from:
         raise Exception(_("dateUntil has to be bigger then dateFrom"))
 
@@ -147,6 +163,14 @@ def validate_schedule_classes_query_date_input(date_from, date_until, order_by):
         if order_by not in sort_options:
             raise Exception(_("orderBy can only be 'location' or 'starttime'")) 
 
+    print(organization_location)
+    if organization_location:
+        rid = get_rid(organization_location)
+        organization_location_id = rid.id
+        result['organization_location_id'] = organization_location_id
+
+    return result
+
 
 class ScheduleItemQuery(graphene.ObjectType):
     schedule_items = DjangoFilterConnectionField(ScheduleItemNode)
@@ -155,7 +179,8 @@ class ScheduleItemQuery(graphene.ObjectType):
         ScheduleClassesDayType,
         date_from=graphene.types.datetime.Date(), 
         date_until=graphene.types.datetime.Date(),
-        order_by=graphene.String()
+        order_by=graphene.String(),
+        organization_location=graphene.String(),
     )
 
     def resolve_schedule_items(self, info, **kwargs):
@@ -170,12 +195,18 @@ class ScheduleItemQuery(graphene.ObjectType):
                                  info, 
                                  date_from=graphene.types.datetime.Date(), 
                                  date_until=graphene.types.datetime.Date(),
-                                 order_by=None
+                                 order_by=None,
+                                 organization_location=None,
                                  ):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.view_scheduleclass')
 
-        validate_schedule_classes_query_date_input(date_from, date_until, order_by)
+        validation_result = validate_schedule_classes_query_date_input(
+            date_from, 
+            date_until, 
+            order_by,
+            organization_location,
+        )
 
         delta = datetime.timedelta(days=1)
         date = date_from
@@ -186,6 +217,9 @@ class ScheduleItemQuery(graphene.ObjectType):
 
             if order_by:
                 day.order_by = order_by
+
+            if 'organization_location_id' in validation_result:
+                day.filter_id_organization_location = validation_result['organization_location_id']
 
             return_list.append(day)
             date += delta
