@@ -142,8 +142,32 @@ const ScheduleClasses = ({ t, history }) => (
             <Container>
               <Page.Header title={t("schedule.title")}>
                 <div className="page-options d-flex">
+                  <Button 
+                    icon="home"
+                    className="mr-2"
+                    color={
+                      ((localStorage.getItem(CSLS.SCHEDULE_CLASSES_ORDER_BY) === "location") || (!localStorage.getItem(CSLS.SCHEDULE_CLASSES_ORDER_BY))) ?
+                      "azure" : "secondary"
+                    }
+                    onClick={() => {
+                      localStorage.setItem(CSLS.SCHEDULE_CLASSES_ORDER_BY, "location")
+                      refetch(get_list_query_variables())
+                    }}
+                  />
+                  <Button 
+                    icon="clock"
+                    className="mr-2"
+                    color={
+                      (localStorage.getItem(CSLS.SCHEDULE_CLASSES_ORDER_BY) === "starttime") ?
+                      "azure" : "secondary"
+                    }
+                    onClick={() => {
+                      localStorage.setItem(CSLS.SCHEDULE_CLASSES_ORDER_BY, "starttime")
+                      refetch(get_list_query_variables())
+                    }}
+                  />
                   <CSDatePicker 
-                    className="form-control schedule-classes-csdatepicker mr-4"
+                    className="form-control schedule-classes-csdatepicker mr-2"
                     selected={new Date(localStorage.getItem(CSLS.SCHEDULE_CLASSES_DATE_FROM))}
                     isClearable={false}
                     onChange={(date) => {
@@ -173,7 +197,7 @@ const ScheduleClasses = ({ t, history }) => (
                         refetch(get_list_query_variables())
                     }} />
                     <Button 
-                      icon="clock"
+                      icon="calendar"
                       color="secondary"
                       onClick={ () => {
                         let currentWeekFrom = moment()
