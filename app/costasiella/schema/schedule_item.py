@@ -151,7 +151,10 @@ class ScheduleClassesDayType(graphene.ObjectType):
 def validate_schedule_classes_query_date_input(date_from, 
                                                date_until, 
                                                order_by, 
-                                               organization_location):
+                                               organization_classtype,
+                                               organization_level,
+                                               organization_location,
+                                               ):
     """
     Check if date_until >= date_start
     Check if delta between dates <= 7 days
