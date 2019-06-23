@@ -21,20 +21,53 @@ function defaultValueLocation() {
 
 
 const ScheduleClassesFilter = ({ t, history, data, refetch }) => (
-  <select 
-    className="form-control"
-    defaultValue={defaultValueLocation()}
-    onChange={ (event) => {
-      localStorage.setItem(CSLS.SCHEDULE_CLASSES_FILTER_LOCATION, event.target.value)
-      console.log('trigger refetch')
-      refetch(get_list_query_variables())
-    }}
-  >
-    <option value="" key={v4()}>{t("schedule.classes.filter_all_locations")}</option>
-    {data.organizationLocations.edges.map(({ node }) =>
-      <option value={node.id} key={v4()}>{node.name}</option>
-    )}
-  </select>
+  <div>
+    {/* Locations */}
+    <select 
+      className="form-control"
+      defaultValue={defaultValueLocation()}
+      onChange={ (event) => {
+        localStorage.setItem(CSLS.SCHEDULE_CLASSES_FILTER_LOCATION, event.target.value)
+        console.log('trigger refetch')
+        refetch(get_list_query_variables())
+      }}
+    >
+      <option value="" key={v4()}>{t("schedule.classes.filter_all_locations")}</option>
+      {data.organizationLocations.edges.map(({ node }) =>
+        <option value={node.id} key={v4()}>{node.name}</option>
+      )}
+    </select>
+    {/* Classtypes */}
+    <select 
+      className="form-control"
+      defaultValue={defaultValueLocation()}
+      onChange={ (event) => {
+        localStorage.setItem(CSLS.SCHEDULE_CLASSES_FILTER_LOCATION, event.target.value)
+        console.log('trigger refetch')
+        refetch(get_list_query_variables())
+      }}
+    >
+      <option value="" key={v4()}>{t("schedule.classes.filter_all_locations")}</option>
+      {data.organizationLocations.edges.map(({ node }) =>
+        <option value={node.id} key={v4()}>{node.name}</option>
+      )}
+    </select>
+    {/* Levels */}
+    <select 
+      className="form-control"
+      defaultValue={defaultValueLocation()}
+      onChange={ (event) => {
+        localStorage.setItem(CSLS.SCHEDULE_CLASSES_FILTER_LOCATION, event.target.value)
+        console.log('trigger refetch')
+        refetch(get_list_query_variables())
+      }}
+    >
+      <option value="" key={v4()}>{t("schedule.classes.filter_all_locations")}</option>
+      {data.organizationLocations.edges.map(({ node }) =>
+        <option value={node.id} key={v4()}>{node.name}</option>
+      )}
+    </select>
+  </div>
 );
 
 export default withTranslation()(withRouter(ScheduleClassesFilter))
