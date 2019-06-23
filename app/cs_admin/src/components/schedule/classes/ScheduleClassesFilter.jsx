@@ -10,26 +10,37 @@ import CSLS from "../../../tools/cs_local_storage"
 import { get_list_query_variables } from './tools'
 
 
-function defaultValueLocation() {
-  let location = localStorage.getItem(CSLS.SCHEDULE_CLASSES_FILTER_LOCATION)
-  if (location) {
-    return location
+function getDefaultValue(value) {
+  let defaultValue = localStorage.getItem(value)
+  if (defaultValue) {
+    return defaultValue
   } else {
     return ""
   }
 }
 
 
+function updateLocalStorageAndRefetch(key, value, refetch) {
+  localStorage.setItem(key, value)
+  refetch(get_list_query_variables())
+
+}
+
+const selectClass = "form-control mb-2"
+
+
 const ScheduleClassesFilter = ({ t, history, data, refetch }) => (
   <div>
     {/* Locations */}
     <select 
-      className="form-control"
-      defaultValue={defaultValueLocation()}
+      className={selectClass}
+      defaultValue={getDefaultValue(CSLS.SCHEDULE_CLASSES_FILTER_LOCATION)}
       onChange={ (event) => {
-        localStorage.setItem(CSLS.SCHEDULE_CLASSES_FILTER_LOCATION, event.target.value)
-        console.log('trigger refetch')
-        refetch(get_list_query_variables())
+        updateLocalStorageAndRefetch(
+          CSLS.SCHEDULE_CLASSES_FILTER_LOCATION,
+          event.target.value,
+          refetch
+        )
       }}
     >
       <option value="" key={v4()}>{t("schedule.classes.filter_all_locations")}</option>
@@ -39,31 +50,35 @@ const ScheduleClassesFilter = ({ t, history, data, refetch }) => (
     </select>
     {/* Classtypes */}
     <select 
-      className="form-control"
-      defaultValue={defaultValueLocation()}
+      className={selectClass}
+      defaultValue={getDefaultValue(CSLS.SCHEDULE_CLASSES_FILTER_CLASSTYPE)}
       onChange={ (event) => {
-        localStorage.setItem(CSLS.SCHEDULE_CLASSES_FILTER_LOCATION, event.target.value)
-        console.log('trigger refetch')
-        refetch(get_list_query_variables())
+        updateLocalStorageAndRefetch(
+          CSLS.SCHEDULE_CLASSES_FILTER_CLASSTYPE,
+          event.target.value,
+          refetch
+        )
       }}
     >
-      <option value="" key={v4()}>{t("schedule.classes.filter_all_locations")}</option>
-      {data.organizationLocations.edges.map(({ node }) =>
+      <option value="" key={v4()}>{t("schedule.classes.filter_all_classtypes")}</option>
+      {data.organizationClasstypes.edges.map(({ node }) =>
         <option value={node.id} key={v4()}>{node.name}</option>
       )}
     </select>
     {/* Levels */}
     <select 
-      className="form-control"
-      defaultValue={defaultValueLocation()}
+      className={selectClass}
+      defaultValue={getDefaultValue(CSLS.SCHEDULE_CLASSES_FILTER_LEVEL)}
       onChange={ (event) => {
-        localStorage.setItem(CSLS.SCHEDULE_CLASSES_FILTER_LOCATION, event.target.value)
-        console.log('trigger refetch')
-        refetch(get_list_query_variables())
+        updateLocalStorageAndRefetch(
+          CSLS.SCHEDULE_CLASSES_FILTER_LEVEL,
+          event.target.value,
+          refetch
+        )
       }}
     >
-      <option value="" key={v4()}>{t("schedule.classes.filter_all_locations")}</option>
-      {data.organizationLocations.edges.map(({ node }) =>
+      <option value="" key={v4()}>{t("schedule.classes.filter_all_levels")}</option>
+      {data.organizationLevels.edges.map(({ node }) =>
         <option value={node.id} key={v4()}>{node.name}</option>
       )}
     </select>
