@@ -362,27 +362,14 @@ const ScheduleClasses = ({ t, history }) => (
               <Grid.Col md={3}>
                 <HasPermissionWrapper permission="add"
                                       resource="scheduleclass">
-                  <Button color="primary btn-block mb-6"
+                  <Button color="primary btn-block mb-4"
                           onClick={() => history.push("/schedule/classes/add")}>
                     <Icon prefix="fe" name="plus-circle" /> {t('schedule.classes.add')}
                   </Button>
                 </HasPermissionWrapper>
-                Filter
+                <h5>{t("general.filter")}</h5>
                 <ScheduleClassesFilter data={data} refetch={refetch} />
-                {/* <select 
-                  className="form-control"
-                  onChange={ (event) => {
-                    localStorage.setItem(CSLS.SCHEDULE_CLASSES_FILTER_LOCATION, event.target.value)
-                    refetch(get_list_query_variables())
-                  }}
-                >
-                  <option value="" key={v4()}>{t("schedule.classes.filter_all_locations")}</option>
-                  {data.organizationLocations.edges.map(({ node }) =>
-                    <option value={node.id} key={v4()}>{node.name}</option>
-                  )}
-                </select> */}
-
-                Menu
+                <h5>{t("general.menu")}</h5>
                 <ScheduleMenu active_link='classes'/>
             </Grid.Col>
           </Grid.Row>
