@@ -2,6 +2,8 @@ import CSLS from "../../../tools/cs_local_storage"
 
 export function get_list_query_variables() {
   let orderBy
+  let organizationClasstype
+  let organizationLevel
   let organizationLocation
 
   let queryVars = {
@@ -14,6 +16,20 @@ export function get_list_query_variables() {
     queryVars.orderBy = orderBy
   }
 
+  organizationClasstype = localStorage.getItem(CSLS.SCHEDULE_CLASSES_FILTER_CLASSTYPE)
+  if (organizationClasstype) {
+    queryVars.organizationClasstype = organizationClasstype
+  } else {
+    queryVars.organizationClasstype = ""
+  }
+
+  organizationLevel = localStorage.getItem(CSLS.SCHEDULE_CLASSES_FILTER_LEVEL)
+  if (organizationLevel) {
+    queryVars.organizationLevel = organizationLevel
+  } else {
+    queryVars.organizationLevel = ""
+  }
+
   organizationLocation = localStorage.getItem(CSLS.SCHEDULE_CLASSES_FILTER_LOCATION)
   if (organizationLocation) {
     queryVars.organizationLocation = organizationLocation
@@ -21,8 +37,6 @@ export function get_list_query_variables() {
     queryVars.organizationLocation = ""
   }
 
-
-  
   console.log(queryVars)
 
   return queryVars
