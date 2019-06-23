@@ -144,7 +144,8 @@
         "once": "Once",
         "payment_method": "Payment method",
         "filter": "Filter",
-        "menu": "Menu"
+        "menu": "Menu",
+        "clear": "Clear"
     },
     "yup": {
         "min_len_3": "Please input at least 3 characters",

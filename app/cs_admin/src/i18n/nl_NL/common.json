@@ -144,7 +144,8 @@
         "once": "__STRING_NOT_TRANSLATED__",
         "payment_method": "__STRING_NOT_TRANSLATED__",
         "filter": "__STRING_NOT_TRANSLATED__",
-        "menu": "__STRING_NOT_TRANSLATED__"
+        "menu": "__STRING_NOT_TRANSLATED__",
+        "clear": "__STRING_NOT_TRANSLATED__"
     },
     "yup": {
         "min_len_3": "__STRING_NOT_TRANSLATED__",

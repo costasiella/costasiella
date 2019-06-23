@@ -20,6 +20,7 @@ import {
   Card,
   Container,
   Table,
+  Text,
 } from "tabler-react";
 import SiteWrapper from "../../SiteWrapper"
 import HasPermissionWrapper from "../../HasPermissionWrapper"
@@ -362,12 +363,27 @@ const ScheduleClasses = ({ t, history }) => (
               <Grid.Col md={3}>
                 <HasPermissionWrapper permission="add"
                                       resource="scheduleclass">
-                  <Button color="primary btn-block mb-4"
+                  <Button color="primary btn-block mb-1"
                           onClick={() => history.push("/schedule/classes/add")}>
                     <Icon prefix="fe" name="plus-circle" /> {t('schedule.classes.add')}
                   </Button>
                 </HasPermissionWrapper>
-                <h5>{t("general.filter")}</h5>
+                <div>
+                  <Button
+                    className="pull-right"
+                    color="link"
+                    size="sm"
+                    onClick={() => {
+                      localStorage.setItem(CSLS.SCHEDULE_CLASSES_FILTER_CLASSTYPE, "")
+                      localStorage.setItem(CSLS.SCHEDULE_CLASSES_FILTER_LEVEL, "")
+                      localStorage.setItem(CSLS.SCHEDULE_CLASSES_FILTER_LOCATION, "")
+                      refetch(get_list_query_variables())
+                    }}
+                  >
+                    {t("general.clear")}
+                  </Button>
+                  <h5 className="mt-2 pt-1">{t("general.filter")}</h5>
+                </div>
                 <ScheduleClassesFilter data={data} refetch={refetch} />
                 <h5>{t("general.menu")}</h5>
                 <ScheduleMenu active_link='classes'/>
