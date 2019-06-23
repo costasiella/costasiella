@@ -62,9 +62,38 @@ export const GET_CLASSES_QUERY = gql`
       }
       edges {
         node {
-          id,
-          archived,
-          displayPublic,
+          id
+          archived
+          name
+        }
+      }
+    }
+    organizationClasstypes(first: 100, archived: false) {
+      pageInfo {
+        startCursor
+        endCursor
+        hasNextPage
+        hasPreviousPage
+      }
+      edges {
+        node {
+          id
+          archived
+          name
+        }
+      }
+    }
+    organizationLevels(first: 100, archived: false) {
+      pageInfo {
+        startCursor
+        endCursor
+        hasNextPage
+        hasPreviousPage
+      }
+      edges {
+        node {
+          id
+          archived
           name
         }
       }
