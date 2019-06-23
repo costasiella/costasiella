@@ -60,6 +60,8 @@ class ScheduleClassesDayType(graphene.ObjectType):
     date = graphene.types.datetime.Date()
     iso_week_day = graphene.Int()
     order_by = graphene.String()
+    filter_id_organization_classtype= graphene.String()
+    filter_id_organization_level= graphene.String()
     filter_id_organization_location= graphene.String()
     classes = graphene.List(ScheduleClassType)
 
@@ -90,6 +92,16 @@ class ScheduleClassesDayType(graphene.ObjectType):
                     (Q(date_end__gte = self.date) | Q(date_end__isnull = True ))
                 )
             )
+        
+        # Filter classtypes
+        if self.filter_id_organization_classtype:
+            schedule_filter &= \
+                Q(organization_classtype__id = self.filter_id_organization_classtype)
+        
+        # Filter level
+        if self.filter_id_organization_level:
+            schedule_filter &= \
+                Q(organization_level__id = self.filter_id_organization_level)
         
         # Filter locations
         if self.filter_id_organization_location:
@@ -165,6 +177,16 @@ def validate_schedule_classes_query_date_input(date_from,
     print("###########")
     print(organization_location)
 
+    if organization_classtype:
+        rid = get_rid(organization_classtype)
+        organization_classtype_id = rid.id
+        result['organization_classtype_id'] = organization_classtype_id
+
+    if organization_level:
+        rid = get_rid(organization_level)
+        organization_level_id = rid.id
+        result['organization_level_id'] = organization_level_id
+
     if organization_location:
         rid = get_rid(organization_location)
         organization_location_id = rid.id
@@ -181,6 +203,8 @@ class ScheduleItemQuery(graphene.ObjectType):
         date_from=graphene.types.datetime.Date(), 
         date_until=graphene.types.datetime.Date(),
         order_by=graphene.String(),
+        organization_classtype=graphene.String(),
+        organization_level=graphene.String(),
         organization_location=graphene.String(),
         
     )
@@ -198,6 +222,8 @@ class ScheduleItemQuery(graphene.ObjectType):
                                  date_from=graphene.types.datetime.Date(), 
                                  date_until=graphene.types.datetime.Date(),
                                  order_by=None,
+                                 organization_classtype=None,
+                                 organization_level=None,
                                  organization_location=None,
                                  ):
         user = info.context.user
@@ -211,6 +237,8 @@ class ScheduleItemQuery(graphene.ObjectType):
             date_from, 
             date_until, 
             order_by,
+            organization_classtype,
+            organization_level,
             organization_location,
         )
 
@@ -226,6 +254,14 @@ class ScheduleItemQuery(graphene.ObjectType):
 
             if order_by:
                 day.order_by = order_by
+
+            if 'organization_classtype_id' in validation_result:
+                day.filter_id_organization_classtype = \
+                    validation_result['organization_classtype_id']
+
+            if 'organization_level_id' in validation_result:
+                day.filter_id_organization_level = \
+                    validation_result['organization_level_id']
 
             if 'organization_location_id' in validation_result:
                 day.filter_id_organization_location = \
