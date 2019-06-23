@@ -98,7 +98,7 @@ const ScheduleClasses = ({ t, history }) => (
   <SiteWrapper>
     <div className="my-3 my-md-5">
       <Query query={GET_CLASSES_QUERY} variables={get_list_query_variables()}>
-        {({ loading, error, data: {scheduleClasses: schedule_classes, user:user}, refetch }) => {
+        {({ loading, error, data, refetch }) => {
           // Loading
           if (loading) return (
             <Container>
@@ -129,7 +129,7 @@ const ScheduleClasses = ({ t, history }) => (
           </Card.Options>
           
           // Empty list
-          if (!schedule_classes.length) { return (
+          if (!data.scheduleClasses.length) { return (
             <ContentCard cardTitle={t('schedule.classes.title')}
                           headerContent={headerOptions}>
               <p>
@@ -225,13 +225,13 @@ const ScheduleClasses = ({ t, history }) => (
 
                         refetch(get_list_query_variables())
                     }} />
-                  </Button.List>
+                  </Button.List> 
                 </div>
               </Page.Header>
               <Grid.Row>
                 <Grid.Col md={9}>
                   {
-                    schedule_classes.map(({ date, classes }) => (
+                    data.scheduleClasses.map(({ date, classes }) => (
                     <div key={v4()}>
                       <Card>
                         <Card.Header>
@@ -366,6 +366,21 @@ const ScheduleClasses = ({ t, history }) => (
                     <Icon prefix="fe" name="plus-circle" /> {t('schedule.classes.add')}
                   </Button>
                 </HasPermissionWrapper>
+                Filter
+                <select 
+                  className="form-control"
+                  onChange={ (event) => {
+                    localStorage.setItem(CSLS.SCHEDULE_CLASSES_FILTER_LOCATION, event.target.value)
+                    refetch(get_list_query_variables())
+                  }}
+                >
+                  <option value="" key={v4()}>{t("schedule.classes.filter_all_locations")}</option>
+                  {data.organizationLocations.edges.map(({ node }) =>
+                    <option value={node.id} key={v4()}>{node.name}</option>
+                  )}
+                </select>
+
+                Menu
                 <ScheduleMenu active_link='classes'/>
             </Grid.Col>
           </Grid.Row>

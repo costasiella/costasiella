@@ -161,6 +161,10 @@ def validate_schedule_classes_query_date_input(date_from,
         if order_by not in sort_options:
             raise Exception(_("orderBy can only be 'location' or 'starttime'")) 
 
+
+    print("###########")
+    print(organization_location)
+
     if organization_location:
         rid = get_rid(organization_location)
         organization_location_id = rid.id
@@ -178,6 +182,7 @@ class ScheduleItemQuery(graphene.ObjectType):
         date_until=graphene.types.datetime.Date(),
         order_by=graphene.String(),
         organization_location=graphene.String(),
+        
     )
 
     def resolve_schedule_items(self, info, **kwargs):
@@ -198,12 +203,19 @@ class ScheduleItemQuery(graphene.ObjectType):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.view_scheduleclass')
 
+        print('############ resolve')
+        print(locals())
+        print(organization_location)
+
         validation_result = validate_schedule_classes_query_date_input(
             date_from, 
             date_until, 
             order_by,
             organization_location,
         )
+
+
+        print(validation_result)
 
         delta = datetime.timedelta(days=1)
         date = date_from
