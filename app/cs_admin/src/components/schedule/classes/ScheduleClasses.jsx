@@ -33,6 +33,7 @@ import CSLS from "../../../tools/cs_local_storage"
 import BooleanBadge from "../../ui/BooleanBadge"
 import ContentCard from "../../general/ContentCard"
 import ScheduleMenu from "../ScheduleMenu"
+import ScheduleClassesFilter from "./ScheduleClassesFilter"
 
 import { GET_CLASSES_QUERY } from "./queries"
 import { get_list_query_variables } from './tools'
@@ -367,7 +368,8 @@ const ScheduleClasses = ({ t, history }) => (
                   </Button>
                 </HasPermissionWrapper>
                 Filter
-                <select 
+                <ScheduleClassesFilter data={data} refetch={refetch} />
+                {/* <select 
                   className="form-control"
                   onChange={ (event) => {
                     localStorage.setItem(CSLS.SCHEDULE_CLASSES_FILTER_LOCATION, event.target.value)
@@ -378,7 +380,7 @@ const ScheduleClasses = ({ t, history }) => (
                   {data.organizationLocations.edges.map(({ node }) =>
                     <option value={node.id} key={v4()}>{node.name}</option>
                   )}
-                </select>
+                </select> */}
 
                 Menu
                 <ScheduleMenu active_link='classes'/>

@@ -17,8 +17,12 @@ export function get_list_query_variables() {
   organizationLocation = localStorage.getItem(CSLS.SCHEDULE_CLASSES_FILTER_LOCATION)
   if (organizationLocation) {
     queryVars.organizationLocation = organizationLocation
+  } else {
+    queryVars.organizationLocation = ""
   }
 
+
+  
   console.log(queryVars)
 
   return queryVars
