@@ -1,8 +1,22 @@
 import gql from "graphql-tag"
 
 export const GET_CLASSES_QUERY = gql`
-  query ScheduleClasses($dateFrom: Date!, $dateUntil:Date!) {
-    scheduleClasses(dateFrom:$dateFrom, dateUntil: $dateUntil) {
+  query ScheduleClasses(
+      $dateFrom: Date!, 
+      $dateUntil:Date!, 
+      $orderBy: String, 
+      $organizationClasstype: String,
+      $organizationLevel: String,
+      $organizationLocation: String
+    ){
+    scheduleClasses(
+        dateFrom:$dateFrom, 
+        dateUntil: $dateUntil, 
+        orderBy: $orderBy, 
+        organizationClasstype: $organizationClasstype,
+        organizationLevel: $organizationLevel,
+        organizationLocation: $organizationLocation
+    ){
       date
       classes {
         scheduleItemId
@@ -50,6 +64,51 @@ export const GET_CLASSES_QUERY = gql`
               }
             }
           }
+        }
+      }
+    }
+    organizationLocations(first: 100, archived: false) {
+      pageInfo {
+        startCursor
+        endCursor
+        hasNextPage
+        hasPreviousPage
+      }
+      edges {
+        node {
+          id
+          archived
+          name
+        }
+      }
+    }
+    organizationClasstypes(first: 100, archived: false) {
+      pageInfo {
+        startCursor
+        endCursor
+        hasNextPage
+        hasPreviousPage
+      }
+      edges {
+        node {
+          id
+          archived
+          name
+        }
+      }
+    }
+    organizationLevels(first: 100, archived: false) {
+      pageInfo {
+        startCursor
+        endCursor
+        hasNextPage
+        hasPreviousPage
+      }
+      edges {
+        node {
+          id
+          archived
+          name
         }
       }
     }

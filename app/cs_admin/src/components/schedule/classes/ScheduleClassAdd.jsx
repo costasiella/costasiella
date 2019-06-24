@@ -8,8 +8,8 @@ import { withRouter } from "react-router"
 import { Formik } from 'formik'
 import { toast } from 'react-toastify'
 
-
 import { GET_CLASSES_QUERY, GET_INPUT_VALUES_QUERY } from './queries'
+import { get_list_query_variables } from './tools'
 import { CLASS_SCHEMA } from './yupSchema'
 import ScheduleClassForm from './ScheduleClassForm'
 
@@ -118,7 +118,7 @@ class ScheduleClassAdd extends Component {
                       initialValues={{ 
                         displayPublic: true,
                         frequencyType: "WEEKLY",
-                        frequencyInterval: "",
+                        frequencyInterval: 1,
                         organizationLocationRoom: "",
                         organizationClasstype: "",
                         organizationLevel: "",
@@ -141,9 +141,7 @@ class ScheduleClassAdd extends Component {
                             } else {
                               dateEnd = values.dateEnd
                             }
-
                           
-
                           createSubscription({ variables: {
                             input: {
                               displayPublic: values.displayPublic,
@@ -158,7 +156,7 @@ class ScheduleClassAdd extends Component {
                               timeEnd: dateToLocalISOTime(values.timeEnd)
                             }
                           }, refetchQueries: [
-                              {query: GET_CLASSES_QUERY, variables: {archived: false }}
+                              {query: GET_CLASSES_QUERY, variables: get_list_query_variables()}
                           ]})
                           .then(({ data }) => {
                               console.log('got data', data)

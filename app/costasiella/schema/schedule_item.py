@@ -59,17 +59,25 @@ class ScheduleClassType(graphene.ObjectType):
 class ScheduleClassesDayType(graphene.ObjectType):
     date = graphene.types.datetime.Date()
     iso_week_day = graphene.Int()
+    order_by = graphene.String()
+    filter_id_organization_classtype= graphene.String()
+    filter_id_organization_level= graphene.String()
+    filter_id_organization_location= graphene.String()
     classes = graphene.List(ScheduleClassType)
 
     def resolve_iso_week_day(self, info):
         return self.date.isoweekday()
 
+    def resolve_order_by(self, info):       
+        return self.order_by
+
     def resolve_classes(self, info):
         iso_week_day = self.resolve_iso_week_day(info)
+        sorting = self.order_by
+        if not sorting: # Default to sort by location, then time
+            sorting = "location"
 
-        ## Query classes table for self.date
-        schedule_items = ScheduleItem.objects.select_related('organization_location_room__organization_location').filter(
-            Q(schedule_item_type = 'CLASS') & \
+        schedule_filter = Q(schedule_item_type = 'CLASS') & \
             (
                 # Classes on this day (Specific)
                 (
@@ -84,7 +92,42 @@ class ScheduleClassesDayType(graphene.ObjectType):
                     (Q(date_end__gte = self.date) | Q(date_end__isnull = True ))
                 )
             )
+        
+        # Filter classtypes
+        if self.filter_id_organization_classtype:
+            schedule_filter &= \
+                Q(organization_classtype__id = self.filter_id_organization_classtype)
+        
+        # Filter level
+        if self.filter_id_organization_level:
+            schedule_filter &= \
+                Q(organization_level__id = self.filter_id_organization_level)
+        
+        # Filter locations
+        if self.filter_id_organization_location:
+            schedule_filter &= \
+                Q(organization_location_room__organization_location__id = self.filter_id_organization_location)
+            
+        ## Query classes table for self.date
+        schedule_items = ScheduleItem.objects.select_related('organization_location_room__organization_location').filter(
+            schedule_filter
         )
+
+        # Set sorting
+        if sorting == "location":
+            # Location | Location room | Start time
+            schedule_items = schedule_items.order_by(
+                'organization_location_room__organization_location__name',
+                'organization_location_room__name',
+                'time_start'
+            )
+        else:
+            # Start time | Location | Location room
+            schedule_items = schedule_items.order_by(
+                'time_start',
+                'organization_location_room__organization_location__name',
+                'organization_location_room__name',
+            )
 
         classes_list = []
         for item in schedule_items:
@@ -105,17 +148,54 @@ class ScheduleClassesDayType(graphene.ObjectType):
         return classes_list
 
 
-def validate_schedule_classes_query_date_input(date_from, date_until):
+def validate_schedule_classes_query_date_input(date_from, 
+                                               date_until, 
+                                               order_by, 
+                                               organization_classtype,
+                                               organization_level,
+                                               organization_location,
+                                               ):
     """
     Check if date_until >= date_start
     Check if delta between dates <= 7 days
     """
+    result = {}
+
     if date_until < date_from:
         raise Exception(_("dateUntil has to be bigger then dateFrom"))
 
     days_between = (date_until - date_from).days
     if days_between > 6:
-        raise Exception(_("dateFrom and dateUntil can't be more then 7 days apart"))   
+        raise Exception(_("dateFrom and dateUntil can't be more then 7 days apart")) 
+    
+    if order_by:
+        sort_options = [
+            'location',
+            'starttime'
+        ]  
+        if order_by not in sort_options:
+            raise Exception(_("orderBy can only be 'location' or 'starttime'")) 
+
+
+    print("###########")
+    print(organization_location)
+
+    if organization_classtype:
+        rid = get_rid(organization_classtype)
+        organization_classtype_id = rid.id
+        result['organization_classtype_id'] = organization_classtype_id
+
+    if organization_level:
+        rid = get_rid(organization_level)
+        organization_level_id = rid.id
+        result['organization_level_id'] = organization_level_id
+
+    if organization_location:
+        rid = get_rid(organization_location)
+        organization_location_id = rid.id
+        result['organization_location_id'] = organization_location_id
+
+    return result
 
 
 class ScheduleItemQuery(graphene.ObjectType):
@@ -124,7 +204,12 @@ class ScheduleItemQuery(graphene.ObjectType):
     schedule_classes = graphene.List(
         ScheduleClassesDayType,
         date_from=graphene.types.datetime.Date(), 
-        date_until=graphene.types.datetime.Date()
+        date_until=graphene.types.datetime.Date(),
+        order_by=graphene.String(),
+        organization_classtype=graphene.String(),
+        organization_level=graphene.String(),
+        organization_location=graphene.String(),
+        
     )
 
     def resolve_schedule_items(self, info, **kwargs):
@@ -138,11 +223,30 @@ class ScheduleItemQuery(graphene.ObjectType):
     def resolve_schedule_classes(self, 
                                  info, 
                                  date_from=graphene.types.datetime.Date(), 
-                                 date_until=graphene.types.datetime.Date()):
+                                 date_until=graphene.types.datetime.Date(),
+                                 order_by=None,
+                                 organization_classtype=None,
+                                 organization_level=None,
+                                 organization_location=None,
+                                 ):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.view_scheduleclass')
 
-        validate_schedule_classes_query_date_input(date_from, date_until)
+        print('############ resolve')
+        print(locals())
+        print(organization_location)
+
+        validation_result = validate_schedule_classes_query_date_input(
+            date_from, 
+            date_until, 
+            order_by,
+            organization_classtype,
+            organization_level,
+            organization_location,
+        )
+
+
+        print(validation_result)
 
         delta = datetime.timedelta(days=1)
         date = date_from
@@ -150,6 +254,21 @@ class ScheduleItemQuery(graphene.ObjectType):
         while date <= date_until:
             day = ScheduleClassesDayType()
             day.date = date
+
+            if order_by:
+                day.order_by = order_by
+
+            if 'organization_classtype_id' in validation_result:
+                day.filter_id_organization_classtype = \
+                    validation_result['organization_classtype_id']
+
+            if 'organization_level_id' in validation_result:
+                day.filter_id_organization_level = \
+                    validation_result['organization_level_id']
+
+            if 'organization_location_id' in validation_result:
+                day.filter_id_organization_location = \
+                    validation_result['organization_location_id']
 
             return_list.append(day)
             date += delta
@@ -215,9 +334,9 @@ class CreateScheduleClass(graphene.relay.ClientIDMutation):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.add_scheduleclass')
 
-        result = validate_schedule_class_create_update_input(input)
-
         print(input)
+
+        result = validate_schedule_class_create_update_input(input)
 
         schedule_item = ScheduleItem(
             schedule_item_type="CLASS", 

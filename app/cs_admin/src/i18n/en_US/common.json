@@ -142,7 +142,10 @@
         "time_start": "Time start",
         "time_end": "Time end",
         "once": "Once",
-        "payment_method": "Payment method"
+        "payment_method": "Payment method",
+        "filter": "Filter",
+        "menu": "Menu",
+        "clear": "Clear"
     },
     "yup": {
         "min_len_3": "Please input at least 3 characters",
@@ -397,7 +400,13 @@
             "frequencyInterval": "Week day",
             "placeholder_enddate": "Click to select a date or leave empty for no enddate",
             "title_edit": "Edit class",
-            "toast_edit_success": "Saved class"
+            "toast_edit_success": "Saved class",
+            "tooltip_sort_by_location": "Sort by location",
+            "tooltip_sort_by_starttime": "Sort by start time",
+            "go_to_date": "Go to date",
+            "filter_all_locations": "All locations",
+            "filter_all_classtypes": "All classtypes",
+            "filter_all_levels": "All levels"
         }
     },
     "countries": {

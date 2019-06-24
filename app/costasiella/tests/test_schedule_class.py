@@ -76,8 +76,22 @@ class GQLScheduleClass(TestCase):
         }
 
         self.scheduleclasses_query = '''
-  query ScheduleClasses($dateFrom: Date!, $dateUntil:Date!) {
-    scheduleClasses(dateFrom:$dateFrom, dateUntil: $dateUntil) {
+  query ScheduleClasses(
+      $dateFrom: Date!, 
+      $dateUntil:Date!, 
+      $orderBy: String, 
+      $organizationClasstype: String,
+      $organizationLevel: String,
+      $organizationLocation: String
+    ){
+    scheduleClasses(
+        dateFrom:$dateFrom, 
+        dateUntil: $dateUntil, 
+        orderBy: $orderBy, 
+        organizationClasstype: $organizationClasstype,
+        organizationLevel: $organizationLevel,
+        organizationLocation: $organizationLocation
+    ){
       date
       classes {
         scheduleItemId
@@ -328,6 +342,80 @@ class GQLScheduleClass(TestCase):
             data['scheduleClasses'][0]['classes'][0]['scheduleItemId'], 
             to_global_id('ScheduleItemNode', schedule_class.id)
         )
+
+
+    def test_query_filter_organization_classtype(self):
+        """ Test filtering query by classtype """
+        query = self.scheduleclasses_query
+
+        schedule_class = f.SchedulePublicWeeklyClassFactory.create()
+        schedule_class2 = f.SchedulePublicWeeklyClassFactory.create()
+
+        first_classtype = schedule_class.organization_classtype
+
+        second_classtype = schedule_class2.organization_classtype
+        second_classtype.name = "Second classtype"
+        second_classtype.save()
+
+        variables = self.variables_query_list
+        variables['organizationClasstype'] = to_global_id('OrganizationClasstypeNode', first_classtype.id)
+
+        executed = execute_test_client_api_query(query, self.admin_user, variables=variables)
+        data = executed.get('data')
+        for day in data['scheduleClasses']:
+            for day_class in day['classes']:
+                self.assertEqual('Second' not in day_class['organizationClasstype']['name'], True)
+
+
+    def test_query_filter_organization_level(self):
+        """ Test filtering query by level """
+        query = self.scheduleclasses_query
+
+        schedule_class = f.SchedulePublicWeeklyClassFactory.create()
+        schedule_class2 = f.SchedulePublicWeeklyClassFactory.create()
+
+        first_level = schedule_class.organization_level
+
+        second_level = schedule_class2.organization_level
+        second_level.name = "Second level"
+        second_level.save()
+
+        variables = self.variables_query_list
+        variables['organizationLevel'] = to_global_id('OrganizationLevelNode', first_level.id)
+
+        executed = execute_test_client_api_query(query, self.admin_user, variables=variables)
+        data = executed.get('data')
+        for day in data['scheduleClasses']:
+            for day_class in day['classes']:
+                self.assertEqual('Second' not in day_class['organizationLevel']['name'], True)
+
+
+    def test_query_filter_organization_location(self):
+        """ Test filtering query by location """
+        query = self.scheduleclasses_query
+
+        schedule_class = f.SchedulePublicWeeklyClassFactory.create()
+        schedule_class2 = f.SchedulePublicWeeklyClassFactory.create()
+
+        first_location_room = schedule_class.organization_location_room
+        first_location = first_location_room.organization_location
+
+        second_location_room = schedule_class2.organization_location_room
+        second_location_room.name = "Second location room"
+        second_location_room.save()
+        second_location = second_location_room.organization_location
+        second_location.name = "Second location"
+        second_location.save()
+
+        variables = self.variables_query_list
+        variables['organizationLocation'] = to_global_id('OrganizationLocationNode', first_location.id)
+
+        executed = execute_test_client_api_query(query, self.admin_user, variables=variables)
+        data = executed.get('data')
+        for day in data['scheduleClasses']:
+            for day_class in day['classes']:
+                self.assertEqual('Second' not in day_class['organizationLocationRoom']['name'], True)
+
 
 
     def test_query_anon_user(self):

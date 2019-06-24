@@ -142,7 +142,10 @@
         "time_start": "__STRING_NOT_TRANSLATED__",
         "time_end": "__STRING_NOT_TRANSLATED__",
         "once": "__STRING_NOT_TRANSLATED__",
-        "payment_method": "__STRING_NOT_TRANSLATED__"
+        "payment_method": "__STRING_NOT_TRANSLATED__",
+        "filter": "__STRING_NOT_TRANSLATED__",
+        "menu": "__STRING_NOT_TRANSLATED__",
+        "clear": "__STRING_NOT_TRANSLATED__"
     },
     "yup": {
         "min_len_3": "__STRING_NOT_TRANSLATED__",
@@ -397,7 +400,13 @@
             "frequencyInterval": "__STRING_NOT_TRANSLATED__",
             "placeholder_enddate": "__STRING_NOT_TRANSLATED__",
             "title_edit": "__STRING_NOT_TRANSLATED__",
-            "toast_edit_success": "__STRING_NOT_TRANSLATED__"
+            "toast_edit_success": "__STRING_NOT_TRANSLATED__",
+            "tooltip_sort_by_location": "__STRING_NOT_TRANSLATED__",
+            "tooltip_sort_by_starttime": "__STRING_NOT_TRANSLATED__",
+            "go_to_date": "__STRING_NOT_TRANSLATED__",
+            "filter_all_locations": "__STRING_NOT_TRANSLATED__",
+            "filter_all_classtypes": "__STRING_NOT_TRANSLATED__",
+            "filter_all_levels": "__STRING_NOT_TRANSLATED__"
         }
     },
     "countries": {

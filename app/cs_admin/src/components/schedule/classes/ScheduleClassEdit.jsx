@@ -10,6 +10,7 @@ import { toast } from 'react-toastify'
 
 
 import { GET_CLASSES_QUERY, GET_CLASS_QUERY } from './queries'
+import { get_list_query_variables } from './tools'
 import { CLASS_SCHEMA } from './yupSchema'
 import ScheduleClassForm from './ScheduleClassForm'
 
@@ -168,7 +169,7 @@ class ScheduleClassEdit extends Component {
                               timeEnd: dateToLocalISOTime(values.timeEnd)
                             }
                           }, refetchQueries: [
-                              {query: GET_CLASSES_QUERY, variables: {archived: false }}
+                              {query: GET_CLASSES_QUERY, variables: get_list_query_variables()}
                           ]})
                           .then(({ data }) => {
                               console.log('got data', data)

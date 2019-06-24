@@ -12,8 +12,10 @@ from django.contrib.auth.models import AnonymousUser
 
 from . import factories as f
 from .helpers import execute_test_client_api_query
+from ..modules.gql_tools import get_rid
 from .. import models
 from .. import schema
+
 
 
 
@@ -282,6 +284,13 @@ query getOrganizationLocation($id: ID!) {
         self.assertEqual(data['createOrganizationLocation']['organizationLocation']['name'], variables['input']['name'])
         self.assertEqual(data['createOrganizationLocation']['organizationLocation']['archived'], False)
         self.assertEqual(data['createOrganizationLocation']['organizationLocation']['displayPublic'], variables['input']['displayPublic'])
+
+        # Check creation of a default room
+        rid = get_rid(data['createOrganizationLocation']['organizationLocation']['id'])
+        location = models.OrganizationLocation.objects.get(pk=rid.id)
+        rooms = models.OrganizationLocationRoom.objects.filter(organization_location = location)
+        room = rooms[0]
+        self.assertEqual(room.name, 'Room 1')
 
 
     def test_create_location_anon_user(self):
