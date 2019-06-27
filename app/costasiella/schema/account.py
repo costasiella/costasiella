@@ -28,7 +28,11 @@ class UserType(DjangoObjectType):
 class AccountNode(DjangoObjectType):
     class Meta:
         model = get_user_model()
-        filter_fields = ['is_active']
+        filter_fields = {
+            'search_name': ['icontains', 'exact'],
+            'full_name': ['icontains', 'exact'],
+            'is_active': ['exact']
+        }
         interfaces = (graphene.relay.Node, )
 
     @classmethod
@@ -204,7 +208,7 @@ class UpdateAccount(graphene.relay.ClientIDMutation):
         mobile = graphene.String(requires=False, default_value="")
         emergency = graphene.String(requires=False, default_value="")
         gender = graphene.String(requires=False, default_value="")
-        date_of_birth = graphene.types.datetime.Date(required=False, default_value="")
+        date_of_birth = graphene.types.datetime.Date(required=False, default_value=None)
 
     account = graphene.Field(AccountNode)
 
@@ -221,6 +225,8 @@ class UpdateAccount(graphene.relay.ClientIDMutation):
             raise Exception('Invalid Account ID!')
 
         validate_create_update_input(account, input, update=True)
+
+        print(input)
 
 
         account.first_name = input['first_name']
@@ -246,6 +252,8 @@ class UpdateAccount(graphene.relay.ClientIDMutation):
             account.gender = input['gender']
         if input['date_of_birth']:
             account.date_of_birth = input['date_of_birth']
+
+            
         account.save()
 
         # Update Allauth email address 

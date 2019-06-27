@@ -79,7 +79,7 @@ class RelationsAccountProfile extends Component {
 
                   // DatePicker doesn't like a string as an initial value
                   // This makes it a happy DatePicker :)
-                  let dateOfBirth = ""
+                  let dateOfBirth = null
                   if (initialData.dateOfBirth) {
                     dateOfBirth = new Date(initialData.dateOfBirth)
                   }
