@@ -10,6 +10,7 @@ class Account(AbstractUser):
     # https://docs.djangoproject.com/en/2.2/ref/models/fields/#editable
 
     full_name = models.CharField(max_length=255, default="", editable=False)
+    search_name = models.CharField(max_length=255, default="", editable=False)
     gender = EncryptedTextField(default="")
     date_of_birth = EncryptedTextField(data_type="date", default="")
     address = EncryptedTextField(default="")
@@ -28,4 +29,5 @@ class Account(AbstractUser):
     def save(self, *args, **kwargs):
         name = [self.first_name, self.last_name]
         self.full_name = " ".join(name)
+        self.search_name = self.full_name.lower()
         super(Account, self).save(*args, **kwargs)

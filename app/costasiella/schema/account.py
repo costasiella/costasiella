@@ -68,6 +68,50 @@ class PermissionNode(DjangoObjectType):
         return self._meta.model.objects.get(id=id)
 
 
+class AccountQuery(graphene.AbstractType):
+    user = graphene.Field(UserType)
+    account = graphene.relay.Node.Field(AccountNode)
+    accounts = DjangoFilterConnectionField(AccountNode)
+    group = graphene.relay.Node.Field(GroupNode)
+    groups = DjangoFilterConnectionField(GroupNode)
+    permission = graphene.relay.Node.Field(PermissionNode)
+    permissions = DjangoFilterConnectionField(PermissionNode)
+
+
+    def resolve_user(self, info):
+        user = info.context.user
+        if user.is_anonymous:
+            raise Exception('Not logged in!')
+
+        return user
+
+
+    def resolve_accounts(self, info, is_active=False, **kwargs):
+        user = info.context.user
+        require_login_and_permission(user, 'costasiella.view_account')
+
+        query_set =  get_user_model().objects.filter(
+            is_active=is_active, 
+            is_superuser=False
+        )
+
+        return query_set.order_by('first_name')
+
+
+    def resolve_groups(self, info):
+        user = info.context.user
+        require_login_and_permission(user, 'costasiella.view_group')
+
+        return Group.objects.all()
+
+
+    def resolve_permissions(self, info):
+        user = info.context.user
+        require_login_and_permission(user, 'costasiella.view_permission')
+
+        return Permission.objects.all()
+
+
 class CreateAccount(graphene.relay.ClientIDMutation):
     class Input:
         first_name = graphene.String(required=True)
@@ -263,45 +307,3 @@ class AccountMutation(graphene.ObjectType):
     update_account_active = UpdateAccountActive.Field()
     delete_account = DeleteAccount.Field()
 
-
-class AccountQuery(graphene.AbstractType):
-    user = graphene.Field(UserType)
-    account = graphene.relay.Node.Field(AccountNode)
-    accounts = DjangoFilterConnectionField(AccountNode)
-    group = graphene.relay.Node.Field(GroupNode)
-    groups = DjangoFilterConnectionField(GroupNode)
-    permission = graphene.relay.Node.Field(PermissionNode)
-    permissions = DjangoFilterConnectionField(PermissionNode)
-
-
-    def resolve_user(self, info):
-        user = info.context.user
-        if user.is_anonymous:
-            raise Exception('Not logged in!')
-
-        return user
-
-
-    def resolve_accounts(self, info, is_active=False, **kwargs):
-        user = info.context.user
-        require_login_and_permission(user, 'costasiella.view_account')
-
-        return get_user_model().objects.filter(
-            is_active=is_active, 
-            is_superuser=False
-        ).order_by('first_name')
-
-
-    def resolve_groups(self, info):
-        user = info.context.user
-        require_login_and_permission(user, 'costasiella.view_group')
-
-        return Group.objects.all()
-
-
-    def resolve_permissions(self, info):
-        user = info.context.user
-        require_login_and_permission(user, 'costasiella.view_permission')
-
-        return Permission.objects.all()
-        
