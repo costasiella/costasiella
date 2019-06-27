@@ -29,7 +29,6 @@ class AccountNode(DjangoObjectType):
     class Meta:
         model = get_user_model()
         filter_fields = {
-            'search_name': ['icontains', 'exact'],
             'full_name': ['icontains', 'exact'],
             'is_active': ['exact']
         }
