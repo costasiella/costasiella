@@ -100,6 +100,9 @@ class RelationsAccountProfile extends Component {
                          {(updateAccount, { data }) => (
                           <Formik
                             initialValues={{ 
+                              customer: initialData.customer, 
+                              teacher: initialData.teacher, 
+                              employee: initialData.employee, 
                               firstName: initialData.firstName, 
                               lastName: initialData.lastName, 
                               email: initialData.email,
@@ -128,6 +131,9 @@ class RelationsAccountProfile extends Component {
                                 updateAccount({ variables: {
                                   input: {
                                     id: match.params.account_id,
+                                    customer: values.customer,
+                                    teacher: values.teacher,
+                                    employee: values.employee,
                                     firstName: values.firstName,
                                     lastName: values.lastName,
                                     email: values.email,

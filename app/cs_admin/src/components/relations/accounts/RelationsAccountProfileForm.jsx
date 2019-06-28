@@ -24,6 +24,50 @@ const RelationsAccountProfileForm = ({ t, history, isSubmitting, errors, values,
       <Card.Body>
         <Grid.Row>
           <Grid.Col>
+            <Form.Group>
+              <Form.Label className="custom-switch">
+                  <Field 
+                  className="custom-switch-input"
+                  type="checkbox" 
+                  name="customer" 
+                  checked={values.customer} />
+                  <span className="custom-switch-indicator" ></span>
+                  <span className="custom-switch-description">{t('general.customer')}</span>
+              </Form.Label>
+              <ErrorMessage name="customer" component="div" />   
+            </Form.Group>  
+          </Grid.Col>
+          <Grid.Col>
+            <Form.Group>
+              <Form.Label className="custom-switch">
+                  <Field 
+                  className="custom-switch-input"
+                  type="checkbox" 
+                  name="teacher" 
+                  checked={values.teacher} />
+                  <span className="custom-switch-indicator" ></span>
+                  <span className="custom-switch-description">{t('general.teacher')}</span>
+              </Form.Label>
+              <ErrorMessage name="teacher" component="div" />   
+            </Form.Group>  
+          </Grid.Col>
+          <Grid.Col>
+            <Form.Group>
+              <Form.Label className="custom-switch">
+                  <Field 
+                  className="custom-switch-input"
+                  type="checkbox" 
+                  name="employee" 
+                  checked={values.employee} />
+                  <span className="custom-switch-indicator" ></span>
+                  <span className="custom-switch-description">{t('general.employee')}</span>
+              </Form.Label>
+              <ErrorMessage name="employee" component="div" />   
+            </Form.Group>  
+          </Grid.Col>
+        </Grid.Row>
+        <Grid.Row>
+          <Grid.Col>
             <Form.Group label={t('general.first_name')}>
               <Field type="text" 
                       name="firstName" 
