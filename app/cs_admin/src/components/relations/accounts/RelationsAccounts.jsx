@@ -26,6 +26,7 @@ import { toast } from 'react-toastify'
 import ContentCard from "../../general/ContentCard"
 import InputSearch from "../../general/InputSearch"
 import RelationsMenu from "../RelationsMenu"
+import CSLS from "../../../tools/cs_local_storage"
 
 import { GET_ACCOUNTS_QUERY } from "./queries"
 
@@ -137,8 +138,12 @@ const RelationsAccounts = ({ t, history, isActive=true }) => (
               <Page.Header title={t("relations.title")}>
                 <div className="page-options d-flex">
                   <InputSearch 
+                    initialValueKey={CSLS.RELATIONS_ACCOUNTS_SEARCH}
                     placeholder="Search..."
-                    onChange={(value) => console.log(value)}
+                    onChange={(value) => {
+                      console.log(value)
+                      localStorage.setItem(CSLS.RELATIONS_ACCOUNTS_SEARCH, value)
+                    }}
                   />
                 </div>
               </Page.Header>

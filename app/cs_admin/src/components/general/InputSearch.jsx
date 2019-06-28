@@ -8,6 +8,7 @@ import {
     Icon
   } from "tabler-react"
 
+import CSLS from "../../tools/cs_local_storage"
 
 class InputSearch extends Component {
   constructor(props) {
@@ -15,8 +16,16 @@ class InputSearch extends Component {
     console.log("Input search props:")
     console.log(props)
     this.input = React.createRef()
+    let inputValue
+    const initialValue = localStorage.getItem(this.props.initialValueKey)
+    if (initialValue) {
+      inputValue = initialValue 
+    } else {
+      inputValue = ""
+    }
+
     this.state = {
-      inputValue: "",
+      inputValue: inputValue,
       submitValue: "",
       doneTypingInterval: 500
     }
@@ -74,8 +83,11 @@ class InputSearch extends Component {
               icon="x"
               disabled={!(this.state.inputValue)}
               onClick={() => {
-                this.setState({inputValue: "", submitValue: ""})
-                this.props.onChange(this.state.submitValue)
+                this.setState({inputValue: "", submitValue: ""}, () => {
+                  // setState callback, this makes sure the onChange function is calles with new values
+                  console.log(this.state)
+                  this.props.onChange(this.state.submitValue) 
+                })
               }}
             >
             </Button>
