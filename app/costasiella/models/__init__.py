@@ -22,3 +22,4 @@ from .organization_subscription_group_subscription import OrganizationSubscripti
 from .organization_subscription_price import OrganizationSubscriptionPrice
 
 from .schedule_item import ScheduleItem
+from .schedule_item_teachers import ScheduleItemTeachers
