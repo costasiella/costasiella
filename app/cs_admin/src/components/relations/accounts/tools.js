@@ -9,7 +9,7 @@ export function get_list_query_variables() {
   let search = localStorage.getItem(CSLS.RELATIONS_ACCOUNTS_SEARCH)
 
   let queryVars = {
-    isActive: isActive,
+    isActive: (isActive === "true") ? true : false,
     searchName: search
   }
 
