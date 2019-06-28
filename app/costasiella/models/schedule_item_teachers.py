@@ -9,14 +9,6 @@ from .account import Account
 # Create your models here.
 
 class ScheduleItemTeachers(models.Model):
-    # class Meta:
-    #     permissions = [
-    #         ('view_scheduleitemteachers', _("Can view schedule class teachers")),
-    #         ('add_scheduleitemteachers', _("Can add schedule class teachers")),
-    #         ('change_scheduleitemteachers', _("Can change schedule class teachers")),
-    #         ('delete_scheduleitemteachers', _("Can delete schedule class teachers")),
-    #     ]
-
     TEACHER_ROLES = [
         ['NORMAL', _("Normal")],
         ['SUB', _("Subteacher")],
