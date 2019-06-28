@@ -18,7 +18,7 @@ import {
   Button,
   Card,
   Container
-} from "tabler-react";
+} from "tabler-react"
 import SiteWrapper from "../../SiteWrapper"
 import HasPermissionWrapper from "../../HasPermissionWrapper"
 import { dateToLocalISO } from '../../../tools/date_tools'
