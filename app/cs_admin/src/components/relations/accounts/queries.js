@@ -26,6 +26,9 @@ export const GET_ACCOUNT_QUERY = gql`
   query Account($id: ID!) {
     account(id:$id) {
       id
+      customer
+      teacher
+      employee
       firstName
       lastName
       email

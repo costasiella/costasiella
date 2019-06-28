@@ -236,12 +236,15 @@ class UpdateAccount(graphene.relay.ClientIDMutation):
         account.email = input['email']
         account.username = input['email']
         # Only update these fields if input has been passed
-        if input['customer']:
-            account.customer = input['customer']
-        if input['teacher']:
-            account.teacher = input['teacher']
-        if input['employee']:
-            account.employee = input['employee']
+        customer = input.get('customer', None)
+        if customer:
+            account.customer = customer
+        teacher = input.get('teacher', None)
+        if teacher:
+            account.teacher = teacher
+        employee = input.get('employee', None)
+        if employee:
+            account.employee = employee
         if input['address']:
             account.address = input['address']
         if input['postcode']:
