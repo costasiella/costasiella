@@ -8,7 +8,7 @@ from .account import Account
 
 # Create your models here.
 
-class ScheduleItemTeachers(models.Model):
+class ScheduleItemTeacher(models.Model):
     TEACHER_ROLES = [
         ['NORMAL', _("Normal")],
         ['SUB', _("Subteacher")],
