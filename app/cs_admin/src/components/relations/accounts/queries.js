@@ -1,8 +1,8 @@
 import gql from "graphql-tag"
 
 export const GET_ACCOUNTS_QUERY = gql`
-  query Accounts($after: String, $before: String, $isActive: Boolean!) {
-    accounts(first: 15, before: $before, after: $after, isActive: $isActive) {
+  query Accounts($after: String, $before: String, $isActive: Boolean!, $searchName: String) {
+    accounts(first: 15, before: $before, after: $after, isActive: $isActive, fullName_Icontains: searchName) {
       pageInfo {
         hasNextPage
         hasPreviousPage
