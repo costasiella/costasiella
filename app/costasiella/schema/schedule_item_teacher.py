@@ -123,8 +123,13 @@ class CreateScheduleItemTeacher(graphene.relay.ClientIDMutation):
 class UpdateScheduleItemTeacher(graphene.relay.ClientIDMutation):
     class Input:
         id = graphene.ID(required=True)
-        name = graphene.String(required=True)
-        display_public = graphene.Boolean(required=True)
+        schedule_item = graphene.ID(required=True)
+        account = graphene.ID(required=True)
+        role = graphene.String(required=False, default_value="")
+        account_2 = graphene.ID(required=True)
+        role_2 = graphene.String(required=False, default_value="")
+        date_start = graphene.types.datetime.Date(required=True)
+        date_end = graphene.types.datetime.Date(required=False, default_value=None)
         
     schedule_item_teacher = graphene.Field(ScheduleItemTeacherNode)
 
@@ -134,24 +139,43 @@ class UpdateScheduleItemTeacher(graphene.relay.ClientIDMutation):
         require_login_and_permission(user, 'costasiella.change_scheduleitemteacher')
 
         rid = get_rid(input['id'])
-
         schedule_item_teacher = ScheduleItemTeacher.objects.filter(id=rid.id).first()
         if not schedule_item_teacher:
-            raise Exception('Invalid Organization Location Room ID!')
+            raise Exception('Invalid Schedule Item Teacher ID!')
 
-        schedule_item_teacher.name = input['name']
-        schedule_item_teacher.display_public = input['display_public']
-        schedule_item_teacher.save(force_update=True)
+        validation_result = validate_schedule_item_teacher_create_update_input(input)
+
+        schedule_item_teacher.schedule_item = validation_result['schedule_item']
+        schedule_item_teacher.account=validation_result['account']
+        schedule_item_teacher.date_start=input['date_start']
+        
+        # Optional fields
+        date_end = input.get('date_end', None)
+        if date_end:
+            schedule_item.date_end = date_end
+
+        role = input.get('role', None)
+        if role:
+            schedule_item.role = role
+
+        account_2 = validation_result.get('account_2', None)
+        if account_2:
+            schedule_item.account_2 = account_2
+
+        role_2 = input.get('role_2', None)
+        if role_2:
+            schedule_item.role_2 = role_2
+
+        schedule_item_teacher.save()
 
         return UpdateScheduleItemTeacher(schedule_item_teacher=schedule_item_teacher)
 
 
-class ArchiveScheduleItemTeacher(graphene.relay.ClientIDMutation):
+class DeleteScheduleItemTeacher(graphene.relay.ClientIDMutation):
     class Input:
         id = graphene.ID(required=True)
-        archived = graphene.Boolean(required=True)
 
-    schedule_item_teacher = graphene.Field(ScheduleItemTeacherNode)
+    ok = graphene.Boolean()
 
     @classmethod
     def mutate_and_get_payload(self, root, info, **input):
@@ -159,19 +183,17 @@ class ArchiveScheduleItemTeacher(graphene.relay.ClientIDMutation):
         require_login_and_permission(user, 'costasiella.delete_scheduleitemteacher')
 
         rid = get_rid(input['id'])
-
         schedule_item_teacher = ScheduleItemTeacher.objects.filter(id=rid.id).first()
         if not schedule_item_teacher:
-            raise Exception('Invalid Organization Location Room ID!')
+            raise Exception('Invalid Schedule Item Teacher ID!')
 
-        schedule_item_teacher.archived = input['archived']
-        schedule_item_teacher.save(force_update=True)
+        ok = schedule_item_teacher.delete()
 
-        return ArchiveScheduleItemTeacher(schedule_item_teacher=schedule_item_teacher)
+        return DeleteScheduleItemTeacher(ok=ok)
 
 
 class ScheduleItemTeacherMutation(graphene.ObjectType):
-    archive_schedule_item_teacher = ArchiveScheduleItemTeacher.Field()
+    delete_schedule_item_teacher = DeleteScheduleItemTeacher.Field()
     create_schedule_item_teacher = CreateScheduleItemTeacher.Field()
     update_schedule_item_teacher = UpdateScheduleItemTeacher.Field()
     
