@@ -66,7 +66,7 @@ class InputSearch extends Component {
 
     return(
         <div className="row row gutters-xs">
-          <div class="col">
+          <div className="col">
           <input 
             ref={this.input}
             className="form-control" 

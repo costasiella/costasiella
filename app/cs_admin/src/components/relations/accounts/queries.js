@@ -12,6 +12,9 @@ export const GET_ACCOUNTS_QUERY = gql`
       edges {
         node {
           id
+          customer
+          teacher
+          employee
           firstName
           lastName
           email

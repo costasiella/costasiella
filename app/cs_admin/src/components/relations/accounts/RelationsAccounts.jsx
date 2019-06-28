@@ -9,6 +9,7 @@ import { withRouter } from "react-router"
 
 
 import {
+  Badge,
   Page,
   Grid,
   Icon,
@@ -200,6 +201,7 @@ const RelationsAccounts = ({ t, history }) => (
                             <Table.Row key={v4()}>
                               <Table.ColHeader>{t('general.name')}</Table.ColHeader>
                               <Table.ColHeader>{t('general.email')}</Table.ColHeader>
+                              <Table.ColHeader>{t('general.info')}</Table.ColHeader>
                             </Table.Row>
                           </Table.Header>
                           <Table.Body>
@@ -210,6 +212,18 @@ const RelationsAccounts = ({ t, history }) => (
                                   </Table.Col>
                                   <Table.Col key={v4()}>
                                     {node.email}
+                                  </Table.Col>
+                                  <Table.Col key={v4()}>
+                                    {console.log(node)}
+                                    {(node.customer) ? <span>
+                                        <Badge color="primary" className="mb-1">{t("general.customer")}</Badge> <br />
+                                      </span> : null}
+                                    {(node.teacher) ? <span>
+                                        <Badge color="info" className="mb-1">{t("general.teacher")}</Badge> <br />
+                                      </span> : null}
+                                    {(node.employee) ? <span>
+                                        <Badge color="secondary" className="mb-1">{t("general.employee")}</Badge> <br />
+                                      </span> : null}
                                   </Table.Col>
                                   <Table.Col className="text-right" key={v4()}>
                                     {(!node.isActive) ? 
