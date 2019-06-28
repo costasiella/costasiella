@@ -158,21 +158,21 @@ const RelationsAccounts = ({ t, history }) => (
           return (
             <RelationsAccountsBase refetch={refetch}>
               <ContentCard cardTitle={t('relations.accounts.title')}
-                          headerContent={headerOptions}
-                          pageInfo={data.accounts.pageInfo}
-                          onLoadMore={() => {
-                            fetchMore({
-                              variables: {
-                                after: data.accounts.pageInfo.endCursor
-                              },
-                              updateQuery: (previousResult, { fetchMoreResult }) => {
-                                const newEdges = fetchMoreResult.accounts.edges
-                                const pageInfo = fetchMoreResult.accounts.pageInfo
+                           headerContent={headerOptions}
+                           pageInfo={data.accounts.pageInfo}
+                           onLoadMore={() => {
+                             fetchMore({
+                               variables: {
+                                 after: data.accounts.pageInfo.endCursor
+                               },
+                               updateQuery: (previousResult, { fetchMoreResult }) => {
+                                 const newEdges = fetchMoreResult.accounts.edges
+                                 const pageInfo = fetchMoreResult.accounts.pageInfo 
 
-                                return newEdges.length
-                                  ? {
-                                      // Put the new accounts at the end of the list and update `pageInfo`
-                                      // so we have the new `endCursor` and `hasNextPage` values
+                                 return newEdges.length
+                                   ? {
+                                       // Put the new accounts at the end of the list and update `pageInfo`
+                                       // so we have the new `endCursor` and `hasNextPage` values
                                       data: {
                                         accounts: {
                                           __typename: previousResult.accounts.__typename,
