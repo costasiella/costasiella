@@ -24,6 +24,7 @@ import { confirmAlert } from 'react-confirm-alert'
 import { toast } from 'react-toastify'
 
 import ContentCard from "../../general/ContentCard"
+import InputSearch from "../../general/InputSearch"
 import RelationsMenu from "../RelationsMenu"
 
 import { GET_ACCOUNTS_QUERY } from "./queries"
@@ -91,7 +92,13 @@ const RelationsAccounts = ({ t, history, isActive=true }) => (
   <SiteWrapper>
     <div className="my-3 my-md-5">
       <Container>
-        <Page.Header title={t("relations.title")} />
+        <Page.Header title={t("relations.title")}>
+          <div className="page-options d-flex">
+            <InputSearch 
+              placeholder="Search..."
+            />
+          </div>
+        </Page.Header>
         <Grid.Row>
           <Grid.Col md={9}>
             <Query query={GET_ACCOUNTS_QUERY} variables={{ isActive }}>
