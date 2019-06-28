@@ -29,6 +29,7 @@ import RelationsMenu from "../RelationsMenu"
 import CSLS from "../../../tools/cs_local_storage"
 
 import { GET_ACCOUNTS_QUERY } from "./queries"
+import get_list_query_variables from "./tools"
 
 
 const UPDATE_ACCOUNT_ACTIVE = gql`
@@ -89,10 +90,10 @@ const confirm_delete = ({t, msgConfirm, msgDescription, msgSuccess, deleteFuncti
 }
 
 
-const RelationsAccounts = ({ t, history, isActive=true }) => (
+const RelationsAccounts = ({ t, history }) => (
   <SiteWrapper>
     <div className="my-3 my-md-5">
-      <Query query={GET_ACCOUNTS_QUERY} variables={{ isActive }}>
+      <Query query={GET_ACCOUNTS_QUERY} variables={get_list_query_variables()}>
         {({ loading, error, data: {accounts: accounts}, refetch, fetchMore }) => {
           // Loading
           if (loading) return (
@@ -111,13 +112,13 @@ const RelationsAccounts = ({ t, history, isActive=true }) => (
           const headerOptions = <Card.Options>
             <Button color={(isActive) ? 'primary': 'secondary'}  
                     size="sm"
-                    onClick={() => {isActive=true; refetch({isActive});}}>
+                    onClick={() => {isActive=true; refetch(get_list_query_variables());}}>
               {t('general.active')}
             </Button>
             <Button color={(!isActive) ? 'primary': 'secondary'} 
                     size="sm" 
                     className="ml-2" 
-                    onClick={() => {isActive=false; refetch({isActive});}}>
+                    onClick={() => {isActive=false; refetch(get_list_query_variables());}}>
               {t('general.deleted')}
             </Button>
           </Card.Options>
@@ -216,7 +217,7 @@ const RelationsAccounts = ({ t, history, isActive=true }) => (
                                                 isActive: !isActive
                                               }
                                         }, refetchQueries: [
-                                            {query: GET_ACCOUNTS_QUERY, variables: {"isActive": isActive }}
+                                            {query: GET_ACCOUNTS_QUERY, variables: get_list_query_variables()}
                                         ]}).then(({ data }) => {
                                           console.log('got data', data);
                                           toast.success(
@@ -259,7 +260,7 @@ const RelationsAccounts = ({ t, history, isActive=true }) => (
                                                       id: node.id
                                                     }
                                                   }, refetchQueries: [
-                                                    {query: GET_ACCOUNTS_QUERY, variables: {"isActive": false }}
+                                                    {query: GET_ACCOUNTS_QUERY, variables: get_list_query_variables()}
                                                   ]}
                                                 })
                                             }}>
