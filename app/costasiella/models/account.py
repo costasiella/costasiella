@@ -9,6 +9,9 @@ class Account(AbstractUser):
     # Editable parameter docs
     # https://docs.djangoproject.com/en/2.2/ref/models/fields/#editable
 
+    customer = models.BooleanField(default=True)
+    teacher = models.BooleanField(default=False)
+    employee = models.BooleanField(default=False)
     full_name = models.CharField(max_length=255, default="", editable=False)
     gender = EncryptedTextField(default="")
     date_of_birth = EncryptedTextField(data_type="date", default="")
