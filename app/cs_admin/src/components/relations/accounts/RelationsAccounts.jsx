@@ -29,7 +29,7 @@ import RelationsMenu from "../RelationsMenu"
 import CSLS from "../../../tools/cs_local_storage"
 
 import { GET_ACCOUNTS_QUERY } from "./queries"
-import get_list_query_variables from "./tools"
+import { get_list_query_variables } from "./tools"
 
 
 const UPDATE_ACCOUNT_ACTIVE = gql`
@@ -51,6 +51,12 @@ const DELETE_ACCOUNT = gql`
     }
   }
 `
+
+
+// Set some initial value for isActive, if not found
+if (!localStorage.getItem(CSLS.RELATIONS_ACCOUNTS_IS_ACTIVE)) {
+  localStorage.setItem(CSLS.RELATIONS_ACCOUNTS_IS_ACTIVE, true) 
+} 
 
 
 const confirm_delete = ({t, msgConfirm, msgDescription, msgSuccess, deleteFunction, functionVariables}) => {
@@ -94,7 +100,7 @@ const RelationsAccounts = ({ t, history }) => (
   <SiteWrapper>
     <div className="my-3 my-md-5">
       <Query query={GET_ACCOUNTS_QUERY} variables={get_list_query_variables()}>
-        {({ loading, error, data: {accounts: accounts}, refetch, fetchMore }) => {
+        {({ loading, error, data, refetch, fetchMore }) => {
           // Loading
           if (loading) return (
             <ContentCard cardTitle={t('relations.accounts.title')}>
@@ -105,30 +111,40 @@ const RelationsAccounts = ({ t, history }) => (
           )
           // Error
           if (error) return (
-            <ContentCard cardTitle={t('relations.accounts.title')}>
-              <p>{t('relations.accounts.error_loading')}</p>
-            </ContentCard>
+            <Container>
+              <ContentCard cardTitle={t('relations.accounts.title')}>
+                <p>{t('relations.accounts.error_loading')}</p>
+              </ContentCard>
+            </Container>
           )
           const headerOptions = <Card.Options>
-            <Button color={(isActive) ? 'primary': 'secondary'}  
+            <Button color={(localStorage.getItem(CSLS.RELATIONS_ACCOUNTS_IS_ACTIVE)) ? 'primary': 'secondary'}  
                     size="sm"
-                    onClick={() => {isActive=true; refetch(get_list_query_variables());}}>
+                    onClick={() => {
+                      localStorage.setItem(CSLS.RELATIONS_ACCOUNTS_IS_ACTIVE, true)
+                      refetch(get_list_query_variables())
+                    }
+            }>
               {t('general.active')}
             </Button>
-            <Button color={(!isActive) ? 'primary': 'secondary'} 
+            <Button color={(localStorage.getItem(CSLS.RELATIONS_ACCOUNTS_IS_ACTIVE)) ? 'secondary': 'primary'} 
                     size="sm" 
                     className="ml-2" 
-                    onClick={() => {isActive=false; refetch(get_list_query_variables());}}>
+                    onClick={() => {
+                      localStorage.setItem(CSLS.RELATIONS_ACCOUNTS_IS_ACTIVE, false)
+                      refetch(get_list_query_variables())
+                    }
+            }>
               {t('general.deleted')}
             </Button>
           </Card.Options>
           
           // Empty list
-          if (!accounts.edges.length) { return (
+          if (!data.accounts.edges.length) { return (
             <ContentCard cardTitle={t('relations.accounts.title')}
                           headerContent={headerOptions}>
               <p>
-              {(!isActive) ? t('relations.accounts.empty_list') : t("relations.accounts.empty_archive")}
+              {(!localStorage.getItem(CSLS.RELATIONS_ACCOUNTS_IS_ACTIVE)) ? t('relations.accounts.empty_list') : t("relations.accounts.empty_archive")}
               </p>
               
             </ContentCard>
@@ -144,6 +160,7 @@ const RelationsAccounts = ({ t, history }) => (
                     onChange={(value) => {
                       console.log(value)
                       localStorage.setItem(CSLS.RELATIONS_ACCOUNTS_SEARCH, value)
+                      refetch(get_list_query_variables())
                     }}
                   />
                 </div>
@@ -152,11 +169,11 @@ const RelationsAccounts = ({ t, history }) => (
                 <Grid.Col md={9}>
                   <ContentCard cardTitle={t('relations.accounts.title')}
                               headerContent={headerOptions}
-                              pageInfo={accounts.pageInfo}
+                              pageInfo={data.accounts.pageInfo}
                               onLoadMore={() => {
                                 fetchMore({
                                   variables: {
-                                    after: accounts.pageInfo.endCursor
+                                    after: data.accounts.pageInfo.endCursor
                                   },
                                   updateQuery: (previousResult, { fetchMoreResult }) => {
                                     const newEdges = fetchMoreResult.accounts.edges
@@ -166,10 +183,12 @@ const RelationsAccounts = ({ t, history }) => (
                                       ? {
                                           // Put the new accounts at the end of the list and update `pageInfo`
                                           // so we have the new `endCursor` and `hasNextPage` values
-                                          accounts: {
-                                            __typename: previousResult.accounts.__typename,
-                                            edges: [ ...previousResult.accounts.edges, ...newEdges ],
-                                            pageInfo
+                                          data: {
+                                            accounts: {
+                                              __typename: previousResult.accounts.__typename,
+                                              edges: [ ...previousResult.accounts.edges, ...newEdges ],
+                                              pageInfo
+                                            }
                                           }
                                         }
                                       : previousResult
@@ -184,7 +203,7 @@ const RelationsAccounts = ({ t, history }) => (
                             </Table.Row>
                           </Table.Header>
                           <Table.Body>
-                              {accounts.edges.map(({ node }) => (
+                              {data.accounts.edges.map(({ node }) => (
                                 <Table.Row key={v4()}>
                                   <Table.Col key={v4()}>
                                     {node.firstName} {node.lastName}
@@ -214,14 +233,14 @@ const RelationsAccounts = ({ t, history }) => (
                                             updateAccountActive({ variables: {
                                               input: {
                                                 id,
-                                                isActive: !isActive
+                                                isActive: !localStorage.getItem(CSLS.RELATIONS_ACCOUNTS_IS_ACTIVE)
                                               }
                                         }, refetchQueries: [
                                             {query: GET_ACCOUNTS_QUERY, variables: get_list_query_variables()}
                                         ]}).then(({ data }) => {
                                           console.log('got data', data);
                                           toast.success(
-                                            (isActive) ? t('relations.accounts.deactivated'): t('relations.accounts.restored'), {
+                                            (localStorage.getItem(CSLS.RELATIONS_ACCOUNTS_IS_ACTIVE)) ? t('relations.accounts.deactivated'): t('relations.accounts.restored'), {
                                               position: toast.POSITION.BOTTOM_RIGHT
                                             })
                                         }).catch((error) => {
