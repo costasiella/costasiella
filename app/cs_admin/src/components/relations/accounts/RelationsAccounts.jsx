@@ -91,63 +91,63 @@ const confirm_delete = ({t, msgConfirm, msgDescription, msgSuccess, deleteFuncti
 const RelationsAccounts = ({ t, history, isActive=true }) => (
   <SiteWrapper>
     <div className="my-3 my-md-5">
-      <Container>
-        <Page.Header title={t("relations.title")}>
-          <div className="page-options d-flex">
-            <InputSearch 
-              placeholder="Search..."
-              onChange={(value) => console.log(value)}
-            />
-          </div>
-        </Page.Header>
-        <Grid.Row>
-          <Grid.Col md={9}>
-            <Query query={GET_ACCOUNTS_QUERY} variables={{ isActive }}>
-             {({ loading, error, data: {accounts: accounts}, refetch, fetchMore }) => {
-                // Loading
-                if (loading) return (
-                  <ContentCard cardTitle={t('relations.accounts.title')}>
-                    <Dimmer active={true}
-                            loadder={true}>
-                    </Dimmer>
-                  </ContentCard>
-                )
-                // Error
-                if (error) return (
-                  <ContentCard cardTitle={t('relations.accounts.title')}>
-                    <p>{t('relations.accounts.error_loading')}</p>
-                  </ContentCard>
-                )
-                const headerOptions = <Card.Options>
-                  <Button color={(isActive) ? 'primary': 'secondary'}  
-                          size="sm"
-                          onClick={() => {isActive=true; refetch({isActive});}}>
-                    {t('general.active')}
-                  </Button>
-                  <Button color={(!isActive) ? 'primary': 'secondary'} 
-                          size="sm" 
-                          className="ml-2" 
-                          onClick={() => {isActive=false; refetch({isActive});}}>
-                    {t('general.deleted')}
-                  </Button>
-                </Card.Options>
-                
-                // Empty list
-                if (!accounts.edges.length) { return (
+      <Query query={GET_ACCOUNTS_QUERY} variables={{ isActive }}>
+        {({ loading, error, data: {accounts: accounts}, refetch, fetchMore }) => {
+          // Loading
+          if (loading) return (
+            <ContentCard cardTitle={t('relations.accounts.title')}>
+              <Dimmer active={true}
+                      loader={true}>
+              </Dimmer>
+            </ContentCard>
+          )
+          // Error
+          if (error) return (
+            <ContentCard cardTitle={t('relations.accounts.title')}>
+              <p>{t('relations.accounts.error_loading')}</p>
+            </ContentCard>
+          )
+          const headerOptions = <Card.Options>
+            <Button color={(isActive) ? 'primary': 'secondary'}  
+                    size="sm"
+                    onClick={() => {isActive=true; refetch({isActive});}}>
+              {t('general.active')}
+            </Button>
+            <Button color={(!isActive) ? 'primary': 'secondary'} 
+                    size="sm" 
+                    className="ml-2" 
+                    onClick={() => {isActive=false; refetch({isActive});}}>
+              {t('general.deleted')}
+            </Button>
+          </Card.Options>
+          
+          // Empty list
+          if (!accounts.edges.length) { return (
+            <ContentCard cardTitle={t('relations.accounts.title')}
+                          headerContent={headerOptions}>
+              <p>
+              {(!isActive) ? t('relations.accounts.empty_list') : t("relations.accounts.empty_archive")}
+              </p>
+              
+            </ContentCard>
+          )} else {   
+          // Life's good! :)
+          return (
+            <Container>
+              <Page.Header title={t("relations.title")}>
+                <div className="page-options d-flex">
+                  <InputSearch 
+                    placeholder="Search..."
+                    onChange={(value) => console.log(value)}
+                  />
+                </div>
+              </Page.Header>
+              <Grid.Row>
+                <Grid.Col md={9}>
                   <ContentCard cardTitle={t('relations.accounts.title')}
-                               headerContent={headerOptions}>
-                    <p>
-                    {(!isActive) ? t('relations.accounts.empty_list') : t("relations.accounts.empty_archive")}
-                    </p>
-                   
-                  </ContentCard>
-                )} else {   
-                // Life's good! :)
-                return (
-                  <ContentCard cardTitle={t('relations.accounts.title')}
-                               headerContent={headerOptions}
-                               pageInfo={accounts.pageInfo}
-                               onLoadMore={() => {
+                              headerContent={headerOptions}
+                              pageInfo={accounts.pageInfo}
+                              onLoadMore={() => {
                                 fetchMore({
                                   variables: {
                                     after: accounts.pageInfo.endCursor
@@ -200,16 +200,16 @@ const RelationsAccounts = ({ t, history, isActive=true }) => (
                                     {(updateAccountActive, { data }) => (
                                       <Table.Col className="text-right" key={v4()}>
                                         <button className="icon btn btn-link btn-sm" 
-                                           title={t('general.deactivate')} 
-                                           href=""
-                                           onClick={() => {
-                                             console.log("clicked isActive")
-                                             let id = node.id
-                                             updateAccountActive({ variables: {
-                                               input: {
+                                          title={t('general.deactivate')} 
+                                          href=""
+                                          onClick={() => {
+                                            console.log("clicked isActive")
+                                            let id = node.id
+                                            updateAccountActive({ variables: {
+                                              input: {
                                                 id,
                                                 isActive: !isActive
-                                               }
+                                              }
                                         }, refetchQueries: [
                                             {query: GET_ACCOUNTS_QUERY, variables: {"isActive": isActive }}
                                         ]}).then(({ data }) => {
@@ -269,22 +269,22 @@ const RelationsAccounts = ({ t, history, isActive=true }) => (
                           </Table.Body>
                         </Table>
                   </ContentCard>
-                )}}
-             }
-            </Query>
-          </Grid.Col>
-          <Grid.Col md={3}>
-            <HasPermissionWrapper permission="add"
-                                  resource="account">
-              <Button color="primary btn-block mb-6"
-                      onClick={() => history.push("/relations/accounts/add")}>
-                <Icon prefix="fe" name="plus-circle" /> {t('relations.accounts.add')}
-              </Button>
-            </HasPermissionWrapper>
-            <RelationsMenu active_link='accounts'/>
-          </Grid.Col>
-        </Grid.Row>
-      </Container>
+                </Grid.Col>
+                <Grid.Col md={3}>
+                  <HasPermissionWrapper permission="add"
+                                        resource="account">
+                    <Button color="primary btn-block mb-6"
+                            onClick={() => history.push("/relations/accounts/add")}>
+                      <Icon prefix="fe" name="plus-circle" /> {t('relations.accounts.add')}
+                    </Button>
+                  </HasPermissionWrapper>
+                  <RelationsMenu active_link='accounts'/>
+                </Grid.Col>
+              </Grid.Row>
+            </Container>
+          )}}
+        }
+      </Query>
     </div>
   </SiteWrapper>
 );
