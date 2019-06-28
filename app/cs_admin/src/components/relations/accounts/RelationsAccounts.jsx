@@ -96,6 +96,7 @@ const RelationsAccounts = ({ t, history, isActive=true }) => (
           <div className="page-options d-flex">
             <InputSearch 
               placeholder="Search..."
+              onChange={(value) => console.log(value)}
             />
           </div>
         </Page.Header>
