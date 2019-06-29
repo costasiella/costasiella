@@ -30,7 +30,10 @@ class AccountNode(DjangoObjectType):
         model = get_user_model()
         filter_fields = {
             'full_name': ['icontains', 'exact'],
-            'is_active': ['exact']
+            'is_active': ['exact'],
+            'customer': ['exact'],
+            'teacher': ['exact'],
+            'employee': ['exact'],
         }
         interfaces = (graphene.relay.Node, )
 
