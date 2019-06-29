@@ -113,6 +113,7 @@ class ScheduleClassEditAll extends Component {
               const initialTimeStart = TimeStringToJSDateOBJ(initialValues.timeStart)
               const initialTimeEnd = TimeStringToJSDateOBJ(initialValues.timeEnd)
               const subtitle = class_edit_all_subtitle({
+                t: t,
                 location: initialValues.organizationLocationRoom.organizationLocation.name,
                 locationRoom: initialValues.organizationLocationRoom.name,
                 classtype: initialValues.organizationClasstype.name,
