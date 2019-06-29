@@ -8,12 +8,11 @@ import { withRouter } from "react-router"
 import { Formik } from 'formik'
 import { toast } from 'react-toastify'
 
-
 import { GET_CLASSES_QUERY, GET_CLASS_QUERY } from '../../queries'
 import { get_list_query_variables } from '../../tools'
 import { CLASS_SCHEMA } from '../../yupSchema'
 import ScheduleClassForm from '../../ScheduleClassForm'
-
+import { class_edit_all_subtitle } from "../tools"
 
 import {
   Page,
@@ -113,10 +112,19 @@ class ScheduleClassEditAll extends Component {
 
               const initialTimeStart = TimeStringToJSDateOBJ(initialValues.timeStart)
               const initialTimeEnd = TimeStringToJSDateOBJ(initialValues.timeEnd)
+              const subtitle = class_edit_all_subtitle({
+                location: initialValues.organizationLocationRoom.organizationLocation.name,
+                locationRoom: initialValues.organizationLocationRoom.name,
+                classtype: initialValues.organizationClasstype.name,
+                starttime: initialTimeStart
+              })
               
               return (
                 <Container>
-                  <Page.Header title={t("schedule.title")} />
+                  <Page.Header 
+                    title={t("schedule.title")} 
+                    subTitle={subtitle}
+                  />
                   <Grid.Row>
                     <Grid.Col md={9}>
                       <Card>
