@@ -149,7 +149,7 @@ const RelationsAccounts = ({ t, history }) => (
               <ContentCard cardTitle={t('relations.accounts.title')}
                             headerContent={headerOptions}>
                 <p>
-                  {(localStorage.getItem(CSLS.RELATIONS_ACCOUNTS_IS_ACTIVE) === "false") ? t('relations.accounts.empty_list') : t("relations.accounts.empty_archive")}
+                  {(localStorage.getItem(CSLS.RELATIONS_ACCOUNTS_IS_ACTIVE) === "true") ? t('relations.accounts.empty_list') : t("relations.accounts.empty_archive")}
                 </p>
               </ContentCard>
             </RelationsAccountsBase>
