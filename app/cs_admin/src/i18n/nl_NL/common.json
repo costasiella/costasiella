@@ -149,7 +149,11 @@
         "customer": "__STRING_NOT_TRANSLATED__",
         "teacher": "__STRING_NOT_TRANSLATED__",
         "employee": "__STRING_NOT_TRANSLATED__",
-        "info": "__STRING_NOT_TRANSLATED__"
+        "info": "__STRING_NOT_TRANSLATED__",
+        "all_accounts": "__STRING_NOT_TRANSLATED__",
+        "customers": "__STRING_NOT_TRANSLATED__",
+        "teachers": "__STRING_NOT_TRANSLATED__",
+        "employees": "__STRING_NOT_TRANSLATED__"
     },
     "yup": {
         "min_len_3": "__STRING_NOT_TRANSLATED__",
