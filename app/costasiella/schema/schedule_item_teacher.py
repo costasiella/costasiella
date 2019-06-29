@@ -65,7 +65,7 @@ def validate_schedule_item_teacher_create_update_input(input):
     if 'schedule_item' in input:
         if input['schedule_item']:
             rid = get_rid(input['schedule_item'])
-            schedule_item = OrganizationClasstype.objects.get(id=rid.id)
+            schedule_item = ScheduleItem.objects.get(id=rid.id)
             result['schedule_item'] = schedule_item
             if not schedule_item:
                 raise Exception(_('Invalid Schedule Item (class) ID!'))        
@@ -79,7 +79,7 @@ class CreateScheduleItemTeacher(graphene.relay.ClientIDMutation):
         schedule_item = graphene.ID(required=True)
         account = graphene.ID(required=True)
         role = graphene.String(required=False, default_value="")
-        account_2 = graphene.ID(required=True)
+        account_2 = graphene.ID(required=False, defailt_value="")
         role_2 = graphene.String(required=False, default_value="")
         date_start = graphene.types.datetime.Date(required=True)
         date_end = graphene.types.datetime.Date(required=False, default_value=None)
@@ -94,7 +94,7 @@ class CreateScheduleItemTeacher(graphene.relay.ClientIDMutation):
 
         schedule_item_teacher = ScheduleItemTeacher(
             schedule_item = validation_result['schedule_item'],
-            account=validation_result['account']
+            account=validation_result['account'],
             date_start=input['date_start']
         )
 

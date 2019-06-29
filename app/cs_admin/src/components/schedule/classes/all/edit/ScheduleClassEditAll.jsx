@@ -9,10 +9,10 @@ import { Formik } from 'formik'
 import { toast } from 'react-toastify'
 
 
-import { GET_CLASSES_QUERY, GET_CLASS_QUERY } from './queries'
-import { get_list_query_variables } from './tools'
-import { CLASS_SCHEMA } from './yupSchema'
-import ScheduleClassForm from './ScheduleClassForm'
+import { GET_CLASSES_QUERY, GET_CLASS_QUERY } from '../../queries'
+import { get_list_query_variables } from '../../tools'
+import { CLASS_SCHEMA } from '../../yupSchema'
+import ScheduleClassForm from '../../ScheduleClassForm'
 
 
 import {
@@ -24,11 +24,11 @@ import {
   Container,
   Form,
 } from "tabler-react"
-import SiteWrapper from "../../SiteWrapper"
-import HasPermissionWrapper from "../../HasPermissionWrapper"
-import { dateToLocalISO, dateToLocalISOTime, TimeStringToJSDateOBJ } from '../../../tools/date_tools'
+import SiteWrapper from "../../../../SiteWrapper"
+import HasPermissionWrapper from "../../../../HasPermissionWrapper"
+import { dateToLocalISO, dateToLocalISOTime, TimeStringToJSDateOBJ } from '../../../../../tools/date_tools'
 
-import ScheduleMenu from '../ScheduleMenu'
+import ScheduleMenu from '../../../ScheduleMenu'
 
 
 const UPDATE_CLASS = gql`
@@ -66,7 +66,7 @@ const UPDATE_CLASS = gql`
 `
 
 
-class ScheduleClassEdit extends Component {
+class ScheduleClassEditAll extends Component {
   constructor(props) {
     super(props)
     console.log("Schedule class edit add props:")
@@ -228,4 +228,4 @@ class ScheduleClassEdit extends Component {
   }
 
 
-export default withTranslation()(withRouter(ScheduleClassEdit))
+export default withTranslation()(withRouter(ScheduleClassEditAll))
