@@ -67,15 +67,20 @@ class InputSearch extends Component {
     return(
         <div className="row row gutters-xs">
           <div className="col">
-          <input 
-            ref={this.input}
-            className="form-control" 
-            type="text" 
-            placeholder={placeholder} 
-            value={this.state.inputValue}
-            onKeyUp={this.onInputKeyUp.bind(this)}
-            onChange={this.onInputChange.bind(this)}
-          />
+            <div className="input-icon">
+              <span className="input-icon-addon">
+                <Icon name="search" />
+              </span>
+              <input 
+                ref={this.input}
+                className="form-control" 
+                type="text" 
+                placeholder={placeholder} 
+                value={this.state.inputValue}
+                onKeyUp={this.onInputKeyUp.bind(this)}
+                onChange={this.onInputChange.bind(this)}
+              />
+            </div>
           </div>
           <div className="col col-auto">
             <Button

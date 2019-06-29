@@ -8,6 +8,7 @@ import {
     Page,
     Grid,
     Icon,
+    Form,
     Dimmer,
     Button,
     Card,
@@ -27,6 +28,15 @@ const RelationsAccountsBase = ({t, history, refetch, children }) => (
     <Container>
       <Page.Header title={t("relations.title")}>
         <div className="page-options d-flex">
+          <Form.Select
+            className="w-auto mr-2"
+            onChange={(event) => console.log(event.target.value)}
+          >
+            <option value="">{t("general.all_accounts")}</option>
+            <option value="customers">{t("general.customers")}</option>
+            <option value="teachers">{t("general.teachers")}</option>
+            <option value="employees">{t("general.employees")}</option>
+          </Form.Select>
           <InputSearch 
             initialValueKey={CSLS.RELATIONS_ACCOUNTS_SEARCH}
             placeholder="Search..."
