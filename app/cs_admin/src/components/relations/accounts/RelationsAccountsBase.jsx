@@ -30,7 +30,11 @@ const RelationsAccountsBase = ({t, history, refetch, children }) => (
         <div className="page-options d-flex">
           <Form.Select
             className="w-auto mr-2"
-            onChange={(event) => console.log(event.target.value)}
+            onChange={(event) => {
+              console.log(event.target.value)
+              localStorage.setItem(CSLS.RELATIONS_ACCOUNTS_FILTER_TYPE, event.target.value)
+              refetch(get_list_query_variables())
+            }}
           >
             <option value="">{t("general.all_accounts")}</option>
             <option value="customers">{t("general.customers")}</option>
