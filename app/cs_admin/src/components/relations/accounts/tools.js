@@ -8,9 +8,9 @@ export function get_list_query_variables() {
 
   let queryVars = {
     isActive: (isActive === "true") ? true : false,
-    customer: "",
-    teacher: "",
-    employee: ""
+    customer: undefined,
+    teacher: undefined,
+    employee: undefined
   }
 
   let search = localStorage.getItem(CSLS.RELATIONS_ACCOUNTS_SEARCH)
@@ -18,12 +18,15 @@ export function get_list_query_variables() {
 
   let type_filter = localStorage.getItem(CSLS.RELATIONS_ACCOUNTS_FILTER_TYPE)
   switch (type_filter) {
-    case "customers":
+    case "customer":
       queryVars.customer = true
+      break
     case "teacher":
       queryVars.teacher = true
+      break
     case "employee":
       queryVars.employee = true
+      break
   }
 
 

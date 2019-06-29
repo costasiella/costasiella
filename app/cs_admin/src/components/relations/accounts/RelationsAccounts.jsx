@@ -99,8 +99,8 @@ const confirm_delete = ({t, msgConfirm, msgDescription, msgSuccess, deleteFuncti
 const RelationsAccounts = ({ t, history }) => (
   <SiteWrapper>
     <div className="my-3 my-md-5">
-      <Query query={GET_ACCOUNTS_QUERY} variables={get_list_query_variables()}>
-        {({ loading, error, data, refetch, fetchMore }) => {
+      <Query query={GET_ACCOUNTS_QUERY} variables={get_list_query_variables()} notifyOnNetworkStatusChange>
+        {({ loading, error, data, refetch, fetchMore, variables}) => {
           // Loading
           if (loading) return (
             <RelationsAccountsBase refetch={refetch}>
@@ -157,6 +157,8 @@ const RelationsAccounts = ({ t, history }) => (
           // Life's good! :)
           return (
             <RelationsAccountsBase refetch={refetch}>
+              {console.log('query vars:')}
+              {console.log(variables)}
               <ContentCard cardTitle={t('relations.accounts.title')}
                            headerContent={headerOptions}
                            pageInfo={data.accounts.pageInfo}
@@ -203,7 +205,7 @@ const RelationsAccounts = ({ t, history }) => (
                             {node.email}
                           </Table.Col>
                           <Table.Col key={v4()}>
-                            {console.log(node)}
+                            {/* {console.log(node)} */}
                             {(node.customer) ? <span>
                                 <Badge color="primary" className="mb-1">{t("general.customer")}</Badge> <br />
                               </span> : null}

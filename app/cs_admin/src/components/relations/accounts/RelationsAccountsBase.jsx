@@ -33,13 +33,14 @@ const RelationsAccountsBase = ({t, history, refetch, children }) => (
             onChange={(event) => {
               console.log(event.target.value)
               localStorage.setItem(CSLS.RELATIONS_ACCOUNTS_FILTER_TYPE, event.target.value)
-              refetch(get_list_query_variables())
+              console.log('fire refetch')
+              console.log(refetch(get_list_query_variables()))
             }}
           >
             <option value="">{t("general.all_accounts")}</option>
-            <option value="customers">{t("general.customers")}</option>
-            <option value="teachers">{t("general.teachers")}</option>
-            <option value="employees">{t("general.employees")}</option>
+            <option value="customer">{t("general.customers")}</option>
+            <option value="teacher">{t("general.teachers")}</option>
+            <option value="employee">{t("general.employees")}</option>
           </Form.Select>
           <InputSearch 
             initialValueKey={CSLS.RELATIONS_ACCOUNTS_SEARCH}
