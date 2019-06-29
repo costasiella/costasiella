@@ -24,6 +24,7 @@ import HasPermissionWrapper from "../../HasPermissionWrapper"
 import { dateToLocalISO } from '../../../tools/date_tools'
 import ProfileCardSmall from "../../ui/ProfileCardSmall"
 
+import { get_list_query_variables } from "./tools"
 import RelationsAccountsBack from "./RelationsAccountsBack"
 import RelationsAccountProfileForm from "./RelationsAccountProfileForm"
 
@@ -149,7 +150,7 @@ class RelationsAccountProfile extends Component {
                                   }
                                 }, refetchQueries: [
                                     // Refetch list
-                                    {query: GET_ACCOUNTS_QUERY, variables: {"isActive": true }},
+                                    {query: GET_ACCOUNTS_QUERY, variables: get_list_query_variables()},
                                     // Refresh local cached results for this account
                                     {query: GET_ACCOUNT_QUERY, variables: {"id": match.params.account_id}}
                                 ]})

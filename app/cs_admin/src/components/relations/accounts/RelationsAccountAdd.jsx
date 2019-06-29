@@ -25,8 +25,8 @@ import {
 import SiteWrapper from "../../SiteWrapper"
 import HasPermissionWrapper from "../../HasPermissionWrapper"
 
+import { get_list_query_variables } from "./tools"
 import RelationsAccountForm from "./RelationsAccountForm"
-
 import RelationsMenu from '../RelationsMenu'
 
 
@@ -69,7 +69,7 @@ const RelationsAccountAdd = ({ t, history }) => (
                                 email: values.email
                               }
                             }, refetchQueries: [
-                                {query: GET_ACCOUNTS_QUERY, variables: {"isActive": true }}
+                                {query: GET_ACCOUNTS_QUERY, variables: get_list_query_variables()}
                             ]})
                             .then(({ data }) => {
                                 console.log('got data', data);
