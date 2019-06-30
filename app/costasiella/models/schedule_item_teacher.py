@@ -10,7 +10,7 @@ from .account import Account
 
 class ScheduleItemTeacher(models.Model):
     TEACHER_ROLES = [
-        ['NORMAL', _("Normal")],
+        ['', _("Regular")],
         ['SUB', _("Subteacher")],
         ['ASSISTANT', _("Assistant")],
         ['KARMA', _("Karma")]

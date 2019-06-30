@@ -12,6 +12,11 @@ from ..modules.messages import Messages
 m = Messages()
 
 class ScheduleItemTeacherNode(DjangoObjectType):
+    # Disable output like "A_3" by graphene automatically converting model choices
+    # to an Enum field
+    role = graphene.Field(graphene.String, source='role')
+    role_2 = graphene.Field(graphene.String, source='role+2')
+
     class Meta:
         model = ScheduleItemTeacher
         filter_fields = ['schedule_item']
