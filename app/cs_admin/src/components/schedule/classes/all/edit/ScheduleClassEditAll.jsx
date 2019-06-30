@@ -27,7 +27,7 @@ import SiteWrapper from "../../../../SiteWrapper"
 import HasPermissionWrapper from "../../../../HasPermissionWrapper"
 import { dateToLocalISO, dateToLocalISOTime, TimeStringToJSDateOBJ } from '../../../../../tools/date_tools'
 
-import ScheduleMenu from '../../../ScheduleMenu'
+import ClassEditMenu from '../ClassEditMenu'
 
 
 const UPDATE_CLASS = gql`
@@ -225,7 +225,7 @@ class ScheduleClassEditAll extends Component {
                     <Icon prefix="fe" name="chevrons-left" /> {t('general.back')}
                   </Button>
                 </HasPermissionWrapper>
-                <ScheduleMenu active_link='classes'/>
+                <ClassEditMenu active_link='edit' classId={id}/>
               </Grid.Col>
             </Grid.Row>
           </Container>
