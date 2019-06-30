@@ -28,8 +28,6 @@ import HasPermissionWrapper from "../../../../HasPermissionWrapper"
 import { dateToLocalISO, dateToLocalISOTime, TimeStringToJSDateOBJ } from '../../../../../tools/date_tools'
 
 import ClassEditBase from '../ClassEditBase'
-import ClassEditMenu from '../ClassEditMenu'
-import ClassEditBack from '../ClassEditBack'
 
 
 const UPDATE_CLASS = gql`

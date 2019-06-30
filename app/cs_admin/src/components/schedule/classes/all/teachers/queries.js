@@ -27,6 +27,32 @@ export const GET_SCHEDULE_CLASS_TEACHERS_QUERY = gql`
         }
       }
     }
+    scheduleItem(id:$scheduleItem) {
+      id
+      frequencyType
+      frequencyInterval
+      organizationLocationRoom {
+        id
+        name
+        organizationLocation {
+          id
+          name
+        }
+      }
+      organizationClasstype {
+        id
+        name
+      }
+      organizationLevel {
+        id
+        name
+      }
+      dateStart
+      dateEnd
+      timeStart
+      timeEnd
+      displayPublic
+    }
   }
 `
 

@@ -23,13 +23,13 @@ import {
 } from "tabler-react";
 import SiteWrapper from "../../../../SiteWrapper"
 import HasPermissionWrapper from "../../../../HasPermissionWrapper"
+import { TimeStringToJSDateOBJ } from '../../../../../tools/date_tools'
 // import { confirmAlert } from 'react-confirm-alert'; // Import
 import { toast } from 'react-toastify'
+import { class_edit_all_subtitle } from "../tools"
 
 import ContentCard from "../../../../general/ContentCard"
 import ClassEditBase from "../ClassEditBase"
-// import ClassEditBack from "../ClassEditBack"
-import ClassEditMenu from "../ClassEditMenu"
 
 import { GET_SCHEDULE_CLASS_TEACHERS_QUERY } from "./queries"
 
@@ -54,9 +54,7 @@ const ScheduleClassTeachers = ({ t, history, match }) => (
           // Loading
           if (loading) return (
             <ClassEditBase menu_active_link="teachers">
-              <Dimmer active={true}
-                      loader={true}>
-              </Dimmer>
+              <Dimmer active={true} loader={true} />
             </ClassEditBase>
           )
           // Error
@@ -79,122 +77,131 @@ const ScheduleClassTeachers = ({ t, history, match }) => (
           //   </Button>
           // </Card.Options>
 
+          const initialTimeStart = TimeStringToJSDateOBJ(data.scheduleItem.timeStart)
+          const subtitle = class_edit_all_subtitle({
+            t: t,
+            location: data.scheduleItem.organizationLocationRoom.organizationLocation.name,
+            locationRoom: data.scheduleItem.organizationLocationRoom.name,
+            classtype: data.scheduleItem.organizationClasstype.name,
+            starttime: initialTimeStart
+          })
+
           // Empty list
           if (!data.scheduleItemTeachers.edges.length) { return (
-            <ClassEditBase menu_active_link="teachers">
+            <ClassEditBase menu_active_link="teachers" subtitle={subtitle}>
               <p>{t('schedule.classes.teachers.empty_list')}</p>
             </ClassEditBase>
           )} else {   
           // Life's good! :)
-          return (
-            <ClassEditBase menu_active_link="teachers" default_card={false}>
-            <ContentCard 
-              cardTitle={t('schedule.classes.title_edit')}
-              // headerContent={headerOptions}
-              pageInfo={data.scheduleItemTeachers.pageInfo}
-              onLoadMore={() => {
-              fetchMore({
-                variables: {
-                  after: data.scheduleItemTeachers.pageInfo.endCursor
-                },
-                updateQuery: (previousResult, { fetchMoreResult }) => {
-                  const newEdges = fetchMoreResult.scheduleItemTeachers.edges
-                  const pageInfo = fetchMoreResult.scheduleItemTeachers.pageInfo
+            return (
+              <ClassEditBase menu_active_link="teachers" default_card={false} subtitle={subtitle}>
+              <ContentCard 
+                cardTitle={t('schedule.classes.title_edit')}
+                // headerContent={headerOptions}
+                pageInfo={data.scheduleItemTeachers.pageInfo}
+                onLoadMore={() => {
+                fetchMore({
+                  variables: {
+                    after: data.scheduleItemTeachers.pageInfo.endCursor
+                  },
+                  updateQuery: (previousResult, { fetchMoreResult }) => {
+                    const newEdges = fetchMoreResult.scheduleItemTeachers.edges
+                    const pageInfo = fetchMoreResult.scheduleItemTeachers.pageInfo
 
-                  return newEdges.length
-                    ? {
-                        // Put the new locations at the end of the list and update `pageInfo`
-                        // so we have the new `endCursor` and `hasNextPage` values
-                        data: { 
-                          scheduleItemTeachers: {
-                            __typename: previousResult.scheduleItemTeachers.__typename,
-                            edges: [ ...previousResult.scheduleItemTeachers.edges, ...newEdges ],
-                            pageInfo
+                    return newEdges.length
+                      ? {
+                          // Put the new locations at the end of the list and update `pageInfo`
+                          // so we have the new `endCursor` and `hasNextPage` values
+                          data: { 
+                            scheduleItemTeachers: {
+                              __typename: previousResult.scheduleItemTeachers.__typename,
+                              edges: [ ...previousResult.scheduleItemTeachers.edges, ...newEdges ],
+                              pageInfo
+                            }
                           }
                         }
-                      }
-                    : previousResult
-                  }
-                })
-              }} >
-              <div>
-                <Alert type="primary">
-                  {/* <strong>{t('general.location')}</strong> {location.name} */}
-                  content
-                </Alert>
+                      : previousResult
+                    }
+                  })
+                }} >
+                <div>
+                  <Alert type="primary">
+                    {/* <strong>{t('general.location')}</strong> {location.name} */}
+                    content
+                  </Alert>
 
-                {/* <Table>
-                  <Table.Header>
-                    <Table.Row key={v4()}>
-                      <Table.ColHeader>{t('general.name')}</Table.ColHeader>
-                      <Table.ColHeader>{t('general.public')}</Table.ColHeader>
-                    </Table.Row>
-                  </Table.Header>
-                  <Table.Body>
-                      {location_rooms.edges.map(({ node }) => (
-                        <Table.Row key={v4()}>
-                          <Table.Col key={v4()}>
-                            {node.name}
-                          </Table.Col>
-                          <Table.Col key={v4()}>
-                            {(node.displayPublic) ? 
-                              <Badge color="success">{t('general.yes')}</Badge>: 
-                              <Badge color="danger">{t('general.no')}</Badge>}
-                          </Table.Col>
-                          <Table.Col className="text-right" key={v4()}>
-                            {(node.archived) ? 
-                              <span className='text-muted'>{t('general.unarchive_to_edit')}</span> :
-                              <Button className='btn-sm' 
-                                      onClick={() => history.push("/organization/locations/rooms/edit/" + match.params.location_id + '/' + node.id)}
-                                      color="secondary">
-                                {t('general.edit')}
-                              </Button>
-                            }
-                          </Table.Col>
-                          <Mutation mutation={ARCHIVE_LOCATION_ROOM} key={v4()}>
-                            {(archiveLocationsRoom, { data }) => (
-                              <Table.Col className="text-right" key={v4()}>
-                                <button className="icon btn btn-link btn-sm" 
-                                    title={t('general.archive')} 
-                                    href=""
-                                    onClick={() => {
-                                      console.log("clicked archived")
-                                      let id = node.id
-                                      archiveLocationsRoom({ variables: {
-                                        input: {
-                                        id,
-                                        archived: !archived
-                                        }
-                                }, refetchQueries: [
-                                    { 
-                                      query: GET_LOCATION_ROOMS_QUERY, 
-                                      variables: {"archived": archived, organizationLocation: match.params.location_id }
-                                    }
-                                ]}).then(({ data }) => {
-                                  console.log('got data', data);
-                                  toast.success(
-                                    (archived) ? t('general.unarchived'): t('general.archived'), {
-                                      position: toast.POSITION.BOTTOM_RIGHT
-                                    })
-                                }).catch((error) => {
-                                  toast.error((t('general.toast_server_error')) + ': ' +  error, {
-                                      position: toast.POSITION.BOTTOM_RIGHT
-                                    })
-                                  console.log('there was an error sending the query', error);
-                                })
-                                }}>
-                                  <Icon prefix="fa" name="inbox" />
-                                </button>
-                              </Table.Col>
-                            )}
-                          </Mutation>
-                        </Table.Row>
-                      ))}
-                  </Table.Body>
-                </Table> */}
-                </div>
-              </ContentCard>
-            </ClassEditBase>
+                  {/* <Table>
+                    <Table.Header>
+                      <Table.Row key={v4()}>
+                        <Table.ColHeader>{t('general.name')}</Table.ColHeader>
+                        <Table.ColHeader>{t('general.public')}</Table.ColHeader>
+                      </Table.Row>
+                    </Table.Header>
+                    <Table.Body>
+                        {location_rooms.edges.map(({ node }) => (
+                          <Table.Row key={v4()}>
+                            <Table.Col key={v4()}>
+                              {node.name}
+                            </Table.Col>
+                            <Table.Col key={v4()}>
+                              {(node.displayPublic) ? 
+                                <Badge color="success">{t('general.yes')}</Badge>: 
+                                <Badge color="danger">{t('general.no')}</Badge>}
+                            </Table.Col>
+                            <Table.Col className="text-right" key={v4()}>
+                              {(node.archived) ? 
+                                <span className='text-muted'>{t('general.unarchive_to_edit')}</span> :
+                                <Button className='btn-sm' 
+                                        onClick={() => history.push("/organization/locations/rooms/edit/" + match.params.location_id + '/' + node.id)}
+                                        color="secondary">
+                                  {t('general.edit')}
+                                </Button>
+                              }
+                            </Table.Col>
+                            <Mutation mutation={ARCHIVE_LOCATION_ROOM} key={v4()}>
+                              {(archiveLocationsRoom, { data }) => (
+                                <Table.Col className="text-right" key={v4()}>
+                                  <button className="icon btn btn-link btn-sm" 
+                                      title={t('general.archive')} 
+                                      href=""
+                                      onClick={() => {
+                                        console.log("clicked archived")
+                                        let id = node.id
+                                        archiveLocationsRoom({ variables: {
+                                          input: {
+                                          id,
+                                          archived: !archived
+                                          }
+                                  }, refetchQueries: [
+                                      { 
+                                        query: GET_LOCATION_ROOMS_QUERY, 
+                                        variables: {"archived": archived, organizationLocation: match.params.location_id }
+                                      }
+                                  ]}).then(({ data }) => {
+                                    console.log('got data', data);
+                                    toast.success(
+                                      (archived) ? t('general.unarchived'): t('general.archived'), {
+                                        position: toast.POSITION.BOTTOM_RIGHT
+                                      })
+                                  }).catch((error) => {
+                                    toast.error((t('general.toast_server_error')) + ': ' +  error, {
+                                        position: toast.POSITION.BOTTOM_RIGHT
+                                      })
+                                    console.log('there was an error sending the query', error);
+                                  })
+                                  }}>
+                                    <Icon prefix="fa" name="inbox" />
+                                  </button>
+                                </Table.Col>
+                              )}
+                            </Mutation>
+                          </Table.Row>
+                        ))}
+                    </Table.Body>
+                  </Table> */}
+                  </div>
+                </ContentCard>
+              </ClassEditBase>
           )}}
         }
       </Query>
