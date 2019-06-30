@@ -28,6 +28,7 @@ import HasPermissionWrapper from "../../../../HasPermissionWrapper"
 import { dateToLocalISO, dateToLocalISOTime, TimeStringToJSDateOBJ } from '../../../../../tools/date_tools'
 
 import ClassEditMenu from '../ClassEditMenu'
+import ClassEditBack from '../ClassEditBack';
 
 
 const UPDATE_CLASS = gql`
@@ -125,7 +126,9 @@ class ScheduleClassEditAll extends Component {
                   <Page.Header 
                     title={t("schedule.title")} 
                     subTitle={subtitle}
-                  />
+                  >
+                    <ClassEditBack />
+                  </Page.Header>
                   <Grid.Row>
                     <Grid.Col md={9}>
                       <Card>
