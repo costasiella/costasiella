@@ -190,7 +190,7 @@ class App extends Component {
             <Route exact path="/schedule" component={ScheduleHome} />
             <Route exact path="/schedule/classes" component={ScheduleClasses} />
             <Route exact path="/schedule/classes/add/" component={ScheduleClassAdd} />
-            <Route exact path="/schedule/classes/all/edit/:id/" component={ScheduleClassEditAll} />
+            <Route exact path="/schedule/classes/all/edit/:class_id/" component={ScheduleClassEditAll} />
 
             <Route component={Error404} />
           </Switch>

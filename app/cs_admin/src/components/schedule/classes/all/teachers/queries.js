@@ -1,8 +1,8 @@
 import gql from "graphql-tag"
 
-export const GET_LOCATION_ROOMS_QUERY = gql`
-  query OrganizationLocationRooms($after: String, $before: String, $organizationLocation: ID!, $archived: Boolean!) {
-    organizationLocationRooms(first: 15, before: $before, after: $after, organizationLocation: $organizationLocation, archived: $archived) {
+export const GET_SCHEDULE_CLASS_TEACHERS_QUERY = gql`
+  query ScheduleItemTeachers($after: String, $before: String, $scheduleItem: ID!) {
+    scheduleItemTeachers(first: 15, before: $before, after: $after, scheduleItem: $scheduleItem) {
       pageInfo {
         startCursor
         endCursor
@@ -12,19 +12,20 @@ export const GET_LOCATION_ROOMS_QUERY = gql`
       edges {
         node {
           id
-          organizationLocation {
+          account {
             id
-            name
+            fullName
           }
-          archived,
-          displayPublic
-          name
+          role
+          account2 {
+            id
+            fullName
+          }
+          role2
+          dateStart
+          dateEnd       
         }
       }
-    }
-    organizationLocation(id: $organizationLocation) {
-      id
-      name
     }
   }
 `

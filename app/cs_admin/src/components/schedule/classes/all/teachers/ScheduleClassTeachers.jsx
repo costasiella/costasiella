@@ -28,9 +28,10 @@ import { toast } from 'react-toastify'
 
 import ContentCard from "../../../general/ContentCard"
 import CardHeaderSeparator from "../../../general/CardHeaderSeparator"
-import OrganizationMenu from "../../OrganizationMenu"
+import ClassEditBack from "../ClassEditBack"
+import ClassEditMenu from "../ClassEditMenu"
 
-import { GET_LOCATION_ROOMS_QUERY } from "./queries"
+import { GET_SCHEDULE_CLASS_TEACHERS_QUERY } from "./queries"
 
 const ARCHIVE_LOCATION_ROOM = gql`
   mutation ArchiveOrganizationLocationRoom($input: ArchiveOrganizationLocationRoomInput!) {
@@ -43,7 +44,7 @@ const ARCHIVE_LOCATION_ROOM = gql`
   }
 `
 
-const OrganizationLocationsRooms = ({ t, history, match, archived=false }) => (
+const ScheduleClassTeachers = ({ t, history, match, archived=false }) => (
   <SiteWrapper>
     <div className="my-3 my-md-5">
       <Container>
@@ -206,14 +207,8 @@ const OrganizationLocationsRooms = ({ t, history, match, archived=false }) => (
             </Query>
           </Grid.Col>
           <Grid.Col md={3}>
-            <HasPermissionWrapper permission="add"
-                                  resource="organizationlocationroom">
-              <Button color="primary btn-block mb-6"
-                      onClick={() => history.push("/organization/locations/rooms/add/" + match.params.location_id)}>
-                <Icon prefix="fe" name="plus-circle" /> {t('organization.location_rooms.add')}
-              </Button>
-            </HasPermissionWrapper>
-            <OrganizationMenu active_link='locations'/>
+            <h5>{t("general.menu")}</h5>
+            <ClassEditMenu active_link='locations'/>
           </Grid.Col>
         </Grid.Row>
       </Container>
@@ -221,4 +216,4 @@ const OrganizationLocationsRooms = ({ t, history, match, archived=false }) => (
   </SiteWrapper>
 );
 
-export default withTranslation()(withRouter(OrganizationLocationsRooms))
+export default withTranslation()(withRouter(ScheduleClassTeachers))

@@ -27,8 +27,9 @@ import SiteWrapper from "../../../../SiteWrapper"
 import HasPermissionWrapper from "../../../../HasPermissionWrapper"
 import { dateToLocalISO, dateToLocalISOTime, TimeStringToJSDateOBJ } from '../../../../../tools/date_tools'
 
+import ClassEditBase from '../ClassEditBase'
 import ClassEditMenu from '../ClassEditMenu'
-import ClassEditBack from '../ClassEditBack';
+import ClassEditBack from '../ClassEditBack'
 
 
 const UPDATE_CLASS = gql`
@@ -77,7 +78,7 @@ class ScheduleClassEditAll extends Component {
     const t = this.props.t
     const match = this.props.match
     const history = this.props.history
-    const id = match.params.id
+    const id = match.params.class_id
     const return_url = "/schedule/classes"
 
     return (
@@ -122,19 +123,23 @@ class ScheduleClassEditAll extends Component {
               })
               
               return (
-                <Container>
-                  <Page.Header 
-                    title={t("schedule.title")} 
-                    subTitle={subtitle}
-                  >
-                    <ClassEditBack />
-                  </Page.Header>
-                  <Grid.Row>
-                    <Grid.Col md={9}>
-                      <Card>
-                        <Card.Header>
-                          <Card.Title>{t('schedule.classes.title_edit')}</Card.Title>
-                        </Card.Header>
+                // <Container>
+                //   <Page.Header 
+                //     title={t("schedule.title")} 
+                //     subTitle={subtitle}
+                //   >
+                //     <ClassEditBack />
+                //   </Page.Header>
+                //   <Grid.Row>
+                //     <Grid.Col md={9}>
+                //       <Card>
+                //         <Card.Header>
+                //           <Card.Title>{t('schedule.classes.title_edit')}</Card.Title>
+                //         </Card.Header>
+                <ClassEditBase 
+                  menu_active_link="edit"
+                  subtitle={subtitle}
+                >
                         <Mutation mutation={UPDATE_CLASS} onCompleted={() => history.push(return_url)}> 
                   {(updateScheduleClass, { data }) => (
                     <Formik
@@ -218,25 +223,26 @@ class ScheduleClassEditAll extends Component {
                     </Formik>
                     )}
                   </Mutation>
-                </Card>
-              </Grid.Col>
-              <Grid.Col md={3}>
-                {/* <HasPermissionWrapper permission="change"
-                                      resource="scheduleclass">
-                  <Button color="primary btn-block mb-6"
-                          onClick={() => history.push(return_url)}>
-                    <Icon prefix="fe" name="chevrons-left" /> {t('general.back')}
-                  </Button>
-                </HasPermissionWrapper> */}
-                <h5>{t('general.menu')}</h5>
-                <ClassEditMenu active_link='edit' classId={id}/>
-              </Grid.Col>
-            </Grid.Row>
-          </Container>
+                  </ClassEditBase>
+    //             </Card>
+    //           </Grid.Col>
+    //           <Grid.Col md={3}>
+    //             {/* <HasPermissionWrapper permission="change"
+    //                                   resource="scheduleclass">
+    //               <Button color="primary btn-block mb-6"
+    //                       onClick={() => history.push(return_url)}>
+    //                 <Icon prefix="fe" name="chevrons-left" /> {t('general.back')}
+    //               </Button>
+    //             </HasPermissionWrapper> */}
+    //             <h5>{t('general.menu')}</h5>
+    //             <ClassEditMenu active_link='edit' classId={id}/>
+    //           </Grid.Col>
+    //         </Grid.Row>
+    //       </Container>
           )}}
-          </Query>
-        </div>
-    </SiteWrapper>
+           </Query>
+         </div>
+      </SiteWrapper>
     )}
   }
 
