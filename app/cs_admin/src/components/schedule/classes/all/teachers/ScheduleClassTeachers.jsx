@@ -132,6 +132,7 @@ const ScheduleClassTeachers = ({ t, history, match }) => (
                       <Table.ColHeader>{t('general.teacher')}</Table.ColHeader>
                       <Table.ColHeader>{t('general.teacher_2')}</Table.ColHeader>
                       <Table.ColHeader></Table.ColHeader>
+                      <Table.ColHeader></Table.ColHeader>
                     </Table.Header>
                     <Table.Body>
                       {data.scheduleItemTeachers.edges.map(({ node }) => (
@@ -153,6 +154,13 @@ const ScheduleClassTeachers = ({ t, history, match }) => (
                                 {represent_teacher_role(node.role2)}
                               </span> : ""
                             }
+                          </Table.Col>
+                          <Table.Col className="text-right" key={v4()}>
+                            <Button className='btn-sm' 
+                                    onClick={() => history.push("/schedule/classes/all/teachers/" + match.params.class_id + '/edit/' + node.id)}
+                                    color="secondary">
+                              {t('general.edit')}
+                            </Button>
                           </Table.Col>
                         </Table.Row>
                       ))}
