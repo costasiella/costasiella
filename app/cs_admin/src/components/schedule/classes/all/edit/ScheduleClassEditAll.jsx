@@ -221,13 +221,14 @@ class ScheduleClassEditAll extends Component {
                 </Card>
               </Grid.Col>
               <Grid.Col md={3}>
-                <HasPermissionWrapper permission="change"
+                {/* <HasPermissionWrapper permission="change"
                                       resource="scheduleclass">
                   <Button color="primary btn-block mb-6"
                           onClick={() => history.push(return_url)}>
                     <Icon prefix="fe" name="chevrons-left" /> {t('general.back')}
                   </Button>
-                </HasPermissionWrapper>
+                </HasPermissionWrapper> */}
+                <h5>{t('general.menu')}</h5>
                 <ClassEditMenu active_link='edit' classId={id}/>
               </Grid.Col>
             </Grid.Row>
