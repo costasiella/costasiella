@@ -7,7 +7,7 @@ import { v4 } from "uuid"
 import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
 import { Link } from 'react-router-dom'
-
+import moment from 'moment'
 
 import {
   Alert,
@@ -26,7 +26,7 @@ import HasPermissionWrapper from "../../../../HasPermissionWrapper"
 import { TimeStringToJSDateOBJ } from '../../../../../tools/date_tools'
 // import { confirmAlert } from 'react-confirm-alert'; // Import
 import { toast } from 'react-toastify'
-import { class_edit_all_subtitle } from "../tools"
+import { class_edit_all_subtitle, represent_teacher_role } from "../tools"
 
 import ContentCard from "../../../../general/ContentCard"
 import ClassEditBase from "../ClassEditBase"
@@ -125,10 +125,39 @@ const ScheduleClassTeachers = ({ t, history, match }) => (
                   })
                 }} >
                 <div>
-                  <Alert type="primary">
-                    {/* <strong>{t('general.location')}</strong> {location.name} */}
-                    content
-                  </Alert>
+                  <Table>
+                    <Table.Header>
+                      <Table.ColHeader>{t('general.date_start')}</Table.ColHeader>
+                      <Table.ColHeader>{t('general.date_end')}</Table.ColHeader>
+                      <Table.ColHeader>{t('general.teacher')}</Table.ColHeader>
+                      <Table.ColHeader>{t('general.teacher_2')}</Table.ColHeader>
+                      <Table.ColHeader></Table.ColHeader>
+                    </Table.Header>
+                    <Table.Body>
+                      {data.scheduleItemTeachers.edges.map(({ node }) => (
+                        <Table.Row key={v4()}>
+                          <Table.Col key={v4()}> 
+                            {moment(node.dateStart).format('LL')}
+                          </Table.Col>
+                          <Table.Col key={v4()}> 
+                            {(node.dateEnd) ? moment(node.dateEtart).format('LL') : ""}
+                          </Table.Col>
+                          <Table.Col>
+                            {node.account.fullName} <br />
+                            {represent_teacher_role(node.role)}
+                          </Table.Col>
+                          <Table.Col>
+                            {node.account2 ?
+                              <span>
+                                {node.account2.fullName} <br />
+                                {represent_teacher_role(node.role2)}
+                              </span> : ""
+                            }
+                          </Table.Col>
+                        </Table.Row>
+                      ))}
+                    </Table.Body>
+                  </Table>
 
                   {/* <Table>
                     <Table.Header>
