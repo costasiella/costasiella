@@ -27,19 +27,17 @@ import { TimeStringToJSDateOBJ } from '../../../../../tools/date_tools'
 // import { confirmAlert } from 'react-confirm-alert'; // Import
 import { toast } from 'react-toastify'
 import { class_edit_all_subtitle, represent_teacher_role } from "../tools"
+import confirm_delete from "../../../../../tools/confirm_delete"
 
 import ContentCard from "../../../../general/ContentCard"
 import ClassEditBase from "../ClassEditBase"
 
 import { GET_SCHEDULE_CLASS_TEACHERS_QUERY } from "./queries"
 
-const ARCHIVE_LOCATION_ROOM = gql`
-  mutation ArchiveOrganizationLocationRoom($input: ArchiveOrganizationLocationRoomInput!) {
-    archiveOrganizationLocationRoom(input: $input) {
-      organizationLocationRoom {
-        id
-        archived
-      }
+const DELETE_SCHEDULE_CLASS_TEACHER = gql`
+  mutation DeleteScheduleClassTeacher($input: DeleteScheduleItemTeacherInput!) {
+    deleteScheduleItemTeacher(input: $input) {
+      ok
     }
   }
 `
@@ -162,6 +160,35 @@ const ScheduleClassTeachers = ({ t, history, match }) => (
                               {t('general.edit')}
                             </Button>
                           </Table.Col>
+                          <Mutation mutation={DELETE_SCHEDULE_CLASS_TEACHER} key={v4()}>
+                            {(deleteScheduleItemTeacher, { data }) => (
+                              <Table.Col className="text-right" key={v4()}>
+                                <button className="icon btn btn-link btn-sm" 
+                                    title={t('general.delete')} 
+                                    href=""
+                                    onClick={() => {
+                                      confirm_delete({
+                                        t: t,
+                                        msgConfirm: t('schedule.classes.teachers.delete_confirm_msg'),
+                                        msgDescription: <p>{t('schedule.classes.teachers.delete_confirm_description')}</p>,
+                                        msgSuccess: t('schedule.classes.,teachers.deleted'),
+                                        deleteFunction: deleteScheduleItemTeacher,
+                                        functionVariables: { variables: {
+                                          input: {
+                                            id: node.id
+                                          }
+                                        }, refetchQueries: [
+                                          {query: GET_SCHEDULE_CLASS_TEACHERS_QUERY, variables: { scheduleItem: match.params.class_id }}
+                                        ]}
+                                    })}}
+                                >
+                                  <span className="text-red">
+                                    <Icon prefix="fe" name="trash-2" />
+                                  </span>
+                                </button>
+                              </Table.Col>
+                            )}
+                          </Mutation>
                         </Table.Row>
                       ))}
                     </Table.Body>
