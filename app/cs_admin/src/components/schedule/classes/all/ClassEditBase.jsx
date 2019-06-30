@@ -28,6 +28,7 @@ class ClassEditBase extends Component {
     const classId = match.params.class_id
     const subtitle = this.props.subtitle
     const menu_active_link = this.props.menu_active_link
+    const default_card = this.props.default_card
 
     return (
   <Container>
@@ -39,14 +40,16 @@ class ClassEditBase extends Component {
     </Page.Header>
     <Grid.Row>
       <Grid.Col md={9}>
-        <Card>
-          <Card.Header>
-            <Card.Title>{t('schedule.classes.title_edit')}</Card.Title>
-          </Card.Header>
-          <Card.Body>
-            {this.props.children}
-          </Card.Body>
-        </Card>
+        {!default_card ? this.props.children :
+          <Card>
+            <Card.Header>
+              <Card.Title>{t('schedule.classes.title_edit')}</Card.Title>
+            </Card.Header>
+            <Card.Body>
+              {this.props.children}
+            </Card.Body>
+          </Card>
+        }
       </Grid.Col>
       <Grid.Col md={3}>
         <h5>{t('general.menu')}</h5>
@@ -55,6 +58,10 @@ class ClassEditBase extends Component {
     </Grid.Row>
   </Container>
 )}}
+
+ClassEditBase.defaultProps = {
+  default_card: true
+}
 
 
 export default withTranslation()(withRouter(ClassEditBase))
