@@ -70,3 +70,23 @@ export const GET_LOCATION_ROOM_QUERY = gql`
     }
   }
 `
+
+
+export const GET_INPUT_VALUES_QUERY = gql`
+  query InputValues($after: String, $before: String) {
+    accounts(first: 15, before: $before, after: $after, isActive: true, teacher: true) {
+      pageInfo {
+        startCursor
+        endCursor
+        hasNextPage
+        hasPreviousPage
+      }
+      edges {
+        node {
+          id
+          fullName
+        }
+      }
+    }
+  }
+`

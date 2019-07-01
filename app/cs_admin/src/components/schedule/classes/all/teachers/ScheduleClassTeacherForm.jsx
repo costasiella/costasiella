@@ -13,7 +13,7 @@ import {
 } from "tabler-react"
 
 
-const OrganizationLocationRoomForm = ({ t, history, match, isSubmitting, errors, values, return_url }) => (
+const ScheduleClassTeacherForm = ({ t, history, match, isSubmitting, errors, values, return_url }) => (
   <FoForm>
       <Card.Body>
           <Form.Group>
@@ -53,4 +53,4 @@ const OrganizationLocationRoomForm = ({ t, history, match, isSubmitting, errors,
   </FoForm>
 );
 
-export default withTranslation()(withRouter(OrganizationLocationRoomForm))
+export default withTranslation()(withRouter(ScheduleClassTeacherForm))
