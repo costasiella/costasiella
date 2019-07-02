@@ -9,7 +9,7 @@ import { Formik, Form as FoForm, Field, ErrorMessage } from 'formik'
 import { toast } from 'react-toastify'
 
 
-import { GET_LOCATION_ROOMS_QUERY } from './queries'
+import { GET_LOCATION_ROOMS_QUERY, GET_INPUT_VALUES_QUERY } from './queries'
 import { LOCATION_ROOM_SCHEMA } from './yupSchema'
 import OrganizationLocationRoomForm from './OrganizationLocationRoomForm'
 
@@ -43,7 +43,7 @@ const return_url = "/organization/locations/rooms/"
 const ScheduleClassTeacherAdd = ({ t, history, match }) => (
   <SiteWrapper>
     <div className="my-3 my-md-5">
-      <Query query={GET_INPUT_VALUES_QUERY} variables = {{archived: false}} >
+      <Query query={GET_INPUT_VALUES_QUERY} >
         {({ loading, error, data, refetch }) => {
           // Loading
           if (loading) return <p>{t('general.loading_with_dots')}</p>
