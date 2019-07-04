@@ -18,6 +18,6 @@ const ScheduleClassTeacherBack = ({ t, classId }) => (
       <Icon prefix="fe" name="chevrons-left" /> {t('general.back')}
     </Button>
   </Link>
-);
+)
 
 export default withTranslation()(withRouter(ScheduleClassTeacherBack))

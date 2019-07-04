@@ -74,13 +74,13 @@ class ScheduleClassTeachers extends Component {
   
             // Loading
             if (loading) return (
-              <ClassEditBase menu_active_link="teachers" sidebar_button={ButtonAdd}>
+              <ClassEditBase menu_active_link="teachers" card_title={t('schedule.classes.teachers.title')} sidebar_button={ButtonAdd}>
                 <Dimmer active={true} loader={true} />
               </ClassEditBase>
             )
             // Error
             if (error) return (
-              <ClassEditBase menu_active_link="teachers" sidebar_button={ButtonAdd}>
+              <ClassEditBase menu_active_link="teachers" card_title={t('schedule.classes.teachers.title')} sidebar_button={ButtonAdd}>
                 <p>{t('schedule.classes.teachers.error_loading')}</p>
               </ClassEditBase>
             )
@@ -109,7 +109,7 @@ class ScheduleClassTeachers extends Component {
   
             // Empty list
             if (!data.scheduleItemTeachers.edges.length) { return (
-              <ClassEditBase menu_active_link="teachers" subtitle={subtitle} sidebar_button={ButtonAdd}>
+              <ClassEditBase menu_active_link="teachers" card_title={t('schedule.classes.teachers.title')} sidebar_button={ButtonAdd}>
                 <p>{t('schedule.classes.teachers.empty_list')}</p>
               </ClassEditBase>
             )} else {   

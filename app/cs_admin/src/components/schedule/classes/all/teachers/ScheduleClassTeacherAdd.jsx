@@ -60,6 +60,7 @@ const ScheduleClassTeacherAdd = ({ t, history, match }) => (
 
           return (
             <ClassEditBase 
+              card_title={t('schedule.classes.teachers.title_add')}
               menu_active_link="teachers"
               sidebar_button={<ScheduleClassTeacherBack classId={match.params.class_id} />}
             >
