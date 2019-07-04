@@ -1,6 +1,7 @@
 // @flow
 
 import React, { Component } from 'react'
+import { t } from 'i18next'
 import { Query } from "react-apollo";
 import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
@@ -77,7 +78,7 @@ class ClassEditBase extends Component {
                   {!default_card ? this.props.children :
                     <Card>
                       <Card.Header>
-                        <Card.Title>{t('schedule.classes.title_edit')}</Card.Title>
+                        <Card.Title>{this.props.card_title}</Card.Title>
                       </Card.Header>
                       <Card.Body>
                         {this.props.children}
@@ -99,7 +100,8 @@ class ClassEditBase extends Component {
 
 ClassEditBase.defaultProps = {
   default_card: true,
-  sidebar_button: ""
+  sidebar_button: "",
+  card_title: t('schedule.classes.title_edit')
 }
 
 
