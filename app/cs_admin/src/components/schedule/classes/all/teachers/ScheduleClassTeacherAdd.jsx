@@ -1,7 +1,7 @@
 // @flow
 
 import React from 'react'
-import { Mutation } from "react-apollo";
+import { Query, Mutation } from "react-apollo";
 import gql from "graphql-tag"
 import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
@@ -11,7 +11,7 @@ import { toast } from 'react-toastify'
 
 import { GET_LOCATION_ROOMS_QUERY, GET_INPUT_VALUES_QUERY } from './queries'
 import { LOCATION_ROOM_SCHEMA } from './yupSchema'
-import OrganizationLocationRoomForm from './OrganizationLocationRoomForm'
+import ScheduleClassTeacherForm from './ScheduleClassTeacherForm'
 
 import {
   Page,
@@ -22,8 +22,8 @@ import {
   Container,
   Form,
 } from "tabler-react"
-import SiteWrapper from "../../../SiteWrapper"
-import HasPermissionWrapper from "../../../HasPermissionWrapper"
+import SiteWrapper from "../../../../SiteWrapper"
+import HasPermissionWrapper from "../../../../HasPermissionWrapper"
 
 import ClassEditBase from "../ClassEditBase"
 

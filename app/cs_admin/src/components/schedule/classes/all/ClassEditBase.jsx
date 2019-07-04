@@ -29,6 +29,7 @@ class ClassEditBase extends Component {
     const subtitle = this.props.subtitle
     const menu_active_link = this.props.menu_active_link
     const default_card = this.props.default_card
+    const sidebar_button = this.props.sidebar_button
 
     return (
   <Container>
@@ -52,6 +53,7 @@ class ClassEditBase extends Component {
         }
       </Grid.Col>
       <Grid.Col md={3}>
+        {sidebar_button}
         <h5>{t('general.menu')}</h5>
         <ClassEditMenu active_link={menu_active_link} classId={classId}/>
       </Grid.Col>
@@ -60,7 +62,8 @@ class ClassEditBase extends Component {
 )}}
 
 ClassEditBase.defaultProps = {
-  default_card: true
+  default_card: true,
+  sidebar_button: ""
 }
 
 
