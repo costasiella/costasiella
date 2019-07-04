@@ -12,7 +12,6 @@ import { GET_CLASSES_QUERY, GET_CLASS_QUERY } from '../../queries'
 import { get_list_query_variables } from '../../tools'
 import { CLASS_SCHEMA } from '../../yupSchema'
 import ScheduleClassForm from '../../ScheduleClassForm'
-import { class_edit_all_subtitle } from "../tools"
 
 import {
   Page,
@@ -112,18 +111,10 @@ class ScheduleClassEditAll extends Component {
 
               const initialTimeStart = TimeStringToJSDateOBJ(initialValues.timeStart)
               const initialTimeEnd = TimeStringToJSDateOBJ(initialValues.timeEnd)
-              const subtitle = class_edit_all_subtitle({
-                t: t,
-                location: initialValues.organizationLocationRoom.organizationLocation.name,
-                locationRoom: initialValues.organizationLocationRoom.name,
-                classtype: initialValues.organizationClasstype.name,
-                starttime: initialTimeStart
-              })
               
               return (
                 <ClassEditBase 
                   menu_active_link="edit"
-                  subtitle={subtitle}
                 >
                   <Mutation mutation={UPDATE_CLASS} onCompleted={() => history.push(return_url)}> 
                   {(updateScheduleClass, { data }) => (
