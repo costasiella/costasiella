@@ -26,6 +26,7 @@ import SiteWrapper from "../../../../SiteWrapper"
 import HasPermissionWrapper from "../../../../HasPermissionWrapper"
 
 import ClassEditBase from "../ClassEditBase"
+import ScheduleClassTeacherBack from "./ScheduleClassTeacherBack"
 
 
 const ADD_SCHEDULE_CLASS_TEACHER = gql`
@@ -59,6 +60,8 @@ const ScheduleClassTeacherAdd = ({ t, history, match }) => (
 
           return (
             <ClassEditBase 
+              menu_active_link="teachers"
+              sidebar_button={<ScheduleClassTeacherBack classId={match.params.class_id} />}
             >
               actual content
             </ClassEditBase>
