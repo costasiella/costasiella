@@ -15,7 +15,7 @@ class ScheduleItemTeacherNode(DjangoObjectType):
     # Disable output like "A_3" by graphene automatically converting model choices
     # to an Enum field
     role = graphene.Field(graphene.String, source='role')
-    role_2 = graphene.Field(graphene.String, source='role+2')
+    role_2 = graphene.Field(graphene.String, source='role_2')
 
     class Meta:
         model = ScheduleItemTeacher
@@ -118,7 +118,7 @@ class CreateScheduleItemTeacher(graphene.relay.ClientIDMutation):
 
         role_2 = input.get('role_2', None)
         if role_2:
-            schedule_item_teaher.role_2 = role_2
+            schedule_item_teacher.role_2 = role_2
 
         schedule_item_teacher.save()
 
