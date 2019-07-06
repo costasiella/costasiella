@@ -27,24 +27,18 @@ import HasPermissionWrapper from "../../../HasPermissionWrapper"
 import OrganizationMenu from "../../OrganizationMenu"
 
 
-const UPDATE_LOCATION_ROOM = gql`
-  mutation UpdateOrganizationLocationRoom($input: UpdateOrganizationLocationRoomInput!) {
-    updateOrganizationLocationRoom(input: $input) {
-      organizationLocationRoom {
+const UPDATE_SCHEDULE_CLASS_TEACHER = gql`
+  mutation UpdateScheduleItemTeacher($input: UpdateScheduleItemTeacherInput!) {
+    updateScheduleItemTeacher(input:$input) {
+      scheduleItemTeacher {
         id
-        organizationLocation {
-          id
-          name
-        }
-        name
-        displayPublic
-      }
+      } 
     }
   }
 `
 
 
-class OrganizationLocationRoomEdit extends Component {
+class ScheduleClassTeacherEdit extends Component {
   constructor(props) {
     super(props)
     console.log("Organization location room edit props:")
@@ -56,8 +50,8 @@ class OrganizationLocationRoomEdit extends Component {
     const match = this.props.match
     const history = this.props.history
     const id = match.params.id
-    const location_id = match.params.location_id
-    const return_url = "/organization/locations/rooms/" + location_id
+    const class_id = match.params.class_id
+    const return_url = "/schedule/classes/all/teachers/" + class_id
 
     return (
       <SiteWrapper>
@@ -156,4 +150,4 @@ class OrganizationLocationRoomEdit extends Component {
   }
 
 
-export default withTranslation()(withRouter(OrganizationLocationRoomEdit))
+export default withTranslation()(withRouter(ScheduleClassTeacherEdit))
