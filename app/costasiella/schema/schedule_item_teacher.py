@@ -39,7 +39,7 @@ class ScheduleItemTeacherQuery(graphene.ObjectType):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.view_scheduleitemteacher')
 
-        return ScheduleItemTeacher.objects.order_by('date_start')
+        return ScheduleItemTeacher.objects.order_by('-date_start')
             
 
 def validate_schedule_item_teacher_create_update_input(input):
