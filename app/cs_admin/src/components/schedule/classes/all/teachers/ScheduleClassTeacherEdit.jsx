@@ -44,7 +44,7 @@ const UPDATE_SCHEDULE_CLASS_TEACHER = gql`
 class ScheduleClassTeacherEdit extends Component {
   constructor(props) {
     super(props)
-    console.log("Organization location room edit props:")
+    console.log("Schedule class teacher edit props:")
     console.log(props)
   }
 
