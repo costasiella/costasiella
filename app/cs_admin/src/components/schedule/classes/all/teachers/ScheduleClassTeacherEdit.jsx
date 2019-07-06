@@ -83,9 +83,9 @@ class ScheduleClassTeacherEdit extends Component {
                 <ClassEditBase 
                   card_title={t('schedule.classes.teachers.title_edit')}
                   menu_active_link="teachers"
-                  sidebar_button={<ScheduleClassTeacherBack classId={match.params.class_id} />}
+                  sidebar_button={<ScheduleClassTeacherBack classId={class_id} />}
                 >
-                  <Mutation mutation={UPDATE_SCHEDULE_CLASS_TEACHER} onCompleted={() => history.push(return_url + match.params.class_id)}> 
+                  <Mutation mutation={UPDATE_SCHEDULE_CLASS_TEACHER} onCompleted={() => history.push(return_url)}> 
                     {(addScheduleClassTeacher, { data }) => (
                         <Formik
                             initialValues={{  
@@ -108,7 +108,7 @@ class ScheduleClassTeacherEdit extends Component {
     
                                 addScheduleClassTeacher({ variables: {
                                   input: {
-                                    scheduleItem: match.params.class_id,
+                                    id: match.params.id,
                                     account: values.account,
                                     role: values.role,
                                     account2: values.account2,

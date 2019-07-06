@@ -122,7 +122,7 @@ const ScheduleClassTeacherAdd = ({ t, history, match }) => (
                             setFieldValue={setFieldValue}
                             errors={errors}
                             values={values}
-                            return_url={return_url}
+                            return_url={return_url + match.params.class_id}
                           />
                         )}
                     </Formik>

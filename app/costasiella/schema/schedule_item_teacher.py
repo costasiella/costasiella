@@ -128,7 +128,6 @@ class CreateScheduleItemTeacher(graphene.relay.ClientIDMutation):
 class UpdateScheduleItemTeacher(graphene.relay.ClientIDMutation):
     class Input:
         id = graphene.ID(required=True)
-        schedule_item = graphene.ID(required=True)
         account = graphene.ID(required=True)
         role = graphene.String(required=False, default_value="")
         account_2 = graphene.ID(required=True)
@@ -150,7 +149,6 @@ class UpdateScheduleItemTeacher(graphene.relay.ClientIDMutation):
 
         validation_result = validate_schedule_item_teacher_create_update_input(input)
 
-        schedule_item_teacher.schedule_item = validation_result['schedule_item']
         schedule_item_teacher.account=validation_result['account']
         schedule_item_teacher.date_start=input['date_start']
         

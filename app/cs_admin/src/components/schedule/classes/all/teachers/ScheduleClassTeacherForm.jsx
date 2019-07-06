@@ -113,7 +113,7 @@ const ScheduleClassTeacherForm = ({ t, history, match, isSubmitting, errors, val
           >
             {t('general.submit')}
           </Button>
-          <Button color="link" onClick={() => history.push(return_url + match.params.class_id)}>
+          <Button color="link" onClick={() => history.push(return_url)} role="button">
               {t('general.cancel')}
           </Button>
       </Card.Footer>

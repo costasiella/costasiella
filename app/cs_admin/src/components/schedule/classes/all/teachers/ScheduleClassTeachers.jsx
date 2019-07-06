@@ -170,7 +170,7 @@ class ScheduleClassTeachers extends Component {
                               {moment(node.dateStart).format('LL')}
                             </Table.Col>
                             <Table.Col key={v4()}> 
-                              {(node.dateEnd) ? moment(node.dateEtart).format('LL') : ""}
+                              {(node.dateEnd) ? moment(node.dateEnd).format('LL') : ""}
                             </Table.Col>
                             <Table.Col>
                               {node.account.fullName} <br />
