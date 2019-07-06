@@ -56,17 +56,36 @@ export const GET_SCHEDULE_CLASS_TEACHERS_QUERY = gql`
   }
 `
 
-export const GET_LOCATION_ROOM_QUERY = gql`
-  query OrganizationLocationRoom($id: ID!) {
-    organizationLocationRoom(id:$id) {
+export const GET_SINGLE_SCHEDULE_CLASS_TEACHERS_QUERY = gql`
+  query ScheduleItemTeacher($before: String, $after: String, $id: ID!) {
+    scheduleItemTeacher(id: $id) {
       id
-      organizationLocation {
+      account {
         id
-        name
+        fullName
       }
-      name
-      displayPublic
-      archived
+      role
+      account2 {
+        id
+        fullName
+      }
+      role2
+      dateStart
+      dateEnd       
+    }
+    accounts(first: 15, before: $before, after: $after, isActive: true, teacher: true) {
+      pageInfo {
+        startCursor
+        endCursor
+        hasNextPage
+        hasPreviousPage
+      }
+      edges {
+        node {
+          id
+          fullName
+        }
+      }
     }
   }
 `
