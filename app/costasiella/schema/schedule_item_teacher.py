@@ -106,19 +106,19 @@ class CreateScheduleItemTeacher(graphene.relay.ClientIDMutation):
         # Optional fields
         date_end = input.get('date_end', None)
         if date_end:
-            schedule_item.date_end = date_end
+            schedule_item_teacher.date_end = date_end
 
         role = input.get('role', None)
         if role:
-            schedule_item.role = role
+            schedule_item_teacher.role = role
 
         account_2 = validation_result.get('account_2', None)
         if account_2:
-            schedule_item.account_2 = account_2
+            schedule_item_teacher.account_2 = account_2
 
         role_2 = input.get('role_2', None)
         if role_2:
-            schedule_item.role_2 = role_2
+            schedule_item_teaher.role_2 = role_2
 
         schedule_item_teacher.save()
 
@@ -157,19 +157,19 @@ class UpdateScheduleItemTeacher(graphene.relay.ClientIDMutation):
         # Optional fields
         date_end = input.get('date_end', None)
         if date_end:
-            schedule_item.date_end = date_end
+            schedule_item_teacher.date_end = date_end
 
         role = input.get('role', None)
         if role:
-            schedule_item.role = role
+            schedule_item_teacher.role = role
 
         account_2 = validation_result.get('account_2', None)
         if account_2:
-            schedule_item.account_2 = account_2
+            schedule_item_teacher.account_2 = account_2
 
         role_2 = input.get('role_2', None)
         if role_2:
-            schedule_item.role_2 = role_2
+            schedule_item_teacher.role_2 = role_2
 
         schedule_item_teacher.save()
 

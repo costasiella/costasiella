@@ -6,6 +6,7 @@ export function class_edit_all_subtitle({t, location, locationRoom, classtype, s
 
 
 export function represent_teacher_role(t, role) {
+  console.log(role)
   switch (role) {
     case "SUB":
       return t('schedule.classes.teacher_roles.sub')

@@ -65,9 +65,9 @@ const ScheduleClassTeacherForm = ({ t, history, match, isSubmitting, errors, val
                       className={(errors.role) ? "form-control is-invalid" : "form-control"} 
                       autoComplete="off">
                 <option value="" key={v4()}></option>
-                <option value="SUB" key={v4()}>{t('schedule.classes.teacher_roles.SUB')}</option>
-                <option value="ASSISTANT" key={v4()}>{t('schedule.classes.teacher_roles.ASSISTANT')}</option>
-                <option value="KARMA" key={v4()}>{t('schedule.classes.teacher_roles.KARMA')}</option>
+                <option value="SUB" key={v4()}>{t('schedule.classes.teacher_roles.sub')}</option>
+                <option value="ASSISTANT" key={v4()}>{t('schedule.classes.teacher_roles.assistant')}</option>
+                <option value="KARMA" key={v4()}>{t('schedule.classes.teacher_roles.karma')}</option>
               </Field>
               <ErrorMessage name="role" component="span" className="invalid-feedback" />
             </Form.Group>
@@ -77,7 +77,7 @@ const ScheduleClassTeacherForm = ({ t, history, match, isSubmitting, errors, val
           <Grid.Col>
             <Form.Group label={t('general.teacher2')}>
               <Field component="select" 
-                      name="account" 
+                      name="account2" 
                       className={(errors.account2) ? "form-control is-invalid" : "form-control"} 
                       autoComplete="off">
                 <option value="" key={v4()}></option>
@@ -91,13 +91,13 @@ const ScheduleClassTeacherForm = ({ t, history, match, isSubmitting, errors, val
           <Grid.Col>
             <Form.Group label={t('general.teacher_role2')}>
               <Field component="select" 
-                      name="role" 
+                      name="role2" 
                       className={(errors.role2) ? "form-control is-invalid" : "form-control"} 
                       autoComplete="off">
                 <option value="" key={v4()}></option>
-                <option value="SUB" key={v4()}>{t('schedule.classes.teacher_roles.SUB')}</option>
-                <option value="ASSISTANT" key={v4()}>{t('schedule.classes.teacher_roles.ASSISTANT')}</option>
-                <option value="KARMA" key={v4()}>{t('schedule.classes.teacher_roles.KARMA')}</option>
+                <option value="SUB" key={v4()}>{t('schedule.classes.teacher_roles.sub')}</option>
+                <option value="ASSISTANT" key={v4()}>{t('schedule.classes.teacher_roles.assistant')}</option>
+                <option value="KARMA" key={v4()}>{t('schedule.classes.teacher_roles.karma')}</option>
               </Field>
               <ErrorMessage name="role2" component="span" className="invalid-feedback" />
             </Form.Group>

@@ -153,16 +153,19 @@ class ScheduleClassTeachers extends Component {
                   <div>
                     <Table>
                       <Table.Header>
-                        <Table.ColHeader>{t('general.date_start')}</Table.ColHeader>
-                        <Table.ColHeader>{t('general.date_end')}</Table.ColHeader>
-                        <Table.ColHeader>{t('general.teacher')}</Table.ColHeader>
-                        <Table.ColHeader>{t('general.teacher_2')}</Table.ColHeader>
-                        <Table.ColHeader></Table.ColHeader>
-                        <Table.ColHeader></Table.ColHeader>
+                        <Table.Row>
+                          <Table.ColHeader>{t('general.date_start')}</Table.ColHeader>
+                          <Table.ColHeader>{t('general.date_end')}</Table.ColHeader>
+                          <Table.ColHeader>{t('general.teacher')}</Table.ColHeader>
+                          <Table.ColHeader>{t('general.teacher_2')}</Table.ColHeader>
+                          <Table.ColHeader></Table.ColHeader>
+                          <Table.ColHeader></Table.ColHeader>
+                        </Table.Row>
                       </Table.Header>
                       <Table.Body>
                         {data.scheduleItemTeachers.edges.map(({ node }) => (
                           <Table.Row key={v4()}>
+                            {console.log(node)}
                             <Table.Col key={v4()}> 
                               {moment(node.dateStart).format('LL')}
                             </Table.Col>
@@ -171,13 +174,17 @@ class ScheduleClassTeachers extends Component {
                             </Table.Col>
                             <Table.Col>
                               {node.account.fullName} <br />
-                              {represent_teacher_role(node.role)}
+                              <span className="text-muted">
+                                {represent_teacher_role(t, node.role)}
+                              </span>
                             </Table.Col>
                             <Table.Col>
                               {node.account2 ?
                                 <span>
                                   {node.account2.fullName} <br />
-                                  {represent_teacher_role(node.role2)}
+                                  <span className="text-muted">
+                                    {represent_teacher_role(t, node.role2)}
+                                  </span>
                                 </span> : ""
                               }
                             </Table.Col>

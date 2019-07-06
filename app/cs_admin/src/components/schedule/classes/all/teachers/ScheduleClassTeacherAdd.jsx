@@ -102,7 +102,7 @@ const ScheduleClassTeacherAdd = ({ t, history, match }) => (
                             ]})
                             .then(({ data }) => {
                                 console.log('got data', data);
-                                toast.success((t('organization.subscription_prices.toast_add_success')), {
+                                toast.success((t('schedule.classes.teachers.toast_add_success')), {
                                     position: toast.POSITION.BOTTOM_RIGHT
                                   })
                               }).catch((error) => {
