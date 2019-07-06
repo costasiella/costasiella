@@ -9,9 +9,10 @@ import { Formik, Form as FoForm, Field, ErrorMessage } from 'formik'
 import { toast } from 'react-toastify'
 
 
-import { GET_LOCATION_ROOMS_QUERY, GET_INPUT_VALUES_QUERY } from './queries'
-import { LOCATION_ROOM_SCHEMA } from './yupSchema'
+import { GET_SCHEDULE_CLASS_TEACHERS_QUERY, GET_INPUT_VALUES_QUERY } from './queries'
+import { SCHEDULE_CLASS_TEACHER_SCHEMA } from './yupSchema'
 import ScheduleClassTeacherForm from './ScheduleClassTeacherForm'
+import { dateToLocalISO } from '../../../../../tools/date_tools'
 
 import {
   Page,
@@ -39,7 +40,7 @@ const ADD_SCHEDULE_CLASS_TEACHER = gql`
   }
 `
 
-const return_url = "/organization/locations/rooms/"
+const return_url = "/schedule/classes/all/teachers/"
 
 const ScheduleClassTeacherAdd = ({ t, history, match }) => (
   <SiteWrapper>
@@ -64,7 +65,69 @@ const ScheduleClassTeacherAdd = ({ t, history, match }) => (
               menu_active_link="teachers"
               sidebar_button={<ScheduleClassTeacherBack classId={match.params.class_id} />}
             >
-              actual content
+              <Mutation mutation={ADD_SCHEDULE_CLASS_TEACHER} onCompleted={() => history.push(return_url + match.params.class_id)}> 
+                {(addScheduleClassTeacher, { data }) => (
+                    <Formik
+                        initialValues={{ 
+                          price: "", 
+                          dateStart: new Date() ,
+                          account: "",
+                          role: "",
+                          account2: "",
+                          role2: "",
+                        }}
+                        validationSchema={SCHEDULE_CLASS_TEACHER_SCHEMA}
+                        onSubmit={(values, { setSubmitting }) => {
+
+                            let dateEnd
+                            if (values.dateEnd) {
+                              dateEnd = dateToLocalISO(values.dateEnd)
+                            } else {
+                              dateEnd = values.dateEnd
+                            }
+
+                            addScheduleClassTeacher({ variables: {
+                              input: {
+                                scheduleItem: match.params.class_id,
+                                account: values.account,
+                                role: values.role,
+                                account2: values.account2,
+                                role2: values.role2,
+                                dateStart: dateToLocalISO(values.dateStart),
+                                dateEnd: dateEnd
+                              }
+                            }, refetchQueries: [
+                                {query: GET_SCHEDULE_CLASS_TEACHERS_QUERY, variables: { scheduleItem: match.params.class_id }},
+                                // {query: GET_SUBSCRIPTIONS_QUERY, variables: {"archived": false }},
+                            ]})
+                            .then(({ data }) => {
+                                console.log('got data', data);
+                                toast.success((t('organization.subscription_prices.toast_add_success')), {
+                                    position: toast.POSITION.BOTTOM_RIGHT
+                                  })
+                              }).catch((error) => {
+                                toast.error((t('general.toast_server_error')) + ': ' +  error, {
+                                    position: toast.POSITION.BOTTOM_RIGHT
+                                  })
+                                console.log('there was an error sending the query', error)
+                                setSubmitting(false)
+                              })
+                        }}
+                        >
+                        {({ isSubmitting, errors, values, setFieldTouched, setFieldValue }) => (
+                          <ScheduleClassTeacherForm
+                            inputData={inputData}
+                            isSubmitting={isSubmitting}
+                            setFieldTouched={setFieldTouched}
+                            setFieldValue={setFieldValue}
+                            errors={errors}
+                            values={values}
+                            return_url={return_url}
+                          />
+                        )}
+                    </Formik>
+                )}
+              </Mutation>
             </ClassEditBase>
           )
         }}
