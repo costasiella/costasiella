@@ -14,17 +14,7 @@ import { SCHEDULE_CLASS_TEACHER_SCHEMA } from './yupSchema'
 import ScheduleClassTeacherForm from './ScheduleClassTeacherForm'
 import { dateToLocalISO } from '../../../../../tools/date_tools'
 
-import {
-  Page,
-  Grid,
-  Icon,
-  Button,
-  Card,
-  Container,
-  Form,
-} from "tabler-react"
 import SiteWrapper from "../../../../SiteWrapper"
-import HasPermissionWrapper from "../../../../HasPermissionWrapper"
 
 import ClassEditBase from "../ClassEditBase"
 import ScheduleClassTeacherBack from "./ScheduleClassTeacherBack"
