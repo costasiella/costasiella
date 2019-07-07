@@ -231,8 +231,6 @@ class UpdateAccount(graphene.relay.ClientIDMutation):
 
         validate_create_update_input(account, input, update=True)
 
-        print(input)
-
         account.first_name = input['first_name']
         account.last_name = input['last_name']
         account.email = input['email']
@@ -244,23 +242,23 @@ class UpdateAccount(graphene.relay.ClientIDMutation):
             account.teacher = input['teacher']
         if 'employee' in input:
             account.employee = input['employee']
-        if input['address']:
+        if 'address' in input:
             account.address = input['address']
-        if input['postcode']:
+        if 'postcode' in input:
             account.postcode = input['postcode']
-        if input['city']:
+        if 'city' in input:
             account.city = input['city']
-        if input['country']:
+        if 'country' in input:
             account.country = input['country']
-        if input['phone']:
+        if 'phone' in input:
             account.phone = input['phone']
-        if input['mobile']:
+        if 'mobile' in input:
             account.mobile = input['mobile']
-        if input['emergency']:
+        if 'emergency' in input:
             account.emergency = input['emergency']
-        if input['gender']:
+        if 'gender' in input:
             account.gender = input['gender']
-        if input['date_of_birth']:
+        if 'date_of_birth' in input:
             account.date_of_birth = input['date_of_birth']
 
             
