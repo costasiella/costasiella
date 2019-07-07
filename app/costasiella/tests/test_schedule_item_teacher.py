@@ -91,38 +91,21 @@ class GQLScheduleItemteacher(TestCase):
 '''
 
         self.schedule_item_teacher_query = '''
-  query ScheduleItemTeacher($id: ID!, $after: String, $before: String, $archived: Boolean!) {
-    organizationSubscriptionPrice(id:$id) {
+  query ScheduleItemTeacher($id: ID!) {
+    scheduleItemTeacher(id: $id) {
       id
-      organizationSubscription {
+      account {
         id
-        name
+        fullName
       }
-      price
-      priceDisplay
-      financeTaxRate {
+      role
+      account2 {
         id
-        name
+        fullName
       }
+      role2
       dateStart
-      dateEnd
-    }
-    financeTaxrates(first: 15, before: $before, after: $after, archived: $archived) {
-      pageInfo {
-        startCursor
-        endCursor
-        hasNextPage
-        hasPreviousPage
-      }
-      edges {
-        node {
-          id
-          archived
-          name
-          percentage
-          rateType
-        }
-      }
+      dateEnd       
     }
   }
 '''
@@ -183,7 +166,7 @@ class GQLScheduleItemteacher(TestCase):
 
 
     def test_query(self):
-        """ Query list of locations """
+        """ Query list of schedule item teachers """
         schedule_item_teacher = f.ScheduleItemTeacherFactory.create()
 
         query = self.schedule_item_teachers_query
@@ -208,127 +191,139 @@ class GQLScheduleItemteacher(TestCase):
         self.assertEqual(data['scheduleItemTeachers']['edges'][0]['node']['dateEnd'], schedule_item_teacher.date_end)
 
 
-    # def test_query_permision_denied(self):
-    #     """ Query list of location rooms """
-    #     query = self.schedule_item_teachers_query
+    def test_query_permision_denied(self):
+        """ Query list of schedule item teachers """
+        schedule_item_teacher = f.ScheduleItemTeacherFactory.create()
 
-    #     variables = {
-    #         'organizationSubscription': to_global_id('OrganizationSubscriptionNode', self.organization_schedule_item_teacher.organization_subscription.pk),
-    #         'archived': False
-    #     }
+        query = self.schedule_item_teachers_query
+        variables = {
+            'scheduleItem': to_global_id('ScheduleItemNode', schedule_item_teacher.schedule_item.pk)
+        }
 
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     executed = execute_test_client_api_query(query, user, variables=variables)
-    #     errors = executed.get('errors')
+        # Create regular user
+        user = f.RegularUserFactory.create()
+        executed = execute_test_client_api_query(query, user, variables=variables)
+        errors = executed.get('errors')
 
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
-
-
-    # def test_query_permision_granted(self):
-    #     """ Query list of location rooms """
-    #     query = self.schedule_item_teachers_query
-
-    #     variables = {
-    #         'organizationSubscription': to_global_id('OrganizationSubscriptionNode', self.organization_schedule_item_teacher.organization_subscription.pk),
-    #         'archived': False
-    #     }
-
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename='view_scheduleitemteacher')
-    #     user.user_permissions.add(permission)
-    #     user.save()
-
-    #     executed = execute_test_client_api_query(query, user, variables=variables)
-    #     data = executed.get('data')
-
-    #     self.assertEqual(data['organizationSubscriptionPrices']['edges'][0]['node']['price'], self.organization_schedule_item_teacher.price)
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
-    # def test_query_anon_user(self):
-    #     """ Query list of location rooms """
-    #     query = self.schedule_item_teachers_query
-    #     variables = {
-    #         'organizationSubscription': to_global_id('OrganizationSubscriptionNode', self.organization_schedule_item_teacher.organization_subscription.pk),
-    #         'archived': False
-    #     }
+    def test_query_permision_granted(self):
+        """ Query list of schedule item teachers """
+        schedule_item_teacher = f.ScheduleItemTeacherFactory.create()
 
-    #     executed = execute_test_client_api_query(query, self.anon_user, variables=variables)
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
+        query = self.schedule_item_teachers_query
+        variables = {
+            'scheduleItem': to_global_id('ScheduleItemNode', schedule_item_teacher.schedule_item.pk)
+        }
+
+        # Create regular user
+        user = f.RegularUserFactory.create()
+        permission = Permission.objects.get(codename='view_scheduleitemteacher')
+        user.user_permissions.add(permission)
+        user.save()
+
+        executed = execute_test_client_api_query(query, user, variables=variables)
+        data = executed.get('data')
+
+        self.assertEqual(
+          data['scheduleItemTeachers']['edges'][0]['node']['account']['id'],
+          to_global_id('AccountNode', schedule_item_teacher.account.pk)
+        )
 
 
-    # def test_query_one(self):
-    #     """ Query one subscription price """   
-    #     query = self.schedule_item_teacher_query
+    def test_query_anon_user(self):
+        """ Query list of schedule item teachers """
+        schedule_item_teacher = f.ScheduleItemTeacherFactory.create()
 
-    #     variables = {
-    #       "id": to_global_id('ScheduleItemTeacherNode', self.organization_schedule_item_teacher.id),
-    #       "archived": False # Used for tax rates
-    #     }
+        query = self.schedule_item_teachers_query
+        variables = {
+            'scheduleItem': to_global_id('ScheduleItemNode', schedule_item_teacher.schedule_item.pk)
+        }
+
+        executed = execute_test_client_api_query(query, self.anon_user, variables=variables)
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
+
+
+    def test_query_one(self):
+        """ Query list of schedule item teacher """
+        schedule_item_teacher = f.ScheduleItemTeacherFactory.create()
+        query = self.schedule_item_teacher_query
+
+        variables = {
+          "id": to_global_id('ScheduleItemTeacherNode', schedule_item_teacher.id),
+        }
        
-    #     executed = execute_test_client_api_query(query, self.admin_user, variables=variables)
-    #     data = executed.get('data')
+        executed = execute_test_client_api_query(query, self.admin_user, variables=variables)
+        data = executed.get('data')
 
-    #     self.assertEqual(data['organizationSubscriptionPrice']['organizationSubscription']['id'], 
-    #       to_global_id('OrganizationSubscriptionNode', self.organization_schedule_item_teacher.organization_subscription.pk))
-    #     self.assertEqual(data['organizationSubscriptionPrice']['price'], self.organization_schedule_item_teacher.price)
-    #     self.assertEqual(data['organizationSubscriptionPrice']['financeTaxRate']['id'], 
-    #       to_global_id('FinanceTaxRateNode', self.organization_schedule_item_teacher.finance_tax_rate.id))
-    #     self.assertEqual(data['organizationSubscriptionPrice']['dateStart'], self.organization_schedule_item_teacher.date_start)
-    #     self.assertEqual(data['organizationSubscriptionPrice']['dateEnd'], self.organization_schedule_item_teacher.date_end)
+        self.assertEqual(
+          data['scheduleItemTeacher']['account']['id'],
+          to_global_id('AccountNode', schedule_item_teacher.account.pk)
+        )
+        self.assertEqual(data['scheduleItemTeacher']['role'], schedule_item_teacher.role)
+        self.assertEqual(
+          data['scheduleItemTeacher']['account2']['id'],
+          to_global_id('AccountNode', schedule_item_teacher.account_2.pk)
+        )
+        self.assertEqual(data['scheduleItemTeacher']['role2'], schedule_item_teacher.role_2)
+        self.assertEqual(data['scheduleItemTeacher']['dateStart'], str(schedule_item_teacher.date_start))
+        self.assertEqual(data['scheduleItemTeacher']['dateEnd'], schedule_item_teacher.date_end)
 
 
-    # def test_query_one_anon_user(self):
-    #     """ Deny permission for anon users Query one subscription price """   
-    #     query = self.schedule_item_teacher_query
+    def test_query_one_anon_user(self):
+        """ Query list of schedule item teacher """
+        schedule_item_teacher = f.ScheduleItemTeacherFactory.create()
+        query = self.schedule_item_teacher_query
 
-    #     variables = {
-    #       "id": to_global_id('ScheduleItemTeacherNode', self.organization_schedule_item_teacher.id),
-    #       "archived": False # Used for tax rates
-    #     }
+        variables = {
+          "id": to_global_id('ScheduleItemTeacherNode', schedule_item_teacher.id),
+        }
        
-    #     executed = execute_test_client_api_query(query, self.anon_user, variables=variables)
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
+        executed = execute_test_client_api_query(query, self.anon_user, variables=variables)
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
-    # def test_query_one_permission_denied(self):
-    #     """ Permission denied message when user lacks authorization """   
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     query = self.schedule_item_teacher_query
+    def test_query_one_permission_denied(self):
+        """ Permission denied message when user lacks authorization """   
+        # Create regular user
+        user = f.RegularUserFactory.create()
+        schedule_item_teacher = f.ScheduleItemTeacherFactory.create()
+        query = self.schedule_item_teacher_query
 
-    #     variables = {
-    #       "id": to_global_id('ScheduleItemTeacherNode', self.organization_schedule_item_teacher.id),
-    #       "archived": False # Used for tax rates
-    #     }
+        variables = {
+          "id": to_global_id('ScheduleItemTeacherNode', schedule_item_teacher.id),
+        }
        
-    #     # Now query single subscription price and check
-    #     executed = execute_test_client_api_query(query, user, variables=variables)
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
+        # Now query single subscription price and check
+        executed = execute_test_client_api_query(query, user, variables=variables)
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
-    # def test_query_one_permission_granted(self):
-    #     """ Respond with data when user has permission """   
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename='view_scheduleitemteacher')
-    #     user.user_permissions.add(permission)
-    #     user.save()
+    def test_query_one_permission_granted(self):
+        """ Respond with data when user has permission """   
+        user = f.RegularUserFactory.create()
+        permission = Permission.objects.get(codename='view_scheduleitemteacher')
+        user.user_permissions.add(permission)
+        user.save()
         
-    #     query = self.schedule_item_teacher_query
+        schedule_item_teacher = f.ScheduleItemTeacherFactory.create()
+        query = self.schedule_item_teacher_query
 
-    #     variables = {
-    #       "id": to_global_id('ScheduleItemTeacherNode', self.organization_schedule_item_teacher.id),
-    #       "archived": False # Used for tax rates
-    #     }
-       
-    #     # Now query single subscription price and check
-    #     executed = execute_test_client_api_query(query, user, variables=variables)
-    #     data = executed.get('data')
-    #     self.assertEqual(data['organizationSubscriptionPrice']['price'], self.organization_schedule_item_teacher.price)
+        variables = {
+          "id": to_global_id('ScheduleItemTeacherNode', schedule_item_teacher.id),
+        }
+
+        # Now query single subscription price and check
+        executed = execute_test_client_api_query(query, user, variables=variables)
+        data = executed.get('data')
+        self.assertEqual(
+          data['scheduleItemTeacher']['account']['id'],
+          to_global_id('AccountNode', schedule_item_teacher.account.pk)
+        )
 
 
     # def test_create_schedule_item_teacher(self):
