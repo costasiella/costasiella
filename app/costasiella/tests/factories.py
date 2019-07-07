@@ -232,6 +232,36 @@ class RegularUserFactory(factory.DjangoModelFactory):
     is_active = True
 
 
+class TeacherFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = get_user_model()
+    # FACTORY_FOR = get_user_model()
+
+    email = 'user@costasiellla.com'
+    username = 'teacher'
+    first_name = 'teacher'
+    last_name = 'account'
+    teacher = True
+    password = factory.PostGenerationMethodCall('set_password', 'CSUser1#')
+
+    is_active = True
+
+
+class Teacher2Factory(factory.DjangoModelFactory):
+    class Meta:
+        model = get_user_model()
+    # FACTORY_FOR = get_user_model()
+
+    email = 'user@costasiellla.com'
+    username = 'teacher2'
+    first_name = 'teacher2'
+    last_name = 'account'
+    teacher = True
+    password = factory.PostGenerationMethodCall('set_password', 'CSUser1#')
+
+    is_active = True
+
+
 class AllAuthEmailAddress(factory.DjangoModelFactory):
     class Meta:
         model = EmailAddress
@@ -271,3 +301,13 @@ class SchedulePublicWeeklyClassFactory(factory.DjangoModelFactory):
     time_end = datetime.time(9, 0)
     display_public = True
     
+    
+class ScheduleItemTeacherFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.ScheduleItemTeacher
+
+    schedule_item = factory.SubFactory(SchedulePublicWeeklyClassFactory)
+    account = factory.SubFactory(TeacherFactory)
+    account_2 = factory.SubFactory(Teacher2Factory)
+    role_2 = "ASSISTANT"
+    date_start = datetime.date(2014, 1, 1)
