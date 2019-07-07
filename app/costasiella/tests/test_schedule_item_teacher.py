@@ -111,21 +111,22 @@ class GQLScheduleItemteacher(TestCase):
 '''
 
         self.schedule_item_teacher_create_mutation = ''' 
-  mutation CreateScheduleItemTeacher($input: CreateScheduleItemTeacherInput!) {
-    createScheduleItemTeacher(input: $input) {
-      organizationSubscriptionPrice {
+  mutation CreateScheduleItemTeacher($input:CreateScheduleItemTeacherInput!) {
+    createScheduleItemTeacher(input:$input) {
+      scheduleItemTeacher(id: $id) {
         id
-        organizationSubscription {
+        account {
           id
-          name
+          fullName
         }
-        price
-        financeTaxRate {
+        role
+        account2 {
           id
-          name
+          fullName
         }
+        role2
         dateStart
-        dateEnd
+        dateEnd       
       }
     }
   }
