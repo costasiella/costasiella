@@ -18,12 +18,13 @@ import {
   Button,
   Card,
   Container
-} from "tabler-react";
+} from "tabler-react"
 import SiteWrapper from "../../SiteWrapper"
 import HasPermissionWrapper from "../../HasPermissionWrapper"
 import { dateToLocalISO } from '../../../tools/date_tools'
 import ProfileCardSmall from "../../ui/ProfileCardSmall"
 
+import { get_list_query_variables } from "./tools"
 import RelationsAccountsBack from "./RelationsAccountsBack"
 import RelationsAccountProfileForm from "./RelationsAccountProfileForm"
 
@@ -79,7 +80,7 @@ class RelationsAccountProfile extends Component {
 
                   // DatePicker doesn't like a string as an initial value
                   // This makes it a happy DatePicker :)
-                  let dateOfBirth = ""
+                  let dateOfBirth = null
                   if (initialData.dateOfBirth) {
                     dateOfBirth = new Date(initialData.dateOfBirth)
                   }
@@ -100,6 +101,9 @@ class RelationsAccountProfile extends Component {
                          {(updateAccount, { data }) => (
                           <Formik
                             initialValues={{ 
+                              customer: initialData.customer, 
+                              teacher: initialData.teacher, 
+                              employee: initialData.employee, 
                               firstName: initialData.firstName, 
                               lastName: initialData.lastName, 
                               email: initialData.email,
@@ -128,6 +132,9 @@ class RelationsAccountProfile extends Component {
                                 updateAccount({ variables: {
                                   input: {
                                     id: match.params.account_id,
+                                    customer: values.customer,
+                                    teacher: values.teacher,
+                                    employee: values.employee,
                                     firstName: values.firstName,
                                     lastName: values.lastName,
                                     email: values.email,
@@ -143,7 +150,7 @@ class RelationsAccountProfile extends Component {
                                   }
                                 }, refetchQueries: [
                                     // Refetch list
-                                    {query: GET_ACCOUNTS_QUERY, variables: {"isActive": true }},
+                                    {query: GET_ACCOUNTS_QUERY, variables: get_list_query_variables()},
                                     // Refresh local cached results for this account
                                     {query: GET_ACCOUNT_QUERY, variables: {"id": match.params.account_id}}
                                 ]})

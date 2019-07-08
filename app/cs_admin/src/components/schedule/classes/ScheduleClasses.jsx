@@ -307,7 +307,7 @@ const ScheduleClasses = ({ t, history }) => (
                                               badge={t('schedule.classes.all_classes_in_series')}
                                               badgeType="secondary"
                                               icon="edit-2"
-                                              onClick={() => history.push('/schedule/classes/edit/' + scheduleItemId)}>
+                                              onClick={() => history.push('/schedule/classes/all/edit/' + scheduleItemId)}>
                                                 {t("general.edit")}
                                             </Dropdown.Item>
                                           </HasPermissionWrapper>,

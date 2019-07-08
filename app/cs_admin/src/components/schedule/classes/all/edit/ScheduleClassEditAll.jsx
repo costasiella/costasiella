@@ -8,12 +8,10 @@ import { withRouter } from "react-router"
 import { Formik } from 'formik'
 import { toast } from 'react-toastify'
 
-
-import { GET_CLASSES_QUERY, GET_CLASS_QUERY } from './queries'
-import { get_list_query_variables } from './tools'
-import { CLASS_SCHEMA } from './yupSchema'
-import ScheduleClassForm from './ScheduleClassForm'
-
+import { GET_CLASSES_QUERY, GET_CLASS_QUERY } from '../../queries'
+import { get_list_query_variables } from '../../tools'
+import { CLASS_SCHEMA } from '../../yupSchema'
+import ScheduleClassForm from '../../ScheduleClassForm'
 
 import {
   Page,
@@ -24,11 +22,11 @@ import {
   Container,
   Form,
 } from "tabler-react"
-import SiteWrapper from "../../SiteWrapper"
-import HasPermissionWrapper from "../../HasPermissionWrapper"
-import { dateToLocalISO, dateToLocalISOTime, TimeStringToJSDateOBJ } from '../../../tools/date_tools'
+import SiteWrapper from "../../../../SiteWrapper"
+import HasPermissionWrapper from "../../../../HasPermissionWrapper"
+import { dateToLocalISO, dateToLocalISOTime, TimeStringToJSDateOBJ } from '../../../../../tools/date_tools'
 
-import ScheduleMenu from '../ScheduleMenu'
+import ClassEditBase from '../ClassEditBase'
 
 
 const UPDATE_CLASS = gql`
@@ -66,7 +64,7 @@ const UPDATE_CLASS = gql`
 `
 
 
-class ScheduleClassEdit extends Component {
+class ScheduleClassEditAll extends Component {
   constructor(props) {
     super(props)
     console.log("Schedule class edit add props:")
@@ -77,7 +75,7 @@ class ScheduleClassEdit extends Component {
     const t = this.props.t
     const match = this.props.match
     const history = this.props.history
-    const id = match.params.id
+    const id = match.params.class_id
     const return_url = "/schedule/classes"
 
     return (
@@ -87,17 +85,17 @@ class ScheduleClassEdit extends Component {
             {({ loading, error, data, refetch }) => {
               // Loading
               if (loading) return (
-                <Container>
+                <ClassEditBase menu_active_link="edit">
                   <p>{t('general.loading_with_dots')}</p>
-                </Container>
+                </ClassEditBase>
               )
               // Error
               if (error) {
                 console.log(error)
                 return (
-                  <Container>
+                  <ClassEditBase menu_active_link="edit">
                     <p>{t('general.error_sad_smiley')}</p>
-                  </Container>
+                  </ClassEditBase>
                 )
               }
               
@@ -115,15 +113,10 @@ class ScheduleClassEdit extends Component {
               const initialTimeEnd = TimeStringToJSDateOBJ(initialValues.timeEnd)
               
               return (
-                <Container>
-                  <Page.Header title={t("schedule.title")} />
-                  <Grid.Row>
-                    <Grid.Col md={9}>
-                      <Card>
-                        <Card.Header>
-                          <Card.Title>{t('schedule.classes.title_edit')}</Card.Title>
-                        </Card.Header>
-                        <Mutation mutation={UPDATE_CLASS} onCompleted={() => history.push(return_url)}> 
+                <ClassEditBase 
+                  menu_active_link="edit"
+                >
+                  <Mutation mutation={UPDATE_CLASS} onCompleted={() => history.push(return_url)}> 
                   {(updateScheduleClass, { data }) => (
                     <Formik
                       initialValues={{ 
@@ -186,46 +179,32 @@ class ScheduleClassEdit extends Component {
                       }}
                       >
                       {({ isSubmitting, setFieldValue, setFieldTouched, errors, values, touched }) => (
-                            <ScheduleClassForm
-                              inputData={inputData}
-                              isSubmitting={isSubmitting}
-                              setFieldValue={setFieldValue}
-                              setFieldTouched={setFieldTouched}
-                              errors={errors}
-                              values={values}
-                              touched={touched}
-                              return_url={return_url}
-                            >
-                              {console.log('########## v & e')}
-                              {console.log(values)}
-                              {console.log(errors)}
-                              {console.log(touched)}
-                            </ScheduleClassForm>
-                          )
-                        }
+                        <ScheduleClassForm
+                          inputData={inputData}
+                          isSubmitting={isSubmitting}
+                          setFieldValue={setFieldValue}
+                          setFieldTouched={setFieldTouched}
+                          errors={errors}
+                          values={values}
+                          touched={touched}
+                          return_url={return_url}
+                        >
+                          {console.log('########## v & e')}
+                          {console.log(values)}
+                          {console.log(errors)}
+                          {console.log(touched)}
+                        </ScheduleClassForm>
+                      )}
                     </Formik>
                     )}
                   </Mutation>
-                </Card>
-              </Grid.Col>
-              <Grid.Col md={3}>
-                <HasPermissionWrapper permission="change"
-                                      resource="scheduleclass">
-                  <Button color="primary btn-block mb-6"
-                          onClick={() => history.push(return_url)}>
-                    <Icon prefix="fe" name="chevrons-left" /> {t('general.back')}
-                  </Button>
-                </HasPermissionWrapper>
-                <ScheduleMenu active_link='classes'/>
-              </Grid.Col>
-            </Grid.Row>
-          </Container>
-          )}}
-          </Query>
-        </div>
-    </SiteWrapper>
+                </ClassEditBase>
+            )}}
+           </Query>
+         </div>
+      </SiteWrapper>
     )}
   }
 
 
-export default withTranslation()(withRouter(ScheduleClassEdit))
+export default withTranslation()(withRouter(ScheduleClassEditAll))

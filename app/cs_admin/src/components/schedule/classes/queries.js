@@ -124,6 +124,10 @@ export const GET_CLASS_QUERY = gql`
       organizationLocationRoom {
         id
         name
+        organizationLocation {
+          id
+          name
+        }
       }
       organizationClasstype {
         id

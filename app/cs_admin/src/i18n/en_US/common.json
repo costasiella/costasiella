@@ -145,7 +145,15 @@
         "payment_method": "Payment method",
         "filter": "Filter",
         "menu": "Menu",
-        "clear": "Clear"
+        "clear": "Clear",
+        "customer": "Customer",
+        "teacher": "Teacher",
+        "employee": "Employee",
+        "info": "Info",
+        "all_accounts": "All accounts",
+        "customers": "Customers",
+        "teachers": "Teachers",
+        "employees": "Employees"
     },
     "yup": {
         "min_len_3": "Please input at least 3 characters",

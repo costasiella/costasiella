@@ -28,7 +28,13 @@ class UserType(DjangoObjectType):
 class AccountNode(DjangoObjectType):
     class Meta:
         model = get_user_model()
-        filter_fields = ['is_active']
+        filter_fields = {
+            'full_name': ['icontains', 'exact'],
+            'is_active': ['exact'],
+            'customer': ['exact'],
+            'teacher': ['exact'],
+            'employee': ['exact'],
+        }
         interfaces = (graphene.relay.Node, )
 
     @classmethod
@@ -66,6 +72,50 @@ class PermissionNode(DjangoObjectType):
         require_login_and_permission(user, 'costasiella.view_permission')
 
         return self._meta.model.objects.get(id=id)
+
+
+class AccountQuery(graphene.AbstractType):
+    user = graphene.Field(UserType)
+    account = graphene.relay.Node.Field(AccountNode)
+    accounts = DjangoFilterConnectionField(AccountNode)
+    group = graphene.relay.Node.Field(GroupNode)
+    groups = DjangoFilterConnectionField(GroupNode)
+    permission = graphene.relay.Node.Field(PermissionNode)
+    permissions = DjangoFilterConnectionField(PermissionNode)
+
+
+    def resolve_user(self, info):
+        user = info.context.user
+        if user.is_anonymous:
+            raise Exception('Not logged in!')
+
+        return user
+
+
+    def resolve_accounts(self, info, is_active=False, **kwargs):
+        user = info.context.user
+        require_login_and_permission(user, 'costasiella.view_account')
+
+        query_set =  get_user_model().objects.filter(
+            is_active=is_active, 
+            is_superuser=False
+        )
+
+        return query_set.order_by('first_name')
+
+
+    def resolve_groups(self, info):
+        user = info.context.user
+        require_login_and_permission(user, 'costasiella.view_group')
+
+        return Group.objects.all()
+
+
+    def resolve_permissions(self, info):
+        user = info.context.user
+        require_login_and_permission(user, 'costasiella.view_permission')
+
+        return Permission.objects.all()
 
 
 class CreateAccount(graphene.relay.ClientIDMutation):
@@ -149,18 +199,21 @@ def validate_create_update_input(account, input, update=False):
 class UpdateAccount(graphene.relay.ClientIDMutation):
     class Input:
         id = graphene.ID(required=True)
+        customer = graphene.Boolean(required=False)
+        teacher = graphene.Boolean(required=False)
+        employee = graphene.Boolean(required=False)
         first_name = graphene.String(required=True)
         last_name = graphene.String(required=True)
         email = graphene.String(required=True)
-        address = graphene.String(requires=False, default_value="")
-        postcode = graphene.String(requires=False, default_value="")
-        city = graphene.String(requires=False, default_value="")
-        country = graphene.String(requires=False, default_value="")
-        phone = graphene.String(requires=False, default_value="")
-        mobile = graphene.String(requires=False, default_value="")
-        emergency = graphene.String(requires=False, default_value="")
-        gender = graphene.String(requires=False, default_value="")
-        date_of_birth = graphene.types.datetime.Date(required=False, default_value="")
+        address = graphene.String(required=False, default_value="")
+        postcode = graphene.String(required=False, default_value="")
+        city = graphene.String(required=False, default_value="")
+        country = graphene.String(required=False, default_value="")
+        phone = graphene.String(required=False, default_value="")
+        mobile = graphene.String(required=False, default_value="")
+        emergency = graphene.String(required=False, default_value="")
+        gender = graphene.String(required=False, default_value="")
+        date_of_birth = graphene.types.datetime.Date(required=False, default_value=None)
 
     account = graphene.Field(AccountNode)
 
@@ -178,30 +231,37 @@ class UpdateAccount(graphene.relay.ClientIDMutation):
 
         validate_create_update_input(account, input, update=True)
 
-
         account.first_name = input['first_name']
         account.last_name = input['last_name']
         account.email = input['email']
         account.username = input['email']
         # Only update these fields if input has been passed
-        if input['address']:
+        if 'customer' in input:
+            account.customer = input['customer']
+        if 'teacher' in input:
+            account.teacher = input['teacher']
+        if 'employee' in input:
+            account.employee = input['employee']
+        if 'address' in input:
             account.address = input['address']
-        if input['postcode']:
+        if 'postcode' in input:
             account.postcode = input['postcode']
-        if input['city']:
+        if 'city' in input:
             account.city = input['city']
-        if input['country']:
+        if 'country' in input:
             account.country = input['country']
-        if input['phone']:
+        if 'phone' in input:
             account.phone = input['phone']
-        if input['mobile']:
+        if 'mobile' in input:
             account.mobile = input['mobile']
-        if input['emergency']:
+        if 'emergency' in input:
             account.emergency = input['emergency']
-        if input['gender']:
+        if 'gender' in input:
             account.gender = input['gender']
-        if input['date_of_birth']:
+        if 'date_of_birth' in input:
             account.date_of_birth = input['date_of_birth']
+
+            
         account.save()
 
         # Update Allauth email address 
@@ -263,45 +323,3 @@ class AccountMutation(graphene.ObjectType):
     update_account_active = UpdateAccountActive.Field()
     delete_account = DeleteAccount.Field()
 
-
-class AccountQuery(graphene.AbstractType):
-    user = graphene.Field(UserType)
-    account = graphene.relay.Node.Field(AccountNode)
-    accounts = DjangoFilterConnectionField(AccountNode)
-    group = graphene.relay.Node.Field(GroupNode)
-    groups = DjangoFilterConnectionField(GroupNode)
-    permission = graphene.relay.Node.Field(PermissionNode)
-    permissions = DjangoFilterConnectionField(PermissionNode)
-
-
-    def resolve_user(self, info):
-        user = info.context.user
-        if user.is_anonymous:
-            raise Exception('Not logged in!')
-
-        return user
-
-
-    def resolve_accounts(self, info, is_active=False, **kwargs):
-        user = info.context.user
-        require_login_and_permission(user, 'costasiella.view_account')
-
-        return get_user_model().objects.filter(
-            is_active=is_active, 
-            is_superuser=False
-        ).order_by('first_name')
-
-
-    def resolve_groups(self, info):
-        user = info.context.user
-        require_login_and_permission(user, 'costasiella.view_group')
-
-        return Group.objects.all()
-
-
-    def resolve_permissions(self, info):
-        user = info.context.user
-        require_login_and_permission(user, 'costasiella.view_permission')
-
-        return Permission.objects.all()
-        
