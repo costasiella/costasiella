@@ -48,11 +48,9 @@ class GQLScheduleItemteacher(TestCase):
             }
         }
 
-        # self.variables_delete = {
-        #     "input": {
-        #         "id": to_global_id('ScheduleItemTeacherNode', self.organization_schedule_item_teacher.pk),
-        #     }
-        # }
+        self.variables_delete = {
+            "input": {}
+        }
 
         self.schedule_item_teachers_query = '''
   query ScheduleItemTeachers($after: String, $before: String, $scheduleItem: ID!) {
@@ -293,7 +291,7 @@ class GQLScheduleItemteacher(TestCase):
           "id": to_global_id('ScheduleItemTeacherNode', schedule_item_teacher.id),
         }
        
-        # Now query single subscription price and check
+        # Now query single schedule item teacher and check
         executed = execute_test_client_api_query(query, user, variables=variables)
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Permission denied!')
@@ -313,7 +311,7 @@ class GQLScheduleItemteacher(TestCase):
           "id": to_global_id('ScheduleItemTeacherNode', schedule_item_teacher.id),
         }
 
-        # Now query single subscription price and check
+        # Now query single schedule item teacher and check
         executed = execute_test_client_api_query(query, user, variables=variables)
         data = executed.get('data')
         self.assertEqual(
@@ -511,73 +509,81 @@ class GQLScheduleItemteacher(TestCase):
         self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
-    # def test_delete_schedule_item_teacher(self):
-    #     """ Delete a subscription price """
-    #     query = self.schedule_item_teacher_delete_mutation
-    #     variables = self.variables_delete
+    def test_delete_schedule_item_teacher(self):
+        """ Delete a schedule item teacher """
+        schedule_item_teacher = f.ScheduleItemTeacherFactory.create()
+        query = self.schedule_item_teacher_delete_mutation
+        variables = self.variables_delete
+        variables['input']['id'] = to_global_id('ScheduleItemTeacherNode', schedule_item_teacher.pk)
 
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         self.admin_user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
+        executed = execute_test_client_api_query(
+            query, 
+            self.admin_user, 
+            variables=variables
+        )
+        data = executed.get('data')
         
-    #     self.assertEqual(data['deleteScheduleItemTeacher']['ok'], True)
+        self.assertEqual(data['deleteScheduleItemTeacher']['ok'], True)
 
-    #     exists = models.ScheduleItemTeacher.objects.exists()
-    #     self.assertEqual(exists, False)
-
-
-    # def test_delete_schedule_item_teacher_anon_user(self):
-    #     """ Delete a subscription pricem """
-    #     query = self.schedule_item_teacher_delete_mutation
-    #     variables = self.variables_delete
-
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         self.anon_user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
+        exists = models.ScheduleItemTeacher.objects.exists()
+        self.assertEqual(exists, False)
 
 
-    # def test_delete_schedule_item_teacher_permission_granted(self):
-    #     """ Allow deleting subscription prices for users with permissions """
-    #     query = self.schedule_item_teacher_delete_mutation
-    #     variables = self.variables_delete
+    def test_delete_schedule_item_teacher_anon_user(self):
+        """ Don't allow deleting schedule item teachers for non logged in users """
+        schedule_item_teacher = f.ScheduleItemTeacherFactory.create()
+        query = self.schedule_item_teacher_delete_mutation
+        variables = self.variables_delete
+        variables['input']['id'] = to_global_id('ScheduleItemTeacherNode', schedule_item_teacher.pk)
 
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename=self.permission_delete)
-    #     user.user_permissions.add(permission)
-    #     user.save()
-
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['deleteScheduleItemTeacher']['ok'], True)
+        executed = execute_test_client_api_query(
+            query, 
+            self.anon_user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
-    # def test_delete_schedule_item_teacher_permission_denied(self):
-    #     """ Check delete subscription price permission denied error message """
-    #     query = self.schedule_item_teacher_delete_mutation
-    #     variables = self.variables_delete
+    def test_delete_schedule_item_teacher_permission_granted(self):
+        """ Allow deleting schedule item teachers for users with permissions """
+        schedule_item_teacher = f.ScheduleItemTeacherFactory.create()
+        query = self.schedule_item_teacher_delete_mutation
+        variables = self.variables_delete
+        variables['input']['id'] = to_global_id('ScheduleItemTeacherNode', schedule_item_teacher.pk)
+
+        # Create regular user
+        user = f.RegularUserFactory.create()
+        permission = Permission.objects.get(codename=self.permission_delete)
+        user.user_permissions.add(permission)
+        user.save()
+
+        executed = execute_test_client_api_query(
+            query, 
+            user,
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['deleteScheduleItemTeacher']['ok'], True)
+
+
+    def test_delete_schedule_item_teacher_permission_denied(self):
+        """ Check delete schedule item teacher permission denied error message """
+        schedule_item_teacher = f.ScheduleItemTeacherFactory.create()
+        query = self.schedule_item_teacher_delete_mutation
+        variables = self.variables_delete
+        variables['input']['id'] = to_global_id('ScheduleItemTeacherNode', schedule_item_teacher.pk)
         
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
+        # Create regular user
+        user = f.RegularUserFactory.create()
 
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
+        executed = execute_test_client_api_query(
+            query, 
+            user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
 
