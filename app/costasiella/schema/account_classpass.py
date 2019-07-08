@@ -77,7 +77,6 @@ class CreateAccountClasspass(graphene.relay.ClientIDMutation):
         account = graphene.ID(required=True)
         organization_classpass = graphene.ID(required=True)
         date_start = graphene.types.datetime.Date(required=True)
-        date_end = graphene.types.datetime.Date(required=False, default_value=None)
         note = graphene.String(required=False, default_value="")
         
 
