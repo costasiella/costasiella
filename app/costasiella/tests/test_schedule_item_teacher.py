@@ -30,19 +30,14 @@ class GQLScheduleItemteacher(TestCase):
         self.permission_change = 'change_scheduleitemteacher'
         self.permission_delete = 'delete_scheduleitemteacher'
 
-        # self.organization_subscription = f.OrganizationSubscriptionFactory.create()
-        # self.finance_tax_rate = f.FinanceTaxRateFactory.create()
-        # self.organization_schedule_item_teacher = f.ScheduleItemTeacherFactory.create()
-
-        # self.variables_create = {
-        #     "input": {
-        #         "organizationSubscription": to_global_id('OrganizationSubscriptionNode', self.organization_subscription.pk),
-        #         "price": 10,
-        #         "financeTaxRate": to_global_id('FinanceTaxRateNode', self.finance_tax_rate.pk),
-        #         "dateStart": '2019-01-01',
-        #         "dateEnd": '2019-12-31',
-        #     }
-        # }
+        self.variables_create = {
+            "input": {
+                "role": "SUB",
+                "role2": "ASSISTANT",
+                "dateStart": '2019-01-01',
+                "dateEnd": '2019-12-31',
+            }
+        }
 
         # self.variables_update = {
         #     "input": {
@@ -113,7 +108,7 @@ class GQLScheduleItemteacher(TestCase):
         self.schedule_item_teacher_create_mutation = ''' 
   mutation CreateScheduleItemTeacher($input:CreateScheduleItemTeacherInput!) {
     createScheduleItemTeacher(input:$input) {
-      scheduleItemTeacher(id: $id) {
+      scheduleItemTeacher {
         id
         account {
           id
@@ -327,85 +322,106 @@ class GQLScheduleItemteacher(TestCase):
         )
 
 
-    # def test_create_schedule_item_teacher(self):
-    #     """ Create a subscription price """
-    #     query = self.schedule_item_teacher_create_mutation
-    #     variables = self.variables_create
+    def test_create_schedule_item_teacher(self):
+        """ Create schedule item teacher """
+        schedule_class = f.SchedulePublicWeeklyClassFactory.create()
+        teacher = f.TeacherFactory.create()
+        teacher2 = f.Teacher2Factory.create()
 
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         self.admin_user, 
-    #         variables=variables
-    #     )
+        query = self.schedule_item_teacher_create_mutation
+        variables = self.variables_create
+        variables['input']['scheduleItem'] = to_global_id('scheduleItemNode', schedule_class.pk)
+        variables['input']['account'] = to_global_id('AccountNode', teacher.pk)
+        variables['input']['account2'] = to_global_id('AccountNode', teacher2.pk)
 
-    #     print("################## create output###########")
-    #     errors = executed.get('errors')
-    #     print(errors)
+        executed = execute_test_client_api_query(
+            query, 
+            self.admin_user, 
+            variables=variables
+        )
 
-    #     data = executed.get('data')
-    #     print(data)
-    #     self.assertEqual(
-    #       data['createScheduleItemTeacher']['organizationSubscriptionPrice']['organizationSubscription']['id'], 
-    #       variables['input']['organizationSubscription'])
-    #     self.assertEqual(data['createScheduleItemTeacher']['organizationSubscriptionPrice']['price'], variables['input']['price'])
-    #     self.assertEqual(data['createScheduleItemTeacher']['organizationSubscriptionPrice']['financeTaxRate']['id'], 
-    #       variables['input']['financeTaxRate'])
-    #     self.assertEqual(data['createScheduleItemTeacher']['organizationSubscriptionPrice']['dateStart'], variables['input']['dateStart'])
-    #     self.assertEqual(data['createScheduleItemTeacher']['organizationSubscriptionPrice']['dateEnd'], variables['input']['dateEnd'])
-
-
-    # def test_create_schedule_item_teacher_anon_user(self):
-    #     """ Don't allow creating subscription prices for non-logged in users """
-    #     query = self.schedule_item_teacher_create_mutation
-    #     variables = self.variables_create
-
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         self.anon_user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
+        data = executed.get('data')
+        self.assertEqual(data['createScheduleItemTeacher']['scheduleItemTeacher']['account']['id'], variables['input']['account'])
+        self.assertEqual(data['createScheduleItemTeacher']['scheduleItemTeacher']['role'], variables['input']['role'])
+        self.assertEqual(data['createScheduleItemTeacher']['scheduleItemTeacher']['account2']['id'], variables['input']['account2'])
+        self.assertEqual(data['createScheduleItemTeacher']['scheduleItemTeacher']['role2'], variables['input']['role2'])
+        self.assertEqual(data['createScheduleItemTeacher']['scheduleItemTeacher']['dateStart'], variables['input']['dateStart'])
+        self.assertEqual(data['createScheduleItemTeacher']['scheduleItemTeacher']['dateEnd'], variables['input']['dateEnd'])
 
 
-    # def test_create_schedule_item_teacher_permission_granted(self):
-    #     """ Allow creating subscription prices for users with permissions """
-    #     query = self.schedule_item_teacher_create_mutation
+    def test_create_schedule_item_teacher_anon_user(self):
+        """ Don't allow creating schedule item teacher for non-logged in users """
+        schedule_class = f.SchedulePublicWeeklyClassFactory.create()
+        teacher = f.TeacherFactory.create()
+        teacher2 = f.Teacher2Factory.create()
 
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename=self.permission_add)
-    #     user.user_permissions.add(permission)
-    #     user.save()
+        query = self.schedule_item_teacher_create_mutation
+        variables = self.variables_create
+        variables['input']['scheduleItem'] = to_global_id('scheduleItemNode', schedule_class.pk)
+        variables['input']['account'] = to_global_id('AccountNode', teacher.pk)
+        variables['input']['account2'] = to_global_id('AccountNode', teacher2.pk)
 
-    #     variables = self.variables_create
+        executed = execute_test_client_api_query(
+            query, 
+            self.anon_user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
 
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['createScheduleItemTeacher']['organizationSubscriptionPrice']['price'], variables['input']['price'])
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
-    # def test_create_schedule_item_teacher_permission_denied(self):
-    #     """ Check create subscription price permission denied error message """
-    #     query = self.schedule_item_teacher_create_mutation
-    #     variables = self.variables_create
+    def test_create_schedule_item_teacher_permission_granted(self):
+        """ Allow creating schedule item teachers for users with permissions """
+        # Create regular user
+        user = f.RegularUserFactory.create()
+        permission = Permission.objects.get(codename=self.permission_add)
+        user.user_permissions.add(permission)
+        user.save()
 
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
+        schedule_class = f.SchedulePublicWeeklyClassFactory.create()
+        teacher = f.TeacherFactory.create()
+        teacher2 = f.Teacher2Factory.create()
 
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
+        query = self.schedule_item_teacher_create_mutation
+        variables = self.variables_create
+        variables['input']['scheduleItem'] = to_global_id('scheduleItemNode', schedule_class.pk)
+        variables['input']['account'] = to_global_id('AccountNode', teacher.pk)
+        variables['input']['account2'] = to_global_id('AccountNode', teacher2.pk)
+
+        executed = execute_test_client_api_query(
+            query, 
+            user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['createScheduleItemTeacher']['scheduleItemTeacher']['account']['id'], variables['input']['account'])
+
+
+    def test_create_schedule_item_teacher_permission_denied(self):
+        """ Check create schedule item teacher permission denied error message """
+        # Create regular user
+        user = f.RegularUserFactory.create()
+
+        schedule_class = f.SchedulePublicWeeklyClassFactory.create()
+        teacher = f.TeacherFactory.create()
+        teacher2 = f.Teacher2Factory.create()
+
+        query = self.schedule_item_teacher_create_mutation
+        variables = self.variables_create
+        variables['input']['scheduleItem'] = to_global_id('scheduleItemNode', schedule_class.pk)
+        variables['input']['account'] = to_global_id('AccountNode', teacher.pk)
+        variables['input']['account2'] = to_global_id('AccountNode', teacher2.pk)
+
+        executed = execute_test_client_api_query(
+            query, 
+            user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
     # def test_update_schedule_item_teacher(self):
