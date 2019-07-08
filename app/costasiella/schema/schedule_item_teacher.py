@@ -95,7 +95,7 @@ class CreateScheduleItemTeacher(graphene.relay.ClientIDMutation):
     def mutate_and_get_payload(self, root, info, **input):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.add_scheduleitemteacher')
-        
+
         validation_result = validate_schedule_item_teacher_create_update_input(input)
 
         schedule_item_teacher = ScheduleItemTeacher(
@@ -131,7 +131,7 @@ class UpdateScheduleItemTeacher(graphene.relay.ClientIDMutation):
         id = graphene.ID(required=True)
         account = graphene.ID(required=True)
         role = graphene.String(required=False, default_value="")
-        account_2 = graphene.ID(required=True)
+        account_2 = graphene.ID(required=False)
         role_2 = graphene.String(required=False, default_value="")
         date_start = graphene.types.datetime.Date(required=True)
         date_end = graphene.types.datetime.Date(required=False, default_value=None)

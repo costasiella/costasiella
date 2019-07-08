@@ -39,15 +39,14 @@ class GQLScheduleItemteacher(TestCase):
             }
         }
 
-        # self.variables_update = {
-        #     "input": {
-        #         "id": to_global_id('ScheduleItemTeacherNode', self.organization_schedule_item_teacher.pk),
-        #         "price": 1466,
-        #         "financeTaxRate": to_global_id('FinanceTaxRateNode', self.finance_tax_rate.pk),
-        #         "dateStart": '2024-01-01',
-        #         "dateEnd": '2024-12-31',
-        #     }
-        # }
+        self.variables_update = {
+            "input": {
+                "role": "SUB",
+                "role2": "ASSISTANT",
+                "dateStart": '2019-01-01',
+                "dateEnd": '2019-12-31',
+            }
+        }
 
         # self.variables_delete = {
         #     "input": {
@@ -129,20 +128,21 @@ class GQLScheduleItemteacher(TestCase):
 
         self.schedule_item_teacher_update_mutation = '''
   mutation UpdateScheduleItemTeacher($input: UpdateScheduleItemTeacherInput!) {
-    updateScheduleItemTeacher(input: $input) {
-      organizationSubscriptionPrice {
+    updateScheduleItemTeacher(input:$input) {
+      scheduleItemTeacher {
         id
-        organizationSubscription {
+        account {
           id
-          name
+          fullName
         }
-        price
-        financeTaxRate {
+        role
+        account2 {
           id
-          name
+          fullName
         }
+        role2
         dateStart
-        dateEnd
+        dateEnd       
       }
     }
   }
@@ -424,76 +424,91 @@ class GQLScheduleItemteacher(TestCase):
         self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
-    # def test_update_schedule_item_teacher(self):
-    #     """ Update a subscription price """
-    #     query = self.schedule_item_teacher_update_mutation
-    #     variables = self.variables_update
+    def test_update_schedule_item_teacher(self):
+        """ Update schedule item teacher """
+        schedule_item_teacher = f.ScheduleItemTeacherFactory.create()
 
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         self.admin_user, 
-    #         variables=variables
-    #     )
+        query = self.schedule_item_teacher_update_mutation
+        variables = self.variables_update
+        variables['input']['id'] = to_global_id('ScheduleItemTeacherNode', schedule_item_teacher.pk)
+        variables['input']['account'] = to_global_id('AccountNode', schedule_item_teacher.account_2.pk)
+        variables['input']['account2'] = to_global_id('AccountNode', schedule_item_teacher.account.pk)
 
-    #     data = executed.get('data')
-    #     self.assertEqual(data['updateScheduleItemTeacher']['organizationSubscriptionPrice']['price'], variables['input']['price'])
-    #     self.assertEqual(data['updateScheduleItemTeacher']['organizationSubscriptionPrice']['financeTaxRate']['id'], 
-    #       variables['input']['financeTaxRate'])
-    #     self.assertEqual(data['updateScheduleItemTeacher']['organizationSubscriptionPrice']['dateStart'], variables['input']['dateStart'])
-    #     self.assertEqual(data['updateScheduleItemTeacher']['organizationSubscriptionPrice']['dateEnd'], variables['input']['dateEnd'])
+        executed = execute_test_client_api_query(
+            query, 
+            self.admin_user, 
+            variables=variables
+        )
 
-
-    # def test_update_schedule_item_teacher_anon_user(self):
-    #     """ Don't allow updating subscription prices for non-logged in users """
-    #     query = self.schedule_item_teacher_update_mutation
-    #     variables = self.variables_update
-
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         self.anon_user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
+        data = executed.get('data')
+        self.assertEqual(data['updateScheduleItemTeacher']['scheduleItemTeacher']['account']['id'], variables['input']['account'])
+        self.assertEqual(data['updateScheduleItemTeacher']['scheduleItemTeacher']['role'], variables['input']['role'])
+        self.assertEqual(data['updateScheduleItemTeacher']['scheduleItemTeacher']['account2']['id'], variables['input']['account2'])
+        self.assertEqual(data['updateScheduleItemTeacher']['scheduleItemTeacher']['role2'], variables['input']['role2'])
+        self.assertEqual(data['updateScheduleItemTeacher']['scheduleItemTeacher']['dateStart'], variables['input']['dateStart'])
+        self.assertEqual(data['updateScheduleItemTeacher']['scheduleItemTeacher']['dateEnd'], variables['input']['dateEnd'])
 
 
-    # def test_update_schedule_item_teacher_permission_granted(self):
-    #     """ Allow updating subscription prices for users with permissions """
-    #     query = self.schedule_item_teacher_update_mutation
-    #     variables = self.variables_update
+    def test_update_schedule_item_teacher_anon_user(self):
+        """ Don't allow updating schedule item teachers for non-logged in users """
+        schedule_item_teacher = f.ScheduleItemTeacherFactory.create()
+        query = self.schedule_item_teacher_update_mutation
+        variables = self.variables_update
+        variables['input']['id'] = to_global_id('ScheduleItemTeacherNode', schedule_item_teacher.pk)
+        variables['input']['account'] = to_global_id('AccountNode', schedule_item_teacher.account_2.pk)
 
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename=self.permission_change)
-    #     user.user_permissions.add(permission)
-    #     user.save()
-
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['updateScheduleItemTeacher']['organizationSubscriptionPrice']['price'], variables['input']['price'])
+        executed = execute_test_client_api_query(
+            query, 
+            self.anon_user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
-    # def test_update_schedule_item_teacher_permission_denied(self):
-    #     """ Check update subscription price permission denied error message """
-    #     query = self.schedule_item_teacher_update_mutation
-    #     variables = self.variables_update
+    def test_update_schedule_item_teacher_permission_granted(self):
+        """ Allow updating schedule item teacher for users with permissions """
+        schedule_item_teacher = f.ScheduleItemTeacherFactory.create()
+        query = self.schedule_item_teacher_update_mutation
+        variables = self.variables_update
+        variables['input']['id'] = to_global_id('ScheduleItemTeacherNode', schedule_item_teacher.pk)
+        variables['input']['account'] = to_global_id('AccountNode', schedule_item_teacher.account_2.pk)
 
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
+        # Create regular user
+        user = f.RegularUserFactory.create()
+        permission = Permission.objects.get(codename=self.permission_change)
+        user.user_permissions.add(permission)
+        user.save()
 
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
+        executed = execute_test_client_api_query(
+            query, 
+            user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['updateScheduleItemTeacher']['scheduleItemTeacher']['role'], variables['input']['role'])
+
+
+    def test_update_schedule_item_teacher_permission_denied(self):
+        """ Check update schedule item teacher permission denied error message """
+        schedule_item_teacher = f.ScheduleItemTeacherFactory.create()
+        query = self.schedule_item_teacher_update_mutation
+        variables = self.variables_update
+        variables['input']['id'] = to_global_id('ScheduleItemTeacherNode', schedule_item_teacher.pk)
+        variables['input']['account'] = to_global_id('AccountNode', schedule_item_teacher.account_2.pk)
+
+        # Create regular user
+        user = f.RegularUserFactory.create()
+
+        executed = execute_test_client_api_query(
+            query, 
+            user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
     # def test_delete_schedule_item_teacher(self):
