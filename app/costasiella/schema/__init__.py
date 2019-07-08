@@ -2,6 +2,7 @@ import graphene
 import graphql_jwt
 
 from .account import AccountQuery, AccountMutation
+from .account_classpass import AccountClasspassQuery, AccountClasspassMutation
 from .account_subscription import AccountSubscriptionQuery, AccountSubscriptionMutation
 
 from .finance_costcenter import FinanceCostCenterQuery, FinanceCostCenterMutation
