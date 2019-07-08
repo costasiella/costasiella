@@ -1,4 +1,5 @@
 from .account import Account
+from .account_classpass import AccountClasspass
 from .account_subscription import AccountSubscription
 
 from .finance_costcenter import FinanceCostCenter
