@@ -31,21 +31,21 @@ import ContentCard from "../../../general/ContentCard"
 import ProfileMenu from "../ProfileMenu"
 import ProfileCardSmall from "../../../ui/ProfileCardSmall"
 
-import { GET_ACCOUNT_SUBSCRIPTIONS_QUERY } from "./queries"
+import { GET_ACCOUNT_CLASSPASSES_QUERY } from "./queries"
 
-const DELETE_ACCOUNT_SUBSCRIPTION = gql`
-  mutation DeleteAccountSubscription($input: DeleteAccountSubscriptionInput!) {
-    deleteAccountSubscription(input: $input) {
+const DELETE_ACCOUNT_CLASSPASS = gql`
+  mutation DeleteAccountClasspass($input: DeleteAccountClasspassInput!) {
+    deleteAccountClasspass(input: $input) {
       ok
     }
   }
 `
 
 
-const AccountSubscriptions = ({ t, history, match, archived=false }) => (
+const AccountClasspasses = ({ t, history, match, archived=false }) => (
   <SiteWrapper>
     <div className="my-3 my-md-5">
-      <Query query={GET_ACCOUNT_SUBSCRIPTIONS_QUERY} variables={{ archived: archived, accountId: match.params.account_id }}> 
+      <Query query={GET_ACCOUNT_CLASSPASSES_QUERY} variables={{ archived: archived, accountId: match.params.account_id }}> 
         {({ loading, error, data, refetch, fetchMore }) => {
           // Loading
           if (loading) return <p>{t('general.loading_with_dots')}</p>
@@ -56,7 +56,7 @@ const AccountSubscriptions = ({ t, history, match, archived=false }) => (
           }
 
           const account = data.account
-          const accountSubscriptions = data.accountSubscriptions
+          const accountClasspasses = data.accountClasspasses
 
           return (
             <Container>
@@ -66,24 +66,24 @@ const AccountSubscriptions = ({ t, history, match, archived=false }) => (
               <Grid.Row>
                 <Grid.Col md={9}>
                   <ContentCard 
-                    cardTitle={t('relations.account.subscriptions.title')}
-                    pageInfo={accountSubscriptions.pageInfo}
+                    cardTitle={t('relations.account.classpasses.title')}
+                    pageInfo={accountClasspasses.pageInfo}
                     onLoadMore={() => {
                       fetchMore({
                         variables: {
-                          after: accountSubscriptions.pageInfo.endCursor
+                          after: accountClasspasses.pageInfo.endCursor
                         },
                         updateQuery: (previousResult, { fetchMoreResult }) => {
-                          const newEdges = fetchMoreResult.accountSubscriptions.edges
-                          const pageInfo = fetchMoreResult.accountSubscriptions.pageInfo
+                          const newEdges = fetchMoreResult.accountClasspasses.edges
+                          const pageInfo = fetchMoreResult.accountClasspasses.pageInfo
 
                           return newEdges.length
                             ? {
-                                // Put the new accountSubscriptions at the end of the list and update `pageInfo`
+                                // Put the new accountClasspasses at the end of the list and update `pageInfo`
                                 // so we have the new `endCursor` and `hasNextPage` values
-                                accountSubscriptions: {
-                                  __typename: previousResult.accountSubscriptions.__typename,
-                                  edges: [ ...previousResult.accountSubscriptions.edges, ...newEdges ],
+                                accountClasspasses: {
+                                  __typename: previousResult.accountClasspasses.__typename,
+                                  edges: [ ...previousResult.accountClasspasses.edges, ...newEdges ],
                                   pageInfo
                                 }
                               }
@@ -98,15 +98,14 @@ const AccountSubscriptions = ({ t, history, match, archived=false }) => (
                           <Table.ColHeader>{t('general.name')}</Table.ColHeader>
                           <Table.ColHeader>{t('general.date_start')}</Table.ColHeader>
                           <Table.ColHeader>{t('general.date_end')}</Table.ColHeader>
-                          <Table.ColHeader>{t('general.payment_method')}</Table.ColHeader>
                           <Table.ColHeader></Table.ColHeader> 
                         </Table.Row>
                       </Table.Header>
                       <Table.Body>
-                          {accountSubscriptions.edges.map(({ node }) => (
+                          {accountClasspasses.edges.map(({ node }) => (
                             <Table.Row key={v4()}>
                               <Table.Col key={v4()}>
-                                {node.organizationSubscription.name}
+                                {node.organizationClasspass.name}
                               </Table.Col>
                               <Table.Col key={v4()}>
                                 {node.dateStart}
@@ -114,19 +113,16 @@ const AccountSubscriptions = ({ t, history, match, archived=false }) => (
                               <Table.Col key={v4()}>
                                 {node.dateEnd}
                               </Table.Col>
-                              <Table.Col key={v4()}>
-                                {(node.financePaymentMethod) ? node.financePaymentMethod.name : ""}
-                              </Table.Col>
                               <Table.Col className="text-right" key={v4()}>
-                                <Link to={"/relations/accounts/" + match.params.account_id + "/subscriptions/edit/" + node.id}>
+                                <Link to={"/relations/accounts/" + match.params.account_id + "/classpasses/edit/" + node.id}>
                                   <Button className='btn-sm' 
                                           color="secondary">
                                     {t('general.edit')}
                                   </Button>
                                 </Link>
                               </Table.Col>
-                              <Mutation mutation={DELETE_ACCOUNT_SUBSCRIPTION} key={v4()}>
-                                {(deleteAccountSubscription, { data }) => (
+                              <Mutation mutation={DELETE_ACCOUNT_CLASSPASS} key={v4()}>
+                                {(deleteAccountClasspass, { data }) => (
                                   <Table.Col className="text-right" key={v4()}>
                                     <button className="icon btn btn-link btn-sm" 
                                       title={t('general.delete')} 
@@ -134,16 +130,16 @@ const AccountSubscriptions = ({ t, history, match, archived=false }) => (
                                       onClick={() => {
                                         confirm_delete({
                                           t: t,
-                                          msgConfirm: t("relations.account.subscriptions.delete_confirm_msg"),
-                                          msgDescription: <p>{node.organizationSubscription.name} {node.dateStart}</p>,
-                                          msgSuccess: t('relations.account.subscriptions.deleted'),
-                                          deleteFunction: deleteAccountSubscription,
+                                          msgConfirm: t("relations.account.classpasses.delete_confirm_msg"),
+                                          msgDescription: <p>{node.organizationClasspass.name} {node.dateStart}</p>,
+                                          msgSuccess: t('relations.account.classpasses.deleted'),
+                                          deleteFunction: deleteAccountClasspass,
                                           functionVariables: { variables: {
                                             input: {
                                               id: node.id
                                             }
                                           }, refetchQueries: [
-                                            {query: GET_ACCOUNT_SUBSCRIPTIONS_QUERY, variables: { archived: archived, accountId: match.params.account_id }} 
+                                            {query: GET_ACCOUNT_CLASSPASSES_QUERY, variables: { archived: archived, accountId: match.params.account_id }} 
                                           ]}
                                         })
                                     }}>
@@ -161,16 +157,16 @@ const AccountSubscriptions = ({ t, history, match, archived=false }) => (
                 <Grid.Col md={3}>
                   <ProfileCardSmall user={account}/>
                   <HasPermissionWrapper permission="add"
-                                        resource="accountsubscription">
-                    <Link to={"/relations/accounts/" + match.params.account_id + "/subscriptions/add"}>
+                                        resource="accountclasspass">
+                    <Link to={"/relations/accounts/" + match.params.account_id + "/classpasses/add"}>
                       <Button color="primary btn-block mb-6">
-                              {/* //  onClick={() => history.push("/organization/subscriptions/add")}> */}
-                        <Icon prefix="fe" name="plus-circle" /> {t('relations.account.subscriptions.add')}
+                              {/* //  onClick={() => history.push("/organization/classpasses/add")}> */}
+                        <Icon prefix="fe" name="plus-circle" /> {t('relations.account.classpasses.add')}
                       </Button>
                     </Link>
                   </HasPermissionWrapper>
                   <ProfileMenu 
-                    active_link='subscriptions' 
+                    active_link='classpasses' 
                     account_id={match.params.account_id}
                   />
                 </Grid.Col>
@@ -184,4 +180,4 @@ const AccountSubscriptions = ({ t, history, match, archived=false }) => (
 )
       
         
-export default withTranslation()(withRouter(AccountSubscriptions))
+export default withTranslation()(withRouter(AccountClasspasses))
