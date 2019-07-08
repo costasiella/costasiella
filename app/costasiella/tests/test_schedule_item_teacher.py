@@ -149,7 +149,7 @@ class GQLScheduleItemteacher(TestCase):
 '''
 
         self.schedule_item_teacher_delete_mutation = '''
-  mutation DeleteScheduleItemTeacher($input: DeleteScheduleItemTeacherInput!) {
+  mutation DeleteScheduleClassTeacher($input: DeleteScheduleItemTeacherInput!) {
     deleteScheduleItemTeacher(input: $input) {
       ok
     }
