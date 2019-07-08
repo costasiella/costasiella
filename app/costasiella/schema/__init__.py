@@ -30,6 +30,7 @@ from .schedule_item_teacher import ScheduleItemTeacherQuery, ScheduleItemTeacher
 
 
 class Query(AccountQuery,
+            AccountClasspassQuery,
             AccountSubscriptionQuery,
             FinanceCostCenterQuery,
             FinanceGLAccountQuery,
@@ -54,6 +55,7 @@ class Query(AccountQuery,
 
 
 class Mutation(AccountMutation,
+               AccountClasspassMutation,
                AccountSubscriptionMutation,
                FinanceCostCenterMutation,
                FinanceGLAccountMutation,
