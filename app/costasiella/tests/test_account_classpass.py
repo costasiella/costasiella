@@ -1,6 +1,6 @@
 # from graphql.error.located_error import GraphQLLocatedError
 import graphql
-import base64
+import datetime
 
 from django.contrib.auth import get_user_model
 from django.test import TestCase
@@ -342,6 +342,87 @@ class GQLAccountClasspass(TestCase):
         )
         self.assertEqual(data['createAccountClasspass']['accountClasspass']['dateStart'], variables['input']['dateStart'])
         self.assertEqual(data['createAccountClasspass']['accountClasspass']['note'], variables['input']['note'])
+
+
+    def test_create_classpass_valid_3_days(self):
+        """ End date should be set 3 days from start """
+        query = self.classpass_create_mutation
+
+        account = f.RegularUserFactory.create()
+        organization_classpass = f.OrganizationClasspassFactory.create()
+        organization_classpass.validity_unit = 'DAYS'
+        organization_classpass.validity = 3
+        organization_classpass.save()
+
+        variables = self.variables_create
+        variables['input']['account'] = to_global_id('AccountNode', account.id)
+        variables['input']['organizationClasspass'] = to_global_id('OrganizationClasspassNode', organization_classpass.id)
+
+        executed = execute_test_client_api_query(
+            query, 
+            self.admin_user, 
+            variables=variables
+        )
+        data = executed.get('data')
+
+        self.assertEqual(
+            data['createAccountClasspass']['accountClasspass']['dateEnd'], 
+            str(datetime.date(2019, 1, 1) + datetime.timedelta(days=2))
+        )
+
+
+    def test_create_classpass_valid_2_weeks(self):
+        """ End date should be set 2 weeks from start """
+        query = self.classpass_create_mutation
+
+        account = f.RegularUserFactory.create()
+        organization_classpass = f.OrganizationClasspassFactory.create()
+        organization_classpass.validity_unit = 'WEEKS'
+        organization_classpass.validity = 2
+        organization_classpass.save()
+
+        variables = self.variables_create
+        variables['input']['account'] = to_global_id('AccountNode', account.id)
+        variables['input']['organizationClasspass'] = to_global_id('OrganizationClasspassNode', organization_classpass.id)
+
+        executed = execute_test_client_api_query(
+            query, 
+            self.admin_user, 
+            variables=variables
+        )
+        data = executed.get('data')
+
+        self.assertEqual(
+            data['createAccountClasspass']['accountClasspass']['dateEnd'], 
+            str(datetime.date(2019, 1, 1) + datetime.timedelta(days=13))
+        )
+
+
+    def test_create_classpass_valid_2_months(self):
+        """ End date should be set 2 weeks from start """
+        query = self.classpass_create_mutation
+
+        account = f.RegularUserFactory.create()
+        organization_classpass = f.OrganizationClasspassFactory.create()
+        organization_classpass.validity_unit = 'MONTHS'
+        organization_classpass.validity = 2
+        organization_classpass.save()
+
+        variables = self.variables_create
+        variables['input']['account'] = to_global_id('AccountNode', account.id)
+        variables['input']['organizationClasspass'] = to_global_id('OrganizationClasspassNode', organization_classpass.id)
+
+        executed = execute_test_client_api_query(
+            query, 
+            self.admin_user, 
+            variables=variables
+        )
+        data = executed.get('data')
+
+        self.assertEqual(
+            data['createAccountClasspass']['accountClasspass']['dateEnd'], 
+            str(datetime.date(2019, 2, 28))
+        )
 
 
     def test_create_classpass_anon_user(self):
