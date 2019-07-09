@@ -128,7 +128,7 @@ class AccountClasspassEdit extends Component {
                                       note: values.note,
                                     }
                                   }, refetchQueries: [
-                                      // {query: GET_CLASSPASSES_QUERY, variables: {archived: false, accountId: account_id}}
+                                      {query: GET_ACCOUNT_CLASSPASSES_QUERY, variables: {archived: false, accountId: account_id}}
                                   ]})
                                   .then(({ data }) => {
                                       console.log('got data', data)
