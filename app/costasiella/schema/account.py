@@ -290,6 +290,9 @@ class UpdateAccountActive(graphene.relay.ClientIDMutation):
         if not account:
             raise Exception('Invalid Account ID!')
 
+
+        print(input)
+
         account.is_active = input['is_active']
         account.save(force_update=True)
 
