@@ -153,7 +153,12 @@
         "all_accounts": "All accounts",
         "customers": "Customers",
         "teachers": "Teachers",
-        "employees": "Employees"
+        "employees": "Employees",
+        "classpass": "Class pass",
+        "teacher_role": "Teacher role",
+        "teacher2": "Teacher 2",
+        "teacher_role2": "Teacher role 2",
+        "teacher_2": "Teacher 2"
     },
     "yup": {
         "min_len_3": "Please input at least 3 characters",
@@ -382,6 +387,16 @@
                 "add": "Add subscription",
                 "title_edit": "Edit subscription",
                 "registration_fee_paid": "Registration fee paid"
+            },
+            "classpasses": {
+                "title_add": "Add class pass",
+                "toast_add_success": "Added class pass",
+                "title_edit": "Edit class pass",
+                "toast_edit_success": "Saved class pass",
+                "title": "Class passes",
+                "delete_confirm_msg": "Are you sure you wish to delete this class pass and all associated data?",
+                "deleted": "Deleted class pass",
+                "add": "Add class pass"
             }
         }
     },
@@ -414,7 +429,25 @@
             "go_to_date": "Go to date",
             "filter_all_locations": "All locations",
             "filter_all_classtypes": "All classtypes",
-            "filter_all_levels": "All levels"
+            "filter_all_levels": "All levels",
+            "teachers": {
+                "title_add": "Add teacher(s)",
+                "toast_add_success": "Added teacher(s)",
+                "title_edit": "Edit teacher(s)",
+                "toast_edit_success": "Saved teacher(s)",
+                "add": "Add teacher",
+                "title": "Teachers",
+                "error_loading": "Error loading teachers for this class :(",
+                "empty_list": "No teachers have been added to this class yet",
+                "delete_confirm_msg": "Are you sure you wish to delete this teachers entry?",
+                "delete_confirm_description": "",
+                "deleted": "Deleted teacher entry"
+            },
+            "teacher_roles": {
+                "sub": "Substitute",
+                "assistant": "Assistant",
+                "karma": "Karma"
+            }
         }
     },
     "countries": {
