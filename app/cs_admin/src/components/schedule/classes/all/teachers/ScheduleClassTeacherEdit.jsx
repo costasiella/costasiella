@@ -133,7 +133,9 @@ class ScheduleClassTeacherEdit extends Component {
                                 errors={errors}
                                 values={values}
                                 return_url={return_url}
-                              />
+                              >
+                                {console.log(errors)}
+                              </ScheduleClassTeacherForm>
                             )}
                         </Formik>
                     )}
