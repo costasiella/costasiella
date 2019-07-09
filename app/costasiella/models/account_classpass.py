@@ -20,7 +20,7 @@ class AccountClasspass(models.Model):
     updated_at = models.DateTimeField(auto_now=True, editable=False)
 
     def __str__(self):
-        return self.organization_classpass.name + ' [' + unicode(date_start) + ']'
+        return self.organization_classpass.name + ' [' + unicode(self.date_start) + ']'
 
 
     def set_date_end(self):
@@ -49,19 +49,19 @@ class AccountClasspass(models.Model):
         import datetime
         import calendar
         
-        if self.organization_classpass.validity_unit == 'months':
+        if self.organization_classpass.validity_unit == 'MONTHS':
             # check for and add months
             months = self.organization_classpass.validity
             if months:
-                date_end = add_months(date_start, months)
+                date_end = add_months(self.date_start, months)
         else:
-            if self.organization_classpass.validity_unit == 'weeks':
+            if self.organization_classpass.validity_unit == 'WEEKS':
                 days = self.organization_classpass.validity * 7
             else:
                 days = self.organization_classpass.validity
 
             delta_days = datetime.timedelta(days=days)
-            date_end = (date_start + delta_days) - datetime.timedelta(days=1)
+            date_end = (self.date_start + delta_days) - datetime.timedelta(days=1)
 
         self.date_end = date_end
 
