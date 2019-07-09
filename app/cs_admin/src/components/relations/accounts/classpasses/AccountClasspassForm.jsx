@@ -93,7 +93,7 @@ const AccountClasspassForm = ({ t, history, inputData, isSubmitting, setFieldVal
           color="link" 
           onClick={() => history.push(return_url)}
         >
-            {t('general.cancel')}
+          {t('general.cancel')}
         </Button>
     </Card.Footer>
   </FoForm>

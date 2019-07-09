@@ -75,6 +75,7 @@ import AccountSubscriptions from './components/relations/accounts/subscriptions/
 import AccountSubscriptionAdd from './components/relations/accounts/subscriptions/AccountSubscriptionAdd'
 import AccountSubscriptionEdit from './components/relations/accounts/subscriptions/AccountSubscriptionEdit'
 import AccountClasspasses from './components/relations/accounts/classpasses/AccountClasspasses'
+import AccountClasspassAdd from './components/relations/accounts/classpasses/AccountClasspassAdd'
 
 import ScheduleHome from './components/schedule/home/ScheduleHome'
 import ScheduleClasses from './components/schedule/classes/ScheduleClasses'
@@ -192,6 +193,7 @@ class App extends Component {
             <Route exact path="/relations/accounts/:account_id/subscriptions/add" component={AccountSubscriptionAdd} />
             <Route exact path="/relations/accounts/:account_id/subscriptions/edit/:id" component={AccountSubscriptionEdit} />
             <Route exact path="/relations/accounts/:account_id/classpasses" component={AccountClasspasses} />
+            <Route exact path="/relations/accounts/:account_id/classpasses/add" component={AccountClasspassAdd} />
             <Route exact path="/schedule" component={ScheduleHome} />
             <Route exact path="/schedule/classes" component={ScheduleClasses} />
             <Route exact path="/schedule/classes/add/" component={ScheduleClassAdd} />
