@@ -44,14 +44,9 @@ const CREATE_ACCOUNT_CLASSPASS = gql`
           id
           name
         }
-        financePaymentMethod {
-          id
-          name
-        }
         dateStart
         dateEnd
         note
-        registrationFeePaid        
       }
     }
   }
@@ -104,10 +99,8 @@ class AccountClasspassAdd extends Component {
                           <Formik
                               initialValues={{ 
                                 organizationClasspass: "",
-                                financePaymentMethod: "",
                                 dateStart: new Date(),
                                 note: "",
-                                registrationFeePaid: false
                               }}
                               validationSchema={CLASSPASS_SCHEMA}
                               onSubmit={(values, { setSubmitting }, errors) => {
@@ -127,11 +120,9 @@ class AccountClasspassAdd extends Component {
                                     input: {
                                       account: account_id, 
                                       organizationClasspass: values.organizationClasspass,
-                                      financePaymentMethod: values.financePaymentMethod,
                                       dateStart: dateToLocalISO(values.dateStart),
                                       dateEnd: dateEnd,
                                       note: values.note,
-                                      registrationFeePaid: values.registrationFeePaid
                                     }
                                   }, refetchQueries: [
                                       // {query: GET_CLASSPASSES_QUERY, variables: {archived: false, accountId: account_id}}
