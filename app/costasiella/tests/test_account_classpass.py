@@ -32,9 +32,7 @@ class GQLAccountClasspass(TestCase):
         self.variables_create = {
             "input": {
                 "dateStart": "2019-01-01",
-                "dateEnd": "2019-12-31",
                 "note": "creation note",
-                "registrationFeePaid": True
             }
         }
 
@@ -43,7 +41,6 @@ class GQLAccountClasspass(TestCase):
                 "dateStart": "2017-01-01",
                 "dateEnd": "2020-12-31",
                 "note": "Update note",
-                "registrationFeePaid": True
             }
         }
 
@@ -63,32 +60,18 @@ class GQLAccountClasspass(TestCase):
             id
             name
           }
-          financePaymentMethod {
-            id
-            name
-          }
           dateStart
           dateEnd
           note
-          registrationFeePaid
           createdAt
         }
       }
-    }
-    account(id:$accountId) {
-      id
-      firstName
-      lastName
-      email
-      phone
-      mobile
-      isActive
     }
   }
 '''
 
         self.classpass_query = '''
-  query AccountClasspass($id: ID!, $accountId: ID!, $after: String, $before: String, $archived: Boolean!) {
+  query AccountClasspass($id: ID!, $after: String, $before: String, $archived: Boolean!) {
     accountClasspass(id:$id) {
       id
       account {
@@ -98,14 +81,9 @@ class GQLAccountClasspass(TestCase):
         id
         name
       }
-      financePaymentMethod {
-        id
-        name
-      }
       dateStart
       dateEnd
       note
-      registrationFeePaid
       createdAt
     }
     organizationClasspasses(first: 100, before: $before, after: $after, archived: $archived) {
@@ -122,31 +100,6 @@ class GQLAccountClasspass(TestCase):
           name
         }
       }
-    }
-    financePaymentMethods(first: 100, before: $before, after: $after, archived: $archived) {
-      pageInfo {
-        startCursor
-        endCursor
-        hasNextPage
-        hasPreviousPage
-      }
-      edges {
-        node {
-          id
-          archived
-          name
-          code
-        }
-      }
-    }
-    account(id:$accountId) {
-      id
-      firstName
-      lastName
-      email
-      phone
-      mobile
-      isActive
     }
   }
 '''
@@ -166,14 +119,9 @@ class GQLAccountClasspass(TestCase):
           id
           name
         }
-        financePaymentMethod {
-          id
-          name
-        }
         dateStart
         dateEnd
         note
-        registrationFeePaid        
       }
     }
   }
@@ -194,14 +142,9 @@ class GQLAccountClasspass(TestCase):
           id
           name
         }
-        financePaymentMethod {
-          id
-          name
-        }
         dateStart
         dateEnd
         note
-        registrationFeePaid        
       }
     }
   }
@@ -234,14 +177,9 @@ class GQLAccountClasspass(TestCase):
             data['accountClasspasses']['edges'][0]['node']['organizationClasspass']['id'], 
             to_global_id("OrganizationClasspassNode", classpass.organization_classpass.id)
         )
-        self.assertEqual(
-            data['accountClasspasses']['edges'][0]['node']['financePaymentMethod']['id'], 
-            to_global_id("FinancePaymentMethodNode", classpass.finance_payment_method.id)
-        )
         self.assertEqual(data['accountClasspasses']['edges'][0]['node']['dateStart'], str(classpass.date_start))
         self.assertEqual(data['accountClasspasses']['edges'][0]['node']['dateEnd'], classpass.date_end) # Factory is set to None so no string conversion required
         self.assertEqual(data['accountClasspasses']['edges'][0]['node']['note'], classpass.note)
-        self.assertEqual(data['accountClasspasses']['edges'][0]['node']['registrationFeePaid'], classpass.registration_fee_paid)
 
 
     def test_query_permision_denied(self):
@@ -303,7 +241,6 @@ class GQLAccountClasspass(TestCase):
         
         variables = {
             "id": to_global_id("AccountClasspassNode", classpass.id),
-            "accountId": to_global_id("AccountNode", classpass.account.id),
             "archived": False,
         }
 
@@ -318,14 +255,9 @@ class GQLAccountClasspass(TestCase):
             data['accountClasspass']['organizationClasspass']['id'], 
             to_global_id('OrganizationClasspassNode', classpass.organization_classpass.id)
         )
-        self.assertEqual(
-            data['accountClasspass']['financePaymentMethod']['id'], 
-            to_global_id('FinancePaymentMethodNode', classpass.finance_payment_method.id)
-        )
         self.assertEqual(data['accountClasspass']['dateStart'], str(classpass.date_start))
         self.assertEqual(data['accountClasspass']['dateEnd'], classpass.date_end)
         self.assertEqual(data['accountClasspass']['note'], classpass.note)
-        self.assertEqual(data['accountClasspass']['registrationFeePaid'], classpass.registration_fee_paid)
 
 
     def test_query_one_anon_user(self):
@@ -334,7 +266,6 @@ class GQLAccountClasspass(TestCase):
 
         variables = {
             "id": to_global_id("AccountClasspassNode", classpass.id),
-            "accountId": to_global_id("AccountNode", classpass.account.id),
             "archived": False,
         }
 
@@ -352,7 +283,6 @@ class GQLAccountClasspass(TestCase):
 
         variables = {
             "id": to_global_id("AccountClasspassNode", classpass.id),
-            "accountId": to_global_id("AccountNode", classpass.account.id),
             "archived": False,
         }
 
@@ -373,7 +303,6 @@ class GQLAccountClasspass(TestCase):
 
         variables = {
             "id": to_global_id("AccountClasspassNode", classpass.id),
-            "accountId": to_global_id("AccountNode", classpass.account.id),
             "archived": False,
         }
 
@@ -392,11 +321,9 @@ class GQLAccountClasspass(TestCase):
 
         account = f.RegularUserFactory.create()
         organization_classpass = f.OrganizationClasspassFactory.create()
-        finance_payment_method = f.FinancePaymentMethodFactory.create()
         variables = self.variables_create
         variables['input']['account'] = to_global_id('AccountNode', account.id)
         variables['input']['organizationClasspass'] = to_global_id('OrganizationClasspassNode', organization_classpass.id)
-        variables['input']['financePaymentMethod'] = to_global_id('FinancePaymentMethodNode', finance_payment_method.id)
 
         executed = execute_test_client_api_query(
             query, 
@@ -413,14 +340,8 @@ class GQLAccountClasspass(TestCase):
             data['createAccountClasspass']['accountClasspass']['organizationClasspass']['id'], 
             variables['input']['organizationClasspass']
         )
-        self.assertEqual(
-            data['createAccountClasspass']['accountClasspass']['financePaymentMethod']['id'], 
-            variables['input']['financePaymentMethod']
-        )
         self.assertEqual(data['createAccountClasspass']['accountClasspass']['dateStart'], variables['input']['dateStart'])
-        self.assertEqual(data['createAccountClasspass']['accountClasspass']['dateEnd'], variables['input']['dateEnd'])
         self.assertEqual(data['createAccountClasspass']['accountClasspass']['note'], variables['input']['note'])
-        self.assertEqual(data['createAccountClasspass']['accountClasspass']['registrationFeePaid'], variables['input']['registrationFeePaid'])
 
 
     def test_create_classpass_anon_user(self):
@@ -429,11 +350,9 @@ class GQLAccountClasspass(TestCase):
         
         account = f.RegularUserFactory.create()
         organization_classpass = f.OrganizationClasspassFactory.create()
-        finance_payment_method = f.FinancePaymentMethodFactory.create()
         variables = self.variables_create
         variables['input']['account'] = to_global_id('AccountNode', account.id)
         variables['input']['organizationClasspass'] = to_global_id('OrganizationClasspassNode', organization_classpass.id)
-        variables['input']['financePaymentMethod'] = to_global_id('FinancePaymentMethodNode', finance_payment_method.id)
 
         executed = execute_test_client_api_query(
             query, 
@@ -451,11 +370,9 @@ class GQLAccountClasspass(TestCase):
 
         account = f.RegularUserFactory.create()
         organization_classpass = f.OrganizationClasspassFactory.create()
-        finance_payment_method = f.FinancePaymentMethodFactory.create()
         variables = self.variables_create
         variables['input']['account'] = to_global_id('AccountNode', account.id)
         variables['input']['organizationClasspass'] = to_global_id('OrganizationClasspassNode', organization_classpass.id)
-        variables['input']['financePaymentMethod'] = to_global_id('FinancePaymentMethodNode', finance_payment_method.id)
 
         # Create regular user
         user = account
@@ -480,11 +397,9 @@ class GQLAccountClasspass(TestCase):
         query = self.classpass_create_mutation
         account = f.RegularUserFactory.create()
         organization_classpass = f.OrganizationClasspassFactory.create()
-        finance_payment_method = f.FinancePaymentMethodFactory.create()
         variables = self.variables_create
         variables['input']['account'] = to_global_id('AccountNode', account.id)
         variables['input']['organizationClasspass'] = to_global_id('OrganizationClasspassNode', organization_classpass.id)
-        variables['input']['financePaymentMethod'] = to_global_id('FinancePaymentMethodNode', finance_payment_method.id)
 
         # Create regular user
         user = account
@@ -504,11 +419,9 @@ class GQLAccountClasspass(TestCase):
         query = self.classpass_update_mutation
         classpass = f.AccountClasspassFactory.create()
         organization_classpass = f.OrganizationClasspassFactory.create()
-        finance_payment_method = f.FinancePaymentMethodFactory.create()
         variables = self.variables_update
         variables['input']['id'] = to_global_id('AccountClasspassNode', classpass.id)
         variables['input']['organizationClasspass'] = to_global_id('OrganizationClasspassNode', organization_classpass.id)
-        variables['input']['financePaymentMethod'] = to_global_id('FinancePaymentMethodNode', finance_payment_method.id)
 
         executed = execute_test_client_api_query(
             query, 
@@ -521,14 +434,9 @@ class GQLAccountClasspass(TestCase):
           data['updateAccountClasspass']['accountClasspass']['organizationClasspass']['id'], 
           variables['input']['organizationClasspass']
         )
-        self.assertEqual(
-          data['updateAccountClasspass']['accountClasspass']['financePaymentMethod']['id'], 
-          variables['input']['financePaymentMethod']
-        )
         self.assertEqual(data['updateAccountClasspass']['accountClasspass']['dateStart'], variables['input']['dateStart'])
         self.assertEqual(data['updateAccountClasspass']['accountClasspass']['dateEnd'], variables['input']['dateEnd'])
         self.assertEqual(data['updateAccountClasspass']['accountClasspass']['note'], variables['input']['note'])
-        self.assertEqual(data['updateAccountClasspass']['accountClasspass']['registrationFeePaid'], variables['input']['registrationFeePaid'])
 
 
     def test_update_classpass_anon_user(self):
@@ -536,11 +444,9 @@ class GQLAccountClasspass(TestCase):
         query = self.classpass_update_mutation
         classpass = f.AccountClasspassFactory.create()
         organization_classpass = f.OrganizationClasspassFactory.create()
-        finance_payment_method = f.FinancePaymentMethodFactory.create()
         variables = self.variables_update
         variables['input']['id'] = to_global_id('AccountClasspassNode', classpass.id)
         variables['input']['organizationClasspass'] = to_global_id('OrganizationClasspassNode', organization_classpass.id)
-        variables['input']['financePaymentMethod'] = to_global_id('FinancePaymentMethodNode', finance_payment_method.id)
 
         executed = execute_test_client_api_query(
             query, 
@@ -557,11 +463,9 @@ class GQLAccountClasspass(TestCase):
         query = self.classpass_update_mutation
         classpass = f.AccountClasspassFactory.create()
         organization_classpass = f.OrganizationClasspassFactory.create()
-        finance_payment_method = f.FinancePaymentMethodFactory.create()
         variables = self.variables_update
         variables['input']['id'] = to_global_id('AccountClasspassNode', classpass.id)
         variables['input']['organizationClasspass'] = to_global_id('OrganizationClasspassNode', organization_classpass.id)
-        variables['input']['financePaymentMethod'] = to_global_id('FinancePaymentMethodNode', finance_payment_method.id)
 
         user = classpass.account
         permission = Permission.objects.get(codename=self.permission_change)
@@ -582,11 +486,9 @@ class GQLAccountClasspass(TestCase):
         query = self.classpass_update_mutation
         classpass = f.AccountClasspassFactory.create()
         organization_classpass = f.OrganizationClasspassFactory.create()
-        finance_payment_method = f.FinancePaymentMethodFactory.create()
         variables = self.variables_update
         variables['input']['id'] = to_global_id('AccountClasspassNode', classpass.id)
         variables['input']['organizationClasspass'] = to_global_id('OrganizationClasspassNode', organization_classpass.id)
-        variables['input']['financePaymentMethod'] = to_global_id('FinancePaymentMethodNode', finance_payment_method.id)
 
         user = classpass.account
 

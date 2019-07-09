@@ -287,7 +287,7 @@ class AccountSubscriptionFactory(factory.DjangoModelFactory):
     
 class AccountClasspassFactory(factory.DjangoModelFactory):
     class Meta:
-        model = models.AccountSubscription
+        model = models.AccountClasspass
 
     account = factory.SubFactory(RegularUserFactory)
     organization_classpass = factory.SubFactory(OrganizationClasspassFactory)
