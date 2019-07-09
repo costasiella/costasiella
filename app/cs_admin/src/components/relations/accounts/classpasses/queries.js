@@ -1,8 +1,8 @@
 import gql from "graphql-tag"
 
-export const GET_ACCOUNT_SUBSCRIPTIONS_QUERY = gql`
-  query AccountSubscriptions($after: String, $before: String, $accountId: ID!) {
-    accountSubscriptions(first: 15, before: $before, after: $after, account: $accountId) {
+export const GET_ACCOUNT_CLASSPASSES_QUERY = gql`
+  query AccountClasspasses($after: String, $before: String, $accountId: ID!) {
+    accountClasspasses(first: 15, before: $before, after: $after, account: $accountId) {
       pageInfo {
         startCursor
         endCursor
@@ -12,17 +12,12 @@ export const GET_ACCOUNT_SUBSCRIPTIONS_QUERY = gql`
       edges {
         node {
           id
-          organizationSubscription {
-            id
-            name
-          }
-          financePaymentMethod {
+          organizationClasspass {
             id
             name
           }
           dateStart
           dateEnd
-          registrationFeePaid
           createdAt
         }
       }
@@ -39,25 +34,20 @@ export const GET_ACCOUNT_SUBSCRIPTIONS_QUERY = gql`
   }
 `
 
-export const GET_ACCOUNT_SUBSCRIPTION_QUERY = gql`
-  query AccountSubscription($id: ID!, $accountId: ID!, $after: String, $before: String, $archived: Boolean!) {
-    accountSubscription(id:$id) {
+export const GET_ACCOUNT_CLASSPASS_QUERY = gql`
+  query AccountClasspass($id: ID!, $accountId: ID!, $after: String, $before: String, $archived: Boolean!) {
+    accountClasspass(id:$id) {
       id
-      organizationSubscription {
-        id
-        name
-      }
-      financePaymentMethod {
+      organizationClasspass {
         id
         name
       }
       dateStart
       dateEnd
       note
-      registrationFeePaid
       createdAt
     }
-    organizationSubscriptions(first: 100, before: $before, after: $after, archived: $archived) {
+    organizationClasspasses(first: 100, before: $before, after: $after, archived: $archived) {
       pageInfo {
         startCursor
         endCursor
@@ -69,22 +59,6 @@ export const GET_ACCOUNT_SUBSCRIPTION_QUERY = gql`
           id
           archived
           name
-        }
-      }
-    }
-    financePaymentMethods(first: 100, before: $before, after: $after, archived: $archived) {
-      pageInfo {
-        startCursor
-        endCursor
-        hasNextPage
-        hasPreviousPage
-      }
-      edges {
-        node {
-          id
-          archived
-          name
-          code
         }
       }
     }
@@ -101,8 +75,8 @@ export const GET_ACCOUNT_SUBSCRIPTION_QUERY = gql`
 `
 
 export const GET_INPUT_VALUES_QUERY = gql`
-  query SubscriptionInputValues($after: String, $before: String, $archived: Boolean!, $accountId: ID!) {
-    organizationSubscriptions(first: 100, before: $before, after: $after, archived: $archived) {
+  query ClasspassInputValues($after: String, $before: String, $archived: Boolean!, $accountId: ID!) {
+    organizationClasspasses(first: 100, before: $before, after: $after, archived: $archived) {
       pageInfo {
         startCursor
         endCursor
@@ -114,22 +88,6 @@ export const GET_INPUT_VALUES_QUERY = gql`
           id
           archived
           name
-        }
-      }
-    }
-    financePaymentMethods(first: 100, before: $before, after: $after, archived: $archived) {
-      pageInfo {
-        startCursor
-        endCursor
-        hasNextPage
-        hasPreviousPage
-      }
-      edges {
-        node {
-          id
-          archived
-          name
-          code
         }
       }
     }
