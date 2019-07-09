@@ -10,9 +10,9 @@ import { Link } from 'react-router-dom'
 import { Formik } from 'formik'
 import { toast } from 'react-toastify'
 
-import { GET_ACCOUNT_SUBSCRIPTIONS_QUERY, GET_ACCOUNT_SUBSCRIPTION_QUERY } from './queries'
-import { SUBSCRIPTION_SCHEMA } from './yupSchema'
-import AccountSubscriptionForm from './AccountSubscriptionForm'
+import { GET_ACCOUNT_CLASSPASSES_QUERY, GET_ACCOUNT_CLASSPASS_QUERY } from './queries'
+import { CLASSPASS_SCHEMA } from './yupSchema'
+import AccountClasspassForm from './AccountClasspassForm'
 
 import {
   Page,
@@ -29,10 +29,10 @@ import { dateToLocalISO } from '../../../../tools/date_tools'
 import ProfileMenu from "../ProfileMenu"
 
 
-const UPDATE_ACCOUNT_SUBSCRIPTION = gql`
-  mutation UpdateAccountSubscription($input: UpdateAccountSubscriptionInput!) {
-    updateAccountSubscription(input: $input) {
-      accountSubscription {
+const UPDATE_ACCOUNT_CLASSPASS = gql`
+  mutation UpdateAccountClasspass($input: UpdateAccountClasspassInput!) {
+    updateAccountClasspass(input: $input) {
+      accountClasspass {
         id
         account {
           id
@@ -40,28 +40,23 @@ const UPDATE_ACCOUNT_SUBSCRIPTION = gql`
           lastName
           email
         }
-        organizationSubscription {
-          id
-          name
-        }
-        financePaymentMethod {
+        organizationClasspass {
           id
           name
         }
         dateStart
         dateEnd
         note
-        registrationFeePaid        
       }
     }
   }
 `
 
 
-class AccountSubscriptionEdit extends Component {
+class AccountClasspassEdit extends Component {
   constructor(props) {
     super(props)
-    console.log("Account subscription add props:")
+    console.log("Account classpass add props:")
     console.log(props)
   }
 
@@ -71,12 +66,12 @@ class AccountSubscriptionEdit extends Component {
     const match = this.props.match
     const id = match.params.id
     const account_id = match.params.account_id
-    const return_url = "/relations/accounts/" + account_id + "/subscriptions"
+    const return_url = "/relations/accounts/" + account_id + "/classpasses"
 
     return (
       <SiteWrapper>
         <div className="my-3 my-md-5">
-        <Query query={GET_ACCOUNT_SUBSCRIPTION_QUERY} variables = {{archived: false,  accountId: account_id, id: id}} >
+        <Query query={GET_ACCOUNT_CLASSPASS_QUERY} variables = {{archived: false,  accountId: account_id, id: id}} >
           {({ loading, error, data, refetch }) => {
             // Loading
             if (loading) return <p>{t('general.loading_with_dots')}</p>
@@ -90,12 +85,7 @@ class AccountSubscriptionEdit extends Component {
             console.log(data)
             const inputData = data
             const account = data.account
-            const initialdata = data.accountSubscription
-
-            let initialPaymentMethod = ""
-            if (initialdata.financePaymentMethod) {
-              initialPaymentMethod = initialdata.financePaymentMethod.id
-            }
+            const initialdata = data.accountClasspass
 
             return (
               <Container>
@@ -104,20 +94,18 @@ class AccountSubscriptionEdit extends Component {
                   <Grid.Col md={9}>
                   <Card>
                     <Card.Header>
-                      <Card.Title>{t('relations.account.subscriptions.title_edit')}</Card.Title>
+                      <Card.Title>{t('relations.account.classpasses.title_edit')}</Card.Title>
                     </Card.Header>
-                      <Mutation mutation={UPDATE_ACCOUNT_SUBSCRIPTION} onCompleted={() => history.push(return_url)}> 
-                      {(updateSubscription, { data }) => (
+                      <Mutation mutation={UPDATE_ACCOUNT_CLASSPASS} onCompleted={() => history.push(return_url)}> 
+                      {(updateClasspass, { data }) => (
                           <Formik
                               initialValues={{ 
-                                organizationSubscription: initialdata.organizationSubscription.id,
-                                financePaymentMethod: initialPaymentMethod,
+                                organizationClasspass: initialdata.organizationClasspass.id,
                                 dateStart: initialdata.dateStart,
                                 dateEnd: initialdata.dateEnd,
                                 note: initialdata.note,
-                                registrationFeePaid: initialdata.registrationFeePaid
                               }}
-                              validationSchema={SUBSCRIPTION_SCHEMA}
+                              validationSchema={CLASSPASS_SCHEMA}
                               onSubmit={(values, { setSubmitting }, errors) => {
                                   console.log('submit values:')
                                   console.log(values)
@@ -131,22 +119,20 @@ class AccountSubscriptionEdit extends Component {
                                     dateEnd = values.dateEnd
                                   }
 
-                                  updateSubscription({ variables: {
+                                  updateClasspass({ variables: {
                                     input: {
                                       id: id,
-                                      organizationSubscription: values.organizationSubscription,
-                                      financePaymentMethod: values.financePaymentMethod,
+                                      organizationClasspass: values.organizationClasspass,
                                       dateStart: dateToLocalISO(values.dateStart),
                                       dateEnd: dateEnd,
                                       note: values.note,
-                                      registrationFeePaid: values.registrationFeePaid
                                     }
                                   }, refetchQueries: [
-                                      // {query: GET_SUBSCRIPTIONS_QUERY, variables: {archived: false, accountId: account_id}}
+                                      // {query: GET_CLASSPASSES_QUERY, variables: {archived: false, accountId: account_id}}
                                   ]})
                                   .then(({ data }) => {
                                       console.log('got data', data)
-                                      toast.success((t('relations.account.subscriptions.toast_edit_success')), {
+                                      toast.success((t('relations.account.classpasses.toast_edit_success')), {
                                           position: toast.POSITION.BOTTOM_RIGHT
                                         })
                                     }).catch((error) => {
@@ -159,7 +145,7 @@ class AccountSubscriptionEdit extends Component {
                               }}
                               >
                               {({ isSubmitting, setFieldValue, setFieldTouched, errors, values }) => (
-                                <AccountSubscriptionForm
+                                <AccountClasspassForm
                                   inputData={inputData}
                                   isSubmitting={isSubmitting}
                                   setFieldValue={setFieldValue}
@@ -169,7 +155,7 @@ class AccountSubscriptionEdit extends Component {
                                   return_url={return_url}
                                 >
                                   {console.log(errors)}
-                                </AccountSubscriptionForm>
+                                </AccountClasspassForm>
                               )}
                           </Formik>
                       )}
@@ -178,14 +164,14 @@ class AccountSubscriptionEdit extends Component {
                   </Grid.Col>
                   <Grid.Col md={3}>
                     <HasPermissionWrapper permission="change"
-                                          resource="accountsubscription">
+                                          resource="accountclasspass">
                       <Link to={return_url}>
                         <Button color="primary btn-block mb-6">
                           <Icon prefix="fe" name="chevrons-left" /> {t('general.back')}
                         </Button>
                       </Link>
                     </HasPermissionWrapper>
-                    <ProfileMenu active_link='subscriptions'/>
+                    <ProfileMenu active_link='classpasses'/>
                   </Grid.Col>
                 </Grid.Row>
               </Container>
@@ -197,4 +183,4 @@ class AccountSubscriptionEdit extends Component {
   }
 
 
-export default withTranslation()(withRouter(AccountSubscriptionEdit))
+export default withTranslation()(withRouter(AccountClasspassEdit))
