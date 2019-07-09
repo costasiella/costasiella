@@ -21,3 +21,48 @@ class AccountClasspass(models.Model):
 
     def __str__(self):
         return self.organization_classpass.name + ' [' + unicode(date_start) + ']'
+
+
+    def set_date_end(self):
+        """
+           Calculate and set enddate when adding a class pass
+           return: datetime.date
+        """
+        def add_months(sourcedate, months):
+            month = sourcedate.month - 1 + months
+            year = int(sourcedate.year + month / 12)
+            month = month % 12 + 1
+            last_day_new = calendar.monthrange(year, month)[1]
+            day = min(sourcedate.day, last_day_new)
+
+            ret_val = datetime.date(year, month, day)
+
+            last_day_source = calendar.monthrange(sourcedate.year,
+                                                  sourcedate.month)[1]
+
+            if sourcedate.day == last_day_source and last_day_source > last_day_new:
+                return ret_val
+            else:
+                delta = datetime.timedelta(days=1)
+                return ret_val - delta
+
+        import datetime
+        import calendar
+        
+        if self.organization_classpass.validity_unit == 'months':
+            # check for and add months
+            months = self.organization_classpass.validity
+            if months:
+                date_end = add_months(date_start, months)
+        else:
+            if self.organization_classpass.validity_unit == 'weeks':
+                days = self.organization_classpass.validity * 7
+            else:
+                days = self.organization_classpass.validity
+
+            delta_days = datetime.timedelta(days=days)
+            date_end = (date_start + delta_days) - datetime.timedelta(days=1)
+
+        self.date_end = date_end
+
+        return date_end

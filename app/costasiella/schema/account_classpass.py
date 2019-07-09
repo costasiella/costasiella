@@ -96,9 +96,8 @@ class CreateAccountClasspass(graphene.relay.ClientIDMutation):
             date_start=input['date_start'], 
         )
 
-        if 'date_end' in input:
-            if input['date_end']: # check if date_end actually has a value
-                account_classpass.date_end = input['date_end']
+        # set date end
+        account_classpass.set_date_end()
 
         if 'note' in input:
             account_classpass.note = input['note']
