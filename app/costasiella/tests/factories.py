@@ -284,6 +284,17 @@ class AccountSubscriptionFactory(factory.DjangoModelFactory):
     note = "Subscription note here"
     registration_fee_paid = False
     
+    
+class AccountClasspassFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.AccountSubscription
+
+    account = factory.SubFactory(RegularUserFactory)
+    organization_classpass = factory.SubFactory(OrganizationClasspassFactory)
+    date_start = datetime.date(2019, 1, 1)
+    date_end = None
+    note = "Subscription note here"
+    
 
 class SchedulePublicWeeklyClassFactory(factory.DjangoModelFactory):
     class Meta:
