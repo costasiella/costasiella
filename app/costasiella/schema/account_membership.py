@@ -105,14 +105,7 @@ class CreateAccountMembership(graphene.relay.ClientIDMutation):
             date_start=input['date_start'], 
         )
 
-        #TODO set end date like in class pass
-
-        if 'registration_fee_paid' in input:
-            account_membership.registration_fee_paid = input['registration_fee_paid']
-
-        if 'date_end' in input:
-            if input['date_end']: # check if date_end actually has a value
-                account_membership.date_end = input['date_end']
+        account_membership.set_date_end()
 
         if 'note' in input:
             account_membership.note = input['note']
@@ -133,7 +126,6 @@ class UpdateAccountMembership(graphene.relay.ClientIDMutation):
         date_start = graphene.types.datetime.Date(required=True)
         date_end = graphene.types.datetime.Date(required=False, default_value=None)
         note = graphene.String(required=False, default_value="")
-        registration_fee_paid = graphene.Boolean(required=False, default_value=False)        
         
     account_membership = graphene.Field(AccountMembershipNode)
 
@@ -152,9 +144,6 @@ class UpdateAccountMembership(graphene.relay.ClientIDMutation):
 
         account_membership.organization_membership=result['organization_membership']
         account_membership.date_start=input['date_start']
-
-        if 'registration_fee_paid' in input:
-            account_membership.registration_fee_paid = input['registration_fee_paid']
 
         if 'date_end' in input:
             # Allow None as a value to be able to NULL date_end

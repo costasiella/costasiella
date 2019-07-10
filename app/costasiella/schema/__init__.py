@@ -3,6 +3,7 @@ import graphql_jwt
 
 from .account import AccountQuery, AccountMutation
 from .account_classpass import AccountClasspassQuery, AccountClasspassMutation
+from .account_membership import AccountMembershipQuery, AccountMembershipMutation
 from .account_subscription import AccountSubscriptionQuery, AccountSubscriptionMutation
 
 from .finance_costcenter import FinanceCostCenterQuery, FinanceCostCenterMutation
@@ -31,6 +32,7 @@ from .schedule_item_teacher import ScheduleItemTeacherQuery, ScheduleItemTeacher
 
 class Query(AccountQuery,
             AccountClasspassQuery,
+            AccountMembershipQuery,
             AccountSubscriptionQuery,
             FinanceCostCenterQuery,
             FinanceGLAccountQuery,
@@ -56,6 +58,7 @@ class Query(AccountQuery,
 
 class Mutation(AccountMutation,
                AccountClasspassMutation,
+               AccountMembershipMutation,
                AccountSubscriptionMutation,
                FinanceCostCenterMutation,
                FinanceGLAccountMutation,
