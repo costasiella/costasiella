@@ -17,24 +17,22 @@ from .. import schema
 
 
 
-class GQLAccountSubscription(TestCase):
+class GQLAccountMembership(TestCase):
     # https://docs.djangoproject.com/en/2.1/topics/testing/overview/
     def setUp(self):
         # This is run before every test
         self.admin_user = f.AdminUserFactory.create()
         self.anon_user = AnonymousUser()
 
-        self.permission_view = 'view_accountsubscription'
-        self.permission_add = 'add_accountsubscription'
-        self.permission_change = 'change_accountsubscription'
-        self.permission_delete = 'delete_accountsubscription'
+        self.permission_view = 'view_accountmembership'
+        self.permission_add = 'add_accountmembership'
+        self.permission_change = 'change_accountmembership'
+        self.permission_delete = 'delete_accountmembership'
 
         self.variables_create = {
             "input": {
                 "dateStart": "2019-01-01",
-                "dateEnd": "2019-12-31",
                 "note": "creation note",
-                "registrationFeePaid": True
             }
         }
 
@@ -43,13 +41,12 @@ class GQLAccountSubscription(TestCase):
                 "dateStart": "2017-01-01",
                 "dateEnd": "2020-12-31",
                 "note": "Update note",
-                "registrationFeePaid": True
             }
         }
 
-        self.subscriptions_query = '''
-  query AccountSubscriptions($after: String, $before: String, $accountId: ID!) {
-    accountSubscriptions(first: 15, before: $before, after: $after, account: $accountId) {
+        self.memberships_query = '''
+  query AccountMemberships($after: String, $before: String, $accountId: ID!) {
+    accountMemberships(first: 15, before: $before, after: $after, account: $accountId) {
       pageInfo {
         startCursor
         endCursor
@@ -59,7 +56,7 @@ class GQLAccountSubscription(TestCase):
       edges {
         node {
           id
-          organizationSubscription {
+          organizationMembership {
             id
             name
           }
@@ -70,7 +67,6 @@ class GQLAccountSubscription(TestCase):
           dateStart
           dateEnd
           note
-          registrationFeePaid
           createdAt
         }
       }
@@ -87,14 +83,14 @@ class GQLAccountSubscription(TestCase):
   }
 '''
 
-        self.subscription_query = '''
-  query AccountSubscription($id: ID!, $accountId: ID!, $after: String, $before: String, $archived: Boolean!) {
-    accountSubscription(id:$id) {
+        self.membership_query = '''
+  query AccountMembership($id: ID!, $accountId: ID!, $after: String, $before: String, $archived: Boolean!) {
+    accountMembership(id:$id) {
       id
       account {
           id
       }
-      organizationSubscription {
+      organizationMembership {
         id
         name
       }
@@ -105,10 +101,9 @@ class GQLAccountSubscription(TestCase):
       dateStart
       dateEnd
       note
-      registrationFeePaid
       createdAt
     }
-    organizationSubscriptions(first: 100, before: $before, after: $after, archived: $archived) {
+    organizationMemberships(first: 100, before: $before, after: $after, archived: $archived) {
       pageInfo {
         startCursor
         endCursor
@@ -151,10 +146,10 @@ class GQLAccountSubscription(TestCase):
   }
 '''
 
-        self.subscription_create_mutation = ''' 
-  mutation CreateAccountSubscription($input: CreateAccountSubscriptionInput!) {
-    createAccountSubscription(input: $input) {
-      accountSubscription {
+        self.membership_create_mutation = ''' 
+  mutation CreateAccountMembership($input: CreateAccountMembershipInput!) {
+    createAccountMembership(input: $input) {
+      accountMembership {
         id
         account {
           id
@@ -162,7 +157,7 @@ class GQLAccountSubscription(TestCase):
           lastName
           email
         }
-        organizationSubscription {
+        organizationMembership {
           id
           name
         }
@@ -173,16 +168,15 @@ class GQLAccountSubscription(TestCase):
         dateStart
         dateEnd
         note
-        registrationFeePaid        
       }
     }
   }
 '''
 
-        self.subscription_update_mutation = '''
-  mutation UpdateAccountSubscription($input: UpdateAccountSubscriptionInput!) {
-    updateAccountSubscription(input: $input) {
-      accountSubscription {
+        self.membership_update_mutation = '''
+  mutation UpdateAccountMembership($input: UpdateAccountMembershipInput!) {
+    updateAccountMembership(input: $input) {
+      accountMembership {
         id
         account {
           id
@@ -190,7 +184,7 @@ class GQLAccountSubscription(TestCase):
           lastName
           email
         }
-        organizationSubscription {
+        organizationMembership {
           id
           name
         }
@@ -201,15 +195,14 @@ class GQLAccountSubscription(TestCase):
         dateStart
         dateEnd
         note
-        registrationFeePaid        
       }
     }
   }
 '''
 
-        self.subscription_delete_mutation = '''
-  mutation DeleteAccountSubscription($input: DeleteAccountSubscriptionInput!) {
-    deleteAccountSubscription(input: $input) {
+        self.membership_delete_mutation = '''
+  mutation DeleteAccountMembership($input: DeleteAccountMembershipInput!) {
+    deleteAccountMembership(input: $input) {
       ok
     }
   }
@@ -221,39 +214,38 @@ class GQLAccountSubscription(TestCase):
 
 
     def test_query(self):
-        """ Query list of account subscriptions """
-        query = self.subscriptions_query
-        subscription = f.AccountSubscriptionFactory.create()
+        """ Query list of account memberships """
+        query = self.memberships_query
+        membership = f.AccountMembershipFactory.create()
         variables = {
-            'accountId': to_global_id('AccountSubscriptionNode', subscription.account.id)
+            'accountId': to_global_id('AccountMembershipNode', membership.account.id)
         }
 
         executed = execute_test_client_api_query(query, self.admin_user, variables=variables)
         data = executed.get('data')
         self.assertEqual(
-            data['accountSubscriptions']['edges'][0]['node']['organizationSubscription']['id'], 
-            to_global_id("OrganizationSubscriptionNode", subscription.organization_subscription.id)
+            data['accountMemberships']['edges'][0]['node']['organizationMembership']['id'], 
+            to_global_id("OrganizationMembershipNode", membership.organization_membership.id)
         )
         self.assertEqual(
-            data['accountSubscriptions']['edges'][0]['node']['financePaymentMethod']['id'], 
-            to_global_id("FinancePaymentMethodNode", subscription.finance_payment_method.id)
+            data['accountMemberships']['edges'][0]['node']['financePaymentMethod']['id'], 
+            to_global_id("FinancePaymentMethodNode", membership.finance_payment_method.id)
         )
-        self.assertEqual(data['accountSubscriptions']['edges'][0]['node']['dateStart'], str(subscription.date_start))
-        self.assertEqual(data['accountSubscriptions']['edges'][0]['node']['dateEnd'], subscription.date_end) # Factory is set to None so no string conversion required
-        self.assertEqual(data['accountSubscriptions']['edges'][0]['node']['note'], subscription.note)
-        self.assertEqual(data['accountSubscriptions']['edges'][0]['node']['registrationFeePaid'], subscription.registration_fee_paid)
+        self.assertEqual(data['accountMemberships']['edges'][0]['node']['dateStart'], str(membership.date_start))
+        self.assertEqual(data['accountMemberships']['edges'][0]['node']['dateEnd'], str(membership.date_end))
+        self.assertEqual(data['accountMemberships']['edges'][0]['node']['note'], membership.note)
 
 
     def test_query_permision_denied(self):
-        """ Query list of account subscriptions - check permission denied """
-        query = self.subscriptions_query
-        subscription = f.AccountSubscriptionFactory.create()
+        """ Query list of account memberships - check permission denied """
+        query = self.memberships_query
+        membership = f.AccountMembershipFactory.create()
         variables = {
-            'accountId': to_global_id('AccountSubscriptionNode', subscription.account.id)
+            'accountId': to_global_id('AccountMembershipNode', membership.account.id)
         }
 
         # Create regular user
-        user = get_user_model().objects.get(pk=subscription.account.id)
+        user = get_user_model().objects.get(pk=membership.account.id)
         executed = execute_test_client_api_query(query, user, variables=variables)
         errors = executed.get('errors')
 
@@ -261,35 +253,35 @@ class GQLAccountSubscription(TestCase):
 
 
     def test_query_permision_granted(self):
-        """ Query list of account subscriptions with view permission """
-        query = self.subscriptions_query
-        subscription = f.AccountSubscriptionFactory.create()
+        """ Query list of account memberships with view permission """
+        query = self.memberships_query
+        membership = f.AccountMembershipFactory.create()
         variables = {
-            'accountId': to_global_id('AccountSubscriptionNode', subscription.account.id)
+            'accountId': to_global_id('AccountMembershipNode', membership.account.id)
         }
 
         # Create regular user
-        user = get_user_model().objects.get(pk=subscription.account.id)
-        permission = Permission.objects.get(codename='view_accountsubscription')
+        user = get_user_model().objects.get(pk=membership.account.id)
+        permission = Permission.objects.get(codename='view_accountmembership')
         user.user_permissions.add(permission)
         user.save()
 
         executed = execute_test_client_api_query(query, user, variables=variables)
         data = executed.get('data')
 
-        # List all subscriptions
+        # List all memberships
         self.assertEqual(
-            data['accountSubscriptions']['edges'][0]['node']['organizationSubscription']['id'], 
-            to_global_id("OrganizationSubscriptionNode", subscription.organization_subscription.id)
+            data['accountMemberships']['edges'][0]['node']['organizationMembership']['id'], 
+            to_global_id("OrganizationMembershipNode", membership.organization_membership.id)
         )
 
 
     def test_query_anon_user(self):
-        """ Query list of account subscriptions - anon user """
-        query = self.subscriptions_query
-        subscription = f.AccountSubscriptionFactory.create()
+        """ Query list of account memberships - anon user """
+        query = self.memberships_query
+        membership = f.AccountMembershipFactory.create()
         variables = {
-            'accountId': to_global_id('AccountSubscriptionNode', subscription.account.id)
+            'accountId': to_global_id('AccountMembershipNode', membership.account.id)
         }
 
         executed = execute_test_client_api_query(query, self.anon_user, variables=variables)
@@ -298,48 +290,47 @@ class GQLAccountSubscription(TestCase):
 
 
     def test_query_one(self):
-        """ Query one account subscription as admin """   
-        subscription = f.AccountSubscriptionFactory.create()
+        """ Query one account membership as admin """   
+        membership = f.AccountMembershipFactory.create()
         
         variables = {
-            "id": to_global_id("AccountSubscriptionNode", subscription.id),
-            "accountId": to_global_id("AccountNode", subscription.account.id),
+            "id": to_global_id("AccountMembershipNode", membership.id),
+            "accountId": to_global_id("AccountNode", membership.account.id),
             "archived": False,
         }
 
-        # Now query single subscription and check
-        executed = execute_test_client_api_query(self.subscription_query, self.admin_user, variables=variables)
+        # Now query single membership and check
+        executed = execute_test_client_api_query(self.membership_query, self.admin_user, variables=variables)
         data = executed.get('data')
         self.assertEqual(
-            data['accountSubscription']['account']['id'], 
-            to_global_id('AccountNode', subscription.account.id)
+            data['accountMembership']['account']['id'], 
+            to_global_id('AccountNode', membership.account.id)
         )
         self.assertEqual(
-            data['accountSubscription']['organizationSubscription']['id'], 
-            to_global_id('OrganizationSubscriptionNode', subscription.organization_subscription.id)
+            data['accountMembership']['organizationMembership']['id'], 
+            to_global_id('OrganizationMembershipNode', membership.organization_membership.id)
         )
         self.assertEqual(
-            data['accountSubscription']['financePaymentMethod']['id'], 
-            to_global_id('FinancePaymentMethodNode', subscription.finance_payment_method.id)
+            data['accountMembership']['financePaymentMethod']['id'], 
+            to_global_id('FinancePaymentMethodNode', membership.finance_payment_method.id)
         )
-        self.assertEqual(data['accountSubscription']['dateStart'], str(subscription.date_start))
-        self.assertEqual(data['accountSubscription']['dateEnd'], subscription.date_end)
-        self.assertEqual(data['accountSubscription']['note'], subscription.note)
-        self.assertEqual(data['accountSubscription']['registrationFeePaid'], subscription.registration_fee_paid)
+        self.assertEqual(data['accountMembership']['dateStart'], str(membership.date_start))
+        self.assertEqual(data['accountMembership']['dateEnd'], str(membership.date_end))
+        self.assertEqual(data['accountMembership']['note'], membership.note)
 
 
     def test_query_one_anon_user(self):
-        """ Deny permission for anon users Query one account subscription """   
-        subscription = f.AccountSubscriptionFactory.create()
+        """ Deny permission for anon users Query one account membership """   
+        membership = f.AccountMembershipFactory.create()
 
         variables = {
-            "id": to_global_id("AccountSubscriptionNode", subscription.id),
-            "accountId": to_global_id("AccountNode", subscription.account.id),
+            "id": to_global_id("AccountMembershipNode", membership.id),
+            "accountId": to_global_id("AccountNode", membership.account.id),
             "archived": False,
         }
 
-        # Now query single subscription and check
-        executed = execute_test_client_api_query(self.subscription_query, self.anon_user, variables=variables)
+        # Now query single membership and check
+        executed = execute_test_client_api_query(self.membership_query, self.anon_user, variables=variables)
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Not logged in!')
 
@@ -347,55 +338,55 @@ class GQLAccountSubscription(TestCase):
     def test_query_one_permission_denied(self):
         """ Permission denied message when user lacks authorization """   
         # Create regular user
-        subscription = f.AccountSubscriptionFactory.create()
-        user = subscription.account
+        membership = f.AccountMembershipFactory.create()
+        user = membership.account
 
         variables = {
-            "id": to_global_id("AccountSubscriptionNode", subscription.id),
-            "accountId": to_global_id("AccountNode", subscription.account.id),
+            "id": to_global_id("AccountMembershipNode", membership.id),
+            "accountId": to_global_id("AccountNode", membership.account.id),
             "archived": False,
         }
 
-        # Now query single subscription and check
-        executed = execute_test_client_api_query(self.subscription_query, user, variables=variables)
+        # Now query single membership and check
+        executed = execute_test_client_api_query(self.membership_query, user, variables=variables)
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
     def test_query_one_permission_granted(self):
         """ Respond with data when user has permission """   
-        subscription = f.AccountSubscriptionFactory.create()
-        user = subscription.account
-        permission = Permission.objects.get(codename='view_accountsubscription')
+        membership = f.AccountMembershipFactory.create()
+        user = membership.account
+        permission = Permission.objects.get(codename='view_accountmembership')
         user.user_permissions.add(permission)
         user.save()
         
 
         variables = {
-            "id": to_global_id("AccountSubscriptionNode", subscription.id),
-            "accountId": to_global_id("AccountNode", subscription.account.id),
+            "id": to_global_id("AccountMembershipNode", membership.id),
+            "accountId": to_global_id("AccountNode", membership.account.id),
             "archived": False,
         }
 
-        # Now query single subscription and check   
-        executed = execute_test_client_api_query(self.subscription_query, user, variables=variables)
+        # Now query single membership and check   
+        executed = execute_test_client_api_query(self.membership_query, user, variables=variables)
         data = executed.get('data')
         self.assertEqual(
-            data['accountSubscription']['organizationSubscription']['id'], 
-            to_global_id('OrganizationSubscriptionNode', subscription.organization_subscription.id)
+            data['accountMembership']['organizationMembership']['id'], 
+            to_global_id('OrganizationMembershipNode', membership.organization_membership.id)
         )
 
 
-    def test_create_subscription(self):
-        """ Create an account subscription """
-        query = self.subscription_create_mutation
+    def test_create_membership(self):
+        """ Create an account membership """
+        query = self.membership_create_mutation
 
         account = f.RegularUserFactory.create()
-        organization_subscription = f.OrganizationSubscriptionFactory.create()
+        organization_membership = f.OrganizationMembershipFactory.create()
         finance_payment_method = f.FinancePaymentMethodFactory.create()
         variables = self.variables_create
         variables['input']['account'] = to_global_id('AccountNode', account.id)
-        variables['input']['organizationSubscription'] = to_global_id('OrganizationSubscriptionNode', organization_subscription.id)
+        variables['input']['organizationMembership'] = to_global_id('OrganizationMembershipNode', organization_membership.id)
         variables['input']['financePaymentMethod'] = to_global_id('FinancePaymentMethodNode', finance_payment_method.id)
 
         executed = execute_test_client_api_query(
@@ -406,33 +397,31 @@ class GQLAccountSubscription(TestCase):
         data = executed.get('data')
 
         self.assertEqual(
-            data['createAccountSubscription']['accountSubscription']['account']['id'], 
+            data['createAccountMembership']['accountMembership']['account']['id'], 
             variables['input']['account']
         )
         self.assertEqual(
-            data['createAccountSubscription']['accountSubscription']['organizationSubscription']['id'], 
-            variables['input']['organizationSubscription']
+            data['createAccountMembership']['accountMembership']['organizationMembership']['id'], 
+            variables['input']['organizationMembership']
         )
         self.assertEqual(
-            data['createAccountSubscription']['accountSubscription']['financePaymentMethod']['id'], 
+            data['createAccountMembership']['accountMembership']['financePaymentMethod']['id'], 
             variables['input']['financePaymentMethod']
         )
-        self.assertEqual(data['createAccountSubscription']['accountSubscription']['dateStart'], variables['input']['dateStart'])
-        self.assertEqual(data['createAccountSubscription']['accountSubscription']['dateEnd'], variables['input']['dateEnd'])
-        self.assertEqual(data['createAccountSubscription']['accountSubscription']['note'], variables['input']['note'])
-        self.assertEqual(data['createAccountSubscription']['accountSubscription']['registrationFeePaid'], variables['input']['registrationFeePaid'])
+        self.assertEqual(data['createAccountMembership']['accountMembership']['dateStart'], variables['input']['dateStart'])
+        self.assertEqual(data['createAccountMembership']['accountMembership']['note'], variables['input']['note'])
 
 
-    def test_create_subscription_anon_user(self):
-        """ Don't allow creating account subscriptions for non-logged in users """
-        query = self.subscription_create_mutation
+    def test_create_membership_anon_user(self):
+        """ Don't allow creating account memberships for non-logged in users """
+        query = self.membership_create_mutation
         
         account = f.RegularUserFactory.create()
-        organization_subscription = f.OrganizationSubscriptionFactory.create()
+        organization_membership = f.OrganizationMembershipFactory.create()
         finance_payment_method = f.FinancePaymentMethodFactory.create()
         variables = self.variables_create
         variables['input']['account'] = to_global_id('AccountNode', account.id)
-        variables['input']['organizationSubscription'] = to_global_id('OrganizationSubscriptionNode', organization_subscription.id)
+        variables['input']['organizationMembership'] = to_global_id('OrganizationMembershipNode', organization_membership.id)
         variables['input']['financePaymentMethod'] = to_global_id('FinancePaymentMethodNode', finance_payment_method.id)
 
         executed = execute_test_client_api_query(
@@ -445,16 +434,16 @@ class GQLAccountSubscription(TestCase):
         self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
-    def test_create_location_permission_granted(self):
-        """ Allow creating subscriptions for users with permissions """
-        query = self.subscription_create_mutation
+    def test_create_membership_permission_granted(self):
+        """ Allow creating memberships for users with permissions """
+        query = self.membership_create_mutation
 
         account = f.RegularUserFactory.create()
-        organization_subscription = f.OrganizationSubscriptionFactory.create()
+        organization_membership = f.OrganizationMembershipFactory.create()
         finance_payment_method = f.FinancePaymentMethodFactory.create()
         variables = self.variables_create
         variables['input']['account'] = to_global_id('AccountNode', account.id)
-        variables['input']['organizationSubscription'] = to_global_id('OrganizationSubscriptionNode', organization_subscription.id)
+        variables['input']['organizationMembership'] = to_global_id('OrganizationMembershipNode', organization_membership.id)
         variables['input']['financePaymentMethod'] = to_global_id('FinancePaymentMethodNode', finance_payment_method.id)
 
         # Create regular user
@@ -469,21 +458,22 @@ class GQLAccountSubscription(TestCase):
             variables=variables
         )
         data = executed.get('data')
+
         self.assertEqual(
-            data['createAccountSubscription']['accountSubscription']['organizationSubscription']['id'], 
-            variables['input']['organizationSubscription']
+            data['createAccountMembership']['accountMembership']['organizationMembership']['id'], 
+            variables['input']['organizationMembership']
         )
 
 
-    def test_create_subscription_permission_denied(self):
-        """ Check create subscription permission denied error message """
-        query = self.subscription_create_mutation
+    def test_create_membership_permission_denied(self):
+        """ Check create membership permission denied error message """
+        query = self.membership_create_mutation
         account = f.RegularUserFactory.create()
-        organization_subscription = f.OrganizationSubscriptionFactory.create()
+        organization_membership = f.OrganizationMembershipFactory.create()
         finance_payment_method = f.FinancePaymentMethodFactory.create()
         variables = self.variables_create
         variables['input']['account'] = to_global_id('AccountNode', account.id)
-        variables['input']['organizationSubscription'] = to_global_id('OrganizationSubscriptionNode', organization_subscription.id)
+        variables['input']['organizationMembership'] = to_global_id('OrganizationMembershipNode', organization_membership.id)
         variables['input']['financePaymentMethod'] = to_global_id('FinancePaymentMethodNode', finance_payment_method.id)
 
         # Create regular user
@@ -499,15 +489,15 @@ class GQLAccountSubscription(TestCase):
         self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
-    def test_update_subscription(self):
-        """ Update a subscription """
-        query = self.subscription_update_mutation
-        subscription = f.AccountSubscriptionFactory.create()
-        organization_subscription = f.OrganizationSubscriptionFactory.create()
+    def test_update_membership(self):
+        """ Update a membership """
+        query = self.membership_update_mutation
+        membership = f.AccountMembershipFactory.create()
+        organization_membership = f.OrganizationMembershipFactory.create()
         finance_payment_method = f.FinancePaymentMethodFactory.create()
         variables = self.variables_update
-        variables['input']['id'] = to_global_id('AccountSubscriptionNode', subscription.id)
-        variables['input']['organizationSubscription'] = to_global_id('OrganizationSubscriptionNode', organization_subscription.id)
+        variables['input']['id'] = to_global_id('AccountMembershipNode', membership.id)
+        variables['input']['organizationMembership'] = to_global_id('OrganizationMembershipNode', organization_membership.id)
         variables['input']['financePaymentMethod'] = to_global_id('FinancePaymentMethodNode', finance_payment_method.id)
 
         executed = execute_test_client_api_query(
@@ -518,28 +508,27 @@ class GQLAccountSubscription(TestCase):
         data = executed.get('data')
 
         self.assertEqual(
-          data['updateAccountSubscription']['accountSubscription']['organizationSubscription']['id'], 
-          variables['input']['organizationSubscription']
+          data['updateAccountMembership']['accountMembership']['organizationMembership']['id'], 
+          variables['input']['organizationMembership']
         )
         self.assertEqual(
-          data['updateAccountSubscription']['accountSubscription']['financePaymentMethod']['id'], 
+          data['updateAccountMembership']['accountMembership']['financePaymentMethod']['id'], 
           variables['input']['financePaymentMethod']
         )
-        self.assertEqual(data['updateAccountSubscription']['accountSubscription']['dateStart'], variables['input']['dateStart'])
-        self.assertEqual(data['updateAccountSubscription']['accountSubscription']['dateEnd'], variables['input']['dateEnd'])
-        self.assertEqual(data['updateAccountSubscription']['accountSubscription']['note'], variables['input']['note'])
-        self.assertEqual(data['updateAccountSubscription']['accountSubscription']['registrationFeePaid'], variables['input']['registrationFeePaid'])
+        self.assertEqual(data['updateAccountMembership']['accountMembership']['dateStart'], variables['input']['dateStart'])
+        self.assertEqual(data['updateAccountMembership']['accountMembership']['dateEnd'], variables['input']['dateEnd'])
+        self.assertEqual(data['updateAccountMembership']['accountMembership']['note'], variables['input']['note'])
 
 
-    def test_update_subscription_anon_user(self):
-        """ Don't allow updating subscriptions for non-logged in users """
-        query = self.subscription_update_mutation
-        subscription = f.AccountSubscriptionFactory.create()
-        organization_subscription = f.OrganizationSubscriptionFactory.create()
+    def test_update_membership_anon_user(self):
+        """ Don't allow updating memberships for non-logged in users """
+        query = self.membership_update_mutation
+        membership = f.AccountMembershipFactory.create()
+        organization_membership = f.OrganizationMembershipFactory.create()
         finance_payment_method = f.FinancePaymentMethodFactory.create()
         variables = self.variables_update
-        variables['input']['id'] = to_global_id('AccountSubscriptionNode', subscription.id)
-        variables['input']['organizationSubscription'] = to_global_id('OrganizationSubscriptionNode', organization_subscription.id)
+        variables['input']['id'] = to_global_id('AccountMembershipNode', membership.id)
+        variables['input']['organizationMembership'] = to_global_id('OrganizationMembershipNode', organization_membership.id)
         variables['input']['financePaymentMethod'] = to_global_id('FinancePaymentMethodNode', finance_payment_method.id)
 
         executed = execute_test_client_api_query(
@@ -552,18 +541,18 @@ class GQLAccountSubscription(TestCase):
         self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
-    def test_update_subscription_permission_granted(self):
-        """ Allow updating subscriptions for users with permissions """
-        query = self.subscription_update_mutation
-        subscription = f.AccountSubscriptionFactory.create()
-        organization_subscription = f.OrganizationSubscriptionFactory.create()
+    def test_update_membership_permission_granted(self):
+        """ Allow updating memberships for users with permissions """
+        query = self.membership_update_mutation
+        membership = f.AccountMembershipFactory.create()
+        organization_membership = f.OrganizationMembershipFactory.create()
         finance_payment_method = f.FinancePaymentMethodFactory.create()
         variables = self.variables_update
-        variables['input']['id'] = to_global_id('AccountSubscriptionNode', subscription.id)
-        variables['input']['organizationSubscription'] = to_global_id('OrganizationSubscriptionNode', organization_subscription.id)
+        variables['input']['id'] = to_global_id('AccountMembershipNode', membership.id)
+        variables['input']['organizationMembership'] = to_global_id('OrganizationMembershipNode', organization_membership.id)
         variables['input']['financePaymentMethod'] = to_global_id('FinancePaymentMethodNode', finance_payment_method.id)
 
-        user = subscription.account
+        user = membership.account
         permission = Permission.objects.get(codename=self.permission_change)
         user.user_permissions.add(permission)
         user.save()
@@ -574,21 +563,21 @@ class GQLAccountSubscription(TestCase):
             variables=variables
         )
         data = executed.get('data')
-        self.assertEqual(data['updateAccountSubscription']['accountSubscription']['dateStart'], variables['input']['dateStart'])
+        self.assertEqual(data['updateAccountMembership']['accountMembership']['dateStart'], variables['input']['dateStart'])
 
 
-    def test_update_subscription_permission_denied(self):
-        """ Check update subscription permission denied error message """
-        query = self.subscription_update_mutation
-        subscription = f.AccountSubscriptionFactory.create()
-        organization_subscription = f.OrganizationSubscriptionFactory.create()
+    def test_update_membership_permission_denied(self):
+        """ Check update membership permission denied error message """
+        query = self.membership_update_mutation
+        membership = f.AccountMembershipFactory.create()
+        organization_membership = f.OrganizationMembershipFactory.create()
         finance_payment_method = f.FinancePaymentMethodFactory.create()
         variables = self.variables_update
-        variables['input']['id'] = to_global_id('AccountSubscriptionNode', subscription.id)
-        variables['input']['organizationSubscription'] = to_global_id('OrganizationSubscriptionNode', organization_subscription.id)
+        variables['input']['id'] = to_global_id('AccountMembershipNode', membership.id)
+        variables['input']['organizationMembership'] = to_global_id('OrganizationMembershipNode', organization_membership.id)
         variables['input']['financePaymentMethod'] = to_global_id('FinancePaymentMethodNode', finance_payment_method.id)
 
-        user = subscription.account
+        user = membership.account
 
         executed = execute_test_client_api_query(
             query, 
@@ -600,12 +589,12 @@ class GQLAccountSubscription(TestCase):
         self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
-    def test_delete_subscription(self):
-        """ Delete an account subscription """
-        query = self.subscription_delete_mutation
-        subscription = f.AccountSubscriptionFactory.create()
+    def test_delete_membership(self):
+        """ Delete an account membership """
+        query = self.membership_delete_mutation
+        membership = f.AccountMembershipFactory.create()
         variables = {"input":{}}
-        variables['input']['id'] = to_global_id('AccountSubscriptionNode', subscription.id)
+        variables['input']['id'] = to_global_id('AccountMembershipNode', membership.id)
 
         executed = execute_test_client_api_query(
             query, 
@@ -614,15 +603,15 @@ class GQLAccountSubscription(TestCase):
         )
         data = executed.get('data')
         print(data)
-        self.assertEqual(data['deleteAccountSubscription']['ok'], True)
+        self.assertEqual(data['deleteAccountMembership']['ok'], True)
 
 
-    def test_delete_subscription_anon_user(self):
-        """ Delete subscription denied for anon user """
-        query = self.subscription_delete_mutation
-        subscription = f.AccountSubscriptionFactory.create()
+    def test_delete_membership_anon_user(self):
+        """ Delete membership denied for anon user """
+        query = self.membership_delete_mutation
+        membership = f.AccountMembershipFactory.create()
         variables = {"input":{}}
-        variables['input']['id'] = to_global_id('AccountSubscriptionNode', subscription.id)
+        variables['input']['id'] = to_global_id('AccountMembershipNode', membership.id)
 
         executed = execute_test_client_api_query(
             query, 
@@ -634,15 +623,15 @@ class GQLAccountSubscription(TestCase):
         self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
-    def test_delete_subscription_permission_granted(self):
-        """ Allow deleting subscriptions for users with permissions """
-        query = self.subscription_delete_mutation
-        subscription = f.AccountSubscriptionFactory.create()
+    def test_delete_membership_permission_granted(self):
+        """ Allow deleting memberships for users with permissions """
+        query = self.membership_delete_mutation
+        membership = f.AccountMembershipFactory.create()
         variables = {"input":{}}
-        variables['input']['id'] = to_global_id('AccountSubscriptionNode', subscription.id)
+        variables['input']['id'] = to_global_id('AccountMembershipNode', membership.id)
 
         # Give permissions
-        user = subscription.account
+        user = membership.account
         permission = Permission.objects.get(codename=self.permission_delete)
         user.user_permissions.add(permission)
         user.save()
@@ -653,17 +642,17 @@ class GQLAccountSubscription(TestCase):
             variables=variables
         )
         data = executed.get('data')
-        self.assertEqual(data['deleteAccountSubscription']['ok'], True)
+        self.assertEqual(data['deleteAccountMembership']['ok'], True)
 
 
-    def test_delete_subscription_permission_denied(self):
-        """ Check delete subscription permission denied error message """
-        query = self.subscription_delete_mutation
-        subscription = f.AccountSubscriptionFactory.create()
+    def test_delete_membership_permission_denied(self):
+        """ Check delete membership permission denied error message """
+        query = self.membership_delete_mutation
+        membership = f.AccountMembershipFactory.create()
         variables = {"input":{}}
-        variables['input']['id'] = to_global_id('AccountSubscriptionNode', subscription.id)
+        variables['input']['id'] = to_global_id('AccountMembershipNode', membership.id)
         
-        user = subscription.account
+        user = membership.account
 
         executed = execute_test_client_api_query(
             query, 
