@@ -51,7 +51,6 @@ const UPDATE_ACCOUNT_MEMBERSHIP = gql`
         dateStart
         dateEnd
         note
-        registrationFeePaid        
       }
     }
   }
@@ -142,7 +141,7 @@ class AccountMembershipEdit extends Component {
                                       registrationFeePaid: values.registrationFeePaid
                                     }
                                   }, refetchQueries: [
-                                      // {query: GET_MEMBERSHIPS_QUERY, variables: {archived: false, accountId: account_id}}
+                                      {query: GET_ACCOUNT_MEMBERSHIPS_QUERY, variables: {archived: false, accountId: account_id}}
                                   ]})
                                   .then(({ data }) => {
                                       console.log('got data', data)
