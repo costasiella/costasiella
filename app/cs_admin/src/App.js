@@ -74,7 +74,7 @@ import RelationsAccountProfile from './components/relations/accounts/RelationsAc
 import AccountClasspasses from './components/relations/accounts/classpasses/AccountClasspasses'
 import AccountClasspassAdd from './components/relations/accounts/classpasses/AccountClasspassAdd'
 import AccountClasspassEdit from './components/relations/accounts/classpasses/AccountClasspassEdit'
-import AccountMembership from './components/relations/accounts/memberships/AccountMemberships'
+import AccountMemberships from './components/relations/accounts/memberships/AccountMemberships'
 import AccountSubscriptions from './components/relations/accounts/subscriptions/AccountSubscriptions'
 import AccountSubscriptionAdd from './components/relations/accounts/subscriptions/AccountSubscriptionAdd'
 import AccountSubscriptionEdit from './components/relations/accounts/subscriptions/AccountSubscriptionEdit'
