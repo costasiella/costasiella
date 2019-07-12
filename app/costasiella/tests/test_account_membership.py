@@ -1,6 +1,6 @@
 # from graphql.error.located_error import GraphQLLocatedError
 import graphql
-import base64
+import datetime
 
 from django.contrib.auth import get_user_model
 from django.test import TestCase
@@ -410,6 +410,88 @@ class GQLAccountMembership(TestCase):
         )
         self.assertEqual(data['createAccountMembership']['accountMembership']['dateStart'], variables['input']['dateStart'])
         self.assertEqual(data['createAccountMembership']['accountMembership']['note'], variables['input']['note'])
+
+
+    def test_create_membership_valid_3_days(self):
+        """ End date should be set 3 days from start """
+        query = self.membership_create_mutation
+
+        account = f.RegularUserFactory.create()
+        organization_membership = f.OrganizationMembershipFactory.create()
+        organization_membership.validity_unit = 'DAYS'
+        organization_membership.validity = 3
+        organization_membership.save()
+
+        variables = self.variables_create
+        variables['input']['account'] = to_global_id('AccountNode', account.id)
+        variables['input']['organizationMembership'] = to_global_id('OrganizationMembershipNode', organization_membership.id)
+
+        executed = execute_test_client_api_query(
+            query, 
+            self.admin_user, 
+            variables=variables
+        )
+        data = executed.get('data')
+
+        self.assertEqual(
+            data['createAccountMembership']['accountMembership']['dateEnd'], 
+            str(datetime.date(2019, 1, 1) + datetime.timedelta(days=2))
+        )
+
+
+    def test_create_membership_valid_2_weeks(self):
+        """ End date should be set 2 weeks from start """
+        query = self.membership_create_mutation
+
+        account = f.RegularUserFactory.create()
+        organization_membership = f.OrganizationMembershipFactory.create()
+        organization_membership.validity_unit = 'WEEKS'
+        organization_membership.validity = 2
+        organization_membership.save()
+
+        variables = self.variables_create
+        variables['input']['account'] = to_global_id('AccountNode', account.id)
+        variables['input']['organizationMembership'] = to_global_id('OrganizationMembershipNode', organization_membership.id)
+
+        executed = execute_test_client_api_query(
+            query, 
+            self.admin_user, 
+            variables=variables
+        )
+        data = executed.get('data')
+
+        self.assertEqual(
+            data['createAccountMembership']['accountMembership']['dateEnd'], 
+            str(datetime.date(2019, 1, 1) + datetime.timedelta(days=13))
+        )
+
+
+    def test_create_membership_valid_2_months(self):
+        """ End date should be set 2 weeks from start """
+        query = self.membership_create_mutation
+
+        account = f.RegularUserFactory.create()
+        organization_membership = f.OrganizationMembershipFactory.create()
+        organization_membership.validity_unit = 'MONTHS'
+        organization_membership.validity = 2
+        organization_membership.save()
+
+        variables = self.variables_create
+        variables['input']['account'] = to_global_id('AccountNode', account.id)
+        variables['input']['organizationMembership'] = to_global_id('OrganizationMembershipNode', organization_membership.id)
+
+        executed = execute_test_client_api_query(
+            query, 
+            self.admin_user, 
+            variables=variables
+        )
+        data = executed.get('data')
+
+        self.assertEqual(
+            data['createAccountMembership']['accountMembership']['dateEnd'], 
+            str(datetime.date(2019, 2, 28))
+        )
+
 
 
     def test_create_membership_anon_user(self):
