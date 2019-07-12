@@ -10,9 +10,9 @@ import { Link } from 'react-router-dom'
 import { Formik } from 'formik'
 import { toast } from 'react-toastify'
 
-import { GET_ACCOUNT_SUBSCRIPTIONS_QUERY, GET_INPUT_VALUES_QUERY } from './queries'
-import { SUBSCRIPTION_SCHEMA } from './yupSchema'
-import AccountSubscriptionForm from './AccountSubscriptionForm'
+import { GET_ACCOUNT_MEMBERSHIPS_QUERY, GET_INPUT_VALUES_QUERY } from './queries'
+import { MEMBERSHIP_SCHEMA } from './yupSchema'
+import AccountMembershipForm from './AccountMembershipForm'
 
 import {
   Page,
@@ -29,10 +29,10 @@ import { dateToLocalISO } from '../../../../tools/date_tools'
 import ProfileMenu from "../ProfileMenu"
 
 
-const CREATE_ACCOUNT_SUBSCRIPTION = gql`
-  mutation CreateAccountSubscription($input: CreateAccountSubscriptionInput!) {
-    createAccountSubscription(input: $input) {
-      accountSubscription {
+const CREATE_ACCOUNT_MEMBERSHIP = gql`
+  mutation CreateAccountMembership($input: CreateAccountMembershipInput!) {
+    createAccountMembership(input: $input) {
+      accountMembership {
         id
         account {
           id
@@ -40,7 +40,7 @@ const CREATE_ACCOUNT_SUBSCRIPTION = gql`
           lastName
           email
         }
-        organizationSubscription {
+        organizationMembership {
           id
           name
         }
@@ -50,18 +50,17 @@ const CREATE_ACCOUNT_SUBSCRIPTION = gql`
         }
         dateStart
         dateEnd
-        note
-        registrationFeePaid        
+        note     
       }
     }
   }
 `
 
 
-class AccountSubscriptionAdd extends Component {
+class AccountMembershipAdd extends Component {
   constructor(props) {
     super(props)
-    console.log("Account subscription add props:")
+    console.log("Account membership add props:")
     console.log(props)
   }
 
@@ -70,7 +69,7 @@ class AccountSubscriptionAdd extends Component {
     const history = this.props.history
     const match = this.props.match
     const account_id = match.params.account_id
-    const return_url = "/relations/accounts/" + account_id + "/subscriptions"
+    const return_url = "/relations/accounts/" + account_id + "/memberships"
 
     return (
       <SiteWrapper>
@@ -97,19 +96,19 @@ class AccountSubscriptionAdd extends Component {
                   <Grid.Col md={9}>
                   <Card>
                     <Card.Header>
-                      <Card.Title>{t('relations.account.subscriptions.title_add')}</Card.Title>
+                      <Card.Title>{t('relations.account.memberships.title_add')}</Card.Title>
                     </Card.Header>
-                      <Mutation mutation={CREATE_ACCOUNT_SUBSCRIPTION} onCompleted={() => history.push(return_url)}> 
-                      {(createSubscription, { data }) => (
+                      <Mutation mutation={CREATE_ACCOUNT_MEMBERSHIP} onCompleted={() => history.push(return_url)}> 
+                      {(createMembership, { data }) => (
                           <Formik
                               initialValues={{ 
-                                organizationSubscription: "",
+                                organizationMembership: "",
                                 financePaymentMethod: "",
                                 dateStart: new Date(),
                                 note: "",
                                 registrationFeePaid: false
                               }}
-                              validationSchema={SUBSCRIPTION_SCHEMA}
+                              validationSchema={MEMBERSHIP_SCHEMA}
                               onSubmit={(values, { setSubmitting }, errors) => {
                                   console.log('submit values:')
                                   console.log(values)
@@ -123,10 +122,10 @@ class AccountSubscriptionAdd extends Component {
                                     dateEnd = values.dateEnd
                                   }
 
-                                  createSubscription({ variables: {
+                                  createMembership({ variables: {
                                     input: {
                                       account: account_id, 
-                                      organizationSubscription: values.organizationSubscription,
+                                      organizationMembership: values.organizationMembership,
                                       financePaymentMethod: values.financePaymentMethod,
                                       dateStart: dateToLocalISO(values.dateStart),
                                       dateEnd: dateEnd,
@@ -134,11 +133,11 @@ class AccountSubscriptionAdd extends Component {
                                       registrationFeePaid: values.registrationFeePaid
                                     }
                                   }, refetchQueries: [
-                                      // {query: GET_SUBSCRIPTIONS_QUERY, variables: {archived: false, accountId: account_id}}
+                                      // {query: GET_MEMBERSHIPS_QUERY, variables: {archived: false, accountId: account_id}}
                                   ]})
                                   .then(({ data }) => {
                                       console.log('got data', data)
-                                      toast.success((t('relations.account.subscriptions.toast_add_success')), {
+                                      toast.success((t('relations.account.memberships.toast_add_success')), {
                                           position: toast.POSITION.BOTTOM_RIGHT
                                         })
                                     }).catch((error) => {
@@ -151,7 +150,7 @@ class AccountSubscriptionAdd extends Component {
                               }}
                               >
                               {({ isSubmitting, setFieldValue, setFieldTouched, errors, values }) => (
-                                <AccountSubscriptionForm
+                                <AccountMembershipForm
                                   inputData={inputData}
                                   isSubmitting={isSubmitting}
                                   setFieldValue={setFieldValue}
@@ -161,7 +160,7 @@ class AccountSubscriptionAdd extends Component {
                                   return_url={return_url}
                                 >
                                   {console.log(errors)}
-                                </AccountSubscriptionForm>
+                                </AccountMembershipForm>
                               )}
                           </Formik>
                       )}
@@ -170,14 +169,14 @@ class AccountSubscriptionAdd extends Component {
                   </Grid.Col>
                   <Grid.Col md={3}>
                     <HasPermissionWrapper permission="add"
-                                          resource="accountsubscription">
+                                          resource="accountmembership">
                       <Link to={return_url}>
                         <Button color="primary btn-block mb-6">
                           <Icon prefix="fe" name="chevrons-left" /> {t('general.back')}
                         </Button>
                       </Link>
                     </HasPermissionWrapper>
-                    <ProfileMenu active_link='subscriptions'/>
+                    <ProfileMenu active_link='memberships'/>
                   </Grid.Col>
                 </Grid.Row>
               </Container>
@@ -189,4 +188,4 @@ class AccountSubscriptionAdd extends Component {
   }
 
 
-export default withTranslation()(withRouter(AccountSubscriptionAdd))
+export default withTranslation()(withRouter(AccountMembershipAdd))

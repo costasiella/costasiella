@@ -71,12 +71,13 @@ import RelationsHome from './components/relations/home/RelationsHome'
 import RelationsAccounts from './components/relations/accounts/RelationsAccounts'
 import RelationsAccountAdd from './components/relations/accounts/RelationsAccountAdd'
 import RelationsAccountProfile from './components/relations/accounts/RelationsAccountProfile'
-import AccountSubscriptions from './components/relations/accounts/subscriptions/AccountSubscriptions'
-import AccountSubscriptionAdd from './components/relations/accounts/subscriptions/AccountSubscriptionAdd'
-import AccountSubscriptionEdit from './components/relations/accounts/subscriptions/AccountSubscriptionEdit'
 import AccountClasspasses from './components/relations/accounts/classpasses/AccountClasspasses'
 import AccountClasspassAdd from './components/relations/accounts/classpasses/AccountClasspassAdd'
 import AccountClasspassEdit from './components/relations/accounts/classpasses/AccountClasspassEdit'
+import AccountMembership from './components/relations/accounts/memberships/AccountMemberships'
+import AccountSubscriptions from './components/relations/accounts/subscriptions/AccountSubscriptions'
+import AccountSubscriptionAdd from './components/relations/accounts/subscriptions/AccountSubscriptionAdd'
+import AccountSubscriptionEdit from './components/relations/accounts/subscriptions/AccountSubscriptionEdit'
 
 import ScheduleHome from './components/schedule/home/ScheduleHome'
 import ScheduleClasses from './components/schedule/classes/ScheduleClasses'
@@ -190,12 +191,13 @@ class App extends Component {
             <Route exact path="/relations/accounts" component={RelationsAccounts} />
             <Route exact path="/relations/accounts/add" component={RelationsAccountAdd} />
             <Route exact path="/relations/accounts/:account_id/profile" component={RelationsAccountProfile} />
-            <Route exact path="/relations/accounts/:account_id/subscriptions" component={AccountSubscriptions} />
-            <Route exact path="/relations/accounts/:account_id/subscriptions/add" component={AccountSubscriptionAdd} />
-            <Route exact path="/relations/accounts/:account_id/subscriptions/edit/:id" component={AccountSubscriptionEdit} />
             <Route exact path="/relations/accounts/:account_id/classpasses" component={AccountClasspasses} />
             <Route exact path="/relations/accounts/:account_id/classpasses/add" component={AccountClasspassAdd} />
             <Route exact path="/relations/accounts/:account_id/classpasses/edit/:id" component={AccountClasspassEdit} />
+            <Route exact path="/relations/accounts/:account_id/memberships" component={AccountMemberships} />
+            <Route exact path="/relations/accounts/:account_id/subscriptions" component={AccountSubscriptions} />
+            <Route exact path="/relations/accounts/:account_id/subscriptions/add" component={AccountSubscriptionAdd} />
+            <Route exact path="/relations/accounts/:account_id/subscriptions/edit/:id" component={AccountSubscriptionEdit} />
             <Route exact path="/schedule" component={ScheduleHome} />
             <Route exact path="/schedule/classes" component={ScheduleClasses} />
             <Route exact path="/schedule/classes/add/" component={ScheduleClassAdd} />
