@@ -11,6 +11,7 @@ import HasPermissionWrapper from "../../HasPermissionWrapper"
 
 
 let profile_active
+let memberships_active
 let subscriptions_active
 let classpasses_active
 
@@ -18,6 +19,7 @@ let classpasses_active
 const ProfileMenu = ({ t, account_id, active_link }) => (
     <List.Group transparent={true}>
         {(active_link === 'profile') ? profile_active = true: profile_active = false}
+        {(active_link === 'memberships') ? memberships_active = true: memberships_active = false}
         {(active_link === 'subscriptions') ? subscriptions_active = true: subscriptions_active = false}
         {(active_link === 'classpasses') ? classpasses_active = true: classpasses_active = false}
         
@@ -31,6 +33,19 @@ const ProfileMenu = ({ t, account_id, active_link }) => (
             >
             {t('relations.accounts.profile')}
         </List.GroupItem>
+        <HasPermissionWrapper 
+            permission="view"
+            resource="accountmembership">
+            <List.GroupItem
+                key={v4()}
+                className="d-flex align-items-center"
+                to={"#/relations/accounts/" + account_id + "/memberships"}
+                icon="clipboard"
+                active={memberships_active}
+                >
+            {t('relations.account.memberships.title')}
+            </List.GroupItem>
+        </HasPermissionWrapper>
         <HasPermissionWrapper 
             permission="view"
             resource="accountsubscription">
