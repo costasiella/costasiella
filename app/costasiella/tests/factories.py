@@ -284,6 +284,18 @@ class AccountSubscriptionFactory(factory.DjangoModelFactory):
     note = "Subscription note here"
     registration_fee_paid = False
     
+
+class AccountMembershipFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.AccountMembership
+
+    account = factory.SubFactory(RegularUserFactory)
+    organization_membership = factory.SubFactory(OrganizationMembershipFactory)
+    finance_payment_method = factory.SubFactory(FinancePaymentMethodFactory)
+    date_start = datetime.date(2019, 1, 1)
+    date_end = datetime.date(2019, 12, 31)
+    note = "Membership note here"
+    
     
 class AccountClasspassFactory(factory.DjangoModelFactory):
     class Meta:
