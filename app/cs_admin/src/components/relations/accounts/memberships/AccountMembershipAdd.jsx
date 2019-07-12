@@ -106,7 +106,6 @@ class AccountMembershipAdd extends Component {
                                 financePaymentMethod: "",
                                 dateStart: new Date(),
                                 note: "",
-                                registrationFeePaid: false
                               }}
                               validationSchema={MEMBERSHIP_SCHEMA}
                               onSubmit={(values, { setSubmitting }, errors) => {
@@ -130,10 +129,9 @@ class AccountMembershipAdd extends Component {
                                       dateStart: dateToLocalISO(values.dateStart),
                                       dateEnd: dateEnd,
                                       note: values.note,
-                                      registrationFeePaid: values.registrationFeePaid
                                     }
                                   }, refetchQueries: [
-                                      // {query: GET_MEMBERSHIPS_QUERY, variables: {archived: false, accountId: account_id}}
+                                      {query: GET_ACCOUNT_MEMBERSHIPS_QUERY, variables: {archived: false, accountId: account_id}}
                                   ]})
                                   .then(({ data }) => {
                                       console.log('got data', data)

@@ -75,6 +75,7 @@ import AccountClasspasses from './components/relations/accounts/classpasses/Acco
 import AccountClasspassAdd from './components/relations/accounts/classpasses/AccountClasspassAdd'
 import AccountClasspassEdit from './components/relations/accounts/classpasses/AccountClasspassEdit'
 import AccountMemberships from './components/relations/accounts/memberships/AccountMemberships'
+import AccountMembershipAdd from './components/relations/accounts/memberships/AccountMembershipAdd'
 import AccountSubscriptions from './components/relations/accounts/subscriptions/AccountSubscriptions'
 import AccountSubscriptionAdd from './components/relations/accounts/subscriptions/AccountSubscriptionAdd'
 import AccountSubscriptionEdit from './components/relations/accounts/subscriptions/AccountSubscriptionEdit'
@@ -137,6 +138,8 @@ class App extends Component {
         <ApolloProvider client={client}>
           <Switch>
             <Route exact path="/" component={HomeHome} />
+            
+            {/* FINANCE */}
             <Route exact path="/finance" component={FinanceHome} />
             <Route exact path="/finance/costcenters" component={FinanceCostCenters} />
             <Route exact path="/finance/costcenters/add" component={FinanceCostCenterAdd} />
@@ -150,6 +153,8 @@ class App extends Component {
             <Route exact path="/finance/taxrates" component={FinanceTaxRates} />
             <Route exact path="/finance/taxrates/add" component={FinanceTaxRatesAdd} />
             <Route exact path="/finance/taxrates/edit/:id" component={FinanceTaxRatesEdit} />
+            
+            {/* ORGANIZATION */}
             <Route exact path="/organization" component={OrganizationHome} />
             <Route exact path="/organization/classpasses" component={OrganizationClasspasses} />
             <Route exact path="/organization/classpasses/add" component={OrganizationClasspassAdd} />
@@ -187,6 +192,8 @@ class App extends Component {
             <Route exact path="/organization/subscriptions/prices/:subscription_id" component={OrganizationSubscriptionsPrices} />
             <Route exact path="/organization/subscriptions/prices/add/:subscription_id" component={OrganizationSubscriptionPriceAdd} />
             <Route exact path="/organization/subscriptions/prices/edit/:subscription_id/:id" component={OrganizationSubscriptionPriceEdit} />
+
+            {/* RELATIONS */}
             <Route exact path="/relations" component={RelationsHome} />
             <Route exact path="/relations/accounts" component={RelationsAccounts} />
             <Route exact path="/relations/accounts/add" component={RelationsAccountAdd} />
@@ -195,9 +202,12 @@ class App extends Component {
             <Route exact path="/relations/accounts/:account_id/classpasses/add" component={AccountClasspassAdd} />
             <Route exact path="/relations/accounts/:account_id/classpasses/edit/:id" component={AccountClasspassEdit} />
             <Route exact path="/relations/accounts/:account_id/memberships" component={AccountMemberships} />
+            <Route exact path="/relations/accounts/:account_id/memberships/add" component={AccountMembershipAdd} />
             <Route exact path="/relations/accounts/:account_id/subscriptions" component={AccountSubscriptions} />
             <Route exact path="/relations/accounts/:account_id/subscriptions/add" component={AccountSubscriptionAdd} />
             <Route exact path="/relations/accounts/:account_id/subscriptions/edit/:id" component={AccountSubscriptionEdit} />
+
+            {/* SCHEDULE */}
             <Route exact path="/schedule" component={ScheduleHome} />
             <Route exact path="/schedule/classes" component={ScheduleClasses} />
             <Route exact path="/schedule/classes/add/" component={ScheduleClassAdd} />
