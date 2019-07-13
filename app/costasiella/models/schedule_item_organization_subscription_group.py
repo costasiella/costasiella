@@ -6,9 +6,9 @@ from .organization_subscription_group import OrganizationSubscriptionGroup
 class ScheduleItemOrganizationSubscriptionGroup(models.Model):
     schedule_item = models.ForeignKey(ScheduleItem, on_delete=models.CASCADE)
     organization_subscription_group = models.ForeignKey(OrganizationSubscriptionGroup, on_delete=models.CASCADE)
-    enroll = models.Boolean(default=False)
-    shop_book = models.Boolean(default=False)
-    attend = models.Boolean(default=False)
+    enroll = models.BooleanField(default=False)
+    shop_book = models.BooleanField(default=False)
+    attend = models.BooleanField(default=False)
     
 
     def __str__(self):
