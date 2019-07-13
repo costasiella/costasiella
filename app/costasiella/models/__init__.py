@@ -25,3 +25,4 @@ from .organization_subscription_price import OrganizationSubscriptionPrice
 
 from .schedule_item import ScheduleItem
 from .schedule_item_teacher import ScheduleItemTeacher
+from .schedule_item_organization_subscription_group import ScheduleItemOrganizationSubscriptionGroup
