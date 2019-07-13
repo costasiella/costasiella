@@ -6,6 +6,7 @@ from django.db import models
 from .organization_classtype import OrganizationClasstype
 from .organization_location_room import OrganizationLocationRoom
 from .organization_level import OrganizationLevel
+from .organization_subscription_group import OrganizationSubscriptionGroup
 
 # Create your models here.
 
@@ -51,6 +52,11 @@ class ScheduleItem(models.Model):
     time_start = models.TimeField()
     time_end = models.TimeField()
     display_public = models.BooleanField(default=False)
+    organization_subscription_groups = models.ManyToManyField(
+        OrganizationSubscriptionGroup, 
+        through='ScheduleItemOrganizationSubscriptionGroup', 
+        related_name='subscription_groups'
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
