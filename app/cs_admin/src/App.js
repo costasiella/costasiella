@@ -85,6 +85,7 @@ import ScheduleHome from './components/schedule/home/ScheduleHome'
 import ScheduleClasses from './components/schedule/classes/ScheduleClasses'
 import ScheduleClassAdd from './components/schedule/classes/ScheduleClassAdd'
 import ScheduleClassEditAll from './components/schedule/classes/all/edit/ScheduleClassEditAll'
+import ScheduleClassSubscriptions from './components/schedule/classes/all/subscriptions/ScheduleClassSubscriptions'
 import ScheduleClassTeachers from './components/schedule/classes/all/teachers/ScheduleClassTeachers'
 import ScheduleClassTeacherAdd from './components/schedule/classes/all/teachers/ScheduleClassTeacherAdd'
 import ScheduleClassTeacherEdit from './components/schedule/classes/all/teachers/ScheduleClassTeacherEdit'
@@ -214,6 +215,7 @@ class App extends Component {
             <Route exact path="/schedule/classes" component={ScheduleClasses} />
             <Route exact path="/schedule/classes/add/" component={ScheduleClassAdd} />
             <Route exact path="/schedule/classes/all/edit/:class_id/" component={ScheduleClassEditAll} />
+            <Route exact path="/schedule/classes/all/subscriptions/:class_id/" component={ScheduleClassSubscriptions} />
             <Route exact path="/schedule/classes/all/teachers/:class_id/" component={ScheduleClassTeachers} />
             <Route exact path="/schedule/classes/all/teachers/:class_id/add" component={ScheduleClassTeacherAdd} />
             <Route exact path="/schedule/classes/all/teachers/:class_id/edit/:id" component={ScheduleClassTeacherEdit} />

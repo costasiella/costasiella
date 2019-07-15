@@ -87,7 +87,7 @@ class ScheduleClassSubscriptions extends Component {
             })
   
             // Empty list
-            if (!data.scheduleItemSubscriptions.edges.length) { return (
+            if (!data.scheduleItemOrganizationSubscriptionGroups.edges.length) { return (
               <ClassEditBase menu_active_link="subscriptions" card_title={t('schedule.classes.subscriptions.title')} sidebar_button={ButtonAdd}>
                 <p>{t('schedule.classes.subscriptions.empty_list')}</p>
               </ClassEditBase>
@@ -103,24 +103,24 @@ class ScheduleClassSubscriptions extends Component {
                 <ContentCard 
                   cardTitle={t('schedule.classes.title_edit')}
                   // headerContent={headerOptions}
-                  pageInfo={data.scheduleItemSubscriptions.pageInfo}
+                  pageInfo={data.scheduleItemOrganizationSubscriptionGroups.pageInfo}
                   onLoadMore={() => {
                   fetchMore({
                     variables: {
-                      after: data.scheduleItemSubscriptions.pageInfo.endCursor
+                      after: data.scheduleItemOrganizationSubscriptionGroups.pageInfo.endCursor
                     },
                     updateQuery: (previousResult, { fetchMoreResult }) => {
-                      const newEdges = fetchMoreResult.scheduleItemSubscriptions.edges
-                      const pageInfo = fetchMoreResult.scheduleItemSubscriptions.pageInfo
+                      const newEdges = fetchMoreResult.scheduleItemOrganizationSubscriptionGroups.edges
+                      const pageInfo = fetchMoreResult.scheduleItemOrganizationSubscriptionGroups.pageInfo
   
                       return newEdges.length
                         ? {
                             // Put the new locations at the end of the list and update `pageInfo`
                             // so we have the new `endCursor` and `hasNextPage` values
                             data: { 
-                              scheduleItemSubscriptions: {
-                                __typename: previousResult.scheduleItemSubscriptions.__typename,
-                                edges: [ ...previousResult.scheduleItemSubscriptions.edges, ...newEdges ],
+                              scheduleItemOrganizationSubscriptionGroups: {
+                                __typename: previousResult.scheduleItemOrganizationSubscriptionGroups.__typename,
+                                edges: [ ...previousResult.scheduleItemOrganizationSubscriptionGroups.edges, ...newEdges ],
                                 pageInfo
                               }
                             }
