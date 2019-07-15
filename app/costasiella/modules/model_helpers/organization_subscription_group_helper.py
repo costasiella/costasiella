@@ -22,8 +22,6 @@ class OrganizationSubscriptionGroupHelper:
         for obj in schedule_items_already_added:
             if obj.schedule_item.id not in ids:
                 ids.append(obj.schedule_item.id)
-                
-        print(schedule_items_already_added)
 
         # Simple filter, don't filter on dates, as users might re-use old classes
         classes_filter = Q(schedule_item_type = 'CLASS') & ~Q(id__in=ids)
@@ -31,8 +29,6 @@ class OrganizationSubscriptionGroupHelper:
         schedule_items = ScheduleItem.objects.filter(
             classes_filter
         )
-
-        print(schedule_items)
 
         for schedule_item in schedule_items:
             schedule_item_organization_subscription_group = \
