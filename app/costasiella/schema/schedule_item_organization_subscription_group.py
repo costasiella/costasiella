@@ -66,6 +66,8 @@ class CreateScheduleItemOrganizationSubscriptionGroup(graphene.relay.ClientIDMut
             organization_subscription_group = organization_subscription_group,
         )
 
+        schedule_item_organization_subscription_group.save()
+
         return CreateScheduleItemOrganizationSubscriptionGroup(schedule_item_organization_subscription_group=schedule_item_organization_subscription_group)
 
 
@@ -83,6 +85,8 @@ class UpdateScheduleItemOrganizationSubscriptionGroup(graphene.relay.ClientIDMut
         user = info.context.user
         require_login_and_permission(user, 'costasiella.add_scheduleitemorganizationsubscriptiongroup')
 
+        print(input)
+
         rid = get_rid(input['id'])
         schedule_item_organization_subscription_group = ScheduleItemOrganizationSubscriptionGroup.objects.filter(id=rid.id).first()
         if not schedule_item_organization_subscription_group:
@@ -97,6 +101,8 @@ class UpdateScheduleItemOrganizationSubscriptionGroup(graphene.relay.ClientIDMut
 
         if 'attend' in input:
             schedule_item_organization_subscription_group.attend = input['attend']
+
+        schedule_item_organization_subscription_group.save()
 
         return UpdateScheduleItemOrganizationSubscriptionGroup(schedule_item_organization_subscription_group=schedule_item_organization_subscription_group)
 
@@ -127,6 +133,6 @@ class DeleteScheduleItemOrganizationSubscriptionGroup(graphene.relay.ClientIDMut
 
 
 class ScheduleItemOrganizationSubscriptionGroupMutation(graphene.ObjectType):
-    create_schedule_item_organization_subcription_group = CreateScheduleItemOrganizationSubscriptionGroup.Field()
-    update_schedule_item_organization_subcription_group = UpdateScheduleItemOrganizationSubscriptionGroup.Field()
-    delete_schedule_item_organization_subcription_group = DeleteScheduleItemOrganizationSubscriptionGroup.Field()
+    create_schedule_item_organization_subscription_group = CreateScheduleItemOrganizationSubscriptionGroup.Field()
+    update_schedule_item_organization_subscription_group = UpdateScheduleItemOrganizationSubscriptionGroup.Field()
+    delete_schedule_item_organization_subscription_group = DeleteScheduleItemOrganizationSubscriptionGroup.Field()

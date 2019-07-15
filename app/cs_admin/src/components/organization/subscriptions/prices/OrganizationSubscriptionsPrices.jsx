@@ -113,7 +113,7 @@ const OrganizationSubscriptionsPrices = ({ t, history, match, archived=false }) 
                 if (loading) return (
                   <ContentCard cardTitle={t('organization.subscription_prices.title')}>
                     <Dimmer active={true}
-                            loadder={true}>
+                            loader={true}>
                     </Dimmer>
                   </ContentCard>
                 )

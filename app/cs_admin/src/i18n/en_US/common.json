@@ -158,7 +158,10 @@
         "teacher_role": "Teacher role",
         "teacher2": "Teacher 2",
         "teacher_role2": "Teacher role 2",
-        "teacher_2": "Teacher 2"
+        "teacher_2": "Teacher 2",
+        "subscriptions": "Subscriptions",
+        "enroll": "Enroll",
+        "attend": "Attend"
     },
     "yup": {
         "min_len_3": "Please input at least 3 characters",
@@ -397,6 +400,16 @@
                 "delete_confirm_msg": "Are you sure you wish to delete this class pass and all associated data?",
                 "deleted": "Deleted class pass",
                 "add": "Add class pass"
+            },
+            "memberships": {
+                "title_add": "Add membership",
+                "toast_add_success": "Added membership",
+                "title_edit": "Edit membership",
+                "toast_edit_success": "Saved membership",
+                "title": "Memberships",
+                "delete_confirm_msg": "Are you sure you wish to delete this membership and all associated data?",
+                "deleted": "Deleted membership",
+                "add": "Add membership"
             }
         }
     },
@@ -447,6 +460,16 @@
                 "sub": "Substitute",
                 "assistant": "Assistant",
                 "karma": "Karma"
+            },
+            "subscriptions": {
+                "attend_disabled": "Can't change",
+                "add": "Add",
+                "title": "Subscriptions",
+                "error_loading": "Error loading subscriptions groups for this class :(",
+                "empty_list": "No subscription groups have been defined yet.",
+                "toast_edit_success": "Saved",
+                "shop_book": "Book in webshop",
+                "attend_disabled_help": "Attend has to be enabled when 'enroll' or 'book in webshop' is set."
             }
         }
     },

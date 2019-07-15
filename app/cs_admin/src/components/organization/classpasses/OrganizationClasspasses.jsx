@@ -65,7 +65,7 @@ const OrganizationClasspasses = ({ t, history, archived=false }) => (
                 if (loading) return (
                   <ContentCard cardTitle={t('organization.classpasses.title')}>
                     <Dimmer active={true}
-                            loadder={true}>
+                            loader={true}>
                     </Dimmer>
                   </ContentCard>
                 )

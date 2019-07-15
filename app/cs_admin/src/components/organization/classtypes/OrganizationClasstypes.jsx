@@ -53,7 +53,7 @@ const OrganizationClasstypes = ({ t, history, archived=false }) => (
                 if (loading) return (
                   <ContentCard cardTitle={t('organization.classtypes.title')}>
                     <Dimmer active={true}
-                            loadder={true}>
+                            loader={true}>
                     </Dimmer>
                   </ContentCard>
                 )

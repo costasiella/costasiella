@@ -54,7 +54,7 @@ const FinanceTaxRates = ({ t, history, archived=false }) => (
                 if (loading) return (
                   <ContentCard cardTitle={t('finance.taxrates.title')}>
                     <Dimmer active={true}
-                            loadder={true}>
+                            loader={true}>
                     </Dimmer>
                   </ContentCard>
                 )

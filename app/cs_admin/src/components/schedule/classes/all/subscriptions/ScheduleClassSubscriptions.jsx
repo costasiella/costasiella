@@ -7,7 +7,7 @@ import { v4 } from "uuid"
 import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
 import { Link } from 'react-router-dom'
-import moment from 'moment'
+import { Formik } from 'formik'
 
 import {
   Alert,
@@ -26,13 +26,23 @@ import HasPermissionWrapper from "../../../../HasPermissionWrapper"
 import { TimeStringToJSDateOBJ } from '../../../../../tools/date_tools'
 // import { confirmAlert } from 'react-confirm-alert'; // Import
 import { toast } from 'react-toastify'
-import { class_edit_all_subtitle, represent_subscription_role } from "../tools"
-import confirm_delete from "../../../../../tools/confirm_delete"
+import { class_edit_all_subtitle } from "../tools"
 
 import ContentCard from "../../../../general/ContentCard"
 import ClassEditBase from "../ClassEditBase"
+import ScheduleClassSubscriptionForm from "./ScheduleClassSubscriptionForm"
 
 import { GET_SCHEDULE_CLASS_SUBSCRIPTIONS_QUERY } from "./queries"
+
+const UPDATE_SCHEDULE_CLASS_SUBSCRIPTION = gql`
+  mutation UpdateScheduleItemOrganizationSubscriptionGroup($input: UpdateScheduleItemOrganizationSubscriptionGroupInput!) {
+    updateScheduleItemOrganizationSubscriptionGroup(input:$input) {
+      scheduleItemOrganizationSubscriptionGroup {
+        id
+      } 
+    }
+  }
+`
 
 
 class ScheduleClassSubscriptions extends Component {
@@ -144,42 +154,63 @@ class ScheduleClassSubscriptions extends Component {
                             <Table.Col key={v4()}> 
                               {node.organizationSubscriptionGroup.name}
                             </Table.Col>
-                            {/* <Table.Col className="text-right" key={v4()}>
-                              <Button className='btn-sm' 
-                                      onClick={() => history.push("/schedule/classes/all/subscriptions/" + match.params.class_id + '/edit/' + node.id)}
-                                      color="secondary">
-                                {t('general.edit')}
-                              </Button>
-                            </Table.Col> */}
-                            {/* <Mutation mutation={DELETE_SCHEDULE_CLASS_TEACHER} key={v4()}>
-                              {(deleteScheduleItemSubscription, { data }) => (
-                                <Table.Col className="text-right" key={v4()}>
-                                  <button className="icon btn btn-link btn-sm" 
-                                      title={t('general.delete')} 
-                                      href=""
-                                      onClick={() => {
-                                        confirm_delete({
-                                          t: t,
-                                          msgConfirm: t('schedule.classes.subscriptions.delete_confirm_msg'),
-                                          msgDescription: <p>{t('schedule.classes.subscriptions.delete_confirm_description')}</p>,
-                                          msgSuccess: t('schedule.classes.subscriptions.deleted'),
-                                          deleteFunction: deleteScheduleItemSubscription,
-                                          functionVariables: { variables: {
-                                            input: {
-                                              id: node.id
-                                            }
-                                          }, refetchQueries: [
-                                            {query: GET_SCHEDULE_CLASS_TEACHERS_QUERY, variables: { scheduleItem: match.params.class_id }}
-                                          ]}
-                                      })}}
-                                  >
-                                    <span className="text-red">
-                                      <Icon prefix="fe" name="trash-2" />
-                                    </span>
-                                  </button>
-                                </Table.Col>
+                            <Table.Col>
+                            <Mutation mutation={UPDATE_SCHEDULE_CLASS_SUBSCRIPTION}> 
+                              {(updateScheduleClassSubscription, { data }) => (
+                                <Formik
+                                    initialValues={{  
+                                      enroll: node.enroll,
+                                      shopBook: node.shopBook,
+                                      attend: node.attend
+                                    }}
+                                    // validationSchema={SCHEDULE_CLASS_TEACHER_SCHEMA}
+                                    onSubmit={(values, { setSubmitting }) => {
+                                        console.log(values)
+
+                                        updateScheduleClassSubscription({ variables: {
+                                          input: {
+                                            id: node.id,
+                                            enroll: values.enroll,
+                                            shopBook: values.shopBook,
+                                            attend: values.attend
+                                          }
+                                        }, refetchQueries: [
+                                            // {query: GET_SCHEDULE_CLASS_TEACHERS_QUERY, variables: { scheduleItem: match.params.class_id }},
+                                            // {query: GET_SUBSCRIPTIONS_QUERY, variables: {"archived": false }},
+                                        ]})
+                                        .then(({ data }) => {
+                                            console.log('got data', data);
+                                            toast.success((t('schedule.classes.subscriptions.toast_edit_success')), {
+                                                position: toast.POSITION.BOTTOM_RIGHT
+                                              })
+                                            setSubmitting(false)
+                                          }).catch((error) => {
+                                            toast.error((t('general.toast_server_error')) + ': ' +  error, {
+                                                position: toast.POSITION.BOTTOM_RIGHT
+                                              })
+                                            console.log('there was an error sending the query', error)
+                                            setSubmitting(false)
+                                          })
+                                    }}
+                                    >
+                                    {({ isSubmitting, errors, values, setFieldTouched, setFieldValue, submitForm }) => (
+                                      <ScheduleClassSubscriptionForm
+                                        isSubmitting={isSubmitting}
+                                        setFieldTouched={setFieldTouched}
+                                        setFieldValue={setFieldValue}
+                                        errors={errors}
+                                        values={values}
+                                        submitForm={submitForm}
+                                      >
+                                        {console.log(errors)}
+                                        {console.log(values)}
+                                        test
+                                      </ScheduleClassSubscriptionForm>
+                                    )}
+                                </Formik>
                               )}
-                            </Mutation> */}
+                            </Mutation>
+                            </Table.Col>
                           </Table.Row>
                         ))}
                       </Table.Body>

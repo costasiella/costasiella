@@ -158,7 +158,10 @@
         "teacher_role": "__STRING_NOT_TRANSLATED__",
         "teacher2": "__STRING_NOT_TRANSLATED__",
         "teacher_role2": "__STRING_NOT_TRANSLATED__",
-        "teacher_2": "__STRING_NOT_TRANSLATED__"
+        "teacher_2": "__STRING_NOT_TRANSLATED__",
+        "subscriptions": "__STRING_NOT_TRANSLATED__",
+        "enroll": "__STRING_NOT_TRANSLATED__",
+        "attend": "__STRING_NOT_TRANSLATED__"
     },
     "yup": {
         "min_len_3": "__STRING_NOT_TRANSLATED__",
@@ -397,6 +400,16 @@
                 "delete_confirm_msg": "__STRING_NOT_TRANSLATED__",
                 "deleted": "__STRING_NOT_TRANSLATED__",
                 "add": "__STRING_NOT_TRANSLATED__"
+            },
+            "memberships": {
+                "title_add": "__STRING_NOT_TRANSLATED__",
+                "toast_add_success": "__STRING_NOT_TRANSLATED__",
+                "title_edit": "__STRING_NOT_TRANSLATED__",
+                "toast_edit_success": "__STRING_NOT_TRANSLATED__",
+                "title": "__STRING_NOT_TRANSLATED__",
+                "delete_confirm_msg": "__STRING_NOT_TRANSLATED__",
+                "deleted": "__STRING_NOT_TRANSLATED__",
+                "add": "__STRING_NOT_TRANSLATED__"
             }
         }
     },
@@ -447,6 +460,16 @@
                 "sub": "__STRING_NOT_TRANSLATED__",
                 "assistant": "__STRING_NOT_TRANSLATED__",
                 "karma": "__STRING_NOT_TRANSLATED__"
+            },
+            "subscriptions": {
+                "attend_disabled": "__STRING_NOT_TRANSLATED__",
+                "add": "__STRING_NOT_TRANSLATED__",
+                "title": "__STRING_NOT_TRANSLATED__",
+                "error_loading": "__STRING_NOT_TRANSLATED__",
+                "empty_list": "__STRING_NOT_TRANSLATED__",
+                "toast_edit_success": "__STRING_NOT_TRANSLATED__",
+                "shop_book": "__STRING_NOT_TRANSLATED__",
+                "attend_disabled_help": "__STRING_NOT_TRANSLATED__"
             }
         }
     },
