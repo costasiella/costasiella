@@ -63,8 +63,6 @@ class CreateOrganizationSubscriptionGroup(graphene.relay.ClientIDMutation):
         helper = OrganizationSubscriptionGroupHelper()
         helper.add_to_all_classes(organization_subscription_group.id)
 
-
-
         return CreateOrganizationSubscriptionGroup(organization_subscription_group=organization_subscription_group)
 
 
