@@ -1,6 +1,4 @@
-from django.utils import timezone
 from django.db.models import Q
-
 
 from ...models import OrganizationSubscriptionGroup, ScheduleItem, ScheduleItemOrganizationSubscriptionGroup
 
@@ -10,8 +8,6 @@ class OrganizationSubscriptionGroupHelper:
         """
         Add a new organization subscription group to all classes
         """
-        now = timezone.now()
-
         # Get all classes to which this group is added
         schedule_items_already_added = ScheduleItemOrganizationSubscriptionGroup.objects.filter(
             organization_subscription_group = organization_subscription_group_id
@@ -40,3 +36,12 @@ class OrganizationSubscriptionGroupHelper:
                 )
             schedule_item_organization_subscription_group.save()
 
+    
+    def remove_from_all_classes(self, organization_subscription_group_id):
+        """
+        Remove an organization subscription group from all classes when archived
+        """
+        ScheduleItemOrganizationSubscriptionGroup.objects.filter(
+            Q(organization_subscription_group = organization_subscription_group_id)
+        ).delete()
+    

@@ -111,6 +111,14 @@ class ArchiveOrganizationSubscriptionGroup(graphene.relay.ClientIDMutation):
         organization_subscription_group.archived = input['archived']
         organization_subscription_group.save(force_update=True)
 
+        # Add (un-archive) or remove (archive) from all classes
+        helper = OrganizationSubscriptionGroupHelper()
+        if organization_subscription_group.archived:
+            helper.remove_from_all_classes(organization_subscription_group.id)
+        else:
+            helper.add_to_all_classes(organization_subscription_group.id)
+            
+
         return ArchiveOrganizationSubscriptionGroup(organization_subscription_group=organization_subscription_group)
 
 
