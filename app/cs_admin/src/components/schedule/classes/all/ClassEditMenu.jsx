@@ -11,11 +11,13 @@ import {
 // import HasPermissionWrapper from "../HasPermissionWrapper"
 
 let edit_active
+let subscriptions_active
 let teachers_active
 
 const ClassEditMenu = ({ t, active_link, classId }) => (
     <List.Group transparent={true}>
         {(active_link === 'edit') ? edit_active = true: edit_active = false}
+        {(active_link === 'subscriptions') ? subscriptions_active = true: subscriptions_active = false}
         {(active_link === 'teachers') ? teachers_active = true: teachers_active = false}
         
 
@@ -36,6 +38,15 @@ const ClassEditMenu = ({ t, active_link, classId }) => (
             active={teachers_active}
             >
             {t('general.teachers')}
+        </List.GroupItem>
+        <List.GroupItem
+            key={v4()}
+            className="d-flex align-items-center"
+            to={"#/schedule/classes/all/subscriptions/" + classId}
+            icon="edit"
+            active={subscriptions_active}
+            >
+            {t('general.subscriptions')}
         </List.GroupItem>
     </List.Group>
 );
