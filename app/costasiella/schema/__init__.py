@@ -27,7 +27,7 @@ from .organization_subscription_group_subscription import OrganizationSubscripti
 from .organization_subscription_price import OrganizationSubscriptionPriceQuery, OrganizationSubscriptionPriceMutation
 
 from .schedule_item import ScheduleItemQuery, ScheduleItemMutation
-from .schedule_item_organization_subscription_group import ScheduleItemOrganizationSubscriptionGroupMutation
+from .schedule_item_organization_subscription_group import ScheduleItemOrganizationSubscriptionGroupQuery, ScheduleItemOrganizationSubscriptionGroupMutation
 from .schedule_item_teacher import ScheduleItemTeacherQuery, ScheduleItemTeacherMutation
 
 
@@ -52,6 +52,7 @@ class Query(AccountQuery,
             OrganizationSubscriptionGroupQuery,
             OrganizationSubscriptionPriceQuery,
             ScheduleItemQuery,
+            ScheduleItemOrganizationSubscriptionGroupQuery,
             ScheduleItemTeacherQuery,
             graphene.ObjectType):
     node = graphene.relay.Node.Field()

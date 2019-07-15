@@ -1,29 +1,27 @@
 import gql from "graphql-tag"
 
-export const GET_SCHEDULE_CLASS_TEACHERS_QUERY = gql`
-  query ScheduleItemTeachers($after: String, $before: String, $scheduleItem: ID!) {
-    scheduleItemTeachers(first: 15, before: $before, after: $after, scheduleItem: $scheduleItem) {
+export const GET_SCHEDULE_CLASS_SUBSCRIPTIONS_QUERY = gql`
+  query ScheduleItemOrganizationSubscriptionGroups($after: String, $before: String, $scheduleItem: ID!) {
+    scheduleItemOrganizationSubscriptionGroups(before: $before, after: $after, scheduleItem:$scheduleItem) {
       pageInfo {
-        startCursor
-        endCursor
         hasNextPage
         hasPreviousPage
+        startCursor
+        endCursor
       }
       edges {
         node {
           id
-          account {
+          scheduleItem {
             id
-            fullName
           }
-          role
-          account2 {
+          organizationSubscriptionGroup {
             id
-            fullName
+            name
           }
-          role2
-          dateStart
-          dateEnd       
+          enroll
+          shopBook
+          attend
         }
       }
     }

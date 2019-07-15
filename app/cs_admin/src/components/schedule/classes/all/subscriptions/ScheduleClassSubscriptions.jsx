@@ -32,7 +32,7 @@ import confirm_delete from "../../../../../tools/confirm_delete"
 import ContentCard from "../../../../general/ContentCard"
 import ClassEditBase from "../ClassEditBase"
 
-import { GET_SCHEDULE_CLASS_TEACHERS_QUERY } from "./queries"
+import { GET_SCHEDULE_CLASS_SUBSCRIPTIONS_QUERY } from "./queries"
 
 
 class ScheduleClassSubscriptions extends Component {
@@ -61,7 +61,7 @@ class ScheduleClassSubscriptions extends Component {
       <div className="my-3 my-md-5">
         {console.log('ID here:')}
         {console.log(classId)}
-        <Query query={GET_SCHEDULE_CLASS_TEACHERS_QUERY} variables={{ scheduleItem: classId }}>
+        <Query query={GET_SCHEDULE_CLASS_SUBSCRIPTIONS_QUERY} variables={{ scheduleItem: classId }}>
           {({ loading, error, data, refetch, fetchMore }) => {
   
             // Loading
@@ -76,19 +76,6 @@ class ScheduleClassSubscriptions extends Component {
                 <p>{t('schedule.classes.subscriptions.error_loading')}</p>
               </ClassEditBase>
             )
-            // const headerOptions = <Card.Options>
-            //   <Button color={(!archived) ? 'primary': 'secondary'}  
-            //           size="sm"
-            //           onClick={() => {archived=false; refetch({archived});}}>
-            //     {t('general.current')}
-            //   </Button>
-            //   <Button color={(archived) ? 'primary': 'secondary'} 
-            //           size="sm" 
-            //           className="ml-2" 
-            //           onClick={() => {archived=true; refetch({archived});}}>
-            //     {t('general.archive')}
-            //   </Button>
-            // </Card.Options>
   
             const initialTimeStart = TimeStringToJSDateOBJ(data.scheduleItem.timeStart)
             const subtitle = class_edit_all_subtitle({
@@ -146,47 +133,24 @@ class ScheduleClassSubscriptions extends Component {
                     <Table>
                       <Table.Header>
                         <Table.Row>
-                          <Table.ColHeader>{t('general.date_start')}</Table.ColHeader>
-                          <Table.ColHeader>{t('general.date_end')}</Table.ColHeader>
                           <Table.ColHeader>{t('general.subscription')}</Table.ColHeader>
-                          <Table.ColHeader>{t('general.subscription_2')}</Table.ColHeader>
-                          <Table.ColHeader></Table.ColHeader>
                           <Table.ColHeader></Table.ColHeader>
                         </Table.Row>
                       </Table.Header>
                       <Table.Body>
-                        {data.scheduleItemSubscriptions.edges.map(({ node }) => (
+                        {data.scheduleItemOrganizationSubscriptionGroups.edges.map(({ node }) => (
                           <Table.Row key={v4()}>
                             {console.log(node)}
                             <Table.Col key={v4()}> 
-                              {moment(node.dateStart).format('LL')}
+                              {node.organizationSubscriptionGroup.name}
                             </Table.Col>
-                            <Table.Col key={v4()}> 
-                              {(node.dateEnd) ? moment(node.dateEnd).format('LL') : ""}
-                            </Table.Col>
-                            <Table.Col>
-                              {node.account.fullName} <br />
-                              <span className="text-muted">
-                                {represent_subscription_role(t, node.role)}
-                              </span>
-                            </Table.Col>
-                            <Table.Col>
-                              {node.account2 ?
-                                <span>
-                                  {node.account2.fullName} <br />
-                                  <span className="text-muted">
-                                    {represent_subscription_role(t, node.role2)}
-                                  </span>
-                                </span> : ""
-                              }
-                            </Table.Col>
-                            <Table.Col className="text-right" key={v4()}>
+                            {/* <Table.Col className="text-right" key={v4()}>
                               <Button className='btn-sm' 
                                       onClick={() => history.push("/schedule/classes/all/subscriptions/" + match.params.class_id + '/edit/' + node.id)}
                                       color="secondary">
                                 {t('general.edit')}
                               </Button>
-                            </Table.Col>
+                            </Table.Col> */}
                             {/* <Mutation mutation={DELETE_SCHEDULE_CLASS_TEACHER} key={v4()}>
                               {(deleteScheduleItemSubscription, { data }) => (
                                 <Table.Col className="text-right" key={v4()}>
