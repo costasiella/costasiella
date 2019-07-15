@@ -524,6 +524,9 @@ class GQLScheduleClass(TestCase):
         self.assertEqual(data['createScheduleClass']['scheduleItem']['displayPublic'], variables['input']['displayPublic'])
 
 
+    #TODO: test adding all non-archived subscription groups on create
+
+
     def test_create_scheduleclass_anon_user(self):
         """ Don't allow creating scheduleclasses for non-logged in users """
         query = self.scheduleclass_create_mutation

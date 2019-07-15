@@ -254,6 +254,9 @@ mutation ArchiveOrganizationSubscriptionGroup($input: ArchiveOrganizationSubscri
         self.assertEqual(data['createOrganizationSubscriptionGroup']['organizationSubscriptionGroup']['archived'], False)
 
 
+    #TODO: Test adding to all schedule_items on creation
+
+
     def test_create_subscriptiongroup_anon_user(self):
         """ Create a subscriptiongroup with anonymous user, check error message """
         query = self.subscriptiongroup_create_mutation
@@ -395,6 +398,9 @@ mutation ArchiveOrganizationSubscriptionGroup($input: ArchiveOrganizationSubscri
         )
         data = executed.get('data')
         self.assertEqual(data['archiveOrganizationSubscriptionGroup']['organizationSubscriptionGroup']['archived'], variables['input']['archived'])
+
+
+    #TODO: Test add / remove from all schedule items when unarchiving/archiving
 
 
     def test_archive_subscriptiongroup_anon_user(self):
