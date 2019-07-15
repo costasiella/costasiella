@@ -34,7 +34,7 @@ class OrganizationSubscriptionGroupHelper:
             schedule_item_organization_subscription_group = \
                 ScheduleItemOrganizationSubscriptionGroup(
                     schedule_item = schedule_item,
-                    organization_subscription_group = OrganizationSubscriptionGroup(organization_subscription_group_id)
+                    organization_subscription_group = OrganizationSubscriptionGroup.objects.get(id=organization_subscription_group_id)
                 )
             schedule_item_organization_subscription_group.save()
 
