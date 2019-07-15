@@ -2,6 +2,12 @@ from django.db.models import Q
 
 from ...models import OrganizationSubscriptionGroup, ScheduleItem, ScheduleItemOrganizationSubscriptionGroup
 
+"""
+This helper file is added to allow function to add / remove a group for all schedule items
+OrganizationSubscriptionGroup is already imported in the ScheduleItem model. Importing the
+Schedule item model in OrganizationSubscription group generates an error.
+"""
+
 
 class OrganizationSubscriptionGroupHelper:
     def add_to_all_classes(self, organization_subscription_group_id):
