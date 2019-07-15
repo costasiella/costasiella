@@ -63,7 +63,6 @@ class BaseEncryptedField(models.Field):
         super(BaseEncryptedField, self).__init__(*args, **kwargs)
 
     # def calculate_crypt_max_length(self, unencrypted_length):
-    #     # TODO: Re-examine if this logic will actually make a large-enough
     #     # max-length for unicode strings that have non-ascii characters in them.
     #     # UTF-8 Characters can use 1 - 4 bytes for a character. 
     #     # In general a textfield might be preferrable, as the encrypted value can be 

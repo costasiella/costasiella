@@ -26,7 +26,7 @@ import HasPermissionWrapper from "../../HasPermissionWrapper"
 
 import OrganizationMenu from "../OrganizationMenu"
 
-//TODO: Add and delete group pass mutations
+
 const ADD_CARD_TO_GROUP = gql`
   mutation AddCardToGroup($input: CreateOrganizationSubscriptionGroupSubscriptionInput!) {
     createOrganizationSubscriptionGroupSubscription(input:$input) {
