@@ -65,7 +65,6 @@ class ScheduleItem(models.Model):
     
 
 
-
 # def define_schedule():
 #     schedule_types = [
 #         ('appointment', T("Appointment"))

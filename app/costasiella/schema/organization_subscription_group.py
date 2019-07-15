@@ -8,6 +8,7 @@ from graphql import GraphQLError
 from ..models import OrganizationSubscriptionGroup
 from ..modules.gql_tools import require_login_and_permission, get_rid
 from ..modules.messages import Messages
+from ..modules.model_helpers.organization_subscription_group_helper import OrganizationSubscriptionGroupHelper
 
 m = Messages()
 
@@ -59,6 +60,10 @@ class CreateOrganizationSubscriptionGroup(graphene.relay.ClientIDMutation):
         )
 
         organization_subscription_group.save()
+        helper = OrganizationSubscriptionGroupHelper()
+        helper.add_to_all_classes(organization_subscription_group.id)
+
+
 
         return CreateOrganizationSubscriptionGroup(organization_subscription_group=organization_subscription_group)
 
