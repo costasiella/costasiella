@@ -68,22 +68,13 @@ class GQLScheduleItemOrganizationSubscriptionGroup(TestCase):
 '''
 
         self.schedule_item_organization_subscription_group_update_mutation = '''
-  mutation UpdateScheduleItemTeacher($input: UpdateScheduleItemTeacherInput!) {
-    updateScheduleItemTeacher(input:$input) {
-      scheduleItemTeacher {
+  mutation UpdateScheduleItemOrganizationSubscriptionGroup($input: UpdateScheduleItemOrganizationSubscriptionGroupInput!) {
+    updateScheduleItemOrganizationSubscriptionGroup(input:$input) {
+      scheduleItemOrganizationSubscriptionGroup {
         id
-        account {
-          id
-          fullName
-        }
-        role
-        account2 {
-          id
-          fullName
-        }
-        role2
-        dateStart
-        dateEnd       
+        enroll
+        shopBook
+        attend     
       }
     }
   }
@@ -96,7 +87,7 @@ class GQLScheduleItemOrganizationSubscriptionGroup(TestCase):
 
     def test_query(self):
         """ Query list of schedule item organization_subscription_groups """
-        schedule_item_organization_subscription_group = f.ScheduleItemTeacherFactory.create()
+        schedule_item_organization_subscription_group = f.ScheduleItemOrganizationSubscriptionGroupDenyFactory.create()
 
         query = self.schedule_item_organization_subscription_groups_query
         variables = {
@@ -107,236 +98,157 @@ class GQLScheduleItemOrganizationSubscriptionGroup(TestCase):
         data = executed.get('data')
 
         self.assertEqual(
-          data['scheduleItemTeachers']['edges'][0]['node']['account']['id'],
-          to_global_id('AccountNode', schedule_item_organization_subscription_group.account.pk)
+          data['scheduleItemOrganizationSubscriptionGroups']['edges'][0]['node']['scheduleItem']['id'],
+          to_global_id('ScheduleItemNode', schedule_item_organization_subscription_group.schedule_item.pk)
         )
-        self.assertEqual(data['scheduleItemTeachers']['edges'][0]['node']['role'], schedule_item_organization_subscription_group.role)
         self.assertEqual(
-          data['scheduleItemTeachers']['edges'][0]['node']['account2']['id'],
-          to_global_id('AccountNode', schedule_item_organization_subscription_group.account_2.pk)
+          data['scheduleItemOrganizationSubscriptionGroups']['edges'][0]['node']['organizationSubscriptionGroup']['id'],
+          to_global_id('OrganizationSubscriptionGroupNode', schedule_item_organization_subscription_group.organization_subscription_group.pk)
         )
-        self.assertEqual(data['scheduleItemTeachers']['edges'][0]['node']['role2'], schedule_item_organization_subscription_group.role_2)
-        self.assertEqual(data['scheduleItemTeachers']['edges'][0]['node']['dateStart'], str(schedule_item_organization_subscription_group.date_start))
-        self.assertEqual(data['scheduleItemTeachers']['edges'][0]['node']['dateEnd'], schedule_item_organization_subscription_group.date_end)
+        self.assertEqual(data['scheduleItemOrganizationSubscriptionGroups']['edges'][0]['node']['enroll'], schedule_item_organization_subscription_group.enroll)
+        self.assertEqual(data['scheduleItemOrganizationSubscriptionGroups']['edges'][0]['node']['shopBook'], schedule_item_organization_subscription_group.shop_book)
+        self.assertEqual(data['scheduleItemOrganizationSubscriptionGroups']['edges'][0]['node']['attend'], schedule_item_organization_subscription_group.attend)
 
 
-    def test_query_permision_denied(self):
-        """ Query list of schedule item organization_subscription_groups """
-        schedule_item_organization_subscription_group = f.ScheduleItemTeacherFactory.create()
+    # def test_query_permision_denied(self):
+    #     """ Query list of schedule item organization_subscription_groups """
+    #     schedule_item_organization_subscription_group = f.ScheduleItemOrganizationSubscriptionGroupFactory.create()
 
-        query = self.schedule_item_organization_subscription_groups_query
-        variables = {
-            'scheduleItem': to_global_id('ScheduleItemNode', schedule_item_organization_subscription_group.schedule_item.pk)
-        }
+    #     query = self.schedule_item_organization_subscription_groups_query
+    #     variables = {
+    #         'scheduleItem': to_global_id('ScheduleItemNode', schedule_item_organization_subscription_group.schedule_item.pk)
+    #     }
 
-        # Create regular user
-        user = f.RegularUserFactory.create()
-        executed = execute_test_client_api_query(query, user, variables=variables)
-        errors = executed.get('errors')
+    #     # Create regular user
+    #     user = f.RegularUserFactory.create()
+    #     executed = execute_test_client_api_query(query, user, variables=variables)
+    #     errors = executed.get('errors')
 
-        self.assertEqual(errors[0]['message'], 'Permission denied!')
-
-
-    def test_query_permision_granted(self):
-        """ Query list of schedule item organization_subscription_groups """
-        schedule_item_organization_subscription_group = f.ScheduleItemTeacherFactory.create()
-
-        query = self.schedule_item_organization_subscription_groups_query
-        variables = {
-            'scheduleItem': to_global_id('ScheduleItemNode', schedule_item_organization_subscription_group.schedule_item.pk)
-        }
-
-        # Create regular user
-        user = f.RegularUserFactory.create()
-        permission = Permission.objects.get(codename='view_scheduleitemorganizationsubscriptiongroup')
-        user.user_permissions.add(permission)
-        user.save()
-
-        executed = execute_test_client_api_query(query, user, variables=variables)
-        data = executed.get('data')
-
-        self.assertEqual(
-          data['scheduleItemTeachers']['edges'][0]['node']['account']['id'],
-          to_global_id('AccountNode', schedule_item_organization_subscription_group.account.pk)
-        )
+    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
-    def test_query_anon_user(self):
-        """ Query list of schedule item organization_subscription_groups """
-        schedule_item_organization_subscription_group = f.ScheduleItemTeacherFactory.create()
+    # def test_query_permision_granted(self):
+    #     """ Query list of schedule item organization_subscription_groups """
+    #     schedule_item_organization_subscription_group = f.ScheduleItemOrganizationSubscriptionGroupFactory.create()
 
-        query = self.schedule_item_organization_subscription_groups_query
-        variables = {
-            'scheduleItem': to_global_id('ScheduleItemNode', schedule_item_organization_subscription_group.schedule_item.pk)
-        }
+    #     query = self.schedule_item_organization_subscription_groups_query
+    #     variables = {
+    #         'scheduleItem': to_global_id('ScheduleItemNode', schedule_item_organization_subscription_group.schedule_item.pk)
+    #     }
 
-        executed = execute_test_client_api_query(query, self.anon_user, variables=variables)
-        errors = executed.get('errors')
-        self.assertEqual(errors[0]['message'], 'Not logged in!')
+    #     # Create regular user
+    #     user = f.RegularUserFactory.create()
+    #     permission = Permission.objects.get(codename='view_scheduleitemorganizationsubscriptiongroup')
+    #     user.user_permissions.add(permission)
+    #     user.save()
 
+    #     executed = execute_test_client_api_query(query, user, variables=variables)
+    #     data = executed.get('data')
 
-    def test_update_schedule_item_organization_subscription_group(self):
-        """ Update schedule item organization_subscription_group """
-        schedule_item_organization_subscription_group = f.ScheduleItemTeacherFactory.create()
-
-        query = self.schedule_item_organization_subscription_group_update_mutation
-        variables = self.variables_update
-        variables['input']['id'] = to_global_id('ScheduleItemTeacherNode', schedule_item_organization_subscription_group.pk)
-        variables['input']['account'] = to_global_id('AccountNode', schedule_item_organization_subscription_group.account_2.pk)
-        variables['input']['account2'] = to_global_id('AccountNode', schedule_item_organization_subscription_group.account.pk)
-
-        executed = execute_test_client_api_query(
-            query, 
-            self.admin_user, 
-            variables=variables
-        )
-
-        data = executed.get('data')
-        self.assertEqual(data['updateScheduleItemTeacher']['scheduleItemTeacher']['account']['id'], variables['input']['account'])
-        self.assertEqual(data['updateScheduleItemTeacher']['scheduleItemTeacher']['role'], variables['input']['role'])
-        self.assertEqual(data['updateScheduleItemTeacher']['scheduleItemTeacher']['account2']['id'], variables['input']['account2'])
-        self.assertEqual(data['updateScheduleItemTeacher']['scheduleItemTeacher']['role2'], variables['input']['role2'])
-        self.assertEqual(data['updateScheduleItemTeacher']['scheduleItemTeacher']['dateStart'], variables['input']['dateStart'])
-        self.assertEqual(data['updateScheduleItemTeacher']['scheduleItemTeacher']['dateEnd'], variables['input']['dateEnd'])
+    #     self.assertEqual(
+    #       data['scheduleItemOrganizationSubscriptionGroups']['edges'][0]['node']['account']['id'],
+    #       to_global_id('AccountNode', schedule_item_organization_subscription_group.account.pk)
+    #     )
 
 
-    def test_update_schedule_item_organization_subscription_group_anon_user(self):
-        """ Don't allow updating schedule item organization_subscription_groups for non-logged in users """
-        schedule_item_organization_subscription_group = f.ScheduleItemTeacherFactory.create()
-        query = self.schedule_item_organization_subscription_group_update_mutation
-        variables = self.variables_update
-        variables['input']['id'] = to_global_id('ScheduleItemTeacherNode', schedule_item_organization_subscription_group.pk)
-        variables['input']['account'] = to_global_id('AccountNode', schedule_item_organization_subscription_group.account_2.pk)
+    # def test_query_anon_user(self):
+    #     """ Query list of schedule item organization_subscription_groups """
+    #     schedule_item_organization_subscription_group = f.ScheduleItemOrganizationSubscriptionGroupFactory.create()
 
-        executed = execute_test_client_api_query(
-            query, 
-            self.anon_user, 
-            variables=variables
-        )
-        data = executed.get('data')
-        errors = executed.get('errors')
-        self.assertEqual(errors[0]['message'], 'Not logged in!')
+    #     query = self.schedule_item_organization_subscription_groups_query
+    #     variables = {
+    #         'scheduleItem': to_global_id('ScheduleItemNode', schedule_item_organization_subscription_group.schedule_item.pk)
+    #     }
+
+    #     executed = execute_test_client_api_query(query, self.anon_user, variables=variables)
+    #     errors = executed.get('errors')
+    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
-    def test_update_schedule_item_organization_subscription_group_permission_granted(self):
-        """ Allow updating schedule item organization_subscription_group for users with permissions """
-        schedule_item_organization_subscription_group = f.ScheduleItemTeacherFactory.create()
-        query = self.schedule_item_organization_subscription_group_update_mutation
-        variables = self.variables_update
-        variables['input']['id'] = to_global_id('ScheduleItemTeacherNode', schedule_item_organization_subscription_group.pk)
-        variables['input']['account'] = to_global_id('AccountNode', schedule_item_organization_subscription_group.account_2.pk)
+    # def test_update_schedule_item_organization_subscription_group(self):
+    #     """ Update schedule item organization_subscription_group """
+    #     schedule_item_organization_subscription_group = f.ScheduleItemOrganizationSubscriptionGroupFactory.create()
 
-        # Create regular user
-        user = f.RegularUserFactory.create()
-        permission = Permission.objects.get(codename=self.permission_change)
-        user.user_permissions.add(permission)
-        user.save()
+    #     query = self.schedule_item_organization_subscription_group_update_mutation
+    #     variables = self.variables_update
+    #     variables['input']['id'] = to_global_id('ScheduleItemOrganizationSubscriptionGroupNode', schedule_item_organization_subscription_group.pk)
+    #     variables['input']['account'] = to_global_id('AccountNode', schedule_item_organization_subscription_group.account_2.pk)
+    #     variables['input']['account2'] = to_global_id('AccountNode', schedule_item_organization_subscription_group.account.pk)
 
-        executed = execute_test_client_api_query(
-            query, 
-            user, 
-            variables=variables
-        )
-        data = executed.get('data')
-        self.assertEqual(data['updateScheduleItemTeacher']['scheduleItemTeacher']['role'], variables['input']['role'])
+    #     executed = execute_test_client_api_query(
+    #         query, 
+    #         self.admin_user, 
+    #         variables=variables
+    #     )
 
-
-    def test_update_schedule_item_organization_subscription_group_permission_denied(self):
-        """ Check update schedule item organization_subscription_group permission denied error message """
-        schedule_item_organization_subscription_group = f.ScheduleItemTeacherFactory.create()
-        query = self.schedule_item_organization_subscription_group_update_mutation
-        variables = self.variables_update
-        variables['input']['id'] = to_global_id('ScheduleItemTeacherNode', schedule_item_organization_subscription_group.pk)
-        variables['input']['account'] = to_global_id('AccountNode', schedule_item_organization_subscription_group.account_2.pk)
-
-        # Create regular user
-        user = f.RegularUserFactory.create()
-
-        executed = execute_test_client_api_query(
-            query, 
-            user, 
-            variables=variables
-        )
-        data = executed.get('data')
-        errors = executed.get('errors')
-        self.assertEqual(errors[0]['message'], 'Permission denied!')
+    #     data = executed.get('data')
+    #     self.assertEqual(data['updateScheduleItemOrganizationSubscriptionGroup']['scheduleItemOrganizationSubscriptionGroup']['account']['id'], variables['input']['account'])
+    #     self.assertEqual(data['updateScheduleItemOrganizationSubscriptionGroup']['scheduleItemOrganizationSubscriptionGroup']['role'], variables['input']['role'])
+    #     self.assertEqual(data['updateScheduleItemOrganizationSubscriptionGroup']['scheduleItemOrganizationSubscriptionGroup']['account2']['id'], variables['input']['account2'])
+    #     self.assertEqual(data['updateScheduleItemOrganizationSubscriptionGroup']['scheduleItemOrganizationSubscriptionGroup']['role2'], variables['input']['role2'])
+    #     self.assertEqual(data['updateScheduleItemOrganizationSubscriptionGroup']['scheduleItemOrganizationSubscriptionGroup']['dateStart'], variables['input']['dateStart'])
+    #     self.assertEqual(data['updateScheduleItemOrganizationSubscriptionGroup']['scheduleItemOrganizationSubscriptionGroup']['dateEnd'], variables['input']['dateEnd'])
 
 
-    def test_delete_schedule_item_organization_subscription_group(self):
-        """ Delete a schedule item organization_subscription_group """
-        schedule_item_organization_subscription_group = f.ScheduleItemTeacherFactory.create()
-        query = self.schedule_item_organization_subscription_group_delete_mutation
-        variables = self.variables_delete
-        variables['input']['id'] = to_global_id('ScheduleItemTeacherNode', schedule_item_organization_subscription_group.pk)
+    # def test_update_schedule_item_organization_subscription_group_anon_user(self):
+    #     """ Don't allow updating schedule item organization_subscription_groups for non-logged in users """
+    #     schedule_item_organization_subscription_group = f.ScheduleItemOrganizationSubscriptionGroupFactory.create()
+    #     query = self.schedule_item_organization_subscription_group_update_mutation
+    #     variables = self.variables_update
+    #     variables['input']['id'] = to_global_id('ScheduleItemOrganizationSubscriptionGroupNode', schedule_item_organization_subscription_group.pk)
+    #     variables['input']['account'] = to_global_id('AccountNode', schedule_item_organization_subscription_group.account_2.pk)
 
-        executed = execute_test_client_api_query(
-            query, 
-            self.admin_user, 
-            variables=variables
-        )
-        data = executed.get('data')
-        
-        self.assertEqual(data['deleteScheduleItemTeacher']['ok'], True)
-
-        exists = models.ScheduleItemTeacher.objects.exists()
-        self.assertEqual(exists, False)
+    #     executed = execute_test_client_api_query(
+    #         query, 
+    #         self.anon_user, 
+    #         variables=variables
+    #     )
+    #     data = executed.get('data')
+    #     errors = executed.get('errors')
+    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
-    def test_delete_schedule_item_organization_subscription_group_anon_user(self):
-        """ Don't allow deleting schedule item organization_subscription_groups for non logged in users """
-        schedule_item_organization_subscription_group = f.ScheduleItemTeacherFactory.create()
-        query = self.schedule_item_organization_subscription_group_delete_mutation
-        variables = self.variables_delete
-        variables['input']['id'] = to_global_id('ScheduleItemTeacherNode', schedule_item_organization_subscription_group.pk)
+    # def test_update_schedule_item_organization_subscription_group_permission_granted(self):
+    #     """ Allow updating schedule item organization_subscription_group for users with permissions """
+    #     schedule_item_organization_subscription_group = f.ScheduleItemOrganizationSubscriptionGroupFactory.create()
+    #     query = self.schedule_item_organization_subscription_group_update_mutation
+    #     variables = self.variables_update
+    #     variables['input']['id'] = to_global_id('ScheduleItemOrganizationSubscriptionGroupNode', schedule_item_organization_subscription_group.pk)
+    #     variables['input']['account'] = to_global_id('AccountNode', schedule_item_organization_subscription_group.account_2.pk)
 
-        executed = execute_test_client_api_query(
-            query, 
-            self.anon_user, 
-            variables=variables
-        )
-        data = executed.get('data')
-        errors = executed.get('errors')
-        self.assertEqual(errors[0]['message'], 'Not logged in!')
+    #     # Create regular user
+    #     user = f.RegularUserFactory.create()
+    #     permission = Permission.objects.get(codename=self.permission_change)
+    #     user.user_permissions.add(permission)
+    #     user.save()
 
-
-    def test_delete_schedule_item_organization_subscription_group_permission_granted(self):
-        """ Allow deleting schedule item organization_subscription_groups for users with permissions """
-        schedule_item_organization_subscription_group = f.ScheduleItemTeacherFactory.create()
-        query = self.schedule_item_organization_subscription_group_delete_mutation
-        variables = self.variables_delete
-        variables['input']['id'] = to_global_id('ScheduleItemTeacherNode', schedule_item_organization_subscription_group.pk)
-
-        # Create regular user
-        user = f.RegularUserFactory.create()
-        permission = Permission.objects.get(codename=self.permission_delete)
-        user.user_permissions.add(permission)
-        user.save()
-
-        executed = execute_test_client_api_query(
-            query, 
-            user,
-            variables=variables
-        )
-        data = executed.get('data')
-        self.assertEqual(data['deleteScheduleItemTeacher']['ok'], True)
+    #     executed = execute_test_client_api_query(
+    #         query, 
+    #         user, 
+    #         variables=variables
+    #     )
+    #     data = executed.get('data')
+    #     self.assertEqual(data['updateScheduleItemOrganizationSubscriptionGroup']['scheduleItemOrganizationSubscriptionGroup']['role'], variables['input']['role'])
 
 
-    def test_delete_schedule_item_organization_subscription_group_permission_denied(self):
-        """ Check delete schedule item organization_subscription_group permission denied error message """
-        schedule_item_organization_subscription_group = f.ScheduleItemTeacherFactory.create()
-        query = self.schedule_item_organization_subscription_group_delete_mutation
-        variables = self.variables_delete
-        variables['input']['id'] = to_global_id('ScheduleItemTeacherNode', schedule_item_organization_subscription_group.pk)
-        
-        # Create regular user
-        user = f.RegularUserFactory.create()
+    # def test_update_schedule_item_organization_subscription_group_permission_denied(self):
+    #     """ Check update schedule item organization_subscription_group permission denied error message """
+    #     schedule_item_organization_subscription_group = f.ScheduleItemOrganizationSubscriptionGroupFactory.create()
+    #     query = self.schedule_item_organization_subscription_group_update_mutation
+    #     variables = self.variables_update
+    #     variables['input']['id'] = to_global_id('ScheduleItemOrganizationSubscriptionGroupNode', schedule_item_organization_subscription_group.pk)
+    #     variables['input']['account'] = to_global_id('AccountNode', schedule_item_organization_subscription_group.account_2.pk)
 
-        executed = execute_test_client_api_query(
-            query, 
-            user, 
-            variables=variables
-        )
-        data = executed.get('data')
-        errors = executed.get('errors')
-        self.assertEqual(errors[0]['message'], 'Permission denied!')
+    #     # Create regular user
+    #     user = f.RegularUserFactory.create()
+
+    #     executed = execute_test_client_api_query(
+    #         query, 
+    #         user, 
+    #         variables=variables
+    #     )
+    #     data = executed.get('data')
+    #     errors = executed.get('errors')
+    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
+
 
