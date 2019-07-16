@@ -254,7 +254,6 @@ mutation ArchiveOrganizationSubscriptionGroup($input: ArchiveOrganizationSubscri
         self.assertEqual(data['createOrganizationSubscriptionGroup']['organizationSubscriptionGroup']['archived'], False)
 
 
-    #TODO: Test adding to all schedule_items on creation
     def test_create_subscriptiongroup_add_to_schedule_item(self):
         """ Is the subscription group added to all schedule items on creation? """
         schedule_item = f.SchedulePublicWeeklyClassFactory.create()
@@ -425,7 +424,49 @@ mutation ArchiveOrganizationSubscriptionGroup($input: ArchiveOrganizationSubscri
         self.assertEqual(data['archiveOrganizationSubscriptionGroup']['organizationSubscriptionGroup']['archived'], variables['input']['archived'])
 
 
-    #TODO: Test add / remove from all schedule items when unarchiving/archiving
+    def test_archive_subscriptiongroup_remove_from_schedule_item_class(self):
+        """ Does archiving a subscriptiongroup remove it from a schedule item """
+        query = self.subscriptiongroup_archive_mutation
+        schedule_item_subscriptiongroup = f.ScheduleItemOrganizationSubscriptionGroupAllowFactory.create()
+        subscriptiongroup = schedule_item_subscriptiongroup.organization_subscription_group
+        variables = self.variables_archive
+        variables['input']['id'] = to_global_id("OrganizationSubscriptionGroupNode", subscriptiongroup.pk)
+
+        executed = execute_test_client_api_query(
+            query, 
+            self.admin_user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['archiveOrganizationSubscriptionGroup']['organizationSubscriptionGroup']['archived'], variables['input']['archived'])
+
+        self.assertEqual(models.ScheduleItemOrganizationSubscriptionGroup.objects.filter(
+            id=schedule_item_subscriptiongroup.id).exists(), 
+            False
+        )
+
+
+    def test_unarchive_subscriptiongroup_add_to_schedule_item_class(self):
+        """ Does archiving a subscriptiongroup add it to a schedule item """
+        query = self.subscriptiongroup_archive_mutation
+        schedule_item = f.SchedulePublicWeeklyClassFactory.create()
+        subscriptiongroup = f.OrganizationSubscriptionGroupFactory.create()
+        variables = self.variables_archive
+        variables['input']['id'] = to_global_id("OrganizationSubscriptionGroupNode", subscriptiongroup.pk)
+        variables['input']['archived'] = False
+
+        executed = execute_test_client_api_query(
+            query, 
+            self.admin_user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['archiveOrganizationSubscriptionGroup']['organizationSubscriptionGroup']['archived'], variables['input']['archived'])
+
+        self.assertEqual(models.ScheduleItemOrganizationSubscriptionGroup.objects.filter(
+            schedule_item=schedule_item).exists(), 
+            True
+        )
 
 
     def test_archive_subscriptiongroup_anon_user(self):
