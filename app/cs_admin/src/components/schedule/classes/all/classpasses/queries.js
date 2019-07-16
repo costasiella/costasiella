@@ -1,8 +1,8 @@
 import gql from "graphql-tag"
 
-export const GET_SCHEDULE_CLASS_SUBSCRIPTIONS_QUERY = gql`
-  query ScheduleItemOrganizationSubscriptionGroups($after: String, $before: String, $scheduleItem: ID!) {
-    scheduleItemOrganizationSubscriptionGroups(before: $before, after: $after, scheduleItem:$scheduleItem) {
+export const GET_SCHEDULE_CLASS_CLASSPASSES_QUERY = gql`
+  query ScheduleItemOrganizationClasspassGroups($after: String, $before: String, $scheduleItem: ID!) {
+    scheduleItemOrganizationClasspassGroups(before: $before, after: $after, scheduleItem:$scheduleItem) {
       pageInfo {
         hasNextPage
         hasPreviousPage
@@ -15,7 +15,7 @@ export const GET_SCHEDULE_CLASS_SUBSCRIPTIONS_QUERY = gql`
           scheduleItem {
             id
           }
-          organizationSubscriptionGroup {
+          organizationClasspassGroup {
             id
             name
           }
