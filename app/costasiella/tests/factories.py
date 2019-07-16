@@ -334,3 +334,25 @@ class ScheduleItemTeacherFactory(factory.DjangoModelFactory):
     account_2 = factory.SubFactory(Teacher2Factory)
     role_2 = "ASSISTANT"
     date_start = datetime.date(2014, 1, 1)
+
+
+class ScheduleItemOrganizationSubscriptionGroupDenyFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.ScheduleItemOrganizationSubscriptionGroup
+
+    schedule_item = factory.SubFactory(SchedulePublicWeeklyClassFactory)
+    organization_subscription_group = factory.SubFactory(OrganizationSubscriptionGroupFactory)
+    enroll = False
+    shop_book = False
+    enroll = False
+
+
+class ScheduleItemOrganizationSubscriptionGroupAllowFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.ScheduleItemOrganizationSubscriptionGroup
+
+    schedule_item = factory.SubFactory(SchedulePublicWeeklyClassFactory)
+    organization_subscription_group = factory.SubFactory(OrganizationSubscriptionGroupFactory)
+    enroll = True
+    shop_book = True
+    enroll = True
