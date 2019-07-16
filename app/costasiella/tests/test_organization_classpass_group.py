@@ -423,6 +423,51 @@ mutation ArchiveOrganizationClasspassGroup($input: ArchiveOrganizationClasspassG
         self.assertEqual(data['archiveOrganizationClasspassGroup']['organizationClasspassGroup']['archived'], variables['input']['archived'])
 
 
+    def test_archive_classpassgroup_remove_from_schedule_item_class(self):
+        """ Does archiving a classpassgroup remove it from a schedule item """
+        query = self.classpassgroup_archive_mutation
+        schedule_item_classpassgroup = f.ScheduleItemOrganizationClasspassGroupAllowFactory.create()
+        classpassgroup = schedule_item_classpassgroup.organization_classpass_group
+        variables = self.variables_archive
+        variables['input']['id'] = to_global_id("OrganizationClasspassGroupNode", classpassgroup.pk)
+
+        executed = execute_test_client_api_query(
+            query, 
+            self.admin_user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['archiveOrganizationClasspassGroup']['organizationClasspassGroup']['archived'], variables['input']['archived'])
+
+        self.assertEqual(models.ScheduleItemOrganizationClasspassGroup.objects.filter(
+            id=schedule_item_classpassgroup.id).exists(), 
+            False
+        )
+
+
+    def test_unarchive_classpassgroup_add_to_schedule_item_class(self):
+        """ Does archiving a classpassgroup add it to a schedule item """
+        query = self.classpassgroup_archive_mutation
+        schedule_item = f.SchedulePublicWeeklyClassFactory.create()
+        classpassgroup = f.OrganizationClasspassGroupFactory.create()
+        variables = self.variables_archive
+        variables['input']['id'] = to_global_id("OrganizationClasspassGroupNode", classpassgroup.pk)
+        variables['input']['archived'] = False
+
+        executed = execute_test_client_api_query(
+            query, 
+            self.admin_user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['archiveOrganizationClasspassGroup']['organizationClasspassGroup']['archived'], variables['input']['archived'])
+
+        self.assertEqual(models.ScheduleItemOrganizationClasspassGroup.objects.filter(
+            schedule_item=schedule_item).exists(), 
+            True
+        )
+
+
     def test_archive_classpassgroup_anon_user(self):
         """ Archive a classpassgroup """
         query = self.classpassgroup_archive_mutation
