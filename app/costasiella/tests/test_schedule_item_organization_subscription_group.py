@@ -30,27 +30,14 @@ class GQLScheduleItemOrganizationSubscriptionGroup(TestCase):
         self.permission_change = 'change_scheduleitemorganizationsubscriptiongroup'
         self.permission_delete = 'delete_scheduleitemorganizationsubscriptiongroup'
 
-        self.variables_create = {
-            "input": {
-                "role": "SUB",
-                "role2": "ASSISTANT",
-                "dateStart": '2019-01-01',
-                "dateEnd": '2019-12-31',
-            }
-        }
-
         self.variables_update = {
             "input": {
-                "role": "SUB",
-                "role2": "ASSISTANT",
-                "dateStart": '2019-01-01',
-                "dateEnd": '2019-12-31',
+                "enroll": True,
+                "shopBook": True,
+                "attend": True
             }
         }
 
-        self.variables_delete = {
-            "input": {}
-        }
 
         self.schedule_item_organization_subscription_groups_query = '''
   query ScheduleItemTeachers($after: String, $before: String, $scheduleItem: ID!) {
