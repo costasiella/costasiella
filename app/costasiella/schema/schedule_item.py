@@ -369,6 +369,7 @@ class CreateScheduleClass(graphene.relay.ClientIDMutation):
 
         helper = ScheduleItemHelper()
         helper.add_all_subscription_groups(schedule_item.id)
+        helper.add_all_classpass_groups(schedule_item.id)
 
         return CreateScheduleClass(schedule_item=schedule_item)
 

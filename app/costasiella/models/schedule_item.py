@@ -6,6 +6,7 @@ from django.db import models
 from .organization_classtype import OrganizationClasstype
 from .organization_location_room import OrganizationLocationRoom
 from .organization_level import OrganizationLevel
+from .organization_classpass_group import OrganizationClasspassGroup
 from .organization_subscription_group import OrganizationSubscriptionGroup
 
 # Create your models here.
@@ -52,6 +53,11 @@ class ScheduleItem(models.Model):
     time_start = models.TimeField()
     time_end = models.TimeField()
     display_public = models.BooleanField(default=False)
+    organization_classpass_groups = models.ManyToManyField(
+        OrganizationClasspassGroup, 
+        through='ScheduleItemOrganizationClasspassGroup', 
+        related_name='classpass_groups'
+    )
     organization_subscription_groups = models.ManyToManyField(
         OrganizationSubscriptionGroup, 
         through='ScheduleItemOrganizationSubscriptionGroup', 
