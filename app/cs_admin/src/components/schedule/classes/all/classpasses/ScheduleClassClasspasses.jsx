@@ -30,15 +30,15 @@ import { class_edit_all_subtitle } from "../tools"
 
 import ContentCard from "../../../../general/ContentCard"
 import ClassEditBase from "../ClassEditBase"
-import ScheduleClassSubscriptionForm from "./ScheduleClassSubscriptionForm"
+import ScheduleClassClasspassForm from "./ScheduleClassClasspassForm"
 
-import { SCHEDULE_CLASS_SUBSCRIPTION_SCHEMA } from './yupSchema'
-import { GET_SCHEDULE_CLASS_SUBSCRIPTIONS_QUERY } from "./queries"
+import { SCHEDULE_CLASS_CLASSPASS_SCHEMA } from './yupSchema'
+import { GET_SCHEDULE_CLASS_CLASSPASSES_QUERY } from "./queries"
 
-const UPDATE_SCHEDULE_CLASS_SUBSCRIPTION = gql`
-  mutation UpdateScheduleItemOrganizationSubscriptionGroup($input: UpdateScheduleItemOrganizationSubscriptionGroupInput!) {
-    updateScheduleItemOrganizationSubscriptionGroup(input:$input) {
-      scheduleItemOrganizationSubscriptionGroup {
+const UPDATE_SCHEDULE_CLASS_CLASSPASS = gql`
+  mutation UpdateScheduleItemOrganizationClasspassGroup($input: UpdateScheduleItemOrganizationClasspassGroupInput!) {
+    updateScheduleItemOrganizationClasspassGroup(input:$input) {
+      scheduleItemOrganizationClasspassGroup {
         id
       } 
     }
@@ -46,10 +46,10 @@ const UPDATE_SCHEDULE_CLASS_SUBSCRIPTION = gql`
 `
 
 
-class ScheduleClassSubscriptions extends Component {
+class ScheduleClassClasspasses extends Component {
   constructor(props) {
     super(props)
-    console.log("Schedule classs subscriptions props:")
+    console.log("Schedule classs classpasses props:")
     console.log(props)
   }
 
@@ -59,10 +59,10 @@ class ScheduleClassSubscriptions extends Component {
     const history = this.props.history
     const classId = match.params.class_id
 
-    const ButtonAdd = <HasPermissionWrapper permission="add" resource="scheduleitemsubscription">
-      <Link to={"/schedule/classes/all/subscriptions/" + classId + "/add" } >
+    const ButtonAdd = <HasPermissionWrapper permission="add" resource="scheduleitemclasspass">
+      <Link to={"/schedule/classes/all/classpasses/" + classId + "/add" } >
         <Button color="primary btn-block mb-6">
-        <Icon prefix="fe" name="plus-circle" /> {t('schedule.classes.subscriptions.add')}
+        <Icon prefix="fe" name="plus-circle" /> {t('schedule.classes.classpasses.add')}
         </Button>
       </Link>
     </HasPermissionWrapper>
@@ -72,19 +72,19 @@ class ScheduleClassSubscriptions extends Component {
       <div className="my-3 my-md-5">
         {console.log('ID here:')}
         {console.log(classId)}
-        <Query query={GET_SCHEDULE_CLASS_SUBSCRIPTIONS_QUERY} variables={{ scheduleItem: classId }}>
+        <Query query={GET_SCHEDULE_CLASS_CLASSPASSES_QUERY} variables={{ scheduleItem: classId }}>
           {({ loading, error, data, refetch, fetchMore }) => {
   
             // Loading
             if (loading) return (
-              <ClassEditBase menu_active_link="subscriptions" card_title={t('schedule.classes.subscriptions.title')} sidebar_button={ButtonAdd}>
+              <ClassEditBase menu_active_link="classpasses" card_title={t('schedule.classes.classpasses.title')} sidebar_button={ButtonAdd}>
                 <Dimmer active={true} loader={true} />
               </ClassEditBase>
             )
             // Error
             if (error) return (
-              <ClassEditBase menu_active_link="subscriptions" card_title={t('schedule.classes.subscriptions.title')} sidebar_button={ButtonAdd}>
-                <p>{t('schedule.classes.subscriptions.error_loading')}</p>
+              <ClassEditBase menu_active_link="classpasses" card_title={t('schedule.classes.classpasses.title')} sidebar_button={ButtonAdd}>
+                <p>{t('schedule.classes.classpasses.error_loading')}</p>
               </ClassEditBase>
             )
   
@@ -98,15 +98,15 @@ class ScheduleClassSubscriptions extends Component {
             })
   
             // Empty list
-            if (!data.scheduleItemOrganizationSubscriptionGroups.edges.length) { return (
-              <ClassEditBase menu_active_link="subscriptions" card_title={t('schedule.classes.subscriptions.title')} sidebar_button={ButtonAdd}>
-                <p>{t('schedule.classes.subscriptions.empty_list')}</p>
+            if (!data.scheduleItemOrganizationClasspassGroups.edges.length) { return (
+              <ClassEditBase menu_active_link="classpasses" card_title={t('schedule.classes.classpasses.title')} sidebar_button={ButtonAdd}>
+                <p>{t('schedule.classes.classpasses.empty_list')}</p>
               </ClassEditBase>
             )} else {   
             // Life's good! :)
               return (
                 <ClassEditBase 
-                  menu_active_link="subscriptions" 
+                  menu_active_link="classpasses" 
                   default_card={false} 
                   subtitle={subtitle}
                   sidebar_button={ButtonAdd}
@@ -114,24 +114,24 @@ class ScheduleClassSubscriptions extends Component {
                 <ContentCard 
                   cardTitle={t('schedule.classes.title_edit')}
                   // headerContent={headerOptions}
-                  pageInfo={data.scheduleItemOrganizationSubscriptionGroups.pageInfo}
+                  pageInfo={data.scheduleItemOrganizationClasspassGroups.pageInfo}
                   onLoadMore={() => {
                   fetchMore({
                     variables: {
-                      after: data.scheduleItemOrganizationSubscriptionGroups.pageInfo.endCursor
+                      after: data.scheduleItemOrganizationClasspassGroups.pageInfo.endCursor
                     },
                     updateQuery: (previousResult, { fetchMoreResult }) => {
-                      const newEdges = fetchMoreResult.scheduleItemOrganizationSubscriptionGroups.edges
-                      const pageInfo = fetchMoreResult.scheduleItemOrganizationSubscriptionGroups.pageInfo
+                      const newEdges = fetchMoreResult.scheduleItemOrganizationClasspassGroups.edges
+                      const pageInfo = fetchMoreResult.scheduleItemOrganizationClasspassGroups.pageInfo
   
                       return newEdges.length
                         ? {
                             // Put the new locations at the end of the list and update `pageInfo`
                             // so we have the new `endCursor` and `hasNextPage` values
                             data: { 
-                              scheduleItemOrganizationSubscriptionGroups: {
-                                __typename: previousResult.scheduleItemOrganizationSubscriptionGroups.__typename,
-                                edges: [ ...previousResult.scheduleItemOrganizationSubscriptionGroups.edges, ...newEdges ],
+                              scheduleItemOrganizationClasspassGroups: {
+                                __typename: previousResult.scheduleItemOrganizationClasspassGroups.__typename,
+                                edges: [ ...previousResult.scheduleItemOrganizationClasspassGroups.edges, ...newEdges ],
                                 pageInfo
                               }
                             }
@@ -144,44 +144,42 @@ class ScheduleClassSubscriptions extends Component {
                     <Table>
                       <Table.Header>
                         <Table.Row>
-                          <Table.ColHeader>{t('general.subscription')}</Table.ColHeader>
+                          <Table.ColHeader>{t('general.classpass')}</Table.ColHeader>
                           <Table.ColHeader></Table.ColHeader>
                         </Table.Row>
                       </Table.Header>
                       <Table.Body>
-                        {data.scheduleItemOrganizationSubscriptionGroups.edges.map(({ node }) => (
+                        {data.scheduleItemOrganizationClasspassGroups.edges.map(({ node }) => (
                           <Table.Row key={v4()}>
                             {console.log(node)}
                             <Table.Col key={v4()}> 
-                              {node.organizationSubscriptionGroup.name}
+                              {node.organizationClasspassGroup.name}
                             </Table.Col>
                             <Table.Col>
-                            <Mutation mutation={UPDATE_SCHEDULE_CLASS_SUBSCRIPTION}> 
-                              {(updateScheduleClassSubscription, { data }) => (
+                            <Mutation mutation={UPDATE_SCHEDULE_CLASS_CLASSPASS}> 
+                              {(updateScheduleClassClasspass, { data }) => (
                                 <Formik
                                     initialValues={{  
-                                      enroll: node.enroll,
                                       shopBook: node.shopBook,
                                       attend: node.attend
                                     }}
-                                    validationSchema={SCHEDULE_CLASS_SUBSCRIPTION_SCHEMA}
+                                    validationSchema={SCHEDULE_CLASS_CLASSPASS_SCHEMA}
                                     onSubmit={(values, { setSubmitting }) => {
                                         console.log(values)
 
-                                        updateScheduleClassSubscription({ variables: {
+                                        updateScheduleClassClasspass({ variables: {
                                           input: {
                                             id: node.id,
-                                            enroll: values.enroll,
                                             shopBook: values.shopBook,
                                             attend: values.attend
                                           }
                                         }, refetchQueries: [
                                             // {query: GET_SCHEDULE_CLASS_TEACHERS_QUERY, variables: { scheduleItem: match.params.class_id }},
-                                            // {query: GET_SUBSCRIPTIONS_QUERY, variables: {"archived": false }},
+                                            // {query: GET_CLASSPASSES_QUERY, variables: {"archived": false }},
                                         ]})
                                         .then(({ data }) => {
                                             console.log('got data', data);
-                                            toast.success((t('schedule.classes.subscriptions.toast_edit_success')), {
+                                            toast.success((t('schedule.classes.classpasses.toast_edit_success')), {
                                                 position: toast.POSITION.BOTTOM_RIGHT
                                               })
                                             setSubmitting(false)
@@ -195,7 +193,7 @@ class ScheduleClassSubscriptions extends Component {
                                     }}
                                     >
                                     {({ isSubmitting, errors, values, setFieldTouched, setFieldValue, submitForm }) => (
-                                      <ScheduleClassSubscriptionForm
+                                      <ScheduleClassClasspassForm
                                         isSubmitting={isSubmitting}
                                         setFieldTouched={setFieldTouched}
                                         setFieldValue={setFieldValue}
@@ -206,7 +204,7 @@ class ScheduleClassSubscriptions extends Component {
                                         {console.log(errors)}
                                         {console.log(values)}
                                         test
-                                      </ScheduleClassSubscriptionForm>
+                                      </ScheduleClassClasspassForm>
                                     )}
                                 </Formik>
                               )}
@@ -229,4 +227,4 @@ class ScheduleClassSubscriptions extends Component {
 
 };
 
-export default withTranslation()(withRouter(ScheduleClassSubscriptions))
+export default withTranslation()(withRouter(ScheduleClassClasspasses))

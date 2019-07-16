@@ -19,7 +19,6 @@ export const GET_SCHEDULE_CLASS_CLASSPASSES_QUERY = gql`
             id
             name
           }
-          enroll
           shopBook
           attend
         }
