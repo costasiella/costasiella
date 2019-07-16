@@ -32,6 +32,7 @@ import ContentCard from "../../../../general/ContentCard"
 import ClassEditBase from "../ClassEditBase"
 import ScheduleClassSubscriptionForm from "./ScheduleClassSubscriptionForm"
 
+import { SCHEDULE_CLASS_SUBSCRIPTION_SCHEMA } from './yupSchema'
 import { GET_SCHEDULE_CLASS_SUBSCRIPTIONS_QUERY } from "./queries"
 
 const UPDATE_SCHEDULE_CLASS_SUBSCRIPTION = gql`
@@ -163,7 +164,7 @@ class ScheduleClassSubscriptions extends Component {
                                       shopBook: node.shopBook,
                                       attend: node.attend
                                     }}
-                                    // validationSchema={SCHEDULE_CLASS_TEACHER_SCHEMA}
+                                    validationSchema={SCHEDULE_CLASS_SUBSCRIPTION_SCHEMA}
                                     onSubmit={(values, { setSubmitting }) => {
                                         console.log(values)
 
