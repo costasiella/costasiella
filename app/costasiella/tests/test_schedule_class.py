@@ -543,7 +543,7 @@ class GQLScheduleClass(TestCase):
       data = executed.get('data')
       schedule_item_id = data['createScheduleClass']['scheduleItem']['id']
 
-      schedule_item = models.ScheduleItem.objects.get(id=get_rid(schedule_item_id)['id'])
+      schedule_item = models.ScheduleItem.objects.get(id=get_rid(schedule_item_id).id)
 
       self.assertEqual(models.ScheduleItemOrganizationSubscriptionGroup.objects.filter(
           schedule_item = schedule_item
