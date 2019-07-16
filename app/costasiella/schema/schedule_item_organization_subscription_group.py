@@ -133,6 +133,6 @@ class DeleteScheduleItemOrganizationSubscriptionGroup(graphene.relay.ClientIDMut
 
 
 class ScheduleItemOrganizationSubscriptionGroupMutation(graphene.ObjectType):
-    create_schedule_item_organization_subscription_group = CreateScheduleItemOrganizationSubscriptionGroup.Field()
+    # create_schedule_item_organization_subscription_group = CreateScheduleItemOrganizationSubscriptionGroup.Field()
     update_schedule_item_organization_subscription_group = UpdateScheduleItemOrganizationSubscriptionGroup.Field()
-    delete_schedule_item_organization_subscription_group = DeleteScheduleItemOrganizationSubscriptionGroup.Field()
+    # delete_schedule_item_organization_subscription_group = DeleteScheduleItemOrganizationSubscriptionGroup.Field()
