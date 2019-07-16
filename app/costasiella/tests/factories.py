@@ -344,7 +344,7 @@ class ScheduleItemOrganizationSubscriptionGroupDenyFactory(factory.DjangoModelFa
     organization_subscription_group = factory.SubFactory(OrganizationSubscriptionGroupFactory)
     enroll = False
     shop_book = False
-    enroll = False
+    attend = False
 
 
 class ScheduleItemOrganizationSubscriptionGroupAllowFactory(factory.DjangoModelFactory):
@@ -355,4 +355,24 @@ class ScheduleItemOrganizationSubscriptionGroupAllowFactory(factory.DjangoModelF
     organization_subscription_group = factory.SubFactory(OrganizationSubscriptionGroupFactory)
     enroll = True
     shop_book = True
-    enroll = True
+    attend = True
+
+
+class ScheduleItemOrganizationClasspassGroupDenyFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.ScheduleItemOrganizationClasspassGroup
+
+    schedule_item = factory.SubFactory(SchedulePublicWeeklyClassFactory)
+    organization_classpass_group = factory.SubFactory(OrganizationClasspassGroupFactory)
+    shop_book = False
+    attend = False
+
+
+class ScheduleItemOrganizationClasspassGroupAllowFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.ScheduleItemOrganizationClasspassGroup
+
+    schedule_item = factory.SubFactory(SchedulePublicWeeklyClassFactory)
+    organization_classpass_group = factory.SubFactory(OrganizationClasspassGroupFactory)
+    shop_book = True
+    attend = True
