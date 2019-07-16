@@ -254,6 +254,32 @@ mutation ArchiveOrganizationClasspassGroup($input: ArchiveOrganizationClasspassG
         self.assertEqual(data['createOrganizationClasspassGroup']['organizationClasspassGroup']['archived'], False)
 
 
+    def test_create_classpassgroup_add_to_schedule_item(self):
+        """ Is the classpass group added to all schedule items on creation? """
+        schedule_item = f.SchedulePublicWeeklyClassFactory.create()
+
+        query = self.classpassgroup_create_mutation
+        variables = self.variables_create
+
+        executed = execute_test_client_api_query(
+            query, 
+            self.admin_user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['createOrganizationClasspassGroup']['organizationClasspassGroup']['name'], variables['input']['name'])
+        self.assertEqual(data['createOrganizationClasspassGroup']['organizationClasspassGroup']['archived'], False)
+
+
+        schedule_item_organization_classpass_group = models.ScheduleItemOrganizationClasspassGroup.objects.all().first()
+        self.assertEqual(
+            to_global_id("OrganizationClasspassGroupNode", schedule_item_organization_classpass_group.organization_classpass_group.id),
+            data['createOrganizationClasspassGroup']['organizationClasspassGroup']['id']
+        )
+        self.assertEqual(schedule_item_organization_classpass_group.shop_book, False)
+        self.assertEqual(schedule_item_organization_classpass_group.attend, False)
+
+
     def test_create_classpassgroup_anon_user(self):
         """ Create a classpassgroup with anonymous user, check error message """
         query = self.classpassgroup_create_mutation
