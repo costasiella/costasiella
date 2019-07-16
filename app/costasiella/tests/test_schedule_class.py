@@ -550,6 +550,31 @@ class GQLScheduleClass(TestCase):
       ).exists(), True)
 
 
+    def test_create_schedule_class_add_all_non_archived_organization_classpass_groups(self):
+      """
+      Create a schedule class and check whether a classpass group is added
+      """
+      classpass_group = f.OrganizationClasspassGroupFactory.create()
+
+      query = self.scheduleclass_create_mutation
+      variables = self.variables_create
+
+      executed = execute_test_client_api_query(
+          query, 
+          self.admin_user, 
+          variables=variables
+      )
+      
+      data = executed.get('data')
+      schedule_item_id = data['createScheduleClass']['scheduleItem']['id']
+
+      schedule_item = models.ScheduleItem.objects.get(id=get_rid(schedule_item_id).id)
+
+      self.assertEqual(models.ScheduleItemOrganizationClasspassGroup.objects.filter(
+          schedule_item = schedule_item
+      ).exists(), True)
+
+
     def test_create_scheduleclass_anon_user(self):
         """ Don't allow creating scheduleclasses for non-logged in users """
         query = self.scheduleclass_create_mutation
