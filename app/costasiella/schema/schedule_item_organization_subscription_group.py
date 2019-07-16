@@ -83,7 +83,7 @@ class UpdateScheduleItemOrganizationSubscriptionGroup(graphene.relay.ClientIDMut
     @classmethod
     def mutate_and_get_payload(self, root, info, **input):
         user = info.context.user
-        require_login_and_permission(user, 'costasiella.add_scheduleitemorganizationsubscriptiongroup')
+        require_login_and_permission(user, 'costasiella.change_scheduleitemorganizationsubscriptiongroup')
 
         rid = get_rid(input['id'])
         schedule_item_organization_subscription_group = ScheduleItemOrganizationSubscriptionGroup.objects.filter(id=rid.id).first()
