@@ -85,8 +85,6 @@ class UpdateScheduleItemOrganizationSubscriptionGroup(graphene.relay.ClientIDMut
         user = info.context.user
         require_login_and_permission(user, 'costasiella.add_scheduleitemorganizationsubscriptiongroup')
 
-        print(input)
-
         rid = get_rid(input['id'])
         schedule_item_organization_subscription_group = ScheduleItemOrganizationSubscriptionGroup.objects.filter(id=rid.id).first()
         if not schedule_item_organization_subscription_group:
