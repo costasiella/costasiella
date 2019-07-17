@@ -5,7 +5,7 @@ from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
 from graphql import GraphQLError
 
-from ..models import OrganizationAppointmentCategory, OrganizationAppointmentCategoryRoom
+from ..models import OrganizationAppointmentCategory 
 from ..modules.gql_tools import require_login_and_permission, get_rid
 from ..modules.messages import Messages
 
@@ -19,27 +19,11 @@ class OrganizationAppointmentCategoryNode(DjangoObjectType):
 
     @classmethod
     def get_node(self, info, id):
-        print("info:")
-        print(info)
         user = info.context.user
-        print('user authenticated:')
-        print(user.is_authenticated)
-        print(user)
-        print(user.is_anonymous)
         require_login_and_permission(user, 'costasiella.view_organizationappointmentcategory')
 
         # Return only public non-archived locations
         return self._meta.model.objects.get(id=id)
-
-
-# class ValidationErrorMessage(graphene.ObjectType):
-#     field = graphene.String(required=True)
-#     message = graphene.String(required=True)
-
-
-# class ValidationErrors(graphene.ObjectType):
-# 	validation_errors = graphene.List(ValidationErrorMessage)
-#     # error_message = graphene.String(required=True)
 
 
 class OrganizationAppointmentCategoryQuery(graphene.ObjectType):
@@ -62,11 +46,9 @@ class OrganizationAppointmentCategoryQuery(graphene.ObjectType):
 class CreateOrganizationAppointmentCategory(graphene.relay.ClientIDMutation):
     class Input:
         name = graphene.String(required=True)
-        display_public = graphene.Boolean(required=True)
+        display_public = graphene.Boolean(required=True, default_value=True)
 
     organization_appointment_category = graphene.Field(OrganizationAppointmentCategoryNode)
-
-    # Output = CreateOrganizationAppointmentCategoryPayload
 
     @classmethod
     def mutate_and_get_payload(self, root, info, **input):
@@ -77,16 +59,6 @@ class CreateOrganizationAppointmentCategory(graphene.relay.ClientIDMutation):
         if not len(input['name']):
             print('validation error found')
             raise GraphQLError(_('Name is required'))
-            # errors.append(
-            #     ValidationErrorMessage(
-            #         field="name",
-            #         message=_("Name is required")
-            #     )
-            # )
-
-            # return ValidationErrors(
-            #     validation_errors = errors
-            # )
 
         organization_appointment_category = OrganizationAppointmentCategory(
             name=input['name'], 
@@ -94,30 +66,8 @@ class CreateOrganizationAppointmentCategory(graphene.relay.ClientIDMutation):
         )
         organization_appointment_category.save()
 
-        # return CreateOrganizationAppointmentCategorySuccess(organization_appointment_category=organization_appointment_category)
         return CreateOrganizationAppointmentCategory(organization_appointment_category=organization_appointment_category)
 
-
-# ''' Query like this when enabling error output using union:
-# mutation {
-#   createOrganizationAppointmentCategory(name:"", displayPublic:true) {
-#     __typename
-#     ... on CreateOrganizationAppointmentCategorySuccess {
-#       organizationAppointmentCategory {
-#         id
-#         name
-#       }
-#     }
-#     ... on ValidationErrors {
-#       validationErrors {
-#         field
-#         message
-#       }
-#     }
-#   }
-# }
-
-# '''
 
 class UpdateOrganizationAppointmentCategory(graphene.relay.ClientIDMutation):
     class Input:
@@ -140,7 +90,7 @@ class UpdateOrganizationAppointmentCategory(graphene.relay.ClientIDMutation):
 
         organization_appointment_category.name = input['name']
         organization_appointment_category.display_public = input['display_public']
-        organization_appointment_category.save(force_update=True)
+        organization_appointment_category.save()
 
         return UpdateOrganizationAppointmentCategory(organization_appointment_category=organization_appointment_category)
 
@@ -164,7 +114,7 @@ class ArchiveOrganizationAppointmentCategory(graphene.relay.ClientIDMutation):
             raise Exception('Invalid Organization AppointmentCategory ID!')
 
         organization_appointment_category.archived = input['archived']
-        organization_appointment_category.save(force_update=True)
+        organization_appointment_category.save()
 
         return ArchiveOrganizationAppointmentCategory(organization_appointment_category=organization_appointment_category)
 
