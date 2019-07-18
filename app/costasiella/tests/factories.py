@@ -89,6 +89,15 @@ class OrganizationLocationRoomFactory(factory.DjangoModelFactory):
     name = "First location room"
 
 
+class OrganizationAppointmentCategoryFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.OrganizationAppointmentCategory
+
+    archived = False
+    display_public = True
+    name = "First category"
+
+
 class OrganizationLevelFactory(factory.DjangoModelFactory):
     class Meta:
         model = models.OrganizationLevel
