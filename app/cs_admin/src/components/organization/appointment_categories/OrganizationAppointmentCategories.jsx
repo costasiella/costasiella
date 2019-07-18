@@ -143,7 +143,7 @@ const OrganizationAppointmentCategories = ({ t, history, archived=false }) => (
                                           {t('general.edit')}
                                         </Button>
                                         <Button className='btn-sm' 
-                                                onClick={() => history.push("/organization/appointment_categories/rooms/" + node.id)}
+                                                onClick={() => history.push("/organization/appointment_categories/appointments/" + node.id)}
                                                 color="secondary">
                                           {t('organization.appointments.title')}
                                         </Button>
