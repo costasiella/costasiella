@@ -1,8 +1,8 @@
 import gql from "graphql-tag"
 
-export const GET_LOCATION_ROOMS_QUERY = gql`
-  query OrganizationLocationRooms($after: String, $before: String, $organizationLocation: ID!, $archived: Boolean!) {
-    organizationLocationRooms(first: 15, before: $before, after: $after, organizationLocation: $organizationLocation, archived: $archived) {
+export const GET_APPOINTMENTS_QUERY = gql`
+  query OrganizationAppointments($after: String, $before: String, $organizationAppointmentCategory: ID!, $archived: Boolean!) {
+    organizationAppointments(first: 15, before: $before, after: $after, organizationAppointmentCategory: $organizationAppointmentCategory, archived: $archived) {
       pageInfo {
         startCursor
         endCursor
@@ -12,7 +12,7 @@ export const GET_LOCATION_ROOMS_QUERY = gql`
       edges {
         node {
           id
-          organizationLocation {
+          organizationAppointmentCategory {
             id
             name
           }
@@ -22,18 +22,18 @@ export const GET_LOCATION_ROOMS_QUERY = gql`
         }
       }
     }
-    organizationLocation(id: $organizationLocation) {
+    organizationAppointmentCategory(id: $organizationAppointmentCategory) {
       id
       name
     }
   }
 `
 
-export const GET_LOCATION_ROOM_QUERY = gql`
-  query OrganizationLocationRoom($id: ID!) {
-    organizationLocationRoom(id:$id) {
+export const GET_APPOINTMENT_QUERY = gql`
+  query OrganizationAppointment($id: ID!) {
+    organizationAppointment(id:$id) {
       id
-      organizationLocation {
+      organizationAppointmentCategory {
         id
         name
       }
