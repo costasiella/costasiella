@@ -9,7 +9,7 @@ import {
   } from "tabler-react"
   import { Form as FoForm, Field, ErrorMessage } from 'formik'
 
-const OrganizationAppointmentCategoryForm = ({ t, history, isSubmitting, errors, return_url }) => (
+const OrganizationAppointmentCategoryForm = ({ t, history, isSubmitting, values, errors, return_url }) => (
   <FoForm>
     <Card.Body>
         <Form.Group>
