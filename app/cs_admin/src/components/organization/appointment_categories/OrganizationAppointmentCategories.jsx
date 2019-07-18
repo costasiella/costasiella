@@ -145,7 +145,7 @@ const OrganizationAppointmentCategories = ({ t, history, archived=false }) => (
                                         <Button className='btn-sm' 
                                                 onClick={() => history.push("/organization/appointment_categories/rooms/" + node.id)}
                                                 color="secondary">
-                                          {t('general.rooms')}
+                                          {t('organization.appointments.title')}
                                         </Button>
                                       </div>
                                     }
