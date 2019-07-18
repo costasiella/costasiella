@@ -9,9 +9,9 @@ import { Formik, Form as FoForm, Field, ErrorMessage } from 'formik'
 import { toast } from 'react-toastify'
 
 
-import { GET_LOCATION_ROOMS_QUERY } from './queries'
-import { LOCATION_ROOM_SCHEMA } from './yupSchema'
-import OrganizationLocationRoomForm from './OrganizationLocationRoomForm'
+import { GET_APPOINTMENTS_QUERY } from './queries'
+import { APPOINTMENT_SCHEMA } from './yupSchema'
+import OrganizationAppointmentForm from './OrganizationAppointmentForm'
 
 import {
   Page,
@@ -28,12 +28,12 @@ import HasPermissionWrapper from "../../../HasPermissionWrapper"
 import OrganizationMenu from "../../OrganizationMenu"
 
 
-const ADD_LOCATION_ROOM = gql`
+const ADD_APPOINTMENT = gql`
   mutation CreateOrganizationAppointment($input: CreateOrganizationAppointmentInput!) {
     createOrganizationAppointment(input: $input) {
       organizationAppointment {
         id
-        organizationAppointment {
+        organizationAppointmentCategory {
           id
           name
         }
@@ -47,7 +47,7 @@ const ADD_LOCATION_ROOM = gql`
 
 const return_url = "/organization/appointment_categories/appointments/"
 
-const OrganizationLocationRoomAdd = ({ t, history, match }) => (
+const OrganizationAppointmentAdd = ({ t, history, match }) => (
   <SiteWrapper>
     <div className="my-3 my-md-5">
       <Container>
@@ -56,27 +56,27 @@ const OrganizationLocationRoomAdd = ({ t, history, match }) => (
           <Grid.Col md={9}>
           <Card>
             <Card.Header>
-              <Card.Title>{t('organization.location_rooms.title_add')}</Card.Title>
+              <Card.Title>{t('organization.appointment.title_add')}</Card.Title>
             </Card.Header>
-            <Mutation mutation={ADD_LOCATION_ROOM} onCompleted={() => history.push(return_url + match.params.location_id)}> 
+            <Mutation mutation={ADD_APPOINTMENT} onCompleted={() => history.push(return_url + match.params.category_id)}> 
                 {(addLocation, { data }) => (
                     <Formik
                         initialValues={{ name: '', displayPublic: true }}
-                        validationSchema={LOCATION_ROOM_SCHEMA}
+                        validationSchema={APPOINTMENT_SCHEMA}
                         onSubmit={(values, { setSubmitting }) => {
                             addLocation({ variables: {
                               input: {
-                                organizationLocation: match.params.location_id,
+                                organizationAppointmentCategory: match.params.category_id,
                                 name: values.name, 
                                 displayPublic: values.displayPublic
                               }
                             }, refetchQueries: [
-                                {query: GET_LOCATION_ROOMS_QUERY,
-                                 variables: {"archived": false, "organizationLocation": match.params.location_id }}
+                                {query: GET_APPOINTMENTS_QUERY,
+                                 variables: {"archived": false, "organizationAppointmentCategory": match.params.category_id }}
                             ]})
                             .then(({ data }) => {
                                 console.log('got data', data);
-                                toast.success((t('organization.location_rooms.toast_add_success')), {
+                                toast.success((t('organization.appointment.toast_add_success')), {
                                     position: toast.POSITION.BOTTOM_RIGHT
                                   })
                               }).catch((error) => {
@@ -89,7 +89,7 @@ const OrganizationLocationRoomAdd = ({ t, history, match }) => (
                         }}
                         >
                         {({ isSubmitting, errors, values }) => (
-                          <OrganizationLocationRoomForm
+                          <OrganizationAppointmentForm
                             isSubmitting={isSubmitting}
                             errors={errors}
                             values={values}
@@ -103,9 +103,9 @@ const OrganizationLocationRoomAdd = ({ t, history, match }) => (
           </Grid.Col>
           <Grid.Col md={3}>
             <HasPermissionWrapper permission="add"
-                                  resource="organizationlocationroom">
+                                  resource="organizationappointment">
               <Button color="primary btn-block mb-6"
-                      onClick={() => history.push(return_url + match.params.location_id)}>
+                      onClick={() => history.push(return_url + match.params.category_id)}>
                 <Icon prefix="fe" name="chevrons-left" /> {t('general.back')}
               </Button>
             </HasPermissionWrapper>
@@ -117,4 +117,4 @@ const OrganizationLocationRoomAdd = ({ t, history, match }) => (
   </SiteWrapper>
 );
 
-export default withTranslation()(withRouter(OrganizationLocationRoomAdd))
+export default withTranslation()(withRouter(OrganizationAppointmentAdd))

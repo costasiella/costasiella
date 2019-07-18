@@ -31,6 +31,7 @@ import FinanceTaxRatesEdit from './components/finance/taxrates/FinanceTaxRateEdi
 
 import OrganizationHome from './components/organization/home/OrganizationHome'
 import OrganizationAppointments from './components/organization/appointment_categories/appointments/OrganizationAppointments'
+import OrganizationAppointmentAdd from './components/organization/appointment_categories/appointments/OrganizationAppointmentAdd'
 import OrganizationAppointmentCategories from './components/organization/appointment_categories/OrganizationAppointmentCategories'
 import OrganizationAppointmentCategoryAdd from './components/organization/appointment_categories/OrganizationAppointmentCategoryAdd'
 import OrganizationAppointmentCategoryEdit from './components/organization/appointment_categories/OrganizationAppointmentCategoryEdit'
@@ -167,6 +168,7 @@ class App extends Component {
             <Route exact path="/organization/appointment_categories/add" component={OrganizationAppointmentCategoryAdd} />
             <Route exact path="/organization/appointment_categories/edit/:id" component={OrganizationAppointmentCategoryEdit} />
             <Route exact path="/organization/appointment_categories/appointments/:category_id" component={OrganizationAppointments} />
+            <Route exact path="/organization/appointment_categories/appointments/add/:category_id" component={OrganizationAppointmentAdd} />
             <Route exact path="/organization/classpasses" component={OrganizationClasspasses} />
             <Route exact path="/organization/classpasses/add" component={OrganizationClasspassAdd} />
             <Route exact path="/organization/classpasses/edit/:id" component={OrganizationClasspassEdit} />    

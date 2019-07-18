@@ -4,6 +4,7 @@ import React from 'react'
 import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
 import { Form as FoForm, Field, ErrorMessage } from 'formik'
+import { Link } from 'react-router-dom'
 
 
 import {
@@ -46,9 +47,11 @@ const OrganizationAppointmentForm = ({ t, history, match, isSubmitting, errors, 
           >
             {t('general.submit')}
           </Button>
-          <Button color="link" onClick={() => history.push(return_url + match.params.location_id)}>
-              {t('general.cancel')}
-          </Button>
+          <Link to={return_url + match.params.category_id}>
+            <Button color="link" type="button">
+                {t('general.cancel')}
+            </Button>
+          </Link>
       </Card.Footer>
   </FoForm>
 );
