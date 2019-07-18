@@ -30,9 +30,9 @@ import OrganizationMenu from "../OrganizationMenu"
 import { GET_APPOINTMENT_CATEGORIES_QUERY } from "./queries"
 
 const ARCHIVE_APPOINTMENT_CATEGORY = gql`
-  mutation ArchiveOrganizationLocation($input: ArchiveOrganizationLocationInput!) {
-    archiveOrganizationLocation(input: $input) {
-      organizationLocation {
+  mutation ArchiveOrganizationAppointmentCategory($input: ArchiveOrganizationAppointmentCategoryInput!) {
+    archiveOrganizationAppointmentCategory(input: $input) {
+      organizationAppointmentCategory {
         id
         archived
       }
