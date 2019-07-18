@@ -8,8 +8,8 @@ import { withRouter } from "react-router"
 import { Formik, Form as FoForm, Field, ErrorMessage } from 'formik'
 import { toast } from 'react-toastify'
 
-import { GET_LOCATIONS_QUERY, GET_LOCATION_QUERY } from './queries'
-import { LOCATION_SCHEMA } from './yupSchema'
+import { GET_APPOINTMENT_CATEGORIES_QUERY, GET_APPOINTMENT_CATEGORY_QUERY } from './queries'
+import { APPOINTMENT_CATEGORY_SCHEMA } from './yupSchema'
 
 
 
@@ -26,12 +26,13 @@ import SiteWrapper from "../../SiteWrapper"
 import HasPermissionWrapper from "../../HasPermissionWrapper"
 
 import OrganizationMenu from "../OrganizationMenu"
+import OrganizationAppointmentCategoryForm from "./OrganizationAppointmentCategoryForm"
 
 
-const UPDATE_LOCATION = gql`
-  mutation UpdateOrganizationLocation($input: UpdateOrganizationLocationInput!) {
-    updateOrganizationLocation(input: $input) {
-      organizationLocation {
+const UPDATE_APPOINTMENT_CATEGORY = gql`
+  mutation UpdateOrganizationAppointmentCategory($input: UpdateOrganizationAppointmentCategoryInput!) {
+    updateOrganizationAppointmentCategory(input: $input) {
+      organizationAppointmentCategory {
         id
         name
         displayPublic
@@ -41,7 +42,7 @@ const UPDATE_LOCATION = gql`
 `
 
 
-class OrganizationLocationEdit extends Component {
+class OrganizationAppointmentCategoryEdit extends Component {
   constructor(props) {
     super(props)
     console.log("Organization location edit props:")
@@ -53,7 +54,7 @@ class OrganizationLocationEdit extends Component {
     const match = this.props.match
     const history = this.props.history
     const id = match.params.id
-    const return_url = "/organization/locations"
+    const return_url = "/organization/appointment_categories"
 
     return (
       <SiteWrapper>
@@ -64,10 +65,10 @@ class OrganizationLocationEdit extends Component {
               <Grid.Col md={9}>
               <Card>
                 <Card.Header>
-                  <Card.Title>{t('organization.locations.title_edit')}</Card.Title>
+                  <Card.Title>{t('organization.appointment_categories.title_edit')}</Card.Title>
                   {console.log(match.params.id)}
                 </Card.Header>
-                <Query query={GET_LOCATION_QUERY} variables={{ id }} >
+                <Query query={GET_APPOINTMENT_CATEGORY_QUERY} variables={{ id }} >
                 {({ loading, error, data, refetch }) => {
                     // Loading
                     if (loading) return <p>{t('general.loading_with_dots')}</p>
@@ -77,36 +78,36 @@ class OrganizationLocationEdit extends Component {
                       return <p>{t('general.error_sad_smiley')}</p>
                     }
                     
-                    const initialData = data.organizationLocation;
+                    const initialData = data.organizationAppointmentCategory;
                     console.log('query data')
                     console.log(data)
 
                     return (
                       
-                      <Mutation mutation={UPDATE_LOCATION} onCompleted={() => history.push(return_url)}> 
-                      {(updateLocation, { data }) => (
+                      <Mutation mutation={UPDATE_APPOINTMENT_CATEGORY} onCompleted={() => history.push(return_url)}> 
+                      {(updateAppointmentCategory, { data }) => (
                           <Formik
                               initialValues={{ 
                                 name: initialData.name, 
                                 displayPublic: initialData.displayPublic 
                               }}
-                              validationSchema={LOCATION_SCHEMA}
+                              validationSchema={APPOINTMENT_CATEGORY_SCHEMA}
                               onSubmit={(values, { setSubmitting }) => {
                                   console.log('submit values:')
                                   console.log(values)
 
-                                  updateLocation({ variables: {
+                                  updateAppointmentCategory({ variables: {
                                     input: {
                                       id: match.params.id,
                                       name: values.name,
                                       displayPublic: values.displayPublic 
                                     }
                                   }, refetchQueries: [
-                                      {query: GET_LOCATIONS_QUERY, variables: {"archived": false }}
+                                      {query: GET_APPOINTMENT_CATEGORIES_QUERY, variables: {"archived": false }}
                                   ]})
                                   .then(({ data }) => {
                                       console.log('got data', data)
-                                      toast.success((t('organization.locations.toast_edit_success')), {
+                                      toast.success((t('organization.appointment_categories.toast_edit_success')), {
                                           position: toast.POSITION.BOTTOM_RIGHT
                                         })
                                     }).catch((error) => {
@@ -119,46 +120,12 @@ class OrganizationLocationEdit extends Component {
                               }}
                               >
                               {({ isSubmitting, errors, values }) => (
-                                  <FoForm>
-                                      <Card.Body>
-                                          <Form.Group>
-                                            <Form.Label className="custom-switch">
-                                              <Field 
-                                                className="custom-switch-input"
-                                                type="checkbox" 
-                                                name="displayPublic" 
-                                                checked={values.displayPublic} />
-                                              <span className="custom-switch-indicator" ></span>
-                                              <span className="custom-switch-description">{t('organization.location.public')}</span>
-                                            </Form.Label>
-                                            <ErrorMessage name="displayPublic" component="div" />   
-                                          </Form.Group>     
-                                          <Form.Group label={t('general.name')} >
-                                            <Field type="text" 
-                                                  name="name" 
-                                                  className={(errors.name) ? "form-control is-invalid" : "form-control"} 
-                                                  autoComplete="off" />
-                                            <ErrorMessage name="name" component="span" className="invalid-feedback" />
-                                          </Form.Group>
-                                      </Card.Body>
-                                      <Card.Footer>
-                                          <Button 
-                                            className="pull-right"
-                                            color="primary"
-                                            disabled={isSubmitting}
-                                            type="submit"
-                                          >
-                                            {t('general.submit')}
-                                          </Button>
-                                          <Button
-                                            type="button" 
-                                            color="link" 
-                                            onClick={() => history.push(return_url)}
-                                          >
-                                              {t('general.cancel')}
-                                          </Button>
-                                      </Card.Footer>
-                                  </FoForm>
+                                  <OrganizationAppointmentCategoryForm
+                                    isSubmitting={isSubmitting}
+                                    errors={errors}
+                                    values={values}
+                                    return_url={return_url}
+                                  />
                               )}
                           </Formik>
                       )}
@@ -169,13 +136,13 @@ class OrganizationLocationEdit extends Component {
               </Grid.Col>
               <Grid.Col md={3}>
                 <HasPermissionWrapper permission="change"
-                                      resource="organizationlocation">
+                                      resource="organizationappointmentcategory">
                   <Button color="primary btn-block mb-6"
                           onClick={() => history.push(return_url)}>
                     <Icon prefix="fe" name="chevrons-left" /> {t('general.back')}
                   </Button>
                 </HasPermissionWrapper>
-                <OrganizationMenu active_link='locations'/>
+                <OrganizationMenu active_link='appointment_categories'/>
               </Grid.Col>
             </Grid.Row>
           </Container>
@@ -185,4 +152,4 @@ class OrganizationLocationEdit extends Component {
   }
 
 
-export default withTranslation()(withRouter(OrganizationLocationEdit))
+export default withTranslation()(withRouter(OrganizationAppointmentCategoryEdit))
