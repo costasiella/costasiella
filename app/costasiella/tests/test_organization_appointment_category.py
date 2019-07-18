@@ -19,21 +19,21 @@ from .. import schema
 
 
 
-class GQLOrganizationLocation(TestCase):
+class GQLOrganizationAppointmentCategory(TestCase):
     # https://docs.djangoproject.com/en/2.1/topics/testing/overview/
     def setUp(self):
         # This is run before every test
         self.admin_user = f.AdminUserFactory.create()
         self.anon_user = AnonymousUser()
 
-        self.permission_view = 'view_organizationlocation'
-        self.permission_add = 'add_organizationlocation'
-        self.permission_change = 'change_organizationlocation'
-        self.permission_delete = 'delete_organizationlocation'
+        self.permission_view = 'view_organizationappointmentcategory'
+        self.permission_add = 'add_organizationappointmentcategory'
+        self.permission_change = 'change_organizationappointmentcategory'
+        self.permission_delete = 'delete_organizationappointmentcategory'
 
-        self.locations_query = '''
-  query OrganizationLocations($after: String, $before: String, $archived: Boolean) {
-    organizationLocations(first: 15, before: $before, after: $after, archived: $archived) {
+        self.appointment_categories_query = '''
+  query OrganizationAppointmentCategories($after: String, $before: String, $archived: Boolean) {
+    organizationAppointmentCategories(first: 15, before: $before, after: $after, archived: $archived) {
       pageInfo {
         startCursor
         endCursor
@@ -52,9 +52,9 @@ class GQLOrganizationLocation(TestCase):
   }
 '''
 
-        self.location_query = '''
-query getOrganizationLocation($id: ID!) {
-    organizationLocation(id:$id) {
+        self.appointment_category_query = '''
+query getOrganizationAppointmentCategory($id: ID!) {
+    organizationAppointmentCategory(id:$id) {
       id
       name
       displayPublic
@@ -63,10 +63,10 @@ query getOrganizationLocation($id: ID!) {
   }
 '''
 
-        self.location_create_mutation = ''' 
-  mutation CreateOrganizationLocation($input: CreateOrganizationLocationInput!) {
-    createOrganizationLocation(input: $input) {
-      organizationLocation {
+        self.appointment_category_create_mutation = ''' 
+  mutation CreateOrganizationAppointmentCategory($input: CreateOrganizationAppointmentCategoryInput!) {
+    createOrganizationAppointmentCategory(input: $input) {
+      organizationAppointmentCategory {
         id
         archived
         displayPublic
@@ -76,10 +76,10 @@ query getOrganizationLocation($id: ID!) {
   }
 '''
 
-        self.location_update_mutation = '''
-  mutation UpdateOrganizationLocation($input: UpdateOrganizationLocationInput!) {
-    updateOrganizationLocation(input: $input) {
-      organizationLocation {
+        self.appointment_category_update_mutation = '''
+  mutation UpdateOrganizationAppointmentCategory($input: UpdateOrganizationAppointmentCategoryInput!) {
+    updateOrganizationAppointmentCategory(input: $input) {
+      organizationAppointmentCategory {
         id
         name
         displayPublic
@@ -88,10 +88,10 @@ query getOrganizationLocation($id: ID!) {
   }
 '''
 
-        self.location_archive_mutation = '''
-  mutation ArchiveOrganizationLocation($input: ArchiveOrganizationLocationInput!) {
-    archiveOrganizationLocation(input: $input) {
-      organizationLocation {
+        self.appointment_category_archive_mutation = '''
+  mutation ArchiveOrganizationAppointmentCategory($input: ArchiveOrganizationAppointmentCategoryInput!) {
+    archiveOrganizationAppointmentCategory(input: $input) {
+      organizationAppointmentCategory {
         id
         archived
       }
@@ -104,39 +104,39 @@ query getOrganizationLocation($id: ID!) {
         pass
 
 
-    def get_node_id_of_first_location(self):
-        # query locations to get node id easily
+    def get_node_id_of_first_appointment_category(self):
+        # query appointment_categories to get node id easily
         variables = {
             'archived': False
         }
-        executed = execute_test_client_api_query(self.locations_query, self.admin_user, variables=variables)
+        executed = execute_test_client_api_query(self.appointment_categories_query, self.admin_user, variables=variables)
         data = executed.get('data')
         
-        return data['organizationLocations']['edges'][0]['node']['id']
+        return data['organizationAppointmentCategories']['edges'][0]['node']['id']
 
 
     def test_query(self):
-        """ Query list of locations """
-        query = self.locations_query
-        location = f.OrganizationLocationFactory.create()
+        """ Query list of appointment_categories """
+        query = self.appointment_categories_query
+        appointment_category = f.OrganizationAppointmentCategoryFactory.create()
         variables = {
             'archived': False
         }
 
         executed = execute_test_client_api_query(query, self.admin_user, variables=variables)
         data = executed.get('data')
-        self.assertEqual(data['organizationLocations']['edges'][0]['node']['name'], location.name)
-        self.assertEqual(data['organizationLocations']['edges'][0]['node']['archived'], location.archived)
-        self.assertEqual(data['organizationLocations']['edges'][0]['node']['displayPublic'], location.display_public)
+        self.assertEqual(data['organizationAppointmentCategories']['edges'][0]['node']['name'], appointment_category.name)
+        self.assertEqual(data['organizationAppointmentCategories']['edges'][0]['node']['archived'], appointment_category.archived)
+        self.assertEqual(data['organizationAppointmentCategories']['edges'][0]['node']['displayPublic'], appointment_category.display_public)
 
 
     def test_query_permision_denied(self):
-        """ Query list of locations """
-        query = self.locations_query
-        location = f.OrganizationLocationFactory.create()
-        non_public_location = f.OrganizationLocationFactory.build()
-        non_public_location.display_public = False
-        non_public_location.save()
+        """ Query list of appointment_categories """
+        query = self.appointment_categories_query
+        appointment_category = f.OrganizationAppointmentCategoryFactory.create()
+        non_public_appointment_category = f.OrganizationAppointmentCategoryFactory.build()
+        non_public_appointment_category.display_public = False
+        non_public_appointment_category.save()
 
         variables = {
             'archived': False
@@ -147,9 +147,9 @@ query getOrganizationLocation($id: ID!) {
         executed = execute_test_client_api_query(query, user, variables=variables)
         data = executed.get('data')
 
-        # Public locations only
+        # Public appointment_categories only
         non_public_found = False
-        for item in data['organizationLocations']['edges']:
+        for item in data['organizationAppointmentCategories']['edges']:
             if not item['node']['displayPublic']:
                 non_public_found = True
 
@@ -157,12 +157,12 @@ query getOrganizationLocation($id: ID!) {
 
 
     def test_query_permision_granted(self):
-        """ Query list of locations """
-        query = self.locations_query
-        location = f.OrganizationLocationFactory.create()
-        non_public_location = f.OrganizationLocationFactory.build()
-        non_public_location.display_public = False
-        non_public_location.save()
+        """ Query list of appointment_categories """
+        query = self.appointment_categories_query
+        appointment_category = f.OrganizationAppointmentCategoryFactory.create()
+        non_public_appointment_category = f.OrganizationAppointmentCategoryFactory.build()
+        non_public_appointment_category.display_public = False
+        non_public_appointment_category.save()
 
         variables = {
             'archived': False
@@ -170,27 +170,27 @@ query getOrganizationLocation($id: ID!) {
 
         # Create regular user
         user = f.RegularUserFactory.create()
-        permission = Permission.objects.get(codename='view_organizationlocation')
+        permission = Permission.objects.get(codename=self.permission_view)
         user.user_permissions.add(permission)
         user.save()
 
         executed = execute_test_client_api_query(query, user, variables=variables)
         data = executed.get('data')
 
-        # List all locations, including non public
+        # List all appointment_categories, including non public
         non_public_found = False
-        for item in data['organizationLocations']['edges']:
+        for item in data['organizationAppointmentCategories']['edges']:
             if not item['node']['displayPublic']:
                 non_public_found = True
 
-        # Assert non public locations are listed
+        # Assert non public appointment_categories are listed
         self.assertEqual(non_public_found, True)
 
 
     def test_query_anon_user(self):
-        """ Query list of locations """
-        query = self.locations_query
-        location = f.OrganizationLocationFactory.create()
+        """ Query list of appointment_categories """
+        query = self.appointment_categories_query
+        appointment_category = f.OrganizationAppointmentCategoryFactory.create()
         variables = {
             'archived': False
         }
@@ -201,30 +201,30 @@ query getOrganizationLocation($id: ID!) {
 
 
     def test_query_one(self):
-        """ Query one location """   
-        location = f.OrganizationLocationFactory.create()
+        """ Query one appointment_category """   
+        appointment_category = f.OrganizationAppointmentCategoryFactory.create()
 
-        # First query locations to get node id easily
-        node_id = self.get_node_id_of_first_location()
+        # First query appointment_categories to get node id easily
+        node_id = self.get_node_id_of_first_appointment_category()
 
-        # Now query single location and check
-        query = self.location_query
+        # Now query single appointment_category and check
+        query = self.appointment_category_query
         executed = execute_test_client_api_query(query, self.admin_user, variables={"id": node_id})
         data = executed.get('data')
-        self.assertEqual(data['organizationLocation']['name'], location.name)
-        self.assertEqual(data['organizationLocation']['archived'], location.archived)
-        self.assertEqual(data['organizationLocation']['displayPublic'], location.display_public)
+        self.assertEqual(data['organizationAppointmentCategory']['name'], appointment_category.name)
+        self.assertEqual(data['organizationAppointmentCategory']['archived'], appointment_category.archived)
+        self.assertEqual(data['organizationAppointmentCategory']['displayPublic'], appointment_category.display_public)
 
 
     def test_query_one_anon_user(self):
-        """ Deny permission for anon users Query one location """   
-        location = f.OrganizationLocationFactory.create()
+        """ Deny permission for anon users Query one appointment_category """   
+        appointment_category = f.OrganizationAppointmentCategoryFactory.create()
 
-        # First query locations to get node id easily
-        node_id = self.get_node_id_of_first_location()
+        # First query appointment_categories to get node id easily
+        node_id = self.get_node_id_of_first_appointment_category()
 
-        # Now query single location and check
-        query = self.location_query
+        # Now query single appointment_category and check
+        query = self.appointment_category_query
         executed = execute_test_client_api_query(query, self.anon_user, variables={"id": node_id})
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Not logged in!')
@@ -234,13 +234,13 @@ query getOrganizationLocation($id: ID!) {
         """ Permission denied message when user lacks authorization """   
         # Create regular user
         user = f.RegularUserFactory.create()
-        location = f.OrganizationLocationFactory.create()
+        appointment_category = f.OrganizationAppointmentCategoryFactory.create()
 
-        # First query locations to get node id easily
-        node_id = self.get_node_id_of_first_location()
+        # First query appointment_categories to get node id easily
+        node_id = self.get_node_id_of_first_appointment_category()
 
-        # Now query single location and check
-        query = self.location_query
+        # Now query single appointment_category and check
+        query = self.appointment_category_query
         executed = execute_test_client_api_query(query, user, variables={"id": node_id})
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Permission denied!')
@@ -249,28 +249,28 @@ query getOrganizationLocation($id: ID!) {
     def test_query_one_permission_granted(self):
         """ Respond with data when user has permission """   
         user = f.RegularUserFactory.create()
-        permission = Permission.objects.get(codename='view_organizationlocation')
+        permission = Permission.objects.get(codename=self.permission_view)
         user.user_permissions.add(permission)
         user.save()
-        location = f.OrganizationLocationFactory.create()
+        appointment_category = f.OrganizationAppointmentCategoryFactory.create()
 
-        # First query locations to get node id easily
-        node_id = self.get_node_id_of_first_location()
+        # First query appointment_categories to get node id easily
+        node_id = self.get_node_id_of_first_appointment_category()
 
-        # Now query single location and check   
-        query = self.location_query
+        # Now query single appointment_category and check   
+        query = self.appointment_category_query
         executed = execute_test_client_api_query(query, user, variables={"id": node_id})
         data = executed.get('data')
-        self.assertEqual(data['organizationLocation']['name'], location.name)
+        self.assertEqual(data['organizationAppointmentCategory']['name'], appointment_category.name)
 
 
-    def test_create_location(self):
-        """ Create a location """
-        query = self.location_create_mutation
+    def test_create_appointment_category(self):
+        """ Create a appointment_category """
+        query = self.appointment_category_create_mutation
 
         variables = {
             "input": {
-                "name": "New location",
+                "name": "New appointment_category",
                 "displayPublic": True
             }
         }
@@ -281,25 +281,18 @@ query getOrganizationLocation($id: ID!) {
             variables=variables
         )
         data = executed.get('data')
-        self.assertEqual(data['createOrganizationLocation']['organizationLocation']['name'], variables['input']['name'])
-        self.assertEqual(data['createOrganizationLocation']['organizationLocation']['archived'], False)
-        self.assertEqual(data['createOrganizationLocation']['organizationLocation']['displayPublic'], variables['input']['displayPublic'])
-
-        # Check creation of a default room
-        rid = get_rid(data['createOrganizationLocation']['organizationLocation']['id'])
-        location = models.OrganizationLocation.objects.get(pk=rid.id)
-        rooms = models.OrganizationLocationRoom.objects.filter(organization_location = location)
-        room = rooms[0]
-        self.assertEqual(room.name, 'Room 1')
+        self.assertEqual(data['createOrganizationAppointmentCategory']['organizationAppointmentCategory']['name'], variables['input']['name'])
+        self.assertEqual(data['createOrganizationAppointmentCategory']['organizationAppointmentCategory']['archived'], False)
+        self.assertEqual(data['createOrganizationAppointmentCategory']['organizationAppointmentCategory']['displayPublic'], variables['input']['displayPublic'])
 
 
-    def test_create_location_anon_user(self):
-        """ Don't allow creating locations for non-logged in users """
-        query = self.location_create_mutation
+    def test_create_appointment_category_anon_user(self):
+        """ Don't allow creating appointment_categories for non-logged in users """
+        query = self.appointment_category_create_mutation
 
         variables = {
             "input": {
-                "name": "New location",
+                "name": "New appointment_category",
                 "displayPublic": True
             }
         }
@@ -314,9 +307,9 @@ query getOrganizationLocation($id: ID!) {
         self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
-    def test_create_location_permission_granted(self):
-        """ Allow creating locations for users with permissions """
-        query = self.location_create_mutation
+    def test_create_appointment_category_permission_granted(self):
+        """ Allow creating appointment_categories for users with permissions """
+        query = self.appointment_category_create_mutation
 
         # Create regular user
         user = f.RegularUserFactory.create()
@@ -326,7 +319,7 @@ query getOrganizationLocation($id: ID!) {
 
         variables = {
             "input": {
-                "name": "New location",
+                "name": "New appointment_category",
                 "displayPublic": True
             }
         }
@@ -337,18 +330,18 @@ query getOrganizationLocation($id: ID!) {
             variables=variables
         )
         data = executed.get('data')
-        self.assertEqual(data['createOrganizationLocation']['organizationLocation']['name'], variables['input']['name'])
-        self.assertEqual(data['createOrganizationLocation']['organizationLocation']['archived'], False)
-        self.assertEqual(data['createOrganizationLocation']['organizationLocation']['displayPublic'], variables['input']['displayPublic'])
+        self.assertEqual(data['createOrganizationAppointmentCategory']['organizationAppointmentCategory']['name'], variables['input']['name'])
+        self.assertEqual(data['createOrganizationAppointmentCategory']['organizationAppointmentCategory']['archived'], False)
+        self.assertEqual(data['createOrganizationAppointmentCategory']['organizationAppointmentCategory']['displayPublic'], variables['input']['displayPublic'])
 
 
-    def test_create_location_permission_denied(self):
-        """ Check create location permission denied error message """
-        query = self.location_create_mutation
+    def test_create_appointment_category_permission_denied(self):
+        """ Check create appointment_category permission denied error message """
+        query = self.appointment_category_create_mutation
         
         variables = {
             "input": {
-                "name": "New location",
+                "name": "New appointment_category",
                 "displayPublic": True
             }
         }
@@ -366,14 +359,14 @@ query getOrganizationLocation($id: ID!) {
         self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
-    def test_update_location(self):
-        """ Update a location """
-        query = self.location_update_mutation
-        location = f.OrganizationLocationFactory.create()
+    def test_update_appointment_category(self):
+        """ Update a appointment_category """
+        query = self.appointment_category_update_mutation
+        appointment_category = f.OrganizationAppointmentCategoryFactory.create()
 
         variables = {
             "input": {
-                "id": self.get_node_id_of_first_location(),
+                "id": self.get_node_id_of_first_appointment_category(),
                 "name": "Updated name",
                 "displayPublic": False
             }
@@ -385,18 +378,18 @@ query getOrganizationLocation($id: ID!) {
             variables=variables
         )
         data = executed.get('data')
-        self.assertEqual(data['updateOrganizationLocation']['organizationLocation']['name'], variables['input']['name'])
-        self.assertEqual(data['updateOrganizationLocation']['organizationLocation']['displayPublic'], variables['input']['displayPublic'])
+        self.assertEqual(data['updateOrganizationAppointmentCategory']['organizationAppointmentCategory']['name'], variables['input']['name'])
+        self.assertEqual(data['updateOrganizationAppointmentCategory']['organizationAppointmentCategory']['displayPublic'], variables['input']['displayPublic'])
 
 
-    def test_update_location_anon_user(self):
-        """ Don't allow updating locations for non-logged in users """
-        query = self.location_update_mutation
-        location = f.OrganizationLocationFactory.create()
+    def test_update_appointment_category_anon_user(self):
+        """ Don't allow updating appointment_categories for non-logged in users """
+        query = self.appointment_category_update_mutation
+        appointment_category = f.OrganizationAppointmentCategoryFactory.create()
 
         variables = {
             "input": {
-                "id": self.get_node_id_of_first_location(),
+                "id": self.get_node_id_of_first_appointment_category(),
                 "name": "Updated name",
                 "displayPublic": False
             }
@@ -412,14 +405,14 @@ query getOrganizationLocation($id: ID!) {
         self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
-    def test_update_location_permission_granted(self):
-        """ Allow updating locations for users with permissions """
-        query = self.location_update_mutation
+    def test_update_appointment_category_permission_granted(self):
+        """ Allow updating appointment_categories for users with permissions """
+        query = self.appointment_category_update_mutation
 
-        location = f.OrganizationLocationFactory.create()
+        appointment_category = f.OrganizationAppointmentCategoryFactory.create()
         variables = {
             "input": {
-                "id": self.get_node_id_of_first_location(),
+                "id": self.get_node_id_of_first_appointment_category(),
                 "name": "Updated name",
                 "displayPublic": False
             }
@@ -437,18 +430,18 @@ query getOrganizationLocation($id: ID!) {
             variables=variables
         )
         data = executed.get('data')
-        self.assertEqual(data['updateOrganizationLocation']['organizationLocation']['name'], variables['input']['name'])
-        self.assertEqual(data['updateOrganizationLocation']['organizationLocation']['displayPublic'], variables['input']['displayPublic'])
+        self.assertEqual(data['updateOrganizationAppointmentCategory']['organizationAppointmentCategory']['name'], variables['input']['name'])
+        self.assertEqual(data['updateOrganizationAppointmentCategory']['organizationAppointmentCategory']['displayPublic'], variables['input']['displayPublic'])
 
 
-    def test_update_location_permission_denied(self):
-        """ Check update location permission denied error message """
-        query = self.location_update_mutation
-        location = f.OrganizationLocationFactory.create()
+    def test_update_appointment_category_permission_denied(self):
+        """ Check update appointment_category permission denied error message """
+        query = self.appointment_category_update_mutation
+        appointment_category = f.OrganizationAppointmentCategoryFactory.create()
 
         variables = {
             "input": {
-                "id": self.get_node_id_of_first_location(),
+                "id": self.get_node_id_of_first_appointment_category(),
                 "name": "Updated name",
                 "displayPublic": False
             }
@@ -467,14 +460,14 @@ query getOrganizationLocation($id: ID!) {
         self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
-    def test_archive_location(self):
-        """ Archive a location """
-        query = self.location_archive_mutation
-        location = f.OrganizationLocationFactory.create()
+    def test_archive_appointment_category(self):
+        """ Archive a appointment_category """
+        query = self.appointment_category_archive_mutation
+        appointment_category = f.OrganizationAppointmentCategoryFactory.create()
 
         variables = {
             "input": {
-                "id": self.get_node_id_of_first_location(),
+                "id": self.get_node_id_of_first_appointment_category(),
                 "archived": True
             }
         }
@@ -485,17 +478,17 @@ query getOrganizationLocation($id: ID!) {
             variables=variables
         )
         data = executed.get('data')
-        self.assertEqual(data['archiveOrganizationLocation']['organizationLocation']['archived'], variables['input']['archived'])
+        self.assertEqual(data['archiveOrganizationAppointmentCategory']['organizationAppointmentCategory']['archived'], variables['input']['archived'])
 
 
-    def test_archive_location_anon_user(self):
-        """ Archive a location """
-        query = self.location_archive_mutation
-        location = f.OrganizationLocationFactory.create()
+    def test_archive_appointment_category_anon_user(self):
+        """ Archive a appointment_category """
+        query = self.appointment_category_archive_mutation
+        appointment_category = f.OrganizationAppointmentCategoryFactory.create()
 
         variables = {
             "input": {
-                "id": self.get_node_id_of_first_location(),
+                "id": self.get_node_id_of_first_appointment_category(),
                 "archived": True
             }
         }
@@ -510,14 +503,14 @@ query getOrganizationLocation($id: ID!) {
         self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
-    def test_archive_location_permission_granted(self):
-        """ Allow archiving locations for users with permissions """
-        query = self.location_archive_mutation
+    def test_archive_appointment_category_permission_granted(self):
+        """ Allow archiving appointment_categories for users with permissions """
+        query = self.appointment_category_archive_mutation
 
-        location = f.OrganizationLocationFactory.create()
+        appointment_category = f.OrganizationAppointmentCategoryFactory.create()
         variables = {
             "input": {
-                "id": self.get_node_id_of_first_location(),
+                "id": self.get_node_id_of_first_appointment_category(),
                 "archived": True
             }
         }
@@ -533,17 +526,17 @@ query getOrganizationLocation($id: ID!) {
             variables=variables
         )
         data = executed.get('data')
-        self.assertEqual(data['archiveOrganizationLocation']['organizationLocation']['archived'], variables['input']['archived'])
+        self.assertEqual(data['archiveOrganizationAppointmentCategory']['organizationAppointmentCategory']['archived'], variables['input']['archived'])
 
 
-    def test_archive_location_permission_denied(self):
-        """ Check archive location permission denied error message """
-        query = self.location_archive_mutation
+    def test_archive_appointment_category_permission_denied(self):
+        """ Check archive appointment_category permission denied error message """
+        query = self.appointment_category_archive_mutation
 
-        location = f.OrganizationLocationFactory.create()
+        appointment_category = f.OrganizationAppointmentCategoryFactory.create()
         variables = {
             "input": {
-                "id": self.get_node_id_of_first_location(),
+                "id": self.get_node_id_of_first_appointment_category(),
                 "archived": True
             }
         }
