@@ -30,12 +30,12 @@ import ContentCard from "../../../general/ContentCard"
 import CardHeaderSeparator from "../../../general/CardHeaderSeparator"
 import OrganizationMenu from "../../OrganizationMenu"
 
-import { GET_LOCATION_ROOMS_QUERY } from "./queries"
+import { GET_APPOINTMENTS_QUERY } from "./queries"
 
-const ARCHIVE_LOCATION_ROOM = gql`
-  mutation ArchiveOrganizationLocationRoom($input: ArchiveOrganizationLocationRoomInput!) {
-    archiveOrganizationLocationRoom(input: $input) {
-      organizationLocationRoom {
+const ARCHIVE_APPOINTMENT = gql`
+  mutation ArchiveOrganizationAppointment($input: ArchiveOrganizationAppointmentInput!) {
+    archiveOrganizationAppointment(input: $input) {
+      organizationAppointment {
         id
         archived
       }
@@ -43,7 +43,7 @@ const ARCHIVE_LOCATION_ROOM = gql`
   }
 `
 
-const OrganizationLocationsRooms = ({ t, history, match, archived=false }) => (
+const OrganizationAppointmentCategorysRooms = ({ t, history, match, archived=false }) => (
   <SiteWrapper>
     <div className="my-3 my-md-5">
       <Container>
@@ -57,11 +57,11 @@ const OrganizationLocationsRooms = ({ t, history, match, archived=false }) => (
         </Page.Header>
         <Grid.Row>
           <Grid.Col md={9}>
-            <Query query={GET_LOCATION_ROOMS_QUERY} variables={{ archived, organizationLocation: match.params.location_id }}>
-             {({ loading, error, data: {organizationLocationRooms: location_rooms, organizationLocation: location}, refetch, fetchMore }) => {
+            <Query query={GET_APPOINTMENTS_QUERY} variables={{ archived, organizationAppointmentCategory: match.params.category_id }}>
+             {({ loading, error, data: {organizationAppointments: appointments, organizationAppointmentCategory: location}, refetch, fetchMore }) => {
                 // Loading
                 if (loading) return (
-                  <ContentCard cardTitle={t('organization.location_rooms.title')}>
+                  <ContentCard cardTitle={t('organization.appointments.title')}>
                     <Dimmer active={true}
                             loader={true}>
                     </Dimmer>
@@ -69,8 +69,8 @@ const OrganizationLocationsRooms = ({ t, history, match, archived=false }) => (
                 )
                 // Error
                 if (error) return (
-                  <ContentCard cardTitle={t('organization.location_rooms.title')}>
-                    <p>{t('organization.location_rooms.error_loading')}</p>
+                  <ContentCard cardTitle={t('organization.appointments.title')}>
+                    <p>{t('organization.appointments.error_loading')}</p>
                   </ContentCard>
                 )
                 const headerOptions = <Card.Options>
@@ -88,36 +88,36 @@ const OrganizationLocationsRooms = ({ t, history, match, archived=false }) => (
                 </Card.Options>
 
                 // Empty list
-                if (!location_rooms.edges.length) { return (
-                  <ContentCard cardTitle={t('organization.location_rooms.title')}
+                if (!appointments.edges.length) { return (
+                  <ContentCard cardTitle={t('organization.appointments.title')}
                                headerContent={headerOptions}>
                     <p>
-                    {(!archived) ? t('organization.location_rooms.empty_list') : t("organization.location_rooms.empty_archive")}
+                    {(!archived) ? t('organization.appointments.empty_list') : t("organization.appointments.empty_archive")}
                     </p>
                    
                   </ContentCard>
                 )} else {   
                 // Life's good! :)
                 return (
-                  <ContentCard cardTitle={t('organization.location_rooms.title')}
+                  <ContentCard cardTitle={t('organization.appointments.title')}
                                headerContent={headerOptions}
-                               pageInfo={location_rooms.pageInfo}
+                               pageInfo={appointments.pageInfo}
                                onLoadMore={() => {
                                 fetchMore({
                                   variables: {
-                                    after: location_rooms.pageInfo.endCursor
+                                    after: appointments.pageInfo.endCursor
                                   },
                                   updateQuery: (previousResult, { fetchMoreResult }) => {
-                                    const newEdges = fetchMoreResult.organizationLocationsRooms.edges
-                                    const pageInfo = fetchMoreResult.organizationLocationsRooms.pageInfo
+                                    const newEdges = fetchMoreResult.organizationAppointmentCategorysRooms.edges
+                                    const pageInfo = fetchMoreResult.organizationAppointmentCategorysRooms.pageInfo
 
                                     return newEdges.length
                                       ? {
                                           // Put the new locations at the end of the list and update `pageInfo`
                                           // so we have the new `endCursor` and `hasNextPage` values
-                                          organizationLocationsRooms: {
-                                            __typename: previousResult.organizationLocationsRooms.__typename,
-                                            edges: [ ...previousResult.organizationLocationsRooms.edges, ...newEdges ],
+                                          organizationAppointmentCategorysRooms: {
+                                            __typename: previousResult.organizationAppointmentCategorysRooms.__typename,
+                                            edges: [ ...previousResult.organizationAppointmentCategorysRooms.edges, ...newEdges ],
                                             pageInfo
                                           }
                                         }
@@ -127,7 +127,7 @@ const OrganizationLocationsRooms = ({ t, history, match, archived=false }) => (
                               }} >
                     <div>
                       <Alert type="primary">
-                        <strong>{t('general.location')}</strong> {location.name}
+                        <strong>{t('general.appointment_category')}</strong> {location.name}
                       </Alert>
 
                       <Table>
@@ -138,7 +138,7 @@ const OrganizationLocationsRooms = ({ t, history, match, archived=false }) => (
                           </Table.Row>
                         </Table.Header>
                         <Table.Body>
-                            {location_rooms.edges.map(({ node }) => (
+                            {appointments.edges.map(({ node }) => (
                               <Table.Row key={v4()}>
                                 <Table.Col key={v4()}>
                                   {node.name}
@@ -152,14 +152,14 @@ const OrganizationLocationsRooms = ({ t, history, match, archived=false }) => (
                                   {(node.archived) ? 
                                     <span className='text-muted'>{t('general.unarchive_to_edit')}</span> :
                                     <Button className='btn-sm' 
-                                            onClick={() => history.push("/organization/locations/rooms/edit/" + match.params.location_id + '/' + node.id)}
+                                            onClick={() => history.push("/organization/appointment_categories/appointments/edit/" + match.params.category_id + '/' + node.id)}
                                             color="secondary">
                                       {t('general.edit')}
                                     </Button>
                                   }
                                 </Table.Col>
-                                <Mutation mutation={ARCHIVE_LOCATION_ROOM} key={v4()}>
-                                  {(archiveLocationsRoom, { data }) => (
+                                <Mutation mutation={ARCHIVE_APPOINTMENT} key={v4()}>
+                                  {(archiveAppointmentCategorysRoom, { data }) => (
                                     <Table.Col className="text-right" key={v4()}>
                                       <button className="icon btn btn-link btn-sm" 
                                           title={t('general.archive')} 
@@ -167,15 +167,15 @@ const OrganizationLocationsRooms = ({ t, history, match, archived=false }) => (
                                           onClick={() => {
                                             console.log("clicked archived")
                                             let id = node.id
-                                            archiveLocationsRoom({ variables: {
+                                            archiveAppointmentCategorysRoom({ variables: {
                                               input: {
                                               id,
                                               archived: !archived
                                               }
                                       }, refetchQueries: [
                                           { 
-                                            query: GET_LOCATION_ROOMS_QUERY, 
-                                            variables: {"archived": archived, organizationLocation: match.params.location_id }
+                                            query: GET_APPOINTMENTS_QUERY, 
+                                            variables: {"archived": archived, organizationAppointmentCategory: match.params.category_id }
                                           }
                                       ]}).then(({ data }) => {
                                         console.log('got data', data);
@@ -207,10 +207,10 @@ const OrganizationLocationsRooms = ({ t, history, match, archived=false }) => (
           </Grid.Col>
           <Grid.Col md={3}>
             <HasPermissionWrapper permission="add"
-                                  resource="organizationlocationroom">
+                                  resource="organizationappointment">
               <Button color="primary btn-block mb-6"
-                      onClick={() => history.push("/organization/locations/rooms/add/" + match.params.location_id)}>
-                <Icon prefix="fe" name="plus-circle" /> {t('organization.location_rooms.add')}
+                      onClick={() => history.push("/organization/appointment_categories/appointments/add/" + match.params.category_id)}>
+                <Icon prefix="fe" name="plus-circle" /> {t('organization.appointments.add')}
               </Button>
             </HasPermissionWrapper>
             <OrganizationMenu active_link='locations'/>
@@ -221,4 +221,4 @@ const OrganizationLocationsRooms = ({ t, history, match, archived=false }) => (
   </SiteWrapper>
 );
 
-export default withTranslation()(withRouter(OrganizationLocationsRooms))
+export default withTranslation()(withRouter(OrganizationAppointmentCategorysRooms))
