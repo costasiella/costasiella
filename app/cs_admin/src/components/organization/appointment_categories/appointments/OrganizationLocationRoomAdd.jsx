@@ -29,11 +29,11 @@ import OrganizationMenu from "../../OrganizationMenu"
 
 
 const ADD_LOCATION_ROOM = gql`
-  mutation CreateOrganizationLocationRoom($input: CreateOrganizationLocationRoomInput!) {
-    createOrganizationLocationRoom(input: $input) {
-      organizationLocationRoom {
+  mutation CreateOrganizationAppointment($input: CreateOrganizationAppointmentInput!) {
+    createOrganizationAppointment(input: $input) {
+      organizationAppointment {
         id
-        organizationLocation {
+        organizationAppointment {
           id
           name
         }
@@ -45,7 +45,7 @@ const ADD_LOCATION_ROOM = gql`
   }
 `
 
-const return_url = "/organization/locations/rooms/"
+const return_url = "/organization/appointment_categories/appointments/"
 
 const OrganizationLocationRoomAdd = ({ t, history, match }) => (
   <SiteWrapper>
