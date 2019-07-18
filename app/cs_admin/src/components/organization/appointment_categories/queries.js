@@ -1,6 +1,6 @@
 import gql from "graphql-tag"
 
-export const GET_CATEGORIES_QUERY = gql`
+export const GET_APPOINTMENT_CATEGORIES_QUERY = gql`
   query OrganizationAppointmentCategories($after: String, $before: String, $archived: Boolean) {
     organizationAppointmentCategories(first: 15, before: $before, after: $after, archived: $archived) {
       pageInfo {
@@ -21,7 +21,7 @@ export const GET_CATEGORIES_QUERY = gql`
   }
 `
 
-export const GET_CATEGORY_QUERY = gql`
+export const GET_APPOINTMENT_CATEGORY_QUERY = gql`
   query OrganizationAppointmentCategory($id: ID!) {
     organizationAppointmentCategory(id:$id) {
       id
