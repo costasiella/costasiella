@@ -73,6 +73,11 @@ class OrganizationHome extends Component {
                       <StampCard header={<small>{t('organization.subscriptions.title')}</small>} footer={t('')} color="blue" icon="edit" />
                     </div>
                   </Grid.Col>
+                  <Grid.Col md={4} lg={4}>
+                    <div onClick={() => history.push('/organization/appointment_categories')}>
+                      <StampCard header={<small>{t('organization.appointments.title')}</small>} footer={t('')} color="blue" icon="calendar" />
+                    </div>
+                  </Grid.Col>
                 </Grid.Row>
               </Grid.Col>
               <Grid.Col md={3}>
