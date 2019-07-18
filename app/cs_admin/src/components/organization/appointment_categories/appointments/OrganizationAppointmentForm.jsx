@@ -13,7 +13,7 @@ import {
 } from "tabler-react"
 
 
-const OrganizationLocationRoomForm = ({ t, history, match, isSubmitting, errors, values, return_url }) => (
+const OrganizationAppointmentForm = ({ t, history, match, isSubmitting, errors, values, return_url }) => (
   <FoForm>
       <Card.Body>
           <Form.Group>
@@ -24,7 +24,7 @@ const OrganizationLocationRoomForm = ({ t, history, match, isSubmitting, errors,
                 name="displayPublic" 
                 checked={values.displayPublic} />
               <span className="custom-switch-indicator" ></span>
-              <span className="custom-switch-description">{t('organization.location_room.public')}</span>
+              <span className="custom-switch-description">{t('organization.appointment.public')}</span>
             </Form.Label>
             <ErrorMessage name="displayPublic" component="div" />   
           </Form.Group>    
@@ -53,4 +53,4 @@ const OrganizationLocationRoomForm = ({ t, history, match, isSubmitting, errors,
   </FoForm>
 );
 
-export default withTranslation()(withRouter(OrganizationLocationRoomForm))
+export default withTranslation()(withRouter(OrganizationAppointmentForm))
