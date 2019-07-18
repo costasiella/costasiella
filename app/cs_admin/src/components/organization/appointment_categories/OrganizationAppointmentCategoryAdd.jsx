@@ -88,6 +88,7 @@ const OrganizationAppointmentCategoryAdd = ({ t, history }) => (
                             isSubmitting={isSubmitting}
                             errors={errors}
                             values={values}
+                            return_url={return_url}
                           />
                         )}
                     </Formik>

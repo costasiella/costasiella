@@ -1,6 +1,7 @@
 import React from 'react'
 import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
+import { Link } from 'react-router-dom'
 
 import {
     Button,
@@ -42,9 +43,11 @@ const OrganizationAppointmentCategoryForm = ({ t, history, isSubmitting, values,
         >
           {t('general.submit')}
         </Button>
-        <Button color="link" onClick={() => history.push(return_url)}>
-            {t('general.cancel')}
-        </Button>
+        <Link to={return_url}>
+          <Button color="link" type="button">
+              {t('general.cancel')}
+          </Button>
+        </Link>
     </Card.Footer>
   </FoForm>
 )
