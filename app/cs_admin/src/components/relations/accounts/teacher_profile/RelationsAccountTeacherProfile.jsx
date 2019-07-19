@@ -157,7 +157,7 @@ class RelationsAccountProfile extends Component {
                     <Grid.Col md={3}>
                       <ProfileCardSmall user={initialData}/>
                       <ProfileMenu 
-                        active_link='profile'
+                        active_link='teacher_profile'
                         account_id={account_id}
                         account={account}
                       /> 

@@ -14,7 +14,7 @@ let profile_active
 let memberships_active
 let subscriptions_active
 let classpasses_active
-
+let teacher_profile_active
 
 const ProfileMenu = ({ t, account_id, active_link, account=null }) => (
     <List.Group transparent={true}>
@@ -22,6 +22,7 @@ const ProfileMenu = ({ t, account_id, active_link, account=null }) => (
         {(active_link === 'memberships') ? memberships_active = true: memberships_active = false}
         {(active_link === 'subscriptions') ? subscriptions_active = true: subscriptions_active = false}
         {(active_link === 'classpasses') ? classpasses_active = true: classpasses_active = false}
+        {(active_link === 'teacher_profile') ? teacher_profile_active = true: teacher_profile_active = false}
         
 
         <List.GroupItem
