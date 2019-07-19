@@ -73,20 +73,15 @@ class RelationsAccountProfile extends Component {
                     return <p>{t('general.error_sad_smiley')}</p>
                   }
                   
-                  const initialData = data.account;
+                  const account = data.account
+                  const initialData = data.accountTeacherProfile;
                   console.log('query data')
                   console.log(data)
 
-                  // DatePicker doesn't like a string as an initial value
-                  // This makes it a happy DatePicker :)
-                  let dateOfBirth = null
-                  if (initialData.dateOfBirth) {
-                    dateOfBirth = new Date(initialData.dateOfBirth)
-                  }
 
                   return (
                     <div>
-                      <Page.Header title={initialData.firstName + " " + initialData.lastName}>
+                      <Page.Header title={account.firstName + " " + account.lastName}>
                         <RelationsAccountsBack />
                       </Page.Header>
                       <Grid.Row>
@@ -164,6 +159,7 @@ class RelationsAccountProfile extends Component {
                       <ProfileMenu 
                         active_link='profile'
                         account_id={account_id}
+                        account={account}
                       /> 
                     </Grid.Col>
                   </Grid.Row>

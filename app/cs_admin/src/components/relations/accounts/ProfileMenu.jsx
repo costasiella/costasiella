@@ -16,7 +16,7 @@ let subscriptions_active
 let classpasses_active
 
 
-const ProfileMenu = ({ t, account_id, active_link }) => (
+const ProfileMenu = ({ t, account_id, active_link, account=null }) => (
     <List.Group transparent={true}>
         {(active_link === 'profile') ? profile_active = true: profile_active = false}
         {(active_link === 'memberships') ? memberships_active = true: memberships_active = false}
@@ -72,6 +72,21 @@ const ProfileMenu = ({ t, account_id, active_link }) => (
             {t('relations.account.classpasses.title')}
             </List.GroupItem>
         </HasPermissionWrapper>
+        { (account) ? (account.teacher) ?
+            <HasPermissionWrapper 
+                permission="view"
+                resource="accountteacherprofile">
+                <List.GroupItem
+                    key={v4()}
+                    className="d-flex align-items-center"
+                    to={"#/relations/accounts/" + account_id + "/teacher_profile"}
+                    icon="paperclip"
+                    active={teacher_profile_active}
+                    >
+                {t('relations.account.teacher_profile.title')}
+                </List.GroupItem>
+            </HasPermissionWrapper>
+        : "" : "" }
     </List.Group>
 );
 
