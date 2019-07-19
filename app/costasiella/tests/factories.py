@@ -98,6 +98,16 @@ class OrganizationAppointmentCategoryFactory(factory.DjangoModelFactory):
     name = "First category"
 
 
+class OrganizationAppointmentFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.OrganizationAppointment
+
+    organization_appointment_category = factory.SubFactory(OrganizationAppointmentCategoryFactory)
+    archived = False
+    display_public = True
+    name = "First appointment"
+
+
 class OrganizationLevelFactory(factory.DjangoModelFactory):
     class Meta:
         model = models.OrganizationLevel
