@@ -15,6 +15,7 @@ export const GET_ACCOUNT_TEACHER_PROFILE_QUERY = gql`
     }
     account(id:$accountId) {
       id
+      teacher
       firstName
       lastName
       email
