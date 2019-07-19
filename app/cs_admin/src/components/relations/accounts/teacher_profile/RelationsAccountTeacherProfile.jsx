@@ -8,7 +8,7 @@ import { withRouter } from "react-router"
 import { Formik } from 'formik'
 import { toast } from 'react-toastify'
 
-import { GET_ACCOUNTS_QUERY, GET_ACCOUNT_QUERY } from './queries'
+import { GET_ACCOUNT_TEACHER_PROFILE_QUERY } from './queries'
 import { ACCOUNT_TEACHER_PROFILE_SCHEMA } from './yupSchema'
 
 import {
@@ -56,15 +56,14 @@ class RelationsAccountProfile extends Component {
   render() {
     const t = this.props.t
     const match = this.props.match
-    const history = this.props.history
     const account_id = match.params.account_id
-    const return_url = "/relations/accounts"
+    const id = match.params.id
 
     return (
       <SiteWrapper>
         <div className="my-3 my-md-5">
           <Container>
-            <Query query={GET_ACCOUNT_QUERY} variables={{ id: account_id }} >
+            <Query query={GET_ACCOUNT_TEACHER_PROFILE_QUERY} variables={{ accountId: account_id, id: id }} >
               {({ loading, error, data, refetch }) => {
                   // Loading
                   if (loading) return <p>{t('general.loading_with_dots')}</p>
@@ -94,69 +93,46 @@ class RelationsAccountProfile extends Component {
                         <Grid.Col md={9}>
                         <Card>
                           <Card.Header>
-                            <Card.Title>{t('relations.accounts.profile')}</Card.Title>
+                            <Card.Title>{t('relations.account.teacher_profile.title')}</Card.Title>
                             {console.log(match.params.account_id)}
                           </Card.Header>
                         <Mutation mutation={UPDATE_ACCOUNT}> 
-                         {(updateAccount, { data }) => (
+                         {(updateAccountTeacherProfile, { data }) => (
                           <Formik
                             initialValues={{ 
-                              customer: initialData.customer, 
-                              teacher: initialData.teacher, 
-                              employee: initialData.employee, 
-                              firstName: initialData.firstName, 
-                              lastName: initialData.lastName, 
-                              email: initialData.email,
-                              dateOfBirth: dateOfBirth,
-                              gender: initialData.gender,
-                              emergency: initialData.emergency,
-                              phone: initialData.phone,
-                              mobile: initialData.mobile,
-                              address: initialData.address,
-                              postcode: initialData.postcode,
-                              city: initialData.city,
-                              country: initialData.country,
+                              classes: initialData.classes, 
+                              appointments: initialData.appointments, 
+                              events: initialData.events, 
+                              role: initialData.role, 
+                              education: initialData.education, 
+                              bio: initialData.bio,
+                              urlBio: initialData.urlBio,
+                              urlWebsite: initialData.urlWebsite,
                             }}
                             validationSchema={ACCOUNT_TEACHER_PROFILE_SCHEMA}
                             onSubmit={(values, { setSubmitting }) => {
                                 console.log('submit values:')
                                 console.log(values)
 
-                                let dateOfBirth
-                                if (values.dateOfBirth) {
-                                  dateOfBirth = dateToLocalISO(values.dateOfBirth)
-                                } else {
-                                  dateOfBirth = values.dateOfBirth
-                                }
-
-                                updateAccount({ variables: {
+                                updateAccountTeacherProfile({ variables: {
                                   input: {
-                                    id: match.params.account_id,
-                                    customer: values.customer,
-                                    teacher: values.teacher,
-                                    employee: values.employee,
-                                    firstName: values.firstName,
-                                    lastName: values.lastName,
-                                    email: values.email,
-                                    dateOfBirth: dateOfBirth,
-                                    gender: values.gender,
-                                    emergency: values.emergency,
-                                    phone: values.phone,
-                                    mobile: values.mobile,
-                                    address: values.address,
-                                    postcode: values.postcode,
-                                    city: values.city,
-                                    country: values.country
+                                    id: id,
+                                    classes: initialData.classes, 
+                                    appointments: initialData.appointments, 
+                                    events: initialData.events, 
+                                    role: initialData.role, 
+                                    education: initialData.education, 
+                                    bio: initialData.bio,
+                                    urlBio: initialData.urlBio,
+                                    urlWebsite: initialData.urlWebsite,
                                   }
                                 }, refetchQueries: [
-                                    // Refetch list
-                                    {query: GET_ACCOUNTS_QUERY, variables: get_list_query_variables()},
-                                    // Refresh local cached results for this account
-                                    {query: GET_ACCOUNT_QUERY, variables: {"id": match.params.account_id}}
+                                    // Refresh local cached results for this account teacher profile
+                                    {query: GET_ACCOUNT_TEACHER_PROFILE_QUERY, variables: {id: id, accountId: account_id}}
                                 ]})
                                 .then(({ data }) => {
                                     console.log('got data', data)
-                                    toast.success((t('relations.accounts.toast_edit_success')), {
+                                    toast.success((t('relations.account.teacher_profile.toast_edit_success')), {
                                         position: toast.POSITION.BOTTOM_RIGHT
                                       })
                                     setSubmitting(false)

@@ -14,9 +14,7 @@ import {
   Grid
 } from "tabler-react"
 
-
-import CSDatePicker from "../../ui/CSDatePicker"
-import ISO_COUNTRY_CODES from "../../../tools/iso_country_codes"
+import { tinymceBasicConf } from "../../../../plugin_config/tinymce"
 
 
 const RelationsAccountProfileForm = ({ t, history, isSubmitting, errors, values, return_url, setFieldTouched, setFieldValue }) => (
@@ -29,12 +27,12 @@ const RelationsAccountProfileForm = ({ t, history, isSubmitting, errors, values,
                   <Field 
                   className="custom-switch-input"
                   type="checkbox" 
-                  name="customer" 
-                  checked={values.customer} />
+                  name="classes" 
+                  checked={values.classes} />
                   <span className="custom-switch-indicator" ></span>
-                  <span className="custom-switch-description">{t('general.customer')}</span>
+                  <span className="custom-switch-description">{t('relations.account.teacher_profile.classes')}</span>
               </Form.Label>
-              <ErrorMessage name="customer" component="div" />   
+              <ErrorMessage name="classes" component="div" />   
             </Form.Group>  
           </Grid.Col>
           <Grid.Col>
@@ -43,12 +41,12 @@ const RelationsAccountProfileForm = ({ t, history, isSubmitting, errors, values,
                   <Field 
                   className="custom-switch-input"
                   type="checkbox" 
-                  name="teacher" 
-                  checked={values.teacher} />
+                  name="events" 
+                  checked={values.events} />
                   <span className="custom-switch-indicator" ></span>
-                  <span className="custom-switch-description">{t('general.teacher')}</span>
+                  <span className="custom-switch-description">{t('relations.account.teacher_profile.events')}</span>
               </Form.Label>
-              <ErrorMessage name="teacher" component="div" />   
+              <ErrorMessage name="events" component="div" />   
             </Form.Group>  
           </Grid.Col>
           <Grid.Col>
@@ -57,144 +55,64 @@ const RelationsAccountProfileForm = ({ t, history, isSubmitting, errors, values,
                   <Field 
                   className="custom-switch-input"
                   type="checkbox" 
-                  name="employee" 
-                  checked={values.employee} />
+                  name="appointments" 
+                  checked={values.appointments} />
                   <span className="custom-switch-indicator" ></span>
-                  <span className="custom-switch-description">{t('general.employee')}</span>
+                  <span className="custom-switch-description">{t('relations.account.teacher_profile.appointments')}</span>
               </Form.Label>
-              <ErrorMessage name="employee" component="div" />   
+              <ErrorMessage name="appointments" component="div" />   
             </Form.Group>  
           </Grid.Col>
         </Grid.Row>
         <Grid.Row>
           <Grid.Col>
-            <Form.Group label={t('general.first_name')}>
+            <Form.Group label={t('general.role')}>
               <Field type="text" 
                       name="firstName" 
-                      className={(errors.firstName) ? "form-control is-invalid" : "form-control"} 
+                      className={(errors.role) ? "form-control is-invalid" : "form-control"} 
                       autoComplete="off" />
-              <ErrorMessage name="firstName" component="span" className="invalid-feedback" />
-            </Form.Group>
-          </Grid.Col>
-          <Grid.Col>
-            <Form.Group label={t('general.last_name')}>
-              <Field type="text" 
-                      name="lastName" 
-                      className={(errors.lastName) ? "form-control is-invalid" : "form-control"} 
-                      autoComplete="off" />
-              <ErrorMessage name="lastName" component="span" className="invalid-feedback" />
+              <ErrorMessage name="role" component="span" className="invalid-feedback" />
             </Form.Group>
           </Grid.Col>
         </Grid.Row>
-        <Grid.Row>
-         <Grid.Col>
-            <Form.Group label={t('general.date_of_birth')}>
-              <CSDatePicker 
-                selected={values.dateOfBirth}
-                onChange={(date) => setFieldValue("dateOfBirth", date)}
-                onBlur={() => setFieldTouched("dateOfBirth", true)}
-              />
-              <ErrorMessage name="dateOfBirth" component="span" className="invalid-feedback" />
-            </Form.Group>
-          </Grid.Col>
-          <Grid.Col>
-            <Form.Group label={t('general.gender')}>
-              <Field component="select" 
-                    name="gender" 
-                    className={(errors.organizationMembership) ? "form-control is-invalid" : "form-control"} 
-                    autoComplete="off">
-                <option value=""></option>
-                <option value="F">{t("genders.female")}</option>
-                <option value="M">{t("genders.male")}</option>
-                <option value="X">{t("genders.other")}</option>
-              </Field>
-              <ErrorMessage name="gender" component="span" className="invalid-feedback" />
-            </Form.Group> 
-          </Grid.Col>
-        </Grid.Row>
+        <Form.Group label={t('general.education')}>
+          <Editor
+              textareaName="education"
+              initialValue={values.education}
+              init={tinymceBasicConf}
+              onChange={(e) => setFieldValue("education", e.target.getContent())}
+              onBlur={() => setFieldTouched("education", true)}
+            />
+          <ErrorMessage name="education" component="span" className="invalid-feedback" />
+        </Form.Group>
+        <Form.Group label={t('general.bio')}>
+          <Editor
+              textareaName="bio"
+              initialValue={values.bio}
+              init={tinymceBasicConf}
+              onChange={(e) => setFieldValue("bio", e.target.getContent())}
+              onBlur={() => setFieldTouched("bio", true)}
+            />
+          <ErrorMessage name="bio" component="span" className="invalid-feedback" />
+        </Form.Group>
         <Grid.Row>
           <Grid.Col>
-            <Form.Group label={t('general.email')}>
+            <Form.Group label={t('relations.account.teacher_profile.url_bio')}>
               <Field type="text" 
-                      name="email" 
-                      className={(errors.email) ? "form-control is-invalid" : "form-control"} 
+                      name="urlBio" 
+                      className={(errors.urlBio) ? "form-control is-invalid" : "form-control"} 
                       autoComplete="off" />
-              <ErrorMessage name="email" component="span" className="invalid-feedback" />
+              <ErrorMessage name="urlBio" component="span" className="invalid-feedback" />
             </Form.Group>
           </Grid.Col>
           <Grid.Col>
-            <Form.Group label={t('relations.accounts.emergency')}>
+            <Form.Group label={t('relations.account.teacher_profile.url_website')}>
               <Field type="text" 
-                     name="emergency" 
-                     className={(errors.emergency) ? "form-control is-invalid" : "form-control"} 
-                     autoComplete="off" />
-              <ErrorMessage name="emergency" component="span" className="invalid-feedback" />
-            </Form.Group>
-          </Grid.Col>
-        </Grid.Row>
-        <Grid.Row>
-          <Grid.Col>
-            <Form.Group label={t('general.phone')}>
-              <Field type="text" 
-                      name="phone" 
-                      className={(errors.phone) ? "form-control is-invalid" : "form-control"} 
+                      name="urlWebsite" 
+                      className={(errors.urlWebsite) ? "form-control is-invalid" : "form-control"} 
                       autoComplete="off" />
-              <ErrorMessage name="phone" component="span" className="invalid-feedback" />
+              <ErrorMessage name="urlWebsite" component="span" className="invalid-feedback" />
             </Form.Group>
-          </Grid.Col>
-          <Grid.Col>
-            <Form.Group label={t('general.mobile')}>
-              <Field type="text" 
-                     name="mobile" 
-                     className={(errors.mobile) ? "form-control is-invalid" : "form-control"} 
-                     autoComplete="off" />
-              <ErrorMessage name="mobile" component="span" className="invalid-feedback" />
-            </Form.Group>
-          </Grid.Col>
-        </Grid.Row>
-        <Grid.Row>
-          <Grid.Col>
-            <Form.Group label={t('general.address')}>
-              <Field type="text" 
-                      name="address" 
-                      className={(errors.address) ? "form-control is-invalid" : "form-control"} 
-                      autoComplete="off" />
-              <ErrorMessage name="address" component="span" className="invalid-feedback" />
-            </Form.Group>
-          </Grid.Col>
-          <Grid.Col>
-            <Form.Group label={t('general.postcode')}>
-              <Field type="text" 
-                     name="postcode" 
-                     className={(errors.postcode) ? "form-control is-invalid" : "form-control"} 
-                     autoComplete="off" />
-              <ErrorMessage name="postcode" component="span" className="invalid-feedback" />
-            </Form.Group>
-          </Grid.Col>
-        </Grid.Row>
-        <Grid.Row>
-          <Grid.Col>
-            <Form.Group label={t('general.city')}>
-              <Field type="text" 
-                      name="city" 
-                      className={(errors.city) ? "form-control is-invalid" : "form-control"} 
-                      autoComplete="off" />
-              <ErrorMessage name="city" component="span" className="invalid-feedback" />
-            </Form.Group>
-          </Grid.Col>
-          <Grid.Col>
-            <Form.Group label={t('general.country')}>
-              <Field component="select" 
-                     name="country" 
-                     className={(errors.country) ? "form-control is-invalid" : "form-control"} 
-                     autoComplete="off">
-                <option value=""></option>
-                { ISO_COUNTRY_CODES.map(
-                    country => <option value={country.Code} key={v4()}>{country.Name}</option>
-                )}
-              </Field>
-              <ErrorMessage name="gender" component="span" className="invalid-feedback" />
-            </Form.Group> 
           </Grid.Col>
         </Grid.Row>
       </Card.Body>
