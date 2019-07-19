@@ -33,10 +33,6 @@ export const GET_APPOINTMENT_QUERY = gql`
   query OrganizationAppointment($id: ID!) {
     organizationAppointment(id:$id) {
       id
-      organizationAppointmentCategory {
-        id
-        name
-      }
       name
       displayPublic
       archived

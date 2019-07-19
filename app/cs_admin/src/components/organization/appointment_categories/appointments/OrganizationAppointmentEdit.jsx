@@ -10,7 +10,7 @@ import { toast } from 'react-toastify'
 
 import { GET_APPOINTMENTS_QUERY, GET_APPOINTMENT_QUERY } from './queries'
 import { APPOINTMENT_SCHEMA } from './yupSchema'
-import OrganizationLocationRoomForm from './OrganizationAppointmentForm'
+import OrganizationAppointmentForm from './OrganizationAppointmentForm'
 
 import {
   Page,
@@ -28,14 +28,10 @@ import OrganizationMenu from "../../OrganizationMenu"
 
 
 const UPDATE_APPOINTMENT = gql`
-  mutation UpdateOrganizationLocationRoom($input: UpdateOrganizationLocationRoomInput!) {
-    updateOrganizationLocationRoom(input: $input) {
-      organizationLocationRoom {
+  mutation UpdateOrganizationAppointment($input: UpdateOrganizationAppointmentInput!) {
+    updateOrganizationAppointment(input: $input) {
+      organizationAppointment {
         id
-        organizationLocation {
-          id
-          name
-        }
         name
         displayPublic
       }
@@ -47,7 +43,7 @@ const UPDATE_APPOINTMENT = gql`
 class OrganizationAppointmentEdit extends Component {
   constructor(props) {
     super(props)
-    console.log("Organization location room edit props:")
+    console.log("Organization appointment edit props:")
     console.log(props)
   }
 
@@ -63,7 +59,7 @@ class OrganizationAppointmentEdit extends Component {
       <SiteWrapper>
         <div className="my-3 my-md-5">
           <Container>
-            <Page.Header title={t('general.organization')} />
+            <Page.Header title={t('organization.title')} />
             <Grid.Row>
               <Grid.Col md={9}>
               <Card>
@@ -81,7 +77,7 @@ class OrganizationAppointmentEdit extends Component {
                       return <p>{t('general.error_sad_smiley')}</p>
                     }
                     
-                    const initialData = data.OrganizationAppointmentEdit;
+                    const initialData = data.organizationAppointment;
                     console.log('query data')
                     console.log(data)
 
