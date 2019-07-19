@@ -10,6 +10,7 @@ from .finance_taxrate import FinanceTaxRate
 
 from .organization_appointment import OrganizationAppointment
 from .organization_appointment_category import OrganizationAppointmentCategory
+from .organization_appointment_price import OrganizationAppointmentPrice
 from .organization_classpass import OrganizationClasspass
 from .organization_classpass_group import OrganizationClasspassGroup
 from .organization_classpass_group_classpass import OrganizationClasspassGroupClasspass
