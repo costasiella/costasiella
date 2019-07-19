@@ -2,6 +2,7 @@ from .account import Account
 from .account_classpass import AccountClasspass
 from .account_membership import AccountMembership
 from .account_subscription import AccountSubscription
+from .account_teacher_profile import AccountTeacherProfile
 
 from .finance_costcenter import FinanceCostCenter
 from .finance_glaccount import FinanceGLAccount
