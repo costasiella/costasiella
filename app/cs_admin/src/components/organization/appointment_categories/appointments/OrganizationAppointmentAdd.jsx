@@ -51,7 +51,7 @@ const OrganizationAppointmentAdd = ({ t, history, match }) => (
   <SiteWrapper>
     <div className="my-3 my-md-5">
       <Container>
-        <Page.Header title="Organization" />
+        <Page.Header title={t('organization.title')} />
         <Grid.Row>
           <Grid.Col md={9}>
           <Card>

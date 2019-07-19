@@ -8,9 +8,9 @@ import { withRouter } from "react-router"
 import { Formik, Form as FoForm, Field, ErrorMessage } from 'formik'
 import { toast } from 'react-toastify'
 
-import { GET_LOCATION_ROOMS_QUERY, GET_LOCATION_ROOM_QUERY } from './queries'
-import { LOCATION_ROOM_SCHEMA } from './yupSchema'
-import OrganizationLocationRoomForm from './OrganizationLocationRoomForm'
+import { GET_APPOINTMENTS_QUERY, GET_APPOINTMENT_QUERY } from './queries'
+import { APPOINTMENT_SCHEMA } from './yupSchema'
+import OrganizationLocationRoomForm from './OrganizationAppointmentForm'
 
 import {
   Page,
@@ -27,7 +27,7 @@ import HasPermissionWrapper from "../../../HasPermissionWrapper"
 import OrganizationMenu from "../../OrganizationMenu"
 
 
-const UPDATE_LOCATION_ROOM = gql`
+const UPDATE_APPOINTMENT = gql`
   mutation UpdateOrganizationLocationRoom($input: UpdateOrganizationLocationRoomInput!) {
     updateOrganizationLocationRoom(input: $input) {
       organizationLocationRoom {
@@ -44,7 +44,7 @@ const UPDATE_LOCATION_ROOM = gql`
 `
 
 
-class OrganizationLocationRoomEdit extends Component {
+class OrganizationAppointmentEdit extends Component {
   constructor(props) {
     super(props)
     console.log("Organization location room edit props:")
@@ -56,22 +56,22 @@ class OrganizationLocationRoomEdit extends Component {
     const match = this.props.match
     const history = this.props.history
     const id = match.params.id
-    const location_id = match.params.location_id
-    const return_url = "/organization/locations/rooms/" + location_id
+    const category_id = match.params.category_id
+    const return_url = "/organization/appointment_categories/appointments/" + category_id
 
     return (
       <SiteWrapper>
         <div className="my-3 my-md-5">
           <Container>
-            <Page.Header title="Organization" />
+            <Page.Header title={t('general.organization')} />
             <Grid.Row>
               <Grid.Col md={9}>
               <Card>
                 <Card.Header>
-                  <Card.Title>{t('organization.location_rooms.title_edit')}</Card.Title>
+                  <Card.Title>{t('organization.appointment.title_edit')}</Card.Title>
                   {console.log(match.params.id)}
                 </Card.Header>
-                <Query query={GET_LOCATION_ROOM_QUERY} variables={{ id }} >
+                <Query query={GET_APPOINTMENT_QUERY} variables={{ id }} >
                 {({ loading, error, data, refetch }) => {
                     // Loading
                     if (loading) return <p>{t('general.loading_with_dots')}</p>
@@ -81,20 +81,20 @@ class OrganizationLocationRoomEdit extends Component {
                       return <p>{t('general.error_sad_smiley')}</p>
                     }
                     
-                    const initialData = data.organizationLocationRoom;
+                    const initialData = data.OrganizationAppointmentEdit;
                     console.log('query data')
                     console.log(data)
 
                     return (
                       
-                      <Mutation mutation={UPDATE_LOCATION_ROOM} onCompleted={() => history.push(return_url)}> 
+                      <Mutation mutation={UPDATE_APPOINTMENT} onCompleted={() => history.push(return_url)}> 
                       {(updateLocation, { data }) => (
                           <Formik
                               initialValues={{ 
                                 name: initialData.name, 
                                 displayPublic: initialData.displayPublic 
                               }}
-                              validationSchema={LOCATION_ROOM_SCHEMA}
+                              validationSchema={APPOINTMENT_SCHEMA}
                               onSubmit={(values, { setSubmitting }) => {
                                   console.log('submit values:')
                                   console.log(values)
@@ -106,12 +106,12 @@ class OrganizationLocationRoomEdit extends Component {
                                       displayPublic: values.displayPublic 
                                     }
                                   }, refetchQueries: [
-                                    {query: GET_LOCATION_ROOMS_QUERY,
-                                      variables: {"archived": false, "organizationLocation": match.params.location_id }}
+                                    {query: GET_APPOINTMENTS_QUERY,
+                                      variables: {"archived": false, "organizationAppointmentCategory": match.params.category_id }}
                                   ]})
                                   .then(({ data }) => {
                                       console.log('got data', data)
-                                      toast.success((t('organization.location_rooms.toast_edit_success')), {
+                                      toast.success((t('organization.appointment.toast_edit_success')), {
                                           position: toast.POSITION.BOTTOM_RIGHT
                                         })
                                     }).catch((error) => {
@@ -124,7 +124,7 @@ class OrganizationLocationRoomEdit extends Component {
                               }}
                               >
                               {({ isSubmitting, errors, values }) => (
-                                <OrganizationLocationRoomForm
+                                <OrganizationAppointmentForm
                                 isSubmitting={isSubmitting}
                                 errors={errors}
                                 values={values}
@@ -140,7 +140,7 @@ class OrganizationLocationRoomEdit extends Component {
               </Grid.Col>
               <Grid.Col md={3}>
                 <HasPermissionWrapper permission="change"
-                                      resource="organizationlocationroom">
+                                      resource="organizationappointment">
                   <Button color="primary btn-block mb-6"
                           onClick={() => history.push(return_url)}>
                     <Icon prefix="fe" name="chevrons-left" /> {t('general.back')}
@@ -156,4 +156,4 @@ class OrganizationLocationRoomEdit extends Component {
   }
 
 
-export default withTranslation()(withRouter(OrganizationLocationRoomEdit))
+export default withTranslation()(withRouter(OrganizationAppointmentEdit))
