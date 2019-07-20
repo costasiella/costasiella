@@ -34,7 +34,7 @@ const ProfileMenu = ({ t, account_id, active_link }) => (
       console.log('account in profile menu')
       console.log(account)
 
-      return (       
+      return (
         <List.Group transparent={true}>
             {(active_link === 'profile') ? profile_active = true: profile_active = false}
             {(active_link === 'memberships') ? memberships_active = true: memberships_active = false}

@@ -14,10 +14,12 @@ import {
   Grid
 } from "tabler-react"
 
+
+import { Editor } from '@tinymce/tinymce-react'
 import { tinymceBasicConf } from "../../../../plugin_config/tinymce"
 
 
-const RelationsAccountProfileForm = ({ t, history, isSubmitting, errors, values, return_url, setFieldTouched, setFieldValue }) => (
+const RelationsAccountTeacherProfileForm = ({ t, history, isSubmitting, errors, values, return_url, setFieldTouched, setFieldValue }) => (
   <FoForm>
       <Card.Body>
         <Grid.Row>
@@ -133,5 +135,5 @@ const RelationsAccountProfileForm = ({ t, history, isSubmitting, errors, values,
   </FoForm>
 )
 
-export default withTranslation()(withRouter(RelationsAccountProfileForm))
+export default withTranslation()(withRouter(RelationsAccountTeacherProfileForm))
 

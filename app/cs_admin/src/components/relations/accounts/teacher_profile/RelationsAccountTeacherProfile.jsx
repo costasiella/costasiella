@@ -19,17 +19,13 @@ import {
   Card,
   Container
 } from "tabler-react"
-import SiteWrapper from "../../SiteWrapper"
-import HasPermissionWrapper from "../../HasPermissionWrapper"
-import { dateToLocalISO } from '../../../tools/date_tools'
-import ProfileCardSmall from "../../ui/ProfileCardSmall"
+import SiteWrapper from "../../../SiteWrapper"
+import ProfileCardSmall from "../../../ui/ProfileCardSmall"
 
-import { get_list_query_variables } from "./tools"
-import RelationsAccountsBack from "./RelationsAccountsBack"
+import RelationsAccountsBack from "../RelationsAccountsBack"
 import RelationsAccountProfileForm from "./RelationsAccountTeacherProfileForm"
 
-// import OrganizationMenu from "../OrganizationMenu"
-import ProfileMenu from "./ProfileMenu"
+import ProfileMenu from "../ProfileMenu"
 
 
 const UPDATE_ACCOUNT = gql`
@@ -46,7 +42,7 @@ const UPDATE_ACCOUNT = gql`
 `
 
 
-class RelationsAccountProfile extends Component {
+class RelationsAccountTeacherProfile extends Component {
   constructor(props) {
     super(props)
     console.log("Organization profile props:")
@@ -172,4 +168,4 @@ class RelationsAccountProfile extends Component {
   }
 
 
-export default withTranslation()(withRouter(RelationsAccountProfile))
+export default withTranslation()(withRouter(RelationsAccountTeacherProfile))

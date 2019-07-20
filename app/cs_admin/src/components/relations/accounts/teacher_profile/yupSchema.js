@@ -1,7 +1,7 @@
 import { t } from 'i18next'
 import * as Yup from 'yup'
 
-export const ACCOUNT_TEAHER_PROFILE_SCHEMA = Yup.object().shape({
+export const ACCOUNT_TEACHER_PROFILE_SCHEMA = Yup.object().shape({
     // firstName: Yup.string()
     //   .min(2, t('yup.min_len_2'))
     //   .required(t('yup.field_required')),
