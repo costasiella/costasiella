@@ -68,11 +68,12 @@ class RelationsAccountTeacherProfile extends Component {
                     console.log(error)
                     return <p>{t('general.error_sad_smiley')}</p>
                   }
-                  
-                  const account = data.account
-                  const initialData = data.accountTeacherProfile;
+
                   console.log('query data')
                   console.log(data)
+                  
+                  const account = data.account
+                  const initialData = data.accountTeacherProfiles.edges[0].node
 
 
                   return (
@@ -151,7 +152,7 @@ class RelationsAccountTeacherProfile extends Component {
                     </Card>
                     </Grid.Col>                                    
                     <Grid.Col md={3}>
-                      <ProfileCardSmall user={initialData}/>
+                      <ProfileCardSmall user={account}/>
                       <ProfileMenu 
                         active_link='teacher_profile'
                         account_id={account_id}
