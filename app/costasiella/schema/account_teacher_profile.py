@@ -72,59 +72,59 @@ class AccountTeacherProfileQuery(graphene.ObjectType):
         return AccountTeacherProfile.objects.filter(account=rid.id)
 
 
-class CreateAccountTeacherProfile(graphene.relay.ClientIDMutation):
-    class Input:
-        account = graphene.ID(required=True)
-        classes = graphene.Boolean(required=False, default_value=True)
-        appointments = graphene.Boolean(required=False, default_value=False)
-        events = graphene.Boolean(required=False, default_value=False)
-        role = graphene.String(required=False, default_value="")
-        education = graphene.String(required=False, default_value="")
-        bio = graphene.String(required=False, default_value="")
-        url_bio = graphene.String(required=False, default_value="")
-        url_website = graphene.String(required=False, default_value="")        
+# class CreateAccountTeacherProfile(graphene.relay.ClientIDMutation):
+#     class Input:
+#         account = graphene.ID(required=True)
+#         classes = graphene.Boolean(required=False, default_value=True)
+#         appointments = graphene.Boolean(required=False, default_value=False)
+#         events = graphene.Boolean(required=False, default_value=False)
+#         role = graphene.String(required=False, default_value="")
+#         education = graphene.String(required=False, default_value="")
+#         bio = graphene.String(required=False, default_value="")
+#         url_bio = graphene.String(required=False, default_value="")
+#         url_website = graphene.String(required=False, default_value="")        
 
-    account_teacher_profile = graphene.Field(AccountTeacherProfileNode)
+#     account_teacher_profile = graphene.Field(AccountTeacherProfileNode)
 
-    @classmethod
-    def mutate_and_get_payload(self, root, info, **input):
-        user = info.context.user
-        require_login_and_permission(user, 'costasiella.add_accountteacherprofile')
+#     @classmethod
+#     def mutate_and_get_payload(self, root, info, **input):
+#         user = info.context.user
+#         require_login_and_permission(user, 'costasiella.add_accountteacherprofile')
 
-        # Validate input
-        result = validate_create_update_input(input, update=False)
+#         # Validate input
+#         result = validate_create_update_input(input, update=False)
 
-        account_teacher_profile = AccountTeacherProfile(
-            account=result['account'],
-        )
+#         account_teacher_profile = AccountTeacherProfile(
+#             account=result['account'],
+#         )
 
-        if 'classes' in input:
-            account_teacher_profile.classes = input['classes']
+#         if 'classes' in input:
+#             account_teacher_profile.classes = input['classes']
 
-        if 'appointments' in input:
-            account_teacher_profile.appointments = input['appointments']
+#         if 'appointments' in input:
+#             account_teacher_profile.appointments = input['appointments']
 
-        if 'events' in input:
-            account_teacher_profile.events = input['events']
+#         if 'events' in input:
+#             account_teacher_profile.events = input['events']
 
-        if 'role' in input:
-            account_teacher_profile.role = input['role']
+#         if 'role' in input:
+#             account_teacher_profile.role = input['role']
 
-        if 'education' in input:
-            account_teacher_profile.education = input['education']
+#         if 'education' in input:
+#             account_teacher_profile.education = input['education']
 
-        if 'bio' in input:
-            account_teacher_profile.bio = input['bio']
+#         if 'bio' in input:
+#             account_teacher_profile.bio = input['bio']
 
-        if 'url_bio' in input:
-            account_teacher_profile.url_bio = input['url_bio']
+#         if 'url_bio' in input:
+#             account_teacher_profile.url_bio = input['url_bio']
 
-        if 'url_website' in input:
-            account_teacher_profile.url_website = input['url_website']
+#         if 'url_website' in input:
+#             account_teacher_profile.url_website = input['url_website']
 
-        account_teacher_profile.save()
+#         account_teacher_profile.save()
 
-        return CreateAccountTeacherProfile(account_teacher_profile=account_teacher_profile)
+#         return CreateAccountTeacherProfile(account_teacher_profile=account_teacher_profile)
 
 
 class UpdateAccountTeacherProfile(graphene.relay.ClientIDMutation):
@@ -180,29 +180,29 @@ class UpdateAccountTeacherProfile(graphene.relay.ClientIDMutation):
         return UpdateAccountTeacherProfile(account_teacher_profile=account_teacher_profile)
 
 
-class DeleteAccountTeacherProfile(graphene.relay.ClientIDMutation):
-    class Input:
-        id = graphene.ID(required=True)
+# class DeleteAccountTeacherProfile(graphene.relay.ClientIDMutation):
+#     class Input:
+#         id = graphene.ID(required=True)
 
-    ok = graphene.Boolean()
+#     ok = graphene.Boolean()
 
-    @classmethod
-    def mutate_and_get_payload(self, root, info, **input):
-        user = info.context.user
-        require_login_and_permission(user, 'costasiella.delete_accountteacherprofile')
+#     @classmethod
+#     def mutate_and_get_payload(self, root, info, **input):
+#         user = info.context.user
+#         require_login_and_permission(user, 'costasiella.delete_accountteacherprofile')
 
-        rid = get_rid(input['id'])
-        account_teacher_profile = AccountTeacherProfile.objects.filter(id=rid.id).first()
-        if not account_teacher_profile:
-            raise Exception('Invalid Account TeacherProfile ID!')
+#         rid = get_rid(input['id'])
+#         account_teacher_profile = AccountTeacherProfile.objects.filter(id=rid.id).first()
+#         if not account_teacher_profile:
+#             raise Exception('Invalid Account TeacherProfile ID!')
 
-        ok = account_teacher_profile.delete()
+#         ok = account_teacher_profile.delete()
 
-        return DeleteAccountTeacherProfile(ok=ok)
+#         return DeleteAccountTeacherProfile(ok=ok)
 
 
 class AccountTeacherProfileMutation(graphene.ObjectType):
-    create_account_teacher_profile = CreateAccountTeacherProfile.Field()
+    # create_account_teacher_profile = CreateAccountTeacherProfile.Field()
     update_account_teacher_profile = UpdateAccountTeacherProfile.Field()
-    delete_account_teacher_profile = DeleteAccountTeacherProfile.Field()
+    # delete_account_teacher_profile = DeleteAccountTeacherProfile.Field()
     
