@@ -112,7 +112,7 @@ class BaseEncryptedField(models.Field):
                 plaintext = decrypt_data_response['data']['plaintext']
                 # print(plaintext)
 
-                retval = base64.urlsafe_b64decode(plaintext).decode('utf-8')
+                retval = base64.b64decode(plaintext).decode('utf-8')
                 if self.data_type == 'date':
                     # Transform return value into datetime.date
                     [year, month, day] = retval.split('-')
@@ -150,11 +150,14 @@ class BaseEncryptedField(models.Field):
             #     )
             #     plaintext = plaintext[:max_length]
 
+            # plaintext.encode created a bytestring
+            # Don't use urlsafe encode, Vault doesn't like it.
+
             encrypt_data_response = self.client.secrets.transit.encrypt_data(
-                    name=self.vault_transit_key,
-                    plaintext=base64.urlsafe_b64encode(plaintext.encode()).decode('ascii'),
+                name=self.vault_transit_key,
+                plaintext=base64.b64encode(plaintext.encode()).decode('ascii'),
             )
-            # print(encrypt_data_response)
+            print(encrypt_data_response)
 
             value = encrypt_data_response['data']['ciphertext'] # (ciphertext)
             # print(value)
