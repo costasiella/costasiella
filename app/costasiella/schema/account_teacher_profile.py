@@ -129,7 +129,7 @@ class CreateAccountTeacherProfile(graphene.relay.ClientIDMutation):
 
 class UpdateAccountTeacherProfile(graphene.relay.ClientIDMutation):
     class Input:
-        id = graphene.ID(required=True)
+        account = graphene.ID(required=True)
         classes = graphene.Boolean(required=False)
         appointments = graphene.Boolean(required=False)
         events = graphene.Boolean(required=False)
@@ -146,10 +146,10 @@ class UpdateAccountTeacherProfile(graphene.relay.ClientIDMutation):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.change_accountteacherprofile')
 
-        rid = get_rid(input['id'])
-        account_teacher_profile = AccountTeacherProfile.objects.filter(id=rid.id).first()
+        rid = get_rid(input['account'])
+        account_teacher_profile = AccountTeacherProfile.objects.filter(account=rid.id).first()
         if not account_teacher_profile:
-            raise Exception('Invalid Account TeacherProfile ID!')
+            raise Exception('Invalid Account Teacher Profile ID!')
 
         if 'classes' in input:
             account_teacher_profile.classes = input['classes']

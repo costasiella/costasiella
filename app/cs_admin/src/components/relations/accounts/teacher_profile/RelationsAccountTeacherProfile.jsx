@@ -28,14 +28,11 @@ import RelationsAccountProfileForm from "./RelationsAccountTeacherProfileForm"
 import ProfileMenu from "../ProfileMenu"
 
 
-const UPDATE_ACCOUNT = gql`
-  mutation UpdateAccount($input:UpdateAccountInput!) {
-    updateAccount(input: $input) {
-      account {
+const UPDATE_ACCOUNT_TEACHER_PROFILE = gql`
+  mutation UpdateAccountTeacherProfile($input:UpdateAccountTeacherProfileInput!) {
+    updateAccountTeacherProfile(input: $input) {
+      accountTeacherProfile {
         id
-        firstName
-        lastName
-        email
       }
     }
   }
@@ -74,6 +71,7 @@ class RelationsAccountTeacherProfile extends Component {
                   
                   const account = data.account
                   const initialData = data.accountTeacherProfiles.edges[0].node
+                  console.log(initialData)
 
 
                   return (
@@ -88,7 +86,7 @@ class RelationsAccountTeacherProfile extends Component {
                             <Card.Title>{t('relations.account.teacher_profile.title')}</Card.Title>
                             {console.log(match.params.account_id)}
                           </Card.Header>
-                        <Mutation mutation={UPDATE_ACCOUNT}> 
+                        <Mutation mutation={UPDATE_ACCOUNT_TEACHER_PROFILE}> 
                          {(updateAccountTeacherProfile, { data }) => (
                           <Formik
                             initialValues={{ 
@@ -108,15 +106,15 @@ class RelationsAccountTeacherProfile extends Component {
 
                                 updateAccountTeacherProfile({ variables: {
                                   input: {
-                                    id: initialData.id,
-                                    classes: initialData.classes, 
-                                    appointments: initialData.appointments, 
-                                    events: initialData.events, 
-                                    role: initialData.role, 
-                                    education: initialData.education, 
-                                    bio: initialData.bio,
-                                    urlBio: initialData.urlBio,
-                                    urlWebsite: initialData.urlWebsite,
+                                    account: initialData.account.id,
+                                    classes: values.classes, 
+                                    appointments: values.appointments, 
+                                    events: values.events, 
+                                    role: values.role, 
+                                    education: values.education, 
+                                    bio: values.bio,
+                                    urlBio: values.urlBio,
+                                    urlWebsite: values.urlWebsite,
                                   }
                                 }, refetchQueries: [
                                     // Refresh local cached results for this account teacher profile

@@ -12,6 +12,9 @@ export const GET_ACCOUNT_TEACHER_PROFILE_QUERY = gql`
       }
       edges {
         node {
+          account {
+            id
+          }
           classes
           appointments
           events
