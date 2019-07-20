@@ -69,7 +69,7 @@ class AccountTeacherProfileQuery(graphene.ObjectType):
         rid = get_rid(account)
 
         ## return everything:
-        return AccountTeacherProfile.objects.filter(account=rid.id).order_by('date_start')
+        return AccountTeacherProfile.objects.filter(account=rid.id)
 
 
 class CreateAccountTeacherProfile(graphene.relay.ClientIDMutation):

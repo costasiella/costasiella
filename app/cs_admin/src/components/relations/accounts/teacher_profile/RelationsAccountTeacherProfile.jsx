@@ -53,13 +53,13 @@ class RelationsAccountTeacherProfile extends Component {
     const t = this.props.t
     const match = this.props.match
     const account_id = match.params.account_id
-    const id = match.params.id
+    console.log(account_id)
 
     return (
       <SiteWrapper>
         <div className="my-3 my-md-5">
           <Container>
-            <Query query={GET_ACCOUNT_TEACHER_PROFILE_QUERY} variables={{ accountId: account_id, id: id }} >
+            <Query query={GET_ACCOUNT_TEACHER_PROFILE_QUERY} variables={{ id: account_id }} >
               {({ loading, error, data, refetch }) => {
                   // Loading
                   if (loading) return <p>{t('general.loading_with_dots')}</p>
@@ -107,7 +107,7 @@ class RelationsAccountTeacherProfile extends Component {
 
                                 updateAccountTeacherProfile({ variables: {
                                   input: {
-                                    id: id,
+                                    id: initialData.id,
                                     classes: initialData.classes, 
                                     appointments: initialData.appointments, 
                                     events: initialData.events, 
@@ -119,7 +119,7 @@ class RelationsAccountTeacherProfile extends Component {
                                   }
                                 }, refetchQueries: [
                                     // Refresh local cached results for this account teacher profile
-                                    {query: GET_ACCOUNT_TEACHER_PROFILE_QUERY, variables: {id: id, accountId: account_id}}
+                                    {query: GET_ACCOUNT_TEACHER_PROFILE_QUERY, variables: {id: account_id}}
                                 ]})
                                 .then(({ data }) => {
                                     console.log('got data', data)

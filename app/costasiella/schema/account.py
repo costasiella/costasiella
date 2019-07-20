@@ -11,6 +11,7 @@ from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
 
 from allauth.account.models import EmailAddress
+from ..models import AccountTeacherProfile
 
 from ..modules.gql_tools import require_login_and_permission, get_rid
 from ..modules.encrypted_fields import EncryptedTextField
@@ -157,6 +158,12 @@ class CreateAccount(graphene.relay.ClientIDMutation):
         )
         email_address.save()
 
+        # Insert Teacher profile
+        account_teacher_profile = AccountTeacherProfile(
+            account = account
+        )
+        account_teacher_profile.save()
+
         return CreateAccount(account=account)
 #         return CreateAccount(user=user)
 
@@ -213,7 +220,7 @@ class UpdateAccount(graphene.relay.ClientIDMutation):
         mobile = graphene.String(required=False, default_value="")
         emergency = graphene.String(required=False, default_value="")
         gender = graphene.String(required=False, default_value="")
-        date_of_birth = graphene.types.datetime.Date(required=False, default_value=None)
+        date_of_birth = graphene.types.datetime.Date(required=False, default_value="")
 
     account = graphene.Field(AccountNode)
 

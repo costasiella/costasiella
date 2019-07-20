@@ -2,8 +2,8 @@ import gql from "graphql-tag"
 
 
 export const GET_ACCOUNT_TEACHER_PROFILE_QUERY = gql`
-  query AccountTeacherProfileQuery($id: ID!, $accountId: ID!) {
-    accountTeacherProfile(id:$id) {
+  query AccountTeacherProfileQuery($id: ID!) {
+    accountTeacherProfiles(account:$id) {
       id
       classes
       appointments
@@ -13,7 +13,7 @@ export const GET_ACCOUNT_TEACHER_PROFILE_QUERY = gql`
       urlBio
       urlWebsite
     }
-    account(id:$accountId) {
+    account(id:$id) {
       id
       teacher
       firstName

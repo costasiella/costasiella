@@ -122,32 +122,30 @@ class RelationsAccountProfile extends Component {
                                 console.log('submit values:')
                                 console.log(values)
 
-                                let dateOfBirth
-                                if (values.dateOfBirth) {
-                                  dateOfBirth = dateToLocalISO(values.dateOfBirth)
-                                } else {
-                                  dateOfBirth = values.dateOfBirth
+                                let input_vars = {
+                                  id: match.params.account_id,
+                                  customer: values.customer,
+                                  teacher: values.teacher,
+                                  employee: values.employee,
+                                  firstName: values.firstName,
+                                  lastName: values.lastName,
+                                  email: values.email,
+                                  gender: values.gender,
+                                  emergency: values.emergency,
+                                  phone: values.phone,
+                                  mobile: values.mobile,
+                                  address: values.address,
+                                  postcode: values.postcode,
+                                  city: values.city,
+                                  country: values.country
                                 }
 
+                                if (values.dateOfBirth) {
+                                  input_vars['dateOfBirth'] = dateToLocalISO(values.dateOfBirth)
+                                } 
+
                                 updateAccount({ variables: {
-                                  input: {
-                                    id: match.params.account_id,
-                                    customer: values.customer,
-                                    teacher: values.teacher,
-                                    employee: values.employee,
-                                    firstName: values.firstName,
-                                    lastName: values.lastName,
-                                    email: values.email,
-                                    dateOfBirth: dateOfBirth,
-                                    gender: values.gender,
-                                    emergency: values.emergency,
-                                    phone: values.phone,
-                                    mobile: values.mobile,
-                                    address: values.address,
-                                    postcode: values.postcode,
-                                    city: values.city,
-                                    country: values.country
-                                  }
+                                  input: input_vars
                                 }, refetchQueries: [
                                     // Refetch list
                                     {query: GET_ACCOUNTS_QUERY, variables: get_list_query_variables()},
