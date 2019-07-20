@@ -2,7 +2,7 @@
 
 import React, {Component } from 'react'
 import gql from "graphql-tag"
-import { Query, Mutation } from "react-apollo";
+import { Query, Mutation } from "react-apollo"
 import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
 import { Formik } from 'formik'
@@ -159,7 +159,6 @@ class RelationsAccountProfile extends Component {
                       <ProfileMenu 
                         active_link='teacher_profile'
                         account_id={account_id}
-                        account={account}
                       /> 
                     </Grid.Col>
                   </Grid.Row>
