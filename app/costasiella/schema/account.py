@@ -238,6 +238,8 @@ class UpdateAccount(graphene.relay.ClientIDMutation):
 
         validate_create_update_input(account, input, update=True)
 
+        print(input)
+
         account.first_name = input['first_name']
         account.last_name = input['last_name']
         account.email = input['email']

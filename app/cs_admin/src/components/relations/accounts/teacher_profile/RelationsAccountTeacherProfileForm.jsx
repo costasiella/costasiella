@@ -70,7 +70,7 @@ const RelationsAccountTeacherProfileForm = ({ t, history, isSubmitting, errors, 
           <Grid.Col>
             <Form.Group label={t('general.role')}>
               <Field type="text" 
-                      name="firstName" 
+                      name="role" 
                       className={(errors.role) ? "form-control is-invalid" : "form-control"} 
                       autoComplete="off" />
               <ErrorMessage name="role" component="span" className="invalid-feedback" />

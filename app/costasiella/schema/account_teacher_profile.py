@@ -151,6 +151,8 @@ class UpdateAccountTeacherProfile(graphene.relay.ClientIDMutation):
         if not account_teacher_profile:
             raise Exception('Invalid Account Teacher Profile ID!')
 
+        print(input)
+
         if 'classes' in input:
             account_teacher_profile.classes = input['classes']
 

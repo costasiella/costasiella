@@ -157,7 +157,7 @@ class BaseEncryptedField(models.Field):
                 name=self.vault_transit_key,
                 plaintext=base64.b64encode(plaintext.encode()).decode('ascii'),
             )
-            print(encrypt_data_response)
+            # print(encrypt_data_response)
 
             value = encrypt_data_response['data']['ciphertext'] # (ciphertext)
             # print(value)
