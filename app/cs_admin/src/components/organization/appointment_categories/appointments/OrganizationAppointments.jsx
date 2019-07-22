@@ -49,9 +49,9 @@ const OrganizationAppointmentCategorysRooms = ({ t, history, match, archived=fal
       <Container>
         <Page.Header title={t("organization.title")}>
           <div className="page-options d-flex">
-            <Link to="/organization/locations" 
+            <Link to="/organization/appointment_categories" 
                   className='btn btn-outline-secondary btn-sm'>
-                <Icon prefix="fe" name="arrow-left" /> {t('general.back_to')} {t('organization.locations.title')}
+                <Icon prefix="fe" name="arrow-left" /> {t('general.back_to')} {t('organization.appointment_categories.title')}
             </Link>
           </div>
         </Page.Header>
