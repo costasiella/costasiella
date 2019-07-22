@@ -32,13 +32,10 @@ import OrganizationMenu from "../../../OrganizationMenu"
 
 import { GET_APPOINTMENT_PRICES_QUERY } from "./queries"
 
-const ARCHIVE_APPOINTMENT_PRICE = gql`
-  mutation ArchiveOrganizationAppointment($input: ArchiveOrganizationAppointmentInput!) {
-    archiveOrganizationAppointment(input: $input) {
-      organizationAppointment {
-        id
-        archived
-      }
+const DELETE_APPOINTMENT_PRICE = gql`
+  mutation DeleteOrganizationAppointmentPrice($input: DeleteOrganizationAppointmentPriceInput!) {
+    deleteOrganizationAppointmentPrice(input: $input) {
+      ok
     }
   }
 `
