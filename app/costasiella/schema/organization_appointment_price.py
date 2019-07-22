@@ -87,12 +87,10 @@ class OrganizationAppointmentPriceQuery(graphene.ObjectType):
 class CreateOrganizationAppointmentPrice(graphene.relay.ClientIDMutation):
     class Input:
         organization_appointment = graphene.ID(required=True)
+        account = graphene.ID(required=True)
         price = graphene.Float(required=True, default_value=0)
         finance_tax_rate = graphene.ID(required=True)
-        date_start = graphene.types.datetime.Date(required=True)
-        date_end = graphene.types.datetime.Date(required=False, default_value=None)
-        
-
+   
     organization_appointment_price = graphene.Field(OrganizationAppointmentPriceNode)
 
     @classmethod
@@ -103,12 +101,10 @@ class CreateOrganizationAppointmentPrice(graphene.relay.ClientIDMutation):
         result = validate_create_update_input(input, update=False)
         organization_appointment_price = OrganizationAppointmentPrice(
             organization_appointment = result['organization_appointment'],
+            account = result['account']
             price = input['price'],
             finance_tax_rate = result['finance_tax_rate'],
-            date_start = result['date_start'],
-            date_end = result.get('date_end', None)
-        )
-        
+        )        
 
         organization_appointment_price.save()
 

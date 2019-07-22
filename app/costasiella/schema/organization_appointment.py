@@ -5,7 +5,7 @@ from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
 from graphql import GraphQLError
 
-from ..models import OrganizationAppointmentCategory, OrganizationAppointment
+from ..models import OrganizationAppointmentCategory, OrganizationAppointment, FinanceCostCenter, FinanceGLAccount
 from ..modules.gql_tools import require_login_and_permission, get_rid
 from ..modules.messages import Messages
 
@@ -42,13 +42,42 @@ class OrganizationAppointmentQuery(graphene.ObjectType):
 
         # Return only public non-archived rooms
         return OrganizationAppointment.objects.filter(display_public = True, archived = False).order_by('organization_appointment_category__name', 'name')
-            
 
+
+def validate_create_update_input(input, update=False):
+    """
+    Validate input
+    """ 
+    result = {}
+
+    # Check GLAccount
+    if 'finance_glaccount' in input:
+        if input['finance_glaccount']: 
+            rid = get_rid(input['finance_glaccount'])
+            finance_glaccount= FinanceGLAccount.objects.filter(id=rid.id).first()
+            result['finance_glaccount'] = finance_glaccount
+            if not finance_glaccount:
+                raise Exception(_('Invalid Finance GLAccount ID!'))
+
+    # Check Costcenter
+    if 'finance_costcenter' in input:
+        if input['finance_costcenter']:
+            rid = get_rid(input['finance_costcenter'])
+            finance_costcenter= FinanceCostCenter.objects.filter(id=rid.id).first()
+            result['finance_costcenter'] = finance_costcenter
+            if not finance_costcenter:
+                raise Exception(_('Invalid Finance Costcenter ID!'))
+
+    return result
+
+            
 class CreateOrganizationAppointment(graphene.relay.ClientIDMutation):
     class Input:
         organization_appointment_category = graphene.ID(required=True)
         name = graphene.String(required=True)
         display_public = graphene.Boolean(required=True)
+        finance_glaccount = graphene.ID(required=False, default_value="")
+        finance_costcenter = graphene.ID(required=False, default_value="")   
 
     organization_appointment = graphene.Field(OrganizationAppointmentNode)
 
@@ -65,11 +94,20 @@ class CreateOrganizationAppointment(graphene.relay.ClientIDMutation):
         if not organization_appointment_category:
             raise Exception('Invalid Organization Appointment Category ID!')
 
+        result = validate_create_update_input(input)
+
         organization_appointment = OrganizationAppointment(
             organization_appointment_category = organization_appointment_category,
             name=input['name'], 
             display_public=input['display_public']
         )
+
+        if 'finance_glaccount' in result:
+            organization_appointment_price.finance_glaccount = result['finance_glaccount']
+
+        if 'finance_costcenter' in result:
+            organization_appointment_price.finance_costcenter = result['finance_costcenter']
+
         organization_appointment.save()
 
         return CreateOrganizationAppointment(organization_appointment=organization_appointment)
@@ -80,6 +118,8 @@ class UpdateOrganizationAppointment(graphene.relay.ClientIDMutation):
         id = graphene.ID(required=True)
         name = graphene.String(required=True)
         display_public = graphene.Boolean(required=True)
+        finance_glaccount = graphene.ID(required=False, default_value="")
+        finance_costcenter = graphene.ID(required=False, default_value="")
         
     organization_appointment = graphene.Field(OrganizationAppointmentNode)
 
@@ -94,8 +134,17 @@ class UpdateOrganizationAppointment(graphene.relay.ClientIDMutation):
         if not organization_appointment:
             raise Exception('Invalid Organization Appointment ID!')
 
+        result = validate_create_update_input(input)
+
         organization_appointment.name = input['name']
         organization_appointment.display_public = input['display_public']
+
+        if 'finance_glaccount' in result:
+            organization_appointment_price.finance_glaccount = result['finance_glaccount']
+
+        if 'finance_costcenter' in result:
+            organization_appointment_price.finance_costcenter = result['finance_costcenter']
+
         organization_appointment.save()
 
         return UpdateOrganizationAppointment(organization_appointment=organization_appointment)
