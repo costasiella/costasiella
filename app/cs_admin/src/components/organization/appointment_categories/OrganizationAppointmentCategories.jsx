@@ -138,12 +138,12 @@ const OrganizationAppointmentCategories = ({ t, history, archived=false }) => (
                                       <span className='text-muted'>{t('general.unarchive_to_edit')}</span> :
                                       <div>
                                         <Button className='btn-sm' 
-                                                onClick={() => history.push("/organization/appointment_categories/" + node.id + "/edit/")}
+                                                onClick={() => history.push("/organization/appointment_categories/edit/" + node.id)}
                                                 color="secondary">
                                           {t('general.edit')}
                                         </Button>
                                         <Button className='btn-sm' 
-                                                onClick={() => history.push("/organization/appointment_categories/" + node.id + "appointments/")}
+                                                onClick={() => history.push("/organization/appointment_categories/" + node.id + "/appointments/")}
                                                 color="secondary">
                                           {t('organization.appointments.title')}
                                         </Button>
