@@ -57,7 +57,7 @@ const OrganizationAppointmentPrices = ({ t, history, match }) => (
         </Page.Header>
         <Grid.Row>
           <Grid.Col md={9}>
-            <Query query={GET_APPOINTMENT_PRICES_QUERY} variables={{ archived, organizationAppointment: match.params.appointment_id }}>
+            <Query query={GET_APPOINTMENT_PRICES_QUERY} variables={{ organizationAppointment: match.params.appointment_id }}>
              {({ loading, error, data, refetch, fetchMore }) => {
                 // Loading
                 if (loading) return (
@@ -73,28 +73,14 @@ const OrganizationAppointmentPrices = ({ t, history, match }) => (
                     <p>{t('organization.appointment_prices.error_loading')}</p>
                   </ContentCard>
                 )
-                const headerOptions = <Card.Options>
-                  <Button color={(!archived) ? 'primary': 'secondary'}  
-                          size="sm"
-                          onClick={() => {archived=false; refetch({archived});}}>
-                    {t('general.current')}
-                  </Button>
-                  <Button color={(archived) ? 'primary': 'secondary'} 
-                          size="sm" 
-                          className="ml-2" 
-                          onClick={() => {archived=true; refetch({archived});}}>
-                    {t('general.archive')}
-                  </Button>
-                </Card.Options>
 
                 const prices = data.organizationAppointmentPrices
 
                 // Empty list
                 if (!prices.edges.length) { return (
-                  <ContentCard cardTitle={t('organization.appointment_prices.title')}
-                               headerContent={headerOptions}>
+                  <ContentCard cardTitle={t('organization.appointment_prices.title')}>
                     <p>
-                    {(!archived) ? t('organization.appointment_prices.empty_list') : t("organization.appointment_prices.empty_archive")}
+                      {t('organization.appointment_prices.empty_list')}
                     </p>
                    
                   </ContentCard>
@@ -102,7 +88,6 @@ const OrganizationAppointmentPrices = ({ t, history, match }) => (
                 // Life's good! :)
                 return (
                   <ContentCard cardTitle={t('organization.appointment_prices.title')}
-                               headerContent={headerOptions}
                                pageInfo={prices.pageInfo}
                                onLoadMore={() => {
                                 fetchMore({
@@ -142,13 +127,12 @@ const OrganizationAppointmentPrices = ({ t, history, match }) => (
                         <Table.Body>
                             {prices.edges.map(({ node }) => (
                               <Table.Row key={v4()}>
+                                {console.log(node)}
                                 <Table.Col key={v4()}>
                                   {node.account.fullName}
                                 </Table.Col>
                                 <Table.Col key={v4()}>
-                                  {(node.displayPublic) ? 
-                                    <Badge color="success">{t('general.yes')}</Badge>: 
-                                    <Badge color="danger">{t('general.no')}</Badge>}
+                                  {node.priceDisplay}
                                 </Table.Col>
                                 <Table.Col className="text-right" key={v4()}>
                                   {(node.archived) ? 
@@ -159,15 +143,11 @@ const OrganizationAppointmentPrices = ({ t, history, match }) => (
                                               color="secondary">
                                         {t('general.edit')}
                                       </Button>
-                                      <Button className='btn-sm' 
-                                              onClick={() => history.push("/organization/appointment_categories/appointments/prices/" + match.params.category_id + '/' + node.id)}
-                                              color="secondary">
-                                        {t('organization.appointment_prices.teacher_prices')}
-                                      </Button>
                                     </span>
                                   }
                                 </Table.Col>
-                                <Mutation mutation={ARCHIVE_APPOINTMENT_PRICE} key={v4()}>
+                                {/* TODO: replace with delete */}
+                                {/* <Mutation mutation={ARCHIVE_APPOINTMENT_PRICE} key={v4()}>
                                   {(archiveAppointmentPrice, { data }) => (
                                     <Table.Col className="text-right" key={v4()}>
                                       <button className="icon btn btn-link btn-sm" 
@@ -179,7 +159,6 @@ const OrganizationAppointmentPrices = ({ t, history, match }) => (
                                             archiveAppointmentPrice({ variables: {
                                               input: {
                                               id,
-                                              archived: !archived
                                               }
                                       }, refetchQueries: [
                                           { 
@@ -203,7 +182,7 @@ const OrganizationAppointmentPrices = ({ t, history, match }) => (
                                       </button>
                                     </Table.Col>
                                   )}
-                                </Mutation>
+                                </Mutation> */}
                               </Table.Row>
                             ))}
                         </Table.Body>
