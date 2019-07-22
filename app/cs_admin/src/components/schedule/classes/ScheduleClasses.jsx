@@ -204,7 +204,7 @@ const ScheduleClasses = ({ t, history }) => (
                         refetch(get_list_query_variables())
                     }} />
                     <Button 
-                      icon="calendar"
+                      icon="sun"
                       color="secondary"
                       onClick={ () => {
                         let currentWeekFrom = moment()

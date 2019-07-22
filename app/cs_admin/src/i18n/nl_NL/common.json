@@ -161,7 +161,12 @@
         "teacher_2": "__STRING_NOT_TRANSLATED__",
         "subscriptions": "__STRING_NOT_TRANSLATED__",
         "enroll": "__STRING_NOT_TRANSLATED__",
-        "attend": "__STRING_NOT_TRANSLATED__"
+        "attend": "__STRING_NOT_TRANSLATED__",
+        "appointment_category": "__STRING_NOT_TRANSLATED__",
+        "role": "__STRING_NOT_TRANSLATED__",
+        "education": "__STRING_NOT_TRANSLATED__",
+        "bio": "__STRING_NOT_TRANSLATED__",
+        "classpasses": "__STRING_NOT_TRANSLATED__"
     },
     "yup": {
         "min_len_3": "__STRING_NOT_TRANSLATED__",
@@ -338,6 +343,34 @@
             "add": "__STRING_NOT_TRANSLATED__",
             "delete_confirm_msg": "__STRING_NOT_TRANSLATED__",
             "deleted": "__STRING_NOT_TRANSLATED__"
+        },
+        "appointment": {
+            "title_add": "__STRING_NOT_TRANSLATED__",
+            "toast_add_success": "__STRING_NOT_TRANSLATED__",
+            "title_edit": "__STRING_NOT_TRANSLATED__",
+            "toast_edit_success": "__STRING_NOT_TRANSLATED__",
+            "public": "__STRING_NOT_TRANSLATED__"
+        },
+        "appointment_categories": {
+            "title": "__STRING_NOT_TRANSLATED__",
+            "error_loading": "__STRING_NOT_TRANSLATED__",
+            "empty_list": "__STRING_NOT_TRANSLATED__",
+            "empty_archive": "__STRING_NOT_TRANSLATED__",
+            "add": "__STRING_NOT_TRANSLATED__",
+            "title_add": "__STRING_NOT_TRANSLATED__",
+            "toast_add_success": "__STRING_NOT_TRANSLATED__",
+            "title_edit": "__STRING_NOT_TRANSLATED__",
+            "toast_edit_success": "__STRING_NOT_TRANSLATED__"
+        },
+        "appointments": {
+            "title": "__STRING_NOT_TRANSLATED__",
+            "error_loading": "__STRING_NOT_TRANSLATED__",
+            "empty_list": "__STRING_NOT_TRANSLATED__",
+            "empty_archive": "__STRING_NOT_TRANSLATED__",
+            "add": "__STRING_NOT_TRANSLATED__"
+        },
+        "appointment_category": {
+            "public": "__STRING_NOT_TRANSLATED__"
         }
     },
     "validity": {
@@ -410,6 +443,15 @@
                 "delete_confirm_msg": "__STRING_NOT_TRANSLATED__",
                 "deleted": "__STRING_NOT_TRANSLATED__",
                 "add": "__STRING_NOT_TRANSLATED__"
+            },
+            "teacher_profile": {
+                "title": "__STRING_NOT_TRANSLATED__",
+                "toast_edit_success": "__STRING_NOT_TRANSLATED__",
+                "classes": "__STRING_NOT_TRANSLATED__",
+                "events": "__STRING_NOT_TRANSLATED__",
+                "appointments": "__STRING_NOT_TRANSLATED__",
+                "url_bio": "__STRING_NOT_TRANSLATED__",
+                "url_website": "__STRING_NOT_TRANSLATED__"
             }
         }
     },
@@ -469,6 +511,16 @@
                 "empty_list": "__STRING_NOT_TRANSLATED__",
                 "toast_edit_success": "__STRING_NOT_TRANSLATED__",
                 "shop_book": "__STRING_NOT_TRANSLATED__",
+                "attend_disabled_help": "__STRING_NOT_TRANSLATED__"
+            },
+            "classpasses": {
+                "add": "__STRING_NOT_TRANSLATED__",
+                "title": "__STRING_NOT_TRANSLATED__",
+                "error_loading": "__STRING_NOT_TRANSLATED__",
+                "empty_list": "__STRING_NOT_TRANSLATED__",
+                "toast_edit_success": "__STRING_NOT_TRANSLATED__",
+                "shop_book": "__STRING_NOT_TRANSLATED__",
+                "attend_disabled": "__STRING_NOT_TRANSLATED__",
                 "attend_disabled_help": "__STRING_NOT_TRANSLATED__"
             }
         }
