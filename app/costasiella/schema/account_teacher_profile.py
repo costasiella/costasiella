@@ -50,7 +50,8 @@ class AccountTeacherProfileNode(DjangoObjectType):
             'account', 
             'classes', 
             'appointments', 
-            'events'
+            'events', 
+            'account__is_active'
         ]
         interfaces = (graphene.relay.Node, )
 

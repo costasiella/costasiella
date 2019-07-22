@@ -80,7 +80,7 @@ const OrganizationAppointmentPriceAdd = ({ t, history, match }) => (
 
                 return (
                   <Mutation mutation={ADD_APPOINTMENT_PRICE} onCompleted={
-                    () => history.push("/organizations/appointment_categories/" + match.params.category_id + "/appointments/" + match.params.appointment_id)}> 
+                    () => history.push("/organization/appointment_categories/" + match.params.category_id + "/appointments/prices/" + match.params.appointment_id)}> 
                       {(addAppointment, { data }) => (
                           <Formik
                               initialValues={{ name: '', displayPublic: true }}
@@ -88,11 +88,10 @@ const OrganizationAppointmentPriceAdd = ({ t, history, match }) => (
                               onSubmit={(values, { setSubmitting }) => {
                                   addAppointment({ variables: {
                                     input: {
-                                      organizationAppointmentCategory: match.params.category_id,
-                                      name: values.name, 
-                                      displayPublic: values.displayPublic,
-                                      financeGlaccount: values.financeGlaccount,
-                                      financeCostcenter: values.financeCostcenter
+                                      organizationAppointment: match.params.appointment_id,
+                                      account: values.account,
+                                      price: values.price, 
+                                      financeTaxRate: values.financeTaxRate,
                                     }
                                   }, refetchQueries: [
                                       {query: GET_APPOINTMENT_PRICES_QUERY,
@@ -118,7 +117,7 @@ const OrganizationAppointmentPriceAdd = ({ t, history, match }) => (
                                   isSubmitting={isSubmitting}
                                   errors={errors}
                                   values={values}
-                                  return_url={"/organizations/appointment_categories/" + match.params.category_id + "/appointments/" + match.params.appointment_id}
+                                  return_url={"/organization/appointment_categories/" + match.params.category_id + "/appointments/prices/" + match.params.appointment_id}
                                 />
                               )}
                           </Formik>

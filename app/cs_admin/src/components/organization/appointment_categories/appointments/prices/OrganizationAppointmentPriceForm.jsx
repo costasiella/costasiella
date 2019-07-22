@@ -25,8 +25,8 @@ const OrganizationAppointmentForm = ({ t, history, match, inputData, isSubmittin
                     className={(errors.account) ? "form-control is-invalid" : "form-control"} 
                     autoComplete="off">
               <option value="" key={v4()}>{t('general.please_select')}</option>
-              {inputData.accounts.edges.map(({ node }) =>
-                <option value={node.id} key={v4()}>{node.fullName}</option>
+              {inputData.accountTeacherProfiles.edges.map(({ node }) =>
+                <option value={node.account.id} key={v4()}>{node.account.fullName}</option>
               )}
             </Field>
             <ErrorMessage name="account" component="span" className="invalid-feedback" />

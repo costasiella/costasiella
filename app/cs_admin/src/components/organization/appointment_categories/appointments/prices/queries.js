@@ -102,7 +102,7 @@ export const GET_INPUT_VALUES_QUERY = gql`
         }
       }
     }
-    accounts(first: 100, before: $before, after: $after, isActive: true, teacher: true) {
+    accountTeacherProfiles(first: 100, before: $before, after: $after, appointments: true, account_IsActive: true) {
       pageInfo {
         startCursor
         endCursor
@@ -112,7 +112,10 @@ export const GET_INPUT_VALUES_QUERY = gql`
       edges {
         node {
           id
-          fullName
+          account {
+            id
+            fullName
+          }
         }
       }
     }
