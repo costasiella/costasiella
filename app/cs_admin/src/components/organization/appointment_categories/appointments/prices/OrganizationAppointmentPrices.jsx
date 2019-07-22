@@ -25,6 +25,7 @@ import SiteWrapper from "../../../../SiteWrapper"
 import HasPermissionWrapper from "../../../../HasPermissionWrapper"
 // import { confirmAlert } from 'react-confirm-alert'; // Import
 import { toast } from 'react-toastify'
+import confirm_delete from "../../../../../tools/confirm_delete"
 
 import ContentCard from "../../../../general/ContentCard"
 import CardHeaderSeparator from "../../../../general/CardHeaderSeparator"
@@ -143,6 +144,33 @@ const OrganizationAppointmentPrices = ({ t, history, match }) => (
                                     </span>
                                   }
                                 </Table.Col>
+                                <Mutation mutation={DELETE_APPOINTMENT_PRICE} key={v4()}>
+                                  {(deleteAppointmentPrice, { data }) => (
+                                    <Table.Col className="text-right" key={v4()}>
+                                      <button className="icon btn btn-link btn-sm" 
+                                        title={t('general.delete')} 
+                                        href=""
+                                        onClick={() => {
+                                          confirm_delete({
+                                            t: t,
+                                            msgConfirm: t("organization.appointment_prices.delete_confirm_msg"),
+                                            msgDescription: <p>{node.account.fullName} {node.priceDisplay}</p>,
+                                            msgSuccess: t('organization.appointment_prices.deleted'),
+                                            deleteFunction: deleteAppointmentPrice,
+                                            functionVariables: { variables: {
+                                              input: {
+                                                id: node.id
+                                              }
+                                            }, refetchQueries: [
+                                              {query: GET_APPOINTMENT_PRICES_QUERY, variables: { organizationAppointment: match.params.appointment_id }} 
+                                            ]}
+                                          })
+                                      }}>
+                                        <span className="text-red"><Icon prefix="fe" name="trash-2" /></span>
+                                      </button>
+                                    </Table.Col>
+                                  )}
+                                </Mutation>
                                 {/* TODO: replace with delete */}
                                 {/* <Mutation mutation={ARCHIVE_APPOINTMENT_PRICE} key={v4()}>
                                   {(archiveAppointmentPrice, { data }) => (
