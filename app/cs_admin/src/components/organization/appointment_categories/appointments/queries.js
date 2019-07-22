@@ -37,5 +37,76 @@ export const GET_APPOINTMENT_QUERY = gql`
       displayPublic
       archived
     }
+    financeGlaccounts(first: 15, before: $before, after: $after, archived: $archived) {
+      pageInfo {
+        startCursor
+        endCursor
+        hasNextPage
+        hasPreviousPage
+      }
+      edges {
+        node {
+          id
+          archived
+          name
+          code
+        }
+      }
+    }
+    financeCostcenters(first: 15, before: $before, after: $after, archived: $archived) {
+      pageInfo {
+        startCursor
+        endCursor
+        hasNextPage
+        hasPreviousPage
+      }
+      edges {
+        node {
+          id
+          archived
+          name
+          code
+        }
+      }
+    }
+  }
+`
+
+
+
+export const GET_INPUT_VALUES_QUERY = gql`
+  query AppointmentInputValues($after: String, $before: String, $archived: Boolean) {
+    financeGlaccounts(first: 15, before: $before, after: $after, archived: $archived) {
+      pageInfo {
+        startCursor
+        endCursor
+        hasNextPage
+        hasPreviousPage
+      }
+      edges {
+        node {
+          id
+          archived
+          name
+          code
+        }
+      }
+    }
+    financeCostcenters(first: 15, before: $before, after: $after, archived: $archived) {
+      pageInfo {
+        startCursor
+        endCursor
+        hasNextPage
+        hasPreviousPage
+      }
+      edges {
+        node {
+          id
+          archived
+          name
+          code
+        }
+      }
+    }
   }
 `
