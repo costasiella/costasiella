@@ -46,7 +46,12 @@ def validate_create_update_input(input, update=False):
 class AccountTeacherProfileNode(DjangoObjectType):   
     class Meta:
         model = AccountTeacherProfile
-        filter_fields = ['account', ]
+        filter_fields = [
+            'account', 
+            'classes', 
+            'appointments', 
+            'events'
+        ]
         interfaces = (graphene.relay.Node, )
 
     @classmethod
