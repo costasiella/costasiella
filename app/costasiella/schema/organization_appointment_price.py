@@ -42,7 +42,6 @@ def validate_create_update_input(input, update=False):
     if not finance_tax_rate:
         raise Exception(_('Invalid Finance Tax Rate ID!'))
 
-
     return result
 
 

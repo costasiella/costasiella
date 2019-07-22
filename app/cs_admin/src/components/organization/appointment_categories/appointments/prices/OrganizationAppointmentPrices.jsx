@@ -30,9 +30,9 @@ import ContentCard from "../../../general/ContentCard"
 import CardHeaderSeparator from "../../../general/CardHeaderSeparator"
 import OrganizationMenu from "../../OrganizationMenu"
 
-import { GET_APPOINTMENTS_QUERY } from "./queries"
+import { GET_APPOINTMENT_PRICES_QUERY } from "./queries"
 
-const ARCHIVE_APPOINTMENT = gql`
+const ARCHIVE_APPOINTMENT_PRICE = gql`
   mutation ArchiveOrganizationAppointment($input: ArchiveOrganizationAppointmentInput!) {
     archiveOrganizationAppointment(input: $input) {
       organizationAppointment {
@@ -57,11 +57,11 @@ const OrganizationAppointmentCategorysRooms = ({ t, history, match, archived=fal
         </Page.Header>
         <Grid.Row>
           <Grid.Col md={9}>
-            <Query query={GET_APPOINTMENTS_QUERY} variables={{ archived, organizationAppointmentCategory: match.params.category_id }}>
-             {({ loading, error, data: {organizationAppointments: appointments, organizationAppointmentCategory: location}, refetch, fetchMore }) => {
+            <Query query={GET_APPOINTMENT_PRICES_QUERY} variables={{ archived, organizationAppointment: match.params.appointment_id }}>
+             {({ loading, error, data, refetch, fetchMore }) => {
                 // Loading
                 if (loading) return (
-                  <ContentCard cardTitle={t('organization.appointments.title')}>
+                  <ContentCard cardTitle={t('organization.appointment_prices.title')}>
                     <Dimmer active={true}
                             loader={true}>
                     </Dimmer>
@@ -69,8 +69,8 @@ const OrganizationAppointmentCategorysRooms = ({ t, history, match, archived=fal
                 )
                 // Error
                 if (error) return (
-                  <ContentCard cardTitle={t('organization.appointments.title')}>
-                    <p>{t('organization.appointments.error_loading')}</p>
+                  <ContentCard cardTitle={t('organization.appointment_prices.title')}>
+                    <p>{t('organization.appointment_prices.error_loading')}</p>
                   </ContentCard>
                 )
                 const headerOptions = <Card.Options>
@@ -87,37 +87,39 @@ const OrganizationAppointmentCategorysRooms = ({ t, history, match, archived=fal
                   </Button>
                 </Card.Options>
 
+                const prices = data.organizationAppointmentPrices
+
                 // Empty list
-                if (!appointments.edges.length) { return (
-                  <ContentCard cardTitle={t('organization.appointments.title')}
+                if (!prices.edges.length) { return (
+                  <ContentCard cardTitle={t('organization.appointment_prices.title')}
                                headerContent={headerOptions}>
                     <p>
-                    {(!archived) ? t('organization.appointments.empty_list') : t("organization.appointments.empty_archive")}
+                    {(!archived) ? t('organization.appointment_prices.empty_list') : t("organization.appointment_prices.empty_archive")}
                     </p>
                    
                   </ContentCard>
                 )} else {   
                 // Life's good! :)
                 return (
-                  <ContentCard cardTitle={t('organization.appointments.title')}
+                  <ContentCard cardTitle={t('organization.appointment_prices.title')}
                                headerContent={headerOptions}
-                               pageInfo={appointments.pageInfo}
+                               pageInfo={prices.pageInfo}
                                onLoadMore={() => {
                                 fetchMore({
                                   variables: {
-                                    after: appointments.pageInfo.endCursor
+                                    after: prices.pageInfo.endCursor
                                   },
                                   updateQuery: (previousResult, { fetchMoreResult }) => {
-                                    const newEdges = fetchMoreResult.organizationAppointmentCategorysRooms.edges
-                                    const pageInfo = fetchMoreResult.organizationAppointmentCategorysRooms.pageInfo
+                                    const newEdges = fetchMoreResult.organizationAppointmentPrices.edges
+                                    const pageInfo = fetchMoreResult.organizationAppointmentPrices.pageInfo
 
                                     return newEdges.length
                                       ? {
                                           // Put the new locations at the end of the list and update `pageInfo`
                                           // so we have the new `endCursor` and `hasNextPage` values
-                                          organizationAppointmentCategorysRooms: {
-                                            __typename: previousResult.organizationAppointmentCategorysRooms.__typename,
-                                            edges: [ ...previousResult.organizationAppointmentCategorysRooms.edges, ...newEdges ],
+                                          organizationAppointmentPrices: {
+                                            __typename: previousResult.organizationAppointmentPrices.__typename,
+                                            edges: [ ...previousResult.organizationAppointmentPrices.edges, ...newEdges ],
                                             pageInfo
                                           }
                                         }
@@ -127,21 +129,21 @@ const OrganizationAppointmentCategorysRooms = ({ t, history, match, archived=fal
                               }} >
                     <div>
                       <Alert type="primary">
-                        <strong>{t('general.appointment_category')}</strong> {location.name}
+                        <strong>{t('general.appointment')}</strong> {data.organizationAppointment.name}
                       </Alert>
 
                       <Table>
                         <Table.Header>
                           <Table.Row key={v4()}>
                             <Table.ColHeader>{t('general.name')}</Table.ColHeader>
-                            <Table.ColHeader>{t('general.public')}</Table.ColHeader>
+                            <Table.ColHeader>{t('general.price')}</Table.ColHeader>
                           </Table.Row>
                         </Table.Header>
                         <Table.Body>
-                            {appointments.edges.map(({ node }) => (
+                            {prices.edges.map(({ node }) => (
                               <Table.Row key={v4()}>
                                 <Table.Col key={v4()}>
-                                  {node.name}
+                                  {node.account.fullName}
                                 </Table.Col>
                                 <Table.Col key={v4()}>
                                   {(node.displayPublic) ? 
@@ -153,19 +155,19 @@ const OrganizationAppointmentCategorysRooms = ({ t, history, match, archived=fal
                                     <span className='text-muted'>{t('general.unarchive_to_edit')}</span> :
                                     <span>
                                       <Button className='btn-sm' 
-                                              onClick={() => history.push("/organization/appointment_categories/appointments/edit/" + match.params.category_id + '/' + node.id)}
+                                              onClick={() => history.push("/organization/appointment_categories/appointments/prices/" + match.params.category_id + '/' + node.id)}
                                               color="secondary">
                                         {t('general.edit')}
                                       </Button>
                                       <Button className='btn-sm' 
                                               onClick={() => history.push("/organization/appointment_categories/appointments/prices/" + match.params.category_id + '/' + node.id)}
                                               color="secondary">
-                                        {t('organization.appointments.teacher_prices')}
+                                        {t('organization.appointment_prices.teacher_prices')}
                                       </Button>
                                     </span>
                                   }
                                 </Table.Col>
-                                <Mutation mutation={ARCHIVE_APPOINTMENT} key={v4()}>
+                                <Mutation mutation={ARCHIVE_APPOINTMENT_PRICE} key={v4()}>
                                   {(archiveAppointmentCategorysRoom, { data }) => (
                                     <Table.Col className="text-right" key={v4()}>
                                       <button className="icon btn btn-link btn-sm" 
@@ -217,7 +219,7 @@ const OrganizationAppointmentCategorysRooms = ({ t, history, match, archived=fal
                                   resource="organizationappointment">
               <Button color="primary btn-block mb-6"
                       onClick={() => history.push("/organization/appointment_categories/appointments/add/" + match.params.category_id)}>
-                <Icon prefix="fe" name="plus-circle" /> {t('organization.appointments.add')}
+                <Icon prefix="fe" name="plus-circle" /> {t('organization.appointment_prices.add')}
               </Button>
             </HasPermissionWrapper>
             <OrganizationMenu active_link='appointments'/>

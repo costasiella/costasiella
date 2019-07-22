@@ -108,16 +108,16 @@ const OrganizationAppointments = ({ t, history, match, archived=false }) => (
                                     after: appointments.pageInfo.endCursor
                                   },
                                   updateQuery: (previousResult, { fetchMoreResult }) => {
-                                    const newEdges = fetchMoreResult.organizationAppointmentCategorysRooms.edges
-                                    const pageInfo = fetchMoreResult.organizationAppointmentCategorysRooms.pageInfo
+                                    const newEdges = fetchMoreResult.organizationAppointmentPrices.edges
+                                    const pageInfo = fetchMoreResult.organizationAppointmentPrices.pageInfo
 
                                     return newEdges.length
                                       ? {
                                           // Put the new locations at the end of the list and update `pageInfo`
                                           // so we have the new `endCursor` and `hasNextPage` values
-                                          organizationAppointmentCategorysRooms: {
-                                            __typename: previousResult.organizationAppointmentCategorysRooms.__typename,
-                                            edges: [ ...previousResult.organizationAppointmentCategorysRooms.edges, ...newEdges ],
+                                          organizationAppointmentPrices: {
+                                            __typename: previousResult.organizationAppointmentPrices.__typename,
+                                            edges: [ ...previousResult.organizationAppointmentPrices.edges, ...newEdges ],
                                             pageInfo
                                           }
                                         }
