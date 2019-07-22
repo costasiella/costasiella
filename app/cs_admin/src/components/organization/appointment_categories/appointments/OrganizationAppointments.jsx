@@ -43,7 +43,7 @@ const ARCHIVE_APPOINTMENT = gql`
   }
 `
 
-const OrganizationAppointmentCategorysRooms = ({ t, history, match, archived=false }) => (
+const OrganizationAppointments = ({ t, history, match, archived=false }) => (
   <SiteWrapper>
     <div className="my-3 my-md-5">
       <Container>
@@ -228,4 +228,4 @@ const OrganizationAppointmentCategorysRooms = ({ t, history, match, archived=fal
   </SiteWrapper>
 );
 
-export default withTranslation()(withRouter(OrganizationAppointmentCategorysRooms))
+export default withTranslation()(withRouter(OrganizationAppointments))

@@ -6,7 +6,7 @@ from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
 from graphql import GraphQLError
 
-from ..models import OrganizationAppointment, OrganizationAppointmentPrice, FinanceTaxRate
+from ..models import Account, OrganizationAppointment, OrganizationAppointmentPrice, FinanceTaxRate
 from ..modules.gql_tools import require_login_and_permission, get_rid
 from ..modules.date_tools import last_day_month
 from ..modules.messages import Messages
@@ -29,7 +29,7 @@ def validate_create_update_input(input, update=False):
             raise Exception(_('Invalid Organization Appointment ID!'))
 
     # Fetch & check account
-    rid = get_rid(input['acount'])
+    rid = get_rid(input['account'])
     account = Account.objects.filter(id=rid.id).first()
     result['account'] = account
     if not account:
