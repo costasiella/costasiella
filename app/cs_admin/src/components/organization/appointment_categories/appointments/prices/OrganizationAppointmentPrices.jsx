@@ -21,14 +21,14 @@ import {
   Container,
   Table
 } from "tabler-react";
-import SiteWrapper from "../../../SiteWrapper"
-import HasPermissionWrapper from "../../../HasPermissionWrapper"
+import SiteWrapper from "../../../../SiteWrapper"
+import HasPermissionWrapper from "../../../../HasPermissionWrapper"
 // import { confirmAlert } from 'react-confirm-alert'; // Import
 import { toast } from 'react-toastify'
 
-import ContentCard from "../../../general/ContentCard"
-import CardHeaderSeparator from "../../../general/CardHeaderSeparator"
-import OrganizationMenu from "../../OrganizationMenu"
+import ContentCard from "../../../../general/ContentCard"
+import CardHeaderSeparator from "../../../../general/CardHeaderSeparator"
+import OrganizationMenu from "../../../OrganizationMenu"
 
 import { GET_APPOINTMENT_PRICES_QUERY } from "./queries"
 
@@ -183,8 +183,8 @@ const OrganizationAppointmentCategorysRooms = ({ t, history, match, archived=fal
                                               }
                                       }, refetchQueries: [
                                           { 
-                                            query: GET_APPOINTMENTS_QUERY, 
-                                            variables: {"archived": archived, organizationAppointmentCategory: match.params.category_id }
+                                            query: GET_APPOINTMENT_PRICES_QUERY, 
+                                            variables: {"archived": archived, organizationAppointment: match.params.appointment_id }
                                           }
                                       ]}).then(({ data }) => {
                                         console.log('got data', data);
