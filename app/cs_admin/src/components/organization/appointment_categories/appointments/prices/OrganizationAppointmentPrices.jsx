@@ -171,43 +171,6 @@ const OrganizationAppointmentPrices = ({ t, history, match }) => (
                                     </Table.Col>
                                   )}
                                 </Mutation>
-                                {/* TODO: replace with delete */}
-                                {/* <Mutation mutation={ARCHIVE_APPOINTMENT_PRICE} key={v4()}>
-                                  {(archiveAppointmentPrice, { data }) => (
-                                    <Table.Col className="text-right" key={v4()}>
-                                      <button className="icon btn btn-link btn-sm" 
-                                          title={t('general.archive')} 
-                                          href=""
-                                          onClick={() => {
-                                            console.log("clicked archived")
-                                            let id = node.id
-                                            archiveAppointmentPrice({ variables: {
-                                              input: {
-                                              id,
-                                              }
-                                      }, refetchQueries: [
-                                          { 
-                                            query: GET_APPOINTMENT_PRICES_QUERY, 
-                                            variables: {organizationAppointment: match.params.appointment_id }
-                                          }
-                                      ]}).then(({ data }) => {
-                                        console.log('got data', data);
-                                        toast.success(
-                                          (archived) ? t('general.unarchived'): t('general.archived'), {
-                                            position: toast.POSITION.BOTTOM_RIGHT
-                                          })
-                                      }).catch((error) => {
-                                        toast.error((t('general.toast_server_error')) + ': ' +  error, {
-                                            position: toast.POSITION.BOTTOM_RIGHT
-                                          })
-                                        console.log('there was an error sending the query', error);
-                                      })
-                                      }}>
-                                        <Icon prefix="fa" name="inbox" />
-                                      </button>
-                                    </Table.Col>
-                                  )}
-                                </Mutation> */}
                               </Table.Row>
                             ))}
                         </Table.Body>
