@@ -116,8 +116,6 @@ class UpdateOrganizationAppointmentPrice(graphene.relay.ClientIDMutation):
         id = graphene.ID(required=True)
         price = graphene.Float(required=True, default_value=0)
         finance_tax_rate = graphene.ID(required=True)
-        date_start = graphene.types.datetime.Date(required=True)
-        date_end = graphene.types.datetime.Date(required=False, default_value=None)
         
     organization_appointment_price = graphene.Field(OrganizationAppointmentPriceNode)
 
@@ -135,8 +133,6 @@ class UpdateOrganizationAppointmentPrice(graphene.relay.ClientIDMutation):
 
         organization_appointment_price.price = input['price']
         organization_appointment_price.finance_tax_rate = result['finance_tax_rate']
-        organization_appointment_price.date_start = result['date_start']
-        organization_appointment_price.date_end = result.get('date_end', None)
         organization_appointment_price.save(force_update=True)
 
         return UpdateOrganizationAppointmentPrice(organization_appointment_price=organization_appointment_price)
