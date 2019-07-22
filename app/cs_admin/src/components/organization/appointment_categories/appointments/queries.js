@@ -30,14 +30,22 @@ export const GET_APPOINTMENTS_QUERY = gql`
 `
 
 export const GET_APPOINTMENT_QUERY = gql`
-  query OrganizationAppointment($id: ID!) {
+  query OrganizationAppointment($id: ID!, $after: String, $before: String) {
     organizationAppointment(id:$id) {
       id
       name
       displayPublic
       archived
+      financeGlaccount {
+        id 
+        name
+      }
+      financeCostcenter {
+        id
+        name
+      }
     }
-    financeGlaccounts(first: 15, before: $before, after: $after, archived: $archived) {
+    financeGlaccounts(first: 15, before: $before, after: $after, archived: false) {
       pageInfo {
         startCursor
         endCursor
@@ -53,7 +61,7 @@ export const GET_APPOINTMENT_QUERY = gql`
         }
       }
     }
-    financeCostcenters(first: 15, before: $before, after: $after, archived: $archived) {
+    financeCostcenters(first: 15, before: $before, after: $after, archived: false) {
       pageInfo {
         startCursor
         endCursor

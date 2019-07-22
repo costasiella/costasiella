@@ -77,9 +77,20 @@ class OrganizationAppointmentEdit extends Component {
                       return <p>{t('general.error_sad_smiley')}</p>
                     }
                     
-                    const initialData = data.organizationAppointment;
+                    const inputData = data
+                    const initialData = data.organizationAppointment
                     console.log('query data')
                     console.log(data)
+
+                    let initialGlaccount = ""
+                    if (initialData.organizationAppointment.financeGlaccount) {
+                      initialGlaccount =  initialData.organizationSubscription.financeGlaccount.id
+                    } 
+
+                    let initialCostcenter = ""
+                    if (initialData.organizationAppointment.financeCostcenter) {
+                      initialCostcenter =  initialData.organizationSubscription.financeCostcenter.id
+                    } 
 
                     return (
                       
@@ -88,7 +99,9 @@ class OrganizationAppointmentEdit extends Component {
                           <Formik
                               initialValues={{ 
                                 name: initialData.name, 
-                                displayPublic: initialData.displayPublic 
+                                displayPublic: initialData.displayPublic,
+                                financeGlaccount: initialGlaccount,
+                                financeCostcenter: initialCostcenter,
                               }}
                               validationSchema={APPOINTMENT_SCHEMA}
                               onSubmit={(values, { setSubmitting }) => {
@@ -99,7 +112,9 @@ class OrganizationAppointmentEdit extends Component {
                                     input: {
                                       id: match.params.id,
                                       name: values.name,
-                                      displayPublic: values.displayPublic 
+                                      displayPublic: values.displayPublic,
+                                      financeGlaccount: values.financeGlaccount,
+                                      financeCostcenter: values.financeCostcenter
                                     }
                                   }, refetchQueries: [
                                     {query: GET_APPOINTMENTS_QUERY,
@@ -121,10 +136,11 @@ class OrganizationAppointmentEdit extends Component {
                               >
                               {({ isSubmitting, errors, values }) => (
                                 <OrganizationAppointmentForm
-                                isSubmitting={isSubmitting}
-                                errors={errors}
-                                values={values}
-                                return_url={return_url}
+                                  inputData={inputData}
+                                  isSubmitting={isSubmitting}
+                                  errors={errors}
+                                  values={values}
+                                  return_url={return_url}
                                 />
                               )}
                           </Formik>

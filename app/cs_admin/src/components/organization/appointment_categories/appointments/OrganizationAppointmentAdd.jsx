@@ -1,7 +1,7 @@
 // @flow
 
 import React from 'react'
-import { Mutation } from "react-apollo";
+import { Mutation, Query } from "react-apollo";
 import gql from "graphql-tag"
 import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
@@ -9,7 +9,7 @@ import { Formik, Form as FoForm, Field, ErrorMessage } from 'formik'
 import { toast } from 'react-toastify'
 
 
-import { GET_APPOINTMENTS_QUERY } from './queries'
+import { GET_APPOINTMENTS_QUERY, GET_INPUT_VALUES_QUERY } from './queries'
 import { APPOINTMENT_SCHEMA } from './yupSchema'
 import OrganizationAppointmentForm from './OrganizationAppointmentForm'
 
@@ -58,47 +58,67 @@ const OrganizationAppointmentAdd = ({ t, history, match }) => (
             <Card.Header>
               <Card.Title>{t('organization.appointment.title_add')}</Card.Title>
             </Card.Header>
-            <Mutation mutation={ADD_APPOINTMENT} onCompleted={() => history.push(return_url + match.params.category_id)}> 
-                {(addLocation, { data }) => (
-                    <Formik
-                        initialValues={{ name: '', displayPublic: true }}
-                        validationSchema={APPOINTMENT_SCHEMA}
-                        onSubmit={(values, { setSubmitting }) => {
-                            addLocation({ variables: {
-                              input: {
-                                organizationAppointmentCategory: match.params.category_id,
-                                name: values.name, 
-                                displayPublic: values.displayPublic
-                              }
-                            }, refetchQueries: [
-                                {query: GET_APPOINTMENTS_QUERY,
-                                 variables: {"archived": false, "organizationAppointmentCategory": match.params.category_id }}
-                            ]})
-                            .then(({ data }) => {
-                                console.log('got data', data);
-                                toast.success((t('organization.appointment.toast_add_success')), {
-                                    position: toast.POSITION.BOTTOM_RIGHT
-                                  })
-                              }).catch((error) => {
-                                toast.error((t('general.toast_server_error')) + ': ' +  error, {
-                                    position: toast.POSITION.BOTTOM_RIGHT
-                                  })
-                                console.log('there was an error sending the query', error)
-                                setSubmitting(false)
-                              })
-                        }}
-                        >
-                        {({ isSubmitting, errors, values }) => (
-                          <OrganizationAppointmentForm
-                            isSubmitting={isSubmitting}
-                            errors={errors}
-                            values={values}
-                            return_url={return_url}
-                            />
-                        )}
-                    </Formik>
-                )}
-                </Mutation>
+            <Query query={GET_INPUT_VALUES_QUERY} variables = {{archived: false}} >
+              {({ loading, error, data, refetch }) => {
+                // Loading
+                if (loading) return <p>{t('general.loading_with_dots')}</p>
+                // Error
+                if (error) {
+                  console.log(error)
+                  return <p>{t('general.error_sad_smiley')}</p>
+                }
+                
+                console.log('query data')
+                console.log(data)
+                const inputData = data
+
+                return (
+                  <Mutation mutation={ADD_APPOINTMENT} onCompleted={() => history.push(return_url + match.params.category_id)}> 
+                      {(addAppointment, { data }) => (
+                          <Formik
+                              initialValues={{ name: '', displayPublic: true }}
+                              validationSchema={APPOINTMENT_SCHEMA}
+                              onSubmit={(values, { setSubmitting }) => {
+                                  addAppointment({ variables: {
+                                    input: {
+                                      organizationAppointmentCategory: match.params.category_id,
+                                      name: values.name, 
+                                      displayPublic: values.displayPublic,
+                                      financeGlaccount: values.financeGlaccount,
+                                      financeCostcenter: values.financeCostcenter
+                                    }
+                                  }, refetchQueries: [
+                                      {query: GET_APPOINTMENTS_QUERY,
+                                      variables: {"archived": false, "organizationAppointmentCategory": match.params.category_id }}
+                                  ]})
+                                  .then(({ data }) => {
+                                      console.log('got data', data);
+                                      toast.success((t('organization.appointment.toast_add_success')), {
+                                          position: toast.POSITION.BOTTOM_RIGHT
+                                        })
+                                    }).catch((error) => {
+                                      toast.error((t('general.toast_server_error')) + ': ' +  error, {
+                                          position: toast.POSITION.BOTTOM_RIGHT
+                                        })
+                                      console.log('there was an error sending the query', error)
+                                      setSubmitting(false)
+                                    })
+                              }}
+                              >
+                              {({ isSubmitting, errors, values }) => (
+                                <OrganizationAppointmentForm
+                                  inputData={inputData}
+                                  isSubmitting={isSubmitting}
+                                  errors={errors}
+                                  values={values}
+                                  return_url={return_url}
+                                  />
+                              )}
+                          </Formik>
+                      )}
+                    </Mutation>
+                )}}
+              </Query>                    
           </Card>
           </Grid.Col>
           <Grid.Col md={3}>
