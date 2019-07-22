@@ -59,7 +59,9 @@ class AccountTeacherProfileNode(DjangoObjectType):
 
 class AccountTeacherProfileQuery(graphene.ObjectType):
     account_teacher_profiles = DjangoFilterConnectionField(AccountTeacherProfileNode)
-    account_teacher_profile = graphene.relay.Node.Field(AccountTeacherProfileNode)
+    ## At some point, figure out which id is required. Node expects "AccountTeacherProfileNode ID", but the id will come
+    # From "Account"
+    # account_teacher_profile = graphene.relay.Node.Field(AccountTeacherProfileNode)
 
 
     def resolve_account_teacher_profiles(self, info, account, **kwargs):
