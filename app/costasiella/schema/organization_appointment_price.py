@@ -101,7 +101,7 @@ class CreateOrganizationAppointmentPrice(graphene.relay.ClientIDMutation):
         result = validate_create_update_input(input, update=False)
         organization_appointment_price = OrganizationAppointmentPrice(
             organization_appointment = result['organization_appointment'],
-            account = result['account']
+            account = result['account'],
             price = input['price'],
             finance_tax_rate = result['finance_tax_rate'],
         )        

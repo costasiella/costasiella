@@ -14,6 +14,7 @@ from .finance_taxrate import FinanceTaxRateQuery, FinanceTaxRateMutation
 
 from .organization_appointment import OrganizationAppointmentQuery, OrganizationAppointmentMutation
 from .organization_appointment_category import OrganizationAppointmentCategoryQuery, OrganizationAppointmentCategoryMutation
+from .organization_appointment_price import OrganizationAppointmentPriceQuery, OrganizationAppointmentPriceMutation
 from .organization_classpass import OrganizationClasspassQuery, OrganizationClasspassMutation
 from .organization_classpass_group import OrganizationClasspassGroupQuery, OrganizationClasspassGroupMutation
 from .organization_classpass_group_classpass import OrganizationClasspassGroupClasspassMutation
@@ -45,6 +46,7 @@ class Query(AccountQuery,
             FinanceTaxRateQuery,
             OrganizationAppointmentQuery,
             OrganizationAppointmentCategoryQuery,
+            OrganizationAppointmentPriceQuery,
             OrganizationClasspassQuery,
             OrganizationClasspassGroupQuery,
             OrganizationClasstypeQuery,
@@ -75,6 +77,7 @@ class Mutation(AccountMutation,
                FinanceTaxRateMutation,
                OrganizationAppointmentMutation,
                OrganizationAppointmentCategoryMutation,
+               OrganizationAppointmentPriceMutation,
                OrganizationClasspassMutation,
                OrganizationClasspassGroupMutation,
                OrganizationClasspassGroupClasspassMutation,
