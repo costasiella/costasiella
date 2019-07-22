@@ -56,7 +56,7 @@ const OrganizationAppointmentAdd = ({ t, history, match }) => (
           <Grid.Col md={9}>
           <Card>
             <Card.Header>
-              <Card.Title>{t('organization.appointment.title_add')}</Card.Title>
+              <Card.Title>{t('organization.appointments.title_add')}</Card.Title>
             </Card.Header>
             <Query query={GET_INPUT_VALUES_QUERY} variables = {{archived: false}} >
               {({ loading, error, data, refetch }) => {
@@ -93,7 +93,7 @@ const OrganizationAppointmentAdd = ({ t, history, match }) => (
                                   ]})
                                   .then(({ data }) => {
                                       console.log('got data', data);
-                                      toast.success((t('organization.appointment.toast_add_success')), {
+                                      toast.success((t('organization.appointments.toast_add_success')), {
                                           position: toast.POSITION.BOTTOM_RIGHT
                                         })
                                     }).catch((error) => {

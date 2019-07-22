@@ -27,7 +27,7 @@ const OrganizationAppointmentForm = ({ t, history, match, inputData, isSubmittin
                 name="displayPublic" 
                 checked={values.displayPublic} />
               <span className="custom-switch-indicator" ></span>
-              <span className="custom-switch-description">{t('organization.appointment.public')}</span>
+              <span className="custom-switch-description">{t('organization.appointments.public')}</span>
             </Form.Label>
             <ErrorMessage name="displayPublic" component="div" />   
           </Form.Group>    

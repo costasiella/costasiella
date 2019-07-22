@@ -162,11 +162,11 @@
         "subscriptions": "Subscriptions",
         "enroll": "Enroll",
         "attend": "Attend",
-        "appointment_category": "__STRING_NOT_TRANSLATED__",
-        "role": "__STRING_NOT_TRANSLATED__",
-        "education": "__STRING_NOT_TRANSLATED__",
-        "bio": "__STRING_NOT_TRANSLATED__",
-        "classpasses": "__STRING_NOT_TRANSLATED__"
+        "appointment_category": "Appointment category",
+        "role": "Role",
+        "education": "Education",
+        "bio": "Bio",
+        "classpasses": "Class passes"
     },
     "yup": {
         "min_len_3": "Please input at least 3 characters",
@@ -344,13 +344,6 @@
             "delete_confirm_msg": "Are you sure you wish to delete this price?",
             "deleted": "Deleted subscription price"
         },
-        "appointment": {
-            "title_add": "__STRING_NOT_TRANSLATED__",
-            "toast_add_success": "__STRING_NOT_TRANSLATED__",
-            "title_edit": "__STRING_NOT_TRANSLATED__",
-            "toast_edit_success": "__STRING_NOT_TRANSLATED__",
-            "public": "This is a public appointment type"
-        },
         "appointment_categories": {
             "title": "Appointment categories",
             "error_loading": "Error loading appointment categories :(",
@@ -363,11 +356,16 @@
             "toast_edit_success": "Saved"
         },
         "appointments": {
-            "title": "__STRING_NOT_TRANSLATED__",
-            "error_loading": "__STRING_NOT_TRANSLATED__",
-            "empty_list": "__STRING_NOT_TRANSLATED__",
-            "empty_archive": "__STRING_NOT_TRANSLATED__",
-            "add": "__STRING_NOT_TRANSLATED__"
+            "title": "Appointments",
+            "error_loading": "Error loading appointments :(",
+            "empty_list": "No appointments have been defined yet in this category.",
+            "empty_archive": "No appointments have been archived yet in this category",
+            "add": "Add appointment",
+            "title_add": "Add appointment",
+            "toast_add_success": "Added appointment",
+            "title_edit": "Edit appointment",
+            "toast_edit_success": "Saved",
+            "public": "This is a public appointment"
         },
         "appointment_category": {
             "public": "This is a public appointment category"

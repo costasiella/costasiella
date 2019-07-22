@@ -64,7 +64,7 @@ class OrganizationAppointmentEdit extends Component {
               <Grid.Col md={9}>
               <Card>
                 <Card.Header>
-                  <Card.Title>{t('organization.appointment.title_edit')}</Card.Title>
+                  <Card.Title>{t('organization.appointments.title_edit')}</Card.Title>
                   {console.log(match.params.id)}
                 </Card.Header>
                 <Query query={GET_APPOINTMENT_QUERY} variables={{ id }} >
@@ -122,7 +122,7 @@ class OrganizationAppointmentEdit extends Component {
                                   ]})
                                   .then(({ data }) => {
                                       console.log('got data', data)
-                                      toast.success((t('organization.appointment.toast_edit_success')), {
+                                      toast.success((t('organization.appointments.toast_edit_success')), {
                                           position: toast.POSITION.BOTTOM_RIGHT
                                         })
                                     }).catch((error) => {
