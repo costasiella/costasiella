@@ -84,10 +84,9 @@ export const GET_APPOINTMENT_QUERY = gql`
 `
 
 
-
 export const GET_INPUT_VALUES_QUERY = gql`
   query AppointmentInputValues($after: String, $before: String, $archived: Boolean) {
-    financeGlaccounts(first: 15, before: $before, after: $after, archived: $archived) {
+    financeTaxrates(first: 15, before: $before, after: $after, archived: $archived) {
       pageInfo {
         startCursor
         endCursor
@@ -103,7 +102,7 @@ export const GET_INPUT_VALUES_QUERY = gql`
         }
       }
     }
-    financeCostcenters(first: 15, before: $before, after: $after, archived: $archived) {
+    accounts(first: 100, before: $before, after: $after, isActive: true, teacher: true) {
       pageInfo {
         startCursor
         endCursor
@@ -113,9 +112,7 @@ export const GET_INPUT_VALUES_QUERY = gql`
       edges {
         node {
           id
-          archived
-          name
-          code
+          fullName
         }
       }
     }

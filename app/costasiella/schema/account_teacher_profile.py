@@ -69,14 +69,12 @@ class AccountTeacherProfileQuery(graphene.ObjectType):
     # account_teacher_profile = graphene.relay.Node.Field(AccountTeacherProfileNode)
 
 
-    def resolve_account_teacher_profiles(self, info, account, **kwargs):
+    def resolve_account_teacher_profiles(self, info, **kwargs):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.view_accountteacherprofile')
 
-        rid = get_rid(account)
-
         ## return everything:
-        return AccountTeacherProfile.objects.filter(account=rid.id)
+        return AccountTeacherProfile.objects.all().order_by('account__full_name')
 
 
 # class CreateAccountTeacherProfile(graphene.relay.ClientIDMutation):

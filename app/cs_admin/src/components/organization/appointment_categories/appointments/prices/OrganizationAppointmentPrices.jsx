@@ -185,7 +185,7 @@ const OrganizationAppointmentPrices = ({ t, history, match }) => (
             <HasPermissionWrapper permission="add"
                                   resource="organizationappointment">
               <Button color="primary btn-block mb-6"
-                      onClick={() => history.push("/organization/appointment_categories/appointments/add/" + match.params.category_id)}>
+                      onClick={() => history.push("/organization/appointment_categories/" + match.params.category_id + "/appointments/prices/" + match.params.appointment_id + "/add")}>
                 <Icon prefix="fe" name="plus-circle" /> {t('organization.appointment_prices.add')}
               </Button>
             </HasPermissionWrapper>

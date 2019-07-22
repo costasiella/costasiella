@@ -9,9 +9,9 @@ import { Formik, Form as FoForm, Field, ErrorMessage } from 'formik'
 import { toast } from 'react-toastify'
 
 
-import { GET_APPOINTMENTS_QUERY, GET_INPUT_VALUES_QUERY } from './queries'
-import { APPOINTMENT_SCHEMA } from './yupSchema'
-import OrganizationAppointmentForm from './OrganizationAppointmentForm'
+import { GET_APPOINTMENT_PRICES_QUERY, GET_INPUT_VALUES_QUERY } from './queries'
+import { APPOINTMENT_PRICE_SCHEMA } from './yupSchema'
+import OrganizationAppointmentPriceForm from './OrganizationAppointmentPriceForm'
 
 import {
   Page,
@@ -22,24 +22,30 @@ import {
   Container,
   Form,
 } from "tabler-react"
-import SiteWrapper from "../../../SiteWrapper"
-import HasPermissionWrapper from "../../../HasPermissionWrapper"
+import SiteWrapper from "../../../../SiteWrapper"
+import HasPermissionWrapper from "../../../../HasPermissionWrapper"
 
-import OrganizationMenu from "../../OrganizationMenu"
+import OrganizationMenu from "../../../OrganizationMenu"
 
 
-const ADD_APPOINTMENT = gql`
-  mutation CreateOrganizationAppointment($input: CreateOrganizationAppointmentInput!) {
-    createOrganizationAppointment(input: $input) {
-      organizationAppointment {
+const ADD_APPOINTMENT_PRICE = gql`
+  mutation CreateOrganizationAppointmentPrice($input: CreateOrganizationAppointmentPriceInput!) {
+    createOrganizationAppointmentPrice(input: $input) {
+      organizationAppointmentPrice {
         id
-        organizationAppointmentCategory {
+        account {
+          id
+          fullName
+        }
+        organizationAppointment {
           id
           name
         }
-        archived
-        displayPublic
-        name
+        price
+        financeTaxRate {
+          id
+          name
+        }
       }
     }
   }
@@ -47,7 +53,7 @@ const ADD_APPOINTMENT = gql`
 
 const return_url = "/organization/appointment_categories/appointments/"
 
-const OrganizationAppointmentAdd = ({ t, history, match }) => (
+const OrganizationAppointmentPriceAdd = ({ t, history, match }) => (
   <SiteWrapper>
     <div className="my-3 my-md-5">
       <Container>
@@ -73,11 +79,12 @@ const OrganizationAppointmentAdd = ({ t, history, match }) => (
                 const inputData = data
 
                 return (
-                  <Mutation mutation={ADD_APPOINTMENT} onCompleted={() => history.push(return_url + match.params.category_id)}> 
+                  <Mutation mutation={ADD_APPOINTMENT_PRICE} onCompleted={
+                    () => history.push("/organizations/appointment_categories/" + match.params.category_id + "/appointments/" + match.params.appointment_id)}> 
                       {(addAppointment, { data }) => (
                           <Formik
                               initialValues={{ name: '', displayPublic: true }}
-                              validationSchema={APPOINTMENT_SCHEMA}
+                              validationSchema={APPOINTMENT_PRICE_SCHEMA}
                               onSubmit={(values, { setSubmitting }) => {
                                   addAppointment({ variables: {
                                     input: {
@@ -88,8 +95,8 @@ const OrganizationAppointmentAdd = ({ t, history, match }) => (
                                       financeCostcenter: values.financeCostcenter
                                     }
                                   }, refetchQueries: [
-                                      {query: GET_APPOINTMENTS_QUERY,
-                                      variables: {"archived": false, "organizationAppointmentCategory": match.params.category_id }}
+                                      {query: GET_APPOINTMENT_PRICES_QUERY,
+                                      variables: {"organizationAppointment": match.params.appointment_id }}
                                   ]})
                                   .then(({ data }) => {
                                       console.log('got data', data);
@@ -106,13 +113,13 @@ const OrganizationAppointmentAdd = ({ t, history, match }) => (
                               }}
                               >
                               {({ isSubmitting, errors, values }) => (
-                                <OrganizationAppointmentForm
+                                <OrganizationAppointmentPriceForm
                                   inputData={inputData}
                                   isSubmitting={isSubmitting}
                                   errors={errors}
                                   values={values}
-                                  return_url={return_url}
-                                  />
+                                  return_url={"/organizations/appointment_categories/" + match.params.category_id + "/appointments/" + match.params.appointment_id}
+                                />
                               )}
                           </Formik>
                       )}
@@ -137,4 +144,4 @@ const OrganizationAppointmentAdd = ({ t, history, match }) => (
   </SiteWrapper>
 );
 
-export default withTranslation()(withRouter(OrganizationAppointmentAdd))
+export default withTranslation()(withRouter(OrganizationAppointmentPriceAdd))
