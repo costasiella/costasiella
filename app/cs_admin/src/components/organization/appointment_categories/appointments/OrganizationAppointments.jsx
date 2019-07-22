@@ -153,7 +153,7 @@ const OrganizationAppointments = ({ t, history, match, archived=false }) => (
                                     <span className='text-muted'>{t('general.unarchive_to_edit')}</span> :
                                     <span>
                                       <Button className='btn-sm' 
-                                              onClick={() => history.push("/organization/appointment_categories/appointments/edit/" + match.params.category_id + '/' + node.id)}
+                                              onClick={() => history.push("/organization/appointment_categories/" + match.params.category_id + "/appointments/edit/" + node.id)}
                                               color="secondary">
                                         {t('general.edit')}
                                       </Button>
@@ -216,7 +216,7 @@ const OrganizationAppointments = ({ t, history, match, archived=false }) => (
             <HasPermissionWrapper permission="add"
                                   resource="organizationappointment">
               <Button color="primary btn-block mb-6"
-                      onClick={() => history.push("/organization/appointment_categories/appointments/add/" + match.params.category_id)}>
+                      onClick={() => history.push("/organization/appointment_categories/" + match.params.category_id + "/appointments/add/")}>
                 <Icon prefix="fe" name="plus-circle" /> {t('organization.appointments.add')}
               </Button>
             </HasPermissionWrapper>

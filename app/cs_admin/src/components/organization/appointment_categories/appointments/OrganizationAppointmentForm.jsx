@@ -77,7 +77,7 @@ const OrganizationAppointmentForm = ({ t, history, match, inputData, isSubmittin
           >
             {t('general.submit')}
           </Button>
-          <Link to={return_url + match.params.category_id}>
+          <Link to={return_url}>
             <Button color="link" type="button">
                 {t('general.cancel')}
             </Button>

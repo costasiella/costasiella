@@ -73,7 +73,7 @@ const OrganizationAppointmentAdd = ({ t, history, match }) => (
                 const inputData = data
 
                 return (
-                  <Mutation mutation={ADD_APPOINTMENT} onCompleted={() => history.push(return_url + match.params.category_id)}> 
+                  <Mutation mutation={ADD_APPOINTMENT} onCompleted={() => history.push("/organization/appointment_categories/" + match.params.category_id + "/appointments")}> 
                       {(addAppointment, { data }) => (
                           <Formik
                               initialValues={{ name: '', displayPublic: true }}
@@ -111,7 +111,7 @@ const OrganizationAppointmentAdd = ({ t, history, match }) => (
                                   isSubmitting={isSubmitting}
                                   errors={errors}
                                   values={values}
-                                  return_url={return_url}
+                                  return_url={"/organization/appointment_categories/" + match.params.category_id + "/appointments"}
                                   />
                               )}
                           </Formik>

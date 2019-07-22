@@ -53,7 +53,7 @@ class OrganizationAppointmentEdit extends Component {
     const history = this.props.history
     const id = match.params.id
     const category_id = match.params.category_id
-    const return_url = "/organization/appointment_categories/appointments/" + category_id
+    const return_url = "/organization/appointment_categories/" + match.params.category_id + "/appointments"
 
     return (
       <SiteWrapper>
