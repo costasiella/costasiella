@@ -43,7 +43,7 @@ const ARCHIVE_APPOINTMENT_PRICE = gql`
   }
 `
 
-const OrganizationAppointmentCategorysRooms = ({ t, history, match, archived=false }) => (
+const OrganizationAppointmentPrices = ({ t, history, match }) => (
   <SiteWrapper>
     <div className="my-3 my-md-5">
       <Container>
@@ -168,7 +168,7 @@ const OrganizationAppointmentCategorysRooms = ({ t, history, match, archived=fal
                                   }
                                 </Table.Col>
                                 <Mutation mutation={ARCHIVE_APPOINTMENT_PRICE} key={v4()}>
-                                  {(archiveAppointmentCategorysRoom, { data }) => (
+                                  {(archiveAppointmentPrice, { data }) => (
                                     <Table.Col className="text-right" key={v4()}>
                                       <button className="icon btn btn-link btn-sm" 
                                           title={t('general.archive')} 
@@ -176,7 +176,7 @@ const OrganizationAppointmentCategorysRooms = ({ t, history, match, archived=fal
                                           onClick={() => {
                                             console.log("clicked archived")
                                             let id = node.id
-                                            archiveAppointmentCategorysRoom({ variables: {
+                                            archiveAppointmentPrice({ variables: {
                                               input: {
                                               id,
                                               archived: !archived
@@ -184,7 +184,7 @@ const OrganizationAppointmentCategorysRooms = ({ t, history, match, archived=fal
                                       }, refetchQueries: [
                                           { 
                                             query: GET_APPOINTMENT_PRICES_QUERY, 
-                                            variables: {"archived": archived, organizationAppointment: match.params.appointment_id }
+                                            variables: {organizationAppointment: match.params.appointment_id }
                                           }
                                       ]}).then(({ data }) => {
                                         console.log('got data', data);
@@ -230,4 +230,4 @@ const OrganizationAppointmentCategorysRooms = ({ t, history, match, archived=fal
   </SiteWrapper>
 );
 
-export default withTranslation()(withRouter(OrganizationAppointmentCategorysRooms))
+export default withTranslation()(withRouter(OrganizationAppointmentPrices))

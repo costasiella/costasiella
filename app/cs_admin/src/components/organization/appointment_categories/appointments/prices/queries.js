@@ -1,8 +1,8 @@
 import gql from "graphql-tag"
 
 export const GET_APPOINTMENT_PRICES_QUERY = gql`
-  query OrganizationAppointmentPrices($after: String, $before: String, $organizationAppointment: ID!, $archived: Boolean!) {
-    organizationAppointmentPrices(first: 15, before: $before, after: $after, organizationAppointment: $organizationAppointment, archived: $archived) {
+  query OrganizationAppointmentPrices($after: String, $before: String, $organizationAppointment: ID!) {
+    organizationAppointmentPrices(first: 15, before: $before, after: $after, organizationAppointment: $organizationAppointment) {
       pageInfo {
         startCursor
         endCursor
