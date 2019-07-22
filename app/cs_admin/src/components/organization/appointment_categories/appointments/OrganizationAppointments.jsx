@@ -151,11 +151,18 @@ const OrganizationAppointmentCategorysRooms = ({ t, history, match, archived=fal
                                 <Table.Col className="text-right" key={v4()}>
                                   {(node.archived) ? 
                                     <span className='text-muted'>{t('general.unarchive_to_edit')}</span> :
-                                    <Button className='btn-sm' 
-                                            onClick={() => history.push("/organization/appointment_categories/appointments/edit/" + match.params.category_id + '/' + node.id)}
-                                            color="secondary">
-                                      {t('general.edit')}
-                                    </Button>
+                                    <span>
+                                      <Button className='btn-sm' 
+                                              onClick={() => history.push("/organization/appointment_categories/appointments/edit/" + match.params.category_id + '/' + node.id)}
+                                              color="secondary">
+                                        {t('general.edit')}
+                                      </Button>
+                                      <Button className='btn-sm' 
+                                              onClick={() => history.push("/organization/appointment_categories/appointments/prices/" + match.params.category_id + '/' + node.id)}
+                                              color="secondary">
+                                        {t('organization.appointments.teacher_prices')}
+                                      </Button>
+                                    </span>
                                   }
                                 </Table.Col>
                                 <Mutation mutation={ARCHIVE_APPOINTMENT} key={v4()}>
