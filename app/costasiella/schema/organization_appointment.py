@@ -103,10 +103,10 @@ class CreateOrganizationAppointment(graphene.relay.ClientIDMutation):
         )
 
         if 'finance_glaccount' in result:
-            organization_appointment_price.finance_glaccount = result['finance_glaccount']
+            organization_appointment.finance_glaccount = result['finance_glaccount']
 
         if 'finance_costcenter' in result:
-            organization_appointment_price.finance_costcenter = result['finance_costcenter']
+            organization_appointment.finance_costcenter = result['finance_costcenter']
 
         organization_appointment.save()
 
@@ -140,10 +140,10 @@ class UpdateOrganizationAppointment(graphene.relay.ClientIDMutation):
         organization_appointment.display_public = input['display_public']
 
         if 'finance_glaccount' in result:
-            organization_appointment_price.finance_glaccount = result['finance_glaccount']
+            organization_appointment.finance_glaccount = result['finance_glaccount']
 
         if 'finance_costcenter' in result:
-            organization_appointment_price.finance_costcenter = result['finance_costcenter']
+            organization_appointment.finance_costcenter = result['finance_costcenter']
 
         organization_appointment.save()
 

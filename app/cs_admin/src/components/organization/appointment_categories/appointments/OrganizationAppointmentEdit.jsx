@@ -83,13 +83,13 @@ class OrganizationAppointmentEdit extends Component {
                     console.log(data)
 
                     let initialGlaccount = ""
-                    if (initialData.organizationAppointment.financeGlaccount) {
-                      initialGlaccount =  initialData.organizationSubscription.financeGlaccount.id
+                    if (initialData.financeGlaccount) {
+                      initialGlaccount =  initialData.financeGlaccount.id
                     } 
 
                     let initialCostcenter = ""
-                    if (initialData.organizationAppointment.financeCostcenter) {
-                      initialCostcenter =  initialData.organizationSubscription.financeCostcenter.id
+                    if (initialData.financeCostcenter) {
+                      initialCostcenter =  initialData.financeCostcenter.id
                     } 
 
                     return (
