@@ -281,6 +281,16 @@ class Teacher2Factory(factory.DjangoModelFactory):
     is_active = True
 
 
+class TeacherProfileFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.AccountTeacherProfile
+
+    account = factory.SubFactory(TeacherFactory)
+    classes = True
+    appointments = True
+    events = True
+
+
 class AllAuthEmailAddress(factory.DjangoModelFactory):
     class Meta:
         model = EmailAddress
