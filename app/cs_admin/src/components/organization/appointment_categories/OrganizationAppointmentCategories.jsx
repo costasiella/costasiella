@@ -138,12 +138,12 @@ const OrganizationAppointmentCategories = ({ t, history, archived=false }) => (
                                       <span className='text-muted'>{t('general.unarchive_to_edit')}</span> :
                                       <div>
                                         <Button className='btn-sm' 
-                                                onClick={() => history.push("/organization/appointment_categories/edit/" + node.id)}
+                                                onClick={() => history.push("/organization/appointment_categories/" + node.id + "/edit/")}
                                                 color="secondary">
                                           {t('general.edit')}
                                         </Button>
                                         <Button className='btn-sm' 
-                                                onClick={() => history.push("/organization/appointment_categories/appointments/" + node.id)}
+                                                onClick={() => history.push("/organization/appointment_categories/" + node.id + "appointments/")}
                                                 color="secondary">
                                           {t('organization.appointments.title')}
                                         </Button>
@@ -201,7 +201,7 @@ const OrganizationAppointmentCategories = ({ t, history, archived=false }) => (
                 <Icon prefix="fe" name="plus-circle" /> {t('organization.appointment_categories.add')}
               </Button>
             </HasPermissionWrapper>
-            <OrganizationMenu active_link='appointment_categories'/>
+            <OrganizationMenu active_link='appointments'/>
           </Grid.Col>
         </Grid.Row>
       </Container>
