@@ -55,9 +55,8 @@ class OrganizationAppointmentPriceNode(DjangoObjectType):
     class Meta:
         model = OrganizationAppointmentPrice
         filter_fields = {
+            'account': ['exact'],
             'organization_appointment': ['exact'],
-            'date_start': ['lte'],
-            'date_end': ['gte', 'isnull']
         }
         interfaces = (graphene.relay.Node, OrganizationAppointmentPriceNodeInterface)
 
@@ -82,7 +81,7 @@ class OrganizationAppointmentPriceQuery(graphene.ObjectType):
         require_login_and_permission(user, 'costasiella.view_organizationappointmentprice')
 
         rid = get_rid(organization_appointment)
-        return OrganizationAppointmentPrice.objects.filter(organization_appointment=rid.id).order_by('-date_start')
+        return OrganizationAppointmentPrice.objects.filter(organization_appointment=rid.id).order_by('account__full_name')
 
 
 class CreateOrganizationAppointmentPrice(graphene.relay.ClientIDMutation):
