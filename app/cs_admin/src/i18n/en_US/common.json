@@ -349,18 +349,18 @@
             "toast_add_success": "__STRING_NOT_TRANSLATED__",
             "title_edit": "__STRING_NOT_TRANSLATED__",
             "toast_edit_success": "__STRING_NOT_TRANSLATED__",
-            "public": "__STRING_NOT_TRANSLATED__"
+            "public": "This is a public appointment type"
         },
         "appointment_categories": {
-            "title": "__STRING_NOT_TRANSLATED__",
-            "error_loading": "__STRING_NOT_TRANSLATED__",
-            "empty_list": "__STRING_NOT_TRANSLATED__",
-            "empty_archive": "__STRING_NOT_TRANSLATED__",
-            "add": "__STRING_NOT_TRANSLATED__",
-            "title_add": "__STRING_NOT_TRANSLATED__",
-            "toast_add_success": "__STRING_NOT_TRANSLATED__",
-            "title_edit": "__STRING_NOT_TRANSLATED__",
-            "toast_edit_success": "__STRING_NOT_TRANSLATED__"
+            "title": "Appointment categories",
+            "error_loading": "Error loading appointment categories :(",
+            "empty_list": "No appointment categories found",
+            "empty_archive": "No appointment categories have been archived yet",
+            "add": "Add appointment category",
+            "title_add": "Add appointment category",
+            "toast_add_success": "Added appointment category",
+            "title_edit": "Edit appointment category",
+            "toast_edit_success": "Saved"
         },
         "appointments": {
             "title": "__STRING_NOT_TRANSLATED__",
@@ -370,7 +370,7 @@
             "add": "__STRING_NOT_TRANSLATED__"
         },
         "appointment_category": {
-            "public": "__STRING_NOT_TRANSLATED__"
+            "public": "This is a public appointment category"
         }
     },
     "validity": {
