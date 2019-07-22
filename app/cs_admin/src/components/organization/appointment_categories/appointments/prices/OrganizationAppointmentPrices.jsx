@@ -49,9 +49,9 @@ const OrganizationAppointmentPrices = ({ t, history, match }) => (
       <Container>
         <Page.Header title={t("organization.title")}>
           <div className="page-options d-flex">
-            <Link to="/organization/appointment_categories" 
+            <Link to={"/organization/appointment_categories/" + match.params.category_id + "/appointments"}
                   className='btn btn-outline-secondary btn-sm'>
-                <Icon prefix="fe" name="arrow-left" /> {t('general.back_to')} {t('organization.appointment_categories.title')}
+                <Icon prefix="fe" name="arrow-left" /> {t('general.back_to')} {t('general.appointment')}
             </Link>
           </div>
         </Page.Header>
@@ -114,7 +114,7 @@ const OrganizationAppointmentPrices = ({ t, history, match }) => (
                               }} >
                     <div>
                       <Alert type="primary">
-                        <strong>{t('general.appointment')}</strong> {data.organizationAppointment.name}
+                        <strong>{t('general.prices_for')} {t('general.appointment')}</strong> {data.organizationAppointment.name}
                       </Alert>
 
                       <Table>
