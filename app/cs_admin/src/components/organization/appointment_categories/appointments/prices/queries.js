@@ -46,7 +46,7 @@ export const GET_APPOINTMENT_PRICE_QUERY = gql`
         name
       }
     }
-    financeTaxrates(first: 15, before: $before, after: $after, archived: $archived) {
+    financeTaxrates(first: 100, before: $before, after: $after, archived: false) {
       pageInfo {
         startCursor
         endCursor
@@ -78,10 +78,6 @@ export const GET_APPOINTMENT_PRICE_QUERY = gql`
           }
         }
       }
-    }
-    organizationAppointment(id: $organizationAppointment) {
-      id
-      name
     }
   }
 `

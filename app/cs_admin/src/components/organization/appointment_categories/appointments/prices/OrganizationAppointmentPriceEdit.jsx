@@ -79,7 +79,7 @@ class OrganizationAppointmentPriceEdit extends Component {
                   <Card.Title>{t('organization.appointments.title_edit')}</Card.Title>
                   {console.log(match.params.id)}
                 </Card.Header>
-                <Query query={GET_APPOINTMENT_PRICE_QUERY} variables={{ id }} >
+                <Query query={GET_APPOINTMENT_PRICE_QUERY} variables={{ id: id }} >
                 {({ loading, error, data, refetch }) => {
                     // Loading
                     if (loading) return <p>{t('general.loading_with_dots')}</p>
