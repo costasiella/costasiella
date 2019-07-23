@@ -113,6 +113,7 @@ class CreateOrganizationAppointmentPrice(graphene.relay.ClientIDMutation):
 class UpdateOrganizationAppointmentPrice(graphene.relay.ClientIDMutation):
     class Input:
         id = graphene.ID(required=True)
+        account = graphene.ID(required=True)
         price = graphene.Float(required=True, default_value=0)
         finance_tax_rate = graphene.ID(required=True)
         
@@ -130,6 +131,7 @@ class UpdateOrganizationAppointmentPrice(graphene.relay.ClientIDMutation):
 
         result = validate_create_update_input(input, update=True)
 
+        organization_appointment_price.account = result['account']
         organization_appointment_price.price = input['price']
         organization_appointment_price.finance_tax_rate = result['finance_tax_rate']
         organization_appointment_price.save(force_update=True)

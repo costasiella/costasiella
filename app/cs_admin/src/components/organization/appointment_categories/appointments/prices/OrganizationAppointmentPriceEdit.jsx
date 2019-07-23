@@ -90,7 +90,7 @@ class OrganizationAppointmentPriceEdit extends Component {
                     }
                     
                     const inputData = data
-                    const initialData = data.organizationAppointment
+                    const initialData = data.organizationAppointmentPrice
                     console.log('query data')
                     console.log(data)
 
