@@ -62,7 +62,7 @@ const OrganizationAppointmentPriceAdd = ({ t, history, match }) => (
           <Grid.Col md={9}>
           <Card>
             <Card.Header>
-              <Card.Title>{t('organization.appointments.title_add')}</Card.Title>
+              <Card.Title>{t('organization.appointment_prices.title_add')}</Card.Title>
             </Card.Header>
             <Query query={GET_INPUT_VALUES_QUERY} variables = {{archived: false}} >
               {({ loading, error, data, refetch }) => {
@@ -104,7 +104,7 @@ const OrganizationAppointmentPriceAdd = ({ t, history, match }) => (
                                   ]})
                                   .then(({ data }) => {
                                       console.log('got data', data);
-                                      toast.success((t('organization.appointments.toast_add_success')), {
+                                      toast.success((t('organization.appointment_prices.toast_add_success')), {
                                           position: toast.POSITION.BOTTOM_RIGHT
                                         })
                                     }).catch((error) => {
@@ -136,7 +136,7 @@ const OrganizationAppointmentPriceAdd = ({ t, history, match }) => (
             <HasPermissionWrapper permission="add"
                                   resource="organizationappointmentprice">
               <Button color="primary btn-block mb-6"
-                      onClick={() => history.push(return_url + match.params.category_id)}>
+                      onClick={() => history.push("/organization/appointment_categories/" + match.params.category_id + "/appointments/prices/" + match.params.appointment_id)}>
                 <Icon prefix="fe" name="chevrons-left" /> {t('general.back')}
               </Button>
             </HasPermissionWrapper>
