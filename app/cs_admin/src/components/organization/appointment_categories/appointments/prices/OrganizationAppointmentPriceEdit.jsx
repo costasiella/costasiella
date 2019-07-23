@@ -8,9 +8,9 @@ import { withRouter } from "react-router"
 import { Formik, Form as FoForm, Field, ErrorMessage } from 'formik'
 import { toast } from 'react-toastify'
 
-import { GET_APPOINTMENT_PRICES_QUERY, GET_APPOINTMENT_QUERY } from './queries'
-import { APPOINTMENT_SCHEMA } from './yupSchema'
-import OrganizationAppointmentForm from './OrganizationAppointmentForm'
+import { GET_APPOINTMENT_PRICES_QUERY, GET_APPOINTMENT_PRICE_QUERY } from './queries'
+import { APPOINTMENT_PRICE_SCHEMA } from './yupSchema'
+import OrganizationAppointmentPriceForm from './OrganizationAppointmentPriceForm'
 
 import {
   Page,
@@ -21,10 +21,10 @@ import {
   Container,
   Form
 } from "tabler-react";
-import SiteWrapper from "../../../SiteWrapper"
-import HasPermissionWrapper from "../../../HasPermissionWrapper"
+import SiteWrapper from "../../../../SiteWrapper"
+import HasPermissionWrapper from "../../../../HasPermissionWrapper"
 
-import OrganizationMenu from "../../OrganizationMenu"
+import OrganizationMenu from "../../../OrganizationMenu"
 
 
 const UPDATE_APPOINTMENT_PRICE = gql`
@@ -111,8 +111,8 @@ class OrganizationAppointmentPriceEdit extends Component {
                           <Formik
                               initialValues={{ 
                                 account: initialAccount,
-                                price: values.price, 
-                                financeTaxRate: values.financeTaxRate,
+                                price: initialData.price, 
+                                financeTaxRate: initialFinanceTaxRate,
                               }}
                               validationSchema={APPOINTMENT_PRICE_SCHEMA}
                               onSubmit={(values, { setSubmitting }) => {
@@ -122,13 +122,13 @@ class OrganizationAppointmentPriceEdit extends Component {
                                   updateLocation({ variables: {
                                     input: {
                                       id: match.params.id,
-                                      account: initialAccount,
+                                      account: values.account,
                                       price: values.price,
-                                      financeTaxRate: initialFinanceTaxRate,
+                                      financeTaxRate: values.financeTaxRate,
                                     }
                                   }, refetchQueries: [
                                     {query: GET_APPOINTMENT_PRICES_QUERY,
-                                      variables: {"archived": false, "organizationAppointment": match.params.appointment_id }}
+                                      variables: {organizationAppointment: match.params.appointment_id }}
                                   ]})
                                   .then(({ data }) => {
                                       console.log('got data', data)
@@ -145,7 +145,7 @@ class OrganizationAppointmentPriceEdit extends Component {
                               }}
                               >
                               {({ isSubmitting, errors, values }) => (
-                                <OrganizationAppointmentForm
+                                <OrganizationAppointmentPriceForm
                                   inputData={inputData}
                                   isSubmitting={isSubmitting}
                                   errors={errors}

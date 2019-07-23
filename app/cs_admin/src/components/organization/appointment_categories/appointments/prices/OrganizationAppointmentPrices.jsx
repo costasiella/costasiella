@@ -137,7 +137,8 @@ const OrganizationAppointmentPrices = ({ t, history, match }) => (
                                     <span className='text-muted'>{t('general.unarchive_to_edit')}</span> :
                                     <span>
                                       <Button className='btn-sm' 
-                                              onClick={() => history.push("/organization/appointment_categories/appointments/prices/" + match.params.category_id + '/' + node.id)}
+                                              onClick={() => history.push("/organization/appointment_categories/" + 
+                                                match.params.category_id + "/appointments/prices/" + match.params.appointment_id + "/edit/" + node.id)}
                                               color="secondary">
                                         {t('general.edit')}
                                       </Button>
