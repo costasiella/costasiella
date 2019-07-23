@@ -134,7 +134,7 @@ const OrganizationAppointmentPriceAdd = ({ t, history, match }) => (
           </Grid.Col>
           <Grid.Col md={3}>
             <HasPermissionWrapper permission="add"
-                                  resource="organizationappointment">
+                                  resource="organizationappointmentprice">
               <Button color="primary btn-block mb-6"
                       onClick={() => history.push(return_url + match.params.category_id)}>
                 <Icon prefix="fe" name="chevrons-left" /> {t('general.back')}

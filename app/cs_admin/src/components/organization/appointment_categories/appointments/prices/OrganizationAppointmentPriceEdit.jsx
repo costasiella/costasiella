@@ -63,8 +63,9 @@ class OrganizationAppointmentPriceEdit extends Component {
     const match = this.props.match
     const history = this.props.history
     const id = match.params.id
+    const appointment_id = match.params.appointment_id
     const category_id = match.params.category_id
-    const return_url = "/organization/appointment_categories/appointments/" + category_id
+    const return_url = "/organization/appointment_categories/" + category_id + "/appointments/prices/" + appointment_id
 
     return (
       <SiteWrapper>
@@ -78,7 +79,7 @@ class OrganizationAppointmentPriceEdit extends Component {
                   <Card.Title>{t('organization.appointments.title_edit')}</Card.Title>
                   {console.log(match.params.id)}
                 </Card.Header>
-                <Query query={GET_APPOINTMENT_QUERY} variables={{ id }} >
+                <Query query={GET_APPOINTMENT_PRICE_QUERY} variables={{ id }} >
                 {({ loading, error, data, refetch }) => {
                     // Loading
                     if (loading) return <p>{t('general.loading_with_dots')}</p>
@@ -113,7 +114,7 @@ class OrganizationAppointmentPriceEdit extends Component {
                                 price: values.price, 
                                 financeTaxRate: values.financeTaxRate,
                               }}
-                              validationSchema={APPOINTMENT_SCHEMA}
+                              validationSchema={APPOINTMENT_PRICE_SCHEMA}
                               onSubmit={(values, { setSubmitting }) => {
                                   console.log('submit values:')
                                   console.log(values)
@@ -127,7 +128,7 @@ class OrganizationAppointmentPriceEdit extends Component {
                                     }
                                   }, refetchQueries: [
                                     {query: GET_APPOINTMENT_PRICES_QUERY,
-                                      variables: {"archived": false, "organizationAppointmentCategory": match.params.category_id }}
+                                      variables: {"archived": false, "organizationAppointment": match.params.appointment_id }}
                                   ]})
                                   .then(({ data }) => {
                                       console.log('got data', data)
@@ -161,7 +162,7 @@ class OrganizationAppointmentPriceEdit extends Component {
               </Grid.Col>
               <Grid.Col md={3}>
                 <HasPermissionWrapper permission="change"
-                                      resource="organizationappointment">
+                                      resource="organizationappointmentprice">
                   <Button color="primary btn-block mb-6"
                           onClick={() => history.push(return_url)}>
                     <Icon prefix="fe" name="chevrons-left" /> {t('general.back')}

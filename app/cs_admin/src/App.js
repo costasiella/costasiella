@@ -38,6 +38,7 @@ import OrganizationAppointmentCategoryAdd from './components/organization/appoin
 import OrganizationAppointmentCategoryEdit from './components/organization/appointment_categories/OrganizationAppointmentCategoryEdit'
 import OrganizationAppointmentPrices from './components/organization/appointment_categories/appointments/prices/OrganizationAppointmentPrices'
 import OrganizationAppointmentPriceAdd from './components/organization/appointment_categories/appointments/prices/OrganizationAppointmentPriceAdd'
+import OrganizationAppointmentPriceEdit from './components/organization/appointment_categories/appointments/prices/OrganizationAppointmentPriceEdit'
 import OrganizationClasspasses from './components/organization/classpasses/OrganizationClasspasses'
 import OrganizationClasspassAdd from './components/organization/classpasses/OrganizationClasspassAdd'
 import OrganizationClasspassEdit from './components/organization/classpasses/OrganizationClasspassEdit'
@@ -178,6 +179,8 @@ class App extends Component {
                    component={OrganizationAppointmentPrices} />
             <Route exact path="/organization/appointment_categories/:category_id/appointments/prices/:appointment_id/add" 
                    component={OrganizationAppointmentPriceAdd} />
+            <Route exact path="/organization/appointment_categories/:category_id/appointments/prices/:appointment_id/edit/:id" 
+                   component={OrganizationAppointmentPriceEdit} />
             <Route exact path="/organization/classpasses" component={OrganizationClasspasses} />
             <Route exact path="/organization/classpasses/add" component={OrganizationClasspassAdd} />
             <Route exact path="/organization/classpasses/edit/:id" component={OrganizationClasspassEdit} />    
