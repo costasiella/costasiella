@@ -166,7 +166,9 @@
         "role": "Role",
         "education": "Education",
         "bio": "Bio",
-        "classpasses": "Class passes"
+        "classpasses": "Class passes",
+        "appointment": "Appointment",
+        "prices_for": "Prices for"
     },
     "yup": {
         "min_len_3": "Please input at least 3 characters",
@@ -365,10 +367,23 @@
             "toast_add_success": "Added appointment",
             "title_edit": "Edit appointment",
             "toast_edit_success": "Saved",
-            "public": "This is a public appointment"
+            "public": "This is a public appointment",
+            "teacher_prices": "Teacher prices"
         },
         "appointment_category": {
             "public": "This is a public appointment category"
+        },
+        "appointment_prices": {
+            "title_add": "Add appointment price",
+            "toast_add_success": "Added appointment price",
+            "title_edit": "Edit appointment price",
+            "toast_edit_success": "Saved",
+            "title": "Appointment prices",
+            "error_loading": "Error loading prices for this appointment :(",
+            "empty_list": "No prices have been defined for this appointment",
+            "delete_confirm_msg": "Are you sure you wish to delete the price for this teacher?",
+            "deleted": "Deleted appointment price",
+            "add": "Add appointment price"
         }
     },
     "validity": {
