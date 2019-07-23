@@ -8,7 +8,7 @@ import { withRouter } from "react-router"
 import { Formik, Form as FoForm, Field, ErrorMessage } from 'formik'
 import { toast } from 'react-toastify'
 
-import { GET_APPOINTMENTS_QUERY, GET_APPOINTMENT_QUERY } from './queries'
+import { GET_APPOINTMENT_PRICES_QUERY, GET_APPOINTMENT_QUERY } from './queries'
 import { APPOINTMENT_SCHEMA } from './yupSchema'
 import OrganizationAppointmentForm from './OrganizationAppointmentForm'
 
@@ -51,7 +51,7 @@ mutation UpdateOrganizationAppointmentPrice($input: UpdateOrganizationAppointmen
 `
 
 
-class OrganizationAppointmentEdit extends Component {
+class OrganizationAppointmentPriceEdit extends Component {
   constructor(props) {
     super(props)
     console.log("Organization appointment edit props:")
@@ -93,26 +93,25 @@ class OrganizationAppointmentEdit extends Component {
                     console.log('query data')
                     console.log(data)
 
-                    let initialGlaccount = ""
-                    if (initialData.financeGlaccount) {
-                      initialGlaccount =  initialData.financeGlaccount.id
-                    } 
+                    let initialAccount = ""
+                    if (initialData.account) {
+                      initialAccount = initialData.account.id
+                    }
 
-                    let initialCostcenter = ""
-                    if (initialData.financeCostcenter) {
-                      initialCostcenter =  initialData.financeCostcenter.id
+                    let initialFinanceTaxRate = ""
+                    if (initialData.financeTaxRate) {
+                      initialFinanceTaxRate =  initialData.financeTaxRate.id
                     } 
 
                     return (
                       
-                      <Mutation mutation={UPDATE_APPOINTMENT} onCompleted={() => history.push(return_url)}> 
+                      <Mutation mutation={UPDATE_APPOINTMENT_PRICE} onCompleted={() => history.push(return_url)}> 
                       {(updateLocation, { data }) => (
                           <Formik
                               initialValues={{ 
-                                name: initialData.name, 
-                                displayPublic: initialData.displayPublic,
-                                financeGlaccount: initialGlaccount,
-                                financeCostcenter: initialCostcenter,
+                                account: initialAccount,
+                                price: values.price, 
+                                financeTaxRate: values.financeTaxRate,
                               }}
                               validationSchema={APPOINTMENT_SCHEMA}
                               onSubmit={(values, { setSubmitting }) => {
@@ -122,13 +121,12 @@ class OrganizationAppointmentEdit extends Component {
                                   updateLocation({ variables: {
                                     input: {
                                       id: match.params.id,
-                                      name: values.name,
-                                      displayPublic: values.displayPublic,
-                                      financeGlaccount: values.financeGlaccount,
-                                      financeCostcenter: values.financeCostcenter
+                                      account: initialAccount,
+                                      price: values.price,
+                                      financeTaxRate: initialFinanceTaxRate,
                                     }
                                   }, refetchQueries: [
-                                    {query: GET_APPOINTMENTS_QUERY,
+                                    {query: GET_APPOINTMENT_PRICES_QUERY,
                                       variables: {"archived": false, "organizationAppointmentCategory": match.params.category_id }}
                                   ]})
                                   .then(({ data }) => {
@@ -179,4 +177,4 @@ class OrganizationAppointmentEdit extends Component {
   }
 
 
-export default withTranslation()(withRouter(OrganizationAppointmentEdit))
+export default withTranslation()(withRouter(OrganizationAppointmentPriceEdit))

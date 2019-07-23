@@ -83,7 +83,12 @@ const OrganizationAppointmentPriceAdd = ({ t, history, match }) => (
                     () => history.push("/organization/appointment_categories/" + match.params.category_id + "/appointments/prices/" + match.params.appointment_id)}> 
                       {(addAppointment, { data }) => (
                           <Formik
-                              initialValues={{ name: '', displayPublic: true }}
+                              initialValues={{ 
+                                organizationAppointment: '', 
+                                account: '',
+                                price: '',
+                                financeTaxRate: "",
+                              }}
                               validationSchema={APPOINTMENT_PRICE_SCHEMA}
                               onSubmit={(values, { setSubmitting }) => {
                                   addAppointment({ variables: {

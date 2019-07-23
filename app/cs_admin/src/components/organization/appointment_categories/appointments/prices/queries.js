@@ -32,23 +32,21 @@ export const GET_APPOINTMENT_PRICES_QUERY = gql`
   }
 `
 
-export const GET_APPOINTMENT_QUERY = gql`
+export const GET_APPOINTMENT_PRICE_QUERY = gql`
   query OrganizationAppointment($id: ID!, $after: String, $before: String) {
-    organizationAppointment(id:$id) {
+    organizationAppointmentPrice(id:$id) {
       id
-      name
-      displayPublic
-      archived
-      financeGlaccount {
-        id 
-        name
+      price
+      account {
+        id
+        fullName
       }
-      financeCostcenter {
+      financeTaxRate {
         id
         name
       }
     }
-    financeGlaccounts(first: 15, before: $before, after: $after, archived: false) {
+    financeTaxrates(first: 15, before: $before, after: $after, archived: $archived) {
       pageInfo {
         startCursor
         endCursor
@@ -64,7 +62,7 @@ export const GET_APPOINTMENT_QUERY = gql`
         }
       }
     }
-    financeCostcenters(first: 15, before: $before, after: $after, archived: false) {
+    accountTeacherProfiles(first: 100, before: $before, after: $after, appointments: true, account_IsActive: true) {
       pageInfo {
         startCursor
         endCursor
@@ -74,11 +72,16 @@ export const GET_APPOINTMENT_QUERY = gql`
       edges {
         node {
           id
-          archived
-          name
-          code
+          account {
+            id
+            fullName
+          }
         }
       }
+    }
+    organizationAppointment(id: $organizationAppointment) {
+      id
+      name
     }
   }
 `
