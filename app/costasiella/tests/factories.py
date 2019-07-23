@@ -108,6 +108,16 @@ class OrganizationAppointmentFactory(factory.DjangoModelFactory):
     name = "First appointment"
 
 
+class OrganizationAppointmentPriceFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.OrganizationAppointmentPrice
+
+    account = factory.SubFactory(TeacherFactory)
+    organization_appointment = factory.SubFactory(OrganizationAppointmentFactory)
+    price = 1245
+    finance_tax_rate = factory.SubFactory(FinanceTaxRateFactory)
+
+
 class OrganizationLevelFactory(factory.DjangoModelFactory):
     class Meta:
         model = models.OrganizationLevel
