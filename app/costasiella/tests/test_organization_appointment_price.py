@@ -58,10 +58,9 @@ class GQLOrganizationAppointmentPrice(TestCase):
             }
         }
 
-        self.variables_archive = {
+        self.variables_delete = {
             "input": {
                 "id": to_global_id('OrganizationAppointmentPriceNode', self.organization_appointment_price.pk),
-                "archived": True,
             }
         }
 
@@ -166,13 +165,10 @@ class GQLOrganizationAppointmentPrice(TestCase):
   }
 '''
 
-        self.appointment_price_archive_mutation = '''
-  mutation ArchiveOrganizationAppointmentPrice($input: ArchiveOrganizationAppointmentPriceInput!) {
-    archiveOrganizationAppointmentPrice(input: $input) {
-      organizationAppointmentPrice {
-        id
-        archived
-      }
+        self.appointment_price_delete_mutation = '''
+  mutation DeleteOrganizationAppointmentPrice($input: DeleteOrganizationAppointmentPriceInput!) {
+    deleteOrganizationAppointmentPrice(input: $input) {
+      ok
     }
   }
 '''
@@ -476,69 +472,69 @@ class GQLOrganizationAppointmentPrice(TestCase):
         self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
-    # def test_archive_appointment_price(self):
-    #     """ Archive a appointment price"""
-    #     query = self.appointment_price_archive_mutation
-    #     variables = self.variables_archive
+    def test_delete_appointment_price(self):
+        """ Delete a appointment price"""
+        query = self.appointment_price_delete_mutation
+        variables = self.variables_delete
 
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         self.admin_user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['archiveOrganizationAppointmentPrice']['organizationAppointmentPrice']['archived'], variables['input']['archived'])
-
-
-    # def test_archive_appointment_price_anon_user(self):
-    #     """ Archive a appointment price """
-    #     query = self.appointment_price_archive_mutation
-    #     variables = self.variables_archive
-
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         self.anon_user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
+        executed = execute_test_client_api_query(
+            query, 
+            self.admin_user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['deleteOrganizationAppointmentPrice']['ok'], True)
 
 
-    # def test_archive_appointment_price_permission_granted(self):
-    #     """ Allow archiving appointments for users with permissions """
-    #     query = self.appointment_price_archive_mutation
-    #     variables = self.variables_archive
+    def test_delete_appointment_price_anon_user(self):
+        """ Delete a appointment price """
+        query = self.appointment_price_delete_mutation
+        variables = self.variables_delete
 
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename=self.permission_delete)
-    #     user.user_permissions.add(permission)
-    #     user.save()
-
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['archiveOrganizationAppointmentPrice']['organizationAppointmentPrice']['archived'], variables['input']['archived'])
+        executed = execute_test_client_api_query(
+            query, 
+            self.anon_user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
-    # def test_archive_appointment_price_permission_denied(self):
-    #     """ Check archive appointment price permission denied error message """
-    #     query = self.appointment_price_archive_mutation
-    #     variables = self.variables_archive
+    def test_delete_appointment_price_permission_granted(self):
+        """ Allow archiving appointments for users with permissions """
+        query = self.appointment_price_delete_mutation
+        variables = self.variables_delete
+
+        # Create regular user
+        user = f.RegularUserFactory.create()
+        permission = Permission.objects.get(codename=self.permission_delete)
+        user.user_permissions.add(permission)
+        user.save()
+
+        executed = execute_test_client_api_query(
+            query, 
+            user,
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['deleteOrganizationAppointmentPrice']['ok'], True)
+
+
+    def test_delete_appointment_price_permission_denied(self):
+        """ Check delete appointment price permission denied error message """
+        query = self.appointment_price_delete_mutation
+        variables = self.variables_delete
         
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
+        # Create regular user
+        user = f.RegularUserFactory.create()
 
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
+        executed = execute_test_client_api_query(
+            query, 
+            user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
 
