@@ -28,26 +28,26 @@ import OrganizationMenu from "../../../OrganizationMenu"
 
 
 const UPDATE_APPOINTMENT_PRICE = gql`
-mutation UpdateOrganizationAppointmentPrice($input: UpdateOrganizationAppointmentPriceInput!) {
-  updateOrganizationAppointmentPrice(input: $input) {
-    organizationAppointmentPrice {
-      id
-      account {
+  mutation UpdateOrganizationAppointmentPrice($input: UpdateOrganizationAppointmentPriceInput!) {
+    updateOrganizationAppointmentPrice(input: $input) {
+      organizationAppointmentPrice {
         id
-        fullName
-      }
-      organizationAppointment {
-        id
-        name
-      }
-      price
-      financeTaxRate {
-        id
-        name
+        account {
+          id
+          fullName
+        }
+        organizationAppointment {
+          id
+          name
+        }
+        price
+        financeTaxRate {
+          id
+          name
+        }
       }
     }
   }
-}
 `
 
 

@@ -30,6 +30,7 @@ class GQLOrganizationAppointmentPrice(TestCase):
         self.permission_change = 'change_organizationappointmentprice'
         self.permission_delete = 'delete_organizationappointmentprice'
 
+        self.teacher = f.Teacher2Factory.create()
         self.organization_appointment = f.OrganizationAppointmentFactory.create()
         self.organization_appointment_price = f.OrganizationAppointmentPriceFactory.create()
         self.finance_tax_rate = f.FinanceTaxRateFactory.create()
@@ -41,6 +42,7 @@ class GQLOrganizationAppointmentPrice(TestCase):
 
         self.variables_create = {
             "input": {
+                "account": to_global_id('AccountNode', self.teacher.pk),
                 "organizationAppointment": to_global_id('OrganizationAppointmentNode', self.organization_appointment.pk),
                 "price": 200,
                 "financeTaxRate": to_global_id('FinanceTaxRateNode', self.finance_tax_rate.pk)
@@ -122,13 +124,19 @@ class GQLOrganizationAppointmentPrice(TestCase):
     createOrganizationAppointmentPrice(input: $input) {
       organizationAppointmentPrice {
         id
+        account {
+          id
+          fullName
+        }
         organizationAppointment {
           id
           name
         }
-        archived
-        displayPublic
-        name
+        price
+        financeTaxRate {
+          id
+          name
+        }
       }
     }
   }
@@ -139,12 +147,19 @@ class GQLOrganizationAppointmentPrice(TestCase):
     updateOrganizationAppointmentPrice(input: $input) {
       organizationAppointmentPrice {
         id
+        account {
+          id
+          fullName
+        }
         organizationAppointment {
           id
           name
         }
-        name
-        displayPublic
+        price
+        financeTaxRate {
+          id
+          name
+        }
       }
     }
   }
@@ -296,83 +311,91 @@ class GQLOrganizationAppointmentPrice(TestCase):
         self.assertEqual(data['organizationAppointmentPrice']['price'], self.organization_appointment_price.price)
 
 
-    # def test_create_appointment_price(self):
-    #     """ Create a appointment price """
-    #     query = self.appointment_price_create_mutation
-    #     variables = self.variables_create
+    def test_create_appointment_price(self):
+        """ Create a appointment price """
+        query = self.appointment_price_create_mutation
+        variables = self.variables_create
 
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         self.admin_user, 
-    #         variables=variables
-    #     )
+        executed = execute_test_client_api_query(
+            query, 
+            self.admin_user, 
+            variables=variables
+        )
 
-    #     data = executed.get('data')
-    #     self.assertEqual(
-    #       data['createOrganizationAppointmentPrice']['organizationAppointmentPrice']['organizationAppointment']['id'], 
-    #       variables['input']['organizationAppointment'])
-    #     self.assertEqual(data['createOrganizationAppointmentPrice']['organizationAppointmentPrice']['name'], variables['input']['name'])
-    #     self.assertEqual(data['createOrganizationAppointmentPrice']['organizationAppointmentPrice']['archived'], False)
-    #     self.assertEqual(data['createOrganizationAppointmentPrice']['organizationAppointmentPrice']['displayPublic'], variables['input']['displayPublic'])
-
-
-    # def test_create_appointment_price_anon_user(self):
-    #     """ Don't allow creating appointments rooms for non-logged in users """
-    #     query = self.appointment_price_create_mutation
-    #     variables = self.variables_create
-
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         self.anon_user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
+        data = executed.get('data')
+        self.assertEqual(
+          data['createOrganizationAppointmentPrice']['organizationAppointmentPrice']['account']['id'], 
+          variables['input']['account'])
+        self.assertEqual(
+          data['createOrganizationAppointmentPrice']['organizationAppointmentPrice']['organizationAppointment']['id'], 
+          variables['input']['organizationAppointment'])
+        self.assertEqual(
+          data['createOrganizationAppointmentPrice']['organizationAppointmentPrice']['financeTaxRate']['id'], 
+          variables['input']['financeTaxRate'])
+        self.assertEqual(data['createOrganizationAppointmentPrice']['organizationAppointmentPrice']['price'], variables['input']['price'])
 
 
-    # def test_create_appointment_price_permission_granted(self):
-    #     """ Allow creating appointment prices for users with permissions """
-    #     query = self.appointment_price_create_mutation
+    def test_create_appointment_price_anon_user(self):
+        """ Don't allow creating appointments rooms for non-logged in users """
+        query = self.appointment_price_create_mutation
+        variables = self.variables_create
 
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename=self.permission_add)
-    #     user.user_permissions.add(permission)
-    #     user.save()
-
-    #     variables = self.variables_create
-
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(
-    #       data['createOrganizationAppointmentPrice']['organizationAppointmentPrice']['organizationAppointment']['id'], 
-    #       variables['input']['organizationAppointment'])
-    #     self.assertEqual(data['createOrganizationAppointmentPrice']['organizationAppointmentPrice']['name'], variables['input']['name'])
-    #     self.assertEqual(data['createOrganizationAppointmentPrice']['organizationAppointmentPrice']['archived'], False)
-    #     self.assertEqual(data['createOrganizationAppointmentPrice']['organizationAppointmentPrice']['displayPublic'], variables['input']['displayPublic'])
+        executed = execute_test_client_api_query(
+            query, 
+            self.anon_user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
-    # def test_create_appointment_price_permission_denied(self):
-    #     """ Check create appointment price permission denied error message """
-    #     query = self.appointment_price_create_mutation
-    #     variables = self.variables_create
+    def test_create_appointment_price_permission_granted(self):
+        """ Allow creating appointment prices for users with permissions """
+        query = self.appointment_price_create_mutation
 
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
+        # Create regular user
+        user = f.RegularUserFactory.create()
+        permission = Permission.objects.get(codename=self.permission_add)
+        user.user_permissions.add(permission)
+        user.save()
 
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
+        variables = self.variables_create
+
+        executed = execute_test_client_api_query(
+            query, 
+            user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(
+          data['createOrganizationAppointmentPrice']['organizationAppointmentPrice']['organizationAppointment']['id'], 
+          variables['input']['organizationAppointment'])
+        self.assertEqual(
+          data['createOrganizationAppointmentPrice']['organizationAppointmentPrice']['account']['id'], 
+          variables['input']['account'])
+        self.assertEqual(
+          data['createOrganizationAppointmentPrice']['organizationAppointmentPrice']['financeTaxRate']['id'], 
+          variables['input']['financeTaxRate'])
+        self.assertEqual(data['createOrganizationAppointmentPrice']['organizationAppointmentPrice']['price'], variables['input']['price'])
+
+
+    def test_create_appointment_price_permission_denied(self):
+        """ Check create appointment price permission denied error message """
+        query = self.appointment_price_create_mutation
+        variables = self.variables_create
+
+        # Create regular user
+        user = f.RegularUserFactory.create()
+
+        executed = execute_test_client_api_query(
+            query, 
+            user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
     # def test_update_appointment_price(self):
