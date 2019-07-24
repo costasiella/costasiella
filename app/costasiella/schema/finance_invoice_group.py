@@ -168,7 +168,7 @@ class ArchiveFinanceInvoiceGroup(graphene.relay.ClientIDMutation):
             raise Exception('Invalid Finance Invoice Group ID!')
 
         finance_invoicegroup.archived = input['archived']
-        finance_invoicegroup.save(force_update=True)
+        finance_invoicegroup.save()
 
         return ArchiveFinanceInvoiceGroup(finance_invoicegroup=finance_invoicegroup)
 
