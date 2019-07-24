@@ -63,7 +63,7 @@ const OrganizationClasspassesGroups = ({ t, history, archived=false }) => (
                 if (loading) return (
                   <ContentCard cardTitle={t('organization.classpass_groups.title')}>
                     <Dimmer active={true}
-                            loadder={true}>
+                            loader={true}>
                     </Dimmer>
                   </ContentCard>
                 )

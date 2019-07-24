@@ -6,6 +6,8 @@ from django.db import models
 from .organization_classtype import OrganizationClasstype
 from .organization_location_room import OrganizationLocationRoom
 from .organization_level import OrganizationLevel
+from .organization_classpass_group import OrganizationClasspassGroup
+from .organization_subscription_group import OrganizationSubscriptionGroup
 
 # Create your models here.
 
@@ -51,82 +53,19 @@ class ScheduleItem(models.Model):
     time_start = models.TimeField()
     time_end = models.TimeField()
     display_public = models.BooleanField(default=False)
+    organization_classpass_groups = models.ManyToManyField(
+        OrganizationClasspassGroup, 
+        through='ScheduleItemOrganizationClasspassGroup', 
+        related_name='classpass_groups'
+    )
+    organization_subscription_groups = models.ManyToManyField(
+        OrganizationSubscriptionGroup, 
+        through='ScheduleItemOrganizationSubscriptionGroup', 
+        related_name='subscription_groups'
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.schedule_item_type + ' [' + str(self.date_start) + ']'
     
-
-
-
-# def define_schedule():
-#     schedule_types = [
-#         ('appointment', T("Appointment"))
-#     ]
-
-#     schedule_frequency_types = [
-#         ('specific', T("Specific")),
-#         ('weekly', T("Weekly")),
-#     ]
-
-#     schedule_frequency_interval_options = [
-#         (0, T("Interval Unused")),
-#         (1, T("Monday")),
-#         (2, T("Tuesday")),
-#         (3, T("Wednesday")),
-#         (4, T("Thursday")),
-#         (5, T("Friday")),
-#         (6, T("Saturday")),
-#         (7, T("Sunday")),
-#     ]
-
-#     db.define_table('schedule',
-#         Field('ScheduleType',
-#               readable=False,
-#               writable=False,
-#               requires=IS_IN_SET(schedule_types),
-#               default='appointment'),
-#         Field('FrequencyType',
-#               readable=False,
-#               writable=False,
-#               requies=IS_IN_SET(schedule_frequency_types),
-#               default='weekly'),
-#         Field('FrequencyInterval', 'integer',
-#               readable=False,
-#               writable=False,
-#               requies=IS_IN_SET(schedule_frequency_interval_options),
-#               default=0),
-#         Field('school_locations_id', db.school_locations,
-#               label=T("Location")),
-#         Field('Startdate', 'date', required=True,
-#               requires=IS_DATE_IN_RANGE(format=DATE_FORMAT,
-#                                         minimum=datetime.date(1900, 1, 1),
-#                                         maximum=datetime.date(2999, 1, 1)),
-#               represent=represent_date,
-#               label=T("Start date"),
-#               widget=os_datepicker_widget),
-#         Field('Enddate', 'date',
-#               requires=IS_EMPTY_OR(IS_DATE_IN_RANGE(format=DATE_FORMAT,
-#                                                     minimum=datetime.date(1900, 1, 1),
-#                                                     maximum=datetime.date(2999, 1, 1))),
-#               represent=represent_date,
-#               label=T("End date"),
-#               widget=os_datepicker_widget),
-#         Field('Starttime', 'time', required=True,
-#               requires=IS_TIME(error_message='must be HH:MM'),
-#               represent=lambda value, row: value.strftime('%H:%M') if value else '',
-#               # widget=os_gui.get_widget_time,
-#               label=T("Start time"),
-#               widget=os_time_widget),
-#         Field('Endtime', 'time', required=True,
-#               requires=IS_TIME(error_message='must be HH:MM'),
-#               represent=lambda value, row: value.strftime('%H:%M') if value else '',
-#               widget=os_time_widget,
-#               label=T("End time")),
-#         Field('AllowAPI', 'boolean',
-#             default=False,
-#             label=T("Public"),
-#             comment=T("When the API is in use, this checkbox defines whether \
-#                 an item is passed to the website.")),
-#     )

@@ -26,7 +26,7 @@ import HasPermissionWrapper from "../../HasPermissionWrapper"
 
 import OrganizationMenu from "../OrganizationMenu"
 
-//TODO: Add and delete group pass mutations
+
 const ADD_CARD_TO_GROUP = gql`
   mutation AddCardToGroup($input: CreateOrganizationClasspassGroupClasspassInput!) {
     createOrganizationClasspassGroupClasspass(input:$input) {
@@ -44,7 +44,6 @@ const ADD_CARD_TO_GROUP = gql`
     }
   }
 `
-
 
 const DELETE_CARD_FROM_GROUP = gql`
   mutation DeleteCardFromGroup($input: DeleteOrganizationClasspassGroupClasspassInput!) {

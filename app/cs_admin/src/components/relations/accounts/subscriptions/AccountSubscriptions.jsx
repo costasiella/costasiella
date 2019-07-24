@@ -45,7 +45,7 @@ const DELETE_ACCOUNT_SUBSCRIPTION = gql`
 const AccountSubscriptions = ({ t, history, match, archived=false }) => (
   <SiteWrapper>
     <div className="my-3 my-md-5">
-      <Query query={GET_ACCOUNT_SUBSCRIPTIONS_QUERY} variables={{ archived: archived, accountId: match.params.account_id }}> 
+      <Query query={GET_ACCOUNT_SUBSCRIPTIONS_QUERY} variables={{ accountId: match.params.account_id }}> 
         {({ loading, error, data, refetch, fetchMore }) => {
           // Loading
           if (loading) return <p>{t('general.loading_with_dots')}</p>

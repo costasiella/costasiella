@@ -235,17 +235,24 @@ const RelationsAccounts = ({ t, history }) => (
                                   onClick={() => {
                                     console.log("clicked isActive")
                                     let id = node.id
+                                    let isActive 
+                                    if (localStorage.getItem(CSLS.RELATIONS_ACCOUNTS_IS_ACTIVE) == "true") {
+                                      isActive = true
+                                    } else {
+                                      isActive = false
+                                    }
+
                                     updateAccountActive({ variables: {
                                       input: {
                                         id,
-                                        isActive: !localStorage.getItem(CSLS.RELATIONS_ACCOUNTS_IS_ACTIVE)
+                                        isActive: !isActive // invert, as we need the opposite from the list currently displayed
                                       }
                                 }, refetchQueries: [
                                     {query: GET_ACCOUNTS_QUERY, variables: get_list_query_variables()}
                                 ]}).then(({ data }) => {
                                   console.log('got data', data);
                                   toast.success(
-                                    (localStorage.getItem(CSLS.RELATIONS_ACCOUNTS_IS_ACTIVE)) ? t('relations.accounts.deactivated'): t('relations.accounts.restored'), {
+                                    (isActive) ? t('relations.accounts.deactivated'): t('relations.accounts.restored'), {
                                       position: toast.POSITION.BOTTOM_RIGHT
                                     })
                                 }).catch((error) => {

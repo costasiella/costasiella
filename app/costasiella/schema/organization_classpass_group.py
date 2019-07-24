@@ -8,6 +8,7 @@ from graphql import GraphQLError
 from ..models import OrganizationClasspassGroup
 from ..modules.gql_tools import require_login_and_permission, get_rid
 from ..modules.messages import Messages
+from ..modules.model_helpers.organization_classpass_group_helper import OrganizationClasspassGroupHelper
 
 m = Messages()
 
@@ -59,6 +60,8 @@ class CreateOrganizationClasspassGroup(graphene.relay.ClientIDMutation):
         )
 
         organization_classpass_group.save()
+        helper = OrganizationClasspassGroupHelper()
+        helper.add_to_all_classes(organization_classpass_group.id)
 
         return CreateOrganizationClasspassGroup(organization_classpass_group=organization_classpass_group)
 
@@ -107,6 +110,13 @@ class ArchiveOrganizationClasspassGroup(graphene.relay.ClientIDMutation):
 
         organization_classpass_group.archived = input['archived']
         organization_classpass_group.save(force_update=True)
+
+        # Add (un-archive) or remove (archive) from all classes
+        helper = OrganizationClasspassGroupHelper()
+        if organization_classpass_group.archived:
+            helper.remove_from_all_classes(organization_classpass_group.id)
+        else:
+            helper.add_to_all_classes(organization_classpass_group.id)
 
         return ArchiveOrganizationClasspassGroup(organization_classpass_group=organization_classpass_group)
 

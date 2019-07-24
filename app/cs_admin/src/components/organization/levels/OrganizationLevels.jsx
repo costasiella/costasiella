@@ -54,7 +54,7 @@ const OrganizationLevels = ({ t, history, archived=false }) => (
                 if (loading) return (
                   <ContentCard cardTitle={t('organization.levels.title')}>
                     <Dimmer active={true}
-                            loadder={true}>
+                            loader={true}>
                     </Dimmer>
                   </ContentCard>
                 )

@@ -54,7 +54,7 @@ const FinanceCostCenters = ({ t, history, archived=false }) => (
                 if (loading) return (
                   <ContentCard cardTitle={t('organization.discoveries.title')}>
                     <Dimmer active={true}
-                            loadder={true}>
+                            loader={true}>
                     </Dimmer>
                   </ContentCard>
                 )

@@ -153,7 +153,22 @@
         "all_accounts": "All accounts",
         "customers": "Customers",
         "teachers": "Teachers",
-        "employees": "Employees"
+        "employees": "Employees",
+        "classpass": "Class pass",
+        "teacher_role": "Teacher role",
+        "teacher2": "Teacher 2",
+        "teacher_role2": "Teacher role 2",
+        "teacher_2": "Teacher 2",
+        "subscriptions": "Subscriptions",
+        "enroll": "Enroll",
+        "attend": "Attend",
+        "appointment_category": "Appointment category",
+        "role": "Role",
+        "education": "Education",
+        "bio": "Bio",
+        "classpasses": "Class passes",
+        "appointment": "Appointment",
+        "prices_for": "Prices for"
     },
     "yup": {
         "min_len_3": "Please input at least 3 characters",
@@ -330,6 +345,45 @@
             "add": "Add subscription price",
             "delete_confirm_msg": "Are you sure you wish to delete this price?",
             "deleted": "Deleted subscription price"
+        },
+        "appointment_categories": {
+            "title": "Appointment categories",
+            "error_loading": "Error loading appointment categories :(",
+            "empty_list": "No appointment categories found",
+            "empty_archive": "No appointment categories have been archived yet",
+            "add": "Add appointment category",
+            "title_add": "Add appointment category",
+            "toast_add_success": "Added appointment category",
+            "title_edit": "Edit appointment category",
+            "toast_edit_success": "Saved"
+        },
+        "appointments": {
+            "title": "Appointments",
+            "error_loading": "Error loading appointments :(",
+            "empty_list": "No appointments have been defined yet in this category.",
+            "empty_archive": "No appointments have been archived yet in this category",
+            "add": "Add appointment",
+            "title_add": "Add appointment",
+            "toast_add_success": "Added appointment",
+            "title_edit": "Edit appointment",
+            "toast_edit_success": "Saved",
+            "public": "This is a public appointment",
+            "teacher_prices": "Teacher prices"
+        },
+        "appointment_category": {
+            "public": "This is a public appointment category"
+        },
+        "appointment_prices": {
+            "title_add": "Add appointment price",
+            "toast_add_success": "Added appointment price",
+            "title_edit": "Edit appointment price",
+            "toast_edit_success": "Saved",
+            "title": "Appointment prices",
+            "error_loading": "Error loading prices for this appointment :(",
+            "empty_list": "No prices have been defined for this appointment",
+            "delete_confirm_msg": "Are you sure you wish to delete the price for this teacher?",
+            "deleted": "Deleted appointment price",
+            "add": "Add appointment price"
         }
     },
     "validity": {
@@ -382,6 +436,35 @@
                 "add": "Add subscription",
                 "title_edit": "Edit subscription",
                 "registration_fee_paid": "Registration fee paid"
+            },
+            "classpasses": {
+                "title_add": "Add class pass",
+                "toast_add_success": "Added class pass",
+                "title_edit": "Edit class pass",
+                "toast_edit_success": "Saved class pass",
+                "title": "Class passes",
+                "delete_confirm_msg": "Are you sure you wish to delete this class pass and all associated data?",
+                "deleted": "Deleted class pass",
+                "add": "Add class pass"
+            },
+            "memberships": {
+                "title_add": "Add membership",
+                "toast_add_success": "Added membership",
+                "title_edit": "Edit membership",
+                "toast_edit_success": "Saved membership",
+                "title": "Memberships",
+                "delete_confirm_msg": "Are you sure you wish to delete this membership and all associated data?",
+                "deleted": "Deleted membership",
+                "add": "Add membership"
+            },
+            "teacher_profile": {
+                "title": "Teacher profile",
+                "toast_edit_success": "Saved",
+                "classes": "Teaches classes",
+                "events": "Teaches events",
+                "appointments": "Teaches appointments",
+                "url_bio": "Link to bio",
+                "url_website": "Website"
             }
         }
     },
@@ -414,7 +497,45 @@
             "go_to_date": "Go to date",
             "filter_all_locations": "All locations",
             "filter_all_classtypes": "All classtypes",
-            "filter_all_levels": "All levels"
+            "filter_all_levels": "All levels",
+            "teachers": {
+                "title_add": "Add teacher(s)",
+                "toast_add_success": "Added teacher(s)",
+                "title_edit": "Edit teacher(s)",
+                "toast_edit_success": "Saved teacher(s)",
+                "add": "Add teacher",
+                "title": "Teachers",
+                "error_loading": "Error loading teachers for this class :(",
+                "empty_list": "No teachers have been added to this class yet",
+                "delete_confirm_msg": "Are you sure you wish to delete this teachers entry?",
+                "delete_confirm_description": "",
+                "deleted": "Deleted teacher entry"
+            },
+            "teacher_roles": {
+                "sub": "Substitute",
+                "assistant": "Assistant",
+                "karma": "Karma"
+            },
+            "subscriptions": {
+                "attend_disabled": "Can't change",
+                "add": "Add",
+                "title": "Subscriptions",
+                "error_loading": "Error loading subscriptions groups for this class :(",
+                "empty_list": "No subscription groups have been defined yet.",
+                "toast_edit_success": "Saved",
+                "shop_book": "Book in webshop",
+                "attend_disabled_help": "Attend has to be enabled when 'enroll' or 'book in webshop' is set."
+            },
+            "classpasses": {
+                "add": "Add",
+                "title": "Class passes",
+                "error_loading": "Error loading class pass groups for this class :(",
+                "empty_list": "No class pass groups have been defined yet.",
+                "toast_edit_success": "Saved",
+                "shop_book": "Book in webshop",
+                "attend_disabled": "Can't change",
+                "attend_disabled_help": "Attend has to be enabled when 'Book in webshop' is set."
+            }
         }
     },
     "countries": {

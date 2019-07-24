@@ -63,7 +63,7 @@ const OrganizationLocationsRooms = ({ t, history, match, archived=false }) => (
                 if (loading) return (
                   <ContentCard cardTitle={t('organization.location_rooms.title')}>
                     <Dimmer active={true}
-                            loadder={true}>
+                            loader={true}>
                     </Dimmer>
                   </ContentCard>
                 )

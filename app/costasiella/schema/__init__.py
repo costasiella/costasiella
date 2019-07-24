@@ -2,7 +2,10 @@ import graphene
 import graphql_jwt
 
 from .account import AccountQuery, AccountMutation
+from .account_classpass import AccountClasspassQuery, AccountClasspassMutation
+from .account_membership import AccountMembershipQuery, AccountMembershipMutation
 from .account_subscription import AccountSubscriptionQuery, AccountSubscriptionMutation
+from .account_teacher_profile import AccountTeacherProfileQuery, AccountTeacherProfileMutation
 
 from .finance_costcenter import FinanceCostCenterQuery, FinanceCostCenterMutation
 from .finance_glaccount import FinanceGLAccountQuery, FinanceGLAccountMutation
@@ -10,6 +13,8 @@ from .finance_payment_method import FinancePaymentMethodQuery, FinancePaymentMet
 from .finance_taxrate import FinanceTaxRateQuery, FinanceTaxRateMutation
 
 from .organization_appointment import OrganizationAppointmentQuery, OrganizationAppointmentMutation
+from .organization_appointment_category import OrganizationAppointmentCategoryQuery, OrganizationAppointmentCategoryMutation
+from .organization_appointment_price import OrganizationAppointmentPriceQuery, OrganizationAppointmentPriceMutation
 from .organization_classpass import OrganizationClasspassQuery, OrganizationClasspassMutation
 from .organization_classpass_group import OrganizationClasspassGroupQuery, OrganizationClasspassGroupMutation
 from .organization_classpass_group_classpass import OrganizationClasspassGroupClasspassMutation
@@ -25,16 +30,23 @@ from .organization_subscription_group_subscription import OrganizationSubscripti
 from .organization_subscription_price import OrganizationSubscriptionPriceQuery, OrganizationSubscriptionPriceMutation
 
 from .schedule_item import ScheduleItemQuery, ScheduleItemMutation
+from .schedule_item_organization_classpass_group import ScheduleItemOrganizationClasspassGroupQuery, ScheduleItemOrganizationClasspassGroupMutation
+from .schedule_item_organization_subscription_group import ScheduleItemOrganizationSubscriptionGroupQuery, ScheduleItemOrganizationSubscriptionGroupMutation
 from .schedule_item_teacher import ScheduleItemTeacherQuery, ScheduleItemTeacherMutation
 
 
 class Query(AccountQuery,
+            AccountClasspassQuery,
+            AccountMembershipQuery,
             AccountSubscriptionQuery,
+            AccountTeacherProfileQuery,
             FinanceCostCenterQuery,
             FinanceGLAccountQuery,
             FinancePaymentMethodQuery,
             FinanceTaxRateQuery,
             OrganizationAppointmentQuery,
+            OrganizationAppointmentCategoryQuery,
+            OrganizationAppointmentPriceQuery,
             OrganizationClasspassQuery,
             OrganizationClasspassGroupQuery,
             OrganizationClasstypeQuery,
@@ -47,18 +59,25 @@ class Query(AccountQuery,
             OrganizationSubscriptionGroupQuery,
             OrganizationSubscriptionPriceQuery,
             ScheduleItemQuery,
+            ScheduleItemOrganizationClasspassGroupQuery,
+            ScheduleItemOrganizationSubscriptionGroupQuery,
             ScheduleItemTeacherQuery,
             graphene.ObjectType):
     node = graphene.relay.Node.Field()
 
 
 class Mutation(AccountMutation,
+               AccountClasspassMutation,
+               AccountMembershipMutation,
                AccountSubscriptionMutation,
+               AccountTeacherProfileMutation,
                FinanceCostCenterMutation,
                FinanceGLAccountMutation,
                FinancePaymentMethodMutation,
                FinanceTaxRateMutation,
                OrganizationAppointmentMutation,
+               OrganizationAppointmentCategoryMutation,
+               OrganizationAppointmentPriceMutation,
                OrganizationClasspassMutation,
                OrganizationClasspassGroupMutation,
                OrganizationClasspassGroupClasspassMutation,
@@ -73,6 +92,8 @@ class Mutation(AccountMutation,
                OrganizationSubscriptionGroupSubscriptionMutation, 
                OrganizationSubscriptionPriceMutation, 
                ScheduleItemMutation,
+               ScheduleItemOrganizationClasspassGroupMutation,
+               ScheduleItemOrganizationSubscriptionGroupMutation,
                ScheduleItemTeacherMutation,
                graphene.ObjectType):
     token_auth = graphql_jwt.ObtainJSONWebToken.Field()

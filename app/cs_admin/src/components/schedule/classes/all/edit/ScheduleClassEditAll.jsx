@@ -104,7 +104,7 @@ class ScheduleClassEditAll extends Component {
               const inputData = data
               const initialValues = data.scheduleItem
 
-              let initialLevelID = null
+              let initialLevelID = ""
               if (initialValues.organizationLevel) {
                 initialLevelID = initialValues.organizationLevel.id
               }

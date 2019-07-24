@@ -40,7 +40,7 @@ export const GET_ACCOUNT_SUBSCRIPTIONS_QUERY = gql`
 `
 
 export const GET_ACCOUNT_SUBSCRIPTION_QUERY = gql`
-  query AccountSubscription($id: ID!, $accountId: ID!, $after: String, $before: String, $archived: Boolean!) {
+  query AccountSubscription($id: ID!, $accountId: ID!, $after: String, $before: String) {
     accountSubscription(id:$id) {
       id
       organizationSubscription {
@@ -57,7 +57,7 @@ export const GET_ACCOUNT_SUBSCRIPTION_QUERY = gql`
       registrationFeePaid
       createdAt
     }
-    organizationSubscriptions(first: 100, before: $before, after: $after, archived: $archived) {
+    organizationSubscriptions(first: 100, before: $before, after: $after, archived: false) {
       pageInfo {
         startCursor
         endCursor
@@ -72,7 +72,7 @@ export const GET_ACCOUNT_SUBSCRIPTION_QUERY = gql`
         }
       }
     }
-    financePaymentMethods(first: 100, before: $before, after: $after, archived: $archived) {
+    financePaymentMethods(first: 100, before: $before, after: $after, archived: false) {
       pageInfo {
         startCursor
         endCursor

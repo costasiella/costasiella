@@ -89,6 +89,25 @@ class OrganizationLocationRoomFactory(factory.DjangoModelFactory):
     name = "First location room"
 
 
+class OrganizationAppointmentCategoryFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.OrganizationAppointmentCategory
+
+    archived = False
+    display_public = True
+    name = "First category"
+
+
+class OrganizationAppointmentFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.OrganizationAppointment
+
+    organization_appointment_category = factory.SubFactory(OrganizationAppointmentCategoryFactory)
+    archived = False
+    display_public = True
+    name = "First appointment"
+
+
 class OrganizationLevelFactory(factory.DjangoModelFactory):
     class Meta:
         model = models.OrganizationLevel
@@ -262,6 +281,26 @@ class Teacher2Factory(factory.DjangoModelFactory):
     is_active = True
 
 
+class TeacherProfileFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.AccountTeacherProfile
+
+    account = factory.SubFactory(TeacherFactory)
+    classes = True
+    appointments = True
+    events = True
+
+
+class OrganizationAppointmentPriceFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.OrganizationAppointmentPrice
+
+    account = factory.SubFactory(TeacherFactory)
+    organization_appointment = factory.SubFactory(OrganizationAppointmentFactory)
+    price = 1245
+    finance_tax_rate = factory.SubFactory(FinanceTaxRateFactory)
+
+
 class AllAuthEmailAddress(factory.DjangoModelFactory):
     class Meta:
         model = EmailAddress
@@ -283,6 +322,29 @@ class AccountSubscriptionFactory(factory.DjangoModelFactory):
     date_end = None
     note = "Subscription note here"
     registration_fee_paid = False
+    
+
+class AccountMembershipFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.AccountMembership
+
+    account = factory.SubFactory(RegularUserFactory)
+    organization_membership = factory.SubFactory(OrganizationMembershipFactory)
+    finance_payment_method = factory.SubFactory(FinancePaymentMethodFactory)
+    date_start = datetime.date(2019, 1, 1)
+    date_end = datetime.date(2019, 12, 31)
+    note = "Membership note here"
+    
+    
+class AccountClasspassFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.AccountClasspass
+
+    account = factory.SubFactory(RegularUserFactory)
+    organization_classpass = factory.SubFactory(OrganizationClasspassFactory)
+    date_start = datetime.date(2019, 1, 1)
+    date_end = None
+    note = "Subscription note here"
     
 
 class SchedulePublicWeeklyClassFactory(factory.DjangoModelFactory):
@@ -311,3 +373,45 @@ class ScheduleItemTeacherFactory(factory.DjangoModelFactory):
     account_2 = factory.SubFactory(Teacher2Factory)
     role_2 = "ASSISTANT"
     date_start = datetime.date(2014, 1, 1)
+
+
+class ScheduleItemOrganizationSubscriptionGroupDenyFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.ScheduleItemOrganizationSubscriptionGroup
+
+    schedule_item = factory.SubFactory(SchedulePublicWeeklyClassFactory)
+    organization_subscription_group = factory.SubFactory(OrganizationSubscriptionGroupFactory)
+    enroll = False
+    shop_book = False
+    attend = False
+
+
+class ScheduleItemOrganizationSubscriptionGroupAllowFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.ScheduleItemOrganizationSubscriptionGroup
+
+    schedule_item = factory.SubFactory(SchedulePublicWeeklyClassFactory)
+    organization_subscription_group = factory.SubFactory(OrganizationSubscriptionGroupFactory)
+    enroll = True
+    shop_book = True
+    attend = True
+
+
+class ScheduleItemOrganizationClasspassGroupDenyFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.ScheduleItemOrganizationClasspassGroup
+
+    schedule_item = factory.SubFactory(SchedulePublicWeeklyClassFactory)
+    organization_classpass_group = factory.SubFactory(OrganizationClasspassGroupFactory)
+    shop_book = False
+    attend = False
+
+
+class ScheduleItemOrganizationClasspassGroupAllowFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.ScheduleItemOrganizationClasspassGroup
+
+    schedule_item = factory.SubFactory(SchedulePublicWeeklyClassFactory)
+    organization_classpass_group = factory.SubFactory(OrganizationClasspassGroupFactory)
+    shop_book = True
+    attend = True

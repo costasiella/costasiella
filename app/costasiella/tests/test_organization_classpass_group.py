@@ -254,6 +254,32 @@ mutation ArchiveOrganizationClasspassGroup($input: ArchiveOrganizationClasspassG
         self.assertEqual(data['createOrganizationClasspassGroup']['organizationClasspassGroup']['archived'], False)
 
 
+    def test_create_classpassgroup_add_to_schedule_item(self):
+        """ Is the classpass group added to all schedule items on creation? """
+        schedule_item = f.SchedulePublicWeeklyClassFactory.create()
+
+        query = self.classpassgroup_create_mutation
+        variables = self.variables_create
+
+        executed = execute_test_client_api_query(
+            query, 
+            self.admin_user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['createOrganizationClasspassGroup']['organizationClasspassGroup']['name'], variables['input']['name'])
+        self.assertEqual(data['createOrganizationClasspassGroup']['organizationClasspassGroup']['archived'], False)
+
+
+        schedule_item_organization_classpass_group = models.ScheduleItemOrganizationClasspassGroup.objects.all().first()
+        self.assertEqual(
+            to_global_id("OrganizationClasspassGroupNode", schedule_item_organization_classpass_group.organization_classpass_group.id),
+            data['createOrganizationClasspassGroup']['organizationClasspassGroup']['id']
+        )
+        self.assertEqual(schedule_item_organization_classpass_group.shop_book, False)
+        self.assertEqual(schedule_item_organization_classpass_group.attend, False)
+
+
     def test_create_classpassgroup_anon_user(self):
         """ Create a classpassgroup with anonymous user, check error message """
         query = self.classpassgroup_create_mutation
@@ -395,6 +421,51 @@ mutation ArchiveOrganizationClasspassGroup($input: ArchiveOrganizationClasspassG
         )
         data = executed.get('data')
         self.assertEqual(data['archiveOrganizationClasspassGroup']['organizationClasspassGroup']['archived'], variables['input']['archived'])
+
+
+    def test_archive_classpassgroup_remove_from_schedule_item_class(self):
+        """ Does archiving a classpassgroup remove it from a schedule item """
+        query = self.classpassgroup_archive_mutation
+        schedule_item_classpassgroup = f.ScheduleItemOrganizationClasspassGroupAllowFactory.create()
+        classpassgroup = schedule_item_classpassgroup.organization_classpass_group
+        variables = self.variables_archive
+        variables['input']['id'] = to_global_id("OrganizationClasspassGroupNode", classpassgroup.pk)
+
+        executed = execute_test_client_api_query(
+            query, 
+            self.admin_user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['archiveOrganizationClasspassGroup']['organizationClasspassGroup']['archived'], variables['input']['archived'])
+
+        self.assertEqual(models.ScheduleItemOrganizationClasspassGroup.objects.filter(
+            id=schedule_item_classpassgroup.id).exists(), 
+            False
+        )
+
+
+    def test_unarchive_classpassgroup_add_to_schedule_item_class(self):
+        """ Does archiving a classpassgroup add it to a schedule item """
+        query = self.classpassgroup_archive_mutation
+        schedule_item = f.SchedulePublicWeeklyClassFactory.create()
+        classpassgroup = f.OrganizationClasspassGroupFactory.create()
+        variables = self.variables_archive
+        variables['input']['id'] = to_global_id("OrganizationClasspassGroupNode", classpassgroup.pk)
+        variables['input']['archived'] = False
+
+        executed = execute_test_client_api_query(
+            query, 
+            self.admin_user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['archiveOrganizationClasspassGroup']['organizationClasspassGroup']['archived'], variables['input']['archived'])
+
+        self.assertEqual(models.ScheduleItemOrganizationClasspassGroup.objects.filter(
+            schedule_item=schedule_item).exists(), 
+            True
+        )
 
 
     def test_archive_classpassgroup_anon_user(self):

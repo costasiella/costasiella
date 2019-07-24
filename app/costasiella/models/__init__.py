@@ -1,5 +1,8 @@
 from .account import Account
+from .account_classpass import AccountClasspass
+from .account_membership import AccountMembership
 from .account_subscription import AccountSubscription
+from .account_teacher_profile import AccountTeacherProfile
 
 from .finance_costcenter import FinanceCostCenter
 from .finance_glaccount import FinanceGLAccount
@@ -7,6 +10,8 @@ from .finance_payment_method import FinancePaymentMethod
 from .finance_taxrate import FinanceTaxRate
 
 from .organization_appointment import OrganizationAppointment
+from .organization_appointment_category import OrganizationAppointmentCategory
+from .organization_appointment_price import OrganizationAppointmentPrice
 from .organization_classpass import OrganizationClasspass
 from .organization_classpass_group import OrganizationClasspassGroup
 from .organization_classpass_group_classpass import OrganizationClasspassGroupClasspass
@@ -23,3 +28,5 @@ from .organization_subscription_price import OrganizationSubscriptionPrice
 
 from .schedule_item import ScheduleItem
 from .schedule_item_teacher import ScheduleItemTeacher
+from .schedule_item_organization_classpass_group import ScheduleItemOrganizationClasspassGroup
+from .schedule_item_organization_subscription_group import ScheduleItemOrganizationSubscriptionGroup

@@ -11,6 +11,7 @@ from . import factories as f
 from .helpers import execute_test_client_api_query
 from .. import models
 from .. import schema
+from ..modules.gql_tools import get_rid
 
 from .factories import AdminUserFactory
 
@@ -277,6 +278,13 @@ class GQLAccount(TransactionTestCase):
           True
         )
 
+        # Check Teacher profile record
+        rid = get_rid(data['createAccount']['account']['id'])
+        self.assertEqual(
+            models.AccountTeacherProfile.objects.filter(account=rid.id).exists(),
+            True
+        )
+
 
     def test_create_account_anon_user(self):
         """ Don't allow creating accounts for non-logged in users """
@@ -293,7 +301,7 @@ class GQLAccount(TransactionTestCase):
         self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
-    def test_create_location_permission_granted(self):
+    def test_create_account_permission_granted(self):
         """ Allow creating accounts for users with permissions """
         query = self.account_create_mutation
         variables = self.variables_create

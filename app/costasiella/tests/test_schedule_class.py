@@ -15,6 +15,7 @@ from . import factories as f
 from .helpers import execute_test_client_api_query
 from .. import models
 from .. import schema
+from ..modules.gql_tools import get_rid
 
 
 class GQLScheduleClass(TestCase):
@@ -522,6 +523,56 @@ class GQLScheduleClass(TestCase):
         self.assertEqual(data['createScheduleClass']['scheduleItem']['timeStart'], variables['input']['timeStart'])
         self.assertEqual(data['createScheduleClass']['scheduleItem']['timeEnd'], variables['input']['timeEnd'])
         self.assertEqual(data['createScheduleClass']['scheduleItem']['displayPublic'], variables['input']['displayPublic'])
+
+
+    def test_create_schedule_class_add_all_non_archived_organization_subscription_groups(self):
+      """
+      Create a schedule class and check whether a subscription group is added
+      """
+      subscription_group = f.OrganizationSubscriptionGroupFactory.create()
+
+      query = self.scheduleclass_create_mutation
+      variables = self.variables_create
+
+      executed = execute_test_client_api_query(
+          query, 
+          self.admin_user, 
+          variables=variables
+      )
+      
+      data = executed.get('data')
+      schedule_item_id = data['createScheduleClass']['scheduleItem']['id']
+
+      schedule_item = models.ScheduleItem.objects.get(id=get_rid(schedule_item_id).id)
+
+      self.assertEqual(models.ScheduleItemOrganizationSubscriptionGroup.objects.filter(
+          schedule_item = schedule_item
+      ).exists(), True)
+
+
+    def test_create_schedule_class_add_all_non_archived_organization_classpass_groups(self):
+      """
+      Create a schedule class and check whether a classpass group is added
+      """
+      classpass_group = f.OrganizationClasspassGroupFactory.create()
+
+      query = self.scheduleclass_create_mutation
+      variables = self.variables_create
+
+      executed = execute_test_client_api_query(
+          query, 
+          self.admin_user, 
+          variables=variables
+      )
+      
+      data = executed.get('data')
+      schedule_item_id = data['createScheduleClass']['scheduleItem']['id']
+
+      schedule_item = models.ScheduleItem.objects.get(id=get_rid(schedule_item_id).id)
+
+      self.assertEqual(models.ScheduleItemOrganizationClasspassGroup.objects.filter(
+          schedule_item = schedule_item
+      ).exists(), True)
 
 
     def test_create_scheduleclass_anon_user(self):

@@ -10,6 +10,7 @@ from graphql_relay import to_global_id
 from ..models import ScheduleItem, OrganizationClasstype, OrganizationLevel, OrganizationLocationRoom
 from ..modules.gql_tools import require_login_and_permission, require_login_and_one_of_permissions, get_rid
 from ..modules.messages import Messages
+from ..modules.model_helpers.schedule_item_helper import ScheduleItemHelper
 from .organization_classtype import OrganizationClasstypeNode
 from .organization_level import OrganizationLevelNode
 from .organization_location_room import OrganizationLocationRoomNode
@@ -365,6 +366,10 @@ class CreateScheduleClass(graphene.relay.ClientIDMutation):
 
         # ALl done, save it :).
         schedule_item.save()
+
+        helper = ScheduleItemHelper()
+        helper.add_all_subscription_groups(schedule_item.id)
+        helper.add_all_classpass_groups(schedule_item.id)
 
         return CreateScheduleClass(schedule_item=schedule_item)
 

@@ -8,6 +8,7 @@ from graphql import GraphQLError
 from ..models import OrganizationSubscriptionGroup
 from ..modules.gql_tools import require_login_and_permission, get_rid
 from ..modules.messages import Messages
+from ..modules.model_helpers.organization_subscription_group_helper import OrganizationSubscriptionGroupHelper
 
 m = Messages()
 
@@ -59,6 +60,8 @@ class CreateOrganizationSubscriptionGroup(graphene.relay.ClientIDMutation):
         )
 
         organization_subscription_group.save()
+        helper = OrganizationSubscriptionGroupHelper()
+        helper.add_to_all_classes(organization_subscription_group.id)
 
         return CreateOrganizationSubscriptionGroup(organization_subscription_group=organization_subscription_group)
 
@@ -107,6 +110,14 @@ class ArchiveOrganizationSubscriptionGroup(graphene.relay.ClientIDMutation):
 
         organization_subscription_group.archived = input['archived']
         organization_subscription_group.save(force_update=True)
+
+        # Add (un-archive) or remove (archive) from all classes
+        helper = OrganizationSubscriptionGroupHelper()
+        if organization_subscription_group.archived:
+            helper.remove_from_all_classes(organization_subscription_group.id)
+        else:
+            helper.add_to_all_classes(organization_subscription_group.id)
+            
 
         return ArchiveOrganizationSubscriptionGroup(organization_subscription_group=organization_subscription_group)
 

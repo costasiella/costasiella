@@ -206,7 +206,7 @@ class ScheduleClassTeachers extends Component {
                                           t: t,
                                           msgConfirm: t('schedule.classes.teachers.delete_confirm_msg'),
                                           msgDescription: <p>{t('schedule.classes.teachers.delete_confirm_description')}</p>,
-                                          msgSuccess: t('schedule.classes.,teachers.deleted'),
+                                          msgSuccess: t('schedule.classes.teachers.deleted'),
                                           deleteFunction: deleteScheduleItemTeacher,
                                           functionVariables: { variables: {
                                             input: {
