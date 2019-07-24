@@ -17,7 +17,7 @@ class OrganizationMembership(models.Model):
     archived = models.BooleanField(default=False)
     display_public = models.BooleanField(default=True)
     display_shop = models.BooleanField(default=True)
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, unique=True)
     description = models.CharField(max_length=255)
     price = models.DecimalField(max_digits=20, decimal_places=2)
     finance_tax_rate = models.ForeignKey(FinanceTaxRate, on_delete=models.CASCADE)

@@ -4,7 +4,7 @@ from django.db import models
 
 class FinanceCostCenter(models.Model):
     archived = models.BooleanField(default=False)
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, unique=True)
     code = models.CharField(max_length=255, default="", help_text=_("Cost center code in your accounting software."))
 
     def __str__(self):

@@ -4,7 +4,7 @@ from .organization_subscription import OrganizationSubscription
 
 class OrganizationSubscriptionGroup(models.Model):
     archived = models.BooleanField(default=False)
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, unique=True)
     organization_subscriptions = models.ManyToManyField(
         OrganizationSubscription, 
         through='OrganizationSubscriptionGroupSubscription', 

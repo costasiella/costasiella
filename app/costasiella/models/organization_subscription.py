@@ -20,7 +20,7 @@ class OrganizationSubscription(models.Model):
     archived = models.BooleanField(default=False)
     display_public = models.BooleanField(default=True)
     display_shop = models.BooleanField(default=True)
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, unique=True)
     description = models.CharField(max_length=255)
     sort_order = models.PositiveIntegerField(default=0)
     min_duration = models.PositiveIntegerField()
