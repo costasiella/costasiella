@@ -101,13 +101,18 @@ class GQLOrganizationAppointmentPrice(TestCase):
   query OrganizationAppointmentPrice($id: ID!) {
     organizationAppointmentPrice(id:$id) {
       id
+      price
       organizationAppointment {
+        id
+      }
+      account {
+        id
+        fullName
+      }
+      financeTaxRate {
         id
         name
       }
-      name
-      displayPublic
-      archived
     }
   }
 '''
@@ -183,151 +188,116 @@ class GQLOrganizationAppointmentPrice(TestCase):
         )
 
 
-    # def test_query_permision_denied(self):
-    #     """ Query list of appointment rooms """
-    #     query = self.appointment_prices_query
-    #     appointment_price = f.OrganizationAppointmentPriceFactory.create()
-    #     non_public_appointment_price = f.OrganizationAppointmentPriceFactory.build()
-    #     non_public_appointment_price.organization_appointment = appointment_price.organization_appointment
-    #     non_public_appointment_price.display_public = False
-    #     non_public_appointment_price.save()
+    def test_query_permision_denied(self):
+        """ Query list of appointment prices """
+        query = self.appointment_prices_query
 
-    #     variables = {
-    #         'organizationAppointment': to_global_id('OrganizationAppointmentNode', appointment_price.organization_appointment.pk),
-    #         'archived': False
-    #     }
+        # Create regular user
+        user = f.RegularUserFactory.create()
+        executed = execute_test_client_api_query(query, user, variables=self.variables_query_list)
+        errors = executed.get('errors')
 
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     executed = execute_test_client_api_query(query, user, variables=variables)
-    #     data = executed.get('data')
-
-    #     print(data)
-
-    #     # Public appointments only
-    #     non_public_found = False
-    #     for item in data['organizationAppointmentPrices']['edges']:
-    #         if not item['node']['displayPublic']:
-    #             non_public_found = True
-
-    #     self.assertEqual(non_public_found, False)
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
-    # def test_query_permision_granted(self):
-    #     """ Query list of appointment rooms """
-    #     query = self.appointment_prices_query
-    #     appointment_price = f.OrganizationAppointmentPriceFactory.create()
-    #     non_public_appointment_price = f.OrganizationAppointmentPriceFactory.build()
-    #     non_public_appointment_price.organization_appointment = appointment_price.organization_appointment
-    #     non_public_appointment_price.display_public = False
-    #     non_public_appointment_price.save()
-
-    #     variables = {
-    #         'organizationAppointment': to_global_id('OrganizationAppointmentNode', appointment_price.organization_appointment.pk),
-    #         'archived': False
-    #     }
-
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename='view_organizationappointmentprice')
-    #     user.user_permissions.add(permission)
-    #     user.save()
-
-    #     executed = execute_test_client_api_query(query, user, variables=variables)
-    #     data = executed.get('data')
-
-    #     # List all appointments, including non public
-    #     non_public_found = False
-    #     for item in data['organizationAppointmentPrices']['edges']:
-    #         if not item['node']['displayPublic']:
-    #             non_public_found = True
-
-    #     # Assert non public appointments are listed
-    #     self.assertEqual(non_public_found, True)
+    def test_query_permision_granted(self):
+        """ Query list of appointment prices """
+        query = self.appointment_prices_query
 
 
-    # def test_query_anon_user(self):
-    #     """ Query list of appointment rooms """
-    #     query = self.appointment_prices_query
-    #     appointment_price = f.OrganizationAppointmentPriceFactory.create()
-    #     variables = {
-    #         'organizationAppointment': to_global_id('OrganizationAppointmentNode', appointment_price.organization_appointment.pk),
-    #         'archived': False
-    #     }
+        # Create regular user
+        user = f.RegularUserFactory.create()
+        permission = Permission.objects.get(codename='view_organizationappointmentprice')
+        user.user_permissions.add(permission)
+        user.save()
 
-    #     executed = execute_test_client_api_query(query, self.anon_user, variables=variables)
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
+        executed = execute_test_client_api_query(query, user, variables=self.variables_query_list)
+        data = executed.get('data')
 
-
-    # def test_query_one(self):
-    #     """ Query one appointment room """   
-    #     appointment_price = f.OrganizationAppointmentPriceFactory.create()
-
-    #     # First query appointments to get node id easily
-    #     node_id = to_global_id('OrganizationAppointmentPriceNode', appointment_price.pk)
-
-    #     # Now query single appointment and check
-    #     query = self.appointment_price_query
-    #     executed = execute_test_client_api_query(query, self.admin_user, variables={"id": node_id})
-    #     data = executed.get('data')
-    #     self.assertEqual(data['organizationAppointmentPrice']['organizationAppointment']['id'], 
-    #       to_global_id('OrganizationAppointmentNode', appointment_price.organization_appointment.pk))
-    #     self.assertEqual(data['organizationAppointmentPrice']['name'], appointment_price.name)
-    #     self.assertEqual(data['organizationAppointmentPrice']['archived'], appointment_price.archived)
-    #     self.assertEqual(data['organizationAppointmentPrice']['displayPublic'], appointment_price.display_public)
+        # See if we're getting any data back
+        self.assertEqual(
+            data['organizationAppointmentPrices']['edges'][0]['node']['account']['id'], 
+            to_global_id('AccountNode', self.organization_appointment_price.account.id)
+        )
 
 
-    # def test_query_one_anon_user(self):
-    #     """ Deny permission for anon users Query one appointment room """   
-    #     appointment_price = f.OrganizationAppointmentPriceFactory.create()
+    def test_query_anon_user(self):
+        """ Query list of appointment prices """
+        query = self.appointment_prices_query
 
-    #     # First query appointments to get node id easily
-    #     node_id = to_global_id('OrganizationAppointmentPriceNode', appointment_price.pk)
-
-    #     # Now query single appointment and check
-    #     query = self.appointment_price_query
-    #     executed = execute_test_client_api_query(query, self.anon_user, variables={"id": node_id})
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
+        executed = execute_test_client_api_query(query, self.anon_user, variables=self.variables_query_list)
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
-    # def test_query_one_permission_denied(self):
-    #     """ Permission denied message when user lacks authorization """   
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     appointment_price = f.OrganizationAppointmentPriceFactory.create()
+    def test_query_one(self):
+        """ Query one appointment price """   
+        # First query appointments to get node id easily
+        node_id = to_global_id('OrganizationAppointmentPriceNode', self.organization_appointment_price.pk)
 
-    #     # First query appointments to get node id easily
-    #     node_id = to_global_id('OrganizationAppointmentPriceNode', appointment_price.pk)
+        # Now query single appointment price and check
+        query = self.appointment_price_query
+        executed = execute_test_client_api_query(query, self.admin_user, variables={"id": node_id})
+        print(executed)
+        data = executed.get('data')
 
-    #     # Now query single appointment and check
-    #     query = self.appointment_price_query
-    #     executed = execute_test_client_api_query(query, user, variables={"id": node_id})
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
+        print(data)
+
+        self.assertEqual(data['organizationAppointmentPrice']['organizationAppointment']['id'], 
+          to_global_id('OrganizationAppointmentNode', self.organization_appointment_price.organization_appointment.pk))
+        self.assertEqual(data['organizationAppointmentPrice']['account']['id'], 
+          to_global_id('AccountNode', self.organization_appointment_price.account.pk))
+        self.assertEqual(data['organizationAppointmentPrice']['price'], self.organization_appointment_price.price)
+        self.assertEqual(data['organizationAppointmentPrice']['financeTaxRate']['id'], 
+          to_global_id('FinanceTaxRateNode', self.organization_appointment_price.finance_tax_rate.id))
 
 
-    # def test_query_one_permission_granted(self):
-    #     """ Respond with data when user has permission """   
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename='view_organizationappointmentprice')
-    #     user.user_permissions.add(permission)
-    #     user.save()
-    #     appointment_price = f.OrganizationAppointmentPriceFactory.create()
+    def test_query_one_anon_user(self):
+        """ Deny permission for anon users Query one appointment price """   
+        # First query appointments to get node id easily
+        node_id = to_global_id('OrganizationAppointmentPriceNode', self.organization_appointment_price.pk)
 
-    #     # First query appointments to get node id easily
-    #     node_id = to_global_id('OrganizationAppointmentPriceNode', appointment_price.pk)
+        # Now query single appointment and check
+        query = self.appointment_price_query
+        executed = execute_test_client_api_query(query, self.anon_user, variables={"id": node_id})
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
 
-    #     # Now query single appointment and check   
-    #     query = self.appointment_price_query
-    #     executed = execute_test_client_api_query(query, user, variables={"id": node_id})
-    #     data = executed.get('data')
-    #     self.assertEqual(data['organizationAppointmentPrice']['name'], appointment_price.name)
+
+    def test_query_one_permission_denied(self):
+        """ Permission denied message when user lacks authorization """   
+        # Create regular user
+        user = f.RegularUserFactory.create()
+
+        # First query appointments to get node id easily
+        node_id = to_global_id('OrganizationAppointmentPriceNode', self.organization_appointment_price.pk)
+
+        # Now query single appointment and check
+        query = self.appointment_price_query
+        executed = execute_test_client_api_query(query, user, variables={"id": node_id})
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
+
+
+    def test_query_one_permission_granted(self):
+        """ Respond with data when user has permission """   
+        user = f.RegularUserFactory.create()
+        permission = Permission.objects.get(codename='view_organizationappointmentprice')
+        user.user_permissions.add(permission)
+        user.save()
+
+        # First query appointments to get node id easily
+        node_id = to_global_id('OrganizationAppointmentPriceNode', self.organization_appointment_price.pk)
+
+        # Now query single appointment and check   
+        query = self.appointment_price_query
+        executed = execute_test_client_api_query(query, user, variables={"id": node_id})
+        data = executed.get('data')
+        self.assertEqual(data['organizationAppointmentPrice']['price'], self.organization_appointment_price.price)
 
 
     # def test_create_appointment_price(self):
-    #     """ Create a appointment room """
+    #     """ Create a appointment price """
     #     query = self.appointment_price_create_mutation
     #     variables = self.variables_create
 
@@ -362,7 +332,7 @@ class GQLOrganizationAppointmentPrice(TestCase):
 
 
     # def test_create_appointment_price_permission_granted(self):
-    #     """ Allow creating appointment rooms for users with permissions """
+    #     """ Allow creating appointment prices for users with permissions """
     #     query = self.appointment_price_create_mutation
 
     #     # Create regular user
@@ -388,7 +358,7 @@ class GQLOrganizationAppointmentPrice(TestCase):
 
 
     # def test_create_appointment_price_permission_denied(self):
-    #     """ Check create appointment room permission denied error message """
+    #     """ Check create appointment price permission denied error message """
     #     query = self.appointment_price_create_mutation
     #     variables = self.variables_create
 
@@ -406,7 +376,7 @@ class GQLOrganizationAppointmentPrice(TestCase):
 
 
     # def test_update_appointment_price(self):
-    #     """ Update a appointment room """
+    #     """ Update a appointment price """
     #     query = self.appointment_price_update_mutation
     #     variables = self.variables_update
 
@@ -422,7 +392,7 @@ class GQLOrganizationAppointmentPrice(TestCase):
 
 
     # def test_update_appointment_price_anon_user(self):
-    #     """ Don't allow updating appointment rooms for non-logged in users """
+    #     """ Don't allow updating appointment prices for non-logged in users """
     #     query = self.appointment_price_update_mutation
     #     variables = self.variables_update
 
@@ -437,7 +407,7 @@ class GQLOrganizationAppointmentPrice(TestCase):
 
 
     # def test_update_appointment_price_permission_granted(self):
-    #     """ Allow updating appointment rooms for users with permissions """
+    #     """ Allow updating appointment prices for users with permissions """
     #     query = self.appointment_price_update_mutation
     #     variables = self.variables_update
 
@@ -458,7 +428,7 @@ class GQLOrganizationAppointmentPrice(TestCase):
 
 
     # def test_update_appointment_price_permission_denied(self):
-    #     """ Check update appointment room permission denied error message """
+    #     """ Check update appointment price permission denied error message """
     #     query = self.appointment_price_update_mutation
     #     variables = self.variables_update
 
@@ -476,7 +446,7 @@ class GQLOrganizationAppointmentPrice(TestCase):
 
 
     # def test_archive_appointment_price(self):
-    #     """ Archive a appointment room"""
+    #     """ Archive a appointment price"""
     #     query = self.appointment_price_archive_mutation
     #     variables = self.variables_archive
 
@@ -490,7 +460,7 @@ class GQLOrganizationAppointmentPrice(TestCase):
 
 
     # def test_archive_appointment_price_anon_user(self):
-    #     """ Archive a appointment room """
+    #     """ Archive a appointment price """
     #     query = self.appointment_price_archive_mutation
     #     variables = self.variables_archive
 
@@ -525,7 +495,7 @@ class GQLOrganizationAppointmentPrice(TestCase):
 
 
     # def test_archive_appointment_price_permission_denied(self):
-    #     """ Check archive appointment room permission denied error message """
+    #     """ Check archive appointment price permission denied error message """
     #     query = self.appointment_price_archive_mutation
     #     variables = self.variables_archive
         
