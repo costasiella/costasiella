@@ -42,7 +42,7 @@ class CreateFinanceInvoiceGroup(graphene.relay.ClientIDMutation):
         display_public = graphene.Boolean(required=False, default_value=True)
         name = graphene.String(required=True)
         due_after_days = graphene.Int(required=False, default_value=30)
-        prefix = graphene.String(required=False, default_value="")
+        prefix = graphene.String(required=False, default_value="INV")
         prefix_year = graphene.Boolean(required=False, default_value=True)
         auto_reset_prefix_year = graphene.Boolean(required=False, default_value=True)
         terms = graphene.String(required=False, default_value="")
@@ -94,16 +94,16 @@ class CreateFinanceInvoiceGroup(graphene.relay.ClientIDMutation):
 class UpdateFinanceInvoiceGroup(graphene.relay.ClientIDMutation):
     class Input:
         id = graphene.ID(required=True)
-        display_public = graphene.Boolean(required=False, default_value=True)
+        display_public = graphene.Boolean(required=False)
         name = graphene.String(required=True)
         next_id = graphene.Int(required=False)
-        due_after_days = graphene.Int(required=False, default_value=30)
-        prefix = graphene.String(required=False, default_value="")
-        prefix_year = graphene.Boolean(required=False, default_value=True)
-        auto_reset_prefix_year = graphene.Boolean(required=False, default_value=True)
-        terms = graphene.String(required=False, default_value="")
-        footer = graphene.String(required=False, default_value="")
-        code = graphene.String(required=False, default_value="")
+        due_after_days = graphene.Int(required=False)
+        prefix = graphene.String(required=False)
+        prefix_year = graphene.Boolean(required=False)
+        auto_reset_prefix_year = graphene.Boolean(required=False)
+        terms = graphene.String(required=False)
+        footer = graphene.String(required=False)
+        code = graphene.String(required=False)
         
     finance_invoice_group = graphene.Field(FinanceInvoiceGroupNode)
 

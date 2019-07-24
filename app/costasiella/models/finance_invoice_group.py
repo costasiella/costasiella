@@ -5,10 +5,10 @@ from django.db import models
 class FinanceInvoiceGroup(models.Model):
     archived = models.BooleanField(default=False)
     display_public = models.BooleanField(default=True)
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, unique=True)
     next_id = models.PositiveIntegerField(default=1)
     due_after_days = models.PositiveSmallIntegerField(default=30)
-    prefix = models.CharField(max_length=255, default="")
+    prefix = models.CharField(max_length=255, default="INV")
     prefix_year = models.BooleanField(default=True)
     auto_reset_prefix_year = models.BooleanField(default=True)
     terms = models.TextField(default="")
