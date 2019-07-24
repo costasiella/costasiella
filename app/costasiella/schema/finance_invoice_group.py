@@ -27,8 +27,8 @@ class FinanceInvoiceGroupNode(DjangoObjectType):
 
 
 class FinanceInvoiceGroupQuery(graphene.ObjectType):
-    finance_invoicegroups = DjangoFilterConnectionField(FinanceInvoiceGroupNode)
-    finance_invoicegroup = graphene.relay.Node.Field(FinanceInvoiceGroupNode)
+    finance_invoice_groups = DjangoFilterConnectionField(FinanceInvoiceGroupNode)
+    finance_invoice_group = graphene.relay.Node.Field(FinanceInvoiceGroupNode)
 
     def resolve_finance_invoicegroups(self, info, archived=False, **kwargs):
         user = info.context.user
@@ -49,7 +49,7 @@ class CreateFinanceInvoiceGroup(graphene.relay.ClientIDMutation):
         footer = graphene.String(required=False, default_value="")
         code = graphene.String(required=False, default_value="")
 
-    finance_invoicegroup = graphene.Field(FinanceInvoiceGroupNode)
+    finance_invoice_group = graphene.Field(FinanceInvoiceGroupNode)
 
     @classmethod
     def mutate_and_get_payload(self, root, info, **input):
@@ -61,43 +61,51 @@ class CreateFinanceInvoiceGroup(graphene.relay.ClientIDMutation):
             print('validation error found')
             raise GraphQLError(_('Name is required'))
 
-        finance_invoicegroup = FinanceInvoiceGroup(
+        finance_invoice_group = FinanceInvoiceGroup(
             name=input['name'], 
         )
 
         if input['due_after_days']:
-            finance_invoicegroup.due_after_days = input['due_after_days']
+            finance_invoice_group.due_after_days = input['due_after_days']
 
         if input['prefix']:
-            finance_invoicegroup.prefix = input['prefix']
+            finance_invoice_group.prefix = input['prefix']
 
         if input['prefix_year']:
-            finance_invoicegroup.prefix_year = input['prefix_year']
+            finance_invoice_group.prefix_year = input['prefix_year']
 
         if input['auto_reset_prefix_year']:
-            finance_invoicegroup.auto_reset_prefix_year = input['auto_reset_prefix_year']
+            finance_invoice_group.auto_reset_prefix_year = input['auto_reset_prefix_year']
 
         if input['terms']:
-            finance_invoicegroup.terms = input['terms']
+            finance_invoice_group.terms = input['terms']
 
         if input['footer']:
-            finance_invoicegroup.footer = input['footer']
+            finance_invoice_group.footer = input['footer']
 
         if input['code']:
-            finance_invoicegroup.code = input['code']
+            finance_invoice_group.code = input['code']
 
-        finance_invoicegroup.save()
+        finance_invoice_group.save()
 
-        return CreateFinanceInvoiceGroup(finance_invoicegroup=finance_invoicegroup)
+        return CreateFinanceInvoiceGroup(finance_invoice_group=finance_invoice_group)
 
 
 class UpdateFinanceInvoiceGroup(graphene.relay.ClientIDMutation):
     class Input:
         id = graphene.ID(required=True)
+        display_public = graphene.Boolean(required=False, default_value=True)
         name = graphene.String(required=True)
-        code = graphene.String(default_value="")
+        next_id = graphene.Integer(required=False)
+        due_after_days = graphene.Integer(required=False, default_value=30)
+        prefix = graphene.String(required=False, default_value="")
+        prefix_year = graphene.Boolean(required=False, default_value=True)
+        auto_reset_prefix_year = graphene.Boolean(required=False, default_value=True)
+        terms = graphene.String(required=False, default_value="")
+        footer = graphene.String(required=False, default_value="")
+        code = graphene.String(required=False, default_value="")
         
-    finance_invoicegroup = graphene.Field(FinanceInvoiceGroupNode)
+    finance_invoice_group = graphene.Field(FinanceInvoiceGroupNode)
 
     @classmethod
     def mutate_and_get_payload(self, root, info, **input):
@@ -106,16 +114,39 @@ class UpdateFinanceInvoiceGroup(graphene.relay.ClientIDMutation):
 
         rid = get_rid(input['id'])
 
-        finance_invoicegroup = FinanceInvoiceGroup.objects.filter(id=rid.id).first()
-        if not finance_invoicegroup:
-            raise Exception('Invalid Finance Costcenter ID!')
+        finance_invoice_group = FinanceInvoiceGroup.objects.filter(id=rid.id).first()
+        if not finance_invoice_group:
+            raise Exception('Invalid Finance Invoice Group ID!')
 
-        finance_invoicegroup.name = input['name']
+        finance_invoice_group.name = input['name']
+
+        if input['next_id']:
+            finance_invoice_group.due_after_days = input['next_id']
+
+        if input['due_after_days']:
+            finance_invoice_group.due_after_days = input['due_after_days']
+
+        if input['prefix']:
+            finance_invoice_group.prefix = input['prefix']
+
+        if input['prefix_year']:
+            finance_invoice_group.prefix_year = input['prefix_year']
+
+        if input['auto_reset_prefix_year']:
+            finance_invoice_group.auto_reset_prefix_year = input['auto_reset_prefix_year']
+
+        if input['terms']:
+            finance_invoice_group.terms = input['terms']
+
+        if input['footer']:
+            finance_invoice_group.footer = input['footer']
+
         if input['code']:
-            finance_invoicegroup.code = input['code']
-        finance_invoicegroup.save(force_update=True)
+            finance_invoice_group.code = input['code']
 
-        return UpdateFinanceInvoiceGroup(finance_invoicegroup=finance_invoicegroup)
+        finance_invoice_group.save()
+
+        return UpdateFinanceInvoiceGroup(finance_invoice_group=finance_invoice_group)
 
 
 class ArchiveFinanceInvoiceGroup(graphene.relay.ClientIDMutation):
@@ -134,7 +165,7 @@ class ArchiveFinanceInvoiceGroup(graphene.relay.ClientIDMutation):
 
         finance_invoicegroup = FinanceInvoiceGroup.objects.filter(id=rid.id).first()
         if not finance_invoicegroup:
-            raise Exception('Invalid Finance Costcenter ID!')
+            raise Exception('Invalid Finance Invoice Group ID!')
 
         finance_invoicegroup.archived = input['archived']
         finance_invoicegroup.save(force_update=True)
