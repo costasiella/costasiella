@@ -142,7 +142,7 @@ class AccountSubscriptionEdit extends Component {
                                       registrationFeePaid: values.registrationFeePaid
                                     }
                                   }, refetchQueries: [
-                                      // {query: GET_SUBSCRIPTIONS_QUERY, variables: {archived: false, accountId: account_id}}
+                                      {query: GET_ACCOUNT_SUBSCRIPTIONS_QUERY, variables: {accountId: account_id}}
                                   ]})
                                   .then(({ data }) => {
                                       console.log('got data', data)
@@ -185,7 +185,10 @@ class AccountSubscriptionEdit extends Component {
                         </Button>
                       </Link>
                     </HasPermissionWrapper>
-                    <ProfileMenu active_link='subscriptions'/>
+                    <ProfileMenu 
+                      active_link='subscriptions'
+                      account_id={match.params.account_id}
+                    />
                   </Grid.Col>
                 </Grid.Row>
               </Container>
