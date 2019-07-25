@@ -177,6 +177,6 @@ class ArchiveFinanceInvoiceGroup(graphene.relay.ClientIDMutation):
 
 
 class FinanceInvoiceGroupMutation(graphene.ObjectType):
-    archive_finance_invoicegroup = ArchiveFinanceInvoiceGroup.Field()
-    create_finance_invoicegroup = CreateFinanceInvoiceGroup.Field()
-    update_finance_invoicegroup = UpdateFinanceInvoiceGroup.Field()
+    archive_finance_invoice_group = ArchiveFinanceInvoiceGroup.Field()
+    create_finance_invoice_group = CreateFinanceInvoiceGroup.Field()
+    update_finance_invoice_group = UpdateFinanceInvoiceGroup.Field()

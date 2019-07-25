@@ -31,7 +31,7 @@ import FinanceInvoiceGroupForm from './FinanceInvoiceGroupForm'
 
 const ADD_INVOICE_GROUP = gql`
   mutation CreateFinanceInvoiceGroup($input:CreateFinanceInvoiceGroupInput!) {
-    createFinanceInvoicegroup(input: $input) {
+    createFinanceInvoiceGroup(input: $input) {
       financeInvoiceGroup{
         id
         archived

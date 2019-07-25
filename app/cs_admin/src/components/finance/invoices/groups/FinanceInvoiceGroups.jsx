@@ -33,7 +33,7 @@ import { GET_INVOICE_GROUPS_QUERY } from "./queries"
 
 const ARCHIVE_INVOICE_GROUP = gql`
   mutation ArchiveFinanceInvoiceGroup($input: ArchiveFinanceInvoiceGroupInput!) {
-    archiveFinanceInvoicegroup(input: $input) {
+    archiveFinanceInvoiceGroup(input: $input) {
       financeInvoiceGroup {
         id
         archived

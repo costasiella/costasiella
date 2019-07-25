@@ -31,7 +31,7 @@ import FinanceInvoiceGroupForm from './FinanceInvoiceGroupForm'
 
 const UPDATE_INVOICE_GROUP = gql`
   mutation UpdateFinanceInvoiceGroup($input: UpdateFinanceInvoiceGroupInput!) {
-    updateFinanceInvoicegroup(input: $input) {
+    updateFinanceInvoiceGroup(input: $input) {
       financeInvoiceGroup {
         id
         name

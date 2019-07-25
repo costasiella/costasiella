@@ -31,15 +31,29 @@ class GQLFinanceInvoiceGroup(TestCase):
 
         self.variables_create = {
             "input": {
+                "displayPublic": True,
                 "name": "New invoicegroup",
-                "code" : "8000"
+                "dueAfterDays": 24,
+                "prefix": "INV",
+                "prefixYear": False,
+                "autoResetPrefixYear": False,
+                "terms": "Terms here",
+                "footer": "Footer",
+                "code" : "70"
             }
         }
 
         self.variables_update = {
             "input": {
+                "displayPublic": True,
                 "name": "Updated invoicegroup",
-                "code" : "9000"
+                "dueAfterDays": 24,
+                "prefix": "INV",
+                "prefixYear": False,
+                "autoResetPrefixYear": False,
+                "terms": "Terms here",
+                "footer": "Footer",
+                "code" : "70"
             }
         }
 
@@ -99,7 +113,7 @@ class GQLFinanceInvoiceGroup(TestCase):
 
         self.invoicegroup_create_mutation = ''' 
   mutation CreateFinanceInvoiceGroup($input:CreateFinanceInvoiceGroupInput!) {
-    createFinanceInvoicegroup(input: $input) {
+    createFinanceInvoiceGroup(input: $input) {
       financeInvoiceGroup{
         id
         archived
@@ -120,7 +134,7 @@ class GQLFinanceInvoiceGroup(TestCase):
 
         self.invoicegroup_update_mutation = '''
   mutation UpdateFinanceInvoiceGroup($input: UpdateFinanceInvoiceGroupInput!) {
-    updateFinanceInvoicegroup(input: $input) {
+    updateFinanceInvoiceGroup(input: $input) {
       financeInvoiceGroup {
         id
         archived
@@ -290,75 +304,85 @@ class GQLFinanceInvoiceGroup(TestCase):
         self.assertEqual(data['financeInvoiceGroup']['name'], invoicegroup.name)
 
 
-    # def test_create_invoicegroup(self):
-    #     """ Create a invoicegroup """
-    #     query = self.invoicegroup_create_mutation
-    #     variables = self.variables_create
+    def test_create_invoicegroup(self):
+        """ Create a invoicegroup """
+        query = self.invoicegroup_create_mutation
+        variables = self.variables_create
 
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         self.admin_user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['createFinanceInvoiceGroup']['financeInvoiceGroup']['name'], variables['input']['name'])
-    #     self.assertEqual(data['createFinanceInvoiceGroup']['financeInvoiceGroup']['archived'], False)
-    #     self.assertEqual(data['createFinanceInvoiceGroup']['financeInvoiceGroup']['code'], variables['input']['code'])
+        executed = execute_test_client_api_query(
+            query, 
+            self.admin_user, 
+            variables=variables
+        )
+        
+        print('##################################')
+        print('##################################')
+        print(executed)
 
-
-    # def test_create_invoicegroup_anon_user(self):
-    #     """ Don't allow creating invoicegroups for non-logged in users """
-    #     query = self.invoicegroup_create_mutation
-    #     variables = self.variables_create
-
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         self.anon_user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
+        data = executed.get('data')
+        self.assertEqual(data['createFinanceInvoiceGroup']['financeInvoiceGroup']['displayPublic'], variables['input']['displayPublic'])
+        self.assertEqual(data['createFinanceInvoiceGroup']['financeInvoiceGroup']['name'], variables['input']['name'])
+        self.assertEqual(data['createFinanceInvoiceGroup']['financeInvoiceGroup']['nextId'], 1)
+        self.assertEqual(data['createFinanceInvoiceGroup']['financeInvoiceGroup']['dueAfterDays'], variables['input']['dueAfterDays'])
+        self.assertEqual(data['createFinanceInvoiceGroup']['financeInvoiceGroup']['prefix'], variables['input']['prefix'])
+        self.assertEqual(data['createFinanceInvoiceGroup']['financeInvoiceGroup']['prefixYear'], variables['input']['prefixYear'])
+        self.assertEqual(data['createFinanceInvoiceGroup']['financeInvoiceGroup']['autoResetPrefixYear'], variables['input']['autoResetPrefixYear'])
+        self.assertEqual(data['createFinanceInvoiceGroup']['financeInvoiceGroup']['terms'], variables['input']['terms'])
+        self.assertEqual(data['createFinanceInvoiceGroup']['financeInvoiceGroup']['footer'], variables['input']['footer'])
+        self.assertEqual(data['createFinanceInvoiceGroup']['financeInvoiceGroup']['code'], variables['input']['code'])
 
 
-    # def test_create_location_permission_granted(self):
-    #     """ Allow creating invoicegroups for users with permissions """
-    #     query = self.invoicegroup_create_mutation
-    #     variables = self.variables_create
+    def test_create_invoicegroup_anon_user(self):
+        """ Don't allow creating invoicegroups for non-logged in users """
+        query = self.invoicegroup_create_mutation
+        variables = self.variables_create
 
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename=self.permission_add)
-    #     user.user_permissions.add(permission)
-    #     user.save()
-
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['createFinanceInvoiceGroup']['financeInvoiceGroup']['name'], variables['input']['name'])
-    #     self.assertEqual(data['createFinanceInvoiceGroup']['financeInvoiceGroup']['archived'], False)
-    #     self.assertEqual(data['createFinanceInvoiceGroup']['financeInvoiceGroup']['code'], variables['input']['code'])
+        executed = execute_test_client_api_query(
+            query, 
+            self.anon_user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
-    # def test_create_invoicegroup_permission_denied(self):
-    #     """ Check create invoicegroup permission denied error message """
-    #     query = self.invoicegroup_create_mutation
-    #     variables = self.variables_create
+    def test_create_location_permission_granted(self):
+        """ Allow creating invoicegroups for users with permissions """
+        query = self.invoicegroup_create_mutation
+        variables = self.variables_create
 
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
+        # Create regular user
+        user = f.RegularUserFactory.create()
+        permission = Permission.objects.get(codename=self.permission_add)
+        user.user_permissions.add(permission)
+        user.save()
 
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
+        executed = execute_test_client_api_query(
+            query, 
+            user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['createFinanceInvoiceGroup']['financeInvoiceGroup']['name'], variables['input']['name'])
+
+
+    def test_create_invoicegroup_permission_denied(self):
+        """ Check create invoicegroup permission denied error message """
+        query = self.invoicegroup_create_mutation
+        variables = self.variables_create
+
+        # Create regular user
+        user = f.RegularUserFactory.create()
+
+        executed = execute_test_client_api_query(
+            query, 
+            user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
     # def test_update_invoicegroup(self):
