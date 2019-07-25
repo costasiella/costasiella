@@ -203,7 +203,8 @@
         "type_error_number": "Please input a number",
         "min_len_2": "Please input at least 2 characters",
         "email": "Please input a valid email address",
-        "time_required": "Please select a time"
+        "time_required": "Please select a time",
+        "field_above_0": "Please add a positive number"
     },
     "home": {
         "title": "Home"

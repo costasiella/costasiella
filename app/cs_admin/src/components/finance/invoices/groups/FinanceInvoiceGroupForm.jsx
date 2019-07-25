@@ -50,10 +50,10 @@ const FinanceInvoiceGroupForm = ({ t, history, isSubmitting, setFieldTouched, se
         <Grid.Col>
           <Form.Group label={t('finance.invoice_groups.next_id')}>
             <Field type="text" 
-                    name="next_id" 
-                    className={(errors.next_id) ? "form-control is-invalid" : "form-control"} 
+                    name="nextId" 
+                    className={(errors.nextId) ? "form-control is-invalid" : "form-control"} 
                     autoComplete="off" />
-            <ErrorMessage name="next_id" component="span" className="invalid-feedback" />
+            <ErrorMessage name="nextId" component="span" className="invalid-feedback" />
           </Form.Group>
         </Grid.Col> : ""}
         <Grid.Col>
@@ -62,7 +62,7 @@ const FinanceInvoiceGroupForm = ({ t, history, isSubmitting, setFieldTouched, se
                     name="dueAfterDays" 
                     className={(errors.dueAfterDays) ? "form-control is-invalid" : "form-control"} 
                     autoComplete="off" />
-            <ErrorMessage name="dueAfterdays" component="span" className="invalid-feedback" />
+            <ErrorMessage name="dueAfterDays" component="span" className="invalid-feedback" />
           </Form.Group>
         </Grid.Col>
       </Grid.Row>

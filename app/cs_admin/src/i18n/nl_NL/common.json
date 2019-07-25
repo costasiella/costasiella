@@ -203,7 +203,8 @@
         "type_error_number": "__STRING_NOT_TRANSLATED__",
         "min_len_2": "__STRING_NOT_TRANSLATED__",
         "email": "__STRING_NOT_TRANSLATED__",
-        "time_required": "__STRING_NOT_TRANSLATED__"
+        "time_required": "__STRING_NOT_TRANSLATED__",
+        "field_above_0": "__STRING_NOT_TRANSLATED__"
     },
     "home": {
         "title": "__STRING_NOT_TRANSLATED__"
