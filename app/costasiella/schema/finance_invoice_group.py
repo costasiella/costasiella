@@ -154,7 +154,7 @@ class ArchiveFinanceInvoiceGroup(graphene.relay.ClientIDMutation):
         id = graphene.ID(required=True)
         archived = graphene.Boolean(required=True)
 
-    finance_invoicegroup = graphene.Field(FinanceInvoiceGroupNode)
+    finance_invoice_group = graphene.Field(FinanceInvoiceGroupNode)
 
     @classmethod
     def mutate_and_get_payload(self, root, info, **input):
@@ -163,14 +163,14 @@ class ArchiveFinanceInvoiceGroup(graphene.relay.ClientIDMutation):
 
         rid = get_rid(input['id'])
 
-        finance_invoicegroup = FinanceInvoiceGroup.objects.filter(id=rid.id).first()
-        if not finance_invoicegroup:
+        finance_invoice_group = FinanceInvoiceGroup.objects.filter(id=rid.id).first()
+        if not finance_invoice_group:
             raise Exception('Invalid Finance Invoice Group ID!')
 
-        finance_invoicegroup.archived = input['archived']
-        finance_invoicegroup.save()
+        finance_invoice_group.archived = input['archived']
+        finance_invoice_group.save()
 
-        return ArchiveFinanceInvoiceGroup(finance_invoicegroup=finance_invoicegroup)
+        return ArchiveFinanceInvoiceGroup(finance_invoice_group=finance_invoice_group)
 
 
 class FinanceInvoiceGroupMutation(graphene.ObjectType):
