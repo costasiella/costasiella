@@ -103,13 +103,6 @@ const FinanceInvoiceGroupForm = ({ t, history, isSubmitting, setFieldTouched, se
           </Form.Group>   
         </Grid.Col>
       </Grid.Row>
-      <Form.Group label={t('finance.code')}>
-        <Field type="text" 
-                name="code" 
-                className={(errors.code) ? "form-control is-invalid" : "form-control"} 
-                autoComplete="off" />
-        <ErrorMessage name="code" component="span" className="invalid-feedback" />
-      </Form.Group>
       <Form.Group label={t('general.terms')}>
         <Editor
           textareaName="terms"
@@ -129,6 +122,13 @@ const FinanceInvoiceGroupForm = ({ t, history, isSubmitting, setFieldTouched, se
           onBlur={() => setFieldTouched("footer", true)}
         />
         <ErrorMessage name="footer" component="span" className="invalid-feedback" />
+      </Form.Group>
+      <Form.Group label={t('finance.code')}>
+        <Field type="text" 
+                name="code" 
+                className={(errors.code) ? "form-control is-invalid" : "form-control"} 
+                autoComplete="off" />
+        <ErrorMessage name="code" component="span" className="invalid-feedback" />
       </Form.Group>
     </Card.Body>
     <Card.Footer>

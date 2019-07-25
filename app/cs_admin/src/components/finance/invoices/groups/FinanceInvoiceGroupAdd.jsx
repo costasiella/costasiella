@@ -82,7 +82,13 @@ const FinanceInvoiceGroupAdd = ({ t, history }) => (
                             addLocation({ variables: {
                               input: {
                                 name: values.name, 
-
+                                displayPublic: values.displayPublic,
+                                dueAfterDays: values.dueAfterDays,
+                                prefix: values.prefix,
+                                prefixYear: values.prefixYear,
+                                autoResetPrefixYear: values.autoResetPrefixYear,
+                                terms: values.terms,
+                                footer: values.footer,
                                 code: values.code
                               }
                             }, refetchQueries: [
@@ -108,6 +114,8 @@ const FinanceInvoiceGroupAdd = ({ t, history }) => (
                             errors={errors}
                             values={values}
                             return_url={return_url}
+                            setFieldTouched={setFieldTouched}
+                            setFieldValue={setFieldValue}
                           />
                         )}
                     </Formik>
