@@ -31,14 +31,14 @@ import FinanceInvoiceGroupForm from './FinanceInvoiceGroupForm'
 
 const ADD_INVOICE_GROUP = gql`
   mutation CreateFinanceInvoiceGroup($input:CreateFinanceInvoiceGroupInput!) {
-    createFinanceInvoiceGroup(input: $input) {
+    createFinanceInvoicegroup(input: $input) {
       financeInvoiceGroup{
         id
         archived
         displayPublic
         name
         nextId
-        dueAfterdays
+        dueAfterDays
         prefix
         prefixYear
         autoResetPrefixYear
