@@ -22,28 +22,37 @@ import {
   Container,
   Form,
 } from "tabler-react"
-import SiteWrapper from "../../SiteWrapper"
-import HasPermissionWrapper from "../../HasPermissionWrapper"
+import SiteWrapper from "../../../SiteWrapper"
+import HasPermissionWrapper from "../../../HasPermissionWrapper"
 
-import FinanceMenu from '../FinanceMenu'
+import FinanceMenu from '../../FinanceMenu'
+import FinanceInvoiceGroupForm from './FinanceInvoiceGroupForm'
 
 
 const ADD_INVOICE_GROUP = gql`
-  mutation CreateFinanceCostCenter($input:CreateFinanceCostCenterInput!) {
-    createFinanceCostcenter(input: $input) {
-      financeCostcenter{
+  mutation CreateFinanceInvoiceGroup($input:CreateFinanceInvoiceGroupInput!) {
+    createFinanceInvoiceGroup(input: $input) {
+      financeInvoiceGroup{
         id
         archived
+        displayPublic
         name
+        nextId
+        dueAfterdays
+        prefix
+        prefixYear
+        autoResetPrefixYear
+        terms
+        footer
         code
       }
     }
   }
 `
 
-const return_url = "/finance/costcenters"
+const return_url = "/finance/invoices/groups"
 
-const FinanceCostCenterAdd = ({ t, history }) => (
+const FinanceInvoiceGroupAdd = ({ t, history }) => (
   <SiteWrapper>
     <div className="my-3 my-md-5">
       <Container>
@@ -52,7 +61,7 @@ const FinanceCostCenterAdd = ({ t, history }) => (
           <Grid.Col md={9}>
           <Card>
             <Card.Header>
-              <Card.Title>{t('finance.costcenters.title_add')}</Card.Title>
+              <Card.Title>{t('finance.invoice_groups.title_add')}</Card.Title>
             </Card.Header>
             <Mutation mutation={ADD_INVOICE_GROUP} onCompleted={() => history.push(return_url)}> 
                 {(addLocation, { data }) => (
@@ -70,7 +79,7 @@ const FinanceCostCenterAdd = ({ t, history }) => (
                             ]})
                             .then(({ data }) => {
                                 console.log('got data', data);
-                                toast.success((t('finance.costcenters.toast_add_success')), {
+                                toast.success((t('finance.invoice_groups.toast_add_success')), {
                                     position: toast.POSITION.BOTTOM_RIGHT
                                   })
                               }).catch((error) => {
@@ -82,38 +91,13 @@ const FinanceCostCenterAdd = ({ t, history }) => (
                               })
                         }}
                         >
-                        {({ isSubmitting, errors }) => (
-                            <FoForm>
-                                <Card.Body>
-                                    <Form.Group label={t('general.name')}>
-                                      <Field type="text" 
-                                              name="name" 
-                                              className={(errors.name) ? "form-control is-invalid" : "form-control"} 
-                                              autoComplete="off" />
-                                      <ErrorMessage name="name" component="span" className="invalid-feedback" />
-                                    </Form.Group>
-                                    <Form.Group label={t('finance.code')}>
-                                      <Field type="text" 
-                                              name="code" 
-                                              className={(errors.code) ? "form-control is-invalid" : "form-control"} 
-                                              autoComplete="off" />
-                                      <ErrorMessage name="code" component="span" className="invalid-feedback" />
-                                    </Form.Group>
-                                </Card.Body>
-                                <Card.Footer>
-                                    <Button 
-                                      color="primary"
-                                      className="pull-right" 
-                                      type="submit" 
-                                      disabled={isSubmitting}
-                                    >
-                                      {t('general.submit')}
-                                    </Button>
-                                    <Button color="link" onClick={() => history.push(return_url)}>
-                                        {t('general.cancel')}
-                                    </Button>
-                                </Card.Footer>
-                            </FoForm>
+                        {({ isSubmitting, values, errors, setFieldValue, setFieldTouched }) => (
+                          <FinanceInvoiceGroupForm 
+                            isSubmitting={isSubmitting}
+                            errors={errors}
+                            values={values}
+                            return_url={return_url}
+                          />
                         )}
                     </Formik>
                 )}
@@ -122,13 +106,13 @@ const FinanceCostCenterAdd = ({ t, history }) => (
           </Grid.Col>
           <Grid.Col md={3}>
             <HasPermissionWrapper permission="add"
-                                  resource="financecostcenter">
+                                  resource="financeinvoicegroup">
               <Button color="primary btn-block mb-6"
                       onClick={() => history.push(return_url)}>
                 <Icon prefix="fe" name="chevrons-left" /> {t('general.back')}
               </Button>
             </HasPermissionWrapper>
-            <FinanceMenu active_link='costcenters'/>
+            <FinanceMenu active_link='invoices'/>
           </Grid.Col>
         </Grid.Row>
       </Container>
@@ -136,4 +120,4 @@ const FinanceCostCenterAdd = ({ t, history }) => (
   </SiteWrapper>
 )
 
-export default withTranslation()(withRouter(FinanceCostCenterAdd))
+export default withTranslation()(withRouter(FinanceInvoiceGroupAdd))
