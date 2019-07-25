@@ -30,7 +30,7 @@ class FinanceInvoiceGroupQuery(graphene.ObjectType):
     finance_invoice_groups = DjangoFilterConnectionField(FinanceInvoiceGroupNode)
     finance_invoice_group = graphene.relay.Node.Field(FinanceInvoiceGroupNode)
 
-    def resolve_finance_invoicegroups(self, info, archived=False, **kwargs):
+    def resolve_finance_invoice_groups(self, info, archived=False, **kwargs):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.view_financeinvoicegroup')
 
