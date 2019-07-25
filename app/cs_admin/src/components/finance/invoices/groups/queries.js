@@ -30,12 +30,20 @@ export const GET_INVOICE_GROUPS_QUERY = gql`
 `
 
 export const GET_INVOICE_GROUP_QUERY = gql`
-  query FinanceCostcenter($id: ID!) {
-    financeCostcenter(id:$id) {
+  query FinanceInvoiceGroup($id: ID!) {
+    financeInvoiceGroup(id:$id) {
       id
-      name
-      code
       archived
+      displayPublic
+      name
+      nextId
+      dueAfterDays
+      prefix
+      prefixYear
+      autoResetPrefixYear
+      terms
+      footer
+      code
     }
   }
 `

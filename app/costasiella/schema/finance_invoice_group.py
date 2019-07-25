@@ -63,27 +63,28 @@ class CreateFinanceInvoiceGroup(graphene.relay.ClientIDMutation):
 
         finance_invoice_group = FinanceInvoiceGroup(
             name=input['name'], 
+            next_id=1,
         )
 
-        if input['due_after_days']:
+        if 'due_after_days' in input:
             finance_invoice_group.due_after_days = input['due_after_days']
 
-        if input['prefix']:
+        if 'prefix' in input:
             finance_invoice_group.prefix = input['prefix']
 
-        if input['prefix_year']:
+        if 'prefix_year' in input:
             finance_invoice_group.prefix_year = input['prefix_year']
 
-        if input['auto_reset_prefix_year']:
+        if 'auto_reset_prefix_year' in input:
             finance_invoice_group.auto_reset_prefix_year = input['auto_reset_prefix_year']
 
-        if input['terms']:
+        if 'terms' in input:
             finance_invoice_group.terms = input['terms']
 
-        if input['footer']:
+        if 'footer' in input:
             finance_invoice_group.footer = input['footer']
 
-        if input['code']:
+        if 'code' in input:
             finance_invoice_group.code = input['code']
 
         finance_invoice_group.save()
@@ -103,7 +104,7 @@ class UpdateFinanceInvoiceGroup(graphene.relay.ClientIDMutation):
         auto_reset_prefix_year = graphene.Boolean(required=False)
         terms = graphene.String(required=False)
         footer = graphene.String(required=False)
-        code = graphene.String(required=False)
+        code = graphene.String(required=False, default_value="")
         
     finance_invoice_group = graphene.Field(FinanceInvoiceGroupNode)
 
@@ -114,34 +115,36 @@ class UpdateFinanceInvoiceGroup(graphene.relay.ClientIDMutation):
 
         rid = get_rid(input['id'])
 
+        print(input)
+
         finance_invoice_group = FinanceInvoiceGroup.objects.filter(id=rid.id).first()
         if not finance_invoice_group:
             raise Exception('Invalid Finance Invoice Group ID!')
 
         finance_invoice_group.name = input['name']
 
-        if input['next_id']:
+        if 'next_id' in input:
             finance_invoice_group.due_after_days = input['next_id']
 
-        if input['due_after_days']:
+        if 'due_after_days' in input:
             finance_invoice_group.due_after_days = input['due_after_days']
 
-        if input['prefix']:
+        if 'prefix' in input:
             finance_invoice_group.prefix = input['prefix']
 
-        if input['prefix_year']:
+        if 'prefix_year' in input:
             finance_invoice_group.prefix_year = input['prefix_year']
 
-        if input['auto_reset_prefix_year']:
+        if 'auto_reset_prefix_year' in input:
             finance_invoice_group.auto_reset_prefix_year = input['auto_reset_prefix_year']
 
-        if input['terms']:
+        if 'terms' in input:
             finance_invoice_group.terms = input['terms']
 
-        if input['footer']:
+        if 'footer' in input:
             finance_invoice_group.footer = input['footer']
 
-        if input['code']:
+        if 'code' in input:
             finance_invoice_group.code = input['code']
 
         finance_invoice_group.save()
