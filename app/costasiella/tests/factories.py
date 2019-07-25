@@ -21,6 +21,23 @@ class FinanceCostCenterFactory(factory.DjangoModelFactory):
     code = "9000"
 
 
+class FinanceInvoiceGroupFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.FinanceInvoiceGroup
+
+    archived = False
+    display_public = True
+    name = "Default"
+    next_id = 1
+    due_after_days = 30
+    prefix = 'INV'
+    prefix_year = True
+    auto_reset_prefix_year = True
+    terms = 'Terms here... I guess'
+    footer = 'A prefectly formal and normal footer text'
+    code = "70"
+
+
 class FinanceGLAccountFactory(factory.DjangoModelFactory):
     class Meta:
         model = models.FinanceGLAccount
