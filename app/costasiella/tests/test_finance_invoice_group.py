@@ -465,78 +465,77 @@ class GQLFinanceInvoiceGroup(TestCase):
         self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
-    # def test_archive_invoicegroup(self):
-    #     """ Archive a invoicegroup """
-    #     query = self.invoicegroup_archive_mutation
-    #     invoicegroup = f.FinanceInvoiceGroupFactory.create()
-    #     variables = self.variables_archive
-    #     variables['input']['id'] = to_global_id('FinanceInvoiceGroupNode', invoicegroup.id)
+    def test_archive_invoicegroup(self):
+        """ Archive a invoicegroup """
+        query = self.invoicegroup_archive_mutation
+        invoicegroup = f.FinanceInvoiceGroupFactory.create()
+        variables = self.variables_archive
+        variables['input']['id'] = to_global_id('FinanceInvoiceGroupNode', invoicegroup.id)
 
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         self.admin_user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     print(data)
-    #     self.assertEqual(data['archiveFinanceInvoiceGroup']['financeInvoiceGroup']['archived'], variables['input']['archived'])
-
-
-    # def test_archive_invoicegroup_anon_user(self):
-    #     """ Archive invoicegroup denied for anon user """
-    #     query = self.invoicegroup_archive_mutation
-    #     invoicegroup = f.FinanceInvoiceGroupFactory.create()
-    #     variables = self.variables_archive
-    #     variables['input']['id'] = to_global_id('FinanceInvoiceGroupNode', invoicegroup.id)
-
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         self.anon_user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
+        executed = execute_test_client_api_query(
+            query, 
+            self.admin_user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['archiveFinanceInvoiceGroup']['financeInvoiceGroup']['archived'], variables['input']['archived'])
 
 
-    # def test_archive_invoicegroup_permission_granted(self):
-    #     """ Allow archiving invoicegroups for users with permissions """
-    #     query = self.invoicegroup_archive_mutation
-    #     invoicegroup = f.FinanceInvoiceGroupFactory.create()
-    #     variables = self.variables_archive
-    #     variables['input']['id'] = to_global_id('FinanceInvoiceGroupNode', invoicegroup.id)
+    def test_archive_invoicegroup_anon_user(self):
+        """ Archive invoicegroup denied for anon user """
+        query = self.invoicegroup_archive_mutation
+        invoicegroup = f.FinanceInvoiceGroupFactory.create()
+        variables = self.variables_archive
+        variables['input']['id'] = to_global_id('FinanceInvoiceGroupNode', invoicegroup.id)
 
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename=self.permission_delete)
-    #     user.user_permissions.add(permission)
-    #     user.save()
-
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['archiveFinanceInvoiceGroup']['financeInvoiceGroup']['archived'], variables['input']['archived'])
+        executed = execute_test_client_api_query(
+            query, 
+            self.anon_user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
-    # def test_archive_invoicegroup_permission_denied(self):
-    #     """ Check archive invoicegroup permission denied error message """
-    #     query = self.invoicegroup_archive_mutation
-    #     invoicegroup = f.FinanceInvoiceGroupFactory.create()
-    #     variables = self.variables_archive
-    #     variables['input']['id'] = to_global_id('FinanceInvoiceGroupNode', invoicegroup.id)
+    def test_archive_invoicegroup_permission_granted(self):
+        """ Allow archiving invoicegroups for users with permissions """
+        query = self.invoicegroup_archive_mutation
+        invoicegroup = f.FinanceInvoiceGroupFactory.create()
+        variables = self.variables_archive
+        variables['input']['id'] = to_global_id('FinanceInvoiceGroupNode', invoicegroup.id)
+
+        # Create regular user
+        user = f.RegularUserFactory.create()
+        permission = Permission.objects.get(codename=self.permission_delete)
+        user.user_permissions.add(permission)
+        user.save()
+
+        executed = execute_test_client_api_query(
+            query, 
+            user,
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['archiveFinanceInvoiceGroup']['financeInvoiceGroup']['archived'], variables['input']['archived'])
+
+
+    def test_archive_invoicegroup_permission_denied(self):
+        """ Check archive invoicegroup permission denied error message """
+        query = self.invoicegroup_archive_mutation
+        invoicegroup = f.FinanceInvoiceGroupFactory.create()
+        variables = self.variables_archive
+        variables['input']['id'] = to_global_id('FinanceInvoiceGroupNode', invoicegroup.id)
         
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
+        # Create regular user
+        user = f.RegularUserFactory.create()
 
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
+        executed = execute_test_client_api_query(
+            query, 
+            user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
 
