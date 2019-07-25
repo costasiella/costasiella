@@ -115,8 +115,6 @@ class UpdateFinanceInvoiceGroup(graphene.relay.ClientIDMutation):
 
         rid = get_rid(input['id'])
 
-        print(input)
-
         finance_invoice_group = FinanceInvoiceGroup.objects.filter(id=rid.id).first()
         if not finance_invoice_group:
             raise Exception('Invalid Finance Invoice Group ID!')
