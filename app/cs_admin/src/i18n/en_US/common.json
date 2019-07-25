@@ -61,7 +61,13 @@
             "add": "Add invoice group",
             "next_id": "Next #",
             "due_after_days": "Due after days",
-            "auto_reset_prefix_year": "Reset to 1 on January 1st"
+            "auto_reset_prefix_year": "Reset to 1 on January 1st",
+            "title_add": "Add invoice group",
+            "toast_add_success": "Added invoice group",
+            "title_edit": "Edit invoice group",
+            "toast_edit_success": "Saved",
+            "public": "Show invoices from this group in account profiles",
+            "prefix_year": "Prefix year"
         }
     },
     "general": {
@@ -183,7 +189,9 @@
         "appointment": "Appointment",
         "prices_for": "Prices for",
         "prefix": "Prefix",
-        "year": "Year"
+        "year": "Year",
+        "terms": "Terms",
+        "footer": "Footer"
     },
     "yup": {
         "min_len_3": "Please input at least 3 characters",

@@ -32,7 +32,7 @@ const FinanceInvoiceGroupForm = ({ t, history, isSubmitting, setFieldTouched, se
                 name="displayPublic" 
                 checked={values.displayPublic} />
               <span className="custom-switch-indicator" ></span>
-              <span className="custom-switch-description">{t('organization.invoice_groups.public')}</span>
+              <span className="custom-switch-description">{t('finance.invoice_groups.public')}</span>
             </Form.Label>
             <ErrorMessage name="displayPublic" component="div" />   
           </Form.Group>    
@@ -83,7 +83,7 @@ const FinanceInvoiceGroupForm = ({ t, history, isSubmitting, setFieldTouched, se
                 name="prefixYear" 
                 checked={values.prefixYear} />
               <span className="custom-switch-indicator" ></span>
-              <span className="custom-switch-description">{t('organization.invoice_groups.prefix_year')}</span>
+              <span className="custom-switch-description">{t('finance.invoice_groups.prefix_year')}</span>
             </Form.Label>
             <ErrorMessage name="prefixYear" component="div" />   
           </Form.Group>   
@@ -97,7 +97,7 @@ const FinanceInvoiceGroupForm = ({ t, history, isSubmitting, setFieldTouched, se
                 name="autoResetPrefixYear" 
                 checked={values.autoResetPrefixYear} />
               <span className="custom-switch-indicator" ></span>
-              <span className="custom-switch-description">{t('organization.invoice_groups.auto_reset_prefix_year')}</span>
+              <span className="custom-switch-description">{t('finance.invoice_groups.auto_reset_prefix_year')}</span>
             </Form.Label>
             <ErrorMessage name="autoResetPrefixYear" component="div" />   
           </Form.Group>   
