@@ -66,12 +66,23 @@ const FinanceInvoiceGroupAdd = ({ t, history }) => (
             <Mutation mutation={ADD_INVOICE_GROUP} onCompleted={() => history.push(return_url)}> 
                 {(addLocation, { data }) => (
                     <Formik
-                        initialValues={{ name: '', code: '' }}
+                        initialValues={{ 
+                          name: '', 
+                          displayPublic: true,
+                          dueAfterDays: 30,
+                          prefix: 'INV',
+                          prefixYear: true,
+                          autoResetPrefixYear: true,
+                          terms: '',
+                          footer: '',
+                          code: '' 
+                        }}
                         validationSchema={INVOICE_GROUP_SCHEMA}
                         onSubmit={(values, { setSubmitting }) => {
                             addLocation({ variables: {
                               input: {
                                 name: values.name, 
+
                                 code: values.code
                               }
                             }, refetchQueries: [

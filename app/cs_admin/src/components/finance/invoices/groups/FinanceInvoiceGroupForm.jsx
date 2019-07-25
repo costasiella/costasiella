@@ -19,7 +19,7 @@ import { tinymceBasicConf } from "../../../../plugin_config/tinymce"
 
 
 
-const FinanceInvoiceGroupForm = ({ t, history, isSubmitting, setFieldTouched, setFieldValue, errors, values, return_url }) => (
+const FinanceInvoiceGroupForm = ({ t, history, isSubmitting, setFieldTouched, setFieldValue, errors, values, return_url, edit=false }) => (
   <FoForm>
     <Card.Body>
       <Grid.Row>
@@ -46,6 +46,7 @@ const FinanceInvoiceGroupForm = ({ t, history, isSubmitting, setFieldTouched, se
         <ErrorMessage name="name" component="span" className="invalid-feedback" />
       </Form.Group>
       <Grid.Row>
+        {(edit) ?
         <Grid.Col>
           <Form.Group label={t('finance.invoice_groups.next_id')}>
             <Field type="text" 
@@ -54,7 +55,7 @@ const FinanceInvoiceGroupForm = ({ t, history, isSubmitting, setFieldTouched, se
                     autoComplete="off" />
             <ErrorMessage name="next_id" component="span" className="invalid-feedback" />
           </Form.Group>
-        </Grid.Col>
+        </Grid.Col> : ""}
         <Grid.Col>
           <Form.Group label={t('finance.invoice_groups.due_after_days')}>
             <Field type="text" 
