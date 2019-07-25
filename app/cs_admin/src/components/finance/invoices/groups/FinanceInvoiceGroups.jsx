@@ -19,13 +19,13 @@ import {
   Container,
   Table
 } from "tabler-react";
-import SiteWrapper from "../../SiteWrapper"
-import HasPermissionWrapper from "../../HasPermissionWrapper"
+import SiteWrapper from "../../../SiteWrapper"
+import HasPermissionWrapper from "../../../HasPermissionWrapper"
 // import { confirmAlert } from 'react-confirm-alert'; // Import
 import { toast } from 'react-toastify'
 
-import ContentCard from "../../general/ContentCard"
-import FinanceMenu from "../FinanceMenu"
+import ContentCard from "../../../general/ContentCard"
+import FinanceMenu from "../../FinanceMenu"
 
 import { GET_INVOICE_GROUPS_QUERY } from "./queries"
 
@@ -188,13 +188,13 @@ const FinanceInvoiceGroups = ({ t, history, archived=false }) => (
           </Grid.Col>
           <Grid.Col md={3}>
             <HasPermissionWrapper permission="add"
-                                  resource="financeglaccount">
+                                  resource="financeinvoicegroup">
               <Button color="primary btn-block mb-6"
-                      onClick={() => history.push("/finance/invoice_groups/add")}>
+                      onClick={() => history.push("/finance/invoices/groups/add")}>
                 <Icon prefix="fe" name="plus-circle" /> {t('finance.invoice_groups.add')}
               </Button>
             </HasPermissionWrapper>
-            <FinanceMenu active_link='invoice_groups'/>
+            <FinanceMenu active_link='invoices'/>
           </Grid.Col>
         </Grid.Row>
       </Container>
