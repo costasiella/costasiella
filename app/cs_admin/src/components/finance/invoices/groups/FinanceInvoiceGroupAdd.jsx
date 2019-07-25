@@ -5,7 +5,7 @@ import { Mutation } from "react-apollo";
 import gql from "graphql-tag"
 import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
-import { Formik, Form as FoForm, Field, ErrorMessage } from 'formik'
+import { Formik } from 'formik'
 import { toast } from 'react-toastify'
 
 
@@ -64,7 +64,7 @@ const FinanceInvoiceGroupAdd = ({ t, history }) => (
               <Card.Title>{t('finance.invoice_groups.title_add')}</Card.Title>
             </Card.Header>
             <Mutation mutation={ADD_INVOICE_GROUP} onCompleted={() => history.push(return_url)}> 
-                {(addLocation, { data }) => (
+                {(addInvoiceGroup, { data }) => (
                     <Formik
                         initialValues={{ 
                           name: '', 
@@ -79,7 +79,7 @@ const FinanceInvoiceGroupAdd = ({ t, history }) => (
                         }}
                         validationSchema={INVOICE_GROUP_SCHEMA}
                         onSubmit={(values, { setSubmitting }) => {
-                            addLocation({ variables: {
+                            addInvoiceGroup({ variables: {
                               input: {
                                 name: values.name, 
                                 displayPublic: values.displayPublic,

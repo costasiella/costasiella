@@ -24,6 +24,7 @@ import FinanceGLAccountAdd from './components/finance/glaccounts/FinanceGLAccoun
 import FinanceGLAccountEdit from './components/finance/glaccounts/FinanceGLAccountEdit'
 import FinanceInvoiceGroups from './components/finance/invoices/groups/FinanceInvoiceGroups'
 import FinanceInvoiceGroupAdd from './components/finance/invoices/groups/FinanceInvoiceGroupAdd'
+import FinanceInvoiceGroupEdit from './components/finance/invoices/groups/FinanceInvoiceGroupEdit'
 import FinancePaymentMethods from './components/finance/payment_methods/FinancePaymentMethods'
 import FinancePaymentMethodAdd from './components/finance/payment_methods/FinancePaymentMethodAdd'
 import FinancePaymentMethodEdit from './components/finance/payment_methods/FinancePaymentMethodEdit'
@@ -161,6 +162,7 @@ class App extends Component {
             <Route exact path="/finance/costcenters/edit/:id" component={FinanceCostCenterEdit} />
             <Route exact path="/finance/invoices/groups" component={FinanceInvoiceGroups} />
             <Route exact path="/finance/invoices/groups/add" component={FinanceInvoiceGroupAdd} />
+            <Route exact path="/finance/invoices/groups/edit/:id" component={FinanceInvoiceGroupEdit} />
             <Route exact path="/finance/glaccounts" component={FinanceGLAccounts} />
             <Route exact path="/finance/glaccounts/add" component={FinanceGLAccountAdd} />
             <Route exact path="/finance/glaccounts/edit/:id" component={FinanceGLAccountEdit} />

@@ -159,7 +159,7 @@ const FinanceInvoiceGroups = ({ t, history, archived=false }) => (
                                 {(node.archived) ? 
                                   <span className='text-muted'>{t('general.unarchive_to_edit')}</span> :
                                   <Button className='btn-sm' 
-                                          onClick={() => history.push("/finance/invoices/groups/" + node.id + "/edit")}
+                                          onClick={() => history.push("/finance/invoices/groups/edit/" + node.id)}
                                           color="secondary">
                                     {t('general.edit')}
                                   </Button>

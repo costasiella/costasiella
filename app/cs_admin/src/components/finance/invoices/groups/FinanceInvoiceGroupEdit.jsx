@@ -5,7 +5,7 @@ import gql from "graphql-tag"
 import { Query, Mutation } from "react-apollo";
 import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
-import { Formik, Form as FoForm, Field, ErrorMessage } from 'formik'
+import { Formik } from 'formik'
 import { toast } from 'react-toastify'
 
 import { GET_INVOICE_GROUPS_QUERY, GET_INVOICE_GROUP_QUERY } from './queries'
@@ -22,16 +22,17 @@ import {
   Container,
   Form
 } from "tabler-react";
-import SiteWrapper from "../../SiteWrapper"
-import HasPermissionWrapper from "../../HasPermissionWrapper"
+import SiteWrapper from "../../../SiteWrapper"
+import HasPermissionWrapper from "../../../HasPermissionWrapper"
 
-import FinanceMenu from "../FinanceMenu"
+import FinanceMenu from "../../FinanceMenu"
+import FinanceInvoiceGroupForm from './FinanceInvoiceGroupForm'
 
 
 const UPDATE_INVOICE_GROUP = gql`
-  mutation UpdateFinanceCostCenter($input: UpdateFinanceCostCenterInput!) {
-    updateFinanceCostcenter(input: $input) {
-      financeCostcenter {
+  mutation UpdateFinanceInvoiceGroup($input: UpdateFinanceInvoiceGroupInput!) {
+    updateFinanceInvoicegroup(input: $input) {
+      financeInvoicegroup {
         id
         name
         code
@@ -41,10 +42,10 @@ const UPDATE_INVOICE_GROUP = gql`
 `
 
 
-class FinanceCostCenterEdit extends Component {
+class FinanceInvoiceGroupEdit extends Component {
   constructor(props) {
     super(props)
-    console.log("finance costcenter edit props:")
+    console.log("finance invoice_group edit props:")
     console.log(props)
   }
 
@@ -53,18 +54,18 @@ class FinanceCostCenterEdit extends Component {
     const match = this.props.match
     const history = this.props.history
     const id = match.params.id
-    const return_url = "/finance/costcenters"
+    const return_url = "/finance/invoices/groups"
 
     return (
       <SiteWrapper>
         <div className="my-3 my-md-5">
           <Container>
-            <Page.Header title={t('finance.costcenters.title')} />
+            <Page.Header title={t('finance.invoice_groups.title')} />
             <Grid.Row>
               <Grid.Col md={9}>
               <Card>
                 <Card.Header>
-                  <Card.Title>{t('finance.costcenters.title_edit')}</Card.Title>
+                  <Card.Title>{t('finance.invoice_groups.title_edit')}</Card.Title>
                   {console.log(match.params.id)}
                 </Card.Header>
                 <Query query={GET_INVOICE_GROUP_QUERY} variables={{ id }} >
@@ -77,17 +78,25 @@ class FinanceCostCenterEdit extends Component {
                     return <p>{t('general.error_sad_smiley')}</p>
                     }
                     
-                    const initialData = data.financeCostcenter;
+                    const initialData = data.financeInvoiceGroup;
                     console.log('query data')
                     console.log(data)
 
                     return (
                       
                       <Mutation mutation={UPDATE_INVOICE_GROUP} onCompleted={() => history.push(return_url)}> 
-                      {(updateGlaccount, { data }) => (
+                        {(updateInvoiceGroup, { data }) => (
                           <Formik
                               initialValues={{ 
                                 name: initialData.name, 
+                                displayPublic: initialData.displayPublic,
+                                dueAfterDays: initialData.dueAfterDays,
+                                nextId: initialData.nextId,
+                                prefix: initialData.prefix,
+                                prefixYear: initialData.prefixYear,
+                                autoResetPrefixYear: initialData.autoResetPrefixYear,
+                                terms: initialData.terms,
+                                footer: initialData.footer,
                                 code: initialData.code
                               }}
                               validationSchema={INVOICE_GROUP_SCHEMA}
@@ -95,10 +104,18 @@ class FinanceCostCenterEdit extends Component {
                                   console.log('submit values:')
                                   console.log(values)
 
-                                  updateGlaccount({ variables: {
+                                  updateInvoiceGroup({ variables: {
                                     input: {
                                       id: match.params.id,
-                                      name: values.name,
+                                      name: values.name, 
+                                      displayPublic: values.displayPublic,
+                                      nextId: values.nextId,
+                                      dueAfterDays: values.dueAfterDays,
+                                      prefix: values.prefix,
+                                      prefixYear: values.prefixYear,
+                                      autoResetPrefixYear: values.autoResetPrefixYear,
+                                      terms: values.terms,
+                                      footer: values.footer,
                                       code: values.code
                                     }
                                   }, refetchQueries: [
@@ -106,7 +123,7 @@ class FinanceCostCenterEdit extends Component {
                                   ]})
                                   .then(({ data }) => {
                                       console.log('got data', data)
-                                      toast.success((t('finance.costcenters.toast_edit_success')), {
+                                      toast.success((t('finance.invoice_groups.toast_edit_success')), {
                                           position: toast.POSITION.BOTTOM_RIGHT
                                         })
                                     }).catch((error) => {
@@ -118,45 +135,19 @@ class FinanceCostCenterEdit extends Component {
                                     })
                               }}
                               >
-                              {({ isSubmitting, errors, values }) => (
-                                  <FoForm>
-                                      <Card.Body>
-                                        <Form.Group label={t('general.name')}>
-                                          <Field type="text" 
-                                                  name="name" 
-                                                  className={(errors.name) ? "form-control is-invalid" : "form-control"} 
-                                                  autoComplete="off" />
-                                          <ErrorMessage name="name" component="span" className="invalid-feedback" />
-                                        </Form.Group>
-                                        <Form.Group label={t('finance.code')}>
-                                          <Field type="text" 
-                                                  name="code" 
-                                                  className={(errors.code) ? "form-control is-invalid" : "form-control"} 
-                                                  autoComplete="off" />
-                                          <ErrorMessage name="code" component="span" className="invalid-feedback" />
-                                        </Form.Group>
-                                      </Card.Body>
-                                      <Card.Footer>
-                                          <Button 
-                                            className="pull-right"
-                                            color="primary"
-                                            disabled={isSubmitting}
-                                            type="submit"
-                                          >
-                                            {t('general.submit')}
-                                          </Button>
-                                          <Button
-                                            type="button" 
-                                            color="link" 
-                                            onClick={() => history.push(return_url)}
-                                          >
-                                              {t('general.cancel')}
-                                          </Button>
-                                      </Card.Footer>
-                                  </FoForm>
+                              {({ isSubmitting, errors, values, setFieldTouched, setFieldValue }) => (
+                                <FinanceInvoiceGroupForm
+                                  isSubmitting={isSubmitting}
+                                  errors={errors}
+                                  values={values}
+                                  return_url={return_url}
+                                  setFieldTouched={setFieldTouched}
+                                  setFieldValue={setFieldValue}
+                                  edit={true}
+                                />
                               )}
                           </Formik>
-                      )}
+                        )}
                       </Mutation>
                       )}}
                 </Query>
@@ -164,13 +155,13 @@ class FinanceCostCenterEdit extends Component {
               </Grid.Col>
               <Grid.Col md={3}>
                 <HasPermissionWrapper permission="change"
-                                      resource="financecostcenter">
+                                      resource="financeinvoicegroup">
                   <Button color="primary btn-block mb-6"
                           onClick={() => history.push(return_url)}>
                     <Icon prefix="fe" name="chevrons-left" /> {t('general.back')}
                   </Button>
                 </HasPermissionWrapper>
-                <FinanceMenu active_link='costcenters'/>
+                <FinanceMenu active_link='invoices'/>
               </Grid.Col>
             </Grid.Row>
           </Container>
@@ -180,4 +171,4 @@ class FinanceCostCenterEdit extends Component {
   }
 
 
-export default withTranslation()(withRouter(FinanceCostCenterEdit))
+export default withTranslation()(withRouter(FinanceInvoiceGroupEdit))
