@@ -58,7 +58,7 @@
             "error_loading": "Error loading invoice groups :(",
             "empty_list": "No invoice groups have been defined yet",
             "empty_archive": "Invoice group archive is empty",
-            "add": "Add invoice groups",
+            "add": "Add invoice group",
             "next_id": "Next #",
             "due_after_days": "Due after days",
             "auto_reset_prefix_year": "Reset to 1 on January 1st"
