@@ -22,6 +22,7 @@ export const GET_INVOICE_GROUPS_QUERY = gql`
           autoResetPrefixYear
           terms
           footer
+          code
         }
       }
     }

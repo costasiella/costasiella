@@ -17,13 +17,15 @@ import {
   Button,
   Card,
   Container,
-  Table
+  Table,
+  Text
 } from "tabler-react";
 import SiteWrapper from "../../../SiteWrapper"
 import HasPermissionWrapper from "../../../HasPermissionWrapper"
 // import { confirmAlert } from 'react-confirm-alert'; // Import
 import { toast } from 'react-toastify'
 
+import BooleanBadge from "../../../ui/BooleanBadge"
 import ContentCard from "../../../general/ContentCard"
 import FinanceMenu from "../../FinanceMenu"
 
@@ -121,6 +123,10 @@ const FinanceInvoiceGroups = ({ t, history, archived=false }) => (
                       <Table.Header>
                         <Table.Row key={v4()}>
                           <Table.ColHeader>{t('general.name')}</Table.ColHeader>
+                          <Table.ColHeader>{t('general.public')}</Table.ColHeader>
+                          <Table.ColHeader>{t('finance.invoice_groups.next_id')}</Table.ColHeader>
+                          <Table.ColHeader>{t('finance.invoice_groups.due_after_days')}</Table.ColHeader>
+                          <Table.ColHeader>{t('general.prefix')}</Table.ColHeader>
                           <Table.ColHeader>{t('finance.code')}</Table.ColHeader>
                         </Table.Row>
                       </Table.Header>
@@ -129,6 +135,22 @@ const FinanceInvoiceGroups = ({ t, history, archived=false }) => (
                             <Table.Row key={v4()}>
                               <Table.Col key={v4()}>
                                 {node.name}
+                              </Table.Col>
+                              <Table.Col key={v4()}>
+                                <BooleanBadge value={node.displayPublic} />
+                              </Table.Col>
+                              <Table.Col key={v4()}>
+                                {node.nextId}
+                              </Table.Col>
+                              <Table.Col key={v4()}>
+                                {node.dueAfterDays}
+                              </Table.Col>
+                              <Table.Col key={v4()}>
+                                {node.prefix} 
+                                {(node.prefixYear) ? <span>[{t('general.year')}]<br /></span>: ''}
+                                {(node.autoResetPrefixYear) ? <Text.Small color="gray">
+                                  {t('finance.invoice_groups.auto_reset_prefix_year')}
+                                </Text.Small>: ''}
                               </Table.Col>
                               <Table.Col key={v4()}>
                                 {node.code}

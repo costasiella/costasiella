@@ -49,6 +49,19 @@
             "empty_list": "No payment methods found",
             "empty_archive": "Payment method archive is empty",
             "add": "Add payment method"
+        },
+        "invoices": {
+            "title": "Invoices"
+        },
+        "invoice_groups": {
+            "title": "Invoice groups",
+            "error_loading": "Error loading invoice groups :(",
+            "empty_list": "No invoice groups have been defined yet",
+            "empty_archive": "Invoice group archive is empty",
+            "add": "Add invoice groups",
+            "next_id": "Next #",
+            "due_after_days": "Due after days",
+            "auto_reset_prefix_year": "Reset to 1 on January 1st"
         }
     },
     "general": {
@@ -168,7 +181,9 @@
         "bio": "Bio",
         "classpasses": "Class passes",
         "appointment": "Appointment",
-        "prices_for": "Prices for"
+        "prices_for": "Prices for",
+        "prefix": "Prefix",
+        "year": "Year"
     },
     "yup": {
         "min_len_3": "Please input at least 3 characters",

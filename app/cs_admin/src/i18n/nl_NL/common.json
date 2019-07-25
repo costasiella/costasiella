@@ -49,6 +49,19 @@
             "empty_list": "__STRING_NOT_TRANSLATED__",
             "empty_archive": "__STRING_NOT_TRANSLATED__",
             "add": "__STRING_NOT_TRANSLATED__"
+        },
+        "invoices": {
+            "title": "__STRING_NOT_TRANSLATED__"
+        },
+        "invoice_groups": {
+            "title": "__STRING_NOT_TRANSLATED__",
+            "error_loading": "__STRING_NOT_TRANSLATED__",
+            "empty_list": "__STRING_NOT_TRANSLATED__",
+            "empty_archive": "__STRING_NOT_TRANSLATED__",
+            "add": "__STRING_NOT_TRANSLATED__",
+            "next_id": "__STRING_NOT_TRANSLATED__",
+            "due_after_days": "__STRING_NOT_TRANSLATED__",
+            "auto_reset_prefix_year": "__STRING_NOT_TRANSLATED__"
         }
     },
     "general": {
@@ -168,7 +181,9 @@
         "bio": "__STRING_NOT_TRANSLATED__",
         "classpasses": "__STRING_NOT_TRANSLATED__",
         "appointment": "__STRING_NOT_TRANSLATED__",
-        "prices_for": "__STRING_NOT_TRANSLATED__"
+        "prices_for": "__STRING_NOT_TRANSLATED__",
+        "prefix": "__STRING_NOT_TRANSLATED__",
+        "year": "__STRING_NOT_TRANSLATED__"
     },
     "yup": {
         "min_len_3": "__STRING_NOT_TRANSLATED__",
