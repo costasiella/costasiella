@@ -29,7 +29,7 @@ const FinanceMenu = ({ t, active_link }) => (
             key={v4()}
             className="d-flex align-items-center"
             to="#/finance/invoices"
-            icon="file"
+            icon="file-text"
             active={invoices_active}
             >
             {t('finance.invoices.title')}
