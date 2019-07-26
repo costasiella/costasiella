@@ -8,8 +8,17 @@ from graphql import GraphQLError
 from ..models import Account, FinanceInvoice, FinanceInvoiceAccount, FinanceInvoiceGroup, FinancePaymentMethod
 from ..modules.gql_tools import require_login_and_permission, get_rid
 from ..modules.messages import Messages
+from ..modules.finance_tools import display_float_as_amount
 
 m = Messages()
+
+class FinanceInvoiceInterface(graphene.Interface):
+    id = graphene.GlobalID()
+    sub_total_display = graphene.String()
+    vat_display = graphene.String()
+    total_display = graphene.String()
+    paid_display = graphene.String()
+    balance_display = graphene.String()
 
 
 class FinanceInvoiceNode(DjangoObjectType):
@@ -19,7 +28,23 @@ class FinanceInvoiceNode(DjangoObjectType):
             'invoice_number',
             'status'
         ]
-        interfaces = (graphene.relay.Node, )
+        interfaces = (graphene.relay.Node, FinanceInvoiceInterface, )
+
+    def resolve_sub_total_display(self, info):
+        return display_float_as_amount(self.sub_total)
+
+    def resolve_vat_display(self, info):
+        return display_float_as_amount(self.vat)
+
+    def resolve_total_display(self, info):
+        return display_float_as_amount(self.total)
+
+    def resolve_paid_display(self, info):
+        return display_float_as_amount(self.paid)
+
+    def resolve_balance_display(self, info):
+        return display_float_as_amount(self.balance)
+
 
     @classmethod
     def get_node(self, info, id):
