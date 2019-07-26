@@ -44,14 +44,14 @@ const ARCHIVE_INVOICE = gql`
 `
 
 
-const FinanceInvoices = ({ t, history, archived=false }) => (
+const FinanceInvoices = ({ t, history }) => (
   <SiteWrapper>
     <div className="my-3 my-md-5">
       <Container>
         <Page.Header title={t("finance.title")} />
         <Grid.Row>
           <Grid.Col md={9}>
-            <Query query={GET_INVOICES_QUERY} variables={{ archived }}>
+            <Query query={GET_INVOICES_QUERY} variables={{}}>
              {({ loading, error, data: {financeInvoices: invoices}, refetch, fetchMore }) => {
                 // Loading
                 if (loading) return (
@@ -136,9 +136,6 @@ const FinanceInvoices = ({ t, history, archived=false }) => (
                                 {moment(node.dateSent).format('LL')} <br />
                                 {moment(node.dateDue).format('LL')}
                               </Table.Col>
-                              {/* <Table.Col key={v4()}>
-                                
-                              </Table.Col> */}
                               <Table.Col key={v4()}>
                                 {node.totalDisplay}
                               </Table.Col>
