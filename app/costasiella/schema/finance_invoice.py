@@ -45,8 +45,7 @@ def validate_create_update_input(input, update=False):
 
     # Fetch & check invoice group
     if not update:
-        # Create only
-
+        ## Create only
         # invoice group
         rid = get_rid(input['finance_invoice_group'])
         finance_invoice_group = FinanceInvoiceGroup.objects.filter(id=rid.id).first()
