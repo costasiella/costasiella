@@ -8,7 +8,6 @@ from .finance_costcenter import FinanceCostCenter
 from .finance_glaccount import FinanceGLAccount
 from .finance_invoice import FinanceInvoice
 from .finance_invoice_account import FinanceInvoiceAccount
-from .finance_invoice_amount import FinanceInvoiceAmount
 from .finance_invoice_group import FinanceInvoiceGroup
 from .finance_payment_method import FinancePaymentMethod
 from .finance_taxrate import FinanceTaxRate

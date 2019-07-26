@@ -5,7 +5,7 @@ from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
 from graphql import GraphQLError
 
-from ..models import FinanceInvoice, FinanceInvoiceGroup, FinancePaymentMethod
+from ..models import FinanceInvoice, FinanceInvoiceAccount, FinanceInvoiceGroup, FinancePaymentMethod
 from ..modules.gql_tools import require_login_and_permission, get_rid
 from ..modules.messages import Messages
 
@@ -87,7 +87,6 @@ class CreateFinanceInvoice(graphene.relay.ClientIDMutation):
         require_login_and_permission(user, 'costasiella.add_financeinvoice')
 
         validation_result = validate_create_update_input(input)
-
         finance_invoice_group = validation_result['finance_invoice_group']
 
         finance_invoice_ = FinanceInvoice(
@@ -100,16 +99,21 @@ class CreateFinanceInvoice(graphene.relay.ClientIDMutation):
         if 'summary' in input:
             finance_invoice.summary = input['summary']
 
-        
-
-
-        #TODO: Link to account or business relation
-
-        #TODO: Based on link, set relation fields
-
+        # Save invoice
         finance_invoice.save()
 
-        return CreateFinanceInvoice(finance_invoice_=finance_invoice_)
+        # Now the invoice has an id, link it to an account
+        finance_invoice_account = FinanceInvoiceAccount(
+            finance_invoice = finance_invoice,
+            account = validation_result['account']
+        )
+        finance_invoice_account.save()
+        # And add an entry in the amount table to store totals
+        # finance_invoice_amount = FinanceInvoiceAmount(
+        #     finance_invoice = finance_invoice,
+        # )
+
+        return CreateFinanceInvoice(finance_invoice=finance_invoice)
 
 
 class UpdateFinanceInvoice(graphene.relay.ClientIDMutation):

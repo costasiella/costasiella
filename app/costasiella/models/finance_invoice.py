@@ -19,6 +19,7 @@ class FinanceInvoice(models.Model):
         ('CANCELLED', _("Cancelled"))
     )
 
+    accounts = models.ManyToManyField(Account, through='FinanceInvoiceAccount', related_name='accounts')
     finance_invoice_group = models.ForeignKey(FinanceInvoiceGroup, on_delete=models.CASCADE)
     finance_payment_method = models.ForeignKey(FinancePaymentMethod, on_delete=models.CASCADE, null=True)
     teacher_payment = models.BooleanField(default=False)
@@ -36,7 +37,11 @@ class FinanceInvoice(models.Model):
     terms = models.TextField(default="")
     footer = models.TextField(default="")
     note = models.TextField(default="")
-    accounts = models.ManyToManyField(Account, through='FinanceInvoiceAccount', related_name='accounts')
+    sub_total = models.DecimalField(max_digits=20, decimal_places=2, default=0)
+    vat = models.DecimalField(max_digits=20, decimal_places=2, default=0)
+    total = models.DecimalField(max_digits=20, decimal_places=2, default=0)
+    paid = models.DecimalField(max_digits=20, decimal_places=2, default=0)
+    balance = models.DecimalField(max_digits=20, decimal_places=2, default=0)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
