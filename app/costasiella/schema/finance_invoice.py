@@ -5,7 +5,7 @@ from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
 from graphql import GraphQLError
 
-from ..models import FinanceInvoice, FinanceInvoiceAccount, FinanceInvoiceGroup, FinancePaymentMethod
+from ..models import Account, FinanceInvoice, FinanceInvoiceAccount, FinanceInvoiceGroup, FinancePaymentMethod
 from ..modules.gql_tools import require_login_and_permission, get_rid
 from ..modules.messages import Messages
 
@@ -106,11 +106,7 @@ class CreateFinanceInvoice(graphene.relay.ClientIDMutation):
         finance_invoice.save()
 
         # Now the invoice has an id, link it to an account
-        finance_invoice_account = FinanceInvoiceAccount(
-            finance_invoice = finance_invoice,
-            account = validation_result['account']
-        )
-        finance_invoice_account.save()
+        finance_invoice.accounts.add(validation_result['account'])
 
         return CreateFinanceInvoice(finance_invoice=finance_invoice)
 
