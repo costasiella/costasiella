@@ -51,7 +51,16 @@
             "add": "__STRING_NOT_TRANSLATED__"
         },
         "invoices": {
-            "title": "__STRING_NOT_TRANSLATED__"
+            "title": "__STRING_NOT_TRANSLATED__",
+            "error_loading": "__STRING_NOT_TRANSLATED__",
+            "empty_list": "__STRING_NOT_TRANSLATED__",
+            "empty_archive": "__STRING_NOT_TRANSLATED__",
+            "invoice_number": "__STRING_NOT_TRANSLATED__",
+            "relation": "__STRING_NOT_TRANSLATED__",
+            "summary": "__STRING_NOT_TRANSLATED__",
+            "date": "__STRING_NOT_TRANSLATED__",
+            "due": "__STRING_NOT_TRANSLATED__",
+            "add": "__STRING_NOT_TRANSLATED__"
         },
         "invoice_groups": {
             "title": "__STRING_NOT_TRANSLATED__",
@@ -191,7 +200,10 @@
         "prefix": "__STRING_NOT_TRANSLATED__",
         "year": "__STRING_NOT_TRANSLATED__",
         "terms": "__STRING_NOT_TRANSLATED__",
-        "footer": "__STRING_NOT_TRANSLATED__"
+        "footer": "__STRING_NOT_TRANSLATED__",
+        "status": "__STRING_NOT_TRANSLATED__",
+        "total": "__STRING_NOT_TRANSLATED__",
+        "balance": "__STRING_NOT_TRANSLATED__"
     },
     "yup": {
         "min_len_3": "__STRING_NOT_TRANSLATED__",

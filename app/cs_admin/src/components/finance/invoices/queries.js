@@ -1,20 +1,36 @@
 import gql from "graphql-tag"
 
-export const GET_COSTCENTERS_QUERY = gql`
-  query FinanceCostCenters($after: String, $before: String, $archived: Boolean) {
-    financeCostcenters(first: 15, before: $before, after: $after, archived: $archived) {
+export const GET_INVOICES_QUERY = gql`
+  query FinanceInvoices {
+    financeInvoices {
       pageInfo {
-        startCursor
-        endCursor
         hasNextPage
         hasPreviousPage
+        startCursor
+        endCursor
       }
       edges {
         node {
-          id,
-          archived,
-          name,
-          code
+          id
+          accounts {
+            edges {
+              node {
+                id
+                fullName
+              }
+            }
+          }
+          invoiceNumber
+          status
+          summary
+          relationCompany
+          relationContactName
+          dateSent
+          dateDue
+          total
+          totalDisplay
+          balance
+          balanceDisplay
         }
       }
     }
