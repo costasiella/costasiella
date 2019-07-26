@@ -46,11 +46,20 @@ def validate_create_update_input(input, update=False):
     # Fetch & check invoice group
     if not update:
         # Create only
+
+        # invoice group
         rid = get_rid(input['finance_invoice_group'])
         finance_invoice_group = FinanceInvoiceGroup.objects.filter(id=rid.id).first()
         result['finance_invoice_group'] = finance_invoice_group
         if not finance_invoice_group:
             raise Exception(_('Invalid Finance Invoice Group ID!'))
+
+        # account
+        rid = get_rid(input['account'])
+        account = Account.objects.filter(id=rid.id).first()
+        result['account'] = account
+        if not account:
+            raise Exception(_('Invalid Account ID!'))
 
     # Check finance payment method
     if 'finance_payment_method' in input:
@@ -67,6 +76,12 @@ def validate_create_update_input(input, update=False):
 
 class CreateFinanceInvoice(graphene.relay.ClientIDMutation):
     class Input:
+        account = graphene.ID(required=True)
+        finance_invoice_group = graphene.ID(required=True)
+        summary = graphene.String(required=False, default_value="")
+        
+
+
         display_public = graphene.Boolean(required=False, default_value=True)
         name = graphene.String(required=True)
         due_after_days = graphene.Int(required=False, default_value=30)
