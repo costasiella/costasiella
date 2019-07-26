@@ -67,26 +67,12 @@ const FinanceInvoices = ({ t, history, archived=false }) => (
                     <p>{t('finance.invoices.error_loading')}</p>
                   </ContentCard>
                 )
-                const headerOptions = <Card.Options>
-                  <Button color={(!archived) ? 'primary': 'secondary'}  
-                          size="sm"
-                          onClick={() => {archived=false; refetch({archived});}}>
-                    {t('general.current')}
-                  </Button>
-                  <Button color={(archived) ? 'primary': 'secondary'} 
-                          size="sm" 
-                          className="ml-2" 
-                          onClick={() => {archived=true; refetch({archived});}}>
-                    {t('general.archive')}
-                  </Button>
-                </Card.Options>
                 
                 // Empty list
                 if (!invoices.edges.length) { return (
-                  <ContentCard cardTitle={t('finance.invoices.title')}
-                               headerContent={headerOptions}>
+                  <ContentCard cardTitle={t('finance.invoices.title')}>
                     <p>
-                    {(!archived) ? t('finance.invoices.empty_list') : t("finance.invoices.empty_archive")}
+                      {t('finance.invoices.empty_list')}
                     </p>
                    
                   </ContentCard>
@@ -94,7 +80,6 @@ const FinanceInvoices = ({ t, history, archived=false }) => (
                 // Life's good! :)
                 return (
                   <ContentCard cardTitle={t('finance.invoices.title')}
-                               headerContent={headerOptions}
                                pageInfo={invoices.pageInfo}
                                onLoadMore={() => {
                                 fetchMore({
