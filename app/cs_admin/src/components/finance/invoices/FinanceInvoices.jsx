@@ -25,6 +25,7 @@ import HasPermissionWrapper from "../../HasPermissionWrapper"
 // import { confirmAlert } from 'react-confirm-alert'; // Import
 import { toast } from 'react-toastify'
 
+import { get_list_query_variables } from "./tools"
 import ContentCard from "../../general/ContentCard"
 import FinanceMenu from "../FinanceMenu"
 import FinanceInvoicesFilter from "./FinanceInvoicesFilter"
@@ -50,7 +51,7 @@ const FinanceInvoices = ({ t, history }) => (
     <div className="my-3 my-md-5">
       <Container>
         <Page.Header title={t("finance.title")} />
-            <Query query={GET_INVOICES_QUERY} variables={{}}>
+            <Query query={GET_INVOICES_QUERY} variables={get_list_query_variables()}>
              {({ loading, error, data: {financeInvoices: invoices}, refetch, fetchMore }) => {
                 // Loading
                 if (loading) return (

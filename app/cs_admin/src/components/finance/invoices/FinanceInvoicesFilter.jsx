@@ -7,7 +7,7 @@ import { withRouter } from "react-router"
 
 
 import CSLS from "../../../tools/cs_local_storage"
-// import { get_list_query_variables } from './tools'
+import { get_list_query_variables } from './tools'
 
 
 function getDefaultValue(value) {
@@ -22,7 +22,7 @@ function getDefaultValue(value) {
 
 function updateLocalStorageAndRefetch(key, value, refetch) {
   localStorage.setItem(key, value)
-  // refetch(get_list_query_variables())
+  refetch(get_list_query_variables())
 
 }
 
