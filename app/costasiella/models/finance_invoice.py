@@ -6,6 +6,7 @@ now = timezone.now()
 
 from django.db import models
 
+from .account import Account
 from .finance_invoice_group import FinanceInvoiceGroup
 from .finance_payment_method import FinancePaymentMethod
 
@@ -35,6 +36,7 @@ class FinanceInvoice(models.Model):
     terms = models.TextField(default="")
     footer = models.TextField(default="")
     note = models.TextField(default="")
+    accounts = models.ManyToManyField(Account, through='FinanceInvoiceAccount', related_name='accounts')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
