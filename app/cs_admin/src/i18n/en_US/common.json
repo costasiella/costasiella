@@ -52,15 +52,15 @@
         },
         "invoices": {
             "title": "Invoices",
-            "error_loading": "__STRING_NOT_TRANSLATED__",
-            "empty_list": "__STRING_NOT_TRANSLATED__",
-            "empty_archive": "__STRING_NOT_TRANSLATED__",
-            "invoice_number": "__STRING_NOT_TRANSLATED__",
-            "relation": "__STRING_NOT_TRANSLATED__",
-            "summary": "__STRING_NOT_TRANSLATED__",
-            "date": "__STRING_NOT_TRANSLATED__",
-            "due": "__STRING_NOT_TRANSLATED__",
-            "add": "__STRING_NOT_TRANSLATED__"
+            "error_loading": "Error loading invoices :(",
+            "empty_list": "No invoices have been created yet",
+            "empty_archive": "No invoices have been archived yet",
+            "invoice_number": "Invoice #",
+            "relation": "Relation",
+            "summary": "Summary",
+            "date": "Date",
+            "due": "Due",
+            "add": "Add invoice"
         },
         "invoice_groups": {
             "title": "Invoice groups",
@@ -201,9 +201,9 @@
         "year": "Year",
         "terms": "Terms",
         "footer": "Footer",
-        "status": "__STRING_NOT_TRANSLATED__",
-        "total": "__STRING_NOT_TRANSLATED__",
-        "balance": "__STRING_NOT_TRANSLATED__"
+        "status": "Status",
+        "total": "Total",
+        "balance": "Balance"
     },
     "yup": {
         "min_len_3": "Please input at least 3 characters",
