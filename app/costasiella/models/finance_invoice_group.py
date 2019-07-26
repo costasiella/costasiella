@@ -1,4 +1,5 @@
 from django.utils.translation import gettext as _
+from django.utils import timezone
 
 from django.db import models
 
@@ -17,4 +18,92 @@ class FinanceInvoiceGroup(models.Model):
 
     def __str__(self):
         return self.name
+
+
+    def _next_invoice_number_new_year(self, year):
+        """ Reset numbering to 1 for first invoice in year """
+        year_start = datetime.date(year, 1, 1)
+        year_end = datetime.date(year, 12, 31)
+
+        year_has_invoices = models.finance_invoice.objects.filter(
+            date_sent__gte = year_start,
+            date_sent__lte = year_end,
+            finance_invoice_group = self.id
+        ).exists()
+
+        if not year_has_invoices:
+            self.next_id = 1
+            self.save()
+
+        # # Check if we have invoices this year for this group
+        # query = (db.invoices.DateCreated >= year_start) & \
+        #         (db.invoices.DateCreated <= year_end) & \
+        #         (db.invoices.invoices_groups_id == self.invoice.invoices_groups_id)
+
+        # invoices_for_this_group_in_year = db(query).count()
+
+        # if invoices_for_this_group_in_year == 1:
+        #     # This is the first invoice in this group for this year
+        #     self.invoice_group.NextID = 1
+        #     self.invoice_group.update_record()
+
+
+    def next_invoice_number(self):
+        """ Get next invoice number """
+        invoice_number = self.prefix or ""
+
+        if self.prefix_year:
+            year = timezone.now().year
+            invoice_number += str(year)
+
+            # Reset next_id for this group to 1 if this is the 1st invoice of the year
+            self._next_invoice_number_new_year(year)
+
+        invoice_number += str(self.next_id)
+
+        return invoice_number
     
+
+
+    # def _get_next_invoice_id(self):
+    #     """
+    #         Returns the number for an invoice
+    #     """
+    #     invoice_id = self.invoice_group.InvoicePrefix or ""
+
+    #     if self.invoice_group.PrefixYear:
+    #         year = unicode(datetime.date.today().year)
+    #         invoice_id += year
+
+    #         # Check if NextID should be reset
+    #         self._get_next_invoice_id_year_prefix_reset_numbering()
+
+    #     invoice_id += unicode(self.invoice_group.NextID)
+
+    #     self.invoice_group.NextID += 1
+    #     self.invoice_group.update_record()
+
+    #     return invoice_id
+
+
+    # def _get_next_invoice_id_year_prefix_reset_numbering(self):
+    #     """
+    #     Reset  numbering to 1 for first invoice in year
+    #     """
+    #     db = current.db
+
+    #     year = self.invoice.DateCreated.year
+    #     year_start = datetime.date(year, 1, 1)
+    #     year_end = datetime.date(year, 12, 31)
+
+    #     # Check if we have invoices this year for this group
+    #     query = (db.invoices.DateCreated >= year_start) & \
+    #             (db.invoices.DateCreated <= year_end) & \
+    #             (db.invoices.invoices_groups_id == self.invoice.invoices_groups_id)
+
+    #     invoices_for_this_group_in_year = db(query).count()
+
+    #     if invoices_for_this_group_in_year == 1:
+    #         # This is the first invoice in this group for this year
+    #         self.invoice_group.NextID = 1
+    #         self.invoice_group.update_record()

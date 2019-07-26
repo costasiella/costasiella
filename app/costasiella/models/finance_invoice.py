@@ -1,4 +1,8 @@
 from django.utils.translation import gettext as _
+from django.utils import timezone
+import datetime
+
+now = timezone.now()
 
 from django.db import models
 
@@ -26,7 +30,7 @@ class FinanceInvoice(models.Model):
     status = models.CharField(max_length=255, choices=STATUSES, default="DRAFT")
     summary = models.CharField(max_length=255, default="")
     invoice_number = models.CharField(max_length=255, default="") # Invoice #
-    date_sent = models.DateField(auto_now_add=True)
+    date_sent = models.DateField()
     date_due = models.DateField()
     terms = models.TextField(default="")
     footer = models.TextField(default="")
@@ -37,4 +41,20 @@ class FinanceInvoice(models.Model):
 
     def __str__(self):
         return self.invoice_number
-    
+
+
+    def save(self, *args, **kwargs):
+        if self.pk is None: # We know this is object creation when there is no pk yet.
+            # set dates
+            self.date_sent = timezone.now().date()
+            self.date_due = self.date_sent + datetime.timedelta(days=self.finance_invoice_group.due_after_days)
+            # set invoice number
+            self.invoice_number = self.finance_invoice_group.next_invoice_number()
+
+            ## Increase next_id for invoice group
+            # This code is here so the id is only +=1'd when an invoice is actually created 
+            self.finance_invoice_group.next_id += 1
+            self.finance_invoice_group.save()
+
+
+        super(FinanceInvoice, self).save(*args, **kwargs)

@@ -79,18 +79,6 @@ class CreateFinanceInvoice(graphene.relay.ClientIDMutation):
         finance_invoice_group = graphene.ID(required=True)
         summary = graphene.String(required=False, default_value="")
         
-
-
-        display_public = graphene.Boolean(required=False, default_value=True)
-        name = graphene.String(required=True)
-        due_after_days = graphene.Int(required=False, default_value=30)
-        prefix = graphene.String(required=False, default_value="INV")
-        prefix_year = graphene.Boolean(required=False, default_value=True)
-        auto_reset_prefix_year = graphene.Boolean(required=False, default_value=True)
-        terms = graphene.String(required=False, default_value="")
-        footer = graphene.String(required=False, default_value="")
-        code = graphene.String(required=False, default_value="")
-
     finance_invoice_ = graphene.Field(FinanceInvoiceNode)
 
     @classmethod
@@ -98,38 +86,28 @@ class CreateFinanceInvoice(graphene.relay.ClientIDMutation):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.add_financeinvoice')
 
-        errors = []
-        if not len(input['name']):
-            print('validation error found')
-            raise GraphQLError(_('Name is required'))
+        validation_result = validate_create_update_input(input)
+
+        finance_invoice_group = validation_result['finance_invoice_group']
 
         finance_invoice_ = FinanceInvoice(
-            name=input['name'], 
-            next_id=1,
+            finance_invoice_group = finance_invoice_group,
+            status = 'DRAFT',
+            terms = finance_invoice_group.terms,
+            footer = finance_invoice_group.footer
         )
 
-        if 'due_after_days' in input:
-            finance_invoice_.due_after_days = input['due_after_days']
+        if 'summary' in input:
+            finance_invoice.summary = input['summary']
 
-        if 'prefix' in input:
-            finance_invoice_.prefix = input['prefix']
+        
 
-        if 'prefix_year' in input:
-            finance_invoice_.prefix_year = input['prefix_year']
 
-        if 'auto_reset_prefix_year' in input:
-            finance_invoice_.auto_reset_prefix_year = input['auto_reset_prefix_year']
+        #TODO: Link to account or business relation
 
-        if 'terms' in input:
-            finance_invoice_.terms = input['terms']
+        #TODO: Based on link, set relation fields
 
-        if 'footer' in input:
-            finance_invoice_.footer = input['footer']
-
-        if 'code' in input:
-            finance_invoice_.code = input['code']
-
-        finance_invoice_.save()
+        finance_invoice.save()
 
         return CreateFinanceInvoice(finance_invoice_=finance_invoice_)
 
