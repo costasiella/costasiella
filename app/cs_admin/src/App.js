@@ -120,6 +120,14 @@ import { registerLocale } from "react-datepicker"
 import nl from 'date-fns/locale/nl';
 registerLocale('nl', nl);
 
+// This allows <string>.trunc(x)
+String.prototype.trunc = 
+  function(n){
+      return this.substr(0, n-1) + (this.length > n ? '...' : '')
+  }
+
+
+// set up ApolloClient
 const client = new ApolloClient({
      uri: "http://localhost:8000/graphql/",
 })

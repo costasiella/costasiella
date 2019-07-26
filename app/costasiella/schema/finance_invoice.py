@@ -135,10 +135,10 @@ class UpdateFinanceInvoice(graphene.relay.ClientIDMutation):
         rid = get_rid(input['id'])
 
         finance_invoice = FinanceInvoice.objects.filter(id=rid.id).first()
-        if not finance_invoice_:
+        if not finance_invoice:
             raise Exception('Invalid Finance Invoice  ID!')
 
-        finance_invoice_.name = input['name']
+        finance_invoice.name = input['name']
 
         if 'next_id' in input:
             finance_invoice_.due_after_days = input['next_id']
@@ -164,9 +164,9 @@ class UpdateFinanceInvoice(graphene.relay.ClientIDMutation):
         if 'code' in input:
             finance_invoice_.code = input['code']
 
-        finance_invoice_.save()
+        finance_invoice.save()
 
-        return UpdateFinanceInvoice(finance_invoice_=finance_invoice_)
+        return UpdateFinanceInvoice(finance_invoice=finance_invoice)
 
 
 class ArchiveFinanceInvoice(graphene.relay.ClientIDMutation):
@@ -185,12 +185,12 @@ class ArchiveFinanceInvoice(graphene.relay.ClientIDMutation):
 
         finance_invoice = FinanceInvoice.objects.filter(id=rid.id).first()
         if not finance_invoice_:
-            raise Exception('Invalid Finance Invoice  ID!')
+            raise Exception('Invalid Finance Invoice ID!')
 
-        finance_invoice_.archived = input['archived']
-        finance_invoice_.save()
+        finance_invoice.archived = input['archived']
+        finance_invoice.save()
 
-        return ArchiveFinanceInvoice(finance_invoice_=finance_invoice_)
+        return ArchiveFinanceInvoice(finance_invoice=finance_invoice)
 
 
 class FinanceInvoiceMutation(graphene.ObjectType):
