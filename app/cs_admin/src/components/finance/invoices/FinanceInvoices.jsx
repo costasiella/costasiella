@@ -126,8 +126,8 @@ const FinanceInvoices = ({ t, history, archived=false }) => (
                           <Table.ColHeader>{t('finance.invoices.invoice_number')}</Table.ColHeader>
                           <Table.ColHeader>{t('finance.invoices.relation')}</Table.ColHeader>
                           <Table.ColHeader>{t('finance.invoices.summary')}</Table.ColHeader>
-                          <Table.ColHeader>{t('finance.invoices.date')}</Table.ColHeader>
-                          <Table.ColHeader>{t('finance.invoices.due')}</Table.ColHeader>
+                          <Table.ColHeader>{t('finance.invoices.date')} & {t('finance.invoices.due')}</Table.ColHeader>
+                          {/* <Table.ColHeader>{t('finance.invoices.due')}</Table.ColHeader> */}
                           <Table.ColHeader>{t('general.total')}</Table.ColHeader>
                           <Table.ColHeader>{t('general.balance')}</Table.ColHeader>
                         </Table.Row>
@@ -148,11 +148,12 @@ const FinanceInvoices = ({ t, history, archived=false }) => (
                                 {node.summary.trunc(15)}
                               </Table.Col>
                               <Table.Col key={v4()}>
-                                {moment(node.dateSent).format('LL')}
-                              </Table.Col>
-                              <Table.Col key={v4()}>
+                                {moment(node.dateSent).format('LL')} <br />
                                 {moment(node.dateDue).format('LL')}
                               </Table.Col>
+                              {/* <Table.Col key={v4()}>
+                                
+                              </Table.Col> */}
                               <Table.Col key={v4()}>
                                 {node.totalDisplay}
                               </Table.Col>

@@ -43,7 +43,7 @@ class FinanceInvoiceNode(DjangoObjectType):
         return display_float_as_amount(self.paid)
 
     def resolve_balance_display(self, info):
-        return display_float_as_amount(self.balance)
+        return display_float_as_amount(self.balance)        
 
 
     @classmethod
