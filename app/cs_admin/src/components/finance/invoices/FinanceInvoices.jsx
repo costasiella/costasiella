@@ -17,7 +17,8 @@ import {
   Button,
   Card,
   Container,
-  Table
+  Table, 
+  Text
 } from "tabler-react";
 import SiteWrapper from "../../SiteWrapper"
 import HasPermissionWrapper from "../../HasPermissionWrapper"
@@ -124,8 +125,7 @@ const FinanceInvoices = ({ t, history, archived=false }) => (
                         <Table.Row key={v4()}>
                           <Table.ColHeader>{t('general.status')}</Table.ColHeader>
                           <Table.ColHeader>{t('finance.invoices.invoice_number')}</Table.ColHeader>
-                          <Table.ColHeader>{t('finance.invoices.relation')}</Table.ColHeader>
-                          <Table.ColHeader>{t('finance.invoices.summary')}</Table.ColHeader>
+                          <Table.ColHeader>{t('finance.invoices.relation')} & {t('finance.invoices.summary')}</Table.ColHeader>
                           <Table.ColHeader>{t('finance.invoices.date')} & {t('finance.invoices.due')}</Table.ColHeader>
                           {/* <Table.ColHeader>{t('finance.invoices.due')}</Table.ColHeader> */}
                           <Table.ColHeader>{t('general.total')}</Table.ColHeader>
@@ -142,10 +142,8 @@ const FinanceInvoices = ({ t, history, archived=false }) => (
                                 {node.invoiceNumber}
                               </Table.Col>
                               <Table.Col key={v4()}>
-                                {(node.relationCompany) ? node.relationCompany: node.relationContactName}
-                              </Table.Col>
-                              <Table.Col key={v4()}>
-                                {node.summary.trunc(15)}
+                                {(node.relationCompany) ? node.relationCompany: node.relationContactName} <br />
+                                <Text.Small color="gray">{node.summary.trunc(20)}</Text.Small>
                               </Table.Col>
                               <Table.Col key={v4()}>
                                 {moment(node.dateSent).format('LL')} <br />
