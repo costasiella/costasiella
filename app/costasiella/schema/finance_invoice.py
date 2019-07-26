@@ -24,10 +24,12 @@ class FinanceInvoiceInterface(graphene.Interface):
 class FinanceInvoiceNode(DjangoObjectType):
     class Meta:
         model = FinanceInvoice
-        filter_fields = [
-            'invoice_number',
-            'status'
-        ]
+        filter_fields = {
+            'invoice_number': ['icontains', 'exact'],
+            'status': ['exact'],
+            'date_sent': ['lte', 'gte'],
+            'date_due': ['lte', 'gte'],
+        }
         interfaces = (graphene.relay.Node, FinanceInvoiceInterface, )
 
     def resolve_sub_total_display(self, info):
