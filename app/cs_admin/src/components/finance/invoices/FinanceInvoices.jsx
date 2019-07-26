@@ -130,6 +130,8 @@ const FinanceInvoices = ({ t, history, archived=false }) => (
                           {/* <Table.ColHeader>{t('finance.invoices.due')}</Table.ColHeader> */}
                           <Table.ColHeader>{t('general.total')}</Table.ColHeader>
                           <Table.ColHeader>{t('general.balance')}</Table.ColHeader>
+                          <Table.ColHeader></Table.ColHeader>
+                          <Table.ColHeader></Table.ColHeader>
                         </Table.Row>
                       </Table.Header>
                       <Table.Body>
@@ -158,17 +160,13 @@ const FinanceInvoices = ({ t, history, archived=false }) => (
                               <Table.Col key={v4()}>
                                 {node.balanceDisplay}
                               </Table.Col>
-
-                              {/* <Table.Col className="text-right" key={v4()}>
-                                {(node.archived) ? 
-                                  <span className='text-muted'>{t('general.unarchive_to_edit')}</span> :
-                                  <Button className='btn-sm' 
-                                          onClick={() => history.push("/finance/invoices/edit/" + node.id)}
-                                          color="secondary">
-                                    {t('general.edit')}
-                                  </Button>
-                                }
-                              </Table.Col> */}
+                              <Table.Col className="text-right" key={v4()}>
+                                <Button className='btn-sm' 
+                                        onClick={() => history.push("/finance/invoices/edit/" + node.id)}
+                                        color="secondary">
+                                  {t('general.edit')}
+                                </Button>
+                              </Table.Col>
                               {/* <Mutation mutation={ARCHIVE_INVOICE} key={v4()}>
                                 {(archiveCostcenter, { data }) => (
                                   <Table.Col className="text-right" key={v4()}>
