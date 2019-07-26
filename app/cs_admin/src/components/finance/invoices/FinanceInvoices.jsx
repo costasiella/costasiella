@@ -203,6 +203,7 @@ const FinanceInvoices = ({ t, history, archived=false }) => (
                 <Icon prefix="fe" name="plus-circle" /> {t('finance.invoices.add')}
               </Button>
             </HasPermissionWrapper> */}
+            <h5 className="mt-2 pt-1">{t("general.filter")}</h5>
             <h5>{t("general.menu")}</h5>
             <FinanceMenu active_link='invoices'/>
           </Grid.Col>
