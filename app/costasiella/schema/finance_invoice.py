@@ -15,7 +15,10 @@ m = Messages()
 class FinanceInvoiceNode(DjangoObjectType):
     class Meta:
         model = FinanceInvoice
-        filter_fields = ['archived']
+        filter_fields = [
+            'invoice_number',
+            'status'
+        ]
         interfaces = (graphene.relay.Node, )
 
     @classmethod
@@ -28,7 +31,7 @@ class FinanceInvoiceNode(DjangoObjectType):
 
 class FinanceInvoiceQuery(graphene.ObjectType):
     finance_invoices = DjangoFilterConnectionField(FinanceInvoiceNode)
-    finance_invoice_ = graphene.relay.Node.Field(FinanceInvoiceNode)
+    finance_invoice = graphene.relay.Node.Field(FinanceInvoiceNode)
 
     def resolve_finance_invoices(self, info, archived=False, **kwargs):
         user = info.context.user
@@ -79,7 +82,7 @@ class CreateFinanceInvoice(graphene.relay.ClientIDMutation):
         finance_invoice_group = graphene.ID(required=True)
         summary = graphene.String(required=False, default_value="")
         
-    finance_invoice_ = graphene.Field(FinanceInvoiceNode)
+    finance_invoice = graphene.Field(FinanceInvoiceNode)
 
     @classmethod
     def mutate_and_get_payload(self, root, info, **input):
@@ -89,7 +92,7 @@ class CreateFinanceInvoice(graphene.relay.ClientIDMutation):
         validation_result = validate_create_update_input(input)
         finance_invoice_group = validation_result['finance_invoice_group']
 
-        finance_invoice_ = FinanceInvoice(
+        finance_invoice = FinanceInvoice(
             finance_invoice_group = finance_invoice_group,
             status = 'DRAFT',
             terms = finance_invoice_group.terms,
@@ -108,10 +111,6 @@ class CreateFinanceInvoice(graphene.relay.ClientIDMutation):
             account = validation_result['account']
         )
         finance_invoice_account.save()
-        # And add an entry in the amount table to store totals
-        # finance_invoice_amount = FinanceInvoiceAmount(
-        #     finance_invoice = finance_invoice,
-        # )
 
         return CreateFinanceInvoice(finance_invoice=finance_invoice)
 
@@ -130,7 +129,7 @@ class UpdateFinanceInvoice(graphene.relay.ClientIDMutation):
         footer = graphene.String(required=False)
         code = graphene.String(required=False, default_value="")
         
-    finance_invoice_ = graphene.Field(FinanceInvoiceNode)
+    finance_invoice = graphene.Field(FinanceInvoiceNode)
 
     @classmethod
     def mutate_and_get_payload(self, root, info, **input):
@@ -139,7 +138,7 @@ class UpdateFinanceInvoice(graphene.relay.ClientIDMutation):
 
         rid = get_rid(input['id'])
 
-        finance_invoice_ = FinanceInvoice.objects.filter(id=rid.id).first()
+        finance_invoice = FinanceInvoice.objects.filter(id=rid.id).first()
         if not finance_invoice_:
             raise Exception('Invalid Finance Invoice  ID!')
 
@@ -179,7 +178,7 @@ class ArchiveFinanceInvoice(graphene.relay.ClientIDMutation):
         id = graphene.ID(required=True)
         archived = graphene.Boolean(required=True)
 
-    finance_invoice_ = graphene.Field(FinanceInvoiceNode)
+    finance_invoice = graphene.Field(FinanceInvoiceNode)
 
     @classmethod
     def mutate_and_get_payload(self, root, info, **input):
@@ -188,7 +187,7 @@ class ArchiveFinanceInvoice(graphene.relay.ClientIDMutation):
 
         rid = get_rid(input['id'])
 
-        finance_invoice_ = FinanceInvoice.objects.filter(id=rid.id).first()
+        finance_invoice = FinanceInvoice.objects.filter(id=rid.id).first()
         if not finance_invoice_:
             raise Exception('Invalid Finance Invoice  ID!')
 
@@ -199,6 +198,6 @@ class ArchiveFinanceInvoice(graphene.relay.ClientIDMutation):
 
 
 class FinanceInvoiceMutation(graphene.ObjectType):
-    archive_finance_invoice_ = ArchiveFinanceInvoice.Field()
-    create_finance_invoice_ = CreateFinanceInvoice.Field()
-    update_finance_invoice_ = UpdateFinanceInvoice.Field()
+    archive_finance_invoice = ArchiveFinanceInvoice.Field()
+    create_finance_invoice = CreateFinanceInvoice.Field()
+    update_finance_invoice = UpdateFinanceInvoice.Field()

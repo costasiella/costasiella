@@ -45,10 +45,8 @@ class FinanceInvoice(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-
     def __str__(self):
         return self.invoice_number
-
 
     def save(self, *args, **kwargs):
         if self.pk is None: # We know this is object creation when there is no pk yet.
@@ -62,6 +60,5 @@ class FinanceInvoice(models.Model):
             # This code is here so the id is only +=1'd when an invoice is actually created 
             self.finance_invoice_group.next_id += 1
             self.finance_invoice_group.save()
-
 
         super(FinanceInvoice, self).save(*args, **kwargs)

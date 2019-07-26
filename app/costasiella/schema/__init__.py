@@ -9,6 +9,7 @@ from .account_teacher_profile import AccountTeacherProfileQuery, AccountTeacherP
 
 from .finance_costcenter import FinanceCostCenterQuery, FinanceCostCenterMutation
 from .finance_glaccount import FinanceGLAccountQuery, FinanceGLAccountMutation
+from .finance_invoice import FinanceInvoiceQuery, FinanceInvoiceMutation
 from .finance_invoice_group import FinanceInvoiceGroupQuery, FinanceInvoiceGroupMutation
 from .finance_payment_method import FinancePaymentMethodQuery, FinancePaymentMethodMutation
 from .finance_taxrate import FinanceTaxRateQuery, FinanceTaxRateMutation
@@ -43,6 +44,7 @@ class Query(AccountQuery,
             AccountTeacherProfileQuery,
             FinanceCostCenterQuery,
             FinanceGLAccountQuery,
+            FinanceInvoiceQuery,
             FinanceInvoiceGroupQuery,
             FinancePaymentMethodQuery,
             FinanceTaxRateQuery,
@@ -75,6 +77,7 @@ class Mutation(AccountMutation,
                AccountTeacherProfileMutation,
                FinanceCostCenterMutation,
                FinanceGLAccountMutation,
+               FinanceInvoiceMutation,
                FinanceInvoiceGroupMutation,
                FinancePaymentMethodMutation,
                FinanceTaxRateMutation,
