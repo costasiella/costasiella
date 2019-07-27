@@ -37,7 +37,7 @@ const FinanceInvoicesFilter = ({ t, history, data, refetch }) => (
     {/* Status */}
     <select 
       className={selectClass}
-      defaultValue={getDefaultValue(CSLS.FINANCE_INVOICES_FILTER_STATUS)}
+      value={getDefaultValue(CSLS.FINANCE_INVOICES_FILTER_STATUS)}
       onChange={ (event) => {
         updateLocalStorageAndRefetch(
           CSLS.FINANCE_INVOICES_FILTER_STATUS,
