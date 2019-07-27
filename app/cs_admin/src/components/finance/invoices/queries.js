@@ -2,7 +2,7 @@ import gql from "graphql-tag"
 
 export const GET_INVOICES_QUERY = gql`
   query FinanceInvoices($after: String, $before: String, $status: String) {
-    financeInvoices(first: 2, before: $before, after: $after, status: $status) {
+    financeInvoices(first: 15, before: $before, after: $after, status: $status) {
       pageInfo {
         hasNextPage
         hasPreviousPage
