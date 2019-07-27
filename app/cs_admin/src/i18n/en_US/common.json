@@ -53,7 +53,7 @@
         "invoices": {
             "title": "Invoices",
             "error_loading": "Error loading invoices :(",
-            "empty_list": "No invoices have been created yet",
+            "empty_list": "No invoices found",
             "empty_archive": "No invoices have been archived yet",
             "invoice_number": "Invoice #",
             "relation": "Relation",
