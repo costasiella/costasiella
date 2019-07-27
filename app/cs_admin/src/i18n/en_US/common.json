@@ -54,13 +54,18 @@
             "title": "Invoices",
             "error_loading": "Error loading invoices :(",
             "empty_list": "No invoices found",
-            "empty_archive": "No invoices have been archived yet",
             "invoice_number": "Invoice #",
             "relation": "Relation",
             "summary": "Summary",
             "date": "Date",
             "due": "Due",
-            "add": "Add invoice"
+            "statuses": {
+                "draft": "Draft",
+                "sent": "Sent",
+                "paid": "Paid",
+                "cancelled": "Cancelled",
+                "all": "All statuses"
+            }
         },
         "invoice_groups": {
             "title": "Invoice groups",

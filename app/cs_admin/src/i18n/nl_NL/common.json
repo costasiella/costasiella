@@ -54,13 +54,18 @@
             "title": "__STRING_NOT_TRANSLATED__",
             "error_loading": "__STRING_NOT_TRANSLATED__",
             "empty_list": "__STRING_NOT_TRANSLATED__",
-            "empty_archive": "__STRING_NOT_TRANSLATED__",
             "invoice_number": "__STRING_NOT_TRANSLATED__",
             "relation": "__STRING_NOT_TRANSLATED__",
             "summary": "__STRING_NOT_TRANSLATED__",
             "date": "__STRING_NOT_TRANSLATED__",
             "due": "__STRING_NOT_TRANSLATED__",
-            "add": "__STRING_NOT_TRANSLATED__"
+            "statuses": {
+                "draft": "__STRING_NOT_TRANSLATED__",
+                "sent": "__STRING_NOT_TRANSLATED__",
+                "paid": "__STRING_NOT_TRANSLATED__",
+                "cancelled": "__STRING_NOT_TRANSLATED__",
+                "all": "__STRING_NOT_TRANSLATED__"
+            }
         },
         "invoice_groups": {
             "title": "__STRING_NOT_TRANSLATED__",

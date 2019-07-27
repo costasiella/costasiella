@@ -12,9 +12,12 @@ import { get_list_query_variables } from './tools'
 
 function getDefaultValue(value) {
   let defaultValue = localStorage.getItem(value)
+  console.log(defaultValue)
+
   if (defaultValue) {
     return defaultValue
   } else {
+    console.log('return empty default')
     return ""
   }
 }
@@ -31,7 +34,7 @@ const selectClass = "form-control mb-2"
 
 const FinanceInvoicesFilter = ({ t, history, data, refetch }) => (
   <div>
-    {/* Locations */}
+    {/* Status */}
     <select 
       className={selectClass}
       defaultValue={getDefaultValue(CSLS.FINANCE_INVOICES_FILTER_STATUS)}
@@ -43,7 +46,7 @@ const FinanceInvoicesFilter = ({ t, history, data, refetch }) => (
         )
       }}
     >
-      <option value="" key={v4()}>{t("finance.invoices.filter_all_statuses")}</option>
+      <option value="" key={v4()}>{t("finance.invoices.statuses.all")}</option>
       <option value="DRAFT" key={v4()}>{t('finance.invoices.statuses.draft')}</option>
       <option value="SENT" key={v4()}>{t('finance.invoices.statuses.sent')}</option>
       <option value="PAID" key={v4()}>{t('finance.invoices.statuses.paid')}</option>
