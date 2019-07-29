@@ -23,7 +23,6 @@ const FinanceInvoiceGroupDefaultForm = ({ t, history, inputData, isSubmitting, s
               name="financeInvoiceGroup" 
               className={(errors.financeInvoiceGroup) ? "form-control is-invalid" : "form-control"} 
               onChange={(e) => {
-                console.log(e.target.value)
                 setFieldValue('financeInvoiceGroup', e.target.value)
                 setFieldTouched('financeInvoiceGroup', true)
                 setTimeout(() => {submitForm()}, 200)
