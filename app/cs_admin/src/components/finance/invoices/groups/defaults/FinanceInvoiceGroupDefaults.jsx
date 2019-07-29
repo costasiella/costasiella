@@ -94,9 +94,9 @@ const FinanceInvoiceGroupsDefaults = ({ t, history }) => (
       <Container>
         <Page.Header title={t("finance.title")}>
           <div className="page-options d-flex">
-            <Link to="/finance/invoices" 
+            <Link to="/finance/invoices/groups" 
                   className='btn btn-outline-secondary btn-sm'>
-                <Icon prefix="fe" name="arrow-left" /> {t('general.back_to')} {t('finance.invoices.title')}
+                <Icon prefix="fe" name="arrow-left" /> {t('general.back_to')} {t('finance.invoice_groups.title')}
             </Link>
           </div>
         </Page.Header>
@@ -240,6 +240,7 @@ const FinanceInvoiceGroupsDefaults = ({ t, history }) => (
             </Query>
           </Grid.Col>
           <Grid.Col md={3}>
+            <h5>{t("general.menu")}</h5>
             <FinanceMenu active_link='invoices'/>
           </Grid.Col>
         </Grid.Row>
