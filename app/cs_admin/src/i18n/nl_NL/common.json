@@ -82,6 +82,23 @@
             "toast_edit_success": "__STRING_NOT_TRANSLATED__",
             "public": "__STRING_NOT_TRANSLATED__",
             "prefix_year": "__STRING_NOT_TRANSLATED__"
+        },
+        "invoice_groups_defaults": {
+            "MEMBERSHIPS": "__STRING_NOT_TRANSLATED__",
+            "SUBSCRIPTIONS": "__STRING_NOT_TRANSLATED__",
+            "CLASSPASSES": "__STRING_NOT_TRANSLATED__",
+            "DROPINCLASSES": "__STRING_NOT_TRANSLATED__",
+            "TRIALCLASSES": "__STRING_NOT_TRANSLATED__",
+            "EVENT_TICKETS": "__STRING_NOT_TRANSLATED__",
+            "SHOP_SALES": "__STRING_NOT_TRANSLATED__",
+            "TEACHER_PAYMENTS": "__STRING_NOT_TRANSLATED__",
+            "EMPLOYEE_EXPENSES": "__STRING_NOT_TRANSLATED__",
+            "TYPE_NOT_FOUND": "__STRING_NOT_TRANSLATED__",
+            "title": "__STRING_NOT_TRANSLATED__",
+            "error_loading": "__STRING_NOT_TRANSLATED__",
+            "empty_list": "__STRING_NOT_TRANSLATED__",
+            "item_type": "__STRING_NOT_TRANSLATED__",
+            "invoice_group": "__STRING_NOT_TRANSLATED__"
         }
     },
     "general": {

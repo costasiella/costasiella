@@ -82,6 +82,23 @@
             "toast_edit_success": "Saved",
             "public": "Show invoices from this group in account profiles",
             "prefix_year": "Prefix year"
+        },
+        "invoice_groups_defaults": {
+            "MEMBERSHIPS": "Memberships",
+            "SUBSCRIPTIONS": "Subscriptions",
+            "CLASSPASSES": "Class passes",
+            "DROPINCLASSES": "Drop-in classes",
+            "TRIALCLASSES": "Trial classes",
+            "EVENT_TICKETS": "Event tickets",
+            "SHOP_SALES": "Shop sales",
+            "TEACHER_PAYMENTS": "Teacher payments",
+            "EMPLOYEE_EXPENSES": "Employee expenses",
+            "TYPE_NOT_FOUND": "Type not found...",
+            "title": "Default invoice groups",
+            "error_loading": "Error loading default invoice groups :(",
+            "empty_list": "No invoice item types have been defined. Have the fixtures been loaded?",
+            "item_type": "Item type",
+            "invoice_group": "Default invoice group"
         }
     },
     "general": {

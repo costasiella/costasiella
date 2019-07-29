@@ -88,7 +88,7 @@ const fetch_default_type_name = (t, itemType) => {
 
 
 
-const FinanceInvoiceGroupsDefaults = ({ t, history, archived=false }) => (
+const FinanceInvoiceGroupsDefaults = ({ t, history }) => (
   <SiteWrapper>
     <div className="my-3 my-md-5">
       <Container>
@@ -118,26 +118,12 @@ const FinanceInvoiceGroupsDefaults = ({ t, history, archived=false }) => (
                     <p>{t('finance.invoice_groups_defaults.error_loading')}</p>
                   </ContentCard>
                 )
-                const headerOptions = <Card.Options>
-                  <Button color={(!archived) ? 'primary': 'secondary'}  
-                          size="sm"
-                          onClick={() => {archived=false; refetch({archived});}}>
-                    {t('general.current')}
-                  </Button>
-                  <Button color={(archived) ? 'primary': 'secondary'} 
-                          size="sm" 
-                          className="ml-2" 
-                          onClick={() => {archived=true; refetch({archived});}}>
-                    {t('general.archive')}
-                  </Button>
-                </Card.Options>
                 
                 // Empty list
                 if (!invoice_group_defaults.edges.length) { return (
-                  <ContentCard cardTitle={t('finance.invoice_groups_defaults.title')}
-                               headerContent={headerOptions}>
+                  <ContentCard cardTitle={t('finance.invoice_groups_defaults.title')}>
                     <p>
-                    {(!archived) ? t('finance.invoice_groups_defaults.empty_list') : t("finance.invoice_groups_defaults.empty_archive")}
+                      {t('finance.invoice_groups_defaults.empty_list')}
                     </p>
                    
                   </ContentCard>
@@ -145,7 +131,6 @@ const FinanceInvoiceGroupsDefaults = ({ t, history, archived=false }) => (
                 // Life's good! :)
                 return (
                   <ContentCard cardTitle={t('finance.invoice_groups_defaults.title')}
-                               headerContent={headerOptions}
                                pageInfo={invoice_group_defaults.pageInfo}
                                onLoadMore={() => {
                                 fetchMore({
