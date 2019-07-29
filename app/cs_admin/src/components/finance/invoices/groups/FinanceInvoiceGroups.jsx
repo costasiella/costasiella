@@ -51,9 +51,13 @@ const FinanceInvoiceGroups = ({ t, history, archived=false }) => (
         <Page.Header title={t("finance.title")}>
           <div className="page-options d-flex">
             <Link to="/finance/invoices" 
-                  className='btn btn-outline-secondary btn-sm'>
+                  className='btn btn-outline-secondary btn-sm mr-2'>
                 <Icon prefix="fe" name="arrow-left" /> {t('general.back_to')} {t('finance.invoices.title')}
             </Link>
+            <Link to="/finance/invoices/groups/defaults" 
+                  className='btn btn-outline-secondary btn-sm'>
+                <Icon prefix="fe" name="settings" /> {t('finance.invoice_groups_defaults.title')}
+            </Link> 
           </div>
         </Page.Header>
         <Grid.Row>
