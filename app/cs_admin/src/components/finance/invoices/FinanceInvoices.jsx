@@ -6,7 +6,7 @@ import gql from "graphql-tag"
 import { v4 } from "uuid"
 import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
-
+import { Link } from 'react-router-dom'
 
 import {
   Page,
@@ -51,7 +51,14 @@ const FinanceInvoices = ({ t, history }) => (
   <SiteWrapper>
     <div className="my-3 my-md-5">
       <Container>
-        <Page.Header title={t("finance.title")} />
+        <Page.Header title={t("finance.title")}>
+          <div className="page-options d-flex">
+              <Link to="/finance/invoices/groups" 
+                    className='btn btn-outline-secondary btn-sm'>
+                <Icon prefix="fe" name="folder" /> {t('general.groups')}
+              </Link>
+            </div>
+        </Page.Header>
             <Query query={GET_INVOICES_QUERY} variables={get_list_query_variables()}>
              {({ loading, error, data: {financeInvoices: invoices}, refetch, fetchMore }) => {
                 // Loading

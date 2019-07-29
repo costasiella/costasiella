@@ -40,7 +40,7 @@ class OrganizationClasspass(models.Model):
         Sell class pass
         """
         from .account_classpass import AccountClasspass
-        
+
         account_classpass = AccountClasspass(
             account=account,
             organization_classpass=self,
@@ -53,7 +53,31 @@ class OrganizationClasspass(models.Model):
 
         print('creating invoice...')
 
+
         return account_classpass
+
+    
+    def _sell_create_invoice(self):
+        """
+        Create an invoice for sold class pass
+        """
+        from .finance_invoice import FinanceInvoice
+
+        finance_invoice = FinanceInvoice(
+            finance_invoice_group = finance_invoice_group,
+            status = 'DRAFT',
+            terms = finance_invoice_group.terms,
+            footer = finance_invoice_group.footer
+        )
+
+        if 'summary' in input:
+            finance_invoice.summary = input['summary']
+
+        # Save invoice
+        finance_invoice.save()
+
+        # Now the invoice has an id, link it to an account
+        finance_invoice.accounts.add(validation_result['account'])
 
 
 #     def sell_to_customer(self, auth_user_id, date_start, note=None, invoice=True):
