@@ -52,6 +52,42 @@ const UPDATE_INVOICE_GROUP_DEFAULT = gql`
 `
 
 
+const fetch_default_type_name = (t, itemType) => {
+  switch(itemType) {
+    case "MEMBERSHIPS":
+      return t('finance.invoice_groups_defaults.MEMBERSHIPS')
+      break
+    case "SUBSCRIPTIONS":
+      return t('finance.invoice_groups_defaults.SUBSCRIPTIONS')
+      break
+    case "CLASSPASSES":
+      return t('finance.invoice_groups_defaults.CLASSPASSES')
+      break
+    case "DROPINCLASSES":
+      return t('finance.invoice_groups_defaults.DROPINCLASSES')
+      break
+    case "TRIALCLASSES":
+      return t('finance.invoice_groups_defaults.TRIALCLASSES')
+      break
+    case "EVENT_TICKETS":
+      return t('finance.invoice_groups_defaults.EVENT_TICKETS')
+      break
+    case "SHOP_SALES":
+      return t('finance.invoice_groups_defaults.SHOP_SALES')
+      break
+    case "TEACHER_PAYMENTS":
+      return t('finance.invoice_groups_defaults.TEACHER_PAYMENTS')
+      break
+    case "EMPLOYEE_EXPENSES":
+      return t('finance.invoice_groups_defaults.EMPLOYEE_EXPENSES')
+      break
+    default:
+      return t('finance.invoice_groups_defaults.TYPE_NOT_FOUND')
+  }
+}
+
+
+
 const FinanceInvoiceGroupsDefaults = ({ t, history, archived=false }) => (
   <SiteWrapper>
     <div className="my-3 my-md-5">
@@ -146,7 +182,7 @@ const FinanceInvoiceGroupsDefaults = ({ t, history, archived=false }) => (
                           {invoice_group_defaults.edges.map(({ node }) => (
                             <Table.Row key={v4()}>
                               <Table.Col key={v4()}>
-                                {node.itemType}
+                                { fetch_default_type_name(t, node.itemType) }
                               </Table.Col>
                               <Table.Col>
                                 <Query query={GET_INVOICE_GROUPS_QUERY} variables={{archived: false}}>

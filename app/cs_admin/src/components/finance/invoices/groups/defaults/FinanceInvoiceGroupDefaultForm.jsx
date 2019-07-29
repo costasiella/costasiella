@@ -18,7 +18,7 @@ import {
 const FinanceInvoiceGroupDefaultForm = ({ t, history, inputData, isSubmitting, setFieldTouched, setFieldValue, errors, values, submitForm }) => (
   <FoForm>
     <Dimmer active={isSubmitting} loader={isSubmitting} >
-      <Form.Group label={t('finance.invoice_groups_defaults.default_group')}>
+      <Form.Group>
         <Field component="select" 
               name="financeInvoiceGroup" 
               className={(errors.financeInvoiceGroup) ? "form-control is-invalid" : "form-control"} 
