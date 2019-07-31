@@ -27,6 +27,22 @@ class FinanceInvoiceItem(models.Model):
         return self.finance_invoice.invoice_number + ' line: ' + self.line_number + ' ' + self.product_name
 
 
+    def save(self, *args, **kwargs):
+        if self.pk is None: # We know this is object creation when there is no pk yet.
+            self.line_number = self._get_item_next_line_nr()
+
+        super(FinanceInvoiceItem, self).save(*args, **kwargs)
+
+
+    def _get_item_next_line_nr(self):
+        """
+        Returns the next item number for an invoice
+        use to set sorting when adding an item
+        """
+        qs = FinanceInvoice.objects.filter(finance_invoice = self.finance_invoice)
+
+        return qs.count() + 1
+
 # def define_invoices_items():
 #     ac_query = (db.accounting_costcenters.Archived == False)
 #     ag_query = (db.accounting_glaccounts.Archived == False)
