@@ -50,7 +50,13 @@ class FinanceInvoice(models.Model):
 
     def set_relation_info(self):
         """ Set relation info from linked account """
+        #TODO: Write this function :)
         pass
+
+    def update_amounts(self):
+        """ Update total amounts fields (sub_total, vat, total, paid, balance) """
+        #TODO: Write this function :)
+
 
     def _first_invoice_in_group_this_year(self, year): 
         """
@@ -91,3 +97,47 @@ class FinanceInvoice(models.Model):
             self._increment_group_next_id()
 
         super(FinanceInvoice, self).save(*args, **kwargs)
+
+
+    def _get_item_next_line_nr(self):
+        """
+        Returns the next item number for an invoice
+        use to set sorting when adding an item
+        """
+        from .finance_invoice_item import FinanceInvoiceItem
+
+        qs = FinanceInvoiceItem.objects.filter(finance_invoice = self)
+
+        return qs.count() + 1
+
+
+    def item_add_classpass(self, account_classpass):
+        """
+        Add account classpass invoice item
+        """
+        from .finance_invoice_item import FinanceInvoiceItem
+        # add item to invoice
+        
+
+        organization_classpass = account_classpass.organization_classpass
+        # finance_invoice = FinanceInvoice.objects.get(pk=self.id)
+
+        finance_invoice_item = FinanceInvoiceItem(
+            finance_invoice = self,
+            line_number = self._get_item_next_line_nr(),
+            product_name = _('Class pass'),
+            description = _('Class pass %s' % str(account_classpass.pk)),
+            quantity = 1,
+            price = organization_classpass.price,
+            finance_tax_rate = organization_classpass.finance_tax_rate,
+            finance_glaccount = organization_classpass.finance_glaccount,
+            finance_costcenter = organization_classpass.finance_costcenter,
+        )
+
+        finance_invoice_item.save()
+
+        #TODO: Link item to account_classpass
+
+        return finance_invoice_item
+
+        # price = classcard.price

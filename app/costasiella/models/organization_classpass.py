@@ -56,13 +56,13 @@ class OrganizationClasspass(models.Model):
 
         if create_invoice:
             print('still alive')
-            self._sell_create_invoice(account, account_classpass)
+            self._sell_create_invoice(account_classpass)
 
 
         return account_classpass
 
     
-    def _sell_create_invoice(self, account, account_classpass):
+    def _sell_create_invoice(self, account_classpass):
         """
         Create an invoice for sold class pass
         """
@@ -88,10 +88,10 @@ class OrganizationClasspass(models.Model):
         finance_invoice.save()
 
         # Add invoice item
-        #TODO: Actually add item
+        finance_invoice.item_add_classpass(account_classpass)
 
         # Now the invoice has an id, link it to an account
-        finance_invoice.accounts.add(account)
+        finance_invoice.accounts.add(account_classpass.account)
 
 
 #     def sell_to_customer(self, auth_user_id, date_start, note=None, invoice=True):

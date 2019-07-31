@@ -16,9 +16,9 @@ class FinanceInvoiceItem(models.Model):
     quantity = models.DecimalField(max_digits=20, decimal_places=2)
     price = models.DecimalField(max_digits=20, decimal_places=2)
     finance_tax_rate = models.ForeignKey(FinanceTaxRate, on_delete=models.CASCADE)
-    subtotal = models.DecimalField(max_digits=20, decimal_places=2)
-    vat = models.DecimalField(max_digits=20, decimal_places=2)
-    total = models.DecimalField(max_digits=20, decimal_places=2)
+    subtotal = models.DecimalField(max_digits=20, decimal_places=2, default=0)
+    vat = models.DecimalField(max_digits=20, decimal_places=2, default=0)
+    total = models.DecimalField(max_digits=20, decimal_places=2, default=0)
     finance_glaccount = models.ForeignKey(FinanceGLAccount, on_delete=models.CASCADE, null=True)
     finance_costcenter = models.ForeignKey(FinanceCostCenter, on_delete=models.CASCADE, null=True)
 
@@ -26,22 +26,9 @@ class FinanceInvoiceItem(models.Model):
     def __str__(self):
         return self.finance_invoice.invoice_number + ' line: ' + self.line_number + ' ' + self.product_name
 
+    
+    #TODO: Calculate subtotal, vat and total on save :)
 
-    def save(self, *args, **kwargs):
-        if self.pk is None: # We know this is object creation when there is no pk yet.
-            self.line_number = self._get_item_next_line_nr()
-
-        super(FinanceInvoiceItem, self).save(*args, **kwargs)
-
-
-    def _get_item_next_line_nr(self):
-        """
-        Returns the next item number for an invoice
-        use to set sorting when adding an item
-        """
-        qs = FinanceInvoice.objects.filter(finance_invoice = self.finance_invoice)
-
-        return qs.count() + 1
 
 # def define_invoices_items():
 #     ac_query = (db.accounting_costcenters.Archived == False)
