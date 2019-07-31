@@ -230,62 +230,68 @@ query FinanceInvoiceGroupDefaults {
         self.assertEqual(data['updateFinanceInvoiceGroupDefault']['financeInvoiceGroupDefault']['financeInvoiceGroup']['id'], 
             variables['input']['financeInvoiceGroup']
         )
+        
 
-    # def test_update_invoicegroupdefault_anon_user(self):
-    #     """ Don't allow updating invoicegroupdefaults for non-logged in users """
-    #     query = self.invoicegroupdefault_update_mutation
-    #     invoicegroupdefault = f.FinanceInvoiceGroupDefaultFactory.create()
-    #     variables = self.variables_update
-    #     variables['input']['id'] = to_global_id('FinanceInvoiceGroupDefaultNode', invoicegroupdefault.id)
+    def test_update_invoicegroupdefault_anon_user(self):
+        """ Don't allow updating invoicegroupdefaults for non-logged in users """
+        query = self.invoicegroupdefault_update_mutation
+        invoicegroup = f.FinanceInvoiceGroupFactory.create()
+        variables = self.variables_update
+        variables['input']['id'] = to_global_id('FinanceInvoiceGroupDefaultNode', 1)
+        variables['input']['financeInvoiceGroup'] = to_global_id('FinanceInvoiceGroupNode', invoicegroup.id)
 
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         self.anon_user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
-
-
-    # def test_update_invoicegroupdefault_permission_granted(self):
-    #     """ Allow updating invoicegroupdefaults for users with permissions """
-    #     query = self.invoicegroupdefault_update_mutation
-    #     invoicegroupdefault = f.FinanceInvoiceGroupDefaultFactory.create()
-    #     variables = self.variables_update
-    #     variables['input']['id'] = to_global_id('FinanceInvoiceGroupDefaultNode', invoicegroupdefault.id)
-
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename=self.permission_change)
-    #     user.user_permissions.add(permission)
-    #     user.save()
-
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['updateFinanceInvoiceGroupDefault']['financeInvoiceGroupDefault']['name'], variables['input']['name'])
+        executed = execute_test_client_api_query(
+            query, 
+            self.anon_user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
-    # def test_update_invoicegroupdefault_permission_denied(self):
-    #     """ Check update invoicegroupdefault permission denied error message """
-    #     query = self.invoicegroupdefault_update_mutation
-    #     invoicegroupdefault = f.FinanceInvoiceGroupDefaultFactory.create()
-    #     variables = self.variables_update
-    #     variables['input']['id'] = to_global_id('FinanceInvoiceGroupDefaultNode', invoicegroupdefault.id)
+    def test_update_invoicegroupdefault_permission_granted(self):
+        """ Allow updating invoicegroupdefaults for users with permissions """
+        query = self.invoicegroupdefault_update_mutation
+        invoicegroup = f.FinanceInvoiceGroupFactory.create()
+        variables = self.variables_update
+        variables['input']['id'] = to_global_id('FinanceInvoiceGroupDefaultNode', 1)
+        variables['input']['financeInvoiceGroup'] = to_global_id('FinanceInvoiceGroupNode', invoicegroup.id)
 
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
+        # Create regular user
+        user = f.RegularUserFactory.create()
+        permission = Permission.objects.get(codename=self.permission_change)
+        user.user_permissions.add(permission)
+        user.save()
 
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
+        executed = execute_test_client_api_query(
+            query, 
+            user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['updateFinanceInvoiceGroupDefault']['financeInvoiceGroupDefault']['financeInvoiceGroup']['id'], 
+            variables['input']['financeInvoiceGroup']
+        )
+
+
+    def test_update_invoicegroupdefault_permission_denied(self):
+        """ Check update invoicegroupdefault permission denied error message """
+        query = self.invoicegroupdefault_update_mutation
+        invoicegroup = f.FinanceInvoiceGroupFactory.create()
+        variables = self.variables_update
+        variables['input']['id'] = to_global_id('FinanceInvoiceGroupDefaultNode', 1)
+        variables['input']['financeInvoiceGroup'] = to_global_id('FinanceInvoiceGroupNode', invoicegroup.id)
+
+        # Create regular user
+        user = f.RegularUserFactory.create()
+
+        executed = execute_test_client_api_query(
+            query, 
+            user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
 
