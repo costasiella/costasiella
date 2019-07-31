@@ -19,6 +19,8 @@ from .. import schema
 
 class GQLAccountClasspass(TestCase):
     # https://docs.djangoproject.com/en/2.1/topics/testing/overview/
+    fixtures = ['invoice_group.json', 'invoice_group_defaults']
+
     def setUp(self):
         # This is run before every test
         self.admin_user = f.AdminUserFactory.create()

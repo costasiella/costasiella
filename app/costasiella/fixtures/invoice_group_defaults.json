@@ -1,58 +1,5 @@
 [
   {
-    "model": "costasiella.FinancePaymentMethod",
-    "pk": 100,
-    "fields": {
-      "archived": false,
-      "system_method": true,
-      "name": "Mollie"
-    }
-  },
-  {
-    "model": "costasiella.FinancePaymentMethod",
-    "pk": 101,
-    "fields": {
-      "archived": false,
-      "system_method": true,
-      "name": "Cash"
-    }
-  },
-  {
-    "model": "costasiella.FinancePaymentMethod",
-    "pk": 102,
-    "fields": {
-      "archived": false,
-      "system_method": true,
-      "name": "Wire transfer"
-    }
-  },
-  {
-    "model": "costasiella.FinancePaymentMethod",
-    "pk": 103,
-    "fields": {
-      "archived": false,
-      "system_method": true,
-      "name": "Direct debit"
-    }
-  },
-  {
-    "model": "costasiella.FinanceInvoiceGroup",
-    "pk": 100,
-    "fields": {
-      "archived": false,
-      "display_public": true,
-      "name": "Default",
-      "next_id": 1,
-      "due_after_days": 30,
-      "prefix": "INV",
-      "prefix_year": true,
-      "auto_reset_prefix_year": true,
-      "terms": "",
-      "footer": "",
-      "code": ""
-    }
-  }, 
-  {
     "model": "costasiella.FinanceInvoiceGroupDefault",
     "fields": {
       "item_type": "MEMBERSHIPS",

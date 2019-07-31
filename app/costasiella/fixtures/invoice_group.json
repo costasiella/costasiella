@@ -1,0 +1,19 @@
+[
+  {
+    "model": "costasiella.FinanceInvoiceGroup",
+    "pk": 100,
+    "fields": {
+      "archived": false,
+      "display_public": true,
+      "name": "Default",
+      "next_id": 1,
+      "due_after_days": 30,
+      "prefix": "INV",
+      "prefix_year": true,
+      "auto_reset_prefix_year": true,
+      "terms": "",
+      "footer": "",
+      "code": ""
+    }
+  }
+]

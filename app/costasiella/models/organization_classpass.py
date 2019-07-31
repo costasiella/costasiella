@@ -45,6 +45,7 @@ class OrganizationClasspass(models.Model):
             account=account,
             organization_classpass=self,
             date_start=date_start, 
+            note=note
         )
 
         # set date end & save
