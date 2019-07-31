@@ -127,55 +127,44 @@ query FinanceInvoiceGroupDefaults {
         )
         
 
-    # def test_query_permision_denied(self):
-    #     """ Query list of invoicegroupdefaults - check permission denied """
-    #     query = self.invoicegroupdefaults_query
-    #     invoicegroupdefault = f.FinanceInvoiceGroupDefaultFactory.create()
-    #     variables = {
-    #         'archived': False
-    #     }
+    def test_query_permision_denied(self):
+        """ Query list of invoicegroupdefaults - check permission denied """
+        query = self.invoicegroupdefaults_query
 
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     executed = execute_test_client_api_query(query, user, variables=variables)
+        # Create regular user
+        user = f.RegularUserFactory.create()
+        executed = execute_test_client_api_query(query, user)
 
-    #     errors = executed.get('errors')
+        errors = executed.get('errors')
 
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
-    # def test_query_permision_granted(self):
-    #     """ Query list of invoicegroupdefaults with view permission """
-    #     query = self.invoicegroupdefaults_query
-    #     invoicegroupdefault = f.FinanceInvoiceGroupDefaultFactory.create()
-    #     variables = {
-    #         'archived': False
-    #     }
+    def test_query_permision_granted(self):
+        """ Query list of invoicegroupdefaults with view permission """
+        query = self.invoicegroupdefaults_query
 
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename='view_financeinvoicegroupdefault')
-    #     user.user_permissions.add(permission)
-    #     user.save()
+        # Create regular user
+        user = f.RegularUserFactory.create()
+        permission = Permission.objects.get(codename='view_financeinvoicegroupdefault')
+        user.user_permissions.add(permission)
+        user.save()
 
-    #     executed = execute_test_client_api_query(query, user, variables=variables)
-    #     data = executed.get('data')
+        executed = execute_test_client_api_query(query, user)
+        data = executed.get('data')
 
-    #     # List all invoicegroupdefaults
-    #     self.assertEqual(data['financeInvoiceGroupDefaults']['edges'][0]['node']['name'], invoicegroupdefault.name)
+        first_default = models.FinanceInvoiceGroupDefault.objects.get(pk=1)
+        self.assertEqual(data['financeInvoiceGroupDefaults']['edges'][0]['node']['id'], 
+            to_global_id('FinanceInvoiceGroupDefaultNode', first_default.id))
 
 
-    # def test_query_anon_user(self):
-    #     """ Query list of invoicegroupdefaults - anon user """
-    #     query = self.invoicegroupdefaults_query
-    #     invoicegroupdefault = f.FinanceInvoiceGroupDefaultFactory.create()
-    #     variables = {
-    #         'archived': False
-    #     }
+    def test_query_anon_user(self):
+        """ Query list of invoicegroupdefaults - anon user """
+        query = self.invoicegroupdefaults_query
 
-    #     executed = execute_test_client_api_query(query, self.anon_user, variables=variables)
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
+        executed = execute_test_client_api_query(query, self.anon_user)
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
 # Comment out tests for now, as this endpoint isn't used anywhere
