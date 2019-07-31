@@ -27,7 +27,7 @@ class FinanceInvoiceGroupFactory(factory.DjangoModelFactory):
 
     archived = False
     display_public = True
-    name = "Default"
+    name = "Another group"
     next_id = 1
     due_after_days = 30
     prefix = 'INV'

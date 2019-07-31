@@ -32,17 +32,7 @@ class GQLFinanceInvoiceGroupDefaultDefault(TestCase):
         self.permission_delete = 'delete_financeinvoicegroupdefault'
 
         self.variables_update = {
-            "input": {
-                "displayPublic": True,
-                "name": "Updated invoicegroupdefault",
-                "dueAfterDays": 24,
-                "prefix": "INV",
-                "prefixYear": False,
-                "autoResetPrefixYear": False,
-                "terms": "Terms here",
-                "footer": "Footer",
-                "code" : "70"
-            }
+            "input": {}
         }
 
         self.invoicegroupdefaults_query = '''
@@ -87,17 +77,11 @@ query FinanceInvoiceGroupDefaults {
     updateFinanceInvoiceGroupDefault(input: $input) {
       financeInvoiceGroupDefault {
         id
-        archived
-        displayPublic
-        name
-        nextId
-        dueAfterDays
-        prefix
-        prefixYear
-        autoResetPrefixYear
-        terms
-        footer
-        code
+        itemType
+        financeInvoiceGroup {
+          id
+          name
+        }
       }
     }
   }
@@ -228,30 +212,24 @@ query FinanceInvoiceGroupDefaults {
     #     self.assertEqual(data['financeInvoiceGroupDefault']['name'], invoicegroupdefault.name)
 
 
-    # def test_update_invoicegroupdefault(self):
-    #     """ Update a invoicegroupdefault """
-    #     query = self.invoicegroupdefault_update_mutation
-    #     invoicegroupdefault = f.FinanceInvoiceGroupDefaultFactory.create()
-    #     variables = self.variables_update
-    #     variables['input']['id'] = to_global_id('FinanceInvoiceGroupDefaultNode', invoicegroupdefault.id)
+    def test_update_invoicegroupdefault(self):
+        """ Update a invoicegroupdefault """
+        query = self.invoicegroupdefault_update_mutation
+        invoicegroup = f.FinanceInvoiceGroupFactory.create()
+        variables = self.variables_update
+        variables['input']['id'] = to_global_id('FinanceInvoiceGroupDefaultNode', 1)
+        variables['input']['financeInvoiceGroup'] = to_global_id('FinanceInvoiceGroupNode', invoicegroup.id)
 
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         self.admin_user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['updateFinanceInvoiceGroupDefault']['financeInvoiceGroupDefault']['id'], variables['input']['id'])
-    #     self.assertEqual(data['updateFinanceInvoiceGroupDefault']['financeInvoiceGroupDefault']['displayPublic'], variables['input']['displayPublic'])
-    #     self.assertEqual(data['updateFinanceInvoiceGroupDefault']['financeInvoiceGroupDefault']['name'], variables['input']['name'])
-    #     self.assertEqual(data['updateFinanceInvoiceGroupDefault']['financeInvoiceGroupDefault']['nextId'], 1)
-    #     self.assertEqual(data['updateFinanceInvoiceGroupDefault']['financeInvoiceGroupDefault']['dueAfterDays'], variables['input']['dueAfterDays'])
-    #     self.assertEqual(data['updateFinanceInvoiceGroupDefault']['financeInvoiceGroupDefault']['prefix'], variables['input']['prefix'])
-    #     self.assertEqual(data['updateFinanceInvoiceGroupDefault']['financeInvoiceGroupDefault']['prefixYear'], variables['input']['prefixYear'])
-    #     self.assertEqual(data['updateFinanceInvoiceGroupDefault']['financeInvoiceGroupDefault']['autoResetPrefixYear'], variables['input']['autoResetPrefixYear'])
-    #     self.assertEqual(data['updateFinanceInvoiceGroupDefault']['financeInvoiceGroupDefault']['terms'], variables['input']['terms'])
-    #     self.assertEqual(data['updateFinanceInvoiceGroupDefault']['financeInvoiceGroupDefault']['footer'], variables['input']['footer'])
-    #     self.assertEqual(data['updateFinanceInvoiceGroupDefault']['financeInvoiceGroupDefault']['code'], variables['input']['code'])
+        executed = execute_test_client_api_query(
+            query, 
+            self.admin_user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['updateFinanceInvoiceGroupDefault']['financeInvoiceGroupDefault']['id'], variables['input']['id'])
+        self.assertEqual(data['updateFinanceInvoiceGroupDefault']['financeInvoiceGroupDefault']['financeInvoiceGroup']['id'], 
+            variables['input']['financeInvoiceGroup']
+        )
 
     # def test_update_invoicegroupdefault_anon_user(self):
     #     """ Don't allow updating invoicegroupdefaults for non-logged in users """
