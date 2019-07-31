@@ -19,7 +19,7 @@ from .. import schema
 
 class GQLAccountClasspass(TestCase):
     # https://docs.djangoproject.com/en/2.1/topics/testing/overview/
-    fixtures = ['invoice_group.json', 'invoice_group_defaults']
+    fixtures = ['finance_invoice_group.json', 'finance_invoice_group_defaults.json']
 
     def setUp(self):
         # This is run before every test

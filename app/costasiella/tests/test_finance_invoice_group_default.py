@@ -19,7 +19,7 @@ from .. import schema
 
 class GQLFinanceInvoiceGroupDefaultDefault(TestCase):
     # https://docs.djangoproject.com/en/2.1/topics/testing/overview/
-    fixtures = ['invoice_group.json', 'invoice_group_defaults']
+    fixtures = ['finance_invoice_group.json', 'finance_invoice_group_defaults.json']
 
     def setUp(self):
         # This is run before every test
@@ -97,7 +97,11 @@ query FinanceInvoiceGroupDefaults {
         """ Query list of invoicegroupdefaults """
         query = self.invoicegroupdefaults_query
         
-        first_default = models.FinanceInvoiceGroupDefault.objects.get(pk=1)
+        qs = models.FinanceInvoiceGroupDefault.objects.all()
+        for item in qs:
+            print(item)
+
+        first_default = models.FinanceInvoiceGroupDefault.objects.all().first()
         default_invoice_group = models.FinanceInvoiceGroup.objects.get(pk=100)
 
         executed = execute_test_client_api_query(query, self.admin_user)
@@ -137,7 +141,7 @@ query FinanceInvoiceGroupDefaults {
         executed = execute_test_client_api_query(query, user)
         data = executed.get('data')
 
-        first_default = models.FinanceInvoiceGroupDefault.objects.get(pk=1)
+        first_default = models.FinanceInvoiceGroupDefault.objects.all().first()
         self.assertEqual(data['financeInvoiceGroupDefaults']['edges'][0]['node']['id'], 
             to_global_id('FinanceInvoiceGroupDefaultNode', first_default.id))
 
@@ -217,7 +221,9 @@ query FinanceInvoiceGroupDefaults {
         query = self.invoicegroupdefault_update_mutation
         invoicegroup = f.FinanceInvoiceGroupFactory.create()
         variables = self.variables_update
-        variables['input']['id'] = to_global_id('FinanceInvoiceGroupDefaultNode', 1)
+
+        first_invoice_group_default = models.FinanceInvoiceGroupDefault.objects.all().first()
+        variables['input']['id'] = to_global_id('FinanceInvoiceGroupDefaultNode', first_invoice_group_default.pk)
         variables['input']['financeInvoiceGroup'] = to_global_id('FinanceInvoiceGroupNode', invoicegroup.id)
 
         executed = execute_test_client_api_query(
@@ -226,6 +232,7 @@ query FinanceInvoiceGroupDefaults {
             variables=variables
         )
         data = executed.get('data')
+        print(data)
         self.assertEqual(data['updateFinanceInvoiceGroupDefault']['financeInvoiceGroupDefault']['id'], variables['input']['id'])
         self.assertEqual(data['updateFinanceInvoiceGroupDefault']['financeInvoiceGroupDefault']['financeInvoiceGroup']['id'], 
             variables['input']['financeInvoiceGroup']
@@ -237,7 +244,8 @@ query FinanceInvoiceGroupDefaults {
         query = self.invoicegroupdefault_update_mutation
         invoicegroup = f.FinanceInvoiceGroupFactory.create()
         variables = self.variables_update
-        variables['input']['id'] = to_global_id('FinanceInvoiceGroupDefaultNode', 1)
+        first_invoice_group_default = models.FinanceInvoiceGroupDefault.objects.all().first()
+        variables['input']['id'] = to_global_id('FinanceInvoiceGroupDefaultNode', first_invoice_group_default.pk)
         variables['input']['financeInvoiceGroup'] = to_global_id('FinanceInvoiceGroupNode', invoicegroup.id)
 
         executed = execute_test_client_api_query(
@@ -255,7 +263,8 @@ query FinanceInvoiceGroupDefaults {
         query = self.invoicegroupdefault_update_mutation
         invoicegroup = f.FinanceInvoiceGroupFactory.create()
         variables = self.variables_update
-        variables['input']['id'] = to_global_id('FinanceInvoiceGroupDefaultNode', 1)
+        first_invoice_group_default = models.FinanceInvoiceGroupDefault.objects.all().first()
+        variables['input']['id'] = to_global_id('FinanceInvoiceGroupDefaultNode', first_invoice_group_default.pk)
         variables['input']['financeInvoiceGroup'] = to_global_id('FinanceInvoiceGroupNode', invoicegroup.id)
 
         # Create regular user
@@ -280,7 +289,8 @@ query FinanceInvoiceGroupDefaults {
         query = self.invoicegroupdefault_update_mutation
         invoicegroup = f.FinanceInvoiceGroupFactory.create()
         variables = self.variables_update
-        variables['input']['id'] = to_global_id('FinanceInvoiceGroupDefaultNode', 1)
+        first_invoice_group_default = models.FinanceInvoiceGroupDefault.objects.all().first()
+        variables['input']['id'] = to_global_id('FinanceInvoiceGroupDefaultNode', first_invoice_group_default.pk)
         variables['input']['financeInvoiceGroup'] = to_global_id('FinanceInvoiceGroupNode', invoicegroup.id)
 
         # Create regular user
