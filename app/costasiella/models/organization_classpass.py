@@ -54,33 +54,40 @@ class OrganizationClasspass(models.Model):
         print('creating invoice...')
 
         if create_invoice:
-            self._sell_create_invoice(account)
+            print('still alive')
+            self._sell_create_invoice(account, account_classpass)
 
 
         return account_classpass
 
     
-    def _sell_create_invoice(self, account):
+    def _sell_create_invoice(self, account, account_classpass):
         """
         Create an invoice for sold class pass
         """
         from .finance_invoice_group_default import FinanceInvoiceGroupDefault
+        from .finance_invoice_group import FinanceInvoiceGroup
         from .finance_invoice import FinanceInvoice
 
-        invoice_group = FinanceInvoiceGroupDefault.objects.filter(item_type="CLASSPASSES").first()
+
+        finance_invoice_group_default = FinanceInvoiceGroupDefault.objects.filter(item_type="CLASSPASSES").first()
+        finance_invoice_group = finance_invoice_group_default.finance_invoice_group
+        print("invoice group")
+        print(finance_invoice_group)
 
         finance_invoice = FinanceInvoice(
-            finance_invoice_group = invoice_group,
-            status = 'DRAFT',
+            finance_invoice_group = finance_invoice_group,
+            summary = _("Class pass %s" % account_classpass.id),
+            status = 'SENT',
             terms = finance_invoice_group.terms,
             footer = finance_invoice_group.footer
         )
 
-        if 'summary' in input:
-            finance_invoice.summary = input['summary']
-
         # Save invoice
         finance_invoice.save()
+
+        # Add invoice item
+        #TODO: Actually add item
 
         # Now the invoice has an id, link it to an account
         finance_invoice.accounts.add(account)
