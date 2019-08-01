@@ -24,31 +24,34 @@ class FinanceInvoiceItem(models.Model):
 
 
     def __str__(self):
-        return self.finance_invoice.invoice_number + ' line: ' + self.line_number + ' ' + self.product_name
+        return self.finance_invoice.invoice_number + " line: " + self.line_number + " " + self.product_name
 
-    
-    #TODO: Calculate subtotal, vat and total on save :)
 
     def save(self, *args. **kwargs):
-        self.computed = self.get_computed()
+        self.subtotal = self._calculate_subtotal()
+        self.vat = self._calculate_vat()
+        self.total = self._calculate_total()
+
         super(TestModel, self).save(*args, **kwargs)
 
     
     def _calculate_subtotal(self):
-        # tax rate in
+        # If tax is included in price, first remove it.
         tax_rate = self.finance_tax_rate
-        # divide price by 1.tax_percentage and then multiply by quantity
+        if tax_rate.rate_type == "IN":
+            # divide price by 1.tax_percentage and then multiply by quantity
+            percentage = (tax.percentage / 100) + 1
+            price = price / percentage
 
-        # tax rate ex
         return self.price * self.quantity
 
 
     def _calculate_vat(self):
-        pass
-        # tax rate in
-
-        # tax rate ex
-
+        tax_rate = self.finance_tax_rate
+        percentage = (tax.percentage / 100)
+        
+        return self.subtotal * percentage
+        
     
     def _calculate_total(self):
         return self.subtotal + self.vat
