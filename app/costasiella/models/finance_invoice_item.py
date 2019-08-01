@@ -27,28 +27,29 @@ class FinanceInvoiceItem(models.Model):
         return self.finance_invoice.invoice_number + " line: " + self.line_number + " " + self.product_name
 
 
-    def save(self, *args. **kwargs):
+    def save(self, *args, **kwargs):
         self.subtotal = self._calculate_subtotal()
         self.vat = self._calculate_vat()
         self.total = self._calculate_total()
 
-        super(TestModel, self).save(*args, **kwargs)
+        super(FinanceInvoiceItem, self).save(*args, **kwargs)
 
     
     def _calculate_subtotal(self):
         # If tax is included in price, first remove it.
         tax_rate = self.finance_tax_rate
+        price = self.price
         if tax_rate.rate_type == "IN":
             # divide price by 1.tax_percentage and then multiply by quantity
-            percentage = (tax.percentage / 100) + 1
-            price = price / percentage
+            percentage = (tax_rate.percentage / 100) + 1
+            price = self.price / percentage
 
-        return self.price * self.quantity
+        return price * self.quantity
 
 
     def _calculate_vat(self):
         tax_rate = self.finance_tax_rate
-        percentage = (tax.percentage / 100)
+        percentage = (tax_rate.percentage / 100)
         
         return self.subtotal * percentage
         
