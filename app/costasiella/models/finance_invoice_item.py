@@ -6,7 +6,7 @@ from django.db import models
 from .finance_costcenter import FinanceCostCenter
 from .finance_glaccount import FinanceGLAccount
 from .finance_invoice import FinanceInvoice
-from .finance_taxrate import FinanceTaxRate
+from .finance_tax_rate import FinanceTaxRate
 
 class FinanceInvoiceItem(models.Model):
     finance_invoice = models.ForeignKey(FinanceInvoice, on_delete=models.CASCADE)
@@ -28,6 +28,30 @@ class FinanceInvoiceItem(models.Model):
 
     
     #TODO: Calculate subtotal, vat and total on save :)
+
+    def save(self, *args. **kwargs):
+        self.computed = self.get_computed()
+        super(TestModel, self).save(*args, **kwargs)
+
+    
+    def _calculate_subtotal(self):
+        # tax rate in
+        tax_rate = self.finance_tax_rate
+        # divide price by 1.tax_percentage and then multiply by quantity
+
+        # tax rate ex
+        return self.price * self.quantity
+
+
+    def _calculate_vat(self):
+        pass
+        # tax rate in
+
+        # tax rate ex
+
+    
+    def _calculate_total(self):
+        return self.subtotal + self.vat
 
 
 # def define_invoices_items():

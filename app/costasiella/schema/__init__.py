@@ -13,7 +13,7 @@ from .finance_invoice import FinanceInvoiceQuery, FinanceInvoiceMutation
 from .finance_invoice_group import FinanceInvoiceGroupQuery, FinanceInvoiceGroupMutation
 from .finance_invoice_group_default import FinanceInvoiceGroupDefaultQuery, FinanceInvoiceGroupDefaultMutation
 from .finance_payment_method import FinancePaymentMethodQuery, FinancePaymentMethodMutation
-from .finance_taxrate import FinanceTaxRateQuery, FinanceTaxRateMutation
+from .finance_tax_rate import FinanceTaxRateQuery, FinanceTaxRateMutation
 
 from .organization_appointment import OrganizationAppointmentQuery, OrganizationAppointmentMutation
 from .organization_appointment_category import OrganizationAppointmentCategoryQuery, OrganizationAppointmentCategoryMutation

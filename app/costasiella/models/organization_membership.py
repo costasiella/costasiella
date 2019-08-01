@@ -4,7 +4,7 @@ from django.db import models
 
 from .finance_costcenter import FinanceCostCenter
 from .finance_glaccount import FinanceGLAccount
-from .finance_taxrate import FinanceTaxRate
+from .finance_tax_rate import FinanceTaxRate
 # Create your models here.
 
 class OrganizationMembership(models.Model):
