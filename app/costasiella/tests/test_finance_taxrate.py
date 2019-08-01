@@ -55,7 +55,7 @@ class GQLFinanceTaxRate(TestCase):
 
         self.taxrates_query = '''
   query FinanceTaxRates($after: String, $before: String, $archived: Boolean) {
-    financeTaxrates(first: 15, before: $before, after: $after, archived: $archived) {
+    financeTaxRates(first: 15, before: $before, after: $after, archived: $archived) {
       pageInfo {
         startCursor
         endCursor
@@ -77,8 +77,8 @@ class GQLFinanceTaxRate(TestCase):
 '''
 
         self.taxrate_query = '''
-  query FinanceTaxrate($id: ID!) {
-    financeTaxrate(id:$id) {
+  query FinanceTaxRate($id: ID!) {
+    financeTaxRate(id:$id) {
       id
       archived
       name
@@ -91,8 +91,8 @@ class GQLFinanceTaxRate(TestCase):
 
         self.taxrate_create_mutation = ''' 
   mutation CreateFinanceTaxRate($input:CreateFinanceTaxRateInput!) {
-    createFinanceTaxrate(input: $input) {
-      financeTaxrate{
+    createFinanceTaxRate(input: $input) {
+      financeTaxRate{
         id
         archived
         name
@@ -105,9 +105,9 @@ class GQLFinanceTaxRate(TestCase):
 '''
 
         self.taxrate_update_mutation = '''
-  mutation UpdateFinanceTaxrate($input: UpdateFinanceTaxRateInput!) {
-    updateFinanceTaxrate(input: $input) {
-      financeTaxrate {
+  mutation UpdateFinanceTaxRate($input: UpdateFinanceTaxRateInput!) {
+    updateFinanceTaxRate(input: $input) {
+      financeTaxRate {
         id
         archived
         name
@@ -121,8 +121,8 @@ class GQLFinanceTaxRate(TestCase):
 
         self.taxrate_archive_mutation = '''
   mutation ArchiveFinanceTaxRate($input: ArchiveFinanceTaxRateInput!) {
-    archiveFinanceTaxrate(input: $input) {
-      financeTaxrate {
+    archiveFinanceTaxRate(input: $input) {
+      financeTaxRate {
         id
         archived
       }
@@ -143,7 +143,7 @@ class GQLFinanceTaxRate(TestCase):
         executed = execute_test_client_api_query(self.taxrates_query, self.admin_user, variables=variables)
         data = executed.get('data')
         
-        return data['financeTaxrates']['edges'][0]['node']['id']
+        return data['financeTaxRates']['edges'][0]['node']['id']
 
 
     def test_query(self):
@@ -156,11 +156,11 @@ class GQLFinanceTaxRate(TestCase):
 
         executed = execute_test_client_api_query(query, self.admin_user, variables=variables)
         data = executed.get('data')
-        self.assertEqual(data['financeTaxrates']['edges'][0]['node']['name'], taxrate.name)
-        self.assertEqual(data['financeTaxrates']['edges'][0]['node']['archived'], taxrate.archived)
-        self.assertEqual(data['financeTaxrates']['edges'][0]['node']['percentage'], taxrate.percentage)
-        self.assertEqual(data['financeTaxrates']['edges'][0]['node']['rateType'], taxrate.rate_type)
-        self.assertEqual(data['financeTaxrates']['edges'][0]['node']['code'], taxrate.code)
+        self.assertEqual(data['financeTaxRates']['edges'][0]['node']['name'], taxrate.name)
+        self.assertEqual(data['financeTaxRates']['edges'][0]['node']['archived'], taxrate.archived)
+        self.assertEqual(data['financeTaxRates']['edges'][0]['node']['percentage'], taxrate.percentage)
+        self.assertEqual(data['financeTaxRates']['edges'][0]['node']['rateType'], taxrate.rate_type)
+        self.assertEqual(data['financeTaxRates']['edges'][0]['node']['code'], taxrate.code)
 
 
     def test_query_permision_denied(self):
@@ -197,11 +197,11 @@ class GQLFinanceTaxRate(TestCase):
         data = executed.get('data')
 
         # List all taxrates
-        self.assertEqual(data['financeTaxrates']['edges'][0]['node']['name'], taxrate.name)
-        self.assertEqual(data['financeTaxrates']['edges'][0]['node']['archived'], taxrate.archived)
-        self.assertEqual(data['financeTaxrates']['edges'][0]['node']['percentage'], taxrate.percentage)
-        self.assertEqual(data['financeTaxrates']['edges'][0]['node']['rateType'], taxrate.rate_type)
-        self.assertEqual(data['financeTaxrates']['edges'][0]['node']['code'], taxrate.code)
+        self.assertEqual(data['financeTaxRates']['edges'][0]['node']['name'], taxrate.name)
+        self.assertEqual(data['financeTaxRates']['edges'][0]['node']['archived'], taxrate.archived)
+        self.assertEqual(data['financeTaxRates']['edges'][0]['node']['percentage'], taxrate.percentage)
+        self.assertEqual(data['financeTaxRates']['edges'][0]['node']['rateType'], taxrate.rate_type)
+        self.assertEqual(data['financeTaxRates']['edges'][0]['node']['code'], taxrate.code)
 
 
     def test_query_anon_user(self):
@@ -227,11 +227,11 @@ class GQLFinanceTaxRate(TestCase):
         # Now query single taxrate and check
         executed = execute_test_client_api_query(self.taxrate_query, self.admin_user, variables={"id": node_id})
         data = executed.get('data')
-        self.assertEqual(data['financeTaxrate']['name'], taxrate.name)
-        self.assertEqual(data['financeTaxrate']['archived'], taxrate.archived)
-        self.assertEqual(data['financeTaxrate']['percentage'], taxrate.percentage)
-        self.assertEqual(data['financeTaxrate']['rateType'], taxrate.rate_type)
-        self.assertEqual(data['financeTaxrate']['code'], taxrate.code)
+        self.assertEqual(data['financeTaxRate']['name'], taxrate.name)
+        self.assertEqual(data['financeTaxRate']['archived'], taxrate.archived)
+        self.assertEqual(data['financeTaxRate']['percentage'], taxrate.percentage)
+        self.assertEqual(data['financeTaxRate']['rateType'], taxrate.rate_type)
+        self.assertEqual(data['financeTaxRate']['code'], taxrate.code)
 
 
     def test_query_one_anon_user(self):
@@ -276,7 +276,7 @@ class GQLFinanceTaxRate(TestCase):
         # Now query single location and check   
         executed = execute_test_client_api_query(self.taxrate_query, user, variables={"id": node_id})
         data = executed.get('data')
-        self.assertEqual(data['financeTaxrate']['name'], taxrate.name)
+        self.assertEqual(data['financeTaxRate']['name'], taxrate.name)
 
 
     def test_create_taxrate(self):
@@ -290,11 +290,11 @@ class GQLFinanceTaxRate(TestCase):
             variables=variables
         )
         data = executed.get('data')
-        self.assertEqual(data['createFinanceTaxrate']['financeTaxrate']['name'], variables['input']['name'])
-        self.assertEqual(data['createFinanceTaxrate']['financeTaxrate']['archived'], False)
-        self.assertEqual(data['createFinanceTaxrate']['financeTaxrate']['percentage'], variables['input']['percentage'])
-        self.assertEqual(data['createFinanceTaxrate']['financeTaxrate']['rateType'], variables['input']['rateType'])
-        self.assertEqual(data['createFinanceTaxrate']['financeTaxrate']['code'], variables['input']['code'])
+        self.assertEqual(data['createFinanceTaxRate']['financeTaxRate']['name'], variables['input']['name'])
+        self.assertEqual(data['createFinanceTaxRate']['financeTaxRate']['archived'], False)
+        self.assertEqual(data['createFinanceTaxRate']['financeTaxRate']['percentage'], variables['input']['percentage'])
+        self.assertEqual(data['createFinanceTaxRate']['financeTaxRate']['rateType'], variables['input']['rateType'])
+        self.assertEqual(data['createFinanceTaxRate']['financeTaxRate']['code'], variables['input']['code'])
 
 
     def test_create_taxrate_anon_user(self):
@@ -329,11 +329,11 @@ class GQLFinanceTaxRate(TestCase):
             variables=variables
         )
         data = executed.get('data')
-        self.assertEqual(data['createFinanceTaxrate']['financeTaxrate']['name'], variables['input']['name'])
-        self.assertEqual(data['createFinanceTaxrate']['financeTaxrate']['archived'], False)
-        self.assertEqual(data['createFinanceTaxrate']['financeTaxrate']['percentage'], variables['input']['percentage'])
-        self.assertEqual(data['createFinanceTaxrate']['financeTaxrate']['rateType'], variables['input']['rateType'])
-        self.assertEqual(data['createFinanceTaxrate']['financeTaxrate']['code'], variables['input']['code'])
+        self.assertEqual(data['createFinanceTaxRate']['financeTaxRate']['name'], variables['input']['name'])
+        self.assertEqual(data['createFinanceTaxRate']['financeTaxRate']['archived'], False)
+        self.assertEqual(data['createFinanceTaxRate']['financeTaxRate']['percentage'], variables['input']['percentage'])
+        self.assertEqual(data['createFinanceTaxRate']['financeTaxRate']['rateType'], variables['input']['rateType'])
+        self.assertEqual(data['createFinanceTaxRate']['financeTaxRate']['code'], variables['input']['code'])
 
 
     def test_create_taxrate_permission_denied(self):
@@ -367,10 +367,10 @@ class GQLFinanceTaxRate(TestCase):
             variables=variables
         )
         data = executed.get('data')
-        self.assertEqual(data['updateFinanceTaxrate']['financeTaxrate']['name'], variables['input']['name'])
-        self.assertEqual(data['updateFinanceTaxrate']['financeTaxrate']['percentage'], variables['input']['percentage'])
-        self.assertEqual(data['updateFinanceTaxrate']['financeTaxrate']['rateType'], variables['input']['rateType'])
-        self.assertEqual(data['updateFinanceTaxrate']['financeTaxrate']['code'], variables['input']['code'])
+        self.assertEqual(data['updateFinanceTaxRate']['financeTaxRate']['name'], variables['input']['name'])
+        self.assertEqual(data['updateFinanceTaxRate']['financeTaxRate']['percentage'], variables['input']['percentage'])
+        self.assertEqual(data['updateFinanceTaxRate']['financeTaxRate']['rateType'], variables['input']['rateType'])
+        self.assertEqual(data['updateFinanceTaxRate']['financeTaxRate']['code'], variables['input']['code'])
 
 
     def test_update_taxrate_anon_user(self):
@@ -409,10 +409,10 @@ class GQLFinanceTaxRate(TestCase):
             variables=variables
         )
         data = executed.get('data')
-        self.assertEqual(data['updateFinanceTaxrate']['financeTaxrate']['name'], variables['input']['name'])
-        self.assertEqual(data['updateFinanceTaxrate']['financeTaxrate']['percentage'], variables['input']['percentage'])
-        self.assertEqual(data['updateFinanceTaxrate']['financeTaxrate']['rateType'], variables['input']['rateType'])
-        self.assertEqual(data['updateFinanceTaxrate']['financeTaxrate']['code'], variables['input']['code'])
+        self.assertEqual(data['updateFinanceTaxRate']['financeTaxRate']['name'], variables['input']['name'])
+        self.assertEqual(data['updateFinanceTaxRate']['financeTaxRate']['percentage'], variables['input']['percentage'])
+        self.assertEqual(data['updateFinanceTaxRate']['financeTaxRate']['rateType'], variables['input']['rateType'])
+        self.assertEqual(data['updateFinanceTaxRate']['financeTaxRate']['code'], variables['input']['code'])
 
 
     def test_update_taxrate_permission_denied(self):
@@ -449,7 +449,7 @@ class GQLFinanceTaxRate(TestCase):
         )
         data = executed.get('data')
         print(data)
-        self.assertEqual(data['archiveFinanceTaxrate']['financeTaxrate']['archived'], variables['input']['archived'])
+        self.assertEqual(data['archiveFinanceTaxRate']['financeTaxRate']['archived'], variables['input']['archived'])
 
 
     def test_archive_taxrate_anon_user(self):
@@ -488,7 +488,7 @@ class GQLFinanceTaxRate(TestCase):
             variables=variables
         )
         data = executed.get('data')
-        self.assertEqual(data['archiveFinanceTaxrate']['financeTaxrate']['archived'], variables['input']['archived'])
+        self.assertEqual(data['archiveFinanceTaxRate']['financeTaxRate']['archived'], variables['input']['archived'])
 
 
     def test_archive_taxrate_permission_denied(self):

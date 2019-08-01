@@ -176,7 +176,7 @@ class GQLOrganizationClasspass(TestCase):
         }
       }
     }
-    financeTaxrates(first: 15, before: $before, after: $after, archived: $archived) {
+    financeTaxRates(first: 15, before: $before, after: $after, archived: $archived) {
       pageInfo {
         startCursor
         endCursor

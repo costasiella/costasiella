@@ -10,7 +10,7 @@ import { toast } from 'react-toastify'
 
 
 import { GET_TAXRATES_QUERY } from './queries'
-import { TAXRATE_SCHEMA } from './yupSchema'
+import { TAX_RATE_SCHEMA } from './yupSchema'
 
 
 import {
@@ -30,8 +30,8 @@ import FinanceMenu from '../FinanceMenu'
 
 const ADD_TAXRATE = gql`
   mutation CreateFinanceTaxRate($input:CreateFinanceTaxRateInput!) {
-    createFinanceTaxrate(input: $input) {
-      financeTaxrate{
+    createFinanceTaxRate(input: $input) {
+      financeTaxRate{
         id
         archived
         name
@@ -60,7 +60,7 @@ const FinanceTaxRateAdd = ({ t, history }) => (
                 {(addLocation, { data }) => (
                     <Formik
                         initialValues={{ name: "", percentage: "", rateType: "IN", code: "" }}
-                        validationSchema={TAXRATE_SCHEMA}
+                        validationSchema={TAX_RATE_SCHEMA}
                         onSubmit={(values, { setSubmitting }) => {
                             addLocation({ variables: {
                               input: {

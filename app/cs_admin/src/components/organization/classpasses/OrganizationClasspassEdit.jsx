@@ -242,7 +242,7 @@ class OrganizationClasspassEdit extends Component {
                                         {console.log("query data in classpass add:")}
                                         {console.log(initialData)}
                                         <option value="" key={v4()}></option>
-                                        {initialData.financeTaxrates.edges.map(({ node }) =>
+                                        {initialData.financeTaxRates.edges.map(({ node }) =>
                                           <option value={node.id} key={v4()}>{node.name} ({node.percentage}% {node.rateType})</option>
                                         )}
                                       </Field>

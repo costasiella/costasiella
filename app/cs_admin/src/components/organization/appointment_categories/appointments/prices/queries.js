@@ -46,7 +46,7 @@ export const GET_APPOINTMENT_PRICE_QUERY = gql`
         name
       }
     }
-    financeTaxrates(first: 100, before: $before, after: $after, archived: false) {
+    financeTaxRates(first: 100, before: $before, after: $after, archived: false) {
       pageInfo {
         startCursor
         endCursor
@@ -85,7 +85,7 @@ export const GET_APPOINTMENT_PRICE_QUERY = gql`
 
 export const GET_INPUT_VALUES_QUERY = gql`
   query AppointmentInputValues($after: String, $before: String, $archived: Boolean) {
-    financeTaxrates(first: 15, before: $before, after: $after, archived: $archived) {
+    financeTaxRates(first: 15, before: $before, after: $after, archived: $archived) {
       pageInfo {
         startCursor
         endCursor

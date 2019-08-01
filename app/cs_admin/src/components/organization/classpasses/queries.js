@@ -96,7 +96,7 @@ export const GET_CLASSPASS_QUERY = gql`
         }
       }
     }
-    financeTaxrates(first: 15, before: $before, after: $after, archived: $archived) {
+    financeTaxRates(first: 15, before: $before, after: $after, archived: $archived) {
       pageInfo {
         startCursor
         endCursor
@@ -165,7 +165,7 @@ export const GET_INPUT_VALUES_QUERY = gql`
         }
       }
     }
-    financeTaxrates(first: 15, before: $before, after: $after, archived: $archived) {
+    financeTaxRates(first: 15, before: $before, after: $after, archived: $archived) {
       pageInfo {
         startCursor
         endCursor
