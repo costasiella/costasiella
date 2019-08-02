@@ -158,6 +158,7 @@ class CreateFinanceInvoiceItem(graphene.relay.ClientIDMutation):
 class UpdateFinanceInvoiceItem(graphene.relay.ClientIDMutation):
     class Input:
         id = graphene.ID(required=True)
+        line_number = graphene.Int(required=False)
         product_name = graphene.String(required=False)
         description = graphene.String(required=False)
         quantity = graphene.Float(required=False)
@@ -180,6 +181,10 @@ class UpdateFinanceInvoiceItem(graphene.relay.ClientIDMutation):
             raise Exception('Invalid Finance Invoice Item  ID!')
 
         validation_result = validate_create_update_input(input, update=True)
+        
+        if 'line_number' in input:
+            # TODO: Add code to make sure line numbers remain sequential
+            finance_invoice_item.line_number = input['line_number']
 
         if 'product_name' in input:
             finance_invoice_item.product_name = input['product_name']
