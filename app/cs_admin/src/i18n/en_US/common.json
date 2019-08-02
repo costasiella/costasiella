@@ -65,6 +65,13 @@
                 "paid": "Paid",
                 "cancelled": "Cancelled",
                 "all": "All statuses"
+            },
+            "status": {
+                "DRAFT": "Draft",
+                "SENT": "Sent",
+                "PAID": "Paid",
+                "CANCELLED": "Cancelled",
+                "NOT_FOUND": "Not found"
             }
         },
         "invoice_groups": {

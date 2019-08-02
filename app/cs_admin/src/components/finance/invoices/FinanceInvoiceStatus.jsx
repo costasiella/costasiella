@@ -36,7 +36,7 @@ class FinanceInvoicesStatus extends Component {
         return <Badge color="warning">{t('finance.invoices.status.CANCELLED')}</Badge>
         break
       default:
-        return t('finance.invoice.status.NOT_FOUND')
+        return t('finance.invoices.status.NOT_FOUND')
       
     }
   }

@@ -65,6 +65,13 @@
                 "paid": "__STRING_NOT_TRANSLATED__",
                 "cancelled": "__STRING_NOT_TRANSLATED__",
                 "all": "__STRING_NOT_TRANSLATED__"
+            },
+            "status": {
+                "DRAFT": "__STRING_NOT_TRANSLATED__",
+                "SENT": "__STRING_NOT_TRANSLATED__",
+                "PAID": "__STRING_NOT_TRANSLATED__",
+                "CANCELLED": "__STRING_NOT_TRANSLATED__",
+                "NOT_FOUND": "__STRING_NOT_TRANSLATED__"
             }
         },
         "invoice_groups": {
