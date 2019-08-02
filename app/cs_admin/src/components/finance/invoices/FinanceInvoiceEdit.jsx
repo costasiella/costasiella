@@ -28,6 +28,8 @@ import HasPermissionWrapper from "../../HasPermissionWrapper"
 
 import FinanceMenu from "../FinanceMenu"
 
+import FinanceInvoiceEditBalance from "./FinanceInvoiceEditBalance"
+
 
 const UPDATE_COSTCENTER = gql`
   mutation UpdateFinanceCostCenter($input: UpdateFinanceCostCenterInput!) {
@@ -164,50 +166,7 @@ class FinanceInvoiceEdit extends Component {
                             </Mutation> */}
                     </Grid.Col>
                     <Grid.Col md={3}>
-                      <Card statusColor="blue">
-                        <Card.Body>
-                          <div>
-                            <span className="pull-left bold">
-                              {t('general.subtotal')}
-                            </span>
-                            <span className="pull-right">
-                              {data.financeInvoice.subtotalDisplay}
-                            </span>
-                          </div><br />
-                          <div>
-                            <span className="pull-left bold">
-                              {t('general.tax')}
-                            </span>
-                            <span className="pull-right">
-                              {data.financeInvoice.taxDisplay}
-                            </span>
-                          </div><br />
-                          <div>
-                            <span className="pull-left bold">
-                              {t('general.total')}
-                            </span>
-                            <span className="pull-right">
-                              {data.financeInvoice.totalDisplay}
-                            </span>
-                          </div><br />
-                          <div>
-                            <span className="pull-left bold">
-                              {t('general.paid')}
-                            </span>
-                            <span className="pull-right">
-                              {data.financeInvoice.paidDisplay}
-                            </span>
-                          </div><br />
-                          <div>
-                            <span className="pull-left bold">
-                              {t('general.balance')}
-                            </span>
-                            <span className="pull-right">
-                              {data.financeInvoice.balanceDisplay}
-                            </span>
-                          </div>
-                        </Card.Body>
-                      </Card>
+                      <FinanceInvoiceEditBalance financeInvoice={data.financeInvoice} />
                       sidebar here
                     </Grid.Col>
                   </Grid.Row>
