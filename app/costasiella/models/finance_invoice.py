@@ -62,7 +62,29 @@ class FinanceInvoice(models.Model):
 
     def update_amounts(self):
         """ Update total amounts fields (sub_total, vat, total, paid, balance) """
-        #TODO: Write this function :)
+        # Get totals from invoice items
+        from .finance_invoice_item import FinanceInvoiceItem
+        from django.db.models import Sum
+
+        sums = FinanceInvoiceItem.objects.filter(finance_invoice = self).aggregate(Sum('sub_total'), Sum('vat'), Sum('total'))
+        print('##############')
+        print(sums)
+
+        self.sub_total = sums['sub_total__sum'] or 0
+        self.vat = sums['vat__sum'] or 0
+        self.total = sums['total__sum'] or 0
+
+        #TODO: Update amount paid & balance
+        self.paid = 0
+        self.balance = self.total - self.paid
+
+        self.save(update_fields=[
+            "sub_total",
+            "vat",
+            "total",
+            "paid",
+            "balance"
+        ])
 
 
     def _first_invoice_in_group_this_year(self, year): 
@@ -105,8 +127,6 @@ class FinanceInvoice(models.Model):
 
             ## Increase next_id for invoice group
             self._increment_group_next_id()
-        
-        self.update_amounts()
 
         super(FinanceInvoice, self).save(*args, **kwargs)
 
@@ -148,5 +168,7 @@ class FinanceInvoice(models.Model):
         )
 
         finance_invoice_item.save()
+
+        self.update_amounts()
 
         return finance_invoice_item
