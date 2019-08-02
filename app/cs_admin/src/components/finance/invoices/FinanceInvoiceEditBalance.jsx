@@ -12,6 +12,9 @@ import {
 
 const FinanceInvoiceEditBalance = ({ t, history, financeInvoice }) => (
   <Card statusColor="blue">
+    <Card.Header>
+      <Card.Title>{t('general.balance')}</Card.Title>
+    </Card.Header>
     <Card.Body>
       <div>
         <span className="pull-left bold">
