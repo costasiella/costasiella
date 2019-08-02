@@ -72,7 +72,9 @@
                 "PAID": "Paid",
                 "CANCELLED": "Cancelled",
                 "NOT_FOUND": "Not found"
-            }
+            },
+            "delete_confirm_msg": "Are you sure you wish to delete this invoice?",
+            "deleted": "Deleted invoice"
         },
         "invoice_groups": {
             "title": "Invoice groups",
@@ -106,6 +108,9 @@
             "empty_list": "No invoice item types have been defined. Have the fixtures been loaded?",
             "item_type": "Item type",
             "invoice_group": "Default invoice group"
+        },
+        "invoice": {
+            "title": "Invoice"
         }
     },
     "general": {
@@ -232,7 +237,10 @@
         "footer": "Footer",
         "status": "Status",
         "total": "Total",
-        "balance": "Balance"
+        "balance": "Balance",
+        "subtotal": "Subtotal",
+        "tax": "Tax",
+        "paid": "Paid"
     },
     "yup": {
         "min_len_3": "Please input at least 3 characters",

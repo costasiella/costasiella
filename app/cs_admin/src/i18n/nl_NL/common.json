@@ -72,7 +72,9 @@
                 "PAID": "__STRING_NOT_TRANSLATED__",
                 "CANCELLED": "__STRING_NOT_TRANSLATED__",
                 "NOT_FOUND": "__STRING_NOT_TRANSLATED__"
-            }
+            },
+            "delete_confirm_msg": "__STRING_NOT_TRANSLATED__",
+            "deleted": "__STRING_NOT_TRANSLATED__"
         },
         "invoice_groups": {
             "title": "__STRING_NOT_TRANSLATED__",
@@ -106,6 +108,9 @@
             "empty_list": "__STRING_NOT_TRANSLATED__",
             "item_type": "__STRING_NOT_TRANSLATED__",
             "invoice_group": "__STRING_NOT_TRANSLATED__"
+        },
+        "invoice": {
+            "title": "__STRING_NOT_TRANSLATED__"
         }
     },
     "general": {
@@ -232,7 +237,10 @@
         "footer": "__STRING_NOT_TRANSLATED__",
         "status": "__STRING_NOT_TRANSLATED__",
         "total": "__STRING_NOT_TRANSLATED__",
-        "balance": "__STRING_NOT_TRANSLATED__"
+        "balance": "__STRING_NOT_TRANSLATED__",
+        "subtotal": "__STRING_NOT_TRANSLATED__",
+        "tax": "__STRING_NOT_TRANSLATED__",
+        "paid": "__STRING_NOT_TRANSLATED__"
     },
     "yup": {
         "min_len_3": "__STRING_NOT_TRANSLATED__",
