@@ -174,6 +174,14 @@ class FinanceInvoiceEdit extends Component {
                               {data.financeInvoice.subtotalDisplay}
                             </span>
                           </div>
+                          <div>
+                            <span className="pull-left bold">
+                              {t('general.tax')}
+                            </span>
+                            <span className="pull-right">
+                              {data.financeInvoice.taxDisplay}
+                            </span>
+                          </div>
                         </Card.Body>
                       </Card>
                       sidebar here

@@ -62,7 +62,7 @@ export const GET_INVOICE_QUERY = gql`
       footer
       note
       subtotalDisplay
-      vatDisplay
+      taxDisplay
       totalDisplay
       paidDisplay
       balanceDisplay
@@ -82,7 +82,7 @@ export const GET_INVOICE_QUERY = gql`
               rateType
             }
             subtotal
-            vat
+            tax
             total
             financeGlaccount {
               id
