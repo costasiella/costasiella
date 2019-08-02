@@ -177,7 +177,7 @@ class UpdateFinanceInvoiceItem(graphene.relay.ClientIDMutation):
 
         finance_invoice_item = FinanceInvoiceItem.objects.filter(id=rid.id).first()
         if not finance_invoice_item:
-            raise Exception('Invalid Finance InvoiceItem  ID!')
+            raise Exception('Invalid Finance Invoice Item  ID!')
 
         validation_result = validate_create_update_input(input, update=True)
 
@@ -223,7 +223,7 @@ class DeleteFinanceInvoiceItem(graphene.relay.ClientIDMutation):
 
         finance_invoice_item = FinanceInvoiceItem.objects.filter(id=rid.id).first()
         if not finance_invoice_item:
-            raise Exception('Invalid Finance InvoiceItem ID!')
+            raise Exception('Invalid Finance Invoice Item ID!')
 
         ok = finance_invoice_item.delete()
 
