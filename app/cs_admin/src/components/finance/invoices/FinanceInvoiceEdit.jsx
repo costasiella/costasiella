@@ -31,19 +31,6 @@ import FinanceMenu from "../FinanceMenu"
 import FinanceInvoiceEditBalance from "./FinanceInvoiceEditBalance"
 
 
-const UPDATE_COSTCENTER = gql`
-  mutation UpdateFinanceCostCenter($input: UpdateFinanceCostCenterInput!) {
-    updateFinanceCostcenter(input: $input) {
-      financeCostcenter {
-        id
-        name
-        code
-      }
-    }
-  }
-`
-
-
 class FinanceInvoiceEdit extends Component {
   constructor(props) {
     super(props)

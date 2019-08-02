@@ -98,3 +98,14 @@ export const GET_INVOICE_QUERY = gql`
     }
   }
 `
+
+
+export const UPDATE_INVOICE = gql`
+  mutation UpdateFinanceInvoice($input: UpdateFinanceInvoiceInput!) {
+    updateFinanceInvoice(input: $input) {
+      financeInvoice {
+        id
+      }
+    }
+  }
+`
