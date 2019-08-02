@@ -51,6 +51,7 @@ class FinanceInvoice(models.Model):
     def __str__(self):
         return self.invoice_number
 
+
     def _set_relation_info(self):
         """ Set relation info from linked account """
         self.relation_contact_name = self.account.full_name
@@ -101,10 +102,12 @@ class FinanceInvoice(models.Model):
             finance_invoice_group = self.finance_invoice_group
         ).exists()  
 
+
     def _increment_group_next_id(self):
         # This code is here so the id is only +=1'd when an invoice is actually created 
         self.finance_invoice_group.next_id += 1
         self.finance_invoice_group.save()
+
 
     def save(self, *args, **kwargs):
         if self.pk is None: # We know this is object creation when there is no pk yet.
