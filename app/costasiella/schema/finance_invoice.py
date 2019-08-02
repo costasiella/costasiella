@@ -141,16 +141,16 @@ class CreateFinanceInvoice(graphene.relay.ClientIDMutation):
 class UpdateFinanceInvoice(graphene.relay.ClientIDMutation):
     class Input:
         id = graphene.ID(required=True)
-        display_public = graphene.Boolean(required=False)
-        name = graphene.String(required=True)
-        next_id = graphene.Int(required=False)
-        due_after_days = graphene.Int(required=False)
-        prefix = graphene.String(required=False)
-        prefix_year = graphene.Boolean(required=False)
-        auto_reset_prefix_year = graphene.Boolean(required=False)
-        terms = graphene.String(required=False)
-        footer = graphene.String(required=False)
-        code = graphene.String(required=False, default_value="")
+        summary = graphene.String(required=False)
+        # name = graphene.String(required=True)
+        # next_id = graphene.Int(required=False)
+        # due_after_days = graphene.Int(required=False)
+        # prefix = graphene.String(required=False)
+        # prefix_year = graphene.Boolean(required=False)
+        # auto_reset_prefix_year = graphene.Boolean(required=False)
+        # terms = graphene.String(required=False)
+        # footer = graphene.String(required=False)
+        # code = graphene.String(required=False, default_value="")
         
     finance_invoice = graphene.Field(FinanceInvoiceNode)
 
@@ -159,37 +159,37 @@ class UpdateFinanceInvoice(graphene.relay.ClientIDMutation):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.change_financeinvoice')
 
+        print(input)
+
         rid = get_rid(input['id'])
 
         finance_invoice = FinanceInvoice.objects.filter(id=rid.id).first()
         if not finance_invoice:
             raise Exception('Invalid Finance Invoice  ID!')
 
-        finance_invoice.name = input['name']
+        if 'summary' in input:
+            finance_invoice.summary = input['summary']
 
-        if 'next_id' in input:
-            finance_invoice_.due_after_days = input['next_id']
+        # if 'due_after_days' in input:
+        #     finance_invoice_.due_after_days = input['due_after_days']
 
-        if 'due_after_days' in input:
-            finance_invoice_.due_after_days = input['due_after_days']
+        # if 'prefix' in input:
+        #     finance_invoice_.prefix = input['prefix']
 
-        if 'prefix' in input:
-            finance_invoice_.prefix = input['prefix']
+        # if 'prefix_year' in input:
+        #     finance_invoice_.prefix_year = input['prefix_year']
 
-        if 'prefix_year' in input:
-            finance_invoice_.prefix_year = input['prefix_year']
+        # if 'auto_reset_prefix_year' in input:
+        #     finance_invoice_.auto_reset_prefix_year = input['auto_reset_prefix_year']
 
-        if 'auto_reset_prefix_year' in input:
-            finance_invoice_.auto_reset_prefix_year = input['auto_reset_prefix_year']
+        # if 'terms' in input:
+        #     finance_invoice_.terms = input['terms']
 
-        if 'terms' in input:
-            finance_invoice_.terms = input['terms']
+        # if 'footer' in input:
+        #     finance_invoice_.footer = input['footer']
 
-        if 'footer' in input:
-            finance_invoice_.footer = input['footer']
-
-        if 'code' in input:
-            finance_invoice_.code = input['code']
+        # if 'code' in input:
+        #     finance_invoice_.code = input['code']
 
         finance_invoice.save()
 

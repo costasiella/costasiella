@@ -105,6 +105,7 @@ export const UPDATE_INVOICE = gql`
     updateFinanceInvoice(input: $input) {
       financeInvoice {
         id
+        summary
       }
     }
   }

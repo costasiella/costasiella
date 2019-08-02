@@ -111,7 +111,7 @@
         },
         "invoice": {
             "title": "Invoice",
-            "toast_edit_summary_success": "__STRING_NOT_TRANSLATED__"
+            "toast_edit_summary_success": "Saved summary"
         }
     },
     "general": {
