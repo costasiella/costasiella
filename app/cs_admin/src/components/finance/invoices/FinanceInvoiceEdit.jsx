@@ -5,6 +5,7 @@ import gql from "graphql-tag"
 import { Query, Mutation } from "react-apollo";
 import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
+import { Link } from 'react-router-dom'
 import { Formik, Form as FoForm, Field, ErrorMessage } from 'formik'
 import { toast } from 'react-toastify'
 
@@ -73,7 +74,14 @@ class FinanceInvoiceEdit extends Component {
 
               return (
                 <Container>
-                  <Page.Header title={t('finance.invoice.title') + ' #' + data.financeInvoice.invoiceNumber} />
+                  <Page.Header title={t('finance.invoice.title') + ' #' + data.financeInvoice.invoiceNumber}>
+                    <div className="page-options d-flex">
+                      <Link to={return_url} 
+                            className='btn btn-link'>
+                          <Icon prefix="fe" name="arrow-left" /> {t('general.back')} 
+                      </Link>
+                    </div>
+                  </Page.Header>
                   <Grid.Row>
                     <Grid.Col md={9}>
                       invoice content here
@@ -156,6 +164,18 @@ class FinanceInvoiceEdit extends Component {
                             </Mutation> */}
                     </Grid.Col>
                     <Grid.Col md={3}>
+                      <Card>
+                        <Card.Body>
+                          <div>
+                            <span className="pull-left bold">
+                              {t('general.sub_total')}
+                            </span>
+                            <span className="pull-right">
+                              {data.financeInvoice.subTotalDisplay}
+                            </span>
+                          </div>
+                        </Card.Body>
+                      </Card>
                       sidebar here
                     </Grid.Col>
                   </Grid.Row>
