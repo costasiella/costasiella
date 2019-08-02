@@ -158,16 +158,13 @@ class CreateFinanceInvoiceItem(graphene.relay.ClientIDMutation):
 class UpdateFinanceInvoiceItem(graphene.relay.ClientIDMutation):
     class Input:
         id = graphene.ID(required=True)
-        display_public = graphene.Boolean(required=False)
-        name = graphene.String(required=True)
-        next_id = graphene.Int(required=False)
-        due_after_days = graphene.Int(required=False)
-        prefix = graphene.String(required=False)
-        prefix_year = graphene.Boolean(required=False)
-        auto_reset_prefix_year = graphene.Boolean(required=False)
-        terms = graphene.String(required=False)
-        footer = graphene.String(required=False)
-        code = graphene.String(required=False, default_value="")
+        product_name = graphene.String(required=False)
+        description = graphene.String(required=False)
+        quantity = graphen.Float(required=False)
+        price = graphen.Float(required=False)
+        finance_tax_rate = graphene.ID(required=False)
+        finance_glaccount = graphene.ID(required=False)
+        finance_costcenter = graphene.ID(required=False)
         
     finance_invoice_item = graphene.Field(FinanceInvoiceItemNode)
 
@@ -182,31 +179,29 @@ class UpdateFinanceInvoiceItem(graphene.relay.ClientIDMutation):
         if not finance_invoice_item:
             raise Exception('Invalid Finance InvoiceItem  ID!')
 
-        finance_invoice_item.name = input['name']
+        validation_result = validate_create_update_input(input, update=True)
 
-        if 'next_id' in input:
-            finance_invoice_item_.due_after_days = input['next_id']
+        if 'product_name' in input:
+            finance_invoice_item.product_name = input['product_name']
 
-        if 'due_after_days' in input:
-            finance_invoice_item_.due_after_days = input['due_after_days']
+        if 'description' in input:
+            finance_invoice_item.description = input['description']
 
-        if 'prefix' in input:
-            finance_invoice_item_.prefix = input['prefix']
+        if 'quantity' in input:
+            finance_invoice_item.quantity = input['quantity']
 
-        if 'prefix_year' in input:
-            finance_invoice_item_.prefix_year = input['prefix_year']
+        if 'price' in input:
+            finance_invoice_item.price = input['price']
 
-        if 'auto_reset_prefix_year' in input:
-            finance_invoice_item_.auto_reset_prefix_year = input['auto_reset_prefix_year']
+        if 'finance_tax_rate' in validation_result:
+            finance_invoice_item.finance_tax_rate = validation_result['finance_tax_rate']
 
-        if 'terms' in input:
-            finance_invoice_item_.terms = input['terms']
+        if 'finance_glaccount' in validation_result:
+            finance_invoice_item.finance_glaccount = validation_result['finance_glaccount']
 
-        if 'footer' in input:
-            finance_invoice_item_.footer = input['footer']
+        if 'finance_costcenter' in validation_result:
+            finance_invoice_item.finance_costcenter = validation_result['finance_costcenter']
 
-        if 'code' in input:
-            finance_invoice_item_.code = input['code']
 
         finance_invoice_item.save()
 
