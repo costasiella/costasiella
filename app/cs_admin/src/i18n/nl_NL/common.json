@@ -110,7 +110,8 @@
             "invoice_group": "__STRING_NOT_TRANSLATED__"
         },
         "invoice": {
-            "title": "__STRING_NOT_TRANSLATED__"
+            "title": "__STRING_NOT_TRANSLATED__",
+            "toast_edit_summary_success": "__STRING_NOT_TRANSLATED__"
         }
     },
     "general": {
@@ -240,7 +241,9 @@
         "balance": "__STRING_NOT_TRANSLATED__",
         "subtotal": "__STRING_NOT_TRANSLATED__",
         "tax": "__STRING_NOT_TRANSLATED__",
-        "paid": "__STRING_NOT_TRANSLATED__"
+        "paid": "__STRING_NOT_TRANSLATED__",
+        "options": "__STRING_NOT_TRANSLATED__",
+        "summary": "__STRING_NOT_TRANSLATED__"
     },
     "yup": {
         "min_len_3": "__STRING_NOT_TRANSLATED__",

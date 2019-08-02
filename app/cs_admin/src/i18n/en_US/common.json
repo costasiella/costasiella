@@ -110,7 +110,8 @@
             "invoice_group": "Default invoice group"
         },
         "invoice": {
-            "title": "Invoice"
+            "title": "Invoice",
+            "toast_edit_summary_success": "__STRING_NOT_TRANSLATED__"
         }
     },
     "general": {
@@ -240,7 +241,9 @@
         "balance": "Balance",
         "subtotal": "Subtotal",
         "tax": "Tax",
-        "paid": "Paid"
+        "paid": "Paid",
+        "options": "Options",
+        "summary": "Summary"
     },
     "yup": {
         "min_len_3": "Please input at least 3 characters",
