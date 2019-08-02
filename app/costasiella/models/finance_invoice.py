@@ -48,7 +48,7 @@ class FinanceInvoice(models.Model):
     def __str__(self):
         return self.invoice_number
 
-    def set_relation_info(self):
+    def _set_relation_info(self):
         """ Set relation info from linked account """
         #TODO: Write this function :)
         pass

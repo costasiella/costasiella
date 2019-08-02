@@ -77,6 +77,7 @@ class OrganizationClasspass(models.Model):
         print(finance_invoice_group)
 
         finance_invoice = FinanceInvoice(
+            account = account_classpass.account
             finance_invoice_group = finance_invoice_group,
             summary = _("Class pass %s" % account_classpass.id),
             status = 'SENT',
@@ -90,8 +91,6 @@ class OrganizationClasspass(models.Model):
         # Add invoice item
         finance_invoice.item_add_classpass(account_classpass)
 
-        # Now the invoice has an id, link it to an account
-        finance_invoice.accounts.add(account_classpass.account)
 
 
 #     def sell_to_customer(self, auth_user_id, date_start, note=None, invoice=True):
