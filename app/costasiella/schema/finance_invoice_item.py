@@ -124,33 +124,33 @@ class CreateFinanceInvoiceItem(graphene.relay.ClientIDMutation):
         finance_tax_rate = graphene.ID(required=True)
         finance_glaccount = graphene.ID(required=False)
         finance_costcenter = graphene.ID(required=False)
-
-        
+  
     finance_invoice_item = graphene.Field(FinanceInvoiceItemNode)
 
     @classmethod
     def mutate_and_get_payload(self, root, info, **input):
         user = info.context.user
-        require_login_and_permission(user, 'costasiella.add_financeinvoice_item')
+        require_login_and_permission(user, 'costasiella.add_financeinvoiceitem')
 
         validation_result = validate_create_update_input(input)
-        finance_invoice_item_group = validation_result['finance_invoice_item_group']
 
         finance_invoice_item = FinanceInvoiceItem(
-            finance_invoice_item_group = finance_invoice_item_group,
-            status = 'DRAFT',
-            terms = finance_invoice_item_group.terms,
-            footer = finance_invoice_item_group.footer
+            finance_invoice = validation_result['finance_invoice'],
+            product_name = input['product_name'],
+            description = input['description'],
+            quantity = input['quantity'],
+            price = input['price'],
+            finance_tax_rate = validation_result['finance_tax_rate'],
         )
 
-        if 'summary' in input:
-            finance_invoice_item.summary = input['summary']
+        if 'finance_glaccount' in input:
+            finance_invoice_item.finance_glaccount = input['finance_glaccount']
+
+        if 'finance_costcenter' in input:
+            finance_invoice_item.finance_costcenter = input['finance_costcenter']
 
         # Save invoice_item
         finance_invoice_item.save()
-
-        # Now the invoice_item has an id, link it to an account
-        finance_invoice_item.accounts.add(validation_result['account'])
 
         return CreateFinanceInvoiceItem(finance_invoice_item=finance_invoice_item)
 
@@ -174,7 +174,7 @@ class UpdateFinanceInvoiceItem(graphene.relay.ClientIDMutation):
     @classmethod
     def mutate_and_get_payload(self, root, info, **input):
         user = info.context.user
-        require_login_and_permission(user, 'costasiella.change_financeinvoice_item')
+        require_login_and_permission(user, 'costasiella.change_financeinvoiceitem')
 
         rid = get_rid(input['id'])
 
@@ -222,7 +222,7 @@ class DeleteFinanceInvoiceItem(graphene.relay.ClientIDMutation):
     @classmethod
     def mutate_and_get_payload(self, root, info, **input):
         user = info.context.user
-        require_login_and_permission(user, 'costasiella.delete_financeinvoice_item')
+        require_login_and_permission(user, 'costasiella.delete_financeinvoiceitem')
 
         rid = get_rid(input['id'])
 
