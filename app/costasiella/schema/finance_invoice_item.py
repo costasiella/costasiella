@@ -26,7 +26,7 @@ class FinanceInvoiceItemNode(DjangoObjectType):
     class Meta:
         model = FinanceInvoiceItem
         filter_fields = {
-            "id", ["exact"]
+            "id": ["exact"]
         }
         interfaces = (graphene.relay.Node, FinanceInvoiceItemInterface, )
 
@@ -57,7 +57,7 @@ class FinanceInvoiceItemNode(DjangoObjectType):
         return self._meta.model.objects.get(id=id)
 
 
-class FinanceInvoiceQuery(graphene.ObjectType):
+class FinanceInvoiceItemQuery(graphene.ObjectType):
     finance_invoice_items = DjangoFilterConnectionField(FinanceInvoiceItemNode)
     finance_invoice_item = graphene.relay.Node.Field(FinanceInvoiceItemNode)
 
@@ -119,8 +119,8 @@ class CreateFinanceInvoiceItem(graphene.relay.ClientIDMutation):
         finance_invoice = graphene.ID(required=True)
         product_name = graphene.String(required=True)
         description = graphene.String(required=True)
-        quantity = graphen.Float(required=True)
-        price = graphen.Float(required=True)
+        quantity = graphene.Float(required=True)
+        price = graphene.Float(required=True)
         finance_tax_rate = graphene.ID(required=True)
         finance_glaccount = graphene.ID(required=False)
         finance_costcenter = graphene.ID(required=False)
@@ -160,8 +160,8 @@ class UpdateFinanceInvoiceItem(graphene.relay.ClientIDMutation):
         id = graphene.ID(required=True)
         product_name = graphene.String(required=False)
         description = graphene.String(required=False)
-        quantity = graphen.Float(required=False)
-        price = graphen.Float(required=False)
+        quantity = graphene.Float(required=False)
+        price = graphene.Float(required=False)
         finance_tax_rate = graphene.ID(required=False)
         finance_glaccount = graphene.ID(required=False)
         finance_costcenter = graphene.ID(required=False)

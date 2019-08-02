@@ -12,6 +12,7 @@ from .finance_glaccount import FinanceGLAccountQuery, FinanceGLAccountMutation
 from .finance_invoice import FinanceInvoiceQuery, FinanceInvoiceMutation
 from .finance_invoice_group import FinanceInvoiceGroupQuery, FinanceInvoiceGroupMutation
 from .finance_invoice_group_default import FinanceInvoiceGroupDefaultQuery, FinanceInvoiceGroupDefaultMutation
+from .finance_invoice_item import FinanceInvoiceItemQuery, FinanceInvoiceItemMutation
 from .finance_payment_method import FinancePaymentMethodQuery, FinancePaymentMethodMutation
 from .finance_tax_rate import FinanceTaxRateQuery, FinanceTaxRateMutation
 
@@ -48,6 +49,7 @@ class Query(AccountQuery,
             FinanceInvoiceQuery,
             FinanceInvoiceGroupQuery,
             FinanceInvoiceGroupDefaultQuery,
+            FinanceInvoiceItemQuery,
             FinancePaymentMethodQuery,
             FinanceTaxRateQuery,
             OrganizationAppointmentQuery,
@@ -82,6 +84,7 @@ class Mutation(AccountMutation,
                FinanceInvoiceMutation,
                FinanceInvoiceGroupMutation,
                FinanceInvoiceGroupDefaultMutation,
+               FinanceInvoiceItemMutation,
                FinancePaymentMethodMutation,
                FinanceTaxRateMutation,
                OrganizationAppointmentMutation,
