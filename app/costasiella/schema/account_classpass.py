@@ -91,7 +91,8 @@ class CreateAccountClasspass(graphene.relay.ClientIDMutation):
         # Validate input
         result = validate_create_update_input(input, update=False)
 
-        sales_result = SalesDude.sell_classpass(
+        sales_dude = SalesDude()
+        sales_result = sales_dude.sell_classpass(
             account = result['account'],
             organization_classpass = result['organization_classpass'],
             date_start = input['date_start'],

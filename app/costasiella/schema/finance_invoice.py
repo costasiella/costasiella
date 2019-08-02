@@ -5,7 +5,7 @@ from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
 from graphql import GraphQLError
 
-from ..models import Account, FinanceInvoice, FinanceInvoiceAccount, FinanceInvoiceGroup, FinancePaymentMethod
+from ..models import Account, FinanceInvoice, FinanceInvoiceGroup, FinancePaymentMethod
 from ..modules.gql_tools import require_login_and_permission, get_rid
 from ..modules.messages import Messages
 from ..modules.finance_tools import display_float_as_amount
@@ -64,7 +64,7 @@ class FinanceInvoiceQuery(graphene.ObjectType):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.view_financeinvoice')
 
-        return FinanceInvoice.objects.all().order_by('invoice_number')
+        return FinanceInvoice.objects.all().order_by('-invoice_number')
 
 
 def validate_create_update_input(input, update=False):

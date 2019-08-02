@@ -1,4 +1,4 @@
-
+from django.utils.translation import gettext as _
 
 class SalesDude():
     def sell_classpass(self, account, organization_classpass, date_start, note=None, create_invoice=True):
@@ -32,13 +32,13 @@ class SalesDude():
         }
         
 
-    def _sell_claspass_create_invoice(self, account_classpass):
+    def _sell_classpass_create_invoice(self, account_classpass):
         """
         Create an invoice for sold class pass
         """
-        from .finance_invoice_group_default import FinanceInvoiceGroupDefault
-        from .finance_invoice_group import FinanceInvoiceGroup
-        from .finance_invoice import FinanceInvoice
+        from ..models.finance_invoice_group_default import FinanceInvoiceGroupDefault
+        from ..models.finance_invoice_group import FinanceInvoiceGroup
+        from ..models.finance_invoice import FinanceInvoice
 
 
         finance_invoice_group_default = FinanceInvoiceGroupDefault.objects.filter(item_type="CLASSPASSES").first()
@@ -47,7 +47,7 @@ class SalesDude():
         print(finance_invoice_group)
 
         finance_invoice = FinanceInvoice(
-            account = account_classpass.account
+            account = account_classpass.account,
             finance_invoice_group = finance_invoice_group,
             summary = _("Class pass %s" % account_classpass.id),
             status = "SENT",
