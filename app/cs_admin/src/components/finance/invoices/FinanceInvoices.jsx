@@ -36,13 +36,10 @@ import { GET_INVOICES_QUERY } from "./queries"
 
 import moment from 'moment'
 
-const ARCHIVE_INVOICE = gql`
-  mutation ArchiveFinanceCostCenter($input: ArchiveFinanceCostCenterInput!) {
-    archiveFinanceCostcenter(input: $input) {
-      financeCostcenter {
-        id
-        archived
-      }
+const DELETE_INVOICE = gql`
+  mutation DeleteFinanceInvoice($input: DeleteFinanceInvoiceInput!) {
+    deleteFinanceInvoice(input: $input) {
+      ok
     }
   }
 `

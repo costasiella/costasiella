@@ -196,13 +196,12 @@ class UpdateFinanceInvoice(graphene.relay.ClientIDMutation):
         return UpdateFinanceInvoice(finance_invoice=finance_invoice)
 
 
-class ArchiveFinanceInvoice(graphene.relay.ClientIDMutation):
+class DeleteFinanceInvoice(graphene.relay.ClientIDMutation):
     class Input:
         id = graphene.ID(required=True)
-        archived = graphene.Boolean(required=True)
 
-    finance_invoice = graphene.Field(FinanceInvoiceNode)
-
+    ok = graphene.Boolean()
+    
     @classmethod
     def mutate_and_get_payload(self, root, info, **input):
         user = info.context.user
@@ -214,13 +213,12 @@ class ArchiveFinanceInvoice(graphene.relay.ClientIDMutation):
         if not finance_invoice_:
             raise Exception('Invalid Finance Invoice ID!')
 
-        finance_invoice.archived = input['archived']
-        finance_invoice.save()
+        ok = finance_invoice.delete()
 
-        return ArchiveFinanceInvoice(finance_invoice=finance_invoice)
+        return DeleteFinanceInvoice(ok=ok)
 
 
 class FinanceInvoiceMutation(graphene.ObjectType):
-    archive_finance_invoice = ArchiveFinanceInvoice.Field()
+    delete_finance_invoice = DeleteFinanceInvoice.Field()
     create_finance_invoice = CreateFinanceInvoice.Field()
     update_finance_invoice = UpdateFinanceInvoice.Field()
