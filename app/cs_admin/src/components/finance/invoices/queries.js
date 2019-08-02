@@ -33,13 +33,68 @@ export const GET_INVOICES_QUERY = gql`
   }
 `
 
-export const GET_COSTCENTER_QUERY = gql`
-  query FinanceCostcenter($id: ID!) {
-    financeCostcenter(id:$id) {
+export const GET_INVOICE_QUERY = gql`
+  query FinanceInvoice($id: ID!) {
+    financeInvoice(id:$id) {
       id
-      name
-      code
-      archived
+      account {
+        id
+        fullName
+      }
+      financePaymentMethod {
+        id
+        name
+      }
+      relationCompany
+      relationCompanyRegistration
+      relationCompanyTaxRegistration
+      relationContactName
+      relationAddress
+      relationPostcode
+      relationCity
+      relationCountry
+      status
+      summary
+      invoiceNumber
+      dateSent
+      dateDue
+      terms
+      footer
+      note
+      subTotalDisplay
+      vatDisplay
+      totalDisplay
+      paidDisplay
+      balanceDisplay
+      items {
+        edges {
+          node {
+            id
+            lineNumber
+            productName
+            description
+            quantity
+            price
+            financeTaxRate {
+              id
+              name
+              percentage
+              rateType
+            }
+            subTotal
+            vat
+            total
+            financeGlaccount {
+              id
+              name
+            }
+            financeCostcenter {
+              id
+              name
+            }
+          }
+        }
+      }
     }
   }
 `
