@@ -8,7 +8,7 @@ import { withRouter } from "react-router"
 import { Formik, Form as FoForm, Field, ErrorMessage } from 'formik'
 import { toast } from 'react-toastify'
 
-import { GET_COSTCENTERS_QUERY, GET_COSTCENTER_QUERY } from './queries'
+import { GET_INVOICES_QUERY, GET_INVOICE_QUERY } from './queries'
 import { COSTCENTER_SCHEMA } from './yupSchema'
 
 
@@ -41,10 +41,10 @@ const UPDATE_COSTCENTER = gql`
 `
 
 
-class FinanceCostCenterEdit extends Component {
+class FinanceInvoiceEdit extends Component {
   constructor(props) {
     super(props)
-    console.log("finance costcenter edit props:")
+    console.log("finance invoice edit props:")
     console.log(props)
   }
 
@@ -53,131 +53,119 @@ class FinanceCostCenterEdit extends Component {
     const match = this.props.match
     const history = this.props.history
     const id = match.params.id
-    const return_url = "/finance/costcenters"
+    const return_url = "/finance/invoices"
 
     return (
       <SiteWrapper>
         <div className="my-3 my-md-5">
-          <Container>
-            <Page.Header title={t('finance.costcenters.title')} />
-            <Grid.Row>
-              <Grid.Col md={9}>
-              <Card>
-                <Card.Header>
-                  <Card.Title>{t('finance.costcenters.title_edit')}</Card.Title>
-                  {console.log(match.params.id)}
-                </Card.Header>
-                <Query query={GET_COSTCENTER_QUERY} variables={{ id }} >
-                {({ loading, error, data, refetch }) => {
-                    // Loading
-                    if (loading) return <p>{t('general.loading_with_dots')}</p>
-                    // Error
-                    if (error) {
-                      console.log(error)
-                    return <p>{t('general.error_sad_smiley')}</p>
-                    }
-                    
-                    const initialData = data.financeCostcenter;
-                    console.log('query data')
-                    console.log(data)
+          <Query query={GET_INVOICE_QUERY} variables={{ id }} >
+            {({ loading, error, data, refetch }) => {
+              // Loading
+              if (loading) return <p>{t('general.loading_with_dots')}</p>
+              // Error
+              if (error) {
+                console.log(error)
+              return <p>{t('general.error_sad_smiley')}</p>
+              }
+              
+              console.log('query data')
+              console.log(data)
 
-                    return (
-                      
-                      <Mutation mutation={UPDATE_COSTCENTER} onCompleted={() => history.push(return_url)}> 
-                      {(updateGlaccount, { data }) => (
-                          <Formik
-                              initialValues={{ 
-                                name: initialData.name, 
-                                code: initialData.code
-                              }}
-                              validationSchema={COSTCENTER_SCHEMA}
-                              onSubmit={(values, { setSubmitting }) => {
-                                  console.log('submit values:')
-                                  console.log(values)
+              return (
+                <Container>
+                  <Page.Header title={t('finance.invoice.title') + ' #' + data.financeInvoice.invoiceNumber} />
+                  <Grid.Row>
+                    <Grid.Col md={9}>
+                      invoice content here
 
-                                  updateGlaccount({ variables: {
-                                    input: {
-                                      id: match.params.id,
-                                      name: values.name,
-                                      code: values.code
-                                    }
-                                  }, refetchQueries: [
-                                      {query: GET_COSTCENTERS_QUERY, variables: {"archived": false }}
-                                  ]})
-                                  .then(({ data }) => {
-                                      console.log('got data', data)
-                                      toast.success((t('finance.costcenters.toast_edit_success')), {
-                                          position: toast.POSITION.BOTTOM_RIGHT
-                                        })
-                                    }).catch((error) => {
-                                      toast.error((t('general.toast_server_error')) + ': ' +  error, {
-                                          position: toast.POSITION.BOTTOM_RIGHT
-                                        })
-                                      console.log('there was an error sending the query', error)
-                                      setSubmitting(false)
-                                    })
-                              }}
-                              >
-                              {({ isSubmitting, errors, values }) => (
-                                  <FoForm>
-                                      <Card.Body>
-                                        <Form.Group label={t('general.name')}>
-                                          <Field type="text" 
-                                                  name="name" 
-                                                  className={(errors.name) ? "form-control is-invalid" : "form-control"} 
-                                                  autoComplete="off" />
-                                          <ErrorMessage name="name" component="span" className="invalid-feedback" />
-                                        </Form.Group>
-                                        <Form.Group label={t('finance.code')}>
-                                          <Field type="text" 
-                                                  name="code" 
-                                                  className={(errors.code) ? "form-control is-invalid" : "form-control"} 
-                                                  autoComplete="off" />
-                                          <ErrorMessage name="code" component="span" className="invalid-feedback" />
-                                        </Form.Group>
-                                      </Card.Body>
-                                      <Card.Footer>
-                                          <Button 
-                                            className="pull-right"
-                                            color="primary"
-                                            disabled={isSubmitting}
-                                            type="submit"
-                                          >
-                                            {t('general.submit')}
-                                          </Button>
-                                          <Button
-                                            type="button" 
-                                            color="link" 
-                                            onClick={() => history.push(return_url)}
-                                          >
-                                              {t('general.cancel')}
-                                          </Button>
-                                      </Card.Footer>
-                                  </FoForm>
-                              )}
-                          </Formik>
-                      )}
-                      </Mutation>
-                      )}}
-                </Query>
-              </Card>
-              </Grid.Col>
-              <Grid.Col md={3}>
-                <HasPermissionWrapper permission="change"
-                                      resource="financecostcenter">
-                  <Button color="primary btn-block mb-6"
-                          onClick={() => history.push(return_url)}>
-                    <Icon prefix="fe" name="chevrons-left" /> {t('general.back')}
-                  </Button>
-                </HasPermissionWrapper>
-                <FinanceMenu active_link='costcenters'/>
-              </Grid.Col>
-            </Grid.Row>
-          </Container>
-        </div>
+{/*                             
+                            <Mutation mutation={UPDATE_COSTCENTER} onCompleted={() => history.push(return_url)}> 
+                            {(updateGlaccount, { data }) => (
+                                <Formik
+                                    initialValues={{ 
+                                      name: initialData.name, 
+                                      code: initialData.code
+                                    }}
+                                    validationSchema={COSTCENTER_SCHEMA}
+                                    onSubmit={(values, { setSubmitting }) => {
+                                        console.log('submit values:')
+                                        console.log(values)
+
+                                        updateGlaccount({ variables: {
+                                          input: {
+                                            id: match.params.id,
+                                            name: values.name,
+                                            code: values.code
+                                          }
+                                        }, refetchQueries: [
+                                            {query: GET_COSTCENTERS_QUERY, variables: {"archived": false }}
+                                        ]})
+                                        .then(({ data }) => {
+                                            console.log('got data', data)
+                                            toast.success((t('finance.costcenters.toast_edit_success')), {
+                                                position: toast.POSITION.BOTTOM_RIGHT
+                                              })
+                                          }).catch((error) => {
+                                            toast.error((t('general.toast_server_error')) + ': ' +  error, {
+                                                position: toast.POSITION.BOTTOM_RIGHT
+                                              })
+                                            console.log('there was an error sending the query', error)
+                                            setSubmitting(false)
+                                          })
+                                    }}
+                                    >
+                                    {({ isSubmitting, errors, values }) => (
+                                        <FoForm>
+                                            <Card.Body>
+                                              <Form.Group label={t('general.name')}>
+                                                <Field type="text" 
+                                                        name="name" 
+                                                        className={(errors.name) ? "form-control is-invalid" : "form-control"} 
+                                                        autoComplete="off" />
+                                                <ErrorMessage name="name" component="span" className="invalid-feedback" />
+                                              </Form.Group>
+                                              <Form.Group label={t('finance.code')}>
+                                                <Field type="text" 
+                                                        name="code" 
+                                                        className={(errors.code) ? "form-control is-invalid" : "form-control"} 
+                                                        autoComplete="off" />
+                                                <ErrorMessage name="code" component="span" className="invalid-feedback" />
+                                              </Form.Group>
+                                            </Card.Body>
+                                            <Card.Footer>
+                                                <Button 
+                                                  className="pull-right"
+                                                  color="primary"
+                                                  disabled={isSubmitting}
+                                                  type="submit"
+                                                >
+                                                  {t('general.submit')}
+                                                </Button>
+                                                <Button
+                                                  type="button" 
+                                                  color="link" 
+                                                  onClick={() => history.push(return_url)}
+                                                >
+                                                    {t('general.cancel')}
+                                                </Button>
+                                            </Card.Footer>
+                                        </FoForm>
+                                    )}
+                                </Formik>
+                            )}
+                            </Mutation> */}
+                    </Grid.Col>
+                    <Grid.Col md={3}>
+                      sidebar here
+                    </Grid.Col>
+                  </Grid.Row>
+                </Container>
+          )}}
+        </Query>
+      </div>
     </SiteWrapper>
     )}
   }
 
 
-export default withTranslation()(withRouter(FinanceCostCenterEdit))
+export default withTranslation()(withRouter(FinanceInvoiceEdit))
