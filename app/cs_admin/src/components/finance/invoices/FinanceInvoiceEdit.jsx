@@ -76,7 +76,7 @@ class FinanceInvoiceEdit extends Component {
                   <Grid.Row>
                     <Grid.Col md={9}>
                       <FinanceInvoiceEditSummary 
-                        data={data}
+                        initialData={data}
                       />
                       invoice content here
 
