@@ -210,7 +210,7 @@ class DeleteFinanceInvoice(graphene.relay.ClientIDMutation):
         rid = get_rid(input['id'])
 
         finance_invoice = FinanceInvoice.objects.filter(id=rid.id).first()
-        if not finance_invoice_:
+        if not finance_invoice:
             raise Exception('Invalid Finance Invoice ID!')
 
         ok = finance_invoice.delete()

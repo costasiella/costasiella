@@ -34,9 +34,10 @@ import FinanceInvoicesStatus from "./FinanceInvoiceStatus"
 
 import { GET_INVOICES_QUERY } from "./queries"
 
+import confirm_delete from "../../../tools/confirm_delete"
 import moment from 'moment'
 
-const DELETE_INVOICE = gql`
+const DELETE_FINANCE_INVOICE = gql`
   mutation DeleteFinanceInvoice($input: DeleteFinanceInvoiceInput!) {
     deleteFinanceInvoice(input: $input) {
       ok
@@ -167,40 +168,36 @@ const FinanceInvoices = ({ t, history }) => (
                                     {t('general.edit')}
                                   </Button>
                                 </Table.Col>
-                                {/* <Mutation mutation={ARCHIVE_INVOICE} key={v4()}>
-                                  {(archiveCostcenter, { data }) => (
+                                <Mutation mutation={DELETE_FINANCE_INVOICE} key={v4()}>
+                                  {(deleteFinanceInvoice, { data }) => (
                                     <Table.Col className="text-right" key={v4()}>
                                       <button className="icon btn btn-link btn-sm" 
-                                          title={t('general.archive')} 
-                                          href=""
-                                          onClick={() => {
-                                            console.log("clicked archived")
-                                            let id = node.id
-                                            archiveCostcenter({ variables: {
-                                              input: {
-                                              id,
-                                              archived: !archived
-                                              }
-                                      }, refetchQueries: [
-                                          {query: GET_INVOICES_QUERY, variables: {"archived": archived }}
-                                      ]}).then(({ data }) => {
-                                        console.log('got data', data);
-                                        toast.success(
-                                          (archived) ? t('general.unarchived'): t('general.archived'), {
-                                            position: toast.POSITION.BOTTOM_RIGHT
+                                        title={t('general.delete')} 
+                                        href=""
+                                        onClick={() => {
+                                          confirm_delete({
+                                            t: t,
+                                            msgConfirm: t("finance.invoices.delete_confirm_msg"),
+                                            msgDescription: <p>{node.invoiceNumber}</p>,
+                                            msgSuccess: t('finance.invoices.deleted'),
+                                            deleteFunction: deleteFinanceInvoice,
+                                            functionVariables: { 
+                                              variables: {
+                                                input: {
+                                                  id: node.id
+                                                }
+                                              }, 
+                                              refetchQueries: [
+                                                {query: GET_INVOICES_QUERY, variables: get_list_query_variables() } 
+                                              ]
+                                            }
                                           })
-                                      }).catch((error) => {
-                                        toast.error((t('general.toast_server_error')) + ': ' +  error, {
-                                            position: toast.POSITION.BOTTOM_RIGHT
-                                          })
-                                        console.log('there was an error sending the query', error);
-                                      })
                                       }}>
-                                        <Icon prefix="fa" name="inbox" />
+                                        <span className="text-red"><Icon prefix="fe" name="trash-2" /></span>
                                       </button>
-                                    </Table.Col>
+                                   </Table.Col>
                                   )}
-                                </Mutation> */}
+                               </Mutation>
                               </Table.Row>
                             ))}
                         </Table.Body>
