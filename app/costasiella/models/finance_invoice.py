@@ -40,7 +40,7 @@ class FinanceInvoice(models.Model):
     terms = models.TextField(default="")
     footer = models.TextField(default="")
     note = models.TextField(default="")
-    sub_total = models.DecimalField(max_digits=20, decimal_places=2, default=0)
+    subtotal = models.DecimalField(max_digits=20, decimal_places=2, default=0)
     vat = models.DecimalField(max_digits=20, decimal_places=2, default=0)
     total = models.DecimalField(max_digits=20, decimal_places=2, default=0)
     paid = models.DecimalField(max_digits=20, decimal_places=2, default=0)
@@ -62,16 +62,16 @@ class FinanceInvoice(models.Model):
 
 
     def update_amounts(self):
-        """ Update total amounts fields (sub_total, vat, total, paid, balance) """
+        """ Update total amounts fields (subtotal, vat, total, paid, balance) """
         # Get totals from invoice items
         from .finance_invoice_item import FinanceInvoiceItem
         from django.db.models import Sum
 
-        sums = FinanceInvoiceItem.objects.filter(finance_invoice = self).aggregate(Sum('sub_total'), Sum('vat'), Sum('total'))
+        sums = FinanceInvoiceItem.objects.filter(finance_invoice = self).aggregate(Sum('subtotal'), Sum('vat'), Sum('total'))
         print('##############')
         print(sums)
 
-        self.sub_total = sums['sub_total__sum'] or 0
+        self.subtotal = sums['subtotal__sum'] or 0
         self.vat = sums['vat__sum'] or 0
         self.total = sums['total__sum'] or 0
 
@@ -80,7 +80,7 @@ class FinanceInvoice(models.Model):
         self.balance = self.total - self.paid
 
         self.save(update_fields=[
-            "sub_total",
+            "subtotal",
             "vat",
             "total",
             "paid",

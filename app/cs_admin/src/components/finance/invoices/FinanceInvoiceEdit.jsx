@@ -168,10 +168,10 @@ class FinanceInvoiceEdit extends Component {
                         <Card.Body>
                           <div>
                             <span className="pull-left bold">
-                              {t('general.sub_total')}
+                              {t('general.subtotal')}
                             </span>
                             <span className="pull-right">
-                              {data.financeInvoice.subTotalDisplay}
+                              {data.financeInvoice.subtotalDisplay}
                             </span>
                           </div>
                         </Card.Body>

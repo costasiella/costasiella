@@ -15,7 +15,7 @@ m = Messages()
 class FinanceInvoiceItemInterface(graphene.Interface):
     id = graphene.GlobalID()
     price_display = graphene.String()
-    sub_total_display = graphene.String()
+    subtotal_display = graphene.String()
     vat_display = graphene.String()
     total_display = graphene.String()
     paid_display = graphene.String()
@@ -31,10 +31,10 @@ class FinanceInvoiceItemNode(DjangoObjectType):
         interfaces = (graphene.relay.Node, FinanceInvoiceItemInterface, )
 
     def resolve_price_display(self, info):
-        return display_float_as_amount(self.sub_total)
+        return display_float_as_amount(self.subtotal)
 
-    def resolve_sub_total_display(self, info):
-        return display_float_as_amount(self.sub_total)
+    def resolve_subtotal_display(self, info):
+        return display_float_as_amount(self.subtotal)
 
     def resolve_vat_display(self, info):
         return display_float_as_amount(self.vat)

@@ -18,7 +18,7 @@ class FinanceInvoiceItem(models.Model):
     quantity = models.DecimalField(max_digits=20, decimal_places=2)
     price = models.DecimalField(max_digits=20, decimal_places=2)
     finance_tax_rate = models.ForeignKey(FinanceTaxRate, on_delete=models.CASCADE)
-    sub_total = models.DecimalField(max_digits=20, decimal_places=2, default=0)
+    subtotal = models.DecimalField(max_digits=20, decimal_places=2, default=0)
     vat = models.DecimalField(max_digits=20, decimal_places=2, default=0)
     total = models.DecimalField(max_digits=20, decimal_places=2, default=0)
     finance_glaccount = models.ForeignKey(FinanceGLAccount, on_delete=models.CASCADE, null=True)
@@ -30,14 +30,14 @@ class FinanceInvoiceItem(models.Model):
 
 
     def save(self, *args, **kwargs):
-        self.sub_total = self._calculate_sub_total()
+        self.subtotal = self._calculate_subtotal()
         self.vat = self._calculate_vat()
         self.total = self._calculate_total()
 
         super(FinanceInvoiceItem, self).save(*args, **kwargs)
 
     
-    def _calculate_sub_total(self):
+    def _calculate_subtotal(self):
         # If tax is included in price, first remove it.
         tax_rate = self.finance_tax_rate
         price = self.price
@@ -53,11 +53,11 @@ class FinanceInvoiceItem(models.Model):
         tax_rate = self.finance_tax_rate
         percentage = (tax_rate.percentage / 100)
         
-        return self.sub_total * percentage
+        return self.subtotal * percentage
         
     
     def _calculate_total(self):
-        return self.sub_total + self.vat
+        return self.subtotal + self.vat
 
 
 # def define_invoices_items():

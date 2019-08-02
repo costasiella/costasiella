@@ -61,7 +61,7 @@ export const GET_INVOICE_QUERY = gql`
       terms
       footer
       note
-      subTotalDisplay
+      subtotalDisplay
       vatDisplay
       totalDisplay
       paidDisplay
@@ -81,7 +81,7 @@ export const GET_INVOICE_QUERY = gql`
               percentage
               rateType
             }
-            subTotal
+            subtotal
             vat
             total
             financeGlaccount {
