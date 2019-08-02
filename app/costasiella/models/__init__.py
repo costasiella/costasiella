@@ -7,7 +7,6 @@ from .account_teacher_profile import AccountTeacherProfile
 from .finance_costcenter import FinanceCostCenter
 from .finance_glaccount import FinanceGLAccount
 from .finance_invoice import FinanceInvoice
-from .finance_invoice_account import FinanceInvoiceAccount
 from .finance_invoice_group import FinanceInvoiceGroup
 from .finance_invoice_group_default import FinanceInvoiceGroupDefault
 from .finance_invoice_item import FinanceInvoiceItem
