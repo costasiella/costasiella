@@ -29,6 +29,9 @@ class FinanceInvoice(models.Model):
     relation_company_tax_registration = models.CharField(max_length=255, default="")
     relation_contact_name = models.CharField(max_length=255, default="")
     relation_address = models.CharField(max_length=255, default="")
+    relation_postcode = models.CharField(max_length=255, default="")
+    relation_city = models.CharField(max_length=255, default="")
+    relation_country = models.CharField(max_length=255, default="")
     status = models.CharField(max_length=255, choices=STATUSES, default="DRAFT")
     summary = models.CharField(max_length=255, default="")
     invoice_number = models.CharField(max_length=255, default="") # Invoice #
@@ -50,8 +53,12 @@ class FinanceInvoice(models.Model):
 
     def _set_relation_info(self):
         """ Set relation info from linked account """
-        #TODO: Write this function :)
-        pass
+        self.relation_contact_name = self.account.full_name
+        self.relation_address = self.account.address
+        self.relation_postcode = self.account.postcode
+        self.relation_city = self.account.city
+        self.relation_country = self.account.country
+
 
     def update_amounts(self):
         """ Update total amounts fields (sub_total, vat, total, paid, balance) """
@@ -79,6 +86,9 @@ class FinanceInvoice(models.Model):
 
     def save(self, *args, **kwargs):
         if self.pk is None: # We know this is object creation when there is no pk yet.
+            # Get relation info
+            self._set_relation_info()
+
             # set dates
             self.date_sent = timezone.now().date()
             self.date_due = self.date_sent + datetime.timedelta(days=self.finance_invoice_group.due_after_days)
@@ -95,6 +105,8 @@ class FinanceInvoice(models.Model):
 
             ## Increase next_id for invoice group
             self._increment_group_next_id()
+        
+        self.update_amounts()
 
         super(FinanceInvoice, self).save(*args, **kwargs)
 

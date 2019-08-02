@@ -144,7 +144,13 @@ const FinanceInvoices = ({ t, history }) => (
                                   {node.invoiceNumber}
                                 </Table.Col>
                                 <Table.Col key={v4()}>
-                                  {(node.relationCompany) ? node.relationCompany: node.relationContactName} <br />
+                                  {(node.account) ? 
+                                    <Link to={"/relations/accounts/" + node.account.id + "/profile"}>
+                                      {(node.relationCompany) ? node.relationCompany: node.relationContactName}
+                                    </Link> :
+                                    (node.relationCompany) ? node.relationCompany: node.relationContactName
+                                  }
+                                   <br />
                                   <Text.Small color="gray">{node.summary.trunc(20)}</Text.Small>
                                 </Table.Col>
                                 <Table.Col key={v4()}>
