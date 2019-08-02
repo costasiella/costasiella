@@ -164,7 +164,7 @@ class FinanceInvoiceEdit extends Component {
                             </Mutation> */}
                     </Grid.Col>
                     <Grid.Col md={3}>
-                      <Card>
+                      <Card statusColor="blue">
                         <Card.Body>
                           <div>
                             <span className="pull-left bold">
@@ -173,13 +173,37 @@ class FinanceInvoiceEdit extends Component {
                             <span className="pull-right">
                               {data.financeInvoice.subtotalDisplay}
                             </span>
-                          </div>
+                          </div><br />
                           <div>
                             <span className="pull-left bold">
                               {t('general.tax')}
                             </span>
                             <span className="pull-right">
                               {data.financeInvoice.taxDisplay}
+                            </span>
+                          </div><br />
+                          <div>
+                            <span className="pull-left bold">
+                              {t('general.total')}
+                            </span>
+                            <span className="pull-right">
+                              {data.financeInvoice.totalDisplay}
+                            </span>
+                          </div><br />
+                          <div>
+                            <span className="pull-left bold">
+                              {t('general.paid')}
+                            </span>
+                            <span className="pull-right">
+                              {data.financeInvoice.paidDisplay}
+                            </span>
+                          </div><br />
+                          <div>
+                            <span className="pull-left bold">
+                              {t('general.balance')}
+                            </span>
+                            <span className="pull-right">
+                              {data.financeInvoice.balanceDisplay}
                             </span>
                           </div>
                         </Card.Body>
