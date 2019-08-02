@@ -13,15 +13,15 @@ import {
 import { UPDATE_INVOICE } from "./queries"
 
 
-const FinanceInvoiceEditSummary = ({ t, history, data }) => (
+const FinanceInvoiceEditOptions = ({ t, history, data }) => (
   <Card statusColor="blue">
     <Card.Header>
-      <Card.Title>{t('general.summary')}</Card.Title>
+      <Card.Title>{t('general.options')}</Card.Title>
     </Card.Header>
     <Card.Body>
-      summary form here
+      options form here
     </Card.Body>
   </Card>
 )
 
-export default withTranslation()(withRouter(FinanceInvoiceEditSummary))
+export default withTranslation()(withRouter(FinanceInvoiceEditOptions))

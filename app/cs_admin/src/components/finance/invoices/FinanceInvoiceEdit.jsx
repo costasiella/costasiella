@@ -29,6 +29,8 @@ import HasPermissionWrapper from "../../HasPermissionWrapper"
 import FinanceMenu from "../FinanceMenu"
 
 import FinanceInvoiceEditBalance from "./FinanceInvoiceEditBalance"
+import FinanceInvoiceEditOptions from "./FinanceInvoiceEditOptions"
+import FinanceInvoiceEditSummary from "./FinanceInvoiceEditSummary"
 
 
 class FinanceInvoiceEdit extends Component {
@@ -73,6 +75,9 @@ class FinanceInvoiceEdit extends Component {
                   </Page.Header>
                   <Grid.Row>
                     <Grid.Col md={9}>
+                      <FinanceInvoiceEditSummary 
+                        data={data}
+                      />
                       invoice content here
 
 {/*                             
@@ -154,7 +159,9 @@ class FinanceInvoiceEdit extends Component {
                     </Grid.Col>
                     <Grid.Col md={3}>
                       <FinanceInvoiceEditBalance financeInvoice={data.financeInvoice} />
-                      sidebar here
+                      <FinanceInvoiceEditOptions
+                        data={data}
+                      />
                     </Grid.Col>
                   </Grid.Row>
                 </Container>
