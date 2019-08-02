@@ -30,6 +30,7 @@ import ContentCard from "../../general/ContentCard"
 import FinanceMenu from "../FinanceMenu"
 import FinanceInvoicesFilter from "./FinanceInvoicesFilter"
 import FinanceInvoicesBase from "./FinanceInvoicesBase"
+import FinanceInvoicesStatus from "./FinanceInvoiceStatus"
 
 import { GET_INVOICES_QUERY } from "./queries"
 
@@ -137,7 +138,7 @@ const FinanceInvoices = ({ t, history }) => (
                             {invoices.edges.map(({ node }) => (
                               <Table.Row key={v4()}>
                                 <Table.Col key={v4()}>
-                                  {node.status}
+                                  <FinanceInvoicesStatus status={node.status} />
                                 </Table.Col>
                                 <Table.Col key={v4()}>
                                   {node.invoiceNumber}
