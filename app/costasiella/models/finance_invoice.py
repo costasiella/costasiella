@@ -124,6 +124,7 @@ class FinanceInvoice(models.Model):
 
         finance_invoice_item = FinanceInvoiceItem(
             finance_invoice = self,
+            account_classpass = account_classpass,
             line_number = self._get_item_next_line_nr(),
             product_name = _('Class pass'),
             description = _('Class pass %s' % str(account_classpass.pk)),
@@ -136,8 +137,4 @@ class FinanceInvoice(models.Model):
 
         finance_invoice_item.save()
 
-        #TODO: Link item to account_classpass
-
         return finance_invoice_item
-
-        # price = classcard.price

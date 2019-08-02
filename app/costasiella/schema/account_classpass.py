@@ -10,6 +10,7 @@ import validators
 from ..models import Account, AccountClasspass, FinancePaymentMethod, OrganizationClasspass
 from ..modules.gql_tools import require_login_and_permission, get_rid
 from ..modules.messages import Messages
+from ..dudes.sales_dude import SalesDude
 
 from sorl.thumbnail import get_thumbnail
 
@@ -90,14 +91,22 @@ class CreateAccountClasspass(graphene.relay.ClientIDMutation):
         # Validate input
         result = validate_create_update_input(input, update=False)
 
-        organization_classpass = result['organization_classpass']
-
-        account_classpass = organization_classpass.sell(
+        sales_result = SalesDude.sell_classpass(
             account = result['account'],
+            organization_classpass = result['organization_classpass'],
             date_start = input['date_start'],
             note = input['note'] if 'note' in input else "",
             create_invoice = True
         )
+
+        account_classpass = sales_result['account_classpass']
+
+        # account_classpass = organization_classpass.sell(
+        #     account = result['account'],
+        #     date_start = input['date_start'],
+        #     note = input['note'] if 'note' in input else "",
+        #     create_invoice = True
+        # )
 
         # account_classpass = AccountClasspass(
         #     account=result['account'],
