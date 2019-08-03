@@ -16,7 +16,7 @@ import {
 
 import { get_list_query_variables } from "./tools"
 import { UPDATE_INVOICE, GET_INVOICES_QUERY } from "./queries"
-// import FinanceInvoiceEditSummaryForm from "./FinanceInvoiceEditSummaryForm"
+import FinanceInvoiceEditOptionsForm from "./FinanceInvoiceEditOptionsForm"
 
 
 const FinanceInvoiceEditOptions = ({ t, history, match, initialData }) => (
@@ -25,12 +25,11 @@ const FinanceInvoiceEditOptions = ({ t, history, match, initialData }) => (
       <Card.Title>{t('general.options')}</Card.Title>
     </Card.Header>
     <Card.Body>
-      options here
-      {/* <Mutation mutation={UPDATE_INVOICE}> 
+      <Mutation mutation={UPDATE_INVOICE}> 
         {(updateInvoice, { data }) => (
           <Formik
             initialValues={{ 
-              summary: initialData.financeInvoice.summary, 
+              invoiceNumber: initialData.financeInvoice.invoiceNumber, 
             }}
             // validationSchema={INVOICE_GROUP_SCHEMA}
             onSubmit={(values, { setSubmitting }) => {
@@ -40,14 +39,14 @@ const FinanceInvoiceEditOptions = ({ t, history, match, initialData }) => (
               updateInvoice({ variables: {
                 input: {
                   id: match.params.id,
-                  summary: values.summary, 
+                  invoiceNumber: values.invoiceNumber, 
                 }
               }, refetchQueries: [
                   {query: GET_INVOICES_QUERY, variables: get_list_query_variables()}
               ]})
               .then(({ data }) => {
                   console.log('got data', data)
-                  toast.success((t('finance.invoice.toast_edit_summary_success')), {
+                  toast.success((t('finance.invoice.toast_edit_options_success')), {
                       position: toast.POSITION.BOTTOM_RIGHT
                     })
                   setSubmitting(false)
@@ -61,18 +60,18 @@ const FinanceInvoiceEditOptions = ({ t, history, match, initialData }) => (
               }}
           >
             {({ isSubmitting, errors, values, touched, handleChange, submitForm }) => (
-              <FinanceInvoiceEditSummaryForm
+              <FinanceInvoiceEditOptionsForm
                 isSubmitting={isSubmitting}
                 errors={errors}
                 values={values}
                 handleChange={handleChange}
                 submitForm={submitForm}
               >
-              </FinanceInvoiceEditSummaryForm>
+              </FinanceInvoiceEditOptionsForm>
             )}
           </Formik>
         )}
-      </Mutation> */}
+      </Mutation>
     </Card.Body>
   </Card>
 )

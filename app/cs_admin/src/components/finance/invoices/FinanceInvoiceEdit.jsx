@@ -160,7 +160,7 @@ class FinanceInvoiceEdit extends Component {
                     <Grid.Col md={3}>
                       <FinanceInvoiceEditBalance financeInvoice={data.financeInvoice} />
                       <FinanceInvoiceEditOptions
-                        data={data}
+                        initialData={data}
                       />
                     </Grid.Col>
                   </Grid.Row>
