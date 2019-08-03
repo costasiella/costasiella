@@ -15,7 +15,7 @@ import {
 let optionsFormTypingTimer
 
 
-const FinanceInvoiceEditOptionsForm = ({ t, isSubmitting, errors, handleChange, submitForm }) => (
+const FinanceInvoiceEditOptionsForm = ({ t, isSubmitting, errors, handleChange, submitForm, inputData }) => (
   <Dimmer loader={isSubmitting} active={isSubmitting}>
     <FoForm>
       <Form.Group label={t('finance.invoices.invoice_number')}>

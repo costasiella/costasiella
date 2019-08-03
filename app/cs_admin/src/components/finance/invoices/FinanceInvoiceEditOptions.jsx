@@ -63,6 +63,7 @@ const FinanceInvoiceEditOptions = ({ t, history, match, initialData }) => (
           >
             {({ isSubmitting, errors, values, touched, handleChange, submitForm }) => (
               <FinanceInvoiceEditOptionsForm
+                inputData={initialData}
                 isSubmitting={isSubmitting}
                 errors={errors}
                 values={values}

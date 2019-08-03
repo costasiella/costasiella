@@ -34,7 +34,7 @@ export const GET_INVOICES_QUERY = gql`
 `
 
 export const GET_INVOICE_QUERY = gql`
-  query FinanceInvoice($id: ID!) {
+  query FinanceInvoice($id: ID!, $before: String, $after: String) {
     financeInvoice(id:$id) {
       id
       account {
@@ -94,6 +94,20 @@ export const GET_INVOICE_QUERY = gql`
               name
             }
           }
+        }
+      }
+    }
+    financePaymentMethods(first: 100, before: $before, after: $after, archived: false) {
+      pageInfo {
+        startCursor
+        endCursor
+        hasNextPage
+        hasPreviousPage
+      }
+      edges {
+        node {
+          id
+          name
         }
       }
     }
