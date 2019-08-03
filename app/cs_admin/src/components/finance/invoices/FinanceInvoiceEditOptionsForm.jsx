@@ -4,7 +4,7 @@ import React from 'react'
 import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
 import { Form as FoForm, Field, ErrorMessage } from 'formik'
-
+import { v4 } from 'uuid'
 
 import {
   Dimmer,
@@ -53,6 +53,23 @@ const FinanceInvoiceEditOptionsForm = ({ t, isSubmitting, errors, handleChange, 
         </Field>
         <ErrorMessage name="status" component="span" className="invalid-feedback" />
       </Form.Group>
+      <Form.Group label={t('general.payment_method')}>
+        <Field component="select" 
+              name="financePaymentMethod" 
+              className={(errors.financePaymentMethod) ? "form-control is-invalid" : "form-control"} 
+              onChange={(e) => {
+                setFieldValue('financePaymentMethod', e.target.value)
+                setFieldTouched('financePaymentMethod', true)
+                setTimeout(() => {submitForm()}, 200)
+              }}
+              autoComplete="off">
+          <option value="" key={v4()}></option>
+          {inputData.financePaymentMethods.edges.map(({ node }) =>
+            <option value={node.id} key={v4()}>{node.name}</option>
+          )}
+        </Field>
+        <ErrorMessage name="financePaymentMethod" component="span" className="invalid-feedback" />
+      </Form.Group>  
     </FoForm>
   </Dimmer>
 )
