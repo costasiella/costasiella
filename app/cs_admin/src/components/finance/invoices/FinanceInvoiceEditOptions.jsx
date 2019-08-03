@@ -7,10 +7,12 @@ import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
 import { Formik } from 'formik'
 import { toast } from 'react-toastify'
+import moment from 'moment'
 
 
 import {
-  Card
+  Card, 
+  Form
 } from "tabler-react"
 
 
@@ -72,6 +74,10 @@ const FinanceInvoiceEditOptions = ({ t, history, match, initialData }) => (
           </Formik>
         )}
       </Mutation>
+      <Form.Label>
+        {t('general.last_updated_at')}
+      </Form.Label>
+        {moment(initialData.financeInvoice.updatedAt).format('LL')}
     </Card.Body>
   </Card>
 )

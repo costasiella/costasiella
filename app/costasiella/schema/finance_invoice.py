@@ -165,7 +165,7 @@ class UpdateFinanceInvoice(graphene.relay.ClientIDMutation):
         if not finance_invoice:
             raise Exception('Invalid Finance Invoice  ID!')
 
-        validation_result = validate_create_update_input(update=True)
+        validation_result = validate_create_update_input(input, update=True)
 
         if 'summary' in input:
             finance_invoice.summary = input['summary']
