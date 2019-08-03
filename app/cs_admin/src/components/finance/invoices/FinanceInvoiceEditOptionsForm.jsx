@@ -15,7 +15,7 @@ import {
 let optionsFormTypingTimer
 
 
-const FinanceInvoiceEditOptionsForm = ({ t, isSubmitting, errors, handleChange, submitForm, inputData }) => (
+const FinanceInvoiceEditOptionsForm = ({ t, isSubmitting, errors, handleChange, submitForm, setFieldValue, setFieldTouched, inputData }) => (
   <Dimmer loader={isSubmitting} active={isSubmitting}>
     <FoForm>
       <Form.Group label={t('finance.invoices.invoice_number')}>
@@ -34,6 +34,24 @@ const FinanceInvoiceEditOptionsForm = ({ t, isSubmitting, errors, handleChange, 
                 
         />
         <ErrorMessage name="invoiceNumber" component="span" className="invalid-feedback" />
+      </Form.Group>
+      <Form.Group label={t('general.status')}>
+        <Field component="select" 
+              name="status" 
+              className={(errors.status) ? "form-control is-invalid" : "form-control"} 
+              autoComplete="off"
+              onChange={(e) => {
+                setFieldValue('status', e.target.value)
+                setFieldTouched('status', true)
+                setTimeout(() => {submitForm()}, 200)
+              }}
+        >
+          <option value="DRAFT">{t('finance.invoices.status.DRAFT')}</option>
+          <option value="SENT">{t('finance.invoices.status.SENT')}</option>
+          <option value="PAID">{t('finance.invoices.status.PAID')}</option>
+          <option value="CANCELLED">{t('finance.invoices.status.CANCELLED')}</option>
+        </Field>
+        <ErrorMessage name="status" component="span" className="invalid-feedback" />
       </Form.Group>
     </FoForm>
   </Dimmer>

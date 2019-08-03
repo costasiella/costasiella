@@ -32,6 +32,7 @@ const FinanceInvoiceEditOptions = ({ t, history, match, initialData }) => (
           <Formik
             initialValues={{ 
               invoiceNumber: initialData.financeInvoice.invoiceNumber, 
+              status: initialData.financeInvoice.status,
             }}
             // validationSchema={INVOICE_GROUP_SCHEMA}
             onSubmit={(values, { setSubmitting }) => {
@@ -42,6 +43,7 @@ const FinanceInvoiceEditOptions = ({ t, history, match, initialData }) => (
                 input: {
                   id: match.params.id,
                   invoiceNumber: values.invoiceNumber, 
+                  status: values.status,
                 }
               }, refetchQueries: [
                   {query: GET_INVOICES_QUERY, variables: get_list_query_variables()}
@@ -61,7 +63,7 @@ const FinanceInvoiceEditOptions = ({ t, history, match, initialData }) => (
                 })
               }}
           >
-            {({ isSubmitting, errors, values, touched, handleChange, submitForm }) => (
+            {({ isSubmitting, errors, values, touched, handleChange, submitForm, setFieldTouched, setFieldValue }) => (
               <FinanceInvoiceEditOptionsForm
                 inputData={initialData}
                 isSubmitting={isSubmitting}
@@ -69,6 +71,8 @@ const FinanceInvoiceEditOptions = ({ t, history, match, initialData }) => (
                 values={values}
                 handleChange={handleChange}
                 submitForm={submitForm}
+                setFieldValue={setFieldValue}
+                setFieldTouched={setFieldTouched}
               >
               </FinanceInvoiceEditOptionsForm>
             )}
