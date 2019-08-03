@@ -33,7 +33,7 @@ class FinanceInvoiceEditOptions extends Component {
     const match = this.props.match
     const initialData = this.props.initialData
 
-    const initialPaymentMethod = ""
+    let initialPaymentMethod = ""
     if (initialData.financeInvoice.financePaymentMethod) {
       initialPaymentMethod = initialData.financeInvoice.financePaymentMethod.id
     }

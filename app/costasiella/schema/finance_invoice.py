@@ -141,6 +141,7 @@ class CreateFinanceInvoice(graphene.relay.ClientIDMutation):
 class UpdateFinanceInvoice(graphene.relay.ClientIDMutation):
     class Input:
         id = graphene.ID(required=True)
+        finance_payment_method = graphene.ID(required=False)
         summary = graphene.String(required=False)
         invoice_number = graphene.String(required=False)
         date_sent = graphene.types.datetime.Date(required=False)
