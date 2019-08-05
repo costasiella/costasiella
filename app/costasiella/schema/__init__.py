@@ -16,6 +16,7 @@ from .finance_invoice_item import FinanceInvoiceItemQuery, FinanceInvoiceItemMut
 from .finance_payment_method import FinancePaymentMethodQuery, FinancePaymentMethodMutation
 from .finance_tax_rate import FinanceTaxRateQuery, FinanceTaxRateMutation
 
+from .organization import OrganizationQuery, OrganizationMutation
 from .organization_appointment import OrganizationAppointmentQuery, OrganizationAppointmentMutation
 from .organization_appointment_category import OrganizationAppointmentCategoryQuery, OrganizationAppointmentCategoryMutation
 from .organization_appointment_price import OrganizationAppointmentPriceQuery, OrganizationAppointmentPriceMutation
@@ -52,6 +53,7 @@ class Query(AccountQuery,
             FinanceInvoiceItemQuery,
             FinancePaymentMethodQuery,
             FinanceTaxRateQuery,
+            OrganizationQuery,
             OrganizationAppointmentQuery,
             OrganizationAppointmentCategoryQuery,
             OrganizationAppointmentPriceQuery,
@@ -87,6 +89,7 @@ class Mutation(AccountMutation,
                FinanceInvoiceItemMutation,
                FinancePaymentMethodMutation,
                FinanceTaxRateMutation,
+               OrganizationMutation,
                OrganizationAppointmentMutation,
                OrganizationAppointmentCategoryMutation,
                OrganizationAppointmentPriceMutation,
