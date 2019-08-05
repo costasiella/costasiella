@@ -111,6 +111,15 @@ export const GET_INVOICE_QUERY = gql`
         }
       }
     }
+    organization(id:"T3JnYW5pemF0aW9uTm9kZToxMDA=") {
+      id
+      name
+      address
+      phone
+      email
+      registration
+      taxRegistration
+    }
   }
 `
 
