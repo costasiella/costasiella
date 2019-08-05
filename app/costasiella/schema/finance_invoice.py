@@ -143,6 +143,14 @@ class UpdateFinanceInvoice(graphene.relay.ClientIDMutation):
         id = graphene.ID(required=True)
         finance_payment_method = graphene.ID(required=False)
         summary = graphene.String(required=False)
+        relation_company = graphene.String(required=False)
+        relation_company_registration = graphene.String(required=False)
+        relation_company_tax_registration = graphene.String(required=False)
+        relation_contact_name = graphene.String(required=False)
+        relation_address = graphene.String(required=False)
+        relation_postcode = graphene.String(required=False)
+        relation_city = graphene.String(required=False)
+        relation_country = graphene.String(required=False)
         invoice_number = graphene.String(required=False)
         date_sent = graphene.types.datetime.Date(required=False)
         date_due = graphene.types.datetime.Date(required=False)
@@ -170,6 +178,30 @@ class UpdateFinanceInvoice(graphene.relay.ClientIDMutation):
 
         if 'summary' in input:
             finance_invoice.summary = input['summary']
+
+        if 'relation_company' in input:
+            finance_invoice.relation_company = input['relation_company']
+
+        if 'relation_company_registration' in input:
+            finance_invoice.relation_company_registration = input['relation_company_registration']
+
+        if 'relation_company_tax_registration' in input:
+            finance_invoice.relation_company_tax_registration = input['relation_company_tax_registration']
+
+        if 'relation_contact_name' in input:
+            finance_invoice.relation_contact_name = input['relation_contact_name']
+
+        if 'relation_address' in input:
+            finance_invoice.relation_address = input['relation_address']
+
+        if 'relation_postcode' in input:
+            finance_invoice.relation_postcode = input['relation_postcode']
+
+        if 'relation_city' in input:
+            finance_invoice.relation_city = input['relation_city']
+
+        if 'relation_country' in input:
+            finance_invoice.relation_country = input['relation_country']
 
         if 'invoice_number' in input:
             finance_invoice.invoice_number = input['invoice_number']

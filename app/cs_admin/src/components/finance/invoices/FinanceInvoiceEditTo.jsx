@@ -29,7 +29,14 @@ const FinanceInvoiceEditTo = ({ t, history, match, initialData }) => (
         {(updateInvoice, { data }) => (
           <Formik
             initialValues={{ 
-              summary: initialData.financeInvoice.summary, 
+              relationCompany: initialData.financeInvoice.relationCompany, 
+              relationCompanyRegistration: initialData.financeInvoice.relationCompanyRegistration, 
+              relationCompanyTaxRegistration: initialData.financeInvoice.relationCompanyTaxRegistration, 
+              relationContactName: initialData.financeInvoice.relationContactName, 
+              relationAddress: initialData.financeInvoice.relationAddress, 
+              relationPostcode: initialData.financeInvoice.relationPostcode, 
+              relationCity: initialData.financeInvoice.relationCity, 
+              relationCountry: initialData.financeInvoice.relationCountry, 
             }}
             // validationSchema={INVOICE_GROUP_SCHEMA}
             onSubmit={(values, { setSubmitting }) => {
@@ -39,7 +46,14 @@ const FinanceInvoiceEditTo = ({ t, history, match, initialData }) => (
               updateInvoice({ variables: {
                 input: {
                   id: match.params.id,
-                  summary: values.summary, 
+                  relationCompany: values.relationCompany,
+                  relationCompanyRegistration: values.relationCompanyRegistration,
+                  relationCompanyTaxRegistration: values.relationCompanyTaxRegistration,
+                  relationContactName: values.relationContactName,
+                  relationAddress: values.relationAddress,
+                  relationPostcode: values.relationPostcode,
+                  relationCity: values.relationCity,
+                  relationCountry: values.relationCountry
                 }
               }, refetchQueries: [
                   {query: GET_INVOICES_QUERY, variables: get_list_query_variables()}
