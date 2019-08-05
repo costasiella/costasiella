@@ -131,73 +131,72 @@ class GQLOrganization(TestCase):
         self.assertEqual(data['organization']['name'], organization.name)
 
 
-    # def test_update_organization(self):
-    #     """ Update a  as admin user """
-    #     query = self.update_organization_mutation
-        
-    #     variables = self.variables_update
+    def test_update_organization(self):
+        """ Update a  as admin user """
+        query = self.update_organization_mutation
+        variables = self.variables_update
 
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         self.admin_user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['updateOrganization']['organization']['name'], variables['input']['name'])
-    #     self.assertEqual(data['updateOrganization']['organization']['archived'], False)
-
-
-    # def test_update_organization_anon_user(self):
-    #     """ Update a  as anonymous user """
-    #     query = self.update_organization_mutation
-        
-    #     variables = self.variables_update
-
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         self.anon_user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
+        executed = execute_test_client_api_query(
+            query, 
+            self.admin_user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['updateOrganization']['organization']['name'], variables['input']['name'])
+        self.assertEqual(data['updateOrganization']['organization']['address'], variables['input']['address'])
+        self.assertEqual(data['updateOrganization']['organization']['phone'], variables['input']['phone'])
+        self.assertEqual(data['updateOrganization']['organization']['email'], variables['input']['email'])
+        self.assertEqual(data['updateOrganization']['organization']['registration'], variables['input']['registration'])
+        self.assertEqual(data['updateOrganization']['organization']['taxRegistration'], variables['input']['taxRegistration'])
 
 
-    # def test_update_organization_permission_granted(self):
-    #     """ Update a  as user with permission """
-    #     query = self.update_organization_mutation
-        
-    #     variables = self.variables_update
+    def test_update_organization_anon_user(self):
+        """ Update a  as anonymous user """
+        query = self.update_organization_mutation
+        variables = self.variables_update
 
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename=self.permission_change)
-    #     user.user_permissions.add(permission)
-    #     user.save()
-
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['updateOrganization']['organization']['name'], variables['input']['name'])
-    #     self.assertEqual(data['updateOrganization']['organization']['archived'], False)
+        executed = execute_test_client_api_query(
+            query, 
+            self.anon_user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
-    # def test_update_organization_permission_denied(self):
-    #     """ Update a  as user without permissions """
-    #     query = self.update_organization_mutation
-        
-    #     variables = self.variables_update
+    def test_update_organization_permission_granted(self):
+        """ Update a  as user with permission """
+        query = self.update_organization_mutation
+        variables = self.variables_update
 
-    #     user = f.RegularUserFactory.create()
+        user = f.RegularUserFactory.create()
+        permission = Permission.objects.get(codename=self.permission_change)
+        user.user_permissions.add(permission)
+        user.save()
 
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
+        executed = execute_test_client_api_query(
+            query, 
+            user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['updateOrganization']['organization']['name'], variables['input']['name'])
+
+
+    def test_update_organization_permission_denied(self):
+        """ Update a  as user without permissions """
+        query = self.update_organization_mutation
+        variables = self.variables_update
+
+        user = f.RegularUserFactory.create()
+
+        executed = execute_test_client_api_query(
+            query, 
+            user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
 
