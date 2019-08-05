@@ -111,7 +111,8 @@
         },
         "invoice": {
             "title": "__STRING_NOT_TRANSLATED__",
-            "toast_edit_summary_success": "__STRING_NOT_TRANSLATED__"
+            "toast_edit_summary_success": "__STRING_NOT_TRANSLATED__",
+            "toast_edit_options_success": "__STRING_NOT_TRANSLATED__"
         }
     },
     "general": {
@@ -243,7 +244,8 @@
         "tax": "__STRING_NOT_TRANSLATED__",
         "paid": "__STRING_NOT_TRANSLATED__",
         "options": "__STRING_NOT_TRANSLATED__",
-        "summary": "__STRING_NOT_TRANSLATED__"
+        "summary": "__STRING_NOT_TRANSLATED__",
+        "last_updated_at": "__STRING_NOT_TRANSLATED__"
     },
     "yup": {
         "min_len_3": "__STRING_NOT_TRANSLATED__",
@@ -460,6 +462,13 @@
             "delete_confirm_msg": "__STRING_NOT_TRANSLATED__",
             "deleted": "__STRING_NOT_TRANSLATED__",
             "add": "__STRING_NOT_TRANSLATED__"
+        },
+        "organization": {
+            "title": "__STRING_NOT_TRANSLATED__",
+            "title_edit": "__STRING_NOT_TRANSLATED__",
+            "toast_edit_success": "__STRING_NOT_TRANSLATED__",
+            "registration": "__STRING_NOT_TRANSLATED__",
+            "tax_registration": "__STRING_NOT_TRANSLATED__"
         }
     },
     "validity": {

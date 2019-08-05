@@ -111,7 +111,8 @@
         },
         "invoice": {
             "title": "Invoice",
-            "toast_edit_summary_success": "Saved summary"
+            "toast_edit_summary_success": "Saved summary",
+            "toast_edit_options_success": "Saved options"
         }
     },
     "general": {
@@ -243,7 +244,8 @@
         "tax": "Tax",
         "paid": "Paid",
         "options": "Options",
-        "summary": "Summary"
+        "summary": "Summary",
+        "last_updated_at": "Last updated"
     },
     "yup": {
         "min_len_3": "Please input at least 3 characters",
@@ -460,6 +462,13 @@
             "delete_confirm_msg": "Are you sure you wish to delete the price for this teacher?",
             "deleted": "Deleted appointment price",
             "add": "Add appointment price"
+        },
+        "organization": {
+            "title": "Organization",
+            "title_edit": "Organization",
+            "toast_edit_success": "Saved organization",
+            "registration": "Registration ID",
+            "tax_registration": "Tax registration ID"
         }
     },
     "validity": {
