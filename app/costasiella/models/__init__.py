@@ -13,6 +13,7 @@ from .finance_invoice_item import FinanceInvoiceItem
 from .finance_payment_method import FinancePaymentMethod
 from .finance_tax_rate import FinanceTaxRate
 
+from .organization import Organization
 from .organization_appointment import OrganizationAppointment
 from .organization_appointment_category import OrganizationAppointmentCategory
 from .organization_appointment_price import OrganizationAppointmentPrice
