@@ -11,11 +11,14 @@ import {
   Form,
 } from "tabler-react"
 
+import CSDatePicker from "../../ui/CSDatePicker"
+
 
 let optionsFormTypingTimer
+const formSubmitTimeout = 1500
 
 
-const FinanceInvoiceEditOptionsForm = ({ t, isSubmitting, errors, handleChange, submitForm, setFieldValue, setFieldTouched, inputData }) => (
+const FinanceInvoiceEditOptionsForm = ({ t, isSubmitting, values, errors, handleChange, submitForm, setFieldValue, setFieldTouched, inputData }) => (
   <Dimmer loader={isSubmitting} active={isSubmitting}>
     <FoForm>
       <Form.Group label={t('finance.invoices.invoice_number')}>
@@ -28,12 +31,38 @@ const FinanceInvoiceEditOptionsForm = ({ t, isSubmitting, errors, handleChange, 
                   handleChange(e)
                   optionsFormTypingTimer = setTimeout(() => {
                     submitForm()
-                  }, 2000)
+                  }, formSubmitTimeout)
                 }}
                 onKeyDown={() => clearTimeout(optionsFormTypingTimer)}
                 
         />
         <ErrorMessage name="invoiceNumber" component="span" className="invalid-feedback" />
+      </Form.Group>
+      <Form.Group label={t('finance.invoices.date')}>
+        <CSDatePicker 
+          className={(errors.dateSent) ? "form-control is-invalid" : "form-control"} 
+          selected={values.dateSent}
+          onChange={(date) => {
+            setFieldValue("dateSent", date)
+            setFieldTouched("dateSent", true)
+            setTimeout(() => {submitForm()}, formSubmitTimeout)
+          }}
+          onBlur={() => setFieldTouched("dateSent", true)}
+        />
+        <ErrorMessage name="dateSent" component="span" className="invalid-feedback" />
+      </Form.Group>
+      <Form.Group label={t('finance.invoices.due')}>
+        <CSDatePicker 
+          className={(errors.dateDue) ? "form-control is-invalid" : "form-control"} 
+          selected={values.dateDue}
+          onChange={(date) => {
+            setFieldValue("dateDue", date)
+            setFieldTouched("dateDue", true)
+            setTimeout(() => {submitForm()}, formSubmitTimeout)
+          }}
+          onBlur={() => setFieldTouched("dateDue", true)}
+        />
+        <ErrorMessage name="dateDue" component="span" className="invalid-feedback" />
       </Form.Group>
       <Form.Group label={t('general.status')}>
         <Field component="select" 
@@ -43,7 +72,7 @@ const FinanceInvoiceEditOptionsForm = ({ t, isSubmitting, errors, handleChange, 
               onChange={(e) => {
                 setFieldValue('status', e.target.value)
                 setFieldTouched('status', true)
-                setTimeout(() => {submitForm()}, 200)
+                setTimeout(() => {submitForm()}, formSubmitTimeout)
               }}
         >
           <option value="DRAFT">{t('finance.invoices.status.DRAFT')}</option>
@@ -60,7 +89,7 @@ const FinanceInvoiceEditOptionsForm = ({ t, isSubmitting, errors, handleChange, 
               onChange={(e) => {
                 setFieldValue('financePaymentMethod', e.target.value)
                 setFieldTouched('financePaymentMethod', true)
-                setTimeout(() => {submitForm()}, 200)
+                setTimeout(() => {submitForm()}, formSubmitTimeout)
               }}
               autoComplete="off">
           <option value="" key={v4()}></option>

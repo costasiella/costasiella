@@ -16,6 +16,7 @@ import {
 } from "tabler-react"
 
 
+import { dateToLocalISO } from '../../../tools/date_tools'
 import { get_list_query_variables } from "./tools"
 import { UPDATE_INVOICE, GET_INVOICES_QUERY } from "./queries"
 import FinanceInvoiceEditOptionsForm from "./FinanceInvoiceEditOptionsForm"
@@ -50,6 +51,8 @@ class FinanceInvoiceEditOptions extends Component {
               <Formik
                 initialValues={{ 
                   invoiceNumber: initialData.financeInvoice.invoiceNumber, 
+                  dateSent: initialData.financeInvoice.dateSent,
+                  dateDue: initialData.financeInvoice.dateDue,
                   status: initialData.financeInvoice.status,
                   financePaymentMethod: initialPaymentMethod
                 }}
@@ -62,6 +65,8 @@ class FinanceInvoiceEditOptions extends Component {
                     input: {
                       id: match.params.id,
                       invoiceNumber: values.invoiceNumber, 
+                      dateSent: dateToLocalISO(values.dateSent),
+                      dateDue: dateToLocalISO(values.dateDue),
                       status: values.status,
                       financePaymentMethod: values.financePaymentMethod,
                     }
