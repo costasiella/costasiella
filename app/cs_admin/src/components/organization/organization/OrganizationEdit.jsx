@@ -42,7 +42,7 @@ const UPDATE_ORGANIZATION = gql`
 class OrganizationEdit extends Component {
   constructor(props) {
     super(props)
-    console.log("Organization level edit props:")
+    console.log("Organization edit props:")
     console.log(props)
   }
 
@@ -51,21 +51,20 @@ class OrganizationEdit extends Component {
     const match = this.props.match
     const history = this.props.history
     const id = match.params.id
-    const return_url = "/organization/levels"
 
     return (
       <SiteWrapper>
         <div className="my-3 my-md-5">
           <Container>
-            <Page.Header title="Organization" />
+            <Page.Header title={t('organization.title')} />
             <Grid.Row>
               <Grid.Col md={9}>
               <Card>
                 <Card.Header>
-                  <Card.Title>{t('organization.levels.title_edit')}</Card.Title>
+                  <Card.Title>{t('organization.organization.title_edit')}</Card.Title>
                   {console.log(match.params.id)}
                 </Card.Header>
-                <Query query={GET_LEVEL_QUERY} variables={{ id }} >
+                <Query query={GET_ORGANIZATION_QUERY} variables={{ id }} >
                 {({ loading, error, data, refetch }) => {
                     // Loading
                     if (loading) return <p>{t('general.loading_with_dots')}</p>
@@ -75,19 +74,24 @@ class OrganizationEdit extends Component {
                       return <p>{t('general.error_sad_smiley')}</p>
                     }
                     
-                    const initialData = data.organizationLevel;
+                    const initialData = data.organization;
                     console.log('query data')
                     console.log(data)
 
                     return (
                       
-                      <Mutation mutation={UPDATE_LEVEL} onCompleted={() => history.push(return_url)}> 
+                      <Mutation mutation={UPDATE_ORGANIZATION}> 
                       {(updateLevel, { data }) => (
                           <Formik
                               initialValues={{ 
                                 name: initialData.name, 
+                                address: initialData.address,
+                                phone: initialData.phone,
+                                email: initialData.email,
+                                registration: initialData.registration,
+                                taxRegistration: initialData.taxRegistration,
                               }}
-                              validationSchema={LEVEL_SCHEMA}
+                              validationSchema={ORGANIZATION_SCHEMA}
                               onSubmit={(values, { setSubmitting }) => {
                                   console.log('submit values:')
                                   console.log(values)
@@ -96,13 +100,18 @@ class OrganizationEdit extends Component {
                                     input: {
                                       id: match.params.id,
                                       name: values.name,
+                                      address: values.address,
+                                      phone: values.phone,
+                                      email: values.email,
+                                      registration: values.registration,
+                                      taxRegistration: values.taxRegistration,
                                     }
                                   }, refetchQueries: [
-                                      {query: GET_LEVELS_QUERY, variables: {"archived": false }}
+                                      // {query: GET_LEVELS_QUERY, variables: {"archived": false }}
                                   ]})
                                   .then(({ data }) => {
                                       console.log('got data', data)
-                                      toast.success((t('organization.levels.toast_edit_success')), {
+                                      toast.success((t('organization.organization.toast_edit_success')), {
                                           position: toast.POSITION.BOTTOM_RIGHT
                                         })
                                     }).catch((error) => {
@@ -115,7 +124,7 @@ class OrganizationEdit extends Component {
                               }}
                               >
                               {({ isSubmitting, errors }) => (
-                                <OrganizationLevelForm 
+                                <OrganizationForm 
                                   isSubmitting={isSubmitting}
                                   errors={errors}
                                   return_url={return_url}
@@ -129,14 +138,8 @@ class OrganizationEdit extends Component {
               </Card>
               </Grid.Col>
               <Grid.Col md={3}>
-                <HasPermissionWrapper permission="change"
-                                      resource="organizationlevel">
-                  <Button color="primary btn-block mb-6"
-                          onClick={() => history.push(return_url)}>
-                    <Icon prefix="fe" name="chevrons-left" /> {t('general.back')}
-                  </Button>
-                </HasPermissionWrapper>
-                <OrganizationMenu active_link='levels'/>
+                <h5>{t("general.menu")}</h5>
+                <OrganizationMenu active_link='organization'/>
               </Grid.Col>
             </Grid.Row>
           </Container>
