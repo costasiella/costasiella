@@ -74,7 +74,15 @@
                 "NOT_FOUND": "__STRING_NOT_TRANSLATED__"
             },
             "delete_confirm_msg": "__STRING_NOT_TRANSLATED__",
-            "deleted": "__STRING_NOT_TRANSLATED__"
+            "deleted": "__STRING_NOT_TRANSLATED__",
+            "relation_company": "__STRING_NOT_TRANSLATED__",
+            "relation_company_registration": "__STRING_NOT_TRANSLATED__",
+            "relation_company_tax_registration": "__STRING_NOT_TRANSLATED__",
+            "relation_contact_name": "__STRING_NOT_TRANSLATED__",
+            "relation_address": "__STRING_NOT_TRANSLATED__",
+            "relation_postcode": "__STRING_NOT_TRANSLATED__",
+            "relation_city": "__STRING_NOT_TRANSLATED__",
+            "relation_country": "__STRING_NOT_TRANSLATED__"
         },
         "invoice_groups": {
             "title": "__STRING_NOT_TRANSLATED__",
@@ -112,7 +120,8 @@
         "invoice": {
             "title": "__STRING_NOT_TRANSLATED__",
             "toast_edit_summary_success": "__STRING_NOT_TRANSLATED__",
-            "toast_edit_options_success": "__STRING_NOT_TRANSLATED__"
+            "toast_edit_options_success": "__STRING_NOT_TRANSLATED__",
+            "toast_edit_to_success": "__STRING_NOT_TRANSLATED__"
         }
     },
     "general": {
@@ -245,7 +254,9 @@
         "paid": "__STRING_NOT_TRANSLATED__",
         "options": "__STRING_NOT_TRANSLATED__",
         "summary": "__STRING_NOT_TRANSLATED__",
-        "last_updated_at": "__STRING_NOT_TRANSLATED__"
+        "last_updated_at": "__STRING_NOT_TRANSLATED__",
+        "from": "__STRING_NOT_TRANSLATED__",
+        "to": "__STRING_NOT_TRANSLATED__"
     },
     "yup": {
         "min_len_3": "__STRING_NOT_TRANSLATED__",
