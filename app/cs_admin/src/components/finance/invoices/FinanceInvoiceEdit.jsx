@@ -28,6 +28,7 @@ import HasPermissionWrapper from "../../HasPermissionWrapper"
 
 import FinanceMenu from "../FinanceMenu"
 
+import FinanceInvoiceEditAdditional from "./FinanceInvoiceEditAdditional"
 import FinanceInvoiceEditBalance from "./FinanceInvoiceEditBalance"
 import FinanceInvoiceEditOptions from "./FinanceInvoiceEditOptions"
 import FinanceInvoiceEditOrganization from "./FinanceInvoiceEditOrganization"
@@ -89,6 +90,7 @@ class FinanceInvoiceEdit extends Component {
                         </Grid.Col>
                       </Grid.Row>
                       invoice content here
+                      <FinanceInvoiceEditAdditional />
 
 {/*                             
                             <Mutation mutation={UPDATE_COSTCENTER} onCompleted={() => history.push(return_url)}> 
