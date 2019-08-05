@@ -16,7 +16,10 @@ import { tinymceBasicConf } from "../../../plugin_config/tinymce"
 
 
 let termsFormTypingTimer
+const formSubmitTimeout = 2000
 
+// Use editor as controlled component:
+// https://github.com/tinymce/tinymce-react/blob/master/README.md
 
 const FinanceInvoiceEditTermsForm = ({ t, isSubmitting, values, errors, handleChange, submitForm, setFieldTouched, setFieldValue }) => (
   <Dimmer loader={isSubmitting} active={isSubmitting}>
@@ -26,7 +29,15 @@ const FinanceInvoiceEditTermsForm = ({ t, isSubmitting, values, errors, handleCh
             textareaName="terms"
             initialValue={values.terms}
             init={tinymceBasicConf}
-            onChange={(e) => setFieldValue("terms", e.target.getContent())}
+            onEditorChange={(content, editor) => {
+              clearTimeout(termsFormTypingTimer)
+              setFieldValue("terms", content)
+              setFieldTouched("terms", true)
+              termsFormTypingTimer = setTimeout(() => {
+                submitForm()
+              }, formSubmitTimeout)         
+            }}
+            onKeyDown={() => clearTimeout(termsFormTypingTimer)}
             onBlur={() => setFieldTouched("terms", true)}
           />
         <ErrorMessage name="terms" component="span" className="invalid-feedback" />
