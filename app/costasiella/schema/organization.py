@@ -154,5 +154,5 @@ class UpdateOrganization(graphene.relay.ClientIDMutation):
 
 class OrganizationMutation(graphene.ObjectType):
     # archive_organization = ArchiveOrganization.Field()
-    create_organization = CreateOrganization.Field()
+    # create_organization = CreateOrganization.Field()
     update_organization = UpdateOrganization.Field()
