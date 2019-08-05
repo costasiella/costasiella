@@ -32,6 +32,7 @@ import FinanceInvoiceEditBalance from "./FinanceInvoiceEditBalance"
 import FinanceInvoiceEditOptions from "./FinanceInvoiceEditOptions"
 import FinanceInvoiceEditOrganization from "./FinanceInvoiceEditOrganization"
 import FinanceInvoiceEditSummary from "./FinanceInvoiceEditSummary"
+import FinanceInvoiceEditTo from "./FinanceInvoiceEditTo"
 
 
 class FinanceInvoiceEdit extends Component {
@@ -82,6 +83,9 @@ class FinanceInvoiceEdit extends Component {
                       <Grid.Row>
                         <Grid.Col md={6} ml={0}>
                           <FinanceInvoiceEditOrganization organization={data.organization} />
+                        </Grid.Col>
+                        <Grid.Col md={6} ml={0}>
+                          <FinanceInvoiceEditTo initialData={data} />
                         </Grid.Col>
                       </Grid.Row>
                       invoice content here

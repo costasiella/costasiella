@@ -12,7 +12,11 @@ import {
 } from "tabler-react"
 
 
-let summaryFormTypingTimer
+let toFormTypingTimer
+
+function handleOnChange({ e, submitForm, handleChange}) {
+  
+}
 
 
 const FinanceInvoiceEditSummaryForm = ({ t, isSubmitting, errors, handleChange, submitForm }) => (
@@ -24,13 +28,13 @@ const FinanceInvoiceEditSummaryForm = ({ t, isSubmitting, errors, handleChange, 
                 className={(errors.summary) ? "form-control is-invalid" : "form-control"} 
                 autoComplete="off" 
                 onChange={(e) => {
-                  clearTimeout(summaryFormTypingTimer)
+                  clearTimeout(toFormTypingTimer)
                   handleChange(e)
-                  summaryFormTypingTimer = setTimeout(() => {
+                  toFormTypingTimer = setTimeout(() => {
                     submitForm()
                   }, 1500)
                 }}
-                onKeyDown={() => clearTimeout(summaryFormTypingTimer)}
+                onKeyDown={() => clearTimeout(toFormTypingTimer)}
                 
         />
         <ErrorMessage name="summary" component="span" className="invalid-feedback" />
