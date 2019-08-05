@@ -10,7 +10,7 @@ import { toast } from 'react-toastify'
 
 import { GET_ORGANIZATION_QUERY } from './queries'
 import { ORGANIZATION_SCHEMA } from './yupSchema'
-import OrganizationLevelForm from './OrganizationForm'
+import OrganizationForm from './OrganizationForm'
 
 
 import {
@@ -114,6 +114,7 @@ class OrganizationEdit extends Component {
                                       toast.success((t('organization.organization.toast_edit_success')), {
                                           position: toast.POSITION.BOTTOM_RIGHT
                                         })
+                                      setSubmitting(false)
                                     }).catch((error) => {
                                       toast.error((t('general.toast_server_error')) + ': ' +  error, {
                                           position: toast.POSITION.BOTTOM_RIGHT
@@ -123,11 +124,13 @@ class OrganizationEdit extends Component {
                                     })
                               }}
                               >
-                              {({ isSubmitting, errors }) => (
+                              {({ isSubmitting, errors, values, setFieldTouched, setFieldValue }) => (
                                 <OrganizationForm 
                                   isSubmitting={isSubmitting}
+                                  values={values}
                                   errors={errors}
-                                  return_url={return_url}
+                                  setFieldTouched={setFieldTouched}
+                                  setFieldValue={setFieldValue}
                                 />
                               )}
                           </Formik>
