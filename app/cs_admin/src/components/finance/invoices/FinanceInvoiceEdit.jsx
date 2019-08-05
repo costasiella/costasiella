@@ -90,7 +90,7 @@ class FinanceInvoiceEdit extends Component {
                         </Grid.Col>
                       </Grid.Row>
                       invoice content here
-                      <FinanceInvoiceEditAdditional />
+                      <FinanceInvoiceEditAdditional initialData={data} />
 
 {/*                             
                             <Mutation mutation={UPDATE_COSTCENTER} onCompleted={() => history.push(return_url)}> 
