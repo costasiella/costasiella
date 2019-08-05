@@ -1,0 +1,10 @@
+[
+  {
+    "model": "costasiella.Organization",
+    "pk": 100,
+    "fields": {
+      "archived": false,
+      "name": "My organization"
+    }
+  }
+]

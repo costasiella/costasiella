@@ -8,10 +8,10 @@ class Organization(models.Model):
     archived = models.BooleanField(default=False)
     name = models.CharField(max_length=255)
     address = models.TextField(default="")
-    phone = models.CharField(max_length=255)
+    phone = models.CharField(max_length=255, default="")
     email = models.EmailField(default="")
-    registration = models.CharField(max_length=255)
-    tax_registration = models.CharField(max_length=255)
+    registration = models.CharField(max_length=255, default="")
+    tax_registration = models.CharField(max_length=255, default="")
 
 
     def __str__(self):
