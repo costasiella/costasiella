@@ -19,6 +19,7 @@ import {
 import { get_list_query_variables } from "./tools"
 import { UPDATE_INVOICE, GET_INVOICES_QUERY } from "./queries"
 import FinanceInvoiceEditItemProductNameForm from "./FinanceInvoiceEditItemProductNameForm"
+import FinanceInvoiceEditItemDescriptionForm from "./FinanceInvoiceEditItemDescriptionForm"
 
 
 export const UPDATE_INVOICE_ITEM = gql`
@@ -90,7 +91,9 @@ const FinanceInvoiceEditItems = ({ t, history, match, inputData }) => (
                 <Mutation mutation={UPDATE_INVOICE_ITEM}> 
                   {(updateInvoiceItem, { data }) => (
                     <Formik
-                      initialValues={get_initial_values(node)}
+                      initialValues={{
+                        productName: node.productName
+                      }}
                       // validationSchema={INVOICE_GROUP_SCHEMA}
                       onSubmit={(values, { setSubmitting }) => {
                         console.log('submit values:')
@@ -129,6 +132,57 @@ const FinanceInvoiceEditItems = ({ t, history, match, inputData }) => (
                           key={"invoice_item_product_name" + node.id} // don't use uuid here, during re-render it causes the inputs to lose focus while typing due to a different key
                         >
                         </FinanceInvoiceEditItemProductNameForm>
+                        
+                      )}
+                    </Formik>
+                  )}
+                </Mutation>
+              </Table.Col>
+              <Table.Col>
+                <Mutation mutation={UPDATE_INVOICE_ITEM}> 
+                  {(updateInvoiceItem, { data }) => (
+                    <Formik
+                      initialValues={{
+                        description: node.description
+                      }}
+                      // validationSchema={INVOICE_GROUP_SCHEMA}
+                      onSubmit={(values, { setSubmitting }) => {
+                        console.log('submit values:')
+                        console.log(values)
+
+                        updateInvoiceItem({ variables: {
+                          input: {
+                            id: node.id,
+                            description: values.description, 
+                          }
+                        }, refetchQueries: [
+                            // {query: GET_INVOICES_QUERY, variables: get_list_query_variables()}
+                        ]})
+                        .then(({ data }) => {
+                            console.log('got data', data)
+                            toast.success((t('finance.invoice.toast_edit_item_description_success')), {
+                                position: toast.POSITION.BOTTOM_RIGHT
+                              })
+                            setSubmitting(false)
+                          }).catch((error) => {
+                            toast.error((t('general.toast_server_error')) + ': ' +  error, {
+                                position: toast.POSITION.BOTTOM_RIGHT
+                              })
+                            console.log('there was an error sending the query', error)
+                            setSubmitting(false)
+                          })
+                        }}
+                    >
+                      {({ isSubmitting, errors, values, touched, handleChange, submitForm, setFieldValue, setFieldTouched }) => (
+                        <FinanceInvoiceEditItemDescriptionForm
+                          isSubmitting={isSubmitting}
+                          errors={errors}
+                          values={values}
+                          handleChange={handleChange}
+                          submitForm={submitForm}
+                          key={"invoice_item_description" + node.id} // don't use uuid here, during re-render it causes the inputs to lose focus while typing due to a different key
+                        >
+                        </FinanceInvoiceEditItemDescriptionForm>
                         
                       )}
                     </Formik>
