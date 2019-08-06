@@ -124,7 +124,8 @@
             "toast_edit_to_success": "To saved",
             "toast_edit_terms_success": "Terms saved",
             "toast_edit_footer_success": "Footer saved",
-            "toast_edit_note_success": "Note saved"
+            "toast_edit_note_success": "Note saved",
+            "toast_edit_item_success": "Item saved"
         }
     },
     "general": {
@@ -261,7 +262,9 @@
         "from": "From",
         "to": "To",
         "payments": "Payments",
-        "items": "Items"
+        "items": "Items",
+        "product_name": "Product name",
+        "quantity_short": "QTY"
     },
     "yup": {
         "min_len_3": "Please input at least 3 characters",
