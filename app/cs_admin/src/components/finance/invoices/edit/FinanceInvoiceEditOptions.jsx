@@ -16,9 +16,9 @@ import {
 } from "tabler-react"
 
 
-import { dateToLocalISO } from '../../../tools/date_tools'
-import { get_list_query_variables } from "./tools"
-import { UPDATE_INVOICE, GET_INVOICES_QUERY } from "./queries"
+import { dateToLocalISO } from '../../../../tools/date_tools'
+import { get_list_query_variables } from "../tools"
+import { UPDATE_INVOICE, GET_INVOICES_QUERY } from "../queries"
 import FinanceInvoiceEditOptionsForm from "./FinanceInvoiceEditOptionsForm"
 
 

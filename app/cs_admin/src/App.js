@@ -23,7 +23,7 @@ import FinanceGLAccounts from './components/finance/glaccounts/FinanceGLAccounts
 import FinanceGLAccountAdd from './components/finance/glaccounts/FinanceGLAccountAdd'
 import FinanceGLAccountEdit from './components/finance/glaccounts/FinanceGLAccountEdit'
 import FinanceInvoices from './components/finance/invoices/FinanceInvoices'
-import FinanceInvoiceEdit from './components/finance/invoices/FinanceInvoiceEdit'
+import FinanceInvoiceEdit from './components/finance/invoices/edit/FinanceInvoiceEdit'
 import FinanceInvoiceGroups from './components/finance/invoices/groups/FinanceInvoiceGroups'
 import FinanceInvoiceGroupAdd from './components/finance/invoices/groups/FinanceInvoiceGroupAdd'
 import FinanceInvoiceGroupEdit from './components/finance/invoices/groups/FinanceInvoiceGroupEdit'

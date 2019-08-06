@@ -12,7 +12,7 @@ import {
 } from "tabler-react"
 
 import { Editor } from '@tinymce/tinymce-react'
-import { tinymceBasicConf } from "../../../plugin_config/tinymce"
+import { tinymceBasicConf } from "../../../../plugin_config/tinymce"
 
 
 let footerFormTypingTimer

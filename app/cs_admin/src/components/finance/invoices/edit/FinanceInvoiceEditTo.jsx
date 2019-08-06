@@ -14,8 +14,8 @@ import {
 } from "tabler-react"
 
 
-import { get_list_query_variables } from "./tools"
-import { UPDATE_INVOICE, GET_INVOICES_QUERY } from "./queries"
+import { get_list_query_variables } from "../tools"
+import { UPDATE_INVOICE, GET_INVOICES_QUERY } from "../queries"
 import FinanceInvoiceEditToForm from "./FinanceInvoiceEditToForm"
 
 

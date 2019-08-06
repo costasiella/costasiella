@@ -9,8 +9,8 @@ import { Link } from 'react-router-dom'
 import { Formik, Form as FoForm, Field, ErrorMessage } from 'formik'
 import { toast } from 'react-toastify'
 
-import { GET_INVOICES_QUERY, GET_INVOICE_QUERY } from './queries'
-import { COSTCENTER_SCHEMA } from './yupSchema'
+import { GET_INVOICES_QUERY, GET_INVOICE_QUERY } from '../queries'
+import { COSTCENTER_SCHEMA } from '../yupSchema'
 
 
 
@@ -23,10 +23,10 @@ import {
   Container,
   Form
 } from "tabler-react";
-import SiteWrapper from "../../SiteWrapper"
-import HasPermissionWrapper from "../../HasPermissionWrapper"
+import SiteWrapper from "../../../SiteWrapper"
+import HasPermissionWrapper from "../../../HasPermissionWrapper"
 
-import FinanceMenu from "../FinanceMenu"
+import FinanceMenu from "../../FinanceMenu"
 
 import FinanceInvoiceEditItems from "./FinanceInvoiceEditItems"
 import FinanceInvoiceEditAdditional from "./FinanceInvoiceEditAdditional"
