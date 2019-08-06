@@ -75,18 +75,20 @@ const FinanceInvoiceEditItems = ({ t, history, match, inputData }) => (
     <Card.Body>
       <Table>
         <Table.Header>
-          <Table.ColHeader>{t("general.product_name")}</Table.ColHeader>
-          <Table.ColHeader>{t("general.description")}</Table.ColHeader>
-          <Table.ColHeader>{t("general.quantity_short")}</Table.ColHeader>
-          <Table.ColHeader>{t("general.price")}</Table.ColHeader>
-          <Table.ColHeader>{t("general.tax")}</Table.ColHeader>
-          <Table.ColHeader>{t("general.subtotal")}</Table.ColHeader>
-          <Table.ColHeader>{t("general.tax")}</Table.ColHeader>
-          <Table.ColHeader>{t("general.total")}</Table.ColHeader>
+          <Table.Row>
+            <Table.ColHeader>{t("general.product_name")}</Table.ColHeader>
+            <Table.ColHeader>{t("general.description")}</Table.ColHeader>
+            <Table.ColHeader>{t("general.quantity_short")}</Table.ColHeader>
+            <Table.ColHeader>{t("general.price")}</Table.ColHeader>
+            <Table.ColHeader>{t("general.tax")}</Table.ColHeader>
+            <Table.ColHeader>{t("general.subtotal")}</Table.ColHeader>
+            <Table.ColHeader>{t("general.tax")}</Table.ColHeader>
+            <Table.ColHeader>{t("general.total")}</Table.ColHeader>
+          </Table.Row>
         </Table.Header>
         <Table.Body>
           {inputData.financeInvoice.items.edges.map(({ node }) => (
-            <Table.Row>
+            <Table.Row key={"item_" + node.id}>
               <Table.Col>
                 <UpdateProductName initialValues={node} />
               </Table.Col>
