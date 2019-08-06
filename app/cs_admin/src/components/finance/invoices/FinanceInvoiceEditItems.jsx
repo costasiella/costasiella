@@ -7,6 +7,7 @@ import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
 import { Formik } from 'formik'
 import { toast } from 'react-toastify'
+import { v4 } from 'uuid'
 
 
 import {
@@ -18,16 +19,42 @@ import { get_list_query_variables } from "./tools"
 import { UPDATE_INVOICE, GET_INVOICES_QUERY } from "./queries"
 import FinanceInvoiceEditItemForm from "./FinanceInvoiceEditItemForm"
 
+
 export const UPDATE_INVOICE_ITEM = gql`
   mutation UpdateFinanceInvoiceItem($input: UpdateFinanceInvoiceItemInput!) {
     updateFinanceInvoiceItem(input: $input) {
       financeInvoiceItem {
         id
-        summary
       }
     }
   }
 `
+
+
+function get_initial_values(node) {
+  let initialValues = {
+    productName: node.productName, 
+    description: node.description, 
+    quantity: node.quantity, 
+    price: node.price, 
+  }
+
+  if (node.financeTaxRate) {
+    initialValues.financeTaxRate = node.financeTaxRate.id
+  }
+
+  if (node.financeGlaccount) {
+    initialValues.financeGlaccount = node.financeGlaccount.id
+  }
+
+  if (node.financeCostcenter) {
+    initialValues.financeCostcenter = node.financeCostcenter.id
+  }
+
+  return initialValues
+
+}
+
 
 
 const FinanceInvoiceEditItems = ({ t, history, match, data }) => (
@@ -40,15 +67,7 @@ const FinanceInvoiceEditItems = ({ t, history, match, data }) => (
         <Mutation mutation={UPDATE_INVOICE}> 
           {(updateInvoice, { data }) => (
             <Formik
-              initialValues={{ 
-                productName: node.productName, 
-                description: node.description, 
-                quantity: node.quantity, 
-                price: node.price, 
-                financeTaxRate: node.financeTaxRate, 
-                financeGlaccount: node.financeGlaccount, 
-                financeCostcenter: node.financeCostcenter, 
-              }}
+              initialValues={get_initial_values(node)}
               // validationSchema={INVOICE_GROUP_SCHEMA}
               onSubmit={(values, { setSubmitting }) => {
                 console.log('submit values:')
@@ -56,7 +75,7 @@ const FinanceInvoiceEditItems = ({ t, history, match, data }) => (
 
                 updateInvoice({ variables: {
                   input: {
-                    id: match.params.id,
+                    id: node.id,
                     productName: values.productName, 
                     description: values.description,
                     quantity: values.quantity,
@@ -66,11 +85,11 @@ const FinanceInvoiceEditItems = ({ t, history, match, data }) => (
                     financeCostcenter: values.financeCostcenter,
                   }
                 }, refetchQueries: [
-                    {query: GET_INVOICES_QUERY, variables: get_list_query_variables()}
+                    // {query: GET_INVOICES_QUERY, variables: get_list_query_variables()}
                 ]})
                 .then(({ data }) => {
                     console.log('got data', data)
-                    toast.success((t('finance.invoice.toast_edit_summary_success')), {
+                    toast.success((t('finance.invoice.toast_edit_item_success')), {
                         position: toast.POSITION.BOTTOM_RIGHT
                       })
                     setSubmitting(false)
@@ -90,8 +109,10 @@ const FinanceInvoiceEditItems = ({ t, history, match, data }) => (
                   values={values}
                   handleChange={handleChange}
                   submitForm={submitForm}
+                  key={v4()}
                 >
                 </FinanceInvoiceEditItemForm>
+                
               )}
             </Formik>
           )}

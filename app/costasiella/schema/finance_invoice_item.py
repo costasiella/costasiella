@@ -5,7 +5,7 @@ from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
 from graphql import GraphQLError
 
-from ..models import Account, FinanceInvoice, FinanceInvoiceItem, FinancePaymentMethod, FinanceGLAccount, FinanceCostCenter
+from ..models import Account, FinanceInvoice, FinanceInvoiceItem, FinancePaymentMethod, FinanceTaxRate, FinanceGLAccount, FinanceCostCenter
 from ..modules.gql_tools import require_login_and_permission, get_rid
 from ..modules.messages import Messages
 from ..modules.finance_tools import display_float_as_amount
@@ -183,6 +183,8 @@ class UpdateFinanceInvoiceItem(graphene.relay.ClientIDMutation):
     def mutate_and_get_payload(self, root, info, **input):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.change_financeinvoiceitem')
+
+        print(input)
 
         rid = get_rid(input['id'])
 

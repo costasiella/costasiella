@@ -46,14 +46,14 @@ class FinanceInvoiceItem(models.Model):
             percentage = (tax_rate.percentage / 100) + 1
             price = self.price / percentage
 
-        return price * self.quantity
+        return float(price) * float(self.quantity)
 
 
     def _calculate_tax(self):
         tax_rate = self.finance_tax_rate
         percentage = (tax_rate.percentage / 100)
         
-        return self.subtotal * percentage
+        return float(self.subtotal) * float(percentage)
         
     
     def _calculate_total(self):
