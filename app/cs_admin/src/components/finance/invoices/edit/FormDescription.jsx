@@ -16,7 +16,7 @@ import {
 let itemDescriptionFormTypingTimer
 const itemSubmitTimeout = 1500
 
-const FinanceInvoiceEditItemDescriptionForm = ({ t, isSubmitting, errors, handleChange, submitForm }) => (
+const FormDescription = ({ t, isSubmitting, errors, handleChange, submitForm }) => (
   <Dimmer loader={isSubmitting} active={isSubmitting}>
     <FoForm>
       <Form.Group>
@@ -40,4 +40,4 @@ const FinanceInvoiceEditItemDescriptionForm = ({ t, isSubmitting, errors, handle
   </Dimmer>
 )
 
-export default withTranslation()(withRouter(FinanceInvoiceEditItemDescriptionForm))
+export default withTranslation()(withRouter(FormDescription))

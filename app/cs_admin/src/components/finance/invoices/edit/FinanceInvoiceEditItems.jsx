@@ -19,8 +19,8 @@ import {
 
 import { get_list_query_variables } from "../tools"
 import { UPDATE_INVOICE, GET_INVOICES_QUERY } from "../queries"
-import FinanceInvoiceEditItemProductNameForm from "./FinanceInvoiceEditItemProductNameForm"
-import FinanceInvoiceEditItemDescriptionForm from "./FinanceInvoiceEditItemDescriptionForm"
+import UpdateProductName from "./UpdateProductName"
+import UpdateDescription from "./UpdateDescription"
 
 
 export const UPDATE_INVOICE_ITEM = gql`
@@ -67,60 +67,6 @@ function get_initial_values(node) {
 }
 
 
-function UpdateProductName({t, node}) {
-  let input;
-  const [updateInvoiceItem, { data }] = useMutation(UPDATE_INVOICE_ITEM)
-
-    return (
-      <Formik
-        initialValues={{
-          productName: node.productName
-        }}
-        // validationSchema={INVOICE_GROUP_SCHEMA}
-        onSubmit={(values, { setSubmitting }) => {
-          console.log('submit values:')
-          console.log(values)
-
-          updateInvoiceItem({ variables: {
-            input: {
-              id: node.id,
-              productName: values.productName, 
-            }
-          }, refetchQueries: [
-              // {query: GET_INVOICES_QUERY, variables: get_list_query_variables()}
-          ]})
-          .then(({ data }) => {
-              console.log('got data', data)
-              toast.success((t('finance.invoice.toast_edit_item_product_name_success')), {
-                  position: toast.POSITION.BOTTOM_RIGHT
-                })
-              setSubmitting(false)
-            }).catch((error) => {
-              toast.error((t('general.toast_server_error')) + ': ' +  error, {
-                  position: toast.POSITION.BOTTOM_RIGHT
-                })
-              console.log('there was an error sending the query', error)
-              setSubmitting(false)
-            })
-          }}
-      >
-        {({ isSubmitting, errors, values, touched, handleChange, submitForm, setFieldValue, setFieldTouched }) => (
-          <FinanceInvoiceEditItemProductNameForm
-            isSubmitting={isSubmitting}
-            errors={errors}
-            values={values}
-            handleChange={handleChange}
-            submitForm={submitForm}
-            key={"invoice_item_product_name" + node.id} // don't use uuid here, during re-render it causes the inputs to lose focus while typing due to a different key
-          >
-          </FinanceInvoiceEditItemProductNameForm>   
-        )}
-      </Formik>
-    )
-}
-
-
-
 const FinanceInvoiceEditItems = ({ t, history, match, inputData }) => (
   <Card statusColor="blue">
     <Card.Header>
@@ -142,10 +88,13 @@ const FinanceInvoiceEditItems = ({ t, history, match, inputData }) => (
           {inputData.financeInvoice.items.edges.map(({ node }) => (
             <Table.Row>
               <Table.Col>
-                <UpdateProductName t={t} node={node} />
+                <UpdateProductName initialValues={node} />
               </Table.Col>
               <Table.Col>
-                <Mutation mutation={UPDATE_INVOICE_ITEM}> 
+                <UpdateDescription initialValues={node} />
+              </Table.Col>
+              <Table.Col>
+                {/* <Mutation mutation={UPDATE_INVOICE_ITEM}> 
                   {(updateInvoiceItem, { data }) => (
                     <Formik
                       initialValues={{
@@ -193,7 +142,7 @@ const FinanceInvoiceEditItems = ({ t, history, match, inputData }) => (
                       )}
                     </Formik>
                   )}
-                </Mutation>
+                </Mutation> */}
               </Table.Col>
             </Table.Row>
           ))}
