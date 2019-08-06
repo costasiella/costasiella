@@ -25,6 +25,14 @@ export const UPDATE_INVOICE_ITEM = gql`
     updateFinanceInvoiceItem(input: $input) {
       financeInvoiceItem {
         id
+        productName
+        description
+        quantity
+        price
+        financeTaxRate {
+          id
+          name
+        }
       }
     }
   }
@@ -57,15 +65,15 @@ function get_initial_values(node) {
 
 
 
-const FinanceInvoiceEditItems = ({ t, history, match, data }) => (
+const FinanceInvoiceEditItems = ({ t, history, match, inputData }) => (
   <Card statusColor="blue">
     <Card.Header>
       <Card.Title>{t('general.items')}</Card.Title>
     </Card.Header>
     <Card.Body>
-      {data.financeInvoice.items.edges.map(({ node }) => (
-        <Mutation mutation={UPDATE_INVOICE}> 
-          {(updateInvoice, { data }) => (
+      {inputData.financeInvoice.items.edges.map(({ node }) => (
+        <Mutation mutation={UPDATE_INVOICE_ITEM}> 
+          {(updateInvoiceItem, { data }) => (
             <Formik
               initialValues={get_initial_values(node)}
               // validationSchema={INVOICE_GROUP_SCHEMA}
@@ -73,7 +81,7 @@ const FinanceInvoiceEditItems = ({ t, history, match, data }) => (
                 console.log('submit values:')
                 console.log(values)
 
-                updateInvoice({ variables: {
+                updateInvoiceItem({ variables: {
                   input: {
                     id: node.id,
                     productName: values.productName, 
@@ -102,14 +110,18 @@ const FinanceInvoiceEditItems = ({ t, history, match, data }) => (
                   })
                 }}
             >
-              {({ isSubmitting, errors, values, touched, handleChange, submitForm }) => (
+              {({ isSubmitting, errors, values, touched, handleChange, submitForm, setFieldValue, setFieldTouched }) => (
                 <FinanceInvoiceEditItemForm
                   isSubmitting={isSubmitting}
                   errors={errors}
                   values={values}
                   handleChange={handleChange}
                   submitForm={submitForm}
-                  key={v4()}
+                  setFieldTouched={setFieldTouched}
+                  setFieldValue={setFieldValue}
+                  inputData={inputData}
+                  node={node}
+                  key={"invoice_item_" + node.id} // don't use uuid here, during re-render it causes the inputs to lose focus while typing due to a different key
                 >
                 </FinanceInvoiceEditItemForm>
                 

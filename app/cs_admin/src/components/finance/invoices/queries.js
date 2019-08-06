@@ -111,6 +111,20 @@ export const GET_INVOICE_QUERY = gql`
         }
       }
     }
+    financeTaxRates(first: 100, before: $before, after: $after, archived: false) {
+      pageInfo {
+        startCursor
+        endCursor
+        hasNextPage
+        hasPreviousPage
+      }
+      edges {
+        node {
+          id
+          name
+        }
+      }
+    }
     organization(id:"T3JnYW5pemF0aW9uTm9kZToxMDA=") {
       id
       name

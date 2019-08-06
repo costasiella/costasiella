@@ -90,7 +90,7 @@ class FinanceInvoiceEdit extends Component {
                           <FinanceInvoiceEditTo initialData={data} />
                         </Grid.Col>
                       </Grid.Row>
-                      <FinanceInvoiceEditItems data={data} />
+                      <FinanceInvoiceEditItems inputData={data} />
                       <FinanceInvoiceEditAdditional initialData={data} />
 
 {/*                             
