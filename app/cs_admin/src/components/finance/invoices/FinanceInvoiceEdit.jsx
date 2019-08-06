@@ -28,6 +28,7 @@ import HasPermissionWrapper from "../../HasPermissionWrapper"
 
 import FinanceMenu from "../FinanceMenu"
 
+import FinanceInvoiceEditItems from "./FinanceInvoiceEditItems"
 import FinanceInvoiceEditAdditional from "./FinanceInvoiceEditAdditional"
 import FinanceInvoiceEditBalance from "./FinanceInvoiceEditBalance"
 import FinanceInvoiceEditOptions from "./FinanceInvoiceEditOptions"
@@ -89,7 +90,7 @@ class FinanceInvoiceEdit extends Component {
                           <FinanceInvoiceEditTo initialData={data} />
                         </Grid.Col>
                       </Grid.Row>
-                      invoice content here
+                      <FinanceInvoiceEditItems data={data} />
                       <FinanceInvoiceEditAdditional initialData={data} />
 
 {/*                             

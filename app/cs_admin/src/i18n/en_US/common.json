@@ -260,7 +260,8 @@
         "last_updated_at": "Last updated",
         "from": "From",
         "to": "To",
-        "payments": "Payments"
+        "payments": "Payments",
+        "items": "Items"
     },
     "yup": {
         "min_len_3": "Please input at least 3 characters",

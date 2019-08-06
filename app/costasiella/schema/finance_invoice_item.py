@@ -117,11 +117,11 @@ def validate_create_update_input(input, update=False):
 class CreateFinanceInvoiceItem(graphene.relay.ClientIDMutation):
     class Input:
         finance_invoice = graphene.ID(required=True)
-        product_name = graphene.String(required=True)
-        description = graphene.String(required=True)
-        quantity = graphene.Float(required=True)
-        price = graphene.Float(required=True)
-        finance_tax_rate = graphene.ID(required=True)
+        product_name = graphene.String(required=False, default_value="")
+        description = graphene.String(required=False, default_value="")
+        quantity = graphene.Float(required=False, default_value=0)
+        price = graphene.Float(required=False, default_value=0)
+        finance_tax_rate = graphene.ID(required=False, default_value=None)
         finance_glaccount = graphene.ID(required=False)
         finance_costcenter = graphene.ID(required=False)
   
@@ -136,18 +136,28 @@ class CreateFinanceInvoiceItem(graphene.relay.ClientIDMutation):
 
         finance_invoice_item = FinanceInvoiceItem(
             finance_invoice = validation_result['finance_invoice'],
-            product_name = input['product_name'],
-            description = input['description'],
-            quantity = input['quantity'],
-            price = input['price'],
-            finance_tax_rate = validation_result['finance_tax_rate'],
         )
 
-        if 'finance_glaccount' in input:
-            finance_invoice_item.finance_glaccount = input['finance_glaccount']
+        if 'product_name' in input:
+            finance_invoice_item.product_name = input['product_name']
 
-        if 'finance_costcenter' in input:
-            finance_invoice_item.finance_costcenter = input['finance_costcenter']
+        if 'description' in input:
+            finance_invoice_item.description = input['description']
+
+        if 'quantity' in input:
+            finance_invoice_item.quantity = input['quantity']
+
+        if 'price' in input:
+            finance_invoice_item.price = input['price']
+
+        if 'finance_tax_rate' in validation_result:
+            finance_invoice_item.finance_tax_rate = validation_result['finance_tax_rate']
+
+        if 'finance_glaccount' in validation_result:
+            finance_invoice_item.finance_glaccount = validation_result['finance_glaccount']
+
+        if 'finance_costcenter' in validation_result:
+            finance_invoice_item.finance_costcenter = validation_result['finance_costcenter']
 
         # Save invoice_item
         finance_invoice_item.save()

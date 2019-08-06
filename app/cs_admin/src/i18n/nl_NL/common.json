@@ -260,7 +260,8 @@
         "last_updated_at": "__STRING_NOT_TRANSLATED__",
         "from": "__STRING_NOT_TRANSLATED__",
         "to": "__STRING_NOT_TRANSLATED__",
-        "payments": "__STRING_NOT_TRANSLATED__"
+        "payments": "__STRING_NOT_TRANSLATED__",
+        "items": "__STRING_NOT_TRANSLATED__"
     },
     "yup": {
         "min_len_3": "__STRING_NOT_TRANSLATED__",
