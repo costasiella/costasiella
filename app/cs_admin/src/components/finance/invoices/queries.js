@@ -83,8 +83,11 @@ export const GET_INVOICE_QUERY = gql`
               rateType
             }
             subtotal
+            subtotalDisplay
             tax
+            taxDisplay
             total
+            totalDisplay
             financeGlaccount {
               id
               name

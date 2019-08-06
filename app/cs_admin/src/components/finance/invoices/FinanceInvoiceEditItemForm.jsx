@@ -9,7 +9,7 @@ import { v4 } from 'uuid'
 import {
   Dimmer,
   Form,
-  Grid
+  Table
 } from "tabler-react"
 
 
@@ -19,8 +19,8 @@ const itemSubmitTimeout = 1500
 const FinanceInvoiceEditItemForm = ({ t, isSubmitting, errors, values, handleChange, submitForm, setFieldValue, setFieldTouched, node, inputData }) => (
   <Dimmer loader={isSubmitting} active={isSubmitting}>
     <FoForm>
-      <Grid.Row>
-        <Grid.Col>
+      <Table.Row>
+        <Table.Col>
           <Form.Group>
             <Field type="text" 
                    name="productName" 
@@ -37,8 +37,8 @@ const FinanceInvoiceEditItemForm = ({ t, isSubmitting, errors, values, handleCha
             />
             <ErrorMessage name="productName" component="span" className="invalid-feedback" />
           </Form.Group>
-        </Grid.Col>
-        <Grid.Col>
+        </Table.Col>
+        <Table.Col>
           <Form.Group>
             <Field type="text" 
                    component="textarea"
@@ -56,8 +56,8 @@ const FinanceInvoiceEditItemForm = ({ t, isSubmitting, errors, values, handleCha
             />
             <ErrorMessage name="description" component="span" className="invalid-feedback" />
           </Form.Group>
-        </Grid.Col>
-        <Grid.Col>
+        </Table.Col>
+        <Table.Col>
           <Form.Group>
             <Field type="text" 
                    name="quantity" 
@@ -74,8 +74,8 @@ const FinanceInvoiceEditItemForm = ({ t, isSubmitting, errors, values, handleCha
             />
             <ErrorMessage name="quantity" component="span" className="invalid-feedback" />
           </Form.Group>
-        </Grid.Col>
-        <Grid.Col>
+        </Table.Col>
+        <Table.Col>
           <Form.Group>
             <Field type="text" 
                    name="price" 
@@ -92,8 +92,8 @@ const FinanceInvoiceEditItemForm = ({ t, isSubmitting, errors, values, handleCha
             />
             <ErrorMessage name="price" component="span" className="invalid-feedback" />
           </Form.Group>
-        </Grid.Col>
-        <Grid.Col>
+        </Table.Col>
+        <Table.Col>
           <Form.Group>
             <Field component="select" 
                   name="financeTaxRate" 
@@ -111,8 +111,17 @@ const FinanceInvoiceEditItemForm = ({ t, isSubmitting, errors, values, handleCha
             </Field>
             <ErrorMessage name="financePaymentMethod" component="span" className="invalid-feedback" />
           </Form.Group>  
-        </Grid.Col>
-      </Grid.Row>
+        </Table.Col>
+        <Table.Col>
+          {node.subtotalDisplay}            
+        </Table.Col>
+        <Table.Col>
+          {node.taxDisplay}            
+        </Table.Col>
+        <Table.Col>
+          {node.totalDisplay}            
+        </Table.Col>
+      </Table.Row>
     </FoForm>
   </Dimmer>
 )
