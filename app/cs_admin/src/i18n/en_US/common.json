@@ -119,9 +119,12 @@
         },
         "invoice": {
             "title": "Invoice",
-            "toast_edit_summary_success": "Saved summary",
-            "toast_edit_options_success": "Saved options",
-            "toast_edit_to_success": "Saved to"
+            "toast_edit_summary_success": "Summary saved",
+            "toast_edit_options_success": "Options saved",
+            "toast_edit_to_success": "To saved",
+            "toast_edit_terms_success": "Terms saved",
+            "toast_edit_footer_success": "Footer saved",
+            "toast_edit_note_success": "Note saved"
         }
     },
     "general": {
@@ -256,7 +259,8 @@
         "summary": "Summary",
         "last_updated_at": "Last updated",
         "from": "From",
-        "to": "To"
+        "to": "To",
+        "payments": "Payments"
     },
     "yup": {
         "min_len_3": "Please input at least 3 characters",

@@ -24,8 +24,8 @@ import FinanceInvoiceEditNoteForm from "./FinanceInvoiceEditNoteForm"
 
 
 const FinanceInvoiceEditAdditional = ({ t, history, match, initialData }) => (
-  <TabbedCard initialTab={t('finance.invoices.terms_and_conditions')}>
-    <Tab title={t('finance.invoices.terms_and_conditions')}>
+  <TabbedCard initialTab={t('general.terms_and_conditions')}>
+    <Tab title={t('general.terms_and_conditions')}>
       <Mutation mutation={UPDATE_INVOICE}> 
         {(updateInvoice, { data }) => (
           <Formik
@@ -76,7 +76,7 @@ const FinanceInvoiceEditAdditional = ({ t, history, match, initialData }) => (
         )}
       </Mutation>
     </Tab>
-    <Tab title={t('finance.invoices.footer')}>
+    <Tab title={t('general.footer')}>
       <Mutation mutation={UPDATE_INVOICE}> 
         {(updateInvoice, { data }) => (
           <Formik
@@ -178,7 +178,7 @@ const FinanceInvoiceEditAdditional = ({ t, history, match, initialData }) => (
         )}
       </Mutation>
     </Tab>
-    <Tab title={t('finance.invoices_payments.title')}>
+    <Tab title={t('general.payments')}>
       Payments
     </Tab>
   </TabbedCard>

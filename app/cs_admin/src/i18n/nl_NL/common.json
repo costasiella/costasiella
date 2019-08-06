@@ -121,7 +121,10 @@
             "title": "__STRING_NOT_TRANSLATED__",
             "toast_edit_summary_success": "__STRING_NOT_TRANSLATED__",
             "toast_edit_options_success": "__STRING_NOT_TRANSLATED__",
-            "toast_edit_to_success": "__STRING_NOT_TRANSLATED__"
+            "toast_edit_to_success": "__STRING_NOT_TRANSLATED__",
+            "toast_edit_terms_success": "__STRING_NOT_TRANSLATED__",
+            "toast_edit_footer_success": "__STRING_NOT_TRANSLATED__",
+            "toast_edit_note_success": "__STRING_NOT_TRANSLATED__"
         }
     },
     "general": {
@@ -256,7 +259,8 @@
         "summary": "__STRING_NOT_TRANSLATED__",
         "last_updated_at": "__STRING_NOT_TRANSLATED__",
         "from": "__STRING_NOT_TRANSLATED__",
-        "to": "__STRING_NOT_TRANSLATED__"
+        "to": "__STRING_NOT_TRANSLATED__",
+        "payments": "__STRING_NOT_TRANSLATED__"
     },
     "yup": {
         "min_len_3": "__STRING_NOT_TRANSLATED__",
