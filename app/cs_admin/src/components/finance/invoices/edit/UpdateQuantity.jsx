@@ -9,16 +9,16 @@ import { toast } from 'react-toastify'
 
 import { get_list_query_variables } from "../tools"
 import { UPDATE_INVOICE_ITEM } from "../queries"
-import FormDescription from "./FormDescription"
+import FormQuantity from "./FormQuantity"
 
 
-function UpdateDescription({t, initialValues}) {
+function UpdateQuantity({t, initialValues}) {
   const [updateInvoiceItem, { data }] = useMutation(UPDATE_INVOICE_ITEM)
 
     return (
       <Formik
         initialValues={{
-          description: initialValues.description
+          quantity: initialValues.quantity
         }}
         // validationSchema={INVOICE_GROUP_SCHEMA}
         onSubmit={(values, { setSubmitting }) => {
@@ -28,14 +28,14 @@ function UpdateDescription({t, initialValues}) {
           updateInvoiceItem({ variables: {
             input: {
               id: initialValues.id,
-              description: values.description, 
+              quantity: values.quantity, 
             }
           }, refetchQueries: [
               // {query: GET_INVOICES_QUERY, variables: get_list_query_variables()}
           ]})
           .then(({ data }) => {
               console.log('got data', data)
-              toast.success((t('finance.invoice.toast_edit_item_description_success')), {
+              toast.success((t('finance.invoice.toast_edit_item_quantity_success')), {
                   position: toast.POSITION.BOTTOM_RIGHT
                 })
               setSubmitting(false)
@@ -49,7 +49,7 @@ function UpdateDescription({t, initialValues}) {
           }}
       >
         {({ isSubmitting, errors, values, handleChange, submitForm }) => (
-          <FormDescription
+          <FormQuantity
             isSubmitting={isSubmitting}
             errors={errors}
             values={values}
@@ -57,11 +57,11 @@ function UpdateDescription({t, initialValues}) {
             submitForm={submitForm}
             key={"invoice_item_product_name" + initialValues.id} // don't use uuid here, during re-render it causes the inputs to lose focus while typing due to a different key
           >
-          </FormDescription>   
+          </FormQuantity>   
         )}
       </Formik>
     )
 }
 
 
-export default withTranslation()(withRouter(UpdateDescription))
+export default withTranslation()(withRouter(UpdateQuantity))

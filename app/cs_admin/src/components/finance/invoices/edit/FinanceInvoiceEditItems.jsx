@@ -21,6 +21,7 @@ import { get_list_query_variables } from "../tools"
 import { UPDATE_INVOICE, GET_INVOICES_QUERY } from "../queries"
 import UpdateProductName from "./UpdateProductName"
 import UpdateDescription from "./UpdateDescription"
+import UpdateQuantity from "./UpdateQuantity"
 
 
 export const UPDATE_INVOICE_ITEM = gql`
@@ -94,6 +95,9 @@ const FinanceInvoiceEditItems = ({ t, history, match, inputData }) => (
               </Table.Col>
               <Table.Col>
                 <UpdateDescription initialValues={node} />
+              </Table.Col>
+              <Table.Col>
+                <UpdateQuantity initialValues={node} />
               </Table.Col>
             </Table.Row>
           ))}
