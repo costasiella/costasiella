@@ -19,6 +19,7 @@ import {
 import { get_list_query_variables } from "./tools"
 import { UPDATE_INVOICE, GET_INVOICES_QUERY } from "./queries"
 import FinanceInvoiceEditTermsForm from "./FinanceInvoiceEditTermsForm"
+import FinanceInvoiceEditFooterForm from "./FinanceInvoiceEditFooterForm"
 
 
 const FinanceInvoiceEditAdditional = ({ t, history, match, initialData }) => (
@@ -75,7 +76,55 @@ const FinanceInvoiceEditAdditional = ({ t, history, match, initialData }) => (
       </Mutation>
     </Tab>
     <Tab title={t('finance.invoices.footer')}>
-      Footer
+      <Mutation mutation={UPDATE_INVOICE}> 
+        {(updateInvoice, { data }) => (
+          <Formik
+            initialValues={{ 
+              footer: initialData.financeInvoice.footer, 
+            }}
+            // validationSchema={INVOICE_GROUP_SCHEMA}
+            onSubmit={(values, { setSubmitting }) => {
+              console.log('submit values:')
+              console.log(values)
+
+              updateInvoice({ variables: {
+                input: {
+                  id: match.params.id,
+                  footer: values.footer, 
+                }
+              }, refetchQueries: [
+                  // {query: GET_INVOICES_QUERY, variables: get_list_query_variables()}
+              ]})
+              .then(({ data }) => {
+                  console.log('got data', data)
+                  toast.success((t('finance.invoice.toast_edit_terms_success')), {
+                      position: toast.POSITION.BOTTOM_RIGHT
+                    })
+                  setSubmitting(false)
+                }).catch((error) => {
+                  toast.error((t('general.toast_server_error')) + ': ' +  error, {
+                      position: toast.POSITION.BOTTOM_RIGHT
+                    })
+                  console.log('there was an error sending the query', error)
+                  setSubmitting(false)
+                })
+              }}
+          >
+            {({ isSubmitting, errors, values, touched, handleChange, submitForm, setFieldTouched, setFieldValue }) => (
+              <FinanceInvoiceEditFooterForm
+                isSubmitting={isSubmitting}
+                errors={errors}
+                values={values}
+                handleChange={handleChange}
+                submitForm={submitForm}
+                setFieldTouched={setFieldTouched}
+                setFieldValue={setFieldValue}
+              >
+              </FinanceInvoiceEditFooterForm>
+            )}
+          </Formik>
+        )}
+      </Mutation>
     </Tab>
     <Tab title={t('general.note')}>
       Note
