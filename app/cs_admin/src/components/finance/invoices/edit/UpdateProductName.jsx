@@ -1,20 +1,11 @@
 // @flow
 
 import React from 'react'
-import gql from "graphql-tag"
-import { Query, Mutation } from "react-apollo"
 import { useMutation } from '@apollo/react-hooks';
 import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
 import { Formik } from 'formik'
 import { toast } from 'react-toastify'
-import { v4 } from 'uuid'
-
-
-import {
-  Card, 
-  Table
-} from "tabler-react"
 
 
 import { get_list_query_variables } from "../tools"
@@ -23,7 +14,6 @@ import FormProductName from "./FormProductName"
 
 
 function UpdateProductName({t, initialValues}) {
-  let input;
   const [updateInvoiceItem, { data }] = useMutation(UPDATE_INVOICE_ITEM)
 
     return (
