@@ -14,13 +14,14 @@ import {
 
 
 let toFormTypingTimer
+const formSubmitTimeout = 750
 
 function handleOnChange({ e, submitForm, handleChange}) {
   clearTimeout(toFormTypingTimer)
   handleChange(e)
   toFormTypingTimer = setTimeout(() => {
     submitForm()
-  }, 1500)
+  }, 750)
 }
 
 function handleOnKeyDown() {
