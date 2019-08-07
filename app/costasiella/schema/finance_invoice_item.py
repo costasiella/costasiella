@@ -219,8 +219,11 @@ class UpdateFinanceInvoiceItem(graphene.relay.ClientIDMutation):
         if 'finance_costcenter' in validation_result:
             finance_invoice_item.finance_costcenter = validation_result['finance_costcenter']
 
-
         finance_invoice_item.save()
+
+        # Update amounts 
+        finance_invoice = finance_invoice_item.finance_invoice
+        finance_invoice.update_amounts()
 
         return UpdateFinanceInvoiceItem(finance_invoice_item=finance_invoice_item)
 
@@ -242,7 +245,11 @@ class DeleteFinanceInvoiceItem(graphene.relay.ClientIDMutation):
         if not finance_invoice_item:
             raise Exception('Invalid Finance Invoice Item ID!')
 
+        finance_invoice = finance_invoice_item.finance_invoice
         ok = finance_invoice_item.delete()
+        
+        # Update amounts
+        finance_invoice.update_amounts()
 
         return DeleteFinanceInvoiceItem(ok=ok)
 
