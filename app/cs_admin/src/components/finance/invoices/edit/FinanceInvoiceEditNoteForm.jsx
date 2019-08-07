@@ -16,7 +16,7 @@ import { tinymceBasicConf } from "../../../../plugin_config/tinymce"
 
 
 let noteFormTypingTimer
-const formSubmitTimeout = 2000
+const formSubmitTimeout = 750
 
 // Use editor as controlled component:
 // https://github.com/tinymce/tinymce-react/blob/master/README.md

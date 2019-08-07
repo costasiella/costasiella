@@ -12,7 +12,7 @@ import {
 
 
 let quantityFormTypingTimer
-const itemSubmitTimeout = 1500
+const itemSubmitTimeout = 750
 
 const FormQuantity = ({ t, isSubmitting, errors, handleChange, submitForm }) => (
   <Dimmer loader={isSubmitting} active={isSubmitting}>

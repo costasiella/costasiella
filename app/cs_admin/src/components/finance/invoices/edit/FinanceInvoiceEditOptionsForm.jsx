@@ -15,7 +15,7 @@ import CSDatePicker from "../../../ui/CSDatePicker"
 
 
 let optionsFormTypingTimer
-const formSubmitTimeout = 1500
+const formSubmitTimeout = 750
 
 
 const FinanceInvoiceEditOptionsForm = ({ t, isSubmitting, values, errors, handleChange, submitForm, setFieldValue, setFieldTouched, inputData }) => (

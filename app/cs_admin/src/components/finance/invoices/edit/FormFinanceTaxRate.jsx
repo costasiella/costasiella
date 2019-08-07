@@ -13,7 +13,7 @@ import {
 
 
 let taxRateFormTypingTimer
-const itemSubmitTimeout = 1500
+const itemSubmitTimeout = 750
 
 const FormFinanceTaxRate = ({ t, isSubmitting, errors, submitForm, inputData, setFieldTouched, setFieldValue }) => (
   <Dimmer loader={isSubmitting} active={isSubmitting}>

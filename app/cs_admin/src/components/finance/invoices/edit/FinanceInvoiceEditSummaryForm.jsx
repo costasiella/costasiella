@@ -13,6 +13,7 @@ import {
 
 
 let summaryFormTypingTimer
+const formSubmitTimeout = 750
 
 
 const FinanceInvoiceEditSummaryForm = ({ t, isSubmitting, errors, handleChange, submitForm }) => (
@@ -28,7 +29,7 @@ const FinanceInvoiceEditSummaryForm = ({ t, isSubmitting, errors, handleChange, 
                   handleChange(e)
                   summaryFormTypingTimer = setTimeout(() => {
                     submitForm()
-                  }, 1500)
+                  }, formSubmitTimeout)
                 }}
                 onKeyDown={() => clearTimeout(summaryFormTypingTimer)}
                 

@@ -14,7 +14,7 @@ import {
 
 
 let itemFormTypingTimer
-const itemSubmitTimeout = 1500
+const itemSubmitTimeout = 750
 
 const FormProductName = ({ t, isSubmitting, errors, handleChange, submitForm }) => (
   <Dimmer loader={isSubmitting} active={isSubmitting}>
