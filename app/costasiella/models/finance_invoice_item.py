@@ -17,7 +17,7 @@ class FinanceInvoiceItem(models.Model):
     description = models.TextField(default="")
     quantity = models.DecimalField(max_digits=20, decimal_places=2)
     price = models.DecimalField(max_digits=20, decimal_places=2)
-    finance_tax_rate = models.ForeignKey(FinanceTaxRate, on_delete=models.CASCADE)
+    finance_tax_rate = models.ForeignKey(FinanceTaxRate, on_delete=models.CASCADE, null=True)
     subtotal = models.DecimalField(max_digits=20, decimal_places=2, default=0)
     tax = models.DecimalField(max_digits=20, decimal_places=2, default=0)
     total = models.DecimalField(max_digits=20, decimal_places=2, default=0)
@@ -41,19 +41,23 @@ class FinanceInvoiceItem(models.Model):
         # If tax is included in price, first remove it.
         tax_rate = self.finance_tax_rate
         price = self.price
-        if tax_rate.rate_type == "IN":
-            # divide price by 1.tax_percentage and then multiply by quantity
-            percentage = (tax_rate.percentage / 100) + 1
-            price = self.price / percentage
+        if tax_rate:
+            if tax_rate.rate_type == "IN":
+                # divide price by 1.tax_percentage and then multiply by quantity
+                percentage = (tax_rate.percentage / 100) + 1
+                price = self.price / percentage
 
         return float(price) * float(self.quantity)
 
 
     def _calculate_tax(self):
         tax_rate = self.finance_tax_rate
-        percentage = (tax_rate.percentage / 100)
-        
-        return float(self.subtotal) * float(percentage)
+        if tax_rate:
+            percentage = (tax_rate.percentage / 100)
+
+            return float(self.subtotal) * float(percentage)
+        else:
+            return 0
         
     
     def _calculate_total(self):
