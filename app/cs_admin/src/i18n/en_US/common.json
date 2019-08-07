@@ -125,7 +125,11 @@
             "toast_edit_terms_success": "Terms saved",
             "toast_edit_footer_success": "Footer saved",
             "toast_edit_note_success": "Note saved",
-            "toast_edit_item_success": "Item saved"
+            "toast_edit_item_description_success": "Item description saved",
+            "toast_edit_item_financeTaxRate_success": "Item tax rate saved",
+            "toast_edit_item_price_success": "Item price saved",
+            "toast_edit_item_product_name_success": "Item product name saved",
+            "toast_edit_item_quantity_success": "Item quantity saved"
         }
     },
     "general": {
@@ -263,8 +267,8 @@
         "to": "To",
         "payments": "Payments",
         "items": "Items",
-        "product_name": "Product name",
-        "quantity_short": "QTY"
+        "quantity_short_and_price": "QTY & Price",
+        "product": "Product"
     },
     "yup": {
         "min_len_3": "Please input at least 3 characters",

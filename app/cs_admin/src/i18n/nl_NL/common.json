@@ -125,7 +125,11 @@
             "toast_edit_terms_success": "__STRING_NOT_TRANSLATED__",
             "toast_edit_footer_success": "__STRING_NOT_TRANSLATED__",
             "toast_edit_note_success": "__STRING_NOT_TRANSLATED__",
-            "toast_edit_item_success": "__STRING_NOT_TRANSLATED__"
+            "toast_edit_item_description_success": "__STRING_NOT_TRANSLATED__",
+            "toast_edit_item_financeTaxRate_success": "__STRING_NOT_TRANSLATED__",
+            "toast_edit_item_price_success": "__STRING_NOT_TRANSLATED__",
+            "toast_edit_item_product_name_success": "__STRING_NOT_TRANSLATED__",
+            "toast_edit_item_quantity_success": "__STRING_NOT_TRANSLATED__"
         }
     },
     "general": {
@@ -263,8 +267,8 @@
         "to": "__STRING_NOT_TRANSLATED__",
         "payments": "__STRING_NOT_TRANSLATED__",
         "items": "__STRING_NOT_TRANSLATED__",
-        "product_name": "__STRING_NOT_TRANSLATED__",
-        "quantity_short": "__STRING_NOT_TRANSLATED__"
+        "quantity_short_and_price": "__STRING_NOT_TRANSLATED__",
+        "product": "__STRING_NOT_TRANSLATED__"
     },
     "yup": {
         "min_len_3": "__STRING_NOT_TRANSLATED__",

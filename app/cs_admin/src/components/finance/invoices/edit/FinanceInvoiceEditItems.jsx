@@ -24,6 +24,7 @@ import UpdateDescription from "./UpdateDescription"
 import UpdateQuantity from "./UpdateQuantity"
 import UpdatePrice from "./UpdatePrice"
 import UpdateFinanceTaxRate from "./UpdateFinanceTaxRate"
+import DeleteItem from "./DeleteItem"
 
 
 export const UPDATE_INVOICE_ITEM = gql`
@@ -70,7 +71,7 @@ export const UPDATE_INVOICE_ITEM = gql`
 // }
 
 
-const FinanceInvoiceEditItems = ({ t, history, match, inputData }) => (
+const FinanceInvoiceEditItems = ({ t, history, match, refetchInvoice, inputData }) => (
   <Card statusColor="blue">
     <Card.Header>
       <Card.Title>{t('general.items')}</Card.Title>
@@ -79,12 +80,12 @@ const FinanceInvoiceEditItems = ({ t, history, match, inputData }) => (
       <Table>
         <Table.Header>
           <Table.Row>
-            <Table.ColHeader>{t("general.product_name")}</Table.ColHeader>
+            <Table.ColHeader>{t("general.product")}</Table.ColHeader>
             <Table.ColHeader>{t("general.description")}</Table.ColHeader>
-            <Table.ColHeader>{t("general.quantity_short")}</Table.ColHeader>
-            <Table.ColHeader>{t("general.price")}</Table.ColHeader>
+            <Table.ColHeader>{t("general.quantity_short_and_price")}</Table.ColHeader>
             <Table.ColHeader>{t("general.tax")}</Table.ColHeader>
             <Table.ColHeader>{t("general.total")}</Table.ColHeader>
+            <Table.ColHeader></Table.ColHeader>
           </Table.Row>
         </Table.Header>
         <Table.Body>
@@ -98,8 +99,6 @@ const FinanceInvoiceEditItems = ({ t, history, match, inputData }) => (
               </Table.Col>
               <Table.Col>
                 <UpdateQuantity initialValues={node} />
-              </Table.Col>
-              <Table.Col>
                 <UpdatePrice initialValues={node} />
               </Table.Col>
               <Table.Col>
@@ -107,6 +106,9 @@ const FinanceInvoiceEditItems = ({ t, history, match, inputData }) => (
               </Table.Col>
               <Table.Col>
                 <span className="pull-right">{node.totalDisplay}</span>
+              </Table.Col>
+              <Table.Col>
+                <DeleteItem node={node} />
               </Table.Col>
             </Table.Row>
           ))}
