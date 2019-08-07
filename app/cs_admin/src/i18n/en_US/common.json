@@ -83,7 +83,7 @@
             "relation_postcode": "Postcode",
             "relation_city": "City",
             "relation_country": "Country",
-            "item_delete_confirm_msg": "Are you suse you wish to delete this item?",
+            "item_delete_confirm_msg": "Are you sure you wish to delete this item?",
             "item_deleted": "Deleted item"
         },
         "invoice_groups": {
