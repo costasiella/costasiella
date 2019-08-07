@@ -153,6 +153,25 @@ export const UPDATE_INVOICE = gql`
 `
 
 
+export const CREATE_INVOICE_ITEM = gql`
+  mutation CreateFinanceInvoiceItem($input: CreateFinanceInvoiceItemInput!) {
+    createFinanceInvoiceItem(input: $input) {
+      financeInvoiceItem {
+        id
+        productName
+        description
+        quantity
+        price
+        financeTaxRate {
+          id
+          name
+        }
+      }
+    }
+  }
+`
+
+
 export const UPDATE_INVOICE_ITEM = gql`
   mutation UpdateFinanceInvoiceItem($input: UpdateFinanceInvoiceItemInput!) {
     updateFinanceInvoiceItem(input: $input) {
