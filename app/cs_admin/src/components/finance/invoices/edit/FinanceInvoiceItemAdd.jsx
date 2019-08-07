@@ -6,8 +6,8 @@ import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
 
 import { get_list_query_variables } from "../tools"
-import { ADD_INVOICE_ITEM, GET_INVOICES_QUERY, GET_INVOICE_QUERY } from "../queries"
-import confirm_delete from "../../../../tools/confirm_delete"
+import { CREATE_INVOICE_ITEM, GET_INVOICES_QUERY, GET_INVOICE_QUERY } from "../queries"
+import { toast } from 'react-toastify'
 
 import {
   Icon
@@ -15,8 +15,8 @@ import {
 
 
 
-function FinanceInvoiceItemAdd({t, match, node}) {
-  const [addInvoiceItem, { data }] = useMutation(ADD_INVOICE_ITEM)
+function FinanceInvoiceItemAdd({t, match}) {
+  const [addInvoiceItem, { data }] = useMutation(CREATE_INVOICE_ITEM)
 
     return (
       <button className="icon btn btn-link btn-sm" 
@@ -35,13 +35,13 @@ function FinanceInvoiceItemAdd({t, match, node}) {
               toast.success((t('finance.invoice.toast_add_item_success')), {
                   position: toast.POSITION.BOTTOM_RIGHT
                 })
-              setSubmitting(false)
+              // setSubmitting(false)
             }).catch((error) => {
               toast.error((t('general.toast_server_error')) + ': ' +  error, {
                   position: toast.POSITION.BOTTOM_RIGHT
                 })
               console.log('there was an error sending the query', error)
-              setSubmitting(false)
+              // setSubmitting(false)
             })
       }}>
         <span className="text-blue"><Icon prefix="fe" name="plus" /></span>

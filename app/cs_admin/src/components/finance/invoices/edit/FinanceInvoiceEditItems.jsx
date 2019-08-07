@@ -25,6 +25,7 @@ import UpdateQuantity from "./UpdateQuantity"
 import UpdatePrice from "./UpdatePrice"
 import UpdateFinanceTaxRate from "./UpdateFinanceTaxRate"
 import FinanceInvoiceItemDelete from "./FinanceInvoiceItemDelete"
+import FinanceInvoiceItemAdd from "./FinanceInvoiceItemAdd"
 
 
 export const UPDATE_INVOICE_ITEM = gql`
@@ -70,11 +71,28 @@ export const UPDATE_INVOICE_ITEM = gql`
 
 // }
 
+{/* <Card.Options>
+                  <Button color={(!archived) ? 'primary': 'secondary'}  
+                          size="sm"
+                          onClick={() => {archived=false; refetch({archived});}}>
+                    {t('general.current')}
+                  </Button>
+                  <Button color={(archived) ? 'primary': 'secondary'} 
+                          size="sm" 
+                          className="ml-2" 
+                          onClick={() => {archived=true; refetch({archived});}}>
+                    {t('general.archive')}
+                  </Button>
+                </Card.Options> */}
+
 
 const FinanceInvoiceEditItems = ({ t, history, match, refetchInvoice, inputData }) => (
   <Card statusColor="blue">
     <Card.Header>
       <Card.Title>{t('general.items')}</Card.Title>
+      <Card.Options>
+        <FinanceInvoiceItemAdd />
+      </Card.Options>
     </Card.Header>
     <Card.Body>
       <Table>
