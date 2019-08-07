@@ -15,7 +15,7 @@ import {
 
 
 
-function DeleteItem({t, match, node}) {
+function FinanceInvoiceItemDelete({t, match, node}) {
   const [deleteInvoiceItem, { data }] = useMutation(DELETE_INVOICE_ITEM)
 
     return (
@@ -48,4 +48,4 @@ function DeleteItem({t, match, node}) {
 }
 
 
-export default withTranslation()(withRouter(DeleteItem))
+export default withTranslation()(withRouter(FinanceInvoiceItemDelete))

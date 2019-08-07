@@ -24,7 +24,7 @@ import UpdateDescription from "./UpdateDescription"
 import UpdateQuantity from "./UpdateQuantity"
 import UpdatePrice from "./UpdatePrice"
 import UpdateFinanceTaxRate from "./UpdateFinanceTaxRate"
-import DeleteItem from "./DeleteItem"
+import FinanceInvoiceItemDelete from "./FinanceInvoiceItemDelete"
 
 
 export const UPDATE_INVOICE_ITEM = gql`
@@ -108,7 +108,7 @@ const FinanceInvoiceEditItems = ({ t, history, match, refetchInvoice, inputData 
                 <span className="pull-right">{node.totalDisplay}</span>
               </Table.Col>
               <Table.Col>
-                <DeleteItem node={node} />
+                <FinanceInvoiceItemDelete node={node} />
               </Table.Col>
             </Table.Row>
           ))}
