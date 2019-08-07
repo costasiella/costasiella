@@ -82,7 +82,9 @@
             "relation_address": "Address",
             "relation_postcode": "Postcode",
             "relation_city": "City",
-            "relation_country": "Country"
+            "relation_country": "Country",
+            "item_delete_confirm_msg": "Are you suse you wish to delete this item?",
+            "item_deleted": "Deleted item"
         },
         "invoice_groups": {
             "title": "Invoice groups",
@@ -129,7 +131,8 @@
             "toast_edit_item_financeTaxRate_success": "Item tax rate saved",
             "toast_edit_item_price_success": "Item price saved",
             "toast_edit_item_product_name_success": "Item product name saved",
-            "toast_edit_item_quantity_success": "Item quantity saved"
+            "toast_edit_item_quantity_success": "Item quantity saved",
+            "toast_add_item_success": "Added item"
         }
     },
     "general": {

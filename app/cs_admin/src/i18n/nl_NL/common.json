@@ -82,7 +82,9 @@
             "relation_address": "__STRING_NOT_TRANSLATED__",
             "relation_postcode": "__STRING_NOT_TRANSLATED__",
             "relation_city": "__STRING_NOT_TRANSLATED__",
-            "relation_country": "__STRING_NOT_TRANSLATED__"
+            "relation_country": "__STRING_NOT_TRANSLATED__",
+            "item_delete_confirm_msg": "__STRING_NOT_TRANSLATED__",
+            "item_deleted": "__STRING_NOT_TRANSLATED__"
         },
         "invoice_groups": {
             "title": "__STRING_NOT_TRANSLATED__",
@@ -129,7 +131,8 @@
             "toast_edit_item_financeTaxRate_success": "__STRING_NOT_TRANSLATED__",
             "toast_edit_item_price_success": "__STRING_NOT_TRANSLATED__",
             "toast_edit_item_product_name_success": "__STRING_NOT_TRANSLATED__",
-            "toast_edit_item_quantity_success": "__STRING_NOT_TRANSLATED__"
+            "toast_edit_item_quantity_success": "__STRING_NOT_TRANSLATED__",
+            "toast_add_item_success": "__STRING_NOT_TRANSLATED__"
         }
     },
     "general": {
