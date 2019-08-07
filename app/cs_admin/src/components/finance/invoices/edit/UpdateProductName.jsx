@@ -56,7 +56,6 @@ function UpdateProductName({t, initialValues}) {
             values={values}
             handleChange={handleChange}
             submitForm={submitForm}
-            key={"invoice_item_product_name" + initialValues.id} // don't use uuid here, during re-render it causes the inputs to lose focus while typing due to a different key
           >
           </FormProductName>   
         )}

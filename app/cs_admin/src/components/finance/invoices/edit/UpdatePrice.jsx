@@ -9,16 +9,16 @@ import { toast } from 'react-toastify'
 
 import { get_list_query_variables } from "../tools"
 import { UPDATE_INVOICE_ITEM } from "../queries"
-import FormDescription from "./FormDescription"
+import FormPrice from "./FormPrice"
 
 
-function UpdateDescription({t, initialValues}) {
+function UpdatePrice({t, initialValues}) {
   const [updateInvoiceItem, { data }] = useMutation(UPDATE_INVOICE_ITEM)
 
     return (
       <Formik
         initialValues={{
-          description: initialValues.description
+          price: initialValues.price
         }}
         // validationSchema={INVOICE_GROUP_SCHEMA}
         onSubmit={(values, { setSubmitting }) => {
@@ -28,14 +28,14 @@ function UpdateDescription({t, initialValues}) {
           updateInvoiceItem({ variables: {
             input: {
               id: initialValues.id,
-              description: values.description, 
+              price: values.price, 
             }
           }, refetchQueries: [
               // {query: GET_INVOICES_QUERY, variables: get_list_query_variables()}
           ]})
           .then(({ data }) => {
               console.log('got data', data)
-              toast.success((t('finance.invoice.toast_edit_item_description_success')), {
+              toast.success((t('finance.invoice.toast_edit_item_price_success')), {
                   position: toast.POSITION.BOTTOM_RIGHT
                 })
               setSubmitting(false)
@@ -49,18 +49,18 @@ function UpdateDescription({t, initialValues}) {
           }}
       >
         {({ isSubmitting, errors, values, handleChange, submitForm }) => (
-          <FormDescription
+          <FormPrice
             isSubmitting={isSubmitting}
             errors={errors}
             values={values}
             handleChange={handleChange}
             submitForm={submitForm}
           >
-          </FormDescription>   
+          </FormPrice>   
         )}
       </Formik>
     )
 }
 
 
-export default withTranslation()(withRouter(UpdateDescription))
+export default withTranslation()(withRouter(UpdatePrice))
