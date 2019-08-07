@@ -68,7 +68,7 @@ class FinanceInvoiceEdit extends Component {
                   <Page.Header title={t('finance.invoice.title') + ' #' + data.financeInvoice.invoiceNumber}>
                     <div className="page-options d-flex">
                       <Link to={return_url} 
-                            className='btn btn-link'>
+                            className='btn btn-secondary'>
                           <Icon prefix="fe" name="arrow-left" /> {t('general.back')} 
                       </Link>
                     </div>
