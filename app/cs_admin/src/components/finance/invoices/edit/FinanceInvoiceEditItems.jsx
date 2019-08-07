@@ -23,6 +23,7 @@ import UpdateProductName from "./UpdateProductName"
 import UpdateDescription from "./UpdateDescription"
 import UpdateQuantity from "./UpdateQuantity"
 import UpdatePrice from "./UpdatePrice"
+import UpdateFinanceTaxRate from "./UpdateFinanceTaxRate"
 
 
 export const UPDATE_INVOICE_ITEM = gql`
@@ -83,8 +84,6 @@ const FinanceInvoiceEditItems = ({ t, history, match, inputData }) => (
             <Table.ColHeader>{t("general.quantity_short")}</Table.ColHeader>
             <Table.ColHeader>{t("general.price")}</Table.ColHeader>
             <Table.ColHeader>{t("general.tax")}</Table.ColHeader>
-            <Table.ColHeader>{t("general.subtotal")}</Table.ColHeader>
-            <Table.ColHeader>{t("general.tax")}</Table.ColHeader>
             <Table.ColHeader>{t("general.total")}</Table.ColHeader>
           </Table.Row>
         </Table.Header>
@@ -102,6 +101,12 @@ const FinanceInvoiceEditItems = ({ t, history, match, inputData }) => (
               </Table.Col>
               <Table.Col>
                 <UpdatePrice initialValues={node} />
+              </Table.Col>
+              <Table.Col>
+                <UpdateFinanceTaxRate initialValues={node} inputData={inputData} />
+              </Table.Col>
+              <Table.Col>
+                <span className="pull-right">{node.totalDisplay}</span>
               </Table.Col>
             </Table.Row>
           ))}
