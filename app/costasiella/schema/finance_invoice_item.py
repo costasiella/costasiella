@@ -85,6 +85,7 @@ def validate_create_update_input(input, update=False):
 
     # Check finance tax rate
     if 'finance_tax_rate' in input:
+        result['finance_tax_rate'] = None
         if input['finance_tax_rate']:
             rid = get_rid(input['finance_tax_rate'])
             finance_tax_rate = FinanceTaxRate.objects.filter(id=rid.id).first()
@@ -94,6 +95,7 @@ def validate_create_update_input(input, update=False):
 
     # Check GLAccount
     if 'finance_glaccount' in input:
+        result['finance_glaccount'] = None
         if input['finance_glaccount']: 
             rid = get_rid(input['finance_glaccount'])
             finance_glaccount= FinanceGLAccount.objects.filter(id=rid.id).first()
@@ -103,6 +105,7 @@ def validate_create_update_input(input, update=False):
 
     # Check Costcenter
     if 'finance_costcenter' in input:
+        result['finance_costcenter'] = None
         if input['finance_costcenter']:
             rid = get_rid(input['finance_costcenter'])
             finance_costcenter= FinanceCostCenter.objects.filter(id=rid.id).first()
