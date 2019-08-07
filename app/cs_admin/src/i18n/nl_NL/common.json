@@ -132,7 +132,8 @@
             "toast_edit_item_price_success": "__STRING_NOT_TRANSLATED__",
             "toast_edit_item_product_name_success": "__STRING_NOT_TRANSLATED__",
             "toast_edit_item_quantity_success": "__STRING_NOT_TRANSLATED__",
-            "toast_add_item_success": "__STRING_NOT_TRANSLATED__"
+            "toast_add_item_success": "__STRING_NOT_TRANSLATED__",
+            "item_add": "__STRING_NOT_TRANSLATED__"
         }
     },
     "general": {

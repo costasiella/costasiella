@@ -8,11 +8,11 @@ import { Formik } from 'formik'
 import { toast } from 'react-toastify'
 
 import { get_list_query_variables } from "../tools"
-import { UPDATE_INVOICE_ITEM } from "../queries"
+import { UPDATE_INVOICE_ITEM, GET_INVOICES_QUERY, GET_INVOICE_QUERY } from "../queries"
 import FormQuantity from "./FormQuantity"
 
 
-function UpdateQuantity({t, initialValues}) {
+function UpdateQuantity({t, match, initialValues}) {
   const [updateInvoiceItem, { data }] = useMutation(UPDATE_INVOICE_ITEM)
 
     return (
@@ -31,7 +31,8 @@ function UpdateQuantity({t, initialValues}) {
               quantity: values.quantity, 
             }
           }, refetchQueries: [
-              // {query: GET_INVOICES_QUERY, variables: get_list_query_variables()}
+              {query: GET_INVOICES_QUERY, variables: get_list_query_variables()},
+              {query: GET_INVOICE_QUERY, variables: {id: match.params.id}}
           ]})
           .then(({ data }) => {
               console.log('got data', data)

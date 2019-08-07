@@ -8,7 +8,7 @@ import { Formik } from 'formik'
 import { toast } from 'react-toastify'
 
 import { get_list_query_variables } from "../tools"
-import { UPDATE_INVOICE_ITEM } from "../queries"
+import { UPDATE_INVOICE_ITEM, GET_INVOICES_QUERY, GET_INVOICE_QUERY } from "../queries"
 import FormFinanceTaxRate from "./FormFinanceTaxRate"
 
 
@@ -23,7 +23,7 @@ function get_initial_tax_rate(node) {
 }
 
 
-function UpdateFinanceTaxRate({t, initialValues, inputData}) {
+function UpdateFinanceTaxRate({t, match, initialValues, inputData}) {
   const [updateInvoiceItem, { data }] = useMutation(UPDATE_INVOICE_ITEM)
 
     return (
@@ -40,7 +40,8 @@ function UpdateFinanceTaxRate({t, initialValues, inputData}) {
               financeTaxRate: values.financeTaxRate, 
             }
           }, refetchQueries: [
-              // {query: GET_INVOICES_QUERY, variables: get_list_query_variables()}
+            {query: GET_INVOICES_QUERY, variables: get_list_query_variables()},
+            {query: GET_INVOICE_QUERY, variables: {id: match.params.id}}
           ]})
           .then(({ data }) => {
               console.log('got data', data)

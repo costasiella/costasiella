@@ -132,7 +132,8 @@
             "toast_edit_item_price_success": "Item price saved",
             "toast_edit_item_product_name_success": "Item product name saved",
             "toast_edit_item_quantity_success": "Item quantity saved",
-            "toast_add_item_success": "Added item"
+            "toast_add_item_success": "Added item",
+            "item_add": "Add item"
         }
     },
     "general": {

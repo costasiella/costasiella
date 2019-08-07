@@ -31,7 +31,7 @@ function UpdateDescription({t, initialValues}) {
               description: values.description, 
             }
           }, refetchQueries: [
-              // {query: GET_INVOICES_QUERY, variables: get_list_query_variables()}
+              // {query: GET_INVOICE_QUERY, variables: {id: match.params.id}}
           ]})
           .then(({ data }) => {
               console.log('got data', data)

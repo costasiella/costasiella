@@ -19,7 +19,7 @@ function FinanceInvoiceItemAdd({t, match}) {
   const [addInvoiceItem, { data }] = useMutation(CREATE_INVOICE_ITEM)
 
     return (
-      <button className="icon btn btn-link btn-sm" 
+      <button className="btn btn-primary btn-sm" 
         title={t('general.delete')} 
         href=""
         onClick={() => {
@@ -44,7 +44,8 @@ function FinanceInvoiceItemAdd({t, match}) {
               // setSubmitting(false)
             })
       }}>
-        <span className="text-blue"><Icon prefix="fe" name="plus" /></span>
+        <Icon prefix="fe" name="plus" /> { ' ' }
+        {t('finance.invoice.item_add')}
       </button>
     )
 }
