@@ -7,8 +7,6 @@ import { withRouter } from "react-router"
 import { Formik } from 'formik'
 import { toast } from 'react-toastify'
 
-
-import { get_list_query_variables } from "../tools"
 import { UPDATE_INVOICE_ITEM } from "../queries"
 import FormProductName from "./FormProductName"
 
@@ -49,7 +47,7 @@ function UpdateProductName({t, initialValues}) {
             })
           }}
       >
-        {({ isSubmitting, errors, values, touched, handleChange, submitForm, setFieldValue, setFieldTouched }) => (
+        {({ isSubmitting, errors, values, handleChange, submitForm }) => (
           <FormProductName
             isSubmitting={isSubmitting}
             errors={errors}

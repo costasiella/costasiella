@@ -12,10 +12,10 @@ import {
   Table
 } from "tabler-react"
 
-import { handleTextInputChange, handleTextInputBlur } from './tools'
+import { handleTextInputBlur } from './tools'
 
 
-const FormProductName = ({ t, isSubmitting, errors, handleChange, submitForm }) => (
+const FormProductName = ({ t, isSubmitting, errors, values, handleChange, submitForm }) => (
   <Dimmer loader={isSubmitting} active={isSubmitting}>
     <FoForm>
       <Form.Group>
@@ -23,9 +23,6 @@ const FormProductName = ({ t, isSubmitting, errors, handleChange, submitForm }) 
                 name="productName" 
                 className={(errors.productName) ? "form-control is-invalid" : "form-control"} 
                 autoComplete="off" 
-                onChange={(e) => {
-                  handleTextInputChange(e, handleChange, submitForm)
-                }}
                 onBlur={(e) => { 
                   handleTextInputBlur(e, handleChange, submitForm)
                 }}

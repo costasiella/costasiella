@@ -11,7 +11,7 @@ import {
 } from "tabler-react"
 
 
-import { handleTextInputChange, handleTextInputBlur } from './tools'
+import { handleTextInputBlur } from './tools'
 
 
 const FormQuantity = ({ t, isSubmitting, errors, handleChange, submitForm }) => (
@@ -22,9 +22,6 @@ const FormQuantity = ({ t, isSubmitting, errors, handleChange, submitForm }) => 
                 name="quantity" 
                 className={(errors.quantity) ? "form-control is-invalid" : "form-control"} 
                 autoComplete="off" 
-                onChange={(e) => {
-                  handleTextInputChange(e, handleChange, submitForm)
-                }}
                 onBlur={(e) => { 
                   handleTextInputBlur(e, handleChange, submitForm)
                 }}

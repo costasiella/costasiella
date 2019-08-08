@@ -1,5 +1,5 @@
 let timer
-const itemSubmitTimeout = 750
+const itemSubmitTimeout = 2000
 
 
 export function handleTextInputChange(e, handleChange, submitForm) {
@@ -17,9 +17,3 @@ export function handleTextInputBlur(e, handleChange, submitForm) {
     setTimeout(() => { submitForm() }, 225)
 }
 
-// export function handleSelectChange(e, fieldName, ) {
-//     clearTimeout(timer)
-//     setFieldValue(fieldName, e.target.value)
-//     setFieldTouched(fieldName, true)
-//     timer = setTimeout(() => {submitForm()}, itemSubmitTimeout)
-// }

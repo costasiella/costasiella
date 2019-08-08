@@ -11,7 +11,7 @@ import {
 } from "tabler-react"
 
 
-import { handleTextInputChange, handleTextInputBlur } from './tools'
+import { handleTextInputBlur } from './tools'
 
 const FormPrice = ({ t, isSubmitting, errors, handleChange, submitForm }) => (
   <Dimmer loader={isSubmitting} active={isSubmitting}>
@@ -21,9 +21,6 @@ const FormPrice = ({ t, isSubmitting, errors, handleChange, submitForm }) => (
                 name="price" 
                 className={(errors.price) ? "form-control is-invalid" : "form-control"} 
                 autoComplete="off" 
-                onChange={(e) => {
-                  handleTextInputChange(e, handleChange, submitForm)
-                }}
                 onBlur={(e) => { 
                   handleTextInputBlur(e, handleChange, submitForm)
                 }}

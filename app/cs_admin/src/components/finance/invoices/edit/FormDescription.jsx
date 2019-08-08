@@ -12,7 +12,7 @@ import {
   Table
 } from "tabler-react"
 
-import { handleTextInputChange, handleTextInputBlur } from './tools'
+import { handleTextInputBlur } from './tools'
 
 
 const FormDescription = ({ t, isSubmitting, errors, handleChange, submitForm }) => (
@@ -24,20 +24,9 @@ const FormDescription = ({ t, isSubmitting, errors, handleChange, submitForm }) 
                 className={(errors.description) ? "form-control is-invalid" : "form-control"} 
                 autoComplete="off" 
                 component="textarea"
-                onChange={(e) => {
-                  handleTextInputChange(e, handleChange, submitForm)
-                }}
                 onBlur={(e) => { 
                   handleTextInputBlur(e, handleChange, submitForm)
                 }}
-                // onChange={(e) => {
-                //   clearTimeout(itemDescriptionFormTypingTimer)
-                //   handleChange(e)
-                //   itemDescriptionFormTypingTimer = setTimeout(() => {
-                //     submitForm()
-                //   }, itemSubmitTimeout)
-                // }}
-                // onKeyDown={() => clearTimeout(itemDescriptionFormTypingTimer)}
         />
         <ErrorMessage name="description" component="span" className="invalid-feedback" />
       </Form.Group>
