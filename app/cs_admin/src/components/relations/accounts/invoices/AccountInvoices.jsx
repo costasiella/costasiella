@@ -32,6 +32,7 @@ import ProfileCardSmall from "../../../ui/ProfileCardSmall"
 
 import { GET_ACCOUNT_INVOICES_QUERY } from "./queries"
 import { DELETE_FINANCE_INVOICE } from "../../../finance/invoices/queries"
+import FinanceInvoiceStatus from "../../../finance/invoices/FinanceInvoiceStatus"
 
 
 function AccountInvoices({ t, match, history }) {
@@ -91,14 +92,20 @@ function AccountInvoices({ t, match, history }) {
                   <Table.Header>
                     <Table.Row key={v4()}>
                       <Table.ColHeader>{t('general.name')}</Table.ColHeader>
-                      <Table.ColHeader></Table.ColHeader> 
+                      <Table.ColHeader>{t('finance.invoices.invoice_number')}</Table.ColHeader>
+                      <Table.ColHeader>{t('finance.invoices.summary')}</Table.ColHeader>
+                      <Table.ColHeader>{t('finance.invoices.date')} & {t('finance.invoices.due')}</Table.ColHeader>
+                      <Table.ColHeader>{t('general.total')}</Table.ColHeader>
+                      <Table.ColHeader>{t('general.balance')}</Table.ColHeader>
+                      <Table.ColHeader></Table.ColHeader>
+                      <Table.ColHeader></Table.ColHeader>
                     </Table.Row>
                   </Table.Header>
                   <Table.Body>
                       {financeInvoices.edges.map(({ node }) => (
                         <Table.Row key={v4()}>
                           <Table.Col key={v4()}>
-                            {node.status}
+                            <FinanceInvoiceStatus status={node.status} />
                           </Table.Col>
                           {/* <Mutation mutation={DELETE_ACCOUNT_SUBSCRIPTION} key={v4()}>
                             {(deleteAccountSubscription, { data }) => (
