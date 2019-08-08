@@ -43,13 +43,27 @@ const CREATE_ACCOUNT_INVOICE= gql`
 
 function AccountInvoiceAdd({ t, match, history }) {
   const account_id = match.params.account_id
+  const { loading: queryLoading, error: queryError, queryData } = useQuery(
+    GET_INPUT_VALUES_QUERY
+  )
   const [createInvoice, { data }] = useMutation(CREATE_ACCOUNT_INVOICE, {
     // onCompleted = () => history.push('/finance/invoices/edit/')
   }) 
+
+  // Query
+  // Loading
+  if (queryLoading) return <p>{t('general.loading_with_dots')}</p>
+  // Error
+  if (queryError) {
+    console.log(queryError)
+    return <p>{t('general.error_sad_smiley')}</p>
+  }
+  
   
   return (
     <Formik
       initialValues={{
+        financeInvoiceGroup: "",
         summary: ""
       }}
       // validationSchema={INVOICE_GROUP_SCHEMA}
@@ -60,6 +74,7 @@ function AccountInvoiceAdd({ t, match, history }) {
         createInvoice({ variables: {
           input: {
             account: account_id, 
+            financeInvoiceGroup: values.financeInvoiceGroup,
             summary: values.summary
           }
         }, refetchQueries: [
@@ -81,6 +96,7 @@ function AccountInvoiceAdd({ t, match, history }) {
     >
       {({ isSubmitting, errors, values, submitForm, setFieldTouched, setFieldValue }) => (
         <AccountInvoiceForm
+          inputData={querydata}
           isSubmitting={isSubmitting}
           errors={errors}
           values={values}

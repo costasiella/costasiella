@@ -5,11 +5,7 @@ import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
 import { Form as FoForm, Field, ErrorMessage } from 'formik'
 import { v4 } from "uuid"
-
-import { Editor } from '@tinymce/tinymce-react'
-import { tinymceBasicConf } from "../../../../plugin_config/tinymce"
-import CSDatePicker from "../../../ui/CSDatePicker"
-
+import { Link } from 'react-router-dom'
 
 import {
   Button,
@@ -21,13 +17,25 @@ import {
 
 const AccountInvoiceAddForm = ({ t, history, inputData, isSubmitting, setFieldValue, setFieldTouched, errors, values, return_url }) => (
   <FoForm>
-    <Card.Body> 
-      <Form.Group label={t('general.last_name')}>
+    <Card.Body>
+      <Form.Group label={t('general.finance_invoice_group')}>
+        <Field component="select" 
+              name="financeInvoiceGroup" 
+              className={(errors.financeInvoiceGroup) ? "form-control is-invalid" : "form-control"} 
+              autoComplete="off">
+          <option value="" key={v4()}></option>
+          {inputData.financeInvoiceGroups.edges.map(({ node }) =>
+            <option value={node.id} key={v4()}>{node.name}</option>
+          )}
+        </Field>
+        <ErrorMessage name="financeInvoiceGroup" component="span" className="invalid-feedback" />
+      </Form.Group>
+      <Form.Group label={t('general.summary')}>
         <Field type="text" 
-                name="lastName" 
-                className={(errors.lastName) ? "form-control is-invalid" : "form-control"} 
+                name="summary" 
+                className={(errors.summary) ? "form-control is-invalid" : "form-control"} 
                 autoComplete="off" />
-        <ErrorMessage name="lastName" component="span" className="invalid-feedback" />
+        <ErrorMessage name="summary" component="span" className="invalid-feedback" />
       </Form.Group>
     </Card.Body>
     <Card.Footer>
@@ -39,13 +47,14 @@ const AccountInvoiceAddForm = ({ t, history, inputData, isSubmitting, setFieldVa
         >
           {t('general.submit')}
         </Button>
-        <Button
-          type="button" 
-          color="link" 
-          onClick={() => history.push(return_url)}
-        >
-            {t('general.cancel')}
-        </Button>
+        <Link to={return_url}>
+          <Button
+            type="button" 
+            color="link" 
+          >
+              {t('general.cancel')}
+          </Button>
+        </Link>
     </Card.Footer>
   </FoForm>
 )
