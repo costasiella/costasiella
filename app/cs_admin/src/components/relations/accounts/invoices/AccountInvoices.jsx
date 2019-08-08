@@ -1,12 +1,14 @@
 // @flow
 
 import React from 'react'
+import { Mutation } from 'react-apollo'
 import { useQuery } from '@apollo/react-hooks'
 import { v4 } from "uuid"
 import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
 import { Link } from 'react-router-dom'
 
+import moment from 'moment'
 
 import {
   Page,
@@ -16,7 +18,8 @@ import {
   Button,
   Card,
   Container,
-  Table
+  Table,
+  Text
 } from "tabler-react";
 import SiteWrapper from "../../../SiteWrapper"
 import HasPermissionWrapper from "../../../HasPermissionWrapper"
@@ -107,8 +110,31 @@ function AccountInvoices({ t, match, history }) {
                           <Table.Col key={v4()}>
                             <FinanceInvoiceStatus status={node.status} />
                           </Table.Col>
-                          {/* <Mutation mutation={DELETE_ACCOUNT_SUBSCRIPTION} key={v4()}>
-                            {(deleteAccountSubscription, { data }) => (
+                          <Table.Col key={v4()}>
+                            {node.invoiceNumber}
+                          </Table.Col>
+                          <Table.Col key={v4()}>
+                            <Text.Small color="gray">{node.summary.trunc(20)}</Text.Small>
+                          </Table.Col>
+                          <Table.Col key={v4()}>
+                            {moment(node.dateSent).format('LL')} <br />
+                            {moment(node.dateDue).format('LL')}
+                          </Table.Col>
+                          <Table.Col key={v4()}>
+                            {node.totalDisplay}
+                          </Table.Col>
+                          <Table.Col key={v4()}>
+                            {node.balanceDisplay}
+                          </Table.Col>
+                          <Table.Col className="text-right" key={v4()}>
+                            <Button className='btn-sm' 
+                                    onClick={() => history.push("/finance/invoices/edit/" + node.id)}
+                                    color="secondary">
+                              {t('general.edit')}
+                            </Button>
+                          </Table.Col>
+                          <Mutation mutation={DELETE_FINANCE_INVOICE} key={v4()}>
+                            {(deleteFinanceInvoice, { data }) => (
                               <Table.Col className="text-right" key={v4()}>
                                 <button className="icon btn btn-link btn-sm" 
                                   title={t('general.delete')} 
@@ -116,24 +142,27 @@ function AccountInvoices({ t, match, history }) {
                                   onClick={() => {
                                     confirm_delete({
                                       t: t,
-                                      msgConfirm: t("relations.account.invoices.delete_confirm_msg"),
-                                      msgDescription: <p>{node.organizationSubscription.name} {node.dateStart}</p>,
-                                      msgSuccess: t('relations.account.invoices.deleted'),
-                                      deleteFunction: deleteAccountSubscription,
-                                      functionVariables: { variables: {
-                                        input: {
-                                          id: node.id
-                                        }
-                                      }, refetchQueries: [
-                                        {query: GET_ACCOUNT_SUBSCRIPTIONS_QUERY, variables: { archived: archived, accountId: match.params.account_id }} 
-                                      ]}
+                                      msgConfirm: t("finance.invoices.delete_confirm_msg"),
+                                      msgDescription: <p>{node.invoiceNumber}</p>,
+                                      msgSuccess: t('finance.invoices.deleted'),
+                                      deleteFunction: deleteFinanceInvoice,
+                                      functionVariables: { 
+                                        variables: {
+                                          input: {
+                                            id: node.id
+                                          }
+                                        }, 
+                                        refetchQueries: [
+                                          {query: GET_ACCOUNT_INVOICES_QUERY, variables: {'account': account_id}},
+                                        ]
+                                      }
                                     })
                                 }}>
                                   <span className="text-red"><Icon prefix="fe" name="trash-2" /></span>
                                 </button>
                               </Table.Col>
                             )}
-                          </Mutation> */}
+                          </Mutation>
                         </Table.Row>
                       ))}
                   </Table.Body>
