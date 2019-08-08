@@ -50,7 +50,7 @@ const FinanceInvoices = ({ t, history }) => (
               </Link>
             </div>
         </Page.Header>
-            <Query query={GET_INVOICES_QUERY} variables={get_list_query_variables()} pollInterval={1000}>
+            <Query query={GET_INVOICES_QUERY} variables={get_list_query_variables()} pollInterval={2000}>
              {({ loading, error, data: {financeInvoices: invoices}, refetch, fetchMore }) => {
                 // Loading
                 if (loading) return (

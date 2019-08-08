@@ -42,7 +42,7 @@ function AccountInvoices({ t, match, history }) {
   const account_id = match.params.account_id
   const { loading, error, data, fetchMore } = useQuery(GET_ACCOUNT_INVOICES_QUERY, {
     variables: {'account': account_id},
-    pollInterval: 1000
+    pollInterval: 2000
   })
 
   // Loading
