@@ -121,6 +121,7 @@ class CreateFinanceInvoice(graphene.relay.ClientIDMutation):
         finance_invoice_group = validation_result['finance_invoice_group']
 
         finance_invoice = FinanceInvoice(
+            account = validation_result['account'],
             finance_invoice_group = finance_invoice_group,
             status = 'DRAFT',
             terms = finance_invoice_group.terms,
@@ -132,9 +133,6 @@ class CreateFinanceInvoice(graphene.relay.ClientIDMutation):
 
         # Save invoice
         finance_invoice.save()
-
-        # Now the invoice has an id, link it to an account
-        finance_invoice.accounts.add(validation_result['account'])
 
         return CreateFinanceInvoice(finance_invoice=finance_invoice)
 
