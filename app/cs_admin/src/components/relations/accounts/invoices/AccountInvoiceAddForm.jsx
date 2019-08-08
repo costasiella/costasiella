@@ -23,7 +23,7 @@ const AccountInvoiceAddForm = ({ t, history, inputData, isSubmitting, setFieldVa
               name="financeInvoiceGroup" 
               className={(errors.financeInvoiceGroup) ? "form-control is-invalid" : "form-control"} 
               autoComplete="off">
-          <option value="" key={v4()}></option>
+          <option value="" key={v4()}>{t('general.please_select')}</option>
           {inputData.financeInvoiceGroups.edges.map(({ node }) =>
             <option value={node.id} key={v4()}>{node.name}</option>
           )}

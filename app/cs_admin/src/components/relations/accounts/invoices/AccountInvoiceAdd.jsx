@@ -2,8 +2,7 @@
 
 import React, {Component } from 'react'
 import gql from "graphql-tag"
-import { useMutation } from '@apollo/react-hooks';
-import { Query, Mutation } from "react-apollo";
+import { useQuery, useMutation } from '@apollo/react-hooks';
 import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
 import { Link } from 'react-router-dom'
@@ -13,7 +12,7 @@ import { toast } from 'react-toastify'
 
 import { GET_ACCOUNT_SUBSCRIPTIONS_QUERY, GET_INPUT_VALUES_QUERY } from './queries'
 import { SUBSCRIPTION_SCHEMA } from './yupSchema'
-import AccountSubscriptionForm from './AccountInvoiceForm'
+import AccountInvoiceAddForm from './AccountInvoiceAddForm'
 
 import {
   Page,
@@ -42,9 +41,14 @@ const CREATE_ACCOUNT_INVOICE= gql`
 
 
 function AccountInvoiceAdd({ t, match, history }) {
+  const return_url = "/relations/account/" + account_id + '/invoices'
   const account_id = match.params.account_id
-  const { loading: queryLoading, error: queryError, queryData } = useQuery(
-    GET_INPUT_VALUES_QUERY
+  const { loading: queryLoading, error: queryError, data: queryData } = useQuery(
+    GET_INPUT_VALUES_QUERY, {
+      variables: {
+        accountId: account_id
+      }
+    }
   )
   const [createInvoice, { data }] = useMutation(CREATE_ACCOUNT_INVOICE, {
     // onCompleted = () => history.push('/finance/invoices/edit/')
@@ -59,57 +63,89 @@ function AccountInvoiceAdd({ t, match, history }) {
     return <p>{t('general.error_sad_smiley')}</p>
   }
   
-  
+  console.log(queryData)
+  const account = queryData.account
+
+
   return (
-    <Formik
-      initialValues={{
-        financeInvoiceGroup: "",
-        summary: ""
-      }}
-      // validationSchema={INVOICE_GROUP_SCHEMA}
-      onSubmit={(values, { setSubmitting }) => {
-        console.log('submit values:')
-        console.log(values)
+    <SiteWrapper>
+      <div className="my-3 my-md-5">
+        <Container>
+          <Page.Header title={account.firstName + " " + account.lastName} />
+          <Grid.Row>
+              <Grid.Col md={9}>
+                <Card>
+                  <Card.Header>
+                    <Card.Title>{t('relations.account.invoices.title_add')}</Card.Title>
+                  </Card.Header>
+                  <Formik
+                    initialValues={{
+                      financeInvoiceGroup: "",
+                      summary: ""
+                    }}
+                    // validationSchema={INVOICE_GROUP_SCHEMA}
+                    onSubmit={(values, { setSubmitting }) => {
+                      console.log('submit values:')
+                      console.log(values)
 
-        createInvoice({ variables: {
-          input: {
-            account: account_id, 
-            financeInvoiceGroup: values.financeInvoiceGroup,
-            summary: values.summary
-          }
-        }, refetchQueries: [
-        ]})
-        .then(({ data }) => {
-            console.log('got data', data)
-            toast.success((t('relations.account.invoices.title_add')), {
-                position: toast.POSITION.BOTTOM_RIGHT
-              })
-            setSubmitting(false)
-          }).catch((error) => {
-            toast.error((t('general.toast_server_error')) + ': ' +  error, {
-                position: toast.POSITION.BOTTOM_RIGHT
-              })
-            console.log('there was an error sending the query', error)
-            setSubmitting(false)
-          })
-        }}
-    >
-      {({ isSubmitting, errors, values, submitForm, setFieldTouched, setFieldValue }) => (
-        <AccountInvoiceForm
-          inputData={querydata}
-          isSubmitting={isSubmitting}
-          errors={errors}
-          values={values}
-          submitForm={submitForm}
-          setFieldTouched={setFieldTouched}
-          setFieldValue={setFieldValue}
-        >
-        </AccountInvoiceForm>   
-      )}
-    </Formik>
+                      createInvoice({ variables: {
+                        input: {
+                          account: account_id, 
+                          financeInvoiceGroup: values.financeInvoiceGroup,
+                          summary: values.summary
+                        }
+                      }, refetchQueries: [
+                      ]})
+                      .then(({ data }) => {
+                          console.log('got data', data)
+                          toast.success((t('relations.account.invoices.title_add')), {
+                              position: toast.POSITION.BOTTOM_RIGHT
+                            })
+                          setSubmitting(false)
+                        }).catch((error) => {
+                          toast.error((t('general.toast_server_error')) + ': ' +  error, {
+                              position: toast.POSITION.BOTTOM_RIGHT
+                            })
+                          console.log('there was an error sending the query', error)
+                          setSubmitting(false)
+                        })
+                      }}
+                  >
+                    {({ isSubmitting, errors, values, submitForm, setFieldTouched, setFieldValue }) => (
+                      <AccountInvoiceAddForm
+                        inputData={queryData}
+                        isSubmitting={isSubmitting}
+                        errors={errors}
+                        values={values}
+                        submitForm={submitForm}
+                        setFieldTouched={setFieldTouched}
+                        setFieldValue={setFieldValue}
+                        return_url={return_url}
+                      >
+                      </AccountInvoiceAddForm>   
+                    )}
+                  </Formik>
+                </Card>
+              </Grid.Col>
+              <Grid.Col md={3}>
+                <HasPermissionWrapper permission="add"
+                                      resource="accountsubscription">
+                  <Link to={return_url}>
+                    <Button color="primary btn-block mb-6">
+                      <Icon prefix="fe" name="chevrons-left" /> {t('general.back')}
+                    </Button>
+                  </Link>
+                </HasPermissionWrapper>
+                <ProfileMenu 
+                  active_link='subscriptions'
+                  account_id={match.params.account_id}
+                />
+              </Grid.Col>
+            </Grid.Row>
+          </Container>
+      </div>
+    </SiteWrapper>
   )
-
-
 }
 
 
