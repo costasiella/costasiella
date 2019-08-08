@@ -96,8 +96,7 @@ function AccountInvoices({ t, match, history }) {
                   <Table.Header>
                     <Table.Row key={v4()}>
                       <Table.ColHeader>{t('general.name')}</Table.ColHeader>
-                      <Table.ColHeader>{t('finance.invoices.invoice_number')}</Table.ColHeader>
-                      <Table.ColHeader>{t('finance.invoices.summary')}</Table.ColHeader>
+                      <Table.ColHeader>{t('finance.invoices.invoice_number')} & {t('finance.invoices.summary')}</Table.ColHeader>
                       <Table.ColHeader>{t('finance.invoices.date')} & {t('finance.invoices.due')}</Table.ColHeader>
                       <Table.ColHeader>{t('general.total')}</Table.ColHeader>
                       <Table.ColHeader>{t('general.balance')}</Table.ColHeader>
@@ -112,10 +111,8 @@ function AccountInvoices({ t, match, history }) {
                             <FinanceInvoiceStatus status={node.status} />
                           </Table.Col>
                           <Table.Col key={v4()}>
-                            {node.invoiceNumber}
-                          </Table.Col>
-                          <Table.Col key={v4()}>
-                            <Text.Small color="gray">{node.summary.trunc(20)}</Text.Small>
+                            {node.invoiceNumber} <br />
+                            <Text.Small color="gray">{node.summary.trunc(35)}</Text.Small>
                           </Table.Col>
                           <Table.Col key={v4()}>
                             {moment(node.dateSent).format('LL')} <br />
