@@ -25,7 +25,7 @@ class FinanceInvoiceNode(DjangoObjectType):
     class Meta:
         model = FinanceInvoice
         filter_fields = {
-            'account', ['exact'],
+            'account': ['exact'],
             'invoice_number': ['icontains', 'exact'],
             'status': ['exact'],
             'date_sent': ['lte', 'gte'],

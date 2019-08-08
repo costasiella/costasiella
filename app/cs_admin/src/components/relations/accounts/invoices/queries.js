@@ -1,33 +1,36 @@
 import gql from "graphql-tag"
 
-export const GET_ACCOUNT_SUBSCRIPTIONS_QUERY = gql`
-  query AccountSubscriptions($after: String, $before: String, $accountId: ID!) {
-    accountSubscriptions(first: 15, before: $before, after: $after, account: $accountId) {
+export const GET_ACCOUNT_INVOICES_QUERY = gql`
+  query FinanceInvoices($after: String, $before: String, $status: String, $account: ID!) {
+    financeInvoices(first: 15, before: $before, after: $after, status: $status, account: $account) {
       pageInfo {
-        startCursor
-        endCursor
         hasNextPage
         hasPreviousPage
+        startCursor
+        endCursor
       }
       edges {
         node {
           id
-          organizationSubscription {
+          account {
             id
-            name
+            fullName
           }
-          financePaymentMethod {
-            id
-            name
-          }
-          dateStart
-          dateEnd
-          registrationFeePaid
-          createdAt
+          invoiceNumber
+          status
+          summary
+          relationCompany
+          relationContactName
+          dateSent
+          dateDue
+          total
+          totalDisplay
+          balance
+          balanceDisplay
         }
       }
     }
-    account(id:$accountId) {
+    account(id:$account) {
       id
       firstName
       lastName

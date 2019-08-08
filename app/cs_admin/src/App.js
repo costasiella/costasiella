@@ -90,6 +90,7 @@ import RelationsAccountProfile from './components/relations/accounts/RelationsAc
 import AccountClasspasses from './components/relations/accounts/classpasses/AccountClasspasses'
 import AccountClasspassAdd from './components/relations/accounts/classpasses/AccountClasspassAdd'
 import AccountClasspassEdit from './components/relations/accounts/classpasses/AccountClasspassEdit'
+import AccountInvoices from './components/relations/accounts/invoices/AccountInvoices'
 import AccountMemberships from './components/relations/accounts/memberships/AccountMemberships'
 import AccountMembershipAdd from './components/relations/accounts/memberships/AccountMembershipAdd'
 import AccountMembershipEdit from './components/relations/accounts/memberships/AccountMembershipEdit'
@@ -248,6 +249,7 @@ class App extends Component {
             <Route exact path="/relations/accounts/:account_id/classpasses" component={AccountClasspasses} />
             <Route exact path="/relations/accounts/:account_id/classpasses/add" component={AccountClasspassAdd} />
             <Route exact path="/relations/accounts/:account_id/classpasses/edit/:id" component={AccountClasspassEdit} />
+            <Route exact path="/relations/accounts/:account_id/invoices" component={AccountInvoices} />
             <Route exact path="/relations/accounts/:account_id/memberships" component={AccountMemberships} />
             <Route exact path="/relations/accounts/:account_id/memberships/add" component={AccountMembershipAdd} />
             <Route exact path="/relations/accounts/:account_id/memberships/edit/:id" component={AccountMembershipEdit} />
