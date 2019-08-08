@@ -14,8 +14,10 @@ import {
 import CSDatePicker from "../../../ui/CSDatePicker"
 
 
+import { handleTextInputBlur } from './tools'
+
 let optionsFormTypingTimer
-const formSubmitTimeout = 750
+const formSubmitTimeout = 225
 
 
 const FinanceInvoiceEditOptionsForm = ({ t, isSubmitting, values, errors, handleChange, submitForm, setFieldValue, setFieldTouched, inputData }) => (
@@ -26,15 +28,9 @@ const FinanceInvoiceEditOptionsForm = ({ t, isSubmitting, values, errors, handle
                 name="invoiceNumber" 
                 className={(errors.invoiceNumber) ? "form-control is-invalid" : "form-control"} 
                 autoComplete="off" 
-                onChange={(e) => {
-                  clearTimeout(optionsFormTypingTimer)
-                  handleChange(e)
-                  optionsFormTypingTimer = setTimeout(() => {
-                    submitForm()
-                  }, formSubmitTimeout)
-                }}
-                onKeyDown={() => clearTimeout(optionsFormTypingTimer)}
-                
+                onBlur={(e) => { 
+                  handleTextInputBlur(e, handleChange, submitForm)
+                }}                
         />
         <ErrorMessage name="invoiceNumber" component="span" className="invalid-feedback" />
       </Form.Group>
@@ -47,7 +43,6 @@ const FinanceInvoiceEditOptionsForm = ({ t, isSubmitting, values, errors, handle
             setFieldTouched("dateSent", true)
             setTimeout(() => {submitForm()}, formSubmitTimeout)
           }}
-          onBlur={() => setFieldTouched("dateSent", true)}
         />
         <ErrorMessage name="dateSent" component="span" className="invalid-feedback" />
       </Form.Group>
@@ -60,7 +55,6 @@ const FinanceInvoiceEditOptionsForm = ({ t, isSubmitting, values, errors, handle
             setFieldTouched("dateDue", true)
             setTimeout(() => {submitForm()}, formSubmitTimeout)
           }}
-          onBlur={() => setFieldTouched("dateDue", true)}
         />
         <ErrorMessage name="dateDue" component="span" className="invalid-feedback" />
       </Form.Group>
@@ -69,10 +63,8 @@ const FinanceInvoiceEditOptionsForm = ({ t, isSubmitting, values, errors, handle
               name="status" 
               className={(errors.status) ? "form-control is-invalid" : "form-control"} 
               autoComplete="off"
-              onChange={(e) => {
-                setFieldValue('status', e.target.value)
-                setFieldTouched('status', true)
-                setTimeout(() => {submitForm()}, formSubmitTimeout)
+              onBlur={(e) => { 
+                handleTextInputBlur(e, handleChange, submitForm)
               }}
         >
           <option value="DRAFT">{t('finance.invoices.status.DRAFT')}</option>
@@ -86,11 +78,9 @@ const FinanceInvoiceEditOptionsForm = ({ t, isSubmitting, values, errors, handle
         <Field component="select" 
               name="financePaymentMethod" 
               className={(errors.financePaymentMethod) ? "form-control is-invalid" : "form-control"} 
-              onChange={(e) => {
-                setFieldValue('financePaymentMethod', e.target.value)
-                setFieldTouched('financePaymentMethod', true)
-                setTimeout(() => {submitForm()}, formSubmitTimeout)
-              }}
+              onBlur={(e) => { 
+                handleTextInputBlur(e, handleChange, submitForm)
+              }}   
               autoComplete="off">
           <option value="" key={v4()}></option>
           {inputData.financePaymentMethods.edges.map(({ node }) =>
