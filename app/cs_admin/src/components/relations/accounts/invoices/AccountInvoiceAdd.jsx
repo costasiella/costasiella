@@ -101,6 +101,7 @@ function AccountInvoiceAdd({ t, match, history }) {
                           toast.success((t('relations.account.invoices.title_add')), {
                               position: toast.POSITION.BOTTOM_RIGHT
                             })
+                          history.push('/finance/invoices/edit/' + data.createFinanceInvoice.financeInvoice.id)
                           setSubmitting(false)
                         }).catch((error) => {
                           toast.error((t('general.toast_server_error')) + ': ' +  error, {
