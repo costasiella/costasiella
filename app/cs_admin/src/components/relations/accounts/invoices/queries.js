@@ -104,8 +104,8 @@ export const GET_ACCOUNT_SUBSCRIPTION_QUERY = gql`
 `
 
 export const GET_INPUT_VALUES_QUERY = gql`
-  query SubscriptionInputValues($after: String, $before: String, $archived: Boolean!, $accountId: ID!) {
-    organizationSubscriptions(first: 100, before: $before, after: $after, archived: $archived) {
+  query InvoiceInputValues($after: String, $before: String, $accountId: ID!) {
+    financeInvoiceGroups(first: 100, before: $before, after: $after, archived: false) {
       pageInfo {
         startCursor
         endCursor
@@ -115,24 +115,7 @@ export const GET_INPUT_VALUES_QUERY = gql`
       edges {
         node {
           id
-          archived
           name
-        }
-      }
-    }
-    financePaymentMethods(first: 100, before: $before, after: $after, archived: $archived) {
-      pageInfo {
-        startCursor
-        endCursor
-        hasNextPage
-        hasPreviousPage
-      }
-      edges {
-        node {
-          id
-          archived
-          name
-          code
         }
       }
     }
