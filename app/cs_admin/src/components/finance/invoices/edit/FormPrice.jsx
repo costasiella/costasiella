@@ -11,8 +11,7 @@ import {
 } from "tabler-react"
 
 
-let priceFormTypingTimer
-const itemSubmitTimeout = 750
+import { handleTextInputChange, handleTextInputBlur } from './tools'
 
 const FormPrice = ({ t, isSubmitting, errors, handleChange, submitForm }) => (
   <Dimmer loader={isSubmitting} active={isSubmitting}>
@@ -23,13 +22,11 @@ const FormPrice = ({ t, isSubmitting, errors, handleChange, submitForm }) => (
                 className={(errors.price) ? "form-control is-invalid" : "form-control"} 
                 autoComplete="off" 
                 onChange={(e) => {
-                  clearTimeout(priceFormTypingTimer)
-                  handleChange(e)
-                  priceFormTypingTimer = setTimeout(() => {
-                    submitForm()
-                  }, itemSubmitTimeout)
+                  handleTextInputChange(e, handleChange, submitForm)
                 }}
-                onKeyDown={() => clearTimeout(priceFormTypingTimer)}
+                onBlur={(e) => { 
+                  handleTextInputBlur(e, handleChange, submitForm)
+                }}
         />
         <ErrorMessage name="price" component="span" className="invalid-feedback" />
       </Form.Group>

@@ -11,8 +11,8 @@ import {
 } from "tabler-react"
 
 
-let quantityFormTypingTimer
-const itemSubmitTimeout = 750
+import { handleTextInputChange, handleTextInputBlur } from './tools'
+
 
 const FormQuantity = ({ t, isSubmitting, errors, handleChange, submitForm }) => (
   <Dimmer loader={isSubmitting} active={isSubmitting}>
@@ -23,13 +23,11 @@ const FormQuantity = ({ t, isSubmitting, errors, handleChange, submitForm }) => 
                 className={(errors.quantity) ? "form-control is-invalid" : "form-control"} 
                 autoComplete="off" 
                 onChange={(e) => {
-                  clearTimeout(quantityFormTypingTimer)
-                  handleChange(e)
-                  quantityFormTypingTimer = setTimeout(() => {
-                    submitForm()
-                  }, itemSubmitTimeout)
+                  handleTextInputChange(e, handleChange, submitForm)
                 }}
-                onKeyDown={() => clearTimeout(quantityFormTypingTimer)}
+                onBlur={(e) => { 
+                  handleTextInputBlur(e, handleChange, submitForm)
+                }}
         />
         <ErrorMessage name="quantity" component="span" className="invalid-feedback" />
       </Form.Group>

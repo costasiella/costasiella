@@ -58,15 +58,14 @@ function UpdateFinanceTaxRate({t, match, initialValues, inputData}) {
             })
           }}
       >
-        {({ isSubmitting, errors, values, submitForm, setFieldTouched, setFieldValue }) => (
+        {({ isSubmitting, errors, values, submitForm, handleChange }) => (
           <FormFinanceTaxRate
             inputData={inputData}
             isSubmitting={isSubmitting}
             errors={errors}
             values={values}
             submitForm={submitForm}
-            setFieldTouched={setFieldTouched}
-            setFieldValue={setFieldValue}
+            handleChange={handleChange}
           >
           </FormFinanceTaxRate>   
         )}

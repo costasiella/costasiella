@@ -11,11 +11,10 @@ import {
   Form,
 } from "tabler-react"
 
+import { handleTextInputChange, handleTextInputBlur } from './tools'
 
-let taxRateFormTypingTimer
-const itemSubmitTimeout = 750
 
-const FormFinanceTaxRate = ({ t, isSubmitting, errors, submitForm, inputData, setFieldTouched, setFieldValue }) => (
+const FormFinanceTaxRate = ({ t, isSubmitting, errors, submitForm, inputData, handleChange }) => (
   <Dimmer loader={isSubmitting} active={isSubmitting}>
     <FoForm>
       <Form.Group>
@@ -24,10 +23,10 @@ const FormFinanceTaxRate = ({ t, isSubmitting, errors, submitForm, inputData, se
               className={(errors.financeTaxRate) ? "form-control is-invalid" : "form-control"} 
               autoComplete="off"
               onChange={(e) => {
-                clearTimeout(taxRateFormTypingTimer)
-                setFieldValue('financeTaxRate', e.target.value)
-                setFieldTouched('financeTaxRate', true)
-                taxRateFormTypingTimer = setTimeout(() => {submitForm()}, itemSubmitTimeout)
+                handleTextInputChange(e, handleChange, submitForm)
+              }}
+              onBlur={(e) => { 
+                handleTextInputBlur(e, handleChange, submitForm)
               }}
         >
           {console.log("query data in form add:")}
