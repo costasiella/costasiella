@@ -32,18 +32,10 @@ import FinanceInvoicesFilter from "./FinanceInvoicesFilter"
 import FinanceInvoicesBase from "./FinanceInvoicesBase"
 import FinanceInvoicesStatus from "./FinanceInvoiceStatus"
 
-import { GET_INVOICES_QUERY } from "./queries"
+import { GET_INVOICES_QUERY, DELETE_FINANCE_INVOICE } from "./queries"
 
 import confirm_delete from "../../../tools/confirm_delete"
 import moment from 'moment'
-
-const DELETE_FINANCE_INVOICE = gql`
-  mutation DeleteFinanceInvoice($input: DeleteFinanceInvoiceInput!) {
-    deleteFinanceInvoice(input: $input) {
-      ok
-    }
-  }
-`
 
 
 const FinanceInvoices = ({ t, history }) => (

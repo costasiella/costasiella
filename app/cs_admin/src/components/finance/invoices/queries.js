@@ -152,6 +152,14 @@ export const UPDATE_INVOICE = gql`
   }
 `
 
+export const DELETE_FINANCE_INVOICE = gql`
+  mutation DeleteFinanceInvoice($input: DeleteFinanceInvoiceInput!) {
+    deleteFinanceInvoice(input: $input) {
+      ok
+    }
+  }
+`
+
 
 export const CREATE_INVOICE_ITEM = gql`
   mutation CreateFinanceInvoiceItem($input: CreateFinanceInvoiceItemInput!) {
