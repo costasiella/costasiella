@@ -115,7 +115,9 @@ class FinanceInvoice(models.Model):
             self._set_relation_info()
 
             # set dates
-            self.date_sent = timezone.now().date()
+            if not self.date_sent:
+                # Date is now if not supplied on creation
+                self.date_sent = timezone.now().date()
             self.date_due = self.date_sent + datetime.timedelta(days=self.finance_invoice_group.due_after_days)
             
             ## set invoice number

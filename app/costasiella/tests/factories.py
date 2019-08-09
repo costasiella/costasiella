@@ -364,6 +364,25 @@ class AccountClasspassFactory(factory.DjangoModelFactory):
     note = "Subscription note here"
     
 
+class FinanceInvoiceFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.FinanceInvoice
+
+    account = factory.SubFactory(RegularUserFactory)
+    finance_invoice_group = factory.SubFactory(FinanceInvoiceGroupFactory)
+    relation_company = "Company"
+    relation_company_registration = "123545ABC"
+    relation_company_tax_registration = "12334324BQ"
+    relation_contact_name = "Relation name"
+    relation_address = "Street 3243"
+    relation_postcode = "3423 BF"
+    relation_city = "City"
+    relation_country = "NL"
+    status = "DRAFT"
+    summary = "models.CharField(max_length=255, default="")"
+    note = "Invoice note here"
+
+
 class SchedulePublicWeeklyClassFactory(factory.DjangoModelFactory):
     class Meta:
         model = models.ScheduleItem
