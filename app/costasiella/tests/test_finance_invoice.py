@@ -265,7 +265,24 @@ class GQLFinanceInvoice(TestCase):
 
     def test_query_status_filter(self):
         """ Query list of account invoices - filtered by status """
-        pass
+        query = self.invoices_query
+        invoice = f.FinanceInvoiceFactory.create()
+        invoice.status = "SENT"
+        invoice.finance_payment_method = f.FinancePaymentMethodFactory()
+        invoice.save()
+
+        variables = {
+            "status": "SENT"
+        }
+
+        executed = execute_test_client_api_query(query, self.admin_user, variables=variables)
+        data = executed.get('data')
+
+        # Make sure the invoice is in the list returned
+        self.assertEqual(
+            data['financeInvoices']['edges'][0]['node']['id'], 
+            to_global_id("FinanceInvoiceNode", invoice.id)
+        )
 
 
 

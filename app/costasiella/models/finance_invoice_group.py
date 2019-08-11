@@ -23,7 +23,6 @@ class FinanceInvoiceGroup(models.Model):
     def _next_invoice_number_new_year(self, first_invoice_this_year):
         """ Reset numbering to 1 for first invoice in year """
         if first_invoice_this_year and self.auto_reset_prefix_year:
-            print('resetting number')
             self.next_id = 1
             self.save()
 
@@ -37,8 +36,6 @@ class FinanceInvoiceGroup(models.Model):
 
             # Reset next_id for this group to 1 if this is the 1st invoice of the year
             self._next_invoice_number_new_year(first_invoice_this_year)
-
-        print(self.next_id)
 
         invoice_number += str(self.next_id)
 
