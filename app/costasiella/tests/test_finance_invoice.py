@@ -286,57 +286,48 @@ class GQLFinanceInvoice(TestCase):
 
 
 
-    # def test_query_permision_denied(self):
-    #     """ Query list of account invoices - check permission denied """
-    #     query = self.invoices_query
-    #     invoice = f.FinanceInvoiceFactory.create()
-    #     variables = {
-    #         'accountId': to_global_id('FinanceInvoiceNode', invoice.account.id)
-    #     }
+    def test_query_permision_denied(self):
+        """ Query list of account invoices - check permission denied """
+        query = self.invoices_query
+        invoice = f.FinanceInvoiceFactory.create()
 
-    #     # Create regular user
-    #     user = get_user_model().objects.get(pk=invoice.account.id)
-    #     executed = execute_test_client_api_query(query, user, variables=variables)
-    #     errors = executed.get('errors')
+        # Create regular user
+        user = get_user_model().objects.get(pk=invoice.account.id)
+        executed = execute_test_client_api_query(query, user)
+        errors = executed.get('errors')
 
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
-    # def test_query_permision_granted(self):
-    #     """ Query list of account invoices with view permission """
-    #     query = self.invoices_query
-    #     invoice = f.FinanceInvoiceFactory.create()
-    #     variables = {
-    #         'accountId': to_global_id('FinanceInvoiceNode', invoice.account.id)
-    #     }
+    def test_query_permision_granted(self):
+        """ Query list of account invoices with view permission """
+        query = self.invoices_query
+        invoice = f.FinanceInvoiceFactory.create()
 
-    #     # Create regular user
-    #     user = get_user_model().objects.get(pk=invoice.account.id)
-    #     permission = Permission.objects.get(codename='view_financeinvoice')
-    #     user.user_permissions.add(permission)
-    #     user.save()
+        # Create regular user
+        user = get_user_model().objects.get(pk=invoice.account.id)
+        permission = Permission.objects.get(codename='view_financeinvoice')
+        user.user_permissions.add(permission)
+        user.save()
 
-    #     executed = execute_test_client_api_query(query, user, variables=variables)
-    #     data = executed.get('data')
+        executed = execute_test_client_api_query(query, user)
+        data = executed.get('data')
 
-    #     # List all invoices
-    #     self.assertEqual(
-    #         data['financeInvoices']['edges'][0]['node']['organizationSubscription']['id'], 
-    #         to_global_id("OrganizationSubscriptionNode", invoice.organization_invoice.id)
-    #     )
+        # List all invoices
+        self.assertEqual(
+            data['financeInvoices']['edges'][0]['node']['account']['id'], 
+            to_global_id("AccountNode", invoice.account.id)
+        )
 
 
-    # def test_query_anon_user(self):
-    #     """ Query list of account invoices - anon user """
-    #     query = self.invoices_query
-    #     invoice = f.FinanceInvoiceFactory.create()
-    #     variables = {
-    #         'accountId': to_global_id('FinanceInvoiceNode', invoice.account.id)
-    #     }
+    def test_query_anon_user(self):
+        """ Query list of account invoices - anon user """
+        query = self.invoices_query
+        invoice = f.FinanceInvoiceFactory.create()
 
-    #     executed = execute_test_client_api_query(query, self.anon_user, variables=variables)
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
+        executed = execute_test_client_api_query(query, self.anon_user)
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
     # def test_query_one(self):
