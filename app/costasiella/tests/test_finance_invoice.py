@@ -566,73 +566,61 @@ class GQLFinanceInvoice(TestCase):
         self.assertEqual(data['updateFinanceInvoice']['financeInvoice']['note'], variables['input']['note'])
 
 
-    # def test_update_invoice_anon_user(self):
-    #     """ Don't allow updating invoices for non-logged in users """
-    #     query = self.invoice_update_mutation
-    #     invoice = f.FinanceInvoiceFactory.create()
-    #     organization_invoice = f.OrganizationSubscriptionFactory.create()
-    #     finance_payment_method = f.FinancePaymentMethodFactory.create()
-    #     variables = self.variables_update
-    #     variables['input']['id'] = to_global_id('FinanceInvoiceNode', invoice.id)
-    #     variables['input']['organizationSubscription'] = to_global_id('OrganizationSubscriptionNode', organization_invoice.id)
-    #     variables['input']['financePaymentMethod'] = to_global_id('FinancePaymentMethodNode', finance_payment_method.id)
+    def test_update_invoice_anon_user(self):
+        """ Don't allow updating invoices for non-logged in users """
+        query = self.invoice_update_mutation
+        invoice = f.FinanceInvoiceFactory.create()
+        variables = self.variables_update
+        variables['input']['id'] = to_global_id('FinanceInvoiceNode', invoice.id)
 
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         self.anon_user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
+        executed = execute_test_client_api_query(
+            query, 
+            self.anon_user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
-    # def test_update_invoice_permission_granted(self):
-    #     """ Allow updating invoices for users with permissions """
-    #     query = self.invoice_update_mutation
-    #     invoice = f.FinanceInvoiceFactory.create()
-    #     organization_invoice = f.OrganizationSubscriptionFactory.create()
-    #     finance_payment_method = f.FinancePaymentMethodFactory.create()
-    #     variables = self.variables_update
-    #     variables['input']['id'] = to_global_id('FinanceInvoiceNode', invoice.id)
-    #     variables['input']['organizationSubscription'] = to_global_id('OrganizationSubscriptionNode', organization_invoice.id)
-    #     variables['input']['financePaymentMethod'] = to_global_id('FinancePaymentMethodNode', finance_payment_method.id)
+    def test_update_invoice_permission_granted(self):
+        """ Allow updating invoices for users with permissions """
+        query = self.invoice_update_mutation
+        invoice = f.FinanceInvoiceFactory.create()
+        variables = self.variables_update
+        variables['input']['id'] = to_global_id('FinanceInvoiceNode', invoice.id)
 
-    #     user = invoice.account
-    #     permission = Permission.objects.get(codename=self.permission_change)
-    #     user.user_permissions.add(permission)
-    #     user.save()
+        user = invoice.account
+        permission = Permission.objects.get(codename=self.permission_change)
+        user.user_permissions.add(permission)
+        user.save()
 
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['updateFinanceInvoice']['financeInvoice']['dateStart'], variables['input']['dateStart'])
+        executed = execute_test_client_api_query(
+            query, 
+            user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['updateFinanceInvoice']['financeInvoice']['dateSent'], variables['input']['dateSent'])
 
 
-    # def test_update_invoice_permission_denied(self):
-    #     """ Check update invoice permission denied error message """
-    #     query = self.invoice_update_mutation
-    #     invoice = f.FinanceInvoiceFactory.create()
-    #     organization_invoice = f.OrganizationSubscriptionFactory.create()
-    #     finance_payment_method = f.FinancePaymentMethodFactory.create()
-    #     variables = self.variables_update
-    #     variables['input']['id'] = to_global_id('FinanceInvoiceNode', invoice.id)
-    #     variables['input']['organizationSubscription'] = to_global_id('OrganizationSubscriptionNode', organization_invoice.id)
-    #     variables['input']['financePaymentMethod'] = to_global_id('FinancePaymentMethodNode', finance_payment_method.id)
+    def test_update_invoice_permission_denied(self):
+        """ Check update invoice permission denied error message """
+        query = self.invoice_update_mutation
+        invoice = f.FinanceInvoiceFactory.create()
+        variables = self.variables_update
+        variables['input']['id'] = to_global_id('FinanceInvoiceNode', invoice.id)
 
-    #     user = invoice.account
+        user = invoice.account
 
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
+        executed = execute_test_client_api_query(
+            query, 
+            user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
     # def test_delete_invoice(self):
