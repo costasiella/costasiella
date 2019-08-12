@@ -184,23 +184,38 @@ class GQLFinanceInvoice(TestCase):
         id
         account {
           id
-          firstName
-          lastName
-          email
+          fullName
         }
-        organizationSubscription {
-          id
+        financeInvoiceGroup {
+          id 
           name
         }
         financePaymentMethod {
           id
           name
         }
-        dateStart
-        dateEnd
+        relationCompany
+        relationCompanyRegistration
+        relationCompanyTaxRegistration
+        relationContactName
+        relationAddress
+        relationPostcode
+        relationCity
+        relationCountry
+        status
+        summary
+        invoiceNumber
+        dateSent
+        dateDue
+        terms
+        footer
         note
-        registrationFeePaid        
-      }
+        subtotalDisplay
+        taxDisplay
+        totalDisplay
+        paidDisplay
+        balanceDisplay
+        updatedAt
     }
   }
 '''
