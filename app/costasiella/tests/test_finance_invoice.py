@@ -15,6 +15,7 @@ from . import factories as f
 from .helpers import execute_test_client_api_query
 from .. import models
 from .. import schema
+from ..modules.gql_tools import get_rid
 
 
 
@@ -36,10 +37,9 @@ class GQLFinanceInvoice(TestCase):
 
         self.variables_create = {
             "input": {
-                # "account": to_global_id('AccountNode', self.account.id),
-                "financeInvoiceGroup": to_global_id('FinanceInvoiceGroup', 100),
-                "summary": "create summary",
-                "note": "test"
+                # Account will be added in the test create functions
+                "financeInvoiceGroup": to_global_id('FinanceInvoiceGroupNode', 100),
+                "summary": "create summary"
             }
         }
 
@@ -141,6 +141,10 @@ class GQLFinanceInvoice(TestCase):
         account {
           id
           fullName
+        }
+        financeInvoiceGroup {
+          id 
+          name
         }
         financePaymentMethod {
           id
@@ -329,10 +333,6 @@ class GQLFinanceInvoice(TestCase):
         executed = execute_test_client_api_query(self.invoice_query, self.admin_user, variables=variables)
         data = executed.get('data')
 
-        print("###############")
-        print(executed)
-        print("###############")
-
         self.assertEqual(
             data['financeInvoice']['account']['id'], 
             to_global_id("AccountNode", invoice.account.id)
@@ -406,117 +406,103 @@ class GQLFinanceInvoice(TestCase):
         )
 
 
-    # def test_create_invoice(self):
-    #     """ Create an account invoice """
-    #     query = self.invoice_create_mutation
+    def test_create_invoice(self):
+        """ Create an account invoice """
+        query = self.invoice_create_mutation
 
-    #     account = f.RegularUserFactory.create()
-    #     organization_invoice = f.OrganizationSubscriptionFactory.create()
-    #     finance_payment_method = f.FinancePaymentMethodFactory.create()
-    #     variables = self.variables_create
-    #     variables['input']['account'] = to_global_id('AccountNode', account.id)
-    #     variables['input']['organizationSubscription'] = to_global_id('OrganizationSubscriptionNode', organization_invoice.id)
-    #     variables['input']['financePaymentMethod'] = to_global_id('FinancePaymentMethodNode', finance_payment_method.id)
+        account = f.RegularUserFactory.create()
+        variables = self.variables_create
+        variables['input']['account'] = to_global_id('AccountNode', account.id)
 
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         self.admin_user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
+        executed = execute_test_client_api_query(
+            query, 
+            self.admin_user, 
+            variables=variables
+        )
+        data = executed.get('data')
 
-    #     self.assertEqual(
-    #         data['createFinanceInvoice']['financeInvoice']['account']['id'], 
-    #         variables['input']['account']
-    #     )
-    #     self.assertEqual(
-    #         data['createFinanceInvoice']['financeInvoice']['organizationSubscription']['id'], 
-    #         variables['input']['organizationSubscription']
-    #     )
-    #     self.assertEqual(
-    #         data['createFinanceInvoice']['financeInvoice']['financePaymentMethod']['id'], 
-    #         variables['input']['financePaymentMethod']
-    #     )
-    #     self.assertEqual(data['createFinanceInvoice']['financeInvoice']['dateStart'], variables['input']['dateStart'])
-    #     self.assertEqual(data['createFinanceInvoice']['financeInvoice']['dateEnd'], variables['input']['dateEnd'])
-    #     self.assertEqual(data['createFinanceInvoice']['financeInvoice']['note'], variables['input']['note'])
-    #     self.assertEqual(data['createFinanceInvoice']['financeInvoice']['registrationFeePaid'], variables['input']['registrationFeePaid'])
+        # Get invoice
+        rid = get_rid(data['createFinanceInvoice']['financeInvoice']['id'])
+        invoice = models.FinanceInvoice.objects.get(pk=rid.id)
+
+        self.assertEqual(
+            data['createFinanceInvoice']['financeInvoice']['account']['id'], 
+            variables['input']['account']
+        )
+        self.assertEqual(
+            data['createFinanceInvoice']['financeInvoice']['financeInvoiceGroup']['id'], 
+            variables['input']['financeInvoiceGroup']
+        )
+        self.assertEqual(data['createFinanceInvoice']['financeInvoice']['dateSent'], str(timezone.now().date()))
+        self.assertEqual(data['createFinanceInvoice']['financeInvoice']['dateDue'], 
+          str(timezone.now().date() + datetime.timedelta(days=invoice.finance_invoice_group.due_after_days))
+        )
+        self.assertEqual(data['createFinanceInvoice']['financeInvoice']['summary'], variables['input']['summary'])
 
 
-    # def test_create_invoice_anon_user(self):
-    #     """ Don't allow creating account invoices for non-logged in users """
-    #     query = self.invoice_create_mutation
+    def test_create_invoice_anon_user(self):
+        """ Don't allow creating account invoices for non-logged in users """
+        query = self.invoice_create_mutation
         
-    #     account = f.RegularUserFactory.create()
-    #     organization_invoice = f.OrganizationSubscriptionFactory.create()
-    #     finance_payment_method = f.FinancePaymentMethodFactory.create()
-    #     variables = self.variables_create
-    #     variables['input']['account'] = to_global_id('AccountNode', account.id)
-    #     variables['input']['organizationSubscription'] = to_global_id('OrganizationSubscriptionNode', organization_invoice.id)
-    #     variables['input']['financePaymentMethod'] = to_global_id('FinancePaymentMethodNode', finance_payment_method.id)
+        account = f.RegularUserFactory.create()
+        variables = self.variables_create
+        variables['input']['account'] = to_global_id('AccountNode', account.id)
 
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         self.anon_user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
+        executed = execute_test_client_api_query(
+            query, 
+            self.anon_user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
-    # def test_create_location_permission_granted(self):
-    #     """ Allow creating invoices for users with permissions """
-    #     query = self.invoice_create_mutation
+    def test_create_location_permission_granted(self):
+        """ Allow creating invoices for users with permissions """
+        query = self.invoice_create_mutation
 
-    #     account = f.RegularUserFactory.create()
-    #     organization_invoice = f.OrganizationSubscriptionFactory.create()
-    #     finance_payment_method = f.FinancePaymentMethodFactory.create()
-    #     variables = self.variables_create
-    #     variables['input']['account'] = to_global_id('AccountNode', account.id)
-    #     variables['input']['organizationSubscription'] = to_global_id('OrganizationSubscriptionNode', organization_invoice.id)
-    #     variables['input']['financePaymentMethod'] = to_global_id('FinancePaymentMethodNode', finance_payment_method.id)
+        account = f.RegularUserFactory.create()
+        variables = self.variables_create
+        variables['input']['account'] = to_global_id('AccountNode', account.id)
 
-    #     # Create regular user
-    #     user = account
-    #     permission = Permission.objects.get(codename=self.permission_add)
-    #     user.user_permissions.add(permission)
-    #     user.save()
+        # Create regular user
+        user = account
+        permission = Permission.objects.get(codename=self.permission_add)
+        user.user_permissions.add(permission)
+        user.save()
 
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(
-    #         data['createFinanceInvoice']['financeInvoice']['organizationSubscription']['id'], 
-    #         variables['input']['organizationSubscription']
-    #     )
+        executed = execute_test_client_api_query(
+            query, 
+            user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(
+            data['createFinanceInvoice']['financeInvoice']['account']['id'], 
+            variables['input']['account']
+        )
 
 
-    # def test_create_invoice_permission_denied(self):
-    #     """ Check create invoice permission denied error message """
-    #     query = self.invoice_create_mutation
-    #     account = f.RegularUserFactory.create()
-    #     organization_invoice = f.OrganizationSubscriptionFactory.create()
-    #     finance_payment_method = f.FinancePaymentMethodFactory.create()
-    #     variables = self.variables_create
-    #     variables['input']['account'] = to_global_id('AccountNode', account.id)
-    #     variables['input']['organizationSubscription'] = to_global_id('OrganizationSubscriptionNode', organization_invoice.id)
-    #     variables['input']['financePaymentMethod'] = to_global_id('FinancePaymentMethodNode', finance_payment_method.id)
+    def test_create_invoice_permission_denied(self):
+        """ Check create invoice permission denied error message """
+        query = self.invoice_create_mutation
 
-    #     # Create regular user
-    #     user = account
+        account = f.RegularUserFactory.create()
+        variables = self.variables_create
+        variables['input']['account'] = to_global_id('AccountNode', account.id)
 
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
+        # Create regular user
+        user = account
+
+        executed = execute_test_client_api_query(
+            query, 
+            user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
     # def test_update_invoice(self):
