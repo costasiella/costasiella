@@ -96,65 +96,39 @@ class GQLFinanceInvoice(TestCase):
 '''
 
         self.invoice_query = '''
-  query FinanceInvoice($id: ID!, $accountId: ID!, $after: String, $before: String, $archived: Boolean!) {
+  query FinanceInvoice($id: ID!, $before: String, $after: String) {
     financeInvoice(id:$id) {
       id
       account {
-          id
-      }
-      organizationSubscription {
         id
-        name
+        fullName
       }
       financePaymentMethod {
         id
         name
       }
-      dateStart
-      dateEnd
+      relationCompany
+      relationCompanyRegistration
+      relationCompanyTaxRegistration
+      relationContactName
+      relationAddress
+      relationPostcode
+      relationCity
+      relationCountry
+      status
+      summary
+      invoiceNumber
+      dateSent
+      dateDue
+      terms
+      footer
       note
-      registrationFeePaid
-      createdAt
-    }
-    organizationSubscriptions(first: 100, before: $before, after: $after, archived: $archived) {
-      pageInfo {
-        startCursor
-        endCursor
-        hasNextPage
-        hasPreviousPage
-      }
-      edges {
-        node {
-          id
-          archived
-          name
-        }
-      }
-    }
-    financePaymentMethods(first: 100, before: $before, after: $after, archived: $archived) {
-      pageInfo {
-        startCursor
-        endCursor
-        hasNextPage
-        hasPreviousPage
-      }
-      edges {
-        node {
-          id
-          archived
-          name
-          code
-        }
-      }
-    }
-    account(id:$accountId) {
-      id
-      firstName
-      lastName
-      email
-      phone
-      mobile
-      isActive
+      subtotalDisplay
+      taxDisplay
+      totalDisplay
+      paidDisplay
+      balanceDisplay
+      updatedAt
     }
   }
 '''
@@ -330,35 +304,35 @@ class GQLFinanceInvoice(TestCase):
         self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
-    # def test_query_one(self):
-    #     """ Query one account invoice as admin """   
-    #     invoice = f.FinanceInvoiceFactory.create()
+    def test_query_one(self):
+        """ Query one account invoice as admin """   
+        invoice = f.FinanceInvoiceFactory.create()
         
-    #     variables = {
-    #         "id": to_global_id("FinanceInvoiceNode", invoice.id),
-    #         "accountId": to_global_id("AccountNode", invoice.account.id),
-    #         "archived": False,
-    #     }
+        variables = {
+            "id": to_global_id("FinanceInvoiceNode", invoice.id),
+            "accountId": to_global_id("AccountNode", invoice.account.id),
+            "archived": False,
+        }
 
-    #     # Now query single invoice and check
-    #     executed = execute_test_client_api_query(self.invoice_query, self.admin_user, variables=variables)
-    #     data = executed.get('data')
-    #     self.assertEqual(
-    #         data['financeInvoice']['account']['id'], 
-    #         to_global_id('AccountNode', invoice.account.id)
-    #     )
-    #     self.assertEqual(
-    #         data['financeInvoice']['organizationSubscription']['id'], 
-    #         to_global_id('OrganizationSubscriptionNode', invoice.organization_invoice.id)
-    #     )
-    #     self.assertEqual(
-    #         data['financeInvoice']['financePaymentMethod']['id'], 
-    #         to_global_id('FinancePaymentMethodNode', invoice.finance_payment_method.id)
-    #     )
-    #     self.assertEqual(data['financeInvoice']['dateStart'], str(invoice.date_start))
-    #     self.assertEqual(data['financeInvoice']['dateEnd'], invoice.date_end)
-    #     self.assertEqual(data['financeInvoice']['note'], invoice.note)
-    #     self.assertEqual(data['financeInvoice']['registrationFeePaid'], invoice.registration_fee_paid)
+        # Now query single invoice and check
+        executed = execute_test_client_api_query(self.invoice_query, self.admin_user, variables=variables)
+        data = executed.get('data')
+        self.assertEqual(
+            data['financeInvoice']['account']['id'], 
+            to_global_id('AccountNode', invoice.account.id)
+        )
+        self.assertEqual(
+            data['financeInvoice']['organizationSubscription']['id'], 
+            to_global_id('OrganizationSubscriptionNode', invoice.organization_invoice.id)
+        )
+        self.assertEqual(
+            data['financeInvoice']['financePaymentMethod']['id'], 
+            to_global_id('FinancePaymentMethodNode', invoice.finance_payment_method.id)
+        )
+        self.assertEqual(data['financeInvoice']['dateStart'], str(invoice.date_start))
+        self.assertEqual(data['financeInvoice']['dateEnd'], invoice.date_end)
+        self.assertEqual(data['financeInvoice']['note'], invoice.note)
+        self.assertEqual(data['financeInvoice']['registrationFeePaid'], invoice.registration_fee_paid)
 
 
     # def test_query_one_anon_user(self):
