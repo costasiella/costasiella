@@ -45,10 +45,23 @@ class GQLFinanceInvoice(TestCase):
 
         self.variables_update = {
             "input": {
-                "dateStart": "2017-01-01",
-                "dateEnd": "2020-12-31",
-                "note": "Update note",
-                "registrationFeePaid": True
+              "financeInvoiceGroup": to_global_id('FinanceInvoiceGroupNode', 100),
+              "summary": "create summary",
+              "relation_company": "ACME INC.",
+              "relation_company_registration": "ACME 4312",
+              "relation_company_tax_registration": "ACME TAX 99",
+              "relation_contact_name": "Contact person",
+              "relation_address": "Street 1",
+              "relation_postcode": "1233434 545",
+              "relation_city": "Amsterdam",
+              "relation_country": "NL",
+              "invoice_number": "INVT0001",
+              "date_sent": "2019-01-03",
+              "date_due": "2019-02-28",
+              "status": "SENT",
+              "terms": "Terms go there",
+              "footer": "Footer here",
+              "note": "Notes here"
             }
         }
 
@@ -216,6 +229,7 @@ class GQLFinanceInvoice(TestCase):
         paidDisplay
         balanceDisplay
         updatedAt
+      }
     }
   }
 '''
