@@ -33,7 +33,9 @@ class GQLFinanceInvoiceItem(TestCase):
         self.permission_change = 'change_financeinvoiceitem'
         self.permission_delete = 'delete_financeinvoiceitem'
 
-        # self.account = f.RegularUserFactory.create()
+        self.finance_tax_rate = f.FinanceTaxRateFactory.create()
+        self.finance_glaccount = f.FinanceGLAccountFactory.create()
+        self.finance_costcenter = f.FinanceCostCenterFactory.create()
 
         self.variables_create = {
             "input": {}
@@ -41,22 +43,13 @@ class GQLFinanceInvoiceItem(TestCase):
 
         self.variables_update = {
             "input": {
-              "summary": "create summary",
-              "relationCompany": "ACME INC.",
-              "relationCompanyRegistration": "ACME 4312",
-              "relationCompanyTaxRegistration": "ACME TAX 99",
-              "relationContactName": "Contact person",
-              "relationAddress": "Street 1",
-              "relationPostcode": "1233434 545",
-              "relationCity": "Amsterdam",
-              "relationCountry": "NL",
-              "invoiceNumber": "INVT0001",
-              "dateSent": "2019-01-03",
-              "dateDue": "2019-02-28",
-              "status": "SENT",
-              "terms": "Terms go there",
-              "footer": "Footer here",
-              "note": "Notes here"
+              "product_name": "Updated product",
+              "description": "Updated description",
+              "quantity": 10,
+              "price": 12.51,
+              "finance_tax_rate": to_global_id("FinanceTaxRateNode", self.finance_tax_rate.pk),
+              "finance_glaccount": to_global_id("FinanceGLAccountNode", self.finance_glaccount.pk),
+              "finance_costcenter": to_global_id("FinanceCostCenterNode", self.finance_costcenter.pk)
             }
         }
 
