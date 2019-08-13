@@ -36,11 +36,7 @@ class GQLFinanceInvoiceItem(TestCase):
         # self.account = f.RegularUserFactory.create()
 
         self.variables_create = {
-            "input": {
-                # Account will be added in the test create functions
-                "financeInvoiceGroup": to_global_id('FinanceInvoiceGroupNode', 100),
-                "summary": "create summary"
-            }
+            "input": {}
         }
 
         self.variables_update = {
@@ -151,6 +147,9 @@ class GQLFinanceInvoiceItem(TestCase):
     createFinanceInvoiceItem(input: $input) {
       financeInvoiceItem {
         id
+        financeInvoice {
+          id
+        }
         productName
         description
         quantity
@@ -169,6 +168,9 @@ class GQLFinanceInvoiceItem(TestCase):
     updateFinanceInvoiceItem(input: $input) {
       financeInvoiceItem {
         id
+        financeInvoice {
+          id
+        }
         productName
         description
         quantity
@@ -359,43 +361,37 @@ class GQLFinanceInvoiceItem(TestCase):
 
 
 
-    # def test_create_invoice(self):
-    #     """ Create an account invoice """
-    #     query = self.invoice_create_mutation
+    def test_create_invoice(self):
+        """ Create an account invoice """
+        query = self.invoice_item_create_mutation
 
-    #     account = f.RegularUserFactory.create()
-    #     variables = self.variables_create
-    #     variables['input']['account'] = to_global_id('AccountNode', account.id)
+        invoice = f.FinanceInvoiceFactory.create()
+        variables = self.variables_create
+        variables['input']['financeInvoice'] = to_global_id('FinanceInvoiceNode', invoice.id)
 
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         self.admin_user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
+        executed = execute_test_client_api_query(
+            query, 
+            self.admin_user, 
+            variables=variables
+        )
+        data = executed.get('data')
 
-    #     # Get invoice
-    #     rid = get_rid(data['createFinanceInvoice']['financeInvoice']['id'])
-    #     invoice = models.FinanceInvoice.objects.get(pk=rid.id)
+        print('##############')
+        print(executed)
 
-    #     self.assertEqual(
-    #         data['createFinanceInvoice']['financeInvoice']['account']['id'], 
-    #         variables['input']['account']
-    #     )
-    #     self.assertEqual(
-    #         data['createFinanceInvoice']['financeInvoice']['financeInvoiceGroup']['id'], 
-    #         variables['input']['financeInvoiceGroup']
-    #     )
-    #     self.assertEqual(data['createFinanceInvoice']['financeInvoice']['dateSent'], str(timezone.now().date()))
-    #     self.assertEqual(data['createFinanceInvoice']['financeInvoice']['dateDue'], 
-    #       str(timezone.now().date() + datetime.timedelta(days=invoice.finance_invoice_group.due_after_days))
-    #     )
-    #     self.assertEqual(data['createFinanceInvoice']['financeInvoice']['summary'], variables['input']['summary'])
+        # Get invoice
+        rid = get_rid(data['createFinanceInvoiceItem']['financeInvoiceItem']['financeInvoice']['id'])
+        invoice = models.FinanceInvoice.objects.get(pk=rid.id)
+
+        self.assertEqual(
+            data['createFinanceInvoiceItem']['financeInvoiceItem']['financeInvoice']['id'], 
+            variables['input']['financeInvoice']
+        )
 
 
     # def test_create_invoice_anon_user(self):
     #     """ Don't allow creating account invoices for non-logged in users """
-    #     query = self.invoice_create_mutation
+    #     query = self.invoice_item_create_mutation
         
     #     account = f.RegularUserFactory.create()
     #     variables = self.variables_create
@@ -413,7 +409,7 @@ class GQLFinanceInvoiceItem(TestCase):
 
     # def test_create_location_permission_granted(self):
     #     """ Allow creating invoices for users with permissions """
-    #     query = self.invoice_create_mutation
+    #     query = self.invoice_item_create_mutation
 
     #     account = f.RegularUserFactory.create()
     #     variables = self.variables_create
@@ -439,7 +435,7 @@ class GQLFinanceInvoiceItem(TestCase):
 
     # def test_create_invoice_permission_denied(self):
     #     """ Check create invoice permission denied error message """
-    #     query = self.invoice_create_mutation
+    #     query = self.invoice_item_create_mutation
 
     #     account = f.RegularUserFactory.create()
     #     variables = self.variables_create
