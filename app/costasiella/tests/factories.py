@@ -383,6 +383,20 @@ class FinanceInvoiceFactory(factory.DjangoModelFactory):
     note = "Invoice note here"
 
 
+class FinanceInvoiceItemFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.FinanceInvoiceItem
+
+    finance_invoice = factory.SubFactory(FinanceInvoiceFactory)
+    product_name = "Product"
+    description = "Description"
+    quantity = 1
+    price = 12
+    finance_tax_rate = factory.SubFactory(FinanceTaxRateFactory)
+    finance_glaccount = factory.SubFactory(FinanceGLAccountFactory)
+    finance_costcenter = factory.SubFactory(FinanceCostCenterFactory)
+
+
 class SchedulePublicWeeklyClassFactory(factory.DjangoModelFactory):
     class Meta:
         model = models.ScheduleItem

@@ -64,7 +64,7 @@ class GQLFinanceInvoiceItem(TestCase):
             }
         }
 
-        self.invoice_itemss_quey = '''
+        self.invoice_items_quey = '''
   query FinanceInvoicesItems($invoice: ID!) {
     financeInvoiceItemss(first: 100, invoice: $invoice) {
       pageInfo {
