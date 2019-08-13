@@ -102,28 +102,6 @@ class CreateAccountClasspass(graphene.relay.ClientIDMutation):
 
         account_classpass = sales_result['account_classpass']
 
-        # account_classpass = organization_classpass.sell(
-        #     account = result['account'],
-        #     date_start = input['date_start'],
-        #     note = input['note'] if 'note' in input else "",
-        #     create_invoice = True
-        # )
-
-        # account_classpass = AccountClasspass(
-        #     account=result['account'],
-        #     organization_classpass=result['organization_classpass'],
-        #     date_start=input['date_start'], 
-        # )
-
-        # # set date end
-        # account_classpass.set_date_end()
-
-        # if 'note' in input:
-        #     account_classpass.note = input['note']
-
-
-        # account_classpass.save()
-
         return CreateAccountClasspass(account_classpass=account_classpass)
 
 
