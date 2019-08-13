@@ -110,40 +110,38 @@ class GQLFinanceInvoiceItem(TestCase):
   }
 '''
 
-        self.invoice_query = '''
-  query FinanceInvoice($id: ID!) {
-    financeInvoice(id:$id) {
+        self.invoice_item_query = '''
+  query FinanceInvoiceItem($id: ID!) {
+    financeInvoiceItem(id:$id) {
       id
-      account {
+      financeInvoice {
         id
-        fullName
       }
-      financePaymentMethod {
+      lineNumber
+      productName
+      description
+      quantity
+      price
+      financeTaxRate {
+        id
+        name
+        percentage
+        rateType
+      }
+      subtotal
+      subtotalDisplay
+      tax
+      taxDisplay
+      total
+      totalDisplay
+      financeGlaccount {
         id
         name
       }
-      relationCompany
-      relationCompanyRegistration
-      relationCompanyTaxRegistration
-      relationContactName
-      relationAddress
-      relationPostcode
-      relationCity
-      relationCountry
-      status
-      summary
-      invoiceNumber
-      dateSent
-      dateDue
-      terms
-      footer
-      note
-      subtotalDisplay
-      taxDisplay
-      totalDisplay
-      paidDisplay
-      balanceDisplay
-      updatedAt
+      financeCostcenter {
+        id
+        name
+      }
     }
   }
 '''
@@ -344,38 +342,37 @@ class GQLFinanceInvoiceItem(TestCase):
         self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
-    # def test_query_one(self):
-    #     """ Query one account invoice as admin """   
-    #     invoice = f.FinanceInvoiceFactory.create()
-
+    def test_query_one(self):
+        """ Query one account invoice item as admin """   
+        invoice_item = f.FinanceInvoiceItemFactory.create()
         
-    #     variables = {
-    #         "id": to_global_id("FinanceInvoiceNode", invoice.id),
-    #     }
+        variables = {
+            "id": to_global_id("FinanceInvoiceNode", invoice.id),
+        }
 
-    #     # Now query single invoice and check
-    #     executed = execute_test_client_api_query(self.invoice_query, self.admin_user, variables=variables)
-    #     data = executed.get('data')
+        # Now query single invoice and check
+        executed = execute_test_client_api_query(self.invoice_item_query, self.admin_user, variables=variables)
+        data = executed.get('data')
 
-    #     self.assertEqual(
-    #         data['financeInvoice']['account']['id'], 
-    #         to_global_id("AccountNode", invoice.account.id)
-    #     )
-    #     self.assertEqual(data['financeInvoice']['invoiceNumber'], invoice.invoice_number)
-    #     self.assertEqual(data['financeInvoice']['dateSent'], str(timezone.now().date()))
-    #     self.assertEqual(data['financeInvoice']['dateDue'], 
-    #       str(timezone.now().date() + datetime.timedelta(days=invoice.finance_invoice_group.due_after_days))
-    #     )
-    #     self.assertEqual(data['financeInvoice']['summary'], invoice.summary)
-    #     self.assertEqual(data['financeInvoice']['relationCompany'], invoice.relation_company)
-    #     self.assertEqual(data['financeInvoice']['relationCompanyRegistration'], invoice.relation_company_registration)
-    #     self.assertEqual(data['financeInvoice']['relationCompanyTaxRegistration'], invoice.relation_company_tax_registration)
-    #     self.assertEqual(data['financeInvoice']['relationContactName'], invoice.relation_contact_name)
-    #     self.assertEqual(data['financeInvoice']['relationAddress'], invoice.relation_address)
-    #     self.assertEqual(data['financeInvoice']['relationPostcode'], invoice.relation_postcode)
-    #     self.assertEqual(data['financeInvoice']['relationCity'], invoice.relation_city)
-    #     self.assertEqual(data['financeInvoice']['relationCountry'], invoice.relation_country)
-    #     self.assertEqual(data['financeInvoice']['status'], invoice.status)
+        # self.assertEqual(
+        #     data['financeInvoice']['account']['id'], 
+        #     to_global_id("AccountNode", invoice.account.id)
+        # )
+        # self.assertEqual(data['financeInvoice']['invoiceNumber'], invoice.invoice_number)
+        # self.assertEqual(data['financeInvoice']['dateSent'], str(timezone.now().date()))
+        # self.assertEqual(data['financeInvoice']['dateDue'], 
+        #   str(timezone.now().date() + datetime.timedelta(days=invoice.finance_invoice_group.due_after_days))
+        # )
+        # self.assertEqual(data['financeInvoice']['summary'], invoice.summary)
+        # self.assertEqual(data['financeInvoice']['relationCompany'], invoice.relation_company)
+        # self.assertEqual(data['financeInvoice']['relationCompanyRegistration'], invoice.relation_company_registration)
+        # self.assertEqual(data['financeInvoice']['relationCompanyTaxRegistration'], invoice.relation_company_tax_registration)
+        # self.assertEqual(data['financeInvoice']['relationContactName'], invoice.relation_contact_name)
+        # self.assertEqual(data['financeInvoice']['relationAddress'], invoice.relation_address)
+        # self.assertEqual(data['financeInvoice']['relationPostcode'], invoice.relation_postcode)
+        # self.assertEqual(data['financeInvoice']['relationCity'], invoice.relation_city)
+        # self.assertEqual(data['financeInvoice']['relationCountry'], invoice.relation_country)
+        # self.assertEqual(data['financeInvoice']['status'], invoice.status)
 
 
     # def test_query_one_anon_user(self):
@@ -387,7 +384,7 @@ class GQLFinanceInvoiceItem(TestCase):
     #     }
 
     #     # Now query single invoice and check
-    #     executed = execute_test_client_api_query(self.invoice_query, self.anon_user, variables=variables)
+    #     executed = execute_test_client_api_query(self.invoice_item_query, self.anon_user, variables=variables)
     #     errors = executed.get('errors')
     #     self.assertEqual(errors[0]['message'], 'Not logged in!')
 
@@ -403,7 +400,7 @@ class GQLFinanceInvoiceItem(TestCase):
     #     }
 
     #     # Now query single invoice and check
-    #     executed = execute_test_client_api_query(self.invoice_query, user, variables=variables)
+    #     executed = execute_test_client_api_query(self.invoice_item_query, user, variables=variables)
     #     errors = executed.get('errors')
     #     self.assertEqual(errors[0]['message'], 'Permission denied!')
 
@@ -422,7 +419,7 @@ class GQLFinanceInvoiceItem(TestCase):
     #     }
 
     #     # Now query single invoice and check   
-    #     executed = execute_test_client_api_query(self.invoice_query, user, variables=variables)
+    #     executed = execute_test_client_api_query(self.invoice_item_query, user, variables=variables)
     #     data = executed.get('data')
     #     self.assertEqual(
     #         data['financeInvoice']['account']['id'], 
