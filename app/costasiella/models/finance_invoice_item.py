@@ -44,7 +44,7 @@ class FinanceInvoiceItem(models.Model):
         if tax_rate:
             if tax_rate.rate_type == "IN":
                 # divide price by 1.tax_percentage and then multiply by quantity
-                percentage = (tax_rate.percentage / 100) + 1
+                percentage = (float(tax_rate.percentage) / 100) + 1
                 price = self.price / percentage
 
         return float(price) * float(self.quantity)

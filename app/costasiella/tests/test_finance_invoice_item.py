@@ -43,13 +43,13 @@ class GQLFinanceInvoiceItem(TestCase):
 
         self.variables_update = {
             "input": {
-              "product_name": "Updated product",
+              "productName": "Updated product",
               "description": "Updated description",
               "quantity": 10,
               "price": 12.51,
-              "finance_tax_rate": to_global_id("FinanceTaxRateNode", self.finance_tax_rate.pk),
-              "finance_glaccount": to_global_id("FinanceGLAccountNode", self.finance_glaccount.pk),
-              "finance_costcenter": to_global_id("FinanceCostCenterNode", self.finance_costcenter.pk)
+              "financeTaxRate": to_global_id("FinanceTaxRateNode", self.finance_tax_rate.pk),
+              "financeGlaccount": to_global_id("FinanceGLAccountNode", self.finance_glaccount.pk),
+              "financeCostcenter": to_global_id("FinanceCostCenterNode", self.finance_costcenter.pk)
             }
         }
 
@@ -169,6 +169,14 @@ class GQLFinanceInvoiceItem(TestCase):
         quantity
         price
         financeTaxRate {
+          id
+          name
+        }
+        financeGlaccount {
+          id
+          name
+        }
+        financeCostcenter {
           id
           name
         }
@@ -444,42 +452,46 @@ class GQLFinanceInvoiceItem(TestCase):
         self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
-    # def test_update_invoice(self):
-    #     """ Update a invoice """
-    #     query = self.invoice_update_mutation
+    def test_update_invoice_item(self):
+        """ Update a invoice item """
+        query = self.invoice_item_update_mutation
 
-    #     invoice = f.FinanceInvoiceFactory.create()
-    #     variables = self.variables_update
-    #     variables['input']['id'] = to_global_id('FinanceInvoiceItemNode', invoice_item.id)
+        invoice_item = f.FinanceInvoiceItemFactory.create()
+        variables = self.variables_update
+        variables['input']['id'] = to_global_id('FinanceInvoiceItemNode', invoice_item.id)
 
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         self.admin_user, 
-    #         variables=variables
-    #     )
+        executed = execute_test_client_api_query(
+            query, 
+            self.admin_user, 
+            variables=variables
+        )
 
-    #     data = executed.get('data')
+        print('#############')
+        print(executed)
 
-    #     self.assertEqual(data['updateFinanceInvoice']['financeInvoice']['relationCompany'], variables['input']['relationCompany'])
-    #     self.assertEqual(data['updateFinanceInvoice']['financeInvoice']['relationCompanyRegistration'], variables['input']['relationCompanyRegistration'])
-    #     self.assertEqual(data['updateFinanceInvoice']['financeInvoice']['relationContactName'], variables['input']['relationContactName'])
-    #     self.assertEqual(data['updateFinanceInvoice']['financeInvoice']['relationAddress'], variables['input']['relationAddress'])
-    #     self.assertEqual(data['updateFinanceInvoice']['financeInvoice']['relationPostcode'], variables['input']['relationPostcode'])
-    #     self.assertEqual(data['updateFinanceInvoice']['financeInvoice']['relationCity'], variables['input']['relationCity'])
-    #     self.assertEqual(data['updateFinanceInvoice']['financeInvoice']['relationCountry'], variables['input']['relationCountry'])
-    #     self.assertEqual(data['updateFinanceInvoice']['financeInvoice']['invoiceNumber'], variables['input']['invoiceNumber'])
-    #     self.assertEqual(data['updateFinanceInvoice']['financeInvoice']['dateSent'], variables['input']['dateSent'])
-    #     self.assertEqual(data['updateFinanceInvoice']['financeInvoice']['dateDue'], variables['input']['dateDue'])
-    #     self.assertEqual(data['updateFinanceInvoice']['financeInvoice']['status'], variables['input']['status'])
-    #     self.assertEqual(data['updateFinanceInvoice']['financeInvoice']['summary'], variables['input']['summary'])
-    #     self.assertEqual(data['updateFinanceInvoice']['financeInvoice']['terms'], variables['input']['terms'])
-    #     self.assertEqual(data['updateFinanceInvoice']['financeInvoice']['footer'], variables['input']['footer'])
-    #     self.assertEqual(data['updateFinanceInvoice']['financeInvoice']['note'], variables['input']['note'])
+        data = executed.get('data')
+
+        self.assertEqual(data['updateFinanceInvoiceItem']['financeInvoiceItem']['productName'], variables['input']['productName'])
+        self.assertEqual(data['updateFinanceInvoiceItem']['financeInvoiceItem']['description'], variables['input']['description'])
+        self.assertEqual(data['updateFinanceInvoiceItem']['financeInvoiceItem']['quantity'], variables['input']['quantity'])
+        self.assertEqual(data['updateFinanceInvoiceItem']['financeInvoiceItem']['price'], variables['input']['price'])
+        self.assertEqual(
+          data['updateFinanceInvoiceItem']['financeInvoiceItem']['financeTaxRate']['id'], 
+          variables['input']['financeTaxRate']
+        )
+        self.assertEqual(
+          data['updateFinanceInvoiceItem']['financeInvoiceItem']['financeGlaccount']['id'], 
+          variables['input']['financeGlaccount']
+        )
+        self.assertEqual(
+          data['updateFinanceInvoiceItem']['financeInvoiceItem']['financeCostcenter']['id'], 
+          variables['input']['financeCostcenter']
+        )
 
 
     # def test_update_invoice_anon_user(self):
     #     """ Don't allow updating invoices for non-logged in users """
-    #     query = self.invoice_update_mutation
+    #     query = self.invoice_item_update_mutation
     #     invoice = f.FinanceInvoiceFactory.create()
     #     variables = self.variables_update
     #     variables['input']['id'] = to_global_id('FinanceInvoiceItemNode', invoice_item.id)
@@ -496,7 +508,7 @@ class GQLFinanceInvoiceItem(TestCase):
 
     # def test_update_invoice_permission_granted(self):
     #     """ Allow updating invoices for users with permissions """
-    #     query = self.invoice_update_mutation
+    #     query = self.invoice_item_update_mutation
     #     invoice = f.FinanceInvoiceFactory.create()
     #     variables = self.variables_update
     #     variables['input']['id'] = to_global_id('FinanceInvoiceItemNode', invoice_item.id)
@@ -512,12 +524,12 @@ class GQLFinanceInvoiceItem(TestCase):
     #         variables=variables
     #     )
     #     data = executed.get('data')
-    #     self.assertEqual(data['updateFinanceInvoice']['financeInvoice']['dateSent'], variables['input']['dateSent'])
+    #     self.assertEqual(data['updateFinanceInvoiceItem']['financeInvoice']['dateSent'], variables['input']['dateSent'])
 
 
     # def test_update_invoice_permission_denied(self):
     #     """ Check update invoice permission denied error message """
-    #     query = self.invoice_update_mutation
+    #     query = self.invoice_item_update_mutation
     #     invoice = f.FinanceInvoiceFactory.create()
     #     variables = self.variables_update
     #     variables['input']['id'] = to_global_id('FinanceInvoiceItemNode', invoice_item.id)
