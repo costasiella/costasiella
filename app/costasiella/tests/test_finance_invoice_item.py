@@ -250,7 +250,7 @@ class GQLFinanceInvoiceItem(TestCase):
 
 
     def test_query(self):
-        """ Query list of account invoices """
+        """ Query list of account invoice items """
         query = self.invoice_items_query
         invoice_item = f.FinanceInvoiceItemFactory.create()
 
@@ -284,98 +284,64 @@ class GQLFinanceInvoiceItem(TestCase):
         self.assertEqual(data['financeInvoiceItems']['edges'][0]['node']['financeCostcenter']['id'], 
           to_global_id('FinanceCostCenterNode', invoice_item.finance_costcenter.id))
 
-        
 
-    #     self.assertEqual(
-    #         data['financeInvoices']['edges'][0]['node']['account']['id'], 
-    #         to_global_id("AccountNode", invoice.account.id)
-    #     )
-    #     self.assertEqual(
-    #         data['financeInvoices']['edges'][0]['node']['financePaymentMethod']['id'], 
-    #         to_global_id("FinancePaymentMethodNode", invoice.finance_payment_method.id)
-    #     )
-    #     self.assertEqual(data['financeInvoices']['edges'][0]['node']['invoiceNumber'], invoice.invoice_number)
-    #     self.assertEqual(data['financeInvoices']['edges'][0]['node']['dateSent'], str(timezone.now().date()))
-    #     self.assertEqual(data['financeInvoices']['edges'][0]['node']['dateDue'], 
-    #       str(timezone.now().date() + datetime.timedelta(days=invoice.finance_invoice_group.due_after_days))
-    #     )
-    #     self.assertEqual(data['financeInvoices']['edges'][0]['node']['summary'], invoice.summary)
-    #     self.assertEqual(data['financeInvoices']['edges'][0]['node']['relationCompany'], invoice.relation_company)
-    #     self.assertEqual(data['financeInvoices']['edges'][0]['node']['relationCompanyRegistration'], invoice.relation_company_registration)
-    #     self.assertEqual(data['financeInvoices']['edges'][0]['node']['relationCompanyTaxRegistration'], invoice.relation_company_tax_registration)
-    #     self.assertEqual(data['financeInvoices']['edges'][0]['node']['relationContactName'], invoice.relation_contact_name)
-    #     self.assertEqual(data['financeInvoices']['edges'][0]['node']['relationAddress'], invoice.relation_address)
-    #     self.assertEqual(data['financeInvoices']['edges'][0]['node']['relationPostcode'], invoice.relation_postcode)
-    #     self.assertEqual(data['financeInvoices']['edges'][0]['node']['relationCity'], invoice.relation_city)
-    #     self.assertEqual(data['financeInvoices']['edges'][0]['node']['relationCountry'], invoice.relation_country)
-    #     self.assertEqual(data['financeInvoices']['edges'][0]['node']['status'], invoice.status)
+    def test_query_permision_denied(self):
+        """ Query list of account invoice items - check permission denied """
+        query = self.invoice_items_query
+        invoice_item = f.FinanceInvoiceItemFactory.create()
+
+        variables = {
+          "financeInvoice": to_global_id('FinanceInvoiceNode', invoice_item.finance_invoice.pk)
+        }
 
 
-    # # def test_query_status_filter(self):
-    #     """ Query list of account invoices - filtered by status """
-    #     query = self.invoices_query
-    #     invoice = f.FinanceInvoiceFactory.create()
-    #     invoice.status = "SENT"
-    #     invoice.finance_payment_method = f.FinancePaymentMethodFactory()
-    #     invoice.save()
+        # Create regular user
+        user = get_user_model().objects.get(pk=invoice_item.finance_invoice.account.id)
+        executed = execute_test_client_api_query(query, user, variables=variables)
+        errors = executed.get('errors')
 
-    #     variables = {
-    #         "status": "SENT"
-    #     }
-
-    #     executed = execute_test_client_api_query(query, self.admin_user, variables=variables)
-    #     data = executed.get('data')
-
-    #     # Make sure the invoice is in the list returned
-    #     self.assertEqual(
-    #         data['financeInvoices']['edges'][0]['node']['id'], 
-    #         to_global_id("FinanceInvoiceNode", invoice.id)
-    #     )
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
+    def test_query_permision_granted(self):
+        """ Query list of account invoice items with view permission """
+        query = self.invoice_items_query
+        invoice_item = f.FinanceInvoiceItemFactory.create()
 
-    # def test_query_permision_denied(self):
-    #     """ Query list of account invoices - check permission denied """
-    #     query = self.invoices_query
-    #     invoice = f.FinanceInvoiceFactory.create()
-
-    #     # Create regular user
-    #     user = get_user_model().objects.get(pk=invoice.account.id)
-    #     executed = execute_test_client_api_query(query, user)
-    #     errors = executed.get('errors')
-
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
+        variables = {
+          "financeInvoice": to_global_id('FinanceInvoiceNode', invoice_item.finance_invoice.pk)
+        }
 
 
-    # def test_query_permision_granted(self):
-    #     """ Query list of account invoices with view permission """
-    #     query = self.invoices_query
-    #     invoice = f.FinanceInvoiceFactory.create()
+        # Create regular user
+        user = get_user_model().objects.get(pk=invoice_item.finance_invoice.account.id)
+        permission = Permission.objects.get(codename='view_financeinvoiceitem')
+        user.user_permissions.add(permission)
+        user.save()
 
-    #     # Create regular user
-    #     user = get_user_model().objects.get(pk=invoice.account.id)
-    #     permission = Permission.objects.get(codename='view_financeinvoice')
-    #     user.user_permissions.add(permission)
-    #     user.save()
+        executed = execute_test_client_api_query(query, user, variables=variables)
+        data = executed.get('data')
 
-    #     executed = execute_test_client_api_query(query, user)
-    #     data = executed.get('data')
-
-    #     # List all invoices
-    #     self.assertEqual(
-    #         data['financeInvoices']['edges'][0]['node']['account']['id'], 
-    #         to_global_id("AccountNode", invoice.account.id)
-    #     )
+        # List selected invoice items
+        self.assertEqual(
+          data['financeInvoiceItems']['edges'][0]['node']['id'],
+          to_global_id('FinanceInvoiceItemNode', invoice_item.id)
+        )
 
 
-    # def test_query_anon_user(self):
-    #     """ Query list of account invoices - anon user """
-    #     query = self.invoices_query
-    #     invoice = f.FinanceInvoiceFactory.create()
+    def test_query_anon_user(self):
+        """ Query list of account invoice items - anon user """
+        query = self.invoice_items_query
+        invoice_item = f.FinanceInvoiceItemFactory.create()
 
-    #     executed = execute_test_client_api_query(query, self.anon_user)
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
+        variables = {
+          "financeInvoice": to_global_id('FinanceInvoiceNode', invoice_item.finance_invoice.pk)
+        }
+
+
+        executed = execute_test_client_api_query(query, self.anon_user, variables=variables)
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
     # def test_query_one(self):
