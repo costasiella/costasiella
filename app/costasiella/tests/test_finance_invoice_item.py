@@ -253,7 +253,7 @@ class GQLFinanceInvoiceItem(TestCase):
         invoice_item = f.FinanceInvoiceItemFactory.create()
 
         variables = {
-          "financeInvoice": to_global_id('FinanceInvoiceNode', invoice_item.finance_invoice.pk)
+          "financeInvoice": to_global_id('FinanceInvoiceItemNode', invoice_item.finance_invoice.pk)
         }
 
         executed = execute_test_client_api_query(query, self.admin_user, variables=variables)
@@ -289,7 +289,7 @@ class GQLFinanceInvoiceItem(TestCase):
         invoice_item = f.FinanceInvoiceItemFactory.create()
 
         variables = {
-          "financeInvoice": to_global_id('FinanceInvoiceNode', invoice_item.finance_invoice.pk)
+          "financeInvoice": to_global_id('FinanceInvoiceItemNode', invoice_item.finance_invoice.pk)
         }
 
 
@@ -307,7 +307,7 @@ class GQLFinanceInvoiceItem(TestCase):
         invoice_item = f.FinanceInvoiceItemFactory.create()
 
         variables = {
-          "financeInvoice": to_global_id('FinanceInvoiceNode', invoice_item.finance_invoice.pk)
+          "financeInvoice": to_global_id('FinanceInvoiceItemNode', invoice_item.finance_invoice.pk)
         }
 
 
@@ -333,9 +333,8 @@ class GQLFinanceInvoiceItem(TestCase):
         invoice_item = f.FinanceInvoiceItemFactory.create()
 
         variables = {
-          "financeInvoice": to_global_id('FinanceInvoiceNode', invoice_item.finance_invoice.pk)
+          "financeInvoice": to_global_id('FinanceInvoiceItemNode', invoice_item.finance_invoice.pk)
         }
-
 
         executed = execute_test_client_api_query(query, self.anon_user, variables=variables)
         errors = executed.get('errors')
@@ -347,84 +346,69 @@ class GQLFinanceInvoiceItem(TestCase):
         invoice_item = f.FinanceInvoiceItemFactory.create()
         
         variables = {
-            "id": to_global_id("FinanceInvoiceNode", invoice.id),
+            "id": to_global_id("FinanceInvoiceItemNode", invoice_item.id),
         }
 
         # Now query single invoice and check
         executed = execute_test_client_api_query(self.invoice_item_query, self.admin_user, variables=variables)
         data = executed.get('data')
 
-        # self.assertEqual(
-        #     data['financeInvoice']['account']['id'], 
-        #     to_global_id("AccountNode", invoice.account.id)
-        # )
-        # self.assertEqual(data['financeInvoice']['invoiceNumber'], invoice.invoice_number)
-        # self.assertEqual(data['financeInvoice']['dateSent'], str(timezone.now().date()))
-        # self.assertEqual(data['financeInvoice']['dateDue'], 
-        #   str(timezone.now().date() + datetime.timedelta(days=invoice.finance_invoice_group.due_after_days))
-        # )
-        # self.assertEqual(data['financeInvoice']['summary'], invoice.summary)
-        # self.assertEqual(data['financeInvoice']['relationCompany'], invoice.relation_company)
-        # self.assertEqual(data['financeInvoice']['relationCompanyRegistration'], invoice.relation_company_registration)
-        # self.assertEqual(data['financeInvoice']['relationCompanyTaxRegistration'], invoice.relation_company_tax_registration)
-        # self.assertEqual(data['financeInvoice']['relationContactName'], invoice.relation_contact_name)
-        # self.assertEqual(data['financeInvoice']['relationAddress'], invoice.relation_address)
-        # self.assertEqual(data['financeInvoice']['relationPostcode'], invoice.relation_postcode)
-        # self.assertEqual(data['financeInvoice']['relationCity'], invoice.relation_city)
-        # self.assertEqual(data['financeInvoice']['relationCountry'], invoice.relation_country)
-        # self.assertEqual(data['financeInvoice']['status'], invoice.status)
+        self.assertEqual(
+            data['financeInvoiceItem']['id'],
+            to_global_id('FinanceInvoiceItemNode', invoice_item.id)
+        )
 
 
-    # def test_query_one_anon_user(self):
-    #     """ Deny permission for anon users Query one account invoice """   
-    #     invoice = f.FinanceInvoiceFactory.create()
-
-    #     variables = {
-    #         "id": to_global_id("FinanceInvoiceNode", invoice.id),
-    #     }
-
-    #     # Now query single invoice and check
-    #     executed = execute_test_client_api_query(self.invoice_item_query, self.anon_user, variables=variables)
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
-
-
-    # def test_query_one_permission_denied(self):
-    #     """ Permission denied message when user lacks authorization """   
-    #     # Create regular user
-    #     invoice = f.FinanceInvoiceFactory.create()
-    #     user = invoice.account
-
-    #     variables = {
-    #         "id": to_global_id("FinanceInvoiceNode", invoice.id),
-    #     }
-
-    #     # Now query single invoice and check
-    #     executed = execute_test_client_api_query(self.invoice_item_query, user, variables=variables)
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
-
-
-    # def test_query_one_permission_granted(self):
-    #     """ Respond with data when user has permission """   
-    #     invoice = f.FinanceInvoiceFactory.create()
-    #     user = invoice.account
-    #     permission = Permission.objects.get(codename='view_financeinvoice')
-    #     user.user_permissions.add(permission)
-    #     user.save()
+    def test_query_one_anon_user(self):
+        """ Deny permission for anon users Query one account invoice """   
+        invoice_item = f.FinanceInvoiceItemFactory.create()
         
+        variables = {
+            "id": to_global_id("FinanceInvoiceItemNode", invoice_item.id),
+        }
 
-    #     variables = {
-    #         "id": to_global_id("FinanceInvoiceNode", invoice.id),
-    #     }
+        # Now query single invoice and check
+        executed = execute_test_client_api_query(self.invoice_item_query, self.anon_user, variables=variables)
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
 
-    #     # Now query single invoice and check   
-    #     executed = execute_test_client_api_query(self.invoice_item_query, user, variables=variables)
-    #     data = executed.get('data')
-    #     self.assertEqual(
-    #         data['financeInvoice']['account']['id'], 
-    #         to_global_id('AccountNode', invoice.account.id)
-    #     )
+
+    def test_query_one_permission_denied(self):
+        """ Permission denied message when user lacks authorization """   
+        # Create regular user
+        invoice_item = f.FinanceInvoiceItemFactory.create()
+        user = invoice_item.finance_invoice.account
+
+        variables = {
+            "id": to_global_id("FinanceInvoiceItemNode", invoice_item.id),
+        }
+
+        # Now query single invoice and check
+        executed = execute_test_client_api_query(self.invoice_item_query, user, variables=variables)
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
+
+
+    def test_query_one_permission_granted(self):
+        """ Respond with data when user has permission """   
+        invoice_item = f.FinanceInvoiceItemFactory.create()
+        user = invoice_item.finance_invoice.account
+        permission = Permission.objects.get(codename='view_financeinvoiceitem')
+        user.user_permissions.add(permission)
+        user.save()
+        
+        variables = {
+            "id": to_global_id("FinanceInvoiceItemNode", invoice_item.id),
+        }
+
+        # Now query single invoice and check   
+        executed = execute_test_client_api_query(self.invoice_item_query, user, variables=variables)
+        data = executed.get('data')
+        self.assertEqual(
+            data['financeInvoiceItem']['id'],
+            to_global_id('FinanceInvoiceItemNode', invoice_item.id)
+        )
+
 
 
     # def test_create_invoice(self):
@@ -532,7 +516,7 @@ class GQLFinanceInvoiceItem(TestCase):
 
     #     invoice = f.FinanceInvoiceFactory.create()
     #     variables = self.variables_update
-    #     variables['input']['id'] = to_global_id('FinanceInvoiceNode', invoice.id)
+    #     variables['input']['id'] = to_global_id('FinanceInvoiceItemNode', invoice_item.id)
 
     #     executed = execute_test_client_api_query(
     #         query, 
@@ -564,7 +548,7 @@ class GQLFinanceInvoiceItem(TestCase):
     #     query = self.invoice_update_mutation
     #     invoice = f.FinanceInvoiceFactory.create()
     #     variables = self.variables_update
-    #     variables['input']['id'] = to_global_id('FinanceInvoiceNode', invoice.id)
+    #     variables['input']['id'] = to_global_id('FinanceInvoiceItemNode', invoice_item.id)
 
     #     executed = execute_test_client_api_query(
     #         query, 
@@ -581,9 +565,9 @@ class GQLFinanceInvoiceItem(TestCase):
     #     query = self.invoice_update_mutation
     #     invoice = f.FinanceInvoiceFactory.create()
     #     variables = self.variables_update
-    #     variables['input']['id'] = to_global_id('FinanceInvoiceNode', invoice.id)
+    #     variables['input']['id'] = to_global_id('FinanceInvoiceItemNode', invoice_item.id)
 
-    #     user = invoice.account
+    #     user = invoice_item.finance_invoice.account
     #     permission = Permission.objects.get(codename=self.permission_change)
     #     user.user_permissions.add(permission)
     #     user.save()
@@ -602,9 +586,9 @@ class GQLFinanceInvoiceItem(TestCase):
     #     query = self.invoice_update_mutation
     #     invoice = f.FinanceInvoiceFactory.create()
     #     variables = self.variables_update
-    #     variables['input']['id'] = to_global_id('FinanceInvoiceNode', invoice.id)
+    #     variables['input']['id'] = to_global_id('FinanceInvoiceItemNode', invoice_item.id)
 
-    #     user = invoice.account
+    #     user = invoice_item.finance_invoice.account
 
     #     executed = execute_test_client_api_query(
     #         query, 
@@ -621,7 +605,7 @@ class GQLFinanceInvoiceItem(TestCase):
     #     query = self.invoice_delete_mutation
     #     invoice = f.FinanceInvoiceFactory.create()
     #     variables = {"input":{}}
-    #     variables['input']['id'] = to_global_id('FinanceInvoiceNode', invoice.id)
+    #     variables['input']['id'] = to_global_id('FinanceInvoiceItemNode', invoice_item.id)
 
     #     executed = execute_test_client_api_query(
     #         query, 
@@ -637,7 +621,7 @@ class GQLFinanceInvoiceItem(TestCase):
     #     query = self.invoice_delete_mutation
     #     invoice = f.FinanceInvoiceFactory.create()
     #     variables = {"input":{}}
-    #     variables['input']['id'] = to_global_id('FinanceInvoiceNode', invoice.id)
+    #     variables['input']['id'] = to_global_id('FinanceInvoiceItemNode', invoice_item.id)
 
     #     executed = execute_test_client_api_query(
     #         query, 
@@ -654,10 +638,10 @@ class GQLFinanceInvoiceItem(TestCase):
     #     query = self.invoice_delete_mutation
     #     invoice = f.FinanceInvoiceFactory.create()
     #     variables = {"input":{}}
-    #     variables['input']['id'] = to_global_id('FinanceInvoiceNode', invoice.id)
+    #     variables['input']['id'] = to_global_id('FinanceInvoiceItemNode', invoice_item.id)
 
     #     # Give permissions
-    #     user = invoice.account
+    #     user = invoice_item.finance_invoice.account
     #     permission = Permission.objects.get(codename=self.permission_delete)
     #     user.user_permissions.add(permission)
     #     user.save()
@@ -676,9 +660,9 @@ class GQLFinanceInvoiceItem(TestCase):
     #     query = self.invoice_delete_mutation
     #     invoice = f.FinanceInvoiceFactory.create()
     #     variables = {"input":{}}
-    #     variables['input']['id'] = to_global_id('FinanceInvoiceNode', invoice.id)
+    #     variables['input']['id'] = to_global_id('FinanceInvoiceItemNode', invoice_item.id)
         
-    #     user = invoice.account
+    #     user = invoice_item.finance_invoice.account
 
     #     executed = execute_test_client_api_query(
     #         query, 
