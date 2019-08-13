@@ -146,97 +146,45 @@ class GQLFinanceInvoiceItem(TestCase):
   }
 '''
 
-        self.invoice_create_mutation = ''' 
-  mutation CreateFinanceInvoice($input: CreateFinanceInvoiceInput!) {
-    createFinanceInvoice(input: $input) {
-      financeInvoice {
+        self.invoice_item_create_mutation = ''' 
+  mutation CreateFinanceInvoiceItem($input: CreateFinanceInvoiceItemInput!) {
+    createFinanceInvoiceItem(input: $input) {
+      financeInvoiceItem {
         id
-        account {
-          id
-          fullName
-        }
-        financeInvoiceGroup {
-          id 
-          name
-        }
-        financePaymentMethod {
+        productName
+        description
+        quantity
+        price
+        financeTaxRate {
           id
           name
         }
-        relationCompany
-        relationCompanyRegistration
-        relationCompanyTaxRegistration
-        relationContactName
-        relationAddress
-        relationPostcode
-        relationCity
-        relationCountry
-        status
-        summary
-        invoiceNumber
-        dateSent
-        dateDue
-        terms
-        footer
-        note
-        subtotalDisplay
-        taxDisplay
-        totalDisplay
-        paidDisplay
-        balanceDisplay
-        updatedAt
       }
     }
   }
 '''
 
-        self.invoice_update_mutation = '''
-  mutation UpdateFinanceInvoice($input: UpdateFinanceInvoiceInput!) {
-    updateFinanceInvoice(input: $input) {
-      financeInvoice {
+        self.invoice_item_update_mutation = '''
+  mutation UpdateFinanceInvoiceItem($input: UpdateFinanceInvoiceItemInput!) {
+    updateFinanceInvoiceItem(input: $input) {
+      financeInvoiceItem {
         id
-        account {
-          id
-          fullName
-        }
-        financeInvoiceGroup {
-          id 
-          name
-        }
-        financePaymentMethod {
+        productName
+        description
+        quantity
+        price
+        financeTaxRate {
           id
           name
         }
-        relationCompany
-        relationCompanyRegistration
-        relationCompanyTaxRegistration
-        relationContactName
-        relationAddress
-        relationPostcode
-        relationCity
-        relationCountry
-        status
-        summary
-        invoiceNumber
-        dateSent
-        dateDue
-        terms
-        footer
-        note
-        subtotalDisplay
-        taxDisplay
-        totalDisplay
-        paidDisplay
-        balanceDisplay
-        updatedAt
       }
     }
   }
 '''
 
-        self.invoice_delete_mutation = '''
-  mutation DeleteFinanceInvoice($input: DeleteFinanceInvoiceInput!) {
-    deleteFinanceInvoice(input: $input) {
+        self.invoice_item_delete_mutation = '''
+  mutation DeleteFinanceInvoiceItem($input: DeleteFinanceInvoiceItemInput!) {
+    deleteFinanceInvoiceItem(input: $input) {
       ok
     }
   }
