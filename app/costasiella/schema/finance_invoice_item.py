@@ -27,7 +27,7 @@ class FinanceInvoiceItemNode(DjangoObjectType):
         model = FinanceInvoiceItem
         filter_fields = {
             "id": ["exact"],
-            "financeInvoice": ["exact"],
+            "finance_invoice": ["exact"],
         }
         interfaces = (graphene.relay.Node, FinanceInvoiceItemInterface, )
 
