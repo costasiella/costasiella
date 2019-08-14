@@ -174,14 +174,6 @@ class ScheduleAppointmentQuery(graphene.ObjectType):
         
     )
 
-    def resolve_schedule_items(self, info, **kwargs):
-        user = info.context.user
-        require_login_and_permission(user, 'costasiella.view_scheduleitem')
-
-        ## return everything:
-        return ScheduleItem.objects.filter()
-
-
     def resolve_schedule_appointments(self, 
                                  info, 
                                  date_from=graphene.types.datetime.Date(), 
