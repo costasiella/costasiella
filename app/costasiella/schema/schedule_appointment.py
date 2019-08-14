@@ -7,12 +7,11 @@ from graphene_django.filter import DjangoFilterConnectionField
 from graphql import GraphQLError
 from graphql_relay import to_global_id
 
-from ..models import ScheduleItem, OrganizationAppointment, OrganizationLevel, OrganizationLocationRoom
+from ..models import ScheduleItem, OrganizationAppointment, OrganizationLocationRoom
 from ..modules.gql_tools import require_login_and_permission, require_login_and_one_of_permissions, get_rid
 from ..modules.messages import Messages
 from ..modules.model_helpers.schedule_item_helper import ScheduleItemHelper
 from .organization_appointment import OrganizationAppointmentNode
-from .organization_level import OrganizationLevelNode
 from .organization_location_room import OrganizationLocationRoomNode
 from .schedule_item import ScheduleItemNode
 
@@ -29,7 +28,6 @@ class ScheduleAppointmentType(graphene.ObjectType):
     date = graphene.types.datetime.Date()
     organization_location_room = graphene.Field(OrganizationLocationRoomNode)
     organization_appointment = graphene.Field(OrganizationAppointmentNode)
-    organization_level = graphene.Field(OrganizationLevelNode)
     time_start = graphene.types.datetime.Time()
     time_end = graphene.types.datetime.Time()
     display_public = graphene.Boolean()
@@ -40,9 +38,8 @@ class ScheduleAppointmentsDayType(graphene.ObjectType):
     date = graphene.types.datetime.Date()
     iso_week_day = graphene.Int()
     order_by = graphene.String()
-    filter_id_organization_appointment= graphene.String()
-    filter_id_organization_level= graphene.String()
-    filter_id_organization_location= graphene.String()
+    filter_id_organization_appointment = graphene.String()
+    filter_id_organization_location = graphene.String()
     appointments = graphene.List(ScheduleAppointmentType)
 
     def resolve_iso_week_day(self, info):
@@ -77,11 +74,6 @@ class ScheduleAppointmentsDayType(graphene.ObjectType):
         if self.filter_id_organization_appointment:
             schedule_filter &= \
                 Q(organization_appointment__id = self.filter_id_organization_appointment)
-        
-        # Filter level
-        if self.filter_id_organization_level:
-            schedule_filter &= \
-                Q(organization_level__id = self.filter_id_organization_level)
         
         # Filter locations
         if self.filter_id_organization_location:
@@ -118,7 +110,6 @@ class ScheduleAppointmentsDayType(graphene.ObjectType):
                     frequency_type=item.frequency_type,
                     organization_location_room=item.organization_location_room,
                     organization_appointment=item.organization_appointment,
-                    organization_level=item.organization_level,
                     time_start=item.time_start,
                     time_end=item.time_end,
                     display_public=item.display_public
@@ -132,7 +123,6 @@ def validate_schedule_classes_query_date_input(date_from,
                                                date_until, 
                                                order_by, 
                                                organization_appointment,
-                                               organization_level,
                                                organization_location,
                                                ):
     """
@@ -165,11 +155,6 @@ def validate_schedule_classes_query_date_input(date_from,
         organization_appointment_id = rid.id
         result['organization_appointment_id'] = organization_appointment_id
 
-    if organization_level:
-        rid = get_rid(organization_level)
-        organization_level_id = rid.id
-        result['organization_level_id'] = organization_level_id
-
     if organization_location:
         rid = get_rid(organization_location)
         organization_location_id = rid.id
@@ -185,7 +170,6 @@ class ScheduleAppointmentQuery(graphene.ObjectType):
         date_until=graphene.types.datetime.Date(),
         order_by=graphene.String(),
         organization_appointment=graphene.String(),
-        organization_level=graphene.String(),
         organization_location=graphene.String(),
         
     )
@@ -204,7 +188,6 @@ class ScheduleAppointmentQuery(graphene.ObjectType):
                                  date_until=graphene.types.datetime.Date(),
                                  order_by=None,
                                  organization_appointment=None,
-                                 organization_level=None,
                                  organization_location=None,
                                  ):
         user = info.context.user
@@ -219,7 +202,6 @@ class ScheduleAppointmentQuery(graphene.ObjectType):
             date_until, 
             order_by,
             organization_appointment,
-            organization_level,
             organization_location,
         )
 
@@ -239,10 +221,6 @@ class ScheduleAppointmentQuery(graphene.ObjectType):
             if 'organization_appointment_id' in validation_result:
                 day.filter_id_organization_appointment = \
                     validation_result['organization_appointment_id']
-
-            if 'organization_level_id' in validation_result:
-                day.filter_id_organization_level = \
-                    validation_result['organization_level_id']
 
             if 'organization_location_id' in validation_result:
                 day.filter_id_organization_location = \
@@ -276,17 +254,7 @@ def validate_schedule_class_create_update_input(input, update=False):
             organization_appointment = OrganizationAppointment.objects.get(id=rid.id)
             result['organization_appointment'] = organization_appointment
             if not organization_appointment:
-                raise Exception(_('Invalid Organization Classtype ID!'))            
-
-    # Check OrganizationLevel
-    if 'organization_level' in input:
-        if input['organization_level']:
-            print('processing')
-            rid = get_rid(input['organization_level'])
-            organization_level = OrganizationLevel.objects.get(id=rid.id)
-            result['organization_level'] = organization_level
-            if not organization_level:
-                raise Exception(_('Invalid Organization Level ID!'))            
+                raise Exception(_('Invalid Organization Classtype ID!')) 
 
 
     return result
@@ -298,7 +266,6 @@ class CreateScheduleAppointment(graphene.relay.ClientIDMutation):
         frequency_interval = graphene.Int(required=True)
         organization_location_room = graphene.ID(required=True)
         organization_appointment = graphene.ID(required=True)
-        organization_level = graphene.ID(required=False, default_value=None)
         date_start = graphene.types.datetime.Date(required=True)
         date_end = graphene.types.datetime.Date(required=False, default_value=None)
         time_start = graphene.types.datetime.Time(required=True)
@@ -338,9 +305,6 @@ class CreateScheduleAppointment(graphene.relay.ClientIDMutation):
         if result['organization_appointment']:
             schedule_item.organization_appointment = result['organization_appointment']
 
-        if 'organization_level' in result:
-            schedule_item.organization_level = result['organization_level']
-
         # ALl done, save it :).
         schedule_item.save()
 
@@ -358,7 +322,6 @@ class UpdateScheduleAppointment(graphene.relay.ClientIDMutation):
         frequency_interval = graphene.Int(required=True)
         organization_location_room = graphene.ID(required=True)
         organization_appointment = graphene.ID(required=True)
-        organization_level = graphene.ID(required=False, default_value=None)
         date_start = graphene.types.datetime.Date(required=True)
         date_end = graphene.types.datetime.Date(required=False, default_value=None)
         time_start = graphene.types.datetime.Time(required=True)
@@ -401,9 +364,6 @@ class UpdateScheduleAppointment(graphene.relay.ClientIDMutation):
 
         if result['organization_appointment']:
             schedule_item.organization_appointment = result['organization_appointment']
-
-        if 'organization_level' in result:
-            schedule_item.organization_level = result['organization_level']
 
         # ALl done, save it :).
         schedule_item.save()
