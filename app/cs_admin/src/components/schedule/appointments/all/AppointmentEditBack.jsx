@@ -8,13 +8,13 @@ import {
   Icon,
 } from "tabler-react";
 
-const ClassEditBack = ({ t }) => (
+const AppointmentEditBack = ({ t }) => (
   <div className="page-options d-flex">
-    <Link to="/schedule/classes" 
+    <Link to="/schedule/appointments" 
           className='btn btn-outline-secondary btn-sm'>
         <Icon prefix="fe" name="arrow-left" /> {t('general.back_to')} {t('schedule.title')}
     </Link>
   </div>
 )
 
-export default withTranslation()(ClassEditBack)
+export default withTranslation()(AppointmentEditBack)
