@@ -5,14 +5,12 @@ export const GET_APPOINTMENTS_QUERY = gql`
       $dateFrom: Date!, 
       $dateUntil:Date!, 
       $orderBy: String, 
-      $organizationAppointment: String,
       $organizationLocation: String
     ){
     scheduleAppointments(
         dateFrom:$dateFrom, 
         dateUntil: $dateUntil, 
         orderBy: $orderBy, 
-        organizationAppointment: $organizationAppointment,
         organizationLocation: $organizationLocation
     ){
       date

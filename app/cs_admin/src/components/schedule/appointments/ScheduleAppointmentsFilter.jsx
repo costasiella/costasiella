@@ -47,8 +47,8 @@ const ScheduleAppointmentsFilter = ({ t, history, data, refetch }) => (
         <option value={node.id} key={v4()}>{node.name}</option>
       )}
     </select>
-    {/* Classtypes */}
-    <select 
+    {/* Appointments */}
+    {/* <select 
       className={selectClass}
       defaultValue={getDefaultValue(CSLS.SCHEDULE_APPOINTMENTS_FILTER_CLASSTYPE)}
       onChange={ (event) => {
@@ -63,7 +63,7 @@ const ScheduleAppointmentsFilter = ({ t, history, data, refetch }) => (
       {data.organizationAppointments.edges.map(({ node }) =>
         <option value={node.id} key={v4()}>{node.name}</option>
       )}
-    </select>
+    </select> */}
   </div>
 );
 

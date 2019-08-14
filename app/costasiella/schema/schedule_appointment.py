@@ -38,7 +38,6 @@ class ScheduleAppointmentsDayType(graphene.ObjectType):
     date = graphene.types.datetime.Date()
     iso_week_day = graphene.Int()
     order_by = graphene.String()
-    filter_id_organization_appointment = graphene.String()
     filter_id_organization_location = graphene.String()
     appointments = graphene.List(ScheduleAppointmentType)
 
@@ -69,11 +68,6 @@ class ScheduleAppointmentsDayType(graphene.ObjectType):
                     (Q(date_end__gte = self.date) | Q(date_end__isnull = True ))
                 )
             )
-        
-        # Filter appointmenttypes
-        if self.filter_id_organization_appointment:
-            schedule_filter &= \
-                Q(organization_appointment__id = self.filter_id_organization_appointment)
         
         # Filter locations
         if self.filter_id_organization_location:
@@ -109,7 +103,6 @@ class ScheduleAppointmentsDayType(graphene.ObjectType):
                     date=self.date,
                     frequency_type=item.frequency_type,
                     organization_location_room=item.organization_location_room,
-                    organization_appointment=item.organization_appointment,
                     time_start=item.time_start,
                     time_end=item.time_end,
                     display_public=item.display_public
@@ -122,7 +115,6 @@ class ScheduleAppointmentsDayType(graphene.ObjectType):
 def validate_schedule_appointments_query_date_input(date_from, 
                                                date_until, 
                                                order_by, 
-                                               organization_appointment,
                                                organization_location,
                                                ):
     """
@@ -146,15 +138,6 @@ def validate_schedule_appointments_query_date_input(date_from,
         if order_by not in sort_options:
             raise Exception(_("orderBy can only be 'location' or 'starttime'")) 
 
-
-    print("###########")
-    print(organization_location)
-
-    if organization_appointment:
-        rid = get_rid(organization_appointment)
-        organization_appointment_id = rid.id
-        result['organization_appointment_id'] = organization_appointment_id
-
     if organization_location:
         rid = get_rid(organization_location)
         organization_location_id = rid.id
@@ -169,7 +152,6 @@ class ScheduleAppointmentQuery(graphene.ObjectType):
         date_from=graphene.types.datetime.Date(), 
         date_until=graphene.types.datetime.Date(),
         order_by=graphene.String(),
-        organization_appointment=graphene.String(),
         organization_location=graphene.String(),
         
     )
@@ -179,7 +161,6 @@ class ScheduleAppointmentQuery(graphene.ObjectType):
                                  date_from=graphene.types.datetime.Date(), 
                                  date_until=graphene.types.datetime.Date(),
                                  order_by=None,
-                                 organization_appointment=None,
                                  organization_location=None,
                                  ):
         user = info.context.user
@@ -193,7 +174,6 @@ class ScheduleAppointmentQuery(graphene.ObjectType):
             date_from, 
             date_until, 
             order_by,
-            organization_appointment,
             organization_location,
         )
 
@@ -209,10 +189,6 @@ class ScheduleAppointmentQuery(graphene.ObjectType):
 
             if order_by:
                 day.order_by = order_by
-
-            if 'organization_appointment_id' in validation_result:
-                day.filter_id_organization_appointment = \
-                    validation_result['organization_appointment_id']
 
             if 'organization_location_id' in validation_result:
                 day.filter_id_organization_location = \
@@ -239,16 +215,6 @@ def validate_schedule_appointment_create_update_input(input, update=False):
             if not organization_location_room:
                 raise Exception(_('Invalid Organization Location Room ID!'))            
 
-    # Check OrganizationAppointment
-    if 'organization_appointment' in input:
-        if input['organization_appointment']:
-            rid = get_rid(input['organization_appointment'])
-            organization_appointment = OrganizationAppointment.objects.get(id=rid.id)
-            result['organization_appointment'] = organization_appointment
-            if not organization_appointment:
-                raise Exception(_('Invalid Organization Appointment ID!')) 
-
-
     return result
 
 
@@ -257,7 +223,6 @@ class CreateScheduleAppointment(graphene.relay.ClientIDMutation):
         frequency_type = graphene.String(required=True)
         frequency_interval = graphene.Int(required=True)
         organization_location_room = graphene.ID(required=True)
-        organization_appointment = graphene.ID(required=True)
         date_start = graphene.types.datetime.Date(required=True)
         date_end = graphene.types.datetime.Date(required=False, default_value=None)
         time_start = graphene.types.datetime.Time(required=True)
@@ -294,9 +259,6 @@ class CreateScheduleAppointment(graphene.relay.ClientIDMutation):
         if result['organization_location_room']:
             schedule_item.organization_location_room = result['organization_location_room']
 
-        if result['organization_appointment']:
-            schedule_item.organization_appointment = result['organization_appointment']
-
         # ALl done, save it :).
         schedule_item.save()
 
@@ -309,7 +271,6 @@ class UpdateScheduleAppointment(graphene.relay.ClientIDMutation):
         frequency_type = graphene.String(required=True)
         frequency_interval = graphene.Int(required=True)
         organization_location_room = graphene.ID(required=True)
-        organization_appointment = graphene.ID(required=True)
         date_start = graphene.types.datetime.Date(required=True)
         date_end = graphene.types.datetime.Date(required=False, default_value=None)
         time_start = graphene.types.datetime.Time(required=True)
@@ -349,9 +310,6 @@ class UpdateScheduleAppointment(graphene.relay.ClientIDMutation):
         # Fields requiring additional validation
         if result['organization_location_room']:
             schedule_item.organization_location_room = result['organization_location_room']
-
-        if result['organization_appointment']:
-            schedule_item.organization_appointment = result['organization_appointment']
 
         # ALl done, save it :).
         schedule_item.save()

@@ -229,7 +229,7 @@ const ScheduleAppointments = ({ t, history }) => (
                                     </Table.Col>
                                     <Table.Col>
                                       {/* Type */}
-                                      {organizationAppointment.name} <br />
+                                      {/* {organizationAppointment.name} <br /> */}
                                     </Table.Col>
                                     <Table.Col>
                                       {/* Public */}

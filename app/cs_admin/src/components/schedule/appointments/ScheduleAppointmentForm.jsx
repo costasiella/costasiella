@@ -74,7 +74,7 @@ const ScheduleAppointmentForm = ({ t, history, inputData, isSubmitting, setField
             </Form.Group> 
           </Grid.Col>
         </Grid.Row>
-        <Form.Group label={t('general.appointment')}>
+        {/* <Form.Group label={t('general.appointment')}>
           <Field component="select" 
                 name="organizationAppointment" 
                 className={(errors.organizationAppointment) ? "form-control is-invalid" : "form-control"} 
@@ -85,7 +85,7 @@ const ScheduleAppointmentForm = ({ t, history, inputData, isSubmitting, setField
             )}
           </Field>
           <ErrorMessage name="organizationAppointment" component="span" className="invalid-feedback" />
-        </Form.Group> 
+        </Form.Group>  */}
         <Grid.Row>
           <Grid.Col>
             <Form.Group label={(values.frequencyType == "SPECIFIC") ? t('general.date') : t('general.date_start')}>
