@@ -18,6 +18,10 @@ class ScheduleItem(models.Model):
             ('add_scheduleclass', _("Can add schedule class")),
             ('change_scheduleclass', _("Can change schedule class")),
             ('delete_scheduleclass', _("Can delete schedule class")),
+            ('view_scheduleappointment', _("Can view schedule appointment")),
+            ('add_scheduleappointment', _("Can add schedule appointment")),
+            ('change_scheduleappointment', _("Can change schedule appointment")),
+            ('delete_scheduleappointment', _("Can delete schedule appointment")),
         ]
 
     SCHEDULE_ITEM_TYPES = (
