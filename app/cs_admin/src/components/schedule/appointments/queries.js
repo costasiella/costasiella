@@ -5,14 +5,14 @@ export const GET_APPOINTMENTS_QUERY = gql`
       $dateFrom: Date!, 
       $dateUntil:Date!, 
       $orderBy: String, 
-      $organizationClasstype: String,
+      $organizationAppointment: String,
       $organizationLocation: String
     ){
-    scheduleClasses(
+    scheduleAppointments(
         dateFrom:$dateFrom, 
         dateUntil: $dateUntil, 
         orderBy: $orderBy, 
-        organizationClasstype: $organizationClasstype,
+        organizationAppointment: $organizationAppointment,
         organizationLocation: $organizationLocation
     ){
       date
@@ -28,7 +28,7 @@ export const GET_APPOINTMENTS_QUERY = gql`
             name
           }
         }
-        organizationClasstype {
+        organizationAppointment {
           id
           name
         }
@@ -76,7 +76,7 @@ export const GET_APPOINTMENTS_QUERY = gql`
         }
       }
     }
-    organizationClasstypes(first: 100, archived: false) {
+    organizationAppointments(first: 100, archived: false) {
       pageInfo {
         startCursor
         endCursor
@@ -108,7 +108,7 @@ export const GET_CLASS_QUERY = gql`
           name
         }
       }
-      organizationClasstype {
+      organizationAppointment {
         id
         name
       }
@@ -141,7 +141,7 @@ export const GET_CLASS_QUERY = gql`
         }
       }
     }
-    organizationClasstypes(first: 100, before: $before, after: $after, archived: $archived) {
+    organizationAppointments(first: 100, before: $before, after: $after, archived: $archived) {
       pageInfo {
         startCursor
         endCursor
@@ -210,7 +210,7 @@ export const GET_INPUT_VALUES_QUERY = gql`
         }
       }
     }
-    organizationClasstypes(first: 100, before: $before, after: $after, archived: $archived) {
+    organizationAppointments(first: 100, before: $before, after: $after, archived: $archived) {
       pageInfo {
         startCursor
         endCursor

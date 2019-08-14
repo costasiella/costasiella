@@ -82,7 +82,7 @@ const ScheduleAppointments = ({ t, history }) => (
           }
           
           // Empty list
-          if (!data.scheduleClasses.length) { return (
+          if (!data.scheduleAppointments.length) { return (
             <ContentCard cardTitle={t('schedule.appointments.title')}>
               <p>
                 {t('schedule.appointments.empty_list')}
@@ -182,7 +182,7 @@ const ScheduleAppointments = ({ t, history }) => (
               </Page.Header>
               <Grid.Row>
                 <Grid.Col md={9}>
-                  { data.scheduleClasses.map(({ date, appointments }) => (
+                  { data.scheduleAppointments.map(({ date, appointments }) => (
                     <div key={v4()}>
                       <Card>
                         <Card.Header>

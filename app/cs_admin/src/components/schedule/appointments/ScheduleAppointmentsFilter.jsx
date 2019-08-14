@@ -60,7 +60,7 @@ const ScheduleAppointmentsFilter = ({ t, history, data, refetch }) => (
       }}
     >
       <option value="" key={v4()}>{t("schedule.appointments.filter_all_classtypes")}</option>
-      {data.organizationClasstypes.edges.map(({ node }) =>
+      {data.organizationAppointments.edges.map(({ node }) =>
         <option value={node.id} key={v4()}>{node.name}</option>
       )}
     </select>
