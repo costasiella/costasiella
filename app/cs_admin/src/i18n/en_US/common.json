@@ -663,7 +663,7 @@
             "tooltip_sort_by_location": "Sort by location",
             "tooltip_sort_by_starttime": "Sort by start time",
             "go_to_date": "Go to date",
-            "all_appointments_in_series": "All appointments",
+            "all_appointments_in_series": "All",
             "delete_confirm_msg": "Are you sure you wish to delete this appointment and all associated data?",
             "deleted": "Appointment deleted",
             "add": "Add appointment",
