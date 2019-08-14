@@ -25,6 +25,7 @@ import {
 import SiteWrapper from "../../SiteWrapper"
 import HasPermissionWrapper from "../../HasPermissionWrapper"
 import CSDatePicker from "../../ui/CSDatePicker"
+import confirm_delete from "../../../tools/confirm_delete"
 import { confirmAlert } from 'react-confirm-alert'
 import { toast } from 'react-toastify'
 
@@ -34,9 +35,9 @@ import CSLS from "../../../tools/cs_local_storage"
 import BooleanBadge from "../../ui/BooleanBadge"
 import ContentCard from "../../general/ContentCard"
 import ScheduleMenu from "../ScheduleMenu"
-import ScheduleClassesFilter from "./ScheduleClassesFilter"
+import ScheduleAppointmentsFilter from "./ScheduleAppointmentsFilter"
 
-import { GET_CLASSES_QUERY } from "./queries"
+import { GET_APPOINTMENTS_QUERY } from "./queries"
 import { get_list_query_variables } from './tools'
 
 import moment from 'moment'
@@ -51,55 +52,18 @@ const DELETE_SCHEDULE_APPOINTMENT = gql`
 `
 
 
-const confirm_delete = ({t, msgConfirm, msgDescription, msgSuccess, deleteFunction, functionVariables}) => {
-  confirmAlert({
-    customUI: ({ onClose }) => {
-      return (
-        <div key={v4()} className='custom-ui'>
-          <h1>{t('general.confirm_delete')}</h1>
-          {msgConfirm}
-          {msgDescription}
-          <button className="btn btn-link pull-right" onClick={onClose}>{t('general.confirm_delete_no')}</button>
-          <button
-            className="btn btn-danger"
-            onClick={() => {
-              deleteFunction(functionVariables)
-                .then(({ data }) => {
-                  console.log('got data', data);
-                  toast.success(
-                    msgSuccess, {
-                      position: toast.POSITION.BOTTOM_RIGHT
-                    })
-                }).catch((error) => {
-                  toast.error((t('general.toast_server_error')) + ': ' +  error, {
-                      position: toast.POSITION.BOTTOM_RIGHT
-                    })
-                  console.log('there was an error sending the query', error);
-                })
-              onClose()
-            }}
-          >
-            <Icon name="trash-2" /> {t('general.confirm_delete_yes')}
-          </button>
-        </div>
-      )
-    }
-  })
-}
-
-
 // Set some initial values for dates, if not found
-if (!localStorage.getItem(CSLS.SCHEDULE_CLASSES_DATE_FROM)) {
+if (!localStorage.getItem(CSLS.SCHEDULE_APPOINTMENTS_DATE_FROM)) {
   console.log('date from not found... defaulting to today...')
-  localStorage.setItem(CSLS.SCHEDULE_CLASSES_DATE_FROM, moment().format('YYYY-MM-DD')) 
-  localStorage.setItem(CSLS.SCHEDULE_CLASSES_DATE_UNTIL, moment().add(6, 'days').format('YYYY-MM-DD')) 
+  localStorage.setItem(CSLS.SCHEDULE_APPOINTMENTS_DATE_FROM, moment().format('YYYY-MM-DD')) 
+  localStorage.setItem(CSLS.SCHEDULE_APPOINTMENTS_DATE_UNTIL, moment().add(6, 'days').format('YYYY-MM-DD')) 
 } 
 
 
 const ScheduleClasses = ({ t, history }) => (
   <SiteWrapper>
     <div className="my-3 my-md-5">
-      <Query query={GET_CLASSES_QUERY} variables={get_list_query_variables()}>
+      <Query query={GET_APPOINTMENTS_QUERY} variables={get_list_query_variables()}>
         {({ loading, error, data, refetch }) => {
           // Loading
           if (loading) return (
@@ -116,26 +80,12 @@ const ScheduleClasses = ({ t, history }) => (
               </Container>
             )
           }
-          const headerOptions = <Card.Options>
-            {/* <Button color={(!archived) ? 'primary': 'secondary'}  
-                    size="sm"
-                    onClick={() => {archived=false; refetch({archived});}}>
-              {t('general.current')}
-            </Button>
-            <Button color={(archived) ? 'primary': 'secondary'} 
-                    size="sm" 
-                    className="ml-2" 
-                    onClick={() => {archived=true; refetch({archived});}}>
-              {t('general.archive')}
-            </Button> */}
-          </Card.Options>
           
           // Empty list
           if (!data.scheduleClasses.length) { return (
-            <ContentCard cardTitle={t('schedule.classes.title')}
-                          headerContent={headerOptions}>
+            <ContentCard cardTitle={t('schedule.appointments.title')}>
               <p>
-                {t('schedule.classes.empty_list')}
+                {t('schedule.appointments.empty_list')}
               </p>
             </ContentCard>
           )} else {   
@@ -144,62 +94,62 @@ const ScheduleClasses = ({ t, history }) => (
             <Container>
               <Page.Header title={t("schedule.title")}>
                 <div className="page-options d-flex">
-                  <span title={t("schedule.classes.tooltip_sort_by_location")}>
+                  <span title={t("schedule.appointments.tooltip_sort_by_location")}>
                     <Button 
                       icon="home"
                       tooltip="text"
                       className="mr-2"
                       color={
-                        ((localStorage.getItem(CSLS.SCHEDULE_CLASSES_ORDER_BY) === "location") || (!localStorage.getItem(CSLS.SCHEDULE_CLASSES_ORDER_BY))) ?
+                        ((localStorage.getItem(CSLS.SCHEDULE_APPOINTMENTS_ORDER_BY) === "location") || (!localStorage.getItem(CSLS.SCHEDULE_APPOINTMENTS_ORDER_BY))) ?
                         "azure" : "secondary"
                       }
                       onClick={() => {
-                        localStorage.setItem(CSLS.SCHEDULE_CLASSES_ORDER_BY, "location")
+                        localStorage.setItem(CSLS.SCHEDULE_APPOINTMENTS_ORDER_BY, "location")
                         refetch(get_list_query_variables())
                       }}
                     />
                   </span>
-                  <span title={t("schedule.classes.tooltip_sort_by_starttime")}>
+                  <span title={t("schedule.appointments.tooltip_sort_by_starttime")}>
                     <Button 
                       icon="clock"
                       className="mr-2"
                       color={
-                        (localStorage.getItem(CSLS.SCHEDULE_CLASSES_ORDER_BY) === "starttime") ?
+                        (localStorage.getItem(CSLS.SCHEDULE_APPOINTMENTS_ORDER_BY) === "starttime") ?
                         "azure" : "secondary"
                       }
                       onClick={() => {
-                        localStorage.setItem(CSLS.SCHEDULE_CLASSES_ORDER_BY, "starttime")
+                        localStorage.setItem(CSLS.SCHEDULE_APPOINTMENTS_ORDER_BY, "starttime")
                         refetch(get_list_query_variables())
                       }}
                     />
                   </span>
                   <CSDatePicker 
-                    className="form-control schedule-classes-csdatepicker mr-2"
-                    selected={new Date(localStorage.getItem(CSLS.SCHEDULE_CLASSES_DATE_FROM))}
+                    className="form-control schedule-appointments-csdatepicker mr-2"
+                    selected={new Date(localStorage.getItem(CSLS.SCHEDULE_APPOINTMENTS_DATE_FROM))}
                     isClearable={false}
                     onChange={(date) => {
                       let nextWeekFrom = moment(date)
                       let nextWeekUntil = moment(nextWeekFrom).add(6, 'days')
 
-                      localStorage.setItem(CSLS.SCHEDULE_CLASSES_DATE_FROM, nextWeekFrom.format('YYYY-MM-DD')) 
-                      localStorage.setItem(CSLS.SCHEDULE_CLASSES_DATE_UNTIL, nextWeekUntil.format('YYYY-MM-DD')) 
+                      localStorage.setItem(CSLS.SCHEDULE_APPOINTMENTS_DATE_FROM, nextWeekFrom.format('YYYY-MM-DD')) 
+                      localStorage.setItem(CSLS.SCHEDULE_APPOINTMENTS_DATE_UNTIL, nextWeekUntil.format('YYYY-MM-DD')) 
 
                       console.log(get_list_query_variables())
 
                       refetch(get_list_query_variables())
                     }}
-                    placeholderText={t('schedule.classes.go_to_date')}
+                    placeholderText={t('schedule.appointments.go_to_date')}
                   />
-                  <Button.List className="schedule-classes-page-options-btn-list">
+                  <Button.List className="schedule-appointments-page-options-btn-list">
                     <Button 
                       icon="chevron-left"
                       color="secondary"
                       onClick={ () => {
-                        let nextWeekFrom = moment(localStorage.getItem(CSLS.SCHEDULE_CLASSES_DATE_FROM)).subtract(7, 'days')
+                        let nextWeekFrom = moment(localStorage.getItem(CSLS.SCHEDULE_APPOINTMENTS_DATE_FROM)).subtract(7, 'days')
                         let nextWeekUntil = moment(nextWeekFrom).add(6, 'days')
                         
-                        localStorage.setItem(CSLS.SCHEDULE_CLASSES_DATE_FROM, nextWeekFrom.format('YYYY-MM-DD')) 
-                        localStorage.setItem(CSLS.SCHEDULE_CLASSES_DATE_UNTIL, nextWeekUntil.format('YYYY-MM-DD')) 
+                        localStorage.setItem(CSLS.SCHEDULE_APPOINTMENTS_DATE_FROM, nextWeekFrom.format('YYYY-MM-DD')) 
+                        localStorage.setItem(CSLS.SCHEDULE_APPOINTMENTS_DATE_UNTIL, nextWeekUntil.format('YYYY-MM-DD')) 
 
                         refetch(get_list_query_variables())
                     }} />
@@ -210,8 +160,8 @@ const ScheduleClasses = ({ t, history }) => (
                         let currentWeekFrom = moment()
                         let currentWeekUntil = moment(currentWeekFrom).add(6, 'days')
 
-                        localStorage.setItem(CSLS.SCHEDULE_CLASSES_DATE_FROM, currentWeekFrom.format('YYYY-MM-DD')) 
-                        localStorage.setItem(CSLS.SCHEDULE_CLASSES_DATE_UNTIL, currentWeekUntil.format('YYYY-MM-DD')) 
+                        localStorage.setItem(CSLS.SCHEDULE_APPOINTMENTS_DATE_FROM, currentWeekFrom.format('YYYY-MM-DD')) 
+                        localStorage.setItem(CSLS.SCHEDULE_APPOINTMENTS_DATE_UNTIL, currentWeekUntil.format('YYYY-MM-DD')) 
                         
                         refetch(get_list_query_variables())
                     }} />
@@ -219,11 +169,11 @@ const ScheduleClasses = ({ t, history }) => (
                       icon="chevron-right"
                       color="secondary"
                       onClick={ () => {
-                        let nextWeekFrom = moment(localStorage.getItem(CSLS.SCHEDULE_CLASSES_DATE_FROM)).add(7, 'days')
+                        let nextWeekFrom = moment(localStorage.getItem(CSLS.SCHEDULE_APPOINTMENTS_DATE_FROM)).add(7, 'days')
                         let nextWeekUntil = moment(nextWeekFrom).add(6, 'days')
                         
-                        localStorage.setItem(CSLS.SCHEDULE_CLASSES_DATE_FROM, nextWeekFrom.format('YYYY-MM-DD')) 
-                        localStorage.setItem(CSLS.SCHEDULE_CLASSES_DATE_UNTIL, nextWeekUntil.format('YYYY-MM-DD')) 
+                        localStorage.setItem(CSLS.SCHEDULE_APPOINTMENTS_DATE_FROM, nextWeekFrom.format('YYYY-MM-DD')) 
+                        localStorage.setItem(CSLS.SCHEDULE_APPOINTMENTS_DATE_UNTIL, nextWeekUntil.format('YYYY-MM-DD')) 
 
                         refetch(get_list_query_variables())
                     }} />
@@ -233,7 +183,7 @@ const ScheduleClasses = ({ t, history }) => (
               <Grid.Row>
                 <Grid.Col md={9}>
                   {
-                    data.scheduleClasses.map(({ date, classes }) => (
+                    data.scheduleClasses.map(({ date, appointments }) => (
                     <div key={v4()}>
                       <Card>
                         <Card.Header>
@@ -245,7 +195,7 @@ const ScheduleClasses = ({ t, history }) => (
                           </Card.Title>
                         </Card.Header>
                         <Card.Body>
-                          {!(classes.length) ? t('schedule.classes.empty_list') :
+                          {!(appointments.length) ? t('schedule.appointments.empty_list') :
                             <Table>
                               <Table.Header>
                                 <Table.Row key={v4()}>
@@ -257,7 +207,7 @@ const ScheduleClasses = ({ t, history }) => (
                                 </Table.Row>
                               </Table.Header>
                               <Table.Body>
-                                {classes.map((
+                                {appointments.map((
                                   { scheduleItemId, 
                                     frequencyType,
                                     date, 
@@ -304,10 +254,10 @@ const ScheduleClasses = ({ t, history }) => (
                                             <Dropdown.ItemDivider key={v4()} />
                                             <Dropdown.Item
                                               key={v4()}
-                                              badge={t('schedule.classes.all_classes_in_series')}
+                                              badge={t('schedule.appointments.all_appointments_in_series')}
                                               badgeType="secondary"
                                               icon="edit-2"
-                                              onClick={() => history.push('/schedule/classes/all/edit/' + scheduleItemId)}>
+                                              onClick={() => history.push('/schedule/appointments/all/edit/' + scheduleItemId)}>
                                                 {t("general.edit")}
                                             </Dropdown.Item>
                                           </HasPermissionWrapper>,
@@ -317,13 +267,13 @@ const ScheduleClasses = ({ t, history }) => (
                                               {(deleteScheduleClass, { data }) => (
                                                   <Dropdown.Item
                                                     key={v4()}
-                                                    badge={t('schedule.classes.all_classes_in_series')}
+                                                    badge={t('schedule.appointments.all_appointments_in_series')}
                                                     badgeType="danger"
                                                     icon="trash-2"
                                                     onClick={() => {
                                                       confirm_delete({
                                                         t: t,
-                                                        msgConfirm: t("schedule.classes.delete_confirm_msg"),
+                                                        msgConfirm: t("schedule.appointments.delete_confirm_msg"),
                                                         msgDescription: <p key={v4()}>
                                                           {moment(date + ' ' + timeStart).format('LT')} {' - '}
                                                           {moment(date + ' ' + timeEnd).format('LT')} {' '} @ {' '}
@@ -331,14 +281,14 @@ const ScheduleClasses = ({ t, history }) => (
                                                           {organizationLocationRoom.name}
                                                           {organizationClasstype.Name}
                                                           </p>,
-                                                        msgSuccess: t('schedule.classes.deleted'),
+                                                        msgSuccess: t('schedule.appointments.deleted'),
                                                         deleteFunction: deleteScheduleClass,
                                                         functionVariables: { variables: {
                                                           input: {
                                                             id: scheduleItemId
                                                           }
                                                         }, refetchQueries: [
-                                                          { query: GET_CLASSES_QUERY, variables: get_list_query_variables() }
+                                                          { query: GET_APPOINTMENTS_QUERY, variables: get_list_query_variables() }
                                                         ]}
                                                       })
                                                   }}>
@@ -364,8 +314,8 @@ const ScheduleClasses = ({ t, history }) => (
                 <HasPermissionWrapper permission="add"
                                       resource="scheduleclass">
                   <Button color="primary btn-block mb-1"
-                          onClick={() => history.push("/schedule/classes/add")}>
-                    <Icon prefix="fe" name="plus-circle" /> {t('schedule.classes.add')}
+                          onClick={() => history.push("/schedule/appointments/add")}>
+                    <Icon prefix="fe" name="plus-circle" /> {t('schedule.appointments.add')}
                   </Button>
                 </HasPermissionWrapper>
                 <div>
@@ -374,9 +324,9 @@ const ScheduleClasses = ({ t, history }) => (
                     color="link"
                     size="sm"
                     onClick={() => {
-                      localStorage.setItem(CSLS.SCHEDULE_CLASSES_FILTER_CLASSTYPE, "")
-                      localStorage.setItem(CSLS.SCHEDULE_CLASSES_FILTER_LEVEL, "")
-                      localStorage.setItem(CSLS.SCHEDULE_CLASSES_FILTER_LOCATION, "")
+                      localStorage.setItem(CSLS.SCHEDULE_APPOINTMENTS_FILTER_CLASSTYPE, "")
+                      localStorage.setItem(CSLS.SCHEDULE_APPOINTMENTS_FILTER_LEVEL, "")
+                      localStorage.setItem(CSLS.SCHEDULE_APPOINTMENTS_FILTER_LOCATION, "")
                       refetch(get_list_query_variables())
                     }}
                   >
@@ -386,7 +336,7 @@ const ScheduleClasses = ({ t, history }) => (
                 <h5 className="mt-2 pt-1">{t("general.filter")}</h5>
                 <ScheduleClassesFilter data={data} refetch={refetch} />
                 <h5>{t("general.menu")}</h5>
-                <ScheduleMenu active_link='classes'/>
+                <ScheduleMenu active_link='appointments'/>
             </Grid.Col>
           </Grid.Row>
         </Container>
