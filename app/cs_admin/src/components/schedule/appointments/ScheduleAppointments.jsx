@@ -200,7 +200,7 @@ const ScheduleAppointments = ({ t, history }) => (
                                 <Table.Row key={v4()}>
                                   <Table.ColHeader>{t('general.time')}</Table.ColHeader>
                                   <Table.ColHeader>{t('general.location')}</Table.ColHeader>
-                                  <Table.ColHeader>{t('general.class')}</Table.ColHeader>
+                                  <Table.ColHeader>{t('general.appointment')}</Table.ColHeader>
                                   <Table.ColHeader>{t('general.public')}</Table.ColHeader>
                                   <Table.ColHeader></Table.ColHeader>
                                 </Table.Row>
@@ -228,7 +228,7 @@ const ScheduleAppointments = ({ t, history }) => (
                                       <span className="text-muted"> &bull; {organizationLocationRoom.name}</span>
                                     </Table.Col>
                                     <Table.Col>
-                                      {/* Type and level */}
+                                      {/* Type */}
                                       {organizationAppointment.name} <br />
                                     </Table.Col>
                                     <Table.Col>
