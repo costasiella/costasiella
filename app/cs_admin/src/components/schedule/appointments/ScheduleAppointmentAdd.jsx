@@ -116,7 +116,7 @@ class ScheduleAppointmentAdd extends Component {
                         frequencyType: "WEEKLY",
                         frequencyInterval: 1,
                         organizationLocationRoom: "",
-                        organizationClasstype: "",
+                        organizationAppointment: "",
                         dateStart: new Date(),
                         timeStart: new Date(),
                         timeEnd: new Date(),
@@ -143,14 +143,14 @@ class ScheduleAppointmentAdd extends Component {
                               frequencyType: values.frequencyType,
                               frequencyInterval: frequencyInterval,
                               organizationLocationRoom: values.organizationLocationRoom,
-                              organizationClasstype: values.organizationClasstype,
+                              organizationAppointment: values.organizationAppointment,
                               dateStart: dateToLocalISO(values.dateStart),
                               dateEnd: dateEnd,
                               timeStart: dateToLocalISOTime(values.timeStart),
                               timeEnd: dateToLocalISOTime(values.timeEnd)
                             }
                           }, refetchQueries: [
-                              {query: GET_CLASSES_QUERY, variables: get_list_query_variables()}
+                              {query: GET_APPOINTMENTS_QUERY, variables: get_list_query_variables()}
                           ]})
                           .then(({ data }) => {
                               console.log('got data', data)
