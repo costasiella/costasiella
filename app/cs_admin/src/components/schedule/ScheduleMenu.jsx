@@ -27,7 +27,7 @@ const ScheduleMenu = ({ t, active_link }) => (
           key={v4()}
           className="d-flex align-items-center"
           to="#/schedule/classes"
-          icon="book-open"
+          icon="book"
           active={classes_active}
           >
           {t('schedule.classes.title')}

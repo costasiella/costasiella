@@ -1,6 +1,6 @@
 import gql from "graphql-tag"
 
-export const GET_CLASSES_QUERY = gql`
+export const GET_APPOINTMENTS_QUERY = gql`
   query ScheduleClasses(
       $dateFrom: Date!, 
       $dateUntil:Date!, 
