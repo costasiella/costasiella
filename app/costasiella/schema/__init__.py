@@ -34,6 +34,7 @@ from .organization_subscription_group import OrganizationSubscriptionGroupQuery,
 from .organization_subscription_group_subscription import OrganizationSubscriptionGroupSubscriptionMutation
 from .organization_subscription_price import OrganizationSubscriptionPriceQuery, OrganizationSubscriptionPriceMutation
 
+from .schedule_class import ScheduleClassQuery, ScheduleClassMutation
 from .schedule_item import ScheduleItemQuery, ScheduleItemMutation
 from .schedule_item_organization_classpass_group import ScheduleItemOrganizationClasspassGroupQuery, ScheduleItemOrganizationClasspassGroupMutation
 from .schedule_item_organization_subscription_group import ScheduleItemOrganizationSubscriptionGroupQuery, ScheduleItemOrganizationSubscriptionGroupMutation
@@ -68,6 +69,7 @@ class Query(AccountQuery,
             OrganizationSubscriptionQuery,
             OrganizationSubscriptionGroupQuery,
             OrganizationSubscriptionPriceQuery,
+            ScheduleClassQuery,
             ScheduleItemQuery,
             ScheduleItemOrganizationClasspassGroupQuery,
             ScheduleItemOrganizationSubscriptionGroupQuery,
@@ -106,6 +108,7 @@ class Mutation(AccountMutation,
                OrganizationSubscriptionGroupMutation, 
                OrganizationSubscriptionGroupSubscriptionMutation, 
                OrganizationSubscriptionPriceMutation, 
+               ScheduleClassMutation,
                ScheduleItemMutation,
                ScheduleItemOrganizationClasspassGroupMutation,
                ScheduleItemOrganizationSubscriptionGroupMutation,
