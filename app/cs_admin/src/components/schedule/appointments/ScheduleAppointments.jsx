@@ -258,7 +258,7 @@ const ScheduleAppointments = ({ t, history }) => (
                                           </HasPermissionWrapper>,
                                           <HasPermissionWrapper key={v4()} permission="delete" resource="scheduleclass">
                                             <Dropdown.ItemDivider key={v4()} />
-                                            <Mutation mutation={DELETE_SCHEDULE_CLASS} key={v4()}>
+                                            <Mutation mutation={DELETE_SCHEDULE_APPOINTMENT} key={v4()}>
                                               {(deleteScheduleClass, { data }) => (
                                                   <Dropdown.Item
                                                     key={v4()}
@@ -329,7 +329,7 @@ const ScheduleAppointments = ({ t, history }) => (
                   </Button>
                 </div>
                 <h5 className="mt-2 pt-1">{t("general.filter")}</h5>
-                <ScheduleClassesFilter data={data} refetch={refetch} />
+                <ScheduleAppointmentsFilter data={data} refetch={refetch} />
                 <h5>{t("general.menu")}</h5>
                 <ScheduleMenu active_link='appointments'/>
             </Grid.Col>

@@ -101,6 +101,7 @@ import AccountSubscriptionEdit from './components/relations/accounts/subscriptio
 import RelationsAccountTeacherProfile from './components/relations/accounts/teacher_profile/RelationsAccountTeacherProfile'
 
 import ScheduleHome from './components/schedule/home/ScheduleHome'
+import ScheduleAppointments from './components/schedule/appointments/ScheduleAppointments'
 import ScheduleClasses from './components/schedule/classes/ScheduleClasses'
 import ScheduleClassAdd from './components/schedule/classes/ScheduleClassAdd'
 import ScheduleClassEditAll from './components/schedule/classes/all/edit/ScheduleClassEditAll'
@@ -262,6 +263,7 @@ class App extends Component {
 
             {/* SCHEDULE */}
             <Route exact path="/schedule" component={ScheduleHome} />
+            <Route exact path="/schedule/appointments" component={ScheduleAppointments} />
             <Route exact path="/schedule/classes" component={ScheduleClasses} />
             <Route exact path="/schedule/classes/add/" component={ScheduleClassAdd} />
             <Route exact path="/schedule/classes/all/edit/:class_id/" component={ScheduleClassEditAll} />

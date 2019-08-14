@@ -1,12 +1,11 @@
 import gql from "graphql-tag"
 
 export const GET_APPOINTMENTS_QUERY = gql`
-  query ScheduleClasses(
+  query ScheduleAppointments(
       $dateFrom: Date!, 
       $dateUntil:Date!, 
       $orderBy: String, 
       $organizationClasstype: String,
-      $organizationLevel: String,
       $organizationLocation: String
     ){
     scheduleClasses(
@@ -14,11 +13,10 @@ export const GET_APPOINTMENTS_QUERY = gql`
         dateUntil: $dateUntil, 
         orderBy: $orderBy, 
         organizationClasstype: $organizationClasstype,
-        organizationLevel: $organizationLevel,
         organizationLocation: $organizationLocation
     ){
       date
-      classes {
+      appointments {
         scheduleItemId
         frequencyType
         date
@@ -31,10 +29,6 @@ export const GET_APPOINTMENTS_QUERY = gql`
           }
         }
         organizationClasstype {
-          id
-          name
-        }
-        organizationLevel {
           id
           name
         }
@@ -83,21 +77,6 @@ export const GET_APPOINTMENTS_QUERY = gql`
       }
     }
     organizationClasstypes(first: 100, archived: false) {
-      pageInfo {
-        startCursor
-        endCursor
-        hasNextPage
-        hasPreviousPage
-      }
-      edges {
-        node {
-          id
-          archived
-          name
-        }
-      }
-    }
-    organizationLevels(first: 100, archived: false) {
       pageInfo {
         startCursor
         endCursor
