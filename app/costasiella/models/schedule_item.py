@@ -3,6 +3,7 @@ from django.utils.translation import gettext as _
 from django.db import models
 
 
+from .organization_appointment import OrganizationAppointment
 from .organization_classtype import OrganizationClasstype
 from .organization_location_room import OrganizationLocationRoom
 from .organization_level import OrganizationLevel
@@ -50,6 +51,7 @@ class ScheduleItem(models.Model):
     frequency_type = models.CharField(max_length=50, choices=FREQUENCY_TYPES)
     frequency_interval = models.PositiveSmallIntegerField(choices=FREQUENCY_INTERVAL_OPTIONS)
     organization_location_room = models.ForeignKey(OrganizationLocationRoom, on_delete=models.CASCADE)
+    organization_appointment = models.ForeignKey(OrganizationAppointment, on_delete=models.CASCADE, null=True)
     organization_classtype = models.ForeignKey(OrganizationClasstype, on_delete=models.CASCADE, null=True)
     organization_level = models.ForeignKey(OrganizationLevel, on_delete=models.CASCADE, null=True)
     date_start = models.DateField()
