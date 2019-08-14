@@ -60,7 +60,7 @@ if (!localStorage.getItem(CSLS.SCHEDULE_APPOINTMENTS_DATE_FROM)) {
 } 
 
 
-const ScheduleClasses = ({ t, history }) => (
+const ScheduleAppointments = ({ t, history }) => (
   <SiteWrapper>
     <div className="my-3 my-md-5">
       <Query query={GET_APPOINTMENTS_QUERY} variables={get_list_query_variables()}>
@@ -182,8 +182,7 @@ const ScheduleClasses = ({ t, history }) => (
               </Page.Header>
               <Grid.Row>
                 <Grid.Col md={9}>
-                  {
-                    data.scheduleClasses.map(({ date, appointments }) => (
+                  { data.scheduleClasses.map(({ date, appointments }) => (
                     <div key={v4()}>
                       <Card>
                         <Card.Header>
@@ -212,8 +211,7 @@ const ScheduleClasses = ({ t, history }) => (
                                     frequencyType,
                                     date, 
                                     organizationLocationRoom, 
-                                    organizationClasstype, 
-                                    organizationLevel,
+                                    organizationAppointment, 
                                     timeStart, 
                                     timeEnd,
                                     displayPublic }) => (
@@ -231,10 +229,7 @@ const ScheduleClasses = ({ t, history }) => (
                                     </Table.Col>
                                     <Table.Col>
                                       {/* Type and level */}
-                                      {organizationClasstype.name} <br />
-                                      <span className="text-muted">
-                                        {(organizationLevel) ? organizationLevel.name: ""}
-                                      </span>
+                                      {organizationAppointment.name} <br />
                                     </Table.Col>
                                     <Table.Col>
                                       {/* Public */}
@@ -279,7 +274,7 @@ const ScheduleClasses = ({ t, history }) => (
                                                           {moment(date + ' ' + timeEnd).format('LT')} {' '} @ {' '}
                                                           {organizationLocationRoom.organizationLocation.name} {' '}
                                                           {organizationLocationRoom.name}
-                                                          {organizationClasstype.Name}
+                                                          {organizationAppointment.Name}
                                                           </p>,
                                                         msgSuccess: t('schedule.appointments.deleted'),
                                                         deleteFunction: deleteScheduleClass,
@@ -346,4 +341,4 @@ const ScheduleClasses = ({ t, history }) => (
   </SiteWrapper>
 );
 
-export default withTranslation()(withRouter(ScheduleClasses))
+export default withTranslation()(withRouter(ScheduleAppointments))
