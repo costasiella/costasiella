@@ -8,10 +8,10 @@ import { withRouter } from "react-router"
 import { Formik } from 'formik'
 import { toast } from 'react-toastify'
 
-import { GET_CLASSES_QUERY, GET_INPUT_VALUES_QUERY } from './queries'
+import { GET_APPOINTMENTS_QUERY, GET_INPUT_VALUES_QUERY } from './queries'
 import { get_list_query_variables } from './tools'
 import { CLASS_SCHEMA } from './yupSchema'
-import ScheduleClassForm from './ScheduleClassForm'
+import ScheduleAppointmentForm from './ScheduleAppointmentForm'
 
 
 import {
@@ -30,9 +30,9 @@ import { dateToLocalISO, dateToLocalISOTime } from '../../../tools/date_tools'
 import ScheduleMenu from '../ScheduleMenu'
 
 
-const CREATE_CLASS = gql`
-  mutation CreateScheduleClass($input:CreateScheduleClassInput!) {
-    createScheduleClass(input: $input) {
+const CREATE_APPOINTMENT = gql`
+  mutation CreateScheduleAppointment($input:CreateScheduleAppointmentInput!) {
+    createScheduleAppointment(input: $input) {
       scheduleItem {
         id
         scheduleItemType
@@ -47,10 +47,6 @@ const CREATE_CLASS = gql`
           }
         }
         organizationClasstype {
-          id
-          name
-        }
-        organizationLevel {
           id
           name
         }
@@ -112,7 +108,7 @@ class ScheduleClassAdd extends Component {
                         <Card.Header>
                           <Card.Title>{t('schedule.classes.title_add')}</Card.Title>
                         </Card.Header>
-                        <Mutation mutation={CREATE_CLASS} onCompleted={() => history.push(return_url)}> 
+                        <Mutation mutation={CREATE_APPOINTMENT} onCompleted={() => history.push(return_url)}> 
                   {(createSubscription, { data }) => (
                     <Formik
                       initialValues={{ 
