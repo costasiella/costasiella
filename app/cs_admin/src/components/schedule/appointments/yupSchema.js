@@ -1,12 +1,12 @@
 import { t } from 'i18next'
 import * as Yup from 'yup'
 
-export const CLASS_SCHEMA = Yup.object().shape({
+export const APPOINTMENT_SCHEMA = Yup.object().shape({
     frequencyType: Yup.string()
       .required(t('yup.field_required')),
     organizationLocationRoom: Yup.string()
       .required(t('yup.field_required')),
-    organizationClasstype: Yup.string()
+    organizationAppointment: Yup.string()
       .required(t('yup.field_required')),
     dateStart: Yup.date()
       .required(t('yup.field_required')),

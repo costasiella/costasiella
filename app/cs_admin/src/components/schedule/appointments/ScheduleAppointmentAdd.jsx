@@ -10,7 +10,7 @@ import { toast } from 'react-toastify'
 
 import { GET_APPOINTMENTS_QUERY, GET_INPUT_VALUES_QUERY } from './queries'
 import { get_list_query_variables } from './tools'
-import { CLASS_SCHEMA } from './yupSchema'
+import { APPOINTMENT_SCHEMA } from './yupSchema'
 import ScheduleAppointmentForm from './ScheduleAppointmentForm'
 
 
@@ -61,17 +61,17 @@ const CREATE_APPOINTMENT = gql`
 `
 
 
-class ScheduleClassAdd extends Component {
+class ScheduleAppointmentAdd extends Component {
   constructor(props) {
     super(props)
-    console.log("Schedule class add add props:")
+    console.log("Schedule appointment add add props:")
     console.log(props)
   }
 
   render() {
     const t = this.props.t
     const history = this.props.history
-    const return_url = "/schedule/classes"
+    const return_url = "/schedule/appointments"
 
     return (
       <SiteWrapper>
@@ -106,7 +106,7 @@ class ScheduleClassAdd extends Component {
                     <Grid.Col md={9}>
                       <Card>
                         <Card.Header>
-                          <Card.Title>{t('schedule.classes.title_add')}</Card.Title>
+                          <Card.Title>{t('schedule.appointments.title_add')}</Card.Title>
                         </Card.Header>
                         <Mutation mutation={CREATE_APPOINTMENT} onCompleted={() => history.push(return_url)}> 
                   {(createSubscription, { data }) => (
@@ -117,12 +117,11 @@ class ScheduleClassAdd extends Component {
                         frequencyInterval: 1,
                         organizationLocationRoom: "",
                         organizationClasstype: "",
-                        organizationLevel: "",
                         dateStart: new Date(),
                         timeStart: new Date(),
                         timeEnd: new Date(),
                       }}
-                      validationSchema={CLASS_SCHEMA}
+                      validationSchema={APPOINTMENT_SCHEMA}
                       onSubmit={(values, { setSubmitting }) => {
                           console.log('submit values:')
                           console.log(values)
@@ -156,7 +155,7 @@ class ScheduleClassAdd extends Component {
                           ]})
                           .then(({ data }) => {
                               console.log('got data', data)
-                              toast.success((t('schedule.classes.toast_add_success')), {
+                              toast.success((t('schedule.appointments.toast_add_success')), {
                                   position: toast.POSITION.BOTTOM_RIGHT
                                 })
                             }).catch((error) => {
@@ -199,7 +198,7 @@ class ScheduleClassAdd extends Component {
                             <Icon prefix="fe" name="chevrons-left" /> {t('general.back')}
                           </Button>
                         </HasPermissionWrapper>
-                        <ScheduleMenu active_link='classes'/>
+                        <ScheduleMenu active_link='appointments'/>
                       </Grid.Col>
                     </Grid.Row>
                   </Container>
