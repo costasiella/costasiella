@@ -16,7 +16,7 @@ import { tinymceBasicConf } from "../../../plugin_config/tinymce"
 import CSDatePicker from "../../ui/CSDatePicker"
 import CSTimePicker from "../../ui/CSTimePicker"
 
-const ScheduleClassForm = ({ t, history, inputData, isSubmitting, setFieldValue, setFieldTouched, errors, values, touched, return_url }) => (
+const ScheduleAppointmentForm = ({ t, history, inputData, isSubmitting, setFieldValue, setFieldTouched, errors, values, touched, return_url }) => (
     <FoForm>
       <Card.Body>
         <Form.Group>
@@ -27,22 +27,22 @@ const ScheduleClassForm = ({ t, history, inputData, isSubmitting, setFieldValue,
               name="displayPublic" 
               checked={values.displayPublic} />
               <span className="custom-switch-indicator" ></span>
-              <span className="custom-switch-description">{t('schedule.classes.public')}</span>
+              <span className="custom-switch-description">{t('schedule.appointments.public')}</span>
           </Form.Label>
           <ErrorMessage name="displayPublic" component="div" />   
         </Form.Group>  
-        <Form.Group label={t('schedule.classes.frequencyType')}>
+        <Form.Group label={t('schedule.appointments.frequencyType')}>
           <Field component="select" 
                 name="frequencyType" 
                 className={(errors.frequencyType) ? "form-control is-invalid" : "form-control"} 
                 autoComplete="off">
-            <option value="SPECIFIC" key={v4()}>{t('schedule.classes.select_specific')}</option>
-            <option value="WEEKLY" key={v4()}>{t('schedule.classes.select_weekly')}</option>
+            <option value="SPECIFIC" key={v4()}>{t('schedule.appointments.select_specific')}</option>
+            <option value="WEEKLY" key={v4()}>{t('schedule.appointments.select_weekly')}</option>
           </Field>
           <ErrorMessage name="frequencyType" component="span" className="invalid-feedback" />
         </Form.Group>
         { (values.frequencyType == "SPECIFIC") ? "" :
-          <Form.Group label={t('schedule.classes.frequencyInterval')}>
+          <Form.Group label={t('schedule.appointments.frequencyInterval')}>
             <Field component="select" 
                   name="frequencyInterval" 
                   className={(errors.frequencyInterval) ? "form-control is-invalid" : "form-control"} 
@@ -73,32 +73,18 @@ const ScheduleClassForm = ({ t, history, inputData, isSubmitting, setFieldValue,
               <ErrorMessage name="organizationLocationRoom" component="span" className="invalid-feedback" />
             </Form.Group> 
           </Grid.Col>
-          <Grid.Col>
-            <Form.Group label={t('general.level')}>
-              <Field component="select" 
-                    name="organizationLevel" 
-                    className={(errors.organizationLevels) ? "form-control is-invalid" : "form-control"} 
-                    autoComplete="off">
-                <option value="" key={v4()}>{t("")}</option>
-                {inputData.organizationLevels.edges.map(({ node }) =>
-                  <option value={node.id} key={v4()}>{node.name}</option>
-                )}
-              </Field>
-              <ErrorMessage name="organizationLevels" component="span" className="invalid-feedback" />
-            </Form.Group> 
-          </Grid.Col>
         </Grid.Row>
-        <Form.Group label={t('general.class')}>
+        <Form.Group label={t('general.appointment')}>
           <Field component="select" 
-                name="organizationClasstype" 
-                className={(errors.organizationClasstype) ? "form-control is-invalid" : "form-control"} 
+                name="organizationAppointment" 
+                className={(errors.organizationAppointment) ? "form-control is-invalid" : "form-control"} 
                 autoComplete="off">
             <option value="" key={v4()}>{t("general.please_select")}</option>
-            {inputData.organizationClasstypes.edges.map(({ node }) =>
+            {inputData.organizationAppointments.edges.map(({ node }) =>
               <option value={node.id} key={v4()}>{node.name}</option>
             )}
           </Field>
-          <ErrorMessage name="organizationClasstype" component="span" className="invalid-feedback" />
+          <ErrorMessage name="organizationAppointment" component="span" className="invalid-feedback" />
         </Form.Group> 
         <Grid.Row>
           <Grid.Col>
@@ -125,7 +111,7 @@ const ScheduleClassForm = ({ t, history, inputData, isSubmitting, setFieldValue,
                     setFieldTouched("dateEnd", true)
                   }}
                   onBlur={() => setFieldTouched("dateEnd", true)}
-                  placeholderText={t('schedule.classes.placeholder_enddate')}
+                  placeholderText={t('schedule.appointments.placeholder_enddate')}
                 />
                 <ErrorMessage name="dateEnd" component="span" className="invalid-feedback" />
               </Form.Group>
@@ -190,4 +176,4 @@ const ScheduleClassForm = ({ t, history, inputData, isSubmitting, setFieldValue,
 )
   
   
-  export default withTranslation()(withRouter(ScheduleClassForm))
+  export default withTranslation()(withRouter(ScheduleAppointmentForm))
