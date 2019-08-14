@@ -48,20 +48,20 @@ class ScheduleAppointmentsDayType(graphene.ObjectType):
     def resolve_order_by(self, info):       
         return self.order_by
 
-    def resolve_classes(self, info):
+    def resolve_appointments(self, info):
         iso_week_day = self.resolve_iso_week_day(info)
         sorting = self.order_by
         if not sorting: # Default to sort by location, then time
             sorting = "location"
 
-        schedule_filter = Q(schedule_item_type = 'CLASS') & \
+        schedule_filter = Q(schedule_item_type = 'APPOINTMENT') & \
             (
                 # Appointmentes on this day (Specific)
                 (
                     Q(frequency_type = 'SPECIFIC') & \
                     Q(date_start = self.date)
                 ) | # OR
-                # Weekly classes
+                # Weekly appointments
                 ( 
                     Q(frequency_type = 'WEEKLY') &
                     Q(frequency_interval = iso_week_day) &
@@ -70,7 +70,7 @@ class ScheduleAppointmentsDayType(graphene.ObjectType):
                 )
             )
         
-        # Filter classtypes
+        # Filter appointmenttypes
         if self.filter_id_organization_appointment:
             schedule_filter &= \
                 Q(organization_appointment__id = self.filter_id_organization_appointment)
@@ -80,7 +80,7 @@ class ScheduleAppointmentsDayType(graphene.ObjectType):
             schedule_filter &= \
                 Q(organization_location_room__organization_location__id = self.filter_id_organization_location)
             
-        ## Query classes table for self.date
+        ## Query appointments table for self.date
         schedule_items = ScheduleItem.objects.select_related('organization_location_room__organization_location').filter(
             schedule_filter
         )
@@ -101,9 +101,9 @@ class ScheduleAppointmentsDayType(graphene.ObjectType):
                 'organization_location_room__name',
             )
 
-        classes_list = []
+        appointments_list = []
         for item in schedule_items:
-            classes_list.append(
+            appointments_list.append(
                 ScheduleAppointmentType(
                     schedule_item_id=to_global_id('ScheduleItemNode', item.pk),
                     date=self.date,
@@ -116,10 +116,10 @@ class ScheduleAppointmentsDayType(graphene.ObjectType):
                 )
             )
     
-        return classes_list
+        return appointments_list
 
 
-def validate_schedule_classes_query_date_input(date_from, 
+def validate_schedule_appointments_query_date_input(date_from, 
                                                date_until, 
                                                order_by, 
                                                organization_appointment,
@@ -182,7 +182,7 @@ class ScheduleAppointmentQuery(graphene.ObjectType):
         return ScheduleItem.objects.filter()
 
 
-    def resolve_schedule_classes(self, 
+    def resolve_schedule_appointments(self, 
                                  info, 
                                  date_from=graphene.types.datetime.Date(), 
                                  date_until=graphene.types.datetime.Date(),
@@ -191,13 +191,13 @@ class ScheduleAppointmentQuery(graphene.ObjectType):
                                  organization_location=None,
                                  ):
         user = info.context.user
-        require_login_and_permission(user, 'costasiella.view_scheduleclass')
+        require_login_and_permission(user, 'costasiella.view_scheduleappointment')
 
         print('############ resolve')
         print(locals())
         print(organization_location)
 
-        validation_result = validate_schedule_classes_query_date_input(
+        validation_result = validate_schedule_appointments_query_date_input(
             date_from, 
             date_until, 
             order_by,
@@ -232,7 +232,7 @@ class ScheduleAppointmentQuery(graphene.ObjectType):
         return return_list
 
 
-def validate_schedule_class_create_update_input(input, update=False):
+def validate_schedule_appointment_create_update_input(input, update=False):
     """
     Validate input
     """ 
@@ -254,7 +254,7 @@ def validate_schedule_class_create_update_input(input, update=False):
             organization_appointment = OrganizationAppointment.objects.get(id=rid.id)
             result['organization_appointment'] = organization_appointment
             if not organization_appointment:
-                raise Exception(_('Invalid Organization Classtype ID!')) 
+                raise Exception(_('Invalid Organization Appointment ID!')) 
 
 
     return result
@@ -277,14 +277,14 @@ class CreateScheduleAppointment(graphene.relay.ClientIDMutation):
     @classmethod
     def mutate_and_get_payload(self, root, info, **input):
         user = info.context.user
-        require_login_and_permission(user, 'costasiella.add_scheduleclass')
+        require_login_and_permission(user, 'costasiella.add_scheduleappointment')
 
         print(input)
 
-        result = validate_schedule_class_create_update_input(input)
+        result = validate_schedule_appointment_create_update_input(input)
 
         schedule_item = ScheduleItem(
-            schedule_item_type="CLASS", 
+            schedule_item_type="APPOINTMENT", 
             frequency_type=input['frequency_type'], 
             frequency_interval=input['frequency_interval'],
             date_start=input['date_start'],
@@ -308,10 +308,6 @@ class CreateScheduleAppointment(graphene.relay.ClientIDMutation):
         # ALl done, save it :).
         schedule_item.save()
 
-        helper = ScheduleItemHelper()
-        helper.add_all_subscription_groups(schedule_item.id)
-        helper.add_all_classpass_groups(schedule_item.id)
-
         return CreateScheduleAppointment(schedule_item=schedule_item)
 
 
@@ -333,9 +329,9 @@ class UpdateScheduleAppointment(graphene.relay.ClientIDMutation):
     @classmethod
     def mutate_and_get_payload(self, root, info, **input):
         user = info.context.user
-        require_login_and_permission(user, 'costasiella.change_scheduleclass')
+        require_login_and_permission(user, 'costasiella.change_scheduleappointment')
 
-        result = validate_schedule_class_create_update_input(input)
+        result = validate_schedule_appointment_create_update_input(input)
         rid = get_rid(input['id'])
 
         schedule_item = ScheduleItem.objects.get(pk=rid.id)
@@ -343,7 +339,7 @@ class UpdateScheduleAppointment(graphene.relay.ClientIDMutation):
             raise Exception('Invalid Schedule Item ID!')
 
         if schedule_item.frequency_type == "WEEKLY" and input['frequency_type'] == 'SPECIFIC':
-            raise Exception('Unable to change weekly class into one time class')
+            raise Exception('Unable to change weekly appointment into one time appointment')
 
         schedule_item.frequency_type = input['frequency_type']
         schedule_item.frequency_interval=input['frequency_interval']
@@ -380,7 +376,7 @@ class DeleteScheduleAppointment(graphene.relay.ClientIDMutation):
     @classmethod
     def mutate_and_get_payload(self, root, info, **input):
         user = info.context.user
-        require_login_and_permission(user, 'costasiella.delete_scheduleclass')
+        require_login_and_permission(user, 'costasiella.delete_scheduleappointment')
 
         rid = get_rid(input['id'])
         schedule_item = ScheduleItem.objects.filter(id=rid.id).first()
@@ -393,6 +389,6 @@ class DeleteScheduleAppointment(graphene.relay.ClientIDMutation):
 
 
 class ScheduleAppointmentMutation(graphene.ObjectType):
-    create_schedule_class = CreateScheduleAppointment.Field()
-    update_schedule_class = UpdateScheduleAppointment.Field()
-    delete_schedule_class = DeleteScheduleAppointment.Field()
+    create_schedule_appointment = CreateScheduleAppointment.Field()
+    update_schedule_appointment = UpdateScheduleAppointment.Field()
+    delete_schedule_appointment = DeleteScheduleAppointment.Field()
