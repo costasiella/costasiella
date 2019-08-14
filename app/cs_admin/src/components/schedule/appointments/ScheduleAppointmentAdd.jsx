@@ -144,7 +144,6 @@ class ScheduleAppointmentAdd extends Component {
                               frequencyInterval: frequencyInterval,
                               organizationLocationRoom: values.organizationLocationRoom,
                               organizationClasstype: values.organizationClasstype,
-                              organizationLevel: values.organizationLevel,
                               dateStart: dateToLocalISO(values.dateStart),
                               dateEnd: dateEnd,
                               timeStart: dateToLocalISOTime(values.timeStart),
@@ -168,7 +167,7 @@ class ScheduleAppointmentAdd extends Component {
                       }}
                       >
                       {({ isSubmitting, setFieldValue, setFieldTouched, errors, values, touched }) => (
-                            <ScheduleClassForm
+                            <ScheduleAppointmentForm
                               inputData={inputData}
                               isSubmitting={isSubmitting}
                               setFieldValue={setFieldValue}
@@ -182,7 +181,7 @@ class ScheduleAppointmentAdd extends Component {
                               {console.log(values)}
                               {console.log(errors)}
                               {console.log(touched)}
-                            </ScheduleClassForm>
+                            </ScheduleAppointmentForm>
                           )
                         }
                     </Formik>
@@ -192,7 +191,7 @@ class ScheduleAppointmentAdd extends Component {
                     </Grid.Col>
                       <Grid.Col md={3}>
                         <HasPermissionWrapper permission="add"
-                                              resource="scheduleclass">
+                                              resource="scheduleappointment">
                           <Button color="primary btn-block mb-6"
                                   onClick={() => history.push(return_url)}>
                             <Icon prefix="fe" name="chevrons-left" /> {t('general.back')}
@@ -210,4 +209,4 @@ class ScheduleAppointmentAdd extends Component {
   }
 
 
-export default withTranslation()(withRouter(ScheduleClassAdd))
+export default withTranslation()(withRouter(ScheduleAppointmentAdd))
