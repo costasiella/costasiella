@@ -272,7 +272,8 @@
         "payments": "Payments",
         "items": "Items",
         "quantity_short_and_price": "QTY & Price",
-        "product": "Product"
+        "product": "Product",
+        "finance_invoice_group": "Invoice group"
     },
     "yup": {
         "min_len_3": "Please input at least 3 characters",
@@ -577,6 +578,13 @@
                 "appointments": "Teaches appointments",
                 "url_bio": "Link to bio",
                 "url_website": "Website"
+            },
+            "invoices": {
+                "title_add": "Add invoice",
+                "title": "Invoices",
+                "add": "Add invoice",
+                "delete_confirm_msg": "Are you sure you wish to delete this invoice?",
+                "deleted": "Deleted invoice"
             }
         }
     },
@@ -648,6 +656,19 @@
                 "attend_disabled": "Can't change",
                 "attend_disabled_help": "Attend has to be enabled when 'Book in webshop' is set."
             }
+        },
+        "appointments": {
+            "title": "Appointments",
+            "empty_list": "No appointments found on this day",
+            "tooltip_sort_by_location": "Sort by location",
+            "tooltip_sort_by_starttime": "Sort by start time",
+            "go_to_date": "Go to date",
+            "all_appointments_in_series": "All appointments",
+            "delete_confirm_msg": "Are you sure you wish to delete this appointment and all associated data?",
+            "deleted": "Appointment deleted",
+            "add": "Add appointment",
+            "filter_all_locations": "All locations",
+            "filter_all_appointments": "All appointment types"
         }
     },
     "countries": {

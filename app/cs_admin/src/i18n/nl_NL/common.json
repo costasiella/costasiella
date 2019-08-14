@@ -272,7 +272,8 @@
         "payments": "__STRING_NOT_TRANSLATED__",
         "items": "__STRING_NOT_TRANSLATED__",
         "quantity_short_and_price": "__STRING_NOT_TRANSLATED__",
-        "product": "__STRING_NOT_TRANSLATED__"
+        "product": "__STRING_NOT_TRANSLATED__",
+        "finance_invoice_group": "__STRING_NOT_TRANSLATED__"
     },
     "yup": {
         "min_len_3": "__STRING_NOT_TRANSLATED__",
@@ -577,6 +578,13 @@
                 "appointments": "__STRING_NOT_TRANSLATED__",
                 "url_bio": "__STRING_NOT_TRANSLATED__",
                 "url_website": "__STRING_NOT_TRANSLATED__"
+            },
+            "invoices": {
+                "title_add": "__STRING_NOT_TRANSLATED__",
+                "title": "__STRING_NOT_TRANSLATED__",
+                "add": "__STRING_NOT_TRANSLATED__",
+                "delete_confirm_msg": "__STRING_NOT_TRANSLATED__",
+                "deleted": "__STRING_NOT_TRANSLATED__"
             }
         }
     },
@@ -648,6 +656,19 @@
                 "attend_disabled": "__STRING_NOT_TRANSLATED__",
                 "attend_disabled_help": "__STRING_NOT_TRANSLATED__"
             }
+        },
+        "appointments": {
+            "title": "__STRING_NOT_TRANSLATED__",
+            "empty_list": "__STRING_NOT_TRANSLATED__",
+            "tooltip_sort_by_location": "__STRING_NOT_TRANSLATED__",
+            "tooltip_sort_by_starttime": "__STRING_NOT_TRANSLATED__",
+            "go_to_date": "__STRING_NOT_TRANSLATED__",
+            "all_appointments_in_series": "__STRING_NOT_TRANSLATED__",
+            "delete_confirm_msg": "__STRING_NOT_TRANSLATED__",
+            "deleted": "__STRING_NOT_TRANSLATED__",
+            "add": "__STRING_NOT_TRANSLATED__",
+            "filter_all_locations": "__STRING_NOT_TRANSLATED__",
+            "filter_all_appointments": "__STRING_NOT_TRANSLATED__"
         }
     },
     "countries": {
