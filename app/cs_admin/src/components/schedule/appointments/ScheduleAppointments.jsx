@@ -259,7 +259,7 @@ const ScheduleAppointments = ({ t, history }) => (
                                           <HasPermissionWrapper key={v4()} permission="delete" resource="scheduleclass">
                                             <Dropdown.ItemDivider key={v4()} />
                                             <Mutation mutation={DELETE_SCHEDULE_APPOINTMENT} key={v4()}>
-                                              {(deleteScheduleClass, { data }) => (
+                                              {(deleteScheduleAppointment, { data }) => (
                                                   <Dropdown.Item
                                                     key={v4()}
                                                     badge={t('schedule.appointments.all_appointments_in_series')}
@@ -274,10 +274,9 @@ const ScheduleAppointments = ({ t, history }) => (
                                                           {moment(date + ' ' + timeEnd).format('LT')} {' '} @ {' '}
                                                           {organizationLocationRoom.organizationLocation.name} {' '}
                                                           {organizationLocationRoom.name}
-                                                          {organizationAppointment.Name}
                                                           </p>,
                                                         msgSuccess: t('schedule.appointments.deleted'),
-                                                        deleteFunction: deleteScheduleClass,
+                                                        deleteFunction: deleteScheduleAppointment,
                                                         functionVariables: { variables: {
                                                           input: {
                                                             id: scheduleItemId

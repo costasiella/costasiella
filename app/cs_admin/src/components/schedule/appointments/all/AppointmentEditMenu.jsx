@@ -19,7 +19,7 @@ const AppointmentEditMenu = ({ t, active_link, appointmentId }) => (
         {(active_link === 'teachers_available') ? teachers_available_active = true: teachers_available_active = false}
         
         <HasPermissionWrapper
-          resource="schedule_appointment"
+          resource="scheduleappointment"
           permission="change"
         >        
           <List.GroupItem
@@ -32,15 +32,20 @@ const AppointmentEditMenu = ({ t, active_link, appointmentId }) => (
               {t('general.edit')}
           </List.GroupItem>
         </HasPermissionWrapper>
-        <List.GroupItem
-            key={v4()}
-            className="d-flex align-items-center"
-            to={"#/schedule/appointments/all/teachers_available/" + appointmentId}
-            icon="users"
-            active={teachers_available_active}
-            >
-            {t('general.teachers_available')}
-        </List.GroupItem>
+        <HasPermissionWrapper
+          resource="scheduleappointment"
+          permission="change"
+        >     
+          <List.GroupItem
+              key={v4()}
+              className="d-flex align-items-center"
+              to={"#/schedule/appointments/all/teachers_available/" + appointmentId}
+              icon="users"
+              active={teachers_available_active}
+              >
+              {t('general.teachers_available')}
+          </List.GroupItem>
+        </HasPermissionWrapper>
     </List.Group>
 );
 
