@@ -39,7 +39,7 @@ const AppointmentEditMenu = ({ t, active_link, appointmentId }) => (
             icon="users"
             active={teachers_available_active}
             >
-            {t('general.teachers')}
+            {t('general.teachers_available')}
         </List.GroupItem>
     </List.Group>
 );

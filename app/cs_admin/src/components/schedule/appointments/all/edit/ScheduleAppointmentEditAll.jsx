@@ -11,7 +11,7 @@ import { toast } from 'react-toastify'
 import { GET_CLASSES_QUERY, GET_CLASS_QUERY } from '../../queries'
 import { get_list_query_variables } from '../../tools'
 import { CLASS_SCHEMA } from '../../yupSchema'
-import ScheduleClassForm from '../../ScheduleClassForm'
+import ScheduleAppointmentForm from '../../ScheduleAppointmentForm'
 
 import {
   Page,
@@ -26,12 +26,12 @@ import SiteWrapper from "../../../../SiteWrapper"
 import HasPermissionWrapper from "../../../../HasPermissionWrapper"
 import { dateToLocalISO, dateToLocalISOTime, TimeStringToJSDateOBJ } from '../../../../../tools/date_tools'
 
-import ClassEditBase from '../ClassEditBase'
+import AppointmentEditBase from '../AppointmentEditBase'
 
 
-const UPDATE_CLASS = gql`
-  mutation UpdateScheduleClass($input:UpdateScheduleClassInput!) {
-    updateScheduleClass(input: $input) {
+const UPDATE_APPOINTMENT = gql`
+  mutation UpdateScheduleAppointment($input:UpdateScheduleAppointmentInput!) {
+    updateScheduleAppointment(input: $input) {
       scheduleItem {
         id
         scheduleItemType
@@ -45,14 +45,6 @@ const UPDATE_CLASS = gql`
             name
           }
         }
-        organizationClasstype {
-          id
-          name
-        }
-        organizationLevel {
-          id
-          name
-        }
         dateStart
         dateEnd
         timeStart
@@ -64,10 +56,10 @@ const UPDATE_CLASS = gql`
 `
 
 
-class ScheduleClassEditAll extends Component {
+class ScheduleAppointmentEditAll extends Component {
   constructor(props) {
     super(props)
-    console.log("Schedule class edit add props:")
+    console.log("Schedule appointment edit add props:")
     console.log(props)
   }
 
@@ -76,26 +68,26 @@ class ScheduleClassEditAll extends Component {
     const match = this.props.match
     const history = this.props.history
     const id = match.params.class_id
-    const return_url = "/schedule/classes"
+    const return_url = "/schedule/appointments"
 
     return (
       <SiteWrapper>
         <div className="my-3 my-md-5">
-          <Query query={GET_CLASS_QUERY} variables = {{id: id, archived: false}} >
+          <Query query={GET_APPOINTMENT_QUERY} variables = {{id: id, archived: false}} >
             {({ loading, error, data, refetch }) => {
               // Loading
               if (loading) return (
-                <ClassEditBase menu_active_link="edit">
+                <AppointmentEditBase menu_active_link="edit">
                   <p>{t('general.loading_with_dots')}</p>
-                </ClassEditBase>
+                </AppointmentEditBase>
               )
               // Error
               if (error) {
                 console.log(error)
                 return (
-                  <ClassEditBase menu_active_link="edit">
+                  <AppointmentEditBase menu_active_link="edit">
                     <p>{t('general.error_sad_smiley')}</p>
-                  </ClassEditBase>
+                  </AppointmentEditBase>
                 )
               }
               
@@ -104,28 +96,22 @@ class ScheduleClassEditAll extends Component {
               const inputData = data
               const initialValues = data.scheduleItem
 
-              let initialLevelID = ""
-              if (initialValues.organizationLevel) {
-                initialLevelID = initialValues.organizationLevel.id
-              }
-
               const initialTimeStart = TimeStringToJSDateOBJ(initialValues.timeStart)
               const initialTimeEnd = TimeStringToJSDateOBJ(initialValues.timeEnd)
               
               return (
-                <ClassEditBase 
+                <AppointmentEditBase 
                   menu_active_link="edit"
                 >
                   <Mutation mutation={UPDATE_CLASS} onCompleted={() => history.push(return_url)}> 
-                  {(updateScheduleClass, { data }) => (
+                  {(updateScheduleAppointment, { data }) => (
                     <Formik
                       initialValues={{ 
                         displayPublic: initialValues.displayPublic,
                         frequencyType: initialValues.frequencyType,
                         frequencyInterval: initialValues.frequencyInterval,
                         organizationLocationRoom: initialValues.organizationLocationRoom.id,
-                        organizationClasstype: initialValues.organizationClasstype.id,
-                        organizationLevel: initialLevelID,
+                        organizationAppointmenttype: initialValues.organizationAppointmenttype.id,
                         dateStart: initialValues.dateStart,
                         dateEnd: initialValues.dateEnd,
                         timeStart: initialTimeStart,
@@ -147,26 +133,24 @@ class ScheduleClassEditAll extends Component {
                               dateEnd = values.dateEnd
                             }  
 
-                          updateScheduleClass({ variables: {
+                          updateScheduleAppointment({ variables: {
                             input: {
                               id: id,
                               displayPublic: values.displayPublic,
                               frequencyType: values.frequencyType,
                               frequencyInterval: frequencyInterval,
                               organizationLocationRoom: values.organizationLocationRoom,
-                              organizationClasstype: values.organizationClasstype,
-                              organizationLevel: values.organizationLevel,
                               dateStart: dateToLocalISO(values.dateStart),
                               dateEnd: dateEnd,
                               timeStart: dateToLocalISOTime(values.timeStart),
                               timeEnd: dateToLocalISOTime(values.timeEnd)
                             }
                           }, refetchQueries: [
-                              {query: GET_CLASSES_QUERY, variables: get_list_query_variables()}
+                              {query: GET_APPOINTMENTS_QUERY, variables: get_list_query_variables()}
                           ]})
                           .then(({ data }) => {
                               console.log('got data', data)
-                              toast.success((t('schedule.classes.toast_edit_success')), {
+                              toast.success((t('schedule.appointments.toast_edit_success')), {
                                   position: toast.POSITION.BOTTOM_RIGHT
                                 })
                             }).catch((error) => {
@@ -179,7 +163,7 @@ class ScheduleClassEditAll extends Component {
                       }}
                       >
                       {({ isSubmitting, setFieldValue, setFieldTouched, errors, values, touched }) => (
-                        <ScheduleClassForm
+                        <ScheduleAppointmentForm
                           inputData={inputData}
                           isSubmitting={isSubmitting}
                           setFieldValue={setFieldValue}
@@ -193,12 +177,12 @@ class ScheduleClassEditAll extends Component {
                           {console.log(values)}
                           {console.log(errors)}
                           {console.log(touched)}
-                        </ScheduleClassForm>
+                        </ScheduleAppointmentForm>
                       )}
                     </Formik>
                     )}
                   </Mutation>
-                </ClassEditBase>
+                </AppointmentEditBase>
             )}}
            </Query>
          </div>
@@ -207,4 +191,4 @@ class ScheduleClassEditAll extends Component {
   }
 
 
-export default withTranslation()(withRouter(ScheduleClassEditAll))
+export default withTranslation()(withRouter(ScheduleAppointmentEditAll))
