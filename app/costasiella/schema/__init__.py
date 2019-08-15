@@ -40,6 +40,7 @@ from .schedule_item import ScheduleItemQuery, ScheduleItemMutation
 from .schedule_item_organization_classpass_group import ScheduleItemOrganizationClasspassGroupQuery, ScheduleItemOrganizationClasspassGroupMutation
 from .schedule_item_organization_subscription_group import ScheduleItemOrganizationSubscriptionGroupQuery, ScheduleItemOrganizationSubscriptionGroupMutation
 from .schedule_item_teacher import ScheduleItemTeacherQuery, ScheduleItemTeacherMutation
+from .schedule_item_teacher_available import ScheduleItemTeacherAvailableQuery, ScheduleItemTeacherAvailableMutation
 
 
 class Query(AccountQuery,
@@ -76,6 +77,7 @@ class Query(AccountQuery,
             ScheduleItemOrganizationClasspassGroupQuery,
             ScheduleItemOrganizationSubscriptionGroupQuery,
             ScheduleItemTeacherQuery,
+            ScheduleItemTeacherAvailableQuery,
             graphene.ObjectType):
     node = graphene.relay.Node.Field()
 
@@ -116,6 +118,7 @@ class Mutation(AccountMutation,
                ScheduleItemOrganizationClasspassGroupMutation,
                ScheduleItemOrganizationSubscriptionGroupMutation,
                ScheduleItemTeacherMutation,
+               ScheduleItemTeacherAvailableMutation,
                graphene.ObjectType):
     token_auth = graphql_jwt.ObtainJSONWebToken.Field()
     verify_token = graphql_jwt.Verify.Field()

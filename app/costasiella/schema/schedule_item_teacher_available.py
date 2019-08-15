@@ -91,7 +91,7 @@ class CreateScheduleItemTeacherAvailable(graphene.relay.ClientIDMutation):
         # Optional fields
         date_end = input.get('date_end', None)
         if date_end:
-            schedule_item_teacher.date_end = date_end
+            schedule_item_teacher_available.date_end = date_end
 
         schedule_item_teacher_available.save()
 
@@ -103,44 +103,33 @@ class UpdateScheduleItemTeacherAvailable(graphene.relay.ClientIDMutation):
         id = graphene.ID(required=True)
         account = graphene.ID(required=True)
         role = graphene.String(required=False, default_value="")
-        account_2 = graphene.ID(required=False)
-        role_2 = graphene.String(required=False, default_value="")
         date_start = graphene.types.datetime.Date(required=True)
         date_end = graphene.types.datetime.Date(required=False, default_value=None)
         
-    schedule_item_teacher = graphene.Field(ScheduleItemTeacherAvailableNode)
+    schedule_item_teacher_available = graphene.Field(ScheduleItemTeacherAvailableNode)
 
     @classmethod
     def mutate_and_get_payload(self, root, info, **input):
         user = info.context.user
-        require_login_and_permission(user, 'costasiella.change_scheduleitemteacher')
+        require_login_and_permission(user, 'costasiella.change_scheduleitemteacheravailable')
 
         rid = get_rid(input['id'])
-        schedule_item_teacher = ScheduleItemTeacherAvailable.objects.filter(id=rid.id).first()
-        if not schedule_item_teacher:
-            raise Exception('Invalid Schedule Item TeacherAvailable ID!')
+        schedule_item_teacher_available = ScheduleItemTeacherAvailable.objects.filter(id=rid.id).first()
+        if not schedule_item_teacher_available:
+            raise Exception('Invalid Schedule Item Teacher Available ID!')
 
-        validation_result = validate_schedule_item_teacher_create_update_input(input)
+        validation_result = validate_schedule_item_teacher_available_create_update_input(input)
 
-        schedule_item_teacher.account=validation_result['account']
-        schedule_item_teacher.date_start=input['date_start']
+        schedule_item_teacher_available.account=validation_result['account']
+        schedule_item_teacher_available.date_start=input['date_start']
         
         # Optional fields
         if 'date_end' in input:
-            schedule_item_teacher.date_end = input['date_end']
+            schedule_item_teacher_available.date_end = input['date_end']
 
-        if 'role' in input:
-            schedule_item_teacher.role = input['role']
+        schedule_item_teacher_available.save()
 
-        if 'account_2' in validation_result:
-            schedule_item_teacher.account_2 = validation_result['account_2']
-
-        if 'role_2' in input:
-            schedule_item_teacher.role_2 = input['role_2']
-
-        schedule_item_teacher.save()
-
-        return UpdateScheduleItemTeacherAvailable(schedule_item_teacher=schedule_item_teacher)
+        return UpdateScheduleItemTeacherAvailable(schedule_item_teacher_available=schedule_item_teacher_available)
 
 
 class DeleteScheduleItemTeacherAvailable(graphene.relay.ClientIDMutation):
@@ -152,20 +141,20 @@ class DeleteScheduleItemTeacherAvailable(graphene.relay.ClientIDMutation):
     @classmethod
     def mutate_and_get_payload(self, root, info, **input):
         user = info.context.user
-        require_login_and_permission(user, 'costasiella.delete_scheduleitemteacher')
+        require_login_and_permission(user, 'costasiella.delete_scheduleitemteacheravailable')
 
         rid = get_rid(input['id'])
-        schedule_item_teacher = ScheduleItemTeacherAvailable.objects.filter(id=rid.id).first()
-        if not schedule_item_teacher:
-            raise Exception('Invalid Schedule Item TeacherAvailable ID!')
+        schedule_item_teacher_available = ScheduleItemTeacherAvailable.objects.filter(id=rid.id).first()
+        if not schedule_item_teacher_available:
+            raise Exception('Invalid Schedule Item Teacher Available ID!')
 
-        ok = schedule_item_teacher.delete()
+        ok = schedule_item_teacher_available.delete()
 
         return DeleteScheduleItemTeacherAvailable(ok=ok)
 
 
 class ScheduleItemTeacherAvailableMutation(graphene.ObjectType):
-    delete_schedule_item_teacher = DeleteScheduleItemTeacherAvailable.Field()
-    create_schedule_item_teacher = CreateScheduleItemTeacherAvailable.Field()
-    update_schedule_item_teacher = UpdateScheduleItemTeacherAvailable.Field()
+    delete_schedule_item_teacher_available = DeleteScheduleItemTeacherAvailable.Field()
+    create_schedule_item_teacher_available = CreateScheduleItemTeacherAvailable.Field()
+    update_schedule_item_teacher_available = UpdateScheduleItemTeacherAvailable.Field()
     
