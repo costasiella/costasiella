@@ -67,7 +67,7 @@ class ScheduleAppointmentEditAll extends Component {
     const t = this.props.t
     const match = this.props.match
     const history = this.props.history
-    const id = match.params.class_id
+    const id = match.params.appointment_id
     const return_url = "/schedule/appointments"
 
     return (

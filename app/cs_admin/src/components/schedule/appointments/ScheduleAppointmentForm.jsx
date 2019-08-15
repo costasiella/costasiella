@@ -166,7 +166,7 @@ const ScheduleAppointmentForm = ({ t, history, inputData, isSubmitting, setField
         type="submit" 
         disabled={isSubmitting}
         >
-        {t('general.submit')}
+          {t('general.submit')}
         </Button>
         <Button color="link" onClick={() => history.push(return_url)}>
             {t('general.cancel')}
