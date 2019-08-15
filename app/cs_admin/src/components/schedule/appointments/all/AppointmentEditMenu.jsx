@@ -8,7 +8,7 @@ import { withTranslation } from 'react-i18next'
 import {
   List
 } from "tabler-react";
-import HasPermissionWrapper from "../HasPermissionWrapper"
+import HasPermissionWrapper from "../../../HasPermissionWrapper"
 
 let edit_active
 let teachers_available_active

@@ -8,9 +8,9 @@ import { withRouter } from "react-router"
 import { Formik } from 'formik'
 import { toast } from 'react-toastify'
 
-import { GET_CLASSES_QUERY, GET_CLASS_QUERY } from '../../queries'
+import { GET_APPOINTMENTS_QUERY, GET_APPOINTMENT_QUERY } from '../../queries'
 import { get_list_query_variables } from '../../tools'
-import { CLASS_SCHEMA } from '../../yupSchema'
+import { APPOINTMENT_SCHEMA } from '../../yupSchema'
 import ScheduleAppointmentForm from '../../ScheduleAppointmentForm'
 
 import {
@@ -103,7 +103,7 @@ class ScheduleAppointmentEditAll extends Component {
                 <AppointmentEditBase 
                   menu_active_link="edit"
                 >
-                  <Mutation mutation={UPDATE_CLASS} onCompleted={() => history.push(return_url)}> 
+                  <Mutation mutation={UPDATE_APPOINTMENT} onCompleted={() => history.push(return_url)}> 
                   {(updateScheduleAppointment, { data }) => (
                     <Formik
                       initialValues={{ 
@@ -111,13 +111,12 @@ class ScheduleAppointmentEditAll extends Component {
                         frequencyType: initialValues.frequencyType,
                         frequencyInterval: initialValues.frequencyInterval,
                         organizationLocationRoom: initialValues.organizationLocationRoom.id,
-                        organizationAppointmenttype: initialValues.organizationAppointmenttype.id,
                         dateStart: initialValues.dateStart,
                         dateEnd: initialValues.dateEnd,
                         timeStart: initialTimeStart,
                         timeEnd: initialTimeEnd,
                       }}
-                      validationSchema={CLASS_SCHEMA}
+                      validationSchema={APPOINTMENT_SCHEMA}
                       onSubmit={(values, { setSubmitting }) => {
                           console.log('submit values:')
                           console.log(values)

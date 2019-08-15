@@ -15,30 +15,30 @@ import {
 } from "tabler-react"
 // import HasPermissionWrapper from "../../../../HasPermissionWrapper"
 
-import { GET_CLASS_QUERY } from "../queries"
+import { GET_APPOINTMENT_QUERY } from "../queries"
 
-import ClassEditMenu from './ClassEditMenu'
-import ClassEditBack from './ClassEditBack';
-import { class_edit_all_subtitle } from "./tools"
+import AppointmentEditMenu from './AppointmentEditMenu'
+import AppointmentEditBack from './AppointmentEditBack';
+import { appointment_edit_all_subtitle } from "./tools"
 
 
-class ClassEditBase extends Component {
+class AppointmentEditBase extends Component {
   constructor(props) {
     super(props)
-    console.log("Schedule class edit add props:")
+    console.log("Schedule appointment edit add props:")
     console.log(props)
   }
 
   render() {
     const t = this.props.t
     const match = this.props.match
-    const classId = match.params.class_id
+    const appointmentId = match.params.appointment_id
     const menu_active_link = this.props.menu_active_link
     const default_card = this.props.default_card
     const sidebar_button = this.props.sidebar_button
 
     return (
-      <Query query={GET_CLASS_QUERY} variables = {{id: classId, archived: false}} >
+      <Query query={GET_APPOINTMENT_QUERY} variables = {{id: appointmentId, archived: false}} >
         {({ loading, error, data, refetch }) => {
           // Loading
           if (loading) return (
@@ -57,11 +57,10 @@ class ClassEditBase extends Component {
           const initialValues = data.scheduleItem
 
           const initialTimeStart = TimeStringToJSDateOBJ(initialValues.timeStart)
-          const subtitle = class_edit_all_subtitle({
+          const subtitle = appointment_edit_all_subtitle({
             t: t,
             location: initialValues.organizationLocationRoom.organizationLocation.name,
             locationRoom: initialValues.organizationLocationRoom.name,
-            classtype: initialValues.organizationClasstype.name,
             starttime: initialTimeStart
           })
           
@@ -71,7 +70,7 @@ class ClassEditBase extends Component {
                 title={t("schedule.title")} 
                 subTitle={subtitle}
               >
-                <ClassEditBack />
+                <AppointmentEditBack />
               </Page.Header>
               <Grid.Row>
                 <Grid.Col md={9}>
@@ -89,7 +88,7 @@ class ClassEditBase extends Component {
                 <Grid.Col md={3}>
                   {sidebar_button}
                   <h5>{t('general.menu')}</h5>
-                  <ClassEditMenu active_link={menu_active_link} classId={classId}/>
+                  <AppointmentEditMenu active_link={menu_active_link} appointmentId={appointmentId}/>
                 </Grid.Col>
               </Grid.Row>
             </Container>
@@ -98,11 +97,10 @@ class ClassEditBase extends Component {
       </Query>
 )}}
 
-ClassEditBase.defaultProps = {
+AppointmentEditBase.defaultProps = {
   default_card: true,
   sidebar_button: "",
-  card_title: t('schedule.classes.title_edit')
+  card_title: t('schedule.appointments.title_edit')
 }
 
-
-export default withTranslation()(withRouter(ClassEditBase))
+export default withTranslation()(withRouter(AppointmentEditBase))
