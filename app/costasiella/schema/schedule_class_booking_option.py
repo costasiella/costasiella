@@ -40,6 +40,7 @@ class ScheduleClassBookingSubscriptionType(graphene.ObjectType):
 # ScheduleClassBookingOptionsType
 class ScheduleClassBookingOptionsType(graphene.ObjectType):  
     date = graphene.types.datetime.Date()
+    list_type = graphene.String()
     account = graphene.Field(AccountNode)
     account_id = graphene.ID()
     schedule_item = graphene.Field(ScheduleItemNode)
@@ -141,10 +142,11 @@ class ScheduleClassBookingOptionsQuery(graphene.ObjectType):
         ScheduleClassBookingOptionsType,
         account = graphene.ID(),
         schedule_item = graphene.ID(),
-        date = graphene.types.datetime.Date()       
+        date = graphene.types.datetime.Date(),
+        list_type = graphene.String(default_value="shop")   
     )
 
-    def resolve_schedule_class_booking_options(self, info, account, schedule_item, date, **kwargs):
+    def resolve_schedule_class_booking_options(self, info, list_type, account, schedule_item, date, **kwargs):
         print(locals())
 
         validation_result = validate_schedule_class_booking_options_input(
@@ -154,7 +156,8 @@ class ScheduleClassBookingOptionsQuery(graphene.ObjectType):
         )
 
         return ScheduleClassBookingOptionsType(
-            date=date,
+            date = date,
+            list_type = list_type,
             account_id = account,
             schedule_item_id = schedule_item,
         )
