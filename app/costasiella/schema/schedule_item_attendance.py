@@ -139,13 +139,8 @@ class CreateScheduleItemAttendance(graphene.relay.ClientIDMutation):
 
 class UpdateScheduleItemAttendance(graphene.relay.ClientIDMutation):
     class Input:
-        id = graphene.ID(required=True)
-        account = graphene.ID(required=True)
-        role = graphene.String(required=False, default_value="")
-        account_2 = graphene.ID(required=False)
-        role_2 = graphene.String(required=False, default_value="")
-        date_start = graphene.types.datetime.Date(required=True)
-        date_end = graphene.types.datetime.Date(required=False, default_value=None)
+        attendance_type = graphene.String(required=False)
+        booking_status = graphene.String(required=False, default_value="BOOKED")
         
     schedule_item_attendance = graphene.Field(ScheduleItemAttendanceNode)
 
@@ -161,21 +156,11 @@ class UpdateScheduleItemAttendance(graphene.relay.ClientIDMutation):
 
         validation_result = validate_schedule_item_attendance_create_update_input(input)
 
-        schedule_item_attendance.account=validation_result['account']
-        schedule_item_attendance.date_start=input['date_start']
+        if 'attendance_input' in input:
+            schedule_item_attendance.attendance_type = input['attendance_type']
         
-        # Optional fields
-        if 'date_end' in input:
-            schedule_item_attendance.date_end = input['date_end']
-
-        if 'role' in input:
-            schedule_item_attendance.role = input['role']
-
-        if 'account_2' in validation_result:
-            schedule_item_attendance.account_2 = validation_result['account_2']
-
-        if 'role_2' in input:
-            schedule_item_attendance.role_2 = input['role_2']
+        if 'booking_status' in input:
+            schedule_item_attendance.booking_status = input['booking_status']
 
         schedule_item_attendance.save()
 
