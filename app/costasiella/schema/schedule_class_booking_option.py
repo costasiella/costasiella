@@ -190,17 +190,7 @@ def validate_schedule_class_booking_options_input(account, schedule_item, date, 
 
     if list_type not in list_types:
         raise Exception('Invalid list type, possible options [enroll, shop_book, attand]')
-
-    # if date_until < date_from:
-    #     raise Exception(_("dateUntil has to be bigger then dateFrom"))
-
-    # days_between = (date_until - date_from).days
-    # if days_between > 6:
-    #     raise Exception(_("dateFrom and dateUntil can't be more then 7 days apart")) 
-
-    #TODO Check if schedule item takes place on date
-
-    
+   
     # account
     rid = get_rid(account)
     account = Account.objects.get(pk=rid.id)
@@ -221,7 +211,6 @@ def validate_schedule_class_booking_options_input(account, schedule_item, date, 
     schedule_dude = ClassScheduleDude()
     if not schedule_dude.schedule_item_takes_place_on_day(schedule_item, date):
         raise Exception("This class doesn't take place on date: " + str(date))
-
 
     return result
 
