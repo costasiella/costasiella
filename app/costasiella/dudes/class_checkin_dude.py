@@ -8,7 +8,7 @@ from ..models import OrganizationClasspassGroupClasspass,
 class ClassCheckinDude():
     def _class_checkedin(self, account, schedule_item, date):
         """
-        :return: True if an account is already checked in to a class, False if not
+        :return: schedule_item_attendance object if found, so we can check for reviews
         """
         pass
 
@@ -23,6 +23,10 @@ class ClassCheckinDude():
         """
         :return: ScheduleItemAttendance object if successful, raise error if not.
         """
+        #TODO: Check if not already signed in
+        #TODO: Check if classes left on pass
+        #TODO: Code reviews
+        #TODO: Update number of classes remaining on pass
 
         schedule_item_attendance = ScheduleItemAttendance(
             account = account,
