@@ -16,8 +16,7 @@ from .account_classpass import AccountClasspassNode
 from .account_subscription import AccountSubscriptionNode
 from .schedule_item import ScheduleItemNode
 
-from ..dudes import ClassCheckinDude
-from ..dudes import ClassScheduleDude
+from ..dudes import ClassCheckinDude, ClassScheduleDude
 
 
 m = Messages()
