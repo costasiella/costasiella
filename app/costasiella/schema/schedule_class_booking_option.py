@@ -16,6 +16,8 @@ from .account_classpass import AccountClasspassNode
 from .account_subscription import AccountSubscriptionNode
 from .schedule_item import ScheduleItemNode
 
+from ..dudes.class_checkin_dude import ClassCheckinDude
+
 
 m = Messages()
 
@@ -76,6 +78,8 @@ class ScheduleClassBookingOptionsType(graphene.ObjectType):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.view_scheduleitem')
 
+        checkin_dude = ClassCheckinDude()
+
         print("############")
         # print(account)
         print(self.account)
@@ -83,6 +87,7 @@ class ScheduleClassBookingOptionsType(graphene.ObjectType):
 
         account = self.resolve_account(info)
         print(account)
+        schedule_item = self.resolve_schedule_item(info)
 
         classpasses_filter = Q(account = account) & \
             Q(date_start__lte = self.date) & \
@@ -92,10 +97,14 @@ class ScheduleClassBookingOptionsType(graphene.ObjectType):
 
         classpasses_list = []
         for classpass in classpasses:
+            allowed = False
+            if checkin_dude.classpass_attend_allowed_for_class(classpass, schedule_item):
+                allowed = True
+
             classpasses_list.append(
                 ScheduleClassBookingClasspassType(
                     booking_type = "classpass",
-                    allowed = True,
+                    allowed = allowed,
                     account_classpass = classpass,
                 )
             )
