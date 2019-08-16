@@ -7,12 +7,13 @@ from graphene_django.filter import DjangoFilterConnectionField
 from graphql import GraphQLError
 from graphql_relay import to_global_id
 
-from ..models import Account, AccountClasspass, ScheduleItem
+from ..models import Account, AccountClasspass, AccountSubscription, ScheduleItem
 from ..modules.gql_tools import require_login_and_permission, require_login_and_one_of_permissions, get_rid
 from ..modules.messages import Messages
 from ..modules.model_helpers.schedule_item_helper import ScheduleItemHelper
 from .account import AccountNode
 from .account_classpass import AccountClasspassNode
+from .account_subscription import AccountSubscriptionNode
 from .schedule_item import ScheduleItemNode
 
 
@@ -21,11 +22,19 @@ m = Messages()
 import datetime
 
 
-# ScheduleClassBookingClasspassTypeType
+# ScheduleClassBookingClasspassType
 class ScheduleClassBookingClasspassType(graphene.ObjectType):
     booking_type = graphene.String()
-    account_classpass = graphene.Field(AccountClasspassNode)
     allowed = graphene.Boolean()  
+    account_classpass = graphene.Field(AccountClasspassNode)
+
+
+# ScheduleClassBookingSubscriptionType
+class ScheduleClassBookingSubscriptionType(graphene.ObjectType):
+    booking_type = graphene.String()
+    allowed = graphene.Boolean()  
+    account_subscription = graphene.Field(AccountSubscriptionNode)
+    
 
     
 # ScheduleClassBookingOptionsType
@@ -36,6 +45,7 @@ class ScheduleClassBookingOptionsType(graphene.ObjectType):
     schedule_item = graphene.Field(ScheduleItemNode)
     schedule_item_id = graphene.ID()
     classpasses = graphene.List(ScheduleClassBookingClasspassType)
+    subscriptions = graphene.List(ScheduleClassBookingSubscriptionType)
 
 
     def resolve_account(self, info):
@@ -84,12 +94,46 @@ class ScheduleClassBookingOptionsType(graphene.ObjectType):
             classpasses_list.append(
                 ScheduleClassBookingClasspassType(
                     booking_type = "classpass",
+                    allowed = True,
                     account_classpass = classpass,
-                    allowed = True
                 )
             )
 
         return classpasses_list
+
+
+    def resolve_subscriptions(self, 
+                            info,
+                            date=graphene.types.datetime.Date(),
+                            ):
+        user = info.context.user
+        require_login_and_permission(user, 'costasiella.view_scheduleitem')
+
+        print("############")
+        # print(account)
+        print(self.account)
+        print(self.account_id)
+
+        account = self.resolve_account(info)
+        print(account)
+
+        subscriptions_filter = Q(account = account) & \
+            Q(date_start__lte = self.date) & \
+            (Q(date_end__gte = self.date) | Q(date_end__isnull = True))
+
+        subscriptions = AccountSubscription.objects.filter(subscriptions_filter).order_by('organization_subscription__name')
+
+        subscriptions_list = []
+        for subscription in subscriptions:
+            subscriptions_list.append(
+                ScheduleClassBookingSubscriptionType(
+                    booking_type = "subscription",
+                    allowed = True,
+                    account_subscription = subscription,
+                )
+            )
+
+        return subscriptions_list
 
 
 class ScheduleClassBookingOptionsQuery(graphene.ObjectType):
@@ -113,8 +157,6 @@ class ScheduleClassBookingOptionsQuery(graphene.ObjectType):
             date=date,
             account_id = account,
             schedule_item_id = schedule_item,
-            # account = validation_result['account'],
-            # schedule_item = validation_result['schedule_item']
         )
 
 
