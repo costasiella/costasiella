@@ -7,7 +7,9 @@ from graphql import GraphQLError
 
 from ..models import Account, AccountClasspass, AccountSubscription, FinanceInvoiceItem, ScheduleItem, ScheduleItemAttendance
 from ..modules.gql_tools import require_login_and_permission, get_rid
-from ..modules.messages import Messages
+from ..modules.messages import 
+
+from ..dudes import ClassCheckinDude
 
 m = Messages()
 
@@ -99,13 +101,15 @@ def validate_schedule_item_attendance_create_update_input(input):
 
 class CreateScheduleItemAttendance(graphene.relay.ClientIDMutation):
     class Input:
-        schedule_item = graphene.ID(required=True)
         account = graphene.ID(required=True)
-        role = graphene.String(required=False, default_value="")
-        account_2 = graphene.ID(required=False, defailt_value="")
-        role_2 = graphene.String(required=False, default_value="")
-        date_start = graphene.types.datetime.Date(required=True)
-        date_end = graphene.types.datetime.Date(required=False, default_value=None)
+        schedule_item = graphene.ID(required=True)
+        account_classpass = graphene.ID(required=False)
+        account_subscription = graphene.ID(required=False)
+        finance_invoice_item = graphene.ID(required=False)
+        attendance_type = graphene.String(required=True)
+        date = graphene.types.datetime.Date(required=True)
+        online_booking = graphene.Boolean(required=False, default_value=False)
+        booking_status = graphene.String(required=False, default_value="BOOKED")
 
     schedule_item_attendance = graphene.Field(ScheduleItemAttendanceNode)
 
@@ -115,31 +119,20 @@ class CreateScheduleItemAttendance(graphene.relay.ClientIDMutation):
         require_login_and_permission(user, 'costasiella.add_scheduleitemattendance')
 
         validation_result = validate_schedule_item_attendance_create_update_input(input)
+        class_checkin_dude = ClassCheckinDude()
+        
+        if attendance_type == "CLASSPASS":
+            if not validation_result['account_classpass']:
+                raise Exception(_('accountClasspass field is mandatory when doing a class pass check-in')
 
-        schedule_item_attendance = ScheduleItemAttendance(
-            schedule_item = validation_result['schedule_item'],
-            account=validation_result['account'],
-            date_start=input['date_start']
-        )
-
-        # Optional fields
-        date_end = input.get('date_end', None)
-        if date_end:
-            schedule_item_attendance.date_end = date_end
-
-        role = input.get('role', None)
-        if role:
-            schedule_item_attendance.role = role
-
-        account_2 = validation_result.get('account_2', None)
-        if account_2:
-            schedule_item_attendance.account_2 = account_2
-
-        role_2 = input.get('role_2', None)
-        if role_2:
-            schedule_item_attendance.role_2 = role_2
-
-        schedule_item_attendance.save()
+            schedule_item_attendance = class_checkin_dude.class_checkin_classpass(
+                account = validation_result['account'],
+                account_classpass = validation_result['account_classpass'],
+                schedule_item = validation_result['schedule_item'],
+                date = schedule_item['date'],
+                booking_status = booking_status,
+                online_booking = online_booking,                    
+            )
 
         return CreateScheduleItemAttendance(schedule_item_attendance=schedule_item_attendance)
 

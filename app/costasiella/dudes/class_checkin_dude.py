@@ -1,9 +1,96 @@
 from django.utils.translation import gettext as _
 
-from ..models import OrganizationClasspassGroupClasspass, ScheduleItemOrganizationClasspassGroup
+from ..models import OrganizationClasspassGroupClasspass, 
+                     ScheduleItemAttendance, 
+                     ScheduleItemOrganizationClasspassGroup
 
 
 class ClassCheckinDude():
+    def _class_checkedin(self, account, schedule_item, date):
+        """
+        :return: True if an account is already checked in to a class, False if not
+        """
+        pass
+
+
+    def class_checkin_classpass(self, 
+                                account,
+                                account_classpass,
+                                schedule_item,
+                                date,
+                                online_booking=False,
+                                booking_status="BOOKED"):
+        """
+        :return: ScheduleItemAttendance object if successful, raise error if not.
+        """
+
+        schedule_item_attendance = ScheduleItemAttendance(
+            account = account,
+            account_classpass = account_classpass,
+            schedule_item = schedule_item,
+            date = date,
+            online_booking = online_booking,
+            booking_status = booking_status
+        )
+
+        schedule_item_attendance.save()
+
+        return schedule_item_attendance
+
+
+    # def attendance_sign_in_classcard(self, cuID, clsID, ccdID, date, online_booking=False, booking_status='booked'):
+    #     """
+    #         :param cuID: db.auth_user.id 
+    #         :param clsID: db.classes.id
+    #         :param ccdID: db.customers_classcards.id
+    #         :param date: datetime.date
+    #         :return: 
+    #     """
+    #     from .os_customer_classcard import CustomerClasscard
+
+    #     db = current.db
+    #     T = current.T
+
+    #     ccd = CustomerClasscard(ccdID)
+    #     classes_available = ccd.get_classes_available()
+
+    #     status = 'fail'
+    #     message = ''
+    #     if classes_available or ccd.school_classcard.Unlimited:
+    #         class_data = dict(
+    #             auth_customer_id=cuID,
+    #             CustomerMembership=self._attendance_sign_in_has_membership(cuID, date),
+    #             classes_id=clsID,
+    #             ClassDate=date,
+    #             AttendanceType=3,  # 3 = classcard
+    #             customers_classcards_id=ccdID,
+    #             online_booking=online_booking,
+    #             BookingStatus=booking_status
+    #         )
+
+    #         signed_in = self._attendance_sign_in_check_signed_in(clsID, cuID, date)
+    #         if signed_in:
+    #             if signed_in.AttendanceType == 5:
+    #                 # Under review, so update
+    #                 status = 'ok'
+    #                 db(db.classes_attendance._id == signed_in.id).update(**class_data)
+    #             else:
+    #                 message = T("Already checked in for this class")
+    #         else:
+    #             status = 'ok'
+
+    #             db.classes_attendance.insert(
+    #                 **class_data
+    #             )
+
+    #             # update class count
+    #             ccd.set_classes_taken()
+    #     else:
+    #         message = T("Unable to add, no classes left on card")
+
+
+        return dict(status=status, message=message)
+
     # def classpass_class_permissions(self, account_classpass, public_only=True):
     def classpass_class_permissions(self, account_classpass):
         """
