@@ -7,13 +7,12 @@ from graphene_django.filter import DjangoFilterConnectionField
 from graphql import GraphQLError
 from graphql_relay import to_global_id
 
-from ..models import ScheduleItem, OrganizationClasstype, OrganizationLevel, OrganizationLocationRoom
+from ..models import Account, AccountClasspass, ScheduleItem
 from ..modules.gql_tools import require_login_and_permission, require_login_and_one_of_permissions, get_rid
 from ..modules.messages import Messages
 from ..modules.model_helpers.schedule_item_helper import ScheduleItemHelper
-from .organization_classtype import OrganizationClasstypeNode
-from .organization_level import OrganizationLevelNode
-from .organization_location_room import OrganizationLocationRoomNode
+from .account import AccountNode
+from .account_classpass import AccountClasspassNode
 from .schedule_item import ScheduleItemNode
 
 
@@ -25,29 +24,212 @@ import datetime
 # ScheduleClassBookingClasspassTypeType
 class ScheduleClassBookingClasspassType(graphene.ObjectType):
     booking_type = graphene.String()
-    schedule_item_id = graphene.ID()
-    account_classpass_id = graphene.ID()
+    account_classpass = graphene.Field(AccountClasspassNode)
+    allowed = graphene.Boolean()  
+
+    
+# ScheduleClassBookingOptionsType
+class ScheduleClassBookingOptionsType(graphene.ObjectType):  
+    date = graphene.types.datetime.Date()
+    account = graphene.Field(AccountNode)
     account_id = graphene.ID()
-    organization_membership_id = graphene.ID()
-    name = graphene.String()
-    allowed = graphene.Boolean()
-    date_end = graphene.types.datetime.Date()
-    unlimited = graphene.Boolean()
-    classes_remaining = graphene.Int()
+    schedule_item = graphene.Field(ScheduleItemNode)
+    schedule_item_id = graphene.ID()
+    classpasses = graphene.List(ScheduleClassBookingClasspassType)
+
+
+    def resolve_account(self, info):
+        # account
+        rid = get_rid(self.account_id)
+        account = Account.objects.get(pk=rid.id)
+        if not account:
+            raise Exception('Invalid Account ID!')
+
+        return account
+
+
+    def resolve_schedule_item(self, info):
+        # account
+        rid = get_rid(self.schedule_item_id)
+        schedule_item = ScheduleItem.objects.get(pk=rid.id)
+        if not schedule_item:
+            raise Exception('Invalid Schedule Item ID!')
+
+        return schedule_item
+
+
+    def resolve_classpasses(self, 
+                            info,
+                            date=graphene.types.datetime.Date(),
+                            ):
+        user = info.context.user
+        require_login_and_permission(user, 'costasiella.view_scheduleitem')
+
+        print("############")
+        # print(account)
+        print(self.account)
+        print(self.account_id)
+
+        account = self.resolve_account(info)
+        print(account)
+
+        classpasses_filter = Q(account = account) & \
+            Q(date_start__lte = self.date) & \
+            (Q(date_end__gte = self.date) | Q(date_end__isnull = True))
+
+        classpasses = AccountClasspass.objects.filter(classpasses_filter).order_by('organization_classpass__name')
+
+        classpasses_list = []
+        for classpass in classpasses:
+            classpasses_list.append(
+                ScheduleClassBookingClasspassType(
+                    booking_type = "classpass",
+                    account_classpass = classpass,
+                    allowed = True
+                )
+            )
+
+        return classpasses_list
+
+
+class ScheduleClassBookingOptionsQuery(graphene.ObjectType):
+    schedule_class_booking_options = graphene.Field(
+        ScheduleClassBookingOptionsType,
+        account = graphene.ID(),
+        schedule_item = graphene.ID(),
+        date = graphene.types.datetime.Date()       
+    )
+
+    def resolve_schedule_class_booking_options(self, info, account, schedule_item, date, **kwargs):
+        print(locals())
+
+        validation_result = validate_schedule_class_booking_options_input(
+            account,
+            schedule_item,
+            date
+        )
+
+        return ScheduleClassBookingOptionsType(
+            date=date,
+            account_id = account,
+            schedule_item_id = schedule_item,
+            # account = validation_result['account'],
+            # schedule_item = validation_result['schedule_item']
+        )
+
+
+def validate_schedule_class_booking_options_input(account, schedule_item, date):
+    """
+    Check if date_until >= date_start
+    Check if delta between dates <= 7 days
+    """
+    result = {}
+
+    # if date_until < date_from:
+    #     raise Exception(_("dateUntil has to be bigger then dateFrom"))
+
+    # days_between = (date_until - date_from).days
+    # if days_between > 6:
+    #     raise Exception(_("dateFrom and dateUntil can't be more then 7 days apart")) 
+
+    #TODO Check if schedule item takes place on date
+    # Check if schedule item takes place on date
     
+    # account
+    rid = get_rid(account)
+    account = Account.objects.get(pk=rid.id)
+    if not account:
+        raise Exception('Invalid account ID!')
+
+    result['account'] = account
+
+    # schedule_item
+    rid = get_rid(schedule_item)
+    schedule_item = ScheduleItem.objects.get(pk=rid.id)
+    if not schedule_item:
+        raise Exception('Invalid Schedule Item ID!')
+
+    result['schedule_item'] = result
+
+    return result
 
 
-    
-    
 
 
-    # date = graphene.types.datetime.Date()
-    # organization_location_room = graphene.Field(OrganizationLocationRoomNode)
-    # organization_classtype = graphene.Field(OrganizationClasstypeNode)
-    # organization_level = graphene.Field(OrganizationLevelNode)
-    # time_start = graphene.types.datetime.Time()
-    # time_end = graphene.types.datetime.Time()
-    # display_public = graphene.Boolean()
+# class ScheduleClassQuery(graphene.ObjectType):
+#     schedule_classes = graphene.List(
+#         ScheduleClassesDayType,
+#         date_from=graphene.types.datetime.Date(), 
+#         date_until=graphene.types.datetime.Date(),
+#         order_by=graphene.String(),
+#         organization_classtype=graphene.String(),
+#         organization_level=graphene.String(),
+#         organization_location=graphene.String(),
+        
+#     )
+
+#     def resolve_schedule_items(self, info, **kwargs):
+#         user = info.context.user
+#         require_login_and_permission(user, 'costasiella.view_scheduleitem')
+
+#         ## return everything:
+#         return ScheduleItem.objects.filter()
+
+
+#     def resolve_schedule_classes(self, 
+#                                  info, 
+#                                  date_from=graphene.types.datetime.Date(), 
+#                                  date_until=graphene.types.datetime.Date(),
+#                                  order_by=None,
+#                                  organization_classtype=None,
+#                                  organization_level=None,
+#                                  organization_location=None,
+#                                  ):
+#         user = info.context.user
+#         require_login_and_permission(user, 'costasiella.view_scheduleclass')
+
+#         print('############ resolve')
+#         print(locals())
+#         print(organization_location)
+
+#         validation_result = validate_schedule_classes_query_date_input(
+#             date_from, 
+#             date_until, 
+#             order_by,
+#             organization_classtype,
+#             organization_level,
+#             organization_location,
+#         )
+
+
+#         print(validation_result)
+
+#         delta = datetime.timedelta(days=1)
+#         date = date_from
+#         return_list = []
+#         while date <= date_until:
+#             day = ScheduleClassesDayType()
+#             day.date = date
+
+#             if order_by:
+#                 day.order_by = order_by
+
+#             if 'organization_classtype_id' in validation_result:
+#                 day.filter_id_organization_classtype = \
+#                     validation_result['organization_classtype_id']
+
+#             if 'organization_level_id' in validation_result:
+#                 day.filter_id_organization_level = \
+#                     validation_result['organization_level_id']
+
+#             if 'organization_location_id' in validation_result:
+#                 day.filter_id_organization_location = \
+#                     validation_result['organization_location_id']
+
+#             return_list.append(day)
+#             date += delta
+
+#         return return_list
 
 
 # # ScheduleClassDayType

@@ -36,6 +36,7 @@ from .organization_subscription_price import OrganizationSubscriptionPriceQuery,
 
 from .schedule_appointment import ScheduleAppointmentQuery, ScheduleAppointmentMutation
 from .schedule_class import ScheduleClassQuery, ScheduleClassMutation
+from .schedule_class_booking_option import ScheduleClassBookingOptionsQuery
 from .schedule_item import ScheduleItemQuery, ScheduleItemMutation
 from .schedule_item_organization_classpass_group import ScheduleItemOrganizationClasspassGroupQuery, ScheduleItemOrganizationClasspassGroupMutation
 from .schedule_item_organization_subscription_group import ScheduleItemOrganizationSubscriptionGroupQuery, ScheduleItemOrganizationSubscriptionGroupMutation
@@ -73,6 +74,7 @@ class Query(AccountQuery,
             OrganizationSubscriptionPriceQuery,
             ScheduleAppointmentQuery,
             ScheduleClassQuery,
+            ScheduleClassBookingOptionsQuery,
             ScheduleItemQuery,
             ScheduleItemOrganizationClasspassGroupQuery,
             ScheduleItemOrganizationSubscriptionGroupQuery,

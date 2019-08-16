@@ -186,8 +186,7 @@ class ScheduleClassQuery(graphene.ObjectType):
         order_by=graphene.String(),
         organization_classtype=graphene.String(),
         organization_level=graphene.String(),
-        organization_location=graphene.String(),
-        
+        organization_location=graphene.String(),   
     )
 
     def resolve_schedule_items(self, info, **kwargs):
