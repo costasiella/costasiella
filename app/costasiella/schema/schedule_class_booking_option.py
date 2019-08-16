@@ -16,7 +16,8 @@ from .account_classpass import AccountClasspassNode
 from .account_subscription import AccountSubscriptionNode
 from .schedule_item import ScheduleItemNode
 
-from ..dudes.class_checkin_dude import ClassCheckinDude
+from ..dudes import ClassCheckinDude
+from ..dudes import ClassScheduleDude
 
 
 m = Messages()
@@ -162,7 +163,8 @@ class ScheduleClassBookingOptionsQuery(graphene.ObjectType):
         validation_result = validate_schedule_class_booking_options_input(
             account,
             schedule_item,
-            date
+            date,
+            list_type,
         )
 
         return ScheduleClassBookingOptionsType(
@@ -173,12 +175,21 @@ class ScheduleClassBookingOptionsQuery(graphene.ObjectType):
         )
 
 
-def validate_schedule_class_booking_options_input(account, schedule_item, date):
+def validate_schedule_class_booking_options_input(account, schedule_item, date, list_type):
     """
     Check if date_until >= date_start
     Check if delta between dates <= 7 days
     """
     result = {}
+
+    list_types = [
+        'enroll',
+        'shop_book',
+        'attend'
+    ]
+
+    if list_type not in list_types:
+        raise Exception('Invalid list type, possible options [enroll, shop_book, attand]')
 
     # if date_until < date_from:
     #     raise Exception(_("dateUntil has to be bigger then dateFrom"))
@@ -188,7 +199,7 @@ def validate_schedule_class_booking_options_input(account, schedule_item, date):
     #     raise Exception(_("dateFrom and dateUntil can't be more then 7 days apart")) 
 
     #TODO Check if schedule item takes place on date
-    # Check if schedule item takes place on date
+
     
     # account
     rid = get_rid(account)
@@ -205,6 +216,12 @@ def validate_schedule_class_booking_options_input(account, schedule_item, date):
         raise Exception('Invalid Schedule Item ID!')
 
     result['schedule_item'] = result
+
+    # Check if schedule item takes place on date
+    schedule_dude = ClassScheduleDude()
+    if not schedule_dude.schedule_item_takes_place_on_day(schedule_item, date):
+        raise Exception("This class doesn't take place on date: " + str(date))
+
 
     return result
 
