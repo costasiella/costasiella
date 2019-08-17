@@ -122,10 +122,13 @@ class CreateScheduleItemAttendance(graphene.relay.ClientIDMutation):
         class_checkin_dude = ClassCheckinDude()
         class_schedule_dude = ClassScheduleDude()
 
-        class_schedule_dude.schedule_item_takes_place_on_day(
+        class_takes_place = class_schedule_dude.schedule_item_takes_place_on_day(
             schedule_item = validation_result['schedule_item'],
             date = input['date']
         )
+        
+        if not class_takes_place:
+            raise Exception(_("This class doesn't take place on this date, please check for the correct date or any holidays."))
         
         if attendance_type == "CLASSPASS":
             if not validation_result['account_classpass']:
