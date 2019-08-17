@@ -2,7 +2,6 @@ from django.utils.translation import gettext as _
 
 from ..models import OrganizationClasspassGroupClasspass, ScheduleItemAttendance, ScheduleItemOrganizationClasspassGroup
 
-
 class ClassCheckinDude():
     def _class_checkedin(self, account, schedule_item, date):
         """

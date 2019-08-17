@@ -9,7 +9,7 @@ from ..models import Account, AccountClasspass, AccountSubscription, FinanceInvo
 from ..modules.gql_tools import require_login_and_permission, get_rid
 from ..modules.messages import Messages
 
-from ..dudes import ClassCheckinDude
+from ..dudes import ClassCheckinDude, ClassScheduleDude
 
 m = Messages()
 
@@ -120,6 +120,12 @@ class CreateScheduleItemAttendance(graphene.relay.ClientIDMutation):
 
         validation_result = validate_schedule_item_attendance_create_update_input(input)
         class_checkin_dude = ClassCheckinDude()
+        class_schedule_dude = ClassScheduleDude()
+
+        class_schedule_dude.schedule_item_takes_place_on_day(
+            schedule_item = validation_result['schedule_item'],
+            date = input['date']
+        )
         
         if attendance_type == "CLASSPASS":
             if not validation_result['account_classpass']:
@@ -129,7 +135,7 @@ class CreateScheduleItemAttendance(graphene.relay.ClientIDMutation):
                 account = validation_result['account'],
                 account_classpass = validation_result['account_classpass'],
                 schedule_item = validation_result['schedule_item'],
-                date = schedule_item['date'],
+                date = input['date'],
                 booking_status = booking_status,
                 online_booking = online_booking,                    
             )
