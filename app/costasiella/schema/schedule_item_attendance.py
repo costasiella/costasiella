@@ -7,7 +7,7 @@ from graphql import GraphQLError
 
 from ..models import Account, AccountClasspass, AccountSubscription, FinanceInvoiceItem, ScheduleItem, ScheduleItemAttendance
 from ..modules.gql_tools import require_login_and_permission, get_rid
-from ..modules.messages import 
+from ..modules.messages import Messages
 
 from ..dudes import ClassCheckinDude
 
@@ -123,7 +123,7 @@ class CreateScheduleItemAttendance(graphene.relay.ClientIDMutation):
         
         if attendance_type == "CLASSPASS":
             if not validation_result['account_classpass']:
-                raise Exception(_('accountClasspass field is mandatory when doing a class pass check-in')
+                raise Exception(_('accountClasspass field is mandatory when doing a class pass check-in'))
 
             schedule_item_attendance = class_checkin_dude.class_checkin_classpass(
                 account = validation_result['account'],
