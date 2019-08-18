@@ -41,7 +41,7 @@ class ScheduleItemAttendanceQuery(graphene.ObjectType):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.view_scheduleitemattendance')
 
-        return ScheduleItemAttendance.objects.order_by('-date_start')
+        return ScheduleItemAttendance.objects.order_by('-account__full_name')
             
 
 def validate_schedule_item_attendance_create_update_input(input):

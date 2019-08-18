@@ -31,9 +31,9 @@ import { class_edit_all_subtitle, represent_teacher_role } from "../../tools"
 import confirm_delete from "../../../../../tools/confirm_delete"
 
 import ContentCard from "../../../../general/ContentCard"
-import ClassEditBase from "../ClassEditBase"
+// import ClassEditBase from "../ClassEditBase"
 
-import { GET_SCHEDULE_CLASS_TEACHERS_QUERY } from "./queries"
+import { GET_SCHEDULE_CLASS_ATTENDANCE_QUERY } from "./queries"
 
 const DELETE_SCHEDULE_CLASS_TEACHER = gql`
   mutation DeleteScheduleClassTeacher($input: DeleteScheduleItemTeacherInput!) {
@@ -46,12 +46,13 @@ const DELETE_SCHEDULE_CLASS_TEACHER = gql`
 
 function ScheduleClassAttendance({ t, match, history }) {
   const return_url = "/schedule/classes/"
-  const schedule_item_id = match.params.schedule_item_id
+  const schedule_item_id = match.params.class_id
+  const class_date = match.params.date
   const { loading: queryLoading, error: queryError, data: queryData } = useQuery(
-    GET_SCHEDULE_CLASS_ATTENDANCE, {
+    GET_SCHEDULE_CLASS_ATTENDANCE_QUERY, {
       variables: {
         scheduleItem: schedule_item_id,
-        date: date
+        date: class_date
       }
     }
   )
@@ -75,7 +76,7 @@ function ScheduleClassAttendance({ t, match, history }) {
     <SiteWrapper>
       <div className="my-3 my-md-5">
         <Container>
-          <Page.Header title={account.firstName + " " + account.lastName} />
+          {/* <Page.Header title={account.firstName + " " + account.lastName} /> */}
           <Grid.Row>
               <Grid.Col md={9}>
                 <Card>

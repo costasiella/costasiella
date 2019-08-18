@@ -1,6 +1,6 @@
 import gql from "graphql-tag"
 
-export const GET_SCHEDULE_CLASS_ATTENDANCE = gql`
+export const GET_SCHEDULE_CLASS_ATTENDANCE_QUERY = gql`
   query ScheduleItemAttendances($after: String, $before: String, $scheduleItem: ID!, $date: Date!) {
     scheduleItemAttendances(first: 15, before: $before, after: $after, scheduleItem: $scheduleItem, date: $date) {
       pageInfo {
