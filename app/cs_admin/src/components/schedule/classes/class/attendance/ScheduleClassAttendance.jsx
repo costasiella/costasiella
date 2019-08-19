@@ -31,9 +31,11 @@ import { class_edit_all_subtitle, represent_teacher_role } from "../../tools"
 import confirm_delete from "../../../../../tools/confirm_delete"
 
 import ContentCard from "../../../../general/ContentCard"
+import InputSearch from "../../../../general/InputSearch"
 // import ClassEditBase from "../ClassEditBase"
 
 import { GET_SCHEDULE_CLASS_ATTENDANCE_QUERY } from "./queries"
+import CSLS from "../../../../../tools/cs_local_storage"
 
 const DELETE_SCHEDULE_CLASS_TEACHER = gql`
   mutation DeleteScheduleClassTeacher($input: DeleteScheduleItemTeacherInput!) {
@@ -76,7 +78,19 @@ function ScheduleClassAttendance({ t, match, history }) {
     <SiteWrapper>
       <div className="my-3 my-md-5">
         <Container>
-          {/* <Page.Header title={account.firstName + " " + account.lastName} /> */}
+          <Page.Header title={t('schedule.title')}>
+            <div className="page-options d-flex">            
+              <InputSearch 
+                initialValueKey={CSLS.SCHEDULE_CLASSES_CLASS_ATTENDANCE_SEARCH}
+                placeholder="Search..."
+                onChange={(value) => {
+                  console.log(value)
+                  localStorage.setItem(CSLS.SCHEDULE_CLASSES_CLASS_ATTENDANCE_SEARCH, value)
+                  // refetch(get_list_query_variables())
+                }}
+              />
+            </div>
+          </Page.Header>
           <Grid.Row>
               <Grid.Col md={9}>
                 <Card>

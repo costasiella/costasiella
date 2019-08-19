@@ -14,6 +14,7 @@ const cs_local_storage_keys = {
     SCHEDULE_CLASSES_FILTER_CLASSTYPE: 'costasiella:scheduleClassesFilterClasstype',
     SCHEDULE_CLASSES_FILTER_LEVEL: 'costasiella:scheduleClassesFilterLevel',
     SCHEDULE_CLASSES_FILTER_LOCATION: 'costasiella:scheduleClassesFilterLocation',
+    SCHEDULE_CLASSES_CLASS_ATTENDANCE_SEARCH: 'costasiella:scheduleClassesClassAttendanceSearch',
 }
 
 export default cs_local_storage_keys
