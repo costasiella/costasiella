@@ -1,7 +1,7 @@
 // @flow
 
 import React, { Component } from 'react'
-import { useQuery, useMutation } from '@apollo/react-hooks'
+import { useQuery, useMutation, useLazyQuery } from '@apollo/react-hooks'
 import { Query, Mutation } from "react-apollo"
 import gql from "graphql-tag"
 import { v4 } from "uuid"
@@ -60,16 +60,16 @@ function ScheduleClassAttendance({ t, match, history }) {
       }
     }
   )
-  const { refetch: refetchAccounts, 
-          loading: queryAccountsLoading, 
-          error: queryAccountsError, 
-          data: queryAccountsData } = useQuery(
-    GET_ACCOUNTS_QUERY, {
-      variables: {
-        searchName: ""
-      }
-    }
-  )
+  const [ getAccounts, 
+         { refetch: refetchAccounts, 
+           loading: queryAccountsLoading, 
+           error: queryAccountsError, 
+           data: queryAccountsData 
+         }] = useLazyQuery( GET_ACCOUNTS_QUERY )
+
+  console.log('queryAccountsData')
+  console.log(queryAccountsData)
+
   // const [createInvoice, { data }] = useMutation(CREATE_ACCOUNT_INVOICE, {
   //   // onCompleted = () => history.push('/finance/invoices/edit/')
   // }) 
@@ -107,7 +107,7 @@ function ScheduleClassAttendance({ t, match, history }) {
                 onChange={(value) => {
                   console.log(value)
                   localStorage.setItem(CSLS.SCHEDULE_CLASSES_CLASS_ATTENDANCE_SEARCH, value)
-                  refetchAccounts(get_accounts_query_variables())
+                  getAccounts({ variabled: get_accounts_query_variables()})
                 }}
               />
             </div>
