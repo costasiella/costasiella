@@ -1,6 +1,6 @@
 // @flow
 
-import React, { Component } from 'react'
+import React, { Component, useState } from 'react'
 import { useQuery, useMutation, useLazyQuery } from '@apollo/react-hooks'
 import { Query, Mutation } from "react-apollo"
 import gql from "graphql-tag"
@@ -49,6 +49,7 @@ const DELETE_SCHEDULE_CLASS_TEACHER = gql`
 
 
 function ScheduleClassAttendance({ t, match, history }) {
+  const [showSearch, setShowSearch] = useState(false)
   const return_url = "/schedule/classes/"
   const schedule_item_id = match.params.class_id
   const class_date = match.params.date
@@ -62,6 +63,7 @@ function ScheduleClassAttendance({ t, match, history }) {
   )
   const [ getAccounts, 
          { refetch: refetchAccounts, 
+           fetchMore: fetchMoreAccounts,
            loading: queryAccountsLoading, 
            error: queryAccountsError, 
            data: queryAccountsData 
@@ -107,7 +109,14 @@ function ScheduleClassAttendance({ t, match, history }) {
                 onChange={(value) => {
                   console.log(value)
                   localStorage.setItem(CSLS.SCHEDULE_CLASSES_CLASS_ATTENDANCE_SEARCH, value)
-                  getAccounts({ variabled: get_accounts_query_variables()})
+                  if (value) {
+                    // {console.log('showSearch')}
+                    // {console.log(showSearch)}
+                    setShowSearch(true)
+                    getAccounts({ variables: get_accounts_query_variables()})
+                  } else {
+                    setShowSearch(false)
+                  }
                 }}
               />
             </div>
@@ -115,14 +124,66 @@ function ScheduleClassAttendance({ t, match, history }) {
           <Grid.Row>
               <Grid.Col md={9}>
                 {/* Search results */}
-                <Card>
+                {(showSearch && (queryAccountsData) && (!queryAccountsLoading) && (!queryAccountsError)) ?
+                  <ContentCard cardTitle={t('general.search_results')}
+                            pageInfo={queryAccountsData.accounts.pageInfo}
+                            onLoadMore={() => {
+                                fetchMoreAccounts({
+                                variables: {
+                                  after: queryAccountsData.accounts.pageInfo.endCursor
+                                },
+                                updateQuery: (previousResult, { fetchMoreResult }) => {
+                                  const newEdges = fetchMoreResult.accounts.edges
+                                  const pageInfo = fetchMoreResult.accounts.pageInfo 
+
+                                  return newEdges.length
+                                    ? {
+                                        // Put the new accounts at the end of the list and update `pageInfo`
+                                        // so we have the new `endCursor` and `hasNextPage` values
+                                        queryAccountsData: {
+                                          accounts: {
+                                            __typename: previousResult.accounts.__typename,
+                                            edges: [ ...previousResult.accounts.edges, ...newEdges ],
+                                            pageInfo
+                                          }
+                                        }
+                                      }
+                                    : previousResult
+                                }
+                              })
+                            }} >
+                    <Table>
+                      <Table.Header>
+                        <Table.Row key={v4()}>
+                          <Table.ColHeader>{t('general.name')}</Table.ColHeader>
+                          <Table.ColHeader>{t('general.email')}</Table.ColHeader>
+                          <Table.ColHeader>{t('general.info')}</Table.ColHeader>
+                        </Table.Row>
+                      </Table.Header>
+                      <Table.Body>
+                        {queryAccountsData.accounts.edges.map(({ node }) => (
+                          <Table.Row key={v4()}>
+                            <Table.Col key={v4()}>
+                              {node.firstName} {node.lastName}
+                            </Table.Col>
+                            <Table.Col key={v4()}>
+                              {node.email}
+                            </Table.Col>
+                          </Table.Row>
+                        ))}
+                      </Table.Body>
+                    </Table>
+                  </ContentCard> : ""
+
+                }
+                {/* <Card>
                   <Card.Header>
                     <Card.Title>{t('general.search_results')}</Card.Title>
                   </Card.Header>
                   <Card.Body>
                     search results here
                   </Card.Body>
-                </Card>
+                </Card> */}
                 {/* Attendance */}
                 <Card>
                   <Card.Header>

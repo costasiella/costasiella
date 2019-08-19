@@ -13,7 +13,8 @@ export function class_subtitle({t, location, locationRoom, classtype, timeStart,
 export function get_accounts_query_variables() {
   let queryVars = {
     teacher: undefined,
-    employee: undefined
+    employee: undefined,
+    searchName: undefined
   }
 
   let search = localStorage.getItem(CSLS.SCHEDULE_CLASSES_CLASS_ATTENDANCE_SEARCH)
