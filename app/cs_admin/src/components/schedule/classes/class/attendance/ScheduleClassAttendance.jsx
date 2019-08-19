@@ -30,6 +30,8 @@ import { toast } from 'react-toastify'
 import { class_edit_all_subtitle, represent_teacher_role } from "../../tools"
 import confirm_delete from "../../../../../tools/confirm_delete"
 
+import { class_subtitle } from "../tools"
+
 import ContentCard from "../../../../general/ContentCard"
 import InputSearch from "../../../../general/InputSearch"
 // import ClassEditBase from "../ClassEditBase"
@@ -72,13 +74,22 @@ function ScheduleClassAttendance({ t, match, history }) {
   }
   
   console.log(queryData)
+  const scheduleItem = queryData.scheduleItem
+  const subtitle = class_subtitle({
+    t: t,
+    location: scheduleItem.organizationLocationRoom.organizationLocation.name, 
+    locationRoom: scheduleItem.organizationLocationRoom.name,
+    classtype: scheduleItem.organizationClasstype.name, 
+    timeStart: TimeStringToJSDateOBJ(scheduleItem.timeStart), 
+    date: class_date
+  })
   
   
   return (
     <SiteWrapper>
       <div className="my-3 my-md-5">
         <Container>
-          <Page.Header title={t('schedule.title')}>
+          <Page.Header title={t('schedule.title')} subTitle={subtitle}>
             <div className="page-options d-flex">            
               <InputSearch 
                 initialValueKey={CSLS.SCHEDULE_CLASSES_CLASS_ATTENDANCE_SEARCH}
