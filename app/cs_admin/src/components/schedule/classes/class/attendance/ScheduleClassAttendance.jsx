@@ -30,13 +30,13 @@ import { toast } from 'react-toastify'
 import { class_edit_all_subtitle, represent_teacher_role } from "../../tools"
 import confirm_delete from "../../../../../tools/confirm_delete"
 
-import { class_subtitle } from "../tools"
+import { class_subtitle, get_accounts_query_variables } from "../tools"
 
 import ContentCard from "../../../../general/ContentCard"
 import InputSearch from "../../../../general/InputSearch"
 // import ClassEditBase from "../ClassEditBase"
 
-import { GET_SCHEDULE_CLASS_ATTENDANCE_QUERY } from "./queries"
+import { GET_ACCOUNTS_QUERY, GET_SCHEDULE_CLASS_ATTENDANCE_QUERY } from "./queries"
 import CSLS from "../../../../../tools/cs_local_storage"
 
 const DELETE_SCHEDULE_CLASS_TEACHER = gql`
@@ -57,6 +57,16 @@ function ScheduleClassAttendance({ t, match, history }) {
       variables: {
         scheduleItem: schedule_item_id,
         date: class_date
+      }
+    }
+  )
+  const { refetch: refetchAccounts, 
+          loading: queryAccountsLoading, 
+          error: queryAccountsError, 
+          data: queryAccountsData } = useQuery(
+    GET_ACCOUNTS_QUERY, {
+      variables: {
+        searchName: ""
       }
     }
   )
@@ -97,19 +107,28 @@ function ScheduleClassAttendance({ t, match, history }) {
                 onChange={(value) => {
                   console.log(value)
                   localStorage.setItem(CSLS.SCHEDULE_CLASSES_CLASS_ATTENDANCE_SEARCH, value)
-                  // refetch(get_list_query_variables())
+                  refetchAccounts(get_accounts_query_variables())
                 }}
               />
             </div>
           </Page.Header>
           <Grid.Row>
               <Grid.Col md={9}>
+                {/* Search results */}
+                <Card>
+                  <Card.Header>
+                    <Card.Title>{t('general.search_results')}</Card.Title>
+                  </Card.Header>
+                  <Card.Body>
+                    search results here
+                  </Card.Body>
+                </Card>
+                {/* Attendance */}
                 <Card>
                   <Card.Header>
                     <Card.Title>{t('general.attendance')}</Card.Title>
                   </Card.Header>
                   <Card.Body>
-                    search results here <br />
                     attendance list here
                   </Card.Body>
                 </Card>
