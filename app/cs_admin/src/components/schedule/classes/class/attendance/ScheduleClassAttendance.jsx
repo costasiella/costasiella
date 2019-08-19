@@ -52,7 +52,7 @@ function ScheduleClassAttendance({ t, match, history }) {
   const return_url = "/schedule/classes/"
   const schedule_item_id = match.params.class_id
   const class_date = match.params.date
-  const { loading: queryLoading, error: queryError, data: queryData } = useQuery(
+  const { loading: queryAttendanceLoading, error: queryAttendanceError, data: queryAttendanceData } = useQuery(
     GET_SCHEDULE_CLASS_ATTENDANCE_QUERY, {
       variables: {
         scheduleItem: schedule_item_id,
@@ -66,15 +66,15 @@ function ScheduleClassAttendance({ t, match, history }) {
 
   // Query
   // Loading
-  if (queryLoading) return <p>{t('general.loading_with_dots')}</p>
+  if (queryAttendanceLoading) return <p>{t('general.loading_with_dots')}</p>
   // Error
-  if (queryError) {
-    console.log(queryError)
+  if (queryAttendanceError) {
+    console.log(queryAttendanceError)
     return <p>{t('general.error_sad_smiley')}</p>
   }
   
-  console.log(queryData)
-  const scheduleItem = queryData.scheduleItem
+  console.log(queryAttendanceData)
+  const scheduleItem = queryAttendanceData.scheduleItem
   const subtitle = class_subtitle({
     t: t,
     location: scheduleItem.organizationLocationRoom.organizationLocation.name, 
@@ -108,7 +108,10 @@ function ScheduleClassAttendance({ t, match, history }) {
                   <Card.Header>
                     <Card.Title>{t('general.attendance')}</Card.Title>
                   </Card.Header>
-                attendance list here
+                  <Card.Body>
+                    search results here <br />
+                    attendance list here
+                  </Card.Body>
                 </Card>
               </Grid.Col>
               <Grid.Col md={3}>
