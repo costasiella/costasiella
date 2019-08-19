@@ -106,7 +106,7 @@ function ScheduleClassAttendance({ t, match, history }) {
               <Grid.Col md={9}>
                 <Card>
                   <Card.Header>
-                    <Card.Title>{t('relations.account.invoices.title_add')}</Card.Title>
+                    <Card.Title>{t('general.attendance')}</Card.Title>
                   </Card.Header>
                 attendance list here
                 </Card>
