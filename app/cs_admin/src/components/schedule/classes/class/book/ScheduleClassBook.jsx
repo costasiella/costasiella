@@ -70,12 +70,12 @@ function ScheduleClassBook({ t, match, history }) {
   if (queryLoading) return <p>{t('general.loading_with_dots')}</p>
   // Error
   if (queryError) {
-    console.log(queryAttendanceError)
+    console.log(queryError)
     return <p>{t('general.error_sad_smiley')}</p>
   }
   
   console.log(queryData)
-  const scheduleItem = queryAttendanceData.scheduleItem
+  const scheduleItem = queryData.scheduleItem
   const subtitle = class_subtitle({
     t: t,
     location: scheduleItem.organizationLocationRoom.organizationLocation.name, 

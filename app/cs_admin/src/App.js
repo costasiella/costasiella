@@ -113,6 +113,7 @@ import ScheduleClassTeachers from './components/schedule/classes/all/teachers/Sc
 import ScheduleClassTeacherAdd from './components/schedule/classes/all/teachers/ScheduleClassTeacherAdd'
 import ScheduleClassTeacherEdit from './components/schedule/classes/all/teachers/ScheduleClassTeacherEdit'
 import ScheduleClassAttendance from './components/schedule/classes/class/attendance/ScheduleClassAttendance'
+import ScheduleClassBook from './components/schedule/classes/class/book/ScheduleClassBook'
 
 import Error404 from "./components/Error404"
 
@@ -277,6 +278,7 @@ class App extends Component {
             <Route exact path="/schedule/classes/all/teachers/:class_id/add" component={ScheduleClassTeacherAdd} />
             <Route exact path="/schedule/classes/all/teachers/:class_id/edit/:id" component={ScheduleClassTeacherEdit} />
             <Route exact path="/schedule/classes/class/attendance/:class_id/:date" component={ScheduleClassAttendance} />
+            <Route exact path="/schedule/classes/class/book/:class_id/:date/:account_id" component={ScheduleClassBook} />
 
             <Route component={Error404} />
           </Switch>

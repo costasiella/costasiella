@@ -172,7 +172,7 @@ function ScheduleClassAttendance({ t, match, history }) {
                               {node.email}
                             </Table.Col>
                             <Table.Col key={v4()}>
-                              <Link to={"/schedule/classes/class/book/" + schedule_item_id + "/" + {class_date} + "/" + node.id}>
+                              <Link to={"/schedule/classes/class/book/" + schedule_item_id + "/" + class_date + "/" + node.id}>
                                 <Button color="secondary pull-right">
                                   {t('general.checkin')} <Icon name="chevron-right" />
                                 </Button>

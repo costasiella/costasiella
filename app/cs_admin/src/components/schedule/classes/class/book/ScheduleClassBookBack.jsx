@@ -13,7 +13,7 @@ import {
 
 
 const ScheduleClassBookBack = ({ t, classId, date }) => (
-  <Link to={"/schedule/classes/class/attendance/" + classId + "/" + } >
+  <Link to={"/schedule/classes/class/attendance/" + classId + "/" + date} >
     <Button color="primary btn-block mb-6">
       <Icon prefix="fe" name="chevrons-left" /> {t('general.back')}
     </Button>
