@@ -10,7 +10,7 @@ export const GET_ACCOUNTS_QUERY = gql`
     $employee: Boolean
   ) {
     accounts(
-      first: 15, 
+      first: 25, 
       before: $before, 
       after: $after, 
       isActive: true, 

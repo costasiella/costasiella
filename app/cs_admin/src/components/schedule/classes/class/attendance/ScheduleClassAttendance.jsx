@@ -159,7 +159,7 @@ function ScheduleClassAttendance({ t, match, history }) {
                         <Table.Row key={v4()}>
                           <Table.ColHeader>{t('general.name')}</Table.ColHeader>
                           <Table.ColHeader>{t('general.email')}</Table.ColHeader>
-                          <Table.ColHeader>{t('general.info')}</Table.ColHeader>
+                          <Table.ColHeader></Table.ColHeader>
                         </Table.Row>
                       </Table.Header>
                       <Table.Body>
@@ -170,6 +170,14 @@ function ScheduleClassAttendance({ t, match, history }) {
                             </Table.Col>
                             <Table.Col key={v4()}>
                               {node.email}
+                            </Table.Col>
+                            <Table.Col key={v4()}>
+                              <Link to={"/schedule/classes/class/book/" + schedule_item_id + "/" + {class_date} + "/" + node.id}>
+                                <Button color="secondary pull-right">
+                                  {t('general.checkin')} <Icon name="chevron-right" />
+                                </Button>
+                              </Link>
+                              
                             </Table.Col>
                           </Table.Row>
                         ))}
