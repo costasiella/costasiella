@@ -50,6 +50,7 @@ export const GET_BOOKING_OPTIONS_QUERY = gql`
         bookingType
         allowed
         accountSubscription {
+          id
           dateStart
           dateEnd
           organizationSubscription {

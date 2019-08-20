@@ -20,7 +20,8 @@ import {
   Button,
   Card,
   Container,
-  Table
+  Table,
+  StampCard
 } from "tabler-react";
 import SiteWrapper from "../../../../SiteWrapper"
 import HasPermissionWrapper from "../../../../HasPermissionWrapper"
@@ -34,6 +35,7 @@ import { class_subtitle, get_accounts_query_variables } from "../tools"
 
 import ContentCard from "../../../../general/ContentCard"
 import ScheduleClassBookBack from "./ScheduleClassBookBack"
+import ScheduleClassBookSubscriptions from "./ScheduleClassBookSubscriptions"
 // import ClassEditBase from "../ClassEditBase"
 
 import { GET_BOOKING_OPTIONS_QUERY } from "./queries"
@@ -75,6 +77,8 @@ function ScheduleClassBook({ t, match, history }) {
   }
   
   console.log(queryData)
+  const account = queryData.scheduleClassBookingOptions.account
+  const subscriptions = queryData.scheduleClassBookingOptions.subscriptions
   const scheduleItem = queryData.scheduleClassBookingOptions.scheduleItem
   const subtitle = class_subtitle({
     t: t,
@@ -97,14 +101,16 @@ function ScheduleClassBook({ t, match, history }) {
           </Page.Header>
           <Grid.Row>
               <Grid.Col md={9}>
-                <Card>
+                <h4>{t('general.booking_options')} {account.fullName}</h4>
+                <ScheduleClassBookSubscriptions subscriptions={subscriptions} />
+                {/* <Card>
                   <Card.Header>
                     <Card.Title>{t('general.booking_options')}</Card.Title>
                   </Card.Header>
                   <Card.Body>
                     attendance list here
                   </Card.Body>
-                </Card>
+                </Card> */}
               </Grid.Col>
               <Grid.Col md={3}>
                 sidebar here
