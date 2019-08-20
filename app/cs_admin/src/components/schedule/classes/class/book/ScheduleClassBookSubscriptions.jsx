@@ -47,17 +47,46 @@ function ScheduleClassBookSubscriptions({ t, match, history, subscriptions }) {
   console.log(subscriptions)
 
   return (
-    <Grid.Row className="mt-6">
-      {subscriptions.map((subscription) => (
-        <Grid.Col md={4} lg={4}>
-          <StampCard
-            icon='edit'
-            color="blue"
-            header={<small>{subscription.accountSubscription.organizationSubscription.name}</small>}
-          />
+    <Grid.Row cards deck>
+      {subscriptions.map((subscription) =>(
+        <Grid.Col md={4}>
+          <Card 
+            statusColor="blue"
+            title={t("general.subscription")} >
+          <Card.Body>
+            <b>{subscription.accountSubscription.organizationSubscription.name}</b><br />
+            details here
+          </Card.Body>
+          <Card.Footer>
+            {(!subscription.allowed) ? t('schedule.classes.class.book.subscription_not_allowed') :
+              <Button 
+                block 
+                outline 
+                color="success" 
+                icon="check"
+              >
+                {t("general.checkin")}
+              </Button>
+            }
+          </Card.Footer>
+          </Card>
         </Grid.Col>
       ))}
     </Grid.Row>
+    // Table
+      // subscriptions.map((subscription) => (
+      //   <Table.Row className="mt-6">
+      //     <Table.Col md={4} lg={4}>
+      //       {t('general.subscription')}
+      //     </Table.Col>
+      //     <Table.Col md={4} lg={4}>
+      //         <span className="pull-right">
+      //           <Icon name="chevron-right" />
+      //         </span>
+      //         {subscription.accountSubscription.organizationSubscription.name}
+      //     </Table.Col>
+      //   </Table.Row>
+      // ))
   )
 }
 

@@ -108,7 +108,11 @@ function ScheduleClassBook({ t, match, history }) {
                     <Card.Title>{t('general.booking_options')}</Card.Title>
                   </Card.Header>
                   <Card.Body>
-                    attendance list here
+                    <Table className="card-table table-vcenter">
+                      <Table.Body>
+                        <ScheduleClassBookSubscriptions subscriptions={subscriptions} />
+                      </Table.Body>
+                    </Table>
                   </Card.Body>
                 </Card> */}
               </Grid.Col>
