@@ -35,6 +35,7 @@ import { class_subtitle, get_accounts_query_variables } from "../tools"
 
 import ContentCard from "../../../../general/ContentCard"
 import ScheduleClassBookBack from "./ScheduleClassBookBack"
+import ScheduleClassBookClasspasses from "./ScheduleClassBookClasspasses"
 import ScheduleClassBookSubscriptions from "./ScheduleClassBookSubscriptions"
 // import ClassEditBase from "../ClassEditBase"
 
@@ -78,6 +79,7 @@ function ScheduleClassBook({ t, match, history }) {
   
   console.log(queryData)
   const account = queryData.scheduleClassBookingOptions.account
+  const classpasses = queryData.scheduleClassBookingOptions.classpasses
   const subscriptions = queryData.scheduleClassBookingOptions.subscriptions
   const scheduleItem = queryData.scheduleClassBookingOptions.scheduleItem
   const subtitle = class_subtitle({
@@ -103,7 +105,10 @@ function ScheduleClassBook({ t, match, history }) {
               <Grid.Col md={9}>
                 <h4>{t('general.booking_options')} {account.fullName}</h4>
                 <div className="mt-6">
-                <ScheduleClassBookSubscriptions subscriptions={subscriptions} />
+                <Grid.Row cards deck>
+                  <ScheduleClassBookSubscriptions subscriptions={subscriptions} />
+                  <ScheduleClassBookClasspasses classpasses={classpasses} />
+                </Grid.Row>
                 {/* <Card>
                   <Card.Header>
                     <Card.Title>{t('general.booking_options')}</Card.Title>

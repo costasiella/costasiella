@@ -62,3 +62,8 @@ export const GET_BOOKING_OPTIONS_QUERY = gql`
     }
   }
 `
+
+
+// export const CHECKIN_MUTATION = gql`
+
+// `

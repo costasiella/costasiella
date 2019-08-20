@@ -42,22 +42,22 @@ import CSLS from "../../../../../tools/cs_local_storage"
 
 
 
-function ScheduleClassBookSubscriptions({ t, match, history, subscriptions }) {
-  console.log('subscriptions')
-  console.log(subscriptions)
+function ScheduleClassBookClasspasses({ t, match, history, classpasses }) {
+  console.log('classpasses')
+  console.log(classpasses)
 
   return (
-    subscriptions.map((subscription) =>(
+    classpasses.map((classpass) =>(
       <Grid.Col md={4}>
         <Card 
           statusColor="blue"
-          title={t("general.subscription")} >
+          title={t("general.classpass")} >
         <Card.Body>
-          <b>{subscription.accountSubscription.organizationSubscription.name}</b><br />
+          <b>{classpass.accountClasspass.organizationClasspass.name}</b><br />
           details here
         </Card.Body>
         <Card.Footer>
-          {(!subscription.allowed) ? t('schedule.classes.class.book.subscription_not_allowed') :
+          {(!classpass.allowed) ? t('schedule.classes.class.book.classpass_not_allowed') :
             <Button 
               block 
               outline 
@@ -71,23 +71,9 @@ function ScheduleClassBookSubscriptions({ t, match, history, subscriptions }) {
         </Card>
       </Grid.Col>
     ))
-    // Table
-      // subscriptions.map((subscription) => (
-      //   <Table.Row className="mt-6">
-      //     <Table.Col md={4} lg={4}>
-      //       {t('general.subscription')}
-      //     </Table.Col>
-      //     <Table.Col md={4} lg={4}>
-      //         <span className="pull-right">
-      //           <Icon name="chevron-right" />
-      //         </span>
-      //         {subscription.accountSubscription.organizationSubscription.name}
-      //     </Table.Col>
-      //   </Table.Row>
-      // ))
   )
 }
 
 
-export default withTranslation()(withRouter(ScheduleClassBookSubscriptions))
+export default withTranslation()(withRouter(ScheduleClassBookClasspasses))
 
