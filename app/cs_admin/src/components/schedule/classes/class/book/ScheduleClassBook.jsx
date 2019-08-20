@@ -75,7 +75,7 @@ function ScheduleClassBook({ t, match, history }) {
   }
   
   console.log(queryData)
-  const scheduleItem = queryData.scheduleItem
+  const scheduleItem = queryData.scheduleClassBookingOptions.scheduleItem
   const subtitle = class_subtitle({
     t: t,
     location: scheduleItem.organizationLocationRoom.organizationLocation.name, 
