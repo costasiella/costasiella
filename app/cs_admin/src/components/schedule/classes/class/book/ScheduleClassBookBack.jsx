@@ -12,12 +12,12 @@ import {
 } from "tabler-react"
 
 
-const ScheduleClassAttendanceBack = ({ t, classId }) => (
-  <Link to={"/schedule/classes/all/teachers/" + classId } >
+const ScheduleClassBookBack = ({ t, classId, date }) => (
+  <Link to={"/schedule/classes/class/attendance/" + classId + "/" + } >
     <Button color="primary btn-block mb-6">
       <Icon prefix="fe" name="chevrons-left" /> {t('general.back')}
     </Button>
   </Link>
 )
 
-export default withTranslation()(withRouter(ScheduleClassAttendanceBack))
+export default withTranslation()(withRouter(ScheduleClassBookBack))
