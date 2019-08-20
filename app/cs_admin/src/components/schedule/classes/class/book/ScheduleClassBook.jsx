@@ -65,10 +65,6 @@ function ScheduleClassBook({ t, match, history }) {
     }
   )
 
-  // const [createInvoice, { data }] = useMutation(CREATE_ACCOUNT_INVOICE, {
-  //   // onCompleted = () => history.push('/finance/invoices/edit/')
-  // }) 
-
   // Query
   // Loading
   if (queryLoading) return <p>{t('general.loading_with_dots')}</p>
@@ -101,71 +97,9 @@ function ScheduleClassBook({ t, match, history }) {
           </Page.Header>
           <Grid.Row>
               <Grid.Col md={9}>
-                {/* Search results */}
-                {(showSearch && (queryAccountsData) && (!queryAccountsLoading) && (!queryAccountsError)) ?
-                  <ContentCard cardTitle={t('general.search_results')}
-                            pageInfo={queryAccountsData.accounts.pageInfo}
-                            onLoadMore={() => {
-                                fetchMoreAccounts({
-                                variables: {
-                                  after: queryAccountsData.accounts.pageInfo.endCursor
-                                },
-                                updateQuery: (previousResult, { fetchMoreResult }) => {
-                                  const newEdges = fetchMoreResult.accounts.edges
-                                  const pageInfo = fetchMoreResult.accounts.pageInfo 
-
-                                  return newEdges.length
-                                    ? {
-                                        // Put the new accounts at the end of the list and update `pageInfo`
-                                        // so we have the new `endCursor` and `hasNextPage` values
-                                        queryAccountsData: {
-                                          accounts: {
-                                            __typename: previousResult.accounts.__typename,
-                                            edges: [ ...previousResult.accounts.edges, ...newEdges ],
-                                            pageInfo
-                                          }
-                                        }
-                                      }
-                                    : previousResult
-                                }
-                              })
-                            }} >
-                    <Table>
-                      <Table.Header>
-                        <Table.Row key={v4()}>
-                          <Table.ColHeader>{t('general.name')}</Table.ColHeader>
-                          <Table.ColHeader>{t('general.email')}</Table.ColHeader>
-                          <Table.ColHeader>{t('general.info')}</Table.ColHeader>
-                        </Table.Row>
-                      </Table.Header>
-                      <Table.Body>
-                        {queryAccountsData.accounts.edges.map(({ node }) => (
-                          <Table.Row key={v4()}>
-                            <Table.Col key={v4()}>
-                              {node.firstName} {node.lastName}
-                            </Table.Col>
-                            <Table.Col key={v4()}>
-                              {node.email}
-                            </Table.Col>
-                          </Table.Row>
-                        ))}
-                      </Table.Body>
-                    </Table>
-                  </ContentCard> : ""
-
-                }
-                {/* <Card>
-                  <Card.Header>
-                    <Card.Title>{t('general.search_results')}</Card.Title>
-                  </Card.Header>
-                  <Card.Body>
-                    search results here
-                  </Card.Body>
-                </Card> */}
-                {/* Attendance */}
                 <Card>
                   <Card.Header>
-                    <Card.Title>{t('general.attendance')}</Card.Title>
+                    <Card.Title>{t('general.booking_options')}</Card.Title>
                   </Card.Header>
                   <Card.Body>
                     attendance list here
