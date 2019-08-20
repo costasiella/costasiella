@@ -104,7 +104,7 @@ class ScheduleClassBookingOptionsType(graphene.ObjectType):
 
             classpasses_list.append(
                 ScheduleClassBookingClasspassType(
-                    booking_type = "classpass",
+                    booking_type = "CLASSPASS",
                     allowed = allowed,
                     account_classpass = classpass,
                 )
@@ -138,7 +138,7 @@ class ScheduleClassBookingOptionsType(graphene.ObjectType):
         for subscription in subscriptions:
             subscriptions_list.append(
                 ScheduleClassBookingSubscriptionType(
-                    booking_type = "subscription",
+                    booking_type = "SUBSCRIPTION",
                     allowed = True,
                     account_subscription = subscription,
                 )
