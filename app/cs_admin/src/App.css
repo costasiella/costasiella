@@ -16,6 +16,10 @@ table .btn {
   margin-left: 4px;
 }
 
+.btn-link:hover {
+  text-decoration: none !important;
+}
+
 /* Tabler changes end */
 
 /* React datepicker changes begin */
