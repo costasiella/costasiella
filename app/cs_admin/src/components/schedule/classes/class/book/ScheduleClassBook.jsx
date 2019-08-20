@@ -50,6 +50,10 @@ const DELETE_SCHEDULE_CLASS_TEACHER = gql`
   }
 `
 
+function OnClickCheckin() {
+  console.log('check-in clicked')
+}
+
 
 function ScheduleClassBook({ t, match, history }) {
   const [showSearch, setShowSearch] = useState(false)
@@ -106,8 +110,8 @@ function ScheduleClassBook({ t, match, history }) {
                 <h4>{t('general.booking_options')} {account.fullName}</h4>
                 <div className="mt-6">
                 <Grid.Row cards deck>
-                  <ScheduleClassBookSubscriptions subscriptions={subscriptions} />
-                  <ScheduleClassBookClasspasses classpasses={classpasses} />
+                  <ScheduleClassBookSubscriptions subscriptions={subscriptions} onClickCheckin={OnClickCheckin}/>
+                  <ScheduleClassBookClasspasses classpasses={classpasses} onClickCheckin={OnClickCheckin}/>
                 </Grid.Row>
                 {/* <Card>
                   <Card.Header>

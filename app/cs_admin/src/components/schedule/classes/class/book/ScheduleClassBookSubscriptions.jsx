@@ -63,6 +63,7 @@ function ScheduleClassBookSubscriptions({ t, match, history, subscriptions, onCl
               outline 
               color="success" 
               icon="check"
+              onClick={() => onClickCheckin()}
             >
               {t("general.checkin")}
             </Button>

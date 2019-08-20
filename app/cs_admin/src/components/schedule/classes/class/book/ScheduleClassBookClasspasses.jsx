@@ -63,6 +63,7 @@ function ScheduleClassBookClasspasses({ t, match, history, classpasses, onClickC
               outline 
               color="success" 
               icon="check"
+              onClick={() => onClickCheckin()}
             >
               {t("general.checkin")}
             </Button>
