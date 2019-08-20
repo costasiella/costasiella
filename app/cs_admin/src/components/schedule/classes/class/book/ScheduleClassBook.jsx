@@ -102,6 +102,7 @@ function ScheduleClassBook({ t, match, history }) {
           <Grid.Row>
               <Grid.Col md={9}>
                 <h4>{t('general.booking_options')} {account.fullName}</h4>
+                <div className="mt-6">
                 <ScheduleClassBookSubscriptions subscriptions={subscriptions} />
                 {/* <Card>
                   <Card.Header>
@@ -115,6 +116,7 @@ function ScheduleClassBook({ t, match, history }) {
                     </Table>
                   </Card.Body>
                 </Card> */}
+                </div>
               </Grid.Col>
               <Grid.Col md={3}>
                 sidebar here
