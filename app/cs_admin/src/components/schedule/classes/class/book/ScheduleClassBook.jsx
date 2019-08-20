@@ -102,7 +102,7 @@ function ScheduleClassBook({ t, match, history }) {
             </div>
           </Page.Header>
           <Grid.Row>
-              <Grid.Col md={9}>
+              <Grid.Col md={12}>
                 <h4>{t('general.booking_options')} {account.fullName}</h4>
                 <div className="mt-6">
                 <Grid.Row cards deck>
@@ -122,21 +122,6 @@ function ScheduleClassBook({ t, match, history }) {
                   </Card.Body>
                 </Card> */}
                 </div>
-              </Grid.Col>
-              <Grid.Col md={3}>
-                sidebar here
-                {/* <HasPermissionWrapper permission="add"
-                                      resource="accountsubscription">
-                  <Link to={return_url}>
-                    <Button color="primary btn-block mb-6">
-                      <Icon prefix="fe" name="chevrons-left" /> {t('general.back')}
-                    </Button>
-                  </Link>
-                </HasPermissionWrapper>
-                <ProfileMenu 
-                  active_link='subscriptions'
-                  account_id={match.params.account_id}
-                /> */}
               </Grid.Col>
             </Grid.Row>
           </Container>

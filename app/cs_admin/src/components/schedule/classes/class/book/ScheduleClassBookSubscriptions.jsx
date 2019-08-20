@@ -48,7 +48,7 @@ function ScheduleClassBookSubscriptions({ t, match, history, subscriptions, onCl
 
   return (
     subscriptions.map((subscription) =>(
-      <Grid.Col md={4}>
+      <Grid.Col md={3}>
         <Card 
           statusColor="blue"
           title={t("general.subscription")} >

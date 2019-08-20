@@ -48,7 +48,7 @@ function ScheduleClassBookClasspasses({ t, match, history, classpasses, onClickC
 
   return (
     classpasses.map((classpass) =>(
-      <Grid.Col md={4}>
+      <Grid.Col md={3}>
         <Card 
           statusColor="blue"
           title={t("general.classpass")} >
