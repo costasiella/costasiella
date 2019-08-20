@@ -32,6 +32,7 @@ import confirm_delete from "../../../../../tools/confirm_delete"
 
 import { class_subtitle, get_accounts_query_variables } from "../tools"
 
+import ScheduleClassBack from "../ScheduleClassBack"
 import ContentCard from "../../../../general/ContentCard"
 import InputSearch from "../../../../general/InputSearch"
 // import ClassEditBase from "../ClassEditBase"
@@ -102,7 +103,8 @@ function ScheduleClassAttendance({ t, match, history }) {
       <div className="my-3 my-md-5">
         <Container>
           <Page.Header title={t('schedule.title')} subTitle={subtitle}>
-            <div className="page-options d-flex">            
+            <div className="page-options d-flex">       
+              <ScheduleClassBack />
               <InputSearch 
                 initialValueKey={CSLS.SCHEDULE_CLASSES_CLASS_ATTENDANCE_SEARCH}
                 placeholder="Search..."
