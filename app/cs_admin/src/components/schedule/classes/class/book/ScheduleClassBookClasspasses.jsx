@@ -42,7 +42,7 @@ import CSLS from "../../../../../tools/cs_local_storage"
 
 
 
-function ScheduleClassBookClasspasses({ t, match, history, classpasses }) {
+function ScheduleClassBookClasspasses({ t, match, history, classpasses, onClickCheckin=f=>f }) {
   console.log('classpasses')
   console.log(classpasses)
 
