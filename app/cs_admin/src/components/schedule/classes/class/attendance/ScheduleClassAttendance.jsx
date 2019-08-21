@@ -183,25 +183,72 @@ function ScheduleClassAttendance({ t, match, history }) {
                       </Table.Body>
                     </Table>
                   </ContentCard> : ""
-
                 }
-                {/* <Card>
-                  <Card.Header>
-                    <Card.Title>{t('general.search_results')}</Card.Title>
-                  </Card.Header>
-                  <Card.Body>
-                    search results here
-                  </Card.Body>
-                </Card> */}
                 {/* Attendance */}
-                <Card>
+                <ContentCard cardTitle={t('general.attendance')}
+                            pageInfo={queryAttendanceData.scheduleItemAttendances.pageInfo}
+                            onLoadMore={() => {
+                                fetchMoreAccounts({
+                                variables: {
+                                  after: queryAttendanceData.scheduleItemAttendances.pageInfo.endCursor
+                                },
+                                updateQuery: (previousResult, { fetchMoreResult }) => {
+                                  const newEdges = fetchMoreResult.scheduleItemAttendances.edges
+                                  const pageInfo = fetchMoreResult.scheduleItemAttendances.pageInfo 
+
+                                  return newEdges.length
+                                    ? {
+                                        // Put the new scheduleItemAttendances at the end of the list and update `pageInfo`
+                                        // so we have the new `endCursor` and `hasNextPage` values
+                                        queryAttendanceData: {
+                                          scheduleItemAttendances: {
+                                            __typename: previousResult.scheduleItemAttendances.__typename,
+                                            edges: [ ...previousResult.scheduleItemAttendances.edges, ...newEdges ],
+                                            pageInfo
+                                          }
+                                        }
+                                      }
+                                    : previousResult
+                                }
+                              })
+                            }} >
+                  <Table>
+                    <Table.Header>
+                      <Table.Row key={v4()}>
+                        <Table.ColHeader>{t('general.name')}</Table.ColHeader>
+                        <Table.ColHeader>{t('general.booking_status')}</Table.ColHeader>
+                        <Table.ColHeader></Table.ColHeader>
+                      </Table.Row>
+                    </Table.Header>
+                    <Table.Body>
+                      {queryAttendanceData.scheduleItemAttendances.edges.map(({ node }) => (
+                          <Table.Row key={v4()}>
+                            <Table.Col>
+                              {node.account.fullName}
+                            </Table.Col>
+                            <Table.Col>
+                              {/* {node.email} */}
+                            </Table.Col>
+                            <Table.Col>
+                              {/* <Link to={"/schedule/classes/class/book/" + schedule_item_id + "/" + class_date + "/" + node.id}>
+                                <Button color="secondary pull-right">
+                                  {t('general.checkin')} <Icon name="chevron-right" />
+                                </Button>
+                              </Link>        */}
+                            </Table.Col>
+                          </Table.Row>
+                        ))}
+                    </Table.Body>
+                  </Table>
+                </ContentCard>
+                {/* <Card>
                   <Card.Header>
                     <Card.Title>{t('general.attendance')}</Card.Title>
                   </Card.Header>
                   <Card.Body>
                     attendance list here
                   </Card.Body>
-                </Card>
+                </Card> */}
               </Grid.Col>
               <Grid.Col md={3}>
                 sidebar here
