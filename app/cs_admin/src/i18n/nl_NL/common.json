@@ -273,7 +273,13 @@
         "items": "__STRING_NOT_TRANSLATED__",
         "quantity_short_and_price": "__STRING_NOT_TRANSLATED__",
         "product": "__STRING_NOT_TRANSLATED__",
-        "finance_invoice_group": "__STRING_NOT_TRANSLATED__"
+        "finance_invoice_group": "__STRING_NOT_TRANSLATED__",
+        "teachers_available": "__STRING_NOT_TRANSLATED__",
+        "search_results": "__STRING_NOT_TRANSLATED__",
+        "checkin": "__STRING_NOT_TRANSLATED__",
+        "attendance": "__STRING_NOT_TRANSLATED__",
+        "booking_status": "__STRING_NOT_TRANSLATED__",
+        "booking_options": "__STRING_NOT_TRANSLATED__"
     },
     "yup": {
         "min_len_3": "__STRING_NOT_TRANSLATED__",
@@ -655,6 +661,24 @@
                 "shop_book": "__STRING_NOT_TRANSLATED__",
                 "attend_disabled": "__STRING_NOT_TRANSLATED__",
                 "attend_disabled_help": "__STRING_NOT_TRANSLATED__"
+            },
+            "class": {
+                "attendance": {
+                    "status_saved": "__STRING_NOT_TRANSLATED__",
+                    "booking_status": {
+                        "ATTENDING": "__STRING_NOT_TRANSLATED__",
+                        "BOOKED": "__STRING_NOT_TRANSLATED__",
+                        "CANCELLED": "__STRING_NOT_TRANSLATED__",
+                        "invalid_type": "__STRING_NOT_TRANSLATED__"
+                    },
+                    "delete_confirm_msg": "__STRING_NOT_TRANSLATED__",
+                    "delete_success": "__STRING_NOT_TRANSLATED__"
+                },
+                "book": {
+                    "toast_success": "__STRING_NOT_TRANSLATED__",
+                    "classpass_not_allowed": "__STRING_NOT_TRANSLATED__",
+                    "subscription_not_allowed": "__STRING_NOT_TRANSLATED__"
+                }
             }
         },
         "appointments": {
@@ -668,7 +692,17 @@
             "deleted": "__STRING_NOT_TRANSLATED__",
             "add": "__STRING_NOT_TRANSLATED__",
             "filter_all_locations": "__STRING_NOT_TRANSLATED__",
-            "filter_all_appointments": "__STRING_NOT_TRANSLATED__"
+            "filter_all_appointments": "__STRING_NOT_TRANSLATED__",
+            "title_edit": "__STRING_NOT_TRANSLATED__",
+            "toast_edit_success": "__STRING_NOT_TRANSLATED__",
+            "title_add": "__STRING_NOT_TRANSLATED__",
+            "toast_add_success": "__STRING_NOT_TRANSLATED__",
+            "public": "__STRING_NOT_TRANSLATED__",
+            "frequencyType": "__STRING_NOT_TRANSLATED__",
+            "select_specific": "__STRING_NOT_TRANSLATED__",
+            "select_weekly": "__STRING_NOT_TRANSLATED__",
+            "frequencyInterval": "__STRING_NOT_TRANSLATED__",
+            "placeholder_enddate": "__STRING_NOT_TRANSLATED__"
         }
     },
     "countries": {

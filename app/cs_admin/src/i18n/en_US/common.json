@@ -273,7 +273,13 @@
         "items": "Items",
         "quantity_short_and_price": "QTY & Price",
         "product": "Product",
-        "finance_invoice_group": "Invoice group"
+        "finance_invoice_group": "Invoice group",
+        "teachers_available": "Teachers available",
+        "search_results": "Search results",
+        "checkin": "Check-in",
+        "attendance": "Attendance",
+        "booking_status": "Booking status",
+        "booking_options": "Booking options"
     },
     "yup": {
         "min_len_3": "Please input at least 3 characters",
@@ -655,6 +661,24 @@
                 "shop_book": "Book in webshop",
                 "attend_disabled": "Can't change",
                 "attend_disabled_help": "Attend has to be enabled when 'Book in webshop' is set."
+            },
+            "class": {
+                "attendance": {
+                    "status_saved": "Updated booking status",
+                    "booking_status": {
+                        "ATTENDING": "Attending",
+                        "BOOKED": "Booked",
+                        "CANCELLED": "Cancelled",
+                        "invalid_type": "Unknown"
+                    },
+                    "delete_confirm_msg": "Are you sure you wish to remove this customer from the attendance list?",
+                    "delete_success": "Customer removed from list"
+                },
+                "book": {
+                    "toast_success": "Check-in success",
+                    "classpass_not_allowed": "Not allowed for this class",
+                    "subscription_not_allowed": "Not allowed for this class"
+                }
             }
         },
         "appointments": {
@@ -668,7 +692,17 @@
             "deleted": "Appointment deleted",
             "add": "Add appointment",
             "filter_all_locations": "All locations",
-            "filter_all_appointments": "All appointment types"
+            "filter_all_appointments": "All appointment types",
+            "title_edit": "__STRING_NOT_TRANSLATED__",
+            "toast_edit_success": "__STRING_NOT_TRANSLATED__",
+            "title_add": "__STRING_NOT_TRANSLATED__",
+            "toast_add_success": "__STRING_NOT_TRANSLATED__",
+            "public": "__STRING_NOT_TRANSLATED__",
+            "frequencyType": "__STRING_NOT_TRANSLATED__",
+            "select_specific": "__STRING_NOT_TRANSLATED__",
+            "select_weekly": "__STRING_NOT_TRANSLATED__",
+            "frequencyInterval": "__STRING_NOT_TRANSLATED__",
+            "placeholder_enddate": "__STRING_NOT_TRANSLATED__"
         }
     },
     "countries": {
