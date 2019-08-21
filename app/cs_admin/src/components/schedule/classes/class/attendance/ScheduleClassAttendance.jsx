@@ -43,9 +43,9 @@ import BadgeBookingStatus from "../../../../ui/BadgeBookingStatus"
 import { GET_ACCOUNTS_QUERY, GET_SCHEDULE_CLASS_ATTENDANCE_QUERY } from "./queries"
 import CSLS from "../../../../../tools/cs_local_storage"
 
-const DELETE_SCHEDULE_CLASS_TEACHER = gql`
-  mutation DeleteScheduleClassTeacher($input: DeleteScheduleItemTeacherInput!) {
-    deleteScheduleItemTeacher(input: $input) {
+const DELETE_SCHEDULE_ITEM_ATTENDANCE = gql`
+  mutation DeleteScheduleItemAttendance($input: DeleteScheduleItemAttendanceInput!) {
+    deleteScheduleItemAttendance(input: $input) {
       ok
     }
   }

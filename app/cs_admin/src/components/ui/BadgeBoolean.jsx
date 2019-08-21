@@ -7,6 +7,7 @@ import {
   Badge
 } from "tabler-react"
 
+
 const BadgeBoolean = ({ t, value }) => (
     (value) ?
         <Badge color="success">{t('general.yes')}</Badge> :
