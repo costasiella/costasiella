@@ -11,7 +11,7 @@ import {
 } from "tabler-react";
 import { toast } from 'react-toastify'
 
-
+import { get_attendance_list_query_variables } from "../attendance/tools"
 import { GET_SCHEDULE_CLASS_ATTENDANCE_QUERY } from "../attendance/queries"
 import { CREATE_SCHEDULE_ITEM_ATTENDANCE } from "./queries"
 import CSLS from "../../../../../tools/cs_local_storage"
@@ -50,10 +50,7 @@ function ClasspassCheckinButton({t, match, history, classpass}) {
       onClick={() => classCheckin({
         variables: { "input": createInput }, 
         refetchQueries: [
-          {query: GET_SCHEDULE_CLASS_ATTENDANCE_QUERY, variables: {
-            scheduleItem: schedule_item_id,
-            date: class_date
-          }},
+          {query: GET_SCHEDULE_CLASS_ATTENDANCE_QUERY, variables: get_attendance_list_query_variables(schedule_item_id, class_date)},
         ]})
         .then(({ data }) => {
             console.log('got data', data);

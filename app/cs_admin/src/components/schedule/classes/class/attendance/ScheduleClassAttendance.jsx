@@ -28,6 +28,7 @@ import { TimeStringToJSDateOBJ } from '../../../../../tools/date_tools'
 // import { confirmAlert } from 'react-confirm-alert'; // Import
 import { toast } from 'react-toastify'
 import { class_edit_all_subtitle, represent_teacher_role } from "../../tools"
+import { get_attendance_list_query_variables } from "./tools"
 import confirm_delete from "../../../../../tools/confirm_delete"
 
 import { get_accounts_query_variables } from "./tools"
@@ -57,10 +58,7 @@ function ScheduleClassAttendance({ t, match, history }) {
   const class_date = match.params.date
   const { loading: queryAttendanceLoading, error: queryAttendanceError, data: queryAttendanceData } = useQuery(
     GET_SCHEDULE_CLASS_ATTENDANCE_QUERY, {
-      variables: {
-        scheduleItem: schedule_item_id,
-        date: class_date
-      }
+      variables: get_attendance_list_query_variables(schedule_item_id, class_date)
     }
   )
   const [ getAccounts, 
