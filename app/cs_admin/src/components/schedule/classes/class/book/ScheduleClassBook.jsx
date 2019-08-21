@@ -52,6 +52,7 @@ const DELETE_SCHEDULE_CLASS_TEACHER = gql`
 
 function OnClickCheckin() {
   console.log('check-in clicked')
+  // const [classCheckin, { data }] = useMutation()
 }
 
 

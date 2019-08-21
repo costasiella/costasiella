@@ -64,6 +64,12 @@ export const GET_BOOKING_OPTIONS_QUERY = gql`
 `
 
 
-// export const CREATE_SCHEDULE_ITEM_ATTENDANCE = gql`
-
-// `
+export const CREATE_SCHEDULE_ITEM_ATTENDANCE = gql`
+  mutation CreateScheduleItemAttendance($input: CreateScheduleItemAttendanceInput!) {
+    createScheduleItemAttendance(input:$input) {
+      scheduleItemAttendance {
+        id
+      }
+    }
+  }
+`
