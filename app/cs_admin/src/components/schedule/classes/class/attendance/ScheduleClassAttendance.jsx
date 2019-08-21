@@ -37,6 +37,7 @@ import { class_subtitle } from "../tools"
 import ScheduleClassBack from "../ScheduleClassBack"
 import ContentCard from "../../../../general/ContentCard"
 import InputSearch from "../../../../general/InputSearch"
+import BadgeBookingStatus from "../../../../ui/BadgeBookingStatus"
 // import ClassEditBase from "../ClassEditBase"
 
 import { GET_ACCOUNTS_QUERY, GET_SCHEDULE_CLASS_ATTENDANCE_QUERY } from "./queries"
@@ -226,7 +227,7 @@ function ScheduleClassAttendance({ t, match, history }) {
                               {node.account.fullName}
                             </Table.Col>
                             <Table.Col>
-                              {node.bookingStatus}
+                              <BadgeBookingStatus status={node.bookingStatus} />
                             </Table.Col>
                             <Table.Col>
                               {/* <Link to={"/schedule/classes/class/book/" + schedule_item_id + "/" + class_date + "/" + node.id}>
