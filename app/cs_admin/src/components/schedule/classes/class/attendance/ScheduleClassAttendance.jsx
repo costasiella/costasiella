@@ -38,18 +38,11 @@ import ScheduleClassBack from "../ScheduleClassBack"
 import ContentCard from "../../../../general/ContentCard"
 import InputSearch from "../../../../general/InputSearch"
 import BadgeBookingStatus from "../../../../ui/BadgeBookingStatus"
+import ScheduleClassAttendanceDelete from "./ScheduleClassAttendanceDelete"
 // import ClassEditBase from "../ClassEditBase"
 
 import { GET_ACCOUNTS_QUERY, GET_SCHEDULE_CLASS_ATTENDANCE_QUERY } from "./queries"
 import CSLS from "../../../../../tools/cs_local_storage"
-
-const DELETE_SCHEDULE_ITEM_ATTENDANCE = gql`
-  mutation DeleteScheduleItemAttendance($input: DeleteScheduleItemAttendanceInput!) {
-    deleteScheduleItemAttendance(input: $input) {
-      ok
-    }
-  }
-`
 
 
 function ScheduleClassAttendance({ t, match, history }) {
@@ -230,6 +223,7 @@ function ScheduleClassAttendance({ t, match, history }) {
                               <BadgeBookingStatus status={node.bookingStatus} />
                             </Table.Col>
                             <Table.Col>
+                              <ScheduleClassAttendanceDelete node={node} />
                               {/* <Link to={"/schedule/classes/class/book/" + schedule_item_id + "/" + class_date + "/" + node.id}>
                                 <Button color="secondary pull-right">
                                   {t('general.checkin')} <Icon name="chevron-right" />
