@@ -52,7 +52,27 @@ const DELETE_SCHEDULE_CLASS_TEACHER = gql`
 
 function OnClickCheckin() {
   console.log('check-in clicked')
-  // const [classCheckin, { data }] = useMutation()
+
+  // const account_id = match.params.account_id
+  // const schedule_item_id = match.params.class_id
+  // const class_date = match.params.date
+
+  // createInput = {
+  //   "account": account_id,
+  //   "scheduleItem": schedule_item_id,
+  //   "date": class_date,
+  // }
+
+  // if (classpass) {
+  //   createInput.accountClasspass = classpass.id,
+  //   createInput.attendanceType = "CLASSPASS"
+  // }
+
+  // const [classCheckin, { data, onCompleted, onError }] = useMutation(CREATE_SCHEDULE_ITEM_ATTENDANCE)
+  // classCheckin({variables: {
+  //   "input": createInput
+  // }})
+
 }
 
 

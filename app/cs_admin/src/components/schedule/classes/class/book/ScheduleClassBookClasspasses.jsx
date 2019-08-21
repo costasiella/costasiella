@@ -35,11 +35,12 @@ import { class_subtitle, get_accounts_query_variables } from "../tools"
 
 import ContentCard from "../../../../general/ContentCard"
 import ScheduleClassBookBack from "./ScheduleClassBookBack"
+import ClasspassCheckinButton from "./ScheduleClassBookClasspassBtn"
+
 // import ClassEditBase from "../ClassEditBase"
 
-import { GET_BOOKING_OPTIONS_QUERY } from "./queries"
+import { GET_BOOKING_OPTIONS_QUERY, CREATE_SCHEDULE_ITEM_ATTENDANCE } from "./queries"
 import CSLS from "../../../../../tools/cs_local_storage"
-
 
 
 function ScheduleClassBookClasspasses({ t, match, history, classpasses, onClickCheckin=f=>f }) {
@@ -58,15 +59,16 @@ function ScheduleClassBookClasspasses({ t, match, history, classpasses, onClickC
         </Card.Body>
         <Card.Footer>
           {(!classpass.allowed) ? t('schedule.classes.class.book.classpass_not_allowed') :
-            <Button 
-              block 
-              outline 
-              color="success" 
-              icon="check"
-              onClick={() => onClickCheckin()}
-            >
-              {t("general.checkin")}
-            </Button>
+            <ClasspassCheckinButton classpass={classpass} />
+            // <Button 
+            //   block 
+            //   outline 
+            //   color="success" 
+            //   icon="check"
+            //   onClick={() => onClickCheckin({classpass: classpass})}
+            // >
+            //   {t("general.checkin")}
+            // </Button>
           }
         </Card.Footer>
         </Card>
