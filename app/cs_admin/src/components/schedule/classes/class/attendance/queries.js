@@ -99,6 +99,17 @@ export const DELETE_SCHEDULE_CLASS_ATTENDANCE = gql`
 `
 
 
+export const UPDATE_SCHEDULE_ITEM_ATTENDANCE = gql`
+  mutation UpdateScheduleItemAttendance($input: UpdateScheduleItemAttendanceInput!) {
+    updateScheduleItemAttendance(input:$input) {
+      scheduleItemAttendance {
+        id
+      }
+    }
+  }
+`
+
+
 // export const GET_SINGLE_SCHEDULE_CLASS_TEACHERS_QUERY = gql`
 //   query ScheduleItemTeacher($before: String, $after: String, $id: ID!) {
 //     scheduleItemTeacher(id: $id) {
