@@ -30,7 +30,8 @@ import { toast } from 'react-toastify'
 import { class_edit_all_subtitle, represent_teacher_role } from "../../tools"
 import confirm_delete from "../../../../../tools/confirm_delete"
 
-import { class_subtitle, get_accounts_query_variables } from "../tools"
+import { get_accounts_query_variables } from "./tools"
+import { class_subtitle } from "../tools"
 
 import ScheduleClassBack from "../ScheduleClassBack"
 import ContentCard from "../../../../general/ContentCard"
