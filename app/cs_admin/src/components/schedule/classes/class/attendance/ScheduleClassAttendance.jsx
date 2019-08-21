@@ -46,12 +46,35 @@ import { GET_ACCOUNTS_QUERY, GET_SCHEDULE_CLASS_ATTENDANCE_QUERY, UPDATE_SCHEDUL
 import CSLS from "../../../../../tools/cs_local_storage"
 
 
+function setAttendanceStatus({t, updateAttendance, node, status}) {
+  updateAttendance({
+    variables: { 
+      input: {
+        id: node.id, 
+        bookingStatus: status
+      }
+    }
+  }).then(({ data }) => {
+    console.log('got data', data);
+    toast.success(
+      t('schedule.classes.class.attendance.status_saved'), {
+        position: toast.POSITION.BOTTOM_RIGHT
+      })
+  }).catch((error) => {
+    toast.error((t('general.toast_server_error')) + ': ' +  error, {
+        position: toast.POSITION.BOTTOM_RIGHT
+      })
+    console.log('there was an error sending the query', error);
+  })
+}
+
+
 function ScheduleClassAttendance({ t, match, history }) {
   const [showSearch, setShowSearch] = useState(false)
   const return_url = "/schedule/classes/"
   const schedule_item_id = match.params.class_id
   const class_date = match.params.date
-  const { loading: queryAttendanceLoading, error: queryAttendanceError, data: queryAttendanceData } = useQuery(
+  const { refetch: refetchAttendance, loading: queryAttendanceLoading, error: queryAttendanceError, data: queryAttendanceData } = useQuery(
     GET_SCHEDULE_CLASS_ATTENDANCE_QUERY, {
       variables: get_attendance_list_query_variables(schedule_item_id, class_date)
     }
@@ -234,23 +257,54 @@ function ScheduleClassAttendance({ t, match, history }) {
                                 type="button"
                                 toggle
                                 color="secondary btn-sm"
-                                triggerContent={t("general.actions")}
+                                triggerContent={t("general.status")}
                                 items={[
                                   <HasPermissionWrapper key={v4()} permission="change" resource="scheduleitemattendance">
                                     <Dropdown.Item
                                       key={v4()}
-                                      icon="edit-2"
+                                      icon="check"
                                       onClick={() => {
-                                        updateAttendance({
-                                          variables: { 
-                                            input: {
-                                              id: node.id, 
-                                              bookingStatus:'BOOKED'
-                                            }
-                                          }
+                                        setAttendanceStatus({
+                                          t: t, 
+                                          updateAttendance: updateAttendance,
+                                          node: node,
+                                          status: 'ATTENDING'
                                         })
+                                        refetchAttendance()
+                                      }}>
+                                        {t('schedule.classes.class.attendance.booking_status.ATTENDING')}
+                                    </Dropdown.Item>
+                                  </HasPermissionWrapper>,
+                                  <HasPermissionWrapper key={v4()} permission="change" resource="scheduleitemattendance">
+                                    <Dropdown.Item
+                                      key={v4()}
+                                      icon="calendar"
+                                      onClick={() => {
+                                        setAttendanceStatus({
+                                          t: t, 
+                                          updateAttendance: updateAttendance,
+                                          node: node,
+                                          status: 'BOOKED'
+                                        })
+                                        refetchAttendance()
                                       }}>
                                         {t('schedule.classes.class.attendance.booking_status.BOOKED')}
+                                    </Dropdown.Item>
+                                  </HasPermissionWrapper>,
+                                  <HasPermissionWrapper key={v4()} permission="change" resource="scheduleitemattendance">
+                                    <Dropdown.Item
+                                      key={v4()}
+                                      icon="x"
+                                      onClick={() => {
+                                        setAttendanceStatus({
+                                          t: t, 
+                                          updateAttendance: updateAttendance,
+                                          node: node,
+                                          status: 'CANCELLED'
+                                        })
+                                        refetchAttendance()
+                                      }}>
+                                        {t('schedule.classes.class.attendance.booking_status.CANCELLED')}
                                     </Dropdown.Item>
                                   </HasPermissionWrapper>,
                                   // <HasPermissionWrapper key={v4()} permission="change" resource="scheduleitemattendance">
