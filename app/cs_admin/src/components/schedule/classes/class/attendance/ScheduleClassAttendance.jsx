@@ -12,6 +12,7 @@ import moment from 'moment'
 
 import {
   Alert,
+  Dropdown,
   Page,
   Grid,
   Icon,
@@ -223,6 +224,71 @@ function ScheduleClassAttendance({ t, match, history }) {
                               <BadgeBookingStatus status={node.bookingStatus} />
                             </Table.Col>
                             <Table.Col>
+                              <Dropdown
+                                key={v4()}
+                                className="pull-right"
+                                type="button"
+                                toggle
+                                color="secondary btn-sm"
+                                triggerContent={t("general.actions")}
+                                items={[
+                                  <HasPermissionWrapper key={v4()} permission="change" resource="scheduleitemattendance">
+                                    <Dropdown.Item
+                                      key={v4()}
+                                      icon="edit-2"
+                                      onClick={() => history.push('/schedule/classes/class/attendance/' + scheduleItemId + '/' + date)}>
+                                        {t("general.attendance")}
+                                    </Dropdown.Item>
+                                  </HasPermissionWrapper>,
+                                  <HasPermissionWrapper key={v4()} permission="change" resource="scheduleitemattendance">
+                                    <Dropdown.ItemDivider key={v4()} />
+                                    <Dropdown.Item
+                                      key={v4()}
+                                      badge={t('schedule.classes.all_classes_in_series')}
+                                      badgeType="secondary"
+                                      icon="edit-2"
+                                      onClick={() => history.push('/schedule/classes/all/edit/' + scheduleItemId)}>
+                                        {t("general.edit")}
+                                    </Dropdown.Item>
+                                  </HasPermissionWrapper>,
+                                  <HasPermissionWrapper key={v4()} permission="delete" resource="scheduleclass">
+                                    <Dropdown.ItemDivider key={v4()} />
+                                    <Mutation mutation={DELETE_SCHEDULE_CLASS} key={v4()}>
+                                      {(deleteScheduleClass, { data }) => (
+                                          <Dropdown.Item
+                                            key={v4()}
+                                            badge={t('schedule.classes.all_classes_in_series')}
+                                            badgeType="danger"
+                                            icon="trash-2"
+                                            onClick={() => {
+                                              confirm_delete({
+                                                t: t,
+                                                msgConfirm: t("schedule.classes.delete_confirm_msg"),
+                                                msgDescription: <p key={v4()}>
+                                                  {moment(date + ' ' + timeStart).format('LT')} {' - '}
+                                                  {moment(date + ' ' + timeEnd).format('LT')} {' '} @ {' '}
+                                                  {organizationLocationRoom.organizationLocation.name} {' '}
+                                                  {organizationLocationRoom.name}
+                                                  {organizationClasstype.Name}
+                                                  </p>,
+                                                msgSuccess: t('schedule.classes.deleted'),
+                                                deleteFunction: deleteScheduleClass,
+                                                functionVariables: { variables: {
+                                                  input: {
+                                                    id: scheduleItemId
+                                                  }
+                                                }, refetchQueries: [
+                                                  { query: GET_CLASSES_QUERY, variables: get_list_query_variables() }
+                                                ]}
+                                              })
+                                          }}>
+                                          {t("general.delete")}
+                                          </Dropdown.Item>
+                                      )}
+                                    </Mutation>
+                                  </HasPermissionWrapper>
+                                ]}
+                              />
                               <ScheduleClassAttendanceDelete node={node} />
                               {/* <Link to={"/schedule/classes/class/book/" + schedule_item_id + "/" + class_date + "/" + node.id}>
                                 <Button color="secondary pull-right">

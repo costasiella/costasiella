@@ -149,6 +149,7 @@ class CreateScheduleItemAttendance(graphene.relay.ClientIDMutation):
 
 class UpdateScheduleItemAttendance(graphene.relay.ClientIDMutation):
     class Input:
+        id = graphene.ID(required=True)
         attendance_type = graphene.String(required=False)
         booking_status = graphene.String(required=False, default_value="BOOKED")
         

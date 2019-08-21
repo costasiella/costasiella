@@ -18,8 +18,6 @@ function ScheduleClassAttendanceDelete({t, match, node}) {
   const class_date = match.params.date
   const [deleteScheduleItemAttendance, { data }] = useMutation(DELETE_SCHEDULE_CLASS_ATTENDANCE)
 
-  console.log(get_attendance_list_query_variables(schedule_item_id, class_date))
-
     return (
       <button className="icon btn btn-link btn-sm" 
         title={t('general.delete')} 
