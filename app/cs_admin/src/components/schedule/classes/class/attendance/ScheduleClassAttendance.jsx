@@ -155,10 +155,10 @@ function ScheduleClassAttendance({ t, match, history }) {
                 {/* Search results */}
                 {(showSearch && (queryAccountsData) && (!queryAccountsLoading) && (!queryAccountsError)) ?
                   <ContentCard cardTitle={t('general.search_results')}
-                            pageInfo={queryAccountsData.accounts.pageInfo}
-                            onLoadMore={() => {
+                              pageInfo={queryAccountsData.accounts.pageInfo}
+                              onLoadMore={() => {
                                 fetchMoreAccounts({
-                                variables: {
+                                  variables: {
                                   after: queryAccountsData.accounts.pageInfo.endCursor
                                 },
                                 updateQuery: (previousResult, { fetchMoreResult }) => {
@@ -220,8 +220,8 @@ function ScheduleClassAttendance({ t, match, history }) {
                 }
                 {/* Attendance */}
                 <ContentCard cardTitle={t('general.attendance')}
-                            pageInfo={queryAttendanceData.scheduleItemAttendances.pageInfo}
-                            onLoadMore={() => {
+                             pageInfo={queryAttendanceData.scheduleItemAttendances.pageInfo}
+                             onLoadMore={() => {
                                 fetchMoreAccounts({
                                 variables: {
                                   after: queryAttendanceData.scheduleItemAttendances.pageInfo.endCursor
