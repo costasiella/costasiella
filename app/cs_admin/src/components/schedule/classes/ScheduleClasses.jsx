@@ -299,11 +299,10 @@ const ScheduleClasses = ({ t, history }) => (
                                         color="secondary btn-sm"
                                         triggerContent={t("general.actions")}
                                         items={[
-                                          <Dropdown.Item key={v4()}>Dropdown Link</Dropdown.Item>,
                                           <HasPermissionWrapper key={v4()} permission="view" resource="scheduleitemattendance">
                                             <Dropdown.Item
                                               key={v4()}
-                                              icon="edit-2"
+                                              icon="check-circle"
                                               onClick={() => history.push('/schedule/classes/class/attendance/' + scheduleItemId + '/' + date)}>
                                                 {t("general.attendance")}
                                             </Dropdown.Item>
