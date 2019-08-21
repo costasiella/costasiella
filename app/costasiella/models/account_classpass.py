@@ -1,9 +1,10 @@
 from django.db import models
-
+from django.db.models import Q
 
 from .account import Account
 from .organization_classpass import OrganizationClasspass
 from .finance_payment_method import FinancePaymentMethod
+
 
 class AccountClasspass(models.Model):
     # add additional fields in here
@@ -24,10 +25,27 @@ class AccountClasspass(models.Model):
         return self.organization_classpass.name + ' [' + unicode(self.date_start) + ']'
 
 
+    def update_classes_remaining(self):
+        """ Calculate remaining classes """
+        from .schedule_item_attendance import 
+        
+        if self.organization_classpass.unlimited:
+            # No need to do anything for unlimited passes
+            return
+        else:
+            total = self.organization_classpass.classes
+            classes_taken = ScheduleItemAttendance.objects.filter(
+                account_classpass = self.id,
+                ~Q(booking_status = 'CANCELLED')
+            )
+            self.classes_remaining = total - classes_taken
+            self.save()
+    
+
     def set_date_end(self):
         """
-           Calculate and set enddate when adding a class pass
-           return: datetime.date
+        Calculate and set enddate when adding a class pass
+        return: datetime.date
         """
         def add_months(sourcedate, months):
             month = sourcedate.month - 1 + months
