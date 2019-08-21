@@ -28,8 +28,6 @@ export const GET_ACCOUNTS_QUERY = gql`
       edges {
         node {
           id
-          firstName
-          lastName
           fullName
           email
           isActive

@@ -108,6 +108,12 @@ function ScheduleClassAttendance({ t, match, history }) {
   }
   
   console.log(queryAttendanceData)
+  let checkedInIds = []
+  queryAttendanceData.scheduleItemAttendances.edges.map(({ node }) => (
+    checkedInIds.push(node.account.id)
+  ))
+  console.log(checkedInIds)
+
   const scheduleItem = queryAttendanceData.scheduleItem
   const subtitle = class_subtitle({
     t: t,
@@ -189,17 +195,20 @@ function ScheduleClassAttendance({ t, match, history }) {
                           {queryAccountsData.accounts.edges.map(({ node }) => (
                             <Table.Row key={v4()}>
                               <Table.Col key={v4()}>
-                                {node.firstName} {node.lastName}
+                                {node.fullName}
                               </Table.Col>
                               <Table.Col key={v4()}>
                                 {node.email}
                               </Table.Col>
                               <Table.Col key={v4()}>
-                                <Link to={"/schedule/classes/class/book/" + schedule_item_id + "/" + class_date + "/" + node.id}>
-                                  <Button color="secondary pull-right">
-                                    {t('general.checkin')} <Icon name="chevron-right" />
-                                  </Button>
-                                </Link>       
+                                {(checkedInIds.includes(node.id)) ? 
+                                 <span className="pull-right">{t("schedule.classes.class.attendance.search_results_already_checked_in")}</span> :
+                                  <Link to={"/schedule/classes/class/book/" + schedule_item_id + "/" + class_date + "/" + node.id}>
+                                    <Button color="secondary pull-right">
+                                      {t('general.checkin')} <Icon name="chevron-right" />
+                                    </Button>
+                                  </Link>       
+                                }
                               </Table.Col>
                             </Table.Row>
                           ))}
