@@ -28,7 +28,8 @@ function ClasspassCheckinButton({t, match, history, classpass}) {
     "scheduleItem": schedule_item_id,
     "accountClasspass": classpass.accountClasspass.id,
     "date": class_date,
-    "attendanceType": "CLASSPASS"
+    "attendanceType": "CLASSPASS",
+    "bookingStatus": "ATTENDING"
   }
 
   const [classCheckin, { data, loading, error, onCompleted }] = useMutation(CREATE_SCHEDULE_ITEM_ATTENDANCE)
