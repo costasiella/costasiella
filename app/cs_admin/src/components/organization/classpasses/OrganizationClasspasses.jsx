@@ -25,7 +25,7 @@ import HasPermissionWrapper from "../../HasPermissionWrapper"
 // import { confirmAlert } from 'react-confirm-alert'; // Import
 import { toast } from 'react-toastify'
 
-import BooleanBadge from "../../ui/BooleanBadge"
+import BadgeBoolean from "../../ui/BadgeBoolean"
 
 import ContentCard from "../../general/ContentCard"
 import CardHeaderSeparator from "../../general/CardHeaderSeparator"
@@ -155,10 +155,10 @@ const OrganizationClasspasses = ({ t, history, archived=false }) => (
                                     {node.name}
                                   </Table.Col>
                                   <Table.Col key={v4()}>
-                                    <BooleanBadge value={node.displayPublic} />
+                                    <BadgeBoolean value={node.displayPublic} />
                                   </Table.Col>
                                   <Table.Col key={v4()}>
-                                    <BooleanBadge value={node.displayShop} />
+                                    <BadgeBoolean value={node.displayShop} />
                                   </Table.Col>
                                   <Table.Col key={v4()}>
                                     {(node.unlimited) ? t('general.unlimited') : node.classes }

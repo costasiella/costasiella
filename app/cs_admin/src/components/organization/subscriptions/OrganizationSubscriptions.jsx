@@ -23,7 +23,7 @@ import SiteWrapper from "../../SiteWrapper"
 import HasPermissionWrapper from "../../HasPermissionWrapper"
 import { toast } from 'react-toastify'
 
-import BooleanBadge from "../../ui/BooleanBadge"
+import BadgeBoolean from "../../ui/BadgeBoolean"
 
 import ContentCard from "../../general/ContentCard"
 import OrganizationMenu from "../OrganizationMenu"
@@ -141,10 +141,10 @@ const OrganizationSubscriptions = ({ t, history, archived=false }) => (
                                     {node.name}
                                   </Table.Col>
                                   <Table.Col key={v4()}>
-                                    <BooleanBadge value={node.displayPublic} />
+                                    <BadgeBoolean value={node.displayPublic} />
                                   </Table.Col>
                                   <Table.Col key={v4()}>
-                                    <BooleanBadge value={node.displayShop} />
+                                    <BadgeBoolean value={node.displayShop} />
                                   </Table.Col>
                                   <Table.Col key={v4()}>
                                     {

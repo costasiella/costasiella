@@ -25,7 +25,7 @@ import SiteWrapper from "../../../SiteWrapper"
 import HasPermissionWrapper from "../../../HasPermissionWrapper"
 import { toast } from 'react-toastify'
 
-import BooleanBadge from "../../../ui/BooleanBadge"
+import BadgeBoolean from "../../../ui/BadgeBoolean"
 import RelationsAccountsBack from "../RelationsAccountsBack"
 import confirm_delete from "../../../../tools/confirm_delete"
 

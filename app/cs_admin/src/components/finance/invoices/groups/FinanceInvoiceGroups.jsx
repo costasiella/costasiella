@@ -26,7 +26,7 @@ import HasPermissionWrapper from "../../../HasPermissionWrapper"
 // import { confirmAlert } from 'react-confirm-alert'; // Import
 import { toast } from 'react-toastify'
 
-import BooleanBadge from "../../../ui/BooleanBadge"
+import BadgeBoolean from "../../../ui/BadgeBoolean"
 import ContentCard from "../../../general/ContentCard"
 import FinanceMenu from "../../FinanceMenu"
 
@@ -162,7 +162,7 @@ const FinanceInvoiceGroups = ({ t, history, archived=false }) => (
                                 </Text.Small>: ''}
                               </Table.Col>
                               <Table.Col key={v4()}>
-                                <BooleanBadge value={node.displayPublic} />
+                                <BadgeBoolean value={node.displayPublic} />
                               </Table.Col>
                               <Table.Col key={v4()}>
                                 {node.code}

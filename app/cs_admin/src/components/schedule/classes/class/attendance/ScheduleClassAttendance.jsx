@@ -226,7 +226,7 @@ function ScheduleClassAttendance({ t, match, history }) {
                               {node.account.fullName}
                             </Table.Col>
                             <Table.Col>
-                              {/* {node.email} */}
+                              {node.bookingStatus}
                             </Table.Col>
                             <Table.Col>
                               {/* <Link to={"/schedule/classes/class/book/" + schedule_item_id + "/" + class_date + "/" + node.id}>

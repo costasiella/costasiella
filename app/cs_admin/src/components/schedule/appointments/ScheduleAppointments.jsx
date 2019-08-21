@@ -32,7 +32,7 @@ import { toast } from 'react-toastify'
 import CSLS from "../../../tools/cs_local_storage"
 
 
-import BooleanBadge from "../../ui/BooleanBadge"
+import BadgeBoolean from "../../ui/BadgeBoolean"
 import ContentCard from "../../general/ContentCard"
 import ScheduleMenu from "../ScheduleMenu"
 import ScheduleAppointmentsFilter from "./ScheduleAppointmentsFilter"
@@ -233,7 +233,7 @@ const ScheduleAppointments = ({ t, history }) => (
                                     </Table.Col>
                                     <Table.Col>
                                       {/* Public */}
-                                      <BooleanBadge value={displayPublic} />
+                                      <BadgeBoolean value={displayPublic} />
                                     </Table.Col>
                                     <Table.Col>
                                       <Dropdown
