@@ -672,7 +672,8 @@
                         "invalid_type": "Unknown"
                     },
                     "delete_confirm_msg": "Are you sure you wish to remove this customer from the attendance list?",
-                    "delete_success": "Customer removed from list"
+                    "delete_success": "Customer removed from list",
+                    "search_result_empty": "No customers found matching your search"
                 },
                 "book": {
                     "toast_success": "Check-in success",

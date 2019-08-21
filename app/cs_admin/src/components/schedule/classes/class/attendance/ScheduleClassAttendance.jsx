@@ -175,35 +175,39 @@ function ScheduleClassAttendance({ t, match, history }) {
                                 }
                               })
                             }} >
-                    <Table>
-                      <Table.Header>
-                        <Table.Row key={v4()}>
-                          <Table.ColHeader>{t('general.name')}</Table.ColHeader>
-                          <Table.ColHeader>{t('general.email')}</Table.ColHeader>
-                          <Table.ColHeader></Table.ColHeader>
-                        </Table.Row>
-                      </Table.Header>
-                      <Table.Body>
-                        {queryAccountsData.accounts.edges.map(({ node }) => (
+                    { (!queryAccountsData.accounts.edges.length) ? 
+                      t('schedule.classes.class.attendance.search_result_empty') : 
+                      <Table>
+                        <Table.Header>
                           <Table.Row key={v4()}>
-                            <Table.Col key={v4()}>
-                              {node.firstName} {node.lastName}
-                            </Table.Col>
-                            <Table.Col key={v4()}>
-                              {node.email}
-                            </Table.Col>
-                            <Table.Col key={v4()}>
-                              <Link to={"/schedule/classes/class/book/" + schedule_item_id + "/" + class_date + "/" + node.id}>
-                                <Button color="secondary pull-right">
-                                  {t('general.checkin')} <Icon name="chevron-right" />
-                                </Button>
-                              </Link>       
-                            </Table.Col>
+                            <Table.ColHeader>{t('general.name')}</Table.ColHeader>
+                            <Table.ColHeader>{t('general.email')}</Table.ColHeader>
+                            <Table.ColHeader></Table.ColHeader>
                           </Table.Row>
-                        ))}
-                      </Table.Body>
-                    </Table>
-                  </ContentCard> : ""
+                        </Table.Header>
+                        <Table.Body>
+                          {queryAccountsData.accounts.edges.map(({ node }) => (
+                            <Table.Row key={v4()}>
+                              <Table.Col key={v4()}>
+                                {node.firstName} {node.lastName}
+                              </Table.Col>
+                              <Table.Col key={v4()}>
+                                {node.email}
+                              </Table.Col>
+                              <Table.Col key={v4()}>
+                                <Link to={"/schedule/classes/class/book/" + schedule_item_id + "/" + class_date + "/" + node.id}>
+                                  <Button color="secondary pull-right">
+                                    {t('general.checkin')} <Icon name="chevron-right" />
+                                  </Button>
+                                </Link>       
+                              </Table.Col>
+                            </Table.Row>
+                          ))}
+                        </Table.Body>
+                      </Table>
+                    }
+                  </ContentCard>
+                  : ""
                 }
                 {/* Attendance */}
                 <ContentCard cardTitle={t('general.attendance')}
