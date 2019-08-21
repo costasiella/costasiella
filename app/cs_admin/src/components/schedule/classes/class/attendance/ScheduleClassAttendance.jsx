@@ -251,6 +251,9 @@ function ScheduleClassAttendance({ t, match, history }) {
                               <BadgeBookingStatus status={node.bookingStatus} />
                             </Table.Col>
                             <Table.Col>
+                              {/* Delete */}
+                              <ScheduleClassAttendanceDelete node={node} />
+                              {/* Status dropdown */}
                               <Dropdown
                                 key={v4()}
                                 className="pull-right"
@@ -309,7 +312,6 @@ function ScheduleClassAttendance({ t, match, history }) {
                                   </HasPermissionWrapper>,
                                 ]}
                               />
-                              <ScheduleClassAttendanceDelete node={node} />
                             </Table.Col>
                           </Table.Row>
                         ))}

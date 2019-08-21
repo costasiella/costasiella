@@ -19,7 +19,7 @@ function ScheduleClassAttendanceDelete({t, match, node}) {
   const [deleteScheduleItemAttendance, { data }] = useMutation(DELETE_SCHEDULE_CLASS_ATTENDANCE)
 
     return (
-      <button className="icon btn btn-link btn-sm" 
+      <button className="icon btn btn-link btn-sm pull-right" 
         title={t('general.delete')} 
         href=""
         onClick={() => {
