@@ -312,6 +312,25 @@ function ScheduleClassAttendance({ t, match, history }) {
                                   </HasPermissionWrapper>,
                                 ]}
                               />
+                              {(node.bookingStatus == "BOOKED") ?
+                                <HasPermissionWrapper key={v4()} permission="change" resource="scheduleitemattendance">
+                                  <Button
+                                    key={v4()}
+                                    className="pull-right"
+                                    color="success"
+                                    size="sm"
+                                    onClick={() => {
+                                      setAttendanceStatus({
+                                        t: t, 
+                                        updateAttendance: updateAttendance,
+                                        node: node,
+                                        status: 'ATTENDING'
+                                      })
+                                      refetchAttendance()
+                                    }}>
+                                      {t('general.checkin')}
+                                  </Button>
+                                </HasPermissionWrapper>  : "" }
                             </Table.Col>
                           </Table.Row>
                         ))}
