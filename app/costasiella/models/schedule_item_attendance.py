@@ -42,5 +42,5 @@ class ScheduleItemAttendance(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return str(self.schedule_item.id) + ' [' + self.account.full_name + " - " + str(date) + '] ' + attendance_type
+        return str(self.schedule_item.id) + ' [' + self.account.full_name + " - " + str(self.date) + '] ' + self.attendance_type
     

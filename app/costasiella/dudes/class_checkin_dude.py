@@ -7,7 +7,13 @@ class ClassCheckinDude():
         """
         :return: schedule_item_attendance object if found, so we can check for reviews
         """
-        pass
+        schedule_item_attendance = ScheduleItemAttendance.objects.filter(
+            account=account,
+            schedule_item=schedule_item,
+            date=date
+        )
+        
+        return schedule_item_attendance
 
 
     def class_checkin_classpass(self, 
@@ -21,6 +27,15 @@ class ClassCheckinDude():
         :return: ScheduleItemAttendance object if successful, raise error if not.
         """
         #TODO: Check if not already signed in
+        qs = self._class_checkedin(account, schedule_item, date)
+        print(qs)
+        if qs.exists():
+            # Already signed in, check for review check-in
+            schedule_item_attendance = qs.first()
+
+            if not schedule_item_attendance == 'REVIEW':
+                raise Exception(_('This account is already checked in to this class'))
+
         #TODO: Check if classes left on pass
         #TODO: Code reviews
         #TODO: Update number of classes remaining on pass

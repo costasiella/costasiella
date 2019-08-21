@@ -208,7 +208,7 @@ function ScheduleClassAttendance({ t, match, history }) {
                                       {t('general.checkin')} <Icon name="chevron-right" />
                                     </Button>
                                   </Link>       
-                                }
+                                }   
                               </Table.Col>
                             </Table.Row>
                           ))}
