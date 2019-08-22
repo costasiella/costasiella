@@ -62,7 +62,8 @@ class GQLAccountSubscription(TestCase):
           account {
             id
             fullName
-          }     
+          }
+          date     
           attendanceType
           bookingStatus
         }
@@ -216,16 +217,17 @@ class GQLAccountSubscription(TestCase):
         executed = execute_test_client_api_query(query, self.admin_user, variables=variables)
         data = executed.get('data')
 
-        print(executed)
         self.assertEqual(
             data['scheduleItemAttendances']['edges'][0]['node']['id'], 
             to_global_id("ScheduleItemAttendanceNode", schedule_item_attendance.id)
         )
-        # self.assertEqual(
-        #     data['accountSubscriptions']['edges'][0]['node']['financePaymentMethod']['id'], 
-        #     to_global_id("FinancePaymentMethodNode", subscription.finance_payment_method.id)
-        # )
-        # self.assertEqual(data['accountSubscriptions']['edges'][0]['node']['dateStart'], str(subscription.date_start))
+        self.assertEqual(
+            data['scheduleItemAttendances']['edges'][0]['node']['account']['id'], 
+            to_global_id("AccountNode", schedule_item_attendance.account.id)
+        )
+        self.assertEqual(data['scheduleItemAttendances']['edges'][0]['node']['date'], variables['date'])
+        self.assertEqual(data['scheduleItemAttendances']['edges'][0]['node']['attendanceType'], "CLASSPASS")
+        self.assertEqual(data['scheduleItemAttendances']['edges'][0]['node']['bookingStatus'], "ATTENDING")
         # self.assertEqual(data['accountSubscriptions']['edges'][0]['node']['dateEnd'], subscription.date_end) # Factory is set to None so no string conversion required
         # self.assertEqual(data['accountSubscriptions']['edges'][0]['node']['note'], subscription.note)
         # self.assertEqual(data['accountSubscriptions']['edges'][0]['node']['registrationFeePaid'], subscription.registration_fee_paid)
