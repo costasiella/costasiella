@@ -419,7 +419,8 @@ class ScheduleItemAttendanceClasspassFactory(factory.DjangoModelFactory):
     class Meta:
         model = models.ScheduleItemAttendance
     
-    account = factory.SubFactory(RegularUserFactory)
+    account_classpass = factory.SubFactory(AccountClasspassFactory)
+    account = factory.SelfAttribute('account_classpass.account')
     schedule_item = factory.SubFactory(SchedulePublicWeeklyClassFactory)
     account_classpass = factory.SubFactory(AccountClasspassFactory)
     attendance_type = 'CLASSPASS'

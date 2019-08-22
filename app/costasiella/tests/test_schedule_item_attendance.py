@@ -47,9 +47,9 @@ class GQLAccountSubscription(TestCase):
             }
         }
 
-        self.subscriptions_query = '''
-  query AccountSubscriptions($after: String, $before: String, $accountId: ID!) {
-    accountSubscriptions(first: 15, before: $before, after: $after, account: $accountId) {
+        self.attendances_query = '''
+  query ScheduleItemAttendances($after: String, $before: String, $scheduleItem: ID!, $date: Date!) {
+    scheduleItemAttendances(first: 100, before: $before, after: $after, scheduleItem: $scheduleItem, date: $date) {
       pageInfo {
         startCursor
         endCursor
@@ -59,30 +59,40 @@ class GQLAccountSubscription(TestCase):
       edges {
         node {
           id
-          organizationSubscription {
+          account {
             id
-            name
-          }
-          financePaymentMethod {
-            id
-            name
-          }
-          dateStart
-          dateEnd
-          note
-          registrationFeePaid
-          createdAt
+            fullName
+          }     
+          attendanceType
+          bookingStatus
         }
       }
     }
-    account(id:$accountId) {
+    scheduleItem(id:$scheduleItem) {
       id
-      firstName
-      lastName
-      email
-      phone
-      mobile
-      isActive
+      frequencyType
+      frequencyInterval
+      organizationLocationRoom {
+        id
+        name
+        organizationLocation {
+          id
+          name
+        }
+      }
+      organizationClasstype {
+        id
+        name
+      }
+      organizationLevel {
+        id
+        name
+      }
+      dateStart
+      dateEnd
+      timeStart
+      timeEnd
+      displayPublic
     }
   }
 '''
@@ -221,32 +231,33 @@ class GQLAccountSubscription(TestCase):
 
 
     def test_query(self):
-        """ Query list of account subscriptions """
-        query = self.subscriptions_query
-        subscription = f.AccountSubscriptionFactory.create()
+        """ Query list of account attendances """
+        query = self.attendances_query
+        schedule_item_attendance = f.ScheduleItemAttendanceClasspassFactory.create()
         variables = {
-            'accountId': to_global_id('AccountSubscriptionNode', subscription.account.id)
+            'scheduleItemId': to_global_id('ScheduleItemNode', schedule_item_attendance.schedule_item.id),
+            'date': '2030-12-05'
         }
 
         executed = execute_test_client_api_query(query, self.admin_user, variables=variables)
         data = executed.get('data')
-        self.assertEqual(
-            data['accountSubscriptions']['edges'][0]['node']['organizationSubscription']['id'], 
-            to_global_id("OrganizationSubscriptionNode", subscription.organization_subscription.id)
-        )
-        self.assertEqual(
-            data['accountSubscriptions']['edges'][0]['node']['financePaymentMethod']['id'], 
-            to_global_id("FinancePaymentMethodNode", subscription.finance_payment_method.id)
-        )
-        self.assertEqual(data['accountSubscriptions']['edges'][0]['node']['dateStart'], str(subscription.date_start))
-        self.assertEqual(data['accountSubscriptions']['edges'][0]['node']['dateEnd'], subscription.date_end) # Factory is set to None so no string conversion required
-        self.assertEqual(data['accountSubscriptions']['edges'][0]['node']['note'], subscription.note)
-        self.assertEqual(data['accountSubscriptions']['edges'][0]['node']['registrationFeePaid'], subscription.registration_fee_paid)
+        # self.assertEqual(
+        #     data['accountSubscriptions']['edges'][0]['node']['organizationSubscription']['id'], 
+        #     to_global_id("OrganizationSubscriptionNode", subscription.organization_subscription.id)
+        # )
+        # self.assertEqual(
+        #     data['accountSubscriptions']['edges'][0]['node']['financePaymentMethod']['id'], 
+        #     to_global_id("FinancePaymentMethodNode", subscription.finance_payment_method.id)
+        # )
+        # self.assertEqual(data['accountSubscriptions']['edges'][0]['node']['dateStart'], str(subscription.date_start))
+        # self.assertEqual(data['accountSubscriptions']['edges'][0]['node']['dateEnd'], subscription.date_end) # Factory is set to None so no string conversion required
+        # self.assertEqual(data['accountSubscriptions']['edges'][0]['node']['note'], subscription.note)
+        # self.assertEqual(data['accountSubscriptions']['edges'][0]['node']['registrationFeePaid'], subscription.registration_fee_paid)
 
 
     # def test_query_permision_denied(self):
-    #     """ Query list of account subscriptions - check permission denied """
-    #     query = self.subscriptions_query
+    #     """ Query list of account attendances - check permission denied """
+    #     query = self.attendances_query
     #     subscription = f.AccountSubscriptionFactory.create()
     #     variables = {
     #         'accountId': to_global_id('AccountSubscriptionNode', subscription.account.id)
@@ -261,8 +272,8 @@ class GQLAccountSubscription(TestCase):
 
 
     # def test_query_permision_granted(self):
-    #     """ Query list of account subscriptions with view permission """
-    #     query = self.subscriptions_query
+    #     """ Query list of account attendances with view permission """
+    #     query = self.attendances_query
     #     subscription = f.AccountSubscriptionFactory.create()
     #     variables = {
     #         'accountId': to_global_id('AccountSubscriptionNode', subscription.account.id)
@@ -277,7 +288,7 @@ class GQLAccountSubscription(TestCase):
     #     executed = execute_test_client_api_query(query, user, variables=variables)
     #     data = executed.get('data')
 
-    #     # List all subscriptions
+    #     # List all attendances
     #     self.assertEqual(
     #         data['accountSubscriptions']['edges'][0]['node']['organizationSubscription']['id'], 
     #         to_global_id("OrganizationSubscriptionNode", subscription.organization_subscription.id)
@@ -285,8 +296,8 @@ class GQLAccountSubscription(TestCase):
 
 
     # def test_query_anon_user(self):
-    #     """ Query list of account subscriptions - anon user """
-    #     query = self.subscriptions_query
+    #     """ Query list of account attendances - anon user """
+    #     query = self.attendances_query
     #     subscription = f.AccountSubscriptionFactory.create()
     #     variables = {
     #         'accountId': to_global_id('AccountSubscriptionNode', subscription.account.id)
@@ -424,7 +435,7 @@ class GQLAccountSubscription(TestCase):
 
 
     # def test_create_subscription_anon_user(self):
-    #     """ Don't allow creating account subscriptions for non-logged in users """
+    #     """ Don't allow creating account attendances for non-logged in users """
     #     query = self.subscription_create_mutation
         
     #     account = f.RegularUserFactory.create()
@@ -446,7 +457,7 @@ class GQLAccountSubscription(TestCase):
 
 
     # def test_create_location_permission_granted(self):
-    #     """ Allow creating subscriptions for users with permissions """
+    #     """ Allow creating attendances for users with permissions """
     #     query = self.subscription_create_mutation
 
     #     account = f.RegularUserFactory.create()
@@ -532,7 +543,7 @@ class GQLAccountSubscription(TestCase):
 
 
     # def test_update_subscription_anon_user(self):
-    #     """ Don't allow updating subscriptions for non-logged in users """
+    #     """ Don't allow updating attendances for non-logged in users """
     #     query = self.subscription_update_mutation
     #     subscription = f.AccountSubscriptionFactory.create()
     #     organization_subscription = f.OrganizationSubscriptionFactory.create()
@@ -553,7 +564,7 @@ class GQLAccountSubscription(TestCase):
 
 
     # def test_update_subscription_permission_granted(self):
-    #     """ Allow updating subscriptions for users with permissions """
+    #     """ Allow updating attendances for users with permissions """
     #     query = self.subscription_update_mutation
     #     subscription = f.AccountSubscriptionFactory.create()
     #     organization_subscription = f.OrganizationSubscriptionFactory.create()
@@ -635,7 +646,7 @@ class GQLAccountSubscription(TestCase):
 
 
     # def test_delete_subscription_permission_granted(self):
-    #     """ Allow deleting subscriptions for users with permissions """
+    #     """ Allow deleting attendances for users with permissions """
     #     query = self.subscription_delete_mutation
     #     subscription = f.AccountSubscriptionFactory.create()
     #     variables = {"input":{}}
