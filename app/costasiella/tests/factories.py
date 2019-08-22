@@ -414,6 +414,19 @@ class SchedulePublicWeeklyClassFactory(factory.DjangoModelFactory):
     time_end = datetime.time(9, 0)
     display_public = True
     
+
+class ScheduleItemAttendanceClasspassFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.ScheduleItemAttendance
+    
+    account = factory.SubFactory(RegularUserFactory)
+    schedule_item = factory.SubFactory(SchedulePublicWeeklyClassFactory)
+    account_classpass = factory.SubFactory(AccountClasspassFactory)
+    attendance_type = 'CLASSPASS'
+    date = '2030-12-05'
+    online_booking = False
+    booking_status = "ATTENDING"
+
     
 class ScheduleItemTeacherFactory(factory.DjangoModelFactory):
     class Meta:
