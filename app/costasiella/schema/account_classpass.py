@@ -44,11 +44,24 @@ def validate_create_update_input(input, update=False):
     return result
 
 
+class AccountClasspassInterface(graphene.Interface):
+    id = graphene.GlobalID()
+    classes_remaining_display = graphene.String()
+
+
 class AccountClasspassNode(DjangoObjectType):   
     class Meta:
         model = AccountClasspass
         filter_fields = ['account', 'date_start', 'date_end']
-        interfaces = (graphene.relay.Node, )
+        interfaces = (graphene.relay.Node, AccountClasspassInterface, )
+
+
+    def resolve_classes_remaining_display(self, info):
+        if self.organization_classpass.unlimited:
+            return _('Unlimited')
+        else:
+            return self.classes_remaining
+
 
     @classmethod
     def get_node(self, info, id):

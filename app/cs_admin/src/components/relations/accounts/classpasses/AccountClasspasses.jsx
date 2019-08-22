@@ -98,6 +98,7 @@ const AccountClasspasses = ({ t, history, match, archived=false }) => (
                           <Table.ColHeader>{t('general.name')}</Table.ColHeader>
                           <Table.ColHeader>{t('general.date_start')}</Table.ColHeader>
                           <Table.ColHeader>{t('general.date_end')}</Table.ColHeader>
+                          <Table.ColHeader>{t('general.classes_remaining')}</Table.ColHeader>
                           <Table.ColHeader></Table.ColHeader> 
                         </Table.Row>
                       </Table.Header>
@@ -112,6 +113,9 @@ const AccountClasspasses = ({ t, history, match, archived=false }) => (
                               </Table.Col>
                               <Table.Col key={v4()}>
                                 {node.dateEnd}
+                              </Table.Col>
+                              <Table.Col key={v4()}>
+                                {node.classesRemainingDisplay}
                               </Table.Col>
                               <Table.Col className="text-right" key={v4()}>
                                 <Link to={"/relations/accounts/" + match.params.account_id + "/classpasses/edit/" + node.id}>
