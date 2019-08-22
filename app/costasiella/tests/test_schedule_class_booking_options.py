@@ -256,13 +256,18 @@ class GQLScheduleClassBookingOptions(TestCase):
     def test_query_classpass_allowed(self):
         """ Query list of scheduleclasses """
         query = self.scheduleclassbookingoptions_query
-        
+
+        # Create class pass
+        account_classpass = f.AccountClasspassFactory.create()
+        account = account_classpass.account
+
+        # Create organization class pass group
         schedule_item_organization_classpass_group = f.ScheduleItemOrganizationClasspassGroupAllowFactory.create()
         schedule_item = schedule_item_organization_classpass_group.schedule_item
-        account = f.RegularUserFactory.create()
-
-
-
+        
+        # Add class pass to group
+        organization_classpass_group = schedule_item_organization_classpass_group.organization_classpass_group
+        organization_classpass_group.organization_classpasses.add(account_classpass.organization_classpass)
 
         variables = {
           'account': to_global_id('AccountNode', account.pk),
@@ -271,8 +276,45 @@ class GQLScheduleClassBookingOptions(TestCase):
           'listType': 'ATTEND'
         }
         executed = execute_test_client_api_query(query, self.admin_user, variables=variables)
-        print(executed)
         data = executed.get('data')
+
+        self.assertEqual(data['scheduleClassBookingOptions']['date'], variables['date'])
+        self.assertEqual(data['scheduleClassBookingOptions']['classpasses'][0]['allowed'], True)
+        self.assertEqual(data['scheduleClassBookingOptions']['classpasses'][0]['accountClasspass']['id'], 
+            to_global_id('AccountClasspassNode', account_classpass.id))
+        
+
+    def test_query_classpass_not_allowed(self):
+        """ Query list of scheduleclasses """
+        query = self.scheduleclassbookingoptions_query
+
+        # Create class pass
+        account_classpass = f.AccountClasspassFactory.create()
+        account = account_classpass.account
+
+        # Create organization class pass group
+        schedule_item_organization_classpass_group = f.ScheduleItemOrganizationClasspassGroupDenyFactory.create()
+        schedule_item = schedule_item_organization_classpass_group.schedule_item
+        
+        # Add class pass to group
+        organization_classpass_group = schedule_item_organization_classpass_group.organization_classpass_group
+        organization_classpass_group.organization_classpasses.add(account_classpass.organization_classpass)
+
+        variables = {
+          'account': to_global_id('AccountNode', account.pk),
+          'scheduleItem': to_global_id('ScheduleItemNode', schedule_item.pk),
+          'date': str(self.next_monday),
+          'listType': 'ATTEND'
+        }
+        executed = execute_test_client_api_query(query, self.admin_user, variables=variables)
+        data = executed.get('data')
+
+        self.assertEqual(data['scheduleClassBookingOptions']['date'], variables['date'])
+        self.assertEqual(data['scheduleClassBookingOptions']['classpasses'][0]['allowed'], False)
+        self.assertEqual(data['scheduleClassBookingOptions']['classpasses'][0]['accountClasspass']['id'], 
+            to_global_id('AccountClasspassNode', account_classpass.id))
+        
+
 
         # self.assertEqual(data['scheduleClasses'][0]['date'], variables['dateFrom'])
         # self.assertEqual(

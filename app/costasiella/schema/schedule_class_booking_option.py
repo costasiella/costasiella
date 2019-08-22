@@ -94,7 +94,7 @@ class ScheduleClassBookingOptionsType(graphene.ObjectType):
         classpasses_list = []
         for classpass in classpasses:
             allowed = False
-            if self.list_type == "attend":
+            if self.list_type == "ATTEND":
                 if checkin_dude.classpass_attend_allowed_for_class(classpass, schedule_item):
                     allowed = True
 

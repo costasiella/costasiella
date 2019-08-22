@@ -197,5 +197,3 @@ class ClassCheckinDude():
                 pass
 
         return schedule_item_ids
-
-        
