@@ -16,6 +16,7 @@ class SalesDude():
 
         # set date end & save
         account_classpass.set_date_end()
+        account_classpass.update_classes_remaining()
         account_classpass.save()
 
         print('creating invoice...')
