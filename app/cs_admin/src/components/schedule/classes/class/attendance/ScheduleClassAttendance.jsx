@@ -36,6 +36,7 @@ import { get_accounts_query_variables } from "./tools"
 import { class_subtitle } from "../tools"
 
 import ScheduleClassBack from "../ScheduleClassBack"
+import ClassMenu from "../ClassMenu"
 import ContentCard from "../../../../general/ContentCard"
 import InputSearch from "../../../../general/InputSearch"
 import BadgeBookingStatus from "../../../../ui/BadgeBookingStatus"
@@ -360,19 +361,11 @@ function ScheduleClassAttendance({ t, match, history }) {
                 </Card> */}
               </Grid.Col>
               <Grid.Col md={3}>
-                sidebar here
-                {/* <HasPermissionWrapper permission="add"
-                                      resource="accountsubscription">
-                  <Link to={return_url}>
-                    <Button color="primary btn-block mb-6">
-                      <Icon prefix="fe" name="chevrons-left" /> {t('general.back')}
-                    </Button>
-                  </Link>
-                </HasPermissionWrapper>
-                <ProfileMenu 
-                  active_link='subscriptions'
-                  account_id={match.params.account_id}
-                /> */}
+                <ClassMenu 
+                  scheduleItemId={schedule_item_id}
+                  class_date={class_date}
+                  active_link="attendance"
+                />
               </Grid.Col>
             </Grid.Row>
           </Container>
