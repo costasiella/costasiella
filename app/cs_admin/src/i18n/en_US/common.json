@@ -279,7 +279,8 @@
         "checkin": "Check-in",
         "attendance": "Attendance",
         "booking_status": "Booking status",
-        "booking_options": "Booking options"
+        "booking_options": "Booking options",
+        "classes_remaining": "Classes remaining"
     },
     "yup": {
         "min_len_3": "Please input at least 3 characters",
@@ -673,7 +674,8 @@
                     },
                     "delete_confirm_msg": "Are you sure you wish to remove this customer from the attendance list?",
                     "delete_success": "Customer removed from list",
-                    "search_result_empty": "No customers found matching your search"
+                    "search_result_empty": "No customers found matching your search",
+                    "search_results_already_checked_in": "Already checked-in"
                 },
                 "book": {
                     "toast_success": "Check-in success",

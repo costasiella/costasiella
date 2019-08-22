@@ -279,7 +279,8 @@
         "checkin": "__STRING_NOT_TRANSLATED__",
         "attendance": "__STRING_NOT_TRANSLATED__",
         "booking_status": "__STRING_NOT_TRANSLATED__",
-        "booking_options": "__STRING_NOT_TRANSLATED__"
+        "booking_options": "__STRING_NOT_TRANSLATED__",
+        "classes_remaining": "__STRING_NOT_TRANSLATED__"
     },
     "yup": {
         "min_len_3": "__STRING_NOT_TRANSLATED__",
@@ -673,7 +674,8 @@
                     },
                     "delete_confirm_msg": "__STRING_NOT_TRANSLATED__",
                     "delete_success": "__STRING_NOT_TRANSLATED__",
-                    "search_result_empty": "__STRING_NOT_TRANSLATED__"
+                    "search_result_empty": "__STRING_NOT_TRANSLATED__",
+                    "search_results_already_checked_in": "__STRING_NOT_TRANSLATED__"
                 },
                 "book": {
                     "toast_success": "__STRING_NOT_TRANSLATED__",
