@@ -169,13 +169,13 @@ def validate_schedule_class_booking_options_input(account, schedule_item, date, 
     result = {}
 
     list_types = [
+        'ATTEND',
         'ENROLL',
-        'SHOP_BOOK',
-        'ATTEND'
+        'SHOP_BOOK'
     ]
 
     if list_type not in list_types:
-        raise Exception('Invalid list type, possible options [enroll, shop_book, attand]')
+        raise Exception('Invalid list type, possible options [ATTEND, ENROLL, SHOP_BOOK]')
    
     # account
     rid = get_rid(account)

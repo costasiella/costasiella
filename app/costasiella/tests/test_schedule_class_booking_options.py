@@ -34,8 +34,18 @@ class GQLScheduleClassBookingOptions(TestCase):
         self.permission_delete = 'delete_scheduleitem'
 
         self.next_monday = next_weekday(datetime.date.today(), 1)
-        print(self.next_monday)
 
+        # Create class pass
+        self.account_classpass = f.AccountClasspassFactory.create()
+        self.account = self.account_classpass.account
+
+        # Create organization class pass group
+        self.schedule_item_organization_classpass_group = f.ScheduleItemOrganizationClasspassGroupAllowFactory.create()
+        self.schedule_item = self.schedule_item_organization_classpass_group.schedule_item
+        
+        # Add class pass to group
+        self.organization_classpass_group = self.schedule_item_organization_classpass_group.organization_classpass_group
+        self.organization_classpass_group.organization_classpasses.add(self.account_classpass.organization_classpass)
 
         # self.variables_create = {
         #     "input": {
@@ -253,25 +263,13 @@ class GQLScheduleClassBookingOptions(TestCase):
     #     self.assertEqual(errors[0]['message'], "dateFrom and dateUntil can't be more then 7 days apart")
 
 
-    def test_query_classpass_allowed(self):
-        """ Query list of scheduleclasses """
+    def test_query_booking_options_list_type_ATTEND(self):
+        """ Query should accept list type ATTEND """
         query = self.scheduleclassbookingoptions_query
 
-        # Create class pass
-        account_classpass = f.AccountClasspassFactory.create()
-        account = account_classpass.account
-
-        # Create organization class pass group
-        schedule_item_organization_classpass_group = f.ScheduleItemOrganizationClasspassGroupAllowFactory.create()
-        schedule_item = schedule_item_organization_classpass_group.schedule_item
-        
-        # Add class pass to group
-        organization_classpass_group = schedule_item_organization_classpass_group.organization_classpass_group
-        organization_classpass_group.organization_classpasses.add(account_classpass.organization_classpass)
-
         variables = {
-          'account': to_global_id('AccountNode', account.pk),
-          'scheduleItem': to_global_id('ScheduleItemNode', schedule_item.pk),
+          'account': to_global_id('AccountNode', self.account.pk),
+          'scheduleItem': to_global_id('ScheduleItemNode', self.schedule_item.pk),
           'date': str(self.next_monday),
           'listType': 'ATTEND'
         }
@@ -281,28 +279,57 @@ class GQLScheduleClassBookingOptions(TestCase):
         self.assertEqual(data['scheduleClassBookingOptions']['date'], variables['date'])
         self.assertEqual(data['scheduleClassBookingOptions']['classpasses'][0]['allowed'], True)
         self.assertEqual(data['scheduleClassBookingOptions']['classpasses'][0]['accountClasspass']['id'], 
-            to_global_id('AccountClasspassNode', account_classpass.id))
+            to_global_id('AccountClasspassNode', self.account_classpass.id))
+
+
+    def test_query_booking_options_list_type_INVALID(self):
+        """ Query should not accept list type INVALID """
+        query = self.scheduleclassbookingoptions_query
+
+        variables = {
+          'account': to_global_id('AccountNode', self.account.pk),
+          'scheduleItem': to_global_id('ScheduleItemNode', self.schedule_item.pk),
+          'date': str(self.next_monday),
+          'listType': 'INVALID'
+        }
+        executed = execute_test_client_api_query(query, self.admin_user, variables=variables)
+        errors = executed.get('errors')
+
+        self.assertEqual(errors[0]['message'], 'Invalid list type, possible options [ATTEND, ENROLL, SHOP_BOOK]')
+
+
+    #TODO: Test types SHOP_BOOk and ENROLL are accepted (when the time comes)
+
+
+    def test_query_classpass_allowed(self):
+        """ Query list of scheduleclasses """
+        query = self.scheduleclassbookingoptions_query
+
+        variables = {
+          'account': to_global_id('AccountNode', self.account.pk),
+          'scheduleItem': to_global_id('ScheduleItemNode', self.schedule_item.pk),
+          'date': str(self.next_monday),
+          'listType': 'ATTEND'
+        }
+        executed = execute_test_client_api_query(query, self.admin_user, variables=variables)
+        data = executed.get('data')
+
+        self.assertEqual(data['scheduleClassBookingOptions']['date'], variables['date'])
+        self.assertEqual(data['scheduleClassBookingOptions']['classpasses'][0]['allowed'], True)
+        self.assertEqual(data['scheduleClassBookingOptions']['classpasses'][0]['accountClasspass']['id'], 
+            to_global_id('AccountClasspassNode', self.account_classpass.id))
         
 
     def test_query_classpass_not_allowed(self):
         """ Query list of scheduleclasses """
         query = self.scheduleclassbookingoptions_query
 
-        # Create class pass
-        account_classpass = f.AccountClasspassFactory.create()
-        account = account_classpass.account
-
-        # Create organization class pass group
-        schedule_item_organization_classpass_group = f.ScheduleItemOrganizationClasspassGroupDenyFactory.create()
-        schedule_item = schedule_item_organization_classpass_group.schedule_item
-        
-        # Add class pass to group
-        organization_classpass_group = schedule_item_organization_classpass_group.organization_classpass_group
-        organization_classpass_group.organization_classpasses.add(account_classpass.organization_classpass)
+        self.schedule_item_organization_classpass_group.attend = False
+        self.schedule_item_organization_classpass_group.save()
 
         variables = {
-          'account': to_global_id('AccountNode', account.pk),
-          'scheduleItem': to_global_id('ScheduleItemNode', schedule_item.pk),
+          'account': to_global_id('AccountNode', self.account.pk),
+          'scheduleItem': to_global_id('ScheduleItemNode', self.schedule_item.pk),
           'date': str(self.next_monday),
           'listType': 'ATTEND'
         }
@@ -312,7 +339,7 @@ class GQLScheduleClassBookingOptions(TestCase):
         self.assertEqual(data['scheduleClassBookingOptions']['date'], variables['date'])
         self.assertEqual(data['scheduleClassBookingOptions']['classpasses'][0]['allowed'], False)
         self.assertEqual(data['scheduleClassBookingOptions']['classpasses'][0]['accountClasspass']['id'], 
-            to_global_id('AccountClasspassNode', account_classpass.id))
+            to_global_id('AccountClasspassNode', self.account_classpass.id))
         
 
 
