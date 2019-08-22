@@ -131,8 +131,8 @@ function ScheduleClassBook({ t, match, history }) {
                 <h4>{t('general.booking_options')} {account.fullName}</h4>
                 <div className="mt-6">
                 <Grid.Row cards deck>
-                  <ScheduleClassBookSubscriptions subscriptions={subscriptions} onClickCheckin={OnClickCheckin}/>
-                  <ScheduleClassBookClasspasses classpasses={classpasses} onClickCheckin={OnClickCheckin}/>
+                  <ScheduleClassBookSubscriptions subscriptions={subscriptions} />
+                  <ScheduleClassBookClasspasses classpasses={classpasses} />
                 </Grid.Row>
                 {/* <Card>
                   <Card.Header>

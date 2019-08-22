@@ -19,6 +19,7 @@ import {
   Badge,
   Button,
   Card,
+  List,
   Container,
   Table,
   StampCard
@@ -55,7 +56,9 @@ function ScheduleClassBookClasspasses({ t, match, history, classpasses, onClickC
           title={t("general.classpass")} >
         <Card.Body>
           <b>{classpass.accountClasspass.organizationClasspass.name}</b><br />
-          details here
+          <span className="text-muted">
+            {t('general.classes_remaining')}: {classpass.accountClasspass.classesRemainingDisplay}
+          </span>
         </Card.Body>
         <Card.Footer>
           {(!classpass.allowed) ? t('schedule.classes.class.book.classpass_not_allowed') :

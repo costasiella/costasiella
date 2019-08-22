@@ -40,6 +40,7 @@ export const GET_BOOKING_OPTIONS_QUERY = gql`
           id
           dateStart
           dateEnd
+          classesRemainingDisplay
           organizationClasspass {
             id
             name
