@@ -206,7 +206,7 @@ class GQLAccountSubscription(TestCase):
 
 
     def test_query(self):
-        """ Query list of account attendances """
+        """ Query list of schedule item attendances """
         query = self.attendances_query
         schedule_item_attendance = f.ScheduleItemAttendanceClasspassFactory.create()
         variables = {
@@ -228,62 +228,62 @@ class GQLAccountSubscription(TestCase):
         self.assertEqual(data['scheduleItemAttendances']['edges'][0]['node']['date'], variables['date'])
         self.assertEqual(data['scheduleItemAttendances']['edges'][0]['node']['attendanceType'], "CLASSPASS")
         self.assertEqual(data['scheduleItemAttendances']['edges'][0]['node']['bookingStatus'], "ATTENDING")
-        # self.assertEqual(data['accountSubscriptions']['edges'][0]['node']['dateEnd'], subscription.date_end) # Factory is set to None so no string conversion required
-        # self.assertEqual(data['accountSubscriptions']['edges'][0]['node']['note'], subscription.note)
-        # self.assertEqual(data['accountSubscriptions']['edges'][0]['node']['registrationFeePaid'], subscription.registration_fee_paid)
 
 
-    # def test_query_permision_denied(self):
-    #     """ Query list of account attendances - check permission denied """
-    #     query = self.attendances_query
-    #     subscription = f.AccountSubscriptionFactory.create()
-    #     variables = {
-    #         'accountId': to_global_id('AccountSubscriptionNode', subscription.account.id)
-    #     }
+    def test_query_permision_denied(self):
+        """ Query list of schedule item attendances - check permission denied """
+        query = self.attendances_query
+        schedule_item_attendance = f.ScheduleItemAttendanceClasspassFactory.create()
+        variables = {
+            'scheduleItem': to_global_id('ScheduleItemNode', schedule_item_attendance.schedule_item.id),
+            'date': '2030-12-05'
+        }
 
-    #     # Create regular user
-    #     user = get_user_model().objects.get(pk=subscription.account.id)
-    #     executed = execute_test_client_api_query(query, user, variables=variables)
-    #     errors = executed.get('errors')
+        # Regular user
+        user = schedule_item_attendance.account
+        executed = execute_test_client_api_query(query, user, variables=variables)
+        errors = executed.get('errors')
 
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
-
-
-    # def test_query_permision_granted(self):
-    #     """ Query list of account attendances with view permission """
-    #     query = self.attendances_query
-    #     subscription = f.AccountSubscriptionFactory.create()
-    #     variables = {
-    #         'accountId': to_global_id('AccountSubscriptionNode', subscription.account.id)
-    #     }
-
-    #     # Create regular user
-    #     user = get_user_model().objects.get(pk=subscription.account.id)
-    #     permission = Permission.objects.get(codename='view_scheduleitemattendance')
-    #     user.user_permissions.add(permission)
-    #     user.save()
-
-    #     executed = execute_test_client_api_query(query, user, variables=variables)
-    #     data = executed.get('data')
-
-    #     # List all attendances
-    #     self.assertEqual(
-    #         data['accountSubscriptions']['edges'][0]['node']['organizationSubscription']['id'], 
-    #         to_global_id("OrganizationSubscriptionNode", subscription.organization_subscription.id)
-    #     )
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
-    # def test_query_anon_user(self):
-    #     """ Query list of account attendances - anon user """
-    #     query = self.attendances_query
-    #     subscription = f.AccountSubscriptionFactory.create()
-    #     variables = {
-    #         'accountId': to_global_id('AccountSubscriptionNode', subscription.account.id)
-    #     }
+    def test_query_permision_granted(self):
+        """ Query list of schedule item attendances with view permission """
+        query = self.attendances_query
+        schedule_item_attendance = f.ScheduleItemAttendanceClasspassFactory.create()
+        variables = {
+            'scheduleItem': to_global_id('ScheduleItemNode', schedule_item_attendance.schedule_item.id),
+            'date': '2030-12-05'
+        }
 
-    #     executed = execute_test_client_api_query(query, self.anon_user, variables=variables)
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
+        # Create regular user
+        user = schedule_item_attendance.account
+        permission = Permission.objects.get(codename='view_scheduleitemattendance')
+        user.user_permissions.add(permission)
+        user.save()
+
+        executed = execute_test_client_api_query(query, user, variables=variables)
+        data = executed.get('data')
+
+        # List all attendances
+        self.assertEqual(
+            data['scheduleItemAttendances']['edges'][0]['node']['id'], 
+            to_global_id("ScheduleItemAttendanceNode", schedule_item_attendance.id)
+        )
+
+
+    def test_query_anon_user(self):
+        """ Query list of schedule item attendances - anon user """
+        query = self.attendances_query
+        schedule_item_attendance = f.ScheduleItemAttendanceClasspassFactory.create()
+        variables = {
+            'scheduleItem': to_global_id('ScheduleItemNode', schedule_item_attendance.schedule_item.id),
+            'date': '2030-12-05'
+        }
+
+        executed = execute_test_client_api_query(query, self.anon_user, variables=variables)
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
     # def test_query_one(self):
