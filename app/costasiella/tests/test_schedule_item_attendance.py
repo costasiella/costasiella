@@ -68,32 +68,6 @@ class GQLAccountSubscription(TestCase):
         }
       }
     }
-    scheduleItem(id:$scheduleItem) {
-      id
-      frequencyType
-      frequencyInterval
-      organizationLocationRoom {
-        id
-        name
-        organizationLocation {
-          id
-          name
-        }
-      }
-      organizationClasstype {
-        id
-        name
-      }
-      organizationLevel {
-        id
-        name
-      }
-      dateStart
-      dateEnd
-      timeStart
-      timeEnd
-      displayPublic
-    }
   }
 '''
 
@@ -235,16 +209,18 @@ class GQLAccountSubscription(TestCase):
         query = self.attendances_query
         schedule_item_attendance = f.ScheduleItemAttendanceClasspassFactory.create()
         variables = {
-            'scheduleItemId': to_global_id('ScheduleItemNode', schedule_item_attendance.schedule_item.id),
+            'scheduleItem': to_global_id('ScheduleItemNode', schedule_item_attendance.schedule_item.id),
             'date': '2030-12-05'
         }
 
         executed = execute_test_client_api_query(query, self.admin_user, variables=variables)
         data = executed.get('data')
-        # self.assertEqual(
-        #     data['accountSubscriptions']['edges'][0]['node']['organizationSubscription']['id'], 
-        #     to_global_id("OrganizationSubscriptionNode", subscription.organization_subscription.id)
-        # )
+
+        print(executed)
+        self.assertEqual(
+            data['scheduleItemAttendances']['edges'][0]['node']['id'], 
+            to_global_id("ScheduleItemAttendanceNode", schedule_item_attendance.id)
+        )
         # self.assertEqual(
         #     data['accountSubscriptions']['edges'][0]['node']['financePaymentMethod']['id'], 
         #     to_global_id("FinancePaymentMethodNode", subscription.finance_payment_method.id)
