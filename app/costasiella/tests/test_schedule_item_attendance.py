@@ -29,12 +29,11 @@ class GQLAccountSubscription(TestCase):
         self.permission_change = 'change_scheduleitemattendance'
         self.permission_delete = 'delete_scheduleitemattendance'
 
-        self.variables_create = {
+        self.variables_create_classpass = {
             "input": {
-                "dateStart": "2019-01-01",
-                "dateEnd": "2019-12-31",
-                "note": "creation note",
-                "registrationFeePaid": True
+                "attendanceType": "CLASSPASS",
+                "bookingStatus": "ATTENDING",
+                "date": "2030-12-05",
             }
         }
 
@@ -72,93 +71,91 @@ class GQLAccountSubscription(TestCase):
   }
 '''
 
-        self.subscription_query = '''
-  query AccountSubscription($id: ID!, $accountId: ID!, $after: String, $before: String, $archived: Boolean!) {
-    accountSubscription(id:$id) {
-      id
-      account {
-          id
-      }
-      organizationSubscription {
-        id
-        name
-      }
-      financePaymentMethod {
-        id
-        name
-      }
-      dateStart
-      dateEnd
-      note
-      registrationFeePaid
-      createdAt
-    }
-    organizationSubscriptions(first: 100, before: $before, after: $after, archived: $archived) {
-      pageInfo {
-        startCursor
-        endCursor
-        hasNextPage
-        hasPreviousPage
-      }
-      edges {
-        node {
-          id
-          archived
-          name
-        }
-      }
-    }
-    financePaymentMethods(first: 100, before: $before, after: $after, archived: $archived) {
-      pageInfo {
-        startCursor
-        endCursor
-        hasNextPage
-        hasPreviousPage
-      }
-      edges {
-        node {
-          id
-          archived
-          name
-          code
-        }
-      }
-    }
-    account(id:$accountId) {
-      id
-      firstName
-      lastName
-      email
-      phone
-      mobile
-      isActive
-    }
-  }
-'''
+#         self.subscription_query = '''
+#   query AccountSubscription($id: ID!, $accountId: ID!, $after: String, $before: String, $archived: Boolean!) {
+#     accountSubscription(id:$id) {
+#       id
+#       account {
+#           id
+#       }
+#       organizationSubscription {
+#         id
+#         name
+#       }
+#       financePaymentMethod {
+#         id
+#         name
+#       }
+#       dateStart
+#       dateEnd
+#       note
+#       registrationFeePaid
+#       createdAt
+#     }
+#     organizationSubscriptions(first: 100, before: $before, after: $after, archived: $archived) {
+#       pageInfo {
+#         startCursor
+#         endCursor
+#         hasNextPage
+#         hasPreviousPage
+#       }
+#       edges {
+#         node {
+#           id
+#           archived
+#           name
+#         }
+#       }
+#     }
+#     financePaymentMethods(first: 100, before: $before, after: $after, archived: $archived) {
+#       pageInfo {
+#         startCursor
+#         endCursor
+#         hasNextPage
+#         hasPreviousPage
+#       }
+#       edges {
+#         node {
+#           id
+#           archived
+#           name
+#           code
+#         }
+#       }
+#     }
+#     account(id:$accountId) {
+#       id
+#       firstName
+#       lastName
+#       email
+#       phone
+#       mobile
+#       isActive
+#     }
+#   }
+# '''
 
-        self.subscription_create_mutation = ''' 
-  mutation CreateAccountSubscription($input: CreateAccountSubscriptionInput!) {
-    createAccountSubscription(input: $input) {
-      accountSubscription {
+        self.schedule_item_attendance_create_mutation = ''' 
+  mutation CreateScheduleItemAttendance($input: CreateScheduleItemAttendanceInput!) {
+    createScheduleItemAttendance(input:$input) {
+      scheduleItemAttendance {
         id
         account {
           id
-          firstName
-          lastName
-          email
+          fullName
         }
-        organizationSubscription {
+        accountClasspass {
           id
-          name
         }
-        financePaymentMethod {
+        accountSubscription {
           id
-          name
         }
-        dateStart
-        dateEnd
-        note
-        registrationFeePaid        
+        date     
+        attendanceType
+        bookingStatus
+        scheduleItem {
+          id
+        }
       }
     }
   }
@@ -375,41 +372,51 @@ class GQLAccountSubscription(TestCase):
     #     )
 
 
-    # def test_create_subscription(self):
-    #     """ Create an account subscription """
-    #     query = self.subscription_create_mutation
+    def test_create_schedule_class_classpass_attendance(self):
+        """ Create an account subscription """
+        query = self.schedule_item_attendance_create_mutation
 
-    #     account = f.RegularUserFactory.create()
-    #     organization_subscription = f.OrganizationSubscriptionFactory.create()
-    #     finance_payment_method = f.FinancePaymentMethodFactory.create()
-    #     variables = self.variables_create
-    #     variables['input']['account'] = to_global_id('AccountNode', account.id)
-    #     variables['input']['organizationSubscription'] = to_global_id('OrganizationSubscriptionNode', organization_subscription.id)
-    #     variables['input']['financePaymentMethod'] = to_global_id('FinancePaymentMethodNode', finance_payment_method.id)
+        # Create class pass
+        self.account_classpass = f.AccountClasspassFactory.create()
+        self.account = self.account_classpass.account
 
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         self.admin_user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
+        # Create organization class pass group
+        self.schedule_item_organization_classpass_group = f.ScheduleItemOrganizationClasspassGroupAllowFactory.create()
+        self.schedule_item = self.schedule_item_organization_classpass_group.schedule_item
+        
+        # Add class pass to group
+        self.organization_classpass_group = self.schedule_item_organization_classpass_group.organization_classpass_group
+        self.organization_classpass_group.organization_classpasses.add(self.account_classpass.organization_classpass)
 
-    #     self.assertEqual(
-    #         data['createAccountSubscription']['accountSubscription']['account']['id'], 
-    #         variables['input']['account']
-    #     )
-    #     self.assertEqual(
-    #         data['createAccountSubscription']['accountSubscription']['organizationSubscription']['id'], 
-    #         variables['input']['organizationSubscription']
-    #     )
-    #     self.assertEqual(
-    #         data['createAccountSubscription']['accountSubscription']['financePaymentMethod']['id'], 
-    #         variables['input']['financePaymentMethod']
-    #     )
-    #     self.assertEqual(data['createAccountSubscription']['accountSubscription']['dateStart'], variables['input']['dateStart'])
-    #     self.assertEqual(data['createAccountSubscription']['accountSubscription']['dateEnd'], variables['input']['dateEnd'])
-    #     self.assertEqual(data['createAccountSubscription']['accountSubscription']['note'], variables['input']['note'])
-    #     self.assertEqual(data['createAccountSubscription']['accountSubscription']['registrationFeePaid'], variables['input']['registrationFeePaid'])
+
+        variables = self.variables_create
+        variables['input']['account'] = to_global_id('AccountNode', account.id)
+        variables['input']['accountClasspass'] = to_global_id('AccountClasspassNode', account_classpass.id)
+        variables['input']['scheduleItem'] = to_global_id('ScheduleItemNode', schedule_item.id)
+
+        executed = execute_test_client_api_query(
+            query, 
+            self.admin_user, 
+            variables=variables
+        )
+        data = executed.get('data')
+
+        self.assertEqual(
+            data['createAccountSubscription']['accountSubscription']['account']['id'], 
+            variables['input']['account']
+        )
+        self.assertEqual(
+            data['createAccountSubscription']['accountSubscription']['organizationSubscription']['id'], 
+            variables['input']['organizationSubscription']
+        )
+        self.assertEqual(
+            data['createAccountSubscription']['accountSubscription']['financePaymentMethod']['id'], 
+            variables['input']['financePaymentMethod']
+        )
+        self.assertEqual(data['createAccountSubscription']['accountSubscription']['dateStart'], variables['input']['dateStart'])
+        self.assertEqual(data['createAccountSubscription']['accountSubscription']['dateEnd'], variables['input']['dateEnd'])
+        self.assertEqual(data['createAccountSubscription']['accountSubscription']['note'], variables['input']['note'])
+        self.assertEqual(data['createAccountSubscription']['accountSubscription']['registrationFeePaid'], variables['input']['registrationFeePaid'])
 
 
     # def test_create_subscription_anon_user(self):
