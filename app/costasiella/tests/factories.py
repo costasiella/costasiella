@@ -362,6 +362,7 @@ class AccountClasspassFactory(factory.DjangoModelFactory):
     date_start = datetime.date(2019, 1, 1)
     date_end = None
     note = "Subscription note here"
+    classes_remaining = 10
     
 
 class FinanceInvoiceFactory(factory.DjangoModelFactory):
