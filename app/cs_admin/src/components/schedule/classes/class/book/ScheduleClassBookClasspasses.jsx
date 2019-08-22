@@ -59,7 +59,6 @@ function ScheduleClassBookClasspasses({ t, match, history, classpasses, onClickC
           <span className="text-muted">
             {t('general.classes_remaining')}: {classpass.accountClasspass.classesRemainingDisplay} <br />
             {t('general.valid_until')}: {moment(classpass.accountClasspass.dateEnd).format('LL')} <br />
-
           </span>
         </Card.Body>
         <Card.Footer>

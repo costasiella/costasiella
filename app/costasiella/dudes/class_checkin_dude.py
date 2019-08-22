@@ -26,7 +26,7 @@ class ClassCheckinDude():
         """
         :return: ScheduleItemAttendance object if successful, raise error if not.
         """
-        #TODO: Check if not already signed in
+        # Check if not already signed in
         qs = self._class_checkedin(account, schedule_item, date)
         print(qs)
         if qs.exists():
@@ -35,10 +35,18 @@ class ClassCheckinDude():
 
             if not schedule_item_attendance == 'REVIEW':
                 raise Exception(_('This account is already checked in to this class'))
+            # else:
+            #TODO: Write review check-ins code
 
-        #TODO: Check if classes left on pass
-        #TODO: Code reviews
-        #TODO: Update number of classes remaining on pass
+        # Check if classes left on pass
+        classes_available = False
+        if account_classpass.organization_classpass.unlimited:
+            classes_available = True
+        if account_classpass.classes_remaining:
+            classes_available = True
+
+        if not classes_available:
+            raise Exception(_('No classes left on this pass'))
 
         schedule_item_attendance = ScheduleItemAttendance(
             account = account,
