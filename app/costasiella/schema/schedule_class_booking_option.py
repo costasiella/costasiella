@@ -79,14 +79,7 @@ class ScheduleClassBookingOptionsType(graphene.ObjectType):
         require_login_and_permission(user, 'costasiella.view_scheduleitem')
 
         checkin_dude = ClassCheckinDude()
-
-        print("############")
-        # print(account)
-        print(self.account)
-        print(self.account_id)
-
         account = self.resolve_account(info)
-        print(account)
         schedule_item = self.resolve_schedule_item(info)
 
         classpasses_filter = (
@@ -123,14 +116,7 @@ class ScheduleClassBookingOptionsType(graphene.ObjectType):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.view_scheduleitem')
 
-        print("############")
-        # print(account)
-        print(self.account)
-        print(self.account_id)
-
         account = self.resolve_account(info)
-        print(account)
-
         subscriptions_filter = Q(account = account) & \
             Q(date_start__lte = self.date) & \
             (Q(date_end__gte = self.date) | Q(date_end__isnull = True))
