@@ -15,7 +15,7 @@ let attendance_active
 
 const ClassMenu = ({ t, scheduleItemId, class_date, active_link }) => (
   <List.Group transparent={true}>
-    {(active_link === 'attendance') ? attendance_active = true: attendance_active = false}
+    {(active_link === "attendance") ? attendance_active = true: attendance_active = false}
     
 
     <HasPermissionWrapper 
@@ -29,7 +29,7 @@ const ClassMenu = ({ t, scheduleItemId, class_date, active_link }) => (
           icon="check-circle"
           active={attendance_active}
           >
-          {t('general.attendance')}
+          {t("general.attendance")}
       </List.GroupItem>
     </HasPermissionWrapper>
 
