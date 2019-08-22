@@ -298,6 +298,24 @@ class GQLScheduleClassBookingOptions(TestCase):
         self.assertEqual(errors[0]['message'], 'Invalid list type, possible options [ATTEND, ENROLL, SHOP_BOOK]')
 
 
+    def test_query_booking_options_invalid_date(self):
+        """ Query should not accept dates when a class isn't happening """
+        query = self.scheduleclassbookingoptions_query
+
+        next_tuesday = self.next_monday + datetime.timedelta(days=1)
+
+        variables = {
+          'account': to_global_id('AccountNode', self.account.pk),
+          'scheduleItem': to_global_id('ScheduleItemNode', self.schedule_item.pk),
+          'date': str(self.next_tuesday),
+          'listType': 'INVALID'
+        }
+        executed = execute_test_client_api_query(query, self.admin_user, variables=variables)
+        errors = executed.get('errors')
+
+        self.assertEqual(errors[0]['message'], "This class doesn't take place on date: " + str(next_tuesday))
+
+
     #TODO: Test types SHOP_BOOk and ENROLL are accepted (when the time comes)
 
 
