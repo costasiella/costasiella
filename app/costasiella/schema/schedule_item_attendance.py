@@ -180,6 +180,10 @@ class UpdateScheduleItemAttendance(graphene.relay.ClientIDMutation):
 
         schedule_item_attendance.save()
 
+        # Update classpass classes remaining
+        if schedule_item_attendance.account_classpass:
+             schedule_item_attendance.account_classpass.update_classes_remaining()
+
         return UpdateScheduleItemAttendance(schedule_item_attendance=schedule_item_attendance)
 
 
@@ -199,7 +203,16 @@ class DeleteScheduleItemAttendance(graphene.relay.ClientIDMutation):
         if not schedule_item_attendance:
             raise Exception('Invalid Schedule Item Attendance ID!')
 
+        # Get linked class pass if any
+        account_classpass = None
+        if schedule_item_attendance.account_classpass:
+             account_classpass = schedule_item_attendance.account_classpass
+
+        # Actually remove
         ok = schedule_item_attendance.delete()
+
+        if account_classpass:
+            account_classpass.update_classes_remaining()
 
         return DeleteScheduleItemAttendance(ok=ok)
 
