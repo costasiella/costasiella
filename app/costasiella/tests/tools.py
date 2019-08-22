@@ -1,4 +1,4 @@
-
+import datetime
 
 def next_weekday(date, isoweekday):
     """ Return next weekday after given date """

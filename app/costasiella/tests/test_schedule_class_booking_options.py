@@ -33,8 +33,8 @@ class GQLScheduleClassBookingOptions(TestCase):
         self.permission_change = 'change_scheduleitem'
         self.permission_delete = 'delete_scheduleitem'
 
-        self.next_monday = next_weekday(1)
-        print(self.next_montday)
+        self.next_monday = next_weekday(datetime.date.today(), 1)
+        print(self.next_monday)
 
 
         # self.variables_create = {
@@ -255,9 +255,9 @@ class GQLScheduleClassBookingOptions(TestCase):
 
     def test_query_classpass_allowed(self):
         """ Query list of scheduleclasses """
-        query = self.scheduleclasses_query
+        query = self.scheduleclassbookingoptions_query
         
-        schedule_item_organization_classpass_group = ScheduleItemOrganizationClasspassGroupAllowFactory.create()
+        schedule_item_organization_classpass_group = f.ScheduleItemOrganizationClasspassGroupAllowFactory.create()
         schedule_item = schedule_item_organization_classpass_group.schedule_item
         account = f.RegularUserFactory.create()
 
@@ -265,8 +265,8 @@ class GQLScheduleClassBookingOptions(TestCase):
 
 
         variables = {
-          'account': to_global_id('AccountNode', account.pk)
-          'scheduleItem': to_global_id('ScheduleItemNode', schedule_item.pk)
+          'account': to_global_id('AccountNode', account.pk),
+          'scheduleItem': to_global_id('ScheduleItemNode', schedule_item.pk),
           'date': str(self.next_monday),
           'listType': 'ATTEND'
         }

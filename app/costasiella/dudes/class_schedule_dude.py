@@ -22,7 +22,7 @@ class ClassScheduleDude():
                 return False
 
             if schedule_item.date_end:
-                if date > date_end:
+                if date > schedule_item.date_end:
                     print('date end')
                     return False
 
