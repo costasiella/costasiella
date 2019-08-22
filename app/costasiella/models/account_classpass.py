@@ -27,7 +27,7 @@ class AccountClasspass(models.Model):
 
     def update_classes_remaining(self):
         """ Calculate remaining classes """
-        from .schedule_item_attendance import 
+        from .schedule_item_attendance import ScheduleItemAttendance
         
         if self.organization_classpass.unlimited:
             # No need to do anything for unlimited passes
@@ -35,9 +35,9 @@ class AccountClasspass(models.Model):
         else:
             total = self.organization_classpass.classes
             classes_taken = ScheduleItemAttendance.objects.filter(
-                account_classpass = self.id,
+                Q(account_classpass = self.id),
                 ~Q(booking_status = 'CANCELLED')
-            )
+            ).count()
             self.classes_remaining = total - classes_taken
             self.save()
     

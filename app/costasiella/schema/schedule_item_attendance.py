@@ -135,14 +135,19 @@ class CreateScheduleItemAttendance(graphene.relay.ClientIDMutation):
             if not validation_result['account_classpass']:
                 raise Exception(_('accountClasspass field is mandatory when doing a class pass check-in'))
 
+            account_classpass = validation_result['account_classpass']
             schedule_item_attendance = class_checkin_dude.class_checkin_classpass(
                 account = validation_result['account'],
-                account_classpass = validation_result['account_classpass'],
+                account_classpass = account_classpass,
                 schedule_item = validation_result['schedule_item'],
                 date = input['date'],
                 booking_status = input['booking_status'],
                 online_booking = input['online_booking'],                    
             )
+
+            account_classpass.update_classes_remaining()
+
+            
 
         return CreateScheduleItemAttendance(schedule_item_attendance=schedule_item_attendance)
 
