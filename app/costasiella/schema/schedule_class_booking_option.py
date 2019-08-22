@@ -169,9 +169,9 @@ def validate_schedule_class_booking_options_input(account, schedule_item, date, 
     result = {}
 
     list_types = [
-        'enroll',
-        'shop_book',
-        'attend'
+        'ENROLL',
+        'SHOP_BOOK',
+        'ATTEND'
     ]
 
     if list_type not in list_types:

@@ -88,7 +88,7 @@ function ScheduleClassBook({ t, match, history }) {
         account: account_id,
         scheduleItem: schedule_item_id,
         date: class_date,
-        listType: "attend"
+        listType: "ATTEND"
       }
     }
   )
