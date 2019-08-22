@@ -280,7 +280,8 @@
         "attendance": "__STRING_NOT_TRANSLATED__",
         "booking_status": "__STRING_NOT_TRANSLATED__",
         "booking_options": "__STRING_NOT_TRANSLATED__",
-        "classes_remaining": "__STRING_NOT_TRANSLATED__"
+        "classes_remaining": "__STRING_NOT_TRANSLATED__",
+        "valid_until": "__STRING_NOT_TRANSLATED__"
     },
     "yup": {
         "min_len_3": "__STRING_NOT_TRANSLATED__",

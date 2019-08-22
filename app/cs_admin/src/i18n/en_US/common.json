@@ -280,7 +280,8 @@
         "attendance": "Attendance",
         "booking_status": "Booking status",
         "booking_options": "Booking options",
-        "classes_remaining": "Classes remaining"
+        "classes_remaining": "Classes remaining",
+        "valid_until": "Valid until"
     },
     "yup": {
         "min_len_3": "Please input at least 3 characters",
