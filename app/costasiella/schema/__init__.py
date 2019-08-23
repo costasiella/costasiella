@@ -7,6 +7,8 @@ from .account_membership import AccountMembershipQuery, AccountMembershipMutatio
 from .account_subscription import AccountSubscriptionQuery, AccountSubscriptionMutation
 from .account_teacher_profile import AccountTeacherProfileQuery, AccountTeacherProfileMutation
 
+from .app_settings import AppSettingsQuery, AppSettingsMutation
+
 from .finance_costcenter import FinanceCostCenterQuery, FinanceCostCenterMutation
 from .finance_glaccount import FinanceGLAccountQuery, FinanceGLAccountMutation
 from .finance_invoice import FinanceInvoiceQuery, FinanceInvoiceMutation
@@ -50,6 +52,7 @@ class Query(AccountQuery,
             AccountMembershipQuery,
             AccountSubscriptionQuery,
             AccountTeacherProfileQuery,
+            AppSettingsQuery,
             FinanceCostCenterQuery,
             FinanceGLAccountQuery,
             FinanceInvoiceQuery,
@@ -91,6 +94,7 @@ class Mutation(AccountMutation,
                AccountMembershipMutation,
                AccountSubscriptionMutation,
                AccountTeacherProfileMutation,
+               AppSettingsMutation,
                FinanceCostCenterMutation,
                FinanceGLAccountMutation,
                FinanceInvoiceMutation,
