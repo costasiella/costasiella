@@ -372,7 +372,7 @@ class GQLScheduleItemAttendance(TestCase):
 
 
     def test_create_schedule_class_classpass_attendance(self):
-        """ Create an account subscription """
+        """ Check in to a class using a class pass """
         query = self.schedule_item_attendance_create_mutation
 
         # Create class pass
@@ -414,6 +414,38 @@ class GQLScheduleItemAttendance(TestCase):
         self.assertEqual(data['createScheduleItemAttendance']['scheduleItemAttendance']['date'], variables['input']['date'])
         self.assertEqual(data['createScheduleItemAttendance']['scheduleItemAttendance']['attendanceType'], variables['input']['attendanceType'])
         self.assertEqual(data['createScheduleItemAttendance']['scheduleItemAttendance']['bookingStatus'], variables['input']['bookingStatus'])
+
+
+    def test_create_schedule_class_classpass_attendance_no_classes_remaining_fail(self):
+        """ Check if checking in to a class with an empty card fails """
+        query = self.schedule_item_attendance_create_mutation
+
+        # Create class pass
+        account_classpass = f.AccountClasspassFactory.create()
+        account_classpass.classes_remaining = 0
+        account_classpass.save()
+        account = account_classpass.account
+
+        # Create organization class pass group
+        schedule_item_organization_classpass_group = f.ScheduleItemOrganizationClasspassGroupAllowFactory.create()
+        schedule_item = schedule_item_organization_classpass_group.schedule_item
+        
+        # Add class pass to group
+        organization_classpass_group = schedule_item_organization_classpass_group.organization_classpass_group
+        organization_classpass_group.organization_classpasses.add(account_classpass.organization_classpass)
+
+        variables = self.variables_create_classpass
+        variables['input']['account'] = to_global_id('AccountNode', account.id)
+        variables['input']['accountClasspass'] = to_global_id('AccountClasspassNode', account_classpass.id)
+        variables['input']['scheduleItem'] = to_global_id('ScheduleItemNode', schedule_item.id)
+
+        executed = execute_test_client_api_query(
+            query, 
+            self.admin_user, 
+            variables=variables
+        )
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'No classes left on this pass')
 
 
     def test_create_schedule_item_attendance_anon_user(self):
