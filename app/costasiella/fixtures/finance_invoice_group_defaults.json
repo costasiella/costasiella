@@ -1,0 +1,65 @@
+[
+  {
+    "model": "costasiella.FinanceInvoiceGroupDefault",
+    "fields": {
+      "item_type": "MEMBERSHIPS",
+      "finance_invoice_group": 100
+    }
+  },
+  {
+    "model": "costasiella.FinanceInvoiceGroupDefault",
+    "fields": {
+      "item_type": "SUBSCRIPTIONS",
+      "finance_invoice_group": 100
+    }
+  },
+  {
+    "model": "costasiella.FinanceInvoiceGroupDefault",
+    "fields": {
+      "item_type": "CLASSPASSES",
+      "finance_invoice_group": 100
+    }
+  },
+  {
+    "model": "costasiella.FinanceInvoiceGroupDefault",
+    "fields": {
+      "item_type": "DROPINCLASSES",
+      "finance_invoice_group": 100
+    }
+  },
+  {
+    "model": "costasiella.FinanceInvoiceGroupDefault",
+    "fields": {
+      "item_type": "TRIALCLASSES",
+      "finance_invoice_group": 100
+    }
+  },
+  {
+    "model": "costasiella.FinanceInvoiceGroupDefault",
+    "fields": {
+      "item_type": "EVENT_TICKETS",
+      "finance_invoice_group": 100
+    }
+  },
+  {
+    "model": "costasiella.FinanceInvoiceGroupDefault",
+    "fields": {
+      "item_type": "SHOP_SALES",
+      "finance_invoice_group": 100
+    }
+  },
+  {
+    "model": "costasiella.FinanceInvoiceGroupDefault",
+    "fields": {
+      "item_type": "TEACHER_PAYMENTS",
+      "finance_invoice_group": 100
+    }
+  },
+  {
+    "model": "costasiella.FinanceInvoiceGroupDefault",
+    "fields": {
+      "item_type": "EMPLOYEE_EXPENSES",
+      "finance_invoice_group": 100
+    }
+  }
+]

@@ -19,6 +19,8 @@ from .. import schema
 
 class GQLAccountClasspass(TestCase):
     # https://docs.djangoproject.com/en/2.1/topics/testing/overview/
+    fixtures = ['finance_invoice_group.json', 'finance_invoice_group_defaults.json']
+
     def setUp(self):
         # This is run before every test
         self.admin_user = f.AdminUserFactory.create()
@@ -63,6 +65,7 @@ class GQLAccountClasspass(TestCase):
           dateStart
           dateEnd
           note
+          classesRemainingDisplay
           createdAt
         }
       }
@@ -178,8 +181,30 @@ class GQLAccountClasspass(TestCase):
             to_global_id("OrganizationClasspassNode", classpass.organization_classpass.id)
         )
         self.assertEqual(data['accountClasspasses']['edges'][0]['node']['dateStart'], str(classpass.date_start))
-        self.assertEqual(data['accountClasspasses']['edges'][0]['node']['dateEnd'], classpass.date_end) # Factory is set to None so no string conversion required
+        self.assertEqual(data['accountClasspasses']['edges'][0]['node']['dateEnd'], str(classpass.date_end))
         self.assertEqual(data['accountClasspasses']['edges'][0]['node']['note'], classpass.note)
+        self.assertEqual(data['accountClasspasses']['edges'][0]['node']['classesRemainingDisplay'], str(classpass.classes_remaining))
+
+
+    def test_query_unlimited(self):
+        """ Classes Remaining display should be Unlimited when oranization pass unlimited = True """
+        query = self.classpasses_query
+        classpass = f.AccountClasspassFactory.create()
+        organization_classpass = classpass.organization_classpass
+        organization_classpass.unlimited = True
+        organization_classpass.save()
+
+        variables = {
+            'accountId': to_global_id('AccountClasspassNode', classpass.account.id)
+        }
+
+        executed = execute_test_client_api_query(query, self.admin_user, variables=variables)
+        data = executed.get('data')
+        self.assertEqual(
+            data['accountClasspasses']['edges'][0]['node']['organizationClasspass']['id'], 
+            to_global_id("OrganizationClasspassNode", classpass.organization_classpass.id)
+        )
+        self.assertEqual(data['accountClasspasses']['edges'][0]['node']['classesRemainingDisplay'], "Unlimited")
 
 
     def test_query_permision_denied(self):
@@ -256,7 +281,7 @@ class GQLAccountClasspass(TestCase):
             to_global_id('OrganizationClasspassNode', classpass.organization_classpass.id)
         )
         self.assertEqual(data['accountClasspass']['dateStart'], str(classpass.date_start))
-        self.assertEqual(data['accountClasspass']['dateEnd'], classpass.date_end)
+        self.assertEqual(data['accountClasspass']['dateEnd'], str(classpass.date_end))
         self.assertEqual(data['accountClasspass']['note'], classpass.note)
 
 

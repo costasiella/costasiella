@@ -28,10 +28,10 @@ class FinanceTaxRateNode(DjangoObjectType):
 
 
 class FinanceTaxRateQuery(graphene.ObjectType):
-    finance_taxrates = DjangoFilterConnectionField(FinanceTaxRateNode)
-    finance_taxrate = graphene.relay.Node.Field(FinanceTaxRateNode)
+    finance_tax_rates = DjangoFilterConnectionField(FinanceTaxRateNode)
+    finance_tax_rate = graphene.relay.Node.Field(FinanceTaxRateNode)
 
-    def resolve_finance_taxrates(self, info, archived=False, **kwargs):
+    def resolve_finance_tax_rates(self, info, archived=False, **kwargs):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.view_financetaxrate')
 
@@ -47,7 +47,7 @@ class CreateFinanceTaxRate(graphene.relay.ClientIDMutation):
         rateType = graphene.String(required=True)
         code = graphene.String(required=False, default_value="")
 
-    finance_taxrate = graphene.Field(FinanceTaxRateNode)
+    finance_tax_rate = graphene.Field(FinanceTaxRateNode)
 
     @classmethod
     def mutate_and_get_payload(self, root, info, **input):
@@ -65,17 +65,17 @@ class CreateFinanceTaxRate(graphene.relay.ClientIDMutation):
         if not validators.between(input['percentage'], 0, 100):
             raise GraphQLError(_('Percentage has to be between 0 and 100'))
 
-        finance_taxrate = FinanceTaxRate(
+        finance_tax_rate = FinanceTaxRate(
             name=input['name'], 
             percentage=input['percentage'],
             rate_type=input['rateType']
         )
         if input['code']:
-            finance_taxrate.code = input['code']
+            finance_tax_rate.code = input['code']
 
-        finance_taxrate.save()
+        finance_tax_rate.save()
 
-        return CreateFinanceTaxRate(finance_taxrate=finance_taxrate)
+        return CreateFinanceTaxRate(finance_tax_rate=finance_tax_rate)
 
 
 class UpdateFinanceTaxRate(graphene.relay.ClientIDMutation):
@@ -86,7 +86,7 @@ class UpdateFinanceTaxRate(graphene.relay.ClientIDMutation):
         rateType = graphene.String(required=True)
         code = graphene.String(default_value="")
         
-    finance_taxrate = graphene.Field(FinanceTaxRateNode)
+    finance_tax_rate = graphene.Field(FinanceTaxRateNode)
 
     @classmethod
     def mutate_and_get_payload(self, root, info, **input):
@@ -95,21 +95,21 @@ class UpdateFinanceTaxRate(graphene.relay.ClientIDMutation):
 
         rid = get_rid(input['id'])
 
-        finance_taxrate = FinanceTaxRate.objects.filter(id=rid.id).first()
-        if not finance_taxrate:
+        finance_tax_rate = FinanceTaxRate.objects.filter(id=rid.id).first()
+        if not finance_tax_rate:
             raise Exception('Invalid Finance Tax Rate ID!')
 
         if not validators.between(input['percentage'], 0, 100):
             raise GraphQLError(_('Percentage has to be between 0 and 100'))
 
-        finance_taxrate.name = input['name']
-        finance_taxrate.percentage = input['percentage']
-        finance_taxrate.rate_type = input['rateType']
+        finance_tax_rate.name = input['name']
+        finance_tax_rate.percentage = input['percentage']
+        finance_tax_rate.rate_type = input['rateType']
         if input['code']:
-            finance_taxrate.code = input['code']
-        finance_taxrate.save(force_update=True)
+            finance_tax_rate.code = input['code']
+        finance_tax_rate.save(force_update=True)
 
-        return UpdateFinanceTaxRate(finance_taxrate=finance_taxrate)
+        return UpdateFinanceTaxRate(finance_tax_rate=finance_tax_rate)
 
 
 class ArchiveFinanceTaxRate(graphene.relay.ClientIDMutation):
@@ -117,7 +117,7 @@ class ArchiveFinanceTaxRate(graphene.relay.ClientIDMutation):
         id = graphene.ID(required=True)
         archived = graphene.Boolean(required=True)
 
-    finance_taxrate = graphene.Field(FinanceTaxRateNode)
+    finance_tax_rate = graphene.Field(FinanceTaxRateNode)
 
     @classmethod
     def mutate_and_get_payload(self, root, info, **input):
@@ -126,17 +126,17 @@ class ArchiveFinanceTaxRate(graphene.relay.ClientIDMutation):
 
         rid = get_rid(input['id'])
 
-        finance_taxrate = FinanceTaxRate.objects.filter(id=rid.id).first()
-        if not finance_taxrate:
+        finance_tax_rate = FinanceTaxRate.objects.filter(id=rid.id).first()
+        if not finance_tax_rate:
             raise Exception('Invalid Finance Tax Rate ID!')
 
-        finance_taxrate.archived = input['archived']
-        finance_taxrate.save(force_update=True)
+        finance_tax_rate.archived = input['archived']
+        finance_tax_rate.save(force_update=True)
 
-        return ArchiveFinanceTaxRate(finance_taxrate=finance_taxrate)
+        return ArchiveFinanceTaxRate(finance_tax_rate=finance_tax_rate)
 
 
 class FinanceTaxRateMutation(graphene.ObjectType):
-    archive_finance_taxrate = ArchiveFinanceTaxRate.Field()
-    create_finance_taxrate = CreateFinanceTaxRate.Field()
-    update_finance_taxrate = UpdateFinanceTaxRate.Field()
+    archive_finance_tax_rate = ArchiveFinanceTaxRate.Field()
+    create_finance_tax_rate = CreateFinanceTaxRate.Field()
+    update_finance_tax_rate = UpdateFinanceTaxRate.Field()

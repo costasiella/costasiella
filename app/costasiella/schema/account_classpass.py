@@ -10,6 +10,7 @@ import validators
 from ..models import Account, AccountClasspass, FinancePaymentMethod, OrganizationClasspass
 from ..modules.gql_tools import require_login_and_permission, get_rid
 from ..modules.messages import Messages
+from ..dudes.sales_dude import SalesDude
 
 from sorl.thumbnail import get_thumbnail
 
@@ -43,11 +44,24 @@ def validate_create_update_input(input, update=False):
     return result
 
 
+class AccountClasspassInterface(graphene.Interface):
+    id = graphene.GlobalID()
+    classes_remaining_display = graphene.String()
+
+
 class AccountClasspassNode(DjangoObjectType):   
     class Meta:
         model = AccountClasspass
         filter_fields = ['account', 'date_start', 'date_end']
-        interfaces = (graphene.relay.Node, )
+        interfaces = (graphene.relay.Node, AccountClasspassInterface, )
+
+
+    def resolve_classes_remaining_display(self, info):
+        if self.organization_classpass.unlimited:
+            return _('Unlimited')
+        else:
+            return self.classes_remaining
+
 
     @classmethod
     def get_node(self, info, id):
@@ -90,20 +104,16 @@ class CreateAccountClasspass(graphene.relay.ClientIDMutation):
         # Validate input
         result = validate_create_update_input(input, update=False)
 
-        account_classpass = AccountClasspass(
-            account=result['account'],
-            organization_classpass=result['organization_classpass'],
-            date_start=input['date_start'], 
+        sales_dude = SalesDude()
+        sales_result = sales_dude.sell_classpass(
+            account = result['account'],
+            organization_classpass = result['organization_classpass'],
+            date_start = input['date_start'],
+            note = input['note'] if 'note' in input else "",
+            create_invoice = True
         )
 
-        # set date end
-        account_classpass.set_date_end()
-
-        if 'note' in input:
-            account_classpass.note = input['note']
-
-
-        account_classpass.save()
+        account_classpass = sales_result['account_classpass']
 
         return CreateAccountClasspass(account_classpass=account_classpass)
 

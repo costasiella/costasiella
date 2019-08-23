@@ -29,6 +29,9 @@ class UserType(DjangoObjectType):
 class AccountNode(DjangoObjectType):
     class Meta:
         model = get_user_model()
+        
+        # fields=() # Fields to include
+        exclude = ['password'] # Fields to exclude
         filter_fields = {
             'full_name': ['icontains', 'exact'],
             'is_active': ['exact'],

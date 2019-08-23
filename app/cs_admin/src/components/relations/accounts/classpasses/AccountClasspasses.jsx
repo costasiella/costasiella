@@ -23,7 +23,7 @@ import SiteWrapper from "../../../SiteWrapper"
 import HasPermissionWrapper from "../../../HasPermissionWrapper"
 import { toast } from 'react-toastify'
 
-import BooleanBadge from "../../../ui/BooleanBadge"
+import BadgeBoolean from "../../../ui/BadgeBoolean"
 import RelationsAccountsBack from "../RelationsAccountsBack"
 import confirm_delete from "../../../../tools/confirm_delete"
 
@@ -45,7 +45,7 @@ const DELETE_ACCOUNT_CLASSPASS = gql`
 const AccountClasspasses = ({ t, history, match, archived=false }) => (
   <SiteWrapper>
     <div className="my-3 my-md-5">
-      <Query query={GET_ACCOUNT_CLASSPASSES_QUERY} variables={{ archived: archived, accountId: match.params.account_id }}> 
+      <Query query={GET_ACCOUNT_CLASSPASSES_QUERY} variables={{ archived: archived, accountId: match.params.account_id }} pollInterval={5000}> 
         {({ loading, error, data, refetch, fetchMore }) => {
           // Loading
           if (loading) return <p>{t('general.loading_with_dots')}</p>
@@ -98,6 +98,7 @@ const AccountClasspasses = ({ t, history, match, archived=false }) => (
                           <Table.ColHeader>{t('general.name')}</Table.ColHeader>
                           <Table.ColHeader>{t('general.date_start')}</Table.ColHeader>
                           <Table.ColHeader>{t('general.date_end')}</Table.ColHeader>
+                          <Table.ColHeader>{t('general.classes_remaining')}</Table.ColHeader>
                           <Table.ColHeader></Table.ColHeader> 
                         </Table.Row>
                       </Table.Header>
@@ -112,6 +113,9 @@ const AccountClasspasses = ({ t, history, match, archived=false }) => (
                               </Table.Col>
                               <Table.Col key={v4()}>
                                 {node.dateEnd}
+                              </Table.Col>
+                              <Table.Col key={v4()}>
+                                {node.classesRemainingDisplay}
                               </Table.Col>
                               <Table.Col className="text-right" key={v4()}>
                                 <Link to={"/relations/accounts/" + match.params.account_id + "/classpasses/edit/" + node.id}>

@@ -3,6 +3,7 @@ from django.utils.translation import gettext as _
 from django.db import models
 
 
+from .organization_appointment import OrganizationAppointment
 from .organization_classtype import OrganizationClasstype
 from .organization_location_room import OrganizationLocationRoom
 from .organization_level import OrganizationLevel
@@ -18,6 +19,10 @@ class ScheduleItem(models.Model):
             ('add_scheduleclass', _("Can add schedule class")),
             ('change_scheduleclass', _("Can change schedule class")),
             ('delete_scheduleclass', _("Can delete schedule class")),
+            ('view_scheduleappointment', _("Can view schedule appointment")),
+            ('add_scheduleappointment', _("Can add schedule appointment")),
+            ('change_scheduleappointment', _("Can change schedule appointment")),
+            ('delete_scheduleappointment', _("Can delete schedule appointment")),
         ]
 
     SCHEDULE_ITEM_TYPES = (

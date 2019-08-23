@@ -18,6 +18,7 @@ export const GET_ACCOUNT_CLASSPASSES_QUERY = gql`
           }
           dateStart
           dateEnd
+          classesRemainingDisplay
           createdAt
         }
       }

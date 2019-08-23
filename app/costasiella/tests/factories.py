@@ -21,6 +21,23 @@ class FinanceCostCenterFactory(factory.DjangoModelFactory):
     code = "9000"
 
 
+class FinanceInvoiceGroupFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.FinanceInvoiceGroup
+
+    archived = False
+    display_public = True
+    name = "Another group"
+    next_id = 1
+    due_after_days = 30
+    prefix = 'INV'
+    prefix_year = True
+    auto_reset_prefix_year = True
+    terms = 'Terms here... I guess'
+    footer = 'A prefectly formal and normal footer text'
+    code = "70"
+
+
 class FinanceGLAccountFactory(factory.DjangoModelFactory):
     class Meta:
         model = models.FinanceGLAccount
@@ -343,9 +360,43 @@ class AccountClasspassFactory(factory.DjangoModelFactory):
     account = factory.SubFactory(RegularUserFactory)
     organization_classpass = factory.SubFactory(OrganizationClasspassFactory)
     date_start = datetime.date(2019, 1, 1)
-    date_end = None
+    date_end = datetime.date(2019, 3, 31)
     note = "Subscription note here"
+    classes_remaining = 10
     
+
+class FinanceInvoiceFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.FinanceInvoice
+
+    account = factory.SubFactory(RegularUserFactory)
+    finance_invoice_group = factory.SubFactory(FinanceInvoiceGroupFactory)
+    relation_company = "Company"
+    relation_company_registration = "123545ABC"
+    relation_company_tax_registration = "12334324BQ"
+    relation_contact_name = "Relation name"
+    relation_address = "Street 3243"
+    relation_postcode = "3423 BF"
+    relation_city = "City"
+    relation_country = "NL"
+    status = "DRAFT"
+    summary = "models.CharField(max_length=255, default="")"
+    note = "Invoice note here"
+
+
+class FinanceInvoiceItemFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.FinanceInvoiceItem
+
+    finance_invoice = factory.SubFactory(FinanceInvoiceFactory)
+    product_name = "Product"
+    description = "Description"
+    quantity = 1
+    price = 12
+    finance_tax_rate = factory.SubFactory(FinanceTaxRateFactory)
+    finance_glaccount = factory.SubFactory(FinanceGLAccountFactory)
+    finance_costcenter = factory.SubFactory(FinanceCostCenterFactory)
+
 
 class SchedulePublicWeeklyClassFactory(factory.DjangoModelFactory):
     class Meta:
@@ -363,6 +414,20 @@ class SchedulePublicWeeklyClassFactory(factory.DjangoModelFactory):
     time_end = datetime.time(9, 0)
     display_public = True
     
+
+class ScheduleItemAttendanceClasspassFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.ScheduleItemAttendance
+    
+    account_classpass = factory.SubFactory(AccountClasspassFactory)
+    account = factory.SelfAttribute('account_classpass.account')
+    schedule_item = factory.SubFactory(SchedulePublicWeeklyClassFactory)
+    account_classpass = factory.SubFactory(AccountClasspassFactory)
+    attendance_type = 'CLASSPASS'
+    date = '2030-12-30'
+    online_booking = False
+    booking_status = "ATTENDING"
+
     
 class ScheduleItemTeacherFactory(factory.DjangoModelFactory):
     class Meta:

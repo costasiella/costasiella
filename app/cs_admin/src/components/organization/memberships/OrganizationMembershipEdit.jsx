@@ -222,7 +222,7 @@ class OrganizationMembershipEdit extends Component {
                                                  name="financeTaxRate" 
                                                  className={(errors.financeTaxRate) ? "form-control is-invalid" : "form-control"} 
                                                  autoComplete="off">
-                                            {initialData.financeTaxrates.edges.map(({ node }) =>
+                                            {initialData.financeTaxRates.edges.map(({ node }) =>
                                               <option value={node.id} key={v4()}>{node.name} ({node.percentage}% {node.rateType})</option>
                                             )}
                                           </Field>

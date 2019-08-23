@@ -2,7 +2,7 @@ import gql from "graphql-tag"
 
 export const GET_TAXRATES_QUERY = gql`
   query FinanceTaxRates($after: String, $before: String, $archived: Boolean) {
-    financeTaxrates(first: 15, before: $before, after: $after, archived: $archived) {
+    financeTaxRates(first: 15, before: $before, after: $after, archived: $archived) {
       pageInfo {
         startCursor
         endCursor
@@ -24,8 +24,8 @@ export const GET_TAXRATES_QUERY = gql`
 `
 
 export const GET_TAXRATE_QUERY = gql`
-  query FinanceTaxrate($id: ID!) {
-    financeTaxrate(id:$id) {
+  query FinanceTaxRate($id: ID!) {
+    financeTaxRate(id:$id) {
       id
       archived
       name

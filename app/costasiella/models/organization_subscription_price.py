@@ -2,7 +2,7 @@ from django.utils.translation import gettext as _
 
 from django.db import models
 
-from .finance_taxrate import FinanceTaxRate
+from .finance_tax_rate import FinanceTaxRate
 from .organization_subscription import OrganizationSubscription
 
 

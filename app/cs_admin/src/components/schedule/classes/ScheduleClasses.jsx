@@ -31,7 +31,7 @@ import { toast } from 'react-toastify'
 import CSLS from "../../../tools/cs_local_storage"
 
 
-import BooleanBadge from "../../ui/BooleanBadge"
+import BadgeBoolean from "../../ui/BadgeBoolean"
 import ContentCard from "../../general/ContentCard"
 import ScheduleMenu from "../ScheduleMenu"
 import ScheduleClassesFilter from "./ScheduleClassesFilter"
@@ -174,7 +174,7 @@ const ScheduleClasses = ({ t, history }) => (
                     />
                   </span>
                   <CSDatePicker 
-                    className="form-control schedule-classes-csdatepicker mr-2"
+                    className="form-control schedule-list-csdatepicker mr-2"
                     selected={new Date(localStorage.getItem(CSLS.SCHEDULE_CLASSES_DATE_FROM))}
                     isClearable={false}
                     onChange={(date) => {
@@ -190,7 +190,7 @@ const ScheduleClasses = ({ t, history }) => (
                     }}
                     placeholderText={t('schedule.classes.go_to_date')}
                   />
-                  <Button.List className="schedule-classes-page-options-btn-list">
+                  <Button.List className="schedule-list-page-options-btn-list">
                     <Button 
                       icon="chevron-left"
                       color="secondary"
@@ -288,7 +288,7 @@ const ScheduleClasses = ({ t, history }) => (
                                     </Table.Col>
                                     <Table.Col>
                                       {/* Public */}
-                                      <BooleanBadge value={displayPublic} />
+                                      <BadgeBoolean value={displayPublic} />
                                     </Table.Col>
                                     <Table.Col>
                                       <Dropdown
@@ -299,7 +299,14 @@ const ScheduleClasses = ({ t, history }) => (
                                         color="secondary btn-sm"
                                         triggerContent={t("general.actions")}
                                         items={[
-                                          <Dropdown.Item key={v4()}>Dropdown Link</Dropdown.Item>,
+                                          <HasPermissionWrapper key={v4()} permission="view" resource="scheduleitemattendance">
+                                            <Dropdown.Item
+                                              key={v4()}
+                                              icon="check-circle"
+                                              onClick={() => history.push('/schedule/classes/class/attendance/' + scheduleItemId + '/' + date)}>
+                                                {t("general.attendance")}
+                                            </Dropdown.Item>
+                                          </HasPermissionWrapper>,
                                           <HasPermissionWrapper key={v4()} permission="change" resource="scheduleclass">
                                             <Dropdown.ItemDivider key={v4()} />
                                             <Dropdown.Item
@@ -382,8 +389,8 @@ const ScheduleClasses = ({ t, history }) => (
                   >
                     {t("general.clear")}
                   </Button>
-                  <h5 className="mt-2 pt-1">{t("general.filter")}</h5>
                 </div>
+                <h5 className="mt-2 pt-1">{t("general.filter")}</h5>
                 <ScheduleClassesFilter data={data} refetch={refetch} />
                 <h5>{t("general.menu")}</h5>
                 <ScheduleMenu active_link='classes'/>

@@ -2,9 +2,22 @@
   height: 100%;
 }
 
+/* font classes begin */
+
+.bold {
+  font-weight: bold;
+}
+
+/* font classes end */
+
+
 /* Tabler changes begin */
 table .btn {
   margin-left: 4px;
+}
+
+.btn-link:hover {
+  text-decoration: none !important;
 }
 
 /* Tabler changes end */
@@ -19,11 +32,11 @@ table .btn {
   z-index: 100;
 }
 
-.schedule-classes-csdatepicker {
+.schedule-list-csdatepicker {
   width: 156px !important;
 }
 
-.schedule-classes-page-options-btn-list {
+.schedule-list-page-options-btn-list {
   width: 100%;
 }
 

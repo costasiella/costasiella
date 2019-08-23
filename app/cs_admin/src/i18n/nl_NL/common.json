@@ -49,6 +49,91 @@
             "empty_list": "__STRING_NOT_TRANSLATED__",
             "empty_archive": "__STRING_NOT_TRANSLATED__",
             "add": "__STRING_NOT_TRANSLATED__"
+        },
+        "invoices": {
+            "title": "__STRING_NOT_TRANSLATED__",
+            "error_loading": "__STRING_NOT_TRANSLATED__",
+            "empty_list": "__STRING_NOT_TRANSLATED__",
+            "invoice_number": "__STRING_NOT_TRANSLATED__",
+            "relation": "__STRING_NOT_TRANSLATED__",
+            "summary": "__STRING_NOT_TRANSLATED__",
+            "date": "__STRING_NOT_TRANSLATED__",
+            "due": "__STRING_NOT_TRANSLATED__",
+            "statuses": {
+                "draft": "__STRING_NOT_TRANSLATED__",
+                "sent": "__STRING_NOT_TRANSLATED__",
+                "paid": "__STRING_NOT_TRANSLATED__",
+                "cancelled": "__STRING_NOT_TRANSLATED__",
+                "all": "__STRING_NOT_TRANSLATED__"
+            },
+            "status": {
+                "DRAFT": "__STRING_NOT_TRANSLATED__",
+                "SENT": "__STRING_NOT_TRANSLATED__",
+                "PAID": "__STRING_NOT_TRANSLATED__",
+                "CANCELLED": "__STRING_NOT_TRANSLATED__",
+                "NOT_FOUND": "__STRING_NOT_TRANSLATED__"
+            },
+            "delete_confirm_msg": "__STRING_NOT_TRANSLATED__",
+            "deleted": "__STRING_NOT_TRANSLATED__",
+            "relation_company": "__STRING_NOT_TRANSLATED__",
+            "relation_company_registration": "__STRING_NOT_TRANSLATED__",
+            "relation_company_tax_registration": "__STRING_NOT_TRANSLATED__",
+            "relation_contact_name": "__STRING_NOT_TRANSLATED__",
+            "relation_address": "__STRING_NOT_TRANSLATED__",
+            "relation_postcode": "__STRING_NOT_TRANSLATED__",
+            "relation_city": "__STRING_NOT_TRANSLATED__",
+            "relation_country": "__STRING_NOT_TRANSLATED__",
+            "item_delete_confirm_msg": "__STRING_NOT_TRANSLATED__",
+            "item_deleted": "__STRING_NOT_TRANSLATED__"
+        },
+        "invoice_groups": {
+            "title": "__STRING_NOT_TRANSLATED__",
+            "error_loading": "__STRING_NOT_TRANSLATED__",
+            "empty_list": "__STRING_NOT_TRANSLATED__",
+            "empty_archive": "__STRING_NOT_TRANSLATED__",
+            "add": "__STRING_NOT_TRANSLATED__",
+            "next_id": "__STRING_NOT_TRANSLATED__",
+            "due_after_days": "__STRING_NOT_TRANSLATED__",
+            "auto_reset_prefix_year": "__STRING_NOT_TRANSLATED__",
+            "title_add": "__STRING_NOT_TRANSLATED__",
+            "toast_add_success": "__STRING_NOT_TRANSLATED__",
+            "title_edit": "__STRING_NOT_TRANSLATED__",
+            "toast_edit_success": "__STRING_NOT_TRANSLATED__",
+            "public": "__STRING_NOT_TRANSLATED__",
+            "prefix_year": "__STRING_NOT_TRANSLATED__"
+        },
+        "invoice_groups_defaults": {
+            "MEMBERSHIPS": "__STRING_NOT_TRANSLATED__",
+            "SUBSCRIPTIONS": "__STRING_NOT_TRANSLATED__",
+            "CLASSPASSES": "__STRING_NOT_TRANSLATED__",
+            "DROPINCLASSES": "__STRING_NOT_TRANSLATED__",
+            "TRIALCLASSES": "__STRING_NOT_TRANSLATED__",
+            "EVENT_TICKETS": "__STRING_NOT_TRANSLATED__",
+            "SHOP_SALES": "__STRING_NOT_TRANSLATED__",
+            "TEACHER_PAYMENTS": "__STRING_NOT_TRANSLATED__",
+            "EMPLOYEE_EXPENSES": "__STRING_NOT_TRANSLATED__",
+            "TYPE_NOT_FOUND": "__STRING_NOT_TRANSLATED__",
+            "title": "__STRING_NOT_TRANSLATED__",
+            "error_loading": "__STRING_NOT_TRANSLATED__",
+            "empty_list": "__STRING_NOT_TRANSLATED__",
+            "item_type": "__STRING_NOT_TRANSLATED__",
+            "invoice_group": "__STRING_NOT_TRANSLATED__"
+        },
+        "invoice": {
+            "title": "__STRING_NOT_TRANSLATED__",
+            "toast_edit_summary_success": "__STRING_NOT_TRANSLATED__",
+            "toast_edit_options_success": "__STRING_NOT_TRANSLATED__",
+            "toast_edit_to_success": "__STRING_NOT_TRANSLATED__",
+            "toast_edit_terms_success": "__STRING_NOT_TRANSLATED__",
+            "toast_edit_footer_success": "__STRING_NOT_TRANSLATED__",
+            "toast_edit_note_success": "__STRING_NOT_TRANSLATED__",
+            "toast_edit_item_description_success": "__STRING_NOT_TRANSLATED__",
+            "toast_edit_item_financeTaxRate_success": "__STRING_NOT_TRANSLATED__",
+            "toast_edit_item_price_success": "__STRING_NOT_TRANSLATED__",
+            "toast_edit_item_product_name_success": "__STRING_NOT_TRANSLATED__",
+            "toast_edit_item_quantity_success": "__STRING_NOT_TRANSLATED__",
+            "toast_add_item_success": "__STRING_NOT_TRANSLATED__",
+            "item_add": "__STRING_NOT_TRANSLATED__"
         }
     },
     "general": {
@@ -168,7 +253,35 @@
         "bio": "__STRING_NOT_TRANSLATED__",
         "classpasses": "__STRING_NOT_TRANSLATED__",
         "appointment": "__STRING_NOT_TRANSLATED__",
-        "prices_for": "__STRING_NOT_TRANSLATED__"
+        "prices_for": "__STRING_NOT_TRANSLATED__",
+        "prefix": "__STRING_NOT_TRANSLATED__",
+        "year": "__STRING_NOT_TRANSLATED__",
+        "terms": "__STRING_NOT_TRANSLATED__",
+        "footer": "__STRING_NOT_TRANSLATED__",
+        "status": "__STRING_NOT_TRANSLATED__",
+        "total": "__STRING_NOT_TRANSLATED__",
+        "balance": "__STRING_NOT_TRANSLATED__",
+        "subtotal": "__STRING_NOT_TRANSLATED__",
+        "tax": "__STRING_NOT_TRANSLATED__",
+        "paid": "__STRING_NOT_TRANSLATED__",
+        "options": "__STRING_NOT_TRANSLATED__",
+        "summary": "__STRING_NOT_TRANSLATED__",
+        "last_updated_at": "__STRING_NOT_TRANSLATED__",
+        "from": "__STRING_NOT_TRANSLATED__",
+        "to": "__STRING_NOT_TRANSLATED__",
+        "payments": "__STRING_NOT_TRANSLATED__",
+        "items": "__STRING_NOT_TRANSLATED__",
+        "quantity_short_and_price": "__STRING_NOT_TRANSLATED__",
+        "product": "__STRING_NOT_TRANSLATED__",
+        "finance_invoice_group": "__STRING_NOT_TRANSLATED__",
+        "teachers_available": "__STRING_NOT_TRANSLATED__",
+        "search_results": "__STRING_NOT_TRANSLATED__",
+        "checkin": "__STRING_NOT_TRANSLATED__",
+        "attendance": "__STRING_NOT_TRANSLATED__",
+        "booking_status": "__STRING_NOT_TRANSLATED__",
+        "booking_options": "__STRING_NOT_TRANSLATED__",
+        "classes_remaining": "__STRING_NOT_TRANSLATED__",
+        "valid_until": "__STRING_NOT_TRANSLATED__"
     },
     "yup": {
         "min_len_3": "__STRING_NOT_TRANSLATED__",
@@ -180,7 +293,8 @@
         "type_error_number": "__STRING_NOT_TRANSLATED__",
         "min_len_2": "__STRING_NOT_TRANSLATED__",
         "email": "__STRING_NOT_TRANSLATED__",
-        "time_required": "__STRING_NOT_TRANSLATED__"
+        "time_required": "__STRING_NOT_TRANSLATED__",
+        "field_above_0": "__STRING_NOT_TRANSLATED__"
     },
     "home": {
         "title": "__STRING_NOT_TRANSLATED__"
@@ -384,6 +498,13 @@
             "delete_confirm_msg": "__STRING_NOT_TRANSLATED__",
             "deleted": "__STRING_NOT_TRANSLATED__",
             "add": "__STRING_NOT_TRANSLATED__"
+        },
+        "organization": {
+            "title": "__STRING_NOT_TRANSLATED__",
+            "title_edit": "__STRING_NOT_TRANSLATED__",
+            "toast_edit_success": "__STRING_NOT_TRANSLATED__",
+            "registration": "__STRING_NOT_TRANSLATED__",
+            "tax_registration": "__STRING_NOT_TRANSLATED__"
         }
     },
     "validity": {
@@ -465,6 +586,13 @@
                 "appointments": "__STRING_NOT_TRANSLATED__",
                 "url_bio": "__STRING_NOT_TRANSLATED__",
                 "url_website": "__STRING_NOT_TRANSLATED__"
+            },
+            "invoices": {
+                "title_add": "__STRING_NOT_TRANSLATED__",
+                "title": "__STRING_NOT_TRANSLATED__",
+                "add": "__STRING_NOT_TRANSLATED__",
+                "delete_confirm_msg": "__STRING_NOT_TRANSLATED__",
+                "deleted": "__STRING_NOT_TRANSLATED__"
             }
         }
     },
@@ -535,7 +663,50 @@
                 "shop_book": "__STRING_NOT_TRANSLATED__",
                 "attend_disabled": "__STRING_NOT_TRANSLATED__",
                 "attend_disabled_help": "__STRING_NOT_TRANSLATED__"
+            },
+            "class": {
+                "attendance": {
+                    "status_saved": "__STRING_NOT_TRANSLATED__",
+                    "booking_status": {
+                        "ATTENDING": "__STRING_NOT_TRANSLATED__",
+                        "BOOKED": "__STRING_NOT_TRANSLATED__",
+                        "CANCELLED": "__STRING_NOT_TRANSLATED__",
+                        "invalid_type": "__STRING_NOT_TRANSLATED__"
+                    },
+                    "delete_confirm_msg": "__STRING_NOT_TRANSLATED__",
+                    "delete_success": "__STRING_NOT_TRANSLATED__",
+                    "search_result_empty": "__STRING_NOT_TRANSLATED__",
+                    "search_results_already_checked_in": "__STRING_NOT_TRANSLATED__"
+                },
+                "book": {
+                    "toast_success": "__STRING_NOT_TRANSLATED__",
+                    "classpass_not_allowed": "__STRING_NOT_TRANSLATED__",
+                    "subscription_not_allowed": "__STRING_NOT_TRANSLATED__"
+                }
             }
+        },
+        "appointments": {
+            "title": "__STRING_NOT_TRANSLATED__",
+            "empty_list": "__STRING_NOT_TRANSLATED__",
+            "tooltip_sort_by_location": "__STRING_NOT_TRANSLATED__",
+            "tooltip_sort_by_starttime": "__STRING_NOT_TRANSLATED__",
+            "go_to_date": "__STRING_NOT_TRANSLATED__",
+            "all_appointments_in_series": "__STRING_NOT_TRANSLATED__",
+            "delete_confirm_msg": "__STRING_NOT_TRANSLATED__",
+            "deleted": "__STRING_NOT_TRANSLATED__",
+            "add": "__STRING_NOT_TRANSLATED__",
+            "filter_all_locations": "__STRING_NOT_TRANSLATED__",
+            "filter_all_appointments": "__STRING_NOT_TRANSLATED__",
+            "title_edit": "__STRING_NOT_TRANSLATED__",
+            "toast_edit_success": "__STRING_NOT_TRANSLATED__",
+            "title_add": "__STRING_NOT_TRANSLATED__",
+            "toast_add_success": "__STRING_NOT_TRANSLATED__",
+            "public": "__STRING_NOT_TRANSLATED__",
+            "frequencyType": "__STRING_NOT_TRANSLATED__",
+            "select_specific": "__STRING_NOT_TRANSLATED__",
+            "select_weekly": "__STRING_NOT_TRANSLATED__",
+            "frequencyInterval": "__STRING_NOT_TRANSLATED__",
+            "placeholder_enddate": "__STRING_NOT_TRANSLATED__"
         }
     },
     "countries": {

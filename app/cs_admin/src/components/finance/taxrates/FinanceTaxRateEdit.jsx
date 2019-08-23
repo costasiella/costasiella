@@ -9,7 +9,7 @@ import { Formik, Form as FoForm, Field, ErrorMessage } from 'formik'
 import { toast } from 'react-toastify'
 
 import { GET_TAXRATES_QUERY, GET_TAXRATE_QUERY } from './queries'
-import { TAXRATE_SCHEMA } from './yupSchema'
+import { TAX_RATE_SCHEMA } from './yupSchema'
 
 
 
@@ -29,9 +29,9 @@ import FinanceMenu from "../FinanceMenu"
 
 
 const UPDATE_TAXRATE = gql`
-  mutation UpdateFinanceTaxrate($input: UpdateFinanceTaxRateInput!) {
-    updateFinanceTaxrate(input: $input) {
-      financeTaxrate {
+  mutation UpdateFinanceTaxRate($input: UpdateFinanceTaxRateInput!) {
+    updateFinanceTaxRate(input: $input) {
+      financeTaxRate {
         id
         archived
         name
@@ -80,7 +80,7 @@ class FinanceTaxRateEdit extends Component {
                     return <p>{t('general.error_sad_smiley')}</p>
                     }
                     
-                    const initialData = data.financeTaxrate;
+                    const initialData = data.financeTaxRate;
                     console.log('query data')
                     console.log(data)
 
@@ -95,7 +95,7 @@ class FinanceTaxRateEdit extends Component {
                                 rateType: initialData.rateType,
                                 code: initialData.code,
                               }}
-                              validationSchema={TAXRATE_SCHEMA}
+                              validationSchema={TAX_RATE_SCHEMA}
                               onSubmit={(values, { setSubmitting }) => {
                                   console.log('submit values:')
                                   console.log(values)

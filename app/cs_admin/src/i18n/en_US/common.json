@@ -49,6 +49,91 @@
             "empty_list": "No payment methods found",
             "empty_archive": "Payment method archive is empty",
             "add": "Add payment method"
+        },
+        "invoices": {
+            "title": "Invoices",
+            "error_loading": "Error loading invoices :(",
+            "empty_list": "No invoices found",
+            "invoice_number": "Invoice #",
+            "relation": "Relation",
+            "summary": "Summary",
+            "date": "Date",
+            "due": "Due",
+            "statuses": {
+                "draft": "Draft",
+                "sent": "Sent",
+                "paid": "Paid",
+                "cancelled": "Cancelled",
+                "all": "All statuses"
+            },
+            "status": {
+                "DRAFT": "Draft",
+                "SENT": "Sent",
+                "PAID": "Paid",
+                "CANCELLED": "Cancelled",
+                "NOT_FOUND": "Not found"
+            },
+            "delete_confirm_msg": "Are you sure you wish to delete this invoice?",
+            "deleted": "Deleted invoice",
+            "relation_company": "Company",
+            "relation_company_registration": "Registration",
+            "relation_company_tax_registration": "Tax registration",
+            "relation_contact_name": "Contact name",
+            "relation_address": "Address",
+            "relation_postcode": "Postcode",
+            "relation_city": "City",
+            "relation_country": "Country",
+            "item_delete_confirm_msg": "Are you sure you wish to delete this item?",
+            "item_deleted": "Deleted item"
+        },
+        "invoice_groups": {
+            "title": "Invoice groups",
+            "error_loading": "Error loading invoice groups :(",
+            "empty_list": "No invoice groups have been defined yet",
+            "empty_archive": "Invoice group archive is empty",
+            "add": "Add invoice group",
+            "next_id": "Next #",
+            "due_after_days": "Due after days",
+            "auto_reset_prefix_year": "Reset to 1 on January 1st",
+            "title_add": "Add invoice group",
+            "toast_add_success": "Added invoice group",
+            "title_edit": "Edit invoice group",
+            "toast_edit_success": "Saved",
+            "public": "Show invoices from this group in account profiles",
+            "prefix_year": "Prefix year"
+        },
+        "invoice_groups_defaults": {
+            "MEMBERSHIPS": "Memberships",
+            "SUBSCRIPTIONS": "Subscriptions",
+            "CLASSPASSES": "Class passes",
+            "DROPINCLASSES": "Drop-in classes",
+            "TRIALCLASSES": "Trial classes",
+            "EVENT_TICKETS": "Event tickets",
+            "SHOP_SALES": "Shop sales",
+            "TEACHER_PAYMENTS": "Teacher payments",
+            "EMPLOYEE_EXPENSES": "Employee expenses",
+            "TYPE_NOT_FOUND": "Type not found...",
+            "title": "Default invoice groups",
+            "error_loading": "Error loading default invoice groups :(",
+            "empty_list": "No invoice item types have been defined. Have the fixtures been loaded?",
+            "item_type": "Item type",
+            "invoice_group": "Default invoice group"
+        },
+        "invoice": {
+            "title": "Invoice",
+            "toast_edit_summary_success": "Summary saved",
+            "toast_edit_options_success": "Options saved",
+            "toast_edit_to_success": "To saved",
+            "toast_edit_terms_success": "Terms saved",
+            "toast_edit_footer_success": "Footer saved",
+            "toast_edit_note_success": "Note saved",
+            "toast_edit_item_description_success": "Item description saved",
+            "toast_edit_item_financeTaxRate_success": "Item tax rate saved",
+            "toast_edit_item_price_success": "Item price saved",
+            "toast_edit_item_product_name_success": "Item product name saved",
+            "toast_edit_item_quantity_success": "Item quantity saved",
+            "toast_add_item_success": "Added item",
+            "item_add": "Add item"
         }
     },
     "general": {
@@ -168,7 +253,35 @@
         "bio": "Bio",
         "classpasses": "Class passes",
         "appointment": "Appointment",
-        "prices_for": "Prices for"
+        "prices_for": "Prices for",
+        "prefix": "Prefix",
+        "year": "Year",
+        "terms": "Terms",
+        "footer": "Footer",
+        "status": "Status",
+        "total": "Total",
+        "balance": "Balance",
+        "subtotal": "Subtotal",
+        "tax": "Tax",
+        "paid": "Paid",
+        "options": "Options",
+        "summary": "Summary",
+        "last_updated_at": "Last updated",
+        "from": "From",
+        "to": "To",
+        "payments": "Payments",
+        "items": "Items",
+        "quantity_short_and_price": "QTY & Price",
+        "product": "Product",
+        "finance_invoice_group": "Invoice group",
+        "teachers_available": "Teachers available",
+        "search_results": "Search results",
+        "checkin": "Check-in",
+        "attendance": "Attendance",
+        "booking_status": "Booking status",
+        "booking_options": "Booking options",
+        "classes_remaining": "Classes remaining",
+        "valid_until": "Valid until"
     },
     "yup": {
         "min_len_3": "Please input at least 3 characters",
@@ -180,7 +293,8 @@
         "type_error_number": "Please input a number",
         "min_len_2": "Please input at least 2 characters",
         "email": "Please input a valid email address",
-        "time_required": "Please select a time"
+        "time_required": "Please select a time",
+        "field_above_0": "Please add a positive number"
     },
     "home": {
         "title": "Home"
@@ -384,6 +498,13 @@
             "delete_confirm_msg": "Are you sure you wish to delete the price for this teacher?",
             "deleted": "Deleted appointment price",
             "add": "Add appointment price"
+        },
+        "organization": {
+            "title": "Organization",
+            "title_edit": "Organization",
+            "toast_edit_success": "Saved organization",
+            "registration": "Registration ID",
+            "tax_registration": "Tax registration ID"
         }
     },
     "validity": {
@@ -465,6 +586,13 @@
                 "appointments": "Teaches appointments",
                 "url_bio": "Link to bio",
                 "url_website": "Website"
+            },
+            "invoices": {
+                "title_add": "Add invoice",
+                "title": "Invoices",
+                "add": "Add invoice",
+                "delete_confirm_msg": "Are you sure you wish to delete this invoice?",
+                "deleted": "Deleted invoice"
             }
         }
     },
@@ -535,7 +663,50 @@
                 "shop_book": "Book in webshop",
                 "attend_disabled": "Can't change",
                 "attend_disabled_help": "Attend has to be enabled when 'Book in webshop' is set."
+            },
+            "class": {
+                "attendance": {
+                    "status_saved": "Updated booking status",
+                    "booking_status": {
+                        "ATTENDING": "Attending",
+                        "BOOKED": "Booked",
+                        "CANCELLED": "Cancelled",
+                        "invalid_type": "Unknown"
+                    },
+                    "delete_confirm_msg": "Are you sure you wish to remove this customer from the attendance list?",
+                    "delete_success": "Customer removed from list",
+                    "search_result_empty": "No customers found matching your search",
+                    "search_results_already_checked_in": "Already checked-in"
+                },
+                "book": {
+                    "toast_success": "Check-in success",
+                    "classpass_not_allowed": "Not allowed for this class",
+                    "subscription_not_allowed": "Not allowed for this class"
+                }
             }
+        },
+        "appointments": {
+            "title": "Appointments",
+            "empty_list": "No appointments found on this day",
+            "tooltip_sort_by_location": "Sort by location",
+            "tooltip_sort_by_starttime": "Sort by start time",
+            "go_to_date": "Go to date",
+            "all_appointments_in_series": "All",
+            "delete_confirm_msg": "Are you sure you wish to delete this appointment and all associated data?",
+            "deleted": "Appointment deleted",
+            "add": "Add appointment",
+            "filter_all_locations": "All locations",
+            "filter_all_appointments": "All appointment types",
+            "title_edit": "__STRING_NOT_TRANSLATED__",
+            "toast_edit_success": "__STRING_NOT_TRANSLATED__",
+            "title_add": "__STRING_NOT_TRANSLATED__",
+            "toast_add_success": "__STRING_NOT_TRANSLATED__",
+            "public": "__STRING_NOT_TRANSLATED__",
+            "frequencyType": "__STRING_NOT_TRANSLATED__",
+            "select_specific": "__STRING_NOT_TRANSLATED__",
+            "select_weekly": "__STRING_NOT_TRANSLATED__",
+            "frequencyInterval": "__STRING_NOT_TRANSLATED__",
+            "placeholder_enddate": "__STRING_NOT_TRANSLATED__"
         }
     },
     "countries": {

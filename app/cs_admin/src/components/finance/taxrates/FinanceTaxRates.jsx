@@ -31,8 +31,8 @@ import { GET_TAXRATES_QUERY } from "./queries"
 
 const ARCHIVE_TAXRATE = gql`
   mutation ArchiveFinanceTaxRate($input: ArchiveFinanceTaxRateInput!) {
-    archiveFinanceTaxrate(input: $input) {
-      financeTaxrate {
+    archiveFinanceTaxRate(input: $input) {
+      financeTaxRate {
         id
         archived
       }
@@ -49,7 +49,7 @@ const FinanceTaxRates = ({ t, history, archived=false }) => (
         <Grid.Row>
           <Grid.Col md={9}>
             <Query query={GET_TAXRATES_QUERY} variables={{ archived }}>
-             {({ loading, error, data: {financeTaxrates: taxrates}, refetch, fetchMore }) => {
+             {({ loading, error, data: {financeTaxRates: taxrates}, refetch, fetchMore }) => {
                 // Loading
                 if (loading) return (
                   <ContentCard cardTitle={t('finance.taxrates.title')}>
@@ -99,16 +99,16 @@ const FinanceTaxRates = ({ t, history, archived=false }) => (
                                     after: taxrates.pageInfo.endCursor
                                   },
                                   updateQuery: (previousResult, { fetchMoreResult }) => {
-                                    const newEdges = fetchMoreResult.financeTaxrates.edges
-                                    const pageInfo = fetchMoreResult.financeTaxrates.pageInfo
+                                    const newEdges = fetchMoreResult.financeTaxRates.edges
+                                    const pageInfo = fetchMoreResult.financeTaxRates.pageInfo
 
                                     return newEdges.length
                                       ? {
                                           // Put the new taxrates at the end of the list and update `pageInfo`
                                           // so we have the new `endCursor` and `hasNextPage` values
-                                          financeTaxrates: {
-                                            __typename: previousResult.financeTaxrates.__typename,
-                                            edges: [ ...previousResult.financeTaxrates.edges, ...newEdges ],
+                                          financeTaxRates: {
+                                            __typename: previousResult.financeTaxRates.__typename,
+                                            edges: [ ...previousResult.financeTaxRates.edges, ...newEdges ],
                                             pageInfo
                                           }
                                         }

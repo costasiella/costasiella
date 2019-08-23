@@ -6,9 +6,14 @@ from .account_teacher_profile import AccountTeacherProfile
 
 from .finance_costcenter import FinanceCostCenter
 from .finance_glaccount import FinanceGLAccount
+from .finance_invoice import FinanceInvoice
+from .finance_invoice_group import FinanceInvoiceGroup
+from .finance_invoice_group_default import FinanceInvoiceGroupDefault
+from .finance_invoice_item import FinanceInvoiceItem
 from .finance_payment_method import FinancePaymentMethod
-from .finance_taxrate import FinanceTaxRate
+from .finance_tax_rate import FinanceTaxRate
 
+from .organization import Organization
 from .organization_appointment import OrganizationAppointment
 from .organization_appointment_category import OrganizationAppointmentCategory
 from .organization_appointment_price import OrganizationAppointmentPrice
@@ -27,6 +32,8 @@ from .organization_subscription_group_subscription import OrganizationSubscripti
 from .organization_subscription_price import OrganizationSubscriptionPrice
 
 from .schedule_item import ScheduleItem
+from .schedule_item_attendance import ScheduleItemAttendance
 from .schedule_item_teacher import ScheduleItemTeacher
+from .schedule_item_teacher_available import ScheduleItemTeacherAvailable
 from .schedule_item_organization_classpass_group import ScheduleItemOrganizationClasspassGroup
 from .schedule_item_organization_subscription_group import ScheduleItemOrganizationSubscriptionGroup

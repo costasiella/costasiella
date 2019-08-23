@@ -18,7 +18,7 @@ from .. import schema
 
 class GQLFinancePaymentMethod(TestCase):
     # https://docs.djangoproject.com/en/2.1/topics/testing/overview/
-    fixtures = ['initial_data.json']
+    fixtures = ['finance_payment_methods.json']
 
     def setUp(self):
         # This is run before every test

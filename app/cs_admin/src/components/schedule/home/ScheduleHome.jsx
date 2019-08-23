@@ -41,11 +41,26 @@ class ScheduleHome extends Component {
             <Grid.Row>
               <Grid.Col md={9}>
                 <Grid.Row>
-                  <Grid.Col md={4} lg={4}>
-                    <div onClick={() => history.push('/schedule/classes')}>
-                      <StampCard header={<small>{t('schedule.classes.title')}</small>} footer={t('')} color="blue" icon="book" />
-                    </div>
-                  </Grid.Col>
+                  <HasPermissionWrapper
+                    resource="scheduleclass"
+                    permission="view"
+                  >
+                    <Grid.Col md={4} lg={4}>
+                      <div onClick={() => history.push('/schedule/classes')}>
+                        <StampCard header={<small>{t('schedule.classes.title')}</small>} footer={t('')} color="blue" icon="book" />
+                      </div>
+                    </Grid.Col>
+                  </HasPermissionWrapper>
+                  <HasPermissionWrapper
+                    resource="scheduleappointment"
+                    permission="view"
+                  >
+                    <Grid.Col md={4} lg={4}>
+                      <div onClick={() => history.push('/schedule/appointments')}>
+                        <StampCard header={<small>{t('schedule.appointments.title')}</small>} footer={t('')} color="blue" icon="calendar" />
+                      </div>
+                    </Grid.Col>
+                  </HasPermissionWrapper>
                 </Grid.Row>
               </Grid.Col>
               <Grid.Col md={3}>

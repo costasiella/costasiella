@@ -9,9 +9,14 @@ from .account_teacher_profile import AccountTeacherProfileQuery, AccountTeacherP
 
 from .finance_costcenter import FinanceCostCenterQuery, FinanceCostCenterMutation
 from .finance_glaccount import FinanceGLAccountQuery, FinanceGLAccountMutation
+from .finance_invoice import FinanceInvoiceQuery, FinanceInvoiceMutation
+from .finance_invoice_group import FinanceInvoiceGroupQuery, FinanceInvoiceGroupMutation
+from .finance_invoice_group_default import FinanceInvoiceGroupDefaultQuery, FinanceInvoiceGroupDefaultMutation
+from .finance_invoice_item import FinanceInvoiceItemQuery, FinanceInvoiceItemMutation
 from .finance_payment_method import FinancePaymentMethodQuery, FinancePaymentMethodMutation
-from .finance_taxrate import FinanceTaxRateQuery, FinanceTaxRateMutation
+from .finance_tax_rate import FinanceTaxRateQuery, FinanceTaxRateMutation
 
+from .organization import OrganizationQuery, OrganizationMutation
 from .organization_appointment import OrganizationAppointmentQuery, OrganizationAppointmentMutation
 from .organization_appointment_category import OrganizationAppointmentCategoryQuery, OrganizationAppointmentCategoryMutation
 from .organization_appointment_price import OrganizationAppointmentPriceQuery, OrganizationAppointmentPriceMutation
@@ -29,10 +34,15 @@ from .organization_subscription_group import OrganizationSubscriptionGroupQuery,
 from .organization_subscription_group_subscription import OrganizationSubscriptionGroupSubscriptionMutation
 from .organization_subscription_price import OrganizationSubscriptionPriceQuery, OrganizationSubscriptionPriceMutation
 
+from .schedule_appointment import ScheduleAppointmentQuery, ScheduleAppointmentMutation
+from .schedule_class import ScheduleClassQuery, ScheduleClassMutation
+from .schedule_class_booking_option import ScheduleClassBookingOptionsQuery
 from .schedule_item import ScheduleItemQuery, ScheduleItemMutation
+from .schedule_item_attendance import ScheduleItemAttendanceQuery, ScheduleItemAttendanceMutation
 from .schedule_item_organization_classpass_group import ScheduleItemOrganizationClasspassGroupQuery, ScheduleItemOrganizationClasspassGroupMutation
 from .schedule_item_organization_subscription_group import ScheduleItemOrganizationSubscriptionGroupQuery, ScheduleItemOrganizationSubscriptionGroupMutation
 from .schedule_item_teacher import ScheduleItemTeacherQuery, ScheduleItemTeacherMutation
+from .schedule_item_teacher_available import ScheduleItemTeacherAvailableQuery, ScheduleItemTeacherAvailableMutation
 
 
 class Query(AccountQuery,
@@ -42,8 +52,13 @@ class Query(AccountQuery,
             AccountTeacherProfileQuery,
             FinanceCostCenterQuery,
             FinanceGLAccountQuery,
+            FinanceInvoiceQuery,
+            FinanceInvoiceGroupQuery,
+            FinanceInvoiceGroupDefaultQuery,
+            FinanceInvoiceItemQuery,
             FinancePaymentMethodQuery,
             FinanceTaxRateQuery,
+            OrganizationQuery,
             OrganizationAppointmentQuery,
             OrganizationAppointmentCategoryQuery,
             OrganizationAppointmentPriceQuery,
@@ -58,10 +73,15 @@ class Query(AccountQuery,
             OrganizationSubscriptionQuery,
             OrganizationSubscriptionGroupQuery,
             OrganizationSubscriptionPriceQuery,
+            ScheduleAppointmentQuery,
+            ScheduleClassQuery,
+            ScheduleClassBookingOptionsQuery,
             ScheduleItemQuery,
+            ScheduleItemAttendanceQuery,
             ScheduleItemOrganizationClasspassGroupQuery,
             ScheduleItemOrganizationSubscriptionGroupQuery,
             ScheduleItemTeacherQuery,
+            ScheduleItemTeacherAvailableQuery,
             graphene.ObjectType):
     node = graphene.relay.Node.Field()
 
@@ -73,8 +93,13 @@ class Mutation(AccountMutation,
                AccountTeacherProfileMutation,
                FinanceCostCenterMutation,
                FinanceGLAccountMutation,
+               FinanceInvoiceMutation,
+               FinanceInvoiceGroupMutation,
+               FinanceInvoiceGroupDefaultMutation,
+               FinanceInvoiceItemMutation,
                FinancePaymentMethodMutation,
                FinanceTaxRateMutation,
+               OrganizationMutation,
                OrganizationAppointmentMutation,
                OrganizationAppointmentCategoryMutation,
                OrganizationAppointmentPriceMutation,
@@ -91,10 +116,14 @@ class Mutation(AccountMutation,
                OrganizationSubscriptionGroupMutation, 
                OrganizationSubscriptionGroupSubscriptionMutation, 
                OrganizationSubscriptionPriceMutation, 
+               ScheduleAppointmentMutation,
+               ScheduleClassMutation,
                ScheduleItemMutation,
+               ScheduleItemAttendanceMutation,
                ScheduleItemOrganizationClasspassGroupMutation,
                ScheduleItemOrganizationSubscriptionGroupMutation,
                ScheduleItemTeacherMutation,
+               ScheduleItemTeacherAvailableMutation,
                graphene.ObjectType):
     token_auth = graphql_jwt.ObtainJSONWebToken.Field()
     verify_token = graphql_jwt.Verify.Field()

@@ -22,6 +22,12 @@ import FinanceCostCenterEdit from './components/finance/costcenters/FinanceCostC
 import FinanceGLAccounts from './components/finance/glaccounts/FinanceGLAccounts'
 import FinanceGLAccountAdd from './components/finance/glaccounts/FinanceGLAccountAdd'
 import FinanceGLAccountEdit from './components/finance/glaccounts/FinanceGLAccountEdit'
+import FinanceInvoices from './components/finance/invoices/FinanceInvoices'
+import FinanceInvoiceEdit from './components/finance/invoices/edit/FinanceInvoiceEdit'
+import FinanceInvoiceGroups from './components/finance/invoices/groups/FinanceInvoiceGroups'
+import FinanceInvoiceGroupAdd from './components/finance/invoices/groups/FinanceInvoiceGroupAdd'
+import FinanceInvoiceGroupEdit from './components/finance/invoices/groups/FinanceInvoiceGroupEdit'
+import FinanceInvoiceGroupDefaults from './components/finance/invoices/groups/defaults/FinanceInvoiceGroupDefaults'
 import FinancePaymentMethods from './components/finance/payment_methods/FinancePaymentMethods'
 import FinancePaymentMethodAdd from './components/finance/payment_methods/FinancePaymentMethodAdd'
 import FinancePaymentMethodEdit from './components/finance/payment_methods/FinancePaymentMethodEdit'
@@ -30,6 +36,7 @@ import FinanceTaxRatesAdd from './components/finance/taxrates/FinanceTaxRateAdd'
 import FinanceTaxRatesEdit from './components/finance/taxrates/FinanceTaxRateEdit'
 
 import OrganizationHome from './components/organization/home/OrganizationHome'
+import OrganizationEdit from './components/organization/organization/OrganizationEdit'
 import OrganizationAppointments from './components/organization/appointment_categories/appointments/OrganizationAppointments'
 import OrganizationAppointmentAdd from './components/organization/appointment_categories/appointments/OrganizationAppointmentAdd'
 import OrganizationAppointmentEdit from './components/organization/appointment_categories/appointments/OrganizationAppointmentEdit'
@@ -83,6 +90,8 @@ import RelationsAccountProfile from './components/relations/accounts/RelationsAc
 import AccountClasspasses from './components/relations/accounts/classpasses/AccountClasspasses'
 import AccountClasspassAdd from './components/relations/accounts/classpasses/AccountClasspassAdd'
 import AccountClasspassEdit from './components/relations/accounts/classpasses/AccountClasspassEdit'
+import AccountInvoices from './components/relations/accounts/invoices/AccountInvoices'
+import AccountInvoiceAdd from './components/relations/accounts/invoices/AccountInvoiceAdd'
 import AccountMemberships from './components/relations/accounts/memberships/AccountMemberships'
 import AccountMembershipAdd from './components/relations/accounts/memberships/AccountMembershipAdd'
 import AccountMembershipEdit from './components/relations/accounts/memberships/AccountMembershipEdit'
@@ -92,6 +101,9 @@ import AccountSubscriptionEdit from './components/relations/accounts/subscriptio
 import RelationsAccountTeacherProfile from './components/relations/accounts/teacher_profile/RelationsAccountTeacherProfile'
 
 import ScheduleHome from './components/schedule/home/ScheduleHome'
+import ScheduleAppointments from './components/schedule/appointments/ScheduleAppointments'
+import ScheduleAppointmentAdd from './components/schedule/appointments/ScheduleAppointmentAdd'
+import ScheduleAppointmentEditAll from './components/schedule/appointments/all/edit/ScheduleAppointmentEditAll'
 import ScheduleClasses from './components/schedule/classes/ScheduleClasses'
 import ScheduleClassAdd from './components/schedule/classes/ScheduleClassAdd'
 import ScheduleClassEditAll from './components/schedule/classes/all/edit/ScheduleClassEditAll'
@@ -100,7 +112,8 @@ import ScheduleClassSubscriptions from './components/schedule/classes/all/subscr
 import ScheduleClassTeachers from './components/schedule/classes/all/teachers/ScheduleClassTeachers'
 import ScheduleClassTeacherAdd from './components/schedule/classes/all/teachers/ScheduleClassTeacherAdd'
 import ScheduleClassTeacherEdit from './components/schedule/classes/all/teachers/ScheduleClassTeacherEdit'
-
+import ScheduleClassAttendance from './components/schedule/classes/class/attendance/ScheduleClassAttendance'
+import ScheduleClassBook from './components/schedule/classes/class/book/ScheduleClassBook'
 
 import Error404 from "./components/Error404"
 
@@ -117,6 +130,14 @@ import { registerLocale } from "react-datepicker"
 import nl from 'date-fns/locale/nl';
 registerLocale('nl', nl);
 
+// This allows <string>.trunc(x)
+String.prototype.trunc = 
+  function(n){
+      return this.substr(0, n-1) + (this.length > n ? '...' : '')
+  }
+
+
+// set up ApolloClient
 const client = new ApolloClient({
      uri: "http://localhost:8000/graphql/",
 })
@@ -157,6 +178,12 @@ class App extends Component {
             <Route exact path="/finance/costcenters" component={FinanceCostCenters} />
             <Route exact path="/finance/costcenters/add" component={FinanceCostCenterAdd} />
             <Route exact path="/finance/costcenters/edit/:id" component={FinanceCostCenterEdit} />
+            <Route exact path="/finance/invoices" component={FinanceInvoices} />
+            <Route exact path="/finance/invoices/edit/:id" component={FinanceInvoiceEdit} />
+            <Route exact path="/finance/invoices/groups" component={FinanceInvoiceGroups} />
+            <Route exact path="/finance/invoices/groups/add" component={FinanceInvoiceGroupAdd} />
+            <Route exact path="/finance/invoices/groups/edit/:id" component={FinanceInvoiceGroupEdit} />
+            <Route exact path="/finance/invoices/groups/defaults" component={FinanceInvoiceGroupDefaults} />
             <Route exact path="/finance/glaccounts" component={FinanceGLAccounts} />
             <Route exact path="/finance/glaccounts/add" component={FinanceGLAccountAdd} />
             <Route exact path="/finance/glaccounts/edit/:id" component={FinanceGLAccountEdit} />
@@ -169,6 +196,7 @@ class App extends Component {
             
             {/* ORGANIZATION */}
             <Route exact path="/organization" component={OrganizationHome} />
+            <Route exact path="/organization/edit/:id" component={OrganizationEdit} />
             <Route exact path="/organization/appointment_categories" component={OrganizationAppointmentCategories} />
             <Route exact path="/organization/appointment_categories/add" component={OrganizationAppointmentCategoryAdd} />
             <Route exact path="/organization/appointment_categories/edit/:id" component={OrganizationAppointmentCategoryEdit} />
@@ -226,6 +254,8 @@ class App extends Component {
             <Route exact path="/relations/accounts/:account_id/classpasses" component={AccountClasspasses} />
             <Route exact path="/relations/accounts/:account_id/classpasses/add" component={AccountClasspassAdd} />
             <Route exact path="/relations/accounts/:account_id/classpasses/edit/:id" component={AccountClasspassEdit} />
+            <Route exact path="/relations/accounts/:account_id/invoices" component={AccountInvoices} />
+            <Route exact path="/relations/accounts/:account_id/invoices/add" component={AccountInvoiceAdd} />
             <Route exact path="/relations/accounts/:account_id/memberships" component={AccountMemberships} />
             <Route exact path="/relations/accounts/:account_id/memberships/add" component={AccountMembershipAdd} />
             <Route exact path="/relations/accounts/:account_id/memberships/edit/:id" component={AccountMembershipEdit} />
@@ -236,6 +266,9 @@ class App extends Component {
 
             {/* SCHEDULE */}
             <Route exact path="/schedule" component={ScheduleHome} />
+            <Route exact path="/schedule/appointments" component={ScheduleAppointments} />
+            <Route exact path="/schedule/appointments/add" component={ScheduleAppointmentAdd} />
+            <Route exact path="/schedule/appointments/all/edit/:appointment_id" component={ScheduleAppointmentEditAll} />
             <Route exact path="/schedule/classes" component={ScheduleClasses} />
             <Route exact path="/schedule/classes/add/" component={ScheduleClassAdd} />
             <Route exact path="/schedule/classes/all/edit/:class_id/" component={ScheduleClassEditAll} />
@@ -244,6 +277,8 @@ class App extends Component {
             <Route exact path="/schedule/classes/all/teachers/:class_id/" component={ScheduleClassTeachers} />
             <Route exact path="/schedule/classes/all/teachers/:class_id/add" component={ScheduleClassTeacherAdd} />
             <Route exact path="/schedule/classes/all/teachers/:class_id/edit/:id" component={ScheduleClassTeacherEdit} />
+            <Route exact path="/schedule/classes/class/attendance/:class_id/:date" component={ScheduleClassAttendance} />
+            <Route exact path="/schedule/classes/class/book/:class_id/:date/:account_id" component={ScheduleClassBook} />
 
             <Route component={Error404} />
           </Switch>
