@@ -4,7 +4,7 @@
     "pk": 1,
     "fields": {
       "date_format": "YYYY-MM-DD",
-      "time_format": "HH:mm",
+      "time_format": "HH:mm"
     }
   }
 ]
