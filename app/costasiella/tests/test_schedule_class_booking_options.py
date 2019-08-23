@@ -33,7 +33,8 @@ class GQLScheduleClassBookingOptions(TestCase):
         self.permission_change = 'change_scheduleitem'
         self.permission_delete = 'delete_scheduleitem'
 
-        self.next_monday = next_weekday(datetime.date.today(), 1)
+        self.monday = datetime.date(2019, 1, 7)
+        self.tuesday = self.monday + datetime.timedelta(days=1)
 
         # Create class pass
         self.account_classpass = f.AccountClasspassFactory.create()
@@ -122,10 +123,12 @@ class GQLScheduleClassBookingOptions(TestCase):
         variables = {
           'account': to_global_id('AccountNode', self.account.pk),
           'scheduleItem': to_global_id('ScheduleItemNode', self.schedule_item.pk),
-          'date': str(self.next_monday),
+          'date': str(self.monday),
           'listType': 'ATTEND'
         }
         executed = execute_test_client_api_query(query, self.admin_user, variables=variables)
+        print('#########')
+        print(executed)
         data = executed.get('data')
 
         self.assertEqual(data['scheduleClassBookingOptions']['date'], variables['date'])
@@ -141,7 +144,7 @@ class GQLScheduleClassBookingOptions(TestCase):
         variables = {
           'account': to_global_id('AccountNode', self.account.pk),
           'scheduleItem': to_global_id('ScheduleItemNode', self.schedule_item.pk),
-          'date': str(self.next_monday),
+          'date': str(self.monday),
           'listType': 'INVALID'
         }
         executed = execute_test_client_api_query(query, self.admin_user, variables=variables)
@@ -154,18 +157,18 @@ class GQLScheduleClassBookingOptions(TestCase):
         """ Query should not accept dates when a class isn't happening """
         query = self.scheduleclassbookingoptions_query
 
-        next_tuesday = self.next_monday + datetime.timedelta(days=1)
+        tuesday = self.monday + datetime.timedelta(days=1)
 
         variables = {
           'account': to_global_id('AccountNode', self.account.pk),
           'scheduleItem': to_global_id('ScheduleItemNode', self.schedule_item.pk),
-          'date': str(self.next_tuesday),
-          'listType': 'INVALID'
+          'date': str(self.tuesday),
+          'listType': 'ATTEND'
         }
         executed = execute_test_client_api_query(query, self.admin_user, variables=variables)
         errors = executed.get('errors')
 
-        self.assertEqual(errors[0]['message'], "This class doesn't take place on date: " + str(next_tuesday))
+        self.assertEqual(errors[0]['message'], "This class doesn't take place on date: " + str(tuesday))
 
 
     #TODO: Test types SHOP_BOOk and ENROLL are accepted (when the time comes)
@@ -178,7 +181,7 @@ class GQLScheduleClassBookingOptions(TestCase):
         variables = {
           'account': to_global_id('AccountNode', self.account.pk),
           'scheduleItem': to_global_id('ScheduleItemNode', self.schedule_item.pk),
-          'date': str(self.next_monday),
+          'date': str(self.monday),
           'listType': 'ATTEND'
         }
         executed = execute_test_client_api_query(query, self.admin_user, variables=variables)
@@ -200,7 +203,7 @@ class GQLScheduleClassBookingOptions(TestCase):
         variables = {
           'account': to_global_id('AccountNode', self.account.pk),
           'scheduleItem': to_global_id('ScheduleItemNode', self.schedule_item.pk),
-          'date': str(self.next_monday),
+          'date': str(self.monday),
           'listType': 'ATTEND'
         }
         executed = execute_test_client_api_query(query, self.admin_user, variables=variables)

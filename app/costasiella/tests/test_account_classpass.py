@@ -181,7 +181,7 @@ class GQLAccountClasspass(TestCase):
             to_global_id("OrganizationClasspassNode", classpass.organization_classpass.id)
         )
         self.assertEqual(data['accountClasspasses']['edges'][0]['node']['dateStart'], str(classpass.date_start))
-        self.assertEqual(data['accountClasspasses']['edges'][0]['node']['dateEnd'], classpass.date_end) # Factory is set to None so no string conversion required
+        self.assertEqual(data['accountClasspasses']['edges'][0]['node']['dateEnd'], str(classpass.date_end))
         self.assertEqual(data['accountClasspasses']['edges'][0]['node']['note'], classpass.note)
         self.assertEqual(data['accountClasspasses']['edges'][0]['node']['classesRemainingDisplay'], str(classpass.classes_remaining))
 
@@ -281,7 +281,7 @@ class GQLAccountClasspass(TestCase):
             to_global_id('OrganizationClasspassNode', classpass.organization_classpass.id)
         )
         self.assertEqual(data['accountClasspass']['dateStart'], str(classpass.date_start))
-        self.assertEqual(data['accountClasspass']['dateEnd'], classpass.date_end)
+        self.assertEqual(data['accountClasspass']['dateEnd'], str(classpass.date_end))
         self.assertEqual(data['accountClasspass']['note'], classpass.note)
 
 
