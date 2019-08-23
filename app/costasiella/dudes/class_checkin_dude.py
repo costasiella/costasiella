@@ -180,9 +180,6 @@ class ClassCheckinDude():
         """
         classes_allowed = self.classpass_attend_allowed(account_classpass)
 
-        print('##############')
-        print(classes_allowed)
-
         if schedule_item.id in classes_allowed:
             return True
         else:
