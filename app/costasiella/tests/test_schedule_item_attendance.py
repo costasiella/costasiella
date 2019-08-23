@@ -626,6 +626,32 @@ class GQLScheduleItemAttendance(TestCase):
         self.assertEqual(data['deleteScheduleItemAttendance']['ok'], True)
 
 
+    def test_delete_schedule_item_attendance_return_class_to_pass(self):
+        """ Delete schedule item attendance and check the number of classes remaining 
+        the pass += 1
+        """
+        query = self.schedule_item_attendance_delete_mutation
+
+        schedule_item_attendance = f.ScheduleItemAttendanceClasspassFactory.create()
+        account_classpass = schedule_item_attendance.account_classpass
+        account_classpass.update_classes_remaining()
+        classes_remaining = account_classpass.classes_remaining
+        variables = self.variables_delete
+        variables['input']['id'] = to_global_id('ScheduleItemAttendanceNode', schedule_item_attendance.id)
+
+        executed = execute_test_client_api_query(
+            query, 
+            self.admin_user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['deleteScheduleItemAttendance']['ok'], True)
+
+        self.assertEqual(classes_remaining + 1,
+          models.AccountClasspass.objects.get(pk=schedule_item_attendance.account_classpass.pk).classes_remaining
+        )
+
+
     def test_delete_schedule_item_attendance_anon_user(self):
         """ Delete schedule item attendance denied for anon user """
         query = self.schedule_item_attendance_delete_mutation
