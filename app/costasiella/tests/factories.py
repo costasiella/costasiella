@@ -360,7 +360,7 @@ class AccountClasspassFactory(factory.DjangoModelFactory):
     account = factory.SubFactory(RegularUserFactory)
     organization_classpass = factory.SubFactory(OrganizationClasspassFactory)
     date_start = datetime.date(2019, 1, 1)
-    date_end = None
+    date_end = datetime.date(2019, 3, 31)
     note = "Subscription note here"
     classes_remaining = 10
     

@@ -46,7 +46,11 @@ class ClassCheckinDude():
             classes_available = True
 
         if not classes_available:
-            raise Exception(_('No classes left on this pass'))
+            raise Exception(_('No classes left on this pass.'))
+
+        # Check pass valid on date
+        if (date < account_classpass.date_start) or (date > account_classpass.date_end):
+            raise Exception(_('This pass is not valid on this date.'))
 
         schedule_item_attendance = ScheduleItemAttendance(
             attendance_type = "CLASSPASS",
