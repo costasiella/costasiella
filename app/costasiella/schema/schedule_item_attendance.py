@@ -153,7 +153,6 @@ class CreateScheduleItemAttendance(graphene.relay.ClientIDMutation):
 class UpdateScheduleItemAttendance(graphene.relay.ClientIDMutation):
     class Input:
         id = graphene.ID(required=True)
-        attendance_type = graphene.String(required=False)
         booking_status = graphene.String(required=False, default_value="BOOKED")
         
     schedule_item_attendance = graphene.Field(ScheduleItemAttendanceNode)
@@ -169,9 +168,6 @@ class UpdateScheduleItemAttendance(graphene.relay.ClientIDMutation):
             raise Exception('Invalid Schedule Item Attendance ID!')
 
         validation_result = validate_schedule_item_attendance_create_update_input(input)
-
-        if 'attendance_input' in input:
-            schedule_item_attendance.attendance_type = input['attendance_type']
         
         if 'booking_status' in input:
             schedule_item_attendance.booking_status = input['booking_status']

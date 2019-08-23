@@ -17,7 +17,7 @@ from .. import schema
 
 
 
-class GQLAccountSubscription(TestCase):
+class GQLScheduleItemAttendance(TestCase):
     # https://docs.djangoproject.com/en/2.1/topics/testing/overview/
     def setUp(self):
         # This is run before every test
@@ -37,12 +37,9 @@ class GQLAccountSubscription(TestCase):
             }
         }
 
-        self.variables_update = {
+        self.variables_update_classpass = {
             "input": {
-                "dateStart": "2017-01-01",
-                "dateEnd": "2020-12-31",
-                "note": "Update note",
-                "registrationFeePaid": True
+                "bookingStatus": "ATTENDING"
             }
         }
 
@@ -161,7 +158,7 @@ class GQLAccountSubscription(TestCase):
   }
 '''
 
-        self.subscription_update_mutation = '''
+        self.schedule_item_attendance_update_mutation = '''
   mutation UpdateScheduleItemAttendance($input: UpdateScheduleItemAttendanceInput!) {
     updateScheduleItemAttendance(input:$input) {
       scheduleItemAttendance {
@@ -182,6 +179,7 @@ class GQLAccountSubscription(TestCase):
         scheduleItem {
           id
         }
+      }
     }
   }
 '''
@@ -396,8 +394,6 @@ class GQLAccountSubscription(TestCase):
             variables=variables
         )
         data = executed.get('data')
-        print("############")
-        print(executed)
 
         self.assertEqual(
             data['createScheduleItemAttendance']['scheduleItemAttendance']['account']['id'], 
@@ -522,15 +518,13 @@ class GQLAccountSubscription(TestCase):
 
 
     def test_update_schedule_class_attendance(self):
-        """ Update a subscription """
-        query = self.subscription_update_mutation
-        subscription = f.AccountSubscriptionFactory.create()
-        organization_subscription = f.OrganizationSubscriptionFactory.create()
-        finance_payment_method = f.FinancePaymentMethodFactory.create()
-        variables = self.variables_update
-        variables['input']['id'] = to_global_id('AccountSubscriptionNode', subscription.id)
-        variables['input']['organizationSubscription'] = to_global_id('OrganizationSubscriptionNode', organization_subscription.id)
-        variables['input']['financePaymentMethod'] = to_global_id('FinancePaymentMethodNode', finance_payment_method.id)
+        """ Update a class attendance status """
+        query = self.schedule_item_attendance_update_mutation
+
+        schedule_item_attendance = f.ScheduleItemAttendanceClasspassFactory.create()
+
+        variables = self.variables_update_classpass
+        variables['input']['id'] = to_global_id('ScheduleItemAttendanceNode', schedule_item_attendance.id)
 
         executed = execute_test_client_api_query(
             query, 
@@ -538,19 +532,17 @@ class GQLAccountSubscription(TestCase):
             variables=variables
         )
         data = executed.get('data')
+        print('##############')
+        print(executed)
 
         self.assertEqual(
-          data['updateAccountSubscription']['accountSubscription']['organizationSubscription']['id'], 
-          variables['input']['organizationSubscription']
+          data['updateScheduleItemAttendance']['scheduleItemAttendance']['id'], 
+          variables['input']['id']
         )
         self.assertEqual(
-          data['updateAccountSubscription']['accountSubscription']['financePaymentMethod']['id'], 
-          variables['input']['financePaymentMethod']
+          data['updateScheduleItemAttendance']['scheduleItemAttendance']['bookingStatus'], 
+          variables['input']['bookingStatus']
         )
-        self.assertEqual(data['updateAccountSubscription']['accountSubscription']['dateStart'], variables['input']['dateStart'])
-        self.assertEqual(data['updateAccountSubscription']['accountSubscription']['dateEnd'], variables['input']['dateEnd'])
-        self.assertEqual(data['updateAccountSubscription']['accountSubscription']['note'], variables['input']['note'])
-        self.assertEqual(data['updateAccountSubscription']['accountSubscription']['registrationFeePaid'], variables['input']['registrationFeePaid'])
 
 
     # def test_update_subscription_anon_user(self):
