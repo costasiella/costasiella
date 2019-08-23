@@ -9,7 +9,7 @@ import { Formik } from 'formik'
 import { toast } from 'react-toastify'
 
 import { GET_PAYMENT_METHODS_QUERY, GET_PAYMENT_METHOD_QUERY } from './queries'
-import { PAYMENT_METHOD_SCHEMA } from './yupSchema'
+// import { PAYMENT_METHOD_SCHEMA } from './yupSchema'
 
 
 
@@ -25,6 +25,7 @@ import SiteWrapper from "../../SiteWrapper"
 import HasPermissionWrapper from "../../HasPermissionWrapper"
 
 // import FinancePaymentMethodForm from './AppSettingsGeneralForm'
+import AppSettingsMenu from "../AppSettingsMenu"
 
 
 const UPDATE_PAYMENT_METHOD = gql`
@@ -45,12 +46,12 @@ function AppSettingsGeneral({ t, match, history }) {
     <SiteWrapper>
       <div className="my-3 my-md-5">
         <Container>
-          <Page.Header title={t('finance.payment_methods.title')} />
+          <Page.Header title={t('settings.title')} />
           <Grid.Row>
             <Grid.Col md={9}>
             <Card>
               <Card.Header>
-                <Card.Title>{t('finance.payment_methods.title_edit')}</Card.Title>
+                <Card.Title>{t('settings.general.title')}</Card.Title>
               </Card.Header>
               <Card.Body>
                 content here
@@ -58,7 +59,7 @@ function AppSettingsGeneral({ t, match, history }) {
             </Card>
             </Grid.Col>
             <Grid.Col md={3}>
-              menu here
+              <AppSettingsMenu active_link="general" />
               {/* <HasPermissionWrapper permission="change"
                                     resource="financepaymentmethod">
                 <Button color="primary btn-block mb-6"

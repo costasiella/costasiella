@@ -14,24 +14,27 @@ let general_active
 
 
 const AppSettingsMenu = ({ t, active_link }) => (
-  <List.Group transparent={true}>
-    {(active_link === 'general') ? general_active = true: general_active = false}        
+  <div>
+    <h5>{t('general.menu')}</h5>
+    <List.Group transparent={true}>
+      {(active_link === 'general') ? general_active = true: general_active = false}        
 
-    <HasPermissionWrapper     
-      permission="view"
-      resource="appsettings"
-    >
-      <List.GroupItem
-        key={v4()}
-        className="d-flex align-items-center"
-        to="#/app_settings/general"
-        icon="file-text"
-        active={general_active}
-        >
-        {t('app_settings.general')}
-      </List.GroupItem>
-    </HasPermissionWrapper>
-  </List.Group>
+      <HasPermissionWrapper     
+        permission="view"
+        resource="appsettings"
+      >
+        <List.GroupItem
+          key={v4()}
+          className="d-flex align-items-center"
+          to="#/app_settings/general"
+          icon="sliders"
+          active={general_active}
+          >
+          {t('app_settings.general')}
+        </List.GroupItem>
+      </HasPermissionWrapper>
+    </List.Group>
+  </div>
 )
 
 export default withTranslation()(AppSettingsMenu)

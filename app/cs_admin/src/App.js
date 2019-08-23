@@ -13,6 +13,8 @@ import gql from "graphql-tag"
 import moment from 'moment'
 import 'moment/locale/nl'
 
+import AppSettingsGeneral from './components/app_settings/general/AppSettingsGeneral'
+
 import HomeHome from './components/home/home/HomeHome'
 
 import FinanceHome from './components/finance/home/FinanceHome'
@@ -279,6 +281,9 @@ class App extends Component {
             <Route exact path="/schedule/classes/all/teachers/:class_id/edit/:id" component={ScheduleClassTeacherEdit} />
             <Route exact path="/schedule/classes/class/attendance/:class_id/:date" component={ScheduleClassAttendance} />
             <Route exact path="/schedule/classes/class/book/:class_id/:date/:account_id" component={ScheduleClassBook} />
+
+            {/* Settings */}
+            <Route exact path="/settings/general" component={AppSettingsGeneral} />
 
             <Route component={Error404} />
           </Switch>
