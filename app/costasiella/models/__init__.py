@@ -4,6 +4,8 @@ from .account_membership import AccountMembership
 from .account_subscription import AccountSubscription
 from .account_teacher_profile import AccountTeacherProfile
 
+from .app_setting import AppSetting
+
 from .finance_costcenter import FinanceCostCenter
 from .finance_glaccount import FinanceGLAccount
 from .finance_invoice import FinanceInvoice
