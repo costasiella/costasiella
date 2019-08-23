@@ -521,7 +521,7 @@ class GQLScheduleItemAttendance(TestCase):
         self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
-    def test_update_schedule_class_attendance(self):
+    def test_update_schedule_item_attendance(self):
         """ Update a class attendance status """
         query = self.schedule_item_attendance_update_mutation
 
@@ -546,7 +546,7 @@ class GQLScheduleItemAttendance(TestCase):
         )
 
 
-    def test_update_subscription_anon_user(self):
+    def test_update_schedule_item_attendance_anon_user(self):
         """ Don't allow updating attendances for non-logged in users """
         query = self.schedule_item_attendance_update_mutation
 
@@ -564,7 +564,7 @@ class GQLScheduleItemAttendance(TestCase):
         self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
-    def test_update_subscription_permission_granted(self):
+    def test_update_schedule_item_attendance_permission_granted(self):
         """ Allow updating attendances for users with permissions """
         query = self.schedule_item_attendance_update_mutation
 
@@ -589,7 +589,7 @@ class GQLScheduleItemAttendance(TestCase):
         )
 
 
-    def test_update_subscription_permission_denied(self):
+    def test_update_schedule_item_attendance_permission_denied(self):
         """ Update a class attendance status permission denied """
         query = self.schedule_item_attendance_update_mutation
 
@@ -609,8 +609,8 @@ class GQLScheduleItemAttendance(TestCase):
         self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
-    def test_delete_subscription(self):
-        """ Delete an schedule item attendance """
+    def test_delete_schedule_item_attendance(self):
+        """ Delete schedule item attendance """
         query = self.schedule_item_attendance_delete_mutation
 
         schedule_item_attendance = f.ScheduleItemAttendanceClasspassFactory.create()
@@ -626,60 +626,63 @@ class GQLScheduleItemAttendance(TestCase):
         self.assertEqual(data['deleteScheduleItemAttendance']['ok'], True)
 
 
-    # def test_delete_subscription_anon_user(self):
-    #     """ Delete subscription denied for anon user """
-    #     query = self.subscription_delete_mutation
-    #     subscription = f.AccountSubscriptionFactory.create()
-    #     variables = {"input":{}}
-    #     variables['input']['id'] = to_global_id('AccountSubscriptionNode', subscription.id)
+    def test_delete_schedule_item_attendance_anon_user(self):
+        """ Delete schedule item attendance denied for anon user """
+        query = self.schedule_item_attendance_delete_mutation
 
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         self.anon_user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
+        schedule_item_attendance = f.ScheduleItemAttendanceClasspassFactory.create()
+        variables = self.variables_delete
+        variables['input']['id'] = to_global_id('ScheduleItemAttendanceNode', schedule_item_attendance.id)
 
-
-    # def test_delete_subscription_permission_granted(self):
-    #     """ Allow deleting attendances for users with permissions """
-    #     query = self.subscription_delete_mutation
-    #     subscription = f.AccountSubscriptionFactory.create()
-    #     variables = {"input":{}}
-    #     variables['input']['id'] = to_global_id('AccountSubscriptionNode', subscription.id)
-
-    #     # Give permissions
-    #     user = subscription.account
-    #     permission = Permission.objects.get(codename=self.permission_delete)
-    #     user.user_permissions.add(permission)
-    #     user.save()
-
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['deleteAccountSubscription']['ok'], True)
+        executed = execute_test_client_api_query(
+            query, 
+            self.anon_user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
-    # def test_delete_subscription_permission_denied(self):
-    #     """ Check delete subscription permission denied error message """
-    #     query = self.subscription_delete_mutation
-    #     subscription = f.AccountSubscriptionFactory.create()
-    #     variables = {"input":{}}
-    #     variables['input']['id'] = to_global_id('AccountSubscriptionNode', subscription.id)
+    def test_delete_schedule_item_attendance_permission_granted(self):
+        """ Allow deleting schedule item attendances for users with permissions """
+        query = self.schedule_item_attendance_delete_mutation
+
+        schedule_item_attendance = f.ScheduleItemAttendanceClasspassFactory.create()
+        variables = self.variables_delete
+        variables['input']['id'] = to_global_id('ScheduleItemAttendanceNode', schedule_item_attendance.id)
+
+        # Give permissions
+        user = schedule_item_attendance.account
+        permission = Permission.objects.get(codename=self.permission_delete)
+        user.user_permissions.add(permission)
+        user.save()
+
+        executed = execute_test_client_api_query(
+            query, 
+            user,
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['deleteScheduleItemAttendance']['ok'], True)
+
+
+    def test_delete_schedule_item_attendance_permission_denied(self):
+        """ Check delete schedule item attendance permission denied error message """
+        query = self.schedule_item_attendance_delete_mutation
+
+        schedule_item_attendance = f.ScheduleItemAttendanceClasspassFactory.create()
+        variables = self.variables_delete
+        variables['input']['id'] = to_global_id('ScheduleItemAttendanceNode', schedule_item_attendance.id)
         
-    #     user = subscription.account
+        user = schedule_item_attendance.account
 
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
+        executed = execute_test_client_api_query(
+            query, 
+            user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
 
