@@ -7,6 +7,7 @@ import { Query } from "react-apollo"
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'
 import 'react-confirm-alert/src/react-confirm-alert.css'
+import { Link } from 'react-router-dom'
 
 import GET_USER from "../queries/system/get_user"
 import { get_all_permissions, has_permission } from "../tools/user_tools"
@@ -139,17 +140,16 @@ class SiteWrapper extends React.Component<Props, State> {
                 imageURL: "/static/logo_stock_backend.svg", // Set logo url here
                 navItems: (
                   <Nav.Item type="div" className="d-none d-md-flex">
-                    <Button
-                      icon="settings"
-                      href="https://github.com/tabler/tabler-react"
-                      target="_blank"
-                      outline
-                      size="sm"
-                      RootComponent="a"
-                      color="primary"
-                    >
-                      {this.props.t('general.settings')}
-                    </Button>
+                    <Link to="/settings/general">
+                      <Button
+                        icon="settings"
+                        outline
+                        size="sm"
+                        color="primary"
+                      >
+                        {this.props.t('general.settings')}
+                      </Button>
+                    </Link>
                   </Nav.Item>
                 ),
                 // notificationsTray: {
