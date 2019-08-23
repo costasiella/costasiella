@@ -128,12 +128,12 @@ class ClassCheckinDude():
         organization_classpass = account_classpass.organization_classpass
 
         # Get groups for class pass
-        qs_groups = OrganizationClasspassGroupClasspass.objects.filter(
+        group_ids = OrganizationClasspassGroupClasspass.objects.filter(
             organization_classpass = organization_classpass
-        )
-        group_ids = []
-        for group in qs_groups:
-            group_ids.append(group.id)
+        ).values_list('organization_classpass_group__id', flat=True)
+        # group_ids = []
+        # for group in qs_groups:
+        #     group_ids.append(group.id)
 
         # Get permissions for groups
         qs_permissions = ScheduleItemOrganizationClasspassGroup.objects.filter(

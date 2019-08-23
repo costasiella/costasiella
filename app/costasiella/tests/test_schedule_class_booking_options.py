@@ -20,7 +20,7 @@ from ..modules.gql_tools import get_rid
 
 
 
-class GQLScheduleClassBookingOptions(TransactionTestCase):
+class GQLScheduleClassBookingOptions(TestCase):
     # https://docs.djangoproject.com/en/2.1/topics/testing/overview/
     """
     This test uses the TransacrionTestCase; it's slower then the regular test case as the DB gets 
