@@ -4,7 +4,7 @@ import base64
 import datetime
 
 from django.contrib.auth import get_user_model
-from django.test import TestCase
+from django.test import TransactionTestCase, TestCase
 from graphene.test import Client
 from graphql_relay import to_global_id
 
@@ -20,8 +20,12 @@ from ..modules.gql_tools import get_rid
 
 
 
-class GQLScheduleClassBookingOptions(TestCase):
+class GQLScheduleClassBookingOptions(TransactionTestCase):
     # https://docs.djangoproject.com/en/2.1/topics/testing/overview/
+    """
+    This test uses the TransacrionTestCase; it's slower then the regular test case as the DB gets 
+    reset every test. However there's some data from previous tests that causes these tests to fail.
+    """
 
     def setUp(self):
         # This is run before every test
@@ -127,8 +131,6 @@ class GQLScheduleClassBookingOptions(TestCase):
           'listType': 'ATTEND'
         }
         executed = execute_test_client_api_query(query, self.admin_user, variables=variables)
-        print('#########')
-        print(executed)
         data = executed.get('data')
 
         self.assertEqual(data['scheduleClassBookingOptions']['date'], variables['date'])
