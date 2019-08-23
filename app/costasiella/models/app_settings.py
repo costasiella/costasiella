@@ -3,7 +3,7 @@ from django.db import models
 
 from ..modules.encrypted_fields import EncryptedTextField
 
-class AppSetting(models.Model):
+class AppSettings(models.Model):
     # add additional fields in here
 
     DATE_FORMATS = (

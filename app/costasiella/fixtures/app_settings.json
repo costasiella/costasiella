@@ -1,6 +1,6 @@
 [
   {
-    "model": "costasiella.AppSetting",
+    "model": "costasiella.AppSettings",
     "pk": 1,
     "fields": {
       "date_format": "YYYY-MM-DD",
