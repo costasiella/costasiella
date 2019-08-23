@@ -546,6 +546,48 @@ class GQLScheduleItemAttendance(TestCase):
         )
 
 
+    def test_update_schedule_item_attendance_classpass_one_less_class_remaining(self):
+        """ Update a class attendance status to attending and check that 1 class is taken from the pass """
+        query = self.schedule_item_attendance_update_mutation
+
+        schedule_item_attendance = f.ScheduleItemAttendanceClasspassFactory.create()
+        account_classpass = schedule_item_attendance.account_classpass
+        classes_remaining_before_checkin = account_classpass.classes_remaining
+        account_classpass.update_classes_remaining()
+        classes_remaining_after_checkin = account_classpass.classes_remaining
+
+        self.assertEqual(classes_remaining_before_checkin - 1, classes_remaining_after_checkin)
+
+
+    def test_update_schedule_item_attendance_classpass_return_class_on_cancel(self):
+        """ Update a class attendance status to attending and check that 1 class is taken from the pass """
+        query = self.schedule_item_attendance_update_mutation
+
+        schedule_item_attendance = f.ScheduleItemAttendanceClasspassFactory.create()
+        account_classpass = schedule_item_attendance.account_classpass
+        account_classpass.update_classes_remaining()
+        classes_remaining = account_classpass.classes_remaining
+
+        variables = self.variables_update_classpass
+        variables['input']['id'] = to_global_id('ScheduleItemAttendanceNode', schedule_item_attendance.id)
+        variables['input']['bookingStatus'] = "CANCELLED"
+
+        executed = execute_test_client_api_query(
+            query, 
+            self.admin_user, 
+            variables=variables
+        )
+        data = executed.get('data')
+
+        self.assertEqual(
+          data['updateScheduleItemAttendance']['scheduleItemAttendance']['bookingStatus'], 
+          variables['input']['bookingStatus']
+        )
+        self.assertEqual(classes_remaining + 1,
+          models.AccountClasspass.objects.get(pk=schedule_item_attendance.account_classpass.pk).classes_remaining
+        )
+
+
     def test_update_schedule_item_attendance_anon_user(self):
         """ Don't allow updating attendances for non-logged in users """
         query = self.schedule_item_attendance_update_mutation
