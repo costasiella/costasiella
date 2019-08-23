@@ -120,6 +120,8 @@ const getNavBarItems = (t, user) => {
 
 }
 
+const now = new Date()
+
 class SiteWrapper extends React.Component<Props, State> {
   state = {}  
 
@@ -204,7 +206,7 @@ class SiteWrapper extends React.Component<Props, State> {
                 //   "Premium and Open Source dashboard template with responsive and high quality UI. For Free!",
                 copyright: (
                   <React.Fragment>
-                    Copyleft © 2019.
+                    Copyleft © {now.getFullYear()}.
                     <a
                       href="https://www.costasiella.com"
                       target="_blank"
