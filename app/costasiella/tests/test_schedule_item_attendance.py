@@ -43,6 +43,10 @@ class GQLScheduleItemAttendance(TestCase):
             }
         }
 
+        self.variables_delete = {
+            "input": {}
+        }
+
         self.attendances_query = '''
   query ScheduleItemAttendances($after: String, $before: String, $scheduleItem: ID!, $date: Date!) {
     scheduleItemAttendances(first: 100, before: $before, after: $after, scheduleItem: $scheduleItem, date: $date) {
@@ -184,9 +188,9 @@ class GQLScheduleItemAttendance(TestCase):
   }
 '''
 
-        self.subscription_delete_mutation = '''
-  mutation DeleteAccountSubscription($input: DeleteAccountSubscriptionInput!) {
-    deleteAccountSubscription(input: $input) {
+        self.schedule_item_attendance_delete_mutation = '''
+  mutation DeleteScheduleItemAttendance($input: DeleteScheduleItemAttendanceInput!) {
+    deleteScheduleItemAttendance(input: $input) {
       ok
     }
   }
@@ -605,21 +609,21 @@ class GQLScheduleItemAttendance(TestCase):
         self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
-    # def test_delete_subscription(self):
-    #     """ Delete an account subscription """
-    #     query = self.subscription_delete_mutation
-    #     subscription = f.AccountSubscriptionFactory.create()
-    #     variables = {"input":{}}
-    #     variables['input']['id'] = to_global_id('AccountSubscriptionNode', subscription.id)
+    def test_delete_subscription(self):
+        """ Delete an schedule item attendance """
+        query = self.schedule_item_attendance_delete_mutation
 
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         self.admin_user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     print(data)
-    #     self.assertEqual(data['deleteAccountSubscription']['ok'], True)
+        schedule_item_attendance = f.ScheduleItemAttendanceClasspassFactory.create()
+        variables = self.variables_delete
+        variables['input']['id'] = to_global_id('ScheduleItemAttendanceNode', schedule_item_attendance.id)
+
+        executed = execute_test_client_api_query(
+            query, 
+            self.admin_user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['deleteScheduleItemAttendance']['ok'], True)
 
 
     # def test_delete_subscription_anon_user(self):
