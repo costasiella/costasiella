@@ -162,29 +162,26 @@ class GQLAccountSubscription(TestCase):
 '''
 
         self.subscription_update_mutation = '''
-  mutation UpdateAccountSubscription($input: UpdateAccountSubscriptionInput!) {
-    updateAccountSubscription(input: $input) {
-      accountSubscription {
+  mutation UpdateScheduleItemAttendance($input: UpdateScheduleItemAttendanceInput!) {
+    updateScheduleItemAttendance(input:$input) {
+      scheduleItemAttendance {
         id
         account {
           id
-          firstName
-          lastName
-          email
+          fullName
         }
-        organizationSubscription {
+        accountClasspass {
           id
-          name
         }
-        financePaymentMethod {
+        accountSubscription {
           id
-          name
         }
-        dateStart
-        dateEnd
-        note
-        registrationFeePaid        
-      }
+        date     
+        attendanceType
+        bookingStatus
+        scheduleItem {
+          id
+        }
     }
   }
 '''
