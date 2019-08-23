@@ -388,7 +388,6 @@ class GQLAccountSubscription(TestCase):
         organization_classpass_group = schedule_item_organization_classpass_group.organization_classpass_group
         organization_classpass_group.organization_classpasses.add(account_classpass.organization_classpass)
 
-
         variables = self.variables_create_classpass
         variables['input']['account'] = to_global_id('AccountNode', account.id)
         variables['input']['accountClasspass'] = to_global_id('AccountClasspassNode', account_classpass.id)
@@ -420,80 +419,109 @@ class GQLAccountSubscription(TestCase):
         self.assertEqual(data['createScheduleItemAttendance']['scheduleItemAttendance']['bookingStatus'], variables['input']['bookingStatus'])
 
 
-    # def test_create_subscription_anon_user(self):
-    #     """ Don't allow creating account attendances for non-logged in users """
-    #     query = self.subscription_create_mutation
+    def test_create_subscription_anon_user(self):
+        """ Don't allow creating account attendances for non-logged in users """
+        query = self.schedule_item_attendance_create_mutation
+
+        # Create class pass
+        account_classpass = f.AccountClasspassFactory.create()
+        account = account_classpass.account
+
+        # Create organization class pass group
+        schedule_item_organization_classpass_group = f.ScheduleItemOrganizationClasspassGroupAllowFactory.create()
+        schedule_item = schedule_item_organization_classpass_group.schedule_item
         
-    #     account = f.RegularUserFactory.create()
-    #     organization_subscription = f.OrganizationSubscriptionFactory.create()
-    #     finance_payment_method = f.FinancePaymentMethodFactory.create()
-    #     variables = self.variables_create
-    #     variables['input']['account'] = to_global_id('AccountNode', account.id)
-    #     variables['input']['organizationSubscription'] = to_global_id('OrganizationSubscriptionNode', organization_subscription.id)
-    #     variables['input']['financePaymentMethod'] = to_global_id('FinancePaymentMethodNode', finance_payment_method.id)
+        # Add class pass to group
+        organization_classpass_group = schedule_item_organization_classpass_group.organization_classpass_group
+        organization_classpass_group.organization_classpasses.add(account_classpass.organization_classpass)
 
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         self.anon_user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
+        variables = self.variables_create_classpass
+        variables['input']['account'] = to_global_id('AccountNode', account.id)
+        variables['input']['accountClasspass'] = to_global_id('AccountClasspassNode', account_classpass.id)
+        variables['input']['scheduleItem'] = to_global_id('ScheduleItemNode', schedule_item.id)
 
-
-    # def test_create_location_permission_granted(self):
-    #     """ Allow creating attendances for users with permissions """
-    #     query = self.subscription_create_mutation
-
-    #     account = f.RegularUserFactory.create()
-    #     organization_subscription = f.OrganizationSubscriptionFactory.create()
-    #     finance_payment_method = f.FinancePaymentMethodFactory.create()
-    #     variables = self.variables_create
-    #     variables['input']['account'] = to_global_id('AccountNode', account.id)
-    #     variables['input']['organizationSubscription'] = to_global_id('OrganizationSubscriptionNode', organization_subscription.id)
-    #     variables['input']['financePaymentMethod'] = to_global_id('FinancePaymentMethodNode', finance_payment_method.id)
-
-    #     # Create regular user
-    #     user = account
-    #     permission = Permission.objects.get(codename=self.permission_add)
-    #     user.user_permissions.add(permission)
-    #     user.save()
-
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(
-    #         data['createAccountSubscription']['accountSubscription']['organizationSubscription']['id'], 
-    #         variables['input']['organizationSubscription']
-    #     )
+        executed = execute_test_client_api_query(
+            query, 
+            self.anon_user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
-    # def test_create_subscription_permission_denied(self):
-    #     """ Check create subscription permission denied error message """
-    #     query = self.subscription_create_mutation
-    #     account = f.RegularUserFactory.create()
-    #     organization_subscription = f.OrganizationSubscriptionFactory.create()
-    #     finance_payment_method = f.FinancePaymentMethodFactory.create()
-    #     variables = self.variables_create
-    #     variables['input']['account'] = to_global_id('AccountNode', account.id)
-    #     variables['input']['organizationSubscription'] = to_global_id('OrganizationSubscriptionNode', organization_subscription.id)
-    #     variables['input']['financePaymentMethod'] = to_global_id('FinancePaymentMethodNode', finance_payment_method.id)
+    def test_create_location_permission_granted(self):
+        """ Allow creating attendances for users with permissions """
+        query = self.schedule_item_attendance_create_mutation
 
-    #     # Create regular user
-    #     user = account
+        # Create class pass
+        account_classpass = f.AccountClasspassFactory.create()
+        account = account_classpass.account
 
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
+        # Create organization class pass group
+        schedule_item_organization_classpass_group = f.ScheduleItemOrganizationClasspassGroupAllowFactory.create()
+        schedule_item = schedule_item_organization_classpass_group.schedule_item
+        
+        # Add class pass to group
+        organization_classpass_group = schedule_item_organization_classpass_group.organization_classpass_group
+        organization_classpass_group.organization_classpasses.add(account_classpass.organization_classpass)
+
+        variables = self.variables_create_classpass
+        variables['input']['account'] = to_global_id('AccountNode', account.id)
+        variables['input']['accountClasspass'] = to_global_id('AccountClasspassNode', account_classpass.id)
+        variables['input']['scheduleItem'] = to_global_id('ScheduleItemNode', schedule_item.id)
+
+        # Create regular user
+        user = account
+        permission = Permission.objects.get(codename=self.permission_add)
+        user.user_permissions.add(permission)
+        user.save()
+
+        executed = execute_test_client_api_query(
+            query, 
+            user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(
+            data['createScheduleItemAttendance']['scheduleItemAttendance']['account']['id'], 
+            variables['input']['account']
+        )
+
+
+    def test_create_subscription_permission_denied(self):
+        """ Check create subscription permission denied error message """
+        query = self.schedule_item_attendance_create_mutation
+        
+        # Create class pass
+        account_classpass = f.AccountClasspassFactory.create()
+        account = account_classpass.account
+
+        # Create organization class pass group
+        schedule_item_organization_classpass_group = f.ScheduleItemOrganizationClasspassGroupAllowFactory.create()
+        schedule_item = schedule_item_organization_classpass_group.schedule_item
+        
+        # Add class pass to group
+        organization_classpass_group = schedule_item_organization_classpass_group.organization_classpass_group
+        organization_classpass_group.organization_classpasses.add(account_classpass.organization_classpass)
+
+        variables = self.variables_create_classpass
+        variables['input']['account'] = to_global_id('AccountNode', account.id)
+        variables['input']['accountClasspass'] = to_global_id('AccountClasspassNode', account_classpass.id)
+        variables['input']['scheduleItem'] = to_global_id('ScheduleItemNode', schedule_item.id)
+
+
+        # Create regular user
+        user = account
+
+        executed = execute_test_client_api_query(
+            query, 
+            user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
     # def test_update_subscription(self):
