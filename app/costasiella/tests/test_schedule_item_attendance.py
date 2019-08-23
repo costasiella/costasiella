@@ -33,7 +33,7 @@ class GQLAccountSubscription(TestCase):
             "input": {
                 "attendanceType": "CLASSPASS",
                 "bookingStatus": "ATTENDING",
-                "date": "2030-12-05",
+                "date": "2030-12-30",
             }
         }
 
@@ -208,7 +208,7 @@ class GQLAccountSubscription(TestCase):
         schedule_item_attendance = f.ScheduleItemAttendanceClasspassFactory.create()
         variables = {
             'scheduleItem': to_global_id('ScheduleItemNode', schedule_item_attendance.schedule_item.id),
-            'date': '2030-12-05'
+            'date': '2030-12-30'
         }
 
         executed = execute_test_client_api_query(query, self.admin_user, variables=variables)
@@ -233,7 +233,7 @@ class GQLAccountSubscription(TestCase):
         schedule_item_attendance = f.ScheduleItemAttendanceClasspassFactory.create()
         variables = {
             'scheduleItem': to_global_id('ScheduleItemNode', schedule_item_attendance.schedule_item.id),
-            'date': '2030-12-05'
+            'date': '2030-12-30'
         }
 
         # Regular user
@@ -250,7 +250,7 @@ class GQLAccountSubscription(TestCase):
         schedule_item_attendance = f.ScheduleItemAttendanceClasspassFactory.create()
         variables = {
             'scheduleItem': to_global_id('ScheduleItemNode', schedule_item_attendance.schedule_item.id),
-            'date': '2030-12-05'
+            'date': '2030-12-30'
         }
 
         # Create regular user
@@ -275,7 +275,7 @@ class GQLAccountSubscription(TestCase):
         schedule_item_attendance = f.ScheduleItemAttendanceClasspassFactory.create()
         variables = {
             'scheduleItem': to_global_id('ScheduleItemNode', schedule_item_attendance.schedule_item.id),
-            'date': '2030-12-05'
+            'date': '2030-12-30'
         }
 
         executed = execute_test_client_api_query(query, self.anon_user, variables=variables)
@@ -377,19 +377,19 @@ class GQLAccountSubscription(TestCase):
         query = self.schedule_item_attendance_create_mutation
 
         # Create class pass
-        self.account_classpass = f.AccountClasspassFactory.create()
-        self.account = self.account_classpass.account
+        account_classpass = f.AccountClasspassFactory.create()
+        account = account_classpass.account
 
         # Create organization class pass group
-        self.schedule_item_organization_classpass_group = f.ScheduleItemOrganizationClasspassGroupAllowFactory.create()
-        self.schedule_item = self.schedule_item_organization_classpass_group.schedule_item
+        schedule_item_organization_classpass_group = f.ScheduleItemOrganizationClasspassGroupAllowFactory.create()
+        schedule_item = schedule_item_organization_classpass_group.schedule_item
         
         # Add class pass to group
-        self.organization_classpass_group = self.schedule_item_organization_classpass_group.organization_classpass_group
-        self.organization_classpass_group.organization_classpasses.add(self.account_classpass.organization_classpass)
+        organization_classpass_group = schedule_item_organization_classpass_group.organization_classpass_group
+        organization_classpass_group.organization_classpasses.add(account_classpass.organization_classpass)
 
 
-        variables = self.variables_create
+        variables = self.variables_create_classpass
         variables['input']['account'] = to_global_id('AccountNode', account.id)
         variables['input']['accountClasspass'] = to_global_id('AccountClasspassNode', account_classpass.id)
         variables['input']['scheduleItem'] = to_global_id('ScheduleItemNode', schedule_item.id)
@@ -400,23 +400,24 @@ class GQLAccountSubscription(TestCase):
             variables=variables
         )
         data = executed.get('data')
+        print("############")
+        print(executed)
 
         self.assertEqual(
-            data['createAccountSubscription']['accountSubscription']['account']['id'], 
+            data['createScheduleItemAttendance']['scheduleItemAttendance']['account']['id'], 
             variables['input']['account']
         )
         self.assertEqual(
-            data['createAccountSubscription']['accountSubscription']['organizationSubscription']['id'], 
-            variables['input']['organizationSubscription']
+            data['createScheduleItemAttendance']['scheduleItemAttendance']['accountClasspass']['id'], 
+            variables['input']['accountClasspass']
         )
         self.assertEqual(
-            data['createAccountSubscription']['accountSubscription']['financePaymentMethod']['id'], 
-            variables['input']['financePaymentMethod']
+            data['createScheduleItemAttendance']['scheduleItemAttendance']['scheduleItem']['id'], 
+            variables['input']['scheduleItem']
         )
-        self.assertEqual(data['createAccountSubscription']['accountSubscription']['dateStart'], variables['input']['dateStart'])
-        self.assertEqual(data['createAccountSubscription']['accountSubscription']['dateEnd'], variables['input']['dateEnd'])
-        self.assertEqual(data['createAccountSubscription']['accountSubscription']['note'], variables['input']['note'])
-        self.assertEqual(data['createAccountSubscription']['accountSubscription']['registrationFeePaid'], variables['input']['registrationFeePaid'])
+        self.assertEqual(data['createScheduleItemAttendance']['scheduleItemAttendance']['date'], variables['input']['date'])
+        self.assertEqual(data['createScheduleItemAttendance']['scheduleItemAttendance']['attendanceType'], variables['input']['attendanceType'])
+        self.assertEqual(data['createScheduleItemAttendance']['scheduleItemAttendance']['bookingStatus'], variables['input']['bookingStatus'])
 
 
     # def test_create_subscription_anon_user(self):

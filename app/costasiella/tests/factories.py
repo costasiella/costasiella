@@ -424,7 +424,7 @@ class ScheduleItemAttendanceClasspassFactory(factory.DjangoModelFactory):
     schedule_item = factory.SubFactory(SchedulePublicWeeklyClassFactory)
     account_classpass = factory.SubFactory(AccountClasspassFactory)
     attendance_type = 'CLASSPASS'
-    date = '2030-12-05'
+    date = '2030-12-30'
     online_booking = False
     booking_status = "ATTENDING"
 

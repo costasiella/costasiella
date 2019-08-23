@@ -49,6 +49,7 @@ class ClassCheckinDude():
             raise Exception(_('No classes left on this pass'))
 
         schedule_item_attendance = ScheduleItemAttendance(
+            attendance_type = "CLASSPASS",
             account = account,
             account_classpass = account_classpass,
             schedule_item = schedule_item,
