@@ -27,7 +27,6 @@ import HasPermissionWrapper from "../../HasPermissionWrapper"
 
 // import FinancePaymentMethodForm from './AppSettingsGeneralForm'
 import AppSettingsBase from "../AppSettingsBase"
-import AppSettingsMenu from "../AppSettingsMenu"
 import AppSettingsGeneralForm from "./AppSettingsGeneralForm"
 
 

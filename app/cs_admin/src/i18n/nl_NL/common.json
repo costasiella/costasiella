@@ -517,7 +517,6 @@
         "user": {
             "error_loading": "__STRING_NOT_TRANSLATED__"
         },
-        "datepicker_dateformat": "__STRING_NOT_TRANSLATED__",
         "datepicker_timeformat": "__STRING_NOT_TRANSLATED__"
     },
     "subscription_unit": {
@@ -959,5 +958,25 @@
         "Zimbabwe": "__STRING_NOT_TRANSLATED__",
         "Virgin_Islands_British": "__STRING_NOT_TRANSLATED__",
         "Virgin_Islands_US": "__STRING_NOT_TRANSLATED__"
+    },
+    "settings": {
+        "title": "__STRING_NOT_TRANSLATED__",
+        "general": {
+            "title": "__STRING_NOT_TRANSLATED__",
+            "error_loading": "__STRING_NOT_TRANSLATED__",
+            "toast_edit_success": "__STRING_NOT_TRANSLATED__",
+            "date_format": "__STRING_NOT_TRANSLATED__",
+            "date_formats": {
+                "YYYY-MM-DD": "__STRING_NOT_TRANSLATED__",
+                "MM-DD-YYYY": "__STRING_NOT_TRANSLATED__",
+                "DD-MM-YYYY": "__STRING_NOT_TRANSLATED__"
+            },
+            "time_format": "__STRING_NOT_TRANSLATED__",
+            "time_formats": {
+                "24hr": "__STRING_NOT_TRANSLATED__",
+                "12hr": "__STRING_NOT_TRANSLATED__"
+            }
+        },
+        "error_loading": "__STRING_NOT_TRANSLATED__"
     }
 }

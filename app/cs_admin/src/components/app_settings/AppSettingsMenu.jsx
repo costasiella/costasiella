@@ -30,7 +30,7 @@ const AppSettingsMenu = ({ t, active_link }) => (
           icon="sliders"
           active={general_active}
           >
-          {t('app_settings.general')}
+          {t('settings.general.title')}
         </List.GroupItem>
       </HasPermissionWrapper>
     </List.Group>

@@ -517,7 +517,6 @@
         "user": {
             "error_loading": "Error loading user :("
         },
-        "datepicker_dateformat": "MMMM d, yyyy",
         "datepicker_timeformat": "h:mm aa"
     },
     "subscription_unit": {
@@ -959,5 +958,25 @@
         "Zimbabwe": "Zimbabwe",
         "Virgin_Islands_British": "Virgin Islands British",
         "Virgin_Islands_US": "Virgin Islands US"
+    },
+    "settings": {
+        "title": "Settings",
+        "general": {
+            "title": "General",
+            "error_loading": "Error loading settings :(",
+            "toast_edit_success": "Saved settings",
+            "date_format": "Date format",
+            "date_formats": {
+                "YYYY-MM-DD": "YYYY-MM-DD",
+                "MM-DD-YYYY": "MM-DD-YYYY",
+                "DD-MM-YYYY": "DD-MM-YYYY"
+            },
+            "time_format": "Time format",
+            "time_formats": {
+                "24hr": "24h",
+                "12hr": "AM/PM"
+            }
+        },
+        "error_loading": "Error loading settings :("
     }
 }

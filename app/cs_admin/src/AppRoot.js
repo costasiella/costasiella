@@ -124,17 +124,17 @@ import Error404 from "./components/Error404"
 function AppRoot({ t }) {
   const { loading, error, data } = useQuery(GET_APP_SETTINGS_QUERY)
 
-  if (loading) return t('general.loading')
+  if (loading) return t('general.loading_with_dots')
   if (error) return `Error! ${error.message}`
   if (error) return (
     <div>
-      { t('Error') } <br />
+      { t('settings.error_loading') } <br />
       { error.message }
     </div>
   )
 
-  // Register "NL" locale for moment
-  moment.locale('en-US')
+  // Register "US" locale for moment
+  // moment.locale('en-US')
   let appSettings = data.appSettings
   console.log(appSettings)
   if (appSettings.timeFormat == 24) {
