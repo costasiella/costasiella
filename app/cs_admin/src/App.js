@@ -8,8 +8,8 @@ import { ApolloProvider } from "react-apollo"
 import ApolloClient from "apollo-boost"
 
 // Import moment locale
-import moment from 'moment'
-import 'moment/locale/nl'
+// import moment from 'moment'
+// import 'moment/locale/nl'
 
 // Main app
 import AppRoot from "./AppRoot"
@@ -23,9 +23,9 @@ import './App.css'
 
 // Register "nl" locale for react-datepicker
 // https://reactdatepicker.com/#example-17
-import { registerLocale } from "react-datepicker"
-import nl from 'date-fns/locale/nl';
-registerLocale('nl', nl);
+// import { registerLocale } from "react-datepicker"
+// import nl from 'date-fns/locale/nl';
+// registerLocale('nl', nl);
 
 // This allows <string>.trunc(x)
 String.prototype.trunc = 
@@ -42,7 +42,7 @@ const client = new ApolloClient({
 
 function App() {
   // Register "NL" locale for moment
-  moment.locale('en-US')
+  // moment.locale('en-US')
 
   return (
     <ApolloProvider client={client}>
