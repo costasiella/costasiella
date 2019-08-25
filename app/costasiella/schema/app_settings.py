@@ -57,3 +57,4 @@ class UpdateAppSettings(graphene.relay.ClientIDMutation):
 
 class AppSettingsMutation(graphene.ObjectType):
     update_app_settings = UpdateAppSettings.Field()
+    

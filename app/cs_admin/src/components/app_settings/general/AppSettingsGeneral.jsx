@@ -8,12 +8,13 @@ import { withRouter } from "react-router"
 import { Formik } from 'formik'
 import { toast } from 'react-toastify'
 
-import { GET_PAYMENT_METHODS_QUERY, GET_PAYMENT_METHOD_QUERY } from './queries'
+import { GET_APP_SETTINGS_QUERY } from './queries'
 // import { PAYMENT_METHOD_SCHEMA } from './yupSchema'
 
 
 
 import {
+  Dimmer,
   Page,
   Grid,
   Icon,
@@ -25,6 +26,7 @@ import SiteWrapper from "../../SiteWrapper"
 import HasPermissionWrapper from "../../HasPermissionWrapper"
 
 // import FinancePaymentMethodForm from './AppSettingsGeneralForm'
+import AppSettingsBase from "../AppSettingsBase"
 import AppSettingsMenu from "../AppSettingsMenu"
 
 
@@ -41,38 +43,46 @@ const UPDATE_PAYMENT_METHOD = gql`
 `
 
 function AppSettingsGeneral({ t, match, history }) {
+  const { loading, error, data } = useQuery(GET_APP_SETTINGS_QUERY)
+  const cardTitle = t("settings.general.title")
+  const sidebarActive = "general"
+
+  console.log('queyr data app settings')
+  console.log(data)
+
+  if (loading) {
+    return (
+      <AppSettingsBase 
+          cardTitle={cardTitle}
+          sidebarActive={sidebarActive}>  
+        <Card.Body>
+          <Dimmer active={true}
+                  loader={true}>
+          </Dimmer>
+        </Card.Body>
+      </AppSettingsBase>
+    )
+  }
+  if (error) {
+    return (
+      <AppSettingsBase 
+          cardTitle={cardTitle}
+          sidebarActive={sidebarActive}>  
+        <Card.Body>
+          {t("settings.general.error_loading")}
+        </Card.Body>
+      </AppSettingsBase>
+    )
+  }
+
 
   return (
-    <SiteWrapper>
-      <div className="my-3 my-md-5">
-        <Container>
-          <Page.Header title={t('settings.title')} />
-          <Grid.Row>
-            <Grid.Col md={9}>
-            <Card>
-              <Card.Header>
-                <Card.Title>{t('settings.general.title')}</Card.Title>
-              </Card.Header>
-              <Card.Body>
-                content here
-              </Card.Body>
-            </Card>
-            </Grid.Col>
-            <Grid.Col md={3}>
-              <AppSettingsMenu active_link="general" />
-              {/* <HasPermissionWrapper permission="change"
-                                    resource="financepaymentmethod">
-                <Button color="primary btn-block mb-6"
-                        onClick={() => history.push(return_url)}>
-                  <Icon prefix="fe" name="chevrons-left" /> {t('general.back')}
-                </Button>
-              </HasPermissionWrapper>
-              <FinanceMenu active_link='payment_methods'/> */}
-            </Grid.Col>
-          </Grid.Row>
-        </Container>
-      </div>
-    </SiteWrapper>
+    <AppSettingsBase 
+    cardTitle={cardTitle}
+      sidebarActive={sidebarActive}
+    >  
+
+    </AppSettingsBase>
   )
 }
 
