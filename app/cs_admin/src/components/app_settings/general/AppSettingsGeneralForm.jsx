@@ -5,6 +5,7 @@ import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
 import { Form as FoForm, Field, ErrorMessage } from 'formik'
 import { Link } from 'react-router-dom'
+import { v4 } from 'uuid'
 
 
 import {
@@ -17,19 +18,27 @@ import {
 const AppSettingsGeneralForm = ({ t, history, isSubmitting, errors, values, return_url }) => (
   <FoForm>
       <Card.Body>
-          <Form.Group label={t('general.name')}>
-            <Field type="text" 
-                    name="name" 
-                    className={(errors.name) ? "form-control is-invalid" : "form-control"} 
-                    autoComplete="off" />
-            <ErrorMessage name="name" component="span" className="invalid-feedback" />
+          <Form.Group label={t('settings.general.date_format')}>
+            <Field component="select" 
+                    name="dateFormat" 
+                    className={(errors.dateFormat) ? "form-control is-invalid" : "form-control"} 
+                    autoComplete="off">
+                <option value="YYYY-MM-DD" key={v4()}>{t('settings.general.date_formats.YYYY-MM-DD')}</option>
+                <option value="MM-DD-YYYY" key={v4()}>{t('settings.general.date_formats.MM-DD-YYYY')}</option>
+                <option value="DD-MM-YYYY" key={v4()}>{t('settings.general.date_formats.DD-MM-YYYY')}</option>
+            </Field>
+            <ErrorMessage name="dateFormat" component="span" className="invalid-feedback" />
           </Form.Group>
-          <Form.Group label={t('finance.code')}>
-            <Field type="text" 
-                    name="code" 
-                    className={(errors.code) ? "form-control is-invalid" : "form-control"} 
-                    autoComplete="off" />
-            <ErrorMessage name="code" component="span" className="invalid-feedback" />
+          <Form.Group label={t('settings.general.time_format')}>
+            <Field component="select" 
+                    name="timeFormat" 
+                    className={(errors.timeFormat) ? "form-control is-invalid" : "form-control"} 
+                    autoComplete="off">
+                <option value="YYYY-MM-DD" key={v4()}>{t('settings.general.date_formats.YYYY-MM-DD')}</option>
+                <option value="MM-DD-YYYY" key={v4()}>{t('settings.general.date_formats.MM-DD-YYYY')}</option>
+                <option value="DD-MM-YYYY" key={v4()}>{t('settings.general.date_formats.DD-MM-YYYY')}</option>
+            </Field>
+            <ErrorMessage name="dateFormat" component="span" className="invalid-feedback" />
           </Form.Group>
       </Card.Body>
       <Card.Footer>
@@ -41,13 +50,13 @@ const AppSettingsGeneralForm = ({ t, history, isSubmitting, errors, values, retu
           >
             {t('general.submit')}
           </Button>
-          <Link to={return_url}>
+          {/* <Link to={return_url}>
             <Button 
               type="button" 
               color="link">
                 {t('general.cancel')}
             </Button>
-          </Link>
+          </Link> */}
       </Card.Footer>
   </FoForm>
 )

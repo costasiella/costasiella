@@ -16,9 +16,9 @@ class AppSettingsNode(DjangoObjectType):
     # Prevent formats from changing (all uppercase or dashes changed to underscores in formats)
     # More info here:
     # http://docs.graphene-python.org/en/latest/types/schema/#auto-camelcase-field-names
-    
+
     date_format = graphene.Field(graphene.String, source='date_format')
-    time_format = graphene.Field(graphene.String, source='time_format')
+    time_format = graphene.Field(graphene.Int, source='time_format')
 
     class Meta:
         model = AppSettings

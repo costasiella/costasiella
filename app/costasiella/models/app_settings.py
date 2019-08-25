@@ -13,12 +13,12 @@ class AppSettings(models.Model):
     )
 
     TIME_FORMATS = (
-        ("HH:mm", _("24 Hr (HH:mm)")),
-        ("hh:mm a", _("12 Hr (hh:mm am/pm)")),
+        (24, _("24 Hr (HH:mm)")),
+        (12, _("12 Hr (hh:mm am/pm)")),
     )
 
     date_format = models.CharField(max_length=255, default="YYYY-MM-DD", choices=DATE_FORMATS)
-    time_format = models.CharField(max_length=255, default="HH:mm", choices=TIME_FORMATS)
+    time_format = models.PositiveIntField(default=24, choices=TIME_FORMATS)
 
     def __str__(self):
         return "system setting object"
