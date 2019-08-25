@@ -9,7 +9,7 @@ import { Formik } from 'formik'
 import { toast } from 'react-toastify'
 
 import { GET_APP_SETTINGS_QUERY, UPDATE_APP_SETTINGS } from '../queries'
-// import { PAYMENT_METHOD_SCHEMA } from './yupSchema'
+import { GENERAL_SCHEMA } from './yupSchema'
 
 
 
@@ -78,7 +78,7 @@ function AppSettingsGeneral({ t, match, history }) {
         timeFormat: data.appSettings.timeFormat,
         note: "",
       }}
-      // validationSchema={CLASSPASS_SCHEMA}
+      validationSchema={GENERAL_SCHEMA}
       onSubmit={(values, { setSubmitting }, errors) => {
           console.log('submit values:')
           console.log(values)
@@ -109,7 +109,6 @@ function AppSettingsGeneral({ t, match, history }) {
     >
       {({ isSubmitting, errors, values }) => (
         <AppSettingsGeneralForm
-          // inputData={inputData}
           isSubmitting={isSubmitting}
           errors={errors}
           values={values}
