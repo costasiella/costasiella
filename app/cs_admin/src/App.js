@@ -13,6 +13,8 @@ import gql from "graphql-tag"
 import moment from 'moment'
 import 'moment/locale/nl'
 
+import { AppSettingsProvider } from "./components/context/AppSettingsContext"
+
 import AppSettingsGeneral from './components/app_settings/general/AppSettingsGeneral'
 
 import HomeHome from './components/home/home/HomeHome'
@@ -168,128 +170,131 @@ class App extends Component {
   render() {
     // Register "NL" locale for moment
     moment.locale('en-US')
+    const appSettings = { dateFormat: "DD-MM-YYYY" }
 
     return (
-      <HashRouter>
+      <AppSettingsProvider value={appSettings}>
         <ApolloProvider client={client}>
-          <Switch>
-            <Route exact path="/" component={HomeHome} />
-            
-            {/* FINANCE */}
-            <Route exact path="/finance" component={FinanceHome} />
-            <Route exact path="/finance/costcenters" component={FinanceCostCenters} />
-            <Route exact path="/finance/costcenters/add" component={FinanceCostCenterAdd} />
-            <Route exact path="/finance/costcenters/edit/:id" component={FinanceCostCenterEdit} />
-            <Route exact path="/finance/invoices" component={FinanceInvoices} />
-            <Route exact path="/finance/invoices/edit/:id" component={FinanceInvoiceEdit} />
-            <Route exact path="/finance/invoices/groups" component={FinanceInvoiceGroups} />
-            <Route exact path="/finance/invoices/groups/add" component={FinanceInvoiceGroupAdd} />
-            <Route exact path="/finance/invoices/groups/edit/:id" component={FinanceInvoiceGroupEdit} />
-            <Route exact path="/finance/invoices/groups/defaults" component={FinanceInvoiceGroupDefaults} />
-            <Route exact path="/finance/glaccounts" component={FinanceGLAccounts} />
-            <Route exact path="/finance/glaccounts/add" component={FinanceGLAccountAdd} />
-            <Route exact path="/finance/glaccounts/edit/:id" component={FinanceGLAccountEdit} />
-            <Route exact path="/finance/paymentmethods" component={FinancePaymentMethods} />
-            <Route exact path="/finance/paymentmethods/add" component={FinancePaymentMethodAdd} />
-            <Route exact path="/finance/paymentmethods/edit/:id" component={FinancePaymentMethodEdit} />
-            <Route exact path="/finance/taxrates" component={FinanceTaxRates} />
-            <Route exact path="/finance/taxrates/add" component={FinanceTaxRatesAdd} />
-            <Route exact path="/finance/taxrates/edit/:id" component={FinanceTaxRatesEdit} />
-            
-            {/* ORGANIZATION */}
-            <Route exact path="/organization" component={OrganizationHome} />
-            <Route exact path="/organization/edit/:id" component={OrganizationEdit} />
-            <Route exact path="/organization/appointment_categories" component={OrganizationAppointmentCategories} />
-            <Route exact path="/organization/appointment_categories/add" component={OrganizationAppointmentCategoryAdd} />
-            <Route exact path="/organization/appointment_categories/edit/:id" component={OrganizationAppointmentCategoryEdit} />
-            <Route exact path="/organization/appointment_categories/:category_id/appointments" component={OrganizationAppointments} />
-            <Route exact path="/organization/appointment_categories/:category_id/appointments/add/" component={OrganizationAppointmentAdd} />
-            <Route exact path="/organization/appointment_categories/:category_id/appointments/edit/:id" component={OrganizationAppointmentEdit} />
-            <Route exact path="/organization/appointment_categories/:category_id/appointments/prices/:appointment_id" 
-                   component={OrganizationAppointmentPrices} />
-            <Route exact path="/organization/appointment_categories/:category_id/appointments/prices/:appointment_id/add" 
-                   component={OrganizationAppointmentPriceAdd} />
-            <Route exact path="/organization/appointment_categories/:category_id/appointments/prices/:appointment_id/edit/:id" 
-                   component={OrganizationAppointmentPriceEdit} />
-            <Route exact path="/organization/classpasses" component={OrganizationClasspasses} />
-            <Route exact path="/organization/classpasses/add" component={OrganizationClasspassAdd} />
-            <Route exact path="/organization/classpasses/edit/:id" component={OrganizationClasspassEdit} />    
-            <Route exact path="/organization/classpasses/groups" component={OrganizationClasspassesGroups} />
-            <Route exact path="/organization/classpasses/groups/add" component={OrganizationClasspassesGroupAdd} />
-            <Route exact path="/organization/classpasses/groups/edit/:id" component={OrganizationClasspassesGroupEdit} />
-            <Route exact path="/organization/classpasses/groups/edit/passes/:id" component={OrganizationClasspassesGroupEditPasses} />
-            <Route exact path="/organization/classtypes" component={OrganizationClasstypes} />
-            <Route exact path="/organization/classtypes/add" component={OrganizationClasstypeAdd} />
-            <Route exact path="/organization/classtypes/edit/:id" component={OrganizationClasstypeEdit} />
-            <Route exact path="/organization/classtypes/edit_image/:id" component={OrganizationClasstypeEditImage} />
-            <Route exact path="/organization/discoveries" component={OrganizationDiscoveries} />
-            <Route exact path="/organization/discoveries/add" component={OrganizationDiscoveryAdd} /> 
-            <Route exact path="/organization/discoveries/edit/:id" component={OrganizationDiscoveryEdit} /> 
-            <Route exact path="/organization/levels" component={OrganizationLevels} />
-            <Route exact path="/organization/levels/add" component={OrganizationLevelAdd} />
-            <Route exact path="/organization/levels/edit/:id" component={OrganizationLevelEdit} />
-            <Route exact path="/organization/locations" component={OrganizationLocations} />
-            <Route exact path="/organization/locations/add" component={OrganizationLocationAdd} />
-            <Route exact path="/organization/locations/edit/:id" component={OrganizationLocationEdit} />
-            <Route exact path="/organization/locations/rooms/:location_id" component={OrganizationLocationRooms} />
-            <Route exact path="/organization/locations/rooms/add/:location_id" component={OrganizationLocationRoomAdd} />
-            <Route exact path="/organization/locations/rooms/edit/:location_id/:id" component={OrganizationLocationRoomEdit} />
-            <Route exact path="/organization/memberships" component={OrganizationMemberships} />
-            <Route exact path="/organization/memberships/add" component={OrganizationMembershipAdd} />
-            <Route exact path="/organization/memberships/edit/:id" component={OrganizationMembershipEdit} /> 
-            <Route exact path="/organization/subscriptions" component={OrganizationSubscriptions} />
-            <Route exact path="/organization/subscriptions/add" component={OrganizationSubscriptionAdd} />
-            <Route exact path="/organization/subscriptions/edit/:id" component={OrganizationSubscriptionEdit} />
-            <Route exact path="/organization/subscriptions/groups" component={OrganizationSubscriptionsGroups} />
-            <Route exact path="/organization/subscriptions/groups/add" component={OrganizationSubscriptionsGroupAdd} />
-            <Route exact path="/organization/subscriptions/groups/edit/:id" component={OrganizationSubscriptionsGroupEdit} />
-            <Route exact path="/organization/subscriptions/groups/edit/subscriptions/:id" component={OrganizationSubscriptionsGroupEditSubscriptions} />
-            <Route exact path="/organization/subscriptions/prices/:subscription_id" component={OrganizationSubscriptionsPrices} />
-            <Route exact path="/organization/subscriptions/prices/add/:subscription_id" component={OrganizationSubscriptionPriceAdd} />
-            <Route exact path="/organization/subscriptions/prices/edit/:subscription_id/:id" component={OrganizationSubscriptionPriceEdit} />
+          <HashRouter>
+            <Switch>
+              <Route exact path="/" component={HomeHome} />
+              
+              {/* FINANCE */}
+              <Route exact path="/finance" component={FinanceHome} />
+              <Route exact path="/finance/costcenters" component={FinanceCostCenters} />
+              <Route exact path="/finance/costcenters/add" component={FinanceCostCenterAdd} />
+              <Route exact path="/finance/costcenters/edit/:id" component={FinanceCostCenterEdit} />
+              <Route exact path="/finance/invoices" component={FinanceInvoices} />
+              <Route exact path="/finance/invoices/edit/:id" component={FinanceInvoiceEdit} />
+              <Route exact path="/finance/invoices/groups" component={FinanceInvoiceGroups} />
+              <Route exact path="/finance/invoices/groups/add" component={FinanceInvoiceGroupAdd} />
+              <Route exact path="/finance/invoices/groups/edit/:id" component={FinanceInvoiceGroupEdit} />
+              <Route exact path="/finance/invoices/groups/defaults" component={FinanceInvoiceGroupDefaults} />
+              <Route exact path="/finance/glaccounts" component={FinanceGLAccounts} />
+              <Route exact path="/finance/glaccounts/add" component={FinanceGLAccountAdd} />
+              <Route exact path="/finance/glaccounts/edit/:id" component={FinanceGLAccountEdit} />
+              <Route exact path="/finance/paymentmethods" component={FinancePaymentMethods} />
+              <Route exact path="/finance/paymentmethods/add" component={FinancePaymentMethodAdd} />
+              <Route exact path="/finance/paymentmethods/edit/:id" component={FinancePaymentMethodEdit} />
+              <Route exact path="/finance/taxrates" component={FinanceTaxRates} />
+              <Route exact path="/finance/taxrates/add" component={FinanceTaxRatesAdd} />
+              <Route exact path="/finance/taxrates/edit/:id" component={FinanceTaxRatesEdit} />
+              
+              {/* ORGANIZATION */}
+              <Route exact path="/organization" component={OrganizationHome} />
+              <Route exact path="/organization/edit/:id" component={OrganizationEdit} />
+              <Route exact path="/organization/appointment_categories" component={OrganizationAppointmentCategories} />
+              <Route exact path="/organization/appointment_categories/add" component={OrganizationAppointmentCategoryAdd} />
+              <Route exact path="/organization/appointment_categories/edit/:id" component={OrganizationAppointmentCategoryEdit} />
+              <Route exact path="/organization/appointment_categories/:category_id/appointments" component={OrganizationAppointments} />
+              <Route exact path="/organization/appointment_categories/:category_id/appointments/add/" component={OrganizationAppointmentAdd} />
+              <Route exact path="/organization/appointment_categories/:category_id/appointments/edit/:id" component={OrganizationAppointmentEdit} />
+              <Route exact path="/organization/appointment_categories/:category_id/appointments/prices/:appointment_id" 
+                    component={OrganizationAppointmentPrices} />
+              <Route exact path="/organization/appointment_categories/:category_id/appointments/prices/:appointment_id/add" 
+                    component={OrganizationAppointmentPriceAdd} />
+              <Route exact path="/organization/appointment_categories/:category_id/appointments/prices/:appointment_id/edit/:id" 
+                    component={OrganizationAppointmentPriceEdit} />
+              <Route exact path="/organization/classpasses" component={OrganizationClasspasses} />
+              <Route exact path="/organization/classpasses/add" component={OrganizationClasspassAdd} />
+              <Route exact path="/organization/classpasses/edit/:id" component={OrganizationClasspassEdit} />    
+              <Route exact path="/organization/classpasses/groups" component={OrganizationClasspassesGroups} />
+              <Route exact path="/organization/classpasses/groups/add" component={OrganizationClasspassesGroupAdd} />
+              <Route exact path="/organization/classpasses/groups/edit/:id" component={OrganizationClasspassesGroupEdit} />
+              <Route exact path="/organization/classpasses/groups/edit/passes/:id" component={OrganizationClasspassesGroupEditPasses} />
+              <Route exact path="/organization/classtypes" component={OrganizationClasstypes} />
+              <Route exact path="/organization/classtypes/add" component={OrganizationClasstypeAdd} />
+              <Route exact path="/organization/classtypes/edit/:id" component={OrganizationClasstypeEdit} />
+              <Route exact path="/organization/classtypes/edit_image/:id" component={OrganizationClasstypeEditImage} />
+              <Route exact path="/organization/discoveries" component={OrganizationDiscoveries} />
+              <Route exact path="/organization/discoveries/add" component={OrganizationDiscoveryAdd} /> 
+              <Route exact path="/organization/discoveries/edit/:id" component={OrganizationDiscoveryEdit} /> 
+              <Route exact path="/organization/levels" component={OrganizationLevels} />
+              <Route exact path="/organization/levels/add" component={OrganizationLevelAdd} />
+              <Route exact path="/organization/levels/edit/:id" component={OrganizationLevelEdit} />
+              <Route exact path="/organization/locations" component={OrganizationLocations} />
+              <Route exact path="/organization/locations/add" component={OrganizationLocationAdd} />
+              <Route exact path="/organization/locations/edit/:id" component={OrganizationLocationEdit} />
+              <Route exact path="/organization/locations/rooms/:location_id" component={OrganizationLocationRooms} />
+              <Route exact path="/organization/locations/rooms/add/:location_id" component={OrganizationLocationRoomAdd} />
+              <Route exact path="/organization/locations/rooms/edit/:location_id/:id" component={OrganizationLocationRoomEdit} />
+              <Route exact path="/organization/memberships" component={OrganizationMemberships} />
+              <Route exact path="/organization/memberships/add" component={OrganizationMembershipAdd} />
+              <Route exact path="/organization/memberships/edit/:id" component={OrganizationMembershipEdit} /> 
+              <Route exact path="/organization/subscriptions" component={OrganizationSubscriptions} />
+              <Route exact path="/organization/subscriptions/add" component={OrganizationSubscriptionAdd} />
+              <Route exact path="/organization/subscriptions/edit/:id" component={OrganizationSubscriptionEdit} />
+              <Route exact path="/organization/subscriptions/groups" component={OrganizationSubscriptionsGroups} />
+              <Route exact path="/organization/subscriptions/groups/add" component={OrganizationSubscriptionsGroupAdd} />
+              <Route exact path="/organization/subscriptions/groups/edit/:id" component={OrganizationSubscriptionsGroupEdit} />
+              <Route exact path="/organization/subscriptions/groups/edit/subscriptions/:id" component={OrganizationSubscriptionsGroupEditSubscriptions} />
+              <Route exact path="/organization/subscriptions/prices/:subscription_id" component={OrganizationSubscriptionsPrices} />
+              <Route exact path="/organization/subscriptions/prices/add/:subscription_id" component={OrganizationSubscriptionPriceAdd} />
+              <Route exact path="/organization/subscriptions/prices/edit/:subscription_id/:id" component={OrganizationSubscriptionPriceEdit} />
 
-            {/* RELATIONS */}
-            <Route exact path="/relations" component={RelationsHome} />
-            <Route exact path="/relations/accounts" component={RelationsAccounts} />
-            <Route exact path="/relations/accounts/add" component={RelationsAccountAdd} />
-            <Route exact path="/relations/accounts/:account_id/profile" component={RelationsAccountProfile} />
-            <Route exact path="/relations/accounts/:account_id/classpasses" component={AccountClasspasses} />
-            <Route exact path="/relations/accounts/:account_id/classpasses/add" component={AccountClasspassAdd} />
-            <Route exact path="/relations/accounts/:account_id/classpasses/edit/:id" component={AccountClasspassEdit} />
-            <Route exact path="/relations/accounts/:account_id/invoices" component={AccountInvoices} />
-            <Route exact path="/relations/accounts/:account_id/invoices/add" component={AccountInvoiceAdd} />
-            <Route exact path="/relations/accounts/:account_id/memberships" component={AccountMemberships} />
-            <Route exact path="/relations/accounts/:account_id/memberships/add" component={AccountMembershipAdd} />
-            <Route exact path="/relations/accounts/:account_id/memberships/edit/:id" component={AccountMembershipEdit} />
-            <Route exact path="/relations/accounts/:account_id/subscriptions" component={AccountSubscriptions} />
-            <Route exact path="/relations/accounts/:account_id/subscriptions/add" component={AccountSubscriptionAdd} />
-            <Route exact path="/relations/accounts/:account_id/subscriptions/edit/:id" component={AccountSubscriptionEdit} />
-            <Route exact path="/relations/accounts/:account_id/teacher_profile" component={RelationsAccountTeacherProfile} />
+              {/* RELATIONS */}
+              <Route exact path="/relations" component={RelationsHome} />
+              <Route exact path="/relations/accounts" component={RelationsAccounts} />
+              <Route exact path="/relations/accounts/add" component={RelationsAccountAdd} />
+              <Route exact path="/relations/accounts/:account_id/profile" component={RelationsAccountProfile} />
+              <Route exact path="/relations/accounts/:account_id/classpasses" component={AccountClasspasses} />
+              <Route exact path="/relations/accounts/:account_id/classpasses/add" component={AccountClasspassAdd} />
+              <Route exact path="/relations/accounts/:account_id/classpasses/edit/:id" component={AccountClasspassEdit} />
+              <Route exact path="/relations/accounts/:account_id/invoices" component={AccountInvoices} />
+              <Route exact path="/relations/accounts/:account_id/invoices/add" component={AccountInvoiceAdd} />
+              <Route exact path="/relations/accounts/:account_id/memberships" component={AccountMemberships} />
+              <Route exact path="/relations/accounts/:account_id/memberships/add" component={AccountMembershipAdd} />
+              <Route exact path="/relations/accounts/:account_id/memberships/edit/:id" component={AccountMembershipEdit} />
+              <Route exact path="/relations/accounts/:account_id/subscriptions" component={AccountSubscriptions} />
+              <Route exact path="/relations/accounts/:account_id/subscriptions/add" component={AccountSubscriptionAdd} />
+              <Route exact path="/relations/accounts/:account_id/subscriptions/edit/:id" component={AccountSubscriptionEdit} />
+              <Route exact path="/relations/accounts/:account_id/teacher_profile" component={RelationsAccountTeacherProfile} />
 
-            {/* SCHEDULE */}
-            <Route exact path="/schedule" component={ScheduleHome} />
-            <Route exact path="/schedule/appointments" component={ScheduleAppointments} />
-            <Route exact path="/schedule/appointments/add" component={ScheduleAppointmentAdd} />
-            <Route exact path="/schedule/appointments/all/edit/:appointment_id" component={ScheduleAppointmentEditAll} />
-            <Route exact path="/schedule/classes" component={ScheduleClasses} />
-            <Route exact path="/schedule/classes/add/" component={ScheduleClassAdd} />
-            <Route exact path="/schedule/classes/all/edit/:class_id/" component={ScheduleClassEditAll} />
-            <Route exact path="/schedule/classes/all/classpasses/:class_id/" component={ScheduleClassClasspasses} />
-            <Route exact path="/schedule/classes/all/subscriptions/:class_id/" component={ScheduleClassSubscriptions} />
-            <Route exact path="/schedule/classes/all/teachers/:class_id/" component={ScheduleClassTeachers} />
-            <Route exact path="/schedule/classes/all/teachers/:class_id/add" component={ScheduleClassTeacherAdd} />
-            <Route exact path="/schedule/classes/all/teachers/:class_id/edit/:id" component={ScheduleClassTeacherEdit} />
-            <Route exact path="/schedule/classes/class/attendance/:class_id/:date" component={ScheduleClassAttendance} />
-            <Route exact path="/schedule/classes/class/book/:class_id/:date/:account_id" component={ScheduleClassBook} />
+              {/* SCHEDULE */}
+              <Route exact path="/schedule" component={ScheduleHome} />
+              <Route exact path="/schedule/appointments" component={ScheduleAppointments} />
+              <Route exact path="/schedule/appointments/add" component={ScheduleAppointmentAdd} />
+              <Route exact path="/schedule/appointments/all/edit/:appointment_id" component={ScheduleAppointmentEditAll} />
+              <Route exact path="/schedule/classes" component={ScheduleClasses} />
+              <Route exact path="/schedule/classes/add/" component={ScheduleClassAdd} />
+              <Route exact path="/schedule/classes/all/edit/:class_id/" component={ScheduleClassEditAll} />
+              <Route exact path="/schedule/classes/all/classpasses/:class_id/" component={ScheduleClassClasspasses} />
+              <Route exact path="/schedule/classes/all/subscriptions/:class_id/" component={ScheduleClassSubscriptions} />
+              <Route exact path="/schedule/classes/all/teachers/:class_id/" component={ScheduleClassTeachers} />
+              <Route exact path="/schedule/classes/all/teachers/:class_id/add" component={ScheduleClassTeacherAdd} />
+              <Route exact path="/schedule/classes/all/teachers/:class_id/edit/:id" component={ScheduleClassTeacherEdit} />
+              <Route exact path="/schedule/classes/class/attendance/:class_id/:date" component={ScheduleClassAttendance} />
+              <Route exact path="/schedule/classes/class/book/:class_id/:date/:account_id" component={ScheduleClassBook} />
 
-            {/* Settings */}
-            <Route exact path="/settings/general" component={AppSettingsGeneral} />
+              {/* Settings */}
+              <Route exact path="/settings/general" component={AppSettingsGeneral} />
 
-            <Route component={Error404} />
-          </Switch>
+              <Route component={Error404} />
+            </Switch>
+          </HashRouter>
         </ApolloProvider>
-      </HashRouter>
-    )};
+      </AppSettingsProvider>
+    )}
 }
 
 export default App
