@@ -34,17 +34,15 @@ const AppSettingsGeneralForm = ({ t, history, isSubmitting, errors, values, retu
                     name="timeFormat" 
                     className={(errors.timeFormat) ? "form-control is-invalid" : "form-control"} 
                     autoComplete="off">
-                <option value="YYYY-MM-DD" key={v4()}>{t('settings.general.date_formats.YYYY-MM-DD')}</option>
-                <option value="MM-DD-YYYY" key={v4()}>{t('settings.general.date_formats.MM-DD-YYYY')}</option>
-                <option value="DD-MM-YYYY" key={v4()}>{t('settings.general.date_formats.DD-MM-YYYY')}</option>
+                <option value="24" key={v4()}>{t('settings.general.time_formats.24hr')}</option>
+                <option value="12" key={v4()}>{t('settings.general.time_formats.12hr')}</option>
             </Field>
-            <ErrorMessage name="dateFormat" component="span" className="invalid-feedback" />
+            <ErrorMessage name="timeFormat" component="span" className="invalid-feedback" />
           </Form.Group>
       </Card.Body>
       <Card.Footer>
           <Button 
             color="primary"
-            className="pull-right" 
             type="submit" 
             disabled={isSubmitting}
           >
