@@ -96,11 +96,12 @@ function AppSettingsGeneral({ t, match, history }) {
               console.log('got data', data)
               toast.success((t('settings.general.toast_edit_success')), {
                   position: toast.POSITION.BOTTOM_RIGHT
-                })
+              })
+              setSubmitting(false)
             }).catch((error) => {
               toast.error((t('general.toast_server_error')) + ': ' +  error, {
                   position: toast.POSITION.BOTTOM_RIGHT
-                })
+              })
               console.log('there was an error sending the query', error)
               setSubmitting(false)
             })
