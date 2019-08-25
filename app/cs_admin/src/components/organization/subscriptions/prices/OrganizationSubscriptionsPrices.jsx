@@ -187,7 +187,6 @@ function OrganizationSubscriptionsPrices ({ t, history, match, archived=false })
                               {subscription_prices.edges.map(({ node }) => (
                                 <Table.Row key={v4()}>
                                   <Table.Col key={v4()}>
-                                    
                                     {moment(node.dateStart).format(dateFormat)}
                                   </Table.Col>
                                   <Table.Col key={v4()}>
