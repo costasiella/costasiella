@@ -6,7 +6,7 @@ from graphene_django.filter import DjangoFilterConnectionField
 from graphql import GraphQLError
 
 from ..models import AppSettings
-from ..modules.gql_tools import require_login_and_permission, get_rid
+from ..modules.gql_tools import require_login, get_rid
 from ..modules.messages import Messages
 
 m = Messages()
@@ -20,7 +20,7 @@ class AppSettingsNode(DjangoObjectType):
     @classmethod
     def get_node(self, info, id):
         user = info.context.user
-        require_login_and_permission(user, 'costasiella.view_appsettings')
+        require_login(user)
 
         return self._meta.model.objects.get(id=id)
 
