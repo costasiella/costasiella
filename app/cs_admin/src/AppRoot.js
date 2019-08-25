@@ -135,7 +135,7 @@ function AppRoot({ t }) {
 
   // Register "NL" locale for moment
   moment.locale('en-US')
-  const appSettings = data
+  const appSettings = data.appSettings
 
   return (
     <AppSettingsProvider value={appSettings}>
