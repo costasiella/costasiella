@@ -138,9 +138,9 @@ function AppRoot({ t }) {
   let appSettings = data.appSettings
   console.log(appSettings)
   if (appSettings.timeFormat == 24) {
-    appSettings.timeFormatApp = "HH:mm"
+    appSettings.timeFormatMoment = "HH:mm"
   } else {
-    appSettings.timeFormatApp = "hh:mm a"
+    appSettings.timeFormatMoment = "hh:mm a"
   }
 
   return (
