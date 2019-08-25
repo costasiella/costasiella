@@ -98,7 +98,6 @@ const confirmDelete = (t, match, deleteSubscriptionPrice, node) => {
 function OrganizationSubscriptionsPrices ({ t, history, match, archived=false }) {
   const appSettings = useContext(AppSettingsContext)
   const dateFormat = appSettings.dateFormat
-  console.log(appSettings)
 
   return (
     <SiteWrapper>

@@ -135,7 +135,12 @@ function AppRoot({ t }) {
 
   // Register "NL" locale for moment
   moment.locale('en-US')
-  const appSettings = data.appSettings
+  let appSettings = data.appSettings
+  if (appSettings.timeFormat === '24') {
+    appSettings.timeFormat = "HH:mm"
+  } else {
+    appSettings.timeFormat = "hh:mm a"
+  }
 
   return (
     <AppSettingsProvider value={appSettings}>
