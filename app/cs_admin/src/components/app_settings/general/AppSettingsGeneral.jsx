@@ -38,7 +38,7 @@ function AppSettingsGeneral({ t, match, history }) {
   const { loading, error, data } = useQuery(GET_APP_SETTINGS_QUERY)
   const [ updateSettings, { data: updateData }] = useMutation(UPDATE_APP_SETTINGS)
 
-  console.log('queyr data app settings')
+  console.log('query data app settings')
   console.log(data)
 
   if (loading) {

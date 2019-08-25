@@ -100,7 +100,7 @@ if (!localStorage.getItem(CSLS.SCHEDULE_CLASSES_DATE_FROM)) {
 function ScheduleClasses ({ t, history }) {
   const appSettings = useContext(AppSettingsContext)
   const dateFormat = appSettings.dateFormat
-  const timeFormat = appSettings.timeFormat
+  const timeFormat = appSettings.timeFormatApp
 
   return (
     <SiteWrapper>
