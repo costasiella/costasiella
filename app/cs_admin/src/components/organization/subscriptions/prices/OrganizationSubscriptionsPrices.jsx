@@ -189,8 +189,7 @@ function OrganizationSubscriptionsPrices ({ t, history, match, archived=false })
                                     {moment(node.dateStart).format(dateFormat)}
                                   </Table.Col>
                                   <Table.Col key={v4()}>
-                                    
-                                    {(node.datEnd) ? moment(node.dateEnd).format(dateFormat) : ""}
+                                    {(node.dateEnd) ? moment(node.dateEnd).format(dateFormat) : ""}
                                   </Table.Col>
                                   <Table.Col key={v4()}>
                                     {node.priceDisplay} <br />
