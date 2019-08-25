@@ -8,7 +8,7 @@ import { withRouter } from "react-router"
 import { Formik } from 'formik'
 import { toast } from 'react-toastify'
 
-import { GET_APP_SETTINGS_QUERY, UPDATE_APP_SETTINGS } from '../queriess'
+import { GET_APP_SETTINGS_QUERY, UPDATE_APP_SETTINGS } from '../queries'
 // import { PAYMENT_METHOD_SCHEMA } from './yupSchema'
 
 
@@ -32,9 +32,11 @@ import AppSettingsGeneralForm from "./AppSettingsGeneralForm"
 
 
 function AppSettingsGeneral({ t, match, history }) {
-  const { loading, error, data } = useQuery(GET_APP_SETTINGS_QUERY)
   const cardTitle = t("settings.general.title")
   const sidebarActive = "general"
+
+  const { loading, error, data } = useQuery(GET_APP_SETTINGS_QUERY)
+  const [ updateSettings, { data: updateData }] = useMutation(UPDATE_APP_SETTINGS)
 
   console.log('queyr data app settings')
   console.log(data)
@@ -82,20 +84,17 @@ function AppSettingsGeneral({ t, match, history }) {
           console.log(values)
           console.log(errors)
 
-          createClasspass({ variables: {
+          updateSettings({ variables: {
             input: {
-              account: account_id, 
-              organizationClasspass: values.organizationClasspass,
-              dateStart: dateToLocalISO(values.dateStart),
-              dateEnd: dateEnd,
-              note: values.note,
+              dateFormat: values.dateFormat,
+              timeFormat: values.timeFormat,
             }
           }, refetchQueries: [
               {query: GET_APP_SETTINGS_QUERY}
           ]})
           .then(({ data }) => {
               console.log('got data', data)
-              toast.success((t('relations.account.classpasses.toast_add_success')), {
+              toast.success((t('settings.general.toast_edit_success')), {
                   position: toast.POSITION.BOTTOM_RIGHT
                 })
             }).catch((error) => {

@@ -18,7 +18,7 @@ class AppSettings(models.Model):
     )
 
     date_format = models.CharField(max_length=255, default="YYYY-MM-DD", choices=DATE_FORMATS)
-    time_format = models.PositiveIntField(default=24, choices=TIME_FORMATS)
+    time_format = models.PositiveIntegerField(default=24, choices=TIME_FORMATS)
 
     def __str__(self):
         return "system setting object"
