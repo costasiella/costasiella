@@ -18,3 +18,5 @@ app/costasiella/__pycache__/
 *.md~
 
 app/\.vscode/
+
+app/celerybeat.pid

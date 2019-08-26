@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'webpack_loader',
     'sorl.thumbnail',
     'constance',
+    'django_celery_beat',
     'django_celery_results',
     
     # local apps
