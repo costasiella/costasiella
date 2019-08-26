@@ -3,7 +3,6 @@ from django.utils.translation import gettext as _
 from django.db import models
 
 
-from .organization_appointment import OrganizationAppointment
 from .organization_classtype import OrganizationClasstype
 from .organization_location_room import OrganizationLocationRoom
 from .organization_level import OrganizationLevel
