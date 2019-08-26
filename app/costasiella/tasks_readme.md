@@ -1,3 +1,7 @@
+# RabbitMQ server
+sudo apt-get install rabbitmq-server
+
+
 # Define tasks
 costasiella/tasks.py
 
