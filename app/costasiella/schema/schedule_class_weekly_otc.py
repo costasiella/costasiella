@@ -38,29 +38,28 @@ class ScheduleClassWeeklyOTCQuery(graphene.ObjectType):
         return ScheduleItemWeeklyOTC.objects.all()
             
 
-def validate_create_update_input(input, update=False):
+def validate_update_input(input):
     """
     Validate input
     """ 
     result = {}
 
-    if not update:
-        # Check ScheduleItem
-        rid = get_rid(input['schedule_item'])
-        schedule_item = ScheduleItem.objects.get(id=rid.id)
-        result['schedule_item'] = schedule_item
-        if not schedule_item:
-            raise Exception(_('Invalid Schedule Item ID!'))    
+    # Check ScheduleItem
+    rid = get_rid(input['schedule_item'])
+    schedule_item = ScheduleItem.objects.get(id=rid.id)
+    result['schedule_item'] = schedule_item
+    if not schedule_item:
+        raise Exception(_('Invalid Schedule Item ID!'))    
 
-        # Check date
-        class_schedule_dude = ClassScheduleDude()
-        class_takes_place = class_schedule_dude.schedule_item_takes_place_on_day(
-            schedule_item = schedule_item,
-            date = input['date']
-        )
-        
-        if not class_takes_place:
-            raise Exception(_("This class doesn't take place on this date, please check for the correct date or any holidays."))
+    # Check date
+    class_schedule_dude = ClassScheduleDude()
+    class_takes_place = class_schedule_dude.schedule_item_takes_place_on_day(
+        schedule_item = schedule_item,
+        date = input['date']
+    )
+    
+    if not class_takes_place:
+        raise Exception(_("This class doesn't take place on this date, please check for the correct date or any holidays."))
     
     # Check OrganizationLocationRoom
     if 'organization_location_room' in input:
@@ -94,57 +93,58 @@ def validate_create_update_input(input, update=False):
     return result
 
 
-class CreateScheduleClassWeeklyOTC(graphene.relay.ClientIDMutation):
-    class Input:
-        schedule_item = graphene.ID(required=True)
-        date = graphene.types.datetime.Date(required=True)
-        organization_location_room = graphene.ID(required=False)
-        organization_classtype = graphene.ID(required=False)
-        organization_level = graphene.ID(required=False)        
-        time_start = graphene.types.datetime.Time(required=False)
-        time_end = graphene.types.datetime.Time(required=False)
+# class CreateScheduleClassWeeklyOTC(graphene.relay.ClientIDMutation):
+#     class Input:
+#         schedule_item = graphene.ID(required=True)
+#         date = graphene.types.datetime.Date(required=True)
+#         organization_location_room = graphene.ID(required=False)
+#         organization_classtype = graphene.ID(required=False)
+#         organization_level = graphene.ID(required=False)        
+#         time_start = graphene.types.datetime.Time(required=False)
+#         time_end = graphene.types.datetime.Time(required=False)
 
-    schedule_class_weekly_otc = graphene.Field(ScheduleClassWeeklyOTCNode)
+#     schedule_class_weekly_otc = graphene.Field(ScheduleClassWeeklyOTCNode)
 
-    @classmethod
-    def mutate_and_get_payload(self, root, info, **input):
-        user = info.context.user
-        require_login_and_permission(user, 'costasiella.add_scheduleclassweeklyotc')
+#     @classmethod
+#     def mutate_and_get_payload(self, root, info, **input):
+#         user = info.context.user
+#         require_login_and_permission(user, 'costasiella.add_scheduleclassweeklyotc')
 
-        result = validate_create_update_input(input)
+#         result = validate_create_update_input(input)
 
-        print(input)
+#         print(input)
 
-        schedule_class_weekly_otc = ScheduleItemWeeklyOTC(
-            schedule_item = result['schedule_item'],
-            date = input['date'],
-        )
+#         schedule_class_weekly_otc = ScheduleItemWeeklyOTC(
+#             schedule_item = result['schedule_item'],
+#             date = input['date'],
+#         )
 
-        if 'organization_location_room' in result:
-            schedule_class_weekly_otc.organization_location_room = result['organization_location_room']
+#         if 'organization_location_room' in result:
+#             schedule_class_weekly_otc.organization_location_room = result['organization_location_room']
 
-        if 'organization_classtype' in result:
-            schedule_class_weekly_otc.organization_classtype = result['organization_classtype']
+#         if 'organization_classtype' in result:
+#             schedule_class_weekly_otc.organization_classtype = result['organization_classtype']
 
-        if 'organization_level' in result:
-            schedule_class_weekly_otc.organization_level = result['organization_level']
+#         if 'organization_level' in result:
+#             schedule_class_weekly_otc.organization_level = result['organization_level']
 
-        if 'time_start' in input:
-            schedule_class_weekly_otc.time_start = input['time_start']
+#         if 'time_start' in input:
+#             schedule_class_weekly_otc.time_start = input['time_start']
 
-        if 'time_end' in input:
-            schedule_class_weekly_otc.time_end = input['time_end']
+#         if 'time_end' in input:
+#             schedule_class_weekly_otc.time_end = input['time_end']
 
 
-        # ALl done, save it :).
-        schedule_class_weekly_otc.save()
+#         # ALl done, save it :).
+#         schedule_class_weekly_otc.save()
 
-        return CreateScheduleClassWeeklyOTC(schedule_class_weekly_otc=schedule_class_weekly_otc)
+#         return CreateScheduleClassWeeklyOTC(schedule_class_weekly_otc=schedule_class_weekly_otc)
 
 
 class UpdateScheduleClassWeeklyOTC(graphene.relay.ClientIDMutation):
     class Input:
-        id = graphene.ID(required=True)
+        schedule_item = graphene.ID(required=True)
+        date = graphene.types.datetime.Date(required=True)
         organization_location_room = graphene.ID(required=False)
         organization_classtype = graphene.ID(required=False)
         organization_level = graphene.ID(required=False)        
@@ -158,12 +158,21 @@ class UpdateScheduleClassWeeklyOTC(graphene.relay.ClientIDMutation):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.change_scheduleclassweeklyotc')
 
-        rid = get_rid(input['id'])
-        schedule_class_weekly_otc = ScheduleItemWeeklyOTC.objects.get(id=rid.id)
-        if not schedule_class_weekly_otc:
-            raise Exception('Invalid Schedule Class Weekly OTC ID!')
+        result = validate_update_input(input)
 
-        result = validate_create_update_input(input)
+        rid = get_rid(input['id'])
+        schedule_class_weekly_otc = ScheduleItemWeeklyOTC.objects.filter(
+            schedule_item = result['schedule_item'],
+            date = input['date']
+        )
+        if not schedule_class_weekly_otc:
+            # Insert if it doesn't exist
+            schedule_class_weekly_otc = ScheduleItemWeeklyOTC(
+                schedule_item = result['schedule_item'],
+                date = input['date']
+            )
+
+        
         
         if 'organization_location_room' in result:
             schedule_class_weekly_otc.organization_location_room = result['organization_location_room']
@@ -209,6 +218,6 @@ class DeleteScheduleClassWeeklyOTC(graphene.relay.ClientIDMutation):
 
 class ScheduleClassWeeklyOTCMutation(graphene.ObjectType):
     delete_schedule_class_weekly_otc = DeleteScheduleClassWeeklyOTC.Field()
-    create_schedule_class_weekly_otc = CreateScheduleClassWeeklyOTC.Field()
+    # create_schedule_class_weekly_otc = CreateScheduleClassWeeklyOTC.Field()
     update_schedule_class_weekly_otc = UpdateScheduleClassWeeklyOTC.Field()
     
