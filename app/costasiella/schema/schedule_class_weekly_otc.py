@@ -42,6 +42,8 @@ def validate_create_update_input(input, update=False):
     """
     Validate input
     """ 
+    result = {}
+
     if not update:
         # Check ScheduleItem
         rid = get_rid(input['schedule_item'])
@@ -53,7 +55,7 @@ def validate_create_update_input(input, update=False):
         # Check date
         class_schedule_dude = ClassScheduleDude()
         class_takes_place = class_schedule_dude.schedule_item_takes_place_on_day(
-            schedule_item = validation_result['schedule_item'],
+            schedule_item = schedule_item,
             date = input['date']
         )
         
