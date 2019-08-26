@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'webpack_loader',
     'sorl.thumbnail',
     'constance',
+    'django_celery_results',
     
     # local apps
     'costasiella.apps.CostasiellaConfig',
@@ -283,9 +284,13 @@ ISO_COUNTRY_CODES = [{"Name":"Afghanistan","Code":"AF"},{"Name":"Åland Islands"
 
 # CELERY STUFF
 # BROKER_URL = 'redis://localhost:6379'
-CELERY_RESULT_BACKEND = 'redis://localhost:6379'
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 # Use system timezone by default
 # CELERY_TIMEZONE = TIME_ZONE
+
+CELERY_RESULT_BACKEND = 'django-db'
+CELERY_CACHE_BACKEND = 'django-cache'
+
+DJANGO_CELERY_RESULTS_TASK_ID_MAX_LENGTH=191
