@@ -9,7 +9,7 @@ from ..models import ScheduleItem, ScheduleItemWeeklyOTC, OrganizationClasstype,
 from ..modules.gql_tools import require_login_and_permission, get_rid
 from ..modules.messages import Messages
 
-from ..dudes import ClassCheckinDude, ClassScheduleDude
+from ..dudes import ClassScheduleDude
 
 m = Messages()
 
@@ -48,7 +48,17 @@ def validate_create_update_input(input, update=False):
         schedule_item = ScheduleItem.objects.get(id=rid.id)
         result['schedule_item'] = schedule_item
         if not schedule_item:
-            raise Exception(_('Invalid Schedule Item ID!'))            
+            raise Exception(_('Invalid Schedule Item ID!'))    
+
+        # Check date
+        class_schedule_dude = ClassScheduleDude()
+        class_takes_place = class_schedule_dude.schedule_item_takes_place_on_day(
+            schedule_item = validation_result['schedule_item'],
+            date = input['date']
+        )
+        
+        if not class_takes_place:
+            raise Exception(_("This class doesn't take place on this date, please check for the correct date or any holidays."))
     
     # Check OrganizationLocationRoom
     if 'organization_location_room' in input:
