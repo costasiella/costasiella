@@ -165,8 +165,7 @@ class UpdateScheduleClassWeeklyOTC(graphene.relay.ClientIDMutation):
             schedule_item = result['schedule_item'],
             date = input['date']
         )
-        if qs.exists:
-            # Update
+        if qs.exists: # Update
             schedule_class_weekly_otc = qs.first()
         else:
             # Insert if it doesn't exist
@@ -175,8 +174,6 @@ class UpdateScheduleClassWeeklyOTC(graphene.relay.ClientIDMutation):
                 date = input['date']
             )
 
-        
-        
         if 'organization_location_room' in result:
             schedule_class_weekly_otc.organization_location_room = result['organization_location_room']
 
