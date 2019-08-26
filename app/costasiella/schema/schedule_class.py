@@ -57,6 +57,11 @@ class ScheduleClassesDayType(graphene.ObjectType):
         if not sorting: # Default to sort by location, then time
             sorting = "location"
 
+        ##
+        # Use Filtered relations to link one time changes
+        # https://docs.djangoproject.com/en/2.2/ref/models/querysets/#filteredrelation-objects
+        ##
+
         schedule_filter = Q(schedule_item_type = 'CLASS') & \
             (
                 # Classes on this day (Specific)
