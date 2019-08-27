@@ -108,58 +108,65 @@ function ScheduleClassEdit({ t, match, history }) {
           </Page.Header>
           <Grid.Row>
             <Grid.Col md={9}>
-              <Formik
-                  initialValues={initialValues}
-                  // validationSchema={SCHEDULE_CLASS_TEACHER_SCHEMA}
-                  onSubmit={(values, { setSubmitting }) => {
+              <Card>
+                <Card.Header>
+                  <Card.Title>{t('general.edit')}</Card.Title>
+                </Card.Header>
+                <Card.Body>
+                  <Formik
+                    initialValues={initialValues}
+                    // validationSchema={SCHEDULE_CLASS_TEACHER_SCHEMA}
+                    onSubmit={(values, { setSubmitting }) => {
 
-                      // let dateEnd
-                      // if (values.dateEnd) {
-                      //   dateEnd = dateToLocalISO(values.dateEnd)
-                      // } else {
-                      //   dateEnd = values.dateEnd
-                      // }
+                        // let dateEnd
+                        // if (values.dateEnd) {
+                        //   dateEnd = dateToLocalISO(values.dateEnd)
+                        // } else {
+                        //   dateEnd = values.dateEnd
+                        // }
 
-                      updateScheduleClassWeeklyOTC({ variables: {
-                        input: {
-                          scheduleItem: schedule_item_id,
-                          date: class_date,
-                          organizationLocationRoom: values.organizationLocationRoom,
-                          organizationClasstype: values.organizationClasstype,
-                          organizationLevel: values.organizationLevel
-                        }
-                      }, refetchQueries: [
-                          {query: GET_SCHEDULE_CLASS_WEEKLY_OTCS_QUERY, variables: query_vars},
-                          // {query: GET_SUBSCRIPTIONS_QUERY, variables: {"archived": false }},
-                      ]})
-                      .then(({ data }) => {
-                          console.log('got data', data);
-                          toast.success((t('schedule.classes.teachers.toast_edit_success')), {
-                              position: toast.POSITION.BOTTOM_RIGHT
-                            })
-                          setSubmitting(false)
-                        }).catch((error) => {
-                          toast.error((t('general.toast_server_error')) + ': ' +  error, {
-                              position: toast.POSITION.BOTTOM_RIGHT
-                            })
-                          console.log('there was an error sending the query', error)
-                          setSubmitting(false)
-                        })
-                  }}
-                  >
-                  {({ isSubmitting, errors, values, setFieldTouched, setFieldValue }) => (
-                    <ScheduleClassEditForm
-                      inputData={queryData}
-                      isSubmitting={isSubmitting}
-                      setFieldTouched={setFieldTouched}
-                      setFieldValue={setFieldValue}
-                      errors={errors}
-                      values={values}
+                        updateScheduleClassWeeklyOTC({ variables: {
+                          input: {
+                            scheduleItem: schedule_item_id,
+                            date: class_date,
+                            organizationLocationRoom: values.organizationLocationRoom,
+                            organizationClasstype: values.organizationClasstype,
+                            organizationLevel: values.organizationLevel
+                          }
+                        }, refetchQueries: [
+                            {query: GET_SCHEDULE_CLASS_WEEKLY_OTCS_QUERY, variables: query_vars},
+                            // {query: GET_SUBSCRIPTIONS_QUERY, variables: {"archived": false }},
+                        ]})
+                        .then(({ data }) => {
+                            console.log('got data', data);
+                            toast.success((t('schedule.classes.teachers.toast_edit_success')), {
+                                position: toast.POSITION.BOTTOM_RIGHT
+                              })
+                            setSubmitting(false)
+                          }).catch((error) => {
+                            toast.error((t('general.toast_server_error')) + ': ' +  error, {
+                                position: toast.POSITION.BOTTOM_RIGHT
+                              })
+                            console.log('there was an error sending the query', error)
+                            setSubmitting(false)
+                          })
+                    }}
                     >
-                      {console.log(errors)}
-                    </ScheduleClassEditForm>
-                  )}
-              </Formik>
+                    {({ isSubmitting, errors, values, setFieldTouched, setFieldValue }) => (
+                      <ScheduleClassEditForm
+                        inputData={queryData}
+                        isSubmitting={isSubmitting}
+                        setFieldTouched={setFieldTouched}
+                        setFieldValue={setFieldValue}
+                        errors={errors}
+                        values={values}
+                      >
+                        {console.log(errors)}
+                      </ScheduleClassEditForm>
+                    )}
+                  </Formik>
+                </Card.Body>
+              </Card>
             </Grid.Col>
             <Grid.Col md={3}>
               <ClassMenu 
