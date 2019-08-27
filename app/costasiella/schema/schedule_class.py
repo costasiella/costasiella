@@ -117,9 +117,9 @@ class ScheduleClassesDayType(graphene.ObjectType):
                 where += str(self.filter_id_organization_classtype) + ' '
             if self.filter_id_organization_location:
                 where += 'AND (CASE WHEN csiotc.organization_location_id IS NULL \
-                                THEN csi_olr.organization_location_room_id  \
-                                ELSE csiotc.organization_location_room_id END) = '
-                where += str(self.filter_id_organization_location_room) + ' '
+                                THEN csi_olr.organization_location_id  \
+                                ELSE csiotc.organization_location_id END) = '
+                where += str(self.filter_id_organization_location) + ' '
             if self.filter_id_organization_level:
                 where += 'AND (CASE WHEN csiotc.organization_level_id IS NULL \
                                 THEN csi.organization_level_id  \
@@ -261,7 +261,7 @@ class ScheduleClassesDayType(graphene.ObjectType):
         # }
 
         schedule_items = ScheduleItem.objects.raw(query)
-        print(schedule_items.query)
+        # print(schedule_items.query)
         # for item in schedule_items:
         #     for f in item._meta.fields:
         #         print(getattr(item, f))
