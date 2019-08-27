@@ -115,11 +115,11 @@ class ScheduleClassesDayType(graphene.ObjectType):
                                 THEN csi.organization_classtype_id  \
                                 ELSE csiotc.organization_classtype_id END) = '
                 where += str(self.filter_id_organization_classtype) + ' '
-            # if self.filter_id_organization_location_room:
-            #     where += 'AND (CASE WHEN csiotc.organization_location_room_id IS NULL \
-            #                     THEN csi.organization_location_room_id  \
-            #                     ELSE csiotc.organization_location_room_id END) = '
-            #     where += str(self.filter_id_organization_location_room) + ' '
+            if self.filter_id_organization_location:
+                where += 'AND (CASE WHEN csiotc.organization_location_id IS NULL \
+                                THEN csi_olr.organization_location_room_id  \
+                                ELSE csiotc.organization_location_room_id END) = '
+                where += str(self.filter_id_organization_location_room) + ' '
             if self.filter_id_organization_level:
                 where += 'AND (CASE WHEN csiotc.organization_level_id IS NULL \
                                 THEN csi.organization_level_id  \
@@ -187,6 +187,10 @@ class ScheduleClassesDayType(graphene.ObjectType):
             SELECT 
                 csi.id,
                 csi.frequency_type,
+                CASE WHEN csiotc.organization_location_id IS NOT NULL
+                     THEN csiotc.organization_location_id
+                     ELSE csi_olr.organization_location_id
+                     END AS organization_location_id,
                 CASE WHEN csiotc.organization_location_room_id IS NOT NULL
                      THEN csiotc.organization_location_room_id
                      ELSE csi.organization_location_room_id
@@ -210,18 +214,21 @@ class ScheduleClassesDayType(graphene.ObjectType):
                 csi.display_public,
                 csiotc.description as test
             FROM costasiella_scheduleitem csi
+            LEFT JOIN costasiella_organizationlocationroom csi_olr ON csi.organization_location_room_id = csi_olr.id
             LEFT JOIN
                 ( SELECT 
-                    id,
-                    schedule_item_id,
-                    date,
-                    description,
-                    organization_location_room_id,
-                    organization_classtype_id,
-                    organization_level_id,
-                    time_start,
-                    time_end
-                  FROM costasiella_scheduleitemweeklyotc
+                    otc.id,
+                    otc.schedule_item_id,
+                    otc.date,
+                    otc.description,
+                    otc.organization_location_room_id,
+                    otc.organization_classtype_id,
+                    otc.organization_level_id,
+                    otc.time_start,
+                    otc.time_end,
+                    otc_olr.organization_location_id
+                  FROM costasiella_scheduleitemweeklyotc otc 
+                  LEFT JOIN costasiella_organizationlocationroom otc_olr ON otc.organization_location_room_id = otc_olr.id
                   WHERE date = "{class_date}" 
                 ) csiotc
                 ON csi.id = csiotc.schedule_item_id
@@ -254,7 +261,7 @@ class ScheduleClassesDayType(graphene.ObjectType):
         # }
 
         schedule_items = ScheduleItem.objects.raw(query)
-        # print(schedule_items.query)
+        print(schedule_items.query)
         # for item in schedule_items:
         #     for f in item._meta.fields:
         #         print(getattr(item, f))
