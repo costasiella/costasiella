@@ -117,6 +117,7 @@ import ScheduleClassTeacherAdd from './components/schedule/classes/all/teachers/
 import ScheduleClassTeacherEdit from './components/schedule/classes/all/teachers/ScheduleClassTeacherEdit'
 import ScheduleClassAttendance from './components/schedule/classes/class/attendance/ScheduleClassAttendance'
 import ScheduleClassBook from './components/schedule/classes/class/book/ScheduleClassBook'
+import ScheduleClassEdit from './components/schedule/classes/class/edit/ScheduleClassEdit'
 
 import Error404 from "./components/Error404"
 
@@ -255,6 +256,7 @@ function AppRoot({ t }) {
           <Route exact path="/schedule/classes/all/teachers/:class_id/edit/:id" component={ScheduleClassTeacherEdit} />
           <Route exact path="/schedule/classes/class/attendance/:class_id/:date" component={ScheduleClassAttendance} />
           <Route exact path="/schedule/classes/class/book/:class_id/:date/:account_id" component={ScheduleClassBook} />
+          <Route exact path="/schedule/classes/class/edit/:class_id/:date" component={ScheduleClassEdit} />
 
           {/* Settings */}
           <Route exact path="/settings/general" component={AppSettingsGeneral} />

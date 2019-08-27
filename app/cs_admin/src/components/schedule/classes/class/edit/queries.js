@@ -25,7 +25,33 @@ export const GET_SCHEDULE_CLASS_WEEKLY_OTCS_QUERY = gql`
         }
       }
     }
-    organizationLocations(first: 100, archived: false) {
+    scheduleItem(id:$scheduleItem) {
+      id
+      frequencyType
+      frequencyInterval
+      organizationLocationRoom {
+        id
+        name
+        organizationLocation {
+          id
+          name
+        }
+      }
+      organizationClasstype {
+        id
+        name
+      }
+      organizationLevel {
+        id
+        name
+      }
+      dateStart
+      dateEnd
+      timeStart
+      timeEnd
+      displayPublic
+    }
+    organizationLocationRooms(first: 100, archived: false) {
       pageInfo {
         startCursor
         endCursor
@@ -37,6 +63,10 @@ export const GET_SCHEDULE_CLASS_WEEKLY_OTCS_QUERY = gql`
           id
           archived
           name
+          organizationLocation {
+            id
+            name
+          }
         }
       }
     }

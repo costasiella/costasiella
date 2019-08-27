@@ -11,10 +11,10 @@ import {
   } from "tabler-react"
 import { Form as FoForm, Field, ErrorMessage } from 'formik'
 
-import { Editor } from '@tinymce/tinymce-react'
-import { tinymceBasicConf } from "../../../plugin_config/tinymce"
-import CSDatePicker from "../../ui/CSDatePicker"
-import CSTimePicker from "../../ui/CSTimePicker"
+// import { Editor } from '@tinymce/tinymce-react'
+// import { tinymceBasicConf } from "../../../plugin_config/tinymce"
+import CSDatePicker from "../../../../ui/CSDatePicker"
+import CSTimePicker from "../../../../ui/CSTimePicker"
 
 const ScheduleClassEditForm = ({ t, history, inputData, isSubmitting, setFieldValue, setFieldTouched, errors, values, touched, return_url }) => (
     <FoForm>
@@ -102,38 +102,6 @@ const ScheduleClassEditForm = ({ t, history, inputData, isSubmitting, setFieldVa
         </Form.Group> 
         <Grid.Row>
           <Grid.Col>
-            <Form.Group label={(values.frequencyType == "SPECIFIC") ? t('general.date') : t('general.date_start')}>
-              <CSDatePicker 
-                className={(errors.dateStart) ? "form-control is-invalid" : "form-control"} 
-                selected={values.dateStart}
-                onChange={(date) => {
-                  setFieldValue("dateStart", date)
-                  setFieldTouched("dateEnd", true)
-                }}
-                onBlur={() => setFieldTouched("dateStart", true)}
-              />
-              <ErrorMessage name="dateStart" component="span" className="invalid-feedback" />
-            </Form.Group>
-          </Grid.Col>
-          { (values.frequencyType == "SPECIFIC") ? "" :
-            <Grid.Col>
-              <Form.Group label={t('general.date_end')}>
-                <CSDatePicker 
-                  selected={values.dateEnd}
-                  onChange={(date) => {
-                    setFieldValue("dateEnd", date)
-                    setFieldTouched("dateEnd", true)
-                  }}
-                  onBlur={() => setFieldTouched("dateEnd", true)}
-                  placeholderText={t('schedule.classes.placeholder_enddate')}
-                />
-                <ErrorMessage name="dateEnd" component="span" className="invalid-feedback" />
-              </Form.Group>
-            </Grid.Col>
-          }
-        </Grid.Row>
-        <Grid.Row>
-          <Grid.Col>
            <Form.Group label={t('general.time_start')}>
               <CSTimePicker 
                 className={(errors.timeStart) ? "form-control is-invalid" : "form-control"} 
@@ -162,7 +130,7 @@ const ScheduleClassEditForm = ({ t, history, inputData, isSubmitting, setFieldVa
             </Form.Group>
           </Grid.Col>
         </Grid.Row>
-        <Form.Group label={t('general.note')}>
+        {/* <Form.Group label={t('general.note')}>
           <Editor
               textareaName="note"
               initialValue={values.note}
@@ -171,7 +139,7 @@ const ScheduleClassEditForm = ({ t, history, inputData, isSubmitting, setFieldVa
               onBlur={() => setFieldTouched("note", true)}
             />
           <ErrorMessage name="note" component="span" className="invalid-feedback" />
-        </Form.Group>
+        </Form.Group> */}
       </Card.Body>
       <Card.Footer>
         <Button 
