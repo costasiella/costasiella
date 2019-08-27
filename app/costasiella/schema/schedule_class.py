@@ -22,6 +22,49 @@ m = Messages()
 import datetime
 
 
+def _get_resolve_classes_filter_query(self):
+    """
+        Returns the filter query for the schedule
+    """
+    where = ''
+
+    # if self.filter_id_teacher:
+    #     where += 'AND ((CASE WHEN cotc.auth_teacher_id IS NULL \
+    #                     THEN clt.auth_teacher_id  \
+    #                     ELSE cotc.auth_teacher_id END) = '
+    #     where += str(self.filter_id_teacher) + ' '
+    #     where += 'OR (CASE WHEN cotc.auth_teacher_id2 IS NULL \
+    #                     THEN clt.auth_teacher_id2  \
+    #                     ELSE cotc.auth_teacher_id2 END) = '
+    #     where += str(self.filter_id_teacher) + ') '
+    if self.filter_id_organization_classtype:
+        where += 'AND (CASE WHEN csiotc.organization_classtype_id IS NULL \
+                        THEN csi.organization_classtype_id  \
+                        ELSE csiotc.organization_classtype_id END) = '
+        where += str(self.filter_id_organization_classtype) + ' '
+    if self.filter_id_organization_location_room:
+        where += 'AND (CASE WHEN csiotc.organization_location_room_id IS NULL \
+                        THEN csi.organization_location_room_id  \
+                        ELSE csiotc.organization_location_room_id END) = '
+        where += str(self.filter_id_organization_location_room) + ' '
+    if self.filter_id_organization_level:
+        where += 'AND (CASE WHEN csiotc.organization_level_id IS NULL \
+                        THEN csi.organization_level_id  \
+                        ELSE csiotc.organization_level_id END) = '
+        where += str(self.filter_id_organization_level) + ' '
+    if self.filter_public:
+        where += "AND csi.display_public = 1 "
+        # where += "AND sl.AllowAPI = 'T' "
+        # where += "AND sct.AllowAPI = 'T' "
+    # if self.filter_starttime_from:
+    #     where += 'AND ((CASE WHEN cotc.Starttime IS NULL \
+    #                     THEN cla.Starttime  \
+    #                     ELSE cotc.Starttime END) >= '
+    #     where += "'" + str(self.filter_starttime_from) + "') "
+
+    return where
+
+
 # ScheduleClassType
 class ScheduleClassType(graphene.ObjectType):
     schedule_item_id = graphene.ID()
@@ -40,9 +83,9 @@ class ScheduleClassesDayType(graphene.ObjectType):
     date = graphene.types.datetime.Date()
     iso_week_day = graphene.Int()
     order_by = graphene.String()
-    filter_id_organization_classtype= graphene.String()
-    filter_id_organization_level= graphene.String()
-    filter_id_organization_location= graphene.String()
+    filter_id_organization_classtype = graphene.String()
+    filter_id_organization_level = graphene.String()
+    filter_id_organization_location = graphene.String()
     classes = graphene.List(ScheduleClassType)
 
     def resolve_iso_week_day(self, info):
@@ -52,6 +95,50 @@ class ScheduleClassesDayType(graphene.ObjectType):
         return self.order_by
 
     def resolve_classes(self, info):
+        def _get_where_query():
+            """
+                Returns the filter query for the schedule
+            """
+            where = ''
+
+            # if self.filter_id_teacher:
+            #     where += 'AND ((CASE WHEN cotc.auth_teacher_id IS NULL \
+            #                     THEN clt.auth_teacher_id  \
+            #                     ELSE cotc.auth_teacher_id END) = '
+            #     where += str(self.filter_id_teacher) + ' '
+            #     where += 'OR (CASE WHEN cotc.auth_teacher_id2 IS NULL \
+            #                     THEN clt.auth_teacher_id2  \
+            #                     ELSE cotc.auth_teacher_id2 END) = '
+            #     where += str(self.filter_id_teacher) + ') '
+            if self.filter_id_organization_classtype:
+                where += 'AND (CASE WHEN csiotc.organization_classtype_id IS NULL \
+                                THEN csi.organization_classtype_id  \
+                                ELSE csiotc.organization_classtype_id END) = '
+                where += str(self.filter_id_organization_classtype) + ' '
+            # if self.filter_id_organization_location_room:
+            #     where += 'AND (CASE WHEN csiotc.organization_location_room_id IS NULL \
+            #                     THEN csi.organization_location_room_id  \
+            #                     ELSE csiotc.organization_location_room_id END) = '
+            #     where += str(self.filter_id_organization_location_room) + ' '
+            if self.filter_id_organization_level:
+                where += 'AND (CASE WHEN csiotc.organization_level_id IS NULL \
+                                THEN csi.organization_level_id  \
+                                ELSE csiotc.organization_level_id END) = '
+                where += str(self.filter_id_organization_level) + ' '
+            # if self.filter_public:
+            #     where += "AND csi.display_public = 1 "
+                # where += "AND sl.AllowAPI = 'T' "
+                # where += "AND sct.AllowAPI = 'T' "
+            # if self.filter_starttime_from:
+            #     where += 'AND ((CASE WHEN cotc.Starttime IS NULL \
+            #                     THEN cla.Starttime  \
+            #                     ELSE cotc.Starttime END) >= '
+            #     where += "'" + str(self.filter_starttime_from) + "') "
+
+            return where
+
+
+
         iso_week_day = self.resolve_iso_week_day(info)
         sorting = self.order_by
         if not sorting: # Default to sort by location, then time
@@ -147,9 +234,11 @@ class ScheduleClassesDayType(graphene.ObjectType):
                          (csi.date_end >= "{class_date}" OR csi.date_end IS NULL)
                         ) 
                     )
+                {where}
         """.format(
             class_date = self.date,
-            iso_week_day = iso_week_day
+            iso_week_day = iso_week_day,
+            where = _get_where_query()
         )
 
         # print(query)
