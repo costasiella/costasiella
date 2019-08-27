@@ -1,5 +1,5 @@
 from django.utils.translation import gettext as _
-from django.db.models import Q
+from django.db.models import Q, FilteredRelation, OuterRef, Subquery
 
 import graphene
 from graphene_django import DjangoObjectType
@@ -7,7 +7,7 @@ from graphene_django.filter import DjangoFilterConnectionField
 from graphql import GraphQLError
 from graphql_relay import to_global_id
 
-from ..models import ScheduleItem, OrganizationClasstype, OrganizationLevel, OrganizationLocationRoom
+from ..models import ScheduleItem, ScheduleItemWeeklyOTC, OrganizationClasstype, OrganizationLevel, OrganizationLocationRoom
 from ..modules.gql_tools import require_login_and_permission, require_login_and_one_of_permissions, get_rid
 from ..modules.messages import Messages
 from ..modules.model_helpers.schedule_item_helper import ScheduleItemHelper
@@ -94,25 +94,91 @@ class ScheduleClassesDayType(graphene.ObjectType):
                 Q(organization_location_room__organization_location__id = self.filter_id_organization_location)
             
         ## Query classes table for self.date
-        schedule_items = ScheduleItem.objects.select_related('organization_location_room__organization_location').filter(
-            schedule_filter
-        )
+        # otc_qs = ScheduleItemWeeklyOTC.objects.filter(Q(schedule_item_id = OuterRef('pk')), Q(date = self.date))
 
-        # Set sorting
-        if sorting == "location":
-            # Location | Location room | Start time
-            schedule_items = schedule_items.order_by(
-                'organization_location_room__organization_location__name',
-                'organization_location_room__name',
-                'time_start'
+        query = """
+            SELECT 
+                csi.id,
+                csi.frequency_type,
+                CASE WHEN csiotc.organization_location_room_id IS NOT NULL
+                     THEN csiotc.organization_location_room_id
+                     ELSE csi.organization_location_room_id
+                     END AS organization_location_room_id,
+                csi.organization_classtype_id,
+                csi.organization_level_id,
+                csi.time_start,
+                csi.time_end,
+                csi.display_public
+            FROM costasiella_scheduleitem csi
+            LEFT JOIN
+                ( SELECT 
+                    id,
+                    schedule_item_id,
+                    date,
+                    organization_location_room_id,
+                    organization_classtype_id,
+                    organization_level_id
+                    time_start,
+                    time_end
+                FROM costasiella_scheduleitemweeklyotc
+                WHERE date = '{class_date}' ) csiotc
+                ON csi.id = csiotc.schedule_item_id
+            WHERE csi.schedule_item_type = "CLASS" 
+                AND (
+                        (csi.frequency_type = "SPECIFIC" AND csi.date_start = '{class_date}' ) OR
+                        ( csi.frequency_type = "WEEKLY" AND 
+                          csi.frequency_interval = {iso_week_day} AND 
+                          csi.date_start <= '{class_date}' AND
+                         (csi.date_end >= '{class_date}' OR csi.date_end IS NULL)
+                        ) 
+                    )
+            """.format(
+                class_date = self.date,
+                iso_week_day = iso_week_day
             )
-        else:
-            # Start time | Location | Location room
-            schedule_items = schedule_items.order_by(
-                'time_start',
-                'organization_location_room__organization_location__name',
-                'organization_location_room__name',
-            )
+
+        print(query)
+
+        schedule_items = ScheduleItem.objects.raw(query)
+
+        # schedule_items = ScheduleItem.objects.annotate(
+        #     # otc = Subquery(otc_qs.values('organization_location_room'))
+        #     otc = FilteredRelation(
+        #         'scheduleitemweeklyotc', condition=(
+        #             Q(scheduleitemweeklyotc__schedule_item_id = OuterRef('pk')) & 
+        #             Q(scheduleitemweeklyotc__date = self.date)
+        #         )
+        #     )
+        # )
+        # .select_related('organization_location_room__organization_location').filter(
+        #     schedule_filter
+        # )
+        # schedule_items = ScheduleItem.objects.annote(
+        #     changed_organization_location_room = FilteredRelation(
+        #         'schedule_item_weekly_otc', condition=(Q(schedule_item_id = OuterRef('id') & Q(date = self.date)))
+        #     )
+        # ).select_related('organization_location_room__organization_location').filter(
+        #     schedule_filter
+        # )
+
+        # print(schedule_items)
+        # print(schedule_items.query)
+
+        # # Set sorting
+        # if sorting == "location":
+        #     # Location | Location room | Start time
+        #     schedule_items = schedule_items.order_by(
+        #         'organization_location_room__organization_location__name',
+        #         'organization_location_room__name',
+        #         'time_start'
+        #     )
+        # else:
+        #     # Start time | Location | Location room
+        #     schedule_items = schedule_items.order_by(
+        #         'time_start',
+        #         'organization_location_room__organization_location__name',
+        #         'organization_location_room__name',
+        #     )
 
         classes_list = []
         for item in schedule_items:

@@ -145,6 +145,8 @@ function ScheduleClasses ({ t, history }) {
                 </p>
               </ContentCard>
             )} else {   
+
+            console.log(data)
             // Life's good! :)
             return (
               <Container>
