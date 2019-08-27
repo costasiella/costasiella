@@ -1,89 +1,74 @@
 import gql from "graphql-tag"
 
 
-export const GET_ACCOUNTS_QUERY = gql`
-  query Accounts(
-    $after: String, 
-    $before: String, 
-    $searchName: String,
-    $teacher: Boolean,
-    $employee: Boolean
-  ) {
-    accounts(
-      first: 25, 
-      before: $before, 
-      after: $after, 
-      isActive: true, 
-      fullName_Icontains: $searchName,
-      customer: true,
-      teacher: $teacher,
-      employee: $employee
-    ) {
-      pageInfo {
-        hasNextPage
-        hasPreviousPage
-        startCursor
-        endCursor
-      }
+export const GET_SCHEDULE_CLASS_WEEKLY_OTCS_QUERY = gql`
+  query ScheduleClassWeeklyOTCs($scheduleItem: ID!, $date: Date!) {
+    scheduleClassWeeklyOtcs(first:1, scheduleItem: $scheduleItem, date:$date) {
       edges {
         node {
-          id
-          fullName
-          email
-          isActive
-        }
-      }
-    }
-  }
-`
-
-
-export const GET_SCHEDULE_CLASS_ATTENDANCE_QUERY = gql`
-  query ScheduleItemAttendances($after: String, $before: String, $scheduleItem: ID!, $date: Date!) {
-    scheduleItemAttendances(first: 100, before: $before, after: $after, scheduleItem: $scheduleItem, date: $date) {
-      pageInfo {
-        startCursor
-        endCursor
-        hasNextPage
-        hasPreviousPage
-      }
-      edges {
-        node {
-          id
-          account {
+          id 
+          date
+          organizationLocationRoom {
             id
-            fullName
-          }     
-          attendanceType
-          bookingStatus
+            name
+          }
+          organizationClasstype {
+            id
+            name
+          }
+          organizationLevel {
+            id
+            name
+          }
+          timeStart
+          timeEnd
         }
       }
     }
-    scheduleItem(id:$scheduleItem) {
-      id
-      frequencyType
-      frequencyInterval
-      organizationLocationRoom {
-        id
-        name
-        organizationLocation {
+    organizationLocations(first: 100, archived: false) {
+      pageInfo {
+        startCursor
+        endCursor
+        hasNextPage
+        hasPreviousPage
+      }
+      edges {
+        node {
           id
+          archived
           name
         }
       }
-      organizationClasstype {
-        id
-        name
+    }
+    organizationClasstypes(first: 100, archived: false) {
+      pageInfo {
+        startCursor
+        endCursor
+        hasNextPage
+        hasPreviousPage
       }
-      organizationLevel {
-        id
-        name
+      edges {
+        node {
+          id
+          archived
+          name
+        }
       }
-      dateStart
-      dateEnd
-      timeStart
-      timeEnd
-      displayPublic
+    }
+    organizationLevels(first: 100, archived: false) {
+      pageInfo {
+        startCursor
+        endCursor
+        hasNextPage
+        hasPreviousPage
+      }
+      edges {
+        node {
+          id
+          archived
+          name
+        }
+      }
     }
   }
 `
@@ -106,58 +91,3 @@ export const UPDATE_SCHEDULE_ITEM_ATTENDANCE = gql`
     }
   }
 `
-
-
-// export const GET_SINGLE_SCHEDULE_CLASS_TEACHERS_QUERY = gql`
-//   query ScheduleItemTeacher($before: String, $after: String, $id: ID!) {
-//     scheduleItemTeacher(id: $id) {
-//       id
-//       account {
-//         id
-//         fullName
-//       }
-//       role
-//       account2 {
-//         id
-//         fullName
-//       }
-//       role2
-//       dateStart
-//       dateEnd       
-//     }
-//     accounts(first: 15, before: $before, after: $after, isActive: true, teacher: true) {
-//       pageInfo {
-//         startCursor
-//         endCursor
-//         hasNextPage
-//         hasPreviousPage
-//       }
-//       edges {
-//         node {
-//           id
-//           fullName
-//         }
-//       }
-//     }
-//   }
-// `
-
-
-// export const GET_INPUT_VALUES_QUERY = gql`
-//   query InputValues($after: String, $before: String) {
-//     accounts(first: 15, before: $before, after: $after, isActive: true, teacher: true) {
-//       pageInfo {
-//         startCursor
-//         endCursor
-//         hasNextPage
-//         hasPreviousPage
-//       }
-//       edges {
-//         node {
-//           id
-//           fullName
-//         }
-//       }
-//     }
-//   }
-// `

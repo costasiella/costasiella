@@ -36,7 +36,7 @@ class ScheduleClassWeeklyOTCQuery(graphene.ObjectType):
         require_login_and_permission(user, 'costasiella.view_scheduleclassweeklyotc')
 
         return ScheduleItemWeeklyOTC.objects.all()
-            
+
 
 def validate_update_input(input):
     """
