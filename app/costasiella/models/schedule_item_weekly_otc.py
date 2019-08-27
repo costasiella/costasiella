@@ -21,6 +21,7 @@ class ScheduleItemWeeklyOTC(models.Model):
 
     schedule_item = models.ForeignKey(ScheduleItem, on_delete=models.CASCADE)
     date = models.DateField()
+    description = models.CharField(max_length=255, default="")
     organization_location_room = models.ForeignKey(OrganizationLocationRoom, on_delete=models.CASCADE, null=True)
     organization_classtype = models.ForeignKey(OrganizationClasstype, on_delete=models.CASCADE, null=True)
     organization_level = models.ForeignKey(OrganizationLevel, on_delete=models.CASCADE, null=True)   
