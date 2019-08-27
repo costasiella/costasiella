@@ -10,10 +10,11 @@ import {
 } from "tabler-react";
 import HasPermissionWrapper from "../../../HasPermissionWrapper"
 
-let attendance_active = false
-let edit_active = false
 
 function ClassMenu ({ t, scheduleItemId, class_date, active_link }) {
+  let attendance_active = false
+  let edit_active = false
+
   switch (active_link) {
     case "attendance":
       attendance_active = true
