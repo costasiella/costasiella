@@ -104,10 +104,22 @@ class ScheduleClassesDayType(graphene.ObjectType):
                      THEN csiotc.organization_location_room_id
                      ELSE csi.organization_location_room_id
                      END AS organization_location_room_id,
-                csi.organization_classtype_id,
-                csi.organization_level_id,
-                csi.time_start,
-                csi.time_end,
+                CASE WHEN csiotc.organization_classtype_id IS NOT NULL
+                     THEN csiotc.organization_classtype_id
+                     ELSE csi.organization_classtype_id
+                     END AS organization_classtype_id,
+                CASE WHEN csiotc.organization_level_id IS NOT NULL
+                     THEN csiotc.organization_level_id
+                     ELSE csi.organization_level_id
+                     END AS organization_level_id,
+                CASE WHEN csiotc.time_start IS NOT NULL
+                     THEN csiotc.time_start
+                     ELSE csi.time_start
+                     END AS time_start,
+                CASE WHEN csiotc.time_end IS NOT NULL
+                     THEN csiotc.time_end
+                     ELSE csi.time_end
+                     END AS time_end,
                 csi.display_public
             FROM costasiella_scheduleitem csi
             LEFT JOIN
@@ -117,7 +129,7 @@ class ScheduleClassesDayType(graphene.ObjectType):
                     date,
                     organization_location_room_id,
                     organization_classtype_id,
-                    organization_level_id
+                    organization_level_id,
                     time_start,
                     time_end
                 FROM costasiella_scheduleitemweeklyotc
