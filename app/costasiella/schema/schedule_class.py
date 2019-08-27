@@ -120,38 +120,56 @@ class ScheduleClassesDayType(graphene.ObjectType):
                      THEN csiotc.time_end
                      ELSE csi.time_end
                      END AS time_end,
-                csi.display_public
+                csi.display_public,
+                csiotc.description as test
             FROM costasiella_scheduleitem csi
             LEFT JOIN
                 ( SELECT 
                     id,
                     schedule_item_id,
                     date,
+                    description,
                     organization_location_room_id,
                     organization_classtype_id,
                     organization_level_id,
                     time_start,
                     time_end
-                FROM costasiella_scheduleitemweeklyotc
-                WHERE date = '{class_date}' ) csiotc
+                  FROM costasiella_scheduleitemweeklyotc
+                  WHERE date = "{class_date}" 
+                ) csiotc
                 ON csi.id = csiotc.schedule_item_id
             WHERE csi.schedule_item_type = "CLASS" 
                 AND (
-                        (csi.frequency_type = "SPECIFIC" AND csi.date_start = '{class_date}' ) OR
+                        (csi.frequency_type = "SPECIFIC" AND csi.date_start = "{class_date}" ) OR
                         ( csi.frequency_type = "WEEKLY" AND 
                           csi.frequency_interval = {iso_week_day} AND 
-                          csi.date_start <= '{class_date}' AND
-                         (csi.date_end >= '{class_date}' OR csi.date_end IS NULL)
+                          csi.date_start <= "{class_date}" AND
+                         (csi.date_end >= "{class_date}" OR csi.date_end IS NULL)
                         ) 
                     )
-            """.format(
-                class_date = self.date,
-                iso_week_day = iso_week_day
-            )
+        """.format(
+            class_date = self.date,
+            iso_week_day = iso_week_day
+        )
 
-        print(query)
+        # print(query)
+
+        ## 
+        # At this time 27 Aug 2019, params don't seem to be working from a dictionary
+        # https://docs.djangoproject.com/en/2.2/topics/db/sql/
+        # the query should be formatted using "%(class_date)s" 
+        ##
+        # params = {
+        #     "class_date": self.date, 
+        #     "iso_week_day": iso_week_day
+        # }
 
         schedule_items = ScheduleItem.objects.raw(query)
+        # print(schedule_items.query)
+        # for item in schedule_items:
+        #     for f in item._meta.fields:
+        #         print(getattr(item, f))
+
 
         # schedule_items = ScheduleItem.objects.annotate(
         #     # otc = Subquery(otc_qs.values('organization_location_room'))
@@ -194,6 +212,10 @@ class ScheduleClassesDayType(graphene.ObjectType):
 
         classes_list = []
         for item in schedule_items:
+
+            print(item)
+            print(item.test)
+
             classes_list.append(
                 ScheduleClassType(
                     schedule_item_id=to_global_id('ScheduleItemNode', item.pk),
