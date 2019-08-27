@@ -12,7 +12,6 @@ import {
 } from "tabler-react"
 
 
-
 function ScheduleClassAttendanceDelete({t, match, node}) {
   const schedule_item_id = match.params.class_id
   const class_date = match.params.date

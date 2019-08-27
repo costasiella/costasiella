@@ -82,10 +82,10 @@ export const DELETE_SCHEDULE_CLASS_ATTENDANCE = gql`
 `
 
 
-export const UPDATE_SCHEDULE_ITEM_ATTENDANCE = gql`
-  mutation UpdateScheduleItemAttendance($input: UpdateScheduleItemAttendanceInput!) {
-    updateScheduleItemAttendance(input:$input) {
-      scheduleItemAttendance {
+export const UPDATE_SCHEDULE_CLASS_WEEKLY_OTC = gql`
+  mutation UpdateScheduleClassWeeklyOTC($input: UpdateScheduleClassWeeklyOTCInput!) {
+    updateScheduleClassWeeklyOtc(input:$input) {
+      scheduleClassWeeklyOtc {
         id
       }
     }
