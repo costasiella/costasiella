@@ -139,18 +139,19 @@ function ScheduleClassEdit({ t, match, history }) {
                         ]})
                         .then(({ data }) => {
                             console.log('got data', data);
-                            toast.success((t('schedule.classes.teachers.toast_edit_success')), {
+                            toast.success((t('schedule.classes.class.edit.toast_edit_success')), {
                                 position: toast.POSITION.BOTTOM_RIGHT
                               })
                             setSubmitting(false)
-                          }).catch((error) => {
-                            toast.error((t('general.toast_server_error')) + ': ' +  error, {
-                                position: toast.POSITION.BOTTOM_RIGHT
-                              })
-                            console.log('there was an error sending the query', error)
-                            setSubmitting(false)
-                          })
-                    }}
+                        }).catch((error) => {
+                          toast.error((t('general.toast_server_error')) + ': ' +  error, {
+                              position: toast.POSITION.BOTTOM_RIGHT
+                            })
+                          console.log('there was an error sending the query', error)
+                          setSubmitting(false)
+                        })
+                      }
+                    }
                     >
                     {({ isSubmitting, errors, values, setFieldTouched, setFieldValue }) => (
                       <ScheduleClassEditForm

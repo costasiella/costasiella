@@ -19,7 +19,7 @@ import CSTimePicker from "../../../../ui/CSTimePicker"
 const ScheduleClassEditForm = ({ t, history, inputData, isSubmitting, setFieldValue, setFieldTouched, errors, values, touched, return_url }) => (
     <FoForm>
       <Card.Body>
-        <Form.Group>
+        {/* <Form.Group>
           <Form.Label className="custom-switch">
               <Field 
               className="custom-switch-input"
@@ -30,34 +30,7 @@ const ScheduleClassEditForm = ({ t, history, inputData, isSubmitting, setFieldVa
               <span className="custom-switch-description">{t('schedule.classes.public')}</span>
           </Form.Label>
           <ErrorMessage name="displayPublic" component="div" />   
-        </Form.Group>  
-        <Form.Group label={t('schedule.classes.frequencyType')}>
-          <Field component="select" 
-                name="frequencyType" 
-                className={(errors.frequencyType) ? "form-control is-invalid" : "form-control"} 
-                autoComplete="off">
-            <option value="SPECIFIC" key={v4()}>{t('schedule.classes.select_specific')}</option>
-            <option value="WEEKLY" key={v4()}>{t('schedule.classes.select_weekly')}</option>
-          </Field>
-          <ErrorMessage name="frequencyType" component="span" className="invalid-feedback" />
-        </Form.Group>
-        { (values.frequencyType == "SPECIFIC") ? "" :
-          <Form.Group label={t('schedule.classes.frequencyInterval')}>
-            <Field component="select" 
-                  name="frequencyInterval" 
-                  className={(errors.frequencyInterval) ? "form-control is-invalid" : "form-control"} 
-                  autoComplete="off">
-              <option value="1" key={v4()}>{t('general.monday')}</option>
-              <option value="2" key={v4()}>{t('general.tuesday')}</option>
-              <option value="3" key={v4()}>{t('general.wednesday')}</option>
-              <option value="4" key={v4()}>{t('general.thursday')}</option>
-              <option value="5" key={v4()}>{t('general.friday')}</option>
-              <option value="6" key={v4()}>{t('general.saturday')}</option>
-              <option value="7" key={v4()}>{t('general.sunday')}</option>
-            </Field>
-            <ErrorMessage name="frequencyInterval" component="span" className="invalid-feedback" />
-          </Form.Group>
-        }
+        </Form.Group>   */}
         <Grid.Row>
           <Grid.Col>
             <Form.Group label={t('general.location')}>
@@ -65,7 +38,7 @@ const ScheduleClassEditForm = ({ t, history, inputData, isSubmitting, setFieldVa
                     name="organizationLocationRoom" 
                     className={(errors.organizationLocationRoom) ? "form-control is-invalid" : "form-control"} 
                     autoComplete="off">
-                <option value="" key={v4()}>{t("general.please_select")}</option>
+                <option value="" key={v4()}>{t("general.no_change")}</option>
                 {inputData.organizationLocationRooms.edges.map(({ node }) =>
                   <option value={node.id} key={v4()}>{node.organizationLocation.name} - {node.name}</option>
                 )}
@@ -79,7 +52,7 @@ const ScheduleClassEditForm = ({ t, history, inputData, isSubmitting, setFieldVa
                     name="organizationLevel" 
                     className={(errors.organizationLevels) ? "form-control is-invalid" : "form-control"} 
                     autoComplete="off">
-                <option value="" key={v4()}>{t("")}</option>
+                <option value="" key={v4()}>{t("general.no_change")}</option>
                 {inputData.organizationLevels.edges.map(({ node }) =>
                   <option value={node.id} key={v4()}>{node.name}</option>
                 )}
@@ -93,7 +66,7 @@ const ScheduleClassEditForm = ({ t, history, inputData, isSubmitting, setFieldVa
                 name="organizationClasstype" 
                 className={(errors.organizationClasstype) ? "form-control is-invalid" : "form-control"} 
                 autoComplete="off">
-            <option value="" key={v4()}>{t("general.please_select")}</option>
+            <option value="" key={v4()}>{t("general.no_change")}</option>
             {inputData.organizationClasstypes.edges.map(({ node }) =>
               <option value={node.id} key={v4()}>{node.name}</option>
             )}

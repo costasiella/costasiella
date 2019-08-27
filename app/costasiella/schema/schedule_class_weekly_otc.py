@@ -68,7 +68,9 @@ def validate_update_input(input):
             organization_location_room = OrganizationLocationRoom.objects.filter(id=rid.id).first()
             result['organization_location_room'] = organization_location_room
             if not organization_location_room:
-                raise Exception(_('Invalid Organization Location Room ID!'))            
+                raise Exception(_('Invalid Organization Location Room ID!'))
+        else:
+            result['organization_location_room'] = None
 
     # Check OrganizationClasstype
     if 'organization_classtype' in input:
@@ -77,7 +79,9 @@ def validate_update_input(input):
             organization_classtype = OrganizationClasstype.objects.get(id=rid.id)
             result['organization_classtype'] = organization_classtype
             if not organization_classtype:
-                raise Exception(_('Invalid Organization Classtype ID!'))            
+                raise Exception(_('Invalid Organization Classtype ID!'))  
+        else:
+            result['organization_classtype'] = None          
 
     # Check OrganizationLevel
     if 'organization_level' in input:
@@ -87,7 +91,9 @@ def validate_update_input(input):
             organization_level = OrganizationLevel.objects.get(id=rid.id)
             result['organization_level'] = organization_level
             if not organization_level:
-                raise Exception(_('Invalid Organization Level ID!'))            
+                raise Exception(_('Invalid Organization Level ID!'))
+        else:
+            result['organization_level'] = None            
 
 
     return result
@@ -157,6 +163,8 @@ class UpdateScheduleClassWeeklyOTC(graphene.relay.ClientIDMutation):
     def mutate_and_get_payload(self, root, info, **input):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.change_scheduleclassweeklyotc')
+
+        print(input)
 
         result = validate_update_input(input)
 
