@@ -191,14 +191,6 @@ class UpdateScheduleClassWeeklyOTC(graphene.relay.ClientIDMutation):
 
         result = validate_update_input(input)
 
-        # rid = get_rid(input['id'])
-        # qs = ScheduleItemWeeklyOTC.objects.filter(
-        #     schedule_item = result['schedule_item'],
-        #     date = input['date']
-        # )
-        # if qs.exists: # Update
-        #     schedule_class_weekly_otc = qs.first()
-        # else:
         # Insert if it doesn't exist
         schedule_class_weekly_otc, created = ScheduleItemWeeklyOTC.objects.get_or_create(
             schedule_item = result['schedule_item'],
