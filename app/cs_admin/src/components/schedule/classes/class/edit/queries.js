@@ -8,6 +8,16 @@ export const GET_SCHEDULE_CLASS_WEEKLY_OTCS_QUERY = gql`
         node {
           id 
           date
+          account {
+            id
+            fullName
+          }
+          role
+          account2 {
+            id
+            fullName
+          }
+          role2
           organizationLocationRoom {
             id
             name

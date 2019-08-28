@@ -300,6 +300,16 @@ function ScheduleClasses ({ t, history }) {
                                         </span>
                                       </Table.Col>
                                       <Table.Col>
+                                        {/* Teacher(s) */}
+                                        { (account) ? 
+                                            account.fullName : 
+                                            <span className="text-red">{t("schedule.classes.no_teacher")}</span>
+                                        } <br />
+                                        <span className="text-muted">
+                                          {(account2) ? account2.fullName : ""}
+                                        </span>
+                                      </Table.Col>
+                                      <Table.Col>
                                         {/* Public */}
                                         <BadgeBoolean value={displayPublic} />
                                       </Table.Col>

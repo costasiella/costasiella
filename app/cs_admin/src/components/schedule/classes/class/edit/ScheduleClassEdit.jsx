@@ -9,6 +9,8 @@ import { Formik } from 'formik'
 import { toast } from 'react-toastify'
 
 import { GET_SCHEDULE_CLASS_WEEKLY_OTCS_QUERY, UPDATE_SCHEDULE_CLASS_WEEKLY_OTC } from './queries'
+import { GET_CLASSES_QUERY } from '../../queries'
+import { get_list_query_variables } from '../../tools'
 // import { SCHEDULE_CLASS_TEACHER_SCHEMA } from './yupSchema'
 import ScheduleClassEditForm from './ScheduleClassEditForm'
 import { TimeStringToJSDateOBJ } from '../../../../../tools/date_tools'
@@ -139,7 +141,7 @@ function ScheduleClassEdit({ t, match, history }) {
                           }
                         }, refetchQueries: [
                             {query: GET_SCHEDULE_CLASS_WEEKLY_OTCS_QUERY, variables: query_vars},
-                            // {query: GET_SUBSCRIPTIONS_QUERY, variables: {"archived": false }},
+                            {query: GET_CLASSES_QUERY, variables: get_list_query_variables()},
                         ]})
                         .then(({ data }) => {
                             console.log('got data', data);
