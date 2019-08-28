@@ -86,8 +86,8 @@ function ScheduleClassEdit({ t, match, history }) {
     if (initialData.account2) {
       initialValues.account2 = initialData.account2.id
     }
-    initialValues.role = initialData.role
-    initialValues.role2 = initialData.role2
+    initialValues.role = initialData.role || ""
+    initialValues.role2 = initialData.role2 || ""
     if (initialData.organizationLocationRoom) {
       initialValues.organizationLocationRoom = initialData.organizationLocationRoom.id
     }

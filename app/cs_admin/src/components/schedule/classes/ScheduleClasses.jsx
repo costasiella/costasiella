@@ -38,7 +38,7 @@ import ScheduleMenu from "../ScheduleMenu"
 import ScheduleClassesFilter from "./ScheduleClassesFilter"
 
 import { GET_CLASSES_QUERY } from "./queries"
-import { get_list_query_variables } from './tools'
+import { get_list_query_variables, represent_teacher } from './tools'
 
 import moment from 'moment'
 
@@ -302,11 +302,11 @@ function ScheduleClasses ({ t, history }) {
                                       <Table.Col>
                                         {/* Teacher(s) */}
                                         { (account) ? 
-                                            account.fullName : 
+                                            represent_teacher(account.fullName, role) : 
                                             <span className="text-red">{t("schedule.classes.no_teacher")}</span>
                                         } <br />
                                         <span className="text-muted">
-                                          {(account2) ? account2.fullName : ""}
+                                          {(account2) ? represent_teacher(account2.fullName, role2) : ""}
                                         </span>
                                       </Table.Col>
                                       <Table.Col>

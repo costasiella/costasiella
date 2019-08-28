@@ -1,3 +1,4 @@
+import React from "react"
 import CSLS from "../../../tools/cs_local_storage"
 
 export function get_list_query_variables() {
@@ -42,3 +43,25 @@ export function get_list_query_variables() {
   return queryVars
 }
 
+
+export function represent_teacher(name, role) {
+  let textColor = false
+
+  switch (role) {
+    case "SUB":
+      textColor = "text-blue"
+      break
+    case "ASSISTANT":
+      textColor = "text-green"
+      break
+    case "KARMA":
+      textColor = "text-orange"
+      break
+  }
+
+  if (textColor) {
+    return <span className={textColor}>{name}</span>
+  } else {
+    return name
+  }
+}
