@@ -80,6 +80,14 @@ function ScheduleClassEdit({ t, match, history }) {
   if (queryData.scheduleClassWeeklyOtcs.edges.length) {
     initialData = queryData.scheduleClassWeeklyOtcs.edges[0].node
 
+    if (initialData.account) {
+      initialValues.account = initialData.account.id
+    }
+    if (initialData.account2) {
+      initialValues.account2 = initialData.account2.id
+    }
+    initialValues.role = initialData.role
+    initialValues.role2 = initialData.role2
     if (initialData.organizationLocationRoom) {
       initialValues.organizationLocationRoom = initialData.organizationLocationRoom.id
     }
@@ -92,6 +100,10 @@ function ScheduleClassEdit({ t, match, history }) {
     initialValues.timeStart = initialData.timeStart
     initialValues.timeEnd = initialData.timeEnd
   } else {
+    initialValues.account = ""
+    initialValues.role = ""
+    initialValues.account2 = ""
+    initialValues.role2 = ""
     initialValues.organizationLocationRoom = ""
     initialValues.organizationClasstype = ""
     initialValues.organizationLevel = ""
