@@ -229,9 +229,9 @@ class ScheduleClassesDayType(graphene.ObjectType):
                     role,
                     account_2_id,
                     role_2
-                FROM schedule_item_teachers
+                FROM costasiella_scheduleitemteacher
                 WHERE date_start <= "{class_date}" AND (
-                      date_end >= "{class_date}" OR Enddate IS NULL)
+                      date_end >= "{class_date}" OR date_end IS NULL)
                 LIMIT 1
                 ) csit
                 ON csit.schedule_item_id = csi.id

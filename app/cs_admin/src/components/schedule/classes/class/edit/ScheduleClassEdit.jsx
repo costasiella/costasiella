@@ -75,7 +75,7 @@ function ScheduleClassEdit({ t, match, history }) {
   
   let initialData
   var initialValues = {}
-  if (queryData.scheduleClassWeeklyOtcs.edges) {
+  if (queryData.scheduleClassWeeklyOtcs.edges.length) {
     initialData = queryData.scheduleClassWeeklyOtcs.edges[0].node
 
     if (initialData.organizationLocationRoom) {
@@ -129,6 +129,10 @@ function ScheduleClassEdit({ t, match, history }) {
                           input: {
                             scheduleItem: schedule_item_id,
                             date: class_date,
+                            account: values.account,
+                            role: values.role,
+                            account2: values.account2,
+                            role2: values.role2,
                             organizationLocationRoom: values.organizationLocationRoom,
                             organizationClasstype: values.organizationClasstype,
                             organizationLevel: values.organizationLevel
