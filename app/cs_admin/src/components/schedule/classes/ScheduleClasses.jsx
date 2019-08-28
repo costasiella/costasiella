@@ -330,13 +330,21 @@ function ScheduleClasses ({ t, history }) {
                                                   {t("general.attendance")}
                                               </Dropdown.Item>
                                             </HasPermissionWrapper>,
+                                            <HasPermissionWrapper key={v4()} permission="view" resource="scheduleclassweeklyotc">
+                                              <Dropdown.Item
+                                                key={v4()}
+                                                icon="edit-3"
+                                                onClick={() => history.push('/schedule/classes/class/edit/' + scheduleItemId + '/' + date)}>
+                                                  {t("general.edit")}
+                                              </Dropdown.Item>
+                                            </HasPermissionWrapper>,
                                             <HasPermissionWrapper key={v4()} permission="change" resource="scheduleclass">
                                               <Dropdown.ItemDivider key={v4()} />
                                               <Dropdown.Item
                                                 key={v4()}
                                                 badge={t('schedule.classes.all_classes_in_series')}
                                                 badgeType="secondary"
-                                                icon="edit-2"
+                                                icon="edit-3"
                                                 onClick={() => history.push('/schedule/classes/all/edit/' + scheduleItemId)}>
                                                   {t("general.edit")}
                                               </Dropdown.Item>
