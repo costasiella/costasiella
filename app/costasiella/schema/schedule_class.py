@@ -11,6 +11,7 @@ from ..models import ScheduleItem, ScheduleItemWeeklyOTC, OrganizationClasstype,
 from ..modules.gql_tools import require_login_and_permission, require_login_and_one_of_permissions, get_rid
 from ..modules.messages import Messages
 from ..modules.model_helpers.schedule_item_helper import ScheduleItemHelper
+from .account import AccountNode
 from .organization_classtype import OrganizationClasstypeNode
 from .organization_level import OrganizationLevelNode
 from .organization_location_room import OrganizationLocationRoomNode
@@ -70,6 +71,10 @@ class ScheduleClassType(graphene.ObjectType):
     schedule_item_id = graphene.ID()
     frequency_type = graphene.String()
     date = graphene.types.datetime.Date()
+    account = graphene.Field(AccountNode)
+    role = graphene.String()
+    account_2 = graphene.Field(AccountNode)
+    role_2 = graphene.String()
     organization_location_room = graphene.Field(OrganizationLocationRoomNode)
     organization_classtype = graphene.Field(OrganizationClasstypeNode)
     organization_level = graphene.Field(OrganizationLevelNode)
