@@ -289,8 +289,8 @@ function ScheduleClasses ({ t, history }) {
                                       </Table.Col>
                                       <Table.Col>
                                         {/* Location */}
-                                        {organizationLocationRoom.organizationLocation.name} {' '}
-                                        <span className="text-muted"> &bull; {organizationLocationRoom.name}</span>
+                                        {organizationLocationRoom.organizationLocation.name} <br />
+                                        <span className="text-muted">{organizationLocationRoom.name}</span>
                                       </Table.Col>
                                       <Table.Col>
                                         {/* Type and level */}
