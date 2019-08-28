@@ -51,6 +51,20 @@ export const GET_SCHEDULE_CLASS_WEEKLY_OTCS_QUERY = gql`
       timeEnd
       displayPublic
     }
+    accounts(first: 100, before: $before, after: $after, isActive: true, teacher: true) {
+      pageInfo {
+        startCursor
+        endCursor
+        hasNextPage
+        hasPreviousPage
+      }
+      edges {
+        node {
+          id
+          fullName
+        }
+      }
+    }
     organizationLocationRooms(first: 100, archived: false) {
       pageInfo {
         startCursor

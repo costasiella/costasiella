@@ -73,7 +73,7 @@ export const GET_SINGLE_SCHEDULE_CLASS_TEACHERS_QUERY = gql`
       dateStart
       dateEnd       
     }
-    accounts(first: 15, before: $before, after: $after, isActive: true, teacher: true) {
+    accounts(first: 100, before: $before, after: $after, isActive: true, teacher: true) {
       pageInfo {
         startCursor
         endCursor
