@@ -69,6 +69,8 @@ def validate_update_input(input):
             result['account'] = account
             if not account:
                 raise Exception(_('Invalid Account ID!'))            
+        else:
+            result['account'] = None
 
     # Check Account
     if 'account_2' in input:
@@ -77,7 +79,9 @@ def validate_update_input(input):
             account_2 = Account.objects.filter(id=rid.id).first()
             result['account_2'] = account_2
             if not account_2:
-                raise Exception(_('Invalid Account ID!'))     
+                raise Exception(_('Invalid Account ID!'))
+        else:
+            result['account_2'] = None     
     
     # Check OrganizationLocationRoom
     if 'organization_location_room' in input:
