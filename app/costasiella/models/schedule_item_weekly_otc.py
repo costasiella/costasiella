@@ -2,15 +2,19 @@ from django.utils.translation import gettext as _
 
 from django.db import models
 
-
+from .account import Account
 from .organization_classtype import OrganizationClasstype
 from .organization_location_room import OrganizationLocationRoom
 from .organization_level import OrganizationLevel
 from .schedule_item import ScheduleItem
 
+from .choices.teacher_roles import get_teacher_roles
+
 # Create your models here.
 
 class ScheduleItemWeeklyOTC(models.Model):
+    TEACHER_ROLES = get_teacher_roles()
+
     class Meta:
         permissions = [
             ('view_scheduleclassweeklyotc', _("Can view schedule class weekly one time change")),
@@ -22,9 +26,13 @@ class ScheduleItemWeeklyOTC(models.Model):
     schedule_item = models.ForeignKey(ScheduleItem, on_delete=models.CASCADE)
     date = models.DateField()
     description = models.CharField(max_length=255, default="")
-    organization_location_room = models.ForeignKey(OrganizationLocationRoom, on_delete=models.CASCADE, null=True)
-    organization_classtype = models.ForeignKey(OrganizationClasstype, on_delete=models.CASCADE, null=True)
-    organization_level = models.ForeignKey(OrganizationLevel, on_delete=models.CASCADE, null=True)   
+    account = models.ForeignKey(Account, on_delete=models.SET_NULL, null=True, related_name="otc_account")
+    role = models.CharField(default="", max_length=50, choices=TEACHER_ROLES)
+    account_2 = models.ForeignKey(Account, on_delete=models.SET_NULL, null=True, related_name="otc_account_2")
+    role_2 = models.CharField(default="", max_length=50, choices=TEACHER_ROLES)
+    organization_location_room = models.ForeignKey(OrganizationLocationRoom, on_delete=models.SET_NULL, null=True)
+    organization_classtype = models.ForeignKey(OrganizationClasstype, on_delete=models.SET_NULL, null=True)
+    organization_level = models.ForeignKey(OrganizationLevel, on_delete=models.SET_NULL, null=True)   
     time_start = models.TimeField(null=True)
     time_end = models.TimeField(null=True)
     # display_public = models.BooleanField(default=False)
