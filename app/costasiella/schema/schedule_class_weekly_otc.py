@@ -5,7 +5,7 @@ from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
 from graphql import GraphQLError
 
-from ..models import ScheduleItem, ScheduleItemWeeklyOTC, OrganizationClasstype, OrganizationLocationRoom, OrganizationLevel
+from ..models import Account, ScheduleItem, ScheduleItemWeeklyOTC, OrganizationClasstype, OrganizationLocationRoom, OrganizationLevel
 from ..modules.gql_tools import require_login_and_permission, get_rid
 from ..modules.messages import Messages
 
@@ -60,6 +60,24 @@ def validate_update_input(input):
     
     if not class_takes_place:
         raise Exception(_("This class doesn't take place on this date, please check for the correct date or any holidays."))
+
+    # Check Account
+    if 'account' in input:
+        if input['account']:
+            rid = get_rid(input['account'])
+            account = Account.objects.filter(id=rid.id).first()
+            result['account'] = account
+            if not account:
+                raise Exception(_('Invalid Account ID!'))            
+
+    # Check Account
+    if 'account_2' in input:
+        if input['account_2']:
+            rid = get_rid(input['account_2'])
+            account_2 = Account.objects.filter(id=rid.id).first()
+            result['account_2'] = account_2
+            if not account_2:
+                raise Exception(_('Invalid Account ID!'))     
     
     # Check OrganizationLocationRoom
     if 'organization_location_room' in input:
