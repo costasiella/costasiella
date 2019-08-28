@@ -281,7 +281,8 @@
         "booking_status": "Booking status",
         "booking_options": "Booking options",
         "classes_remaining": "Classes remaining",
-        "valid_until": "Valid until"
+        "valid_until": "Valid until",
+        "no_change": "No change"
     },
     "yup": {
         "min_len_3": "Please input at least 3 characters",
@@ -681,8 +682,12 @@
                     "toast_success": "Check-in success",
                     "classpass_not_allowed": "Not allowed for this class",
                     "subscription_not_allowed": "Not allowed for this class"
+                },
+                "edit": {
+                    "toast_edit_success": "Saved"
                 }
-            }
+            },
+            "no_teacher": "No teacher"
         },
         "appointments": {
             "title": "Appointments",

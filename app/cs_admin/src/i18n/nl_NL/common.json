@@ -281,7 +281,8 @@
         "booking_status": "__STRING_NOT_TRANSLATED__",
         "booking_options": "__STRING_NOT_TRANSLATED__",
         "classes_remaining": "__STRING_NOT_TRANSLATED__",
-        "valid_until": "__STRING_NOT_TRANSLATED__"
+        "valid_until": "__STRING_NOT_TRANSLATED__",
+        "no_change": "__STRING_NOT_TRANSLATED__"
     },
     "yup": {
         "min_len_3": "__STRING_NOT_TRANSLATED__",
@@ -681,8 +682,12 @@
                     "toast_success": "__STRING_NOT_TRANSLATED__",
                     "classpass_not_allowed": "__STRING_NOT_TRANSLATED__",
                     "subscription_not_allowed": "__STRING_NOT_TRANSLATED__"
+                },
+                "edit": {
+                    "toast_edit_success": "__STRING_NOT_TRANSLATED__"
                 }
-            }
+            },
+            "no_teacher": "__STRING_NOT_TRANSLATED__"
         },
         "appointments": {
             "title": "__STRING_NOT_TRANSLATED__",
