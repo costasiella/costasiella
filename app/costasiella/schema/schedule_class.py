@@ -309,6 +309,8 @@ class ScheduleClassesDayType(graphene.ObjectType):
 
             print(item)
             print(item.test)
+            print(item.account)
+            print(item.account_id)
 
             classes_list.append(
                 ScheduleClassType(
