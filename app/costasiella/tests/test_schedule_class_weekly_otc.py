@@ -31,7 +31,7 @@ class GQLScheduleClassWeeklyOTC(TestCase):
 
         self.variables_create_classpass = {
             "input": {
-                "attendanceType": "CLASSPASS",
+                "weeklyotcType": "CLASSPASS",
                 "bookingStatus": "ATTENDING",
                 "date": "2019-01-07",
             }
@@ -47,29 +47,40 @@ class GQLScheduleClassWeeklyOTC(TestCase):
             "input": {}
         }
 
-        self.attendances_query = '''
-  query ScheduleItemAttendances($after: String, $before: String, $scheduleItem: ID!, $date: Date!) {
-    scheduleItemAttendances(first: 100, before: $before, after: $after, scheduleItem: $scheduleItem, date: $date) {
-      pageInfo {
-        startCursor
-        endCursor
-        hasNextPage
-        hasPreviousPage
-      }
+        self.weeklyotcs_query = '''
+  query ScheduleClassWeeklyOTCs($scheduleItem: ID!, $date: Date!) {
+    scheduleClassWeeklyOtcs(first:1, scheduleItem: $scheduleItem, date:$date) {
       edges {
         node {
-          id
+          id 
+          date
           account {
             id
             fullName
           }
-          date     
-          attendanceType
-          bookingStatus
+          role
+          account2 {
+            id
+            fullName
+          }
+          role2
+          organizationLocationRoom {
+            id
+            name
+          }
+          organizationClasstype {
+            id
+            name
+          }
+          organizationLevel {
+            id
+            name
+          }
+          timeStart
+          timeEnd
         }
       }
     }
-  }
 '''
 
 #         self.subscription_query = '''
@@ -136,7 +147,7 @@ class GQLScheduleClassWeeklyOTC(TestCase):
 #   }
 # '''
 
-        self.schedule_item_attendance_create_mutation = ''' 
+        self.schedule_item_weeklyotc_create_mutation = ''' 
   mutation CreateScheduleItemAttendance($input: CreateScheduleItemAttendanceInput!) {
     createScheduleItemAttendance(input:$input) {
       scheduleItemAttendance {
@@ -152,7 +163,7 @@ class GQLScheduleClassWeeklyOTC(TestCase):
           id
         }
         date     
-        attendanceType
+        weeklyotcType
         bookingStatus
         scheduleItem {
           id
@@ -162,7 +173,7 @@ class GQLScheduleClassWeeklyOTC(TestCase):
   }
 '''
 
-        self.schedule_item_attendance_update_mutation = '''
+        self.schedule_item_weeklyotc_update_mutation = '''
   mutation UpdateScheduleItemAttendance($input: UpdateScheduleItemAttendanceInput!) {
     updateScheduleItemAttendance(input:$input) {
       scheduleItemAttendance {
@@ -178,7 +189,7 @@ class GQLScheduleClassWeeklyOTC(TestCase):
           id
         }
         date     
-        attendanceType
+        weeklyotcType
         bookingStatus
         scheduleItem {
           id
@@ -188,7 +199,7 @@ class GQLScheduleClassWeeklyOTC(TestCase):
   }
 '''
 
-        self.schedule_item_attendance_delete_mutation = '''
+        self.schedule_item_weeklyotc_delete_mutation = '''
   mutation DeleteScheduleItemAttendance($input: DeleteScheduleItemAttendanceInput!) {
     deleteScheduleItemAttendance(input: $input) {
       ok
@@ -202,11 +213,11 @@ class GQLScheduleClassWeeklyOTC(TestCase):
 
 
     def test_query(self):
-        """ Query list of schedule item attendances """
-        query = self.attendances_query
-        schedule_item_attendance = f.ScheduleItemAttendanceClasspassFactory.create()
+        """ Query list of schedule item weeklyotcs """
+        query = self.weeklyotcs_query
+        schedule_item_weeklyotc = f.ScheduleItemAttendanceClasspassFactory.create()
         variables = {
-            'scheduleItem': to_global_id('ScheduleItemNode', schedule_item_attendance.schedule_item.id),
+            'scheduleItem': to_global_id('ScheduleItemNode', schedule_item_weeklyotc.schedule_item.id),
             'date': '2030-12-30'
         }
 
@@ -215,28 +226,28 @@ class GQLScheduleClassWeeklyOTC(TestCase):
 
         self.assertEqual(
             data['scheduleItemAttendances']['edges'][0]['node']['id'], 
-            to_global_id("ScheduleItemAttendanceNode", schedule_item_attendance.id)
+            to_global_id("ScheduleItemAttendanceNode", schedule_item_weeklyotc.id)
         )
         self.assertEqual(
             data['scheduleItemAttendances']['edges'][0]['node']['account']['id'], 
-            to_global_id("AccountNode", schedule_item_attendance.account.id)
+            to_global_id("AccountNode", schedule_item_weeklyotc.account.id)
         )
         self.assertEqual(data['scheduleItemAttendances']['edges'][0]['node']['date'], variables['date'])
-        self.assertEqual(data['scheduleItemAttendances']['edges'][0]['node']['attendanceType'], "CLASSPASS")
+        self.assertEqual(data['scheduleItemAttendances']['edges'][0]['node']['weeklyotcType'], "CLASSPASS")
         self.assertEqual(data['scheduleItemAttendances']['edges'][0]['node']['bookingStatus'], "ATTENDING")
 
 
     def test_query_permision_denied(self):
-        """ Query list of schedule item attendances - check permission denied """
-        query = self.attendances_query
-        schedule_item_attendance = f.ScheduleItemAttendanceClasspassFactory.create()
+        """ Query list of schedule item weeklyotcs - check permission denied """
+        query = self.weeklyotcs_query
+        schedule_item_weeklyotc = f.ScheduleItemAttendanceClasspassFactory.create()
         variables = {
-            'scheduleItem': to_global_id('ScheduleItemNode', schedule_item_attendance.schedule_item.id),
+            'scheduleItem': to_global_id('ScheduleItemNode', schedule_item_weeklyotc.schedule_item.id),
             'date': '2030-12-30'
         }
 
         # Regular user
-        user = schedule_item_attendance.account
+        user = schedule_item_weeklyotc.account
         executed = execute_test_client_api_query(query, user, variables=variables)
         errors = executed.get('errors')
 
@@ -244,36 +255,36 @@ class GQLScheduleClassWeeklyOTC(TestCase):
 
 
     def test_query_permision_granted(self):
-        """ Query list of schedule item attendances with view permission """
-        query = self.attendances_query
-        schedule_item_attendance = f.ScheduleItemAttendanceClasspassFactory.create()
+        """ Query list of schedule item weeklyotcs with view permission """
+        query = self.weeklyotcs_query
+        schedule_item_weeklyotc = f.ScheduleItemAttendanceClasspassFactory.create()
         variables = {
-            'scheduleItem': to_global_id('ScheduleItemNode', schedule_item_attendance.schedule_item.id),
+            'scheduleItem': to_global_id('ScheduleItemNode', schedule_item_weeklyotc.schedule_item.id),
             'date': '2030-12-30'
         }
 
         # Create regular user
-        user = schedule_item_attendance.account
-        permission = Permission.objects.get(codename='view_scheduleitemattendance')
+        user = schedule_item_weeklyotc.account
+        permission = Permission.objects.get(codename='view_scheduleitemweeklyotc')
         user.user_permissions.add(permission)
         user.save()
 
         executed = execute_test_client_api_query(query, user, variables=variables)
         data = executed.get('data')
 
-        # List all attendances
+        # List all weeklyotcs
         self.assertEqual(
             data['scheduleItemAttendances']['edges'][0]['node']['id'], 
-            to_global_id("ScheduleItemAttendanceNode", schedule_item_attendance.id)
+            to_global_id("ScheduleItemAttendanceNode", schedule_item_weeklyotc.id)
         )
 
 
     def test_query_anon_user(self):
-        """ Query list of schedule item attendances - anon user """
-        query = self.attendances_query
-        schedule_item_attendance = f.ScheduleItemAttendanceClasspassFactory.create()
+        """ Query list of schedule item weeklyotcs - anon user """
+        query = self.weeklyotcs_query
+        schedule_item_weeklyotc = f.ScheduleItemAttendanceClasspassFactory.create()
         variables = {
-            'scheduleItem': to_global_id('ScheduleItemNode', schedule_item_attendance.schedule_item.id),
+            'scheduleItem': to_global_id('ScheduleItemNode', schedule_item_weeklyotc.schedule_item.id),
             'date': '2030-12-30'
         }
 
@@ -351,7 +362,7 @@ class GQLScheduleClassWeeklyOTC(TestCase):
     #     """ Respond with data when user has permission """   
     #     subscription = f.AccountSubscriptionFactory.create()
     #     user = subscription.account
-    #     permission = Permission.objects.get(codename='view_scheduleitemattendance')
+    #     permission = Permission.objects.get(codename='view_scheduleitemweeklyotc')
     #     user.user_permissions.add(permission)
     #     user.save()
         
@@ -371,9 +382,9 @@ class GQLScheduleClassWeeklyOTC(TestCase):
     #     )
 
 
-    def test_create_schedule_class_classpass_attendance(self):
+    def test_create_schedule_class_classpass_weeklyotc(self):
         """ Check in to a class using a class pass """
-        query = self.schedule_item_attendance_create_mutation
+        query = self.schedule_item_weeklyotc_create_mutation
 
         # Create class pass
         account_classpass = f.AccountClasspassFactory.create()
@@ -412,13 +423,13 @@ class GQLScheduleClassWeeklyOTC(TestCase):
             variables['input']['scheduleItem']
         )
         self.assertEqual(data['createScheduleItemAttendance']['scheduleItemAttendance']['date'], variables['input']['date'])
-        self.assertEqual(data['createScheduleItemAttendance']['scheduleItemAttendance']['attendanceType'], variables['input']['attendanceType'])
+        self.assertEqual(data['createScheduleItemAttendance']['scheduleItemAttendance']['weeklyotcType'], variables['input']['weeklyotcType'])
         self.assertEqual(data['createScheduleItemAttendance']['scheduleItemAttendance']['bookingStatus'], variables['input']['bookingStatus'])
 
 
-    def test_create_schedule_class_classpass_attendance_no_classes_remaining_fail(self):
+    def test_create_schedule_class_classpass_weeklyotc_no_classes_remaining_fail(self):
         """ Check if checking in to a class with an empty card fails """
-        query = self.schedule_item_attendance_create_mutation
+        query = self.schedule_item_weeklyotc_create_mutation
 
         # Create class pass
         account_classpass = f.AccountClasspassFactory.create()
@@ -448,9 +459,9 @@ class GQLScheduleClassWeeklyOTC(TestCase):
         self.assertEqual(errors[0]['message'], 'No classes left on this pass.')
 
 
-    def test_create_schedule_class_classpass_attendance_pass_date_invalid_fail(self):
+    def test_create_schedule_class_classpass_weeklyotc_pass_date_invalid_fail(self):
         """ Check if checking in to a class with an empty card fails """
-        query = self.schedule_item_attendance_create_mutation
+        query = self.schedule_item_weeklyotc_create_mutation
 
         # Create class pass
         account_classpass = f.AccountClasspassFactory.create()
@@ -479,9 +490,9 @@ class GQLScheduleClassWeeklyOTC(TestCase):
         self.assertEqual(errors[0]['message'], 'This pass is not valid on this date.')
 
 
-    def test_create_schedule_item_attendance_anon_user(self):
-        """ Don't allow creating account attendances for non-logged in users """
-        query = self.schedule_item_attendance_create_mutation
+    def test_create_schedule_item_weeklyotc_anon_user(self):
+        """ Don't allow creating account weeklyotcs for non-logged in users """
+        query = self.schedule_item_weeklyotc_create_mutation
 
         # Create class pass
         account_classpass = f.AccountClasspassFactory.create()
@@ -510,9 +521,9 @@ class GQLScheduleClassWeeklyOTC(TestCase):
         self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
-    def test_create_schedule_item_attendance_permission_granted(self):
-        """ Allow creating attendances for users with permissions """
-        query = self.schedule_item_attendance_create_mutation
+    def test_create_schedule_item_weeklyotc_permission_granted(self):
+        """ Allow creating weeklyotcs for users with permissions """
+        query = self.schedule_item_weeklyotc_create_mutation
 
         # Create class pass
         account_classpass = f.AccountClasspassFactory.create()
@@ -549,9 +560,9 @@ class GQLScheduleClassWeeklyOTC(TestCase):
         )
 
 
-    def test_create_schedule_item_attendance_permission_denied(self):
+    def test_create_schedule_item_weeklyotc_permission_denied(self):
         """ Check create subscription permission denied error message """
-        query = self.schedule_item_attendance_create_mutation
+        query = self.schedule_item_weeklyotc_create_mutation
 
         # Create class pass
         account_classpass = f.AccountClasspassFactory.create()
@@ -584,13 +595,13 @@ class GQLScheduleClassWeeklyOTC(TestCase):
         self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
-    def test_update_schedule_item_attendance(self):
-        """ Update a class attendance status """
-        query = self.schedule_item_attendance_update_mutation
+    def test_update_schedule_item_weeklyotc(self):
+        """ Update a class weeklyotc status """
+        query = self.schedule_item_weeklyotc_update_mutation
 
-        schedule_item_attendance = f.ScheduleItemAttendanceClasspassFactory.create()
+        schedule_item_weeklyotc = f.ScheduleItemAttendanceClasspassFactory.create()
         variables = self.variables_update_classpass
-        variables['input']['id'] = to_global_id('ScheduleItemAttendanceNode', schedule_item_attendance.id)
+        variables['input']['id'] = to_global_id('ScheduleItemAttendanceNode', schedule_item_weeklyotc.id)
 
         executed = execute_test_client_api_query(
             query, 
@@ -609,12 +620,12 @@ class GQLScheduleClassWeeklyOTC(TestCase):
         )
 
 
-    def test_update_schedule_item_attendance_classpass_one_less_class_remaining(self):
-        """ Update a class attendance status to attending and check that 1 class is taken from the pass """
-        query = self.schedule_item_attendance_update_mutation
+    def test_update_schedule_item_weeklyotc_classpass_one_less_class_remaining(self):
+        """ Update a class weeklyotc status to attending and check that 1 class is taken from the pass """
+        query = self.schedule_item_weeklyotc_update_mutation
 
-        schedule_item_attendance = f.ScheduleItemAttendanceClasspassFactory.create()
-        account_classpass = schedule_item_attendance.account_classpass
+        schedule_item_weeklyotc = f.ScheduleItemAttendanceClasspassFactory.create()
+        account_classpass = schedule_item_weeklyotc.account_classpass
         classes_remaining_before_checkin = account_classpass.classes_remaining
         account_classpass.update_classes_remaining()
         classes_remaining_after_checkin = account_classpass.classes_remaining
@@ -622,17 +633,17 @@ class GQLScheduleClassWeeklyOTC(TestCase):
         self.assertEqual(classes_remaining_before_checkin - 1, classes_remaining_after_checkin)
 
 
-    def test_update_schedule_item_attendance_classpass_return_class_on_cancel(self):
-        """ Update a class attendance status to attending and check that 1 class is taken from the pass """
-        query = self.schedule_item_attendance_update_mutation
+    def test_update_schedule_item_weeklyotc_classpass_return_class_on_cancel(self):
+        """ Update a class weeklyotc status to attending and check that 1 class is taken from the pass """
+        query = self.schedule_item_weeklyotc_update_mutation
 
-        schedule_item_attendance = f.ScheduleItemAttendanceClasspassFactory.create()
-        account_classpass = schedule_item_attendance.account_classpass
+        schedule_item_weeklyotc = f.ScheduleItemAttendanceClasspassFactory.create()
+        account_classpass = schedule_item_weeklyotc.account_classpass
         account_classpass.update_classes_remaining()
         classes_remaining = account_classpass.classes_remaining
 
         variables = self.variables_update_classpass
-        variables['input']['id'] = to_global_id('ScheduleItemAttendanceNode', schedule_item_attendance.id)
+        variables['input']['id'] = to_global_id('ScheduleItemAttendanceNode', schedule_item_weeklyotc.id)
         variables['input']['bookingStatus'] = "CANCELLED"
 
         executed = execute_test_client_api_query(
@@ -647,17 +658,17 @@ class GQLScheduleClassWeeklyOTC(TestCase):
           variables['input']['bookingStatus']
         )
         self.assertEqual(classes_remaining + 1,
-          models.AccountClasspass.objects.get(pk=schedule_item_attendance.account_classpass.pk).classes_remaining
+          models.AccountClasspass.objects.get(pk=schedule_item_weeklyotc.account_classpass.pk).classes_remaining
         )
 
 
-    def test_update_schedule_item_attendance_anon_user(self):
-        """ Don't allow updating attendances for non-logged in users """
-        query = self.schedule_item_attendance_update_mutation
+    def test_update_schedule_item_weeklyotc_anon_user(self):
+        """ Don't allow updating weeklyotcs for non-logged in users """
+        query = self.schedule_item_weeklyotc_update_mutation
 
-        schedule_item_attendance = f.ScheduleItemAttendanceClasspassFactory.create()
+        schedule_item_weeklyotc = f.ScheduleItemAttendanceClasspassFactory.create()
         variables = self.variables_update_classpass
-        variables['input']['id'] = to_global_id('ScheduleItemAttendanceNode', schedule_item_attendance.id)
+        variables['input']['id'] = to_global_id('ScheduleItemAttendanceNode', schedule_item_weeklyotc.id)
 
         executed = execute_test_client_api_query(
             query, 
@@ -669,15 +680,15 @@ class GQLScheduleClassWeeklyOTC(TestCase):
         self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
-    def test_update_schedule_item_attendance_permission_granted(self):
-        """ Allow updating attendances for users with permissions """
-        query = self.schedule_item_attendance_update_mutation
+    def test_update_schedule_item_weeklyotc_permission_granted(self):
+        """ Allow updating weeklyotcs for users with permissions """
+        query = self.schedule_item_weeklyotc_update_mutation
 
-        schedule_item_attendance = f.ScheduleItemAttendanceClasspassFactory.create()
+        schedule_item_weeklyotc = f.ScheduleItemAttendanceClasspassFactory.create()
         variables = self.variables_update_classpass
-        variables['input']['id'] = to_global_id('ScheduleItemAttendanceNode', schedule_item_attendance.id)
+        variables['input']['id'] = to_global_id('ScheduleItemAttendanceNode', schedule_item_weeklyotc.id)
 
-        user = schedule_item_attendance.account
+        user = schedule_item_weeklyotc.account
         permission = Permission.objects.get(codename=self.permission_change)
         user.user_permissions.add(permission)
         user.save()
@@ -694,15 +705,15 @@ class GQLScheduleClassWeeklyOTC(TestCase):
         )
 
 
-    def test_update_schedule_item_attendance_permission_denied(self):
-        """ Update a class attendance status permission denied """
-        query = self.schedule_item_attendance_update_mutation
+    def test_update_schedule_item_weeklyotc_permission_denied(self):
+        """ Update a class weeklyotc status permission denied """
+        query = self.schedule_item_weeklyotc_update_mutation
 
-        schedule_item_attendance = f.ScheduleItemAttendanceClasspassFactory.create()
+        schedule_item_weeklyotc = f.ScheduleItemAttendanceClasspassFactory.create()
         variables = self.variables_update_classpass
-        variables['input']['id'] = to_global_id('ScheduleItemAttendanceNode', schedule_item_attendance.id)
+        variables['input']['id'] = to_global_id('ScheduleItemAttendanceNode', schedule_item_weeklyotc.id)
 
-        user = schedule_item_attendance.account
+        user = schedule_item_weeklyotc.account
 
         executed = execute_test_client_api_query(
             query, 
@@ -714,13 +725,13 @@ class GQLScheduleClassWeeklyOTC(TestCase):
         self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
-    def test_delete_schedule_item_attendance(self):
-        """ Delete schedule item attendance """
-        query = self.schedule_item_attendance_delete_mutation
+    def test_delete_schedule_item_weeklyotc(self):
+        """ Delete schedule item weeklyotc """
+        query = self.schedule_item_weeklyotc_delete_mutation
 
-        schedule_item_attendance = f.ScheduleItemAttendanceClasspassFactory.create()
+        schedule_item_weeklyotc = f.ScheduleItemAttendanceClasspassFactory.create()
         variables = self.variables_delete
-        variables['input']['id'] = to_global_id('ScheduleItemAttendanceNode', schedule_item_attendance.id)
+        variables['input']['id'] = to_global_id('ScheduleItemAttendanceNode', schedule_item_weeklyotc.id)
 
         executed = execute_test_client_api_query(
             query, 
@@ -731,18 +742,18 @@ class GQLScheduleClassWeeklyOTC(TestCase):
         self.assertEqual(data['deleteScheduleItemAttendance']['ok'], True)
 
 
-    def test_delete_schedule_item_attendance_return_class_to_pass(self):
-        """ Delete schedule item attendance and check the number of classes remaining 
+    def test_delete_schedule_item_weeklyotc_return_class_to_pass(self):
+        """ Delete schedule item weeklyotc and check the number of classes remaining 
         the pass += 1
         """
-        query = self.schedule_item_attendance_delete_mutation
+        query = self.schedule_item_weeklyotc_delete_mutation
 
-        schedule_item_attendance = f.ScheduleItemAttendanceClasspassFactory.create()
-        account_classpass = schedule_item_attendance.account_classpass
+        schedule_item_weeklyotc = f.ScheduleItemAttendanceClasspassFactory.create()
+        account_classpass = schedule_item_weeklyotc.account_classpass
         account_classpass.update_classes_remaining()
         classes_remaining = account_classpass.classes_remaining
         variables = self.variables_delete
-        variables['input']['id'] = to_global_id('ScheduleItemAttendanceNode', schedule_item_attendance.id)
+        variables['input']['id'] = to_global_id('ScheduleItemAttendanceNode', schedule_item_weeklyotc.id)
 
         executed = execute_test_client_api_query(
             query, 
@@ -753,17 +764,17 @@ class GQLScheduleClassWeeklyOTC(TestCase):
         self.assertEqual(data['deleteScheduleItemAttendance']['ok'], True)
 
         self.assertEqual(classes_remaining + 1,
-          models.AccountClasspass.objects.get(pk=schedule_item_attendance.account_classpass.pk).classes_remaining
+          models.AccountClasspass.objects.get(pk=schedule_item_weeklyotc.account_classpass.pk).classes_remaining
         )
 
 
-    def test_delete_schedule_item_attendance_anon_user(self):
-        """ Delete schedule item attendance denied for anon user """
-        query = self.schedule_item_attendance_delete_mutation
+    def test_delete_schedule_item_weeklyotc_anon_user(self):
+        """ Delete schedule item weeklyotc denied for anon user """
+        query = self.schedule_item_weeklyotc_delete_mutation
 
-        schedule_item_attendance = f.ScheduleItemAttendanceClasspassFactory.create()
+        schedule_item_weeklyotc = f.ScheduleItemAttendanceClasspassFactory.create()
         variables = self.variables_delete
-        variables['input']['id'] = to_global_id('ScheduleItemAttendanceNode', schedule_item_attendance.id)
+        variables['input']['id'] = to_global_id('ScheduleItemAttendanceNode', schedule_item_weeklyotc.id)
 
         executed = execute_test_client_api_query(
             query, 
@@ -775,16 +786,16 @@ class GQLScheduleClassWeeklyOTC(TestCase):
         self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
-    def test_delete_schedule_item_attendance_permission_granted(self):
-        """ Allow deleting schedule item attendances for users with permissions """
-        query = self.schedule_item_attendance_delete_mutation
+    def test_delete_schedule_item_weeklyotc_permission_granted(self):
+        """ Allow deleting schedule item weeklyotcs for users with permissions """
+        query = self.schedule_item_weeklyotc_delete_mutation
 
-        schedule_item_attendance = f.ScheduleItemAttendanceClasspassFactory.create()
+        schedule_item_weeklyotc = f.ScheduleItemAttendanceClasspassFactory.create()
         variables = self.variables_delete
-        variables['input']['id'] = to_global_id('ScheduleItemAttendanceNode', schedule_item_attendance.id)
+        variables['input']['id'] = to_global_id('ScheduleItemAttendanceNode', schedule_item_weeklyotc.id)
 
         # Give permissions
-        user = schedule_item_attendance.account
+        user = schedule_item_weeklyotc.account
         permission = Permission.objects.get(codename=self.permission_delete)
         user.user_permissions.add(permission)
         user.save()
@@ -798,15 +809,15 @@ class GQLScheduleClassWeeklyOTC(TestCase):
         self.assertEqual(data['deleteScheduleItemAttendance']['ok'], True)
 
 
-    def test_delete_schedule_item_attendance_permission_denied(self):
-        """ Check delete schedule item attendance permission denied error message """
-        query = self.schedule_item_attendance_delete_mutation
+    def test_delete_schedule_item_weeklyotc_permission_denied(self):
+        """ Check delete schedule item weeklyotc permission denied error message """
+        query = self.schedule_item_weeklyotc_delete_mutation
 
-        schedule_item_attendance = f.ScheduleItemAttendanceClasspassFactory.create()
+        schedule_item_weeklyotc = f.ScheduleItemAttendanceClasspassFactory.create()
         variables = self.variables_delete
-        variables['input']['id'] = to_global_id('ScheduleItemAttendanceNode', schedule_item_attendance.id)
+        variables['input']['id'] = to_global_id('ScheduleItemAttendanceNode', schedule_item_weeklyotc.id)
         
-        user = schedule_item_attendance.account
+        user = schedule_item_weeklyotc.account
 
         executed = execute_test_client_api_query(
             query, 
