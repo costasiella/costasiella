@@ -316,12 +316,17 @@ class ScheduleClassesDayType(graphene.ObjectType):
             print(item.test)
             print(item.account)
             print(item.account_id)
+            print(item.role)
 
             classes_list.append(
                 ScheduleClassType(
                     schedule_item_id=to_global_id('ScheduleItemNode', item.pk),
                     date=self.date,
                     frequency_type=item.frequency_type,
+                    account=item.account,
+                    role=item.role,
+                    account_2=item.account_2,
+                    role_2=item.role_2,
                     organization_location_room=item.organization_location_room,
                     organization_classtype=item.organization_classtype,
                     organization_level=item.organization_level,

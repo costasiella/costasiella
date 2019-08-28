@@ -204,13 +204,13 @@ class UpdateScheduleClassWeeklyOTC(graphene.relay.ClientIDMutation):
             schedule_class_weekly_otc.account = result['account']
 
         if 'role' in input:
-            schedule_class_weekly_otc.role = result['role']
+            schedule_class_weekly_otc.role = input['role']
 
         if 'account_2' in result:
             schedule_class_weekly_otc.account_2 = result['account_2']
 
         if 'role_2' in input:
-            schedule_class_weekly_otc.role_2 = result['role_2']
+            schedule_class_weekly_otc.role_2 = input['role_2']
 
         if 'organization_location_room' in result:
             schedule_class_weekly_otc.organization_location_room = result['organization_location_room']
