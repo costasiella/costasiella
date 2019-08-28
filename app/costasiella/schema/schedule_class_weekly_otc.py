@@ -170,6 +170,10 @@ class UpdateScheduleClassWeeklyOTC(graphene.relay.ClientIDMutation):
         schedule_item = graphene.ID(required=True)
         date = graphene.types.datetime.Date(required=True)
         description = graphene.String(required=False)
+        account = graphene.ID(required=False)
+        role = graphene.String(required=False)
+        account_2 = graphene.ID(required=False)
+        role_2 = graphene.String(required=False)
         organization_location_room = graphene.ID(required=False)
         organization_classtype = graphene.ID(required=False)
         organization_level = graphene.ID(required=False)        
@@ -203,6 +207,18 @@ class UpdateScheduleClassWeeklyOTC(graphene.relay.ClientIDMutation):
 
         if 'description' in input:
             schedule_class_weekly_otc.description = input['description']
+
+        if 'account' in result:
+            schedule_class_weekly_otc.account = result['account']
+
+        if 'role' in input:
+            schedule_class_weekly_otc.role = result['role']
+
+        if 'account_2' in result:
+            schedule_class_weekly_otc.account_2 = result['account_2']
+
+        if 'role_2' in input:
+            schedule_class_weekly_otc.role_2 = result['role_2']
 
         if 'organization_location_room' in result:
             schedule_class_weekly_otc.organization_location_room = result['organization_location_room']
