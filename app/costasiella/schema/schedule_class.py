@@ -221,6 +221,20 @@ class ScheduleClassesDayType(graphene.ObjectType):
                   WHERE date = "{class_date}" 
                 ) csiotc
                 ON csi.id = csiotc.schedule_item_id
+            LEFT JOIN
+                ( SELECT 
+                    id,
+                    schedule_item_id,
+                    account_id,
+                    role,
+                    account_2_id,
+                    role_2
+                FROM schedule_item_teachers
+                WHERE date_start <= "{class_date}" AND (
+                      date_end >= "{class_date}" OR Enddate IS NULL)
+                LIMIT 1
+                ) csit
+                ON csit.schedule_item_id = csi.id
             WHERE csi.schedule_item_type = "CLASS" 
                 AND (
                         (csi.frequency_type = "SPECIFIC" AND csi.date_start = "{class_date}" ) OR
