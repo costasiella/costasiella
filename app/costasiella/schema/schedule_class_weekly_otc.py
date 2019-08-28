@@ -14,6 +14,9 @@ from ..dudes import ClassScheduleDude
 m = Messages()
 
 class ScheduleClassWeeklyOTCNode(DjangoObjectType):
+    role = graphene.Field(graphene.String, source="role")
+    role_2 = graphene.Field(graphene.String, source="role2")
+
     class Meta:
         model = ScheduleItemWeeklyOTC
         filter_fields = ['schedule_item', 'date']
