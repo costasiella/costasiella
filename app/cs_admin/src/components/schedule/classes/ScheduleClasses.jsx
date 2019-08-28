@@ -260,6 +260,7 @@ function ScheduleClasses ({ t, history }) {
                                     <Table.ColHeader>{t('general.time')}</Table.ColHeader>
                                     <Table.ColHeader>{t('general.location')}</Table.ColHeader>
                                     <Table.ColHeader>{t('general.class')}</Table.ColHeader>
+                                    <Table.ColHeader>{t('general.teacher')}</Table.ColHeader>
                                     <Table.ColHeader>{t('general.public')}</Table.ColHeader>
                                     <Table.ColHeader></Table.ColHeader>
                                   </Table.Row>
@@ -269,6 +270,10 @@ function ScheduleClasses ({ t, history }) {
                                     { scheduleItemId, 
                                       frequencyType,
                                       date, 
+                                      account, 
+                                      role,
+                                      account2,
+                                      role2,
                                       organizationLocationRoom, 
                                       organizationClasstype, 
                                       organizationLevel,
