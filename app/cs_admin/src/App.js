@@ -30,10 +30,14 @@ String.prototype.trunc =
       return this.substr(0, n-1) + (this.length > n ? '...' : '')
   }
 
+const token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6ImVkd2luQG9wZW5zdHVkaW9wcm9qZWN0LmNvbSIsImV4cCI6MTU2NzA3NzE4Miwib3JpZ0lhdCI6MTU2NzA3Njg4Mn0.2x8QJ4SXuHRjTW0sVl5BOq9CJvyE57fDDcQF6rLBni8"
 
 // set up ApolloClient
 const client = new ApolloClient({
-     uri: "http://localhost:8000/graphql/",
+    uri: "http://localhost:8000/graphql/",
+    headers: {
+      Authorization: `JWT ${token}`
+    }
 })
 
 
