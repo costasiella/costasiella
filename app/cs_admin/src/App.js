@@ -11,6 +11,8 @@ import ApolloClient from "apollo-boost"
 // import moment from 'moment'
 // import 'moment/locale/nl'
 
+import CSLS from "./tools/cs_local_storage"
+
 // Main app
 import AppRoot from "./AppRoot"
 
