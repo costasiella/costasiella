@@ -56,7 +56,7 @@ function UserLogin({t, match, history}) {
             .then(({ data }) => {
                 console.log('got data', data)
                 CSAuth.login(data.tokenAuth.token)
-                setTimeout(() => history.push('/'), 250)                
+                setTimeout(() => history.push('/'), 500)                
                 // toast.info((t('user.login.toast_success')), {
                 //     position: toast.POSITION.BOTTOM_RIGHT
                 //   })

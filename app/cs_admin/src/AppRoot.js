@@ -120,6 +120,7 @@ import ScheduleClassBook from './components/schedule/classes/class/book/Schedule
 import ScheduleClassEdit from './components/schedule/classes/class/edit/ScheduleClassEdit'
 
 import UserLogin from './components/user/login/UserLogin'
+import UserLogout from './components/user/login/UserLogout'
 
 import Error404 from "./components/Error404"
 
@@ -264,6 +265,7 @@ function AppRoot({ t }) {
 
           {/* User */}
           <Route exact path="/user/login" component={UserLogin} />
+          <Route exact path="/user/logout" component={UserLogout} />
 
           <Route component={Error404} />
         </Switch>
