@@ -55,12 +55,12 @@ function UserLogin({t, match, history}) {
             ]})
             .then(({ data }) => {
                 console.log('got data', data)
-                // history.push('/')
                 CSAuth.login(data.tokenAuth.token)
+                setTimeout(() => history.push('/'), 250)                
                 // toast.info((t('user.login.toast_success')), {
                 //     position: toast.POSITION.BOTTOM_RIGHT
                 //   })
-                setSubmitting(false)
+                // setSubmitting(false)
                 // Redirect to home or something like that...
               }).catch((error) => {
                 if ( error.message.includes('credentials') ) {

@@ -33,16 +33,17 @@ String.prototype.trunc =
 
 
 // set up ApolloClient
+// TODO: Set up token expiration and auto refresh if possible and redirect to login if refresh token is expired.
 const client = new ApolloClient({
-    uri: "http://localhost:8000/graphql/",
-    request: async operation => {
-      const token = CSAuth.token
-      operation.setContext({
-        headers: {
-          Authorization: token ? `JWT ${token}` : ''
-        }
-      })
-     }
+  uri: "http://localhost:8000/graphql/",
+  request: async operation => {
+    const token = CSAuth.token
+    operation.setContext({
+      headers: {
+        Authorization: token ? `JWT ${token}` : ''
+      }
+    })
+    }
 })
 
 
