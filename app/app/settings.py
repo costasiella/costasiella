@@ -44,7 +44,7 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'graphene_django',
-    'webpack_loader',
+    # 'webpack_loader',
     'sorl.thumbnail',
     'constance',
     'corsheaders',
@@ -204,12 +204,12 @@ GRAPHENE = {
 
 # Webpack loader
 
-WEBPACK_LOADER = {
-    'DEFAULT': {
-            'BUNDLE_DIR_NAME': 'bundles/',
-            'STATS_FILE': os.path.join(BASE_DIR, 'webpack-stats.dev.json'),
-        }
-}
+# WEBPACK_LOADER = {
+#     'DEFAULT': {
+#             'BUNDLE_DIR_NAME': 'bundles/',
+#             'STATS_FILE': os.path.join(BASE_DIR, 'webpack-stats.dev.json'),
+#         }
+# }
 
 # Where to go after login, well... let's just go home and take care of things from there :).
 
