@@ -1,6 +1,6 @@
 // @flow
 
-import React, {Component } from 'react'
+import React, { useState } from 'react'
 import gql from "graphql-tag"
 import { useQuery, useMutation } from "react-apollo";
 import { withTranslation } from 'react-i18next'
@@ -23,7 +23,7 @@ import { CSAuth } from "../../../tools/authentication"
 
 
 function UserLogout({t, match, history}) {
-  let active = false
+  const [active, setActive] = useState(false);
 
   return (
     <StandaloneFormPage imageURL="">
@@ -41,7 +41,7 @@ function UserLogout({t, match, history}) {
             color="primary"
             type="button" 
             onClick={() => {
-              active = true
+              setActive(true)
               CSAuth.logout()
               setTimeout(() => toast.info((t('user.logout.success')), {
                 position: toast.POSITION.BOTTOM_RIGHT
