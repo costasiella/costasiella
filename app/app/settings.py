@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'webpack_loader',
     'sorl.thumbnail',
     'constance',
+    'corsheaders',
     'django_celery_beat',
     'django_celery_results',
     
@@ -67,6 +68,10 @@ MIDDLEWARE = [
     
     # 3rd party
     'graphql_jwt.middleware.JSONWebTokenMiddleware',
+    # Cors
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    # Cors 
 
     # local apps
     # 'costasiella.middleware.AuthRequiredMiddleware'
@@ -295,3 +300,12 @@ CELERY_RESULT_BACKEND = 'django-db'
 CELERY_CACHE_BACKEND = 'django-cache'
 
 DJANGO_CELERY_RESULTS_TASK_ID_MAX_LENGTH=191
+
+
+##
+# Cors setup
+##
+CORS_ORIGIN_ALLOW_ALL = True
+# CORS_ORIGIN_WHITELIST = [
+#     "http://localhost:3000"
+# ]
