@@ -37,7 +37,7 @@ String.prototype.trunc =
 const client = new ApolloClient({
   uri: "http://localhost:8000/graphql/",
   request: async operation => {
-    const token = CSAuth.token
+    const token = localStorage.getItem(CSLS.AUTH_TOKEN)
     operation.setContext({
       headers: {
         Authorization: token ? `JWT ${token}` : ''

@@ -129,17 +129,19 @@ import UserLogout from './components/user/login/UserLogout'
 
 import Error404 from "./components/Error404"
 
-
+import CSLS from "./tools/cs_local_storage"
 import { CSAuth } from './tools/authentication'
 
 
-const PrivateRoute = ({ component: Component, ...rest }) => (
-  <Route {...rest} render={(props) => (
-    CSAuth.token
-      ? <Component {...props} />
-      : <Redirect to='/user/login' />
-  )} />
-)
+const PrivateRoute = ({ component: Component, ...rest }) => {
+  return (
+    <Route {...rest} render={(props) => (
+      localStorage.getItem(CSLS.AUTH_TOKEN)
+        ? <Component {...props} />
+        : <Redirect to='/user/login' />
+    )} />
+  )
+}
 
 
 function AppRoot({ t }) {
