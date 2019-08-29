@@ -27,7 +27,7 @@ class AppSettingsNode(DjangoObjectType):
     @classmethod
     def get_node(self, info, id):
         user = info.context.user
-        require_login(user)
+        # require_login(user)
 
         return self._meta.model.objects.get(id=id)
 
