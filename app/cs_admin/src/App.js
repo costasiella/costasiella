@@ -32,18 +32,6 @@ String.prototype.trunc =
   }
 
 
-// const getHeaders = () => {
-//   const token = CSAuth.token  
-//   if (token) {
-//     return { 
-//       Authorization: `JWT ${token}`
-//     }
-//   } else {
-//     return {}
-//   }
-// }
-
-
 // set up ApolloClient
 const client = new ApolloClient({
     uri: "http://localhost:8000/graphql/",
@@ -53,9 +41,8 @@ const client = new ApolloClient({
         headers: {
           Authorization: token ? `JWT ${token}` : ''
         }
-      });
+      })
      }
-    // headers: getHeaders()
 })
 
 
