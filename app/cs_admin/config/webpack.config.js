@@ -23,6 +23,7 @@ const getClientEnvironment = require('./env');
 const ModuleNotFoundPlugin = require('react-dev-utils/ModuleNotFoundPlugin');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin-alt');
 const typescriptFormatter = require('react-dev-utils/typescriptFormatter');
+const BundleTracker = require('webpack-bundle-tracker');
 
 
 // Source maps are resource heavy and can cause out of memory issue for large source files.
@@ -51,7 +52,7 @@ module.exports = function(webpackEnv) {
   // In development, we always serve from the root. This makes config easier.
   const publicPath = isEnvProduction
     ? paths.servedPath
-    : isEnvDevelopment && '/';
+    : 'http://localhost:3000/';
   // Some apps do not use client-side routing with pushState.
   // For these, "homepage" can be set to "." to enable relative asset paths.
   const shouldUseRelativeAssetPaths = publicPath === './';
@@ -61,7 +62,7 @@ module.exports = function(webpackEnv) {
   // Omit trailing slash as %PUBLIC_URL%/xyz looks better than %PUBLIC_URL%xyz.
   const publicUrl = isEnvProduction
     ? publicPath.slice(0, -1)
-    : isEnvDevelopment && '';
+    : 'http://localhost:3000/';
   // Get environment variables to inject into our app.
   const env = getClientEnvironment(publicUrl);
 
@@ -89,7 +90,7 @@ module.exports = function(webpackEnv) {
           // Necessary for external CSS imports to work
           // https://github.com/facebook/create-react-app/issues/2677
           ident: 'postcss',
-          plugins: () => [
+          f: () => [
             require('postcss-flexbugs-fixes'),
             require('postcss-preset-env')({
               autoprefixer: {
@@ -133,10 +134,14 @@ module.exports = function(webpackEnv) {
       // Note: instead of the default WebpackDevServer client, we use a custom one
       // to bring better experience for Create React App users. You can replace
       // the line below with these two lines if you prefer the stock client:
+      isEnvDevelopment &&
+        require.resolve('webpack-dev-server/client') + '?http://localhost:3000',
+      isEnvDevelopment &&
+        require.resolve('webpack/hot/dev-server'),
       // require.resolve('webpack-dev-server/client') + '?/',
       // require.resolve('webpack/hot/dev-server'),
-      isEnvDevelopment &&
-        require.resolve('react-dev-utils/webpackHotDevClient'),
+      //isEnvDevelopment &&
+        //require.resolve('react-dev-utils/webpackHotDevClient'),
       // Finally, this is your app's code:
       paths.appIndexJs,
       // We include the app code last so that if there is a runtime error during
@@ -236,12 +241,12 @@ module.exports = function(webpackEnv) {
       // https://twitter.com/wSokra/status/969633336732905474
       // https://medium.com/webpack/webpack-4-code-splitting-chunk-graph-and-the-splitchunks-optimization-be739a861366
       splitChunks: {
-        chunks: 'all',
-        name: false,
+        chunks:  'async', // default: 'all'
+        name: true, // default: false
       },
       // Keep the runtime chunk separated to enable long term caching
       // https://twitter.com/wSokra/status/969679223278505985
-      runtimeChunk: true,
+      runtimeChunk: false, // default: true
     },
     resolve: {
       // This allows you to set a fallback for where Webpack should look for modules.
@@ -475,7 +480,8 @@ module.exports = function(webpackEnv) {
           {},
           {
             inject: true,
-            template: paths.appHtml,
+            //template: paths.appHtml,
+            template: isEnvProduction ? paths.appHtml : paths.appHtmlDev
           },
           isEnvProduction
             ? {
@@ -495,6 +501,10 @@ module.exports = function(webpackEnv) {
             : undefined
         )
       ),
+      isEnvDevelopment &&
+        new BundleTracker({path: paths.statsRoot, filename: './webpack-stats.dev.json'}),
+      isEnvProduction &&
+        new BundleTracker({path: paths.statsRoot, filename: './webpack-stats.prod.json'}),
       // Inlines the webpack runtime script. This script is too small to warrant
       // a network request.
       isEnvProduction &&
