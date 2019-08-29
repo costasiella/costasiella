@@ -35,22 +35,32 @@ function UserLogout({t, match, history}) {
           </Card.Title>
           {t('user.logout.confirmation_message')} <br /><br />
           <Button 
-          block
-          loading={active}
-          disabled={active}
-          color="primary"
-          type="submit" 
-          onClick={() => {
-            active = true
-            CSAuth.logout()
-            setTimeout(() => toast.info((t('user.logout.success')), {
-              position: toast.POSITION.BOTTOM_RIGHT
-            }), 350)
-            setTimeout(() => history.push('/user/login'), 250)
-          }}
-        >
-          {t('general.logout')}
-        </Button>
+            block
+            loading={active}
+            disabled={active}
+            color="primary"
+            type="button" 
+            onClick={() => {
+              active = true
+              CSAuth.logout()
+              setTimeout(() => toast.info((t('user.logout.success')), {
+                position: toast.POSITION.BOTTOM_RIGHT
+              }), 350)
+              setTimeout(() => history.push('/user/login'), 250)
+            }}
+          >
+            {t('general.logout')}
+          </Button>
+          <Button 
+            block
+            color="link"
+            onClick={(event) => {
+              event.preventDefault()  
+              window.history.back()
+            }}
+          >
+            {t('general.back')}
+          </Button>
         </Card.Body>
       </Card>
       <ToastContainer autoClose={5000}/>
