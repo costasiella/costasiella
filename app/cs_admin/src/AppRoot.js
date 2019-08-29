@@ -119,6 +119,8 @@ import ScheduleClassAttendance from './components/schedule/classes/class/attenda
 import ScheduleClassBook from './components/schedule/classes/class/book/ScheduleClassBook'
 import ScheduleClassEdit from './components/schedule/classes/class/edit/ScheduleClassEdit'
 
+import UserLogin from './components/user/login/UserLogin'
+
 import Error404 from "./components/Error404"
 
 
@@ -260,6 +262,9 @@ function AppRoot({ t }) {
 
           {/* Settings */}
           <Route exact path="/settings/general" component={AppSettingsGeneral} />
+
+          {/* User */}
+          <Route exact path="/user/login" component={UserLogin} />
 
           <Route component={Error404} />
         </Switch>
