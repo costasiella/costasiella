@@ -18,7 +18,6 @@ import "tabler-react/dist/Tabler.css"
 import "react-datepicker/dist/react-datepicker.css"
 // App css
 import './App.css'
-import './AppFonts.scss'
 
 // Register "nl" locale for react-datepicker
 // https://reactdatepicker.com/#example-17
