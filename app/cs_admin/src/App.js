@@ -7,6 +7,7 @@ import ApolloClient from "apollo-boost"
 // import 'moment/locale/nl'
 
 import CSLS from "./tools/cs_local_storage"
+import { CSAuth } from './tools/authentication'
 
 // Main app
 import AppRoot from "./AppRoot"
@@ -30,14 +31,16 @@ String.prototype.trunc =
       return this.substr(0, n-1) + (this.length > n ? '...' : '')
   }
 
-const token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6ImVkd2luQG9wZW5zdHVkaW9wcm9qZWN0LmNvbSIsImV4cCI6MTU2NzA3NzE4Miwib3JpZ0lhdCI6MTU2NzA3Njg4Mn0.2x8QJ4SXuHRjTW0sVl5BOq9CJvyE57fDDcQF6rLBni8"
+const token = CSAuth.token
+console.log('token')
+console.log(token)
 
 // set up ApolloClient
 const client = new ApolloClient({
     uri: "http://localhost:8000/graphql/",
-    headers: {
-      Authorization: `JWT ${token}`
-    }
+    // headers: {
+    //   Authorization: `JWT ${token}`
+    // }
 })
 
 

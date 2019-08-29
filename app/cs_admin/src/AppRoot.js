@@ -128,7 +128,6 @@ function AppRoot({ t }) {
   const { loading, error, data } = useQuery(GET_APP_SETTINGS_QUERY)
 
   if (loading) return t('general.loading_with_dots')
-  if (error) return `Error! ${error.message}`
   if (error) return (
     <div>
       { t('settings.error_loading') } <br />

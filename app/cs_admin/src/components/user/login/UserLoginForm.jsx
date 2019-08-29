@@ -22,23 +22,26 @@ import {
 const UserLoginForm = ({ t, history, isSubmitting, errors, values, return_url, setFieldTouched, setFieldValue }) => (
   <FoForm className="card" autoComplete="off">
       <Card.Body className="p-6">
-        <Form.Group label={t('general.email')}>
+        <Card.Title>
+          {t('user.login.title')}
+        </Card.Title>
+        <Form.Group label={t('user.login.email')}>
           <Field type="text" 
                   name="email" 
+                  placeholder={t('user.login.email_placeholder')}
                   className={(errors.email) ? "form-control is-invalid" : "form-control"} 
                   autoComplete="off" />
           <ErrorMessage name="email" component="span" className="invalid-feedback" />
         </Form.Group>
         <Form.Group label={t('general.password')}>
-          <Field type="text" 
+          <Field type="password" 
                   name="password" 
+                  placeholder={t('user.login.password_placeholder')}
                   className={(errors.password) ? "form-control is-invalid" : "form-control"} 
                   autoComplete="off" />
           <ErrorMessage name="password" component="span" className="invalid-feedback" />
         </Form.Group>
-    
-      </Card.Body>
-      <Card.Footer>
+        <Form.Footer>
           <Button 
             block
             color="primary"
@@ -47,7 +50,8 @@ const UserLoginForm = ({ t, history, isSubmitting, errors, values, return_url, s
           >
             {t('general.login')}
           </Button>
-      </Card.Footer>
+        </Form.Footer>
+      </Card.Body>
   </FoForm>
 )
 

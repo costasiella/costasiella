@@ -6,12 +6,14 @@ import { useQuery, useMutation } from "react-apollo";
 import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
 import { Formik } from 'formik'
+import { ToastContainer } from 'react-toastify'
 import { toast } from 'react-toastify'
 
 // import { GET_ACCOUNTS_QUERY, GET_ACCOUNT_QUERY } from './queries'
 // import { ACCOUNT_SCHEMA } from './yupSchema'
 
 import {
+  Card,
   StandaloneFormPage,
 } from "tabler-react"
 import HasPermissionWrapper from "../../HasPermissionWrapper"
@@ -22,6 +24,7 @@ import UserLoginForm from "./UserLoginForm"
 
 
 function UserLogin({t, match, history}) {
+  let errorMessage
   const [doTokenAuth, { data }] = useMutation(TOKEN_AUTH)
 
   return (
@@ -38,7 +41,7 @@ function UserLogin({t, match, history}) {
             console.log(values)
 
             let vars = {
-              email: values.email,
+              username: values.email,
               password: values.password,
             }
 
@@ -51,15 +54,24 @@ function UserLogin({t, match, history}) {
             ]})
             .then(({ data }) => {
                 console.log('got data', data)
-                toast.success((t('user.login.toast_create_success')), {
+                history.push('/')
+                toast.success((t('user.login.toast_success')), {
                     position: toast.POSITION.BOTTOM_RIGHT
                   })
                 setSubmitting(false)
                 // Redirect to home or something like that...
               }).catch((error) => {
-                toast.error((t('general.toast_server_error')) + ': ' +  error, {
+                if ( error.message.includes('credentials') ) {
+                  // Request user to input valid credentials
+                  toast.info((t('user.login.invalid_credentials')), {
                     position: toast.POSITION.BOTTOM_RIGHT
                   })
+                } else {
+                  // Show general error message
+                  toast.error((t('general.toast_server_error')) + ': ' +  error, {
+                    position: toast.POSITION.BOTTOM_RIGHT
+                  })
+                }
                 console.log('there was an error sending the query', error)
                 setSubmitting(false)
               })
@@ -75,6 +87,7 @@ function UserLogin({t, match, history}) {
           />
         )}
       </Formik>      
+      <ToastContainer autoClose={5000}/>
     </StandaloneFormPage>
   )
 }

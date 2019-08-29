@@ -4,7 +4,7 @@ import * as React from "react"
 import { withTranslation } from 'react-i18next'
 import { NavLink, withRouter } from "react-router-dom"
 import { Query } from "react-apollo"
-import { ToastContainer } from 'react-toastify';
+import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import 'react-confirm-alert/src/react-confirm-alert.css'
 import { Link } from 'react-router-dom'
