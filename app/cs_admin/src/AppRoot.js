@@ -134,9 +134,17 @@ import { CSAuth } from './tools/authentication'
 
 
 const PrivateRoute = ({ component: Component, ...rest }) => {
+  const token = localStorage.getItem(CSLS.AUTH_TOKEN)
+  console.log(token)
+  console.log(rest.path)
+  
+  if (!token) {
+    localStorage.setItem(CSLS.AUTH_LOGIN_NEXT, rest.path)
+  }
+
   return (
     <Route {...rest} render={(props) => (
-      localStorage.getItem(CSLS.AUTH_TOKEN)
+      token
         ? <Component {...props} />
         : <Redirect to='/user/login' />
     )} />

@@ -20,6 +20,7 @@ import HasPermissionWrapper from "../../HasPermissionWrapper"
 
 import { TOKEN_AUTH } from "../../../queries/system/auth"
 import { CSAuth } from "../../../tools/authentication"
+import CSLS from "../../../tools/cs_local_storage"
 
 import UserLoginForm from "./UserLoginForm"
 
@@ -55,8 +56,9 @@ function UserLogin({t, match, history}) {
             ]})
             .then(({ data }) => {
                 console.log('got data', data)
+                const next = localStorage.getItem(CSLS.AUTH_LOGIN_NEXT) || "/"
                 CSAuth.login(data.tokenAuth.token)
-                setTimeout(() => history.push('/'), 500)                
+                setTimeout(() => history.push(next), 500)                
                 // toast.info((t('user.login.toast_success')), {
                 //     position: toast.POSITION.BOTTOM_RIGHT
                 //   })
