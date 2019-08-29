@@ -28,7 +28,8 @@ from django.conf.urls.static import static
 
 
 urlpatterns = [
-    path('', login_required(TemplateView.as_view(template_name="backend.html")), name="home"),
+    # path('', login_required(TemplateView.as_view(template_name="backend.html")), name="home"),
+    path('', TemplateView.as_view(template_name="backend.html"), name="home"),
     path('admin/', admin.site.urls),
     path('accounts/', include('allauth.urls')),
     # path('graphql/', GraphQLView.as_view(graphiql=True)),
