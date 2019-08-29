@@ -184,7 +184,7 @@ class SiteWrapper extends React.Component<Props, State> {
                   // { icon: "user", value: "Profile" },
                   { icon: "lock", value: "Change password", to: "/accounts/password/change/" },
                   { isDivider: true },
-                  { icon: "log-out", value: "Sign out", to: "/accounts/logout/" },
+                  { icon: "log-out", value: "Sign out", to: "/#/user/logout/" },
                 ],
               },
               }}
