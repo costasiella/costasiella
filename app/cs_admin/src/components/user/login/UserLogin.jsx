@@ -19,6 +19,7 @@ import {
 import HasPermissionWrapper from "../../HasPermissionWrapper"
 
 import { TOKEN_AUTH } from "../../../queries/system/auth"
+import { CSAuth } from "../../../tools/authentication"
 
 import UserLoginForm from "./UserLoginForm"
 
@@ -54,10 +55,11 @@ function UserLogin({t, match, history}) {
             ]})
             .then(({ data }) => {
                 console.log('got data', data)
-                history.push('/')
-                toast.success((t('user.login.toast_success')), {
-                    position: toast.POSITION.BOTTOM_RIGHT
-                  })
+                // history.push('/')
+                CSAuth.login(data.tokenAuth.token)
+                // toast.info((t('user.login.toast_success')), {
+                //     position: toast.POSITION.BOTTOM_RIGHT
+                //   })
                 setSubmitting(false)
                 // Redirect to home or something like that...
               }).catch((error) => {

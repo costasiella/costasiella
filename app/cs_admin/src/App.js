@@ -31,16 +31,31 @@ String.prototype.trunc =
       return this.substr(0, n-1) + (this.length > n ? '...' : '')
   }
 
-const token = CSAuth.token
-console.log('token')
-console.log(token)
+
+// const getHeaders = () => {
+//   const token = CSAuth.token  
+//   if (token) {
+//     return { 
+//       Authorization: `JWT ${token}`
+//     }
+//   } else {
+//     return {}
+//   }
+// }
+
 
 // set up ApolloClient
 const client = new ApolloClient({
     uri: "http://localhost:8000/graphql/",
-    // headers: {
-    //   Authorization: `JWT ${token}`
-    // }
+    request: async operation => {
+      const token = CSAuth.token
+      operation.setContext({
+        headers: {
+          Authorization: token ? `JWT ${token}` : ''
+        }
+      });
+     }
+    // headers: getHeaders()
 })
 
 
