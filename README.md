@@ -31,6 +31,7 @@ This is a rough list of the technoligies used in this project.
 - Django
 - GraphQL
 - Celery
+- MySQL
 - Redis
 
 ### Frontend
