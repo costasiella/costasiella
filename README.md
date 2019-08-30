@@ -4,7 +4,16 @@
 
 ## About
 
-Costasiella is a project aimed at rebuilding [OpenStudio](https://github.com/openstudioproject/openstudio) using more modern technologies with a wider userbase. At the moment the project is nowhere near feature parity. That being said, all major components are up and running. Work on the GraphQL API is progressing nicely, we can run background tasks, the auth workflow is nearing completion and considerable work has gone into the admin section of the frontend. 
+Costasiella is a project aimed at rebuilding [OpenStudio](https://github.com/openstudioproject/openstudio) using more modern technologies with a wider userbase. At the moment the project is nowhere near feature parity or production ready. That being said, all major components are up and running. Work on the GraphQL API is progressing nicely, we can run background tasks, the auth workflow is nearing completion and considerable work has gone into the admin section of the frontend. 
+
+### When will it be done?
+
+It'll be a good while before all features from OpenStudio have been ported. The current plan is to focus on building a MVP which will include accounts, class passes and subscriptions, a schedule for classes and an online shop. From here freatures will be added bit by bit as time and resources allow.
+
+Ok... that's all nice and well... but when can I expect it?
+The short answer is, when it's ready.
+
+There's still a lot of code to be written and tested, so there is no commitment to a specific timeline. As OpenStudio is stable and contains many useful features, we prefer to take our time with this project to "get it right". So it's ready when it's ready.
 
 ## Contributing
 
