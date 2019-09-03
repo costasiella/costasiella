@@ -55,7 +55,10 @@ class GQLScheduleClassWeeklyOTC(TestCase):
         }
 
         self.variables_delete = {
-            "input": {}
+            "input": {
+                "scheduleItem": to_global_id('ScheduleItemNode', self.class_otc.schedule_item.id),
+                "date": "2030-12-30",
+            }
         }
 
         self.weeklyotcs_query = '''
@@ -302,7 +305,6 @@ class GQLScheduleClassWeeklyOTC(TestCase):
             variables=variables
         )
         data = executed.get('data')
-        print(executed)
 
         self.assertEqual(
           data['updateScheduleClassWeeklyOtc']['scheduleClassWeeklyOtc']['scheduleItem']['id'], 
@@ -354,67 +356,58 @@ class GQLScheduleClassWeeklyOTC(TestCase):
         )
 
 
-    # def test_update_schedule_item_weeklyotc_anon_user(self):
-    #     """ Don't allow updating weeklyotcs for non-logged in users """
-    #     query = self.schedule_item_weeklyotc_update_mutation
+    def test_update_schedule_item_weeklyotc_anon_user(self):
+        """ Don't allow updating weeklyotcs for non-logged in users """
+        query = self.schedule_item_weeklyotc_update_mutation
+        variables = self.variables_update
 
-    #     schedule_item_weeklyotc = f.ScheduleItemWeeklyOTCClasspassFactory.create()
-    #     variables = self.variables_update
-    #     variables['input']['id'] = to_global_id('ScheduleItemWeeklyOTCNode', schedule_item_weeklyotc.id)
-
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         self.anon_user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
+        executed = execute_test_client_api_query(
+            query, 
+            self.anon_user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
-    # def test_update_schedule_item_weeklyotc_permission_granted(self):
-    #     """ Allow updating weeklyotcs for users with permissions """
-    #     query = self.schedule_item_weeklyotc_update_mutation
+    def test_update_schedule_item_weeklyotc_permission_granted(self):
+        """ Allow updating weeklyotcs for users with permissions """
+        query = self.schedule_item_weeklyotc_update_mutation
+        variables = self.variables_update
 
-    #     schedule_item_weeklyotc = f.ScheduleItemWeeklyOTCClasspassFactory.create()
-    #     variables = self.variables_update
-    #     variables['input']['id'] = to_global_id('ScheduleItemWeeklyOTCNode', schedule_item_weeklyotc.id)
+        user = self.class_otc.account
+        permission = Permission.objects.get(codename=self.permission_change)
+        user.user_permissions.add(permission)
+        user.save()
 
-    #     user = schedule_item_weeklyotc.account
-    #     permission = Permission.objects.get(codename=self.permission_change)
-    #     user.user_permissions.add(permission)
-    #     user.save()
-
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(
-    #       data['updateScheduleItemWeeklyOTC']['scheduleClassWeeklyOtc']['bookingStatus'], 
-    #       variables['input']['bookingStatus']
-    #     )
+        executed = execute_test_client_api_query(
+            query, 
+            user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(
+          data['updateScheduleClassWeeklyOtc']['scheduleClassWeeklyOtc']['scheduleItem']['id'], 
+          variables['input']['scheduleItem']
+        )
 
 
-    # def test_update_schedule_item_weeklyotc_permission_denied(self):
-    #     """ Update a class weeklyotc status permission denied """
-    #     query = self.schedule_item_weeklyotc_update_mutation
+    def test_update_schedule_item_weeklyotc_permission_denied(self):
+        """ Update a class weeklyotc status permission denied """
+        query = self.schedule_item_weeklyotc_update_mutation
+        variables = self.variables_update
 
-    #     schedule_item_weeklyotc = f.ScheduleItemWeeklyOTCClasspassFactory.create()
-    #     variables = self.variables_update
-    #     variables['input']['id'] = to_global_id('ScheduleItemWeeklyOTCNode', schedule_item_weeklyotc.id)
+        user = self.class_otc.account
 
-    #     user = schedule_item_weeklyotc.account
-
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
+        executed = execute_test_client_api_query(
+            query, 
+            user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
     # def test_delete_schedule_item_weeklyotc(self):
