@@ -1,6 +1,6 @@
 // @flow
 
-import React from 'react'
+import React, { useState } from 'react'
 import gql from "graphql-tag"
 import { useQuery, useMutation } from "react-apollo";
 import { withTranslation } from 'react-i18next'
@@ -34,12 +34,13 @@ import {
 import SiteWrapper from "../../../../SiteWrapper"
 import HasPermissionWrapper from "../../../../HasPermissionWrapper"
 // import ClassEditBase from "../ClassEditBase"
+import ScheduleClassWeeklyOTCDelete from './ScheduleClassWeeklyOTCDelete'
 import ScheduleClassBack from "../ScheduleClassBack"
 import ClassMenu from "../ClassMenu"
 
 
-
 function ScheduleClassEdit({ t, match, history }) {
+  let showDelete = false
   const schedule_item_id = match.params.class_id
   const class_date = match.params.date
   console.log(schedule_item_id)
@@ -78,6 +79,8 @@ function ScheduleClassEdit({ t, match, history }) {
   let initialData
   var initialValues = {}
   if (queryData.scheduleClassWeeklyOtcs.edges.length) {
+    showDelete = true
+
     initialData = queryData.scheduleClassWeeklyOtcs.edges[0].node
 
     if (initialData.account) {
@@ -100,6 +103,7 @@ function ScheduleClassEdit({ t, match, history }) {
     initialValues.timeStart = initialData.timeStart
     initialValues.timeEnd = initialData.timeEnd
   } else {
+    console.log('setting initial values')
     initialValues.account = ""
     initialValues.role = ""
     initialValues.account2 = ""
@@ -188,6 +192,9 @@ function ScheduleClassEdit({ t, match, history }) {
               </Card>
             </Grid.Col>
             <Grid.Col md={3}>
+              {(showDelete) ? 
+                <ScheduleClassWeeklyOTCDelete /> : ""
+              }
               <ClassMenu 
                 scheduleItemId={schedule_item_id}
                 class_date={class_date}

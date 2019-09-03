@@ -22,20 +22,21 @@ function ScheduleClassWeeklyOTCDelete({t, match, node}) {
   }
 
   return (
-    <button className="icon btn btn-link btn-sm pull-right" 
+    <button className="icon btn btn-danger mb-3" 
       title={t('general.delete')} 
       href=""
       onClick={() => {
         confirm_delete({
           t: t,
           msgConfirm: t("schedule.classes.class.edit.delete_confirm_msg"),
-          msgDescription: <p>{node.account.fullName}</p>,
+          msgDescription: <p></p>,
           msgSuccess: t('schedule.classes.class.edit.delete_success'),
           deleteFunction: deleteClassOTC,
           functionVariables: { 
             variables: {
               input: {
-                id: node.id
+                scheduleItem: schedule_item_id,
+                date: class_date
               }
             }, 
             refetchQueries: [
@@ -45,7 +46,7 @@ function ScheduleClassWeeklyOTCDelete({t, match, node}) {
           }
         })
     }}>
-      <span className="text-red"><Icon prefix="fe" name="trash-2" />{t("schedule.classes.class.edit.delete_all_changes")}</span>
+      <span className="text-white"><Icon prefix="fe" name="trash-2" /> {" "} {t("schedule.classes.class.edit.delete_all_changes")}</span>
     </button>
   )
 }
