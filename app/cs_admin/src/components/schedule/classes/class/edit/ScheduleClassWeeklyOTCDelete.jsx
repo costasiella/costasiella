@@ -3,7 +3,8 @@ import { useMutation } from '@apollo/react-hooks';
 import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
 
-import { get_attendance_list_query_variables } from "./tools"
+import { GET_CLASSES_QUERY } from '../../queries'
+import { get_list_query_variables } from '../../tools'
 import { DELETE_SCHEDULE_CLASS_WEEKLY_OTC, GET_SCHEDULE_CLASS_WEEKLY_OTCS_QUERY } from "./queries"
 import confirm_delete from "../../../../../tools/confirm_delete"
 
@@ -12,14 +13,18 @@ import {
 } from "tabler-react"
 
 
-function ScheduleClassWeeklyOTCDelete({t, match, node}) {
+function ScheduleClassWeeklyOTCDelete({t, match, history}) {
   const schedule_item_id = match.params.class_id
   const class_date = match.params.date
-  const [deleteClassOTC, { data }] = useMutation(DELETE_SCHEDULE_CLASS_WEEKLY_OTC)
+  const [deleteClassOTC, { data }] = useMutation(DELETE_SCHEDULE_CLASS_WEEKLY_OTC, {
+    onCompleted: () => { history.push("/schedule/classes/") }
+  })
   const query_vars = {
     scheduleItem: schedule_item_id,
     date: class_date
   }
+
+  
 
   return (
     <button className="icon btn btn-danger mb-3" 
@@ -37,11 +42,11 @@ function ScheduleClassWeeklyOTCDelete({t, match, node}) {
               input: {
                 scheduleItem: schedule_item_id,
                 date: class_date
-              }
+              },
             }, 
             refetchQueries: [
-              { query: GET_SCHEDULE_CLASS_WEEKLY_OTCS_QUERY, 
-                variables: query_vars },
+              { query: GET_SCHEDULE_CLASS_WEEKLY_OTCS_QUERY, variables: query_vars },
+              { query: GET_CLASSES_QUERY, variables: get_list_query_variables() },
             ]
           }
         })
