@@ -39,6 +39,8 @@ class GQLScheduleClassWeeklyOTC(TestCase):
 
         self.variables_update = {
             "input": {
+                "scheduleItem": to_global_id('ScheduleItemNode', self.class_otc.schedule_item.id),
+                "date": "2030-12-30",
                 "description": "hello world",
                 "account": to_global_id('AccountNode', self.class_otc.account.id),
                 "role": "ASSISTANT",
@@ -47,8 +49,8 @@ class GQLScheduleClassWeeklyOTC(TestCase):
                 "organizationLocationRoom": to_global_id('OrganizationLocationRoomNode', self.class_otc.organization_location_room.id),
                 "organizationClasstype": to_global_id('OrganizationClasstypeNode', self.class_otc.organization_classtype.id),
                 "organizationLevel": to_global_id('OrganizationLevelNode', self.class_otc.organization_level.id),
-                "timeStart": "04:30",
-                "timeStart": "07:00",
+                "timeStart": "04:30:00",
+                "timeEnd": "07:00:00",
             }
         }
 
@@ -289,71 +291,67 @@ class GQLScheduleClassWeeklyOTC(TestCase):
         self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
-    # def test_update_schedule_item_weeklyotc(self):
-    #     """ Update a class weeklyotc status """
-    #     query = self.schedule_item_weeklyotc_update_mutation
+    def test_update_schedule_item_weeklyotc(self):
+        """ Update a class weeklyotc status """
+        query = self.schedule_item_weeklyotc_update_mutation
+        variables = self.variables_update
 
-    #     schedule_item_weeklyotc = f.ScheduleItemWeeklyOTCClasspassFactory.create()
-    #     variables = self.variables_update_classpass
-    #     variables['input']['id'] = to_global_id('ScheduleItemWeeklyOTCNode', schedule_item_weeklyotc.id)
+        executed = execute_test_client_api_query(
+            query, 
+            self.admin_user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        print(executed)
 
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         self.admin_user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-
-    #     self.assertEqual(
-    #       data['updateScheduleItemWeeklyOTC']['scheduleItemWeeklyOTC']['id'], 
-    #       variables['input']['id']
-    #     )
-    #     self.assertEqual(
-    #       data['updateScheduleItemWeeklyOTC']['scheduleItemWeeklyOTC']['bookingStatus'], 
-    #       variables['input']['bookingStatus']
-    #     )
-
-
-    # def test_update_schedule_item_weeklyotc_classpass_one_less_class_remaining(self):
-    #     """ Update a class weeklyotc status to attending and check that 1 class is taken from the pass """
-    #     query = self.schedule_item_weeklyotc_update_mutation
-
-    #     schedule_item_weeklyotc = f.ScheduleItemWeeklyOTCClasspassFactory.create()
-    #     account_classpass = schedule_item_weeklyotc.account_classpass
-    #     classes_remaining_before_checkin = account_classpass.classes_remaining
-    #     account_classpass.update_classes_remaining()
-    #     classes_remaining_after_checkin = account_classpass.classes_remaining
-
-    #     self.assertEqual(classes_remaining_before_checkin - 1, classes_remaining_after_checkin)
-
-
-    # def test_update_schedule_item_weeklyotc_classpass_return_class_on_cancel(self):
-    #     """ Update a class weeklyotc status to attending and check that 1 class is taken from the pass """
-    #     query = self.schedule_item_weeklyotc_update_mutation
-
-    #     schedule_item_weeklyotc = f.ScheduleItemWeeklyOTCClasspassFactory.create()
-    #     account_classpass = schedule_item_weeklyotc.account_classpass
-    #     account_classpass.update_classes_remaining()
-    #     classes_remaining = account_classpass.classes_remaining
-
-    #     variables = self.variables_update_classpass
-    #     variables['input']['id'] = to_global_id('ScheduleItemWeeklyOTCNode', schedule_item_weeklyotc.id)
-    #     variables['input']['bookingStatus'] = "CANCELLED"
-
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         self.admin_user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-
-    #     self.assertEqual(
-    #       data['updateScheduleItemWeeklyOTC']['scheduleItemWeeklyOTC']['bookingStatus'], 
-    #       variables['input']['bookingStatus']
-    #     )
-    #     self.assertEqual(classes_remaining + 1,
-    #       models.AccountClasspass.objects.get(pk=schedule_item_weeklyotc.account_classpass.pk).classes_remaining
-    #     )
+        self.assertEqual(
+          data['updateScheduleClassWeeklyOtc']['scheduleClassWeeklyOtc']['scheduleItem']['id'], 
+          variables['input']['scheduleItem']
+        )
+        self.assertEqual(
+          data['updateScheduleClassWeeklyOtc']['scheduleClassWeeklyOtc']['date'], 
+          variables['input']['date']
+        )
+        self.assertEqual(
+          data['updateScheduleClassWeeklyOtc']['scheduleClassWeeklyOtc']['description'], 
+          variables['input']['description']
+        )
+        self.assertEqual(
+          data['updateScheduleClassWeeklyOtc']['scheduleClassWeeklyOtc']['account']['id'], 
+          variables['input']['account']
+        )
+        self.assertEqual(
+          data['updateScheduleClassWeeklyOtc']['scheduleClassWeeklyOtc']['role'], 
+          variables['input']['role']
+        )
+        self.assertEqual(
+          data['updateScheduleClassWeeklyOtc']['scheduleClassWeeklyOtc']['account2']['id'], 
+          variables['input']['account2']
+        )
+        self.assertEqual(
+          data['updateScheduleClassWeeklyOtc']['scheduleClassWeeklyOtc']['role2'], 
+          variables['input']['role2']
+        )
+        self.assertEqual(
+          data['updateScheduleClassWeeklyOtc']['scheduleClassWeeklyOtc']['organizationLocationRoom']['id'], 
+          variables['input']['organizationLocationRoom']
+        )
+        self.assertEqual(
+          data['updateScheduleClassWeeklyOtc']['scheduleClassWeeklyOtc']['organizationClasstype']['id'], 
+          variables['input']['organizationClasstype']
+        )
+        self.assertEqual(
+          data['updateScheduleClassWeeklyOtc']['scheduleClassWeeklyOtc']['organizationLevel']['id'], 
+          variables['input']['organizationLevel']
+        )
+        self.assertEqual(
+          data['updateScheduleClassWeeklyOtc']['scheduleClassWeeklyOtc']['timeStart'], 
+          variables['input']['timeStart']
+        )
+        self.assertEqual(
+          data['updateScheduleClassWeeklyOtc']['scheduleClassWeeklyOtc']['timeEnd'], 
+          variables['input']['timeEnd']
+        )
 
 
     # def test_update_schedule_item_weeklyotc_anon_user(self):
@@ -361,7 +359,7 @@ class GQLScheduleClassWeeklyOTC(TestCase):
     #     query = self.schedule_item_weeklyotc_update_mutation
 
     #     schedule_item_weeklyotc = f.ScheduleItemWeeklyOTCClasspassFactory.create()
-    #     variables = self.variables_update_classpass
+    #     variables = self.variables_update
     #     variables['input']['id'] = to_global_id('ScheduleItemWeeklyOTCNode', schedule_item_weeklyotc.id)
 
     #     executed = execute_test_client_api_query(
@@ -379,7 +377,7 @@ class GQLScheduleClassWeeklyOTC(TestCase):
     #     query = self.schedule_item_weeklyotc_update_mutation
 
     #     schedule_item_weeklyotc = f.ScheduleItemWeeklyOTCClasspassFactory.create()
-    #     variables = self.variables_update_classpass
+    #     variables = self.variables_update
     #     variables['input']['id'] = to_global_id('ScheduleItemWeeklyOTCNode', schedule_item_weeklyotc.id)
 
     #     user = schedule_item_weeklyotc.account
@@ -394,7 +392,7 @@ class GQLScheduleClassWeeklyOTC(TestCase):
     #     )
     #     data = executed.get('data')
     #     self.assertEqual(
-    #       data['updateScheduleItemWeeklyOTC']['scheduleItemWeeklyOTC']['bookingStatus'], 
+    #       data['updateScheduleItemWeeklyOTC']['scheduleClassWeeklyOtc']['bookingStatus'], 
     #       variables['input']['bookingStatus']
     #     )
 
@@ -404,7 +402,7 @@ class GQLScheduleClassWeeklyOTC(TestCase):
     #     query = self.schedule_item_weeklyotc_update_mutation
 
     #     schedule_item_weeklyotc = f.ScheduleItemWeeklyOTCClasspassFactory.create()
-    #     variables = self.variables_update_classpass
+    #     variables = self.variables_update
     #     variables['input']['id'] = to_global_id('ScheduleItemWeeklyOTCNode', schedule_item_weeklyotc.id)
 
     #     user = schedule_item_weeklyotc.account
