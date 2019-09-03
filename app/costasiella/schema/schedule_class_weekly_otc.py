@@ -15,7 +15,7 @@ m = Messages()
 
 class ScheduleClassWeeklyOTCNode(DjangoObjectType):
     role = graphene.Field(graphene.String, source="role")
-    role_2 = graphene.Field(graphene.String, source="role2")
+    role_2 = graphene.Field(graphene.String, source="role_2")
 
     class Meta:
         model = ScheduleItemWeeklyOTC
