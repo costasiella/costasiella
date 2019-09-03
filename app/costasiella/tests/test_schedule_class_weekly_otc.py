@@ -37,9 +37,18 @@ class GQLScheduleClassWeeklyOTC(TestCase):
         }
 
 
-        self.variables_update_classpass = {
+        self.variables_update = {
             "input": {
-                "bookingStatus": "ATTENDING"
+                "description": "hello world",
+                "account": to_global_id('AccountNode', self.class_otc.account.id),
+                "role": "ASSISTANT",
+                "account2": to_global_id('AccountNode', self.class_otc.account_2.id),
+                "role2": "ASSISTANT",
+                "organizationLocationRoom": to_global_id('OrganizationLocationRoomNode', self.class_otc.organization_location_room.id),
+                "organizationClasstype": to_global_id('OrganizationClasstypeNode', self.class_otc.organization_classtype.id),
+                "organizationLevel": to_global_id('OrganizationLevelNode', self.class_otc.organization_level.id),
+                "timeStart": "04:30",
+                "timeStart": "07:00",
             }
         }
 
