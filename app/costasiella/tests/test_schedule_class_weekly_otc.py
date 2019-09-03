@@ -424,63 +424,54 @@ class GQLScheduleClassWeeklyOTC(TestCase):
         self.assertEqual(data['deleteScheduleClassWeeklyOtc']['ok'], True)
 
 
-    # def test_delete_schedule_item_weeklyotc_anon_user(self):
-    #     """ Delete schedule item weeklyotc denied for anon user """
-    #     query = self.schedule_item_weeklyotc_delete_mutation
+    def test_delete_schedule_class_weeklyotc_anon_user(self):
+        """ Delete schedule class weeklyotc denied for anon user """
+        query = self.delete_mutation
+        variables = self.variables_delete
 
-    #     schedule_item_weeklyotc = f.ScheduleItemWeeklyOTCClasspassFactory.create()
-    #     variables = self.variables_delete
-    #     variables['input']['id'] = to_global_id('ScheduleItemWeeklyOTCNode', schedule_item_weeklyotc.id)
-
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         self.anon_user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
+        executed = execute_test_client_api_query(
+            query, 
+            self.anon_user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
-    # def test_delete_schedule_item_weeklyotc_permission_granted(self):
-    #     """ Allow deleting schedule item weeklyotcs for users with permissions """
-    #     query = self.schedule_item_weeklyotc_delete_mutation
-
-    #     schedule_item_weeklyotc = f.ScheduleItemWeeklyOTCClasspassFactory.create()
-    #     variables = self.variables_delete
-    #     variables['input']['id'] = to_global_id('ScheduleItemWeeklyOTCNode', schedule_item_weeklyotc.id)
-
-    #     # Give permissions
-    #     user = schedule_item_weeklyotc.account
-    #     permission = Permission.objects.get(codename=self.permission_delete)
-    #     user.user_permissions.add(permission)
-    #     user.save()
-
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['deleteScheduleItemWeeklyOTC']['ok'], True)
-
-
-    # def test_delete_schedule_item_weeklyotc_permission_denied(self):
-    #     """ Check delete schedule item weeklyotc permission denied error message """
-    #     query = self.schedule_item_weeklyotc_delete_mutation
-
-    #     schedule_item_weeklyotc = f.ScheduleItemWeeklyOTCClasspassFactory.create()
-    #     variables = self.variables_delete
-    #     variables['input']['id'] = to_global_id('ScheduleItemWeeklyOTCNode', schedule_item_weeklyotc.id)
+    def test_delete_schedule_class_weeklyotc_permission_granted(self):
+        """ Allow deleting schedule class weeklyotcs for users with permissions """
+        query = self.delete_mutation
+        variables = self.variables_delete
         
-    #     user = schedule_item_weeklyotc.account
+        # Give permissions
+        user = self.class_otc.account
+        permission = Permission.objects.get(codename=self.permission_delete)
+        user.user_permissions.add(permission)
+        user.save()
 
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
+        executed = execute_test_client_api_query(
+            query, 
+            user,
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['deleteScheduleClassWeeklyOtc']['ok'], True)
+
+
+    def test_delete_schedule_class_weeklyotc_permission_denied(self):
+        """ Check delete schedule class weeklyotc permission denied error message """
+        query = self.delete_mutation
+        variables = self.variables_delete
+        
+        user = self.class_otc.account
+
+        executed = execute_test_client_api_query(
+            query, 
+            user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
 
