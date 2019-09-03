@@ -160,26 +160,34 @@ class GQLScheduleClassWeeklyOTC(TestCase):
 
 
         self.schedule_item_weeklyotc_update_mutation = '''
-  mutation UpdateScheduleItemWeeklyOTC($input: UpdateScheduleItemWeeklyOTCInput!) {
-    updateScheduleItemWeeklyOTC(input:$input) {
-      scheduleItemWeeklyOTC {
+  mutation UpdateScheduleClassWeeklyOTC($input: UpdateScheduleClassWeeklyOTCInput!) {
+    updateScheduleClassWeeklyOtc(input:$input) {
+      scheduleClassWeeklyOtc {
         id
-        account {
-          id
-          fullName
-        }
-        accountClasspass {
-          id
-        }
-        accountSubscription {
-          id
-        }
-        date     
-        weeklyotcType
-        bookingStatus
         scheduleItem {
           id
         }
+        date
+        description
+        account {
+          id
+        }
+        role
+        account2 {
+          id
+        }
+        role2
+        organizationLocationRoom {
+          id
+        }
+        organizationClasstype {
+          id
+        }
+        organizationLevel {
+          id
+        }
+        timeStart
+        timeEnd
       }
     }
   }
