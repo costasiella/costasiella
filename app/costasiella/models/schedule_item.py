@@ -2,13 +2,14 @@ from django.utils.translation import gettext as _
 
 from django.db import models
 
-
-from .organization_appointment import OrganizationAppointment
+from .account import Account
 from .organization_classtype import OrganizationClasstype
 from .organization_location_room import OrganizationLocationRoom
 from .organization_level import OrganizationLevel
 from .organization_classpass_group import OrganizationClasspassGroup
 from .organization_subscription_group import OrganizationSubscriptionGroup
+
+from .choices.teacher_roles import get_teacher_roles
 
 # Create your models here.
 
@@ -47,6 +48,8 @@ class ScheduleItem(models.Model):
         (7, _("Sunday")),
     )
 
+    TEACHER_ROLES = get_teacher_roles()
+
     schedule_item_type = models.CharField(max_length=50, choices=SCHEDULE_ITEM_TYPES)
     frequency_type = models.CharField(max_length=50, choices=FREQUENCY_TYPES)
     frequency_interval = models.PositiveSmallIntegerField(choices=FREQUENCY_INTERVAL_OPTIONS)
@@ -70,6 +73,17 @@ class ScheduleItem(models.Model):
     )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    ################ BEGIN EMPTY FIELDS ################
+    # No value is actually stored here for now, but these fields are very useful in the schedule_class schema
+    # By having these fields here we can map the schedule_item_teacher or schedule_item_weekly_otc account 
+    # into these fields
+    ####################################################
+    account = models.ForeignKey(Account, on_delete=models.SET_NULL, null=True, related_name="si_account")
+    role = models.CharField(default="", max_length=50, choices=TEACHER_ROLES)
+    account_2 = models.ForeignKey(Account, on_delete=models.SET_NULL, null=True, related_name="si_account_2")
+    role_2 = models.CharField(default="", max_length=50, choices=TEACHER_ROLES)
+    ################ END EMPTY FIELDS ##################
+
 
     def __str__(self):
         return self.schedule_item_type + ' [' + str(self.date_start) + ']'

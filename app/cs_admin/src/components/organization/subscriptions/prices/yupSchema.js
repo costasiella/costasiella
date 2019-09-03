@@ -10,5 +10,5 @@ export const SUBSCRIPTION_PRICE_SCHEMA = Yup.object().shape({
       .required(t('yup.field_required')),
     dateStart: Yup.date()
       .required(t('yup.field_required')),
-    dateEnd: Yup.date(),
+    // dateEnd: Yup.date(),
   })

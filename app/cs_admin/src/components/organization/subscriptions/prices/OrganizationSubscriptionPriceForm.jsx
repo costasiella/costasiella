@@ -32,7 +32,7 @@ const OrganizationSubscriptionPriceForm = (
                 name="financeTaxRate" 
                 className={(errors.financeTaxRate) ? "form-control is-invalid" : "form-control"} 
                 autoComplete="off">
-          {console.log("query data in classpass add:")}
+          {console.log("query data in subscription price add:")}
           {console.log(inputData)}
           <option value="" key={v4()}>{t('general.please_select')}</option>
           {inputData.financeTaxRates.edges.map(({ node }) =>

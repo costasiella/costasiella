@@ -5,16 +5,12 @@ from django.db import models
 
 from .schedule_item import ScheduleItem
 from .account import Account
+from .choices.teacher_roles import get_teacher_roles
 
 # Create your models here.
 
 class ScheduleItemTeacher(models.Model):
-    TEACHER_ROLES = [
-        ['', _("Regular")],
-        ['SUB', _("Subteacher")],
-        ['ASSISTANT', _("Assistant")],
-        ['KARMA', _("Karma")]
-    ]
+    TEACHER_ROLES = get_teacher_roles()
 
     schedule_item = models.ForeignKey(ScheduleItem, on_delete=models.CASCADE)
     account = models.ForeignKey(Account, on_delete=models.CASCADE)

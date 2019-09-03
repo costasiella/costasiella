@@ -28,7 +28,6 @@ import HasPermissionWrapper from "../../../../HasPermissionWrapper"
 import { TimeStringToJSDateOBJ } from '../../../../../tools/date_tools'
 // import { confirmAlert } from 'react-confirm-alert'; // Import
 import { toast } from 'react-toastify'
-import { class_edit_all_subtitle, represent_teacher_role } from "../../tools"
 import { get_attendance_list_query_variables } from "./tools"
 import confirm_delete from "../../../../../tools/confirm_delete"
 
@@ -351,14 +350,6 @@ function ScheduleClassAttendance({ t, match, history }) {
                     </Table.Body>
                   </Table>
                 </ContentCard>
-                {/* <Card>
-                  <Card.Header>
-                    <Card.Title>{t('general.attendance')}</Card.Title>
-                  </Card.Header>
-                  <Card.Body>
-                    attendance list here
-                  </Card.Body>
-                </Card> */}
               </Grid.Col>
               <Grid.Col md={3}>
                 <ClassMenu 

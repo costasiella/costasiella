@@ -1,5 +1,5 @@
 from django.utils.translation import gettext as _
-from django.db.models import Q
+from django.db.models import Q, FilteredRelation, OuterRef, Subquery
 
 import graphene
 from graphene_django import DjangoObjectType
@@ -7,10 +7,11 @@ from graphene_django.filter import DjangoFilterConnectionField
 from graphql import GraphQLError
 from graphql_relay import to_global_id
 
-from ..models import ScheduleItem, OrganizationClasstype, OrganizationLevel, OrganizationLocationRoom
+from ..models import ScheduleItem, ScheduleItemWeeklyOTC, OrganizationClasstype, OrganizationLevel, OrganizationLocationRoom
 from ..modules.gql_tools import require_login_and_permission, require_login_and_one_of_permissions, get_rid
 from ..modules.messages import Messages
 from ..modules.model_helpers.schedule_item_helper import ScheduleItemHelper
+from .account import AccountNode
 from .organization_classtype import OrganizationClasstypeNode
 from .organization_level import OrganizationLevelNode
 from .organization_location_room import OrganizationLocationRoomNode
@@ -22,11 +23,58 @@ m = Messages()
 import datetime
 
 
+def _get_resolve_classes_filter_query(self):
+    """
+        Returns the filter query for the schedule
+    """
+    where = ''
+
+    # if self.filter_id_teacher:
+    #     where += 'AND ((CASE WHEN cotc.auth_teacher_id IS NULL \
+    #                     THEN clt.auth_teacher_id  \
+    #                     ELSE cotc.auth_teacher_id END) = '
+    #     where += str(self.filter_id_teacher) + ' '
+    #     where += 'OR (CASE WHEN cotc.auth_teacher_id2 IS NULL \
+    #                     THEN clt.auth_teacher_id2  \
+    #                     ELSE cotc.auth_teacher_id2 END) = '
+    #     where += str(self.filter_id_teacher) + ') '
+    if self.filter_id_organization_classtype:
+        where += 'AND (CASE WHEN csiotc.organization_classtype_id IS NULL \
+                        THEN csi.organization_classtype_id  \
+                        ELSE csiotc.organization_classtype_id END) = '
+        where += str(self.filter_id_organization_classtype) + ' '
+    if self.filter_id_organization_location_room:
+        where += 'AND (CASE WHEN csiotc.organization_location_room_id IS NULL \
+                        THEN csi.organization_location_room_id  \
+                        ELSE csiotc.organization_location_room_id END) = '
+        where += str(self.filter_id_organization_location_room) + ' '
+    if self.filter_id_organization_level:
+        where += 'AND (CASE WHEN csiotc.organization_level_id IS NULL \
+                        THEN csi.organization_level_id  \
+                        ELSE csiotc.organization_level_id END) = '
+        where += str(self.filter_id_organization_level) + ' '
+    if self.filter_public:
+        where += "AND csi.display_public = 1 "
+        # where += "AND sl.AllowAPI = 'T' "
+        # where += "AND sct.AllowAPI = 'T' "
+    # if self.filter_starttime_from:
+    #     where += 'AND ((CASE WHEN cotc.Starttime IS NULL \
+    #                     THEN cla.Starttime  \
+    #                     ELSE cotc.Starttime END) >= '
+    #     where += "'" + str(self.filter_starttime_from) + "') "
+
+    return where
+
+
 # ScheduleClassType
 class ScheduleClassType(graphene.ObjectType):
     schedule_item_id = graphene.ID()
     frequency_type = graphene.String()
     date = graphene.types.datetime.Date()
+    account = graphene.Field(AccountNode)
+    role = graphene.String()
+    account_2 = graphene.Field(AccountNode)
+    role_2 = graphene.String()
     organization_location_room = graphene.Field(OrganizationLocationRoomNode)
     organization_classtype = graphene.Field(OrganizationClasstypeNode)
     organization_level = graphene.Field(OrganizationLevelNode)
@@ -40,9 +88,9 @@ class ScheduleClassesDayType(graphene.ObjectType):
     date = graphene.types.datetime.Date()
     iso_week_day = graphene.Int()
     order_by = graphene.String()
-    filter_id_organization_classtype= graphene.String()
-    filter_id_organization_level= graphene.String()
-    filter_id_organization_location= graphene.String()
+    filter_id_organization_classtype = graphene.String()
+    filter_id_organization_level = graphene.String()
+    filter_id_organization_location = graphene.String()
     classes = graphene.List(ScheduleClassType)
 
     def resolve_iso_week_day(self, info):
@@ -52,70 +100,233 @@ class ScheduleClassesDayType(graphene.ObjectType):
         return self.order_by
 
     def resolve_classes(self, info):
+        def _get_where_query():
+            """
+                Returns the filter query for the schedule
+            """
+            where = ''
+
+            # if self.filter_id_teacher:
+            #     where += 'AND ((CASE WHEN cotc.auth_teacher_id IS NULL \
+            #                     THEN clt.auth_teacher_id  \
+            #                     ELSE cotc.auth_teacher_id END) = '
+            #     where += str(self.filter_id_teacher) + ' '
+            #     where += 'OR (CASE WHEN cotc.auth_teacher_id2 IS NULL \
+            #                     THEN clt.auth_teacher_id2  \
+            #                     ELSE cotc.auth_teacher_id2 END) = '
+            #     where += str(self.filter_id_teacher) + ') '
+            if self.filter_id_organization_classtype:
+                where += 'AND (CASE WHEN csiotc.organization_classtype_id IS NULL \
+                                THEN csi.organization_classtype_id  \
+                                ELSE csiotc.organization_classtype_id END) = '
+                where += str(self.filter_id_organization_classtype) + ' '
+            if self.filter_id_organization_location:
+                where += 'AND (CASE WHEN csiotc.organization_location_id IS NULL \
+                                THEN csi_olr.organization_location_id  \
+                                ELSE csiotc.organization_location_id END) = '
+                where += str(self.filter_id_organization_location) + ' '
+            if self.filter_id_organization_level:
+                where += 'AND (CASE WHEN csiotc.organization_level_id IS NULL \
+                                THEN csi.organization_level_id  \
+                                ELSE csiotc.organization_level_id END) = '
+                where += str(self.filter_id_organization_level) + ' '
+            # if self.filter_public:
+            #     where += "AND csi.display_public = 1 "
+                # where += "AND sl.AllowAPI = 'T' "
+                # where += "AND sct.AllowAPI = 'T' "
+            # if self.filter_starttime_from:
+            #     where += 'AND ((CASE WHEN cotc.Starttime IS NULL \
+            #                     THEN cla.Starttime  \
+            #                     ELSE cotc.Starttime END) >= '
+            #     where += "'" + str(self.filter_starttime_from) + "') "
+
+            return where
+
+
+
         iso_week_day = self.resolve_iso_week_day(info)
         sorting = self.order_by
         if not sorting: # Default to sort by location, then time
             sorting = "location"
 
-        schedule_filter = Q(schedule_item_type = 'CLASS') & \
-            (
-                # Classes on this day (Specific)
-                (
-                    Q(frequency_type = 'SPECIFIC') & \
-                    Q(date_start = self.date)
-                ) | # OR
-                # Weekly classes
-                ( 
-                    Q(frequency_type = 'WEEKLY') &
-                    Q(frequency_interval = iso_week_day) &
-                    Q(date_start__lte = self.date) & 
-                    (Q(date_end__gte = self.date) | Q(date_end__isnull = True ))
-                )
-            )
-        
-        # Filter classtypes
-        if self.filter_id_organization_classtype:
-            schedule_filter &= \
-                Q(organization_classtype__id = self.filter_id_organization_classtype)
-        
-        # Filter level
-        if self.filter_id_organization_level:
-            schedule_filter &= \
-                Q(organization_level__id = self.filter_id_organization_level)
-        
-        # Filter locations
-        if self.filter_id_organization_location:
-            schedule_filter &= \
-                Q(organization_location_room__organization_location__id = self.filter_id_organization_location)
-            
-        ## Query classes table for self.date
-        schedule_items = ScheduleItem.objects.select_related('organization_location_room__organization_location').filter(
-            schedule_filter
+        # # Set sorting
+        # if sorting == "location":
+        #     # Location | Location room | Start time
+        #     schedule_items = schedule_items.order_by(
+        #         'organization_location_room__organization_location__name',
+        #         'organization_location_room__name',
+        #         'time_start'
+        #     )
+        # else:
+        #     # Start time | Location | Location room
+        #     schedule_items = schedule_items.order_by(
+        #         'time_start',
+        #         'organization_location_room__organization_location__name',
+        #         'organization_location_room__name',
+        #     )
+
+        if sorting == 'location':
+            order_by_sql = 'organization_location_name, time_start'
+        else: # sorting == 'starttime'
+            order_by_sql = 'time_start, organization_location_name'
+
+        query = """
+            SELECT 
+                csi.id,
+                csi.frequency_type,
+                CASE WHEN csiotc.organization_location_id IS NOT NULL
+                     THEN csiotc.organization_location_id
+                     ELSE csi_olr.organization_location_id
+                     END AS organization_location_id,
+                CASE WHEN csiotc.organization_location_id IS NOT NULL
+                     THEN csiotc.organization_location_name
+                     ELSE csi_ol.name
+                     END AS organization_location_name,
+                CASE WHEN csiotc.organization_location_room_id IS NOT NULL
+                     THEN csiotc.organization_location_room_id
+                     ELSE csi.organization_location_room_id
+                     END AS organization_location_room_id,
+                CASE WHEN csiotc.organization_classtype_id IS NOT NULL
+                     THEN csiotc.organization_classtype_id
+                     ELSE csi.organization_classtype_id
+                     END AS organization_classtype_id,
+                CASE WHEN csiotc.organization_level_id IS NOT NULL
+                     THEN csiotc.organization_level_id
+                     ELSE csi.organization_level_id
+                     END AS organization_level_id,
+                CASE WHEN csiotc.time_start IS NOT NULL
+                     THEN csiotc.time_start
+                     ELSE csi.time_start
+                     END AS time_start,
+                CASE WHEN csiotc.time_end IS NOT NULL
+                     THEN csiotc.time_end
+                     ELSE csi.time_end
+                     END AS time_end,
+                csi.display_public,
+                csiotc.description as test,
+               CASE WHEN csiotc.account_id IS NOT NULL
+                    THEN csiotc.account_id
+                    ELSE csit.account_id
+                    END AS account_id,
+               CASE WHEN csiotc.account_id IS NOT NULL
+                    THEN csiotc.role
+                    ELSE csit.role
+                    END AS role,
+               CASE WHEN csiotc.account_2_id IS NOT NULL
+                    THEN csiotc.account_2_id
+                    ELSE csit.account_2_id
+                    END AS account_2_id,
+               CASE WHEN csiotc.account_2_id IS NOT NULL
+                    THEN csiotc.role_2
+                    ELSE csit.role_2
+                    END AS role_2
+            FROM costasiella_scheduleitem csi
+            LEFT JOIN costasiella_organizationlocationroom csi_olr ON csi.organization_location_room_id = csi_olr.id
+            LEFT JOIN costasiella_organizationlocation csi_ol ON csi_olr.organization_location_id = csi_ol.id
+            LEFT JOIN
+                ( SELECT 
+                    otc.id,
+                    otc.schedule_item_id,
+                    otc.date,
+                    otc.account_id,
+                    otc.role,
+                    otc.account_2_id,
+                    otc.role_2,
+                    otc.description,
+                    otc.organization_location_room_id,
+                    otc.organization_classtype_id,
+                    otc.organization_level_id,
+                    otc.time_start,
+                    otc.time_end,
+                    otc_olr.organization_location_id,
+                    otc_ol.name as organization_location_name
+                  FROM costasiella_scheduleitemweeklyotc otc 
+                  LEFT JOIN costasiella_organizationlocationroom otc_olr ON otc.organization_location_room_id = otc_olr.id
+                  LEFT JOIN costasiella_organizationlocation otc_ol ON otc_olr.organization_location_id = otc_ol.id
+                  WHERE date = "{class_date}" 
+                ) csiotc
+                ON csi.id = csiotc.schedule_item_id
+            LEFT JOIN
+                ( SELECT 
+                    id,
+                    schedule_item_id,
+                    account_id,
+                    role,
+                    account_2_id,
+                    role_2
+                FROM costasiella_scheduleitemteacher
+                WHERE date_start <= "{class_date}" AND (
+                      date_end >= "{class_date}" OR date_end IS NULL)
+                LIMIT 1
+                ) csit
+                ON csit.schedule_item_id = csi.id
+            WHERE csi.schedule_item_type = "CLASS" 
+                AND (
+                        (csi.frequency_type = "SPECIFIC" AND csi.date_start = "{class_date}" ) OR
+                        ( csi.frequency_type = "WEEKLY" AND 
+                          csi.frequency_interval = {iso_week_day} AND 
+                          csi.date_start <= "{class_date}" AND
+                         (csi.date_end >= "{class_date}" OR csi.date_end IS NULL)
+                        ) 
+                    )
+                {where_sql}
+            ORDER BY {order_by_sql}
+        """.format(
+            class_date = self.date,
+            iso_week_day = iso_week_day,
+            where_sql = _get_where_query(),
+            order_by_sql = order_by_sql
         )
 
-        # Set sorting
-        if sorting == "location":
-            # Location | Location room | Start time
-            schedule_items = schedule_items.order_by(
-                'organization_location_room__organization_location__name',
-                'organization_location_room__name',
-                'time_start'
-            )
-        else:
-            # Start time | Location | Location room
-            schedule_items = schedule_items.order_by(
-                'time_start',
-                'organization_location_room__organization_location__name',
-                'organization_location_room__name',
-            )
+        # print(query)
+
+        ## 
+        # At this time 27 Aug 2019, params don't seem to be working from a dictionary
+        # https://docs.djangoproject.com/en/2.2/topics/db/sql/
+        # the query should be formatted using "%(class_date)s" 
+        ##
+        # params = {
+        #     "class_date": self.date, 
+        #     "iso_week_day": iso_week_day
+        # }
+
+        schedule_items = ScheduleItem.objects.raw(query)
+        # print(schedule_items.query)
+
+        # # Set sorting
+        # if sorting == "location":
+        #     # Location | Location room | Start time
+        #     schedule_items = schedule_items.order_by(
+        #         'organization_location_room__organization_location__name',
+        #         'organization_location_room__name',
+        #         'time_start'
+        #     )
+        # else:
+        #     # Start time | Location | Location room
+        #     schedule_items = schedule_items.order_by(
+        #         'time_start',
+        #         'organization_location_room__organization_location__name',
+        #         'organization_location_room__name',
+        #     )
 
         classes_list = []
         for item in schedule_items:
+
+            print(item)
+            print(item.test)
+            print(item.account)
+            print(item.account_id)
+            print(item.role)
+
             classes_list.append(
                 ScheduleClassType(
                     schedule_item_id=to_global_id('ScheduleItemNode', item.pk),
                     date=self.date,
                     frequency_type=item.frequency_type,
+                    account=item.account,
+                    role=item.role,
+                    account_2=item.account_2,
+                    role_2=item.role_2,
                     organization_location_room=item.organization_location_room,
                     organization_classtype=item.organization_classtype,
                     organization_level=item.organization_level,

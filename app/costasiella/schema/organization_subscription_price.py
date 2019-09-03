@@ -41,12 +41,18 @@ def validate_create_update_input(input, update=False):
     if not input['date_start']:
         raise Exception(_('dateStart is required!'))
 
+    ##
+    # Date start is always first day of the month
+    ##
     result['date_start'] = datetime.date(
         input['date_start'].year,
         input['date_start'].month,
         1
     )
 
+    ##
+    # Date end is always last day of the month
+    ##
     if 'date_end' in input:
         if input['date_end']:
             result['date_end'] = datetime.date(
@@ -157,7 +163,7 @@ class UpdateOrganizationSubscriptionPrice(graphene.relay.ClientIDMutation):
         organization_subscription_price.finance_tax_rate = result['finance_tax_rate']
         organization_subscription_price.date_start = result['date_start']
         organization_subscription_price.date_end = result.get('date_end', None)
-        organization_subscription_price.save(force_update=True)
+        organization_subscription_price.save()
 
         return UpdateOrganizationSubscriptionPrice(organization_subscription_price=organization_subscription_price)
 

@@ -281,7 +281,11 @@
         "booking_status": "Booking status",
         "booking_options": "Booking options",
         "classes_remaining": "Classes remaining",
-        "valid_until": "Valid until"
+        "valid_until": "Valid until",
+        "no_change": "No change",
+        "password": "Password",
+        "login": "Sign in",
+        "logout": "Sign out"
     },
     "yup": {
         "min_len_3": "Please input at least 3 characters",
@@ -517,7 +521,6 @@
         "user": {
             "error_loading": "Error loading user :("
         },
-        "datepicker_dateformat": "MMMM d, yyyy",
         "datepicker_timeformat": "h:mm aa"
     },
     "subscription_unit": {
@@ -682,8 +685,15 @@
                     "toast_success": "Check-in success",
                     "classpass_not_allowed": "Not allowed for this class",
                     "subscription_not_allowed": "Not allowed for this class"
+                },
+                "edit": {
+                    "toast_edit_success": "Saved",
+                    "delete_confirm_msg": "Are you sure you wish to delete all changes for this class on this date?",
+                    "delete_success": "Removed all changes for class",
+                    "delete_all_changes": "Remove all changes on this date"
                 }
-            }
+            },
+            "no_teacher": "No teacher"
         },
         "appointments": {
             "title": "Appointments",
@@ -959,5 +969,40 @@
         "Zimbabwe": "Zimbabwe",
         "Virgin_Islands_British": "Virgin Islands British",
         "Virgin_Islands_US": "Virgin Islands US"
+    },
+    "settings": {
+        "title": "Settings",
+        "general": {
+            "title": "General",
+            "error_loading": "Error loading settings :(",
+            "toast_edit_success": "Saved settings",
+            "date_format": "Date format",
+            "date_formats": {
+                "YYYY-MM-DD": "YYYY-MM-DD",
+                "MM-DD-YYYY": "MM-DD-YYYY",
+                "DD-MM-YYYY": "DD-MM-YYYY"
+            },
+            "time_format": "Time format",
+            "time_formats": {
+                "24hr": "24h",
+                "12hr": "AM/PM"
+            }
+        },
+        "error_loading": "Error loading settings :("
+    },
+    "user": {
+        "login": {
+            "toast_success": "__STRING_NOT_TRANSLATED__",
+            "invalid_credentials": "__STRING_NOT_TRANSLATED__",
+            "title": "__STRING_NOT_TRANSLATED__",
+            "email": "__STRING_NOT_TRANSLATED__",
+            "email_placeholder": "__STRING_NOT_TRANSLATED__",
+            "password_placeholder": "__STRING_NOT_TRANSLATED__"
+        },
+        "logout": {
+            "title": "__STRING_NOT_TRANSLATED__",
+            "confirmation_message": "__STRING_NOT_TRANSLATED__",
+            "success": "__STRING_NOT_TRANSLATED__"
+        }
     }
 }

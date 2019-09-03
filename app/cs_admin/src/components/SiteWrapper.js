@@ -4,9 +4,10 @@ import * as React from "react"
 import { withTranslation } from 'react-i18next'
 import { NavLink, withRouter } from "react-router-dom"
 import { Query } from "react-apollo"
-import { ToastContainer } from 'react-toastify';
+import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import 'react-confirm-alert/src/react-confirm-alert.css'
+import { Link } from 'react-router-dom'
 
 import GET_USER from "../queries/system/get_user"
 import { get_all_permissions, has_permission } from "../tools/user_tools"
@@ -119,6 +120,8 @@ const getNavBarItems = (t, user) => {
 
 }
 
+const now = new Date()
+
 class SiteWrapper extends React.Component<Props, State> {
   state = {}  
 
@@ -139,17 +142,16 @@ class SiteWrapper extends React.Component<Props, State> {
                 imageURL: "/static/logo_stock_backend.svg", // Set logo url here
                 navItems: (
                   <Nav.Item type="div" className="d-none d-md-flex">
-                    <Button
-                      icon="settings"
-                      href="https://github.com/tabler/tabler-react"
-                      target="_blank"
-                      outline
-                      size="sm"
-                      RootComponent="a"
-                      color="primary"
-                    >
-                      {this.props.t('general.settings')}
-                    </Button>
+                    <Link to="/settings/general">
+                      <Button
+                        icon="settings"
+                        outline
+                        size="sm"
+                        color="primary"
+                      >
+                        {this.props.t('general.settings')}
+                      </Button>
+                    </Link>
                   </Nav.Item>
                 ),
                 // notificationsTray: {
@@ -182,7 +184,7 @@ class SiteWrapper extends React.Component<Props, State> {
                   // { icon: "user", value: "Profile" },
                   { icon: "lock", value: "Change password", to: "/accounts/password/change/" },
                   { isDivider: true },
-                  { icon: "log-out", value: "Sign out", to: "/accounts/logout/" },
+                  { icon: "log-out", value: "Sign out", to: "/#/user/logout/" },
                 ],
               },
               }}
@@ -204,7 +206,7 @@ class SiteWrapper extends React.Component<Props, State> {
                 //   "Premium and Open Source dashboard template with responsive and high quality UI. For Free!",
                 copyright: (
                   <React.Fragment>
-                    Copyleft © 2019.
+                    Copyleft © {now.getFullYear()}.
                     <a
                       href="https://www.costasiella.com"
                       target="_blank"

@@ -7,6 +7,8 @@ from .account_membership import AccountMembershipQuery, AccountMembershipMutatio
 from .account_subscription import AccountSubscriptionQuery, AccountSubscriptionMutation
 from .account_teacher_profile import AccountTeacherProfileQuery, AccountTeacherProfileMutation
 
+from .app_settings import AppSettingsQuery, AppSettingsMutation
+
 from .finance_costcenter import FinanceCostCenterQuery, FinanceCostCenterMutation
 from .finance_glaccount import FinanceGLAccountQuery, FinanceGLAccountMutation
 from .finance_invoice import FinanceInvoiceQuery, FinanceInvoiceMutation
@@ -37,6 +39,7 @@ from .organization_subscription_price import OrganizationSubscriptionPriceQuery,
 from .schedule_appointment import ScheduleAppointmentQuery, ScheduleAppointmentMutation
 from .schedule_class import ScheduleClassQuery, ScheduleClassMutation
 from .schedule_class_booking_option import ScheduleClassBookingOptionsQuery
+from .schedule_class_weekly_otc import ScheduleClassWeeklyOTCQuery, ScheduleClassWeeklyOTCMutation
 from .schedule_item import ScheduleItemQuery, ScheduleItemMutation
 from .schedule_item_attendance import ScheduleItemAttendanceQuery, ScheduleItemAttendanceMutation
 from .schedule_item_organization_classpass_group import ScheduleItemOrganizationClasspassGroupQuery, ScheduleItemOrganizationClasspassGroupMutation
@@ -50,6 +53,7 @@ class Query(AccountQuery,
             AccountMembershipQuery,
             AccountSubscriptionQuery,
             AccountTeacherProfileQuery,
+            AppSettingsQuery,
             FinanceCostCenterQuery,
             FinanceGLAccountQuery,
             FinanceInvoiceQuery,
@@ -76,6 +80,7 @@ class Query(AccountQuery,
             ScheduleAppointmentQuery,
             ScheduleClassQuery,
             ScheduleClassBookingOptionsQuery,
+            ScheduleClassWeeklyOTCQuery,
             ScheduleItemQuery,
             ScheduleItemAttendanceQuery,
             ScheduleItemOrganizationClasspassGroupQuery,
@@ -91,6 +96,7 @@ class Mutation(AccountMutation,
                AccountMembershipMutation,
                AccountSubscriptionMutation,
                AccountTeacherProfileMutation,
+               AppSettingsMutation,
                FinanceCostCenterMutation,
                FinanceGLAccountMutation,
                FinanceInvoiceMutation,
@@ -118,6 +124,7 @@ class Mutation(AccountMutation,
                OrganizationSubscriptionPriceMutation, 
                ScheduleAppointmentMutation,
                ScheduleClassMutation,
+               ScheduleClassWeeklyOTCMutation,
                ScheduleItemMutation,
                ScheduleItemAttendanceMutation,
                ScheduleItemOrganizationClasspassGroupMutation,

@@ -209,6 +209,7 @@ def validate_create_update_input(account, input, update=False):
 class UpdateAccount(graphene.relay.ClientIDMutation):
     class Input:
         id = graphene.ID(required=True)
+        password = graphene.String(required=False)
         customer = graphene.Boolean(required=False)
         teacher = graphene.Boolean(required=False)
         employee = graphene.Boolean(required=False)
@@ -248,6 +249,8 @@ class UpdateAccount(graphene.relay.ClientIDMutation):
         account.email = input['email']
         account.username = input['email']
         # Only update these fields if input has been passed
+        if 'password' in input:
+            account.set_password(input['password'])
         if 'customer' in input:
             account.customer = input['customer']
         if 'teacher' in input:

@@ -20,7 +20,10 @@ from allauth.account.models import EmailAddress
 
 
 class GQLAccount(TransactionTestCase):
-    # https://docs.djangoproject.com/en/2.1/topics/testing/overview/
+    # use TransActionTestCase to db is reset after each query
+    # https://docs.djangoproject.com/en/2.2/topics/testing/overview/
+
+
     def setUp(self):
         # This is run before every test
         self.admin_user = f.AdminUserFactory.create()

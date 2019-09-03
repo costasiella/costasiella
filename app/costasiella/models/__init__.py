@@ -4,6 +4,8 @@ from .account_membership import AccountMembership
 from .account_subscription import AccountSubscription
 from .account_teacher_profile import AccountTeacherProfile
 
+from .app_settings import AppSettings
+
 from .finance_costcenter import FinanceCostCenter
 from .finance_glaccount import FinanceGLAccount
 from .finance_invoice import FinanceInvoice
@@ -37,3 +39,4 @@ from .schedule_item_teacher import ScheduleItemTeacher
 from .schedule_item_teacher_available import ScheduleItemTeacherAvailable
 from .schedule_item_organization_classpass_group import ScheduleItemOrganizationClasspassGroup
 from .schedule_item_organization_subscription_group import ScheduleItemOrganizationSubscriptionGroup
+from .schedule_item_weekly_otc import ScheduleItemWeeklyOTC

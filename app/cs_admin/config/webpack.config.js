@@ -480,7 +480,8 @@ module.exports = function(webpackEnv) {
           {},
           {
             inject: true,
-            template: paths.appHtml,
+            //template: paths.appHtml,
+            template: isEnvProduction ? paths.appHtml : paths.appHtmlDev
           },
           isEnvProduction
             ? {
