@@ -282,7 +282,10 @@
         "booking_options": "__STRING_NOT_TRANSLATED__",
         "classes_remaining": "__STRING_NOT_TRANSLATED__",
         "valid_until": "__STRING_NOT_TRANSLATED__",
-        "no_change": "__STRING_NOT_TRANSLATED__"
+        "no_change": "__STRING_NOT_TRANSLATED__",
+        "password": "__STRING_NOT_TRANSLATED__",
+        "login": "__STRING_NOT_TRANSLATED__",
+        "logout": "__STRING_NOT_TRANSLATED__"
     },
     "yup": {
         "min_len_3": "__STRING_NOT_TRANSLATED__",
@@ -684,7 +687,10 @@
                     "subscription_not_allowed": "__STRING_NOT_TRANSLATED__"
                 },
                 "edit": {
-                    "toast_edit_success": "__STRING_NOT_TRANSLATED__"
+                    "toast_edit_success": "__STRING_NOT_TRANSLATED__",
+                    "delete_confirm_msg": "__STRING_NOT_TRANSLATED__",
+                    "delete_success": "__STRING_NOT_TRANSLATED__",
+                    "delete_all_changes": "__STRING_NOT_TRANSLATED__"
                 }
             },
             "no_teacher": "__STRING_NOT_TRANSLATED__"
@@ -983,5 +989,20 @@
             }
         },
         "error_loading": "__STRING_NOT_TRANSLATED__"
+    },
+    "user": {
+        "login": {
+            "toast_success": "__STRING_NOT_TRANSLATED__",
+            "invalid_credentials": "__STRING_NOT_TRANSLATED__",
+            "title": "__STRING_NOT_TRANSLATED__",
+            "email": "__STRING_NOT_TRANSLATED__",
+            "email_placeholder": "__STRING_NOT_TRANSLATED__",
+            "password_placeholder": "__STRING_NOT_TRANSLATED__"
+        },
+        "logout": {
+            "title": "__STRING_NOT_TRANSLATED__",
+            "confirmation_message": "__STRING_NOT_TRANSLATED__",
+            "success": "__STRING_NOT_TRANSLATED__"
+        }
     }
 }

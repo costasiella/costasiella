@@ -282,7 +282,10 @@
         "booking_options": "Booking options",
         "classes_remaining": "Classes remaining",
         "valid_until": "Valid until",
-        "no_change": "No change"
+        "no_change": "No change",
+        "password": "Password",
+        "login": "Sign in",
+        "logout": "Sign out"
     },
     "yup": {
         "min_len_3": "Please input at least 3 characters",
@@ -684,7 +687,10 @@
                     "subscription_not_allowed": "Not allowed for this class"
                 },
                 "edit": {
-                    "toast_edit_success": "Saved"
+                    "toast_edit_success": "Saved",
+                    "delete_confirm_msg": "Are you sure you wish to delete all changes for this class on this date?",
+                    "delete_success": "Removed all changes for class",
+                    "delete_all_changes": "Remove all changes on this date"
                 }
             },
             "no_teacher": "No teacher"
@@ -983,5 +989,20 @@
             }
         },
         "error_loading": "Error loading settings :("
+    },
+    "user": {
+        "login": {
+            "toast_success": "__STRING_NOT_TRANSLATED__",
+            "invalid_credentials": "__STRING_NOT_TRANSLATED__",
+            "title": "__STRING_NOT_TRANSLATED__",
+            "email": "__STRING_NOT_TRANSLATED__",
+            "email_placeholder": "__STRING_NOT_TRANSLATED__",
+            "password_placeholder": "__STRING_NOT_TRANSLATED__"
+        },
+        "logout": {
+            "title": "__STRING_NOT_TRANSLATED__",
+            "confirmation_message": "__STRING_NOT_TRANSLATED__",
+            "success": "__STRING_NOT_TRANSLATED__"
+        }
     }
 }
