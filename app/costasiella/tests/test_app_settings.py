@@ -78,23 +78,24 @@ class GQLAppSettings(TestCase):
         self.assertEqual(data['appSettings']['timeFormat'], "24")
 
 
-    def test_query_one_anon_user(self):
-        """ Deny permission for anon users """   
-        executed = execute_test_client_api_query(self.appsettings_query, self.anon_user)
-        errors = executed.get('errors')
-        self.assertEqual(errors[0]['message'], 'Not logged in!')
+    # query is allowed publicly
+    # def test_query_one_anon_user(self):
+    #     """ Deny permission for anon users """   
+    #     executed = execute_test_client_api_query(self.appsettings_query, self.anon_user)
+    #     errors = executed.get('errors')
+    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
-    def test_query_one_permission_regular_user(self):
-        """ Permission granted when logged in """   
-        # Create regular user
-        user = f.RegularUserFactory.create()
+    # def test_query_one_permission_regular_user(self):
+    #     """ Permission granted when logged in """   
+    #     # Create regular user
+    #     user = f.RegularUserFactory.create()
 
-        # Now query single appsettings and check
-        executed = execute_test_client_api_query(self.appsettings_query, user)
-        data = executed.get('data')
+    #     # Now query single appsettings and check
+    #     executed = execute_test_client_api_query(self.appsettings_query, user)
+    #     data = executed.get('data')
         
-        self.assertEqual(data['appSettings']['dateFormat'], "YYYY-MM-DD")
+    #     self.assertEqual(data['appSettings']['dateFormat'], "YYYY-MM-DD")
 
 
     def test_update_appsettings(self):
