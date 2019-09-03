@@ -421,34 +421,7 @@ class GQLScheduleClassWeeklyOTC(TestCase):
             variables=variables
         )
         data = executed.get('data')
-        print(executed)
         self.assertEqual(data['deleteScheduleClassWeeklyOtc']['ok'], True)
-
-
-    # def test_delete_schedule_item_weeklyotc_return_class_to_pass(self):
-    #     """ Delete schedule item weeklyotc and check the number of classes remaining 
-    #     the pass += 1
-    #     """
-    #     query = self.schedule_item_weeklyotc_delete_mutation
-
-    #     schedule_item_weeklyotc = f.ScheduleItemWeeklyOTCClasspassFactory.create()
-    #     account_classpass = schedule_item_weeklyotc.account_classpass
-    #     account_classpass.update_classes_remaining()
-    #     classes_remaining = account_classpass.classes_remaining
-    #     variables = self.variables_delete
-    #     variables['input']['id'] = to_global_id('ScheduleItemWeeklyOTCNode', schedule_item_weeklyotc.id)
-
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         self.admin_user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['deleteScheduleItemWeeklyOTC']['ok'], True)
-
-    #     self.assertEqual(classes_remaining + 1,
-    #       models.AccountClasspass.objects.get(pk=schedule_item_weeklyotc.account_classpass.pk).classes_remaining
-    #     )
 
 
     # def test_delete_schedule_item_weeklyotc_anon_user(self):
