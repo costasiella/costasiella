@@ -194,8 +194,6 @@ class UpdateScheduleClassWeeklyOTC(graphene.relay.ClientIDMutation):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.change_scheduleclassweeklyotc')
 
-        print(input)
-
         result = validate_update_input(input)
 
         # Insert if it doesn't exist

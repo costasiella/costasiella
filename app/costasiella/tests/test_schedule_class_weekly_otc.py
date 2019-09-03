@@ -164,7 +164,7 @@ class GQLScheduleClassWeeklyOTC(TestCase):
 # '''
 
 
-        self.schedule_item_weeklyotc_update_mutation = '''
+        self.update_mutation = '''
   mutation UpdateScheduleClassWeeklyOTC($input: UpdateScheduleClassWeeklyOTCInput!) {
     updateScheduleClassWeeklyOtc(input:$input) {
       scheduleClassWeeklyOtc {
@@ -198,9 +198,9 @@ class GQLScheduleClassWeeklyOTC(TestCase):
   }
 '''
 
-        self.schedule_item_weeklyotc_delete_mutation = '''
-  mutation DeleteScheduleItemWeeklyOTC($input: DeleteScheduleItemWeeklyOTCInput!) {
-    deleteScheduleItemWeeklyOTC(input: $input) {
+        self.delete_mutation = '''
+  mutation DeleteScheduleClassWeeklyOTC($input: DeleteScheduleClassWeeklyOTCInput!) {
+    deleteScheduleClassWeeklyOtc(input: $input) {
       ok
     }
   }
@@ -294,9 +294,9 @@ class GQLScheduleClassWeeklyOTC(TestCase):
         self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
-    def test_update_schedule_item_weeklyotc(self):
+    def test_update_schedule_class_weeklyotc(self):
         """ Update a class weeklyotc status """
-        query = self.schedule_item_weeklyotc_update_mutation
+        query = self.update_mutation
         variables = self.variables_update
 
         executed = execute_test_client_api_query(
@@ -356,9 +356,9 @@ class GQLScheduleClassWeeklyOTC(TestCase):
         )
 
 
-    def test_update_schedule_item_weeklyotc_anon_user(self):
+    def test_update_schedule_class_weeklyotc_anon_user(self):
         """ Don't allow updating weeklyotcs for non-logged in users """
-        query = self.schedule_item_weeklyotc_update_mutation
+        query = self.update_mutation
         variables = self.variables_update
 
         executed = execute_test_client_api_query(
@@ -371,9 +371,9 @@ class GQLScheduleClassWeeklyOTC(TestCase):
         self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
-    def test_update_schedule_item_weeklyotc_permission_granted(self):
+    def test_update_schedule_class_weeklyotc_permission_granted(self):
         """ Allow updating weeklyotcs for users with permissions """
-        query = self.schedule_item_weeklyotc_update_mutation
+        query = self.update_mutation
         variables = self.variables_update
 
         user = self.class_otc.account
@@ -393,9 +393,9 @@ class GQLScheduleClassWeeklyOTC(TestCase):
         )
 
 
-    def test_update_schedule_item_weeklyotc_permission_denied(self):
+    def test_update_schedule_class_weeklyotc_permission_denied(self):
         """ Update a class weeklyotc status permission denied """
-        query = self.schedule_item_weeklyotc_update_mutation
+        query = self.update_mutation
         variables = self.variables_update
 
         user = self.class_otc.account
@@ -410,21 +410,19 @@ class GQLScheduleClassWeeklyOTC(TestCase):
         self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
-    # def test_delete_schedule_item_weeklyotc(self):
-    #     """ Delete schedule item weeklyotc """
-    #     query = self.schedule_item_weeklyotc_delete_mutation
+    def test_delete_schedule_class_weeklyotc(self):
+        """ Delete schedule class weeklyotc """
+        query = self.delete_mutation
+        variables = self.variables_delete
 
-    #     schedule_item_weeklyotc = f.ScheduleItemWeeklyOTCClasspassFactory.create()
-    #     variables = self.variables_delete
-    #     variables['input']['id'] = to_global_id('ScheduleItemWeeklyOTCNode', schedule_item_weeklyotc.id)
-
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         self.admin_user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['deleteScheduleItemWeeklyOTC']['ok'], True)
+        executed = execute_test_client_api_query(
+            query, 
+            self.admin_user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        print(executed)
+        self.assertEqual(data['deleteScheduleClassWeeklyOtc']['ok'], True)
 
 
     # def test_delete_schedule_item_weeklyotc_return_class_to_pass(self):
