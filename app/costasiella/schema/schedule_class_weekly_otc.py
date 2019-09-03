@@ -241,7 +241,8 @@ class UpdateScheduleClassWeeklyOTC(graphene.relay.ClientIDMutation):
 
 class DeleteScheduleClassWeeklyOTC(graphene.relay.ClientIDMutation):
     class Input:
-        id = graphene.ID(required=True)
+        schedule_item = graphene.ID(required=True)
+        date = graphene.types.datetime.Date(required=True)
 
     ok = graphene.Boolean()
 
@@ -250,10 +251,13 @@ class DeleteScheduleClassWeeklyOTC(graphene.relay.ClientIDMutation):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.delete_scheduleclassweeklyotc')
 
-        rid = get_rid(input['id'])
-        schedule_class_weekly_otc = ScheduleItemWeeklyOTC.objects.filter(id=rid.id).first()
+        rid = get_rid(input['schedule_item'])
+        schedule_class_weekly_otc = ScheduleItemWeeklyOTC.objects.filter(
+            schedule_item_id=rid.id,
+            date=input['date']
+        )
         if not schedule_class_weekly_otc:
-            raise Exception('Invalid Schedule Class Attendance ID!')
+            raise Exception('No changes found, nothing deleted.')
 
         # Actually remove
         ok = schedule_class_weekly_otc.delete()
