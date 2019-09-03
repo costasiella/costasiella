@@ -31,6 +31,11 @@ class GQLScheduleClassWeeklyOTC(TestCase):
 
         self.class_otc = f.SchedulePublicWeeklyClassOTCFactory.create()
 
+        self.variables_list_all = {
+            'scheduleItem': to_global_id('ScheduleItemNode', self.class_otc.schedule_item.id),
+            'date': '2030-12-30'
+        }
+
 
         self.variables_update_classpass = {
             "input": {
@@ -188,11 +193,8 @@ class GQLScheduleClassWeeklyOTC(TestCase):
         """ Query list of schedule item weeklyotcs """
         query = self.weeklyotcs_query
         # schedule_item_weeklyotc = f.ScheduleItemWeeklyOTCClasspassFactory.create()
-        variables = {
-            'scheduleItem': to_global_id('ScheduleItemNode', self.class_otc.schedule_item.id),
-            'date': '2030-12-30'
-        }
 
+        variables = self.variables_list_all
         executed = execute_test_client_api_query(query, self.admin_user, variables=variables)
         data = executed.get('data')
 
@@ -229,60 +231,45 @@ class GQLScheduleClassWeeklyOTC(TestCase):
         
 
 
-    # def test_query_permision_denied(self):
-    #     """ Query list of schedule item weeklyotcs - check permission denied """
-    #     query = self.weeklyotcs_query
-    #     schedule_item_weeklyotc = f.ScheduleItemWeeklyOTCClasspassFactory.create()
-    #     variables = {
-    #         'scheduleItem': to_global_id('ScheduleItemNode', schedule_item_weeklyotc.schedule_item.id),
-    #         'date': '2030-12-30'
-    #     }
+    def test_query_permision_denied(self):
+        """ Query list of schedule item weeklyotcs - check permission denied """
+        query = self.weeklyotcs_query
 
-    #     # Regular user
-    #     user = schedule_item_weeklyotc.account
-    #     executed = execute_test_client_api_query(query, user, variables=variables)
-    #     errors = executed.get('errors')
+        # Regular user
+        user = self.class_otc.account
+        executed = execute_test_client_api_query(query, user, variables=self.variables_list_all)
+        errors = executed.get('errors')
 
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
-    # def test_query_permision_granted(self):
-    #     """ Query list of schedule item weeklyotcs with view permission """
-    #     query = self.weeklyotcs_query
-    #     schedule_item_weeklyotc = f.ScheduleItemWeeklyOTCClasspassFactory.create()
-    #     variables = {
-    #         'scheduleItem': to_global_id('ScheduleItemNode', schedule_item_weeklyotc.schedule_item.id),
-    #         'date': '2030-12-30'
-    #     }
+    def test_query_permision_granted(self):
+        """ Query list of schedule item weeklyotcs with view permission """
+        query = self.weeklyotcs_query
 
-    #     # Create regular user
-    #     user = schedule_item_weeklyotc.account
-    #     permission = Permission.objects.get(codename='view_scheduleitemweeklyotc')
-    #     user.user_permissions.add(permission)
-    #     user.save()
+        # Create regular user
+        user = self.class_otc.account
+        permission = Permission.objects.get(codename=self.permission_view)
+        user.user_permissions.add(permission)
+        user.save()
 
-    #     executed = execute_test_client_api_query(query, user, variables=variables)
-    #     data = executed.get('data')
+        executed = execute_test_client_api_query(query, user, variables=self.variables_list_all)
+        data = executed.get('data')
 
-    #     # List all weeklyotcs
-    #     self.assertEqual(
-    #         data['scheduleItemWeeklyOtcs']['edges'][0]['node']['id'], 
-    #         to_global_id("ScheduleItemWeeklyOTCNode", schedule_item_weeklyotc.id)
-    #     )
+        # List all weeklyotcs
+        self.assertEqual(
+            data['scheduleClassWeeklyOtcs']['edges'][0]['node']['id'], 
+            to_global_id("ScheduleClassWeeklyOTCNode", self.class_otc.id)
+        )
 
 
-    # def test_query_anon_user(self):
-    #     """ Query list of schedule item weeklyotcs - anon user """
-    #     query = self.weeklyotcs_query
-    #     schedule_item_weeklyotc = f.ScheduleItemWeeklyOTCClasspassFactory.create()
-    #     variables = {
-    #         'scheduleItem': to_global_id('ScheduleItemNode', schedule_item_weeklyotc.schedule_item.id),
-    #         'date': '2030-12-30'
-    #     }
+    def test_query_anon_user(self):
+        """ Query list of schedule item weeklyotcs - anon user """
+        query = self.weeklyotcs_query
 
-    #     executed = execute_test_client_api_query(query, self.anon_user, variables=variables)
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
+        executed = execute_test_client_api_query(query, self.anon_user, variables=self.variables_list_all)
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
     # def test_update_schedule_item_weeklyotc(self):
