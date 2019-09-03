@@ -127,7 +127,7 @@ export const GET_SCHEDULE_CLASS_WEEKLY_OTCS_QUERY = gql`
   }
 `
 
-export const Delete_SCHEDULE_CLASS_WEEKLY_OTC = gql`
+export const DELETE_SCHEDULE_CLASS_WEEKLY_OTC = gql`
   mutation DeleteScheduleClassWeeklyOTC($input: DeleteScheduleClassWeeklyOTCInput!) {
     deleteScheduleClassWeeklyOtc(input: $input) {
       ok
