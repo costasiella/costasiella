@@ -9,16 +9,13 @@ from .organization_level import OrganizationLevel
 from .schedule_item import ScheduleItem
 
 from .choices.teacher_roles import get_teacher_roles
+from .choices.schedule_item_otc_statuses import get_schedule_item_otc_statuses
 
 # Create your models here.
 
 class ScheduleItemWeeklyOTC(models.Model):
     TEACHER_ROLES = get_teacher_roles()
-    STATUSES = [
-        ['', _("Regular")],
-        ['CANCELLED', _("Cancelled")],
-        ['OPEN', _("No teacher")]
-    ]
+    STATUSES = get_schedule_item_otc_statuses()
 
     class Meta:
         permissions = [

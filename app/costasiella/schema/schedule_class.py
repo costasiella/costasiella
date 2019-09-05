@@ -71,6 +71,8 @@ class ScheduleClassType(graphene.ObjectType):
     schedule_item_id = graphene.ID()
     frequency_type = graphene.String()
     date = graphene.types.datetime.Date()
+    status = graphene.String()
+    description = graphene.String()
     account = graphene.Field(AccountNode)
     role = graphene.String()
     account_2 = graphene.Field(AccountNode)
@@ -330,6 +332,8 @@ class ScheduleClassesDayType(graphene.ObjectType):
                 ScheduleClassType(
                     schedule_item_id=to_global_id('ScheduleItemNode', item.pk),
                     date=self.date,
+                    status=item.status,
+                    description=item.description,
                     frequency_type=item.frequency_type,
                     account=item.account,
                     role=item.role,

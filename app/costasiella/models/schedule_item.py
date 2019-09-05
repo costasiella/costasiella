@@ -10,6 +10,7 @@ from .organization_classpass_group import OrganizationClasspassGroup
 from .organization_subscription_group import OrganizationSubscriptionGroup
 
 from .choices.teacher_roles import get_teacher_roles
+from .choices.schedule_item_otc_statuses import get_schedule_item_otc_statuses
 
 # Create your models here.
 
@@ -49,6 +50,7 @@ class ScheduleItem(models.Model):
     )
 
     TEACHER_ROLES = get_teacher_roles()
+    STATUSES = get_schedule_item_otc_statuses()
 
     schedule_item_type = models.CharField(max_length=50, choices=SCHEDULE_ITEM_TYPES)
     frequency_type = models.CharField(max_length=50, choices=FREQUENCY_TYPES)
@@ -78,6 +80,8 @@ class ScheduleItem(models.Model):
     # By having these fields here we can map the schedule_item_teacher or schedule_item_weekly_otc account 
     # into these fields
     ####################################################
+    status = models.CharField(max_length=255, default="", choices=STATUSES)
+    description = models.CharField(max_length=255, default="")
     account = models.ForeignKey(Account, on_delete=models.SET_NULL, null=True, related_name="si_account")
     role = models.CharField(default="", max_length=50, choices=TEACHER_ROLES)
     account_2 = models.ForeignKey(Account, on_delete=models.SET_NULL, null=True, related_name="si_account_2")
