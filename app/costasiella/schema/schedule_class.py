@@ -217,20 +217,31 @@ class ScheduleClassesDayType(graphene.ObjectType):
                      ELSE csi.time_end
                      END AS time_end,
                 csi.display_public,
-               CASE WHEN csiotc.account_id IS NOT NULL
-                    THEN csiotc.account_id
+               CASE     
+                    WHEN csiotc.status = "OPEN"
+                        THEN NULL
+                    WHEN csiotc.account_id IS NOT NULL
+                        THEN csiotc.account_id
                     ELSE csit.account_id
                     END AS account_id,
-               CASE WHEN csiotc.account_id IS NOT NULL
-                    THEN csiotc.role
+               CASE 
+                    WHEN csiotc.status = "OPEN"
+                        THEN NULL
+                    WHEN csiotc.account_id IS NOT NULL
+                        THEN csiotc.role
                     ELSE csit.role
                     END AS role,
-               CASE WHEN csiotc.account_2_id IS NOT NULL
-                    THEN csiotc.account_2_id
+               CASE 
+                    WHEN csiotc.status = "OPEN"
+                        THEN NULL
+                    WHEN csiotc.account_2_id IS NOT NULL
+                        THEN csiotc.account_2_id
                     ELSE csit.account_2_id
                     END AS account_2_id,
-               CASE WHEN csiotc.account_2_id IS NOT NULL
-                    THEN csiotc.role_2
+               CASE WHEN csiotc.status = "OPEN"
+                        THEN NULL
+                    WHEN csiotc.account_2_id IS NOT NULL
+                        THEN csiotc.role_2
                     ELSE csit.role_2
                     END AS role_2
             FROM costasiella_scheduleitem csi
