@@ -98,6 +98,8 @@ class GQLScheduleClass(TestCase):
         scheduleItemId
         frequencyType
         date
+        status
+        description
         organizationLocationRoom {
           id
           name
