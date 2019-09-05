@@ -176,6 +176,7 @@ class UpdateScheduleClassWeeklyOTC(graphene.relay.ClientIDMutation):
     class Input:
         schedule_item = graphene.ID(required=True)
         date = graphene.types.datetime.Date(required=True)
+        status = graphene.String(required=False)
         description = graphene.String(required=False)
         account = graphene.ID(required=False)
         role = graphene.String(required=False)
@@ -201,6 +202,9 @@ class UpdateScheduleClassWeeklyOTC(graphene.relay.ClientIDMutation):
             schedule_item = result['schedule_item'],
             date = input['date']
         )
+
+        if 'status' in input:
+            schedule_class_weekly_otc.status = input['status']
 
         if 'description' in input:
             schedule_class_weekly_otc.description = input['description']
