@@ -174,6 +174,13 @@ class ScheduleClassesDayType(graphene.ObjectType):
             SELECT 
                 csi.id,
                 csi.frequency_type,
+                CASE
+                    WHEN csiotc.account_id IS NOT NULL AND csiotc.role = "SUB" 
+                        THEN "SUB"
+                    WHEN csiotc.status 
+                        THEN csiotc.status                    
+                    ELSE ""
+                END AS status,
                 CASE WHEN csiotc.organization_location_id IS NOT NULL
                      THEN csiotc.organization_location_id
                      ELSE csi_olr.organization_location_id
@@ -228,11 +235,12 @@ class ScheduleClassesDayType(graphene.ObjectType):
                     otc.id,
                     otc.schedule_item_id,
                     otc.date,
+                    otc.status,
+                    otc.description,
                     otc.account_id,
                     otc.role,
                     otc.account_2_id,
                     otc.role_2,
-                    otc.description,
                     otc.organization_location_room_id,
                     otc.organization_classtype_id,
                     otc.organization_level_id,
