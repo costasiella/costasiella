@@ -14,6 +14,12 @@ from .choices.teacher_roles import get_teacher_roles
 
 class ScheduleItemWeeklyOTC(models.Model):
     TEACHER_ROLES = get_teacher_roles()
+    STATUSES = [
+        ['', _("Regular")],
+        ['SUB', _("Sub teacher")],
+        ['CANCELLED', _("Cancelled")],
+        ['OPEN', _("No teacher")]
+    ]
 
     class Meta:
         permissions = [
@@ -25,6 +31,7 @@ class ScheduleItemWeeklyOTC(models.Model):
 
     schedule_item = models.ForeignKey(ScheduleItem, on_delete=models.CASCADE)
     date = models.DateField()
+    status = models.CharField(max_length=255, default="", choices=STATUSES)
     description = models.CharField(max_length=255, default="")
     account = models.ForeignKey(Account, on_delete=models.SET_NULL, null=True, related_name="otc_account")
     role = models.CharField(default="", max_length=50, choices=TEACHER_ROLES)
