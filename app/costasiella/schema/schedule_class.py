@@ -177,6 +177,10 @@ class ScheduleClassesDayType(graphene.ObjectType):
                 csi.id,
                 csi.frequency_type,
                 CASE
+                    WHEN csiotc.status = "CANCELLED" 
+                        THEN csiotc.status
+                    WHEN csiotc.status = "OPEN" 
+                        THEN csiotc.status
                     WHEN csiotc.account_id IS NOT NULL AND csiotc.role = "SUB" 
                         THEN "SUB"
                     WHEN csiotc.status 

@@ -295,7 +295,8 @@ function ScheduleClasses ({ t, history }) {
                                         {/* Start & end time */}
                                         {moment(date + ' ' + timeStart).format(timeFormat)} {' - '}
                                         {moment(date + ' ' + timeEnd).format(timeFormat)} { ' ' }
-                                        {(frequencyType === 'SPECIFIC') ? <Badge color="primary">{t('general.once')}</Badge> : null }
+                                        {(frequencyType === 'SPECIFIC') ? <Badge color="primary">{t('general.once')}</Badge> : null } <br />
+                                        <span className="text-muted">{description}</span>
                                       </Table.Col>
                                       <Table.Col>
                                         {/* Location */}
