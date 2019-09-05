@@ -433,44 +433,6 @@ class SchedulePublicWeeklyClassOTCFactory(factory.DjangoModelFactory):
     time_end = datetime.time(12, 30)
     
 
-# class SchedulePublicWeeklyClassOTCCANCELLEDFactory(factory.DjangoModelFactory):
-#     class Meta:
-#         model = models.ScheduleItemWeeklyOTC
-
-#     schedule_item = factory.SubFactory(SchedulePublicWeeklyClassFactory)
-#     date = datetime.date(2030, 12, 30)
-#     status = "CANCELLED"
-#     description = "Test description"
-#     account = factory.SubFactory(TeacherFactory)
-#     role = "SUB"
-#     account_2 = factory.SubFactory(Teacher2Factory)
-#     role_2 = "SUB"
-#     organization_location_room = factory.SelfAttribute('schedule_item.organization_location_room')
-#     organization_classtype = factory.SelfAttribute('schedule_item.organization_classtype')
-#     organization_level = factory.SelfAttribute('schedule_item.organization_level')
-#     time_start = datetime.time(11, 0)
-#     time_end = datetime.time(12, 30)
-    
-
-# class SchedulePublicWeeklyClassOTCOPENFactory(factory.DjangoModelFactory):
-#     class Meta:
-#         model = models.ScheduleItemWeeklyOTC
-
-#     schedule_item = factory.SubFactory(SchedulePublicWeeklyClassFactory)
-#     date = datetime.date(2030, 12, 30)
-#     status = "OPEN"
-#     description = "Test description"
-#     account = factory.SubFactory(TeacherFactory)
-#     role = "SUB"
-#     account_2 = factory.SubFactory(Teacher2Factory)
-#     role_2 = "SUB"
-#     organization_location_room = factory.SelfAttribute('schedule_item.organization_location_room')
-#     organization_classtype = factory.SelfAttribute('schedule_item.organization_classtype')
-#     organization_level = factory.SelfAttribute('schedule_item.organization_level')
-#     time_start = datetime.time(11, 0)
-#     time_end = datetime.time(12, 30)
-    
-
 class ScheduleItemAttendanceClasspassFactory(factory.DjangoModelFactory):
     class Meta:
         model = models.ScheduleItemAttendance
