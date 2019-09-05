@@ -19,7 +19,31 @@ import CSTimePicker from "../../../../ui/CSTimePicker"
 const ScheduleClassEditForm = ({ t, history, inputData, isSubmitting, setFieldValue, setFieldTouched, errors, values, touched, return_url }) => (
     <FoForm>
       <Card.Body>
-      <Grid.Row>
+        <Grid.Row>
+          <Grid.Col>
+            <Form.Group label={t('general.status')}>
+              <Field component="select" 
+                      name="status" 
+                      className={(errors.status) ? "form-control is-invalid" : "form-control"} 
+                      autoComplete="off">
+                <option value="" key={v4()}>{t('')}</option>
+                <option value="CANCELLED" key={v4()}>{t('general.cancelled')}</option>
+                <option value="OPEN" key={v4()}>{t('schedule.classes.no_teacher')}</option>
+              </Field>
+              <ErrorMessage name="status" component="span" className="invalid-feedback" />
+            </Form.Group>
+          </Grid.Col>
+          <Grid.Col>
+            <Form.Group label={t('general.description')}>
+              <Field type="text" 
+                      name="description" 
+                      className={(errors.description) ? "form-control is-invalid" : "form-control"} 
+                      autoComplete="off" />
+              <ErrorMessage name="description" component="span" className="invalid-feedback" />
+            </Form.Group>
+          </Grid.Col>
+        </Grid.Row>
+        <Grid.Row>
           <Grid.Col>
             <Form.Group label={t('general.teacher')}>
               <Field component="select" 

@@ -82,7 +82,9 @@ function ScheduleClassEdit({ t, match, history }) {
     showDelete = true
 
     initialData = queryData.scheduleClassWeeklyOtcs.edges[0].node
-
+    
+    initialValues.status = initialData.status
+    initialValues.description = initialData.description
     if (initialData.account) {
       initialValues.account = initialData.account.id
     }
@@ -104,6 +106,8 @@ function ScheduleClassEdit({ t, match, history }) {
     initialValues.timeEnd = initialData.timeEnd
   } else {
     console.log('setting initial values')
+    initialValues.status = ""
+    initialValues.description = ""
     initialValues.account = ""
     initialValues.role = ""
     initialValues.account2 = ""
@@ -147,6 +151,8 @@ function ScheduleClassEdit({ t, match, history }) {
                           input: {
                             scheduleItem: schedule_item_id,
                             date: class_date,
+                            status: values.status,
+                            description: values.description,
                             account: values.account,
                             role: values.role,
                             account2: values.account2,
