@@ -16,7 +16,6 @@ class ScheduleItemWeeklyOTC(models.Model):
     TEACHER_ROLES = get_teacher_roles()
     STATUSES = [
         ['', _("Regular")],
-        ['SUB', _("Sub teacher")],
         ['CANCELLED', _("Cancelled")],
         ['OPEN', _("No teacher")]
     ]
