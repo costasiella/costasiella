@@ -68,6 +68,7 @@ class GQLScheduleClassWeeklyOTC(TestCase):
         node {
           id 
           date
+          status
           description
           account {
             id
@@ -225,6 +226,7 @@ class GQLScheduleClassWeeklyOTC(TestCase):
             to_global_id("ScheduleClassWeeklyOTCNode", self.class_otc.id)
         )
         self.assertEqual(data['scheduleClassWeeklyOtcs']['edges'][0]['node']['date'], variables['date'])
+        self.assertEqual(data['scheduleClassWeeklyOtcs']['edges'][0]['node']["status"], self.class_otc.status)
         self.assertEqual(data['scheduleClassWeeklyOtcs']['edges'][0]['node']['description'], self.class_otc.description)
         self.assertEqual(
             data['scheduleClassWeeklyOtcs']['edges'][0]['node']['account']['id'], 
@@ -249,8 +251,7 @@ class GQLScheduleClassWeeklyOTC(TestCase):
             to_global_id("OrganizationLevelNode", self.class_otc.organization_level.id)
         )
         self.assertEqual(data['scheduleClassWeeklyOtcs']['edges'][0]['node']['timeStart'], str(self.class_otc.time_start))
-        self.assertEqual(data['scheduleClassWeeklyOtcs']['edges'][0]['node']['timeEnd'], str(self.class_otc.time_end))
-        
+        self.assertEqual(data['scheduleClassWeeklyOtcs']['edges'][0]['node']['timeEnd'], str(self.class_otc.time_end))        
 
 
     def test_query_permision_denied(self):

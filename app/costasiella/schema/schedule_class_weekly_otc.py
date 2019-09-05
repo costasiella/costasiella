@@ -14,6 +14,7 @@ from ..dudes import ClassScheduleDude
 m = Messages()
 
 class ScheduleClassWeeklyOTCNode(DjangoObjectType):
+    status = graphene.Field(graphene.String, source="status")
     role = graphene.Field(graphene.String, source="role")
     role_2 = graphene.Field(graphene.String, source="role_2")
 
