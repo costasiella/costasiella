@@ -282,7 +282,8 @@ class ScheduleClassesDayType(graphene.ObjectType):
                 FROM costasiella_scheduleitemteacher
                 WHERE date_start <= "{class_date}" AND (
                       date_end >= "{class_date}" OR date_end IS NULL)
-                LIMIT 1
+                ORDER BY date_start
+                LIMIT 2
                 ) csit
                 ON csit.schedule_item_id = csi.id
             WHERE csi.schedule_item_type = "CLASS" 
@@ -303,7 +304,7 @@ class ScheduleClassesDayType(graphene.ObjectType):
             order_by_sql = order_by_sql
         )
 
-        # print(query)
+        print(query)
 
         ## 
         # At this time 27 Aug 2019, params don't seem to be working from a dictionary
