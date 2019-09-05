@@ -183,6 +183,7 @@ class ScheduleClassesDayType(graphene.ObjectType):
                         THEN csiotc.status                    
                     ELSE ""
                 END AS status,
+                csiotc.description as description,
                 CASE WHEN csiotc.organization_location_id IS NOT NULL
                      THEN csiotc.organization_location_id
                      ELSE csi_olr.organization_location_id
@@ -212,7 +213,6 @@ class ScheduleClassesDayType(graphene.ObjectType):
                      ELSE csi.time_end
                      END AS time_end,
                 csi.display_public,
-                csiotc.description as test,
                CASE WHEN csiotc.account_id IS NOT NULL
                     THEN csiotc.account_id
                     ELSE csit.account_id
@@ -322,8 +322,10 @@ class ScheduleClassesDayType(graphene.ObjectType):
         classes_list = []
         for item in schedule_items:
 
+            print("#############")
             print(item)
-            print(item.test)
+            print(item.status)
+            print(item.description)
             print(item.account)
             print(item.account_id)
             print(item.role)
