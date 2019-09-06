@@ -18,7 +18,7 @@ import {
 } from "tabler-react"
 import HasPermissionWrapper from "../../HasPermissionWrapper"
 
-import { TOKEN_AUTH } from "../../../queries/system/auth"
+import { TOKEN_AUTH, TOKEN_VERIFY } from "../../../queries/system/auth"
 import { CSAuth } from "../../../tools/authentication"
 import CSLS from "../../../tools/cs_local_storage"
 
@@ -28,6 +28,7 @@ import UserLoginForm from "./UserLoginForm"
 function UserLogin({t, match, history}) {
   let errorMessage
   const [doTokenAuth, { data }] = useMutation(TOKEN_AUTH)
+  const [verifyToken, { data: tokenVerifyData }] = useMutation(TOKEN_VERIFY)
 
   return (
     <StandaloneFormPage imageURL="">
@@ -58,12 +59,20 @@ function UserLogin({t, match, history}) {
                 console.log('got data', data)
                 const next = localStorage.getItem(CSLS.AUTH_LOGIN_NEXT) || "/"
                 CSAuth.login(data.tokenAuth.token)
-                setTimeout(() => history.push(next), 500)                
-                // toast.info((t('user.login.toast_success')), {
-                //     position: toast.POSITION.BOTTOM_RIGHT
-                //   })
-                // setSubmitting(false)
-                // Redirect to home or something like that...
+                verifyToken({
+                  variables: { token: data.tokenAuth.token }
+                }).then(({ data }) => {
+                  console.log('got verify data', data)
+                  CSAuth.updateTokenInfo(data.verifyToken.payload)
+                  // Login success!
+                  setTimeout(() => history.push(next), 500)
+                }).catch((error) => {
+                  toast.error((t('general.toast_server_error')) + ': ' +  error, {
+                    position: toast.POSITION.BOTTOM_RIGHT
+                  })
+                  console.log('there was an error verifying the login', error)
+                  setSubmitting(false)
+                })
               }).catch((error) => {
                 if ( error.message.includes('credentials') ) {
                   // Request user to input valid credentials

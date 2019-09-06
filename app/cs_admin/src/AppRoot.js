@@ -140,6 +140,8 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
   
   if (!token) {
     localStorage.setItem(CSLS.AUTH_LOGIN_NEXT, rest.path)
+  } else {
+    // We're logged in, check token expiration
   }
 
   return (
