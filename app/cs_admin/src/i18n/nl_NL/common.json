@@ -1007,7 +1007,8 @@
         "register": {
             "create_account": "__STRING_NOT_TRANSLATED__",
             "create_account_msg": "__STRING_NOT_TRANSLATED__",
-            "create_account_msg_click_below": "__STRING_NOT_TRANSLATED__"
+            "create_account_msg_click_below": "__STRING_NOT_TRANSLATED__",
+            "reset_password": "__STRING_NOT_TRANSLATED__"
         }
     }
 }
