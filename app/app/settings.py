@@ -190,8 +190,9 @@ MEDIA_URL = '/media/'
 
 # Email configuration
 
-EMAIL_HOST = 'localhost'
-EMAIL_PORT = 2525
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+# EMAIL_HOST = 'localhost'
+# EMAIL_PORT = 2525
 
 # Graphene settings
 
@@ -221,7 +222,8 @@ GRAPHQL_JWT = {
 
 # Where to go after login, well... let's just go home and take care of things from there :).
 
-LOGIN_REDIRECT_URL = 'home'
+LOGIN_URL = '/#/user/login'
+LOGIN_REDIRECT_URL = '/#/'
 
 # Custom user model
 AUTH_USER_MODEL = 'costasiella.Account'
@@ -242,12 +244,16 @@ ACCOUNT_USER_MODEL_USERNAME_FIELD = None
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_AUTHENTICATION_METHOD = 'email'  # Use email as the primary identifier
 ACCOUNT_EMAIL_VERIFICATION = "mandatory" # Make email verification mandatory to avoid junk email accounts
-ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = True
+ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = False
+ACCOUNT_CONFIRM_EMAIL_ON_GET = True # Confirm email by simply going to the link
+ACCOUNT_EMAIL_CONFIRMATION_ANONYMOUS_REDIRECT_URL = "email_verified"
+ACCOUNT_EMAIL_CONFIRMATION_AUTHENTICATED_REDIRECT_URL = "email_verified"
 ACCOUNT_EMAIL_SUBJECT_PREFIX = "" # Don't prefix the email subjects
 ACCOUNT_LOGIN_ATTEMPTS_LIMIT = 7
 ACCOUNT_LOGIN_ATTEMPTS_TIMEOUT = 900 # Lock out a user for 15 minutes after 7 invalid attempts to log in
 ACCOUNT_SIGNUP_FORM_CLASS = 'costasiella.forms.SignupForm'
-ACCOUNT_LOGIN_ON_PASSWORD_RESET = True # Log in users after password reset instead of showing a "done" page.
+ACCOUNT_LOGIN_ON_PASSWORD_RESET = False # Log in users after password reset instead of showing a "done" page.
+
 
 
 # Allow Base64 encoded uploads of up to 5MB
