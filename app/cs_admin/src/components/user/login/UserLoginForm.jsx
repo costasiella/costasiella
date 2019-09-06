@@ -57,7 +57,7 @@ const UserLoginForm = ({ t, history, isSubmitting, errors, values, return_url, s
           </Grid.Col>
           <Grid.Col md={6}>
             <Button 
-              color="secondary"
+              color="link"
               RootComponent="a"
               href={(window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") ? 
                 "http://localhost:8000/accounts/password/reset/" :
