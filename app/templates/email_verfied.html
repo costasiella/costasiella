@@ -8,7 +8,11 @@
 
 {% block content %}
 <h1>{% trans "Email address verified" %}</h1>
-You can now log in
+    {% if "localhost" in request.build_absolute_uri %}
+        <p>{% trans "You can now sign in!" %} <a href="http://localhost:3000/#/user/login"><b>{% trans "Sign In" %}</b></a></p>
+    {% else %}
+        <p>{% trans "You can now sign in!" %} <a href="/#/user/login"><b>{% trans "Sign In" %}</b></a></p>
+    {% endif %}
 
 
 {% endblock %}
