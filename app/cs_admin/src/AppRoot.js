@@ -10,6 +10,7 @@ import {
 } from 'react-router-dom'
 import { withTranslation } from 'react-i18next'
 import { useQuery } from "react-apollo"
+import { toast } from 'react-toastify'
 
 import { GET_APP_SETTINGS_QUERY } from "./components/app_settings/queries"
 
@@ -134,15 +135,20 @@ import { CSAuth } from './tools/authentication'
 
 
 const PrivateRoute = ({ component: Component, ...rest }) => {
-  const token = localStorage.getItem(CSLS.AUTH_TOKEN)
+  let token = localStorage.getItem(CSLS.AUTH_TOKEN)
   console.log(token)
   console.log(rest.path)
   
+  // Check expiration
+  const tokenExp = localStorage.getItem(CSLS.AUTH_TOKEN_EXP)
+  if ((new Date() / 1000) >= tokenExp) {
+    CSAuth.logout(true)
+    token = false
+  }
+  // Set path to go to after login
   if (!token) {
     localStorage.setItem(CSLS.AUTH_LOGIN_NEXT, rest.path)
-  } else {
-    // We're logged in, check token expiration
-  }
+  } 
 
   return (
     <Route {...rest} render={(props) => (
