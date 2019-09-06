@@ -1,18 +1,14 @@
-{% load static %}
+{% extends "bootstrapadmin/base.html" %}
 
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width" />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,300i,400,400i,500,500i,600,600i,700,700i&amp;subset=latin-ext">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-    <title>Costasiella</title>
-    <script type="text/javascript" src="{% static 'tinymce/tinymce.min.js' %}"></script>
-  </head>
-  <body>
-    Email verified! <br>
-    you can now log in!!!
-  </body>
-</html>
+{% load i18n %}
+{% load account %}
 
+{% block head_title %}{% trans "Email address verified" %}{% endblock %}
+
+
+{% block content %}
+<h1>{% trans "Email address verified" %}</h1>
+You can now log in
+
+
+{% endblock %}
