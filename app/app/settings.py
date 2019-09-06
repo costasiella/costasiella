@@ -202,6 +202,14 @@ GRAPHENE = {
     ],
 }
 
+# GraphQL JWT settings
+# Tokens expire after 3 days
+GRAPHQL_JWT = {
+    'JWT_VERIFY_EXPIRATION': True,
+    'JWT_EXPIRATION_DELTA': timedelta(days=3),
+    'JWT_REFRESH_EXPIRATION_DELTA': timedelta(days=3),
+}
+
 # Webpack loader
 
 # WEBPACK_LOADER = {
