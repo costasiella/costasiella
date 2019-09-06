@@ -285,7 +285,8 @@
         "no_change": "__STRING_NOT_TRANSLATED__",
         "password": "__STRING_NOT_TRANSLATED__",
         "login": "__STRING_NOT_TRANSLATED__",
-        "logout": "__STRING_NOT_TRANSLATED__"
+        "logout": "__STRING_NOT_TRANSLATED__",
+        "cancelled": "__STRING_NOT_TRANSLATED__"
     },
     "yup": {
         "min_len_3": "__STRING_NOT_TRANSLATED__",
@@ -992,7 +993,6 @@
     },
     "user": {
         "login": {
-            "toast_success": "__STRING_NOT_TRANSLATED__",
             "invalid_credentials": "__STRING_NOT_TRANSLATED__",
             "title": "__STRING_NOT_TRANSLATED__",
             "email": "__STRING_NOT_TRANSLATED__",
