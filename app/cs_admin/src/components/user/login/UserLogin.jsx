@@ -13,7 +13,9 @@ import { toast } from 'react-toastify'
 // import { ACCOUNT_SCHEMA } from './yupSchema'
 
 import {
+  Button,
   Card,
+  Icon,
   StandaloneFormPage,
 } from "tabler-react"
 import HasPermissionWrapper from "../../HasPermissionWrapper"
@@ -99,7 +101,22 @@ function UserLogin({t, match, history}) {
             values={values}
           />
         )}
-      </Formik>      
+      </Formik>    
+      <div className="text-center">
+        <h5>{t('user.register.create_account')}</h5>
+        {t('user.register.create_account_msg')} <br />
+        {t('user.register.create_account_msg_click_below')} <br />
+      </div>
+      <Button 
+        block
+        color="link"
+        onClick={(event) => {
+          event.preventDefault()  
+          window.history.back()
+        }}
+      >
+        {t('user.register.create_account')} <Icon name="chevron-right" />
+      </Button>
       <ToastContainer autoClose={5000}/>
     </StandaloneFormPage>
   )

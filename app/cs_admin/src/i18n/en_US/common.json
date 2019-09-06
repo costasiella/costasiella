@@ -1003,6 +1003,11 @@
             "title": "Sign out",
             "confirmation_message": "Are you sure you wish to sign out?",
             "success": "You've been signed out"
+        },
+        "register": {
+            "create_account": "Create your account",
+            "create_account_msg": "New here? Join us today! It only takes a few steps.",
+            "create_account_msg_click_below": "Click the button below to get started."
         }
     }
 }
