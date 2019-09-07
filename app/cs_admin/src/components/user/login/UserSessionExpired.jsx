@@ -33,7 +33,7 @@ function UserSessionExpired({t, match, history}) {
           <Card.Title>
             {t('user.session_expired.title')}
           </Card.Title>
-          {t('user.session_expired.confirmation_message')} <br /><br />
+          {t('user.session_expired.message')} <br /><br />
           <Button 
             block
             loading={active}
@@ -42,27 +42,13 @@ function UserSessionExpired({t, match, history}) {
             type="button" 
             onClick={() => {
               setActive(true)
-              CSAuth.logout()
-              setTimeout(() => toast.info((t('user.session_expired.success')), {
-                position: toast.POSITION.BOTTOM_RIGHT
-              }), 350)
               setTimeout(() => history.push('/user/login'), 250)
             }}
           >
-            {t('general.login')}
+            {t('user.session_expired.go_to_login')}
           </Button>
         </Card.Body>
       </Card>
-      <Button 
-        block
-        color="link"
-        onClick={(event) => {
-          event.preventDefault()  
-          window.history.back()
-        }}
-      >
-        {t('general.cancel')}
-      </Button>
       <ToastContainer autoClose={5000}/>
     </StandaloneFormPage>
   )
