@@ -15,6 +15,7 @@ import { toast } from 'react-toastify'
 import {
   Card,
   Button,
+  Icon,
   StandaloneFormPage,
 } from "tabler-react"
 import HasPermissionWrapper from "../../HasPermissionWrapper"
@@ -45,7 +46,7 @@ function UserSessionExpired({t, match, history}) {
               setTimeout(() => history.push('/user/login'), 250)
             }}
           >
-            {t('user.session_expired.go_to_login')}
+            {t('user.session_expired.go_to_login')} <Icon name="chevron-right" />
           </Button>
         </Card.Body>
       </Card>

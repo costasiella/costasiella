@@ -1009,6 +1009,11 @@
             "create_account_msg": "__STRING_NOT_TRANSLATED__",
             "create_account_msg_click_below": "__STRING_NOT_TRANSLATED__",
             "reset_password": "__STRING_NOT_TRANSLATED__"
+        },
+        "session_expired": {
+            "title": "__STRING_NOT_TRANSLATED__",
+            "message": "__STRING_NOT_TRANSLATED__",
+            "go_to_login": "__STRING_NOT_TRANSLATED__"
         }
     }
 }
