@@ -331,24 +331,13 @@ class UpdateAccountPassword(graphene.relay.ClientIDMutation):
 
             # Check strength of new password
             # https://docs.djangoproject.com/en/2.2/topics/auth/passwords/
-            validators = password_validation.get_password_validators([
-                {
-                    'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-                },
-                {
-                    'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-                    'OPTIONS': {
-                        'min_length': 9,
-                    }
-                },
-                {
-                    'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-                },
-                {
-                    'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-                },
-            ])
-            password_validation.validate_password(password=input['password_new'], user=user, password_validators=validators)
+            password_validation.validate_password(
+                password=input['password_new'], 
+                user=user, 
+                password_validators=password_validation.get_password_validators(
+                    settings.AUTH_PASSWORD_VALIDATORS
+                )
+            )
 
             user.set_password(input['password_new'])
             user.save()
