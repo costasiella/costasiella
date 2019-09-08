@@ -34,8 +34,9 @@ function UserChangePassword({t, match, history}) {
       {/* TODO: point imageURL to logo */}
       <Formik
         initialValues={{ 
-          email: "",
-          password: ""
+          passwordCurrent: "",
+          passwordNew: "",
+          passwordNew2: ""
         }}
         // validationSchema={ACCOUNT_SCHEMA}
         onSubmit={(values, { setSubmitting }) => {
@@ -49,7 +50,7 @@ function UserChangePassword({t, match, history}) {
               }
             }
 
-            doTokenAuth({ variables: vars,
+            updatePassword({ variables: vars,
               refetchQueries: [
                 // // Refetch list
                 // {query: GET_ACCOUNTS_QUERY, variables: get_list_query_variables()},
@@ -58,15 +59,14 @@ function UserChangePassword({t, match, history}) {
             ]})
             .then(({ data }) => {
                 console.log('got data', data)
-                const next = localStorage.getItem(CSLS.AUTH_LOGIN_NEXT) || "/"
-                CSAuth.login(data.tokenAuth.token)
-                verifyToken({
-                  variables: { token: data.tokenAuth.token }
+                history.push('/')
+                toast.info((t('user.change_password.success')), {
+                  position: toast.POSITION.BOTTOM_RIGHT
                 })
               }).catch((error) => {
                 if ( error.message.includes('credentials') ) {
                   // Request user to input valid credentials
-                  toast.info((t('user.login.invalid_credentials')), {
+                  toast.info((t('user.change_password.invalid_credentials')), {
                     position: toast.POSITION.BOTTOM_RIGHT
                   })
                 } else {
