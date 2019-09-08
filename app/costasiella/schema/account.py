@@ -393,5 +393,6 @@ class AccountMutation(graphene.ObjectType):
     create_account = CreateAccount.Field()
     update_account = UpdateAccount.Field()
     update_account_active = UpdateAccountActive.Field()
+    update_account_password = UpdateAccountPassword.Field()
     delete_account = DeleteAccount.Field()
 
