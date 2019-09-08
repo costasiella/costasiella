@@ -125,6 +125,7 @@ import ScheduleClassAttendance from './components/schedule/classes/class/attenda
 import ScheduleClassBook from './components/schedule/classes/class/book/ScheduleClassBook'
 import ScheduleClassEdit from './components/schedule/classes/class/edit/ScheduleClassEdit'
 
+import UserChangePassword from './components/user/login/UserChangePassword'
 import UserLogin from './components/user/login/UserLogin'
 import UserLogout from './components/user/login/UserLogout'
 import UserSessionExpired from './components/user/login/UserSessionExpired'
@@ -303,6 +304,7 @@ function AppRoot({ t }) {
           <PrivateRoute exact path="/settings/general" component={AppSettingsGeneral} />
 
           {/* User */}
+          <PrivateRoute exact path="/user/change_password" component={UserChangePassword} />
           <Route exact path="/user/login" component={UserLogin} />
           <Route exact path="/user/logout" component={UserLogout} />
           <Route exact path="/user/session/expired" component={UserSessionExpired} />
