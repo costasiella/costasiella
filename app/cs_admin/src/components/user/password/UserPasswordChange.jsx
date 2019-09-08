@@ -50,35 +50,37 @@ function UserChangePassword({t, match, history}) {
               }
             }
 
-            updatePassword({ variables: vars,
-              refetchQueries: [
-                // // Refetch list
-                // {query: GET_ACCOUNTS_QUERY, variables: get_list_query_variables()},
-                // // Refresh local cached results for this account
-                // {query: GET_ACCOUNT_QUERY, variables: {"id": match.params.account_id}}
-            ]})
-            .then(({ data }) => {
+            updatePassword({ variables: vars })
+              .then(({ data }) => {
                 console.log('got data', data)
-                toast.info((t('user.change_password.success')), {
+                setTimeout(() => toast.success((t('user.change_password.success')), {
                   position: toast.POSITION.BOTTOM_RIGHT
-                })
-                history.push('/')
+                }), 300)
+                window.history.back()
               }).catch((error) => {
                 console.log('#############')
                 console.log(error.messages)
                 console.log(error.graphQLErrors)
                 console.log(Object.keys(error))
 
-                let i
-                for (i = 0; i < error.graphQLErrors.length; i++) {
-                  toast.error(error.graphQLErrors[0].message
-                      .replace(/'/g, "")
-                      .replace(/,/g, "")
-                      .replace(/\[/g, "")
-                      .replace(/\]/g, ""), {
+                if (error.graphQLErrors) {
+                  let i
+                  for (i = 0; i < error.graphQLErrors.length; i++) {
+                    toast.error(error.graphQLErrors[0].message
+                        .replace(/'/g, "")
+                        .replace(/,/g, "")
+                        .replace(/\[/g, "")
+                        .replace(/\]/g, ""), {
+                      position: toast.POSITION.BOTTOM_RIGHT
+                    })
+                  }
+                } else {
+                  // Show general error message
+                  toast.error((t('general.toast_server_error')) + ': ' +  error, {
                     position: toast.POSITION.BOTTOM_RIGHT
                   })
                 }
+                
                 console.log('there was an error sending the query', error)
                 setSubmitting(false)
               })
