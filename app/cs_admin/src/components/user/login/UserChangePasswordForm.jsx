@@ -26,48 +26,37 @@ const UserLoginForm = ({ t, history, isSubmitting, errors, values, return_url, s
       <Card.Title>
         {t('user.login.title')}
       </Card.Title>
-      <Form.Group label={t('user.login.email')}>
+      <Form.Group label={t('user.change_password.password_current')}>
         <Field type="text" 
-                name="email" 
-                placeholder={t('user.login.email_placeholder')}
-                className={(errors.email) ? "form-control is-invalid" : "form-control"} 
+                name="passwordCurrent" 
+                className={(errors.passwordCurrent) ? "form-control is-invalid" : "form-control"} 
                 autoComplete="off" />
-        <ErrorMessage name="email" component="span" className="invalid-feedback" />
+        <ErrorMessage name="passwordCurrent" component="span" className="invalid-feedback" />
       </Form.Group>
-      <Form.Group label={t('general.password')}>
-        <Field type="password" 
-                name="password" 
-                placeholder={t('user.login.password_placeholder')}
-                className={(errors.password) ? "form-control is-invalid" : "form-control"} 
+      <Form.Group label={t('user.change_password.password_new')}>
+        <Field type="text" 
+                name="passwordNew" 
+                className={(errors.passwordNew) ? "form-control is-invalid" : "form-control"} 
                 autoComplete="off" />
-        <ErrorMessage name="password" component="span" className="invalid-feedback" />
+        <ErrorMessage name="passwordNew" component="span" className="invalid-feedback" />
+      </Form.Group>
+      <Form.Group label={t('user.change_password.password_new_repeat')}>
+        <Field type="text" 
+                name="passwordNew2" 
+                className={(errors.passwordNew2) ? "form-control is-invalid" : "form-control"} 
+                autoComplete="off" />
+        <ErrorMessage name="passwordNew2" component="span" className="invalid-feedback" />
       </Form.Group>
       <Form.Footer>
-        <Grid.Row>
-          <Grid.Col md={6}>
-            <Button 
-              block
-              loading={isSubmitting}
-              color="primary"
-              type="submit" 
-              disabled={isSubmitting}
-            >
-              {t('general.login')}
-            </Button>
-          </Grid.Col>
-          <Grid.Col md={6}>
-            <Button 
-              color="link"
-              RootComponent="a"
-              href={(window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") ? 
-                "http://localhost:8000/accounts/password/reset/" :
-                "/accounts/password/reset/"
-              } 
-            >
-              {t('user.register.reset_password')}
-            </Button>
-          </Grid.Col>
-        </Grid.Row>
+        <Button 
+          block
+          loading={isSubmitting}
+          color="primary"
+          type="submit" 
+          disabled={isSubmitting}
+        >
+          {t('user.change_password')}
+        </Button>
       </Form.Footer>
     </Card.Body>
   </FoForm>

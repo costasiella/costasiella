@@ -43,8 +43,10 @@ function UserChangePassword({t, match, history}) {
             console.log(values)
 
             let vars = {
-              passwordCurrent = values.passwordCurrent,
-              passwordNew = values.passwordNew
+              input: {
+                passwordCurrent = values.passwordCurrent,
+                passwordNew = values.passwordNew
+              }
             }
 
             doTokenAuth({ variables: vars,
