@@ -304,7 +304,7 @@ function AppRoot({ t }) {
           <PrivateRoute exact path="/settings/general" component={AppSettingsGeneral} />
 
           {/* User */}
-          <PrivateRoute exact path="/user/change_password" component={UserChangePassword} />
+          <PrivateRoute exact path="/user/password/change" component={UserChangePassword} />
           <Route exact path="/user/login" component={UserLogin} />
           <Route exact path="/user/logout" component={UserLogout} />
           <Route exact path="/user/session/expired" component={UserSessionExpired} />

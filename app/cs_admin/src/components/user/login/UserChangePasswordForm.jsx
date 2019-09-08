@@ -24,24 +24,24 @@ const UserLoginForm = ({ t, history, isSubmitting, errors, values, return_url, s
   <FoForm className="card" autoComplete="off">
     <Card.Body className="p-6">
       <Card.Title>
-        {t('user.login.title')}
+        {t('user.change_password.title')}
       </Card.Title>
       <Form.Group label={t('user.change_password.password_current')}>
-        <Field type="text" 
+        <Field type="password" 
                 name="passwordCurrent" 
                 className={(errors.passwordCurrent) ? "form-control is-invalid" : "form-control"} 
                 autoComplete="off" />
         <ErrorMessage name="passwordCurrent" component="span" className="invalid-feedback" />
       </Form.Group>
       <Form.Group label={t('user.change_password.password_new')}>
-        <Field type="text" 
+        <Field type="password" 
                 name="passwordNew" 
                 className={(errors.passwordNew) ? "form-control is-invalid" : "form-control"} 
                 autoComplete="off" />
         <ErrorMessage name="passwordNew" component="span" className="invalid-feedback" />
       </Form.Group>
       <Form.Group label={t('user.change_password.password_new_repeat')}>
-        <Field type="text" 
+        <Field type="password" 
                 name="passwordNew2" 
                 className={(errors.passwordNew2) ? "form-control is-invalid" : "form-control"} 
                 autoComplete="off" />

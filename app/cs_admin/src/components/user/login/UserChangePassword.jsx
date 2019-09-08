@@ -45,8 +45,8 @@ function UserChangePassword({t, match, history}) {
 
             let vars = {
               input: {
-                passwordCurrent = values.passwordCurrent,
-                passwordNew = values.passwordNew
+                passwordCurrent: values.passwordCurrent,
+                passwordNew: values.passwordNew
               }
             }
 
@@ -59,10 +59,10 @@ function UserChangePassword({t, match, history}) {
             ]})
             .then(({ data }) => {
                 console.log('got data', data)
-                history.push('/')
                 toast.info((t('user.change_password.success')), {
                   position: toast.POSITION.BOTTOM_RIGHT
                 })
+                history.push('/')
               }).catch((error) => {
                 if ( error.message.includes('credentials') ) {
                   // Request user to input valid credentials
@@ -71,7 +71,7 @@ function UserChangePassword({t, match, history}) {
                   })
                 } else {
                   // Show general error message
-                  toast.error((t('general.toast_server_error')) + ': ' +  error, {
+                  toast.error(error.message.replace('GraphQL error: ', ''), {
                     position: toast.POSITION.BOTTOM_RIGHT
                   })
                 }
