@@ -6,7 +6,7 @@ from django.contrib.auth.models import Group, Permission
 from django.db.models import Q
 
 import graphene
-from django.contrib.auth.password_validation import validate_password
+from django.contrib.auth import password_validation
 from django.contrib.auth.hashers import check_password
 from graphene_django.converter import convert_django_field
 from graphene_django import DjangoObjectType
@@ -301,10 +301,11 @@ class UpdateAccountPassword(graphene.relay.ClientIDMutation):
     def mutate_and_get_payload(self, root, info, **input):
         user = info.context.user
 
+        print(user)
         print(input)
 
         ok = False
-        if input['id']:
+        if input.get('id', False):
             # Change password for another use
             require_login_and_permission(user, 'costasiella.change_account')
 
@@ -318,7 +319,6 @@ class UpdateAccountPassword(graphene.relay.ClientIDMutation):
         else:
             # Change password for current user
             require_login(user)
-            account = get_user_model().objects.filter(user.id)
 
             # Check if current password exists
             if not input['password_current']:
@@ -326,15 +326,32 @@ class UpdateAccountPassword(graphene.relay.ClientIDMutation):
 
             # Check current password
             # https://docs.djangoproject.com/en/2.2/topics/auth/customizing/
-            if not check_password(input['password_current'], account.password):
+            if not check_password(input['password_current'], user.password):
                 raise Exception(_("Current password incorrect, please try again"))
 
             # Check strength of new password
             # https://docs.djangoproject.com/en/2.2/topics/auth/passwords/
-            validate_password(input['password_new'], user, validators=settings.AUTH_PASSWORD_VALIDATORS)
+            validators = password_validation.get_password_validators([
+                {
+                    'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+                },
+                {
+                    'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+                    'OPTIONS': {
+                        'min_length': 9,
+                    }
+                },
+                {
+                    'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+                },
+                {
+                    'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+                },
+            ])
+            password_validation.validate_password(password=input['password_new'], user=user, password_validators=validators)
 
-            account.set_password(input['password_new'])
-            account.save()
+            user.set_password(input['password_new'])
+            user.save()
 
         ok = True
 
