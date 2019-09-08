@@ -1014,6 +1014,19 @@
             "title": "Session expired",
             "message": "To prevent unauthorized access to your account we request you to sign in again every one in a while.",
             "go_to_login": "Sign in again"
+        },
+        "change_password": {
+            "success": "Saved new password",
+            "requirements": "Password requirements",
+            "requirement_min_length": "Is at least 9 characters long.",
+            "requirement_not_similar_account": "Doesn't include (part of) your name or email address.",
+            "requirement_not_a_digit": "Is not just numbers.",
+            "requirement_not_common": "Is not a common word.",
+            "requirement_tips": "Add some capitalization, numbers and symbols to make it stronger",
+            "title": "Change password",
+            "password_current": "Current password",
+            "password_new": "New password",
+            "password_new_repeat": "New password (again)"
         }
     }
 }

@@ -125,10 +125,10 @@ import ScheduleClassAttendance from './components/schedule/classes/class/attenda
 import ScheduleClassBook from './components/schedule/classes/class/book/ScheduleClassBook'
 import ScheduleClassEdit from './components/schedule/classes/class/edit/ScheduleClassEdit'
 
-import UserChangePassword from './components/user/login/UserChangePassword'
+import UserChangePassword from './components/user/password/UserPasswordChange'
 import UserLogin from './components/user/login/UserLogin'
 import UserLogout from './components/user/login/UserLogout'
-import UserSessionExpired from './components/user/login/UserSessionExpired'
+import UserSessionExpired from './components/user/session/UserSessionExpired'
 
 import Error404 from "./components/Error404"
 

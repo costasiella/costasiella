@@ -20,7 +20,7 @@ import {
 // import ISO_COUNTRY_CODES from "../../../tools/iso_country_codes"
 
 
-const UserLoginForm = ({ t, history, isSubmitting, errors, values, return_url, setFieldTouched, setFieldValue }) => (
+const UserPasswordChangeForm = ({ t, history, isSubmitting, errors, values, return_url, setFieldTouched, setFieldValue }) => (
   <FoForm className="card" autoComplete="off">
     <Card.Body className="p-6">
       <Card.Title>
@@ -55,12 +55,12 @@ const UserLoginForm = ({ t, history, isSubmitting, errors, values, return_url, s
           type="submit" 
           disabled={isSubmitting}
         >
-          {t('user.change_password')}
+          {t('user.change_password.title')}
         </Button>
       </Form.Footer>
     </Card.Body>
   </FoForm>
 )
 
-export default withTranslation()(withRouter(UserLoginForm))
+export default withTranslation()(withRouter(UserPasswordChangeForm))
 

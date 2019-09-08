@@ -6,6 +6,7 @@ from django.contrib.auth.models import Group, Permission
 from django.db.models import Q
 
 import graphene
+from graphql import GraphQLError
 from django.contrib.auth import password_validation
 from django.contrib.auth.hashers import check_password
 from graphene_django.converter import convert_django_field
@@ -322,12 +323,12 @@ class UpdateAccountPassword(graphene.relay.ClientIDMutation):
 
             # Check if current password exists
             if not input['password_current']:
-                raise Exception(_("Current password can't be empty"))
+                raise GraphQLError(_("Current password can't be empty"), extensions={'code': 'CURRENT_PASSWORD_EMPTY'})
 
             # Check current password
             # https://docs.djangoproject.com/en/2.2/topics/auth/customizing/
             if not check_password(input['password_current'], user.password):
-                raise Exception(_("Current password incorrect, please try again"))
+                raise GraphQLError(_("Current password is incorrect, please try again"), extensions={'code': 'CURRENT_PASSWORD_INCORRECT'})
 
             # Check strength of new password
             # https://docs.djangoproject.com/en/2.2/topics/auth/passwords/

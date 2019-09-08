@@ -1014,6 +1014,20 @@
             "title": "__STRING_NOT_TRANSLATED__",
             "message": "__STRING_NOT_TRANSLATED__",
             "go_to_login": "__STRING_NOT_TRANSLATED__"
+        },
+        "change_password": {
+            "success": "__STRING_NOT_TRANSLATED__",
+            "invalid_credentials": "__STRING_NOT_TRANSLATED__",
+            "requirements": "__STRING_NOT_TRANSLATED__",
+            "requirement_min_length": "__STRING_NOT_TRANSLATED__",
+            "requirement_not_similar_account": "__STRING_NOT_TRANSLATED__",
+            "requirement_not_a_digit": "__STRING_NOT_TRANSLATED__",
+            "requirement_not_common": "__STRING_NOT_TRANSLATED__",
+            "title": "__STRING_NOT_TRANSLATED__",
+            "password_current": "__STRING_NOT_TRANSLATED__",
+            "password_new": "__STRING_NOT_TRANSLATED__",
+            "password_new_repeat": "__STRING_NOT_TRANSLATED__",
+            "requirement_tips": "__STRING_NOT_TRANSLATED__"
         }
     }
 }

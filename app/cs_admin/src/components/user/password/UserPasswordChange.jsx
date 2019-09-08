@@ -9,20 +9,20 @@ import { Formik } from 'formik'
 import { ToastContainer } from 'react-toastify'
 import { toast } from 'react-toastify'
 
-// import { GET_ACCOUNTS_QUERY, GET_ACCOUNT_QUERY } from './queries'
-// import { ACCOUNT_SCHEMA } from './yupSchema'
+import { PASSWORD_CHANGE_SCHEMA } from './yupSchema'
 
 import {
   Button,
   Card,
   Icon,
+  List,
   StandaloneFormPage,
 } from "tabler-react"
 import HasPermissionWrapper from "../../HasPermissionWrapper"
 
 import { UPDATE_ACCOUNT_PASSWORD } from "../../../queries/system/auth"
 import CSLS from "../../../tools/cs_local_storage"
-import UserChangePasswordForm from './UserChangePasswordForm';
+import UserPasswordChangeForm from './UserPasswordChangeForm';
 
 
 function UserChangePassword({t, match, history}) {
@@ -38,7 +38,7 @@ function UserChangePassword({t, match, history}) {
           passwordNew: "",
           passwordNew2: ""
         }}
-        // validationSchema={ACCOUNT_SCHEMA}
+        // validationSchema={PASSWORD_CHANGE_SCHEMA}
         onSubmit={(values, { setSubmitting }) => {
             console.log('submit values:')
             console.log(values)
@@ -64,14 +64,18 @@ function UserChangePassword({t, match, history}) {
                 })
                 history.push('/')
               }).catch((error) => {
-                if ( error.message.includes('credentials') ) {
-                  // Request user to input valid credentials
-                  toast.info((t('user.change_password.invalid_credentials')), {
-                    position: toast.POSITION.BOTTOM_RIGHT
-                  })
-                } else {
-                  // Show general error message
-                  toast.error(error.message.replace('GraphQL error: ', ''), {
+                console.log('#############')
+                console.log(error.messages)
+                console.log(error.graphQLErrors)
+                console.log(Object.keys(error))
+
+                let i
+                for (i = 0; i < error.graphQLErrors.length; i++) {
+                  toast.error(error.graphQLErrors[0].message
+                      .replace(/'/g, "")
+                      .replace(/,/g, "")
+                      .replace(/\[/g, "")
+                      .replace(/\]/g, ""), {
                     position: toast.POSITION.BOTTOM_RIGHT
                   })
                 }
@@ -81,7 +85,7 @@ function UserChangePassword({t, match, history}) {
         }}
         >
         {({ isSubmitting, errors, values, setFieldTouched, setFieldValue }) => (
-          <UserChangePasswordForm
+          <UserPasswordChangeForm
             isSubmitting={isSubmitting}
             etFieldValue={setFieldValue}
             esetFieldTouched={setFieldTouched}
@@ -90,6 +94,13 @@ function UserChangePassword({t, match, history}) {
           />
         )}
       </Formik>    
+      <h5>{t('user.change_password.requirements')}</h5>
+      <List>
+        <List.Item>{t('user.change_password.requirement_not_a_digit')}</List.Item>
+        <List.Item>{t('user.change_password.requirement_not_common')}</List.Item>
+        <List.Item>{t('user.change_password.requirement_min_length')}</List.Item>
+        <List.Item>{t('user.change_password.requirement_not_similar_account')}</List.Item>
+      </List>
       {/* Cancel button below form */}
       <Button 
         block
