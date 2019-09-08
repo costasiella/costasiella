@@ -6,6 +6,8 @@ from django.contrib.auth.models import Group, Permission
 from django.db.models import Q
 
 import graphene
+from django.contrib.auth.password_validation import validate_password
+from django.contrib.auth.hashers import check_password
 from graphene_django.converter import convert_django_field
 from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
@@ -13,7 +15,7 @@ from graphene_django.filter import DjangoFilterConnectionField
 from allauth.account.models import EmailAddress
 from ..models import AccountTeacherProfile
 
-from ..modules.gql_tools import require_login_and_permission, get_rid
+from ..modules.gql_tools import require_login, require_login_and_permission, get_rid
 from ..modules.encrypted_fields import EncryptedTextField
 
 @convert_django_field.register(EncryptedTextField)
@@ -285,6 +287,57 @@ class UpdateAccount(graphene.relay.ClientIDMutation):
         email_address.save()
 
         return UpdateAccount(account=account)
+
+
+class UpdateAccountPassword(graphene.relay.ClientIDMutation):
+    class Input:
+        id = graphene.ID(required=False)
+        password_current = graphene.String(required=False)
+        password_new = graphene.String(required=True)
+
+    ok = graphene.Boolean()
+
+    @classmethod
+    def mutate_and_get_payload(self, root, info, **input):
+        user = info.context.user
+
+        print(input)
+
+        ok = False
+        if input['id']:
+            # Change password for another use
+            require_login_and_permission(user, 'costasiella.change_account')
+
+            rid = get_rid(input['id'])
+            account = get_user_model().objects.get(id=rid.id)
+            if not account:
+                raise Exception('Invalid Account ID!')
+
+            account.set_password(input['password_new'])
+            account.save()
+        else:
+            # Change password for current user
+            require_login(user)
+            
+            account = get_user_model().objects.filter(user.id)
+
+            # Check if current password exists
+            if not input['password_current']:
+                raise Exception(_("Current password can't be empty"))
+
+            # Check current password
+            if not check_password(input['password_current'], account.password):
+                raise Exception(_("Current password incorrect, please try again"))
+
+            # Check strength of new password
+            validate_password(input['password_new'], user, validators=settings.AUTH_PASSWORD_VALIDATORS)
+
+            account.set_password(input['password_new'])
+            account.save()
+
+        ok = True
+
+        return UpdateAccountPassword(ok=ok)
 
 
 class UpdateAccountActive(graphene.relay.ClientIDMutation):
