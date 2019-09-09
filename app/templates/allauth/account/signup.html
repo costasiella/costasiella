@@ -7,7 +7,7 @@
 
 {% block content %}
 
-<h3 class="card-title">{% trans "Create an account" %}</h3>
+<h3 class="card-title">{% trans "Create your account" %}</h3>
 <p>{% trans "Join us today! It only takes a few steps" %}</p>
 <!--
   {{ form.as_p }}
@@ -41,15 +41,15 @@
     </div>
     <div class="row">
         <div class="col-12 text-left">
-            {% trans "By signing up I agree to" %} <br>
+            {% trans "By signing up I" %} <br>
             <ul>
-                <li>The terms and conditions</li>
-                <li>The privacy policy</li>
+                <li>Agree to the terms and conditions</li>
+                <li>Agree to the privacy policy</li>
             </ul>
         </div>
     </div>
     <div class="sign-btn text-center">
-        <button type="submit" class="btn btn-primary btn-block">{% trans "Create Account" %}</button>
+        <button type="submit" class="btn btn-primary btn-block">{% trans "Create your account" %}</button>
     </div>
 </form>
 
@@ -63,6 +63,10 @@
     {% else %}
         <a href="/#/user/login">
     {% endif %}
-        <b>{% trans "Sign In" %}</b></a></p>
+    <b>{% trans "Sign In" %}</b></a></p>
+    
+    <p> {% trans "In case you can't register because your email address already has an account, please" %}
+    <b><a href="/accounts/password/reset/">{% trans "reset your password" %}</a></b>.     
+    </p>
 </div>
 {% endblock %}
