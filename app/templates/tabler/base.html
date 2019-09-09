@@ -22,18 +22,19 @@
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,300i,400,400i,500,500i,600,600i,700,700i&amp;subset=latin-ext">
         <!-- dashboard stylesheets & js -->
+        <script src="{% static 'tabler/dist/assets/js/require.min.js' %}"></script>
         <script>
             requirejs.config({
-              baseUrl: '.'
+              baseUrl: '/static/tabler/dist/'
             });
         </script>
-        <script src="{% static 'tabler/js/require.min.js' %}"></script>
+        
 <!--
         <script src="./assets/js/require.min.js"></script>
 -->
         <!-- Dashboard Core -->
-        <link rel="stylesheet" href="{% static 'tabler/css/dashboard.css' %}">
-        <script src="{% static 'tabler/js/dashboard.js' %}"></script>
+        <link rel="stylesheet" href="{% static 'tabler/dist/assets/css/dashboard.css' %}">
+        <script src="{% static 'tabler/dist/assets/js/dashboard.js' %}"></script>
     </head>
     <body class="">
         <div class="page">
@@ -44,7 +45,13 @@
                             <div class="text-center mb-6">
                                 <img src="{% static 'logos/stock/logo_stock_backend" class="h-6" alt="">
                             </div>
-                            {% block content %}
+                            <div class="card">
+                                <div class="card-body">
+                                    {% block content %}
+                                    {% endblock %}
+                                </div>
+                            </div>
+                            {% block content_links %}
                             {% endblock %}
                         </div>
                     </div>
