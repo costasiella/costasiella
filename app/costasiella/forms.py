@@ -7,14 +7,12 @@ from .models import Account
 
 
 class AccountCreationForm(UserCreationForm):
-
     class Meta(UserCreationForm):
         model = get_user_model()
         fields = ('email',)
 
 
 class AccountChangeForm(UserChangeForm):
-
     class Meta:
         model = get_user_model()
         fields = ('email',)
@@ -24,12 +22,12 @@ class SignupForm(forms.Form):
     first_name = forms.CharField(
         max_length=30, 
         widget=forms.TextInput(attrs={'placeholder': _('First name')}),
-        label='First name'
+        label=_('First name')
     )
     last_name = forms.CharField(
         max_length=30,
         widget=forms.TextInput(attrs={'placeholder': _('Last name')}), 
-        label='Last name'
+        label=_('Last name')
     )
 
     def signup(self, request, user):
