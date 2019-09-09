@@ -38,7 +38,7 @@ function UserChangePassword({t, match, history}) {
           passwordNew: "",
           passwordNew2: ""
         }}
-        // validationSchema={PASSWORD_CHANGE_SCHEMA}
+        validationSchema={PASSWORD_CHANGE_SCHEMA}
         onSubmit={(values, { setSubmitting }) => {
             console.log('submit values:')
             console.log(values)

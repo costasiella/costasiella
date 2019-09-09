@@ -5,7 +5,8 @@ export const PASSWORD_CHANGE_SCHEMA = Yup.object().shape({
     passwordCurrent: Yup.string()
       .required(t('yup.field_required')),
     passwordNew: Yup.string()
-      .required(t('yup.field_required')),
+      .required(t('yup.field_required'))
+      .min(2, t('yup.min_len_9')),
     passwordNew2: Yup.string()
-      .required(t('yup.field_required')),
+      .oneOf([Yup.ref('passwordNew'), null], t('yup.passwords_must_match')),
   })

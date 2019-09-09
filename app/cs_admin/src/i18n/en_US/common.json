@@ -290,6 +290,7 @@
     },
     "yup": {
         "min_len_3": "Please input at least 3 characters",
+        "min_len_9": "Please input at least 9 characters",
         "field_required": "This field is required",
         "field_has_to_be_number": "Please input a number",
         "positive_number_required": "Please input a number above 0",
@@ -299,7 +300,8 @@
         "min_len_2": "Please input at least 2 characters",
         "email": "Please input a valid email address",
         "time_required": "Please select a time",
-        "field_above_0": "Please add a positive number"
+        "field_above_0": "Please add a positive number",
+        "passwords_must_match": "New password fields should match"
     },
     "home": {
         "title": "Home"
@@ -1022,7 +1024,6 @@
             "requirement_not_similar_account": "Doesn't include (part of) your name or email address.",
             "requirement_not_a_digit": "Is not just numbers.",
             "requirement_not_common": "Is not a common word.",
-            "requirement_tips": "Add some capitalization, numbers and symbols to make it stronger",
             "title": "Change password",
             "password_current": "Current password",
             "password_new": "New password",
