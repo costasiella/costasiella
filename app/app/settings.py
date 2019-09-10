@@ -268,6 +268,7 @@ ACCOUNT_EMAIL_SUBJECT_PREFIX = "" # Don't prefix the email subjects
 ACCOUNT_LOGIN_ATTEMPTS_LIMIT = 7
 ACCOUNT_LOGIN_ATTEMPTS_TIMEOUT = 900 # Lock out a user for 15 minutes after 7 invalid attempts to log in
 ACCOUNT_SIGNUP_FORM_CLASS = 'costasiella.forms.SignupForm'
+ACCOUNT_SIGNUP_PASSWORD_ENTER_TWICE = False
 ACCOUNT_LOGIN_ON_PASSWORD_RESET = False # Log in users after password reset instead of showing a "done" page.
 
 
