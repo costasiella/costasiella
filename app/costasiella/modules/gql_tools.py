@@ -35,3 +35,20 @@ def require_login_and_one_of_permissions(user, permissions):
 def get_rid(global_id):
     Rid = namedtuple('Rid', 'name id')
     return Rid(*from_global_id(global_id))
+
+
+# Get file from base64 string
+def get_content_file_from_base64_str(data_str, name=None):
+    """
+    Convert base64 encoded file to Django ContentFile
+    """
+    import base64
+    from django.core.files.base import ContentFile
+
+    _format, _file_str = data_str.split(';base64,')
+    _name, ext = _format.split('/')
+
+    if not name:
+        name = _name.split(":")[-1]
+
+    return ContentFile(base64.b64decode(_file_str), name='{}.{}'.format(name, ext))
