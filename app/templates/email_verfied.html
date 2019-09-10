@@ -1,4 +1,4 @@
-{% extends "bootstrapadmin/base.html" %}
+{% extends "tabler/base.html" %}
 
 {% load i18n %}
 {% load account %}
@@ -7,12 +7,12 @@
 
 
 {% block content %}
-<h1>{% trans "Email address verified" %}</h1>
+<h3 class="card-title">{% trans "Email address verified" %}</h3>
+    <p>{% trans "You can now sign in!" %} <br><br>
     {% if "localhost" in request.build_absolute_uri %}
-        <p>{% trans "You can now sign in!" %} <a href="http://localhost:3000/#/user/login"><b>{% trans "Sign In" %}</b></a></p>
+        <a class="btn btn-primary btn-block" href="http://localhost:3000/#/user/login">
     {% else %}
-        <p>{% trans "You can now sign in!" %} <a href="/#/user/login"><b>{% trans "Sign In" %}</b></a></p>
+        <a class="btn btn-primary btn-block" href="/#/user/login">
     {% endif %}
-
-
+    {% trans "To sign in" %} <span class="fe fe-chevron-right"></span></a></p>
 {% endblock %}
