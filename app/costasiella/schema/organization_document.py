@@ -7,7 +7,7 @@ from graphql import GraphQLError
 
 import validators
 
-from ..models import OrganizationClasstype
+from ..models import Organization, OrganizationDocument
 from ..modules.gql_tools import require_login_and_permission, get_rid
 from ..modules.messages import Messages
 
@@ -15,90 +15,86 @@ from sorl.thumbnail import get_thumbnail
 
 m = Messages()
 
-class OrganizationClasstypeNodeInterface(graphene.Interface):
+class OrganizatioNodeInterface(graphene.Interface):
     id = graphene.GlobalID()
-    url_image = graphene.String()
-    url_image_thumbnail_small = graphene.String()
+    url_document = graphene.String()
 
 
 class OrganizationClasstypeNode(DjangoObjectType):
-    def resolve_url_image(self, info):
-        if self.image:
-            return self.image.url
-        else:
-            return ''
-
-    def resolve_url_image_thumbnail_small(self, info):
-        if self.image:
-            return get_thumbnail(self.image, '50x50', crop='center', quality=99).url
+    def resolve_url_document(self, info):
+        if self.document:
+            return self.document.url
         else:
             return ''
     
     class Meta:
-        model = OrganizationClasstype
-        filter_fields = ['archived']
-        interfaces = (graphene.relay.Node, OrganizationClasstypeNodeInterface)
+        model = OrganizationDocument
+        filter_fields = ['document_type', 'organization']
+        interfaces = (graphene.relay.Node, OrganizationDocumentNodeInterface)
 
     @classmethod
     def get_node(self, info, id):
         user = info.context.user
-        require_login_and_permission(user, 'costasiella.view_organizationclasstype')
+        # This node is public, no need for any permission checking
 
-        # Return only public non-archived classtypes
         return self._meta.model.objects.get(id=id)
 
 
-class OrganizationClasstypeQuery(graphene.ObjectType):
-    organization_classtypes = DjangoFilterConnectionField(OrganizationClasstypeNode)
-    organization_classtype = graphene.relay.Node.Field(OrganizationClasstypeNode)
+class OrganizationDocumentQuery(graphene.ObjectType):
+    organization_documents = DjangoFilterConnectionField(OrganizationDocumentNode)
+    organization_document = graphene.relay.Node.Field(OrganizationDocumentNode)
 
-    def resolve_organization_classtypes(self, info, archived, **kwargs):
-        user = info.context.user
-        if user.is_anonymous:
-            raise Exception(m.user_not_logged_in)
+    # def resolve_organization_documents(self, info, **kwargs):
+    #     user = info.context.user
 
-        # Has permission: return everything
-        if user.has_perm('costasiella.view_organizationclasstype'):
-            print('user has view permission')
-            return OrganizationClasstype.objects.filter(archived = archived).order_by('name')
-
-        # Return only public non-archived locations
-        return OrganizationClasstype.objects.filter(display_public = True, archived = False).order_by('name')
+    #     return OrganizationClasstype.objects.all.order_by('document_type', '-date_start')
 
 
-class CreateOrganizationClasstype(graphene.relay.ClientIDMutation):
+class CreateOrganizationDocument(graphene.relay.ClientIDMutation):
     class Input:
-        name = graphene.String(required=True)
-        description = graphene.String(required=False, default_value="")
-        display_public = graphene.Boolean(required=True, default_value=True)
-        url_website = graphene.String(required=False, default_value="")
+        document_type = graphene.String(required=True)
+
+        date_start = graphene.types.datetime.Date(required=True)
+        date_end = graphene.types.datetime.Date(required=False, default_value=None)
+        document = graphene.String(required=True)
 
     organization_classtype = graphene.Field(OrganizationClasstypeNode)
 
     @classmethod
     def mutate_and_get_payload(self, root, info, **input):
         user = info.context.user
-        require_login_and_permission(user, 'costasiella.add_organizationclasstype')
+        require_login_and_permission(user, 'costasiella.add_organizationdocument')
 
-        # Validate input
-        if not len(input['name']):
-            print('validation error found')
-            raise GraphQLError(_('Name is required'))
+        import base64
+        from django.core.files.base import ContentFile
 
-        url_website = input['url_website']
-        if url_website:
-            if not validators.url(url_website, public=True):
-                raise GraphQLError(_('Invalid URL, make sure it starts with "http"'))
+        def base64_file(data, name=None):
+            _format, _document_str = data.split(';base64,')
+            _name, ext = _format.split('/')
+            if not name:
+                name = _name.split(":")[-1]
+            return ContentFile(base64.b64decode(_document_str), name='{}.{}'.format(name, ext))
 
-        organization_classtype = OrganizationClasstype(
-            name=input['name'], 
-            description=input['description'],
-            display_public=input['display_public'],
-            url_website=url_website,
+        b64_enc_image = input['document']
+        # print(b64_enc_image)
+        (document_file_type, document_file) = b64_enc_image.split(',')
+        # print(document_file_type)
+
+        organization_document = OrganizationDocument(
+            organization = Organization.objects.get(id=1),
+            document_type = input['document_type'],
+            date_start = input['date_start'],
+            document = base64_file(data=b64_enc_image)
         )
-        organization_classtype.save()
 
-        return CreateOrganizationClasstype(organization_classtype = organization_classtype)
+        if 'date_end' in input:
+            date_end = input['date_end']
+
+     
+
+        organization_document.save()
+
+        return CreateOrganizationDocument(organization_document = organization_document)
 
 
 class UpdateOrganizationClasstype(graphene.relay.ClientIDMutation):
@@ -171,7 +167,7 @@ class UploadOrganizationClasstypeImage(graphene.relay.ClientIDMutation):
 
         
         classtype.image = base64_file(data=b64_enc_image)
-        classtype.save()
+        classtype.save(force_update=True)
 
         print('new image')
         img = classtype.image
@@ -182,31 +178,29 @@ class UploadOrganizationClasstypeImage(graphene.relay.ClientIDMutation):
         return UpdateOrganizationClasstype(organization_classtype=classtype)
 
 
-class ArchiveOrganizationClasstype(graphene.relay.ClientIDMutation):
+class DeleteOrganizationDocument(graphene.relay.ClientIDMutation):
     class Input:
         id = graphene.ID(required=True)
-        archived = graphene.Boolean(required=True)
 
-    organization_classtype = graphene.Field(OrganizationClasstypeNode)
-
+    ok = graphene.Boolean()
+    
     @classmethod
     def mutate_and_get_payload(self, root, info, **input):
         user = info.context.user
-        require_login_and_permission(user, 'costasiella.delete_organizationclasstype')
+        require_login_and_permission(user, 'costasiella.delete_organizationdocument')
 
         rid = get_rid(input['id'])
-        classtype = OrganizationClasstype.objects.filter(id=rid.id).first()
-        if not classtype:
-            raise Exception('Invalid Organization Classtype ID!')
+        organization_document = OrganizationDocument.objects.get(id=rid.id)
+        if not organization_document:
+            raise Exception('Invalid Organization Document ID!')
 
-        classtype.archived = input['archived']
-        classtype.save(force_update=True)
+        ok = organization_document.delete()
 
-        return ArchiveOrganizationClasstype(organization_classtype=classtype)
+        return DeleteOrganizationDocument(ok=ok)
 
 
-class OrganizationClasstypeMutation(graphene.ObjectType):
-    archive_organization_classtype = ArchiveOrganizationClasstype.Field()
-    create_organization_classtype = CreateOrganizationClasstype.Field()
-    update_organization_classtype = UpdateOrganizationClasstype.Field()
-    upload_organization_classtype_image = UploadOrganizationClasstypeImage.Field()
+class OrganizationDocumentMutation(graphene.ObjectType):
+    delete_organization_documment = DeleteOrganizationDocument.Field()
+    create_organization_document = CreateOrganizationDocument.Field()
+    update_organization_document = UpdateOrganizationDocument.Field()
+    
