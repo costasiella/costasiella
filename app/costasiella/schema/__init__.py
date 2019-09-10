@@ -27,6 +27,7 @@ from .organization_classpass_group import OrganizationClasspassGroupQuery, Organ
 from .organization_classpass_group_classpass import OrganizationClasspassGroupClasspassMutation
 from .organization_classtype import OrganizationClasstypeQuery, OrganizationClasstypeMutation
 from .organization_discovery import OrganizationDiscoveryQuery, OrganizationDiscoveryMutation
+from .organization_document import OrganizationDocumentQuery, OrganizationDocumentMutation
 from .organization_location import OrganizationLocationQuery, OrganizationLocationMutation
 from .organization_location_room import OrganizationLocationRoomQuery, OrganizationLocationRoomMutation
 from .organization_level import OrganizationLevelQuery, OrganizationLevelMutation
@@ -70,6 +71,7 @@ class Query(AccountQuery,
             OrganizationClasspassGroupQuery,
             OrganizationClasstypeQuery,
             OrganizationDiscoveryQuery,
+            OrganizationDocumentQuery,
             OrganizationLocationQuery, 
             OrganizationLocationRoomQuery, 
             OrganizationLevelQuery, 
@@ -114,6 +116,7 @@ class Mutation(AccountMutation,
                OrganizationClasspassGroupClasspassMutation,
                OrganizationClasstypeMutation,
                OrganizationDiscoveryMutation,
+               OrganizationDocumentMutation,
                OrganizationLocationMutation,
                OrganizationLocationRoomMutation,
                OrganizationLevelMutation,

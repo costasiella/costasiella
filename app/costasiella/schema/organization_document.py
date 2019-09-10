@@ -15,12 +15,12 @@ from sorl.thumbnail import get_thumbnail
 
 m = Messages()
 
-class OrganizatioNodeInterface(graphene.Interface):
+class OrganizationDocumentNodeInterface(graphene.Interface):
     id = graphene.GlobalID()
     url_document = graphene.String()
 
 
-class OrganizationClasstypeNode(DjangoObjectType):
+class OrganizationDocumentNode(DjangoObjectType):
     def resolve_url_document(self, info):
         if self.document:
             return self.document.url
@@ -57,7 +57,7 @@ class CreateOrganizationDocument(graphene.relay.ClientIDMutation):
         date_end = graphene.types.datetime.Date(required=False, default_value=None)
         document = graphene.String(required=True)
 
-    organization_classtype = graphene.Field(OrganizationClasstypeNode)
+    organization_document = graphene.Field(OrganizationDocumentNode)
 
     @classmethod
     def mutate_and_get_payload(self, root, info, **input):
@@ -72,9 +72,7 @@ class CreateOrganizationDocument(graphene.relay.ClientIDMutation):
         )
 
         if 'date_end' in input:
-            date_end = input['date_end']
-
-     
+            date_end = input['date_end']    
 
         organization_document.save()
 
