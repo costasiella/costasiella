@@ -60,6 +60,9 @@ SITE_ID = 1
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    # Cors
+    'corsheaders.middleware.CorsMiddleware',
+    # End Cors
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -68,10 +71,6 @@ MIDDLEWARE = [
     
     # 3rd party
     'graphql_jwt.middleware.JSONWebTokenMiddleware',
-    # Cors
-    'corsheaders.middleware.CorsMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    # Cors 
 
     # local apps
     # 'costasiella.middleware.AuthRequiredMiddleware'
@@ -334,7 +333,7 @@ DJANGO_CELERY_RESULTS_TASK_ID_MAX_LENGTH=191
 
 
 ##
-# Cors setup
+# Cors setttings
 ##
 CORS_ORIGIN_ALLOW_ALL = True
 # CORS_ORIGIN_WHITELIST = [
