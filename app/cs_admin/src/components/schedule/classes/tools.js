@@ -1,6 +1,9 @@
 import React from "react"
 import CSLS from "../../../tools/cs_local_storage"
 
+import StatusIcon from "../../ui/StatusIcon"
+
+
 export function get_list_query_variables() {
   let orderBy
   let organizationClasstype
@@ -64,4 +67,25 @@ export function represent_teacher(name, role) {
   } else {
     return name
   }
+}
+
+
+export function represent_class_status(status) {
+  let color
+
+  switch (status) {
+    case "SUB":
+      color = "primary"
+      break
+    case "CANCELLED":
+      color = "warning"
+      break
+    case "OPEN":
+      color = "danger"
+      break
+    default:
+      color = "success"
+  }
+
+  return <StatusIcon color={color} />
 }

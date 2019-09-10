@@ -285,10 +285,12 @@
         "no_change": "No change",
         "password": "Password",
         "login": "Sign in",
-        "logout": "Sign out"
+        "logout": "Sign out",
+        "cancelled": "Cancelled"
     },
     "yup": {
         "min_len_3": "Please input at least 3 characters",
+        "min_len_9": "Please input at least 9 characters",
         "field_required": "This field is required",
         "field_has_to_be_number": "Please input a number",
         "positive_number_required": "Please input a number above 0",
@@ -298,7 +300,8 @@
         "min_len_2": "Please input at least 2 characters",
         "email": "Please input a valid email address",
         "time_required": "Please select a time",
-        "field_above_0": "Please add a positive number"
+        "field_above_0": "Please add a positive number",
+        "passwords_must_match": "New password fields should match"
     },
     "home": {
         "title": "Home"
@@ -992,17 +995,39 @@
     },
     "user": {
         "login": {
-            "toast_success": "__STRING_NOT_TRANSLATED__",
-            "invalid_credentials": "__STRING_NOT_TRANSLATED__",
-            "title": "__STRING_NOT_TRANSLATED__",
-            "email": "__STRING_NOT_TRANSLATED__",
-            "email_placeholder": "__STRING_NOT_TRANSLATED__",
-            "password_placeholder": "__STRING_NOT_TRANSLATED__"
+            "invalid_credentials": "Email or password not correct",
+            "title": "Sign in",
+            "email": "Email",
+            "email_placeholder": "Email...",
+            "password_placeholder": "Password ..."
         },
         "logout": {
-            "title": "__STRING_NOT_TRANSLATED__",
-            "confirmation_message": "__STRING_NOT_TRANSLATED__",
-            "success": "__STRING_NOT_TRANSLATED__"
+            "title": "Sign out",
+            "confirmation_message": "Are you sure you wish to sign out?",
+            "success": "You've been signed out"
+        },
+        "register": {
+            "create_account": "Create your account",
+            "create_account_msg": "New here? Join us today! It only takes a few steps.",
+            "create_account_msg_click_below": "Click the button below to get started.",
+            "reset_password": "Forgot password?"
+        },
+        "session_expired": {
+            "title": "Session expired",
+            "message": "To prevent unauthorized access to your account we request you to sign in again every one in a while.",
+            "go_to_login": "Sign in again"
+        },
+        "change_password": {
+            "success": "Saved new password",
+            "requirements": "Password requirements",
+            "requirement_min_length": "Is at least 9 characters long.",
+            "requirement_not_similar_account": "Doesn't include (part of) your name or email address.",
+            "requirement_not_a_digit": "Is not just numbers.",
+            "requirement_not_common": "Is not a common word.",
+            "title": "Change password",
+            "password_current": "Current password",
+            "password_new": "New password",
+            "password_new_repeat": "New password (again)"
         }
     }
 }

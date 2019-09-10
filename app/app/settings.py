@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 """
 
 import os
+from datetime import timedelta
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -29,7 +30,6 @@ ALLOWED_HOSTS = ['*']
 
 
 # Application definition
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -60,6 +60,9 @@ SITE_ID = 1
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    # Cors
+    'corsheaders.middleware.CorsMiddleware',
+    # End Cors
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -68,10 +71,6 @@ MIDDLEWARE = [
     
     # 3rd party
     'graphql_jwt.middleware.JSONWebTokenMiddleware',
-    # Cors
-    'corsheaders.middleware.CorsMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    # Cors 
 
     # local apps
     # 'costasiella.middleware.AuthRequiredMiddleware'
@@ -178,9 +177,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "assets", "bootstrapadmin"),
     os.path.join(BASE_DIR, "assets"),
-    os.path.join(BASE_DIR, "assets", "logos", "stock"),
 ]
 
 # Media files (User uploads)
@@ -190,8 +187,9 @@ MEDIA_URL = '/media/'
 
 # Email configuration
 
-EMAIL_HOST = 'localhost'
-EMAIL_PORT = 2525
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+# EMAIL_HOST = 'localhost'
+# EMAIL_PORT = 2525
 
 # Graphene settings
 
@@ -200,6 +198,14 @@ GRAPHENE = {
     'MIDDLEWARE': [
         'graphql_jwt.middleware.JSONWebTokenMiddleware',
     ],
+}
+
+# GraphQL JWT settings
+# Tokens expire after 3 days
+GRAPHQL_JWT = {
+    'JWT_VERIFY_EXPIRATION': True,
+    'JWT_EXPIRATION_DELTA': timedelta(days=3),
+    'JWT_REFRESH_EXPIRATION_DELTA': timedelta(days=3),
 }
 
 # Webpack loader
@@ -213,7 +219,8 @@ GRAPHENE = {
 
 # Where to go after login, well... let's just go home and take care of things from there :).
 
-LOGIN_REDIRECT_URL = 'home'
+LOGIN_URL = '/#/user/login'
+LOGIN_REDIRECT_URL = '/#/'
 
 # Custom user model
 AUTH_USER_MODEL = 'costasiella.Account'
@@ -222,6 +229,25 @@ AUTH_USER_MODEL = 'costasiella.Account'
 PASSWORD_HASHERS = [
     'django.contrib.auth.hashers.Argon2PasswordHasher',
     'django.contrib.auth.hashers.PBKDF2PasswordHasher',
+]
+
+# Add some password validators
+AUTH_PASSWORD_VALIDATORS = [
+    {
+        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        'OPTIONS': {
+            'min_length': 9,
+        }
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+    },
 ]
 
 # Allauth configuration
@@ -234,12 +260,16 @@ ACCOUNT_USER_MODEL_USERNAME_FIELD = None
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_AUTHENTICATION_METHOD = 'email'  # Use email as the primary identifier
 ACCOUNT_EMAIL_VERIFICATION = "mandatory" # Make email verification mandatory to avoid junk email accounts
-ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = True
+ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = False
+ACCOUNT_CONFIRM_EMAIL_ON_GET = True # Confirm email by simply going to the link
+ACCOUNT_EMAIL_CONFIRMATION_ANONYMOUS_REDIRECT_URL = "email_verified"
+ACCOUNT_EMAIL_CONFIRMATION_AUTHENTICATED_REDIRECT_URL = "email_verified"
 ACCOUNT_EMAIL_SUBJECT_PREFIX = "" # Don't prefix the email subjects
 ACCOUNT_LOGIN_ATTEMPTS_LIMIT = 7
 ACCOUNT_LOGIN_ATTEMPTS_TIMEOUT = 900 # Lock out a user for 15 minutes after 7 invalid attempts to log in
 ACCOUNT_SIGNUP_FORM_CLASS = 'costasiella.forms.SignupForm'
-ACCOUNT_LOGIN_ON_PASSWORD_RESET = True # Log in users after password reset instead of showing a "done" page.
+ACCOUNT_LOGIN_ON_PASSWORD_RESET = False # Log in users after password reset instead of showing a "done" page.
+
 
 
 # Allow Base64 encoded uploads of up to 5MB
@@ -303,7 +333,7 @@ DJANGO_CELERY_RESULTS_TASK_ID_MAX_LENGTH=191
 
 
 ##
-# Cors setup
+# Cors setttings
 ##
 CORS_ORIGIN_ALLOW_ALL = True
 # CORS_ORIGIN_WHITELIST = [

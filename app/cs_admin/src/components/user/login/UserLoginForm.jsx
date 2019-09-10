@@ -43,15 +43,31 @@ const UserLoginForm = ({ t, history, isSubmitting, errors, values, return_url, s
         <ErrorMessage name="password" component="span" className="invalid-feedback" />
       </Form.Group>
       <Form.Footer>
-        <Button 
-          block
-          loading={isSubmitting}
-          color="primary"
-          type="submit" 
-          disabled={isSubmitting}
-        >
-          {t('general.login')}
-        </Button>
+        <Grid.Row>
+          <Grid.Col md={6}>
+            <Button 
+              block
+              loading={isSubmitting}
+              color="primary"
+              type="submit" 
+              disabled={isSubmitting}
+            >
+              {t('general.login')}
+            </Button>
+          </Grid.Col>
+          <Grid.Col md={6}>
+            <Button 
+              color="link"
+              RootComponent="a"
+              href={(window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") ? 
+                "http://localhost:8000/accounts/password/reset/" :
+                "/accounts/password/reset/"
+              } 
+            >
+              {t('user.register.reset_password')}
+            </Button>
+          </Grid.Col>
+        </Grid.Row>
       </Form.Footer>
     </Card.Body>
   </FoForm>

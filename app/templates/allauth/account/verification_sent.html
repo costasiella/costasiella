@@ -5,8 +5,10 @@
 {% block head_title %}{% trans "Verify Your E-mail Address" %}{% endblock %}
 
 {% block content %}
-    <h1>{% trans "Verify Your E-mail Address" %}</h1>
+    <h3 class="card-title">{% trans "Time to open your inbox!" %}</h1>
 
-    <p>{% blocktrans %}We have sent an e-mail to you for verification. Follow the link provided to finalize the signup process. Please contact us if you do not receive it within a few minutes.{% endblocktrans %}</p>
+    <p><b>{% trans 'We have sent an e-mail to you for verification.' %}</b></p>
+    <p>{% blocktrans %} Please follow the link provided in the email to finalize the creation of your account. {% endblocktrans %} <br><br>
+    {% blocktrans %} In case you don't receive it within a few minutes: Please check your spam folder first, but contact us if you don't receive it. {% endblocktrans %}</p>
 
 {% endblock %}

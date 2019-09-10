@@ -9,11 +9,13 @@ from .organization_level import OrganizationLevel
 from .schedule_item import ScheduleItem
 
 from .choices.teacher_roles import get_teacher_roles
+from .choices.schedule_item_otc_statuses import get_schedule_item_otc_statuses
 
 # Create your models here.
 
 class ScheduleItemWeeklyOTC(models.Model):
     TEACHER_ROLES = get_teacher_roles()
+    STATUSES = get_schedule_item_otc_statuses()
 
     class Meta:
         permissions = [
@@ -25,6 +27,7 @@ class ScheduleItemWeeklyOTC(models.Model):
 
     schedule_item = models.ForeignKey(ScheduleItem, on_delete=models.CASCADE)
     date = models.DateField()
+    status = models.CharField(max_length=255, default="", choices=STATUSES)
     description = models.CharField(max_length=255, default="")
     account = models.ForeignKey(Account, on_delete=models.SET_NULL, null=True, related_name="otc_account")
     role = models.CharField(default="", max_length=50, choices=TEACHER_ROLES)

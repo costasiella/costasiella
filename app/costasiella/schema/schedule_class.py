@@ -71,6 +71,8 @@ class ScheduleClassType(graphene.ObjectType):
     schedule_item_id = graphene.ID()
     frequency_type = graphene.String()
     date = graphene.types.datetime.Date()
+    status = graphene.String()
+    description = graphene.String()
     account = graphene.Field(AccountNode)
     role = graphene.String()
     account_2 = graphene.Field(AccountNode)
@@ -174,6 +176,18 @@ class ScheduleClassesDayType(graphene.ObjectType):
             SELECT 
                 csi.id,
                 csi.frequency_type,
+                CASE
+                    WHEN csiotc.status = "CANCELLED" 
+                        THEN csiotc.status
+                    WHEN csiotc.status = "OPEN" 
+                        THEN csiotc.status
+                    WHEN csiotc.account_id IS NOT NULL AND csiotc.role = "SUB" 
+                        THEN "SUB"
+                    WHEN csiotc.status 
+                        THEN csiotc.status                    
+                    ELSE ""
+                END AS status,
+                csiotc.description as description,
                 CASE WHEN csiotc.organization_location_id IS NOT NULL
                      THEN csiotc.organization_location_id
                      ELSE csi_olr.organization_location_id
@@ -203,21 +217,31 @@ class ScheduleClassesDayType(graphene.ObjectType):
                      ELSE csi.time_end
                      END AS time_end,
                 csi.display_public,
-                csiotc.description as test,
-               CASE WHEN csiotc.account_id IS NOT NULL
-                    THEN csiotc.account_id
+               CASE     
+                    WHEN csiotc.status = "OPEN"
+                        THEN NULL
+                    WHEN csiotc.account_id IS NOT NULL
+                        THEN csiotc.account_id
                     ELSE csit.account_id
                     END AS account_id,
-               CASE WHEN csiotc.account_id IS NOT NULL
-                    THEN csiotc.role
+               CASE 
+                    WHEN csiotc.status = "OPEN"
+                        THEN NULL
+                    WHEN csiotc.account_id IS NOT NULL
+                        THEN csiotc.role
                     ELSE csit.role
                     END AS role,
-               CASE WHEN csiotc.account_2_id IS NOT NULL
-                    THEN csiotc.account_2_id
+               CASE 
+                    WHEN csiotc.status = "OPEN"
+                        THEN NULL
+                    WHEN csiotc.account_2_id IS NOT NULL
+                        THEN csiotc.account_2_id
                     ELSE csit.account_2_id
                     END AS account_2_id,
-               CASE WHEN csiotc.account_2_id IS NOT NULL
-                    THEN csiotc.role_2
+               CASE WHEN csiotc.status = "OPEN"
+                        THEN NULL
+                    WHEN csiotc.account_2_id IS NOT NULL
+                        THEN csiotc.role_2
                     ELSE csit.role_2
                     END AS role_2
             FROM costasiella_scheduleitem csi
@@ -228,11 +252,12 @@ class ScheduleClassesDayType(graphene.ObjectType):
                     otc.id,
                     otc.schedule_item_id,
                     otc.date,
+                    otc.status,
+                    otc.description,
                     otc.account_id,
                     otc.role,
                     otc.account_2_id,
                     otc.role_2,
-                    otc.description,
                     otc.organization_location_room_id,
                     otc.organization_classtype_id,
                     otc.organization_level_id,
@@ -257,7 +282,8 @@ class ScheduleClassesDayType(graphene.ObjectType):
                 FROM costasiella_scheduleitemteacher
                 WHERE date_start <= "{class_date}" AND (
                       date_end >= "{class_date}" OR date_end IS NULL)
-                LIMIT 1
+                ORDER BY date_start
+                LIMIT 2
                 ) csit
                 ON csit.schedule_item_id = csi.id
             WHERE csi.schedule_item_type = "CLASS" 
@@ -278,7 +304,7 @@ class ScheduleClassesDayType(graphene.ObjectType):
             order_by_sql = order_by_sql
         )
 
-        # print(query)
+        print(query)
 
         ## 
         # At this time 27 Aug 2019, params don't seem to be working from a dictionary
@@ -312,8 +338,10 @@ class ScheduleClassesDayType(graphene.ObjectType):
         classes_list = []
         for item in schedule_items:
 
+            print("#############")
             print(item)
-            print(item.test)
+            print(item.status)
+            print(item.description)
             print(item.account)
             print(item.account_id)
             print(item.role)
@@ -322,6 +350,8 @@ class ScheduleClassesDayType(graphene.ObjectType):
                 ScheduleClassType(
                     schedule_item_id=to_global_id('ScheduleItemNode', item.pk),
                     date=self.date,
+                    status=item.status,
+                    description=item.description,
                     frequency_type=item.frequency_type,
                     account=item.account,
                     role=item.role,

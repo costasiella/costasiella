@@ -6,6 +6,9 @@ from django.contrib.auth.models import Group, Permission
 from django.db.models import Q
 
 import graphene
+from graphql import GraphQLError
+from django.contrib.auth import password_validation
+from django.contrib.auth.hashers import check_password
 from graphene_django.converter import convert_django_field
 from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
@@ -13,7 +16,7 @@ from graphene_django.filter import DjangoFilterConnectionField
 from allauth.account.models import EmailAddress
 from ..models import AccountTeacherProfile
 
-from ..modules.gql_tools import require_login_and_permission, get_rid
+from ..modules.gql_tools import require_login, require_login_and_permission, get_rid
 from ..modules.encrypted_fields import EncryptedTextField
 
 @convert_django_field.register(EncryptedTextField)
@@ -209,7 +212,7 @@ def validate_create_update_input(account, input, update=False):
 class UpdateAccount(graphene.relay.ClientIDMutation):
     class Input:
         id = graphene.ID(required=True)
-        password = graphene.String(required=False)
+        # password = graphene.String(required=False)
         customer = graphene.Boolean(required=False)
         teacher = graphene.Boolean(required=False)
         employee = graphene.Boolean(required=False)
@@ -249,8 +252,8 @@ class UpdateAccount(graphene.relay.ClientIDMutation):
         account.email = input['email']
         account.username = input['email']
         # Only update these fields if input has been passed
-        if 'password' in input:
-            account.set_password(input['password'])
+        # if 'password' in input:
+        #     account.set_password(input['password'])
         if 'customer' in input:
             account.customer = input['customer']
         if 'teacher' in input:
@@ -285,6 +288,64 @@ class UpdateAccount(graphene.relay.ClientIDMutation):
         email_address.save()
 
         return UpdateAccount(account=account)
+
+
+class UpdateAccountPassword(graphene.relay.ClientIDMutation):
+    class Input:
+        id = graphene.ID(required=False)
+        password_current = graphene.String(required=False)
+        password_new = graphene.String(required=True)
+
+    ok = graphene.Boolean()
+
+    @classmethod
+    def mutate_and_get_payload(self, root, info, **input):
+        user = info.context.user
+
+        print(user)
+        print(input)
+
+        ok = False
+        if input.get('id', False):
+            # Change password for another use
+            require_login_and_permission(user, 'costasiella.change_account')
+
+            rid = get_rid(input['id'])
+            account = get_user_model().objects.get(id=rid.id)
+            if not account:
+                raise Exception('Invalid Account ID!')
+
+            account.set_password(input['password_new'])
+            account.save()
+        else:
+            # Change password for current user
+            require_login(user)
+
+            # Check if current password exists
+            if not input['password_current']:
+                raise GraphQLError(_("Current password can't be empty"), extensions={'code': 'CURRENT_PASSWORD_EMPTY'})
+
+            # Check current password
+            # https://docs.djangoproject.com/en/2.2/topics/auth/customizing/
+            if not check_password(input['password_current'], user.password):
+                raise GraphQLError(_("Current password is incorrect, please try again"), extensions={'code': 'CURRENT_PASSWORD_INCORRECT'})
+
+            # Check strength of new password
+            # https://docs.djangoproject.com/en/2.2/topics/auth/passwords/
+            password_validation.validate_password(
+                password=input['password_new'], 
+                user=user, 
+                password_validators=password_validation.get_password_validators(
+                    settings.AUTH_PASSWORD_VALIDATORS
+                )
+            )
+
+            user.set_password(input['password_new'])
+            user.save()
+
+        ok = True
+
+        return UpdateAccountPassword(ok=ok)
 
 
 class UpdateAccountActive(graphene.relay.ClientIDMutation):
@@ -339,5 +400,6 @@ class AccountMutation(graphene.ObjectType):
     create_account = CreateAccount.Field()
     update_account = UpdateAccount.Field()
     update_account_active = UpdateAccountActive.Field()
+    update_account_password = UpdateAccountPassword.Field()
     delete_account = DeleteAccount.Field()
 

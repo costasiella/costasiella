@@ -22,6 +22,8 @@ export const GET_CLASSES_QUERY = gql`
         scheduleItemId
         frequencyType
         date
+        status
+        description
         account {
           id
           fullName

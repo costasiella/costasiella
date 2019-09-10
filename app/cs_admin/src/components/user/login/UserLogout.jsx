@@ -51,18 +51,18 @@ function UserLogout({t, match, history}) {
           >
             {t('general.logout')}
           </Button>
-          <Button 
-            block
-            color="link"
-            onClick={(event) => {
-              event.preventDefault()  
-              window.history.back()
-            }}
-          >
-            {t('general.back')}
-          </Button>
         </Card.Body>
       </Card>
+      <Button 
+        block
+        color="link"
+        onClick={(event) => {
+          event.preventDefault()  
+          window.history.back()
+        }}
+      >
+        {t('general.cancel')}
+      </Button>
       <ToastContainer autoClose={5000}/>
     </StandaloneFormPage>
   )

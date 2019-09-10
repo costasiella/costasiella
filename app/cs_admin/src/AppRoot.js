@@ -10,6 +10,7 @@ import {
 } from 'react-router-dom'
 import { withTranslation } from 'react-i18next'
 import { useQuery } from "react-apollo"
+import { toast } from 'react-toastify'
 
 import { GET_APP_SETTINGS_QUERY } from "./components/app_settings/queries"
 
@@ -124,8 +125,10 @@ import ScheduleClassAttendance from './components/schedule/classes/class/attenda
 import ScheduleClassBook from './components/schedule/classes/class/book/ScheduleClassBook'
 import ScheduleClassEdit from './components/schedule/classes/class/edit/ScheduleClassEdit'
 
+import UserChangePassword from './components/user/password/UserPasswordChange'
 import UserLogin from './components/user/login/UserLogin'
 import UserLogout from './components/user/login/UserLogout'
+import UserSessionExpired from './components/user/session/UserSessionExpired'
 
 import Error404 from "./components/Error404"
 
@@ -134,18 +137,28 @@ import { CSAuth } from './tools/authentication'
 
 
 const PrivateRoute = ({ component: Component, ...rest }) => {
-  const token = localStorage.getItem(CSLS.AUTH_TOKEN)
+  let token = localStorage.getItem(CSLS.AUTH_TOKEN)
+  let tokenExpired = false
   console.log(token)
   console.log(rest.path)
   
+  // Check expiration
+  const tokenExp = localStorage.getItem(CSLS.AUTH_TOKEN_EXP)
+  if ((new Date() / 1000) >= tokenExp) {
+    CSAuth.logout(true)
+    tokenExpired = true
+  }
+  // Set path to go to after login
   if (!token) {
     localStorage.setItem(CSLS.AUTH_LOGIN_NEXT, rest.path)
-  }
+  } 
 
   return (
     <Route {...rest} render={(props) => (
       token
-        ? <Component {...props} />
+        ? tokenExpired 
+          ? <Redirect to='/user/session/expired' />
+          : <Component {...props} />
         : <Redirect to='/user/login' />
     )} />
   )
@@ -291,8 +304,10 @@ function AppRoot({ t }) {
           <PrivateRoute exact path="/settings/general" component={AppSettingsGeneral} />
 
           {/* User */}
+          <PrivateRoute exact path="/user/password/change" component={UserChangePassword} />
           <Route exact path="/user/login" component={UserLogin} />
           <Route exact path="/user/logout" component={UserLogout} />
+          <Route exact path="/user/session/expired" component={UserSessionExpired} />
 
           <Route component={Error404} />
         </Switch>

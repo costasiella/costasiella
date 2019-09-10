@@ -38,7 +38,11 @@ import ScheduleMenu from "../ScheduleMenu"
 import ScheduleClassesFilter from "./ScheduleClassesFilter"
 
 import { GET_CLASSES_QUERY } from "./queries"
-import { get_list_query_variables, represent_teacher } from './tools'
+import { 
+  get_list_query_variables, 
+  represent_class_status,
+  represent_teacher 
+} from './tools'
 
 import moment from 'moment'
 
@@ -257,6 +261,7 @@ function ScheduleClasses ({ t, history }) {
                               <Table>
                                 <Table.Header>
                                   <Table.Row key={v4()}>
+                                    <Table.ColHeader /> 
                                     <Table.ColHeader>{t('general.time')}</Table.ColHeader>
                                     <Table.ColHeader>{t('general.location')}</Table.ColHeader>
                                     <Table.ColHeader>{t('general.class')}</Table.ColHeader>
@@ -270,6 +275,8 @@ function ScheduleClasses ({ t, history }) {
                                     { scheduleItemId, 
                                       frequencyType,
                                       date, 
+                                      status,
+                                      description,
                                       account, 
                                       role,
                                       account2,
@@ -282,10 +289,14 @@ function ScheduleClasses ({ t, history }) {
                                       displayPublic }) => (
                                     <Table.Row key={v4()}>
                                       <Table.Col>
+                                        {represent_class_status(status)}
+                                      </Table.Col>
+                                      <Table.Col>
                                         {/* Start & end time */}
                                         {moment(date + ' ' + timeStart).format(timeFormat)} {' - '}
                                         {moment(date + ' ' + timeEnd).format(timeFormat)} { ' ' }
-                                        {(frequencyType === 'SPECIFIC') ? <Badge color="primary">{t('general.once')}</Badge> : null }
+                                        {(frequencyType === 'SPECIFIC') ? <Badge color="primary">{t('general.once')}</Badge> : null } <br />
+                                        <span className="text-muted">{description}</span>
                                       </Table.Col>
                                       <Table.Col>
                                         {/* Location */}

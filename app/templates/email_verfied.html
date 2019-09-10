@@ -1,0 +1,18 @@
+{% extends "tabler/base.html" %}
+
+{% load i18n %}
+{% load account %}
+
+{% block head_title %}{% trans "Email address verified" %}{% endblock %}
+
+
+{% block content %}
+<h3 class="card-title">{% trans "Email address verified" %}</h3>
+    <p>{% trans "You can now sign in!" %} <br><br>
+    {% if "localhost" in request.build_absolute_uri %}
+        <a class="btn btn-primary btn-block" href="http://localhost:3000/#/user/login">
+    {% else %}
+        <a class="btn btn-primary btn-block" href="/#/user/login">
+    {% endif %}
+    {% trans "To sign in" %} <span class="fe fe-chevron-right"></span></a></p>
+{% endblock %}

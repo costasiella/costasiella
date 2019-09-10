@@ -38,6 +38,12 @@ class GQLScheduleClass(TestCase):
             'dateUntil': str(a_monday + datetime.timedelta(days=6))
         }
 
+        status_monday = datetime.date(2030, 12, 30)
+        self.variables_query_list_status = {
+            'dateFrom': str(status_monday),
+            'dateUntil': str(status_monday + datetime.timedelta(days=6))
+        }
+
         self.organization_location_room = f.OrganizationLocationRoomFactory.create()
         self.organization_classtype = f.OrganizationClasstypeFactory.create()
         self.organization_level = f.OrganizationLevelFactory.create()
@@ -98,6 +104,8 @@ class GQLScheduleClass(TestCase):
         scheduleItemId
         frequencyType
         date
+        status
+        description
         organizationLocationRoom {
           id
           name
@@ -306,6 +314,87 @@ class GQLScheduleClass(TestCase):
         self.assertEqual(
             data['scheduleClasses'][0]['classes'][0]['displayPublic'], 
             schedule_class.display_public
+        )
+
+
+    def test_query_status_sub(self):
+        """ Query list sub status of scheduleclass """
+        query = self.scheduleclasses_query
+        
+        schedule_class_otc = f.SchedulePublicWeeklyClassOTCFactory.create()
+        schedule_class = schedule_class_otc.schedule_item
+
+        variables = self.variables_query_list_status
+        executed = execute_test_client_api_query(query, self.admin_user, variables=variables)
+        print("##############")
+        print(executed)
+        data = executed.get('data')
+
+        self.assertEqual(data['scheduleClasses'][0]['date'], variables['dateFrom'])
+        self.assertEqual(
+            data['scheduleClasses'][0]['classes'][0]['scheduleItemId'], 
+            to_global_id('ScheduleItemNode', schedule_class.id)
+        )
+        self.assertEqual(
+            data['scheduleClasses'][0]['classes'][0]['status'], 
+            "SUB"
+        )
+
+
+    def test_query_status_cancelled(self):
+        """ Query list status cancelled of scheduleclass """
+        query = self.scheduleclasses_query
+        
+        schedule_class_otc = f.SchedulePublicWeeklyClassOTCFactory.create()
+        schedule_class_otc.status = 'CANCELLED'
+        schedule_class_otc.description = 'moonday'
+        schedule_class_otc.save()
+        schedule_class = schedule_class_otc.schedule_item
+
+        variables = self.variables_query_list_status
+        executed = execute_test_client_api_query(query, self.admin_user, variables=variables)
+        print("##############")
+        print(executed)
+        data = executed.get('data')
+
+        self.assertEqual(data['scheduleClasses'][0]['date'], variables['dateFrom'])
+        self.assertEqual(
+            data['scheduleClasses'][0]['classes'][0]['scheduleItemId'], 
+            to_global_id('ScheduleItemNode', schedule_class.id)
+        )
+        self.assertEqual(
+            data['scheduleClasses'][0]['classes'][0]['status'], 
+            schedule_class_otc.status
+        )
+        self.assertEqual(
+            data['scheduleClasses'][0]['classes'][0]['description'], 
+            schedule_class_otc.description
+        )
+
+
+    def test_query_status_open(self):
+        """ Query list status open of scheduleclass """
+        query = self.scheduleclasses_query
+        
+        schedule_class_otc = f.SchedulePublicWeeklyClassOTCFactory.create()
+        schedule_class_otc.status = 'OPEN'
+        schedule_class_otc.save()
+        schedule_class = schedule_class_otc.schedule_item
+
+        variables = self.variables_query_list_status
+        executed = execute_test_client_api_query(query, self.admin_user, variables=variables)
+        print("##############")
+        print(executed)
+        data = executed.get('data')
+
+        self.assertEqual(data['scheduleClasses'][0]['date'], variables['dateFrom'])
+        self.assertEqual(
+            data['scheduleClasses'][0]['classes'][0]['scheduleItemId'], 
+            to_global_id('ScheduleItemNode', schedule_class.id)
+        )
+        self.assertEqual(
+            data['scheduleClasses'][0]['classes'][0]['status'], 
+            schedule_class_otc.status
         )
 
 

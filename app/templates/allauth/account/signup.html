@@ -7,7 +7,7 @@
 
 {% block content %}
 
-<h3>{% trans "Create an account" %}</h3>
+<h3 class="card-title">{% trans "Create your account" %}</h3>
 <p>{% trans "Join us today! It only takes a few steps" %}</p>
 <!--
   {{ form.as_p }}
@@ -16,44 +16,60 @@
     {% csrf_token %}
     {{ form.non_field_errors }}
     <div class="form-group">
+        <label class="form-label">{% trans "First name" %}</label>
         {{ form.first_name|addcss:"form-control" }}
         <i class="ik ik-user"></i>
         {{ form.first_name.errors }}
     </div>
     <div class="form-group">
+        <label class="form-label">{% trans "Last name" %}</label>
         {{ form.last_name|addcss:"form-control" }}
-        <i class="ik ik-user"></i>
         {{ form.last_name.errors }}
     </div>
     <div class="form-group">
+        <label class="form-label">{% trans "Email" %}</label>
         {{ form.email|addcss:"form-control" }}
-        <i class="ik ik-mail"></i>
         {{ form.email.errors }}
     </div>
     <div class="form-group">
-        <input type="password" name="password1" placeholder={% trans "Password" %} required="" id="id_password1" class="form-control" aria-autocomplete="list">
-        <i class="ik ik-lock"></i>
+        <label class="form-label">{% trans "Password" %}</label>
+        <input type="password" name="password1" placeholder={% trans "Password" %} required="" id="id_password1" class="form-control">
     </div>
     <div class="form-group">
-        <input type="password" name="password2" placeholder={% trans "Password (again)" %}required="" id="id_password2" class="form-control">
-        <i class="ik ik-lock"></i>
+        <label class="form-label">{% trans "Password (again)" %}</label>
+        <input type="password" name="password2" placeholder={% trans "Password (again)" %} required="" id="id_password2" class="form-control">
     </div>
     <div class="row">
-        <div class="col-12 text-left">
-            {% trans "By signing up I agree to" %} <br>
-            <ul>
-                <li>The terms and conditions</li>
-                <li>The privacy policy</li>
-            </ul>
+        <div class="col-12 text-left text-muted text-small">
+            <small>
+                {% trans "By signing up I" %} <br>
+                <ul>
+                    <li>Agree to the terms and conditions</li>
+                    <li>Agree to the privacy policy</li>
+                </ul>
+            </small>
         </div>
     </div>
     <div class="sign-btn text-center">
-        <button type="submit" class="btn btn-theme">{% trans "Create Account" %}</button>
+        <button type="submit" class="btn btn-primary btn-block">{% trans "Create your account" %}</button>
     </div>
-    
 </form>
-<div class="register">
-    <p>{% trans "Already have an account?" %} <a href="{{ login_url }}"><b>{% trans "Sign In" %}</b></a></p>
-</div>
 
+{% endblock %}
+
+{% block content_links %}
+<div class="text-center">
+    <p>{% trans "Already have an account?" %}
+    {% if "localhost" in request.build_absolute_uri %}
+        <a href="http://localhost:3000/#/user/login">
+    {% else %}
+        <a href="/#/user/login">
+    {% endif %}
+    <b>{% trans "Sign In" %}</b></a></p>
+</div>
+<div class="text-justify">
+    <p> {% trans "In case you can't register because your email address already has an account, please" %}
+    <b><a href="/accounts/password/reset/">{% trans "reset your password" %}</a></b>.     
+    </p>
+</div>
 {% endblock %}
