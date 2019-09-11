@@ -43,8 +43,9 @@ function processClientError(error) {
   console.log(error.forward)
   let i
   for (i = 0; i < error.response.errors.length; i++) {
-    if (error.response.errors[i].extensions.code == CSEC.USER_NOT_LOGGED_IN) {
+    if (error.response.errors[i].extensions.code === CSEC.USER_NOT_LOGGED_IN) {
       window.location.href = "/#/user/login"
+      window.location.reload()
       break
     }
   }  
