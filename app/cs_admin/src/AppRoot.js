@@ -137,9 +137,7 @@ import { CSAuth } from './tools/authentication'
 
 
 const PrivateRoute = ({ component: Component, ...rest }) => {
-  let token = localStorage.getItem(CSLS.AUTH_TOKEN)
   let tokenExpired = false
-  console.log(token)
   console.log(rest.path)
   
   // Check expiration
@@ -148,18 +146,12 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
     CSAuth.logout(true)
     tokenExpired = true
   }
-  // Set path to go to after login
-  if (!token) {
-    localStorage.setItem(CSLS.AUTH_LOGIN_NEXT, rest.path)
-  } 
 
   return (
     <Route {...rest} render={(props) => (
-      token
-        ? tokenExpired 
-          ? <Redirect to='/user/session/expired' />
-          : <Component {...props} />
-        : <Redirect to='/user/login' />
+      tokenExpired 
+        ? <Redirect to='/user/session/expired' />
+        : <Component {...props} />
     )} />
   )
 }

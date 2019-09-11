@@ -7,6 +7,7 @@ import ApolloClient from "apollo-boost"
 // import 'moment/locale/nl'
 
 import CSLS from "./tools/cs_local_storage"
+import CSEC from "./tools/cs_error_codes"
 import { CSAuth } from './tools/authentication'
 
 // Main app
@@ -32,20 +33,23 @@ String.prototype.trunc =
   }
 
 
+function processClientError(error) {
+  let i
+  for (i = 0; i < error.response.errors.length; i++) {
+    if (error.response.errors[i].extensions.code == CSEC.USER_NOT_LOGGED_IN) {
+      window.location.href = "/#/user/login"
+      break
+    }
+  }  
+}
+
 // set up ApolloClient
 // TODO: Set up token expiration and auto refresh if possible and redirect to login if refresh token is expired.
 const client = new ApolloClient({
   // uri: "http://localhost:8000/graphql/",
   uri: "/graphql/",
-  credentials: "same-origin"
-  // request: async operation => {
-  //   const token = localStorage.getItem(CSLS.AUTH_TOKEN)
-  //   operation.setContext({
-  //     headers: {
-  //       Authorization: token ? `JWT ${token}` : ''
-  //     }
-  //   })
-  // }
+  credentials: "same-origin",
+  onError: processClientError,
 })
 
 

@@ -3,7 +3,7 @@ import CSLS from "./cs_local_storage"
 
 export const CSAuth = {
     login(token) {
-        localStorage.setItem(CSLS.AUTH_TOKEN, token)
+        // localStorage.setItem(CSLS.AUTH_TOKEN, token)
         localStorage.removeItem(CSLS.AUTH_LOGIN_NEXT)
     },
     updateTokenInfo(payload) {
@@ -17,8 +17,8 @@ export const CSAuth = {
             localStorage.removeItem(CSLS.AUTH_TOKEN_ORIGIAT)
             localStorage.removeItem(CSLS.AUTH_LOGIN_NEXT)
         } 
-        //  Always remove token
-        localStorage.removeItem(CSLS.AUTH_TOKEN)
+        // //  Always remove token
+        // localStorage.removeItem(CSLS.AUTH_TOKEN)
         
     }
 }

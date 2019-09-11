@@ -13,7 +13,7 @@ def require_login(user):
 
 def require_permission(user, permission):
     if not user.has_perm(permission):
-        raise Exception(m.user_permission_denied)
+        raise GraphQLError(m.user_permission_denied, extensions={'code': get_error_code('USER_PERMISSION_DENIED')})
 
 def require_login_and_permission(user, permission):
     require_login(user)
@@ -29,7 +29,7 @@ def require_login_and_one_of_permissions(user, permissions):
             break
 
     if not has_permission:
-        raise Exception(m.user_permission_denied)
+        raise GraphQLError(m.user_permission_denied, extensions={'code': get_error_code('USER_PERMISSION_DENIED')})
 
 
 # To convert relay node id to real id
@@ -57,4 +57,6 @@ def get_content_file_from_base64_str(data_str, name=None):
 
 def get_error_code(error_code):
     if error_code == "USER_NOT_LOGGED_IN":
+        return error_code
+    elif error_code == "USER_PERMISSION_DENIED":
         return error_code
