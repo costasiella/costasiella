@@ -337,3 +337,6 @@ DJANGO_CELERY_RESULTS_TASK_ID_MAX_LENGTH=191
 # Cors setttings
 ##
 CORS_ORIGIN_ALLOW_ALL = False
+# CORS_ORIGIN_WHITELIST = [
+#     "http://example.com"
+# ]
