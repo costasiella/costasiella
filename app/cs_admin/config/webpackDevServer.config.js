@@ -84,7 +84,7 @@ module.exports = function(proxy, allowedHost) {
     //proxy,
     proxy: [{
         context: ['/graphql'],
-        target: 'http://localhost:8000',
+        target: 'http://localhost:8000'
     }],
     before(app, server) {
       if (fs.existsSync(paths.proxySetup)) {
