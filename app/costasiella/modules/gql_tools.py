@@ -1,5 +1,6 @@
 from collections import namedtuple
 from graphql_relay.node.node import from_global_id
+from graphql import GraphQLError
 
 from .messages import Messages
 
@@ -8,7 +9,7 @@ m = Messages()
 # Auth
 def require_login(user):
     if user.is_anonymous:
-        raise Exception(m.user_not_logged_in)
+        raise GraphQLError(m.user_not_logged_in, extensions={'code': get_error_code('USER_NOT_LOGGED_IN')})
 
 def require_permission(user, permission):
     if not user.has_perm(permission):
@@ -52,3 +53,8 @@ def get_content_file_from_base64_str(data_str, name=None):
         name = _name.split(":")[-1]
 
     return ContentFile(base64.b64decode(_file_str), name='{}.{}'.format(name, ext))
+
+
+def get_error_code(error_code):
+    if error_code == "USER_NOT_LOGGED_IN":
+        return error_code
