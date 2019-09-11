@@ -174,6 +174,13 @@ module.exports = function(webpackEnv) {
         : isEnvDevelopment &&
           (info => path.resolve(info.absoluteResourcePath).replace(/\\/g, '/')),
     },
+    devServer: {
+      proxy: {
+        '/graphql': {
+           target: 'http://localhost:8000/'
+         },
+      },
+    },
     optimization: {
       minimize: isEnvProduction,
       minimizer: [
