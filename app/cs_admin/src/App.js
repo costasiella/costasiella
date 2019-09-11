@@ -66,6 +66,14 @@ const client = new ApolloClient({
   //     }
   //   })
   // }
+  // request: async operation => {
+  //   const token = localStorage.getItem(CSLS.AUTH_TOKEN)
+  //   operation.setContext({
+  //     headers: {
+  //       Authorization: token ? `JWT ${token}`: ''
+  //     }
+  //   })
+  // }
 })
 
 
