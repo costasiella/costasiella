@@ -93,8 +93,7 @@ class AccountQuery(graphene.AbstractType):
 
     def resolve_user(self, info):
         user = info.context.user
-        if user.is_anonymous:
-            raise Exception('Not logged in!')
+        require_login(user)
 
         return user
 
