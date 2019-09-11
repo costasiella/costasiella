@@ -206,6 +206,7 @@ GRAPHQL_JWT = {
     'JWT_VERIFY_EXPIRATION': True,
     'JWT_EXPIRATION_DELTA': timedelta(days=3),
     'JWT_REFRESH_EXPIRATION_DELTA': timedelta(days=3),
+    # 'JWT_COOKIE_SECURE': True # Set this to true for production
 }
 
 # Webpack loader
