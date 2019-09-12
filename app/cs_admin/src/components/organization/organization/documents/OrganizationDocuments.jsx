@@ -54,7 +54,7 @@ function OrganizationDocuments({ t, match }) {
                               {docType[1]}
                             </Table.Col>
                             <Table.Col className="text-right" key={v4()}>
-                              <Link to={`"/organization/documents/${organizationId}/${docType[0]}"`}>
+                              <Link to={`/organization/documents/${organizationId}/${docType[0]}`}>
                                 <Button className='btn-sm' 
                                         color="secondary">
                                   {t('general.manage')} <Icon name="chevron-right" />
