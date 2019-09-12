@@ -286,7 +286,11 @@
         "password": "Password",
         "login": "Sign in",
         "logout": "Sign out",
-        "cancelled": "Cancelled"
+        "cancelled": "Cancelled",
+        "privacy_policy": "Privacy policy",
+        "document": "Document",
+        "manage": "Manage",
+        "documents": "Documents"
     },
     "yup": {
         "min_len_3": "Please input at least 3 characters",
@@ -512,6 +516,9 @@
             "toast_edit_success": "Saved organization",
             "registration": "Registration ID",
             "tax_registration": "Tax registration ID"
+        },
+        "documents": {
+            "title": "Documents"
         }
     },
     "validity": {

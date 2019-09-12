@@ -286,7 +286,11 @@
         "password": "__STRING_NOT_TRANSLATED__",
         "login": "__STRING_NOT_TRANSLATED__",
         "logout": "__STRING_NOT_TRANSLATED__",
-        "cancelled": "__STRING_NOT_TRANSLATED__"
+        "cancelled": "__STRING_NOT_TRANSLATED__",
+        "privacy_policy": "__STRING_NOT_TRANSLATED__",
+        "document": "__STRING_NOT_TRANSLATED__",
+        "manage": "__STRING_NOT_TRANSLATED__",
+        "documents": "__STRING_NOT_TRANSLATED__"
     },
     "yup": {
         "min_len_3": "__STRING_NOT_TRANSLATED__",
@@ -512,6 +516,9 @@
             "toast_edit_success": "__STRING_NOT_TRANSLATED__",
             "registration": "__STRING_NOT_TRANSLATED__",
             "tax_registration": "__STRING_NOT_TRANSLATED__"
+        },
+        "documents": {
+            "title": "__STRING_NOT_TRANSLATED__"
         }
     },
     "validity": {
