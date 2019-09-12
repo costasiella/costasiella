@@ -32,7 +32,20 @@ function OrganizationDocuments({ t, match }) {
     <SiteWrapper>
       <div className="my-3 my-md-5">
         <Container>
-          <Page.Header title={t('organization.title')} />
+          <Page.Header title={t('organization.title')}>
+            <div className="page-options d-flex">
+              <Link to={`/organization/edit/${organizationId}`}>
+                <Button 
+                  icon="arrow-left"
+                  className="mr-2"
+                  outline
+                  color="secondary"
+                >
+                  {t('general.back_to')} {t('organization.title')}
+                </Button>
+              </Link>
+            </div>
+          </Page.Header>
           <Grid.Row>
             <Grid.Col md={9}>
               <Card>
