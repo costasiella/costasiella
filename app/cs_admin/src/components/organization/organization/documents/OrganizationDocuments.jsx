@@ -20,7 +20,8 @@ import SiteWrapper from "../../../SiteWrapper"
 import OrganizationMenu from "../../OrganizationMenu"
 
 
-function OrganizationDocuments({ t }) {
+function OrganizationDocuments({ t, match }) {
+  const organizationId = match.params.organization_id
   const docTypes = [
     [ "TERMS_AND_CONDITATIONS", t("general.terms_and_conditions")],
     [ "PRIVACY_POLICY", t("general.privacy_policy")],
@@ -35,7 +36,9 @@ function OrganizationDocuments({ t }) {
           <Grid.Row>
             <Grid.Col md={9}>
               <Card>
-                <Card.Title>{t('organization.documents.title')}</Card.Title>
+                <Card.Header>
+                  <Card.Title>{t('organization.documents.title')}</Card.Title>
+                </Card.Header>
                 <Card.Body>
                   <Table>
                     <Table.Header>
@@ -51,7 +54,7 @@ function OrganizationDocuments({ t }) {
                               {docType[1]}
                             </Table.Col>
                             <Table.Col className="text-right" key={v4()}>
-                              <Link to={`"/organization/documents/${docType[0]}"`}>
+                              <Link to={`"/organization/documents/${organizationId}/${docType[0]}"`}>
                                 <Button className='btn-sm' 
                                         color="secondary">
                                   {t('general.manage')} <Icon name="chevron-right" />

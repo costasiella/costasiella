@@ -69,6 +69,7 @@ import OrganizationClasstypeEditImage from './components/organization/classtypes
 import OrganizationDiscoveries from './components/organization/discovery/OrganizationDiscoveries'
 import OrganizationDiscoveryAdd from './components/organization/discovery/OrganizationDiscoveryAdd'
 import OrganizationDiscoveryEdit from './components/organization/discovery/OrganizationDiscoveryEdit'
+import OrganizationDocuments from './components/organization/organization/documents/OrganizationDocuments'
 import OrganizationLocations from './components/organization/locations/OrganizationLocations'
 import OrganizationLocationAdd from './components/organization/locations/OrganizationLocationAdd'
 import OrganizationLocationEdit from './components/organization/locations/OrganizationLocationEdit'
@@ -208,6 +209,7 @@ function AppRoot({ t }) {
           {/* ORGANIZATION */}
           <PrivateRoute exact path="/organization" component={OrganizationHome} />
           <PrivateRoute exact path="/organization/edit/:id" component={OrganizationEdit} />
+          <PrivateRoute exact path="/organization/documents/:organization_id" component={OrganizationDocuments} />
           <PrivateRoute exact path="/organization/appointment_categories" component={OrganizationAppointmentCategories} />
           <PrivateRoute exact path="/organization/appointment_categories/add" component={OrganizationAppointmentCategoryAdd} />
           <PrivateRoute exact path="/organization/appointment_categories/edit/:id" component={OrganizationAppointmentCategoryEdit} />
