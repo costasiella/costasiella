@@ -1,8 +1,6 @@
 // @flow
 
 import React from 'react'
-import { Query, Mutation } from "react-apollo"
-import gql from "graphql-tag"
 import { v4 } from "uuid"
 import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
@@ -13,19 +11,12 @@ import {
   Page,
   Grid,
   Icon,
-  Dimmer,
-  Badge,
   Button,
   Card,
   Container,
   Table
 } from "tabler-react";
 import SiteWrapper from "../../../SiteWrapper"
-import HasPermissionWrapper from "../../../HasPermissionWrapper"
-// import { confirmAlert } from 'react-confirm-alert'; // Import
-import { toast } from 'react-toastify'
-
-import ContentCard from "../../../general/ContentCard"
 import OrganizationMenu from "../../OrganizationMenu"
 
 
