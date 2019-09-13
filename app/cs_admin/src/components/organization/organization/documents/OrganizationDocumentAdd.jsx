@@ -60,17 +60,22 @@ function OrganizationDocumentAdd({ t, match, history }) {
   const [addDocument, { data }] = useMutation(ADD_DOCUMENT)
 
   return (
-    <OrganizationDocumentsBase headerLinks=
-    {back} sidebarButton={sidebarButton}>
-      <Formik
-        initialValues={{ 
-          version: '',
-          dateStart: '', 
-          dateEnd: '',
-          document: ''
-        }}
-        // validationSchema={DOCUMENT_SCHEMA}
-        onSubmit={(values, { setSubmitting }) => {
+    <OrganizationDocumentsBase headerLinks={back} sidebarButton={sidebarButton}>
+      <Card>
+        <Card.Header>
+          <Card.Title>
+            {t('organizations.documents.add')}
+          </Card.Title>
+        </Card.Header>
+        <Formik
+          initialValues={{ 
+            version: '',
+            dateStart: '', 
+            dateEnd: '',
+            document: ''
+          }}
+          // validationSchema={DOCUMENT_SCHEMA}
+          onSubmit={(values, { setSubmitting }) => {
             let dateEnd
             if (values.dateEnd) {
               dateEnd = dateToLocalISO(values.dateEnd)
@@ -104,15 +109,18 @@ function OrganizationDocumentAdd({ t, match, history }) {
               })
           }}
           >
-          {({ isSubmitting, errors }) => (
+          {({ isSubmitting, errors, values, setFieldTouched, setFieldValue }) => (
               <OrganizationDocumentForm 
                 isSubmitting={isSubmitting}
+                values={values}
                 errors={errors}
+                setFieldTouched={setFieldTouched}
+                setFieldValue={setFieldValue}
                 return_url={return_url}
-                
               />
           )}
         </Formik>
+      </Card>
     </OrganizationDocumentsBase>
   )
 }
