@@ -9,7 +9,7 @@ import {
   } from "tabler-react"
   import { Form as FoForm, Field, ErrorMessage } from 'formik'
 
-const OrganizationLevelForm = ({ t, history, isSubmitting, errors, return_url }) => (
+const OrganizationDocumentForm = ({ t, history, isSubmitting, errors, return_url }) => (
     <FoForm>
         <Card.Body>
             <Form.Group label={t('general.name')}>

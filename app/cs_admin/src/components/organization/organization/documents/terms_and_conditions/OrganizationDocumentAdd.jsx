@@ -1,16 +1,15 @@
 // @flow
 
 import React from 'react'
-import { Mutation } from "react-apollo";
-import gql from "graphql-tag"
+import { useMutation } from "react-apollo";
 import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
 import { Formik } from 'formik'
 import { toast } from 'react-toastify'
 
-
-import { GET_LEVELS_QUERY } from './queries'
-import { LEVEL_SCHEMA } from './yupSchema'
+import { ADD_DOCUMENT } from "../queries"
+import { LEVEL_SCHEMA } from '../yupSchema'
+import { dateToLocalISO } from "../../../../../tools/date_tools"
 import OrganizationLDocumentForm from './OrganizationDocumentForm'
 
 
@@ -27,10 +26,96 @@ import SiteWrapper from "../../SiteWrapper"
 import HasPermissionWrapper from "../../HasPermissionWrapper"
 
 import OrganizationMenu from '../OrganizationMenu'
-import { ADD_DOCUMENT } from "../queries"
+import OrganizationDocumentsBase from "../OrganizationDocumentsBase"
 
 
 const return_url = "/organization/levels"
+
+function OrganizationDocumentAdd({ t, history }) {
+  const organizationId = match.params.organization_id
+  const documentType = match.params.document_type
+  
+  const returnUrl = `/organization/documents/${organizationId}/${documentType}`
+  const back = <Link to={returnUrl}>
+    <Button 
+      icon="arrow-left"
+      className="mr-2"
+      outline
+      color="secondary"
+    >
+      {t('general.back_to')} {t('organization.documents.list.title')}
+    </Button>
+  </Link>
+  const sidebarButton = <HasPermissionWrapper 
+    permission="add"
+    resource="organizationdocument">
+      <Link to={returnUrl} >
+        <Button color="primary btn-block mb-6" >
+          <Icon prefix="fe" name="plus-circle" /> {t('organization.documents.add')}
+        </Button>
+      </Link>
+  </HasPermissionWrapper>
+
+  const [addDocument, { data }] = useMutation(ADD_DOCUMENT)
+
+  return (
+    <OrganizationDocumentsBase headerLinks=
+    {back} sidebarButton={sidebarButton}>
+      <Formik
+        initialValues={{ 
+          version: '',
+          dateStart: '', 
+          dateEnd: '',
+          documents: ''
+        }}
+        validationSchema={DOCUMENT_SCHEMA}
+        onSubmit={(values, { setSubmitting }) => {
+            let dateEnd
+            if (values.dateEnd) {
+              dateEnd = dateToLocalISO(values.dateEnd)
+            } else {
+              dateEnd = values.dateEnd
+            }
+
+            addLocation({ variables: {
+              input: {
+                name: values.name, 
+                version: values.version,
+                dateStart: dateToLocalISO(values.dateStart),
+                dateEnd: dateEnd,
+                document: values.document,
+              }
+            }, refetchQueries: [
+                {query: GET_DOCUMENTS_QUERY, variables: {documentType: documentType}}
+            ]})
+            .then(({ data }) => {
+                console.log('got data', data);
+                toast.success((t('organization.documents.toast_add_success')), {
+                    position: toast.POSITION.BOTTOM_RIGHT
+                  })
+              }).catch((error) => {
+                toast.error((t('general.toast_server_error')) + ': ' +  error, {
+                    position: toast.POSITION.BOTTOM_RIGHT
+                  })
+                console.log('there was an error sending the query', error)
+                setSubmitting(false)
+              })
+          }}
+          >
+          {({ isSubmitting, errors }) => (
+              <OrganizationDocumentForm 
+                isSubmitting={isSubmitting}
+                errors={errors}
+                return_url={return_url}
+              />
+          )}
+        </Formik>
+    </OrganizationDocumentsBase>
+  )
+}
+
+export default OrganizationDocumentAdd
+
 
 const OrganizationLevelAdd = ({ t, history }) => (
   <SiteWrapper>
