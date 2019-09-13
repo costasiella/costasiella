@@ -53,6 +53,7 @@ class OrganizationDocumentQuery(graphene.ObjectType):
 class CreateOrganizationDocument(graphene.relay.ClientIDMutation):
     class Input:
         document_type = graphene.String(required=True)
+        version = graphene.String(required=True)
         date_start = graphene.types.datetime.Date(required=True)
         date_end = graphene.types.datetime.Date(required=False, default_value=None)
         document = graphene.String(required=True)
@@ -66,6 +67,7 @@ class CreateOrganizationDocument(graphene.relay.ClientIDMutation):
 
         organization_document = OrganizationDocument(
             organization = Organization.objects.get(id=1),
+            version = input['version'],
             document_type = input['document_type'],
             date_start = input['date_start'],
             document = get_content_file_from_base64_str(data=input['document'])
