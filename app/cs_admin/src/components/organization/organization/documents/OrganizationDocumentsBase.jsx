@@ -14,7 +14,7 @@ import SiteWrapper from "../../../SiteWrapper"
 import OrganizationMenu from "../../OrganizationMenu"
 
 
-function OrganizationDocumentsBase({ t, children, headerLinks }) {
+function OrganizationDocumentsBase({ t, children, headerLinks, sidebarButton }) {
   return (
     <SiteWrapper>
       <div className="my-3 my-md-5">
