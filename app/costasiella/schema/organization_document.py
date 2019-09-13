@@ -85,6 +85,7 @@ class UpdateOrganizationDocument(graphene.relay.ClientIDMutation):
     class Input:
         id = graphene.ID(required=True)
         document_type = graphene.String(required=False)
+        version = graphene.String(required=True)
         date_start = graphene.types.datetime.Date(required=False)
         date_end = graphene.types.datetime.Date(required=False, default_value=None)
         document = graphene.String(required=False)
@@ -103,6 +104,9 @@ class UpdateOrganizationDocument(graphene.relay.ClientIDMutation):
 
         if 'document_type' in input:
             organization_document.document_type = input['document_type']
+
+        if 'version' in input:
+            organization_document.document_type = input['version']
 
         if 'date_start' in input:
             organization_document.date_start = input['date_start']
