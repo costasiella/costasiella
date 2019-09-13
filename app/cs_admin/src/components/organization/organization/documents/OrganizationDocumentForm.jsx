@@ -38,7 +38,13 @@ function OrganizationDocumentForm ({ t, history, values, isSubmitting, errors, r
       <Card.Body>
         <Grid.Row>
           <Grid.Col>
-
+            <Form.Group label={t('general.version')}>
+              <Field type="text" 
+                    name="version" 
+                    className={(errors.version) ? "form-control is-invalid" : "form-control"} 
+                    autoComplete="off" />
+              <ErrorMessage name="version" component="span" className="invalid-feedback" />
+            </Form.Group>
           </Grid.Col>
           <Grid.Col>
             <Form.Group label={t('general.custom_file_input_label')}>
@@ -51,13 +57,6 @@ function OrganizationDocumentForm ({ t, history, values, isSubmitting, errors, r
             </Form.Group>
           </Grid.Col>
         </Grid.Row>
-        <Form.Group label={t('general.version')}>
-          <Field type="text" 
-                name="version" 
-                className={(errors.version) ? "form-control is-invalid" : "form-control"} 
-                autoComplete="off" />
-          <ErrorMessage name="version" component="span" className="invalid-feedback" />
-        </Form.Group>
         <Grid.Row>
           <Grid.Col>
             <Form.Group label={t('general.date_start')}>
