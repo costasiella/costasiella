@@ -27,19 +27,8 @@ import SiteWrapper from "../../SiteWrapper"
 import HasPermissionWrapper from "../../HasPermissionWrapper"
 
 import OrganizationMenu from '../OrganizationMenu'
+import { ADD_DOCUMENT } from "../queries"
 
-
-const ADD_LEVEL = gql`
-  mutation CreateOrganizationLevel($input:CreateOrganizationLevelInput!) {
-    createOrganizationLevel(input: $input) {
-      organizationLevel{
-        id
-        archived
-        name
-      }
-    }
-  }
-`
 
 const return_url = "/organization/levels"
 

@@ -24,12 +24,27 @@ export const GET_DOCUMENTS_QUERY = gql`
   }
 `
 
-export const GET_LEVEL_QUERY = gql`
-  query SchoolLevel($id: ID!) {
-    organizationLevel(id:$id) {
+export const GET_DOCUMENT_QUERY = gql`
+  query OrganizationDocument($id: ID!) {
+    organizationDocument(id:$id) {
       id
-      name
-      archived
+      version
+      dateStart
+      dateEnd
+      document
+    }
+  }
+`
+
+export const ADD_DOCUMENT = gql`
+  mutation CreateOrganizationDocument($input:CreateOrganizationDocumentInput!) {
+    createOrganizationDocument(input: $input) {
+      organizationDocument{
+        id
+        version
+        dateStart
+        dateEnd
+      }
     }
   }
 `

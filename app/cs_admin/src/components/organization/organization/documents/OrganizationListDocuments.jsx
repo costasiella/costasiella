@@ -109,6 +109,7 @@ function OrganizationListDocuments({ t, match, history }) {
         <Table>
               <Table.Header>
                 <Table.Row key={v4()}>
+                  <Table.ColHeader>{t('general.date')}</Table.ColHeader>
                   <Table.ColHeader>{t('general.version')}</Table.ColHeader>
                   <Table.ColHeader>{t('general.download')}</Table.ColHeader>
                 </Table.Row>
