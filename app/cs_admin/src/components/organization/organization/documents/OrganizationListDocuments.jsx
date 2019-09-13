@@ -56,15 +56,9 @@ function OrganizationListDocuments({ t, match, history }) {
       </Link>
   </HasPermissionWrapper>
 
-
-  console.log(documentType)
-
   const { loading, error, data, fetchMore } = useQuery(GET_DOCUMENTS_QUERY, {
     variables: { documentType: documentType }
   })
-
-  console.log(data)
-  console.log(error)
 
   if (loading) {
     return (
