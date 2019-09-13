@@ -11,7 +11,7 @@ import { toast } from 'react-toastify'
 
 import { GET_LEVELS_QUERY } from './queries'
 import { LEVEL_SCHEMA } from './yupSchema'
-import OrganizationLevelForm from './OrganizationLevelForm'
+import OrganizationLDocumentForm from './OrganizationDocumentForm'
 
 
 import {

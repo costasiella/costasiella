@@ -9,8 +9,8 @@ import { Formik } from 'formik'
 import { toast } from 'react-toastify'
 
 import { GET_LEVELS_QUERY, GET_LEVEL_QUERY } from './queries'
-import { LEVEL_SCHEMA } from './yupSchema'
-import OrganizationLevelForm from './OrganizationLevelForm'
+import { LEVEL_SCHEMA } from './terms_and_conditions/yupSchema'
+import OrganizationLevelForm from './terms_and_conditions/OrganizationLevelForm'
 
 
 import {
