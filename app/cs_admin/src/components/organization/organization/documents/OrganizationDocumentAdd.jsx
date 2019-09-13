@@ -6,8 +6,9 @@ import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
 import { Formik } from 'formik'
 import { toast } from 'react-toastify'
+import { Link } from 'react-router-dom'
 
-import { ADD_DOCUMENT } from "./queries"
+import { ADD_DOCUMENT, GET_DOCUMENTS_QUERY } from "./queries"
 import { DOCUMENT_SCHEMA } from './yupSchema'
 import { dateToLocalISO } from "../../../../tools/date_tools"
 import OrganizationDocumentForm from './OrganizationDocumentForm'
@@ -22,16 +23,16 @@ import {
   Container,
   Form,
 } from "tabler-react"
-import SiteWrapper from "../../SiteWrapper"
-import HasPermissionWrapper from "../../HasPermissionWrapper"
+import SiteWrapper from "../../../SiteWrapper"
+import HasPermissionWrapper from "../../../HasPermissionWrapper"
 
-import OrganizationMenu from '../OrganizationMenu'
-import OrganizationDocumentsBase from "../OrganizationDocumentsBase"
+import OrganizationMenu from '../../OrganizationMenu'
+import OrganizationDocumentsBase from "./OrganizationDocumentsBase"
 
 
 const return_url = "/organization/levels"
 
-function OrganizationDocumentAdd({ t, history }) {
+function OrganizationDocumentAdd({ t, match, history }) {
   const organizationId = match.params.organization_id
   const documentType = match.params.document_type
   
@@ -116,7 +117,7 @@ function OrganizationDocumentAdd({ t, history }) {
   )
 }
 
-export default OrganizationDocumentAdd
+export default withTranslation()(OrganizationDocumentAdd)
 
 
 // const OrganizationLevelAdd = ({ t, history }) => (
