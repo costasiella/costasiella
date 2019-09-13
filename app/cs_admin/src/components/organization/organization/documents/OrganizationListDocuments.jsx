@@ -1,11 +1,12 @@
 // @flow
 
 import React from 'react'
-import { Query, Mutation } from "react-apollo"
+import { useQuery, useMutation } from "react-apollo"
 import gql from "graphql-tag"
 import { v4 } from "uuid"
 import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
+import { Link } from "react-router-dom"
 
 
 import {
@@ -19,13 +20,14 @@ import {
   Container,
   Table
 } from "tabler-react";
-import SiteWrapper from "../../SiteWrapper"
-import HasPermissionWrapper from "../../HasPermissionWrapper"
+import SiteWrapper from "../../../SiteWrapper"
+import HasPermissionWrapper from "../../../HasPermissionWrapper"
 // import { confirmAlert } from 'react-confirm-alert'; // Import
 import { toast } from 'react-toastify'
 
-import ContentCard from "../../general/ContentCard"
-import OrganizationMenu from "../OrganizationMenu"
+import ISODateString from "../../../ui/ISODateString"
+import ContentCard from "../../../general/ContentCard"
+import OrganizationMenu from "../../OrganizationMenu"
 
 import { GET_DOCUMENTS_QUERY } from "./queries"
 
@@ -72,7 +74,7 @@ function OrganizationListDocuments({ t, match, history }) {
 
                       return newEdges.length
                         ? {
-                            // Put the new levels at the end of the list and update `pageInfo`
+                            // Put the fetched documents at the end of the list and update `pageInfo`
                             // so we have the new `endCursor` and `hasNextPage` values
                             organizationDocuments: {
                               __typename: previousResult.organizationDocuments.__typename,
@@ -88,26 +90,30 @@ function OrganizationListDocuments({ t, match, history }) {
                 <Table>
                       <Table.Header>
                         <Table.Row key={v4()}>
-                          <Table.ColHeader>{t('general.name')}</Table.ColHeader>
+                          <Table.ColHeader>{t('general.version')}</Table.ColHeader>
+                          <Table.ColHeader>{t('general.download')}</Table.ColHeader>
                         </Table.Row>
                       </Table.Header>
                       <Table.Body>
-                          {levels.edges.map(({ node }) => (
+                          {data.organizationDocuments.edges.map(({ node }) => (
                             <Table.Row key={v4()}>
                               <Table.Col key={v4()}>
-                                {node.name}
+                                <ISODateString ISODateStr={node.dateStart} />
+                                {(node.dateEnd) ? <span> - <ISODateString ISODateStr={node.dateEnd} /></span> : ""}
+                              </Table.Col>
+                              <Table.Col key={v4()}>
+                                {node.version}
                               </Table.Col>
                               <Table.Col className="text-right" key={v4()}>
-                                {(node.archived) ? 
-                                  <span className='text-muted'>{t('general.unarchive_to_edit')}</span> :
+                                <Link to={`/organization/documents/${organizationId}/documentType/edit/${node.id}`} >
                                   <Button className='btn-sm' 
-                                          onClick={() => history.push("/organization/levels/edit/" + node.id)}
                                           color="secondary">
                                     {t('general.edit')}
                                   </Button>
-                                }
+                                </Link>
                               </Table.Col>
-                              <Mutation mutation={ARCHIVE_LEVEL} key={v4()}>
+                              {/* Add delete */}
+                              {/* <Mutation mutation={ARCHIVE_LEVEL} key={v4()}>
                                 {(archiveCostcenter, { data }) => (
                                   <Table.Col className="text-right" key={v4()}>
                                     <button className="icon btn btn-link btn-sm" 
@@ -140,7 +146,7 @@ function OrganizationListDocuments({ t, match, history }) {
                                     </button>
                                   </Table.Col>
                                 )}
-                              </Mutation>
+                              </Mutation> */}
                             </Table.Row>
                           ))}
                       </Table.Body>

@@ -13,6 +13,7 @@ export const GET_DOCUMENTS_QUERY = gql`
         node {
           id
           documentType
+          version
           dateStart
           dateEnd
           document
