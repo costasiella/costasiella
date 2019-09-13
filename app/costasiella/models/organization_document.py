@@ -13,6 +13,7 @@ class OrganizationDocument(models.Model):
 
     organization = models.ForeignKey(Organization, on_delete=models.CASCADE)
     document_type = models.CharField(max_length=50, choices=DOCUMENT_TYPES)
+    version = models.CharField(max_length=50, default="")
     date_start = models.DateField()
     date_end = models.DateField(null=True)
     document = models.FileField(upload_to='organization_document', default=None)

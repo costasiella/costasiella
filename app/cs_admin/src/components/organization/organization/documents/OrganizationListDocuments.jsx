@@ -34,7 +34,7 @@ function OrganizationListDocuments({ t, match, history }) {
   const organizationId = match.params.organization_id
   const documentType = match.params.document_type
 
-  const { loading, error, data } = useQuery(GET_DOCUMENTS_QUERY, {
+  const { loading, error, data, fetchMore } = useQuery(GET_DOCUMENTS_QUERY, {
     variables: { documentType: documentType }
   })
 
@@ -58,138 +58,94 @@ function OrganizationListDocuments({ t, match, history }) {
           </Page.Header>
           <Grid.Row>
             <Grid.Col md={9}>
-              <Query query={GET_LEVELS_QUERY} variables={{ archived }}>
-              {({ loading, error, data: {organizationLevels: levels}, refetch, fetchMore }) => {
-                  // Loading
-                  if (loading) return (
-                    <ContentCard cardTitle={t('organization.levels.title')}>
-                      <Dimmer active={true}
-                              loader={true}>
-                      </Dimmer>
-                    </ContentCard>
-                  )
-                  // Error
-                  if (error) return (
-                    <ContentCard cardTitle={t('organization.levels.title')}>
-                      <p>{t('organization.levels.error_loading')}</p>
-                    </ContentCard>
-                  )
-                  const headerOptions = <Card.Options>
-                    <Button color={(!archived) ? 'primary': 'secondary'}  
-                            size="sm"
-                            onClick={() => {archived=false; refetch({archived});}}>
-                      {t('general.current')}
-                    </Button>
-                    <Button color={(archived) ? 'primary': 'secondary'} 
-                            size="sm" 
-                            className="ml-2" 
-                            onClick={() => {archived=true; refetch({archived});}}>
-                      {t('general.archive')}
-                    </Button>
-                  </Card.Options>
-                  
-                  // Empty list
-                  if (!levels.edges.length) { return (
-                    <ContentCard cardTitle={t('organization.levels.title')}
-                                headerContent={headerOptions}>
-                      <p>
-                      {(!archived) ? t('organization.levels.empty_list') : t("organization.levels.empty_archive")}
-                      </p>
-                    
-                    </ContentCard>
-                  )} else {   
-                  // Life's good! :)
-                  return (
-                    <ContentCard cardTitle={t('organization.levels.title')}
-                                headerContent={headerOptions}
-                                pageInfo={levels.pageInfo}
-                                onLoadMore={() => {
-                                  fetchMore({
-                                    variables: {
-                                      after: levels.pageInfo.endCursor
-                                    },
-                                    updateQuery: (previousResult, { fetchMoreResult }) => {
-                                      const newEdges = fetchMoreResult.organizationLevels.edges
-                                      const pageInfo = fetchMoreResult.organizationLevels.pageInfo
+              <ContentCard 
+                cardTitle={t('organization.documents.title')}
+                pageInfo={data.organizationDocuments.pageInfo}
+                onLoadMore={() => {
+                  fetchMore({
+                    variables: {
+                      after: data.organizationDocuments.pageInfo.endCursor
+                    },
+                    updateQuery: (previousResult, { fetchMoreResult }) => {
+                      const newEdges = fetchMoreResult.organizationDocuments.edges
+                      const pageInfo = fetchMoreResult.organizationDocuments.pageInfo
 
-                                      return newEdges.length
-                                        ? {
-                                            // Put the new levels at the end of the list and update `pageInfo`
-                                            // so we have the new `endCursor` and `hasNextPage` values
-                                            organizationLevels: {
-                                              __typename: previousResult.organizationLevels.__typename,
-                                              edges: [ ...previousResult.organizationLevels.edges, ...newEdges ],
-                                              pageInfo
-                                            }
+                      return newEdges.length
+                        ? {
+                            // Put the new levels at the end of the list and update `pageInfo`
+                            // so we have the new `endCursor` and `hasNextPage` values
+                            organizationDocuments: {
+                              __typename: previousResult.organizationDocuments.__typename,
+                              edges: [ ...previousResult.organizationDocuments.edges, ...newEdges ],
+                              pageInfo
+                            }
+                          }
+                        : previousResult
+                    }
+                  })
+                }}
+              >
+                <Table>
+                      <Table.Header>
+                        <Table.Row key={v4()}>
+                          <Table.ColHeader>{t('general.name')}</Table.ColHeader>
+                        </Table.Row>
+                      </Table.Header>
+                      <Table.Body>
+                          {levels.edges.map(({ node }) => (
+                            <Table.Row key={v4()}>
+                              <Table.Col key={v4()}>
+                                {node.name}
+                              </Table.Col>
+                              <Table.Col className="text-right" key={v4()}>
+                                {(node.archived) ? 
+                                  <span className='text-muted'>{t('general.unarchive_to_edit')}</span> :
+                                  <Button className='btn-sm' 
+                                          onClick={() => history.push("/organization/levels/edit/" + node.id)}
+                                          color="secondary">
+                                    {t('general.edit')}
+                                  </Button>
+                                }
+                              </Table.Col>
+                              <Mutation mutation={ARCHIVE_LEVEL} key={v4()}>
+                                {(archiveCostcenter, { data }) => (
+                                  <Table.Col className="text-right" key={v4()}>
+                                    <button className="icon btn btn-link btn-sm" 
+                                      title={t('general.archive')} 
+                                      href=""
+                                      onClick={() => {
+                                        console.log("clicked archived")
+                                        let id = node.id
+                                        archiveCostcenter({ variables: {
+                                          input: {
+                                            id,
+                                            archived: !archived
                                           }
-                                        : previousResult
-                                    }
-                                  })
-                                }} >
-                      <Table>
-                            <Table.Header>
-                              <Table.Row key={v4()}>
-                                <Table.ColHeader>{t('general.name')}</Table.ColHeader>
-                              </Table.Row>
-                            </Table.Header>
-                            <Table.Body>
-                                {levels.edges.map(({ node }) => (
-                                  <Table.Row key={v4()}>
-                                    <Table.Col key={v4()}>
-                                      {node.name}
-                                    </Table.Col>
-                                    <Table.Col className="text-right" key={v4()}>
-                                      {(node.archived) ? 
-                                        <span className='text-muted'>{t('general.unarchive_to_edit')}</span> :
-                                        <Button className='btn-sm' 
-                                                onClick={() => history.push("/organization/levels/edit/" + node.id)}
-                                                color="secondary">
-                                          {t('general.edit')}
-                                        </Button>
-                                      }
-                                    </Table.Col>
-                                    <Mutation mutation={ARCHIVE_LEVEL} key={v4()}>
-                                      {(archiveCostcenter, { data }) => (
-                                        <Table.Col className="text-right" key={v4()}>
-                                          <button className="icon btn btn-link btn-sm" 
-                                            title={t('general.archive')} 
-                                            href=""
-                                            onClick={() => {
-                                              console.log("clicked archived")
-                                              let id = node.id
-                                              archiveCostcenter({ variables: {
-                                                input: {
-                                                  id,
-                                                  archived: !archived
-                                                }
-                                          }, refetchQueries: [
-                                              {query: GET_LEVELS_QUERY, variables: {"archived": archived }}
-                                          ]}).then(({ data }) => {
-                                            console.log('got data', data);
-                                            toast.success(
-                                              (archived) ? t('general.unarchived'): t('general.archived'), {
-                                                position: toast.POSITION.BOTTOM_RIGHT
-                                              })
-                                          }).catch((error) => {
-                                            toast.error((t('general.toast_server_error')) + ': ' +  error, {
-                                                position: toast.POSITION.BOTTOM_RIGHT
-                                              })
-                                            console.log('there was an error sending the query', error);
-                                          })
-                                          }}>
-                                            <Icon prefix="fa" name="inbox" />
-                                          </button>
-                                        </Table.Col>
-                                      )}
-                                    </Mutation>
-                                  </Table.Row>
-                                ))}
-                            </Table.Body>
-                          </Table>
-                    </ContentCard>
-                  )}}
-              }
-              </Query>
+                                    }, refetchQueries: [
+                                        {query: GET_LEVELS_QUERY, variables: {"archived": archived }}
+                                    ]}).then(({ data }) => {
+                                      console.log('got data', data);
+                                      toast.success(
+                                        (archived) ? t('general.unarchived'): t('general.archived'), {
+                                          position: toast.POSITION.BOTTOM_RIGHT
+                                        })
+                                    }).catch((error) => {
+                                      toast.error((t('general.toast_server_error')) + ': ' +  error, {
+                                          position: toast.POSITION.BOTTOM_RIGHT
+                                        })
+                                      console.log('there was an error sending the query', error);
+                                    })
+                                    }}>
+                                      <Icon prefix="fa" name="inbox" />
+                                    </button>
+                                  </Table.Col>
+                                )}
+                              </Mutation>
+                            </Table.Row>
+                          ))}
+                      </Table.Body>
+                    </Table>
+              </ContentCard>
             </Grid.Col>
             <Grid.Col md={3}>
               <HasPermissionWrapper permission="add"
