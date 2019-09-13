@@ -36,9 +36,47 @@ function OrganizationListDocuments({ t, match, history }) {
   const organizationId = match.params.organization_id
   const documentType = match.params.document_type
 
+  console.log(documentType)
+
   const { loading, error, data, fetchMore } = useQuery(GET_DOCUMENTS_QUERY, {
     variables: { documentType: documentType }
   })
+
+  console.log(data)
+  console.log(error)
+
+  if (loading) {
+    return "loading..."
+  }
+
+  if (error) {
+    return "error!"
+  }
+
+  // if (loading) {
+  //   return (
+  //     <AppSettingsBase 
+  //         cardTitle={cardTitle}
+  //         sidebarActive={sidebarActive}>  
+  //       <Card.Body>
+  //         <Dimmer active={true}
+  //                 loader={true}>
+  //         </Dimmer>
+  //       </Card.Body>
+  //     </AppSettingsBase>
+  //   )
+  // }
+  // if (error) {
+  //   return (
+  //     <AppSettingsBase 
+  //         cardTitle={cardTitle}
+  //         sidebarActive={sidebarActive}>  
+  //       <Card.Body>
+  //         {t("settings.general.error_loading")}
+  //       </Card.Body>
+  //     </AppSettingsBase>
+  //   )
+  // }
 
   return (
     <SiteWrapper>
@@ -161,7 +199,7 @@ function OrganizationListDocuments({ t, match, history }) {
                   <Icon prefix="fe" name="plus-circle" /> {t('organization.levels.add')}
                 </Button>
               </HasPermissionWrapper>
-              <OrganizationMenu active_link='levels'/>
+              <OrganizationMenu active_link='organization'/>
             </Grid.Col>
           </Grid.Row>
         </Container>
