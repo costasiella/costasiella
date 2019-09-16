@@ -76,22 +76,23 @@ function OrganizationDocumentAdd({ t, match, history }) {
           }}
           // validationSchema={DOCUMENT_SCHEMA}
           onSubmit={(values, { setSubmitting }) => {
-            let dateEnd
-            if (values.dateEnd) {
-              dateEnd = dateToLocalISO(values.dateEnd)
-            } else {
-              dateEnd = values.dateEnd
+            console.log("Submit values")
+            console.log(values)
+
+            let inputVars = {
+              documentType: documentType,
+              version: values.version,
+              dateStart: dateToLocalISO(values.dateStart),
+              document: values.document,
             }
 
+            if (values.dateEnd) {
+              inputVars.dateEnd = dateToLocalISO(values.dateEnd)
+            }
+
+
             addDocument({ variables: {
-              input: {
-                documentType: documentType,
-                name: values.name, 
-                version: values.version,
-                dateStart: dateToLocalISO(values.dateStart),
-                dateEnd: dateEnd,
-                document: values.document,
-              }
+              input: inputVars
             }, refetchQueries: [
                 {query: GET_DOCUMENTS_QUERY, variables: {documentType: documentType}}
             ]})

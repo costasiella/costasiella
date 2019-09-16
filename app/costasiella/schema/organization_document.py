@@ -65,6 +65,8 @@ class CreateOrganizationDocument(graphene.relay.ClientIDMutation):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.add_organizationdocument')
 
+        print(input)
+
         organization_document = OrganizationDocument(
             organization = Organization.objects.get(id=1),
             version = input['version'],
