@@ -46,6 +46,16 @@ function OrganizationDocumentAdd({ t, match, history }) {
   const organizationId = match.params.organization_id
   const documentType = match.params.document_type
 
+  let subTitle = ""
+  switch (documentType) {
+    case "TERMS_AND_CONDITIONS":
+      subTitle = t('general.terms_and_conditions')
+      break
+    case "PRIVACY_POLICY":
+      subTitle = t('general.privacy_policy')
+      break
+  }
+
   // Vars for document file input field start
   const [fileName, setFileName] = useState("")
   const inputFileName = useRef(null)
@@ -86,7 +96,7 @@ function OrganizationDocumentAdd({ t, match, history }) {
       <Card>
         <Card.Header>
           <Card.Title>
-            {t('organizations.documents.add')}
+            {t('organization.documents.add') + ' - ' + subTitle}
           </Card.Title>
         </Card.Header>
         <Formik
