@@ -112,12 +112,13 @@ function OrganizationDocumentAdd({ t, match, history }) {
           onSubmit={(values, { setSubmitting }) => {
             console.log("Submit values")
             console.log(values)
+            console.log(fileName)
 
             let inputVars = {
               documentType: documentType,
               version: values.version,
               dateStart: dateToLocalISO(values.dateStart),
-              document: values.document,
+              documentFileName: fileName,
             }
 
             if (values.dateEnd) {

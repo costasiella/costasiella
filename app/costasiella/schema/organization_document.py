@@ -65,6 +65,7 @@ def validate_document_type(document_type):
 
 class CreateOrganizationDocument(graphene.relay.ClientIDMutation):
     class Input:
+        document_file_name = graphene.String(required=True)
         document_type = graphene.String(required=True)
         version = graphene.String(required=True)
         date_start = graphene.types.datetime.Date(required=True)
@@ -78,15 +79,12 @@ class CreateOrganizationDocument(graphene.relay.ClientIDMutation):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.add_organizationdocument')
 
-        print(input)
-
-
         organization_document = OrganizationDocument(
             organization = Organization.objects.get(id=100),
             version = input['version'],
             document_type = input['document_type'],
             date_start = input['date_start'],
-            document = get_content_file_from_base64_str(data_str=input['document'], name=input['document_type'])
+            document = get_content_file_from_base64_str(data_str=input['document'], file_name=input['document_file_name'])
         )
 
         if 'date_end' in input:
@@ -100,6 +98,7 @@ class CreateOrganizationDocument(graphene.relay.ClientIDMutation):
 class UpdateOrganizationDocument(graphene.relay.ClientIDMutation):
     class Input:
         id = graphene.ID(required=True)
+        document_file_name = graphene.String(required=False)
         document_type = graphene.String(required=False)
         version = graphene.String(required=True)
         date_start = graphene.types.datetime.Date(required=False)
@@ -112,6 +111,8 @@ class UpdateOrganizationDocument(graphene.relay.ClientIDMutation):
     def mutate_and_get_payload(self, root, info, **input):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.change_organizationdocument')
+
+        #TODO Validator; if supplying document_type, document_file_name is also required
 
         rid = get_rid(input['id'])
         organization_document = OrganizationClasstype.objects.get(id=rid.id)

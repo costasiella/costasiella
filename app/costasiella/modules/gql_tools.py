@@ -39,24 +39,22 @@ def get_rid(global_id):
 
 
 # Get file from base64 string
-def get_content_file_from_base64_str(data_str, name=None):
+def get_content_file_from_base64_str(data_str, file_name):
     """
     Convert base64 encoded file to Django ContentFile
     """
     import base64
+    import os
     import uuid
     from django.core.files.base import ContentFile
 
-    _format, _file_str = data_str.split(';base64,')
-    _name, ext = _format.split('/')
+    file_format, file_str = data_str.split(';base64,')
+    file_name, ext = os.path.splitext(file_name)
 
-    if not name:
-        name = _name.split(":")[-1]
+    # Add UUID to file name to prevent guessing of file names in media
+    file_name = '-'.join([ file_name, str(uuid.uuid4()) ])
 
-
-    name = '-'.join([ name, str(uuid.uuid4()) ])
-
-    return ContentFile(base64.b64decode(_file_str), name='{}.{}'.format(name, ext))
+    return ContentFile(base64.b64decode(file_str), name='{}{}'.format(file_name, ext))
 
 
 def get_error_code(error_code):
