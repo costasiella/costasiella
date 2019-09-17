@@ -23,7 +23,7 @@ import OrganizationMenu from "../../OrganizationMenu"
 function OrganizationDocuments({ t, match }) {
   const organizationId = match.params.organization_id
   const docTypes = [
-    [ "TERMS_AND_CONDITATIONS", t("general.terms_and_conditions")],
+    [ "TERMS_AND_CONDITIONS", t("general.terms_and_conditions")],
     [ "PRIVACY_POLICY", t("general.privacy_policy")],
   ]
 

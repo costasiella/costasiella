@@ -3,13 +3,10 @@ from django.utils.translation import gettext as _
 from django.db import models
 
 from .organization import Organization
-
+from .choices.organization_document_types import get_organization_document_types
 
 class OrganizationDocument(models.Model):
-    DOCUMENT_TYPES = [
-        ['TERMS_AND_CONDITIONS', _("Terms and conditions")],
-        ['PRIVACY_POLICY', _("Privacy policy")],
-    ]
+    DOCUMENT_TYPES = get_organization_document_types()
 
     organization = models.ForeignKey(Organization, on_delete=models.CASCADE)
     document_type = models.CharField(max_length=50, choices=DOCUMENT_TYPES)

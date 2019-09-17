@@ -10,6 +10,7 @@ import validators
 from ..models import Organization, OrganizationDocument
 from ..modules.gql_tools import require_login_and_permission, get_rid, get_content_file_from_base64_str
 from ..modules.messages import Messages
+from ..models.choices.organization_document_types import get_organization_document_types
 
 from sorl.thumbnail import get_thumbnail
 
@@ -50,6 +51,18 @@ class OrganizationDocumentQuery(graphene.ObjectType):
     #     return OrganizationClasstype.objects.all.order_by('document_type', '-date_start')
 
 
+def validate_document_type(document_type):
+    types = get_organization_document_types()
+    valid_type = False
+    for t in types:
+        if t[0] == document_type:
+            valid_type = True
+            break
+    
+    if not valid_type:
+        raise GraphQLError(_('Invalid document type!'))        
+
+
 class CreateOrganizationDocument(graphene.relay.ClientIDMutation):
     class Input:
         document_type = graphene.String(required=True)
@@ -67,12 +80,13 @@ class CreateOrganizationDocument(graphene.relay.ClientIDMutation):
 
         print(input)
 
+
         organization_document = OrganizationDocument(
-            organization = Organization.objects.get(id=1),
+            organization = Organization.objects.get(id=100),
             version = input['version'],
             document_type = input['document_type'],
             date_start = input['date_start'],
-            document = get_content_file_from_base64_str(data=input['document'])
+            document = get_content_file_from_base64_str(data_str=input['document'])
         )
 
         if 'date_end' in input:

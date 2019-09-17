@@ -130,6 +130,7 @@ function OrganizationDocumentAdd({ t, match, history }) {
                   toast.success((t('organization.documents.toast_add_success')), {
                       position: toast.POSITION.BOTTOM_RIGHT
                     })
+                    setSubmitting(false)
                 }).catch((error) => {
                   toast.error((t('general.toast_server_error')) + ': ' +  error, {
                       position: toast.POSITION.BOTTOM_RIGHT
