@@ -69,22 +69,12 @@ function OrganizationDocumentAdd({ t, match, history }) {
   // Vars for document file input field end
   
   const returnUrl = `/organization/documents/${organizationId}/${documentType}`
-  const back = <Link to={returnUrl}>
-    <Button 
-      icon="arrow-left"
-      className="mr-2"
-      outline
-      color="secondary"
-    >
-      {t('general.back_to')} {t('organization.documents.list.title')}
-    </Button>
-  </Link>
   const sidebarButton = <HasPermissionWrapper 
     permission="add"
     resource="organizationdocument">
       <Link to={returnUrl} >
         <Button color="primary btn-block mb-6" >
-          <Icon prefix="fe" name="plus-circle" /> {t('organization.documents.add')}
+          <Icon prefix="fe" name="chevrons-left" /> {t('general.back')}
         </Button>
       </Link>
   </HasPermissionWrapper>
@@ -94,7 +84,7 @@ function OrganizationDocumentAdd({ t, match, history }) {
   })
 
   return (
-    <OrganizationDocumentsBase headerLinks={back} sidebarButton={sidebarButton}>
+    <OrganizationDocumentsBase sidebarButton={sidebarButton}>
       <Card>
         <Card.Header>
           <Card.Title>
