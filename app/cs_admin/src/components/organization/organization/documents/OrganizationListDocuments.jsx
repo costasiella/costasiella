@@ -124,6 +124,11 @@ function OrganizationListDocuments({ t, match, history }) {
                       <Table.Col key={v4()}>
                         {node.version}
                       </Table.Col>
+                      <Table.Col key={v4()}>
+                        <a href={node.urlDocument} target="_blank">
+                          {t('Download file')}
+                        </a>
+                      </Table.Col>
                       <Table.Col className="text-right" key={v4()}>
                         <Link to={`/organization/documents/${organizationId}/documentType/edit/${node.id}`} >
                           <Button className='btn-sm' 

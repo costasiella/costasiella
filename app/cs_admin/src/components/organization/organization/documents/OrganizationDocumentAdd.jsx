@@ -138,7 +138,6 @@ function OrganizationDocumentAdd({ t, match, history }) {
                   console.log('there was an error sending the query', error)
                   setSubmitting(false)
                 })
-
             }
             
             let file = inputFileName.current.files[0]
