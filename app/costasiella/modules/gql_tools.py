@@ -44,6 +44,7 @@ def get_content_file_from_base64_str(data_str, name=None):
     Convert base64 encoded file to Django ContentFile
     """
     import base64
+    import uuid
     from django.core.files.base import ContentFile
 
     _format, _file_str = data_str.split(';base64,')
@@ -51,6 +52,9 @@ def get_content_file_from_base64_str(data_str, name=None):
 
     if not name:
         name = _name.split(":")[-1]
+
+
+    name = '-'.join([ name, str(uuid.uuid4()) ])
 
     return ContentFile(base64.b64decode(_file_str), name='{}.{}'.format(name, ext))
 

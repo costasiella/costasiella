@@ -86,7 +86,7 @@ class CreateOrganizationDocument(graphene.relay.ClientIDMutation):
             version = input['version'],
             document_type = input['document_type'],
             date_start = input['date_start'],
-            document = get_content_file_from_base64_str(data_str=input['document'])
+            document = get_content_file_from_base64_str(data_str=input['document'], name=input['document_type'])
         )
 
         if 'date_end' in input:
