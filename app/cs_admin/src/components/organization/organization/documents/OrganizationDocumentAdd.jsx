@@ -89,7 +89,9 @@ function OrganizationDocumentAdd({ t, match, history }) {
       </Link>
   </HasPermissionWrapper>
 
-  const [addDocument, { data }] = useMutation(ADD_DOCUMENT)
+  const [addDocument, { data }] = useMutation(ADD_DOCUMENT, {
+    onCompleted: () => history.push(returnUrl)
+  })
 
   return (
     <OrganizationDocumentsBase headerLinks={back} sidebarButton={sidebarButton}>
