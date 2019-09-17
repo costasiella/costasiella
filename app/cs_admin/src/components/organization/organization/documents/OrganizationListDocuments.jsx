@@ -126,7 +126,7 @@ function OrganizationListDocuments({ t, match, history }) {
                       </Table.Col>
                       <Table.Col key={v4()}>
                         <a href={node.urlDocument} target="_blank">
-                          {t('Download file')}
+                          {t('general.download_file')}
                         </a>
                       </Table.Col>
                       <Table.Col className="text-right" key={v4()}>
