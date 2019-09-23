@@ -130,7 +130,7 @@ function OrganizationListDocuments({ t, match, history }) {
                         </a>
                       </Table.Col>
                       <Table.Col className="text-right" key={v4()}>
-                        <Link to={`/organization/documents/${organizationId}/documentType/edit/${node.id}`} >
+                        <Link to={`/organization/documents/${organizationId}/${documentType}/edit/${node.id}`} >
                           <Button className='btn-sm' 
                                   color="secondary">
                             {t('general.edit')}

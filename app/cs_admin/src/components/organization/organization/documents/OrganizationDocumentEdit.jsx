@@ -17,7 +17,6 @@ import { DOCUMENT_SCHEMA } from './yupSchema'
 import { dateToLocalISO } from "../../../../tools/date_tools"
 // import OrganizationDocumentForm from './OrganizationDocumentForm'
 import CSDatePicker from "../../../ui/CSDatePicker"
-import { getSubtitle } from "./tools"
 
 import {
   Grid,
@@ -29,7 +28,7 @@ import {
 import HasPermissionWrapper from "../../../HasPermissionWrapper"
 
 import OrganizationDocumentsBase from "./OrganizationDocumentsBase"
-import { getSubtitle } from './tools';
+import { getSubtitle } from './tools'
 
 
 function OrganizationDocumentEdit({ t, match, history }) {
@@ -50,7 +49,7 @@ function OrganizationDocumentEdit({ t, match, history }) {
   </HasPermissionWrapper>
 
   const { loading, error, data } = useQuery(GET_DOCUMENT_QUERY, {
-    variables = { "id": id }
+    variables: { "id": id }
   })
 
   if (loading) {
@@ -92,7 +91,6 @@ function OrganizationDocumentEdit({ t, match, history }) {
           onSubmit={(values, { setSubmitting }) => {
             console.log("Submit values")
             console.log(values)
-            console.log(fileName)
 
             let inputVars = {
               id: id,

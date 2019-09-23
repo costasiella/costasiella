@@ -18,7 +18,6 @@ import { DOCUMENT_SCHEMA } from './yupSchema'
 import { dateToLocalISO } from "../../../../tools/date_tools"
 // import OrganizationDocumentForm from './OrganizationDocumentForm'
 import CSDatePicker from "../../../ui/CSDatePicker"
-import { getSubtitle } from "./tools"
 
 import {
   Page,
@@ -34,7 +33,7 @@ import HasPermissionWrapper from "../../../HasPermissionWrapper"
 
 import OrganizationMenu from '../../OrganizationMenu'
 import OrganizationDocumentsBase from "./OrganizationDocumentsBase"
-import { get_subtitle } from './tools';
+import { getSubtitle } from './tools'
 
 
 const customFileInputLabelStyle = {
