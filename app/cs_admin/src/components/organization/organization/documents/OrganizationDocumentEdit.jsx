@@ -13,7 +13,7 @@ import {
 import { toast } from 'react-toastify'
 import { Link } from 'react-router-dom'
 
-import { ADD_DOCUMENT, GET_DOCUMENTS_QUERY } from "./queries"
+import { UPDATE_DOCUMENT, GET_DOCUMENT_QUERY, GET_DOCUMENTS_QUERY } from "./queries"
 import { DOCUMENT_SCHEMA } from './yupSchema'
 import { dateToLocalISO } from "../../../../tools/date_tools"
 // import OrganizationDocumentForm from './OrganizationDocumentForm'
@@ -47,6 +47,7 @@ const customFileInputLabelStyle = {
 function OrganizationDocumentEdit({ t, match, history }) {
   const organizationId = match.params.organization_id
   const documentType = match.params.document_type
+  const id = match.params.id
   const subTitle = getSubtitle(t, documentType)
 
   // Vars for document file input field start
@@ -72,9 +73,31 @@ function OrganizationDocumentEdit({ t, match, history }) {
       </Link>
   </HasPermissionWrapper>
 
-  const [updateDocument, { data }] = useMutation(UPDATE_DOCUMENT, {
+  const { loading, error, data } = useQuery(GET_DOCUMENT_QUERY, {
+    variables = { "id": id }
+  })
+
+  if (loading) {
+    return (
+      <OrganizationDocumentsBase sidebarButton={sidebarButton}>
+        {t("general.loading_with_dots")}
+      </OrganizationDocumentsBase>
+    )
+  }
+
+  if (error) {
+    return (
+      <OrganizationDocumentsBase sidebarButton={sidebarButton}>
+        {t("organization.documents.error_loading")}
+      </OrganizationDocumentsBase>
+    )
+  }
+
+  const [updateDocument, { data: dataUpdate }] = useMutation(UPDATE_DOCUMENT, {
     onCompleted: () => history.push(returnUrl)
   })
+
+
 
   return (
     <OrganizationDocumentsBase sidebarButton={sidebarButton}>
@@ -86,10 +109,9 @@ function OrganizationDocumentEdit({ t, match, history }) {
         </Card.Header>
         <Formik
           initialValues={{ 
-            version: '',
-            dateStart: '', 
-            dateEnd: '',
-            document: ''
+            version: data.organizationDocument.version,
+            dateStart: data.organizationDocument.dateStart, 
+            dateEnd: data.organizationDocument.dateEnd,
           }}
           // validationSchema={DOCUMENT_SCHEMA}
           onSubmit={(values, { setSubmitting }) => {
@@ -153,7 +175,7 @@ function OrganizationDocumentEdit({ t, match, history }) {
                     <ErrorMessage name="version" component="span" className="invalid-feedback" />
                   </Form.Group>
                 </Grid.Col>
-                <Grid.Col>
+                {/* <Grid.Col>
                   <Form.Group label={t('general.custom_file_input_label')}>
                     <div className="custom-file">
                       <input type="file" ref={inputFileName} className="custom-file-input" onChange={handleFileInputChange} />
@@ -162,7 +184,7 @@ function OrganizationDocumentEdit({ t, match, history }) {
                       </label>
                     </div>
                   </Form.Group>
-                </Grid.Col>
+                </Grid.Col> */}
               </Grid.Row>
               <Grid.Row>
                 <Grid.Col>
@@ -208,73 +230,4 @@ function OrganizationDocumentEdit({ t, match, history }) {
   )
 }
 
-export default withTranslation()(OrganizationDocumentAdd)
-
-
-// const OrganizationLevelAdd = ({ t, history }) => (
-//   <SiteWrapper>
-//     <div className="my-3 my-md-5">
-//       <Container>
-//         <Page.Header title={t('organization.title')} />
-//         <Grid.Row>
-//           <Grid.Col md={9}>
-//           <Card>
-//             <Card.Header>
-//               <Card.Title>{t('organization.levels.title_add')}</Card.Title>
-//             </Card.Header>
-//             <Mutation mutation={ADD_LEVEL} onCompleted={() => history.push(return_url)}> 
-//                 {(addLocation, { data }) => (
-//                     <Formik
-//                         initialValues={{ name: '', code: '' }}
-//                         validationSchema={LEVEL_SCHEMA}
-//                         onSubmit={(values, { setSubmitting }) => {
-//                             addLocation({ variables: {
-//                               input: {
-//                                 name: values.name, 
-//                               }
-//                             }, refetchQueries: [
-//                                 {query: GET_LEVELS_QUERY, variables: {"archived": false }}
-//                             ]})
-//                             .then(({ data }) => {
-//                                 console.log('got data', data);
-//                                 toast.success((t('organization.levels.toast_add_success')), {
-//                                     position: toast.POSITION.BOTTOM_RIGHT
-//                                   })
-//                               }).catch((error) => {
-//                                 toast.error((t('general.toast_server_error')) + ': ' +  error, {
-//                                     position: toast.POSITION.BOTTOM_RIGHT
-//                                   })
-//                                 console.log('there was an error sending the query', error)
-//                                 setSubmitting(false)
-//                               })
-//                         }}
-//                         >
-//                         {({ isSubmitting, errors }) => (
-//                             <OrganizationLevelForm 
-//                               isSubmitting={isSubmitting}
-//                               errors={errors}
-//                               return_url={return_url}
-//                             />
-//                         )}
-//                     </Formik>
-//                 )}
-//                 </Mutation>
-//           </Card>
-//           </Grid.Col>
-//           <Grid.Col md={3}>
-//             <HasPermissionWrapper permission="add"
-//                                   resource="organizationlevel">
-//               <Button color="primary btn-block mb-6"
-//                       onClick={() => history.push(return_url)}>
-//                 <Icon prefix="fe" name="chevrons-left" /> {t('general.back')}
-//               </Button>
-//             </HasPermissionWrapper>
-//             <OrganizationMenu active_link='levels'/>
-//           </Grid.Col>
-//         </Grid.Row>
-//       </Container>
-//     </div>
-//   </SiteWrapper>
-// )
-
-// export default withTranslation()(withRouter(OrganizationLevelAdd))
+export default withTranslation()(OrganizationDocumentEdit)
