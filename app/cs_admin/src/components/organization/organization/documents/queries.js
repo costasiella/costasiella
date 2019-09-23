@@ -48,3 +48,16 @@ export const ADD_DOCUMENT = gql`
     }
   }
 `
+
+export const UPDATE_DOCUMENT = gql`
+  mutation UpdateOrganizationDocument($input:UpdateOrganizationDocumentInput!) {
+    updateOrganizationDocument(input: $input) {
+      organizationDocument{
+        id
+        version
+        dateStart
+        dateEnd
+      }
+    }
+  }
+`
