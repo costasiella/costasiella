@@ -98,12 +98,12 @@ class CreateOrganizationDocument(graphene.relay.ClientIDMutation):
 class UpdateOrganizationDocument(graphene.relay.ClientIDMutation):
     class Input:
         id = graphene.ID(required=True)
-        document_file_name = graphene.String(required=False)
-        document_type = graphene.String(required=False)
-        version = graphene.String(required=True)
+        # document_file_name = graphene.String(required=False)
+        # document_type = graphene.String(required=False)
+        version = graphene.String(required=False)
         date_start = graphene.types.datetime.Date(required=False)
-        date_end = graphene.types.datetime.Date(required=False, default_value=None)
-        document = graphene.String(required=False)
+        date_end = graphene.types.datetime.Date(required=False)
+        # document = graphene.String(required=False)
 
     organization_document = graphene.Field(OrganizationDocumentNode)
 
@@ -115,15 +115,15 @@ class UpdateOrganizationDocument(graphene.relay.ClientIDMutation):
         #TODO Validator; if supplying document_type, document_file_name is also required
 
         rid = get_rid(input['id'])
-        organization_document = OrganizationClasstype.objects.get(id=rid.id)
+        organization_document = OrganizationDocument.objects.get(id=rid.id)
         if not organization_document:
             raise Exception('Invalid Organization Document ID!')
 
-        if 'document_type' in input:
-            organization_document.document_type = input['document_type']
+        # if 'document_type' in input:
+        #     organization_document.document_type = input['document_type']
 
         if 'version' in input:
-            organization_document.document_type = input['version']
+            organization_document.version = input['version']
 
         if 'date_start' in input:
             organization_document.date_start = input['date_start']
@@ -131,8 +131,8 @@ class UpdateOrganizationDocument(graphene.relay.ClientIDMutation):
         if 'date_end' in input:
             organization_document.date_end = input['date_end']
 
-        if 'document' in input:
-            organization_document.document = get_content_file_from_base64_str(data=input['document'])
+        # if 'document' in input:
+        #     organization_document.document = get_content_file_from_base64_str(data=input['document'])
 
         organization_document.save()
 

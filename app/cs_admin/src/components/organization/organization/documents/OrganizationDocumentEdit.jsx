@@ -93,7 +93,6 @@ function OrganizationDocumentEdit({ t, match, history }) {
 
             let inputVars = {
               id: id,
-              documentType: documentType,
               version: values.version,
               dateStart: dateToLocalISO(values.dateStart),
             }
