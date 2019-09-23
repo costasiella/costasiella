@@ -61,3 +61,11 @@ export const UPDATE_DOCUMENT = gql`
     }
   }
 `
+
+export const DELETE_DOCUMENT = gql`
+  mutation DeleteOrganizationDocument($input:DeleteOrganizationDocumentInput!) {
+    deleteOrganizationDocument(input: $input) {
+      ok
+    }
+  }
+`
