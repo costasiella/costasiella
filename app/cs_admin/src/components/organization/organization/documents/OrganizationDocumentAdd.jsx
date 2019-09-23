@@ -18,6 +18,7 @@ import { DOCUMENT_SCHEMA } from './yupSchema'
 import { dateToLocalISO } from "../../../../tools/date_tools"
 // import OrganizationDocumentForm from './OrganizationDocumentForm'
 import CSDatePicker from "../../../ui/CSDatePicker"
+import { getSubtitle } from "./tools"
 
 import {
   Page,
@@ -33,6 +34,7 @@ import HasPermissionWrapper from "../../../HasPermissionWrapper"
 
 import OrganizationMenu from '../../OrganizationMenu'
 import OrganizationDocumentsBase from "./OrganizationDocumentsBase"
+import { get_subtitle } from './tools';
 
 
 const customFileInputLabelStyle = {
@@ -45,16 +47,7 @@ const customFileInputLabelStyle = {
 function OrganizationDocumentAdd({ t, match, history }) {
   const organizationId = match.params.organization_id
   const documentType = match.params.document_type
-
-  let subTitle = ""
-  switch (documentType) {
-    case "TERMS_AND_CONDITIONS":
-      subTitle = t('general.terms_and_conditions')
-      break
-    case "PRIVACY_POLICY":
-      subTitle = t('general.privacy_policy')
-      break
-  }
+  const subTitle = getSubtitle(t, documentType)
 
   // Vars for document file input field start
   const [fileName, setFileName] = useState("")

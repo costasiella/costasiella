@@ -13,11 +13,12 @@ import {
 import { toast } from 'react-toastify'
 import { Link } from 'react-router-dom'
 
-import { UPDATE_DOCUMENT, GET_DOCUMENTS_QUERY, GET_DOCUMENT_QUERY } from "./queries"
+import { ADD_DOCUMENT, GET_DOCUMENTS_QUERY } from "./queries"
 import { DOCUMENT_SCHEMA } from './yupSchema'
 import { dateToLocalISO } from "../../../../tools/date_tools"
 // import OrganizationDocumentForm from './OrganizationDocumentForm'
 import CSDatePicker from "../../../ui/CSDatePicker"
+import { getSubtitle } from "./tools"
 
 import {
   Page,
@@ -33,6 +34,7 @@ import HasPermissionWrapper from "../../../HasPermissionWrapper"
 
 import OrganizationMenu from '../../OrganizationMenu'
 import OrganizationDocumentsBase from "./OrganizationDocumentsBase"
+import { get_subtitle } from './tools';
 
 
 const customFileInputLabelStyle = {
@@ -45,23 +47,12 @@ const customFileInputLabelStyle = {
 function OrganizationDocumentEdit({ t, match, history }) {
   const organizationId = match.params.organization_id
   const documentType = match.params.document_type
-  const id = match.params.id
-
-
-  let subTitle = ""
-  switch (documentType) {
-    case "TERMS_AND_CONDITIONS":
-      subTitle = t('general.terms_and_conditions')
-      break
-    case "PRIVACY_POLICY":
-      subTitle = t('general.privacy_policy')
-      break
-  }
+  const subTitle = getSubtitle(t, documentType)
 
   // Vars for document file input field start
   const [fileName, setFileName] = useState("")
   const inputFileName = useRef(null)
-  const fileInputLabel = fileName || t("general.custom_file_input_inner_label")
+  const fileInputLabel = fileName || t("general.custom_file_input_inner_label_update")
 
   const handleFileInputChange = (event) => {
     console.log('on change triggered')
@@ -86,11 +77,11 @@ function OrganizationDocumentEdit({ t, match, history }) {
   })
 
   return (
-    <OrganizationDocumentsBase headerLinks={back} sidebarButton={sidebarButton}>
+    <OrganizationDocumentsBase sidebarButton={sidebarButton}>
       <Card>
         <Card.Header>
           <Card.Title>
-            {t('organization.documents.add') + ' - ' + subTitle}
+            {t('organization.documents.edit') + ' - ' + subTitle}
           </Card.Title>
         </Card.Header>
         <Formik
@@ -217,7 +208,7 @@ function OrganizationDocumentEdit({ t, match, history }) {
   )
 }
 
-export default withTranslation()(OrganizationDocumentEdit)
+export default withTranslation()(OrganizationDocumentAdd)
 
 
 // const OrganizationLevelAdd = ({ t, history }) => (
