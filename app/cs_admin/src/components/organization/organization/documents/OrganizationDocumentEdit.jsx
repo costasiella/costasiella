@@ -1,6 +1,6 @@
 // @flow
 
-import React, { useState, useRef } from 'react'
+import React from 'react'
 import { useMutation, useQuery } from "react-apollo";
 import { withTranslation } from 'react-i18next'
 import { 
@@ -48,6 +48,9 @@ function OrganizationDocumentEdit({ t, match, history }) {
       </Link>
   </HasPermissionWrapper>
 
+  const [updateDocument, { data: dataUpdate }] = useMutation(UPDATE_DOCUMENT, {
+    onCompleted: () => history.push(returnUrl)
+  })
   const { loading, error, data } = useQuery(GET_DOCUMENT_QUERY, {
     variables: { "id": id }
   })
@@ -67,10 +70,6 @@ function OrganizationDocumentEdit({ t, match, history }) {
       </OrganizationDocumentsBase>
     )
   }
-
-  const [updateDocument, { data: dataUpdate }] = useMutation(UPDATE_DOCUMENT, {
-    onCompleted: () => history.push(returnUrl)
-  })
 
 
   return (
