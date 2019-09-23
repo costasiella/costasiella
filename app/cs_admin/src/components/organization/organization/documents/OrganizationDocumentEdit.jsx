@@ -1,9 +1,8 @@
 // @flow
 
 import React, { useState, useRef } from 'react'
-import { useMutation } from "react-apollo";
+import { useMutation, useQuery } from "react-apollo";
 import { withTranslation } from 'react-i18next'
-import { withRouter } from "react-router"
 import { 
   Formik,
   Form as FoForm, 
@@ -21,27 +20,16 @@ import CSDatePicker from "../../../ui/CSDatePicker"
 import { getSubtitle } from "./tools"
 
 import {
-  Page,
   Grid,
   Icon,
   Button,
   Card,
-  Container,
   Form,
 } from "tabler-react"
-import SiteWrapper from "../../../SiteWrapper"
 import HasPermissionWrapper from "../../../HasPermissionWrapper"
 
-import OrganizationMenu from '../../OrganizationMenu'
 import OrganizationDocumentsBase from "./OrganizationDocumentsBase"
-import { get_subtitle } from './tools';
-
-
-const customFileInputLabelStyle = {
-  whiteSpace: "nowrap",
-  display: "block",
-  overflow: "hidden"
-}  
+import { getSubtitle } from './tools';
 
 
 function OrganizationDocumentEdit({ t, match, history }) {
@@ -49,18 +37,6 @@ function OrganizationDocumentEdit({ t, match, history }) {
   const documentType = match.params.document_type
   const id = match.params.id
   const subTitle = getSubtitle(t, documentType)
-
-  // Vars for document file input field start
-  const [fileName, setFileName] = useState("")
-  const inputFileName = useRef(null)
-  const fileInputLabel = fileName || t("general.custom_file_input_inner_label_update")
-
-  const handleFileInputChange = (event) => {
-    console.log('on change triggered')
-    setFileName(event.target.files[0].name)
-  }
-
-  // Vars for document file input field end
   
   const returnUrl = `/organization/documents/${organizationId}/${documentType}`
   const sidebarButton = <HasPermissionWrapper 
@@ -98,7 +74,6 @@ function OrganizationDocumentEdit({ t, match, history }) {
   })
 
 
-
   return (
     <OrganizationDocumentsBase sidebarButton={sidebarButton}>
       <Card>
@@ -120,46 +95,34 @@ function OrganizationDocumentEdit({ t, match, history }) {
             console.log(fileName)
 
             let inputVars = {
+              id: id,
               documentType: documentType,
               version: values.version,
               dateStart: dateToLocalISO(values.dateStart),
-              documentFileName: fileName,
             }
 
             if (values.dateEnd) {
               inputVars.dateEnd = dateToLocalISO(values.dateEnd)
             }
 
-            let reader = new FileReader()
-            reader.onload = function(reader_event) {
-              console.log(reader_event.target.result)
-              let b64_enc_file = reader_event.target.result
-              console.log(b64_enc_file)
-              // Add uploaded document b64 encoded blob to input vars
-              inputVars.document = b64_enc_file
-
-              addDocument({ variables: {
-                input: inputVars
-              }, refetchQueries: [
-                  {query: GET_DOCUMENTS_QUERY, variables: {documentType: documentType}}
-              ]})
-              .then(({ data }) => {
-                  console.log('got data', data);
-                  toast.success((t('organization.documents.toast_add_success')), {
-                      position: toast.POSITION.BOTTOM_RIGHT
-                    })
-                    setSubmitting(false)
-                }).catch((error) => {
-                  toast.error((t('general.toast_server_error')) + ': ' +  error, {
-                      position: toast.POSITION.BOTTOM_RIGHT
-                    })
-                  console.log('there was an error sending the query', error)
+            updateDocument({ variables: {
+              input: inputVars
+            }, refetchQueries: [
+                {query: GET_DOCUMENTS_QUERY, variables: {documentType: documentType}}
+            ]})
+            .then(({ data }) => {
+                console.log('got data', data);
+                toast.success((t('organization.documents.toast_edit_success')), {
+                    position: toast.POSITION.BOTTOM_RIGHT
+                  })
                   setSubmitting(false)
-                })
-            }
-            
-            let file = inputFileName.current.files[0]
-            reader.readAsDataURL(file)
+              }).catch((error) => {
+                toast.error((t('general.toast_server_error')) + ': ' +  error, {
+                    position: toast.POSITION.BOTTOM_RIGHT
+                  })
+                console.log('there was an error sending the query', error)
+                setSubmitting(false)
+              })
           }}
           >
           {({ isSubmitting, errors, values, setFieldTouched, setFieldValue }) => (
