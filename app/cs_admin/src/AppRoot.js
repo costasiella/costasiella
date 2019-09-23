@@ -72,6 +72,7 @@ import OrganizationDiscoveryEdit from './components/organization/discovery/Organ
 import OrganizationDocuments from './components/organization/organization/documents/OrganizationDocuments'
 import OrganizationListDocuments from './components/organization/organization/documents/OrganizationListDocuments'
 import OrganizationDocumentAdd from './components/organization/organization/documents/OrganizationDocumentAdd'
+import OrganizationDocumentEdit from './components/organization/organization/documents/OrganizationDocumentEdit'
 import OrganizationLocations from './components/organization/locations/OrganizationLocations'
 import OrganizationLocationAdd from './components/organization/locations/OrganizationLocationAdd'
 import OrganizationLocationEdit from './components/organization/locations/OrganizationLocationEdit'
@@ -214,6 +215,7 @@ function AppRoot({ t }) {
           <PrivateRoute exact path="/organization/documents/:organization_id" component={OrganizationDocuments} />
           <PrivateRoute exact path="/organization/documents/:organization_id/:document_type" component={OrganizationListDocuments} />
           <PrivateRoute exact path="/organization/documents/:organization_id/:document_type/add" component={OrganizationDocumentAdd} />
+          <PrivateRoute exact path="/organization/documents/:organization_id/:document_type/edit/:id" component={OrganizationDocumentEdit} />
           <PrivateRoute exact path="/organization/appointment_categories" component={OrganizationAppointmentCategories} />
           <PrivateRoute exact path="/organization/appointment_categories/add" component={OrganizationAppointmentCategoryAdd} />
           <PrivateRoute exact path="/organization/appointment_categories/edit/:id" component={OrganizationAppointmentCategoryEdit} />
