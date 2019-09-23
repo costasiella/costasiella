@@ -30,7 +30,7 @@ import ContentCard from "../../../general/ContentCard"
 import OrganizationMenu from "../../OrganizationMenu"
 import OrganizationDocumentsBase from "./OrganizationDocumentsBase"
 
-import { GET_DOCUMENTS_QUERY } from "./queries"
+import { GET_DOCUMENTS_QUERY, DELETE_DOCUMENT } from "./queries"
 
 
 function OrganizationListDocuments({ t, match, history }) {
