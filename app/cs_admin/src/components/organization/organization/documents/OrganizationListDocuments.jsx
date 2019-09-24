@@ -29,6 +29,7 @@ import ISODateString from "../../../ui/ISODateString"
 import ContentCard from "../../../general/ContentCard"
 import OrganizationMenu from "../../OrganizationMenu"
 import OrganizationDocumentsBase from "./OrganizationDocumentsBase"
+import OrganizationDocumentsDelete from "./OrganizationDocumentDelete"
 
 import { GET_DOCUMENTS_QUERY, DELETE_DOCUMENT } from "./queries"
 
@@ -136,6 +137,7 @@ function OrganizationListDocuments({ t, match, history }) {
                             {t('general.edit')}
                           </Button>
                         </Link>
+                        <OrganizationDocumentsDelete node={node} />
                       </Table.Col>
                       {/* Add delete */}
                       {/* <Mutation mutation={ARCHIVE_LEVEL} key={v4()}>

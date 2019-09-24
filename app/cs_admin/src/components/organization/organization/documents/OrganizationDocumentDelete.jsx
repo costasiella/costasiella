@@ -3,7 +3,7 @@ import { useMutation } from '@apollo/react-hooks';
 import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
 
-import { DELETE_DOCUMENT, GET_DOCUMENTS_QUERY } from "../queries"
+import { DELETE_DOCUMENT, GET_DOCUMENTS_QUERY } from "./queries"
 import confirmDelete from "../../../../tools/confirm_delete"
 
 import {
@@ -22,7 +22,7 @@ function OrganizationDocumentDelete({t, match, node}) {
         confirmDelete({
           t: t,
           msgConfirm: t("organization.documents.delete_confirm_msg"),
-          msgDescription: <p>{node.version}</p>,
+          msgDescription: <p> {t("general.version")}: {node.version}</p>,
           msgSuccess: t('organization.documents.deleted'),
           deleteFunction: deleteOrganizationDocument,
           functionVariables: { 

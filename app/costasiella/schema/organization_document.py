@@ -161,6 +161,6 @@ class DeleteOrganizationDocument(graphene.relay.ClientIDMutation):
 
 
 class OrganizationDocumentMutation(graphene.ObjectType):
-    delete_organization_documment = DeleteOrganizationDocument.Field()
+    delete_organization_document = DeleteOrganizationDocument.Field()
     create_organization_document = CreateOrganizationDocument.Field()
     update_organization_document = UpdateOrganizationDocument.Field()
