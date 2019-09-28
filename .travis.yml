@@ -11,8 +11,6 @@ env:
 install:
   - pip install -r requirements.txt
 before_script:
-  - chown -R `whoami` .
-  - chmod -R u+rwx .
   - mysql -e 'CREATE DATABASE IF NOT EXISTS test;' -u root
   - cd app
 script:
