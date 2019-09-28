@@ -1,5 +1,6 @@
 # from graphql.error.located_error import GraphQLLocatedError
 import os
+import shutil
 import graphql
 import base64
 
@@ -7,6 +8,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Permission
 from django.test import TestCase
 from graphene.test import Client
+from graphql_relay import to_global_id
 
 # Create your tests here.
 from django.contrib.auth.models import AnonymousUser
@@ -16,7 +18,7 @@ from .helpers import execute_test_client_api_query
 from .. import models
 from .. import schema
 
-from graphql_relay import to_global_id
+from app.settings.development import MEDIA_ROOT
 
 
 class GQLOrganizationDocument(TestCase):
@@ -143,7 +145,13 @@ class GQLOrganizationDocument(TestCase):
 
     def tearDown(self):
         # This is run after every test
-        pass
+        print(MEDIA_ROOT)
+        # Clean test media root after each test to prevent stray files after testing
+        for root, dirs, files in os.walk(MEDIA_ROOT):
+          for f in files:
+            os.unlink(os.path.join(root, f))
+          for d in dirs:
+            shutil.rmtree(os.path.join(root, d))
 
 
     def test_query(self):
