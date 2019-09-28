@@ -53,15 +53,14 @@ class GQLOrganizationDocument(TestCase):
               }
           }
 
-        # self.variables_update = {
-        #     "input": {
-        #         "id": to_global_id('OrganizationSubscriptionPriceNode', self.organization_organization_document.pk),
-        #         "price": 1466,
-        #         "financeTaxRate": to_global_id('FinanceTaxRateNode', self.finance_tax_rate.pk),
-        #         "dateStart": '2024-01-01',
-        #         "dateEnd": '2024-12-31',
-        #     }
-        # }
+        self.variables_update = {
+            "input": {
+                "id": to_global_id("OrganizationDocumentNode", self.organization_document.id)
+                "version": "1.2",
+                "dateStart": "2019-11-01",
+                "dateStart": "2019-12-31",
+            }
+        }
 
         # self.variables_delete = {
         #     "input": {
