@@ -20,6 +20,8 @@ from graphql_relay import to_global_id
 
 class GQLOrganizationDocument(TestCase):
     # https://docs.djangoproject.com/en/2.1/topics/testing/overview/
+    fixtures = ['organization.json']
+
     def setUp(self):
         # This is run before every test
         self.admin_user = f.AdminUserFactory.create()
@@ -30,7 +32,7 @@ class GQLOrganizationDocument(TestCase):
         self.permission_change = 'change_organizationdocument'
         self.permission_delete = 'delete_organizationdocument'
 
-        self.organization_subscription = f.OrganizationSubscriptionFactory.create()
+        self.organization_document = f.OrganizationDocumentFactory.create()
         self.finance_tax_rate = f.FinanceTaxRateFactory.create()
         self.organization_subscription_price = f.OrganizationSubscriptionPriceFactory.create()
 
