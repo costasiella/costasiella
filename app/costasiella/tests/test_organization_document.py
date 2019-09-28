@@ -32,65 +32,53 @@ class GQLOrganizationDocument(TestCase):
         self.permission_delete = 'delete_organizationdocument'
 
         self.organization_document = f.OrganizationDocumentFactory.create()
-        self.finance_tax_rate = f.FinanceTaxRateFactory.create()
-        self.organization_subscription_price = f.OrganizationSubscriptionPriceFactory.create()
 
-        self.variables_create = {
-            "input": {
-                "organizationSubscription": to_global_id('OrganizationSubscriptionNode', self.organization_subscription.pk),
-                "price": 10,
-                "financeTaxRate": to_global_id('FinanceTaxRateNode', self.finance_tax_rate.pk),
-                "dateStart": '2019-01-01',
-                "dateEnd": '2019-12-31',
-            }
-        }
+        # self.variables_create = {
+        #     "input": {
+        #         "organizationSubscription": to_global_id('OrganizationSubscriptionNode', self.organization_subscription.pk),
+        #         "price": 10,
+        #         "financeTaxRate": to_global_id('FinanceTaxRateNode', self.finance_tax_rate.pk),
+        #         "dateStart": '2019-01-01',
+        #         "dateEnd": '2019-12-31',
+        #     }
+        # }
 
-        self.variables_update = {
-            "input": {
-                "id": to_global_id('OrganizationSubscriptionPriceNode', self.organization_subscription_price.pk),
-                "price": 1466,
-                "financeTaxRate": to_global_id('FinanceTaxRateNode', self.finance_tax_rate.pk),
-                "dateStart": '2024-01-01',
-                "dateEnd": '2024-12-31',
-            }
-        }
+        # self.variables_update = {
+        #     "input": {
+        #         "id": to_global_id('OrganizationSubscriptionPriceNode', self.organization_subscription_price.pk),
+        #         "price": 1466,
+        #         "financeTaxRate": to_global_id('FinanceTaxRateNode', self.finance_tax_rate.pk),
+        #         "dateStart": '2024-01-01',
+        #         "dateEnd": '2024-12-31',
+        #     }
+        # }
 
-        self.variables_delete = {
-            "input": {
-                "id": to_global_id('OrganizationSubscriptionPriceNode', self.organization_subscription_price.pk),
-            }
-        }
+        # self.variables_delete = {
+        #     "input": {
+        #         "id": to_global_id('OrganizationSubscriptionPriceNode', self.organization_subscription_price.pk),
+        #     }
+        # }
 
-        self.subscription_prices_query = '''
-  query OrganizationSubscriptionPrices($after: String, $before: String, $organizationSubscription: ID!) {
-    organizationSubscriptionPrices(first: 15, before: $before, after: $after, organizationSubscription: $organizationSubscription) {
+        self.organization_documents_query = '''
+  query OrganizationDocuments($documentType: String!) {
+    organizationDocuments(documentType:$documentType) {
       pageInfo {
-        startCursor
-        endCursor
         hasNextPage
         hasPreviousPage
+        startCursor
+        endCursor
       }
       edges {
         node {
           id
-          organizationSubscription {
-            id
-            name
-          }
-          price
-          priceDisplay
-          financeTaxRate {
-            id
-            name
-          }
+          documentType
+          version
           dateStart
           dateEnd
+          document
+          urlDocument
         }
       }
-    }
-    organizationSubscription(id: $organizationSubscription) {
-      id
-      name
     }
   }
 '''
@@ -189,7 +177,7 @@ class GQLOrganizationDocument(TestCase):
 
     def test_query(self):
         """ Query list of locations """
-        query = self.subscription_prices_query
+        query = self.organization_documents_query
 
         variables = {
             'organizationSubscription': to_global_id('OrganizationSubscriptionNode', self.organization_subscription_price.organization_subscription.pk),
@@ -212,7 +200,7 @@ class GQLOrganizationDocument(TestCase):
 
     def test_query_permision_denied(self):
         """ Query list of location rooms """
-        query = self.subscription_prices_query
+        query = self.organization_documents_query
 
         variables = {
             'organizationSubscription': to_global_id('OrganizationSubscriptionNode', self.organization_subscription_price.organization_subscription.pk),
@@ -229,7 +217,7 @@ class GQLOrganizationDocument(TestCase):
 
     def test_query_permision_granted(self):
         """ Query list of location rooms """
-        query = self.subscription_prices_query
+        query = self.organization_documents_query
 
         variables = {
             'organizationSubscription': to_global_id('OrganizationSubscriptionNode', self.organization_subscription_price.organization_subscription.pk),
@@ -250,7 +238,7 @@ class GQLOrganizationDocument(TestCase):
 
     def test_query_anon_user(self):
         """ Query list of location rooms """
-        query = self.subscription_prices_query
+        query = self.organization_documents_query
         variables = {
             'organizationSubscription': to_global_id('OrganizationSubscriptionNode', self.organization_subscription_price.organization_subscription.pk),
             'archived': False
