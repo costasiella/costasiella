@@ -70,7 +70,7 @@ class CreateOrganizationDocument(graphene.relay.ClientIDMutation):
         version = graphene.String(required=True)
         date_start = graphene.types.datetime.Date(required=True)
         date_end = graphene.types.datetime.Date(required=False, default_value=None)
-        document = graphene.String(required=True)
+        document = graphene.String(required=True) # File als base64 encoded string
 
     organization_document = graphene.Field(OrganizationDocumentNode)
 
