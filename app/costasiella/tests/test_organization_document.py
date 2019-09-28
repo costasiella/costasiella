@@ -121,34 +121,26 @@ class GQLOrganizationDocument(TestCase):
   }
 '''
 
-#         self.organization_document_update_mutation = '''
-#   mutation UpdateOrganizationSubscriptionPrice($input: UpdateOrganizationSubscriptionPriceInput!) {
-#     updateOrganizationSubscriptionPrice(input: $input) {
-#       organizationSubscriptionPrice {
-#         id
-#         organizationSubscription {
-#           id
-#           name
-#         }
-#         price
-#         financeTaxRate {
-#           id
-#           name
-#         }
-#         dateStart
-#         dateEnd
-#       }
-#     }
-#   }
-# '''
+        self.organization_document_update_mutation = '''
+  mutation UpdateOrganizationDocument($input:UpdateOrganizationDocumentInput!) {
+    updateOrganizationDocument(input: $input) {
+      organizationDocument{
+        id
+        version
+        dateStart
+        dateEnd
+      }
+    }
+  }
+'''
 
-#         self.organization_document_delete_mutation = '''
-#   mutation DeleteOrganizationSubscriptionPrice($input: DeleteOrganizationSubscriptionPriceInput!) {
-#     deleteOrganizationSubscriptionPrice(input: $input) {
-#       ok
-#     }
-#   }
-# '''
+        self.organization_document_delete_mutation = '''
+  mutation DeleteOrganizationDocument($input:DeleteOrganizationDocumentInput!) {
+    deleteOrganizationDocument(input: $input) {
+      ok
+    }
+  }
+'''
 
     def tearDown(self):
         # This is run after every test
