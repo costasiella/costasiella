@@ -55,7 +55,7 @@ class GQLOrganizationDocument(TestCase):
 
         # self.variables_update = {
         #     "input": {
-        #         "id": to_global_id('OrganizationSubscriptionPriceNode', self.organization_subscription_price.pk),
+        #         "id": to_global_id('OrganizationSubscriptionPriceNode', self.organization_organization_document.pk),
         #         "price": 1466,
         #         "financeTaxRate": to_global_id('FinanceTaxRateNode', self.finance_tax_rate.pk),
         #         "dateStart": '2024-01-01',
@@ -65,7 +65,7 @@ class GQLOrganizationDocument(TestCase):
 
         # self.variables_delete = {
         #     "input": {
-        #         "id": to_global_id('OrganizationSubscriptionPriceNode', self.organization_subscription_price.pk),
+        #         "id": to_global_id('OrganizationSubscriptionPriceNode', self.organization_organization_document.pk),
         #     }
         # }
 
@@ -121,7 +121,7 @@ class GQLOrganizationDocument(TestCase):
   }
 '''
 
-#         self.subscription_price_update_mutation = '''
+#         self.organization_document_update_mutation = '''
 #   mutation UpdateOrganizationSubscriptionPrice($input: UpdateOrganizationSubscriptionPriceInput!) {
 #     updateOrganizationSubscriptionPrice(input: $input) {
 #       organizationSubscriptionPrice {
@@ -142,7 +142,7 @@ class GQLOrganizationDocument(TestCase):
 #   }
 # '''
 
-#         self.subscription_price_delete_mutation = '''
+#         self.organization_document_delete_mutation = '''
 #   mutation DeleteOrganizationSubscriptionPrice($input: DeleteOrganizationSubscriptionPriceInput!) {
 #     deleteOrganizationSubscriptionPrice(input: $input) {
 #       ok
@@ -205,72 +205,65 @@ class GQLOrganizationDocument(TestCase):
         self.assertEqual(data['createOrganizationDocument']['organizationDocument']['version'], variables['input']['version'])
         self.assertEqual(data['createOrganizationDocument']['organizationDocument']['dateStart'], variables['input']['dateStart'])
         # self.assertEqual(data['createOrganizationDocument']['organizationDocument']['document'], variables['input']['document'])
-        
-        
-        # self.assertEqual(data['createOrganizationSubscriptionPrice']['organizationSubscriptionPrice']['price'], variables['input']['price'])
-        # self.assertEqual(data['createOrganizationSubscriptionPrice']['organizationSubscriptionPrice']['financeTaxRate']['id'], 
-        #   variables['input']['financeTaxRate'])
-        # self.assertEqual(data['createOrganizationSubscriptionPrice']['organizationSubscriptionPrice']['dateStart'], variables['input']['dateStart'])
-        # self.assertEqual(data['createOrganizationSubscriptionPrice']['organizationSubscriptionPrice']['dateEnd'], variables['input']['dateEnd'])
 
 
-    # def test_create_subscription_price_anon_user(self):
-    #     """ Don't allow creating subscription prices for non-logged in users """
-    #     query = self.subscription_price_create_mutation
-    #     variables = self.variables_create
+    def test_create_organization_document_anon_user(self):
+        """ Don't allow creating organization documents for non-logged in users """
+        query = self.organization_document_create_mutation
+        variables = self.variables_create
 
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         self.anon_user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
-
-
-    # def test_create_subscription_price_permission_granted(self):
-    #     """ Allow creating subscription prices for users with permissions """
-    #     query = self.subscription_price_create_mutation
-
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename=self.permission_add)
-    #     user.user_permissions.add(permission)
-    #     user.save()
-
-    #     variables = self.variables_create
-
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['createOrganizationSubscriptionPrice']['organizationSubscriptionPrice']['price'], variables['input']['price'])
+        executed = execute_test_client_api_query(
+            query, 
+            self.anon_user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
-    # def test_create_subscription_price_permission_denied(self):
-    #     """ Check create subscription price permission denied error message """
-    #     query = self.subscription_price_create_mutation
-    #     variables = self.variables_create
+    def test_create_organization_document_permission_granted(self):
+        """ Allow creating organization documents for users with permissions """
+        query = self.organization_document_create_mutation
 
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
+        # Create regular user
+        user = f.RegularUserFactory.create()
+        permission = Permission.objects.get(codename=self.permission_add)
+        user.user_permissions.add(permission)
+        user.save()
 
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
+        variables = self.variables_create
+
+        executed = execute_test_client_api_query(
+            query, 
+            user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['createOrganizationDocument']['organizationDocument']['documentType'], variables['input']['documentType'])
 
 
-    # def test_update_subscription_price(self):
-    #     """ Update a subscription price """
-    #     query = self.subscription_price_update_mutation
+    def test_create_organization_document_permission_denied(self):
+        """ Check create organization document permission denied error message """
+        query = self.organization_document_create_mutation
+        variables = self.variables_create
+
+        # Create regular user
+        user = f.RegularUserFactory.create()
+
+        executed = execute_test_client_api_query(
+            query, 
+            user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
+
+
+    # def test_update_organization_document(self):
+    #     """ Update a organization document """
+    #     query = self.organization_document_update_mutation
     #     variables = self.variables_update
 
     #     executed = execute_test_client_api_query(
@@ -287,9 +280,9 @@ class GQLOrganizationDocument(TestCase):
     #     self.assertEqual(data['updateOrganizationSubscriptionPrice']['organizationSubscriptionPrice']['dateEnd'], variables['input']['dateEnd'])
 
 
-    # def test_update_subscription_price_anon_user(self):
-    #     """ Don't allow updating subscription prices for non-logged in users """
-    #     query = self.subscription_price_update_mutation
+    # def test_update_organization_document_anon_user(self):
+    #     """ Don't allow updating organization documents for non-logged in users """
+    #     query = self.organization_document_update_mutation
     #     variables = self.variables_update
 
     #     executed = execute_test_client_api_query(
@@ -302,9 +295,9 @@ class GQLOrganizationDocument(TestCase):
     #     self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
-    # def test_update_subscription_price_permission_granted(self):
-    #     """ Allow updating subscription prices for users with permissions """
-    #     query = self.subscription_price_update_mutation
+    # def test_update_organization_document_permission_granted(self):
+    #     """ Allow updating organization documents for users with permissions """
+    #     query = self.organization_document_update_mutation
     #     variables = self.variables_update
 
     #     # Create regular user
@@ -322,9 +315,9 @@ class GQLOrganizationDocument(TestCase):
     #     self.assertEqual(data['updateOrganizationSubscriptionPrice']['organizationSubscriptionPrice']['price'], variables['input']['price'])
 
 
-    # def test_update_subscription_price_permission_denied(self):
-    #     """ Check update subscription price permission denied error message """
-    #     query = self.subscription_price_update_mutation
+    # def test_update_organization_document_permission_denied(self):
+    #     """ Check update organization document permission denied error message """
+    #     query = self.organization_document_update_mutation
     #     variables = self.variables_update
 
     #     # Create regular user
@@ -340,9 +333,9 @@ class GQLOrganizationDocument(TestCase):
     #     self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
-    # def test_delete_subscription_price(self):
-    #     """ Delete a subscription price """
-    #     query = self.subscription_price_delete_mutation
+    # def test_delete_organization_document(self):
+    #     """ Delete a organization document """
+    #     query = self.organization_document_delete_mutation
     #     variables = self.variables_delete
 
     #     executed = execute_test_client_api_query(
@@ -358,9 +351,9 @@ class GQLOrganizationDocument(TestCase):
     #     self.assertEqual(exists, False)
 
 
-    # def test_delete_subscription_price_anon_user(self):
-    #     """ Delete a subscription pricem """
-    #     query = self.subscription_price_delete_mutation
+    # def test_delete_organization_document_anon_user(self):
+    #     """ Delete a organization documentm """
+    #     query = self.organization_document_delete_mutation
     #     variables = self.variables_delete
 
     #     executed = execute_test_client_api_query(
@@ -373,9 +366,9 @@ class GQLOrganizationDocument(TestCase):
     #     self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
-    # def test_delete_subscription_price_permission_granted(self):
-    #     """ Allow deleting subscription prices for users with permissions """
-    #     query = self.subscription_price_delete_mutation
+    # def test_delete_organization_document_permission_granted(self):
+    #     """ Allow deleting organization documents for users with permissions """
+    #     query = self.organization_document_delete_mutation
     #     variables = self.variables_delete
 
     #     # Create regular user
@@ -393,9 +386,9 @@ class GQLOrganizationDocument(TestCase):
     #     self.assertEqual(data['deleteOrganizationSubscriptionPrice']['ok'], True)
 
 
-    # def test_delete_subscription_price_permission_denied(self):
-    #     """ Check delete subscription price permission denied error message """
-    #     query = self.subscription_price_delete_mutation
+    # def test_delete_organization_document_permission_denied(self):
+    #     """ Check delete organization document permission denied error message """
+    #     query = self.organization_document_delete_mutation
     #     variables = self.variables_delete
         
     #     # Create regular user
