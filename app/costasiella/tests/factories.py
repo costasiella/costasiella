@@ -1,6 +1,7 @@
 from django.utils import timezone
 from django.contrib.auth import get_user_model
 
+import os
 import datetime
 import factory
 
@@ -108,7 +109,7 @@ class OrganizationDocumentFactory(factory.DjangoModelFactory):
     # https://factoryboy.readthedocs.io/en/latest/orms.html
     # Refer to the part "Extra Fields (class dactory.django.FileField)"
     document = factory.django.FileField(
-        from_file=os.path.join("files", "test.pdf"),
+        from_path=os.path.join(os.getcwd(), "costasiella", "tests", "files", "test.pdf"),
     )
 
 
