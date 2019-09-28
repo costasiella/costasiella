@@ -62,11 +62,11 @@ class GQLOrganizationDocument(TestCase):
             }
         }
 
-        # self.variables_delete = {
-        #     "input": {
-        #         "id": to_global_id('OrganizationSubscriptionPriceNode', self.organization_organization_document.pk),
-        #     }
-        # }
+        self.variables_delete = {
+            "input": {
+                "id": to_global_id('OrganizationDocumentNode', self.organization_document.id),
+            }
+        }
 
         self.organization_documents_query = '''
   query OrganizationDocuments($documentType: String!) {
@@ -323,73 +323,73 @@ class GQLOrganizationDocument(TestCase):
         self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
-    # def test_delete_organization_document(self):
-    #     """ Delete a organization document """
-    #     query = self.organization_document_delete_mutation
-    #     variables = self.variables_delete
+    def test_delete_organization_document(self):
+        """ Delete a organization document """
+        query = self.organization_document_delete_mutation
+        variables = self.variables_delete
 
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         self.admin_user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
+        executed = execute_test_client_api_query(
+            query, 
+            self.admin_user, 
+            variables=variables
+        )
+        data = executed.get('data')
         
-    #     self.assertEqual(data['deleteOrganizationSubscriptionPrice']['ok'], True)
+        self.assertEqual(data['deleteOrganizationDocument']['ok'], True)
 
-    #     exists = models.OrganizationSubscriptionPrice.objects.exists()
-    #     self.assertEqual(exists, False)
-
-
-    # def test_delete_organization_document_anon_user(self):
-    #     """ Delete a organization documentm """
-    #     query = self.organization_document_delete_mutation
-    #     variables = self.variables_delete
-
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         self.anon_user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
+        exists = models.OrganizationDocument.objects.exists()
+        self.assertEqual(exists, False)
 
 
-    # def test_delete_organization_document_permission_granted(self):
-    #     """ Allow deleting organization documents for users with permissions """
-    #     query = self.organization_document_delete_mutation
-    #     variables = self.variables_delete
+    def test_delete_organization_document_anon_user(self):
+        """ Delete a organization documentm """
+        query = self.organization_document_delete_mutation
+        variables = self.variables_delete
 
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename=self.permission_delete)
-    #     user.user_permissions.add(permission)
-    #     user.save()
-
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['deleteOrganizationSubscriptionPrice']['ok'], True)
+        executed = execute_test_client_api_query(
+            query, 
+            self.anon_user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
-    # def test_delete_organization_document_permission_denied(self):
-    #     """ Check delete organization document permission denied error message """
-    #     query = self.organization_document_delete_mutation
-    #     variables = self.variables_delete
+    def test_delete_organization_document_permission_granted(self):
+        """ Allow deleting organization documents for users with permissions """
+        query = self.organization_document_delete_mutation
+        variables = self.variables_delete
+
+        # Create regular user
+        user = f.RegularUserFactory.create()
+        permission = Permission.objects.get(codename=self.permission_delete)
+        user.user_permissions.add(permission)
+        user.save()
+
+        executed = execute_test_client_api_query(
+            query, 
+            user,
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['deleteOrganizationDocument']['ok'], True)
+
+
+    def test_delete_organization_document_permission_denied(self):
+        """ Check delete organization document permission denied error message """
+        query = self.organization_document_delete_mutation
+        variables = self.variables_delete
         
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
+        # Create regular user
+        user = f.RegularUserFactory.create()
 
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
+        executed = execute_test_client_api_query(
+            query, 
+            user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
 
