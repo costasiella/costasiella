@@ -73,6 +73,7 @@ class OrganizationFactory(factory.DjangoModelFactory):
     class Meta:
         model = models.Organization
 
+    id = 100
     archived = False
     name = "My Organization"
 
@@ -92,7 +93,6 @@ class OrganizationDiscoveryFactory(factory.DjangoModelFactory):
     class Meta:
         model = models.OrganizationDiscovery
 
-    id = 100
     archived = False
     name = "First discovery"
 

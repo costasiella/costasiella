@@ -1,4 +1,5 @@
 # from graphql.error.located_error import GraphQLLocatedError
+import os
 import graphql
 import base64
 
@@ -31,9 +32,6 @@ class GQLOrganizationDocument(TestCase):
         self.permission_change = 'change_organizationdocument'
         self.permission_delete = 'delete_organizationdocument'
 
-        import os
-        print(os.getcwd())
-
         self.organization_document = f.OrganizationDocumentFactory.create()
 
         self.variables_query_list = {
@@ -44,15 +42,16 @@ class GQLOrganizationDocument(TestCase):
           "id": to_global_id("OrganizationDocumentNode", self.organization_document.id)
         }
 
-        # self.variables_create = {
-        #     "input": {
-        #         "organizationSubscription": to_global_id('OrganizationSubscriptionNode', self.organization_subscription.pk),
-        #         "price": 10,
-        #         "financeTaxRate": to_global_id('FinanceTaxRateNode', self.finance_tax_rate.pk),
-        #         "dateStart": '2019-01-01',
-        #         "dateEnd": '2019-12-31',
-        #     }
-        # }
+        with open(os.path.join(os.getcwd(), "costasiella", "tests", "files", "test_pdf.txt"), 'r') as input_file:
+          self.variables_create = {
+              "input": {
+                  "documentFileName": "test.pdf",
+                  "documentType": "TERMS_AND_CONDITIONS",
+                  "version": "1.1",
+                  "dateStart": "2019-12-01",
+                  "document": input_file.read().replace("\n", "")
+              }
+          }
 
         # self.variables_update = {
         #     "input": {
@@ -106,26 +105,18 @@ class GQLOrganizationDocument(TestCase):
   }
 '''
 
-#         self.subscription_price_create_mutation = ''' 
-#   mutation CreateOrganizationSubscriptionPrice($input: CreateOrganizationSubscriptionPriceInput!) {
-#     createOrganizationSubscriptionPrice(input: $input) {
-#       organizationSubscriptionPrice {
-#         id
-#         organizationSubscription {
-#           id
-#           name
-#         }
-#         price
-#         financeTaxRate {
-#           id
-#           name
-#         }
-#         dateStart
-#         dateEnd
-#       }
-#     }
-#   }
-# '''
+        self.organization_document_create_mutation = ''' 
+  mutation CreateOrganizationDocument($input:CreateOrganizationDocumentInput!) {
+    createOrganizationDocument(input: $input) {
+      organizationDocument{
+        id
+        version
+        dateStart
+        dateEnd
+      }
+    }
+  }
+'''
 
 #         self.subscription_price_update_mutation = '''
 #   mutation UpdateOrganizationSubscriptionPrice($input: UpdateOrganizationSubscriptionPriceInput!) {
@@ -192,31 +183,30 @@ class GQLOrganizationDocument(TestCase):
         self.assertEqual(data['organizationDocument']['id'], self.variables_query_one['id'])
 
 
-    # def test_create_subscription_price(self):
-    #     """ Create a subscription price """
-    #     query = self.subscription_price_create_mutation
-    #     variables = self.variables_create
+    def test_create_organization_document(self):
+        """ Create an organization document """
+        query = self.organization_document_create_mutation
+        variables = self.variables_create
 
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         self.admin_user, 
-    #         variables=variables
-    #     )
+        executed = execute_test_client_api_query(
+            query, 
+            self.admin_user, 
+            variables=variables
+        )
 
-    #     print("################## create output###########")
-    #     errors = executed.get('errors')
-    #     print(errors)
+        print("################## create output###########")
+        print(executed)
 
-    #     data = executed.get('data')
-    #     print(data)
-    #     self.assertEqual(
-    #       data['createOrganizationSubscriptionPrice']['organizationSubscriptionPrice']['organizationSubscription']['id'], 
-    #       variables['input']['organizationSubscription'])
-    #     self.assertEqual(data['createOrganizationSubscriptionPrice']['organizationSubscriptionPrice']['price'], variables['input']['price'])
-    #     self.assertEqual(data['createOrganizationSubscriptionPrice']['organizationSubscriptionPrice']['financeTaxRate']['id'], 
-    #       variables['input']['financeTaxRate'])
-    #     self.assertEqual(data['createOrganizationSubscriptionPrice']['organizationSubscriptionPrice']['dateStart'], variables['input']['dateStart'])
-    #     self.assertEqual(data['createOrganizationSubscriptionPrice']['organizationSubscriptionPrice']['dateEnd'], variables['input']['dateEnd'])
+        data = executed.get('data')
+        self.assertEqual(
+          data['createOrganizationDocument']['organizationDocument']['version'], 
+          variables['input']['version']
+        )
+        # self.assertEqual(data['createOrganizationSubscriptionPrice']['organizationSubscriptionPrice']['price'], variables['input']['price'])
+        # self.assertEqual(data['createOrganizationSubscriptionPrice']['organizationSubscriptionPrice']['financeTaxRate']['id'], 
+        #   variables['input']['financeTaxRate'])
+        # self.assertEqual(data['createOrganizationSubscriptionPrice']['organizationSubscriptionPrice']['dateStart'], variables['input']['dateStart'])
+        # self.assertEqual(data['createOrganizationSubscriptionPrice']['organizationSubscriptionPrice']['dateEnd'], variables['input']['dateEnd'])
 
 
     # def test_create_subscription_price_anon_user(self):
