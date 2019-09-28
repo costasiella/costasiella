@@ -40,6 +40,10 @@ class GQLOrganizationDocument(TestCase):
           "documentType": "TERMS_AND_CONDITIONS"
         }
 
+        self.variables_query_one = {
+          "id": to_global_id("OrganizationDocumentNode", self.organization_document.id)
+        }
+
         # self.variables_create = {
         #     "input": {
         #         "organizationSubscription": to_global_id('OrganizationSubscriptionNode', self.organization_subscription.pk),
@@ -90,42 +94,17 @@ class GQLOrganizationDocument(TestCase):
   }
 '''
 
-#         self.subscription_price_query = '''
-#   query OrganizationSubscriptionPrice($id: ID!, $after: String, $before: String, $archived: Boolean!) {
-#     organizationSubscriptionPrice(id:$id) {
-#       id
-#       organizationSubscription {
-#         id
-#         name
-#       }
-#       price
-#       priceDisplay
-#       financeTaxRate {
-#         id
-#         name
-#       }
-#       dateStart
-#       dateEnd
-#     }
-#     financeTaxRates(first: 15, before: $before, after: $after, archived: $archived) {
-#       pageInfo {
-#         startCursor
-#         endCursor
-#         hasNextPage
-#         hasPreviousPage
-#       }
-#       edges {
-#         node {
-#           id
-#           archived
-#           name
-#           percentage
-#           rateType
-#         }
-#       }
-#     }
-#   }
-# '''
+        self.organization_document_query = '''
+  query OrganizationDocument($id: ID!) {
+    organizationDocument(id:$id) {
+      id
+      version
+      dateStart
+      dateEnd
+      document
+    }
+  }
+'''
 
 #         self.subscription_price_create_mutation = ''' 
 #   mutation CreateOrganizationSubscriptionPrice($input: CreateOrganizationSubscriptionPriceInput!) {
@@ -203,25 +182,14 @@ class GQLOrganizationDocument(TestCase):
     # The listing of these documents is public, so users also don't need to be logged in.
     ##
 
-    # def test_query_one(self):
-    #     """ Query one subscription price """   
-    #     query = self.subscription_price_query
+    def test_query_one(self):
+        """ Query one organization document """   
+        query = self.organization_document_query
+      
+        executed = execute_test_client_api_query(query, self.admin_user, variables=self.variables_query_one)
+        data = executed.get('data')
 
-    #     variables = {
-    #       "id": to_global_id('OrganizationSubscriptionPriceNode', self.organization_subscription_price.id),
-    #       "archived": False # Used for tax rates
-    #     }
-       
-    #     executed = execute_test_client_api_query(query, self.admin_user, variables=variables)
-    #     data = executed.get('data')
-
-    #     self.assertEqual(data['organizationSubscriptionPrice']['organizationSubscription']['id'], 
-    #       to_global_id('OrganizationSubscriptionNode', self.organization_subscription_price.organization_subscription.pk))
-    #     self.assertEqual(data['organizationSubscriptionPrice']['price'], self.organization_subscription_price.price)
-    #     self.assertEqual(data['organizationSubscriptionPrice']['financeTaxRate']['id'], 
-    #       to_global_id('FinanceTaxRateNode', self.organization_subscription_price.finance_tax_rate.id))
-    #     self.assertEqual(data['organizationSubscriptionPrice']['dateStart'], self.organization_subscription_price.date_start)
-    #     self.assertEqual(data['organizationSubscriptionPrice']['dateEnd'], self.organization_subscription_price.date_end)
+        self.assertEqual(data['organizationDocument']['id'], self.variables_query_one['id'])
 
 
     # def test_query_one_anon_user(self):
