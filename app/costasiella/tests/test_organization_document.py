@@ -101,6 +101,7 @@ class GQLOrganizationDocument(TestCase):
       dateStart
       dateEnd
       document
+      documentType
     }
   }
 '''
@@ -113,6 +114,8 @@ class GQLOrganizationDocument(TestCase):
         version
         dateStart
         dateEnd
+        document
+        documentType
       }
     }
   }
@@ -198,10 +201,12 @@ class GQLOrganizationDocument(TestCase):
         print(executed)
 
         data = executed.get('data')
-        self.assertEqual(
-          data['createOrganizationDocument']['organizationDocument']['version'], 
-          variables['input']['version']
-        )
+        self.assertEqual(data['createOrganizationDocument']['organizationDocument']['documentType'], variables['input']['documentType'])
+        self.assertEqual(data['createOrganizationDocument']['organizationDocument']['version'], variables['input']['version'])
+        self.assertEqual(data['createOrganizationDocument']['organizationDocument']['dateStart'], variables['input']['dateStart'])
+        # self.assertEqual(data['createOrganizationDocument']['organizationDocument']['document'], variables['input']['document'])
+        
+        
         # self.assertEqual(data['createOrganizationSubscriptionPrice']['organizationSubscriptionPrice']['price'], variables['input']['price'])
         # self.assertEqual(data['createOrganizationSubscriptionPrice']['organizationSubscriptionPrice']['financeTaxRate']['id'], 
         #   variables['input']['financeTaxRate'])
