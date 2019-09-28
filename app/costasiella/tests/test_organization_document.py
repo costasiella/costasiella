@@ -270,57 +270,57 @@ class GQLOrganizationDocument(TestCase):
         self.assertEqual(data['updateOrganizationDocument']['organizationDocument']['dateEnd'], variables['input']['dateEnd'])
 
 
-    # def test_update_organization_document_anon_user(self):
-    #     """ Don't allow updating organization documents for non-logged in users """
-    #     query = self.organization_document_update_mutation
-    #     variables = self.variables_update
+    def test_update_organization_document_anon_user(self):
+        """ Don't allow updating organization documents for non-logged in users """
+        query = self.organization_document_update_mutation
+        variables = self.variables_update
 
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         self.anon_user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
-
-
-    # def test_update_organization_document_permission_granted(self):
-    #     """ Allow updating organization documents for users with permissions """
-    #     query = self.organization_document_update_mutation
-    #     variables = self.variables_update
-
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename=self.permission_change)
-    #     user.user_permissions.add(permission)
-    #     user.save()
-
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['updateOrganizationSubscriptionPrice']['organizationSubscriptionPrice']['price'], variables['input']['price'])
+        executed = execute_test_client_api_query(
+            query, 
+            self.anon_user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
-    # def test_update_organization_document_permission_denied(self):
-    #     """ Check update organization document permission denied error message """
-    #     query = self.organization_document_update_mutation
-    #     variables = self.variables_update
+    def test_update_organization_document_permission_granted(self):
+        """ Allow updating organization documents for users with permissions """
+        query = self.organization_document_update_mutation
+        variables = self.variables_update
 
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
+        # Create regular user
+        user = f.RegularUserFactory.create()
+        permission = Permission.objects.get(codename=self.permission_change)
+        user.user_permissions.add(permission)
+        user.save()
 
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
+        executed = execute_test_client_api_query(
+            query, 
+            user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['updateOrganizationDocument']['organizationDocument']['version'], variables['input']['version'])
+
+
+    def test_update_organization_document_permission_denied(self):
+        """ Check update organization document permission denied error message """
+        query = self.organization_document_update_mutation
+        variables = self.variables_update
+
+        # Create regular user
+        user = f.RegularUserFactory.create()
+
+        executed = execute_test_client_api_query(
+            query, 
+            user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
     # def test_delete_organization_document(self):
