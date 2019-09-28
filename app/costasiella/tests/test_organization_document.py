@@ -190,14 +190,13 @@ class GQLOrganizationDocument(TestCase):
         data = executed.get('data')
 
         self.assertEqual(
-            data['organizationDocuments']['edges'][0]['node']['organizationDoument']['id'], 
-            to_global_id('OrganizationDocument', self.organization_document.id)
+            data['organizationDocuments']['edges'][0]['node']['id'], 
+            to_global_id('OrganizationDocumentNode', self.organization_document.id)
         )
-        # self.assertEqual(data['organizationSubscriptionPrices']['edges'][0]['node']['price'], self.organization_subscription_price.price)
-        # self.assertEqual(data['organizationSubscriptionPrices']['edges'][0]['node']['financeTaxRate']['id'], 
-        #   to_global_id('FinanceTaxRateNode', self.organization_subscription_price.finance_tax_rate.pk))
-        # self.assertEqual(data['organizationSubscriptionPrices']['edges'][0]['node']['dateStart'], self.organization_subscription_price.date_start)
-        # self.assertEqual(data['organizationSubscriptionPrices']['edges'][0]['node']['dateEnd'], self.organization_subscription_price.date_end)
+        self.assertEqual(data['organizationDocuments']['edges'][0]['node']['documentType'], self.organization_document.document_type)
+        self.assertEqual(data['organizationDocuments']['edges'][0]['node']['version'], str(self.organization_document.version))
+        self.assertEqual(data['organizationDocuments']['edges'][0]['node']['dateStart'], str(self.organization_document.date_start))
+        self.assertEqual(data['organizationDocuments']['edges'][0]['node']['document'], self.organization_document.document)
 
 
     # def test_query_permision_denied(self):
