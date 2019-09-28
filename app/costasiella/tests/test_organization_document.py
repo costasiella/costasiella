@@ -198,57 +198,10 @@ class GQLOrganizationDocument(TestCase):
         self.assertEqual(data['organizationDocuments']['edges'][0]['node']['dateStart'], str(self.organization_document.date_start))
         self.assertEqual(data['organizationDocuments']['edges'][0]['node']['document'], self.organization_document.document)
 
-
-    # def test_query_permision_denied(self):
-    #     """ Query list of organization documents """
-    #     query = self.organization_documents_query
-
-    #     variables = {
-    #         'organizationSubscription': to_global_id('OrganizationSubscriptionNode', self.organization_subscription_price.organization_subscription.pk),
-    #         'archived': False
-    #     }
-
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     executed = execute_test_client_api_query(query, user, variables=variables)
-    #     errors = executed.get('errors')
-
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
-
-
-    # def test_query_permision_granted(self):
-    #     """ Query list of location rooms """
-    #     query = self.organization_documents_query
-
-    #     variables = {
-    #         'organizationSubscription': to_global_id('OrganizationSubscriptionNode', self.organization_subscription_price.organization_subscription.pk),
-    #         'archived': False
-    #     }
-
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename='view_organizationdocument')
-    #     user.user_permissions.add(permission)
-    #     user.save()
-
-    #     executed = execute_test_client_api_query(query, user, variables=variables)
-    #     data = executed.get('data')
-
-    #     self.assertEqual(data['organizationSubscriptionPrices']['edges'][0]['node']['price'], self.organization_subscription_price.price)
-
-
-    # def test_query_anon_user(self):
-    #     """ Query list of location rooms """
-    #     query = self.organization_documents_query
-    #     variables = {
-    #         'organizationSubscription': to_global_id('OrganizationSubscriptionNode', self.organization_subscription_price.organization_subscription.pk),
-    #         'archived': False
-    #     }
-
-    #     executed = execute_test_client_api_query(query, self.anon_user, variables=variables)
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
-
+    ##
+    # No permission tests are required in this test, as there are no permission checks in the schema.
+    # The listing of these documents is public, so users also don't need to be logged in.
+    ##
 
     # def test_query_one(self):
     #     """ Query one subscription price """   
