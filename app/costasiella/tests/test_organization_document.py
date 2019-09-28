@@ -192,57 +192,6 @@ class GQLOrganizationDocument(TestCase):
         self.assertEqual(data['organizationDocument']['id'], self.variables_query_one['id'])
 
 
-    # def test_query_one_anon_user(self):
-    #     """ Deny permission for anon users Query one subscription price """   
-    #     query = self.subscription_price_query
-
-    #     variables = {
-    #       "id": to_global_id('OrganizationSubscriptionPriceNode', self.organization_subscription_price.id),
-    #       "archived": False # Used for tax rates
-    #     }
-       
-    #     executed = execute_test_client_api_query(query, self.anon_user, variables=variables)
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
-
-
-    # def test_query_one_permission_denied(self):
-    #     """ Permission denied message when user lacks authorization """   
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     query = self.subscription_price_query
-
-    #     variables = {
-    #       "id": to_global_id('OrganizationSubscriptionPriceNode', self.organization_subscription_price.id),
-    #       "archived": False # Used for tax rates
-    #     }
-       
-    #     # Now query single subscription price and check
-    #     executed = execute_test_client_api_query(query, user, variables=variables)
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
-
-
-    # def test_query_one_permission_granted(self):
-    #     """ Respond with data when user has permission """   
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename='view_organizationdocument')
-    #     user.user_permissions.add(permission)
-    #     user.save()
-        
-    #     query = self.subscription_price_query
-
-    #     variables = {
-    #       "id": to_global_id('OrganizationSubscriptionPriceNode', self.organization_subscription_price.id),
-    #       "archived": False # Used for tax rates
-    #     }
-       
-    #     # Now query single subscription price and check
-    #     executed = execute_test_client_api_query(query, user, variables=variables)
-    #     data = executed.get('data')
-    #     self.assertEqual(data['organizationSubscriptionPrice']['price'], self.organization_subscription_price.price)
-
-
     # def test_create_subscription_price(self):
     #     """ Create a subscription price """
     #     query = self.subscription_price_create_mutation
