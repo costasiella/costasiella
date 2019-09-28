@@ -182,7 +182,7 @@ STATICFILES_DIRS = [
 
 # Media files (User uploads)
 # https://docs.djangoproject.com/en/2.1/topics/files/
-MEDIA_ROOT = '/home/edwin/Development/costasiella/app/costasiella/media'
+MEDIA_ROOT = os.path.join(os.getcwd(), "costasiella", "media")
 MEDIA_URL = '/media/'
 
 # Email configuration
