@@ -145,13 +145,15 @@ class GQLOrganizationDocument(TestCase):
 
     def tearDown(self):
         # This is run after every test
-        print(MEDIA_ROOT)
-        # Clean test media root after each test to prevent stray files after testing
-        for root, dirs, files in os.walk(MEDIA_ROOT):
-          for f in files:
-            os.unlink(os.path.join(root, f))
-          for d in dirs:
-            shutil.rmtree(os.path.join(root, d))
+        if 'TRAVIS' not in os.environ:
+          # Clean test media root after each test to prevent stray files after testing
+          # But don't run on Travis-CI, as we don't seem to be allowed to remove stuff from dirs
+          # in the tests
+          for root, dirs, files in os.walk(MEDIA_ROOT):
+            for f in files:
+              os.unlink(os.path.join(root, f))
+            for d in dirs:
+              shutil.rmtree(os.path.join(root, d))
 
 
     def test_query(self):
