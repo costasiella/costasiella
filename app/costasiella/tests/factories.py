@@ -68,6 +68,14 @@ class FinanceTaxRateFactory(factory.DjangoModelFactory):
     code = "8000"
 
 
+class OrganizationFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.Organization
+
+    archived = False
+    name = "My Organization"
+
+
 class OrganizationClasstypeFactory(factory.DjangoModelFactory):
     class Meta:
         model = models.OrganizationClasstype
@@ -83,8 +91,25 @@ class OrganizationDiscoveryFactory(factory.DjangoModelFactory):
     class Meta:
         model = models.OrganizationDiscovery
 
+    id = 100
     archived = False
     name = "First discovery"
+
+
+class OrganizationDocumentFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.OrganizationDocument
+
+    organization = factory.SubFactory(OrganizationFactory)
+    document_type = "TERMS_AND_CONDITIONS"
+    version = 1.0
+    date_start = datetime.date(2019, 1, 1)
+    # date_end is None
+    # https://factoryboy.readthedocs.io/en/latest/orms.html
+    # Refer to the part "Extra Fields (class dactory.django.FileField)"
+    document = factory.django.FileField(
+        from_file=os.path.join("files", "test.pdf"),
+    )
 
 
 class OrganizationLocationFactory(factory.DjangoModelFactory):

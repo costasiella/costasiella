@@ -20,7 +20,6 @@ from graphql_relay import to_global_id
 
 class GQLOrganizationDocument(TestCase):
     # https://docs.djangoproject.com/en/2.1/topics/testing/overview/
-    fixtures = ['organization.json']
 
     def setUp(self):
         # This is run before every test
