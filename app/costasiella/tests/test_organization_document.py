@@ -55,10 +55,10 @@ class GQLOrganizationDocument(TestCase):
 
         self.variables_update = {
             "input": {
-                "id": to_global_id("OrganizationDocumentNode", self.organization_document.id)
+                "id": to_global_id("OrganizationDocumentNode", self.organization_document.id),
                 "version": "1.2",
                 "dateStart": "2019-11-01",
-                "dateStart": "2019-12-31",
+                "dateEnd": "2019-12-31",
             }
         }
 
@@ -252,23 +252,22 @@ class GQLOrganizationDocument(TestCase):
         self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
-    # def test_update_organization_document(self):
-    #     """ Update a organization document """
-    #     query = self.organization_document_update_mutation
-    #     variables = self.variables_update
+    def test_update_organization_document(self):
+        """ Update a organization document """
+        query = self.organization_document_update_mutation
+        variables = self.variables_update
 
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         self.admin_user, 
-    #         variables=variables
-    #     )
+        executed = execute_test_client_api_query(
+            query, 
+            self.admin_user, 
+            variables=variables
+        )
 
-    #     data = executed.get('data')
-    #     self.assertEqual(data['updateOrganizationSubscriptionPrice']['organizationSubscriptionPrice']['price'], variables['input']['price'])
-    #     self.assertEqual(data['updateOrganizationSubscriptionPrice']['organizationSubscriptionPrice']['financeTaxRate']['id'], 
-    #       variables['input']['financeTaxRate'])
-    #     self.assertEqual(data['updateOrganizationSubscriptionPrice']['organizationSubscriptionPrice']['dateStart'], variables['input']['dateStart'])
-    #     self.assertEqual(data['updateOrganizationSubscriptionPrice']['organizationSubscriptionPrice']['dateEnd'], variables['input']['dateEnd'])
+        data = executed.get('data')
+        self.assertEqual(data['updateOrganizationDocument']['organizationDocument']['id'], variables['input']['id'])
+        self.assertEqual(data['updateOrganizationDocument']['organizationDocument']['version'], variables['input']['version'])
+        self.assertEqual(data['updateOrganizationDocument']['organizationDocument']['dateStart'], variables['input']['dateStart'])
+        self.assertEqual(data['updateOrganizationDocument']['organizationDocument']['dateEnd'], variables['input']['dateEnd'])
 
 
     # def test_update_organization_document_anon_user(self):
