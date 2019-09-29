@@ -1,4 +1,5 @@
 from .account import Account
+from .account_accepted_document import AccountAcceptedDocument
 from .account_classpass import AccountClasspass
 from .account_membership import AccountMembership
 from .account_subscription import AccountSubscription

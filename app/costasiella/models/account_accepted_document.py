@@ -1,0 +1,22 @@
+from django.db import models
+
+
+from .account import Account
+from .organization_document import OrganizationDocument
+from ..modules.encrypted_fields import EncryptedTextField
+
+class AccountAcceptedDocument(models.Model):
+    # add additional fields in here
+    # teacher and employee will use OneToOne fields. An account can optionally be a teacher or employee.
+    # Editable parameter docs
+    # https://docs.djangoproject.com/en/2.2/ref/models/fields/#editable
+
+    account = models.ForeignKey(Account, on_delete=models.CASCADE)
+    document = models.ForeignKey(OrganizationDocument, on_delete=models.SET_NULL, null=True)
+    date_accepted = models.DateTimeField(auto_now_add=True, editable=False)
+    ip_accepted = EncryptedTextField(default="")
+    created_at = models.DateTimeField(auto_now_add=True, editable=False)
+    updated_at = models.DateTimeField(auto_now=True, editable=False)
+
+    def __str__(self):
+        return self.organization_document.document_type + ' [' + str(date_accepted) + ']'
