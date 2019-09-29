@@ -198,9 +198,6 @@ class GQLOrganizationDocument(TestCase):
             variables=variables
         )
 
-        print("################## create output###########")
-        print(executed)
-
         data = executed.get('data')
         self.assertEqual(data['createOrganizationDocument']['organizationDocument']['documentType'], variables['input']['documentType'])
         self.assertEqual(data['createOrganizationDocument']['organizationDocument']['version'], variables['input']['version'])
