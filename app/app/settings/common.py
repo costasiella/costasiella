@@ -14,7 +14,8 @@ import os
 from datetime import timedelta
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+# We need to add one more os.path.dirname, as settings has been moved into a folder
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 
 # Quick-start development settings - unsuitable for production
@@ -93,7 +94,10 @@ ROOT_URLCONF = 'app.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, "templates"), os.path.join(BASE_DIR, "templates", "allauth")],
+        'DIRS': [
+            os.path.join(BASE_DIR, "templates"),
+            os.path.join(BASE_DIR, "templates", "allauth")
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

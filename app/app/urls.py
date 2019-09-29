@@ -30,8 +30,8 @@ from django.conf.urls.static import static
 urlpatterns = [
     # path('', login_required(TemplateView.as_view(template_name="backend.html")), name="home"),
     # path('', TemplateView.as_view(template_name="backend.html"), name="home"),
+    path('accounts/', include('allauth.urls')),
     path('email/verified/', TemplateView.as_view(template_name="email_verfied.html"), name="email_verified"),
     path('admin/', admin.site.urls),
-    path('accounts/', include('allauth.urls')),
     path('graphql/', csrf_exempt(jwt_cookie(GraphQLView.as_view(graphiql=True))), name="graphql"),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) # Development only
