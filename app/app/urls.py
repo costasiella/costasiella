@@ -26,12 +26,16 @@ from graphql_jwt.decorators import jwt_cookie
 from django.conf import settings
 from django.conf.urls.static import static
 
+from costasiella.views import privacy_policy, terms_and_conditions
+
 
 urlpatterns = [
     # path('', login_required(TemplateView.as_view(template_name="backend.html")), name="home"),
     # path('', TemplateView.as_view(template_name="backend.html"), name="home"),
     path('accounts/', include('allauth.urls')),
     path('email/verified/', TemplateView.as_view(template_name="email_verfied.html"), name="email_verified"),
+    path('document/terms-and-conditions', terms_and_conditions, name="terms_and_conditions"),
+    path('document/privacy-policy', privacy_policy, name="privacy_policy"),
     path('admin/', admin.site.urls),
     path('graphql/', csrf_exempt(jwt_cookie(GraphQLView.as_view(graphiql=True))), name="graphql"),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) # Development only
