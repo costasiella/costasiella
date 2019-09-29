@@ -11,13 +11,13 @@
    xmlns:xlink="http://www.w3.org/1999/xlink"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="200"
-   height="32"
-   viewBox="0 0 52.916665 8.4666669"
+   width="139.77249"
+   height="23.733334"
+   viewBox="0 0 36.981471 6.2794447"
    version="1.1"
    id="svg8"
    inkscape:version="0.92.4 (unknown)"
-   sodipodi:docname="crappy_logo.svg">
+   sodipodi:docname="logo_stock_backend.svg">
   <defs
      id="defs2">
     <linearGradient
@@ -41,9 +41,9 @@
        id="linearGradient4604"
        gradientUnits="userSpaceOnUse"
        x1="1.1996968"
-       y1="292.65592"
-       x2="38.181169"
-       y2="292.65592" />
+       y1="292.65591"
+       x2="38.181168"
+       y2="292.65591" />
   </defs>
   <sodipodi:namedview
      id="base"
@@ -52,18 +52,22 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="22.4"
-     inkscape:cx="2.5930817"
-     inkscape:cy="11.241928"
+     inkscape:zoom="3.959798"
+     inkscape:cx="46.664159"
+     inkscape:cy="12.69301"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      showgrid="false"
      units="px"
      inkscape:window-width="1577"
      inkscape:window-height="828"
-     inkscape:window-x="92"
-     inkscape:window-y="77"
-     inkscape:window-maximized="0" />
+     inkscape:window-x="2202"
+     inkscape:window-y="162"
+     inkscape:window-maximized="0"
+     fit-margin-top="2"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="2" />
   <metadata
      id="metadata5">
     <rdf:RDF>
@@ -72,7 +76,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -80,7 +84,7 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(0,-288.53332)">
+     transform="translate(-0.04388355,-289.91781)">
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:6.3499999px;line-height:1.25;font-family:'Open Sans';-inkscape-font-specification:'Open Sans';letter-spacing:0px;word-spacing:0px;opacity:1;fill:#4d4d4d;fill-opacity:1;stroke:none;stroke-width:0.26458332"
