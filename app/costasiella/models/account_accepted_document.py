@@ -14,7 +14,7 @@ class AccountAcceptedDocument(models.Model):
     account = models.ForeignKey(Account, on_delete=models.CASCADE)
     document = models.ForeignKey(OrganizationDocument, on_delete=models.SET_NULL, null=True)
     date_accepted = models.DateTimeField(auto_now_add=True, editable=False)
-    ip_accepted = EncryptedTextField(default="")
+    client_ip = EncryptedTextField(default="")
     created_at = models.DateTimeField(auto_now_add=True, editable=False)
     updated_at = models.DateTimeField(auto_now=True, editable=False)
 
