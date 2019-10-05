@@ -51,6 +51,7 @@ from .schedule_item_teacher_available import ScheduleItemTeacherAvailableQuery, 
 
 
 class Query(AccountQuery,
+            AccountAcceptedDocumentQuery,
             AccountClasspassQuery,
             AccountMembershipQuery,
             AccountSubscriptionQuery,
