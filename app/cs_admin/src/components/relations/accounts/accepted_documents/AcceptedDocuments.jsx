@@ -10,8 +10,6 @@ import { Link } from 'react-router-dom'
 
 import AppSettingsContext from '../../../context/AppSettingsContext'
 
-
-
 import {
   Page,
   Grid,
@@ -28,7 +26,7 @@ import { toast } from 'react-toastify'
 
 import BadgeBoolean from "../../../ui/BadgeBoolean"
 import RelationsAccountsBack from "../RelationsAccountsBack"
-import confirm_delete from "../../../../tools/confirm_delete"
+import DocumentType from "../../../ui/DocumentType"
 
 import ContentCard from "../../../general/ContentCard"
 import ProfileMenu from "../ProfileMenu"
@@ -57,6 +55,8 @@ function AccountAcceptedDocuments({ t, history, match }) {
     console.log(error)
     return <p>{t('general.error_sad_smiley')}</p>
   }
+
+  console.log(data)
   
   const account = data.account
   const acceptedDocuments = data.accountAcceptedDocuments
@@ -109,13 +109,13 @@ function AccountAcceptedDocuments({ t, history, match }) {
                       {acceptedDocuments.edges.map(({ node }) => (
                         <Table.Row key={v4()}>
                           <Table.Col key={v4()}>
-                            {node.documentType}
+                            <DocumentType documentType={node.document.documentType} />
                           </Table.Col>
                           <Table.Col key={v4()}>
                           {moment(node.dateAccepted).format(dateFormat)}
                           </Table.Col>
                           <Table.Col key={v4()}>
-                            {node.documentUrl}
+                            {node.document.urlDocument}
                           </Table.Col>
                         </Table.Row>
                       ))}
