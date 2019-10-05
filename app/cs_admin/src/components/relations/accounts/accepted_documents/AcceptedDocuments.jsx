@@ -117,14 +117,6 @@ function AccountAcceptedDocuments({ t, history, match }) {
                           <Table.Col key={v4()}>
                             {node.documentUrl}
                           </Table.Col>
-                          <Table.Col className="text-right" key={v4()}>
-                            <Link to={"/relations/accounts/" + match.params.account_id + "/classpasses/edit/" + node.id}>
-                              <Button className='btn-sm' 
-                                      color="secondary">
-                                {t('general.edit')}
-                              </Button>
-                            </Link>
-                          </Table.Col>
                         </Table.Row>
                       ))}
                   </Table.Body>
