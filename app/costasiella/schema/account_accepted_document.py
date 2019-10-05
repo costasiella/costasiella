@@ -42,5 +42,5 @@ class AccountAcceptedDocumentQuery(graphene.ObjectType):
         require_login_and_permission(user, 'costasiella.view_accountaccepteddocument')
 
         rid = get_rid(account)
-        return AccountClasspass.objects.filter(account=rid.id).order_by('date_start')
+        return AccountAcceptedDocument.objects.filter(account=rid.id).order_by('date_accepted')
 
