@@ -1,12 +1,15 @@
 // @flow
 
-import React from 'react'
+import React, { useContext } from 'react'
 import { useQuery } from "react-apollo"
 import gql from "graphql-tag"
 import { v4 } from "uuid"
 import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
 import { Link } from 'react-router-dom'
+
+import AppSettingsContext from '../../../context/AppSettingsContext'
+
 
 
 import {
@@ -33,9 +36,14 @@ import ProfileCardSmall from "../../../ui/ProfileCardSmall"
 
 import { GET_ACCOUNT_ACCEPTED_DOCUMENTS_QUERY } from "./queries"
 
+import moment from 'moment'
+
 
 function AccountAcceptedDocuments({ t, history, match }) {
-  accountId = match.params.account_id
+  const appSettings = useContext(AppSettingsContext)
+  const dateFormat = appSettings.dateFormat
+
+  const accountId = match.params.account_id
   const { loading, error, data, fetchMore } = useQuery(GET_ACCOUNT_ACCEPTED_DOCUMENTS_QUERY, {
     variables: {
       account: accountId
@@ -104,7 +112,7 @@ function AccountAcceptedDocuments({ t, history, match }) {
                             {node.documentType}
                           </Table.Col>
                           <Table.Col key={v4()}>
-                            {node.dateAccepted}
+                          {moment(node.dateAccepted).format(dateFormat)}
                           </Table.Col>
                           <Table.Col key={v4()}>
                             {node.documentUrl}
