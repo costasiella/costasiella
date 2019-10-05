@@ -352,7 +352,16 @@ class AllAuthEmailAddress(factory.DjangoModelFactory):
     email = 'user@costasiella.com'
     verified = True
     primary = True
-    
+
+
+class AccountAcceptedDocumentFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.AccountAcceptedDocument
+
+    account = factory.SubFactory(RegularUserFactory)
+    document = factory.SubFactory(OrganizationDocumentFactory)
+    date_accepted = datetime.date(2019, 1, 1)
+
 
 class AccountSubscriptionFactory(factory.DjangoModelFactory):
     class Meta:
