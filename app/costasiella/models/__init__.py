@@ -1,4 +1,5 @@
 from .account import Account
+from .account_accepted_document import AccountAcceptedDocument
 from .account_classpass import AccountClasspass
 from .account_membership import AccountMembership
 from .account_subscription import AccountSubscription
@@ -24,6 +25,7 @@ from .organization_classpass_group import OrganizationClasspassGroup
 from .organization_classpass_group_classpass import OrganizationClasspassGroupClasspass
 from .organization_classtype import OrganizationClasstype
 from .organization_discovery import OrganizationDiscovery
+from .organization_document import OrganizationDocument
 from .organization_level import OrganizationLevel
 from .organization_location import OrganizationLocation
 from .organization_location_room import OrganizationLocationRoom

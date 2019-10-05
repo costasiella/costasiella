@@ -69,6 +69,10 @@ import OrganizationClasstypeEditImage from './components/organization/classtypes
 import OrganizationDiscoveries from './components/organization/discovery/OrganizationDiscoveries'
 import OrganizationDiscoveryAdd from './components/organization/discovery/OrganizationDiscoveryAdd'
 import OrganizationDiscoveryEdit from './components/organization/discovery/OrganizationDiscoveryEdit'
+import OrganizationDocuments from './components/organization/organization/documents/OrganizationDocuments'
+import OrganizationListDocuments from './components/organization/organization/documents/OrganizationListDocuments'
+import OrganizationDocumentAdd from './components/organization/organization/documents/OrganizationDocumentAdd'
+import OrganizationDocumentEdit from './components/organization/organization/documents/OrganizationDocumentEdit'
 import OrganizationLocations from './components/organization/locations/OrganizationLocations'
 import OrganizationLocationAdd from './components/organization/locations/OrganizationLocationAdd'
 import OrganizationLocationEdit from './components/organization/locations/OrganizationLocationEdit'
@@ -96,6 +100,7 @@ import RelationsHome from './components/relations/home/RelationsHome'
 import RelationsAccounts from './components/relations/accounts/RelationsAccounts'
 import RelationsAccountAdd from './components/relations/accounts/RelationsAccountAdd'
 import RelationsAccountProfile from './components/relations/accounts/RelationsAccountProfile'
+import AccountAcceptedDocuments from './components/relations/accounts/accepted_documents/AcceptedDocuments.jsx'
 import AccountClasspasses from './components/relations/accounts/classpasses/AccountClasspasses'
 import AccountClasspassAdd from './components/relations/accounts/classpasses/AccountClasspassAdd'
 import AccountClasspassEdit from './components/relations/accounts/classpasses/AccountClasspassEdit'
@@ -137,9 +142,7 @@ import { CSAuth } from './tools/authentication'
 
 
 const PrivateRoute = ({ component: Component, ...rest }) => {
-  let token = localStorage.getItem(CSLS.AUTH_TOKEN)
   let tokenExpired = false
-  console.log(token)
   console.log(rest.path)
   
   // Check expiration
@@ -148,18 +151,12 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
     CSAuth.logout(true)
     tokenExpired = true
   }
-  // Set path to go to after login
-  if (!token) {
-    localStorage.setItem(CSLS.AUTH_LOGIN_NEXT, rest.path)
-  } 
 
   return (
     <Route {...rest} render={(props) => (
-      token
-        ? tokenExpired 
-          ? <Redirect to='/user/session/expired' />
-          : <Component {...props} />
-        : <Redirect to='/user/login' />
+      tokenExpired 
+        ? <Redirect to='/user/session/expired' />
+        : <Component {...props} />
     )} />
   )
 }
@@ -216,6 +213,10 @@ function AppRoot({ t }) {
           {/* ORGANIZATION */}
           <PrivateRoute exact path="/organization" component={OrganizationHome} />
           <PrivateRoute exact path="/organization/edit/:id" component={OrganizationEdit} />
+          <PrivateRoute exact path="/organization/documents/:organization_id" component={OrganizationDocuments} />
+          <PrivateRoute exact path="/organization/documents/:organization_id/:document_type" component={OrganizationListDocuments} />
+          <PrivateRoute exact path="/organization/documents/:organization_id/:document_type/add" component={OrganizationDocumentAdd} />
+          <PrivateRoute exact path="/organization/documents/:organization_id/:document_type/edit/:id" component={OrganizationDocumentEdit} />
           <PrivateRoute exact path="/organization/appointment_categories" component={OrganizationAppointmentCategories} />
           <PrivateRoute exact path="/organization/appointment_categories/add" component={OrganizationAppointmentCategoryAdd} />
           <PrivateRoute exact path="/organization/appointment_categories/edit/:id" component={OrganizationAppointmentCategoryEdit} />
@@ -270,6 +271,7 @@ function AppRoot({ t }) {
           <PrivateRoute exact path="/relations/accounts" component={RelationsAccounts} />
           <PrivateRoute exact path="/relations/accounts/add" component={RelationsAccountAdd} />
           <PrivateRoute exact path="/relations/accounts/:account_id/profile" component={RelationsAccountProfile} />
+          <PrivateRoute exact path="/relations/accounts/:account_id/accepted_documents" component={AccountAcceptedDocuments} />
           <PrivateRoute exact path="/relations/accounts/:account_id/classpasses" component={AccountClasspasses} />
           <PrivateRoute exact path="/relations/accounts/:account_id/classpasses/add" component={AccountClasspassAdd} />
           <PrivateRoute exact path="/relations/accounts/:account_id/classpasses/edit/:id" component={AccountClasspassEdit} />

@@ -1,5 +1,3 @@
-// @flow
-
 import React from 'react'
 import { useMutation } from '@apollo/react-hooks';
 import { withTranslation } from 'react-i18next'

@@ -20,3 +20,5 @@ app/costasiella/__pycache__/
 app/\.vscode/
 
 app/celerybeat.pid
+
+*.txt~

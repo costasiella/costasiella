@@ -1,6 +1,7 @@
 from django.utils import timezone
 from django.contrib.auth import get_user_model
 
+import os
 import datetime
 import factory
 
@@ -68,6 +69,15 @@ class FinanceTaxRateFactory(factory.DjangoModelFactory):
     code = "8000"
 
 
+class OrganizationFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.Organization
+
+    id = 100
+    archived = False
+    name = "My Organization"
+
+
 class OrganizationClasstypeFactory(factory.DjangoModelFactory):
     class Meta:
         model = models.OrganizationClasstype
@@ -85,6 +95,22 @@ class OrganizationDiscoveryFactory(factory.DjangoModelFactory):
 
     archived = False
     name = "First discovery"
+
+
+class OrganizationDocumentFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.OrganizationDocument
+
+    organization = factory.SubFactory(OrganizationFactory)
+    document_type = "TERMS_AND_CONDITIONS"
+    version = 1.0
+    date_start = datetime.date(2019, 1, 1)
+    # date_end is None
+    # https://factoryboy.readthedocs.io/en/latest/orms.html
+    # Refer to the part "Extra Fields (class dactory.django.FileField)"
+    document = factory.django.FileField(
+        from_path=os.path.join(os.getcwd(), "costasiella", "tests", "files", "test.pdf"),
+    )
 
 
 class OrganizationLocationFactory(factory.DjangoModelFactory):
@@ -326,7 +352,16 @@ class AllAuthEmailAddress(factory.DjangoModelFactory):
     email = 'user@costasiella.com'
     verified = True
     primary = True
-    
+
+
+class AccountAcceptedDocumentFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.AccountAcceptedDocument
+
+    account = factory.SubFactory(RegularUserFactory)
+    document = factory.SubFactory(OrganizationDocumentFactory)
+    date_accepted = datetime.date(2019, 1, 1)
+
 
 class AccountSubscriptionFactory(factory.DjangoModelFactory):
     class Meta:

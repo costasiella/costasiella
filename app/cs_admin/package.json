@@ -40,6 +40,7 @@
     "jest": "23.6.0",
     "jest-pnp-resolver": "1.0.1",
     "jest-resolve": "23.6.0",
+    "js-cookie": "^2.2.1",
     "mini-css-extract-plugin": "0.4.3",
     "moment": "^2.24.0",
     "node-sass": "^4.12.0",

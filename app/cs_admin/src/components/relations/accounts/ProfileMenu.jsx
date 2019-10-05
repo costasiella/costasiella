@@ -19,6 +19,7 @@ let subscriptions_active
 let classpasses_active
 let teacher_profile_active
 let invoices_active
+let accepted_documents_active
 
 const ProfileMenu = ({ t, account_id, active_link }) => (
   <Query query={GET_ACCOUNT_QUERY} variables={{ id: account_id }} >
@@ -43,6 +44,7 @@ const ProfileMenu = ({ t, account_id, active_link }) => (
             {(active_link === 'classpasses') ? classpasses_active = true: classpasses_active = false}
             {(active_link === 'teacher_profile') ? teacher_profile_active = true: teacher_profile_active = false}
             {(active_link === 'invoices') ? invoices_active = true: invoices_active = false}
+            {(active_link === 'accepted_documents') ? accepted_documents_active = true: accepted_documents_active = false}
             
 
             <List.GroupItem
@@ -121,6 +123,19 @@ const ProfileMenu = ({ t, account_id, active_link }) => (
                     </List.GroupItem>
                 </HasPermissionWrapper>
             : "" }
+            <HasPermissionWrapper 
+                permission="view"
+                resource="accountaccepteddocument">
+                <List.GroupItem
+                    key={v4()}
+                    className="d-flex align-items-center"
+                    to={"#/relations/accounts/" + account_id + "/accepted_documents"}
+                    icon="check-square"
+                    active={accepted_documents_active}
+                    >
+                {t('relations.account.accepted_documents.title')}
+                </List.GroupItem>
+            </HasPermissionWrapper>
         </List.Group>
       )
     }}

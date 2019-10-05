@@ -2,6 +2,7 @@ import graphene
 import graphql_jwt
 
 from .account import AccountQuery, AccountMutation
+from .account_accepted_document import AccountAcceptedDocumentQuery
 from .account_classpass import AccountClasspassQuery, AccountClasspassMutation
 from .account_membership import AccountMembershipQuery, AccountMembershipMutation
 from .account_subscription import AccountSubscriptionQuery, AccountSubscriptionMutation
@@ -27,6 +28,7 @@ from .organization_classpass_group import OrganizationClasspassGroupQuery, Organ
 from .organization_classpass_group_classpass import OrganizationClasspassGroupClasspassMutation
 from .organization_classtype import OrganizationClasstypeQuery, OrganizationClasstypeMutation
 from .organization_discovery import OrganizationDiscoveryQuery, OrganizationDiscoveryMutation
+from .organization_document import OrganizationDocumentQuery, OrganizationDocumentMutation
 from .organization_location import OrganizationLocationQuery, OrganizationLocationMutation
 from .organization_location_room import OrganizationLocationRoomQuery, OrganizationLocationRoomMutation
 from .organization_level import OrganizationLevelQuery, OrganizationLevelMutation
@@ -49,6 +51,7 @@ from .schedule_item_teacher_available import ScheduleItemTeacherAvailableQuery, 
 
 
 class Query(AccountQuery,
+            AccountAcceptedDocumentQuery,
             AccountClasspassQuery,
             AccountMembershipQuery,
             AccountSubscriptionQuery,
@@ -70,6 +73,7 @@ class Query(AccountQuery,
             OrganizationClasspassGroupQuery,
             OrganizationClasstypeQuery,
             OrganizationDiscoveryQuery,
+            OrganizationDocumentQuery,
             OrganizationLocationQuery, 
             OrganizationLocationRoomQuery, 
             OrganizationLevelQuery, 
@@ -114,6 +118,7 @@ class Mutation(AccountMutation,
                OrganizationClasspassGroupClasspassMutation,
                OrganizationClasstypeMutation,
                OrganizationDiscoveryMutation,
+               OrganizationDocumentMutation,
                OrganizationLocationMutation,
                OrganizationLocationRoomMutation,
                OrganizationLevelMutation,
@@ -135,4 +140,5 @@ class Mutation(AccountMutation,
     token_auth = graphql_jwt.ObtainJSONWebToken.Field()
     verify_token = graphql_jwt.Verify.Field()
     refresh_token = graphql_jwt.Refresh.Field()
+    revoke_token = graphql_jwt.Revoke.Field()
 

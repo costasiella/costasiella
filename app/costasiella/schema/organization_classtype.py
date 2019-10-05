@@ -171,7 +171,7 @@ class UploadOrganizationClasstypeImage(graphene.relay.ClientIDMutation):
 
         
         classtype.image = base64_file(data=b64_enc_image)
-        classtype.save(force_update=True)
+        classtype.save()
 
         print('new image')
         img = classtype.image

@@ -29,6 +29,15 @@ export const TOKEN_REFRESH = gql`
 `
 
 
+export const TOKEN_REVOKE = gql`
+  mutation RevokeToken($refreshToken: String!) {
+    revokeToken(refreshToken: $refreshToken) {
+      revoked
+    }
+  }
+`
+
+
 export const UPDATE_ACCOUNT_PASSWORD = gql`
   mutation UpdateAccountPassword($input: UpdateAccountPasswordInput!) {
     updateAccountPassword(input: $input) {

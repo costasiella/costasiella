@@ -35,17 +35,14 @@
         <label class="form-label">{% trans "Password" %}</label>
         <input type="password" name="password1" placeholder={% trans "Password" %} required="" id="id_password1" class="form-control">
     </div>
-    <div class="form-group">
-        <label class="form-label">{% trans "Password (again)" %}</label>
-        <input type="password" name="password2" placeholder={% trans "Password (again)" %} required="" id="id_password2" class="form-control">
-    </div>
+
     <div class="row">
         <div class="col-12 text-left text-muted text-small">
             <small>
                 {% trans "By signing up I" %} <br>
                 <ul>
-                    <li>Agree to the terms and conditions</li>
-                    <li>Agree to the privacy policy</li>
+                    <li>Agree to the <a target="_blank" href="/document/terms-and-conditions">{% trans "Terms and conditions" %}</a></li>
+                    <li>Agree to the <a target="_blank" href="/document/privacy-policy">{% trans "Privacy policy" %}</a></li>
                 </ul>
             </small>
         </div>

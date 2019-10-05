@@ -2,9 +2,10 @@
 
 import React, {Component } from 'react'
 import gql from "graphql-tag"
-import { Query, Mutation } from "react-apollo";
+import { Query, Mutation } from "react-apollo"
 import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
+import { Link } from "react-router-dom"
 import { Formik } from 'formik'
 import { toast } from 'react-toastify'
 
@@ -56,7 +57,19 @@ class OrganizationEdit extends Component {
       <SiteWrapper>
         <div className="my-3 my-md-5">
           <Container>
-            <Page.Header title={t('organization.title')} />
+            <Page.Header title={t('organization.title')}>
+              <div className="page-options d-flex">
+                <Link to={`/organization/documents/${id}`}>
+                  <Button 
+                    icon="briefcase"
+                    className="mr-2"
+                    color="secondary"
+                  >
+                    {t('general.documents')}
+                  </Button>
+                </Link>
+              </div>
+            </Page.Header>
             <Grid.Row>
               <Grid.Col md={9}>
               <Card>

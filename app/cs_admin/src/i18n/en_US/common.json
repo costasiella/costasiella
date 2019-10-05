@@ -286,7 +286,16 @@
         "password": "Password",
         "login": "Sign in",
         "logout": "Sign out",
-        "cancelled": "Cancelled"
+        "cancelled": "Cancelled",
+        "privacy_policy": "Privacy policy",
+        "document": "Document",
+        "manage": "Manage",
+        "documents": "Documents",
+        "version": "Version",
+        "download": "Download",
+        "document_type": "Document type",
+        "date_accepted": "Accepted on date",
+        "unknown_document_type": "Unknown document type"
     },
     "yup": {
         "min_len_3": "Please input at least 3 characters",
@@ -512,6 +521,16 @@
             "toast_edit_success": "Saved organization",
             "registration": "Registration ID",
             "tax_registration": "Tax registration ID"
+        },
+        "documents": {
+            "title": "Documents",
+            "add": "Add document",
+            "toast_add_success": "Added document",
+            "error_loading": "Error loading documents :(",
+            "delete_confirm_msg": "Are you sure you wish to delete this document?",
+            "deleted": "Deleted document",
+            "edit": "Edit document",
+            "toast_edit_success": "Saved document"
         }
     },
     "validity": {
@@ -599,6 +618,10 @@
                 "add": "Add invoice",
                 "delete_confirm_msg": "Are you sure you wish to delete this invoice?",
                 "deleted": "Deleted invoice"
+            },
+            "accepted_documents": {
+                "title": "Accepted documents",
+                "accepted_from_address": "Accepted from address"
             }
         }
     },
