@@ -7,12 +7,12 @@ import {
   Button
 } from "tabler-react";
 
-const FileDownloadTableButton = ({ t, mediaUrl, className="" }) => {
+const FileDownloadTableButton = ({ t, mediaUrl, className="", target="_blank" }) => {
   return <Button 
            color={"secondary " + className}
            size="sm"
            icon="download-cloud"
-           target="_blank"
+           target={target}
            RootComponent="a" 
            href={mediaUrl}
           >

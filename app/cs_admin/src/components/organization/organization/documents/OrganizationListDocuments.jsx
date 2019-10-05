@@ -26,6 +26,7 @@ import HasPermissionWrapper from "../../../HasPermissionWrapper"
 import { toast } from 'react-toastify'
 
 import ISODateString from "../../../ui/ISODateString"
+import FileDownloadTableButton from "../../../ui/FileDownloadTableButton"
 import ContentCard from "../../../general/ContentCard"
 import OrganizationMenu from "../../OrganizationMenu"
 import OrganizationDocumentsBase from "./OrganizationDocumentsBase"
@@ -126,9 +127,7 @@ function OrganizationListDocuments({ t, match, history }) {
                         {node.version}
                       </Table.Col>
                       <Table.Col key={v4()}>
-                        <a href={node.urlDocument} target="_blank">
-                          {t('general.download_file')}
-                        </a>
+                        <FileDownloadTableButton mediaUrl={node.urlDocument} />
                       </Table.Col>
                       <Table.Col className="text-right" key={v4()}>
                         <Link to={`/organization/documents/${organizationId}/${documentType}/edit/${node.id}`} >
@@ -139,41 +138,6 @@ function OrganizationListDocuments({ t, match, history }) {
                         </Link>
                         <OrganizationDocumentsDelete node={node} />
                       </Table.Col>
-                      {/* Add delete */}
-                      {/* <Mutation mutation={ARCHIVE_LEVEL} key={v4()}>
-                        {(archiveCostcenter, { data }) => (
-                          <Table.Col className="text-right" key={v4()}>
-                            <button className="icon btn btn-link btn-sm" 
-                              title={t('general.archive')} 
-                              href=""
-                              onClick={() => {
-                                console.log("clicked archived")
-                                let id = node.id
-                                archiveCostcenter({ variables: {
-                                  input: {
-                                    id,
-                                    archived: !archived
-                                  }
-                            }, refetchQueries: [
-                                {query: GET_LEVELS_QUERY, variables: {"archived": archived }}
-                            ]}).then(({ data }) => {
-                              console.log('got data', data);
-                              toast.success(
-                                (archived) ? t('general.unarchived'): t('general.archived'), {
-                                  position: toast.POSITION.BOTTOM_RIGHT
-                                })
-                            }).catch((error) => {
-                              toast.error((t('general.toast_server_error')) + ': ' +  error, {
-                                  position: toast.POSITION.BOTTOM_RIGHT
-                                })
-                              console.log('there was an error sending the query', error);
-                            })
-                            }}>
-                              <Icon prefix="fa" name="inbox" />
-                            </button>
-                          </Table.Col>
-                        )}
-                      </Mutation> */}
                     </Table.Row>
                   ))}
               </Table.Body>
