@@ -17,7 +17,7 @@ from .. import schema
 
 
 
-class GQLAccountClasspass(TestCase):
+class GQLAccountAcceptedDocument(TestCase):
     # https://docs.djangoproject.com/en/2.1/topics/testing/overview/
     fixtures = ['finance_invoice_group.json', 'finance_invoice_group_defaults.json']
 
@@ -88,56 +88,56 @@ class GQLAccountClasspass(TestCase):
         self.assertEqual(data['accountAcceptedDocuments']['edges'][0]['node']['dateAccepted'], str(accepted_document.date_accepted).replace(' ', 'T'))
 
 
-    # def test_query_permision_denied(self):
-    #     """ Query list of account accepted_documents - check permission denied """
-    #     query = self.accepted_documents
-    #     accepted_document = f.AccountAcceptedDocumentFactory.create()
-    #     variables = {
-    #         "account": to_global_id("AccountNode", accepted_document.account.id)
-    #     }
+    def test_query_permision_denied(self):
+        """ Query list of account accepted_documents - check permission denied """
+        query = self.accepted_documents
+        accepted_document = f.AccountAcceptedDocumentFactory.create()
+        variables = {
+            "account": to_global_id("AccountNode", accepted_document.account.id)
+        }
 
-    #     # Create regular user
-    #     user = get_user_model().objects.get(pk=accepted_document.account.id)
-    #     executed = execute_test_client_api_query(query, user, variables=variables)
-    #     errors = executed.get('errors')
+        # Create regular user
+        user = get_user_model().objects.get(pk=accepted_document.account.id)
+        executed = execute_test_client_api_query(query, user, variables=variables)
+        errors = executed.get('errors')
 
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
-
-
-    # def test_query_permision_granted(self):
-    #     """ Query list of account accepted_documents with view permission """
-    #     query = self.accepted_documents
-    #     accepted_document = f.AccountAcceptedDocumentFactory.create()
-    #     variables = {
-    #         "account": to_global_id("AccountNode", accepted_document.account.id)
-    #     }
-
-    #     # Create regular user
-    #     user = get_user_model().objects.get(pk=accepted_document.account.id)
-    #     permission = Permission.objects.get(codename='view_accountaccepteddocument')
-    #     user.user_permissions.add(permission)
-    #     user.save()
-
-    #     executed = execute_test_client_api_query(query, user, variables=variables)
-    #     data = executed.get('data')
-
-    #     self.assertEqual(
-    #         data['accountAcceptedDocuments']['edges'][0]['node']['document']['id'], 
-    #         to_global_id('OrganizationDocumentNode', self.accepted_document.document.id)
-    #     )
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
-    # def test_query_anon_user(self):
-    #     """ Query list of account accepted_documents - anon user """
-    #     query = self.accepted_documents
-    #     accepted_document = f.AccountClasspassFactory.create()
-    #     variables = {
-    #         'accountId': to_global_id('AccountClasspassNode', accepted_document.account.id)
-    #     }
+    def test_query_permision_granted(self):
+        """ Query list of account accepted_documents with view permission """
+        query = self.accepted_documents
+        accepted_document = f.AccountAcceptedDocumentFactory.create()
+        variables = {
+            "account": to_global_id("AccountNode", accepted_document.account.id)
+        }
 
-    #     executed = execute_test_client_api_query(query, self.anon_user, variables=variables)
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
+        # Create regular user
+        user = get_user_model().objects.get(pk=accepted_document.account.id)
+        permission = Permission.objects.get(codename='view_accountaccepteddocument')
+        user.user_permissions.add(permission)
+        user.save()
+
+        executed = execute_test_client_api_query(query, user, variables=variables)
+        data = executed.get('data')
+
+        self.assertEqual(
+            data['accountAcceptedDocuments']['edges'][0]['node']['document']['id'], 
+            to_global_id('OrganizationDocumentNode', accepted_document.document.id)
+        )
+
+
+    def test_query_anon_user(self):
+        """ Query list of account accepted_documents - anon user """
+        query = self.accepted_documents
+        accepted_document = f.AccountAcceptedDocumentFactory.create()
+        variables = {
+            "account": to_global_id("AccountNode", accepted_document.account.id)
+        }
+
+        executed = execute_test_client_api_query(query, self.anon_user, variables=variables)
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
     ##
