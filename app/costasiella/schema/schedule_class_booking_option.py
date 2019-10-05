@@ -36,7 +36,6 @@ class ScheduleClassBookingSubscriptionType(graphene.ObjectType):
     booking_type = graphene.String()
     allowed = graphene.Boolean()  
     account_subscription = graphene.Field(AccountSubscriptionNode)
-    
 
     
 # ScheduleClassBookingOptionsType
