@@ -7,7 +7,7 @@ from graphql import GraphQLError
 
 import validators
 
-from ..models import Account, AccountClasspass, FinancePaymentMethod, OrganizationClasspass
+from ..models import Account, AccountAcceptedDocument
 from ..modules.gql_tools import require_login_and_permission, get_rid
 from ..modules.messages import Messages
 from ..dudes.sales_dude import SalesDude
@@ -19,8 +19,8 @@ m = Messages()
 
 class AccountAcceptedDocumentNode(DjangoObjectType):   
     class Meta:
-        model = AccountClasspass
-        filter_fields = ['account', 'date_start', 'date_end']
+        model = AccountAcceptedDocument
+        filter_fields = ['account', 'date_accepted']
         interfaces = (graphene.relay.Node, )
 
 
