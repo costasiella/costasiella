@@ -293,7 +293,9 @@
         "documents": "__STRING_NOT_TRANSLATED__",
         "version": "__STRING_NOT_TRANSLATED__",
         "download": "__STRING_NOT_TRANSLATED__",
-        "download_file": "__STRING_NOT_TRANSLATED__"
+        "document_type": "__STRING_NOT_TRANSLATED__",
+        "date_accepted": "__STRING_NOT_TRANSLATED__",
+        "unknown_document_type": "__STRING_NOT_TRANSLATED__"
     },
     "yup": {
         "min_len_3": "__STRING_NOT_TRANSLATED__",
@@ -522,12 +524,13 @@
         },
         "documents": {
             "title": "__STRING_NOT_TRANSLATED__",
-            "list": {
-                "title": "__STRING_NOT_TRANSLATED__"
-            },
             "add": "__STRING_NOT_TRANSLATED__",
             "toast_add_success": "__STRING_NOT_TRANSLATED__",
-            "error_loading": "__STRING_NOT_TRANSLATED__"
+            "error_loading": "__STRING_NOT_TRANSLATED__",
+            "delete_confirm_msg": "__STRING_NOT_TRANSLATED__",
+            "deleted": "__STRING_NOT_TRANSLATED__",
+            "edit": "__STRING_NOT_TRANSLATED__",
+            "toast_edit_success": "__STRING_NOT_TRANSLATED__"
         }
     },
     "validity": {
@@ -615,6 +618,9 @@
                 "add": "__STRING_NOT_TRANSLATED__",
                 "delete_confirm_msg": "__STRING_NOT_TRANSLATED__",
                 "deleted": "__STRING_NOT_TRANSLATED__"
+            },
+            "accepted_documents": {
+                "title": "__STRING_NOT_TRANSLATED__"
             }
         }
     },
@@ -1044,11 +1050,6 @@
             "password_current": "__STRING_NOT_TRANSLATED__",
             "password_new": "__STRING_NOT_TRANSLATED__",
             "password_new_repeat": "__STRING_NOT_TRANSLATED__"
-        }
-    },
-    "organizations": {
-        "documents": {
-            "add": "__STRING_NOT_TRANSLATED__"
         }
     }
 }

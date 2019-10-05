@@ -293,7 +293,9 @@
         "documents": "Documents",
         "version": "Version",
         "download": "Download",
-        "download_file": "Download file"
+        "document_type": "Document type",
+        "date_accepted": "Accepted on date",
+        "unknown_document_type": "Unknown document type"
     },
     "yup": {
         "min_len_3": "Please input at least 3 characters",
@@ -522,12 +524,13 @@
         },
         "documents": {
             "title": "Documents",
-            "list": {
-                "title": "Documents"
-            },
             "add": "Add document",
             "toast_add_success": "Added document",
-            "error_loading": "Error loading documents :("
+            "error_loading": "Error loading documents :(",
+            "delete_confirm_msg": "Are you sure you wish to delete this document?",
+            "deleted": "Deleted document",
+            "edit": "Edit document",
+            "toast_edit_success": "Saved document"
         }
     },
     "validity": {
@@ -615,6 +618,9 @@
                 "add": "Add invoice",
                 "delete_confirm_msg": "Are you sure you wish to delete this invoice?",
                 "deleted": "Deleted invoice"
+            },
+            "accepted_documents": {
+                "title": "Accepted documents"
             }
         }
     },
@@ -1044,11 +1050,6 @@
             "password_current": "Current password",
             "password_new": "New password",
             "password_new_repeat": "New password (again)"
-        }
-    },
-    "organizations": {
-        "documents": {
-            "add": "__STRING_NOT_TRANSLATED__"
         }
     }
 }
