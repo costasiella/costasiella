@@ -27,6 +27,7 @@ import { toast } from 'react-toastify'
 import BadgeBoolean from "../../../ui/BadgeBoolean"
 import RelationsAccountsBack from "../RelationsAccountsBack"
 import DocumentType from "../../../ui/DocumentType"
+import FileDownloadTableButton from "../../../ui/FileDownloadTableButton"
 
 import ContentCard from "../../../general/ContentCard"
 import ProfileMenu from "../ProfileMenu"
@@ -102,7 +103,7 @@ function AccountAcceptedDocuments({ t, history, match }) {
                     <Table.Row key={v4()}>
                       <Table.ColHeader>{t('general.document_type')}</Table.ColHeader>
                       <Table.ColHeader>{t('general.date_accepted')}</Table.ColHeader>
-                      <Table.ColHeader>{t('general.document')}</Table.ColHeader>
+                      <Table.ColHeader><span className="pull-right">{t('general.document')}</span></Table.ColHeader>
                     </Table.Row>
                   </Table.Header>
                   <Table.Body>
@@ -115,7 +116,7 @@ function AccountAcceptedDocuments({ t, history, match }) {
                           {moment(node.dateAccepted).format(dateFormat)}
                           </Table.Col>
                           <Table.Col key={v4()}>
-                            {node.document.urlDocument}
+                            <FileDownloadTableButton mediaUrl={node.document.urlDocument} className="pull-right" />
                           </Table.Col>
                         </Table.Row>
                       ))}
