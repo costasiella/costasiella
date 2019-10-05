@@ -141,7 +141,7 @@ class GQLAccountAcceptedDocument(TestCase):
 
 
     ##
-    # These tests are not immediately required, add when needed (05-10-2019)
+    # These tests are not immediately required, will be added when needed (05-10-2019)
     ##
 
     # def test_query_one(self):
