@@ -77,19 +77,19 @@ function AccountAcceptedDocuments({ t, history, match }) {
                 onLoadMore={() => {
                   fetchMore({
                     variables: {
-                      after: acceptedDocuments.pageInfo.endCursor
+                      after: data.accountAcceptedDocuments.pageInfo.endCursor
                     },
                     updateQuery: (previousResult, { fetchMoreResult }) => {
-                      const newEdges = fetchMoreResult.acceptedDocuments.edges
-                      const pageInfo = fetchMoreResult.acceptedDocuments.pageInfo
+                      const newEdges = fetchMoreResult.accountAcceptedDocuments.edges
+                      const pageInfo = fetchMoreResult.accountAcceptedDocuments.pageInfo
 
                       return newEdges.length
                         ? {
                             // Put the new acceptedDocuments at the end of the list and update `pageInfo`
                             // so we have the new `endCursor` and `hasNextPage` values
-                            acceptedDocuments: {
-                              __typename: previousResult.acceptedDocuments.__typename,
-                              edges: [ ...previousResult.acceptedDocuments.edges, ...newEdges ],
+                            accountAcceptedDocuments: {
+                              __typename: previousResult.accountAcceptedDocuments.__typename,
+                              edges: [ ...previousResult.accountAcceptedDocuments.edges, ...newEdges ],
                               pageInfo
                             }
                           }
