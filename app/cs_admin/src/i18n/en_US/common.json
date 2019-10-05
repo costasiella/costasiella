@@ -620,7 +620,8 @@
                 "deleted": "Deleted invoice"
             },
             "accepted_documents": {
-                "title": "Accepted documents"
+                "title": "Accepted documents",
+                "accepted_from_address": "Accepted from address"
             }
         }
     },
