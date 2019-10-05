@@ -12,9 +12,6 @@ export const GET_ACCOUNT_ACCEPTED_DOCUMENTS_QUERY = gql`
       edges {
         node {
           id
-          account {
-            email
-          }
           document {
             id
             documentType
