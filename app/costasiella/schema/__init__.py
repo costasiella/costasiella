@@ -2,6 +2,7 @@ import graphene
 import graphql_jwt
 
 from .account import AccountQuery, AccountMutation
+from .account_accepted_document import AccountAcceptedDocumentQuery
 from .account_classpass import AccountClasspassQuery, AccountClasspassMutation
 from .account_membership import AccountMembershipQuery, AccountMembershipMutation
 from .account_subscription import AccountSubscriptionQuery, AccountSubscriptionMutation
