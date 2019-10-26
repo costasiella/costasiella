@@ -206,6 +206,52 @@ class ClassCheckinDude():
         return schedule_item_ids
 
 
+    def class_checkin_subscription(self, 
+                                   account,
+                                   account_subscription,
+                                   schedule_item,
+                                   date,
+                                   online_booking=False,
+                                   booking_status="BOOKED"):
+        """
+        :return: ScheduleItemAttendance object if successful, raise error if not.
+        """
+        # Check if not already signed in
+        qs = self._class_checkedin(account, schedule_item, date)
+        print(qs)
+        if qs.exists():
+            # Already signed in, check for review check-in
+            schedule_item_attendance = qs.first()
+
+            if not schedule_item_attendance == 'REVIEW':
+                raise Exception(_('This account is already checked in to this class'))
+            # else:
+            #TODO: Write review check-ins code
+
+        #TODO: Check if credits remaining
+
+        # if not credits_available:
+        #     raise Exception(_('No credits left left on this pass.'))
+
+        # Subscription valid on date
+        if (date < account_subscription.date_start) or (date > account_subscription.date_end):
+            raise Exception(_('This subscription is not valid on this date.'))
+
+        schedule_item_attendance = ScheduleItemAttendance(
+            attendance_type = "SUBSCRIPTION",
+            account = account,
+            account_subscription = account_subscription,
+            schedule_item = schedule_item,
+            date = date,
+            online_booking = online_booking,
+            booking_status = booking_status
+        )
+
+        schedule_item_attendance.save()
+
+        return schedule_item_attendance
+
+
     def subscription_class_permissions(self, account_subscription):
         """
         :return: return list of class permissons for this subscription
