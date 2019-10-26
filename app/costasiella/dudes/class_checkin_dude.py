@@ -234,7 +234,12 @@ class ClassCheckinDude():
         #     raise Exception(_('No credits left left on this pass.'))
 
         # Subscription valid on date
-        if (date < account_subscription.date_start) or (date > account_subscription.date_end):
+        if account_subscription.date_end:
+            date_invalid_condition = (date < account_subscription.date_start) or (date > account_subscription.date_end)
+        else:
+            date_invalid_condition = (date < account_subscription.date_start)
+
+        if date_invalid_condition:
             raise Exception(_('This subscription is not valid on this date.'))
 
         schedule_item_attendance = ScheduleItemAttendance(
