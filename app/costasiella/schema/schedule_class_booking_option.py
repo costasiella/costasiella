@@ -115,7 +115,10 @@ class ScheduleClassBookingOptionsType(graphene.ObjectType):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.view_scheduleitem')
 
+        checkin_dude = ClassCheckinDude()
         account = self.resolve_account(info)
+        schedule_item = self.resolve_schedule_item(info)
+
         subscriptions_filter = Q(account = account) & \
             Q(date_start__lte = self.date) & \
             (Q(date_end__gte = self.date) | Q(date_end__isnull = True))
@@ -124,10 +127,15 @@ class ScheduleClassBookingOptionsType(graphene.ObjectType):
 
         subscriptions_list = []
         for subscription in subscriptions:
+            allowed = False
+            if self.list_type == "ATTEND":
+                if checkin_dude.subscription_attend_allowed_for_class(subscription, schedule_item):
+                    allowed = True
+
             subscriptions_list.append(
                 ScheduleClassBookingSubscriptionType(
                     booking_type = "SUBSCRIPTION",
-                    allowed = True,
+                    allowed = allowed,
                     account_subscription = subscription,
                 )
             )

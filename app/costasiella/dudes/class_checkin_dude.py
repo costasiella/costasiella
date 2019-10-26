@@ -1,6 +1,6 @@
 from django.utils.translation import gettext as _
 
-from ..models import ScheduleItemAttendance, 
+from ..models import ScheduleItemAttendance
 from ..models import OrganizationClasspassGroupClasspass, ScheduleItemOrganizationClasspassGroup
 from ..models import OrganizationSubscriptionGroupSubscription, ScheduleItemOrganizationSubscriptionGroup
 
