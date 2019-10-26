@@ -147,6 +147,8 @@ class CreateScheduleItemAttendance(graphene.relay.ClientIDMutation):
 
             account_classpass.update_classes_remaining()
 
+        
+
         return CreateScheduleItemAttendance(schedule_item_attendance=schedule_item_attendance)
 
 
