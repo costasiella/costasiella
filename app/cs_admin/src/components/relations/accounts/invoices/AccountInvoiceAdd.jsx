@@ -138,7 +138,7 @@ function AccountInvoiceAdd({ t, match, history }) {
                   </Link>
                 </HasPermissionWrapper>
                 <ProfileMenu 
-                  active_link='subscriptions'
+                  active_link='invoices'
                   account_id={match.params.account_id}
                 />
               </Grid.Col>
