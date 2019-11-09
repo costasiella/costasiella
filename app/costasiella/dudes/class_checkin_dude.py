@@ -1,6 +1,8 @@
 from django.utils.translation import gettext as _
 
-from ..models import OrganizationClasspassGroupClasspass, ScheduleItemAttendance, ScheduleItemOrganizationClasspassGroup
+from ..models import ScheduleItemAttendance
+from ..models import OrganizationClasspassGroupClasspass, ScheduleItemOrganizationClasspassGroup
+from ..models import OrganizationSubscriptionGroupSubscription, ScheduleItemOrganizationSubscriptionGroup
 
 class ClassCheckinDude():
     def _class_checkedin(self, account, schedule_item, date):
@@ -196,7 +198,162 @@ class ClassCheckinDude():
         schedule_item_ids = []
         for schedule_item_id in permissions:
             try:
+                if permissions[schedule_item_id]['shop_book']:
+                    schedule_item_ids.append(schedule_item_id)
+            except KeyError:
+                pass
+
+        return schedule_item_ids
+
+
+    def class_checkin_subscription(self, 
+                                   account,
+                                   account_subscription,
+                                   schedule_item,
+                                   date,
+                                   online_booking=False,
+                                   booking_status="BOOKED"):
+        """
+        :return: ScheduleItemAttendance object if successful, raise error if not.
+        """
+        # Check if not already signed in
+        qs = self._class_checkedin(account, schedule_item, date)
+        print(qs)
+        if qs.exists():
+            # Already signed in, check for review check-in
+            schedule_item_attendance = qs.first()
+
+            if not schedule_item_attendance == 'REVIEW':
+                raise Exception(_('This account is already checked in to this class'))
+            # else:
+            #TODO: Write review check-ins code
+
+        #TODO: Check if credits remaining
+
+        # if not credits_available:
+        #     raise Exception(_('No credits left left on this pass.'))
+
+        # Subscription valid on date
+        if account_subscription.date_end:
+            date_invalid_condition = (date < account_subscription.date_start) or (date > account_subscription.date_end)
+        else:
+            date_invalid_condition = (date < account_subscription.date_start)
+
+        if date_invalid_condition:
+            raise Exception(_('This subscription is not valid on this date.'))
+
+        schedule_item_attendance = ScheduleItemAttendance(
+            attendance_type = "SUBSCRIPTION",
+            account = account,
+            account_subscription = account_subscription,
+            schedule_item = schedule_item,
+            date = date,
+            online_booking = online_booking,
+            booking_status = booking_status
+        )
+
+        schedule_item_attendance.save()
+
+        return schedule_item_attendance
+
+
+    def subscription_class_permissions(self, account_subscription):
+        """
+        :return: return list of class permissons for this subscription
+        """
+        organization_subscription = account_subscription.organization_subscription
+
+        # Get groups for class pass
+        group_ids = OrganizationSubscriptionGroupSubscription.objects.filter(
+            organization_subscription = organization_subscription
+        ).values_list('organization_subscription_group__id', flat=True)
+        # group_ids = []
+        # for group in qs_groups:
+        #     group_ids.append(group.id)
+
+        # Get permissions for groups
+        qs_permissions = ScheduleItemOrganizationSubscriptionGroup.objects.filter(
+            organization_subscription_group__in = group_ids
+        )
+
+        permissions = {}
+        for schedule_item_organization_subscription_group in qs_permissions:
+            schedule_item_id = schedule_item_organization_subscription_group.schedule_item_id
+
+            if schedule_item_id not in permissions:
+                permissions[schedule_item_id] = {}
+
+            if schedule_item_organization_subscription_group.enroll:
+                permissions[schedule_item_id]['enroll'] = True
+
+            if schedule_item_organization_subscription_group.shop_book:
+                permissions[schedule_item_id]['shop_book'] = True
+
+            if schedule_item_organization_subscription_group.attend:
+                permissions[schedule_item_id]['attend'] = True
+
+        return permissions
+
+
+    def subscription_attend_allowed(self, account_subscription):
+        """
+        Returns True is a class pass is allowed for a class,
+        otherwise False
+        """
+        permissions = self.subscription_class_permissions(account_subscription)
+
+        schedule_item_ids = []
+        for schedule_item_id in permissions:
+            try:
                 if permissions[schedule_item_id]['attend']:
+                    schedule_item_ids.append(schedule_item_id)
+            except KeyError:
+                pass
+
+        return schedule_item_ids
+
+    
+    def subscription_attend_allowed_for_class(self, account_subscription, schedule_item):
+        """
+        :return: True if a subscription has the attend permission for a class
+        """
+        classes_allowed = self.subscription_attend_allowed(account_subscription)
+
+        if schedule_item.id in classes_allowed:
+            return True
+        else:
+            return False
+
+
+    def subscription_shop_book_allowed(self, acount_subscription):
+        """
+        Returns True is a class pass is allowed for a class,
+        otherwise False
+        """
+        permissions = self.subscription_class_permissions(account_subscription)
+
+        schedule_item_ids = []
+        for schedule_item_id in permissions:
+            try:
+                if permissions[schedule_item_id]['shop_book']:
+                    schedule_item_ids.append(schedule_item_id)
+            except KeyError:
+                pass
+
+        return schedule_item_ids
+
+
+    def subscription_enroll_allowed(self, acount_subscription):
+        """
+        Returns True is a class pass is allowed for a class,
+        otherwise False
+        """
+        permissions = self.subscription_class_permissions(account_subscription)
+
+        schedule_item_ids = []
+        for schedule_item_id in permissions:
+            try:
+                if permissions[schedule_item_id]['enroll']:
                     schedule_item_ids.append(schedule_item_id)
             except KeyError:
                 pass

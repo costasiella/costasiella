@@ -36,6 +36,7 @@ import { class_subtitle, get_accounts_query_variables } from "../tools"
 import ContentCard from "../../../../general/ContentCard"
 import ScheduleClassBookBack from "./ScheduleClassBookBack"
 // import ClassEditBase from "../ClassEditBase"
+import SubscriptionCheckinButton from "./ScheduleClassBookSubscriptionBtn"
 
 import { GET_BOOKING_OPTIONS_QUERY } from "./queries"
 import CSLS from "../../../../../tools/cs_local_storage"
@@ -58,15 +59,7 @@ function ScheduleClassBookSubscriptions({ t, match, history, subscriptions, onCl
         </Card.Body>
         <Card.Footer>
           {(!subscription.allowed) ? t('schedule.classes.class.book.subscription_not_allowed') :
-            <Button 
-              block 
-              outline 
-              color="success" 
-              icon="check"
-              onClick={() => onClickCheckin()}
-            >
-              {t("general.checkin")}
-            </Button>
+            <SubscriptionCheckinButton subscription={subscription} />
           }
         </Card.Footer>
         </Card>
