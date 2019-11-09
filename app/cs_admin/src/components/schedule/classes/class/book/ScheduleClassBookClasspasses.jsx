@@ -64,15 +64,6 @@ function ScheduleClassBookClasspasses({ t, match, history, classpasses, onClickC
         <Card.Footer>
           {(!classpass.allowed) ? t('schedule.classes.class.book.classpass_not_allowed') :
             <ClasspassCheckinButton classpass={classpass} />
-            // <Button 
-            //   block 
-            //   outline 
-            //   color="success" 
-            //   icon="check"
-            //   onClick={() => onClickCheckin({classpass: classpass})}
-            // >
-            //   {t("general.checkin")}
-            // </Button>
           }
         </Card.Footer>
         </Card>

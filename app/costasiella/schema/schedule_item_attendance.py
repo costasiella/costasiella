@@ -147,6 +147,22 @@ class CreateScheduleItemAttendance(graphene.relay.ClientIDMutation):
 
             account_classpass.update_classes_remaining()
 
+        elif attendance_type == "SUBSCRIPTION":
+            if not validation_result['account_subscription']:
+                raise Exception(_('accountSubscription field is mandatory when doing a subscription check-in'))
+
+            account_subscription = validation_result['account_subscription']
+            schedule_item_attendance = class_checkin_dude.class_checkin_subscription(
+                account = validation_result['account'],
+                account_subscription = account_subscription,
+                schedule_item = validation_result['schedule_item'],
+                date = input['date'],
+                booking_status = input['booking_status'],
+                online_booking = input['online_booking'],                    
+            )
+
+            #TODO: add code to update available credits for a subscription
+
         return CreateScheduleItemAttendance(schedule_item_attendance=schedule_item_attendance)
 
 
