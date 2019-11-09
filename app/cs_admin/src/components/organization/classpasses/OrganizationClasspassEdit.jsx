@@ -126,6 +126,8 @@ class OrganizationClasspassEdit extends Component {
                               initialValues={{ 
                                 displayPublic: initialData.organizationClasspass.displayPublic,
                                 displayShop: initialData.organizationClasspass.displayShop,
+                                trialPass: initialData.organizationClasspass.trialPass,
+                                trialTimes: initialData.organizationClasspass.trialTimes,
                                 name: initialData.organizationClasspass.name,
                                 description: initialData.organizationClasspass.description,
                                 price: initialData.organizationClasspass.price,
@@ -149,6 +151,8 @@ class OrganizationClasspassEdit extends Component {
                                       id: match.params.id,
                                       displayPublic: values.displayPublic,
                                       displayShop: values.displayShop,
+                                      trialPass: values.trialPass,
+                                      trialTimes: values.trialTimes,
                                       name: values.name,
                                       description: values.description,
                                       price: values.price,
