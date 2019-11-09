@@ -18,6 +18,8 @@ class OrganizationClasspass(models.Model):
     archived = models.BooleanField(default=False)
     display_public = models.BooleanField(default=True)
     display_shop = models.BooleanField(default=True)
+    trial_pass = models.BooleanField(default=False)
+    trial_times = models.PositiveIntegerField(default=1)
     name = models.CharField(max_length=255)
     description = models.CharField(max_length=255)
     price = models.DecimalField(max_digits=20, decimal_places=2)
