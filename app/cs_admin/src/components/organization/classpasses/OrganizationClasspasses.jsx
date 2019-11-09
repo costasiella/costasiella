@@ -143,6 +143,7 @@ const OrganizationClasspasses = ({ t, history, archived=false }) => (
                               <Table.ColHeader>{t('general.name')}</Table.ColHeader>
                               <Table.ColHeader>{t('general.public')}</Table.ColHeader>
                               <Table.ColHeader>{t('general.shop')}</Table.ColHeader>
+                              <Table.ColHeader>{t('organization.classpasses.trial_pass')}</Table.ColHeader>
                               <Table.ColHeader>{t('general.classes')}</Table.ColHeader>
                               <Table.ColHeader>{t('general.price')}</Table.ColHeader>
                               <Table.ColHeader>{t('general.validity')}</Table.ColHeader>
@@ -159,6 +160,9 @@ const OrganizationClasspasses = ({ t, history, archived=false }) => (
                                   </Table.Col>
                                   <Table.Col key={v4()}>
                                     <BadgeBoolean value={node.displayShop} />
+                                  </Table.Col>
+                                  <Table.Col key={v4()}>
+                                    <BadgeBoolean value={node.trialPass} />
                                   </Table.Col>
                                   <Table.Col key={v4()}>
                                     {(node.unlimited) ? t('general.unlimited') : node.classes }
