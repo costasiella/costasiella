@@ -117,6 +117,8 @@ class OrganizationClasspassAdd extends Component {
                               initialValues={{ 
                                 displayPublic: true,
                                 displayShop: true,
+                                trialPass: false,
+                                trialTimes: 1,
                                 name: "",
                                 description: "",
                                 price: 0,
@@ -139,6 +141,8 @@ class OrganizationClasspassAdd extends Component {
                                     input: {
                                       displayPublic: values.displayPublic,
                                       displayShop: values.displayShop,
+                                      trialPass: values.trialPass,
+                                      trialTimes: values.trialTimes,
                                       name: values.name,
                                       description: values.description,
                                       price: values.price,
