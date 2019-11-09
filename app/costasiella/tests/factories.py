@@ -184,6 +184,7 @@ class OrganizationClasspassFactory(factory.DjangoModelFactory):
     archived = False
     display_public = True
     display_shop = True
+    trial_pass = False
     name = "First class pass"
     description = "The first one..."
     price = 125
@@ -194,6 +195,28 @@ class OrganizationClasspassFactory(factory.DjangoModelFactory):
     unlimited = False
     organization_membership = factory.SubFactory(OrganizationMembershipFactory)
     quick_stats_amount = 12.5
+    finance_glaccount = factory.SubFactory(FinanceGLAccountFactory)
+    finance_costcenter = factory.SubFactory(FinanceCostCenterFactory)
+
+
+class OrganizationClasspassTrialFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.OrganizationClasspass
+
+    archived = False
+    display_public = True
+    display_shop = True
+    trial_pass = True
+    trial_times = 1
+    name = "One trial class"
+    description = "A short description here..."
+    price = 15
+    finance_tax_rate = factory.SubFactory(FinanceTaxRateFactory)
+    validity = 1
+    validity_unit = "DAYS"
+    classes = 1
+    unlimited = False
+    quick_stats_amount = 15
     finance_glaccount = factory.SubFactory(FinanceGLAccountFactory)
     finance_costcenter = factory.SubFactory(FinanceCostCenterFactory)
 
