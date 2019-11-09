@@ -19,7 +19,10 @@ class OrganizationClasspass(models.Model):
     display_public = models.BooleanField(default=True)
     display_shop = models.BooleanField(default=True)
     trial_pass = models.BooleanField(default=False)
-    trial_times = models.PositiveIntegerField(default=1)
+    trial_times = models.PositiveIntegerField(
+        default=1,
+        help_text=_("Number of times this pass can be bought by a customer. (Only used when trial card is selected)")
+    )
     name = models.CharField(max_length=255)
     description = models.CharField(max_length=255)
     price = models.DecimalField(max_digits=20, decimal_places=2)
