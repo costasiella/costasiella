@@ -84,45 +84,57 @@ class OrganizationClasspassForm extends Component {
                 />
                 <ErrorMessage name="description" component="span" className="invalid-feedback" />
             </Form.Group>
-            <Form.Group label={t('general.price')}>
-                <Field type="text" 
-                    name="price" 
-                    className={(errors.price) ? "form-control is-invalid" : "form-control"} 
-                    autoComplete="off" />
-                <ErrorMessage name="price" component="span" className="invalid-feedback" />
-            </Form.Group>
-            <Form.Group label={t('general.taxrate')}>
-                <Field component="select" 
-                        name="financeTaxRate" 
-                        className={(errors.financeTaxRate) ? "form-control is-invalid" : "form-control"} 
-                        autoComplete="off">
-                {console.log("query data in classpass add:")}
-                {console.log(initialData)}
-                <option value="" key={v4()}></option>
-                {initialData.financeTaxRates.edges.map(({ node }) =>
-                    <option value={node.id} key={v4()}>{node.name} ({node.percentage}% {node.rateType})</option>
-                )}
-                </Field>
-                <ErrorMessage name="financeTaxRate" component="span" className="invalid-feedback" />
-            </Form.Group>
-            <Form.Group label={t('general.validity')}>
-                <Field type="text" 
-                    name="validity" 
-                    className={(errors.validity) ? "form-control is-invalid" : "form-control"} 
-                    autoComplete="off" />
-                <ErrorMessage name="validity" component="span" className="invalid-feedback" />
-            </Form.Group>
-            <Form.Group label={t('general.validity_unit')}>
-                <Field component="select" 
-                        name="validityUnit" 
-                        className={(errors.validityUnit) ? "form-control is-invalid" : "form-control"} 
-                        autoComplete="off">
-                <option value="DAYS" key={v4()}>{t('validity.days')}</option>
-                <option value="WEEKS" key={v4()}>{t('validity.weeks')}</option>
-                <option value="MONTHS" key={v4()}>{t('validity.months')}</option>
-                </Field>
-                <ErrorMessage name="validityUnit" component="span" className="invalid-feedback" />
-            </Form.Group>
+            <Grid.Row>
+              <Grid.Col>
+                <Form.Group label={t('general.price')}>
+                    <Field type="text" 
+                        name="price" 
+                        className={(errors.price) ? "form-control is-invalid" : "form-control"} 
+                        autoComplete="off" />
+                    <ErrorMessage name="price" component="span" className="invalid-feedback" />
+                </Form.Group>
+              </Grid.Col>
+              <Grid.Col>
+                <Form.Group label={t('general.taxrate')}>
+                  <Field component="select" 
+                          name="financeTaxRate" 
+                          className={(errors.financeTaxRate) ? "form-control is-invalid" : "form-control"} 
+                          autoComplete="off">
+                  {console.log("query data in classpass add:")}
+                  {console.log(initialData)}
+                  <option value="" key={v4()}></option>
+                  {initialData.financeTaxRates.edges.map(({ node }) =>
+                      <option value={node.id} key={v4()}>{node.name} ({node.percentage}% {node.rateType})</option>
+                  )}
+                  </Field>
+                  <ErrorMessage name="financeTaxRate" component="span" className="invalid-feedback" />
+                </Form.Group>
+              </Grid.Col>
+            </Grid.Row>
+            <Grid.Row>
+              <Grid.Col>
+                <Form.Group label={t('general.validity')}>
+                  <Field type="text" 
+                      name="validity" 
+                      className={(errors.validity) ? "form-control is-invalid" : "form-control"} 
+                      autoComplete="off" />
+                  <ErrorMessage name="validity" component="span" className="invalid-feedback" />
+                </Form.Group>
+              </Grid.Col>
+              <Grid.Col>
+                <Form.Group label={t('general.validity_unit')}>
+                  <Field component="select" 
+                          name="validityUnit" 
+                          className={(errors.validityUnit) ? "form-control is-invalid" : "form-control"} 
+                          autoComplete="off">
+                  <option value="DAYS" key={v4()}>{t('validity.days')}</option>
+                  <option value="WEEKS" key={v4()}>{t('validity.weeks')}</option>
+                  <option value="MONTHS" key={v4()}>{t('validity.months')}</option>
+                  </Field>
+                  <ErrorMessage name="validityUnit" component="span" className="invalid-feedback" />
+                </Form.Group>
+              </Grid.Col>
+            </Grid.Row>
             <Form.Group>
                 <Form.Label className="custom-switch">
                     <Field 
@@ -165,30 +177,36 @@ class OrganizationClasspassForm extends Component {
                     </Form.Group>
                     : ""
             }
-            <Form.Group label={t('general.glaccount')}>
-                <Field component="select" 
-                        name="financeGlaccount" 
-                        className={(errors.financeGlaccount) ? "form-control is-invalid" : "form-control"} 
-                        autoComplete="off">
-                <option value="" key={v4()}></option>
-                {initialData.financeGlaccounts.edges.map(({ node }) =>
-                    <option value={node.id} key={v4()}>{node.name} ({node.code})</option>
-                )}
-                </Field>
-                <ErrorMessage name="financeGlaccount" component="span" className="invalid-feedback" />
-            </Form.Group>
-            <Form.Group label={t('general.costcenter')}>
-                <Field component="select" 
-                        name="financeCostcenter" 
-                        className={(errors.financeCostcenter) ? "form-control is-invalid" : "form-control"} 
-                        autoComplete="off">
-                <option value="" key={v4()}></option>
-                {initialData.financeCostcenters.edges.map(({ node }) =>
-                    <option value={node.id} key={v4()}>{node.name} ({node.code})</option>
-                )}
-                </Field>
-                <ErrorMessage name="financeCostcenter" component="span" className="invalid-feedback" />
-            </Form.Group>
+            <Grid.Row>
+              <Grid.Col>
+                <Form.Group label={t('general.glaccount')}>
+                  <Field component="select" 
+                          name="financeGlaccount" 
+                          className={(errors.financeGlaccount) ? "form-control is-invalid" : "form-control"} 
+                          autoComplete="off">
+                  <option value="" key={v4()}></option>
+                  {initialData.financeGlaccounts.edges.map(({ node }) =>
+                      <option value={node.id} key={v4()}>{node.name} ({node.code})</option>
+                  )}
+                  </Field>
+                  <ErrorMessage name="financeGlaccount" component="span" className="invalid-feedback" />
+                </Form.Group>
+              </Grid.Col>
+              <Grid.Col>
+                <Form.Group label={t('general.costcenter')}>
+                  <Field component="select" 
+                          name="financeCostcenter" 
+                          className={(errors.financeCostcenter) ? "form-control is-invalid" : "form-control"} 
+                          autoComplete="off">
+                  <option value="" key={v4()}></option>
+                  {initialData.financeCostcenters.edges.map(({ node }) =>
+                      <option value={node.id} key={v4()}>{node.name} ({node.code})</option>
+                  )}
+                  </Field>
+                  <ErrorMessage name="financeCostcenter" component="span" className="invalid-feedback" />
+                </Form.Group>
+              </Grid.Col>
+            </Grid.Row>
             </Card.Body>
             <Card.Footer>
                 <Button 
