@@ -328,11 +328,14 @@
             "add": "__STRING_NOT_TRANSLATED__",
             "groups": {
                 "edit_passes": "__STRING_NOT_TRANSLATED__"
-            }
+            },
+            "trial_pass": "__STRING_NOT_TRANSLATED__"
         },
         "classpass": {
             "public": "__STRING_NOT_TRANSLATED__",
-            "shop": "__STRING_NOT_TRANSLATED__"
+            "shop": "__STRING_NOT_TRANSLATED__",
+            "trial_pass": "__STRING_NOT_TRANSLATED__",
+            "trial_times": "__STRING_NOT_TRANSLATED__"
         },
         "classpass_groups": {
             "title_add": "__STRING_NOT_TRANSLATED__",

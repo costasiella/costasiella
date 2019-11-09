@@ -328,11 +328,14 @@
             "add": "Add class pass",
             "groups": {
                 "edit_passes": "Passes in group"
-            }
+            },
+            "trial_pass": "Trial"
         },
         "classpass": {
             "public": "This is a public pass",
-            "shop": "Show this pass in the shop"
+            "shop": "Show this pass in the shop",
+            "trial_pass": "Trial pass",
+            "trial_times": "Number of times a customer can buy this pass (only used for trial passes)"
         },
         "classpass_groups": {
             "title_add": "Add class pass group",
