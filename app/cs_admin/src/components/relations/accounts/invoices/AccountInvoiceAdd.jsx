@@ -41,8 +41,8 @@ const CREATE_ACCOUNT_INVOICE= gql`
 
 
 function AccountInvoiceAdd({ t, match, history }) {
-  const return_url = "/relations/account/" + account_id + '/invoices'
   const account_id = match.params.account_id
+  const return_url = "/relations/accounts/" + account_id + '/invoices'
   const { loading: queryLoading, error: queryError, data: queryData } = useQuery(
     GET_INPUT_VALUES_QUERY, {
       variables: {
