@@ -124,7 +124,6 @@ class CreateScheduleItemPrice(graphene.relay.ClientIDMutation):
         if date_end:
             schedule_item_price.date_end = date_end
 
-
         organization_classpass_dropin = validation_result.get('organization_classpass_dropin', None)
         if organization_classpass_dropin:
             schedule_item_price.organization_classpass_dropin = organization_classpass_dropin
@@ -141,12 +140,10 @@ class CreateScheduleItemPrice(graphene.relay.ClientIDMutation):
 class UpdateScheduleItemPrice(graphene.relay.ClientIDMutation):
     class Input:
         id = graphene.ID(required=True)
-        account = graphene.ID(required=True)
-        role = graphene.String(required=False, default_value="")
-        account_2 = graphene.ID(required=False)
-        role_2 = graphene.String(required=False, default_value="")
-        date_start = graphene.types.datetime.Date(required=True)
-        date_end = graphene.types.datetime.Date(required=False, default_value=None)
+        organization_classpass_dropin = graphene.ID(required=False)
+        organization_classpass_trial = graphene.ID(required=False)
+        date_start = graphene.types.datetime.Date(required=False)
+        date_end = graphene.types.datetime.Date(required=False)
         
     schedule_item_price = graphene.Field(ScheduleItemPriceNode)
 
@@ -161,22 +158,23 @@ class UpdateScheduleItemPrice(graphene.relay.ClientIDMutation):
             raise Exception('Invalid Schedule Item Teacher ID!')
 
         validation_result = validate_schedule_item_price_create_update_input(input)
-
-        schedule_item_price.account=validation_result['account']
-        schedule_item_price.date_start=input['date_start']
         
         # Optional fields
-        if 'date_end' in input:
-            schedule_item_price.date_end = input['date_end']
+        date_start = input.get('date_start', None)
+        if date_start:
+            schedule_item_price.date_start = date_start
 
-        if 'role' in input:
-            schedule_item_price.role = input['role']
+        date_end = input.get('date_end', None)
+        if date_end:
+            schedule_item_price.date_end = date_end
 
-        if 'account_2' in validation_result:
-            schedule_item_price.account_2 = validation_result['account_2']
+        organization_classpass_dropin = validation_result.get('organization_classpass_dropin', None)
+        if organization_classpass_dropin:
+            schedule_item_price.organization_classpass_dropin = organization_classpass_dropin
 
-        if 'role_2' in input:
-            schedule_item_price.role_2 = input['role_2']
+        organization_classpass_trial = validation_result.get('organization_classpass_trial', None)
+        if organization_classpass_trial:
+            schedule_item_price.organization_classpass_trial = organization_classpass_trial
 
         schedule_item_price.save()
 
