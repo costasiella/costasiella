@@ -11,19 +11,19 @@ import { toast } from 'react-toastify'
 
 import { GET_SCHEDULE_CLASS_TEACHERS_QUERY, GET_INPUT_VALUES_QUERY } from './queries'
 import { SCHEDULE_CLASS_TEACHER_SCHEMA } from './yupSchema'
-import ScheduleClassTeacherForm from './ScheduleClassTeacherForm'
+import ScheduleClassPriceForm from './ScheduleClassPriceForm'
 import { dateToLocalISO } from '../../../../../tools/date_tools'
 
 import SiteWrapper from "../../../../SiteWrapper"
 
 import ClassEditBase from "../ClassEditBase"
-import ScheduleClassTeacherBack from "./ScheduleClassTeacherBack"
+import ScheduleClassPriceBack from "./ScheduleClassPriceBack"
 
 
-const ADD_SCHEDULE_CLASS_TEACHER = gql`
-  mutation CreateScheduleItemTeacher($input:CreateScheduleItemTeacherInput!) {
-    createScheduleItemTeacher(input:$input) {
-      scheduleItemTeacher {
+const ADD_SCHEDULE_ITEM_PRICE = gql`
+  mutation CreateScheduleItemPrice($input:CreateScheduleItemPriceInput!) {
+    createScheduleItemPrice(input:$input) {
+      scheduleItemPrice {
         id
       } 
     }
@@ -32,7 +32,7 @@ const ADD_SCHEDULE_CLASS_TEACHER = gql`
 
 const return_url = "/schedule/classes/all/teachers/"
 
-const ScheduleClassTeacherAdd = ({ t, history, match }) => (
+const ScheduleClassPriceAdd = ({ t, history, match }) => (
   <SiteWrapper>
     <div className="my-3 my-md-5">
       <Query query={GET_INPUT_VALUES_QUERY} >
@@ -53,10 +53,10 @@ const ScheduleClassTeacherAdd = ({ t, history, match }) => (
             <ClassEditBase 
               card_title={t('schedule.classes.teachers.title_add')}
               menu_active_link="teachers"
-              sidebar_button={<ScheduleClassTeacherBack classId={match.params.class_id} />}
+              sidebar_button={<ScheduleClassPriceBack classId={match.params.class_id} />}
             >
               <Mutation mutation={ADD_SCHEDULE_CLASS_TEACHER} onCompleted={() => history.push(return_url + match.params.class_id)}> 
-                {(addScheduleClassTeacher, { data }) => (
+                {(addScheduleClassPrice, { data }) => (
                     <Formik
                         initialValues={{ 
                           price: "", 
@@ -76,7 +76,7 @@ const ScheduleClassTeacherAdd = ({ t, history, match }) => (
                               dateEnd = values.dateEnd
                             }
 
-                            addScheduleClassTeacher({ variables: {
+                            addScheduleClassPrice({ variables: {
                               input: {
                                 scheduleItem: match.params.class_id,
                                 account: values.account,
@@ -105,7 +105,7 @@ const ScheduleClassTeacherAdd = ({ t, history, match }) => (
                         }}
                         >
                         {({ isSubmitting, errors, values, setFieldTouched, setFieldValue }) => (
-                          <ScheduleClassTeacherForm
+                          <ScheduleClassPriceForm
                             inputData={inputData}
                             isSubmitting={isSubmitting}
                             setFieldTouched={setFieldTouched}
@@ -127,4 +127,4 @@ const ScheduleClassTeacherAdd = ({ t, history, match }) => (
 )
 
 
-export default withTranslation()(withRouter(ScheduleClassTeacherAdd))
+export default withTranslation()(withRouter(ScheduleClassPriceAdd))
