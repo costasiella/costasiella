@@ -1,7 +1,7 @@
 // @flow
 
-import React, { Component } from 'react'
-import { Query, Mutation, useContext, useQuery } from "react-apollo"
+import React, { useContext } from 'react'
+import { Query, Mutation, useQuery } from "react-apollo"
 import gql from "graphql-tag"
 import { v4 } from "uuid"
 import { withTranslation } from 'react-i18next'
@@ -33,7 +33,7 @@ import confirm_delete from "../../../../../tools/confirm_delete"
 import ContentCard from "../../../../general/ContentCard"
 import ClassEditBase from "../ClassEditBase"
 
-import { GET_SCHEDULE_CLASS_PRICES_QUERY } from "./queries"
+import { GET_SCHEDULE_ITEM_PRICES_QUERY } from "./queries"
 
 const DELETE_SCHEDULE_ITEM_PRICE = gql`
   mutation DeleteScheduleItemPrice($input: DeleteScheduleItemPriceInput!) {
@@ -49,16 +49,18 @@ function ScheduleClassPrices({t, match, history}) {
   const dateFormat = appSettings.dateFormat
   const classId = match.params.class_id
 
-  const { loading, error, data } = useQuery(GET_SCHEDULE_CLASS_PRICES_QUERY, variables={ scheduleItem: classId })
+  const { loading, error, data, fetchMore } = useQuery(GET_SCHEDULE_ITEM_PRICES_QUERY, {
+    variables: { scheduleItem: classId }
+  })
 
   if (loading) return (
-    <ClassEditBase menu_active_link="prices" card_title={t('schedule.classes.prices.title')} sidebar_button={ButtonAdd}>
+    <ClassEditBase menu_active_link="prices" card_title={t('schedule.classes.prices.title')} sidebar_button={<ButtonAdd classId={classId}/>}>
       <Dimmer active={true} loader={true} />
     </ClassEditBase>
   )
   // Error
   if (error) return (
-    <ClassEditBase menu_active_link="prices" card_title={t('schedule.classes.prices.title')} sidebar_button={ButtonAdd}>
+    <ClassEditBase menu_active_link="prices" card_title={t('schedule.classes.prices.title')} sidebar_button={<ButtonAdd classId={classId}/>}>
       <p>{t('schedule.classes.prices.error_loading')}</p>
     </ClassEditBase>
   )
@@ -76,7 +78,7 @@ function ScheduleClassPrices({t, match, history}) {
 
   // Empty list
   if (!data.scheduleItemPrices.edges.length) { return (
-    <ClassEditBase menu_active_link="prices" card_title={t('schedule.classes.prices.title')} sidebar_button={ButtonAdd}>
+    <ClassEditBase menu_active_link="prices" card_title={t('schedule.classes.prices.title')} sidebar_button={<ButtonAdd classId={classId}/>}>
       <p>{t('schedule.classes.prices.empty_list')}</p>
     </ClassEditBase>
   )}
@@ -91,7 +93,7 @@ function ScheduleClassPrices({t, match, history}) {
           menu_active_link="prices" 
           default_card={false} 
           subtitle={subtitle}
-          sidebar_button={ButtonAdd}
+          sidebar_button={<ButtonAdd classId={classId}/>}>
         >
         <ContentCard 
           cardTitle={t('schedule.classes.title_edit')}
@@ -145,20 +147,10 @@ function ScheduleClassPrices({t, match, history}) {
                       {(node.dateEnd) ? moment(node.dateEnd).format('LL') : ""}
                     </Table.Col>
                     <Table.Col>
-                      {node.account.fullName} <br />
-                      <span className="text-muted">
-                        {represent_price_role(t, node.role)}
-                      </span>
+                      {node.organizationClasspassDropin.name}
                     </Table.Col>
                     <Table.Col>
-                      {node.account2 ?
-                        <span>
-                          {node.account2.fullName} <br />
-                          <span className="text-muted">
-                            {represent_price_role(t, node.role2)}
-                          </span>
-                        </span> : ""
-                      }
+                      {(node.organizationClasspassTrial) ? node.organizationClasspassTrial.name : ""}
                     </Table.Col>
                     <Table.Col className="text-right" key={v4()}>
                       <Button className='btn-sm' 
@@ -167,7 +159,7 @@ function ScheduleClassPrices({t, match, history}) {
                         {t('general.edit')}
                       </Button>
                     </Table.Col>
-                    <Mutation mutation={DELETE_SCHEDULE_CLASS_TEACHER} key={v4()}>
+                    {/* <Mutation mutation={DELETE_SCHEDULE_CLASS_TEACHER} key={v4()}>
                       {(deleteScheduleItemPrice, { data }) => (
                         <Table.Col className="text-right" key={v4()}>
                           <button className="icon btn btn-link btn-sm" 
@@ -195,7 +187,7 @@ function ScheduleClassPrices({t, match, history}) {
                           </button>
                         </Table.Col>
                       )}
-                    </Mutation>
+                    </Mutation> */}
                   </Table.Row>
                 ))}
               </Table.Body>
