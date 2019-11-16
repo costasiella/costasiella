@@ -54,17 +54,24 @@ function ScheduleClassPrices({t, match, history}) {
   })
 
   if (loading) return (
-    <ClassEditBase menu_active_link="prices" card_title={t('schedule.classes.prices.title')} sidebar_button={<ButtonAdd classId={classId}/>}>
-      <Dimmer active={true} loader={true} />
-    </ClassEditBase>
+    <SiteWrapper>
+      <div className="my-3 my-md-5">
+        <ClassEditBase menu_active_link="prices" card_title={t('schedule.classes.prices.title')} sidebar_button={<ButtonAdd classId={classId}/>}>
+          <Dimmer active={true} loader={true} />
+        </ClassEditBase>
+      </div>
+    </SiteWrapper>
   )
   // Error
   if (error) return (
-    <ClassEditBase menu_active_link="prices" card_title={t('schedule.classes.prices.title')} sidebar_button={<ButtonAdd classId={classId}/>}>
-      <p>{t('schedule.classes.prices.error_loading')}</p>
-    </ClassEditBase>
+    <SiteWrapper>
+      <div className="my-3 my-md-5">
+        <ClassEditBase menu_active_link="prices" card_title={t('schedule.classes.prices.title')} sidebar_button={<ButtonAdd classId={classId}/>}>
+          <p>{t('schedule.classes.prices.error_loading')}</p>
+        </ClassEditBase>
+      </div>
+    </SiteWrapper>
   )
-
 
 
   const initialTimeStart = TimeStringToJSDateOBJ(data.scheduleItem.timeStart)
@@ -78,9 +85,13 @@ function ScheduleClassPrices({t, match, history}) {
 
   // Empty list
   if (!data.scheduleItemPrices.edges.length) { return (
-    <ClassEditBase menu_active_link="prices" card_title={t('schedule.classes.prices.title')} sidebar_button={<ButtonAdd classId={classId}/>}>
-      <p>{t('schedule.classes.prices.empty_list')}</p>
-    </ClassEditBase>
+    <SiteWrapper>
+      <div className="my-3 my-md-5">
+        <ClassEditBase menu_active_link="prices" card_title={t('schedule.classes.prices.title')} sidebar_button={<ButtonAdd classId={classId}/>}>
+          <p>{t('schedule.classes.prices.empty_list')}</p>
+        </ClassEditBase>
+      </div>
+    </SiteWrapper>
   )}
 
   return (
