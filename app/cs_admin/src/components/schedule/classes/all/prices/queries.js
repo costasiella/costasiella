@@ -14,11 +14,11 @@ export const GET_SCHEDULE_ITEM_PRICES_QUERY = gql`
           id
           organizationClasspassDropin {
             id
-            Name
+            name
           }
           organizationClasspassTrial {
             id
-            Name
+            name
           }
           dateStart
           dateEnd       
