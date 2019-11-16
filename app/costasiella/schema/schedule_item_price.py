@@ -87,7 +87,7 @@ def validate_schedule_item_price_create_update_input(input):
     # Check Organization Classpass Trial
     if 'organization_classpass_trial' in input:
         if input['organization_classpass_trial']:
-            rid = get_rid(input['organization_classpass_trial')
+            rid = get_rid(input['organization_classpass_trial'])
             organization_classpass = OrganizationClasspass.get(id=rid.id)
             result['organization_classpass_trial'] = organization_classpass
             if not organization_classpass:
