@@ -78,7 +78,7 @@ def validate_schedule_item_price_create_update_input(input):
     # Check Organization Classpass Dropin
     if 'organization_classpass_dropin' in input:
         if input['organization_classpass_dropin']:
-            rid = get_rid(input['organization_classpass_dropion'])
+            rid = get_rid(input['organization_classpass_dropin'])
             organization_classpass = OrganizationClasspass.get(id=rid.id)
             result['organization_classpass_dropin'] = organization_classpass
             if not organization_classpass:
@@ -87,7 +87,7 @@ def validate_schedule_item_price_create_update_input(input):
     # Check Organization Classpass Trial
     if 'organization_classpass_trial' in input:
         if input['organization_classpass_trial']:
-            rid = get_rid(input['organization_classpass_dropion'])
+            rid = get_rid(input['organization_classpass_trial')
             organization_classpass = OrganizationClasspass.get(id=rid.id)
             result['organization_classpass_trial'] = organization_classpass
             if not organization_classpass:
@@ -100,10 +100,8 @@ def validate_schedule_item_price_create_update_input(input):
 class CreateScheduleItemPrice(graphene.relay.ClientIDMutation):
     class Input:
         schedule_item = graphene.ID(required=True)
-        account = graphene.ID(required=True)
-        role = graphene.String(required=False, default_value="")
-        account_2 = graphene.ID(required=False, defailt_value="")
-        role_2 = graphene.String(required=False, default_value="")
+        organization_classpass_dropin = graphene.ID(required=True)
+        organization_classpass_trial = graphene.ID(required=True)
         date_start = graphene.types.datetime.Date(required=True)
         date_end = graphene.types.datetime.Date(required=False, default_value=None)
 
@@ -118,7 +116,6 @@ class CreateScheduleItemPrice(graphene.relay.ClientIDMutation):
 
         schedule_item_price = ScheduleItemPrice(
             schedule_item = validation_result['schedule_item'],
-            account=validation_result['account'],
             date_start=input['date_start']
         )
 
@@ -127,17 +124,14 @@ class CreateScheduleItemPrice(graphene.relay.ClientIDMutation):
         if date_end:
             schedule_item_price.date_end = date_end
 
-        role = input.get('role', None)
-        if role:
-            schedule_item_price.role = role
 
-        account_2 = validation_result.get('account_2', None)
-        if account_2:
-            schedule_item_price.account_2 = account_2
+        organization_classpass_dropin = validation_result.get('organization_classpass_dropin', None)
+        if organization_classpass_dropin:
+            schedule_item_price.organization_classpass_dropin = organization_classpass_dropin
 
-        role_2 = input.get('role_2', None)
-        if role_2:
-            schedule_item_price.role_2 = role_2
+        organization_classpass_trial = validation_result.get('organization_classpass_trial', None)
+        if organization_classpass_trial:
+            schedule_item_price.organization_classpass_trial = organization_classpass_trial
 
         schedule_item_price.save()
 
