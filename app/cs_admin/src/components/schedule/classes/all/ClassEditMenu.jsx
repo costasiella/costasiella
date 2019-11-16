@@ -14,6 +14,7 @@ let edit_active
 let classpasses_active
 let subscriptions_active
 let teachers_active
+let prices_active
 
 const ClassEditMenu = ({ t, active_link, classId }) => (
     <List.Group transparent={true}>
@@ -21,6 +22,7 @@ const ClassEditMenu = ({ t, active_link, classId }) => (
         {(active_link === 'classpasses') ? classpasses_active = true: classpasses_active = false}
         {(active_link === 'subscriptions') ? subscriptions_active = true: subscriptions_active = false}
         {(active_link === 'teachers') ? teachers_active = true: teachers_active = false}
+        {(active_link === 'prices') ? prices_active = true: prices_active = false}
         
 
         <List.GroupItem
@@ -40,6 +42,15 @@ const ClassEditMenu = ({ t, active_link, classId }) => (
             active={teachers_active}
             >
             {t('general.teachers')}
+        </List.GroupItem>
+        <List.GroupItem
+            key={v4()}
+            className="d-flex align-items-center"
+            to={"#/schedule/classes/all/prices/" + classId}
+            icon="dollar-sign"
+            active={prices_active}
+            >
+            {t('general.prices')}
         </List.GroupItem>
         <List.GroupItem
             key={v4()}
