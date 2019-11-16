@@ -41,4 +41,5 @@ from .schedule_item_teacher import ScheduleItemTeacher
 from .schedule_item_teacher_available import ScheduleItemTeacherAvailable
 from .schedule_item_organization_classpass_group import ScheduleItemOrganizationClasspassGroup
 from .schedule_item_organization_subscription_group import ScheduleItemOrganizationSubscriptionGroup
+from .schedule_item_price import ScheduleItemPrice
 from .schedule_item_weekly_otc import ScheduleItemWeeklyOTC
