@@ -195,7 +195,7 @@ class DeleteScheduleItemPrice(graphene.relay.ClientIDMutation):
         rid = get_rid(input['id'])
         schedule_item_price = ScheduleItemPrice.objects.filter(id=rid.id).first()
         if not schedule_item_price:
-            raise Exception('Invalid Schedule Item Teacher ID!')
+            raise Exception('Invalid Schedule Item Price ID!')
 
         ok = schedule_item_price.delete()
 
