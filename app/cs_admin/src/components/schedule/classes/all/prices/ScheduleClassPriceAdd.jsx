@@ -67,8 +67,8 @@ function ScheduleClassPriceAdd({ t, history, match }) {
     <SiteWrapper>
       <div className="my-3 my-md-5">
         <ClassEditBase 
-          card_title={t('schedule.classes.teachers.title_add')}
-          menu_active_link="teachers"
+          card_title={t('schedule.classes.prices.title_add')}
+          menu_active_link="prices"
           sidebar_button={<ScheduleClassPriceBack classId={match.params.class_id} />}
         >
           <Formik
