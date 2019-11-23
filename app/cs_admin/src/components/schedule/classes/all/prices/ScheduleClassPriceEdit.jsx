@@ -2,7 +2,7 @@
 
 import React, {Component } from 'react'
 import gql from "graphql-tag"
-import { Query, Mutation } from "react-apollo";
+import { useQuery, useMutation } from "react-apollo"
 import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
 import { Formik } from 'formik'
@@ -20,15 +20,21 @@ import ClassEditBase from "../ClassEditBase"
 import ScheduleClassTeacherBack from "./ScheduleClassTeacherBack"
 
 
-const UPDATE_SCHEDULE_CLASS_TEACHER = gql`
-  mutation UpdateScheduleItemTeacher($input: UpdateScheduleItemTeacherInput!) {
-    updateScheduleItemTeacher(input:$input) {
-      scheduleItemTeacher {
+const UPDATE_SCHEDULE_ITEM_PRICE = gql`
+  mutation UpdateScheduleItemPrice($input: UpdateScheduleItemPriceInput!) {
+    updateScheduleItemPrice(input:$input) {
+      scheduleItemPrice {
         id
       } 
     }
   }
 `
+
+function ScheduleClassPriceEdit({ t, history, match }) {
+  const return_url = "/schedule/classes/all/prices/"
+  const { loading: queryLoading, error: queryError, data, } = useQuery(GET_INPUT_VALUES_QUERY)
+  const [addScheduleClassPrice, { mutationData, mutationLoading, mutationError, onCompleted }] = useMutation(UPDATE_SCHEDULE_ITEM_PRICE)
+}
 
 
 class ScheduleClassTeacherEdit extends Component {

@@ -1,7 +1,7 @@
 // @flow
 
 import React from 'react'
-import { useQuery, useMutation } from "react-apollo";
+import { useQuery, useMutation } from "react-apollo"
 import gql from "graphql-tag"
 import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
