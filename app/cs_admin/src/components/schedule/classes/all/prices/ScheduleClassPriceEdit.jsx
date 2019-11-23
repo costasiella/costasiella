@@ -31,14 +31,17 @@ const UPDATE_SCHEDULE_ITEM_PRICE = gql`
 `
 
 function ScheduleClassPriceEdit({ t, history, match }) {
-  const return_url = "/schedule/classes/all/prices/"
+  const classId = match.params.class_id
+  const return_url = "/schedule/classes/all/prices/" + classId
   const id = match.params.id
   const { loading: queryLoading, error: queryError, data, } = useQuery(GET_SINGLE_SCHEDULE_ITEM_PRICE_QUERY, {
     variables: {
       id: id
     }
   })
-  const [addScheduleClassPrice, { mutationData, mutationLoading, mutationError, onCompleted }] = useMutation(UPDATE_SCHEDULE_ITEM_PRICE)
+  const [editScheduleClassPrice, { mutationData, mutationLoading, mutationError, onCompleted }] = useMutation(UPDATE_SCHEDULE_ITEM_PRICE, {
+    onCompleted: () => history.push(return_url)
+  })
 
 
   if (queryLoading) return (
@@ -101,9 +104,9 @@ function ScheduleClassPriceEdit({ t, history, match }) {
                   dateEnd = values.dateEnd
                 }
 
-                addScheduleClassPrice({ variables: {
+                editScheduleClassPrice({ variables: {
                   input: {
-                    scheduleItem: match.params.class_id,
+                    id: id,
                     dateStart: dateToLocalISO(values.dateStart),
                     dateEnd: dateEnd,
                     organizationClasspassDropin: values.organizationClasspassDropin,
