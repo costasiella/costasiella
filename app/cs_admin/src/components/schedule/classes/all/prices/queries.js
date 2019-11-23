@@ -54,38 +54,36 @@ export const GET_SCHEDULE_ITEM_PRICES_QUERY = gql`
   }
 `
 
-export const GET_SINGLE_SCHEDULE_CLASS_TEACHERS_QUERY = gql`
-  query ScheduleItemTeacher($before: String, $after: String, $id: ID!) {
-    scheduleItemTeacher(id: $id) {
+export const GET_SINGLE_SCHEDULE_ITEM_PRICE_QUERY = gql`
+query ScheduleItemPrice($before: String, $after: String, $id: ID!) {
+  scheduleItemPrice(id: $id) {
+    id
+    organizationClasspassDropin {
       id
-      account {
-        id
-        fullName
-      }
-      role
-      account2 {
-        id
-        fullName
-      }
-      role2
-      dateStart
-      dateEnd       
+      name
     }
-    accounts(first: 100, before: $before, after: $after, isActive: true, teacher: true) {
-      pageInfo {
-        startCursor
-        endCursor
-        hasNextPage
-        hasPreviousPage
-      }
-      edges {
-        node {
-          id
-          fullName
-        }
+    organizationClasspassTrial {
+      id
+      name
+    }
+    dateStart
+    dateEnd       
+  }
+  organizationClasspasses(first: 100, before: $before, after: $after, archived: false) {
+    pageInfo {
+      startCursor
+      endCursor
+      hasNextPage
+      hasPreviousPage
+    }
+    edges {
+      node {
+        id
+        name
       }
     }
   }
+}
 `
 
 
