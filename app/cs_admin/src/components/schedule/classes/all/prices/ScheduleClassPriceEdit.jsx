@@ -34,7 +34,9 @@ function ScheduleClassPriceEdit({ t, history, match }) {
   const return_url = "/schedule/classes/all/prices/"
   const id = match.params.id
   const { loading: queryLoading, error: queryError, data, } = useQuery(GET_SINGLE_SCHEDULE_ITEM_PRICE_QUERY, {
-    "id": id
+    variables: {
+      id: id
+    }
   })
   const [addScheduleClassPrice, { mutationData, mutationLoading, mutationError, onCompleted }] = useMutation(UPDATE_SCHEDULE_ITEM_PRICE)
 
