@@ -164,7 +164,7 @@ function ScheduleClassPrices({t, match, history}) {
                       </Button>
                     </Table.Col>
                     <Table.Col>
-                      <ScheduleClassPriceDelete />
+                      <ScheduleClassPriceDelete id={node.id} />
                     </Table.Col>
                     {/* <Mutation mutation={DELETE_SCHEDULE_CLASS_TEACHER} key={v4()}>
                       {(deleteScheduleItemPrice, { data }) => (

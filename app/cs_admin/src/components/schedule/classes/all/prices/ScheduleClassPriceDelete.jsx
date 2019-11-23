@@ -11,12 +11,9 @@ import {
 } from "tabler-react"
 
 
-function ScheduleClassPriceDelete({t, match, history}) {
+function ScheduleClassPriceDelete({t, match, history, id}) {
   const classId = match.params.class_id
-  const id = match.params.id
-  const [deleteClassPrice, { data }] = useMutation(DELETE_SCHEDULE_ITEM_PRICE, {
-    onCompleted: () => { history.push("/schedule/classes/all/prices" + classId) }
-  })
+  const [deleteClassPrice, { data }] = useMutation(DELETE_SCHEDULE_ITEM_PRICE)
   const query_vars = {
     scheduleItem: classId
   }
