@@ -32,16 +32,9 @@ import confirm_delete from "../../../../../tools/confirm_delete"
 
 import ContentCard from "../../../../general/ContentCard"
 import ClassEditBase from "../ClassEditBase"
+import ScheduleClassPriceDelete from './ScheduleClassPriceDelete'
 
 import { GET_SCHEDULE_ITEM_PRICES_QUERY } from "./queries"
-
-const DELETE_SCHEDULE_ITEM_PRICE = gql`
-  mutation DeleteScheduleItemPrice($input: DeleteScheduleItemPriceInput!) {
-    deleteScheduleItemPrice(input: $input) {
-      ok
-    }
-  }
-`
 
 
 function ScheduleClassPrices({t, match, history}) {
@@ -169,6 +162,9 @@ function ScheduleClassPrices({t, match, history}) {
                               color="secondary">
                         {t('general.edit')}
                       </Button>
+                    </Table.Col>
+                    <Table.Col>
+                      <ScheduleClassPriceDelete />
                     </Table.Col>
                     {/* <Mutation mutation={DELETE_SCHEDULE_CLASS_TEACHER} key={v4()}>
                       {(deleteScheduleItemPrice, { data }) => (

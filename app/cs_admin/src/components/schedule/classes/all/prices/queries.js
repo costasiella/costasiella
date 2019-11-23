@@ -105,3 +105,11 @@ export const GET_INPUT_VALUES_QUERY = gql`
     }
   }
 `
+
+export const DELETE_SCHEDULE_ITEM_PRICE = gql`
+  mutation DeleteScheduleItemPrice($input: DeleteScheduleItemPriceInput!) {
+    deleteScheduleItemPrice(input: $input) {
+      ok
+    }
+  }
+`
