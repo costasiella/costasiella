@@ -79,7 +79,7 @@ def validate_schedule_item_price_create_update_input(input):
     if 'organization_classpass_dropin' in input:
         if input['organization_classpass_dropin']:
             rid = get_rid(input['organization_classpass_dropin'])
-            organization_classpass = OrganizationClasspass.get(id=rid.id)
+            organization_classpass = OrganizationClasspass.objects.get(id=rid.id)
             result['organization_classpass_dropin'] = organization_classpass
             if not organization_classpass:
                 raise Exception(_('Invalid Organization Classpass ID!'))   
@@ -88,7 +88,7 @@ def validate_schedule_item_price_create_update_input(input):
     if 'organization_classpass_trial' in input:
         if input['organization_classpass_trial']:
             rid = get_rid(input['organization_classpass_trial'])
-            organization_classpass = OrganizationClasspass.get(id=rid.id)
+            organization_classpass = OrganizationClasspass.objects.get(id=rid.id)
             result['organization_classpass_trial'] = organization_classpass
             if not organization_classpass:
                 raise Exception(_('Invalid Organization Classpass ID!'))   

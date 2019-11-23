@@ -91,7 +91,7 @@ export const GET_SINGLE_SCHEDULE_CLASS_TEACHERS_QUERY = gql`
 
 export const GET_INPUT_VALUES_QUERY = gql`
   query InputValues($after: String, $before: String) {
-    OrganizationClasspasses(first: 100, before: $before, after: $after, archived: false) {
+    organizationClasspasses(first: 100, before: $before, after: $after, archived: false) {
       pageInfo {
         startCursor
         endCursor

@@ -104,7 +104,7 @@ function ScheduleClassPrices({t, match, history}) {
           menu_active_link="prices" 
           default_card={false} 
           subtitle={subtitle}
-          sidebar_button={<ButtonAdd classId={classId}/>}>
+          sidebar_button={<ButtonAdd classId={classId}/>}
         >
         <ContentCard 
           cardTitle={t('schedule.classes.title_edit')}
