@@ -509,81 +509,81 @@ class GQLScheduleItemPrice(TestCase):
         self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
-    # def test_delete_schedule_item_price(self):
-    #     """ Delete a schedule item price """
-    #     schedule_item_price = f.ScheduleItemPriceFactory.create()
-    #     query = self.schedule_item_price_delete_mutation
-    #     variables = self.variables_delete
-    #     variables['input']['id'] = to_global_id('ScheduleItemPriceNode', schedule_item_price.pk)
+    def test_delete_schedule_item_price(self):
+        """ Delete a schedule item price """
+        schedule_item_price = f.ScheduleItemPriceFactory.create()
+        query = self.schedule_item_price_delete_mutation
+        variables = self.variables_delete
+        variables['input']['id'] = to_global_id('ScheduleItemPriceNode', schedule_item_price.pk)
 
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         self.admin_user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
+        executed = execute_test_client_api_query(
+            query, 
+            self.admin_user, 
+            variables=variables
+        )
+        data = executed.get('data')
         
-    #     self.assertEqual(data['deleteScheduleItemPrice']['ok'], True)
+        self.assertEqual(data['deleteScheduleItemPrice']['ok'], True)
 
-    #     exists = models.ScheduleItemPrice.objects.exists()
-    #     self.assertEqual(exists, False)
-
-
-    # def test_delete_schedule_item_price_anon_user(self):
-    #     """ Don't allow deleting schedule item prices for non logged in users """
-    #     schedule_item_price = f.ScheduleItemPriceFactory.create()
-    #     query = self.schedule_item_price_delete_mutation
-    #     variables = self.variables_delete
-    #     variables['input']['id'] = to_global_id('ScheduleItemPriceNode', schedule_item_price.pk)
-
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         self.anon_user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
+        exists = models.ScheduleItemPrice.objects.exists()
+        self.assertEqual(exists, False)
 
 
-    # def test_delete_schedule_item_price_permission_granted(self):
-    #     """ Allow deleting schedule item prices for users with permissions """
-    #     schedule_item_price = f.ScheduleItemPriceFactory.create()
-    #     query = self.schedule_item_price_delete_mutation
-    #     variables = self.variables_delete
-    #     variables['input']['id'] = to_global_id('ScheduleItemPriceNode', schedule_item_price.pk)
+    def test_delete_schedule_item_price_anon_user(self):
+        """ Don't allow deleting schedule item prices for non logged in users """
+        schedule_item_price = f.ScheduleItemPriceFactory.create()
+        query = self.schedule_item_price_delete_mutation
+        variables = self.variables_delete
+        variables['input']['id'] = to_global_id('ScheduleItemPriceNode', schedule_item_price.pk)
 
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename=self.permission_delete)
-    #     user.user_permissions.add(permission)
-    #     user.save()
-
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['deleteScheduleItemPrice']['ok'], True)
+        executed = execute_test_client_api_query(
+            query, 
+            self.anon_user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
-    # def test_delete_schedule_item_price_permission_denied(self):
-    #     """ Check delete schedule item price permission denied error message """
-    #     schedule_item_price = f.ScheduleItemPriceFactory.create()
-    #     query = self.schedule_item_price_delete_mutation
-    #     variables = self.variables_delete
-    #     variables['input']['id'] = to_global_id('ScheduleItemPriceNode', schedule_item_price.pk)
+    def test_delete_schedule_item_price_permission_granted(self):
+        """ Allow deleting schedule item prices for users with permissions """
+        schedule_item_price = f.ScheduleItemPriceFactory.create()
+        query = self.schedule_item_price_delete_mutation
+        variables = self.variables_delete
+        variables['input']['id'] = to_global_id('ScheduleItemPriceNode', schedule_item_price.pk)
+
+        # Create regular user
+        user = f.RegularUserFactory.create()
+        permission = Permission.objects.get(codename=self.permission_delete)
+        user.user_permissions.add(permission)
+        user.save()
+
+        executed = execute_test_client_api_query(
+            query, 
+            user,
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['deleteScheduleItemPrice']['ok'], True)
+
+
+    def test_delete_schedule_item_price_permission_denied(self):
+        """ Check delete schedule item price permission denied error message """
+        schedule_item_price = f.ScheduleItemPriceFactory.create()
+        query = self.schedule_item_price_delete_mutation
+        variables = self.variables_delete
+        variables['input']['id'] = to_global_id('ScheduleItemPriceNode', schedule_item_price.pk)
         
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
+        # Create regular user
+        user = f.RegularUserFactory.create()
 
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
+        executed = execute_test_client_api_query(
+            query, 
+            user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
 
