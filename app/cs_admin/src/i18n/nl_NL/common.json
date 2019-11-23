@@ -295,7 +295,10 @@
         "download": "__STRING_NOT_TRANSLATED__",
         "document_type": "__STRING_NOT_TRANSLATED__",
         "date_accepted": "__STRING_NOT_TRANSLATED__",
-        "unknown_document_type": "__STRING_NOT_TRANSLATED__"
+        "unknown_document_type": "__STRING_NOT_TRANSLATED__",
+        "prices": "__STRING_NOT_TRANSLATED__",
+        "dropin": "__STRING_NOT_TRANSLATED__",
+        "trial": "__STRING_NOT_TRANSLATED__"
     },
     "yup": {
         "min_len_3": "__STRING_NOT_TRANSLATED__",
@@ -722,7 +725,22 @@
                     "delete_all_changes": "__STRING_NOT_TRANSLATED__"
                 }
             },
-            "no_teacher": "__STRING_NOT_TRANSLATED__"
+            "no_teacher": "__STRING_NOT_TRANSLATED__",
+            "prices": {
+                "add": "__STRING_NOT_TRANSLATED__",
+                "title_add": "__STRING_NOT_TRANSLATED__",
+                "toast_add_success": "__STRING_NOT_TRANSLATED__",
+                "title_edit": "__STRING_NOT_TRANSLATED__",
+                "toast_edit_success": "__STRING_NOT_TRANSLATED__",
+                "title": "__STRING_NOT_TRANSLATED__",
+                "error_loading": "__STRING_NOT_TRANSLATED__",
+                "empty_list": "__STRING_NOT_TRANSLATED__",
+                "delete_confirm_msg": "__STRING_NOT_TRANSLATED__",
+                "delete_confirm_description": "__STRING_NOT_TRANSLATED__",
+                "deleted": "__STRING_NOT_TRANSLATED__"
+            },
+            "classpass_dropin": "__STRING_NOT_TRANSLATED__",
+            "classpass_trial": "__STRING_NOT_TRANSLATED__"
         },
         "appointments": {
             "title": "__STRING_NOT_TRANSLATED__",
