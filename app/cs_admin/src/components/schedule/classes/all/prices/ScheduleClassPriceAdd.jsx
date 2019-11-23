@@ -32,9 +32,12 @@ const ADD_SCHEDULE_ITEM_PRICE = gql`
 
 
 function ScheduleClassPriceAdd({ t, history, match }) {
-  const return_url = "/schedule/classes/all/prices/"
+  const classId = match.params.class_id
+  const return_url = "/schedule/classes/all/prices/" + classId
   const { loading: queryLoading, error: queryError, data, } = useQuery(GET_INPUT_VALUES_QUERY)
-  const [addScheduleClassPrice, { mutationData, mutationLoading, mutationError, onCompleted }] = useMutation(ADD_SCHEDULE_ITEM_PRICE)
+  const [addScheduleClassPrice, { mutationData, mutationLoading, mutationError, onCompleted }] = useMutation(ADD_SCHEDULE_ITEM_PRICE, {
+    onCompleted: () => history.push(return_url),
+  })
 
   if (queryLoading) return (
     <SiteWrapper>
