@@ -32,8 +32,6 @@ class GQLScheduleItemPrice(TestCase):
 
         self.variables_create = {
             "input": {
-                "role": "SUB",
-                "role2": "ASSISTANT",
                 "dateStart": '2019-01-01',
                 "dateEnd": '2019-12-31',
             }
@@ -41,8 +39,6 @@ class GQLScheduleItemPrice(TestCase):
 
         self.variables_update = {
             "input": {
-                "role": "SUB",
-                "role2": "ASSISTANT",
                 "dateStart": '2019-01-01',
                 "dateEnd": '2019-12-31',
             }
@@ -103,16 +99,17 @@ class GQLScheduleItemPrice(TestCase):
     createScheduleItemPrice(input:$input) {
       scheduleItemPrice {
         id
-        account {
+        scheduleItem {
           id
-          fullName
         }
-        role
-        account2 {
+        organizationClasspassDropin {
           id
-          fullName
+          name
         }
-        role2
+        organizationClasspassTrial {
+          id
+          name
+        }
         dateStart
         dateEnd       
       }
@@ -125,16 +122,17 @@ class GQLScheduleItemPrice(TestCase):
     updateScheduleItemPrice(input:$input) {
       scheduleItemPrice {
         id
-        account {
+        scheduleItem {
           id
-          fullName
         }
-        role
-        account2 {
+        organizationClasspassDropin {
           id
-          fullName
+          name
         }
-        role2
+        organizationClasspassTrial {
+          id
+          name
+        }
         dateStart
         dateEnd       
       }
@@ -143,7 +141,7 @@ class GQLScheduleItemPrice(TestCase):
 '''
 
         self.schedule_item_price_delete_mutation = '''
-  mutation DeleteScheduleClassPrice($input: DeleteScheduleItemPriceInput!) {
+  mutation DeleteScheduleItemPrice($input: DeleteScheduleItemPriceInput!) {
     deleteScheduleItemPrice(input: $input) {
       ok
     }
@@ -313,106 +311,108 @@ class GQLScheduleItemPrice(TestCase):
         )
 
 
-    # def test_create_schedule_item_price(self):
-    #     """ Create schedule item price """
-    #     schedule_class = f.SchedulePublicWeeklyClassFactory.create()
-    #     price = f.PriceFactory.create()
-    #     price2 = f.Price2Factory.create()
+    def test_create_schedule_item_price(self):
+        """ Create schedule item price """
+        schedule_class = f.SchedulePublicWeeklyClassFactory.create()
+        classpass_dropin = f.OrganizationClasspassFactory.create()
+        classpass_trial = f.OrganizationClasspassTrialFactory.create()
 
-    #     query = self.schedule_item_price_create_mutation
-    #     variables = self.variables_create
-    #     variables['input']['scheduleItem'] = to_global_id('scheduleItemNode', schedule_class.pk)
-    #     variables['input']['account'] = to_global_id('AccountNode', price.pk)
-    #     variables['input']['account2'] = to_global_id('AccountNode', price2.pk)
+        query = self.schedule_item_price_create_mutation
+        variables = self.variables_create
+        variables['input']['scheduleItem'] = to_global_id('ScheduleItemNode', schedule_class.pk)
+        variables['input']['organizationClasspassDropin'] = to_global_id('OrganizationClasspassNode', classpass_dropin.pk)
+        variables['input']['organizationClasspassTrial'] = to_global_id('OrganizationClasspassNode', classpass_trial.pk)
 
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         self.admin_user, 
-    #         variables=variables
-    #     )
+        executed = execute_test_client_api_query(
+            query, 
+            self.admin_user, 
+            variables=variables
+        )
 
-    #     data = executed.get('data')
-    #     self.assertEqual(data['createScheduleItemPrice']['scheduleItemPrice']['account']['id'], variables['input']['account'])
-    #     self.assertEqual(data['createScheduleItemPrice']['scheduleItemPrice']['role'], variables['input']['role'])
-    #     self.assertEqual(data['createScheduleItemPrice']['scheduleItemPrice']['account2']['id'], variables['input']['account2'])
-    #     self.assertEqual(data['createScheduleItemPrice']['scheduleItemPrice']['role2'], variables['input']['role2'])
-    #     self.assertEqual(data['createScheduleItemPrice']['scheduleItemPrice']['dateStart'], variables['input']['dateStart'])
-    #     self.assertEqual(data['createScheduleItemPrice']['scheduleItemPrice']['dateEnd'], variables['input']['dateEnd'])
-
-
-    # def test_create_schedule_item_price_anon_user(self):
-    #     """ Don't allow creating schedule item price for non-logged in users """
-    #     schedule_class = f.SchedulePublicWeeklyClassFactory.create()
-    #     price = f.PriceFactory.create()
-    #     price2 = f.Price2Factory.create()
-
-    #     query = self.schedule_item_price_create_mutation
-    #     variables = self.variables_create
-    #     variables['input']['scheduleItem'] = to_global_id('scheduleItemNode', schedule_class.pk)
-    #     variables['input']['account'] = to_global_id('AccountNode', price.pk)
-    #     variables['input']['account2'] = to_global_id('AccountNode', price2.pk)
-
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         self.anon_user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
+        data = executed.get('data')
+        self.assertEqual(data['createScheduleItemPrice']['scheduleItemPrice']['scheduleItem']['id'], variables['input']['scheduleItem'])
+        self.assertEqual(data['createScheduleItemPrice']['scheduleItemPrice']['organizationClasspassDropin']['id'], 
+          variables['input']['organizationClasspassDropin'])
+        self.assertEqual(data['createScheduleItemPrice']['scheduleItemPrice']['organizationClasspassTrial']['id'], 
+          variables['input']['organizationClasspassTrial'])
+        self.assertEqual(data['createScheduleItemPrice']['scheduleItemPrice']['dateStart'], variables['input']['dateStart'])
+        self.assertEqual(data['createScheduleItemPrice']['scheduleItemPrice']['dateEnd'], variables['input']['dateEnd'])
 
 
-    # def test_create_schedule_item_price_permission_granted(self):
-    #     """ Allow creating schedule item prices for users with permissions """
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename=self.permission_add)
-    #     user.user_permissions.add(permission)
-    #     user.save()
+    def test_create_schedule_item_price_anon_user(self):
+        """ Don't allow creating schedule item price for non-logged in users """
+        schedule_class = f.SchedulePublicWeeklyClassFactory.create()
+        classpass_dropin = f.OrganizationClasspassFactory.create()
+        classpass_trial = f.OrganizationClasspassTrialFactory.create()
 
-    #     schedule_class = f.SchedulePublicWeeklyClassFactory.create()
-    #     price = f.PriceFactory.create()
-    #     price2 = f.Price2Factory.create()
+        query = self.schedule_item_price_create_mutation
+        variables = self.variables_create
+        variables['input']['scheduleItem'] = to_global_id('ScheduleItemNode', schedule_class.pk)
+        variables['input']['organizationClasspassDropin'] = to_global_id('OrganizationClasspassNode', classpass_dropin.pk)
+        variables['input']['organizationClasspassTrial'] = to_global_id('OrganizationClasspassNode', classpass_trial.pk)
 
-    #     query = self.schedule_item_price_create_mutation
-    #     variables = self.variables_create
-    #     variables['input']['scheduleItem'] = to_global_id('scheduleItemNode', schedule_class.pk)
-    #     variables['input']['account'] = to_global_id('AccountNode', price.pk)
-    #     variables['input']['account2'] = to_global_id('AccountNode', price2.pk)
+        executed = execute_test_client_api_query(
+            query, 
+            self.anon_user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
 
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['createScheduleItemPrice']['scheduleItemPrice']['account']['id'], variables['input']['account'])
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
-    # def test_create_schedule_item_price_permission_denied(self):
-    #     """ Check create schedule item price permission denied error message """
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
+    def test_create_schedule_item_price_permission_granted(self):
+        """ Allow creating schedule item prices for users with permissions """
+        # Create regular user
+        user = f.RegularUserFactory.create()
+        permission = Permission.objects.get(codename=self.permission_add)
+        user.user_permissions.add(permission)
+        user.save()
 
-    #     schedule_class = f.SchedulePublicWeeklyClassFactory.create()
-    #     price = f.PriceFactory.create()
-    #     price2 = f.Price2Factory.create()
+        schedule_class = f.SchedulePublicWeeklyClassFactory.create()
+        classpass_dropin = f.OrganizationClasspassFactory.create()
+        classpass_trial = f.OrganizationClasspassTrialFactory.create()
 
-    #     query = self.schedule_item_price_create_mutation
-    #     variables = self.variables_create
-    #     variables['input']['scheduleItem'] = to_global_id('scheduleItemNode', schedule_class.pk)
-    #     variables['input']['account'] = to_global_id('AccountNode', price.pk)
-    #     variables['input']['account2'] = to_global_id('AccountNode', price2.pk)
+        query = self.schedule_item_price_create_mutation
+        variables = self.variables_create
+        variables['input']['scheduleItem'] = to_global_id('ScheduleItemNode', schedule_class.pk)
+        variables['input']['organizationClasspassDropin'] = to_global_id('OrganizationClasspassNode', classpass_dropin.pk)
+        variables['input']['organizationClasspassTrial'] = to_global_id('OrganizationClasspassNode', classpass_trial.pk)
 
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
+        executed = execute_test_client_api_query(
+            query, 
+            user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['createScheduleItemPrice']['scheduleItemPrice']['organizationClasspassDropin']['id'], 
+                         variables['input']['organizationClasspassDropin'])
+
+
+    def test_create_schedule_item_price_permission_denied(self):
+        """ Check create schedule item price permission denied error message """
+        # Create regular user
+        user = f.RegularUserFactory.create()
+
+        schedule_class = f.SchedulePublicWeeklyClassFactory.create()
+        classpass_dropin = f.OrganizationClasspassFactory.create()
+        classpass_trial = f.OrganizationClasspassTrialFactory.create()
+
+        query = self.schedule_item_price_create_mutation
+        variables = self.variables_create
+        variables['input']['scheduleItem'] = to_global_id('ScheduleItemNode', schedule_class.pk)
+        variables['input']['organizationClasspassDropin'] = to_global_id('OrganizationClasspassNode', classpass_dropin.pk)
+        variables['input']['organizationClasspassTrial'] = to_global_id('OrganizationClasspassNode', classpass_trial.pk)
+
+        executed = execute_test_client_api_query(
+            query, 
+            user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
     # def test_update_schedule_item_price(self):
