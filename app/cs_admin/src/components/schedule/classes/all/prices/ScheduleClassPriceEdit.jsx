@@ -34,6 +34,27 @@ function ScheduleClassPriceEdit({ t, history, match }) {
   const return_url = "/schedule/classes/all/prices/"
   const { loading: queryLoading, error: queryError, data, } = useQuery(GET_INPUT_VALUES_QUERY)
   const [addScheduleClassPrice, { mutationData, mutationLoading, mutationError, onCompleted }] = useMutation(UPDATE_SCHEDULE_ITEM_PRICE)
+
+
+  if (queryLoading) return (
+    <SiteWrapper>
+      <div className="my-3 my-md-5">
+        <p>{t('general.loading_with_dots')}</p>
+      </div>
+    </SiteWrapper>
+  )
+  // Error
+  if (queryError) {
+    return (
+      <SiteWrapper>
+        <div className="my-3 my-md-5">
+          console.log(error)
+          return <p>{t('general.error_sad_smiley')}</p>
+        </div>
+      </SiteWrapper>
+    )
+  }
+
 }
 
 
