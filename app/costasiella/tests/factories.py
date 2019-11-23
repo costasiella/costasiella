@@ -515,6 +515,16 @@ class ScheduleItemTeacherFactory(factory.DjangoModelFactory):
     role_2 = "ASSISTANT"
     date_start = datetime.date(2014, 1, 1)
 
+    
+class ScheduleItemPriceFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.ScheduleItemPrice
+
+    schedule_item = factory.SubFactory(SchedulePublicWeeklyClassFactory)
+    organization_classpass_dropin = factory.SubFactory(OrganizationClasspassFactory)
+    organization_classpass_trial = factory.SubFactory(OrganizationClasspassTrialFactory)
+    date_start = datetime.date(2014, 1, 1)
+
 
 class ScheduleItemOrganizationSubscriptionGroupDenyFactory(factory.DjangoModelFactory):
     class Meta:
