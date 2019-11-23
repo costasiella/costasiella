@@ -243,8 +243,6 @@ class GQLScheduleItemPrice(TestCase):
         executed = execute_test_client_api_query(query, self.admin_user, variables=variables)
         data = executed.get('data')
 
-        print(executed)
-
         self.assertEqual(
           data['scheduleItemPrice']['organizationClasspassDropin']['id'],
           to_global_id('OrganizationClasspassNode', schedule_item_price.organization_classpass_dropin.pk)
@@ -415,91 +413,100 @@ class GQLScheduleItemPrice(TestCase):
         self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
-    # def test_update_schedule_item_price(self):
-    #     """ Update schedule item price """
-    #     schedule_item_price = f.ScheduleItemPriceFactory.create()
+    def test_update_schedule_item_price(self):
+        """ Update schedule item price """
+        schedule_item_price = f.ScheduleItemPriceFactory.create()
+        classpass_dropin = f.OrganizationClasspassFactory.create()
+        classpass_trial = f.OrganizationClasspassTrialFactory.create()
 
-    #     query = self.schedule_item_price_update_mutation
-    #     variables = self.variables_update
-    #     variables['input']['id'] = to_global_id('ScheduleItemPriceNode', schedule_item_price.pk)
-    #     variables['input']['account'] = to_global_id('AccountNode', schedule_item_price.account_2.pk)
-    #     variables['input']['account2'] = to_global_id('AccountNode', schedule_item_price.account.pk)
+        query = self.schedule_item_price_update_mutation
+        variables = self.variables_update
+        variables['input']['id'] = to_global_id('ScheduleItemPriceNode', schedule_item_price.pk)
+        variables['input']['organizationClasspassDropin'] = to_global_id('OrganizationClasspassNode', classpass_dropin.pk)
+        variables['input']['organizationClasspassTrial'] = to_global_id('OrganizationClasspassNode', classpass_trial.pk)
 
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         self.admin_user, 
-    #         variables=variables
-    #     )
+        executed = execute_test_client_api_query(
+            query, 
+            self.admin_user, 
+            variables=variables
+        )
 
-    #     data = executed.get('data')
-    #     self.assertEqual(data['updateScheduleItemPrice']['scheduleItemPrice']['account']['id'], variables['input']['account'])
-    #     self.assertEqual(data['updateScheduleItemPrice']['scheduleItemPrice']['role'], variables['input']['role'])
-    #     self.assertEqual(data['updateScheduleItemPrice']['scheduleItemPrice']['account2']['id'], variables['input']['account2'])
-    #     self.assertEqual(data['updateScheduleItemPrice']['scheduleItemPrice']['role2'], variables['input']['role2'])
-    #     self.assertEqual(data['updateScheduleItemPrice']['scheduleItemPrice']['dateStart'], variables['input']['dateStart'])
-    #     self.assertEqual(data['updateScheduleItemPrice']['scheduleItemPrice']['dateEnd'], variables['input']['dateEnd'])
-
-
-    # def test_update_schedule_item_price_anon_user(self):
-    #     """ Don't allow updating schedule item prices for non-logged in users """
-    #     schedule_item_price = f.ScheduleItemPriceFactory.create()
-    #     query = self.schedule_item_price_update_mutation
-    #     variables = self.variables_update
-    #     variables['input']['id'] = to_global_id('ScheduleItemPriceNode', schedule_item_price.pk)
-    #     variables['input']['account'] = to_global_id('AccountNode', schedule_item_price.account_2.pk)
-
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         self.anon_user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
+        data = executed.get('data')
+        self.assertEqual(data['updateScheduleItemPrice']['scheduleItemPrice']['organizationClasspassDropin']['id'], 
+          variables['input']['organizationClasspassDropin'])
+        self.assertEqual(data['updateScheduleItemPrice']['scheduleItemPrice']['organizationClasspassTrial']['id'], 
+          variables['input']['organizationClasspassTrial'])
+        self.assertEqual(data['updateScheduleItemPrice']['scheduleItemPrice']['dateStart'], variables['input']['dateStart'])
+        self.assertEqual(data['updateScheduleItemPrice']['scheduleItemPrice']['dateEnd'], variables['input']['dateEnd'])
 
 
-    # def test_update_schedule_item_price_permission_granted(self):
-    #     """ Allow updating schedule item price for users with permissions """
-    #     schedule_item_price = f.ScheduleItemPriceFactory.create()
-    #     query = self.schedule_item_price_update_mutation
-    #     variables = self.variables_update
-    #     variables['input']['id'] = to_global_id('ScheduleItemPriceNode', schedule_item_price.pk)
-    #     variables['input']['account'] = to_global_id('AccountNode', schedule_item_price.account_2.pk)
+    def test_update_schedule_item_price_anon_user(self):
+        """ Don't allow updating schedule item prices for non-logged in users """
+        schedule_item_price = f.ScheduleItemPriceFactory.create()
+        query = self.schedule_item_price_update_mutation
+        variables = self.variables_update
+        variables['input']['id'] = to_global_id('ScheduleItemPriceNode', schedule_item_price.pk)
 
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename=self.permission_change)
-    #     user.user_permissions.add(permission)
-    #     user.save()
-
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['updateScheduleItemPrice']['scheduleItemPrice']['role'], variables['input']['role'])
+        executed = execute_test_client_api_query(
+            query, 
+            self.anon_user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
-    # def test_update_schedule_item_price_permission_denied(self):
-    #     """ Check update schedule item price permission denied error message """
-    #     schedule_item_price = f.ScheduleItemPriceFactory.create()
-    #     query = self.schedule_item_price_update_mutation
-    #     variables = self.variables_update
-    #     variables['input']['id'] = to_global_id('ScheduleItemPriceNode', schedule_item_price.pk)
-    #     variables['input']['account'] = to_global_id('AccountNode', schedule_item_price.account_2.pk)
+    def test_update_schedule_item_price_permission_granted(self):
+        """ Allow updating schedule item price for users with permissions """
+        schedule_item_price = f.ScheduleItemPriceFactory.create()
+        classpass_dropin = f.OrganizationClasspassFactory.create()
+        classpass_trial = f.OrganizationClasspassTrialFactory.create()
 
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
+        query = self.schedule_item_price_update_mutation
+        variables = self.variables_update
+        variables['input']['id'] = to_global_id('ScheduleItemPriceNode', schedule_item_price.pk)
+        variables['input']['organizationClasspassDropin'] = to_global_id('OrganizationClasspassNode', classpass_dropin.pk)
+        variables['input']['organizationClasspassTrial'] = to_global_id('OrganizationClasspassNode', classpass_trial.pk)
 
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
+        # Create regular user
+        user = f.RegularUserFactory.create()
+        permission = Permission.objects.get(codename=self.permission_change)
+        user.user_permissions.add(permission)
+        user.save()
+
+        executed = execute_test_client_api_query(
+            query, 
+            user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['updateScheduleItemPrice']['scheduleItemPrice']['dateEnd'], variables['input']['dateEnd'])
+
+
+    def test_update_schedule_item_price_permission_denied(self):
+        """ Check update schedule item price permission denied error message """
+        schedule_item_price = f.ScheduleItemPriceFactory.create()
+        classpass_dropin = f.OrganizationClasspassFactory.create()
+        classpass_trial = f.OrganizationClasspassTrialFactory.create()
+
+        query = self.schedule_item_price_update_mutation
+        variables = self.variables_update
+        variables['input']['id'] = to_global_id('ScheduleItemPriceNode', schedule_item_price.pk)
+        variables['input']['organizationClasspassDropin'] = to_global_id('OrganizationClasspassNode', classpass_dropin.pk)
+        variables['input']['organizationClasspassTrial'] = to_global_id('OrganizationClasspassNode', classpass_trial.pk)
+
+        # Create regular user
+        user = f.RegularUserFactory.create()
+
+        executed = execute_test_client_api_query(
+            query, 
+            user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
     # def test_delete_schedule_item_price(self):
