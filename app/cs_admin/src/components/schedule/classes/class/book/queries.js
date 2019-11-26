@@ -33,6 +33,16 @@ export const GET_BOOKING_OPTIONS_QUERY = gql`
         timeStart
         timeEnd
       }
+    	scheduleItemPrices {
+        organizationClasspassDropin {
+          id
+          price
+        }
+        organizationClasspassTrial {
+          id
+          price
+        }
+      }
       classpasses {
         bookingType 
         allowed
