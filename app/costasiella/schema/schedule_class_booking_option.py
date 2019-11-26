@@ -15,6 +15,7 @@ from .account import AccountNode
 from .account_classpass import AccountClasspassNode
 from .account_subscription import AccountSubscriptionNode
 from .schedule_item import ScheduleItemNode
+from .schedule_item_price import ScheduleItemPriceNode
 
 from ..dudes import ClassCheckinDude, ClassScheduleDude
 
@@ -48,6 +49,7 @@ class ScheduleClassBookingOptionsType(graphene.ObjectType):
     schedule_item_id = graphene.ID()
     classpasses = graphene.List(ScheduleClassBookingClasspassType)
     subscriptions = graphene.List(ScheduleClassBookingSubscriptionType)
+    classpass_dropin = graphene.Field(ScheduleClassBookingClasspassType)
 
 
     def resolve_account(self, info):
@@ -68,6 +70,13 @@ class ScheduleClassBookingOptionsType(graphene.ObjectType):
             raise Exception('Invalid Schedule Item ID!')
 
         return schedule_item
+
+
+    def resolse_classpass_dropin(self, info):
+        # Drop-in classpass
+        schedule_item = self.resolve_schedule_item(info)
+
+
 
 
     def resolve_classpasses(self, 
