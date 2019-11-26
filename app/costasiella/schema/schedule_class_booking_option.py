@@ -7,7 +7,7 @@ from graphene_django.filter import DjangoFilterConnectionField
 from graphql import GraphQLError
 from graphql_relay import to_global_id
 
-from ..models import Account, AccountClasspass, AccountSubscription, ScheduleItem
+from ..models import Account, AccountClasspass, AccountSubscription, ScheduleItem, ScheduleItemPrice
 from ..modules.gql_tools import require_login_and_permission, require_login_and_one_of_permissions, get_rid
 from ..modules.messages import Messages
 from ..modules.model_helpers.schedule_item_helper import ScheduleItemHelper
@@ -76,6 +76,7 @@ class ScheduleClassBookingOptionsType(graphene.ObjectType):
         # Drop-in classpass
         schedule_item = self.resolve_schedule_item(info)
 
+        qs = schedule_item_price.objects.
 
 
 
