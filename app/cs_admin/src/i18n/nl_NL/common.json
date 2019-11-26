@@ -716,7 +716,8 @@
                 "book": {
                     "toast_success": "__STRING_NOT_TRANSLATED__",
                     "classpass_not_allowed": "__STRING_NOT_TRANSLATED__",
-                    "subscription_not_allowed": "__STRING_NOT_TRANSLATED__"
+                    "subscription_not_allowed": "__STRING_NOT_TRANSLATED__",
+                    "dropin_pay_and_book": "__STRING_NOT_TRANSLATED__"
                 },
                 "edit": {
                     "toast_edit_success": "__STRING_NOT_TRANSLATED__",
@@ -737,7 +738,8 @@
                 "empty_list": "__STRING_NOT_TRANSLATED__",
                 "delete_confirm_msg": "__STRING_NOT_TRANSLATED__",
                 "delete_confirm_description": "__STRING_NOT_TRANSLATED__",
-                "deleted": "__STRING_NOT_TRANSLATED__"
+                "deleted": "__STRING_NOT_TRANSLATED__",
+                "delete_success": "__STRING_NOT_TRANSLATED__"
             },
             "classpass_dropin": "__STRING_NOT_TRANSLATED__",
             "classpass_trial": "__STRING_NOT_TRANSLATED__"

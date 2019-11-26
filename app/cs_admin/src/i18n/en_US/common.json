@@ -716,7 +716,8 @@
                 "book": {
                     "toast_success": "Check-in success",
                     "classpass_not_allowed": "Not allowed for this class",
-                    "subscription_not_allowed": "Not allowed for this class"
+                    "subscription_not_allowed": "Not allowed for this class",
+                    "dropin_pay_and_book": "Pay and book class"
                 },
                 "edit": {
                     "toast_edit_success": "Saved",
@@ -737,7 +738,8 @@
                 "empty_list": "No prices have been defined for this class yet.",
                 "delete_confirm_msg": "Are you sure you wish to delete this price?",
                 "delete_confirm_description": "",
-                "deleted": "Deleted price"
+                "deleted": "Deleted price",
+                "delete_success": "__STRING_NOT_TRANSLATED__"
             },
             "classpass_dropin": "Drop-in classpass",
             "classpass_trial": "Trial classpass"

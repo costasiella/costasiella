@@ -36,11 +36,13 @@ export const GET_BOOKING_OPTIONS_QUERY = gql`
     	scheduleItemPrices {
         organizationClasspassDropin {
           id
-          price
+          name
+          priceDisplay
         }
         organizationClasspassTrial {
           id
-          price
+          name
+          priceDisplay
         }
       }
       classpasses {

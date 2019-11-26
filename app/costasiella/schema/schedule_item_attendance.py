@@ -163,6 +163,9 @@ class CreateScheduleItemAttendance(graphene.relay.ClientIDMutation):
 
             #TODO: add code to update available credits for a subscription
 
+        #TODO: Add CLASSPASS_BUY_AND_BOOK
+        
+
         return CreateScheduleItemAttendance(schedule_item_attendance=schedule_item_attendance)
 
 
