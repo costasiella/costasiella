@@ -49,7 +49,7 @@ class ScheduleClassBookingOptionsType(graphene.ObjectType):
     schedule_item_id = graphene.ID()
     classpasses = graphene.List(ScheduleClassBookingClasspassType)
     subscriptions = graphene.List(ScheduleClassBookingSubscriptionType)
-    prices = graphene.Field(ScheduleItemPriceNode)
+    schedule_item_prices = graphene.Field(ScheduleItemPriceNode)
 
 
     def resolve_account(self, info):
@@ -72,7 +72,7 @@ class ScheduleClassBookingOptionsType(graphene.ObjectType):
         return schedule_item
 
 
-    def resolve_prices(self, info):
+    def resolve_schedule_item_prices(self, info):
         # Drop-in classpass
         schedule_item = self.resolve_schedule_item(info)
 
