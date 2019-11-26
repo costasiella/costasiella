@@ -21,5 +21,5 @@ class ScheduleItemPrice(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.schedule_item + ' [' + self.account.full_name + " - " + str(date_start) + ']'
+        return str(self.schedule_item) + ' [' + str(self.date_start) + " - " + str(self.date_end) + ']'
     
