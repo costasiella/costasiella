@@ -105,7 +105,7 @@ class ScheduleClassBookingOptionsType(graphene.ObjectType):
             Q(account = account) & 
             Q(date_start__lte = self.date) & 
             (Q(date_end__gte = self.date) | Q(date_end__isnull = True)) & 
-            (Q(classes_remaining__gte = 0) | Q(organization_classpass__unlimited = True))
+            (Q(classes_remaining__gt = 0) | Q(organization_classpass__unlimited = True))
         )
 
         classpasses = AccountClasspass.objects.filter(classpasses_filter).order_by('organization_classpass__name')
