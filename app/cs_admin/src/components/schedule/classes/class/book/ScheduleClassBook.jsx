@@ -38,6 +38,7 @@ import ScheduleClassBookBack from "./ScheduleClassBookBack"
 import ScheduleClassBookClasspasses from "./ScheduleClassBookClasspasses"
 import ScheduleClassBookSubscriptions from "./ScheduleClassBookSubscriptions"
 import ScheduleClassBookPriceDropin from "./ScheduleClassBookPriceDropin"
+import ScheduleClassBookPriceTrial from "./ScheduleClassBookPriceTrial"
 // import ClassEditBase from "../ClassEditBase"
 
 import { GET_BOOKING_OPTIONS_QUERY } from "./queries"
@@ -117,6 +118,8 @@ function ScheduleClassBook({ t, match, history }) {
     timeStart: TimeStringToJSDateOBJ(scheduleItem.timeStart), 
     date: class_date
   })
+
+  console.log(prices)
   
   
   return (
@@ -138,8 +141,12 @@ function ScheduleClassBook({ t, match, history }) {
                   {(prices) ?
                     (prices.organizationClasspassDropin) ? 
                       <ScheduleClassBookPriceDropin priceDropin={prices.organizationClasspassDropin}/> : "" 
-                    : ""
-                  }
+                    : "" }
+                  {(prices) ?
+                    (prices.organizationClasspassTrial) ? 
+                      <ScheduleClassBookPriceTrial priceTrial={prices.organizationClasspassTrial}/> : "" 
+                    : "" }
+
                 </Grid.Row>
                 </div>
               </Grid.Col>
