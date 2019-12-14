@@ -36,7 +36,7 @@ import { class_subtitle, get_accounts_query_variables } from "../tools"
 
 import ContentCard from "../../../../general/ContentCard"
 import ScheduleClassBookBack from "./ScheduleClassBookBack"
-import ClasspassCheckinButton from "./ScheduleClassBookClasspassBtn"
+import ScheduleClassBookPriceBtn from "./ScheduleClassBookPriceBtn"
 
 // import ClassEditBase from "../ClassEditBase"
 
@@ -61,7 +61,7 @@ function ScheduleClassBookPriceDropin({ t, match, history, priceDropin, onClickC
           {/* {t('general.valid_until')}: {moment(classpass.accountClasspass.dateEnd).format('LL')} <br /> */}
       </Card.Body>
       <Card.Footer>
-        button here...
+        <ScheduleClassBookPriceBtn priceDropin={priceDropin} />
         {/* {(!classpass.allowed) ? t('schedule.classes.class.book.classpass_not_allowed') :
           <ClasspassCheckinButton classpass={classpass} />
         } */}

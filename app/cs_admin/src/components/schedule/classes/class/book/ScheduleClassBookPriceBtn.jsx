@@ -17,8 +17,8 @@ import { CREATE_SCHEDULE_ITEM_ATTENDANCE } from "./queries"
 import CSLS from "../../../../../tools/cs_local_storage"
 
 
-function ClasspassCheckinButton({t, match, history, classpass}) {
-  console.log(classpass)
+function ScheduleClassBookPriceBtn({t, match, history, priceDropin}) {
+  console.log(priceDropin)
   const account_id = match.params.account_id
   const schedule_item_id = match.params.class_id
   const class_date = match.params.date
@@ -26,9 +26,9 @@ function ClasspassCheckinButton({t, match, history, classpass}) {
   const createInput = {
     "account": account_id,
     "scheduleItem": schedule_item_id,
-    "accountClasspass": classpass.accountClasspass.id,
+    "organizationClasspass": priceDropin.id,
     "date": class_date,
-    "attendanceType": "CLASSPASS",
+    "attendanceType": "CLASSPASS_BUY_AND_BOOK",
     "bookingStatus": "ATTENDING"
   }
 
@@ -74,5 +74,5 @@ function ClasspassCheckinButton({t, match, history, classpass}) {
 }
 
 
-export default withTranslation()(withRouter(ClasspassCheckinButton))
+export default withTranslation()(withRouter(ScheduleClassBookPriceBtn))
 
