@@ -5,7 +5,7 @@ from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
 from graphql import GraphQLError
 
-from ..models import Account, AccountClasspass, AccountSubscription, FinanceInvoiceItem, ScheduleItem, ScheduleItemAttendance
+from ..models import Account, AccountClasspass, AccountSubscription, FinanceInvoiceItem, OrganizationClasspass, ScheduleItem, ScheduleItemAttendance
 from ..modules.gql_tools import require_login_and_permission, get_rid
 from ..modules.messages import Messages
 
@@ -86,6 +86,15 @@ def validate_schedule_item_attendance_create_update_input(input):
             if not account_invoice_item:
                 raise Exception(_('Invalid Account Invoice Item ID!'))                      
 
+    # Check OrganizationClasspass
+    if 'organization_classpass' in input:
+        if input['organization_classpass']:
+            rid = get_rid(input['organization_classpass'])
+            organization_classpass = OrganizationClasspass.objects.filter(id=rid.id).first()
+            result['organization_classpass'] = organization_classpass
+            if not organization_classpass:
+                raise Exception(_('Invalid Organization Classpass ID!'))                      
+
     # Check Schedule Item
     if 'schedule_item' in input:
         if input['schedule_item']:
@@ -164,6 +173,24 @@ class CreateScheduleItemAttendance(graphene.relay.ClientIDMutation):
             #TODO: add code to update available credits for a subscription
 
         #TODO: Add CLASSPASS_BUY_AND_BOOK
+        elif attendance_type == "CLASSPASS_BUY_AND_BOOK":
+            if not validation_result['organization_classpass']:
+                raise Exception(_('organizationClasspass field is mandatory when doing a classpass buy and check-in'))
+
+            organization_classpass = validation_result['organization_classpass']
+            result = class_checkin_dude.sell_classpass_and_class_checkin(
+                account = validation_result['account'],
+                organization_classpass = organization_classpass,
+                schedule_item = validation_result['schedule_item'],
+                date = input['date'],
+                booking_status = input['booking_status'],
+                online_booking = input['online_booking'],                    
+            )
+
+            schedule_item_attendance = result['schedule_item_attendance']
+            account_classpass = result['account_classpass']
+
+            account_classpass.update_classes_remaining()
         
 
         return CreateScheduleItemAttendance(schedule_item_attendance=schedule_item_attendance)
