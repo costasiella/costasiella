@@ -18,6 +18,54 @@ class ClassCheckinDude():
         return schedule_item_attendance
 
 
+    def sell_classpass_and_class_checkin(self, 
+                                         account,
+                                         organization_classpass,
+                                         schedule_item,
+                                         date,
+                                         booking_status=False,
+                                         online_booking="BOOKED"):
+        """
+        :return: ScheduleItemAttendance and AccountClasspass objects if successful
+        Raise error when not successful
+        """
+        # Check if not already signed in
+        qs = self._class_checkedin(account, schedule_item, date)
+        print(qs)
+        if qs.exists():
+            # Already signed in, check for review check-in
+            schedule_item_attendance = qs.first()
+
+            if not schedule_item_attendance == 'REVIEW':
+                raise Exception(_('This account is already checked in to this class'))
+            # else:
+            #TODO: Write review check-ins code
+
+
+        from .sales_dude import SalesDude
+        sales_dude = SalesDude()
+        sales_result = sales_dude.sell_classpass(
+            account=account, 
+            organization_classpass=organization_classpass, 
+            date_start=date
+        )
+        account_classpass = sales_result['account_classpass']
+
+        schedule_item_attendance = self.class_checkin_classpass(
+            account=account,
+            account_classpass=account_classpass,
+            schedule_item=schedule_item,
+            date=date,
+            online_booking=online_booking,
+            booking_status=booking_status,
+        )
+
+        return {
+            "schedule_item_attendance": schedule_item_attendance,
+            "account_classpass": account_classpass
+        }
+
+
     def class_checkin_classpass(self, 
                                 account,
                                 account_classpass,
