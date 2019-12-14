@@ -114,6 +114,7 @@ class CreateScheduleItemAttendance(graphene.relay.ClientIDMutation):
         schedule_item = graphene.ID(required=True)
         account_classpass = graphene.ID(required=False)
         account_subscription = graphene.ID(required=False)
+        organization_classpass = graphene.ID(required=False)
         finance_invoice_item = graphene.ID(required=False)
         attendance_type = graphene.String(required=True)
         date = graphene.types.datetime.Date(required=True)
