@@ -216,3 +216,8 @@ class GQLScheduleClassBookingOptions(TestCase):
         self.assertEqual(data['scheduleClassBookingOptions']['classpasses'][0]['accountClasspass']['id'], 
             to_global_id('AccountClasspassNode', self.account_classpass.id))
         
+
+    #TODO: Test subscriptions allowed / not allowed
+
+    #TODO: Test classpass buy and check-in drop-in
+    #TODO: Test classpass buy and check-in trial
