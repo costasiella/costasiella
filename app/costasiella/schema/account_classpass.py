@@ -83,7 +83,7 @@ class AccountClasspassQuery(graphene.ObjectType):
         rid = get_rid(account)
 
         ## return everything:
-        return AccountClasspass.objects.filter(account=rid.id).order_by('date_start')
+        return AccountClasspass.objects.filter(account=rid.id).order_by('-date_start')
 
 
 class CreateAccountClasspass(graphene.relay.ClientIDMutation):
