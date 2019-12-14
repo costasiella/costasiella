@@ -135,8 +135,11 @@ function ScheduleClassBook({ t, match, history }) {
                 <Grid.Row cards deck>
                   <ScheduleClassBookSubscriptions subscriptions={subscriptions} />
                   <ScheduleClassBookClasspasses classpasses={classpasses} />
-                  {(prices.organizationClasspassDropin) ? 
-                    <ScheduleClassBookPriceDropin priceDropin={prices.organizationClasspassDropin}/> : "" }
+                  {(prices) ?
+                    (prices.organizationClasspassDropin) ? 
+                      <ScheduleClassBookPriceDropin priceDropin={prices.organizationClasspassDropin}/> : "" 
+                    : ""
+                  }
                 </Grid.Row>
                 </div>
               </Grid.Col>
