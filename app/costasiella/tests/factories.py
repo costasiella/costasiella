@@ -391,7 +391,7 @@ class AccountSubscriptionFactory(factory.DjangoModelFactory):
         model = models.AccountSubscription
 
     class Params:
-        initial_account = False
+        initial_account = factory.SubFactory(RegularUserFactory)
 
     account = factory.LazyAttribute(
         lambda o: o.initial_account if o.initial_account else factory.SubFactory(RegularUserFactory)
@@ -409,7 +409,7 @@ class AccountMembershipFactory(factory.DjangoModelFactory):
         model = models.AccountMembership
 
     class Params:
-        initial_account = False
+        initial_account = factory.SubFactory(RegularUserFactory)
 
     account = factory.LazyAttribute(
         lambda o: o.initial_account if o.initial_account else factory.SubFactory(RegularUserFactory)
@@ -426,7 +426,7 @@ class AccountClasspassFactory(factory.DjangoModelFactory):
         model = models.AccountClasspass
 
     class Params:
-        initial_account = False
+        initial_account = factory.SubFactory(RegularUserFactory)
 
     account = factory.LazyAttribute(
         lambda o: o.initial_account if o.initial_account else factory.SubFactory(RegularUserFactory)
@@ -443,7 +443,7 @@ class FinanceInvoiceFactory(factory.DjangoModelFactory):
         model = models.FinanceInvoice
 
     class Params:
-        initial_account = False
+        initial_account = factory.SubFactory(RegularUserFactory)
 
     account = factory.LazyAttribute(
         lambda o: o.initial_account if o.initial_account else factory.SubFactory(RegularUserFactory)
@@ -550,7 +550,12 @@ class ScheduleItemOrganizationSubscriptionGroupDenyFactory(factory.DjangoModelFa
     class Meta:
         model = models.ScheduleItemOrganizationSubscriptionGroup
 
-    schedule_item = factory.SubFactory(SchedulePublicWeeklyClassFactory)
+    class Params:
+        initial_schedule_item = factory.SubFactory(SchedulePublicWeeklyClassFactory)
+
+    schedule_item = factory.LazyAttribute(
+        lambda o: o.initial_schedule_item if o.initial_schedule_item else factory.SubFactory(SchedulePublicWeeklyClassFactory)
+    )
     organization_subscription_group = factory.SubFactory(OrganizationSubscriptionGroupFactory)
     enroll = False
     shop_book = False
@@ -561,7 +566,12 @@ class ScheduleItemOrganizationSubscriptionGroupAllowFactory(factory.DjangoModelF
     class Meta:
         model = models.ScheduleItemOrganizationSubscriptionGroup
 
-    schedule_item = factory.SubFactory(SchedulePublicWeeklyClassFactory)
+    class Params:
+        initial_schedule_item = factory.SubFactory(SchedulePublicWeeklyClassFactory)
+
+    schedule_item = factory.LazyAttribute(
+        lambda o: o.initial_schedule_item if o.initial_schedule_item else factory.SubFactory(SchedulePublicWeeklyClassFactory)
+    )
     organization_subscription_group = factory.SubFactory(OrganizationSubscriptionGroupFactory)
     enroll = True
     shop_book = True
@@ -572,7 +582,13 @@ class ScheduleItemOrganizationClasspassGroupDenyFactory(factory.DjangoModelFacto
     class Meta:
         model = models.ScheduleItemOrganizationClasspassGroup
 
-    schedule_item = factory.SubFactory(SchedulePublicWeeklyClassFactory)
+
+    class Params:
+        initial_schedule_item = factory.SubFactory(SchedulePublicWeeklyClassFactory)
+
+    schedule_item = factory.LazyAttribute(
+        lambda o: o.initial_schedule_item if o.initial_schedule_item else factory.SubFactory(SchedulePublicWeeklyClassFactory)
+    )
     organization_classpass_group = factory.SubFactory(OrganizationClasspassGroupFactory)
     shop_book = False
     attend = False
@@ -582,7 +598,12 @@ class ScheduleItemOrganizationClasspassGroupAllowFactory(factory.DjangoModelFact
     class Meta:
         model = models.ScheduleItemOrganizationClasspassGroup
 
-    schedule_item = factory.SubFactory(SchedulePublicWeeklyClassFactory)
+    class Params:
+        initial_schedule_item = factory.SubFactory(SchedulePublicWeeklyClassFactory)
+
+    schedule_item = factory.LazyAttribute(
+        lambda o: o.initial_schedule_item if o.initial_schedule_item else factory.SubFactory(SchedulePublicWeeklyClassFactory)
+    )
     organization_classpass_group = factory.SubFactory(OrganizationClasspassGroupFactory)
     shop_book = True
     attend = True
