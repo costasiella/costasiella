@@ -390,7 +390,12 @@ class AccountSubscriptionFactory(factory.DjangoModelFactory):
     class Meta:
         model = models.AccountSubscription
 
-    account = factory.SubFactory(RegularUserFactory)
+    class Params:
+        initial_account = False
+
+    account = factory.LazyAttribute(
+        lambda o: o.initial_account if o.initial_account else factory.SubFactory(RegularUserFactory)
+    )
     organization_subscription = factory.SubFactory(OrganizationSubscriptionFactory)
     finance_payment_method = factory.SubFactory(FinancePaymentMethodFactory)
     date_start = datetime.date(2019, 1, 1)
@@ -403,7 +408,12 @@ class AccountMembershipFactory(factory.DjangoModelFactory):
     class Meta:
         model = models.AccountMembership
 
-    account = factory.SubFactory(RegularUserFactory)
+    class Params:
+        initial_account = False
+
+    account = factory.LazyAttribute(
+        lambda o: o.initial_account if o.initial_account else factory.SubFactory(RegularUserFactory)
+    )
     organization_membership = factory.SubFactory(OrganizationMembershipFactory)
     finance_payment_method = factory.SubFactory(FinancePaymentMethodFactory)
     date_start = datetime.date(2019, 1, 1)
@@ -415,7 +425,12 @@ class AccountClasspassFactory(factory.DjangoModelFactory):
     class Meta:
         model = models.AccountClasspass
 
-    account = factory.SubFactory(RegularUserFactory)
+    class Params:
+        initial_account = False
+
+    account = factory.LazyAttribute(
+        lambda o: o.initial_account if o.initial_account else factory.SubFactory(RegularUserFactory)
+    )
     organization_classpass = factory.SubFactory(OrganizationClasspassFactory)
     date_start = datetime.date(2019, 1, 1)
     date_end = datetime.date(2019, 3, 31)
@@ -427,7 +442,12 @@ class FinanceInvoiceFactory(factory.DjangoModelFactory):
     class Meta:
         model = models.FinanceInvoice
 
-    account = factory.SubFactory(RegularUserFactory)
+    class Params:
+        initial_account = False
+
+    account = factory.LazyAttribute(
+        lambda o: o.initial_account if o.initial_account else factory.SubFactory(RegularUserFactory)
+    )
     finance_invoice_group = factory.SubFactory(FinanceInvoiceGroupFactory)
     relation_company = "Company"
     relation_company_registration = "123545ABC"
