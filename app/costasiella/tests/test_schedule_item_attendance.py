@@ -487,7 +487,6 @@ class GQLScheduleItemAttendance(TestCase):
         self.assertEqual(errors[0]['message'], 'This pass is not valid on this date.')
 
 
-
     def test_create_schedule_class_subscription_attendance(self):
         """ Check in to a class using a subscription """
         query = self.schedule_item_attendance_create_mutation

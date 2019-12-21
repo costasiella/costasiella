@@ -261,7 +261,7 @@ class GQLScheduleClassBookingOptions(TestCase):
         self.assertEqual(data['scheduleClassBookingOptions']['date'], variables['date'])
         self.assertEqual(data['scheduleClassBookingOptions']['subscriptions'][0]['allowed'], True)
         self.assertEqual(data['scheduleClassBookingOptions']['subscriptions'][0]['accountSubscription']['id'], 
-            to_global_id('AccountSubscriptionNode', self.account_classpass.id))
+            to_global_id('AccountSubscriptionNode', self.account_subscription.id))
         
 
     def test_query_subscription_not_allowed(self):

@@ -173,7 +173,6 @@ class CreateScheduleItemAttendance(graphene.relay.ClientIDMutation):
 
             #TODO: add code to update available credits for a subscription
 
-        #TODO: Add CLASSPASS_BUY_AND_BOOK
         elif attendance_type == "CLASSPASS_BUY_AND_BOOK":
             if not validation_result['organization_classpass']:
                 raise Exception(_('organizationClasspass field is mandatory when doing a classpass buy and check-in'))
