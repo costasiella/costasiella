@@ -184,6 +184,7 @@ class OrganizationClasspassFactory(factory.DjangoModelFactory):
     archived = False
     display_public = True
     display_shop = True
+    trial_pass = False
     name = "First class pass"
     description = "The first one..."
     price = 125
@@ -194,6 +195,28 @@ class OrganizationClasspassFactory(factory.DjangoModelFactory):
     unlimited = False
     organization_membership = factory.SubFactory(OrganizationMembershipFactory)
     quick_stats_amount = 12.5
+    finance_glaccount = factory.SubFactory(FinanceGLAccountFactory)
+    finance_costcenter = factory.SubFactory(FinanceCostCenterFactory)
+
+
+class OrganizationClasspassTrialFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.OrganizationClasspass
+
+    archived = False
+    display_public = True
+    display_shop = True
+    trial_pass = True
+    trial_times = 1
+    name = "One trial class"
+    description = "A short description here..."
+    price = 15
+    finance_tax_rate = factory.SubFactory(FinanceTaxRateFactory)
+    validity = 1
+    validity_unit = "DAYS"
+    classes = 1
+    unlimited = False
+    quick_stats_amount = 15
     finance_glaccount = factory.SubFactory(FinanceGLAccountFactory)
     finance_costcenter = factory.SubFactory(FinanceCostCenterFactory)
 
@@ -367,7 +390,12 @@ class AccountSubscriptionFactory(factory.DjangoModelFactory):
     class Meta:
         model = models.AccountSubscription
 
-    account = factory.SubFactory(RegularUserFactory)
+    class Params:
+        initial_account = factory.SubFactory(RegularUserFactory)
+
+    account = factory.LazyAttribute(
+        lambda o: o.initial_account if o.initial_account else factory.SubFactory(RegularUserFactory)
+    )
     organization_subscription = factory.SubFactory(OrganizationSubscriptionFactory)
     finance_payment_method = factory.SubFactory(FinancePaymentMethodFactory)
     date_start = datetime.date(2019, 1, 1)
@@ -380,7 +408,12 @@ class AccountMembershipFactory(factory.DjangoModelFactory):
     class Meta:
         model = models.AccountMembership
 
-    account = factory.SubFactory(RegularUserFactory)
+    class Params:
+        initial_account = factory.SubFactory(RegularUserFactory)
+
+    account = factory.LazyAttribute(
+        lambda o: o.initial_account if o.initial_account else factory.SubFactory(RegularUserFactory)
+    )
     organization_membership = factory.SubFactory(OrganizationMembershipFactory)
     finance_payment_method = factory.SubFactory(FinancePaymentMethodFactory)
     date_start = datetime.date(2019, 1, 1)
@@ -392,7 +425,12 @@ class AccountClasspassFactory(factory.DjangoModelFactory):
     class Meta:
         model = models.AccountClasspass
 
-    account = factory.SubFactory(RegularUserFactory)
+    class Params:
+        initial_account = factory.SubFactory(RegularUserFactory)
+
+    account = factory.LazyAttribute(
+        lambda o: o.initial_account if o.initial_account else factory.SubFactory(RegularUserFactory)
+    )
     organization_classpass = factory.SubFactory(OrganizationClasspassFactory)
     date_start = datetime.date(2019, 1, 1)
     date_end = datetime.date(2019, 3, 31)
@@ -404,7 +442,12 @@ class FinanceInvoiceFactory(factory.DjangoModelFactory):
     class Meta:
         model = models.FinanceInvoice
 
-    account = factory.SubFactory(RegularUserFactory)
+    class Params:
+        initial_account = factory.SubFactory(RegularUserFactory)
+
+    account = factory.LazyAttribute(
+        lambda o: o.initial_account if o.initial_account else factory.SubFactory(RegularUserFactory)
+    )
     finance_invoice_group = factory.SubFactory(FinanceInvoiceGroupFactory)
     relation_company = "Company"
     relation_company_registration = "123545ABC"
@@ -492,12 +535,33 @@ class ScheduleItemTeacherFactory(factory.DjangoModelFactory):
     role_2 = "ASSISTANT"
     date_start = datetime.date(2014, 1, 1)
 
+    
+class ScheduleItemPriceFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.ScheduleItemPrice
+
+
+    class Params:
+        initial_schedule_item = factory.SubFactory(SchedulePublicWeeklyClassFactory)
+
+    schedule_item = factory.LazyAttribute(
+        lambda o: o.initial_schedule_item if o.initial_schedule_item else factory.SubFactory(SchedulePublicWeeklyClassFactory)
+    )
+    organization_classpass_dropin = factory.SubFactory(OrganizationClasspassFactory)
+    organization_classpass_trial = factory.SubFactory(OrganizationClasspassTrialFactory)
+    date_start = datetime.date(2014, 1, 1)
+
 
 class ScheduleItemOrganizationSubscriptionGroupDenyFactory(factory.DjangoModelFactory):
     class Meta:
         model = models.ScheduleItemOrganizationSubscriptionGroup
 
-    schedule_item = factory.SubFactory(SchedulePublicWeeklyClassFactory)
+    class Params:
+        initial_schedule_item = factory.SubFactory(SchedulePublicWeeklyClassFactory)
+
+    schedule_item = factory.LazyAttribute(
+        lambda o: o.initial_schedule_item if o.initial_schedule_item else factory.SubFactory(SchedulePublicWeeklyClassFactory)
+    )
     organization_subscription_group = factory.SubFactory(OrganizationSubscriptionGroupFactory)
     enroll = False
     shop_book = False
@@ -508,7 +572,12 @@ class ScheduleItemOrganizationSubscriptionGroupAllowFactory(factory.DjangoModelF
     class Meta:
         model = models.ScheduleItemOrganizationSubscriptionGroup
 
-    schedule_item = factory.SubFactory(SchedulePublicWeeklyClassFactory)
+    class Params:
+        initial_schedule_item = factory.SubFactory(SchedulePublicWeeklyClassFactory)
+
+    schedule_item = factory.LazyAttribute(
+        lambda o: o.initial_schedule_item if o.initial_schedule_item else factory.SubFactory(SchedulePublicWeeklyClassFactory)
+    )
     organization_subscription_group = factory.SubFactory(OrganizationSubscriptionGroupFactory)
     enroll = True
     shop_book = True
@@ -519,7 +588,13 @@ class ScheduleItemOrganizationClasspassGroupDenyFactory(factory.DjangoModelFacto
     class Meta:
         model = models.ScheduleItemOrganizationClasspassGroup
 
-    schedule_item = factory.SubFactory(SchedulePublicWeeklyClassFactory)
+
+    class Params:
+        initial_schedule_item = factory.SubFactory(SchedulePublicWeeklyClassFactory)
+
+    schedule_item = factory.LazyAttribute(
+        lambda o: o.initial_schedule_item if o.initial_schedule_item else factory.SubFactory(SchedulePublicWeeklyClassFactory)
+    )
     organization_classpass_group = factory.SubFactory(OrganizationClasspassGroupFactory)
     shop_book = False
     attend = False
@@ -529,7 +604,12 @@ class ScheduleItemOrganizationClasspassGroupAllowFactory(factory.DjangoModelFact
     class Meta:
         model = models.ScheduleItemOrganizationClasspassGroup
 
-    schedule_item = factory.SubFactory(SchedulePublicWeeklyClassFactory)
+    class Params:
+        initial_schedule_item = factory.SubFactory(SchedulePublicWeeklyClassFactory)
+
+    schedule_item = factory.LazyAttribute(
+        lambda o: o.initial_schedule_item if o.initial_schedule_item else factory.SubFactory(SchedulePublicWeeklyClassFactory)
+    )
     organization_classpass_group = factory.SubFactory(OrganizationClasspassGroupFactory)
     shop_book = True
     attend = True

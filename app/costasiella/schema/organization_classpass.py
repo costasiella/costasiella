@@ -113,6 +113,8 @@ class CreateOrganizationClasspass(graphene.relay.ClientIDMutation):
     class Input:
         display_public = graphene.Boolean(required=True, default_value=True)
         display_shop = graphene.Boolean(required=True, default_value=True)
+        trial_pass = graphene.Boolean(required=False, default_value=True)
+        trial_times = graphene.String(required=False)
         name = graphene.String(required=True)
         description = graphene.String(required=False, default_value="")
         price = graphene.Float(required=True, default_value=0)
@@ -139,6 +141,7 @@ class CreateOrganizationClasspass(graphene.relay.ClientIDMutation):
         classpass = OrganizationClasspass(
             display_public=input['display_public'],
             display_shop=input['display_shop'],
+            trial_pass=input['trial_pass'],
             name=input['name'], 
             description=input['description'],
             price=input['price'],
@@ -149,6 +152,9 @@ class CreateOrganizationClasspass(graphene.relay.ClientIDMutation):
             unlimited=input['unlimited'],
             quick_stats_amount=input.get('quick_stats_amount', None)
         )
+
+        if 'trial_times' in input:
+            classpass.trial_times = input['trial_times']
 
         if 'organization_membership' in result:
             classpass.organization_membership = result['organization_membership']
@@ -169,6 +175,8 @@ class UpdateOrganizationClasspass(graphene.relay.ClientIDMutation):
         id = graphene.ID(required=True)
         display_public = graphene.Boolean(required=True, default_value=True)
         display_shop = graphene.Boolean(required=True, default_value=True)
+        trial_pass = graphene.Boolean(required=False)
+        trial_times = graphene.String(required=False)
         name = graphene.String(required=True)
         description = graphene.String(required=False, default_value="")
         price = graphene.Float(required=True, default_value=0)
@@ -207,6 +215,12 @@ class UpdateOrganizationClasspass(graphene.relay.ClientIDMutation):
         classpass.classes=input['classes']
         classpass.unlimited=input['unlimited']
         classpass.quick_stats_amount=input['quick_stats_amount']
+
+        if 'trial_pass' in input:
+            classpass.trial_pass = input['trial_pass']
+
+        if 'trial_times' in input:
+            classpass.trial_times = input['trial_times']
 
         if 'organization_membership' in result:
             classpass.organization_membership = result['organization_membership']

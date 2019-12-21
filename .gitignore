@@ -22,3 +22,7 @@ app/\.vscode/
 app/celerybeat.pid
 
 *.txt~
+
+app/\.idea/
+
+.gitignore~

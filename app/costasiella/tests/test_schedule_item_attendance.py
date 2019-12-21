@@ -19,6 +19,8 @@ from .. import schema
 
 class GQLScheduleItemAttendance(TestCase):
     # https://docs.djangoproject.com/en/2.1/topics/testing/overview/
+    fixtures = ['finance_invoice_group.json', 'finance_invoice_group_defaults.json']
+
     def setUp(self):
         # This is run before every test
         self.admin_user = f.AdminUserFactory.create()
@@ -40,6 +42,14 @@ class GQLScheduleItemAttendance(TestCase):
         self.variables_create_subscription = {
             "input": {
                 "attendanceType": "SUBSCRIPTION",
+                "bookingStatus": "ATTENDING",
+                "date": "2019-01-07",
+            }
+        }
+
+        self.variables_create_classpass_buy_and_book = {
+            "input": {
+                "attendanceType": "CLASSPASS_BUY_AND_BOOK",
                 "bookingStatus": "ATTENDING",
                 "date": "2019-01-07",
             }
@@ -487,7 +497,6 @@ class GQLScheduleItemAttendance(TestCase):
         self.assertEqual(errors[0]['message'], 'This pass is not valid on this date.')
 
 
-
     def test_create_schedule_class_subscription_attendance(self):
         """ Check in to a class using a subscription """
         query = self.schedule_item_attendance_create_mutation
@@ -531,6 +540,110 @@ class GQLScheduleItemAttendance(TestCase):
         self.assertEqual(data['createScheduleItemAttendance']['scheduleItemAttendance']['date'], variables['input']['date'])
         self.assertEqual(data['createScheduleItemAttendance']['scheduleItemAttendance']['attendanceType'], variables['input']['attendanceType'])
         self.assertEqual(data['createScheduleItemAttendance']['scheduleItemAttendance']['bookingStatus'], variables['input']['bookingStatus'])
+
+
+    def test_create_schedule_class_classpass_buy_and_book_dropin_attendance(self):
+        """ Check in to a class using the organization class pass
+            set for drop-in classes """
+        query = self.schedule_item_attendance_create_mutation
+
+        # Create schedule_item with prices
+        schedule_item_price = f.ScheduleItemPriceFactory.create()
+
+        # Create account
+        account = f.RegularUserFactory.create()
+
+        variables = self.variables_create_classpass_buy_and_book
+        variables['input']['account'] = to_global_id('AccountNode', account.id)
+        variables['input']['organizationClasspass'] = to_global_id(
+            'OrganizationClasspassNode', 
+            schedule_item_price.organization_classpass_dropin.id
+        )
+        variables['input']['scheduleItem'] = to_global_id('ScheduleItemNode', schedule_item_price.schedule_item.id)
+
+        executed = execute_test_client_api_query(
+            query, 
+            self.admin_user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        
+        self.assertEqual(
+            data['createScheduleItemAttendance']['scheduleItemAttendance']['account']['id'],
+            variables['input']['account']
+        )
+        self.assertEqual(
+            len(data['createScheduleItemAttendance']['scheduleItemAttendance']['accountClasspass']),
+            True
+        )
+        self.assertEqual(
+            data['createScheduleItemAttendance']['scheduleItemAttendance']['scheduleItem']['id'],
+            variables['input']['scheduleItem']
+        )
+        self.assertEqual(
+            data['createScheduleItemAttendance']['scheduleItemAttendance']['attendanceType'], 
+            "CLASSPASS",
+        )
+        self.assertEqual(
+            data['createScheduleItemAttendance']['scheduleItemAttendance']['date'], 
+            variables['input']['date']
+        )
+        self.assertEqual(
+            data['createScheduleItemAttendance']['scheduleItemAttendance']['bookingStatus'], 
+            variables['input']['bookingStatus']
+        )
+
+
+    def test_create_schedule_class_classpass_buy_and_book_trial_attendance(self):
+        """ Check in to a class using the organization class pass
+            set for trial classes """
+        query = self.schedule_item_attendance_create_mutation
+
+        # Create schedule_item with prices
+        schedule_item_price = f.ScheduleItemPriceFactory.create()
+
+        # Create account
+        account = f.RegularUserFactory.create()
+
+        variables = self.variables_create_classpass_buy_and_book
+        variables['input']['account'] = to_global_id('AccountNode', account.id)
+        variables['input']['organizationClasspass'] = to_global_id(
+            'OrganizationClasspassNode', 
+            schedule_item_price.organization_classpass_trial.id
+        )
+        variables['input']['scheduleItem'] = to_global_id('ScheduleItemNode', schedule_item_price.schedule_item.id)
+
+        executed = execute_test_client_api_query(
+            query, 
+            self.admin_user, 
+            variables=variables
+        )
+        data = executed.get('data')
+
+        self.assertEqual(
+            data['createScheduleItemAttendance']['scheduleItemAttendance']['account']['id'],
+            variables['input']['account']
+        )
+        self.assertEqual(
+            len(data['createScheduleItemAttendance']['scheduleItemAttendance']['accountClasspass']),
+            True
+        )
+        self.assertEqual(
+            data['createScheduleItemAttendance']['scheduleItemAttendance']['scheduleItem']['id'],
+            variables['input']['scheduleItem']
+        )
+        self.assertEqual(
+            data['createScheduleItemAttendance']['scheduleItemAttendance']['attendanceType'], 
+            "CLASSPASS",
+        )
+        self.assertEqual(
+            data['createScheduleItemAttendance']['scheduleItemAttendance']['date'], 
+            variables['input']['date']
+        )
+        self.assertEqual(
+            data['createScheduleItemAttendance']['scheduleItemAttendance']['bookingStatus'], 
+            variables['input']['bookingStatus']
+        )
 
 
     def test_create_schedule_item_attendance_anon_user(self):

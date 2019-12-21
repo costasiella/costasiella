@@ -55,10 +55,33 @@ class GQLOrganizationClasspass(TestCase):
             }
         }
 
+        self.variables_create_trial = {
+            "input": {
+                "displayPublic": True,
+                "displayShop": True,
+                "trialPass": True,
+                "trialTimes": 1,
+                "name": "Trial pass",
+                "description": "Description",
+                "price": 15,
+                "financeTaxRate": to_global_id("FinanceTaxRateNode", self.finance_tax_rate.pk),
+                "validity": 1,
+                "validityUnit": "DAYS",
+                "classes": 1,
+                "unlimited": False,
+                "organizationMembership": to_global_id("OrganizationMembershipNode", self.organization_membership.pk),
+                "quickStatsAmount": 15,
+                "financeGlaccount": to_global_id("FinanceGLAccountNode", self.finance_glaccount.pk),
+                "financeCostcenter": to_global_id("FinanceCostCenterNode", self.finance_costcenter.pk),
+            }
+        }
+
         self.variables_update = {
             "input": {
                 "displayPublic": True,
                 "displayShop": True,
+                "trialPass": True,
+                "trialTimes": 1,
                 "name": "Updated classpass",
                 "description": "Description",
                 "price": 125,
@@ -95,6 +118,8 @@ class GQLOrganizationClasspass(TestCase):
           archived
           displayPublic
           displayShop
+          trialPass
+          trialTimes
           name
           description
           price
@@ -134,6 +159,8 @@ class GQLOrganizationClasspass(TestCase):
       archived
       displayPublic
       displayShop
+      trialPass
+      trialTimes
       name
       description
       price
@@ -236,6 +263,8 @@ class GQLOrganizationClasspass(TestCase):
         archived
         displayPublic
         displayShop
+        trialPass
+        trialTimes
         name
         description
         price
@@ -273,6 +302,8 @@ class GQLOrganizationClasspass(TestCase):
         archived
         displayPublic
         displayShop
+        trialPass
+        trialTimes
         name
         description
         price
@@ -332,24 +363,29 @@ class GQLOrganizationClasspass(TestCase):
         self.assertEqual(data['organizationClasspasses']['edges'][0]['node']['archived'], classpass.archived)
         self.assertEqual(data['organizationClasspasses']['edges'][0]['node']['displayPublic'], classpass.display_public)
         self.assertEqual(data['organizationClasspasses']['edges'][0]['node']['displayShop'], classpass.display_shop)
+        self.assertEqual(data['organizationClasspasses']['edges'][0]['node']['trialPass'], classpass.trial_pass)
+        self.assertEqual(data['organizationClasspasses']['edges'][0]['node']['trialTimes'], classpass.trial_times)
         self.assertEqual(data['organizationClasspasses']['edges'][0]['node']['name'], classpass.name)
         self.assertEqual(data['organizationClasspasses']['edges'][0]['node']['description'], classpass.description)
         self.assertEqual(data['organizationClasspasses']['edges'][0]['node']['price'], classpass.price)
-        self.assertEqual(data['organizationClasspasses']['edges'][0]['node']['priceDisplay'], display_float_as_amount(classpass.price))
+        self.assertEqual(data['organizationClasspasses']['edges'][0]['node']['priceDisplay'],
+                         display_float_as_amount(classpass.price))
         self.assertEqual(data['organizationClasspasses']['edges'][0]['node']['financeTaxRate']['id'], 
-          to_global_id("FinanceTaxRateNode", classpass.finance_tax_rate.pk))
-        self.assertEqual(data['organizationClasspasses']['edges'][0]['node']['validityUnit'], classpass.validity_unit)
-        self.assertEqual(data['organizationClasspasses']['edges'][0]['node']['validityUnitDisplay'], display_validity_unit(classpass.validity_unit))
+                         to_global_id("FinanceTaxRateNode", classpass.finance_tax_rate.pk))
+        self.assertEqual(data['organizationClasspasses']['edges'][0]['node']['validityUnit'],
+                         classpass.validity_unit)
+        self.assertEqual(data['organizationClasspasses']['edges'][0]['node']['validityUnitDisplay'],
+                         display_validity_unit(classpass.validity_unit))
         self.assertEqual(data['organizationClasspasses']['edges'][0]['node']['classes'], classpass.classes)
         self.assertEqual(data['organizationClasspasses']['edges'][0]['node']['unlimited'], classpass.unlimited)
         self.assertEqual(data['organizationClasspasses']['edges'][0]['node']['organizationMembership']['id'], 
-          to_global_id("OrganizationMembershipNode", classpass.organization_membership.pk))
-        self.assertEqual(data['organizationClasspasses']['edges'][0]['node']['quickStatsAmount'], classpass.quick_stats_amount)
+                         to_global_id("OrganizationMembershipNode", classpass.organization_membership.pk))
+        self.assertEqual(data['organizationClasspasses']['edges'][0]['node']['quickStatsAmount'],
+                         classpass.quick_stats_amount)
         self.assertEqual(data['organizationClasspasses']['edges'][0]['node']['financeGlaccount']['id'], 
-          to_global_id("FinanceGLAccountNode", classpass.finance_glaccount.pk))
+                         to_global_id("FinanceGLAccountNode", classpass.finance_glaccount.pk))
         self.assertEqual(data['organizationClasspasses']['edges'][0]['node']['financeCostcenter']['id'], 
-          to_global_id("FinanceCostCenterNode", classpass.finance_costcenter.pk))
-
+                         to_global_id("FinanceCostCenterNode", classpass.finance_costcenter.pk))
 
     def test_query_permision_denied(self):
         """ Query list of classpasses - check permission denied """
@@ -495,7 +531,6 @@ class GQLOrganizationClasspass(TestCase):
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Permission denied!')
 
-
     def test_query_one_permission_granted(self):
         """ Respond with data when user has permission """   
         user = f.RegularUserFactory.create()
@@ -517,7 +552,6 @@ class GQLOrganizationClasspass(TestCase):
         data = executed.get('data')
         self.assertEqual(data['organizationClasspass']['name'], classpass.name)
 
-
     def test_create_classpasses(self):
         """ Create a classpasses """
         query = self.classpass_create_mutation
@@ -529,21 +563,53 @@ class GQLOrganizationClasspass(TestCase):
             variables=variables
         )
         data = executed.get('data')
-        self.assertEqual(data['createOrganizationClasspass']['organizationClasspass']['displayPublic'], variables['input']['displayPublic'])
-        self.assertEqual(data['createOrganizationClasspass']['organizationClasspass']['displayShop'], variables['input']['displayShop'])
+        self.assertEqual(data['createOrganizationClasspass']['organizationClasspass']['displayPublic'],
+                         variables['input']['displayPublic'])
+        self.assertEqual(data['createOrganizationClasspass']['organizationClasspass']['displayShop'],
+                         variables['input']['displayShop'])
         self.assertEqual(data['createOrganizationClasspass']['organizationClasspass']['archived'], False)
-        self.assertEqual(data['createOrganizationClasspass']['organizationClasspass']['name'], variables['input']['name'])
-        self.assertEqual(data['createOrganizationClasspass']['organizationClasspass']['description'], variables['input']['description'])
-        self.assertEqual(data['createOrganizationClasspass']['organizationClasspass']['price'], variables['input']['price'])
-        self.assertEqual(data['createOrganizationClasspass']['organizationClasspass']['financeTaxRate']['id'], variables['input']['financeTaxRate'])
-        self.assertEqual(data['createOrganizationClasspass']['organizationClasspass']['validity'], variables['input']['validity'])
-        self.assertEqual(data['createOrganizationClasspass']['organizationClasspass']['validityUnit'], variables['input']['validityUnit'])
-        self.assertEqual(data['createOrganizationClasspass']['organizationClasspass']['classes'], variables['input']['classes'])
-        self.assertEqual(data['createOrganizationClasspass']['organizationClasspass']['unlimited'], variables['input']['unlimited'])
-        self.assertEqual(data['createOrganizationClasspass']['organizationClasspass']['organizationMembership']['id'], variables['input']['organizationMembership'])
-        self.assertEqual(data['createOrganizationClasspass']['organizationClasspass']['quickStatsAmount'], variables['input']['quickStatsAmount'])
-        self.assertEqual(data['createOrganizationClasspass']['organizationClasspass']['financeGlaccount']['id'], variables['input']['financeGlaccount'])
-        self.assertEqual(data['createOrganizationClasspass']['organizationClasspass']['financeCostcenter']['id'], variables['input']['financeCostcenter'])
+        self.assertEqual(data['createOrganizationClasspass']['organizationClasspass']['name'],
+                         variables['input']['name'])
+        self.assertEqual(data['createOrganizationClasspass']['organizationClasspass']['description'],
+                         variables['input']['description'])
+        self.assertEqual(data['createOrganizationClasspass']['organizationClasspass']['price'],
+                         variables['input']['price'])
+        self.assertEqual(data['createOrganizationClasspass']['organizationClasspass']['financeTaxRate']['id'],
+                         variables['input']['financeTaxRate'])
+        self.assertEqual(data['createOrganizationClasspass']['organizationClasspass']['validity'],
+                         variables['input']['validity'])
+        self.assertEqual(data['createOrganizationClasspass']['organizationClasspass']['validityUnit'],
+                         variables['input']['validityUnit'])
+        self.assertEqual(data['createOrganizationClasspass']['organizationClasspass']['classes'],
+                         variables['input']['classes'])
+        self.assertEqual(data['createOrganizationClasspass']['organizationClasspass']['unlimited'],
+                         variables['input']['unlimited'])
+        self.assertEqual(data['createOrganizationClasspass']['organizationClasspass']['organizationMembership']['id'],
+                         variables['input']['organizationMembership'])
+        self.assertEqual(data['createOrganizationClasspass']['organizationClasspass']['quickStatsAmount'],
+                         variables['input']['quickStatsAmount'])
+        self.assertEqual(data['createOrganizationClasspass']['organizationClasspass']['financeGlaccount']['id'],
+                         variables['input']['financeGlaccount'])
+        self.assertEqual(data['createOrganizationClasspass']['organizationClasspass']['financeCostcenter']['id'],
+                         variables['input']['financeCostcenter'])
+
+    def test_create_classpasses_trial(self):
+        """ Create a classpasses """
+        query = self.classpass_create_mutation
+        variables = self.variables_create_trial
+
+        executed = execute_test_client_api_query(
+            query,
+            self.admin_user,
+            variables=variables
+        )
+        data = executed.get('data')
+
+        # Only test the trial specific fields, the other fields are tested in the regular create test
+        self.assertEqual(data['createOrganizationClasspass']['organizationClasspass']['trialPass'],
+                         variables['input']['trialPass'])
+        self.assertEqual(data['createOrganizationClasspass']['organizationClasspass']['trialTimes'],
+                         variables['input']['trialTimes'])
 
 
     def test_create_classpasses_anon_user(self):
@@ -560,9 +626,8 @@ class GQLOrganizationClasspass(TestCase):
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Not logged in!')
 
-
     def test_create_location_permission_granted(self):
-        """ Allow creating classpasses for users with permissions """
+        """ Allow creating class passes for users with permissions """
         query = self.classpass_create_mutation
         variables = self.variables_create
 
@@ -594,7 +659,6 @@ class GQLOrganizationClasspass(TestCase):
         self.assertEqual(data['createOrganizationClasspass']['organizationClasspass']['financeGlaccount']['id'], variables['input']['financeGlaccount'])
         self.assertEqual(data['createOrganizationClasspass']['organizationClasspass']['financeCostcenter']['id'], variables['input']['financeCostcenter'])
 
-
     def test_create_classpasses_permission_denied(self):
         """ Check create classpasses permission denied error message """
         query = self.classpass_create_mutation
@@ -612,7 +676,6 @@ class GQLOrganizationClasspass(TestCase):
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Permission denied!')
 
-
     def test_update_classpasses(self):
         """ Update a classpasses """
         query = self.classpass_update_mutation
@@ -628,22 +691,39 @@ class GQLOrganizationClasspass(TestCase):
         )
         data = executed.get('data')
 
-        self.assertEqual(data['updateOrganizationClasspass']['organizationClasspass']['displayPublic'], variables['input']['displayPublic'])
-        self.assertEqual(data['updateOrganizationClasspass']['organizationClasspass']['displayShop'], variables['input']['displayShop'])
+        self.assertEqual(data['updateOrganizationClasspass']['organizationClasspass']['displayPublic'],
+                         variables['input']['displayPublic'])
+        self.assertEqual(data['updateOrganizationClasspass']['organizationClasspass']['displayShop'],
+                         variables['input']['displayShop'])
+        self.assertEqual(data['updateOrganizationClasspass']['organizationClasspass']['trialPass'],
+                         variables['input']['trialPass'])
+        self.assertEqual(data['updateOrganizationClasspass']['organizationClasspass']['trialTimes'],
+                         variables['input']['trialTimes'])
         self.assertEqual(data['updateOrganizationClasspass']['organizationClasspass']['archived'], False)
-        self.assertEqual(data['updateOrganizationClasspass']['organizationClasspass']['name'], variables['input']['name'])
-        self.assertEqual(data['updateOrganizationClasspass']['organizationClasspass']['description'], variables['input']['description'])
-        self.assertEqual(data['updateOrganizationClasspass']['organizationClasspass']['price'], variables['input']['price'])
-        self.assertEqual(data['updateOrganizationClasspass']['organizationClasspass']['financeTaxRate']['id'], variables['input']['financeTaxRate'])
-        self.assertEqual(data['updateOrganizationClasspass']['organizationClasspass']['validity'], variables['input']['validity'])
-        self.assertEqual(data['updateOrganizationClasspass']['organizationClasspass']['validityUnit'], variables['input']['validityUnit'])
-        self.assertEqual(data['updateOrganizationClasspass']['organizationClasspass']['classes'], variables['input']['classes'])
-        self.assertEqual(data['updateOrganizationClasspass']['organizationClasspass']['unlimited'], variables['input']['unlimited'])
-        self.assertEqual(data['updateOrganizationClasspass']['organizationClasspass']['organizationMembership']['id'], variables['input']['organizationMembership'])
-        self.assertEqual(data['updateOrganizationClasspass']['organizationClasspass']['quickStatsAmount'], variables['input']['quickStatsAmount'])
-        self.assertEqual(data['updateOrganizationClasspass']['organizationClasspass']['financeGlaccount']['id'], variables['input']['financeGlaccount'])
-        self.assertEqual(data['updateOrganizationClasspass']['organizationClasspass']['financeCostcenter']['id'], variables['input']['financeCostcenter'])
-
+        self.assertEqual(data['updateOrganizationClasspass']['organizationClasspass']['name'],
+                         variables['input']['name'])
+        self.assertEqual(data['updateOrganizationClasspass']['organizationClasspass']['description'],
+                         variables['input']['description'])
+        self.assertEqual(data['updateOrganizationClasspass']['organizationClasspass']['price'],
+                         variables['input']['price'])
+        self.assertEqual(data['updateOrganizationClasspass']['organizationClasspass']['financeTaxRate']['id'],
+                         variables['input']['financeTaxRate'])
+        self.assertEqual(data['updateOrganizationClasspass']['organizationClasspass']['validity'],
+                         variables['input']['validity'])
+        self.assertEqual(data['updateOrganizationClasspass']['organizationClasspass']['validityUnit'],
+                         variables['input']['validityUnit'])
+        self.assertEqual(data['updateOrganizationClasspass']['organizationClasspass']['classes'],
+                         variables['input']['classes'])
+        self.assertEqual(data['updateOrganizationClasspass']['organizationClasspass']['unlimited'],
+                         variables['input']['unlimited'])
+        self.assertEqual(data['updateOrganizationClasspass']['organizationClasspass']['organizationMembership']['id'],
+                         variables['input']['organizationMembership'])
+        self.assertEqual(data['updateOrganizationClasspass']['organizationClasspass']['quickStatsAmount'],
+                         variables['input']['quickStatsAmount'])
+        self.assertEqual(data['updateOrganizationClasspass']['organizationClasspass']['financeGlaccount']['id'],
+                         variables['input']['financeGlaccount'])
+        self.assertEqual(data['updateOrganizationClasspass']['organizationClasspass']['financeCostcenter']['id'],
+                         variables['input']['financeCostcenter'])
 
     def test_update_classpasses_anon_user(self):
         """ Don't allow updating classpasses for non-logged in users """

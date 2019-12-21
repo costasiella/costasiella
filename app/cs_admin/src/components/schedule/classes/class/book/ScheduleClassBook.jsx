@@ -37,6 +37,8 @@ import ContentCard from "../../../../general/ContentCard"
 import ScheduleClassBookBack from "./ScheduleClassBookBack"
 import ScheduleClassBookClasspasses from "./ScheduleClassBookClasspasses"
 import ScheduleClassBookSubscriptions from "./ScheduleClassBookSubscriptions"
+import ScheduleClassBookPriceDropin from "./ScheduleClassBookPriceDropin"
+import ScheduleClassBookPriceTrial from "./ScheduleClassBookPriceTrial"
 // import ClassEditBase from "../ClassEditBase"
 
 import { GET_BOOKING_OPTIONS_QUERY } from "./queries"
@@ -106,6 +108,7 @@ function ScheduleClassBook({ t, match, history }) {
   const account = queryData.scheduleClassBookingOptions.account
   const classpasses = queryData.scheduleClassBookingOptions.classpasses
   const subscriptions = queryData.scheduleClassBookingOptions.subscriptions
+  const prices = queryData.scheduleClassBookingOptions.scheduleItemPrices
   const scheduleItem = queryData.scheduleClassBookingOptions.scheduleItem
   const subtitle = class_subtitle({
     t: t,
@@ -115,6 +118,8 @@ function ScheduleClassBook({ t, match, history }) {
     timeStart: TimeStringToJSDateOBJ(scheduleItem.timeStart), 
     date: class_date
   })
+
+  console.log(prices)
   
   
   return (
@@ -133,19 +138,16 @@ function ScheduleClassBook({ t, match, history }) {
                 <Grid.Row cards deck>
                   <ScheduleClassBookSubscriptions subscriptions={subscriptions} />
                   <ScheduleClassBookClasspasses classpasses={classpasses} />
+                  {(prices) ?
+                    (prices.organizationClasspassDropin) ? 
+                      <ScheduleClassBookPriceDropin priceDropin={prices.organizationClasspassDropin}/> : "" 
+                    : "" }
+                  {(prices) ?
+                    (prices.organizationClasspassTrial) ? 
+                      <ScheduleClassBookPriceTrial priceTrial={prices.organizationClasspassTrial}/> : "" 
+                    : "" }
+
                 </Grid.Row>
-                {/* <Card>
-                  <Card.Header>
-                    <Card.Title>{t('general.booking_options')}</Card.Title>
-                  </Card.Header>
-                  <Card.Body>
-                    <Table className="card-table table-vcenter">
-                      <Table.Body>
-                        <ScheduleClassBookSubscriptions subscriptions={subscriptions} />
-                      </Table.Body>
-                    </Table>
-                  </Card.Body>
-                </Card> */}
                 </div>
               </Grid.Col>
             </Grid.Row>

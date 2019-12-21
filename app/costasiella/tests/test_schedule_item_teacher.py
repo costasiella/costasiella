@@ -18,7 +18,7 @@ from .. import schema
 from graphql_relay import to_global_id
 
 
-class GQLScheduleItemteacher(TestCase):
+class GQLScheduleItemTeacher(TestCase):
     # https://docs.djangoproject.com/en/2.1/topics/testing/overview/
     def setUp(self):
         # This is run before every test

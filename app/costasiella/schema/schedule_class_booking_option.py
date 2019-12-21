@@ -7,7 +7,7 @@ from graphene_django.filter import DjangoFilterConnectionField
 from graphql import GraphQLError
 from graphql_relay import to_global_id
 
-from ..models import Account, AccountClasspass, AccountSubscription, ScheduleItem
+from ..models import Account, AccountClasspass, AccountSubscription, ScheduleItem, ScheduleItemPrice
 from ..modules.gql_tools import require_login_and_permission, require_login_and_one_of_permissions, get_rid
 from ..modules.messages import Messages
 from ..modules.model_helpers.schedule_item_helper import ScheduleItemHelper
@@ -15,6 +15,7 @@ from .account import AccountNode
 from .account_classpass import AccountClasspassNode
 from .account_subscription import AccountSubscriptionNode
 from .schedule_item import ScheduleItemNode
+from .schedule_item_price import ScheduleItemPriceNode
 
 from ..dudes import ClassCheckinDude, ClassScheduleDude
 
@@ -48,6 +49,7 @@ class ScheduleClassBookingOptionsType(graphene.ObjectType):
     schedule_item_id = graphene.ID()
     classpasses = graphene.List(ScheduleClassBookingClasspassType)
     subscriptions = graphene.List(ScheduleClassBookingSubscriptionType)
+    schedule_item_prices = graphene.Field(ScheduleItemPriceNode)
 
 
     def resolve_account(self, info):
@@ -70,6 +72,24 @@ class ScheduleClassBookingOptionsType(graphene.ObjectType):
         return schedule_item
 
 
+    def resolve_schedule_item_prices(self, info):
+        # Drop-in classpass
+        schedule_item = self.resolve_schedule_item(info)
+
+        qs = ScheduleItemPrice.objects.filter(
+            Q(schedule_item = schedule_item) & 
+            Q(date_start__lte = self.date) &
+            (Q(date_end__gte = self.date ) | Q(date_end__isnull = True))
+        )
+
+        print(qs)
+
+        if qs.exists():
+            return qs.first()
+        else:
+            return None
+
+
     def resolve_classpasses(self, 
                             info,
                             date=graphene.types.datetime.Date(),
@@ -85,7 +105,7 @@ class ScheduleClassBookingOptionsType(graphene.ObjectType):
             Q(account = account) & 
             Q(date_start__lte = self.date) & 
             (Q(date_end__gte = self.date) | Q(date_end__isnull = True)) & 
-            (Q(classes_remaining__gte = 0) | Q(organization_classpass__unlimited = True))
+            (Q(classes_remaining__gt = 0) | Q(organization_classpass__unlimited = True))
         )
 
         classpasses = AccountClasspass.objects.filter(classpasses_filter).order_by('organization_classpass__name')

@@ -46,6 +46,7 @@ from .schedule_item import ScheduleItemQuery, ScheduleItemMutation
 from .schedule_item_attendance import ScheduleItemAttendanceQuery, ScheduleItemAttendanceMutation
 from .schedule_item_organization_classpass_group import ScheduleItemOrganizationClasspassGroupQuery, ScheduleItemOrganizationClasspassGroupMutation
 from .schedule_item_organization_subscription_group import ScheduleItemOrganizationSubscriptionGroupQuery, ScheduleItemOrganizationSubscriptionGroupMutation
+from .schedule_item_price import ScheduleItemPriceQuery, ScheduleItemPriceMutation
 from .schedule_item_teacher import ScheduleItemTeacherQuery, ScheduleItemTeacherMutation
 from .schedule_item_teacher_available import ScheduleItemTeacherAvailableQuery, ScheduleItemTeacherAvailableMutation
 
@@ -89,6 +90,7 @@ class Query(AccountQuery,
             ScheduleItemAttendanceQuery,
             ScheduleItemOrganizationClasspassGroupQuery,
             ScheduleItemOrganizationSubscriptionGroupQuery,
+            ScheduleItemPriceQuery,
             ScheduleItemTeacherQuery,
             ScheduleItemTeacherAvailableQuery,
             graphene.ObjectType):
@@ -134,6 +136,7 @@ class Mutation(AccountMutation,
                ScheduleItemAttendanceMutation,
                ScheduleItemOrganizationClasspassGroupMutation,
                ScheduleItemOrganizationSubscriptionGroupMutation,
+               ScheduleItemPriceMutation,
                ScheduleItemTeacherMutation,
                ScheduleItemTeacherAvailableMutation,
                graphene.ObjectType):

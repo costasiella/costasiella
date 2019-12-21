@@ -15,6 +15,7 @@ export const GET_CLASSPASSES_QUERY = gql`
           archived
           displayPublic
           displayShop
+          trialPass
           name
           description
           price
@@ -54,6 +55,8 @@ export const GET_CLASSPASS_QUERY = gql`
       archived
       displayPublic
       displayShop
+      trialPass
+      trialTimes
       name
       description
       price

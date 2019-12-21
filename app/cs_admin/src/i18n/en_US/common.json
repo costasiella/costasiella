@@ -295,7 +295,10 @@
         "download": "Download",
         "document_type": "Document type",
         "date_accepted": "Accepted on date",
-        "unknown_document_type": "Unknown document type"
+        "unknown_document_type": "Unknown document type",
+        "prices": "Prices",
+        "dropin": "Drop in",
+        "trial": "Trial"
     },
     "yup": {
         "min_len_3": "Please input at least 3 characters",
@@ -328,11 +331,14 @@
             "add": "Add class pass",
             "groups": {
                 "edit_passes": "Passes in group"
-            }
+            },
+            "trial_pass": "Trial"
         },
         "classpass": {
             "public": "This is a public pass",
-            "shop": "Show this pass in the shop"
+            "shop": "Show this pass in the shop",
+            "trial_pass": "Trial pass",
+            "trial_times": "Number of times a customer can buy this pass (only used for trial passes)"
         },
         "classpass_groups": {
             "title_add": "Add class pass group",
@@ -710,7 +716,8 @@
                 "book": {
                     "toast_success": "Check-in success",
                     "classpass_not_allowed": "Not allowed for this class",
-                    "subscription_not_allowed": "Not allowed for this class"
+                    "subscription_not_allowed": "Not allowed for this class",
+                    "dropin_pay_and_book": "Pay and book class"
                 },
                 "edit": {
                     "toast_edit_success": "Saved",
@@ -719,7 +726,23 @@
                     "delete_all_changes": "Remove all changes on this date"
                 }
             },
-            "no_teacher": "No teacher"
+            "no_teacher": "No teacher",
+            "prices": {
+                "add": "Add price",
+                "title_add": "Add price",
+                "toast_add_success": "Added price",
+                "title_edit": "Edit price",
+                "toast_edit_success": "Saved price",
+                "title": "Prices",
+                "error_loading": "Error loading prices for this class :(",
+                "empty_list": "No prices have been defined for this class yet.",
+                "delete_confirm_msg": "Are you sure you wish to delete this price?",
+                "delete_confirm_description": "",
+                "deleted": "Deleted price",
+                "delete_success": "__STRING_NOT_TRANSLATED__"
+            },
+            "classpass_dropin": "Drop-in classpass",
+            "classpass_trial": "Trial classpass"
         },
         "appointments": {
             "title": "Appointments",

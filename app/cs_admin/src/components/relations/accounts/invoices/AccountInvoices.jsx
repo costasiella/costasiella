@@ -116,7 +116,7 @@ function AccountInvoices({ t, match, history }) {
                           </Table.Col>
                           <Table.Col key={v4()}>
                             {moment(node.dateSent).format('LL')} <br />
-                            {moment(node.dateDue).format('LL')}
+                            <Text.Small color="gray">{moment(node.dateDue).format('LL')}</Text.Small>
                           </Table.Col>
                           <Table.Col key={v4()}>
                             {node.totalDisplay}
