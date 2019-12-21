@@ -309,9 +309,3 @@ class GQLScheduleClassBookingOptions(TestCase):
             data['scheduleClassBookingOptions']['scheduleItemPrices']['organizationClasspassTrial']['id'], 
             to_global_id('OrganizationClasspassNode', self.schedule_item_price.organization_classpass_trial.id)
         )
-
-
-    #TODO: Test classpass buy and check-in drop-in
-
-
-    #TODO: Test classpass buy and check-in trial
