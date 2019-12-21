@@ -540,7 +540,13 @@ class ScheduleItemPriceFactory(factory.DjangoModelFactory):
     class Meta:
         model = models.ScheduleItemPrice
 
-    schedule_item = factory.SubFactory(SchedulePublicWeeklyClassFactory)
+
+    class Params:
+        initial_schedule_item = factory.SubFactory(SchedulePublicWeeklyClassFactory)
+
+    schedule_item = factory.LazyAttribute(
+        lambda o: o.initial_schedule_item if o.initial_schedule_item else factory.SubFactory(SchedulePublicWeeklyClassFactory)
+    )
     organization_classpass_dropin = factory.SubFactory(OrganizationClasspassFactory)
     organization_classpass_trial = factory.SubFactory(OrganizationClasspassTrialFactory)
     date_start = datetime.date(2014, 1, 1)
