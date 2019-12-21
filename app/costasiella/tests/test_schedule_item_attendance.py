@@ -594,8 +594,56 @@ class GQLScheduleItemAttendance(TestCase):
         )
 
 
-    #TODO: Test classpass buy and check-in trial
+    def test_create_schedule_class_classpass_buy_and_book_trial_attendance(self):
+        """ Check in to a class using the organization class pass
+            set for trial classes """
+        query = self.schedule_item_attendance_create_mutation
 
+        # Create schedule_item with prices
+        schedule_item_price = f.ScheduleItemPriceFactory.create()
+
+        # Create account
+        account = f.RegularUserFactory.create()
+
+        variables = self.variables_create_classpass_buy_and_book
+        variables['input']['account'] = to_global_id('AccountNode', account.id)
+        variables['input']['organizationClasspass'] = to_global_id(
+            'OrganizationClasspassNode', 
+            schedule_item_price.organization_classpass_trial.id
+        )
+        variables['input']['scheduleItem'] = to_global_id('ScheduleItemNode', schedule_item_price.schedule_item.id)
+
+        executed = execute_test_client_api_query(
+            query, 
+            self.admin_user, 
+            variables=variables
+        )
+        data = executed.get('data')
+
+        self.assertEqual(
+            data['createScheduleItemAttendance']['scheduleItemAttendance']['account']['id'],
+            variables['input']['account']
+        )
+        self.assertEqual(
+            len(data['createScheduleItemAttendance']['scheduleItemAttendance']['accountClasspass']),
+            True
+        )
+        self.assertEqual(
+            data['createScheduleItemAttendance']['scheduleItemAttendance']['scheduleItem']['id'],
+            variables['input']['scheduleItem']
+        )
+        self.assertEqual(
+            data['createScheduleItemAttendance']['scheduleItemAttendance']['attendanceType'], 
+            "CLASSPASS",
+        )
+        self.assertEqual(
+            data['createScheduleItemAttendance']['scheduleItemAttendance']['date'], 
+            variables['input']['date']
+        )
+        self.assertEqual(
+            data['createScheduleItemAttendance']['scheduleItemAttendance']['bookingStatus'], 
+            variables['input']['bookingStatus']
+        )
 
 
     def test_create_schedule_item_attendance_anon_user(self):
