@@ -62,7 +62,16 @@ def invoice_pdf_preview(request, node_id):
     template_path = 'system/invoices/export_invoice_pdf.html'
     t = get_template(template_path)
     print(t)
-    rendered_template = render_to_string(template_path)
+    rendered_template = render_to_string(
+        template_path,
+        {
+            "logo": "logo",
+            "studio": {
+                "name": "studio name",
+            },
+            "invoice": finance_invoice,
+        }
+    )
 
     return HttpResponse(rendered_template)
 
