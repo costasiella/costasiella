@@ -153,7 +153,27 @@
         {% if invoice.relation_company %}
             {{ invoice.relation_company }}<br>
         {% endif %}
-
+        {% if invoice.relation_company_registration %}
+            {{ invoice.relation_company_registration }}<br>
+        {% endif %}
+        {% if invoice.relation_company_tax_registration %}
+            {{ invoice.CustomerCompanyTaxRegistration }}<br>
+        {% endif %}
+        {% if invoice.relation_contact_name %}
+            {{ invoice.relation_contact_name }}<br>
+        {% endif %}
+        {% if invoice.relation_address %}
+            {{ invoice.relation_address|safe }}<br>
+        {% endif %}
+        {% if invoice.relation_postcode %}
+            {{ invoice.relation_postcode|safe }}
+        {% endif %}
+        {% if invoice.relation_city %}
+            {{ invoice.relation_city|safe }}
+        {% endif %}
+        {% if invoice.relation_country %}
+            <br> {{ invoice.relation_country|safe }}
+        {% endif %}
     </div>
 
     {% if invoice.summary %}
