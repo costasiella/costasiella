@@ -59,6 +59,9 @@ def invoice_pdf_preview(request, node_id):
 
     app_settings = AppSettings.objects.get(id=1)
     organization = Organization.objects.get(id=100)
+    items = FinanceInvoiceItem.objects.filter(
+        finance_invoice = finance_invoice
+    )
 
     print(finance_invoice)
 
@@ -75,6 +78,7 @@ def invoice_pdf_preview(request, node_id):
             "invoice": finance_invoice,
             "date_sent": finance_invoice.date_sent,
             "organization": organization,
+            "items": items
         }
     )
 

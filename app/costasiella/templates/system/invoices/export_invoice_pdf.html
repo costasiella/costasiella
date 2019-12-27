@@ -193,29 +193,34 @@
                 <th><span class="right">PRICE INCL VAT</span></th>
                 <th><span class="right">SUBTOTAL</span></th>
                 <th class="taxrate"><span class="right">TAX RATE</span></th>
+                <th class="taxrate"><span class="right">TOTAL</span></th>
             </tr>
         </thead>
         <tbody>
         {% for item in items %}
             <tr>
-                <td>{{ item.ProductName }}</td>
-                <td>{{ item.Description }}</td>
-                <td><span class="right">{{ item.Quantity }}</span></td>
-                <td><span class="right">{{ item.Price }}</span></td>
-                <td><span class="right">{{ item.TotalPrice }}</span></td>
-                <td><span class="right">{{ item.tax_rates_id }}</span></td>
+                <td>{{ item.product_name }}</td>
+                <td>{{ item.description }}</td>
+                <td><span class="right">{{ item.quantity }}</span></td>
+                <td><span class="right">{{ item.price }}</span></td>
+                <td><span class="right">{{ item.subtotal }}</span></td>
+                <td><span class="right">{{ item.finance_tax_rate.name }}</span></td>
+                <td><span class="right">{{ item.total}}</span></td>
             </tr>
         {% endfor %}
         <tr class="border-top">
             <td></td>
             <td></td>
             <td></td>
-            <td><span class="right">Subtotal</span></td>
-            <td><span class="right">{{ amounts.TotalPrice }}</span></td>
             <td></td>
+            <td></td>
+            <td><span class="right">Subtotal</span></td>
+            <td><span class="right">{{ invoice.subtotal }}</span></td>
         </tr>
         {% for tax_rate in amounts_vat %}
             <tr>
+            <td></td>
+            <td></td>
             <td></td>
             <td></td>
             <td></td>
@@ -228,9 +233,10 @@
             <td></td>
             <td></td>
             <td></td>
-            <td class="border-top"><span class="right">Total</span></td>
-            <td class="border-top"><span class="right">{{ amounts.totalpricevat }}</span></td>
             <td></td>
+            <td></td>
+            <td class="border-top"><span class="right">Total</span></td>
+            <td class="border-top"><span class="right">{{ invoice.total }}</span></td>
         </tr>
         </tbody>
         
