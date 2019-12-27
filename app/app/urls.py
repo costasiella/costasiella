@@ -26,7 +26,7 @@ from graphql_jwt.decorators import jwt_cookie
 from django.conf import settings
 from django.conf.urls.static import static
 
-from costasiella.views import privacy_policy, terms_and_conditions
+from costasiella.views import *
 
 
 urlpatterns = [
@@ -36,6 +36,7 @@ urlpatterns = [
     path('email/verified/', TemplateView.as_view(template_name="email_verfied.html"), name="email_verified"),
     path('document/terms-and-conditions', terms_and_conditions, name="terms_and_conditions"),
     path('document/privacy-policy', privacy_policy, name="privacy_policy"),
+    path('export/invoice/pdf/<str:node_id>', invoice_pdf, name="export_invoice_pdf"),
     path('admin/', admin.site.urls),
     path('graphql/', csrf_exempt(jwt_cookie(GraphQLView.as_view(graphiql=True))), name="graphql"),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) # Development only
