@@ -141,11 +141,11 @@
         </tr>
         <tr>
             <td class="grey bold">ISSUED </td>
-            {# <td>{{ invoice.DateCreated.strftime(DATE_FORMAT)}}</td> #}
+            <td>{{ invoice.date_sent }}</td>
         </tr>
         <tr>
             <td class="grey bold">DUE DATE </td>
-            {# <td>{{ invoice.DateDue.strftime(DATE_FORMAT)}}</td> #}
+            <td>{{ invoice.date_due }}</td>
         </tr>
     </table>
 

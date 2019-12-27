@@ -9,7 +9,7 @@ from django.template.loader import get_template, render_to_string
 # from django.template.loader import render_to_string
 # rendered = render_to_string('my_template.html', {'foo': 'bar'})
 
-from ..models import FinanceInvoice, FinanceInvoiceGroup, FinanceInvoiceGroupDefault, FinanceInvoiceItem
+from ..models import AppSettings, FinanceInvoice, FinanceInvoiceGroup, FinanceInvoiceGroupDefault, FinanceInvoiceItem
 from ..modules.gql_tools import require_login_and_permission, get_rid
 
 
@@ -56,6 +56,9 @@ def invoice_pdf_preview(request, node_id):
     if not finance_invoice:
         raise Http404(_("Invoice not found..."))
 
+
+    app_settings = AppSettings.objects.get(id=1)
+
     print(finance_invoice)
 
 
@@ -70,6 +73,8 @@ def invoice_pdf_preview(request, node_id):
                 "name": "studio name",
             },
             "invoice": finance_invoice,
+            "date_sent": finance_invoice.date_sent,
+            "date_format": app_settings.date_format
         }
     )
 
