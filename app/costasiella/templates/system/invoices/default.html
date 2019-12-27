@@ -1,7 +1,19 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <!--[if !HTML5]>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge{{=not request.is_local and ',chrome=1' or ''}}">
+    <![endif]-->
+    <!-- www.phpied.com/conditional-comments-block-downloads/ -->
+    <!-- Always force latest IE rendering engine
+         (even in intranet) & Chrome Frame
+         Remove this if you use the .htaccess -->
+
     <meta charset="utf-8" />
+
+    <!-- http://dev.w3.org/html5/markup/meta.name.html -->
+    <meta name="application-name" content="{{=request.application}}" />
+
     <style>
         @page { size: a4; }
 
@@ -120,14 +132,22 @@
 
 <body>
     <div class="right studio-info text-right">
-        {{logo}}<br>
+        {{=logo}}<br>
         <div class='text-right grey'>
-            {# name.upper() #}
-            <span class='bold'>{{ studio.name }}</span><br>
+            <span class='bold'>{{=studio['name'].upper()}}</span><br>
                 <div class='small-font'>
-                    {% if studio.address %}
-                        {{studio.address }}
-                    {% endif %} <br>
+                    {{ if studio['address']: }}
+                        {{=studio['address']}}<br>
+                    {{ pass }}
+                    {{ if studio['phone']: }}
+                        {{=studio['phone']}}<br>
+                    {{ pass }}
+                    {{ if studio['email']: }}
+                        {{=studio['email']}}<br>
+                    {{ pass }}
+                    {{ if studio['registration']: }}
+                        {{=studio['registration']}}
+                    {{ pass }}
                 </div>
         </div>
     </div>
@@ -137,32 +157,44 @@
     <table class="table-info">
         <tr>
             <td class="grey bold">INVOICE #</td>
-            <td>{{ invoice.InvoiceID}}</td>
+            <td>{{=invoice.InvoiceID}}</td>
         </tr>
         <tr>
             <td class="grey bold">ISSUED </td>
-            {# <td>{{ invoice.DateCreated.strftime(DATE_FORMAT)}}</td> #}
+            <td>{{=invoice.DateCreated.strftime(DATE_FORMAT)}}</td>
         </tr>
         <tr>
             <td class="grey bold">DUE DATE </td>
-            {# <td>{{ invoice.DateDue.strftime(DATE_FORMAT)}}</td> #}
+            <td>{{=invoice.DateDue.strftime(DATE_FORMAT)}}</td>
         </tr>
     </table>
 
     <div>
         <span class="grey bold">BILL TO</span><br>
-        {% if invoice.relation_company %}
-            {{ invoice.relation_company }}<br>
-        {% endif %}
+        {{ if invoice.CustomerCompany: }}
+            {{ =invoice.CustomerCompany }}<br>
+        {{ pass }}
+        {{ if invoice.CustomerCompanyRegistration: }}
+            {{ =invoice.CustomerCompanyRegistration }}<br>
+        {{ pass }}
+        {{ if invoice.CustomerCompanyTaxRegistration: }}
+            {{ =invoice.CustomerCompanyTaxRegistration }}<br>
+        {{ pass }}
+        {{ if invoice.CustomerName: }}
+            {{ =invoice.CustomerName }}<br>
+        {{ pass }}
+        {{ if invoice.CustomerAddress: }}
+            {{ =XML(invoice.CustomerAddress.replace('\n', '<br>')) }}<br>
+        {{ pass }}
 
     </div>
 
-    {% if invoice.summary %}
+    {{ if invoice['Description']: }}
         <div id="description" class='clear'>
             <span class="bold grey">SUMMARY</span><br>
-            <span class="grey">{{ invoice.summary }}</span>
+            <span class="grey">{{=invoice['Description']}}</span>
         </div>
-    {% endif %}
+    {{pass}}
 
 
     <table class="table-items">
@@ -177,40 +209,40 @@
             </tr>
         </thead>
         <tbody>
-        {% for item in items %}
+        {{ for item in items: }}
             <tr>
-                <td>{{ item.ProductName }}</td>
-                <td>{{ item.Description }}</td>
-                <td><span class="right">{{ item.Quantity }}</span></td>
-                <td><span class="right">{{ item.Price }}</span></td>
-                <td><span class="right">{{ item.TotalPrice }}</span></td>
-                <td><span class="right">{{ item.tax_rates_id }}</span></td>
+                <td>{{=item.ProductName}}</td>
+                <td>{{=item.Description}}</td>
+                <td><span class="right">{{=item.Quantity}}</span></td>
+                <td><span class="right">{{=item.Price}}</span></td>
+                <td><span class="right">{{=item.TotalPrice}}</span></td>
+                <td><span class="right">{{=item.tax_rates_id}}</span></td>
             </tr>
-        {% endfor %}
+        {{pass}}
         <tr class="border-top">
             <td></td>
             <td></td>
             <td></td>
             <td><span class="right">Subtotal</span></td>
-            <td><span class="right">{{ amounts.TotalPrice }}</span></td>
+            <td><span class="right">{{ =amounts['TotalPrice'] }}</span></td>
             <td></td>
         </tr>
-        {% for tax_rate in amounts_vat %}
+        {{ for tax_rate in amounts_vat: }}
             <tr>
             <td></td>
             <td></td>
             <td></td>
-            <td><span class="right">{{ tax_rate.name }}</span></td>
-            <td><span class="right">{{ tax_rate.amount }}</span></td>
+            <td><span class="right">{{ =tax_rate['Name'] }}</span></td>
+            <td><span class="right">{{ =tax_rate['Amount'] }}</span></td>
             <td></td>
             </tr>
-        {% endfor %}
+        {{ pass }}
         <tr>
             <td></td>
             <td></td>
             <td></td>
             <td class="border-top"><span class="right">Total</span></td>
-            <td class="border-top"><span class="right">{{ amounts.totalpricevat }}</span></td>
+            <td class="border-top"><span class="right">{{ =amounts['TotalPriceVAT'] }}</span></td>
             <td></td>
         </tr>
         </tbody>
@@ -219,20 +251,23 @@
 
     <!-- Don't forget the terms and footer -->
 
-    {% if invoice.terms %}
+    {{ if invoice['Terms']: }}
         <div id="terms" class="clear grey">
             <span id="terms-header" class="bold">TERMS AND CONDITIONS</span>
-            {{ invoice.terms }}
+            {{ =XML(invoice['Terms']) }}
         </div>
-    {% endif %}
+    {{pass}}
 
-    {% if invoice.footer %}
+    {{ if invoice['Footer']: }}
         <footer class="clear">
             <div class="footer-inner">
-                {{ invoice.footer }}
+                {{ =XML(invoice['Footer']) }}
             </div>
         </footer>
-    {% endif %}
-    
+    {{pass}}
+
+
 </body>
+
+
 </html>
