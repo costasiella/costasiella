@@ -124,8 +124,8 @@
         <div class='text-right grey'>
             <span class='bold'>{{ organization.name|upper }}</span><br>
                 <div class='small-font'>
-                    {% if studio.address %}
-                        {{studio.address }}
+                    {% if organization.address %}
+                        {{ organization.address|safe }}
                     {% endif %} <br>
                 </div>
         </div>
