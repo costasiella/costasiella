@@ -177,3 +177,66 @@ class FinanceInvoice(models.Model):
         self.update_amounts()
 
         return finance_invoice_item
+
+
+    def tax_rates_amounts(self, formatted=False):
+        """
+        Returns tax for each tax rate as list sorted by tax rate percentage
+        format: [ [ tax_rate_obj, sum ] ]
+        """
+        from django.db.models import Sum
+
+        from .finance_invoice_item import FinanceInvoiceItem
+        from .finance_tax_rate import FinanceTaxRate
+
+        amounts_tax = []
+
+        tax_rates = FinanceTaxRate.objects.filter(
+            financeinvoiceitem__finance_invoice = self,
+        ).annotate(invoice_amount=Sum("financeinvoiceitem__tax"))
+        # for tax_rate in tax_rates:
+        #     items = FinanceInvoiceItem.objects.filter(
+        #         finance_invoice = self,
+        #         finance_tax_rate = tax_rate
+        #     )
+
+        print(tax_rates)
+
+        for t in tax_rates:
+            print(t.name)
+            print(t.rate_type)
+            print(t.invoice_amount)
+
+            
+
+
+
+
+    #TODO: Port this function to Django
+    # def amounts_tax_rates(self, formatted=False):
+    #     """
+    #         Returns vat for each tax rate as list sorted by tax rate percentage
+    #         format: [ [ Name, Amount ] ]
+    #     """
+    #     db = current.db
+    #     # CURRSYM = current.globalenv['CURRSYM']
+
+    #     amounts_vat = []
+    #     rows = db().select(db.tax_rates.id, db.tax_rates.Name,
+    #                        orderby=db.tax_rates.Percentage)
+    #     for row in rows:
+    #         sum = db.invoices_items.VAT.sum()
+    #         query = (db.invoices_items.invoices_id == iID) & \
+    #                 (db.invoices_items.tax_rates_id == row.id)
+
+    #         result = db(query).select(sum).first()
+
+    #         if not result[sum] is None:
+    #             # if formatted:
+    #                 # amount = SPAN(CURRSYM, ' ', format(result[sum], '.2f'))
+    #             else:
+    #                 amount = result[sum]
+    #             amounts_vat.append({'Name'   : row.Name,
+    #                                 'Amount' : amount})
+
+    #     return amounts_vat

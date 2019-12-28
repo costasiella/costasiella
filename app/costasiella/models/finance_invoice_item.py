@@ -64,36 +64,6 @@ class FinanceInvoiceItem(models.Model):
         return self.subtotal + self.tax
 
 
-    #TODO: Port this function to Django
-    # def amounts_tax_rates(self, formatted=False):
-    #     """
-    #         Returns vat for each tax rate as list sorted by tax rate percentage
-    #         format: [ [ Name, Amount ] ]
-    #     """
-    #     db = current.db
-    #     # CURRSYM = current.globalenv['CURRSYM']
-
-    #     amounts_vat = []
-    #     rows = db().select(db.tax_rates.id, db.tax_rates.Name,
-    #                        orderby=db.tax_rates.Percentage)
-    #     for row in rows:
-    #         sum = db.invoices_items.VAT.sum()
-    #         query = (db.invoices_items.invoices_id == iID) & \
-    #                 (db.invoices_items.tax_rates_id == row.id)
-
-    #         result = db(query).select(sum).first()
-
-    #         if not result[sum] is None:
-    #             # if formatted:
-    #                 # amount = SPAN(CURRSYM, ' ', format(result[sum], '.2f'))
-    #             else:
-    #                 amount = result[sum]
-    #             amounts_vat.append({'Name'   : row.Name,
-    #                                 'Amount' : amount})
-
-    #     return amounts_vat
-
-
 # def define_invoices_items():
 #     ac_query = (db.accounting_costcenters.Archived == False)
 #     ag_query = (db.accounting_glaccounts.Archived == False)

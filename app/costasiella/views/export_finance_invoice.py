@@ -63,7 +63,10 @@ def invoice_pdf_preview(request, node_id):
         finance_invoice = finance_invoice
     )
 
+    tax_rates_amounts = finance_invoice.tax_rates_amounts()
+
     print(finance_invoice)
+    print(tax_rates_amounts)
 
     template_path = 'system/invoices/export_invoice_pdf.html'
     t = get_template(template_path)
