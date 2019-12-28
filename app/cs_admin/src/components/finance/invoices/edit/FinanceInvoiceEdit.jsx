@@ -46,6 +46,7 @@ class FinanceInvoiceEdit extends Component {
     const history = this.props.history
     const id = match.params.id
     const return_url = "/finance/invoices"
+    const export_url = "/export/invoice/pdf/" + id
 
     return (
       <SiteWrapper>
@@ -68,9 +69,14 @@ class FinanceInvoiceEdit extends Component {
                   <Page.Header title={t('finance.invoice.title') + ' #' + data.financeInvoice.invoiceNumber}>
                     <div className="page-options d-flex">
                       <Link to={return_url} 
-                            className='btn btn-secondary'>
+                            className='btn btn-secondary mr-2'>
                           <Icon prefix="fe" name="arrow-left" /> {t('general.back')} 
                       </Link>
+                      <a href={export_url} 
+                         className='btn btn-secondary'>
+                         <Icon prefix="fe" name="printer" /> {t('general.pdf')} 
+                      </a>
+
                     </div>
                   </Page.Header>
                   <Grid.Row>
