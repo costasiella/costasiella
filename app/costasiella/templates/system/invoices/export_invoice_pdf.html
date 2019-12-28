@@ -204,7 +204,7 @@
                 <td><span class="right">{{ item.quantity }}</span></td>
                 <td><span class="right">{{ item.price }}</span></td>
                 <td><span class="right">{{ item.subtotal }}</span></td>
-                <td><span class="right">{{ item.finance_tax_rate.name }}</span></td>
+                <td><span class="right">{{ item.finance_tax_rate.name }} ({{ item.finance_tax_rate.rate_type }})</span></td>
                 <td><span class="right">{{ item.total}}</span></td>
             </tr>
         {% endfor %}
@@ -217,15 +217,15 @@
             <td><span class="right">Subtotal</span></td>
             <td><span class="right">{{ invoice.subtotal }}</span></td>
         </tr>
-        {% for tax_rate in amounts_vat %}
+        {% for tax_rate in tax_rates %}
             <tr>
             <td></td>
             <td></td>
             <td></td>
             <td></td>
             <td></td>
-            <td><span class="right">{{ tax_rate.name }}</span></td>
-            <td><span class="right">{{ tax_rate.amount }}</span></td>
+            <td><span class="right">{{ tax_rate.name }} ({{ tax_rate.rate_type }})</span></td>
+            <td><span class="right">{{ tax_rate.invoice_amount }}</span></td>
             <td></td>
             </tr>
         {% endfor %}
