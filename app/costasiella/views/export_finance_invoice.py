@@ -55,7 +55,7 @@ def invoice_html(node_id):
         }
     )
 
-    return rendered_template
+    return [ finance_invoice, rendered_template ]
 
 
     # permission  = ((auth.has_membership(group_id='Admins') or
@@ -90,7 +90,7 @@ def invoice_pdf(request, node_id):
     print(node_id)
     # print(request.POST.node_id)
 
-    html = invoice_html(node_id)
+    finance_invoice, html = invoice_html(node_id)
 
     # Create a file-like buffer to receive PDF data.
     buffer = io.BytesIO()
@@ -100,7 +100,9 @@ def invoice_pdf(request, node_id):
     # present the option to save the file.
     buffer.seek(0)
 
-    return FileResponse(buffer, as_attachment=True, filename='invoice.pdf')
+    filename = _('invoice') + '_' + finance_invoice.invoice_number + '.pdf'
+
+    return FileResponse(buffer, as_attachment=True, filename=filename)
 
 
 def invoice_pdf_preview(request, node_id):
@@ -113,6 +115,6 @@ def invoice_pdf_preview(request, node_id):
     print(node_id)
     # print(request.POST.node_id)
 
-    html = invoice_html(node_id)
+    invoice, html = invoice_html(node_id)
 
     return HttpResponse(html)
