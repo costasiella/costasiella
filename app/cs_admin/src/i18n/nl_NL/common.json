@@ -298,7 +298,8 @@
         "unknown_document_type": "__STRING_NOT_TRANSLATED__",
         "prices": "__STRING_NOT_TRANSLATED__",
         "dropin": "__STRING_NOT_TRANSLATED__",
-        "trial": "__STRING_NOT_TRANSLATED__"
+        "trial": "__STRING_NOT_TRANSLATED__",
+        "pdf": "__STRING_NOT_TRANSLATED__"
     },
     "yup": {
         "min_len_3": "__STRING_NOT_TRANSLATED__",
@@ -717,7 +718,8 @@
                     "toast_success": "__STRING_NOT_TRANSLATED__",
                     "classpass_not_allowed": "__STRING_NOT_TRANSLATED__",
                     "subscription_not_allowed": "__STRING_NOT_TRANSLATED__",
-                    "dropin_pay_and_book": "__STRING_NOT_TRANSLATED__"
+                    "dropin_pay_and_book": "__STRING_NOT_TRANSLATED__",
+                    "trial_pay_and_book": "__STRING_NOT_TRANSLATED__"
                 },
                 "edit": {
                     "toast_edit_success": "__STRING_NOT_TRANSLATED__",

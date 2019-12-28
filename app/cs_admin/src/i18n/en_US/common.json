@@ -298,7 +298,8 @@
         "unknown_document_type": "Unknown document type",
         "prices": "Prices",
         "dropin": "Drop in",
-        "trial": "Trial"
+        "trial": "Trial",
+        "pdf": "PDF"
     },
     "yup": {
         "min_len_3": "Please input at least 3 characters",
@@ -717,7 +718,8 @@
                     "toast_success": "Check-in success",
                     "classpass_not_allowed": "Not allowed for this class",
                     "subscription_not_allowed": "Not allowed for this class",
-                    "dropin_pay_and_book": "Pay and book class"
+                    "dropin_pay_and_book": "Pay and book class",
+                    "trial_pay_and_book": "Pay and book class"
                 },
                 "edit": {
                     "toast_edit_success": "Saved",
@@ -739,7 +741,7 @@
                 "delete_confirm_msg": "Are you sure you wish to delete this price?",
                 "delete_confirm_description": "",
                 "deleted": "Deleted price",
-                "delete_success": "__STRING_NOT_TRANSLATED__"
+                "delete_success": "Deleted price"
             },
             "classpass_dropin": "Drop-in classpass",
             "classpass_trial": "Trial classpass"
