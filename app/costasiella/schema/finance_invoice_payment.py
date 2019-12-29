@@ -120,7 +120,7 @@ class CreateFinanceInvoicePayment(graphene.relay.ClientIDMutation):
         if 'finance_payment_method' in validation_result:
             finance_invoice_payment.finance_payment_method = validation_result['finance_payment_method']
 
-        # Save invoice_item
+        # Save invoice payment
         finance_invoice_payment.save()
 
         # Update invoice total amounts 
