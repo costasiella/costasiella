@@ -74,42 +74,30 @@ def validate_create_update_input(input, update=False):
             if not finance_tax_rate:
                 raise Exception(_('Invalid Finance Tax Rate ID!'))
 
-    # Check GLAccount
-    if 'finance_glaccount' in input:
-        result['finance_glaccount'] = None
-        if input['finance_glaccount']: 
-            rid = get_rid(input['finance_glaccount'])
-            finance_glaccount= FinanceGLAccount.objects.filter(id=rid.id).first()
-            result['finance_glaccount'] = finance_glaccount
-            if not finance_glaccount:
-                raise Exception(_('Invalid Finance GLAccount ID!'))
-
-    # Check Costcenter
-    if 'finance_costcenter' in input:
-        result['finance_costcenter'] = None
-        if input['finance_costcenter']:
-            rid = get_rid(input['finance_costcenter'])
-            finance_costcenter= FinanceCostCenter.objects.filter(id=rid.id).first()
-            result['finance_costcenter'] = finance_costcenter
-            if not finance_costcenter:
-                raise Exception(_('Invalid Finance Costcenter ID!'))
+    # Check finance payment method
+    if 'finance_payment_method' in input:
+        result['finance_payment_method'] = None
+        if input['finance_payment_method']:
+            rid = get_rid(input['finance_payment_method'])
+            finance_payment_method = FinancePaymentMethod.objects.get(id=rid.id)
+            result['finance_payment_method'] = finance_payment_method
+            if not finance_payment_method:
+                raise Exception(_('Invalid Finance Tax Rate ID!'))
 
 
     return result
 
 
-class CreateFinanceInvoiceItem(graphene.relay.ClientIDMutation):
+class CreateFinanceInvoicePayment(graphene.relay.ClientIDMutation):
     class Input:
         finance_invoice = graphene.ID(required=True)
-        product_name = graphene.String(required=False, default_value="")
-        description = graphene.String(required=False, default_value="")
-        quantity = graphene.Float(required=False, default_value=0)
-        price = graphene.Float(required=False, default_value=0)
+        amount = graphene.Float(required=True)
+        date = graphene.types.datetime.Date(required=True)
         finance_tax_rate = graphene.ID(required=False, default_value=None)
-        finance_glaccount = graphene.ID(required=False)
-        finance_costcenter = graphene.ID(required=False)
+        finance_payment_method = graphene.ID(required=False, default_value=None)
+        note = graphene.String(required=False, default_value="")
   
-    finance_invoice_item = graphene.Field(FinanceInvoiceItemNode)
+    finance_invoice_payment = graphene.Field(FinanceInvoicePaymentNode)
 
     @classmethod
     def mutate_and_get_payload(self, root, info, **input):
@@ -120,33 +108,21 @@ class CreateFinanceInvoiceItem(graphene.relay.ClientIDMutation):
 
         finance_invoice_item = FinanceInvoiceItem(
             finance_invoice = validation_result['finance_invoice'],
+            amount = input['amount'],
+            date = input['date'],
+            note = input['note'] # Not required, but we set a default value
         )
-
-        if 'product_name' in input:
-            finance_invoice_item.product_name = input['product_name']
-
-        if 'description' in input:
-            finance_invoice_item.description = input['description']
-
-        if 'quantity' in input:
-            finance_invoice_item.quantity = input['quantity']
-
-        if 'price' in input:
-            finance_invoice_item.price = input['price']
 
         if 'finance_tax_rate' in validation_result:
             finance_invoice_item.finance_tax_rate = validation_result['finance_tax_rate']
 
-        if 'finance_glaccount' in validation_result:
-            finance_invoice_item.finance_glaccount = validation_result['finance_glaccount']
-
-        if 'finance_costcenter' in validation_result:
-            finance_invoice_item.finance_costcenter = validation_result['finance_costcenter']
+        if 'finance_payment_method' in validation_result:
+            finance_invoice_item.finance_payment_method = validation_result['finance_payment_method']
 
         # Save invoice_item
         finance_invoice_item.save()
 
-        return CreateFinanceInvoiceItem(finance_invoice_item=finance_invoice_item)
+        return CreateFinanceInvoicePayment(finance_invoice_payment=finance_invoice_payment)
 
 
 class UpdateFinanceInvoiceItem(graphene.relay.ClientIDMutation):
