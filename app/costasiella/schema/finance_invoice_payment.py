@@ -179,7 +179,7 @@ class UpdateFinanceInvoicePayment(graphene.relay.ClientIDMutation):
         return UpdateFinanceInvoicePayment(finance_invoice_payment=finance_invoice_payment)
 
 
-class DeleteFinanceInvoiceItem(graphene.relay.ClientIDMutation):
+class DeleteFinanceInvoicePayment(graphene.relay.ClientIDMutation):
     class Input:
         id = graphene.ID(required=True)
 
@@ -188,24 +188,24 @@ class DeleteFinanceInvoiceItem(graphene.relay.ClientIDMutation):
     @classmethod
     def mutate_and_get_payload(self, root, info, **input):
         user = info.context.user
-        require_login_and_permission(user, 'costasiella.delete_financeinvoiceitem')
+        require_login_and_permission(user, 'costasiella.delete_financeinvoicepayment')
 
         rid = get_rid(input['id'])
 
-        finance_invoice_item = FinanceInvoiceItem.objects.filter(id=rid.id).first()
-        if not finance_invoice_item:
-            raise Exception('Invalid Finance Invoice Item ID!')
+        finance_invoice_payment = FinanceInvoicePayment.objects.filter(id=rid.id).first()
+        if not finance_invoice_payment:
+            raise Exception('Invalid Finance Invoice Payment ID!')
 
-        finance_invoice = finance_invoice_item.finance_invoice
-        ok = finance_invoice_item.delete()
+        finance_invoice = finance_invoice_payment.finance_invoice
+        ok = finance_invoice_payment.delete()
         
         # Update amounts
         finance_invoice.update_amounts()
 
-        return DeleteFinanceInvoiceItem(ok=ok)
+        return DeleteFinanceInvoicePayment(ok=ok)
 
 
-class FinanceInvoiceItemMutation(graphene.ObjectType):
-    delete_finance_invoice_item = DeleteFinanceInvoiceItem.Field()
-    create_finance_invoice_item = CreateFinanceInvoiceItem.Field()
-    update_finance_invoice_item = UpdateFinanceInvoiceItem.Field()
+class FinanceInvoicePaymentMutation(graphene.ObjectType):
+    delete_finance_invoice_payment = DeleteFinanceInvoicePayment.Field()
+    create_finance_invoice_payment = CreateFinanceInvoicePayment.Field()
+    update_finance_invoice_payment = UpdateFinanceInvoicePayment.Field()
