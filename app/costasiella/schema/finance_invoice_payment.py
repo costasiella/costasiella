@@ -192,7 +192,7 @@ class DeleteFinanceInvoicePayment(graphene.relay.ClientIDMutation):
 
         rid = get_rid(input['id'])
 
-        finance_invoice_payment = FinanceInvoicePayment.objects.filter(id=rid.id).first()
+        finance_invoice_payment = FinanceInvoicePayment.objects.get(id=rid.id)
         if not finance_invoice_payment:
             raise Exception('Invalid Finance Invoice Payment ID!')
 
