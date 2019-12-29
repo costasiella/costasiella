@@ -102,90 +102,81 @@ class CreateFinanceInvoicePayment(graphene.relay.ClientIDMutation):
     @classmethod
     def mutate_and_get_payload(self, root, info, **input):
         user = info.context.user
-        require_login_and_permission(user, 'costasiella.add_financeinvoiceitem')
+        require_login_and_permission(user, 'costasiella.add_financeinvoicepayment')
 
         validation_result = validate_create_update_input(input)
+        finance_invoice = validation_result['finance_invoice']
 
-        finance_invoice_item = FinanceInvoiceItem(
-            finance_invoice = validation_result['finance_invoice'],
+        finance_invoice_Payment = FinanceInvoicePayment(
+            finance_invoice = finance_invoice,
             amount = input['amount'],
             date = input['date'],
             note = input['note'] # Not required, but we set a default value
         )
 
         if 'finance_tax_rate' in validation_result:
-            finance_invoice_item.finance_tax_rate = validation_result['finance_tax_rate']
+            finance_invoice_payment.finance_tax_rate = validation_result['finance_tax_rate']
 
         if 'finance_payment_method' in validation_result:
-            finance_invoice_item.finance_payment_method = validation_result['finance_payment_method']
+            finance_invoice_payment.finance_payment_method = validation_result['finance_payment_method']
 
         # Save invoice_item
-        finance_invoice_item.save()
+        finance_invoice_payment.save()
+
+        # Update invoice total amounts 
+        finance_invoice.update_amounts()
 
         return CreateFinanceInvoicePayment(finance_invoice_payment=finance_invoice_payment)
 
 
-class UpdateFinanceInvoiceItem(graphene.relay.ClientIDMutation):
+class UpdateFinanceInvoicePayment(graphene.relay.ClientIDMutation):
     class Input:
         id = graphene.ID(required=True)
-        line_number = graphene.Int(required=False)
-        product_name = graphene.String(required=False)
-        description = graphene.String(required=False)
-        quantity = graphene.Float(required=False)
-        price = graphene.Float(required=False)
+        amount = graphene.Float(required=False)
+        date = graphene.types.datetime.Date(required=False)
         finance_tax_rate = graphene.ID(required=False)
-        finance_glaccount = graphene.ID(required=False)
-        finance_costcenter = graphene.ID(required=False)
+        finance_payment_method = graphene.ID(required=False)
+        note = graphene.String(required=False)
         
-    finance_invoice_item = graphene.Field(FinanceInvoiceItemNode)
+    finance_invoice_payment = graphene.Field(FinanceInvoicePaymentNode)
 
     @classmethod
     def mutate_and_get_payload(self, root, info, **input):
         user = info.context.user
-        require_login_and_permission(user, 'costasiella.change_financeinvoiceitem')
+        require_login_and_permission(user, 'costasiella.change_financeinvoicepayment')
 
         print(input)
 
         rid = get_rid(input['id'])
 
-        finance_invoice_item = FinanceInvoiceItem.objects.filter(id=rid.id).first()
-        if not finance_invoice_item:
-            raise Exception('Invalid Finance Invoice Item  ID!')
+        finance_invoice_payment = FinanceInvoicePayment.objects.filter(id=rid.id).first()
+        if not finance_invoice_payment:
+            raise Exception('Invalid Finance Invoice Payment  ID!')
 
         validation_result = validate_create_update_input(input, update=True)
         
-        if 'line_number' in input:
-            # TODO: Add code to make sure line numbers remain sequential
-            finance_invoice_item.line_number = input['line_number']
+        if 'amount' in input:
+            finance_invoice_payment.amount = input['amount']
 
-        if 'product_name' in input:
-            finance_invoice_item.product_name = input['product_name']
+        if 'date' in input:
+            finance_invoice_payment.date = input['date']
 
-        if 'description' in input:
-            finance_invoice_item.description = input['description']
-
-        if 'quantity' in input:
-            finance_invoice_item.quantity = input['quantity']
-
-        if 'price' in input:
-            finance_invoice_item.price = input['price']
+        if 'note' in input:
+            finance_invoice_payment.note = input['note']
 
         if 'finance_tax_rate' in validation_result:
-            finance_invoice_item.finance_tax_rate = validation_result['finance_tax_rate']
+            finance_invoice_payment.finance_tax_rate = validation_result['finance_tax_rate']
 
-        if 'finance_glaccount' in validation_result:
-            finance_invoice_item.finance_glaccount = validation_result['finance_glaccount']
+        if 'finance_payment_method' in validation_result:
+            finance_invoice_payment.finance_payment_method = validation_result['finance_payment_method']
 
-        if 'finance_costcenter' in validation_result:
-            finance_invoice_item.finance_costcenter = validation_result['finance_costcenter']
+        finance_invoice_payment.save()
 
-        finance_invoice_item.save()
-
-        # Update amounts 
-        finance_invoice = finance_invoice_item.finance_invoice
+        # Update invoice total amounts 
+        finance_invoice = finance_invoice_payment.finance_invoice
         finance_invoice.update_amounts()
 
-        return UpdateFinanceInvoiceItem(finance_invoice_item=finance_invoice_item)
+        return UpdateFinanceInvoicePayment(finance_invoice_payment=finance_invoice_payment)
 
 
 class DeleteFinanceInvoiceItem(graphene.relay.ClientIDMutation):
