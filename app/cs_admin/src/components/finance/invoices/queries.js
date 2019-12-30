@@ -115,10 +115,6 @@ export const GET_INVOICE_QUERY = gql`
               id
               name
             }
-            financeTaxRate {
-              id
-              name
-            }
           }
         }
       }
