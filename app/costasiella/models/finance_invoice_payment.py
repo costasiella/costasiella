@@ -12,7 +12,6 @@ class FinanceInvoicePayment(models.Model):
     amount = models.DecimalField(max_digits=20, decimal_places=2)
     date = models.DateField()
     finance_payment_method = models.ForeignKey(FinancePaymentMethod, on_delete=models.CASCADE, null=True)
-    finance_tax_rate = models.ForeignKey(FinanceTaxRate, on_delete=models.CASCADE, null=True)
     note = models.TextField(default="")
 
 

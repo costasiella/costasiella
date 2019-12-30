@@ -5,7 +5,7 @@ from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
 from graphql import GraphQLError
 
-from ..models import Account, FinanceInvoice, FinanceInvoicePayment, FinancePaymentMethod, FinanceTaxRate
+from ..models import Account, FinanceInvoice, FinanceInvoicePayment, FinancePaymentMethod
 from ..modules.gql_tools import require_login_and_permission, get_rid
 from ..modules.messages import Messages
 from ..modules.finance_tools import display_float_as_amount
@@ -64,16 +64,6 @@ def validate_create_update_input(input, update=False):
         if not finance_invoice:
             raise Exception(_('Invalid Finance Invoice ID!'))
 
-    # Check finance tax rate
-    if 'finance_tax_rate' in input:
-        result['finance_tax_rate'] = None
-        if input['finance_tax_rate']:
-            rid = get_rid(input['finance_tax_rate'])
-            finance_tax_rate = FinanceTaxRate.objects.filter(id=rid.id).first()
-            result['finance_tax_rate'] = finance_tax_rate
-            if not finance_tax_rate:
-                raise Exception(_('Invalid Finance Tax Rate ID!'))
-
     # Check finance payment method
     if 'finance_payment_method' in input:
         result['finance_payment_method'] = None
@@ -93,7 +83,6 @@ class CreateFinanceInvoicePayment(graphene.relay.ClientIDMutation):
         finance_invoice = graphene.ID(required=True)
         amount = graphene.Float(required=True)
         date = graphene.types.datetime.Date(required=True)
-        finance_tax_rate = graphene.ID(required=False, default_value=None)
         finance_payment_method = graphene.ID(required=False, default_value=None)
         note = graphene.String(required=False, default_value="")
   
@@ -114,9 +103,6 @@ class CreateFinanceInvoicePayment(graphene.relay.ClientIDMutation):
             note = input['note'] # Not required, but we set a default value
         )
 
-        if 'finance_tax_rate' in validation_result:
-            finance_invoice_payment.finance_tax_rate = validation_result['finance_tax_rate']
-
         if 'finance_payment_method' in validation_result:
             finance_invoice_payment.finance_payment_method = validation_result['finance_payment_method']
 
@@ -134,7 +120,6 @@ class UpdateFinanceInvoicePayment(graphene.relay.ClientIDMutation):
         id = graphene.ID(required=True)
         amount = graphene.Float(required=False)
         date = graphene.types.datetime.Date(required=False)
-        finance_tax_rate = graphene.ID(required=False)
         finance_payment_method = graphene.ID(required=False)
         note = graphene.String(required=False)
         
@@ -163,9 +148,6 @@ class UpdateFinanceInvoicePayment(graphene.relay.ClientIDMutation):
 
         if 'note' in input:
             finance_invoice_payment.note = input['note']
-
-        if 'finance_tax_rate' in validation_result:
-            finance_invoice_payment.finance_tax_rate = validation_result['finance_tax_rate']
 
         if 'finance_payment_method' in validation_result:
             finance_invoice_payment.finance_payment_method = validation_result['finance_payment_method']
