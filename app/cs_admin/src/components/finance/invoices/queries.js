@@ -99,6 +99,29 @@ export const GET_INVOICE_QUERY = gql`
           }
         }
       }
+      payments {
+        pageInfo {
+          hasNextPage
+          hasPreviousPage
+          startCursor
+          endCursor
+        }
+        edges {
+          node {
+            id
+            amount
+            date
+            financePaymentMethod {
+              id
+              name
+            }
+            financeTaxRate {
+              id
+              name
+            }
+          }
+        }
+      }
     }
     financePaymentMethods(first: 100, before: $before, after: $after, archived: false) {
       pageInfo {
