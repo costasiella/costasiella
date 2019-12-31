@@ -93,7 +93,7 @@ function FinanceInvoicePaymentAdd({ t, history, match }) {
                 note: values.note
               }
             }, refetchQueries: [
-                // {query: GET_SCHEDULE_ITEM_PRICES_QUERY, variables: { scheduleItem: match.params.class_id }},
+                {query: GET_INVOICE_QUERY, variables: { id: invoiceId }},
             ]})
             .then(({ data }) => {
                 console.log('got data', data);
