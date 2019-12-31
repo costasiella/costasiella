@@ -5,6 +5,7 @@ import { useQuery, useMutation } from "react-apollo"
 import gql from "graphql-tag"
 import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
+import { Link } from "react-router-dom"
 import { Formik } from 'formik'
 import { toast } from 'react-toastify'
 
@@ -71,6 +72,13 @@ function FinanceInvoicePaymentBase({ t, history, match, children, form_type="cre
       <div className="my-3 my-md-5">
         <Container>
           <Page.Header title={ title }>
+            <div className="page-options d-flex">
+              {/* Back */}
+              <Link to={return_url} 
+                    className='btn btn-secondary mr-2'>
+                  <Icon prefix="fe" name="arrow-left" /> {t('general.back')} 
+              </Link>
+            </div>
           </Page.Header>
           <Grid.Row>
             <Grid.Col md={6}>
