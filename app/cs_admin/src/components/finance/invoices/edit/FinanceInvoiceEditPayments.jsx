@@ -88,7 +88,6 @@ export const UPDATE_INVOICE_ITEM = gql`
 
 const FinanceInvoiceEditPayments = ({ t, history, match, refetchInvoice, inputData }) => (
   <div>
-      <span class="pull-right">Add button here...</span>
       <Table>
         <Table.Header>
           <Table.Row>
