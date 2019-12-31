@@ -19,10 +19,12 @@ import {
   Icon,
   Button,
   Card,
-  Container
+  Container,
+  Table
 } from "tabler-react";
 import SiteWrapper from "../../../SiteWrapper"
 // import ScheduleClassPriceBack from "./ScheduleClassPriceBack"
+import FinanceInvoiceEditBalance from "../edit/FinanceInvoiceEditBalance"
 
 
 function FinanceInvoicePaymentBase({ t, history, match, children, form_type="create" }) {
@@ -86,7 +88,16 @@ function FinanceInvoicePaymentBase({ t, history, match, children, form_type="cre
               {children} 
             </Grid.Col>
             <Grid.Col md={6}>
-              invoice data here...
+            <Card statusColor="blue">
+              <Card.Header>
+                <Card.Title>{t('general.info')}</Card.Title>
+              </Card.Header>
+              <Card.Body padding={0}>
+                <h4> #{ invoice_number } </h4>
+                { inputData.financeInvoice.summary }
+              </Card.Body>
+            </Card>
+            <FinanceInvoiceEditBalance financeInvoice={inputData.financeInvoice} />
             </Grid.Col>
           </Grid.Row>
         </Container>
