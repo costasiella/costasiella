@@ -116,6 +116,7 @@ export const GET_INVOICE_QUERY = gql`
               id
               name
             }
+            note
           }
         }
       }
