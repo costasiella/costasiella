@@ -44,7 +44,7 @@ const FinanceInvoiceEditPayments = ({ t, history, match, refetchInvoice, inputDa
                 { (node.financePaymentMethod) ? node.financePaymentMethod.name : "" }
               </Table.Col>
               <Table.Col>
-                { node.note }
+                <div dangerouslySetInnerHTML={{ __html:node.note }}></div>
               </Table.Col>
               <Table.Col>
                 <Link to={ "/finance/invoices/" + inputData.financeInvoice.id + "/payment/edit/" + node.id } 
