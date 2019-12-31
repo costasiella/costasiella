@@ -27,7 +27,11 @@ import SiteWrapper from "../../../SiteWrapper"
 function FinanceInvoicePaymentBase({ t, history, match, children, form_type="create" }) {
   const invoiceId = match.params.invoice_id
   const return_url = "/finance/invoices/edit/" + invoiceId
-  const { loading: queryLoading, error: queryError, data, } = useQuery(GET_INVOICE_QUERY)
+  const { loading: queryLoading, error: queryError, data, } = useQuery(GET_INVOICE_QUERY, {
+    variables: {
+      id: invoiceId
+    }
+  })
 
   if (queryLoading) return (
     <SiteWrapper>

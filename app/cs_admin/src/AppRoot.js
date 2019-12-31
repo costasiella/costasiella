@@ -204,7 +204,7 @@ function AppRoot({ t }) {
           <PrivateRoute exact path="/finance/invoices/groups/add" component={FinanceInvoiceGroupAdd} />
           <PrivateRoute exact path="/finance/invoices/groups/edit/:id" component={FinanceInvoiceGroupEdit} />
           <PrivateRoute exact path="/finance/invoices/groups/defaults" component={FinanceInvoiceGroupDefaults} />
-          <PrivateRoute exact path="/finance/invoices/:invoice_id/payments/add" component={FinanceInvoicePaymentAdd} />
+          <PrivateRoute exact path="/finance/invoices/:invoice_id/payment/add" component={FinanceInvoicePaymentAdd} />
           <PrivateRoute exact path="/finance/glaccounts" component={FinanceGLAccounts} />
           <PrivateRoute exact path="/finance/glaccounts/add" component={FinanceGLAccountAdd} />
           <PrivateRoute exact path="/finance/glaccounts/edit/:id" component={FinanceGLAccountEdit} />
