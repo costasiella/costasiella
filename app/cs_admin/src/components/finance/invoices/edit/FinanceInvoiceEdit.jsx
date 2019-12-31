@@ -47,6 +47,7 @@ class FinanceInvoiceEdit extends Component {
     const id = match.params.id
     const return_url = "/finance/invoices"
     const export_url = "/export/invoice/pdf/" + id
+    const payment_add_url = "/finance/invoice/" + id + "/payment/add"
 
     return (
       <SiteWrapper>
@@ -68,10 +69,17 @@ class FinanceInvoiceEdit extends Component {
                 <Container>
                   <Page.Header title={t('finance.invoice.title') + ' #' + data.financeInvoice.invoiceNumber}>
                     <div className="page-options d-flex">
+                      {/* Back */}
                       <Link to={return_url} 
                             className='btn btn-secondary mr-2'>
                           <Icon prefix="fe" name="arrow-left" /> {t('general.back')} 
                       </Link>
+                      {/* Add payment */}
+                      <a href={payment_add_url} 
+                         className='btn btn-secondary mr-2'>
+                         <Icon prefix="fe" name="dollar-sign" /> {t('finance.invoice.payment_add')} 
+                      </a>
+                      {/* Export as PDF */}
                       <a href={export_url} 
                          className='btn btn-secondary'>
                          <Icon prefix="fe" name="printer" /> {t('general.pdf')} 
