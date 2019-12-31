@@ -12,18 +12,22 @@ import { toast } from 'react-toastify'
 // import { GET_INVOICE_QUERY, GET_INPUT_VALUES_QUERY } from './queries'
 import { GET_INVOICE_QUERY } from "../queries"
 
-import SiteWrapper from "../../../../SiteWrapper"
+import {
+  Page,
+  Grid,
+  Icon,
+  Button,
+  Card,
+  Container
+} from "tabler-react";
+import SiteWrapper from "../../../SiteWrapper"
 // import ScheduleClassPriceBack from "./ScheduleClassPriceBack"
 
 
-function FinanceInvoicePaymentBase({ t, history, match, form_type="create" }) {
+function FinanceInvoicePaymentBase({ t, history, match, children, form_type="create" }) {
   const invoiceId = match.params.invoice_id
   const return_url = "/finance/invoices/edit/" + invoiceId
   const { loading: queryLoading, error: queryError, data, } = useQuery(GET_INVOICE_QUERY)
-  const [addInvoicePayment, { mutationData, mutationLoading, mutationError, onCompleted }] = useMutation(ADD_INVOICE_PAYMENT, {
-    onCompleted: () => history.push(return_url),
-  })
-
 
   if (queryLoading) return (
     <SiteWrapper>
@@ -37,7 +41,7 @@ function FinanceInvoicePaymentBase({ t, history, match, form_type="create" }) {
     return (
       <SiteWrapper>
         <div className="my-3 my-md-5">
-          { console.log(error) }
+          { console.log(queryError) }
           <p>{t('general.error_sad_smiley')}</p>
         </div>
       </SiteWrapper>

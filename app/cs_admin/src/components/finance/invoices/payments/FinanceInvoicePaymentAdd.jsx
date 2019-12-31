@@ -11,13 +11,12 @@ import { toast } from 'react-toastify'
 
 import { GET_SCHEDULE_ITEM_PRICES_QUERY, GET_INPUT_VALUES_QUERY } from './queries'
 import { FINANCE_INVOICE_PAYMENT_SCHEMA } from './yupSchema'
-import ScheduleClassPriceForm from './ScheduleClassPriceForm'
-import { dateToLocalISO } from '../../../../../tools/date_tools'
+// import ScheduleClassPriceForm from './ScheduleClassPriceForm'
+// import { dateToLocalISO } from '../../../../../tools/date_tools'
 
-import SiteWrapper from "../../../../SiteWrapper"
+import SiteWrapper from "../../../SiteWrapper"
 
 import FinanceInvoicePaymentBase from "./FinanceInvoicePaymentBase"
-import ScheduleClassPriceBack from "./ScheduleClassPriceBack"
 
 
 const ADD_FINANCE_INVOICE_PAYMENT = gql`
@@ -35,7 +34,7 @@ function FinanceInvoicePaymentAdd({ t, history, match }) {
   const invoiceId = match.params.class_id
   const return_url = "/finance/invoice/edit/" + invoiceId
   const { loading: queryLoading, error: queryError, data, } = useQuery(GET_INPUT_VALUES_QUERY)
-  const [ADD_FINANCE_INVOICE_PAYMENT, { mutationData, mutationLoading, mutationError, onCompleted }] = useMutation(ADD_FINANCE_INVOICE_PAYMENT, {
+  const [addInvoicePayment, { mutationData, mutationLoading, mutationError, onCompleted }] = useMutation(ADD_FINANCE_INVOICE_PAYMENT, {
     onCompleted: () => history.push(return_url),
   })
 
@@ -51,7 +50,7 @@ function FinanceInvoicePaymentAdd({ t, history, match }) {
     return (
       <SiteWrapper>
         <div className="my-3 my-md-5">
-          { console.log(error) }
+          { console.log(queryError) }
           <p>{t('general.error_sad_smiley')}</p>
         </div>
       </SiteWrapper>
