@@ -18,6 +18,10 @@ import CSDatePicker from "../../../ui/CSDatePicker"
 
 const FinanceInvoicePaymentForm = ({ t, history, match, isSubmitting, errors, values, inputData, return_url, setFieldTouched, setFieldValue }) => (
   <FoForm>
+    <Card statusColor="blue">
+      <Card.Header>
+        <Card.Title>{t('general.details')}</Card.Title>
+      </Card.Header>
       <Card.Body>
         <Grid.Row>
           <Grid.Col>
@@ -72,6 +76,7 @@ const FinanceInvoicePaymentForm = ({ t, history, match, isSubmitting, errors, va
               {t('general.cancel')}
           </Button>
       </Card.Footer>
+    </Card>
   </FoForm>
 );
 

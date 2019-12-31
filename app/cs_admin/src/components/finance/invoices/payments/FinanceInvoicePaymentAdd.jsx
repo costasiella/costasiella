@@ -9,6 +9,11 @@ import { Formik } from 'formik'
 import { toast } from 'react-toastify'
 
 
+import {
+  Card,
+} from "tabler-react"
+
+
 import { GET_INVOICE_QUERY } from "../queries"
 import { GET_INPUT_VALUES_QUERY } from './queries'
 import { FINANCE_INVOICE_PAYMENT_SCHEMA } from './yupSchema'
