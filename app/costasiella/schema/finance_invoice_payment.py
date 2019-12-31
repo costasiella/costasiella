@@ -96,7 +96,7 @@ class CreateFinanceInvoicePayment(graphene.relay.ClientIDMutation):
         validation_result = validate_create_update_input(input)
         finance_invoice = validation_result['finance_invoice']
 
-        finance_invoice_Payment = FinanceInvoicePayment(
+        finance_invoice_payment = FinanceInvoicePayment(
             finance_invoice = finance_invoice,
             amount = input['amount'],
             date = input['date'],

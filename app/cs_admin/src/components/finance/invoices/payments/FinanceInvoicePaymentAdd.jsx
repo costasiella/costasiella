@@ -86,7 +86,7 @@ function FinanceInvoicePaymentAdd({ t, history, match }) {
         onSubmit={(values, { setSubmitting }) => {
             addInvoicePayment({ variables: {
               input: {
-                id: invoiceId,
+                financeInvoice: invoiceId,
                 date: dateToLocalISO(values.date),
                 amount: values.amount,
                 financePaymentMethod: values.financePaymentMethod,
