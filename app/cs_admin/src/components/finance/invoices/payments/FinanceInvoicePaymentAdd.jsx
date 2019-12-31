@@ -39,7 +39,7 @@ const ADD_FINANCE_INVOICE_PAYMENT = gql`
 
 function FinanceInvoicePaymentAdd({ t, history, match }) {
   const invoiceId = match.params.invoice_id
-  const return_url = "/finance/invoice/edit/" + invoiceId
+  const return_url = "/finance/invoices/edit/" + invoiceId
   const { loading: queryLoading, error: queryError, data, } = useQuery(GET_INVOICE_QUERY, {
     variables: {
       id: invoiceId
