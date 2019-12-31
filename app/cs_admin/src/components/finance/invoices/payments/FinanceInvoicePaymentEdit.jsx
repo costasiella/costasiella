@@ -128,7 +128,8 @@ function FinanceInvoicePaymentEdit({ t, history, match }) {
                 console.log('there was an error sending the query', error)
                 setSubmitting(false)
               })
-        }}
+          }
+        }
         >
         {({ isSubmitting, errors, values, setFieldTouched, setFieldValue }) => (
           <FinanceInvoicePaymentForm
