@@ -96,73 +96,12 @@ function FinanceInvoicePaymentBase({ t, history, match, children, form_type="cre
                 <h4> #{ invoice_number } </h4>
                 { inputData.financeInvoice.account.fullName } <br />
                 { inputData.financeInvoice.summary }
-                
               </Card.Body>
             </Card>
             <FinanceInvoiceEditBalance financeInvoice={inputData.financeInvoice} />
             </Grid.Col>
           </Grid.Row>
         </Container>
-        {/* <ClassEditBase 
-          card_title={t('schedule.classes.prices.title_add')}
-          menu_active_link="prices"
-          sidebar_button={<ScheduleClassPriceBack classId={match.params.class_id} />}
-        >
-          <Formik
-            initialValues={{ 
-              dateStart: new Date() ,
-              organizationClasspassDropin: "",
-              organizationClasspassTrial: "",
-            }}
-            // validationSchema={SCHEDULE_CLASS_TEACHER_SCHEMA}
-            onSubmit={(values, { setSubmitting }) => {
-
-                let dateEnd
-                if (values.dateEnd) {
-                  dateEnd = dateToLocalISO(values.dateEnd)
-                } else {
-                  dateEnd = values.dateEnd
-                }
-
-                addScheduleClassPrice({ variables: {
-                  input: {
-                    scheduleItem: match.params.class_id,
-                    dateStart: dateToLocalISO(values.dateStart),
-                    dateEnd: dateEnd,
-                    organizationClasspassDropin: values.organizationClasspassDropin,
-                    organizationClasspassTrial: values.organizationClasspassTrial
-                  }
-                }, refetchQueries: [
-                    {query: GET_SCHEDULE_ITEM_PRICES_QUERY, variables: { scheduleItem: match.params.class_id }},
-                    // {query: GET_SUBSCRIPTIONS_QUERY, variables: {"archived": false }},
-                ]})
-                .then(({ data }) => {
-                    console.log('got data', data);
-                    toast.success((t('schedule.classes.prices.toast_add_success')), {
-                        position: toast.POSITION.BOTTOM_RIGHT
-                      })
-                  }).catch((error) => {
-                    toast.error((t('general.toast_server_error')) + ': ' +  error, {
-                        position: toast.POSITION.BOTTOM_RIGHT
-                      })
-                    console.log('there was an error sending the query', error)
-                    setSubmitting(false)
-                  })
-            }}
-            >
-            {({ isSubmitting, errors, values, setFieldTouched, setFieldValue }) => (
-              <ScheduleClassPriceForm
-                inputData={inputData}
-                isSubmitting={isSubmitting}
-                setFieldTouched={setFieldTouched}
-                setFieldValue={setFieldValue}
-                errors={errors}
-                values={values}
-                return_url={return_url + match.params.class_id}
-              />
-            )}
-        </Formik>
-        </ClassEditBase> */}
       </div>
     </SiteWrapper>
   )
