@@ -9,14 +9,16 @@ import { Formik } from 'formik'
 import { toast } from 'react-toastify'
 
 
-import { GET_SCHEDULE_ITEM_PRICES_QUERY, GET_INPUT_VALUES_QUERY } from './queries'
+import { GET_INVOICE_QUERY } from "../queries"
+import { GET_INPUT_VALUES_QUERY } from './queries'
 import { FINANCE_INVOICE_PAYMENT_SCHEMA } from './yupSchema'
 // import ScheduleClassPriceForm from './ScheduleClassPriceForm'
-// import { dateToLocalISO } from '../../../../../tools/date_tools'
+import { dateToLocalISO } from '../../../../tools/date_tools'
 
 import SiteWrapper from "../../../SiteWrapper"
 
 import FinanceInvoicePaymentBase from "./FinanceInvoicePaymentBase"
+import FinanceInvoicePaymentForm from "./FinanceInvoicePaymentForm"
 
 
 const ADD_FINANCE_INVOICE_PAYMENT = gql`
@@ -31,9 +33,13 @@ const ADD_FINANCE_INVOICE_PAYMENT = gql`
 
 
 function FinanceInvoicePaymentAdd({ t, history, match }) {
-  const invoiceId = match.params.class_id
+  const invoiceId = match.params.invoice_id
   const return_url = "/finance/invoice/edit/" + invoiceId
-  const { loading: queryLoading, error: queryError, data, } = useQuery(GET_INPUT_VALUES_QUERY)
+  const { loading: queryLoading, error: queryError, data, } = useQuery(GET_INVOICE_QUERY, {
+    variables: {
+      id: invoiceId
+    }
+  })
   const [addInvoicePayment, { mutationData, mutationLoading, mutationError, onCompleted }] = useMutation(ADD_FINANCE_INVOICE_PAYMENT, {
     onCompleted: () => history.push(return_url),
   })
@@ -64,62 +70,53 @@ function FinanceInvoicePaymentAdd({ t, history, match }) {
 
   return (
     <FinanceInvoicePaymentBase form_type={"create"}>
-      form here...
+      <Formik
+        initialValues={{ 
+          date: new Date() ,
+          amount: inputData.financeInvoice.total,
+          financePaymentMethod: "",
+          note: ""
+        }}
+        // validationSchema={FINANCE_INVOICE_PAYMENT_SCHEMA}
+        onSubmit={(values, { setSubmitting }) => {
+            addInvoicePayment({ variables: {
+              input: {
+                id: invoiceId,
+                date: dateToLocalISO(values.date),
+                amount: values.amount,
+                financePaymentMethod: values.financePaymentMethod,
+                note: values.note
+              }
+            }, refetchQueries: [
+                // {query: GET_SCHEDULE_ITEM_PRICES_QUERY, variables: { scheduleItem: match.params.class_id }},
+            ]})
+            .then(({ data }) => {
+                console.log('got data', data);
+                toast.success((t('finance.invoice.payments.toast_add_success')), {
+                    position: toast.POSITION.BOTTOM_RIGHT
+                  })
+              }).catch((error) => {
+                toast.error((t('general.toast_server_error')) + ': ' +  error, {
+                    position: toast.POSITION.BOTTOM_RIGHT
+                  })
+                console.log('there was an error sending the query', error)
+                setSubmitting(false)
+              })
+        }}
+        >
+        {({ isSubmitting, errors, values, setFieldTouched, setFieldValue }) => (
+          <FinanceInvoicePaymentForm
+            inputData={inputData}
+            isSubmitting={isSubmitting}
+            setFieldTouched={setFieldTouched}
+            setFieldValue={setFieldValue}
+            errors={errors}
+            values={values}
+            return_url={return_url}
+          />
+        )}
+      </Formik>
     </FinanceInvoicePaymentBase>
-        //   <Formik
-        //     initialValues={{ 
-        //       dateStart: new Date() ,
-        //       organizationClasspassDropin: "",
-        //       organizationClasspassTrial: "",
-        //     }}
-        //     // validationSchema={SCHEDULE_CLASS_TEACHER_SCHEMA}
-        //     onSubmit={(values, { setSubmitting }) => {
-
-        //         let dateEnd
-        //         if (values.dateEnd) {
-        //           dateEnd = dateToLocalISO(values.dateEnd)
-        //         } else {
-        //           dateEnd = values.dateEnd
-        //         }
-
-        //         addScheduleClassPrice({ variables: {
-        //           input: {
-        //             scheduleItem: match.params.class_id,
-        //             dateStart: dateToLocalISO(values.dateStart),
-        //             dateEnd: dateEnd,
-        //             organizationClasspassDropin: values.organizationClasspassDropin,
-        //             organizationClasspassTrial: values.organizationClasspassTrial
-        //           }
-        //         }, refetchQueries: [
-        //             {query: GET_SCHEDULE_ITEM_PRICES_QUERY, variables: { scheduleItem: match.params.class_id }},
-        //             // {query: GET_SUBSCRIPTIONS_QUERY, variables: {"archived": false }},
-        //         ]})
-        //         .then(({ data }) => {
-        //             console.log('got data', data);
-        //             toast.success((t('schedule.classes.prices.toast_add_success')), {
-        //                 position: toast.POSITION.BOTTOM_RIGHT
-        //               })
-        //           }).catch((error) => {
-        //             toast.error((t('general.toast_server_error')) + ': ' +  error, {
-        //                 position: toast.POSITION.BOTTOM_RIGHT
-        //               })
-        //             console.log('there was an error sending the query', error)
-        //             setSubmitting(false)
-        //           })
-        //     }}
-        //     >
-        //     {({ isSubmitting, errors, values, setFieldTouched, setFieldValue }) => (
-        //       <ScheduleClassPriceForm
-        //         inputData={inputData}
-        //         isSubmitting={isSubmitting}
-        //         setFieldTouched={setFieldTouched}
-        //         setFieldValue={setFieldValue}
-        //         errors={errors}
-        //         values={values}
-        //         return_url={return_url + match.params.class_id}
-        //       />
-        //     )}
-        // </Formik>
   )
 }
 

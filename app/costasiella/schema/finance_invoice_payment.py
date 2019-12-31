@@ -81,8 +81,8 @@ def validate_create_update_input(input, update=False):
 class CreateFinanceInvoicePayment(graphene.relay.ClientIDMutation):
     class Input:
         finance_invoice = graphene.ID(required=True)
+        date = graphene.types.datetime.Date(required=True)    
         amount = graphene.Float(required=True)
-        date = graphene.types.datetime.Date(required=True)
         finance_payment_method = graphene.ID(required=False, default_value=None)
         note = graphene.String(required=False, default_value="")
   
@@ -118,8 +118,8 @@ class CreateFinanceInvoicePayment(graphene.relay.ClientIDMutation):
 class UpdateFinanceInvoicePayment(graphene.relay.ClientIDMutation):
     class Input:
         id = graphene.ID(required=True)
-        amount = graphene.Float(required=False)
         date = graphene.types.datetime.Date(required=False)
+        amount = graphene.Float(required=False)
         finance_payment_method = graphene.ID(required=False)
         note = graphene.String(required=False)
         
