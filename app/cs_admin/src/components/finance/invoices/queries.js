@@ -63,6 +63,7 @@ export const GET_INVOICE_QUERY = gql`
       note
       subtotalDisplay
       taxDisplay
+      total
       totalDisplay
       paidDisplay
       balanceDisplay
