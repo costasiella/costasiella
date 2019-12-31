@@ -40,13 +40,16 @@ const UPDATE_FINANCE_INVOICE_PAYMENT = gql`
 function FinanceInvoicePaymentEdit({ t, history, match }) {
   const invoiceId = match.params.invoice_id
   const id = match.params.id
+  console.log(invoiceId)
+  console.log(id)
+
   const return_url = "/finance/invoices/edit/" + invoiceId
-  const { loading: invoiceQueryLoading, error: invoiceQueryError, invoiceData, } = useQuery(GET_INVOICE_QUERY, {
+  const { loading: invoiceQueryLoading, error: invoiceQueryError, data: invoiceData, } = useQuery(GET_INVOICE_QUERY, {
     variables: {
       id: invoiceId
     }
   })
-  const { loading: paymentQueryLoading, error: paymentQueryError, paymentData, } = useQuery(GET_INVOICE_PAYMENT_QUERY, {
+  const { loading: paymentQueryLoading, error: paymentQueryError, data: paymentData, } = useQuery(GET_INVOICE_PAYMENT_QUERY, {
     variables: {
       id: id
     }
@@ -87,8 +90,9 @@ function FinanceInvoicePaymentEdit({ t, history, match }) {
 
   console.log('query data')
   console.log(invoiceData)
+  console.log(paymentData)
   const inputData = invoiceData
-  const initialValues = paymentData
+  const initialValues = paymentData.financeInvoicePayment
 
   let initialPaymentMethod
   if (initialValues.financePaymentMethod) {
@@ -96,7 +100,7 @@ function FinanceInvoicePaymentEdit({ t, history, match }) {
   }
 
   return (
-    <FinanceInvoicePaymentBase form_type={"create"}>
+    <FinanceInvoicePaymentBase form_type={"update"}>
       <Formik
         initialValues={{ 
           date: initialValues.date,
@@ -106,8 +110,9 @@ function FinanceInvoicePaymentEdit({ t, history, match }) {
         }}
         // validationSchema={FINANCE_INVOICE_PAYMENT_SCHEMA}
         onSubmit={(values, { setSubmitting }) => {
-            addInvoicePayment({ variables: {
+            updateInvoicePayment({ variables: {
               input: {
+                id: id,
                 date: dateToLocalISO(values.date),
                 amount: values.amount,
                 financePaymentMethod: values.financePaymentMethod,

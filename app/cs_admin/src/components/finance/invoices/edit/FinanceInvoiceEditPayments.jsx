@@ -52,8 +52,8 @@ const FinanceInvoiceEditPayments = ({ t, history, match, refetchInvoice, inputDa
                 >
                   <Icon prefix="fe" name="edit" />
                 </Link>
-
-                Edit | Del
+                {/* TODO: Add delete button */}
+                Del
                 {/* <FinanceInvoiceItemDelete node={node} /> */}
               </Table.Col>
             </Table.Row>
