@@ -111,6 +111,7 @@ export const GET_INVOICE_QUERY = gql`
           node {
             id
             amount
+            amountDisplay
             date
             financePaymentMethod {
               id

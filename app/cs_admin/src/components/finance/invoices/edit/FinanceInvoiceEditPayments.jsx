@@ -105,7 +105,7 @@ const FinanceInvoiceEditPayments = ({ t, history, match, refetchInvoice, inputDa
                 { node.date }
               </Table.Col>
               <Table.Col>
-                { node.amount }
+                { node.amountDisplay }
               </Table.Col>
               <Table.Col>
                 { (node.financePaymentMethod) ? node.financePaymentMethod.name : "" }
