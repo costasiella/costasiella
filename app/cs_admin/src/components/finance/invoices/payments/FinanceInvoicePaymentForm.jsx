@@ -13,7 +13,8 @@ import {
   Form,
 } from "tabler-react"
 
-
+import { Editor } from '@tinymce/tinymce-react'
+import { tinymceBasicConf } from "../../../../plugin_config/tinymce"
 import CSDatePicker from "../../../ui/CSDatePicker"
 
 const FinanceInvoicePaymentForm = ({ t, history, match, isSubmitting, errors, values, inputData, return_url, setFieldTouched, setFieldValue }) => (
@@ -60,6 +61,20 @@ const FinanceInvoicePaymentForm = ({ t, history, match, isSubmitting, errors, va
               </Field>
               <ErrorMessage name="financePaymentMethod" component="span" className="invalid-feedback" />
             </Form.Group>
+          </Grid.Col>
+        </Grid.Row>
+        <Grid.Row>
+          <Grid.Col>
+          <Form.Group label={t('general.note')}>
+            <Editor
+                textareaName="note"
+                initialValue={values.note}
+                init={tinymceBasicConf}
+                onChange={(e) => setFieldValue("note", e.target.getContent())}
+                onBlur={() => setFieldTouched("note", true)}
+              />
+            <ErrorMessage name="note" component="span" className="invalid-feedback" />
+          </Form.Group>
           </Grid.Col>
         </Grid.Row>
       </Card.Body>

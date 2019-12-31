@@ -83,11 +83,11 @@ function FinanceInvoicePaymentBase({ t, history, match, children, form_type="cre
             </div>
           </Page.Header>
           <Grid.Row>
-            <Grid.Col md={6}>
+            <Grid.Col md={8}>
               {/* Form can go here */}
               {children} 
             </Grid.Col>
-            <Grid.Col md={6}>
+            <Grid.Col md={4}>
             <Card statusColor="blue">
               <Card.Header>
                 <Card.Title>{t('general.info')}</Card.Title>
