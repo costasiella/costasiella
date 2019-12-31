@@ -86,24 +86,28 @@ function FinanceInvoicePaymentEdit({ t, history, match }) {
   }
 
   console.log('query data')
-  console.log(data)
-  const inputData = data
+  console.log(invoiceData)
+  const inputData = invoiceData
+  const initialValues = paymentData
 
+  let initialPaymentMethod
+  if (initialValues.financePaymentMethod) {
+    initialPaymentMethod = initialValues.financePaymentMethod.id
+  }
 
   return (
     <FinanceInvoicePaymentBase form_type={"create"}>
       <Formik
         initialValues={{ 
-          date: new Date() ,
-          amount: inputData.financeInvoice.total,
-          financePaymentMethod: "",
-          note: ""
+          date: initialValues.date,
+          amount: initialValues.amount,
+          financePaymentMethod: initialPaymentMethod,
+          note: initialValues.note
         }}
         // validationSchema={FINANCE_INVOICE_PAYMENT_SCHEMA}
         onSubmit={(values, { setSubmitting }) => {
             addInvoicePayment({ variables: {
               input: {
-                financeInvoice: invoiceId,
                 date: dateToLocalISO(values.date),
                 amount: values.amount,
                 financePaymentMethod: values.financePaymentMethod,
@@ -114,7 +118,7 @@ function FinanceInvoicePaymentEdit({ t, history, match }) {
             ]})
             .then(({ data }) => {
                 console.log('got data', data);
-                toast.success((t('finance.invoice.payments.toast_add_success')), {
+                toast.success((t('finance.invoice.payments.toast_edit_success')), {
                     position: toast.POSITION.BOTTOM_RIGHT
                   })
               }).catch((error) => {
