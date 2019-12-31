@@ -1,21 +1,17 @@
 import gql from "graphql-tag"
 
 
-export const GET_INPUT_VALUES_QUERY = gql`
-  query InputValues($before: String, $after: String) {
-    financePaymentMethods(first: 100, before: $before, after: $after, archived: false) {
-      pageInfo {
-        startCursor
-        endCursor
-        hasNextPage
-        hasPreviousPage
+export const GET_INVOICE_PAYMENT_QUERY = gql`
+  query FinanceInvoicePayment($id: ID!) {
+    financeInvoicePayment(id:$id) {
+      id
+      date
+      amount
+      financePaymentMethod {
+        id
+        name
       }
-      edges {
-        node {
-          id
-          name
-        }
-      }
+      note
     }
   }
 `
