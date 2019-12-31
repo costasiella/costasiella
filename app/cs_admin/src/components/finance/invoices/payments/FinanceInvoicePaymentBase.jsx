@@ -94,7 +94,9 @@ function FinanceInvoicePaymentBase({ t, history, match, children, form_type="cre
               </Card.Header>
               <Card.Body padding={0}>
                 <h4> #{ invoice_number } </h4>
+                { inputData.financeInvoice.account.fullName } <br />
                 { inputData.financeInvoice.summary }
+                
               </Card.Body>
             </Card>
             <FinanceInvoiceEditBalance financeInvoice={inputData.financeInvoice} />
