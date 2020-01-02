@@ -65,6 +65,7 @@ class FinanceInvoice(models.Model):
         """ Update total amounts fields (subtotal, tax, total, paid, balance) """
         # Get totals from invoice items
         from .finance_invoice_item import FinanceInvoiceItem
+        from .finance_invoice_payment import FinanceInvoicePayment
         from django.db.models import Sum
 
         sums = FinanceInvoiceItem.objects.filter(finance_invoice = self).aggregate(Sum('subtotal'), Sum('tax'), Sum('total'))
@@ -75,8 +76,13 @@ class FinanceInvoice(models.Model):
         self.tax = sums['tax__sum'] or 0
         self.total = sums['total__sum'] or 0
 
+        payment_sum = FinanceInvoicePayment.objects.filter(
+            finance_invoice = self
+        ).aggregate(Sum('amount'))
+        print(payment_sum)
+
         #TODO: Update amount paid & balance
-        self.paid = 0
+        self.paid = payment_sum['amount__sum'] or 0
         self.balance = self.total - self.paid
 
         self.save(update_fields=[
