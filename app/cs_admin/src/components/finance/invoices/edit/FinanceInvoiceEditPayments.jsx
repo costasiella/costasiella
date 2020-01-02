@@ -1,15 +1,9 @@
 // @flow
 
 import React, { useContext } from 'react'
-import gql from "graphql-tag"
-import { Query, Mutation } from "react-apollo"
-import { useMutation } from '@apollo/react-hooks';
 import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
 import { Link } from "react-router-dom"
-import { Formik } from 'formik'
-import { toast } from 'react-toastify'
-import { v4 } from 'uuid'
 
 import {
   Icon, 
@@ -19,7 +13,6 @@ import {
 import moment from 'moment'
 
 import AppSettingsContext from '../../../context/AppSettingsContext'
-
 import FinanceInvoiceEditPaymentDelete from "./FinanceInvoiceEditPaymentDelete"
 
 

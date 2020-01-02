@@ -66,6 +66,7 @@ export const GET_INVOICE_QUERY = gql`
       total
       totalDisplay
       paidDisplay
+      balance
       balanceDisplay
       updatedAt
       items {

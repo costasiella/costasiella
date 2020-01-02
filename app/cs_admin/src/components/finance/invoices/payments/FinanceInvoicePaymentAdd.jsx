@@ -14,7 +14,9 @@ import {
 } from "tabler-react"
 
 
-import { GET_INVOICE_QUERY } from "../queries"
+import { get_list_query_variables } from "../tools"
+
+import { GET_INVOICE_QUERY, GET_INVOICES_QUERY } from "../queries"
 import { GET_INPUT_VALUES_QUERY } from './queries'
 import { FINANCE_INVOICE_PAYMENT_SCHEMA } from './yupSchema'
 // import ScheduleClassPriceForm from './ScheduleClassPriceForm'
@@ -78,7 +80,7 @@ function FinanceInvoicePaymentAdd({ t, history, match }) {
       <Formik
         initialValues={{ 
           date: new Date() ,
-          amount: inputData.financeInvoice.total,
+          amount: inputData.financeInvoice.balance,
           financePaymentMethod: "",
           note: ""
         }}
@@ -93,6 +95,7 @@ function FinanceInvoicePaymentAdd({ t, history, match }) {
                 note: values.note
               }
             }, refetchQueries: [
+                {query: GET_INVOICES_QUERY, variables: get_list_query_variables() },
                 {query: GET_INVOICE_QUERY, variables: { id: invoiceId }},
             ]})
             .then(({ data }) => {

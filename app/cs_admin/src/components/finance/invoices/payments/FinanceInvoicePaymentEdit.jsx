@@ -13,8 +13,9 @@ import {
   Card,
 } from "tabler-react"
 
+import { get_list_query_variables } from "../tools"
 
-import { GET_INVOICE_QUERY } from "../queries"
+import { GET_INVOICE_QUERY, GET_INVOICES_QUERY } from "../queries"
 import { GET_INVOICE_PAYMENT_QUERY } from './queries'
 import { FINANCE_INVOICE_PAYMENT_SCHEMA } from './yupSchema'
 // import ScheduleClassPriceForm from './ScheduleClassPriceForm'
@@ -119,6 +120,7 @@ function FinanceInvoicePaymentEdit({ t, history, match }) {
                 note: values.note
               }
             }, refetchQueries: [
+                {query: GET_INVOICES_QUERY, variables: get_list_query_variables() },
                 {query: GET_INVOICE_QUERY, variables: { id: invoiceId }},
             ]})
             .then(({ data }) => {

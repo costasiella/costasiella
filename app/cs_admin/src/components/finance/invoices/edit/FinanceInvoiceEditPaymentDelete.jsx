@@ -14,6 +14,8 @@ import {
 import moment from 'moment'
 import AppSettingsContext from '../../../context/AppSettingsContext'
 
+import { get_list_query_variables } from "../tools"
+
 
 function FinanceInvoiceEditPaymentDelete({t, match, node}) {
   const appSettings = useContext(AppSettingsContext)
@@ -38,7 +40,7 @@ function FinanceInvoiceEditPaymentDelete({t, match, node}) {
                 }
               }, 
               refetchQueries: [
-                // {query: GET_INVOICES_QUERY, variables: get_list_query_variables() },
+                {query: GET_INVOICES_QUERY, variables: get_list_query_variables() },
                 {query: GET_INVOICE_QUERY, variables: {id: match.params.id} },
               ]
             }
