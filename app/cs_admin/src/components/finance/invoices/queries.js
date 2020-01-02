@@ -228,3 +228,12 @@ export const DELETE_INVOICE_ITEM = gql`
     }
   }
 `
+
+
+export const DELETE_INVOICE_PAYMENT = gql`
+  mutation DeleteFinanceInvoicePayment($input: DeleteFinanceInvoicePaymentInput!) {
+    deleteFinanceInvoicePayment(input: $input) {
+      ok
+    }
+  }
+`
