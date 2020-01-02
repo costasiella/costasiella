@@ -11,11 +11,12 @@ import { Formik } from 'formik'
 import { toast } from 'react-toastify'
 import { v4 } from 'uuid'
 
-
 import {
   Icon, 
   Table
 } from "tabler-react"
+
+import FinanceInvoiceEditPaymentDelete from "./FinanceInvoiceEditPaymentDelete"
 
 
 
@@ -53,7 +54,7 @@ const FinanceInvoiceEditPayments = ({ t, history, match, refetchInvoice, inputDa
                   <Icon prefix="fe" name="edit" />
                 </Link>
                 {/* TODO: Add delete button */}
-                Del
+                <FinanceInvoiceEditPaymentDelete node={node} />
                 {/* <FinanceInvoiceItemDelete node={node} /> */}
               </Table.Col>
             </Table.Row>
