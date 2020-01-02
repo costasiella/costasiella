@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { useMutation } from '@apollo/react-hooks';
 import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
@@ -11,9 +11,13 @@ import {
   Icon
 } from "tabler-react"
 
+import moment from 'moment'
+import AppSettingsContext from '../../../context/AppSettingsContext'
 
 
 function FinanceInvoiceEditPaymentDelete({t, match, node}) {
+  const appSettings = useContext(AppSettingsContext)
+  const dateFormat = appSettings.dateFormat
   const [deleteInvoicePayment, { data }] = useMutation(DELETE_INVOICE_PAYMENT)
 
     return (
@@ -24,7 +28,7 @@ function FinanceInvoiceEditPaymentDelete({t, match, node}) {
           confirm_delete({
             t: t,
             msgConfirm: t("finance.invoices.payment_delete_confirm_msg"),
-            msgDescription: <p>{node.date} <br /> {node.amountDisplay}</p>,
+            msgDescription: <p>{ moment(node.date).format(dateFormat) } - {node.amountDisplay}</p>,
             msgSuccess: t('finance.invoices.payment_deleted'),
             deleteFunction: deleteInvoicePayment,
             functionVariables: { 
