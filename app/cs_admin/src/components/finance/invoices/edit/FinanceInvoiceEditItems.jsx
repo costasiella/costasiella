@@ -48,8 +48,21 @@ function FinanceInvoiceEditItems ({ t, history, match, refetchInvoice, inputData
   //   console.log(reason)
   // }
 
-  const onDragEnd = useCallback(() => {
+  const onDragEnd = useCallback((result) => {
     // the only one that is required
+    console.log('onDragEnd triggered...')
+    console.log(result)
+    const { destination, source, reason } = result
+    console.log(source)
+    console.log(destination)
+    console.log(reason)
+
+    // TODO: notify backend of sorting change
+    // dragableID = nodeID 
+    // Indexes are 0 indexed
+    // source.index = old index
+    // destination.index = new index
+
   }, []);
 
   return (
