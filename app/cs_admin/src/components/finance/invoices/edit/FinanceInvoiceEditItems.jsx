@@ -114,6 +114,7 @@ function FinanceInvoiceEditItems ({ t, history, match, refetchInvoice, inputData
                         )}
                       </Draggable>
                     ))}
+                    {provided.placeholder}
                   </tbody>
               )}
             </Droppable>
