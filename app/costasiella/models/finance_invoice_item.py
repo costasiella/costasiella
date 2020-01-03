@@ -12,7 +12,7 @@ from .finance_tax_rate import FinanceTaxRate
 class FinanceInvoiceItem(models.Model):
     finance_invoice = models.ForeignKey(FinanceInvoice, on_delete=models.CASCADE, related_name="items")
     account_classpass = models.ForeignKey(AccountClasspass, on_delete=models.SET_NULL, null=True, default=None)
-    line_number = models.PositiveSmallIntegerField(default=1)
+    line_number = models.PositiveSmallIntegerField(default=0)
     product_name = models.CharField(max_length=255)
     description = models.TextField(default="")
     quantity = models.DecimalField(max_digits=20, decimal_places=2)
