@@ -86,28 +86,10 @@ class GQLFinanceInvoicePayment(TestCase):
       financeInvoice {
         id
       }
-      lineNumber
-      productName
-      description
-      quantity
-      price
-      financeTaxRate {
-        id
-        name
-        percentage
-        rateType
-      }
-      subtotal
-      subtotalDisplay
-      tax
-      taxDisplay
-      total
-      totalDisplay
-      financeGlaccount {
-        id
-        name
-      }
-      financeCostcenter {
+      date
+      amount
+      note
+      financePaymentMethod {
         id
         name
       }
@@ -190,8 +172,6 @@ class GQLFinanceInvoicePayment(TestCase):
         executed = execute_test_client_api_query(query, self.admin_user, variables=variables)
         data = executed.get('data')
 
-        print(executed)
-
         self.assertEqual(
           data['financeInvoicePayments']['edges'][0]['node']['id'],
           to_global_id('FinanceInvoicePaymentNode', invoice_payment.id)
@@ -266,74 +246,84 @@ class GQLFinanceInvoicePayment(TestCase):
         self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
-    # def test_query_one(self):
-    #     """ Query one account invoice payment as admin """   
-    #     invoice_payment = f.FinanceInvoicePaymentFactory.create()
+    def test_query_one(self):
+        """ Query one account invoice payment as admin """   
+        invoice_payment = f.FinanceInvoicePaymentFactory.create()
         
-    #     variables = {
-    #         "id": to_global_id("FinanceInvoicePaymentNode", invoice_payment.id),
-    #     }
+        variables = {
+            "id": to_global_id("FinanceInvoicePaymentNode", invoice_payment.id),
+        }
 
-    #     # Now query single invoice and check
-    #     executed = execute_test_client_api_query(self.invoice_payment_query, self.admin_user, variables=variables)
-    #     data = executed.get('data')
+        # Now query single invoice and check
+        executed = execute_test_client_api_query(self.invoice_payment_query, self.admin_user, variables=variables)
+        data = executed.get('data')
 
-    #     self.assertEqual(
-    #         data['financeInvoicePayment']['id'],
-    #         to_global_id('FinanceInvoicePaymentNode', invoice_payment.id)
-    #     )
+        self.assertEqual(
+            data['financeInvoicePayment']['id'],
+            to_global_id('FinanceInvoicePaymentNode', invoice_payment.id)
+        )
+        self.assertEqual(
+            data['financeInvoicePayment']['financeInvoice']['id'],
+            to_global_id('FinanceInvoiceNode', invoice_payment.finance_invoice.id)
+        )
+        self.assertEqual(data['financeInvoicePayment']['date'], str(invoice_payment.date))
+        self.assertEqual(data['financeInvoicePayment']['amount'], invoice_payment.amount)
+        self.assertEqual(data['financeInvoicePayment']['note'], invoice_payment.note)
+        self.assertEqual(
+            data['financeInvoicePayment']['financePaymentMethod']['id'],
+            to_global_id('FinancePaymentMethodNode', invoice_payment.finance_payment_method.id)
+        )
 
 
-    # def test_query_one_anon_user(self):
-    #     """ Deny permission for anon users Query one account invoice """   
-    #     invoice_payment = f.FinanceInvoicePaymentFactory.create()
+    def test_query_one_anon_user(self):
+        """ Deny permission for anon users Query one account invoice """   
+        invoice_payment = f.FinanceInvoicePaymentFactory.create()
         
-    #     variables = {
-    #         "id": to_global_id("FinanceInvoicePaymentNode", invoice_payment.id),
-    #     }
+        variables = {
+            "id": to_global_id("FinanceInvoicePaymentNode", invoice_payment.id),
+        }
 
-    #     # Now query single invoice and check
-    #     executed = execute_test_client_api_query(self.invoice_payment_query, self.anon_user, variables=variables)
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
-
-
-    # def test_query_one_permission_denied(self):
-    #     """ Permission denied message when user lacks authorization """   
-    #     # Create regular user
-    #     invoice_payment = f.FinanceInvoicePaymentFactory.create()
-    #     user = invoice_payment.finance_invoice.account
-
-    #     variables = {
-    #         "id": to_global_id("FinanceInvoicePaymentNode", invoice_payment.id),
-    #     }
-
-    #     # Now query single invoice and check
-    #     executed = execute_test_client_api_query(self.invoice_payment_query, user, variables=variables)
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
+        # Now query single invoice and check
+        executed = execute_test_client_api_query(self.invoice_payment_query, self.anon_user, variables=variables)
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
-    # def test_query_one_permission_granted(self):
-    #     """ Respond with data when user has permission """   
-    #     invoice_payment = f.FinanceInvoicePaymentFactory.create()
-    #     user = invoice_payment.finance_invoice.account
-    #     permission = Permission.objects.get(codename='view_financeinvoicepayment')
-    #     user.user_permissions.add(permission)
-    #     user.save()
+    def test_query_one_permission_denied(self):
+        """ Permission denied message when user lacks authorization """   
+        # Create regular user
+        invoice_payment = f.FinanceInvoicePaymentFactory.create()
+        user = invoice_payment.finance_invoice.account
+
+        variables = {
+            "id": to_global_id("FinanceInvoicePaymentNode", invoice_payment.id),
+        }
+
+        # Now query single invoice and check
+        executed = execute_test_client_api_query(self.invoice_payment_query, user, variables=variables)
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
+
+
+    def test_query_one_permission_granted(self):
+        """ Respond with data when user has permission """   
+        invoice_payment = f.FinanceInvoicePaymentFactory.create()
+        user = invoice_payment.finance_invoice.account
+        permission = Permission.objects.get(codename='view_financeinvoicepayment')
+        user.user_permissions.add(permission)
+        user.save()
         
-    #     variables = {
-    #         "id": to_global_id("FinanceInvoicePaymentNode", invoice_payment.id),
-    #     }
+        variables = {
+            "id": to_global_id("FinanceInvoicePaymentNode", invoice_payment.id),
+        }
 
-    #     # Now query single invoice and check   
-    #     executed = execute_test_client_api_query(self.invoice_payment_query, user, variables=variables)
-    #     data = executed.get('data')
-    #     self.assertEqual(
-    #         data['financeInvoicePayment']['id'],
-    #         to_global_id('FinanceInvoicePaymentNode', invoice_payment.id)
-    #     )
-
+        # Now query single invoice and check   
+        executed = execute_test_client_api_query(self.invoice_payment_query, user, variables=variables)
+        data = executed.get('data')
+        self.assertEqual(
+            data['financeInvoicePayment']['id'],
+            to_global_id('FinanceInvoicePaymentNode', invoice_payment.id)
+        )
 
 
     # def test_create_invoice_payment(self):
