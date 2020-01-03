@@ -218,6 +218,63 @@ class UpdateFinanceInvoiceItem(graphene.relay.ClientIDMutation):
         
         if 'line_number' in input:
             # TODO: Add code to make sure line numbers remain sequential
+            old_line_nr = int(finance_invoice_item.line_number)
+            new_line_nr = int(input['line_number'])
+
+            if old_line_nr > new_line_nr:
+                # Do stuff
+            else:
+                # Do other stuff
+
+
+            # def items_update_sorting():
+            #     """
+            #         Called as JSON, sets the sorting for invoice items in the db
+            #     """
+            #     # check if we're using json, if not, provide a fail message
+            #     if not request.extension == 'json':
+            #         return dict(status  = 'fail',
+            #                     message = T("Please call this function as json"))
+
+            #     status = 'OK'
+            #     message = T('Changed sorting')
+
+            #     iID       = request.vars['iID']
+            #     old_index = int(request.vars['old_index'])
+            #     new_index = int(request.vars['new_index'])
+
+            #     query = (db.invoices_items.invoices_id == iID) & \
+            #             (db.invoices_items.Sorting == old_index)
+            #     changed_row = db(query).select(db.invoices_items.ALL).first()
+
+            #     if old_index > new_index:
+            #         query = (db.invoices_items.invoices_id == iID) & \
+            #                 (db.invoices_items.Sorting < old_index) & \
+            #                 (db.invoices_items.Sorting >= new_index)
+            #         rows = db(query).select(db.invoices_items.ALL)
+            #         for row in rows:
+            #             row.Sorting = row.Sorting + 1
+            #             row.update_record()
+            #     else:
+            #         query = (db.invoices_items.invoices_id == iID) & \
+            #                 (db.invoices_items.Sorting > old_index) & \
+            #                 (db.invoices_items.Sorting <= new_index)
+            #         rows = db(query).select(db.invoices_items.ALL)
+            #         for row in rows:
+            #             row.Sorting = row.Sorting - 1
+            #             row.update_record()
+
+
+            #     changed_row.Sorting = new_index
+            #     changed_row.update_record()
+
+            #     invoice = Invoice(iID)
+            #     invoice.on_update()
+
+
+            #     return dict(status = status,
+            #                 message = message)
+
             finance_invoice_item.line_number = input['line_number']
 
         if 'product_name' in input:
