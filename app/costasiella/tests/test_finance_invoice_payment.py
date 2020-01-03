@@ -321,7 +321,7 @@ class GQLFinanceInvoicePayment(TestCase):
 
 
     def test_create_invoice_payment(self):
-        """ Create an account invoice payment """
+        """ Create an invoice payment """
         query = self.invoice_payment_create_mutation
 
         invoice_item = f.FinanceInvoiceItemFactory.create()
@@ -359,7 +359,7 @@ class GQLFinanceInvoicePayment(TestCase):
 
 
     def test_create_invoice_payment_anon_user(self):
-        """ Don't allow creating account invoices for non-logged in users """
+        """ Don't allow creating invoice payments for non-logged in users """
         query = self.invoice_payment_create_mutation
 
         invoice_item = f.FinanceInvoiceItemFactory.create()
@@ -378,7 +378,7 @@ class GQLFinanceInvoicePayment(TestCase):
 
 
     def test_create_invoice_payment_permission_granted(self):
-        """ Allow creating invoices for users with permissions """
+        """ Allow creating invoice payments for users with permissions """
         query = self.invoice_payment_create_mutation
 
         invoice_item = f.FinanceInvoiceItemFactory.create()
@@ -405,7 +405,7 @@ class GQLFinanceInvoicePayment(TestCase):
 
 
     def test_create_invoice_payment_permission_denied(self):
-        """ Check create invoice permission denied error message """
+        """ Check create invoice payment permission denied error message """
         query = self.invoice_payment_create_mutation
 
         invoice_item = f.FinanceInvoiceItemFactory.create()
@@ -427,7 +427,7 @@ class GQLFinanceInvoicePayment(TestCase):
 
 
     def test_update_invoice_payment(self):
-        """ Update a invoice payment """
+        """ Update an invoice payment """
         query = self.invoice_payment_update_mutation
 
         invoice_payment = f.FinanceInvoicePaymentFactory.create()
@@ -451,7 +451,7 @@ class GQLFinanceInvoicePayment(TestCase):
 
 
     def test_update_invoice_payment_anon_user(self):
-        """ Don't allow updating invoices for non-logged in users """
+        """ Don't allow updating invoice payments for non-logged in users """
         query = self.invoice_payment_update_mutation
 
         invoice_payment = f.FinanceInvoicePaymentFactory.create()
@@ -469,7 +469,7 @@ class GQLFinanceInvoicePayment(TestCase):
 
 
     def test_update_invoice_payment_permission_granted(self):
-        """ Allow updating invoices for users with permissions """
+        """ Allow updating invoice payments for users with permissions """
         query = self.invoice_payment_update_mutation
 
         invoice_payment = f.FinanceInvoicePaymentFactory.create()
@@ -491,7 +491,7 @@ class GQLFinanceInvoicePayment(TestCase):
 
 
     def test_update_invoice_payment_permission_denied(self):
-        """ Check update invoice permission denied error message """
+        """ Check update invoice payment permission denied error message """
         query = self.invoice_payment_update_mutation
 
         invoice_payment = f.FinanceInvoicePaymentFactory.create()
@@ -510,76 +510,76 @@ class GQLFinanceInvoicePayment(TestCase):
         self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
-    # def test_delete_invoice(self):
-    #     """ Delete an account invoice """
-    #     query = self.invoice_payment_delete_mutation
-    #     invoice_payment = f.FinanceInvoicePaymentFactory.create()
-    #     variables = {"input":{}}
-    #     variables['input']['id'] = to_global_id('FinanceInvoicePaymentNode', invoice_payment.id)
+    def test_delete_invoice_payment(self):
+        """ Delete an account invoice payment """
+        query = self.invoice_payment_delete_mutation
+        invoice_payment = f.FinanceInvoicePaymentFactory.create()
+        variables = {"input":{}}
+        variables['input']['id'] = to_global_id('FinanceInvoicePaymentNode', invoice_payment.id)
 
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         self.admin_user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['deleteFinanceInvoicePayment']['ok'], True)
-
-
-    # def test_delete_invoice_payment_anon_user(self):
-    #     """ Delete invoice denied for anon user """
-    #     query = self.invoice_payment_delete_mutation
-    #     invoice_payment = f.FinanceInvoicePaymentFactory.create()
-    #     variables = {"input":{}}
-    #     variables['input']['id'] = to_global_id('FinanceInvoicePaymentNode', invoice_payment.id)
-
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         self.anon_user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
+        executed = execute_test_client_api_query(
+            query, 
+            self.admin_user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['deleteFinanceInvoicePayment']['ok'], True)
 
 
-    # def test_delete_invoice_payment_permission_granted(self):
-    #     """ Allow deleting invoices for users with permissions """
-    #     query = self.invoice_payment_delete_mutation
-    #     invoice_payment = f.FinanceInvoicePaymentFactory.create()
-    #     variables = {"input":{}}
-    #     variables['input']['id'] = to_global_id('FinanceInvoicePaymentNode', invoice_payment.id)
+    def test_delete_invoice_payment_anon_user(self):
+        """ Delete invoice denied for anon user """
+        query = self.invoice_payment_delete_mutation
+        invoice_payment = f.FinanceInvoicePaymentFactory.create()
+        variables = {"input":{}}
+        variables['input']['id'] = to_global_id('FinanceInvoicePaymentNode', invoice_payment.id)
 
-    #     # Give permissions
-    #     user = invoice_payment.finance_invoice.account
-    #     permission = Permission.objects.get(codename=self.permission_delete)
-    #     user.user_permissions.add(permission)
-    #     user.save()
-
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['deleteFinanceInvoicePayment']['ok'], True)
+        executed = execute_test_client_api_query(
+            query, 
+            self.anon_user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
-    # def test_delete_invoice_payment_permission_denied(self):
-    #     """ Check delete invoice permission denied error message """
-    #     query = self.invoice_payment_delete_mutation
-    #     invoice_payment = f.FinanceInvoicePaymentFactory.create()
-    #     variables = {"input":{}}
-    #     variables['input']['id'] = to_global_id('FinanceInvoicePaymentNode', invoice_payment.id)
+    def test_delete_invoice_payment_permission_granted(self):
+        """ Allow deleting invoices for users with permissions """
+        query = self.invoice_payment_delete_mutation
+        invoice_payment = f.FinanceInvoicePaymentFactory.create()
+        variables = {"input":{}}
+        variables['input']['id'] = to_global_id('FinanceInvoicePaymentNode', invoice_payment.id)
+
+        # Give permissions
+        user = invoice_payment.finance_invoice.account
+        permission = Permission.objects.get(codename=self.permission_delete)
+        user.user_permissions.add(permission)
+        user.save()
+
+        executed = execute_test_client_api_query(
+            query, 
+            user,
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['deleteFinanceInvoicePayment']['ok'], True)
+
+
+    def test_delete_invoice_payment_permission_denied(self):
+        """ Check delete invoice permission denied error message """
+        query = self.invoice_payment_delete_mutation
+        invoice_payment = f.FinanceInvoicePaymentFactory.create()
+        variables = {"input":{}}
+        variables['input']['id'] = to_global_id('FinanceInvoicePaymentNode', invoice_payment.id)
         
-    #     user = invoice_payment.finance_invoice.account
+        user = invoice_payment.finance_invoice.account
 
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
+        executed = execute_test_client_api_query(
+            query, 
+            user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
 
