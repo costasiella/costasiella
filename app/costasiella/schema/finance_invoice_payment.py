@@ -130,8 +130,6 @@ class UpdateFinanceInvoicePayment(graphene.relay.ClientIDMutation):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.change_financeinvoicepayment')
 
-        print(input)
-
         rid = get_rid(input['id'])
 
         finance_invoice_payment = FinanceInvoicePayment.objects.filter(id=rid.id).first()
