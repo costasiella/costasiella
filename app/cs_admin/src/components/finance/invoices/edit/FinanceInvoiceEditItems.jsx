@@ -2,6 +2,7 @@
 
 import React, { useCallback } from 'react'
 import gql from "graphql-tag"
+import { useMutation } from "react-apollo"
 import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
@@ -33,6 +34,8 @@ export const UPDATE_INVOICE_ITEM = gql`
           id
           name
         }
+        total
+        line_number
       }
     }
   }
@@ -52,7 +55,7 @@ function FinanceInvoiceEditItems ({ t, history, match, refetchInvoice, inputData
     // the only one that is required
     console.log('onDragEnd triggered...')
     console.log(result)
-    const { destination, source, reason } = result
+    const { draggableId, destination, source, reason } = result
     console.log(source)
     console.log(destination)
     console.log(reason)
@@ -62,6 +65,14 @@ function FinanceInvoiceEditItems ({ t, history, match, refetchInvoice, inputData
     // Indexes are 0 indexed
     // source.index = old index
     // destination.index = new index
+
+    const [updateItem, { data }] = useMutation(UPDATE_INVOICE_ITEM)
+    updateItem({ variables: { 
+      input: {
+        id: draggableId,
+        line_number = destination.index
+      } 
+    }})
 
   }, []);
 
