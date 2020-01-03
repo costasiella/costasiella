@@ -26,7 +26,7 @@ const FormFinanceTaxRate = ({ t, isSubmitting, errors, submitForm, inputData, ha
                 handleTextInputBlur(e, handleChange, submitForm)
               }}
         >
-          {console.log("query data in form add:")}
+          {console.log("query data in form finance tax rate:")}
           {console.log(inputData)}
           <option value="" key={v4()}></option>
           {inputData.financeTaxRates.edges.map(({ node }) =>

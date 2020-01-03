@@ -6,6 +6,7 @@ import { useMutation } from "react-apollo"
 import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
+import { toast } from 'react-toastify'
 
 import {
   Card, 
@@ -19,6 +20,7 @@ import UpdatePrice from "./UpdatePrice"
 import UpdateFinanceTaxRate from "./UpdateFinanceTaxRate"
 import FinanceInvoiceItemDelete from "./FinanceInvoiceItemDelete"
 import FinanceInvoiceItemAdd from "./FinanceInvoiceItemAdd"
+import { GET_INVOICE_QUERY } from '../queries'
 
 
 export const UPDATE_INVOICE_ITEM = gql`
@@ -35,21 +37,14 @@ export const UPDATE_INVOICE_ITEM = gql`
           name
         }
         total
-        line_number
+        lineNumber
       }
     }
   }
 `
 
 function FinanceInvoiceEditItems ({ t, history, match, refetchInvoice, inputData }) {
-  // function onDragEnd(result) {
-  //   console.log('onDragEnd triggered...')
-  //   console.log(result)
-  //   const { destination, source, reason } = result
-  //   console.log(source)
-  //   console.log(destination)
-  //   console.log(reason)
-  // }
+  const [updateItem, { data }] = useMutation(UPDATE_INVOICE_ITEM)
 
   const onDragEnd = useCallback((result) => {
     // the only one that is required
@@ -66,27 +61,39 @@ function FinanceInvoiceEditItems ({ t, history, match, refetchInvoice, inputData
     // source.index = old index
     // destination.index = new index
 
-    const [updateItem, { data }] = useMutation(UPDATE_INVOICE_ITEM)
-    updateItem({ variables: { 
-      input: {
-        id: draggableId,
-        line_number = destination.index
-      } 
-    }}).then(({ data }) => {
+    updateLineNumber({
+      node_id: draggableId,
+      line_number: destination.index
+    })
+
+  }, []);
+
+
+  const updateLineNumber = ({ node_id, line_number }) => {
+    updateItem({ 
+      variables: { 
+        input: {
+          id: node_id,
+          lineNumber: line_number
+        } 
+      },
+      refetchQueries: [
+        { 
+          query: GET_INVOICE_QUERY, variables: {id: inputData.financeInvoice.id}
+        }
+      ]
+    }).then(({ data }) => {
       console.log('got data', data)
       toast.success((t('settings.general.toast_edit_success')), {
           position: toast.POSITION.BOTTOM_RIGHT
       })
-      setSubmitting(false)
     }).catch((error) => {
       toast.error((t('general.toast_server_error')) + ': ' +  error, {
           position: toast.POSITION.BOTTOM_RIGHT
       })
       console.log('there was an error sending the query', error)
-      setSubmitting(false)
     })
-
-  }, []);
+  }
 
   return (
     <DragDropContext onDragEnd={onDragEnd} >
