@@ -46,46 +46,6 @@ export const UPDATE_INVOICE_ITEM = gql`
   }
 `
 
-
-// function get_initial_values(node) {
-//   let initialValues = {
-//     productName: node.productName, 
-//     description: node.description, 
-//     quantity: node.quantity, 
-//     price: node.price, 
-//   }
-
-//   if (node.financeTaxRate) {
-//     initialValues.financeTaxRate = node.financeTaxRate.id
-//   }
-
-//   if (node.financeGlaccount) {
-//     initialValues.financeGlaccount = node.financeGlaccount.id
-//   }
-
-//   if (node.financeCostcenter) {
-//     initialValues.financeCostcenter = node.financeCostcenter.id
-//   }
-
-//   return initialValues
-
-// }
-
-{/* <Card.Options>
-                  <Button color={(!archived) ? 'primary': 'secondary'}  
-                          size="sm"
-                          onClick={() => {archived=false; refetch({archived});}}>
-                    {t('general.current')}
-                  </Button>
-                  <Button color={(archived) ? 'primary': 'secondary'} 
-                          size="sm" 
-                          className="ml-2" 
-                          onClick={() => {archived=true; refetch({archived});}}>
-                    {t('general.archive')}
-                  </Button>
-                </Card.Options> */}
-
-
 const FinanceInvoiceEditItems = ({ t, history, match, refetchInvoice, inputData }) => (
   <Card statusColor="blue">
     <Card.Header>
