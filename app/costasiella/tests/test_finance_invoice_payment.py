@@ -45,17 +45,15 @@ class GQLFinanceInvoicePayment(TestCase):
             }
         }
 
-        # self.variables_update = {
-        #     "input": {
-        #       "productName": "Updated product",
-        #       "description": "Updated description",
-        #       "quantity": 10,
-        #       "price": 12.51,
-        #       "financeTaxRate": to_global_id("FinanceTaxRateNode", self.finance_tax_rate.pk),
-        #       "financeGlaccount": to_global_id("FinanceGLAccountNode", self.finance_glaccount.pk),
-        #       "financeCostcenter": to_global_id("FinanceCostCenterNode", self.finance_costcenter.pk)
-        #     }
-        # }
+        self.variables_update = {
+            "input": {
+              "date": datetime.date(2019, 1, 1),
+              "amount": 12,
+              "note": "test update note",
+              # Fixed value for wire transfer (from fixtures)
+              "financePaymentMethod": to_global_id("FinancePaymentMethodNode", 103) 
+            }
+        }
 
         self.invoice_payments_query = '''
   query FinanceInvoicesPayments($financeInvoice: ID!) {
