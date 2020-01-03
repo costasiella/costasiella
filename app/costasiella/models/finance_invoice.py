@@ -69,8 +69,6 @@ class FinanceInvoice(models.Model):
         from django.db.models import Sum
 
         sums = FinanceInvoiceItem.objects.filter(finance_invoice = self).aggregate(Sum('subtotal'), Sum('tax'), Sum('total'))
-        print('##############')
-        print(sums)
 
         self.subtotal = sums['subtotal__sum'] or 0
         self.tax = sums['tax__sum'] or 0
@@ -79,9 +77,7 @@ class FinanceInvoice(models.Model):
         payment_sum = FinanceInvoicePayment.objects.filter(
             finance_invoice = self
         ).aggregate(Sum('amount'))
-        print(payment_sum)
 
-        #TODO: Update amount paid & balance
         self.paid = payment_sum['amount__sum'] or 0
         self.balance = self.total - self.paid
 
