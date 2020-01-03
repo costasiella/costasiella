@@ -147,7 +147,7 @@ class FinanceInvoice(models.Model):
 
         qs = FinanceInvoiceItem.objects.filter(finance_invoice = self)
 
-        return qs.count() + 1
+        return qs.count()
 
 
     def item_add_classpass(self, account_classpass):
