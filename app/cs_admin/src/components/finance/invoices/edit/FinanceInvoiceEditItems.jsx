@@ -2,23 +2,15 @@
 
 import React from 'react'
 import gql from "graphql-tag"
-import { Query, Mutation } from "react-apollo"
-import { useMutation } from '@apollo/react-hooks';
 import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
-import { Formik } from 'formik'
-import { toast } from 'react-toastify'
-import { v4 } from 'uuid'
-
+import { DragDropContext } from 'react-beautiful-dnd';
 
 import {
   Card, 
   Table
 } from "tabler-react"
 
-
-import { get_list_query_variables } from "../tools"
-import { UPDATE_INVOICE, GET_INVOICES_QUERY } from "../queries"
 import UpdateProductName from "./UpdateProductName"
 import UpdateDescription from "./UpdateDescription"
 import UpdateQuantity from "./UpdateQuantity"
