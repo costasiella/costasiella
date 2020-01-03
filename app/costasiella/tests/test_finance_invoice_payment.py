@@ -98,51 +98,40 @@ class GQLFinanceInvoicePayment(TestCase):
 '''
 
         self.invoice_payment_create_mutation = ''' 
-  mutation CreateFinanceInvoicePayment($input: CreateFinanceInvoicePaymentInput!) {
-    createFinanceInvoicePayment(input: $input) {
+  mutation CreateFinanceInvoicePayment($input:CreateFinanceInvoicePaymentInput!) {
+    createFinanceInvoicePayment(input:$input) {
       financeInvoicePayment {
         id
         financeInvoice {
           id
         }
-        productName
-        description
-        quantity
-        price
-        financeTaxRate {
+        date
+        amount
+        note
+        financePaymentMethod {
           id
           name
         }
-      }
+      } 
     }
   }
 '''
 
         self.invoice_payment_update_mutation = '''
-  mutation UpdateFinanceInvoicePayment($input: UpdateFinanceInvoicePaymentInput!) {
-    updateFinanceInvoicePayment(input: $input) {
+  mutation UpdateFinanceInvoicePayment($input:UpdateFinanceInvoicePaymentInput!) {
+    updateFinanceInvoicePayment(input:$input) {
       financeInvoicePayment {
         id
         financeInvoice {
           id
         }
-        productName
-        description
-        quantity
-        price
-        financeTaxRate {
+        date
+        amount
+        note
+        financePaymentMethod {
           id
           name
         }
-        financeGlaccount {
-          id
-          name
-        }
-        financeCostcenter {
-          id
-          name
-        }
-      }
     }
   }
 '''
@@ -326,29 +315,29 @@ class GQLFinanceInvoicePayment(TestCase):
         )
 
 
-    # def test_create_invoice_payment(self):
-    #     """ Create an account invoice """
-    #     query = self.invoice_payment_create_mutation
+    def test_create_invoice_payment(self):
+        """ Create an account invoice payment """
+        query = self.invoice_payment_create_mutation
 
-    #     invoice = f.FinanceInvoiceFactory.create()
-    #     variables = self.variables_create
-    #     variables['input']['financeInvoice'] = to_global_id('FinanceInvoiceNode', invoice.id)
+        invoice = f.FinanceInvoiceFactory.create()
+        variables = self.variables_create
+        variables['input']['financeInvoice'] = to_global_id('FinanceInvoiceNode', invoice.id)
 
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         self.admin_user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
+        executed = execute_test_client_api_query(
+            query, 
+            self.admin_user, 
+            variables=variables
+        )
+        data = executed.get('data')
 
-    #     # Get invoice
-    #     rid = get_rid(data['createFinanceInvoicePayment']['financeInvoicePayment']['financeInvoice']['id'])
-    #     invoice = models.FinanceInvoice.objects.get(pk=rid.id)
+        # Get invoice
+        rid = get_rid(data['createFinanceInvoicePayment']['financeInvoicePayment']['financeInvoice']['id'])
+        invoice = models.FinanceInvoice.objects.get(pk=rid.id)
 
-    #     self.assertEqual(
-    #         data['createFinanceInvoicePayment']['financeInvoicePayment']['financeInvoice']['id'], 
-    #         variables['input']['financeInvoice']
-    #     )
+        self.assertEqual(
+            data['createFinanceInvoicePayment']['financeInvoicePayment']['financeInvoice']['id'], 
+            variables['input']['financeInvoice']
+        )
 
 
     # def test_create_invoice_payment_anon_user(self):
