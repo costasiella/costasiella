@@ -13,6 +13,7 @@ from ..modules.finance_tools import display_float_as_amount
 
 m = Messages()
 
+
 class FinanceInvoiceItemInterface(graphene.Interface):
     id = graphene.GlobalID()
     price_display = graphene.String()
@@ -29,7 +30,6 @@ class FinanceInvoiceItemFilter(FilterSet):
         fields = [ 
             'id', 
             'finance_invoice', 
-            # 'line_number' 
         ]
         
         order_by = OrderingFilter(
@@ -42,7 +42,7 @@ class FinanceInvoiceItemFilter(FilterSet):
 class FinanceInvoiceItemNode(DjangoObjectType):
     class Meta:
         model = FinanceInvoiceItem
-        # filter_fields = [ 'id', 'finance_invoice' ]
+        filter_fields = [ 'id', 'finance_invoice' ]
         interfaces = (graphene.relay.Node, FinanceInvoiceItemInterface, )
 
     def resolve_price_display(self, info):
@@ -75,7 +75,7 @@ class FinanceInvoiceItemNode(DjangoObjectType):
 class FinanceInvoiceItemQuery(graphene.ObjectType):  
     finance_invoice_items = DjangoFilterConnectionField(
         FinanceInvoiceItemNode,
-        filterset_class=FinanceInvoiceItemFilter,
+        filterset_class=FinanceInvoiceItemFilter
     )
     finance_invoice_item = graphene.relay.Node.Field(FinanceInvoiceItemNode)
 
