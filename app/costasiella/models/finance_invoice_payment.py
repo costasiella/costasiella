@@ -9,8 +9,8 @@ from .finance_payment_method import FinancePaymentMethod
 
 class FinanceInvoicePayment(models.Model):
     finance_invoice = models.ForeignKey(FinanceInvoice, on_delete=models.CASCADE, related_name="payments")
-    amount = models.DecimalField(max_digits=20, decimal_places=2)
     date = models.DateField()
+    amount = models.DecimalField(max_digits=20, decimal_places=2)
     finance_payment_method = models.ForeignKey(FinancePaymentMethod, on_delete=models.CASCADE, null=True)
     note = models.TextField(default="")
 
