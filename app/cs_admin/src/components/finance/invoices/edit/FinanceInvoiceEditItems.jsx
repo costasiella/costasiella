@@ -1,6 +1,6 @@
 // @flow
 
-import React, { useCallback } from 'react'
+import React, { useCallback, useState } from 'react'
 import gql from "graphql-tag"
 import { useMutation } from "react-apollo"
 import { withTranslation } from 'react-i18next'
@@ -46,6 +46,8 @@ export const UPDATE_INVOICE_ITEM = gql`
 function FinanceInvoiceEditItems ({ t, history, match, refetchInvoice, inputData }) {
   const [updateItem, { data }] = useMutation(UPDATE_INVOICE_ITEM)
 
+  const [ invoiceItems, setInvoiceItems ] = useState(inputData.financeInvoice.items.edges)
+
   const onDragEnd = useCallback((result) => {
     // the only one that is required
     console.log('onDragEnd triggered...')
@@ -76,6 +78,14 @@ function FinanceInvoiceEditItems ({ t, history, match, refetchInvoice, inputData
       return
     }
 
+    console.log(invoiceItems)
+
+    const new_order = invoiceItems
+    const item = invoiceItems[source.index]
+    new_order.splice(source.index, 1)
+    new_order.splice(destination.index, 0, item)
+    setInvoiceItems(new_order) 
+    
 
     updateLineNumber({
       node_id: draggableId,
@@ -95,7 +105,7 @@ function FinanceInvoiceEditItems ({ t, history, match, refetchInvoice, inputData
       },
     }).then(({ data }) => {
       console.log('got data', data)
-      toast.success((t('settings.general.toast_edit_success')), {
+      toast.success((t('finance.invoice.saved_item_sorting')), {
           position: toast.POSITION.BOTTOM_RIGHT
       })
     }).catch((error) => {
@@ -133,7 +143,7 @@ function FinanceInvoiceEditItems ({ t, history, match, refetchInvoice, inputData
                     ref={provided.innerRef} 
                     {...provided.droppableProps} 
                   >
-                    {inputData.financeInvoice.items.edges.map(({ node }, idx) => (
+                    {invoiceItems.map(({ node }, idx) => (
                       <Draggable 
                         draggableId={node.id}
                         index={idx}
