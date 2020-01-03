@@ -36,7 +36,13 @@ class GQLFinanceInvoicePayment(TestCase):
         self.finance_payment_method = models.FinancePaymentMethod.objects.get(id=102)
 
         self.variables_create = {
-            "input": {}
+            "input": {
+              "date": datetime.date(2019, 1, 1),
+              "amount": 12,
+              "note": "test create note",
+              # Fixed value for wire transfer (from fixtures)
+              "financePaymentMethod": to_global_id("FinancePaymentMethodNode", 102) 
+            }
         }
 
         # self.variables_update = {
@@ -319,7 +325,8 @@ class GQLFinanceInvoicePayment(TestCase):
         """ Create an account invoice payment """
         query = self.invoice_payment_create_mutation
 
-        invoice = f.FinanceInvoiceFactory.create()
+        invoice_item = f.FinanceInvoiceItemFactory.create()
+        invoice = invoice_item.finance_invoice
         variables = self.variables_create
         variables['input']['financeInvoice'] = to_global_id('FinanceInvoiceNode', invoice.id)
 
@@ -330,79 +337,94 @@ class GQLFinanceInvoicePayment(TestCase):
         )
         data = executed.get('data')
 
-        # Get invoice
-        rid = get_rid(data['createFinanceInvoicePayment']['financeInvoicePayment']['financeInvoice']['id'])
-        invoice = models.FinanceInvoice.objects.get(pk=rid.id)
+        # Get payment
+        rid = get_rid(data['createFinanceInvoicePayment']['financeInvoicePayment']['id'])
+        invoice_payment = models.FinanceInvoicePayment.objects.get(pk=rid.id)
 
+        self.assertEqual(
+            data['createFinanceInvoicePayment']['financeInvoicePayment']['financeInvoice']['id'], 
+            variables['input']['financeInvoice']
+        )
+        self.assertEqual(
+            data['createFinanceInvoicePayment']['financeInvoicePayment']['date'], 
+            str(variables['input']['date'])
+        )
+        self.assertEqual(
+            data['createFinanceInvoicePayment']['financeInvoicePayment']['amount'], 
+            variables['input']['amount']
+        )
+        self.assertEqual(
+            data['createFinanceInvoicePayment']['financeInvoicePayment']['financePaymentMethod']['id'], 
+            variables['input']['financePaymentMethod']
+        )
+
+
+    def test_create_invoice_payment_anon_user(self):
+        """ Don't allow creating account invoices for non-logged in users """
+        query = self.invoice_payment_create_mutation
+
+        invoice_item = f.FinanceInvoiceItemFactory.create()
+        invoice = invoice_item.finance_invoice
+        variables = self.variables_create
+        variables['input']['financeInvoice'] = to_global_id('FinanceInvoiceNode', invoice.id)
+        
+        executed = execute_test_client_api_query(
+            query, 
+            self.anon_user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
+
+
+    def test_create_invoice_payment_permission_granted(self):
+        """ Allow creating invoices for users with permissions """
+        query = self.invoice_payment_create_mutation
+
+        invoice_item = f.FinanceInvoiceItemFactory.create()
+        invoice = invoice_item.finance_invoice
+        variables = self.variables_create
+        variables['input']['financeInvoice'] = to_global_id('FinanceInvoiceNode', invoice.id)
+
+        # Create regular user
+        user = get_user_model().objects.get(pk=invoice.account.id)
+        permission = Permission.objects.get(codename=self.permission_add)
+        user.user_permissions.add(permission)
+        user.save()
+
+        executed = execute_test_client_api_query(
+            query, 
+            user, 
+            variables=variables
+        )
+        data = executed.get('data')
         self.assertEqual(
             data['createFinanceInvoicePayment']['financeInvoicePayment']['financeInvoice']['id'], 
             variables['input']['financeInvoice']
         )
 
 
-    # def test_create_invoice_payment_anon_user(self):
-    #     """ Don't allow creating account invoices for non-logged in users """
-    #     query = self.invoice_payment_create_mutation
+    def test_create_invoice_payment_permission_denied(self):
+        """ Check create invoice permission denied error message """
+        query = self.invoice_payment_create_mutation
 
-    #     invoice = f.FinanceInvoiceFactory.create()
-    #     variables = self.variables_create
-    #     variables['input']['financeInvoice'] = to_global_id('FinanceInvoiceNode', invoice.id)
-        
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         self.anon_user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
+        invoice_item = f.FinanceInvoiceItemFactory.create()
+        invoice = invoice_item.finance_invoice
+        variables = self.variables_create
+        variables['input']['financeInvoice'] = to_global_id('FinanceInvoiceNode', invoice.id)
 
+        # Create regular user
+        user = get_user_model().objects.get(pk=invoice.account.id)
 
-    # def test_create_invoice_payment_permission_granted(self):
-    #     """ Allow creating invoices for users with permissions """
-    #     query = self.invoice_payment_create_mutation
-
-    #     invoice = f.FinanceInvoiceFactory.create()
-    #     variables = self.variables_create
-    #     variables['input']['financeInvoice'] = to_global_id('FinanceInvoiceNode', invoice.id)
-
-    #     # Create regular user
-    #     user = get_user_model().objects.get(pk=invoice.account.id)
-    #     permission = Permission.objects.get(codename=self.permission_add)
-    #     user.user_permissions.add(permission)
-    #     user.save()
-
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(
-    #         data['createFinanceInvoicePayment']['financeInvoicePayment']['financeInvoice']['id'], 
-    #         variables['input']['financeInvoice']
-    #     )
-
-
-    # def test_create_invoice_payment_permission_denied(self):
-    #     """ Check create invoice permission denied error message """
-    #     query = self.invoice_payment_create_mutation
-
-    #     invoice = f.FinanceInvoiceFactory.create()
-    #     variables = self.variables_create
-    #     variables['input']['financeInvoice'] = to_global_id('FinanceInvoiceNode', invoice.id)
-
-    #     # Create regular user
-    #     user = get_user_model().objects.get(pk=invoice.account.id)
-
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
+        executed = execute_test_client_api_query(
+            query, 
+            user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
     # def test_update_invoice_payment(self):
