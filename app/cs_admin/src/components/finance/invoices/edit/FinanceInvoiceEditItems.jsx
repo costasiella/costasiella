@@ -1,6 +1,6 @@
 // @flow
 
-import React from 'react'
+import React, { useCallback } from 'react'
 import gql from "graphql-tag"
 import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
@@ -39,15 +39,18 @@ export const UPDATE_INVOICE_ITEM = gql`
 `
 
 function FinanceInvoiceEditItems ({ t, history, match, refetchInvoice, inputData }) {
-  function onDragEnd(result) {
-    console.log('onDragEnd triggered...')
-    console.log(result)
-    const { destination, source, reason } = result
-    console.log(source)
-    console.log(destination)
-    console.log(reason)
-    
-  }
+  // function onDragEnd(result) {
+  //   console.log('onDragEnd triggered...')
+  //   console.log(result)
+  //   const { destination, source, reason } = result
+  //   console.log(source)
+  //   console.log(destination)
+  //   console.log(reason)
+  // }
+
+  const onDragEnd = useCallback(() => {
+    // the only one that is required
+  }, []);
 
   return (
     <DragDropContext onDragEnd={onDragEnd} >
@@ -70,32 +73,49 @@ function FinanceInvoiceEditItems ({ t, history, match, refetchInvoice, inputData
                 <Table.ColHeader></Table.ColHeader>
               </Table.Row>
             </Table.Header>
-            <Droppable >
-              <Table.Body>
-                {inputData.financeInvoice.items.edges.map(({ node }) => (
-                  <Table.Row key={"item_" + node.id}>
-                    <Table.Col>
-                      <UpdateProductName initialValues={node} />
-                    </Table.Col>
-                    <Table.Col>
-                      <UpdateDescription initialValues={node} />
-                    </Table.Col>
-                    <Table.Col>
-                      <UpdateQuantity initialValues={node} />
-                      <UpdatePrice initialValues={node} />
-                    </Table.Col>
-                    <Table.Col>
-                      <UpdateFinanceTaxRate initialValues={node} inputData={inputData} />
-                    </Table.Col>
-                    <Table.Col>
-                      <span className="pull-right">{node.totalDisplay}</span>
-                    </Table.Col>
-                    <Table.Col>
-                      <FinanceInvoiceItemDelete node={node} />
-                    </Table.Col>
-                  </Table.Row>
-                ))}
-              </Table.Body>
+            <Droppable droppableId="invoice_items">
+              {(provided, snapshot) => (
+                  <tbody 
+                    ref={provided.innerRef} 
+                    {...provided.droppableProps} 
+                  >
+                    {inputData.financeInvoice.items.edges.map(({ node }, idx) => (
+                      <Draggable 
+                        draggableId={node.id}
+                        index={idx}
+                        key={node.id}
+                      >
+                        {(provided, snapshot) => (
+                            <tr 
+                              ref={provided.innerRef}
+                              {...provided.draggableProps}
+                              {...provided.dragHandleProps}
+                            >
+                              <Table.Col>
+                                <UpdateProductName initialValues={node} />
+                              </Table.Col>
+                              <Table.Col>
+                                <UpdateDescription initialValues={node} />
+                              </Table.Col>
+                              <Table.Col>
+                                <UpdateQuantity initialValues={node} />
+                                <UpdatePrice initialValues={node} />
+                              </Table.Col>
+                              <Table.Col>
+                                <UpdateFinanceTaxRate initialValues={node} inputData={inputData} />
+                              </Table.Col>
+                              <Table.Col>
+                                <span className="pull-right">{node.totalDisplay}</span>
+                              </Table.Col>
+                              <Table.Col>
+                                <FinanceInvoiceItemDelete node={node} />
+                              </Table.Col>
+                            </tr>
+                        )}
+                      </Draggable>
+                    ))}
+                  </tbody>
+              )}
             </Droppable>
           </Table>
         </Card.Body>
