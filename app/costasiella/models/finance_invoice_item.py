@@ -24,6 +24,8 @@ class FinanceInvoiceItem(models.Model):
     finance_glaccount = models.ForeignKey(FinanceGLAccount, on_delete=models.CASCADE, null=True)
     finance_costcenter = models.ForeignKey(FinanceCostCenter, on_delete=models.CASCADE, null=True)
 
+    class Meta:
+        ordering = ("finance_invoice", "line_number",)
 
     def __str__(self):
         return self.finance_invoice.invoice_number + " line: " + self.line_number + " " + self.product_name
