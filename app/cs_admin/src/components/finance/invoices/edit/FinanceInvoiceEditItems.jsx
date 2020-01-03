@@ -61,6 +61,22 @@ function FinanceInvoiceEditItems ({ t, history, match, refetchInvoice, inputData
     // source.index = old index
     // destination.index = new index
 
+    // Nothing to do, nowhere to go...
+    console.log("drop cancelled...")
+    if (!destination || reason === 'CANCEL') {
+      return
+    }
+
+    // Moved back to the same spot
+    console.log("dropped to the same spot")
+    if (
+      destination.droppableId === source.droppableId &&
+      destination.index === source.index
+    ) {
+      return
+    }
+
+
     updateLineNumber({
       node_id: draggableId,
       line_number: destination.index
@@ -77,11 +93,6 @@ function FinanceInvoiceEditItems ({ t, history, match, refetchInvoice, inputData
           lineNumber: line_number
         } 
       },
-      refetchQueries: [
-        { 
-          query: GET_INVOICE_QUERY, variables: {id: inputData.financeInvoice.id}
-        }
-      ]
     }).then(({ data }) => {
       console.log('got data', data)
       toast.success((t('settings.general.toast_edit_success')), {
