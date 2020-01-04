@@ -346,7 +346,7 @@ class DeleteFinanceInvoiceItem(graphene.relay.ClientIDMutation):
         # Update line numbers of following items to keep them sequential
         items = FinanceInvoiceItem.objects.filter(
             finance_invoice = finance_invoice_item.finance_invoice,
-            line_number__gt = new_line_nr
+            line_number__gt = finance_invoice_item.line_number
         )
         for i in items:
             i.line_number -= 1
