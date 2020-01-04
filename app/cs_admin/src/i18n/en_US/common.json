@@ -84,7 +84,9 @@
             "relation_city": "City",
             "relation_country": "Country",
             "item_delete_confirm_msg": "Are you sure you wish to delete this item?",
-            "item_deleted": "Deleted item"
+            "item_deleted": "Deleted item",
+            "payment_delete_confirm_msg": "Are you sure you wish to delte this payment?",
+            "payment_deleted": "Deleted payment"
         },
         "invoice_groups": {
             "title": "Invoice groups",
@@ -133,7 +135,14 @@
             "toast_edit_item_product_name_success": "Item product name saved",
             "toast_edit_item_quantity_success": "Item quantity saved",
             "toast_add_item_success": "Added item",
-            "item_add": "Add item"
+            "item_add": "Add item",
+            "saved_item_sorting": "Updated sorting",
+            "payments": {
+                "toast_add_success": "Added payment",
+                "toast_edit_success": "Saved payment",
+                "add": "Add payment",
+                "edit": "Edit payment"
+            }
         }
     },
     "general": {
@@ -299,7 +308,9 @@
         "prices": "Prices",
         "dropin": "Drop in",
         "trial": "Trial",
-        "pdf": "PDF"
+        "pdf": "PDF",
+        "amount": "Amount",
+        "details": "Details"
     },
     "yup": {
         "min_len_3": "Please input at least 3 characters",

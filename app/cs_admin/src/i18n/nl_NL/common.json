@@ -84,7 +84,9 @@
             "relation_city": "__STRING_NOT_TRANSLATED__",
             "relation_country": "__STRING_NOT_TRANSLATED__",
             "item_delete_confirm_msg": "__STRING_NOT_TRANSLATED__",
-            "item_deleted": "__STRING_NOT_TRANSLATED__"
+            "item_deleted": "__STRING_NOT_TRANSLATED__",
+            "payment_delete_confirm_msg": "__STRING_NOT_TRANSLATED__",
+            "payment_deleted": "__STRING_NOT_TRANSLATED__"
         },
         "invoice_groups": {
             "title": "__STRING_NOT_TRANSLATED__",
@@ -133,7 +135,14 @@
             "toast_edit_item_product_name_success": "__STRING_NOT_TRANSLATED__",
             "toast_edit_item_quantity_success": "__STRING_NOT_TRANSLATED__",
             "toast_add_item_success": "__STRING_NOT_TRANSLATED__",
-            "item_add": "__STRING_NOT_TRANSLATED__"
+            "item_add": "__STRING_NOT_TRANSLATED__",
+            "saved_item_sorting": "__STRING_NOT_TRANSLATED__",
+            "payments": {
+                "toast_add_success": "__STRING_NOT_TRANSLATED__",
+                "toast_edit_success": "__STRING_NOT_TRANSLATED__",
+                "add": "__STRING_NOT_TRANSLATED__",
+                "edit": "__STRING_NOT_TRANSLATED__"
+            }
         }
     },
     "general": {
@@ -299,7 +308,9 @@
         "prices": "__STRING_NOT_TRANSLATED__",
         "dropin": "__STRING_NOT_TRANSLATED__",
         "trial": "__STRING_NOT_TRANSLATED__",
-        "pdf": "__STRING_NOT_TRANSLATED__"
+        "pdf": "__STRING_NOT_TRANSLATED__",
+        "amount": "__STRING_NOT_TRANSLATED__",
+        "details": "__STRING_NOT_TRANSLATED__"
     },
     "yup": {
         "min_len_3": "__STRING_NOT_TRANSLATED__",

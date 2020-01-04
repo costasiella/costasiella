@@ -77,7 +77,7 @@ class FinanceInvoiceEdit extends Component {
                       {/* Add payment */}
                       <Link to={payment_add_url} 
                          className='btn btn-secondary mr-2'>
-                         <Icon prefix="fe" name="dollar-sign" /> {t('finance.invoice.payment_add')} 
+                         <Icon prefix="fe" name="dollar-sign" /> {t('finance.invoice.payments.add')} 
                       </Link>
                       {/* Export as PDF */}
                       <a href={export_url} 

@@ -62,9 +62,9 @@ function FinanceInvoicePaymentBase({ t, history, match, children, form_type="cre
 
   let title
   if ( form_type == "create" ) {
-    title = t('finance.invoice.payment.add')
+    title = t('finance.invoice.payments.add')
   } else {
-    title = t('finance.invoice.payment.edit')
+    title = t('finance.invoice.payments.edit')
   }
 
   title = title + " #" + invoice_number
