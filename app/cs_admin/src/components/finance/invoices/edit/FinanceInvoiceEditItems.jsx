@@ -1,6 +1,6 @@
 // @flow
 
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useState, useEffect } from 'react'
 import gql from "graphql-tag"
 import { useMutation } from "react-apollo"
 import { withTranslation } from 'react-i18next'
@@ -47,6 +47,11 @@ function FinanceInvoiceEditItems ({ t, history, match, refetchInvoice, inputData
   const [updateItem, { data }] = useMutation(UPDATE_INVOICE_ITEM)
 
   const [ invoiceItems, setInvoiceItems ] = useState(inputData.financeInvoice.items.edges)
+
+  useEffect(() => {
+    setInvoiceItems(inputData.financeInvoice.items.edges);
+  })
+
 
   const onDragEnd = useCallback((result) => {
     // the only one that is required
