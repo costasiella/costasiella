@@ -156,13 +156,13 @@ function FinanceInvoiceEditItems ({ t, history, match, refetchInvoice, inputData
       toast.success((t('finance.invoice.saved_item_sorting')), {
           position: toast.POSITION.BOTTOM_RIGHT
       })
-      setUpdating(false)
+      setTimeout(() => setUpdating(false), 325)
     }).catch((error) => {
       toast.error((t('general.toast_server_error')) + ': ' +  error, {
           position: toast.POSITION.BOTTOM_RIGHT
       })
       console.log('there was an error sending the query', error)
-      setUpdating(false)
+      setTimeout(() => setUpdating(false), 325)
     })
   }
 
