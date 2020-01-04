@@ -354,15 +354,6 @@ class DeleteFinanceInvoiceItem(graphene.relay.ClientIDMutation):
 
         # Actually delete item
         ok = finance_invoice_item.delete()
-
-
-        # if item.Sorting:
-        # query = (db.invoices_items.invoices_id == iID) & \
-        #         (db.invoices_items.Sorting > item.Sorting)
-        # rows = db(query).select(db.invoices_items.ALL)
-        # for row in rows:
-        #     row.Sorting = row.Sorting - 1
-        #     row.update_record()
         
         # Update amounts
         finance_invoice.update_amounts()
