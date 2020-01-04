@@ -217,7 +217,6 @@ class UpdateFinanceInvoiceItem(graphene.relay.ClientIDMutation):
         validation_result = validate_create_update_input(input, update=True)
         
         if 'line_number' in input:
-            # TODO: Add code to make sure line numbers remain sequential
             old_line_nr = int(finance_invoice_item.line_number)
             new_line_nr = int(input['line_number'])
 
@@ -341,9 +340,27 @@ class DeleteFinanceInvoiceItem(graphene.relay.ClientIDMutation):
             raise Exception('Invalid Finance Invoice Item ID!')
 
         finance_invoice = finance_invoice_item.finance_invoice
+
+        # Update line numbers of following items to keep them sequential
+        items = FinanceInvoiceItem.objects.filter(
+            finance_invoice = finance_invoice_item.finance_invoice,
+            line_number__gt = new_line_nr
+        )
+        for i in items:
+            i.line_number -= 1
+            i.save()
+
+        # Actually delete item
         ok = finance_invoice_item.delete()
 
-        # TODO: Add code to make sure line numbers remain sequential
+
+        # if item.Sorting:
+        # query = (db.invoices_items.invoices_id == iID) & \
+        #         (db.invoices_items.Sorting > item.Sorting)
+        # rows = db(query).select(db.invoices_items.ALL)
+        # for row in rows:
+        #     row.Sorting = row.Sorting - 1
+        #     row.update_record()
         
         # Update amounts
         finance_invoice.update_amounts()
