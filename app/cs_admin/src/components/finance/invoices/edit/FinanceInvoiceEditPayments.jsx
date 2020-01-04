@@ -52,7 +52,7 @@ function FinanceInvoiceEditPayments ({ t, history, match, refetchInvoice, inputD
                     <Link to={ "/finance/invoices/" + inputData.financeInvoice.id + "/payment/edit/" + node.id } 
                           className='btn btn-secondary btn-sm mr-2'
                     >
-                      <Icon prefix="fe" name="edit" />
+                      {t('general.edit')}
                     </Link>
                     <FinanceInvoiceEditPaymentDelete node={node} />
                   </span>
