@@ -155,9 +155,11 @@ class CreateFinanceInvoiceItem(graphene.relay.ClientIDMutation):
         require_login_and_permission(user, 'costasiella.add_financeinvoiceitem')
 
         validation_result = validate_create_update_input(input)
+        finance_invoice = validation_result['finance_invoice']
 
         finance_invoice_item = FinanceInvoiceItem(
-            finance_invoice = validation_result['finance_invoice'],
+            finance_invoice = finance_invoice,
+            line_number = finance_invoice._get_item_next_line_nr()
         )
 
         if 'product_name' in input:
