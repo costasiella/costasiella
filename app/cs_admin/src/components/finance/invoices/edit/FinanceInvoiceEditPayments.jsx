@@ -48,14 +48,14 @@ function FinanceInvoiceEditPayments ({ t, history, match, refetchInvoice, inputD
                   <div dangerouslySetInnerHTML={{ __html:node.note }}></div>
                 </Table.Col>
                 <Table.Col>
-                  <Link to={ "/finance/invoices/" + inputData.financeInvoice.id + "/payment/edit/" + node.id } 
-                        className='btn btn-secondary btn-sm mr-2'
-                  >
-                    <Icon prefix="fe" name="edit" />
-                  </Link>
-                  {/* TODO: Add delete button */}
-                  <FinanceInvoiceEditPaymentDelete node={node} />
-                  {/* <FinanceInvoiceItemDelete node={node} /> */}
+                  <span className="pull-right">
+                    <Link to={ "/finance/invoices/" + inputData.financeInvoice.id + "/payment/edit/" + node.id } 
+                          className='btn btn-secondary btn-sm mr-2'
+                    >
+                      <Icon prefix="fe" name="edit" />
+                    </Link>
+                    <FinanceInvoiceEditPaymentDelete node={node} />
+                  </span>
                 </Table.Col>
               </Table.Row>
             ))}
