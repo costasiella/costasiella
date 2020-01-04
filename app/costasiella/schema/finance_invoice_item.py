@@ -222,10 +222,27 @@ class UpdateFinanceInvoiceItem(graphene.relay.ClientIDMutation):
             new_line_nr = int(input['line_number'])
 
             if old_line_nr > new_line_nr:
-                # Do stuff
+                items = FinanceInvoiceItem.objects.filter(
+                    finance_invoice = finance_invoice_item.finance_invoice,
+                    line_number__lt = old_line_nr,
+                    line_number__gte = new_line_nr
+                )
+                for i in items:
+                    i.line_number += 1
+                    i.save()
             else:
-                # Do other stuff
+                items = FinanceInvoiceItem.objects.filter(
+                    finance_invoice = finance_invoice_item.finance_invoice,
+                    line_number__gt = old_line_nr,
+                    line_number__lte = new_line_nr
+                )
+                for i in items:
+                    i.line_number -= 1
+                    i.save()
 
+            finance_invoice_item.line_number = new_line_nr
+            # Always save after this operation
+            finance_invoice_item.save()
 
             # def items_update_sorting():
             #     """
@@ -275,7 +292,6 @@ class UpdateFinanceInvoiceItem(graphene.relay.ClientIDMutation):
             #     return dict(status = status,
             #                 message = message)
 
-            finance_invoice_item.line_number = input['line_number']
 
         if 'product_name' in input:
             finance_invoice_item.product_name = input['product_name']
