@@ -100,7 +100,7 @@ class FinanceInvoiceEdit extends Component {
                           <FinanceInvoiceEditTo initialData={data} />
                         </Grid.Col>
                       </Grid.Row>
-                      <FinanceInvoiceEditItems inputData={data} />
+                      <FinanceInvoiceEditItems inputData={data} refetchInvoice={refetch} />
                       <FinanceInvoiceEditAdditional initialData={data} />
 
 {/*                             

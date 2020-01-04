@@ -9,7 +9,8 @@ import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
 import { toast } from 'react-toastify'
 
 import {
-  Card, 
+  Card,
+  Dimmer, 
   Table
 } from "tabler-react"
 
@@ -46,12 +47,46 @@ export const UPDATE_INVOICE_ITEM = gql`
 function FinanceInvoiceEditItems ({ t, history, match, refetchInvoice, inputData }) {
   const [updateItem, { data }] = useMutation(UPDATE_INVOICE_ITEM)
 
-  const [ invoiceItems, setInvoiceItems ] = useState(inputData.financeInvoice.items.edges)
+  // const [ invoiceItems, setInvoiceItems ] = useState(inputData.financeInvoice.items.edges)
+  // const [ allowReorder, setAllowReorder ] = useState(true)
+  const [ updating, setUpdating ] = useState(false)
 
-  useEffect(() => {
-    setInvoiceItems(inputData.financeInvoice.items.edges);
-  })
+  // useEffect(() => {
+  //   console.log("props updated")
 
+  //   if (inputData.financeInvoice.items.edges !== invoiceItems) {
+  //     setInvoiceItems(inputData.financeInvoice.items.edges)
+  //     setAllowReorder(false)
+  //   } else {
+  //     setAllowReorder(true)
+  //   }
+
+  //   let unmounted = false
+  //   if(!unmounted) {
+  //     // cancel update state
+  //   }
+  //   return () => unmounted = true;
+  // }, [])
+  // }, [inputData.financeInvoice.items.edges, invoiceItems])
+
+  // useEffect(() => {
+  //   console.log("render items!")
+  //   console.log(invoiceItems)
+  //   // Update invoice items when one has been added or removed
+  //   setInvoiceItems(inputData.financeInvoice.items.edges) 
+  //   console.log("after effect items!")
+  //   console.log(invoiceItems)
+  // })
+  // }, [inputData.financeInvoice.items.edges])
+
+
+  // useEffect(() => {
+  //   console.log("Called on setInvoiceItems")
+  //   // setInvoiceItems(inputData.financeInvoice.items.edges) 
+  // }, [setInvoiceItems] )
+
+  // console.log("main component items...")
+  // console.log(invoiceItems)
 
   const onDragEnd = useCallback((result) => {
     // the only one that is required
@@ -83,14 +118,18 @@ function FinanceInvoiceEditItems ({ t, history, match, refetchInvoice, inputData
       return
     }
 
-    console.log(invoiceItems)
+    // console.log("invoice items in onDragEnd")
+    // console.log(invoiceItems)
 
-    const new_order = invoiceItems
-    const item = invoiceItems[source.index]
-    new_order.splice(source.index, 1)
-    new_order.splice(destination.index, 0, item)
-    setInvoiceItems(new_order) 
-    
+    // const new_order = invoiceItems
+    // const item = invoiceItems[source.index]
+    // console.log("dnd item:")
+    // console.log(item)
+    // // remove dnd'd item from array
+    // new_order.splice(source.index, 1)
+    // // add dnd'd item to new position in array
+    // new_order.splice(destination.index, 0, item)
+    // setInvoiceItems(new_order) 
 
     updateLineNumber({
       node_id: draggableId,
@@ -101,6 +140,7 @@ function FinanceInvoiceEditItems ({ t, history, match, refetchInvoice, inputData
 
 
   const updateLineNumber = ({ node_id, line_number }) => {
+    setUpdating(true)
     updateItem({ 
       variables: { 
         input: {
@@ -108,16 +148,21 @@ function FinanceInvoiceEditItems ({ t, history, match, refetchInvoice, inputData
           lineNumber: line_number
         } 
       },
+      refetchQueries: [
+        { query: GET_INVOICE_QUERY, variables: { id: inputData.financeInvoice.id }}
+      ]
     }).then(({ data }) => {
       console.log('got data', data)
       toast.success((t('finance.invoice.saved_item_sorting')), {
           position: toast.POSITION.BOTTOM_RIGHT
       })
+      setUpdating(false)
     }).catch((error) => {
       toast.error((t('general.toast_server_error')) + ': ' +  error, {
           position: toast.POSITION.BOTTOM_RIGHT
       })
       console.log('there was an error sending the query', error)
+      setUpdating(false)
     })
   }
 
@@ -131,63 +176,66 @@ function FinanceInvoiceEditItems ({ t, history, match, refetchInvoice, inputData
           </Card.Options>
         </Card.Header>
         <Card.Body>
-          <Table>
-            <Table.Header>
-              <Table.Row>
-                <Table.ColHeader>{t("general.product")}</Table.ColHeader>
-                <Table.ColHeader>{t("general.description")}</Table.ColHeader>
-                <Table.ColHeader>{t("general.quantity_short_and_price")}</Table.ColHeader>
-                <Table.ColHeader>{t("general.tax")}</Table.ColHeader>
-                <Table.ColHeader>{t("general.total")}</Table.ColHeader>
-                <Table.ColHeader></Table.ColHeader>
-              </Table.Row>
-            </Table.Header>
-            <Droppable droppableId="invoice_items">
-              {(provided, snapshot) => (
-                  <tbody 
-                    ref={provided.innerRef} 
-                    {...provided.droppableProps} 
-                  >
-                    {invoiceItems.map(({ node }, idx) => (
-                      <Draggable 
-                        draggableId={node.id}
-                        index={idx}
-                        key={node.id}
-                      >
-                        {(provided, snapshot) => (
-                            <tr 
-                              ref={provided.innerRef}
-                              {...provided.draggableProps}
-                              {...provided.dragHandleProps}
-                            >
-                              <Table.Col>
-                                <UpdateProductName initialValues={node} />
-                              </Table.Col>
-                              <Table.Col>
-                                <UpdateDescription initialValues={node} />
-                              </Table.Col>
-                              <Table.Col>
-                                <UpdateQuantity initialValues={node} />
-                                <UpdatePrice initialValues={node} />
-                              </Table.Col>
-                              <Table.Col>
-                                <UpdateFinanceTaxRate initialValues={node} inputData={inputData} />
-                              </Table.Col>
-                              <Table.Col>
-                                <span className="pull-right">{node.totalDisplay}</span>
-                              </Table.Col>
-                              <Table.Col>
-                                <FinanceInvoiceItemDelete node={node} />
-                              </Table.Col>
-                            </tr>
-                        )}
-                      </Draggable>
-                    ))}
-                    {provided.placeholder}
-                  </tbody>
-              )}
-            </Droppable>
-          </Table>
+          {/* {(allowReorder) ? "reordering allowed" : "no reordering allowed"} */}
+          <Dimmer active={updating} loader={updating}>
+            <Table>
+              <Table.Header>
+                <Table.Row>
+                  <Table.ColHeader>{t("general.product")}</Table.ColHeader>
+                  <Table.ColHeader>{t("general.description")}</Table.ColHeader>
+                  <Table.ColHeader>{t("general.quantity_short_and_price")}</Table.ColHeader>
+                  <Table.ColHeader>{t("general.tax")}</Table.ColHeader>
+                  <Table.ColHeader>{t("general.total")}</Table.ColHeader>
+                  <Table.ColHeader></Table.ColHeader>
+                </Table.Row>
+              </Table.Header>
+              <Droppable droppableId="invoice_items">
+                {(provided, snapshot) => (
+                    <tbody 
+                      ref={provided.innerRef} 
+                      {...provided.droppableProps} 
+                    >
+                      {inputData.financeInvoice.items.edges.map(({ node }, idx) => (
+                        <Draggable 
+                          draggableId={node.id}
+                          index={idx}
+                          key={node.id}
+                        >
+                          {(provided, snapshot) => (
+                              <tr 
+                                ref={provided.innerRef}
+                                {...provided.draggableProps}
+                                {...provided.dragHandleProps}
+                              >
+                                <Table.Col>
+                                  <UpdateProductName initialValues={node} />
+                                </Table.Col>
+                                <Table.Col>
+                                  <UpdateDescription initialValues={node} />
+                                </Table.Col>
+                                <Table.Col>
+                                  <UpdateQuantity initialValues={node} />
+                                  <UpdatePrice initialValues={node} />
+                                </Table.Col>
+                                <Table.Col>
+                                  <UpdateFinanceTaxRate initialValues={node} inputData={inputData} />
+                                </Table.Col>
+                                <Table.Col>
+                                  <span className="pull-right">{node.totalDisplay}</span>
+                                </Table.Col>
+                                <Table.Col>
+                                  <FinanceInvoiceItemDelete node={node} />
+                                </Table.Col>
+                              </tr>
+                          )}
+                        </Draggable>
+                      ))}
+                      {provided.placeholder}
+                    </tbody>
+                )}
+              </Droppable>
+            </Table>
+          </Dimmer>
         </Card.Body>
       </Card>
     </DragDropContext>
