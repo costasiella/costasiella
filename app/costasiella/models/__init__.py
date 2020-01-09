@@ -13,6 +13,7 @@ from .finance_invoice import FinanceInvoice
 from .finance_invoice_group import FinanceInvoiceGroup
 from .finance_invoice_group_default import FinanceInvoiceGroupDefault
 from .finance_invoice_item import FinanceInvoiceItem
+from .finance_invoice_payment import FinanceInvoicePayment
 from .finance_payment_method import FinancePaymentMethod
 from .finance_tax_rate import FinanceTaxRate
 

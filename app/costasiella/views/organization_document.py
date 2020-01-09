@@ -4,7 +4,7 @@ from django.shortcuts import redirect, render
 from django.http import Http404
 from django.db.models import Q
 
-from .models import OrganizationDocument
+from ..models import OrganizationDocument
 
 # Create your views here.
 def terms_and_conditions(request):

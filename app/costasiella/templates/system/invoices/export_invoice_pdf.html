@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <style>
+        @page { size: a4; }
+
+        body {
+            font-size: 12px;
+            font-family: sans-serif;
+            line-height: 1.2em;
+        }
+
+        .right { float: right; }
+
+        .clear { clear:both; }
+
+        .grey { color: #777; }
+
+        .bold { font-weight: bold; }
+
+        .text-left { text-align: left; }
+
+        .text-right { text-align: right; }
+
+        .text-center { text-align: center; }
+        
+        .small-font { font-size: 82%; }
+
+        table { border-collapse: collapse; }
+
+        footer {
+            margin-top: 1.5cm;
+            font-size: 90%;
+            width: 100%;
+            text-align: center;
+            padding-top: 10px;
+            border-top: 1px solid #EAEAEA;
+        }
+
+        .footer-inner {
+            margin-left: 75px;
+            margin-right: 75px;
+        }
+
+        table.table-info {
+            display: inline-block;
+            margin: 1em 0 2em 0;
+
+            font-size: 90%;
+            margin: 10px 0 20px 0;
+        }
+
+        .table-items {
+            width: 100%;
+            margin: 20px 0 50px 0;
+            font-size: 70%;
+        }
+
+        .table-items td,
+        .table-items th {
+            font-weight: normal;
+            padding: 8px 5px 8px 5px;
+            border: 0;
+        }
+
+        .table-items tbody tr:nth-child(odd) {
+            background-color: #EAEAEA;
+        }
+
+        .table-items tbody tr:nth-last-child(-n+3) {
+            background-color: #FFFFFF;
+        }
+
+        .table-items thead tr th {
+            border-bottom-style: solid;
+            border-bottom: 1px solid #BBB;
+        }
+
+        th.taxrate { min-width: 40px; }
+
+        .border-top {
+            border-top: 1px solid #BBB;
+        }
+
+        div.invoice {
+            font-size: 270%;
+        }
+
+        #description {
+            margin-top: 20px;
+        }
+
+        #terms {
+            width: 100%;
+            text-align: center;
+        }
+
+        #terms-header {
+            display: block;
+            width: 100%;
+            border-bottom: 2px solid #EAEAEA;
+            margin-bottom: 10px;
+        }
+
+        .studio-info {
+            width: 55%;
+        }
+
+        img {
+            max-width: 90%;
+            text-align: center;
+            margin-bottom: 20px;
+            max-height: 84px;
+        }
+
+    </style>
+
+</head>
+
+<body>
+    <div class="right studio-info text-right">
+        {# {{logo}}<br> #}
+        <div class='text-right grey'>
+            <span class='bold'>{{ organization.name|upper }}</span><br>
+                <div class='small-font'>
+                    {% if organization.address %}
+                        {{ organization.address|safe }}
+                    {% endif %} <br>
+                </div>
+        </div>
+    </div>
+
+    <div class='invoice grey'>INVOICE</div><br>
+
+    <table class="table-info">
+        <tr>
+            <td class="grey bold">INVOICE #</td>
+            <td>{{ invoice.invoice_number}}</td>
+        </tr>
+        <tr>
+            <td class="grey bold">ISSUED </td>
+            <td>{{ invoice.date_sent }}</td>
+        </tr>
+        <tr>
+            <td class="grey bold">DUE DATE </td>
+            <td>{{ invoice.date_due }}</td>
+        </tr>
+    </table>
+
+    <div>
+        <span class="grey bold">BILL TO</span><br>
+        {% if invoice.relation_company %}
+            {{ invoice.relation_company }}<br>
+        {% endif %}
+        {% if invoice.relation_company_registration %}
+            {{ invoice.relation_company_registration }}<br>
+        {% endif %}
+        {% if invoice.relation_company_tax_registration %}
+            {{ invoice.CustomerCompanyTaxRegistration }}<br>
+        {% endif %}
+        {% if invoice.relation_contact_name %}
+            {{ invoice.relation_contact_name }}<br>
+        {% endif %}
+        {% if invoice.relation_address %}
+            {{ invoice.relation_address|safe }}<br>
+        {% endif %}
+        {% if invoice.relation_postcode %}
+            {{ invoice.relation_postcode|safe }}
+        {% endif %}
+        {% if invoice.relation_city %}
+            {{ invoice.relation_city|safe }}
+        {% endif %}
+        {% if invoice.relation_country %}
+            <br> {{ invoice.relation_country|safe }}
+        {% endif %}
+    </div>
+
+    {% if invoice.summary %}
+        <div id="description" class='clear'>
+            <span class="bold grey">SUMMARY</span><br>
+            <span class="grey">{{ invoice.summary }}</span>
+        </div>
+    {% endif %}
+
+
+    <table class="table-items">
+        <thead class="grey">
+            <tr>
+                <th>PRODUCT NAME</th>
+                <th>DESCRIPTION</th>
+                <th><span class="right">QTY</span></th>
+                <th><span class="right">PRICE</span></th>
+                <th><span class="right">SUBTOTAL</span></th>
+                <th class="taxrate"><span class="right">TAX RATE</span></th>
+                <th class="taxrate"><span class="right">TOTAL</span></th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for item in items %}
+            <tr>
+                <td>{{ item.product_name }}</td>
+                <td>{{ item.description }}</td>
+                <td><span class="right">{{ item.quantity }}</span></td>
+                <td><span class="right">{{ item.price }}</span></td>
+                <td><span class="right">{{ item.subtotal }}</span></td>
+                <td><span class="right">{{ item.finance_tax_rate.name }} ({{ item.finance_tax_rate.rate_type }})</span></td>
+                <td><span class="right">{{ item.total}}</span></td>
+            </tr>
+        {% endfor %}
+        <tr class="border-top">
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td><span class="right">Subtotal</span></td>
+            <td><span class="right">{{ invoice.subtotal }}</span></td>
+        </tr>
+        {% for tax_rate in tax_rates %}
+            <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td><span class="right">{{ tax_rate.name }} ({{ tax_rate.rate_type }})</span></td>
+            <td><span class="right">{{ tax_rate.invoice_amount }}</span></td>
+            </tr>
+        {% endfor %}
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td class="border-top"><span class="right">Total</span></td>
+            <td class="border-top"><span class="right">{{ invoice.total }}</span></td>
+        </tr>
+        </tbody>
+        
+    </table>
+
+    <!-- Don't forget the terms and footer -->
+
+    {% if invoice.terms %}
+        <div id="terms" class="clear grey">
+            <span id="terms-header" class="bold">TERMS AND CONDITIONS</span>
+            {{ invoice.terms }}
+        </div>
+    {% endif %}
+
+    {% if invoice.footer %}
+        <footer class="clear">
+            <div class="footer-inner">
+                {{ invoice.footer }}
+            </div>
+        </footer>
+    {% endif %}
+    
+</body>
+</html>

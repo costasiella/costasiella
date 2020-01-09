@@ -37,6 +37,8 @@ import FinanceInvoiceGroups from './components/finance/invoices/groups/FinanceIn
 import FinanceInvoiceGroupAdd from './components/finance/invoices/groups/FinanceInvoiceGroupAdd'
 import FinanceInvoiceGroupEdit from './components/finance/invoices/groups/FinanceInvoiceGroupEdit'
 import FinanceInvoiceGroupDefaults from './components/finance/invoices/groups/defaults/FinanceInvoiceGroupDefaults'
+import FinanceInvoicePaymentAdd from './components/finance/invoices/payments/FinanceInvoicePaymentAdd'
+import FinanceInvoicePaymentEdit from './components/finance/invoices/payments/FinanceInvoicePaymentEdit'
 import FinancePaymentMethods from './components/finance/payment_methods/FinancePaymentMethods'
 import FinancePaymentMethodAdd from './components/finance/payment_methods/FinancePaymentMethodAdd'
 import FinancePaymentMethodEdit from './components/finance/payment_methods/FinancePaymentMethodEdit'
@@ -203,6 +205,8 @@ function AppRoot({ t }) {
           <PrivateRoute exact path="/finance/invoices/groups/add" component={FinanceInvoiceGroupAdd} />
           <PrivateRoute exact path="/finance/invoices/groups/edit/:id" component={FinanceInvoiceGroupEdit} />
           <PrivateRoute exact path="/finance/invoices/groups/defaults" component={FinanceInvoiceGroupDefaults} />
+          <PrivateRoute exact path="/finance/invoices/:invoice_id/payment/add" component={FinanceInvoicePaymentAdd} />
+          <PrivateRoute exact path="/finance/invoices/:invoice_id/payment/edit/:id" component={FinanceInvoicePaymentEdit} />
           <PrivateRoute exact path="/finance/glaccounts" component={FinanceGLAccounts} />
           <PrivateRoute exact path="/finance/glaccounts/add" component={FinanceGLAccountAdd} />
           <PrivateRoute exact path="/finance/glaccounts/edit/:id" component={FinanceGLAccountEdit} />

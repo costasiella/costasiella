@@ -3,6 +3,7 @@ from django.utils.translation import gettext as _
 import graphene
 from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
+from django_filters import FilterSet, OrderingFilter
 from graphql import GraphQLError
 
 from ..models import Account, FinanceInvoice, FinanceInvoiceItem, FinancePaymentMethod, FinanceTaxRate, FinanceGLAccount, FinanceCostCenter
@@ -11,6 +12,7 @@ from ..modules.messages import Messages
 from ..modules.finance_tools import display_float_as_amount
 
 m = Messages()
+
 
 class FinanceInvoiceItemInterface(graphene.Interface):
     id = graphene.GlobalID()
@@ -22,13 +24,25 @@ class FinanceInvoiceItemInterface(graphene.Interface):
     balance_display = graphene.String()
 
 
+class FinanceInvoiceItemFilter(FilterSet):
+    class Meta:
+        model = FinanceInvoiceItem
+        fields = [ 
+            'id', 
+            'finance_invoice', 
+        ]
+        
+        order_by = OrderingFilter(
+            fields=(
+                ('line_number', 'line_number'),
+            )
+        )
+
+
 class FinanceInvoiceItemNode(DjangoObjectType):
     class Meta:
         model = FinanceInvoiceItem
-        filter_fields = {
-            "id": ["exact"],
-            "finance_invoice": ["exact"],
-        }
+        filter_fields = [ 'id', 'finance_invoice' ]
         interfaces = (graphene.relay.Node, FinanceInvoiceItemInterface, )
 
     def resolve_price_display(self, info):
@@ -58,15 +72,19 @@ class FinanceInvoiceItemNode(DjangoObjectType):
         return self._meta.model.objects.get(id=id)
 
 
-class FinanceInvoiceItemQuery(graphene.ObjectType):
-    finance_invoice_items = DjangoFilterConnectionField(FinanceInvoiceItemNode)
+class FinanceInvoiceItemQuery(graphene.ObjectType):  
+    finance_invoice_items = DjangoFilterConnectionField(
+        FinanceInvoiceItemNode,
+        filterset_class=FinanceInvoiceItemFilter
+    )
     finance_invoice_item = graphene.relay.Node.Field(FinanceInvoiceItemNode)
 
-    def resolve_finance_invoice_items(self, info, archived=False, **kwargs):
+
+    def resolve_finance_invoice_items(self, info, **kwargs):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.view_financeinvoiceitem')
 
-        return FinanceInvoiceItem.objects.all().order_by('line_number')
+        return FinanceInvoiceItemFilter(kwargs).qs.order_by('line_number')
 
 
 def validate_create_update_input(input, update=False):
@@ -137,9 +155,11 @@ class CreateFinanceInvoiceItem(graphene.relay.ClientIDMutation):
         require_login_and_permission(user, 'costasiella.add_financeinvoiceitem')
 
         validation_result = validate_create_update_input(input)
+        finance_invoice = validation_result['finance_invoice']
 
         finance_invoice_item = FinanceInvoiceItem(
-            finance_invoice = validation_result['finance_invoice'],
+            finance_invoice = finance_invoice,
+            line_number = finance_invoice._get_item_next_line_nr()
         )
 
         if 'product_name' in input:
@@ -199,8 +219,31 @@ class UpdateFinanceInvoiceItem(graphene.relay.ClientIDMutation):
         validation_result = validate_create_update_input(input, update=True)
         
         if 'line_number' in input:
-            # TODO: Add code to make sure line numbers remain sequential
-            finance_invoice_item.line_number = input['line_number']
+            old_line_nr = int(finance_invoice_item.line_number)
+            new_line_nr = int(input['line_number'])
+
+            if old_line_nr > new_line_nr:
+                items = FinanceInvoiceItem.objects.filter(
+                    finance_invoice = finance_invoice_item.finance_invoice,
+                    line_number__lt = old_line_nr,
+                    line_number__gte = new_line_nr
+                )
+                for i in items:
+                    i.line_number += 1
+                    i.save()
+            else:
+                items = FinanceInvoiceItem.objects.filter(
+                    finance_invoice = finance_invoice_item.finance_invoice,
+                    line_number__gt = old_line_nr,
+                    line_number__lte = new_line_nr
+                )
+                for i in items:
+                    i.line_number -= 1
+                    i.save()
+
+            finance_invoice_item.line_number = new_line_nr
+            # Always save after this operation
+            finance_invoice_item.save()
 
         if 'product_name' in input:
             finance_invoice_item.product_name = input['product_name']
@@ -250,6 +293,17 @@ class DeleteFinanceInvoiceItem(graphene.relay.ClientIDMutation):
             raise Exception('Invalid Finance Invoice Item ID!')
 
         finance_invoice = finance_invoice_item.finance_invoice
+
+        # Update line numbers of following items to keep them sequential
+        items = FinanceInvoiceItem.objects.filter(
+            finance_invoice = finance_invoice_item.finance_invoice,
+            line_number__gt = finance_invoice_item.line_number
+        )
+        for i in items:
+            i.line_number -= 1
+            i.save()
+
+        # Actually delete item
         ok = finance_invoice_item.delete()
         
         # Update amounts

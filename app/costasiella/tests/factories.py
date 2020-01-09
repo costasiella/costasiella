@@ -466,7 +466,13 @@ class FinanceInvoiceItemFactory(factory.DjangoModelFactory):
     class Meta:
         model = models.FinanceInvoiceItem
 
-    finance_invoice = factory.SubFactory(FinanceInvoiceFactory)
+    # finance_invoice = factory.SubFactory(FinanceInvoiceFactory)
+    class Params:
+        initial_invoice = factory.SubFactory(FinanceInvoiceFactory)
+
+    finance_invoice = factory.LazyAttribute(
+        lambda o: o.initial_invoice if o.initial_invoice else factory.SubFactory(FinanceInvoiceFactory)
+    )
     product_name = "Product"
     description = "Description"
     quantity = 1
@@ -474,6 +480,22 @@ class FinanceInvoiceItemFactory(factory.DjangoModelFactory):
     finance_tax_rate = factory.SubFactory(FinanceTaxRateFactory)
     finance_glaccount = factory.SubFactory(FinanceGLAccountFactory)
     finance_costcenter = factory.SubFactory(FinanceCostCenterFactory)
+
+
+class FinanceInvoicePaymentFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.FinanceInvoicePayment
+
+    class Params:
+        initial_invoice = factory.SubFactory(FinanceInvoiceFactory)
+
+    finance_invoice = factory.LazyAttribute(
+        lambda o: o.initial_invoice if o.initial_invoice else factory.SubFactory(FinanceInvoiceFactory)
+    )
+    date = datetime.date(2019, 1, 1)
+    amount = 12
+    finance_payment_method = factory.SubFactory(FinancePaymentMethodFactory)
+    note = "Payment note here!"
 
 
 class SchedulePublicWeeklyClassFactory(factory.DjangoModelFactory):

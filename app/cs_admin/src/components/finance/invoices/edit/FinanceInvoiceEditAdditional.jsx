@@ -21,6 +21,7 @@ import { UPDATE_INVOICE, GET_INVOICES_QUERY } from "../queries"
 import FinanceInvoiceEditTermsForm from "./FinanceInvoiceEditTermsForm"
 import FinanceInvoiceEditFooterForm from "./FinanceInvoiceEditFooterForm"
 import FinanceInvoiceEditNoteForm from "./FinanceInvoiceEditNoteForm"
+import FinanceInvoiceEditPayments from "./FinanceInvoiceEditPayments"
 
 
 const FinanceInvoiceEditAdditional = ({ t, history, match, initialData }) => (
@@ -179,7 +180,7 @@ const FinanceInvoiceEditAdditional = ({ t, history, match, initialData }) => (
       </Mutation>
     </Tab>
     <Tab title={t('general.payments')}>
-      Payments
+      <FinanceInvoiceEditPayments inputData={initialData} />
     </Tab>
   </TabbedCard>
   // <Card statusColor="blue">

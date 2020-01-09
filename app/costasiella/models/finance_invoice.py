@@ -65,18 +65,20 @@ class FinanceInvoice(models.Model):
         """ Update total amounts fields (subtotal, tax, total, paid, balance) """
         # Get totals from invoice items
         from .finance_invoice_item import FinanceInvoiceItem
+        from .finance_invoice_payment import FinanceInvoicePayment
         from django.db.models import Sum
 
         sums = FinanceInvoiceItem.objects.filter(finance_invoice = self).aggregate(Sum('subtotal'), Sum('tax'), Sum('total'))
-        print('##############')
-        print(sums)
 
         self.subtotal = sums['subtotal__sum'] or 0
         self.tax = sums['tax__sum'] or 0
         self.total = sums['total__sum'] or 0
 
-        #TODO: Update amount paid & balance
-        self.paid = 0
+        payment_sum = FinanceInvoicePayment.objects.filter(
+            finance_invoice = self
+        ).aggregate(Sum('amount'))
+
+        self.paid = payment_sum['amount__sum'] or 0
         self.balance = self.total - self.paid
 
         self.save(update_fields=[
@@ -145,7 +147,7 @@ class FinanceInvoice(models.Model):
 
         qs = FinanceInvoiceItem.objects.filter(finance_invoice = self)
 
-        return qs.count() + 1
+        return qs.count()
 
 
     def item_add_classpass(self, account_classpass):
@@ -177,3 +179,63 @@ class FinanceInvoice(models.Model):
         self.update_amounts()
 
         return finance_invoice_item
+
+
+    def tax_rates_amounts(self, formatted=False):
+        """
+        Returns tax for each tax rate as list sorted by tax rate percentage
+        format: [ [ tax_rate_obj, sum ] ]
+        """
+        from django.db.models import Sum
+
+        from .finance_invoice_item import FinanceInvoiceItem
+        from .finance_tax_rate import FinanceTaxRate
+
+        amounts_tax = []
+
+        tax_rates = FinanceTaxRate.objects.filter(
+            financeinvoiceitem__finance_invoice = self,
+        ).annotate(invoice_amount=Sum("financeinvoiceitem__tax"))
+
+        # print(tax_rates)
+
+        # for t in tax_rates:
+        #     print(t.name)
+        #     print(t.rate_type)
+        #     print(t.invoice_amount)
+
+        return tax_rates
+
+            
+
+
+
+
+    #TODO: Port this function to Django
+    # def amounts_tax_rates(self, formatted=False):
+    #     """
+    #         Returns vat for each tax rate as list sorted by tax rate percentage
+    #         format: [ [ Name, Amount ] ]
+    #     """
+    #     db = current.db
+    #     # CURRSYM = current.globalenv['CURRSYM']
+
+    #     amounts_vat = []
+    #     rows = db().select(db.tax_rates.id, db.tax_rates.Name,
+    #                        orderby=db.tax_rates.Percentage)
+    #     for row in rows:
+    #         sum = db.invoices_items.VAT.sum()
+    #         query = (db.invoices_items.invoices_id == iID) & \
+    #                 (db.invoices_items.tax_rates_id == row.id)
+
+    #         result = db(query).select(sum).first()
+
+    #         if not result[sum] is None:
+    #             # if formatted:
+    #                 # amount = SPAN(CURRSYM, ' ', format(result[sum], '.2f'))
+    #             else:
+    #                 amount = result[sum]
+    #             amounts_vat.append({'Name'   : row.Name,
+    #                                 'Amount' : amount})
+
+    #     return amounts_vat

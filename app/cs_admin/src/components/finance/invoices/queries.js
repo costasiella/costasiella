@@ -63,8 +63,10 @@ export const GET_INVOICE_QUERY = gql`
       note
       subtotalDisplay
       taxDisplay
+      total
       totalDisplay
       paidDisplay
+      balance
       balanceDisplay
       updatedAt
       items {
@@ -96,6 +98,27 @@ export const GET_INVOICE_QUERY = gql`
               id
               name
             }
+          }
+        }
+      }
+      payments {
+        pageInfo {
+          hasNextPage
+          hasPreviousPage
+          startCursor
+          endCursor
+        }
+        edges {
+          node {
+            id
+            amount
+            amountDisplay
+            date
+            financePaymentMethod {
+              id
+              name
+            }
+            note
           }
         }
       }
@@ -202,6 +225,15 @@ export const UPDATE_INVOICE_ITEM = gql`
 export const DELETE_INVOICE_ITEM = gql`
   mutation DeleteFinanceInvoiceItem($input: DeleteFinanceInvoiceItemInput!) {
     deleteFinanceInvoiceItem(input: $input) {
+      ok
+    }
+  }
+`
+
+
+export const DELETE_INVOICE_PAYMENT = gql`
+  mutation DeleteFinanceInvoicePayment($input: DeleteFinanceInvoicePaymentInput!) {
+    deleteFinanceInvoicePayment(input: $input) {
       ok
     }
   }
