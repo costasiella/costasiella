@@ -143,11 +143,11 @@ class GQLFinanceInvoiceItem(TestCase):
         financeInvoice {
           id
         }
+        lineNumber
         productName
         description
         quantity
         price
-        lineNumber
         financeTaxRate {
           id
           name
@@ -165,6 +165,7 @@ class GQLFinanceInvoiceItem(TestCase):
         financeInvoice {
           id
         }
+        lineNumber
         productName
         description
         quantity
@@ -520,6 +521,76 @@ class GQLFinanceInvoiceItem(TestCase):
           data['updateFinanceInvoiceItem']['financeInvoiceItem']['financeCostcenter']['id'], 
           variables['input']['financeCostcenter']
         )
+
+
+    def test_update_invoice_item(self):
+        """ Update a invoice item """
+        query = self.invoice_item_update_mutation
+        query_create = self.invoice_item_create_mutation
+
+        invoice = f.FinanceInvoiceFactory.create()
+        invoice_item = f.FinanceInvoiceItemFactory.create(
+          initial_invoice=invoice
+        )
+
+        query_create = self.invoice_item_create_mutation
+        variables_create = self.variables_create
+        variables_create['input']['financeInvoice'] = to_global_id('FinanceInvoiceNode', invoice.id)
+
+        # Add 2 more items
+        # Execute again and check if the line number for the 2nd item = 1
+        executed = execute_test_client_api_query(
+            query_create, 
+            self.admin_user, 
+            variables=variables_create
+        )
+
+        data = executed.get('data')
+        id_2 = data['createFinanceInvoiceItem']['financeInvoiceItem']['id']
+        rid_2 = get_rid(id_2)
+        line_nr_2 = data['createFinanceInvoiceItem']['financeInvoiceItem']['lineNumber']
+
+        self.assertEqual(data['createFinanceInvoiceItem']['financeInvoiceItem']['lineNumber'], 1)
+
+        # Execute again and check if the line number for the 3rd item = 2
+        executed = execute_test_client_api_query(
+            query_create, 
+            self.admin_user, 
+            variables=variables_create
+        )
+
+        data = executed.get('data')
+        id_3 = data['createFinanceInvoiceItem']['financeInvoiceItem']['id']
+        rid_3 = get_rid(id_3)
+        line_nr_3 = data['createFinanceInvoiceItem']['financeInvoiceItem']['lineNumber']
+
+        self.assertEqual(data['createFinanceInvoiceItem']['financeInvoiceItem']['lineNumber'], 2)
+
+        variables = {
+          "input": {
+            "lineNumber": 0
+          }
+        }
+        variables['input']['id'] = id_3
+
+        executed = execute_test_client_api_query(
+            query, 
+            self.admin_user, 
+            variables=variables
+        )
+        data = executed.get('data')
+
+        self.assertEqual(
+          data['updateFinanceInvoiceItem']['financeInvoiceItem']['lineNumber'], 
+          variables['input']['lineNumber']
+        )
+
+        item_1 = models.FinanceInvoiceItem.objects.get(id=invoice_item.id)
+        item_2 = models.FinanceInvoiceItem.objects.get(id=rid_2.id)
+        item_3 = models.FinanceInvoiceItem.objects.get(id=rid_3.id)
+        self.assertEqual(item_1.line_number, 1)
+        self.assertEqual(item_2.line_number, 2)
+        self.assertEqual(item_3.line_number, 0)
 
 
     def test_update_invoice_item_anon_user(self):
