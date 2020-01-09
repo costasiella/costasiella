@@ -617,15 +617,11 @@ class GQLFinanceInvoiceItem(TestCase):
             self.admin_user, 
             variables=variables_create
         )
-        print("###################")
-        print(executed)
 
         data = executed.get('data')
         id_2 = data['createFinanceInvoiceItem']['financeInvoiceItem']['id']
         rid_2 = get_rid(id_2)
         line_nr_2 = data['createFinanceInvoiceItem']['financeInvoiceItem']['lineNumber']
-
-        print(rid_2)
 
         self.assertEqual(data['createFinanceInvoiceItem']['financeInvoiceItem']['lineNumber'], 1)
 
@@ -635,15 +631,10 @@ class GQLFinanceInvoiceItem(TestCase):
             self.admin_user, 
             variables=variables_create
         )
-        print("###################")
-        print(executed)
-
         data = executed.get('data')
         id_3 = data['createFinanceInvoiceItem']['financeInvoiceItem']['id']
         rid_3 = get_rid(id_3)
         line_nr_3 = data['createFinanceInvoiceItem']['financeInvoiceItem']['lineNumber']
-
-        print(rid_3)
 
         self.assertEqual(data['createFinanceInvoiceItem']['financeInvoiceItem']['lineNumber'], 2)
         
