@@ -147,6 +147,7 @@ class GQLFinanceInvoiceItem(TestCase):
         description
         quantity
         price
+        lineNumber
         financeTaxRate {
           id
           name
@@ -361,7 +362,6 @@ class GQLFinanceInvoiceItem(TestCase):
         )
 
 
-
     def test_create_invoice_item(self):
         """ Create an account invoice """
         query = self.invoice_item_create_mutation
@@ -385,6 +385,43 @@ class GQLFinanceInvoiceItem(TestCase):
             data['createFinanceInvoiceItem']['financeInvoiceItem']['financeInvoice']['id'], 
             variables['input']['financeInvoice']
         )
+
+
+    def test_create_invoice_item_increate_line_number(self):
+        """ Create an account invoice """
+        query = self.invoice_item_create_mutation
+
+        invoice = f.FinanceInvoiceFactory.create()
+        variables = self.variables_create
+        variables['input']['financeInvoice'] = to_global_id('FinanceInvoiceNode', invoice.id)
+
+        executed = execute_test_client_api_query(
+            query, 
+            self.admin_user, 
+            variables=variables
+        )
+        data = executed.get('data')
+
+        # Get invoice
+        rid = get_rid(data['createFinanceInvoiceItem']['financeInvoiceItem']['financeInvoice']['id'])
+        invoice = models.FinanceInvoice.objects.get(pk=rid.id)
+
+        self.assertEqual(
+            data['createFinanceInvoiceItem']['financeInvoiceItem']['financeInvoice']['id'], 
+            variables['input']['financeInvoice']
+        )
+        self.assertEqual(data['createFinanceInvoiceItem']['financeInvoiceItem']['lineNumber'], 0)
+        
+
+        # Execute again and check if the line number for the 2nd item = 1
+        executed = execute_test_client_api_query(
+            query, 
+            self.admin_user, 
+            variables=variables
+        )
+        data = executed.get('data')
+
+        self.assertEqual(data['createFinanceInvoiceItem']['financeInvoiceItem']['lineNumber'], 1)
 
 
     def test_create_invoice_item_anon_user(self):
