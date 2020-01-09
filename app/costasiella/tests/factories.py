@@ -466,7 +466,13 @@ class FinanceInvoiceItemFactory(factory.DjangoModelFactory):
     class Meta:
         model = models.FinanceInvoiceItem
 
-    finance_invoice = factory.SubFactory(FinanceInvoiceFactory)
+    # finance_invoice = factory.SubFactory(FinanceInvoiceFactory)
+    class Params:
+        initial_invoice = factory.SubFactory(FinanceInvoiceFactory)
+
+    finance_invoice = factory.LazyAttribute(
+        lambda o: o.initial_invoice if o.initial_invoice else factory.SubFactory(FinanceInvoiceFactory)
+    )
     product_name = "Product"
     description = "Description"
     quantity = 1

@@ -582,8 +582,8 @@ class GQLFinanceInvoiceItem(TestCase):
         self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
-    def test_delete_invoice(self):
-        """ Delete an account invoice """
+    def test_delete_invoice_item(self):
+        """ Delete an account invoice item """
         query = self.invoice_item_delete_mutation
         invoice_item = f.FinanceInvoiceItemFactory.create()
         variables = {"input":{}}
@@ -596,6 +596,74 @@ class GQLFinanceInvoiceItem(TestCase):
         )
         data = executed.get('data')
         self.assertEqual(data['deleteFinanceInvoiceItem']['ok'], True)
+
+
+    def test_delete_invoice_item_check_line_number(self):
+        """ Delete an account invoice item """
+        query = self.invoice_item_delete_mutation
+        invoice = f.FinanceInvoiceFactory.create()
+        invoice_item = f.FinanceInvoiceItemFactory.create(
+          initial_invoice=invoice
+        )
+
+        query_create = self.invoice_item_create_mutation
+        variables_create = self.variables_create
+        variables_create['input']['financeInvoice'] = to_global_id('FinanceInvoiceNode', invoice.id)
+
+        # Add 2 more items
+        # Execute again and check if the line number for the 2nd item = 1
+        executed = execute_test_client_api_query(
+            query_create, 
+            self.admin_user, 
+            variables=variables_create
+        )
+        print("###################")
+        print(executed)
+
+        data = executed.get('data')
+        id_2 = data['createFinanceInvoiceItem']['financeInvoiceItem']['id']
+        rid_2 = get_rid(id_2)
+        line_nr_2 = data['createFinanceInvoiceItem']['financeInvoiceItem']['lineNumber']
+
+        print(rid_2)
+
+        self.assertEqual(data['createFinanceInvoiceItem']['financeInvoiceItem']['lineNumber'], 1)
+
+        # Execute again and check if the line number for the 3rd item = 2
+        executed = execute_test_client_api_query(
+            query_create, 
+            self.admin_user, 
+            variables=variables_create
+        )
+        print("###################")
+        print(executed)
+
+        data = executed.get('data')
+        id_3 = data['createFinanceInvoiceItem']['financeInvoiceItem']['id']
+        rid_3 = get_rid(id_3)
+        line_nr_3 = data['createFinanceInvoiceItem']['financeInvoiceItem']['lineNumber']
+
+        print(rid_3)
+
+        self.assertEqual(data['createFinanceInvoiceItem']['financeInvoiceItem']['lineNumber'], 2)
+        
+        variables = {"input":{}}
+        variables['input']['id'] = to_global_id('FinanceInvoiceItemNode', invoice_item.id)
+
+        executed = execute_test_client_api_query(
+            query, 
+            self.admin_user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['deleteFinanceInvoiceItem']['ok'], True)
+
+        # Check re-numbering items 2 and 3
+        item_2 = models.FinanceInvoiceItem.objects.get(pk=rid_2.id)
+        item_3 = models.FinanceInvoiceItem.objects.get(pk=rid_3.id)
+
+        self.assertEqual(item_2.line_number, line_nr_2 - 1)
+        self.assertEqual(item_3.line_number, line_nr_3 - 1)
 
 
     def test_delete_invoice_item_anon_user(self):
