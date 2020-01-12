@@ -12,9 +12,9 @@ import {
   Card,
   Container,
 } from "tabler-react";
-import SiteWrapperSelfCheckin from "../SiteWrapperSelfCheckin"
+import SiteWrapperSelfCheckin from "../../SiteWrapperSelfCheckin"
 
-import HasPermissionWrapper from "../HasPermissionWrapper"
+import HasPermissionWrapper from "../../HasPermissionWrapper"
 
 
 function Locations({ t, match, history }) {
