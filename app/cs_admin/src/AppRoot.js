@@ -135,6 +135,8 @@ import ScheduleClassPrices from './components/schedule/classes/all/prices/Schedu
 import ScheduleClassPriceAdd from './components/schedule/classes/all/prices/ScheduleClassPriceAdd'
 import ScheduleClassPriceEdit from './components/schedule/classes/all/prices/ScheduleClassPriceEdit'
 
+import SelfCheckinLocations from './components/selfcheckin/Locations'
+
 import UserChangePassword from './components/user/password/UserPasswordChange'
 import UserLogin from './components/user/login/UserLogin'
 import UserLogout from './components/user/login/UserLogout'
@@ -311,6 +313,9 @@ function AppRoot({ t }) {
           <PrivateRoute exact path="/schedule/classes/class/attendance/:class_id/:date" component={ScheduleClassAttendance} />
           <PrivateRoute exact path="/schedule/classes/class/book/:class_id/:date/:account_id" component={ScheduleClassBook} />
           <PrivateRoute exact path="/schedule/classes/class/edit/:class_id/:date" component={ScheduleClassEdit} />
+
+          {/* Self Check-in */}
+          <PrivateRoute exact path="/selfcheckin" component={SelfCheckinLocations} />
 
           {/* Settings */}
           <PrivateRoute exact path="/settings/general" component={AppSettingsGeneral} />

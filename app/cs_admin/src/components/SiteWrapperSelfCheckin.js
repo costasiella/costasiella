@@ -140,20 +140,20 @@ class SiteWrapperSelfCheckin extends React.Component<Props, State> {
                 href: "/",
                 alt: "Costasiella",
                 imageURL: "/static/logos/stock/logo_stock_backend.svg", // Set logo url here
-                navItems: (
-                  <Nav.Item type="div" className="d-none d-md-flex">
-                    <Link to="/settings/general">
-                      <Button
-                        icon="settings"
-                        outline
-                        size="sm"
-                        color="primary"
-                      >
-                        {this.props.t('general.settings')}
-                      </Button>
-                    </Link>
-                  </Nav.Item>
-                ),
+                // navItems: (
+                //   <Nav.Item type="div" className="d-none d-md-flex">
+                //     <Link to="/settings/general">
+                //       <Button
+                //         icon="settings"
+                //         outline
+                //         size="sm"
+                //         color="primary"
+                //       >
+                //         {this.props.t('general.settings')}
+                //       </Button>
+                //     </Link>
+                //   </Nav.Item>
+                // ),
                 // notificationsTray: {
                 //   notificationsObjects,
                 //   markAllAsRead: () =>
