@@ -3,15 +3,12 @@
 import React, {Component } from 'react'
 import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
-import { useQuery } from '@apollo/react-hooks';
+import { useQuery } from '@apollo/react-hooks'
+import { Link } from 'react-router-dom'
 
 import {
-  Page,
-  Grid,
   Icon,
-  Button,
-  Card,
-  Container,
+  List
 } from "tabler-react";
 import SelfCheckinBase from "../SelfCheckinBase"
 
@@ -33,16 +30,31 @@ function Locations({ t, match, history }) {
     </SelfCheckinBase>
   )
 
+
   return (
     <SelfCheckinBase title={t("selfcheckin.locations.title")}>
-      <Card>
-        <Card.Header>
-          <Card.Title>{t('home.title')}</Card.Title>
-        </Card.Header>
-        <Card.Body>
-          Hello world from the self checkin component!
-        </Card.Body>
-      </Card>
+      {
+        data.organizationLocations.edges.map(({node}) =>
+          <div>
+            <h3>{node.name}</h3>
+            <List.Group>
+              {
+                node.organizationlocationroomSet.edges.map(({node}) =>
+                  <List.GroupItem action>
+                    <Link to={"/selfcheckin/room/" + node.id}>
+                      <div>
+                        <span className="pull-right"><Icon name="chevron-right" /></span>
+                        {node.name}
+                      </div>
+                    </Link>
+                  </List.GroupItem>
+                )
+              }
+            </List.Group>
+            <br />
+          </div>
+        )
+      }
     </SelfCheckinBase>
   )
 }
