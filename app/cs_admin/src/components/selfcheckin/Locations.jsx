@@ -17,25 +17,13 @@ import SiteWrapperSelfCheckin from "../SiteWrapperSelfCheckin"
 import HasPermissionWrapper from "../HasPermissionWrapper"
 
 
-class Locations extends Component {
-  constructor(props) {
-    super(props)
-    console.log("Home home props:")
-    console.log(props)
-  }
+function Locations({ t, match, history }) {
 
-
-  render() {
-    const t = this.props.t
-    const match = this.props.match
-    const history = this.props.history
-    const id = match.params.id
-
-    return (
-      <SiteWrapperSelfCheckin>
+  return (
+    <SiteWrapperSelfCheckin>
         <div className="my-3 my-md-5">
           <Container>
-            <Page.Header title={t("home.title")} />
+            <Page.Header title={t("selfcheckin.locations.title")} />
             <Grid.Row>
               <Grid.Col md={9}>
               <Card>
@@ -55,8 +43,8 @@ class Locations extends Component {
           </Container>
         </div>
     </SiteWrapperSelfCheckin>
-    )}
-  }
+  )
+}
 
 
 export default withTranslation()(withRouter(Locations))
