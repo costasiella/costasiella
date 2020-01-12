@@ -33,28 +33,42 @@ function Locations({ t, match, history }) {
 
   return (
     <SelfCheckinBase title={t("selfcheckin.locations.title")}>
-      {
-        data.organizationLocations.edges.map(({node}) =>
-          <div>
-            <h3>{node.name}</h3>
-            <List.Group>
-              {
-                node.organizationlocationroomSet.edges.map(({node}) =>
-                  <List.GroupItem action>
-                    <Link to={"/selfcheckin/room/" + node.id}>
-                      <div>
-                        <span className="pull-right"><Icon name="chevron-right" /></span>
-                        {node.name}
-                      </div>
-                    </Link>
-                  </List.GroupItem>
-                )
-              }
-            </List.Group>
-            <br />
-          </div>
-        )
-      }
+      <h4>{t("selfcheckin.locations.please_select")}</h4>
+        <List.Group>
+          {
+            data.organizationLocations.edges.map(({node}) =>
+              <List.GroupItem action>
+                <Link to={"/selfcheckin/location/" + node.id}>
+                  <div>
+                    <span className="pull-right"><Icon name="chevron-right" /></span>
+                    {node.name}
+                  </div>
+                </Link>
+              </List.GroupItem>
+          )}
+        </List.Group>
+
+          {/* //  List location rooms
+          // <div>
+          //   <h3>{node.name}</h3>
+          //   <List.Group>
+          //     {
+          //       node.organizationlocationroomSet.edges.map(({node}) =>
+          //         <List.GroupItem action>
+          //           <Link to={"/selfcheckin/room/" + node.id}>
+          //             <div>
+          //               <span className="pull-right"><Icon name="chevron-right" /></span>
+          //               {node.name}
+          //             </div>
+          //           </Link>
+          //         </List.GroupItem>
+          //       )
+          //     }
+          //   </List.Group>
+          //   <br />
+          // </div>
+        // ) */}
+      
     </SelfCheckinBase>
   )
 }
