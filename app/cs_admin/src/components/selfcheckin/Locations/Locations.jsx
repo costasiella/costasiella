@@ -3,6 +3,7 @@
 import React, {Component } from 'react'
 import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
+import { useQuery } from '@apollo/react-hooks';
 
 import {
   Page,
@@ -12,37 +13,37 @@ import {
   Card,
   Container,
 } from "tabler-react";
-import SiteWrapperSelfCheckin from "../../SiteWrapperSelfCheckin"
+import SelfCheckinBase from "../SelfCheckinBase"
 
 import HasPermissionWrapper from "../../HasPermissionWrapper"
+import { GET_ORGANIZATION_LOCATIONS_QUERY } from "./queries"
 
 
 function Locations({ t, match, history }) {
+  const { loading, error, data } = useQuery(GET_ORGANIZATION_LOCATIONS_QUERY);
+
+  if (loading) return (
+    <SelfCheckinBase>
+      {t("general.loading_with_dots")}
+    </SelfCheckinBase>
+  )
+  if (error) return (
+    <SelfCheckinBase>
+      {t("selfcheckin.loadings.error_loading")}
+    </SelfCheckinBase>
+  )
 
   return (
-    <SiteWrapperSelfCheckin>
-        <div className="my-3 my-md-5">
-          <Container>
-            <Page.Header title={t("selfcheckin.locations.title")} />
-            <Grid.Row>
-              <Grid.Col md={9}>
-              <Card>
-                <Card.Header>
-                  <Card.Title>{t('home.title')}</Card.Title>
-                </Card.Header>
-                <Card.Body>
-                    Hello world from the self checkin component!
-                </Card.Body>
-              </Card>
-              </Grid.Col>
-              <Grid.Col md={3}>
-                menu here :)
-                {/* <FinanceMenu /> */}
-              </Grid.Col>
-            </Grid.Row>
-          </Container>
-        </div>
-    </SiteWrapperSelfCheckin>
+    <SelfCheckinBase title={t("selfcheckin.locations.title")}>
+      <Card>
+        <Card.Header>
+          <Card.Title>{t('home.title')}</Card.Title>
+        </Card.Header>
+        <Card.Body>
+          Hello world from the self checkin component!
+        </Card.Body>
+      </Card>
+    </SelfCheckinBase>
   )
 }
 
