@@ -9,6 +9,7 @@ import { Link } from 'react-router-dom'
 import moment from 'moment'
 
 import {
+  Button,
   Card,
   Icon,
   Table
@@ -105,6 +106,14 @@ function LocationClasses({ t, match, history }) {
                         { (account) ? account.fullName : 
                           <span className="text-red">{t("schedule.classes.no_teacher")}</span>
                         }
+                      </Table.Col>
+                      <Table.Col>
+                        <Link to={"/selfcheckin/location/" + locationId + "/" + scheduleItemId + "/" + date}>
+                          <Button color="secondary" className="pull-right">
+                            {t("selfcheckin.classes.go_to_checkin")}
+                            <Icon name="chevron-right" />
+                          </Button>
+                        </Link>
                       </Table.Col>
                     </Table.Row>
                   )
