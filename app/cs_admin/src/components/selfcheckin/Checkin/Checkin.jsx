@@ -73,7 +73,7 @@ function SelfCheckinCheckin({ t, match, history }) {
       variables: get_attendance_list_query_variables(scheduleItemId, class_date)
     }
   )
-  
+
   const [ updateAttendance, 
     { loading: mutationAttendanceLoading, error: mutationAttendanceError },
   ] = useMutation(UPDATE_SCHEDULE_ITEM_ATTENDANCE)
@@ -99,7 +99,6 @@ function SelfCheckinCheckin({ t, match, history }) {
       {t("selfcheckin.checkin.error_loading")}
     </SelfCheckinBase>
   )
-
 
   console.log(queryAttendanceData)
 
@@ -151,14 +150,14 @@ function SelfCheckinCheckin({ t, match, history }) {
                     </Table.Col>
                     <Table.Col>
                       {/* Delete */}
-                      <ScheduleClassAttendanceDelete node={node} />
+                      {/* <ScheduleClassAttendanceDelete node={node} /> */}
                       {/* Status dropdown */}
                       <Dropdown
                         key={v4()}
                         className="pull-right"
                         type="button"
                         toggle
-                        color="secondary btn-sm"
+                        color="secondary"
                         triggerContent={t("general.status")}
                         items={[
                           <HasPermissionWrapper key={v4()} permission="change" resource="scheduleitemattendance">
@@ -217,7 +216,7 @@ function SelfCheckinCheckin({ t, match, history }) {
                             key={v4()}
                             className="pull-right"
                             color="success"
-                            size="sm"
+                            size=""
                             onClick={() => {
                               setAttendanceStatus({
                                 t: t, 
