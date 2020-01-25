@@ -108,7 +108,7 @@ function LocationClasses({ t, match, history }) {
                         }
                       </Table.Col>
                       <Table.Col>
-                        <Link to={"/selfcheckin/location/" + locationId + "/" + scheduleItemId + "/" + date}>
+                        <Link to={"/selfcheckin/checkin/" + locationId + "/" + scheduleItemId + "/" + date}>
                           <Button color="secondary" className="pull-right">
                             {t("selfcheckin.classes.go_to_checkin")}
                             <Icon name="chevron-right" />
