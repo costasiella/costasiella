@@ -2,16 +2,19 @@
 
 import React, { useContext } from 'react'
 import { useQuery, useMutation, useLazyQuery } from '@apollo/react-hooks'
+import { v4 } from "uuid"
 import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
 import { Link } from 'react-router-dom'
 import { toast } from 'react-toastify'
+
 
 import moment from 'moment'
 
 import {
   Button,
   Card,
+  Dropdown,
   Icon,
   Table
 } from "tabler-react";
@@ -21,7 +24,11 @@ import AppSettingsContext from '../../context/AppSettingsContext'
 
 import HasPermissionWrapper from "../../HasPermissionWrapper"
 import { GET_ACCOUNTS_QUERY, GET_SCHEDULE_CLASS_ATTENDANCE_QUERY, UPDATE_SCHEDULE_ITEM_ATTENDANCE } from "./queries"
+import { get_attendance_list_query_variables } from "./tools"
 import CSLS from "../../../tools/cs_local_storage"
+import BadgeBookingStatus from "../../ui/BadgeBookingStatus"
+import ContentCard from "../../general/ContentCard"
+import ScheduleClassAttendanceDelete from "../../schedule/classes/class/attendance/ScheduleClassAttendanceDelete"
 
 
 function setAttendanceStatus({t, updateAttendance, node, status}) {
@@ -50,38 +57,185 @@ function setAttendanceStatus({t, updateAttendance, node, status}) {
 function SelfCheckinCheckin({ t, match, history }) {
   const locationId = match.params.location_id
   const scheduleItemId = match.params.schedule_item_id
-  const date = match.params.date
+  const class_date = match.params.date
   const appSettings = useContext(AppSettingsContext)
   const dateFormat = appSettings.dateFormat
   const timeFormat = appSettings.timeFormatMoment
   // const today = moment().format('YYYY-MM-DD')
 
-  // const { loading, error, data } = useQuery(GET_LOCATION_CLASSES_QUERY, {
-  //   variables: {
-  //     dateFrom: today,
-  //     dateUntil: today,
-  //     organizationLocation: locationId,
-  //   }
-  // })
+  const { 
+    refetch: refetchAttendance, 
+    loading: queryAttendanceLoading, 
+    error: queryAttendanceError, 
+    data: queryAttendanceData 
+  } = useQuery(
+    GET_SCHEDULE_CLASS_ATTENDANCE_QUERY, {
+      variables: get_attendance_list_query_variables(scheduleItemId, class_date)
+    }
+  )
+  
+  const [ updateAttendance, 
+    { loading: mutationAttendanceLoading, error: mutationAttendanceError },
+  ] = useMutation(UPDATE_SCHEDULE_ITEM_ATTENDANCE)
 
-  // if (loading) return (
-  //   <SelfCheckinBase>
-  //     {t("general.loading_with_dots")}
-  //   </SelfCheckinBase>
-  // )
-  // if (error) return (
-  //   <SelfCheckinBase>
-  //     {t("selfcheckin.checkin.error_loading")}
-  //   </SelfCheckinBase>
-  // )
+  const [ getAccounts, 
+    { refetch: refetchAccounts, 
+      fetchMore: fetchMoreAccounts,
+      loading: queryAccountsLoading, 
+      error: queryAccountsError, 
+      data: queryAccountsData 
+    }] = useLazyQuery( GET_ACCOUNTS_QUERY )
 
-  // console.log(data)
+  console.log('queryAccountsData')
+  console.log(queryAccountsData)
+  
+  if (queryAttendanceLoading) return (
+    <SelfCheckinBase>
+      {t("general.loading_with_dots")}
+    </SelfCheckinBase>
+  )
+  if (queryAttendanceError) return (
+    <SelfCheckinBase>
+      {t("selfcheckin.checkin.error_loading")}
+    </SelfCheckinBase>
+  )
+
+
+  console.log(queryAttendanceData)
 
   return (
     <SelfCheckinBase title={t("selfcheckin.classes.title")}>
-      <Card title={t("general.attendance")}>
-        
-      </Card>
+      <ContentCard cardTitle={t('general.attendance')}
+                    pageInfo={queryAttendanceData.scheduleItemAttendances.pageInfo}
+                    onLoadMore={() => {
+                      fetchMoreAccounts({
+                      variables: {
+                        after: queryAttendanceData.scheduleItemAttendances.pageInfo.endCursor
+                      },
+                      updateQuery: (previousResult, { fetchMoreResult }) => {
+                        const newEdges = fetchMoreResult.scheduleItemAttendances.edges
+                        const pageInfo = fetchMoreResult.scheduleItemAttendances.pageInfo 
+
+                        return newEdges.length
+                          ? {
+                              // Put the new scheduleItemAttendances at the end of the list and update `pageInfo`
+                              // so we have the new `endCursor` and `hasNextPage` values
+                              queryAttendanceData: {
+                                scheduleItemAttendances: {
+                                  __typename: previousResult.scheduleItemAttendances.__typename,
+                                  edges: [ ...previousResult.scheduleItemAttendances.edges, ...newEdges ],
+                                  pageInfo
+                                }
+                              }
+                            }
+                          : previousResult
+                      }
+                    })
+        }} >
+          <Table>
+            <Table.Header>
+              <Table.Row key={v4()}>
+                <Table.ColHeader>{t('general.name')}</Table.ColHeader>
+                <Table.ColHeader>{t('general.booking_status')}</Table.ColHeader>
+                <Table.ColHeader></Table.ColHeader>
+              </Table.Row>
+            </Table.Header>
+            <Table.Body>
+              {queryAttendanceData.scheduleItemAttendances.edges.map(({ node }) => (
+                  <Table.Row key={v4()}>
+                    <Table.Col>
+                      {node.account.fullName}
+                    </Table.Col>
+                    <Table.Col>
+                      <BadgeBookingStatus status={node.bookingStatus} />
+                    </Table.Col>
+                    <Table.Col>
+                      {/* Delete */}
+                      <ScheduleClassAttendanceDelete node={node} />
+                      {/* Status dropdown */}
+                      <Dropdown
+                        key={v4()}
+                        className="pull-right"
+                        type="button"
+                        toggle
+                        color="secondary btn-sm"
+                        triggerContent={t("general.status")}
+                        items={[
+                          <HasPermissionWrapper key={v4()} permission="change" resource="scheduleitemattendance">
+                            <Dropdown.Item
+                              key={v4()}
+                              icon="check"
+                              onClick={() => {
+                                setAttendanceStatus({
+                                  t: t, 
+                                  updateAttendance: updateAttendance,
+                                  node: node,
+                                  status: 'ATTENDING'
+                                })
+                                refetchAttendance()
+                              }}>
+                                {t('schedule.classes.class.attendance.booking_status.ATTENDING')}
+                            </Dropdown.Item>
+                          </HasPermissionWrapper>,
+                          <HasPermissionWrapper key={v4()} permission="change" resource="scheduleitemattendance">
+                            <Dropdown.Item
+                              key={v4()}
+                              icon="calendar"
+                              onClick={() => {
+                                setAttendanceStatus({
+                                  t: t, 
+                                  updateAttendance: updateAttendance,
+                                  node: node,
+                                  status: 'BOOKED'
+                                })
+                                refetchAttendance()
+                              }}>
+                                {t('schedule.classes.class.attendance.booking_status.BOOKED')}
+                            </Dropdown.Item>
+                          </HasPermissionWrapper>,
+                          <HasPermissionWrapper key={v4()} permission="change" resource="scheduleitemattendance">
+                            <Dropdown.Item
+                              key={v4()}
+                              icon="x"
+                              onClick={() => {
+                                setAttendanceStatus({
+                                  t: t, 
+                                  updateAttendance: updateAttendance,
+                                  node: node,
+                                  status: 'CANCELLED'
+                                })
+                                refetchAttendance()
+                              }}>
+                                {t('schedule.classes.class.attendance.booking_status.CANCELLED')}
+                            </Dropdown.Item>
+                          </HasPermissionWrapper>,
+                        ]}
+                      />
+                      {(node.bookingStatus == "BOOKED") ?
+                        <HasPermissionWrapper key={v4()} permission="change" resource="scheduleitemattendance">
+                          <Button
+                            key={v4()}
+                            className="pull-right"
+                            color="success"
+                            size="sm"
+                            onClick={() => {
+                              setAttendanceStatus({
+                                t: t, 
+                                updateAttendance: updateAttendance,
+                                node: node,
+                                status: 'ATTENDING'
+                              })
+                              refetchAttendance()
+                            }}>
+                              {t('general.checkin')}
+                          </Button>
+                        </HasPermissionWrapper>  : "" }
+                    </Table.Col>
+                  </Table.Row>
+                ))}
+            </Table.Body>
+          </Table>
+      </ContentCard>
 
     </SelfCheckinBase>
   )
