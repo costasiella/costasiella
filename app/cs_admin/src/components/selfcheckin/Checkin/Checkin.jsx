@@ -4,8 +4,8 @@ import React, { useContext } from 'react'
 import { useQuery, useMutation, useLazyQuery } from '@apollo/react-hooks'
 import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
-import { useQuery } from '@apollo/react-hooks'
 import { Link } from 'react-router-dom'
+import { toast } from 'react-toastify'
 
 import moment from 'moment'
 
@@ -56,29 +56,32 @@ function SelfCheckinCheckin({ t, match, history }) {
   const timeFormat = appSettings.timeFormatMoment
   // const today = moment().format('YYYY-MM-DD')
 
-  const { loading, error, data } = useQuery(GET_LOCATION_CLASSES_QUERY, {
-    variables: {
-      dateFrom: today,
-      dateUntil: today,
-      organizationLocation: locationId,
-    }
-  })
+  // const { loading, error, data } = useQuery(GET_LOCATION_CLASSES_QUERY, {
+  //   variables: {
+  //     dateFrom: today,
+  //     dateUntil: today,
+  //     organizationLocation: locationId,
+  //   }
+  // })
 
-  if (loading) return (
-    <SelfCheckinBase>
-      {t("general.loading_with_dots")}
-    </SelfCheckinBase>
-  )
-  if (error) return (
-    <SelfCheckinBase>
-      {t("selfcheckin.checkin.error_loading")}
-    </SelfCheckinBase>
-  )
+  // if (loading) return (
+  //   <SelfCheckinBase>
+  //     {t("general.loading_with_dots")}
+  //   </SelfCheckinBase>
+  // )
+  // if (error) return (
+  //   <SelfCheckinBase>
+  //     {t("selfcheckin.checkin.error_loading")}
+  //   </SelfCheckinBase>
+  // )
 
-  console.log(data)
+  // console.log(data)
 
   return (
     <SelfCheckinBase title={t("selfcheckin.classes.title")}>
+      <Card title={t("general.attendance")}>
+        
+      </Card>
 
     </SelfCheckinBase>
   )

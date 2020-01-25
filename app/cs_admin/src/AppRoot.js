@@ -135,6 +135,7 @@ import ScheduleClassPrices from './components/schedule/classes/all/prices/Schedu
 import ScheduleClassPriceAdd from './components/schedule/classes/all/prices/ScheduleClassPriceAdd'
 import ScheduleClassPriceEdit from './components/schedule/classes/all/prices/ScheduleClassPriceEdit'
 
+import SelfCheckinCheckin from './components/selfcheckin/Checkin/Checkin'
 import SelfCheckinLocations from './components/selfcheckin/Locations/Locations'
 import SelfCheckinLocationClasses from './components/selfcheckin/LocationClasses/LocationClasses'
 
@@ -316,6 +317,7 @@ function AppRoot({ t }) {
           <PrivateRoute exact path="/schedule/classes/class/edit/:class_id/:date" component={ScheduleClassEdit} />
 
           {/* Self Check-in */}
+          <PrivateRoute exact path="/selfcheckin/checkin/:location_id/:schedule_item_id/:date" component={SelfCheckinCheckin} />
           <PrivateRoute exact path="/selfcheckin" component={SelfCheckinLocations} />
           <PrivateRoute exact path="/selfcheckin/location/:location_id" component={SelfCheckinLocationClasses} />
 
