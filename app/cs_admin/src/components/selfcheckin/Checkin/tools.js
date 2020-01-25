@@ -8,7 +8,7 @@ export function get_accounts_query_variables() {
     searchName: undefined
   }
 
-  let search = localStorage.getItem(CSLS.SCHEDULE_CLASSES_CLASS_ATTENDANCE_SEARCH)
+  let search = localStorage.getItem(CSLS.SELFCHECKIN_CHECKIN_SEARCH)
   queryVars.searchName = search
 
   console.log(queryVars)
