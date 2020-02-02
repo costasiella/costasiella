@@ -146,7 +146,6 @@ function ScheduleClassBook({ t, match, history }) {
                     (prices.organizationClasspassTrial) ? 
                       <ScheduleClassBookPriceTrial priceTrial={prices.organizationClasspassTrial}/> : "" 
                     : "" }
-
                 </Grid.Row>
                 </div>
               </Grid.Col>
@@ -156,8 +155,6 @@ function ScheduleClassBook({ t, match, history }) {
     </SiteWrapper>
   )
 }
-
-
 
 
 export default withTranslation()(withRouter(ScheduleClassBook))
