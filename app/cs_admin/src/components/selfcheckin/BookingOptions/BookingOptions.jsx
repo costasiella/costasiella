@@ -23,26 +23,27 @@ import {
   Table,
   StampCard
 } from "tabler-react";
-import SiteWrapper from "../../../../SiteWrapper"
-import HasPermissionWrapper from "../../../../HasPermissionWrapper"
-import { TimeStringToJSDateOBJ } from '../../../../../tools/date_tools'
+import SelfCheckinBase from "../SelfCheckinBase"
+// import HasPermissionWrapper from "../../../HasPermissionWrapper"
+import { TimeStringToJSDateOBJ } from '../../../tools/date_tools'
 // import { confirmAlert } from 'react-confirm-alert'; // Import
 import { toast } from 'react-toastify'
-import { class_edit_all_subtitle, represent_teacher_role } from "../../tools"
-import confirm_delete from "../../../../../tools/confirm_delete"
+// import { class_edit_all_subtitle } from "../../schedule/classes/tools"
+// import confirm_delete from "../../../../tools/confirm_delete"
 
-import { class_subtitle, get_accounts_query_variables } from "../tools"
+import { class_subtitle, get_accounts_query_variables } from "../../schedule/classes/class/tools"
 
-import ContentCard from "../../../../general/ContentCard"
-import ScheduleClassBookBack from "./ScheduleClassBookBack"
-import ScheduleClassBookClasspasses from "./ScheduleClassBookClasspasses"
-import ScheduleClassBookSubscriptions from "./ScheduleClassBookSubscriptions"
-import ScheduleClassBookPriceDropin from "./ScheduleClassBookPriceDropin"
-import ScheduleClassBookPriceTrial from "./ScheduleClassBookPriceTrial"
+// import ContentCard from "../../../../general/ContentCard"
+// import ScheduleClassBookBack from "./ScheduleClassBookBack"
+import ScheduleClassBookClasspasses from "../../schedule/classes/class/book/ScheduleClassBookClasspasses"
+// import ScheduleClassBookClasspasses from ""
+import ScheduleClassBookSubscriptions from "../../schedule/classes/class/book/ScheduleClassBookSubscriptions"
+import ScheduleClassBookPriceDropin from "../../schedule/classes/class/book/ScheduleClassBookPriceDropin"
+import ScheduleClassBookPriceTrial from "../../schedule/classes/class/book/ScheduleClassBookPriceTrial"
 // import ClassEditBase from "../ClassEditBase"
 
 import { GET_BOOKING_OPTIONS_QUERY } from "./queries"
-import CSLS from "../../../../../tools/cs_local_storage"
+// import CSLS from "../../../../tools/cs_local_storage"
 
 const DELETE_SCHEDULE_CLASS_TEACHER = gql`
   mutation DeleteScheduleClassTeacher($input: DeleteScheduleItemTeacherInput!) {
@@ -52,37 +53,12 @@ const DELETE_SCHEDULE_CLASS_TEACHER = gql`
   }
 `
 
-function OnClickCheckin() {
-  console.log('check-in clicked')
 
-  // const account_id = match.params.account_id
-  // const schedule_item_id = match.params.class_id
-  // const class_date = match.params.date
-
-  // createInput = {
-  //   "account": account_id,
-  //   "scheduleItem": schedule_item_id,
-  //   "date": class_date,
-  // }
-
-  // if (classpass) {
-  //   createInput.accountClasspass = classpass.id,
-  //   createInput.attendanceType = "CLASSPASS"
-  // }
-
-  // const [classCheckin, { data, onCompleted, onError }] = useMutation(CREATE_SCHEDULE_ITEM_ATTENDANCE)
-  // classCheckin({variables: {
-  //   "input": createInput
-  // }})
-
-}
-
-
-function ScheduleClassBook({ t, match, history }) {
+function SelfCheckinBookingOptions({ t, match, history }) {
   const [showSearch, setShowSearch] = useState(false)
   const return_url = "/schedule/classes/"
   const account_id = match.params.account_id
-  const schedule_item_id = match.params.class_id
+  const schedule_item_id = match.params.schedule_item_id
   const class_date = match.params.date
   const locationId = match.params.location_id
   const { loading: queryLoading, error: queryError, data: queryData } = useQuery(
@@ -149,5 +125,5 @@ function ScheduleClassBook({ t, match, history }) {
 }
 
 
-export default withTranslation()(withRouter(ScheduleClassBook))
+export default withTranslation()(withRouter(SelfCheckinBookingOptions))
 
