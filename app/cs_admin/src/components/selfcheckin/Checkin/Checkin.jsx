@@ -310,7 +310,7 @@ function SelfCheckinCheckin({ t, match, history }) {
                     <Table.Col key={v4()}>
                       {(checkedInIds.includes(node.id)) ? 
                         <span className="pull-right">{t("schedule.classes.class.attendance.search_results_already_checked_in")}</span> :
-                        <Link to={"/selfcheckin/book/" + scheduleItemId + "/" + class_date + "/" + node.id}>
+                        <Link to={"/selfcheckin/book/" + locationId + "/" + scheduleItemId + "/" + class_date + "/" + node.id}>
                           <Button color="secondary pull-right">
                             {t('general.checkin')} <Icon name="chevron-right" />
                           </Button>

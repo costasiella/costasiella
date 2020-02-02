@@ -84,6 +84,7 @@ function ScheduleClassBook({ t, match, history }) {
   const account_id = match.params.account_id
   const schedule_item_id = match.params.class_id
   const class_date = match.params.date
+  const locationId = match.params.location_id
   const { loading: queryLoading, error: queryError, data: queryData } = useQuery(
     GET_BOOKING_OPTIONS_QUERY, {
       variables: {
