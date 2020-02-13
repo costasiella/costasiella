@@ -43,7 +43,15 @@ import CSLS from "../../../../../tools/cs_local_storage"
 
 
 
-function ScheduleClassBookSubscriptions({ t, match, history, subscriptions, onClickCheckin=f=>f }) {
+function ScheduleClassBookSubscriptions({ 
+  t, 
+  match, 
+  history, 
+  subscriptions, 
+  locationId,
+  onClickCheckin=f=>f, 
+  returnTo="schedule_classes"
+}) {
   console.log('subscriptions')
   console.log(subscriptions)
 
@@ -59,7 +67,7 @@ function ScheduleClassBookSubscriptions({ t, match, history, subscriptions, onCl
         </Card.Body>
         <Card.Footer>
           {(!subscription.allowed) ? t('schedule.classes.class.book.subscription_not_allowed') :
-            <SubscriptionCheckinButton subscription={subscription} />
+            <SubscriptionCheckinButton subscription={subscription} returnTo={returnTo} locationId={locationId} />
           }
         </Card.Footer>
         </Card>
