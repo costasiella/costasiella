@@ -43,9 +43,15 @@ import CSLS from "../../../../../tools/cs_local_storage"
 
 
 
-function ScheduleClassBookSubscriptions({ t, match, history, subscriptions, onClickCheckin=f=>f }) {
-  console.log('subscriptions')
-  console.log(subscriptions)
+function ScheduleClassBookSubscriptions({ 
+  t, 
+  match, 
+  history, 
+  subscriptions, 
+  locationId,
+  onClickCheckin=f=>f, 
+  returnTo="schedule_classes"
+}) {
 
   return (
     subscriptions.map((subscription) =>(
@@ -59,26 +65,12 @@ function ScheduleClassBookSubscriptions({ t, match, history, subscriptions, onCl
         </Card.Body>
         <Card.Footer>
           {(!subscription.allowed) ? t('schedule.classes.class.book.subscription_not_allowed') :
-            <SubscriptionCheckinButton subscription={subscription} />
+            <SubscriptionCheckinButton subscription={subscription} returnTo={returnTo} locationId={locationId} />
           }
         </Card.Footer>
         </Card>
       </Grid.Col>
     ))
-    // Table
-      // subscriptions.map((subscription) => (
-      //   <Table.Row className="mt-6">
-      //     <Table.Col md={4} lg={4}>
-      //       {t('general.subscription')}
-      //     </Table.Col>
-      //     <Table.Col md={4} lg={4}>
-      //         <span className="pull-right">
-      //           <Icon name="chevron-right" />
-      //         </span>
-      //         {subscription.accountSubscription.organizationSubscription.name}
-      //     </Table.Col>
-      //   </Table.Row>
-      // ))
   )
 }
 

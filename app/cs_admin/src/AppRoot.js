@@ -135,6 +135,11 @@ import ScheduleClassPrices from './components/schedule/classes/all/prices/Schedu
 import ScheduleClassPriceAdd from './components/schedule/classes/all/prices/ScheduleClassPriceAdd'
 import ScheduleClassPriceEdit from './components/schedule/classes/all/prices/ScheduleClassPriceEdit'
 
+import SelfCheckinCheckin from './components/selfcheckin/Checkin/Checkin'
+import SelfCheckinBookingOptions from './components/selfcheckin/BookingOptions/BookingOptions'
+import SelfCheckinLocations from './components/selfcheckin/Locations/Locations'
+import SelfCheckinLocationClasses from './components/selfcheckin/LocationClasses/LocationClasses'
+
 import UserChangePassword from './components/user/password/UserPasswordChange'
 import UserLogin from './components/user/login/UserLogin'
 import UserLogout from './components/user/login/UserLogout'
@@ -311,6 +316,13 @@ function AppRoot({ t }) {
           <PrivateRoute exact path="/schedule/classes/class/attendance/:class_id/:date" component={ScheduleClassAttendance} />
           <PrivateRoute exact path="/schedule/classes/class/book/:class_id/:date/:account_id" component={ScheduleClassBook} />
           <PrivateRoute exact path="/schedule/classes/class/edit/:class_id/:date" component={ScheduleClassEdit} />
+
+          {/* Self Check-in */}
+          <PrivateRoute exact path="/selfcheckin/checkin/:location_id/:class_id/:date" component={SelfCheckinCheckin} />
+          <PrivateRoute exact path="/selfcheckin/book/:location_id/:class_id/:date/:account_id" 
+                              component={SelfCheckinBookingOptions} />
+          <PrivateRoute exact path="/selfcheckin" component={SelfCheckinLocations} />
+          <PrivateRoute exact path="/selfcheckin/location/:location_id" component={SelfCheckinLocationClasses} />
 
           {/* Settings */}
           <PrivateRoute exact path="/settings/general" component={AppSettingsGeneral} />

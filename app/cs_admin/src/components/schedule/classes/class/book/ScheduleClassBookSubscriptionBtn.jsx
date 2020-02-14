@@ -16,8 +16,10 @@ import { GET_SCHEDULE_CLASS_ATTENDANCE_QUERY } from "../attendance/queries"
 import { CREATE_SCHEDULE_ITEM_ATTENDANCE } from "./queries"
 import CSLS from "../../../../../tools/cs_local_storage"
 
+import { getUrlFromReturnTo } from "./tools"
 
-function SubscriptionCheckinButton({t, match, history, subscription}) {
+
+function SubscriptionCheckinButton({t, match, history, subscription, returnTo, locationId=null}) {
   console.log(subscription)
   const account_id = match.params.account_id
   const schedule_item_id = match.params.class_id
@@ -42,6 +44,13 @@ function SubscriptionCheckinButton({t, match, history, subscription}) {
     return "uh oh... error found"
   }
 
+  const return_url = getUrlFromReturnTo({
+    returnTo: returnTo,
+    schedule_item_id: schedule_item_id,
+    class_date: class_date,
+    locationId: locationId
+  })
+
   return (
     <Button 
       block 
@@ -56,7 +65,7 @@ function SubscriptionCheckinButton({t, match, history, subscription}) {
         .then(({ data }) => {
             console.log('got data', data);
             // redirect back to attendance list
-            history.push('/schedule/classes/class/attendance/' + schedule_item_id + "/" + class_date)
+            history.push(return_url)
             // show message to user
             toast.success((t('schedule.classes.class.book.toast_success')), {
               position: toast.POSITION.BOTTOM_RIGHT
