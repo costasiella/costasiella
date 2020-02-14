@@ -52,8 +52,6 @@ function ScheduleClassBookSubscriptions({
   onClickCheckin=f=>f, 
   returnTo="schedule_classes"
 }) {
-  console.log('subscriptions')
-  console.log(subscriptions)
 
   return (
     subscriptions.map((subscription) =>(

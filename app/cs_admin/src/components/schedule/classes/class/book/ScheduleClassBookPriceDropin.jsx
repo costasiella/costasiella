@@ -44,7 +44,15 @@ import { GET_BOOKING_OPTIONS_QUERY, CREATE_SCHEDULE_ITEM_ATTENDANCE } from "./qu
 import CSLS from "../../../../../tools/cs_local_storage"
 
 
-function ScheduleClassBookPriceDropin({ t, match, history, priceDropin, onClickCheckin=f=>f }) {
+function ScheduleClassBookPriceDropin({ 
+  t, 
+  match, 
+  history, 
+  priceDropin, 
+  locationId,
+  onClickCheckin=f=>f,
+  returnTo="schedule_classes"
+}) {
   console.log('priceDropin')
   console.log(priceDropin)
 
@@ -58,7 +66,7 @@ function ScheduleClassBookPriceDropin({ t, match, history, priceDropin, onClickC
         {t("schedule.classes.class.book.dropin_pay_and_book")} <br />
       </Card.Body>
       <Card.Footer>
-        <ScheduleClassBookPriceBtn price={priceDropin} />
+        <ScheduleClassBookPriceBtn price={priceDropin} returnTo={returnTo} locationID={locationId} />
       </Card.Footer>
       </Card>
     </Grid.Col>

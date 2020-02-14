@@ -44,7 +44,15 @@ import { GET_BOOKING_OPTIONS_QUERY, CREATE_SCHEDULE_ITEM_ATTENDANCE } from "./qu
 import CSLS from "../../../../../tools/cs_local_storage"
 
 
-function ScheduleClassBookPriceTrial({ t, match, history, priceTrial, onClickCheckin=f=>f }) {
+function ScheduleClassBookPriceTrial({ 
+  t, 
+  match, 
+  history, 
+  priceTrial, 
+  locationId,
+  onClickCheckin=f=>f,
+  returnTo="schedule_classes"
+}) {
   console.log('priceTrial')
   console.log(priceTrial)
 
@@ -58,7 +66,7 @@ function ScheduleClassBookPriceTrial({ t, match, history, priceTrial, onClickChe
         {t("schedule.classes.class.book.trial_pay_and_book")} <br />
       </Card.Body>
       <Card.Footer>
-        <ScheduleClassBookPriceBtn price={priceTrial} />
+        <ScheduleClassBookPriceBtn price={priceTrial} returnTo={returnTo} locationId={locationId} />
       </Card.Footer>
       </Card>
     </Grid.Col>

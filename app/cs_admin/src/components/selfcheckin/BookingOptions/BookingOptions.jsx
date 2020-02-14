@@ -118,11 +118,19 @@ function SelfCheckinBookingOptions({ t, match, history }) {
               />
               {(prices) ?
                 (prices.organizationClasspassDropin) ? 
-                  <ScheduleClassBookPriceDropin priceDropin={prices.organizationClasspassDropin}/> : "" 
+                  <ScheduleClassBookPriceDropin 
+                    priceDropin={prices.organizationClasspassDropin}
+                    returnTo="selfcheckin" 
+                    locationId={locationId}
+                  /> : "" 
                 : "" }
               {(prices) ?
                 (prices.organizationClasspassTrial) ? 
-                  <ScheduleClassBookPriceTrial priceTrial={prices.organizationClasspassTrial}/> : "" 
+                  <ScheduleClassBookPriceTrial 
+                    priceTrial={prices.organizationClasspassTrial}
+                    returnTo="selfcheckin" 
+                    locationId={locationId}
+                  /> : "" 
                 : "" }
             </Grid.Row>
             </div>
