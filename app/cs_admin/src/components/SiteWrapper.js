@@ -107,13 +107,25 @@ const getNavBarItems = (t, user) => {
     (has_permission(permissions, 'view', 'organizationlocation')) ||
     (has_permission(permissions, 'view', 'organizationmembership')) 
    ){
-  items.push({
-    value: t("organization.title"),
-    to: "/organization",
-    icon: "feather",
-    LinkComponent: withRouter(NavLink),
-  })
-}
+   items.push({
+      value: t("organization.title"),
+      to: "/organization",
+      icon: "feather",
+      LinkComponent: withRouter(NavLink),
+    })
+  }
+
+  // Insights
+  if (
+    (has_permission(permissions, 'view', 'insights'))
+   ){
+    items.push({
+      value: t("insights.title"),
+      to: "/insights",
+      icon: "bar-chart-2",
+      LinkComponent: withRouter(NavLink),
+    })
+  }
 
 
   return items
