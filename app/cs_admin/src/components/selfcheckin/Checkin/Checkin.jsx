@@ -58,7 +58,7 @@ function setAttendanceStatus({t, updateAttendance, node, status}) {
 function SelfCheckinCheckin({ t, match, history }) {
   const [showSearch, setShowSearch] = useState(false)
   const locationId = match.params.location_id
-  const scheduleItemId = match.params.schedule_item_id
+  const scheduleItemId = match.params.class_id
   const class_date = match.params.date
   const appSettings = useContext(AppSettingsContext)
   const dateFormat = appSettings.dateFormat

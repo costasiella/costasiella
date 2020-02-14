@@ -318,8 +318,8 @@ function AppRoot({ t }) {
           <PrivateRoute exact path="/schedule/classes/class/edit/:class_id/:date" component={ScheduleClassEdit} />
 
           {/* Self Check-in */}
-          <PrivateRoute exact path="/selfcheckin/checkin/:location_id/:schedule_item_id/:date" component={SelfCheckinCheckin} />
-          <PrivateRoute exact path="/selfcheckin/book/:location_id/:schedule_item_id/:date/:account_id" 
+          <PrivateRoute exact path="/selfcheckin/checkin/:location_id/:class_id/:date" component={SelfCheckinCheckin} />
+          <PrivateRoute exact path="/selfcheckin/book/:location_id/:class_id/:date/:account_id" 
                               component={SelfCheckinBookingOptions} />
           <PrivateRoute exact path="/selfcheckin" component={SelfCheckinLocations} />
           <PrivateRoute exact path="/selfcheckin/location/:location_id" component={SelfCheckinLocationClasses} />

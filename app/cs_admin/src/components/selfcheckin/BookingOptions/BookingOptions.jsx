@@ -58,7 +58,7 @@ function SelfCheckinBookingOptions({ t, match, history }) {
   const [showSearch, setShowSearch] = useState(false)
   const return_url = "/schedule/classes/"
   const account_id = match.params.account_id
-  const schedule_item_id = match.params.schedule_item_id
+  const schedule_item_id = match.params.class_id
   const class_date = match.params.date
   const locationId = match.params.location_id
   const { loading: queryLoading, error: queryError, data: queryData } = useQuery(
