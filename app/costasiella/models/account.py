@@ -1,3 +1,5 @@
+from django.utils.translation import gettext as _
+
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
@@ -8,6 +10,11 @@ class Account(AbstractUser):
     # teacher and employee will use OneToOne fields. An account can optionally be a teacher or employee.
     # Editable parameter docs
     # https://docs.djangoproject.com/en/2.2/ref/models/fields/#editable
+
+    class Meta:
+        permissions = [
+            ('view_insights', _("Can view insights")),
+        ]
 
     customer = models.BooleanField(default=True)
     teacher = models.BooleanField(default=False)
