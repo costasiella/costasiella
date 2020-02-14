@@ -16,6 +16,8 @@ import { GET_SCHEDULE_CLASS_ATTENDANCE_QUERY } from "../attendance/queries"
 import { CREATE_SCHEDULE_ITEM_ATTENDANCE } from "./queries"
 import CSLS from "../../../../../tools/cs_local_storage"
 
+import { getUrlFromReturnTo } from "./tools"
+
 
 function SubscriptionCheckinButton({t, match, history, subscription, returnTo, locationId=null}) {
   console.log(subscription)
@@ -42,14 +44,12 @@ function SubscriptionCheckinButton({t, match, history, subscription, returnTo, l
     return "uh oh... error found"
   }
 
-  let return_url
-
-  if (returnTo == "schedule_classes") {
-    return_url = '/schedule/classes/class/attendance/' + schedule_item_id + "/" + class_date
-  } else if (returnTo == "selfcheckin") {
-    return_url = '/selfcheckin/checkin/' + locationId + "/" + schedule_item_id + "/" + class_date
-  }
-  
+  const return_url = getUrlFromReturnTo({
+    returnTo: returnTo,
+    schedule_item_id: schedule_item_id,
+    class_date: class_date,
+    locationId: locationId
+  })
 
   return (
     <Button 

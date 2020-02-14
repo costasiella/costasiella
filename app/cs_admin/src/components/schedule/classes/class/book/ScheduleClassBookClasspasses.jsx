@@ -44,9 +44,15 @@ import { GET_BOOKING_OPTIONS_QUERY, CREATE_SCHEDULE_ITEM_ATTENDANCE } from "./qu
 import CSLS from "../../../../../tools/cs_local_storage"
 
 
-function ScheduleClassBookClasspasses({ t, match, history, classpasses, onClickCheckin=f=>f }) {
-  console.log('classpasses')
-  console.log(classpasses)
+function ScheduleClassBookClasspasses({ 
+  t, 
+  match, 
+  history, 
+  classpasses,  
+  locationId,
+  onClickCheckin=f=>f ,
+  returnTo="schedule_classes"
+}) {
 
   return (
     classpasses.map((classpass) =>(
@@ -63,7 +69,7 @@ function ScheduleClassBookClasspasses({ t, match, history, classpasses, onClickC
         </Card.Body>
         <Card.Footer>
           {(!classpass.allowed) ? t('schedule.classes.class.book.classpass_not_allowed') :
-            <ClasspassCheckinButton classpass={classpass} />
+            <ClasspassCheckinButton classpass={classpass} returnTo={returnTo} locationId={locationId} />
           }
         </Card.Footer>
         </Card>

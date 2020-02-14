@@ -106,8 +106,16 @@ function SelfCheckinBookingOptions({ t, match, history }) {
             <h4>{t('general.booking_options')} {account.fullName}</h4>
             <div className="mt-6">
             <Grid.Row cards deck>
-              <ScheduleClassBookSubscriptions subscriptions={subscriptions} returnTo="selfcheckin"/>
-              <ScheduleClassBookClasspasses classpasses={classpasses} />
+              <ScheduleClassBookSubscriptions 
+                subscriptions={subscriptions} 
+                returnTo="selfcheckin" 
+                locationId={locationId}
+              />
+              <ScheduleClassBookClasspasses 
+                classpasses={classpasses} 
+                returnTo="selfcheckin" 
+                locationId={locationId}
+              />
               {(prices) ?
                 (prices.organizationClasspassDropin) ? 
                   <ScheduleClassBookPriceDropin priceDropin={prices.organizationClasspassDropin}/> : "" 
