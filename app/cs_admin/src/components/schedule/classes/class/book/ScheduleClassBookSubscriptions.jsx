@@ -73,20 +73,6 @@ function ScheduleClassBookSubscriptions({
         </Card>
       </Grid.Col>
     ))
-    // Table
-      // subscriptions.map((subscription) => (
-      //   <Table.Row className="mt-6">
-      //     <Table.Col md={4} lg={4}>
-      //       {t('general.subscription')}
-      //     </Table.Col>
-      //     <Table.Col md={4} lg={4}>
-      //         <span className="pull-right">
-      //           <Icon name="chevron-right" />
-      //         </span>
-      //         {subscription.accountSubscription.organizationSubscription.name}
-      //     </Table.Col>
-      //   </Table.Row>
-      // ))
   )
 }
 
