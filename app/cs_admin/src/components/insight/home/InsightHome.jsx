@@ -13,13 +13,13 @@ import {
 import SiteWrapper from "../../SiteWrapper"
 import HasPermissionWrapper from "../../HasPermissionWrapper"
 
-import RelationsMenu from "../RelationsMenu"
+import InsightMenu from "../InsightMenu"
 
 
-class RelationsHome extends Component {
+class InsightHome extends Component {
   constructor(props) {
     super(props)
-    console.log("School home props:")
+    console.log("Insight home props:")
     console.log(props)
   }
 
@@ -33,19 +33,19 @@ class RelationsHome extends Component {
       <SiteWrapper>
         <div className="my-3 my-md-5">
           <Container>
-            <Page.Header title={t("relations.title")} />
+            <Page.Header title={t("insight.title")} />
             <Grid.Row>
               <Grid.Col md={9}>
                 <Grid.Row>
                   <Grid.Col md={4} lg={4}>
-                    <div onClick={() => history.push('/relations/accounts')}>
-                      <StampCard header={<small>{t('relations.accounts.title')}</small>} footer={t('')} color="blue" icon="users" />
+                    <div onClick={() => history.push('/insight/classpasses')}>
+                      <StampCard header={<small>{t('insight.classpasses.title')}</small>} footer={t('')} color="blue" icon="credit-card" />
                     </div>
                   </Grid.Col>
                 </Grid.Row>
               </Grid.Col>
               <Grid.Col md={3}>
-                <RelationsMenu />
+                <InsightMenu />
               </Grid.Col>
             </Grid.Row>
           </Container>
@@ -55,4 +55,4 @@ class RelationsHome extends Component {
   }
 
 
-export default withTranslation()(withRouter(RelationsHome))
+export default withTranslation()(withRouter(InsightHome))
