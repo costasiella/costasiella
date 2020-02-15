@@ -117,11 +117,11 @@ const getNavBarItems = (t, user) => {
 
   // Insights
   if (
-    (has_permission(permissions, 'view', 'insights'))
+    (has_permission(permissions, 'view', 'insight'))
    ){
     items.push({
-      value: t("insights.title"),
-      to: "/insights",
+      value: t("insight.title"),
+      to: "/insight",
       icon: "bar-chart-2",
       LinkComponent: withRouter(NavLink),
     })
