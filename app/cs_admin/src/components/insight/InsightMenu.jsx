@@ -22,7 +22,7 @@ const InsightMenu = ({ t, active_link }) => (
             key={v4()}
             className="d-flex align-items-center"
             to="#/insight/classpasses"
-            icon="users"
+            icon="credit-card"
             active={classpasses_active}
             >
             {t('insight.classpass.title')}
