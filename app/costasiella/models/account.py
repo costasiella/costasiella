@@ -14,6 +14,7 @@ class Account(AbstractUser):
     class Meta:
         permissions = [
             ('view_insight', _("Can view insight menu")),
+            ('view_insightclasspassessold', _("Can view insight classpasses sold")),
         ]
 
     customer = models.BooleanField(default=True)
