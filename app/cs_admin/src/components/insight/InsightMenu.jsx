@@ -17,16 +17,20 @@ const InsightMenu = ({ t, active_link }) => (
     <List.Group transparent={true}>
         {(active_link === 'classpasses') ? classpasses_active = true: classpasses_active = false}
         
-
-        <List.GroupItem
-            key={v4()}
-            className="d-flex align-items-center"
-            to="#/insight/classpasses"
-            icon="credit-card"
-            active={classpasses_active}
-            >
-            {t('insight.classpass.title')}
-        </List.GroupItem>
+        <HasPermissionWrapper 
+            permission="view"
+            resource="insight"
+        >
+          <List.GroupItem
+              key={v4()}
+              className="d-flex align-items-center"
+              to="#/insight/classpasses/sold"
+              icon="credit-card"
+              active={classpasses_active}
+              >
+              {t('insight.classpass.title')}
+          </List.GroupItem>
+        </HasPermissionWrapper>
         {/* <HasPermissionWrapper 
             permission="view"
             resource="organizationlocation">
