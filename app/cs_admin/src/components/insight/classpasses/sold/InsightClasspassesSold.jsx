@@ -22,6 +22,7 @@ import {
   Text,
 } from "tabler-react";
 import SiteWrapper from "../../../SiteWrapper"
+// import ContentCard from "../../general/ContentCard"
 
 import InsightClasspassesMenu from '../InsightClasspassesMenu'
 
@@ -39,7 +40,11 @@ function InsightClasspassesSold ({ t, history }) {
           </Page.Header>
           <Grid.Row>
             <Grid.Col md={9}>
-              Content
+              <Card title={t('insight.classpasses.sold.title')}>
+                <Card.Body>
+                  content
+                </Card.Body>
+              </Card>
             </Grid.Col>
             <Grid.Col md={3}>
               <h5>{t('general.menu')}</h5>
