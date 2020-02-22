@@ -1,5 +1,7 @@
 from django.utils.translation import gettext as _
+from django.utils import timezone
 from django.db.models import Q, FilteredRelation, OuterRef, Subquery
+
 
 import graphene
 from graphene_django import DjangoObjectType
@@ -27,15 +29,19 @@ import datetime
 
 class AccountClasspassesSoldType(graphene.ObjectType):
     description = graphene.String()
-    data = graphene.List(graphene.Int())
+    data = graphene.List(graphene.Int)
     year = graphene.Int()
 
     def resolve_description(self, info):
-        return self.description = _("account_classpasses_sold")
+        return _("account_classpasses_sold")
 
     def resolve_data(self, info):       
         insight_data_dude = InsightDataDude()
-        data = insight_data_dude.get_classpasses_year_summary_count(year)
+        year = self.year
+        if not year:
+            year = timezone.now().year
+
+        data = insight_data_dude.get_classpasses_year_summary_count(self.year)
 
         return data
 
@@ -91,20 +97,16 @@ def validate_schedule_classes_query_date_input(date_from,
 
 
 class InsightQuery(graphene.ObjectType):
-    account_classpasses_sold = graphene.List(
-        AccountClasspassesSoldType,
-        year=graphene.Int,
-    )
+    insight_account_classpasses_sold = graphene.Field(AccountClasspassesSoldType, year=graphene.Int())
 
-    def resolve_account_classpasses_sold(self, 
-                                         info, 
-                                         year=graphene.Int(required=True, default_value=datetime.date.today().year):
+    def resolve_insight_account_classpasses_sold(self, 
+                                                 info, 
+                                                 year=graphene.Int(required=True, default_value=timezone.now().year)):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.view_insightclasspassessold')
 
         print('############ resolve')
         print(locals())
-        print(organization_location)
 
         account_classpasses_sold = AccountClasspassesSoldType()
         account_classpasses_sold.year = year
