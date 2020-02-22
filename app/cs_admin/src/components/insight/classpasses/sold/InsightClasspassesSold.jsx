@@ -48,7 +48,7 @@ function InsightClasspassesSold ({ t, history }) {
                     style={{ height: "16rem" }}
                     data={{
                       columns: [
-                        // each columns data
+                        // each columns data as array, starting with "name" and then containing data
                         [
                           "data1",
                           0,
