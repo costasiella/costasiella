@@ -86,7 +86,7 @@ function InsightClasspassesSold ({ t, history }) {
                       groups: [["data1", "data2"]],
                       colors: {
                         data1: colors["blue"],
-                        data1: colors["green"],
+                        data2: colors["green"],
                       },
                       names: {
                         // name of each serie
