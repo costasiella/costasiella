@@ -38,7 +38,7 @@ class InsightHome extends Component {
               <Grid.Col md={9}>
                 <Grid.Row>
                   <Grid.Col md={4} lg={4}>
-                    <div onClick={() => history.push('/insight/classpasses')}>
+                    <div onClick={() => history.push('/insight/classpasses/sold')}>
                       <StampCard header={<small>{t('insight.classpasses.title')}</small>} footer={t('')} color="blue" icon="credit-card" />
                     </div>
                   </Grid.Col>
