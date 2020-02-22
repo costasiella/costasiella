@@ -22,7 +22,7 @@ class InsightDataDude:
         """
         Return monthly counts of sold passes
         """
-        data = [_("account_classpasses_sold")]
+        data = []
 
         for i in range(1, 13):
             date_from = datetime.date(year, i, 1)
