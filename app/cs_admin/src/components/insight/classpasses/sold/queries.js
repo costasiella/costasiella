@@ -1,0 +1,11 @@
+import gql from "graphql-tag"
+
+export const GET_CLASSPASSES_SOLD_QUERY = gql`
+  query InsightAccountClasspassesSold($year: Int!) {
+    insightAccountClasspassesSold(year: $year) {
+      description
+      data
+      year
+    }
+  }
+`

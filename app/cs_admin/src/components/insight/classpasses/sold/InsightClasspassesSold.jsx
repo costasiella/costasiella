@@ -1,5 +1,5 @@
 import React, { useContext } from 'react'
-import { Query, Mutation } from "react-apollo"
+import { useQuery, Mutation } from "react-apollo"
 import gql from "graphql-tag"
 import { v4 } from "uuid"
 import { withTranslation } from 'react-i18next'
@@ -25,6 +25,7 @@ import {
 } from "tabler-react";
 import SiteWrapper from "../../../SiteWrapper"
 // import ContentCard from "../../general/ContentCard"
+import { GET_CLASSPASSES_SOLD_QUERY } from './queries'
 
 import InsightClasspassesMenu from '../InsightClasspassesMenu'
 
@@ -32,6 +33,37 @@ function InsightClasspassesSold ({ t, history }) {
   const appSettings = useContext(AppSettingsContext)
   const dateFormat = appSettings.dateFormat
   const timeFormat = appSettings.timeFormatMoment
+
+  const { loading, error, data, fetchMore } = useQuery(GET_CLASSPASSES_SOLD_QUERY, {
+    variables: { year: 2020 }
+  })
+
+
+  if (loading) {
+    return (
+      "loading..."
+      // <OrganizationDocumentsBase headerLinks={back}>
+      //   {t('general.loading_with_dots')}
+      // </OrganizationDocumentsBase>
+    )
+  }
+
+  if (error) {
+    return (
+      "error..."
+      // <OrganizationDocumentsBase headerLinks={back}>
+      //   {t('organization.documents.error_loading')}
+      // </OrganizationDocumentsBase>
+    )
+  }
+
+  console.log(data)
+
+  const data_sold_label = t("insight.classpasses.sold.title")
+  const chart_data = data.insightAccountClasspassesSold.data
+  console.log("chart_data")
+  console.log(data_sold_label, ...chart_data)
+
 
   return (
     <SiteWrapper>
@@ -49,49 +81,32 @@ function InsightClasspassesSold ({ t, history }) {
                     data={{
                       columns: [
                         // each columns data as array, starting with "name" and then containing data
-                        [
-                          "data1",
-                          0,
-                          5,
-                          1,
-                          2,
-                          7,
-                          5,
-                          6,
-                          8,
-                          24,
-                          7,
-                          12,
-                          5,
-                          6
-                        ],
-                        [
-                          "data2",
-                          57,
-                          52,
-                          13,
-                          24,
-                          75,
-                          56,
-                          67,
-                          83,
-                          24,
-                          74,
-                          125,
-                          52,
-                          64,
-                        ],
+                        [ data_sold_label, ...chart_data],
+                        // [
+                        //   "data2",
+                        //   57,
+                        //   52,
+                        //   13,
+                        //   24,
+                        //   75,
+                        //   56,
+                        //   67,
+                        //   83,
+                        //   24,
+                        //   74,
+                        //   125,
+                        //   52,
+                        //   64,
+                        // ],
                       ],
                       type: "area", // default type of chart
-                      groups: [["data1", "data2"]],
+                      groups: [[data_sold_label]],
                       colors: {
                         data1: colors["blue"],
-                        data2: colors["green"],
                       },
                       names: {
                         // name of each serie
-                        data1: t("general.purchases"),
-                        data2: t("general.active"),
+                        data1: data_sold_label,
                       },
                       
                     }}
