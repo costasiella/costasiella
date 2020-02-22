@@ -45,7 +45,7 @@ function InsightClasspassesSold ({ t, history }) {
               <Card title={t('insight.classpasses.sold.title')}>
                 <Card.Body>
                   <C3Chart
-                    style={{ height: "14rem" }}
+                    style={{ height: "16rem" }}
                     data={{
                       columns: [
                         // each columns data
@@ -63,29 +63,35 @@ function InsightClasspassesSold ({ t, history }) {
                           7,
                           12,
                           5,
-                          6,
-                          3,
-                          2,
-                          2,
-                          6,
-                          30,
-                          10,
-                          10,
-                          15,
-                          14,
-                          47,
-                          65,
-                          55,
+                          6
+                        ],
+                        [
+                          "data2",
+                          57,
+                          52,
+                          13,
+                          24,
+                          75,
+                          56,
+                          67,
+                          83,
+                          24,
+                          74,
+                          125,
+                          52,
+                          64,
                         ],
                       ],
                       type: "area", // default type of chart
-                      groups: [["data1"]],
+                      groups: [["data1", "data2"]],
                       colors: {
                         data1: colors["blue"],
+                        data1: colors["green"],
                       },
                       names: {
                         // name of each serie
                         data1: t("general.purchases"),
+                        data2: t("general.active"),
                       },
                       
                     }}
