@@ -6,7 +6,24 @@ import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
 import { Link } from 'react-router-dom'
 
-import AppSettingsContext from '../../context/AppSettingsContext'
+import AppSettingsContext from '../../../context/AppSettingsContext'
+
+import {
+  Badge,
+  Dropdown,
+  Page,
+  Grid,
+  Icon,
+  Dimmer,
+  Button,
+  Card,
+  Container,
+  Table,
+  Text,
+} from "tabler-react";
+import SiteWrapper from "../../../SiteWrapper"
+
+import InsightClasspassesMenu from '../InsightClasspassesMenu'
 
 function InsightClasspassesSold ({ t, history }) {
   const appSettings = useContext(AppSettingsContext)
@@ -25,7 +42,8 @@ function InsightClasspassesSold ({ t, history }) {
               Content
             </Grid.Col>
             <Grid.Col md={3}>
-              Sidebar
+              <h5>{t('general.menu')}</h5>
+              <InsightClasspassesMenu active_link="sold" />
             </Grid.Col>
           </Grid.Row>
         </Container>  
