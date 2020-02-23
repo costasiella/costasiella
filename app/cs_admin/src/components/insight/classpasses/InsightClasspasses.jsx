@@ -61,14 +61,14 @@ function InsightClasspasses ({ t, history }) {
     <SiteWrapper>
       <div className="my-3 my-md-5">
         <Container>
-          <Page.Header title={t("insight.title")}>
+          <Page.Header title={t("insight.title")} subTitle={t("general.classpasses") + " " + year}>
             <div className="page-options d-flex">
               <InsightBackHome />
             </div>
           </Page.Header>
           <Grid.Row>
             <Grid.Col md={9}>
-              <Card title={t('insight.classpasses.sold.title')}>
+              <Card title={t('general.chart')}>
                 <Card.Body>
                   <C3Chart
                     style={{ height: "16rem" }}

@@ -23,7 +23,6 @@ class InsightHome extends Component {
     console.log(props)
   }
 
-
   render() {
     const t = this.props.t
     const match = this.props.match
