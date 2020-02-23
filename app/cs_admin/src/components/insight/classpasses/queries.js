@@ -12,9 +12,9 @@ export const GET_CLASSPASSES_SOLD_QUERY = gql`
 `
 
 
-export const GET_CLASSPASSES_CURRENT_QUERY = gql`
-  query InsightAccountClasspassesCurrent($year: Int!) {
-    insightAccountClasspassesCurrent(year: $year) {
+export const GET_CLASSPASSES_ACTIVE_QUERY = gql`
+  query InsightAccountClasspassesActive($year: Int!) {
+    insightAccountClasspassesActive(year: $year) {
       description
       data
       year

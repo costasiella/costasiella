@@ -13,7 +13,7 @@ import {
   Card,
 } from "tabler-react";
 // import ContentCard from "../../general/ContentCard"
-import { GET_CLASSPASSES_SOLD_QUERY, GET_CLASSPASSES_CURRENT_QUERY } from './queries'
+import { GET_CLASSPASSES_SOLD_QUERY, GET_CLASSPASSES_ACTIVE_QUERY } from './queries'
 import InsightClasspassesBase from './InsightClasspassesBase'
 
 function InsightClasspasses ({ t, history }) {
@@ -32,42 +32,42 @@ function InsightClasspasses ({ t, history }) {
   })
 
   const { 
-    loading: loadingCurrent, 
-    error: errorCurrent, 
-    data: dataCurrent
-   } = useQuery(GET_CLASSPASSES_CURRENT_QUERY, {
+    loading: loadingActive, 
+    error: errorActive, 
+    data: dataActive
+   } = useQuery(GET_CLASSPASSES_ACTIVE_QUERY, {
     variables: { year: 2020 }
   })
 
 
-  if (loadingSold || loadingCurrent) {
+  if (loadingSold || loadingActive) {
     return (
-      <InsightClasspassesBase uear={year}>
+      <InsightClasspassesBase year={year}>
         {t("general.loading_with_dots")}
       </InsightClasspassesBase>
     )
   }
 
-  if (errorSold || errorCurrent) {
+  if (errorSold || errorActive) {
     return (
-      <InsightClasspassesBase uear={year}>
+      <InsightClasspassesBase year={year}>
         {t("general.error_sad_smiley")}
       </InsightClasspassesBase>
     )
   }
 
   console.log(dataSold)
-  console.log(dataCurrent)
+  console.log(dataActive)
 
   const data_sold_label = t("insight.classpasses.sold.title")
   const chart_data_sold = dataSold.insightAccountClasspassesSold.data
   console.log("chart_data sold")
   console.log(data_sold_label, ...chart_data_sold)
 
-  const data_current_label = t("insight.classpasses.current.title")
-  const chart_data_current = dataCurrent.insightAccountClasspassesCurrent.data
-  console.log("chart_data current")
-  console.log(data_sold_label, ...chart_data_current)
+  const data_active_label = t("insight.classpasses.active.title")
+  const chart_data_active = dataActive.insightAccountClasspassesActive.data
+  console.log("chart_data active")
+  console.log(data_sold_label, ...chart_data_active)
 
 
   return (
@@ -81,35 +81,19 @@ function InsightClasspasses ({ t, history }) {
                 data={{
                   columns: [
                     // each columns data as array, starting with "name" and then containing data
-                    [ data_sold_label, ...chart_data_sold],
-                    [ data_current_label, ...chart_data_current],
-                    // [
-                    //   "data2",
-                    //   57,
-                    //   52,
-                    //   13,
-                    //   24,
-                    //   75,
-                    //   56,
-                    //   67,
-                    //   83,
-                    //   24,
-                    //   74,
-                    //   125,
-                    //   52,
-                    //   64,
-                    // ],
+                    [ 'sold', ...chart_data_sold],
+                    [ 'active', ...chart_data_active],
                   ],
                   type: "area", // default type of chart
-                  groups: [[data_sold_label], [data_current_label]],
+                  groups: [[data_sold_label], [data_active_label]],
                   colors: {
-                    data1: colors["blue"],
-                    data2: colors["green"],
+                    sold: colors["blue"],
+                    active: colors["green"],
                   },
                   names: {
                     // name of each serie
-                    data1: data_sold_label,
-                    data2: data_current_label,
+                    sold: data_sold_label,
+                    active: data_active_label,
                   },
                   
                 }}
