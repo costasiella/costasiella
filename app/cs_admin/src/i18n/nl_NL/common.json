@@ -310,7 +310,9 @@
         "trial": "__STRING_NOT_TRANSLATED__",
         "pdf": "__STRING_NOT_TRANSLATED__",
         "amount": "__STRING_NOT_TRANSLATED__",
-        "details": "__STRING_NOT_TRANSLATED__"
+        "details": "__STRING_NOT_TRANSLATED__",
+        "chart": "__STRING_NOT_TRANSLATED__",
+        "room": "__STRING_NOT_TRANSLATED__"
     },
     "yup": {
         "min_len_3": "__STRING_NOT_TRANSLATED__",
@@ -1088,5 +1090,41 @@
             "password_new": "__STRING_NOT_TRANSLATED__",
             "password_new_repeat": "__STRING_NOT_TRANSLATED__"
         }
-    }
+    },
+    "insight": {
+        "classpasses": {
+            "sold": {
+                "title": "__STRING_NOT_TRANSLATED__",
+                "export_excel": "__STRING_NOT_TRANSLATED__"
+            },
+            "active": {
+                "title": "__STRING_NOT_TRANSLATED__",
+                "export_excel": "__STRING_NOT_TRANSLATED__"
+            },
+            "title": "__STRING_NOT_TRANSLATED__"
+        },
+        "title": "__STRING_NOT_TRANSLATED__",
+        "classpass": {
+            "title": "__STRING_NOT_TRANSLATED__"
+        }
+    },
+    "selfcheckin": {
+        "classes": {
+            "title": "__STRING_NOT_TRANSLATED__",
+            "error_loading": "__STRING_NOT_TRANSLATED__",
+            "go_to_checkin": "__STRING_NOT_TRANSLATED__"
+        },
+        "checkin": {
+            "error_loading": "__STRING_NOT_TRANSLATED__",
+            "title_not_on_list": "__STRING_NOT_TRANSLATED__"
+        },
+        "locations": {
+            "please_select": "__STRING_NOT_TRANSLATED__",
+            "error_loading": "__STRING_NOT_TRANSLATED__"
+        },
+        "home": {
+            "title": "__STRING_NOT_TRANSLATED__"
+        }
+    },
+    "search": "__STRING_NOT_TRANSLATED__"
 }

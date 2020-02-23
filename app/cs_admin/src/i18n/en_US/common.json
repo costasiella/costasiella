@@ -310,7 +310,9 @@
         "trial": "Trial",
         "pdf": "PDF",
         "amount": "Amount",
-        "details": "Details"
+        "details": "Details",
+        "chart": "Chart",
+        "room": "Room"
     },
     "yup": {
         "min_len_3": "Please input at least 3 characters",
@@ -1088,5 +1090,41 @@
             "password_new": "New password",
             "password_new_repeat": "New password (again)"
         }
-    }
+    },
+    "insight": {
+        "classpasses": {
+            "sold": {
+                "title": "Sold classpasses",
+                "export_excel": "Export sold as Excel"
+            },
+            "active": {
+                "title": "Active classpasses",
+                "export_excel": "Export active as Excel"
+            },
+            "title": "classpasses"
+        },
+        "title": "Insight",
+        "classpass": {
+            "title": "classpasses"
+        }
+    },
+    "selfcheckin": {
+        "classes": {
+            "title": "Classes",
+            "error_loading": "Error loading classes :(",
+            "go_to_checkin": "Go to check-in"
+        },
+        "checkin": {
+            "error_loading": "Error loading check-in :(",
+            "title_not_on_list": "Not on the list?"
+        },
+        "locations": {
+            "please_select": "Please choose your location",
+            "error_loading": "Error loading locations :("
+        },
+        "home": {
+            "title": "Self check-in"
+        }
+    },
+    "search": "Search"
 }
