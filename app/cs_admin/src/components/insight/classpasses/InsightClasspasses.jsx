@@ -21,6 +21,7 @@ function InsightClasspasses ({ t, history }) {
   const dateFormat = appSettings.dateFormat
   const timeFormat = appSettings.timeFormatMoment
   const year = 2020
+  const export_url_active = "/export/insight/classpasses/active/" + year
   const export_url_sold = "/export/insight/classpasses/sold/" + year
 
   const { 
@@ -155,6 +156,16 @@ function InsightClasspasses ({ t, history }) {
             icon="download-cloud"
           >
             {t("insight.classpasses.sold.export_excel")}
+          </Button>
+          {/* Export as active as excel sheet */}
+          <Button
+            block
+            color="secondary"
+            RootComponent="a"
+            href={export_url_active}
+            icon="download-cloud"
+          >
+            {t("insight.classpasses.active.export_excel")}
           </Button>
         </Grid.Col>
       {/* </Grid.Row> */}
