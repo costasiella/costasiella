@@ -46,58 +46,29 @@ class AccountClasspassesSoldType(graphene.ObjectType):
         return data
 
 
-def validate_schedule_classes_query_date_input(date_from, 
-                                               date_until, 
-                                               order_by, 
-                                               organization_classtype,
-                                               organization_level,
-                                               organization_location,
-                                               ):
-    """
-    Check if date_until >= date_start
-    Check if delta between dates <= 7 days
-    """
-    result = {}
+class AccountClasspassesCurrentType(graphene.ObjectType):
+    description = graphene.String()
+    data = graphene.List(graphene.Int)
+    year = graphene.Int()
 
-    if date_until < date_from:
-        raise Exception(_("dateUntil has to be bigger then dateFrom"))
+    def resolve_description(self, info):
+        return _("account_classpasses_current")
 
-    days_between = (date_until - date_from).days
-    if days_between > 6:
-        raise Exception(_("dateFrom and dateUntil can't be more then 7 days apart")) 
-    
-    if order_by:
-        sort_options = [
-            'location',
-            'starttime'
-        ]  
-        if order_by not in sort_options:
-            raise Exception(_("orderBy can only be 'location' or 'starttime'")) 
+    def resolve_data(self, info):       
+        insight_account_classpasses_dude = InsightAccountClasspassesDude()
+        year = self.year
+        if not year:
+            year = timezone.now().year
 
+        data = insight_account_classpasses_dude.get_classpasses_current_year_summary_count(self.year)
 
-    print("###########")
-    print(organization_location)
-
-    if organization_classtype:
-        rid = get_rid(organization_classtype)
-        organization_classtype_id = rid.id
-        result['organization_classtype_id'] = organization_classtype_id
-
-    if organization_level:
-        rid = get_rid(organization_level)
-        organization_level_id = rid.id
-        result['organization_level_id'] = organization_level_id
-
-    if organization_location:
-        rid = get_rid(organization_location)
-        organization_location_id = rid.id
-        result['organization_location_id'] = organization_location_id
-
-    return result
+        return data
 
 
 class InsightQuery(graphene.ObjectType):
     insight_account_classpasses_sold = graphene.Field(AccountClasspassesSoldType, year=graphene.Int())
+    insight_account_classpasses_current = graphene.Field(AccountClasspassesCurrentType, year=graphene.Int())
+
 
     def resolve_insight_account_classpasses_sold(self, 
                                                  info, 
@@ -112,3 +83,18 @@ class InsightQuery(graphene.ObjectType):
         account_classpasses_sold.year = year
 
         return account_classpasses_sold
+
+
+    def resolve_insight_account_classpasses_current(self, 
+                                                    info, 
+                                                    year=graphene.Int(required=True, default_value=timezone.now().year)):
+        user = info.context.user
+        require_login_and_permission(user, 'costasiella.view_insightclasspassescurrent')
+
+        print('############ resolve')
+        print(locals())
+
+        account_classpasses_current = AccountClasspassesCurrentType()
+        account_classpasses_current.year = year
+
+        return account_classpasses_current
