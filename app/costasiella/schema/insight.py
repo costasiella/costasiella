@@ -46,13 +46,13 @@ class AccountClasspassesSoldType(graphene.ObjectType):
         return data
 
 
-class AccountClasspassesCurrentType(graphene.ObjectType):
+class AccountClasspassesActiveType(graphene.ObjectType):
     description = graphene.String()
     data = graphene.List(graphene.Int)
     year = graphene.Int()
 
     def resolve_description(self, info):
-        return _("account_classpasses_current")
+        return _("account_classpasses_active")
 
     def resolve_data(self, info):       
         insight_account_classpasses_dude = InsightAccountClasspassesDude()
@@ -60,14 +60,14 @@ class AccountClasspassesCurrentType(graphene.ObjectType):
         if not year:
             year = timezone.now().year
 
-        data = insight_account_classpasses_dude.get_classpasses_current_year_summary_count(self.year)
+        data = insight_account_classpasses_dude.get_classpasses_active_year_summary_count(self.year)
 
         return data
 
 
 class InsightQuery(graphene.ObjectType):
     insight_account_classpasses_sold = graphene.Field(AccountClasspassesSoldType, year=graphene.Int())
-    insight_account_classpasses_current = graphene.Field(AccountClasspassesCurrentType, year=graphene.Int())
+    insight_account_classpasses_active = graphene.Field(AccountClasspassesActiveType, year=graphene.Int())
 
 
     def resolve_insight_account_classpasses_sold(self, 
@@ -85,16 +85,16 @@ class InsightQuery(graphene.ObjectType):
         return account_classpasses_sold
 
 
-    def resolve_insight_account_classpasses_current(self, 
+    def resolve_insight_account_classpasses_active(self, 
                                                     info, 
                                                     year=graphene.Int(required=True, default_value=timezone.now().year)):
         user = info.context.user
-        require_login_and_permission(user, 'costasiella.view_insightclasspassescurrent')
+        require_login_and_permission(user, 'costasiella.view_insightclasspassesactive')
 
         print('############ resolve')
         print(locals())
 
-        account_classpasses_current = AccountClasspassesCurrentType()
-        account_classpasses_current.year = year
+        account_classpasses_active = AccountClasspassesActiveType()
+        account_classpasses_active.year = year
 
-        return account_classpasses_current
+        return account_classpasses_active

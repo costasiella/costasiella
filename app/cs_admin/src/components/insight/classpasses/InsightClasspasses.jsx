@@ -13,7 +13,7 @@ import {
   Card,
 } from "tabler-react";
 // import ContentCard from "../../general/ContentCard"
-import { GET_CLASSPASSES_SOLD_QUERY } from './queries'
+import { GET_CLASSPASSES_SOLD_QUERY, GET_CLASSPASSES_CURRENT_QUERY } from './queries'
 import InsightClasspassesBase from './InsightClasspassesBase'
 
 function InsightClasspasses ({ t, history }) {
@@ -31,8 +31,16 @@ function InsightClasspasses ({ t, history }) {
     variables: { year: 2020 }
   })
 
+  const { 
+    loading: loadingCurrent, 
+    error: errorCurrent, 
+    data: dataCurrent
+   } = useQuery(GET_CLASSPASSES_CURRENT_QUERY, {
+    variables: { year: 2020 }
+  })
 
-  if (loadingSold) {
+
+  if (loadingSold || loadingCurrent) {
     return (
       <InsightClasspassesBase uear={year}>
         {t("general.loading_with_dots")}
@@ -40,7 +48,7 @@ function InsightClasspasses ({ t, history }) {
     )
   }
 
-  if (errorSold) {
+  if (errorSold || errorCurrent) {
     return (
       <InsightClasspassesBase uear={year}>
         {t("general.error_sad_smiley")}
@@ -49,11 +57,17 @@ function InsightClasspasses ({ t, history }) {
   }
 
   console.log(dataSold)
+  console.log(dataCurrent)
 
   const data_sold_label = t("insight.classpasses.sold.title")
-  const chart_data = dataSold.insightAccountClasspassesSold.data
-  console.log("chart_data")
-  console.log(data_sold_label, ...chart_data)
+  const chart_data_sold = dataSold.insightAccountClasspassesSold.data
+  console.log("chart_data sold")
+  console.log(data_sold_label, ...chart_data_sold)
+
+  const data_current_label = t("insight.classpasses.current.title")
+  const chart_data_current = dataCurrent.insightAccountClasspassesCurrent.data
+  console.log("chart_data current")
+  console.log(data_sold_label, ...chart_data_current)
 
 
   return (
@@ -67,7 +81,8 @@ function InsightClasspasses ({ t, history }) {
                 data={{
                   columns: [
                     // each columns data as array, starting with "name" and then containing data
-                    [ data_sold_label, ...chart_data],
+                    [ data_sold_label, ...chart_data_sold],
+                    [ data_current_label, ...chart_data_current],
                     // [
                     //   "data2",
                     //   57,
@@ -86,13 +101,15 @@ function InsightClasspasses ({ t, history }) {
                     // ],
                   ],
                   type: "area", // default type of chart
-                  groups: [[data_sold_label]],
+                  groups: [[data_sold_label], [data_current_label]],
                   colors: {
                     data1: colors["blue"],
+                    data2: colors["green"],
                   },
                   names: {
                     // name of each serie
                     data1: data_sold_label,
+                    data2: data_current_label,
                   },
                   
                 }}
