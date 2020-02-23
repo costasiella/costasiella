@@ -8,16 +8,13 @@ import AppSettingsContext from '../../context/AppSettingsContext'
 
 import {
   colors,
-  Page,
   Grid,
   Button,
   Card,
-  Container,
 } from "tabler-react";
-import SiteWrapper from "../../SiteWrapper"
 // import ContentCard from "../../general/ContentCard"
 import { GET_CLASSPASSES_SOLD_QUERY } from './queries'
-import InsightBackHome from '../InsightBackHome'
+import InsightClasspassesBase from './InsightClasspassesBase'
 
 function InsightClasspasses ({ t, history }) {
   const appSettings = useContext(AppSettingsContext)
@@ -33,19 +30,17 @@ function InsightClasspasses ({ t, history }) {
 
   if (loading) {
     return (
-      "loading..."
-      // <OrganizationDocumentsBase headerLinks={back}>
-      //   {t('general.loading_with_dots')}
-      // </OrganizationDocumentsBase>
+      <InsightClasspassesBase uear={year}>
+        {t("general.loading_with_dots")}
+      </InsightClasspassesBase>
     )
   }
 
   if (error) {
     return (
-      "error..."
-      // <OrganizationDocumentsBase headerLinks={back}>
-      //   {t('organization.documents.error_loading')}
-      // </OrganizationDocumentsBase>
+      <InsightClasspassesBase uear={year}>
+        {t("general.error_sad_smiley")}
+      </InsightClasspassesBase>
     )
   }
 
@@ -58,116 +53,119 @@ function InsightClasspasses ({ t, history }) {
 
 
   return (
-    <SiteWrapper>
-      <div className="my-3 my-md-5">
-        <Container>
-          <Page.Header title={t("insight.title")} subTitle={t("general.classpasses") + " " + year}>
-            <div className="page-options d-flex">
-              <InsightBackHome />
-            </div>
-          </Page.Header>
-          <Grid.Row>
-            <Grid.Col md={9}>
-              <Card title={t('general.chart')}>
-                <Card.Body>
-                  <C3Chart
-                    style={{ height: "16rem" }}
-                    data={{
-                      columns: [
-                        // each columns data as array, starting with "name" and then containing data
-                        [ data_sold_label, ...chart_data],
-                        // [
-                        //   "data2",
-                        //   57,
-                        //   52,
-                        //   13,
-                        //   24,
-                        //   75,
-                        //   56,
-                        //   67,
-                        //   83,
-                        //   24,
-                        //   74,
-                        //   125,
-                        //   52,
-                        //   64,
-                        // ],
-                      ],
-                      type: "area", // default type of chart
-                      groups: [[data_sold_label]],
-                      colors: {
-                        data1: colors["blue"],
-                      },
-                      names: {
-                        // name of each serie
-                        data1: data_sold_label,
-                      },
-                      
-                    }}
-                    axis={{
-                      y: {
-                        padding: {
-                          bottom: 0,
-                        },
-                        show: true,
-                        // inner: true,
-                        // tick: {
-                        //   outer: true,
-                        // },
-                      },
-                      x: {
-                        // padding: {
-                        //   left: 0,
-                        //   right: 0,
-                        // },
-                        show: true,
-                      },
-                    }}
-                    // legend={{
-                    //   position: "inset",
-                    //   padding: 0,
-                    //   inset: {
-                    //     anchor: "top-left",
-                    //     x: 0,
-                    //     y: 8,
-                    //     step: 10,
-                    //   },
-                    // }}
-                    tooltip={{
-                      format: {
-                        title: function(x) {
-                          return "";
-                        },
-                      },
-                    }}
-                    padding={{
+    <InsightClasspassesBase year={year}>
+      {/* <Grid.Row> */}
+        <Grid.Col md={9}>
+          <Card title={t('general.chart')}>
+            <Card.Body>
+              <C3Chart
+                style={{ height: "16rem" }}
+                data={{
+                  columns: [
+                    // each columns data as array, starting with "name" and then containing data
+                    [ data_sold_label, ...chart_data],
+                    // [
+                    //   "data2",
+                    //   57,
+                    //   52,
+                    //   13,
+                    //   24,
+                    //   75,
+                    //   56,
+                    //   67,
+                    //   83,
+                    //   24,
+                    //   74,
+                    //   125,
+                    //   52,
+                    //   64,
+                    // ],
+                  ],
+                  type: "area", // default type of chart
+                  groups: [[data_sold_label]],
+                  colors: {
+                    data1: colors["blue"],
+                  },
+                  names: {
+                    // name of each serie
+                    data1: data_sold_label,
+                  },
+                  
+                }}
+                axis={{
+                  y: {
+                    padding: {
                       bottom: 0,
-                      // left: -1,
-                      right: -1,
-                    }}
-                    point={{
-                      show: false,
-                    }}
-                  />
-                </Card.Body>
-              </Card>
-            </Grid.Col>
-            <Grid.Col md={3}>
-              {/* Export as sold as excel sheet */}
-              <Button
-                block
-                color="secondary"
-                RootComponent="a"
-                href={export_url_sold}
-                icon="download-cloud"
-              >
-                {t("insight.classpasses.sold.export_excel")}
-              </Button>
-            </Grid.Col>
-          </Grid.Row>
-        </Container>  
-      </div>
-    </SiteWrapper>
+                    },
+                    show: true,
+                    // inner: true,
+                    // tick: {
+                    //   outer: true,
+                    // },
+                  },
+                  x: {
+                    // padding: {
+                    //   left: 0,
+                    //   right: 0,
+                    // },
+                    show: true,
+                  },
+                }}
+                // legend={{
+                //   position: "inset",
+                //   padding: 0,
+                //   inset: {
+                //     anchor: "top-left",
+                //     x: 0,
+                //     y: 8,
+                //     step: 10,
+                //   },
+                // }}
+                tooltip={{
+                  format: {
+                    title: function(x) {
+                      return "";
+                    },
+                  },
+                }}
+                padding={{
+                  bottom: 0,
+                  // left: -1,
+                  right: -1,
+                }}
+                point={{
+                  show: false,
+                }}
+              />
+            </Card.Body>
+          </Card>
+        </Grid.Col>
+        <Grid.Col md={3}>
+          {/* Export as sold as excel sheet */}
+          <Button
+            block
+            color="secondary"
+            RootComponent="a"
+            href={export_url_sold}
+            icon="download-cloud"
+          >
+            {t("insight.classpasses.sold.export_excel")}
+          </Button>
+        </Grid.Col>
+      {/* </Grid.Row> */}
+    </InsightClasspassesBase>
+  //   <SiteWrapper>
+  //     <div className="my-3 my-md-5">
+  //       <Container>
+  //         <Page.Header title={t("insight.title")} subTitle={t("general.classpasses") + " " + year}>
+  //           <div className="page-options d-flex">
+  //             <InsightBackHome />
+  //           </div>
+  //         </Page.Header>
+
+  //       </Container>  
+  //     </div>
+  //   </SiteWrapper>
   )
 }
 
