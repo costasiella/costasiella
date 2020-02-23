@@ -23,12 +23,16 @@ function InsightClasspasses ({ t, history }) {
   const year = 2020
   const export_url_sold = "/export/insight/classpasses/sold/" + year
 
-  const { loading, error, data, fetchMore } = useQuery(GET_CLASSPASSES_SOLD_QUERY, {
+  const { 
+    loading: loadingSold, 
+    error: errorSold, 
+    data: dataSold
+   } = useQuery(GET_CLASSPASSES_SOLD_QUERY, {
     variables: { year: 2020 }
   })
 
 
-  if (loading) {
+  if (loadingSold) {
     return (
       <InsightClasspassesBase uear={year}>
         {t("general.loading_with_dots")}
@@ -36,7 +40,7 @@ function InsightClasspasses ({ t, history }) {
     )
   }
 
-  if (error) {
+  if (errorSold) {
     return (
       <InsightClasspassesBase uear={year}>
         {t("general.error_sad_smiley")}
@@ -44,10 +48,10 @@ function InsightClasspasses ({ t, history }) {
     )
   }
 
-  console.log(data)
+  console.log(dataSold)
 
   const data_sold_label = t("insight.classpasses.sold.title")
-  const chart_data = data.insightAccountClasspassesSold.data
+  const chart_data = dataSold.insightAccountClasspassesSold.data
   console.log("chart_data")
   console.log(data_sold_label, ...chart_data)
 
