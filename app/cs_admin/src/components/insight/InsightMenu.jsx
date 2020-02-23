@@ -24,7 +24,7 @@ const InsightMenu = ({ t, active_link }) => (
           <List.GroupItem
               key={v4()}
               className="d-flex align-items-center"
-              to="#/insight/classpasses/sold"
+              to="#/insight/classpasses"
               icon="credit-card"
               active={classpasses_active}
               >

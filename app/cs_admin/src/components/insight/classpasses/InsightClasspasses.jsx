@@ -1,38 +1,30 @@
 import React, { useContext } from 'react'
-import { useQuery, Mutation } from "react-apollo"
-import gql from "graphql-tag"
-import { v4 } from "uuid"
+import { useQuery } from "react-apollo"
 import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
-import { Link } from 'react-router-dom'
 import C3Chart from "react-c3js"
 
-import AppSettingsContext from '../../../context/AppSettingsContext'
+import AppSettingsContext from '../../context/AppSettingsContext'
 
 import {
-  Badge,
-  Dropdown,
   colors,
   Page,
   Grid,
-  Icon,
-  Dimmer,
   Button,
   Card,
   Container,
-  Table,
-  Text,
 } from "tabler-react";
-import SiteWrapper from "../../../SiteWrapper"
+import SiteWrapper from "../../SiteWrapper"
 // import ContentCard from "../../general/ContentCard"
 import { GET_CLASSPASSES_SOLD_QUERY } from './queries'
+import InsightBackHome from '../InsightBackHome'
 
-import InsightClasspassesMenu from '../InsightClasspassesMenu'
-
-function InsightClasspassesSold ({ t, history }) {
+function InsightClasspasses ({ t, history }) {
   const appSettings = useContext(AppSettingsContext)
   const dateFormat = appSettings.dateFormat
   const timeFormat = appSettings.timeFormatMoment
+  const year = 2020
+  const export_url_sold = "/export/insight/classpasses/sold/" + year
 
   const { loading, error, data, fetchMore } = useQuery(GET_CLASSPASSES_SOLD_QUERY, {
     variables: { year: 2020 }
@@ -70,7 +62,9 @@ function InsightClasspassesSold ({ t, history }) {
       <div className="my-3 my-md-5">
         <Container>
           <Page.Header title={t("insight.title")}>
-            Header
+            <div className="page-options d-flex">
+              <InsightBackHome />
+            </div>
           </Page.Header>
           <Grid.Row>
             <Grid.Col md={9}>
@@ -159,8 +153,16 @@ function InsightClasspassesSold ({ t, history }) {
               </Card>
             </Grid.Col>
             <Grid.Col md={3}>
-              <h5>{t('general.menu')}</h5>
-              <InsightClasspassesMenu active_link="sold" />
+              {/* Export as sold as excel sheet */}
+              <Button
+                block
+                color="secondary"
+                RootComponent="a"
+                href={export_url_sold}
+                icon="download-cloud"
+              >
+                {t("insight.classpasses.sold.export_excel")}
+              </Button>
             </Grid.Col>
           </Grid.Row>
         </Container>  
@@ -169,4 +171,4 @@ function InsightClasspassesSold ({ t, history }) {
   )
 }
 
-export default withTranslation()(withRouter(InsightClasspassesSold))
+export default withTranslation()(withRouter(InsightClasspasses))

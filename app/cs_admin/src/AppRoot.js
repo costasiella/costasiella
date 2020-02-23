@@ -46,7 +46,7 @@ import FinanceTaxRates from './components/finance/taxrates/FinanceTaxRates'
 import FinanceTaxRatesAdd from './components/finance/taxrates/FinanceTaxRateAdd'
 import FinanceTaxRatesEdit from './components/finance/taxrates/FinanceTaxRateEdit'
 
-import InsightClasspassesSold from './components/insight/classpasses/sold/InsightClasspassesSold'
+import InsightClasspasses from './components/insight/classpasses/InsightClasspasses'
 
 import OrganizationHome from './components/organization/home/OrganizationHome'
 import OrganizationEdit from './components/organization/organization/OrganizationEdit'
@@ -323,7 +323,7 @@ function AppRoot({ t }) {
 
           {/* Insight */}
           <PrivateRoute exact path="/insight" component={InsightHome} />
-          <PrivateRoute exact path="/insight/classpasses/sold" component={InsightClasspassesSold} />
+          <PrivateRoute exact path="/insight/classpasses" component={InsightClasspasses} />
 
           {/* Self Check-in */}
           <PrivateRoute exact path="/selfcheckin/checkin/:location_id/:class_id/:date" component={SelfCheckinCheckin} />
