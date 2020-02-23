@@ -80,13 +80,28 @@ function InsightClasspasses ({ t, history }) {
               <C3Chart
                 style={{ height: "16rem" }}
                 data={{
+                  x: 'x',
                   columns: [
                     // each columns data as array, starting with "name" and then containing data
+                    [ 'x',
+                      t("datetime.months.short_january"),
+                      t("datetime.months.short_february"),
+                      t("datetime.months.short_march"),
+                      t("datetime.months.short_april"),
+                      t("datetime.months.short_may"),
+                      t("datetime.months.short_june"),
+                      t("datetime.months.short_july"),
+                      t("datetime.months.short_august"),
+                      t("datetime.months.short_september"),
+                      t("datetime.months.short_october"),
+                      t("datetime.months.short_november"),
+                      t("datetime.months.short_decemer"),
+                    ],
                     [ 'sold', ...chart_data_sold],
                     [ 'active', ...chart_data_active],
                   ],
                   type: "area", // default type of chart
-                  groups: [[data_sold_label], [data_active_label]],
+                  groups: [['sold'], ['active']],
                   colors: {
                     sold: colors["blue"],
                     active: colors["green"],
@@ -104,29 +119,16 @@ function InsightClasspasses ({ t, history }) {
                       bottom: 0,
                     },
                     show: true,
-                    // inner: true,
-                    // tick: {
-                    //   outer: true,
-                    // },
                   },
                   x: {
-                    // padding: {
-                    //   left: 0,
-                    //   right: 0,
-                    // },
+                    padding: {
+                      left: 0,
+                      right: 0,
+                    },
+                    type: 'category',
                     show: true,
                   },
                 }}
-                // legend={{
-                //   position: "inset",
-                //   padding: 0,
-                //   inset: {
-                //     anchor: "top-left",
-                //     x: 0,
-                //     y: 8,
-                //     step: 10,
-                //   },
-                // }}
                 tooltip={{
                   format: {
                     title: function(x) {

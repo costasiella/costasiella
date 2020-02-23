@@ -1126,5 +1126,21 @@
             "title": "Self check-in"
         }
     },
-    "search": "Search"
+    "search": "Search",
+    "datetime": {
+        "months": {
+            "short_january": "Jan",
+            "short_february": "Feb",
+            "short_march": "Mar",
+            "short_april": "Apr",
+            "short_may": "May",
+            "short_june": "Jun",
+            "short_july": "Jul",
+            "short_august": "Aug",
+            "short_september": "Sep",
+            "short_october": "Oct",
+            "short_november": "Nov",
+            "short_decemer": "Dec"
+        }
+    }
 }
