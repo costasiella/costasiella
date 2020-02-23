@@ -19,7 +19,7 @@ from .organization_level import OrganizationLevelNode
 from .organization_location_room import OrganizationLocationRoomNode
 from .schedule_item import ScheduleItemNode
 
-from ..dudes.insight_data_dude import InsightDataDude
+from ..dudes.insight_account_classpasses_dude import InsightAccountClasspassesDude
 
 
 m = Messages()
@@ -36,12 +36,12 @@ class AccountClasspassesSoldType(graphene.ObjectType):
         return _("account_classpasses_sold")
 
     def resolve_data(self, info):       
-        insight_data_dude = InsightDataDude()
+        insight_account_classpasses_dude = InsightAccountClasspassesDude()
         year = self.year
         if not year:
             year = timezone.now().year
 
-        data = insight_data_dude.get_classpasses_year_summary_count(self.year)
+        data = insight_account_classpasses_dude.get_classpasses_sold_year_summary_count(self.year)
 
         return data
 
