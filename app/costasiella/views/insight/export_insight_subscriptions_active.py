@@ -13,8 +13,6 @@ from django.template.loader import get_template, render_to_string
 
 from ...models import AppSettings
 from ...dudes import InsightAccountSubscriptionsDude
-# from ..modules.gql_tools import require_login_and_permission, get_rid
-
 
 
 # Create your views here.

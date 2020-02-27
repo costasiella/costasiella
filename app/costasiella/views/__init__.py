@@ -6,3 +6,5 @@ from .export_finance_invoice import invoice_pdf, invoice_pdf_preview
 # Insight exports
 from .insight.export_insight_classpasses_active import export_excel_insight_classpasses_active
 from .insight.export_insight_classpasses_sold import export_excel_insight_classpasses_sold
+from .insight.export_insight_subscriptions_active import export_excel_insight_subscriptions_active
+from .insight.export_insight_subscriptions_sold import export_excel_insight_subscriptions_sold

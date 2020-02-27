@@ -16,7 +16,7 @@ from ...dudes import InsightAccountSubscriptionsDude
 
 
 # Create your views here.
-def export_excel_insight_subscriptionss_sold(request, year):
+def export_excel_insight_subscriptions_sold(request, year):
     """
     Export 
 
