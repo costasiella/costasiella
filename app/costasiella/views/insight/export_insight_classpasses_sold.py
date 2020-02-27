@@ -21,8 +21,8 @@ from ...dudes.insight_account_classpasses_dude import InsightAccountClasspassesD
 def export_excel_insight_classpasses_sold(request, year):
     """
     Export 
-
-    :param: POST: node_id - FinanceInvoiceNode ID
+    
+    :param: POST: year: int year (yyyy)
     """
     import openpyxl
     print("Year:")

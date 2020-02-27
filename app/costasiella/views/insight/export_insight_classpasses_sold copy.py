@@ -18,7 +18,7 @@ from ...dudes.insight_account_classpasses_dude import InsightAccountClasspassesD
 
 
 # Create your views here.
-def export_excel_insight_classpasses_active(request, year):
+def export_excel_insight_classpasses_sold(request, year):
     """
     Export 
 
@@ -30,7 +30,7 @@ def export_excel_insight_classpasses_active(request, year):
     # print(request.POST.node_id)
 
     iac_dude = InsightAccountClasspassesDude()
-    data = iac_dude.get_classpasses_active_year_data(year)
+    data = iac_dude.get_classpasses_sold_year_data(year)
     print(data)
 
     wb = openpyxl.workbook.Workbook(write_only=True)
@@ -69,6 +69,6 @@ def export_excel_insight_classpasses_active(request, year):
     # present the option to save the file.
     buffer.seek(0)
 
-    filename = _('classpasses_active') + '_' + str(year) + '.xlsx'
+    filename = _('classpasses_sold') + '_' + str(year) + '.xlsx'
 
     return FileResponse(buffer, as_attachment=True, filename=filename)
