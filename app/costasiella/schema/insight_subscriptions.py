@@ -19,7 +19,7 @@ from .organization_level import OrganizationLevelNode
 from .organization_location_room import OrganizationLocationRoomNode
 from .schedule_item import ScheduleItemNode
 
-from ..dudes.insight_account_classpasses_dude import InsightAccountClasspassesDude
+from ..dudes import InsightAccountSubscriptionsDude
 
 
 m = Messages()
