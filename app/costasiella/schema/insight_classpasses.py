@@ -65,7 +65,7 @@ class AccountClasspassesActiveType(graphene.ObjectType):
         return data
 
 
-class InsightQuery(graphene.ObjectType):
+class InsightClasspassesQuery(graphene.ObjectType):
     insight_account_classpasses_sold = graphene.Field(AccountClasspassesSoldType, year=graphene.Int())
     insight_account_classpasses_active = graphene.Field(AccountClasspassesActiveType, year=graphene.Int())
 
@@ -98,3 +98,4 @@ class InsightQuery(graphene.ObjectType):
         account_classpasses_active.year = year
 
         return account_classpasses_active
+
