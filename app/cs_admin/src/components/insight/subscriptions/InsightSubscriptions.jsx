@@ -13,7 +13,7 @@ import {
   Card,
 } from "tabler-react";
 // import ContentCard from "../../general/ContentCard"
-import { GET_CLASSPASSES_SOLD_QUERY, GET_CLASSPASSES_ACTIVE_QUERY } from './queries'
+import { GET_SUBSCRIPTIONS_SOLD_QUERY, GET_SUBSCRIPTIONS_ACTIVE_QUERY } from './queries'
 import InsightSubscriptionsBase from './InsightSubscriptionsBase'
 
 function InsightSubscriptions ({ t, history }) {
@@ -28,7 +28,7 @@ function InsightSubscriptions ({ t, history }) {
     loading: loadingSold, 
     error: errorSold, 
     data: dataSold
-   } = useQuery(GET_CLASSPASSES_SOLD_QUERY, {
+   } = useQuery(GET_SUBSCRIPTIONS_SOLD_QUERY, {
     variables: { year: 2020 }
   })
 
@@ -36,7 +36,7 @@ function InsightSubscriptions ({ t, history }) {
     loading: loadingActive, 
     error: errorActive, 
     data: dataActive
-   } = useQuery(GET_CLASSPASSES_ACTIVE_QUERY, {
+   } = useQuery(GET_SUBSCRIPTIONS_ACTIVE_QUERY, {
     variables: { year: 2020 }
   })
 
@@ -60,13 +60,13 @@ function InsightSubscriptions ({ t, history }) {
   console.log(dataSold)
   console.log(dataActive)
 
-  const data_sold_label = t("insight.classpasses.sold.title")
-  const chart_data_sold = dataSold.insightAccountClasspassesSold.data
+  const data_sold_label = t("insight.subscriptions.sold.title")
+  const chart_data_sold = dataSold.insightAccountSubscriptionsSold.data
   console.log("chart_data sold")
   console.log(data_sold_label, ...chart_data_sold)
 
-  const data_active_label = t("insight.classpasses.active.title")
-  const chart_data_active = dataActive.insightAccountClasspassesActive.data
+  const data_active_label = t("insight.subscriptions.active.title")
+  const chart_data_active = dataActive.insightAccountSubscriptionsActive.data
   console.log("chart_data active")
   console.log(data_sold_label, ...chart_data_active)
 
@@ -157,7 +157,7 @@ function InsightSubscriptions ({ t, history }) {
             href={export_url_sold}
             icon="download-cloud"
           >
-            {t("insight.classpasses.sold.export_excel")}
+            {t("insight.subscriptions.sold.export_excel")}
           </Button>
           {/* Export as active as excel sheet */}
           <Button
@@ -167,7 +167,7 @@ function InsightSubscriptions ({ t, history }) {
             href={export_url_active}
             icon="download-cloud"
           >
-            {t("insight.classpasses.active.export_excel")}
+            {t("insight.subscriptions.active.export_excel")}
           </Button>
         </Grid.Col>
       {/* </Grid.Row> */}
