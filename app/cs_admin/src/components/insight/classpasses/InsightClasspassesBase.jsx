@@ -15,6 +15,12 @@ import InsightBackHome from '../InsightBackHome'
 
 import CSLS from "../../../tools/cs_local_storage"
 
+// Set some initial values for dates, if not found
+if (!localStorage.getItem(CSLS.INSIGHT_CLASSPASSES_YEAR)) {
+  console.log('year from not found... defaulting to today...')
+  localStorage.setItem(CSLS.INSIGHT_CLASSPASSES_YEAR, moment().format('YYYY')) 
+} 
+
 function InsightClasspassesBase ({ t, history, children, year, refetchData=f=>f }) {
   return (
     <SiteWrapper>
@@ -28,7 +34,7 @@ function InsightClasspassesBase ({ t, history, children, year, refetchData=f=>f 
                   icon="chevron-left"
                   color="secondary"
                   onClick={ () => {
-                    let previousYear = localStorage.getItem(CSLS.INSIGHT_CLASSPASSES_YEAR) - 1                    
+                    let previousYear = parseInt(localStorage.getItem(CSLS.INSIGHT_CLASSPASSES_YEAR)) - 1                    
                     localStorage.setItem(CSLS.INSIGHT_CLASSPASSES_YEAR, previousYear) 
 
                     refetchData(previousYear)
@@ -46,7 +52,7 @@ function InsightClasspassesBase ({ t, history, children, year, refetchData=f=>f 
                   icon="chevron-right"
                   color="secondary"
                   onClick={ () => {
-                    let nextYear = localStorage.getItem(CSLS.INSIGHT_CLASSPASSES_YEAR) + 1                    
+                    let nextYear = parseInt(localStorage.getItem(CSLS.INSIGHT_CLASSPASSES_YEAR)) + 1                    
                     localStorage.setItem(CSLS.INSIGHT_CLASSPASSES_YEAR, nextYear) 
 
                     refetchData(nextYear)

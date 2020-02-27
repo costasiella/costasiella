@@ -5,6 +5,7 @@ import { withRouter } from "react-router"
 import C3Chart from "react-c3js"
 
 import AppSettingsContext from '../../context/AppSettingsContext'
+import CSLS from "../../../tools/cs_local_storage"
 
 import {
   colors,
@@ -20,24 +21,26 @@ function InsightClasspasses ({ t, history }) {
   const appSettings = useContext(AppSettingsContext)
   const dateFormat = appSettings.dateFormat
   const timeFormat = appSettings.timeFormatMoment
-  const year = 2020
+  const year = localStorage.getItem(CSLS.INSIGHT_CLASSPASSES_YEAR)
   const export_url_active = "/export/insight/classpasses/active/" + year
   const export_url_sold = "/export/insight/classpasses/sold/" + year
 
   const { 
     loading: loadingSold, 
     error: errorSold, 
-    data: dataSold
+    data: dataSold,
+    refetch: refetchSold
    } = useQuery(GET_CLASSPASSES_SOLD_QUERY, {
-    variables: { year: 2020 }
+    variables: { year: year }
   })
 
   const { 
     loading: loadingActive, 
     error: errorActive, 
-    data: dataActive
+    data: dataActive,
+    refetch: refetchActive
    } = useQuery(GET_CLASSPASSES_ACTIVE_QUERY, {
-    variables: { year: 2020 }
+    variables: { year: year }
   })
 
 
@@ -57,6 +60,11 @@ function InsightClasspasses ({ t, history }) {
     )
   }
 
+  function refetchData(year) {
+    refetchActive({year: year})
+    refetchSold({year: year})
+  }
+
   console.log(dataSold)
   console.log(dataActive)
 
@@ -72,7 +80,7 @@ function InsightClasspasses ({ t, history }) {
 
 
   return (
-    <InsightClasspassesBase year={year}>
+    <InsightClasspassesBase year={year} refetchData={refetchData}>
       {/* <Grid.Row> */}
         <Grid.Col md={9}>
           <Card title={t('general.chart')}>
