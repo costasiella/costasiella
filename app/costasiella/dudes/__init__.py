@@ -1,4 +1,7 @@
 from .class_checkin_dude import ClassCheckinDude
 from .class_schedule_dude import ClassScheduleDude
 
+from .insight_account_classpasses_dude import InsightAccountClasspassesDude
+from .insight_account_subscriptions_dude import InsightAccountSubscriptionsDude
+
 from .sales_dude import SalesDude

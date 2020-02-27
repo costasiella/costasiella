@@ -84,8 +84,8 @@ class InsightAccountSubscriptionsDude:
         from ..models import AccountSubscription
 
         count = AccountSubscription.objects.filter(
+            (Q(date_end__gte = date_from) | Q(date_end__isnull=True)),
             date_start__lte = date_until,
-            (Q(date_end__gte = date_from) | Q(date_end__isnull=True))
         ).count()
 
         print(count)
@@ -118,8 +118,8 @@ class InsightAccountSubscriptionsDude:
         from ..models import AccountSubscription
 
         qs = AccountSubscription.objects.filter(
+            (Q(date_end__gte = date_from) | Q(date_end__isnull=True)),
             date_start__lte = date_until,
-            (Q(date_end__gte = date_from) | Q(date_end__isnull=True))
         ).order_by("date_start")
 
         return qs
