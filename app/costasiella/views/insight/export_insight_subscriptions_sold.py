@@ -36,8 +36,7 @@ def export_excel_insight_subscriptions_sold(request, year):
         _("Relation"),
         _("Subscription"),
         _("Start"),
-        _("Expiration"),
-        _("Price")
+        _("Expiration")
     ]
 
     for month in range(1, 13):
@@ -52,8 +51,7 @@ def export_excel_insight_subscriptions_sold(request, year):
                 subscription.account.full_name,
                 subscription.organization_subscription.name,
                 subscription.date_start,
-                subscription.date_end,
-                subscription.organization_subscription.price
+                subscription.date_end
             ]
 
             ws.append(data_list)

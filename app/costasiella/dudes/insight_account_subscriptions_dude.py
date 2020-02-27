@@ -54,7 +54,7 @@ class InsightAccountSubscriptionsDude:
         return qs
 
 
-    def get_subscription_sold_year_data(self, year):
+    def get_subscriptions_sold_year_data(self, year):
         """
         Get subscriptions sold (new) year data
         """

@@ -22,4 +22,4 @@ class AccountSubscription(models.Model):
     updated_at = models.DateTimeField(auto_now=True, editable=False)
 
     def __str__(self):
-        return self.organization_subscription.name + ' [' + unicode(date_start) + ']'
+        return self.organization_subscription.name + ' [' + str(self.date_start) + ']'
