@@ -21,8 +21,8 @@ function InsightSubscriptions ({ t, history }) {
   const dateFormat = appSettings.dateFormat
   const timeFormat = appSettings.timeFormatMoment
   const year = 2020
-  const export_url_active = "/export/insight/classpasses/active/" + year
-  const export_url_sold = "/export/insight/classpasses/sold/" + year
+  const export_url_active = "/export/insight/subscriptions/active/" + year
+  const export_url_sold = "/export/insight/subscriptions/sold/" + year
 
   const { 
     loading: loadingSold, 

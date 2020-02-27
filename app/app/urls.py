@@ -40,7 +40,18 @@ urlpatterns = [
         export_excel_insight_classpasses_active, 
         name="export_excel_insight_classpasses_active"
     ),
-    path('export/insight/classpasses/sold/<int:year>', export_excel_insight_classpasses_sold, name="export_excel_insight_classpasses_sold"),
+    path('export/insight/classpasses/sold/<int:year>', 
+        export_excel_insight_classpasses_sold, 
+        name="export_excel_insight_classpasses_sold"
+    ),
+    path('export/insight/subscriptions/active/<int:year>', 
+        export_excel_insight_subscriptions_active, 
+        name="export_excel_insight_classpasses_active"
+    ),
+    path('export/insight/subscriptions/sold/<int:year>', 
+        export_excel_insight_subscriptions_sold, 
+        name="export_excel_insight_subscriptions_sold"
+    ),
     path('export/invoice/pdf/<str:node_id>', invoice_pdf, name="export_invoice_pdf"),
     path('export/invoice/pdf/preview/<str:node_id>', invoice_pdf_preview, name="export_invoice_pdf_preview"),
     path('admin/', admin.site.urls),
