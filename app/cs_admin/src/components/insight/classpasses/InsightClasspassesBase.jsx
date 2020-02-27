@@ -43,8 +43,8 @@ function InsightClasspassesBase ({ t, history, children, year, refetchData=f=>f 
                   icon="sunset"
                   color="secondary"
                   onClick={ () => {
-                    let currentYear = moment()
-                    localStorage.setItem(CSLS.INSIGHT_CLASSPASSES_YEAR, currentYear.format('YYYY')) 
+                    let currentYear = moment().format('YYYY')
+                    localStorage.setItem(CSLS.INSIGHT_CLASSPASSES_YEAR, currentYear) 
                     
                     refetchData(currentYear)
                 }} />
