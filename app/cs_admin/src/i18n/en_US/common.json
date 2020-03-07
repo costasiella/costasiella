@@ -1106,6 +1106,17 @@
         "title": "Insight",
         "classpass": {
             "title": "Classpasses"
+        },
+        "subscriptions": {
+            "title": "Subscriptions",
+            "sold": {
+                "title": "Sold subscriptions",
+                "export_excel": "Export sold as Excel"
+            },
+            "active": {
+                "title": "Active subscriptions",
+                "export_excel": "Export active as Excel"
+            }
         }
     },
     "selfcheckin": {

@@ -1106,6 +1106,17 @@
         "title": "__STRING_NOT_TRANSLATED__",
         "classpass": {
             "title": "__STRING_NOT_TRANSLATED__"
+        },
+        "subscriptions": {
+            "title": "__STRING_NOT_TRANSLATED__",
+            "sold": {
+                "title": "__STRING_NOT_TRANSLATED__",
+                "export_excel": "__STRING_NOT_TRANSLATED__"
+            },
+            "active": {
+                "title": "__STRING_NOT_TRANSLATED__",
+                "export_excel": "__STRING_NOT_TRANSLATED__"
+            }
         }
     },
     "selfcheckin": {
