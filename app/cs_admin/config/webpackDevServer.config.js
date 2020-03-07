@@ -83,7 +83,7 @@ module.exports = function(proxy, allowedHost) {
     public: allowedHost,
     //proxy,
     proxy: [{
-        context: ['/graphql', '/media', '/static/', '/export/'],
+        context: ['/d', '/media', '/static/'],
         target: 'http://localhost:8000'
     }],
     before(app, server) {

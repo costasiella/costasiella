@@ -179,7 +179,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
-STATIC_URL = '/static/'
+STATIC_URL = '/d/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "assets"),
 ]
@@ -187,7 +187,7 @@ STATICFILES_DIRS = [
 # Media files (User uploads)
 # https://docs.djangoproject.com/en/2.1/topics/files/
 MEDIA_ROOT = os.path.join(os.getcwd(), "costasiella", "media")
-MEDIA_URL = '/media/'
+MEDIA_URL = '/d/media/'
 
 # Email configuration
 
