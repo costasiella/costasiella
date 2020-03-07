@@ -1070,7 +1070,7 @@
         "register": {
             "create_account": "Create your account",
             "create_account_msg": "New here? Join us today! It only takes a few steps.",
-            "create_account_msg_click_below": "Click the button below to get started.",
+            "create_account_msg_click_below": "Click the link below to get started.",
             "reset_password": "Forgot password?"
         },
         "session_expired": {

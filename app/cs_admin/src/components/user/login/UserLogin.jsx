@@ -112,8 +112,8 @@ function UserLogin({t, match, history}) {
         color="link"
         RootComponent="a"
         href={(window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") ? 
-          "http://localhost:8000/accounts/signup/" :
-          "/accounts/signup/"
+          "http://localhost:8000/d/accounts/signup/" :
+          "/d/accounts/signup/"
         } 
       >
         {t('user.register.create_account')} <Icon name="chevron-right" />
