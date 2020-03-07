@@ -88,74 +88,44 @@ class GQLInsightClasspasses(TestCase):
         self.assertEqual(data['insightAccountClasspassesActive']['data'][11], 0)
 
 
-    # def test_query_permision_denied(self):
-    #     """ Query list of classpasses - check permission denied """
-    #     query = self.classpasses_query
-    #     classpass = f.OrganizationClasspassFactory.create()
-    #     non_public = f.OrganizationClasspassFactory.create()
-    #     non_public.display_public = False
-    #     non_public.save()
+    def test_query_permision_denied(self):
+        """ Query list of classpasses - check permission denied """
+        query = self.query_classpasses_active
+        classpass = f.AccountClasspassFactory.create()
 
-    #     variables = {
-    #         'archived': False
-    #     }
+        # Create regular user
+        user = classpass.account
+        executed = execute_test_client_api_query(query, user, variables=self.variables_query)
+        errors = executed.get('errors')
 
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     executed = execute_test_client_api_query(query, user, variables=variables)
-    #     data = executed.get('data')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
+        
 
-    #     # Public class only
-    #     non_public_found = False
-    #     for item in data['organizationClasspasses']['edges']:
-    #         if not item['node']['displayPublic']:
-    #             non_public_found = True
+    def test_query_permision_granted(self):
+        """ Query list of classpasses with view permission """
+        query = self.query_classpasses_active
+        classpass = f.AccountClasspassFactory.create()      
 
-    #     self.assertEqual(non_public_found, False)
+        # Create regular user
+        user = classpass.account
+        permission = Permission.objects.get(codename='view_insightclasspassesactive')
+        user.user_permissions.add(permission)
+        user.save()
 
+        executed = execute_test_client_api_query(query, user, variables=self.variables_query)
+        data = executed.get('data')
 
-    # def test_query_permision_granted(self):
-    #     """ Query list of classpasses with view permission """
-    #     query = self.classpasses_query
-    #     classpass = f.OrganizationClasspassFactory.create()
-    #     non_public = f.OrganizationClasspassFactory.create()
-    #     non_public.display_public = False
-    #     non_public.save()
-
-    #     variables = {
-    #         'archived': False
-    #     }
-
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename='view_organizationclasspass')
-    #     user.user_permissions.add(permission)
-    #     user.save()
-
-    #     executed = execute_test_client_api_query(query, user, variables=variables)
-    #     data = executed.get('data')
-
-    #     # List all class passes, including non public
-    #     non_public_found = False
-    #     for item in data['organizationClasspasses']['edges']:
-    #         if not item['node']['displayPublic']:
-    #             non_public_found = True
-
-    #     # Assert non public classtypes are listed
-    #     self.assertEqual(non_public_found, True)
+        self.assertEqual(data['insightAccountClasspassesActive']['year'], self.variables_query['year'])
 
 
-    # def test_query_anon_user(self):
-    #     """ Query list of classpasses - anon user """
-    #     query = self.classpasses_query
-    #     classpass = f.OrganizationClasspassFactory.create()
-    #     variables = {
-    #         'archived': False
-    #     }
+    def test_query_anon_user(self):
+        """ Query list of classpasses - anon user """
+        query = self.query_classpasses_active
+        classpass = f.AccountClasspassFactory.create()  
 
-    #     executed = execute_test_client_api_query(query, self.anon_user, variables=variables)
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
+        executed = execute_test_client_api_query(query, self.anon_user, variables=self.variables_query)
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
     # def test_query_one(self):
