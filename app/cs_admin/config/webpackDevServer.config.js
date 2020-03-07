@@ -83,7 +83,7 @@ module.exports = function(proxy, allowedHost) {
     public: allowedHost,
     //proxy,
     proxy: [{
-        context: ['/d', '/media', '/static/'],
+        context: ['/d'],
         target: 'http://localhost:8000'
     }],
     before(app, server) {
