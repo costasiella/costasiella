@@ -126,7 +126,6 @@ class GQLInsightClasspasses(TestCase):
         self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
-
     def test_query_sold(self):
         """ Query list of classpasses """
         query = self.query_classpasses_sold
