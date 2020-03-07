@@ -1,10 +1,10 @@
 {
   "main.css": "/static/css/main.f2bdca24.css",
-  "main.js": "/static/js/main.3647c68b.js",
-  "main.js.map": "/static/js/main.3647c68b.js.map",
-  "static/media/Tabler.css": "/static/media/gb-wls.2831a6dd.svg",
+  "main.js": "/static/js/main.9fcbc5de.js",
+  "main.js.map": "/static/js/main.9fcbc5de.js.map",
+  "static/media/Tabler.css": "/static/media/lt.14b63eab.svg",
   "static/css/main.f2bdca24.css.map": "/static/css/main.f2bdca24.css.map",
   "index.html": "/index.html",
-  "precache-manifest.a465b591c7d16ddb72507bf447f5a587.js": "/precache-manifest.a465b591c7d16ddb72507bf447f5a587.js",
+  "precache-manifest.cb1f84d0131610912b1724bec8858ac4.js": "/precache-manifest.cb1f84d0131610912b1724bec8858ac4.js",
   "service-worker.js": "/service-worker.js"
 }
