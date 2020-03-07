@@ -32,10 +32,11 @@ from costasiella.views import *
 urlpatterns = [
     # path('', login_required(TemplateView.as_view(template_name="backend.html")), name="home"),
     # path('', TemplateView.as_view(template_name="backend.html"), name="home"),
+    path('admin/', admin.site.urls),
     path('accounts/', include('allauth.urls')),
     path('email/verified/', TemplateView.as_view(template_name="email_verfied.html"), name="email_verified"),
-    path('document/terms-and-conditions', terms_and_conditions, name="terms_and_conditions"),
-    path('document/privacy-policy', privacy_policy, name="privacy_policy"),
+    path('export/terms-and-conditions', terms_and_conditions, name="terms_and_conditions"),
+    path('export/privacy-policy', privacy_policy, name="privacy_policy"),
     path('export/insight/classpasses/active/<int:year>', 
         export_excel_insight_classpasses_active, 
         name="export_excel_insight_classpasses_active"
@@ -54,6 +55,5 @@ urlpatterns = [
     ),
     path('export/invoice/pdf/<str:node_id>', invoice_pdf, name="export_invoice_pdf"),
     path('export/invoice/pdf/preview/<str:node_id>', invoice_pdf_preview, name="export_invoice_pdf_preview"),
-    path('admin/', admin.site.urls),
     path('graphql/', csrf_exempt(jwt_cookie(GraphQLView.as_view(graphiql=True))), name="graphql"),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) # Development only
