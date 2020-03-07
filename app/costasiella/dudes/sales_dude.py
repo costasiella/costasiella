@@ -1,6 +1,6 @@
 from django.utils.translation import gettext as _
 
-class SalesDude():
+class SalesDude:
     def sell_classpass(self, account, organization_classpass, date_start, note="", create_invoice=True):
         """
         Sell classpass to account

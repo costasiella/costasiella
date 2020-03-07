@@ -46,6 +46,9 @@ import FinanceTaxRates from './components/finance/taxrates/FinanceTaxRates'
 import FinanceTaxRatesAdd from './components/finance/taxrates/FinanceTaxRateAdd'
 import FinanceTaxRatesEdit from './components/finance/taxrates/FinanceTaxRateEdit'
 
+import InsightClasspasses from './components/insight/classpasses/InsightClasspasses'
+import InsightSubscriptions from './components/insight/subscriptions/InsightSubscriptions'
+
 import OrganizationHome from './components/organization/home/OrganizationHome'
 import OrganizationEdit from './components/organization/organization/OrganizationEdit'
 import OrganizationAppointments from './components/organization/appointment_categories/appointments/OrganizationAppointments'
@@ -134,6 +137,8 @@ import ScheduleClassEdit from './components/schedule/classes/class/edit/Schedule
 import ScheduleClassPrices from './components/schedule/classes/all/prices/ScheduleClassPrices'
 import ScheduleClassPriceAdd from './components/schedule/classes/all/prices/ScheduleClassPriceAdd'
 import ScheduleClassPriceEdit from './components/schedule/classes/all/prices/ScheduleClassPriceEdit'
+
+import InsightHome from './components/insight/home/InsightHome'
 
 import SelfCheckinCheckin from './components/selfcheckin/Checkin/Checkin'
 import SelfCheckinBookingOptions from './components/selfcheckin/BookingOptions/BookingOptions'
@@ -316,6 +321,11 @@ function AppRoot({ t }) {
           <PrivateRoute exact path="/schedule/classes/class/attendance/:class_id/:date" component={ScheduleClassAttendance} />
           <PrivateRoute exact path="/schedule/classes/class/book/:class_id/:date/:account_id" component={ScheduleClassBook} />
           <PrivateRoute exact path="/schedule/classes/class/edit/:class_id/:date" component={ScheduleClassEdit} />
+
+          {/* Insight */}
+          <PrivateRoute exact path="/insight" component={InsightHome} />
+          <PrivateRoute exact path="/insight/classpasses" component={InsightClasspasses} />
+          <PrivateRoute exact path="/insight/subscriptions" component={InsightSubscriptions} />
 
           {/* Self Check-in */}
           <PrivateRoute exact path="/selfcheckin/checkin/:location_id/:class_id/:date" component={SelfCheckinCheckin} />

@@ -26,13 +26,13 @@ function Locations({ t, match, history }) {
   )
   if (error) return (
     <SelfCheckinBase>
-      {t("selfcheckin.loadings.error_loading")}
+      {t("selfcheckin.locations.error_loading")}
     </SelfCheckinBase>
   )
 
 
   return (
-    <SelfCheckinBase title={t("selfcheckin.locations.title")}>
+    <SelfCheckinBase title={t("selfcheckin.home.title")}>
       <h4>{t("selfcheckin.locations.please_select")}</h4>
         <List.Group>
           {

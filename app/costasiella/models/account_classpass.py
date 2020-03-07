@@ -22,7 +22,7 @@ class AccountClasspass(models.Model):
     updated_at = models.DateTimeField(auto_now=True, editable=False)
 
     def __str__(self):
-        return self.organization_classpass.name + ' [' + unicode(self.date_start) + ']'
+        return self.organization_classpass.name + ' [' + str(self.date_start) + ']'
 
 
     def update_classes_remaining(self):

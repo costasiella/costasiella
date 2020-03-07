@@ -216,7 +216,7 @@ function ScheduleClasses ({ t, history }) {
                           refetch(get_list_query_variables())
                       }} />
                       <Button 
-                        icon="sun"
+                        icon="sunset"
                         color="secondary"
                         onClick={ () => {
                           let currentWeekFrom = moment()

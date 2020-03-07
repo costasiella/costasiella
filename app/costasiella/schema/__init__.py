@@ -20,6 +20,9 @@ from .finance_invoice_payment import FinanceInvoicePaymentQuery, FinanceInvoiceP
 from .finance_payment_method import FinancePaymentMethodQuery, FinancePaymentMethodMutation
 from .finance_tax_rate import FinanceTaxRateQuery, FinanceTaxRateMutation
 
+from .insight_classpasses import InsightClasspassesQuery
+from .insight_subscriptions import InsightSubscriptionsQuery
+
 from .organization import OrganizationQuery, OrganizationMutation
 from .organization_appointment import OrganizationAppointmentQuery, OrganizationAppointmentMutation
 from .organization_appointment_category import OrganizationAppointmentCategoryQuery, OrganizationAppointmentCategoryMutation
@@ -68,6 +71,8 @@ class Query(AccountQuery,
             FinanceInvoicePaymentQuery,
             FinancePaymentMethodQuery,
             FinanceTaxRateQuery,
+            InsightClasspassesQuery,
+            InsightSubscriptionsQuery,
             OrganizationQuery,
             OrganizationAppointmentQuery,
             OrganizationAppointmentCategoryQuery,
