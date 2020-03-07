@@ -26,3 +26,5 @@ app/celerybeat.pid
 app/\.idea/
 
 .gitignore~
+
+*.ini~
