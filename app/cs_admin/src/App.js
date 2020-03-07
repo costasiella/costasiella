@@ -55,7 +55,7 @@ function processClientError(error) {
 // TODO: Set up token expiration and auto refresh if possible and redirect to login if refresh token is expired.
 const client = new ApolloClient({
   // uri: "http://localhost:8000/graphql/",
-  uri: "/graphql/",
+  uri: "/d/graphql/",
   credentials: "same-origin",
   onError: processClientError,
   // request: async operation => {

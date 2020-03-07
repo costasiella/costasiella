@@ -60,8 +60,8 @@ const UserLoginForm = ({ t, history, isSubmitting, errors, values, return_url, s
               color="link"
               RootComponent="a"
               href={(window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") ? 
-                "http://localhost:8000/accounts/password/reset/" :
-                "/accounts/password/reset/"
+                "http://localhost:8000/d/accounts/password/reset/" :
+                "/d/accounts/password/reset/"
               } 
             >
               {t('user.register.reset_password')}
