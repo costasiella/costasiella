@@ -41,6 +41,13 @@ pip3 install -r requirements.txt
 
 
 
+###
+# Vault setup
+###
+
+TO DO...
+
+
 
 ###
 # Social auth setup; not currently implemented. Only email authentication is supported.
