@@ -1,8 +1,53 @@
+# This guide assumes you'll install costasiella in the following directories:
+
+backand: /opt/costasiella
+frontend: /var/www/html/build
+virtual environments: /opt/venvs
+
+(Django root = /opt/costasiella/app)
+
+# Install required packages
+
+$ sudo apt install python3-pip python3.6-dev libmysqlclient-dev nginx-full mysql-server-5.7 redis-server redis-tools
+
+# Optional; globally setup virtualenv and virtualenvwraper for easier management of your virtual environments
+
+sudo pip3 install virtualenv virtualenvwrapper
+
+Add the following to your .bashrc file(s) 
+# virtualenvwrapper setup
+export VIRTUALENVWRAPPER_PYTHON=/usr/bin/python3
+export WORKON_HOME=/opt/venvs
+export PROJECT_HOME=/opt
+export VIRTUALENVWRAPPER_SCRIPT=/usr/local/bin/virtualenvwrapper.sh
+source /usr/local/bin/virtualenvwrapper_lazy.sh
+
+Create the virtualenvirontment
+
+sudo mkvirtualenv -p /usr/bin/python3 costasiella
+
+# In your Django root execute the command below to install the required python modules
+
+pip3 install -r requirements.txt
+
 # In your Django root execute the command below to create your database tables:
 
 ./manage.py migrate
 
-Now start your server, visit your admin pages (e.g. http://localhost:8000/admin/) and follow these steps:
+# Create a super user
+
+./manage.py createsuperuser
+> enter your information
+
+
+
+
+###
+# Social auth setup; not currently implemented. Only email authentication is supported.
+# You can stop reading here.
+###
+
+Now start your server, visit your admin pages (e.g. http://localhost:8000/d/admin/) and follow these steps:
 
 Add a Site for your domain, matching settings.SITE_ID (django.contrib.sites app).
 For each OAuth based provider, add a Social App (socialaccount app).
