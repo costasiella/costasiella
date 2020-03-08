@@ -46,6 +46,7 @@ import FinanceTaxRates from './components/finance/taxrates/FinanceTaxRates'
 import FinanceTaxRatesAdd from './components/finance/taxrates/FinanceTaxRateAdd'
 import FinanceTaxRatesEdit from './components/finance/taxrates/FinanceTaxRateEdit'
 
+import InsightHome from './components/insight/home/InsightHome'
 import InsightClasspasses from './components/insight/classpasses/InsightClasspasses'
 import InsightSubscriptions from './components/insight/subscriptions/InsightSubscriptions'
 
@@ -137,8 +138,6 @@ import ScheduleClassEdit from './components/schedule/classes/class/edit/Schedule
 import ScheduleClassPrices from './components/schedule/classes/all/prices/ScheduleClassPrices'
 import ScheduleClassPriceAdd from './components/schedule/classes/all/prices/ScheduleClassPriceAdd'
 import ScheduleClassPriceEdit from './components/schedule/classes/all/prices/ScheduleClassPriceEdit'
-
-import InsightHome from './components/insight/home/InsightHome'
 
 import SelfCheckinCheckin from './components/selfcheckin/Checkin/Checkin'
 import SelfCheckinBookingOptions from './components/selfcheckin/BookingOptions/BookingOptions'

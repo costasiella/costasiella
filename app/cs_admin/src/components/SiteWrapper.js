@@ -133,9 +133,10 @@ const getNavBarItems = (t, user) => {
    ){
     items.push({
       value: t("goto.title"),
-      to: "/goto",
       icon: "zap",
-      LinkComponent: withRouter(NavLink),
+      subItems: [
+        { value: t("selfcheckin.home.title"), to: "/selfcheckin", LinkComponent: withRouter(NavLink) },
+      ],
     })
   }
 

@@ -1153,5 +1153,8 @@
             "short_november": "__STRING_NOT_TRANSLATED__",
             "short_decemer": "__STRING_NOT_TRANSLATED__"
         }
+    },
+    "goto": {
+        "title": "__STRING_NOT_TRANSLATED__"
     }
 }

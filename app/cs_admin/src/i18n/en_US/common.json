@@ -1153,5 +1153,8 @@
             "short_november": "Nov",
             "short_decemer": "Dec"
         }
+    },
+    "goto": {
+        "title": "Go to"
     }
 }
