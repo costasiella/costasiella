@@ -127,6 +127,18 @@ const getNavBarItems = (t, user) => {
     })
   }
 
+  // Go to
+  if (
+    (has_permission(permissions, 'view', 'selfcheckin'))
+   ){
+    items.push({
+      value: t("goto.title"),
+      to: "/goto",
+      icon: "zap",
+      LinkComponent: withRouter(NavLink),
+    })
+  }
+
 
   return items
 
