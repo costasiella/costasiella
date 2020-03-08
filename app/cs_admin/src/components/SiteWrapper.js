@@ -127,6 +127,13 @@ const getNavBarItems = (t, user) => {
     })
   }
 
+  let goToSubItems = []
+  if (has_permission(permissions, 'view', 'selfcheckin')) {
+    goToSubItems.push(
+      { value: t("selfcheckin.home.title"), to: "/selfcheckin", LinkComponent: withRouter(NavLink) }
+    )
+  }
+
   // Go to
   if (
     (has_permission(permissions, 'view', 'selfcheckin'))
@@ -134,9 +141,7 @@ const getNavBarItems = (t, user) => {
     items.push({
       value: t("goto.title"),
       icon: "zap",
-      subItems: [
-        { value: t("selfcheckin.home.title"), to: "/selfcheckin", LinkComponent: withRouter(NavLink) },
-      ],
+      subItems: goToSubItems,
     })
   }
 
