@@ -131,11 +131,17 @@ pip3 install -r requirements.txt
 > enter your information
 
 ##
+# Static files collection
+##
+./manage.py collectstatic
+
+##
 # TO DO
 ##
 
 - uwsgi setup
 - nginx setup
+
 
 ##
 # Create user and log in
