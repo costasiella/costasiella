@@ -28,6 +28,10 @@ class ScheduleItemAttendanceNode(DjangoObjectType):
     def get_node(self, info, id):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.view_scheduleitemattendance')
+        require_login_and_one_of_permissions(user,
+            'costasiella.view_scheduleitemattendance',
+            'costasiella.view_selfcheckin'
+        )
 
         # Return only public non-archived location rooms
         return self._meta.model.objects.get(id=id)
@@ -39,7 +43,10 @@ class ScheduleItemAttendanceQuery(graphene.ObjectType):
 
     def resolve_schedule_item_attendances(self, info, **kwargs):
         user = info.context.user
-        require_login_and_permission(user, 'costasiella.view_scheduleitemattendance')
+        require_login_and_one_of_permissions(user,
+            'costasiella.view_scheduleitemattendance',
+            'costasiella.view_selfcheckin'
+        )
 
         return ScheduleItemAttendance.objects.order_by('-account__full_name')
             
@@ -126,7 +133,10 @@ class CreateScheduleItemAttendance(graphene.relay.ClientIDMutation):
     @classmethod
     def mutate_and_get_payload(self, root, info, **input):
         user = info.context.user
-        require_login_and_permission(user, 'costasiella.add_scheduleitemattendance')
+        require_login_and_one_of_permissions(user,
+            'costasiella.add_scheduleitemattendance',
+            'costasiella.view_selfcheckin'
+        )
 
         validation_result = validate_schedule_item_attendance_create_update_input(input)
         class_checkin_dude = ClassCheckinDude()
@@ -206,7 +216,10 @@ class UpdateScheduleItemAttendance(graphene.relay.ClientIDMutation):
     @classmethod
     def mutate_and_get_payload(self, root, info, **input):
         user = info.context.user
-        require_login_and_permission(user, 'costasiella.change_scheduleitemattendance')
+        require_login_and_one_of_permissions(user,
+            'costasiella.change_scheduleitemattendance',
+            'costasiella.view_selfcheckin'
+        )
 
         rid = get_rid(input['id'])
         schedule_item_attendance = ScheduleItemAttendance.objects.filter(id=rid.id).first()
@@ -236,7 +249,10 @@ class DeleteScheduleItemAttendance(graphene.relay.ClientIDMutation):
     @classmethod
     def mutate_and_get_payload(self, root, info, **input):
         user = info.context.user
-        require_login_and_permission(user, 'costasiella.delete_scheduleitemattendance')
+        require_login_and_one_of_permissions(user,
+            'costasiella.delete_scheduleitemattendance',
+            'costasiella.view_selfcheckin'
+        )
 
         rid = get_rid(input['id'])
         schedule_item_attendance = ScheduleItemAttendance.objects.filter(id=rid.id).first()
