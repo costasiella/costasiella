@@ -125,6 +125,10 @@ pip3 install -r requirements.txt
 
 ./manage.py migrate
 
+# Load the setup data
+
+./manage.py loaddata costasiella/fixtures/*.json
+
 # Create a super user
 
 ./manage.py createsuperuser
