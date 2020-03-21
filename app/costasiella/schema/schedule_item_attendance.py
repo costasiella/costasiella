@@ -6,7 +6,7 @@ from graphene_django.filter import DjangoFilterConnectionField
 from graphql import GraphQLError
 
 from ..models import Account, AccountClasspass, AccountSubscription, FinanceInvoiceItem, OrganizationClasspass, ScheduleItem, ScheduleItemAttendance
-from ..modules.gql_tools import require_login_and_permission, get_rid
+from ..modules.gql_tools import require_login_and_permission, require_login_and_one_of_permissions, get_rid
 from ..modules.messages import Messages
 
 from ..dudes import ClassCheckinDude, ClassScheduleDude

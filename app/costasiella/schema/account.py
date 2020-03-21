@@ -16,7 +16,7 @@ from graphene_django.filter import DjangoFilterConnectionField
 from allauth.account.models import EmailAddress
 from ..models import AccountTeacherProfile
 
-from ..modules.gql_tools import require_login, require_login_and_permission, get_rid
+from ..modules.gql_tools import require_login, require_login_and_permission, require_login_and_one_of_permissions, get_rid
 from ..modules.encrypted_fields import EncryptedTextField
 
 @convert_django_field.register(EncryptedTextField)
