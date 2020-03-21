@@ -167,10 +167,11 @@ class ScheduleClassBookingOptionsQuery(graphene.ObjectType):
     )
 
     def resolve_schedule_class_booking_options(self, info, list_type, account, schedule_item, date, **kwargs):
-        require_login_and_one_of_permissions(user,
+        user = info.context.user
+        require_login_and_one_of_permissions(user, [
             'costasiella.view_scheduleitem',
             'costasiella.view_selfcheckin'
-        )
+        ])
 
         validation_result = validate_schedule_class_booking_options_input(
             account,

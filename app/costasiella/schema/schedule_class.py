@@ -451,10 +451,10 @@ class ScheduleClassQuery(graphene.ObjectType):
                                  organization_location=None,
                                  ):
         user = info.context.user
-        require_login_and_one_of_permissions(user,
+        require_login_and_one_of_permissions(user, [
             'costasiella.view_scheduleclass',
             'costasiella.view_selfcheckin'
-        )
+        ])
 
         print('############ resolve')
         print(locals())
