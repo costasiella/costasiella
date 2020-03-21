@@ -47,7 +47,10 @@ class AccountNode(DjangoObjectType):
     @classmethod
     def get_node(self, info, id):
         user = info.context.user
-        require_login_and_permission(user, 'costasiella.view_account')
+        require_login_and_one_of_permissions(user, [
+            'costasiella.view_account',
+            'costasiella.view_selfcheckin'
+        ])
         #TODO: Add permission for accounts to get their own info or all info with view permission
 
         return self._meta.model.objects.get(id=id)
@@ -100,7 +103,10 @@ class AccountQuery(graphene.AbstractType):
 
     def resolve_accounts(self, info, is_active=False, **kwargs):
         user = info.context.user
-        require_login_and_permission(user, 'costasiella.view_account')
+        require_login_and_one_of_permissions(user, [
+            'costasiella.view_account',
+            'costasiella.view_selfcheckin'
+        ])
 
         query_set =  get_user_model().objects.filter(
             is_active=is_active, 
