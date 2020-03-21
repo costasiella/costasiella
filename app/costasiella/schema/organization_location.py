@@ -57,7 +57,8 @@ class OrganizationLocationQuery(graphene.ObjectType):
         # else:
             # return OrganizationLocation.objects.all()
         ## return everything:
-        if user.has_perm('costasiella.view_organizationlocation'):
+        if user.has_perm('costasiella.view_organizationlocation') or \
+           user.has_perm('costasiella.view_selfcheckin'):
             print('user has view permission')
             return OrganizationLocation.objects.filter(archived = archived).order_by('name')
 

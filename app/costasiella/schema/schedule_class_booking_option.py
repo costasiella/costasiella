@@ -94,9 +94,6 @@ class ScheduleClassBookingOptionsType(graphene.ObjectType):
                             info,
                             date=graphene.types.datetime.Date(),
                             ):
-        user = info.context.user
-        require_login_and_permission(user, 'costasiella.view_scheduleitem')
-
         checkin_dude = ClassCheckinDude()
         account = self.resolve_account(info)
         schedule_item = self.resolve_schedule_item(info)
@@ -132,9 +129,6 @@ class ScheduleClassBookingOptionsType(graphene.ObjectType):
                             info,
                             date=graphene.types.datetime.Date(),
                             ):
-        user = info.context.user
-        require_login_and_permission(user, 'costasiella.view_scheduleitem')
-
         checkin_dude = ClassCheckinDude()
         account = self.resolve_account(info)
         schedule_item = self.resolve_schedule_item(info)
@@ -173,6 +167,12 @@ class ScheduleClassBookingOptionsQuery(graphene.ObjectType):
     )
 
     def resolve_schedule_class_booking_options(self, info, list_type, account, schedule_item, date, **kwargs):
+        user = info.context.user
+        require_login_and_one_of_permissions(user, [
+            'costasiella.view_scheduleitem',
+            'costasiella.view_selfcheckin'
+        ])
+
         validation_result = validate_schedule_class_booking_options_input(
             account,
             schedule_item,

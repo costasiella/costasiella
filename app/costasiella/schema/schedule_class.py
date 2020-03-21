@@ -432,7 +432,10 @@ class ScheduleClassQuery(graphene.ObjectType):
 
     def resolve_schedule_items(self, info, **kwargs):
         user = info.context.user
-        require_login_and_permission(user, 'costasiella.view_scheduleitem')
+        require_login_and_one_of_permissions(user,
+            'costasiella.view_scheduleitem',
+            'costasiella.view_selfcheckin'
+        )
 
         ## return everything:
         return ScheduleItem.objects.filter()
@@ -448,7 +451,10 @@ class ScheduleClassQuery(graphene.ObjectType):
                                  organization_location=None,
                                  ):
         user = info.context.user
-        require_login_and_permission(user, 'costasiella.view_scheduleclass')
+        require_login_and_one_of_permissions(user, [
+            'costasiella.view_scheduleclass',
+            'costasiella.view_selfcheckin'
+        ])
 
         print('############ resolve')
         print(locals())
