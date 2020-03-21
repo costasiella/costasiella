@@ -20,7 +20,10 @@ class OrganizationLocationRoomNode(DjangoObjectType):
     @classmethod
     def get_node(self, info, id):
         user = info.context.user
-        require_login_and_permission(user, 'costasiella.view_organizationlocationroom')
+        require_login_and_one_of_permissions('user', [
+            'costasiella.view_organizationlocationroom',
+            'costasiella.view_selfcheckin'
+        ])
 
         # Return only public non-archived location rooms
         return self._meta.model.objects.get(id=id)
@@ -37,7 +40,8 @@ class OrganizationLocationRoomQuery(graphene.ObjectType):
             raise Exception(m.user_not_logged_in)
 
         ## return everything:
-        if user.has_perm('costasiella.view_organizationlocationroom'):
+        if user.has_perm('costasiella.view_organizationlocationroom') or
+           user.has_perm('costasiella.view_selfcheckin'):
             return OrganizationLocationRoom.objects.filter(archived = archived).order_by('organization_location__name', 'name')
 
         # Return only public non-archived rooms
