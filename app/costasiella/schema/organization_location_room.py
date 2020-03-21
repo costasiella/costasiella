@@ -20,7 +20,7 @@ class OrganizationLocationRoomNode(DjangoObjectType):
     @classmethod
     def get_node(self, info, id):
         user = info.context.user
-        require_login_and_one_of_permissions('user', [
+        require_login_and_one_of_permissions(user, [
             'costasiella.view_organizationlocationroom',
             'costasiella.view_selfcheckin'
         ])
