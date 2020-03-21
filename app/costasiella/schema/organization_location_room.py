@@ -40,7 +40,7 @@ class OrganizationLocationRoomQuery(graphene.ObjectType):
             raise Exception(m.user_not_logged_in)
 
         ## return everything:
-        if user.has_perm('costasiella.view_organizationlocationroom') or
+        if user.has_perm('costasiella.view_organizationlocationroom') or \
            user.has_perm('costasiella.view_selfcheckin'):
             return OrganizationLocationRoom.objects.filter(archived = archived).order_by('organization_location__name', 'name')
 
