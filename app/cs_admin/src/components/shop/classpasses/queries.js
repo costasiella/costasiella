@@ -1,8 +1,8 @@
 import gql from "graphql-tag"
 
 export const GET_CLASSPASSES_QUERY = gql`
-  query OrganizationClasspasses($after: String, $before: String, $archived: Boolean) {
-    organizationClasspasses(first: 15, before: $before, after: $after, archived: $archived) {
+  query OrganizationClasspasses($after: String, $before: String) {
+    organizationClasspasses(first: 15, before: $before, after: $after, archived: false) {
       pageInfo {
         startCursor
         endCursor
