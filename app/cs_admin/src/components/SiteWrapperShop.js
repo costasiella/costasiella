@@ -61,6 +61,14 @@ const getNavBarItems = (t, user) => {
     useExact: true,
   })
 
+  items.push({
+    value: t("shop.classpasses.title"),
+    to: "/shop/classpasses",
+    icon: "credit-card",
+    LinkComponent: withRouter(NavLink),
+    useExact: true,
+  })
+
 
 //  Use this code as an example for the account pages in the shop
   // let goToSubItems = []
