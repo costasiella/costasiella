@@ -32,12 +32,12 @@ function ShopHome({ t, match, history }) {
 
 
   return (
-    <SelfCheckinBase title={t("shop.home.title")}>
+    <ShopBase title={t("shop.home.title")}>
       <h4>{t("shop.home.welcome")}</h4>
       
         hello world!
       
-    </SelfCheckinBase>
+    </ShopBase>
   )
 }
 

@@ -144,6 +144,8 @@ import SelfCheckinBookingOptions from './components/selfcheckin/BookingOptions/B
 import SelfCheckinLocations from './components/selfcheckin/Locations/Locations'
 import SelfCheckinLocationClasses from './components/selfcheckin/LocationClasses/LocationClasses'
 
+import ShopHome from './components/shop/home/ShopHome'
+
 import UserChangePassword from './components/user/password/UserPasswordChange'
 import UserLogin from './components/user/login/UserLogin'
 import UserLogout from './components/user/login/UserLogout'
@@ -332,6 +334,9 @@ function AppRoot({ t }) {
                               component={SelfCheckinBookingOptions} />
           <PrivateRoute exact path="/selfcheckin" component={SelfCheckinLocations} />
           <PrivateRoute exact path="/selfcheckin/location/:location_id" component={SelfCheckinLocationClasses} />
+
+          {/* Shop */}
+          <Route exact path = "/shop" component={ShopHome} />
 
           {/* Settings */}
           <PrivateRoute exact path="/settings/general" component={AppSettingsGeneral} />
