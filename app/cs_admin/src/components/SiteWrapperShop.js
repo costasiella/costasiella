@@ -143,17 +143,17 @@ class SiteWrapperShop extends React.Component<Props, State> {
                 //     ),
                 //   unread: unreadCount,
                 // },
-                accountDropdown: {
-                avatarURL: "#",
-                name: data.user.firstName + ' ' + data.user.lastName,
-                description: "",
-                options: [
-                  // { icon: "user", value: "Profile" },
-                  { icon: "lock", value: "Change password", to: "/#/user/password/change/" },
-                  { isDivider: true },
-                  { icon: "log-out", value: "Sign out", to: "/#/user/logout/" },
-                ],
-              },
+              //   accountDropdown: {
+              //   avatarURL: "#",
+              //   name: data.user.firstName + ' ' + data.user.lastName,
+              //   description: "",
+              //   options: [
+              //     // { icon: "user", value: "Profile" },
+              //     { icon: "lock", value: "Change password", to: "/#/user/password/change/" },
+              //     { isDivider: true },
+              //     { icon: "log-out", value: "Sign out", to: "/#/user/logout/" },
+              //   ],
+              // },
               }}
               // navProps={{ itemsObjects: navBarItems }}
               navProps={{ itemsObjects: getNavBarItems(this.props.t, data.user) }}
