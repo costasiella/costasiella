@@ -5,7 +5,6 @@ import { withRouter } from "react-router"
 import {
   Page,
   Grid,
-  Card,
   Container,
 } from "tabler-react";
 import SiteWrapperShop from "../SiteWrapperShop"
