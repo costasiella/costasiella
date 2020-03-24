@@ -10,7 +10,7 @@ import {
   Icon,
   List
 } from "tabler-react";
-import ShopClasspassesBase from "../ShopCLasspassesBase"
+import ShopClasspassesBase from "./ShopClasspassesBase"
 
 import { GET_ORGANIZATION_CLASSPASSES_QUERY } from "./queries"
 
@@ -29,6 +29,8 @@ function ShopClasspasses({ t, match, history }) {
       {t("shop.classpasses.error_loading")}
     </ShopClasspassesBase>
   )
+
+  console.log(data)
 
 
   return (
