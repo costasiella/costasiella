@@ -8,7 +8,8 @@ import { Link } from 'react-router-dom'
 
 import {
   Icon,
-  List
+  List,
+  PricingCard
 } from "tabler-react";
 import ShopClasspassesBase from "./ShopClasspassesBase"
 
@@ -36,6 +37,8 @@ function ShopClasspasses({ t, match, history }) {
   return (
     <ShopClasspassesBase title={title}>
         Classpasses here...
+
+        
     </ShopClasspassesBase>
   )
 }

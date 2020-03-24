@@ -72,7 +72,7 @@ class OrganizationClasspassNodeInterface(graphene.Interface):
 class OrganizationClasspassNode(DjangoObjectType):   
     class Meta:
         model = OrganizationClasspass
-        filter_fields = ['archived']
+        filter_fields = ['archived', 'display_shop']
         interfaces = (graphene.relay.Node, OrganizationClasspassNodeInterface)
 
     def resolve_price_display(self, info):
@@ -97,16 +97,48 @@ class OrganizationClasspassQuery(graphene.ObjectType):
     organization_classpass = graphene.relay.Node.Field(OrganizationClasspassNode)
 
 
-    def resolve_organization_classpasses(self, info, archived, **kwargs):
+    def resolve_organization_classpasses(self, info, **kwargs):
         user = info.context.user
         require_login(user)
         # Has permission: return everything
-        if user.has_perm('costasiella.view_organizationclasspass'):
-            print('user has view permission')
-            return OrganizationClasspass.objects.filter(archived = archived).order_by('name')
 
-        # Return only public non-archived locations
-        return OrganizationClasspass.objects.filter(display_public = True, archived = False).order_by('name')
+        order_by = 'name'
+
+        # kwargs
+        print(locals())
+        archived = kwargs.get('archived', False)
+        display_shop = kwargs.get('display_shop', None)
+
+
+        objects = OrganizationClasspass.objects
+        
+        if display_shop:
+            # Only show public passes in the shop... always!
+            return objects.filter(
+                display_shop = True, 
+                display_public = True, 
+                archived = False
+            ).order_by(order_by)
+
+        # Check if user has view permission; if not; only show active passes
+        if user.has_perm('costasiella.view_organizationclasspass'): 
+            objects = OrganizationClasspass.objects.filter(
+                archived = archived
+            )
+
+            if not display_shop is None:
+                objects = objects.filter(display_shop = display_shop)
+
+        else:
+            # Non logged in user or user without permission
+            # only display public classpasses
+            objects = OrganizationClasspass.objects.filter(
+                archived = False,
+                display_public = True,
+                display_shop = display_shop
+            )  
+
+        return objects.order_by('name')
 
 
 class CreateOrganizationClasspass(graphene.relay.ClientIDMutation):
