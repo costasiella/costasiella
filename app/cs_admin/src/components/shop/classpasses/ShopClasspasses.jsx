@@ -16,6 +16,9 @@ import ShopClasspassesBase from "./ShopClasspassesBase"
 
 import { GET_ORGANIZATION_CLASSPASSES_QUERY } from "./queries"
 
+// Example:
+// https://github.com/tabler/tabler-react/blob/master/example/src/interface/PricingCardsPage.react.js
+
 
 function ShopClasspasses({ t, match, history }) {
   const title = t("shop.home.title")
@@ -41,7 +44,7 @@ function ShopClasspasses({ t, match, history }) {
         <Grid.Row>
           {classpasses.edges.map(({ node }) => (
             <Grid.Col md={3}>
-              <PricingCard className="primary">
+              <PricingCard>
                 <PricingCard.Category>
                   {node.name}
                 </PricingCard.Category>
@@ -49,10 +52,14 @@ function ShopClasspasses({ t, match, history }) {
                   {node.priceDisplay}
                 </PricingCard.Price>
                 <PricingCard.AttributeList>
-                <PricingCard.AttributeItem available={true}>
-                  <b>{(node.unlimited) ? t('general.unlimited') : node.classes }</b> { " " }
-                  {((node.classes != 1) || (node.unlimited))? t('general.classes'): t('general.class')}
-                </PricingCard.AttributeItem>
+                  <PricingCard.AttributeItem available={false}>
+                    <b>{(node.unlimited) ? t('general.unlimited') : node.classes }</b> { " " }
+                    {((node.classes != 1) || (node.unlimited))? t('general.classes'): t('general.class')}
+                  </PricingCard.AttributeItem>
+                  <PricingCard.AttributeItem available={true}>
+                    <b>{(node.unlimited) ? t('general.unlimited') : node.classes }</b> { " " }
+                    {((node.classes != 1) || (node.unlimited))? t('general.classes'): t('general.class')}
+                  </PricingCard.AttributeItem>
                 </PricingCard.AttributeList>
               </PricingCard>
             </Grid.Col>
@@ -66,3 +73,30 @@ function ShopClasspasses({ t, match, history }) {
 
 
 export default withTranslation()(withRouter(ShopClasspasses))
+
+
+{/* <Grid.Col sm={6} lg={3}>
+<PricingCard active>
+  <PricingCard.Category>{"Premium"}</PricingCard.Category>
+  <PricingCard.Price>{"$49"} </PricingCard.Price>
+  <PricingCard.AttributeList>
+    <PricingCard.AttributeItem>
+      <strong>10 </strong>
+      {"Users"}
+    </PricingCard.AttributeItem>
+    <PricingCard.AttributeItem hasIcon available>
+      {"Sharing Tools"}
+    </PricingCard.AttributeItem>
+    <PricingCard.AttributeItem hasIcon available>
+      {"Design Tools"}
+    </PricingCard.AttributeItem>
+    <PricingCard.AttributeItem hasIcon available={false}>
+      {"Private Messages"}
+    </PricingCard.AttributeItem>
+    <PricingCard.AttributeItem hasIcon available={false}>
+      {"Twitter API"}
+    </PricingCard.AttributeItem>
+  </PricingCard.AttributeList>
+  <PricingCard.Button active>{"Choose plan"} </PricingCard.Button>
+</PricingCard>
+</Grid.Col> */}
