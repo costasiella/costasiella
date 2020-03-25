@@ -52,13 +52,12 @@ function ShopClasspasses({ t, match, history }) {
                   {node.priceDisplay}
                 </PricingCard.Price>
                 <PricingCard.AttributeList>
-                  <PricingCard.AttributeItem available={false}>
+                  <PricingCard.AttributeItem>
                     <b>{(node.unlimited) ? t('general.unlimited') : node.classes }</b> { " " }
                     {((node.classes != 1) || (node.unlimited))? t('general.classes'): t('general.class')}
                   </PricingCard.AttributeItem>
-                  <PricingCard.AttributeItem available={true}>
-                    <b>{(node.unlimited) ? t('general.unlimited') : node.classes }</b> { " " }
-                    {((node.classes != 1) || (node.unlimited))? t('general.classes'): t('general.class')}
+                  <PricingCard.AttributeItem>
+                    <b>{node.validity}</b> {' '} {node.validityUnitDisplay}
                   </PricingCard.AttributeItem>
                 </PricingCard.AttributeList>
               </PricingCard>

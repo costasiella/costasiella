@@ -81,7 +81,7 @@ class OrganizationClasspassNode(DjangoObjectType):
 
     def resolve_validity_unit_display(self, info):
         from ..modules.validity_tools import display_validity_unit
-        return display_validity_unit(self.validity_unit)
+        return display_validity_unit(self.validity_unit, self.validity)
 
     @classmethod
     def get_node(self, info, id):
@@ -111,7 +111,7 @@ class OrganizationClasspassQuery(graphene.ObjectType):
 
 
         objects = OrganizationClasspass.objects
-        
+
         if display_shop:
             # Only show public passes in the shop... always!
             return objects.filter(
