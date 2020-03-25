@@ -7,6 +7,7 @@ import { useQuery } from '@apollo/react-hooks'
 import { Link } from 'react-router-dom'
 
 import {
+  Grid,
   Icon,
   List,
   PricingCard
@@ -32,11 +33,31 @@ function ShopClasspasses({ t, match, history }) {
   )
 
   console.log(data)
-
+  const classpasses = data.organizationClasspasses
+  console.log(classpasses)
 
   return (
     <ShopClasspassesBase title={title}>
-        Classpasses here...
+        <Grid.Row>
+          {classpasses.edges.map(({ node }) => (
+            <Grid.Col md={3}>
+              <PricingCard className="primary">
+                <PricingCard.Category>
+                  {node.name}
+                </PricingCard.Category>
+                <PricingCard.Price>
+                  {node.priceDisplay}
+                </PricingCard.Price>
+                <PricingCard.AttributeList>
+                <PricingCard.AttributeItem available={true}>
+                  <b>{(node.unlimited) ? t('general.unlimited') : node.classes }</b> { " " }
+                  {((node.classes != 1) || (node.unlimited))? t('general.classes'): t('general.class')}
+                </PricingCard.AttributeItem>
+                </PricingCard.AttributeList>
+              </PricingCard>
+            </Grid.Col>
+          ))}
+        </Grid.Row>
 
         
     </ShopClasspassesBase>
