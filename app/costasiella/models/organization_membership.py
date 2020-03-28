@@ -18,7 +18,7 @@ class OrganizationMembership(models.Model):
     display_public = models.BooleanField(default=True)
     display_shop = models.BooleanField(default=True)
     name = models.CharField(max_length=255)
-    description = models.CharField(max_length=255)
+    description = models.TextField()
     price = models.DecimalField(max_digits=20, decimal_places=2)
     finance_tax_rate = models.ForeignKey(FinanceTaxRate, on_delete=models.CASCADE)
     validity = models.PositiveIntegerField()
