@@ -312,7 +312,8 @@
         "amount": "Amount",
         "details": "Details",
         "chart": "Chart",
-        "room": "Room"
+        "room": "Room",
+        "valid_for": "valid for"
     },
     "yup": {
         "min_len_3": "Please input at least 3 characters",
@@ -1156,5 +1157,16 @@
     },
     "goto": {
         "title": "Go to"
+    },
+    "shop": {
+        "home": {
+            "title": "Home",
+            "welcome": "Welcome"
+        },
+        "classpasses": {
+            "error_loading": "Error loading class passes :(",
+            "title": "Classpasses"
+        },
+        "title": "Shop"
     }
 }

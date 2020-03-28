@@ -57,9 +57,15 @@ function ShopClasspasses({ t, match, history }) {
                     {((node.classes != 1) || (node.unlimited))? t('general.classes'): t('general.class')}
                   </PricingCard.AttributeItem>
                   <PricingCard.AttributeItem>
+                    {t('general.valid_for')} { " " }
                     <b>{node.validity}</b> {' '} {node.validityUnitDisplay}
                   </PricingCard.AttributeItem>
                 </PricingCard.AttributeList>
+                <Link to={"/shop/classpass/" + node.id}>
+                  <PricingCard.Button >
+                    {t("shop.classpasses.choose")} <Icon name="chevron-right" />
+                  </PricingCard.Button>
+                </Link>
               </PricingCard>
             </Grid.Col>
           ))}

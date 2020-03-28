@@ -312,7 +312,8 @@
         "amount": "__STRING_NOT_TRANSLATED__",
         "details": "__STRING_NOT_TRANSLATED__",
         "chart": "__STRING_NOT_TRANSLATED__",
-        "room": "__STRING_NOT_TRANSLATED__"
+        "room": "__STRING_NOT_TRANSLATED__",
+        "valid_for": "__STRING_NOT_TRANSLATED__"
     },
     "yup": {
         "min_len_3": "__STRING_NOT_TRANSLATED__",
@@ -1155,6 +1156,17 @@
         }
     },
     "goto": {
+        "title": "__STRING_NOT_TRANSLATED__"
+    },
+    "shop": {
+        "home": {
+            "title": "__STRING_NOT_TRANSLATED__",
+            "welcome": "__STRING_NOT_TRANSLATED__"
+        },
+        "classpasses": {
+            "error_loading": "__STRING_NOT_TRANSLATED__",
+            "title": "__STRING_NOT_TRANSLATED__"
+        },
         "title": "__STRING_NOT_TRANSLATED__"
     }
 }
