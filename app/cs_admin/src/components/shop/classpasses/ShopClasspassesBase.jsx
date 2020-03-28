@@ -15,8 +15,8 @@ import ShopBase from "../ShopBase"
 function ShopClasspassesBase({ t, match, history, children }) {
   
   return (
-    <ShopBase title={t("shop.home.title")}>
-      <h4>{t("shop.home.welcome")}</h4>
+    <ShopBase title={t("shop.title")}>
+      <h4>{t("shop.classpasses.title")}</h4>
         {children}
     </ShopBase>
   )
