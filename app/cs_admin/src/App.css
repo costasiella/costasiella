@@ -12,6 +12,10 @@
 
 
 /* Tabler changes begin */
+a:hover {
+  text-decoration: none;
+}
+
 table .btn {
   margin-left: 4px;
 }
