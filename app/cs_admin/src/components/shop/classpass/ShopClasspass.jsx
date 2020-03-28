@@ -12,7 +12,8 @@ import {
   List,
   PricingCard
 } from "tabler-react";
-import ShopClasspassesBase from "./ShopClasspassBase"
+import ShopClasspassBase from "./ShopClasspassBase"
+import ShopClasspassesPricingCard from "./ShopClasspassPricingCard"
 
 import { GET_ORGANIZATION_CLASSPASS_QUERY } from "./queries"
 
@@ -20,41 +21,42 @@ import { GET_ORGANIZATION_CLASSPASS_QUERY } from "./queries"
 // https://github.com/tabler/tabler-react/blob/master/example/src/interface/PricingCardsPage.react.js
 
 
-function ShopClasspassPricingCard({ t, classpass, btnLink }) {
-  // classpass should be an object with at least the following values from an organizationClasspass object:
-  // id, name, priceDisplay, unlimited, classes, validity, link
+function ShopClasspass({ t, match, history }) {
+  const title = t("shop.home.title")
+  const id = match.params.id
+  const { loading, error, data } = useQuery(GET_ORGANIZATION_CLASSPASS_QUERY, {
+    variables: { id: id }
+  })
+
+  if (loading) return (
+    <ShopClasspassesBase title={title} >
+      {t("general.loading_with_dots")}
+    </ShopClasspassesBase>
+  )
+  if (error) return (
+    <ShopClasspassesBase title={title}>
+      {t("shop.classpass.error_loading")}
+    </ShopClasspassesBase>
+  )
+
+  console.log(data)
+  const classpass = data.organizationClasspass
+  console.log(classpass)
+
   return (
-    <PricingCard>
-      <PricingCard.Category>
-        {classpass.name}
-      </PricingCard.Category>
-      <PricingCard.Price>
-        {classpass.priceDisplay}
-      </PricingCard.Price>
-      <PricingCard.AttributeList>
-        <PricingCard.AttributeItem>
-          <b>{(classpass.unlimited) ? t('general.unlimited') : classpass.classes }</b> { " " }
-          {((classpass.classes != 1) || (classpass.unlimited))? t('general.classes'): t('general.class')}
-        </PricingCard.AttributeItem>
-        <PricingCard.AttributeItem>
-          {t('general.valid_for')} { " " }
-          <b>{classpass.validity}</b> {' '} {classpass.validityUnitDisplay}
-        </PricingCard.AttributeItem>
-      </PricingCard.AttributeList>
-      {(btnLink) ?
-        <Link to={btnLink}>
-          <PricingCard.Button >
-            {t("shop.classpasses.choose")} <Icon name="chevron-right" />
-          </PricingCard.Button>
-        </Link>
-        : ""
-      }
-    </PricingCard>
+    <ShopClasspassBase title={title}>
+        <Grid.Row>
+            <Grid.Col md={3}>
+              <ShopClasspassesPricingCard classpass={classpass} />
+            </Grid.Col>
+          ))}
+        </Grid.Row>
+    </ShopClasspassBase>
   )
 }
 
 
-export default withTranslation()(withRouter(ShopClasspassPricingCard))
+export default withTranslation()(withRouter(ShopClasspass))
 
 
 {/* <Grid.Col sm={6} lg={3}>
