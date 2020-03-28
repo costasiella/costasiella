@@ -9,16 +9,12 @@ import { Link } from 'react-router-dom'
 import {
   Grid,
   Icon,
-  List,
-  PricingCard
+  List
 } from "tabler-react";
 import ShopClasspassBase from "./ShopClasspassBase"
 import ShopClasspassesPricingCard from "./ShopClasspassPricingCard"
 
 import { GET_ORGANIZATION_CLASSPASS_QUERY } from "./queries"
-
-// Example:
-// https://github.com/tabler/tabler-react/blob/master/example/src/interface/PricingCardsPage.react.js
 
 
 function ShopClasspass({ t, match, history }) {
