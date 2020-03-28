@@ -14,25 +14,25 @@ import {
 import ShopClasspassBase from "./ShopClasspassBase"
 import ShopClasspassesPricingCard from "./ShopClasspassPricingCard"
 
-import { GET_ORGANIZATION_CLASSPASS_QUERY } from "./queries"
+import { GET_CLASSPASS_QUERY } from "./queries"
 
 
 function ShopClasspass({ t, match, history }) {
   const title = t("shop.home.title")
   const id = match.params.id
-  const { loading, error, data } = useQuery(GET_ORGANIZATION_CLASSPASS_QUERY, {
+  const { loading, error, data } = useQuery(GET_CLASSPASS_QUERY, {
     variables: { id: id }
   })
 
   if (loading) return (
-    <ShopClasspassesBase title={title} >
+    <ShopClasspassBase title={title} >
       {t("general.loading_with_dots")}
-    </ShopClasspassesBase>
+    </ShopClasspassBase>
   )
   if (error) return (
-    <ShopClasspassesBase title={title}>
+    <ShopClasspassBase title={title}>
       {t("shop.classpass.error_loading")}
-    </ShopClasspassesBase>
+    </ShopClasspassBase>
   )
 
   console.log(data)
@@ -43,9 +43,8 @@ function ShopClasspass({ t, match, history }) {
     <ShopClasspassBase title={title}>
         <Grid.Row>
             <Grid.Col md={3}>
-              <ShopClasspassesPricingCard classpass={classpass} />
+              <ShopClasspassesPricingCard classpass={classpass} active={true} />
             </Grid.Col>
-          ))}
         </Grid.Row>
     </ShopClasspassBase>
   )

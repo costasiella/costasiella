@@ -20,11 +20,11 @@ import { GET_ORGANIZATION_CLASSPASS_QUERY } from "./queries"
 // https://github.com/tabler/tabler-react/blob/master/example/src/interface/PricingCardsPage.react.js
 
 
-function ShopClasspassPricingCard({ t, classpass, btnLink }) {
+function ShopClasspassPricingCard({ t, classpass, btnLink, active=false }) {
   // classpass should be an object with at least the following values from an organizationClasspass object:
   // id, name, priceDisplay, unlimited, classes, validity, link
   return (
-    <PricingCard>
+    <PricingCard active={active}>
       <PricingCard.Category>
         {classpass.name}
       </PricingCard.Category>
