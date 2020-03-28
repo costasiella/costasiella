@@ -1165,8 +1165,13 @@
         },
         "classpasses": {
             "error_loading": "Error loading class passes :(",
-            "title": "Classpasses"
+            "title": "Classpasses",
+            "choose": "Choose"
         },
-        "title": "Shop"
+        "title": "Shop",
+        "classpass": {
+            "error_loading": "Error loading class pass :(",
+            "selected": "Selected pass"
+        }
     }
 }
