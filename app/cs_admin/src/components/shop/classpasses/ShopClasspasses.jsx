@@ -13,6 +13,7 @@ import {
   PricingCard
 } from "tabler-react";
 import ShopClasspassesBase from "./ShopClasspassesBase"
+import ShopClasspassPricingCard from "../classpass/ShopClasspassPricingCard"
 
 import { GET_ORGANIZATION_CLASSPASSES_QUERY } from "./queries"
 
@@ -44,7 +45,11 @@ function ShopClasspasses({ t, match, history }) {
         <Grid.Row>
           {classpasses.edges.map(({ node }) => (
             <Grid.Col md={3}>
-              <PricingCard>
+              <ShopClasspassPricingCard
+                classpass={node}
+                btnLink={"/shop/classpass/" + node.id}
+              />
+              {/* <PricingCard>
                 <PricingCard.Category>
                   {node.name}
                 </PricingCard.Category>
@@ -66,7 +71,7 @@ function ShopClasspasses({ t, match, history }) {
                     {t("shop.classpasses.choose")} <Icon name="chevron-right" />
                   </PricingCard.Button>
                 </Link>
-              </PricingCard>
+              </PricingCard> */}
             </Grid.Col>
           ))}
         </Grid.Row>
