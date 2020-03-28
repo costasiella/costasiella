@@ -42,8 +42,11 @@ function ShopClasspass({ t, match, history }) {
   return (
     <ShopClasspassBase title={title}>
         <Grid.Row>
-            <Grid.Col md={3}>
+            <Grid.Col xl={3} lg={3} md={4} sm={6} xs={12}>
               <ShopClasspassesPricingCard classpass={classpass} active={true} />
+            </Grid.Col>
+            <Grid.Col xl={3} lg={3} md={4} sm={6} xs={12}>
+              <div dangerouslySetInnerHTML={{__html:classpass.description}}></div>
             </Grid.Col>
         </Grid.Row>
     </ShopClasspassBase>
