@@ -165,7 +165,7 @@ class UpdateFinanceOrder(graphene.relay.ClientIDMutation):
         return UpdateFinanceOrder(finance_order=finance_order)
 
 
-class DeleteFinanceInvoice(graphene.relay.ClientIDMutation):
+class DeleteFinanceOrder(graphene.relay.ClientIDMutation):
     class Input:
         id = graphene.ID(required=True)
 
@@ -174,20 +174,20 @@ class DeleteFinanceInvoice(graphene.relay.ClientIDMutation):
     @classmethod
     def mutate_and_get_payload(self, root, info, **input):
         user = info.context.user
-        require_login_and_permission(user, 'costasiella.delete_financeinvoice')
+        require_login_and_permission(user, 'costasiella.delete_financeorder')
 
         rid = get_rid(input['id'])
 
-        finance_invoice = FinanceInvoice.objects.filter(id=rid.id).first()
-        if not finance_invoice:
-            raise Exception('Invalid Finance Invoice ID!')
+        finance_order = FinanceOrder.objects.filter(id=rid.id).first()
+        if not finance_order:
+            raise Exception('Invalid Finance Order ID!')
 
-        ok = finance_invoice.delete()
+        ok = finance_order.delete()
 
-        return DeleteFinanceInvoice(ok=ok)
+        return DeleteFinanceOrder(ok=ok)
 
 
-class FinanceInvoiceMutation(graphene.ObjectType):
-    delete_finance_invoice = DeleteFinanceInvoice.Field()
-    create_finance_invoice = CreateFinanceInvoice.Field()
-    update_finance_invoice = UpdateFinanceInvoice.Field()
+class FinanceOrderMutation(graphene.ObjectType):
+    delete_finance_order = DeleteFinanceInvoice.Field()
+    create_finance_order = CreateFinanceInvoice.Field()
+    update_finance_order = UpdateFinanceInvoice.Field()
