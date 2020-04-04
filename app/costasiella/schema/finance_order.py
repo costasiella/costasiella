@@ -135,25 +135,10 @@ class CreateFinanceOrder(graphene.relay.ClientIDMutation):
 class UpdateFinanceOrder(graphene.relay.ClientIDMutation):
     class Input:
         id = graphene.ID(required=True)
-        finance_payment_method = graphene.ID(required=False)
-        summary = graphene.String(required=False)
-        relation_company = graphene.String(required=False)
-        relation_company_registration = graphene.String(required=False)
-        relation_company_tax_registration = graphene.String(required=False)
-        relation_contact_name = graphene.String(required=False)
-        relation_address = graphene.String(required=False)
-        relation_postcode = graphene.String(required=False)
-        relation_city = graphene.String(required=False)
-        relation_country = graphene.String(required=False)
-        invoice_number = graphene.String(required=False)
-        date_sent = graphene.types.datetime.Date(required=False)
-        date_due = graphene.types.datetime.Date(required=False)
         status = graphene.String(required=False)
-        terms = graphene.String(required=False)
-        footer = graphene.String(required=False)
         note = graphene.String(required=False)
 
-    finance_invoice = graphene.Field(FinanceInvoiceNode)
+    finance_order = graphene.Field(FinanceOrderNode)
 
     @classmethod
     def mutate_and_get_payload(self, root, info, **input):
@@ -161,70 +146,23 @@ class UpdateFinanceOrder(graphene.relay.ClientIDMutation):
         require_login_and_permission(user, 'costasiella.change_financeinvoice')
 
         print(input)
-
         rid = get_rid(input['id'])
 
-        finance_invoice = FinanceInvoice.objects.filter(id=rid.id).first()
-        if not finance_invoice:
-            raise Exception('Invalid Finance Invoice  ID!')
+        finance_order = FinanceOrder.objects.filter(id=rid.id).first()
+        if not finance_order:
+            raise Exception('Invalid Finance Order ID!')
 
         validation_result = validate_create_update_input(input, update=True)
 
-        if 'summary' in input:
-            finance_invoice.summary = input['summary']
-
-        if 'relation_company' in input:
-            finance_invoice.relation_company = input['relation_company']
-
-        if 'relation_company_registration' in input:
-            finance_invoice.relation_company_registration = input['relation_company_registration']
-
-        if 'relation_company_tax_registration' in input:
-            finance_invoice.relation_company_tax_registration = input['relation_company_tax_registration']
-
-        if 'relation_contact_name' in input:
-            finance_invoice.relation_contact_name = input['relation_contact_name']
-
-        if 'relation_address' in input:
-            finance_invoice.relation_address = input['relation_address']
-
-        if 'relation_postcode' in input:
-            finance_invoice.relation_postcode = input['relation_postcode']
-
-        if 'relation_city' in input:
-            finance_invoice.relation_city = input['relation_city']
-
-        if 'relation_country' in input:
-            finance_invoice.relation_country = input['relation_country']
-
-        if 'invoice_number' in input:
-            finance_invoice.invoice_number = input['invoice_number']
-
-        if 'date_sent' in input:
-            finance_invoice.date_sent = input['date_sent']
-
-        if 'date_due' in input:
-            finance_invoice.date_due = input['date_due']
-
         if 'status' in input:
-            finance_invoice.status = input['status']
-
-        if 'terms' in input:
-            finance_invoice.terms = input['terms']
-
-        if 'footer' in input:
-            finance_invoice.footer = input['footer']
+            finance_order.status = input['status']
 
         if 'note' in input:
-            finance_invoice.note = input['note']
+            finance_order.note = input['note']
 
-        if 'finance_payment_method' in validation_result:
-            finance_invoice.finance_payment_method = validation_result['finance_payment_method']
+        finance_order.save()
 
-
-        finance_invoice.save()
-
-        return UpdateFinanceInvoice(finance_invoice=finance_invoice)
+        return UpdateFinanceOrder(finance_order=finance_order)
 
 
 class DeleteFinanceInvoice(graphene.relay.ClientIDMutation):
