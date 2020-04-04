@@ -62,82 +62,77 @@ class FinanceOrderQuery(graphene.ObjectType):
     finance_order = graphene.relay.Node.Field(FinanceOrderNode)
 
     def resolve_finance_orders(self, info, archived=False, **kwargs):
-        user = info.context.user
+        user = info.context.usetr
         require_login_and_permission(user, 'costasiella.view_financeorder')
 
         return FinanceOrder.objects.all().order_by('-pk')
 
 
-def validate_create_update_input(input, update=False):
-    """
-    Validate input
-    """ 
-    result = {}
+# def validate_create_update_input(input, update=False):
+#     """
+#     Validate input
+#     """ 
+#     result = {}
 
-    # Fetch & check invoice group
-    if not update:
-        ## Create only
-        # invoice group
-        rid = get_rid(input['finance_invoice_group'])
-        finance_invoice_group = FinanceInvoiceGroup.objects.filter(id=rid.id).first()
-        result['finance_invoice_group'] = finance_invoice_group
-        if not finance_invoice_group:
-            raise Exception(_('Invalid Finance Invoice Group ID!'))
+#     # Fetch & check invoice group
+#     if not update:
+#         ## Create only
+#         # invoice group
+#         rid = get_rid(input['finance_invoice_group'])
+#         finance_invoice_group = FinanceInvoiceGroup.objects.filter(id=rid.id).first()
+#         result['finance_invoice_group'] = finance_invoice_group
+#         if not finance_invoice_group:
+#             raise Exception(_('Invalid Finance Invoice Group ID!'))
 
-        # account
-        rid = get_rid(input['account'])
-        account = Account.objects.filter(id=rid.id).first()
-        result['account'] = account
-        if not account:
-            raise Exception(_('Invalid Account ID!'))
+#         # account
+#         rid = get_rid(input['account'])
+#         account = Account.objects.filter(id=rid.id).first()
+#         result['account'] = account
+#         if not account:
+#             raise Exception(_('Invalid Account ID!'))
 
-    # Check finance payment method
-    if 'finance_payment_method' in input:
-        if input['finance_payment_method']:
-            rid = get_rid(input['finance_payment_method'])
-            finance_payment_method = FinancePaymentMethod.objects.filter(id=rid.id).first()
-            result['finance_payment_method'] = finance_payment_method
-            if not finance_payment_method:
-                raise Exception(_('Invalid Finance Payment Method ID!'))
-
-
-    return result
+#     # Check finance payment method
+#     if 'finance_payment_method' in input:
+#         if input['finance_payment_method']:
+#             rid = get_rid(input['finance_payment_method'])
+#             finance_payment_method = FinancePaymentMethod.objects.filter(id=rid.id).first()
+#             result['finance_payment_method'] = finance_payment_method
+#             if not finance_payment_method:
+#                 raise Exception(_('Invalid Finance Payment Method ID!'))
 
 
-class CreateFinanceInvoice(graphene.relay.ClientIDMutation):
+#     return result
+
+
+class CreateFinanceOrder(graphene.relay.ClientIDMutation):
     class Input:
         account = graphene.ID(required=True)
-        finance_invoice_group = graphene.ID(required=True)
-        summary = graphene.String(required=False, default_value="")
+        note = graphene.String(required=False, default_value="")
         
-    finance_invoice = graphene.Field(FinanceInvoiceNode)
+    finance_order = graphene.Field(FinanceOrderNode)
 
     @classmethod
     def mutate_and_get_payload(self, root, info, **input):
         user = info.context.user
-        require_login_and_permission(user, 'costasiella.add_financeinvoice')
+        require_login_and_permission(user, 'costasiella.add_financeorder')
 
-        validation_result = validate_create_update_input(input)
-        finance_invoice_group = validation_result['finance_invoice_group']
+        # validation_result = validate_create_update_input(input)
+        # finance_invoice_group = validation_result['finance_invoice_group']
 
-        finance_invoice = FinanceInvoice(
+        finance_order = FinanceOrder(
             account = validation_result['account'],
-            finance_invoice_group = finance_invoice_group,
-            status = 'DRAFT',
-            terms = finance_invoice_group.terms,
-            footer = finance_invoice_group.footer
         )
 
-        if 'summary' in input:
-            finance_invoice.summary = input['summary']
+        if 'note' in input:
+            finance_order.note = input['note']
 
-        # Save invoice
-        finance_invoice.save()
+        # Save order
+        finance_order.save()
 
-        return CreateFinanceInvoice(finance_invoice=finance_invoice)
+        return CreateFinanceOrder(finance_order=finance_order)
 
 
-class UpdateFinanceInvoice(graphene.relay.ClientIDMutation):
+class UpdateFinanceOrder(graphene.relay.ClientIDMutation):
     class Input:
         id = graphene.ID(required=True)
         finance_payment_method = graphene.ID(required=False)
