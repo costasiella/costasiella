@@ -47,6 +47,11 @@ class FinanceHome extends Component {
                     </div>
                   </Grid.Col>
                   <Grid.Col md={4} lg={4}>
+                    <div onClick={() => history.push('/finance/orders')}>
+                      <StampCard header={<small>{t('finance.orders.title')}</small>} footer={t('')} color="blue" icon="file-plus" />
+                    </div>
+                  </Grid.Col>
+                  <Grid.Col md={4} lg={4}>
                     <div onClick={() => history.push('/finance/glaccounts')}>
                       <StampCard header={<small>{t('finance.glaccounts.title')}</small>} footer={t('')} color="blue" icon="book" />
                     </div>
