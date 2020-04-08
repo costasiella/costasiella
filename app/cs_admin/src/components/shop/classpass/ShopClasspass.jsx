@@ -7,6 +7,7 @@ import { useQuery } from '@apollo/react-hooks'
 import { Link } from 'react-router-dom'
 
 import {
+  Card,
   Grid,
   Icon,
   List
@@ -42,12 +43,27 @@ function ShopClasspass({ t, match, history }) {
   return (
     <ShopClasspassBase title={title}>
         <Grid.Row>
-            <Grid.Col xl={3} lg={3} md={4} sm={6} xs={12}>
-              <ShopClasspassesPricingCard classpass={classpass} active={true} />
-            </Grid.Col>
-            <Grid.Col xl={3} lg={3} md={4} sm={6} xs={12}>
-              <div dangerouslySetInnerHTML={{__html:classpass.description}}></div>
-            </Grid.Col>
+          <Grid.Col md={4}>
+            <ShopClasspassesPricingCard classpass={classpass} active={true} />
+          </Grid.Col>
+          <Grid.Col md={4}>
+            <Card title={t("shop.classpass.additional_information")}>
+              <Card.Body>
+                <div dangerouslySetInnerHTML={{__html:classpass.description}}></div>
+              </Card.Body>
+            </Card>
+          </Grid.Col>
+          <Grid.Col md={4}>
+            <Card title={t("shop.checkout")}>
+              <Card.Body>
+                Order form with login check here...
+                {/* When a user is not logged in, show a login button to redirect to the login page */}
+              </Card.Body>
+              <Card.Footer>
+                Button here (login or order)
+              </Card.Footer>
+            </Card>
+          </Grid.Col>
         </Grid.Row>
     </ShopClasspassBase>
   )
