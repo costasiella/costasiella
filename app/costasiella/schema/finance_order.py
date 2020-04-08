@@ -65,40 +65,24 @@ class FinanceOrderQuery(graphene.ObjectType):
         return FinanceOrder.objects.all().order_by('-pk')
 
 
-# def validate_create_update_input(input, update=False):
-#     """
-#     Validate input
-#     """ 
-#     result = {}
+def validate_create_update_input(input, update=False):
+    """
+    Validate input
+    """ 
+    result = {}
 
-#     # Fetch & check invoice group
-#     if not update:
-#         ## Create only
-#         # invoice group
-#         rid = get_rid(input['finance_invoice_group'])
-#         finance_invoice_group = FinanceInvoiceGroup.objects.filter(id=rid.id).first()
-#         result['finance_invoice_group'] = finance_invoice_group
-#         if not finance_invoice_group:
-#             raise Exception(_('Invalid Finance Invoice Group ID!'))
-
-#         # account
-#         rid = get_rid(input['account'])
-#         account = Account.objects.filter(id=rid.id).first()
-#         result['account'] = account
-#         if not account:
-#             raise Exception(_('Invalid Account ID!'))
-
-#     # Check finance payment method
-#     if 'finance_payment_method' in input:
-#         if input['finance_payment_method']:
-#             rid = get_rid(input['finance_payment_method'])
-#             finance_payment_method = FinancePaymentMethod.objects.filter(id=rid.id).first()
-#             result['finance_payment_method'] = finance_payment_method
-#             if not finance_payment_method:
-#                 raise Exception(_('Invalid Finance Payment Method ID!'))
+    # Fetch & check invoice group
+    if not update:
+        ## Create only
+        # account
+        rid = get_rid(input['account'])
+        account = Account.objects.filter(id=rid.id).first()
+        result['account'] = account
+        if not account:
+            raise Exception(_('Invalid Account ID!'))
 
 
-#     return result
+    return result
 
 
 class CreateFinanceOrder(graphene.relay.ClientIDMutation):
@@ -113,8 +97,7 @@ class CreateFinanceOrder(graphene.relay.ClientIDMutation):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.add_financeorder')
 
-        # validation_result = validate_create_update_input(input)
-        # finance_invoice_group = validation_result['finance_invoice_group']
+        validation_result = validate_create_update_input(input)
 
         finance_order = FinanceOrder(
             account = validation_result['account'],
@@ -149,9 +132,8 @@ class UpdateFinanceOrder(graphene.relay.ClientIDMutation):
         if not finance_order:
             raise Exception('Invalid Finance Order ID!')
 
-        validation_result = validate_create_update_input(input, update=True)
-
         if 'status' in input:
+            # TODO: Validate status input
             finance_order.status = input['status']
 
         if 'note' in input:
