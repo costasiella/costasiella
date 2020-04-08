@@ -26,10 +26,7 @@ class FinanceOrderNode(DjangoObjectType):
         model = FinanceOrder
         filter_fields = {
             'account': ['exact'],
-            'invoice_number': ['icontains', 'exact'],
             'status': ['exact'],
-            'date_sent': ['lte', 'gte'],
-            'date_due': ['lte', 'gte'],
         }
         interfaces = (graphene.relay.Node, FinanceOrderInterface, )
 
@@ -188,6 +185,6 @@ class DeleteFinanceOrder(graphene.relay.ClientIDMutation):
 
 
 class FinanceOrderMutation(graphene.ObjectType):
-    delete_finance_order = DeleteFinanceInvoice.Field()
-    create_finance_order = CreateFinanceInvoice.Field()
-    update_finance_order = UpdateFinanceInvoice.Field()
+    delete_finance_order = DeleteFinanceOrder.Field()
+    create_finance_order = CreateFinanceOrder.Field()
+    update_finance_order = UpdateFinanceOrder.Field()
