@@ -59,7 +59,7 @@ class FinanceOrderQuery(graphene.ObjectType):
     finance_order = graphene.relay.Node.Field(FinanceOrderNode)
 
     def resolve_finance_orders(self, info, archived=False, **kwargs):
-        user = info.context.usetr
+        user = info.context.user
         require_login_and_permission(user, 'costasiella.view_financeorder')
 
         return FinanceOrder.objects.all().order_by('-pk')
