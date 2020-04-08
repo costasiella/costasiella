@@ -4,6 +4,7 @@ const cs_local_storage_keys = {
     AUTH_TOKEN_ORIGIAT: 'costasiella:authTokenorigIat',
     AUTH_LOGIN_NEXT: 'costasiella:authLoginNext',
     FINANCE_INVOICES_FILTER_STATUS: 'costasiella:financeInvoicesFilterStatus',
+    FINANCE_ORDERS_FILTER_STATUS: 'costasiella:financeOrdersFilterStatus',
     INSIGHT_CLASSPASSES_YEAR: 'costasiella:insightClasspassesYear',
     INSIGHT_SUBSCRIPTIONS_YEAR: 'costasiella:insightSubscriptionsYear',
     RELATIONS_ACCOUNTS_FILTER_TYPE: 'costasiella:relationsAccountsFilterType',
