@@ -131,6 +131,9 @@ function FinanceOrders({t, match, history}) {
                     {node.totalDisplay}
                   </Table.Col>
                   <Table.Col key={v4()}>
+                    Edit
+                  </Table.Col>
+                  <Table.Col key={v4()}>
                     <FinanceOrderDelete node={node}/>
                   </Table.Col>
                 </Table.Row>
