@@ -95,9 +95,8 @@ function FinanceOrders({t, match, history}) {
             <Table.Row key={v4()}>
               <Table.ColHeader>{t('general.status')}</Table.ColHeader>
               <Table.ColHeader>{t('finance.orders.order_number')}</Table.ColHeader>
-              <Table.ColHeader>{t('finance.invoices.relation')} & {t('finance.invoices.summary')}</Table.ColHeader>
-              <Table.ColHeader>{t('finance.invoices.date')} & {t('finance.invoices.due')}</Table.ColHeader>
-              {/* <Table.ColHeader>{t('finance.invoices.due')}</Table.ColHeader> */}
+              <Table.ColHeader>{t('finance.orders.relation')}</Table.ColHeader>
+              <Table.ColHeader>{t('finance.orders.date')}</Table.ColHeader>
               <Table.ColHeader>{t('general.total')}</Table.ColHeader>
               <Table.ColHeader>{t('general.balance')}</Table.ColHeader>
               <Table.ColHeader></Table.ColHeader>
@@ -109,6 +108,12 @@ function FinanceOrders({t, match, history}) {
                 <Table.Row key={v4()}>
                   <Table.Col key={v4()}>
                     {node.status}
+                  </Table.Col>
+                  <Table.Col key={v4()}>
+                    # {node.orderNumber}
+                  </Table.Col>
+                  <Table.Col key={v4()}>
+                    {node.account.fullName}
                   </Table.Col>
                   <Table.Col key={v4()}>
                     {moment(node.createdAt).format('LL')}
