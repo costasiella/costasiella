@@ -91,13 +91,36 @@ function FinanceOrders({t, match, history}) {
           })
         }} 
       >
-
+        <Table>
+          <Table.Header>
+            <Table.Row key={v4()}>
+              <Table.ColHeader>{t('general.status')}</Table.ColHeader>
+              <Table.ColHeader>{t('finance.invoices.invoice_number')}</Table.ColHeader>
+              <Table.ColHeader>{t('finance.invoices.relation')} & {t('finance.invoices.summary')}</Table.ColHeader>
+              <Table.ColHeader>{t('finance.invoices.date')} & {t('finance.invoices.due')}</Table.ColHeader>
+              {/* <Table.ColHeader>{t('finance.invoices.due')}</Table.ColHeader> */}
+              <Table.ColHeader>{t('general.total')}</Table.ColHeader>
+              <Table.ColHeader>{t('general.balance')}</Table.ColHeader>
+              <Table.ColHeader></Table.ColHeader>
+              <Table.ColHeader></Table.ColHeader>
+            </Table.Row>
+          </Table.Header>
+          <Table.Body>
+              {invoices.edges.map(({ node }) => (        
+                <Table.Row key={v4()}>
+                  <Table.Col key={v4()}>
+                    {node.status}
+                  </Table.Col>
+                  <Table.Col key={v4()}>
+                    {moment(node.createdAt).format('LL')}
+                  </Table.Col>
+                </Table.Row>
+              ))}
+          </Table.Body>
+        </Table>
       </ContentCard>
     </FinanceOrdersBase>
   )
-
-
-
 }
 
 
