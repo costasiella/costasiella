@@ -26,16 +26,14 @@ import { toast } from 'react-toastify'
 
 import { get_list_query_variables } from "./tools"
 import ContentCard from "../../general/ContentCard"
-import FinanceMenu from "../FinanceMenu"
-import FinanceInvoicesFilter from "./FinanceOrdersFilter"
-import FinanceInvoicesBase from "./FinanceOrdersBase"
-import FinanceInvoicesStatus from "./FinanceInvoiceStatus"
+import FinanceOrdersBase from './FinanceOrdersBase'
+import FinanceOrderStatus from "./FinanceOrderStatus"
 
 import { GET_ORDERS_QUERY, DELETE_FINANCE_ORDER } from "./queries"
 
 import confirm_delete from "../../../tools/confirm_delete"
 import moment from 'moment'
-import FinanceOrdersBase from './FinanceOrdersBase'
+
 
 
 function FinanceOrders({t, match, history}) {
@@ -107,7 +105,7 @@ function FinanceOrders({t, match, history}) {
               {orders.edges.map(({ node }) => (        
                 <Table.Row key={v4()}>
                   <Table.Col key={v4()}>
-                    {node.status}
+                    <FinanceOrderStatus status={node.status} />
                   </Table.Col>
                   <Table.Col key={v4()}>
                     # {node.orderNumber}
