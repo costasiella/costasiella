@@ -1192,8 +1192,8 @@
         "classpass": {
             "error_loading": "Error loading class pass :(",
             "selected": "Selected pass",
-            "additional_information": "__STRING_NOT_TRANSLATED__"
+            "additional_information": "Additional information"
         },
-        "checkout": "__STRING_NOT_TRANSLATED__"
+        "checkout": "Check out"
     }
 }
