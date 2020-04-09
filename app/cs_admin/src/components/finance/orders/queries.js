@@ -159,20 +159,19 @@ export const GET_INVOICE_QUERY = gql`
 `
 
 
-export const UPDATE_INVOICE = gql`
-  mutation UpdateFinanceInvoice($input: UpdateFinanceInvoiceInput!) {
-    updateFinanceInvoice(input: $input) {
-      financeInvoice {
+export const UPDATE_FINANCE_ORDER = gql`
+  mutation UpdateFinanceOrder($input: UpdateFinanceOrderInput!) {
+    updateFinanceOrder(input: $input) {
+      financeOrder {
         id
-        summary
       }
     }
   }
 `
 
-export const DELETE_FINANCE_INVOICE = gql`
-  mutation DeleteFinanceInvoice($input: DeleteFinanceInvoiceInput!) {
-    deleteFinanceInvoice(input: $input) {
+export const DELETE_FINANCE_ORDER = gql`
+  mutation DeleteFinanceOrder($input: DeleteFinanceOrderInput!) {
+    deleteFinanceOrder(input: $input) {
       ok
     }
   }
