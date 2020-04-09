@@ -94,7 +94,7 @@ function FinanceOrders({t, match, history}) {
           <Table.Header>
             <Table.Row key={v4()}>
               <Table.ColHeader>{t('general.status')}</Table.ColHeader>
-              <Table.ColHeader>{t('finance.invoices.invoice_number')}</Table.ColHeader>
+              <Table.ColHeader>{t('finance.orders.order_number')}</Table.ColHeader>
               <Table.ColHeader>{t('finance.invoices.relation')} & {t('finance.invoices.summary')}</Table.ColHeader>
               <Table.ColHeader>{t('finance.invoices.date')} & {t('finance.invoices.due')}</Table.ColHeader>
               {/* <Table.ColHeader>{t('finance.invoices.due')}</Table.ColHeader> */}

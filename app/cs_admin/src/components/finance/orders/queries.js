@@ -12,6 +12,7 @@ export const GET_ORDERS_QUERY = gql`
       edges {
         node {
           id
+          orderNumber
           account {
             id
             fullName
