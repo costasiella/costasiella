@@ -9,18 +9,12 @@ from .account_classpass import AccountClasspass
 from .account_subscription import AccountSubscription
 from .finance_invoice_item import FinanceInvoiceItem
 
+from .choices.schedule_item_attendance_types import get_schedule_item_attendance_types
+
 # Create your models here.
 
 class ScheduleItemAttendance(models.Model):
-    ATTENDANCE_TYPES = [
-        ['TRIAL', _("Trial")],
-        ['DROPIN', _("Drop in")],
-        ['CLASSPASS', _("Classpass")],
-        ['SUBSCRIPTION', _("Subscription")],
-        ['COMPLEMENTARY', _("Complementary")],
-        ['REVIEW', _("To be reviewed")],
-        ['RECONCILE_LATER', _("Reconcile later")],
-    ]
+    ATTENDANCE_TYPES = get_schedule_item_attendance_types()
 
     BOOKING_STATUSES = [
         ['BOOKED', _("Booked")],
