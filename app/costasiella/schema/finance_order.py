@@ -63,6 +63,26 @@ class FinanceOrderQuery(graphene.ObjectType):
         return FinanceOrder.objects.all().order_by('-pk')
 
 
+# def validate_create_update_input(input, update=False):
+#     """
+#     Validate input
+#     """ 
+#     result = {}
+
+#     # Fetch & check invoice group
+#     if not update:
+#         ## Create only
+#         # account
+#         rid = get_rid(input['account'])
+#         account = Account.objects.filter(id=rid.id).first()
+#         result['account'] = account
+#         if not account:
+#             raise Exception(_('Invalid Account ID!'))
+
+
+#     return result
+
+
 class CreateFinanceOrder(graphene.relay.ClientIDMutation):
     class Input:
         note = graphene.String(required=False, default_value="")
@@ -73,6 +93,8 @@ class CreateFinanceOrder(graphene.relay.ClientIDMutation):
     def mutate_and_get_payload(self, root, info, **input):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.add_financeorder')
+
+        # validation_result = validate_create_update_input(input)
 
         finance_order = FinanceOrder(
             account = user,
