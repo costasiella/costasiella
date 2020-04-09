@@ -156,9 +156,12 @@
                 "PAID": "Paid",
                 "DELIVERED": "Delivered",
                 "CANCELLED": "Cancelled",
-                "NOT_FOUND": "Not found"
+                "NOT_FOUND": "Not found",
+                "all": "All statuses"
             },
-            "empty_list": "No orders found..."
+            "empty_list": "No orders found...",
+            "delete_confirm_msg": "Are you sure you wish to delete this order?",
+            "deleted": "Deleted order"
         }
     },
     "general": {
@@ -329,7 +332,8 @@
         "details": "Details",
         "chart": "Chart",
         "room": "Room",
-        "valid_for": "valid for"
+        "valid_for": "valid for",
+        "order": "Order"
     },
     "yup": {
         "min_len_3": "Please input at least 3 characters",

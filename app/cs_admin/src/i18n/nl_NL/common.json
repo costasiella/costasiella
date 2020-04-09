@@ -156,9 +156,12 @@
                 "PAID": "__STRING_NOT_TRANSLATED__",
                 "DELIVERED": "__STRING_NOT_TRANSLATED__",
                 "CANCELLED": "__STRING_NOT_TRANSLATED__",
-                "NOT_FOUND": "__STRING_NOT_TRANSLATED__"
+                "NOT_FOUND": "__STRING_NOT_TRANSLATED__",
+                "all": "__STRING_NOT_TRANSLATED__"
             },
-            "empty_list": "__STRING_NOT_TRANSLATED__"
+            "empty_list": "__STRING_NOT_TRANSLATED__",
+            "delete_confirm_msg": "__STRING_NOT_TRANSLATED__",
+            "deleted": "__STRING_NOT_TRANSLATED__"
         }
     },
     "general": {
@@ -329,7 +332,8 @@
         "details": "__STRING_NOT_TRANSLATED__",
         "chart": "__STRING_NOT_TRANSLATED__",
         "room": "__STRING_NOT_TRANSLATED__",
-        "valid_for": "__STRING_NOT_TRANSLATED__"
+        "valid_for": "__STRING_NOT_TRANSLATED__",
+        "order": "__STRING_NOT_TRANSLATED__"
     },
     "yup": {
         "min_len_3": "__STRING_NOT_TRANSLATED__",
