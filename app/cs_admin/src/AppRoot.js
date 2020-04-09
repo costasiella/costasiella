@@ -39,6 +39,7 @@ import FinanceInvoiceGroupEdit from './components/finance/invoices/groups/Financ
 import FinanceInvoiceGroupDefaults from './components/finance/invoices/groups/defaults/FinanceInvoiceGroupDefaults'
 import FinanceInvoicePaymentAdd from './components/finance/invoices/payments/FinanceInvoicePaymentAdd'
 import FinanceInvoicePaymentEdit from './components/finance/invoices/payments/FinanceInvoicePaymentEdit'
+import FinanceOrders from './components/finance/orders/FinanceOrders'
 import FinancePaymentMethods from './components/finance/payment_methods/FinancePaymentMethods'
 import FinancePaymentMethodAdd from './components/finance/payment_methods/FinancePaymentMethodAdd'
 import FinancePaymentMethodEdit from './components/finance/payment_methods/FinancePaymentMethodEdit'
@@ -223,6 +224,7 @@ function AppRoot({ t }) {
           <PrivateRoute exact path="/finance/glaccounts" component={FinanceGLAccounts} />
           <PrivateRoute exact path="/finance/glaccounts/add" component={FinanceGLAccountAdd} />
           <PrivateRoute exact path="/finance/glaccounts/edit/:id" component={FinanceGLAccountEdit} />
+          <PrivateRoute exact path="/finance/orders" component={FinanceOrders} />
           <PrivateRoute exact path="/finance/paymentmethods" component={FinancePaymentMethods} />
           <PrivateRoute exact path="/finance/paymentmethods/add" component={FinancePaymentMethodAdd} />
           <PrivateRoute exact path="/finance/paymentmethods/edit/:id" component={FinancePaymentMethodEdit} />
