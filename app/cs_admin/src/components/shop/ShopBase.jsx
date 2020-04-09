@@ -10,9 +10,10 @@ import {
   Container,
 } from "tabler-react";
 import SiteWrapperShop from "../SiteWrapperShop"
+import ShopCheckoutProgress from "./ShopCheckoutProgress"
 
 
-function ShopBase({ t, match, history, children, title, return_url }) {
+function ShopBase({ t, match, history, children, title, return_url, checkoutProgress=false }) {
 
   return (
     <SiteWrapperShop>
@@ -32,6 +33,9 @@ function ShopBase({ t, match, history, children, title, return_url }) {
           </Page.Header>
             <Grid.Row>
               <Grid.Col md={12}>
+                {(checkoutProgress) ?
+                  <ShopCheckoutProgress checkoutProgress={checkoutProgress} />
+                  : "" }
                 { children }
               </Grid.Col>
             </Grid.Row>

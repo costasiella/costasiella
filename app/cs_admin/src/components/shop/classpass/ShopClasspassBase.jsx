@@ -12,9 +12,9 @@ function ShopClasspassBase({ t, match, history, children }) {
     <ShopBase 
       title={t("shop.title")}
       return_url="/shop/classpasses"
+      checkoutProgress="order"
     >
-      <h4>{t("shop.classpass.selected")}</h4>
-        {children}
+      {children}
     </ShopBase>
   )
 }
