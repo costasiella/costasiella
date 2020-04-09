@@ -29,7 +29,7 @@ const ShopClasspassForm = ({ t, isSubmitting, errors }) => (
         type="submit" 
         disabled={isSubmitting}
       >
-        {t('shop.order')} <Icon name="chevron-right" />
+        {t('shop.place_order')} <Icon name="chevron-right" />
       </Button>
     </FoForm>
 )
