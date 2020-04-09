@@ -3,8 +3,10 @@
 import React, {Component } from 'react'
 import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
-import { useQuery } from '@apollo/react-hooks'
+import { useQuery, useMutation } from '@apollo/react-hooks'
 import { Link } from 'react-router-dom'
+import { Formik } from 'formik'
+import { toast } from 'react-toastify'
 
 import {
   Card,
@@ -13,9 +15,11 @@ import {
   List
 } from "tabler-react";
 import ShopClasspassBase from "./ShopClasspassBase"
+import ShopClasspassForm from "./ShopClasspassForm"
 import ShopClasspassesPricingCard from "./ShopClasspassPricingCard"
 
 import { GET_CLASSPASS_QUERY } from "./queries"
+import { CREATE_ORDER } from "../queries"
 
 
 function ShopClasspass({ t, match, history }) {
@@ -24,6 +28,9 @@ function ShopClasspass({ t, match, history }) {
   const { loading, error, data } = useQuery(GET_CLASSPASS_QUERY, {
     variables: { id: id }
   })
+
+  const [createOrder, { data: createOrderData }] = useMutation(CREATE_ORDER)
+
 
   if (loading) return (
     <ShopClasspassBase title={title} >
@@ -49,6 +56,7 @@ function ShopClasspass({ t, match, history }) {
           <Grid.Col md={4}>
             <Card title={t("shop.classpass.additional_information")}>
               <Card.Body>
+                {/* TODO: Display terms & privacy policy */}
                 <div dangerouslySetInnerHTML={{__html:classpass.description}}></div>
               </Card.Body>
             </Card>
@@ -56,12 +64,45 @@ function ShopClasspass({ t, match, history }) {
           <Grid.Col md={4}>
             <Card title={t("shop.checkout")}>
               <Card.Body>
-                Order form with login check here...
+                <Formik
+                  initialValues={{ note: "" }}
+                  // validationSchema={CLASSTYPE_SCHEMA}
+                  onSubmit={(values, { setSubmitting }) => {
+                      createOrder({ variables: {
+                        input: {
+                          note: values.note,
+                          // organizationClasspass: match.params.id
+                        },
+                        // file: values.image
+                      }, refetchQueries: [
+                          // {query: GET_CLASSTYPES_QUERY, variables: {"archived": false }}
+                      ]})
+                      .then(({ data }) => {
+                          console.log('got data', data)
+                          console.log('good...  now redirect to the payment page')
+                          // toast.success((t('shop..toast_add_success')), {
+                          //     position: toast.POSITION.BOTTOM_RIGHT
+                          //   })
+                        }).catch((error) => {
+                          toast.error((t('general.toast_server_error')) + ': ' +  error, {
+                              position: toast.POSITION.BOTTOM_RIGHT
+                            })
+                          console.log('there was an error sending the query', error)
+                          setSubmitting(false)
+                        })
+                  }}
+                  >
+                  {({ isSubmitting, errors, values }) => (
+                    <ShopClasspassForm 
+                      isSubmitting={isSubmitting}
+                      errors={errors}
+                      values={values}
+                    />
+                  )}
+                </Formik>
+
                 {/* When a user is not logged in, show a login button to redirect to the login page */}
               </Card.Body>
-              <Card.Footer>
-                Button here (login or order)
-              </Card.Footer>
             </Card>
           </Grid.Col>
         </Grid.Row>
