@@ -21,8 +21,6 @@ export const GET_ORDERS_QUERY = gql`
           status
           total
           totalDisplay
-          balance
-          balanceDisplay
           createdAt
         }
       }
