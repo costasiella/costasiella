@@ -18,11 +18,11 @@ function ShopCheckoutProgress({ t, match, history, checkoutProgress="" }) {
 
   switch(checkoutProgress) {
     case "order":
-      color_order = "success"
+      color_order = "info"
       break
     case "payment":
       color_order = "success"
-      color_payment = "success"
+      color_payment = "info"
       break      
     case "complete":
       color_order = "success"
