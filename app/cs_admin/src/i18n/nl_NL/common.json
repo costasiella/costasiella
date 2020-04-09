@@ -143,6 +143,21 @@
                 "add": "__STRING_NOT_TRANSLATED__",
                 "edit": "__STRING_NOT_TRANSLATED__"
             }
+        },
+        "orders": {
+            "title": "__STRING_NOT_TRANSLATED__",
+            "error_loading": "__STRING_NOT_TRANSLATED__",
+            "order_number": "__STRING_NOT_TRANSLATED__",
+            "relation": "__STRING_NOT_TRANSLATED__",
+            "date": "__STRING_NOT_TRANSLATED__",
+            "statuses": {
+                "RECEIVED": "__STRING_NOT_TRANSLATED__",
+                "AWAITING_PAYMENT": "__STRING_NOT_TRANSLATED__",
+                "PAID": "__STRING_NOT_TRANSLATED__",
+                "DELIVERED": "__STRING_NOT_TRANSLATED__",
+                "CANCELLED": "__STRING_NOT_TRANSLATED__",
+                "NOT_FOUND": "__STRING_NOT_TRANSLATED__"
+            }
         }
     },
     "general": {
@@ -1171,7 +1186,9 @@
         "title": "__STRING_NOT_TRANSLATED__",
         "classpass": {
             "error_loading": "__STRING_NOT_TRANSLATED__",
-            "selected": "__STRING_NOT_TRANSLATED__"
-        }
+            "selected": "__STRING_NOT_TRANSLATED__",
+            "additional_information": "__STRING_NOT_TRANSLATED__"
+        },
+        "checkout": "__STRING_NOT_TRANSLATED__"
     }
 }

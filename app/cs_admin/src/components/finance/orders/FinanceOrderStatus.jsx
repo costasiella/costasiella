@@ -30,22 +30,22 @@ class FinanceOrderStatus extends Component {
 
     switch (status) {
       case "RECEIVED":
-        return <Badge color="secondary">{t('finance.orders.status.RECEIVED')}</Badge>
+        return <Badge color="secondary">{t('finance.orders.statuses.RECEIVED')}</Badge>
         break
       case "AWAITING_PAYMENT":
-        return <Badge color="primary">{t('finance.orders.status.AWAITING_PAYMENT')}</Badge>
+        return <Badge color="primary">{t('finance.orders.statuses.AWAITING_PAYMENT')}</Badge>
         break
       case "PAID":
-        return <Badge color="success">{t('finance.orders.status.PAID')}</Badge>
+        return <Badge color="success">{t('finance.orders.statuses.PAID')}</Badge>
         break
       case "DELIVERED":
-        return <Badge color="success">{t('finance.orders.status.DELIVERED')}</Badge>
+        return <Badge color="success">{t('finance.orders.statuses.DELIVERED')}</Badge>
         break
       case "CANCELLED":
-        return <Badge color="warning">{t('finance.orders.status.CANCELLED')}</Badge>
+        return <Badge color="warning">{t('finance.orders.statuses.CANCELLED')}</Badge>
         break
       default:
-        return t('finance.orders.status.NOT_FOUND') 
+        return t('finance.orders.statuses.NOT_FOUND') 
     }
   }
 }

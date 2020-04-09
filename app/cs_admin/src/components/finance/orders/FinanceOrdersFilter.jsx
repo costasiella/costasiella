@@ -46,11 +46,11 @@ const FinanceOrdersFilter = ({ t, history, data, refetch }) => (
         )
       }}
     >
-      <option value="RECEIVED" key={v4()}>{t('finance.orders.statuses.received')}</option>
-      <option value="AWAITING_PAYMENT" key={v4()}>{t('finance.orders.statuses.awaiting_payment')}</option>
-      <option value="PAID" key={v4()}>{t('finance.orders.statuses.paid')}</option>
-      <option value="DELIVERED" key={v4()}>{t('finance.orders.statuses.delivered')}</option>
-      <option value="CANCELLED" key={v4()}>{t('finance.orders.statuses.cancelled')}</option>
+      <option value="RECEIVED" key={v4()}>{t('finance.orders.statuses.RECEIVED')}</option>
+      <option value="AWAITING_PAYMENT" key={v4()}>{t('finance.orders.statuses.AWAITING_PAYMENT')}</option>
+      <option value="PAID" key={v4()}>{t('finance.orders.statuses.PAID')}</option>
+      <option value="DELIVERED" key={v4()}>{t('finance.orders.statuses.DELIVERED')}</option>
+      <option value="CANCELLED" key={v4()}>{t('finance.orders.statuses.CANCELLED')}</option>
     </select>
   </div>
 );
