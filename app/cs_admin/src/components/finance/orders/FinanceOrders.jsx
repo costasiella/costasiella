@@ -28,6 +28,7 @@ import { get_list_query_variables } from "./tools"
 import ContentCard from "../../general/ContentCard"
 import FinanceOrdersBase from './FinanceOrdersBase'
 import FinanceOrderStatus from "./FinanceOrderStatus"
+import FinanceOrderDelete from "./FinanceOrderDelete"
 
 import { GET_ORDERS_QUERY, DELETE_FINANCE_ORDER } from "./queries"
 
@@ -128,6 +129,9 @@ function FinanceOrders({t, match, history}) {
                   </Table.Col>
                   <Table.Col key={v4()}>
                     {node.totalDisplay}
+                  </Table.Col>
+                  <Table.Col key={v4()}>
+                    <FinanceOrderDelete node={node}/>
                   </Table.Col>
                 </Table.Row>
               ))}
