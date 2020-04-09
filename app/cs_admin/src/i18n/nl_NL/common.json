@@ -1191,9 +1191,20 @@
         "title": "__STRING_NOT_TRANSLATED__",
         "classpass": {
             "error_loading": "__STRING_NOT_TRANSLATED__",
-            "selected": "__STRING_NOT_TRANSLATED__",
             "additional_information": "__STRING_NOT_TRANSLATED__"
         },
-        "checkout": "__STRING_NOT_TRANSLATED__"
+        "checkout": "__STRING_NOT_TRANSLATED__",
+        "": {
+            "toast_add_success": "__STRING_NOT_TRANSLATED__"
+        },
+        "order": {
+            "note": "__STRING_NOT_TRANSLATED__"
+        },
+        "place_order": "__STRING_NOT_TRANSLATED__",
+        "checkout_progress": {
+            "order": "__STRING_NOT_TRANSLATED__",
+            "payment": "__STRING_NOT_TRANSLATED__",
+            "complete": "__STRING_NOT_TRANSLATED__"
+        }
     }
 }

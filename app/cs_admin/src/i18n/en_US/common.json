@@ -1191,9 +1191,20 @@
         "title": "Shop",
         "classpass": {
             "error_loading": "Error loading class pass :(",
-            "selected": "Selected pass",
             "additional_information": "Additional information"
         },
-        "checkout": "Check out"
+        "checkout": "Check out",
+        "": {
+            "toast_add_success": "__STRING_NOT_TRANSLATED__"
+        },
+        "order": {
+            "note": "Any message with this order?"
+        },
+        "place_order": "Place order",
+        "checkout_progress": {
+            "order": "Order",
+            "payment": "Payment",
+            "complete": "Complete"
+        }
     }
 }
