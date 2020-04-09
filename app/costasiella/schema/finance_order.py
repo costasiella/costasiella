@@ -14,6 +14,7 @@ m = Messages()
 
 class FinanceOrderInterface(graphene.Interface):
     id = graphene.GlobalID()
+    order_number = graphene.Int()
     subtotal_display = graphene.String()
     tax_display = graphene.String()
     total_display = graphene.String()
@@ -30,6 +31,9 @@ class FinanceOrderNode(DjangoObjectType):
         }
         interfaces = (graphene.relay.Node, FinanceOrderInterface, )
 
+    def resolve_order_number(self, info):
+        return self.id
+
     def resolve_subtotal_display(self, info):
         return display_float_as_amount(self.subtotal)
 
@@ -38,12 +42,6 @@ class FinanceOrderNode(DjangoObjectType):
 
     def resolve_total_display(self, info):
         return display_float_as_amount(self.total)
-
-    def resolve_paid_display(self, info):
-        return display_float_as_amount(self.paid)
-
-    def resolve_balance_display(self, info):
-        return display_float_as_amount(self.balance)        
 
 
     @classmethod

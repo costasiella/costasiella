@@ -96,7 +96,6 @@ function FinanceOrders({t, match, history}) {
               <Table.ColHeader>{t('finance.orders.relation')}</Table.ColHeader>
               <Table.ColHeader>{t('finance.orders.date')}</Table.ColHeader>
               <Table.ColHeader>{t('general.total')}</Table.ColHeader>
-              <Table.ColHeader>{t('general.balance')}</Table.ColHeader>
               <Table.ColHeader></Table.ColHeader>
               <Table.ColHeader></Table.ColHeader>
             </Table.Row>
@@ -115,6 +114,9 @@ function FinanceOrders({t, match, history}) {
                   </Table.Col>
                   <Table.Col key={v4()}>
                     {moment(node.createdAt).format('LL')}
+                  </Table.Col>
+                  <Table.Col key={v4()}>
+                    {node.totalDisplay}
                   </Table.Col>
                 </Table.Row>
               ))}
