@@ -157,7 +157,8 @@
                 "DELIVERED": "__STRING_NOT_TRANSLATED__",
                 "CANCELLED": "__STRING_NOT_TRANSLATED__",
                 "NOT_FOUND": "__STRING_NOT_TRANSLATED__"
-            }
+            },
+            "empty_list": "__STRING_NOT_TRANSLATED__"
         }
     },
     "general": {

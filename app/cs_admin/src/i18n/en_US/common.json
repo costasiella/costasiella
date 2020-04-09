@@ -157,7 +157,8 @@
                 "DELIVERED": "Delivered",
                 "CANCELLED": "Cancelled",
                 "NOT_FOUND": "Not found"
-            }
+            },
+            "empty_list": "No orders found..."
         }
     },
     "general": {

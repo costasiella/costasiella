@@ -59,6 +59,17 @@ function FinanceOrders({t, match, history}) {
   const orders = data.financeOrders
   console.log(orders)
 
+  // Empty list
+  if (!orders.edges.length) { return (
+    <FinanceOrdersBase refetch={refetch}>
+      <ContentCard cardTitle={t('finance.orders.title')}>
+        <p>
+          {t('finance.orders.empty_list')}
+        </p>
+      </ContentCard>
+    </FinanceOrdersBase>
+  )}
+
   return (
     <FinanceOrdersBase title={title} refetch={refetch}>
       <ContentCard 
