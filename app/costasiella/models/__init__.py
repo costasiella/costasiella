@@ -15,6 +15,7 @@ from .finance_invoice_group_default import FinanceInvoiceGroupDefault
 from .finance_invoice_item import FinanceInvoiceItem
 from .finance_invoice_payment import FinanceInvoicePayment
 from .finance_order import FinanceOrder
+from .finance_order_item import FinanceOrderItem
 from .finance_payment_method import FinancePaymentMethod
 from .finance_tax_rate import FinanceTaxRate
 
