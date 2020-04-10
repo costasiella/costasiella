@@ -342,7 +342,7 @@ function AppRoot({ t }) {
 
           {/* Shop */}
           <Route exact path = "/shop" component={ShopHome} />
-          <PrivateRoute exact path = "/shop/checkout/payment" component={ShopCheckoutPayment} />
+          <PrivateRoute exact path = "/shop/checkout/payment/:id" component={ShopCheckoutPayment} />
           <Route exact path = "/shop/classpasses" component={ShopClasspasses} />
           <Route exact path = "/shop/classpass/:id" component={ShopClasspass} />
 
