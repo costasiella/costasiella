@@ -386,7 +386,8 @@
                 "order_received": "__STRING_NOT_TRANSLATED__",
                 "order_received_subheader": "__STRING_NOT_TRANSLATED__",
                 "order_received_to_payment_explanation": "__STRING_NOT_TRANSLATED__",
-                "order_received_to_payment_text": "__STRING_NOT_TRANSLATED__"
+                "order_received_to_payment_text": "__STRING_NOT_TRANSLATED__",
+                "order_summary_message": "__STRING_NOT_TRANSLATED__"
             },
             "title": "__STRING_NOT_TRANSLATED__"
         },

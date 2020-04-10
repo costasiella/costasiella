@@ -63,8 +63,8 @@ function ShopCheckoutPayment({ t, match, history }) {
           </Grid.Col>
           <Grid.Col md={6}>
             <Card title={t("shop.checkout.payment.order_summary")}>
-              <Card.Body>
-                <Table>
+              <div class="table-responsive">
+                <Table cards={true}>
                   <Table.Header>
                     <Table.Row>
                       <Table.ColHeader>{t('general.item')}</Table.ColHeader>
@@ -88,11 +88,17 @@ function ShopCheckoutPayment({ t, match, history }) {
                         {t("general.total")}
                       </Table.Col>
                       <Table.Col>
-                        {order.totalDisplay}
+                          {order.totalDisplay}
                       </Table.Col>
                     </Table.Row>
                   </Table.Body>
                 </Table>
+              </div>
+              <Card.Body>
+                <span className="text-muted">
+                  <Icon name="message-square" /> {t("shop.checkout.payment.order_summary_message")} <br /><br />
+                  {order.message}
+                </span>
               </Card.Body>
             </Card>
           </Grid.Col>
