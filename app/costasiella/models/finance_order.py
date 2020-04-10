@@ -52,95 +52,30 @@ class FinanceOrder(models.Model):
         ])
 
 
-    # def _first_invoice_in_group_this_year(self, year): 
-    #     """
-    #     This invoice has to be the first in the group this year if no other 
-    #     invoices are found in this group in this year
-    #     """
-    #     year_start = datetime.date(year, 1, 1)
-    #     year_end = datetime.date(year, 12, 31)
-
-    #     return not FinanceInvoice.objects.filter(
-    #         date_sent__gte = year_start,
-    #         date_sent__lte = year_end,
-    #         finance_invoice_group = self.finance_invoice_group
-    #     ).exists()  
-
-
-    # def _increment_group_next_id(self):
-    #     # This code is here so the id is only +=1'd when an invoice is actually created 
-    #     self.finance_invoice_group.next_id += 1
-    #     self.finance_invoice_group.save()
-
-
-    # def save(self, *args, **kwargs):
-    #     if self.pk is None: # We know this is object creation when there is no pk yet.
-    #         # Get relation info
-    #         self._set_relation_info()
-
-    #         # set dates
-    #         if not self.date_sent:
-    #             # Date is now if not supplied on creation
-    #             self.date_sent = timezone.now().date()
-    #         self.date_due = self.date_sent + datetime.timedelta(days=self.finance_invoice_group.due_after_days)
-            
-    #         ## set invoice number
-    #         # Check if this is the first invoice in this group
-    #         # (Needed to check if we should reset the numbering for this year)
-    #         year = self.date_sent.year
-    #         first_invoice_in_group_this_year = self._first_invoice_in_group_this_year(year)
-    #         self.invoice_number = self.finance_invoice_group.next_invoice_number(
-    #             year, 
-    #             first_invoice_this_year = first_invoice_in_group_this_year
-    #         )
-
-    #         ## Increase next_id for invoice group
-    #         self._increment_group_next_id()
-
-    #     super(FinanceInvoice, self).save(*args, **kwargs)
-
-
-    # def _get_item_next_line_nr(self):
-    #     """
-    #     Returns the next item number for an invoice
-    #     use to set sorting when adding an item
-    #     """
-    #     from .finance_invoice_item import FinanceInvoiceItem
-
-    #     qs = FinanceInvoiceItem.objects.filter(finance_invoice = self)
-
-    #     return qs.count()
-
-
-    # def item_add_classpass(self, account_classpass):
-    #     """
-    #     Add account classpass invoice item
-    #     """
-    #     from .finance_invoice_item import FinanceInvoiceItem
-    #     # add item to invoice
+    def item_add_classpass(self, organization_classpass):
+        """
+        Add organization classpass invoice item
+        """
+        from .finance_order_item import FinanceOrderItem
         
+        # add item to order
+        finance_order_item = FinanceOrderItem(
+            finance_order = self,
+            organization_classpass = organization_classpass,
+            product_name = _('Class pass'),
+            description = "",
+            quantity = 1,
+            price = organization_classpass.price,
+            finance_tax_rate = organization_classpass.finance_tax_rate,
+            finance_glaccount = organization_classpass.finance_glaccount,
+            finance_costcenter = organization_classpass.finance_costcenter,
+        )
 
-    #     organization_classpass = account_classpass.organization_classpass
-    #     # finance_invoice = FinanceInvoice.objects.get(pk=self.id)
+        finance_order_item.save()
 
-    #     finance_invoice_item = FinanceInvoiceItem(
-    #         finance_invoice = self,
-    #         account_classpass = account_classpass,
-    #         line_number = self._get_item_next_line_nr(),
-    #         product_name = _('Class pass'),
-    #         description = _('Class pass %s' % str(account_classpass.pk)),
-    #         quantity = 1,
-    #         price = organization_classpass.price,
-    #         finance_tax_rate = organization_classpass.finance_tax_rate,
-    #         finance_glaccount = organization_classpass.finance_glaccount,
-    #         finance_costcenter = organization_classpass.finance_costcenter,
-    #     )
+        self.update_amounts()
 
-    #     finance_invoice_item.save()
-
-    #     self.update_amounts()
-
-    #     return finance_invoice_item
+        return finance_order_item
 
 
     # def tax_rates_amounts(self, formatted=False):
