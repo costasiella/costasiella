@@ -28,7 +28,7 @@ const AppSettingsMenu = ({ t, active_link }) => (
         <List.GroupItem
           key={v4()}
           className="d-flex align-items-center"
-          to="#/app_settings/general"
+          to="#/settings/general"
           icon="sliders"
           active={general_active}
           >
@@ -42,7 +42,7 @@ const AppSettingsMenu = ({ t, active_link }) => (
         <List.GroupItem
           key={v4()}
           className="d-flex align-items-center"
-          to="#/app_settings/general"
+          to="#/settings/integration"
           icon="code"
           active={integration_active}
           >

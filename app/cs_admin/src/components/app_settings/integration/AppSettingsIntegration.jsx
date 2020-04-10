@@ -9,7 +9,7 @@ import { Formik } from 'formik'
 import { toast } from 'react-toastify'
 
 import { GET_APP_SETTINGS_QUERY, UPDATE_APP_SETTINGS } from '../queries'
-import { GENERAL_SCHEMA } from './mollie/yupSchema'
+import { MOLLIE_SCHEMA } from './yupSchema'
 
 
 
@@ -77,7 +77,7 @@ function AppSettingsIntegration({ t, match, history }) {
         timeFormat: data.appSettings.timeFormat,
         note: "",
       }}
-      validationSchema={GENERAL_SCHEMA}
+      validationSchema={MOLLIE_SCHEMA}
       onSubmit={(values, { setSubmitting }, errors) => {
           console.log('submit values:')
           console.log(values)

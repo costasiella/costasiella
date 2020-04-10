@@ -21,6 +21,7 @@ import 'moment/locale/nl'
 import { AppSettingsProvider } from "./components/context/AppSettingsContext"
 
 import AppSettingsGeneral from './components/app_settings/general/AppSettingsGeneral'
+import AppSettingsIntegration from './components/app_settings/integration/AppSettingsIntegration'
 
 import HomeHome from './components/home/home/HomeHome'
 
@@ -348,6 +349,7 @@ function AppRoot({ t }) {
 
           {/* Settings */}
           <PrivateRoute exact path="/settings/general" component={AppSettingsGeneral} />
+          <PrivateRoute exact path="/settings/integration" component={AppSettingsIntegration} />
 
           {/* User */}
           <PrivateRoute exact path="/user/password/change" component={UserChangePassword} />
