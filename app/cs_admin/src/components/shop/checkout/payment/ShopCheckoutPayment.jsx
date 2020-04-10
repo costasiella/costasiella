@@ -1,6 +1,6 @@
 // @flow
 
-import React, {Component } from 'react'
+import React, { useRef, useState } from 'react'
 import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
 import { useQuery, useMutation } from '@apollo/react-hooks'
@@ -21,7 +21,12 @@ import { GET_ORDER_QUERY } from "./queries"
 // import { CREATE_ORDER } from "../../queries"
 
 
+
+
 function ShopCheckoutPayment({ t, match, history }) {
+  const btnPayNow = useRef(null);
+  const initialBtnText = <span><Icon name="credit-card" /> {t('shop.checkout.payment.to_payment')} <Icon name="chevron-right" /></span>
+  const [btn_text, setBtnText] = useState(initialBtnText)
   const title = t("shop.home.title")
   const id = match.params.id
   const { loading, error, data } = useQuery(GET_ORDER_QUERY, {
@@ -48,6 +53,15 @@ function ShopCheckoutPayment({ t, match, history }) {
   const orderItems = order.items.edges
   console.log(orderItems)
 
+  function onClickPay() {
+    btnPayNow.current.setAttribute("disabled", "disabled")
+    setBtnText(t("shop.checkout.payment.redirecting"))
+    // btnPayNow.current.setValue("redirecting...")
+    // btnPayNow
+    // btnPayNow.current.removeAttribute("disabled")
+  }
+
+
   return (
     <ShopCheckoutPaymentBase title={title}>
         <Grid.Row>
@@ -59,14 +73,13 @@ function ShopCheckoutPayment({ t, match, history }) {
                 {t("shop.checkout.payment.order_received_to_payment_text")}
               </Card.Body>
               <Card.Footer>
-                <Button 
-                  block
-                  color="success"
-                  // onClick={}
-                  // disabled={isSubmitting}
+                <button
+                  className="btn btn-block btn-success"
+                  ref={btnPayNow}
+                  onClick={ onClickPay }
                 >
-                  <Icon name="credit-card" /> {t('shop.checkout.payment.to_payment')} <Icon name="chevron-right" />
-                </Button>
+                  {btn_text}
+                </button>
               </Card.Footer>
             </Card>
           </Grid.Col>
