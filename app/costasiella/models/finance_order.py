@@ -63,7 +63,7 @@ class FinanceOrder(models.Model):
             finance_order = self,
             organization_classpass = organization_classpass,
             product_name = _('Class pass'),
-            description = "",
+            description = organization_classpass.name,
             quantity = 1,
             price = organization_classpass.price,
             finance_tax_rate = organization_classpass.finance_tax_rate,
