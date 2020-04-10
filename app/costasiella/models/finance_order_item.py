@@ -10,6 +10,7 @@ from .finance_costcenter import FinanceCostCenter
 from .finance_glaccount import FinanceGLAccount
 from .finance_order import FinanceOrder
 from .finance_tax_rate import FinanceTaxRate
+from .organization_classpass import OrganizationClasspass
 from .schedule_item import ScheduleItem
 
 from .choices.schedule_item_attendance_types import get_schedule_item_attendance_types
@@ -18,6 +19,8 @@ class FinanceOrderItem(models.Model):
     ATTENDANCE_TYPES = get_schedule_item_attendance_types()
 
     finance_order = models.ForeignKey(FinanceOrder, on_delete=models.CASCADE)
+    # Class pass fields
+    organization_classpass = models.ForeignKey(OrganizationClasspass, on_delete=models.CASCADE, null=True)
     # Class fields
     attendance_type = models.CharField(max_length=255, choices=ATTENDANCE_TYPES)
     schedule_item = models.ForeignKey(ScheduleItem, on_delete=models.CASCADE)
@@ -36,9 +39,44 @@ class FinanceOrderItem(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+        
     def __str__(self):
-        return _("Order: ") + str(self.id)
+        return _("Order: ") + str(self.id) + self.product_name
 
+
+    def save(self, *args, **kwargs):
+        self.subtotal = self._calculate_subtotal()
+        self.tax = self._calculate_tax()
+        self.total = self._calculate_total()
+
+        super(FinanceOrderItem, self).save(*args, **kwargs)
+
+    
+    def _calculate_subtotal(self):
+        # If tax is included in price, first remove it.
+        tax_rate = self.finance_tax_rate
+        price = float(self.price)
+        if tax_rate:
+            if tax_rate.rate_type == "IN":
+                # divide price by 1.tax_percentage and then multiply by quantity
+                percentage = (float(tax_rate.percentage) / 100) + 1
+                price = price / percentage
+
+        return float(price) * float(self.quantity)
+
+
+    def _calculate_tax(self):
+        tax_rate = self.finance_tax_rate
+        if tax_rate:
+            percentage = (tax_rate.percentage / 100)
+
+            return float(self.subtotal) * float(percentage)
+        else:
+            return 0
+        
+    
+    def _calculate_total(self):
+        return self.subtotal + self.tax
 
 
 # def define_customers_orders_items():
