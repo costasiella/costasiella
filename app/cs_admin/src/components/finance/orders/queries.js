@@ -17,7 +17,7 @@ export const GET_ORDERS_QUERY = gql`
             id
             fullName
           }
-          note
+          message
           status
           total
           totalDisplay
@@ -29,14 +29,28 @@ export const GET_ORDERS_QUERY = gql`
 `
 
 export const GET_ORDER_QUERY = gql`
-  query FinanceOrder($id: ID!, $before: String, $after: String) {
-    financeOrder(id:$id) {
+  query FinanceOrder($id: ID!) {
+    financeOrder(id: $id) {
       id
+      orderNumber
       account {
         id
         fullName
       }
+      message
       status
+      total
+      totalDisplay
+      createdAt
+      items {
+        edges {
+          node {
+            id
+            productName
+          }
+        }
+      }
+      
     }
   }
 `
