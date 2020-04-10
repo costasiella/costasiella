@@ -10,7 +10,7 @@ export const GET_ORDER_QUERY = gql`
         id
         fullName
       }
-      note
+      message
       status
       total
       totalDisplay

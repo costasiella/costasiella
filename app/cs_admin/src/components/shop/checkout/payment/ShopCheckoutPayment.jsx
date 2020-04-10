@@ -49,14 +49,14 @@ function ShopCheckoutPayment({ t, match, history }) {
     <ShopCheckoutPaymentBase title={title}>
         <Grid.Row>
           <Grid.Col md={6}>
-            <Card title={t("shop.classpass.additional_information")}>
+            <Card title={t("shop.checkout.payment.payment")}>
               <Card.Body>
                 Payment info here    
               </Card.Body>
             </Card>
           </Grid.Col>
           <Grid.Col md={6}>
-            <Card title={t("shop.classpass.additional_information")}>
+            <Card title={t("shop.checkout.payment.order_info")}>
               <Card.Body>
                 Order info here
               </Card.Body>
