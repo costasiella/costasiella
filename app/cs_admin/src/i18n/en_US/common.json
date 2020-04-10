@@ -333,7 +333,8 @@
         "chart": "Chart",
         "room": "Room",
         "valid_for": "valid for",
-        "order": "Order"
+        "order": "Order",
+        "item": "Item"
     },
     "yup": {
         "min_len_3": "Please input at least 3 characters",
@@ -1193,7 +1194,6 @@
             "error_loading": "Error loading class pass :(",
             "additional_information": "Additional information"
         },
-        "checkout": "Check out",
         "": {
             "toast_add_success": "__STRING_NOT_TRANSLATED__"
         },
@@ -1205,6 +1205,13 @@
             "order": "Order",
             "payment": "Payment",
             "complete": "Complete"
+        },
+        "checkout": {
+            "payment": {
+                "payment": "Payment",
+                "order_summary": "Order summary"
+            },
+            "title": "Check out"
         }
     }
 }

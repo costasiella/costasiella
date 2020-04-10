@@ -62,7 +62,7 @@ function ShopClasspass({ t, match, history }) {
             </Card>
           </Grid.Col>
           <Grid.Col md={4}>
-            <Card title={t("shop.checkout")}>
+            <Card title={t("shop.checkout.title")}>
               <Card.Body>
                 <Formik
                   initialValues={{ message: "" }}

@@ -26,7 +26,6 @@ export const GET_ORDER_QUERY = gql`
           }
         }
       }
-      
     }
   }
 `
