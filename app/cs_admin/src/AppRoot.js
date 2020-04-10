@@ -146,6 +146,7 @@ import SelfCheckinLocations from './components/selfcheckin/Locations/Locations'
 import SelfCheckinLocationClasses from './components/selfcheckin/LocationClasses/LocationClasses'
 
 import ShopHome from './components/shop/home/ShopHome'
+import ShopCheckoutPayment from './components/shop/checkout/payment/ShopCheckoutPayment'
 import ShopClasspasses from './components/shop/classpasses/ShopClasspasses'
 import ShopClasspass from './components/shop/classpass/ShopClasspass'
 
@@ -341,6 +342,7 @@ function AppRoot({ t }) {
 
           {/* Shop */}
           <Route exact path = "/shop" component={ShopHome} />
+          <PrivateRoute exact path = "/shop/checkout/payment" component={ShopCheckoutPayment} />
           <Route exact path = "/shop/classpasses" component={ShopClasspasses} />
           <Route exact path = "/shop/classpass/:id" component={ShopClasspass} />
 
