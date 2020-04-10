@@ -15,7 +15,7 @@ import {
   List
 } from "tabler-react";
 import ShopClasspassBase from "./ShopClasspassBase"
-import ShopClasspassForm from "./ShopClasspassForm"
+import ShopCheckoutForm from "../ShopCheckoutForm"
 import ShopClasspassesPricingCard from "./ShopClasspassPricingCard"
 
 import { GET_CLASSPASS_QUERY } from "./queries"
@@ -93,7 +93,7 @@ function ShopClasspass({ t, match, history }) {
                   }}
                   >
                   {({ isSubmitting, errors, values }) => (
-                    <ShopClasspassForm 
+                    <ShopCheckoutForm 
                       isSubmitting={isSubmitting}
                       errors={errors}
                       values={values}
