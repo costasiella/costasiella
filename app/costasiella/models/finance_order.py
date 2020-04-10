@@ -22,7 +22,7 @@ class FinanceOrder(models.Model):
 
     account = models.ForeignKey(Account, on_delete=models.SET_NULL, null=True)
     status = models.CharField(max_length=255, choices=STATUSES, default="RECEIVED")
-    note = models.TextField(default="")
+    message = models.TextField(default="")
     subtotal = models.DecimalField(max_digits=20, decimal_places=2, default=0)
     tax = models.DecimalField(max_digits=20, decimal_places=2, default=0)
     total = models.DecimalField(max_digits=20, decimal_places=2, default=0)

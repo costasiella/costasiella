@@ -82,7 +82,7 @@ def validate_create_update_input(input, update=False):
 
 class CreateFinanceOrder(graphene.relay.ClientIDMutation):
     class Input:
-        note = graphene.String(required=False, default_value="")
+        message = graphene.String(required=False, default_value="")
         organization_classpass = graphene.ID(required=False)
         
     finance_order = graphene.Field(FinanceOrderNode)
@@ -98,8 +98,8 @@ class CreateFinanceOrder(graphene.relay.ClientIDMutation):
             account = user,
         )
 
-        if 'note' in input:
-            finance_order.note = input['note']
+        if 'message' in input:
+            finance_order.message = input['message']
 
         # Save order
         finance_order.save()
@@ -117,7 +117,7 @@ class UpdateFinanceOrder(graphene.relay.ClientIDMutation):
     class Input:
         id = graphene.ID(required=True)
         status = graphene.String(required=False)
-        note = graphene.String(required=False)
+        message = graphene.String(required=False)
 
     finance_order = graphene.Field(FinanceOrderNode)
 
@@ -137,8 +137,8 @@ class UpdateFinanceOrder(graphene.relay.ClientIDMutation):
             # TODO: Validate status input
             finance_order.status = input['status']
 
-        if 'note' in input:
-            finance_order.note = input['note']
+        if 'message' in input:
+            finance_order.message = input['message']
 
         finance_order.save()
 
