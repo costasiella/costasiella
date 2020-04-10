@@ -14,13 +14,13 @@ import {
 
 const ShopClasspassForm = ({ t, isSubmitting, errors }) => (
     <FoForm>
-      <Form.Group label={t('shop.order.note')}>
+      <Form.Group label={t('shop.order.')}>
         <Field type="text" 
                component="textarea"
-               name="note" 
-               className={(errors.note) ? "form-control is-invalid" : "form-control"} 
+               name="message" 
+               className={(errors.message) ? "form-control is-invalid" : "form-control"} 
                autoComplete="off" />
-        <ErrorMessage name="note" component="span" className="invalid-feedback" />
+        <ErrorMessage name="message" component="span" className="invalid-feedback" />
       </Form.Group>
       <Button 
         block

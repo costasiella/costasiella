@@ -65,12 +65,12 @@ function ShopClasspass({ t, match, history }) {
             <Card title={t("shop.checkout")}>
               <Card.Body>
                 <Formik
-                  initialValues={{ note: "" }}
+                  initialValues={{ message: "" }}
                   // validationSchema={CLASSTYPE_SCHEMA}
                   onSubmit={(values, { setSubmitting }) => {
                       createOrder({ variables: {
                         input: {
-                          note: values.note,
+                          message: values.message,
                           // organizationClasspass: match.params.id
                         },
                         // file: values.image
