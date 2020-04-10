@@ -13,6 +13,7 @@ import {
   Grid,
   Icon,
   Table,
+  Button,
 } from "tabler-react";
 import ShopCheckoutPaymentBase from "./ShopCheckoutPaymentBase"
 
@@ -56,9 +57,17 @@ function ShopCheckoutPayment({ t, match, history }) {
                 <h5 className={"mb-4"}>{t("shop.checkout.payment.order_received_subheader")}</h5>
                 {t("shop.checkout.payment.order_received_to_payment_explanation")} <br />
                 {t("shop.checkout.payment.order_received_to_payment_text")}
-
-              
               </Card.Body>
+              <Card.Footer>
+                <Button 
+                  block
+                  color="success"
+                  // onClick={}
+                  // disabled={isSubmitting}
+                >
+                  <Icon name="credit-card" /> {t('shop.checkout.payment.to_payment')} <Icon name="chevron-right" />
+                </Button>
+              </Card.Footer>
             </Card>
           </Grid.Col>
           <Grid.Col md={6}>
