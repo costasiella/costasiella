@@ -94,6 +94,8 @@ class CreateFinanceOrder(graphene.relay.ClientIDMutation):
 
         validation_result = validate_create_update_input(input)
 
+        print(input)
+
         finance_order = FinanceOrder(
             account = user,
         )

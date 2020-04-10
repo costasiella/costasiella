@@ -12,7 +12,7 @@ import {
   Card,
   Grid,
   Icon,
-  List
+  Table,
 } from "tabler-react";
 import ShopCheckoutPaymentBase from "./ShopCheckoutPaymentBase"
 
@@ -42,8 +42,10 @@ function ShopCheckoutPayment({ t, match, history }) {
   )
 
   console.log(data)
-  const classpass = data.organizationClasspass
-  console.log(classpass)
+  const order = data.financeOrder
+  console.log(order)
+  const orderItems = order.items.edges
+  console.log(orderItems)
 
   return (
     <ShopCheckoutPaymentBase title={title}>
@@ -56,9 +58,29 @@ function ShopCheckoutPayment({ t, match, history }) {
             </Card>
           </Grid.Col>
           <Grid.Col md={6}>
-            <Card title={t("shop.checkout.payment.order_info")}>
+            <Card title={t("shop.checkout.payment.order_summary")}>
               <Card.Body>
-                Order info here
+                <Table>
+                  <Table.Header>
+                    <Table.Row>
+                      <Table.ColHeader>{t('general.item')}</Table.ColHeader>
+                      <Table.ColHeader>{t('general.price')}</Table.ColHeader>
+                    </Table.Row>
+                  </Table.Header>
+                  <Table.Body>
+                    {orderItems.map(({ node }) => (
+                      <Table.Row>
+                        <Table.Col>
+                          {node.productName} <br /> 
+                          <span className="text-muted">
+                            {node.description}
+                          </span>
+                        </Table.Col>
+                        <Table.Col>{node.totalDisplay}</Table.Col>
+                      </Table.Row>      
+                    ))}
+                  </Table.Body>
+                </Table>
               </Card.Body>
             </Card>
           </Grid.Col>
