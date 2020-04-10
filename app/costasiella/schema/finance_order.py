@@ -63,29 +63,27 @@ class FinanceOrderQuery(graphene.ObjectType):
         return FinanceOrder.objects.all().order_by('-pk')
 
 
-# def validate_create_update_input(input, update=False):
-#     """
-#     Validate input
-#     """ 
-#     result = {}
+def validate_create_update_input(input, update=False):
+    """
+    Validate input
+    """ 
+    result = {}
 
-#     # Fetch & check invoice group
-#     if not update:
-#         ## Create only
-#         # account
-#         rid = get_rid(input['account'])
-#         account = Account.objects.filter(id=rid.id).first()
-#         result['account'] = account
-#         if not account:
-#             raise Exception(_('Invalid Account ID!'))
+    # Fetch & check organization classpass
+    if 'organization_classpass' in input:
+        rid = get_rid(input["organization_classpass"])
+        organization_classpass = OrganizationClasspass.objects.get(id=rid.id)
+        result['organization_classpass'] = organization_classpass
+        if not organization_classpass:
+            raise Exception(_('Invalid Organization Classpass ID!'))
 
-
-#     return result
+    return result
 
 
 class CreateFinanceOrder(graphene.relay.ClientIDMutation):
     class Input:
         note = graphene.String(required=False, default_value="")
+        organization_classpass = graphene.ID(required=False)
         
     finance_order = graphene.Field(FinanceOrderNode)
 
@@ -94,7 +92,7 @@ class CreateFinanceOrder(graphene.relay.ClientIDMutation):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.add_financeorder')
 
-        # validation_result = validate_create_update_input(input)
+        validation_result = validate_create_update_input(input)
 
         finance_order = FinanceOrder(
             account = user,
@@ -105,6 +103,12 @@ class CreateFinanceOrder(graphene.relay.ClientIDMutation):
 
         # Save order
         finance_order.save()
+
+        # Process items
+        if 'organization_classpass' in validation_result:
+            #TODO: actually add item
+            pass
+        
 
         return CreateFinanceOrder(finance_order=finance_order)
 
