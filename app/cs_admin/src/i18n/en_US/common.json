@@ -1198,7 +1198,7 @@
             "toast_add_success": "__STRING_NOT_TRANSLATED__"
         },
         "order": {
-            "note": "Any message with this order?"
+            "message": "Any message with this order?"
         },
         "place_order": "Place order",
         "checkout_progress": {

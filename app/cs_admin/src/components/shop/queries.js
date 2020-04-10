@@ -6,7 +6,7 @@ export const CREATE_ORDER = gql`
     createFinanceOrder(input: $input) {
       financeOrder {
         id
-        note
+        message
         account {
           id
           fullName

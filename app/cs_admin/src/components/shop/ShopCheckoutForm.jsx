@@ -14,7 +14,7 @@ import {
 
 const ShopClasspassForm = ({ t, isSubmitting, errors }) => (
     <FoForm>
-      <Form.Group label={t('shop.order.')}>
+      <Form.Group label={t('shop.order.message')}>
         <Field type="text" 
                component="textarea"
                name="message" 
