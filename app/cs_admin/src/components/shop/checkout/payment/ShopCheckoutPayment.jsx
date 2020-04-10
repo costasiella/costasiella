@@ -51,9 +51,13 @@ function ShopCheckoutPayment({ t, match, history }) {
     <ShopCheckoutPaymentBase title={title}>
         <Grid.Row>
           <Grid.Col md={6}>
-            <Card title={t("shop.checkout.payment.payment")}>
+            <Card title={t("shop.checkout.payment.order_received")}>
               <Card.Body>
-                Payment info here    
+                <h5 className={"mb-4"}>{t("shop.checkout.payment.order_received_subheader")}</h5>
+                {t("shop.checkout.payment.order_received_to_payment_explanation")} <br />
+                {t("shop.checkout.payment.order_received_to_payment_text")}
+
+              
               </Card.Body>
             </Card>
           </Grid.Col>

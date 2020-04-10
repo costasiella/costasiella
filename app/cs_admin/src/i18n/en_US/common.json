@@ -1208,8 +1208,11 @@
         },
         "checkout": {
             "payment": {
-                "payment": "Payment",
-                "order_summary": "Order summary"
+                "order_summary": "Order summary",
+                "order_received": "Order received",
+                "order_received_subheader": "We have received our order",
+                "order_received_to_payment_explanation": "The items in your order will be delivered as soon as we've received the payment for this order.",
+                "order_received_to_payment_text": "Please click the button below to start the payment."
             },
             "title": "Check out"
         }
