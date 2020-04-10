@@ -83,6 +83,8 @@ function ShopClasspass({ t, match, history }) {
                           // toast.success((t('shop..toast_add_success')), {
                           //     position: toast.POSITION.BOTTOM_RIGHT
                           //   })
+                          const orderId = data.createFinanceOrder.financeOrder.id
+                          history.push('/shop/checkout/payment/' + orderId)
                         }).catch((error) => {
                           toast.error((t('general.toast_server_error')) + ': ' +  error, {
                               position: toast.POSITION.BOTTOM_RIGHT
