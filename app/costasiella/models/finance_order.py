@@ -32,33 +32,24 @@ class FinanceOrder(models.Model):
     def __str__(self):
         return _("Order: ") + str(self.id)
 
-    # def update_amounts(self):
-    #     """ Update total amounts fields (subtotal, tax, total, paid, balance) """
-    #     # Get totals from invoice items
-    #     from .finance_invoice_item import FinanceInvoiceItem
-    #     from .finance_invoice_payment import FinanceInvoicePayment
-    #     from django.db.models import Sum
 
-    #     sums = FinanceInvoiceItem.objects.filter(finance_invoice = self).aggregate(Sum('subtotal'), Sum('tax'), Sum('total'))
+    def update_amounts(self):
+        """ Update total amounts fields (subtotal, tax, total, paid, balance) """
+        # Get totals from invoice items
+        from .finance_order_item import FinanceOrderItem
+        from django.db.models import Sum
 
-    #     self.subtotal = sums['subtotal__sum'] or 0
-    #     self.tax = sums['tax__sum'] or 0
-    #     self.total = sums['total__sum'] or 0
+        sums = FinanceOrderItem.objects.filter(finance_order = self).aggregate(Sum('subtotal'), Sum('tax'), Sum('total'))
 
-    #     payment_sum = FinanceInvoicePayment.objects.filter(
-    #         finance_invoice = self
-    #     ).aggregate(Sum('amount'))
+        self.subtotal = sums['subtotal__sum'] or 0
+        self.tax = sums['tax__sum'] or 0
+        self.total = sums['total__sum'] or 0
 
-    #     self.paid = payment_sum['amount__sum'] or 0
-    #     self.balance = self.total - self.paid
-
-    #     self.save(update_fields=[
-    #         "subtotal",
-    #         "tax",
-    #         "total",
-    #         "paid",
-    #         "balance"
-    #     ])
+        self.save(update_fields=[
+            "subtotal",
+            "tax",
+            "total"
+        ])
 
 
     # def _first_invoice_in_group_this_year(self, year): 
