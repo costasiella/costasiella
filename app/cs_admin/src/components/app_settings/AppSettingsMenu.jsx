@@ -11,6 +11,7 @@ import {
 import HasPermissionWrapper from "../HasPermissionWrapper"
 
 let general_active
+let integration_active
 
 
 const AppSettingsMenu = ({ t, active_link }) => (
@@ -18,6 +19,7 @@ const AppSettingsMenu = ({ t, active_link }) => (
     <h5>{t('general.menu')}</h5>
     <List.Group transparent={true}>
       {(active_link === 'general') ? general_active = true: general_active = false}        
+      {(active_link === 'integration') ? integration_active = true: integration_active = false}        
 
       <HasPermissionWrapper     
         permission="view"
@@ -31,6 +33,20 @@ const AppSettingsMenu = ({ t, active_link }) => (
           active={general_active}
           >
           {t('settings.general.title')}
+        </List.GroupItem>
+      </HasPermissionWrapper>
+      <HasPermissionWrapper     
+        permission="view"
+        resource="appsettings"
+      >
+        <List.GroupItem
+          key={v4()}
+          className="d-flex align-items-center"
+          to="#/app_settings/general"
+          icon="code"
+          active={integration_active}
+          >
+          {t('settings.integration.title')}
         </List.GroupItem>
       </HasPermissionWrapper>
     </List.Group>
