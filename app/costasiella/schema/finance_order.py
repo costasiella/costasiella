@@ -107,7 +107,7 @@ class CreateFinanceOrder(graphene.relay.ClientIDMutation):
         # Process items
         if 'organization_classpass' in validation_result:
             #TODO: actually add item
-            pass
+            finance_order.item_add_classpass(validation_result['organization_classpass'])
         
 
         return CreateFinanceOrder(finance_order=finance_order)

@@ -18,6 +18,7 @@ from .finance_invoice_group_default import FinanceInvoiceGroupDefaultQuery, Fina
 from .finance_invoice_item import FinanceInvoiceItemQuery, FinanceInvoiceItemMutation
 from .finance_invoice_payment import FinanceInvoicePaymentQuery, FinanceInvoicePaymentMutation
 from .finance_order import FinanceOrderQuery, FinanceOrderMutation
+from .finance_order_item import FinanceOrderItemQuery
 from .finance_payment_method import FinancePaymentMethodQuery, FinancePaymentMethodMutation
 from .finance_tax_rate import FinanceTaxRateQuery, FinanceTaxRateMutation
 
@@ -71,6 +72,7 @@ class Query(AccountQuery,
             FinanceInvoiceItemQuery,
             FinanceInvoicePaymentQuery,
             FinanceOrderQuery,
+            FinanceOrderItemQuery,
             FinancePaymentMethodQuery,
             FinanceTaxRateQuery,
             InsightClasspassesQuery,

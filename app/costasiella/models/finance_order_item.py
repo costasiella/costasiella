@@ -18,13 +18,13 @@ from .choices.schedule_item_attendance_types import get_schedule_item_attendance
 class FinanceOrderItem(models.Model):
     ATTENDANCE_TYPES = get_schedule_item_attendance_types()
 
-    finance_order = models.ForeignKey(FinanceOrder, on_delete=models.CASCADE)
+    finance_order = models.ForeignKey(FinanceOrder, on_delete=models.CASCADE, related_name="items")
     # Class pass fields
     organization_classpass = models.ForeignKey(OrganizationClasspass, on_delete=models.CASCADE, null=True)
     # Class fields
-    attendance_type = models.CharField(max_length=255, choices=ATTENDANCE_TYPES)
+    attendance_type = models.CharField(max_length=255, choices=ATTENDANCE_TYPES, null=True)
     schedule_item = models.ForeignKey(ScheduleItem, on_delete=models.CASCADE, null=True)
-    date = models.DateField()
+    date = models.DateField(null=True)
     # General fields
     product_name = models.CharField(max_length=255)
     description = models.TextField(default="")
