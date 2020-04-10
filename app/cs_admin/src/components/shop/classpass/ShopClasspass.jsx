@@ -71,7 +71,7 @@ function ShopClasspass({ t, match, history }) {
                       createOrder({ variables: {
                         input: {
                           message: values.message,
-                          // organizationClasspass: match.params.id
+                          organizationClasspass: match.params.id
                         },
                         // file: values.image
                       }, refetchQueries: [
