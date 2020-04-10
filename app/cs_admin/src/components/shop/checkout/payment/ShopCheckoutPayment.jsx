@@ -79,6 +79,14 @@ function ShopCheckoutPayment({ t, match, history }) {
                         <Table.Col>{node.totalDisplay}</Table.Col>
                       </Table.Row>      
                     ))}
+                    <Table.Row className="bold">
+                      <Table.Col>
+                        {t("general.total")}
+                      </Table.Col>
+                      <Table.Col>
+                        {order.totalDisplay}
+                      </Table.Col>
+                    </Table.Row>
                   </Table.Body>
                 </Table>
               </Card.Body>
