@@ -1074,7 +1074,11 @@
                 "12hr": "AM/PM"
             }
         },
-        "error_loading": "Error loading settings :("
+        "error_loading": "Error loading settings :(",
+        "integration": {
+            "title": "Integration",
+            "mollie_api_key": "Mollie API key"
+        }
     },
     "user": {
         "login": {

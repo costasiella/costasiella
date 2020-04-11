@@ -189,6 +189,10 @@
                 "24hr": "__STRING_NOT_TRANSLATED__",
                 "12hr": "__STRING_NOT_TRANSLATED__"
             }
+        },
+        "integration": {
+            "title": "__STRING_NOT_TRANSLATED__",
+            "mollie_api_key": "__STRING_NOT_TRANSLATED__"
         }
     },
     "yup": {

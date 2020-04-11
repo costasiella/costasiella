@@ -9,9 +9,6 @@ import { Formik } from 'formik'
 import { toast } from 'react-toastify'
 
 import { GET_SYSTEM_SETTINGS_QUERY, UPDATE_SYSTEM_SETTING } from './queries'
-import { MOLLIE_SCHEMA } from './yupSchema'
-
-
 
 import {
   Dimmer,
