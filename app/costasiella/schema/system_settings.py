@@ -1,0 +1,71 @@
+from django.utils.translation import gettext as _
+
+import graphene
+from graphene_django import DjangoObjectType
+from graphene_django.filter import DjangoFilterConnectionField
+from graphql import GraphQLError
+
+from ..models import SystemSetting
+from ..modules.gql_tools import require_login, require_login_and_permission, get_rid
+from ..modules.messages import Messages
+
+m = Messages()
+
+
+class SystemSettingNode(DjangoObjectType):   
+    class Meta:
+        model = SystemSetting
+        filter_fields = ['setting']
+        interfaces = (graphene.relay.Node, )
+
+    @classmethod
+    def get_node(self, info, id):
+        user = info.context.user
+        require_login_and_permission(user, 'costasiella.view_systemsetting')
+
+        return self._meta.model.objects.get(id=id)
+
+
+class SystemSettingQuery(graphene.ObjectType):
+    system_settings = DjangoFilterConnectionField(SystemSettingNode)
+    system_setting = graphene.relay.Node.Field(SystemSettingNode)
+
+
+    def resolve_system_settings(self, info, account, **kwargs):
+        user = info.context.user
+        require_login_and_permission(user, 'costasiella.view_system_settings')
+
+        rid = get_rid(account)
+
+        ## return everything:
+        return SystemSetting.objects.all()
+
+
+class UpdateAppSettings(graphene.relay.ClientIDMutation):
+    class Input:
+        date_format = graphene.String(required=False)
+        time_format = graphene.String(required=False)
+        
+    app_settings = graphene.Field(AppSettingsNode)
+
+    @classmethod
+    def mutate_and_get_payload(self, root, info, **input):
+        user = info.context.user
+        require_login_and_permission(user, 'costasiella.change_appsettings')
+
+        app_settings = AppSettings.objects.get(id=1)
+
+        if 'date_format' in input:
+            app_settings.date_format = input['date_format']
+
+        if 'time_format' in input:
+            app_settings.time_format = input['time_format']
+
+
+        app_settings.save()
+
+        return UpdateAppSettings(app_settings=app_settings)
+
+
+class AppSettingsMutation(graphene.ObjectType):
+    update_app_settings = UpdateAppSettings.Field()
