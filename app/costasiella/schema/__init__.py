@@ -56,6 +56,7 @@ from .schedule_item_price import ScheduleItemPriceQuery, ScheduleItemPriceMutati
 from .schedule_item_teacher import ScheduleItemTeacherQuery, ScheduleItemTeacherMutation
 from .schedule_item_teacher_available import ScheduleItemTeacherAvailableQuery, ScheduleItemTeacherAvailableMutation
 
+from .system_settings import SystemSettingQuery, SystemSettingMutation
 
 class Query(AccountQuery,
             AccountAcceptedDocumentQuery,
@@ -104,6 +105,7 @@ class Query(AccountQuery,
             ScheduleItemPriceQuery,
             ScheduleItemTeacherQuery,
             ScheduleItemTeacherAvailableQuery,
+            SystemSettingQuery,
             graphene.ObjectType):
     node = graphene.relay.Node.Field()
 
@@ -152,6 +154,7 @@ class Mutation(AccountMutation,
                ScheduleItemPriceMutation,
                ScheduleItemTeacherMutation,
                ScheduleItemTeacherAvailableMutation,
+               SystemSettingMutation,
                graphene.ObjectType):
     token_auth = graphql_jwt.ObtainJSONWebToken.Field()
     verify_token = graphql_jwt.Verify.Field()

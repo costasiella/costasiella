@@ -71,5 +71,5 @@ class UpdateSystemSetting(graphene.relay.ClientIDMutation):
         return UpdateSystemSetting(system_setting=system_setting)
 
 
-class AppSettingsMutation(graphene.ObjectType):
-    update_app_settings = UpdateAppSettings.Field()
+class SystemSettingMutation(graphene.ObjectType):
+    update_system_setting = UpdateSystemSetting.Field()
