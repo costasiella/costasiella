@@ -131,7 +131,12 @@ function FinanceOrders({t, match, history}) {
                     {node.totalDisplay}
                   </Table.Col>
                   <Table.Col key={v4()}>
-                    Edit
+                    <Link to={"/finance/orders/edit/" + node.id}>
+                      <Button className='btn-sm' 
+                              color="secondary">
+                        {t('general.edit')}
+                      </Button>
+                    </Link>
                   </Table.Col>
                   <Table.Col key={v4()}>
                     <FinanceOrderDelete node={node}/>
