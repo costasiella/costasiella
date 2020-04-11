@@ -19,7 +19,7 @@ export const GET_SYSTEM_SETTINGS_QUERY = gql`
 export const UPDATE_SYSTEM_SETTING = gql`
   mutation UpdateAppSettings($input: UpdateSystemSettingInput!) {
     updateSystemSetting(input: $input) {
-      ssystemSetting {
+      systemSetting {
         id
       }
     }

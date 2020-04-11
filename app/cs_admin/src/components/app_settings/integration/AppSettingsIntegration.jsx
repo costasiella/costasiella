@@ -8,7 +8,7 @@ import { withRouter } from "react-router"
 import { Formik } from 'formik'
 import { toast } from 'react-toastify'
 
-import { GET_APP_SETTINGS_QUERY, UPDATE_APP_SETTINGS } from '../queries'
+import { GET_SYSTEM_SETTINGS_QUERY, UPDATE_SYSTEM_SETTING } from './queries'
 import { MOLLIE_SCHEMA } from './yupSchema'
 
 
@@ -34,8 +34,8 @@ function AppSettingsIntegration({ t, match, history }) {
   const cardTitle = t("settings.integration.title")
   const sidebarActive = "integration"
 
-  const { loading, error, data } = useQuery(GET_APP_SETTINGS_QUERY)
-  const [ updateSettings, { data: updateData }] = useMutation(UPDATE_APP_SETTINGS)
+  const { loading, error, data } = useQuery(GET_SYSTEM_SETTINGS_QUERY)
+  const [ updateSettings, { data: updateData }] = useMutation(UPDATE_SYSTEM_SETTING)
 
   console.log('query data app settings')
   console.log(data)
@@ -73,11 +73,9 @@ function AppSettingsIntegration({ t, match, history }) {
     >  
     <Formik
       initialValues={{ 
-        dateFormat: data.appSettings.dateFormat,
-        timeFormat: data.appSettings.timeFormat,
-        note: "",
+        mollie_api_key: data.systemSettings.edges[0].node.value
       }}
-      validationSchema={MOLLIE_SCHEMA}
+      // validationSchema={MOLLIE_SCHEMA}
       onSubmit={(values, { setSubmitting }, errors) => {
           console.log('submit values:')
           console.log(values)
@@ -85,11 +83,11 @@ function AppSettingsIntegration({ t, match, history }) {
 
           updateSettings({ variables: {
             input: {
-              dateFormat: values.dateFormat,
-              timeFormat: values.timeFormat,
+              setting: "integration_mollie_api_key",
+              value: values.mollie_api_key
             }
           }, refetchQueries: [
-              {query: GET_APP_SETTINGS_QUERY}
+              {query: GET_SYSTEM_SETTINGS_QUERY}
           ]})
           .then(({ data }) => {
               console.log('got data', data)

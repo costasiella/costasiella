@@ -15,29 +15,15 @@ import {
 } from "tabler-react"
 
 
-const AppSettingsGeneralForm = ({ t, history, isSubmitting, errors, values, return_url }) => (
+const AppSettingsIntegrationForm = ({ t, history, isSubmitting, errors, values, return_url }) => (
   <FoForm>
       <Card.Body>
-          <Form.Group label={t('settings.general.date_format')}>
-            <Field component="select" 
-                    name="dateFormat" 
-                    className={(errors.dateFormat) ? "form-control is-invalid" : "form-control"} 
-                    autoComplete="off">
-                <option value="YYYY-MM-DD" key={v4()}>{t('settings.general.date_formats.YYYY-MM-DD')}</option>
-                <option value="MM-DD-YYYY" key={v4()}>{t('settings.general.date_formats.MM-DD-YYYY')}</option>
-                <option value="DD-MM-YYYY" key={v4()}>{t('settings.general.date_formats.DD-MM-YYYY')}</option>
-            </Field>
-            <ErrorMessage name="dateFormat" component="span" className="invalid-feedback" />
-          </Form.Group>
-          <Form.Group label={t('settings.general.time_format')}>
-            <Field component="select" 
-                    name="timeFormat" 
-                    className={(errors.timeFormat) ? "form-control is-invalid" : "form-control"} 
-                    autoComplete="off">
-                <option value="24" key={v4()}>{t('settings.general.time_formats.24hr')}</option>
-                <option value="12" key={v4()}>{t('settings.general.time_formats.12hr')}</option>
-            </Field>
-            <ErrorMessage name="timeFormat" component="span" className="invalid-feedback" />
+          <Form.Group label={t('settings.integration.mollie_api_key')}>
+            <Field type="text" 
+              name="mollie_api_key" 
+              className={(errors.mollie_api_key) ? "form-control is-invalid" : "form-control"} 
+              autoComplete="off" />
+            <ErrorMessage name="mollie_api_key" component="span" className="invalid-feedback" />
           </Form.Group>
       </Card.Body>
       <Card.Footer>
@@ -59,4 +45,4 @@ const AppSettingsGeneralForm = ({ t, history, isSubmitting, errors, values, retu
   </FoForm>
 )
 
-export default withTranslation()(withRouter(AppSettingsGeneralForm))
+export default withTranslation()(withRouter(AppSettingsIntegrationForm))
