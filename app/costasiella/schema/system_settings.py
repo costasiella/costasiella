@@ -41,30 +41,34 @@ class SystemSettingQuery(graphene.ObjectType):
         return SystemSetting.objects.all()
 
 
-class UpdateAppSettings(graphene.relay.ClientIDMutation):
+class UpdateSystemSetting(graphene.relay.ClientIDMutation):
     class Input:
-        date_format = graphene.String(required=False)
-        time_format = graphene.String(required=False)
+        setting = graphene.String(required=True)
+        value = graphene.String(required=True, default="")
         
-    app_settings = graphene.Field(AppSettingsNode)
+    system_setting = graphene.Field(SystemSettingNode)
 
     @classmethod
     def mutate_and_get_payload(self, root, info, **input):
         user = info.context.user
-        require_login_and_permission(user, 'costasiella.change_appsettings')
+        require_login_and_permission(user, 'costasiella.change_systemsetting')
 
-        app_settings = AppSettings.objects.get(id=1)
+        system_setting = SystemSetting.objects.get(setting=setting)
+        if not system_setting:
+            # Insert
+            system_setting = SystemSetting(
+                setting = input['setting']
+                value = input['value']
+            )
+        else:
+            # Update
+            system_setting.setting = input['setting']
+            system_setting.value = input['value']
 
-        if 'date_format' in input:
-            app_settings.date_format = input['date_format']
+        # Save
+        system_setting.save()
 
-        if 'time_format' in input:
-            app_settings.time_format = input['time_format']
-
-
-        app_settings.save()
-
-        return UpdateAppSettings(app_settings=app_settings)
+        return UpdateSystemSetting(system_setting=system_setting)
 
 
 class AppSettingsMutation(graphene.ObjectType):
