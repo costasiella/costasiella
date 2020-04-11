@@ -56,7 +56,7 @@ from .schedule_item_price import ScheduleItemPriceQuery, ScheduleItemPriceMutati
 from .schedule_item_teacher import ScheduleItemTeacherQuery, ScheduleItemTeacherMutation
 from .schedule_item_teacher_available import ScheduleItemTeacherAvailableQuery, ScheduleItemTeacherAvailableMutation
 
-from .system_settings import SystemSettingQuery, SystemSettingMutation
+from .system_setting import SystemSettingQuery, SystemSettingMutation
 
 class Query(AccountQuery,
             AccountAcceptedDocumentQuery,

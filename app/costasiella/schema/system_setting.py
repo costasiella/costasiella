@@ -16,14 +16,24 @@ class SystemSettingNode(DjangoObjectType):
     class Meta:
         model = SystemSetting
         filter_fields = ['setting']
+        filter_fields = {
+            'setting': ['exact'],
+        }
         interfaces = (graphene.relay.Node, )
 
     @classmethod
-    def get_node(self, info, id):
+    def get_node(self, info, **kwargs):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.view_systemsetting')
 
-        return self._meta.model.objects.get(id=id)
+        print(kwargs)
+        id = kwargs.get('id')
+        setting = kwargs.get('name')
+
+        if id:
+            return self._meta.model.objects.get(id=id)
+        if setting:
+            return self._meta.model.objects.get(setting=setting)
 
 
 class SystemSettingQuery(graphene.ObjectType):
@@ -31,11 +41,11 @@ class SystemSettingQuery(graphene.ObjectType):
     system_setting = graphene.relay.Node.Field(SystemSettingNode)
 
 
-    def resolve_system_settings(self, info, account, **kwargs):
+    def resolve_system_settings(self, info, **kwargs):
         user = info.context.user
-        require_login_and_permission(user, 'costasiella.view_system_settings')
+        require_login_and_permission(user, 'costasiella.view_systemsetting')
 
-        rid = get_rid(account)
+        # rid = get_rid()
 
         ## return everything:
         return SystemSetting.objects.all()
