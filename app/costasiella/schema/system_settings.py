@@ -53,15 +53,16 @@ class UpdateSystemSetting(graphene.relay.ClientIDMutation):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.change_systemsetting')
 
-        system_setting = SystemSetting.objects.get(setting=setting)
-        if not system_setting:
+        record_found = SystemSetting.objects.filter(setting=input['setting']).exists()
+        if not record_found:
             # Insert
             system_setting = SystemSetting(
-                setting = input['setting']
+                setting = input['setting'],
                 value = input['value']
             )
         else:
             # Update
+            system_setting = SystemSetting.objects.filter(setting=input['setting']).first()
             system_setting.setting = input['setting']
             system_setting.value = input['value']
 
