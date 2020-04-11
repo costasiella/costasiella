@@ -17,7 +17,7 @@ import {
 } from "tabler-react";
 import ShopCheckoutPaymentBase from "./ShopCheckoutPaymentBase"
 
-import { GET_ORDER_QUERY } from "./queries"
+import { GET_ORDER_QUERY, CREATE_PAYMENT_LINK } from "./queries"
 // import { CREATE_ORDER } from "../../queries"
 
 
@@ -32,6 +32,8 @@ function ShopCheckoutPayment({ t, match, history }) {
   const { loading, error, data } = useQuery(GET_ORDER_QUERY, {
     variables: { id: id }
   })
+
+  const [createPaymentLink, {data: createPaymentLinkData}] = useMutation(CREATE_PAYMENT_LINK)
 
   // const [createOrder, { data: createOrderData }] = useMutation(CREATE_ORDER)
 
@@ -59,6 +61,16 @@ function ShopCheckoutPayment({ t, match, history }) {
     // btnPayNow.current.setValue("redirecting...")
     // btnPayNow
     // btnPayNow.current.removeAttribute("disabled")
+    createPaymentLink({ variables: { id: id } }).then(({ data }) => {
+      console.log('got data', data);
+      const paymentLink = data.createFinanceOrderPaymentLink.financeOrderPaymentLink.paymentLink
+      window.location.href = paymentLink
+    }).catch((error) => {
+      toast.error((t('general.toast_server_error')) + ': ' +  error, {
+          position: toast.POSITION.BOTTOM_RIGHT
+        })
+      console.log('there was an error sending the query', error)
+    })
   }
 
 
@@ -85,7 +97,7 @@ function ShopCheckoutPayment({ t, match, history }) {
           </Grid.Col>
           <Grid.Col md={6}>
             <Card title={t("shop.checkout.payment.order_summary")}>
-              <div class="table-responsive">
+              <div className="table-responsive">
                 <Table cards={true}>
                   <Table.Header>
                     <Table.Row>
