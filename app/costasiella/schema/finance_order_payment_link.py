@@ -35,10 +35,10 @@ class CreateFinanceOrderPaymentLink(graphene.Mutation):
         print(id)
 
         rid = get_rid(id)
-        finance_order = FinanceOrder.objects.get(pk=rid.id)      
+        finance_order = FinanceOrder.objects.get(pk=rid.id)
 
-        
-
+        finance_order_payment_link = FinanceOrderPaymentLinkType()
+        finance_order_payment_link.payment_link = "https://google.nl/"      
 
         return CreateFinanceOrderPaymentLink(
             finance_order_payment_link=finance_order_payment_link
@@ -47,3 +47,19 @@ class CreateFinanceOrderPaymentLink(graphene.Mutation):
 
 class FinanceOrderPaymentLinkMutation(graphene.ObjectType):
     create_finance_order_payment_link = CreateFinanceOrderPaymentLink.Field()
+
+
+"""
+mutation CreateFinanceOrderPaymentLink($id: ID!) {
+  createFinanceOrderPaymentLink(id: $id) {
+    financeOrderPaymentLink {
+      paymentLink
+    }
+  }
+}
+
+{
+  "id": "RmluYW5jZU9yZGVyTm9kZTo1OQ=="
+}
+
+"""
