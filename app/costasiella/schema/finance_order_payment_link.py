@@ -30,12 +30,58 @@ class CreateFinanceOrderPaymentLink(graphene.Mutation):
 
     @classmethod
     def mutate(self, root, info, id):
+        from mollie.api.client import Client
+        from mollie.api.error import Error as MollieError
+
+        print(info.context)
+        # print(info.context.build_absolute_uri())
+        
         user = info.context.user
+        host = info.context.get_host()
+        # https://docs.djangoproject.com/en/3.0/ref/request-response/
         # Check if the user owns this order
         print(id)
 
         rid = get_rid(id)
         finance_order = FinanceOrder.objects.get(pk=rid.id)
+        if finance_order.account != user:
+            raise GraphQLError(
+                m.finance_order_belongs_other_account, 
+                extensions={'code': FINANCE_ORDER_OTHER_ACCOUNT}
+            )
+
+        mollie = Client()
+        # mollie_api_key = get_sys_property('mollie_website_profile')
+        mollie_api_key = "test_kBdWS2sfs2k9HcSCfx7cQkCbc3f5VQ"
+        mollie.set_api_key(mollie_api_key)
+        
+        # Order information
+        amount = finance_order.total
+        description = _("Order #") + str(finance_order.id)
+
+        
+        # Gather mollie payment info
+        recurring_type = None
+
+        redirect_url = 'https://' + host + '/#/shop/checkout/complete/' + id
+        print(redirect_url)
+
+        # payment = mollie.payments.create({
+        #     'amount': {
+        #         'currency': CURRENCY,
+        #         'value': amount
+        #     },
+        #     'description': description,
+        #     'sequenceType': recurring_type,
+        #     'customerId': mollie_customer_id,
+        #     'redirectUrl': redirect_url,
+        #     'webhookUrl': 'https://' + request.env.http_host + '/mollie/webhook',
+        #     'metadata': {
+        #         'customers_orders_id': coID
+        #     }
+        # })
+
+
 
         finance_order_payment_link = FinanceOrderPaymentLinkType()
         finance_order_payment_link.payment_link = "https://google.nl/"      
