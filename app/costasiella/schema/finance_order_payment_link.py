@@ -89,7 +89,7 @@ class CreateFinanceOrderPaymentLink(graphene.Mutation):
             'redirectUrl': redirect_url,
             'webhookUrl': webhook_url,
             'metadata': {
-                'customers_orders_id': finance_order.pk
+                'order_id': finance_order.pk
             }
         })
 
