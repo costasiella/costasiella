@@ -7,7 +7,7 @@ from graphene_django.filter import DjangoFilterConnectionField
 from graphql import GraphQLError
 from graphql_relay import to_global_id
 
-from ..models import FinanceOrder
+from ..models import FinanceOrder, IntegrationLogMollie
 from ..modules.gql_tools import require_login_and_permission, require_login_and_one_of_permissions, get_rid
 from ..modules.messages import Messages
 
@@ -94,6 +94,15 @@ class CreateFinanceOrderPaymentLink(graphene.Mutation):
         })
 
         print(payment)
+
+        #  Log payment info
+        log = IntegrationLogMollie(
+            mollie_payment_id = payment['id'],
+            recurring_type = recurring_type,
+            webhook_url = webhook_url,
+            finance_order = finance_order,
+        )
+        log.save()
 
         finance_order_payment_link = FinanceOrderPaymentLinkType()
         finance_order_payment_link.payment_link = payment.checkout_url

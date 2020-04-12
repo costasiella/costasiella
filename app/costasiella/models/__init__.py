@@ -19,6 +19,8 @@ from .finance_order_item import FinanceOrderItem
 from .finance_payment_method import FinancePaymentMethod
 from .finance_tax_rate import FinanceTaxRate
 
+from .integration_log_mollie import IntegrationLogMollie
+
 from .organization import Organization
 from .organization_appointment import OrganizationAppointment
 from .organization_appointment_category import OrganizationAppointmentCategory
