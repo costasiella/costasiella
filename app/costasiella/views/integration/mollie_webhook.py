@@ -68,6 +68,7 @@ def mollie_webhook(request):
             payment_date = datetime.datetime.strptime(payment.paid_at.split('+')[0],
                                                       '%Y-%m-%dT%H:%M:%S').date()
 
+            print(payment_amount)
             print(payment_date)
 
 
