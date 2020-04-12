@@ -97,6 +97,7 @@ class CreateFinanceOrderPaymentLink(graphene.Mutation):
 
         #  Log payment info
         log = IntegrationLogMollie(
+            log_source = "ORDER_PAY",
             mollie_payment_id = payment['id'],
             recurring_type = recurring_type,
             webhook_url = webhook_url,

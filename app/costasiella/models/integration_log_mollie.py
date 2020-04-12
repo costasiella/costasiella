@@ -8,7 +8,13 @@ from .finance_order import FinanceOrder
 
 class IntegrationLogMollie(models.Model):
     # add additional fields in here
+    LOG_SOURCES = (
+        ('ORDER_PAY', _("Order pay")),
+        ('INVOICE_PAY', _("Invoice pay")),
+        ('WEBHOOK', _("Webhook")),
+    )
 
+    log_source = models.CharField(max_length=255, choices=LOG_SOURCES)
     mollie_payment_id = models.CharField(max_length=255)
     recurring_type = models.CharField(max_length=255, null=True)
     webhook_url = models.TextField()
