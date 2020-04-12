@@ -20,6 +20,7 @@ class IntegrationLogMollie(models.Model):
     webhook_url = models.TextField(null=True)
     finance_invoice = models.ForeignKey(FinanceInvoice, on_delete=models.CASCADE, null=True)
     finance_order = models.ForeignKey(FinanceOrder, on_delete=models.CASCADE, null=True)
+    payment_data = models.TextField(null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     
