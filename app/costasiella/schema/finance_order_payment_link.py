@@ -33,6 +33,8 @@ class CreateFinanceOrderPaymentLink(graphene.Mutation):
         from mollie.api.client import Client
         from mollie.api.error import Error as MollieError
 
+        from ..dudes.mollie_dude import MollieDude
+
         print(info.context)
         # print(info.context.build_absolute_uri())
         
@@ -50,6 +52,8 @@ class CreateFinanceOrderPaymentLink(graphene.Mutation):
                 extensions={'code': FINANCE_ORDER_OTHER_ACCOUNT}
             )
 
+        mollie_dude = MollieDude()
+
         mollie = Client()
         # mollie_api_key = get_sys_property('mollie_website_profile')
         mollie_api_key = "test_kBdWS2sfs2k9HcSCfx7cQkCbc3f5VQ"
@@ -66,9 +70,20 @@ class CreateFinanceOrderPaymentLink(graphene.Mutation):
         redirect_url = 'https://' + host + '/#/shop/checkout/complete/' + id
         print(redirect_url)
 
+        #TODO: Save & fetch mollie customer ID
+        mollie_customer_id = mollie_dude.get_account_mollie_customer_id(
+          user,
+          mollie
+        )
+
+        print(mollie_customer_id)
+
+
+        #TODO: Fetch currency eg. EUR or USD, etc.
+
         # payment = mollie.payments.create({
         #     'amount': {
-        #         'currency': CURRENCY,
+        #         'currency': EUR,
         #         'value': amount
         #     },
         #     'description': description,
