@@ -7,7 +7,7 @@ from graphene_django.filter import DjangoFilterConnectionField
 from graphql import GraphQLError
 from graphql_relay import to_global_id
 
-from ..models import FinanceOrder, IntegrationLogMollie
+from ..models import FinanceOrder, IntegrationLogMollie, SystemSetting
 from ..modules.gql_tools import require_login_and_permission, require_login_and_one_of_permissions, get_rid
 from ..modules.messages import Messages
 
@@ -56,7 +56,7 @@ class CreateFinanceOrderPaymentLink(graphene.Mutation):
 
         mollie = Client()
         # mollie_api_key = get_sys_property('mollie_website_profile')
-        mollie_api_key = "test_kBdWS2sfs2k9HcSCfx7cQkCbc3f5VQ"
+        mollie_api_key = mollie_dude.get_api_key()
         mollie.set_api_key(mollie_api_key)
         
         # Order information

@@ -1,6 +1,21 @@
 from django.utils.translation import gettext as _
 
+from ..models import SystemSetting
+
+
 class MollieDude:
+    def get_api_key(self):
+        """
+        Fetch & return mollie api key, if any
+        """
+        mollie_api_key = None
+        qs = SystemSetting.objects.filter(setting="integration_mollie_api_key")
+        if qs.exists():
+            mollie_api_key = qs.first().value
+
+        return mollie_api_key
+
+
     def get_webhook_url(self, request):
         """
         :param request: Django request
