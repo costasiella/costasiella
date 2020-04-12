@@ -17,7 +17,7 @@ class IntegrationLogMollie(models.Model):
     log_source = models.CharField(max_length=255, choices=LOG_SOURCES)
     mollie_payment_id = models.CharField(max_length=255)
     recurring_type = models.CharField(max_length=255, null=True)
-    webhook_url = models.TextField()
+    webhook_url = models.TextField(null=True)
     finance_invoice = models.ForeignKey(FinanceInvoice, on_delete=models.CASCADE, null=True)
     finance_order = models.ForeignKey(FinanceOrder, on_delete=models.CASCADE, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
