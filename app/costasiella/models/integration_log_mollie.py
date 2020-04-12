@@ -20,8 +20,3 @@ class IntegrationLogMollie(models.Model):
 
     def __str__(self):
         return "mollie payment: " + self.mollie_payment_id
-
-    # def save(self, *args, **kwargs):
-    #     name = [self.first_name, self.last_name]
-    #     self.full_name = " ".join(name)
-    #     super(Account, self).save(*args, **kwargs)
