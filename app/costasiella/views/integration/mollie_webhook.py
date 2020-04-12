@@ -11,21 +11,30 @@ from django.template.loader import get_template, render_to_string
 # from django.template.loader import render_to_string
 # rendered = render_to_string('my_template.html', {'foo': 'bar'})
 
-from ..models import FinanceInvoice, FinanceOrder, IntegrationLogMollie
-from ..modules.gql_tools import require_login_and_permission, get_rid
+import datetime
+
+from ...models import FinanceInvoice, FinanceOrder, IntegrationLogMollie
+from ...modules.gql_tools import require_login_and_permission, get_rid
 
 from ...dudes.mollie_dude import MollieDude
 
+from mollie.api.client import Client
+from mollie.api.error import Error as MollieError
 
-def mollie_webhook(request, id):
+
+def mollie_webhook(request):
     """
     Webhook called by mollie
     """
+    id = request.POST.get('id', None)
+
     log = IntegrationLogMollie(
         log_source = "WEBHOOK",
         mollie_payment_id = id,
     )
     log.save()
+
+    print(id)
 
     # try to get payment
     try:
@@ -40,13 +49,15 @@ def mollie_webhook(request, id):
         payment_id = id
         payment = mollie.payments.get(payment_id)
 
+        print(payment)
+
         # Log payment data
         log.payment_data = str(payment)
         log.save()
 
         # Determine what to do
-        finance_invoice_id = payment['metadata']['invoice_id']
-        finance_order_id = payment['metadata']['order_id'] 
+        finance_invoice_id = payment['metadata'].get("invoice_id", None)
+        finance_order_id = payment['metadata'].get("order_id", None)
 
         if payment.is_paid():
             #
@@ -75,21 +86,21 @@ def mollie_webhook(request, id):
             #     # Deliver order
             #     webhook_order_paid(coID, payment_amount, payment_date, payment_id, payment=payment)
 
-            return 'Paid'
+            return HttpResponse('Paid')
         elif payment.is_pending():
             #
             # The payment has started but is not complete yet.
             #
-            return 'Pending'
+            return HttpResponse('Pending')
         elif payment.is_open():
             #
             # The payment has not started yet. Wait for it.
             #
-            return 'Open'
+            return HttpResponse('Open')
         else:
             #
             # The payment isn't paid, pending nor open. We can assume it was aborted.
             #
-            return 'Cancelled'
+            return HttpResponse('Cancelled')
     except MollieError as e:
-        return 'API call failed: {error}'.format(error=e)
+        return HttpResponse('API call failed: {error}'.format(error=e))
