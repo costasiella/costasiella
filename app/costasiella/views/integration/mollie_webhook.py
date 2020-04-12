@@ -17,7 +17,7 @@ from ..modules.gql_tools import require_login_and_permission, get_rid
 from ...dudes.mollie_dude import MollieDude
 
 
-def webhook(request, id):
+def mollie_webhook(request, id):
     """
     Webhook called by mollie
     """

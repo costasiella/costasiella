@@ -8,3 +8,6 @@ from .insight.export_insight_classpasses_active import export_excel_insight_clas
 from .insight.export_insight_classpasses_sold import export_excel_insight_classpasses_sold
 from .insight.export_insight_subscriptions_active import export_excel_insight_subscriptions_active
 from .insight.export_insight_subscriptions_sold import export_excel_insight_subscriptions_sold
+
+# Mollie
+from .integration.mollie_webhook import mollie_webhook
