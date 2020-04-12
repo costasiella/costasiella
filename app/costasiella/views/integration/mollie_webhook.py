@@ -1,0 +1,88 @@
+import io
+
+from django.utils.translation import gettext as _
+from django.utils import timezone
+from django.shortcuts import redirect, render
+from django.http import Http404, HttpResponse, FileResponse
+from django.db.models import Q
+from django.template.loader import get_template, render_to_string
+
+
+# from django.template.loader import render_to_string
+# rendered = render_to_string('my_template.html', {'foo': 'bar'})
+
+from ..models import FinanceInvoice, FinanceOrder, IntegrationLogMollie
+from ..modules.gql_tools import require_login_and_permission, get_rid
+
+
+def webhook():
+    """
+        Webhook called by mollie
+    """
+    id = request.vars['id']
+
+    mlwID = db.mollie_log_webhook.insert(mollie_payment_id=id)
+    mlw = db.mollie_log_webhook(mlwID)
+
+    # try to get payment
+    try:
+        mollie = Client()
+        mollie_api_key = get_sys_property('mollie_website_profile')
+        mollie.set_api_key(mollie_api_key)
+
+        payment_id = id
+        payment = mollie.payments.get(payment_id)
+
+        mlw.mollie_payment = str(payment)
+        mlw.update_record()
+
+        iID = ''
+        coID = payment['metadata']['customers_orders_id'] # customers_orders_id
+
+        if coID == 'invoice':
+            # Invoice payment instead of order payment
+            iID = payment['metadata']['invoice_id']
+
+        if payment.is_paid():
+            #
+            # At this point you'd probably want to start the process of delivering the
+            # product to the customer.
+            #
+            payment_amount = float(payment.amount['value'])
+            payment_date = datetime.datetime.strptime(payment.paid_at.split('+')[0],
+                                                      '%Y-%m-%dT%H:%M:%S').date()
+
+
+            # Process refunds
+            if payment.refunds:
+                webook_payment_is_paid_process_refunds(coID, iID, payment.refunds)
+
+            # Process chargebacks
+            if payment.chargebacks:
+                webhook_payment_is_paid_process_chargeback(coID, iID, payment)
+
+            if coID == 'invoice':
+                # add payment to invoice
+                webhook_invoice_paid(iID, payment_amount, payment_date, payment_id)
+            else:
+                # Deliver order
+                webhook_order_paid(coID, payment_amount, payment_date, payment_id, payment=payment)
+
+            return 'Paid'
+        elif payment.is_pending():
+            #
+            # The payment has started but is not complete yet.
+            #
+            return 'Pending'
+        elif payment.is_open():
+            #
+            # The payment has not started yet. Wait for it.
+            #
+            return 'Open'
+        else:
+            #
+            # The payment isn't paid, pending nor open. We can assume it was aborted.
+            #
+            return 'Cancelled'
+    except MollieError as e:
+        return 'API call failed: {error}'.format(error=e)
