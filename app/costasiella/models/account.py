@@ -34,6 +34,7 @@ class Account(AbstractUser):
     phone = EncryptedTextField(default="")
     mobile = EncryptedTextField(default="")
     emergency = EncryptedTextField(default="")
+    mollie_customer_id = EncryptedTextField(default="")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
