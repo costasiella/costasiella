@@ -7,6 +7,7 @@ import { useQuery, useMutation } from '@apollo/react-hooks'
 import { Link } from 'react-router-dom'
 import { Formik } from 'formik'
 import { toast } from 'react-toastify'
+import { v4 } from 'uuid'
 
 import {
   Card,
@@ -107,7 +108,7 @@ function ShopCheckoutPayment({ t, match, history }) {
                   </Table.Header>
                   <Table.Body>
                     {orderItems.map(({ node }) => (
-                      <Table.Row>
+                      <Table.Row key={v4()}>
                         <Table.Col>
                           {node.productName} <br /> 
                           <span className="text-muted">
