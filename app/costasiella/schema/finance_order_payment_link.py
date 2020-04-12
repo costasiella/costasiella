@@ -66,40 +66,37 @@ class CreateFinanceOrderPaymentLink(graphene.Mutation):
         
         # Gather mollie payment info
         recurring_type = None
-
         redirect_url = 'https://' + host + '/#/shop/checkout/complete/' + id
         print(redirect_url)
-
-        #TODO: Save & fetch mollie customer ID
         mollie_customer_id = mollie_dude.get_account_mollie_customer_id(
           user,
           mollie
         )
-
         print(mollie_customer_id)
-
+        webhook_url = mollie_dude.get_webhook_url(info.context)
+        print(webhook_url)
 
         #TODO: Fetch currency eg. EUR or USD, etc.
 
-        # payment = mollie.payments.create({
-        #     'amount': {
-        #         'currency': EUR,
-        #         'value': amount
-        #     },
-        #     'description': description,
-        #     'sequenceType': recurring_type,
-        #     'customerId': mollie_customer_id,
-        #     'redirectUrl': redirect_url,
-        #     'webhookUrl': 'https://' + request.env.http_host + '/mollie/webhook',
-        #     'metadata': {
-        #         'customers_orders_id': coID
-        #     }
-        # })
+        payment = mollie.payments.create({
+            'amount': {
+                'currency': "EUR",
+                'value': str(amount)
+            },
+            'description': description,
+            'sequenceType': recurring_type,
+            'customerId': mollie_customer_id,
+            'redirectUrl': redirect_url,
+            'webhookUrl': webhook_url,
+            'metadata': {
+                'customers_orders_id': finance_order.pk
+            }
+        })
 
-
+        print(payment)
 
         finance_order_payment_link = FinanceOrderPaymentLinkType()
-        finance_order_payment_link.payment_link = "https://google.nl/"      
+        finance_order_payment_link.payment_link = payment.checkout_url
 
         return CreateFinanceOrderPaymentLink(
             finance_order_payment_link=finance_order_payment_link

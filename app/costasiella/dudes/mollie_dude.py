@@ -1,6 +1,16 @@
 from django.utils.translation import gettext as _
 
 class MollieDude:
+    def get_webhook_url(self, request):
+        """
+        :param request: Django request
+        """
+        host = request.get_host()
+        webhook_url = "https://" + host + "/d/mollie/webhook"
+
+        return webhook_url
+
+
     def get_account_mollie_customer_id(self, account, mollie):
         """
         :param account: models.Account object
