@@ -7,6 +7,8 @@ now = timezone.now()
 from django.db import models
 
 from .account import Account
+from .finance_invoice import FinanceInvoice
+from .finance_invoice_group import FinanceInvoiceGroup
 from .finance_invoice_group_default import FinanceInvoiceGroupDefault
 # from .finance_invoice_group import FinanceInvoiceGroup
 # from .finance_payment_method import FinancePaymentMethod
@@ -21,6 +23,7 @@ class FinanceOrder(models.Model):
         ('CANCELLED', _("Cancelled")),
     )
 
+    finance_invoice = models.ForeignKey(FinanceInvoice, on_delete=models.SET_NULL, null=True)
     account = models.ForeignKey(Account, on_delete=models.SET_NULL, null=True)
     status = models.CharField(max_length=255, choices=STATUSES, default="RECEIVED")
     message = models.TextField(default="")
@@ -93,10 +96,11 @@ class FinanceOrder(models.Model):
             create_invoice = True
             invoice = self._deliver_create_invoice()
 
-        
-
 
     def _deliver_create_invoice(self):
+        """
+        Create invoice for order delivery & link invoice to order
+        """
         finance_invoice_group_default = FinanceInvoiceGroupDefault.objects.filter(item_type="CLASSPASSES").first()
         finance_invoice_group = finance_invoice_group_default.finance_invoice_group
 
@@ -108,8 +112,8 @@ class FinanceOrder(models.Model):
             terms = finance_invoice_group.terms,
             footer = finance_invoice_group.footer
         )
-
         finance_invoice.save()
+        self.finance_invoice = finance_invoice
 
         return finance_invoice
 
