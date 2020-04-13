@@ -86,15 +86,31 @@ class FinanceOrder(models.Model):
         """
         Deliver this order
         """
+        from .finance_order_item import FinanceOrderItem
         # Don't deliver cancelled orders or orders that have already been deliverd
         if self.status == "DELIVERED" or self.status == "CANCELLED":
             return
 
         # Don't create an invoice when there's nothing that needs to be paid
         create_invoice = False
+        finance_invoice = None
         if self.total > 0:
             create_invoice = True
-            invoice = self._deliver_create_invoice()
+            finance_invoice = self._deliver_create_invoice()
+
+        items = FinanceOrderItem.objects.filter(finance_order=self)
+        print(items)
+
+        for item in items:
+            if item.organization_classpass:
+                self._deliver_classpass(organization_classpass, finance_invoice, create_invoice)
+
+        self.status = "DELIVERED"
+        self.save()
+
+        return dict(
+            finance_invoice = finance_invoice
+        )
 
 
     def _deliver_create_invoice(self):
@@ -118,14 +134,27 @@ class FinanceOrder(models.Model):
         return finance_invoice
 
 
-    def _deliver_classpass(self,organization_classpass):
+    def _deliver_classpass(self,
+                           organization_classpass,
+                           finance_invoice,
+                           create_invoice):
         """
         Deliver classpass
         """
+        from ..dudes.sales_dude import SalesDude
 
+        sales_dude = SalesDude()
+        today = timezone.now().date()
+        result = sales_dude.sell_classpass(
+            self.account, 
+            organization_classpass, 
+            date_start,
+            create_invoice=False
+        )
+        account_classpass = result['account_classpass']
 
-
-
-            
-
+        if create_invoice:
+            finance_invoice.item_add_classpass(
+                account_classpass
+            )
 
