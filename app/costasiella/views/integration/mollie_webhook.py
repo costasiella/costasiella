@@ -125,5 +125,7 @@ def webhook_deliver_order(finance_order_id, payment_amount, payment_date):
             finance_invoice=finance_invoice,
             amount=payment_amount,
             date=payment_date,
+            payment_methods_id=100,  # 100 = mollie
+            
         )
         finance_invoice_payment.save()
