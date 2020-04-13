@@ -76,9 +76,10 @@ def mollie_webhook(request):
 
             if finance_order_id:
                 webhook_deliver_order(
-                    finance_order_id,
-                    payment_amount,
-                    payment_date
+                    finance_order_id=finance_order_id,
+                    payment_amount=payment_amount,
+                    payment_date=payment_date,
+                    payment_id=id
                 )
 
             # if coID == 'invoice':
@@ -108,7 +109,7 @@ def mollie_webhook(request):
         return HttpResponse('API call failed: {error}'.format(error=e))
 
 
-def webhook_deliver_order(finance_order_id, payment_amount, payment_date):
+def webhook_deliver_order(finance_order_id, payment_amount, payment_date, payment_id):
     """
     Deliver order when payment for an order is received
     :param finance_order_id: models.finance_order.id
@@ -126,6 +127,6 @@ def webhook_deliver_order(finance_order_id, payment_amount, payment_date):
             amount=payment_amount,
             date=payment_date,
             payment_methods_id=100,  # 100 = mollie
-            
+            online_payment_id="mollie %s" % payment_id
         )
         finance_invoice_payment.save()
