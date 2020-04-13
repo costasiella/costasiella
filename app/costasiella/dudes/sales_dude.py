@@ -31,14 +31,13 @@ class SalesDude:
             "account_classpass": account_classpass,
             "finance_invoice": finance_invoice
         }
-        
 
-    def _sell_classpass_create_invoice(self, account_classpass):
+    @staticmethod
+    def _sell_classpass_create_invoice(account_classpass):
         """
         Create an invoice for sold class pass
         """
         from ..models.finance_invoice_group_default import FinanceInvoiceGroupDefault
-        from ..models.finance_invoice_group import FinanceInvoiceGroup
         from ..models.finance_invoice import FinanceInvoice
 
         finance_invoice_group_default = FinanceInvoiceGroupDefault.objects.filter(item_type="CLASSPASSES").first()
