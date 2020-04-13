@@ -1,4 +1,4 @@
-import io
+import datetime
 
 from django.utils.translation import gettext as _
 from django.utils import timezone
@@ -7,13 +7,7 @@ from django.http import Http404, HttpResponse, FileResponse
 from django.db.models import Q
 from django.template.loader import get_template, render_to_string
 
-
-# from django.template.loader import render_to_string
-# rendered = render_to_string('my_template.html', {'foo': 'bar'})
-
-import datetime
-
-from ...models import FinanceInvoice, FinanceOrder, IntegrationLogMollie
+from ...models import FinanceInvoicePayment, FinanceOrder, IntegrationLogMollie
 from ...modules.gql_tools import require_login_and_permission, get_rid
 
 from ...dudes.mollie_dude import MollieDude
@@ -80,6 +74,13 @@ def mollie_webhook(request):
             # if payment.chargebacks:
             #     webhook_payment_is_paid_process_chargeback(coID, iID, payment)
 
+            if finance_order_id:
+                webhook_deliver_order(
+                    finance_order_id,
+                    payment_amount,
+                    payment_date
+                )
+
             # if coID == 'invoice':
             #     # add payment to invoice
             #     webhook_invoice_paid(iID, payment_amount, payment_date, payment_id)
@@ -105,3 +106,24 @@ def mollie_webhook(request):
             return HttpResponse('Cancelled')
     except MollieError as e:
         return HttpResponse('API call failed: {error}'.format(error=e))
+
+
+def webhook_deliver_order(finance_order_id, payment_amount, payment_date):
+    """
+    Deliver order when payment for an order is received
+    :param finance_order_id: models.finance_order.id
+    :return:
+    """
+    finance_order = FinanceOrder.objects.get(id=finance_order_id)
+    # Deliver order
+    result = finance_order.deliver()
+    finance_invoice = result['finance_invoice']
+
+    # Add payment to invoice if an invoice is found
+    if finance_invoice:
+        finance_invoice_payment = FinanceInvoicePayment(
+            finance_invoice=finance_invoice,
+            amount=payment_amount,
+            date=payment_date,
+        )
+        finance_invoice_payment.save()
