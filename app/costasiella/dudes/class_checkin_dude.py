@@ -4,6 +4,7 @@ from ..models import ScheduleItemAttendance
 from ..models import OrganizationClasspassGroupClasspass, ScheduleItemOrganizationClasspassGroup
 from ..models import OrganizationSubscriptionGroupSubscription, ScheduleItemOrganizationSubscriptionGroup
 
+
 class ClassCheckinDude():
     def _class_checkedin(self, account, schedule_item, date):
         """

@@ -7,6 +7,7 @@ now = timezone.now()
 from django.db import models
 
 from .account import Account
+from .finance_invoice_group_default import FinanceInvoiceGroupDefault
 # from .finance_invoice_group import FinanceInvoiceGroup
 # from .finance_payment_method import FinancePaymentMethod
 
@@ -78,61 +79,49 @@ class FinanceOrder(models.Model):
         return finance_order_item
 
 
-    # def tax_rates_amounts(self, formatted=False):
-    #     """
-    #     Returns tax for each tax rate as list sorted by tax rate percentage
-    #     format: [ [ tax_rate_obj, sum ] ]
-    #     """
-    #     from django.db.models import Sum
+    def deliver(self):
+        """
+        Deliver this order
+        """
+        # Don't deliver cancelled orders or orders that have already been deliverd
+        if self.status == "DELIVERED" or self.status == "CANCELLED":
+            return
 
-    #     from .finance_invoice_item import FinanceInvoiceItem
-    #     from .finance_tax_rate import FinanceTaxRate
+        # Don't create an invoice when there's nothing that needs to be paid
+        create_invoice = False
+        if self.total > 0:
+            create_invoice = True
+            invoice = self._deliver_create_invoice()
 
-    #     amounts_tax = []
+        
 
-    #     tax_rates = FinanceTaxRate.objects.filter(
-    #         financeinvoiceitem__finance_invoice = self,
-    #     ).annotate(invoice_amount=Sum("financeinvoiceitem__tax"))
 
-    #     # print(tax_rates)
+    def _deliver_create_invoice(self):
+        finance_invoice_group_default = FinanceInvoiceGroupDefault.objects.filter(item_type="CLASSPASSES").first()
+        finance_invoice_group = finance_invoice_group_default.finance_invoice_group
 
-    #     # for t in tax_rates:
-    #     #     print(t.name)
-    #     #     print(t.rate_type)
-    #     #     print(t.invoice_amount)
+        finance_invoice = FinanceInvoice(
+            account = self.account,
+            finance_invoice_group = finance_invoice_group,
+            summary = _("Order %s" % self.id),
+            status = "SENT",
+            terms = finance_invoice_group.terms,
+            footer = finance_invoice_group.footer
+        )
 
-    #     return tax_rates
+        finance_invoice.save()
+
+        return finance_invoice
+
+
+    def _deliver_classpass(self,organization_classpass):
+        """
+        Deliver classpass
+        """
+
+
+
 
             
 
 
-
-
-    #TODO: Port this function to Django
-    # def amounts_tax_rates(self, formatted=False):
-    #     """
-    #         Returns vat for each tax rate as list sorted by tax rate percentage
-    #         format: [ [ Name, Amount ] ]
-    #     """
-    #     db = current.db
-    #     # CURRSYM = current.globalenv['CURRSYM']
-
-    #     amounts_vat = []
-    #     rows = db().select(db.tax_rates.id, db.tax_rates.Name,
-    #                        orderby=db.tax_rates.Percentage)
-    #     for row in rows:
-    #         sum = db.invoices_items.VAT.sum()
-    #         query = (db.invoices_items.invoices_id == iID) & \
-    #                 (db.invoices_items.tax_rates_id == row.id)
-
-    #         result = db(query).select(sum).first()
-
-    #         if not result[sum] is None:
-    #             # if formatted:
-    #                 # amount = SPAN(CURRSYM, ' ', format(result[sum], '.2f'))
-    #             else:
-    #                 amount = result[sum]
-    #             amounts_vat.append({'Name'   : row.Name,
-    #                                 'Amount' : amount})
-
-    #     return amounts_vat
