@@ -7,8 +7,11 @@ from django.http import Http404, HttpResponse, FileResponse
 from django.db.models import Q
 from django.template.loader import get_template, render_to_string
 
-from ...models import FinanceInvoicePayment, FinanceOrder, IntegrationLogMollie
-from ...modules.gql_tools import require_login_and_permission, get_rid
+from ...models import \
+        FinanceInvoicePayment, \
+        FinanceOrder, \
+        FinancePaymentMethod, \
+        IntegrationLogMollie
 
 from ...dudes.mollie_dude import MollieDude
 
@@ -118,15 +121,19 @@ def webhook_deliver_order(finance_order_id, payment_amount, payment_date, paymen
     finance_order = FinanceOrder.objects.get(id=finance_order_id)
     # Deliver order
     result = finance_order.deliver()
-    finance_invoice = result['finance_invoice']
+    if result is not None:
+        finance_invoice = result['finance_invoice']
+        finance_payment_method = FinancePaymentMethod.objects.get(pk=100) # Mollie
 
-    # Add payment to invoice if an invoice is found
-    if finance_invoice:
-        finance_invoice_payment = FinanceInvoicePayment(
-            finance_invoice=finance_invoice,
-            amount=payment_amount,
-            date=payment_date,
-            payment_methods_id=100,  # 100 = mollie
-            online_payment_id="mollie %s" % payment_id
-        )
-        finance_invoice_payment.save()
+        # Add payment to invoice if an invoice is found
+        if finance_invoice:
+            finance_invoice_payment = FinanceInvoicePayment(
+                finance_invoice=finance_invoice,
+                amount=payment_amount,
+                date=payment_date,
+                finance_payment_method=finance_payment_method,
+                online_payment_id="mollie %s" % payment_id
+            )
+            finance_invoice_payment.save()
+
+            finance_invoice.is_paid()
