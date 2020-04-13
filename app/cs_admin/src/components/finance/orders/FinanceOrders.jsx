@@ -41,7 +41,7 @@ function FinanceOrders({t, match, history}) {
   const title = t("shop.home.title")
   const { loading, error, data, refetch, fetchMore } = useQuery(GET_ORDERS_QUERY, {
     variables: {get_list_query_variables},
-    pollInterval: 2000
+    // pollInterval: 2000
   })
 
   if (loading) return (
