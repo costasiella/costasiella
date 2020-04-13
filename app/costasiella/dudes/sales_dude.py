@@ -1,5 +1,6 @@
 from django.utils.translation import gettext as _
 
+
 class SalesDude:
     def sell_classpass(self, account, organization_classpass, date_start, note="", create_invoice=True):
         """
@@ -26,7 +27,6 @@ class SalesDude:
             print('still alive')
             finance_invoice = self._sell_classpass_create_invoice(account_classpass)
 
-
         return {
             "account_classpass": account_classpass,
             "finance_invoice": finance_invoice
@@ -40,7 +40,6 @@ class SalesDude:
         from ..models.finance_invoice_group_default import FinanceInvoiceGroupDefault
         from ..models.finance_invoice_group import FinanceInvoiceGroup
         from ..models.finance_invoice import FinanceInvoice
-
 
         finance_invoice_group_default = FinanceInvoiceGroupDefault.objects.filter(item_type="CLASSPASSES").first()
         finance_invoice_group = finance_invoice_group_default.finance_invoice_group

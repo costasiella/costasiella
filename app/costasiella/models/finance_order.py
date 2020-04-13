@@ -36,7 +36,6 @@ class FinanceOrder(models.Model):
     def __str__(self):
         return _("Order: ") + str(self.id)
 
-
     def update_amounts(self):
         """ Update total amounts fields (subtotal, tax, total, paid, balance) """
         # Get totals from invoice items
@@ -54,7 +53,6 @@ class FinanceOrder(models.Model):
             "tax",
             "total"
         ])
-
 
     def item_add_classpass(self, organization_classpass):
         """
@@ -81,13 +79,12 @@ class FinanceOrder(models.Model):
 
         return finance_order_item
 
-
     def deliver(self):
         """
         Deliver this order
         """
         from .finance_order_item import FinanceOrderItem
-        # Don't deliver cancelled orders or orders that have already been deliverd
+        # Don't deliver cancelled orders or orders that have already been delivered
         if self.status == "DELIVERED" or self.status == "CANCELLED":
             return
 
@@ -103,15 +100,15 @@ class FinanceOrder(models.Model):
 
         for item in items:
             if item.organization_classpass:
-                self._deliver_classpass(organization_classpass, finance_invoice, create_invoice)
+                self._deliver_classpass(
+                    item.organization_classpass, finance_invoice, create_invoice)
 
         self.status = "DELIVERED"
         self.save()
 
         return dict(
-            finance_invoice = finance_invoice
+            finance_invoice=finance_invoice
         )
-
 
     def _deliver_create_invoice(self):
         """
@@ -133,13 +130,15 @@ class FinanceOrder(models.Model):
 
         return finance_invoice
 
-
     def _deliver_classpass(self,
                            organization_classpass,
                            finance_invoice,
                            create_invoice):
         """
-        Deliver classpass
+        :param organization_classpass: models.organization_classpass object
+        :param finance_invoice: models.finance_invoice object
+        :param create_invoice: Boolean
+        :return:
         """
         from ..dudes.sales_dude import SalesDude
 
@@ -148,7 +147,7 @@ class FinanceOrder(models.Model):
         result = sales_dude.sell_classpass(
             self.account, 
             organization_classpass, 
-            date_start,
+            today,
             create_invoice=False
         )
         account_classpass = result['account_classpass']
@@ -157,4 +156,3 @@ class FinanceOrder(models.Model):
             finance_invoice.item_add_classpass(
                 account_classpass
             )
-
