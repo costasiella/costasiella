@@ -136,4 +136,5 @@ def webhook_deliver_order(finance_order_id, payment_amount, payment_date, paymen
             )
             finance_invoice_payment.save()
 
+            # Check if the invoice has been paid in full and whether we should update it's status
             finance_invoice.is_paid()
