@@ -14,6 +14,7 @@ import {
   Table,
 } from "tabler-react";
 import ShopCheckoutPaymentBase from "./ShopCheckoutPaymentBase"
+import ShopCheckoutOrderSummary from "../order_summary/ShopCheckoutOrderSummary"
 
 import { GET_ORDER_QUERY } from "../queries"
 import { CREATE_PAYMENT_LINK } from "./queries"
@@ -89,7 +90,8 @@ function ShopCheckoutPayment({ t, match, history }) {
             </Card>
           </Grid.Col>
           <Grid.Col md={6}>
-            <Card title={t("shop.checkout.payment.order_summary")}>
+            <ShopCheckoutOrderSummary id={id} />
+            {/* <Card title={t("shop.checkout.payment.order_summary")}>
               <div className="table-responsive">
                 <Table cards={true}>
                   <Table.Header>
@@ -127,7 +129,7 @@ function ShopCheckoutPayment({ t, match, history }) {
                   {order.message}
                 </span>
               </Card.Body>
-            </Card>
+            </Card> */}
           </Grid.Col>
         </Grid.Row>
     </ShopCheckoutPaymentBase>
