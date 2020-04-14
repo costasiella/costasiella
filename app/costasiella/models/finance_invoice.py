@@ -51,7 +51,6 @@ class FinanceInvoice(models.Model):
     def __str__(self):
         return self.invoice_number
 
-
     def _set_relation_info(self):
         """ Set relation info from linked account """
         self.relation_contact_name = self.account.full_name
@@ -59,7 +58,6 @@ class FinanceInvoice(models.Model):
         self.relation_postcode = self.account.postcode
         self.relation_city = self.account.city
         self.relation_country = self.account.country
-
 
     def update_amounts(self):
         """ Update total amounts fields (subtotal, tax, total, paid, balance) """
@@ -89,7 +87,6 @@ class FinanceInvoice(models.Model):
             "balance"
         ])
 
-
     def _first_invoice_in_group_this_year(self, year): 
         """
         This invoice has to be the first in the group this year if no other 
@@ -102,14 +99,12 @@ class FinanceInvoice(models.Model):
             date_sent__gte = year_start,
             date_sent__lte = year_end,
             finance_invoice_group = self.finance_invoice_group
-        ).exists()  
-
+        ).exists()
 
     def _increment_group_next_id(self):
         # This code is here so the id is only +=1'd when an invoice is actually created 
         self.finance_invoice_group.next_id += 1
         self.finance_invoice_group.save()
-
 
     def save(self, *args, **kwargs):
         if self.pk is None: # We know this is object creation when there is no pk yet.
@@ -137,7 +132,6 @@ class FinanceInvoice(models.Model):
 
         super(FinanceInvoice, self).save(*args, **kwargs)
 
-
     def _get_item_next_line_nr(self):
         """
         Returns the next item number for an invoice
@@ -149,15 +143,12 @@ class FinanceInvoice(models.Model):
 
         return qs.count()
 
-
     def item_add_classpass(self, account_classpass):
         """
         Add account classpass invoice item
         """
         from .finance_invoice_item import FinanceInvoiceItem
         # add item to invoice
-        
-
         organization_classpass = account_classpass.organization_classpass
         # finance_invoice = FinanceInvoice.objects.get(pk=self.id)
 
@@ -180,21 +171,18 @@ class FinanceInvoice(models.Model):
 
         return finance_invoice_item
 
-
     def tax_rates_amounts(self, formatted=False):
         """
         Returns tax for each tax rate as list sorted by tax rate percentage
         format: [ [ tax_rate_obj, sum ] ]
         """
         from django.db.models import Sum
-
-        from .finance_invoice_item import FinanceInvoiceItem
         from .finance_tax_rate import FinanceTaxRate
 
         amounts_tax = []
 
         tax_rates = FinanceTaxRate.objects.filter(
-            financeinvoiceitem__finance_invoice = self,
+            financeinvoiceitem__finance_invoice=self,
         ).annotate(invoice_amount=Sum("financeinvoiceitem__tax"))
 
         # print(tax_rates)
@@ -206,36 +194,17 @@ class FinanceInvoice(models.Model):
 
         return tax_rates
 
-            
+    def is_paid(self):
+        """
+        Check if the status should be changed to 'paid'
+        """
+        self.update_amounts()
 
-
-
-
-    #TODO: Port this function to Django
-    # def amounts_tax_rates(self, formatted=False):
-    #     """
-    #         Returns vat for each tax rate as list sorted by tax rate percentage
-    #         format: [ [ Name, Amount ] ]
-    #     """
-    #     db = current.db
-    #     # CURRSYM = current.globalenv['CURRSYM']
-
-    #     amounts_vat = []
-    #     rows = db().select(db.tax_rates.id, db.tax_rates.Name,
-    #                        orderby=db.tax_rates.Percentage)
-    #     for row in rows:
-    #         sum = db.invoices_items.VAT.sum()
-    #         query = (db.invoices_items.invoices_id == iID) & \
-    #                 (db.invoices_items.tax_rates_id == row.id)
-
-    #         result = db(query).select(sum).first()
-
-    #         if not result[sum] is None:
-    #             # if formatted:
-    #                 # amount = SPAN(CURRSYM, ' ', format(result[sum], '.2f'))
-    #             else:
-    #                 amount = result[sum]
-    #             amounts_vat.append({'Name'   : row.Name,
-    #                                 'Amount' : amount})
-
-    #     return amounts_vat
+        if self.paid >= self.total:
+            self.status = "PAID"
+            self.save()
+            return True
+        else:
+            self.status = "SENT"
+            self.save()
+            return False
