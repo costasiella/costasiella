@@ -4,8 +4,6 @@ import React, { useRef, useState } from 'react'
 import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
 import { useQuery, useMutation } from '@apollo/react-hooks'
-import { Link } from 'react-router-dom'
-import { Formik } from 'formik'
 import { toast } from 'react-toastify'
 import { v4 } from 'uuid'
 
@@ -14,14 +12,11 @@ import {
   Grid,
   Icon,
   Table,
-  Button,
 } from "tabler-react";
 import ShopCheckoutPaymentBase from "./ShopCheckoutPaymentBase"
 
-import { GET_ORDER_QUERY, CREATE_PAYMENT_LINK } from "./queries"
-// import { CREATE_ORDER } from "../../queries"
-
-
+import { GET_ORDER_QUERY } from "../queries"
+import { CREATE_PAYMENT_LINK } from "./queries"
 
 
 function ShopCheckoutPayment({ t, match, history }) {
@@ -35,9 +30,6 @@ function ShopCheckoutPayment({ t, match, history }) {
   })
 
   const [createPaymentLink, {data: createPaymentLinkData}] = useMutation(CREATE_PAYMENT_LINK)
-
-  // const [createOrder, { data: createOrderData }] = useMutation(CREATE_ORDER)
-
 
   if (loading) return (
     <ShopCheckoutPaymentBase title={title} >
