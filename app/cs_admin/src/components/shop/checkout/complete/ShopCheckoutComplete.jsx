@@ -3,15 +3,14 @@
 import React, { useRef, useState } from 'react'
 import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
-import { useQuery, useMutation } from '@apollo/react-hooks'
-import { toast } from 'react-toastify'
-import { v4 } from 'uuid'
+import { useQuery } from '@apollo/react-hooks'
+import { Link } from 'react-router-dom'
 
 import {
+  Button,
   Card,
   Grid,
-  Icon,
-  Table,
+  Icon
 } from "tabler-react";
 import ShopCheckoutCompleteBase from "./ShopCheckoutCompleteBase"
 import ShopCheckoutOrderSummary from "../order_summary/ShopCheckoutOrderSummary"
@@ -90,13 +89,21 @@ function ShopCheckoutComplete({ t, match, history }) {
                 {contentText}
               </Card.Body>
               <Card.Footer>
-                <button
+                <Link to="/shop/account/">
+                  <Button 
+                    block
+                    color="success"
+                  >
+                    {t("shop.complete.to_account")} <Icon name="chevron-right" />
+                  </Button>
+                </Link>
+                {/* <button
                   className="btn btn-block btn-success"
                   ref={btnPayNow}
                   onClick={ onClickPay }
                 >
                   {btn_text}
-                </button>
+                </button> */}
               </Card.Footer>
             </Card>
           </Grid.Col>
