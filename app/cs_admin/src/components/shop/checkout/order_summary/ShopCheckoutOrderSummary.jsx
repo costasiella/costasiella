@@ -68,11 +68,14 @@ function ShopCheckoutOrderSummary({ t, id }) {
         </Table>
       </div>
       <Card.Body>
-        <span className="text-muted">
-          <Icon name="message-square" /> {t("shop.checkout.order_summary.message")} <br /><br /> 
-          {/* Order message */}
-          {order.message}
-        </span>
+        {(order.message) ?
+          <span className="text-muted">
+            <Icon name="message-square" /> {t("shop.checkout.order_summary.message")} <br /><br /> 
+            {/* Order message */}
+            {order.message}
+          </span> 
+          : ""
+        }
       </Card.Body>
     </Card>
   )
