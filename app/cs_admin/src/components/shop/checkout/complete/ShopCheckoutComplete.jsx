@@ -97,13 +97,6 @@ function ShopCheckoutComplete({ t, match, history }) {
                     {t("shop.complete.to_account")} <Icon name="chevron-right" />
                   </Button>
                 </Link>
-                {/* <button
-                  className="btn btn-block btn-success"
-                  ref={btnPayNow}
-                  onClick={ onClickPay }
-                >
-                  {btn_text}
-                </button> */}
               </Card.Footer>
             </Card>
           </Grid.Col>
