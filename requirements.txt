@@ -23,6 +23,7 @@ django-graphiql==0.4.4
 django-graphql-jwt==0.2.1
 django-timezone-field==3.0
 django-webpack-loader==0.6.0
+et-xmlfile==1.0.1
 factory-boy==2.11.1
 Faker==1.0.2
 graphene==2.1.8
@@ -33,11 +34,13 @@ html5lib==1.0.1
 hvac==0.8.2
 idna==2.8
 importlib-metadata==0.19
+jdcal==1.4.1
 kombu==4.6.4
 mollie-api-python==2.3.1
 more-itertools==7.2.0
 mysqlclient==1.4.1
 oauthlib==3.0.1
+openpyxl==3.0.3
 Pillow==6.2.0
 promise==2.2.1
 pycparser==2.19
