@@ -46,7 +46,7 @@ class FinanceInvoiceEdit extends Component {
     const history = this.props.history
     const id = match.params.id
     const return_url = "/finance/invoices"
-    const export_url = "/export/invoice/pdf/" + id
+    const export_url = "/d/export/invoice/pdf/" + id
     const payment_add_url = "/finance/invoices/" + id + "/payment/add"
 
     return (
