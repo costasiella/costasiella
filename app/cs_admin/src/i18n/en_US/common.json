@@ -1225,10 +1225,10 @@
             "complete": {
                 "order_not_found": "Sorry... this order could not be found...",
                 "success_subheader": "Thank you!",
-                "success_content_text": "All items from the order have been added to your profile and an invoice has been added to your account.",
+                "success_content_text": "All items in this order and an invoice have been added to your account.",
                 "fail_subheader": "Uh oh... ",
-                "fail_content_text": "It looks like something went wrong with your payment. Please contact us and let us know what happened so our staff can help you.",
-                "title": "Check complete",
+                "fail_content_text": "It looks like something went wrong with your payment. Please contact us in case there was a technical error and you'd like our staff can help you.",
+                "title": "Checkout complete",
                 "success_payment_received": "We have received your payment for this order."
             },
             "order_summary": {
