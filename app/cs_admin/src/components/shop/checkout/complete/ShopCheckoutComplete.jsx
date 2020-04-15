@@ -13,10 +13,10 @@ import {
   Icon,
   Table,
 } from "tabler-react";
-import ShopCheckoutPaymentBase from "./ShopCheckoutCompleteBase"
+import ShopCheckoutCompleteBase from "./ShopCheckoutCompleteBase"
+import ShopCheckoutOrderSummary from "../order_summary/ShopCheckoutOrderSummary"
 
 import { GET_ORDER_QUERY } from "../queries"
-import { CREATE_PAYMENT_LINK } from "./queries"
 
 
 function ShopCheckoutComplete({ t, match, history }) {
@@ -29,17 +29,15 @@ function ShopCheckoutComplete({ t, match, history }) {
     variables: { id: id }
   })
 
-  const [createPaymentLink, {data: createPaymentLinkData}] = useMutation(CREATE_PAYMENT_LINK)
-
   if (loading) return (
-    <ShopCheckoutPaymentBase title={title} >
+    <ShopCheckoutCompleteBase title={title} >
       {t("general.loading_with_dots")}
-    </ShopCheckoutPaymentBase>
+    </ShopCheckoutCompleteBase>
   )
   if (error) return (
-    <ShopCheckoutPaymentBase title={title}>
+    <ShopCheckoutCompleteBase title={title}>
       {t("shop.classpass.error_loading")}
-    </ShopCheckoutPaymentBase>
+    </ShopCheckoutCompleteBase>
   )
 
   console.log(data)
@@ -48,27 +46,9 @@ function ShopCheckoutComplete({ t, match, history }) {
   const orderItems = order.items.edges
   console.log(orderItems)
 
-  function onClickPay() {
-    btnPayNow.current.setAttribute("disabled", "disabled")
-    setBtnText(t("shop.checkout.payment.redirecting"))
-    // btnPayNow.current.setValue("redirecting...")
-    // btnPayNow
-    // btnPayNow.current.removeAttribute("disabled")
-    createPaymentLink({ variables: { id: id } }).then(({ data }) => {
-      console.log('got data', data);
-      const paymentLink = data.createFinanceOrderPaymentLink.financeOrderPaymentLink.paymentLink
-      window.location.href = paymentLink
-    }).catch((error) => {
-      toast.error((t('general.toast_server_error')) + ': ' +  error, {
-          position: toast.POSITION.BOTTOM_RIGHT
-        })
-      console.log('there was an error sending the query', error)
-    })
-  }
-
 
   return (
-    <ShopCheckoutPaymentBase title={title}>
+    <ShopCheckoutCompleteBase title={title}>
         <Grid.Row>
           <Grid.Col md={6}>
             <Card title={t("shop.checkout.payment.order_received")}>
@@ -89,48 +69,10 @@ function ShopCheckoutComplete({ t, match, history }) {
             </Card>
           </Grid.Col>
           <Grid.Col md={6}>
-            <Card title={t("shop.checkout.payment.order_summary")}>
-              <div className="table-responsive">
-                <Table cards={true}>
-                  <Table.Header>
-                    <Table.Row>
-                      <Table.ColHeader>{t('general.item')}</Table.ColHeader>
-                      <Table.ColHeader>{t('general.price')}</Table.ColHeader>
-                    </Table.Row>
-                  </Table.Header>
-                  <Table.Body>
-                    {orderItems.map(({ node }) => (
-                      <Table.Row key={v4()}>
-                        <Table.Col>
-                          {node.productName} <br /> 
-                          <span className="text-muted">
-                            {node.description}
-                          </span>
-                        </Table.Col>
-                        <Table.Col>{node.totalDisplay}</Table.Col>
-                      </Table.Row>      
-                    ))}
-                    <Table.Row className="bold">
-                      <Table.Col>
-                        {t("general.total")}
-                      </Table.Col>
-                      <Table.Col>
-                          {order.totalDisplay}
-                      </Table.Col>
-                    </Table.Row>
-                  </Table.Body>
-                </Table>
-              </div>
-              <Card.Body>
-                <span className="text-muted">
-                  <Icon name="message-square" /> {t("shop.checkout.payment.order_summary_message")} <br /><br />
-                  {order.message}
-                </span>
-              </Card.Body>
-            </Card>
+            <ShopCheckoutOrderSummary id={id} />
           </Grid.Col>
         </Grid.Row>
-    </ShopCheckoutPaymentBase>
+    </ShopCheckoutCompleteBase>
   )
 }
 
