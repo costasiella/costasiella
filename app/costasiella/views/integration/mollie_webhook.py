@@ -203,8 +203,16 @@ def webhook_add_refund(finance_invoice,
     :param refund_description: Refund description
     :return: None
     """
-    pass
+    finance_invoice_payment = FinanceInvoicePayment(
+        finance_invoice=finance_invoice,
+        date=date,
+        amount=amount,
+        note=refund_description,
+        online_payment_id=payment_id,
+        online_refund_id=refund_id
+    )
 
+    finance_invoice_payment.save()
 
 
 def webook_payment_is_paid_process_chargebacks(finance_invoice_id, finance_order_id, payment):
