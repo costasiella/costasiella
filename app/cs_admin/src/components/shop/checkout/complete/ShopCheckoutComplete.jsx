@@ -55,6 +55,29 @@ function ShopCheckoutComplete({ t, match, history }) {
     )
   }
 
+  let subHeader = ""
+  let contentText = ""
+  let paymentReceived = ""
+
+  // Success!
+  if (order.status == "DELIVERED") {
+    // Thank you message
+    subHeader = t("shop.checkout.complete.success_subheader") 
+    // Something to explain the user what's next
+    contentText = t("shop.checkout.complete.success_content_text")
+
+    // Confirm receiving payment to user
+    if (order.total) {
+      paymentReceived = t("shop.checkout.success_payment_received")
+    }
+  } else {
+    // Fail...
+    // Looks like something went wrong message
+    subHeader = t("shop.checkout.complete.fail_subheader") 
+    // Notify user of ways to contact
+    contentText = t("shop.checkout.complete.fail_content_text")
+  }
+
 
   return (
     <ShopCheckoutCompleteBase title={title}>
@@ -62,9 +85,9 @@ function ShopCheckoutComplete({ t, match, history }) {
           <Grid.Col md={6}>
             <Card title={t("shop.checkout.complete.title")}>
               <Card.Body>
-                <h5 className={"mb-4"}>{t("shop.checkout.complete.complete_subheader")}</h5>
-                {t("shop.checkout.payment.order_received_to_payment_explanation")} <br />
-                {t("shop.checkout.payment.order_received_to_payment_text")}
+                <h5 className={"mb-4"}>{subHeader}</h5>
+                {paymentReceived} <br />
+                {contentText}
               </Card.Body>
               <Card.Footer>
                 <button
