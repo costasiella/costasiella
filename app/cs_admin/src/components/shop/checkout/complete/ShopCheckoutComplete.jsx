@@ -67,7 +67,7 @@ function ShopCheckoutComplete({ t, match, history }) {
 
     // Confirm receiving payment to user
     if (order.total) {
-      paymentReceived = t("shop.checkout.success_payment_received")
+      paymentReceived = t("shop.checkout.complete.success_payment_received")
     }
   } else {
     // Fail...
