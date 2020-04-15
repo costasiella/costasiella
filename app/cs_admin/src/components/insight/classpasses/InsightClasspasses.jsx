@@ -22,8 +22,8 @@ function InsightClasspasses ({ t, history }) {
   const dateFormat = appSettings.dateFormat
   const timeFormat = appSettings.timeFormatMoment
   const year = localStorage.getItem(CSLS.INSIGHT_CLASSPASSES_YEAR)
-  const export_url_active = "/export/insight/classpasses/active/" + year
-  const export_url_sold = "/export/insight/classpasses/sold/" + year
+  const export_url_active = "/d/export/insight/classpasses/active/" + year
+  const export_url_sold = "/d/export/insight/classpasses/sold/" + year
 
   const { 
     loading: loadingSold, 

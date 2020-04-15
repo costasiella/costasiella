@@ -22,8 +22,8 @@ function InsightSubscriptions ({ t, history }) {
   const dateFormat = appSettings.dateFormat
   const timeFormat = appSettings.timeFormatMoment
   const year = localStorage.getItem(CSLS.INSIGHT_SUBSCRIPTIONS_YEAR)
-  const export_url_active = "/export/insight/subscriptions/active/" + year
-  const export_url_sold = "/export/insight/subscriptions/sold/" + year
+  const export_url_active = "/d/export/insight/subscriptions/active/" + year
+  const export_url_sold = "/d/export/insight/subscriptions/sold/" + year
 
   const { 
     loading: loadingSold, 
