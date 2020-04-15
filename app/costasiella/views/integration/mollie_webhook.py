@@ -8,10 +8,11 @@ from django.db.models import Q
 from django.template.loader import get_template, render_to_string
 
 from ...models import \
-        FinanceInvoicePayment, \
-        FinanceOrder, \
-        FinancePaymentMethod, \
-        IntegrationLogMollie
+    FinanceInvoice, \
+    FinanceInvoicePayment, \
+    FinanceOrder, \
+    FinancePaymentMethod, \
+    IntegrationLogMollie
 
 from ...dudes.mollie_dude import MollieDude
 
@@ -68,15 +69,7 @@ def mollie_webhook(request):
             print(payment_amount)
             print(payment_date)
 
-
-            # # Process refunds
-            # if payment.refunds:
-            #     webook_payment_is_paid_process_refunds(coID, iID, payment.refunds)
-
-            # # Process chargebacks
-            # if payment.chargebacks:
-            #     webhook_payment_is_paid_process_chargeback(coID, iID, payment)
-
+            # Process order payment
             if finance_order_id:
                 webhook_deliver_order(
                     finance_order_id=finance_order_id,
@@ -85,12 +78,25 @@ def mollie_webhook(request):
                     payment_id=id
                 )
 
-            # if coID == 'invoice':
-            #     # add payment to invoice
-            #     webhook_invoice_paid(iID, payment_amount, payment_date, payment_id)
-            # else:
-            #     # Deliver order
-            #     webhook_order_paid(coID, payment_amount, payment_date, payment_id, payment=payment)
+            # TODO: Process invoice payment
+            if finance_invoice_id:
+                pass
+
+            # Process refunds
+            if payment.refunds:
+                webook_payment_is_paid_process_refunds(
+                    finance_invoice_id,
+                    finance_order_id,
+                    payment
+                )
+
+            # Process chargebacks
+            if payment.chargebacks:
+                webhook_payment_is_paid_process_chargebacks(
+                    finance_invoice_id,
+                    finance_order_id,
+                    payment
+                )
 
             return HttpResponse('Paid')
         elif payment.is_pending():
@@ -138,3 +144,74 @@ def webhook_deliver_order(finance_order_id, payment_amount, payment_date, paymen
 
             # Check if the invoice has been paid in full and whether we should update it's status
             finance_invoice.is_paid()
+
+
+def webook_payment_is_paid_process_refunds(finance_invoice_id, finance_order_id, payment):
+    """
+    :param finance_invoice_id:
+    :param finance_order_id:
+    :param payment:
+    :return:
+    """
+    finance_invoice = None
+    if finance_order_id:
+        finance_order = FinanceOrder.objects.get(pk=finance_order_id)
+        finance_invoice = finance_order.finance_invoice
+
+    if finance_invoice_id:
+        finance_invoice = FinanceInvoice.objects.get(pk=finance_invoice_id)
+
+    refunds = payment.refunds
+    if refunds['count']:
+        for refund in refunds['_embedded']['refunds']:
+            refund_id = refund['id']
+            amount = float(refund['settlementAmount']['value'])
+            refund_date = datetime.datetime.strptime(refund['createdAt'].split('+')[0],
+                                                     '%Y-%m-%dT%H:%M:%S').date()
+
+            description = refund.get('description', "")
+            refund_description = "Mollie refund(%s) - %s" % (refund_id, description)
+
+            qs_refund = FinanceInvoicePayment.objects.filter(
+                online_refund_id=refund_id
+            )
+
+            if not qs_refund.exists() and finance_invoice:
+                webhook_add_refund(
+                    finance_invoice,
+                    amount,
+                    refund_date,
+                    refund['paymentId'],
+                    refund['id'],
+                    refund_description
+                )
+
+
+def webhook_add_refund(finance_invoice,
+                       amount,
+                       date,
+                       payment_id,
+                       refund_id,
+                       refund_description):
+    """
+
+    :param finance_invoice: FinanceInvoice object
+    :param amount: amount to be refunded
+    :param date: refund date
+    :param payment_id: mollie payment id
+    :param refund_id: mollie refund id
+    :param refund_description: Refund description
+    :return: None
+    """
+    pass
+
+
+
+def webook_payment_is_paid_process_chargebacks(finance_invoice_id, finance_order_id, payment):
+    """
+    :param finance_invoice_id:
+    :param finance_order_id:
+    :param payment:
+    :return:
+    """
+    pass
