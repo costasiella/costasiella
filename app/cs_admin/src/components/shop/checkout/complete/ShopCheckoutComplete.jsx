@@ -46,14 +46,23 @@ function ShopCheckoutComplete({ t, match, history }) {
   const orderItems = order.items.edges
   console.log(orderItems)
 
+  // Order not found
+  if (!order) {
+    return (
+      <ShopCheckoutCompleteBase title={title}>
+        {t("shop.checkout.complete.order_not_found")}
+      </ShopCheckoutCompleteBase>
+    )
+  }
+
 
   return (
     <ShopCheckoutCompleteBase title={title}>
         <Grid.Row>
           <Grid.Col md={6}>
-            <Card title={t("shop.checkout.payment.order_received")}>
+            <Card title={t("shop.checkout.complete.title")}>
               <Card.Body>
-                <h5 className={"mb-4"}>{t("shop.checkout.payment.order_received_subheader")}</h5>
+                <h5 className={"mb-4"}>{t("shop.checkout.complete.complete_subheader")}</h5>
                 {t("shop.checkout.payment.order_received_to_payment_explanation")} <br />
                 {t("shop.checkout.payment.order_received_to_payment_text")}
               </Card.Body>
