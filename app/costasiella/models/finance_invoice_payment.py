@@ -14,6 +14,8 @@ class FinanceInvoicePayment(models.Model):
     finance_payment_method = models.ForeignKey(FinancePaymentMethod, on_delete=models.CASCADE, null=True)
     note = models.TextField(default="")
     online_payment_id = models.TextField(null=True)
+    online_refund_id = models.TextField(null=True)
+    online_chargeback_id = models.TextField(null=True)
 
     def __str__(self):
         return self.finance_invoice.invoice_number + " payment: " + self.date + " " + self.amount
