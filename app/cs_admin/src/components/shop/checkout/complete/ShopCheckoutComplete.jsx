@@ -56,7 +56,7 @@ function ShopCheckoutComplete({ t, match, history }) {
 
   let subHeader = ""
   let contentText = ""
-  let paymentReceived = ""
+  let paymentText = ""
 
   // Success!
   if (order.status == "DELIVERED") {
@@ -67,7 +67,7 @@ function ShopCheckoutComplete({ t, match, history }) {
 
     // Confirm receiving payment to user
     if (order.total) {
-      paymentReceived = t("shop.checkout.complete.success_payment_received")
+      paymentText = t("shop.checkout.complete.success_payment_text")
     }
   } else {
     // Fail...
@@ -75,6 +75,11 @@ function ShopCheckoutComplete({ t, match, history }) {
     subHeader = t("shop.checkout.complete.fail_subheader") 
     // Notify user of ways to contact
     contentText = t("shop.checkout.complete.fail_content_text")
+
+    // Notify user that payment hasn't been received
+    if (order.total) {
+      paymentText = t("shop.checkout.complete.fail_payment_text")
+    }
   }
 
 
@@ -85,7 +90,7 @@ function ShopCheckoutComplete({ t, match, history }) {
             <Card title={t("shop.checkout.complete.title")}>
               <Card.Body>
                 <h5 className={"mb-4"}>{subHeader}</h5>
-                {paymentReceived} <br />
+                {paymentText} <br />
                 {contentText}
               </Card.Body>
               <Card.Footer>

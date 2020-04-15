@@ -403,7 +403,8 @@
                 "fail_subheader": "__STRING_NOT_TRANSLATED__",
                 "fail_content_text": "__STRING_NOT_TRANSLATED__",
                 "title": "__STRING_NOT_TRANSLATED__",
-                "success_payment_received": "__STRING_NOT_TRANSLATED__"
+                "success_payment_text": "__STRING_NOT_TRANSLATED__",
+                "fail_payment_text": "__STRING_NOT_TRANSLATED__"
             },
             "order_summary": {
                 "error_loading": "__STRING_NOT_TRANSLATED__",

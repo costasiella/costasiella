@@ -1227,9 +1227,10 @@
                 "success_subheader": "Thank you!",
                 "success_content_text": "All items in this order and an invoice have been added to your account.",
                 "fail_subheader": "Uh oh... ",
-                "fail_content_text": "It looks like something went wrong with your payment. Please contact us in case there was a technical error and you'd like our staff can help you.",
+                "fail_content_text": "Please contact us in case there was a technical error and you'd like our staff can help you.",
                 "title": "Checkout complete",
-                "success_payment_received": "We have received your payment for this order."
+                "success_payment_text": "We have received your payment for this order.",
+                "fail_payment_text": "It looks like something went wrong while processing your payment. "
             },
             "order_summary": {
                 "error_loading": "Error loading order information :(",
