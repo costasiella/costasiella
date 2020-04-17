@@ -5,55 +5,54 @@ from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
 from graphql import GraphQLError
 
-from ..models import SystemSetting
+from ..models import SystemMailTemplate
 from ..modules.gql_tools import require_login, require_login_and_permission, get_rid
 from ..modules.messages import Messages
 
 m = Messages()
 
 
-class SystemSettingNode(DjangoObjectType):   
+class SystemMailTemplateNode(DjangoObjectType):
     class Meta:
-        model = SystemSetting
+        model = SystemMailTemplate
         filter_fields = {
-            'setting': ['exact'],
+            'id': ['exact'],
         }
         interfaces = (graphene.relay.Node, )
 
     @classmethod
     def get_node(self, info, **kwargs):
         user = info.context.user
-        require_login_and_permission(user, 'costasiella.view_systemsetting')
+        require_login_and_permission(user, 'costasiella.view_systemmailtemplate')
 
         print(kwargs)
         id = kwargs.get('id')
-        setting = kwargs.get('name')
 
-        if id:
-            return self._meta.model.objects.get(id=id)
-        if setting:
-            return self._meta.model.objects.get(setting=setting)
+        return self._meta.model.objects.get(id=id)
 
 
-class SystemSettingQuery(graphene.ObjectType):
-    system_settings = DjangoFilterConnectionField(SystemSettingNode)
-    system_setting = graphene.relay.Node.Field(SystemSettingNode)
+class SystemMailTemplateQuery(graphene.ObjectType):
+    system_mail_templates = DjangoFilterConnectionField(SystemMailTemplateNode)
+    system_mail_template = graphene.relay.Node.Field(SystemMailTemplateNode)
 
-    def resolve_system_settings(self, info, **kwargs):
+    def resolve_mail_templates(self, info, **kwargs):
         user = info.context.user
-        require_login_and_permission(user, 'costasiella.view_systemsetting')
+        require_login_and_permission(user, 'costasiella.view_systemmailtemplate')
 
         # rid = get_rid()
         # return everything:
-        return SystemSetting.objects.all()
+        return SystemMailTemplate.objects.all()
 
 
 class UpdateSystemSetting(graphene.relay.ClientIDMutation):
     class Input:
-        setting = graphene.String(required=True)
-        value = graphene.String(required=True, default="")
+        subject = graphene.String()
+        title = graphene.String()
+        description = graphene.String()
+        content = graphene.String()
+        comments = graphene.String()
         
-    system_setting = graphene.Field(SystemSettingNode)
+    system_setting = graphene.Field(SystemMailTemplateNode)
 
     @classmethod
     def mutate_and_get_payload(self, root, info, **input):
