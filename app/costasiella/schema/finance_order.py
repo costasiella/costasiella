@@ -114,7 +114,9 @@ class CreateFinanceOrder(graphene.relay.ClientIDMutation):
             finance_order.item_add_classpass(validation_result['organization_classpass'])
 
         # Notify user of receiving order
-        mail_dude = MailDude(account=user, email_template="order_received")
+        mail_dude = MailDude(account=user,
+                             email_template="order_received",
+                             finance_order=finance_order)
         mail_dude.send()
 
         return CreateFinanceOrder(finance_order=finance_order)

@@ -10,9 +10,12 @@ from .mail_template_dude import MailTemplateDude
 class MailDude:
     def __init__(self,
                  account,
-                 email_template):
+                 email_template,
+                 **kwargs):
         self.account = account
         self.email_template = email_template
+        self.finance_order = kwargs.get('finance_order', None)
+        self.kwargs = kwargs
 
     def send(self):
         """
@@ -20,6 +23,12 @@ class MailDude:
         :return:
         """
         # Get rendered template
+        template_dude = MailTemplateDude(
+            email_template=self.email_template,
+            **self.kwargs,
+        )
+        template = template_dude.render()
+        print(template)
 
         # Send mail
         send_mail(
