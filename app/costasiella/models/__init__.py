@@ -49,4 +49,5 @@ from .schedule_item_organization_subscription_group import ScheduleItemOrganizat
 from .schedule_item_price import ScheduleItemPrice
 from .schedule_item_weekly_otc import ScheduleItemWeeklyOTC
 
+from .system_mail_template import SystemMailTemplate
 from .system_setting import SystemSetting
