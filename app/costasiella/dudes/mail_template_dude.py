@@ -11,7 +11,9 @@ from django.core.mail import send_mail
 class MailTemplateDude:
     def __init__(self, email_template, **kwargs):
         """
-        :param kwargs:
+        :param email_template: field "name" in SystemMailTemplate model
+        :param kwargs: one or more of
+        - finance_order
         """
         self.email_template = email_template
         self.kwargs = kwargs
@@ -30,8 +32,7 @@ class MailTemplateDude:
 
     def render(self):
         """
-        Render email template
-        :param email_template: field "name" in SystemMailTemplate model
+        Switch render functions and return render function output
         :return: HTML message
         """
         functions = {

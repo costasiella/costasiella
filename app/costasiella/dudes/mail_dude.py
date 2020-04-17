@@ -1,3 +1,5 @@
+import html2text
+
 from django.utils.translation import gettext as _
 from django.core.mail import send_mail
 
@@ -28,13 +30,14 @@ class MailDude:
             **self.kwargs,
         )
         template = template_dude.render()
-        print(template)
+        # print(template)
+        message = html2text.html2text(template['html_message'])
 
         # Send mail
         send_mail(
-            subject="Test",  # Later from template
-            message="Message",
-            html_message="<html>hello world</html>",
+            subject=template['subject'],  # Later from template
+            message=message,
+            html_message=template['html_message'],
             from_email="info@openstudioproject.com",
             recipient_list=[self.account.email],
             fail_silently=False
