@@ -1,5 +1,6 @@
 import os
 from django.conf import settings
+from django.template.loader import render_to_string
 
 from django.utils.translation import gettext as _
 from django.core.mail import send_mail
@@ -14,11 +15,18 @@ class MailTemplateDude:
         """
         self.email_template = email_template
         self.kwargs = kwargs
-        # self.finance_order = kwargs.get('finance_order', None)
+        self.default_template = 'mail/default.html'
 
         # Read default mail template
         print(settings.BASE_DIR)
-        print(os.path.join(settings.BASE_DIR, 'templates', 'mail', 'default.html'))
+        # default_template = os.path.join(
+        #     settings.BASE_DIR,
+        #     'templates',
+        #     'mail',
+        #     'default.html'
+        # )
+
+        # self.base_template = loader.get_template()
 
     def render(self):
         """
@@ -47,9 +55,24 @@ class MailTemplateDude:
         # Throw a spectacular error if finance_order is not found :)
         print(finance_order)
 
-        return dict(
-            subject="order received",
-            html_message="<html>Hello world from order received template</html>"
+        # Render content
+
+        # Render template
+        context = {
+            "logo": "",
+            "title": "title",
+            "description": "description",
+            "content": "hello world",
+            "comments": "comments",
+            "footer": "footer"
+        }
+
+        html_message = render_to_string(
+            self.default_template,
+            context
         )
 
-        # Fetch template here
+        return dict(
+            subject=_("Order received"),
+            html_message=html_message
+        )
