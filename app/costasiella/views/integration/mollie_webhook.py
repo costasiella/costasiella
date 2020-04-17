@@ -177,7 +177,7 @@ def webook_payment_is_paid_process_refunds(finance_invoice_id, finance_order_id,
             )
 
             if not qs_refund.exists() and finance_invoice:
-                webhook_add_refund(
+                webhook_invoice_refund(
                     finance_invoice,
                     amount,
                     refund_date,
@@ -187,14 +187,13 @@ def webook_payment_is_paid_process_refunds(finance_invoice_id, finance_order_id,
                 )
 
 
-def webhook_add_refund(finance_invoice,
-                       amount,
-                       date,
-                       payment_id,
-                       refund_id,
-                       refund_description):
+def webhook_invoice_refund(finance_invoice,
+                           amount,
+                           date,
+                           payment_id,
+                           refund_id,
+                           refund_description):
     """
-
     :param finance_invoice: FinanceInvoice object
     :param amount: amount to be refunded
     :param date: refund date
@@ -226,4 +225,74 @@ def webook_payment_is_paid_process_chargebacks(finance_invoice_id, finance_order
     :param payment:
     :return:
     """
-    pass
+    finance_invoice = None
+    if finance_order_id:
+        finance_order = FinanceOrder.objects.get(pk=finance_order_id)
+        finance_invoice = finance_order.finance_invoice
+
+    if finance_invoice_id:
+        finance_invoice = FinanceInvoice.objects.get(pk=finance_invoice_id)
+
+    chargebacks = payment.chargebacks
+    if chargebacks['count']:
+        for chargeback in chargebacks['_embedded']['chargebacks']:
+            chargeback_id = chargeback['id']
+            amount = float(chargeback['settlementAmount']['value'])
+            chargeback_date = datetime.datetime.strptime(chargeback['createdAt'].split('+')[0],
+                                                         '%Y-%m-%dT%H:%M:%S').date()
+            try:
+                chargeback_description = "Failure reason: %s (Bank reason code: %s)" % (
+                    payment['details']['bankReason'],
+                    payment['details']['bankReasonCode']
+                )
+            except AttributeError:
+                chargeback_description = ''
+
+            qs_chargeback = FinanceInvoicePayment.objects.filter(
+                online_chargeback_id=chargeback_id
+            )
+
+            if not qs_chargeback.exists() and finance_invoice:
+                # Only process the chargeback if it hasn't been processed already
+                webhook_invoice_chargeback(
+                    finance_invoice,
+                    amount,
+                    chargeback_date,
+                    chargeback['paymentId'],
+                    chargeback['id'],
+                    chargeback_description
+                )
+
+
+def webhook_invoice_chargeback(finance_invoice,
+                               amount,
+                               date,
+                               payment_id,
+                               chargeback_id,
+                               chargeback_description):
+    """
+    :param finance_invoice: FinanceInvoice object
+    :param amount: amount to be refunded
+    :param date: refund date
+    :param payment_id: mollie payment id
+    :param chargeback_id: mollie refund id
+    :param chargeback_description: Refund description
+    :return: None
+    """
+    finance_payment_method = FinancePaymentMethod.objects.get(pk=100)  # Mollie
+
+    finance_invoice_payment = FinanceInvoicePayment(
+        finance_invoice=finance_invoice,
+        date=date,
+        amount=amount,
+        finance_payment_method=finance_payment_method,
+        note=chargeback_description,
+        online_payment_id=payment_id,
+        online_chargeback_id=chargeback_id
+    )
+
+    finance_invoice_payment.save()
+    finance_invoice.is_paid()
+
+
+    #TODO: Notify customer of failed recurring payment
