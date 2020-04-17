@@ -1,6 +1,8 @@
 import os
 from django.conf import settings
 from django.template.loader import render_to_string
+from django.template import Template, Context
+
 
 from django.utils.translation import gettext as _
 from django.core.mail import send_mail
@@ -39,9 +41,30 @@ class MailTemplateDude:
             "order_received": self._render_template_order_received
         }
 
-        func = functions.get(self.email_template, lambda: "Invalid Template")
+        func = functions.get(self.email_template, lambda: None)
+        content = func()
+        if content is None:
+            return "Invalid Template"
 
-        return func()
+        # Render base template
+        context = {
+            "logo": "",
+            "title": content.get("title", ""),
+            "description": content.get("description", ""),
+            "content": content.get("content", ""),
+            "comments": content.get("comments", ""),
+            "footer": content.get("footer", "")
+        }
+
+        html_message = render_to_string(
+            self.default_template,
+            context
+        )
+
+        return dict(
+            subject=content['subject'],
+            html_message=html_message
+        )
 
     def _render_template_order_received(self):
         """
@@ -55,25 +78,19 @@ class MailTemplateDude:
 
         # Throw a spectacular error if finance_order is not found :)
         print(finance_order)
+        print(finance_order.items)
 
         # Render content
 
-        # Render template
-        context = {
-            "logo": "",
-            "title": "title",
-            "description": "description",
-            "content": "hello world",
-            "comments": "comments",
-            "footer": "footer"
-        }
-
-        html_message = render_to_string(
-            self.default_template,
-            context
-        )
+        # t = Template("My name is {{ my_name }}.")
+        # c = Context({"my_name": "Adrian"})
+        # t.render(c)
 
         return dict(
-            subject=_("Order received"),
-            html_message=html_message
+            subject="order received",
+            title="title",
+            description="description",
+            content="content",
+            comments="comments",
+            footer="footer"
         )
