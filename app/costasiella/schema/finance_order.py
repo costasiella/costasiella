@@ -10,6 +10,8 @@ from ..modules.gql_tools import require_login_and_permission, get_rid
 from ..modules.messages import Messages
 from ..modules.finance_tools import display_float_as_amount
 
+from ..dudes.mail_dude import MailDude
+
 m = Messages()
 
 class FinanceOrderInterface(graphene.Interface):
@@ -110,7 +112,10 @@ class CreateFinanceOrder(graphene.relay.ClientIDMutation):
         if 'organization_classpass' in validation_result:
             #TODO: actually add item
             finance_order.item_add_classpass(validation_result['organization_classpass'])
-        
+
+        # Notify user of receiving order
+        mail_dude = MailDude(account=user, email_template="order_received")
+        mail_dude.send()
 
         return CreateFinanceOrder(finance_order=finance_order)
 
