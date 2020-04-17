@@ -1,3 +1,6 @@
+import os
+from django.conf import settings
+
 from django.utils.translation import gettext as _
 from django.core.mail import send_mail
 
@@ -12,6 +15,10 @@ class MailTemplateDude:
         self.email_template = email_template
         self.kwargs = kwargs
         # self.finance_order = kwargs.get('finance_order', None)
+
+        # Read default mail template
+        print(settings.BASE_DIR)
+        print(os.path.join(settings.BASE_DIR, 'templates', 'mail', 'default.html'))
 
     def render(self):
         """
