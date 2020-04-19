@@ -146,6 +146,8 @@ import SelfCheckinBookingOptions from './components/selfcheckin/BookingOptions/B
 import SelfCheckinLocations from './components/selfcheckin/Locations/Locations'
 import SelfCheckinLocationClasses from './components/selfcheckin/LocationClasses/LocationClasses'
 
+import SettingsHome from './components/settings/home/SettingsHome'
+
 import ShopHome from './components/shop/home/ShopHome'
 import ShopCheckoutPayment from './components/shop/checkout/payment/ShopCheckoutPayment'
 import ShopCheckoutComplete from './components/shop/checkout/complete/ShopCheckoutComplete'
@@ -350,6 +352,7 @@ function AppRoot({ t }) {
           <Route exact path = "/shop/classpass/:id" component={ShopClasspass} />
 
           {/* Settings */}
+          <PrivateRoute exact path="/settings" component={SettingsHome} />
           <PrivateRoute exact path="/settings/general" component={AppSettingsGeneral} />
           <PrivateRoute exact path="/settings/integration" component={AppSettingsIntegration} />
 
