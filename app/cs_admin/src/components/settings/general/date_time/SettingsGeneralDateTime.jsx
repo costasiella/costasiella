@@ -23,6 +23,7 @@ import SettingsGeneralDateTimeForm from "./SettingsGeneralDateTimeForm"
 
 
 function SettingsGeneralDateTime({ t, match, history }) {
+  const headerSubTitle = t("settings.general.datetime")
   const cardTitle = t("settings.general.title")
   const sidebarActive = "general"
 
@@ -35,6 +36,7 @@ function SettingsGeneralDateTime({ t, match, history }) {
   if (loading) {
     return (
       <SettingsBase 
+          headerSubTitle={headerSubTitle}
           cardTitle={cardTitle}
           sidebarActive={sidebarActive}>  
         <Card.Body>
@@ -48,6 +50,7 @@ function SettingsGeneralDateTime({ t, match, history }) {
   if (error) {
     return (
       <SettingsBase 
+          headerSubTitle={headerSubTitle}
           cardTitle={cardTitle}
           sidebarActive={sidebarActive}>  
         <Card.Body>
@@ -60,7 +63,8 @@ function SettingsGeneralDateTime({ t, match, history }) {
 
   return (
     <SettingsBase 
-    cardTitle={cardTitle}
+      headerSubTitle={headerSubTitle}
+      cardTitle={cardTitle}
       sidebarActive={sidebarActive}
     >  
     <Formik
