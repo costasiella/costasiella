@@ -35,7 +35,7 @@ function SettingsHome({ t, match, params }) {
                   <h5>{t("settings.general.date_time.title")}</h5>
                   {t("settings.general.date_time.explanation")}
                   <br /><br />
-                  <SettingsHomeItemButton link="/settings/general/datetime/" />
+                  <SettingsHomeItemButton link="/settings/general/datetime" />
                 </Card.Body>
               </Card>
             </Grid.Col>

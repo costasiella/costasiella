@@ -12,16 +12,13 @@ import { withTranslation } from 'react-i18next'
 import { useQuery } from "react-apollo"
 import { toast } from 'react-toastify'
 
-import { GET_APP_SETTINGS_QUERY } from "./components/app_settings/queries"
+import { GET_APP_SETTINGS_QUERY } from "./components/settings/general/date_time/queries"
 
 // Import moment locale
 import moment from 'moment'
 import 'moment/locale/nl'
 
 import { AppSettingsProvider } from "./components/context/AppSettingsContext"
-
-import AppSettingsGeneral from './components/app_settings/general/AppSettingsGeneral'
-import AppSettingsIntegration from './components/app_settings/integration/AppSettingsIntegration'
 
 import HomeHome from './components/home/home/HomeHome'
 
@@ -147,6 +144,7 @@ import SelfCheckinLocations from './components/selfcheckin/Locations/Locations'
 import SelfCheckinLocationClasses from './components/selfcheckin/LocationClasses/LocationClasses'
 
 import SettingsHome from './components/settings/home/SettingsHome'
+import SettingsGeneralDateTime from './components/settings/general/date_time/SettingsGeneralDateTime'
 
 import ShopHome from './components/shop/home/ShopHome'
 import ShopCheckoutPayment from './components/shop/checkout/payment/ShopCheckoutPayment'
@@ -353,8 +351,8 @@ function AppRoot({ t }) {
 
           {/* Settings */}
           <PrivateRoute exact path="/settings" component={SettingsHome} />
-          <PrivateRoute exact path="/settings/general" component={AppSettingsGeneral} />
-          <PrivateRoute exact path="/settings/integration" component={AppSettingsIntegration} />
+          <PrivateRoute exact path="/settings/general/datetime" component={SettingsGeneralDateTime} />
+          {/* <PrivateRoute exact path="/settings/integration" component={AppSettingsIntegration} /> */}
 
           {/* User */}
           <PrivateRoute exact path="/user/password/change" component={UserChangePassword} />

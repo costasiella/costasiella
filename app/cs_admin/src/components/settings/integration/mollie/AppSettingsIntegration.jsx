@@ -19,11 +19,11 @@ import {
   Card,
   Container,
 } from "tabler-react";
-import SiteWrapper from "../../SiteWrapper"
-import HasPermissionWrapper from "../../HasPermissionWrapper"
+import SiteWrapper from "../../../SiteWrapper"
+import HasPermissionWrapper from "../../../HasPermissionWrapper"
 
 // import FinancePaymentMethodForm from './AppSettingsGeneralForm'
-import AppSettingsBase from "../AppSettingsBase"
+import SettingsBase from "../../SettingsBase"
 import AppSettingsIntegrationForm from "./AppSettingsIntegrationForm"
 
 
@@ -39,7 +39,7 @@ function AppSettingsIntegration({ t, match, history }) {
 
   if (loading) {
     return (
-      <AppSettingsBase 
+      <SettingsBase 
           cardTitle={cardTitle}
           sidebarActive={sidebarActive}>  
         <Card.Body>
@@ -47,24 +47,24 @@ function AppSettingsIntegration({ t, match, history }) {
                   loader={true}>
           </Dimmer>
         </Card.Body>
-      </AppSettingsBase>
+      </SettingsBase>
     )
   }
   if (error) {
     return (
-      <AppSettingsBase 
+      <SettingsBase 
           cardTitle={cardTitle}
           sidebarActive={sidebarActive}>  
         <Card.Body>
           {t("settings.general.error_loading")}
         </Card.Body>
-      </AppSettingsBase>
+      </SettingsBase>
     )
   }
 
 
   return (
-    <AppSettingsBase 
+    <SettingsBase 
     cardTitle={cardTitle}
       sidebarActive={sidebarActive}
     >  
@@ -111,7 +111,7 @@ function AppSettingsIntegration({ t, match, history }) {
         </AppSettingsIntegrationForm>
       )}
       </Formik>
-    </AppSettingsBase>
+    </SettingsBase>
   )
 }
 

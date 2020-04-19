@@ -4,7 +4,6 @@ import React from 'react'
 import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
 import { Form as FoForm, Field, ErrorMessage } from 'formik'
-import { Link } from 'react-router-dom'
 import { v4 } from 'uuid'
 
 
@@ -15,7 +14,7 @@ import {
 } from "tabler-react"
 
 
-const AppSettingsGeneralForm = ({ t, history, isSubmitting, errors, values, return_url }) => (
+const SettingsGeneralDateTimeForm = ({ t, history, isSubmitting, errors, values, return_url }) => (
   <FoForm>
       <Card.Body>
           <Form.Group label={t('settings.general.date_format')}>
@@ -59,4 +58,4 @@ const AppSettingsGeneralForm = ({ t, history, isSubmitting, errors, values, retu
   </FoForm>
 )
 
-export default withTranslation()(withRouter(AppSettingsGeneralForm))
+export default withTranslation()(withRouter(SettingsGeneralDateTimeForm))

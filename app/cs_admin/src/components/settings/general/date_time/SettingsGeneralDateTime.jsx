@@ -1,36 +1,28 @@
 // @flow
 
-import React, {Component } from 'react'
-import gql from "graphql-tag"
+import React from 'react'
 import { useQuery, useMutation } from "react-apollo"
 import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
 import { Formik } from 'formik'
 import { toast } from 'react-toastify'
 
-import { GET_APP_SETTINGS_QUERY, UPDATE_APP_SETTINGS } from '../queries'
-import { GENERAL_SCHEMA } from './yupSchema'
-
+import { GET_APP_SETTINGS_QUERY, UPDATE_APP_SETTINGS } from './queries'
+import { DATETIME_SCHEMA } from './yupSchema'
 
 
 import {
-  Dimmer,
-  Page,
-  Grid,
-  Icon,
-  Button,
   Card,
-  Container,
+  Dimmer,
 } from "tabler-react";
-import SiteWrapper from "../../SiteWrapper"
-import HasPermissionWrapper from "../../HasPermissionWrapper"
+import SiteWrapper from "../../../SiteWrapper"
+import HasPermissionWrapper from "../../../HasPermissionWrapper"
 
-// import FinancePaymentMethodForm from './AppSettingsGeneralForm'
-import AppSettingsBase from "../AppSettingsBase"
-import AppSettingsGeneralForm from "./AppSettingsGeneralForm"
+import SettingsBase from "../../SettingsBase"
+import SettingsGeneralDateTimeForm from "./SettingsGeneralDateTimeForm"
 
 
-function AppSettingsGeneral({ t, match, history }) {
+function SettingsGeneralDateTime({ t, match, history }) {
   const cardTitle = t("settings.general.title")
   const sidebarActive = "general"
 
@@ -42,7 +34,7 @@ function AppSettingsGeneral({ t, match, history }) {
 
   if (loading) {
     return (
-      <AppSettingsBase 
+      <SettingsBase 
           cardTitle={cardTitle}
           sidebarActive={sidebarActive}>  
         <Card.Body>
@@ -50,24 +42,24 @@ function AppSettingsGeneral({ t, match, history }) {
                   loader={true}>
           </Dimmer>
         </Card.Body>
-      </AppSettingsBase>
+      </SettingsBase>
     )
   }
   if (error) {
     return (
-      <AppSettingsBase 
+      <SettingsBase 
           cardTitle={cardTitle}
           sidebarActive={sidebarActive}>  
         <Card.Body>
           {t("settings.general.error_loading")}
         </Card.Body>
-      </AppSettingsBase>
+      </SettingsBase>
     )
   }
 
 
   return (
-    <AppSettingsBase 
+    <SettingsBase 
     cardTitle={cardTitle}
       sidebarActive={sidebarActive}
     >  
@@ -77,7 +69,7 @@ function AppSettingsGeneral({ t, match, history }) {
         timeFormat: data.appSettings.timeFormat,
         note: "",
       }}
-      validationSchema={GENERAL_SCHEMA}
+      validationSchema={DATETIME_SCHEMA}
       onSubmit={(values, { setSubmitting }, errors) => {
           console.log('submit values:')
           console.log(values)
@@ -107,18 +99,18 @@ function AppSettingsGeneral({ t, match, history }) {
       }}
     >
       {({ isSubmitting, errors, values }) => (
-        <AppSettingsGeneralForm
+        <SettingsGeneralDateTimeForm
           isSubmitting={isSubmitting}
           errors={errors}
           values={values}
         >
           {console.log(errors)}
-        </AppSettingsGeneralForm>
+        </SettingsGeneralDateTimeForm>
       )}
       </Formik>
-    </AppSettingsBase>
+    </SettingsBase>
   )
 }
 
 
-export default withTranslation()(withRouter(AppSettingsGeneral))
+export default withTranslation()(withRouter(SettingsGeneralDateTime))

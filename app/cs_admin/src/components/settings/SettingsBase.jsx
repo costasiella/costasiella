@@ -13,26 +13,21 @@ import {
 import SiteWrapper from "../SiteWrapper"
 import HasPermissionWrapper from "../HasPermissionWrapper"
 
-import AppSettingsMenu from "./AppSettingsMenu"
 
-function AppSettingsBase({ t, children, cardTitle, sidebarActive, sidebarContent }) {
+function SettingsBase({ t, children, cardTitle, sidebarActive, sidebarContent }) {
   return (
     <SiteWrapper>
       <div className="my-3 my-md-5">
         <Container>
           <Page.Header title={t('settings.title')} />
           <Grid.Row>
-            <Grid.Col md={9}>
+            <Grid.Col md={12}>
             <Card>
               <Card.Header>
                 <Card.Title>{cardTitle}</Card.Title>
               </Card.Header>
               {children}
             </Card>
-            </Grid.Col>
-            <Grid.Col md={3}>
-              <AppSettingsMenu active_link={sidebarActive} />
-              {sidebarContent}
             </Grid.Col>
           </Grid.Row>
         </Container>
@@ -42,4 +37,4 @@ function AppSettingsBase({ t, children, cardTitle, sidebarActive, sidebarContent
 }
 
 
-export default withTranslation()(withRouter(AppSettingsBase))
+export default withTranslation()(withRouter(SettingsBase))
