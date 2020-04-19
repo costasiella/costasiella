@@ -28,7 +28,8 @@ import SettingsIntegrationMollieForm from "./SettingsIntegrationMollieForm"
 
 
 function SettingsIntegrationMollie({ t, match, history }) {
-  const cardTitle = t("settings.integration.title")
+  const headerSubTitle = t('settings.integration.title')
+  const cardTitle = t("settings.integration.mollie.title")
   const sidebarActive = "integration"
 
   const { loading, error, data } = useQuery(GET_SYSTEM_SETTINGS_QUERY)
@@ -40,6 +41,7 @@ function SettingsIntegrationMollie({ t, match, history }) {
   if (loading) {
     return (
       <SettingsBase 
+          headerSubTitle={headerSubTitle}
           cardTitle={cardTitle}
           sidebarActive={sidebarActive}>  
         <Card.Body>
@@ -53,6 +55,7 @@ function SettingsIntegrationMollie({ t, match, history }) {
   if (error) {
     return (
       <SettingsBase 
+          headerSubTitle={headerSubTitle}
           cardTitle={cardTitle}
           sidebarActive={sidebarActive}>  
         <Card.Body>
@@ -65,7 +68,8 @@ function SettingsIntegrationMollie({ t, match, history }) {
 
   return (
     <SettingsBase 
-    cardTitle={cardTitle}
+      headerSubTitle={headerSubTitle}
+      cardTitle={cardTitle}
       sidebarActive={sidebarActive}
     >  
     <Formik
