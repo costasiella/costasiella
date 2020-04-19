@@ -4,8 +4,6 @@ import React from 'react'
 import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
 import { Form as FoForm, Field, ErrorMessage } from 'formik'
-import { Link } from 'react-router-dom'
-import { v4 } from 'uuid'
 
 
 import {
@@ -15,10 +13,10 @@ import {
 } from "tabler-react"
 
 
-const AppSettingsIntegrationForm = ({ t, history, isSubmitting, errors, values, return_url }) => (
+const SettingsIntegrationMollieForm = ({ t, history, isSubmitting, errors, values, return_url }) => (
   <FoForm>
       <Card.Body>
-          <Form.Group label={t('settings.integration.mollie_api_key')}>
+          <Form.Group label={t('settings.integration.mollie.api_key')}>
             <Field type="text" 
               name="mollie_api_key" 
               className={(errors.mollie_api_key) ? "form-control is-invalid" : "form-control"} 
@@ -45,4 +43,4 @@ const AppSettingsIntegrationForm = ({ t, history, isSubmitting, errors, values, 
   </FoForm>
 )
 
-export default withTranslation()(withRouter(AppSettingsIntegrationForm))
+export default withTranslation()(withRouter(SettingsIntegrationMollieForm))

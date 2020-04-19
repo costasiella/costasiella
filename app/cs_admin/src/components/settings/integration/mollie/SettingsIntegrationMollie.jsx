@@ -24,10 +24,10 @@ import HasPermissionWrapper from "../../../HasPermissionWrapper"
 
 // import FinancePaymentMethodForm from './AppSettingsGeneralForm'
 import SettingsBase from "../../SettingsBase"
-import AppSettingsIntegrationForm from "./AppSettingsIntegrationForm"
+import SettingsIntegrationMollieForm from "./SettingsIntegrationMollieForm"
 
 
-function AppSettingsIntegration({ t, match, history }) {
+function SettingsIntegrationMollie({ t, match, history }) {
   const cardTitle = t("settings.integration.title")
   const sidebarActive = "integration"
 
@@ -102,13 +102,13 @@ function AppSettingsIntegration({ t, match, history }) {
       }}
     >
       {({ isSubmitting, errors, values }) => (
-        <AppSettingsIntegrationForm
+        <SettingsIntegrationMollieForm
           isSubmitting={isSubmitting}
           errors={errors}
           values={values}
         >
           {console.log(errors)}
-        </AppSettingsIntegrationForm>
+        </SettingsIntegrationMollieForm>
       )}
       </Formik>
     </SettingsBase>
@@ -116,4 +116,4 @@ function AppSettingsIntegration({ t, match, history }) {
 }
 
 
-export default withTranslation()(withRouter(AppSettingsIntegration))
+export default withTranslation()(withRouter(SettingsIntegrationMollie))
