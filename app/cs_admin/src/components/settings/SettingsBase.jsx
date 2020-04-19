@@ -14,12 +14,12 @@ import SiteWrapper from "../SiteWrapper"
 import HasPermissionWrapper from "../HasPermissionWrapper"
 
 
-function SettingsBase({ t, children, cardTitle, sidebarActive, sidebarContent }) {
+function SettingsBase({ t, children, headerSubTitle="", cardTitle, sidebarActive, sidebarContent }) {
   return (
     <SiteWrapper>
       <div className="my-3 my-md-5">
         <Container>
-          <Page.Header title={t('settings.title')} />
+          <Page.Header title={t('settings.title')} subTitle={headerSubTitle}/>
           <Grid.Row>
             <Grid.Col md={12}>
             <Card>
