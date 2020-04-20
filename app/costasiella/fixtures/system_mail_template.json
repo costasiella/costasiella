@@ -1,0 +1,14 @@
+[
+  {
+    "model": "costasiella.SystemMailTemplate",
+    "pk": 10000,
+    "fields": {
+      "name": "order_received",
+      "subject": "Order received",
+      "title": "We've received your order",
+      "description": "",
+      "content": "<h3>We have received your order with number #{{order_id}} on {{order_date}}</h3>\n<p>&nbsp;</p>\n<p>{{order_items}}</p>\n<p>&nbsp;</p>\n<p>To view your orders, please click <a href='{{link_profile_orders}}'>here</a>.</p>",
+      "comments": ""
+    }
+  }
+]

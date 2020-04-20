@@ -21,20 +21,21 @@ class SystemMailTemplateNode(DjangoObjectType):
         interfaces = (graphene.relay.Node, )
 
     @classmethod
-    def get_node(self, info, **kwargs):
+    def get_node(cls, info, **kwargs):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.view_systemmailtemplate')
 
         print(kwargs)
         id = kwargs.get('id')
 
-        return self._meta.model.objects.get(id=id)
+        return cls._meta.model.objects.get(id=id)
 
 
 class SystemMailTemplateQuery(graphene.ObjectType):
     system_mail_templates = DjangoFilterConnectionField(SystemMailTemplateNode)
     system_mail_template = graphene.relay.Node.Field(SystemMailTemplateNode)
 
+    @staticmethod
     def resolve_mail_templates(self, info, **kwargs):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.view_systemmailtemplate')
