@@ -1,36 +1,21 @@
 // @flow
 
 import React from 'react'
-import { Query, Mutation } from "react-apollo"
-import gql from "graphql-tag"
-import { v4 } from "uuid"
 import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
-import { Link } from 'react-router-dom'
 
 
 import {
   Page,
   Grid,
-  Icon,
-  Dimmer,
-  Button,
-  Card,
   Container,
-  Table
 } from "tabler-react";
 import SiteWrapper from "../../SiteWrapper"
 import HasPermissionWrapper from "../../HasPermissionWrapper"
 import { toast } from 'react-toastify'
 
-import BadgeBoolean from "../../ui/BadgeBoolean"
 
-import ContentCard from "../../general/ContentCard"
-import OrganizationMenu from "../OrganizationMenu"
-
-
-
-function SettingsMailTemplates({ t }) {
+function SettingsMailTemplates({ t, children }) {
   return (
     <SiteWrapper>
       <div className="my-3 my-md-5">
@@ -40,6 +25,7 @@ function SettingsMailTemplates({ t }) {
           </Page.Header>
           <Grid.Row>
             <Grid.Col md={12}>
+              {children}
             </Grid.Col>
           </Grid.Row>
         </Container>
