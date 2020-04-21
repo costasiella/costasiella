@@ -45,39 +45,47 @@ class SystemMailTemplateQuery(graphene.ObjectType):
         return SystemMailTemplate.objects.all()
 
 
-class UpdateSystemSetting(graphene.relay.ClientIDMutation):
+class UpdateSystemMailTemplate(graphene.relay.ClientIDMutation):
     class Input:
+        id = graphene.String(required=True)
         subject = graphene.String()
         title = graphene.String()
         description = graphene.String()
         content = graphene.String()
         comments = graphene.String()
         
-    system_setting = graphene.Field(SystemMailTemplateNode)
+    system_mail_template = graphene.Field(SystemMailTemplateNode)
 
     @classmethod
     def mutate_and_get_payload(self, root, info, **input):
         user = info.context.user
-        require_login_and_permission(user, 'costasiella.change_systemsetting')
+        require_login_and_permission(user, 'costasiella.change_systemmailtemplate')
 
-        record_found = SystemSetting.objects.filter(setting=input['setting']).exists()
-        if not record_found:
-            # Insert
-            system_setting = SystemSetting(
-                setting = input['setting'],
-                value = input['value']
-            )
-        else:
-            # Update
-            system_setting = SystemSetting.objects.filter(setting=input['setting']).first()
-            system_setting.setting = input['setting']
-            system_setting.value = input['value']
+        rid = get_rid(input['id'])
+        system_mail_template = SystemMailTemplate.objects.get(pk=rid.id)
+        if not system_mail_template:
+            raise Exception('Invalid System Mail Template ID!')
+
+        if 'subject' in input:
+            system_mail_template.subject = input['subject']
+
+        if 'title' in input:
+            system_mail_template.title = input['title']
+
+        if 'description' in input:
+            system_mail_template.description = input['description']
+
+        if 'content' in input:
+            system_mail_template.content = input['content']
+
+        if 'comments' in input:
+            system_mail_template.comments = input['comments']
 
         # Save
-        system_setting.save()
+        system_mail_template.save()
 
-        return UpdateSystemSetting(system_setting=system_setting)
+        return UpdateSystemMailTemplate(system_mail_template=system_mail_template)
 
 
-class SystemSettingMutation(graphene.ObjectType):
-    update_system_setting = UpdateSystemSetting.Field()
+class SystemMailTemplateMutation(graphene.ObjectType):
+    update_system_mail_template = UpdateSystemMailTemplate.Field()
