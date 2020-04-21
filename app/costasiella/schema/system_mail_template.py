@@ -42,7 +42,7 @@ class SystemMailTemplateQuery(graphene.ObjectType):
 
         # rid = get_rid()
         # return everything:
-        return SystemMailTemplate.objects.all()
+        return SystemMailTemplate.objects.all().order_by('name')
 
 
 class UpdateSystemMailTemplate(graphene.relay.ClientIDMutation):
