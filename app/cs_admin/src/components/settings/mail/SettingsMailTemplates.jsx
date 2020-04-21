@@ -29,6 +29,7 @@ import { GET_SYSTEM_MAIL_TEMPLATES_QUERY } from "./queries"
 
 
 function SystemMailTemplates({ t, match, params }) {
+  const title = t("settings.mail.templates.title")
   const { loading, error, data } = useQuery(GET_SYSTEM_MAIL_TEMPLATES_QUERY)
 
   if (loading) return (
