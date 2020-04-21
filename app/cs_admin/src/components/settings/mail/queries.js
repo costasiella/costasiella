@@ -12,6 +12,7 @@ export const GET_SYSTEM_MAIL_TEMPLATES_QUERY = gql`
       edges {
         node {
           id
+          name
           subject
           title
           description
