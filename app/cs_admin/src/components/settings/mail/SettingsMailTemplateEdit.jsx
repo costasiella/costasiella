@@ -92,6 +92,7 @@ function SettingsMailTemplateEdit({ t, match, history }) {
 
           updateSettings({ variables: {
             input: {
+              id: id,
               subject: values.subject,
               title: values.title,
               description: values.description,
@@ -103,7 +104,7 @@ function SettingsMailTemplateEdit({ t, match, history }) {
           ]})
           .then(({ data }) => {
               console.log('got data', data)
-              toast.success((t('settings.general.toast_edit_success')), {
+              toast.success((t('settings.mail.templates.edit.toast_edit_success')), {
                   position: toast.POSITION.BOTTOM_RIGHT
               })
               setSubmitting(false)
