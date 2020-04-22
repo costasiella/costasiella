@@ -37,3 +37,19 @@ export const GET_SYSTEM_MAIL_TEMPLATE_QUERY = gql`
     }
   }
 `
+
+export const UPDATE_SYSTEM_MAIL_TEMPLATE =  gql`
+  mutation UpdateSystemMailTemplate($input: UpdateSystemMailTemplateInput!) {
+    updateSystemMailTemplate(input: $input) {
+      systemMailTemplate {
+        id
+        name
+        subject
+        title
+        description
+        content
+        comments
+      }
+    }
+  }
+`
