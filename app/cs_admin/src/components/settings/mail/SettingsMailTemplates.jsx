@@ -51,7 +51,7 @@ function SystemMailTemplates({ t, match, params }) {
 
 
   return (
-    <SettingsMailTemplatesBase title={title}>
+    <SettingsMailTemplatesBase title={title} >
       <ContentCard 
         cardTitle={t('settings.mail.templates.title')}
         // headerContent={headerOptions}

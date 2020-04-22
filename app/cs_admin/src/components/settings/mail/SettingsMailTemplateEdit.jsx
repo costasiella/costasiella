@@ -21,9 +21,9 @@ import {
 } from "tabler-react";
 import SiteWrapper from "../../SiteWrapper"
 import HasPermissionWrapper from "../../HasPermissionWrapper"
+import getCardTitle from './tools'
 
-// import FinancePaymentMethodForm from './AppSettingsGeneralForm'
-import SettingsBase from "../SettingsBase"
+import SettingsMailTemplatesBase from "./SettingsMailTemplatesBase"
 import SettingsMailTemplateEditForm from "./SettingsMailTemplateEditForm"
 
 
@@ -45,7 +45,7 @@ function SettingsMailTemplateEdit({ t, match, history }) {
 
   if (loading) {
     return (
-      <SettingsBase 
+      <SettingsMailTemplatesBase 
           headerSubTitle={headerSubTitle}
           cardTitle={cardTitle}
       >  
@@ -54,25 +54,27 @@ function SettingsMailTemplateEdit({ t, match, history }) {
                   loader={true}>
           </Dimmer>
         </Card.Body>
-      </SettingsBase>
+      </SettingsMailTemplatesBase>
     )
   }
   if (error) {
     return (
-      <SettingsBase 
+      <SettingsMailTemplatesBase 
           headerSubTitle={headerSubTitle}
           cardTitle={cardTitle}
       >  
         <Card.Body>
           {t("settings.general.error_loading")}
         </Card.Body>
-      </SettingsBase>
+      </SettingsMailTemplatesBase>
     )
   }
 
+  const cardTitle = getCardTitle(data.systemMailTemplate.name)
+
 
   return (
-    <SettingsBase 
+    <SettingsMailTemplatesBase 
       headerSubTitle={headerSubTitle}
       cardTitle={cardTitle}
     >  
@@ -124,13 +126,14 @@ function SettingsMailTemplateEdit({ t, match, history }) {
           values={values}
           setFieldTouched={setFieldTouched}
           setFieldValue={setFieldValue}
+          cardTitle={}
           returnUrl={returnUrl}
         >
           {console.log(errors)}
         </SettingsMailTemplateEditForm>
       )}
       </Formik>
-    </SettingsBase>
+    </SettingsMailTemplatesBase>
   )
 }
 
