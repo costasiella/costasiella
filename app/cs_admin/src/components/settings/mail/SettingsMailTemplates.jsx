@@ -93,7 +93,12 @@ function SystemMailTemplates({ t, match, params }) {
                         {node.name}
                       </Table.Col>
                       <Table.Col>
-                        
+                        <Link to={"/settings/mail/templates/edit/" + node.id}>
+                          <Button className='btn-sm' 
+                                  color="secondary">
+                            {t('general.edit')}
+                          </Button>
+                        </Link>
                       </Table.Col>
                     </Table.Row>
                   ))}
