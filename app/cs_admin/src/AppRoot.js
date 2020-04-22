@@ -147,6 +147,7 @@ import SettingsHome from './components/settings/home/SettingsHome'
 import SettingsGeneralDateTime from './components/settings/general/date_time/SettingsGeneralDateTime'
 import SettingsIntegrationMollie from './components/settings/integration/mollie/SettingsIntegrationMollie'
 import SettingsMailTemplates from './components/settings/mail/SettingsMailTemplates'
+import SettingsMailTemplateEdit from './components/settings/mail/SettingsMailTemplateEdit'
 
 import ShopHome from './components/shop/home/ShopHome'
 import ShopCheckoutPayment from './components/shop/checkout/payment/ShopCheckoutPayment'
@@ -356,7 +357,7 @@ function AppRoot({ t }) {
           <PrivateRoute exact path="/settings/general/datetime" component={SettingsGeneralDateTime} />
           <PrivateRoute exact path="/settings/integration/mollie" component={SettingsIntegrationMollie} />
           <PrivateRoute exact path="/settings/mail/templates" component={SettingsMailTemplates} />
-          
+          <PrivateRoute exact path="/settings/mail/templates/edit/:id" component={SettingsMailTemplateEdit} />
 
           {/* User */}
           <PrivateRoute exact path="/user/password/change" component={UserChangePassword} />

@@ -8,7 +8,7 @@ import { withRouter } from "react-router"
 import { Formik } from 'formik'
 import { toast } from 'react-toastify'
 
-import { GET_SYSTEM_MAIL_TEMPLATE_QUERY, UPDATE_SYSTEM_MAIL_TEMPLATE } from './queries'
+import { GET_SYSTEM_MAIL_TEMPLATE_QUERY, GET_SYSTEM_MAIL_TEMPLATES_QUERY, UPDATE_SYSTEM_MAIL_TEMPLATE } from './queries'
 
 import {
   Dimmer,
@@ -19,16 +19,17 @@ import {
   Card,
   Container,
 } from "tabler-react";
-import SiteWrapper from "../../../SiteWrapper"
-import HasPermissionWrapper from "../../../HasPermissionWrapper"
+import SiteWrapper from "../../SiteWrapper"
+import HasPermissionWrapper from "../../HasPermissionWrapper"
 
 // import FinancePaymentMethodForm from './AppSettingsGeneralForm'
-import SettingsBase from "../../SettingsBase"
+import SettingsBase from "../SettingsBase"
 import SettingsMailTemplateEditForm from "./SettingsMailTemplateEditForm"
 
 
 function SettingsMailTemplateEdit({ t, match, history }) {
   const id = match.params.id
+  const returnUrl = "/settings/mail/templates"
   const headerSubTitle = t('settings.mail.title')
   const cardTitle = t("settings.mail.templates.edit.title")
 
@@ -47,7 +48,7 @@ function SettingsMailTemplateEdit({ t, match, history }) {
       <SettingsBase 
           headerSubTitle={headerSubTitle}
           cardTitle={cardTitle}
-          sidebarActive={sidebarActive}>  
+      >  
         <Card.Body>
           <Dimmer active={true}
                   loader={true}>
@@ -61,7 +62,7 @@ function SettingsMailTemplateEdit({ t, match, history }) {
       <SettingsBase 
           headerSubTitle={headerSubTitle}
           cardTitle={cardTitle}
-          sidebarActive={sidebarActive}>  
+      >  
         <Card.Body>
           {t("settings.general.error_loading")}
         </Card.Body>
@@ -74,7 +75,6 @@ function SettingsMailTemplateEdit({ t, match, history }) {
     <SettingsBase 
       headerSubTitle={headerSubTitle}
       cardTitle={cardTitle}
-      sidebarActive={sidebarActive}
     >  
     <Formik
       initialValues={{ 
@@ -94,12 +94,12 @@ function SettingsMailTemplateEdit({ t, match, history }) {
             input: {
               subject: values.subject,
               title: values.title,
-              description: value.description,
-              content: data.content,
-              comments: comments.comments
+              description: values.description,
+              content: values.content,
+              comments: values.comments
             }
           }, refetchQueries: [
-              {query: GET_SYSTEM_MAIL_TEMPLATE_QUERY}
+              {query: GET_SYSTEM_MAIL_TEMPLATES_QUERY}
           ]})
           .then(({ data }) => {
               console.log('got data', data)
@@ -116,11 +116,14 @@ function SettingsMailTemplateEdit({ t, match, history }) {
             })
       }}
     >
-      {({ isSubmitting, errors, values }) => (
+      {({ isSubmitting, errors, values, setFieldTouched, setFieldValue }) => (
         <SettingsMailTemplateEditForm
           isSubmitting={isSubmitting}
           errors={errors}
           values={values}
+          setFieldTouched={setFieldTouched}
+          setFieldValue={setFieldValue}
+          returnUrl={returnUrl}
         >
           {console.log(errors)}
         </SettingsMailTemplateEditForm>
