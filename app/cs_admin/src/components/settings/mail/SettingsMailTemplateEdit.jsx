@@ -78,7 +78,7 @@ function SettingsMailTemplateEdit({ t, match, history }) {
   return (
     <SettingsMailTemplateEditBase 
       headerSubTitle={headerSubTitle}
-      help={templateInfo.helpText}
+      help={templateInfo.helpTexts}
     >  
     <Formik
       initialValues={{ 
