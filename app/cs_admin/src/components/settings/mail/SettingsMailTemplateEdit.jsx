@@ -21,7 +21,7 @@ import {
 } from "tabler-react";
 import SiteWrapper from "../../SiteWrapper"
 import HasPermissionWrapper from "../../HasPermissionWrapper"
-import getCardTitle from './tools'
+import { getTemplateInfo } from './tools'
 
 import SettingsMailTemplatesBase from "./SettingsMailTemplatesBase"
 import SettingsMailTemplateEditForm from "./SettingsMailTemplateEditForm"
@@ -70,13 +70,15 @@ function SettingsMailTemplateEdit({ t, match, history }) {
     )
   }
 
-  const cardTitle = getCardTitle(data.systemMailTemplate.name)
+  const templateInfo = getTemplateInfo(t, data.systemMailTemplate.name)
+  console.log(data.systemMailTemplate.name)
+  console.log(templateInfo)
 
 
   return (
     <SettingsMailTemplatesBase 
       headerSubTitle={headerSubTitle}
-      cardTitle={cardTitle}
+      help={templateInfo.helpText}
     >  
     <Formik
       initialValues={{ 
@@ -126,7 +128,7 @@ function SettingsMailTemplateEdit({ t, match, history }) {
           values={values}
           setFieldTouched={setFieldTouched}
           setFieldValue={setFieldValue}
-          cardTitle={}
+          cardTitle={templateInfo.cardTitle}
           returnUrl={returnUrl}
         >
           {console.log(errors)}
