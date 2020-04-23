@@ -23,7 +23,7 @@ import SiteWrapper from "../../SiteWrapper"
 import HasPermissionWrapper from "../../HasPermissionWrapper"
 import { getTemplateInfo } from './tools'
 
-import SettingsMailTemplatesBase from "./SettingsMailTemplatesBase"
+import SettingsMailTemplateEditBase from "./SettingsMailTemplateEditBase"
 import SettingsMailTemplateEditForm from "./SettingsMailTemplateEditForm"
 
 
@@ -45,7 +45,7 @@ function SettingsMailTemplateEdit({ t, match, history }) {
 
   if (loading) {
     return (
-      <SettingsMailTemplatesBase 
+      <SettingsMailTemplateEditBase 
           headerSubTitle={headerSubTitle}
           cardTitle={cardTitle}
       >  
@@ -54,19 +54,19 @@ function SettingsMailTemplateEdit({ t, match, history }) {
                   loader={true}>
           </Dimmer>
         </Card.Body>
-      </SettingsMailTemplatesBase>
+      </SettingsMailTemplateEditBase>
     )
   }
   if (error) {
     return (
-      <SettingsMailTemplatesBase 
+      <SettingsMailTemplateEditBase 
           headerSubTitle={headerSubTitle}
           cardTitle={cardTitle}
       >  
         <Card.Body>
           {t("settings.general.error_loading")}
         </Card.Body>
-      </SettingsMailTemplatesBase>
+      </SettingsMailTemplateEditBase>
     )
   }
 
@@ -76,7 +76,7 @@ function SettingsMailTemplateEdit({ t, match, history }) {
 
 
   return (
-    <SettingsMailTemplatesBase 
+    <SettingsMailTemplateEditBase 
       headerSubTitle={headerSubTitle}
       help={templateInfo.helpText}
     >  
@@ -135,7 +135,7 @@ function SettingsMailTemplateEdit({ t, match, history }) {
         </SettingsMailTemplateEditForm>
       )}
       </Formik>
-    </SettingsMailTemplatesBase>
+    </SettingsMailTemplateEditBase>
   )
 }
 

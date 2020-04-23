@@ -6,6 +6,7 @@ import { withRouter } from "react-router"
 
 
 import {
+  Card,
   Page,
   Grid,
   Container,
@@ -15,7 +16,7 @@ import HasPermissionWrapper from "../../HasPermissionWrapper"
 import { toast } from 'react-toastify'
 
 
-function SettingsMailTemplatesBase({ t, children, headerSubTitle, help="" }) {
+function SettingsMailTemplatesBase({ t, children, headerSubTitle, }) {
   return (
     <SiteWrapper>
       <div className="my-3 my-md-5">
@@ -24,11 +25,8 @@ function SettingsMailTemplatesBase({ t, children, headerSubTitle, help="" }) {
             {/* To do: back button here */}
           </Page.Header>
           <Grid.Row>
-            <Grid.Col md={8}>
+            <Grid.Col md={12}>
               {children}
-            </Grid.Col>
-            <Grid.Col md={4}>
-              {help}
             </Grid.Col>
           </Grid.Row>
         </Container>
