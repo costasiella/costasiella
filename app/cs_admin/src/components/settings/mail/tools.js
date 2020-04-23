@@ -3,23 +3,35 @@ import React from "react"
 
 export function getTemplateInfo(t, template_name) {
   let cardTitle
-  let helpText
+  let helpTexts
 
 
   switch(template_name) {
     case "order_received":
       cardTitle = t("settings.mail.templates.order_received.title")
-      helpText = t("settings.mail.templates.order_received.help_text")    
+      helpTexts = {
+        subject: t("settings.mail.templates.order_received.help_subject"),
+        title: t("settings.mail.templates.order_received.help_title"),
+        description: t("settings.mail.templates.order_received.help_description"),
+        content: t("settings.mail.templates.order_received.help_content"),
+        comments: t("settings.mail.templates.order_received.help_comments"), 
+      }
       break
     default:
       cardTitle = t("settings.mail.templates.not_found.title")
-      helpText = t("settings.mail.templates.not_found.help_text")
+      helpTexts = {
+        subject: t("settings.mail.templates.not_found.help_subject"),
+        title: t("settings.mail.templates.not_found.help_title"),
+        description: t("settings.mail.templates.not_found.help_description"),
+        content: t("settings.mail.templates.not_found.help_content"),
+        comments: t("settings.mail.templates.not_found.help_comments"),
+      }
   }
 
 
   return {
     "cardTitle": cardTitle,
-    "helpText": helpText,
+    "helpTexts": helpTexts,
   }
 }
 
