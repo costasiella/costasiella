@@ -27,6 +27,21 @@ function SettingsHome({ t, match, params }) {
           <Page.Header title={t('settings.title')} />
           <Grid.Row>
             <Grid.Col md={12}>
+              <h4>{t("settings.finance.title")}</h4>
+            </Grid.Col>
+            <Grid.Col md={3}>
+              <Card>
+                <Card.Body>
+                  <h5>{t("settings.finance.currency.title")}</h5>
+                  {t("settings.finance.currency.explanation")}
+                  <br /><br />
+                  <SettingsHomeItemButton link="/settings/finance/currency" />
+                </Card.Body>
+              </Card>
+            </Grid.Col>
+          </Grid.Row>
+          <Grid.Row>
+            <Grid.Col md={12}>
               <h4>{t("settings.general.title")}</h4>
             </Grid.Col>
             <Grid.Col md={3}>
