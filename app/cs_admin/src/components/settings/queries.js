@@ -2,8 +2,8 @@ import gql from "graphql-tag"
 
 
 export const GET_SYSTEM_SETTINGS_QUERY = gql`
-  query SystemSettings {
-    systemSettings(setting: "integration_mollie_api_key") {
+  query SystemSettings($setting: String!) {
+    systemSettings(setting: $setting) {
       edges {
         node {
           id
