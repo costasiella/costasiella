@@ -81,10 +81,12 @@ class MailTemplateDude:
 
         # Render content
         # items context
+        #TODO: Fetch currency symbol from db
         context = {
             "order_items": [
                 1, 2, 3
-            ]
+            ],
+            "currency_symbol": "€"
         }
 
         # Render items table
