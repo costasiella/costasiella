@@ -10,6 +10,7 @@ from graphql_relay import to_global_id
 from ..models import FinanceOrder, IntegrationLogMollie, SystemSetting
 from ..modules.gql_tools import require_login_and_permission, require_login_and_one_of_permissions, get_rid
 from ..modules.messages import Messages
+from ..modules.finance_tools import get_currency
 
 
 m = Messages()
@@ -76,11 +77,11 @@ class CreateFinanceOrderPaymentLink(graphene.Mutation):
         webhook_url = mollie_dude.get_webhook_url(info.context)
         print(webhook_url)
 
-        #TODO: Fetch currency eg. EUR or USD, etc.
-
+        # Fetch currency eg. EUR or USD, etc.
+        currency = get_currency() or "EUR"
         payment = mollie.payments.create({
             'amount': {
-                'currency': "EUR",
+                'currency': currency,
                 'value': str(amount)
             },
             'description': description,
