@@ -19,11 +19,12 @@ class MailTemplateDude:
         """
         self.email_template = email_template
         self.kwargs = kwargs
-        self.default_template = 'mail/default.html'
+        self.template_default = 'mail/default.html'
+        self.template_order_items = 'mail/order_items.html'
 
         # Read default mail template
         print(settings.BASE_DIR)
-        # default_template = os.path.join(
+        # template_default = os.path.join(
         #     settings.BASE_DIR,
         #     'templates',
         #     'mail',
@@ -57,7 +58,7 @@ class MailTemplateDude:
         }
 
         html_message = render_to_string(
-            self.default_template,
+            self.template_default,
             context
         )
 
@@ -71,8 +72,6 @@ class MailTemplateDude:
         Render order received template
         :return: HTML message
         """
-        # Fetch template
-
         # Check if we have the required arguments
         finance_order = self.kwargs.get('finance_order', None)
 
@@ -81,6 +80,20 @@ class MailTemplateDude:
         print(finance_order.items)
 
         # Render content
+        # items context
+        context = {
+            "order_items": [
+                1, 2, 3
+            ]
+        }
+
+        # Render items table
+        items_html = render_to_string(
+            self.template_order_items,
+            context
+        )
+
+        print(items_html)
 
         # t = Template("My name is {{ my_name }}.")
         # c = Context({"my_name": "Adrian"})
@@ -90,7 +103,7 @@ class MailTemplateDude:
             subject="order received",
             title="title",
             description="description",
-            content="content",
+            content=items_html,
             comments="comments",
             footer="footer"
         )
