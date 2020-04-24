@@ -52,9 +52,6 @@ function SettingsIntegrationMollie({ t, match, history }) {
   })
   const [ updateSettings, { data: updateData }] = useMutation(UPDATE_SYSTEM_SETTING)
 
-  console.log('query data app settings')
-  console.log(data)
-
   if ((loadingCurrency) || (loadingSymbol)) {
     return (
       <SettingsBase 
@@ -82,6 +79,22 @@ function SettingsIntegrationMollie({ t, match, history }) {
     )
   }
 
+  console.log('query data app settings')
+  console.log(dataCurrency)
+  console.log(dataSymbol)
+
+  let initialValues = {
+    currency: "EUR",
+    symbol: "€"
+  }
+  if (dataCurrency.systemSettings.edges.length){
+    initialValues['currency'] = dataCurrency.systemSettings.edges[0].node.value
+  } 
+  if (dataSymbol.systemSettings.edges.length){
+    initialValues['symbol'] = dataSymbol.systemSettings.edges[0].node.value
+  } 
+    
+
 
   return (
     <SettingsBase 
@@ -91,8 +104,8 @@ function SettingsIntegrationMollie({ t, match, history }) {
     >  
     <Formik
       initialValues={{ 
-        finance_currency: dataCurrency.systemSettings.edges[0].node.value,
-        finance_currency_symbol: dataSymbol.systemSettings.edges[0].node.value
+        finance_currency: initialValues['currency'],
+        finance_currency_symbol: initialValues['symbol']
       }}
       // validationSchema={MOLLIE_SCHEMA}
       onSubmit={(values, { setSubmitting }, errors) => {
@@ -100,16 +113,23 @@ function SettingsIntegrationMollie({ t, match, history }) {
           console.log(values)
           console.log(errors)
 
-          settings = [
+          const settings = [
             { setting: "finance_currency", value: values.finance_currency },
             { setting: "finance_currency_symbol", value: values.finance_currency_symbol },
           ]
 
+          let error = false
+
           for (let i in settings) {
+
+            console.log(i)
+            console.log(settings[i].setting)
+            console.log(settings[i].value)
+
             updateSettings({ variables: {
               input: {
-                setting: i.setting,
-                value: i.value
+                setting: settings[i].setting,
+                value: settings[i].value,
               }
             }, refetchQueries: [
                 {query: GET_SYSTEM_SETTINGS_QUERY, variables: { setting: i.setting }},
@@ -121,7 +141,9 @@ function SettingsIntegrationMollie({ t, match, history }) {
                 })
                 setSubmitting(false)
               }).catch((error) => {
-                error = true
+                toast.error((t('general.toast_server_error')) + ': ' +  error, {
+                  position: toast.POSITION.BOTTOM_RIGHT
+                })
                 console.log('there was an error sending the query', error)
                 setSubmitting(false)
               })
