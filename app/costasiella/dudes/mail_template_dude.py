@@ -7,6 +7,8 @@ from django.template import Template, Context
 from django.utils.translation import gettext as _
 from django.core.mail import send_mail
 
+from ..models import AppSettings, SystemMailTemplate
+
 # https://docs.djangoproject.com/en/2.2/topics/email/
 
 
@@ -19,6 +21,7 @@ class MailTemplateDude:
         """
         self.email_template = email_template
         self.kwargs = kwargs
+        self.app_settings = AppSettings.objects.get(pk=1)
         self.template_default = 'mail/default.html'
         self.template_order_items = 'mail/order_items.html'
 
@@ -79,31 +82,53 @@ class MailTemplateDude:
         print(finance_order)
         print(finance_order.items)
 
-        # Render content
-        # items context
-        #TODO: Fetch currency symbol from db
-        context = {
+        # Fetch template
+        mail_template = SystemMailTemplate.objects.get(name='finance_order')
+
+        # Render template items
+        description_context = {
+            "order": finance_order,
+            "order_date": finance_order.created_at.strftime(
+                self.app_settings.date_format
+            )
+        }
+        description = render_to_string(
+            mail_template.description,
+            description_context,
+        )
+
+
+        # Render content (items table)
+        items_context = {
             "order": finance_order,
             "currency_symbol": "€"
         }
-
-        # Render items table
-        items_html = render_to_string(
+        items = render_to_string(
             self.template_order_items,
-            context
+            items_context
+        )
+        content_context = {
+            "order": finance_order,
+            "order_items": items
+        }
+        content = render_to_string(
+            mail_template.content,
+            content_context
         )
 
-        print(items_html)
+        #TODO: Add footer template
+
+        # print(items_html)
 
         # t = Template("My name is {{ my_name }}.")
         # c = Context({"my_name": "Adrian"})
         # t.render(c)
 
         return dict(
-            subject="order received",
-            title="title",
-            description="description",
-            content=items_html,
-            comments="comments",
+            subject=mail_template.subject,
+            title=mail_template.title,
+            description=description,
+            content=content,
+            comments=mail_template.comments,
             footer="footer"
         )
