@@ -83,9 +83,7 @@ class MailTemplateDude:
         # items context
         #TODO: Fetch currency symbol from db
         context = {
-            "order_items": [
-                1, 2, 3
-            ],
+            "order": finance_order,
             "currency_symbol": "€"
         }
 
