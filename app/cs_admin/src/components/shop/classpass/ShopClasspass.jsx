@@ -80,9 +80,6 @@ function ShopClasspass({ t, match, history }) {
                       .then(({ data }) => {
                           console.log('got data', data)
                           console.log('good...  now redirect to the payment page')
-                          // toast.success((t('shop..toast_add_success')), {
-                          //     position: toast.POSITION.BOTTOM_RIGHT
-                          //   })
                           const orderId = data.createFinanceOrder.financeOrder.id
                           history.push('/shop/checkout/payment/' + orderId)
                         }).catch((error) => {

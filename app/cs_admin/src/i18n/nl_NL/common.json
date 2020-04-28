@@ -169,15 +169,19 @@
         "unknown_document_type": "__STRING_NOT_TRANSLATED__",
         "password": "__STRING_NOT_TRANSLATED__",
         "login": "__STRING_NOT_TRANSLATED__",
-        "logout": "__STRING_NOT_TRANSLATED__"
+        "logout": "__STRING_NOT_TRANSLATED__",
+        "subject": "__STRING_NOT_TRANSLATED__",
+        "title": "__STRING_NOT_TRANSLATED__",
+        "content": "__STRING_NOT_TRANSLATED__",
+        "comments": "__STRING_NOT_TRANSLATED__"
     },
     "settings": {
         "error_loading": "__STRING_NOT_TRANSLATED__",
-        "title": "__STRING_NOT_TRANSLATED__",
         "general": {
             "title": "__STRING_NOT_TRANSLATED__",
             "error_loading": "__STRING_NOT_TRANSLATED__",
             "toast_edit_success": "__STRING_NOT_TRANSLATED__",
+            "datetime": "__STRING_NOT_TRANSLATED__",
             "date_format": "__STRING_NOT_TRANSLATED__",
             "date_formats": {
                 "YYYY-MM-DD": "__STRING_NOT_TRANSLATED__",
@@ -188,11 +192,60 @@
             "time_formats": {
                 "24hr": "__STRING_NOT_TRANSLATED__",
                 "12hr": "__STRING_NOT_TRANSLATED__"
+            },
+            "date_time": {
+                "title": "__STRING_NOT_TRANSLATED__",
+                "explanation": "__STRING_NOT_TRANSLATED__"
             }
+        },
+        "title": "__STRING_NOT_TRANSLATED__",
+        "finance": {
+            "currency": {
+                "title": "__STRING_NOT_TRANSLATED__",
+                "explanation": "__STRING_NOT_TRANSLATED__"
+            },
+            "currency_symbol": "__STRING_NOT_TRANSLATED__",
+            "title": "__STRING_NOT_TRANSLATED__"
         },
         "integration": {
             "title": "__STRING_NOT_TRANSLATED__",
-            "mollie_api_key": "__STRING_NOT_TRANSLATED__"
+            "mollie": {
+                "title": "__STRING_NOT_TRANSLATED__",
+                "explanation": "__STRING_NOT_TRANSLATED__",
+                "api_key": "__STRING_NOT_TRANSLATED__"
+            }
+        },
+        "mail": {
+            "title": "__STRING_NOT_TRANSLATED__",
+            "templates": {
+                "title": "__STRING_NOT_TRANSLATED__",
+                "explanation": "__STRING_NOT_TRANSLATED__",
+                "edit": {
+                    "title": "__STRING_NOT_TRANSLATED__",
+                    "toast_edit_success": "__STRING_NOT_TRANSLATED__"
+                },
+                "error_loading": "__STRING_NOT_TRANSLATED__",
+                "name": "__STRING_NOT_TRANSLATED__",
+                "order_received": {
+                    "title": "__STRING_NOT_TRANSLATED__",
+                    "help_subject": "__STRING_NOT_TRANSLATED__",
+                    "help_title": "__STRING_NOT_TRANSLATED__",
+                    "help_description": "__STRING_NOT_TRANSLATED__",
+                    "help_content": "__STRING_NOT_TRANSLATED__",
+                    "help_comments": "__STRING_NOT_TRANSLATED__"
+                },
+                "not_found": {
+                    "title": "__STRING_NOT_TRANSLATED__",
+                    "help_subject": "__STRING_NOT_TRANSLATED__",
+                    "help_title": "__STRING_NOT_TRANSLATED__",
+                    "help_description": "__STRING_NOT_TRANSLATED__",
+                    "help_content": "__STRING_NOT_TRANSLATED__",
+                    "help_comments": "__STRING_NOT_TRANSLATED__"
+                }
+            }
+        },
+        "home": {
+            "link_edit": "__STRING_NOT_TRANSLATED__"
         }
     },
     "yup": {
@@ -412,9 +465,6 @@
             }
         },
         "title": "__STRING_NOT_TRANSLATED__",
-        "": {
-            "toast_add_success": "__STRING_NOT_TRANSLATED__"
-        },
         "classpasses": {
             "choose": "__STRING_NOT_TRANSLATED__",
             "error_loading": "__STRING_NOT_TRANSLATED__",

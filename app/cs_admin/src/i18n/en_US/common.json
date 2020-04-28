@@ -334,7 +334,11 @@
         "room": "Room",
         "valid_for": "valid for",
         "order": "Order",
-        "item": "Item"
+        "item": "Item",
+        "subject": "__STRING_NOT_TRANSLATED__",
+        "title": "__STRING_NOT_TRANSLATED__",
+        "content": "__STRING_NOT_TRANSLATED__",
+        "comments": "__STRING_NOT_TRANSLATED__"
     },
     "yup": {
         "min_len_3": "Please input at least 3 characters",
@@ -1062,6 +1066,7 @@
             "title": "General",
             "error_loading": "Error loading settings :(",
             "toast_edit_success": "Saved settings",
+            "datetime": "Date and time",
             "date_format": "Date format",
             "date_formats": {
                 "YYYY-MM-DD": "YYYY-MM-DD",
@@ -1070,14 +1075,62 @@
             },
             "time_format": "Time format",
             "time_formats": {
-                "24hr": "24h",
+                "24hr": "24hr",
                 "12hr": "AM/PM"
+            },
+            "date_time": {
+                "title": "Date and time",
+                "explanation": "Date and time format"
             }
         },
         "error_loading": "Error loading settings :(",
         "integration": {
             "title": "Integration",
-            "mollie_api_key": "Mollie API key"
+            "mollie": {
+                "title": "Mollie",
+                "explanation": "Mollie integration settings",
+                "api_key": "Mollie API key"
+            }
+        },
+        "finance": {
+            "currency": {
+                "title": "Currency",
+                "explanation": "Set the currency and currency symbol"
+            },
+            "currency_symbol": "Currency symbol",
+            "title": "Currency"
+        },
+        "mail": {
+            "title": "Mail",
+            "templates": {
+                "title": "Templates",
+                "explanation": "Set the contents of system generated mails.",
+                "edit": {
+                    "title": "Edit template",
+                    "toast_edit_success": "Saved"
+                },
+                "error_loading": "Error loading mail templates :(",
+                "name": "Name",
+                "order_received": {
+                    "title": "Order received",
+                    "help_subject": "__STRING_NOT_TRANSLATED__",
+                    "help_title": "__STRING_NOT_TRANSLATED__",
+                    "help_description": "__STRING_NOT_TRANSLATED__",
+                    "help_content": "__STRING_NOT_TRANSLATED__",
+                    "help_comments": "__STRING_NOT_TRANSLATED__"
+                },
+                "not_found": {
+                    "title": "Template not found",
+                    "help_subject": "__STRING_NOT_TRANSLATED__",
+                    "help_title": "__STRING_NOT_TRANSLATED__",
+                    "help_description": "__STRING_NOT_TRANSLATED__",
+                    "help_content": "__STRING_NOT_TRANSLATED__",
+                    "help_comments": "__STRING_NOT_TRANSLATED__"
+                }
+            }
+        },
+        "home": {
+            "link_edit": "Change settings"
         }
     },
     "user": {
@@ -1197,9 +1250,6 @@
         "classpass": {
             "error_loading": "Error loading class pass :(",
             "additional_information": "Additional information"
-        },
-        "": {
-            "toast_add_success": "__STRING_NOT_TRANSLATED__"
         },
         "order": {
             "message": "Any message with this order?"
