@@ -12,8 +12,12 @@ export function getTemplateInfo(t, template_name) {
       helpTexts = {
         subject: t("settings.mail.templates.order_received.help_subject"),
         title: t("settings.mail.templates.order_received.help_title"),
-        description: t("settings.mail.templates.order_received.help_description"),
-        content: t("settings.mail.templates.order_received.help_content"),
+        description: t("settings.mail.templates.order_received.help_description", {
+          interpolation: { prefix: "%%", suffix: "%%" }
+        }),
+        content: t("settings.mail.templates.order_received.help_content", {
+          interpolation: { prefix: "%%", suffix: "%%" }
+        }),
         comments: t("settings.mail.templates.order_received.help_comments"), 
       }
       break

@@ -1113,19 +1113,19 @@
                 "name": "Name",
                 "order_received": {
                     "title": "Order received",
-                    "help_subject": "__STRING_NOT_TRANSLATED__",
-                    "help_title": "__STRING_NOT_TRANSLATED__",
-                    "help_description": "__STRING_NOT_TRANSLATED__",
-                    "help_content": "__STRING_NOT_TRANSLATED__",
-                    "help_comments": "__STRING_NOT_TRANSLATED__"
+                    "help_subject": "No variables available",
+                    "help_title": "No variables available",
+                    "help_description": "{{ order }} (Order information), {{order_date}} (Order creation date)",
+                    "help_content": "{{order}} (Order information), {{order_items}} (Table of order items)",
+                    "help_comments": "No variables available"
                 },
                 "not_found": {
                     "title": "Template not found",
-                    "help_subject": "__STRING_NOT_TRANSLATED__",
-                    "help_title": "__STRING_NOT_TRANSLATED__",
-                    "help_description": "__STRING_NOT_TRANSLATED__",
-                    "help_content": "__STRING_NOT_TRANSLATED__",
-                    "help_comments": "__STRING_NOT_TRANSLATED__"
+                    "help_subject": "",
+                    "help_title": "",
+                    "help_description": "",
+                    "help_content": "",
+                    "help_comments": ""
                 }
             }
         },
