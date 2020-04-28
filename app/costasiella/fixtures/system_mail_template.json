@@ -1,21 +1,21 @@
 [
   {
     "model": "costasiella.SystemMailTemplate",
-    "pk": 10000,
+    "pk": 50000,
     "fields": {
       "name": "order_received",
       "subject": "Order received",
       "title": "We've received your order",
-      "description": "",
+      "description": "<ul><li>Order #{{order.id}}</li><li>Date {{order_date}}</li></ul>",
       "content": "{{order_items}}",
       "comments": ""
     }
   },
   {
     "model": "costasiella.SystemMailTemplate",
-    "pk": 20000,
+    "pk": 100000,
     "fields": {
-      "name": "footer",
+      "name": "system_footer",
       "subject": "",
       "title": "",
       "description": "",

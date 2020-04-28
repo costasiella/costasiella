@@ -50,6 +50,11 @@ class MailTemplateDude:
         if content is None:
             return "Invalid Template"
 
+        footer = ""
+        footer_template = SystemMailTemplate.objects.get(pk=100000)
+        if footer_template:
+            footer = footer_template.content
+
         # Render base template
         context = {
             "logo": "",
@@ -57,7 +62,7 @@ class MailTemplateDude:
             "description": content.get("description", ""),
             "content": content.get("content", ""),
             "comments": content.get("comments", ""),
-            "footer": content.get("footer", "")
+            "footer": footer
         }
 
         html_message = render_to_string(
@@ -83,20 +88,17 @@ class MailTemplateDude:
         print(finance_order.items)
 
         # Fetch template
-        mail_template = SystemMailTemplate.objects.get(name='finance_order')
+        mail_template = SystemMailTemplate.objects.get(pk=50000)
 
         # Render template items
-        description_context = {
+        description_context = Context({
             "order": finance_order,
             "order_date": finance_order.created_at.strftime(
                 self.app_settings.date_format
             )
-        }
-        description = render_to_string(
-            mail_template.description,
-            description_context,
-        )
-
+        })
+        description_template = Template(mail_template.description)
+        description = description_template.render(description_context)
 
         # Render content (items table)
         items_context = {
@@ -107,14 +109,12 @@ class MailTemplateDude:
             self.template_order_items,
             items_context
         )
-        content_context = {
+        content_context = Context({
             "order": finance_order,
             "order_items": items
-        }
-        content = render_to_string(
-            mail_template.content,
-            content_context
-        )
+        })
+        content_template = Template(mail_template.content)
+        content = content_template.render(content_context)
 
         #TODO: Add footer template
 
@@ -129,6 +129,5 @@ class MailTemplateDude:
             title=mail_template.title,
             description=description,
             content=content,
-            comments=mail_template.comments,
-            footer="footer"
+            comments=mail_template.comments
         )
