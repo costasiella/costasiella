@@ -335,10 +335,10 @@
         "valid_for": "valid for",
         "order": "Order",
         "item": "Item",
-        "subject": "__STRING_NOT_TRANSLATED__",
-        "title": "__STRING_NOT_TRANSLATED__",
-        "content": "__STRING_NOT_TRANSLATED__",
-        "comments": "__STRING_NOT_TRANSLATED__"
+        "subject": "Subject",
+        "title": "Title",
+        "content": "Content",
+        "comments": "Comments"
     },
     "yup": {
         "min_len_3": "Please input at least 3 characters",
