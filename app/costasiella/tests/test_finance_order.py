@@ -293,58 +293,53 @@ class GQLFinanceOrder(TestCase):
         )
         self.assertEqual(data['financeOrder']['message'], order.message)
         self.assertEqual(data['financeOrder']['status'], order.status)
-    #
-    #
-    # def test_query_one_anon_user(self):
-    #     """ Deny permission for anon users Query one finance order """
-    #     order = f.FinanceOrderFactory.create()
-    #
-    #     variables = {
-    #         "id": to_global_id("FinanceOrderNode", order.id),
-    #     }
-    #
-    #     # Now query single order and check
-    #     executed = execute_test_client_api_query(self.order_query, self.anon_user, variables=variables)
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
-    #
-    #
-    # def test_query_one_permission_denied(self):
-    #     """ Permission denied message when user lacks authorization """
-    #     # Create regular user
-    #     order = f.FinanceOrderFactory.create()
-    #     user = order.account
-    #
-    #     variables = {
-    #         "id": to_global_id("FinanceOrderNode", order.id),
-    #     }
-    #
-    #     # Now query single order and check
-    #     executed = execute_test_client_api_query(self.order_query, user, variables=variables)
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
-    #
-    #
-    # def test_query_one_permission_granted(self):
-    #     """ Respond with data when user has permission """
-    #     order = f.FinanceOrderFactory.create()
-    #     user = order.account
-    #     permission = Permission.objects.get(codename='view_financeorder')
-    #     user.user_permissions.add(permission)
-    #     user.save()
-    #
-    #
-    #     variables = {
-    #         "id": to_global_id("FinanceOrderNode", order.id),
-    #     }
-    #
-    #     # Now query single order and check
-    #     executed = execute_test_client_api_query(self.order_query, user, variables=variables)
-    #     data = executed.get('data')
-    #     self.assertEqual(
-    #         data['financeOrder']['account']['id'],
-    #         to_global_id('AccountNode', order.account.id)
-    #     )
+
+    def test_query_one_anon_user(self):
+        """ Deny permission for anon users Query one finance order """
+        order = f.FinanceOrderFactory.create()
+
+        variables = {
+            "id": to_global_id("FinanceOrderNode", order.id),
+        }
+
+        # Now query single order and check
+        executed = execute_test_client_api_query(self.order_query, self.anon_user, variables=variables)
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
+
+    def test_query_one_permission_denied(self):
+        """ Permission denied message when user lacks authorization """
+        # Create regular user
+        order = f.FinanceOrderFactory.create()
+        user = order.account
+
+        variables = {
+            "id": to_global_id("FinanceOrderNode", order.id),
+        }
+
+        # Now query single order and check
+        executed = execute_test_client_api_query(self.order_query, user, variables=variables)
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
+
+    def test_query_one_permission_granted(self):
+        """ Respond with data when user has permission """
+        order = f.FinanceOrderFactory.create()
+        user = order.account
+        permission = Permission.objects.get(codename='view_financeorder')
+        user.user_permissions.add(permission)
+        user.save()
+
+        variables = {
+            "id": to_global_id("FinanceOrderNode", order.id),
+        }
+        # Now query single order and check
+        executed = execute_test_client_api_query(self.order_query, user, variables=variables)
+        data = executed.get('data')
+        self.assertEqual(
+            data['financeOrder']['account']['id'],
+            to_global_id('AccountNode', order.account.id)
+        )
     #
     #
     # def test_create_order(self):
