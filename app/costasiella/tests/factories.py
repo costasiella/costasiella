@@ -508,7 +508,6 @@ class FinanceOrderFactory(factory.DjangoModelFactory):
     account = factory.LazyAttribute(
         lambda o: o.initial_account if o.initial_account else factory.SubFactory(RegularUserFactory)
     )
-    finance_invoice_group = factory.SubFactory(FinanceInvoiceGroupFactory)
     status = "RECEIVED"
     message = "Customer's note here..."
 
