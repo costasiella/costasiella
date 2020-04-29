@@ -24,7 +24,7 @@ import SettingsGeneralDateTimeForm from "./SettingsGeneralDateTimeForm"
 
 function SettingsGeneralDateTime({ t, match, history }) {
   const headerSubTitle = t("settings.general.datetime")
-  const cardTitle = t("settings.general.title")
+  const cardTitle = t("settings.general.datetime")
   const sidebarActive = "general"
 
   const { loading, error, data } = useQuery(GET_APP_SETTINGS_QUERY)
