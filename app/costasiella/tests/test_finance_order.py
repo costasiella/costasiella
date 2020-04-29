@@ -21,6 +21,8 @@ from ..modules.gql_tools import get_rid
 
 class GQLFinanceOrder(TestCase):
     # https://docs.djangoproject.com/en/2.1/topics/testing/overview/
+    fixtures = ['app_settings.json', 'system_mail_template.json']
+
     def setUp(self):
         # This is run before every test
         self.admin_user = f.AdminUserFactory.create()
@@ -31,13 +33,9 @@ class GQLFinanceOrder(TestCase):
         self.permission_change = 'change_financeorder'
         self.permission_delete = 'delete_financeorder'
 
-        self.organization_classpass = f.OrganizationClasspassFactory.create()
-
-        self.variables_create_classpass = {
+        self.variables_create = {
             "input": {
-                "organization_classpass": to_global_id('OrganizationClasspassNode', self.organization_classpass.id),
-                "messsage": "customers' message",
-
+                "message": "Hello world!",
             }
         }
 
@@ -121,6 +119,12 @@ class GQLFinanceOrder(TestCase):
     createFinanceOrder(input: $input) {
       financeOrder {
         id
+        account {
+            id
+        }
+        message
+        status
+        createdAt
       }
     }
   }
@@ -224,9 +228,6 @@ class GQLFinanceOrder(TestCase):
         executed = execute_test_client_api_query(query, user)
         data = executed.get('data')
 
-        print("################")
-        print(data)
-
         # List all orders
         self.assertEqual(
             data['financeOrders']['edges'][0]['node']['account']['id'],
@@ -311,9 +312,11 @@ class GQLFinanceOrder(TestCase):
         """ Create an finance order """
         query = self.order_create_mutation
 
-        account = f.RegularUserFactory.create()
+        organization_classpass = f.OrganizationClasspassFactory.create()
         variables = self.variables_create
-        variables['input']['account'] = to_global_id('AccountNode', account.id)
+        variables['input']['organizationClasspass'] = to_global_id(
+            'OrganizationClasspassNode', organization_classpass.id
+        )
 
         executed = execute_test_client_api_query(
             query,
@@ -322,23 +325,21 @@ class GQLFinanceOrder(TestCase):
         )
         data = executed.get('data')
 
+        print("#################")
+        print(executed)
+
         # Get order
-        rid = get_rid(data['createFinanceOrder']['financeOrder']['id'])
-        order = models.FinanceOrder.objects.get(pk=rid.id)
+        # rid = get_rid(data['createFinanceOrder']['financeOrder']['id'])
+        # order = models.FinanceOrder.objects.get(pk=rid.id)
 
         self.assertEqual(
             data['createFinanceOrder']['financeOrder']['account']['id'],
-            variables['input']['account']
+            to_global_id('AccountNode', self.admin_user.pk)
         )
-        self.assertEqual(
-            data['createFinanceOrder']['financeOrder']['financeOrderGroup']['id'],
-            variables['input']['financeOrderGroup']
-        )
-        self.assertEqual(data['createFinanceOrder']['financeOrder']['dateSent'], str(timezone.now().date()))
-        self.assertEqual(data['createFinanceOrder']['financeOrder']['dateDue'],
-          str(timezone.now().date() + datetime.timedelta(days=order.finance_order_group.due_after_days))
-        )
-        self.assertEqual(data['createFinanceOrder']['financeOrder']['summary'], variables['input']['summary'])
+        self.assertEqual(data['createFinanceOrder']['financeOrder']['message'], variables['input']['message'])
+        self.assertEqual(data['createFinanceOrder']['financeOrder']['status'], 'RECEIVED')
+
+        #TODO: Verify that classpass item was added to the order
 
     #
     # def test_create_order_anon_user(self):
