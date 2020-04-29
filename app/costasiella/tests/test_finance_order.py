@@ -117,15 +117,15 @@ class GQLFinanceOrder(TestCase):
 '''
 #
 #         self.order_create_mutation = '''
-#   mutation CreateFinanceInvoice($input: CreateFinanceInvoiceInput!) {
-#     createFinanceInvoice(input: $input) {
-#       financeInvoice {
+#   mutation CreateFinanceOrder($input: CreateFinanceOrderInput!) {
+#     createFinanceOrder(input: $input) {
+#       financeOrder {
 #         id
 #         account {
 #           id
 #           fullName
 #         }
-#         financeInvoiceGroup {
+#         financeOrderGroup {
 #           id
 #           name
 #         }
@@ -161,15 +161,15 @@ class GQLFinanceOrder(TestCase):
 # '''
 #
 #         self.order_update_mutation = '''
-#   mutation UpdateFinanceInvoice($input: UpdateFinanceInvoiceInput!) {
-#     updateFinanceInvoice(input: $input) {
-#       financeInvoice {
+#   mutation UpdateFinanceOrder($input: UpdateFinanceOrderInput!) {
+#     updateFinanceOrder(input: $input) {
+#       financeOrder {
 #         id
 #         account {
 #           id
 #           fullName
 #         }
-#         financeInvoiceGroup {
+#         financeOrderGroup {
 #           id
 #           name
 #         }
@@ -205,8 +205,8 @@ class GQLFinanceOrder(TestCase):
 # '''
 #
 #         self.order_delete_mutation = '''
-#   mutation DeleteFinanceInvoice($input: DeleteFinanceInvoiceInput!) {
-#     deleteFinanceInvoice(input: $input) {
+#   mutation DeleteFinanceOrder($input: DeleteFinanceOrderInput!) {
+#     deleteFinanceOrder(input: $input) {
 #       ok
 #     }
 #   }
@@ -280,7 +280,7 @@ class GQLFinanceOrder(TestCase):
         """ Query one finance order as admin """
         order = f.FinanceOrderFactory.create()
         variables = {
-            "id": to_global_id("FinanceInvoiceNode", order.id),
+            "id": to_global_id("FinanceOrderNode", order.id),
         }
 
         # Now query single order and check
@@ -288,24 +288,11 @@ class GQLFinanceOrder(TestCase):
         data = executed.get('data')
 
         self.assertEqual(
-            data['financeInvoice']['account']['id'],
+            data['financeOrder']['account']['id'],
             to_global_id("AccountNode", order.account.id)
         )
-        self.assertEqual(data['financeInvoice']['orderNumber'], order.order_number)
-        self.assertEqual(data['financeInvoice']['dateSent'], str(timezone.now().date()))
-        self.assertEqual(data['financeInvoice']['dateDue'],
-          str(timezone.now().date() + datetime.timedelta(days=order.finance_order_group.due_after_days))
-        )
-        self.assertEqual(data['financeInvoice']['summary'], order.summary)
-        self.assertEqual(data['financeInvoice']['relationCompany'], order.relation_company)
-        self.assertEqual(data['financeInvoice']['relationCompanyRegistration'], order.relation_company_registration)
-        self.assertEqual(data['financeInvoice']['relationCompanyTaxRegistration'], order.relation_company_tax_registration)
-        self.assertEqual(data['financeInvoice']['relationContactName'], order.relation_contact_name)
-        self.assertEqual(data['financeInvoice']['relationAddress'], order.relation_address)
-        self.assertEqual(data['financeInvoice']['relationPostcode'], order.relation_postcode)
-        self.assertEqual(data['financeInvoice']['relationCity'], order.relation_city)
-        self.assertEqual(data['financeInvoice']['relationCountry'], order.relation_country)
-        self.assertEqual(data['financeInvoice']['status'], order.status)
+        self.assertEqual(data['financeOrder']['message'], order.message)
+        self.assertEqual(data['financeOrder']['status'], order.status)
     #
     #
     # def test_query_one_anon_user(self):
@@ -313,7 +300,7 @@ class GQLFinanceOrder(TestCase):
     #     order = f.FinanceOrderFactory.create()
     #
     #     variables = {
-    #         "id": to_global_id("FinanceInvoiceNode", order.id),
+    #         "id": to_global_id("FinanceOrderNode", order.id),
     #     }
     #
     #     # Now query single order and check
@@ -329,7 +316,7 @@ class GQLFinanceOrder(TestCase):
     #     user = order.account
     #
     #     variables = {
-    #         "id": to_global_id("FinanceInvoiceNode", order.id),
+    #         "id": to_global_id("FinanceOrderNode", order.id),
     #     }
     #
     #     # Now query single order and check
@@ -348,14 +335,14 @@ class GQLFinanceOrder(TestCase):
     #
     #
     #     variables = {
-    #         "id": to_global_id("FinanceInvoiceNode", order.id),
+    #         "id": to_global_id("FinanceOrderNode", order.id),
     #     }
     #
     #     # Now query single order and check
     #     executed = execute_test_client_api_query(self.order_query, user, variables=variables)
     #     data = executed.get('data')
     #     self.assertEqual(
-    #         data['financeInvoice']['account']['id'],
+    #         data['financeOrder']['account']['id'],
     #         to_global_id('AccountNode', order.account.id)
     #     )
     #
@@ -376,22 +363,22 @@ class GQLFinanceOrder(TestCase):
     #     data = executed.get('data')
     #
     #     # Get order
-    #     rid = get_rid(data['createFinanceInvoice']['financeInvoice']['id'])
-    #     order = models.FinanceInvoice.objects.get(pk=rid.id)
+    #     rid = get_rid(data['createFinanceOrder']['financeOrder']['id'])
+    #     order = models.FinanceOrder.objects.get(pk=rid.id)
     #
     #     self.assertEqual(
-    #         data['createFinanceInvoice']['financeInvoice']['account']['id'],
+    #         data['createFinanceOrder']['financeOrder']['account']['id'],
     #         variables['input']['account']
     #     )
     #     self.assertEqual(
-    #         data['createFinanceInvoice']['financeInvoice']['financeInvoiceGroup']['id'],
-    #         variables['input']['financeInvoiceGroup']
+    #         data['createFinanceOrder']['financeOrder']['financeOrderGroup']['id'],
+    #         variables['input']['financeOrderGroup']
     #     )
-    #     self.assertEqual(data['createFinanceInvoice']['financeInvoice']['dateSent'], str(timezone.now().date()))
-    #     self.assertEqual(data['createFinanceInvoice']['financeInvoice']['dateDue'],
+    #     self.assertEqual(data['createFinanceOrder']['financeOrder']['dateSent'], str(timezone.now().date()))
+    #     self.assertEqual(data['createFinanceOrder']['financeOrder']['dateDue'],
     #       str(timezone.now().date() + datetime.timedelta(days=order.finance_order_group.due_after_days))
     #     )
-    #     self.assertEqual(data['createFinanceInvoice']['financeInvoice']['summary'], variables['input']['summary'])
+    #     self.assertEqual(data['createFinanceOrder']['financeOrder']['summary'], variables['input']['summary'])
     #
     #
     # def test_create_order_anon_user(self):
@@ -433,7 +420,7 @@ class GQLFinanceOrder(TestCase):
     #     )
     #     data = executed.get('data')
     #     self.assertEqual(
-    #         data['createFinanceInvoice']['financeInvoice']['account']['id'],
+    #         data['createFinanceOrder']['financeOrder']['account']['id'],
     #         variables['input']['account']
     #     )
     #
@@ -465,7 +452,7 @@ class GQLFinanceOrder(TestCase):
     #
     #     order = f.FinanceOrderFactory.create()
     #     variables = self.variables_update
-    #     variables['input']['id'] = to_global_id('FinanceInvoiceNode', order.id)
+    #     variables['input']['id'] = to_global_id('FinanceOrderNode', order.id)
     #
     #     executed = execute_test_client_api_query(
     #         query,
@@ -475,21 +462,21 @@ class GQLFinanceOrder(TestCase):
     #
     #     data = executed.get('data')
     #
-    #     self.assertEqual(data['updateFinanceInvoice']['financeInvoice']['relationCompany'], variables['input']['relationCompany'])
-    #     self.assertEqual(data['updateFinanceInvoice']['financeInvoice']['relationCompanyRegistration'], variables['input']['relationCompanyRegistration'])
-    #     self.assertEqual(data['updateFinanceInvoice']['financeInvoice']['relationContactName'], variables['input']['relationContactName'])
-    #     self.assertEqual(data['updateFinanceInvoice']['financeInvoice']['relationAddress'], variables['input']['relationAddress'])
-    #     self.assertEqual(data['updateFinanceInvoice']['financeInvoice']['relationPostcode'], variables['input']['relationPostcode'])
-    #     self.assertEqual(data['updateFinanceInvoice']['financeInvoice']['relationCity'], variables['input']['relationCity'])
-    #     self.assertEqual(data['updateFinanceInvoice']['financeInvoice']['relationCountry'], variables['input']['relationCountry'])
-    #     self.assertEqual(data['updateFinanceInvoice']['financeInvoice']['orderNumber'], variables['input']['orderNumber'])
-    #     self.assertEqual(data['updateFinanceInvoice']['financeInvoice']['dateSent'], variables['input']['dateSent'])
-    #     self.assertEqual(data['updateFinanceInvoice']['financeInvoice']['dateDue'], variables['input']['dateDue'])
-    #     self.assertEqual(data['updateFinanceInvoice']['financeInvoice']['status'], variables['input']['status'])
-    #     self.assertEqual(data['updateFinanceInvoice']['financeInvoice']['summary'], variables['input']['summary'])
-    #     self.assertEqual(data['updateFinanceInvoice']['financeInvoice']['terms'], variables['input']['terms'])
-    #     self.assertEqual(data['updateFinanceInvoice']['financeInvoice']['footer'], variables['input']['footer'])
-    #     self.assertEqual(data['updateFinanceInvoice']['financeInvoice']['note'], variables['input']['note'])
+    #     self.assertEqual(data['updateFinanceOrder']['financeOrder']['relationCompany'], variables['input']['relationCompany'])
+    #     self.assertEqual(data['updateFinanceOrder']['financeOrder']['relationCompanyRegistration'], variables['input']['relationCompanyRegistration'])
+    #     self.assertEqual(data['updateFinanceOrder']['financeOrder']['relationContactName'], variables['input']['relationContactName'])
+    #     self.assertEqual(data['updateFinanceOrder']['financeOrder']['relationAddress'], variables['input']['relationAddress'])
+    #     self.assertEqual(data['updateFinanceOrder']['financeOrder']['relationPostcode'], variables['input']['relationPostcode'])
+    #     self.assertEqual(data['updateFinanceOrder']['financeOrder']['relationCity'], variables['input']['relationCity'])
+    #     self.assertEqual(data['updateFinanceOrder']['financeOrder']['relationCountry'], variables['input']['relationCountry'])
+    #     self.assertEqual(data['updateFinanceOrder']['financeOrder']['orderNumber'], variables['input']['orderNumber'])
+    #     self.assertEqual(data['updateFinanceOrder']['financeOrder']['dateSent'], variables['input']['dateSent'])
+    #     self.assertEqual(data['updateFinanceOrder']['financeOrder']['dateDue'], variables['input']['dateDue'])
+    #     self.assertEqual(data['updateFinanceOrder']['financeOrder']['status'], variables['input']['status'])
+    #     self.assertEqual(data['updateFinanceOrder']['financeOrder']['summary'], variables['input']['summary'])
+    #     self.assertEqual(data['updateFinanceOrder']['financeOrder']['terms'], variables['input']['terms'])
+    #     self.assertEqual(data['updateFinanceOrder']['financeOrder']['footer'], variables['input']['footer'])
+    #     self.assertEqual(data['updateFinanceOrder']['financeOrder']['note'], variables['input']['note'])
     #
     #
     # def test_update_order_anon_user(self):
@@ -497,7 +484,7 @@ class GQLFinanceOrder(TestCase):
     #     query = self.order_update_mutation
     #     order = f.FinanceOrderFactory.create()
     #     variables = self.variables_update
-    #     variables['input']['id'] = to_global_id('FinanceInvoiceNode', order.id)
+    #     variables['input']['id'] = to_global_id('FinanceOrderNode', order.id)
     #
     #     executed = execute_test_client_api_query(
     #         query,
@@ -514,7 +501,7 @@ class GQLFinanceOrder(TestCase):
     #     query = self.order_update_mutation
     #     order = f.FinanceOrderFactory.create()
     #     variables = self.variables_update
-    #     variables['input']['id'] = to_global_id('FinanceInvoiceNode', order.id)
+    #     variables['input']['id'] = to_global_id('FinanceOrderNode', order.id)
     #
     #     user = order.account
     #     permission = Permission.objects.get(codename=self.permission_change)
@@ -527,7 +514,7 @@ class GQLFinanceOrder(TestCase):
     #         variables=variables
     #     )
     #     data = executed.get('data')
-    #     self.assertEqual(data['updateFinanceInvoice']['financeInvoice']['dateSent'], variables['input']['dateSent'])
+    #     self.assertEqual(data['updateFinanceOrder']['financeOrder']['dateSent'], variables['input']['dateSent'])
     #
     #
     # def test_update_order_permission_denied(self):
@@ -535,7 +522,7 @@ class GQLFinanceOrder(TestCase):
     #     query = self.order_update_mutation
     #     order = f.FinanceOrderFactory.create()
     #     variables = self.variables_update
-    #     variables['input']['id'] = to_global_id('FinanceInvoiceNode', order.id)
+    #     variables['input']['id'] = to_global_id('FinanceOrderNode', order.id)
     #
     #     user = order.account
     #
@@ -554,7 +541,7 @@ class GQLFinanceOrder(TestCase):
     #     query = self.order_delete_mutation
     #     order = f.FinanceOrderFactory.create()
     #     variables = {"input":{}}
-    #     variables['input']['id'] = to_global_id('FinanceInvoiceNode', order.id)
+    #     variables['input']['id'] = to_global_id('FinanceOrderNode', order.id)
     #
     #     executed = execute_test_client_api_query(
     #         query,
@@ -562,7 +549,7 @@ class GQLFinanceOrder(TestCase):
     #         variables=variables
     #     )
     #     data = executed.get('data')
-    #     self.assertEqual(data['deleteFinanceInvoice']['ok'], True)
+    #     self.assertEqual(data['deleteFinanceOrder']['ok'], True)
     #
     #
     # def test_delete_order_anon_user(self):
@@ -570,7 +557,7 @@ class GQLFinanceOrder(TestCase):
     #     query = self.order_delete_mutation
     #     order = f.FinanceOrderFactory.create()
     #     variables = {"input":{}}
-    #     variables['input']['id'] = to_global_id('FinanceInvoiceNode', order.id)
+    #     variables['input']['id'] = to_global_id('FinanceOrderNode', order.id)
     #
     #     executed = execute_test_client_api_query(
     #         query,
@@ -587,7 +574,7 @@ class GQLFinanceOrder(TestCase):
     #     query = self.order_delete_mutation
     #     order = f.FinanceOrderFactory.create()
     #     variables = {"input":{}}
-    #     variables['input']['id'] = to_global_id('FinanceInvoiceNode', order.id)
+    #     variables['input']['id'] = to_global_id('FinanceOrderNode', order.id)
     #
     #     # Give permissions
     #     user = order.account
@@ -601,7 +588,7 @@ class GQLFinanceOrder(TestCase):
     #         variables=variables
     #     )
     #     data = executed.get('data')
-    #     self.assertEqual(data['deleteFinanceInvoice']['ok'], True)
+    #     self.assertEqual(data['deleteFinanceOrder']['ok'], True)
     #
     #
     # def test_delete_order_permission_denied(self):
@@ -609,7 +596,7 @@ class GQLFinanceOrder(TestCase):
     #     query = self.order_delete_mutation
     #     order = f.FinanceOrderFactory.create()
     #     variables = {"input":{}}
-    #     variables['input']['id'] = to_global_id('FinanceInvoiceNode', order.id)
+    #     variables['input']['id'] = to_global_id('FinanceOrderNode', order.id)
     #
     #     user = order.account
     #
