@@ -498,6 +498,46 @@ class FinanceInvoicePaymentFactory(factory.DjangoModelFactory):
     note = "Payment note here!"
 
 
+class FinanceOrderFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.FinanceOrder
+
+    class Params:
+        initial_account = factory.SubFactory(RegularUserFactory)
+
+    account = factory.LazyAttribute(
+        lambda o: o.initial_account if o.initial_account else factory.SubFactory(RegularUserFactory)
+    )
+    finance_invoice_group = factory.SubFactory(FinanceInvoiceGroupFactory)
+    status = "RECEIVED"
+    message = "Customer's note here..."
+
+
+class FinanceOrderItemClasspassFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.FinanceOrderItem
+
+    class Params:
+        initial_order = factory.SubFactory(FinanceOrderFactory)
+        initial_organization_classpass = factory.SubFactory(OrganizationClasspassFactory)
+
+    finance_order = factory.LazyAttribute(
+        lambda o: o.initial_order if o.initial_order else factory.SubFactory(FinanceOrderFactory)
+    )
+    organization_classpass = factory.LazyAttribute(
+        lambda o: o.initial_organization_classpass if o.initial_organization_classpass else factory.SubFactory(
+            OrganizationClasspassFactory
+        )
+    )
+    product_name = "Classpass"
+    description = "Classpass description"
+    quantity = 1
+    price = factory.SelfAttribute('organization_classpass.price')
+    finance_tax_rate = factory.SelfAttribute('organization_classpass.finance_tax_rate')
+    finance_glaccount = factory.SelfAttribute('organization_classpass.finance_glaccount')
+    finance_costcenter = factory.SelfAttribute('organization_classpass.finance_costcenter')
+
+
 class SchedulePublicWeeklyClassFactory(factory.DjangoModelFactory):
     class Meta:
         model = models.ScheduleItem
