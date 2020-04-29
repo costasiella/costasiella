@@ -115,50 +115,16 @@ class GQLFinanceOrder(TestCase):
     }
   }
 '''
-#
-#         self.order_create_mutation = '''
-#   mutation CreateFinanceOrder($input: CreateFinanceOrderInput!) {
-#     createFinanceOrder(input: $input) {
-#       financeOrder {
-#         id
-#         account {
-#           id
-#           fullName
-#         }
-#         financeOrderGroup {
-#           id
-#           name
-#         }
-#         financePaymentMethod {
-#           id
-#           name
-#         }
-#         relationCompany
-#         relationCompanyRegistration
-#         relationCompanyTaxRegistration
-#         relationContactName
-#         relationAddress
-#         relationPostcode
-#         relationCity
-#         relationCountry
-#         status
-#         summary
-#         orderNumber
-#         dateSent
-#         dateDue
-#         terms
-#         footer
-#         note
-#         subtotalDisplay
-#         taxDisplay
-#         totalDisplay
-#         paidDisplay
-#         balanceDisplay
-#         updatedAt
-#       }
-#     }
-#   }
-# '''
+
+        self.order_create_mutation = '''
+  mutation CreateFinanceOrder($input: CreateFinanceOrderInput!) {
+    createFinanceOrder(input: $input) {
+      financeOrder {
+        id
+      }
+    }
+  }
+'''
 #
 #         self.order_update_mutation = '''
 #   mutation UpdateFinanceOrder($input: UpdateFinanceOrderInput!) {
@@ -340,41 +306,40 @@ class GQLFinanceOrder(TestCase):
             data['financeOrder']['account']['id'],
             to_global_id('AccountNode', order.account.id)
         )
-    #
-    #
-    # def test_create_order(self):
-    #     """ Create an finance order """
-    #     query = self.order_create_mutation
-    #
-    #     account = f.RegularUserFactory.create()
-    #     variables = self.variables_create
-    #     variables['input']['account'] = to_global_id('AccountNode', account.id)
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.admin_user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #
-    #     # Get order
-    #     rid = get_rid(data['createFinanceOrder']['financeOrder']['id'])
-    #     order = models.FinanceOrder.objects.get(pk=rid.id)
-    #
-    #     self.assertEqual(
-    #         data['createFinanceOrder']['financeOrder']['account']['id'],
-    #         variables['input']['account']
-    #     )
-    #     self.assertEqual(
-    #         data['createFinanceOrder']['financeOrder']['financeOrderGroup']['id'],
-    #         variables['input']['financeOrderGroup']
-    #     )
-    #     self.assertEqual(data['createFinanceOrder']['financeOrder']['dateSent'], str(timezone.now().date()))
-    #     self.assertEqual(data['createFinanceOrder']['financeOrder']['dateDue'],
-    #       str(timezone.now().date() + datetime.timedelta(days=order.finance_order_group.due_after_days))
-    #     )
-    #     self.assertEqual(data['createFinanceOrder']['financeOrder']['summary'], variables['input']['summary'])
-    #
+
+    def test_create_order_classpass(self):
+        """ Create an finance order """
+        query = self.order_create_mutation
+
+        account = f.RegularUserFactory.create()
+        variables = self.variables_create
+        variables['input']['account'] = to_global_id('AccountNode', account.id)
+
+        executed = execute_test_client_api_query(
+            query,
+            self.admin_user,
+            variables=variables
+        )
+        data = executed.get('data')
+
+        # Get order
+        rid = get_rid(data['createFinanceOrder']['financeOrder']['id'])
+        order = models.FinanceOrder.objects.get(pk=rid.id)
+
+        self.assertEqual(
+            data['createFinanceOrder']['financeOrder']['account']['id'],
+            variables['input']['account']
+        )
+        self.assertEqual(
+            data['createFinanceOrder']['financeOrder']['financeOrderGroup']['id'],
+            variables['input']['financeOrderGroup']
+        )
+        self.assertEqual(data['createFinanceOrder']['financeOrder']['dateSent'], str(timezone.now().date()))
+        self.assertEqual(data['createFinanceOrder']['financeOrder']['dateDue'],
+          str(timezone.now().date() + datetime.timedelta(days=order.finance_order_group.due_after_days))
+        )
+        self.assertEqual(data['createFinanceOrder']['financeOrder']['summary'], variables['input']['summary'])
+
     #
     # def test_create_order_anon_user(self):
     #     """ Don't allow creating finance orders for non-logged in users """
