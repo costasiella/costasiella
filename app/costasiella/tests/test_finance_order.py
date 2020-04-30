@@ -329,8 +329,8 @@ class GQLFinanceOrder(TestCase):
         print(executed)
 
         # Get order
-        # rid = get_rid(data['createFinanceOrder']['financeOrder']['id'])
-        # order = models.FinanceOrder.objects.get(pk=rid.id)
+        rid = get_rid(data['createFinanceOrder']['financeOrder']['id'])
+        order = models.FinanceOrder.objects.get(pk=rid.id)
 
         self.assertEqual(
             data['createFinanceOrder']['financeOrder']['account']['id'],
@@ -339,7 +339,14 @@ class GQLFinanceOrder(TestCase):
         self.assertEqual(data['createFinanceOrder']['financeOrder']['message'], variables['input']['message'])
         self.assertEqual(data['createFinanceOrder']['financeOrder']['status'], 'RECEIVED')
 
-        #TODO: Verify that classpass item was added to the order
+        # Verify that classpass item was added to the order
+        first_item = order.items.first()
+        self.assertEqual(first_item.product_name, "Class pass")
+        self.assertEqual(first_item.price, organization_classpass.price)
+        self.assertEqual(first_item.total, organization_classpass.price)
+        self.assertEqual(first_item.description, organization_classpass.name)
+        self.assertEqual(first_item.quantity, 1)
+        self.assertEqual(first_item.finance_tax_rate, organization_classpass.finance_tax_rate)
 
     #
     # def test_create_order_anon_user(self):
