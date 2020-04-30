@@ -126,7 +126,6 @@ class UpdateFinanceOrder(graphene.relay.ClientIDMutation):
     class Input:
         id = graphene.ID(required=True)
         status = graphene.String(required=False)
-        message = graphene.String(required=False)
 
     finance_order = graphene.Field(FinanceOrderNode)
 
@@ -145,9 +144,6 @@ class UpdateFinanceOrder(graphene.relay.ClientIDMutation):
         if 'status' in input:
             # TODO: Validate status input
             finance_order.status = input['status']
-
-        if 'message' in input:
-            finance_order.message = input['message']
 
         finance_order.save()
 
