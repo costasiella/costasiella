@@ -174,13 +174,13 @@ class GQLFinanceOrder(TestCase):
 #   }
 # '''
 #
-#         self.order_delete_mutation = '''
-#   mutation DeleteFinanceOrder($input: DeleteFinanceOrderInput!) {
-#     deleteFinanceOrder(input: $input) {
-#       ok
-#     }
-#   }
-# '''
+        self.order_delete_mutation = '''
+  mutation DeleteFinanceOrder($input: DeleteFinanceOrderInput!) {
+    deleteFinanceOrder(input: $input) {
+      ok
+    }
+  }
+'''
 
     def tearDown(self):
         # This is run after every test
@@ -412,8 +412,8 @@ class GQLFinanceOrder(TestCase):
         data = executed.get('data')
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Permission denied!')
-    #
-    #
+
+
     # def test_update_order(self):
     #     """ Update a order """
     #     query = self.order_update_mutation
@@ -504,76 +504,75 @@ class GQLFinanceOrder(TestCase):
     #     self.assertEqual(errors[0]['message'], 'Permission denied!')
     #
     #
-    # def test_delete_order(self):
-    #     """ Delete an finance order """
-    #     query = self.order_delete_mutation
-    #     order = f.FinanceOrderFactory.create()
-    #     variables = {"input":{}}
-    #     variables['input']['id'] = to_global_id('FinanceOrderNode', order.id)
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.admin_user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['deleteFinanceOrder']['ok'], True)
-    #
-    #
-    # def test_delete_order_anon_user(self):
-    #     """ Delete order denied for anon user """
-    #     query = self.order_delete_mutation
-    #     order = f.FinanceOrderFactory.create()
-    #     variables = {"input":{}}
-    #     variables['input']['id'] = to_global_id('FinanceOrderNode', order.id)
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.anon_user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
-    #
-    #
-    # def test_delete_order_permission_granted(self):
-    #     """ Allow deleting orders for users with permissions """
-    #     query = self.order_delete_mutation
-    #     order = f.FinanceOrderFactory.create()
-    #     variables = {"input":{}}
-    #     variables['input']['id'] = to_global_id('FinanceOrderNode', order.id)
-    #
-    #     # Give permissions
-    #     user = order.account
-    #     permission = Permission.objects.get(codename=self.permission_delete)
-    #     user.user_permissions.add(permission)
-    #     user.save()
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['deleteFinanceOrder']['ok'], True)
-    #
-    #
-    # def test_delete_order_permission_denied(self):
-    #     """ Check delete order permission denied error message """
-    #     query = self.order_delete_mutation
-    #     order = f.FinanceOrderFactory.create()
-    #     variables = {"input":{}}
-    #     variables['input']['id'] = to_global_id('FinanceOrderNode', order.id)
-    #
-    #     user = order.account
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
-    #
+    def test_delete_order(self):
+        """ Delete an finance order """
+        query = self.order_delete_mutation
+        order = f.FinanceOrderFactory.create()
+        variables = {"input":{}}
+        variables['input']['id'] = to_global_id('FinanceOrderNode', order.id)
+
+        executed = execute_test_client_api_query(
+            query,
+            self.admin_user,
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['deleteFinanceOrder']['ok'], True)
+
+
+    def test_delete_order_anon_user(self):
+        """ Delete order denied for anon user """
+        query = self.order_delete_mutation
+        order = f.FinanceOrderFactory.create()
+        variables = {"input":{}}
+        variables['input']['id'] = to_global_id('FinanceOrderNode', order.id)
+
+        executed = execute_test_client_api_query(
+            query,
+            self.anon_user,
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
+
+
+    def test_delete_order_permission_granted(self):
+        """ Allow deleting orders for users with permissions """
+        query = self.order_delete_mutation
+        order = f.FinanceOrderFactory.create()
+        variables = {"input":{}}
+        variables['input']['id'] = to_global_id('FinanceOrderNode', order.id)
+
+        # Give permissions
+        user = order.account
+        permission = Permission.objects.get(codename=self.permission_delete)
+        user.user_permissions.add(permission)
+        user.save()
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['deleteFinanceOrder']['ok'], True)
+
+
+    def test_delete_order_permission_denied(self):
+        """ Check delete order permission denied error message """
+        query = self.order_delete_mutation
+        order = f.FinanceOrderFactory.create()
+        variables = {"input":{}}
+        variables['input']['id'] = to_global_id('FinanceOrderNode', order.id)
+
+        user = order.account
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
