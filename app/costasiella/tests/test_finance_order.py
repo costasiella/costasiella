@@ -325,9 +325,6 @@ class GQLFinanceOrder(TestCase):
         )
         data = executed.get('data')
 
-        print("#################")
-        print(executed)
-
         # Get order
         rid = get_rid(data['createFinanceOrder']['financeOrder']['id'])
         order = models.FinanceOrder.objects.get(pk=rid.id)
@@ -348,70 +345,73 @@ class GQLFinanceOrder(TestCase):
         self.assertEqual(first_item.quantity, 1)
         self.assertEqual(first_item.finance_tax_rate, organization_classpass.finance_tax_rate)
 
-    #
-    # def test_create_order_anon_user(self):
-    #     """ Don't allow creating finance orders for non-logged in users """
-    #     query = self.order_create_mutation
-    #
-    #     account = f.RegularUserFactory.create()
-    #     variables = self.variables_create
-    #     variables['input']['account'] = to_global_id('AccountNode', account.id)
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.anon_user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
-    #
-    #
-    # def test_create_location_permission_granted(self):
-    #     """ Allow creating orders for users with permissions """
-    #     query = self.order_create_mutation
-    #
-    #     account = f.RegularUserFactory.create()
-    #     variables = self.variables_create
-    #     variables['input']['account'] = to_global_id('AccountNode', account.id)
-    #
-    #     # Create regular user
-    #     user = account
-    #     permission = Permission.objects.get(codename=self.permission_add)
-    #     user.user_permissions.add(permission)
-    #     user.save()
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(
-    #         data['createFinanceOrder']['financeOrder']['account']['id'],
-    #         variables['input']['account']
-    #     )
-    #
-    #
-    # def test_create_order_permission_denied(self):
-    #     """ Check create order permission denied error message """
-    #     query = self.order_create_mutation
-    #
-    #     account = f.RegularUserFactory.create()
-    #     variables = self.variables_create
-    #     variables['input']['account'] = to_global_id('AccountNode', account.id)
-    #
-    #     # Create regular user
-    #     user = account
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
+    def test_create_order_anon_user(self):
+        """ Don't allow creating finance orders for non-logged in users """
+        query = self.order_create_mutation
+
+        organization_classpass = f.OrganizationClasspassFactory.create()
+        variables = self.variables_create
+        variables['input']['organizationClasspass'] = to_global_id(
+            'OrganizationClasspassNode', organization_classpass.id
+        )
+
+        executed = execute_test_client_api_query(
+            query,
+            self.anon_user,
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
+
+    def test_create_location_permission_granted(self):
+        """ Allow creating orders for users with permissions """
+        query = self.order_create_mutation
+
+        organization_classpass = f.OrganizationClasspassFactory.create()
+        variables = self.variables_create
+        variables['input']['organizationClasspass'] = to_global_id(
+            'OrganizationClasspassNode', organization_classpass.id
+        )
+
+        # Create regular user
+        user = f.RegularUserFactory.create()
+        permission = Permission.objects.get(codename=self.permission_add)
+        user.user_permissions.add(permission)
+        user.save()
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(
+            data['createFinanceOrder']['financeOrder']['account']['id'],
+            to_global_id('AccountNode', user.pk)
+        )
+
+    def test_create_order_permission_denied(self):
+        """ Check create order permission denied error message """
+        query = self.order_create_mutation
+
+        organization_classpass = f.OrganizationClasspassFactory.create()
+        variables = self.variables_create
+        variables['input']['organizationClasspass'] = to_global_id(
+            'OrganizationClasspassNode', organization_classpass.id
+        )
+
+        # Create regular user
+        user = f.RegularUserFactory.create()
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
     #
     #
     # def test_update_order(self):
