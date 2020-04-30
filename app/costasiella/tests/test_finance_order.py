@@ -502,13 +502,12 @@ class GQLFinanceOrder(TestCase):
     #     data = executed.get('data')
     #     errors = executed.get('errors')
     #     self.assertEqual(errors[0]['message'], 'Permission denied!')
-    #
-    #
+
     def test_delete_order(self):
         """ Delete an finance order """
         query = self.order_delete_mutation
         order = f.FinanceOrderFactory.create()
-        variables = {"input":{}}
+        variables = {"input": {}}
         variables['input']['id'] = to_global_id('FinanceOrderNode', order.id)
 
         executed = execute_test_client_api_query(
@@ -519,12 +518,11 @@ class GQLFinanceOrder(TestCase):
         data = executed.get('data')
         self.assertEqual(data['deleteFinanceOrder']['ok'], True)
 
-
     def test_delete_order_anon_user(self):
         """ Delete order denied for anon user """
         query = self.order_delete_mutation
         order = f.FinanceOrderFactory.create()
-        variables = {"input":{}}
+        variables = {"input": {}}
         variables['input']['id'] = to_global_id('FinanceOrderNode', order.id)
 
         executed = execute_test_client_api_query(
@@ -536,12 +534,11 @@ class GQLFinanceOrder(TestCase):
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Not logged in!')
 
-
     def test_delete_order_permission_granted(self):
         """ Allow deleting orders for users with permissions """
         query = self.order_delete_mutation
         order = f.FinanceOrderFactory.create()
-        variables = {"input":{}}
+        variables = {"input": {}}
         variables['input']['id'] = to_global_id('FinanceOrderNode', order.id)
 
         # Give permissions
@@ -558,12 +555,11 @@ class GQLFinanceOrder(TestCase):
         data = executed.get('data')
         self.assertEqual(data['deleteFinanceOrder']['ok'], True)
 
-
     def test_delete_order_permission_denied(self):
         """ Check delete order permission denied error message """
         query = self.order_delete_mutation
         order = f.FinanceOrderFactory.create()
-        variables = {"input":{}}
+        variables = {"input": {}}
         variables['input']['id'] = to_global_id('FinanceOrderNode', order.id)
 
         user = order.account
