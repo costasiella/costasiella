@@ -95,11 +95,8 @@ class CreateFinanceOrder(graphene.relay.ClientIDMutation):
         require_login_and_permission(user, 'costasiella.add_financeorder')
 
         validation_result = validate_create_update_input(input)
-
-        print(input)
-
         finance_order = FinanceOrder(
-            account = user,
+            account=user,
         )
 
         if 'message' in input:
