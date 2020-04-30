@@ -6,6 +6,7 @@ now = timezone.now()
 
 from django.db import models
 
+from ..models.choices.finance_order_statuses import get_finance_order_statuses
 from .account import Account
 from .finance_invoice import FinanceInvoice
 from .finance_invoice_group import FinanceInvoiceGroup
@@ -15,13 +16,7 @@ from .finance_invoice_group_default import FinanceInvoiceGroupDefault
 
 
 class FinanceOrder(models.Model):
-    STATUSES = (
-        ('RECEIVED', _("Received")),
-        ('AWAITING_PAYMENT', _("Awaiting payment")),
-        ('PAID', _("Paid")),
-        ('DELIVERED', _("Delivered")),
-        ('CANCELLED', _("Cancelled")),
-    )
+    STATUSES = get_finance_order_statuses()
 
     finance_invoice = models.ForeignKey(FinanceInvoice, on_delete=models.SET_NULL, null=True)
     account = models.ForeignKey(Account, on_delete=models.SET_NULL, null=True)

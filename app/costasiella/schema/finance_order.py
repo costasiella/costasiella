@@ -6,9 +6,11 @@ from graphene_django.filter import DjangoFilterConnectionField
 from graphql import GraphQLError
 
 from ..models import Account, FinanceOrder, OrganizationClasspass
+from ..models.choices.finance_order_statuses import get_finance_order_statuses
 from ..modules.gql_tools import require_login_and_permission, get_rid
 from ..modules.messages import Messages
 from ..modules.finance_tools import display_float_as_amount
+
 
 from ..dudes.mail_dude import MailDude
 
@@ -72,12 +74,24 @@ def validate_create_update_input(input, update=False):
     result = {}
 
     # Fetch & check organization classpass
-    if 'organization_classpass' in input:
-        rid = get_rid(input["organization_classpass"])
-        organization_classpass = OrganizationClasspass.objects.get(id=rid.id)
-        result['organization_classpass'] = organization_classpass
-        if not organization_classpass:
-            raise Exception(_('Invalid Organization Classpass ID!'))
+    if not update:
+        # Create checks
+        if 'organization_classpass' in input:
+            rid = get_rid(input["organization_classpass"])
+            organization_classpass = OrganizationClasspass.objects.get(id=rid.id)
+            result['organization_classpass'] = organization_classpass
+            if not organization_classpass:
+                raise Exception(_('Invalid Organization Classpass ID!'))
+
+    else:
+        # Update checks
+        order_statuses = get_finance_order_statuses()
+        valid_statuses = [status[0] for status in order_statuses]
+        if ['status'] in input:
+            if input['status'] in valid_statuses:
+                result['status'] = input['status']
+            else:
+                raise Exception(_('Invalid Organization Classpass ID!'))
 
     return result
 
@@ -138,9 +152,11 @@ class UpdateFinanceOrder(graphene.relay.ClientIDMutation):
         if not finance_order:
             raise Exception('Invalid Finance Order ID!')
 
-        if 'status' in input:
+        validation_result = validate_create_update_input(input, update=True)
+
+        if 'status' in validation_result:
             # TODO: Validate status input
-            finance_order.status = input['status']
+            finance_order.status = validation_result['status']
 
         finance_order.save()
 
