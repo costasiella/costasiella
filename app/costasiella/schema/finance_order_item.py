@@ -73,7 +73,7 @@ class FinanceOrderItemQuery(graphene.ObjectType):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.view_financeorderitem')
 
-        return FinanceInvoiceItemFilter(kwargs).qs.order_by('id')
+        return FinanceOrderItemFilter(kwargs).qs.order_by('id')
 
 
 # def validate_create_update_input(input, update=False):
