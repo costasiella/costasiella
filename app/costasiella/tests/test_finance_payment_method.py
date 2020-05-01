@@ -141,7 +141,7 @@ class GQLFinancePaymentMethod(TestCase):
         self.assertEqual(data['financePaymentMethods']['edges'][0]['node']['code'], paymentmethod.code)
 
 
-    def test_query_permision_denied(self):
+    def test_query_permission_denied(self):
         """ Query list of paymentmethods - check permission denied """
         query = self.paymentmethods_query
         variables = {
@@ -156,7 +156,7 @@ class GQLFinancePaymentMethod(TestCase):
         self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
-    def test_query_permision_granted(self):
+    def test_query_permission_granted(self):
         """ Query list of paymentmethods with view permission """
         query = self.paymentmethods_query
         # The payment method "Cash" from the fixtures will be listed first

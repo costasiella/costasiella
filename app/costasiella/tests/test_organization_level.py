@@ -141,7 +141,7 @@ mutation ArchiveOrganizationLevel($input: ArchiveOrganizationLevelInput!) {
 
 
 
-    def test_query_permision_denied(self):
+    def test_query_permission_denied(self):
         """ Query list of levels as user without permissions """
         query = self.levels_query
         level = f.OrganizationLevelFactory.create()
@@ -161,7 +161,7 @@ mutation ArchiveOrganizationLevel($input: ArchiveOrganizationLevelInput!) {
         self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
-    def test_query_permision_granted(self):
+    def test_query_permission_granted(self):
         """ Query list of levels with view permission """
         query = self.levels_query
         level = f.OrganizationLevelFactory.create()

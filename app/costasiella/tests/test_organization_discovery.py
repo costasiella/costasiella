@@ -140,7 +140,7 @@ mutation ArchiveOrganizationDiscovery($input: ArchiveOrganizationDiscoveryInput!
 
 
 
-    def test_query_permision_denied(self):
+    def test_query_permission_denied(self):
         """ Query list of discoveries as user without permissions """
         query = self.discoveries_query
         discovery = f.OrganizationDiscoveryFactory.create()
@@ -160,7 +160,7 @@ mutation ArchiveOrganizationDiscovery($input: ArchiveOrganizationDiscoveryInput!
         self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
-    def test_query_permision_granted(self):
+    def test_query_permission_granted(self):
         """ Query list of discoveries with view permission """
         query = self.discoveries_query
         discovery = f.OrganizationDiscoveryFactory.create()

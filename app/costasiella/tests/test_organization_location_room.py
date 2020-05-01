@@ -171,7 +171,7 @@ class GQLOrganizationLocationRoom(TestCase):
         self.assertEqual(data['organizationLocationRooms']['edges'][0]['node']['displayPublic'], location_room.display_public)
 
 
-    def test_query_permision_denied(self):
+    def test_query_permission_denied(self):
         """ Query list of location rooms """
         query = self.location_rooms_query
         location_room = f.OrganizationLocationRoomFactory.create()
@@ -201,7 +201,7 @@ class GQLOrganizationLocationRoom(TestCase):
         self.assertEqual(non_public_found, False)
 
 
-    def test_query_permision_granted(self):
+    def test_query_permission_granted(self):
         """ Query list of location rooms """
         query = self.location_rooms_query
         location_room = f.OrganizationLocationRoomFactory.create()

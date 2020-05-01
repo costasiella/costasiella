@@ -202,7 +202,7 @@ class GQLFinanceOrder(TestCase):
         self.assertEqual(data['financeOrders']['edges'][0]['node']['status'], order.status)
         self.assertEqual(data['financeOrders']['edges'][0]['node']['message'], order.message)
 
-    def test_query_permision_denied(self):
+    def test_query_permission_denied(self):
         """ Query list of finance orders - check permission denied """
         query = self.orders_query
         order = f.FinanceOrderFactory.create()

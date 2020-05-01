@@ -387,7 +387,7 @@ class GQLOrganizationClasspass(TestCase):
         self.assertEqual(data['organizationClasspasses']['edges'][0]['node']['financeCostcenter']['id'], 
                          to_global_id("FinanceCostCenterNode", classpass.finance_costcenter.pk))
 
-    def test_query_permision_denied(self):
+    def test_query_permission_denied(self):
         """ Query list of classpasses - check permission denied """
         query = self.classpasses_query
         classpass = f.OrganizationClasspassFactory.create()
@@ -413,7 +413,7 @@ class GQLOrganizationClasspass(TestCase):
         self.assertEqual(non_public_found, False)
 
 
-    def test_query_permision_granted(self):
+    def test_query_permission_granted(self):
         """ Query list of classpasses with view permission """
         query = self.classpasses_query
         classpass = f.OrganizationClasspassFactory.create()

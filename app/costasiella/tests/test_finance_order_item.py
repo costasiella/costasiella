@@ -153,63 +153,58 @@ class GQLFinanceOrderItem(TestCase):
         self.assertEqual(data['financeOrderItems']['edges'][0]['node']['financeCostcenter']['id'],
                          to_global_id('FinanceCostCenterNode', order_item.finance_costcenter.id))
 
-    # def test_query_permision_denied(self):
-    #     """ Query list of account order items - check permission denied """
-    #     query = self.order_items_query
-    #     order_item = f.FinanceOrderItemClasspassFactory.create()
-    # 
-    #     variables = {
-    #       "financeOrder": to_global_id('FinanceOrderItemNode', order_item.finance_order.pk)
-    #     }
-    # 
-    # 
-    #     # Create regular user
-    #     user = get_user_model().objects.get(pk=order_item.finance_order.account.id)
-    #     executed = execute_test_client_api_query(query, user, variables=variables)
-    #     errors = executed.get('errors')
-    # 
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
-    # 
-    # 
-    # def test_query_permision_granted(self):
-    #     """ Query list of account order items with view permission """
-    #     query = self.order_items_query
-    #     order_item = f.FinanceOrderItemClasspassFactory.create()
-    # 
-    #     variables = {
-    #       "financeOrder": to_global_id('FinanceOrderItemNode', order_item.finance_order.pk)
-    #     }
-    # 
-    # 
-    #     # Create regular user
-    #     user = get_user_model().objects.get(pk=order_item.finance_order.account.id)
-    #     permission = Permission.objects.get(codename='view_financeorderitem')
-    #     user.user_permissions.add(permission)
-    #     user.save()
-    # 
-    #     executed = execute_test_client_api_query(query, user, variables=variables)
-    #     data = executed.get('data')
-    # 
-    #     # List selected order items
-    #     self.assertEqual(
-    #       data['financeOrderItems']['edges'][0]['node']['id'],
-    #       to_global_id('FinanceOrderItemNode', order_item.id)
-    #     )
-    # 
-    # 
-    # def test_query_anon_user(self):
-    #     """ Query list of account order items - anon user """
-    #     query = self.order_items_query
-    #     order_item = f.FinanceOrderItemClasspassFactory.create()
-    # 
-    #     variables = {
-    #       "financeOrder": to_global_id('FinanceOrderItemNode', order_item.finance_order.pk)
-    #     }
-    # 
-    #     executed = execute_test_client_api_query(query, self.anon_user, variables=variables)
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
-    # 
+    def test_query_permission_denied(self):
+        """ Query list of account order items - check permission denied """
+        query = self.order_items_query
+        order_item = f.FinanceOrderItemClasspassFactory.create()
+
+        variables = {
+            "financeOrder": to_global_id('FinanceOrderItemNode', order_item.finance_order.pk)
+        }
+
+        # Create regular user
+        user = get_user_model().objects.get(pk=order_item.finance_order.account.id)
+        executed = execute_test_client_api_query(query, user, variables=variables)
+        errors = executed.get('errors')
+
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
+
+    def test_query_permission_granted(self):
+        """ Query list of account order items with view permission """
+        query = self.order_items_query
+        order_item = f.FinanceOrderItemClasspassFactory.create()
+
+        variables = {
+            "financeOrder": to_global_id('FinanceOrderItemNode', order_item.finance_order.pk)
+        }
+
+        # Create regular user
+        user = get_user_model().objects.get(pk=order_item.finance_order.account.id)
+        permission = Permission.objects.get(codename='view_financeorderitem')
+        user.user_permissions.add(permission)
+        user.save()
+
+        executed = execute_test_client_api_query(query, user, variables=variables)
+        data = executed.get('data')
+
+        # List selected order items
+        self.assertEqual(
+            data['financeOrderItems']['edges'][0]['node']['id'],
+            to_global_id('FinanceOrderItemNode', order_item.id)
+        )
+
+    def test_query_anon_user(self):
+        """ Query list of account order items - anon user """
+        query = self.order_items_query
+        order_item = f.FinanceOrderItemClasspassFactory.create()
+
+        variables = {
+            "financeOrder": to_global_id('FinanceOrderItemNode', order_item.finance_order.pk)
+        }
+
+        executed = execute_test_client_api_query(query, self.anon_user, variables=variables)
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
     # 
     # def test_query_one(self):
     #     """ Query one account order item as admin """   

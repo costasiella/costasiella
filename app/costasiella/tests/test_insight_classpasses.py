@@ -86,7 +86,7 @@ class GQLInsightClasspasses(TestCase):
         self.assertEqual(data['insightAccountClasspassesActive']['data'][11], 0)
 
 
-    def test_query_active_permision_denied(self):
+    def test_query_active_permission_denied(self):
         """ Query list of classpasses - check permission denied """
         query = self.query_classpasses_active
         classpass = f.AccountClasspassFactory.create()
@@ -99,7 +99,7 @@ class GQLInsightClasspasses(TestCase):
         self.assertEqual(errors[0]['message'], 'Permission denied!')
         
 
-    def test_query_active_permision_granted(self):
+    def test_query_active_permission_granted(self):
         """ Query list of classpasses with view permission """
         query = self.query_classpasses_active
         classpass = f.AccountClasspassFactory.create()      
@@ -152,7 +152,7 @@ class GQLInsightClasspasses(TestCase):
         self.assertEqual(data['insightAccountClasspassesSold']['data'][11], 0)
 
 
-    def test_query_permision_denied(self):
+    def test_query_permission_denied(self):
         """ Query list of classpasses - check permission denied """
         query = self.query_classpasses_sold
         classpass = f.AccountClasspassFactory.create()
@@ -165,7 +165,7 @@ class GQLInsightClasspasses(TestCase):
         self.assertEqual(errors[0]['message'], 'Permission denied!')
         
 
-    def test_query_permision_granted(self):
+    def test_query_permission_granted(self):
         """ Query list of classpasses with view permission """
         query = self.query_classpasses_sold
         classpass = f.AccountClasspassFactory.create()      

@@ -340,7 +340,7 @@ class GQLOrganizationSubscription(TestCase):
           to_global_id("FinanceCostCenterNode", subscription.finance_costcenter.pk))
 
 
-    def test_query_permision_denied(self):
+    def test_query_permission_denied(self):
         """ Query list of subscriptions - check permission denied """
         query = self.subscriptions_query
         subscription = f.OrganizationSubscriptionFactory.create()
@@ -366,7 +366,7 @@ class GQLOrganizationSubscription(TestCase):
         self.assertEqual(non_public_found, False)
 
 
-    def test_query_permision_granted(self):
+    def test_query_permission_granted(self):
         """ Query list of subscriptions with view permission """
         query = self.subscriptions_query
         subscription = f.OrganizationSubscriptionFactory.create()

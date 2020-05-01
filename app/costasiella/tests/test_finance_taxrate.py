@@ -163,7 +163,7 @@ class GQLFinanceTaxRate(TestCase):
         self.assertEqual(data['financeTaxRates']['edges'][0]['node']['code'], taxrate.code)
 
 
-    def test_query_permision_denied(self):
+    def test_query_permission_denied(self):
         """ Query list of taxrates - check permission denied """
         query = self.taxrates_query
         taxrate = f.FinanceTaxRateFactory.create()
@@ -179,7 +179,7 @@ class GQLFinanceTaxRate(TestCase):
         self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
-    def test_query_permision_granted(self):
+    def test_query_permission_granted(self):
         """ Query list of taxrates with view permission """
         query = self.taxrates_query
         taxrate = f.FinanceTaxRateFactory.create()
