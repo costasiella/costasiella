@@ -18,7 +18,6 @@ from .. import schema
 from ..modules.gql_tools import get_rid
 
 
-
 class GQLFinanceOrderItem(TestCase):
     # https://docs.djangoproject.com/en/2.1/topics/testing/overview/
     fixtures = ['app_settings.json', 'system_mail_template.json']
