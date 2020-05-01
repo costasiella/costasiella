@@ -72,8 +72,9 @@ class FinanceTaxRateFactory(factory.DjangoModelFactory):
 class OrganizationFactory(factory.DjangoModelFactory):
     class Meta:
         model = models.Organization
+        django_get_or_create = ('pk',)
 
-    id = 100
+    pk = 100
     archived = False
     name = "My Organization"
 
@@ -103,6 +104,22 @@ class OrganizationDocumentFactory(factory.DjangoModelFactory):
 
     organization = factory.SubFactory(OrganizationFactory)
     document_type = "TERMS_AND_CONDITIONS"
+    version = 1.0
+    date_start = datetime.date(2019, 1, 1)
+    # date_end is None
+    # https://factoryboy.readthedocs.io/en/latest/orms.html
+    # Refer to the part "Extra Fields (class dactory.django.FileField)"
+    document = factory.django.FileField(
+        from_path=os.path.join(os.getcwd(), "costasiella", "tests", "files", "test.pdf"),
+    )
+
+
+class OrganizationDocumentPrivacyPolicyFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.OrganizationDocument
+
+    organization = factory.SubFactory(OrganizationFactory)
+    document_type = "PRIVACY_POLICY"
     version = 1.0
     date_start = datetime.date(2019, 1, 1)
     # date_end is None

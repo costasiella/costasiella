@@ -312,6 +312,8 @@ class GQLFinanceOrder(TestCase):
         """ Create an finance order """
         query = self.order_create_mutation
 
+        terms_and_conditions = f.OrganizationDocumentFactory.create()
+        privacy_policy = f.OrganizationDocumentPrivacyPolicyFactory.create()
         organization_classpass = f.OrganizationClasspassFactory.create()
         variables = self.variables_create
         variables['input']['organizationClasspass'] = to_global_id(
@@ -345,6 +347,19 @@ class GQLFinanceOrder(TestCase):
         self.assertEqual(first_item.quantity, 1)
         self.assertEqual(first_item.finance_tax_rate, organization_classpass.finance_tax_rate)
 
+        # Verify that accepted documents have been added to the account placing the order
+        qs_terms = models.AccountAcceptedDocument.objects.filter(
+            account=self.admin_user,
+            document=terms_and_conditions
+        )
+        self.assertEqual(qs_terms.exists(), True)
+        qs_privacy = models.AccountAcceptedDocument.objects.filter(
+            account=self.admin_user,
+            document=privacy_policy
+        )
+        self.assertEqual(qs_privacy.exists(), True)
+
+
     def test_create_order_anon_user(self):
         """ Don't allow creating finance orders for non-logged in users """
         query = self.order_create_mutation
@@ -364,7 +379,7 @@ class GQLFinanceOrder(TestCase):
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Not logged in!')
 
-    def test_create_location_permission_granted(self):
+    def test_create_order_permission_granted(self):
         """ Allow creating orders for users with permissions """
         query = self.order_create_mutation
 
