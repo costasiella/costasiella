@@ -23,8 +23,8 @@ class FinanceOrderItem(models.Model):
     organization_classpass = models.ForeignKey(OrganizationClasspass, on_delete=models.CASCADE, null=True)
     # Class fields
     attendance_type = models.CharField(max_length=255, choices=ATTENDANCE_TYPES, null=True)
+    attendance_date = models.DateField(null=True)
     schedule_item = models.ForeignKey(ScheduleItem, on_delete=models.CASCADE, null=True)
-    date = models.DateField(null=True)
     # General fields
     product_name = models.CharField(max_length=255)
     description = models.TextField(default="")
