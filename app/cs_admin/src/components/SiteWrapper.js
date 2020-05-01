@@ -133,6 +133,9 @@ const getNavBarItems = (t, user) => {
       { value: t("selfcheckin.home.title"), to: "/selfcheckin", LinkComponent: withRouter(NavLink) }
     )
   }
+  goToSubItems.push(
+    { value: t("shop.title"), to: "/shop", LinkComponent: withRouter(NavLink) }
+  )
 
   // Go to
   if (
