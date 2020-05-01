@@ -11,6 +11,8 @@ import {
   Icon
 } from "tabler-react"
 
+import cs_django_links from "../../tools/cs_django_links"
+
 
 const ShopClasspassForm = ({ t, isSubmitting, errors }) => (
     <FoForm>
@@ -22,6 +24,17 @@ const ShopClasspassForm = ({ t, isSubmitting, errors }) => (
                autoComplete="off" />
         <ErrorMessage name="message" component="span" className="invalid-feedback" />
       </Form.Group>
+      <small className="text-muted">
+        {t("shop.order.by_placing_this_order")} <br />
+        <ul>
+          <li>{t("shop.order.agree_terms")} {" "}
+            <a target="_blank" href={cs_django_links.EXPORT_TERMS_AND_CONDITIONS}>{t("general.terms_and_conditions")}</a>
+          </li>
+          <li>{t("shop.order.agree_privacy")} {" "}
+            <a target="_blank" href={cs_django_links.EXPORT_PRIVACY_POLICY}>{t("general.privacy_policy")}</a>
+          </li>
+        </ul>
+      </small>
       <Button 
         block
         color="primary"
