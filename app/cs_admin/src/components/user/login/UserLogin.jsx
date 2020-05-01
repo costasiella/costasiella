@@ -111,7 +111,7 @@ function UserLogin({t, match, history}) {
         block
         color="link"
         RootComponent="a"
-        href={(window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") ? 
+        href={(window.location.hostname === "localhost" || window.location.hostname === "dev.costasiella.com") ? 
           "http://localhost:8000/d/accounts/signup/" :
           "/d/accounts/signup/"
         } 
