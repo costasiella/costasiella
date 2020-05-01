@@ -1,11 +1,13 @@
 from django.utils.translation import gettext as _
+from django.db.models import Q
+from django.utils import timezone
 
 import graphene
 from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
 from graphql import GraphQLError
 
-from ..models import Account, FinanceOrder, OrganizationClasspass
+from ..models import AccountAcceptedDocument, FinanceOrder, OrganizationClasspass, OrganizationDocument
 from ..models.choices.finance_order_statuses import get_finance_order_statuses
 from ..modules.gql_tools import require_login_and_permission, get_rid
 from ..modules.messages import Messages
@@ -96,6 +98,39 @@ def validate_create_update_input(input, update=False):
     return result
 
 
+def create_finance_order_log_accepted_documents(info):
+    """
+    Log time when user accepted terms & privacy policy (if any)
+    :param info: Execution env info
+    :return: None
+    """
+    user = info.context.user
+    x_forwarded_for = info.context.META.get('HTTP_X_FORWARDED_FOR', None)
+    if x_forwarded_for:
+        client_ip = x_forwarded_for.split(',')[0]
+    else:
+        client_ip = info.context.META.get('REMOTE_ADDR', "0.0.0.0")
+
+    now = timezone.now()
+    today = now.date()
+
+    document_types = ['TERMS_AND_CONDITIONS', 'PRIVACY_POLICY']
+    for document_type in document_types:
+        documents = OrganizationDocument.objects.filter((
+                Q(document_type=document_type) &
+                Q(date_start__lte=today) &
+                (Q(date_end__gte=today) | Q(date_end__isnull=True))
+        ))
+
+        for document in documents:
+            accepted_document = AccountAcceptedDocument(
+                account=user,
+                document=document,
+                client_ip=client_ip
+            )
+            accepted_document.save()
+
+
 class CreateFinanceOrder(graphene.relay.ClientIDMutation):
     class Input:
         message = graphene.String(required=False, default_value="")
@@ -121,8 +156,10 @@ class CreateFinanceOrder(graphene.relay.ClientIDMutation):
 
         # Process items
         if 'organization_classpass' in validation_result:
-            #TODO: actually add item
             finance_order.item_add_classpass(validation_result['organization_classpass'])
+
+        # Accept terms and privacy policy
+        create_finance_order_log_accepted_documents(info)
 
         # Notify user of receiving order
         mail_dude = MailDude(account=user,
