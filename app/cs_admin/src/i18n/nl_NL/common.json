@@ -471,7 +471,10 @@
             "title": "__STRING_NOT_TRANSLATED__"
         },
         "order": {
-            "message": "__STRING_NOT_TRANSLATED__"
+            "message": "__STRING_NOT_TRANSLATED__",
+            "by_placing_this_order": "__STRING_NOT_TRANSLATED__",
+            "agree_terms": "__STRING_NOT_TRANSLATED__",
+            "agree_privacy": "__STRING_NOT_TRANSLATED__"
         },
         "place_order": "__STRING_NOT_TRANSLATED__",
         "checkout_progress": {

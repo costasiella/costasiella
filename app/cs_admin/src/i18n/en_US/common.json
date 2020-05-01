@@ -1252,7 +1252,10 @@
             "additional_information": "Additional information"
         },
         "order": {
-            "message": "Any message with this order?"
+            "message": "Any message with this order?",
+            "by_placing_this_order": "By placing this order I",
+            "agree_terms": "Accept the ",
+            "agree_privacy": "Accept the"
         },
         "place_order": "Place order",
         "checkout_progress": {
