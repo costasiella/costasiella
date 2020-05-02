@@ -69,6 +69,14 @@ const getNavBarItems = (t, user) => {
     useExact: true,
   })
 
+  items.push({
+    value: t("shop.account.title"),
+    to: "/shop/account",
+    icon: "user",
+    LinkComponent: withRouter(NavLink),
+    useExact: true,
+  })
+
 
 //  Use this code as an example for the account pages in the shop
   // let goToSubItems = []
