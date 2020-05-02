@@ -17,12 +17,14 @@ from allauth.account.models import EmailAddress
 from ..models import AccountTeacherProfile
 
 from ..modules.gql_tools import require_login, \
+    require_permission, \
     require_login_and_permission, \
     require_login_and_one_of_permissions, \
     require_login_and_one_of_permission_or_own_account, \
     get_rid
 
 from ..modules.encrypted_fields import EncryptedTextField
+
 
 @convert_django_field.register(EncryptedTextField)
 def convert_json_field_to_string(field, registry=None):
@@ -52,14 +54,7 @@ class AccountNode(DjangoObjectType):
     @classmethod
     def get_node(self, info, id):
         user = info.context.user
-
-        print("##########")
-        print(id)
-
-        model = get_user_model()
-        record_id = id
-
-        require_login_and_one_of_permission_or_own_account(user, model, record_id, [
+        require_login_and_one_of_permissions(user, [
             'costasiella.view_account',
             'costasiella.view_selfcheckin'
         ])
@@ -104,13 +99,11 @@ class AccountQuery(graphene.AbstractType):
     permission = graphene.relay.Node.Field(PermissionNode)
     permissions = DjangoFilterConnectionField(PermissionNode)
 
-
     def resolve_user(self, info):
         user = info.context.user
         require_login(user)
 
         return user
-
 
     def resolve_accounts(self, info, is_active=False, **kwargs):
         user = info.context.user
@@ -119,20 +112,18 @@ class AccountQuery(graphene.AbstractType):
             'costasiella.view_selfcheckin'
         ])
 
-        query_set =  get_user_model().objects.filter(
+        query_set = get_user_model().objects.filter(
             is_active=is_active, 
             is_superuser=False
         )
 
         return query_set.order_by('first_name')
 
-
     def resolve_groups(self, info):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.view_group')
 
         return Group.objects.all()
-
 
     def resolve_permissions(self, info):
         user = info.context.user
@@ -250,14 +241,17 @@ class UpdateAccount(graphene.relay.ClientIDMutation):
     @classmethod
     def mutate_and_get_payload(self, root, info, **input):
         user = info.context.user
-        require_login_and_permission(user, 'costasiella.change_account')
-
+        require_login(user)
         # print(input)
 
         rid = get_rid(input['id'])
         account = get_user_model().objects.filter(id=rid.id).first()
         if not account:
             raise Exception('Invalid Account ID!')
+
+        # Allow users to update their own account without additional permissions
+        if not user.id == account.id:
+            require_permission(user, 'costasiella.change_account')
 
         validate_create_update_input(account, input, update=True)
 

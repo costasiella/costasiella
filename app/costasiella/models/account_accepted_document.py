@@ -19,4 +19,4 @@ class AccountAcceptedDocument(models.Model):
     updated_at = models.DateTimeField(auto_now=True, editable=False)
 
     def __str__(self):
-        return self.organization_document.document_type + ' [' + str(date_accepted) + ']'
+        return self.document.document_type + ' [' + str(self.date_accepted) + ']'
