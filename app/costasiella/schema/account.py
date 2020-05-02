@@ -248,8 +248,7 @@ class UpdateAccount(graphene.relay.ClientIDMutation):
 
         # Allow users to update their own account without additional permissions
         if not user.id == account.id:
-            raise Exception('permission denied!')
-            # require_permission(user, 'costasiella.change_account')
+            require_permission(user, 'costasiella.change_account')
 
         validate_create_update_input(account, input, update=True)
 
