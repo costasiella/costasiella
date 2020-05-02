@@ -19,7 +19,7 @@ class FinanceInvoice(models.Model):
         ('CANCELLED', _("Cancelled"))
     )
 
-    account = models.ForeignKey(Account, on_delete=models.SET_NULL, null=True)
+    account = models.ForeignKey(Account, on_delete=models.SET_NULL, null=True, related_name="invoices")
     finance_invoice_group = models.ForeignKey(FinanceInvoiceGroup, on_delete=models.CASCADE)
     finance_payment_method = models.ForeignKey(FinancePaymentMethod, on_delete=models.CASCADE, null=True)
     teacher_payment = models.BooleanField(default=False)

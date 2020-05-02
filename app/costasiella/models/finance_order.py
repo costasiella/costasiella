@@ -18,7 +18,7 @@ from .finance_invoice_group_default import FinanceInvoiceGroupDefault
 class FinanceOrder(models.Model):
     STATUSES = get_finance_order_statuses()
 
-    finance_invoice = models.ForeignKey(FinanceInvoice, on_delete=models.SET_NULL, null=True)
+    finance_invoice = models.ForeignKey(FinanceInvoice, on_delete=models.SET_NULL, null=True, related_name="orders")
     account = models.ForeignKey(Account, on_delete=models.SET_NULL, null=True)
     status = models.CharField(max_length=255, choices=STATUSES, default="RECEIVED")
     message = models.TextField(default="")

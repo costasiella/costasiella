@@ -12,7 +12,7 @@ class AccountClasspass(models.Model):
     # Editable parameter docs
     # https://docs.djangoproject.com/en/2.2/ref/models/fields/#editable
 
-    account = models.ForeignKey(Account, on_delete=models.CASCADE)
+    account = models.ForeignKey(Account, on_delete=models.CASCADE, related_name="classpasses")
     organization_classpass = models.ForeignKey(OrganizationClasspass, on_delete=models.CASCADE)
     date_start = models.DateField()
     date_end = models.DateField(null=True)
