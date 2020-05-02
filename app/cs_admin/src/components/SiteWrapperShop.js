@@ -74,7 +74,27 @@ const getNavBarItems = (t, user) => {
   let accountSubItems = [
     { 
       value: t("shop.account.profile.title"), 
-      to: "/shop/account", 
+      to: "/shop/account/profile", 
+      LinkComponent: withRouter(NavLink) 
+    },
+    { 
+      value: t("shop.account.orders.title"), 
+      to: "/shop/account/orders", 
+      LinkComponent: withRouter(NavLink) 
+    },
+    { 
+      value: t("shop.account.invoices.title"), 
+      to: "/shop/account/invoices", 
+      LinkComponent: withRouter(NavLink) 
+    },
+    { 
+      value: t("shop.account.classpasses.title"), 
+      to: "/shop/account/classpasses", 
+      LinkComponent: withRouter(NavLink) 
+    },
+    { 
+      value: t("shop.account.classes.title"), 
+      to: "/shop/account/classes", 
       LinkComponent: withRouter(NavLink) 
     },
   ]
