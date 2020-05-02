@@ -16,7 +16,12 @@ from graphene_django.filter import DjangoFilterConnectionField
 from allauth.account.models import EmailAddress
 from ..models import AccountTeacherProfile
 
-from ..modules.gql_tools import require_login, require_login_and_permission, require_login_and_one_of_permissions, get_rid
+from ..modules.gql_tools import require_login, \
+    require_login_and_permission, \
+    require_login_and_one_of_permissions, \
+    require_login_and_one_of_permission_or_own_account, \
+    get_rid
+
 from ..modules.encrypted_fields import EncryptedTextField
 
 @convert_django_field.register(EncryptedTextField)
@@ -47,11 +52,17 @@ class AccountNode(DjangoObjectType):
     @classmethod
     def get_node(self, info, id):
         user = info.context.user
-        require_login_and_one_of_permissions(user, [
+
+        print("##########")
+        print(id)
+
+        model = get_user_model()
+        record_id = id
+
+        require_login_and_one_of_permission_or_own_account(user, model, record_id, [
             'costasiella.view_account',
             'costasiella.view_selfcheckin'
         ])
-        #TODO: Add permission for accounts to get their own info or all info with view permission
 
         return self._meta.model.objects.get(id=id)
 
