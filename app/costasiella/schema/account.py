@@ -188,26 +188,23 @@ def validate_create_update_input(account, input, update=False):
     # result = {}
 
     # verify email unique
-    query_set = get_user_model().objects.filter(
-        ~Q(pk=account.pk),
-        Q(email=input['email'])
-    )
-
-    # Don't insert duplicate emails into the DB.
-    if query_set.exists():
-        raise Exception(_('Unable to save, an account is already registered with this e-mail address'))
+    if 'email' in input:
+        query_set = get_user_model().objects.filter(
+            ~Q(pk=account.pk),
+            Q(email=input['email'])
+        )
+        # Don't insert duplicate emails into the DB.
+        if query_set.exists():
+            raise Exception(_('Unable to save, an account is already registered with this e-mail address'))
 
     # Verify gender
-    genders = [
-        'M', 'F', 'X'
-    ]
-
-    if input['gender']:
+    if input.get('gender', None):
+        genders = ['M', 'F', 'X']
         if not input['gender'] in genders:
             raise Exception(_("Please specify gender as M, F or X (for other)"))
 
     # Verify country code
-    if input['country']:
+    if input.get('country', None):
         country_codes = []
         for country in settings.ISO_COUNTRY_CODES:
             country_codes.append(country['Code'])
@@ -223,18 +220,18 @@ class UpdateAccount(graphene.relay.ClientIDMutation):
         customer = graphene.Boolean(required=False)
         teacher = graphene.Boolean(required=False)
         employee = graphene.Boolean(required=False)
-        first_name = graphene.String(required=True)
-        last_name = graphene.String(required=True)
-        email = graphene.String(required=True)
-        address = graphene.String(required=False, default_value="")
-        postcode = graphene.String(required=False, default_value="")
-        city = graphene.String(required=False, default_value="")
-        country = graphene.String(required=False, default_value="")
-        phone = graphene.String(required=False, default_value="")
-        mobile = graphene.String(required=False, default_value="")
-        emergency = graphene.String(required=False, default_value="")
-        gender = graphene.String(required=False, default_value="")
-        date_of_birth = graphene.types.datetime.Date(required=False, default_value="")
+        first_name = graphene.String(required=False)
+        last_name = graphene.String(required=False)
+        email = graphene.String(required=False)
+        address = graphene.String(required=False)
+        postcode = graphene.String(required=False)
+        city = graphene.String(required=False)
+        country = graphene.String(required=False)
+        phone = graphene.String(required=False)
+        mobile = graphene.String(required=False)
+        emergency = graphene.String(required=False)
+        gender = graphene.String(required=False)
+        date_of_birth = graphene.types.datetime.Date(required=False)
 
     account = graphene.Field(AccountNode)
 
@@ -251,16 +248,20 @@ class UpdateAccount(graphene.relay.ClientIDMutation):
 
         # Allow users to update their own account without additional permissions
         if not user.id == account.id:
-            require_permission(user, 'costasiella.change_account')
+            raise Exception('permission denied!')
+            # require_permission(user, 'costasiella.change_account')
 
         validate_create_update_input(account, input, update=True)
 
         print(input)
 
-        account.first_name = input['first_name']
-        account.last_name = input['last_name']
-        account.email = input['email']
-        account.username = input['email']
+        if 'first_name' in input:
+            account.first_name = input['first_name']
+        if 'last_name' in input:
+            account.last_name = input['last_name']
+        if 'email' in input:
+            account.email = input['email']
+            account.username = input['email']
         # Only update these fields if input has been passed
         # if 'password' in input:
         #     account.set_password(input['password'])
