@@ -484,6 +484,14 @@
         },
         "complete": {
             "to_account": "__STRING_NOT_TRANSLATED__"
+        },
+        "account": {
+            "title": "__STRING_NOT_TRANSLATED__",
+            "profile": {
+                "title": "__STRING_NOT_TRANSLATED__",
+                "explanation": "__STRING_NOT_TRANSLATED__"
+            },
+            "btn_text_profile_edit": "__STRING_NOT_TRANSLATED__"
         }
     },
     "home": {
