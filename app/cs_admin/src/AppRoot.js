@@ -150,6 +150,7 @@ import SettingsIntegrationMollie from './components/settings/integration/mollie/
 import SettingsMailTemplates from './components/settings/mail/SettingsMailTemplates'
 import SettingsMailTemplateEdit from './components/settings/mail/SettingsMailTemplateEdit'
 
+import ShopAccountHome from './components/shop/account/home/ShopAccountHome'
 import ShopHome from './components/shop/home/ShopHome'
 import ShopCheckoutPayment from './components/shop/checkout/payment/ShopCheckoutPayment'
 import ShopCheckoutComplete from './components/shop/checkout/complete/ShopCheckoutComplete'
@@ -348,6 +349,7 @@ function AppRoot({ t }) {
 
           {/* Shop */}
           <Route exact path = "/shop" component={ShopHome} />
+          <PrivateRoute exact path = "/shop/account" component={ShopAccountHome} />
           <PrivateRoute exact path = "/shop/checkout/payment/:id" component={ShopCheckoutPayment} />
           <PrivateRoute exact path = "/shop/checkout/complete/:id" component={ShopCheckoutComplete} />
           <Route exact path = "/shop/classpasses" component={ShopClasspasses} />
