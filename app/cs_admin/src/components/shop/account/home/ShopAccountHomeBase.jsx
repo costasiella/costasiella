@@ -26,5 +26,4 @@ function ShopAccountHomeBase({ t, match, history, children, subTitle="" }) {
   )
 }
 
-
 export default withTranslation()(withRouter(ShopAccountHomeBase))
