@@ -49,62 +49,62 @@ function ShopClasspass({ t, match, history }) {
 
   return (
     <ShopClasspassBase title={title}>
-        <Grid.Row>
-          <Grid.Col md={4}>
-            <ShopClasspassesPricingCard classpass={classpass} active={true} />
-          </Grid.Col>
-          <Grid.Col md={4}>
-            <Card title={t("shop.classpass.additional_information")}>
-              <Card.Body>
-                {/* TODO: Display terms & privacy policy */}
-                <div dangerouslySetInnerHTML={{__html:classpass.description}}></div>
-              </Card.Body>
-            </Card>
-          </Grid.Col>
-          <Grid.Col md={4}>
-            <Card title={t("shop.checkout.title")}>
-              <Card.Body>
-                <Formik
-                  initialValues={{ message: "" }}
-                  // validationSchema={CLASSTYPE_SCHEMA}
-                  onSubmit={(values, { setSubmitting }) => {
-                      createOrder({ variables: {
-                        input: {
-                          message: values.message,
-                          organizationClasspass: match.params.id
-                        },
-                        // file: values.image
-                      }, refetchQueries: [
-                          // {query: GET_CLASSTYPES_QUERY, variables: {"archived": false }}
-                      ]})
-                      .then(({ data }) => {
-                          console.log('got data', data)
-                          console.log('good...  now redirect to the payment page')
-                          const orderId = data.createFinanceOrder.financeOrder.id
-                          history.push('/shop/checkout/payment/' + orderId)
-                        }).catch((error) => {
-                          toast.error((t('general.toast_server_error')) + ': ' +  error, {
-                              position: toast.POSITION.BOTTOM_RIGHT
-                            })
-                          console.log('there was an error sending the query', error)
-                          setSubmitting(false)
-                        })
-                  }}
-                  >
-                  {({ isSubmitting, errors, values }) => (
-                    <ShopCheckoutForm 
-                      isSubmitting={isSubmitting}
-                      errors={errors}
-                      values={values}
-                    />
-                  )}
-                </Formik>
+      <Grid.Row>
+        <Grid.Col md={4}>
+          <ShopClasspassesPricingCard classpass={classpass} active={true} />
+        </Grid.Col>
+        <Grid.Col md={4}>
+          <Card title={t("shop.classpass.additional_information")}>
+            <Card.Body>
+              {/* TODO: Display terms & privacy policy */}
+              <div dangerouslySetInnerHTML={{__html:classpass.description}}></div>
+            </Card.Body>
+          </Card>
+        </Grid.Col>
+        <Grid.Col md={4}>
+          <Card title={t("shop.checkout.title")}>
+            <Card.Body>
+              <Formik
+                initialValues={{ message: "" }}
+                // validationSchema={CLASSTYPE_SCHEMA}
+                onSubmit={(values, { setSubmitting }) => {
+                    createOrder({ variables: {
+                      input: {
+                        message: values.message,
+                        organizationClasspass: match.params.id
+                      },
+                      // file: values.image
+                    }, refetchQueries: [
+                        // {query: GET_CLASSTYPES_QUERY, variables: {"archived": false }}
+                    ]})
+                    .then(({ data }) => {
+                        console.log('got data', data)
+                        console.log('good...  now redirect to the payment page')
+                        const orderId = data.createFinanceOrder.financeOrder.id
+                        history.push('/shop/checkout/payment/' + orderId)
+                      }).catch((error) => {
+                        toast.error((t('general.toast_server_error')) + ': ' +  error, {
+                            position: toast.POSITION.BOTTOM_RIGHT
+                          })
+                        console.log('there was an error sending the query', error)
+                        setSubmitting(false)
+                      })
+                }}
+                >
+                {({ isSubmitting, errors, values }) => (
+                  <ShopCheckoutForm 
+                    isSubmitting={isSubmitting}
+                    errors={errors}
+                    values={values}
+                  />
+                )}
+              </Formik>
 
-                {/* When a user is not logged in, show a login button to redirect to the login page */}
-              </Card.Body>
-            </Card>
-          </Grid.Col>
-        </Grid.Row>
+              {/* When a user is not logged in, show a login button to redirect to the login page */}
+            </Card.Body>
+          </Card>
+        </Grid.Col>
+      </Grid.Row>
     </ShopClasspassBase>
   )
 }

@@ -24,7 +24,6 @@ class AccountClasspass(models.Model):
     def __str__(self):
         return self.organization_classpass.name + ' [' + str(self.date_start) + ']'
 
-
     def update_classes_remaining(self):
         """ Calculate remaining classes """
         from .schedule_item_attendance import ScheduleItemAttendance
@@ -40,7 +39,6 @@ class AccountClasspass(models.Model):
             ).count()
             self.classes_remaining = total - classes_taken
             self.save()
-    
 
     def set_date_end(self):
         """

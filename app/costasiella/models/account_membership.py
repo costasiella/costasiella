@@ -5,6 +5,7 @@ from .account import Account
 from .organization_membership import OrganizationMembership
 from .finance_payment_method import FinancePaymentMethod
 
+
 class AccountMembership(models.Model):
     # add additional fields in here
     # teacher and employee will use OneToOne fields. An account can optionally be a teacher or employee.
@@ -22,7 +23,6 @@ class AccountMembership(models.Model):
 
     def __str__(self):
         return self.organization_membership.name + ' [' + unicode(date_start) + ']'
-
 
     def set_date_end(self):
         """

@@ -5,6 +5,7 @@ from .account import Account
 from .organization_subscription import OrganizationSubscription
 from .finance_payment_method import FinancePaymentMethod
 
+
 class AccountSubscription(models.Model):
     # add additional fields in here
     # teacher and employee will use OneToOne fields. An account can optionally be a teacher or employee.

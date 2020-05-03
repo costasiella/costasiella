@@ -11,6 +11,7 @@ import {
   Container
 } from "tabler-react";
 import SiteWrapperShop from "../../../SiteWrapperShop"
+import GET_USER from "../../../../queries/system/get_user"
 
 import ShopAccountHomeButton from "./ShopAccountHomeButton"
 
