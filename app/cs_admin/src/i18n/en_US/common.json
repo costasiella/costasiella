@@ -1297,7 +1297,7 @@
             "title": "My account",
             "profile": {
                 "title": "My profile",
-                "explanation": "Update your name and contact information."
+                "explanation": "Update your name and contact information. Please keep your information updated in case we need to contact you or reply to an inquiry."
             },
             "btn_text_profile_edit": "Update profile"
         }
