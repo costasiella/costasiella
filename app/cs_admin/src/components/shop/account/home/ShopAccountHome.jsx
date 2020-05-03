@@ -5,13 +5,12 @@ import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
 
 import {
+  Card,
   Page,
   Grid,
-  Container,
-  StampCard
+  Container
 } from "tabler-react";
-import SiteWrapper from "../../SiteWrapper"
-import HasPermissionWrapper from "../../HasPermissionWrapper"
+import SiteWrapper from "../../../SiteWrapper"
 
 import ShopAccountHomeButton from "./ShopAccountHomeButton"
 
@@ -30,7 +29,7 @@ function ShopAccountHome({t, match, history}) {
                     <h5>{t("shop.account.profile.title")}</h5>
                     {t("shop.account.profile.explanation")}
                     <br /><br />
-                    <ShopAccountHomeButton link="/shop/account/profile" />
+                    <ShopAccountHomeButton link="/shop/account/profile" buttonText={t("shop.account.btn_text_profile_edit")} />
                   </Card.Body>
                 </Card>
               </Grid.Col>
