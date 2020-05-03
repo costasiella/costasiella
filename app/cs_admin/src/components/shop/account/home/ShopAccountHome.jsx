@@ -10,7 +10,7 @@ import {
   Grid,
   Container
 } from "tabler-react";
-import SiteWrapper from "../../../SiteWrapper"
+import SiteWrapperShop from "../../../SiteWrapperShop"
 
 import ShopAccountHomeButton from "./ShopAccountHomeButton"
 
@@ -18,10 +18,13 @@ import ShopAccountHomeButton from "./ShopAccountHomeButton"
 function ShopAccountHome({t, match, history}) {
 
   return (
-    <SiteWrapper>
+    <SiteWrapperShop>
         <div className="my-3 my-md-5">
           <Container>
             <Page.Header title={t("shop.account.title")} />
+            {/* Above this line will be things like classes, class passe, etc. */}
+            <hr />
+            {/* Administrative stuff below this point, profile, invoices, orders, etc. */}
             <Grid.Row>
               <Grid.Col md={4} lg={4}>
                 <Card>
@@ -36,7 +39,7 @@ function ShopAccountHome({t, match, history}) {
             </Grid.Row>
           </Container>
         </div>
-    </SiteWrapper>
+    </SiteWrapperShop>
   )
 }
 
