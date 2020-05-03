@@ -69,63 +69,13 @@ const getNavBarItems = (t, user) => {
     useExact: true,
   })
 
-
-  // Account sub items
-  let accountSubItems = [
-    { 
-      value: t("shop.account.profile.title"), 
-      to: "/shop/account/profile", 
-      LinkComponent: withRouter(NavLink) 
-    },
-    { 
-      value: t("shop.account.orders.title"), 
-      to: "/shop/account/orders", 
-      LinkComponent: withRouter(NavLink) 
-    },
-    { 
-      value: t("shop.account.invoices.title"), 
-      to: "/shop/account/invoices", 
-      LinkComponent: withRouter(NavLink) 
-    },
-    { 
-      value: t("shop.account.classpasses.title"), 
-      to: "/shop/account/classpasses", 
-      LinkComponent: withRouter(NavLink) 
-    },
-    { 
-      value: t("shop.account.classes.title"), 
-      to: "/shop/account/classes", 
-      LinkComponent: withRouter(NavLink) 
-    },
-  ]
-  
-
   items.push({
     value: t("shop.account.title"),
+    to: "/shop/account",
     icon: "user",
-    subItems: accountSubItems,
+    LinkComponent: withRouter(NavLink),
+    useExact: true,
   })
-
-
-//  Use this code as an example for the account pages in the shop
-  // let goToSubItems = []
-  // if (has_permission(permissions, 'view', 'selfcheckin')) {
-  //   goToSubItems.push(
-  //     { value: t("selfcheckin.home.title"), to: "/selfcheckin", LinkComponent: withRouter(NavLink) }
-  //   )
-  // }
-
-  // // Go to
-  // if (
-  //   (has_permission(permissions, 'view', 'selfcheckin'))
-  //  ){
-  //   items.push({
-  //     value: t("goto.title"),
-  //     icon: "zap",
-  //     subItems: goToSubItems,
-  //   })
-  // }
-
 
   return items
 
