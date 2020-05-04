@@ -4,6 +4,7 @@ import React from 'react'
 import { withTranslation } from 'react-i18next'
 import { v4 } from 'uuid'
 import { withRouter } from "react-router"
+import { Link } from 'react-router-dom'
 import { Form as FoForm, Field, ErrorMessage } from 'formik'
 
 
@@ -15,11 +16,11 @@ import {
 } from "tabler-react"
 
 
-import CSDatePicker from "../../ui/CSDatePicker"
-import ISO_COUNTRY_CODES from "../../../tools/iso_country_codes"
+import CSDatePicker from "../../../ui/CSDatePicker"
+import ISO_COUNTRY_CODES from "../../../../tools/iso_country_codes"
 
 
-const ShopAccountProfileForm = ({ t, history, isSubmitting, errors, values, return_url, setFieldTouched, setFieldValue }) => (
+const ShopAccountProfileForm = ({ t, history, isSubmitting, errors, values, returnUrl, setFieldTouched, setFieldValue }) => (
   <FoForm>
     <Card title={t("shop.accounts.profile.edit")} >
       <Card.Body>
@@ -164,7 +165,7 @@ const ShopAccountProfileForm = ({ t, history, isSubmitting, errors, values, retu
           >
             {t('general.submit')}
           </Button>
-          <Link to={return_url}>
+          <Link to={returnUrl}>
             <Button color="link">
                 {t('general.cancel')}
             </Button>
