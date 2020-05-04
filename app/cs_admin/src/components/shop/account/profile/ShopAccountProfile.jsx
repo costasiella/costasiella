@@ -13,23 +13,24 @@ import {
 } from "tabler-react";
 import SiteWrapperShop from "../../../SiteWrapperShop"
 import GET_USER_PROFILE from "../../../../queries/system/get_user_profile"
+import { UPDATE_PROFILE } from "./queries"
 
-import ShopAccountHomeBase from "./ShopAccountHomeBase"
-import ShopAccountHomeButton from "./ShopAccountHomeButton"
+import ShopAccountProfileBase from "./ShopAccountProfileBase"
 
 
-function ShopAccountHome({t, match, history}) {
+function ShopAccountProfile({t, match, history}) {
   const { loading, error, data } = useQuery(GET_USER_PROFILE)
+  const [ updateProfile ] = useMutation(UPDATE_PROFILE)
 
   if (loading) return (
-    <ShopAccountHomeBase>
+    <ShopAccountProfileBase>
       {t("general.loading_with_dots")}
-    </ShopAccountHomeBase>
+    </ShopAccountProfileBase>
   )
   if (error) return (
-    <ShopAccountHomeBase>
+    <ShopAccountProfileBase>
       {t("shop.account.error_loading_user_data")}
-    </ShopAccountHomeBase>
+    </ShopAccountProfileBase>
   )
 
   console.log("User data: ###")
@@ -37,25 +38,18 @@ function ShopAccountHome({t, match, history}) {
   const user = data.user
 
   return (
-    <ShopAccountHomeBase subTitle={user.fullName}>
+    <ShopAccountProfileBase subTitle={user.fullName}>
       {/* Above this line will be things like classes, class passe, etc. */}
       <hr />
       {/* Administrative stuff below this point, profile, invoices, orders, etc. */}
       <Grid.Row>
         <Grid.Col md={4} lg={4}>
-          <Card>
-            <Card.Body>
-              <h5>{t("shop.account.profile.title")}</h5>
-              {t("shop.account.profile.explanation")}
-              <br /><br />
-              <ShopAccountHomeButton link="/shop/account/profile" buttonText={t("shop.account.btn_text_profile_edit")} />
-            </Card.Body>
-          </Card>
+          Form here...
         </Grid.Col>
       </Grid.Row>
-    </ShopAccountHomeBase>
+    </ShopAccountProfileBase>
   )
 }
 
 
-export default withTranslation()(withRouter(ShopAccountHome))
+export default withTranslation()(withRouter(ShopAccountProfile))
