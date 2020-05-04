@@ -13,12 +13,12 @@ import {
 import SiteWrapperShop from "../../../SiteWrapperShop"
 
 
-function ShopAccountProfileBase({ t, match, history, children, subTitle="" }) {
+function ShopAccountProfileBase({ t, match, history, children, accountName="" }) {
   return (
     <SiteWrapperShop>
       <div className="my-3 my-md-5">
         <Container>
-          <Page.Header title={t("shop.account.title")} subTitle={subTitle}/>
+          <Page.Header title={t("shop.account.title")} subTitle={ t("shop.account.profile.title") + " " + accountName}/>
           { children }
         </Container>
       </div>
