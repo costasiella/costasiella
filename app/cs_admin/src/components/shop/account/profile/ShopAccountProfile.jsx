@@ -22,6 +22,8 @@ import ShopAccountProfileForm from "./ShopAccountProfileForm"
 
 import { dateToLocalISO } from '../../../../tools/date_tools'
 
+import { ACCOUNT_SCHEMA } from "./yupSchema"
+
 
 function ShopAccountProfile({t, match, history}) {
   const { loading, error, data } = useQuery(GET_USER_PROFILE)
@@ -66,7 +68,7 @@ function ShopAccountProfile({t, match, history}) {
               city: user.city,
               country: user.country
             }}
-            // validationSchema={ACCOUNT_SCHEMA}
+            validationSchema={ACCOUNT_SCHEMA}
             onSubmit={(values, { setSubmitting }) => {
                 console.log('submit values:')
                 console.log(values)
