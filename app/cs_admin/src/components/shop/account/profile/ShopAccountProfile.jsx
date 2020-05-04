@@ -72,7 +72,7 @@ function ShopAccountProfile({t, match, history}) {
                 console.log(values)
 
                 let input_vars = {
-                  id: user.id,
+                  id: user.accountId,
                   firstName: values.firstName,
                   lastName: values.lastName,
                   email: values.email,
