@@ -7,6 +7,7 @@ from django.db.models import Q
 
 import graphene
 from graphql import GraphQLError
+from graphql_relay import to_global_id
 from django.contrib.auth import password_validation
 from django.contrib.auth.hashers import check_password
 from graphene_django.converter import convert_django_field
@@ -32,8 +33,13 @@ def convert_json_field_to_string(field, registry=None):
 
 
 class UserType(DjangoObjectType):
+    account_id = graphene.ID()
+
     class Meta:
         model = get_user_model()
+
+    def resolve_account_id(self, info):
+        return to_global_id("AccountNode", info.context.user.id)
 
 
 class AccountNode(DjangoObjectType):

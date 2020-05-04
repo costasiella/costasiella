@@ -5,6 +5,7 @@ from django.db import models
 
 from ..modules.encrypted_fields import EncryptedTextField
 
+
 class Account(AbstractUser):
     # add additional fields in here
     # teacher and employee will use OneToOne fields. An account can optionally be a teacher or employee.
