@@ -260,7 +260,6 @@ class UpdateAccount(graphene.relay.ClientIDMutation):
 
         validate_create_update_input(account, input, update=True)
 
-        print(input)
         # Only process these fields when a user has the "change_account" permission. Users shouldn't be able to
         # change this for their own account
         if user.has_perm(change_permission):
