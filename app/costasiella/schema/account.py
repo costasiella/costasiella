@@ -252,14 +252,26 @@ class UpdateAccount(graphene.relay.ClientIDMutation):
         if not account:
             raise Exception('Invalid Account ID!')
 
+        change_permission = 'costasiella.change_account'
+
         # Allow users to update their own account without additional permissions
         if not user.id == account.id:
-            require_permission(user, 'costasiella.change_account')
+            require_permission(user, change_permission)
 
         validate_create_update_input(account, input, update=True)
 
         print(input)
+        # Only process these fields when a user has the "change_account" permission. Users shouldn't be able to
+        # change this for their own account
+        if user.has_perm(change_permission):
+            if 'customer' in input:
+                account.customer = input['customer']
+            if 'teacher' in input:
+                account.teacher = input['teacher']
+            if 'employee' in input:
+                account.employee = input['employee']
 
+        # Users can change these fields
         if 'first_name' in input:
             account.first_name = input['first_name']
         if 'last_name' in input:
@@ -267,15 +279,10 @@ class UpdateAccount(graphene.relay.ClientIDMutation):
         if 'email' in input:
             account.email = input['email']
             account.username = input['email']
+
         # Only update these fields if input has been passed
         # if 'password' in input:
         #     account.set_password(input['password'])
-        if 'customer' in input:
-            account.customer = input['customer']
-        if 'teacher' in input:
-            account.teacher = input['teacher']
-        if 'employee' in input:
-            account.employee = input['employee']
         if 'address' in input:
             account.address = input['address']
         if 'postcode' in input:
@@ -295,10 +302,9 @@ class UpdateAccount(graphene.relay.ClientIDMutation):
         if 'date_of_birth' in input:
             account.date_of_birth = input['date_of_birth']
 
-            
         account.save()
 
-        # Update Allauth email address 
+        # Update allauth email address
         email_address = EmailAddress.objects.filter(user=account).first()
         email_address.email = account.email
         email_address.save()
