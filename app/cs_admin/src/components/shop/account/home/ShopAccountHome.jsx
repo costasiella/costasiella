@@ -39,6 +39,18 @@ function ShopAccountHome({t, match, history}) {
   return (
     <ShopAccountHomeBase subTitle={user.fullName}>
       {/* Above this line will be things like classes, class passe, etc. */}
+      <Grid.Row>
+        <Grid.Col md={4} lg={4}>
+          <Card>
+            <Card.Body>
+              <h5>{t("shop.account.classpasses.title")}</h5>
+              {t("shop.account.classpasses.explanation")}
+              <br /><br />
+              <ShopAccountHomeButton link="/shop/account/classpasses" buttonText={t("shop.account.btn_text_view")} />
+            </Card.Body>
+          </Card>
+        </Grid.Col>
+      </Grid.Row>
       <hr />
       {/* Administrative stuff below this point, profile, invoices, orders, etc. */}
       <Grid.Row>
