@@ -489,9 +489,21 @@
             "title": "__STRING_NOT_TRANSLATED__",
             "profile": {
                 "title": "__STRING_NOT_TRANSLATED__",
+                "explanation": "__STRING_NOT_TRANSLATED__",
+                "toast_edit_success": "__STRING_NOT_TRANSLATED__"
+            },
+            "btn_text_profile_edit": "__STRING_NOT_TRANSLATED__",
+            "error_loading_user_data": "__STRING_NOT_TRANSLATED__",
+            "classpasses": {
+                "title": "__STRING_NOT_TRANSLATED__",
                 "explanation": "__STRING_NOT_TRANSLATED__"
             },
-            "btn_text_profile_edit": "__STRING_NOT_TRANSLATED__"
+            "btn_text_view": "__STRING_NOT_TRANSLATED__"
+        },
+        "accounts": {
+            "profile": {
+                "edit": "__STRING_NOT_TRANSLATED__"
+            }
         }
     },
     "home": {

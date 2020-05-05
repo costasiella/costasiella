@@ -1297,9 +1297,21 @@
             "title": "My account",
             "profile": {
                 "title": "My profile",
-                "explanation": "Update your name and contact information. Please keep your information updated in case we need to contact you or reply to an inquiry."
+                "explanation": "Update your name and contact information. Please keep your information updated in case we need to contact you or reply to an inquiry.",
+                "toast_edit_success": "__STRING_NOT_TRANSLATED__"
             },
-            "btn_text_profile_edit": "Update profile"
+            "btn_text_profile_edit": "Update profile",
+            "error_loading_user_data": "Error loading profile data :(",
+            "classpasses": {
+                "title": "My class passes",
+                "explanation": "View your current and past classpasses"
+            },
+            "btn_text_view": "View"
+        },
+        "accounts": {
+            "profile": {
+                "edit": "__STRING_NOT_TRANSLATED__"
+            }
         }
     }
 }
