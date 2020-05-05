@@ -8,7 +8,7 @@ from graphql import GraphQLError
 import validators
 
 from ..models import Account, AccountClasspass, FinancePaymentMethod, OrganizationClasspass
-from ..modules.gql_tools import require_login_and_permission, get_rid
+from ..modules.gql_tools import require_login, require_login_and_permission, get_rid
 from ..modules.messages import Messages
 from ..dudes.sales_dude import SalesDude
 
@@ -38,8 +38,6 @@ def validate_create_update_input(input, update=False):
     result['organization_classpass'] = organization_classpass
     if not organization_classpass:
         raise Exception(_('Invalid Organization Classpass ID!'))
-
-
 
     return result
 
@@ -75,15 +73,28 @@ class AccountClasspassQuery(graphene.ObjectType):
     account_classpasses = DjangoFilterConnectionField(AccountClasspassNode)
     account_classpass = graphene.relay.Node.Field(AccountClasspassNode)
 
-
-    def resolve_account_classpasses(self, info, account, **kwargs):
+    def resolve_account_classpasses(self, info, **kwargs):
+        """
+        Return classpasses for an account
+        - Require login
+        - Always return users' own info when no view_accountclasspass permission
+        - Allow user to specify the account
+        :param info:
+        :param account:
+        :param kwargs:
+        :return:
+        """
         user = info.context.user
-        require_login_and_permission(user, 'costasiella.view_accountclasspass')
+        require_login(user)
 
-        rid = get_rid(account)
+        if user.has_perm('costasiella.view_accountclasspass') and 'account' in kwargs:
+            rid = get_rid(kwargs.get('account', user.id))
+            account_id = rid.id
+        else:
+            account_id = user.id
 
-        ## return everything:
-        return AccountClasspass.objects.filter(account=rid.id).order_by('-date_start')
+        # Allow user to specify account
+        return AccountClasspass.objects.filter(account=account_id).order_by('-date_start')
 
 
 class CreateAccountClasspass(graphene.relay.ClientIDMutation):
