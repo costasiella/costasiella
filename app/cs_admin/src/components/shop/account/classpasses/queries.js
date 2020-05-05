@@ -17,10 +17,12 @@ export const QUERY_ACCOUNT_CLASSPASSES = gql`
             id
             fullName
           }
-          dateStart
           organizationClasspass {
             name
           }
+          dateStart
+          dateEnd
+          classesRemainingDisplay
         }
       }
     }
