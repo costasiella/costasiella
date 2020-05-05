@@ -36,7 +36,7 @@ function ShopAccountProfile({t, match, history}) {
   )
   if (error) return (
     <ShopAccountProfileBase>
-      {t("shop.account.error_loading_user_data")}
+      {t("shop.account.profile.error_loading_data")}
     </ShopAccountProfileBase>
   )
 
