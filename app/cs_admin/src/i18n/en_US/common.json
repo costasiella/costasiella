@@ -1298,7 +1298,7 @@
             "profile": {
                 "title": "My profile",
                 "explanation": "Update your name and contact information. Please keep your information updated in case we need to contact you or reply to an inquiry.",
-                "toast_edit_success": "__STRING_NOT_TRANSLATED__"
+                "toast_edit_success": "Saved"
             },
             "btn_text_profile_edit": "Update profile",
             "error_loading_user_data": "Error loading profile data :(",
@@ -1310,7 +1310,7 @@
         },
         "accounts": {
             "profile": {
-                "edit": "__STRING_NOT_TRANSLATED__"
+                "edit": "My profile"
             }
         }
     }
