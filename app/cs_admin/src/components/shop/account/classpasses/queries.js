@@ -26,5 +26,22 @@ export const QUERY_ACCOUNT_CLASSPASSES = gql`
         }
       }
     }
+    user {
+      id
+      accountId
+      firstName
+      lastName
+      fullName
+      email
+      gender
+      dateOfBirth
+      address
+      postcode
+      city
+      country
+      phone
+      mobile
+      emergency
+    }
   }
 `
