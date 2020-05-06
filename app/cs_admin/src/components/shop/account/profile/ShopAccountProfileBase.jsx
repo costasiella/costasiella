@@ -18,7 +18,7 @@ function ShopAccountProfileBase({ t, match, history, children, accountName="" })
     <SiteWrapperShop>
       <div className="my-3 my-md-5">
         <Container>
-          <Page.Header title={t("shop.account.title")} subTitle={ t("shop.account.profile.title") + " " + accountName}/>
+          <Page.Header title={t("shop.account.title")} subTitle={ accountName }/>
           { children }
         </Container>
       </div>

@@ -50,7 +50,7 @@ function ShopAccountProfile({t, match, history}) {
   }
 
   return (
-    <ShopAccountProfileBase subTitle={user.fullName}>
+    <ShopAccountProfileBase accountName={user.fullName}>
       <Grid.Row>
         <Grid.Col md={12}>
           <Formik
