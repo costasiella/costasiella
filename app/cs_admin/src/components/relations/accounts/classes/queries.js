@@ -30,7 +30,16 @@ export const GET_ACCOUNT_CLASSES_QUERY = gql`
             }
           }
         }
-      }
+      } 
+    }
+    account(id:$account) {
+      id
+      firstName
+      lastName
+      email
+      phone
+      mobile
+      isActive
     }
   }
 `
