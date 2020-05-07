@@ -1,7 +1,7 @@
 // @flow
 
 import React, { useContext } from 'react'
-import { Query, Mutation } from "react-apollo"
+import { useQuery, useMutation } from "react-apollo"
 import gql from "graphql-tag"
 import { v4 } from "uuid"
 import { withTranslation } from 'react-i18next'
@@ -49,9 +49,9 @@ const DELETE_ACCOUNT_CLASS = gql`
 function AccountClasses({ t, match, history }) {
   const appSettings = useContext(AppSettingsContext)
   const dateFormat = appSettings.dateFormat
-  const timeFormat = appSettings.timeFormat
+  const timeFormat = appSettings.timeFormatMoment
   const account_id = match.params.account_id
-  const { loading, error, data } = useQuery(GET_ACCOUNT_CLASSES_QUERY, {
+  const { loading, error, data, fetchMore } = useQuery(GET_ACCOUNT_CLASSES_QUERY, {
     variables: {'account': account_id},
   })
 
@@ -77,7 +77,7 @@ function AccountClasses({ t, match, history }) {
   const scheduleItemAttendances = data.scheduleItemAttendances
   
   // Empty list
-  if (!scheduleItemAttendances.edged.length) {
+  if (!scheduleItemAttendances.edges.length) {
     return (
       <AccountClassesBase account={account}>
         <p>{t('relations.account.classes.empty_list')}</p>
@@ -118,7 +118,6 @@ function AccountClasses({ t, match, history }) {
         <Table>
           <Table.Header>
             <Table.Row key={v4()}>
-              <Table.ColHeader>{t('general.date')}</Table.ColHeader>
               <Table.ColHeader>{t('general.time')}</Table.ColHeader>
               <Table.ColHeader>{t('general.class')}</Table.ColHeader>
               <Table.ColHeader>{t('general.location')}</Table.ColHeader>
@@ -129,20 +128,24 @@ function AccountClasses({ t, match, history }) {
           <Table.Body>
               {scheduleItemAttendances.edges.map(({ node }) => (
                 <Table.Row key={v4()}>
+                  {                console.log(node)}
                   <Table.Col>
-                    { moment(node.date).format(dateFormat) }
-                  </Table.Col>
-                  <Table.Col>
-                    { moment(node.scheduleItem.timeStart).format(timeFormat) }
+                    { moment(node.date).format(dateFormat) } <br />
+                    <span className="text-muted">
+                      {moment(node.date + ' ' + node.scheduleItem.timeStart).format(timeFormat)}
+                    </span>
                   </Table.Col>
                   <Table.Col>
                     { node.scheduleItem.organizationClasstype.name }
                   </Table.Col>
                   <Table.Col>
-                    { node.scheduleItem.organizationLocationRoom.organnizationLocation.name } <br />
+                    { node.scheduleItem.organizationLocationRoom.organizationLocation.name } <br />
                     <span className="text-muted">
                       { node.scheduleItem.organizationLocationRoom.name }
                     </span> 
+                  </Table.Col>
+                  <Table.Col>
+                    <BadgeBookingStatus status={node.bookingStatus} />
                   </Table.Col>
                   {/* <Table.Col className="text-right" key={v4()}>
                     <Link to={"/relations/accounts/" + match.params.account_id + "/classpasses/edit/" + node.id}>
@@ -242,4 +245,4 @@ function AccountClasses({ t, match, history }) {
 // )
       
         
-export default withTranslation()(withRouter(scheduleItemAttendances))
+export default withTranslation()(withRouter(AccountClasses))
