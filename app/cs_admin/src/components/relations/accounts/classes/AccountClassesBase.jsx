@@ -12,13 +12,16 @@ import {
 import SiteWrapper from "../../../SiteWrapper"
 import RelationsAccountsBack from "../RelationsAccountsBack"
 
+import ProfileMenu from "../ProfileMenu"
+import ProfileCardSmall from "../../../ui/ProfileCardSmall"
 
-function AccountClassesBase({ t, match, history, children, accountName="" }) {
+
+function AccountClassesBase({ t, match, history, children, account={} }) {
   return (
     <SiteWrapper>
       <div className="my-3 my-md-5">
         <Container>
-          <Page.Header title={accountName} >
+          <Page.Header title={account.fullName} >
             <RelationsAccountsBack />
           </Page.Header>
           <Grid.Row>
