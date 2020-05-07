@@ -79,7 +79,7 @@ function AccountClasses({ t, match, history }) {
   // Empty list
   if (!scheduleItemAttendances.edged.length) {
     return (
-      <AccountClassesBase>
+      <AccountClassesBase account={account}>
         <p>{t('relations.account.classes.empty_list')}</p>
       </AccountClassesBase>
     )
@@ -87,7 +87,7 @@ function AccountClasses({ t, match, history }) {
 
   // Return populated list
   return (
-    <AccountClassesBase>
+    <AccountClassesBase account={account}>
       <ContentCard 
         cardTitle={t('relations.account.classes.title')}
         pageInfo={scheduleItemAttendances.pageInfo}
