@@ -1,8 +1,7 @@
 // @flow
 
 import React, { useContext } from 'react'
-import { useQuery, useMutation } from "react-apollo"
-import gql from "graphql-tag"
+import { useQuery } from "react-apollo"
 import { v4 } from "uuid"
 import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
@@ -12,28 +11,13 @@ import moment from 'moment'
 import AppSettingsContext from '../../../context/AppSettingsContext'
 
 import {
-  Page,
-  Grid,
-  Icon,
-  Dimmer,
-  Button,
-  Card,
-  Container,
   Table
 } from "tabler-react";
-import SiteWrapper from "../../../SiteWrapper"
 import HasPermissionWrapper from "../../../HasPermissionWrapper"
-import { toast } from 'react-toastify'
 
-import BadgeBoolean from "../../../ui/BadgeBoolean"
 import BadgeBookingStatus from "../../../ui/BadgeBookingStatus"
-import RelationsAccountsBack from "../RelationsAccountsBack"
-import confirm_delete from "../../../../tools/confirm_delete"
-
 
 import ContentCard from "../../../general/ContentCard"
-import ProfileMenu from "../ProfileMenu"
-import ProfileCardSmall from "../../../ui/ProfileCardSmall"
 import AccountClassesBase from "./AccountClassesBase"
 
 import AccountClassDelete from "./AccountClassDelete"
