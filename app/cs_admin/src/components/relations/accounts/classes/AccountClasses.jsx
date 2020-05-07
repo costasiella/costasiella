@@ -36,15 +36,10 @@ import ProfileMenu from "../ProfileMenu"
 import ProfileCardSmall from "../../../ui/ProfileCardSmall"
 import AccountClassesBase from "./AccountClassesBase"
 
+import AccountClassDelete from "./AccountClassDelete"
+
 import { GET_ACCOUNT_CLASSES_QUERY } from "./queries"
 
-const DELETE_ACCOUNT_CLASS = gql`
-  mutation DeleteScheduleItemAttendance($input: DeleteScheduleItemAttendanceInput!) {
-    DeleteScheduleItemAttendance(input: $input) {
-      ok
-    }
-  }
-`
 
 function AccountClasses({ t, match, history }) {
   const appSettings = useContext(AppSettingsContext)
@@ -126,64 +121,68 @@ function AccountClasses({ t, match, history }) {
             </Table.Row>
           </Table.Header>
           <Table.Body>
-              {scheduleItemAttendances.edges.map(({ node }) => (
-                <Table.Row key={v4()}>
-                  {                console.log(node)}
-                  <Table.Col>
-                    { moment(node.date).format(dateFormat) } <br />
-                    <span className="text-muted">
-                      {moment(node.date + ' ' + node.scheduleItem.timeStart).format(timeFormat)}
-                    </span>
-                  </Table.Col>
-                  <Table.Col>
-                    { node.scheduleItem.organizationClasstype.name }
-                  </Table.Col>
-                  <Table.Col>
-                    { node.scheduleItem.organizationLocationRoom.organizationLocation.name } <br />
-                    <span className="text-muted">
-                      { node.scheduleItem.organizationLocationRoom.name }
-                    </span> 
-                  </Table.Col>
-                  <Table.Col>
-                    <BadgeBookingStatus status={node.bookingStatus} />
-                  </Table.Col>
-                  {/* <Table.Col className="text-right" key={v4()}>
-                    <Link to={"/relations/accounts/" + match.params.account_id + "/classpasses/edit/" + node.id}>
-                      <Button className='btn-sm' 
-                              color="secondary">
-                        {t('general.edit')}
-                      </Button>
-                    </Link>
-                  </Table.Col> */}
-                  {/* <Mutation mutation={DELETE_ACCOUNT_CLASSPASS} key={v4()}>
-                    {(deleteAccountClasspass, { data }) => (
-                      <Table.Col className="text-right" key={v4()}>
-                        <button className="icon btn btn-link btn-sm" 
-                          title={t('general.delete')} 
-                          href=""
-                          onClick={() => {
-                            confirm_delete({
-                              t: t,
-                              msgConfirm: t("relations.account.classpasses.delete_confirm_msg"),
-                              msgDescription: <p>{node.organizationClasspass.name} {node.dateStart}</p>,
-                              msgSuccess: t('relations.account.classpasses.deleted'),
-                              deleteFunction: deleteAccountClasspass,
-                              functionVariables: { variables: {
-                                input: {
-                                  id: node.id
-                                }
-                              }, refetchQueries: [
-                                {query: GET_ACCOUNT_CLASSPASSES_QUERY, variables: { archived: archived, accountId: match.params.account_id }} 
-                              ]}
-                            })
-                        }}>
-                          <span className="text-red"><Icon prefix="fe" name="trash-2" /></span>
-                        </button>
-                      </Table.Col>
-                    )}
-                  </Mutation> */}
-                </Table.Row>
-              ))}
+            {scheduleItemAttendances.edges.map(({ node }) => (
+              <Table.Row key={v4()}>
+                { console.log(node) }
+                { console.log(account) }
+                <Table.Col>
+                  { moment(node.date).format(dateFormat) } <br />
+                  <span className="text-muted">
+                    {moment(node.date + ' ' + node.scheduleItem.timeStart).format(timeFormat)}
+                  </span>
+                </Table.Col>
+                <Table.Col>
+                  { node.scheduleItem.organizationClasstype.name }
+                </Table.Col>
+                <Table.Col>
+                  { node.scheduleItem.organizationLocationRoom.organizationLocation.name } <br />
+                  <span className="text-muted">
+                    { node.scheduleItem.organizationLocationRoom.name }
+                  </span> 
+                </Table.Col>
+                <Table.Col>
+                  <BadgeBookingStatus status={node.bookingStatus} />
+                </Table.Col>
+                <Table.Col>
+                  <AccountClassDelete account={account} node={node} />
+                </Table.Col>
+                {/* <Table.Col className="text-right" key={v4()}>
+                  <Link to={"/relations/accounts/" + match.params.account_id + "/classpasses/edit/" + node.id}>
+                    <Button className='btn-sm' 
+                            color="secondary">
+                      {t('general.edit')}
+                    </Button>
+                  </Link>
+                </Table.Col> */}
+                {/* <Mutation mutation={DELETE_ACCOUNT_CLASSPASS} key={v4()}>
+                  {(deleteAccountClasspass, { data }) => (
+                    <Table.Col className="text-right" key={v4()}>
+                      <button className="icon btn btn-link btn-sm" 
+                        title={t('general.delete')} 
+                        href=""
+                        onClick={() => {
+                          confirm_delete({
+                            t: t,
+                            msgConfirm: t("relations.account.classpasses.delete_confirm_msg"),
+                            msgDescription: <p>{node.organizationClasspass.name} {node.dateStart}</p>,
+                            msgSuccess: t('relations.account.classpasses.deleted'),
+                            deleteFunction: deleteAccountClasspass,
+                            functionVariables: { variables: {
+                              input: {
+                                id: node.id
+                              }
+                            }, refetchQueries: [
+                              {query: GET_ACCOUNT_CLASSPASSES_QUERY, variables: { archived: archived, accountId: match.params.account_id }} 
+                            ]}
+                          })
+                      }}>
+                        <span className="text-red"><Icon prefix="fe" name="trash-2" /></span>
+                      </button>
+                    </Table.Col>
+                  )}
+                </Mutation> */}
+              </Table.Row>
+            ))}
           </Table.Body>
         </Table>
       </ContentCard>
