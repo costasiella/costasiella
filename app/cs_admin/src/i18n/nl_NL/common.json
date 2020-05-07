@@ -490,13 +490,16 @@
             "profile": {
                 "title": "__STRING_NOT_TRANSLATED__",
                 "explanation": "__STRING_NOT_TRANSLATED__",
-                "toast_edit_success": "__STRING_NOT_TRANSLATED__"
+                "toast_edit_success": "__STRING_NOT_TRANSLATED__",
+                "error_loading_data": "__STRING_NOT_TRANSLATED__"
             },
             "btn_text_profile_edit": "__STRING_NOT_TRANSLATED__",
             "error_loading_user_data": "__STRING_NOT_TRANSLATED__",
             "classpasses": {
                 "title": "__STRING_NOT_TRANSLATED__",
-                "explanation": "__STRING_NOT_TRANSLATED__"
+                "explanation": "__STRING_NOT_TRANSLATED__",
+                "error_loading_data": "__STRING_NOT_TRANSLATED__",
+                "empty_list": "__STRING_NOT_TRANSLATED__"
             },
             "btn_text_view": "__STRING_NOT_TRANSLATED__"
         },
@@ -803,9 +806,7 @@
             "invoices": {
                 "title_add": "__STRING_NOT_TRANSLATED__",
                 "title": "__STRING_NOT_TRANSLATED__",
-                "add": "__STRING_NOT_TRANSLATED__",
-                "delete_confirm_msg": "__STRING_NOT_TRANSLATED__",
-                "deleted": "__STRING_NOT_TRANSLATED__"
+                "add": "__STRING_NOT_TRANSLATED__"
             },
             "memberships": {
                 "title_add": "__STRING_NOT_TRANSLATED__",
@@ -836,6 +837,11 @@
                 "appointments": "__STRING_NOT_TRANSLATED__",
                 "url_bio": "__STRING_NOT_TRANSLATED__",
                 "url_website": "__STRING_NOT_TRANSLATED__"
+            },
+            "classes": {
+                "empty_list": "__STRING_NOT_TRANSLATED__",
+                "title": "__STRING_NOT_TRANSLATED__",
+                "add": "__STRING_NOT_TRANSLATED__"
             }
         },
         "accounts": {

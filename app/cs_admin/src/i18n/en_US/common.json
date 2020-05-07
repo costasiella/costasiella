@@ -661,13 +661,16 @@
             "invoices": {
                 "title_add": "Add invoice",
                 "title": "Invoices",
-                "add": "Add invoice",
-                "delete_confirm_msg": "Are you sure you wish to delete this invoice?",
-                "deleted": "Deleted invoice"
+                "add": "Add invoice"
             },
             "accepted_documents": {
                 "title": "Accepted documents",
                 "accepted_from_address": "Accepted from address"
+            },
+            "classes": {
+                "empty_list": "This customer hasn't attended any classes yet...",
+                "title": "Classes",
+                "add": "Add class"
             }
         }
     },
@@ -1298,13 +1301,16 @@
             "profile": {
                 "title": "My profile",
                 "explanation": "Update your name and contact information. Please keep your information updated in case we need to contact you or reply to an inquiry.",
-                "toast_edit_success": "Saved"
+                "toast_edit_success": "Saved",
+                "error_loading_data": "Error loading profile data :("
             },
             "btn_text_profile_edit": "Update profile",
             "error_loading_user_data": "Error loading profile data :(",
             "classpasses": {
                 "title": "My class passes",
-                "explanation": "View your current and past classpasses"
+                "explanation": "View your current and past classpasses",
+                "error_loading_data": "Error loading classpasses :(",
+                "empty_list": "No current classpasses"
             },
             "btn_text_view": "View"
         },
