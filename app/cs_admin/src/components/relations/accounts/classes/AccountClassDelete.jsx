@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { useMutation } from '@apollo/react-hooks';
 import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
@@ -7,12 +7,20 @@ import { GET_ACCOUNT_CLASSES_QUERY } from "./queries"
 import { DELETE_SCHEDULE_CLASS_ATTENDANCE } from "../../../schedule/classes/class/attendance/queries"
 import confirm_delete from "../../../../tools/confirm_delete"
 
+import AppSettingsContext from '../../../context/AppSettingsContext'
+
+import moment from 'moment'
+
 import {
-  Icon
+  Icon,
+  List
 } from "tabler-react"
 
 
 function AccountClassDelete({t, match, node, account}) {
+  const appSettings = useContext(AppSettingsContext)
+  const dateFormat = appSettings.dateFormat
+  const timeFormat = appSettings.timeFormatMoment
   const [deleteScheduleItemAttendance, { data }] = useMutation(DELETE_SCHEDULE_CLASS_ATTENDANCE)
 
   console.log("AccountClassDelete")
@@ -28,7 +36,20 @@ function AccountClassDelete({t, match, node, account}) {
         confirm_delete({
           t: t,
           msgConfirm: t("schedule.classes.class.attendance.delete_confirm_msg"),
-          msgDescription: <p>{node.scheduleItem.organizationClasstype.name} on {node.date}</p>,
+          msgDescription: <p>
+            <List>
+              <List.Item>
+                {t("general.time")}: { moment(node.date).format(dateFormat) } { ' ' }
+                {moment(node.date + ' ' + node.scheduleItem.timeStart).format(timeFormat)}
+              </List.Item>
+              <List.Item>
+                {t("general.class")}: {node.scheduleItem.organizationClasstype.name} 
+              </List.Item>
+              <List.Item>
+                {t("general.location")}: {node.scheduleItem.organizationLocationRoom.organizationLocation.name} 
+              </List.Item>
+            </List>    
+          </p>,
           msgSuccess: t('schedule.classes.class.attendance.delete_success'),
           deleteFunction: deleteScheduleItemAttendance,
           functionVariables: { 

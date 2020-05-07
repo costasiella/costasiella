@@ -19,7 +19,6 @@ import BadgeBookingStatus from "../../../ui/BadgeBookingStatus"
 
 import ContentCard from "../../../general/ContentCard"
 import AccountClassesBase from "./AccountClassesBase"
-
 import AccountClassDelete from "./AccountClassDelete"
 
 import { GET_ACCOUNT_CLASSES_QUERY } from "./queries"
