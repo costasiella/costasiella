@@ -671,6 +671,9 @@
                 "empty_list": "This customer hasn't attended any classes yet...",
                 "title": "Classes",
                 "add": "Add class"
+            },
+            "orders": {
+                "title": "Orders"
             }
         }
     },
@@ -1312,7 +1315,11 @@
                 "error_loading_data": "Error loading classpasses :(",
                 "empty_list": "No current classpasses"
             },
-            "btn_text_view": "View"
+            "btn_text_view": "View",
+            "orders": {
+                "title": "__STRING_NOT_TRANSLATED__",
+                "explanation": "__STRING_NOT_TRANSLATED__"
+            }
         },
         "accounts": {
             "profile": {

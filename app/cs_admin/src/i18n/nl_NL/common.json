@@ -501,7 +501,11 @@
                 "error_loading_data": "__STRING_NOT_TRANSLATED__",
                 "empty_list": "__STRING_NOT_TRANSLATED__"
             },
-            "btn_text_view": "__STRING_NOT_TRANSLATED__"
+            "btn_text_view": "__STRING_NOT_TRANSLATED__",
+            "orders": {
+                "title": "__STRING_NOT_TRANSLATED__",
+                "explanation": "__STRING_NOT_TRANSLATED__"
+            }
         },
         "accounts": {
             "profile": {
@@ -842,6 +846,9 @@
                 "empty_list": "__STRING_NOT_TRANSLATED__",
                 "title": "__STRING_NOT_TRANSLATED__",
                 "add": "__STRING_NOT_TRANSLATED__"
+            },
+            "orders": {
+                "title": "__STRING_NOT_TRANSLATED__"
             }
         },
         "accounts": {
