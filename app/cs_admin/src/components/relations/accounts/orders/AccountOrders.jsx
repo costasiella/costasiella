@@ -134,7 +134,7 @@ function AccountOrders({ t, match, history }) {
                     </Link>
                   </Table.Col>
                   <Table.Col key={v4()}>
-                    <AccountOrderDelete node={node} account={account}/>
+                    <AccountOrderDelete node={node} account={account} />
                   </Table.Col>
                 </Table.Row>
               ))}
