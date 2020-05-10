@@ -21,7 +21,7 @@ import BadgeBookingStatus from "../../../ui/BadgeBookingStatus"
 
 import ContentCard from "../../../general/ContentCard"
 import AccountOrdersBase from "./AccountOrdersBase"
-// import AccountClassDelete from "./AccountClassDelete"
+import AccountOrderDelete from "./AccountOrderDelete"
 
 import { GET_ACCOUNT_ORDERS_QUERY } from "./queries"
 
@@ -134,7 +134,7 @@ function AccountOrders({ t, match, history }) {
                     </Link>
                   </Table.Col>
                   <Table.Col key={v4()}>
-                    {/* <FinanceOrderDelete node={node}/> */}
+                    <AccountOrderDelete node={node} account={account}/>
                   </Table.Col>
                 </Table.Row>
               ))}
