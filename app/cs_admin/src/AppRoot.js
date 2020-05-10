@@ -115,6 +115,7 @@ import AccountInvoiceAdd from './components/relations/accounts/invoices/AccountI
 import AccountMemberships from './components/relations/accounts/memberships/AccountMemberships'
 import AccountMembershipAdd from './components/relations/accounts/memberships/AccountMembershipAdd'
 import AccountMembershipEdit from './components/relations/accounts/memberships/AccountMembershipEdit'
+import AccountOrders from './components/relations/accounts/orders/AccountOrders'
 import AccountSubscriptions from './components/relations/accounts/subscriptions/AccountSubscriptions'
 import AccountSubscriptionAdd from './components/relations/accounts/subscriptions/AccountSubscriptionAdd'
 import AccountSubscriptionEdit from './components/relations/accounts/subscriptions/AccountSubscriptionEdit'
@@ -314,6 +315,7 @@ function AppRoot({ t }) {
           <PrivateRoute exact path="/relations/accounts/:account_id/memberships" component={AccountMemberships} />
           <PrivateRoute exact path="/relations/accounts/:account_id/memberships/add" component={AccountMembershipAdd} />
           <PrivateRoute exact path="/relations/accounts/:account_id/memberships/edit/:id" component={AccountMembershipEdit} />
+          <PrivateRoute exact path="/relations/accounts/:account_id/orders" component={AccountOrders} />
           <PrivateRoute exact path="/relations/accounts/:account_id/subscriptions" component={AccountSubscriptions} />
           <PrivateRoute exact path="/relations/accounts/:account_id/subscriptions/add" component={AccountSubscriptionAdd} />
           <PrivateRoute exact path="/relations/accounts/:account_id/subscriptions/edit/:id" component={AccountSubscriptionEdit} />

@@ -12,6 +12,7 @@ import AppSettingsContext from '../../../context/AppSettingsContext'
 import FinanceOrderStatus from "../../../finance/orders/FinanceOrderStatus"
 
 import {
+  Button,
   Table
 } from "tabler-react";
 import HasPermissionWrapper from "../../../HasPermissionWrapper"
@@ -22,7 +23,7 @@ import ContentCard from "../../../general/ContentCard"
 import AccountOrdersBase from "./AccountOrdersBase"
 // import AccountClassDelete from "./AccountClassDelete"
 
-import { GET_ACCOUNT_CLASSES_QUERY } from "./queries"
+import { GET_ACCOUNT_ORDERS_QUERY } from "./queries"
 
 
 function AccountOrders({ t, match, history }) {
@@ -30,7 +31,7 @@ function AccountOrders({ t, match, history }) {
   const dateFormat = appSettings.dateFormat
   // const timeFormat = appSettings.timeFormatMoment
   const account_id = match.params.account_id
-  const { loading, error, data, fetchMore } = useQuery(GET_ACCOUNT_CLASSES_QUERY, {
+  const { loading, error, data, fetchMore } = useQuery(GET_ACCOUNT_ORDERS_QUERY, {
     variables: {'account': account_id},
   })
 
@@ -53,7 +54,7 @@ function AccountOrders({ t, match, history }) {
   console.log("AccountClasses data:")
   console.log(data)
   const account = data.account
-  const financeOrders = data.financeOrderes
+  const financeOrders = data.financeOrders
   
   // Empty list
   if (!financeOrders.edges.length) {
@@ -133,7 +134,7 @@ function AccountOrders({ t, match, history }) {
                     </Link>
                   </Table.Col>
                   <Table.Col key={v4()}>
-                    <FinanceOrderDelete node={node}/>
+                    {/* <FinanceOrderDelete node={node}/> */}
                   </Table.Col>
                 </Table.Row>
               ))}
