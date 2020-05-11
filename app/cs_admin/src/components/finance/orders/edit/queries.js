@@ -8,6 +8,7 @@ export const GET_FINANCE_ORDER_QUERY = gql`
         id
         fullName
       }
+      orderNumber
       status
       message
       createdAt

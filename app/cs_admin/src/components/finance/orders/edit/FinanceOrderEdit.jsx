@@ -75,6 +75,10 @@ function FinanceOrderEdit({t, match, history}) {
             <Table cards>
               <Table.Body>
                 <Table.Row>
+                  <Table.ColHeader>{t("general.order")} #</Table.ColHeader>
+                  <Table.Col>{order.orderNumber}</Table.Col>
+                </Table.Row>
+                <Table.Row>
                   <Table.ColHeader>{t("general.account")}</Table.ColHeader>
                   <Table.Col>{order.account.fullName}</Table.Col>
                 </Table.Row>
