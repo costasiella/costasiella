@@ -173,7 +173,8 @@
         "subject": "__STRING_NOT_TRANSLATED__",
         "title": "__STRING_NOT_TRANSLATED__",
         "content": "__STRING_NOT_TRANSLATED__",
-        "comments": "__STRING_NOT_TRANSLATED__"
+        "comments": "__STRING_NOT_TRANSLATED__",
+        "account": "__STRING_NOT_TRANSLATED__"
     },
     "settings": {
         "error_loading": "__STRING_NOT_TRANSLATED__",
@@ -332,7 +333,11 @@
                 "DELIVERED": "__STRING_NOT_TRANSLATED__",
                 "CANCELLED": "__STRING_NOT_TRANSLATED__",
                 "NOT_FOUND": "__STRING_NOT_TRANSLATED__"
-            }
+            },
+            "edit_details": "__STRING_NOT_TRANSLATED__",
+            "placed_at": "__STRING_NOT_TRANSLATED__",
+            "toast_edit_success": "__STRING_NOT_TRANSLATED__",
+            "customer_message": "__STRING_NOT_TRANSLATED__"
         },
         "glaccounts": {
             "title": "__STRING_NOT_TRANSLATED__",
@@ -848,7 +853,10 @@
                 "add": "__STRING_NOT_TRANSLATED__"
             },
             "orders": {
-                "title": "__STRING_NOT_TRANSLATED__"
+                "title": "__STRING_NOT_TRANSLATED__",
+                "delete_confirm_msg": "__STRING_NOT_TRANSLATED__",
+                "delete_success": "__STRING_NOT_TRANSLATED__",
+                "empty_list": "__STRING_NOT_TRANSLATED__"
             }
         },
         "accounts": {

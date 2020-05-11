@@ -161,7 +161,11 @@
             },
             "empty_list": "No orders found...",
             "delete_confirm_msg": "Are you sure you wish to delete this order?",
-            "deleted": "Deleted order"
+            "deleted": "Deleted order",
+            "edit_details": "Edit order",
+            "placed_at": "Received on",
+            "toast_edit_success": "Saved status",
+            "customer_message": "Customer message"
         }
     },
     "general": {
@@ -338,7 +342,8 @@
         "subject": "Subject",
         "title": "Title",
         "content": "Content",
-        "comments": "Comments"
+        "comments": "Comments",
+        "account": "Account"
     },
     "yup": {
         "min_len_3": "Please input at least 3 characters",
@@ -673,7 +678,10 @@
                 "add": "Add class"
             },
             "orders": {
-                "title": "Orders"
+                "title": "Orders",
+                "delete_confirm_msg": "Are you sure you with to delete this order?",
+                "delete_success": "Order deleted",
+                "empty_list": "No orders placed yet..."
             }
         }
     },
@@ -1317,8 +1325,8 @@
             },
             "btn_text_view": "View",
             "orders": {
-                "title": "__STRING_NOT_TRANSLATED__",
-                "explanation": "__STRING_NOT_TRANSLATED__"
+                "title": "My Orders",
+                "explanation": "View and mange your orders."
             }
         },
         "accounts": {
