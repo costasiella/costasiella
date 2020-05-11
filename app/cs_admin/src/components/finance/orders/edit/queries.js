@@ -51,24 +51,11 @@ export const GET_FINANCE_ORDER_QUERY = gql`
 `
 
 
-export const UPDATE_FINANCE_ORDER = gql`
-  mutation UpdateAccountClasspass($input: UpdateAccountClasspassInput!) {
-    updateAccountClasspass(input: $input) {
-      accountClasspass {
+export const UPDATE_ORDER = gql`
+  mutation UpdateFinanceOrder($input: UpdateFinanceOrderInput!) {
+    updateFinanceOrder(input: $input) {
+      financeOrder {
         id
-        account {
-          id
-          firstName
-          lastName
-          email
-        }
-        organizationClasspass {
-          id
-          name
-        }
-        dateStart
-        dateEnd
-        note
       }
     }
   }
