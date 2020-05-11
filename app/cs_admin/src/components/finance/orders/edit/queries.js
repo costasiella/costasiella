@@ -9,6 +9,7 @@ export const GET_FINANCE_ORDER_QUERY = gql`
         fullName
       }
       status
+      message
       createdAt
       total
       totalDisplay
@@ -31,6 +32,7 @@ export const GET_FINANCE_ORDER_QUERY = gql`
             description
             quantity
             price
+            priceDisplay
             financeTaxRate {
               name
             }

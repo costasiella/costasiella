@@ -8,6 +8,7 @@ import { withRouter } from "react-router"
 import { Link } from 'react-router-dom'
 import { Formik } from 'formik'
 import { toast } from 'react-toastify'
+import { v4 } from "uuid"
 import moment from 'moment'
 
 import { GET_ORDERS_QUERY } from '../queries'
@@ -146,7 +147,26 @@ function FinanceOrderEdit({t, match, history}) {
                 </Table.Row>
               </Table.Header>
               <Table.Body>
-                
+                { order.items.edges.map(({ node }) => (        
+                  <Table.Row key={v4()}>
+                    <Table.Col>
+                      {node.productName}
+                    </Table.Col>
+                    <Table.Col>
+                      {node.description}
+                    </Table.Col>
+                    <Table.Col>
+                      {node.quantity} <br />
+                      {node.priceDisplay}
+                    </Table.Col>
+                    <Table.Col>
+                      {node.financeTaxRate.name}
+                    </Table.Col>
+                    <Table.Col>
+                      {node.totalDisplay}
+                    </Table.Col>
+                  </Table.Row>
+                ))}
               </Table.Body>                
             </Table>
           </Card>
@@ -154,6 +174,17 @@ function FinanceOrderEdit({t, match, history}) {
       </Grid.Row>
       {/* End items row */}
       {/* Start note row */}
+      { (order.message) ?
+        <Grid.Row>
+          <Grid.Col md={12}>
+            <Card title={t('finance.orders.customer_message')}>
+              <Card.Body>
+                {order.message}
+              </Card.Body>
+            </Card>
+          </Grid.Col>
+        </Grid.Row> : ""
+      }
       {/* End note row */}
     </FinanceOrderEditBase>
   )
