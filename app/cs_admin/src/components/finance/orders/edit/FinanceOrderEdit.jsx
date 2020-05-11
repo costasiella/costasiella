@@ -75,14 +75,16 @@ function FinanceOrderEdit({t, match, history}) {
         <Grid.Col md={6}>
           <Card title={t("finance.orders.edit_details")}>
             <Table cards>
-              <Table.Row>
-                <Table.ColHeader>{t("general.account")}</Table.ColHeader>
-                <Table.Col>{order.account.fullName}</Table.Col>
-              </Table.Row>
-              <Table.Row>
-                <Table.ColHeader>{t("finance.orders.placed_at")}</Table.ColHeader>
-                <Table.Col>{moment(order.createdAt).format(dateTimeFormat)}</Table.Col>
-              </Table.Row>
+              <Table.Body>
+                <Table.Row>
+                  <Table.ColHeader>{t("general.account")}</Table.ColHeader>
+                  <Table.Col>{order.account.fullName}</Table.Col>
+                </Table.Row>
+                <Table.Row>
+                  <Table.ColHeader>{t("finance.orders.placed_at")}</Table.ColHeader>
+                  <Table.Col>{moment(order.createdAt).format(dateTimeFormat)}</Table.Col>
+                </Table.Row>
+              </Table.Body>
             </Table>
           </Card>
 
