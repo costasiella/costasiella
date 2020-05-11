@@ -43,7 +43,7 @@ function FinanceOrderEdit({t, match, history}) {
   const { loading, error, data } = useQuery(GET_FINANCE_ORDER_QUERY, {
     variables: { id: id },
   })
-  const [updateStatus] = useMutation(UPDATE_ORDER)
+  const [updateOrder] = useMutation(UPDATE_ORDER)
 
 
   // Loading
@@ -65,8 +65,6 @@ function FinanceOrderEdit({t, match, history}) {
   console.log(data) 
   const order = data.financeOrder
   
-
-
 
   return(
     <FinanceOrderEditBase>
@@ -99,7 +97,7 @@ function FinanceOrderEdit({t, match, history}) {
                 console.log('submit values:')
                 console.log(values)
 
-                UPDATE_ORDER({ variables: {
+                updateOrder({ variables: {
                   input: {
                     id: match.params.id,
                     status: values.status
@@ -112,6 +110,7 @@ function FinanceOrderEdit({t, match, history}) {
                     toast.success((t('finance.orders.toast_edit_success')), {
                         position: toast.POSITION.BOTTOM_RIGHT
                       })
+                    setSubmitting(false)
                   }).catch((error) => {
                     toast.error((t('general.toast_server_error')) + ': ' +  error, {
                         position: toast.POSITION.BOTTOM_RIGHT

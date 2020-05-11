@@ -19,7 +19,7 @@ const FinanceOrderEditForm = ({ t, isSubmitting, errors, values, returnUrl }) =>
     <Card title={t('general.status')}>
       <Card.Body> 
         <Grid.Row>
-          <Grid.Col>
+          <Grid.Col md={10}>
             <Form.Group>
               <Field component="select" 
                      name="status" 
@@ -35,18 +35,18 @@ const FinanceOrderEditForm = ({ t, isSubmitting, errors, values, returnUrl }) =>
               <ErrorMessage name="status" component="span" className="invalid-feedback" />
             </Form.Group>
           </Grid.Col>
+          <Grid.Col md={2}>
+          <Button 
+                className="pull-right"
+                color="primary"
+                disabled={isSubmitting}
+                type="submit"
+              >
+                {t('general.submit')}
+              </Button>
+          </Grid.Col>
         </Grid.Row> 
       </Card.Body>
-      <Card.Footer>
-          <Button 
-            className="pull-right"
-            color="primary"
-            disabled={isSubmitting}
-            type="submit"
-          >
-            {t('general.submit')}
-          </Button>
-      </Card.Footer>
     </Card>
   </FoForm>
 )

@@ -89,7 +89,7 @@ def validate_create_update_input(input, update=False):
         # Update checks
         order_statuses = get_finance_order_statuses()
         valid_statuses = [status[0] for status in order_statuses]
-        if ['status'] in input:
+        if 'status' in input:
             if input['status'] in valid_statuses:
                 result['status'] = input['status']
             else:
