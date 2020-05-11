@@ -5,8 +5,6 @@ import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
 import { Form as FoForm, Field, ErrorMessage } from 'formik'
 import { v4 } from "uuid"
-import { Link } from 'react-router-dom'
-
 
 import {
   Button,
@@ -16,13 +14,13 @@ import {
 } from "tabler-react";
 
 
-const FinanceOrderEditForm = ({ t, history, inputData, isSubmitting, setFieldValue, setFieldTouched, errors, values, return_url }) => (
+const FinanceOrderEditForm = ({ t, isSubmitting, errors, values, returnUrl }) => (
   <FoForm>
-    <Card>
+    <Card title={t('general.status')}>
       <Card.Body> 
         <Grid.Row>
           <Grid.Col>
-            <Form.Group label={t('general.status')}>
+            <Form.Group>
               <Field component="select" 
                      name="status" 
                      className={(errors.status) ? "form-control is-invalid" : "form-control"} 
@@ -48,14 +46,6 @@ const FinanceOrderEditForm = ({ t, history, inputData, isSubmitting, setFieldVal
           >
             {t('general.submit')}
           </Button>
-          <Link to={return_url} >
-            <Button
-              type="button" 
-              color="link" 
-            >
-              {t('general.cancel')}
-            </Button>
-          </Link>
       </Card.Footer>
     </Card>
   </FoForm>
