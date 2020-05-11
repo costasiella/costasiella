@@ -192,7 +192,6 @@ class UpdateFinanceOrder(graphene.relay.ClientIDMutation):
         validation_result = validate_create_update_input(input, update=True)
 
         if 'status' in validation_result:
-            # TODO: Validate status input
             finance_order.status = validation_result['status']
 
         finance_order.save()
