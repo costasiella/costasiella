@@ -53,16 +53,18 @@ class LoadMoreOnBottomScroll extends Component {
           </Grid.Row>
           <Grid.Row>
             <Grid.Col md={12}>
-            {(!pageInfo) ? '':
-              (pageInfo.hasNextPage) ? 
-                <Button 
-                  link
-                  onClick={onLoadMore} 
-                  >
-                  {t('general.load_more')}
-                </Button>
-              : t('general.loaded_all')
-            }
+              <Card>
+                {(!pageInfo) ? '':
+                  (pageInfo.hasNextPage) ? 
+                    <Button 
+                      link
+                      onClick={onLoadMore} 
+                      >
+                      {t('general.load_more')}
+                    </Button>
+                  : t('general.loaded_all')
+                }
+              </Card>
             </Grid.Col>
           </Grid.Row>
         </div>
