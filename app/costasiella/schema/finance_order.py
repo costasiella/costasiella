@@ -9,7 +9,7 @@ from graphql import GraphQLError
 
 from ..models import AccountAcceptedDocument, FinanceOrder, OrganizationClasspass, OrganizationDocument
 from ..models.choices.finance_order_statuses import get_finance_order_statuses
-from ..modules.gql_tools import require_login_and_permission, get_rid
+from ..modules.gql_tools import require_login, require_login_and_permission, get_rid
 from ..modules.messages import Messages
 from ..modules.finance_tools import display_float_as_amount
 
@@ -64,9 +64,26 @@ class FinanceOrderQuery(graphene.ObjectType):
 
     def resolve_finance_orders(self, info, archived=False, **kwargs):
         user = info.context.user
-        require_login_and_permission(user, 'costasiella.view_financeorder')
+        require_login(user)
 
-        return FinanceOrder.objects.all().order_by('-pk')
+        view_permission = user.has_perm('costasiella.view_financeorder')
+
+        if view_permission and 'account' in kwargs:
+            # Allow user to filter by any account
+            rid = get_rid(kwargs.get('account', user.id))
+            account_id = rid.id
+        elif view_permission:
+            # return all
+            account_id = None
+        else:
+            # A user can only query their own orders
+            account_id = user.id
+
+        order_by = '-pk'
+        if account_id:
+            return FinanceOrder.objects.filter(account=account_id).order_by(order_by)
+        else:
+            return FinanceOrder.objects.all().order_by(order_by)
 
 
 def validate_create_update_input(input, update=False):
