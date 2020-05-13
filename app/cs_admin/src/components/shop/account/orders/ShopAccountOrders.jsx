@@ -8,6 +8,7 @@ import { v4 } from "uuid"
 import moment from 'moment'
 
 import AppSettingsContext from '../../../context/AppSettingsContext'
+import FinanceOrderStatus from "../../../finance/orders/FinanceOrderStatus"
 
 import {
   Card,
@@ -18,6 +19,8 @@ import { QUERY_ACCOUNT_ORDERS } from "./queries"
 
 import ShopAccountOrdersBase from "./ShopAccountOrdersBase"
 import LoadMoreOnBottomScroll from "../../../general/LoadMoreOnBottomScroll"
+
+import { get_order_card_status_color } from "./tools"
 
 
 function ShopAccountOrders({t, match, history}) {
@@ -95,8 +98,40 @@ function ShopAccountOrders({t, match, history}) {
             <h4>{t("shop.account.orders.title")}</h4>
             {orders.edges.map(({ node }) => (
               <div>
+                <span className="pull-right">
+                  <FinanceOrderStatus status={node.status} />
+                </span>
                 {moment(node.createdAt).format(dateTimeFormat)}
-                {node.status}
+                <Card 
+                  title={t("general.order") + " #" + node.orderNumber}
+                  statusColor={get_order_card_status_color(node.status)}
+                >
+                  <Card.Body>
+                    <Table cards>
+                      <Table.Header>
+                        <Table.Row>
+                          <Table.ColHeader>{t("general.product")}</Table.ColHeader>
+                          <Table.ColHeader>{t("general.description")}</Table.ColHeader>
+                          <Table.ColHeader>{t("general.total")}</Table.ColHeader>
+                        </Table.Row>
+                      </Table.Header>
+                      <Table.Body>
+                        {node.items.edges.map(({ node }) => (
+                          <Table.Row>
+                            <Table.Col>{node.productName}</Table.Col>
+                            <Table.Col>{node.description}</Table.Col>
+                            <Table.Col>{node.totalDisplay}</Table.Col>
+                          </Table.Row>    
+                        ))}
+                        <Table.Row>
+                          <Table.Col></Table.Col>
+                          <Table.Col></Table.Col>
+                          <Table.Col><span className="bold">{node.totalDisplay}</span></Table.Col>
+                        </Table.Row>
+                      </Table.Body>
+                    </Table>
+                  </Card.Body>
+                </Card>
               </div>
             ))}
 
