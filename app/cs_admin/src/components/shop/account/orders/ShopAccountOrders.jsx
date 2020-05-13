@@ -23,6 +23,8 @@ import LoadMoreOnBottomScroll from "../../../general/LoadMoreOnBottomScroll"
 function ShopAccountOrders({t, match, history}) {
   const appSettings = useContext(AppSettingsContext)
   const dateFormat = appSettings.dateFormat
+  const timeFormat = appSettings.timeFormatMoment
+  const dateTimeFormat = dateFormat + ' ' + timeFormat
   const { loading, error, data, fetchMore } = useQuery(QUERY_ACCOUNT_ORDERS)
   
 
@@ -93,6 +95,7 @@ function ShopAccountOrders({t, match, history}) {
             <h4>{t("shop.account.orders.title")}</h4>
             {orders.edges.map(({ node }) => (
               <div>
+                {moment(node.createdAt).format(dateTimeFormat)}
                 {node.status}
               </div>
             ))}
