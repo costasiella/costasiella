@@ -106,31 +106,29 @@ function ShopAccountOrders({t, match, history}) {
                   title={t("general.order") + " #" + node.orderNumber}
                   statusColor={get_order_card_status_color(node.status)}
                 >
-                  <Card.Body>
-                    <Table cards>
-                      <Table.Header>
+                  <Table cards>
+                    <Table.Header>
+                      <Table.Row>
+                        <Table.ColHeader>{t("general.product")}</Table.ColHeader>
+                        <Table.ColHeader>{t("general.description")}</Table.ColHeader>
+                        <Table.ColHeader>{t("general.total")}</Table.ColHeader>
+                      </Table.Row>
+                    </Table.Header>
+                    <Table.Body>
+                      {node.items.edges.map(({ node }) => (
                         <Table.Row>
-                          <Table.ColHeader>{t("general.product")}</Table.ColHeader>
-                          <Table.ColHeader>{t("general.description")}</Table.ColHeader>
-                          <Table.ColHeader>{t("general.total")}</Table.ColHeader>
-                        </Table.Row>
-                      </Table.Header>
-                      <Table.Body>
-                        {node.items.edges.map(({ node }) => (
-                          <Table.Row>
-                            <Table.Col>{node.productName}</Table.Col>
-                            <Table.Col>{node.description}</Table.Col>
-                            <Table.Col>{node.totalDisplay}</Table.Col>
-                          </Table.Row>    
-                        ))}
-                        <Table.Row>
-                          <Table.Col></Table.Col>
-                          <Table.Col></Table.Col>
-                          <Table.Col><span className="bold">{node.totalDisplay}</span></Table.Col>
-                        </Table.Row>
-                      </Table.Body>
-                    </Table>
-                  </Card.Body>
+                          <Table.Col>{node.productName}</Table.Col>
+                          <Table.Col>{node.description}</Table.Col>
+                          <Table.Col>{node.totalDisplay}</Table.Col>
+                        </Table.Row>    
+                      ))}
+                      <Table.Row>
+                        <Table.Col></Table.Col>
+                        <Table.Col></Table.Col>
+                        <Table.Col><span className="bold">{node.totalDisplay}</span></Table.Col>
+                      </Table.Row>
+                    </Table.Body>
+                  </Table>
                 </Card>
               </div>
             ))}
