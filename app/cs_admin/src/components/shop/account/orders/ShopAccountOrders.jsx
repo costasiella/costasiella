@@ -132,35 +132,6 @@ function ShopAccountOrders({t, match, history}) {
                 </Card>
               </div>
             ))}
-
-            {/* <Table>
-              <Table.Header>
-                <Table.Row key={v4()}>
-                  <Table.ColHeader>{t('general.name')}</Table.ColHeader>
-                  <Table.ColHeader>{t('general.date_start')}</Table.ColHeader>
-                  <Table.ColHeader>{t('general.date_end')}</Table.ColHeader>
-                  <Table.ColHeader>{t('general.classes_remaining')}</Table.ColHeader>
-                </Table.Row>
-              </Table.Header>
-              <Table.Body>
-                {classpasses.edges.map(({ node }) => (
-                  <Table.Row key={v4()}>
-                    <Table.Col>
-                      {node.organizationClasspass.name}
-                    </Table.Col>
-                    <Table.Col>
-                      {moment(node.dateStart).format(dateFormat)}
-                    </Table.Col>
-                    <Table.Col>
-                      {moment(node.dateEnd).format(dateFormat)}
-                    </Table.Col>
-                    <Table.Col>
-                      {node.classesRemainingDisplay}
-                    </Table.Col>
-                  </Table.Row>
-                ))}
-              </Table.Body>
-            </Table> */}
           </LoadMoreOnBottomScroll>
         </Grid.Col>
       </Grid.Row>
