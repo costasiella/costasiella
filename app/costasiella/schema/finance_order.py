@@ -9,10 +9,9 @@ from graphql import GraphQLError
 
 from ..models import AccountAcceptedDocument, FinanceOrder, OrganizationClasspass, OrganizationDocument
 from ..models.choices.finance_order_statuses import get_finance_order_statuses
-from ..modules.gql_tools import require_login, require_login_and_permission, get_rid
-from ..modules.messages import Messages
+from ..modules.gql_tools import require_login, require_login_and_permission, get_rid, get_error_code
 from ..modules.finance_tools import display_float_as_amount
-
+from ..modules.messages import Messages
 
 from ..dudes.mail_dude import MailDude
 
@@ -197,7 +196,7 @@ class UpdateFinanceOrder(graphene.relay.ClientIDMutation):
     @classmethod
     def mutate_and_get_payload(self, root, info, **input):
         user = info.context.user
-        require_login_and_permission(user, 'costasiella.change_financeinvoice')
+        require_login(user)
 
         print(input)
         rid = get_rid(input['id'])
@@ -205,6 +204,12 @@ class UpdateFinanceOrder(graphene.relay.ClientIDMutation):
         finance_order = FinanceOrder.objects.filter(id=rid.id).first()
         if not finance_order:
             raise Exception('Invalid Finance Order ID!')
+
+        # To change an order, permissions or ownership is required.
+        if not user.has_perm('costasiella.change_financeinvoice'):
+            if not finance_order.account == rid.id:
+                raise GraphQLError(m.user_permission_denied,
+                                   extensions={'code': get_error_code('USER_PERMISSION_DENIED')})
 
         validation_result = validate_create_update_input(input, update=True)
 
