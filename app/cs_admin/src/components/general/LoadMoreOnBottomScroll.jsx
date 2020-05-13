@@ -4,6 +4,7 @@ import { withTranslation } from 'react-i18next'
 import {
     Button,
     Card,
+    Grid,
   } from "tabler-react"
 
 
@@ -54,16 +55,18 @@ class LoadMoreOnBottomScroll extends Component {
           <Grid.Row>
             <Grid.Col md={12}>
               <Card>
-                {(!pageInfo) ? '':
-                  (pageInfo.hasNextPage) ? 
-                    <Button 
-                      link
-                      onClick={onLoadMore} 
-                      >
-                      {t('general.load_more')}
-                    </Button>
-                  : t('general.loaded_all')
-                }
+                <Card.Body>
+                  {(!pageInfo) ? '':
+                    (pageInfo.hasNextPage) ? 
+                      <Button 
+                        link
+                        onClick={onLoadMore} 
+                        >
+                        {t('general.load_more')}
+                      </Button>
+                    : t('general.loaded_all')
+                  }
+                </Card.Body>
               </Card>
             </Grid.Col>
           </Grid.Row>
