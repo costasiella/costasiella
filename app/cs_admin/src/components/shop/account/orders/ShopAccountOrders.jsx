@@ -5,14 +5,17 @@ import { useQuery } from "react-apollo"
 import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
 import { v4 } from "uuid"
+import { Link } from 'react-router-dom'
 import moment from 'moment'
 
 import AppSettingsContext from '../../../context/AppSettingsContext'
 import FinanceOrderStatus from "../../../finance/orders/FinanceOrderStatus"
 
 import {
+  Button,
   Card,
   Grid,
+  Icon,
   Table
 } from "tabler-react";
 import { QUERY_ACCOUNT_ORDERS } from "./queries"
@@ -101,11 +104,31 @@ function ShopAccountOrders({t, match, history}) {
                 <span className="pull-right">
                   <FinanceOrderStatus status={node.status} />
                 </span>
-                {moment(node.createdAt).format(dateTimeFormat)}
-                <Card 
-                  title={t("general.order") + " #" + node.orderNumber}
-                  statusColor={get_order_card_status_color(node.status)}
-                >
+                <span className="text-muted">
+                  {moment(node.createdAt).format(dateTimeFormat)}
+                </span>
+                <Card statusColor={get_order_card_status_color(node.status)}>
+                  <Card.Header>
+                    <Card.Title>{t("general.order") + " #" + node.orderNumber}</Card.Title>
+                    <Card.Options>
+                      <Button
+                        className="mr-4"
+                        outline
+                        color="warning"
+                        size="sm"
+                      >
+                        {t('general.cancel')}
+                      </Button>
+                      <Link to={"/shop/checkout/payment/" + node.id}>
+                        <Button
+                          color="success"
+                          size="sm"
+                        >
+                          {t('shop.account.orders.to_payment')} <Icon name="chevron-right" />
+                        </Button>
+                      </Link>
+                    </Card.Options>
+                  </Card.Header>
                   <Table cards>
                     <Table.Header>
                       <Table.Row>
