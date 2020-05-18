@@ -1326,7 +1326,16 @@
             "btn_text_view": "View",
             "orders": {
                 "title": "My Orders",
-                "explanation": "View and mange your orders."
+                "explanation": "View and mange your orders.",
+                "confirm_cancel": "Cancel order?",
+                "empty_list": "You haven't placed any orders yet.",
+                "msg_cancel_confirm": "Are you sure you wish to cancel this order?",
+                "order": {
+                    "cancelled": "Order cancelled"
+                },
+                "to_payment": "Payment",
+                "confirm_cancel_no": "No, Don't cancel",
+                "confirm_cancel_yes": "Yes, cancel it"
             }
         },
         "accounts": {

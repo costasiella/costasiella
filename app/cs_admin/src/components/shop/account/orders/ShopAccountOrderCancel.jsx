@@ -1,7 +1,14 @@
+import React from 'react'
+import { withTranslation } from 'react-i18next'
+import { toast } from 'react-toastify'
+import { confirmAlert } from 'react-confirm-alert'
+import v4 from 'uuid'
 
+import {
+  Icon,
+} from "tabler-react";
 
-function cancelOrder({t, msgConfirm, msgDescription, msgSuccess, cancelFunction, functionVariables}) {
-
+export function cancelOrder({t, msgConfirm, msgDescription, msgSuccess, cancelFunction, functionVariables}) {
   return (
     confirmAlert({
       customUI: ({ onClose }) => {
@@ -10,7 +17,7 @@ function cancelOrder({t, msgConfirm, msgDescription, msgSuccess, cancelFunction,
             <h1>{t('shop.account.orders.confirm_cancel')}</h1>
             {msgConfirm}
             {msgDescription}
-            <button className="btn btn-link pull-right" onClick={onClose}>{t('general.confirm_cancel_no')}</button>
+            <button className="btn btn-link pull-right" onClick={onClose}>{t('shop.account.orders.confirm_cancel_no')}</button>
             <button
               className="btn btn-warning btn-sm outline"
               onClick={() => {
@@ -30,7 +37,7 @@ function cancelOrder({t, msgConfirm, msgDescription, msgSuccess, cancelFunction,
                 onClose()
               }}
             >
-              <Icon name="slash" /> {t('general.confirm_cancel_yes')}
+              {t('shop.account.orders.confirm_cancel_yes')}
             </button>
           </div>
         )

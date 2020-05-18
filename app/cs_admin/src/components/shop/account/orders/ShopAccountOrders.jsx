@@ -1,6 +1,6 @@
 // @flow
 
-import React, { useContext} from 'react'
+import React, { useContext } from 'react'
 import { useQuery } from "react-apollo"
 import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
@@ -21,9 +21,15 @@ import {
 import { QUERY_ACCOUNT_ORDERS } from "./queries"
 
 import ShopAccountOrdersBase from "./ShopAccountOrdersBase"
+import { cancelOrder } from "./ShopAccountOrderCancel"
 import LoadMoreOnBottomScroll from "../../../general/LoadMoreOnBottomScroll"
 
 import { get_order_card_status_color } from "./tools"
+
+
+function Cancel() {
+  alert('cancelled!')
+}
 
 
 function ShopAccountOrders({t, match, history}) {
@@ -116,6 +122,14 @@ function ShopAccountOrders({t, match, history}) {
                         outline
                         color="warning"
                         size="sm"
+                        onClick={() => cancelOrder({
+                          t: t,
+                          msgConfirm: t('shop.account.orders.msg_cancel_confirm'),
+                          msgDescription: <p>{t('general.order') + " #" + node.orderNumber}</p>, 
+                          msgSuccess: t('shop.account.orders.order.cancelled'), 
+                          cancelFunction: Cancel, 
+                          functionVariables: {}
+                        })}
                       >
                         {t('general.cancel')}
                       </Button>

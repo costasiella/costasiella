@@ -22,7 +22,6 @@ import {
 } from "tabler-react";
 import SiteWrapper from "../../../SiteWrapper"
 import HasPermissionWrapper from "../../../HasPermissionWrapper"
-// import { confirmAlert } from 'react-confirm-alert'; // Import
 import { toast } from 'react-toastify'
 
 import ISODateString from "../../../ui/ISODateString"

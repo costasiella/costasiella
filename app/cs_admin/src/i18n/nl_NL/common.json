@@ -509,7 +509,16 @@
             "btn_text_view": "__STRING_NOT_TRANSLATED__",
             "orders": {
                 "title": "__STRING_NOT_TRANSLATED__",
-                "explanation": "__STRING_NOT_TRANSLATED__"
+                "explanation": "__STRING_NOT_TRANSLATED__",
+                "confirm_cancel": "__STRING_NOT_TRANSLATED__",
+                "empty_list": "__STRING_NOT_TRANSLATED__",
+                "msg_cancel_confirm": "__STRING_NOT_TRANSLATED__",
+                "order": {
+                    "cancelled": "__STRING_NOT_TRANSLATED__"
+                },
+                "to_payment": "__STRING_NOT_TRANSLATED__",
+                "confirm_cancel_no": "__STRING_NOT_TRANSLATED__",
+                "confirm_cancel_yes": "__STRING_NOT_TRANSLATED__"
             }
         },
         "accounts": {
