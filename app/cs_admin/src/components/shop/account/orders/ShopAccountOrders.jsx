@@ -1,7 +1,7 @@
 // @flow
 
 import React, { useContext } from 'react'
-import { useQuery } from "react-apollo"
+import { useQuery, useMutation } from "react-apollo"
 import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
 import { v4 } from "uuid"
@@ -18,7 +18,7 @@ import {
   Icon,
   Table
 } from "tabler-react";
-import { QUERY_ACCOUNT_ORDERS } from "./queries"
+import { QUERY_ACCOUNT_ORDERS, UPDATE_ORDER } from "./queries"
 
 import ShopAccountOrdersBase from "./ShopAccountOrdersBase"
 import { cancelOrder } from "./ShopAccountOrderCancel"
@@ -38,7 +38,7 @@ function ShopAccountOrders({t, match, history}) {
   const timeFormat = appSettings.timeFormatMoment
   const dateTimeFormat = dateFormat + ' ' + timeFormat
   const { loading, error, data, fetchMore } = useQuery(QUERY_ACCOUNT_ORDERS)
-  
+  const [ updateOrder ] = useMutation(UPDATE_ORDER)
 
   if (loading) return (
     <ShopAccountOrdersBase>
@@ -127,8 +127,15 @@ function ShopAccountOrders({t, match, history}) {
                           msgConfirm: t('shop.account.orders.msg_cancel_confirm'),
                           msgDescription: <p>{t('general.order') + " #" + node.orderNumber}</p>, 
                           msgSuccess: t('shop.account.orders.order.cancelled'), 
-                          cancelFunction: Cancel, 
-                          functionVariables: {}
+                          cancelFunction: updateOrder, 
+                          functionVariables: {
+                            variables: {
+                              input: {
+                                id: node.id,
+                                status: 'CANCELLED'
+                              }
+                            }
+                          }
                         })}
                       >
                         {t('general.cancel')}

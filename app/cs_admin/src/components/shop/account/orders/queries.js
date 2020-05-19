@@ -71,3 +71,15 @@ export const QUERY_ACCOUNT_ORDERS = gql`
     }
   }
 `
+
+
+export const UPDATE_ORDER = gql`
+  mutation UpdateOrder($input: UpdateFinanceOrderInput!) {
+    updateFinanceOrder(input: $input) {
+      financeOrder {
+        id
+        status
+      }
+    }
+  }
+`
