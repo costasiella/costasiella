@@ -109,7 +109,7 @@ def validate_create_update_input(input, update=False):
             if input['status'] in valid_statuses:
                 result['status'] = input['status']
             else:
-                raise Exception(_('Invalid Organization Classpass ID!'))
+                raise Exception(_('Invalid Finance Order ID!'))
 
     return result
 
@@ -198,9 +198,7 @@ class UpdateFinanceOrder(graphene.relay.ClientIDMutation):
         user = info.context.user
         require_login(user)
 
-        print(input)
         rid = get_rid(input['id'])
-
         finance_order = FinanceOrder.objects.filter(id=rid.id).first()
         if not finance_order:
             raise Exception('Invalid Finance Order ID!')
@@ -208,12 +206,12 @@ class UpdateFinanceOrder(graphene.relay.ClientIDMutation):
         validation_result = validate_create_update_input(input, update=True)
 
         # To change an order, permissions or ownership is required.
-        if not user.has_perm('costasiella.change_financeinvoice'):
-            if not finance_order.account == rid.id:
+        if not user.has_perm('costasiella.change_financeorder'):
+            if not finance_order.account.id == user.id:
                 raise GraphQLError(m.user_permission_denied,
                                    extensions={'code': get_error_code('USER_PERMISSION_DENIED')})
             else:
-                # User wants to change own invoice, check if status change is permitted.
+                # User wants to change own order, check if status change is permitted.
                 # Status can only be "Cancelled"
                 if not validation_result.get('status', '') == "CANCELLED":
                     raise GraphQLError(m.user_invalid_order_status,
