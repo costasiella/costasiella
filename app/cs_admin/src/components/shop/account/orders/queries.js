@@ -2,8 +2,8 @@ import gql from "graphql-tag"
 
 
 export const QUERY_ACCOUNT_ORDERS = gql`
-  query FinanceOrders($after: String, $before: String, $status: String) {
-    financeOrders(first: 15, before: $before, after: $after, status: $status) {
+  query FinanceOrders($after: String, $before: String, $account: ID!) {
+    financeOrders(first: 15, before: $before, after: $after, account: $account) {
       pageInfo {
         hasNextPage
         hasPreviousPage

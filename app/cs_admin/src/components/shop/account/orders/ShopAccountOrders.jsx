@@ -17,7 +17,7 @@ import {
   Grid,
   Icon,
   Table
-} from "tabler-react";
+} from "tabler-react"
 import { QUERY_ACCOUNT_ORDERS, UPDATE_ORDER } from "./queries"
 
 import ShopAccountOrdersBase from "./ShopAccountOrdersBase"
@@ -26,18 +26,18 @@ import LoadMoreOnBottomScroll from "../../../general/LoadMoreOnBottomScroll"
 
 import { get_order_card_status_color } from "./tools"
 
-
-function Cancel() {
-  alert('cancelled!')
-}
-
-
 function ShopAccountOrders({t, match, history}) {
   const appSettings = useContext(AppSettingsContext)
   const dateFormat = appSettings.dateFormat
   const timeFormat = appSettings.timeFormatMoment
   const dateTimeFormat = dateFormat + ' ' + timeFormat
-  const { loading, error, data, fetchMore } = useQuery(QUERY_ACCOUNT_ORDERS)
+  
+
+  const { loading, error, data, fetchMore } = useQuery(QUERY_ACCOUNT_ORDERS, {
+    variables: {
+      account: accountId
+    }
+  })
   const [ updateOrder ] = useMutation(UPDATE_ORDER)
 
   if (loading) return (
