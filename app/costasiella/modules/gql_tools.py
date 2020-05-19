@@ -80,7 +80,9 @@ def get_content_file_from_base64_str(data_str, file_name):
 
 
 def get_error_code(error_code):
-    if error_code == "USER_NOT_LOGGED_IN":
+    if error_code == "USER_INVALID_ORDER_STATUS":
+        return error_code
+    elif error_code == "USER_NOT_LOGGED_IN":
         return error_code
     elif error_code == "USER_PERMISSION_DENIED":
         return error_code

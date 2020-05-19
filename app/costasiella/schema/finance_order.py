@@ -205,13 +205,19 @@ class UpdateFinanceOrder(graphene.relay.ClientIDMutation):
         if not finance_order:
             raise Exception('Invalid Finance Order ID!')
 
+        validation_result = validate_create_update_input(input, update=True)
+
         # To change an order, permissions or ownership is required.
         if not user.has_perm('costasiella.change_financeinvoice'):
             if not finance_order.account == rid.id:
                 raise GraphQLError(m.user_permission_denied,
                                    extensions={'code': get_error_code('USER_PERMISSION_DENIED')})
-
-        validation_result = validate_create_update_input(input, update=True)
+            else:
+                # User wants to change own invoice, check if status change is permitted.
+                # Status can only be "Cancelled"
+                if not validation_result.get('status', '') == "CANCELLED":
+                    raise GraphQLError(m.user_invalid_order_status,
+                                       extensions={'code': 'USER_INVALID_ORDER_STATUS'})
 
         if 'status' in validation_result:
             finance_order.status = validation_result['status']
