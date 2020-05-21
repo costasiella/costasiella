@@ -1,9 +1,15 @@
 export function get_order_card_status_color(status) {
     switch(status) {
-        case ("RECEIVED" || "AWAITING_PAYMENT"): 
+        case ("RECEIVED"): 
           return "blue"
           break
-        case ("PAID" || "DDELIVERED"):
+        case ("AWAITING_PAYMENT"): 
+          return "blue"
+          break
+        case ("PAID"):
+          return "green"
+          break
+        case ("DELIVERED"):
           return "green"
           break
         case "CANCELLED":

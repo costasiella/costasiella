@@ -120,37 +120,41 @@ function ShopAccountOrders({t, match, history}) {
                   <Card.Header>
                     <Card.Title>{t("general.order") + " #" + node.orderNumber}</Card.Title>
                     <Card.Options>
-                      <Button
-                        className="mr-4"
-                        outline
-                        color="warning"
-                        size="sm"
-                        onClick={() => cancelOrder({
-                          t: t,
-                          msgConfirm: t('shop.account.orders.msg_cancel_confirm'),
-                          msgDescription: <p>{t('general.order') + " #" + node.orderNumber}</p>, 
-                          msgSuccess: t('shop.account.orders.order.cancelled'), 
-                          cancelFunction: updateOrder, 
-                          functionVariables: {
-                            variables: {
-                              input: {
-                                id: node.id,
-                                status: 'CANCELLED'
+                      {(node.status == "RECEIVED" || node.status == "AWAITING_PAYMENT") ?
+                        <Button
+                          outline
+                          color="warning"
+                          size="sm"
+                          onClick={() => cancelOrder({
+                            t: t,
+                            msgConfirm: t('shop.account.orders.msg_cancel_confirm'),
+                            msgDescription: <p>{t('general.order') + " #" + node.orderNumber}</p>, 
+                            msgSuccess: t('shop.account.orders.order.cancelled'), 
+                            cancelFunction: updateOrder, 
+                            functionVariables: {
+                              variables: {
+                                input: {
+                                  id: node.id,
+                                  status: 'CANCELLED'
+                                }
                               }
                             }
-                          }
-                        })}
-                      >
-                        {t('general.cancel')}
-                      </Button>
-                      <Link to={"/shop/checkout/payment/" + node.id}>
-                        <Button
-                          color="success"
-                          size="sm"
+                          })}
                         >
-                          {t('shop.account.orders.to_payment')} <Icon name="chevron-right" />
+                          {t('general.cancel')}
                         </Button>
-                      </Link>
+                      : ""}
+                      {(node.status == "AWAITING_PAYMENT") ?
+                        <Link to={"/shop/checkout/payment/" + node.id}>
+                          <Button
+                            className="ml-4"
+                            color="success"
+                            size="sm"
+                          >
+                            {t('shop.account.orders.to_payment')} <Icon name="chevron-right" />
+                          </Button>
+                        </Link>
+                      : ""}
                     </Card.Options>
                   </Card.Header>
                   <Table cards>
