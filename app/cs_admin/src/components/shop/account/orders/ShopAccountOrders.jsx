@@ -19,6 +19,7 @@ import {
   Table
 } from "tabler-react"
 import { QUERY_ACCOUNT_ORDERS, UPDATE_ORDER } from "./queries"
+import GET_USER_PROFILE from "../../../../queries/system/get_user_profile"
 
 import ShopAccountOrdersBase from "./ShopAccountOrdersBase"
 import { cancelOrder } from "./ShopAccountOrderCancel"
@@ -31,21 +32,23 @@ function ShopAccountOrders({t, match, history}) {
   const dateFormat = appSettings.dateFormat
   const timeFormat = appSettings.timeFormatMoment
   const dateTimeFormat = dateFormat + ' ' + timeFormat
-  
 
+  // Chain queries. First query user data and then query orders for that user once we have the account Id.
+  const { loading: loadingUser, error: errorUser, data: dataUser } = useQuery(GET_USER_PROFILE)
   const { loading, error, data, fetchMore } = useQuery(QUERY_ACCOUNT_ORDERS, {
+    skip: loadingUser || errorUser || !dataUser,
     variables: {
-      account: accountId
+      account: dataUser && dataUser.user ? dataUser.user.accountId : null
     }
   })
   const [ updateOrder ] = useMutation(UPDATE_ORDER)
 
-  if (loading) return (
+  if (loading || loadingUser || !data) return (
     <ShopAccountOrdersBase>
       {t("general.loading_with_dots")}
     </ShopAccountOrdersBase>
   )
-  if (error) return (
+  if (error || errorUser) return (
     <ShopAccountOrdersBase>
       {t("shop.account.classpasses.error_loading_data")}
     </ShopAccountOrdersBase>
@@ -53,7 +56,7 @@ function ShopAccountOrders({t, match, history}) {
 
   console.log("User data: ###")
   console.log(data)
-  const user = data.user
+  const user = dataUser.user
   const orders = data.financeOrders
 
   // Empty list
