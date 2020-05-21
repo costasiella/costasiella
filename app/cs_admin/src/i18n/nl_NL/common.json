@@ -525,6 +525,9 @@
             "profile": {
                 "edit": "__STRING_NOT_TRANSLATED__"
             }
+        },
+        "classes": {
+            "title": "__STRING_NOT_TRANSLATED__"
         }
     },
     "home": {

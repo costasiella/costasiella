@@ -1342,6 +1342,9 @@
             "profile": {
                 "edit": "My profile"
             }
+        },
+        "classes": {
+            "title": "Classes"
         }
     }
 }
