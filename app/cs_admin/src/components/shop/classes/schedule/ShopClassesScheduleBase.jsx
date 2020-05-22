@@ -10,7 +10,7 @@ import {
   Icon,
   List
 } from "tabler-react";
-import ShopBase from "../ShopBase"
+import ShopBase from "../../ShopBase"
 
 function ShopClassesScheduleBase({ t, match, history, children }) {
   
