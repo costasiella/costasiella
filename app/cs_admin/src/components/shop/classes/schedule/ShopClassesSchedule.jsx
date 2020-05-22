@@ -70,12 +70,13 @@ function ShopClassesSchedule({ t, match, history }) {
           <Button 
             icon="chevron-left"
             color="secondary"
+            disabled={ (moment(localStorage.getItem(CSLS.SHOP_CLASSES_DATE_FROM)).subtract(7, 'days').isBefore(moment(), "day")) }
             onClick={ () => {
-              let nextWeekFrom = moment(localStorage.getItem(CSLS.SHOP_CLASSES_DATE_FROM)).subtract(7, 'days')
-              let nextWeekUntil = moment(nextWeekFrom).add(6, 'days')
+              let prevWeekFrom = moment(localStorage.getItem(CSLS.SHOP_CLASSES_DATE_FROM)).subtract(7, 'days')
+              let prevWeekUntil = moment(prevWeekFrom).add(6, 'days')
               
-              localStorage.setItem(CSLS.SHOP_CLASSES_DATE_FROM, nextWeekFrom.format('YYYY-MM-DD')) 
-              localStorage.setItem(CSLS.SHOP_CLASSES_DATE_UNTIL, nextWeekUntil.format('YYYY-MM-DD')) 
+              localStorage.setItem(CSLS.SHOP_CLASSES_DATE_FROM, prevWeekFrom.format('YYYY-MM-DD')) 
+              localStorage.setItem(CSLS.SHOP_CLASSES_DATE_UNTIL, prevWeekUntil.format('YYYY-MM-DD')) 
 
               refetch(get_list_query_variables())
           }} />
