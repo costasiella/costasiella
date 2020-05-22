@@ -44,7 +44,7 @@ function ShopClassesSchedule({ t, match, history }) {
   const timeFormat = appSettings.timeFormatMoment
 
   const title = t("shop.home.title")
-  const { loading, error, data } = useQuery(GET_CLASSES_QUERY, {
+  const { loading, error, data, refetch } = useQuery(GET_CLASSES_QUERY, {
     variables: get_list_query_variables()
   })
 
@@ -65,7 +65,47 @@ function ShopClassesSchedule({ t, match, history }) {
   return (
     <ShopClassesScheduleBase 
       title={title}
-      pageHeaderOptions="hello world"
+      pageHeaderOptions={
+        <Button.List className="schedule-list-page-options-btn-list">
+          <Button 
+            icon="chevron-left"
+            color="secondary"
+            onClick={ () => {
+              let nextWeekFrom = moment(localStorage.getItem(CSLS.SHOP_CLASSES_DATE_FROM)).subtract(7, 'days')
+              let nextWeekUntil = moment(nextWeekFrom).add(6, 'days')
+              
+              localStorage.setItem(CSLS.SHOP_CLASSES_DATE_FROM, nextWeekFrom.format('YYYY-MM-DD')) 
+              localStorage.setItem(CSLS.SHOP_CLASSES_DATE_UNTIL, nextWeekUntil.format('YYYY-MM-DD')) 
+
+              refetch(get_list_query_variables())
+          }} />
+          <Button 
+            color="secondary"
+            onClick={ () => {
+              let currentWeekFrom = moment()
+              let currentWeekUntil = moment(currentWeekFrom).add(6, 'days')
+
+              localStorage.setItem(CSLS.SHOP_CLASSES_DATE_FROM, currentWeekFrom.format('YYYY-MM-DD')) 
+              localStorage.setItem(CSLS.SHOP_CLASSES_DATE_UNTIL, currentWeekUntil.format('YYYY-MM-DD')) 
+              
+              refetch(get_list_query_variables())
+          }} > 
+            {t("general.today")}
+          </Button>
+          <Button 
+            icon="chevron-right"
+            color="secondary"
+            onClick={ () => {
+              let nextWeekFrom = moment(localStorage.getItem(CSLS.SHOP_CLASSES_DATE_FROM)).add(7, 'days')
+              let nextWeekUntil = moment(nextWeekFrom).add(6, 'days')
+              
+              localStorage.setItem(CSLS.SHOP_CLASSES_DATE_FROM, nextWeekFrom.format('YYYY-MM-DD')) 
+              localStorage.setItem(CSLS.SHOP_CLASSES_DATE_UNTIL, nextWeekUntil.format('YYYY-MM-DD')) 
+
+              refetch(get_list_query_variables())
+          }} />
+        </Button.List> 
+      }
     >
         
       {data.scheduleClasses.map(({ date, classes }) =>
