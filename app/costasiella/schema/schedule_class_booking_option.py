@@ -8,7 +8,7 @@ from graphql import GraphQLError
 from graphql_relay import to_global_id
 
 from ..models import Account, AccountClasspass, AccountSubscription, ScheduleItem, ScheduleItemPrice
-from ..modules.gql_tools import require_login_and_permission, require_login_and_one_of_permissions, get_rid
+from ..modules.gql_tools import require_login, require_login_and_one_of_permissions, get_rid
 from ..modules.messages import Messages
 from ..modules.model_helpers.schedule_item_helper import ScheduleItemHelper
 from .account import AccountNode
@@ -121,9 +121,9 @@ class ScheduleClassBookingOptionsType(graphene.ObjectType):
         return classpasses_list
 
     def resolve_subscriptions(self, 
-                            info,
-                            date=graphene.types.datetime.Date(),
-                            ):
+                              info,
+                              date=graphene.types.datetime.Date(),
+                              ):
         checkin_dude = ClassCheckinDude()
         account = self.resolve_account(info)
         schedule_item = self.resolve_schedule_item(info)
@@ -158,17 +158,22 @@ class ScheduleClassBookingOptionsQuery(graphene.ObjectType):
         account=graphene.ID(),
         schedule_item=graphene.ID(),
         date=graphene.types.datetime.Date(),
-        list_type=graphene.String(default_value="shop")
+        list_type=graphene.String(default_value="SHOP_BOOK")
     )
 
-    def resolve_schedule_class_booking_options(self, info, list_type, account, schedule_item, date, **kwargs):
+    def resolve_schedule_class_booking_options(self, info, list_type, schedule_item, date, **kwargs):
         user = info.context.user
-        require_login_and_one_of_permissions(user, [
-            'costasiella.view_scheduleitem',
-            'costasiella.view_selfcheckin'
-        ])
+        require_login(user)
 
-        validation_result = validate_schedule_class_booking_options_input(
+        permission = user.has_perm('costasiella.view_scheduleitem') or user.has_perm('costasiella.view_selfcheckin')
+
+        account = to_global_id('AccountNode', user.id)
+        if 'account' in kwargs and permission:
+            # An account has been specified and the current user has permission to view booking options
+            # for other accounts
+            account = kwargs['account']
+
+        validate_schedule_class_booking_options_input(
             account,
             schedule_item,
             date,
@@ -176,10 +181,10 @@ class ScheduleClassBookingOptionsQuery(graphene.ObjectType):
         )
 
         return ScheduleClassBookingOptionsType(
-            date = date,
-            list_type = list_type,
-            account_id = account,
-            schedule_item_id = schedule_item,
+            date=date,
+            list_type=list_type,
+            account_id=account,
+            schedule_item_id=schedule_item,
         )
 
 
