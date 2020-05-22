@@ -153,9 +153,11 @@ function ShopClassesSchedule({ t, match, history }) {
                             <span className="text-muted">{ organizationLocationRoom.organizationLocation.name }</span>
                             </Table.Col>
                             <Table.Col>
-                              <Button className="pull-right" color="primary" outline>
-                                Book <Icon name="chevron-right" />
-                              </Button>
+                              <Link to={`/shop/classes/book/${scheduleItemId}/${date}`}>
+                                <Button className="pull-right" color="primary" outline>
+                                  {t("general.book")} <Icon name="chevron-right" />
+                                </Button>
+                              </Link>
                             </Table.Col>
                           </Table.Row>
                         )
