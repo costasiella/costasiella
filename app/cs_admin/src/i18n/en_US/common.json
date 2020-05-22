@@ -694,7 +694,7 @@
         "title": "Schedule",
         "classes": {
             "title": "Classes",
-            "empty_list": "No classes found on this day",
+            "empty_list": "No classes scheduled on this day",
             "add": "Add class",
             "all_classes_in_series": "All classes",
             "delete_confirm_msg": "Are you sure you wish to delete this class and all associated data?",

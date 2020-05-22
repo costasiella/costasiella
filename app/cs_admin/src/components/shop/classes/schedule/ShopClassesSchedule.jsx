@@ -1,6 +1,6 @@
 // @flow
 
-import React, {Component } from 'react'
+import React, { useContext } from 'react'
 import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
 import { useQuery } from '@apollo/react-hooks'
@@ -9,13 +9,16 @@ import { v4 } from 'uuid'
 import moment from 'moment'
 
 import CSLS from "../../../../tools/cs_local_storage"
+import AppSettingsContext from '../../../context/AppSettingsContext'
 
 import {
+  Button,
   Card, 
   Grid,
   Icon,
   List,
-  PricingCard
+  Media,
+  Table,
 } from "tabler-react";
 import ShopClassesScheduleBase from "./ShopClassesScheduleBase"
 
@@ -35,6 +38,10 @@ if (!localStorage.getItem(CSLS.SHOP_CLASSES_DATE_FROM)) {
 
 
 function ShopClassesSchedule({ t, match, history }) {
+  const appSettings = useContext(AppSettingsContext)
+  const dateFormat = appSettings.dateFormat
+  const timeFormat = appSettings.timeFormatMoment
+
   const title = t("shop.home.title")
   const { loading, error, data } = useQuery(GET_CLASSES_QUERY, {
     variables: get_list_query_variables()
@@ -68,7 +75,49 @@ function ShopClassesSchedule({ t, match, history }) {
                       {moment(date).format("LL")} 
                     </span>
                   </Card.Title>
-                </Card.Header>
+                </Card.Header>                
+                {!(classes.length) ? 
+                  <Card.Body>
+                    <p>{t('schedule.classes.empty_list')}</p>
+                  </Card.Body> :
+                  <Table cards>
+                    <Table.Body>
+                      {classes.map(({ 
+                        scheduleItemId, 
+                        frequencyType,
+                        date, 
+                        status,
+                        description,
+                        account, 
+                        role,
+                        account2,
+                        role2,
+                        organizationLocationRoom, 
+                        organizationClasstype, 
+                        organizationLevel,
+                        timeStart, 
+                        timeEnd,
+                        displayPublic }) => (
+                          <Table.Row>
+                            <Table.Col>
+                            <h4>
+                              {moment(date + ' ' + timeStart).format(timeFormat)} {' - '}
+                              {moment(date + ' ' + timeEnd).format(timeFormat)} { ' ' }
+                            </h4> 
+                            { organizationClasstype.name } { (account) ? ' ' + t("general.with") + ' ' + account.fullName : "" } <br />
+                            <span className="text-muted">{ organizationLocationRoom.organizationLocation.name }</span>
+                            </Table.Col>
+                            <Table.Col>
+                              <Button className="pull-right" color="primary" outline>
+                                Book <Icon name="chevron-right" />
+                              </Button>
+                            </Table.Col>
+                          </Table.Row>
+                        )
+                      )}
+                    </Table.Body>
+                  </Table>
+                }
               </Card>
           </Grid.Col>
         </Grid.Row>
@@ -80,30 +129,3 @@ function ShopClassesSchedule({ t, match, history }) {
 
 
 export default withTranslation()(withRouter(ShopClassesSchedule))
-
-
-{/* <Grid.Col sm={6} lg={3}>
-<PricingCard active>
-  <PricingCard.Category>{"Premium"}</PricingCard.Category>
-  <PricingCard.Price>{"$49"} </PricingCard.Price>
-  <PricingCard.AttributeList>
-    <PricingCard.AttributeItem>
-      <strong>10 </strong>
-      {"Users"}
-    </PricingCard.AttributeItem>
-    <PricingCard.AttributeItem hasIcon available>
-      {"Sharing Tools"}
-    </PricingCard.AttributeItem>
-    <PricingCard.AttributeItem hasIcon available>
-      {"Design Tools"}
-    </PricingCard.AttributeItem>
-    <PricingCard.AttributeItem hasIcon available={false}>
-      {"Private Messages"}
-    </PricingCard.AttributeItem>
-    <PricingCard.AttributeItem hasIcon available={false}>
-      {"Twitter API"}
-    </PricingCard.AttributeItem>
-  </PricingCard.AttributeList>
-  <PricingCard.Button active>{"Choose plan"} </PricingCard.Button>
-</PricingCard>
-</Grid.Col> */}
