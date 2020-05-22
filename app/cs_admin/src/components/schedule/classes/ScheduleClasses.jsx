@@ -256,155 +256,153 @@ function ScheduleClasses ({ t, history }) {
                               </span>
                             </Card.Title>
                           </Card.Header>
-                          <Card.Body>
-                            {!(classes.length) ? t('schedule.classes.empty_list') :
-                              <Table>
-                                <Table.Header>
+                          {!(classes.length) ? t('schedule.classes.empty_list') :
+                            <Table cards>
+                              <Table.Header>
+                                <Table.Row key={v4()}>
+                                  <Table.ColHeader /> 
+                                  <Table.ColHeader>{t('general.time')}</Table.ColHeader>
+                                  <Table.ColHeader>{t('general.location')}</Table.ColHeader>
+                                  <Table.ColHeader>{t('general.class')}</Table.ColHeader>
+                                  <Table.ColHeader>{t('general.teacher')}</Table.ColHeader>
+                                  <Table.ColHeader>{t('general.public')}</Table.ColHeader>
+                                  <Table.ColHeader></Table.ColHeader>
+                                </Table.Row>
+                              </Table.Header>
+                              <Table.Body>
+                                {classes.map((
+                                  { scheduleItemId, 
+                                    frequencyType,
+                                    date, 
+                                    status,
+                                    description,
+                                    account, 
+                                    role,
+                                    account2,
+                                    role2,
+                                    organizationLocationRoom, 
+                                    organizationClasstype, 
+                                    organizationLevel,
+                                    timeStart, 
+                                    timeEnd,
+                                    displayPublic }) => (
                                   <Table.Row key={v4()}>
-                                    <Table.ColHeader /> 
-                                    <Table.ColHeader>{t('general.time')}</Table.ColHeader>
-                                    <Table.ColHeader>{t('general.location')}</Table.ColHeader>
-                                    <Table.ColHeader>{t('general.class')}</Table.ColHeader>
-                                    <Table.ColHeader>{t('general.teacher')}</Table.ColHeader>
-                                    <Table.ColHeader>{t('general.public')}</Table.ColHeader>
-                                    <Table.ColHeader></Table.ColHeader>
+                                    <Table.Col>
+                                      {represent_class_status(status)}
+                                    </Table.Col>
+                                    <Table.Col>
+                                      {/* Start & end time */}
+                                      {moment(date + ' ' + timeStart).format(timeFormat)} {' - '}
+                                      {moment(date + ' ' + timeEnd).format(timeFormat)} { ' ' }
+                                      {(frequencyType === 'SPECIFIC') ? <Badge color="primary">{t('general.once')}</Badge> : null } <br />
+                                      <span className="text-muted">{description}</span>
+                                    </Table.Col>
+                                    <Table.Col>
+                                      {/* Location */}
+                                      {organizationLocationRoom.organizationLocation.name} <br />
+                                      <span className="text-muted">{organizationLocationRoom.name}</span>
+                                    </Table.Col>
+                                    <Table.Col>
+                                      {/* Type and level */}
+                                      {organizationClasstype.name} <br />
+                                      <span className="text-muted">
+                                        {(organizationLevel) ? organizationLevel.name: ""}
+                                      </span>
+                                    </Table.Col>
+                                    <Table.Col>
+                                      {/* Teacher(s) */}
+                                      { (account) ? 
+                                          represent_teacher(account.fullName, role) : 
+                                          <span className="text-red">{t("schedule.classes.no_teacher")}</span>
+                                      } <br />
+                                      <span className="text-muted">
+                                        {(account2) ? represent_teacher(account2.fullName, role2) : ""}
+                                      </span>
+                                    </Table.Col>
+                                    <Table.Col>
+                                      {/* Public */}
+                                      <BadgeBoolean value={displayPublic} />
+                                    </Table.Col>
+                                    <Table.Col>
+                                      <Dropdown
+                                        key={v4()}
+                                        className="pull-right"
+                                        type="button"
+                                        toggle
+                                        color="secondary btn-sm"
+                                        triggerContent={t("general.actions")}
+                                        items={[
+                                          <HasPermissionWrapper key={v4()} permission="view" resource="scheduleitemattendance">
+                                            <Dropdown.Item
+                                              key={v4()}
+                                              icon="check-circle"
+                                              onClick={() => history.push('/schedule/classes/class/attendance/' + scheduleItemId + '/' + date)}>
+                                                {t("general.attendance")}
+                                            </Dropdown.Item>
+                                          </HasPermissionWrapper>,
+                                          <HasPermissionWrapper key={v4()} permission="view" resource="scheduleclassweeklyotc">
+                                            <Dropdown.Item
+                                              key={v4()}
+                                              icon="edit-3"
+                                              onClick={() => history.push('/schedule/classes/class/edit/' + scheduleItemId + '/' + date)}>
+                                                {t("general.edit")}
+                                            </Dropdown.Item>
+                                          </HasPermissionWrapper>,
+                                          <HasPermissionWrapper key={v4()} permission="change" resource="scheduleclass">
+                                            <Dropdown.ItemDivider key={v4()} />
+                                            <Dropdown.Item
+                                              key={v4()}
+                                              badge={t('schedule.classes.all_classes_in_series')}
+                                              badgeType="secondary"
+                                              icon="edit-3"
+                                              onClick={() => history.push('/schedule/classes/all/edit/' + scheduleItemId)}>
+                                                {t("general.edit")}
+                                            </Dropdown.Item>
+                                          </HasPermissionWrapper>,
+                                          <HasPermissionWrapper key={v4()} permission="delete" resource="scheduleclass">
+                                            <Dropdown.ItemDivider key={v4()} />
+                                            <Mutation mutation={DELETE_SCHEDULE_CLASS} key={v4()}>
+                                              {(deleteScheduleClass, { data }) => (
+                                                  <Dropdown.Item
+                                                    key={v4()}
+                                                    badge={t('schedule.classes.all_classes_in_series')}
+                                                    badgeType="danger"
+                                                    icon="trash-2"
+                                                    onClick={() => {
+                                                      confirm_delete({
+                                                        t: t,
+                                                        msgConfirm: t("schedule.classes.delete_confirm_msg"),
+                                                        msgDescription: <p key={v4()}>
+                                                          {moment(date + ' ' + timeStart).format('LT')} {' - '}
+                                                          {moment(date + ' ' + timeEnd).format('LT')} {' '} @ {' '}
+                                                          {organizationLocationRoom.organizationLocation.name} {' '}
+                                                          {organizationLocationRoom.name}
+                                                          {organizationClasstype.Name}
+                                                          </p>,
+                                                        msgSuccess: t('schedule.classes.deleted'),
+                                                        deleteFunction: deleteScheduleClass,
+                                                        functionVariables: { variables: {
+                                                          input: {
+                                                            id: scheduleItemId
+                                                          }
+                                                        }, refetchQueries: [
+                                                          { query: GET_CLASSES_QUERY, variables: get_list_query_variables() }
+                                                        ]}
+                                                      })
+                                                  }}>
+                                                  {t("general.delete")}
+                                                  </Dropdown.Item>
+                                              )}
+                                            </Mutation>
+                                          </HasPermissionWrapper>
+                                        ]}
+                                      />
+                                    </Table.Col>
                                   </Table.Row>
-                                </Table.Header>
-                                <Table.Body>
-                                  {classes.map((
-                                    { scheduleItemId, 
-                                      frequencyType,
-                                      date, 
-                                      status,
-                                      description,
-                                      account, 
-                                      role,
-                                      account2,
-                                      role2,
-                                      organizationLocationRoom, 
-                                      organizationClasstype, 
-                                      organizationLevel,
-                                      timeStart, 
-                                      timeEnd,
-                                      displayPublic }) => (
-                                    <Table.Row key={v4()}>
-                                      <Table.Col>
-                                        {represent_class_status(status)}
-                                      </Table.Col>
-                                      <Table.Col>
-                                        {/* Start & end time */}
-                                        {moment(date + ' ' + timeStart).format(timeFormat)} {' - '}
-                                        {moment(date + ' ' + timeEnd).format(timeFormat)} { ' ' }
-                                        {(frequencyType === 'SPECIFIC') ? <Badge color="primary">{t('general.once')}</Badge> : null } <br />
-                                        <span className="text-muted">{description}</span>
-                                      </Table.Col>
-                                      <Table.Col>
-                                        {/* Location */}
-                                        {organizationLocationRoom.organizationLocation.name} <br />
-                                        <span className="text-muted">{organizationLocationRoom.name}</span>
-                                      </Table.Col>
-                                      <Table.Col>
-                                        {/* Type and level */}
-                                        {organizationClasstype.name} <br />
-                                        <span className="text-muted">
-                                          {(organizationLevel) ? organizationLevel.name: ""}
-                                        </span>
-                                      </Table.Col>
-                                      <Table.Col>
-                                        {/* Teacher(s) */}
-                                        { (account) ? 
-                                            represent_teacher(account.fullName, role) : 
-                                            <span className="text-red">{t("schedule.classes.no_teacher")}</span>
-                                        } <br />
-                                        <span className="text-muted">
-                                          {(account2) ? represent_teacher(account2.fullName, role2) : ""}
-                                        </span>
-                                      </Table.Col>
-                                      <Table.Col>
-                                        {/* Public */}
-                                        <BadgeBoolean value={displayPublic} />
-                                      </Table.Col>
-                                      <Table.Col>
-                                        <Dropdown
-                                          key={v4()}
-                                          className="pull-right"
-                                          type="button"
-                                          toggle
-                                          color="secondary btn-sm"
-                                          triggerContent={t("general.actions")}
-                                          items={[
-                                            <HasPermissionWrapper key={v4()} permission="view" resource="scheduleitemattendance">
-                                              <Dropdown.Item
-                                                key={v4()}
-                                                icon="check-circle"
-                                                onClick={() => history.push('/schedule/classes/class/attendance/' + scheduleItemId + '/' + date)}>
-                                                  {t("general.attendance")}
-                                              </Dropdown.Item>
-                                            </HasPermissionWrapper>,
-                                            <HasPermissionWrapper key={v4()} permission="view" resource="scheduleclassweeklyotc">
-                                              <Dropdown.Item
-                                                key={v4()}
-                                                icon="edit-3"
-                                                onClick={() => history.push('/schedule/classes/class/edit/' + scheduleItemId + '/' + date)}>
-                                                  {t("general.edit")}
-                                              </Dropdown.Item>
-                                            </HasPermissionWrapper>,
-                                            <HasPermissionWrapper key={v4()} permission="change" resource="scheduleclass">
-                                              <Dropdown.ItemDivider key={v4()} />
-                                              <Dropdown.Item
-                                                key={v4()}
-                                                badge={t('schedule.classes.all_classes_in_series')}
-                                                badgeType="secondary"
-                                                icon="edit-3"
-                                                onClick={() => history.push('/schedule/classes/all/edit/' + scheduleItemId)}>
-                                                  {t("general.edit")}
-                                              </Dropdown.Item>
-                                            </HasPermissionWrapper>,
-                                            <HasPermissionWrapper key={v4()} permission="delete" resource="scheduleclass">
-                                              <Dropdown.ItemDivider key={v4()} />
-                                              <Mutation mutation={DELETE_SCHEDULE_CLASS} key={v4()}>
-                                                {(deleteScheduleClass, { data }) => (
-                                                    <Dropdown.Item
-                                                      key={v4()}
-                                                      badge={t('schedule.classes.all_classes_in_series')}
-                                                      badgeType="danger"
-                                                      icon="trash-2"
-                                                      onClick={() => {
-                                                        confirm_delete({
-                                                          t: t,
-                                                          msgConfirm: t("schedule.classes.delete_confirm_msg"),
-                                                          msgDescription: <p key={v4()}>
-                                                            {moment(date + ' ' + timeStart).format('LT')} {' - '}
-                                                            {moment(date + ' ' + timeEnd).format('LT')} {' '} @ {' '}
-                                                            {organizationLocationRoom.organizationLocation.name} {' '}
-                                                            {organizationLocationRoom.name}
-                                                            {organizationClasstype.Name}
-                                                            </p>,
-                                                          msgSuccess: t('schedule.classes.deleted'),
-                                                          deleteFunction: deleteScheduleClass,
-                                                          functionVariables: { variables: {
-                                                            input: {
-                                                              id: scheduleItemId
-                                                            }
-                                                          }, refetchQueries: [
-                                                            { query: GET_CLASSES_QUERY, variables: get_list_query_variables() }
-                                                          ]}
-                                                        })
-                                                    }}>
-                                                    {t("general.delete")}
-                                                    </Dropdown.Item>
-                                                )}
-                                              </Mutation>
-                                            </HasPermissionWrapper>
-                                          ]}
-                                        />
-                                      </Table.Col>
-                                    </Table.Row>
-                                  ))}
-                                </Table.Body>
-                              </Table>
-                            }
-                          </Card.Body>
+                                ))}
+                              </Table.Body>
+                            </Table>
+                          }
                         </Card>
                       </div>
                       ))}
