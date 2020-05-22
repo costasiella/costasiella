@@ -13,7 +13,7 @@ import SiteWrapperShop from "../SiteWrapperShop"
 import ShopCheckoutProgress from "./ShopCheckoutProgress"
 
 
-function ShopBase({ t, match, history, children, title, return_url, checkoutProgress=false }) {
+function ShopBase({ t, match, history, children, title, return_url, pageHeaderOptions="", checkoutProgress=false }) {
 
   return (
     <SiteWrapperShop>
@@ -29,6 +29,7 @@ function ShopBase({ t, match, history, children, title, return_url, checkoutProg
                 </Link>
                 : ""
               }
+              { pageHeaderOptions }
             </div>
           </Page.Header>
             <Grid.Row>

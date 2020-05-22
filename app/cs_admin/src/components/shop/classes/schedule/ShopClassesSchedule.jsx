@@ -21,6 +21,7 @@ import {
   Table,
 } from "tabler-react";
 import ShopClassesScheduleBase from "./ShopClassesScheduleBase"
+import CSDatePicker from "../../../ui/CSDatePicker"
 
 import { GET_CLASSES_QUERY } from "../../../schedule/classes/queries"
 
@@ -62,7 +63,10 @@ function ShopClassesSchedule({ t, match, history }) {
   console.log(data.scheduleClasses)
 
   return (
-    <ShopClassesScheduleBase title={title}>
+    <ShopClassesScheduleBase 
+      title={title}
+      pageHeaderOptions="hello world"
+    >
         
       {data.scheduleClasses.map(({ date, classes }) =>
         <Grid.Row key={v4()}>

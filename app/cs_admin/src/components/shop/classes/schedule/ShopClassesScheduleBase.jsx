@@ -12,10 +12,10 @@ import {
 } from "tabler-react";
 import ShopBase from "../../ShopBase"
 
-function ShopClassesScheduleBase({ t, match, history, children }) {
+function ShopClassesScheduleBase({ t, match, history, children, pageHeaderOptions="" }) {
   
   return (
-    <ShopBase title={t("shop.title")}>
+    <ShopBase title={t("shop.title")} pageHeaderOptions={pageHeaderOptions}>
       <h4>{t("shop.classes.title")}</h4>
         {children}
     </ShopBase>
