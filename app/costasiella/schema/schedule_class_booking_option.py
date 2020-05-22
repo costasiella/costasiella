@@ -51,7 +51,6 @@ class ScheduleClassBookingOptionsType(graphene.ObjectType):
     subscriptions = graphene.List(ScheduleClassBookingSubscriptionType)
     schedule_item_prices = graphene.Field(ScheduleItemPriceNode)
 
-
     def resolve_account(self, info):
         # account
         rid = get_rid(self.account_id)
@@ -60,7 +59,6 @@ class ScheduleClassBookingOptionsType(graphene.ObjectType):
             raise Exception('Invalid Account ID!')
 
         return account
-
 
     def resolve_schedule_item(self, info):
         # account
@@ -71,15 +69,14 @@ class ScheduleClassBookingOptionsType(graphene.ObjectType):
 
         return schedule_item
 
-
     def resolve_schedule_item_prices(self, info):
         # Drop-in classpass
         schedule_item = self.resolve_schedule_item(info)
 
         qs = ScheduleItemPrice.objects.filter(
-            Q(schedule_item = schedule_item) & 
-            Q(date_start__lte = self.date) &
-            (Q(date_end__gte = self.date ) | Q(date_end__isnull = True))
+            Q(schedule_item=schedule_item) &
+            Q(date_start__lte=self.date) &
+            (Q(date_end__gte=self.date ) | Q(date_end__isnull=True))
         )
 
         print(qs)
@@ -88,7 +85,6 @@ class ScheduleClassBookingOptionsType(graphene.ObjectType):
             return qs.first()
         else:
             return None
-
 
     def resolve_classpasses(self, 
                             info,
@@ -99,10 +95,10 @@ class ScheduleClassBookingOptionsType(graphene.ObjectType):
         schedule_item = self.resolve_schedule_item(info)
 
         classpasses_filter = (
-            Q(account = account) & 
-            Q(date_start__lte = self.date) & 
-            (Q(date_end__gte = self.date) | Q(date_end__isnull = True)) & 
-            (Q(classes_remaining__gt = 0) | Q(organization_classpass__unlimited = True))
+            Q(account=account) &
+            Q(date_start__lte=self.date) &
+            (Q(date_end__gte=self.date) | Q(date_end__isnull=True)) &
+            (Q(classes_remaining__gt=0) | Q(organization_classpass__unlimited=True))
         )
 
         classpasses = AccountClasspass.objects.filter(classpasses_filter).order_by('organization_classpass__name')
@@ -123,7 +119,6 @@ class ScheduleClassBookingOptionsType(graphene.ObjectType):
             )
 
         return classpasses_list
-
 
     def resolve_subscriptions(self, 
                             info,
@@ -160,10 +155,10 @@ class ScheduleClassBookingOptionsType(graphene.ObjectType):
 class ScheduleClassBookingOptionsQuery(graphene.ObjectType):
     schedule_class_booking_options = graphene.Field(
         ScheduleClassBookingOptionsType,
-        account = graphene.ID(),
-        schedule_item = graphene.ID(),
-        date = graphene.types.datetime.Date(),
-        list_type = graphene.String(default_value="shop")   
+        account=graphene.ID(),
+        schedule_item=graphene.ID(),
+        date=graphene.types.datetime.Date(),
+        list_type=graphene.String(default_value="shop")
     )
 
     def resolve_schedule_class_booking_options(self, info, list_type, account, schedule_item, date, **kwargs):
