@@ -73,5 +73,9 @@ class ScheduleItemHelper:
                 schedule_item.organization_classtype = schedule_item_weekly_otc.organization_classtype
             if schedule_item_weekly_otc.organization_level:
                 schedule_item.organization_level = schedule_item_weekly_otc.organization_level
-
+            if schedule_item_weekly_otc.time_start:
+                schedule_item.time_start = schedule_item_weekly_otc.time_start
+            if schedule_item_weekly_otc.time_end:
+                schedule_item.time_end = schedule_item_weekly_otc.time_end
+                
         return schedule_item
