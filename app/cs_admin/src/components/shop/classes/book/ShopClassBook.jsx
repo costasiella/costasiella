@@ -1,6 +1,6 @@
 // @flow
 
-import React, { Component, useState } from 'react'
+import React, { useContext } from 'react'
 import { useQuery, useMutation, useLazyQuery } from '@apollo/react-hooks'
 import gql from "graphql-tag"
 import { v4 } from "uuid"
@@ -25,7 +25,7 @@ import {
 import { TimeStringToJSDateOBJ } from '../../../../tools/date_tools'
 // import { confirmAlert } from 'react-confirm-alert'; // Import
 import { toast } from 'react-toastify'
-
+import AppSettingsContext from '../../../context/AppSettingsContext'
 
 import ShopClassBookBack from "./ShopClassBookBack"
 import ShopClassBookBase from "./ShopClassBookBase"
@@ -40,6 +40,10 @@ import { GET_BOOKING_OPTIONS_QUERY } from "./queries"
 
 
 function ShopClassBook({ t, match, history }) {
+  const appSettings = useContext(AppSettingsContext)
+  const dateFormat = appSettings.dateFormat
+  const timeFormat = appSettings.timeFormatMoment
+
   const schedule_item_id = match.params.class_id
   const class_date = match.params.date
   const { loading, error, data } = useQuery(
@@ -74,14 +78,21 @@ function ShopClassBook({ t, match, history }) {
   const subscriptions = data.scheduleClassBookingOptions.subscriptions
   const prices = data.scheduleClassBookingOptions.scheduleItemPrices
   const scheduleItem = data.scheduleClassBookingOptions.scheduleItem
+
+  const location = scheduleItem.organizationLocationRoom.organizationLocation.name
+  const classType = scheduleItem.organizationClasstype.name
+  const timeStart = moment(TimeStringToJSDateOBJ(scheduleItem.timeStart)).format(timeFormat) 
+  const timeEnd = moment(TimeStringToJSDateOBJ(scheduleItem.timeEnd)).format(timeFormat) 
+  const date_display = moment(class_date).format(dateFormat)
   // const subtitle = class_subtitle({
   //   t: t,
-  //   location: scheduleItem.organizationLocationRoom.organizationLocation.name, 
+  //   location: , 
   //   locationRoom: scheduleItem.organizationLocationRoom.name,
-  //   classtype: scheduleItem.organizationClasstype.name, 
-  //   timeStart: TimeStringToJSDateOBJ(scheduleItem.timeStart), 
+  //   classtype: , 
+  //   timeStart: , 
   //   date: class_date
   // })
+  const class_info = date_display + ' ' + timeStart + ' - ' + timeEnd + ', ' + classType + ' ' + t("general.at") + ' ' + location
 
   console.log(prices)
   
@@ -90,8 +101,7 @@ function ShopClassBook({ t, match, history }) {
     <ShopClassBookBase pageHeaderOptions={<ShopClassBookBack />}>
       <Grid.Row>
         <Grid.Col md={12}>
-          <h4>{t('general.booking_options')}</h4>
-          <h5>Class info</h5>
+          { class_info }
           <div className="mt-6">
             <Grid.Row cards deck>
               {/* <ScheduleClassBookSubscriptions subscriptions={subscriptions} />
