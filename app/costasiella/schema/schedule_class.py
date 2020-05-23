@@ -420,6 +420,7 @@ def validate_schedule_classes_query_date_input(date_from,
 
 
 class ScheduleClassQuery(graphene.ObjectType):
+    # schedule_class = graphene.Field(ScheduleItemNode)
     schedule_classes = graphene.List(
         ScheduleClassesDayType,
         date_from=graphene.types.datetime.Date(), 
@@ -430,15 +431,41 @@ class ScheduleClassQuery(graphene.ObjectType):
         organization_location=graphene.String(),   
     )
 
-    def resolve_schedule_items(self, info, **kwargs):
-        user = info.context.user
-        require_login_and_one_of_permissions(user,
-            'costasiella.view_scheduleitem',
-            'costasiella.view_selfcheckin'
+
+    def resolve_schedule_class(self, info, schedule_item_id, date):
+        """
+        Resolve schedule class
+        :param info:
+        :param schedule_item_id:
+        :param date:
+        :return:
+        """
+        # account
+        rid = get_rid(schedule_item_id)
+        schedule_item = ScheduleItem.objects.get(pk=rid.id)
+        if not schedule_item:
+            raise Exception('Invalid Schedule Item ID!')
+
+        sih = ScheduleItemHelper()
+        schedule_item = sih.schedule_item_with_otc_data(schedule_item, self.date)
+
+        schedule_class = ScheduleClassType(
+            schedule_item_id=schedule_item.id,
+            frequency_type=schedule_item.frequencyType,
+            date=date,
+            status=schedule_item.status or "",
+            description=schedule_item.description or "",
+            account=schedule_item.account,
+            role=schedule_item.role,
+            account_2=schedule_item.account_2,
+            organization_location_room=schedule_item.organization_location_room,
+            organization_classtype=schedule_item.organization_classtype,
+            organization_level=schedule_item.organization_level,
+            time_start=schedule_item.time_start,
+            time_end=schedule_item.time_end
         )
 
-        ## return everything:
-        return ScheduleItem.objects.filter()
+        return schedule_class
 
 
     def resolve_schedule_classes(self, 

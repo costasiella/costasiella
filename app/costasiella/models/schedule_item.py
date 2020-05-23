@@ -14,6 +14,7 @@ from .choices.schedule_item_otc_statuses import get_schedule_item_otc_statuses
 
 # Create your models here.
 
+
 class ScheduleItem(models.Model):
     class Meta:
         permissions = [
