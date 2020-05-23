@@ -31,7 +31,7 @@ import ShopClassBookBack from "./ShopClassBookBack"
 import ShopClassBookBase from "./ShopClassBookBase"
 // import ScheduleClassBookClasspasses from "./ScheduleClassBookClasspasses"
 // import ScheduleClassBookSubscriptions from "./ScheduleClassBookSubscriptions"
-// import ScheduleClassBookPriceDropin from "./ScheduleClassBookPriceDropin"
+import ShopClassBookPriceDropin from "./ShopClassBookPriceDropin"
 // import ScheduleClassBookPriceTrial from "./ScheduleClassBookPriceTrial"
 // import ClassEditBase from "../ClassEditBase"
 
@@ -104,6 +104,10 @@ function ShopClassBook({ t, match, history }) {
           { class_info }
           <div className="mt-6">
             <Grid.Row cards deck>
+              {(prices) ?
+                (prices.organizationClasspassDropin) ? 
+                  <ShopClassBookPriceDropin priceDropin={prices.organizationClasspassDropin}/> : "" 
+              : "" }
               {/* <ScheduleClassBookSubscriptions subscriptions={subscriptions} />
               <ScheduleClassBookClasspasses classpasses={classpasses} />
               {(prices) ?
