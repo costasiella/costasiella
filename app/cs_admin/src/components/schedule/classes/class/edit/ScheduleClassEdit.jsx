@@ -13,7 +13,7 @@ import { GET_CLASSES_QUERY } from '../../queries'
 import { get_list_query_variables } from '../../tools'
 // import { SCHEDULE_CLASS_TEACHER_SCHEMA } from './yupSchema'
 import ScheduleClassEditForm from './ScheduleClassEditForm'
-import { TimeStringToJSDateOBJ } from '../../../../../tools/date_tools'
+import { TimeStringToJSDateOBJ, dateToLocalISOTime } from '../../../../../tools/date_tools'
 
 import { class_subtitle } from "../tools"
 
@@ -102,8 +102,13 @@ function ScheduleClassEdit({ t, match, history }) {
     if (initialData.organizationLevel) {
       initialValues.organizationLevel = initialData.organizationLevel.id
     }
-    initialValues.timeStart = initialData.timeStart
-    initialValues.timeEnd = initialData.timeEnd
+    if (initialData.timeStart) {
+      initialValues.timeStart = TimeStringToJSDateOBJ(initialData.timeStart)
+    }
+    if (initialData.timeEnd) {
+      initialValues.timeEnd = TimeStringToJSDateOBJ(initialData.timeEnd)
+    }
+    
   } else {
     console.log('setting initial values')
     initialValues.status = ""
@@ -147,6 +152,20 @@ function ScheduleClassEdit({ t, match, history }) {
                         //   dateEnd = values.dateEnd
                         // }
 
+                        console.log(values.timeStart)
+                        console.log(values.timeEnd)
+
+                        let timeStart = undefined
+                        let timeEnd = undefined
+                        if (values.timeStart) {
+                          timeStart = dateToLocalISOTime(values.timeStart)
+                        }
+                        
+                        if (values.timeEnd) {
+                          timeEnd = dateToLocalISOTime(values.timeEnd)  
+                        }
+                        
+
                         updateScheduleClassWeeklyOTC({ variables: {
                           input: {
                             scheduleItem: schedule_item_id,
@@ -159,7 +178,9 @@ function ScheduleClassEdit({ t, match, history }) {
                             role2: values.role2,
                             organizationLocationRoom: values.organizationLocationRoom,
                             organizationClasstype: values.organizationClasstype,
-                            organizationLevel: values.organizationLevel
+                            organizationLevel: values.organizationLevel,
+                            timeStart: timeStart,
+                            timeEnd: timeEnd,
                           }
                         }, refetchQueries: [
                             {query: GET_SCHEDULE_CLASS_WEEKLY_OTCS_QUERY, variables: query_vars},
