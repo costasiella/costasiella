@@ -144,8 +144,6 @@ class ScheduleClassesDayType(graphene.ObjectType):
 
             return where
 
-
-
         iso_week_day = self.resolve_iso_week_day(info)
         sorting = self.order_by
         if not sorting: # Default to sort by location, then time
@@ -315,6 +313,8 @@ class ScheduleClassesDayType(graphene.ObjectType):
         #     "class_date": self.date, 
         #     "iso_week_day": iso_week_day
         # }
+
+        #TODO: add parameters here to prevent SQL injection: IMPORTANT!!!
 
         schedule_items = ScheduleItem.objects.raw(query)
         # print(schedule_items.query)

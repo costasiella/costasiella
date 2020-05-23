@@ -13,6 +13,7 @@ from .choices.schedule_item_otc_statuses import get_schedule_item_otc_statuses
 
 # Create your models here.
 
+
 class ScheduleItemWeeklyOTC(models.Model):
     TEACHER_ROLES = get_teacher_roles()
     STATUSES = get_schedule_item_otc_statuses()

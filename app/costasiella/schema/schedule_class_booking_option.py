@@ -7,7 +7,8 @@ from graphene_django.filter import DjangoFilterConnectionField
 from graphql import GraphQLError
 from graphql_relay import to_global_id
 
-from ..models import Account, AccountClasspass, AccountSubscription, ScheduleItem, ScheduleItemPrice
+from ..models import Account, AccountClasspass, AccountSubscription, \
+                     ScheduleItem, ScheduleItemPrice, ScheduleItemWeeklyOTC
 from ..modules.gql_tools import require_login, require_login_and_one_of_permissions, get_rid
 from ..modules.messages import Messages
 from ..modules.model_helpers.schedule_item_helper import ScheduleItemHelper
@@ -66,6 +67,26 @@ class ScheduleClassBookingOptionsType(graphene.ObjectType):
         schedule_item = ScheduleItem.objects.get(pk=rid.id)
         if not schedule_item:
             raise Exception('Invalid Schedule Item ID!')
+
+        schedule_item_weekly_otc = ScheduleItemWeeklyOTC.objects.filter(
+            schedule_item=schedule_item,
+            date=self.date
+        )
+
+        # Change schedule item in memory before returning, but don't save it!
+        if schedule_item_weekly_otc:
+            if schedule_item_weekly_otc.account:
+                schedule_item.account = schedule_item_weekly_otc.account
+                schedule_item.role = schedule_item_weekly_otc.role
+            if schedule_item_weekly_otc.account_2:
+                schedule_item.account = schedule_item_weekly_otc.account_2
+                schedule_item.role = schedule_item_weekly_otc.role_2
+            if schedule_item_weekly_otc.organization_location_room:
+                schedule_item.organization_location_room = schedule_item_weekly_otc.organization_location_room
+            if schedule_item_weekly_otc.organization_classtype:
+                schedule_item.organization_classtype = schedule_item_weekly_otc.organization_classtype
+            if schedule_item_weekly_otc.organization_level:
+                schedule_item.organization_level = schedule_item_weekly_otc.organization_level
 
         return schedule_item
 
