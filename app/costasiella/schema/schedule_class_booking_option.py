@@ -68,29 +68,8 @@ class ScheduleClassBookingOptionsType(graphene.ObjectType):
         if not schedule_item:
             raise Exception('Invalid Schedule Item ID!')
 
-        schedule_item_weekly_otc_qs = ScheduleItemWeeklyOTC.objects.filter(
-            schedule_item=schedule_item,
-            date=self.date
-        )
-
-        schedule_item_weekly_otc = None
-        if schedule_item_weekly_otc_qs.exists():
-            schedule_item_weekly_otc = schedule_item_weekly_otc_qs.first()
-
-        # Change schedule item in memory before returning, but don't save it!
-        if schedule_item_weekly_otc:
-            if schedule_item_weekly_otc.account:
-                schedule_item.account = schedule_item_weekly_otc.account
-                schedule_item.role = schedule_item_weekly_otc.role
-            if schedule_item_weekly_otc.account_2:
-                schedule_item.account = schedule_item_weekly_otc.account_2
-                schedule_item.role = schedule_item_weekly_otc.role_2
-            if schedule_item_weekly_otc.organization_location_room:
-                schedule_item.organization_location_room = schedule_item_weekly_otc.organization_location_room
-            if schedule_item_weekly_otc.organization_classtype:
-                schedule_item.organization_classtype = schedule_item_weekly_otc.organization_classtype
-            if schedule_item_weekly_otc.organization_level:
-                schedule_item.organization_level = schedule_item_weekly_otc.organization_level
+        sih = ScheduleItemHelper()
+        schedule_item = sih.schedule_item_with_otc_data(schedule_item, self.date)
 
         return schedule_item
 
