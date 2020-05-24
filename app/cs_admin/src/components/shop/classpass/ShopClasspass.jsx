@@ -8,6 +8,8 @@ import { Link } from 'react-router-dom'
 import { Formik } from 'formik'
 import { toast } from 'react-toastify'
 
+import moment from 'moment'
+
 import {
   Card,
   Grid,
@@ -25,6 +27,9 @@ import { CREATE_ORDER } from "../queries"
 function ShopClasspass({ t, match, history }) {
   const title = t("shop.home.title")
   const id = match.params.id
+  const scheduleItemId = match.params.class_id
+  const classDate = match.params.date
+
   const { loading, error, data } = useQuery(GET_CLASSPASS_QUERY, {
     variables: { id: id }
   })
