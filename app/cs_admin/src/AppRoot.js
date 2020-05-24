@@ -370,6 +370,7 @@ function AppRoot({ t }) {
           <Route exact path = "/shop/classes/book/:class_id/:date" component={ShopClassBook} />
           <Route exact path = "/shop/classpasses" component={ShopClasspasses} />
           <Route exact path = "/shop/classpass/:id" component={ShopClasspass} />
+          <Route exact path = "/shop/classpass/:id/:class_id/:date" component={ShopClasspass} />
 
           {/* Settings */}
           <PrivateRoute exact path="/settings" component={SettingsHome} />
