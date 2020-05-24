@@ -9,6 +9,8 @@ import {
   Grid,
 } from "tabler-react";
 
+import ShopClassBookPriceBtn from './ShopClassBookPriceBtn'
+
 function ShopClassBookPriceDropin({ 
   t, 
   match, 
@@ -28,8 +30,7 @@ function ShopClassBookPriceDropin({
         {t("shop.classes.book.dropin_pay_and_book")} <br />
       </Card.Body>
       <Card.Footer>
-        Button here
-        {/* <ShopClassBookPriceBtn price={priceDropin} locationID={locationId} /> */}
+        <ShopClassBookPriceBtn price={priceDropin} />
       </Card.Footer>
       </Card>
     </Grid.Col>
