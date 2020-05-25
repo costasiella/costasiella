@@ -92,47 +92,55 @@ function FinanceOrderEdit({t, match, history}) {
 
         </Grid.Col>
         <Grid.Col md={6}>
-          <Formik
-            initialValues={{ 
-              status: order.status, 
-            }}
-            // validationSchema={GLACCOUNT_SCHEMA}
-            onSubmit={(values, { setSubmitting }) => {
-                console.log('submit values:')
-                console.log(values)
+          {(order.status != "DELIVERED") ? 
+            <Formik
+              initialValues={{ 
+                status: order.status, 
+              }}
+              // validationSchema={GLACCOUNT_SCHEMA}
+              onSubmit={(values, { setSubmitting }) => {
+                  console.log('submit values:')
+                  console.log(values)
 
-                updateOrder({ variables: {
-                  input: {
-                    id: match.params.id,
-                    status: values.status
-                  }
-                }, refetchQueries: [
-                    {query: GET_ORDERS_QUERY }
-                ]})
-                .then(({ data }) => {
-                    console.log('got data', data)
-                    toast.success((t('finance.orders.toast_edit_success')), {
-                        position: toast.POSITION.BOTTOM_RIGHT
-                      })
-                    setSubmitting(false)
-                  }).catch((error) => {
-                    toast.error((t('general.toast_server_error')) + ': ' +  error, {
-                        position: toast.POSITION.BOTTOM_RIGHT
-                      })
-                    console.log('there was an error sending the query', error)
-                    setSubmitting(false)
-                  })
-            }}
-            >
-            {({ isSubmitting, errors, values }) => (
-              <FinanceOrderEditForm
-                isSubmitting={isSubmitting}
-                errors={errors}
-                values={values}
-                returnUrl={returnUrl}
-              />
-            )}
-          </Formik>
+                  updateOrder({ variables: {
+                    input: {
+                      id: match.params.id,
+                      status: values.status
+                    }
+                  }, refetchQueries: [
+                      {query: GET_ORDERS_QUERY }
+                  ]})
+                  .then(({ data }) => {
+                      console.log('got data', data)
+                      toast.success((t('finance.orders.toast_edit_success')), {
+                          position: toast.POSITION.BOTTOM_RIGHT
+                        })
+                      setSubmitting(false)
+                    }).catch((error) => {
+                      toast.error((t('general.toast_server_error')) + ': ' +  error, {
+                          position: toast.POSITION.BOTTOM_RIGHT
+                        })
+                      console.log('there was an error sending the query', error)
+                      setSubmitting(false)
+                    })
+              }}
+              >
+              {({ isSubmitting, errors, values }) => (
+                <FinanceOrderEditForm
+                  isSubmitting={isSubmitting}
+                  errors={errors}
+                  values={values}
+                  returnUrl={returnUrl}
+                />
+              )}
+            </Formik>
+            :     
+            <Card title={t('general.status')}>
+              <Card.Body> 
+                <span className="text-green"><Icon name="check" /></span> {t("finance.orders.statuses.DELIVERED")}
+              </Card.Body>
+            </Card>
+          }
         </Grid.Col>
       </Grid.Row> 
       {/* End information row */}

@@ -11,6 +11,7 @@ import {
   Card,
   Form,
   Grid,
+  Icon
 } from "tabler-react";
 
 
@@ -34,6 +35,10 @@ const FinanceOrderEditForm = ({ t, isSubmitting, errors, values, returnUrl }) =>
               </Field>
               <ErrorMessage name="status" component="span" className="invalid-feedback" />
             </Form.Group>
+            <span className="text-muted">
+              <Icon name="info" /> {' '}
+              {t("finance.orders.set_status_to_delivered_to_deliver_manually")}
+            </span>
           </Grid.Col>
           <Grid.Col md={2}>
           <Button 
