@@ -7,7 +7,7 @@ from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
 from graphql import GraphQLError
 
-from ..models import AccountAcceptedDocument, FinanceOrder, OrganizationClasspass, OrganizationDocument
+from ..models import AccountAcceptedDocument, FinanceOrder, OrganizationClasspass, OrganizationDocument, ScheduleItem
 from ..models.choices.finance_order_statuses import get_finance_order_statuses
 from ..modules.gql_tools import require_login, require_login_and_permission, get_rid, get_error_code
 from ..modules.finance_tools import display_float_as_amount
@@ -101,6 +101,14 @@ def validate_create_update_input(input, update=False):
             if not organization_classpass:
                 raise Exception(_('Invalid Organization Classpass ID!'))
 
+        if 'schedule_item' in input:
+            if 'attendance_date' not in input:
+                raise Exception(_('Date is required when specifying Schedule Item ID!'))
+            rid = get_rid(input["schedule_item"])
+            schedule_item = ScheduleItem.objects.get(id=rid.id)
+            result['schedule_item'] = schedule_item
+            if not schedule_item:
+                raise Exception(_('Invalid Schedule Item ID!'))
     else:
         # Update checks
         order_statuses = get_finance_order_statuses()
@@ -151,17 +159,22 @@ class CreateFinanceOrder(graphene.relay.ClientIDMutation):
     class Input:
         message = graphene.String(required=False, default_value="")
         organization_classpass = graphene.ID(required=False)
+        schedule_item = graphene.ID(required=False)
+        attendance_date = graphene.types.datetime.Date(required=False)
         
     finance_order = graphene.Field(FinanceOrderNode)
 
     @classmethod
     def mutate_and_get_payload(self, root, info, **input):
         user = info.context.user
-        require_login_and_permission(user, 'costasiella.add_financeorder')
+        require_login(user)
+
+        print(input)
 
         validation_result = validate_create_update_input(input)
         finance_order = FinanceOrder(
             account=user,
+            status="AWAITING_PAYMENT"
         )
 
         if 'message' in input:
@@ -170,9 +183,12 @@ class CreateFinanceOrder(graphene.relay.ClientIDMutation):
         # Save order
         finance_order.save()
 
+        attendance_date = input.get('attendance_date', None)
         # Process items
         if 'organization_classpass' in validation_result:
-            finance_order.item_add_classpass(validation_result['organization_classpass'])
+            finance_order.item_add_classpass(validation_result['organization_classpass'],
+                                             schedule_item=validation_result.get('schedule_item', None),
+                                             attendance_date=attendance_date)
 
         # Accept terms and privacy policy
         create_finance_order_log_accepted_documents(info)
