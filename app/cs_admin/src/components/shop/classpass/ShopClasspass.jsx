@@ -74,27 +74,27 @@ function ShopClasspass({ t, match, history }) {
           <ShopClasspassesPricingCard classpass={classpass} active={true} />
         </Grid.Col>
         <Grid.Col md={4}>
-          <Card title={t("shop.classpass.additional_information")}>
-            <Card.Body>
-              <div dangerouslySetInnerHTML={{__html:classpass.description}}></div>
-            </Card.Body>
-          </Card>
           {(dataClass && !loadingClass && !errorClass) ?
             <Card title={t("shop.classpass.class_book_information")}>
               <Card.Body>
-                {t("shop.classbass.class_book_explanation")} <br /><br />
+                {t("shop.classpass.class_book_explanation")} <br /><br />
                 <b>
                   {moment(classDate).format(dateFormat)} {' '}
                   {moment(TimeStringToJSDateOBJ(dataClass.scheduleClass.timeStart)).format(timeFormat)} {' - '}
                   {moment(TimeStringToJSDateOBJ(dataClass.scheduleClass.timeEnd)).format(timeFormat)} <br />  
                 </b>
                 {dataClass.scheduleClass.organizationClasstype.name + " " + t("general.at") + ' ' + 
-                 dataClass.scheduleClass.organizationLocationRoom.organizationLocation.name}
+                  dataClass.scheduleClass.organizationLocationRoom.organizationLocation.name}
 
               </Card.Body>
             </Card>
             : "" 
           }
+          <Card title={t("shop.classpass.additional_information")}>
+            <Card.Body>
+              <div dangerouslySetInnerHTML={{__html:classpass.description}}></div>
+            </Card.Body>
+          </Card>
         </Grid.Col>
         <Grid.Col md={4}>
           <Card title={t("shop.checkout.title")}>
