@@ -100,7 +100,6 @@ def validate_create_update_input(input, update=False):
             if not finance_payment_method:
                 raise Exception(_('Invalid Finance Payment Method ID!'))
 
-
     return result
 
 
@@ -121,11 +120,11 @@ class CreateFinanceInvoice(graphene.relay.ClientIDMutation):
         finance_invoice_group = validation_result['finance_invoice_group']
 
         finance_invoice = FinanceInvoice(
-            account = validation_result['account'],
-            finance_invoice_group = finance_invoice_group,
-            status = 'DRAFT',
-            terms = finance_invoice_group.terms,
-            footer = finance_invoice_group.footer
+            account=validation_result['account'],
+            finance_invoice_group=finance_invoice_group,
+            status='DRAFT',
+            terms=finance_invoice_group.terms,
+            footer=finance_invoice_group.footer
         )
 
         if 'summary' in input:

@@ -40,7 +40,7 @@ class FinanceOrderItemFilter(FilterSet):
 class FinanceOrderItemNode(DjangoObjectType):
     class Meta:
         model = FinanceOrderItem
-        filter_fields = [ 'id', 'finance_order' ]
+        filter_fields = ['id', 'finance_order']
         interfaces = (graphene.relay.Node, FinanceOrderItemInterface, )
 
     def resolve_price_display(self, info):
@@ -67,7 +67,6 @@ class FinanceOrderItemNode(DjangoObjectType):
 class FinanceOrderItemQuery(graphene.ObjectType):  
     finance_order_items = DjangoFilterConnectionField(FinanceOrderItemNode)
     finance_order_item = graphene.relay.Node.Field(FinanceOrderItemNode)
-
 
     def resolve_finance_order_items(self, info, **kwargs):
         user = info.context.user
