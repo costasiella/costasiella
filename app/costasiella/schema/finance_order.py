@@ -17,6 +17,7 @@ from ..dudes.mail_dude import MailDude
 
 m = Messages()
 
+
 class FinanceOrderInterface(graphene.Interface):
     id = graphene.GlobalID()
     order_number = graphene.Int()
@@ -235,6 +236,9 @@ class UpdateFinanceOrder(graphene.relay.ClientIDMutation):
 
         if 'status' in validation_result:
             finance_order.status = validation_result['status']
+            # Deliver order when current status isn't "delivered"
+            if validation_result['status'] == 'DELIVERED' and finance_order.status != "DELIVERED":
+                finance_order.deliver()
 
         finance_order.save()
 
