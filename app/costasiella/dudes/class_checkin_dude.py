@@ -100,16 +100,18 @@ class ClassCheckinDude():
             raise Exception(_('This pass is not valid on this date.'))
 
         schedule_item_attendance = ScheduleItemAttendance(
-            attendance_type = "CLASSPASS",
-            account = account,
-            account_classpass = account_classpass,
-            schedule_item = schedule_item,
-            date = date,
-            online_booking = online_booking,
-            booking_status = booking_status
+            attendance_type="CLASSPASS",
+            account=account,
+            account_classpass=account_classpass,
+            schedule_item=schedule_item,
+            date=date,
+            online_booking=online_booking,
+            booking_status=booking_status
         )
 
         schedule_item_attendance.save()
+        account_classpass.update_classes_remaining()
+        account_classpass.save()
 
         return schedule_item_attendance
 
