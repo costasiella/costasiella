@@ -1,20 +1,15 @@
 from django.utils.translation import gettext as _
 from django.utils import timezone
-import datetime
-
-now = timezone.now()
-
 from django.db import models
 
 from ..models.choices.finance_order_statuses import get_finance_order_statuses
 from .account import Account
 from .finance_invoice import FinanceInvoice
-from .finance_invoice_group import FinanceInvoiceGroup
 from .finance_invoice_group_default import FinanceInvoiceGroupDefault
-# from .finance_invoice_group import FinanceInvoiceGroup
-# from .finance_payment_method import FinancePaymentMethod
 
 from ..dudes.class_checkin_dude import ClassCheckinDude
+
+now = timezone.now()
 
 
 class FinanceOrder(models.Model):
@@ -86,7 +81,6 @@ class FinanceOrder(models.Model):
             finance_order_item = self._item_add_class_data(finance_order_item,
                                                            schedule_item,
                                                            attendance_date)
-
         finance_order_item.save()
 
         self.update_amounts()
@@ -105,12 +99,12 @@ class FinanceOrder(models.Model):
         # Don't create an invoice when there's nothing that needs to be paid
         create_invoice = False
         finance_invoice = None
+
         if self.total > 0:
             create_invoice = True
             finance_invoice = self._deliver_create_invoice()
 
         items = FinanceOrderItem.objects.filter(finance_order=self)
-        print(items)
 
         for item in items:
             if item.organization_classpass:
@@ -121,6 +115,7 @@ class FinanceOrder(models.Model):
                 )
 
                 if item.schedule_item and item.attendance_date:
+                    print("DELIVER CLASS CHECKIN FOR CLASS PASS")
                     self._deliver_checkin_class(
                         schedule_item=item.schedule_item,
                         attendance_date=item.attendance_date,
