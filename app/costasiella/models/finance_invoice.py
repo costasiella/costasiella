@@ -153,16 +153,16 @@ class FinanceInvoice(models.Model):
         # finance_invoice = FinanceInvoice.objects.get(pk=self.id)
 
         finance_invoice_item = FinanceInvoiceItem(
-            finance_invoice = self,
-            account_classpass = account_classpass,
-            line_number = self._get_item_next_line_nr(),
-            product_name = _('Class pass'),
-            description = _('Class pass %s' % str(account_classpass.pk)),
-            quantity = 1,
-            price = organization_classpass.price,
-            finance_tax_rate = organization_classpass.finance_tax_rate,
-            finance_glaccount = organization_classpass.finance_glaccount,
-            finance_costcenter = organization_classpass.finance_costcenter,
+            finance_invoice=self,
+            account_classpass=account_classpass,
+            line_number=self._get_item_next_line_nr(),
+            product_name=_('Class pass'),
+            description=_('Class pass %s\n%s' % (str(account_classpass.pk), organization_classpass.name)),
+            quantity=1,
+            price=organization_classpass.price,
+            finance_tax_rate=organization_classpass.finance_tax_rate,
+            finance_glaccount=organization_classpass.finance_glaccount,
+            finance_costcenter=organization_classpass.finance_costcenter,
         )
 
         finance_invoice_item.save()
