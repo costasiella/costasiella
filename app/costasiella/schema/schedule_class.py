@@ -296,10 +296,10 @@ class ScheduleClassesDayType(graphene.ObjectType):
                 {where_sql}
             ORDER BY {order_by_sql}
         """.format(
-            class_date = self.date,
-            iso_week_day = iso_week_day,
-            where_sql = _get_where_query(),
-            order_by_sql = order_by_sql
+            class_date=self.date,
+            iso_week_day=iso_week_day,
+            where_sql=_get_where_query(),
+            order_by_sql=order_by_sql
         )
 
         print(query)
@@ -314,7 +314,7 @@ class ScheduleClassesDayType(graphene.ObjectType):
         #     "iso_week_day": iso_week_day
         # }
 
-        #TODO: add parameters here to prevent SQL injection: IMPORTANT!!!
+        # TODO: add parameters here to prevent SQL injection: IMPORTANT!!!
 
         schedule_items = ScheduleItem.objects.raw(query)
         # print(schedule_items.query)
@@ -397,7 +397,6 @@ def validate_schedule_classes_query_date_input(date_from,
         if order_by not in sort_options:
             raise Exception(_("orderBy can only be 'location' or 'starttime'")) 
 
-
     print("###########")
     print(organization_location)
 
@@ -420,7 +419,7 @@ def validate_schedule_classes_query_date_input(date_from,
 
 
 class ScheduleClassQuery(graphene.ObjectType):
-    # schedule_class = graphene.Field(ScheduleItemNode)
+    schedule_class = graphene.Field(ScheduleClassType, schedule_item_id=graphene.ID(), date=graphene.types.datetime.Date())
     schedule_classes = graphene.List(
         ScheduleClassesDayType,
         date_from=graphene.types.datetime.Date(), 
@@ -431,8 +430,10 @@ class ScheduleClassQuery(graphene.ObjectType):
         organization_location=graphene.String(),   
     )
 
-
-    def resolve_schedule_class(self, info, schedule_item_id, date):
+    def resolve_schedule_class(self,
+                               info,
+                               schedule_item_id,
+                               date):
         """
         Resolve schedule class
         :param info:
@@ -440,19 +441,18 @@ class ScheduleClassQuery(graphene.ObjectType):
         :param date:
         :return:
         """
-        # account
         rid = get_rid(schedule_item_id)
         schedule_item = ScheduleItem.objects.get(pk=rid.id)
         if not schedule_item:
             raise Exception('Invalid Schedule Item ID!')
 
         sih = ScheduleItemHelper()
-        schedule_item = sih.schedule_item_with_otc_data(schedule_item, self.date)
+        schedule_item = sih.schedule_item_with_otc_data(schedule_item, date)
 
         schedule_class = ScheduleClassType(
-            schedule_item_id=schedule_item.id,
-            frequency_type=schedule_item.frequencyType,
             date=date,
+            schedule_item_id=schedule_item.id,
+            frequency_type=schedule_item.frequency_type,
             status=schedule_item.status or "",
             description=schedule_item.description or "",
             account=schedule_item.account,
@@ -466,7 +466,6 @@ class ScheduleClassQuery(graphene.ObjectType):
         )
 
         return schedule_class
-
 
     def resolve_schedule_classes(self, 
                                  info, 

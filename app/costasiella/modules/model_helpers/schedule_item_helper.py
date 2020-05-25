@@ -59,8 +59,7 @@ class ScheduleItemHelper:
         if schedule_item_weekly_otc_qs.exists():
             schedule_item_weekly_otc = schedule_item_weekly_otc_qs.first()
 
-        # Change schedule item in memory before returning, but don't save it!
-        if schedule_item_weekly_otc:
+            # Change schedule item in memory before returning, but don't save it!
             if schedule_item_weekly_otc.account:
                 schedule_item.account = schedule_item_weekly_otc.account
                 schedule_item.role = schedule_item_weekly_otc.role
