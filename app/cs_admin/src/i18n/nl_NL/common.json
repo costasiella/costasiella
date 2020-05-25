@@ -340,7 +340,8 @@
             "edit_details": "__STRING_NOT_TRANSLATED__",
             "placed_at": "__STRING_NOT_TRANSLATED__",
             "toast_edit_success": "__STRING_NOT_TRANSLATED__",
-            "customer_message": "__STRING_NOT_TRANSLATED__"
+            "customer_message": "__STRING_NOT_TRANSLATED__",
+            "set_status_to_delivered_to_deliver_manually": "__STRING_NOT_TRANSLATED__"
         },
         "glaccounts": {
             "title": "__STRING_NOT_TRANSLATED__",

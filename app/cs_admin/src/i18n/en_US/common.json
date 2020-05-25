@@ -165,7 +165,8 @@
             "edit_details": "Edit order",
             "placed_at": "Received on",
             "toast_edit_success": "Saved status",
-            "customer_message": "Customer message"
+            "customer_message": "Customer message",
+            "set_status_to_delivered_to_deliver_manually": "Change the status to 'Delivered' to manually deliver the order and create an invoice."
         }
     },
     "general": {
