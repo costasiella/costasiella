@@ -1,15 +1,12 @@
 from django.utils.translation import gettext as _
 
-from ..models import ScheduleItemAttendance
-from ..models import OrganizationClasspassGroupClasspass, ScheduleItemOrganizationClasspassGroup
-from ..models import OrganizationSubscriptionGroupSubscription, ScheduleItemOrganizationSubscriptionGroup
-
 
 class ClassCheckinDude():
     def _class_checkedin(self, account, schedule_item, date):
         """
         :return: schedule_item_attendance object if found, so we can check for reviews
         """
+        from ..models import ScheduleItemAttendance
         schedule_item_attendance = ScheduleItemAttendance.objects.filter(
             account=account,
             schedule_item=schedule_item,
@@ -40,7 +37,6 @@ class ClassCheckinDude():
                 raise Exception(_('This account is already checked in to this class'))
             # else:
             #TODO: Write review check-ins code
-
 
         from .sales_dude import SalesDude
         sales_dude = SalesDude()
@@ -75,6 +71,8 @@ class ClassCheckinDude():
         """
         :return: ScheduleItemAttendance object if successful, raise error if not.
         """
+        from ..models import ScheduleItemAttendance
+
         # Check if not already signed in
         qs = self._class_checkedin(account, schedule_item, date)
         print(qs)
@@ -174,6 +172,7 @@ class ClassCheckinDude():
         """
         :return: return list of class permissons
         """
+        from ..models import OrganizationClasspassGroupClasspass, ScheduleItemOrganizationClasspassGroup
         organization_classpass = account_classpass.organization_classpass
 
         # Get groups for class pass
@@ -262,6 +261,7 @@ class ClassCheckinDude():
         """
         :return: ScheduleItemAttendance object if successful, raise error if not.
         """
+        from ..models import ScheduleItemAttendance
         # Check if not already signed in
         qs = self._class_checkedin(account, schedule_item, date)
         print(qs)
@@ -306,6 +306,8 @@ class ClassCheckinDude():
         """
         :return: return list of class permissons for this subscription
         """
+        from ..models import OrganizationSubscriptionGroupSubscription, ScheduleItemOrganizationSubscriptionGroup
+
         organization_subscription = account_subscription.organization_subscription
 
         # Get groups for class pass
