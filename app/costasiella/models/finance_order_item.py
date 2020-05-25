@@ -1,9 +1,7 @@
-from django.utils.translation import gettext as _
-from django.utils import timezone
 import datetime
 
-now = timezone.now()
-
+from django.utils.translation import gettext as _
+from django.utils import timezone
 from django.db import models
 
 from .finance_costcenter import FinanceCostCenter
@@ -12,8 +10,10 @@ from .finance_order import FinanceOrder
 from .finance_tax_rate import FinanceTaxRate
 from .organization_classpass import OrganizationClasspass
 from .schedule_item import ScheduleItem
-
 from .choices.schedule_item_attendance_types import get_schedule_item_attendance_types
+
+now = timezone.now()
+
 
 class FinanceOrderItem(models.Model):
     ATTENDANCE_TYPES = get_schedule_item_attendance_types()
@@ -39,10 +39,8 @@ class FinanceOrderItem(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-        
     def __str__(self):
         return _("Order: ") + str(self.id) + self.product_name
-
 
     def save(self, *args, **kwargs):
         self.subtotal = self._calculate_subtotal()
@@ -51,7 +49,6 @@ class FinanceOrderItem(models.Model):
 
         super(FinanceOrderItem, self).save(*args, **kwargs)
 
-    
     def _calculate_subtotal(self):
         # If tax is included in price, first remove it.
         tax_rate = self.finance_tax_rate
@@ -64,7 +61,6 @@ class FinanceOrderItem(models.Model):
 
         return float(price) * float(self.quantity)
 
-
     def _calculate_tax(self):
         tax_rate = self.finance_tax_rate
         if tax_rate:
@@ -73,8 +69,7 @@ class FinanceOrderItem(models.Model):
             return float(self.subtotal) * float(percentage)
         else:
             return 0
-        
-    
+
     def _calculate_total(self):
         return self.subtotal + self.tax
 
