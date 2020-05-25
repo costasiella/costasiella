@@ -113,12 +113,12 @@ class FinanceOrder(models.Model):
         finance_invoice_group = finance_invoice_group_default.finance_invoice_group
 
         finance_invoice = FinanceInvoice(
-            account = self.account,
-            finance_invoice_group = finance_invoice_group,
-            summary = _("Order %s" % self.id),
-            status = "SENT",
-            terms = finance_invoice_group.terms,
-            footer = finance_invoice_group.footer
+            account=self.account,
+            finance_invoice_group=finance_invoice_group,
+            summary=_("Order %s" % self.id),
+            status="SENT",
+            terms=finance_invoice_group.terms,
+            footer=finance_invoice_group.footer
         )
         finance_invoice.save()
         self.finance_invoice = finance_invoice
