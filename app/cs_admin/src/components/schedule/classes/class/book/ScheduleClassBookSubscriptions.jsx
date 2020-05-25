@@ -49,7 +49,6 @@ function ScheduleClassBookSubscriptions({
   history, 
   subscriptions, 
   locationId,
-  onClickCheckin=f=>f, 
   returnTo="schedule_classes"
 }) {
 
