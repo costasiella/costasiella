@@ -39,3 +39,23 @@ export const GET_CLASSPASS_QUERY = gql`
     }
   }
 `
+
+
+export const GET_CLASS_QUERY = gql`
+  query ScheduleClass($scheduleItemId: ID!, $date: Date!) {
+    scheduleClass(scheduleItemId: $scheduleItemId, date:$date) {
+      scheduleItemId 
+      date
+      organizationLocationRoom {
+        organizationLocation {
+          name
+        }
+      }
+      organizationClasstype {
+        name
+      }
+      timeStart
+      timeEnd
+    }
+  }
+`
