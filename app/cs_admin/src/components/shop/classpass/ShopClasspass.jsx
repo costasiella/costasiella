@@ -103,11 +103,19 @@ function ShopClasspass({ t, match, history }) {
                 initialValues={{ message: "" }}
                 // validationSchema={CLASSTYPE_SCHEMA}
                 onSubmit={(values, { setSubmitting }) => {
+
+                    let createOrderInput = {
+                      message: values.message,
+                      organizationClasspass: match.params.id,
+                    }
+
+                    if (scheduleItemId && classDate) {
+                      createOrderInput.attendanceDate = classDate
+                      createOrderInput.scheduleItem = scheduleItemId
+                    }
+
                     createOrder({ variables: {
-                      input: {
-                        message: values.message,
-                        organizationClasspass: match.params.id
-                      },
+                      input: createOrderInput,
                       // file: values.image
                     }, refetchQueries: [
                         // {query: GET_CLASSTYPES_QUERY, variables: {"archived": false }}
