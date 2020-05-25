@@ -235,10 +235,11 @@ class UpdateFinanceOrder(graphene.relay.ClientIDMutation):
                                        extensions={'code': 'USER_INVALID_ORDER_STATUS'})
 
         if 'status' in validation_result:
-            finance_order.status = validation_result['status']
             # Deliver order when current status isn't "delivered"
             if validation_result['status'] == 'DELIVERED' and finance_order.status != "DELIVERED":
-                finance_order.deliver()
+                finance_order.deliver() # This will also set the status to 'DELIVERED'
+            else:
+                finance_order.status = validation_result['status']
 
         finance_order.save()
 
