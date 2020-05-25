@@ -1,6 +1,6 @@
 // @flow
 
-import React, {Component } from 'react'
+import React, { useContext } from 'react'
 import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
 import { useQuery, useMutation } from '@apollo/react-hooks'
@@ -15,16 +15,23 @@ import {
   Grid,
   Icon,
   List
-} from "tabler-react";
+} from "tabler-react"
+import { TimeStringToJSDateOBJ } from '../../../tools/date_tools'
+import AppSettingsContext from '../../context/AppSettingsContext'
+
 import ShopClasspassBase from "./ShopClasspassBase"
 import ShopCheckoutForm from "../ShopCheckoutForm"
 import ShopClasspassesPricingCard from "./ShopClasspassPricingCard"
 
-import { GET_CLASSPASS_QUERY } from "./queries"
+import { GET_CLASSPASS_QUERY, GET_CLASS_QUERY } from "./queries"
 import { CREATE_ORDER } from "../queries"
 
 
 function ShopClasspass({ t, match, history }) {
+  const appSettings = useContext(AppSettingsContext)
+  const dateFormat = appSettings.dateFormat
+  const timeFormat = appSettings.timeFormatMoment
+
   const title = t("shop.home.title")
   const id = match.params.id
   const scheduleItemId = match.params.class_id
@@ -32,6 +39,11 @@ function ShopClasspass({ t, match, history }) {
 
   const { loading, error, data } = useQuery(GET_CLASSPASS_QUERY, {
     variables: { id: id }
+  })
+
+  const { loading: loadingClass, error: errorClass, data: dataClass } = useQuery(GET_CLASS_QUERY, {
+    variables: { scheduleItemId: scheduleItemId, date: classDate },
+    skip: (!scheduleItemId || !classDate)
   })
 
   const [createOrder, { data: createOrderData }] = useMutation(CREATE_ORDER)
@@ -52,6 +64,9 @@ function ShopClasspass({ t, match, history }) {
   const classpass = data.organizationClasspass
   console.log(classpass)
 
+  console.log('DATA CLASS')
+  console.log(dataClass)
+
   return (
     <ShopClasspassBase title={title}>
       <Grid.Row>
@@ -61,10 +76,25 @@ function ShopClasspass({ t, match, history }) {
         <Grid.Col md={4}>
           <Card title={t("shop.classpass.additional_information")}>
             <Card.Body>
-              {/* TODO: Display terms & privacy policy */}
               <div dangerouslySetInnerHTML={{__html:classpass.description}}></div>
             </Card.Body>
           </Card>
+          {(dataClass && !loadingClass && !errorClass) ?
+            <Card title={t("shop.classpass.class_book_information")}>
+              <Card.Body>
+                {t("shop.classbass.class_book_explanation")} <br /><br />
+                <b>
+                  {moment(classDate).format(dateFormat)} {' '}
+                  {moment(TimeStringToJSDateOBJ(dataClass.scheduleClass.timeStart)).format(timeFormat)} {' - '}
+                  {moment(TimeStringToJSDateOBJ(dataClass.scheduleClass.timeEnd)).format(timeFormat)} <br />  
+                </b>
+                {dataClass.scheduleClass.organizationClasstype.name + " " + t("general.at") + ' ' + 
+                 dataClass.scheduleClass.organizationLocationRoom.organizationLocation.name}
+
+              </Card.Body>
+            </Card>
+            : "" 
+          }
         </Grid.Col>
         <Grid.Col md={4}>
           <Card title={t("shop.checkout.title")}>
