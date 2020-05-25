@@ -18,7 +18,6 @@ class ClassCheckinDude():
         
         return schedule_item_attendance
 
-
     def sell_classpass_and_class_checkin(self, 
                                          account,
                                          organization_classpass,
@@ -65,7 +64,6 @@ class ClassCheckinDude():
             "schedule_item_attendance": schedule_item_attendance,
             "account_classpass": account_classpass
         }
-
 
     def class_checkin_classpass(self, 
                                 account,
@@ -254,7 +252,6 @@ class ClassCheckinDude():
 
         return schedule_item_ids
 
-
     def class_checkin_subscription(self, 
                                    account,
                                    account_subscription,
@@ -304,7 +301,6 @@ class ClassCheckinDude():
         schedule_item_attendance.save()
 
         return schedule_item_attendance
-
 
     def subscription_class_permissions(self, account_subscription):
         """

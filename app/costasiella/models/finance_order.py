@@ -14,6 +14,8 @@ from .finance_invoice_group_default import FinanceInvoiceGroupDefault
 # from .finance_invoice_group import FinanceInvoiceGroup
 # from .finance_payment_method import FinancePaymentMethod
 
+from ..dudes.class_checkin_dude import ClassCheckinDude
+
 
 class FinanceOrder(models.Model):
     STATUSES = get_finance_order_statuses()
@@ -49,7 +51,19 @@ class FinanceOrder(models.Model):
             "total"
         ])
 
-    def item_add_classpass(self, organization_classpass):
+    def _item_add_class_data(self, finance_order_item, schedule_item, attendance_date):
+        """
+        Enrich item with class checkin info
+        :param schedule_item: schedule item id
+        :param date: class date
+        :return: finance order item with class data set
+        """
+        finance_order_item.attendance_date = attendance_date
+        finance_order_item.schedule_item = schedule_item
+
+        return finance_order_item
+
+    def item_add_classpass(self, organization_classpass, schedule_item=None, attendance_date=None):
         """
         Add organization classpass invoice item
         """
@@ -57,16 +71,21 @@ class FinanceOrder(models.Model):
         
         # add item to order
         finance_order_item = FinanceOrderItem(
-            finance_order = self,
-            organization_classpass = organization_classpass,
-            product_name = _('Class pass'),
-            description = organization_classpass.name,
-            quantity = 1,
-            price = organization_classpass.price,
-            finance_tax_rate = organization_classpass.finance_tax_rate,
-            finance_glaccount = organization_classpass.finance_glaccount,
-            finance_costcenter = organization_classpass.finance_costcenter,
+            finance_order=self,
+            organization_classpass=organization_classpass,
+            product_name=_('Class pass'),
+            description=organization_classpass.name,
+            quantity=1,
+            price=organization_classpass.price,
+            finance_tax_rate=organization_classpass.finance_tax_rate,
+            finance_glaccount=organization_classpass.finance_glaccount,
+            finance_costcenter=organization_classpass.finance_costcenter,
         )
+
+        if schedule_item and attendance_date:
+            finance_order_item = self._item_add_class_data(finance_order_item,
+                                                           schedule_item,
+                                                           attendance_date)
 
         finance_order_item.save()
 
@@ -95,8 +114,18 @@ class FinanceOrder(models.Model):
 
         for item in items:
             if item.organization_classpass:
-                self._deliver_classpass(
-                    item.organization_classpass, finance_invoice, create_invoice)
+                account_classpass = self._deliver_classpass(
+                    item.organization_classpass,
+                    finance_invoice,
+                    create_invoice
+                )
+
+                if item.schedule_item and item.attendance_date:
+                    self._deliver_checkin_class(
+                        schedule_item=item.schedule_item,
+                        attendance_date=item.attendance_date,
+                        account_classpass=account_classpass
+                    )
 
         self.status = "DELIVERED"
         self.save()
@@ -151,3 +180,31 @@ class FinanceOrder(models.Model):
             finance_invoice.item_add_classpass(
                 account_classpass
             )
+
+        return account_classpass
+
+    def _deliver_checkin_class(self,
+                               schedule_item,
+                               attendance_date,
+                               account_classpass=None):
+        """
+
+        :param schedule_item: models.ScheduleItem object
+        :param attendance_date: datetime.date (class date)
+        :param account_classpass: models.AccountClasspass object
+        :return: None
+        """
+        class_checkin_dude = ClassCheckinDude()
+        schedule_item_attendance = None
+
+        if account_classpass:
+            schedule_item_attendance = class_checkin_dude.class_checkin_classpass(
+                account=self.account,
+                account_classpass=account_classpass,
+                schedule_item=schedule_item,
+                date=attendance_date,
+                online_booking=True,  # Orders can only be online bookings
+                booking_status="BOOKED"
+            )
+
+        return schedule_item_attendance
