@@ -343,7 +343,10 @@
         "title": "Title",
         "content": "Content",
         "comments": "Comments",
-        "account": "Account"
+        "account": "Account",
+        "at": "at",
+        "with": "With",
+        "book": "Book"
     },
     "yup": {
         "min_len_3": "Please input at least 3 characters",
@@ -1263,7 +1266,9 @@
         "title": "Shop",
         "classpass": {
             "error_loading": "Error loading class pass :(",
-            "additional_information": "Additional information"
+            "additional_information": "Additional information",
+            "class_book_information": "Selected class",
+            "class_book_explanation": "You'll be signed in to the class below once the order process has been completed."
         },
         "order": {
             "message": "Any message with this order?",
@@ -1344,7 +1349,12 @@
             }
         },
         "classes": {
-            "title": "Classes"
+            "title": "Classes",
+            "book": {
+                "title": "Booking options for class",
+                "btn_dropin_pay_and_book": "Buy drop in class",
+                "dropin_pay_and_book": "Book this class using a drop in class"
+            }
         }
     }
 }

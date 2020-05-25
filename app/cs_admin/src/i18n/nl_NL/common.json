@@ -174,7 +174,10 @@
         "title": "__STRING_NOT_TRANSLATED__",
         "content": "__STRING_NOT_TRANSLATED__",
         "comments": "__STRING_NOT_TRANSLATED__",
-        "account": "__STRING_NOT_TRANSLATED__"
+        "account": "__STRING_NOT_TRANSLATED__",
+        "at": "__STRING_NOT_TRANSLATED__",
+        "with": "__STRING_NOT_TRANSLATED__",
+        "book": "__STRING_NOT_TRANSLATED__"
     },
     "settings": {
         "error_loading": "__STRING_NOT_TRANSLATED__",
@@ -440,7 +443,9 @@
         },
         "classpass": {
             "error_loading": "__STRING_NOT_TRANSLATED__",
-            "additional_information": "__STRING_NOT_TRANSLATED__"
+            "additional_information": "__STRING_NOT_TRANSLATED__",
+            "class_book_information": "__STRING_NOT_TRANSLATED__",
+            "class_book_explanation": "__STRING_NOT_TRANSLATED__"
         },
         "checkout": {
             "payment": {
@@ -527,7 +532,12 @@
             }
         },
         "classes": {
-            "title": "__STRING_NOT_TRANSLATED__"
+            "title": "__STRING_NOT_TRANSLATED__",
+            "book": {
+                "title": "__STRING_NOT_TRANSLATED__",
+                "btn_dropin_pay_and_book": "__STRING_NOT_TRANSLATED__",
+                "dropin_pay_and_book": "__STRING_NOT_TRANSLATED__"
+            }
         }
     },
     "home": {
