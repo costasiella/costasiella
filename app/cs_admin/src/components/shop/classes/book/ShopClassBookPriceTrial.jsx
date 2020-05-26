@@ -23,7 +23,7 @@ function ShopClassBookPriceTrial({
   return (
     <Grid.Col md={3}>
       <Card 
-        statusColor="blue"
+        statusColor="green"
         title={t("general.trial")} >
       <Card.Body>
         <b>{priceTrial.priceDisplay}</b><br />
