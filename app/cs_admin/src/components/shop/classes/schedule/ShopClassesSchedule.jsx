@@ -34,7 +34,13 @@ if (!localStorage.getItem(CSLS.SHOP_CLASSES_DATE_FROM)) {
   console.log('date from not found... defaulting to today...')
   localStorage.setItem(CSLS.SHOP_CLASSES_DATE_FROM, moment().format('YYYY-MM-DD')) 
   localStorage.setItem(CSLS.SHOP_CLASSES_DATE_UNTIL, moment().add(6, 'days').format('YYYY-MM-DD')) 
-} 
+} else {
+  const date_from  = moment(localStorage.getItem(CSLS.SHOP_CLASSES_DATE_FROM))
+  if (date_from.isBefore(moment(), "day")) {
+    localStorage.setItem(CSLS.SHOP_CLASSES_DATE_FROM, moment().format('YYYY-MM-DD')) 
+    localStorage.setItem(CSLS.SHOP_CLASSES_DATE_UNTIL, moment().add(6, 'days').format('YYYY-MM-DD')) 
+  }
+}
 
 
 
