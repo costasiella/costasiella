@@ -48,7 +48,12 @@ class ScheduleItemAttendanceQuery(graphene.ObjectType):
             'costasiella.view_selfcheckin'
         ])
 
-        return ScheduleItemAttendance.objects.order_by('-account__full_name')
+        if 'account' in kwargs:
+            order_by = '-date'
+        else:
+            order_by = '-account__full_name'
+
+        return ScheduleItemAttendance.objects.order_by(order_by)
             
 
 def validate_schedule_item_attendance_create_update_input(input):
