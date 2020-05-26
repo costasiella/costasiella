@@ -10,7 +10,7 @@ import {
   Card,
 } from "tabler-react";
 
-import ClasspassCheckinButton from "./ScheduleClassBookClasspassBtn"
+// import ClasspassCheckinButton from "./ShopClassBookClasspassBtn"
 
 
 function ShopClassBookClasspasses({ 

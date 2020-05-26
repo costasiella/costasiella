@@ -29,6 +29,7 @@ import AppSettingsContext from '../../../context/AppSettingsContext'
 
 import ShopClassBookBack from "./ShopClassBookBack"
 import ShopClassBookBase from "./ShopClassBookBase"
+import ShopClassBookClasspasses from './ShopClassBookClasspasses'
 // import ScheduleClassBookClasspasses from "./ScheduleClassBookClasspasses"
 // import ScheduleClassBookSubscriptions from "./ScheduleClassBookSubscriptions"
 import ShopClassBookPriceDropin from "./ShopClassBookPriceDropin"
@@ -103,6 +104,7 @@ function ShopClassBook({ t, match, history }) {
           { class_info }
           <div className="mt-6">
             <Grid.Row cards deck>
+              <ShopClassBookClasspasses classpasses={classpasses} />
               {(prices) ?
                 (prices.organizationClasspassDropin) ? 
                   <ShopClassBookPriceDropin priceDropin={prices.organizationClasspassDropin}/> : "" 
