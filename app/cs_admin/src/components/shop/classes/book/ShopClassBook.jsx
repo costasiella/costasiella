@@ -32,8 +32,7 @@ import ShopClassBookBase from "./ShopClassBookBase"
 // import ScheduleClassBookClasspasses from "./ScheduleClassBookClasspasses"
 // import ScheduleClassBookSubscriptions from "./ScheduleClassBookSubscriptions"
 import ShopClassBookPriceDropin from "./ShopClassBookPriceDropin"
-// import ScheduleClassBookPriceTrial from "./ScheduleClassBookPriceTrial"
-// import ClassEditBase from "../ClassEditBase"
+import ShopClassBookPriceTrial from "./ShopClassBookPriceTrial"
 
 import { GET_BOOKING_OPTIONS_QUERY } from "./queries"
 // import CSLS from "../../../../../tools/cs_local_storage"
@@ -108,6 +107,10 @@ function ShopClassBook({ t, match, history }) {
                 (prices.organizationClasspassDropin) ? 
                   <ShopClassBookPriceDropin priceDropin={prices.organizationClasspassDropin}/> : "" 
               : "" }
+              {(prices) ?
+                (prices.organizationClasspassTrial) ? 
+                  <ShopClassBookPriceTrial priceTrial={prices.organizationClasspassTrial}/> : "" 
+                : "" } 
               {/* <ScheduleClassBookSubscriptions subscriptions={subscriptions} />
               <ScheduleClassBookClasspasses classpasses={classpasses} />
               {(prices) ?
