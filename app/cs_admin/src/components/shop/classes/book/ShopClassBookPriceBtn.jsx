@@ -24,7 +24,7 @@ function ShopClassBookPriceBtn({t, match, history, price}) {
       outline 
       color="primary" 
     >
-      {t("shop.classes.book.btn_dropin_pay_and_book")} <Icon name="chevron-right" />
+      {t("shop.classes.book.pay_and_book")} <Icon name="chevron-right" />
     </Button>
     </Link>
   )
