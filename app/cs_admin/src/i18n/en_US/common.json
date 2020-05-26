@@ -1353,8 +1353,9 @@
             "title": "Classes",
             "book": {
                 "title": "Booking options for class",
-                "btn_dropin_pay_and_book": "Buy drop in class",
-                "dropin_pay_and_book": "Book this class using a drop in class"
+                "dropin_pay_and_book": "Buy a drop in class",
+                "pay_and_book": "Pay and book",
+                "trial_pay_and_book": "Buy a trial class"
             }
         }
     }

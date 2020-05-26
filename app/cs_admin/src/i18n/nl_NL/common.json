@@ -536,8 +536,9 @@
             "title": "__STRING_NOT_TRANSLATED__",
             "book": {
                 "title": "__STRING_NOT_TRANSLATED__",
-                "btn_dropin_pay_and_book": "__STRING_NOT_TRANSLATED__",
-                "dropin_pay_and_book": "__STRING_NOT_TRANSLATED__"
+                "dropin_pay_and_book": "__STRING_NOT_TRANSLATED__",
+                "pay_and_book": "__STRING_NOT_TRANSLATED__",
+                "trial_pay_and_book": "__STRING_NOT_TRANSLATED__"
             }
         }
     },
