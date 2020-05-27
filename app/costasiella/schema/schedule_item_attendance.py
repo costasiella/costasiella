@@ -150,7 +150,7 @@ class CreateScheduleItemAttendance(graphene.relay.ClientIDMutation):
             user.has_perm('costasiella.view_selfcheckin')
 
         validation_result = validate_schedule_item_attendance_create_update_input(input, user)
-        if not permission:
+        if not permission or 'account' not in input:
             # When the user doesn't have permissions; always use their own account
             validation_result['account'] = user
 
