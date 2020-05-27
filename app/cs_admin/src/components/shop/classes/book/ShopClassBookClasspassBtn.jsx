@@ -53,8 +53,10 @@ function ShopClassBookClasspassBtn({t, match, history, classpass}) {
         ]})
         .then(({ data }) => {
             console.log('got data', data);
-            // redirect back to attendance list
+            // redirect to class booked page
             console.log("Checkin success!")
+            history.push(`/shop/classes/booked/${schedule_item_id}/${class_date}`)
+
             // show message to user
             // toast.success((t('schedule.classes.class.book.toast_success')), {
             //   position: toast.POSITION.BOTTOM_RIGHT

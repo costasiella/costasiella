@@ -39,5 +39,3 @@ export const GET_CLASSPASS_QUERY = gql`
     }
   }
 `
-
-
