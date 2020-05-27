@@ -2,6 +2,17 @@ from django.utils.translation import gettext as _
 
 
 class ClassCheckinDude():
+    def class_check_checkedin(self, account, schedule_item, date):
+        """
+        :param account: models.Account object
+        :param schedule_item: models.ScheduleItem object
+        :param date: datetime.date object
+        :return: Boolean; true if the account is already checked-in for the class, false otherwise
+        """
+        qs = self._class_checkedin(account, schedule_item, date)
+
+        return qs.exists()
+
     def _class_checkedin(self, account, schedule_item, date):
         """
         :return: schedule_item_attendance object if found, so we can check for reviews
