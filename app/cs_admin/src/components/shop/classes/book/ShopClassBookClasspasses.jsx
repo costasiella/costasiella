@@ -10,15 +10,12 @@ import {
   Card,
 } from "tabler-react";
 
-// import ClasspassCheckinButton from "./ShopClassBookClasspassBtn"
+import ShopClassBookClasspassBtn from "./ShopClassBookClasspassBtn"
 
 
-function ShopClassBookClasspasses({ 
-  t, 
-  match, 
-  history, 
-  classpasses
-}) {
+function ShopClassBookClasspasses({ t, match, history, classpasses }) {
+  console.log("CLASSPASSES")
+  console.log(classpasses)
 
   return (
     classpasses.map((classpass) =>(
@@ -35,8 +32,7 @@ function ShopClassBookClasspasses({
         </Card.Body>
         <Card.Footer>
           {(!classpass.allowed) ? t('schedule.classes.class.book.classpass_not_allowed') :
-            "Button here"
-            // <ShopClasspassCheckinButton classpass={classpass} returnTo={returnTo} locationId={locationId} />
+            <ShopClassBookClasspassBtn classpass={classpass} />
           }
         </Card.Footer>
         </Card>
