@@ -226,7 +226,6 @@ class ClassCheckinDude():
                 pass
 
         return schedule_item_ids
-
     
     def classpass_attend_allowed_for_class(self, account_classpass, schedule_item):
         """
@@ -239,8 +238,7 @@ class ClassCheckinDude():
         else:
             return False
 
-
-    def classpass_shop_book_allowed(self, acount_classpass):
+    def classpass_shop_book_allowed(self, account_classpass):
         """
         Returns True is a class pass is allowed for a class,
         otherwise False
@@ -256,6 +254,17 @@ class ClassCheckinDude():
                 pass
 
         return schedule_item_ids
+
+    def classpass_shop_book_allowed_for_class(self, account_classpass, schedule_item):
+        """
+        :return: True if a classpass has the attend permission for a class
+        """
+        classes_allowed = self.classpass_shop_book_allowed(account_classpass)
+
+        if schedule_item.id in classes_allowed:
+            return True
+        else:
+            return False
 
     def class_checkin_subscription(self, 
                                    account,
