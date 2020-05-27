@@ -8,6 +8,7 @@ import { withRouter } from "react-router"
 
 import {
   Button,
+  Icon,
 } from "tabler-react";
 import { toast } from 'react-toastify'
 
@@ -44,8 +45,7 @@ function ShopClassBookClasspassBtn({t, match, history, classpass}) {
     <Button 
       block 
       outline 
-      color="success" 
-      icon="check"
+      color="primary" 
       onClick={() => classCheckin({
         variables: { "input": createInput }, 
         refetchQueries: [
@@ -66,7 +66,7 @@ function ShopClassBookClasspassBtn({t, match, history, classpass}) {
             console.log('there was an error sending the query', error)
           })}
     >
-      {t("general.checkin")}
+      {t("general.book")} <Icon name="chevron-right" />
     </Button>
   )
 }
