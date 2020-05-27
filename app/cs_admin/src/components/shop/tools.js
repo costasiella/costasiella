@@ -1,15 +1,18 @@
 import React from 'react'
+import moment from 'moment'
+import { TimeStringToJSDateOBJ } from '../../tools/date_tools'
+
 
 export function DisplayClassInfo({t, classDate, classData, dateFormat, timeFormat }) {
     return (
       <div>
         <b>
           {moment(classDate).format(dateFormat)} {' '}
-          {moment(TimeStringToJSDateOBJ(dataClass.scheduleClass.timeStart)).format(timeFormat)} {' - '}
-          {moment(TimeStringToJSDateOBJ(dataClass.scheduleClass.timeEnd)).format(timeFormat)} <br />  
+          {moment(TimeStringToJSDateOBJ(classData.scheduleClass.timeStart)).format(timeFormat)} {' - '}
+          {moment(TimeStringToJSDateOBJ(classData.scheduleClass.timeEnd)).format(timeFormat)} <br />  
         </b>
-        {dataClass.scheduleClass.organizationClasstype.name + " " + t("general.at") + ' ' + 
-          dataClass.scheduleClass.organizationLocationRoom.organizationLocation.name}
+        {classData.scheduleClass.organizationClasstype.name + " " + t("general.at") + ' ' + 
+          classData.scheduleClass.organizationLocationRoom.organizationLocation.name}
       </div>
     )
 }
