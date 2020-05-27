@@ -9,7 +9,10 @@ import { Link } from 'react-router-dom'
 import moment from 'moment'
 
 import {
+  Button,
+  Card,
   Grid,
+  Icon
 } from "tabler-react";
 import { TimeStringToJSDateOBJ } from '../../../../tools/date_tools'
 // import { confirmAlert } from 'react-confirm-alert'; // Import
@@ -31,7 +34,7 @@ function ShopClassBook({ t, match, history }) {
   const { loading, error, data } = useQuery(
     GET_CLASS_QUERY, {
       variables: {
-        scheduleItem: schedule_item_id,
+        scheduleItemId: schedule_item_id,
         date: class_date,
       }
     }
@@ -61,12 +64,29 @@ function ShopClassBook({ t, match, history }) {
     <ShopClassBookedBase>
       <Grid.Row cards deck>
         <Grid.Col md={6}>
-            Class info here
-           {/* { class_info }               */}
+          <Card title={t("shop.classes.booked.class")}>
+            <Card.Body>
+              Class info here
+            </Card.Body>
+          </Card>
         </Grid.Col>
         <Grid.Col md={6}>
+          <Card title={"shop.classes.booked.class_info"}>
+            <Card.Body>
             Other info here...
-           {/* { class_info }               */}
+            </Card.Body>
+            <Card.Footer>
+              <Link to={"/shop/account"}>
+                <Button
+                  outline
+                  block
+                  color="success"
+                >
+                  {t("general.continue")} <Icon name="chevron-right" />
+                </Button>
+              </Link>
+            </Card.Footer>
+          </Card>
         </Grid.Col>
       </Grid.Row>
     </ShopClassBookedBase>

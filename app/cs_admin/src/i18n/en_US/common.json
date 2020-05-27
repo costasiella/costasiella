@@ -347,7 +347,8 @@
         "account": "Account",
         "at": "at",
         "with": "With",
-        "book": "Book"
+        "book": "Book",
+        "continue": "Continue"
     },
     "yup": {
         "min_len_3": "Please input at least 3 characters",
@@ -1356,6 +1357,10 @@
                 "dropin_pay_and_book": "Buy a drop in class",
                 "pay_and_book": "Pay and book",
                 "trial_pay_and_book": "Buy a trial class"
+            },
+            "booked": {
+                "class": "Selected class",
+                "title": "Class booked!"
             }
         }
     }

@@ -177,7 +177,8 @@
         "account": "__STRING_NOT_TRANSLATED__",
         "at": "__STRING_NOT_TRANSLATED__",
         "with": "__STRING_NOT_TRANSLATED__",
-        "book": "__STRING_NOT_TRANSLATED__"
+        "book": "__STRING_NOT_TRANSLATED__",
+        "continue": "__STRING_NOT_TRANSLATED__"
     },
     "settings": {
         "error_loading": "__STRING_NOT_TRANSLATED__",
@@ -539,6 +540,10 @@
                 "dropin_pay_and_book": "__STRING_NOT_TRANSLATED__",
                 "pay_and_book": "__STRING_NOT_TRANSLATED__",
                 "trial_pay_and_book": "__STRING_NOT_TRANSLATED__"
+            },
+            "booked": {
+                "class": "__STRING_NOT_TRANSLATED__",
+                "title": "__STRING_NOT_TRANSLATED__"
             }
         }
     },
