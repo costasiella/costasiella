@@ -1,11 +1,9 @@
-from django.utils.translation import gettext as _
-
 import graphene
+
+from django.utils.translation import gettext as _
 from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
 from graphql import GraphQLError
-
-import validators
 
 from ..models import Account, AccountClasspass, FinancePaymentMethod, OrganizationClasspass
 from ..modules.gql_tools import require_login, require_login_and_permission, get_rid
@@ -53,13 +51,11 @@ class AccountClasspassNode(DjangoObjectType):
         filter_fields = ['account', 'date_start', 'date_end']
         interfaces = (graphene.relay.Node, AccountClasspassInterface, )
 
-
     def resolve_classes_remaining_display(self, info):
         if self.organization_classpass.unlimited:
             return _('Unlimited')
         else:
             return self.classes_remaining
-
 
     @classmethod
     def get_node(self, info, id):
@@ -103,7 +99,6 @@ class CreateAccountClasspass(graphene.relay.ClientIDMutation):
         organization_classpass = graphene.ID(required=True)
         date_start = graphene.types.datetime.Date(required=True)
         note = graphene.String(required=False, default_value="")
-        
 
     account_classpass = graphene.Field(AccountClasspassNode)
 
@@ -117,11 +112,11 @@ class CreateAccountClasspass(graphene.relay.ClientIDMutation):
 
         sales_dude = SalesDude()
         sales_result = sales_dude.sell_classpass(
-            account = result['account'],
-            organization_classpass = result['organization_classpass'],
-            date_start = input['date_start'],
-            note = input['note'] if 'note' in input else "",
-            create_invoice = True
+            account=result['account'],
+            organization_classpass=result['organization_classpass'],
+            date_start=input['date_start'],
+            note=input['note'] if 'note' in input else "",
+            create_invoice=True
         )
 
         account_classpass = sales_result['account_classpass']
@@ -143,7 +138,6 @@ class UpdateAccountClasspass(graphene.relay.ClientIDMutation):
     def mutate_and_get_payload(self, root, info, **input):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.change_accountclasspass')
-
     
         rid = get_rid(input['id'])
         account_classpass = AccountClasspass.objects.filter(id=rid.id).first()
@@ -151,9 +145,8 @@ class UpdateAccountClasspass(graphene.relay.ClientIDMutation):
             raise Exception('Invalid Account Classpass ID!')
 
         result = validate_create_update_input(input, update=True)
-
-        account_classpass.organization_classpass=result['organization_classpass']
-        account_classpass.date_start=input['date_start']
+        account_classpass.organization_classpass = result['organization_classpass']
+        account_classpass.date_start = input['date_start']
 
         if 'date_end' in input:
             # Allow None as a value to be able to NULL date_end
