@@ -543,7 +543,9 @@
             },
             "booked": {
                 "class": "__STRING_NOT_TRANSLATED__",
-                "title": "__STRING_NOT_TRANSLATED__"
+                "title": "__STRING_NOT_TRANSLATED__",
+                "class_explanation": "__STRING_NOT_TRANSLATED__",
+                "class_info": "__STRING_NOT_TRANSLATED__"
             }
         }
     },

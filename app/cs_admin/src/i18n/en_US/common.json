@@ -1360,7 +1360,9 @@
             },
             "booked": {
                 "class": "Selected class",
-                "title": "Class booked!"
+                "title": "Class booked!",
+                "class_explanation": "We've reserved your spot in the class below.",
+                "class_info": "Good to know"
             }
         }
     }
