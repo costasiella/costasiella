@@ -17,8 +17,6 @@ function ShopClassBookPriceDropin({
   history, 
   priceDropin
 }) {
-  console.log('priceDropin')
-  console.log(priceDropin)
 
   return (
     <Grid.Col md={3}>

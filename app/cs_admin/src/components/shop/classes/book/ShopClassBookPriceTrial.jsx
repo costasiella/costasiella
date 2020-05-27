@@ -17,8 +17,6 @@ function ShopClassBookPriceTrial({
   history, 
   priceTrial
 }) {
-  console.log('priceTrial')
-  console.log(priceTrial)
 
   return (
     <Grid.Col md={3}>
