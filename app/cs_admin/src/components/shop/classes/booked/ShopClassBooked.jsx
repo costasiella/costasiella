@@ -23,6 +23,8 @@ import ShopClassBookedBase from "./ShopClassBookedBase"
 import { GET_CLASS_QUERY } from "../../queries"
 // import CSLS from "../../../../../tools/cs_local_storage"
 
+import { DisplayClassInfo } from "../../tools"
+
 
 function ShopClassBook({ t, match, history }) {
   const appSettings = useContext(AppSettingsContext)
@@ -66,12 +68,19 @@ function ShopClassBook({ t, match, history }) {
         <Grid.Col md={6}>
           <Card title={t("shop.classes.booked.class")}>
             <Card.Body>
-              Class info here
+              {t("shop.classes.booked.class_explanation")} <br /><br />
+              <DisplayClassInfo 
+                t={t} 
+                classDate={class_date}
+                classData={data} 
+                dateFormat={dateFormat} 
+                timeFormat={timeFormat}
+              />
             </Card.Body>
           </Card>
         </Grid.Col>
         <Grid.Col md={6}>
-          <Card title={"shop.classes.booked.class_info"}>
+          <Card title={t("shop.classes.booked.class_info")}>
             <Card.Body>
             Other info here...
             </Card.Body>
