@@ -5,8 +5,10 @@ from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
 from graphql import GraphQLError
 
-from ..models import Account, AccountClasspass, AccountSubscription, FinanceInvoiceItem, OrganizationClasspass, ScheduleItem, ScheduleItemAttendance
-from ..modules.gql_tools import require_login_and_permission, require_login_and_one_of_permissions, get_rid
+from ..models import Account, AccountClasspass, AccountSubscription, \
+                     FinanceInvoiceItem, OrganizationClasspass, ScheduleItem, ScheduleItemAttendance
+from ..modules.gql_tools import require_login, require_login_and_permission, \
+                                require_login_and_one_of_permissions, get_rid
 from ..modules.messages import Messages
 
 from ..dudes import ClassCheckinDude, ClassScheduleDude
@@ -116,13 +118,12 @@ def validate_schedule_item_attendance_create_update_input(input):
             if not schedule_item:
                 raise Exception(_('Invalid Schedule Item (class) ID!'))        
 
-
     return result
 
 
 class CreateScheduleItemAttendance(graphene.relay.ClientIDMutation):
     class Input:
-        account = graphene.ID(required=True)
+        account = graphene.ID(required=False)
         schedule_item = graphene.ID(required=True)
         account_classpass = graphene.ID(required=False)
         account_subscription = graphene.ID(required=False)
@@ -138,22 +139,28 @@ class CreateScheduleItemAttendance(graphene.relay.ClientIDMutation):
     @classmethod
     def mutate_and_get_payload(self, root, info, **input):
         user = info.context.user
-        require_login_and_one_of_permissions(user, [
-            'costasiella.add_scheduleitemattendance',
-            'costasiella.view_selfcheckin'
-        ])
+        require_login(user)
+
+        permission = user.has_perm('costasiella.add_scheduleitemattendance') or \
+                     user.has_perm('costasiella.view_selfcheckin')
 
         validation_result = validate_schedule_item_attendance_create_update_input(input)
+        if not permission:
+            # When the user doesn't have permissions; always use their own account
+            validation_result['account'] = user
+
         class_checkin_dude = ClassCheckinDude()
         class_schedule_dude = ClassScheduleDude()
 
         class_takes_place = class_schedule_dude.schedule_item_takes_place_on_day(
-            schedule_item = validation_result['schedule_item'],
-            date = input['date']
+            schedule_item=validation_result['schedule_item'],
+            date=input['date']
         )
         
         if not class_takes_place:
-            raise Exception(_("This class doesn't take place on this date, please check for the correct date or any holidays."))
+            raise Exception(
+                _("This class doesn't take place on this date, please check for the correct date or any holidays.")
+            )
         
         attendance_type = input['attendance_type']
         if attendance_type == "CLASSPASS":
@@ -207,7 +214,6 @@ class CreateScheduleItemAttendance(graphene.relay.ClientIDMutation):
 
             account_classpass.update_classes_remaining()
         
-
         return CreateScheduleItemAttendance(schedule_item_attendance=schedule_item_attendance)
 
 
