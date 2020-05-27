@@ -13,6 +13,7 @@ from .choices.schedule_item_attendance_types import get_schedule_item_attendance
 
 # Create your models here.
 
+
 class ScheduleItemAttendance(models.Model):
     ATTENDANCE_TYPES = get_schedule_item_attendance_types()
 
@@ -27,7 +28,8 @@ class ScheduleItemAttendance(models.Model):
     account_classpass = models.ForeignKey(AccountClasspass, on_delete=models.CASCADE, null=True)
     account_subscription = models.ForeignKey(AccountSubscription, on_delete=models.CASCADE, null=True)
     finance_invoice_item = models.ForeignKey(FinanceInvoiceItem, on_delete=models.SET_NULL, null=True)
-    account_has_membership = models.BooleanField(default=False)  # Set to True when account has membership at time of check-in
+    # Set to True when account has membership at time of check-in
+    account_has_membership = models.BooleanField(default=False)
     attendance_type = models.CharField(max_length=255, choices=ATTENDANCE_TYPES)
     date = models.DateField()
     online_booking = models.BooleanField(default=False)
@@ -36,5 +38,5 @@ class ScheduleItemAttendance(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return str(self.schedule_item.id) + ' [' + self.account.full_name + " - " + str(self.date) + '] ' + self.attendance_type
-    
+        return str(self.schedule_item.id) + ' [' + self.account.full_name + " - " + str(self.date) + '] ' + \
+               self.attendance_type
