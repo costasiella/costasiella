@@ -1,7 +1,8 @@
+import graphene
+
 from django.utils.translation import gettext as _
 from django.db.models import Q
 
-import graphene
 from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
 from graphql import GraphQLError
@@ -113,12 +114,15 @@ class ScheduleClassBookingOptionsType(graphene.ObjectType):
             if self.list_type == "ATTEND":
                 if checkin_dude.classpass_attend_allowed_for_class(classpass, schedule_item):
                     allowed = True
+            elif self.list_type == "SHOP_BOOK":
+                if checkin_dude.classpass_shop_book_allowed_for_class(classpass, schedule_item):
+                    allowed = True
 
             classpasses_list.append(
                 ScheduleClassBookingClasspassType(
-                    booking_type = "CLASSPASS",
-                    allowed = allowed,
-                    account_classpass = classpass,
+                    booking_type="CLASSPASS",
+                    allowed=allowed,
+                    account_classpass=classpass,
                 )
             )
 
