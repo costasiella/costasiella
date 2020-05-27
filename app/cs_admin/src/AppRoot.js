@@ -158,7 +158,7 @@ import ShopAccountClasspasses from './components/shop/account/classpasses/ShopAc
 import ShopAccountOrders from './components/shop/account/orders/ShopAccountOrders'
 import ShopAccountProfile from './components/shop/account/profile/ShopAccountProfile'
 import ShopClassBook from './components/shop/classes/book/ShopClassBook'
-import ShopClassBooked from './components/shop/classes/book/ShopClassBooked'
+import ShopClassBooked from './components/shop/classes/booked/ShopClassBooked'
 import ShopClassesSchedule from './components/shop/classes/schedule/ShopClassesSchedule'
 import ShopHome from './components/shop/home/ShopHome'
 import ShopCheckoutPayment from './components/shop/checkout/payment/ShopCheckoutPayment'
