@@ -58,7 +58,7 @@ class ScheduleItemAttendanceQuery(graphene.ObjectType):
         return ScheduleItemAttendance.objects.order_by(order_by)
             
 
-def validate_schedule_item_attendance_create_update_input(input):
+def validate_schedule_item_attendance_create_update_input(input, user):
     """
     Validate input
     """ 
@@ -92,13 +92,13 @@ def validate_schedule_item_attendance_create_update_input(input):
                 raise Exception(_('Invalid Account Subscription ID!'))                      
 
     # Check FinanceInvoiceItem
-    if 'account_invoice_item' in input:
-        if input['account_invoice_item']:
-            rid = get_rid(input['account_invoice_item'])
-            account_invoice_item = AccountInvoiceIteam.objects.filter(id=rid.id).first()
-            result['account_invoice_item'] = account_invoice_item
-            if not account_invoice_item:
-                raise Exception(_('Invalid Account Invoice Item ID!'))                      
+    if 'finance_invoice_item' in input:
+        if input['finance_invoice_item']:
+            rid = get_rid(input['finance_invoice_item'])
+            finance_invoice_item = FinanceInvoiceItem.objects.filter(id=rid.id).first()
+            result['finance_invoice_item'] = finance_invoice_item
+            if not finance_invoice_item:
+                raise Exception(_('Invalid Finance Invoice Item ID!'))                      
 
     # Check OrganizationClasspass
     if 'organization_classpass' in input:
@@ -142,9 +142,9 @@ class CreateScheduleItemAttendance(graphene.relay.ClientIDMutation):
         require_login(user)
 
         permission = user.has_perm('costasiella.add_scheduleitemattendance') or \
-                     user.has_perm('costasiella.view_selfcheckin')
+            user.has_perm('costasiella.view_selfcheckin')
 
-        validation_result = validate_schedule_item_attendance_create_update_input(input)
+        validation_result = validate_schedule_item_attendance_create_update_input(input, user)
         if not permission:
             # When the user doesn't have permissions; always use their own account
             validation_result['account'] = user
@@ -213,7 +213,7 @@ class CreateScheduleItemAttendance(graphene.relay.ClientIDMutation):
             account_classpass = result['account_classpass']
 
             account_classpass.update_classes_remaining()
-        
+
         return CreateScheduleItemAttendance(schedule_item_attendance=schedule_item_attendance)
 
 
