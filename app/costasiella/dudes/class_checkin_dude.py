@@ -85,6 +85,10 @@ class ClassCheckinDude():
             # else:
             #TODO: Write review check-ins code
 
+        # Verify classpass belongs to account
+        if account_classpass.account != account:
+            raise Exception(_("This classpass doesn't belong to this account"))
+
         # Check if classes left on pass
         classes_available = False
         if account_classpass.organization_classpass.unlimited:
@@ -275,6 +279,9 @@ class ClassCheckinDude():
                 raise Exception(_('This account is already checked in to this class'))
             # else:
             #TODO: Write review check-ins code
+
+        if account_subscription.account != account:
+            raise Exception(_("This subscription doesn't belong to this account"))
 
         #TODO: Check if credits remaining
 
