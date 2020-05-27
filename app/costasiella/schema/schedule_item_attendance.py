@@ -78,6 +78,9 @@ def validate_schedule_item_attendance_create_update_input(input, user):
         if input['account_classpass']:
             rid = get_rid(input['account_classpass'])
             account_classpass = AccountClasspass.objects.filter(id=rid.id).first()
+            if account_classpass.account != user:
+                raise Exception(_("This classpass doesn't belong to this account"))
+
             result['account_classpass'] = account_classpass
             if not account_classpass:
                 raise Exception(_('Invalid Account Classpass ID!'))                      
@@ -87,6 +90,8 @@ def validate_schedule_item_attendance_create_update_input(input, user):
         if input['account_subscription']:
             rid = get_rid(input['account_subscription'])
             account_subscription = AccountSubscription.objects.filter(id=rid.id).first()
+            if account_subscription.account != user:
+                raise Exception(_("This subscription doesn't belong to this account"))
             result['account_subscription'] = account_subscription
             if not account_subscription:
                 raise Exception(_('Invalid Account Subscription ID!'))                      
@@ -98,7 +103,7 @@ def validate_schedule_item_attendance_create_update_input(input, user):
             finance_invoice_item = FinanceInvoiceItem.objects.filter(id=rid.id).first()
             result['finance_invoice_item'] = finance_invoice_item
             if not finance_invoice_item:
-                raise Exception(_('Invalid Finance Invoice Item ID!'))                      
+                raise Exception(_('Invalid Finance Invoice Item ID!'))
 
     # Check OrganizationClasspass
     if 'organization_classpass' in input:
