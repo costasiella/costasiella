@@ -23,7 +23,8 @@ import ShopClasspassBase from "./ShopClasspassBase"
 import ShopCheckoutForm from "../ShopCheckoutForm"
 import ShopClasspassesPricingCard from "./ShopClasspassPricingCard"
 
-import { GET_CLASSPASS_QUERY, GET_CLASS_QUERY } from "./queries"
+import { GET_CLASSPASS_QUERY } from "./queries"
+import { GET_CLASS_QUERY } from "../queries"
 import { CREATE_ORDER } from "../queries"
 
 
