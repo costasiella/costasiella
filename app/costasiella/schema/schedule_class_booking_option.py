@@ -52,6 +52,7 @@ class ScheduleClassBookingOptionsType(graphene.ObjectType):
     classpasses = graphene.List(ScheduleClassBookingClasspassType)
     subscriptions = graphene.List(ScheduleClassBookingSubscriptionType)
     schedule_item_prices = graphene.Field(ScheduleItemPriceNode)
+    already_booked = graphene.Boolean()
 
     def resolve_account(self, info):
         # account
@@ -158,6 +159,17 @@ class ScheduleClassBookingOptionsType(graphene.ObjectType):
             )
 
         return subscriptions_list
+
+    def resolve_already_booked(self, info):
+        """
+        Check if the account is already attending this class
+        """
+        checkin_dude = ClassCheckinDude()
+        return checkin_dude.class_check_checkedin(
+            account=self.resolve_account(info),
+            schedule_item=self.resolve_schedule_item(info),
+            date=self.date
+        )
 
 
 class ScheduleClassBookingOptionsQuery(graphene.ObjectType):
