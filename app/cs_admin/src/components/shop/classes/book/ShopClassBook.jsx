@@ -73,6 +73,7 @@ function ShopClassBook({ t, match, history }) {
   }
   
   console.log(data)
+  const alreadyBooked = data.scheduleClassBookingOptions.alreadyBooked
   const account = data.scheduleClassBookingOptions.account
   const classpasses = data.scheduleClassBookingOptions.classpasses
   const subscriptions = data.scheduleClassBookingOptions.subscriptions
@@ -95,6 +96,8 @@ function ShopClassBook({ t, match, history }) {
   const class_info = date_display + ' ' + timeStart + ' - ' + timeEnd + ', ' + classType + ' ' + t("general.at") + ' ' + location
 
   console.log(prices)
+  console.log("ALREADY BOOKED")
+  console.log(alreadyBooked)
   
   
   return (
@@ -103,27 +106,31 @@ function ShopClassBook({ t, match, history }) {
         <Grid.Col md={12}>
           { class_info }
           <div className="mt-6">
-            <Grid.Row cards deck>
-              <ShopClassBookClasspasses classpasses={classpasses} />
-              {(prices) ?
-                (prices.organizationClasspassDropin) ? 
-                  <ShopClassBookPriceDropin priceDropin={prices.organizationClasspassDropin}/> : "" 
-              : "" }
-              {(prices) ?
-                (prices.organizationClasspassTrial) ? 
-                  <ShopClassBookPriceTrial priceTrial={prices.organizationClasspassTrial}/> : "" 
-                : "" } 
-              {/* <ScheduleClassBookSubscriptions subscriptions={subscriptions} />
-              <ScheduleClassBookClasspasses classpasses={classpasses} />
-              {(prices) ?
-                (prices.organizationClasspassDropin) ? 
-                  <ScheduleClassBookPriceDropin priceDropin={prices.organizationClasspassDropin}/> : "" 
+            {(alreadyBooked) ?
+              t("You've already booked this class ")
+              : 
+              <Grid.Row cards deck>
+                <ShopClassBookClasspasses classpasses={classpasses} />
+                {(prices) ?
+                  (prices.organizationClasspassDropin) ? 
+                    <ShopClassBookPriceDropin priceDropin={prices.organizationClasspassDropin}/> : "" 
                 : "" }
-              {(prices) ?
-                (prices.organizationClasspassTrial) ? 
-                  <ScheduleClassBookPriceTrial priceTrial={prices.organizationClasspassTrial}/> : "" 
-                : "" } */}
-            </Grid.Row>
+                {(prices) ?
+                  (prices.organizationClasspassTrial) ? 
+                    <ShopClassBookPriceTrial priceTrial={prices.organizationClasspassTrial}/> : "" 
+                  : "" } 
+                {/* <ScheduleClassBookSubscriptions subscriptions={subscriptions} />
+                <ScheduleClassBookClasspasses classpasses={classpasses} />
+                {(prices) ?
+                  (prices.organizationClasspassDropin) ? 
+                    <ScheduleClassBookPriceDropin priceDropin={prices.organizationClasspassDropin}/> : "" 
+                  : "" }
+                {(prices) ?
+                  (prices.organizationClasspassTrial) ? 
+                    <ScheduleClassBookPriceTrial priceTrial={prices.organizationClasspassTrial}/> : "" 
+                  : "" } */}
+              </Grid.Row>
+            }
           </div>
         </Grid.Col>
       </Grid.Row>

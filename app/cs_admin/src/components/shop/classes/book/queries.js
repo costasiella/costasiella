@@ -5,6 +5,7 @@ export const GET_BOOKING_OPTIONS_QUERY = gql`
   query ScheduleClassBookingOptions($scheduleItem:ID!, $date:Date!, $listType:String!) {
     scheduleClassBookingOptions(scheduleItem: $scheduleItem, date:$date, listType:$listType) {
       date
+      alreadyBooked
       account {
         id
         fullName
