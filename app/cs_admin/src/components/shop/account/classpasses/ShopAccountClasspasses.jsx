@@ -64,7 +64,7 @@ function ShopAccountClasspasses({t, match, history}) {
     <ShopAccountClasspassesBase accountName={user.fullName}>
       <Grid.Row>
         <Grid.Col md={12}>
-          <ContentCard cardTitle={t('organization.subscriptions.title')}
+          <ContentCard cardTitle={t('shop.account.classpasses.title')}
             // headerContent={headerOptions}
             pageInfo={classpasses.pageInfo}
             onLoadMore={() => {
