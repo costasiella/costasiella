@@ -163,6 +163,7 @@ import ShopClassesSchedule from './components/shop/classes/schedule/ShopClassesS
 import ShopHome from './components/shop/home/ShopHome'
 import ShopCheckoutPayment from './components/shop/checkout/payment/ShopCheckoutPayment'
 import ShopCheckoutComplete from './components/shop/checkout/complete/ShopCheckoutComplete'
+import ShopClasses from './components/shop/account/classes/ShopAccountClasses'
 import ShopClasspasses from './components/shop/classpasses/ShopClasspasses'
 import ShopClasspass from './components/shop/classpass/ShopClasspass'
 
@@ -362,6 +363,7 @@ function AppRoot({ t }) {
           {/* Shop */}
           <Route exact path = "/shop" component={ShopHome} />
           <PrivateRoute exact path = "/shop/account" component={ShopAccountHome} />
+          <PrivateRoute exact path = "/shop/account/classes" component={ShopClasses} />
           <PrivateRoute exact path = "/shop/account/classpasses" component={ShopAccountClasspasses} />
           <PrivateRoute exact path = "/shop/account/orders" component={ShopAccountOrders} />
           <PrivateRoute exact path = "/shop/account/profile" component={ShopAccountProfile} />
