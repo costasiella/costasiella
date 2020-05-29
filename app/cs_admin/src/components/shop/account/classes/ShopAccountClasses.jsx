@@ -9,6 +9,7 @@ import { Link } from 'react-router-dom'
 import moment from 'moment'
 
 import AppSettingsContext from '../../../context/AppSettingsContext'
+import BadgeBookingStatus from '../../../ui/BadgeBookingStatus'
 
 import {
   Button,
@@ -17,7 +18,7 @@ import {
   Icon,
   Table
 } from "tabler-react"
-import { QUERY_ACCOUNT_ORDERS, UPDATE_ORDER } from "./queries"
+import { GET_ACCOUNT_CLASSES_QUERY } from "./queries"
 import GET_USER_PROFILE from "../../../../queries/system/get_user_profile"
 
 import ShopAccountClassesBase from "./ShopAccountClassesBase"
@@ -32,7 +33,7 @@ function ShopAccountClasses({t, match, history}) {
 
   // Chain queries. First query user data and then query class attendance for that user once we have the account Id.
   const { loading: loadingUser, error: errorUser, data: dataUser } = useQuery(GET_USER_PROFILE)
-  const { loading, error, data, fetchMore } = useQuery(QUERY_ACCOUNT_ORDERS, {
+  const { loading, error, data, fetchMore } = useQuery(GET_ACCOUNT_CLASSES_QUERY, {
     skip: loadingUser || errorUser || !dataUser,
     variables: {
       account: dataUser && dataUser.user ? dataUser.user.accountId : null
