@@ -1343,6 +1343,12 @@
                 "to_payment": "Payment",
                 "confirm_cancel_no": "No, Don't cancel",
                 "confirm_cancel_yes": "Yes, cancel it"
+            },
+            "classes": {
+                "error_loading_data": "Error loading your classes... :(",
+                "title": "My classes",
+                "empty_list": "You haven't booked any classes yet",
+                "explanation": "View your upcoming and past classes"
             }
         },
         "accounts": {
@@ -1365,5 +1371,6 @@
                 "class_info": "Good to know"
             }
         }
-    }
+    },
+    "You've already booked this class ": "__STRING_NOT_TRANSLATED__"
 }

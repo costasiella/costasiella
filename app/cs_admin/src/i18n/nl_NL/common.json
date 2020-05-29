@@ -526,6 +526,12 @@
                 "to_payment": "__STRING_NOT_TRANSLATED__",
                 "confirm_cancel_no": "__STRING_NOT_TRANSLATED__",
                 "confirm_cancel_yes": "__STRING_NOT_TRANSLATED__"
+            },
+            "classes": {
+                "error_loading_data": "__STRING_NOT_TRANSLATED__",
+                "title": "__STRING_NOT_TRANSLATED__",
+                "empty_list": "__STRING_NOT_TRANSLATED__",
+                "explanation": "__STRING_NOT_TRANSLATED__"
             }
         },
         "accounts": {
@@ -1365,5 +1371,6 @@
         "Yemen": "__STRING_NOT_TRANSLATED__",
         "Zambia": "__STRING_NOT_TRANSLATED__",
         "Zimbabwe": "__STRING_NOT_TRANSLATED__"
-    }
+    },
+    "You've already booked this class ": "__STRING_NOT_TRANSLATED__"
 }
