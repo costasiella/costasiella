@@ -45,17 +45,28 @@ class ScheduleItemAttendanceQuery(graphene.ObjectType):
 
     def resolve_schedule_item_attendances(self, info, **kwargs):
         user = info.context.user
-        require_login_and_one_of_permissions(user, [
-            'costasiella.view_scheduleitemattendance',
-            'costasiella.view_selfcheckin'
-        ])
+        require_login(user)
 
-        if 'account' in kwargs:
+        permission = user.has_perm('costasiella.view_scheduleitemattendance') or \
+            user.has_perm('costasiella.view_selfcheckin')
+
+        if permission and 'account' in kwargs:
+            rid = get_rid(kwargs.get('account', user.id))
+            account_id = rid.id
+        elif permission:
+            account_id = None
+        else:
+            account_id = user.id
+
+        qs = ScheduleItemAttendance.objects()
+
+        if account_id:
+            qs = qs.filter(account=account_id)
             order_by = '-date'
         else:
             order_by = '-account__full_name'
 
-        return ScheduleItemAttendance.objects.order_by(order_by)
+        return qs.order_by(order_by)
             
 
 def validate_schedule_item_attendance_create_update_input(input, user):
