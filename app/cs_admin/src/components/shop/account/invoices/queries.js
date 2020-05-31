@@ -13,10 +13,6 @@ export const QUERY_ACCOUNT_INVOICES = gql`
       edges {
         node {
           id
-          account {
-            id
-            fullName
-          }
           invoiceNumber
           status
           summary
