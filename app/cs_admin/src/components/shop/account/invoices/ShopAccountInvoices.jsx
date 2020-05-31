@@ -103,14 +103,17 @@ function ShopAccountInvoices({t, match, history}) {
                 }
               })
             }} >
-            <Table>
+            <Table cards>
               <Table.Header>
                 <Table.Row key={v4()}>
-                  <Table.ColHeader>{t('general.time')}</Table.ColHeader>
-                  <Table.ColHeader>{t('general.class')}</Table.ColHeader>
-                  <Table.ColHeader>{t('general.location')}</Table.ColHeader>
-                  <Table.ColHeader>{t('general.booking_status')}</Table.ColHeader>
-                  <Table.ColHeader></Table.ColHeader>  
+                  <Table.ColHeader>{t('general.status')}</Table.ColHeader>
+                  <Table.ColHeader>{t('finance.invoices.invoice_number')}</Table.ColHeader>
+                  <Table.ColHeader>{t('finance.invoices.relation')} & {t('finance.invoices.summary')}</Table.ColHeader>
+                  <Table.ColHeader>{t('finance.invoices.date')} & {t('finance.invoices.due')}</Table.ColHeader>
+                  {/* <Table.ColHeader>{t('finance.invoices.due')}</Table.ColHeader> */}
+                  <Table.ColHeader>{t('general.total')}</Table.ColHeader>
+                  <Table.ColHeader>{t('general.balance')}</Table.ColHeader>
+                  <Table.ColHeader></Table.ColHeader>
                 </Table.Row>
               </Table.Header>
               <Table.Body>
