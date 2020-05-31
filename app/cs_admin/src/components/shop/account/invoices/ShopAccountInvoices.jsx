@@ -30,7 +30,7 @@ function ShopAccountInvoices({t, match, history}) {
   const timeFormat = appSettings.timeFormatMoment
   const dateTimeFormat = dateFormat + ' ' + timeFormat
 
-  // Chain queries. First query user data and then query orders for that user once we have the account Id.
+  // Chain queries. First query user data and then query invoices for that user once we have the account Id.
   const { loading: loadingUser, error: errorUser, data: dataUser } = useQuery(GET_USER_PROFILE)
   const { loading, error, data, fetchMore } = useQuery(QUERY_ACCOUNT_INVOICES, {
     skip: loadingUser || errorUser || !dataUser,
@@ -56,14 +56,14 @@ function ShopAccountInvoices({t, match, history}) {
   const invoices = data.financeInvoices
 
   // Empty list
-  if (!orders.edges.length) {
+  if (!invoices.edges.length) {
     return (
       <ShopAccountInvoicesBase accountName={user.fullName}>
         <Grid.Row>
           <Grid.Col md={12}>
-            <Card cardTitle={t('shop.account.orders.title')} >
+            <Card cardTitle={t('shop.account.invoices.title')} >
               <Card.Body>
-                {t('shop.account.orders.empty_list')}
+                {t('shop.account.invoices.empty_list')}
               </Card.Body>
             </Card>
           </Grid.Col>
