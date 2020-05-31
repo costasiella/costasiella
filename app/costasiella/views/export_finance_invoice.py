@@ -55,7 +55,7 @@ def invoice_html(node_id):
         }
     )
 
-    return [ finance_invoice, rendered_template ]
+    return [finance_invoice, rendered_template]
 
 
     # permission  = ((auth.has_membership(group_id='Admins') or
