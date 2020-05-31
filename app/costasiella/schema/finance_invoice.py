@@ -6,7 +6,7 @@ from graphene_django.filter import DjangoFilterConnectionField
 from graphql import GraphQLError
 
 from ..models import Account, FinanceInvoice, FinanceInvoiceGroup, FinancePaymentMethod
-from ..modules.gql_tools import require_login_and_permission, get_rid
+from ..modules.gql_tools import require_login, require_login_and_permission, get_rid
 from ..modules.messages import Messages
 from ..modules.finance_tools import display_float_as_amount
 
@@ -63,9 +63,25 @@ class FinanceInvoiceQuery(graphene.ObjectType):
 
     def resolve_finance_invoices(self, info, archived=False, **kwargs):
         user = info.context.user
-        require_login_and_permission(user, 'costasiella.view_financeinvoice')
+        require_login(user)
+        view_permission = user.has_perm('costasiella.view_financeinvoice')
 
-        return FinanceInvoice.objects.all().order_by('-pk')
+        if view_permission and 'account' in kwargs:
+            # Allow user to filter by any account
+            rid = get_rid(kwargs.get('account', user.id))
+            account_id = rid.id
+        elif view_permission:
+            # return all
+            account_id = None
+        else:
+            # A user can only query their own invoices
+            account_id = user.id
+
+        order_by = '-pk'
+        if account_id:
+            return FinanceInvoice.objects.filter(account=account_id).order_by(order_by)
+        else:
+            return FinanceInvoice.objects.all().order_by(order_by)
 
 
 def validate_create_update_input(input, update=False):
