@@ -10,13 +10,15 @@ import moment from 'moment'
 
 import AppSettingsContext from '../../../context/AppSettingsContext'
 import FinanceInvoicesStatus from "../../../ui/FinanceInvoiceStatus"
+import ContentCard from "../../../general/ContentCard"
 
 import {
   Button,
   Card,
   Grid,
   Icon,
-  Table
+  Table,
+  Text
 } from "tabler-react"
 import { QUERY_ACCOUNT_INVOICES } from "./queries"
 import GET_USER_PROFILE from "../../../../queries/system/get_user_profile"
@@ -77,7 +79,7 @@ function ShopAccountInvoices({t, match, history}) {
     <ShopAccountInvoicesBase accountName={user.fullName}>
       <Grid.Row>
         <Grid.Col md={12}>
-          <ContentCard cardTitle={t('shop.account.classes.title')}
+          <ContentCard cardTitle={t('shop.account.invoices.title')}
             // headerContent={headerOptions}
             pageInfo={invoices.pageInfo}
             onLoadMore={() => {
@@ -103,12 +105,11 @@ function ShopAccountInvoices({t, match, history}) {
                 }
               })
             }} >
-            <Table cards>
+            <Table cards responsive>
               <Table.Header>
                 <Table.Row key={v4()}>
                   <Table.ColHeader>{t('general.status')}</Table.ColHeader>
                   <Table.ColHeader>{t('finance.invoices.invoice_number')}</Table.ColHeader>
-                  <Table.ColHeader>{t('finance.invoices.summary')}</Table.ColHeader>
                   <Table.ColHeader>{t('finance.invoices.date')} & {t('finance.invoices.due')}</Table.ColHeader>
                   {/* <Table.ColHeader>{t('finance.invoices.due')}</Table.ColHeader> */}
                   <Table.ColHeader>{t('general.total')}</Table.ColHeader>
@@ -123,12 +124,10 @@ function ShopAccountInvoices({t, match, history}) {
                       <FinanceInvoicesStatus status={node.status} />
                     </Table.Col>
                     <Table.Col key={v4()}>
-                      {node.invoiceNumber}
-                    </Table.Col>
-                    <Table.Col key={v4()}>
-                      <span title={node.summary}>
+                      {node.invoiceNumber} <br />
+                      <Text.Small muted>
                         {node.summary.trunc(20)}
-                      </span>
+                      </Text.Small>
                     </Table.Col>
                     <Table.Col key={v4()}>
                       {moment(node.dateSent).format('LL')} <br />
