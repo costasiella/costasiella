@@ -23,7 +23,7 @@ def _verifiy_permission_or_account(request, finance_invoice):
     :return:
     """
     user = request.user
-    if user.has_perm('costasiella.view_finance_invoice') or finance_invoice.account == user:
+    if user.has_perm('costasiella.view_financeinvoice') or finance_invoice.account == user:
         return True
     else:
         return False
