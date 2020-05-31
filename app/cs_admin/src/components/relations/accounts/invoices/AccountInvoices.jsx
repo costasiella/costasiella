@@ -35,7 +35,7 @@ import ProfileCardSmall from "../../../ui/ProfileCardSmall"
 
 import { GET_ACCOUNT_INVOICES_QUERY } from "./queries"
 import { DELETE_FINANCE_INVOICE } from "../../../finance/invoices/queries"
-import FinanceInvoiceStatus from "../../../finance/invoices/FinanceInvoiceStatus"
+import FinanceInvoiceStatus from "../../../ui/FinanceInvoiceStatus"
 
 
 function AccountInvoices({ t, match, history }) {
