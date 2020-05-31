@@ -108,7 +108,7 @@ function ShopAccountInvoices({t, match, history}) {
                 <Table.Row key={v4()}>
                   <Table.ColHeader>{t('general.status')}</Table.ColHeader>
                   <Table.ColHeader>{t('finance.invoices.invoice_number')}</Table.ColHeader>
-                  <Table.ColHeader>{t('finance.invoices.relation')} & {t('finance.invoices.summary')}</Table.ColHeader>
+                  <Table.ColHeader>{t('finance.invoices.summary')}</Table.ColHeader>
                   <Table.ColHeader>{t('finance.invoices.date')} & {t('finance.invoices.due')}</Table.ColHeader>
                   {/* <Table.ColHeader>{t('finance.invoices.due')}</Table.ColHeader> */}
                   <Table.ColHeader>{t('general.total')}</Table.ColHeader>
@@ -117,28 +117,39 @@ function ShopAccountInvoices({t, match, history}) {
                 </Table.Row>
               </Table.Header>
               <Table.Body>
-                {/* { invoices.edges.map(({ node }) => (
+                { invoices.edges.map(({ node }) => (
                   <Table.Row key={v4()}>
-                    <Table.Col>
-                      { moment(node.date).format(dateFormat) } <br />
-                      <span className="text-muted">
-                        {moment(node.date + ' ' + node.scheduleItem.timeStart).format(timeFormat)}
+                    <Table.Col key={v4()}>
+                      <FinanceInvoicesStatus status={node.status} />
+                    </Table.Col>
+                    <Table.Col key={v4()}>
+                      {node.invoiceNumber}
+                    </Table.Col>
+                    <Table.Col key={v4()}>
+                      <span title={node.summary}>
+                        {node.summary.trunc(20)}
                       </span>
                     </Table.Col>
-                    <Table.Col>
-                      { node.scheduleItem.organizationClasstype.name }
+                    <Table.Col key={v4()}>
+                      {moment(node.dateSent).format('LL')} <br />
+                      {moment(node.dateDue).format('LL')}
                     </Table.Col>
-                    <Table.Col>
-                      { node.scheduleItem.organizationLocationRoom.organizationLocation.name } <br />
-                      <span className="text-muted">
-                        { node.scheduleItem.organizationLocationRoom.name }
-                      </span> 
+                    <Table.Col key={v4()}>
+                      {node.totalDisplay}
                     </Table.Col>
-                    <Table.Col>
-                      <BadgeBookingStatus status={node.bookingStatus} />
+                    <Table.Col key={v4()}>
+                      {node.balanceDisplay}
+                    </Table.Col>
+                    <Table.Col className="text-right" key={v4()}>
+                      Export
+                      {/* <Button className='btn-sm' 
+                              onClick={() => history.push("/finance/invoices/edit/" + node.id)}
+                              color="secondary">
+                        {t('general.edit')}
+                      </Button> */}
                     </Table.Col>
                   </Table.Row>
-                ))} */}
+                ))}
               </Table.Body>
             </Table>
           </ContentCard>
