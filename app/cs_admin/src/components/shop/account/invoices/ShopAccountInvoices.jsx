@@ -140,12 +140,14 @@ function ShopAccountInvoices({t, match, history}) {
                       {node.balanceDisplay}
                     </Table.Col>
                     <Table.Col className="text-right" key={v4()}>
-                      Export
-                      {/* <Button className='btn-sm' 
-                              onClick={() => history.push("/finance/invoices/edit/" + node.id)}
-                              color="secondary">
-                        {t('general.edit')}
-                      </Button> */}
+                      <Button 
+                        RootComponent="a"
+                        href={`/d/export/invoice/pdf/${node.id}`}
+                        color="secondary"
+                        icon="printer"
+                      >
+                        {t('general.pdf')}
+                      </Button>
                     </Table.Col>
                   </Table.Row>
                 ))}
