@@ -1349,6 +1349,11 @@
                 "title": "My classes",
                 "empty_list": "You haven't booked any classes yet",
                 "explanation": "View your upcoming and past classes"
+            },
+            "invoices": {
+                "title": "My invoices",
+                "explanation": "View your invoices and download them as a PDF file.",
+                "empty_list": "You don't have any invoices yet."
             }
         },
         "accounts": {
