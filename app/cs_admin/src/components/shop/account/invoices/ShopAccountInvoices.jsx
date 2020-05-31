@@ -88,16 +88,16 @@ function ShopAccountInvoices({t, match, history}) {
                   after: invoices.pageInfo.endCursor
                 },
                 updateQuery: (previousResult, { fetchMoreResult }) => {
-                  const newEdges = fetchMoreResult.schduleItemAttendances.edges
-                  const pageInfo = fetchMoreResult.schduleItemAttendances.pageInfo
+                  const newEdges = fetchMoreResult.financeInvoices.edges
+                  const pageInfo = fetchMoreResult.financeInvoices.pageInfo
 
                   return newEdges.length
                     ? {
                         // Put the new subscriptions at the end of the list and update `pageInfo`
                         // so we have the new `endCursor` and `hasNextPage` values
-                        schduleItemAttendances: {
-                          __typename: previousResult.schduleItemAttendances.__typename,
-                          edges: [ ...previousResult.schduleItemAttendances.edges, ...newEdges ],
+                        financeInvoices: {
+                          __typename: previousResult.financeInvoices.__typename,
+                          edges: [ ...previousResult.financeInvoices.edges, ...newEdges ],
                           pageInfo
                         }
                       }
