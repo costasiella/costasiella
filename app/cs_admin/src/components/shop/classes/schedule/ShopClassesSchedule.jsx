@@ -21,6 +21,7 @@ import {
   Table,
 } from "tabler-react";
 import ShopClassesScheduleBase from "./ShopClassesScheduleBase"
+import ShopClassesScheduleFilter from "./ShopClassesScheduleFilter"
 import CSDatePicker from "../../../ui/CSDatePicker"
 
 import { GET_CLASSES_QUERY } from "../../../schedule/classes/queries"
@@ -114,7 +115,8 @@ function ShopClassesSchedule({ t, match, history }) {
         </Button.List> 
       }
     >
-        
+      
+      <ShopClassesScheduleFilter data={data} />
       {data.scheduleClasses.map(({ date, classes }) =>
         <Grid.Row key={v4()}>
           <Grid.Col md={12}>
