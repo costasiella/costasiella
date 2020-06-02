@@ -116,7 +116,7 @@ function ShopClassesSchedule({ t, match, history }) {
       }
     >
       
-      <ShopClassesScheduleFilter data={data} />
+      <ShopClassesScheduleFilter data={data} refetch={refetch} />
       {data.scheduleClasses.map(({ date, classes }) =>
         <Grid.Row key={v4()}>
           <Grid.Col md={12}>
