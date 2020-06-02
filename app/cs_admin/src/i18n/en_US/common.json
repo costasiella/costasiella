@@ -1374,8 +1374,11 @@
                 "title": "Class booked!",
                 "class_explanation": "We've reserved your spot in the class below.",
                 "class_info": "Good to know"
-            }
+            },
+            "filter_all_locations": "All locations",
+            "filter_all_classtypes": "All classtypes",
+            "filter_all_levels": "All levels"
         }
     },
-    "You've already booked this class ": "__STRING_NOT_TRANSLATED__"
+    "You've already booked this class ": "You've already booked this class"
 }

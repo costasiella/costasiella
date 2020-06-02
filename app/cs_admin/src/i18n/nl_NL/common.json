@@ -557,7 +557,10 @@
                 "title": "__STRING_NOT_TRANSLATED__",
                 "class_explanation": "__STRING_NOT_TRANSLATED__",
                 "class_info": "__STRING_NOT_TRANSLATED__"
-            }
+            },
+            "filter_all_locations": "__STRING_NOT_TRANSLATED__",
+            "filter_all_classtypes": "__STRING_NOT_TRANSLATED__",
+            "filter_all_levels": "__STRING_NOT_TRANSLATED__"
         }
     },
     "home": {
