@@ -24,4 +24,6 @@ def update(request):
     # Set latest version
     new_version = version_dude.update_version()
 
-    return HttpResponse(_("Updated database to version: %s.%s" % (new_version['version'], new_version['version_patch'])))
+    return HttpResponse(
+        _("Updated database to version: %s.%s" % (new_version['version'], new_version['version_patch']))
+    )
