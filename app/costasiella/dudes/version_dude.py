@@ -9,27 +9,29 @@ class VersionDude:
         self.setting_version = "system_version"
         self.setting_version_patch = "system_version_patch"
 
-        self.version = SystemSetting.objects.get(setting=self.setting_version) or "0"
-        self.version_patch = SystemSetting.objects.get(setting=self.setting_version_patch) or "0"
+        self.version = SystemSetting.objects.get(setting=self.setting_version)
+        self.version_patch = SystemSetting.objects.get(setting=self.setting_version_patch)
 
-    def set_current_version(self):
+    @staticmethod
+    def get_latest_version():
+        return {
+            "version": "0.01",
+            "vresion_patch": "0"
+        }
+
+    def update_version(self):
         """
         Set the current version
         :return:
         """
-        version = "0"
-        release = "01"
-        version_patch = "0"
-
-        full_version = float(version + "." + release)
+        data = self.get_latest_version()
+        latest_version = float(data['version'])
+        latest_version_patch = float(data['version_patch'])
 
         if self.version:
-            self.version.value = full_version
+            self.version.value = latest_version
             self.version.save()
-            self.version_patch.value = version_patch
+            self.version_patch.value = latest_version_patch
             self.version_patch.save()
 
-        return {
-            version: full_version,
-            version_patch: version_patch
-        }
+        return data
