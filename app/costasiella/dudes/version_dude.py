@@ -9,14 +9,29 @@ class VersionDude:
         self.setting_version = "system_version"
         self.setting_version_patch = "system_version_patch"
 
-        self.version = SystemSetting.objects.get(setting=self.setting_version)
-        self.version_patch = SystemSetting.objects.get(setting=self.setting_version_patch)
+        try:
+            self.version_obj = SystemSetting.objects.get(setting=self.setting_version)
+        except SystemSetting.DoesNotExist:
+            self.version_obj = SystemSetting.objects.create(
+                setting=self.setting_version,
+                value="0"
+            )
+        try:
+            self.version_patch_obj = SystemSetting.objects.get(setting=self.setting_version_patch)
+        except SystemSetting.DoesNotExist:
+            self.version_patch_obj = SystemSetting.objects.create(
+                setting=self.setting_version_patch,
+                value="0"
+            )
+
+        self.version = self.version_obj.value
+        self.version_patch = self.version_patch_obj.value
 
     @staticmethod
     def get_latest_version():
         return {
             "version": "0.01",
-            "vresion_patch": "0"
+            "version_patch": "0"
         }
 
     def update_version(self):
@@ -25,13 +40,13 @@ class VersionDude:
         :return:
         """
         data = self.get_latest_version()
-        latest_version = float(data['version'])
-        latest_version_patch = float(data['version_patch'])
+        latest_version = data['version']
+        latest_version_patch = data['version_patch']
 
-        if self.version:
-            self.version.value = latest_version
-            self.version.save()
-            self.version_patch.value = latest_version_patch
-            self.version_patch.save()
+        if self.version_obj:
+            self.version_obj.value = latest_version
+            self.version_obj.save()
+            self.version_patch_obj.value = latest_version_patch
+            self.version_patch_obj.save()
 
         return data
