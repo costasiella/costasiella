@@ -9,8 +9,8 @@ class VersionDude:
         self.setting_version = "system_version"
         self.setting_version_patch = "system_version_patch"
 
-        self.version = SystemSetting.objects.get(setting=self.setting_version)
-        self.version_patch = SystemSetting.objects.get(setting=self.setting_version_patch)
+        self.version = SystemSetting.objects.get(setting=self.setting_version) or "0"
+        self.version_patch = SystemSetting.objects.get(setting=self.setting_version_patch) or "0"
 
     def set_current_version(self):
         """
