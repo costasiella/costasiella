@@ -12,5 +12,8 @@ from .insight.export_insight_subscriptions_sold import export_excel_insight_subs
 # Mollie
 from .integration.mollie_webhook import mollie_webhook
 
+# Setup
+from .setup import setup
+
 # Update
 from .update import update

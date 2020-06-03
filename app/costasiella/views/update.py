@@ -7,8 +7,6 @@ from ..dudes.version_dude import VersionDude
 def update(request):
     """
     Update function
-
-    :param: POST: node_id - FinanceInvoiceNode ID
     """
     if not request.user:
         raise Http404(_("Page not found..."))
