@@ -22,7 +22,7 @@ from django.contrib.auth.decorators import login_required
 from graphene_django.views import GraphQLView
 from graphql_jwt.decorators import jwt_cookie
 
-## Development only
+# Development only
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -57,4 +57,5 @@ urlpatterns = [
     path('d/export/invoice/pdf/preview/<str:node_id>', invoice_pdf_preview, name="export_invoice_pdf_preview"),
     path('d/graphql/', csrf_exempt(jwt_cookie(GraphQLView.as_view(graphiql=True))), name="graphql"),
     path('d/mollie/webhook/', csrf_exempt(mollie_webhook), name="mollie_webhook"),
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) # Development only
+    path('d/update/', update, name="update"),
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)  # Development only
