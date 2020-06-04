@@ -26,10 +26,13 @@ class SetupDude:
         Set the current version
         :return:
         """
+        print("we're running the setup function")
+
         if self.complete == "T":
-            return _("Setup already executed... setup will not be executed again")
+            return _("Setup already executed... setup will not be executed again.")
         # Set current version
         version_dude = VersionDude()
+        version_dude.update_version()
 
         self.setting_setup_complete_obj.value = "T"
         self.setting_setup_complete_obj.save()

@@ -10,6 +10,6 @@ def setup(request):
     """
     # Execute setup
     setup_dude = SetupDude()
-    message = SetupDude.setup()
+    message = setup_dude.setup()
 
     return HttpResponse(message)
