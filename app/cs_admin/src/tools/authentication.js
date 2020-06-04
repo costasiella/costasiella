@@ -19,7 +19,7 @@ export const CSAuth = {
             localStorage.removeItem(CSLS.AUTH_TOKEN_EXP)
             localStorage.removeItem(CSLS.AUTH_TOKEN_ORIGIAT)
             localStorage.removeItem(CSLS.AUTH_LOGIN_NEXT)
-            localStorage.setItem(CSLS.AUTH_TOKEN_REFRESH_EXP)
+            localStorage.removeItem(CSLS.AUTH_TOKEN_REFRESH_EXP)
         } 
         // //  Always remove token
         // localStorage.removeItem(CSLS.AUTH_TOKEN)

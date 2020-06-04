@@ -40,6 +40,24 @@ export const TOKEN_REVOKE = gql`
 `
 
 
+export const TOKEN_COOKIE_DELETE = gql`
+  mutation {
+    deleteTokenCookie {
+      deleted
+    }
+  }
+`
+
+
+export const TOKEN_REFRESH_COOKIE_DELETE = gql`
+  mutation {
+    deleteRefreshTokenCookie {
+      deleted
+    }
+  }
+`
+
+
 export const UPDATE_ACCOUNT_PASSWORD = gql`
   mutation UpdateAccountPassword($input: UpdateAccountPasswordInput!) {
     updateAccountPassword(input: $input) {
