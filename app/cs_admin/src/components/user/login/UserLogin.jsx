@@ -2,7 +2,7 @@
 
 import React, {Component } from 'react'
 import gql from "graphql-tag"
-import { useQuery, useMutation } from "react-apollo";
+import { useQuery, useMutation } from "react-apollo"
 import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
 import { Formik } from 'formik'
@@ -20,7 +20,7 @@ import {
 } from "tabler-react"
 import HasPermissionWrapper from "../../HasPermissionWrapper"
 
-import { TOKEN_AUTH, TOKEN_VERIFY } from "../../../queries/system/auth"
+import { TOKEN_AUTH, TOKEN_REFRESH } from "../../../queries/system/auth"
 import { CSAuth } from "../../../tools/authentication"
 import CSLS from "../../../tools/cs_local_storage"
 
@@ -29,8 +29,8 @@ import UserLoginForm from "./UserLoginForm"
 
 function UserLogin({t, match, history}) {
   let errorMessage
-  const [doTokenAuth, { data }] = useMutation(TOKEN_AUTH)
-  const [verifyToken, { data: tokenVerifyData }] = useMutation(TOKEN_VERIFY)
+  const [ doTokenAuth ] = useMutation(TOKEN_AUTH)
+  const [ doTokenRefresh ] = useMutation(TOKEN_REFRESH)
 
   return (
     <StandaloneFormPage imageURL="">
@@ -42,9 +42,6 @@ function UserLogin({t, match, history}) {
         }}
         // validationSchema={ACCOUNT_SCHEMA}
         onSubmit={(values, { setSubmitting }) => {
-            console.log('submit values:')
-            console.log(values)
-
             let vars = {
               username: values.email,
               password: values.password,
@@ -61,11 +58,11 @@ function UserLogin({t, match, history}) {
                 console.log('got data', data)
                 const next = localStorage.getItem(CSLS.AUTH_LOGIN_NEXT) || "/"
                 CSAuth.login(data.tokenAuth.token)
-                verifyToken({
+                doTokenRefresh({
                   variables: { token: data.tokenAuth.token }
                 }).then(({ data }) => {
-                  console.log('got verify data', data)
-                  CSAuth.updateTokenInfo(data.verifyToken.payload)
+                  console.log('got refresh data', data)
+                  CSAuth.updateTokenInfo(data.refreshToken)
                   // Login success!
                   setTimeout(() => history.push(next), 500)
                 }).catch((error) => {

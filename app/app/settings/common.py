@@ -46,7 +46,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'django_celery_beat',
     'django_celery_results',
-    # 'graphql_jwt.refresh_token.apps.RefreshTokenConfig',
+    'graphql_jwt.refresh_token.apps.RefreshTokenConfig',
     
     # local apps
     'costasiella.apps.CostasiellaConfig',
@@ -211,8 +211,8 @@ GRAPHENE = {
 GRAPHQL_JWT = {
     'JWT_VERIFY_EXPIRATION': True,
     'JWT_EXPIRATION_DELTA': timedelta(minutes=1),  # Default = 5 minutes
-    # 'JWT_REFRESH_EXPIRATION_DELTA': timedelta(hours=1),  # Default = 7 days
-    # 'JWT_LONG_RUNNING_REFRESH_TOKEN': True
+    'JWT_REFRESH_EXPIRATION_DELTA': timedelta(minutes=30),  # Default = 7 days
+    'JWT_LONG_RUNNING_REFRESH_TOKEN': True
     # 'JWT_COOKIE_SECURE': True # Set this to true for production
 }
 

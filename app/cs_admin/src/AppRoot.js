@@ -1,7 +1,7 @@
 // import React, { Component } from 'react';
 // import logo from './logo.svg';
 
-import React from 'react'
+import React, { Component } from 'react'
 import {
   Route, 
   Switch, 
@@ -9,10 +9,11 @@ import {
   Redirect
 } from 'react-router-dom'
 import { withTranslation } from 'react-i18next'
-import { useQuery } from "react-apollo"
+import { useQuery, useMutation } from "react-apollo"
 import { toast } from 'react-toastify'
 
 import { GET_APP_SETTINGS_QUERY } from "./components/settings/general/date_time/queries"
+import { TOKEN_REFRESH } from "./queries/system/auth"
 
 // Import moment locale
 import moment from 'moment'
@@ -180,23 +181,43 @@ import { CSAuth } from './tools/authentication'
 
 
 const PrivateRoute = ({ component: Component, ...rest }) => {
-  let tokenExpired = false
+  const [doTokenRefresh] = useMutation(TOKEN_REFRESH)
+  let authTokenExpired = false
   console.log(rest.path)
+
+  const ContinueAsYouAre = <Route {...rest} render={(props) => ( <Component {...props} /> )} />
+  const SessionExpired = <Route {...rest} render={(props) => ( <Redirect to='/user/session/expired' /> )} />
   
   // Check expiration
   const tokenExp = localStorage.getItem(CSLS.AUTH_TOKEN_EXP)
   if ((new Date() / 1000) >= tokenExp) {
-    CSAuth.logout(true)
-    tokenExpired = true
+    authTokenExpired = true
   }
 
-  return (
-    <Route {...rest} render={(props) => (
-      tokenExpired 
-        ? <Redirect to='/user/session/expired' />
-        : <Component {...props} />
-    )} />
-  )
+  if (authTokenExpired) {
+    const refreshTokenExp = localStorage.getItem(CSLS.AUTH_TOKEN_REFRESH_EXP)
+    if ((new Date() / 1000) >= refreshTokenExp) {
+      return SessionExpired
+    } else {
+      // Refresh token
+      doTokenRefresh().then(({ data }) => {
+        console.log('got refresh data', data)
+        CSAuth.updateTokenInfo(data.refreshToken)
+        return ContinueAsYouAre
+      }).catch((error) => {
+        toast.error('general.toast_server_error' + ': ' +  error, {
+          position: toast.POSITION.BOTTOM_RIGHT
+        })
+        console.log('there was an error refreshing the token', error) 
+        console.log("REDIRECT BACK TO LOGIN")
+        window.location.href = "/#/user/login"
+        window.location.reload()
+      })
+    }
+  } else {
+    return ContinueAsYouAre
+  }
+  return null
 }
 
 
