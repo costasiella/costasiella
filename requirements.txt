@@ -1,5 +1,6 @@
 amqp==2.5.2
 aniso8601==3.0.2
+anyjson==0.3.3
 argon2-cffi==19.1.0
 asgiref==3.2.3
 billiard==3.6.3.0
@@ -19,7 +20,7 @@ django-celery-results==1.1.2
 django-cors-headers==3.2.0
 django-filter==2.1.0
 django-graphiql==0.4.4
-django-graphql-jwt==0.2.1
+django-graphql-jwt==0.3.1
 django-timezone-field==3.0
 django-webpack-loader==0.6.0
 et-xmlfile==1.0.1

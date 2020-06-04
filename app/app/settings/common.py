@@ -34,7 +34,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django.contrib.sites', # django-allauth requirement
+    'django.contrib.sites',  # django-allauth requirement
 
     # 3rd party
     'allauth',
@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'django_celery_beat',
     'django_celery_results',
+    # 'graphql_jwt.refresh_token.apps.RefreshTokenConfig',
     
     # local apps
     'costasiella.apps.CostasiellaConfig',
@@ -64,9 +65,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    
-    # 3rd party
-    'graphql_jwt.middleware.JSONWebTokenMiddleware',
 
     # local apps
     # 'costasiella.middleware.AuthRequiredMiddleware'
@@ -74,14 +72,14 @@ MIDDLEWARE = [
 
 # Add GraphQL JWT Tokens
 AUTHENTICATION_BACKENDS = [
+    # graphql JWT authorization
+    'graphql_jwt.backends.JSONWebTokenBackend',
+
     # Needed to login by username in Django admin, regardless of `allauth`
     'django.contrib.auth.backends.ModelBackend',
 
     # `allauth` specific authentication methods, such as login by e-mail
     'allauth.account.auth_backends.AuthenticationBackend',
-
-    # graphql JWT authorization
-    'graphql_jwt.backends.JSONWebTokenBackend',
 ]
 
 ROOT_URLCONF = 'app.urls'
@@ -212,8 +210,9 @@ GRAPHENE = {
 # Tokens expire after 3 days
 GRAPHQL_JWT = {
     'JWT_VERIFY_EXPIRATION': True,
-    'JWT_EXPIRATION_DELTA': timedelta(days=3),
-    'JWT_REFRESH_EXPIRATION_DELTA': timedelta(days=3),
+    'JWT_EXPIRATION_DELTA': timedelta(minutes=1),  # Default = 5 minutes
+    # 'JWT_REFRESH_EXPIRATION_DELTA': timedelta(hours=1),  # Default = 7 days
+    # 'JWT_LONG_RUNNING_REFRESH_TOKEN': True
     # 'JWT_COOKIE_SECURE': True # Set this to true for production
 }
 

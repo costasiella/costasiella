@@ -3,6 +3,7 @@ from django.db import models
 
 from ..modules.encrypted_fields import EncryptedTextField
 
+
 class SystemSetting(models.Model):
     # add additional fields in here
 
