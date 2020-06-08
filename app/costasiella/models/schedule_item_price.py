@@ -22,4 +22,3 @@ class ScheduleItemPrice(models.Model):
 
     def __str__(self):
         return str(self.schedule_item) + ' [' + str(self.date_start) + " - " + str(self.date_end) + ']'
-    

@@ -7,8 +7,8 @@ from .schedule_item import ScheduleItem
 from .account import Account
 from .choices.teacher_roles import get_teacher_roles
 
-# Create your models here.
 
+# Create your models here.
 class ScheduleItemTeacher(models.Model):
     TEACHER_ROLES = get_teacher_roles()
 
@@ -24,4 +24,3 @@ class ScheduleItemTeacher(models.Model):
 
     def __str__(self):
         return self.schedule_item + ' [' + self.account.full_name + " - " + str(date_start) + ']'
-    

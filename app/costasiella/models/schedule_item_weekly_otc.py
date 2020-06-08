@@ -44,4 +44,3 @@ class ScheduleItemWeeklyOTC(models.Model):
 
     def __str__(self):
         return self.schedule_item + ' otc [' + str(self.date) + ']'
-    
