@@ -47,7 +47,7 @@ class AccountNode(DjangoObjectType):
         model = get_user_model()
         
         # fields=() # Fields to include
-        exclude = ['password'] # Fields to exclude
+        exclude = ['password']  # Fields to exclude
         filter_fields = {
             'full_name': ['icontains', 'exact'],
             'is_active': ['exact'],
@@ -156,7 +156,7 @@ class CreateAccount(graphene.relay.ClientIDMutation):
             email = input['email']
         )
 
-        #Don't insert duplicate records in the DB. If this records exist, fetch and return it
+        # Don't insert duplicate records in the DB. If this records exist, fetch and return it
         if query_set.exists():
             raise Exception(_('An account is already registered with this e-mail address'))
 
@@ -382,13 +382,9 @@ class UpdateAccountActive(graphene.relay.ClientIDMutation):
         require_login_and_permission(user, 'costasiella.delete_account')
 
         rid = get_rid(input['id'])
-
         account = get_user_model().objects.filter(id=rid.id).first()
         if not account:
             raise Exception('Invalid Account ID!')
-
-
-        print(input)
 
         account.is_active = input['is_active']
         account.save(force_update=True)
