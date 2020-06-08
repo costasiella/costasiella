@@ -143,6 +143,30 @@
                 "add": "Add payment",
                 "edit": "Edit payment"
             }
+        },
+        "orders": {
+            "title": "Orders",
+            "error_loading": "Error loading orders :(",
+            "order_number": "Order #",
+            "relation": "Relation",
+            "date": "Received",
+            "statuses": {
+                "RECEIVED": "Received",
+                "AWAITING_PAYMENT": "Awaiting payment",
+                "PAID": "Paid",
+                "DELIVERED": "Delivered",
+                "CANCELLED": "Cancelled",
+                "NOT_FOUND": "Not found",
+                "all": "All statuses"
+            },
+            "empty_list": "No orders found...",
+            "delete_confirm_msg": "Are you sure you wish to delete this order?",
+            "deleted": "Deleted order",
+            "edit_details": "Edit order",
+            "placed_at": "Received on",
+            "toast_edit_success": "Saved status",
+            "customer_message": "Customer message",
+            "set_status_to_delivered_to_deliver_manually": "Change the status to 'Delivered' to manually deliver the order and create an invoice."
         }
     },
     "general": {
@@ -312,7 +336,19 @@
         "amount": "Amount",
         "details": "Details",
         "chart": "Chart",
-        "room": "Room"
+        "room": "Room",
+        "valid_for": "valid for",
+        "order": "Order",
+        "item": "Item",
+        "subject": "Subject",
+        "title": "Title",
+        "content": "Content",
+        "comments": "Comments",
+        "account": "Account",
+        "at": "at",
+        "with": "With",
+        "book": "Book",
+        "continue": "Continue"
     },
     "yup": {
         "min_len_3": "Please input at least 3 characters",
@@ -635,13 +671,22 @@
             "invoices": {
                 "title_add": "Add invoice",
                 "title": "Invoices",
-                "add": "Add invoice",
-                "delete_confirm_msg": "Are you sure you wish to delete this invoice?",
-                "deleted": "Deleted invoice"
+                "add": "Add invoice"
             },
             "accepted_documents": {
                 "title": "Accepted documents",
                 "accepted_from_address": "Accepted from address"
+            },
+            "classes": {
+                "empty_list": "This customer hasn't attended any classes yet...",
+                "title": "Classes",
+                "add": "Add class"
+            },
+            "orders": {
+                "title": "Orders",
+                "delete_confirm_msg": "Are you sure you with to delete this order?",
+                "delete_success": "Order deleted",
+                "empty_list": "No orders placed yet..."
             }
         }
     },
@@ -654,7 +699,7 @@
         "title": "Schedule",
         "classes": {
             "title": "Classes",
-            "empty_list": "No classes found on this day",
+            "empty_list": "No classes scheduled on this day",
             "add": "Add class",
             "all_classes_in_series": "All classes",
             "delete_confirm_msg": "Are you sure you wish to delete this class and all associated data?",
@@ -1040,6 +1085,7 @@
             "title": "General",
             "error_loading": "Error loading settings :(",
             "toast_edit_success": "Saved settings",
+            "datetime": "Date and time",
             "date_format": "Date format",
             "date_formats": {
                 "YYYY-MM-DD": "YYYY-MM-DD",
@@ -1048,11 +1094,63 @@
             },
             "time_format": "Time format",
             "time_formats": {
-                "24hr": "24h",
+                "24hr": "24hr",
                 "12hr": "AM/PM"
+            },
+            "date_time": {
+                "title": "Date and time",
+                "explanation": "Date and time format"
             }
         },
-        "error_loading": "Error loading settings :("
+        "error_loading": "Error loading settings :(",
+        "integration": {
+            "title": "Integration",
+            "mollie": {
+                "title": "Mollie",
+                "explanation": "Mollie integration settings",
+                "api_key": "Mollie API key"
+            }
+        },
+        "finance": {
+            "currency": {
+                "title": "Currency",
+                "explanation": "Set the currency and currency symbol"
+            },
+            "currency_symbol": "Currency symbol",
+            "title": "Currency"
+        },
+        "mail": {
+            "title": "Mail",
+            "templates": {
+                "title": "Templates",
+                "explanation": "Set the contents of system generated mails.",
+                "edit": {
+                    "title": "Edit template",
+                    "toast_edit_success": "Saved"
+                },
+                "error_loading": "Error loading mail templates :(",
+                "name": "Name",
+                "order_received": {
+                    "title": "Order received",
+                    "help_subject": "No variables available",
+                    "help_title": "No variables available",
+                    "help_description": "{{ order }} (Order information), {{order_date}} (Order creation date)",
+                    "help_content": "{{order}} (Order information), {{order_items}} (Table of order items)",
+                    "help_comments": "No variables available"
+                },
+                "not_found": {
+                    "title": "Template not found",
+                    "help_subject": "",
+                    "help_title": "",
+                    "help_description": "",
+                    "help_content": "",
+                    "help_comments": ""
+                }
+            }
+        },
+        "home": {
+            "link_edit": "Change settings"
+        }
     },
     "user": {
         "login": {
@@ -1156,5 +1254,131 @@
     },
     "goto": {
         "title": "Go to"
-    }
+    },
+    "shop": {
+        "home": {
+            "title": "Home",
+            "welcome": "Welcome"
+        },
+        "classpasses": {
+            "error_loading": "Error loading class passes :(",
+            "title": "Classpasses",
+            "choose": "Choose"
+        },
+        "title": "Shop",
+        "classpass": {
+            "error_loading": "Error loading class pass :(",
+            "additional_information": "Additional information",
+            "class_book_information": "Selected class",
+            "class_book_explanation": "You'll be signed in to the class below once the order process has been completed."
+        },
+        "order": {
+            "message": "Any message with this order?",
+            "by_placing_this_order": "By placing this order I",
+            "agree_terms": "Accept the ",
+            "agree_privacy": "Accept the"
+        },
+        "place_order": "Place order",
+        "checkout_progress": {
+            "order": "Order",
+            "payment": "Payment",
+            "complete": "Complete"
+        },
+        "checkout": {
+            "payment": {
+                "order_summary": "Order summary",
+                "order_received": "Order received",
+                "order_received_subheader": "We have received our order",
+                "order_received_to_payment_explanation": "The items in your order will be delivered as soon as we've received the payment for this order.",
+                "order_received_to_payment_text": "Please click the button below to start the payment.",
+                "order_summary_message": "Order message",
+                "to_payment": "Pay now",
+                "redirecting": "Preparing payment..."
+            },
+            "title": "Check out",
+            "complete": {
+                "order_not_found": "Sorry... this order could not be found...",
+                "success_subheader": "Thank you!",
+                "success_content_text": "All items in this order and an invoice have been added to your account.",
+                "fail_subheader": "Uh oh... ",
+                "fail_content_text": "Please contact us in case there was a technical error and you'd like our staff can help you.",
+                "title": "Checkout complete",
+                "success_payment_text": "We have received your payment for this order.",
+                "fail_payment_text": "It looks like something went wrong while processing your payment. "
+            },
+            "order_summary": {
+                "error_loading": "Error loading order information :(",
+                "message": "Order message"
+            }
+        },
+        "complete": {
+            "to_account": "To your account"
+        },
+        "account": {
+            "title": "My account",
+            "profile": {
+                "title": "My profile",
+                "explanation": "Update your name and contact information. Please keep your information updated in case we need to contact you or reply to an inquiry.",
+                "toast_edit_success": "Saved",
+                "error_loading_data": "Error loading profile data :("
+            },
+            "btn_text_profile_edit": "Update profile",
+            "error_loading_user_data": "Error loading profile data :(",
+            "classpasses": {
+                "title": "My class passes",
+                "explanation": "View your current and past classpasses",
+                "error_loading_data": "Error loading classpasses :(",
+                "empty_list": "No current classpasses"
+            },
+            "btn_text_view": "View",
+            "orders": {
+                "title": "My Orders",
+                "explanation": "View and mange your orders.",
+                "confirm_cancel": "Cancel order?",
+                "empty_list": "You haven't placed any orders yet.",
+                "msg_cancel_confirm": "Are you sure you wish to cancel this order?",
+                "order": {
+                    "cancelled": "Order cancelled"
+                },
+                "to_payment": "Payment",
+                "confirm_cancel_no": "No, Don't cancel",
+                "confirm_cancel_yes": "Yes, cancel it"
+            },
+            "classes": {
+                "error_loading_data": "Error loading your classes... :(",
+                "title": "My classes",
+                "empty_list": "You haven't booked any classes yet",
+                "explanation": "View your upcoming and past classes"
+            },
+            "invoices": {
+                "title": "My invoices",
+                "explanation": "View your invoices and download them as a PDF file.",
+                "empty_list": "You don't have any invoices yet."
+            }
+        },
+        "accounts": {
+            "profile": {
+                "edit": "My profile"
+            }
+        },
+        "classes": {
+            "title": "Classes",
+            "book": {
+                "title": "Booking options for class",
+                "dropin_pay_and_book": "Buy a drop in class",
+                "pay_and_book": "Pay and book",
+                "trial_pay_and_book": "Buy a trial class"
+            },
+            "booked": {
+                "class": "Selected class",
+                "title": "Class booked!",
+                "class_explanation": "We've reserved your spot in the class below.",
+                "class_info": "Good to know"
+            },
+            "filter_all_locations": "All locations",
+            "filter_all_classtypes": "All classtypes",
+            "filter_all_levels": "All levels"
+        }
+    },
+    "You've already booked this class ": "You've already booked this class"
 }

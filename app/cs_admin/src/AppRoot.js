@@ -1,7 +1,7 @@
 // import React, { Component } from 'react';
 // import logo from './logo.svg';
 
-import React from 'react'
+import React, { Component } from 'react'
 import {
   Route, 
   Switch, 
@@ -9,18 +9,17 @@ import {
   Redirect
 } from 'react-router-dom'
 import { withTranslation } from 'react-i18next'
-import { useQuery } from "react-apollo"
+import { useQuery, useMutation } from "react-apollo"
 import { toast } from 'react-toastify'
 
-import { GET_APP_SETTINGS_QUERY } from "./components/app_settings/queries"
+import { GET_APP_SETTINGS_QUERY } from "./components/settings/general/date_time/queries"
+import { TOKEN_REFRESH } from "./queries/system/auth"
 
 // Import moment locale
 import moment from 'moment'
 import 'moment/locale/nl'
 
 import { AppSettingsProvider } from "./components/context/AppSettingsContext"
-
-import AppSettingsGeneral from './components/app_settings/general/AppSettingsGeneral'
 
 import HomeHome from './components/home/home/HomeHome'
 
@@ -39,6 +38,8 @@ import FinanceInvoiceGroupEdit from './components/finance/invoices/groups/Financ
 import FinanceInvoiceGroupDefaults from './components/finance/invoices/groups/defaults/FinanceInvoiceGroupDefaults'
 import FinanceInvoicePaymentAdd from './components/finance/invoices/payments/FinanceInvoicePaymentAdd'
 import FinanceInvoicePaymentEdit from './components/finance/invoices/payments/FinanceInvoicePaymentEdit'
+import FinanceOrders from './components/finance/orders/FinanceOrders'
+import FinanceOrderEdit from './components/finance/orders/edit/FinanceOrderEdit'
 import FinancePaymentMethods from './components/finance/payment_methods/FinancePaymentMethods'
 import FinancePaymentMethodAdd from './components/finance/payment_methods/FinancePaymentMethodAdd'
 import FinancePaymentMethodEdit from './components/finance/payment_methods/FinancePaymentMethodEdit'
@@ -107,6 +108,7 @@ import RelationsAccounts from './components/relations/accounts/RelationsAccounts
 import RelationsAccountAdd from './components/relations/accounts/RelationsAccountAdd'
 import RelationsAccountProfile from './components/relations/accounts/RelationsAccountProfile'
 import AccountAcceptedDocuments from './components/relations/accounts/accepted_documents/AcceptedDocuments.jsx'
+import RelationsAccountClasses from './components/relations/accounts/classes/AccountClasses'
 import AccountClasspasses from './components/relations/accounts/classpasses/AccountClasspasses'
 import AccountClasspassAdd from './components/relations/accounts/classpasses/AccountClasspassAdd'
 import AccountClasspassEdit from './components/relations/accounts/classpasses/AccountClasspassEdit'
@@ -115,6 +117,7 @@ import AccountInvoiceAdd from './components/relations/accounts/invoices/AccountI
 import AccountMemberships from './components/relations/accounts/memberships/AccountMemberships'
 import AccountMembershipAdd from './components/relations/accounts/memberships/AccountMembershipAdd'
 import AccountMembershipEdit from './components/relations/accounts/memberships/AccountMembershipEdit'
+import AccountOrders from './components/relations/accounts/orders/AccountOrders'
 import AccountSubscriptions from './components/relations/accounts/subscriptions/AccountSubscriptions'
 import AccountSubscriptionAdd from './components/relations/accounts/subscriptions/AccountSubscriptionAdd'
 import AccountSubscriptionEdit from './components/relations/accounts/subscriptions/AccountSubscriptionEdit'
@@ -144,6 +147,28 @@ import SelfCheckinBookingOptions from './components/selfcheckin/BookingOptions/B
 import SelfCheckinLocations from './components/selfcheckin/Locations/Locations'
 import SelfCheckinLocationClasses from './components/selfcheckin/LocationClasses/LocationClasses'
 
+import SettingsFinanceCurrency from './components/settings/finance/currency/SettingsFinanceCurrency'
+import SettingsGeneralDateTime from './components/settings/general/date_time/SettingsGeneralDateTime'
+import SettingsHome from './components/settings/home/SettingsHome'
+import SettingsIntegrationMollie from './components/settings/integration/mollie/SettingsIntegrationMollie'
+import SettingsMailTemplates from './components/settings/mail/SettingsMailTemplates'
+import SettingsMailTemplateEdit from './components/settings/mail/SettingsMailTemplateEdit'
+
+import ShopAccountHome from './components/shop/account/home/ShopAccountHome'
+import ShopAccountClasspasses from './components/shop/account/classpasses/ShopAccountClasspasses'
+import ShopAccountInvoices from './components/shop/account/invoices/ShopAccountInvoices'
+import ShopAccountOrders from './components/shop/account/orders/ShopAccountOrders'
+import ShopAccountProfile from './components/shop/account/profile/ShopAccountProfile'
+import ShopClassBook from './components/shop/classes/book/ShopClassBook'
+import ShopClassBooked from './components/shop/classes/booked/ShopClassBooked'
+import ShopClassesSchedule from './components/shop/classes/schedule/ShopClassesSchedule'
+import ShopHome from './components/shop/home/ShopHome'
+import ShopCheckoutPayment from './components/shop/checkout/payment/ShopCheckoutPayment'
+import ShopCheckoutComplete from './components/shop/checkout/complete/ShopCheckoutComplete'
+import ShopClasses from './components/shop/account/classes/ShopAccountClasses'
+import ShopClasspasses from './components/shop/classpasses/ShopClasspasses'
+import ShopClasspass from './components/shop/classpass/ShopClasspass'
+
 import UserChangePassword from './components/user/password/UserPasswordChange'
 import UserLogin from './components/user/login/UserLogin'
 import UserLogout from './components/user/login/UserLogout'
@@ -156,23 +181,43 @@ import { CSAuth } from './tools/authentication'
 
 
 const PrivateRoute = ({ component: Component, ...rest }) => {
-  let tokenExpired = false
+  const [doTokenRefresh] = useMutation(TOKEN_REFRESH)
+  let authTokenExpired = false
   console.log(rest.path)
+
+  const ContinueAsYouAre = <Route {...rest} render={(props) => ( <Component {...props} /> )} />
+  const SessionExpired = <Route {...rest} render={(props) => ( <Redirect to='/user/session/expired' /> )} />
   
   // Check expiration
   const tokenExp = localStorage.getItem(CSLS.AUTH_TOKEN_EXP)
   if ((new Date() / 1000) >= tokenExp) {
-    CSAuth.logout(true)
-    tokenExpired = true
+    authTokenExpired = true
   }
 
-  return (
-    <Route {...rest} render={(props) => (
-      tokenExpired 
-        ? <Redirect to='/user/session/expired' />
-        : <Component {...props} />
-    )} />
-  )
+  if (authTokenExpired) {
+    const refreshTokenExp = localStorage.getItem(CSLS.AUTH_TOKEN_REFRESH_EXP)
+    if ((new Date() / 1000) >= refreshTokenExp) {
+      return SessionExpired
+    } else {
+      // Refresh token
+      doTokenRefresh().then(({ data }) => {
+        console.log('got refresh data', data)
+        CSAuth.updateTokenInfo(data.refreshToken)
+        return ContinueAsYouAre
+      }).catch((error) => {
+        toast.error('general.toast_server_error' + ': ' +  error, {
+          position: toast.POSITION.BOTTOM_RIGHT
+        })
+        console.log('there was an error refreshing the token', error) 
+        console.log("REDIRECT BACK TO LOGIN")
+        window.location.href = "/#/user/login"
+        window.location.reload()
+      })
+    }
+  } else {
+    return ContinueAsYouAre
+  }
+  return null
 }
 
 
@@ -219,6 +264,8 @@ function AppRoot({ t }) {
           <PrivateRoute exact path="/finance/glaccounts" component={FinanceGLAccounts} />
           <PrivateRoute exact path="/finance/glaccounts/add" component={FinanceGLAccountAdd} />
           <PrivateRoute exact path="/finance/glaccounts/edit/:id" component={FinanceGLAccountEdit} />
+          <PrivateRoute exact path="/finance/orders" component={FinanceOrders} />
+          <PrivateRoute exact path="/finance/orders/edit/:id" component={FinanceOrderEdit} />
           <PrivateRoute exact path="/finance/paymentmethods" component={FinancePaymentMethods} />
           <PrivateRoute exact path="/finance/paymentmethods/add" component={FinancePaymentMethodAdd} />
           <PrivateRoute exact path="/finance/paymentmethods/edit/:id" component={FinancePaymentMethodEdit} />
@@ -288,6 +335,7 @@ function AppRoot({ t }) {
           <PrivateRoute exact path="/relations/accounts/add" component={RelationsAccountAdd} />
           <PrivateRoute exact path="/relations/accounts/:account_id/profile" component={RelationsAccountProfile} />
           <PrivateRoute exact path="/relations/accounts/:account_id/accepted_documents" component={AccountAcceptedDocuments} />
+          <PrivateRoute exact path="/relations/accounts/:account_id/classes" component={RelationsAccountClasses} />
           <PrivateRoute exact path="/relations/accounts/:account_id/classpasses" component={AccountClasspasses} />
           <PrivateRoute exact path="/relations/accounts/:account_id/classpasses/add" component={AccountClasspassAdd} />
           <PrivateRoute exact path="/relations/accounts/:account_id/classpasses/edit/:id" component={AccountClasspassEdit} />
@@ -296,6 +344,7 @@ function AppRoot({ t }) {
           <PrivateRoute exact path="/relations/accounts/:account_id/memberships" component={AccountMemberships} />
           <PrivateRoute exact path="/relations/accounts/:account_id/memberships/add" component={AccountMembershipAdd} />
           <PrivateRoute exact path="/relations/accounts/:account_id/memberships/edit/:id" component={AccountMembershipEdit} />
+          <PrivateRoute exact path="/relations/accounts/:account_id/orders" component={AccountOrders} />
           <PrivateRoute exact path="/relations/accounts/:account_id/subscriptions" component={AccountSubscriptions} />
           <PrivateRoute exact path="/relations/accounts/:account_id/subscriptions/add" component={AccountSubscriptionAdd} />
           <PrivateRoute exact path="/relations/accounts/:account_id/subscriptions/edit/:id" component={AccountSubscriptionEdit} />
@@ -333,8 +382,30 @@ function AppRoot({ t }) {
           <PrivateRoute exact path="/selfcheckin" component={SelfCheckinLocations} />
           <PrivateRoute exact path="/selfcheckin/location/:location_id" component={SelfCheckinLocationClasses} />
 
+          {/* Shop */}
+          <Route exact path = "/shop" component={ShopHome} />
+          <PrivateRoute exact path = "/shop/account" component={ShopAccountHome} />
+          <PrivateRoute exact path = "/shop/account/classes" component={ShopClasses} />
+          <PrivateRoute exact path = "/shop/account/classpasses" component={ShopAccountClasspasses} />
+          <PrivateRoute exact path = "/shop/account/invoices" component={ShopAccountInvoices} />
+          <PrivateRoute exact path = "/shop/account/orders" component={ShopAccountOrders} />
+          <PrivateRoute exact path = "/shop/account/profile" component={ShopAccountProfile} />
+          <PrivateRoute exact path = "/shop/checkout/payment/:id" component={ShopCheckoutPayment} />
+          <PrivateRoute exact path = "/shop/checkout/complete/:id" component={ShopCheckoutComplete} />
+          <Route exact path = "/shop/classes" component={ShopClassesSchedule} />
+          <PrivateRoute exact path = "/shop/classes/book/:class_id/:date" component={ShopClassBook} />
+          <PrivateRoute exact path = "/shop/classes/booked/:class_id/:date" component={ShopClassBooked} />
+          <Route exact path = "/shop/classpasses" component={ShopClasspasses} />
+          <Route exact path = "/shop/classpass/:id" component={ShopClasspass} />
+          <Route exact path = "/shop/classpass/:id/:class_id/:date" component={ShopClasspass} />
+
           {/* Settings */}
-          <PrivateRoute exact path="/settings/general" component={AppSettingsGeneral} />
+          <PrivateRoute exact path="/settings" component={SettingsHome} />
+          <PrivateRoute exact path="/settings/finance/currency" component={SettingsFinanceCurrency} />
+          <PrivateRoute exact path="/settings/general/datetime" component={SettingsGeneralDateTime} />
+          <PrivateRoute exact path="/settings/integration/mollie" component={SettingsIntegrationMollie} />
+          <PrivateRoute exact path="/settings/mail/templates" component={SettingsMailTemplates} />
+          <PrivateRoute exact path="/settings/mail/templates/edit/:id" component={SettingsMailTemplateEdit} />
 
           {/* User */}
           <PrivateRoute exact path="/user/password/change" component={UserChangePassword} />

@@ -5,13 +5,14 @@ from .account import Account
 from .organization_subscription import OrganizationSubscription
 from .finance_payment_method import FinancePaymentMethod
 
+
 class AccountSubscription(models.Model):
     # add additional fields in here
     # teacher and employee will use OneToOne fields. An account can optionally be a teacher or employee.
     # Editable parameter docs
     # https://docs.djangoproject.com/en/2.2/ref/models/fields/#editable
 
-    account = models.ForeignKey(Account, on_delete=models.CASCADE)
+    account = models.ForeignKey(Account, on_delete=models.CASCADE, related_name="subscriptions")
     organization_subscription = models.ForeignKey(OrganizationSubscription, on_delete=models.CASCADE)
     finance_payment_method = models.ForeignKey(FinancePaymentMethod, on_delete=models.CASCADE, null=True)
     date_start = models.DateField()

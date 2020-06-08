@@ -301,7 +301,7 @@ class GQLOrganizationMembership(TestCase):
           to_global_id("FinanceCostCenterNode", membership.finance_costcenter.pk))
 
 
-    def test_query_permision_denied(self):
+    def test_query_permission_denied(self):
         """ Query list of memberships - check permission denied """
         query = self.memberships_query
         membership = f.OrganizationMembershipFactory.create()
@@ -317,7 +317,7 @@ class GQLOrganizationMembership(TestCase):
         self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
-    def test_query_permision_granted(self):
+    def test_query_permission_granted(self):
         """ Query list of memberships with view permission """
         query = self.memberships_query
         membership = f.OrganizationMembershipFactory.create()

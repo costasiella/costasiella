@@ -254,7 +254,7 @@ class GQLScheduleClassWeeklyOTC(TestCase):
         self.assertEqual(data['scheduleClassWeeklyOtcs']['edges'][0]['node']['timeEnd'], str(self.class_otc.time_end))        
 
 
-    def test_query_permision_denied(self):
+    def test_query_permission_denied(self):
         """ Query list of schedule item weeklyotcs - check permission denied """
         query = self.weeklyotcs_query
 
@@ -266,7 +266,7 @@ class GQLScheduleClassWeeklyOTC(TestCase):
         self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
-    def test_query_permision_granted(self):
+    def test_query_permission_granted(self):
         """ Query list of schedule item weeklyotcs with view permission """
         query = self.weeklyotcs_query
 

@@ -9,6 +9,7 @@ export const GET_BOOKING_OPTIONS_QUERY = gql`
         id
         fullName
       }
+      alreadyBooked
       scheduleItem {
         frequencyType
         frequencyInterval

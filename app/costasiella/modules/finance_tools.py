@@ -1,6 +1,24 @@
 
 
-def display_float_as_amount(amount):
-    from constance import config
+def get_currency():
+    from ..models import SystemSetting
+    setting = SystemSetting.objects.get(setting="finance_currency")
+    if setting:
+        return setting.value
+    else:
+        return "EUR"
 
-    return ' '.join([config.CURRENCY_SYMBOL, format(amount, '.2f')])
+
+def get_currency_symbol():
+    from ..models import SystemSetting
+    setting = SystemSetting.objects.get(setting="finance_currency_symbol")
+    if setting:
+        return setting.value
+    else:
+        return "€"
+
+
+def display_float_as_amount(amount):
+    currency_symbol = get_currency_symbol()
+
+    return ' '.join([currency_symbol, format(amount, '.2f')])

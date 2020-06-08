@@ -177,7 +177,7 @@ class GQLScheduleItemPrice(TestCase):
         self.assertEqual(data['scheduleItemPrices']['edges'][0]['node']['dateEnd'], schedule_item_price.date_end)
 
 
-    def test_query_permision_denied(self):
+    def test_query_permission_denied(self):
         """ Query list of schedule item prices """
         schedule_item_price = f.ScheduleItemPriceFactory.create()
 
@@ -194,7 +194,7 @@ class GQLScheduleItemPrice(TestCase):
         self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
-    def test_query_permision_granted(self):
+    def test_query_permission_granted(self):
         """ Query list of schedule item prices """
         schedule_item_price = f.ScheduleItemPriceFactory.create()
 

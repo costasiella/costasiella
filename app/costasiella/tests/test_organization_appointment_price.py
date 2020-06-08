@@ -200,7 +200,7 @@ class GQLOrganizationAppointmentPrice(TestCase):
         )
 
 
-    def test_query_permision_denied(self):
+    def test_query_permission_denied(self):
         """ Query list of appointment prices """
         query = self.appointment_prices_query
 
@@ -212,7 +212,7 @@ class GQLOrganizationAppointmentPrice(TestCase):
         self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
-    def test_query_permision_granted(self):
+    def test_query_permission_granted(self):
         """ Query list of appointment prices """
         query = self.appointment_prices_query
 

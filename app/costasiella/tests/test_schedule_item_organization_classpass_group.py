@@ -108,7 +108,7 @@ class GQLScheduleItemOrganizationClasspassGroup(TestCase):
 
     # All logged in users can query which classes can be accessed by which groups. 
 
-    # def test_query_permision_denied(self):
+    # def test_query_permission_denied(self):
     #     """ Query list of schedule item organization_classpass_groups """
     #     schedule_item_organization_classpass_group = f.ScheduleItemOrganizationClasspassGroupDenyFactory.create()
 
@@ -125,7 +125,7 @@ class GQLScheduleItemOrganizationClasspassGroup(TestCase):
     #     self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
-    # def test_query_permision_granted(self):
+    # def test_query_permission_granted(self):
     #     """ Query list of schedule item organization_classpass_groups """
     #     schedule_item_organization_classpass_group = f.ScheduleItemOrganizationClasspassGroupDenyFactory.create()
 

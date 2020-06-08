@@ -20,10 +20,13 @@ import {
 import HasPermissionWrapper from "../../HasPermissionWrapper"
 
 import { CSAuth } from "../../../tools/authentication"
+import { TOKEN_COOKIE_DELETE, TOKEN_REFRESH_COOKIE_DELETE } from "../../../queries/system/auth"
 
 
 function UserLogout({t, match, history}) {
-  const [active, setActive] = useState(false);
+  const [ deleteCookie ] = useMutation(TOKEN_COOKIE_DELETE)
+  const [ deleteRefreshCookie ] = useMutation(TOKEN_REFRESH_COOKIE_DELETE)
+  const [active, setActive] = useState(false)
 
   return (
     <StandaloneFormPage imageURL="">
@@ -43,6 +46,18 @@ function UserLogout({t, match, history}) {
             onClick={() => {
               setActive(true)
               CSAuth.logout()
+              deleteCookie().then(({ data }) => {
+                console.log('got data', data)
+                })
+              .catch((error) => {
+                console.log(error)
+              })
+              deleteRefreshCookie().then(({ data }) => {
+                console.log('got data', data)
+                })
+              .catch((error) => {
+                console.log(error)
+              })
               setTimeout(() => toast.info((t('user.logout.success')), {
                 position: toast.POSITION.BOTTOM_RIGHT
               }), 350)

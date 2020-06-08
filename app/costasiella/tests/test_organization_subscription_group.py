@@ -132,7 +132,7 @@ mutation ArchiveOrganizationSubscriptionGroup($input: ArchiveOrganizationSubscri
 
 
 
-    def test_query_permision_denied(self):
+    def test_query_permission_denied(self):
         """ Query list of subscriptiongroups as user without permissions """
         query = self.subscriptiongroups_query
         subscriptiongroup = f.OrganizationSubscriptionGroupFactory.create()
@@ -149,7 +149,7 @@ mutation ArchiveOrganizationSubscriptionGroup($input: ArchiveOrganizationSubscri
         self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
-    def test_query_permision_granted(self):
+    def test_query_permission_granted(self):
         """ Query list of subscriptiongroups with view permission """
         query = self.subscriptiongroups_query
         subscriptiongroup = f.OrganizationSubscriptionGroupFactory.create()

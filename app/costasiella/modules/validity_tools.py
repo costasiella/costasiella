@@ -1,11 +1,18 @@
 from django.utils.translation import gettext as _
 
-def display_validity_unit(validity_unit):
-    VALIDITY_UNITS = (
-        ("DAYS", _("Days")),
-        ("WEEKS", _("Weeks")),
-        ("MONTHS", _("Months"))
-    )
+def display_validity_unit(validity_unit, validity):
+    if validity == 1:
+        VALIDITY_UNITS = (
+            ("DAYS", _("Day")),
+            ("WEEKS", _("Week")),
+            ("MONTHS", _("Month"))
+        )
+    else:
+        VALIDITY_UNITS = (
+            ("DAYS", _("Days")),
+            ("WEEKS", _("Weeks")),
+            ("MONTHS", _("Months"))
+        ) 
 
     return_value = _("Validity unit not found")
 

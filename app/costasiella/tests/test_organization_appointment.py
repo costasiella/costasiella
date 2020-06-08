@@ -171,7 +171,7 @@ class GQLOrganizationAppointment(TestCase):
         self.assertEqual(data['organizationAppointments']['edges'][0]['node']['displayPublic'], appointment.display_public)
 
 
-    def test_query_permision_denied(self):
+    def test_query_permission_denied(self):
         """ Query list of appointment_category rooms """
         query = self.appointments_query
         appointment = f.OrganizationAppointmentFactory.create()
@@ -201,7 +201,7 @@ class GQLOrganizationAppointment(TestCase):
         self.assertEqual(non_public_found, False)
 
 
-    def test_query_permision_granted(self):
+    def test_query_permission_granted(self):
         """ Query list of appointment_category rooms """
         query = self.appointments_query
         appointment = f.OrganizationAppointmentFactory.create()

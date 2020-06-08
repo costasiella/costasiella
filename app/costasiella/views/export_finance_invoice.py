@@ -15,6 +15,20 @@ from ..models import AppSettings, FinanceInvoice, FinanceInvoiceGroup, FinanceIn
 from ..modules.gql_tools import require_login_and_permission, get_rid
 
 
+def _verifiy_permission_or_account(request, finance_invoice):
+    """
+
+    :param request:
+    :param finance_invoice:
+    :return:
+    """
+    user = request.user
+    if user.has_perm('costasiella.view_financeinvoice') or finance_invoice.account == user:
+        return True
+    else:
+        return False
+
+
 def invoice_html(node_id):
     """
     Return rendered invoice html template
@@ -55,7 +69,7 @@ def invoice_html(node_id):
         }
     )
 
-    return [ finance_invoice, rendered_template ]
+    return [finance_invoice, rendered_template]
 
 
     # permission  = ((auth.has_membership(group_id='Admins') or
@@ -91,6 +105,8 @@ def invoice_pdf(request, node_id):
     # print(request.POST.node_id)
 
     finance_invoice, html = invoice_html(node_id)
+    if not _verifiy_permission_or_account(request, finance_invoice):
+        raise Http404(_("Invoice not found..."))
 
     # Create a file-like buffer to receive PDF data.
     buffer = io.BytesIO()
@@ -115,6 +131,8 @@ def invoice_pdf_preview(request, node_id):
     print(node_id)
     # print(request.POST.node_id)
 
-    invoice, html = invoice_html(node_id)
+    finance_invoice, html = invoice_html(node_id)
+    if not _verifiy_permission_or_account(request, finance_invoice):
+        raise Http404(_("Invoice not found..."))
 
     return HttpResponse(html)

@@ -5,8 +5,10 @@ from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
 from graphql import GraphQLError
 
-from ..models import Account, AccountClasspass, AccountSubscription, FinanceInvoiceItem, OrganizationClasspass, ScheduleItem, ScheduleItemAttendance
-from ..modules.gql_tools import require_login_and_permission, require_login_and_one_of_permissions, get_rid
+from ..models import Account, AccountClasspass, AccountSubscription, \
+                     FinanceInvoiceItem, OrganizationClasspass, ScheduleItem, ScheduleItemAttendance
+from ..modules.gql_tools import require_login, require_login_and_permission, \
+                                require_login_and_one_of_permissions, get_rid
 from ..modules.messages import Messages
 
 from ..dudes import ClassCheckinDude, ClassScheduleDude
@@ -43,15 +45,31 @@ class ScheduleItemAttendanceQuery(graphene.ObjectType):
 
     def resolve_schedule_item_attendances(self, info, **kwargs):
         user = info.context.user
-        require_login_and_one_of_permissions(user, [
-            'costasiella.view_scheduleitemattendance',
-            'costasiella.view_selfcheckin'
-        ])
+        require_login(user)
 
-        return ScheduleItemAttendance.objects.order_by('-account__full_name')
+        view_permission = user.has_perm('costasiella.view_scheduleitemattendance') or \
+            user.has_perm('costasiella.view_selfcheckin')
+
+        if view_permission and 'account' in kwargs:
+            # Allow user to filter by any account
+            rid = get_rid(kwargs.get('account', user.id))
+            account_id = rid.id
+        elif view_permission:
+            # return all
+            account_id = None
+        else:
+            # A user can only query their own orders
+            account_id = user.id
+
+        if account_id:
+            order_by = '-date'
+            return ScheduleItemAttendance.objects.filter(account=account_id).order_by(order_by)
+        else:
+            order_by = '-account__full_name'
+            return ScheduleItemAttendance.objects.all().order_by(order_by)
             
 
-def validate_schedule_item_attendance_create_update_input(input):
+def validate_schedule_item_attendance_create_update_input(input, user):
     """
     Validate input
     """ 
@@ -85,13 +103,13 @@ def validate_schedule_item_attendance_create_update_input(input):
                 raise Exception(_('Invalid Account Subscription ID!'))                      
 
     # Check FinanceInvoiceItem
-    if 'account_invoice_item' in input:
-        if input['account_invoice_item']:
-            rid = get_rid(input['account_invoice_item'])
-            account_invoice_item = AccountInvoiceIteam.objects.filter(id=rid.id).first()
-            result['account_invoice_item'] = account_invoice_item
-            if not account_invoice_item:
-                raise Exception(_('Invalid Account Invoice Item ID!'))                      
+    if 'finance_invoice_item' in input:
+        if input['finance_invoice_item']:
+            rid = get_rid(input['finance_invoice_item'])
+            finance_invoice_item = FinanceInvoiceItem.objects.filter(id=rid.id).first()
+            result['finance_invoice_item'] = finance_invoice_item
+            if not finance_invoice_item:
+                raise Exception(_('Invalid Finance Invoice Item ID!'))
 
     # Check OrganizationClasspass
     if 'organization_classpass' in input:
@@ -111,13 +129,12 @@ def validate_schedule_item_attendance_create_update_input(input):
             if not schedule_item:
                 raise Exception(_('Invalid Schedule Item (class) ID!'))        
 
-
     return result
 
 
 class CreateScheduleItemAttendance(graphene.relay.ClientIDMutation):
     class Input:
-        account = graphene.ID(required=True)
+        account = graphene.ID(required=False)
         schedule_item = graphene.ID(required=True)
         account_classpass = graphene.ID(required=False)
         account_subscription = graphene.ID(required=False)
@@ -133,22 +150,28 @@ class CreateScheduleItemAttendance(graphene.relay.ClientIDMutation):
     @classmethod
     def mutate_and_get_payload(self, root, info, **input):
         user = info.context.user
-        require_login_and_one_of_permissions(user, [
-            'costasiella.add_scheduleitemattendance',
-            'costasiella.view_selfcheckin'
-        ])
+        require_login(user)
 
-        validation_result = validate_schedule_item_attendance_create_update_input(input)
+        permission = user.has_perm('costasiella.add_scheduleitemattendance') or \
+            user.has_perm('costasiella.view_selfcheckin')
+
+        validation_result = validate_schedule_item_attendance_create_update_input(input, user)
+        if not permission or 'account' not in input:
+            # When the user doesn't have permissions; always use their own account
+            validation_result['account'] = user
+
         class_checkin_dude = ClassCheckinDude()
         class_schedule_dude = ClassScheduleDude()
 
         class_takes_place = class_schedule_dude.schedule_item_takes_place_on_day(
-            schedule_item = validation_result['schedule_item'],
-            date = input['date']
+            schedule_item=validation_result['schedule_item'],
+            date=input['date']
         )
         
         if not class_takes_place:
-            raise Exception(_("This class doesn't take place on this date, please check for the correct date or any holidays."))
+            raise Exception(
+                _("This class doesn't take place on this date, please check for the correct date or any holidays.")
+            )
         
         attendance_type = input['attendance_type']
         if attendance_type == "CLASSPASS":
@@ -157,12 +180,12 @@ class CreateScheduleItemAttendance(graphene.relay.ClientIDMutation):
 
             account_classpass = validation_result['account_classpass']
             schedule_item_attendance = class_checkin_dude.class_checkin_classpass(
-                account = validation_result['account'],
-                account_classpass = account_classpass,
-                schedule_item = validation_result['schedule_item'],
-                date = input['date'],
-                booking_status = input['booking_status'],
-                online_booking = input['online_booking'],                    
+                account=validation_result['account'],
+                account_classpass=account_classpass,
+                schedule_item=validation_result['schedule_item'],
+                date=input['date'],
+                booking_status=input['booking_status'],
+                online_booking=input['online_booking'],
             )
 
             account_classpass.update_classes_remaining()
@@ -173,12 +196,12 @@ class CreateScheduleItemAttendance(graphene.relay.ClientIDMutation):
 
             account_subscription = validation_result['account_subscription']
             schedule_item_attendance = class_checkin_dude.class_checkin_subscription(
-                account = validation_result['account'],
-                account_subscription = account_subscription,
-                schedule_item = validation_result['schedule_item'],
-                date = input['date'],
-                booking_status = input['booking_status'],
-                online_booking = input['online_booking'],                    
+                account=validation_result['account'],
+                account_subscription=account_subscription,
+                schedule_item=validation_result['schedule_item'],
+                date=input['date'],
+                booking_status=input['booking_status'],
+                online_booking=input['online_booking'],
             )
 
             #TODO: add code to update available credits for a subscription
@@ -201,7 +224,6 @@ class CreateScheduleItemAttendance(graphene.relay.ClientIDMutation):
             account_classpass = result['account_classpass']
 
             account_classpass.update_classes_remaining()
-        
 
         return CreateScheduleItemAttendance(schedule_item_attendance=schedule_item_attendance)
 

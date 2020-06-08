@@ -166,7 +166,7 @@ class GQLAccount(TransactionTestCase):
         self.assertEqual(data['accounts']['edges'][0]['node']['email'], account.email)
 
 
-    def test_query_permision_denied(self):
+    def test_query_permission_denied(self):
         """ Query list of accounts - check permission denied """
         query = self.accounts_query
         account = f.RegularUserFactory()
@@ -178,7 +178,7 @@ class GQLAccount(TransactionTestCase):
         self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
-    def test_query_permision_granted(self):
+    def test_query_permission_granted(self):
         """ Query list of accounts with view permission """
         query = self.accounts_query
         account = f.RegularUserFactory.create()

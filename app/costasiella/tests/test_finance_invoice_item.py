@@ -236,7 +236,7 @@ class GQLFinanceInvoiceItem(TestCase):
           to_global_id('FinanceCostCenterNode', invoice_item.finance_costcenter.id))
 
 
-    def test_query_permision_denied(self):
+    def test_query_permission_denied(self):
         """ Query list of account invoice items - check permission denied """
         query = self.invoice_items_query
         invoice_item = f.FinanceInvoiceItemFactory.create()
@@ -254,7 +254,7 @@ class GQLFinanceInvoiceItem(TestCase):
         self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
-    def test_query_permision_granted(self):
+    def test_query_permission_granted(self):
         """ Query list of account invoice items with view permission """
         query = self.invoice_items_query
         invoice_item = f.FinanceInvoiceItemFactory.create()

@@ -72,8 +72,9 @@ class FinanceTaxRateFactory(factory.DjangoModelFactory):
 class OrganizationFactory(factory.DjangoModelFactory):
     class Meta:
         model = models.Organization
+        django_get_or_create = ('pk',)
 
-    id = 100
+    pk = 100
     archived = False
     name = "My Organization"
 
@@ -103,6 +104,22 @@ class OrganizationDocumentFactory(factory.DjangoModelFactory):
 
     organization = factory.SubFactory(OrganizationFactory)
     document_type = "TERMS_AND_CONDITIONS"
+    version = 1.0
+    date_start = datetime.date(2019, 1, 1)
+    # date_end is None
+    # https://factoryboy.readthedocs.io/en/latest/orms.html
+    # Refer to the part "Extra Fields (class dactory.django.FileField)"
+    document = factory.django.FileField(
+        from_path=os.path.join(os.getcwd(), "costasiella", "tests", "files", "test.pdf"),
+    )
+
+
+class OrganizationDocumentPrivacyPolicyFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.OrganizationDocument
+
+    organization = factory.SubFactory(OrganizationFactory)
+    document_type = "PRIVACY_POLICY"
     version = 1.0
     date_start = datetime.date(2019, 1, 1)
     # date_end is None
@@ -496,6 +513,45 @@ class FinanceInvoicePaymentFactory(factory.DjangoModelFactory):
     amount = 12
     finance_payment_method = factory.SubFactory(FinancePaymentMethodFactory)
     note = "Payment note here!"
+
+
+class FinanceOrderFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.FinanceOrder
+
+    class Params:
+        initial_account = factory.SubFactory(RegularUserFactory)
+
+    account = factory.LazyAttribute(
+        lambda o: o.initial_account if o.initial_account else factory.SubFactory(RegularUserFactory)
+    )
+    status = "RECEIVED"
+    message = "Customer's note here..."
+
+
+class FinanceOrderItemClasspassFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.FinanceOrderItem
+
+    class Params:
+        initial_order = factory.SubFactory(FinanceOrderFactory)
+        initial_organization_classpass = factory.SubFactory(OrganizationClasspassFactory)
+
+    finance_order = factory.LazyAttribute(
+        lambda o: o.initial_order if o.initial_order else factory.SubFactory(FinanceOrderFactory)
+    )
+    organization_classpass = factory.LazyAttribute(
+        lambda o: o.initial_organization_classpass if o.initial_organization_classpass else factory.SubFactory(
+            OrganizationClasspassFactory
+        )
+    )
+    product_name = "Classpass"
+    description = "Classpass description"
+    quantity = 1
+    price = factory.SelfAttribute('organization_classpass.price')
+    finance_tax_rate = factory.SelfAttribute('organization_classpass.finance_tax_rate')
+    finance_glaccount = factory.SelfAttribute('organization_classpass.finance_glaccount')
+    finance_costcenter = factory.SelfAttribute('organization_classpass.finance_costcenter')
 
 
 class SchedulePublicWeeklyClassFactory(factory.DjangoModelFactory):

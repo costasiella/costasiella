@@ -133,6 +133,9 @@ const getNavBarItems = (t, user) => {
       { value: t("selfcheckin.home.title"), to: "/selfcheckin", LinkComponent: withRouter(NavLink) }
     )
   }
+  goToSubItems.push(
+    { value: t("shop.title"), to: "/shop", LinkComponent: withRouter(NavLink) }
+  )
 
   // Go to
   if (
@@ -172,7 +175,7 @@ class SiteWrapper extends React.Component<Props, State> {
                 imageURL: "/d/static/logos/stock/logo_stock_backend.svg", // Set logo url here
                 navItems: (
                   <Nav.Item type="div" className="d-none d-md-flex">
-                    <Link to="/settings/general">
+                    <Link to="/settings">
                       <Button
                         icon="settings"
                         outline

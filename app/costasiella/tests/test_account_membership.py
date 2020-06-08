@@ -236,7 +236,7 @@ class GQLAccountMembership(TestCase):
         self.assertEqual(data['accountMemberships']['edges'][0]['node']['note'], membership.note)
 
 
-    def test_query_permision_denied(self):
+    def test_query_permission_denied(self):
         """ Query list of account memberships - check permission denied """
         query = self.memberships_query
         membership = f.AccountMembershipFactory.create()
@@ -252,7 +252,7 @@ class GQLAccountMembership(TestCase):
         self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
-    def test_query_permision_granted(self):
+    def test_query_permission_granted(self):
         """ Query list of account memberships with view permission """
         query = self.memberships_query
         membership = f.AccountMembershipFactory.create()

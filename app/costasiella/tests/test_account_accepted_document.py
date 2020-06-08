@@ -88,7 +88,7 @@ class GQLAccountAcceptedDocument(TestCase):
         self.assertEqual(data['accountAcceptedDocuments']['edges'][0]['node']['dateAccepted'], str(accepted_document.date_accepted).replace(' ', 'T'))
 
 
-    def test_query_permision_denied(self):
+    def test_query_permission_denied(self):
         """ Query list of account accepted_documents - check permission denied """
         query = self.accepted_documents
         accepted_document = f.AccountAcceptedDocumentFactory.create()
@@ -104,7 +104,7 @@ class GQLAccountAcceptedDocument(TestCase):
         self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
-    def test_query_permision_granted(self):
+    def test_query_permission_granted(self):
         """ Query list of account accepted_documents with view permission """
         query = self.accepted_documents
         accepted_document = f.AccountAcceptedDocumentFactory.create()

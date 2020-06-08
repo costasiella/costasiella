@@ -136,7 +136,7 @@ mutation ArchiveOrganizationClasstype($input: ArchiveOrganizationClasstypeInput!
         self.assertEqual(item['displayPublic'], classtype.display_public)
 
 
-    def test_query_permision_denied(self):
+    def test_query_permission_denied(self):
         """ Query list of classtypes as user without permissions """
         query = self.classtypes_query
         classtype = f.OrganizationClasstypeFactory.create()
@@ -162,7 +162,7 @@ mutation ArchiveOrganizationClasstype($input: ArchiveOrganizationClasstypeInput!
         self.assertEqual(non_public_found, False)
 
 
-    def test_query_permision_granted(self):
+    def test_query_permission_granted(self):
         """ Query list of classtypes with view permission """
         query = self.classtypes_query
         classtype = f.OrganizationClasstypeFactory.create()

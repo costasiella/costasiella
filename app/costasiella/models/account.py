@@ -5,6 +5,7 @@ from django.db import models
 
 from ..modules.encrypted_fields import EncryptedTextField
 
+
 class Account(AbstractUser):
     # add additional fields in here
     # teacher and employee will use OneToOne fields. An account can optionally be a teacher or employee.
@@ -34,6 +35,7 @@ class Account(AbstractUser):
     phone = EncryptedTextField(default="")
     mobile = EncryptedTextField(default="")
     emergency = EncryptedTextField(default="")
+    mollie_customer_id = models.CharField(max_length=255, default="", editable=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

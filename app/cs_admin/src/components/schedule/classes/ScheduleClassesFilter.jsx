@@ -26,7 +26,7 @@ function updateLocalStorageAndRefetch(key, value, refetch) {
 
 }
 
-const selectClass = "form-control mb-2"
+const selectClass = "form-control custom-select mb-2"
 
 
 const ScheduleClassesFilter = ({ t, history, data, refetch }) => (

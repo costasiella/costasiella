@@ -11,8 +11,8 @@ from .organization_subscription_group import OrganizationSubscriptionGroup
 
 from .choices.teacher_roles import get_teacher_roles
 from .choices.schedule_item_otc_statuses import get_schedule_item_otc_statuses
+from .choices.schedule_item_frequency_types import get_schedule_item_frequency_types
 
-# Create your models here.
 
 class ScheduleItem(models.Model):
     class Meta:
@@ -32,10 +32,7 @@ class ScheduleItem(models.Model):
         ('APPOINTMENT', _("Appointment"))
     )
 
-    FREQUENCY_TYPES = (
-        ('SPECIFIC', _("Specific")),
-        ('WEEKLY', _("Weekly")),
-    )
+    FREQUENCY_TYPES = get_schedule_item_frequency_types()
 
     FREQUENCY_INTERVAL_OPTIONS = (
         (0, _("Interval unused")),

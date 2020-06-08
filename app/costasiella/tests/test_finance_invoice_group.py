@@ -194,7 +194,7 @@ class GQLFinanceInvoiceGroup(TestCase):
         self.assertEqual(data['financeInvoiceGroups']['edges'][0]['node']['code'], invoicegroup.code)
 
 
-    def test_query_permision_denied(self):
+    def test_query_permission_denied(self):
         """ Query list of invoicegroups - check permission denied """
         query = self.invoicegroups_query
         invoicegroup = f.FinanceInvoiceGroupFactory.create()
@@ -211,7 +211,7 @@ class GQLFinanceInvoiceGroup(TestCase):
         self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
-    def test_query_permision_granted(self):
+    def test_query_permission_granted(self):
         """ Query list of invoicegroups with view permission """
         query = self.invoicegroups_query
         invoicegroup = f.FinanceInvoiceGroupFactory.create()

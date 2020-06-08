@@ -9,9 +9,14 @@ from .finance_glaccount import FinanceGLAccount
 from .finance_invoice import FinanceInvoice
 from .finance_tax_rate import FinanceTaxRate
 
+
 class FinanceInvoiceItem(models.Model):
     finance_invoice = models.ForeignKey(FinanceInvoice, on_delete=models.CASCADE, related_name="items")
-    account_classpass = models.ForeignKey(AccountClasspass, on_delete=models.SET_NULL, null=True, default=None)
+    account_classpass = models.ForeignKey(AccountClasspass,
+                                          on_delete=models.SET_NULL,
+                                          null=True,
+                                          default=None,
+                                          related_name="invoice_items")
     line_number = models.PositiveSmallIntegerField(default=0)
     product_name = models.CharField(max_length=255)
     description = models.TextField(default="")

@@ -209,7 +209,7 @@ class GQLOrganizationSubscriptionPrice(TestCase):
         self.assertEqual(data['organizationSubscriptionPrices']['edges'][0]['node']['dateEnd'], self.organization_subscription_price.date_end)
 
 
-    def test_query_permision_denied(self):
+    def test_query_permission_denied(self):
         """ Query list of location rooms """
         query = self.subscription_prices_query
 
@@ -226,7 +226,7 @@ class GQLOrganizationSubscriptionPrice(TestCase):
         self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
-    def test_query_permision_granted(self):
+    def test_query_permission_granted(self):
         """ Query list of location rooms """
         query = self.subscription_prices_query
 

@@ -14,8 +14,12 @@ from .finance_invoice_group import FinanceInvoiceGroup
 from .finance_invoice_group_default import FinanceInvoiceGroupDefault
 from .finance_invoice_item import FinanceInvoiceItem
 from .finance_invoice_payment import FinanceInvoicePayment
+from .finance_order import FinanceOrder
+from .finance_order_item import FinanceOrderItem
 from .finance_payment_method import FinancePaymentMethod
 from .finance_tax_rate import FinanceTaxRate
+
+from .integration_log_mollie import IntegrationLogMollie
 
 from .organization import Organization
 from .organization_appointment import OrganizationAppointment
@@ -38,9 +42,13 @@ from .organization_subscription_price import OrganizationSubscriptionPrice
 
 from .schedule_item import ScheduleItem
 from .schedule_item_attendance import ScheduleItemAttendance
+from .schedule_item_mail import ScheduleItemMail
 from .schedule_item_teacher import ScheduleItemTeacher
 from .schedule_item_teacher_available import ScheduleItemTeacherAvailable
 from .schedule_item_organization_classpass_group import ScheduleItemOrganizationClasspassGroup
 from .schedule_item_organization_subscription_group import ScheduleItemOrganizationSubscriptionGroup
 from .schedule_item_price import ScheduleItemPrice
 from .schedule_item_weekly_otc import ScheduleItemWeeklyOTC
+
+from .system_mail_template import SystemMailTemplate
+from .system_setting import SystemSetting

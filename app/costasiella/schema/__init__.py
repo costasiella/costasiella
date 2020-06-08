@@ -17,6 +17,9 @@ from .finance_invoice_group import FinanceInvoiceGroupQuery, FinanceInvoiceGroup
 from .finance_invoice_group_default import FinanceInvoiceGroupDefaultQuery, FinanceInvoiceGroupDefaultMutation
 from .finance_invoice_item import FinanceInvoiceItemQuery, FinanceInvoiceItemMutation
 from .finance_invoice_payment import FinanceInvoicePaymentQuery, FinanceInvoicePaymentMutation
+from .finance_order import FinanceOrderQuery, FinanceOrderMutation
+from .finance_order_payment_link import FinanceOrderPaymentLinkMutation
+from .finance_order_item import FinanceOrderItemQuery
 from .finance_payment_method import FinancePaymentMethodQuery, FinancePaymentMethodMutation
 from .finance_tax_rate import FinanceTaxRateQuery, FinanceTaxRateMutation
 
@@ -54,6 +57,9 @@ from .schedule_item_price import ScheduleItemPriceQuery, ScheduleItemPriceMutati
 from .schedule_item_teacher import ScheduleItemTeacherQuery, ScheduleItemTeacherMutation
 from .schedule_item_teacher_available import ScheduleItemTeacherAvailableQuery, ScheduleItemTeacherAvailableMutation
 
+from .system_mail_template import SystemMailTemplateQuery, SystemMailTemplateMutation
+from .system_setting import SystemSettingQuery, SystemSettingMutation
+
 
 class Query(AccountQuery,
             AccountAcceptedDocumentQuery,
@@ -69,6 +75,8 @@ class Query(AccountQuery,
             FinanceInvoiceGroupDefaultQuery,
             FinanceInvoiceItemQuery,
             FinanceInvoicePaymentQuery,
+            FinanceOrderQuery,
+            FinanceOrderItemQuery,
             FinancePaymentMethodQuery,
             FinanceTaxRateQuery,
             InsightClasspassesQuery,
@@ -100,6 +108,8 @@ class Query(AccountQuery,
             ScheduleItemPriceQuery,
             ScheduleItemTeacherQuery,
             ScheduleItemTeacherAvailableQuery,
+            SystemMailTemplateQuery,
+            SystemSettingQuery,
             graphene.ObjectType):
     node = graphene.relay.Node.Field()
 
@@ -117,6 +127,8 @@ class Mutation(AccountMutation,
                FinanceInvoiceGroupDefaultMutation,
                FinanceInvoiceItemMutation,
                FinanceInvoicePaymentMutation,
+               FinanceOrderMutation,
+               FinanceOrderPaymentLinkMutation,
                FinancePaymentMethodMutation,
                FinanceTaxRateMutation,
                OrganizationMutation,
@@ -147,9 +159,14 @@ class Mutation(AccountMutation,
                ScheduleItemPriceMutation,
                ScheduleItemTeacherMutation,
                ScheduleItemTeacherAvailableMutation,
+               SystemMailTemplateMutation,
+               SystemSettingMutation,
                graphene.ObjectType):
     token_auth = graphql_jwt.ObtainJSONWebToken.Field()
     verify_token = graphql_jwt.Verify.Field()
     refresh_token = graphql_jwt.Refresh.Field()
     revoke_token = graphql_jwt.Revoke.Field()
+    delete_token_cookie = graphql_jwt.DeleteJSONWebTokenCookie.Field()
+    # Long running refresh tokens
+    delete_refresh_token_cookie = graphql_jwt.DeleteRefreshTokenCookie.Field()
 

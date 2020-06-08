@@ -7,6 +7,7 @@ from django.db.models import Q
 
 import graphene
 from graphql import GraphQLError
+from graphql_relay import to_global_id
 from django.contrib.auth import password_validation
 from django.contrib.auth.hashers import check_password
 from graphene_django.converter import convert_django_field
@@ -16,8 +17,15 @@ from graphene_django.filter import DjangoFilterConnectionField
 from allauth.account.models import EmailAddress
 from ..models import AccountTeacherProfile
 
-from ..modules.gql_tools import require_login, require_login_and_permission, require_login_and_one_of_permissions, get_rid
+from ..modules.gql_tools import require_login, \
+    require_permission, \
+    require_login_and_permission, \
+    require_login_and_one_of_permissions, \
+    require_login_and_one_of_permission_or_own_account, \
+    get_rid
+
 from ..modules.encrypted_fields import EncryptedTextField
+
 
 @convert_django_field.register(EncryptedTextField)
 def convert_json_field_to_string(field, registry=None):
@@ -25,8 +33,13 @@ def convert_json_field_to_string(field, registry=None):
 
 
 class UserType(DjangoObjectType):
+    account_id = graphene.ID()
+
     class Meta:
         model = get_user_model()
+
+    def resolve_account_id(self, info):
+        return to_global_id("AccountNode", info.context.user.id)
 
 
 class AccountNode(DjangoObjectType):
@@ -34,7 +47,7 @@ class AccountNode(DjangoObjectType):
         model = get_user_model()
         
         # fields=() # Fields to include
-        exclude = ['password'] # Fields to exclude
+        exclude = ['password']  # Fields to exclude
         filter_fields = {
             'full_name': ['icontains', 'exact'],
             'is_active': ['exact'],
@@ -51,7 +64,6 @@ class AccountNode(DjangoObjectType):
             'costasiella.view_account',
             'costasiella.view_selfcheckin'
         ])
-        #TODO: Add permission for accounts to get their own info or all info with view permission
 
         return self._meta.model.objects.get(id=id)
 
@@ -93,13 +105,11 @@ class AccountQuery(graphene.AbstractType):
     permission = graphene.relay.Node.Field(PermissionNode)
     permissions = DjangoFilterConnectionField(PermissionNode)
 
-
     def resolve_user(self, info):
         user = info.context.user
         require_login(user)
 
         return user
-
 
     def resolve_accounts(self, info, is_active=False, **kwargs):
         user = info.context.user
@@ -108,20 +118,18 @@ class AccountQuery(graphene.AbstractType):
             'costasiella.view_selfcheckin'
         ])
 
-        query_set =  get_user_model().objects.filter(
+        query_set = get_user_model().objects.filter(
             is_active=is_active, 
             is_superuser=False
         )
 
         return query_set.order_by('first_name')
 
-
     def resolve_groups(self, info):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.view_group')
 
         return Group.objects.all()
-
 
     def resolve_permissions(self, info):
         user = info.context.user
@@ -148,7 +156,7 @@ class CreateAccount(graphene.relay.ClientIDMutation):
             email = input['email']
         )
 
-        #Don't insert duplicate records in the DB. If this records exist, fetch and return it
+        # Don't insert duplicate records in the DB. If this records exist, fetch and return it
         if query_set.exists():
             raise Exception(_('An account is already registered with this e-mail address'))
 
@@ -186,26 +194,23 @@ def validate_create_update_input(account, input, update=False):
     # result = {}
 
     # verify email unique
-    query_set = get_user_model().objects.filter(
-        ~Q(pk=account.pk),
-        Q(email=input['email'])
-    )
-
-    # Don't insert duplicate emails into the DB.
-    if query_set.exists():
-        raise Exception(_('Unable to save, an account is already registered with this e-mail address'))
+    if 'email' in input:
+        query_set = get_user_model().objects.filter(
+            ~Q(pk=account.pk),
+            Q(email=input['email'])
+        )
+        # Don't insert duplicate emails into the DB.
+        if query_set.exists():
+            raise Exception(_('Unable to save, an account is already registered with this e-mail address'))
 
     # Verify gender
-    genders = [
-        'M', 'F', 'X'
-    ]
-
-    if input['gender']:
+    if input.get('gender', None):
+        genders = ['M', 'F', 'X']
         if not input['gender'] in genders:
             raise Exception(_("Please specify gender as M, F or X (for other)"))
 
     # Verify country code
-    if input['country']:
+    if input.get('country', None):
         country_codes = []
         for country in settings.ISO_COUNTRY_CODES:
             country_codes.append(country['Code'])
@@ -221,26 +226,25 @@ class UpdateAccount(graphene.relay.ClientIDMutation):
         customer = graphene.Boolean(required=False)
         teacher = graphene.Boolean(required=False)
         employee = graphene.Boolean(required=False)
-        first_name = graphene.String(required=True)
-        last_name = graphene.String(required=True)
-        email = graphene.String(required=True)
-        address = graphene.String(required=False, default_value="")
-        postcode = graphene.String(required=False, default_value="")
-        city = graphene.String(required=False, default_value="")
-        country = graphene.String(required=False, default_value="")
-        phone = graphene.String(required=False, default_value="")
-        mobile = graphene.String(required=False, default_value="")
-        emergency = graphene.String(required=False, default_value="")
-        gender = graphene.String(required=False, default_value="")
-        date_of_birth = graphene.types.datetime.Date(required=False, default_value="")
+        first_name = graphene.String(required=False)
+        last_name = graphene.String(required=False)
+        email = graphene.String(required=False)
+        address = graphene.String(required=False)
+        postcode = graphene.String(required=False)
+        city = graphene.String(required=False)
+        country = graphene.String(required=False)
+        phone = graphene.String(required=False)
+        mobile = graphene.String(required=False)
+        emergency = graphene.String(required=False)
+        gender = graphene.String(required=False)
+        date_of_birth = graphene.types.datetime.Date(required=False)
 
     account = graphene.Field(AccountNode)
 
     @classmethod
     def mutate_and_get_payload(self, root, info, **input):
         user = info.context.user
-        require_login_and_permission(user, 'costasiella.change_account')
-
+        require_login(user)
         # print(input)
 
         rid = get_rid(input['id'])
@@ -248,23 +252,36 @@ class UpdateAccount(graphene.relay.ClientIDMutation):
         if not account:
             raise Exception('Invalid Account ID!')
 
+        change_permission = 'costasiella.change_account'
+
+        # Allow users to update their own account without additional permissions
+        if not user.id == account.id:
+            require_permission(user, change_permission)
+
         validate_create_update_input(account, input, update=True)
 
-        print(input)
+        # Only process these fields when a user has the "change_account" permission. Users shouldn't be able to
+        # change this for their own account
+        if user.has_perm(change_permission):
+            if 'customer' in input:
+                account.customer = input['customer']
+            if 'teacher' in input:
+                account.teacher = input['teacher']
+            if 'employee' in input:
+                account.employee = input['employee']
 
-        account.first_name = input['first_name']
-        account.last_name = input['last_name']
-        account.email = input['email']
-        account.username = input['email']
+        # Users can change these fields
+        if 'first_name' in input:
+            account.first_name = input['first_name']
+        if 'last_name' in input:
+            account.last_name = input['last_name']
+        if 'email' in input:
+            account.email = input['email']
+            account.username = input['email']
+
         # Only update these fields if input has been passed
         # if 'password' in input:
         #     account.set_password(input['password'])
-        if 'customer' in input:
-            account.customer = input['customer']
-        if 'teacher' in input:
-            account.teacher = input['teacher']
-        if 'employee' in input:
-            account.employee = input['employee']
         if 'address' in input:
             account.address = input['address']
         if 'postcode' in input:
@@ -284,10 +301,9 @@ class UpdateAccount(graphene.relay.ClientIDMutation):
         if 'date_of_birth' in input:
             account.date_of_birth = input['date_of_birth']
 
-            
         account.save()
 
-        # Update Allauth email address 
+        # Update allauth email address
         email_address = EmailAddress.objects.filter(user=account).first()
         email_address.email = account.email
         email_address.save()
@@ -366,13 +382,9 @@ class UpdateAccountActive(graphene.relay.ClientIDMutation):
         require_login_and_permission(user, 'costasiella.delete_account')
 
         rid = get_rid(input['id'])
-
         account = get_user_model().objects.filter(id=rid.id).first()
         if not account:
             raise Exception('Invalid Account ID!')
-
-
-        print(input)
 
         account.is_active = input['is_active']
         account.save(force_update=True)

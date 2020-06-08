@@ -12,7 +12,7 @@ class AccountClasspass(models.Model):
     # Editable parameter docs
     # https://docs.djangoproject.com/en/2.2/ref/models/fields/#editable
 
-    account = models.ForeignKey(Account, on_delete=models.CASCADE)
+    account = models.ForeignKey(Account, on_delete=models.CASCADE, related_name="classpasses")
     organization_classpass = models.ForeignKey(OrganizationClasspass, on_delete=models.CASCADE)
     date_start = models.DateField()
     date_end = models.DateField(null=True)
@@ -23,7 +23,6 @@ class AccountClasspass(models.Model):
 
     def __str__(self):
         return self.organization_classpass.name + ' [' + str(self.date_start) + ']'
-
 
     def update_classes_remaining(self):
         """ Calculate remaining classes """
@@ -40,7 +39,6 @@ class AccountClasspass(models.Model):
             ).count()
             self.classes_remaining = total - classes_taken
             self.save()
-    
 
     def set_date_end(self):
         """

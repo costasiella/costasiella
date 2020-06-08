@@ -398,7 +398,7 @@ class GQLScheduleClass(TestCase):
         )
 
 
-    def test_query_permision_denied(self):
+    def test_query_permission_denied(self):
         """ Query list of scheduleclasses - check permission denied """
         query = self.scheduleclasses_query
         schedule_class = f.SchedulePublicWeeklyClassFactory.create()
@@ -411,7 +411,7 @@ class GQLScheduleClass(TestCase):
         self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
-    def test_query_permision_granted(self):
+    def test_query_permission_granted(self):
         """ Query list of scheduleclasses with view permission """
         query = self.scheduleclasses_query
         schedule_class = f.SchedulePublicWeeklyClassFactory.create()

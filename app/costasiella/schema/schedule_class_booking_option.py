@@ -1,14 +1,16 @@
+import graphene
+
 from django.utils.translation import gettext as _
 from django.db.models import Q
 
-import graphene
 from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
 from graphql import GraphQLError
 from graphql_relay import to_global_id
 
-from ..models import Account, AccountClasspass, AccountSubscription, ScheduleItem, ScheduleItemPrice
-from ..modules.gql_tools import require_login_and_permission, require_login_and_one_of_permissions, get_rid
+from ..models import Account, AccountClasspass, AccountSubscription, \
+                     ScheduleItem, ScheduleItemPrice, ScheduleItemWeeklyOTC
+from ..modules.gql_tools import require_login, require_login_and_one_of_permissions, get_rid
 from ..modules.messages import Messages
 from ..modules.model_helpers.schedule_item_helper import ScheduleItemHelper
 from .account import AccountNode
@@ -50,7 +52,7 @@ class ScheduleClassBookingOptionsType(graphene.ObjectType):
     classpasses = graphene.List(ScheduleClassBookingClasspassType)
     subscriptions = graphene.List(ScheduleClassBookingSubscriptionType)
     schedule_item_prices = graphene.Field(ScheduleItemPriceNode)
-
+    already_booked = graphene.Boolean()
 
     def resolve_account(self, info):
         # account
@@ -61,7 +63,6 @@ class ScheduleClassBookingOptionsType(graphene.ObjectType):
 
         return account
 
-
     def resolve_schedule_item(self, info):
         # account
         rid = get_rid(self.schedule_item_id)
@@ -69,17 +70,19 @@ class ScheduleClassBookingOptionsType(graphene.ObjectType):
         if not schedule_item:
             raise Exception('Invalid Schedule Item ID!')
 
-        return schedule_item
+        sih = ScheduleItemHelper()
+        schedule_item = sih.schedule_item_with_otc_data(schedule_item, self.date)
 
+        return schedule_item
 
     def resolve_schedule_item_prices(self, info):
         # Drop-in classpass
         schedule_item = self.resolve_schedule_item(info)
 
         qs = ScheduleItemPrice.objects.filter(
-            Q(schedule_item = schedule_item) & 
-            Q(date_start__lte = self.date) &
-            (Q(date_end__gte = self.date ) | Q(date_end__isnull = True))
+            Q(schedule_item=schedule_item) &
+            Q(date_start__lte=self.date) &
+            (Q(date_end__gte=self.date ) | Q(date_end__isnull=True))
         )
 
         print(qs)
@@ -88,7 +91,6 @@ class ScheduleClassBookingOptionsType(graphene.ObjectType):
             return qs.first()
         else:
             return None
-
 
     def resolve_classpasses(self, 
                             info,
@@ -99,10 +101,10 @@ class ScheduleClassBookingOptionsType(graphene.ObjectType):
         schedule_item = self.resolve_schedule_item(info)
 
         classpasses_filter = (
-            Q(account = account) & 
-            Q(date_start__lte = self.date) & 
-            (Q(date_end__gte = self.date) | Q(date_end__isnull = True)) & 
-            (Q(classes_remaining__gt = 0) | Q(organization_classpass__unlimited = True))
+            Q(account=account) &
+            Q(date_start__lte=self.date) &
+            (Q(date_end__gte=self.date) | Q(date_end__isnull=True)) &
+            (Q(classes_remaining__gt=0) | Q(organization_classpass__unlimited=True))
         )
 
         classpasses = AccountClasspass.objects.filter(classpasses_filter).order_by('organization_classpass__name')
@@ -113,22 +115,24 @@ class ScheduleClassBookingOptionsType(graphene.ObjectType):
             if self.list_type == "ATTEND":
                 if checkin_dude.classpass_attend_allowed_for_class(classpass, schedule_item):
                     allowed = True
+            elif self.list_type == "SHOP_BOOK":
+                if checkin_dude.classpass_shop_book_allowed_for_class(classpass, schedule_item):
+                    allowed = True
 
             classpasses_list.append(
                 ScheduleClassBookingClasspassType(
-                    booking_type = "CLASSPASS",
-                    allowed = allowed,
-                    account_classpass = classpass,
+                    booking_type="CLASSPASS",
+                    allowed=allowed,
+                    account_classpass=classpass,
                 )
             )
 
         return classpasses_list
 
-
     def resolve_subscriptions(self, 
-                            info,
-                            date=graphene.types.datetime.Date(),
-                            ):
+                              info,
+                              date=graphene.types.datetime.Date(),
+                              ):
         checkin_dude = ClassCheckinDude()
         account = self.resolve_account(info)
         schedule_item = self.resolve_schedule_item(info)
@@ -156,24 +160,40 @@ class ScheduleClassBookingOptionsType(graphene.ObjectType):
 
         return subscriptions_list
 
+    def resolve_already_booked(self, info):
+        """
+        Check if the account is already attending this class
+        """
+        checkin_dude = ClassCheckinDude()
+        return checkin_dude.class_check_checkedin(
+            account=self.resolve_account(info),
+            schedule_item=self.resolve_schedule_item(info),
+            date=self.date
+        )
+
 
 class ScheduleClassBookingOptionsQuery(graphene.ObjectType):
     schedule_class_booking_options = graphene.Field(
         ScheduleClassBookingOptionsType,
-        account = graphene.ID(),
-        schedule_item = graphene.ID(),
-        date = graphene.types.datetime.Date(),
-        list_type = graphene.String(default_value="shop")   
+        account=graphene.ID(),
+        schedule_item=graphene.ID(),
+        date=graphene.types.datetime.Date(),
+        list_type=graphene.String(default_value="SHOP_BOOK")
     )
 
-    def resolve_schedule_class_booking_options(self, info, list_type, account, schedule_item, date, **kwargs):
+    def resolve_schedule_class_booking_options(self, info, list_type, schedule_item, date, **kwargs):
         user = info.context.user
-        require_login_and_one_of_permissions(user, [
-            'costasiella.view_scheduleitem',
-            'costasiella.view_selfcheckin'
-        ])
+        require_login(user)
 
-        validation_result = validate_schedule_class_booking_options_input(
+        permission = user.has_perm('costasiella.view_scheduleitem') or user.has_perm('costasiella.view_selfcheckin')
+
+        account = to_global_id('AccountNode', user.id)
+        if 'account' in kwargs and permission:
+            # An account has been specified and the current user has permission to view booking options
+            # for other accounts
+            account = kwargs['account']
+
+        validate_schedule_class_booking_options_input(
             account,
             schedule_item,
             date,
@@ -181,10 +201,10 @@ class ScheduleClassBookingOptionsQuery(graphene.ObjectType):
         )
 
         return ScheduleClassBookingOptionsType(
-            date = date,
-            list_type = list_type,
-            account_id = account,
-            schedule_item_id = schedule_item,
+            date=date,
+            list_type=list_type,
+            account_id=account,
+            schedule_item_id=schedule_item,
         )
 
 

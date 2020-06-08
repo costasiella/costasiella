@@ -119,7 +119,7 @@ class GQLAccountTeacherProfile(TestCase):
         self.assertEqual(data['accountTeacherProfiles']['edges'][0]['node']['events'], teacher_profile.events)
 
 
-    def test_query_permision_denied(self):
+    def test_query_permission_denied(self):
         """ Query list of account teacher_profiles - check permission denied """
         query = self.teacher_profiles_query
         teacher_profile = f.TeacherProfileFactory.create()
@@ -135,7 +135,7 @@ class GQLAccountTeacherProfile(TestCase):
         self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
-    def test_query_permision_granted(self):
+    def test_query_permission_granted(self):
         """ Query list of account teacher_profiles with view permission """
         query = self.teacher_profiles_query
         teacher_profile = f.TeacherProfileFactory.create()

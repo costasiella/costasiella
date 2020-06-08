@@ -185,7 +185,7 @@ class GQLScheduleItemTeacher(TestCase):
         self.assertEqual(data['scheduleItemTeachers']['edges'][0]['node']['dateEnd'], schedule_item_teacher.date_end)
 
 
-    def test_query_permision_denied(self):
+    def test_query_permission_denied(self):
         """ Query list of schedule item teachers """
         schedule_item_teacher = f.ScheduleItemTeacherFactory.create()
 
@@ -202,7 +202,7 @@ class GQLScheduleItemTeacher(TestCase):
         self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
-    def test_query_permision_granted(self):
+    def test_query_permission_granted(self):
         """ Query list of schedule item teachers """
         schedule_item_teacher = f.ScheduleItemTeacherFactory.create()
 

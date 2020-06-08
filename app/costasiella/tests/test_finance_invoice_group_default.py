@@ -115,7 +115,7 @@ query FinanceInvoiceGroupDefaults {
         )
         
 
-    def test_query_permision_denied(self):
+    def test_query_permission_denied(self):
         """ Query list of invoicegroupdefaults - check permission denied """
         query = self.invoicegroupdefaults_query
 
@@ -128,7 +128,7 @@ query FinanceInvoiceGroupDefaults {
         self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
-    def test_query_permision_granted(self):
+    def test_query_permission_granted(self):
         """ Query list of invoicegroupdefaults with view permission """
         query = self.invoicegroupdefaults_query
 

@@ -21,7 +21,7 @@ class OrganizationSubscription(models.Model):
     display_public = models.BooleanField(default=True)
     display_shop = models.BooleanField(default=True)
     name = models.CharField(max_length=255)
-    description = models.CharField(max_length=255)
+    description = models.TextField()
     sort_order = models.PositiveIntegerField(default=0)
     min_duration = models.PositiveIntegerField()
     classes = models.PositiveIntegerField()

@@ -144,8 +144,6 @@ class ScheduleClassesDayType(graphene.ObjectType):
 
             return where
 
-
-
         iso_week_day = self.resolve_iso_week_day(info)
         sorting = self.order_by
         if not sorting: # Default to sort by location, then time
@@ -298,10 +296,10 @@ class ScheduleClassesDayType(graphene.ObjectType):
                 {where_sql}
             ORDER BY {order_by_sql}
         """.format(
-            class_date = self.date,
-            iso_week_day = iso_week_day,
-            where_sql = _get_where_query(),
-            order_by_sql = order_by_sql
+            class_date=self.date,
+            iso_week_day=iso_week_day,
+            where_sql=_get_where_query(),
+            order_by_sql=order_by_sql
         )
 
         print(query)
@@ -315,6 +313,8 @@ class ScheduleClassesDayType(graphene.ObjectType):
         #     "class_date": self.date, 
         #     "iso_week_day": iso_week_day
         # }
+
+        # TODO: add parameters here to prevent SQL injection: IMPORTANT!!!
 
         schedule_items = ScheduleItem.objects.raw(query)
         # print(schedule_items.query)
@@ -397,7 +397,6 @@ def validate_schedule_classes_query_date_input(date_from,
         if order_by not in sort_options:
             raise Exception(_("orderBy can only be 'location' or 'starttime'")) 
 
-
     print("###########")
     print(organization_location)
 
@@ -420,6 +419,7 @@ def validate_schedule_classes_query_date_input(date_from,
 
 
 class ScheduleClassQuery(graphene.ObjectType):
+    schedule_class = graphene.Field(ScheduleClassType, schedule_item_id=graphene.ID(), date=graphene.types.datetime.Date())
     schedule_classes = graphene.List(
         ScheduleClassesDayType,
         date_from=graphene.types.datetime.Date(), 
@@ -430,16 +430,42 @@ class ScheduleClassQuery(graphene.ObjectType):
         organization_location=graphene.String(),   
     )
 
-    def resolve_schedule_items(self, info, **kwargs):
-        user = info.context.user
-        require_login_and_one_of_permissions(user,
-            'costasiella.view_scheduleitem',
-            'costasiella.view_selfcheckin'
+    def resolve_schedule_class(self,
+                               info,
+                               schedule_item_id,
+                               date):
+        """
+        Resolve schedule class
+        :param info:
+        :param schedule_item_id:
+        :param date:
+        :return:
+        """
+        rid = get_rid(schedule_item_id)
+        schedule_item = ScheduleItem.objects.get(pk=rid.id)
+        if not schedule_item:
+            raise Exception('Invalid Schedule Item ID!')
+
+        sih = ScheduleItemHelper()
+        schedule_item = sih.schedule_item_with_otc_data(schedule_item, date)
+
+        schedule_class = ScheduleClassType(
+            date=date,
+            schedule_item_id=schedule_item.id,
+            frequency_type=schedule_item.frequency_type,
+            status=schedule_item.status or "",
+            description=schedule_item.description or "",
+            account=schedule_item.account,
+            role=schedule_item.role,
+            account_2=schedule_item.account_2,
+            organization_location_room=schedule_item.organization_location_room,
+            organization_classtype=schedule_item.organization_classtype,
+            organization_level=schedule_item.organization_level,
+            time_start=schedule_item.time_start,
+            time_end=schedule_item.time_end
         )
 
-        ## return everything:
-        return ScheduleItem.objects.filter()
-
+        return schedule_class
 
     def resolve_schedule_classes(self, 
                                  info, 

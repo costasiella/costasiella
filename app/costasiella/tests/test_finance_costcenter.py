@@ -147,7 +147,7 @@ class GQLFinanceCostCenter(TestCase):
         self.assertEqual(data['financeCostcenters']['edges'][0]['node']['code'], costcenter.code)
 
 
-    def test_query_permision_denied(self):
+    def test_query_permission_denied(self):
         """ Query list of costcenters - check permission denied """
         query = self.costcenters_query
         costcenter = f.FinanceCostCenterFactory.create()
@@ -163,7 +163,7 @@ class GQLFinanceCostCenter(TestCase):
         self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
-    def test_query_permision_granted(self):
+    def test_query_permission_granted(self):
         """ Query list of costcenters with view permission """
         query = self.costcenters_query
         costcenter = f.FinanceCostCenterFactory.create()

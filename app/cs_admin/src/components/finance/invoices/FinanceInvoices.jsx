@@ -30,7 +30,7 @@ import ContentCard from "../../general/ContentCard"
 import FinanceMenu from "../FinanceMenu"
 import FinanceInvoicesFilter from "./FinanceInvoicesFilter"
 import FinanceInvoicesBase from "./FinanceInvoicesBase"
-import FinanceInvoicesStatus from "./FinanceInvoiceStatus"
+import FinanceInvoicesStatus from "../../ui/FinanceInvoiceStatus"
 
 import { GET_INVOICES_QUERY, DELETE_FINANCE_INVOICE } from "./queries"
 

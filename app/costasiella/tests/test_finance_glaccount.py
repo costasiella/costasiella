@@ -148,7 +148,7 @@ class GQLFinanceGLAccount(TestCase):
         self.assertEqual(data['financeGlaccounts']['edges'][0]['node']['code'], glaccount.code)
 
 
-    def test_query_permision_denied(self):
+    def test_query_permission_denied(self):
         """ Query list of glaccounts - check permission denied """
         query = self.glaccounts_query
         glaccount = f.FinanceGLAccountFactory.create()
@@ -164,7 +164,7 @@ class GQLFinanceGLAccount(TestCase):
         self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
-    def test_query_permision_granted(self):
+    def test_query_permission_granted(self):
         """ Query list of glaccounts with view permission """
         query = self.glaccounts_query
         glaccount = f.FinanceGLAccountFactory.create()

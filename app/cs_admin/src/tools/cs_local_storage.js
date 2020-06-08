@@ -2,8 +2,10 @@ const cs_local_storage_keys = {
     AUTH_TOKEN: 'costasiella:authToken',
     AUTH_TOKEN_EXP: 'costasiella:authTokenExp',
     AUTH_TOKEN_ORIGIAT: 'costasiella:authTokenorigIat',
+    AUTH_TOKEN_REFRESH_EXP: 'costasiella:refreshTokenExp',
     AUTH_LOGIN_NEXT: 'costasiella:authLoginNext',
     FINANCE_INVOICES_FILTER_STATUS: 'costasiella:financeInvoicesFilterStatus',
+    FINANCE_ORDERS_FILTER_STATUS: 'costasiella:financeOrdersFilterStatus',
     INSIGHT_CLASSPASSES_YEAR: 'costasiella:insightClasspassesYear',
     INSIGHT_SUBSCRIPTIONS_YEAR: 'costasiella:insightSubscriptionsYear',
     RELATIONS_ACCOUNTS_FILTER_TYPE: 'costasiella:relationsAccountsFilterType',
@@ -21,6 +23,12 @@ const cs_local_storage_keys = {
     SCHEDULE_CLASSES_FILTER_LEVEL: 'costasiella:scheduleClassesFilterLevel',
     SCHEDULE_CLASSES_FILTER_LOCATION: 'costasiella:scheduleClassesFilterLocation',
     SCHEDULE_CLASSES_CLASS_ATTENDANCE_SEARCH: 'costasiella:scheduleClassesClassAttendanceSearch',
+    SHOP_CLASSES_DATE_FROM: 'costasiella:shopClassesDateFrom',
+    SHOP_CLASSES_DATE_UNTIL: 'costasiella:shopClassesDateUntil',
+    SHOP_CLASSES_ORDER_BY: 'costasiella:shopClassesOrderBy',
+    SSHOP_CLASSES_FILTER_CLASSTYPE: 'costasiella:shopClassesFilterClasstype',
+    SHOP_CLASSES_FILTER_LEVEL: 'costasiella:shopClassesFilterLevel',
+    SHOP_CLASSES_FILTER_LOCATION: 'costasiella:shopClassesFilterLocation',
 }
 
 export default cs_local_storage_keys

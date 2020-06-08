@@ -1,14 +1,29 @@
 from django.utils.translation import gettext as _
 
-from ..models import ScheduleItemAttendance
-from ..models import OrganizationClasspassGroupClasspass, ScheduleItemOrganizationClasspassGroup
-from ..models import OrganizationSubscriptionGroupSubscription, ScheduleItemOrganizationSubscriptionGroup
 
 class ClassCheckinDude():
+    def class_check_checkedin(self, account, schedule_item, date):
+        """
+        :param account: models.Account object
+        :param schedule_item: models.ScheduleItem object
+        :param date: datetime.date object
+        :return: Boolean; true if the account is already checked-in for the class, false otherwise
+        """
+        qs = self._class_checkedin(account, schedule_item, date)
+
+        print(account)
+        print(schedule_item)
+        print(date)
+
+        print(qs.first())
+
+        return qs.exists()
+
     def _class_checkedin(self, account, schedule_item, date):
         """
         :return: schedule_item_attendance object if found, so we can check for reviews
         """
+        from ..models import ScheduleItemAttendance
         schedule_item_attendance = ScheduleItemAttendance.objects.filter(
             account=account,
             schedule_item=schedule_item,
@@ -16,7 +31,6 @@ class ClassCheckinDude():
         )
         
         return schedule_item_attendance
-
 
     def sell_classpass_and_class_checkin(self, 
                                          account,
@@ -41,7 +55,6 @@ class ClassCheckinDude():
             # else:
             #TODO: Write review check-ins code
 
-
         from .sales_dude import SalesDude
         sales_dude = SalesDude()
         sales_result = sales_dude.sell_classpass(
@@ -65,7 +78,6 @@ class ClassCheckinDude():
             "account_classpass": account_classpass
         }
 
-
     def class_checkin_classpass(self, 
                                 account,
                                 account_classpass,
@@ -76,6 +88,8 @@ class ClassCheckinDude():
         """
         :return: ScheduleItemAttendance object if successful, raise error if not.
         """
+        from ..models import ScheduleItemAttendance
+
         # Check if not already signed in
         qs = self._class_checkedin(account, schedule_item, date)
         print(qs)
@@ -87,6 +101,10 @@ class ClassCheckinDude():
                 raise Exception(_('This account is already checked in to this class'))
             # else:
             #TODO: Write review check-ins code
+
+        # Verify classpass belongs to account
+        if account_classpass.account != account:
+            raise Exception(_("This classpass doesn't belong to this account"))
 
         # Check if classes left on pass
         classes_available = False
@@ -103,16 +121,18 @@ class ClassCheckinDude():
             raise Exception(_('This pass is not valid on this date.'))
 
         schedule_item_attendance = ScheduleItemAttendance(
-            attendance_type = "CLASSPASS",
-            account = account,
-            account_classpass = account_classpass,
-            schedule_item = schedule_item,
-            date = date,
-            online_booking = online_booking,
-            booking_status = booking_status
+            attendance_type="CLASSPASS",
+            account=account,
+            account_classpass=account_classpass,
+            schedule_item=schedule_item,
+            date=date,
+            online_booking=online_booking,
+            booking_status=booking_status
         )
 
         schedule_item_attendance.save()
+        account_classpass.update_classes_remaining()
+        account_classpass.save()
 
         return schedule_item_attendance
 
@@ -175,6 +195,7 @@ class ClassCheckinDude():
         """
         :return: return list of class permissons
         """
+        from ..models import OrganizationClasspassGroupClasspass, ScheduleItemOrganizationClasspassGroup
         organization_classpass = account_classpass.organization_classpass
 
         # Get groups for class pass
@@ -222,7 +243,6 @@ class ClassCheckinDude():
                 pass
 
         return schedule_item_ids
-
     
     def classpass_attend_allowed_for_class(self, account_classpass, schedule_item):
         """
@@ -235,8 +255,7 @@ class ClassCheckinDude():
         else:
             return False
 
-
-    def classpass_shop_book_allowed(self, acount_classpass):
+    def classpass_shop_book_allowed(self, account_classpass):
         """
         Returns True is a class pass is allowed for a class,
         otherwise False
@@ -253,6 +272,16 @@ class ClassCheckinDude():
 
         return schedule_item_ids
 
+    def classpass_shop_book_allowed_for_class(self, account_classpass, schedule_item):
+        """
+        :return: True if a classpass has the attend permission for a class
+        """
+        classes_allowed = self.classpass_shop_book_allowed(account_classpass)
+
+        if schedule_item.id in classes_allowed:
+            return True
+        else:
+            return False
 
     def class_checkin_subscription(self, 
                                    account,
@@ -264,6 +293,7 @@ class ClassCheckinDude():
         """
         :return: ScheduleItemAttendance object if successful, raise error if not.
         """
+        from ..models import ScheduleItemAttendance
         # Check if not already signed in
         qs = self._class_checkedin(account, schedule_item, date)
         print(qs)
@@ -275,6 +305,9 @@ class ClassCheckinDude():
                 raise Exception(_('This account is already checked in to this class'))
             # else:
             #TODO: Write review check-ins code
+
+        if account_subscription.account != account:
+            raise Exception(_("This subscription doesn't belong to this account"))
 
         #TODO: Check if credits remaining
 
@@ -304,11 +337,12 @@ class ClassCheckinDude():
 
         return schedule_item_attendance
 
-
     def subscription_class_permissions(self, account_subscription):
         """
         :return: return list of class permissons for this subscription
         """
+        from ..models import OrganizationSubscriptionGroupSubscription, ScheduleItemOrganizationSubscriptionGroup
+
         organization_subscription = account_subscription.organization_subscription
 
         # Get groups for class pass

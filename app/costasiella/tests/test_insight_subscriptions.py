@@ -86,7 +86,7 @@ class GQLInsightSubscriptions(TestCase):
         self.assertEqual(data['insightAccountSubscriptionsActive']['data'][11], 1)
 
 
-    def test_query_active_permision_denied(self):
+    def test_query_active_permission_denied(self):
         """ Query list of subscriptions - check permission denied """
         query = self.query_subscriptions_active
         subscription = f.AccountSubscriptionFactory.create()
@@ -99,7 +99,7 @@ class GQLInsightSubscriptions(TestCase):
         self.assertEqual(errors[0]['message'], 'Permission denied!')
         
 
-    def test_query_active_permision_granted(self):
+    def test_query_active_permission_granted(self):
         """ Query list of subscriptions with view permission """
         query = self.query_subscriptions_active
         subscription = f.AccountSubscriptionFactory.create()      
@@ -152,7 +152,7 @@ class GQLInsightSubscriptions(TestCase):
         self.assertEqual(data['insightAccountSubscriptionsSold']['data'][11], 0)
 
 
-    def test_query_permision_denied(self):
+    def test_query_permission_denied(self):
         """ Query list of subscriptions - check permission denied """
         query = self.query_subscriptions_sold
         subscription = f.AccountSubscriptionFactory.create()
@@ -165,7 +165,7 @@ class GQLInsightSubscriptions(TestCase):
         self.assertEqual(errors[0]['message'], 'Permission denied!')
         
 
-    def test_query_permision_granted(self):
+    def test_query_permission_granted(self):
         """ Query list of subscriptions with view permission """
         query = self.query_subscriptions_sold
         subscription = f.AccountSubscriptionFactory.create()      

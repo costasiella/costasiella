@@ -1,7 +1,5 @@
 from django.utils.translation import gettext as _
 
-from ..models import ScheduleItem
-
 
 class ClassScheduleDude():
     def schedule_item_takes_place_on_day(self, schedule_item, date):

@@ -3,9 +3,9 @@ import gql from "graphql-tag"
 
 export const TOKEN_AUTH = gql`
   mutation TokenAuth($username: String!, $password: String!) {
-      tokenAuth(username: $username, password: $password) {
-      token
-      }
+    tokenAuth(username: $username, password: $password) {
+    token
+    }
   } 
 `
 
@@ -20,10 +20,12 @@ export const TOKEN_VERIFY = gql`
 
 
 export const TOKEN_REFRESH = gql`
-  mutation RefreshToken($token: String!) {
-    refreshToken(token: $token) {
+  mutation RefreshToken {
+    refreshToken {
       token
       payload
+      refreshExpiresIn
+      refreshToken
     }
   }
 `
@@ -33,6 +35,24 @@ export const TOKEN_REVOKE = gql`
   mutation RevokeToken($refreshToken: String!) {
     revokeToken(refreshToken: $refreshToken) {
       revoked
+    }
+  }
+`
+
+
+export const TOKEN_COOKIE_DELETE = gql`
+  mutation {
+    deleteTokenCookie {
+      deleted
+    }
+  }
+`
+
+
+export const TOKEN_REFRESH_COOKIE_DELETE = gql`
+  mutation {
+    deleteRefreshTokenCookie {
+      deleted
     }
   }
 `

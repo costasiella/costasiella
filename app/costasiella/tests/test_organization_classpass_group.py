@@ -132,7 +132,7 @@ mutation ArchiveOrganizationClasspassGroup($input: ArchiveOrganizationClasspassG
 
 
 
-    def test_query_permision_denied(self):
+    def test_query_permission_denied(self):
         """ Query list of classpassgroups as user without permissions """
         query = self.classpassgroups_query
         classpassgroup = f.OrganizationClasspassGroupFactory.create()
@@ -149,7 +149,7 @@ mutation ArchiveOrganizationClasspassGroup($input: ArchiveOrganizationClasspassG
         self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
-    def test_query_permision_granted(self):
+    def test_query_permission_granted(self):
         """ Query list of classpassgroups with view permission """
         query = self.classpassgroups_query
         classpassgroup = f.OrganizationClasspassGroupFactory.create()
