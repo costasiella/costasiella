@@ -15,7 +15,6 @@ let classpasses_active
 let subscriptions_active
 let teachers_active
 let prices_active
-let info_mail_active
 
 const ClassEditMenu = ({ t, active_link, classId }) => (
     <List.Group transparent={true}>
@@ -23,9 +22,7 @@ const ClassEditMenu = ({ t, active_link, classId }) => (
         {(active_link === 'classpasses') ? classpasses_active = true: classpasses_active = false}
         {(active_link === 'subscriptions') ? subscriptions_active = true: subscriptions_active = false}
         {(active_link === 'teachers') ? teachers_active = true: teachers_active = false}
-        {(active_link === 'prices') ? prices_active = true: prices_active = false}
-        {(active_link === 'info_mail') ? info_mail_active = true: info_mail_active = false}
-        
+        {(active_link === 'prices') ? prices_active = true: prices_active = false}        
 
         <List.GroupItem
             key={v4()}
@@ -71,15 +68,6 @@ const ClassEditMenu = ({ t, active_link, classId }) => (
             active={classpasses_active}
             >
             {t('general.classpasses')}
-        </List.GroupItem>
-        <List.GroupItem
-            key={v4()}
-            className="d-flex align-items-center"
-            to={"#/schedule/classes/all/info_mail/" + classId}
-            icon="mail"
-            active={info_mail_active}
-            >
-            {t('general.info_mail')}
         </List.GroupItem>
     </List.Group>
 );
