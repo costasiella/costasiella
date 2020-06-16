@@ -640,7 +640,7 @@ class UpdateScheduleClass(graphene.relay.ClientIDMutation):
         time_start = graphene.types.datetime.Time(required=True)
         time_end = graphene.types.datetime.Time(required=True)
         display_public = graphene.Boolean(required=True, default_value=False)
-        info_mail_content = graphene.String()
+        info_mail_content = graphene.String(default_value="")
 
     schedule_item = graphene.Field(ScheduleItemNode)
 
@@ -671,9 +671,8 @@ class UpdateScheduleClass(graphene.relay.ClientIDMutation):
         if date_end:
             schedule_item.date_end = date_end
 
-        info_mail_content = input.get('info_mail_content', None)
-        if info_mail_content:
-            schedule_item.info_mail_content = info_mail_content
+        if 'info_mail_content' in input:
+            schedule_item.info_mail_content = input['info_mail_content']
 
         # Fields requiring additional validation
         if result['organization_location_room']:
