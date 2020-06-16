@@ -1,6 +1,18 @@
 [
   {
     "model": "costasiella.SystemMailTemplate",
+    "pk": 30000,
+    "fields": {
+      "name": "class_info_mail",
+      "subject": "Class booked!",
+      "title": "We've reserved your spot",
+      "description": "<ul><li>Date {{class_date}}</li><li>Time {{class_time}}</li><li>Class {{schedule_item.school_classtype.name}}</li><li>Class {{schedule_item.school_location_room.school_location.name}}</li></ul>",
+      "content": "{{mail_content}}",
+      "comments": ""
+    }
+  },
+  {
+    "model": "costasiella.SystemMailTemplate",
     "pk": 50000,
     "fields": {
       "name": "order_received",
