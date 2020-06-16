@@ -172,6 +172,16 @@ const ScheduleClassForm = ({ t, history, inputData, isSubmitting, setFieldValue,
             />
           <ErrorMessage name="note" component="span" className="invalid-feedback" />
         </Form.Group>
+        <Form.Group label={t('general.info_mail')}>
+          <Editor
+              textareaName="infoMailContent"
+              initialValue={values.infoMailContent}
+              init={tinymceBasicConf}
+              onChange={(e) => setFieldValue("infoMailContent", e.target.getContent())}
+              onBlur={() => setFieldTouched("infoMailContent", true)}
+            />
+          <ErrorMessage name="note" component="span" className="invalid-feedback" />
+        </Form.Group>
       </Card.Body>
       <Card.Footer>
         <Button 

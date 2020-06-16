@@ -116,7 +116,7 @@ class ScheduleClassEditAll extends Component {
                 <ClassEditBase 
                   menu_active_link="edit"
                 >
-                  <Mutation mutation={UPDATE_CLASS} onCompleted={() => history.push(return_url)}> 
+                  <Mutation mutation={UPDATE_CLASS}> 
                   {(updateScheduleClass, { data }) => (
                     <Formik
                       initialValues={{ 
@@ -130,6 +130,7 @@ class ScheduleClassEditAll extends Component {
                         dateEnd: initialValues.dateEnd,
                         timeStart: initialTimeStart,
                         timeEnd: initialTimeEnd,
+                        infoMailContent: initialValues.infoMailContent
                       }}
                       validationSchema={CLASS_SCHEMA}
                       onSubmit={(values, { setSubmitting }) => {
@@ -159,7 +160,8 @@ class ScheduleClassEditAll extends Component {
                               dateStart: dateToLocalISO(values.dateStart),
                               dateEnd: dateEnd,
                               timeStart: dateToLocalISOTime(values.timeStart),
-                              timeEnd: dateToLocalISOTime(values.timeEnd)
+                              timeEnd: dateToLocalISOTime(values.timeEnd),
+                              infoMailContent: values.infoMailContent
                             }
                           }, refetchQueries: [
                               {query: GET_CLASSES_QUERY, variables: get_list_query_variables()}
