@@ -63,7 +63,9 @@ def validate_update_input(input):
     )
     
     if not class_takes_place:
-        raise Exception(_("This class doesn't take place on this date, please check for the correct date or any holidays."))
+        raise Exception(
+            _("This class doesn't take place on this date, please check for the correct date or any holidays.")
+        )
 
     # Check Account
     if 'account' in input:
@@ -119,8 +121,7 @@ def validate_update_input(input):
             if not organization_level:
                 raise Exception(_('Invalid Organization Level ID!'))
         else:
-            result['organization_level'] = None            
-
+            result['organization_level'] = None
 
     return result
 

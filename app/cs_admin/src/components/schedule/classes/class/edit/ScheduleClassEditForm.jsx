@@ -11,8 +11,8 @@ import {
   } from "tabler-react"
 import { Form as FoForm, Field, ErrorMessage } from 'formik'
 
-// import { Editor } from '@tinymce/tinymce-react'
-// import { tinymceBasicConf } from "../../../plugin_config/tinymce"
+import { Editor } from '@tinymce/tinymce-react'
+import { tinymceBasicConf } from "../../../../../plugin_config/tinymce"
 import CSDatePicker from "../../../../ui/CSDatePicker"
 import CSTimePicker from "../../../../ui/CSTimePicker"
 
@@ -177,6 +177,16 @@ const ScheduleClassEditForm = ({ t, history, inputData, isSubmitting, setFieldVa
             </Form.Group>
           </Grid.Col>
         </Grid.Row>
+        <Form.Group label={t('general.info_mail')}>
+          <Editor
+              textareaName="infoMailContent"
+              initialValue={values.infoMailContent}
+              init={tinymceBasicConf}
+              onChange={(e) => setFieldValue("infoMailContent", e.target.getContent())}
+              onBlur={() => setFieldTouched("infoMailContent", true)}
+            />
+          <ErrorMessage name="note" component="span" className="invalid-feedback" />
+        </Form.Group>
         {/* <Form.Group label={t('general.note')}>
           <Editor
               textareaName="note"
