@@ -6,7 +6,7 @@
       "name": "class_info_mail",
       "subject": "Class booked!",
       "title": "We've reserved your spot",
-      "description": "<ul><li>Date {{class_date}}</li><li>Time {{class_time}}</li><li>Class {{schedule_item.school_classtype.name}}</li><li>Class {{schedule_item.school_location_room.school_location.name}}</li></ul>",
+      "description": "<ul><li>Date {{class_date}}</li><li>Time {{class_time}}</li><li>Class {{class_classtype}}</li><li>Location {{class_location}}</li></ul>",
       "content": "{{mail_content}}",
       "comments": ""
     }
