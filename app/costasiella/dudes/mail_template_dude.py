@@ -7,7 +7,7 @@ from django.template import Template, Context
 from django.utils.translation import gettext as _
 from django.core.mail import send_mail
 
-from ..models import SystemMailTemplate
+from ..models import SystemMailTemplate, ScheduleItemWeeklyOTC
 from ..dudes.app_settings_dude import AppSettingsDude
 
 # https://docs.djangoproject.com/en/2.2/topics/email/
@@ -83,16 +83,27 @@ class MailTemplateDude:
         :return: HTML message
         """
         # Check if we have the required arguments
+        error = False
+        error_message = ""
+
         schedule_item = self.kwargs.get('schedule_item', None)
-        schedule_item_weekly_otc = self.kwargs.get('schedule_item_weekly_otc', None)
         date = self.kwargs.get('date', None)
 
         if date is None:
             raise Exception(_("date is a required parameter for the class_info_mail template render function"))
 
-        if schedule_item is None or schedule_item_weekly_otc is None:
-            raise Exception(_("schedule_item and schedule_item_weekly_otc should be specified"))
+        if schedule_item is None:
+            raise Exception(_("schedule_item should be specified"))
 
+        schedule_item_weekly_otc = None
+        qs = ScheduleItemWeeklyOTC.objects.filter(
+            schedule_item=schedule_item,
+            date=date
+        )
+        if qs.exists:
+            schedule_item_weekly_otc = qs.first()
+
+        print("##############")
         print(schedule_item)
         print(schedule_item_weekly_otc)
         print(date)
@@ -102,7 +113,7 @@ class MailTemplateDude:
 
         class_time = schedule_item.time_start
         classtype = schedule_item.organization_classtype.name
-        location = schedule_item.organization_location_room.school_location.name
+        location = schedule_item.organization_location_room.organization_location.name
         mail_content = schedule_item.info_mail_content
 
         if schedule_item_weekly_otc:
@@ -113,17 +124,21 @@ class MailTemplateDude:
                 classtype = schedule_item_weekly_otc.classtype.name
 
             if schedule_item_weekly_otc.organization_location_room:
-                location = schedule_item_weekly_otc.organization_location_room.school_location.name
+                location = schedule_item_weekly_otc.organization_location_room.organization_location.name
 
             if schedule_item_weekly_otc.info_mail_content:
                 mail_content = schedule_item_weekly_otc.info_mail_content
+
+        if not mail_content:
+            error = True
+            error_message = _("No mail content defined, no need to send a mail.")
 
         # Render description
         description_context = Context({
             "class_date": date.strftime(self.app_settings_dude.date_format),
             "class_time": class_time.strftime(self.app_settings_dude.time_format),
-            "classtype": classtype,
-            "location": location
+            "class_classtype": classtype,
+            "class_location": location
         })
         description_template = Template(mail_template.description)
         description = description_template.render(description_context)
@@ -140,7 +155,9 @@ class MailTemplateDude:
             title=mail_template.title,
             description=description,
             content=content,
-            comments=mail_template.comments
+            comments=mail_template.comments,
+            error=error,
+            error_message=error_message
         )
 
     def _render_template_order_received(self):
