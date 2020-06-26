@@ -6,7 +6,7 @@ class AppSettingsDude:
         """
         Fetch current settings from db and set properties.
         """
-        self.app_settings = AppSettings.objects.get(1)
+        self.app_settings = AppSettings.objects.get(pk=1)
         self.date_format = self._set_date_format()
         self.time_format = self._set_time_format()
         self.datetime_format = self.date_format + ' ' + self.time_format
