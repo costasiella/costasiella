@@ -1,7 +1,23 @@
 from django.utils.translation import gettext as _
 
 
-class ClassCheckinDude():
+class ClassCheckinDude:
+    def _send_info_mail(self, account, schedule_item, date):
+        """
+        Send info mail to customer, if configured.
+        :param account: models.Account object
+        :param schedule_item: models.ScheduleItem object
+        :param date: datetime.date object
+        :return:
+        """
+        from ..dudes.mail_dude import MailDude
+
+        mail_dude = MailDude(account=account,
+                             email_template="class_info_mail",
+                             schedule_item=schedule_item,
+                             date=date)
+        mail_dude.send()
+
     def class_check_checkedin(self, account, schedule_item, date):
         """
         :param account: models.Account object
@@ -134,8 +150,13 @@ class ClassCheckinDude():
         account_classpass.update_classes_remaining()
         account_classpass.save()
 
-        return schedule_item_attendance
+        self._send_info_mail(
+            account=account,
+            schedule_item=schedule_item,
+            date=date,
+        )
 
+        return schedule_item_attendance
 
     # def attendance_sign_in_classcard(self, cuID, clsID, ccdID, date, online_booking=False, booking_status='booked'):
     #     """
@@ -186,11 +207,9 @@ class ClassCheckinDude():
     #             ccd.set_classes_taken()
     #     else:
     #         message = T("Unable to add, no classes left on card")
-
-
-        return dict(status=status, message=message)
-
+    #     return dict(status=status, message=message)
     # def classpass_class_permissions(self, account_classpass, public_only=True):
+
     def classpass_class_permissions(self, account_classpass):
         """
         :return: return list of class permissons
@@ -225,7 +244,6 @@ class ClassCheckinDude():
                 permissions[schedule_item_id]['attend'] = True
 
         return permissions
-
 
     def classpass_attend_allowed(self, account_classpass):
         """
@@ -334,6 +352,12 @@ class ClassCheckinDude():
         )
 
         schedule_item_attendance.save()
+
+        self._send_info_mail(
+            account=account,
+            schedule_item=schedule_item,
+            date=date,
+        )
 
         return schedule_item_attendance
 
