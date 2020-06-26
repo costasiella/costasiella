@@ -77,50 +77,71 @@ class MailTemplateDude:
             html_message=html_message
         )
 
-    # def _render_class_info_mail(self):
-    #     """
-    #     Render info mail for a class
-    #     :return: HTML message
-    #     """
-    #     # Check if we have the required arguments
-    #     schedule_item = self.kwargs.get('schedule_item', None)
-    #     schedule_item_weekly_otc = self.kwargs.get('schedule_item_weekly_otc', None)
-    #     date = self.kwargs.get('date', None)
-    #
-    #     if date is None:
-    #         raise Exception(_("date is a required parameter for the class_info_mail template render function"))
-    #
-    #     if schedule_item is None and schedule_item_weekly_otc is None:
-    #         raise Exception(_("schedule_item or schedule_item_weekly_otc should be specified"))
-    #
-    #     print(schedule_item)
-    #     print(schedule_item_weekly_otc)
-    #     print(date)
-    #
-    #     # Fetch template
-    #     mail_template = SystemMailTemplate.objects.get(pk=30000)
-    #
-    #
-    #     if schedule_item_weekly_otc:
-    #
-    #
-    #
-    #
-    #         # items_context = {
-    #         #     "order": finance_order,
-    #         #     "currency_symbol": "€"
-    #         # }
-    #         # items = render_to_string(
-    #         #     self.template_order_items,
-    #         #     items_context
-    #         # )
-    #     return dict(
-    #         subject=mail_template.subject,
-    #         title=mail_template.title,
-    #         description=description,
-    #         content=content,
-    #         comments=mail_template.comments
-    #     )
+    def _render_class_info_mail(self):
+        """
+        Render info mail for a class
+        :return: HTML message
+        """
+        # Check if we have the required arguments
+        schedule_item = self.kwargs.get('schedule_item', None)
+        schedule_item_weekly_otc = self.kwargs.get('schedule_item_weekly_otc', None)
+        date = self.kwargs.get('date', None)
+
+        if date is None:
+            raise Exception(_("date is a required parameter for the class_info_mail template render function"))
+
+        if schedule_item is None or schedule_item_weekly_otc is None:
+            raise Exception(_("schedule_item and schedule_item_weekly_otc should be specified"))
+
+        print(schedule_item)
+        print(schedule_item_weekly_otc)
+        print(date)
+
+        # Fetch template
+        mail_template = SystemMailTemplate.objects.get(pk=30000)
+
+        class_time = schedule_item.time_start
+        classtype = schedule_item.organization_classtype.name
+        location = schedule_item.organization_location_room.school_location.name
+        mail_content = schedule_item.info_mail_content
+
+        if schedule_item_weekly_otc:
+            if schedule_item_weekly_otc.time_start:
+                class_time = schedule_item_weekly_otc.time_start
+
+            if schedule_item_weekly_otc.organization_classtype:
+                classtype = schedule_item_weekly_otc.classtype.name
+
+            if schedule_item_weekly_otc.organization_location_room:
+                location = schedule_item_weekly_otc.organization_location_room.school_location.name
+
+            if schedule_item_weekly_otc.info_mail_content:
+                mail_content = schedule_item_weekly_otc.info_mail_content
+
+        # Render description
+        description_context = Context({
+            "class_date": date.strftime(self.app_settings_dude.date_format),
+            "class_time": class_time.strftime(self.app_settings_dude.time_format),
+            "classtype": classtype,
+            "location": location
+        })
+        description_template = Template(mail_template.description)
+        description = description_template.render(description_context)
+
+        # Render content
+        content_context = Context({
+            "mail_content": mail_content
+        })
+        content_template = Template(mail_template.content)
+        content = content_template.render(content_context)
+
+        return dict(
+            subject=mail_template.subject,
+            title=mail_template.title,
+            description=description,
+            content=content,
+            comments=mail_template.comments
+        )
 
     def _render_template_order_received(self):
         """
