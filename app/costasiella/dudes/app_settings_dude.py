@@ -8,7 +8,8 @@ class AppSettingsDude:
         """
         self.app_settings = AppSettings.objects.get(1)
         self.date_format = self._set_date_format()
-        # time_format = app_settings.time_format
+        self.time_format = self._set_time_format()
+        self.datetime_format = self.date_format + ' ' + self.time_format
 
     def _set_date_format(self):
         """
@@ -32,3 +33,13 @@ class AppSettingsDude:
                 date_format = df[0]
 
         return date_format
+
+    def _set_time_format(self):
+        """
+        Set the current time format
+        :return:
+        """
+        if self.app_settings.time_format == 12:
+            return "%-I %p"
+        else:
+            return "%H:%M"
