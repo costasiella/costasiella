@@ -6,6 +6,7 @@ from ..modules.encrypted_fields import EncryptedTextField
 from .finance_invoice import FinanceInvoice
 from .finance_order import FinanceOrder
 
+
 class IntegrationLogMollie(models.Model):
     # add additional fields in here
     LOG_SOURCES = (
@@ -23,7 +24,6 @@ class IntegrationLogMollie(models.Model):
     payment_data = models.TextField(null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    
 
     def __str__(self):
         return "mollie payment: " + self.mollie_payment_id
