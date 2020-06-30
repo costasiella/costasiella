@@ -83,6 +83,7 @@ class ScheduleClassType(graphene.ObjectType):
     time_start = graphene.types.datetime.Time()
     time_end = graphene.types.datetime.Time()
     display_public = graphene.Boolean()
+    info_mail_content = graphene.String()
 
 
 # ScheduleClassDayType
@@ -462,7 +463,8 @@ class ScheduleClassQuery(graphene.ObjectType):
             organization_classtype=schedule_item.organization_classtype,
             organization_level=schedule_item.organization_level,
             time_start=schedule_item.time_start,
-            time_end=schedule_item.time_end
+            time_end=schedule_item.time_end,
+            info_mail_content=schedule_item.info_mail_content
         )
 
         return schedule_class
