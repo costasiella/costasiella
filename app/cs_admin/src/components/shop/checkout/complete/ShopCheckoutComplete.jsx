@@ -106,7 +106,7 @@ function ShopCheckoutComplete({ t, match, history }) {
             </Card>
           </Grid.Col>
           <Grid.Col md={6}>
-            <ShopCheckoutOrderSummary id={id} />
+            <ShopCheckoutOrderSummary id={id} complete={true} />
           </Grid.Col>
         </Grid.Row>
     </ShopCheckoutCompleteBase>

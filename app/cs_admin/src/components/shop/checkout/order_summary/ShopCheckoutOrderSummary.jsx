@@ -18,7 +18,7 @@ import { dateToLocalISO } from '../../../../tools/date_tools'
 import { DisplayClassInfo } from '../../tools'
 
 
-function ShopCheckoutOrderSummary({ t, id }) {
+function ShopCheckoutOrderSummary({ t, id, complete=false }) {
   const { loading, error, data } = useQuery(GET_ORDER_QUERY, {
     variables: { id: id }
   })
@@ -101,7 +101,7 @@ function ShopCheckoutOrderSummary({ t, id }) {
           <ShopCheckoutClassInfo 
             scheduleItemId={scheduleItemId}
             date={classDate}
-            complete={false}
+            complete={complete}
           />
           : ""
         }
