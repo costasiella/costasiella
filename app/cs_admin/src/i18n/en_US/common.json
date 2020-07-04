@@ -348,7 +348,8 @@
         "at": "at",
         "with": "With",
         "book": "Book",
-        "continue": "Continue"
+        "continue": "Continue",
+        "info_mail": "__STRING_NOT_TRANSLATED__"
     },
     "yup": {
         "min_len_3": "Please input at least 3 characters",
@@ -1309,6 +1310,11 @@
             "order_summary": {
                 "error_loading": "Error loading order information :(",
                 "message": "Order message"
+            },
+            "class_info": {
+                "error_loading": "Error loading class information :(",
+                "have_been_checked_in": "We've booked your spot for this class!",
+                "will_be_checked_in": "You'll book a spot for this class"
             }
         },
         "complete": {

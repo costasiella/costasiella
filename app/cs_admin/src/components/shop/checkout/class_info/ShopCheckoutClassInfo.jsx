@@ -48,12 +48,12 @@ function ShopCheckoutClassInfo({ t, scheduleItemId, date, complete=true}) {
         } <br /><br /> 
         {/* Class display message */}
         <DisplayClassInfo 
-            t={t} 
-            classDate={date}
-            classData={data} 
-            dateFormat={dateFormat} 
-            timeFormat={timeFormat}
-          />
+          t={t} 
+          classDate={date}
+          classData={data} 
+          dateFormat={dateFormat} 
+          timeFormat={timeFormat}
+        />
       </span> 
       : ""
   )
