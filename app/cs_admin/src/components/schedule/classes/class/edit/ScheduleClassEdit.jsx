@@ -108,6 +108,9 @@ function ScheduleClassEdit({ t, match, history }) {
     if (initialData.timeEnd) {
       initialValues.timeEnd = TimeStringToJSDateOBJ(initialData.timeEnd)
     }
+    if (initialData.infoMailContent) {
+      initialValues.infoMailContent = initialData.infoMailContent
+    }
     
   } else {
     console.log('setting initial values')
@@ -122,6 +125,7 @@ function ScheduleClassEdit({ t, match, history }) {
     initialValues.organizationLevel = ""
     initialValues.timeStart = ""
     initialValues.timeEnd = ""
+    initialValues.infoMailContent = ""
   }
 
   return (
@@ -181,6 +185,7 @@ function ScheduleClassEdit({ t, match, history }) {
                             organizationLevel: values.organizationLevel,
                             timeStart: timeStart,
                             timeEnd: timeEnd,
+                            infoMailContent: values.infoMailContent
                           }
                         }, refetchQueries: [
                             {query: GET_SCHEDULE_CLASS_WEEKLY_OTCS_QUERY, variables: query_vars},

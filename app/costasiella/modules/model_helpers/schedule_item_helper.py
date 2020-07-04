@@ -59,7 +59,7 @@ class ScheduleItemHelper:
         if schedule_item_weekly_otc_qs.exists():
             schedule_item_weekly_otc = schedule_item_weekly_otc_qs.first()
 
-            # Change schedule item in memory before returning, but don't save it!
+            # Change schedule item in memory before returning, but DON'T save it!
             if schedule_item_weekly_otc.account:
                 schedule_item.account = schedule_item_weekly_otc.account
                 schedule_item.role = schedule_item_weekly_otc.role
@@ -76,5 +76,7 @@ class ScheduleItemHelper:
                 schedule_item.time_start = schedule_item_weekly_otc.time_start
             if schedule_item_weekly_otc.time_end:
                 schedule_item.time_end = schedule_item_weekly_otc.time_end
+            if schedule_item_weekly_otc.info_mail_content:
+                schedule_item.info_mail_content = schedule_item_weekly_otc.info_mail_content
                 
         return schedule_item

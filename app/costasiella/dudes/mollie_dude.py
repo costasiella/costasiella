@@ -15,7 +15,6 @@ class MollieDude:
 
         return mollie_api_key
 
-
     def get_webhook_url(self, request):
         """
         :param request: Django request
@@ -24,7 +23,6 @@ class MollieDude:
         webhook_url = "https://" + host + "/d/mollie/webhook"
 
         return webhook_url
-
 
     def get_account_mollie_customer_id(self, account, mollie):
         """
@@ -49,7 +47,6 @@ class MollieDude:
             mollie_customer_id = account.mollie_customer_id
 
         return mollie_customer_id
-
 
     def _mollie_customer_check_valid(self, account, mollie):
         """

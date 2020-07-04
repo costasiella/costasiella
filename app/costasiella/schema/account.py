@@ -386,6 +386,9 @@ class UpdateAccountActive(graphene.relay.ClientIDMutation):
         if not account:
             raise Exception('Invalid Account ID!')
 
+        if account == user:
+            raise Exception(_("Can't deactivate currently logged in account."))
+
         account.is_active = input['is_active']
         account.save(force_update=True)
 
@@ -407,6 +410,9 @@ class DeleteAccount(graphene.relay.ClientIDMutation):
         account = get_user_model().objects.filter(id=rid.id).first()
         if not account:
             raise Exception('Invalid Account ID!')
+
+        if account == user:
+            raise Exception(_("Can't delete currently logged in account."))
 
         ok = account.delete()
 

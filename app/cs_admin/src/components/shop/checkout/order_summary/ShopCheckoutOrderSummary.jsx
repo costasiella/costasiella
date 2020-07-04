@@ -13,9 +13,12 @@ import {
 } from "tabler-react";
 
 import { GET_ORDER_QUERY } from "../queries"
+import ShopCheckoutClassInfo from "../class_info/ShopCheckoutClassInfo"
+import { dateToLocalISO } from '../../../../tools/date_tools'
+import { DisplayClassInfo } from '../../tools'
 
 
-function ShopCheckoutOrderSummary({ t, id }) {
+function ShopCheckoutOrderSummary({ t, id, complete=false }) {
   const { loading, error, data } = useQuery(GET_ORDER_QUERY, {
     variables: { id: id }
   })
@@ -32,6 +35,23 @@ function ShopCheckoutOrderSummary({ t, id }) {
   console.log(order)
   const orderItems = order.items.edges
   console.log(orderItems)
+
+  let classDate 
+  let scheduleItemId
+  let item
+  console.log("Start looping")
+  for (item of orderItems) {
+    let node = item.node
+    console.log(node)
+    if (node.scheduleItem) {
+      classDate = node.attendanceDate
+      scheduleItemId = node.scheduleItem.id
+    }
+  }
+
+  console.log('schedule item found!')
+  console.log(classDate)
+  console.log(scheduleItemId)
 
 
   return (
@@ -70,10 +90,19 @@ function ShopCheckoutOrderSummary({ t, id }) {
       <Card.Body>
         {(order.message) ?
           <span className="text-muted">
-            <Icon name="message-square" /> {t("shop.checkout.order_summary.message")} <br /><br /> 
+            <h5><Icon name="message-square" /> {t("shop.checkout.order_summary.message")}</h5> 
             {/* Order message */}
             {order.message}
           </span> 
+          : ""
+        }
+        <br /><br />
+        {(scheduleItemId && classDate) ?
+          <ShopCheckoutClassInfo 
+            scheduleItemId={scheduleItemId}
+            date={classDate}
+            complete={complete}
+          />
           : ""
         }
       </Card.Body>

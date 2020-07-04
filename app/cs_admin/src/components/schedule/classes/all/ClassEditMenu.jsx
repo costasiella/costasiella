@@ -22,8 +22,7 @@ const ClassEditMenu = ({ t, active_link, classId }) => (
         {(active_link === 'classpasses') ? classpasses_active = true: classpasses_active = false}
         {(active_link === 'subscriptions') ? subscriptions_active = true: subscriptions_active = false}
         {(active_link === 'teachers') ? teachers_active = true: teachers_active = false}
-        {(active_link === 'prices') ? prices_active = true: prices_active = false}
-        
+        {(active_link === 'prices') ? prices_active = true: prices_active = false}        
 
         <List.GroupItem
             key={v4()}

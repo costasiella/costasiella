@@ -39,6 +39,7 @@ class ScheduleItemWeeklyOTC(models.Model):
     organization_level = models.ForeignKey(OrganizationLevel, on_delete=models.SET_NULL, null=True)   
     time_start = models.TimeField(null=True)
     time_end = models.TimeField(null=True)
+    info_mail_content = models.TextField(default="")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

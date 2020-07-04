@@ -43,7 +43,7 @@ def invoice_html(node_id):
     app_settings = AppSettings.objects.get(id=1)
     organization = Organization.objects.get(id=100)
     items = FinanceInvoiceItem.objects.filter(
-        finance_invoice = finance_invoice
+        finance_invoice=finance_invoice
     )
 
     tax_rates = finance_invoice.tax_rates_amounts()

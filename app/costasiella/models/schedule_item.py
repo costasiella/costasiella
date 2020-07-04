@@ -70,6 +70,7 @@ class ScheduleItem(models.Model):
         through='ScheduleItemOrganizationSubscriptionGroup', 
         related_name='subscription_groups'
     )
+    info_mail_content = models.TextField(default="")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     ################ BEGIN EMPTY FIELDS ################
@@ -84,7 +85,6 @@ class ScheduleItem(models.Model):
     account_2 = models.ForeignKey(Account, on_delete=models.SET_NULL, null=True, related_name="si_account_2")
     role_2 = models.CharField(default="", max_length=50, choices=TEACHER_ROLES)
     ################ END EMPTY FIELDS ##################
-
 
     def __str__(self):
         return self.schedule_item_type + ' [' + str(self.date_start) + ']'

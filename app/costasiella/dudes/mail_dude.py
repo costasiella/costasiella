@@ -9,6 +9,7 @@ from django.core.mail import send_mail
 
 from .mail_template_dude import MailTemplateDude
 
+
 class MailDude:
     def __init__(self,
                  account,
@@ -16,7 +17,6 @@ class MailDude:
                  **kwargs):
         self.account = account
         self.email_template = email_template
-        self.finance_order = kwargs.get('finance_order', None)
         self.kwargs = kwargs
 
     def send(self):
@@ -30,8 +30,12 @@ class MailDude:
             **self.kwargs,
         )
         template = template_dude.render()
-        # print(template)
+        print(template)
         message = html2text.html2text(template['html_message'])
+
+        if template.get('error', False):
+            # Don't send an email when we have a render error
+            return
 
         # Send mail
         send_mail(

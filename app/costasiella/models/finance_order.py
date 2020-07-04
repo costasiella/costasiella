@@ -34,7 +34,7 @@ class FinanceOrder(models.Model):
         from .finance_order_item import FinanceOrderItem
         from django.db.models import Sum
 
-        sums = FinanceOrderItem.objects.filter(finance_order = self).aggregate(Sum('subtotal'), Sum('tax'), Sum('total'))
+        sums = FinanceOrderItem.objects.filter(finance_order=self).aggregate(Sum('subtotal'), Sum('tax'), Sum('total'))
 
         self.subtotal = sums['subtotal__sum'] or 0
         self.tax = sums['tax__sum'] or 0
@@ -94,6 +94,9 @@ class FinanceOrder(models.Model):
         from .finance_order_item import FinanceOrderItem
         # Don't deliver cancelled orders or orders that have already been delivered
         if self.status == "DELIVERED" or self.status == "CANCELLED":
+            print(self)
+            print(self.status)
+            print("Returning...")
             return
 
         # Don't create an invoice when there's nothing that needs to be paid

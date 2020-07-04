@@ -23,6 +23,10 @@ export const GET_ORDER_QUERY = gql`
             description
             quantity
             totalDisplay
+            scheduleItem {
+              id
+            }
+            attendanceDate
           }
         }
       }

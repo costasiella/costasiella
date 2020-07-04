@@ -63,7 +63,9 @@ def validate_update_input(input):
     )
     
     if not class_takes_place:
-        raise Exception(_("This class doesn't take place on this date, please check for the correct date or any holidays."))
+        raise Exception(
+            _("This class doesn't take place on this date, please check for the correct date or any holidays.")
+        )
 
     # Check Account
     if 'account' in input:
@@ -119,8 +121,7 @@ def validate_update_input(input):
             if not organization_level:
                 raise Exception(_('Invalid Organization Level ID!'))
         else:
-            result['organization_level'] = None            
-
+            result['organization_level'] = None
 
     return result
 
@@ -188,6 +189,7 @@ class UpdateScheduleClassWeeklyOTC(graphene.relay.ClientIDMutation):
         organization_level = graphene.ID(required=False)        
         time_start = graphene.types.datetime.Time(required=False)
         time_end = graphene.types.datetime.Time(required=False)
+        info_mail_content = graphene.String()
         
     schedule_class_weekly_otc = graphene.Field(ScheduleClassWeeklyOTCNode)
 
@@ -202,8 +204,8 @@ class UpdateScheduleClassWeeklyOTC(graphene.relay.ClientIDMutation):
 
         # Insert if it doesn't exist
         schedule_class_weekly_otc, created = ScheduleItemWeeklyOTC.objects.get_or_create(
-            schedule_item = result['schedule_item'],
-            date = input['date']
+            schedule_item=result['schedule_item'],
+            date=input['date']
         )
 
         if 'status' in input:
@@ -238,6 +240,9 @@ class UpdateScheduleClassWeeklyOTC(graphene.relay.ClientIDMutation):
 
         if 'time_end' in input:
             schedule_class_weekly_otc.time_end = input['time_end']
+
+        if 'info_mail_content' in input:
+            schedule_class_weekly_otc.info_mail_content = input['info_mail_content']
 
         schedule_class_weekly_otc.save()
 

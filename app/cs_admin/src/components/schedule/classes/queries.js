@@ -154,6 +154,7 @@ export const GET_CLASS_QUERY = gql`
       timeStart
       timeEnd
       displayPublic
+      infoMailContent
     }
     organizationLocationRooms(first: 100, before: $before, after: $after, archived: $archived) {
       pageInfo {

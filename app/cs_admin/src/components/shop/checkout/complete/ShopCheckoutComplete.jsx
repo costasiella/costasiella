@@ -57,6 +57,7 @@ function ShopCheckoutComplete({ t, match, history }) {
   let subHeader = ""
   let contentText = ""
   let paymentText = ""
+  let complete = false
 
   // Success!
   if (order.status == "DELIVERED") {
@@ -64,6 +65,7 @@ function ShopCheckoutComplete({ t, match, history }) {
     subHeader = t("shop.checkout.complete.success_subheader") 
     // Something to explain the user what's next
     contentText = t("shop.checkout.complete.success_content_text")
+    complete = true
 
     // Confirm receiving payment to user
     if (order.total) {
@@ -106,7 +108,7 @@ function ShopCheckoutComplete({ t, match, history }) {
             </Card>
           </Grid.Col>
           <Grid.Col md={6}>
-            <ShopCheckoutOrderSummary id={id} />
+            <ShopCheckoutOrderSummary id={id} complete={complete} />
           </Grid.Col>
         </Grid.Row>
     </ShopCheckoutCompleteBase>
