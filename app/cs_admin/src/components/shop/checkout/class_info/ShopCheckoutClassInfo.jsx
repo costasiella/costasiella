@@ -41,7 +41,7 @@ function ShopCheckoutClassInfo({ t, scheduleItemId, date, complete=true}) {
 
   return (
     (!loading && !error) ?
-      <span className="text-muted">
+      <div className="text-muted">
         <Icon name="book" /> {
           (complete) ? t("shop.checkout.class_info.have_been_checked_in")
                      : t("shop.checkout.class_info.will_be_checked_in") 
@@ -54,7 +54,7 @@ function ShopCheckoutClassInfo({ t, scheduleItemId, date, complete=true}) {
           dateFormat={dateFormat} 
           timeFormat={timeFormat}
         />
-      </span> 
+      </div> 
       : ""
   )
 }

@@ -96,6 +96,7 @@ function ShopCheckoutOrderSummary({ t, id }) {
           </span> 
           : ""
         }
+        <br /><br />
         {(scheduleItemId && classDate) ?
           <ShopCheckoutClassInfo 
             scheduleItemId={scheduleItemId}
