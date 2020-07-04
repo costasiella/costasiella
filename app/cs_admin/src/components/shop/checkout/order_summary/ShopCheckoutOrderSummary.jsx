@@ -90,7 +90,7 @@ function ShopCheckoutOrderSummary({ t, id, complete=false }) {
       <Card.Body>
         {(order.message) ?
           <span className="text-muted">
-            <Icon name="message-square" /> {t("shop.checkout.order_summary.message")} <br /><br /> 
+            <h5><Icon name="message-square" /> {t("shop.checkout.order_summary.message")}</h5> 
             {/* Order message */}
             {order.message}
           </span> 

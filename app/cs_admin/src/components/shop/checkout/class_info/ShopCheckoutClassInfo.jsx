@@ -42,11 +42,11 @@ function ShopCheckoutClassInfo({ t, scheduleItemId, date, complete=true}) {
   return (
     (!loading && !error) ?
       <div className="text-muted">
-        <Icon name="book" /> {
+        <h5><Icon name="book" /> {
           (complete) ? t("shop.checkout.class_info.have_been_checked_in")
                      : t("shop.checkout.class_info.will_be_checked_in") 
-        } <br /><br /> 
-        {/* Class display message */}
+        }</h5>
+        {/* Class display info $ mail content */}
         <DisplayClassInfo 
           t={t} 
           classDate={date}
@@ -54,6 +54,14 @@ function ShopCheckoutClassInfo({ t, scheduleItemId, date, complete=true}) {
           dateFormat={dateFormat} 
           timeFormat={timeFormat}
         />
+        <br />
+        {(data.scheduleClass.infoMailContent) ? 
+          <div>
+            <h5><Icon name="info" /> {t("shop.checkout.class_info.info_mail")}</h5>
+            <div dangerouslySetInnerHTML={{ __html: data.scheduleClass.infoMailContent }} /> 
+          </div>
+          : ""
+        }
       </div> 
       : ""
   )

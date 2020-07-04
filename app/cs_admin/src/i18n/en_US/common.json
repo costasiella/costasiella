@@ -1314,7 +1314,7 @@
             "class_info": {
                 "error_loading": "Error loading class information :(",
                 "have_been_checked_in": "We've reserved your spot in this class!",
-                "will_be_checked_in": "We'll reserve a spot in this class"
+                "will_be_checked_in": "We'll reserve your spot in this class once we've received your payment"
             }
         },
         "complete": {

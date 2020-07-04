@@ -16,6 +16,7 @@ export const GET_SCHEDULE_CLASS_QUERY = gql`
       }
           timeStart
       timeEnd
+      infoMailContent
     }
   }
 `
