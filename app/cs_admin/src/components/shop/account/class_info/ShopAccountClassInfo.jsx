@@ -17,15 +17,15 @@ import {
 } from "tabler-react"
 
 import GET_USER_PROFILE from "../../../../queries/system/get_user_profile"
+import ShopCheckoutClassInfo from "../../checkout/class_info/ShopCheckoutClassInfo"
 import ShopAccountClassInfoBase from "./ShopAccountClassInfoBase"
 
 
 
 function ShopAccountClassInfo({t, match, history}) {
   const { loading, error, data } = useQuery(GET_USER_PROFILE)
-  const scheduleItemId = match.params.id
-  const classDate = match.params.date 
-
+  const scheduleItemId = match.params.class_id
+  const date = match.params.date 
 
   if (loading) return (
     <ShopAccountClassInfoBase>
@@ -43,12 +43,14 @@ function ShopAccountClassInfo({t, match, history}) {
   // Populated list
   return (
     <ShopAccountClassInfoBase accountName={user.fullName}>
-      <Card>
-        <ShopCheckoutClassInfo
-          scheduleItemId={scheduleItemId}
-          classDate={classDate}
-          complete={true}
-        />
+      <Card title={t("shop.account.class_info.title")}>
+        <Card.Body>
+          <ShopCheckoutClassInfo
+            scheduleItemId={scheduleItemId}
+            date={date}
+            complete={true}
+          />
+        </Card.Body>
       </Card>
     </ShopAccountClassInfoBase>
   )

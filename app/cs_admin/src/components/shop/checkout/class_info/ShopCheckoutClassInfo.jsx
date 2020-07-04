@@ -23,6 +23,10 @@ function ShopCheckoutClassInfo({ t, scheduleItemId, date, complete=true}) {
   const dateFormat = appSettings.dateFormat
   const timeFormat = appSettings.timeFormatMoment
 
+
+  console.log(scheduleItemId)
+  console.log(date)
+
   const { loading, error, data } = useQuery(GET_SCHEDULE_CLASS_QUERY, {
     variables: { 
       scheduleItemId: scheduleItemId,

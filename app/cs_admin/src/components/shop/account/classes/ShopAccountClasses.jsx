@@ -139,6 +139,11 @@ function ShopAccountClasses({t, match, history}) {
                     <Table.Col>
                       <BadgeBookingStatus status={node.bookingStatus} />
                     </Table.Col>
+                    <Table.Col>
+                      <Link to={`/shop/account/class_info/${node.scheduleItem.id}/${node.date}`}>
+                        info
+                      </Link>
+                    </Table.Col>
                   </Table.Row>
                 ))}
               </Table.Body>
