@@ -13,6 +13,9 @@ import {
 } from "tabler-react";
 
 import { GET_ORDER_QUERY } from "../queries"
+import ShopCheckoutClassInfo from "../class_info/ShopCheckoutClassInfo"
+import { dateToLocalISO } from '../../../../tools/date_tools'
+import { DisplayClassInfo } from '../../tools'
 
 
 function ShopCheckoutOrderSummary({ t, id }) {
@@ -91,6 +94,14 @@ function ShopCheckoutOrderSummary({ t, id }) {
             {/* Order message */}
             {order.message}
           </span> 
+          : ""
+        }
+        {(scheduleItemId && classDate) ?
+          <ShopCheckoutClassInfo 
+            scheduleItemId={scheduleItemId}
+            date={classDate}
+            complete={false}
+          />
           : ""
         }
       </Card.Body>

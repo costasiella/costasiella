@@ -1,6 +1,6 @@
 // @flow
 
-import React from 'react'
+import React, { useContext } from 'react'
 import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
 import { useQuery } from '@apollo/react-hooks'
@@ -14,10 +14,11 @@ import {
 } from "tabler-react";
 
 import AppSettingsContext from '../../../context/AppSettingsContext'
+import { DisplayClassInfo } from "../../tools"
 import { GET_SCHEDULE_CLASS_QUERY } from "./queries"
 
 
-function ShopCheckoutClassInfo({ t, scheduleItemId, date }) {
+function ShopCheckoutClassInfo({ t, scheduleItemId, date, complete=true}) {
   const appSettings = useContext(AppSettingsContext)
   const dateFormat = appSettings.dateFormat
   const timeFormat = appSettings.timeFormatMoment
@@ -37,15 +38,22 @@ function ShopCheckoutClassInfo({ t, scheduleItemId, date }) {
   )
 
   console.log(data)
-  const scheduleClass = data.scheduleClass
-  console.log(scheduleClass)
 
   return (
-    (order.message) ?
+    (!loading && !error) ?
       <span className="text-muted">
-        <Icon name="book" /> {t("general.class")} <br /><br /> 
+        <Icon name="book" /> {
+          (complete) ? t("shop.checkout.class_info.have_been_checked_in")
+                     : t("shop.checkout.class_info.will_be_checked_in") 
+        } <br /><br /> 
         {/* Class display message */}
-        
+        <DisplayClassInfo 
+            t={t} 
+            classDate={date}
+            classData={data} 
+            dateFormat={dateFormat} 
+            timeFormat={timeFormat}
+          />
       </span> 
       : ""
   )
