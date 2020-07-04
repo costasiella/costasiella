@@ -479,7 +479,8 @@
             "class_info": {
                 "error_loading": "__STRING_NOT_TRANSLATED__",
                 "have_been_checked_in": "__STRING_NOT_TRANSLATED__",
-                "will_be_checked_in": "__STRING_NOT_TRANSLATED__"
+                "will_be_checked_in": "__STRING_NOT_TRANSLATED__",
+                "info_mail": "__STRING_NOT_TRANSLATED__"
             }
         },
         "title": "__STRING_NOT_TRANSLATED__",
@@ -543,6 +544,10 @@
                 "title": "__STRING_NOT_TRANSLATED__",
                 "explanation": "__STRING_NOT_TRANSLATED__",
                 "empty_list": "__STRING_NOT_TRANSLATED__"
+            },
+            "class_info": {
+                "error_loading_data": "__STRING_NOT_TRANSLATED__",
+                "title": "__STRING_NOT_TRANSLATED__"
             }
         },
         "accounts": {

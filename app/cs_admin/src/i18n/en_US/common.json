@@ -1314,7 +1314,8 @@
             "class_info": {
                 "error_loading": "Error loading class information :(",
                 "have_been_checked_in": "We've reserved your spot in this class!",
-                "will_be_checked_in": "We'll reserve your spot in this class once we've received your payment"
+                "will_be_checked_in": "We'll reserve your spot in this class once we've received your payment",
+                "info_mail": "Class information"
             }
         },
         "complete": {
@@ -1360,6 +1361,10 @@
                 "title": "My invoices",
                 "explanation": "View your invoices and download them as a PDF file.",
                 "empty_list": "You don't have any invoices yet."
+            },
+            "class_info": {
+                "error_loading_data": "Error loading class info... :(",
+                "title": "Class information"
             }
         },
         "accounts": {
