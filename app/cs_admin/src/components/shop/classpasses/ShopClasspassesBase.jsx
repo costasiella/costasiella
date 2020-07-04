@@ -4,7 +4,6 @@ import React, {Component } from 'react'
 import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
 import { useQuery } from '@apollo/react-hooks'
-import { Link } from 'react-router-dom'
 
 import {
   Icon,
