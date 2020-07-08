@@ -43,9 +43,16 @@ function ShopContact({ t, match, history }) {
   console.log(data)
   console.log(data.organization)
 
+  const organization = data.organization
+
   return (
     <ShopContactBase>
-      Hello world!
+      <h3>{organization.name}</h3>
+      <div dangerouslySetInnerHTML={{ __html: organization.address}} />
+      <p>{organization.email}</p>
+      <p>{organization.phone}</p>
+      <p>{organization.registration}</p>
+      <p>{organization.taxRegistration}</p>
     </ShopContactBase>
   )
 }
