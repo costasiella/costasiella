@@ -30,12 +30,12 @@ function ShopContact({ t, match, history }) {
   })
 
   if (loading) return (
-    <ShopContactBase title={title} >
+    <ShopContactBase>
       {t("general.loading_with_dots")}
     </ShopContactBase>
   )
   if (error) return (
-    <ShopContactBase title={title}>
+    <ShopContactBase>
       {t("shop.classpasses.error_loading")}
     </ShopContactBase>
   )
