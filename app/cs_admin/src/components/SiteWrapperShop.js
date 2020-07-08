@@ -85,6 +85,14 @@ const getNavBarItems = (t, user) => {
     useExact: true,
   })
 
+  items.push({
+    value: t("shop.contact.title"),
+    to: "/shop/contact",
+    icon: "message-square",
+    LinkComponent: withRouter(NavLink),
+    useExact: true,
+  })
+
   return items
 
 }
