@@ -1,4 +1,4 @@
-import gql from "graphql-tag"
+import { gql } from '@apollo/client';
 
 export const GET_LOCATION_ROOMS_QUERY = gql`
   query OrganizationLocationRooms($after: String, $before: String, $organizationLocation: ID!, $archived: Boolean!) {

@@ -1,4 +1,4 @@
-import gql from "graphql-tag"
+import { gql } from '@apollo/client';
 
 export const GET_COSTCENTERS_QUERY = gql`
   query FinanceCostCenters($after: String, $before: String, $archived: Boolean) {

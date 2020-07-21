@@ -1,4 +1,4 @@
-import gql from "graphql-tag"
+import { gql } from '@apollo/client';
 
 export const GET_TAXRATES_QUERY = gql`
   query FinanceTaxRates($after: String, $before: String, $archived: Boolean) {

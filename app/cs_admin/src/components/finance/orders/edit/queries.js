@@ -1,4 +1,4 @@
-import gql from "graphql-tag"
+import { gql } from '@apollo/client';
 
 export const GET_FINANCE_ORDER_QUERY = gql`
   query FinanceOrder($id: ID!) {

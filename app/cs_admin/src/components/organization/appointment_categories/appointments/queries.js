@@ -1,4 +1,4 @@
-import gql from "graphql-tag"
+import { gql } from '@apollo/client';
 
 export const GET_APPOINTMENTS_QUERY = gql`
   query OrganizationAppointments($after: String, $before: String, $organizationAppointmentCategory: ID!, $archived: Boolean!) {

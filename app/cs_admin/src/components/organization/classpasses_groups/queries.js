@@ -1,4 +1,4 @@
-import gql from "graphql-tag"
+import { gql } from '@apollo/client';
 
 export const GET_CLASSPASS_GROUPS_QUERY = gql`
   query OrganizationClasspassGroups($after: String, $before: String, $archived: Boolean) {

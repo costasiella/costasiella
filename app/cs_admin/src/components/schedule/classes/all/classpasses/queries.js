@@ -1,4 +1,4 @@
-import gql from "graphql-tag"
+import { gql } from '@apollo/client';
 
 export const GET_SCHEDULE_CLASS_CLASSPASSES_QUERY = gql`
   query ScheduleItemOrganizationClasspassGroups($after: String, $before: String, $scheduleItem: ID!) {

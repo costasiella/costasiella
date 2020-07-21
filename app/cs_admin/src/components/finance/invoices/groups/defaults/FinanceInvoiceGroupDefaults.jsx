@@ -2,7 +2,7 @@
 
 import React from 'react'
 import { Query, Mutation } from "react-apollo"
-import gql from "graphql-tag"
+import { gql } from '@apollo/client';
 import { v4 } from "uuid"
 import { Formik } from 'formik'
 import { withTranslation } from 'react-i18next'

@@ -1,4 +1,4 @@
-import gql from "graphql-tag"
+import { gql } from '@apollo/client';
 
 export const GET_CLASSTYPES_QUERY = gql`
 query OrganizationClasstypes($after: String, $before: String, $archived: Boolean) {

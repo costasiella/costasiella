@@ -1,4 +1,4 @@
-import gql from "graphql-tag"
+import { gql } from '@apollo/client';
 
 export const GET_SCHEDULE_CLASS_TEACHERS_QUERY = gql`
   query ScheduleItemTeachers($after: String, $before: String, $scheduleItem: ID!) {

@@ -242,6 +242,8 @@ function AppRoot({ t }) {
     </div>
   )
 
+  console.log(data.appSettings)
+
   // Register "US" locale for moment
   // moment.locale('en-US')
   let appSettings = data.appSettings

@@ -1,6 +1,7 @@
 import React from 'react'
-import { ApolloProvider } from "react-apollo"
-import ApolloClient from "apollo-boost"
+// import { ApolloProvider } from "react-apollo"
+// import ApolloClient from "apollo-boost"
+import { ApolloProvider, ApolloClient, InMemoryCache } from '@apollo/client';
 
 // Import moment locale
 // import moment from 'moment'
@@ -58,6 +59,7 @@ const client = new ApolloClient({
   uri: "/d/graphql/",
   credentials: "same-origin",
   onError: processClientError,
+  cache: new InMemoryCache()
   // request: async operation => {
   //   var csrftoken = Cookies.get('csrftoken');
   //   operation.setContext({

@@ -2,7 +2,7 @@
 
 import React from 'react'
 import { useQuery, useMutation } from "react-apollo"
-import gql from "graphql-tag"
+import { gql } from '@apollo/client';
 import { v4 } from "uuid"
 import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"

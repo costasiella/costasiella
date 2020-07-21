@@ -1,4 +1,4 @@
-import gql from "graphql-tag"
+import { gql } from '@apollo/client';
 
 export const GET_ACCOUNT_ACCEPTED_DOCUMENTS_QUERY = gql`
   query AccountAcceptedDocuments($after: String, $before: String, $account: ID!) {

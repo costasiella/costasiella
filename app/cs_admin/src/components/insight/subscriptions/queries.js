@@ -1,4 +1,4 @@
-import gql from "graphql-tag"
+import { gql } from '@apollo/client';
 
 
 export const GET_SUBSCRIPTIONS_SOLD_QUERY = gql`

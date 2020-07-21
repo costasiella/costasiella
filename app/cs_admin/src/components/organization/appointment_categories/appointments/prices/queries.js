@@ -1,4 +1,4 @@
-import gql from "graphql-tag"
+import { gql } from '@apollo/client';
 
 export const GET_APPOINTMENT_PRICES_QUERY = gql`
   query OrganizationAppointmentPrices($after: String, $before: String, $organizationAppointment: ID!) {
