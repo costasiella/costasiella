@@ -198,10 +198,18 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
 
   if (authTokenExpired) {
     const refreshTokenExp = localStorage.getItem(CSLS.AUTH_TOKEN_REFRESH_EXP)
-    if ((new Date() / 1000) >= refreshTokenExp) {
+    if ((new Date() / 1000) >= refreshTokenExp || (refreshTokenExp == null)) {
+      console.log("refresh token expired or not found")
+      console.log(new Date() / 1000)
+      console.log(refreshTokenExp)
+
       return SessionExpired
     } else {
       // Refresh token
+      console.log("auth token expired")
+      console.log(new Date() / 1000)
+      console.log(refreshTokenExp)
+
       doTokenRefresh().then(({ data }) => {
         console.log('got refresh data', data)
         CSAuth.updateTokenInfo(data.refreshToken)
