@@ -122,17 +122,17 @@ class ScheduleClassesDayType(graphene.ObjectType):
                 where += 'AND (CASE WHEN csiotc.organization_classtype_id IS NULL \
                                 THEN csi.organization_classtype_id  \
                                 ELSE csiotc.organization_classtype_id END) = '
-                where += str(self.filter_id_organization_classtype) + ' '
+                where += '%(filter_id_organization_classtype)s '
             if self.filter_id_organization_location:
                 where += 'AND (CASE WHEN csiotc.organization_location_id IS NULL \
                                 THEN csi_olr.organization_location_id  \
                                 ELSE csiotc.organization_location_id END) = '
-                where += str(self.filter_id_organization_location) + ' '
+                where += '%(filter_id_organization_location)s '
             if self.filter_id_organization_level:
                 where += 'AND (CASE WHEN csiotc.organization_level_id IS NULL \
                                 THEN csi.organization_level_id  \
                                 ELSE csiotc.organization_level_id END) = '
-                where += str(self.filter_id_organization_level) + ' '
+                where += '%(filter_id_organization_level)s '
             # if self.filter_public:
             #     where += "AND csi.display_public = 1 "
                 # where += "AND sl.AllowAPI = 'T' "
@@ -147,7 +147,7 @@ class ScheduleClassesDayType(graphene.ObjectType):
 
         iso_week_day = self.resolve_iso_week_day(info)
         sorting = self.order_by
-        if not sorting: # Default to sort by location, then time
+        if not sorting:  # Default to sort by location, then time
             sorting = "location"
 
         # # Set sorting
@@ -168,7 +168,7 @@ class ScheduleClassesDayType(graphene.ObjectType):
 
         if sorting == 'location':
             order_by_sql = 'organization_location_name, time_start'
-        else: # sorting == 'starttime'
+        else:  # sorting == 'starttime'
             order_by_sql = 'time_start, organization_location_name'
 
         query = """
@@ -267,7 +267,7 @@ class ScheduleClassesDayType(graphene.ObjectType):
                   FROM costasiella_scheduleitemweeklyotc otc 
                   LEFT JOIN costasiella_organizationlocationroom otc_olr ON otc.organization_location_room_id = otc_olr.id
                   LEFT JOIN costasiella_organizationlocation otc_ol ON otc_olr.organization_location_id = otc_ol.id
-                  WHERE date = "{class_date}" 
+                  WHERE date = %(class_date)s 
                 ) csiotc
                 ON csi.id = csiotc.schedule_item_id
             LEFT JOIN
@@ -279,26 +279,24 @@ class ScheduleClassesDayType(graphene.ObjectType):
                     account_2_id,
                     role_2
                 FROM costasiella_scheduleitemteacher
-                WHERE date_start <= "{class_date}" AND (
-                      date_end >= "{class_date}" OR date_end IS NULL)
+                WHERE date_start <= %(class_date)s AND (
+                      date_end >= %(class_date)s OR date_end IS NULL)
                 ORDER BY date_start
                 LIMIT 2
                 ) csit
                 ON csit.schedule_item_id = csi.id
             WHERE csi.schedule_item_type = "CLASS" 
                 AND (
-                        (csi.frequency_type = "SPECIFIC" AND csi.date_start = "{class_date}" ) OR
+                        (csi.frequency_type = "SPECIFIC" AND csi.date_start = %(class_date)s ) OR
                         ( csi.frequency_type = "WEEKLY" AND 
-                          csi.frequency_interval = {iso_week_day} AND 
-                          csi.date_start <= "{class_date}" AND
-                         (csi.date_end >= "{class_date}" OR csi.date_end IS NULL)
+                          csi.frequency_interval = %(iso_week_day)s AND 
+                          csi.date_start <= %(class_date)s AND
+                         (csi.date_end >= %(class_date)s OR csi.date_end IS NULL)
                         ) 
                     )
                 {where_sql}
             ORDER BY {order_by_sql}
         """.format(
-            class_date=self.date,
-            iso_week_day=iso_week_day,
             where_sql=_get_where_query(),
             order_by_sql=order_by_sql
         )
@@ -307,17 +305,20 @@ class ScheduleClassesDayType(graphene.ObjectType):
 
         ## 
         # At this time 27 Aug 2019, params don't seem to be working from a dictionary
-        # https://docs.djangoproject.com/en/2.2/topics/db/sql/
-        # the query should be formatted using "%(class_date)s" 
+        # https://docs.djangoproject.com/en/3.0/topics/db/sql/
+        # the query should be formatted using %(class_date)s 
         ##
-        # params = {
-        #     "class_date": self.date, 
-        #     "iso_week_day": iso_week_day
-        # }
+        params = {
+            "class_date": str(self.date),
+            "iso_week_day": iso_week_day,
+            "filter_id_organization_classtype": self.filter_id_organization_classtype,
+            "filter_id_organization_location": self.filter_id_organization_location,
+            "filter_id_organization_level": self.filter_id_organization_level,
+        }
 
         # TODO: add parameters here to prevent SQL injection: IMPORTANT!!!
 
-        schedule_items = ScheduleItem.objects.raw(query)
+        schedule_items = ScheduleItem.objects.raw(query, params=params)
         # print(schedule_items.query)
 
         # # Set sorting
