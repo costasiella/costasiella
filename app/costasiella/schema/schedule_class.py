@@ -301,7 +301,7 @@ class ScheduleClassesDayType(graphene.ObjectType):
             order_by_sql=order_by_sql
         )
 
-        print(query)
+        # print(query)
 
         ## 
         # At this time 27 Aug 2019, params don't seem to be working from a dictionary

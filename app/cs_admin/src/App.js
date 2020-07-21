@@ -1,7 +1,9 @@
 import React from 'react'
 import { ApolloProvider } from "react-apollo"
 import ApolloClient from "apollo-boost"
+import { Observable } from 'apollo-link';
 
+import { TOKEN_REFRESH } from "./queries/system/auth"
 // Import moment locale
 // import moment from 'moment'
 // import 'moment/locale/nl'
@@ -35,20 +37,127 @@ String.prototype.trunc =
   }
 
 
-function processClientError(error) {
-  console.log(Object.keys(error))
-  console.log(error.operation)
-  console.log(error.networkError)
-  console.log(error.graphQLErrors)
-  console.log(error.forward)
-  // let i
-  // for (i = 0; i < error.response.errors.length; i++) {
-  //   if (error.response.errors[i].extensions && error.response.errors[i].extensions.code === CSEC.USER_NOT_LOGGED_IN) {
-  //     window.location.href = "/#/user/login"
-  //     window.location.reload()
-  //     break
-  //   }
-  // }
+function processClientError({ networkError, graphQLErrors, operation, forward, response }) {
+  // console.log(Object.keys(error))
+  console.log(operation)
+  console.log(networkError)
+  console.log(graphQLErrors)
+  console.log(forward)
+  console.log(response)
+  let i
+  for (i = 0; i < response.errors.length; i++) {
+    if (response.errors[i].extensions && response.errors[i].extensions.code === CSEC.USER_NOT_LOGGED_IN) {
+
+      let authTokenExpired = false
+      const tokenExp = localStorage.getItem(CSLS.AUTH_TOKEN_EXP)
+      if ((new Date() / 1000) >= tokenExp) {
+        authTokenExpired = true
+      }
+
+      console.log('token expired')
+      console.log(authTokenExpired)
+
+      if (authTokenExpired) {
+        const refreshTokenExp = localStorage.getItem(CSLS.AUTH_TOKEN_REFRESH_EXP)
+        if ((new Date() / 1000) >= refreshTokenExp || (refreshTokenExp == null)) {
+          // Session expired
+          console.log("refresh token expired or not found")
+          console.log(new Date() / 1000)
+          console.log(refreshTokenExp)
+    
+          window.location.href = "#/user/session/expired"
+          window.location.reload()
+        } else {
+          // Refresh token
+          // https://able.bio/AnasT/apollo-graphql-async-access-token-refresh--470t1c8
+          console.log("auth token expired")
+          console.log(new Date() / 1000)
+          console.log(refreshTokenExp)
+
+          console.log("refresh token.... somehow....")
+
+          return new Observable(observer => {
+            client.mutate({
+              mutation: TOKEN_REFRESH
+            })
+              .then(({ data }) => { 
+                console.log(data)
+                CSAuth.updateTokenInfo(data.refreshToken)
+              })
+              .then(() => {
+                const subscriber = {
+                  next: observer.next.bind(observer),
+                  error: observer.error.bind(observer),
+                  complete: observer.complete.bind(observer)
+                };
+
+                // Retry last failed request
+                forward(operation).subscribe(subscriber);
+              })
+              .catch(error => {
+                // No refresh or client token available, we force user to login
+                observer.error(error);
+              });
+
+          })
+
+          // return fromPromise(
+          //   client.mutate({
+          //     mutation: TOKEN_REFRESH
+          //   })
+          //     .then(({ data }) => { 
+          //       console.log(data)
+          //       CSAuth.updateTokenInfo(data.refreshToken)
+          //     })
+          //     .catch((error) => { 
+          //       console.log(error); 
+          //       window.location.href = "/#/user/login"
+          //       window.location.reload()
+          //     })
+
+          //   // retry the request, returning the new observable
+          //   return forward(operation);
+          // });
+          
+          // client.mutate({
+          //   mutation: TOKEN_REFRESH
+          // })
+          //   .then(({ data }) => { 
+          //     console.log(data)
+          //     CSAuth.updateTokenInfo(data.refreshToken)
+          //     return forward(operation)
+          //   })
+          //   .catch((error) => { 
+          //     console.log(error); 
+          //     window.location.href = "/#/user/login"
+          //     window.location.reload()
+          //   })
+
+          // return forward(operation)
+
+          // doTokenRefresh().then(({ data }) => {
+          //   console.log('got refresh data', data)
+          //   CSAuth.updateTokenInfo(data.refreshToken)
+          //   return ContinueAsYouAre
+          // }).catch((error) => {
+          //   toast.error('general.toast_server_error' + ': ' +  error, {
+          //     position: toast.POSITION.BOTTOM_RIGHT
+          //   })
+          //   console.log('there was an error refreshing the token', error) 
+          //   console.log("REDIRECT BACK TO LOGIN")
+          //   window.location.href = "/#/user/login"
+          //   window.location.reload()
+          // })
+        }
+      } else {
+        window.location.href = "/#/user/login"
+        window.location.reload()
+      }
+
+      // window.location.href = "/#/user/login"
+      // window.location.reload()
+    }
+  }
 }
 
 // set up ApolloClient
