@@ -36,7 +36,6 @@ String.prototype.trunc =
       return this.substr(0, n-1) + (this.length > n ? '...' : '')
   }
 
-
 function processClientError({ networkError, graphQLErrors, operation, forward, response }) {
   // console.log(Object.keys(error))
   console.log(operation)
@@ -68,8 +67,8 @@ function processClientError({ networkError, graphQLErrors, operation, forward, r
           window.location.href = "#/user/session/expired"
           window.location.reload()
         } else {
-          // Refresh token
-          // https://able.bio/AnasT/apollo-graphql-async-access-token-refresh--470t1c8
+          // Refresh token... no idea how this observable & subscriber stuff works... but it does :).
+          // https://stackoverflow.com/questions/50965347/how-to-execute-an-async-fetch-request-and-then-retry-last-failed-request/51321068#51321068
           console.log("auth token expired")
           console.log(new Date() / 1000)
           console.log(refreshTokenExp)
@@ -97,57 +96,11 @@ function processClientError({ networkError, graphQLErrors, operation, forward, r
               .catch(error => {
                 // No refresh or client token available, we force user to login
                 observer.error(error);
+                window.location.href = "/#/user/login"
+                window.location.reload()
               });
 
           })
-
-          // return fromPromise(
-          //   client.mutate({
-          //     mutation: TOKEN_REFRESH
-          //   })
-          //     .then(({ data }) => { 
-          //       console.log(data)
-          //       CSAuth.updateTokenInfo(data.refreshToken)
-          //     })
-          //     .catch((error) => { 
-          //       console.log(error); 
-          //       window.location.href = "/#/user/login"
-          //       window.location.reload()
-          //     })
-
-          //   // retry the request, returning the new observable
-          //   return forward(operation);
-          // });
-          
-          // client.mutate({
-          //   mutation: TOKEN_REFRESH
-          // })
-          //   .then(({ data }) => { 
-          //     console.log(data)
-          //     CSAuth.updateTokenInfo(data.refreshToken)
-          //     return forward(operation)
-          //   })
-          //   .catch((error) => { 
-          //     console.log(error); 
-          //     window.location.href = "/#/user/login"
-          //     window.location.reload()
-          //   })
-
-          // return forward(operation)
-
-          // doTokenRefresh().then(({ data }) => {
-          //   console.log('got refresh data', data)
-          //   CSAuth.updateTokenInfo(data.refreshToken)
-          //   return ContinueAsYouAre
-          // }).catch((error) => {
-          //   toast.error('general.toast_server_error' + ': ' +  error, {
-          //     position: toast.POSITION.BOTTOM_RIGHT
-          //   })
-          //   console.log('there was an error refreshing the token', error) 
-          //   console.log("REDIRECT BACK TO LOGIN")
-          //   window.location.href = "/#/user/login"
-          //   window.location.reload()
-          // })
         }
       } else {
         window.location.href = "/#/user/login"
