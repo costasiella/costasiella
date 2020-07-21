@@ -9,7 +9,7 @@ import {
   Redirect
 } from 'react-router-dom'
 import { withTranslation } from 'react-i18next'
-import { useQuery, useMutation } from "react-apollo"
+import { useQuery, useMutation } from "@apollo/client"
 import { toast } from 'react-toastify'
 
 import { GET_APP_SETTINGS_QUERY } from "./components/settings/general/date_time/queries"
@@ -248,11 +248,12 @@ function AppRoot({ t }) {
   // moment.locale('en-US')
   let appSettings = data.appSettings
   console.log(appSettings)
-  if (appSettings.timeFormat == 24) {
-    appSettings.timeFormatMoment = "HH:mm"
-  } else {
-    appSettings.timeFormatMoment = "hh:mm a"
-  }
+  // if (appSettings.timeFormat == 24) {
+  //   appSettings.timeFormatMoment = "HH:mm"
+  // } else {
+  //   appSettings.timeFormatMoment = "hh:mm a"
+  // }
+  
 
   return (
     <AppSettingsProvider value={appSettings}>

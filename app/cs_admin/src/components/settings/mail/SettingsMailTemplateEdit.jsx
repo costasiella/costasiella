@@ -2,7 +2,7 @@
 
 import React, {Component } from 'react'
 import { gql } from '@apollo/client';
-import { useQuery, useMutation } from "react-apollo"
+import { useQuery, useMutation } from '@apollo/client';
 import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
 import { Formik } from 'formik'

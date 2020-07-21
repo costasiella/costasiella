@@ -1,5 +1,5 @@
 import React, { useContext } from 'react'
-import { useQuery } from "react-apollo"
+import { useQuery } from '@apollo/client';
 import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
 import C3Chart from "react-c3js"

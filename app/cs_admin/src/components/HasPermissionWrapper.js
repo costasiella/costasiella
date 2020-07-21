@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Query } from "react-apollo"
+import { Query } from '@apollo/client/react/components';
 
 import GET_USER from '../queries/system/get_user'
 import { get_all_permissions } from "../tools/user_tools"

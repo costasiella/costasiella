@@ -3,7 +3,7 @@
 import React, {Component } from 'react'
 import { gql } from '@apollo/client';
 import { v4 } from "uuid"
-import { Query, Mutation } from "react-apollo";
+import { Query, Mutation } from '@apollo/client/react/components';
 import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
 import { toast } from 'react-toastify'

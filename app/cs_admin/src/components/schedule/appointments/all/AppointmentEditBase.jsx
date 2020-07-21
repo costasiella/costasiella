@@ -2,7 +2,7 @@
 
 import React, { Component } from 'react'
 import { t } from 'i18next'
-import { Query } from "react-apollo";
+import { Query } from '@apollo/client/react/components';
 import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
 import { TimeStringToJSDateOBJ } from '../../../../tools/date_tools'

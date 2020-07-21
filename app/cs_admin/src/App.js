@@ -1,7 +1,8 @@
 import React from 'react'
 // import { ApolloProvider } from "react-apollo"
 // import ApolloClient from "apollo-boost"
-import { ApolloProvider, ApolloClient, InMemoryCache } from '@apollo/client';
+import { ApolloProvider, ApolloClient, HttpLink, InMemoryCache } from '@apollo/client';
+
 
 // Import moment locale
 // import moment from 'moment'
@@ -52,11 +53,39 @@ function processClientError(error) {
   // }
 }
 
+const httpLink = new HttpLink({
+  uri: "/d/graphql/",
+  fetch: customFetch
+})
+
+const customFetch = (uri, options) => {
+  // This reference to the refreshingPromise will let us check later on if we are executing getting the refresh token.
+  // this.refreshingPromise = null;
+
+  // // Create initial fetch, this is what would normally be executed in the link without the override
+  // var initialRequest = fetch(uri, options)
+
+  // // The apolloHttpLink expects that whatever fetch function is used, it returns a promise.
+  // // Here we return the initialRequest promise
+  // return initialRequest.then((response) => {
+  //   return(response.json())
+  // }).then((json) => {
+  //   // We should now have the JSON from the response of initialRequest
+  //   // We check that we do and look for errors from the GraphQL server
+  //   // If it has the error 'User is not logged in' (that's our implementation of a 401) we execute the next steps in the re-auth flow
+  //   if (json && json.errors && json.errors[0] && json.errors[0].message === 'User is not logged in.') {
+  //     if (!this.refreshingPromise) {
+
+  //       // Grab the refresh token from the store
+
+  return fetch(uri, options)
+}
+
 // set up ApolloClient
 // TODO: Set up token expiration and auto refresh if possible and redirect to login if refresh token is expired.
 const client = new ApolloClient({
   // uri: "http://localhost:8000/graphql/",
-  uri: "/d/graphql/",
+  link: httpLink,
   credentials: "same-origin",
   onError: processClientError,
   cache: new InMemoryCache()

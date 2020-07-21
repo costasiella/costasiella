@@ -2,7 +2,7 @@
 
 import React, { Component, useState } from 'react'
 import { useQuery, useMutation, useLazyQuery } from '@apollo/react-hooks'
-import { Query, Mutation } from "react-apollo"
+import { Query, Mutation } from '@apollo/client/react/components';
 import { gql } from '@apollo/client';
 import { v4 } from "uuid"
 import { withTranslation } from 'react-i18next'

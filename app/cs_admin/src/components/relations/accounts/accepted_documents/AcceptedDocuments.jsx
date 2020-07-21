@@ -1,7 +1,7 @@
 // @flow
 
 import React, { useContext } from 'react'
-import { useQuery } from "react-apollo"
+import { useQuery } from '@apollo/client';
 import { gql } from '@apollo/client';
 import { v4 } from "uuid"
 import { withTranslation } from 'react-i18next'

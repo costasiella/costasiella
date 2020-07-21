@@ -2,7 +2,7 @@
 
 import React, { useCallback, useState, useEffect } from 'react'
 import { gql } from '@apollo/client';
-import { useMutation } from "react-apollo"
+import { useMutation } from '@apollo/client';
 import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';

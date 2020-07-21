@@ -1,7 +1,7 @@
 // @flow
 
 import React from 'react'
-import { Query } from "react-apollo"
+import { Query } from '@apollo/client/react/components';
 import { v4 } from "uuid"
 import { withTranslation } from 'react-i18next'
 
