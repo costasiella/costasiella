@@ -299,4 +299,3 @@ class ScheduleItemAttendanceMutation(graphene.ObjectType):
     delete_schedule_item_attendance = DeleteScheduleItemAttendance.Field()
     create_schedule_item_attendance = CreateScheduleItemAttendance.Field()
     update_schedule_item_attendance = UpdateScheduleItemAttendance.Field()
-    

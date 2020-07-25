@@ -19,7 +19,12 @@ from .. import schema
 
 class GQLScheduleItemAttendance(TestCase):
     # https://docs.djangoproject.com/en/2.1/topics/testing/overview/
-    fixtures = ['app_settings.json', 'finance_invoice_group.json', 'finance_invoice_group_defaults.json']
+    fixtures = [
+        'app_settings.json',
+        'finance_invoice_group.json',
+        'finance_invoice_group_defaults.json',
+        'system_mail_template.json'
+    ]
 
     def setUp(self):
         # This is run before every test
@@ -502,7 +507,6 @@ class GQLScheduleItemAttendance(TestCase):
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'This pass is not valid on this date.')
 
-
     def test_create_schedule_class_subscription_attendance(self):
         """ Check in to a class using a subscription """
         query = self.schedule_item_attendance_create_mutation
@@ -682,7 +686,6 @@ class GQLScheduleItemAttendance(TestCase):
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Not logged in!')
 
-
     def test_create_schedule_item_attendance_permission_granted(self):
         """ Allow creating attendances for users with permissions """
         query = self.schedule_item_attendance_create_mutation
@@ -722,9 +725,9 @@ class GQLScheduleItemAttendance(TestCase):
         )
 
     def test_create_schedule_item_attendance_permission_denied(self):
-        """ Check create subscription permission denied error message
-        A user can query the orders linked to their account, so an error will never be thrown
-        But a user shouldn't be able to view orders from other accounts without additional permission
+        """
+        Verify that the user who created the attendance record is the user who executed the query, not the account
+        specified, if any.
         """
         query = self.schedule_item_attendance_create_mutation
 
@@ -742,24 +745,24 @@ class GQLScheduleItemAttendance(TestCase):
         organization_classpass_group.organization_classpasses.add(account_classpass.organization_classpass)
 
         variables = self.variables_create_classpass
-        variables['input']['account'] = to_global_id('AccountNode', account.id)
+        variables['input']['account'] = to_global_id('AccountNode', other_user.id)
         variables['input']['accountClasspass'] = to_global_id('AccountClasspassNode', account_classpass.id)
         variables['input']['scheduleItem'] = to_global_id('ScheduleItemNode', schedule_item.id)
 
         # Create regular user
         user = account
-
         executed = execute_test_client_api_query(
             query, 
-            other_user,
+            user,
             variables=variables
         )
         data = executed.get('data')
         errors = executed.get('errors')
 
-        for item in data['createScheduleItemAttendance']['edges']:
-            node = item['node']
-            self.assertNotEqual(node['account']['id'], to_global_id("AccountNode", other_user.id))
+        self.assertEqual(
+            data['createScheduleItemAttendance']['scheduleItemAttendance']['account']['id'],
+            to_global_id('AccountNode', account.id)
+        )
 
 
     def test_update_schedule_item_attendance(self):
