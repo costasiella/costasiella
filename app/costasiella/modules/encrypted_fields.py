@@ -2,6 +2,7 @@
 import warnings
 import datetime
 import base64
+import os
 
 import django
 # import six
@@ -17,12 +18,6 @@ except ImportError:
                       'You can obtain hvac from https://hvac.readthedocs.io/.')
 
 
-
-# >>> var = base64.urlsafe_b64encode('plaintext'.encode()).decode('utf8')
-# >>> base64.urlsafe_b64decode(var).decode('utf-8')
-# 'plaintext'
-
-
 class EncryptionWarning(RuntimeWarning):
     pass
 
@@ -36,6 +31,10 @@ class BaseEncryptedField(models.Field):
         #                                'setting to your Keyczar keys directory.')
         # crypt_class = self.get_crypt_class()
         # self.crypt = crypt_class.Read(settings.ENCRYPTED_FIELD_KEYS_DIR)
+        self.running_as_test = False
+        if 'TRAVIS' in os.environ or getattr(settings, 'TESTING', False):
+            self.running_as_test = True
+
         vault_url = getattr(settings, 'VAULT_URL', None)
         vault_token = getattr(settings, 'VAULT_TOKEN', None)
         self.vault_transit_key = getattr(settings, 'VAULT_TRANSIT_KEY', None)
@@ -102,6 +101,9 @@ class BaseEncryptedField(models.Field):
         """
         # if isinstance(self.crypt.primary_key, keyczar.keys.RsaPublicKey):
         #     retval = value
+        if self.running_as_test:
+            return value
+
         if value and not isinstance(value, datetime.date): 
             if (value.startswith(self.prefix)):
                 # Decrypt
@@ -131,9 +133,12 @@ class BaseEncryptedField(models.Field):
 
     def get_db_prep_value(self, value, connection, prepared=False):
         # if value and not value.startswith(self.prefix):
+        if self.running_as_test:
+            return value
+
         if value:
             if self.data_type == 'date':
-                plaintext = str(value) # convert to string first
+                plaintext = str(value)  # convert to string first
             else:
                 plaintext = value
 
@@ -159,7 +164,7 @@ class BaseEncryptedField(models.Field):
             )
             # print(encrypt_data_response)
 
-            value = encrypt_data_response['data']['ciphertext'] # (ciphertext)
+            value = encrypt_data_response['data']['ciphertext']  # (ciphertext)
             # print(value)
 
         return value

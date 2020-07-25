@@ -1,11 +1,14 @@
 """
 Django settings for development
 """
-
+import sys
 from app.settings.common import *
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+
+# This tests whether the second commandline argument (after ./manage.py) was test.
+TESTING = len(sys.argv) > 1 and sys.argv[1] == 'test'
 
 # Media files (User uploads)
 # https://docs.djangoproject.com/en/2.1/topics/files/
