@@ -315,7 +315,7 @@ class GQLFinanceOrder(TestCase):
         )
 
     def test_create_order_classpass(self):
-        """ Create an finance order """
+        """ Create finance order with class pass"""
         query = self.order_create_mutation
 
         terms_and_conditions = f.OrganizationDocumentFactory.create()
@@ -332,6 +332,9 @@ class GQLFinanceOrder(TestCase):
             variables=variables
         )
         data = executed.get('data')
+        print("#######")
+        print(executed)
+        print("!!!!!!!!!")
 
         # Get order
         rid = get_rid(data['createFinanceOrder']['financeOrder']['id'])
