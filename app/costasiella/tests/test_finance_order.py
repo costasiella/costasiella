@@ -202,17 +202,22 @@ class GQLFinanceOrder(TestCase):
         self.assertEqual(data['financeOrders']['edges'][0]['node']['status'], order.status)
         self.assertEqual(data['financeOrders']['edges'][0]['node']['message'], order.message)
 
+    # A user can query the orders linked to their account, so an error will never be thrown
+    # But a user shouldn't be able to view orders from other accounts without additional permission
     def test_query_permission_denied(self):
         """ Query list of finance orders - check permission denied """
         query = self.orders_query
         order = f.FinanceOrderFactory.create()
+        other_user = f.TeacherFactory.create()
 
-        # Create regular user
+        # Query as another use and verify oder is not visible
         user = get_user_model().objects.get(pk=order.account.id)
-        executed = execute_test_client_api_query(query, user)
-        errors = executed.get('errors')
+        executed = execute_test_client_api_query(query, other_user)
+        data = executed.get('data')
 
-        self.assertEqual(errors[0]['message'], 'Permission denied!')
+        for item in data['financeOrders']['edges']:
+            node = item['node']
+            self.assertNotEqual(node['account']['id'], to_global_id("AccountNode", other_user.id))
 
     def test_query_permission_granted(self):
         """ Query list of finance orders with view permission """
@@ -336,7 +341,7 @@ class GQLFinanceOrder(TestCase):
             to_global_id('AccountNode', self.admin_user.pk)
         )
         self.assertEqual(data['createFinanceOrder']['financeOrder']['message'], variables['input']['message'])
-        self.assertEqual(data['createFinanceOrder']['financeOrder']['status'], 'RECEIVED')
+        self.assertEqual(data['createFinanceOrder']['financeOrder']['status'], 'AWAITING_PAYMENT')
 
         # Verify that classpass item was added to the order
         first_item = order.items.first()
@@ -406,27 +411,29 @@ class GQLFinanceOrder(TestCase):
             to_global_id('AccountNode', user.pk)
         )
 
-    def test_create_order_permission_denied(self):
-        """ Check create order permission denied error message """
-        query = self.order_create_mutation
+    # All logged in users can create orders for their account.
 
-        organization_classpass = f.OrganizationClasspassFactory.create()
-        variables = self.variables_create
-        variables['input']['organizationClasspass'] = to_global_id(
-            'OrganizationClasspassNode', organization_classpass.id
-        )
-
-        # Create regular user
-        user = f.RegularUserFactory.create()
-
-        executed = execute_test_client_api_query(
-            query,
-            user,
-            variables=variables
-        )
-        data = executed.get('data')
-        errors = executed.get('errors')
-        self.assertEqual(errors[0]['message'], 'Permission denied!')
+    # def test_create_order_permission_denied(self):
+    #     """ Check create order permission denied error message """
+    #     query = self.order_create_mutation
+    #
+    #     organization_classpass = f.OrganizationClasspassFactory.create()
+    #     variables = self.variables_create
+    #     variables['input']['organizationClasspass'] = to_global_id(
+    #         'OrganizationClasspassNode', organization_classpass.id
+    #     )
+    #
+    #     # Create regular user
+    #     user = f.RegularUserFactory.create()
+    #
+    #     executed = execute_test_client_api_query(
+    #         query,
+    #         user,
+    #         variables=variables
+    #     )
+    #     data = executed.get('data')
+    #     errors = executed.get('errors')
+    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
     # def test_update_order(self):
