@@ -460,8 +460,29 @@ class GQLAccount(TransactionTestCase):
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Not logged in!')
 
-
     def test_update_account_active_permission_granted(self):
+        """ Allow update account status for users with permissions """
+        query = self.account_update_active_mutation
+
+        account = f.RegularUserFactory.create()
+        other_user = f.TeacherFactory.create()
+        variables = self.variables_update_active
+        variables['input']['id'] = to_global_id('AccountNode', account.pk)
+
+        # Grant permissions
+        permission = Permission.objects.get(codename=self.permission_delete)
+        other_user.user_permissions.add(permission)
+        other_user.save()
+
+        executed = execute_test_client_api_query(
+            query,
+            other_user,
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['updateAccountActive']['account']['isActive'], variables['input']['isActive'])
+
+    def test_update_account_active_permission_granted_current_account(self):
         """ Allow update account status for users with permissions """
         query = self.account_update_active_mutation
 
@@ -475,13 +496,13 @@ class GQLAccount(TransactionTestCase):
         account.save()
 
         executed = execute_test_client_api_query(
-            query, 
+            query,
             account,
             variables=variables
         )
-        data = executed.get('data')
-        self.assertEqual(data['updateAccountActive']['account']['isActive'], variables['input']['isActive'])
 
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['extensions']['code'], "USER_CURRENTLY_LOGGED_IN")
 
     def test_update_account_active_permission_denied(self):
         """ Check update account status permission denied error message """
