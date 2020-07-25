@@ -417,7 +417,10 @@ class DeleteAccount(graphene.relay.ClientIDMutation):
             raise Exception('Invalid Account ID!')
 
         if account == user:
-            raise Exception(_("Can't delete currently logged in account."))
+            raise GraphQLError(
+                _("Can't delete currently logged in account."),
+                extensions={'code': get_error_code('USER_CURRENTLY_LOGGED_IN')}
+            )
 
         ok = account.delete()
 

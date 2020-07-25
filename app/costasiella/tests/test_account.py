@@ -557,7 +557,6 @@ class GQLAccount(TransactionTestCase):
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Not logged in!')
 
-
     def test_delete_account_permission_granted(self):
         """ Allow deleting accounts for users with permissions """
         query = self.account_delete_mutation
@@ -576,9 +575,30 @@ class GQLAccount(TransactionTestCase):
             account,
             variables=variables
         )
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['extensions']['code'], "USER_CURRENTLY_LOGGED_IN")
+
+    def test_delete_account_permission_granted_other_user(self):
+        """ Allow deleting accounts for users with permissions """
+        query = self.account_delete_mutation
+
+        account = f.RegularUserFactory.create()
+        other_user = f.TeacherFactory.create()
+        variables = self.variables_delete
+        variables['input']['id'] = to_global_id('AccountNode', account.pk)
+
+        # Grant permissions
+        permission = Permission.objects.get(codename=self.permission_delete)
+        other_user.user_permissions.add(permission)
+        other_user.save()
+
+        executed = execute_test_client_api_query(
+            query,
+            other_user,
+            variables=variables
+        )
         data = executed.get('data')
         self.assertEqual(data['deleteAccount']['ok'], True)
-
 
     def test_delete_account_permission_denied(self):
         """ Check delete account permission denied error message """
