@@ -69,7 +69,7 @@ class ScheduleItemAttendanceQuery(graphene.ObjectType):
             return ScheduleItemAttendance.objects.all().order_by(order_by)
             
 
-def validate_schedule_item_attendance_create_update_input(input, user):
+def validate_schedule_item_attendance_create_update_input(input):
     """
     Validate input
     """ 
@@ -155,7 +155,7 @@ class CreateScheduleItemAttendance(graphene.relay.ClientIDMutation):
         permission = user.has_perm('costasiella.add_scheduleitemattendance') or \
             user.has_perm('costasiella.view_selfcheckin')
 
-        validation_result = validate_schedule_item_attendance_create_update_input(input, user)
+        validation_result = validate_schedule_item_attendance_create_update_input(input)
         if not permission or 'account' not in input:
             # When the user doesn't have permissions; always use their own account
             validation_result['account'] = user
@@ -299,4 +299,3 @@ class ScheduleItemAttendanceMutation(graphene.ObjectType):
     delete_schedule_item_attendance = DeleteScheduleItemAttendance.Field()
     create_schedule_item_attendance = CreateScheduleItemAttendance.Field()
     update_schedule_item_attendance = UpdateScheduleItemAttendance.Field()
-    

@@ -206,9 +206,11 @@ class GQLAccountClasspass(TestCase):
         )
         self.assertEqual(data['accountClasspasses']['edges'][0]['node']['classesRemainingDisplay'], "Unlimited")
 
-
     def test_query_permission_denied(self):
-        """ Query list of account classpasses - check permission denied """
+        """ Query list of account classpass - check permission denied
+        A user can query the class passes linked to their account, so an error will never be thrown
+        But a user shouldn't be able to view orders from other accounts without additional permission
+        """
         query = self.classpasses_query
         classpass = f.AccountClasspassFactory.create()
         variables = {
@@ -217,11 +219,13 @@ class GQLAccountClasspass(TestCase):
 
         # Create regular user
         user = get_user_model().objects.get(pk=classpass.account.id)
-        executed = execute_test_client_api_query(query, user, variables=variables)
-        errors = executed.get('errors')
+        other_user = f.TeacherFactory.create()
+        executed = execute_test_client_api_query(query, other_user, variables=variables)
+        data = executed.get('data')
 
-        self.assertEqual(errors[0]['message'], 'Permission denied!')
-
+        for item in data['accountClasspasses']['edges']:
+            node = item['node']
+            self.assertNotEqual(node['account']['id'], to_global_id("AccountNode", user.id))
 
     def test_query_permission_granted(self):
         """ Query list of account classpasses with view permission """

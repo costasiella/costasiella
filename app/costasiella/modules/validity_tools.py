@@ -1,14 +1,15 @@
 from django.utils.translation import gettext as _
 
+
 def display_validity_unit(validity_unit, validity):
-    if validity == 1:
-        VALIDITY_UNITS = (
+    if int(validity) == 1:
+        validity_units = (
             ("DAYS", _("Day")),
             ("WEEKS", _("Week")),
             ("MONTHS", _("Month"))
         )
     else:
-        VALIDITY_UNITS = (
+        validity_units = (
             ("DAYS", _("Days")),
             ("WEEKS", _("Weeks")),
             ("MONTHS", _("Months"))
@@ -16,7 +17,7 @@ def display_validity_unit(validity_unit, validity):
 
     return_value = _("Validity unit not found")
 
-    for u in VALIDITY_UNITS:
+    for u in validity_units:
         if validity_unit == u[0]:
             return_value = u[1]
 
@@ -24,14 +25,14 @@ def display_validity_unit(validity_unit, validity):
 
 
 def display_subscription_unit(subscription_unit):
-    SUBSCRIPTION_UNITS = (
+    subscription_units = (
         ("WEEK", _("Week")),
         ("MONTH", _("Month"))
     )
 
     return_value = _("Subscription unit not found")
 
-    for u in SUBSCRIPTION_UNITS:
+    for u in subscription_units:
         if subscription_unit == u[0]:
             return_value = u[1]
 

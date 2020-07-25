@@ -55,6 +55,7 @@ function ShopAccountClasses({t, match, history}) {
 
   console.log("User data: ###")
   console.log(data)
+  console.log(dataUser)
   const user = dataUser.user
   const scheduleItemAttendances = data.scheduleItemAttendances
 

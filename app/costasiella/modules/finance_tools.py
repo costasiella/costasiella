@@ -2,20 +2,24 @@
 
 def get_currency():
     from ..models import SystemSetting
-    setting = SystemSetting.objects.get(setting="finance_currency")
-    if setting:
-        return setting.value
+
+    default = "EUR"
+    qs = SystemSetting.objects.filter(setting="finance_currency")
+    if qs.exists():
+        return qs.first().value or default
     else:
-        return "EUR"
+        return default
 
 
 def get_currency_symbol():
     from ..models import SystemSetting
-    setting = SystemSetting.objects.get(setting="finance_currency_symbol")
-    if setting:
-        return setting.value
+
+    default = "€"
+    qs = SystemSetting.objects.filter(setting="finance_currency_symbol")
+    if qs.exists():
+        return qs.first().value or default
     else:
-        return "€"
+        return default
 
 
 def display_float_as_amount(amount):

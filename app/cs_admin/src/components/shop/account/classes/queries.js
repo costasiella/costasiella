@@ -2,8 +2,8 @@ import gql from "graphql-tag"
 
 
 export const GET_ACCOUNT_CLASSES_QUERY = gql`
-  query ScheduleItemAttendance($before: String, $after: String) {
-    scheduleItemAttendances(first: 20, before: $before, after: $after) {
+  query ScheduleItemAttendance($before: String, $after: String, $account: ID!) {
+    scheduleItemAttendances(first: 20, before: $before, after: $after, account: $account) {
       pageInfo {
         hasNextPage
         hasPreviousPage

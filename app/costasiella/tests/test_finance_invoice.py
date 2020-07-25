@@ -302,20 +302,23 @@ class GQLFinanceInvoice(TestCase):
             to_global_id("FinanceInvoiceNode", invoice.id)
         )
 
-
-
     def test_query_permission_denied(self):
-        """ Query list of account invoices - check permission denied """
+        """ Query list of account invoices - check permission denied
+        A user can query the invoices linked to their account, so an error will never be thrown
+        But a user shouldn't be able to view orders from other accounts without additional permission
+        """
         query = self.invoices_query
         invoice = f.FinanceInvoiceFactory.create()
+        other_user = f.TeacherFactory.create()
 
         # Create regular user
         user = get_user_model().objects.get(pk=invoice.account.id)
-        executed = execute_test_client_api_query(query, user)
-        errors = executed.get('errors')
+        executed = execute_test_client_api_query(query, other_user)
+        data = executed.get('data')
 
-        self.assertEqual(errors[0]['message'], 'Permission denied!')
-
+        for item in data['financeInvoices']['edges']:
+            node = item['node']
+            self.assertNotEqual(node['account']['id'], to_global_id("AccountNode", user.id))
 
     def test_query_permission_granted(self):
         """ Query list of account invoices with view permission """

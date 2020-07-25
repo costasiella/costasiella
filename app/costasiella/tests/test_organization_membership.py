@@ -294,7 +294,8 @@ class GQLOrganizationMembership(TestCase):
           to_global_id("FinanceTaxRateNode", membership.finance_tax_rate.pk))
         self.assertEqual(data['organizationMemberships']['edges'][0]['node']['validity'], membership.validity)
         self.assertEqual(data['organizationMemberships']['edges'][0]['node']['validityUnit'], membership.validity_unit)
-        self.assertEqual(data['organizationMemberships']['edges'][0]['node']['validityUnitDisplay'], display_validity_unit(membership.validity_unit))
+        self.assertEqual(data['organizationMemberships']['edges'][0]['node']['validityUnitDisplay'],
+                         display_validity_unit(membership.validity_unit, membership.validity))
         self.assertEqual(data['organizationMemberships']['edges'][0]['node']['financeGlaccount']['id'], 
           to_global_id("FinanceGLAccountNode", membership.finance_glaccount.pk))
         self.assertEqual(data['organizationMemberships']['edges'][0]['node']['financeCostcenter']['id'], 
@@ -346,7 +347,8 @@ class GQLOrganizationMembership(TestCase):
           to_global_id("FinanceTaxRateNode", membership.finance_tax_rate.pk))
         self.assertEqual(data['organizationMemberships']['edges'][0]['node']['validity'], membership.validity)
         self.assertEqual(data['organizationMemberships']['edges'][0]['node']['validityUnit'], membership.validity_unit)
-        self.assertEqual(data['organizationMemberships']['edges'][0]['node']['validityUnitDisplay'], display_validity_unit(membership.validity_unit))
+        self.assertEqual(data['organizationMemberships']['edges'][0]['node']['validityUnitDisplay'],
+                         display_validity_unit(membership.validity_unit, membership.validity))
         self.assertEqual(data['organizationMemberships']['edges'][0]['node']['financeGlaccount']['id'], 
           to_global_id("FinanceGLAccountNode", membership.finance_glaccount.pk))
         self.assertEqual(data['organizationMemberships']['edges'][0]['node']['financeCostcenter']['id'], 
@@ -391,7 +393,8 @@ class GQLOrganizationMembership(TestCase):
           to_global_id("FinanceTaxRateNode", membership.finance_tax_rate.pk))
         self.assertEqual(data['organizationMembership']['validity'], membership.validity)
         self.assertEqual(data['organizationMembership']['validityUnit'], membership.validity_unit)
-        self.assertEqual(data['organizationMembership']['validityUnitDisplay'], display_validity_unit(membership.validity_unit))
+        self.assertEqual(data['organizationMembership']['validityUnitDisplay'],
+                         display_validity_unit(membership.validity_unit, membership.validity))
         self.assertEqual(data['organizationMembership']['financeGlaccount']['id'], 
           to_global_id("FinanceGLAccountNode", membership.finance_glaccount.pk))
         self.assertEqual(data['organizationMembership']['financeCostcenter']['id'], 

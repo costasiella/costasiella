@@ -9,6 +9,7 @@ import {
   Container
 } from "tabler-react";
 import SiteWrapperShop from "../../../SiteWrapperShop"
+import ShopAccountBack from "../ShopAccountBack"
 
 
 function ShopAccountOrdersBase({ t, match, history, children, accountName="" }) {
@@ -16,7 +17,11 @@ function ShopAccountOrdersBase({ t, match, history, children, accountName="" }) 
       <SiteWrapperShop>
         <div className="my-3 my-md-5">
           <Container>
-            <Page.Header title={t("shop.account.title")} subTitle={ accountName }/>
+            <Page.Header title={t("shop.account.title")} subTitle={ accountName }>
+              <div className="page-options d-flex">
+                <ShopAccountBack />
+              </div>
+            </Page.Header>
             { children }
           </Container>
         </div>

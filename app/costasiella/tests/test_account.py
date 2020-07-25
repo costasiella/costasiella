@@ -405,18 +405,19 @@ class GQLAccount(TransactionTestCase):
         self.assertEqual(data['updateAccount']['account']['firstName'], variables['input']['firstName'])
 
 
-    def test_update_account_permission_denied(self):
+    def test_update_account_permission_denied_other_user(self):
         """ Check update account permission denied error message """
         query = self.account_update_mutation
 
         email = f.AllAuthEmailAddress.create()
         account = email.user
+        other_user = f.TeacherFactory.create()
         variables = self.variables_update
         variables['input']['id'] = to_global_id('AccountNode', account.pk)
 
         executed = execute_test_client_api_query(
             query, 
-            account, 
+            other_user,
             variables=variables
         )
         data = executed.get('data')
@@ -459,8 +460,29 @@ class GQLAccount(TransactionTestCase):
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Not logged in!')
 
-
     def test_update_account_active_permission_granted(self):
+        """ Allow update account status for users with permissions """
+        query = self.account_update_active_mutation
+
+        account = f.RegularUserFactory.create()
+        other_user = f.TeacherFactory.create()
+        variables = self.variables_update_active
+        variables['input']['id'] = to_global_id('AccountNode', account.pk)
+
+        # Grant permissions
+        permission = Permission.objects.get(codename=self.permission_delete)
+        other_user.user_permissions.add(permission)
+        other_user.save()
+
+        executed = execute_test_client_api_query(
+            query,
+            other_user,
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['updateAccountActive']['account']['isActive'], variables['input']['isActive'])
+
+    def test_update_account_active_permission_granted_current_account(self):
         """ Allow update account status for users with permissions """
         query = self.account_update_active_mutation
 
@@ -474,13 +496,13 @@ class GQLAccount(TransactionTestCase):
         account.save()
 
         executed = execute_test_client_api_query(
-            query, 
+            query,
             account,
             variables=variables
         )
-        data = executed.get('data')
-        self.assertEqual(data['updateAccountActive']['account']['isActive'], variables['input']['isActive'])
 
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['extensions']['code'], "USER_CURRENTLY_LOGGED_IN")
 
     def test_update_account_active_permission_denied(self):
         """ Check update account status permission denied error message """
@@ -535,7 +557,6 @@ class GQLAccount(TransactionTestCase):
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Not logged in!')
 
-
     def test_delete_account_permission_granted(self):
         """ Allow deleting accounts for users with permissions """
         query = self.account_delete_mutation
@@ -554,9 +575,30 @@ class GQLAccount(TransactionTestCase):
             account,
             variables=variables
         )
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['extensions']['code'], "USER_CURRENTLY_LOGGED_IN")
+
+    def test_delete_account_permission_granted_other_user(self):
+        """ Allow deleting accounts for users with permissions """
+        query = self.account_delete_mutation
+
+        account = f.RegularUserFactory.create()
+        other_user = f.TeacherFactory.create()
+        variables = self.variables_delete
+        variables['input']['id'] = to_global_id('AccountNode', account.pk)
+
+        # Grant permissions
+        permission = Permission.objects.get(codename=self.permission_delete)
+        other_user.user_permissions.add(permission)
+        other_user.save()
+
+        executed = execute_test_client_api_query(
+            query,
+            other_user,
+            variables=variables
+        )
         data = executed.get('data')
         self.assertEqual(data['deleteAccount']['ok'], True)
-
 
     def test_delete_account_permission_denied(self):
         """ Check delete account permission denied error message """

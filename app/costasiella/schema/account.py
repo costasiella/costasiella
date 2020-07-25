@@ -8,6 +8,7 @@ from django.db.models import Q
 import graphene
 from graphql import GraphQLError
 from graphql_relay import to_global_id
+from graphql import GraphQLError
 from django.contrib.auth import password_validation
 from django.contrib.auth.hashers import check_password
 from graphene_django.converter import convert_django_field
@@ -22,7 +23,8 @@ from ..modules.gql_tools import require_login, \
     require_login_and_permission, \
     require_login_and_one_of_permissions, \
     require_login_and_one_of_permission_or_own_account, \
-    get_rid
+    get_rid, \
+    get_error_code
 
 from ..modules.encrypted_fields import EncryptedTextField
 
@@ -387,7 +389,10 @@ class UpdateAccountActive(graphene.relay.ClientIDMutation):
             raise Exception('Invalid Account ID!')
 
         if account == user:
-            raise Exception(_("Can't deactivate currently logged in account."))
+            raise GraphQLError(
+                _("Can't deactivate currently logged in account."),
+                extensions={'code': get_error_code('USER_CURRENTLY_LOGGED_IN')}
+            )
 
         account.is_active = input['is_active']
         account.save(force_update=True)
@@ -412,7 +417,10 @@ class DeleteAccount(graphene.relay.ClientIDMutation):
             raise Exception('Invalid Account ID!')
 
         if account == user:
-            raise Exception(_("Can't delete currently logged in account."))
+            raise GraphQLError(
+                _("Can't delete currently logged in account."),
+                extensions={'code': get_error_code('USER_CURRENTLY_LOGGED_IN')}
+            )
 
         ok = account.delete()
 

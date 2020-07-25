@@ -163,6 +163,7 @@ import ShopAccountProfile from './components/shop/account/profile/ShopAccountPro
 import ShopClassBook from './components/shop/classes/book/ShopClassBook'
 import ShopClassBooked from './components/shop/classes/booked/ShopClassBooked'
 import ShopClassesSchedule from './components/shop/classes/schedule/ShopClassesSchedule'
+import ShopContact from './components/shop/contact/ShopContact'
 import ShopHome from './components/shop/home/ShopHome'
 import ShopCheckoutPayment from './components/shop/checkout/payment/ShopCheckoutPayment'
 import ShopCheckoutComplete from './components/shop/checkout/complete/ShopCheckoutComplete'
@@ -197,10 +198,18 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
 
   if (authTokenExpired) {
     const refreshTokenExp = localStorage.getItem(CSLS.AUTH_TOKEN_REFRESH_EXP)
-    if ((new Date() / 1000) >= refreshTokenExp) {
+    if ((new Date() / 1000) >= refreshTokenExp || (refreshTokenExp == null)) {
+      console.log("refresh token expired or not found")
+      console.log(new Date() / 1000)
+      console.log(refreshTokenExp)
+
       return SessionExpired
     } else {
       // Refresh token
+      console.log("auth token expired")
+      console.log(new Date() / 1000)
+      console.log(refreshTokenExp)
+
       doTokenRefresh().then(({ data }) => {
         console.log('got refresh data', data)
         CSAuth.updateTokenInfo(data.refreshToken)
@@ -400,6 +409,7 @@ function AppRoot({ t }) {
           <Route exact path = "/shop/classpasses" component={ShopClasspasses} />
           <Route exact path = "/shop/classpass/:id" component={ShopClasspass} />
           <Route exact path = "/shop/classpass/:id/:class_id/:date" component={ShopClasspass} />
+          <Route exact path = "/shop/contact" component={ShopContact} />
 
           {/* Settings */}
           <PrivateRoute exact path="/settings" component={SettingsHome} />

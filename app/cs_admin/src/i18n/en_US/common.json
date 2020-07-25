@@ -1174,7 +1174,7 @@
         },
         "session_expired": {
             "title": "Session expired",
-            "message": "To prevent unauthorized access to your account we request you to sign in again every one in a while.",
+            "message": "To prevent unauthorized access to your account we request you to sign in again.",
             "go_to_login": "Sign in again"
         },
         "change_password": {
