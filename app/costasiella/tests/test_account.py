@@ -405,18 +405,19 @@ class GQLAccount(TransactionTestCase):
         self.assertEqual(data['updateAccount']['account']['firstName'], variables['input']['firstName'])
 
 
-    def test_update_account_permission_denied(self):
+    def test_update_account_permission_denied_other_user(self):
         """ Check update account permission denied error message """
         query = self.account_update_mutation
 
         email = f.AllAuthEmailAddress.create()
         account = email.user
+        other_user = f.TeacherFactory.create()
         variables = self.variables_update
         variables['input']['id'] = to_global_id('AccountNode', account.pk)
 
         executed = execute_test_client_api_query(
             query, 
-            account, 
+            other_user,
             variables=variables
         )
         data = executed.get('data')
