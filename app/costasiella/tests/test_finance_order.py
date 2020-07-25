@@ -202,10 +202,11 @@ class GQLFinanceOrder(TestCase):
         self.assertEqual(data['financeOrders']['edges'][0]['node']['status'], order.status)
         self.assertEqual(data['financeOrders']['edges'][0]['node']['message'], order.message)
 
-    # A user can query the orders linked to their account, so an error will never be thrown
-    # But a user shouldn't be able to view orders from other accounts without additional permission
     def test_query_permission_denied(self):
-        """ Query list of finance orders - check permission denied """
+        """ Query list of finance orders - check permission denied
+        A user can query the orders linked to their account, so an error will never be thrown
+        But a user shouldn't be able to view orders from other accounts without additional permission
+        """
         query = self.orders_query
         order = f.FinanceOrderFactory.create()
         other_user = f.TeacherFactory.create()
