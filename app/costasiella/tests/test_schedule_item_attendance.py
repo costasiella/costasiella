@@ -268,7 +268,7 @@ class GQLScheduleItemAttendance(TestCase):
 
         for item in data['scheduleItemAttendances']['edges']:
             node = item['node']
-            self.assertNotEqual(node['account']['id'], to_global_id("AccountNode", other_user.id))
+            self.assertNotEqual(node['account']['id'], to_global_id("AccountNode", user.id))
 
         # self.assertEqual(errors[0]['message'], 'Permission denied!')
 

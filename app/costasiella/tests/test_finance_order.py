@@ -218,7 +218,7 @@ class GQLFinanceOrder(TestCase):
 
         for item in data['financeOrders']['edges']:
             node = item['node']
-            self.assertNotEqual(node['account']['id'], to_global_id("AccountNode", other_user.id))
+            self.assertNotEqual(node['account']['id'], to_global_id("AccountNode", user.id))
 
     def test_query_permission_granted(self):
         """ Query list of finance orders with view permission """
