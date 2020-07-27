@@ -14,7 +14,7 @@ import {
 import SiteWrapper from "../../SiteWrapper"
 import HasPermissionWrapper from "../../HasPermissionWrapper"
 import { toast } from 'react-toastify'
-
+import SettingsBack from "../SettingsBack"
 
 function SettingsMailTemplatesBase({ t, children, headerSubTitle, help={} }) {
   return (
@@ -22,7 +22,9 @@ function SettingsMailTemplatesBase({ t, children, headerSubTitle, help={} }) {
       <div className="my-3 my-md-5">
         <Container>
           <Page.Header title={t("settings.mail.templates.title")} subTitle={headerSubTitle}>
-            {/* To do: back button here */}
+            <div className="page-options d-flex">
+              <SettingsBack returnUrl="/settings/mail/templates" />
+            </div>
           </Page.Header>
           <Grid.Row>
             <Grid.Col md={8}>
