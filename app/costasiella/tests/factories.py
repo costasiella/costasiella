@@ -596,7 +596,6 @@ class ScheduleItemAttendanceClasspassFactory(factory.DjangoModelFactory):
     account_classpass = factory.SubFactory(AccountClasspassFactory)
     account = factory.SelfAttribute('account_classpass.account')
     schedule_item = factory.SubFactory(SchedulePublicWeeklyClassFactory)
-    account_classpass = factory.SubFactory(AccountClasspassFactory)
     attendance_type = 'CLASSPASS'
     date = datetime.date(2030, 12, 30)
     online_booking = False
@@ -617,7 +616,6 @@ class ScheduleItemTeacherFactory(factory.DjangoModelFactory):
 class ScheduleItemPriceFactory(factory.DjangoModelFactory):
     class Meta:
         model = models.ScheduleItemPrice
-
 
     class Params:
         initial_schedule_item = factory.SubFactory(SchedulePublicWeeklyClassFactory)
@@ -691,3 +689,12 @@ class ScheduleItemOrganizationClasspassGroupAllowFactory(factory.DjangoModelFact
     organization_classpass_group = factory.SubFactory(OrganizationClasspassGroupFactory)
     shop_book = True
     attend = True
+
+
+class SystemSettingFinanceCurrencyFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.SystemSetting
+        django_get_or_create = ('pk',)
+
+    setting = "finance_currency"
+    value = "EUR"
