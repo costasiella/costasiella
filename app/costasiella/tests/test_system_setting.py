@@ -5,13 +5,15 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Permission
 from django.test import TestCase
 from graphene.test import Client
+from graphql_relay import to_global_id
 
 # Create your tests here.
 from django.contrib.auth.models import AnonymousUser
 
 from . import factories as f
-from .helpers import execute_test_client_api_query
 from .. import models
+from ..modules.gql_tools import get_rid
+from .helpers import execute_test_client_api_query
 
 
 class GQLSystemSetting(TestCase):
