@@ -136,6 +136,7 @@ class GQLSystemSetting(TestCase):
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Not logged in!')
 
+
     def test_create_setting(self):
         """ Create a setting - should be inserted if it doesn't exist """
         query = self.setting_update_mutation
@@ -147,9 +148,28 @@ class GQLSystemSetting(TestCase):
             variables=variables
         )
         data = executed.get('data')
-        print("##########")
-        print(executed)
-        print("@@@@@@@@@@@@")
+        # Check return value from schema
+        self.assertEqual(data['updateSystemSetting']['systemSetting']['setting'], variables['input']['setting'])
+        self.assertEqual(data['updateSystemSetting']['systemSetting']['value'], variables['input']['value'])
+
+        # Check db
+        qs = models.SystemSetting.objects.filter(setting=variables['input']['setting'])
+        self.assertEqual(True, qs.exists())
+        self.assertEqual(qs.first().setting, variables['input']['setting'])
+        self.assertEqual(qs.first().value, variables['input']['value'])
+
+    def test_update_setting(self):
+        """ Update a setting already existing """
+        query = self.setting_update_mutation
+        setting = f.SystemSettingFinanceCurrencyFactory.create()
+        variables = self.variables_update
+
+        executed = execute_test_client_api_query(
+            query,
+            self.admin_user,
+            variables=variables
+        )
+        data = executed.get('data')
         # Check return value from schema
         self.assertEqual(data['updateSystemSetting']['systemSetting']['setting'], variables['input']['setting'])
         self.assertEqual(data['updateSystemSetting']['systemSetting']['value'], variables['input']['value'])
