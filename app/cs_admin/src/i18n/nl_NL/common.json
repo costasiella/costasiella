@@ -252,6 +252,13 @@
         },
         "home": {
             "link_edit": "__STRING_NOT_TRANSLATED__"
+        },
+        "about": {
+            "title": "__STRING_NOT_TRANSLATED__",
+            "explanation": "__STRING_NOT_TRANSLATED__",
+            "about": {
+                "title": "__STRING_NOT_TRANSLATED__"
+            }
         }
     },
     "yup": {
@@ -572,6 +579,9 @@
             "filter_all_locations": "__STRING_NOT_TRANSLATED__",
             "filter_all_classtypes": "__STRING_NOT_TRANSLATED__",
             "filter_all_levels": "__STRING_NOT_TRANSLATED__"
+        },
+        "contact": {
+            "title": "__STRING_NOT_TRANSLATED__"
         }
     },
     "home": {
@@ -1391,5 +1401,6 @@
         "Zambia": "__STRING_NOT_TRANSLATED__",
         "Zimbabwe": "__STRING_NOT_TRANSLATED__"
     },
-    "You've already booked this class ": "__STRING_NOT_TRANSLATED__"
+    "You've already booked this class ": "__STRING_NOT_TRANSLATED__",
+    "View info": "__STRING_NOT_TRANSLATED__"
 }

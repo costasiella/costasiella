@@ -92,7 +92,7 @@ function SettingsHome({ t, match, params }) {
             <Grid.Col md={3}>
               <Card>
                 <Card.Body>
-                  <h5>{t("settings.about.title")}</h5>
+                  <h5>{t("settings.about.about.title")}</h5>
                   {t("settings.about.explanation")}
                   <br /><br />
                   <SettingsHomeItemButton 
