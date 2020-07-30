@@ -179,7 +179,9 @@
         "with": "__STRING_NOT_TRANSLATED__",
         "book": "__STRING_NOT_TRANSLATED__",
         "continue": "__STRING_NOT_TRANSLATED__",
-        "info_mail": "__STRING_NOT_TRANSLATED__"
+        "info_mail": "__STRING_NOT_TRANSLATED__",
+        "license": "__STRING_NOT_TRANSLATED__",
+        "license_text": "__STRING_NOT_TRANSLATED__"
     },
     "settings": {
         "error_loading": "__STRING_NOT_TRANSLATED__",
@@ -258,7 +260,8 @@
             "explanation": "__STRING_NOT_TRANSLATED__",
             "about": {
                 "title": "__STRING_NOT_TRANSLATED__",
-                "this_is_costasiella": "__STRING_NOT_TRANSLATED__"
+                "this_is_costasiella": "__STRING_NOT_TRANSLATED__",
+                "license_version": "__STRING_NOT_TRANSLATED__"
             }
         }
     },

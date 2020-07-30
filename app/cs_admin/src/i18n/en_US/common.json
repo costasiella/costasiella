@@ -349,7 +349,9 @@
         "with": "With",
         "book": "Book",
         "continue": "Continue",
-        "info_mail": "Info mail"
+        "info_mail": "Info mail",
+        "license": "License",
+        "license_text": "License text"
     },
     "yup": {
         "min_len_3": "Please input at least 3 characters",
@@ -1157,7 +1159,8 @@
             "explanation": "System and license information.",
             "about": {
                 "title": "About Costasiella",
-                "this_is_costasiella": "This is Costasiella"
+                "this_is_costasiella": "This is Costasiella",
+                "license_version": "Costasiella is released under GPL-2.0-or-later."
             }
         }
     },
