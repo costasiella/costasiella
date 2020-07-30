@@ -85,6 +85,24 @@ function SettingsHome({ t, match, params }) {
               </Card>
             </Grid.Col>
           </Grid.Row>
+          <Grid.Row>
+            <Grid.Col md={12}>
+              <h4>{t("settings.about.title")}</h4>
+            </Grid.Col>
+            <Grid.Col md={3}>
+              <Card>
+                <Card.Body>
+                  <h5>{t("settings.about.title")}</h5>
+                  {t("settings.about.explanation")}
+                  <br /><br />
+                  <SettingsHomeItemButton 
+                    link="/settings/about" 
+                    linkTitle={t("View info")}
+                  />
+                </Card.Body>
+              </Card>
+            </Grid.Col>
+          </Grid.Row>
         </Container>
       </div>
     </SiteWrapper>

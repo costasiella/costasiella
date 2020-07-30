@@ -10,7 +10,7 @@ import {
   Icon,
 } from "tabler-react";
 
-function SettingsHomeItemButton({ t, link }) {
+function SettingsHomeItemButton({ t, link, linkTitle=null }) {
   return (
     <Link to={link} >
       <Button 
@@ -18,7 +18,7 @@ function SettingsHomeItemButton({ t, link }) {
         block
         color="primary"
       >
-        {t("settings.home.link_edit")} <Icon name="chevron-right" />
+        {linkTitle ? linkTitle: t("settings.home.link_edit")} <Icon name="chevron-right" />
       </Button>
     </Link>
   )
