@@ -349,7 +349,9 @@
         "with": "With",
         "book": "Book",
         "continue": "Continue",
-        "info_mail": "__STRING_NOT_TRANSLATED__"
+        "info_mail": "Info mail",
+        "license": "License",
+        "license_text": "License text"
     },
     "yup": {
         "min_len_3": "Please input at least 3 characters",
@@ -1151,6 +1153,15 @@
         },
         "home": {
             "link_edit": "Change settings"
+        },
+        "about": {
+            "title": "About",
+            "explanation": "System and license information.",
+            "about": {
+                "title": "About Costasiella",
+                "this_is_costasiella": "This is Costasiella",
+                "license_version": "Costasiella is released under GPL-2.0-or-later."
+            }
         }
     },
     "user": {
@@ -1389,7 +1400,11 @@
             "filter_all_locations": "All locations",
             "filter_all_classtypes": "All classtypes",
             "filter_all_levels": "All levels"
+        },
+        "contact": {
+            "title": "Contact"
         }
     },
-    "You've already booked this class ": "You've already booked this class"
+    "You've already booked this class ": "You've already booked this class",
+    "View info": "View info"
 }

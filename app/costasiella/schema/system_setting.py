@@ -43,8 +43,6 @@ class SystemSettingQuery(graphene.ObjectType):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.view_systemsetting')
 
-        # rid = get_rid()
-        # return everything:
         return SystemSetting.objects.all()
 
 
@@ -60,8 +58,8 @@ class UpdateSystemSetting(graphene.relay.ClientIDMutation):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.change_systemsetting')
 
-        record_found = SystemSetting.objects.filter(setting=input['setting']).exists()
-        if not record_found:
+        qs = SystemSetting.objects.filter(setting=input['setting'])
+        if not qs.exists():
             # Insert
             system_setting = SystemSetting(
                 setting = input['setting'],
@@ -69,7 +67,7 @@ class UpdateSystemSetting(graphene.relay.ClientIDMutation):
             )
         else:
             # Update
-            system_setting = SystemSetting.objects.filter(setting=input['setting']).first()
+            system_setting = qs.first()
             system_setting.setting = input['setting']
             system_setting.value = input['value']
 

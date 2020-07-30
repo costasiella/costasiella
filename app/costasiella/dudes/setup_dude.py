@@ -29,7 +29,7 @@ class SetupDude:
         print("we're running the setup function")
 
         if self.complete == "T":
-            return _("Setup already executed... setup will not be executed again.")
+            return _("Setup already complete... setup will not be executed again.")
         # Set current version
         version_dude = VersionDude()
         version_dude.update_version()
