@@ -694,7 +694,6 @@ class ScheduleItemOrganizationClasspassGroupAllowFactory(factory.DjangoModelFact
 class SystemSettingFinanceCurrencyFactory(factory.DjangoModelFactory):
     class Meta:
         model = models.SystemSetting
-        django_get_or_create = ('pk',)
 
     setting = "finance_currency"
     value = "EUR"
