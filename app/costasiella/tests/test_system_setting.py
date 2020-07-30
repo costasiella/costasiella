@@ -24,9 +24,9 @@ class GQLSystemSetting(TestCase):
         self.anon_user = AnonymousUser()
 
         self.permission_view = 'view_systemsetting'
-        self.permission_add = 'add_systemsetting'
+        # self.permission_add = 'add_systemsetting'
         self.permission_change = 'change_systemsetting'
-        self.permission_delete = 'delete_systemsetting'
+        # self.permission_delete = 'delete_systemsetting'
         
         self.variables_update = {
             "input": {
@@ -136,7 +136,6 @@ class GQLSystemSetting(TestCase):
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Not logged in!')
 
-
     def test_create_setting(self):
         """ Create a setting - should be inserted if it doesn't exist """
         query = self.setting_update_mutation
@@ -179,206 +178,53 @@ class GQLSystemSetting(TestCase):
         self.assertEqual(True, qs.exists())
         self.assertEqual(qs.first().setting, variables['input']['setting'])
         self.assertEqual(qs.first().value, variables['input']['value'])
-    #
-    # def test_create_level_anon_user(self):
-    #     """ Create a level with anonymous user, check error message """
-    #     query = self.level_create_mutation
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.anon_user,
-    #         variables=self.variables_create
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
-    #
-    #
-    # def test_create_level_permission_granted(self):
-    #     """ Create a level with a user having the add permission """
-    #     query = self.level_create_mutation
-    #     variables = self.variables_create
-    #
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename=self.permission_add)
-    #     user.user_permissions.add(permission)
-    #     user.save()
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['createOrganizationLevel']['organizationLevel']['name'], variables['input']['name'])
-    #     self.assertEqual(data['createOrganizationLevel']['organizationLevel']['archived'], False)
-    #
-    #
-    # def test_create_level_permission_denied(self):
-    #     """ Create a level with a user not having the add permission """
-    #     query = self.level_create_mutation
-    #
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=self.variables_create
-    #     )
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
-    #
-    #
-    # def test_update_level(self):
-    #     """ Update a level as admin user """
-    #     query = self.level_update_mutation
-    #     level = f.OrganizationLevelFactory.create()
-    #     variables = self.variables_update
-    #     variables['input']['id'] = self.get_node_id_of_first_level()
-    #
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.admin_user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['updateOrganizationLevel']['organizationLevel']['name'], variables['input']['name'])
-    #     self.assertEqual(data['updateOrganizationLevel']['organizationLevel']['archived'], False)
-    #
-    #
-    # def test_update_level_anon_user(self):
-    #     """ Update a level as anonymous user """
-    #     query = self.level_update_mutation
-    #     level = f.OrganizationLevelFactory.create()
-    #     variables = self.variables_update
-    #     variables['input']['id'] = self.get_node_id_of_first_level()
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.anon_user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
-    #
-    #
-    # def test_update_level_permission_granted(self):
-    #     """ Update a level as user with permission """
-    #     query = self.level_update_mutation
-    #     level = f.OrganizationLevelFactory.create()
-    #     variables = self.variables_update
-    #     variables['input']['id'] = self.get_node_id_of_first_level()
-    #
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename=self.permission_change)
-    #     user.user_permissions.add(permission)
-    #     user.save()
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['updateOrganizationLevel']['organizationLevel']['name'], variables['input']['name'])
-    #     self.assertEqual(data['updateOrganizationLevel']['organizationLevel']['archived'], False)
-    #
-    #
-    # def test_update_level_permission_denied(self):
-    #     """ Update a level as user without permissions """
-    #     query = self.level_update_mutation
-    #     level = f.OrganizationLevelFactory.create()
-    #     variables = self.variables_update
-    #     variables['input']['id'] = self.get_node_id_of_first_level()
-    #
-    #     user = f.RegularUserFactory.create()
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
-    #
-    #
-    # def test_archive_level(self):
-    #     """ Archive a level """
-    #     query = self.level_archive_mutation
-    #     level = f.OrganizationLevelFactory.create()
-    #     variables = self.variables_archive
-    #     variables['input']['id'] = self.get_node_id_of_first_level()
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.admin_user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['archiveOrganizationLevel']['organizationLevel']['archived'], variables['input']['archived'])
-    #
-    #
-    # def test_archive_level_anon_user(self):
-    #     """ Archive a level """
-    #     query = self.level_archive_mutation
-    #     level = f.OrganizationLevelFactory.create()
-    #     variables = self.variables_archive
-    #     variables['input']['id'] = self.get_node_id_of_first_level()
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.anon_user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
-    #
-    #
-    # def test_archive_level_permission_granted(self):
-    #     """ Allow archiving settings for users with permissions """
-    #     query = self.level_archive_mutation
-    #     level = f.OrganizationLevelFactory.create()
-    #     variables = self.variables_archive
-    #     variables['input']['id'] = self.get_node_id_of_first_level()
-    #
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename=self.permission_delete)
-    #     user.user_permissions.add(permission)
-    #     user.save()
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['archiveOrganizationLevel']['organizationLevel']['archived'], variables['input']['archived'])
-    #
-    #
-    # def test_archive_level_permission_denied(self):
-    #     """ Check archive level permission denied error message """
-    #     query = self.level_archive_mutation
-    #     level = f.OrganizationLevelFactory.create()
-    #     variables = self.variables_archive
-    #     variables['input']['id'] = self.get_node_id_of_first_level()
-    #
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
-    #
-    #
+
+    def test_create_update_setting_anon_user(self):
+        """ Create a level with anonymous user, check error message """
+        query = self.setting_update_mutation
+
+        executed = execute_test_client_api_query(
+            query,
+            self.anon_user,
+            variables=self.variables_update
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
+
+    def test_create_update_setting_permission_granted(self):
+        """ Create a setting with a user having the add permission """
+        query = self.setting_update_mutation
+        variables = self.variables_update
+
+        # Create regular user
+        user = f.RegularUserFactory.create()
+        permission = Permission.objects.get(codename=self.permission_change)
+        user.user_permissions.add(permission)
+        user.save()
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=variables
+        )
+        data = executed.get('data')
+
+        self.assertEqual(data['updateSystemSetting']['systemSetting']['setting'], variables['input']['setting'])
+        self.assertEqual(data['updateSystemSetting']['systemSetting']['value'], variables['input']['value'])
+
+    def test_create_level_permission_denied(self):
+        """ Create a setting with a user not having the add permission """
+        query = self.setting_update_mutation
+
+        # Create regular user
+        user = f.RegularUserFactory.create()
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=self.variables_update
+        )
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
+    
