@@ -27,7 +27,7 @@ import SettingsBase from "../../SettingsBase"
 import SettingsFinanceCurrencyForm from "./SettingsFinanceCurrencyForm"
 
 
-function SettingsIntegrationMollie({ t, match, history }) {
+function SettingsFinanceCurrency({ t, match, history }) {
   const headerSubTitle = t('settings.integration.title')
   const cardTitle = t("settings.integration.mollie.title")
   const sidebarActive = "integration"
@@ -165,4 +165,4 @@ function SettingsIntegrationMollie({ t, match, history }) {
 }
 
 
-export default withTranslation()(withRouter(SettingsIntegrationMollie))
+export default withTranslation()(withRouter(SettingsFinanceCurrency))
