@@ -65,17 +65,17 @@ class GQLSystemSetting(TestCase):
         pass
 
     # def get_node_id_of_first_level(self):
-    #     # query levels to get node id easily
+    #     # query settings to get node id easily
     #     variables = {
     #         'archived': False
     #     }
-    #     executed = execute_test_client_api_query(self.levels_query, self.admin_user, variables=variables)
+    #     executed = execute_test_client_api_query(self.settings_query, self.admin_user, variables=variables)
     #     data = executed.get('data')
     #
-    #     return data['organizationLevels']['edges'][0]['node']['id']
+    #     return data['organizationsettings']['edges'][0]['node']['id']
 
     def test_query(self):
-        """ Query list of levels """
+        """ Query list of settings """
         query = self.settings_query
         setting = f.SystemSettingFinanceCurrencyFactory.create()
         variables = {
@@ -83,126 +83,57 @@ class GQLSystemSetting(TestCase):
         }
 
         executed = execute_test_client_api_query(query, self.admin_user, variables=variables)
-        print(executed)
         data = executed.get('data')
         item = data['systemSettings']['edges'][0]['node']
         self.assertEqual(item['setting'], setting.setting)
         self.assertEqual(item['value'], setting.value)
 
+    def test_query_permission_denied(self):
+        """ Query list of settings as user without permissions """
+        query = self.settings_query
+        setting = f.SystemSettingFinanceCurrencyFactory.create()
+        variables = {
+            "setting": "finance_currency"
+        }
 
-    #
-    # def test_query_permission_denied(self):
-    #     """ Query list of levels as user without permissions """
-    #     query = self.levels_query
-    #     level = f.OrganizationLevelFactory.create()
-    #     non_public_level = f.OrganizationLevelFactory.build()
-    #     non_public_level.display_public = False
-    #     non_public_level.save()
-    #
-    #     variables = {
-    #         'archived': False
-    #     }
-    #
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     executed = execute_test_client_api_query(query, user, variables=variables)
-    #     errors = executed.get('errors')
-    #
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
-    #
-    #
-    # def test_query_permission_granted(self):
-    #     """ Query list of levels with view permission """
-    #     query = self.levels_query
-    #     level = f.OrganizationLevelFactory.create()
-    #     non_public_level = f.OrganizationLevelFactory.build()
-    #     non_public_level.display_public = False
-    #     non_public_level.save()
-    #
-    #     variables = {
-    #         'archived': False
-    #     }
-    #
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename=self.permission_view)
-    #     user.user_permissions.add(permission)
-    #     user.save()
-    #
-    #     executed = execute_test_client_api_query(query, user, variables=variables)
-    #     data = executed.get('data')
-    #     item = data['organizationLevels']['edges'][0]['node']
-    #     self.assertEqual(item['name'], level.name)
-    #
-    #
-    # def test_query_anon_user(self):
-    #     """ Query list of levels as anon user """
-    #     query = self.levels_query
-    #     level = f.OrganizationLevelFactory.create()
-    #     variables = {
-    #         'archived': False
-    #     }
-    #
-    #     executed = execute_test_client_api_query(query, self.anon_user, variables=variables)
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
-    #
-    #
-    # def test_query_one(self):
-    #     """ Query one level """
-    #     level = f.OrganizationLevelFactory.create()
-    #
-    #     # First query levels to get node id easily
-    #     node_id = self.get_node_id_of_first_level()
-    #
-    #     # Now query single level and check
-    #     query = self.level_query
-    #     executed = execute_test_client_api_query(query, self.admin_user, variables={"id": node_id})
-    #     data = executed.get('data')
-    #     print(data)
-    #     self.assertEqual(data['organizationLevel']['name'], level.name)
-    #     self.assertEqual(data['organizationLevel']['archived'], level.archived)
-    #
-    #
-    # def test_query_one_anon_user(self):
-    #     """ Deny permission for anon users Query one level """
-    #     query = self.level_query
-    #     level = f.OrganizationLevelFactory.create()
-    #     node_id = self.get_node_id_of_first_level()
-    #     executed = execute_test_client_api_query(query, self.anon_user, variables={"id": node_id})
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
-    #
-    #
-    # def test_query_one_permission_denied(self):
-    #     """ Permission denied message when user lacks authorization """
-    #     query = self.level_query
-    #
-    #     user = f.RegularUserFactory.create()
-    #     level = f.OrganizationLevelFactory.create()
-    #     node_id = self.get_node_id_of_first_level()
-    #
-    #     executed = execute_test_client_api_query(query, user, variables={"id": node_id})
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
-    #
-    #
-    # def test_query_one_permission_granted(self):
-    #     """ Respond with data when user has permission """
-    #     query = self.level_query
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename='view_organizationlevel')
-    #     user.user_permissions.add(permission)
-    #     user.save()
-    #
-    #     level = f.OrganizationLevelFactory.create()
-    #     node_id = self.get_node_id_of_first_level()
-    #
-    #     executed = execute_test_client_api_query(query, user, variables={"id": node_id})
-    #     data = executed.get('data')
-    #     self.assertEqual(data['organizationLevel']['name'], level.name)
-    #
+        # Create regular user
+        user = f.RegularUserFactory.create()
+        executed = execute_test_client_api_query(query, user, variables=variables)
+        errors = executed.get('errors')
+
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
+
+    def test_query_permission_granted(self):
+        """ Query list of settings with view permission """
+        query = self.settings_query
+        setting = f.SystemSettingFinanceCurrencyFactory.create()
+        variables = {
+            "setting": "finance_currency"
+        }
+
+        # Create regular user
+        user = f.RegularUserFactory.create()
+        permission = Permission.objects.get(codename=self.permission_view)
+        user.user_permissions.add(permission)
+        user.save()
+
+        executed = execute_test_client_api_query(query, user, variables=variables)
+        data = executed.get('data')
+        item = data['systemSettings']['edges'][0]['node']
+        self.assertEqual(item['setting'], setting.setting)
+
+
+    def test_query_anon_user(self):
+        """ Query list of settings as anon user """
+        query = self.settings_query
+        setting = f.SystemSettingFinanceCurrencyFactory.create()
+        variables = {
+            "setting": "finance_currency"
+        }
+
+        executed = execute_test_client_api_query(query, self.anon_user, variables=variables)
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
     #
     # def test_create_level(self):
     #     """ Create a level """
@@ -380,7 +311,7 @@ class GQLSystemSetting(TestCase):
     #
     #
     # def test_archive_level_permission_granted(self):
-    #     """ Allow archiving levels for users with permissions """
+    #     """ Allow archiving settings for users with permissions """
     #     query = self.level_archive_mutation
     #     level = f.OrganizationLevelFactory.create()
     #     variables = self.variables_archive
