@@ -1,14 +1,11 @@
 // @flow
 
-import React, {Component } from 'react'
-import gql from "graphql-tag"
-import { useQuery, useMutation } from "react-apollo"
+import React from 'react'
+import { useQuery } from "react-apollo"
 import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
-import { Formik } from 'formik'
-import { toast } from 'react-toastify'
 
-import { GET_SYSTEM_SETTINGS_QUERY, UPDATE_SYSTEM_SETTING } from '../../queries'
+import { GET_SYSTEM_SETTINGS_QUERY } from '../queries'
 
 import {
   Dimmer,
@@ -19,17 +16,14 @@ import {
   Card,
   Container,
 } from "tabler-react";
-import SiteWrapper from "../../../SiteWrapper"
-import HasPermissionWrapper from "../../../HasPermissionWrapper"
 
 // import FinancePaymentMethodForm from './AppSettingsGeneralForm'
-import SettingsBase from "../../SettingsBase"
+import SettingsBase from "../SettingsBase"
 
 
 function SettingsAbout({ t, match, history }) {
-  const headerSubTitle = t('settings.integration.title')
-  const cardTitle = t("settings.integration.mollie.title")
-  const sidebarActive = "integration"
+  const headerSubTitle = t('settings.about.title')
+  const cardTitle = t("settings.about.about.title")
 
   const { 
     loading: loadingVersion, 
@@ -54,8 +48,7 @@ function SettingsAbout({ t, match, history }) {
     return (
       <SettingsBase 
           headerSubTitle={headerSubTitle}
-          cardTitle={cardTitle}
-          sidebarActive={sidebarActive}>  
+          cardTitle={cardTitle} >  
         <Card.Body>
           <Dimmer active={true}
                   loader={true}>
@@ -68,8 +61,7 @@ function SettingsAbout({ t, match, history }) {
     return (
       <SettingsBase 
           headerSubTitle={headerSubTitle}
-          cardTitle={cardTitle}
-          sidebarActive={sidebarActive}>  
+          cardTitle={cardTitle} >  
         <Card.Body>
           {t("settings.general.error_loading")}
         </Card.Body>
@@ -96,9 +88,12 @@ function SettingsAbout({ t, match, history }) {
     <SettingsBase 
       headerSubTitle={headerSubTitle}
       cardTitle={cardTitle}
-      sidebarActive={sidebarActive}
-    >  
-      This is costasiella {`${version}.${patch}`}
+    >
+      <Card.Body>
+        <h2>
+          {t("settings.about.about.this_is_costasiella")} {`${version}.${patch}`}
+        </h2>
+      </Card.Body>
     </SettingsBase>
   )
 }

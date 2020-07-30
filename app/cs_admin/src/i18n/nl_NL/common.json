@@ -257,7 +257,8 @@
             "title": "__STRING_NOT_TRANSLATED__",
             "explanation": "__STRING_NOT_TRANSLATED__",
             "about": {
-                "title": "__STRING_NOT_TRANSLATED__"
+                "title": "__STRING_NOT_TRANSLATED__",
+                "this_is_costasiella": "__STRING_NOT_TRANSLATED__"
             }
         }
     },

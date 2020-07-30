@@ -1156,7 +1156,8 @@
             "title": "About",
             "explanation": "System and license information.",
             "about": {
-                "title": "About Costasiella"
+                "title": "About Costasiella",
+                "this_is_costasiella": "This is Costasiella"
             }
         }
     },
