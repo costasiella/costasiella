@@ -1,3 +1,4 @@
+import Cookies from 'js-cookie'
 import React from 'react'
 import { ApolloProvider } from "react-apollo"
 import ApolloClient from "apollo-boost"
@@ -113,6 +114,16 @@ function processClientError({ networkError, graphQLErrors, operation, forward, r
   }
 }
 
+// Fetch CSRF Token 
+let csrftoken;
+async function getCsrfToken() {
+    if (csrftoken) return csrftoken;
+    csrftoken = await fetch('/d/csrf/')
+        .then(response => response.json())
+        .then(data => data.csrfToken)
+    return await csrftoken
+}
+
 // set up ApolloClient
 // TODO: Set up token expiration and auto refresh if possible and redirect to login if refresh token is expired.
 const client = new ApolloClient({
@@ -120,6 +131,17 @@ const client = new ApolloClient({
   uri: "/d/graphql/",
   credentials: "same-origin",
   onError: processClientError,
+  request: async (operation) => {
+    const csrftoken = await getCsrfToken();
+    Cookies.set('csrftoken', csrftoken);
+    // set the cookie 'csrftoken'
+    operation.setContext({
+        // set the 'X-CSRFToken' header to the csrftoken
+        headers: {
+            'X-CSRFToken': csrftoken,
+        },
+    });
+},
   // request: async operation => {
   //   var csrftoken = Cookies.get('csrftoken');
   //   operation.setContext({
