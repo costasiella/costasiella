@@ -22,17 +22,21 @@ from django.contrib.auth.decorators import login_required
 from graphene_django.views import GraphQLView
 from graphql_jwt.decorators import jwt_cookie
 
+from costasiella.views import *
+
 # Development only
 from django.conf import settings
 from django.conf.urls.static import static
+# Development only end
 
-from costasiella.views import *
+
 
 urlpatterns = [
     # path('', login_required(TemplateView.as_view(template_name="backend.html")), name="home"),
     # path('', TemplateView.as_view(template_name="backend.html"), name="home"),
     path('d/admin/', admin.site.urls),
-    path('d/accounts/', include('allauth.urls')),
+    path('d/admin/defender/', include('defender.urls')),  # defender admin
+    path('d/accounts/', include('allauth.urls')),  # allauth
     path('d/email/verified/', TemplateView.as_view(template_name="email_verfied.html"), name="email_verified"),
     path('d/export/terms-and-conditions', terms_and_conditions, name="terms_and_conditions"),
     path('d/export/privacy-policy', privacy_policy, name="privacy_policy"),

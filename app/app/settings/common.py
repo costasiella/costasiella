@@ -41,13 +41,13 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'graphene_django',
-    # 'webpack_loader',
     'sorl.thumbnail',
     'corsheaders',
     'django_celery_beat',
     'django_celery_results',
     'graphql_jwt.refresh_token.apps.RefreshTokenConfig',
-    
+    'defender',
+
     # local apps
     'costasiella.apps.CostasiellaConfig',
 ]
@@ -65,6 +65,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'defender.middleware.FailedLoginMiddleware',
 
     # local apps
     # 'costasiella.middleware.AuthRequiredMiddleware'
