@@ -29,8 +29,6 @@ from django.conf import settings
 from django.conf.urls.static import static
 # Development only end
 
-
-
 urlpatterns = [
     # path('', login_required(TemplateView.as_view(template_name="backend.html")), name="home"),
     # path('', TemplateView.as_view(template_name="backend.html"), name="home"),
