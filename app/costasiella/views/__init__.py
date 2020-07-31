@@ -1,3 +1,6 @@
+# CSRF token
+from .csrf_token import csrf
+
 # Document exports
 from .organization_document import privacy_policy, terms_and_conditions
 # Invoice exports
