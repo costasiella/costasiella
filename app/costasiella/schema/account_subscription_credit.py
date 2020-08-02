@@ -123,7 +123,7 @@ class UpdateAccountSubscriptionCredit(graphene.relay.ClientIDMutation):
         return UpdateAccountSubscriptionCredit(account_subscription_credit=account_subscription_credit)
 
 
-class DeleteAccountSubscription(graphene.relay.ClientIDMutation):
+class DeleteAccountSubscriptionCredit(graphene.relay.ClientIDMutation):
     class Input:
         id = graphene.ID(required=True)
 
@@ -132,19 +132,19 @@ class DeleteAccountSubscription(graphene.relay.ClientIDMutation):
     @classmethod
     def mutate_and_get_payload(self, root, info, **input):
         user = info.context.user
-        require_login_and_permission(user, 'costasiella.delete_accountsubscription')
+        require_login_and_permission(user, 'costasiella.delete_accountsubscriptioncredit')
 
         rid = get_rid(input['id'])
-        account_subscription = AccountSubscription.objects.filter(id=rid.id).first()
-        if not account_subscription:
-            raise Exception('Invalid Account Subscription ID!')
+        account_subscription_credit = AccountSubscriptionCredit.objects.filter(id=rid.id).first()
+        if not account_subscription_credit:
+            raise Exception('Invalid Account Subscription Credit ID!')
 
-        ok = account_subscription.delete()
+        ok = account_subscription_credit.delete()
 
-        return DeleteAccountSubscription(ok=ok)
+        return DeleteAccountSubscriptionCredit(ok=ok)
 
 
-class AccountSubscriptionMutation(graphene.ObjectType):
-    create_account_subscription = CreateAccountSubscription.Field()
-    delete_account_subscription = DeleteAccountSubscription.Field()
-    update_account_subscription = UpdateAccountSubscription.Field()
+class AccountSubscriptionCreditMutation(graphene.ObjectType):
+    create_account_subscription_credit = CreateAccountSubscriptionCredit.Field()
+    delete_account_subscription_credit = DeleteAccountSubscriptionCredit.Field()
+    update_account_subscription_credit = UpdateAccountSubscriptionCredit.Field()
