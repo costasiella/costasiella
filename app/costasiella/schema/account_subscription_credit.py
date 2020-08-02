@@ -16,36 +16,21 @@ from sorl.thumbnail import get_thumbnail
 m = Messages()
 
 
-def validate_create_update_input(input, update=False):
+def validate_create_update_input(input):
     """
     Validate input
     """ 
     result = {}
 
-    # Fetch & check account
-    if not update:
-        # Create only
-        rid = get_rid(input['account'])
-        account = Account.objects.filter(id=rid.id).first()
-        result['account'] = account
-        if not account:
-            raise Exception(_('Invalid Account ID!'))
+    if not input['mutation_type'] in ['ADD', 'SUB']:
+        raise Exception(_('Invalid mutation type; ADD and SUB are accepted'))
 
-    # Fetch & check organization subscription
+    # Fetch & check account subscription
     rid = get_rid(input['organization_subscription'])
-    organization_subscription = OrganizationSubscription.objects.get(pk=rid.id)
-    result['organization_subscription'] = organization_subscription
-    if not organization_subscription:
-        raise Exception(_('Invalid Organization Subscription ID!'))
-
-    # Check finance payment method
-    if 'finance_payment_method' in input:
-        if input['finance_payment_method']:
-            rid = get_rid(input['finance_payment_method'])
-            finance_payment_method = FinancePaymentMethod.objects.filter(id=rid.id).first()
-            result['finance_payment_method'] = finance_payment_method
-            if not finance_payment_method:
-                raise Exception(_('Invalid Finance Payment Method ID!'))
+    account_subscription = AccountSubscription.objects.get(pk=rid.id)
+    result['account_subscription'] = account_subscription
+    if not account_subscription:
+        raise Exception(_('Invalid Account Subscription ID!'))
 
     return result
 
@@ -78,49 +63,33 @@ class AccountSubscriptionCreditQuery(graphene.ObjectType):
         return AccountSubscription.objects.filter(account_subscription=rid.id).order_by('created_at')
 
 
-class CreateAccountSubscription(graphene.relay.ClientIDMutation):
+class CreateAccountSubscriptionCredit(graphene.relay.ClientIDMutation):
     class Input:
-        account = graphene.ID(required=True)
-        organization_subscription = graphene.ID(required=True)
-        finance_payment_method = graphene.ID(required=False, default_value="")
-        date_start = graphene.types.datetime.Date(required=True)
-        date_end = graphene.types.datetime.Date(required=False, default_value=None)
-        note = graphene.String(required=False, default_value="")
-        registration_fee_paid = graphene.Boolean(required=False, default_value=False)        
-        
+        account_subscription = graphene.ID(required=True)
+        mutation_type = graphene.String(required=True)
+        mutation_amount = graphene.Float(required=True)
+        description = graphene.String(required=False, default_value="")
 
-    account_subscription = graphene.Field(AccountSubscriptionNode)
+    account_subscription_credit = graphene.Field(AccountSubscriptionCreditNode)
 
     @classmethod
     def mutate_and_get_payload(self, root, info, **input):
         user = info.context.user
-        require_login_and_permission(user, 'costasiella.add_accountsubscription')
+        require_login_and_permission(user, 'costasiella.add_accountsubscriptioncredit')
 
         # Validate input
         result = validate_create_update_input(input, update=False)
 
-        account_subscription = AccountSubscription(
-            account=result['account'],
-            organization_subscription=result['organization_subscription'],
-            date_start=input['date_start'], 
+        account_subscription_credit = AccountSubscriptionCredit(
+            account_subscription=result['account_subscription'],
+            mutation_type=input['mutation_type'],
+            mutation_amount=input['mutation_amount'],
+            description=input['description']
         )
 
-        if 'registration_fee_paid' in input:
-            account_subscription.registration_fee_paid = input['registration_fee_paid']
+        account_subscription_credit.save()
 
-        if 'date_end' in input:
-            if input['date_end']: # check if date_end actually has a value
-                account_subscription.date_end = input['date_end']
-
-        if 'note' in input:
-            account_subscription.note = input['note']
-
-        if 'finance_payment_method' in result:
-            account_subscription.finance_payment_method = result['finance_payment_method']
-
-        account_subscription.save()
-
-        return CreateAccountSubscription(account_subscription=account_subscription)
+        return CreateAccountSubscriptionCredit(account_subscription_credit=account_subscription_credit)
 
 
 class UpdateAccountSubscription(graphene.relay.ClientIDMutation):
