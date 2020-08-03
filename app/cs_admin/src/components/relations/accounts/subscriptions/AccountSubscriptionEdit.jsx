@@ -112,21 +112,7 @@ class AccountSubscriptionEdit extends Component {
                     subscription_id={id}
                     active="general"
                   />
-                  {/* <div class="card-tabs card-tabs-top">
-                    <a href="javascript:void(0)" class="card-tabs-item active">
-                      <h3 class="card-title">General</h3>
-                    </a>
-                    <a href="javascript:void(0)" class="card-tabs-item">
-                      <h3 class="mb-1">25</h3>
-                    </a>
-                    <a href="javascript:void(0)" class="card-tabs-item">
-                      <h3 class="mb-1">2</h3>
-                    </a>
-                    <a href="javascript:void(0)" class="card-tabs-item">
-                      <h3 class="mb-1">2</h3>
-                    </a>
-                  </div> */}
-                      <Mutation mutation={UPDATE_ACCOUNT_SUBSCRIPTION} onCompleted={() => history.push(return_url)}> 
+                    <Mutation mutation={UPDATE_ACCOUNT_SUBSCRIPTION} onCompleted={() => history.push(return_url)}> 
                       {(updateSubscription, { data }) => (
                           <Formik
                               initialValues={{ 
