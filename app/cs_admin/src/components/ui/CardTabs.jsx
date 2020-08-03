@@ -3,11 +3,6 @@
 import React from 'react'
 import { withTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
-import { Card } from 'tabler-react'
-
-// import {
-//   Alert
-// } from "tabler-react"
 
 // position: top or bottom
 // tabs: [[name, title, link], ...]
