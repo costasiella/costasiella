@@ -25,6 +25,7 @@ import {
 import SiteWrapper from "../../../SiteWrapper"
 import HasPermissionWrapper from "../../../HasPermissionWrapper"
 import { dateToLocalISO } from '../../../../tools/date_tools'
+import AccountSubscriptionEditTabs from "./AccountSubscriptionEditTabs"
 
 import ProfileMenu from "../ProfileMenu"
 
@@ -106,7 +107,12 @@ class AccountSubscriptionEdit extends Component {
                   <Card.Header>
                       <Card.Title>{t('relations.account.subscriptions.title_edit')}</Card.Title>
                   </Card.Header>
-                  <div class="card-tabs card-tabs-top">
+                  <AccountSubscriptionEditTabs 
+                    account_id={account_id}
+                    subscription_id={id}
+                    active="general"
+                  />
+                  {/* <div class="card-tabs card-tabs-top">
                     <a href="javascript:void(0)" class="card-tabs-item active">
                       <h3 class="card-title">General</h3>
                     </a>
@@ -119,7 +125,7 @@ class AccountSubscriptionEdit extends Component {
                     <a href="javascript:void(0)" class="card-tabs-item">
                       <h3 class="mb-1">2</h3>
                     </a>
-                  </div>
+                  </div> */}
                       <Mutation mutation={UPDATE_ACCOUNT_SUBSCRIPTION} onCompleted={() => history.push(return_url)}> 
                       {(updateSubscription, { data }) => (
                           <Formik
