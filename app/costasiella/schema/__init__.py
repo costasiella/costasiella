@@ -6,6 +6,7 @@ from .account_accepted_document import AccountAcceptedDocumentQuery
 from .account_classpass import AccountClasspassQuery, AccountClasspassMutation
 from .account_membership import AccountMembershipQuery, AccountMembershipMutation
 from .account_subscription import AccountSubscriptionQuery, AccountSubscriptionMutation
+from .account_subscription_credit import AccountSubscriptionCreditQuery, AccountSubscriptionCreditMutation
 from .account_teacher_profile import AccountTeacherProfileQuery, AccountTeacherProfileMutation
 
 from .app_settings import AppSettingsQuery, AppSettingsMutation
@@ -66,6 +67,7 @@ class Query(AccountQuery,
             AccountClasspassQuery,
             AccountMembershipQuery,
             AccountSubscriptionQuery,
+            AccountSubscriptionCreditQuery,
             AccountTeacherProfileQuery,
             AppSettingsQuery,
             FinanceCostCenterQuery,
@@ -118,6 +120,7 @@ class Mutation(AccountMutation,
                AccountClasspassMutation,
                AccountMembershipMutation,
                AccountSubscriptionMutation,
+               AccountSubscriptionCreditMutation,
                AccountTeacherProfileMutation,
                AppSettingsMutation,
                FinanceCostCenterMutation,

@@ -27,7 +27,7 @@ def validate_create_update_input(input, update=False):
 
     # Fetch & check account subscription
     if not update:
-        rid = get_rid(input['organization_subscription'])
+        rid = get_rid(input['account_subscription'])
         account_subscription = AccountSubscription.objects.get(pk=rid.id)
         result['account_subscription'] = account_subscription
         if not account_subscription:
