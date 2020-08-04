@@ -120,7 +120,7 @@ import AccountMembershipEdit from './components/relations/accounts/memberships/A
 import AccountOrders from './components/relations/accounts/orders/AccountOrders'
 import AccountSubscriptions from './components/relations/accounts/subscriptions/AccountSubscriptions'
 import AccountSubscriptionAdd from './components/relations/accounts/subscriptions/AccountSubscriptionAdd'
-import AccountSubscriptionEdit from './components/relations/accounts/subscriptions/AccountSubscriptionEdit'
+import AccountSubscriptionEdit from './components/relations/accounts/subscriptions/edit/AccountSubscriptionEdit'
 import RelationsAccountTeacherProfile from './components/relations/accounts/teacher_profile/RelationsAccountTeacherProfile'
 
 import ScheduleHome from './components/schedule/home/ScheduleHome'
