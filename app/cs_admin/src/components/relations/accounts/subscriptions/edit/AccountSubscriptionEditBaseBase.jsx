@@ -20,10 +20,10 @@ import AccountSubscriptionEditTabs from "./AccountSubscriptionEditTabs"
 import ProfileMenu from "../../ProfileMenu"
 
 
-function AccountSubscriptionEditBaseBase({t, history, match, account, active_tab}) {
+function AccountSubscriptionEditBaseBase({t, history, match, children, account=null, active_tab}) {
   const accountId = match.params.account_id
   const subscriptionId = match.params.subscription_id
-  const returnUrl = "/relations/accounts/" + account_id + "/subscriptions"
+  const returnUrl = "/relations/accounts/" + accountId + "/subscriptions"
 
   return (
     <SiteWrapper>
