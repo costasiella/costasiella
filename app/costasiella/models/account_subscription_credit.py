@@ -18,8 +18,9 @@ class AccountSubscriptionCredit(models.Model):
         ('SUB', _("Subtract")),
     ]
 
-    # account = models.ForeignKey(Account, on_delete=models.CASCADE, related_name="subscriptions")
-    account_subscription = models.ForeignKey(AccountSubscription, on_delete=models.CASCADE)
+    account_subscription = models.ForeignKey(AccountSubscription,
+                                             on_delete=models.CASCADE,
+                                             related_name="credits")
     schedule_item_attendance = models.ForeignKey(ScheduleItemAttendance,
                                                  on_delete=models.CASCADE,
                                                  null=True)
