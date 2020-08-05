@@ -39,7 +39,9 @@ def validate_create_update_input(input, update=False):
 class AccountSubscriptionCreditNode(DjangoObjectType):
     class Meta:
         model = AccountSubscriptionCredit
-        filter_fields = ['account_subscription']
+        filter_fields = {
+            'account_subscription': ['exact'],
+        }
         interfaces = (graphene.relay.Node, )
 
     @classmethod
@@ -57,11 +59,10 @@ class AccountSubscriptionCreditQuery(graphene.ObjectType):
     def resolve_account_subscription_credits(self, info, account_subscription, **kwargs):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.view_accountsubscriptioncredit')
-
         rid = get_rid(account_subscription)
 
         # return everything:
-        return AccountSubscription.objects.filter(account_subscription=rid.id).order_by('created_at')
+        return AccountSubscriptionCredit.objects.filter(account_subscription__id=rid.id).order_by('created_at')
 
 
 class CreateAccountSubscriptionCredit(graphene.relay.ClientIDMutation):
