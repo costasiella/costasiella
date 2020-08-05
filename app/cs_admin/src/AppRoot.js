@@ -358,7 +358,7 @@ function AppRoot({ t }) {
           <PrivateRoute exact path="/relations/accounts/:account_id/orders" component={AccountOrders} />
           <PrivateRoute exact path="/relations/accounts/:account_id/subscriptions" component={AccountSubscriptions} />
           <PrivateRoute exact path="/relations/accounts/:account_id/subscriptions/add" component={AccountSubscriptionAdd} />
-          <PrivateRoute exact path="/relations/accounts/:account_id/subscriptions/edit/:id" component={AccountSubscriptionEdit} />
+          <PrivateRoute exact path="/relations/accounts/:account_id/subscriptions/edit/:subscription_id" component={AccountSubscriptionEdit} />
           <PrivateRoute exact path="/relations/accounts/:account_id/teacher_profile" component={RelationsAccountTeacherProfile} />
 
           {/* SCHEDULE */}

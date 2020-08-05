@@ -60,7 +60,7 @@ const UPDATE_ACCOUNT_SUBSCRIPTION = gql`
 
 
 function AccountSubscriptionEdit({t, match, history}) {
-  const id = match.params.id
+  const id = match.params.subscription_id
   const accountId = match.params.account_id
   const returnUrl = `/relations/accounts/${accountId}/subscriptions`
   const activeTab = "general"
