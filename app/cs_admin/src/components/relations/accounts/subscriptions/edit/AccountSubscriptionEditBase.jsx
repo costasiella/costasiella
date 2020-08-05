@@ -10,7 +10,7 @@ import { Link } from 'react-router-dom'
 import { Formik } from 'formik'
 import { toast } from 'react-toastify'
 
-import { GET_ACCOUNT_QUERY } from '../queries'
+import { GET_ACCOUNT_SUBSCRIPTION_QUERY } from '../queries'
 import AccountSubscriptionForm from '../AccountSubscriptionForm'
 
 import {
@@ -32,9 +32,11 @@ import ProfileMenu from "../../ProfileMenu"
 
 function AccountSubscriptionEditBase({t, history, match, children, active_tab}) {
   const accountId = match.params.account_id
-  const { loading, error, data } = useQuery(GET_ACCOUNT_QUERY, {
+  const subscriptionId = match.params.subscription_id
+  const { loading, error, data } = useQuery(GET_ACCOUNT_SUBSCRIPTION_QUERY, {
     variables: {
-      accountId: accountId
+      accountId: accountId,
+      id: subscriptionId
     }
   })
   
@@ -52,9 +54,10 @@ function AccountSubscriptionEditBase({t, history, match, children, active_tab}) 
 
   console.log(data)
   const account = data.account
+  const subscription = data.accountSubscription
 
   return (
-    <AccountSubscriptionEditBaseBase active_tab={active_tab} account={account}>
+    <AccountSubscriptionEditBaseBase active_tab={active_tab} account={account} subscription={subscription}>
       {children}
     </AccountSubscriptionEditBaseBase>
   )
