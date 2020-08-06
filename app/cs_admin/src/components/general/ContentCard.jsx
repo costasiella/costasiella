@@ -44,6 +44,7 @@ class ContentCard extends Component {
       const onLoadMore = this.props.onLoadMore 
       const pageInfo = this.props.pageInfo
       const children = this.props.children
+      const cardTabs = this.props.cardTabs
 
 
       return(
@@ -52,6 +53,7 @@ class ContentCard extends Component {
             <Card.Title>{cardTitle}</Card.Title>
             {headerContent}
           </Card.Header>
+          {cardTabs}
           <Card.Body>
             {children}
           </Card.Body>
