@@ -181,7 +181,7 @@
         "continue": "__STRING_NOT_TRANSLATED__",
         "info_mail": "__STRING_NOT_TRANSLATED__",
         "license": "__STRING_NOT_TRANSLATED__",
-        "license_text": "__STRING_NOT_TRANSLATED__"
+        "license_info": "__STRING_NOT_TRANSLATED__"
     },
     "settings": {
         "error_loading": "__STRING_NOT_TRANSLATED__",
