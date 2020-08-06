@@ -21,7 +21,7 @@ import {
   Container,
 } from "tabler-react";
 // import HasPermissionWrapper from "../../../../HasPermissionWrapper"
-import AccountSubscriptionEditBase from "../AccountSubscriptionEditBase"
+import AccountSubscriptionEditListBase from "../AccountSubscriptionEditListBase"
 
 
 function AccountSubscriptionEditCredits({t, match, history}) {
@@ -62,9 +62,9 @@ function AccountSubscriptionEditCredits({t, match, history}) {
   // }
 
   return (
-    <AccountSubscriptionEditBase active_tab={activeTab}>
+    <AccountSubscriptionEditListBase active_tab={activeTab}>
       hello world
-    </AccountSubscriptionEditBase>
+    </AccountSubscriptionEditListBase>
   )
 }
 
