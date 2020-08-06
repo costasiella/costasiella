@@ -30,7 +30,7 @@ import AccountSubscriptionEditListBaseBase from "./AccountSubscriptionEditListBa
 import ProfileMenu from "../../ProfileMenu"
 
 
-function AccountSubscriptionEditBase({t, history, match, children, pageInfo, onLoadMore, active_tab}) {
+function AccountSubscriptionEditListBase({t, history, match, children, pageInfo, onLoadMore, active_tab}) {
   const accountId = match.params.account_id
   const subscriptionId = match.params.subscription_id
   const { loading, error, data } = useQuery(GET_ACCOUNT_SUBSCRIPTION_QUERY, {
@@ -70,4 +70,4 @@ function AccountSubscriptionEditBase({t, history, match, children, pageInfo, onL
 }
 
 
-export default withTranslation()(withRouter(AccountSubscriptionEditBase))
+export default withTranslation()(withRouter(AccountSubscriptionEditListBase))
