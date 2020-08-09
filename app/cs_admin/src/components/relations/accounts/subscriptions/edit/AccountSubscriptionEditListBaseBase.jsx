@@ -54,7 +54,7 @@ function AccountSubscriptionEditBaseBase({
           <Grid.Row>
             <Grid.Col md={9}>
               <ContentCard 
-                cardTitle={t('relations.account.subscriptions.title_edit') + " " + cardTitle}
+                cardTitle={<span>{t('relations.account.subscriptions.title_edit')} {cardTitle}</span>}
                 pageInfo={pageInfo}
                 onLoadMore={onLoadMore}
                 cardTabs={<AccountSubscriptionEditTabs 
