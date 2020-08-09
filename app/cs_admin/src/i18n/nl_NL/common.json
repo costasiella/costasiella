@@ -181,7 +181,9 @@
         "continue": "__STRING_NOT_TRANSLATED__",
         "info_mail": "__STRING_NOT_TRANSLATED__",
         "license": "__STRING_NOT_TRANSLATED__",
-        "license_info": "__STRING_NOT_TRANSLATED__"
+        "license_info": "__STRING_NOT_TRANSLATED__",
+        "credits": "__STRING_NOT_TRANSLATED__",
+        "mutation": "__STRING_NOT_TRANSLATED__"
     },
     "settings": {
         "error_loading": "__STRING_NOT_TRANSLATED__",
@@ -906,7 +908,10 @@
                 "registration_fee_paid": "__STRING_NOT_TRANSLATED__",
                 "delete_confirm_msg": "__STRING_NOT_TRANSLATED__",
                 "deleted": "__STRING_NOT_TRANSLATED__",
-                "add": "__STRING_NOT_TRANSLATED__"
+                "add": "__STRING_NOT_TRANSLATED__",
+                "credits": {
+                    "title_list": "__STRING_NOT_TRANSLATED__"
+                }
             },
             "teacher_profile": {
                 "title": "__STRING_NOT_TRANSLATED__",

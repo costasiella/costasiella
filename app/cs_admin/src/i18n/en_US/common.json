@@ -351,7 +351,9 @@
         "continue": "Continue",
         "info_mail": "Info mail",
         "license": "License",
-        "license_info": "License Info"
+        "license_info": "License Info",
+        "credits": "Credits",
+        "mutation": "Mutation"
     },
     "yup": {
         "min_len_3": "Please input at least 3 characters",
@@ -640,7 +642,10 @@
                 "deleted": "Deleted subscription",
                 "add": "Add subscription",
                 "title_edit": "Edit subscription",
-                "registration_fee_paid": "Registration fee paid"
+                "registration_fee_paid": "Registration fee paid",
+                "credits": {
+                    "title_list": "Credit mutations"
+                }
             },
             "classpasses": {
                 "title_add": "Add class pass",
