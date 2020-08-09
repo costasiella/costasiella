@@ -248,11 +248,6 @@ function AppRoot({ t }) {
   // moment.locale('en-US')
   let appSettings = data.appSettings
   console.log(appSettings)
-  if (appSettings.timeFormat == 24) {
-    appSettings.timeFormatMoment = "HH:mm"
-  } else {
-    appSettings.timeFormatMoment = "hh:mm a"
-  }
 
   return (
     <AppSettingsProvider value={appSettings}>
