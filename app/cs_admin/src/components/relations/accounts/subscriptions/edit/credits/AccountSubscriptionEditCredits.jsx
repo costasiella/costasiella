@@ -1,6 +1,6 @@
 // @flow
 
-import React, {Component } from 'react'
+import React, { useContext } from 'react'
 import gql from "graphql-tag"
 import { useQuery, useMutation } from "react-apollo";
 import { withTranslation } from 'react-i18next'
@@ -10,6 +10,9 @@ import { v4 } from 'uuid'
 
 import { Formik } from 'formik'
 import { toast } from 'react-toastify'
+import SubscriptionCreditsMutationType from "../../../../../ui/SubscriptionCreditsMutationType"
+
+import AppSettingsContext from '../../../../../context/AppSettingsContext'
 
 import { GET_ACCOUNT_SUBSCRIPTION_CREDITS_QUERY } from './queries'
 
@@ -24,9 +27,16 @@ import {
 } from "tabler-react";
 // import HasPermissionWrapper from "../../../../HasPermissionWrapper"
 import AccountSubscriptionEditListBase from "../AccountSubscriptionEditListBase"
+import moment from 'moment';
 
 
 function AccountSubscriptionEditCredits({t, match, history}) {
+  const appSettings = useContext(AppSettingsContext)
+  const dateFormat = appSettings.dateFormat
+  const timeFormat = appSettings.timeFormatMoment
+  const dateTimeFormatMoment = appSettings.dateTimeFormatMoment
+  console.log(appSettings)
+  
   const id = match.params.subscription_id
   const accountId = match.params.account_id
   const subscriptionId = match.params.subscription_id
@@ -95,21 +105,30 @@ function AccountSubscriptionEditCredits({t, match, history}) {
       <Table>
         <Table.Header>
           <Table.Row key={v4()}>
-            {/* <Table.ColHeader>{t('general.status')}</Table.ColHeader>
-            <Table.ColHeader>{t('finance.invoices.invoice_number')}</Table.ColHeader>
-            <Table.ColHeader>{t('finance.invoices.relation')} & {t('finance.invoices.summary')}</Table.ColHeader>
-            <Table.ColHeader>{t('finance.invoices.date')} & {t('finance.invoices.due')}</Table.ColHeader>
-            <Table.ColHeader>{t('general.total')}</Table.ColHeader>
-            <Table.ColHeader>{t('general.balance')}</Table.ColHeader>
+            <Table.ColHeader>{t('general.time')}</Table.ColHeader>
+            <Table.ColHeader>{t('general.description')}</Table.ColHeader>
+            <Table.ColHeader>{t('general.credits')}</Table.ColHeader>
+            <Table.ColHeader>{t('general.mutation')}</Table.ColHeader>
             <Table.ColHeader></Table.ColHeader>
-            <Table.ColHeader></Table.ColHeader> */}
           </Table.Row>
         </Table.Header>
         <Table.Body>
             {accountSubscriptionCredits.edges.map(({ node }) => (
               <Table.Row key={v4()}>
                 <Table.Col>
-                  {node.id}
+                  {moment(node.createdAt).format(dateTimeFormatMoment)}
+                </Table.Col>
+                <Table.Col>
+                  {node.description}
+                </Table.Col>
+                <Table.Col>
+                  {node.mutationAmount}
+                </Table.Col>
+                <Table.Col>
+                  <SubscriptionCreditsMutationType mutationType={node.mutationType} />
+                </Table.Col>
+                <Table.Col className="text-right">
+                  Edit
                 </Table.Col>
                 {/* <Table.Col key={v4()}>
                   <FinanceInvoicesStatus status={node.status} />
