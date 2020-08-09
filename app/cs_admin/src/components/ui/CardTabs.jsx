@@ -21,7 +21,7 @@ function CardTabs({ t, position="top", tabs, active}) {
   }   
 
   return (
-    <div class={`card-tabs ${class_tabs_position}`}>
+    <div className={`card-tabs ${class_tabs_position}`}>
       {
         tabs.map(({name, title, link}) => (
           <Link to={link} className={`card-tabs-item ${(name === active) ? "active": ""}`}>
