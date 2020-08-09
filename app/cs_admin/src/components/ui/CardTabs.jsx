@@ -3,6 +3,7 @@
 import React from 'react'
 import { withTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
+import { v4 } from 'uuid'
 
 // position: top or bottom
 // tabs: [[name, title, link], ...]
@@ -24,7 +25,7 @@ function CardTabs({ t, position="top", tabs, active}) {
     <div className={`card-tabs ${class_tabs_position}`}>
       {
         tabs.map(({name, title, link}) => (
-          <Link to={link} className={`card-tabs-item ${(name === active) ? "active": ""}`}>
+          <Link key={v4()} to={link} className={`card-tabs-item ${(name === active) ? "active": ""}`}>
             <h3 className="card-title"> {title} </h3>
           </Link>
         ))
