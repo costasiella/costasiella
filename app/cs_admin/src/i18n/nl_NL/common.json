@@ -1411,5 +1411,8 @@
         "Zimbabwe": "__STRING_NOT_TRANSLATED__"
     },
     "You've already booked this class ": "__STRING_NOT_TRANSLATED__",
-    "View info": "__STRING_NOT_TRANSLATED__"
+    "View info": "__STRING_NOT_TRANSLATED__",
+    "automation": {
+        "title": "__STRING_NOT_TRANSLATED__"
+    }
 }

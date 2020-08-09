@@ -1411,5 +1411,8 @@
         }
     },
     "You've already booked this class ": "You've already booked this class",
-    "View info": "View info"
+    "View info": "View info",
+    "automation": {
+        "title": "Automation"
+    }
 }
