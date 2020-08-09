@@ -101,6 +101,7 @@ function AccountSubscriptionEditCredits({t, match, history}) {
 
   return (
     <AccountSubscriptionEditListBase active_tab={activeTab} pageInfo={pageInfo} onLoadMore={onLoadMore}>
+      <div className="pull-right">Add button here...</div>
       <h5>{t('relations.account.subscriptions.credits.title_list')}</h5>
       <Table>
         <Table.Header>
@@ -109,6 +110,7 @@ function AccountSubscriptionEditCredits({t, match, history}) {
             <Table.ColHeader>{t('general.description')}</Table.ColHeader>
             <Table.ColHeader>{t('general.credits')}</Table.ColHeader>
             <Table.ColHeader>{t('general.mutation')}</Table.ColHeader>
+            <Table.ColHeader></Table.ColHeader>
             <Table.ColHeader></Table.ColHeader>
           </Table.Row>
         </Table.Header>
@@ -130,69 +132,9 @@ function AccountSubscriptionEditCredits({t, match, history}) {
                 <Table.Col className="text-right">
                   Edit
                 </Table.Col>
-                {/* <Table.Col key={v4()}>
-                  <FinanceInvoicesStatus status={node.status} />
+                <Table.Col className="text-right">
+                  Del
                 </Table.Col>
-                <Table.Col key={v4()}>
-                  {node.invoiceNumber}
-                </Table.Col>
-                <Table.Col key={v4()}>
-                  {(node.account) ? 
-                    <Link to={"/relations/accounts/" + node.account.id + "/profile"}>
-                      {(node.relationCompany) ? node.relationCompany: node.relationContactName}
-                    </Link> :
-                    (node.relationCompany) ? node.relationCompany: node.relationContactName
-                  }
-                    <br />
-                  <Text.Small color="gray">{node.summary.trunc(20)}</Text.Small>
-                </Table.Col>
-                <Table.Col key={v4()}>
-                  {moment(node.dateSent).format('LL')} <br />
-                  {moment(node.dateDue).format('LL')}
-                </Table.Col>
-                <Table.Col key={v4()}>
-                  {node.totalDisplay}
-                </Table.Col>
-                <Table.Col key={v4()}>
-                  {node.balanceDisplay}
-                </Table.Col>
-                <Table.Col className="text-right" key={v4()}>
-                  <Button className='btn-sm' 
-                          onClick={() => history.push("/finance/invoices/edit/" + node.id)}
-                          color="secondary">
-                    {t('general.edit')}
-                  </Button>
-                </Table.Col>
-                <Mutation mutation={DELETE_FINANCE_INVOICE} key={v4()}>
-                  {(deleteFinanceInvoice, { data }) => (
-                    <Table.Col className="text-right" key={v4()}>
-                      <button className="icon btn btn-link btn-sm" 
-                        title={t('general.delete')} 
-                        href=""
-                        onClick={() => {
-                          confirm_delete({
-                            t: t,
-                            msgConfirm: t("finance.invoices.delete_confirm_msg"),
-                            msgDescription: <p>{node.invoiceNumber}</p>,
-                            msgSuccess: t('finance.invoices.deleted'),
-                            deleteFunction: deleteFinanceInvoice,
-                            functionVariables: { 
-                              variables: {
-                                input: {
-                                  id: node.id
-                                }
-                              }, 
-                              refetchQueries: [
-                                {query: GET_INVOICES_QUERY, variables: get_list_query_variables() } 
-                              ]
-                            }
-                          })
-                      }}>
-                        <span className="text-red"><Icon prefix="fe" name="trash-2" /></span>
-                      </button>
-                    </Table.Col>
-                  )}
-                </Mutation> */}
               </Table.Row>
             ))}
         </Table.Body>
