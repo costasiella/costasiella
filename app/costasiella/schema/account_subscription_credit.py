@@ -145,7 +145,40 @@ class DeleteAccountSubscriptionCredit(graphene.relay.ClientIDMutation):
         return DeleteAccountSubscriptionCredit(ok=ok)
 
 
+class CreateAccountSubscriptionCreditForMonth(graphene.relay.ClientIDMutation):
+    class Input:
+        x = graphene.Int()
+        y = graphene.Int()
+
+    ok = graphene.Boolean()
+
+    @classmethod
+    def mutate_and_get_payload(self, root, info, **input):
+        user = info.context.user
+        require_login_and_permission(user, 'costasiella.delete_accountsubscriptioncredit')
+
+        from costasiella.tasks import account_subscription_credits_add_for_month
+
+        print(input)
+        x = input['x']
+        y = input['y']
+
+        task = account_subscription_credits_add_for_month.delay(x, y)
+        print(task)
+        ok = True
+
+        # rid = get_rid(input['id'])
+        # account_subscription = AccountSubscription.objects.filter(id=rid.id).first()
+        # if not account_subscription:
+        #     raise Exception('Invalid Account Subscription ID!')
+        #
+        # ok = account_subscription.delete()
+
+        return CreateAccountSubscriptionCreditForMonth(ok=ok)
+
+
 class AccountSubscriptionCreditMutation(graphene.ObjectType):
     create_account_subscription_credit = CreateAccountSubscriptionCredit.Field()
+    create_account_subscription_credit_for_month = CreateAccountSubscriptionCreditForMonth.Field()
     delete_account_subscription_credit = DeleteAccountSubscriptionCredit.Field()
     update_account_subscription_credit = UpdateAccountSubscriptionCredit.Field()
