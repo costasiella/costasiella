@@ -18,7 +18,7 @@ celery -A app beat -l info --scheduler django_celery_beat.schedulers:DatabaseSch
 
 sudo rabbitmqctl list_queues
 
-# Worker
+# Celery Worker
 
 celery -A app worker -l info
 
