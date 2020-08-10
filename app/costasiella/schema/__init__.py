@@ -11,6 +11,8 @@ from .account_teacher_profile import AccountTeacherProfileQuery, AccountTeacherP
 
 from .app_settings import AppSettingsQuery, AppSettingsMutation
 
+from .django_celery_result_task_result import DjangoCeleryResultTaskResultQuery
+
 from .finance_costcenter import FinanceCostCenterQuery, FinanceCostCenterMutation
 from .finance_glaccount import FinanceGLAccountQuery, FinanceGLAccountMutation
 from .finance_invoice import FinanceInvoiceQuery, FinanceInvoiceMutation
@@ -70,6 +72,7 @@ class Query(AccountQuery,
             AccountSubscriptionCreditQuery,
             AccountTeacherProfileQuery,
             AppSettingsQuery,
+            DjangoCeleryResultTaskResultQuery,
             FinanceCostCenterQuery,
             FinanceGLAccountQuery,
             FinanceInvoiceQuery,
