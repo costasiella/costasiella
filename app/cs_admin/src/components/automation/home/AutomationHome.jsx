@@ -34,7 +34,7 @@ function AutomationHome({ t, match, params }) {
                   <h5>{t("automation.account.subscriptions.credits.title")}</h5>
                   {t("automation.account.subscriptions.credits.explanation")}
                   <br /><br />
-                  <SettingsHomeItemButton link="/automation/account/subscriptions/credits" />
+                  <AutomationHomeItemButton link="/automation/account/subscriptions/credits" />
                 </Card.Body>
               </Card>
             </Grid.Col>

@@ -23,6 +23,8 @@ import { AppSettingsProvider } from "./components/context/AppSettingsContext"
 
 import HomeHome from './components/home/home/HomeHome'
 
+import AutomationHome from './components/automation/home/AutomationHome'
+
 import FinanceHome from './components/finance/home/FinanceHome'
 import FinanceCostCenters from './components/finance/costcenters/FinanceCostCenters'
 import FinanceCostCenterAdd from './components/finance/costcenters/FinanceCostCenterAdd'
@@ -253,7 +255,11 @@ function AppRoot({ t }) {
     <AppSettingsProvider value={appSettings}>
       <HashRouter>
         <Switch>
+          {/* HOME */}
           <PrivateRoute exact path="/" component={HomeHome} />
+
+          {/* AUTOMATION */}
+          <PrivateRoute exact path="/automation" component={AutomationHome} />
           
           {/* FINANCE */}
           <PrivateRoute exact path="/finance" component={FinanceHome} />
