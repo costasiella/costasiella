@@ -18,7 +18,7 @@ function SettingsHomeItemButton({ t, link, linkTitle=null }) {
         block
         color="primary"
       >
-        {linkTitle ? linkTitle: t("settings.home.link_edit")} <Icon name="chevron-right" />
+        {linkTitle ? linkTitle: t("automation.home.link_edit")} <Icon name="chevron-right" />
       </Button>
     </Link>
   )

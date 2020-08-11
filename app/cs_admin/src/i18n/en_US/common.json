@@ -1413,6 +1413,18 @@
     "You've already booked this class ": "You've already booked this class",
     "View info": "View info",
     "automation": {
-        "title": "Automation"
+        "title": "Automation",
+        "account": {
+            "subscriptions": {
+                "title": "Account subscriptions",
+                "credits": {
+                    "title": "Credits",
+                    "explanation": "Add monthly credits for all active subscriptions."
+                }
+            }
+        },
+        "home": {
+            "link_edit": "View"
+        }
     }
 }
