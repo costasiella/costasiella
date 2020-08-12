@@ -65,17 +65,18 @@ function AutomationAccountSubscriptionCredits({t, history, match}) {
   
     console.log("Automation credits data:")
     console.log(data)
+    const taskResults = data.djangoCeleryResultTaskResults
     // const account = data.account
     // const scheduleItemAttendances = data.scheduleItemAttendances
     
     // // Empty list
-    // if (!scheduleItemAttendances.edges.length) {
-    //   return (
-    //     <AutomationAccountSubscriptionCreditsBase account={account}>
-    //       <p>{t('relations.account.classes.empty_list')}</p>
-    //     </AutomationAccountSubscriptionCreditsBase>
-    //   )
-    // }
+    if (!djangoCeleryResultTaskResults.edges.length) {
+      return (
+        <AutomationAccountSubscriptionCreditsBase account={account}>
+          <p>{t('automation.account.subscriptions.credits.empty_list')}</p>
+        </AutomationAccountSubscriptionCreditsBase>
+      )
+    }
 
   return (
     <AutomationAccountSubscriptionCreditsBase>
