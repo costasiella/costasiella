@@ -70,9 +70,9 @@ function AutomationAccountSubscriptionCredits({t, history, match}) {
     // const scheduleItemAttendances = data.scheduleItemAttendances
     
     // // Empty list
-    if (!djangoCeleryResultTaskResults.edges.length) {
+    if (!taskResults.edges.length) {
       return (
-        <AutomationAccountSubscriptionCreditsBase account={account}>
+        <AutomationAccountSubscriptionCreditsBase>
           <p>{t('automation.account.subscriptions.credits.empty_list')}</p>
         </AutomationAccountSubscriptionCreditsBase>
       )
