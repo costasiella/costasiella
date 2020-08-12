@@ -19,12 +19,12 @@ import {
   Container,
   Table
 } from "tabler-react";
-import SiteWrapper from "../../SiteWrapper"
-import HasPermissionWrapper from "../../HasPermissionWrapper"
+import SiteWrapper from "../../../../SiteWrapper"
+import HasPermissionWrapper from "../../../../HasPermissionWrapper"
 // import { confirmAlert } from 'react-confirm-alert'; // Import
 import { toast } from 'react-toastify'
 
-import ContentCard from "../../general/ContentCard"
+import ContentCard from "../../../../general/ContentCard"
 
 import { GET_TASK_RESULT_QUERY } from "../../../queries"
 import AutomationAccountSubscriptionCreditsBase from './AutomationAccountSubscriptionCreditsBase'

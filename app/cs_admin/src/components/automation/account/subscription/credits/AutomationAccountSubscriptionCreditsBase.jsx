@@ -10,17 +10,19 @@ import {
   Grid,
   Container,
 } from "tabler-react";
-import SiteWrapper from "../../SiteWrapper"
-import HasPermissionWrapper from "../../HasPermissionWrapper"
+import SiteWrapper from "../../../../SiteWrapper"
+import HasPermissionWrapper from "../../../../HasPermissionWrapper"
 import AutomationBack from "../../../AutomationBack"
 
-function AutomationAccountSubscriptionCreditsBase({t, history, match}) {
+function AutomationAccountSubscriptionCreditsBase({t, history, match, children}) {
   return (
     <SiteWrapper>
       <div className="my-3 my-md-5">
         <Container>
           <Page.Header title={t('automation.title')} >
-            <AutomationBack />
+            <div className="page-options d-flex">
+              <AutomationBack />
+            </div>
           </Page.Header>
           <Grid.Row>
             <Grid.Col md={12}>
