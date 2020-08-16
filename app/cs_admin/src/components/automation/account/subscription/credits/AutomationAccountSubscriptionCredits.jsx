@@ -1,11 +1,13 @@
 // @flow
 
-import React from 'react'
+import React, { useContext } from 'react'
 import { Query, Mutation, useQuery } from "react-apollo"
 import gql from "graphql-tag"
 import { v4 } from "uuid"
 import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
+import moment from 'moment'
+import AppSettingsContext from '../../../../context/AppSettingsContext'
 
 
 import {
@@ -41,7 +43,10 @@ import AutomationAccountSubscriptionCreditsBase from './AutomationAccountSubscri
 // `
 
 function AutomationAccountSubscriptionCredits({t, history, match}) {
-  const { error, loading, data } = useQuery(GET_TASK_RESULT_QUERY, {
+  const appSettings = useContext(AppSettingsContext)
+  const dateTimeFormatMoment = appSettings.dateTimeFormatMoment
+
+  const { error, loading, data, fetchMore } = useQuery(GET_TASK_RESULT_QUERY, {
     variables: {
       taskName: "costasiella.tasks.account.subscription.credits.tasks.account_subscription_credits_add_for_month"
     }
@@ -80,7 +85,55 @@ function AutomationAccountSubscriptionCredits({t, history, match}) {
 
   return (
     <AutomationAccountSubscriptionCreditsBase>
-      hello world!
+      <ContentCard cardTitle={t('automation.account.subscriptions.credits.title')}
+                  pageInfo={taskResults.pageInfo}
+                  onLoadMore={() => {
+                    fetchMore({
+                      variables: {
+                        after: taskResults.pageInfo.endCursor
+                      },
+                      updateQuery: (previousResult, { fetchMoreResult }) => {
+                        const newEdges = fetchMoreResult.djangoCeleryResultTaskResults.edges
+                        const pageInfo = fetchMoreResult.djangoCeleryResultTaskResults.pageInfo
+
+                        return newEdges.length
+                          ? {
+                              // Put the new invoices at the end of the list and update `pageInfo`
+                              // so we have the new `endCursor` and `hasNextPage` values
+                              djangoCeleryResultTaskResults: {
+                                __typename: previousResult.djangoCeleryResultTaskResults.__typename,
+                                edges: [ ...previousResult.djangoCeleryResultTaskResults.edges, ...newEdges ],
+                                pageInfo
+                              }
+                            }
+                          : previousResult
+                      }
+                    })
+                  }} 
+        >
+          <Table>
+            <Table.Header>
+              <Table.Row key={v4()}>
+                <Table.ColHeader>{t('automation.general.time_completed')}</Table.ColHeader>
+                <Table.ColHeader>{t('automation.general.task_result')}</Table.ColHeader>
+                <Table.ColHeader>{t('automation.general.status.title')}</Table.ColHeader>
+                <Table.ColHeader>{t('automation.general.task_kwargs')}</Table.ColHeader>
+                <Table.ColHeader>{t('automation.general.task_result')}</Table.ColHeader>
+                <Table.ColHeader></Table.ColHeader>
+                <Table.ColHeader></Table.ColHeader>
+              </Table.Row>
+            </Table.Header>
+            <Table.Body>
+              {taskResults.edges.map(({ node }) => (
+                <Table.Row key={v4()}>
+                  <Table.Col>
+                    {moment(node.dateDone).format(dateTimeFormatMoment)}
+                  </Table.Col>
+                </Table.Row>
+              ))}
+            </Table.Body>
+          </Table>
+        </ContentCard>
     </AutomationAccountSubscriptionCreditsBase>
   )
 }
