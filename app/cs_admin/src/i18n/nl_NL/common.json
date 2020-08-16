@@ -1419,12 +1419,21 @@
                 "title": "__STRING_NOT_TRANSLATED__",
                 "credits": {
                     "title": "__STRING_NOT_TRANSLATED__",
-                    "explanation": "__STRING_NOT_TRANSLATED__"
+                    "explanation": "__STRING_NOT_TRANSLATED__",
+                    "empty_list": "__STRING_NOT_TRANSLATED__"
                 }
             }
         },
         "home": {
             "link_edit": "__STRING_NOT_TRANSLATED__"
+        },
+        "general": {
+            "time_completed": "__STRING_NOT_TRANSLATED__",
+            "task_result": "__STRING_NOT_TRANSLATED__",
+            "status": {
+                "title": "__STRING_NOT_TRANSLATED__"
+            },
+            "task_kwargs": "__STRING_NOT_TRANSLATED__"
         }
     }
 }

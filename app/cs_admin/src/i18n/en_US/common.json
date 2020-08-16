@@ -1419,12 +1419,21 @@
                 "title": "Account subscriptions",
                 "credits": {
                     "title": "Credits",
-                    "explanation": "Add monthly credits for all active subscriptions."
+                    "explanation": "Add monthly credits for all active subscriptions.",
+                    "empty_list": "__STRING_NOT_TRANSLATED__"
                 }
             }
         },
         "home": {
             "link_edit": "View"
+        },
+        "general": {
+            "time_completed": "Completed on",
+            "task_result": "Result",
+            "status": {
+                "title": "Status"
+            },
+            "task_kwargs": "Task arguments"
         }
     }
 }
