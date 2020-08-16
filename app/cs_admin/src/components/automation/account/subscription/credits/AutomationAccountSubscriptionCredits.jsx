@@ -85,31 +85,32 @@ function AutomationAccountSubscriptionCredits({t, history, match}) {
 
   return (
     <AutomationAccountSubscriptionCreditsBase>
-      <ContentCard cardTitle={t('automation.account.subscriptions.credits.title')}
-                  pageInfo={taskResults.pageInfo}
-                  onLoadMore={() => {
-                    fetchMore({
-                      variables: {
-                        after: taskResults.pageInfo.endCursor
-                      },
-                      updateQuery: (previousResult, { fetchMoreResult }) => {
-                        const newEdges = fetchMoreResult.djangoCeleryResultTaskResults.edges
-                        const pageInfo = fetchMoreResult.djangoCeleryResultTaskResults.pageInfo
+      <ContentCard 
+        cardTitle={t('automation.account.subscriptions.credits.title')}
+        pageInfo={taskResults.pageInfo}
+        onLoadMore={() => {
+          fetchMore({
+            variables: {
+              after: taskResults.pageInfo.endCursor
+            },
+            updateQuery: (previousResult, { fetchMoreResult }) => {
+              const newEdges = fetchMoreResult.djangoCeleryResultTaskResults.edges
+              const pageInfo = fetchMoreResult.djangoCeleryResultTaskResults.pageInfo
 
-                        return newEdges.length
-                          ? {
-                              // Put the new invoices at the end of the list and update `pageInfo`
-                              // so we have the new `endCursor` and `hasNextPage` values
-                              djangoCeleryResultTaskResults: {
-                                __typename: previousResult.djangoCeleryResultTaskResults.__typename,
-                                edges: [ ...previousResult.djangoCeleryResultTaskResults.edges, ...newEdges ],
-                                pageInfo
-                              }
-                            }
-                          : previousResult
-                      }
-                    })
-                  }} 
+              return newEdges.length
+                ? {
+                    // Put the new invoices at the end of the list and update `pageInfo`
+                    // so we have the new `endCursor` and `hasNextPage` values
+                    djangoCeleryResultTaskResults: {
+                      __typename: previousResult.djangoCeleryResultTaskResults.__typename,
+                      edges: [ ...previousResult.djangoCeleryResultTaskResults.edges, ...newEdges ],
+                      pageInfo
+                    }
+                  }
+                : previousResult
+              }
+            })
+          }} 
         >
           <Table>
             <Table.Header>
