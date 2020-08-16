@@ -1434,6 +1434,16 @@
                 "title": "__STRING_NOT_TRANSLATED__"
             },
             "task_kwargs": "__STRING_NOT_TRANSLATED__"
+        },
+        "tasks": {
+            "result_statuses": {
+                "pending": "__STRING_NOT_TRANSLATED__",
+                "started": "__STRING_NOT_TRANSLATED__",
+                "success": "__STRING_NOT_TRANSLATED__",
+                "failure": "__STRING_NOT_TRANSLATED__",
+                "retry": "__STRING_NOT_TRANSLATED__",
+                "revoked": "__STRING_NOT_TRANSLATED__"
+            }
         }
     }
 }

@@ -1434,6 +1434,16 @@
                 "title": "Status"
             },
             "task_kwargs": "Task arguments"
+        },
+        "tasks": {
+            "result_statuses": {
+                "pending": "Pending...",
+                "started": "Started...",
+                "success": "Success",
+                "failure": "Failure",
+                "retry": "Retry",
+                "revoked": "Revoked"
+            }
         }
     }
 }

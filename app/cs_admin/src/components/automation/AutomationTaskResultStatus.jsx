@@ -15,22 +15,22 @@ import {
 function AutomationTaskResultStatus({t, history, match, status}) {
   switch(status) {
     case "PENDING":
-      return <Badge color="secondary">{t("costasiella.tasks.result_statuses.pending")}</Badge>
+      return <Badge color="secondary">{t("automation.tasks.result_statuses.pending")}</Badge>
       break
     case "STARTED":
-      return <Badge color="primary">{t("costasiella.tasks.result_statuses.started")}</Badge>
+      return <Badge color="primary">{t("automation.tasks.result_statuses.started")}</Badge>
       break
     case "SUCCESS":
-      return <Badge color="success">{t("costasiella.tasks.result_statuses.success")}</Badge>
+      return <Badge color="success">{t("automation.tasks.result_statuses.success")}</Badge>
       break
     case "FAILURE":
-      return <Badge color="danger">{t("costasiella.tasks.result_statuses.failure")}</Badge>
+      return <Badge color="danger">{t("automation.tasks.result_statuses.failure")}</Badge>
       break
     case "RETRY":
-      return <Badge color="warning">{t("costasiella.tasks.result_statuses.retry")}</Badge>
+      return <Badge color="warning">{t("automation.tasks.result_statuses.retry")}</Badge>
       break
     case "REVOKED":
-      return <Badge color="warning">{t("costasiella.tasks.result_statuses.revoked")}</Badge>
+      return <Badge color="warning">{t("automation.tasks.result_statuses.revoked")}</Badge>
       break
     default:
       return "status unknown"
