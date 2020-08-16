@@ -114,12 +114,10 @@ function AutomationAccountSubscriptionCredits({t, history, match}) {
           <Table>
             <Table.Header>
               <Table.Row key={v4()}>
-                <Table.ColHeader>{t('automation.general.time_completed')}</Table.ColHeader>
-                <Table.ColHeader>{t('automation.general.task_result')}</Table.ColHeader>
                 <Table.ColHeader>{t('automation.general.status.title')}</Table.ColHeader>
+                <Table.ColHeader>{t('automation.general.time_completed')}</Table.ColHeader>
                 <Table.ColHeader>{t('automation.general.task_kwargs')}</Table.ColHeader>
                 <Table.ColHeader>{t('automation.general.task_result')}</Table.ColHeader>
-                <Table.ColHeader></Table.ColHeader>
                 <Table.ColHeader></Table.ColHeader>
               </Table.Row>
             </Table.Header>
@@ -127,7 +125,19 @@ function AutomationAccountSubscriptionCredits({t, history, match}) {
               {taskResults.edges.map(({ node }) => (
                 <Table.Row key={v4()}>
                   <Table.Col>
+                    {node.status}
+                  </Table.Col>
+                  <Table.Col>
                     {moment(node.dateDone).format(dateTimeFormatMoment)}
+                  </Table.Col>
+                  <Table.Col>
+                    {node.taskKwargs}
+                  </Table.Col>
+                  <Table.Col>
+                    {node.result}
+                  </Table.Col>
+                  <Table.Col>
+
                   </Table.Col>
                 </Table.Row>
               ))}
