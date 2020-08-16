@@ -30,6 +30,7 @@ import ContentCard from "../../../../general/ContentCard"
 
 import { GET_TASK_RESULT_QUERY } from "../../../queries"
 import AutomationAccountSubscriptionCreditsBase from './AutomationAccountSubscriptionCreditsBase'
+import AutomationTaskResultStatus from "../../../AutomationTaskResultStatus"
 
 // const ARCHIVE_LEVEL = gql`
 //   mutation ArchiveOrganizationLevel($input: ArchiveOrganizationLevelInput!) {
@@ -126,7 +127,7 @@ function AutomationAccountSubscriptionCredits({t, history, match}) {
               {taskResults.edges.map(({ node }) => (
                 <Table.Row key={v4()}>
                   <Table.Col>
-                    {node.status}
+                    <AutomationTaskResultStatus status={node.status} />
                   </Table.Col>
                   <Table.Col>
                     {moment(node.dateDone).format(dateTimeFormatMoment)}
