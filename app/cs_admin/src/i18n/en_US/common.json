@@ -1418,9 +1418,9 @@
             "subscriptions": {
                 "title": "Account subscriptions",
                 "credits": {
-                    "title": "Credits",
+                    "title": "Account subscription credits background task results",
                     "explanation": "Add monthly credits for all active subscriptions.",
-                    "empty_list": "__STRING_NOT_TRANSLATED__"
+                    "empty_list": "This task hasn't run before."
                 }
             }
         },
