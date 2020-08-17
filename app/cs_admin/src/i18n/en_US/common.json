@@ -645,6 +645,10 @@
                 "registration_fee_paid": "Registration fee paid",
                 "credits": {
                     "title_list": "Credit mutations"
+                },
+                "pauses": {
+                    "empty_list": "This subscription hasn't been paused before.",
+                    "title_list": "Pauses"
                 }
             },
             "classpasses": {

@@ -41,7 +41,7 @@ function AccountSubscriptionEditPauses({t, match, history}) {
   const accountId = match.params.account_id
   const subscriptionId = match.params.subscription_id
   const returnUrl = `/relations/accounts/${accountId}/subscriptions`
-  const activeTab = "credits"
+  const activeTab = "pauses"
 
   const { loading, error, data, fetchMore } = useQuery(GET_ACCOUNT_SUBSCRIPTION_PAUSES_QUERY, {
     variables: {

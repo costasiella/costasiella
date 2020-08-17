@@ -911,6 +911,10 @@
                 "add": "__STRING_NOT_TRANSLATED__",
                 "credits": {
                     "title_list": "__STRING_NOT_TRANSLATED__"
+                },
+                "pauses": {
+                    "empty_list": "__STRING_NOT_TRANSLATED__",
+                    "title_list": "__STRING_NOT_TRANSLATED__"
                 }
             },
             "teacher_profile": {
