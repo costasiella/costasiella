@@ -64,8 +64,8 @@ function AccountSubscriptionEditPauses({t, match, history}) {
   console.log('query data')
   console.log(data)
 
-  const accountSubscriptionCredits = data.accountSubscriptionCredits
-  const pageInfo = data.accountSubscriptionCredits.pageInfo
+  const accountSubscriptionPauses = data.accountSubscriptionPauses
+  const pageInfo = data.accountSubscriptionPauses.pageInfo
   // const inputData = data
   // const account = data.account
   // const initialdata = data.accountSubscription
@@ -78,19 +78,19 @@ function AccountSubscriptionEditPauses({t, match, history}) {
   const onLoadMore = () => {
     fetchMore({
       variables: {
-        after: accountSubscriptionCredits.pageInfo.endCursor
+        after: accountSubscriptionPauses.pageInfo.endCursor
       },
       updateQuery: (previousResult, { fetchMoreResult }) => {
-        const newEdges = fetchMoreResult.accountSubscriptionCredits.edges
-        const pageInfo = fetchMoreResult.accountSubscriptionCredits.pageInfo
+        const newEdges = fetchMoreResult.accountSubscriptionPauses.edges
+        const pageInfo = fetchMoreResult.accountSubscriptionPauses.pageInfo
 
         return newEdges.length
           ? {
               // Put the new invoices at the end of the list and update `pageInfo`
               // so we have the new `endCursor` and `hasNextPage` values
-              accountSubscriptionCredits: {
-                __typename: previousResult.accountSubscriptionCredits.__typename,
-                edges: [ ...previousResult.accountSubscriptionCredits.edges, ...newEdges ],
+              accountSubscriptionPauses: {
+                __typename: previousResult.accountSubscriptionPauses.__typename,
+                edges: [ ...previousResult.accountSubscriptionPauses.edges, ...newEdges ],
                 pageInfo
               }
             }
@@ -102,32 +102,28 @@ function AccountSubscriptionEditPauses({t, match, history}) {
   return (
     <AccountSubscriptionEditListBase active_tab={activeTab} pageInfo={pageInfo} onLoadMore={onLoadMore}>
       <div className="pull-right">Add button here...</div>
-      <h5>{t('relations.account.subscriptions.credits.title_list')}</h5>
+      <h5>{t('relations.account.subscriptions.pauses.title_list')}</h5>
       <Table>
         <Table.Header>
           <Table.Row key={v4()}>
-            <Table.ColHeader>{t('general.time')}</Table.ColHeader>
+            <Table.ColHeader>{t('general.date_start')}</Table.ColHeader>
+            <Table.ColHeader>{t('general.date_end')}</Table.ColHeader>
             <Table.ColHeader>{t('general.description')}</Table.ColHeader>
-            <Table.ColHeader>{t('general.credits')}</Table.ColHeader>
-            <Table.ColHeader>{t('general.mutation')}</Table.ColHeader>
             <Table.ColHeader></Table.ColHeader>
             <Table.ColHeader></Table.ColHeader>
           </Table.Row>
         </Table.Header>
         <Table.Body>
-            {accountSubscriptionCredits.edges.map(({ node }) => (
+            {accountSubscriptionPauses.edges.map(({ node }) => (
               <Table.Row key={v4()}>
                 <Table.Col>
-                  {moment(node.createdAt).format(dateTimeFormatMoment)}
+                  {moment(node.dateStart).format(dateTimeFormatMoment)}
+                </Table.Col>
+                <Table.Col>
+                  {moment(node.dateEnd).format(dateTimeFormatMoment)}
                 </Table.Col>
                 <Table.Col>
                   {node.description}
-                </Table.Col>
-                <Table.Col>
-                  {node.mutationAmount}
-                </Table.Col>
-                <Table.Col>
-                  <SubscriptionCreditsMutationType mutationType={node.mutationType} />
                 </Table.Col>
                 <Table.Col className="text-right">
                   Edit
