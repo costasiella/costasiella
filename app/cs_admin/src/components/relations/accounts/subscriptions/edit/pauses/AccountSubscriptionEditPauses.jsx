@@ -70,6 +70,8 @@ function AccountSubscriptionEditPauses({t, match, history}) {
     // Empty list
     if (!accountSubscriptionPauses.edges.length) { return (
       <AccountSubscriptionEditListBase active_tab={activeTab}>
+        <div className="pull-right">Add button here...</div>
+        <h5>{t('relations.account.subscriptions.pauses.title_list')}</h5>
         <p>{t('relations.account.subscriptions.pauses.empty_list')}</p>
       </AccountSubscriptionEditListBase>
     )}
