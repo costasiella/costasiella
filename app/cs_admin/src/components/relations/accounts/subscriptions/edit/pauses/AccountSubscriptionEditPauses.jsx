@@ -66,6 +66,13 @@ function AccountSubscriptionEditPauses({t, match, history}) {
 
   const accountSubscriptionPauses = data.accountSubscriptionPauses
   const pageInfo = data.accountSubscriptionPauses.pageInfo
+
+    // Empty list
+    if (!accountSubscriptionPauses.edges.length) { return (
+      <AccountSubscriptionEditListBase active_tab={activeTab}>
+        <p>{t('relations.account.subscriptions.pauses.empty_list')}</p>
+      </AccountSubscriptionEditListBase>
+    )}
   // const inputData = data
   // const account = data.account
   // const initialdata = data.accountSubscription
