@@ -13,6 +13,7 @@ class AccountSubscriptionPause(models.Model):
                                              related_name="pauses")
     date_start = models.DateField()
     date_end = models.DateField()
+    description = models.TextField(default="")
     created_at = models.DateTimeField(auto_now_add=True, editable=False)
     updated_at = models.DateTimeField(auto_now=True, editable=False)
 
