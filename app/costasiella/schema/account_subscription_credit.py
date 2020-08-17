@@ -117,7 +117,7 @@ class UpdateAccountSubscriptionCredit(graphene.relay.ClientIDMutation):
 
         account_subscription_credit.mutation_type = input['mutation_type']
         account_subscription_credit.mutation_amount = input['mutation_amount']
-        account_subscription_credit.description = input['mutation_description']
+        account_subscription_credit.description = input['description']
 
         account_subscription_credit.save()
 

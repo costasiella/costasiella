@@ -7,6 +7,7 @@ from .account_classpass import AccountClasspassQuery, AccountClasspassMutation
 from .account_membership import AccountMembershipQuery, AccountMembershipMutation
 from .account_subscription import AccountSubscriptionQuery, AccountSubscriptionMutation
 from .account_subscription_credit import AccountSubscriptionCreditQuery, AccountSubscriptionCreditMutation
+from .account_subscription_pause import AccountSubscriptionPauseQuery, AccountSubscriptionPauseMutation
 from .account_teacher_profile import AccountTeacherProfileQuery, AccountTeacherProfileMutation
 
 from .app_settings import AppSettingsQuery, AppSettingsMutation
@@ -70,6 +71,7 @@ class Query(AccountQuery,
             AccountMembershipQuery,
             AccountSubscriptionQuery,
             AccountSubscriptionCreditQuery,
+            AccountSubscriptionPauseQuery,
             AccountTeacherProfileQuery,
             AppSettingsQuery,
             DjangoCeleryResultTaskResultQuery,
@@ -124,6 +126,7 @@ class Mutation(AccountMutation,
                AccountMembershipMutation,
                AccountSubscriptionMutation,
                AccountSubscriptionCreditMutation,
+               AccountSubscriptionPauseMutation,
                AccountTeacherProfileMutation,
                AppSettingsMutation,
                FinanceCostCenterMutation,
