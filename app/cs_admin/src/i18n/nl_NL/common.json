@@ -183,7 +183,8 @@
         "license": "__STRING_NOT_TRANSLATED__",
         "license_info": "__STRING_NOT_TRANSLATED__",
         "credits": "__STRING_NOT_TRANSLATED__",
-        "mutation": "__STRING_NOT_TRANSLATED__"
+        "mutation": "__STRING_NOT_TRANSLATED__",
+        "add": "__STRING_NOT_TRANSLATED__"
     },
     "settings": {
         "error_loading": "__STRING_NOT_TRANSLATED__",

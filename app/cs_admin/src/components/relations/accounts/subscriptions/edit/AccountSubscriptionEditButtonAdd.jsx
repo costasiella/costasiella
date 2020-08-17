@@ -15,6 +15,7 @@ function AccountSubscriptionEditButtonAdd({t, match, history, linkTo}) {
     <Link to={linkTo}>
       <Button
         color="primary"
+        size="sm"
         icon="plus-circle"
       >
         {t("general.add")}

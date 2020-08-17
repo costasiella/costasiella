@@ -353,7 +353,8 @@
         "license": "License",
         "license_info": "License Info",
         "credits": "Credits",
-        "mutation": "Mutation"
+        "mutation": "Mutation",
+        "add": "Add"
     },
     "yup": {
         "min_len_3": "Please input at least 3 characters",
