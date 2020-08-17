@@ -27,6 +27,7 @@ import {
 } from "tabler-react";
 // import HasPermissionWrapper from "../../../../HasPermissionWrapper"
 import AccountSubscriptionEditListBase from "../AccountSubscriptionEditListBase"
+import AccountSubscriptionEditButtonAdd from "../AccountSubscriptionEditButtonAdd"
 import moment from 'moment';
 
 
@@ -42,6 +43,9 @@ function AccountSubscriptionEditPauses({t, match, history}) {
   const subscriptionId = match.params.subscription_id
   const returnUrl = `/relations/accounts/${accountId}/subscriptions`
   const activeTab = "pauses"
+
+  const buttonAdd = <AccountSubscriptionEditButtonAdd 
+                      linkTo={`/relations/accounts/${accountId}/subscriptions/edit/${subscriptionId}/pauses/add`} />
 
   const { loading, error, data, fetchMore } = useQuery(GET_ACCOUNT_SUBSCRIPTION_PAUSES_QUERY, {
     variables: {
@@ -70,7 +74,7 @@ function AccountSubscriptionEditPauses({t, match, history}) {
     // Empty list
     if (!accountSubscriptionPauses.edges.length) { return (
       <AccountSubscriptionEditListBase active_tab={activeTab}>
-        <div className="pull-right">Add button here...</div>
+        <div className="pull-right">{buttonAdd}</div>
         <h5>{t('relations.account.subscriptions.pauses.title_list')}</h5>
         <p>{t('relations.account.subscriptions.pauses.empty_list')}</p>
       </AccountSubscriptionEditListBase>
@@ -110,7 +114,7 @@ function AccountSubscriptionEditPauses({t, match, history}) {
 
   return (
     <AccountSubscriptionEditListBase active_tab={activeTab} pageInfo={pageInfo} onLoadMore={onLoadMore}>
-      <div className="pull-right">Add button here...</div>
+      <div className="pull-right">{buttonAdd}</div>
       <h5>{t('relations.account.subscriptions.pauses.title_list')}</h5>
       <Table>
         <Table.Header>
