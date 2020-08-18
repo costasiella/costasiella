@@ -649,7 +649,13 @@
                 },
                 "pauses": {
                     "empty_list": "This subscription hasn't been paused before.",
-                    "title_list": "Pauses"
+                    "title_list": "Pauses",
+                    "toast_add_success": "Added pause",
+                    "delete_confirm_msg": "Are you sure you wish to delete this pause?",
+                    "delete_success": "Deleted pause",
+                    "toast_edit_success": "Saved",
+                    "add": "Add",
+                    "edit": "Edit"
                 }
             },
             "classpasses": {
