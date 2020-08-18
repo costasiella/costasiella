@@ -656,6 +656,12 @@
                     "toast_edit_success": "Saved",
                     "add": "Add",
                     "edit": "Edit"
+                },
+                "menu": {
+                    "general": "General",
+                    "pauses": "Pauses",
+                    "blocks": "Blocks",
+                    "credits": "Credits"
                 }
             },
             "classpasses": {

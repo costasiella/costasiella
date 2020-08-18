@@ -922,6 +922,12 @@
                     "toast_edit_success": "__STRING_NOT_TRANSLATED__",
                     "add": "__STRING_NOT_TRANSLATED__",
                     "edit": "__STRING_NOT_TRANSLATED__"
+                },
+                "menu": {
+                    "general": "__STRING_NOT_TRANSLATED__",
+                    "pauses": "__STRING_NOT_TRANSLATED__",
+                    "blocks": "__STRING_NOT_TRANSLATED__",
+                    "credits": "__STRING_NOT_TRANSLATED__"
                 }
             },
             "teacher_profile": {
