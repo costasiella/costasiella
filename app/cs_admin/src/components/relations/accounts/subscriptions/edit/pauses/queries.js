@@ -24,3 +24,12 @@ query AccountSubscriptionPauses($before: String, $after: String, $accountSubscri
   }
 }
 `
+
+
+export const DELETE_ACCOUNT_SUBSCRIPTION_PAUSE = gql`
+  mutation DeleteAccountSubscriptionPause($input: DeleteAccountSubscriptionPauseInput!) {
+    deleteAccountSubscriptionPause(input: $input) {
+      ok
+    }
+  }
+`
