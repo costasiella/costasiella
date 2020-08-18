@@ -131,10 +131,10 @@ function AccountSubscriptionEditPauses({t, match, history}) {
             {accountSubscriptionPauses.edges.map(({ node }) => (
               <Table.Row key={v4()}>
                 <Table.Col>
-                  {moment(node.dateStart).format(dateTimeFormatMoment)}
+                  {moment(node.dateStart).format(dateFormat)}
                 </Table.Col>
                 <Table.Col>
-                  {moment(node.dateEnd).format(dateTimeFormatMoment)}
+                  {moment(node.dateEnd).format(dateFormat)}
                 </Table.Col>
                 <Table.Col>
                 <div dangerouslySetInnerHTML={{__html: node.description}} />
