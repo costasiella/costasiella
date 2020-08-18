@@ -28,6 +28,11 @@ function AccountSubscriptionEditTabs({ t, active, account_id, subscription_id}) 
             link: `/relations/accounts/${account_id}/subscriptions/edit/${subscription_id}/blocks`
           },
           {
+            name: "alt_prices", 
+            title: t("relations.account.subscriptions.menu.alt_prices"), 
+            link: `/relations/accounts/${account_id}/subscriptions/edit/${subscription_id}/alt_prices`
+          },
+          {
             name: "credits", 
             title: t("relations.account.subscriptions.menu.credits"), 
             link: `/relations/accounts/${account_id}/subscriptions/edit/${subscription_id}/credits`
