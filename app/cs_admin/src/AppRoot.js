@@ -127,6 +127,7 @@ import AccountSubscriptionEdit from './components/relations/accounts/subscriptio
 import AccountSubscriptionEditCredits from './components/relations/accounts/subscriptions/edit/credits/AccountSubscriptionEditCredits'
 import AccountSubscriptionEditPauses from './components/relations/accounts/subscriptions/edit/pauses/AccountSubscriptionEditPauses'
 import AccountSubscriptionEditPauseAdd from './components/relations/accounts/subscriptions/edit/pauses/AccountSubscriptionEditPauseAdd'
+import AccountSubscriptionEditPauseEdit from './components/relations/accounts/subscriptions/edit/pauses/AccountSubscriptionEditPauseEdit'
 import RelationsAccountTeacherProfile from './components/relations/accounts/teacher_profile/RelationsAccountTeacherProfile'
 
 import ScheduleHome from './components/schedule/home/ScheduleHome'
@@ -369,6 +370,8 @@ function AppRoot({ t }) {
           <PrivateRoute exact path="/relations/accounts/:account_id/subscriptions/edit/:subscription_id/credits" component={AccountSubscriptionEditCredits} />
           <PrivateRoute exact path="/relations/accounts/:account_id/subscriptions/edit/:subscription_id/pauses" component={AccountSubscriptionEditPauses} />
           <PrivateRoute exact path="/relations/accounts/:account_id/subscriptions/edit/:subscription_id/pauses/add" component={AccountSubscriptionEditPauseAdd} />
+          <PrivateRoute exact path="/relations/accounts/:account_id/subscriptions/edit/:subscription_id/pauses/edit/:id" 
+                        component={AccountSubscriptionEditPauseEdit} />
           <PrivateRoute exact path="/relations/accounts/:account_id/teacher_profile" component={RelationsAccountTeacherProfile} />
 
           {/* SCHEDULE */}
