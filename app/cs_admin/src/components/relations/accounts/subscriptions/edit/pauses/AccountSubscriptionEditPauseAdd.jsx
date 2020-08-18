@@ -8,9 +8,9 @@ import { withRouter } from "react-router"
 import { Formik } from 'formik'
 import { toast } from 'react-toastify'
 
-import { GET_ACCOUNT_SUBSCRIPTION_PAUSES_QUERY } from "../queries"
-import { FINANCE_INVOICE_PAYMENT_SCHEMA } from './yupSchema'
-import { dateToLocalISO } from '../../../../tools/date_tools'
+import { GET_ACCOUNT_SUBSCRIPTION_PAUSES_QUERY } from "./queries"
+// import { FINANCE_INVOICE_PAYMENT_SCHEMA } from './yupSchema'
+import { dateToLocalISO } from '../../../../../../tools/date_tools'
 
 import AccountSubscriptionEditPauseBase from "./AccountSubscriptionEditPauseBase"
 import AccountSubscriptionEditPauseForm from "./AccountSubscriptionEditPauseForm"
@@ -34,11 +34,9 @@ const ADD_ACCOUNT_SUBSCRIPTION_PAUSE = gql`
 
 
 function AccountSubscriptionEditPauseAdd({ t, history, match }) {
-  const id = match.params.subscription_id
   const accountId = match.params.account_id
   const subscriptionId = match.params.subscription_id
   const returnUrl = `/relations/accounts/${accountId}/subscriptions/edit/${subscriptionId}/pauses/`
-  const activeTab = "pauses"
 
   // const invoiceId = match.params.invoice_id
   // const return_url = "/finance/invoices/edit/" + invoiceId
@@ -47,7 +45,7 @@ function AccountSubscriptionEditPauseAdd({ t, history, match }) {
   //     id: invoiceId
   //   }
   // })
-  const [addInvoicePayment, { mutationData, mutationLoading, mutationError, onCompleted }] = useMutation(ADD_ACCOUNT_SUBSCRIPTION_PAUSE, {
+  const [addSubscriptionPause] = useMutation(ADD_ACCOUNT_SUBSCRIPTION_PAUSE, {
     onCompleted: () => history.push(returnUrl),
   })
 
@@ -71,7 +69,7 @@ function AccountSubscriptionEditPauseAdd({ t, history, match }) {
   // const inputData = data
 
   return (
-    <AccountSubscriptionEditPauseBase formType={"create"}>
+    <AccountSubscriptionEditPauseBase>
       <Formik
         initialValues={{ 
           dateStart: new Date() ,
@@ -79,30 +77,33 @@ function AccountSubscriptionEditPauseAdd({ t, history, match }) {
         }}
         // validationSchema={FINANCE_INVOICE_PAYMENT_SCHEMA}
         onSubmit={(values, { setSubmitting }) => {
-            addInvoicePayment({ variables: {
-              input: {
-                accountSubscription: subscriptionId,
-                dateStart: dateToLocalISO(values.dateStart),
-                dateEnd: dateToLocalISO(values.dateEnd),
-                description: values.description
-              }
-            }, refetchQueries: [
-                {query: GET_ACCOUNT_SUBSCRIPTION_PAUSES_QUERY, variables: {
-                  accountSubscription: subscriptionId
-                }},
-            ]})
-            .then(({ data }) => {
-                console.log('got data', data);
-                toast.success((t('relations.account.subscriptions.pauses.toast_add_success')), {
-                    position: toast.POSITION.BOTTOM_RIGHT
-                  })
-              }).catch((error) => {
-                toast.error((t('general.toast_server_error')) + ': ' +  error, {
-                    position: toast.POSITION.BOTTOM_RIGHT
-                  })
-                console.log('there was an error sending the query', error)
-                setSubmitting(false)
-              })
+          console.log("submit values")
+          console.log(values)
+
+          addSubscriptionPause({ variables: {
+            input: {
+              accountSubscription: subscriptionId,
+              dateStart: dateToLocalISO(values.dateStart),
+              dateEnd: dateToLocalISO(values.dateEnd),
+              description: values.description
+            }
+          }, refetchQueries: [
+              {query: GET_ACCOUNT_SUBSCRIPTION_PAUSES_QUERY, variables: {
+                accountSubscription: subscriptionId
+              }},
+          ]})
+          .then(({ data }) => {
+              console.log('got data', data);
+              toast.success((t('relations.account.subscriptions.pauses.toast_add_success')), {
+                  position: toast.POSITION.BOTTOM_RIGHT
+                })
+            }).catch((error) => {
+              toast.error((t('general.toast_server_error')) + ': ' +  error, {
+                  position: toast.POSITION.BOTTOM_RIGHT
+                })
+              console.log('there was an error sending the query', error)
+              setSubmitting(false)
+            })
         }}
         >
         {({ isSubmitting, errors, values, setFieldTouched, setFieldValue }) => (
@@ -112,7 +113,8 @@ function AccountSubscriptionEditPauseAdd({ t, history, match }) {
             setFieldValue={setFieldValue}
             errors={errors}
             values={values}
-            return_url={return_url}
+            returnUrl={returnUrl}
+            formTitle="create"
           />
         )}
       </Formik>
