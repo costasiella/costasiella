@@ -46,6 +46,7 @@ function AccountSubscriptionEditBlockForm ({
           <Grid.Col>
             <Form.Group label={t('general.date_start')}>
               <CSDatePicker 
+                className={(errors.dateStart) ? "form-control is-invalid" : "form-control"} 
                 selected={values.dateStart}
                 onChange={(date) => setFieldValue("dateStart", date)}
                 onBlur={() => setFieldTouched("dateStart", true)}
@@ -56,6 +57,7 @@ function AccountSubscriptionEditBlockForm ({
           <Grid.Col>
             <Form.Group label={t('general.date_end')}>
               <CSDatePicker 
+                className={(errors.dateEnd) ? "form-control is-invalid" : "form-control"} 
                 selected={values.dateEnd}
                 onChange={(date) => setFieldValue("dateEnd", date)}
                 onBlur={() => setFieldTouched("dateEnd", true)}
