@@ -78,7 +78,7 @@ class CreateAccountSubscriptionPause(graphene.relay.ClientIDMutation):
     def mutate_and_get_payload(self, root, info, **input):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.add_accountsubscriptionpause')
-        
+
         # Validate input
         result = validate_create_update_input(input, update=False)
 
@@ -115,8 +115,8 @@ class UpdateAccountSubscriptionPause(graphene.relay.ClientIDMutation):
 
         result = validate_create_update_input(input, update=True)
 
-        account_subscription_pause.mutation_type = input['date_start']
-        account_subscription_pause.mutation_amount = input['date_end']
+        account_subscription_pause.date_start = input['date_start']
+        account_subscription_pause.date_end = input['date_end']
         account_subscription_pause.description = input['description']
 
         account_subscription_pause.save()
