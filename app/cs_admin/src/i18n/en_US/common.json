@@ -654,8 +654,8 @@
                     "delete_confirm_msg": "Are you sure you wish to delete this pause?",
                     "delete_success": "Deleted pause",
                     "toast_edit_success": "Saved",
-                    "add": "Add",
-                    "edit": "Edit"
+                    "add": "Add pause",
+                    "edit": "Edit pause"
                 },
                 "menu": {
                     "general": "General",
@@ -668,8 +668,8 @@
                     "delete_confirm_msg": "Are you sure you wish to delete this blocked period?",
                     "delete_success": "Deleted blocked period",
                     "toast_edit_success": "Saved",
-                    "add": "Add",
-                    "edit": "Edit",
+                    "add": "Add block",
+                    "edit": "Edit block",
                     "title_list": "Blocked periods",
                     "empty_list": "This subscription hasn't been blocked before."
                 }
