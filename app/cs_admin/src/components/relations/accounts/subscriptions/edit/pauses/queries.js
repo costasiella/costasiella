@@ -25,6 +25,20 @@ query AccountSubscriptionPauses($before: String, $after: String, $accountSubscri
 }
 `
 
+export const GET_ACCOUNT_SUBSCRIPTION_PAUSE_QUERY = gql`
+query AccountSubscriptionPause($id: ID!) {
+  accountSubscriptionPause(id:$id) {
+    id
+    accountSubscription {
+      id
+    }
+    dateStart
+    dateEnd
+    description
+  }
+}
+`
+
 
 export const DELETE_ACCOUNT_SUBSCRIPTION_PAUSE = gql`
   mutation DeleteAccountSubscriptionPause($input: DeleteAccountSubscriptionPauseInput!) {
