@@ -4,7 +4,7 @@ import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
 
 import { DELETE_ACCOUNT_SUBSCRIPTION_PAUSE, GET_ACCOUNT_SUBSCRIPTION_PAUSES_QUERY } from "./queries"
-import confirm_delete from "../../../../../tools/confirm_delete"
+import confirm_delete from "../../../../../../tools/confirm_delete"
 
 import {
   Icon
@@ -19,7 +19,7 @@ function AccountSubscriptionEditPauseDelete({t, match, history, id}) {
   }
 
   return (
-    <button className="icon btn btn-danger btn-sm mb-3 pull-right" 
+    <button className="icon btn btn-link btn-sm mb-3 pull-right" 
       title={t('general.delete')} 
       onClick={() => {
         confirm_delete({
@@ -40,7 +40,7 @@ function AccountSubscriptionEditPauseDelete({t, match, history, id}) {
           }
         })
     }}>
-      <span className="text-white"><Icon prefix="fe" name="trash-2" /> {" "} {t("")}</span>
+      <Icon prefix="fe" name="trash-2" />
     </button>
   )
 }

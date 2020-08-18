@@ -28,6 +28,7 @@ import {
 // import HasPermissionWrapper from "../../../../HasPermissionWrapper"
 import AccountSubscriptionEditListBase from "../AccountSubscriptionEditListBase"
 import AccountSubscriptionEditButtonAdd from "../AccountSubscriptionEditButtonAdd"
+import AccountSubscriptionEditPauseDelete from "./AccountSubscriptionEditPauseDelete"
 import moment from 'moment';
 
 
@@ -142,7 +143,7 @@ function AccountSubscriptionEditPauses({t, match, history}) {
                   Edit
                 </Table.Col>
                 <Table.Col className="text-right">
-                  Del
+                  <AccountSubscriptionEditPauseDelete id={node.id} />
                 </Table.Col>
               </Table.Row>
             ))}
