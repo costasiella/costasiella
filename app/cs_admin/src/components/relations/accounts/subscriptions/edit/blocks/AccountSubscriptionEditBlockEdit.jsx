@@ -8,18 +8,18 @@ import { withRouter } from "react-router"
 import { Formik } from 'formik'
 import { toast } from 'react-toastify'
 
-import { GET_ACCOUNT_SUBSCRIPTION_PAUSES_QUERY, GET_ACCOUNT_SUBSCRIPTION_PAUSE_QUERY } from "./queries"
+import { GET_ACCOUNT_SUBSCRIPTION_BLOCKS_QUERY, GET_ACCOUNT_SUBSCRIPTION_BLOCK_QUERY } from "./queries"
 // import { FINANCE_INVOICE_PAYMENT_SCHEMA } from './yupSchema'
 import { dateToLocalISO } from '../../../../../../tools/date_tools'
 
-import AccountSubscriptionEditPauseBase from "./AccountSubscriptionEditPauseBase"
-import AccountSubscriptionEditPauseForm from "./AccountSubscriptionEditPauseForm"
+import AccountSubscriptionEditBlockBase from "./AccountSubscriptionEditBlockBase"
+import AccountSubscriptionEditBlockForm from "./AccountSubscriptionEditBlockForm"
 
 
-const UPDATE_ACCOUNT_SUBSCRIPTION_PAUSE = gql`
-  mutation UpdateAccountSubscriptionPause($input:UpdateAccountSubscriptionPauseInput!) {
-    updateAccountSubscriptionPause(input: $input) {
-      accountSubscriptionPause {
+const UPDATE_ACCOUNT_SUBSCRIPTION_BLOCK = gql`
+  mutation UpdateAccountSubscriptionBlock($input:UpdateAccountSubscriptionBlockInput!) {
+    updateAccountSubscriptionBlock(input: $input) {
+      accountSubscriptionBlock {
         id
       }
     }
@@ -27,58 +27,58 @@ const UPDATE_ACCOUNT_SUBSCRIPTION_PAUSE = gql`
 `
 
 
-function AccountSubscriptionEditPauseEdit({ t, history, match }) {
+function AccountSubscriptionEditBlockEdit({ t, history, match }) {
   const id = match.params.id
   const accountId = match.params.account_id
   const subscriptionId = match.params.subscription_id
-  const returnUrl = `/relations/accounts/${accountId}/subscriptions/edit/${subscriptionId}/pauses/`
+  const returnUrl = `/relations/accounts/${accountId}/subscriptions/edit/${subscriptionId}/blocks/`
 
-  const { loading, error, data, } = useQuery(GET_ACCOUNT_SUBSCRIPTION_PAUSE_QUERY, {
+  const { loading, error, data, } = useQuery(GET_ACCOUNT_SUBSCRIPTION_BLOCK_QUERY, {
     variables: {
       id: id
     }
   })
 
-  const [updateSubscriptionPause] = useMutation(UPDATE_ACCOUNT_SUBSCRIPTION_PAUSE, {
+  const [updateSubscriptionBlock] = useMutation(UPDATE_ACCOUNT_SUBSCRIPTION_BLOCK, {
     onCompleted: () => history.push(returnUrl),
   })
 
   if (loading) return (
-    <AccountSubscriptionEditPauseBase>
+    <AccountSubscriptionEditBlockBase>
         <p>{t('general.loading_with_dots')}</p>
-    </AccountSubscriptionEditPauseBase>
+    </AccountSubscriptionEditBlockBase>
   )
   // Error
   if (error) {
     return (
-      <AccountSubscriptionEditPauseBase>
+      <AccountSubscriptionEditBlockBase>
           { console.log(error) }
           <p>{t('general.error_sad_smiley')}</p>
-      </AccountSubscriptionEditPauseBase>
+      </AccountSubscriptionEditBlockBase>
     )
   }
 
   console.log('query data')
   console.log(data)
   const inputData = data
-  const accountSubscriptionPause = data.accountSubscriptionPause
+  const accountSubscriptionBlock = data.accountSubscriptionBlock
 
 
 
   return (
-    <AccountSubscriptionEditPauseBase>
+    <AccountSubscriptionEditBlockBase>
       <Formik
         initialValues={{ 
-          dateStart: new Date(accountSubscriptionPause.dateStart),
-          dateEnd: new Date(accountSubscriptionPause.dateEnd),
-          description: accountSubscriptionPause.description
+          dateStart: new Date(accountSubscriptionBlock.dateStart),
+          dateEnd: new Date(accountSubscriptionBlock.dateEnd),
+          description: accountSubscriptionBlock.description
         }}
         // validationSchema={FINANCE_INVOICE_PAYMENT_SCHEMA}
         onSubmit={(values, { setSubmitting }) => {
           console.log("submit values")
           console.log(values)
 
-          updateSubscriptionPause({ variables: {
+          updateSubscriptionBlock({ variables: {
             input: {
               id: id,
               dateStart: dateToLocalISO(values.dateStart),
@@ -86,13 +86,13 @@ function AccountSubscriptionEditPauseEdit({ t, history, match }) {
               description: values.description
             }
           }, refetchQueries: [
-              {query: GET_ACCOUNT_SUBSCRIPTION_PAUSES_QUERY, variables: {
+              {query: GET_ACCOUNT_SUBSCRIPTION_BLOCKS_QUERY, variables: {
                 accountSubscription: subscriptionId
               }},
           ]})
           .then(({ data }) => {
               console.log('got data', data);
-              toast.success((t('relations.account.subscriptions.pauses.toast_edit_success')), {
+              toast.success((t('relations.account.subscriptions.blocks.toast_edit_success')), {
                   position: toast.POSITION.BOTTOM_RIGHT
                 })
             }).catch((error) => {
@@ -105,7 +105,7 @@ function AccountSubscriptionEditPauseEdit({ t, history, match }) {
         }}
         >
         {({ isSubmitting, errors, values, setFieldTouched, setFieldValue }) => (
-          <AccountSubscriptionEditPauseForm
+          <AccountSubscriptionEditBlockForm
             isSubmitting={isSubmitting}
             setFieldTouched={setFieldTouched}
             setFieldValue={setFieldValue}
@@ -116,9 +116,9 @@ function AccountSubscriptionEditPauseEdit({ t, history, match }) {
           />
         )}
       </Formik>
-    </AccountSubscriptionEditPauseBase>
+    </AccountSubscriptionEditBlockBase>
   )
 }
 
 
-export default withTranslation()(withRouter(AccountSubscriptionEditPauseEdit))
+export default withTranslation()(withRouter(AccountSubscriptionEditBlockEdit))
