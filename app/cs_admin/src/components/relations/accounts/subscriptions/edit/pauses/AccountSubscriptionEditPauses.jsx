@@ -136,7 +136,7 @@ function AccountSubscriptionEditPauses({t, match, history}) {
                   {moment(node.dateEnd).format(dateTimeFormatMoment)}
                 </Table.Col>
                 <Table.Col>
-                  {node.description}
+                <div dangerouslySetInnerHTML={{__html: node.description}} />
                 </Table.Col>
                 <Table.Col className="text-right">
                   Edit
