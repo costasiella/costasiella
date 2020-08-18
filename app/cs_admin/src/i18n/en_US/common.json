@@ -662,6 +662,16 @@
                     "pauses": "Pauses",
                     "blocks": "Blocks",
                     "credits": "Credits"
+                },
+                "blocks": {
+                    "toast_add_success": "Added block",
+                    "delete_confirm_msg": "Are you sure you wish to delete this blocked period?",
+                    "delete_success": "Deleted blocked period",
+                    "toast_edit_success": "Saved",
+                    "add": "Add",
+                    "edit": "Edit",
+                    "title_list": "Blocked periods",
+                    "empty_list": "This subscription hasn't been blocked before."
                 }
             },
             "classpasses": {
