@@ -21,12 +21,6 @@ const ADD_ACCOUNT_SUBSCRIPTION_PAUSE = gql`
     createAccountSubscriptionPause(input: $input) {
       accountSubscriptionPause {
         id
-        accountSubscription {
-          id
-        }
-        dateStart
-        dateEnd
-        description
       }
     }
   }
