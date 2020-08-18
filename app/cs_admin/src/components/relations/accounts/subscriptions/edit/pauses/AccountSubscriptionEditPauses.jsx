@@ -140,7 +140,12 @@ function AccountSubscriptionEditPauses({t, match, history}) {
                 <div dangerouslySetInnerHTML={{__html: node.description}} />
                 </Table.Col>
                 <Table.Col className="text-right">
-                  Edit
+                  <Link to={`/relations/accounts/${accountId}/subscriptions/edit/${subscriptionId}/pauses/edit/${node.id}`}>
+                    <Button className='btn-sm' 
+                            color="secondary">
+                      {t('general.edit')}
+                    </Button>
+                  </Link>
                 </Table.Col>
                 <Table.Col className="text-right">
                   <AccountSubscriptionEditPauseDelete id={node.id} />
