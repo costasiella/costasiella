@@ -14,17 +14,22 @@ function AccountSubscriptionEditTabs({ t, active, account_id, subscription_id}) 
       tabs={[
           {
             name: "general", 
-            title: "General", 
+            title: t("relations.account.subscriptions.menu.general"), 
             link: `/relations/accounts/${account_id}/subscriptions/edit/${subscription_id}`
           },
           {
             name: "pauses", 
-            title: "Pauses", 
+            title: t("relations.account.subscriptions.menu.pauses"), 
             link: `/relations/accounts/${account_id}/subscriptions/edit/${subscription_id}/pauses`
           },
           {
+            name: "blocks", 
+            title: t("relations.account.subscriptions.menu.blocks"), 
+            link: `/relations/accounts/${account_id}/subscriptions/edit/${subscription_id}/blocks`
+          },
+          {
             name: "credits", 
-            title: "Credits", 
+            title: t("relations.account.subscriptions.menu.credits"), 
             link: `/relations/accounts/${account_id}/subscriptions/edit/${subscription_id}/credits`
           },
       ]}
