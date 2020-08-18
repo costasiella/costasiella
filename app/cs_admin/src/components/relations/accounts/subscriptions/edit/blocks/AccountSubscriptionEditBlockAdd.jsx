@@ -9,7 +9,7 @@ import { Formik } from 'formik'
 import { toast } from 'react-toastify'
 
 import { GET_ACCOUNT_SUBSCRIPTION_BLOCKS_QUERY } from "./queries"
-// import { FINANCE_INVOICE_PAYMENT_SCHEMA } from './yupSchema'
+import { ACCOUNT_SUBSCRIPTION_BLOCK_SCHEMA } from './yupSchema'
 import { dateToLocalISO } from '../../../../../../tools/date_tools'
 
 import AccountSubscriptionEditBlockBase from "./AccountSubscriptionEditBlockBase"
@@ -44,7 +44,7 @@ function AccountSubscriptionEditBlockAdd({ t, history, match }) {
           dateStart: new Date() ,
           description: ""
         }}
-        // validationSchema={FINANCE_INVOICE_PAYMENT_SCHEMA}
+        validationSchema={ACCOUNT_SUBSCRIPTION_BLOCK_SCHEMA}
         onSubmit={(values, { setSubmitting }) => {
           console.log("submit values")
           console.log(values)
