@@ -27,7 +27,7 @@ class AccountSubscriptionCredit(models.Model):
     mutation_type = models.CharField(max_length=255, choices=MUTATION_TYPES, default="ADD")
     mutation_amount = models.DecimalField(max_digits=20, decimal_places=1)
     description = models.TextField(default="")
-    subscription_year = models.IntegerField(null=True),
+    subscription_year = models.IntegerField(null=True)
     subscription_month = models.IntegerField(null=True)
     created_at = models.DateTimeField(auto_now_add=True, editable=False)  # can be used at mutation_datetime
     updated_at = models.DateTimeField(auto_now=True, editable=False)

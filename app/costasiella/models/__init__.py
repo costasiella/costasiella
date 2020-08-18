@@ -3,6 +3,7 @@ from .account_accepted_document import AccountAcceptedDocument
 from .account_classpass import AccountClasspass
 from .account_membership import AccountMembership
 from .account_subscription import AccountSubscription
+from .account_subscription_alt_price import AccountSubscriptionAltPrice
 from .account_subscription_block import AccountSubscriptionBlock
 from .account_subscription_credit import AccountSubscriptionCredit
 from .account_subscription_pause import AccountSubscriptionPause
