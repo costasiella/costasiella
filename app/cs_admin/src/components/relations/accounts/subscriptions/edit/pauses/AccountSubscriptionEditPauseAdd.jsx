@@ -8,24 +8,12 @@ import { withRouter } from "react-router"
 import { Formik } from 'formik'
 import { toast } from 'react-toastify'
 
-
-import {
-  Card,
-} from "tabler-react"
-
-
-import { get_list_query_variables } from "../tools"
-
-import { GET_INVOICE_QUERY, GET_INVOICES_QUERY } from "../queries"
-import { GET_INPUT_VALUES_QUERY } from './queries'
+import { GET_ACCOUNT_SUBSCRIPTION_PAUSES_QUERY } from "../queries"
 import { FINANCE_INVOICE_PAYMENT_SCHEMA } from './yupSchema'
-// import ScheduleClassPriceForm from './ScheduleClassPriceForm'
 import { dateToLocalISO } from '../../../../tools/date_tools'
 
-import SiteWrapper from "../../../SiteWrapper"
-
-import FinanceInvoicePaymentBase from "./AccountSubscriptionEditPauseBase"
-import FinanceInvoicePaymentForm from "./AccountSubscriptionEditPauseForm"
+import AccountSubscriptionEditPauseBase from "./AccountSubscriptionEditPauseBase"
+import AccountSubscriptionEditPauseForm from "./AccountSubscriptionEditPauseForm"
 
 
 const ADD_ACCOUNT_SUBSCRIPTION_PAUSE = gql`
@@ -49,70 +37,63 @@ function AccountSubscriptionEditPauseAdd({ t, history, match }) {
   const id = match.params.subscription_id
   const accountId = match.params.account_id
   const subscriptionId = match.params.subscription_id
-  const returnUrl = `/relations/accounts/${accountId}/subscriptions`
+  const returnUrl = `/relations/accounts/${accountId}/subscriptions/edit/${subscriptionId}/pauses/`
   const activeTab = "pauses"
 
-  const invoiceId = match.params.invoice_id
-  const return_url = "/finance/invoices/edit/" + invoiceId
-  const { loading: queryLoading, error: queryError, data, } = useQuery(GET_INVOICE_QUERY, {
-    variables: {
-      id: invoiceId
-    }
-  })
+  // const invoiceId = match.params.invoice_id
+  // const return_url = "/finance/invoices/edit/" + invoiceId
+  // const { loading: queryLoading, error: queryError, data, } = useQuery(GET_INVOICE_QUERY, {
+  //   variables: {
+  //     id: invoiceId
+  //   }
+  // })
   const [addInvoicePayment, { mutationData, mutationLoading, mutationError, onCompleted }] = useMutation(ADD_ACCOUNT_SUBSCRIPTION_PAUSE, {
-    onCompleted: () => history.push(return_url),
+    onCompleted: () => history.push(returnUrl),
   })
 
-  if (queryLoading) return (
-    <SiteWrapper>
-      <div className="my-3 my-md-5">
-        <p>{t('general.loading_with_dots')}</p>
-      </div>
-    </SiteWrapper>
-  )
-  // Error
-  if (queryError) {
-    return (
-      <SiteWrapper>
-        <div className="my-3 my-md-5">
-          { console.log(queryError) }
-          <p>{t('general.error_sad_smiley')}</p>
-        </div>
-      </SiteWrapper>
-    )
-  }
+  // if (queryLoading) return (
+  //   <AccountSubscriptionEditPauseBase>
+  //       <p>{t('general.loading_with_dots')}</p>
+  //   </AccountSubscriptionEditPauseBase>
+  // )
+  // // Error
+  // if (queryError) {
+  //   return (
+  //     <AccountSubscriptionEditPauseBase>
+  //         { console.log(queryError) }
+  //         <p>{t('general.error_sad_smiley')}</p>
+  //     </AccountSubscriptionEditPauseBase>
+  //   )
+  // }
 
-  console.log('query data')
-  console.log(data)
-  const inputData = data
-
+  // console.log('query data')
+  // console.log(data)
+  // const inputData = data
 
   return (
-    <FinanceInvoicePaymentBase form_type={"create"}>
+    <AccountSubscriptionEditPauseBase formType={"create"}>
       <Formik
         initialValues={{ 
-          date: new Date() ,
-          amount: inputData.financeInvoice.balance,
-          financePaymentMethod: "",
-          note: ""
+          dateStart: new Date() ,
+          description: ""
         }}
         // validationSchema={FINANCE_INVOICE_PAYMENT_SCHEMA}
         onSubmit={(values, { setSubmitting }) => {
             addInvoicePayment({ variables: {
               input: {
-                financeInvoice: invoiceId,
-                date: dateToLocalISO(values.date),
-                amount: values.amount,
-                financePaymentMethod: values.financePaymentMethod,
-                note: values.note
+                accountSubscription: subscriptionId,
+                dateStart: dateToLocalISO(values.dateStart),
+                dateEnd: dateToLocalISO(values.dateEnd),
+                description: values.description
               }
             }, refetchQueries: [
-                {query: GET_INVOICES_QUERY, variables: get_list_query_variables() },
-                {query: GET_INVOICE_QUERY, variables: { id: invoiceId }},
+                {query: GET_ACCOUNT_SUBSCRIPTION_PAUSES_QUERY, variables: {
+                  accountSubscription: subscriptionId
+                }},
             ]})
             .then(({ data }) => {
                 console.log('got data', data);
-                toast.success((t('finance.invoice.payments.toast_add_success')), {
+                toast.success((t('relations.account.subscriptions.pauses.toast_add_success')), {
                     position: toast.POSITION.BOTTOM_RIGHT
                   })
               }).catch((error) => {
@@ -125,8 +106,7 @@ function AccountSubscriptionEditPauseAdd({ t, history, match }) {
         }}
         >
         {({ isSubmitting, errors, values, setFieldTouched, setFieldValue }) => (
-          <FinanceInvoicePaymentForm
-            inputData={inputData}
+          <AccountSubscriptionEditPauseForm
             isSubmitting={isSubmitting}
             setFieldTouched={setFieldTouched}
             setFieldValue={setFieldValue}
@@ -136,7 +116,7 @@ function AccountSubscriptionEditPauseAdd({ t, history, match }) {
           />
         )}
       </Formik>
-    </FinanceInvoicePaymentBase>
+    </AccountSubscriptionEditPauseBase>
   )
 }
 
