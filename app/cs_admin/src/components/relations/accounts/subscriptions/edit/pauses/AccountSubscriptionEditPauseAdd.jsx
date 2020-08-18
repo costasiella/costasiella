@@ -9,7 +9,7 @@ import { Formik } from 'formik'
 import { toast } from 'react-toastify'
 
 import { GET_ACCOUNT_SUBSCRIPTION_PAUSES_QUERY } from "./queries"
-// import { FINANCE_INVOICE_PAYMENT_SCHEMA } from './yupSchema'
+import { ACCOUNT_SUBSCRIPTION_PAUSE_SCHEMA } from './yupSchema'
 import { dateToLocalISO } from '../../../../../../tools/date_tools'
 
 import AccountSubscriptionEditPauseBase from "./AccountSubscriptionEditPauseBase"
@@ -32,35 +32,9 @@ function AccountSubscriptionEditPauseAdd({ t, history, match }) {
   const subscriptionId = match.params.subscription_id
   const returnUrl = `/relations/accounts/${accountId}/subscriptions/edit/${subscriptionId}/pauses/`
 
-  // const invoiceId = match.params.invoice_id
-  // const return_url = "/finance/invoices/edit/" + invoiceId
-  // const { loading: queryLoading, error: queryError, data, } = useQuery(GET_INVOICE_QUERY, {
-  //   variables: {
-  //     id: invoiceId
-  //   }
-  // })
   const [addSubscriptionPause] = useMutation(ADD_ACCOUNT_SUBSCRIPTION_PAUSE, {
     onCompleted: () => history.push(returnUrl),
   })
-
-  // if (queryLoading) return (
-  //   <AccountSubscriptionEditPauseBase>
-  //       <p>{t('general.loading_with_dots')}</p>
-  //   </AccountSubscriptionEditPauseBase>
-  // )
-  // // Error
-  // if (queryError) {
-  //   return (
-  //     <AccountSubscriptionEditPauseBase>
-  //         { console.log(queryError) }
-  //         <p>{t('general.error_sad_smiley')}</p>
-  //     </AccountSubscriptionEditPauseBase>
-  //   )
-  // }
-
-  // console.log('query data')
-  // console.log(data)
-  // const inputData = data
 
   return (
     <AccountSubscriptionEditPauseBase>
@@ -69,7 +43,7 @@ function AccountSubscriptionEditPauseAdd({ t, history, match }) {
           dateStart: new Date() ,
           description: ""
         }}
-        // validationSchema={FINANCE_INVOICE_PAYMENT_SCHEMA}
+        validationSchema={ACCOUNT_SUBSCRIPTION_PAUSE_SCHEMA}
         onSubmit={(values, { setSubmitting }) => {
           console.log("submit values")
           console.log(values)

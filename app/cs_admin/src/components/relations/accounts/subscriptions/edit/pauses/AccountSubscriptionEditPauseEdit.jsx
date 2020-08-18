@@ -9,7 +9,7 @@ import { Formik } from 'formik'
 import { toast } from 'react-toastify'
 
 import { GET_ACCOUNT_SUBSCRIPTION_PAUSES_QUERY, GET_ACCOUNT_SUBSCRIPTION_PAUSE_QUERY } from "./queries"
-// import { FINANCE_INVOICE_PAYMENT_SCHEMA } from './yupSchema'
+import { ACCOUNT_SUBSCRIPTION_PAUSE_SCHEMA } from './yupSchema'
 import { dateToLocalISO } from '../../../../../../tools/date_tools'
 
 import AccountSubscriptionEditPauseBase from "./AccountSubscriptionEditPauseBase"
@@ -73,7 +73,7 @@ function AccountSubscriptionEditPauseEdit({ t, history, match }) {
           dateEnd: new Date(accountSubscriptionPause.dateEnd),
           description: accountSubscriptionPause.description
         }}
-        // validationSchema={FINANCE_INVOICE_PAYMENT_SCHEMA}
+        validationSchema={ACCOUNT_SUBSCRIPTION_PAUSE_SCHEMA}
         onSubmit={(values, { setSubmitting }) => {
           console.log("submit values")
           console.log(values)
