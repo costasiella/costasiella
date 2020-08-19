@@ -122,7 +122,7 @@ function AccountSubscriptionEditBlocks({t, match, history}) {
                   {moment(node.dateEnd).format(dateFormat)}
                 </Table.Col>
                 <Table.Col>
-                <div dangerouslySetInnerHTML={{__html: node.description}} />
+                  <div dangerouslySetInnerHTML={{__html: node.description}} />
                 </Table.Col>
                 <Table.Col className="text-right">
                   <Link to={`/relations/accounts/${accountId}/subscriptions/edit/${subscriptionId}/blocks/edit/${node.id}`}>
