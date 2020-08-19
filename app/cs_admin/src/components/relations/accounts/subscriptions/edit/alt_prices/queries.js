@@ -18,6 +18,7 @@ query AccountSubscriptionAltPrices($before:String, $after:String, $accountSubscr
         subscriptionYear
         subscriptionMonth
         amount
+        amountDisplay
         description
         note
         createdAt
