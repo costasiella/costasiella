@@ -61,6 +61,15 @@ function AccountSubscriptionEditAltPriceForm ({
               <ErrorMessage name="subscriptionMonth" component="span" className="invalid-feedback" />
             </Form.Group>
           </Grid.Col>
+          <Grid.Col>
+            <Form.Group label={t('general.amount')}>
+                <Field type="text" 
+                    name="amount" 
+                    className={(errors.amount) ? "form-control is-invalid" : "form-control"} 
+                    autoComplete="off" />
+                <ErrorMessage name="amount" component="span" className="invalid-feedback" />
+            </Form.Group>
+          </Grid.Col>
         </Grid.Row>
         <Grid.Row>
           <Grid.Col>
