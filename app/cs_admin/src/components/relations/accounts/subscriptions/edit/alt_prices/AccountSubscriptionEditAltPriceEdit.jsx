@@ -9,7 +9,7 @@ import { Formik } from 'formik'
 import { toast } from 'react-toastify'
 
 import { GET_ACCOUNT_SUBSCRIPTION_ALT_PRICES_QUERY, GET_ACCOUNT_SUBSCRIPTION_ALT_PRICE_QUERY } from "./queries"
-// import { ACCOUNT_SUBSCRIPTION_ALT_PRICE_SCHEMA } from './yupSchema'
+import { ACCOUNT_SUBSCRIPTION_ALT_PRICE_SCHEMA } from './yupSchema'
 
 import AccountSubscriptionEditAltPriceBase from "./AccountSubscriptionEditAltPriceBase"
 import AccountSubscriptionEditAltPriceForm from "./AccountSubscriptionEditAltPriceForm"
@@ -74,7 +74,7 @@ function AccountSubscriptionEditAltPriceEdit({ t, history, match }) {
           description: accountSubscriptionAltPrice.description,
           note: accountSubscriptionAltPrice.note
         }}
-        // validationSchema={ACCOUNT_SUBSCRIPTION_ALT_PRICE_SCHEMA}
+        validationSchema={ACCOUNT_SUBSCRIPTION_ALT_PRICE_SCHEMA}
         onSubmit={(values, { setSubmitting }) => {
           console.log("submit values")
           console.log(values)
