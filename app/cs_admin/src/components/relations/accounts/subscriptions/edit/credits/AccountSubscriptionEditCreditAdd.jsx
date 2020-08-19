@@ -40,7 +40,8 @@ function AccountSubscriptionEditCreditAdd({ t, history, match }) {
     <AccountSubscriptionEditCreditBase>
       <Formik
         initialValues={{ 
-          dateStart: new Date() ,
+          mutationType: "ADD",
+          mutationAmount: 0,
           description: ""
         }}
         // validationSchema={ACCOUNT_SUBSCRIPTION_CREDIT_SCHEMA}
