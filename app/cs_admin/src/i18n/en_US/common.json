@@ -357,7 +357,7 @@
         "add": "Add",
         "subscription_year": "Subscription year",
         "subscription_month": "Subscription month",
-        "subtract": "__STRING_NOT_TRANSLATED__"
+        "subtract": "Subtract"
     },
     "yup": {
         "min_len_3": "Please input at least 3 characters",
