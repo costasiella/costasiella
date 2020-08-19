@@ -9,7 +9,7 @@ import { v4 } from 'uuid'
 
 import AppSettingsContext from '../../../../../context/AppSettingsContext'
 
-import { GET_ACCOUNT_SUBSCRIPTION_BLOCKS_QUERY } from './queries'
+import { GET_ACCOUNT_SUBSCRIPTION_ALT_PRICES_QUERY } from './queries'
 
 import {
   Page,
@@ -41,7 +41,7 @@ function AccountSubscriptionEditAltPrices({t, match, history}) {
   const buttonAdd = <AccountSubscriptionEditButtonAdd 
                       linkTo={`/relations/accounts/${accountId}/subscriptions/edit/${subscriptionId}/alt_prices/add`} />
 
-  const { loading, error, data, fetchMore } = useQuery(GET_ACCOUNT_SUBSCRIPTION_ALT_PRICE_QUERY, {
+  const { loading, error, data, fetchMore } = useQuery(GET_ACCOUNT_SUBSCRIPTION_ALT_PRICES_QUERY, {
     variables: {
       accountSubscription: subscriptionId
     }
