@@ -135,7 +135,12 @@ function AccountSubscriptionEditCredits({t, match, history}) {
                   <SubscriptionCreditsMutationType mutationType={node.mutationType} />
                 </Table.Col>
                 <Table.Col className="text-right">
-                  Edit
+                  <Link to={`/relations/accounts/${accountId}/subscriptions/edit/${subscriptionId}/credits/edit/${node.id}`}>
+                    <Button className='btn-sm' 
+                            color="secondary">
+                      {t('general.edit')}
+                    </Button>
+                  </Link>
                 </Table.Col>
                 <Table.Col className="text-right">
                   <AccountSubscriptionEditCreditDelete id={node.id} />
