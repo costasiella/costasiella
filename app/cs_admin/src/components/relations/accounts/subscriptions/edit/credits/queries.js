@@ -24,3 +24,27 @@ query AccountSubscriptionCredits($before: String, $after: String, $accountSubscr
   }
 }
 `
+
+export const GET_ACCOUNT_SUBSCRIPTION_CREDIT_QUERY = gql`
+query AccountSubscriptionCredit($id: ID!) {
+  accountSubscriptionCredit(id:$id) {
+    id
+    accountSubscription {
+      id
+    }
+    mutationType
+    mutationAmount
+    description
+    createdAt
+  }
+}
+`
+
+
+export const DELETE_ACCOUNT_SUBSCRIPTION_CREDIT = gql`
+  mutation DeleteAccountSubscriptionCredit($input: DeleteAccountSubscriptionCreditInput!) {
+    deleteAccountSubscriptionCredit(input: $input) {
+      ok
+    }
+  }
+`
