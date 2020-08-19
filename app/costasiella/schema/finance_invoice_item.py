@@ -46,7 +46,7 @@ class FinanceInvoiceItemNode(DjangoObjectType):
         interfaces = (graphene.relay.Node, FinanceInvoiceItemInterface, )
 
     def resolve_price_display(self, info):
-        return display_float_as_amount(self.subtotal)
+        return display_float_as_amount(self.price)
 
     def resolve_subtotal_display(self, info):
         return display_float_as_amount(self.subtotal)
