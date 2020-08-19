@@ -48,8 +48,8 @@ class AccountSubscriptionAltPriceNode(DjangoObjectType):
         }
         interfaces = (graphene.relay.Node, AccountSubscriptionAltPriceInterface,)
 
-    def resolve_price_display(self, info):
-        return display_float_as_amount(self.subtotal)
+    def resolve_amount_display(self, info):
+        return display_float_as_amount(self.amount)
 
     @classmethod
     def get_node(self, info, id):
@@ -88,6 +88,8 @@ class CreateAccountSubscriptionAltPrice(graphene.relay.ClientIDMutation):
     def mutate_and_get_payload(self, root, info, **input):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.add_accountsubscriptionaltprice')
+
+        print(input)
 
         # Validate input
         result = validate_create_update_input(input, update=False)
