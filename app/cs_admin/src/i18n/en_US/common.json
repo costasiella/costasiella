@@ -661,7 +661,8 @@
                     "general": "General",
                     "pauses": "Pauses",
                     "blocks": "Blocks",
-                    "credits": "Credits"
+                    "credits": "Credits",
+                    "alt_prices": "Alt. prices"
                 },
                 "blocks": {
                     "toast_add_success": "Added block",
