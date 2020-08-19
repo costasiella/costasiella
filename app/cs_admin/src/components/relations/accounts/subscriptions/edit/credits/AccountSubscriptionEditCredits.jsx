@@ -27,6 +27,7 @@ import {
 } from "tabler-react";
 // import HasPermissionWrapper from "../../../../HasPermissionWrapper"
 import AccountSubscriptionEditListBase from "../AccountSubscriptionEditListBase"
+import AccountSubscriptionEditButtonAdd from "../AccountSubscriptionEditButtonAdd"
 import moment from 'moment';
 
 
@@ -42,6 +43,9 @@ function AccountSubscriptionEditCredits({t, match, history}) {
   const subscriptionId = match.params.subscription_id
   const returnUrl = `/relations/accounts/${accountId}/subscriptions`
   const activeTab = "credits"
+
+  const buttonAdd = <AccountSubscriptionEditButtonAdd 
+                     linkTo={`/relations/accounts/${accountId}/subscriptions/edit/${subscriptionId}/credits/add`} />
 
   const { loading, error, data, fetchMore } = useQuery(GET_ACCOUNT_SUBSCRIPTION_CREDITS_QUERY, {
     variables: {
@@ -101,7 +105,7 @@ function AccountSubscriptionEditCredits({t, match, history}) {
 
   return (
     <AccountSubscriptionEditListBase active_tab={activeTab} pageInfo={pageInfo} onLoadMore={onLoadMore}>
-      <div className="pull-right">Add button here...</div>
+      <div className="pull-right">{buttonAdd}</div>
       <h5>{t('relations.account.subscriptions.credits.title_list')}</h5>
       <Table>
         <Table.Header>
