@@ -186,7 +186,8 @@
         "mutation": "__STRING_NOT_TRANSLATED__",
         "add": "__STRING_NOT_TRANSLATED__",
         "subscription_year": "__STRING_NOT_TRANSLATED__",
-        "subscription_month": "__STRING_NOT_TRANSLATED__"
+        "subscription_month": "__STRING_NOT_TRANSLATED__",
+        "subtract": "__STRING_NOT_TRANSLATED__"
     },
     "settings": {
         "error_loading": "__STRING_NOT_TRANSLATED__",
@@ -913,7 +914,14 @@
                 "deleted": "__STRING_NOT_TRANSLATED__",
                 "add": "__STRING_NOT_TRANSLATED__",
                 "credits": {
-                    "title_list": "__STRING_NOT_TRANSLATED__"
+                    "title_list": "__STRING_NOT_TRANSLATED__",
+                    "toast_add_success": "__STRING_NOT_TRANSLATED__",
+                    "delete_confirm_msg": "__STRING_NOT_TRANSLATED__",
+                    "delete_success": "__STRING_NOT_TRANSLATED__",
+                    "toast_edit_success": "__STRING_NOT_TRANSLATED__",
+                    "add": "__STRING_NOT_TRANSLATED__",
+                    "edit": "__STRING_NOT_TRANSLATED__",
+                    "mutationType": "__STRING_NOT_TRANSLATED__"
                 },
                 "pauses": {
                     "empty_list": "__STRING_NOT_TRANSLATED__",

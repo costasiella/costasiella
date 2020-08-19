@@ -356,7 +356,8 @@
         "mutation": "Mutation",
         "add": "Add",
         "subscription_year": "Subscription year",
-        "subscription_month": "Subscription month"
+        "subscription_month": "Subscription month",
+        "subtract": "__STRING_NOT_TRANSLATED__"
     },
     "yup": {
         "min_len_3": "Please input at least 3 characters",
@@ -647,7 +648,14 @@
                 "title_edit": "Edit subscription",
                 "registration_fee_paid": "Registration fee paid",
                 "credits": {
-                    "title_list": "Credit mutations"
+                    "title_list": "Credit mutations",
+                    "toast_add_success": "Added credit mutation",
+                    "delete_confirm_msg": "Are you sure you wish to delete this credit mutation?",
+                    "delete_success": "Deleted credit mutation",
+                    "toast_edit_success": "Saved",
+                    "add": "Add credit mutation",
+                    "edit": "Edit credit mutation",
+                    "mutationType": "Mutation type"
                 },
                 "pauses": {
                     "empty_list": "This subscription hasn't been paused before.",
