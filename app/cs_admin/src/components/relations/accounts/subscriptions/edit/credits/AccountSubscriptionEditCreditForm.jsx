@@ -58,7 +58,6 @@ function AccountSubscriptionEditCreditForm ({
                      name="mutationType" 
                      className={(errors.mutationType) ? "form-control is-invalid" : "form-control"} 
                      autoComplete="off">
-                <option value=""></option>
                 <option value="ADD">{t("general.add")}</option>
                 <option value="SUB">{t("general.subtract")}</option>
               </Field>
