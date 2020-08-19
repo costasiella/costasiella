@@ -354,7 +354,9 @@
         "license_info": "License Info",
         "credits": "Credits",
         "mutation": "Mutation",
-        "add": "Add"
+        "add": "Add",
+        "subscription_year": "Subscription year",
+        "subscription_month": "Subscription month"
     },
     "yup": {
         "min_len_3": "Please input at least 3 characters",
@@ -673,6 +675,16 @@
                     "edit": "Edit block",
                     "title_list": "Blocked periods",
                     "empty_list": "This subscription hasn't been blocked before."
+                },
+                "alt_prices": {
+                    "toast_add_success": "Added alt. price",
+                    "delete_confirm_msg": "Are you sure you with to delete this alt. price?",
+                    "delete_success": "Deleted alt. price",
+                    "toast_edit_success": "Saved",
+                    "add": "Add alt. price",
+                    "edit": "Edit alt. price",
+                    "title_list": "Alt. prices",
+                    "empty_list": "No alternative prices have been defined for this subscription."
                 }
             },
             "classpasses": {

@@ -184,7 +184,9 @@
         "license_info": "__STRING_NOT_TRANSLATED__",
         "credits": "__STRING_NOT_TRANSLATED__",
         "mutation": "__STRING_NOT_TRANSLATED__",
-        "add": "__STRING_NOT_TRANSLATED__"
+        "add": "__STRING_NOT_TRANSLATED__",
+        "subscription_year": "__STRING_NOT_TRANSLATED__",
+        "subscription_month": "__STRING_NOT_TRANSLATED__"
     },
     "settings": {
         "error_loading": "__STRING_NOT_TRANSLATED__",
@@ -931,6 +933,16 @@
                     "alt_prices": "__STRING_NOT_TRANSLATED__"
                 },
                 "blocks": {
+                    "toast_add_success": "__STRING_NOT_TRANSLATED__",
+                    "delete_confirm_msg": "__STRING_NOT_TRANSLATED__",
+                    "delete_success": "__STRING_NOT_TRANSLATED__",
+                    "toast_edit_success": "__STRING_NOT_TRANSLATED__",
+                    "add": "__STRING_NOT_TRANSLATED__",
+                    "edit": "__STRING_NOT_TRANSLATED__",
+                    "title_list": "__STRING_NOT_TRANSLATED__",
+                    "empty_list": "__STRING_NOT_TRANSLATED__"
+                },
+                "alt_prices": {
                     "toast_add_success": "__STRING_NOT_TRANSLATED__",
                     "delete_confirm_msg": "__STRING_NOT_TRANSLATED__",
                     "delete_success": "__STRING_NOT_TRANSLATED__",
