@@ -9,7 +9,7 @@ import { Formik } from 'formik'
 import { toast } from 'react-toastify'
 
 import { GET_ACCOUNT_SUBSCRIPTION_CREDITS_QUERY, GET_ACCOUNT_SUBSCRIPTION_CREDIT_QUERY } from "./queries"
-// import { ACCOUNT_SUBSCRIPTION_CREDIT_SCHEMA } from './yupSchema'
+import { ACCOUNT_SUBSCRIPTION_CREDIT_SCHEMA } from './yupSchema'
 import { dateToLocalISO } from '../../../../../../tools/date_tools'
 
 import AccountSubscriptionEditCreditBase from "./AccountSubscriptionEditCreditBase"
@@ -71,7 +71,7 @@ function AccountSubscriptionEditCreditEdit({ t, history, match }) {
           mutationAmount: accountSubscriptionCredit.mutationAmount,
           description: accountSubscriptionCredit.description
         }}
-        // validationSchema={ACCOUNT_SUBSCRIPTION_CREDIT_SCHEMA}
+        validationSchema={ACCOUNT_SUBSCRIPTION_CREDIT_SCHEMA}
         onSubmit={(values, { setSubmitting }) => {
           console.log("submit values")
           console.log(values)
