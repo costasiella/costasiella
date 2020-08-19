@@ -126,6 +126,7 @@ import AccountSubscriptionAdd from './components/relations/accounts/subscription
 import AccountSubscriptionEdit from './components/relations/accounts/subscriptions/edit/AccountSubscriptionEdit'
 import AccountSubscriptionEditAltPrices from './components/relations/accounts/subscriptions/edit/alt_prices/AccountSubscriptionEditAltPrices'
 import AccountSubscriptionEditAltPriceAdd from './components/relations/accounts/subscriptions/edit/alt_prices/AccountSubscriptionEditAltPriceAdd'
+import AccountSubscriptionEditAltPriceEdit from './components/relations/accounts/subscriptions/edit/alt_prices/AccountSubscriptionEditAltPriceEdit'
 import AccountSubscriptionEditBlocks from './components/relations/accounts/subscriptions/edit/blocks/AccountSubscriptionEditBlocks'
 import AccountSubscriptionEditBlockAdd from './components/relations/accounts/subscriptions/edit/blocks/AccountSubscriptionEditBlockAdd'
 import AccountSubscriptionEditBlockEdit from './components/relations/accounts/subscriptions/edit/blocks/AccountSubscriptionEditBlockEdit'
@@ -375,6 +376,8 @@ function AppRoot({ t }) {
           <PrivateRoute exact path="/relations/accounts/:account_id/subscriptions/edit/:subscription_id/alt_prices" component={AccountSubscriptionEditAltPrices} />
           <PrivateRoute exact path="/relations/accounts/:account_id/subscriptions/edit/:subscription_id/alt_prices/add" 
                         component={AccountSubscriptionEditAltPriceAdd} />
+          <PrivateRoute exact path="/relations/accounts/:account_id/subscriptions/edit/:subscription_id/alt_prices/edit/:id" 
+                        component={AccountSubscriptionEditAltPriceEdit} />
           <PrivateRoute exact path="/relations/accounts/:account_id/subscriptions/edit/:subscription_id/blocks" component={AccountSubscriptionEditBlocks} />
           <PrivateRoute exact path="/relations/accounts/:account_id/subscriptions/edit/:subscription_id/blocks/add" component={AccountSubscriptionEditBlockAdd} />
           <PrivateRoute exact path="/relations/accounts/:account_id/subscriptions/edit/:subscription_id/blocks/edit/:id" 
