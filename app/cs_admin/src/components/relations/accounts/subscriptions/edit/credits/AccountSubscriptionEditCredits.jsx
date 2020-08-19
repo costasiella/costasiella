@@ -28,6 +28,7 @@ import {
 // import HasPermissionWrapper from "../../../../HasPermissionWrapper"
 import AccountSubscriptionEditListBase from "../AccountSubscriptionEditListBase"
 import AccountSubscriptionEditButtonAdd from "../AccountSubscriptionEditButtonAdd"
+import AccountSubscriptionEditCreditDelete from "./AccountSubscriptionEditCreditDelete"
 import moment from 'moment';
 
 
@@ -125,7 +126,7 @@ function AccountSubscriptionEditCredits({t, match, history}) {
                   {moment(node.createdAt).format(dateTimeFormatMoment)}
                 </Table.Col>
                 <Table.Col>
-                  {node.description}
+                  <div dangerouslySetInnerHTML={{__html: node.description}} />
                 </Table.Col>
                 <Table.Col>
                   {node.mutationAmount}
@@ -137,7 +138,7 @@ function AccountSubscriptionEditCredits({t, match, history}) {
                   Edit
                 </Table.Col>
                 <Table.Col className="text-right">
-                  Del
+                  <AccountSubscriptionEditCreditDelete id={node.id} />
                 </Table.Col>
               </Table.Row>
             ))}
