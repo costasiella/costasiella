@@ -5,15 +5,13 @@ from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
 from graphql import GraphQLError
 
-import validators
 
 from ..models import AccountSubscription, AccountSubscriptionAltPrice
 from ..modules.gql_tools import require_login_and_permission, get_rid
 from ..modules.messages import Messages
 
 from .custom_schema_validators import is_month, is_year
-
-from sorl.thumbnail import get_thumbnail
+from ..modules.finance_tools import display_float_as_amount
 
 m = Messages()
 
@@ -38,13 +36,20 @@ def validate_create_update_input(input, update=False):
     return result
 
 
+class AccountSubscriptionAltPriceInterface(graphene.Interface):
+    amount_display = graphene.String()
+
+
 class AccountSubscriptionAltPriceNode(DjangoObjectType):
     class Meta:
         model = AccountSubscriptionAltPrice
         filter_fields = {
             'account_subscription': ['exact'],
         }
-        interfaces = (graphene.relay.Node, )
+        interfaces = (graphene.relay.Node, AccountSubscriptionAltPriceInterface,)
+
+    def resolve_price_display(self, info):
+        return display_float_as_amount(self.subtotal)
 
     @classmethod
     def get_node(self, info, id):
