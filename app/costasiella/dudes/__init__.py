@@ -1,6 +1,8 @@
 from .class_checkin_dude import ClassCheckinDude
 from .class_schedule_dude import ClassScheduleDude
 
+from .date_tools_dude import DateToolsDude
+
 from .insight_account_classpasses_dude import InsightAccountClasspassesDude
 from .insight_account_subscriptions_dude import InsightAccountSubscriptionsDude
 
