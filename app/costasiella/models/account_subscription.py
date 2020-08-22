@@ -94,7 +94,6 @@ class AccountSubscription(models.Model):
 
             return period_days
 
-
     def get_credits_given_for_month(self, year, month):
         """
         Get credits given for a selected month
