@@ -6,6 +6,7 @@ import gql from "graphql-tag"
 import { v4 } from "uuid"
 import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
+import { Link } from "react-router-dom"
 import moment from 'moment'
 import AppSettingsContext from '../../../../context/AppSettingsContext'
 
@@ -53,42 +54,54 @@ function AutomationAccountSubscriptionCredits({t, history, match}) {
     }
   })
 
-    // Loading
-    if (loading) return (
+  const headerOptions = <Card.Options>
+    <Link to={"/automation/account/subscriptions/credits/add"}>
+      <Button color="primary" 
+              size="sm"
+      >
+      {t('general.new_task')}
+      </Button>
+    </Link>
+  </Card.Options>
+
+
+  // Loading
+  if (loading) return (
+    <AutomationAccountSubscriptionCreditsBase>
+      <p>{t('general.loading_with_dots')}</p>
+    </AutomationAccountSubscriptionCreditsBase>
+  )
+  // Error
+  if (error) {
+    console.log(error)
+    return (
       <AutomationAccountSubscriptionCreditsBase>
-        <p>{t('general.loading_with_dots')}</p>
+        <p>{t('general.error_sad_smiley')}</p>
       </AutomationAccountSubscriptionCreditsBase>
     )
-    // Error
-    if (error) {
-      console.log(error)
-      return (
-        <AutomationAccountSubscriptionCreditsBase>
-          <p>{t('general.error_sad_smiley')}</p>
-        </AutomationAccountSubscriptionCreditsBase>
-      )
-    }
+  }
+
+  console.log("Automation credits data:")
+  console.log(data)
+  const taskResults = data.djangoCeleryResultTaskResults
+  // const account = data.account
+  // const scheduleItemAttendances = data.scheduleItemAttendances
   
-    console.log("Automation credits data:")
-    console.log(data)
-    const taskResults = data.djangoCeleryResultTaskResults
-    // const account = data.account
-    // const scheduleItemAttendances = data.scheduleItemAttendances
-    
-    // // Empty list
-    if (!taskResults.edges.length) {
-      return (
-        <AutomationAccountSubscriptionCreditsBase>
-          <p>{t('automation.account.subscriptions.credits.empty_list')}</p>
-        </AutomationAccountSubscriptionCreditsBase>
-      )
-    }
+  // // Empty list
+  if (!taskResults.edges.length) {
+    return (
+      <AutomationAccountSubscriptionCreditsBase>
+        <p>{t('automation.account.subscriptions.credits.empty_list')}</p>
+      </AutomationAccountSubscriptionCreditsBase>
+    )
+  }
 
   return (
     <AutomationAccountSubscriptionCreditsBase>
       <ContentCard 
         cardTitle={t('automation.account.subscriptions.credits.title')}
         pageInfo={taskResults.pageInfo}
+        headerContent={headerOptions}
         onLoadMore={() => {
           fetchMore({
             variables: {
