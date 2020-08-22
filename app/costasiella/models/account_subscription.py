@@ -93,3 +93,21 @@ class AccountSubscription(models.Model):
             period_days = period_days - overlap
 
             return period_days
+
+
+    def get_credits_given_for_month(self, year, month):
+        """
+        Get credits given for a selected month
+        :param year: int
+        :param month: int
+        :return: query set with added credits for a month
+        """
+        from .account_subscription_credit import AccountSubscriptionCredit
+
+        qs = AccountSubscriptionCredit.objects.filter(
+            Q(subscription_year=year) &
+            Q(subscription_month=month) &
+            Q(mutation_type='ADD')
+        )
+
+        return qs
