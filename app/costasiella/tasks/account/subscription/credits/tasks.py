@@ -4,7 +4,7 @@ from celery import shared_task
 from django.utils.translation import gettext as _
 from django.db.models import Q
 
-from .....models import AccountSubscription
+from .....models import AccountSubscription, AccountSubscriptionCredit
 from .....dudes import DateToolsDude
 
 @shared_task
@@ -28,8 +28,9 @@ def account_subscription_credits_add_for_month(year, month):
 
     if not qs.exits():
         # Nothing to do
-        return _("No active subscription found in month %s-%s" % (year, month))
+        return _("No active subscription found in month %s-%s") % (year, month)
 
+    counter = 0
     for account_subscription in qs:
         billable_days = account_subscription.get_billable_days_in_month(year, month)
         if not billable_days:
@@ -52,8 +53,30 @@ def account_subscription_credits_add_for_month(year, month):
             continue
 
         # passed all checks, time to add some credits!
-        
+        # Calculate number of credits to give:
+        # Total days (Add 1, when subtracted it's one day less)
+        total_days = (last_day_month - first_day_month) + datetime.timedelta(days=1)
 
+        percent = float(billable_days) / float(total_days.days)
+        classes = account_subscription.organization_subscription.classes
+        if account_subscription.organization_subscription.subscription_unit == 'MONTH':
+            credits_to_add = round(classes * percent, 1)
+        else:
+            weeks_in_month = round(total_days.days / float(7), 1)
+            credits_to_add = round((weeks_in_month * (classes or 0)) * percent, 1)
+
+        account_subscription_credit = AccountSubscriptionCredit(
+            account_subscription=account_subscription,
+            mutation_type="ADD",
+            mutation_amount=credits_to_add,
+            subscription_year=year,
+            subscription_month=month,
+        )
+        account_subscription_credit.save()
+
+        counter += 1
+
+    return _("Added credits for %s subscriptions") % counter
 
 
 
