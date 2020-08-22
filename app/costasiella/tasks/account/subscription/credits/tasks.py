@@ -1,14 +1,71 @@
+import datetime
+
 from celery import shared_task
+from django.utils.translation import gettext as _
+from django.db.models import Q
+
+from .....models import AccountSubscription
+from .....dudes import DateToolsDude
 
 @shared_task
-def account_subscription_credits_add_for_month(x, y):
+def account_subscription_credits_add_for_month(year, month):
     """
     Add subscription credits for a given month
-    :param x:
-    :param y:
+    :param year: YYYY
+    :param month: 1 ... 2
     :return:
     """
-    return x + y
+    date_dude = DateToolsDude()
+
+    first_day_month = datetime.date(year, month, 1)
+    last_day_month = date_dude.get_last_day_month(first_day_month)
+
+    # Fetch rows
+    qs = AccountSubscription.objects.filter(
+        Q(date_start__lte=last_day_month) &
+        (Q(date_end__gte=first_day_month) | Q(date_end__isnull=True))
+    )
+
+    if not qs.exits():
+        # Nothing to do
+        return _("No active subscription found in month %s-%s" % (year, month))
+
+    for account_subscription in qs:
+        billable_days = account_subscription.get_billable_days_in_month(year, month)
+        if not billable_days:
+            # No credits to give. No billable days
+            continue
+
+        credits_given = account_subscription.get_credits_given_for_month(year, month)
+        if credits_given.exists():
+            # credits for this month have already been given
+            continue
+
+        if (not account_subscription.organization_subscription.classes and
+                not account_subscription.organization_subscription.unlimited):
+            # No classes defined for a subscription with limited nr of classes
+            continue
+
+        if (not account_subscription.organization_subscription.classes and
+                not account_subscription.organization_subscription.unlimited):
+            # No classes defined for a subscription with limited nr of classes
+            continue
+
+        # passed all checks, time to add some credits!
+        
+
+
+
+
+    # For row in rows
+    # Skip when credits have already been given for a month
+    # Skip when no billable days (fully paused)
+    # Skip when no classes or subscription unit defined in organization subscription
+
+    # Pass number of billable days to add function for individual subscription
+    #TODO book classes when class reservations are implemented
+
+    # Calculate number of credits to give
 
 # def add_credits(self, year, month):
 #     """
