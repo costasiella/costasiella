@@ -25,7 +25,7 @@ class OrganizationSubscription(models.Model):
     sort_order = models.PositiveIntegerField(default=0)
     min_duration = models.PositiveIntegerField()
     classes = models.PositiveIntegerField()
-    subscription_unit = models.CharField(max_length=10, choices=SUBSCRIPTION_UNITS, default="DAYS")
+    subscription_unit = models.CharField(max_length=10, choices=SUBSCRIPTION_UNITS, default="WEEK")
     reconciliation_classes = models.PositiveSmallIntegerField(default=0)
     credit_validity = models.PositiveIntegerField(default=1)
     unlimited = models.BooleanField(default=False)
