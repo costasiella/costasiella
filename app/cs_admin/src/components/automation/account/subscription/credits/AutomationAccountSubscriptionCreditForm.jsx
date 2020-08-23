@@ -5,7 +5,8 @@ import { withRouter } from "react-router"
 import {
     Button,
     Card,
-    Form
+    Form,
+    Grid
   } from "tabler-react"
   import { Form as FoForm, Field, ErrorMessage } from 'formik'
 
@@ -14,13 +15,26 @@ function AutomationAccountSubscriptionCreditForm({ t, history, isSubmitting, err
   return (
     <FoForm>
       <Card.Body>
-        <Form.Group label={t('general.name')}>
-        <Field type="text" 
-                name="name" 
-                className={(errors.name) ? "form-control is-invalid" : "form-control"} 
-                autoComplete="off" />
-        <ErrorMessage name="name" component="span" className="invalid-feedback" />
-        </Form.Group>
+        <Grid.Row>
+          <Grid.Col>
+            <Form.Group label={t('general.subscription_year')}>
+              <Field type="number" 
+                      name="subscriptionYear" 
+                      className={(errors.subscriptionYear) ? "form-control is-invalid" : "form-control"} 
+                      autoComplete="off" />
+              <ErrorMessage name="subscriptionYear" component="span" className="invalid-feedback" />
+            </Form.Group>
+          </Grid.Col>
+          <Grid.Col>
+            <Form.Group label={t('general.subscription_month')}>
+              <Field type="number" 
+                      name="subscriptionMonth" 
+                      className={(errors.subscriptionMonth) ? "form-control is-invalid" : "form-control"} 
+                      autoComplete="off" />
+              <ErrorMessage name="subscriptionMonth" component="span" className="invalid-feedback" />
+            </Form.Group>
+          </Grid.Col>
+        </Grid.Row>
       </Card.Body>
       <Card.Footer>
         <Button 
@@ -37,8 +51,6 @@ function AutomationAccountSubscriptionCreditForm({ t, history, isSubmitting, err
       </Card.Footer>
     </FoForm>
   )
-
 }
   
-  
-  export default withTranslation()(withRouter(AutomationAccountSubscriptionCreditForm))
+export default withTranslation()(withRouter(AutomationAccountSubscriptionCreditForm))
