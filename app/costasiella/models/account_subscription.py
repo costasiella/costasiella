@@ -92,7 +92,7 @@ class AccountSubscription(models.Model):
             # Subtract pause overlap from period to be paid
             period_days = period_days - overlap
 
-            return period_days
+        return period_days
 
     def get_credits_given_for_month(self, year, month):
         """
