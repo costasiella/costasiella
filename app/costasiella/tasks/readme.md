@@ -12,15 +12,21 @@ Django Admin
 
 # Scheduler (Beat)
 
+```bash
 celery -A app beat -l info --scheduler django_celery_beat.schedulers:DatabaseScheduler
+```
 
 # Check that messages from beat arrive in queue
 
+```bash
 sudo rabbitmqctl list_queues
+```
 
 # Celery Worker
 
+```bash
 celery -A app worker -l info
+```
 
 # View results:
 
