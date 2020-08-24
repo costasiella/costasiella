@@ -14,14 +14,14 @@ import SiteWrapper from "../../../../SiteWrapper"
 import HasPermissionWrapper from "../../../../HasPermissionWrapper"
 import AutomationBack from "../../../AutomationBack"
 
-function AutomationAccountSubscriptionCreditsBase({t, history, match, children}) {
+function AutomationAccountSubscriptionCreditsBase({t, history, match, children, returnUrl="/automation"}) {
   return (
     <SiteWrapper>
       <div className="my-3 my-md-5">
         <Container>
           <Page.Header title={t('automation.title')} >
             <div className="page-options d-flex">
-              <AutomationBack />
+              <AutomationBack returnUrl={returnUrl} />
             </div>
           </Page.Header>
           <Grid.Row>
