@@ -1,4 +1,5 @@
 from django.utils.translation import gettext as _
+from django.db.models import Sum
 
 import graphene
 from graphene_django import DjangoObjectType
@@ -7,11 +8,10 @@ from graphql import GraphQLError
 
 import validators
 
-from ..models import Account, AccountSubscription, FinancePaymentMethod, OrganizationSubscription
+from ..models import Account, AccountSubscription, AccountSubscriptionCredit, \
+                     FinancePaymentMethod, OrganizationSubscription
 from ..modules.gql_tools import require_login_and_permission, get_rid
 from ..modules.messages import Messages
-
-from sorl.thumbnail import get_thumbnail
 
 m = Messages()
 
@@ -47,15 +47,19 @@ def validate_create_update_input(input, update=False):
             if not finance_payment_method:
                 raise Exception(_('Invalid Finance Payment Method ID!'))
 
-
     return result
+
+
+class AccountSubscriptionNodeInterface(graphene.Interface):
+    id = graphene.GlobalID()
+    credit_total = graphene.Float()
 
 
 class AccountSubscriptionNode(DjangoObjectType):   
     class Meta:
         model = AccountSubscription
         filter_fields = ['account', 'date_start', 'date_end']
-        interfaces = (graphene.relay.Node, )
+        interfaces = (graphene.relay.Node, AccountSubscriptionNodeInterface,)
 
     @classmethod
     def get_node(self, info, id):
@@ -63,6 +67,21 @@ class AccountSubscriptionNode(DjangoObjectType):
         require_login_and_permission(user, 'costasiella.view_accountsubscription')
 
         return self._meta.model.objects.get(id=id)
+
+    def resolve_credit_total(self, info):
+        qs_add = AccountSubscriptionCredit.objects.filter(
+            account_subscription=self.id,
+            mutation_type="ADD"
+        ).aggregate(Sum('mutation_amount'))
+        qs_sub = AccountSubscriptionCredit.objects.filter(
+            account_subscription=self.id,
+            mutation_type="SUB"
+        ).aggregate(Sum('mutation_amount'))
+
+        total_add = qs_add['mutation_amount__sum'] or 0
+        total_sub = qs_sub['mutation_amount__sum'] or 0
+
+        return total_add - total_sub
 
 
 class AccountSubscriptionQuery(graphene.ObjectType):
