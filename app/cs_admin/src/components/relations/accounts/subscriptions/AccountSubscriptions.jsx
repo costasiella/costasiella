@@ -99,6 +99,7 @@ const AccountSubscriptions = ({ t, history, match, archived=false }) => (
                           <Table.ColHeader>{t('general.date_start')}</Table.ColHeader>
                           <Table.ColHeader>{t('general.date_end')}</Table.ColHeader>
                           <Table.ColHeader>{t('general.payment_method')}</Table.ColHeader>
+                          <Table.ColHeader>{t('general.credits')}</Table.ColHeader>
                           <Table.ColHeader></Table.ColHeader> 
                         </Table.Row>
                       </Table.Header>
@@ -116,6 +117,9 @@ const AccountSubscriptions = ({ t, history, match, archived=false }) => (
                               </Table.Col>
                               <Table.Col key={v4()}>
                                 {(node.financePaymentMethod) ? node.financePaymentMethod.name : ""}
+                              </Table.Col>
+                              <Table.Col key={v4()}>
+                                {node.creditTotal}
                               </Table.Col>
                               <Table.Col className="text-right" key={v4()}>
                                 <Link to={"/relations/accounts/" + match.params.account_id + "/subscriptions/edit/" + node.id}>
