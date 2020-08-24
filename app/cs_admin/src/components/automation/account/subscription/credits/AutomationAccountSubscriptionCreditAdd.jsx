@@ -15,28 +15,18 @@ import AutomationAccountSubscriptionCreditForm from './AutomationAccountSubscrip
 
 
 import {
-  Page,
-  Grid,
-  Icon,
-  Button,
   Card,
-  Container,
-  Form,
 } from "tabler-react"
-import SiteWrapper from "../../SiteWrapper"
-import HasPermissionWrapper from "../../HasPermissionWrapper"
+// import SiteWrapper from "../../SiteWrapper"
+// import HasPermissionWrapper from "../../HasPermissionWrapper"
 
 import AutomationAccountSubscriptionCreditsBase from './AutomationAccountSubscriptionCreditsBase'
 
 
 const ADD_TASK = gql`
-  mutation CreateOrganizationLevel($input:CreateOrganizationLevelInput!) {
-    createOrganizationLevel(input: $input) {
-      organizationLevel{
-        id
-        archived
-        name
-      }
+  mutation CreateAccountSubscriptionCreditForMonth($input:CreateAccountSubscriptionCreditForMonthInput!) {
+    createAccountSubscriptionCreditForMonth(input: $input) {
+      ok
     }
   }
 `
@@ -47,49 +37,48 @@ function AutomationAccountSubscriptionCreditAdd({ t, history }) {
   const returnUrl = "/automation/account/subscriptions/credits"
 
   return (
-    <AutomationAccountSubscriptionCreditsBase>
+    <AutomationAccountSubscriptionCreditsBase returnUrl={returnUrl}>
       <Card>
-        <Card.Body>
-          <Formik
-            initialValues={{ 
-              subscriptionYear: new Date().getFullYear(), 
-              subscriptionMonth: new Date().getMonth() }}
-            // validationSchema={LEVEL_SCHEMA}
-            onSubmit={(values, { setSubmitting }) => {
-                addTask({ variables: {
-                  input: {
-                    month: values.subscriptionMonth,
-                    year: values.subscriptionYear
-                  }
-                }, refetchQueries: [
-                    {query: GET_TASK_RESULT_QUERY, 
-                      variables: {
-                        taskName: "costasiella.tasks.account.subscription.credits.tasks.account_subscription_credits_add_for_month"
-                    }}
-                ]})
-                .then(({ data }) => {
-                    console.log('got data', data);
-                    toast.success((t('automation.account.subscriptions.credits.toast_add_success')), {
-                        position: toast.POSITION.BOTTOM_RIGHT
-                      })
-                  }).catch((error) => {
-                    toast.error((t('general.toast_server_error')) + ': ' +  error, {
-                        position: toast.POSITION.BOTTOM_RIGHT
-                      })
-                    console.log('there was an error sending the query', error)
-                    setSubmitting(false)
-                  })
-            }}
-            >
-            {({ isSubmitting, errors }) => (
-                <AutomationAccountSubscriptionCreditForm 
-                  isSubmitting={isSubmitting}
-                  errors={errors}
-                  returnUrl={returnUrl}
-                />
-            )}
-          </Formik>
-        </Card.Body>
+        <Formik
+          initialValues={{ 
+            subscriptionYear: new Date().getFullYear(), 
+            subscriptionMonth: new Date().getMonth() }}
+          // validationSchema={LEVEL_SCHEMA}
+          onSubmit={(values, { setSubmitting }) => {
+              addTask({ variables: {
+                input: {
+                  month: values.subscriptionMonth,
+                  year: values.subscriptionYear
+                }
+              }, refetchQueries: [
+                  {query: GET_TASK_RESULT_QUERY, 
+                    variables: {
+                      taskName: "costasiella.tasks.account.subscription.credits.tasks.account_subscription_credits_add_for_month"
+                  }}
+              ]})
+              .then(({ data }) => {
+                  console.log('got data', data)
+                  history.push(returnUrl)
+                  toast.success((t('automation.account.subscriptions.credits.toast_add_success')), {
+                      position: toast.POSITION.BOTTOM_RIGHT
+                    })
+                }).catch((error) => {
+                  toast.error((t('general.toast_server_error')) + ': ' +  error, {
+                      position: toast.POSITION.BOTTOM_RIGHT
+                    })
+                  console.log('there was an error sending the query', error)
+                  setSubmitting(false)
+                })
+          }}
+          >
+          {({ isSubmitting, errors }) => (
+              <AutomationAccountSubscriptionCreditForm 
+                isSubmitting={isSubmitting}
+                errors={errors}
+                returnUrl={returnUrl}
+              />
+          )}
+        </Formik>
       </Card>
     </AutomationAccountSubscriptionCreditsBase>
   )
