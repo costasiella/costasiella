@@ -8,6 +8,7 @@ import { withRouter } from "react-router"
 import { Formik } from 'formik'
 import { toast } from 'react-toastify'
 
+import { GET_ACCOUNT_SUBSCRIPTION_QUERY } from "../../queries"
 import { GET_ACCOUNT_SUBSCRIPTION_CREDITS_QUERY, GET_ACCOUNT_SUBSCRIPTION_CREDIT_QUERY } from "./queries"
 import { ACCOUNT_SUBSCRIPTION_CREDIT_SCHEMA } from './yupSchema'
 import { dateToLocalISO } from '../../../../../../tools/date_tools'
@@ -87,6 +88,10 @@ function AccountSubscriptionEditCreditEdit({ t, history, match }) {
               {query: GET_ACCOUNT_SUBSCRIPTION_CREDITS_QUERY, variables: {
                 accountSubscription: subscriptionId
               }},
+              {query: GET_ACCOUNT_SUBSCRIPTION_QUERY, variables: {
+                accountId: accountId,
+                id: subscriptionId
+              }}
           ]})
           .then(({ data }) => {
               console.log('got data', data);
