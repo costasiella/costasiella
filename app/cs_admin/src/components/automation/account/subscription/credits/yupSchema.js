@@ -1,8 +1,15 @@
 import { t } from 'i18next'
 import * as Yup from 'yup'
 
-export const LEVEL_SCHEMA = Yup.object().shape({
-    name: Yup.string()
-      .min(3, t('yup.min_len_3'))
-      .required(t('yup.field_required')),
+export const AUTOMATION_ACCOUNT_SUBSCRIPTION_CREDIT_SCHEMA = Yup.object().shape({
+  subscriptionYear: Yup.number()
+    .required()
+    .positive()
+    .min(1000)
+    .max(9999),
+  subscriptionMonth: Yup.number()
+    .required()
+    .positive()
+    .min(1)
+    .max(12),
   })
