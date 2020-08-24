@@ -43,7 +43,7 @@ function AccountSubscriptionEditBaseBase({
   const returnUrl = "/relations/accounts/" + accountId + "/subscriptions"
   const cardTitle = (subscription) ? 
     <span className="text-muted">
-      - {subscription.organizationSubscription.name + " " + moment(subscription.dateStart).format(dateFormat)}
+      - {subscription.organizationSubscription.name + " " + moment(subscription.dateStart).format(dateFormat)} - {subscription.creditTotal} {t("general.credits")}
     </span> : ""
 
   return (

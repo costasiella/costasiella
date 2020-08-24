@@ -22,6 +22,7 @@ export const GET_ACCOUNT_SUBSCRIPTIONS_QUERY = gql`
           }
           dateStart
           dateEnd
+          creditTotal
           registrationFeePaid
           createdAt
         }
@@ -54,6 +55,7 @@ export const GET_ACCOUNT_SUBSCRIPTION_QUERY = gql`
       dateStart
       dateEnd
       note
+      creditTotal
       registrationFeePaid
       createdAt
     }
