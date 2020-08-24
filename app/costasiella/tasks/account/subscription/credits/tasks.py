@@ -17,6 +17,9 @@ def account_subscription_credits_add_for_month(year, month):
     """
     date_dude = DateToolsDude()
 
+    # print("###############")
+    # print("Start adding credits")
+
     first_day_month = datetime.date(year, month, 1)
     last_day_month = date_dude.get_last_day_month(first_day_month)
 
@@ -32,24 +35,23 @@ def account_subscription_credits_add_for_month(year, month):
 
     counter = 0
     for account_subscription in qs:
+        print(account_subscription)
         billable_days = account_subscription.get_billable_days_in_month(year, month)
         if not billable_days:
             # No credits to give. No billable days
+            # print("no billable days")
             continue
 
         credits_given = account_subscription.get_credits_given_for_month(year, month)
         if credits_given.exists():
             # credits for this month have already been given
+            # print("Credits already added")
             continue
 
         if (not account_subscription.organization_subscription.classes and
                 not account_subscription.organization_subscription.unlimited):
             # No classes defined for a subscription with limited nr of classes
-            continue
-
-        if (not account_subscription.organization_subscription.classes and
-                not account_subscription.organization_subscription.unlimited):
-            # No classes defined for a subscription with limited nr of classes
+            # print("No classes defined")
             continue
 
         # passed all checks, time to add some credits!
@@ -65,10 +67,13 @@ def account_subscription_credits_add_for_month(year, month):
             weeks_in_month = round(total_days.days / float(7), 1)
             credits_to_add = round((weeks_in_month * (classes or 0)) * percent, 1)
 
+        # print("Credits to add: %s" % credits_to_add)
+
         account_subscription_credit = AccountSubscriptionCredit(
             account_subscription=account_subscription,
             mutation_type="ADD",
             mutation_amount=credits_to_add,
+            description=_("Credits %s-%s") % (year, month),
             subscription_year=year,
             subscription_month=month,
         )
