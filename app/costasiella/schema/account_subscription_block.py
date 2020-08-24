@@ -62,7 +62,7 @@ class AccountSubscriptionBlockQuery(graphene.ObjectType):
         rid = get_rid(account_subscription)
 
         # return everything:
-        return AccountSubscriptionBlock.objects.filter(account_subscription__id=rid.id).order_by('date_start')
+        return AccountSubscriptionBlock.objects.filter(account_subscription__id=rid.id).order_by('-date_start')
 
 
 class CreateAccountSubscriptionBlock(graphene.relay.ClientIDMutation):

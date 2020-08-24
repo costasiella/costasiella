@@ -70,7 +70,7 @@ class AccountSubscriptionAltPriceQuery(graphene.ObjectType):
 
         # return everything:
         qs = AccountSubscriptionAltPrice.objects.filter(account_subscription__id=rid.id)
-        return qs.order_by('subscription_year', 'subscription_month')
+        return qs.order_by('-subscription_year', '-subscription_month')
 
 
 class CreateAccountSubscriptionAltPrice(graphene.relay.ClientIDMutation):

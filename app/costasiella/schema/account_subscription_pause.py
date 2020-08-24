@@ -62,7 +62,7 @@ class AccountSubscriptionPauseQuery(graphene.ObjectType):
         rid = get_rid(account_subscription)
 
         # return everything:
-        return AccountSubscriptionPause.objects.filter(account_subscription__id=rid.id).order_by('date_start')
+        return AccountSubscriptionPause.objects.filter(account_subscription__id=rid.id).order_by('-date_start')
 
 
 class CreateAccountSubscriptionPause(graphene.relay.ClientIDMutation):
