@@ -26,7 +26,7 @@ def account_subscription_credits_add_for_month(year, month):
         (Q(date_end__gte=first_day_month) | Q(date_end__isnull=True))
     )
 
-    if not qs.exits():
+    if not qs.exists():
         # Nothing to do
         return _("No active subscription found in month %s-%s") % (year, month)
 
