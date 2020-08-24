@@ -145,25 +145,35 @@ class DeleteAccountSubscriptionCredit(graphene.relay.ClientIDMutation):
         return DeleteAccountSubscriptionCredit(ok=ok)
 
 
+def create_account_subscription_credit_for_month_validation(input):
+    """
+    Validate input for create subscription credits for month task
+    """
+    from .custom_schema_validators import is_month, is_year
+
+    is_month(input['month'])
+    is_year(input['year'])
+
+
 class CreateAccountSubscriptionCreditForMonth(graphene.relay.ClientIDMutation):
     class Input:
-        x = graphene.Int()
-        y = graphene.Int()
+        year = graphene.Int()
+        month = graphene.Int()
 
     ok = graphene.Boolean()
 
     @classmethod
     def mutate_and_get_payload(self, root, info, **input):
-        user = info.context.user
-        require_login_and_permission(user, 'costasiella.delete_accountsubscriptioncredit')
-
         from costasiella.tasks import account_subscription_credits_add_for_month
 
-        print(input)
-        x = input['x']
-        y = input['y']
+        user = info.context.user
+        require_login_and_permission(user, 'costasiella.add_accountsubscriptioncredit')
 
-        task = account_subscription_credits_add_for_month.delay(x, y)
+        print(input)
+        year = input['year']
+        month = input['month']
+
+        task = account_subscription_credits_add_for_month.delay(year, month)
         print(task)
         ok = True
 
