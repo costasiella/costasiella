@@ -62,7 +62,7 @@ class AccountSubscriptionCreditQuery(graphene.ObjectType):
         rid = get_rid(account_subscription)
 
         # return everything:
-        return AccountSubscriptionCredit.objects.filter(account_subscription__id=rid.id).order_by('created_at')
+        return AccountSubscriptionCredit.objects.filter(account_subscription__id=rid.id).order_by('-created_at')
 
 
 class CreateAccountSubscriptionCredit(graphene.relay.ClientIDMutation):
