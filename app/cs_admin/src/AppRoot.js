@@ -25,6 +25,7 @@ import HomeHome from './components/home/home/HomeHome'
 
 import AutomationHome from './components/automation/home/AutomationHome'
 import AutomationAccountSubscriptionCredits from './components/automation/account/subscription/credits/AutomationAccountSubscriptionCredits'
+import AutomationAccountSubscriptionCreditAdd from './components/automation/account/subscription/credits/AutomationAccountSubscriptionCreditAdd'
 
 import FinanceHome from './components/finance/home/FinanceHome'
 import FinanceCostCenters from './components/finance/costcenters/FinanceCostCenters'
@@ -274,6 +275,8 @@ function AppRoot({ t }) {
           <PrivateRoute exact path="/automation" component={AutomationHome} />
           <PrivateRoute exact path="/automation/account/subscriptions/credits" 
                               component={AutomationAccountSubscriptionCredits} />
+          <PrivateRoute exact path="/automation/account/subscriptions/credits/add" 
+                              component={AutomationAccountSubscriptionCreditAdd} />
           
           {/* FINANCE */}
           <PrivateRoute exact path="/finance" component={FinanceHome} />
