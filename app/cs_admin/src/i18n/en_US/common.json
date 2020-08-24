@@ -357,7 +357,8 @@
         "add": "Add",
         "subscription_year": "Subscription year",
         "subscription_month": "Subscription month",
-        "subtract": "Subtract"
+        "subtract": "Subtract",
+        "new_task": "New task"
     },
     "yup": {
         "min_len_3": "Please input at least 3 characters",
@@ -1468,7 +1469,8 @@
                 "credits": {
                     "title": "Account subscription credits background task results",
                     "explanation": "Add monthly credits for all active subscriptions.",
-                    "empty_list": "This task hasn't run before."
+                    "empty_list": "This task hasn't run before.",
+                    "toast_add_success": "Started adding credits..."
                 }
             }
         },
