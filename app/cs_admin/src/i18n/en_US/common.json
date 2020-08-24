@@ -1467,10 +1467,11 @@
             "subscriptions": {
                 "title": "Account subscriptions",
                 "credits": {
-                    "title": "Account subscription credits background task results",
+                    "title": "Add credits",
                     "explanation": "Add monthly credits for all active subscriptions.",
                     "empty_list": "This task hasn't run before.",
-                    "toast_add_success": "Started adding credits..."
+                    "toast_add_success": "Started adding credits...",
+                    "title_card": "Add credit task result"
                 }
             }
         },

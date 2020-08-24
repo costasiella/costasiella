@@ -99,7 +99,7 @@ function AutomationAccountSubscriptionCredits({t, history, match}) {
   return (
     <AutomationAccountSubscriptionCreditsBase>
       <ContentCard 
-        cardTitle={t('automation.account.subscriptions.credits.title')}
+        cardTitle={t('automation.account.subscriptions.credits.title_card')}
         pageInfo={taskResults.pageInfo}
         headerContent={headerOptions}
         onLoadMore={() => {
