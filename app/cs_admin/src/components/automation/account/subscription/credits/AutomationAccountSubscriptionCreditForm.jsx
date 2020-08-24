@@ -1,12 +1,14 @@
 import React from 'react'
 import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
+import { Link } from "react-router-dom"
 
 import {
     Button,
     Card,
     Form,
-    Grid
+    Grid,
+    Icon
   } from "tabler-react"
   import { Form as FoForm, Field, ErrorMessage } from 'formik'
 
@@ -43,11 +45,13 @@ function AutomationAccountSubscriptionCreditForm({ t, history, isSubmitting, err
           type="submit" 
           disabled={isSubmitting}
           >
-          {t('general.submit')}
+          {t('general.new_task')} <Icon name="chevron-right" />
         </Button>
-        <Button color="link" onClick={() => history.push(return_url)}>
+        <Link to={returnUrl}>
+          <Button color="link">
             {t('general.cancel')}
-        </Button>
+          </Button>
+        </Link>
       </Card.Footer>
     </FoForm>
   )
