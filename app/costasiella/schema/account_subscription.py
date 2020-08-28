@@ -69,25 +69,13 @@ class AccountSubscriptionNode(DjangoObjectType):
         return self._meta.model.objects.get(id=id)
 
     def resolve_credit_total(self, info):
-        qs_add = AccountSubscriptionCredit.objects.filter(
-            account_subscription=self.id,
-            mutation_type="ADD"
-        ).aggregate(Sum('mutation_amount'))
-        qs_sub = AccountSubscriptionCredit.objects.filter(
-            account_subscription=self.id,
-            mutation_type="SUB"
-        ).aggregate(Sum('mutation_amount'))
-
-        total_add = qs_add['mutation_amount__sum'] or 0
-        total_sub = qs_sub['mutation_amount__sum'] or 0
-
-        return total_add - total_sub
+        account_subscription = self._meta.model.objects.get(id=id)
+        return account_subscription.get_credits_total()
 
 
 class AccountSubscriptionQuery(graphene.ObjectType):
     account_subscriptions = DjangoFilterConnectionField(AccountSubscriptionNode)
     account_subscription = graphene.relay.Node.Field(AccountSubscriptionNode)
-
 
     def resolve_account_subscriptions(self, info, account, **kwargs):
         user = info.context.user
@@ -95,7 +83,7 @@ class AccountSubscriptionQuery(graphene.ObjectType):
 
         rid = get_rid(account)
 
-        ## return everything:
+        # return everything:
         return AccountSubscription.objects.filter(account=rid.id).order_by('date_start')
 
 
