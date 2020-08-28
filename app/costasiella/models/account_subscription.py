@@ -94,6 +94,42 @@ class AccountSubscription(models.Model):
 
         return period_days
 
+    def get_credits_total(self):
+        """
+
+        :return: Float
+        """
+        from django.db.models import Sum
+        from .account_subscription_credit import AccountSubscriptionCredit
+
+        qs_add = AccountSubscriptionCredit.objects.filter(
+            account_subscription=self.id,
+            mutation_type="ADD"
+        ).aggregate(Sum('mutation_amount'))
+        qs_sub = AccountSubscriptionCredit.objects.filter(
+            account_subscription=self.id,
+            mutation_type="SUB"
+        ).aggregate(Sum('mutation_amount'))
+
+        total_add = qs_add['mutation_amount__sum'] or 0
+        total_sub = qs_sub['mutation_amount__sum'] or 0
+
+        # Round to 1 decimal and return
+        return round(total_add - total_sub, 1)
+
+    def get_usable_credits_total(self):
+        """
+        Get total credits and add reconciliation credits from subscription (if any)
+        :return: Float
+        """
+        credits_total = self.get_credits_total()
+        if self.organization_subscription.reconciliation_credits:
+            return_value = credits_total + self.organization_subscription.reconciliation_credits
+        else:
+            return_value = credits_total
+
+        return round(return_value, 1)
+
     def get_credits_given_for_month(self, year, month):
         """
         Get credits given for a selected month
