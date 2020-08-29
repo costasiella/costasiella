@@ -123,8 +123,8 @@ class AccountSubscription(models.Model):
         :return: Float
         """
         credits_total = self.get_credits_total()
-        if self.organization_subscription.reconciliation_credits:
-            return_value = credits_total + self.organization_subscription.reconciliation_credits
+        if self.organization_subscription.reconciliation_classes:
+            return_value = credits_total + self.organization_subscription.reconciliation_classes
         else:
             return_value = credits_total
 
