@@ -1,3 +1,5 @@
+from .app_settings_dude import AppSettingsDude
+
 from .class_checkin_dude import ClassCheckinDude
 from .class_schedule_dude import ClassScheduleDude
 
