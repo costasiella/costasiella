@@ -327,10 +327,11 @@ class ClassCheckinDude:
         if account_subscription.account != account:
             raise Exception(_("This subscription doesn't belong to this account"))
 
-        #TODO: Check if credits remaining
+        if (account_subscription.get_usable_credits_total() - 1) < 0:
+            raise Exception(_("Insufficient credits available to book this class"))
 
         # if not credits_available:
-        #     raise Exception(_('No credits left left on this pass.'))
+        #     raise Exception(_('No credits left for this subscription.'))
 
         # Subscription valid on date
         if account_subscription.date_end:
@@ -342,16 +343,21 @@ class ClassCheckinDude:
             raise Exception(_('This subscription is not valid on this date.'))
 
         schedule_item_attendance = ScheduleItemAttendance(
-            attendance_type = "SUBSCRIPTION",
-            account = account,
-            account_subscription = account_subscription,
-            schedule_item = schedule_item,
-            date = date,
-            online_booking = online_booking,
-            booking_status = booking_status
+            attendance_type="SUBSCRIPTION",
+            account=account,
+            account_subscription=account_subscription,
+            schedule_item=schedule_item,
+            date=date,
+            online_booking=online_booking,
+            booking_status=booking_status
         )
 
         schedule_item_attendance.save()
+
+        self.class_checkin_subscription_subtract_credit(
+            account_subscription,
+            schedule_item_attendance,
+        )
 
         self._send_info_mail(
             account=account,
@@ -360,6 +366,46 @@ class ClassCheckinDude:
         )
 
         return schedule_item_attendance
+
+    def class_checkin_subscription_subtract_credit(self, account_subscription, schedule_item_attendance):
+        """
+        Subtract one credit from a subscription when checking in to a class
+        :param account_subscription:
+        :param schedule_item:
+        :param date:
+        :return:
+        """
+        from ..dudes import AppSettingsDude, ClassScheduleDude
+        from ..models import AccountSubscriptionCredit
+
+        app_settings_dude = AppSettingsDude()
+        class_schedule_dude = ClassScheduleDude()
+
+        schedule_item_otc = class_schedule_dude.schedule_class_with_otc_data(
+            schedule_item_attendance.schedule_item,
+            schedule_item_attendance.date
+        )
+
+        # Get otc date time, type and location, if any.
+        description = _("{date} {time} - {classtype} in {location}").format(
+            date=schedule_item_attendance.date.strftime(
+                app_settings_dude.date_format
+            ),
+            time=schedule_item_attendance.schedule_item.time_start.strftime(
+                app_settings_dude.time_format
+            ),
+            classtype=schedule_item_otc.organization_classtype.name,
+            location=schedule_item_otc.organization_location_room.organization_location.name
+        )
+
+        account_subscription_credit = AccountSubscriptionCredit(
+            account_subscription=account_subscription,
+            schedule_item_attendance=schedule_item_attendance,
+            mutation_amount=1,
+            mutation_type="SUB",
+            description=description
+        )
+        account_subscription_credit.save()
 
     def subscription_class_permissions(self, account_subscription):
         """
