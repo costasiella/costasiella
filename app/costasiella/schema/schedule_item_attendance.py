@@ -5,7 +5,7 @@ from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
 from graphql import GraphQLError
 
-from ..models import Account, AccountClasspass, AccountSubscription, \
+from ..models import Account, AccountClasspass, AccountSubscription, AccountSubscriptionCredit, \
                      FinanceInvoiceItem, OrganizationClasspass, ScheduleItem, ScheduleItemAttendance
 from ..modules.gql_tools import require_login, require_login_and_permission, \
                                 require_login_and_one_of_permissions, get_rid
@@ -258,6 +258,12 @@ class UpdateScheduleItemAttendance(graphene.relay.ClientIDMutation):
         # Update classpass classes remaining
         if schedule_item_attendance.account_classpass:
              schedule_item_attendance.account_classpass.update_classes_remaining()
+
+        # Refund subscription credit (remove it)
+        if schedule_item_attendance.account_subscription and input['booking_status'] == 'CANCELLED':
+            AccountSubscriptionCredit.objects.filter(
+                schedule_item_attendance=schedule_item_attendance,
+            ).delete()
 
         return UpdateScheduleItemAttendance(schedule_item_attendance=schedule_item_attendance)
 

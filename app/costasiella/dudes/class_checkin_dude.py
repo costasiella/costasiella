@@ -446,7 +446,6 @@ class ClassCheckinDude:
 
         return permissions
 
-
     def subscription_attend_allowed(self, account_subscription):
         """
         Returns True is a class pass is allowed for a class,
@@ -464,7 +463,6 @@ class ClassCheckinDude:
 
         return schedule_item_ids
 
-    
     def subscription_attend_allowed_for_class(self, account_subscription, schedule_item):
         """
         :return: True if a subscription has the attend permission for a class
@@ -475,7 +473,6 @@ class ClassCheckinDude:
             return True
         else:
             return False
-
 
     def subscription_shop_book_allowed(self, acount_subscription):
         """
@@ -493,7 +490,6 @@ class ClassCheckinDude:
                 pass
 
         return schedule_item_ids
-
 
     def subscription_enroll_allowed(self, acount_subscription):
         """
