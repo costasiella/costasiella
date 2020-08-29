@@ -44,14 +44,21 @@ import { GET_ACCOUNTS_QUERY, GET_SCHEDULE_CLASS_ATTENDANCE_QUERY, UPDATE_SCHEDUL
 import CSLS from "../../../../../tools/cs_local_storage"
 
 
-function setAttendanceStatus({t, updateAttendance, node, status}) {
+function setAttendanceStatus({t, match, updateAttendance, node, status}) {
+  const schedule_item_id = match.params.class_id
+  const class_date = match.params.date
+
   updateAttendance({
     variables: { 
       input: {
         id: node.id, 
         bookingStatus: status
       }
-    }
+    },
+    refetchQueries: [
+      {query: GET_SCHEDULE_CLASS_ATTENDANCE_QUERY, 
+        variables: get_attendance_list_query_variables(schedule_item_id, class_date)}
+    ]
   }).then(({ data }) => {
     console.log('got data', data);
     toast.success(
@@ -273,22 +280,22 @@ function ScheduleClassAttendance({ t, match, history }) {
                                 color="secondary btn-sm"
                                 triggerContent={t("general.status")}
                                 items={[
-                                  <HasPermissionWrapper key={v4()} permission="change" resource="scheduleitemattendance">
-                                    <Dropdown.Item
-                                      key={v4()}
-                                      icon="check"
-                                      onClick={() => {
-                                        setAttendanceStatus({
-                                          t: t, 
-                                          updateAttendance: updateAttendance,
-                                          node: node,
-                                          status: 'ATTENDING'
-                                        })
-                                        refetchAttendance()
-                                      }}>
-                                        {t('schedule.classes.class.attendance.booking_status.ATTENDING')}
-                                    </Dropdown.Item>
-                                  </HasPermissionWrapper>,
+                                  // <HasPermissionWrapper key={v4()} permission="change" resource="scheduleitemattendance">
+                                  //   <Dropdown.Item
+                                  //     key={v4()}
+                                  //     icon="check"
+                                  //     onClick={() => {
+                                  //       setAttendanceStatus({
+                                  //         t: t, 
+                                  //         updateAttendance: updateAttendance,
+                                  //         node: node,
+                                  //         status: 'ATTENDING'
+                                  //       })
+                                  //       refetchAttendance()
+                                  //     }}>
+                                  //       {t('schedule.classes.class.attendance.booking_status.ATTENDING')}
+                                  //   </Dropdown.Item>
+                                  // </HasPermissionWrapper>,
                                   <HasPermissionWrapper key={v4()} permission="change" resource="scheduleitemattendance">
                                     <Dropdown.Item
                                       key={v4()}
@@ -296,11 +303,11 @@ function ScheduleClassAttendance({ t, match, history }) {
                                       onClick={() => {
                                         setAttendanceStatus({
                                           t: t, 
+                                          match: match,
                                           updateAttendance: updateAttendance,
                                           node: node,
                                           status: 'BOOKED'
                                         })
-                                        refetchAttendance()
                                       }}>
                                         {t('schedule.classes.class.attendance.booking_status.BOOKED')}
                                     </Dropdown.Item>
@@ -312,11 +319,11 @@ function ScheduleClassAttendance({ t, match, history }) {
                                       onClick={() => {
                                         setAttendanceStatus({
                                           t: t, 
+                                          match: match,
                                           updateAttendance: updateAttendance,
                                           node: node,
                                           status: 'CANCELLED'
                                         })
-                                        refetchAttendance()
                                       }}>
                                         {t('schedule.classes.class.attendance.booking_status.CANCELLED')}
                                     </Dropdown.Item>
@@ -333,11 +340,11 @@ function ScheduleClassAttendance({ t, match, history }) {
                                     onClick={() => {
                                       setAttendanceStatus({
                                         t: t, 
+                                        match: match,
                                         updateAttendance: updateAttendance,
                                         node: node,
                                         status: 'ATTENDING'
                                       })
-                                      refetchAttendance()
                                     }}>
                                       {t('general.checkin')}
                                   </Button>

@@ -355,7 +355,6 @@ class ClassCheckinDude:
         schedule_item_attendance.save()
 
         self.class_checkin_subscription_subtract_credit(
-            account_subscription,
             schedule_item_attendance,
         )
 
@@ -367,7 +366,7 @@ class ClassCheckinDude:
 
         return schedule_item_attendance
 
-    def class_checkin_subscription_subtract_credit(self, account_subscription, schedule_item_attendance):
+    def class_checkin_subscription_subtract_credit(self, schedule_item_attendance):
         """
         Subtract one credit from a subscription when checking in to a class
         :param account_subscription:
@@ -399,7 +398,7 @@ class ClassCheckinDude:
         )
 
         account_subscription_credit = AccountSubscriptionCredit(
-            account_subscription=account_subscription,
+            account_subscription=schedule_item_attendance.account_subscription,
             schedule_item_attendance=schedule_item_attendance,
             mutation_amount=1,
             mutation_type="SUB",
