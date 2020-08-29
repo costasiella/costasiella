@@ -69,7 +69,7 @@ class AccountSubscriptionNode(DjangoObjectType):
         return self._meta.model.objects.get(id=id)
 
     def resolve_credit_total(self, info):
-        account_subscription = self._meta.model.objects.get(id=id)
+        account_subscription = self._meta.model.objects.get(id=self.id)
         return account_subscription.get_credits_total()
 
 
