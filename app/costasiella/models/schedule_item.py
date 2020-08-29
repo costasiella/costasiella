@@ -88,4 +88,3 @@ class ScheduleItem(models.Model):
 
     def __str__(self):
         return self.schedule_item_type + ' [' + str(self.date_start) + ']'
-    
