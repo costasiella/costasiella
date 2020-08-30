@@ -31,7 +31,7 @@ function ShopClassBookSubscriptions({ t, match, history, subscriptions }) {
         </Card.Body>
         <Card.Footer>
           {(!subscription.allowed) ? t('schedule.classes.class.book.subscription_not_allowed') :
-            <ShopClassBookSubsriptionBtn subscription={subscription} />
+            <ShopClassBookSubscriptionBtn subscription={subscription} />
           }
         </Card.Footer>
         </Card>

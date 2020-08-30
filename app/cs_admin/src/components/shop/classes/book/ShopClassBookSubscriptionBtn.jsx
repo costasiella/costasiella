@@ -25,7 +25,7 @@ function ShopClassBookSubscriptionBtn({t, match, history, subscription}) {
   const createInput = {
     "account": account_id,
     "scheduleItem": schedule_item_id,
-    "accountSubscripition": classpass.accountSubscription.id,
+    "accountSubscripition": subscription.accountSubscription.id,
     "date": class_date,
     "attendanceType": "SUBSCRIPTION",
     "bookingStatus": "BOOKED"
