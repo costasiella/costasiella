@@ -36,8 +36,8 @@ def account_subscription_credits_add_for_month(year, month):
     counter = 0
     for account_subscription in qs:
         print(account_subscription)
-        billable_days = account_subscription.get_billable_days_in_month(year, month)
-        if not billable_days:
+        billable_period = account_subscription.get_billable_period_in_month(year, month)
+        if not billable_period['billable_days']:
             # No credits to give. No billable days
             # print("no billable days")
             continue

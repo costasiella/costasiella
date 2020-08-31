@@ -29,7 +29,7 @@ class AccountSubscription(models.Model):
     def __str__(self):
         return self.organization_subscription.name + ' [' + str(self.date_start) + ']'
 
-    def get_billable_days_in_month(self, year, month):
+    def get_billable_period_in_month(self, year, month):
         """
         Get billable number of days for a given month.
         The number of billable days is calculated by checking if the subscription starts or ends before or after the
@@ -91,9 +91,15 @@ class AccountSubscription(models.Model):
             overlap = max(0, delta)
 
             # Subtract pause overlap from period to be paid
+            period_start = latest_start
+            period_end = earliest_end
             period_days = period_days - overlap
 
-        return period_days
+        return dict(
+            period_start=period_start,
+            period_end=period_end,
+            billable_days=period_days
+        )
 
     def create_credits_for_month(self, year, month):
         # Calculate number of credits to give:
@@ -106,7 +112,8 @@ class AccountSubscription(models.Model):
         first_day_month = datetime.date(year, month, 1)
         last_day_month = date_dude.get_last_day_month(first_day_month)
         total_days = (last_day_month - first_day_month) + datetime.timedelta(days=1)
-        billable_days = self.get_billable_days_in_month(year, month)
+        billable_period = self.get_billable_period_in_month(year, month)
+        billable_days=billable_period['billable_days']
 
         percent = float(billable_days) / float(total_days.days)
         classes = self.organization_subscription.classes
@@ -127,6 +134,8 @@ class AccountSubscription(models.Model):
             subscription_month=month,
         )
         account_subscription_credit.save()
+
+        return account_subscription_credit
 
     def get_credits_total(self):
         """
