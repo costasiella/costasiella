@@ -1,5 +1,6 @@
 from django.utils.translation import gettext as _
 from django.db.models import Sum
+from django.utils import timezone
 
 import graphene
 from graphene_django import DjangoObjectType
@@ -84,7 +85,7 @@ class AccountSubscriptionQuery(graphene.ObjectType):
         rid = get_rid(account)
 
         # return everything:
-        return AccountSubscription.objects.filter(account=rid.id).order_by('date_start')
+        return AccountSubscription.objects.filter(account=rid.id).order_by('-date_start')
 
 
 class CreateAccountSubscription(graphene.relay.ClientIDMutation):
@@ -128,6 +129,10 @@ class CreateAccountSubscription(graphene.relay.ClientIDMutation):
             account_subscription.finance_payment_method = result['finance_payment_method']
 
         account_subscription.save()
+
+        # Add credits
+        now = timezone.now()
+        account_subscription.create_credits_for_month(now.year, now.month)
 
         return CreateAccountSubscription(account_subscription=account_subscription)
 
