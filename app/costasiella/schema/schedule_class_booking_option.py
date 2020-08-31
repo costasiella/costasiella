@@ -149,6 +149,9 @@ class ScheduleClassBookingOptionsType(graphene.ObjectType):
             if self.list_type == "ATTEND":
                 if checkin_dude.subscription_attend_allowed_for_class(subscription, schedule_item):
                     allowed = True
+            elif self.list_type == "SHOP_BOOK":
+                if checkin_dude.subscription_shop_book_allowed_for_class(subscription, schedule_item):
+                    allowed = True
 
             subscriptions_list.append(
                 ScheduleClassBookingSubscriptionType(
