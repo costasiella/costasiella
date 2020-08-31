@@ -174,6 +174,7 @@ class AccountSubscription(models.Model):
         from .account_subscription_credit import AccountSubscriptionCredit
 
         qs = AccountSubscriptionCredit.objects.filter(
+            Q(account_subscription=self) &
             Q(subscription_year=year) &
             Q(subscription_month=month) &
             Q(mutation_type='ADD')
