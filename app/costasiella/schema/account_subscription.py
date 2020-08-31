@@ -1,6 +1,5 @@
 from django.utils.translation import gettext as _
 from django.db.models import Sum
-from django.utils import timezone
 
 import graphene
 from graphene_django import DjangoObjectType
@@ -131,8 +130,8 @@ class CreateAccountSubscription(graphene.relay.ClientIDMutation):
         account_subscription.save()
 
         # Add credits
-        now = timezone.now()
-        account_subscription.create_credits_for_month(now.year, now.month)
+        account_subscription.create_credits_for_month(account_subscription.date_start.year,
+                                                      account_subscription.date_start.month)
 
         return CreateAccountSubscription(account_subscription=account_subscription)
 
