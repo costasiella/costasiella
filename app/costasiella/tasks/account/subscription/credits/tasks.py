@@ -57,33 +57,10 @@ def account_subscription_credits_add_for_month(year, month):
         # passed all checks, time to add some credits!
         # Calculate number of credits to give:
         # Total days (Add 1, when subtracted it's one day less)
-        total_days = (last_day_month - first_day_month) + datetime.timedelta(days=1)
-
-        percent = float(billable_days) / float(total_days.days)
-        classes = account_subscription.organization_subscription.classes
-        if account_subscription.organization_subscription.subscription_unit == 'MONTH':
-            credits_to_add = round(classes * percent, 1)
-        else:
-            weeks_in_month = round(total_days.days / float(7), 1)
-            credits_to_add = round((weeks_in_month * (classes or 0)) * percent, 1)
-
-        # print("Credits to add: %s" % credits_to_add)
-
-        account_subscription_credit = AccountSubscriptionCredit(
-            account_subscription=account_subscription,
-            mutation_type="ADD",
-            mutation_amount=credits_to_add,
-            description=_("Credits %s-%s") % (year, month),
-            subscription_year=year,
-            subscription_month=month,
-        )
-        account_subscription_credit.save()
-
+        account_subscription.create_credits_for_month(year, month)
         counter += 1
 
     return _("Added credits for %s subscriptions") % counter
-
-
 
     # For row in rows
     # Skip when credits have already been given for a month
