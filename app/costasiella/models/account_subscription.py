@@ -1,6 +1,7 @@
 import datetime
 from collections import namedtuple
 
+from django.utils.translation import gettext as _
 from django.db import models
 from django.db.models import Q
 
@@ -93,6 +94,39 @@ class AccountSubscription(models.Model):
             period_days = period_days - overlap
 
         return period_days
+
+    def create_credits_for_month(self, year, month):
+        # Calculate number of credits to give:
+        # Total days (Add 1, when subtracted it's one day less)
+        from ..dudes import DateToolsDude
+        from .account_subscription_credit import AccountSubscriptionCredit
+
+        date_dude = DateToolsDude()
+
+        first_day_month = datetime.date(year, month, 1)
+        last_day_month = date_dude.get_last_day_month(first_day_month)
+        total_days = (last_day_month - first_day_month) + datetime.timedelta(days=1)
+        billable_days = self.get_billable_days_in_month(year, month)
+
+        percent = float(billable_days) / float(total_days.days)
+        classes = self.organization_subscription.classes
+        if self.organization_subscription.subscription_unit == 'MONTH':
+            credits_to_add = round(classes * percent, 1)
+        else:
+            weeks_in_month = round(total_days.days / float(7), 1)
+            credits_to_add = round((weeks_in_month * (classes or 0)) * percent, 1)
+
+        # print("Credits to add: %s" % credits_to_add)
+
+        account_subscription_credit = AccountSubscriptionCredit(
+            account_subscription=self,
+            mutation_type="ADD",
+            mutation_amount=credits_to_add,
+            description=_("Credits %s-%s") % (year, month),
+            subscription_year=year,
+            subscription_month=month,
+        )
+        account_subscription_credit.save()
 
     def get_credits_total(self):
         """
