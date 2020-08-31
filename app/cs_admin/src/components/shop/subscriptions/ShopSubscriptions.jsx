@@ -10,7 +10,7 @@ import {
   Grid,
 } from "tabler-react";
 import ShopSubscriptionsBase from "./ShopSubscriptionsBase"
-import ShopSubscriptionPricingCard from "../classpass/ShopSubscriptionPricingCard"
+import ShopSubscriptionPricingCard from "../subscription/ShopSubscriptionPricingCard"
 
 import { GET_ORGANIZATION_SUBSCRIPTIONS_QUERY } from "./queries"
 
