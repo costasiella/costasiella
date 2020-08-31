@@ -36,11 +36,10 @@ class OrganizationSubscription(models.Model):
     finance_glaccount = models.ForeignKey(FinanceGLAccount, on_delete=models.CASCADE, null=True)
     finance_costcenter = models.ForeignKey(FinanceCostCenter, on_delete=models.CASCADE, null=True)
 
-
     def get_price_on_date(self, date, display=False):
         query_set = self.organizationsubscriptionprice_set.filter(
-            Q(date_start__lte = date) & 
-            (Q(date_end__gte = date) | Q(date_end__isnull = True))
+            Q(date_start__lte=date) &
+            (Q(date_end__gte=date) | Q(date_end__isnull=True))
         )
         
         if query_set.exists():
@@ -52,7 +51,20 @@ class OrganizationSubscription(models.Model):
         else:
             return None
 
+    def get_finance_tax_rate_on_date(self, date, display=False):
+        query_set = self.organizationsubscriptionprice_set.filter(
+            Q(date_start__lte=date) &
+            (Q(date_end__gte=date) | Q(date_end__isnull=True))
+        )
+
+        if query_set.exists():
+            finance_tax_rate = query_set.first().finance_tax_rate
+            if display:
+                return finance_tax_rate.name
+            else:
+                return finance_tax_rate
+        else:
+            return None
 
     def __str__(self):
         return self.name
-    
