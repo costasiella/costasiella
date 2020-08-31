@@ -358,7 +358,8 @@
         "subscription_year": "Subscription year",
         "subscription_month": "Subscription month",
         "subtract": "Subtract",
-        "new_task": "New task"
+        "new_task": "New task",
+        "credits_remaining": "Credits remaining"
     },
     "yup": {
         "min_len_3": "Please input at least 3 characters",

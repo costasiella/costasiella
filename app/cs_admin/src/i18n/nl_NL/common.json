@@ -188,7 +188,8 @@
         "subscription_year": "__STRING_NOT_TRANSLATED__",
         "subscription_month": "__STRING_NOT_TRANSLATED__",
         "subtract": "__STRING_NOT_TRANSLATED__",
-        "new_task": "__STRING_NOT_TRANSLATED__"
+        "new_task": "__STRING_NOT_TRANSLATED__",
+        "credits_remaining": "__STRING_NOT_TRANSLATED__"
     },
     "settings": {
         "error_loading": "__STRING_NOT_TRANSLATED__",
