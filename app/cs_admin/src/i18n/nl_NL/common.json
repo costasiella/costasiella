@@ -600,6 +600,10 @@
             "title": "__STRING_NOT_TRANSLATED__",
             "choose": "__STRING_NOT_TRANSLATED__",
             "error_loading": "__STRING_NOT_TRANSLATED__"
+        },
+        "subscription": {
+            "error_loading": "__STRING_NOT_TRANSLATED__",
+            "additional_information": "__STRING_NOT_TRANSLATED__"
         }
     },
     "home": {

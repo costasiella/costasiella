@@ -1464,6 +1464,10 @@
             "title": "Subscriptions",
             "choose": "Choose",
             "error_loading": "Error loading subscriptions...:("
+        },
+        "subscription": {
+            "error_loading": "Error loading subscription information...:(",
+            "additional_information": "Additional information"
         }
     },
     "You've already booked this class ": "You've already booked this class",
