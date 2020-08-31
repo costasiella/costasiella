@@ -42,7 +42,7 @@ function AutomationAccountSubscriptionCreditAdd({ t, history }) {
         <Formik
           initialValues={{ 
             subscriptionYear: new Date().getFullYear(), 
-            subscriptionMonth: new Date().getMonth() }}
+            subscriptionMonth: new Date().getMonth() + 1 }}
           validationSchema={AUTOMATION_ACCOUNT_SUBSCRIPTION_CREDIT_SCHEMA}
           onSubmit={(values, { setSubmitting }) => {
               addTask({ variables: {
