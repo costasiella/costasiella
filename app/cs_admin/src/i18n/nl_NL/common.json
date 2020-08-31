@@ -594,6 +594,9 @@
         },
         "contact": {
             "title": "__STRING_NOT_TRANSLATED__"
+        },
+        "subscriptions": {
+            "title": "__STRING_NOT_TRANSLATED__"
         }
     },
     "home": {

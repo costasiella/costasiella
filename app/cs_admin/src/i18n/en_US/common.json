@@ -1458,6 +1458,9 @@
         },
         "contact": {
             "title": "Contact"
+        },
+        "subscriptions": {
+            "title": "Subscriptions"
         }
     },
     "You've already booked this class ": "You've already booked this class",
