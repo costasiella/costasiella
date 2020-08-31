@@ -359,7 +359,8 @@
         "subscription_month": "Subscription month",
         "subtract": "Subtract",
         "new_task": "New task",
-        "credits_remaining": "Credits remaining"
+        "credits_remaining": "Credits remaining",
+        "month": "Month"
     },
     "yup": {
         "min_len_3": "Please input at least 3 characters",
@@ -1460,7 +1461,9 @@
             "title": "Contact"
         },
         "subscriptions": {
-            "title": "Subscriptions"
+            "title": "Subscriptions",
+            "choose": "Choose",
+            "error_loading": "Error loading subscriptions...:("
         }
     },
     "You've already booked this class ": "You've already booked this class",

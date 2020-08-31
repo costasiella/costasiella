@@ -189,7 +189,8 @@
         "subscription_month": "__STRING_NOT_TRANSLATED__",
         "subtract": "__STRING_NOT_TRANSLATED__",
         "new_task": "__STRING_NOT_TRANSLATED__",
-        "credits_remaining": "__STRING_NOT_TRANSLATED__"
+        "credits_remaining": "__STRING_NOT_TRANSLATED__",
+        "month": "__STRING_NOT_TRANSLATED__"
     },
     "settings": {
         "error_loading": "__STRING_NOT_TRANSLATED__",
@@ -596,7 +597,9 @@
             "title": "__STRING_NOT_TRANSLATED__"
         },
         "subscriptions": {
-            "title": "__STRING_NOT_TRANSLATED__"
+            "title": "__STRING_NOT_TRANSLATED__",
+            "choose": "__STRING_NOT_TRANSLATED__",
+            "error_loading": "__STRING_NOT_TRANSLATED__"
         }
     },
     "home": {
