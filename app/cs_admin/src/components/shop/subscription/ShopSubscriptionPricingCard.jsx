@@ -20,7 +20,7 @@ import { GET_ORGANIZATION_SUBSCRIPTION_QUERY } from "./queries"
 // https://github.com/tabler/tabler-react/blob/master/example/src/interface/PricingCardsPage.react.js
 
 
-function ShopClasspassPricingCard({ t, classpass, btnLink, active=false }) {
+function ShopClasspassPricingCard({ t, subscription, btnLink, active=false }) {
   // classpass should be an object with at least the following values from an organizationClasspass object:
   // id, name, priceDisplay, unlimited, classes, validity, link
   return (
@@ -34,7 +34,7 @@ function ShopClasspassPricingCard({ t, classpass, btnLink, active=false }) {
       <PricingCard.AttributeList>
         <PricingCard.AttributeItem>
           <b>{(subscription.unlimited) ? t('general.unlimited') : subscription.classes }</b> { " " }
-          {((subscription.classes != 1) || (subscription.unlimited))? t('general.classes'): t('general.class')}
+          {((subscription.classes != 1) || (subscription.unlimited))? t('general.classes'): t('general.class')} / {t('general.month')}
         </PricingCard.AttributeItem>
         <PricingCard.AttributeItem>
           {t('general.min_duration')} { " " }
