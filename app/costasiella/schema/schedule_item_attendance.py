@@ -15,6 +15,7 @@ from ..dudes import ClassCheckinDude, ClassScheduleDude
 
 m = Messages()
 
+
 class ScheduleItemAttendanceNode(DjangoObjectType):
     # Disable output like "A_3" by graphene automatically converting model choices
     # to an Enum field
@@ -193,6 +194,8 @@ class CreateScheduleItemAttendance(graphene.relay.ClientIDMutation):
         elif attendance_type == "SUBSCRIPTION":
             if not validation_result['account_subscription']:
                 raise Exception(_('accountSubscription field is mandatory when doing a subscription check-in'))
+
+            print("SUBSCRIPTION checkin")
 
             account_subscription = validation_result['account_subscription']
             schedule_item_attendance = class_checkin_dude.class_checkin_subscription(

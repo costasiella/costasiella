@@ -18,16 +18,15 @@ import { CREATE_SCHEDULE_ITEM_ATTENDANCE } from "../../../schedule/classes/class
 
 function ShopClassBookSubscriptionBtn({t, match, history, subscription}) {
   console.log(subscription)
-  const account_id = match.params.account_id
   const schedule_item_id = match.params.class_id
   const class_date = match.params.date
 
   const createInput = {
-    "account": account_id,
     "scheduleItem": schedule_item_id,
-    "accountSubscripition": subscription.accountSubscription.id,
+    "accountSubscription": subscription.accountSubscription.id,
     "date": class_date,
     "attendanceType": "SUBSCRIPTION",
+    "onlineBooking": true,
     "bookingStatus": "BOOKED"
   }
 
