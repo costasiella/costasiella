@@ -188,6 +188,7 @@ import ShopClasses from './components/shop/account/classes/ShopAccountClasses'
 import ShopClasspasses from './components/shop/classpasses/ShopClasspasses'
 import ShopClasspass from './components/shop/classpass/ShopClasspass'
 import ShopSubscriptions from './components/shop/subscriptions/ShopSubscriptions'
+import ShopSubscription from './components/shop/subscription/ShopSubscription'
 
 import UserChangePassword from './components/user/password/UserPasswordChange'
 import UserLogin from './components/user/login/UserLogin'
@@ -449,6 +450,7 @@ function AppRoot({ t }) {
           <Route exact path = "/shop/classpass/:id/:class_id/:date" component={ShopClasspass} />
           <Route exact path = "/shop/contact" component={ShopContact} />
           <Route exact path = "/shop/subscriptions" component={ShopSubscriptions} />
+          <Route exact path = "/shop/subscription/:id" component={ShopSubscription} />
 
           {/* Settings */}
           <PrivateRoute exact path="/settings" component={SettingsHome} />
