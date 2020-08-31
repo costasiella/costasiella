@@ -2,7 +2,7 @@ import gql from "graphql-tag"
 
 
 export const GET_SUBSCRIPTION_QUERY = gql`
-  query OrganizationSubscription($id: ID!, $after: String, $before: String, $archived: Boolean!) {
+  query OrganizationSubscription($id: ID!) {
     organizationSubscription(id:$id) {
       id
       archived

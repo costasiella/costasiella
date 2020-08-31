@@ -12,9 +12,6 @@ import {
   List,
   PricingCard
 } from "tabler-react";
-import ShopClasspassesBase from "./ShopClasspassBase"
-
-import { GET_ORGANIZATION_SUBSCRIPTION_QUERY } from "./queries"
 
 // Example:
 // https://github.com/tabler/tabler-react/blob/master/example/src/interface/PricingCardsPage.react.js

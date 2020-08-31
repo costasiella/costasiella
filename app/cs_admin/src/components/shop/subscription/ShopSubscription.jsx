@@ -70,7 +70,7 @@ function ShopSubscription({ t, match, history }) {
     <ShopSubscriptionBase title={title}>
       <Grid.Row>
         <Grid.Col md={4}>
-          <ShopSubscriptionesPricingCard subscription={subscription} active={true} />
+          <ShopSubscriptionPricingCard subscription={subscription} active={true} />
         </Grid.Col>
         <Grid.Col md={4}>
           <Card title={t("shop.subscription.additional_information")}>
