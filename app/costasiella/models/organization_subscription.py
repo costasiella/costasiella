@@ -43,7 +43,16 @@ class OrganizationSubscription(models.Model):
         )
         
         if query_set.exists():
-            price = query_set.first().price
+            # TODO: take VAT rate into consideration (in case of EX. ; add it before returning value)
+            subscription_price = query_set.first()
+            price = subscription_price.price
+
+            if subscription_price.finance_tax_rate:
+                finance_tax_rate = subscription_price.finance_tax_rate
+                if finance_tax_rate.rate_type == "EX":
+                    percentage = (finance_tax_rate.percentage / 100)
+                    price = round(float(price) * float(1 + percentage), 2)
+
             if display:
                 return display_float_as_amount(price)
             else:
