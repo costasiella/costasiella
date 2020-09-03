@@ -50,7 +50,7 @@ class CreateFinanceOrderPaymentLink(graphene.Mutation):
         if finance_order.account != user:
             raise GraphQLError(
                 m.finance_order_belongs_other_account, 
-                extensions={'code': FINANCE_ORDER_OTHER_ACCOUNT}
+                extensions={'code': m.FINANCE_ORDER_OTHER_ACCOUNT}
             )
 
         mollie_dude = MollieDude()
@@ -63,10 +63,8 @@ class CreateFinanceOrderPaymentLink(graphene.Mutation):
         # Order information
         amount = finance_order.total
         description = _("Order #") + str(finance_order.id)
-
         
         # Gather mollie payment info
-        recurring_type = None
         redirect_url = 'https://' + host + '/#/shop/checkout/complete/' + id
         print(redirect_url)
         mollie_customer_id = mollie_dude.get_account_mollie_customer_id(
@@ -77,6 +75,27 @@ class CreateFinanceOrderPaymentLink(graphene.Mutation):
         webhook_url = mollie_dude.get_webhook_url(info.context)
         print(webhook_url)
 
+        # Check recurring or not
+        order_contains_subscription = finance_order.items_contain_subscription()
+        sequence_type = None
+        if order_contains_subscription:
+            # Check if we have a mandate
+            mandates = mollie_dude.get_account_mollie_mandates(user, mollie)
+            # set default sequence type, change to recurring if a valid mandate is found.
+            recurring_type = 'first'
+            if mandates['count'] > 0:
+                # background payment
+                valid_mandate = False
+                for mandate in mandates['_embedded']['mandates']:
+                    if mandate['status'] == 'valid':
+                        valid_mandate = True
+                        break
+
+                if valid_mandate:
+                    # Do a normal payment, probably an automatic payment failed somewhere in the process
+                    # and customer should pay manually now
+                    sequence_type = None
+
         # Fetch currency eg. EUR or USD, etc.
         currency = get_currency() or "EUR"
         payment = mollie.payments.create({
@@ -85,7 +104,7 @@ class CreateFinanceOrderPaymentLink(graphene.Mutation):
                 'value': str(amount)
             },
             'description': description,
-            'sequenceType': recurring_type,
+            'sequenceType': sequence_type,
             'customerId': mollie_customer_id,
             'redirectUrl': redirect_url,
             'webhookUrl': webhook_url,
