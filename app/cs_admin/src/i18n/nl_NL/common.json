@@ -950,7 +950,8 @@
                     "pauses": "__STRING_NOT_TRANSLATED__",
                     "blocks": "__STRING_NOT_TRANSLATED__",
                     "credits": "__STRING_NOT_TRANSLATED__",
-                    "alt_prices": "__STRING_NOT_TRANSLATED__"
+                    "alt_prices": "__STRING_NOT_TRANSLATED__",
+                    "invoices": "__STRING_NOT_TRANSLATED__"
                 },
                 "blocks": {
                     "toast_add_success": "__STRING_NOT_TRANSLATED__",
