@@ -61,3 +61,18 @@ class MollieDude:
                 return True
             except Exception as e:
                 return False
+
+    def get_account_mollie_mandates(self, account, mollie):
+        """
+        Get mollie mandates for account
+        :param account: Account object
+        :param mollie: mollie client object
+        :return:
+        """
+        # check if we have a mollie customer id
+        if not account.mollie_customer_id:
+            return
+
+        mandates = mollie.customer_mandates.with_parent_id(account.mollie_customer_id).list()
+
+        return mandates
