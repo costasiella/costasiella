@@ -101,8 +101,8 @@ class FinanceOrder(models.Model):
             product_name=_('Subscription'),
             description=organization_subscription.name,
             quantity=1,
-            price=organization_subscription.get_price_on_date(now.date),
-            finance_tax_rate=organization_subscription.get_finance_tax_rate_on_date(now.date),
+            price=organization_subscription.get_price_on_date(now.date()),
+            finance_tax_rate=organization_subscription.get_finance_tax_rate_on_date(now.date()),
             finance_glaccount=organization_subscription.finance_glaccount,
             finance_costcenter=organization_subscription.finance_costcenter,
         )
@@ -111,6 +111,19 @@ class FinanceOrder(models.Model):
         self.update_amounts()
 
         return finance_order_item
+
+    def items_contain_subscription(self):
+        """
+        Check if there is a subscription item in the items for this order
+        :return:
+        """
+        from .finance_order_item import FinanceOrderItem
+
+        qs = FinanceOrderItem.objects.filter(
+            finance_order=self,
+            organization_subscription__isnull=False,
+        )
+        return qs.exists()
 
     def deliver(self):
         """
