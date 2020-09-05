@@ -47,10 +47,12 @@ class CreateFinanceOrderPaymentLink(graphene.Mutation):
 
         rid = get_rid(id)
         finance_order = FinanceOrder.objects.get(pk=rid.id)
-        if finance_order.account != user:
+        print(finance_order.account.id)
+        print(user.id)
+        if finance_order.account.id != user.id:
             raise GraphQLError(
                 m.finance_order_belongs_other_account, 
-                extensions={'code': m.FINANCE_ORDER_OTHER_ACCOUNT}
+                extensions={'code': m.finance_order_belongs_other_account}
             )
 
         mollie_dude = MollieDude()
@@ -81,8 +83,9 @@ class CreateFinanceOrderPaymentLink(graphene.Mutation):
         if order_contains_subscription:
             # Check if we have a mandate
             mandates = mollie_dude.get_account_mollie_mandates(user, mollie)
+            print(mandates)
             # set default sequence type, change to recurring if a valid mandate is found.
-            recurring_type = 'first'
+            sequence_type = 'first'
             if mandates['count'] > 0:
                 # background payment
                 valid_mandate = False
@@ -92,6 +95,7 @@ class CreateFinanceOrderPaymentLink(graphene.Mutation):
                         break
 
                 if valid_mandate:
+                    print("No sequence type... valid mandate found")
                     # Do a normal payment, probably an automatic payment failed somewhere in the process
                     # and customer should pay manually now
                     sequence_type = None
@@ -119,7 +123,7 @@ class CreateFinanceOrderPaymentLink(graphene.Mutation):
         log = IntegrationLogMollie(
             log_source="ORDER_PAY",
             mollie_payment_id=payment['id'],
-            recurring_type=recurring_type,
+            recurring_type=sequence_type,
             webhook_url=webhook_url,
             finance_order=finance_order,
         )
