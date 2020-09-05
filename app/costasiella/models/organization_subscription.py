@@ -36,16 +36,25 @@ class OrganizationSubscription(models.Model):
     finance_glaccount = models.ForeignKey(FinanceGLAccount, on_delete=models.CASCADE, null=True)
     finance_costcenter = models.ForeignKey(FinanceCostCenter, on_delete=models.CASCADE, null=True)
 
-    def get_price_on_date(self, date, display=False):
+    def get_price_on_date(self, date, raw_price=False, display=False):
+        """
+        :param date: datetime.date
+        :param raw_price: Boolean - use to send price without VAT calculation to other functions
+        :param display: Format returned value as string with currency symbol
+        :return: Price (str or int)
+        """
         query_set = self.organizationsubscriptionprice_set.filter(
             Q(date_start__lte=date) &
             (Q(date_end__gte=date) | Q(date_end__isnull=True))
         )
-        
+
         if query_set.exists():
             # TODO: take VAT rate into consideration (in case of EX. ; add it before returning value)
             subscription_price = query_set.first()
             price = subscription_price.price
+
+            if raw_price:
+                return price
 
             if subscription_price.finance_tax_rate:
                 finance_tax_rate = subscription_price.finance_tax_rate
