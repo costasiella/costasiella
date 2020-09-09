@@ -101,7 +101,7 @@ class FinanceOrder(models.Model):
             product_name=_('Subscription'),
             description=organization_subscription.name,
             quantity=1,
-            price=organization_subscription.get_price_on_date(now.date()),
+            price=organization_subscription.get_price_on_date(now.date(), raw_price=True),
             finance_tax_rate=organization_subscription.get_finance_tax_rate_on_date(now.date()),
             finance_glaccount=organization_subscription.finance_glaccount,
             finance_costcenter=organization_subscription.finance_costcenter,

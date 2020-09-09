@@ -34,7 +34,7 @@ class FinanceInvoice(models.Model):
     relation_country = models.CharField(max_length=255, default="")
     status = models.CharField(max_length=255, choices=STATUSES, default="DRAFT")
     summary = models.CharField(max_length=255, default="")
-    invoice_number = models.CharField(max_length=255, default="") # Invoice #
+    invoice_number = models.CharField(max_length=255, default="")  # Invoice #
     date_sent = models.DateField()
     date_due = models.DateField()
     terms = models.TextField(default="")
@@ -117,7 +117,7 @@ class FinanceInvoice(models.Model):
                 self.date_sent = timezone.now().date()
             self.date_due = self.date_sent + datetime.timedelta(days=self.finance_invoice_group.due_after_days)
             
-            ## set invoice number
+            # set invoice number
             # Check if this is the first invoice in this group
             # (Needed to check if we should reset the numbering for this year)
             year = self.date_sent.year
@@ -127,7 +127,7 @@ class FinanceInvoice(models.Model):
                 first_invoice_this_year = first_invoice_in_group_this_year
             )
 
-            ## Increase next_id for invoice group
+            # Increase next_id for invoice group
             self._increment_group_next_id()
 
         super(FinanceInvoice, self).save(*args, **kwargs)

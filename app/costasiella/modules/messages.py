@@ -5,4 +5,3 @@ class Messages:
     user_permission_denied = _("Permission denied!")
     user_invalid_order_status = _("Invalid order status. Allowed status: 'CANCELLED'")
     user_not_logged_in = _("Not logged in!")
-    
