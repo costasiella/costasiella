@@ -4,6 +4,7 @@ from django.utils import timezone
 from django.db import models
 
 from .account_classpass import AccountClasspass
+from .account_subscription import AccountSubscription
 from .finance_costcenter import FinanceCostCenter
 from .finance_glaccount import FinanceGLAccount
 from .finance_invoice import FinanceInvoice
@@ -17,6 +18,13 @@ class FinanceInvoiceItem(models.Model):
                                           null=True,
                                           default=None,
                                           related_name="invoice_items")
+    account_subscription = models.ForeignKey(AccountSubscription,
+                                             on_delete=models.SET_NULL,
+                                             null=True,
+                                             default=None,
+                                             related_name="invoice_items")
+    subscription_year = models.IntegerField(null=True)
+    subscription_month = models.IntegerField(null=True)
     line_number = models.PositiveSmallIntegerField(default=0)
     product_name = models.CharField(max_length=255)
     description = models.TextField(default="")
