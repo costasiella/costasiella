@@ -242,12 +242,52 @@ class FinanceInvoice(models.Model):
 
         #TODO: Check if the first 2 months need to be billed
 
-        #TODO: Check if a registration fee has been paid
+        # Check if a registration fee has been paid
+        self._item_add_subscription_registration_fee(
+            account_subscription,
+            finance_tax_rate
+        )
 
         self.update_amounts()
+
         return finance_invoice_item
 
+    def _item_add_subscription_registration_fee(self, account_subscription, finance_tax_rate):
+        """
+        Check if a registration fee should be added to the invoice and if so, add it.
+        :param account_subscription: models.AccountSubscription
+        :param finance_tax_rate: models.FinanceTaxRate
+        :return: models.FinanceInvoiceItem
+        """
+        from .account_subscription import AccountSubscription
+        from .finance_invoice_item import FinanceInvoiceItem
 
+        qs = AccountSubscription.objects.filter(
+            account=account_subscription.account, # Could also be self.account... same same
+            registration_fee_paid=True
+        )
+        if qs.exists():
+            return
+        else:
+            fee_to_be_paid = account_subscription.organization_subcription.registration_fee
+            if fee_to_be_paid:
+                # Add registration fee to invoice
+                finance_invoice_item = FinanceInvoiceItem(
+                    finance_invoice=self,
+                    line_number=self._get_item_next_line_nr(),
+                    product_name=_("Registration fee"),
+                    description=_("One time registration fee"),
+                    quantity=1,
+                    price=fee_to_be_paid,
+                    finance_tax_rate=finance_tax_rate
+                )
+                finance_invoice_item.save()
+
+                # Mark registration fee as paid
+                account_subscription.registration_fee_paid = True
+                account_subscription.save()
+
+                return finance_invoice_item
 
         ################# OpenStudio code below ####################
 
