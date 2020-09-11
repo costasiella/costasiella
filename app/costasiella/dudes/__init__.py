@@ -8,4 +8,6 @@ from .date_tools_dude import DateToolsDude
 from .insight_account_classpasses_dude import InsightAccountClasspassesDude
 from .insight_account_subscriptions_dude import InsightAccountSubscriptionsDude
 
+from .mollie_dude import MollieDude
+
 from .sales_dude import SalesDude
