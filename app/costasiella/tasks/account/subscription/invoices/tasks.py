@@ -90,14 +90,21 @@ def account_subscription_invoices_add_for_month_mollie_collection(year, month):
     :return:
     """
     #TODO: Add function to send mail for failed payment collection
+    from mollie.api.client import Client
     from mollie.api.error import Error as MollieError
 
-    from .....models import AccountSubscription
+    from .....models import AccountSubscription, IntegrationLogMollie
+    from .....modules.finance_tools import get_currency
     from .....dudes import MollieDude, date_tools_dude
 
 
     date_tools_dude = DateToolsDude()
     mollie_dude = MollieDude()
+
+    # Create mollie instance
+    mollie = Client()
+    mollie_api_key = mollie_dude.get_api_key()
+    mollie.set_api_key(mollie_api_key)
 
     first_day_month = datetime.date(year, month, 1)
     last_day_month = date_tools_dude.get_last_day_month(first_day_month)
@@ -131,7 +138,63 @@ def account_subscription_invoices_add_for_month_mollie_collection(year, month):
             continue
 
         # Create mollie recurring payment
-        
+        account = finance_invoice.account
+        mollie_customer_id = account.mollie_customer_id
+        mandates = mollie_dude.get_account_mollie_mandates(account, mollie)
+
+        valid_mandate = False
+        # set default recurring type, change to recurring if a valid mandate is found.
+        if mandates['count'] > 0:
+            # background payment
+            for mandate in mandates['_embedded']['mandates']:
+                if mandate['status'] == 'valid':
+                    valid_mandate = True
+                    break
+
+            if valid_mandate:
+                # Create recurring payment
+                try:
+                    webhook_url = mollie_dude.get_webhook_url_without_request()
+                    description = finance_invoice.summary + ' - ' + finance_invoice.invoice_number
+                    payment = mollie.payments.create({
+                        'amount': {
+                            'currency': get_currency(),
+                            'value': str(finance_invoice.total)
+                        },
+                        'customerId': mollie_customer_id,
+                        'sequenceType': 'recurring',  # important
+                        'description': description,
+                        'webhookUrl': webhook_url,
+                        'metadata': {
+                            'invoice_id': finance_invoice.pk,
+                        }
+                    })
+
+                    #  Log payment info
+                    log = IntegrationLogMollie(
+                        log_source="TASK_ACCOUNT_SUBSCRIPTION_MOLLIE_COLLECT",
+                        mollie_payment_id=payment['id'],
+                        recurring_type='recurring',
+                        webhook_url=webhook_url,
+                        finance_invoice=finance_invoice
+                    )
+                    log.save()
+
+                    success += 1
+
+                except MollieError as e:
+                    print(e)
+                    # send mail to ask customer to pay manually
+                    send_mail_failed(cs.auth_customer_id)
+
+                    failed += 1
+                    # return error
+                    # return 'API call failed: ' + e.message
+        else:
+            # send mail to ask customer to pay manually
+            send_mail_failed(cs.auth_customer_id)
+
+            failed +=1
 
 
     ########## OpenStudio example code begin ###############
