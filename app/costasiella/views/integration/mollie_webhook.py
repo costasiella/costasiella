@@ -27,8 +27,8 @@ def mollie_webhook(request):
     id = request.POST.get('id', None)
 
     log = IntegrationLogMollie(
-        log_source = "WEBHOOK",
-        mollie_payment_id = id,
+        log_source="WEBHOOK",
+        mollie_payment_id=id,
     )
     log.save()
 
