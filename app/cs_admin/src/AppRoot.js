@@ -166,6 +166,7 @@ import SelfCheckinLocationClasses from './components/selfcheckin/LocationClasses
 import SettingsAbout from './components/settings/about/SettingsAbout'
 import SettingsFinanceCurrency from './components/settings/finance/currency/SettingsFinanceCurrency'
 import SettingsGeneralDateTime from './components/settings/general/date_time/SettingsGeneralDateTime'
+import SettingsGeneralSystem from './components/settings/general/system/SettingsGeneralSystem'
 import SettingsHome from './components/settings/home/SettingsHome'
 import SettingsIntegrationMollie from './components/settings/integration/mollie/SettingsIntegrationMollie'
 import SettingsMailTemplates from './components/settings/mail/SettingsMailTemplates'
@@ -457,6 +458,7 @@ function AppRoot({ t }) {
           <PrivateRoute exact path="/settings/about" component={SettingsAbout} />
           <PrivateRoute exact path="/settings/finance/currency" component={SettingsFinanceCurrency} />
           <PrivateRoute exact path="/settings/general/datetime" component={SettingsGeneralDateTime} />
+          <PrivateRoute exact path="/settings/general/system" component={SettingsGeneralSystem} />
           <PrivateRoute exact path="/settings/integration/mollie" component={SettingsIntegrationMollie} />
           <PrivateRoute exact path="/settings/mail/templates" component={SettingsMailTemplates} />
           <PrivateRoute exact path="/settings/mail/templates/edit/:id" component={SettingsMailTemplateEdit} />
