@@ -1163,7 +1163,7 @@
             },
             "system": {
                 "title": "System",
-                "system_hostname": "Hostname of this installation (without http:// or https://)",
+                "system_hostname": "Hostname of this installation (eg. demo.costasiella.com without http:// or https://)",
                 "explanation": "System settings"
             }
         },
