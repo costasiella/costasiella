@@ -39,6 +39,16 @@ function SettingsHome({ t, match, params }) {
                 </Card.Body>
               </Card>
             </Grid.Col>
+            <Grid.Col md={3}>
+              <Card>
+                <Card.Body>
+                  <h5>{t("settings.general.system.title")}</h5>
+                  {t("settings.general.system.explanation")}
+                  <br /><br />
+                  <SettingsHomeItemButton link="/settings/general/system" />
+                </Card.Body>
+              </Card>
+            </Grid.Col>
           </Grid.Row>
           <Grid.Row>
             <Grid.Col md={12}>
