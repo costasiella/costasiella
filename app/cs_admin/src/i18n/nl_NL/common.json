@@ -213,6 +213,11 @@
             "date_time": {
                 "title": "__STRING_NOT_TRANSLATED__",
                 "explanation": "__STRING_NOT_TRANSLATED__"
+            },
+            "system": {
+                "title": "__STRING_NOT_TRANSLATED__",
+                "system_hostname": "__STRING_NOT_TRANSLATED__",
+                "explanation": "__STRING_NOT_TRANSLATED__"
             }
         },
         "title": "__STRING_NOT_TRANSLATED__",

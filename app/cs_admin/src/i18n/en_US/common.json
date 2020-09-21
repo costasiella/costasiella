@@ -1160,6 +1160,11 @@
             "date_time": {
                 "title": "Date and time",
                 "explanation": "Date and time format"
+            },
+            "system": {
+                "title": "System",
+                "system_hostname": "Hostname of this installation (without http:// or https://)",
+                "explanation": "System settings"
             }
         },
         "error_loading": "Error loading settings :(",
