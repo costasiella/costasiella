@@ -28,8 +28,8 @@ import SettingsFinanceCurrencyForm from "./SettingsFinanceCurrencyForm"
 
 
 function SettingsFinanceCurrency({ t, match, history }) {
-  const headerSubTitle = t('settings.integration.title')
-  const cardTitle = t("settings.integration.mollie.title")
+  const headerSubTitle = t('settings.finance.title')
+  const cardTitle = t("settings.finance.currency.title")
   const sidebarActive = "integration"
 
   const { 

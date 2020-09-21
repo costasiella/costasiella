@@ -1182,7 +1182,7 @@
                 "explanation": "Set the currency and currency symbol"
             },
             "currency_symbol": "Currency symbol",
-            "title": "Currency"
+            "title": "Finance"
         },
         "mail": {
             "title": "Mail",
