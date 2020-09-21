@@ -1483,7 +1483,8 @@
                     "explanation": "Add monthly credits for all active subscriptions.",
                     "empty_list": "This task hasn't run before.",
                     "toast_add_success": "Started adding credits...",
-                    "title_card": "Add credit task result"
+                    "title_card": "Add credit task result",
+                    "title_add": "Add subscription credits for month"
                 }
             }
         },

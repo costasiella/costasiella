@@ -39,6 +39,9 @@ function AutomationAccountSubscriptionCreditAdd({ t, history }) {
   return (
     <AutomationAccountSubscriptionCreditsBase returnUrl={returnUrl}>
       <Card>
+        <Card.Header>
+          <Card.Title>{t('automation.account.subscriptions.credits.title_add')}</Card.Title>
+        </Card.Header>
         <Formik
           initialValues={{ 
             subscriptionYear: new Date().getFullYear(), 
