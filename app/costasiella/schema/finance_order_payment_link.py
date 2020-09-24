@@ -74,7 +74,7 @@ class CreateFinanceOrderPaymentLink(graphene.Mutation):
           mollie
         )
         print(mollie_customer_id)
-        webhook_url = mollie_dude.get_webhook_url(info.context)
+        webhook_url = mollie_dude.get_webhook_url_from_request(info.context)
         print(webhook_url)
 
         # Check recurring or not

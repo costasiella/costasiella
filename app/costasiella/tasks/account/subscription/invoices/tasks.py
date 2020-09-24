@@ -154,7 +154,7 @@ def account_subscription_invoices_add_for_month_mollie_collection(year, month):
             if valid_mandate:
                 # Create recurring payment
                 try:
-                    webhook_url = mollie_dude.get_webhook_url_without_request()
+                    webhook_url = mollie_dude.get_webhook_url_from_db()
                     description = finance_invoice.summary + ' - ' + finance_invoice.invoice_number
                     payment = mollie.payments.create({
                         'amount': {
