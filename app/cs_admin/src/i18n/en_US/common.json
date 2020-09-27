@@ -1440,8 +1440,8 @@
                 "title": "Class information"
             },
             "subscriptions": {
-                "title": "__STRING_NOT_TRANSLATED__",
-                "explanation": "__STRING_NOT_TRANSLATED__"
+                "title": "Subscriptions",
+                "explanation": "View your current and past subscriptions"
             }
         },
         "accounts": {
