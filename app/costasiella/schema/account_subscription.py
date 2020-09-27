@@ -10,7 +10,7 @@ import validators
 
 from ..models import Account, AccountSubscription, AccountSubscriptionCredit, \
                      FinancePaymentMethod, OrganizationSubscription
-from ..modules.gql_tools import require_login_and_permission, get_rid
+from ..modules.gql_tools import require_login, require_login_and_permission, get_rid
 from ..modules.messages import Messages
 
 m = Messages()
@@ -79,12 +79,18 @@ class AccountSubscriptionQuery(graphene.ObjectType):
 
     def resolve_account_subscriptions(self, info, account, **kwargs):
         user = info.context.user
-        require_login_and_permission(user, 'costasiella.view_accountsubscription')
+        require_login(user)
+        # require_login_and_permission(user, 'costasiella.view_accountsubscription')
 
-        rid = get_rid(account)
+        user = info.context.user
+        if user.has_perm('costasiella.view_accountsubscription') and 'account' in kwargs:
+            rid = get_rid(kwargs.get('account', user.id))
+            account_id = rid.id
+        else:
+            account_id = user.id
 
-        # return everything:
-        return AccountSubscription.objects.filter(account=rid.id).order_by('-date_start')
+        # Allow user to specify account
+        return AccountSubscription.objects.filter(account=account_id).order_by('-date_start')
 
 
 class CreateAccountSubscription(graphene.relay.ClientIDMutation):
@@ -97,7 +103,6 @@ class CreateAccountSubscription(graphene.relay.ClientIDMutation):
         note = graphene.String(required=False, default_value="")
         registration_fee_paid = graphene.Boolean(required=False, default_value=False)        
         
-
     account_subscription = graphene.Field(AccountSubscriptionNode)
 
     @classmethod
