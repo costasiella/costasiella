@@ -26,6 +26,8 @@ import HomeHome from './components/home/home/HomeHome'
 import AutomationHome from './components/automation/home/AutomationHome'
 import AutomationAccountSubscriptionCredits from './components/automation/account/subscription/credits/AutomationAccountSubscriptionCredits'
 import AutomationAccountSubscriptionCreditAdd from './components/automation/account/subscription/credits/AutomationAccountSubscriptionCreditAdd'
+import AutomationAccountSubscriptionMollieCollections 
+  from './components/automation/account/subscription/mollie_collection/AutomationAccountSubscriptionMollieCollections'
 
 import FinanceHome from './components/finance/home/FinanceHome'
 import FinanceCostCenters from './components/finance/costcenters/FinanceCostCenters'
@@ -280,6 +282,9 @@ function AppRoot({ t }) {
                               component={AutomationAccountSubscriptionCredits} />
           <PrivateRoute exact path="/automation/account/subscriptions/credits/add" 
                               component={AutomationAccountSubscriptionCreditAdd} />
+          <PrivateRoute exact path="/automation/account/subscriptions/mollie_collections" 
+                              component={AutomationAccountSubscriptionMollieCollections} />
+
           
           {/* FINANCE */}
           <PrivateRoute exact path="/finance" component={FinanceHome} />
