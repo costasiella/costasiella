@@ -52,7 +52,7 @@ def account_subscription_invoices_add_for_month(year, month, description='', inv
     # T = current.T
     # db = current.db
     # DATE_FORMAT = current.DATE_FORMAT
-    # 
+    #
     # year = int(year)
     # month = int(month)
     #
