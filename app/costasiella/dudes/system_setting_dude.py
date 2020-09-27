@@ -9,9 +9,10 @@ class SystemSettingDude:
         """
         from ..models import SystemSetting
 
-        setting = None
+        setting_value = None
         qs = SystemSetting.objects.filter(setting=setting)
-        if qs.exists():
-            setting = qs.first().value
 
-        return setting
+        if qs.exists():
+            setting_value = qs.first().value
+
+        return setting_value
