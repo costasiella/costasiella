@@ -1490,6 +1490,10 @@
                     "toast_add_success": "Started adding credits...",
                     "title_card": "Add credit task result",
                     "title_add": "Add subscription credits for month"
+                },
+                "mollie_collection": {
+                    "title": "Mollie payment collection",
+                    "explanation": "Collect payments for mollie subscriptions."
                 }
             }
         },
