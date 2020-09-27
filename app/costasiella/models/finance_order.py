@@ -163,6 +163,13 @@ class FinanceOrder(models.Model):
                         account_classpass=account_classpass
                     )
 
+            if item.organization_subscription:
+                account_subscription = self._deliver_subscription(
+                    item.organization_subscription,
+                    finance_invoice,
+                    create_invoice
+                )
+
         self.status = "DELIVERED"
         self.save()
 
@@ -218,6 +225,33 @@ class FinanceOrder(models.Model):
             )
 
         return account_classpass
+
+    def _deliver_subscription(self,
+                              organization_subscription,
+                              finance_invoice,
+                              create_invoice):
+        """
+        :param organization_subscription: models.organization_subscription object
+        :param finance_invoice: models.finance_invoice object
+        :param create_invoice: Boolean
+        :return:
+        """
+        from ..dudes.sales_dude import SalesDude
+
+        sales_dude = SalesDude()
+        today = timezone.now().date()
+        result = sales_dude.sell_subscription(
+            self.account,
+            organization_subscription,
+            today,
+            create_invoice=False
+        )
+        account_subscription = result['account_subscription']
+
+        if create_invoice:
+            finance_invoice.item_add_subscription(account_subscription, today.year, today.month)
+
+        return account_subscription
 
     def _deliver_checkin_class(self,
                                schedule_item,
