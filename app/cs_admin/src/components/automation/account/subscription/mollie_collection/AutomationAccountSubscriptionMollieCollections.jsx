@@ -107,7 +107,7 @@ function AutomationAccountSubscriptionMollieCollections({t, history, match}) {
             })
           }} 
         >
-          {(!taskResults.length) ? 
+          {(!taskResults.edges.length) ? 
             // Empty list
             <p>{t('automation.account.subscriptions.mollie_collection.empty_list')}</p>
             :
