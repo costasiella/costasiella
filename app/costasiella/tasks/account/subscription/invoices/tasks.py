@@ -45,40 +45,40 @@ def account_subscription_invoices_add_for_month(year, month, description='', inv
 
     ########### OpenStudio reference code below ###########
 
-    from .os_customer_subscription import CustomerSubscription
-    from general_helpers import get_last_day_month
-    from .os_invoice import Invoice
-
-    T = current.T
-    db = current.db
-    DATE_FORMAT = current.DATE_FORMAT
-
-    year = int(year)
-    month = int(month)
-
-    firstdaythismonth = datetime.date(year, month, 1)
-    lastdaythismonth = get_last_day_month(firstdaythismonth)
-
-    invoices_count = 0
-
-    # get all active subscriptions in month
-    query = (db.customers_subscriptions.Startdate <= lastdaythismonth) & \
-            ((db.customers_subscriptions.Enddate >= firstdaythismonth) |
-             (db.customers_subscriptions.Enddate == None))
-
-    rows = db(query).select(db.customers_subscriptions.ALL)
-    for row in rows:
-        cs = CustomerSubscription(row.id)
-        cs.create_invoice_for_month(year, month, description, invoice_date)
-
-        invoices_count += 1
-
-    ##
-    # For scheduled tasks db connection has to be committed manually
-    ##
-    db.commit()
-
-    return T("Invoices in month") + ': ' + str(invoices_count)
+    # from .os_customer_subscription import CustomerSubscription
+    # from general_helpers import get_last_day_month
+    # from .os_invoice import Invoice
+    #
+    # T = current.T
+    # db = current.db
+    # DATE_FORMAT = current.DATE_FORMAT
+    # 
+    # year = int(year)
+    # month = int(month)
+    #
+    # firstdaythismonth = datetime.date(year, month, 1)
+    # lastdaythismonth = get_last_day_month(firstdaythismonth)
+    #
+    # invoices_count = 0
+    #
+    # # get all active subscriptions in month
+    # query = (db.customers_subscriptions.Startdate <= lastdaythismonth) & \
+    #         ((db.customers_subscriptions.Enddate >= firstdaythismonth) |
+    #          (db.customers_subscriptions.Enddate == None))
+    #
+    # rows = db(query).select(db.customers_subscriptions.ALL)
+    # for row in rows:
+    #     cs = CustomerSubscription(row.id)
+    #     cs.create_invoice_for_month(year, month, description, invoice_date)
+    #
+    #     invoices_count += 1
+    #
+    # ##
+    # # For scheduled tasks db connection has to be committed manually
+    # ##
+    # db.commit()
+    #
+    # return T("Invoices in month") + ': ' + str(invoices_count)
 
 
 @shared_task
@@ -96,7 +96,6 @@ def account_subscription_invoices_add_for_month_mollie_collection(year, month):
     from .....models import AccountSubscription, IntegrationLogMollie
     from .....modules.finance_tools import get_currency
     from .....dudes import MollieDude, date_tools_dude
-
 
     date_tools_dude = DateToolsDude()
     mollie_dude = MollieDude()
@@ -119,82 +118,94 @@ def account_subscription_invoices_add_for_month_mollie_collection(year, month):
         )
     )
 
+    print(qs)
+
     success = 0
     failed = 0
+    if not qs.exists():
+        return _("No invoices added for mollie subscriptions")
+    else:
+        # Request recurring mollie recurring payment creation
+        for account_subscription in qs:
+            finance_invoice_item = account_subscription.create_invoice_for_month(year, month)
+            # Check if an invoice (item) was created
+            if not finance_invoice_item:
+                print("No invoice found")
+                continue
 
-    for i, account_subscription in qs:
-        finance_invoice_item = account_subscription.create_invoice_for_month(year, month)
-        # Check if an invoice (item) was created
-        if not finance_invoice_item:
-            continue
+            finance_invoice = finance_invoice_item.finance_invoice
+            # Only continue when the invoice status == SENT
+            if not finance_invoice.status == 'SENT':
+                print("invoice status not sent")
+                continue
 
-        finance_invoice = finance_invoice_item.finance_invoice
-        # Only continue when the invoice status == SENT
-        if not finance_invoice.status == 'SENT':
-            continue
+            # Check if the amount of the invoice > 0:
+            if not finance_invoice.total:
+                print("Invoice has amount 0")
+                continue
 
-        # Check if the amount of the invoice > 0:
-        if not finance_invoice.total:
-            continue
+            # Create mollie recurring payment
+            account = finance_invoice.account
+            mollie_customer_id = account.mollie_customer_id
+            mandates = mollie_dude.get_account_mollie_mandates(account, mollie)
 
-        # Create mollie recurring payment
-        account = finance_invoice.account
-        mollie_customer_id = account.mollie_customer_id
-        mandates = mollie_dude.get_account_mollie_mandates(account, mollie)
+            valid_mandate = False
+            # set default recurring type, change to recurring if a valid mandate is found.
+            if mandates['count'] > 0:
+                # background payment
+                for mandate in mandates['_embedded']['mandates']:
+                    if mandate['status'] == 'valid':
+                        valid_mandate = True
+                        break
 
-        valid_mandate = False
-        # set default recurring type, change to recurring if a valid mandate is found.
-        if mandates['count'] > 0:
-            # background payment
-            for mandate in mandates['_embedded']['mandates']:
-                if mandate['status'] == 'valid':
-                    valid_mandate = True
-                    break
+                if valid_mandate:
+                    # Create recurring payment
+                    try:
+                        webhook_url = mollie_dude.get_webhook_url_from_db()
+                        description = finance_invoice.summary + ' - ' + finance_invoice.invoice_number
+                        payment = mollie.payments.create({
+                            'amount': {
+                                'currency': get_currency(),
+                                'value': str(finance_invoice.total)
+                            },
+                            'customerId': mollie_customer_id,
+                            'sequenceType': 'recurring',  # important
+                            'description': description,
+                            'webhookUrl': webhook_url,
+                            'metadata': {
+                                'invoice_id': finance_invoice.pk,
+                            }
+                        })
 
-            if valid_mandate:
-                # Create recurring payment
-                try:
-                    webhook_url = mollie_dude.get_webhook_url_from_db()
-                    description = finance_invoice.summary + ' - ' + finance_invoice.invoice_number
-                    payment = mollie.payments.create({
-                        'amount': {
-                            'currency': get_currency(),
-                            'value': str(finance_invoice.total)
-                        },
-                        'customerId': mollie_customer_id,
-                        'sequenceType': 'recurring',  # important
-                        'description': description,
-                        'webhookUrl': webhook_url,
-                        'metadata': {
-                            'invoice_id': finance_invoice.pk,
-                        }
-                    })
+                        #  Log payment info
+                        log = IntegrationLogMollie(
+                            log_source="TASK_ACCOUNT_SUBSCRIPTION_MOLLIE_COLLECT",
+                            mollie_payment_id=payment['id'],
+                            recurring_type='recurring',
+                            webhook_url=webhook_url,
+                            finance_invoice=finance_invoice
+                        )
+                        log.save()
 
-                    #  Log payment info
-                    log = IntegrationLogMollie(
-                        log_source="TASK_ACCOUNT_SUBSCRIPTION_MOLLIE_COLLECT",
-                        mollie_payment_id=payment['id'],
-                        recurring_type='recurring',
-                        webhook_url=webhook_url,
-                        finance_invoice=finance_invoice
-                    )
-                    log.save()
+                        success += 1
 
-                    success += 1
+                    except MollieError as e:
+                        print(e)
+                        # send mail to ask customer to pay manually
+                        #TODO: Implement send mail failed.
+                        # send_mail_failed(cs.auth_customer_id)
 
-                except MollieError as e:
-                    print(e)
-                    # send mail to ask customer to pay manually
-                    send_mail_failed(cs.auth_customer_id)
+                        failed += 1
+                        # return error
+                        # return 'API call failed: ' + e.message
+            else:
+                # send mail to ask customer to pay manually
+                # TODO: Implement send mail failed.
+                # send_mail_failed(cs.auth_customer_id)
 
-                    failed += 1
-                    # return error
-                    # return 'API call failed: ' + e.message
-        else:
-            # send mail to ask customer to pay manually
-            send_mail_failed(cs.auth_customer_id)
+                failed += 1
 
-            failed +=1
+        return _("Mollie collection result: Success (%s), Failed (%s)") % (success, failed)
 
 
     ########## OpenStudio example code begin ###############
