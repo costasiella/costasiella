@@ -45,7 +45,7 @@ function AutomationAccountSubscriptionMollieCollections({t, history, match}) {
   })
 
   const headerOptions = <Card.Options>
-    <Link to={"/automation/account/subscriptions/mollie_collection/add"}>
+    <Link to={"/automation/account/subscriptions/mollie_collections/add"}>
       <Button color="primary" 
               size="sm"
       >

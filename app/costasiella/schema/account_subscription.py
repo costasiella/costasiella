@@ -229,7 +229,7 @@ class CreateAccountSubscriptionInvoicesMonth(graphene.relay.ClientIDMutation):
         return CreateAccountSubscriptionInvoicesMonth(ok=ok)
 
 
-class CreateAccountSubscriptionMollieCollectionForMonth(graphene.relay.ClientIDMutation):
+class CreateAccountSubscriptionInvoicesMollieCollectionForMonth(graphene.relay.ClientIDMutation):
     class Input:
         year = graphene.Int()
         month = graphene.Int()
@@ -251,12 +251,12 @@ class CreateAccountSubscriptionMollieCollectionForMonth(graphene.relay.ClientIDM
         print(task)
         ok = True
 
-        return CreateAccountSubscriptionMollieCollectionForMonth(ok=ok)
+        return CreateAccountSubscriptionInvoicesMollieCollectionForMonth(ok=ok)
 
 
 class AccountSubscriptionMutation(graphene.ObjectType):
     create_account_subscription = CreateAccountSubscription.Field()
     create_account_subscription_invoices_mollie_collection_for_month = \
-        CreateAccountSubscriptionInvoicesMonth.Field()
+        CreateAccountSubscriptionInvoicesMollieCollectionForMonth.Field()
     delete_account_subscription = DeleteAccountSubscription.Field()
     update_account_subscription = UpdateAccountSubscription.Field()

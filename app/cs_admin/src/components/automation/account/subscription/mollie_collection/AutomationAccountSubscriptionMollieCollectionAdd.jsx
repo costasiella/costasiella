@@ -24,8 +24,10 @@ import AutomationAccountSubscriptionCreditsBase from './AutomationAccountSubscri
 
 
 const ADD_TASK = gql`
-  mutation CreateAccountSubscriptionMollieCollectionForMonth($input:CreateAccountSubscriptionMollieCollectionForMonthInput!) {
-    createAccountSubscriptionMollieCollectionForMonth(input: $input) {
+  mutation CreateAccountSubscriptionInvoicesMollieCollectionForMonth(
+    $input:CreateAccountSubscriptionInvoicesMollieCollectionForMonthInput!
+  ) {
+    createAccountSubscriptionInvoicesMollieCollectionForMonth(input: $input) {
       ok
     }
   }
