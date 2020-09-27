@@ -172,7 +172,7 @@ class CreateAccountSubscriptionCreditForMonth(graphene.relay.ClientIDMutation):
         year = input['year']
         month = input['month']
 
-        task = account_subscription_credits_add_for_month.delay(year, month)
+        task = account_subscription_credits_add_for_month.delay(year=year, month=month)
         ok = True
 
         return CreateAccountSubscriptionCreditForMonth(ok=ok)

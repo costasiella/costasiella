@@ -247,7 +247,7 @@ class CreateAccountSubscriptionInvoicesMollieCollectionForMonth(graphene.relay.C
         year = input['year']
         month = input['month']
 
-        task = account_subscription_invoices_add_for_month_mollie_collection.delay(year, month)
+        task = account_subscription_invoices_add_for_month_mollie_collection.delay(year=year, month=month)
         print(task)
         ok = True
 
