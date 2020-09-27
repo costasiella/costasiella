@@ -169,20 +169,11 @@ class CreateAccountSubscriptionCreditForMonth(graphene.relay.ClientIDMutation):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.add_accountsubscriptioncredit')
 
-        print(input)
         year = input['year']
         month = input['month']
 
         task = account_subscription_credits_add_for_month.delay(year, month)
-        print(task)
         ok = True
-
-        # rid = get_rid(input['id'])
-        # account_subscription = AccountSubscription.objects.filter(id=rid.id).first()
-        # if not account_subscription:
-        #     raise Exception('Invalid Account Subscription ID!')
-        #
-        # ok = account_subscription.delete()
 
         return CreateAccountSubscriptionCreditForMonth(ok=ok)
 
