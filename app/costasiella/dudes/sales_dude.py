@@ -62,7 +62,13 @@ class SalesDude:
 
         return finance_invoice_item
 
-    def sell_subscription(self, account, organization_subscription, date_start, note="", create_invoice=True):
+    def sell_subscription(self,
+                          account,
+                          organization_subscription,
+                          date_start,
+                          finance_payment_method,
+                          note="",
+                          create_invoice=True):
         """
         Sell subscription to account
         """
@@ -72,6 +78,7 @@ class SalesDude:
             account=account,
             organization_subscription=organization_subscription,
             date_start=date_start,
+            finance_payment_method=finance_payment_method,
             note=note
         )
 

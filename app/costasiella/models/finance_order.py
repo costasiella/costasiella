@@ -236,7 +236,11 @@ class FinanceOrder(models.Model):
         :param create_invoice: Boolean
         :return:
         """
+        from .finance_payment_method import FinancePaymentMethod
         from ..dudes.sales_dude import SalesDude
+
+        # Mollie payment
+        finance_payment_method = FinancePaymentMethod.objects.get(pk=100)
 
         sales_dude = SalesDude()
         today = timezone.now().date()
@@ -244,6 +248,7 @@ class FinanceOrder(models.Model):
             self.account,
             organization_subscription,
             today,
+            finance_payment_method=finance_payment_method,
             create_invoice=False
         )
         account_subscription = result['account_subscription']
