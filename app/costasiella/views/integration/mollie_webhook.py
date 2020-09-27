@@ -84,7 +84,7 @@ def mollie_webhook(request):
 
             # Process refunds
             if payment.refunds:
-                webook_payment_is_paid_process_refunds(
+                webhook_payment_is_paid_process_refunds(
                     finance_invoice_id,
                     finance_order_id,
                     payment
@@ -146,7 +146,7 @@ def webhook_deliver_order(finance_order_id, payment_amount, payment_date, paymen
             finance_invoice.is_paid()
 
 
-def webook_payment_is_paid_process_refunds(finance_invoice_id, finance_order_id, payment):
+def webhook_payment_is_paid_process_refunds(finance_invoice_id, finance_order_id, payment):
     """
     :param finance_invoice_id:
     :param finance_order_id:
@@ -218,7 +218,7 @@ def webhook_invoice_refund(finance_invoice,
     finance_invoice.is_paid()
 
 
-def webook_payment_is_paid_process_chargebacks(finance_invoice_id, finance_order_id, payment):
+def webhook_payment_is_paid_process_chargebacks(finance_invoice_id, finance_order_id, payment):
     """
     :param finance_invoice_id:
     :param finance_order_id:
@@ -254,7 +254,7 @@ def webook_payment_is_paid_process_chargebacks(finance_invoice_id, finance_order
 
             if not qs_chargeback.exists() and finance_invoice:
                 # Only process the chargeback if it hasn't been processed already
-                webhook_invoice_chargeback(
+                webhook_invoice_add_chargeback_payment(
                     finance_invoice,
                     amount,
                     chargeback_date,
@@ -264,12 +264,12 @@ def webook_payment_is_paid_process_chargebacks(finance_invoice_id, finance_order
                 )
 
 
-def webhook_invoice_chargeback(finance_invoice,
-                               amount,
-                               date,
-                               payment_id,
-                               chargeback_id,
-                               chargeback_description):
+def webhook_invoice_add_chargeback_payment(finance_invoice,
+                                           amount,
+                                           date,
+                                           payment_id,
+                                           chargeback_id,
+                                           chargeback_description):
     """
     :param finance_invoice: FinanceInvoice object
     :param amount: amount to be refunded
