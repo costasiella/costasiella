@@ -573,6 +573,10 @@
             "class_info": {
                 "error_loading_data": "__STRING_NOT_TRANSLATED__",
                 "title": "__STRING_NOT_TRANSLATED__"
+            },
+            "subscriptions": {
+                "title": "__STRING_NOT_TRANSLATED__",
+                "explanation": "__STRING_NOT_TRANSLATED__"
             }
         },
         "accounts": {
@@ -1493,7 +1497,11 @@
                 },
                 "mollie_collection": {
                     "title": "__STRING_NOT_TRANSLATED__",
-                    "explanation": "__STRING_NOT_TRANSLATED__"
+                    "explanation": "__STRING_NOT_TRANSLATED__",
+                    "title_add": "__STRING_NOT_TRANSLATED__",
+                    "toast_add_success": "__STRING_NOT_TRANSLATED__",
+                    "title_card": "__STRING_NOT_TRANSLATED__",
+                    "empty_list": "__STRING_NOT_TRANSLATED__"
                 }
             }
         },

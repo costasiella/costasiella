@@ -1438,6 +1438,10 @@
             "class_info": {
                 "error_loading_data": "Error loading class info... :(",
                 "title": "Class information"
+            },
+            "subscriptions": {
+                "title": "__STRING_NOT_TRANSLATED__",
+                "explanation": "__STRING_NOT_TRANSLATED__"
             }
         },
         "accounts": {
@@ -1493,7 +1497,11 @@
                 },
                 "mollie_collection": {
                     "title": "Mollie payment collection",
-                    "explanation": "Collect payments for mollie subscriptions."
+                    "explanation": "Collect payments for mollie subscriptions.",
+                    "title_add": "Collect mollie subscription payements for month",
+                    "toast_add_success": "Started collecting subscription payments...",
+                    "title_card": "Mollie subscription payment collection result",
+                    "empty_list": "This task hasn't run before."
                 }
             }
         },
