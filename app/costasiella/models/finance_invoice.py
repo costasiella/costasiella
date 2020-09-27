@@ -230,6 +230,9 @@ class FinanceInvoice(models.Model):
         finance_invoice_item = FinanceInvoiceItem(
             finance_invoice=self,
             line_number=self._get_item_next_line_nr(),
+            account_subscription=account_subscription,
+            subscription_year=year,
+            subscription_month=month,
             product_name=_("Subscription %s") % account_subscription.id,
             description=description,
             quantity=1,
