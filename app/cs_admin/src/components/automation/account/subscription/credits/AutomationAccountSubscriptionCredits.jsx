@@ -87,14 +87,6 @@ function AutomationAccountSubscriptionCredits({t, history, match}) {
   // const account = data.account
   // const scheduleItemAttendances = data.scheduleItemAttendances
   
-  // // Empty list
-  if (!taskResults.edges.length) {
-    return (
-      <AutomationAccountSubscriptionCreditsBase>
-        <p>{t('automation.account.subscriptions.credits.empty_list')}</p>
-      </AutomationAccountSubscriptionCreditsBase>
-    )
-  }
 
   return (
     <AutomationAccountSubscriptionCreditsBase>
@@ -126,38 +118,44 @@ function AutomationAccountSubscriptionCredits({t, history, match}) {
             })
           }} 
         >
-          <Table>
-            <Table.Header>
-              <Table.Row key={v4()}>
-                <Table.ColHeader>{t('automation.general.status.title')}</Table.ColHeader>
-                <Table.ColHeader>{t('automation.general.time_completed')}</Table.ColHeader>
-                <Table.ColHeader>{t('automation.general.task_kwargs')}</Table.ColHeader>
-                <Table.ColHeader>{t('automation.general.task_result')}</Table.ColHeader>
-                <Table.ColHeader></Table.ColHeader>
-              </Table.Row>
-            </Table.Header>
-            <Table.Body>
-              {taskResults.edges.map(({ node }) => (
+          { (!taskResults.edges.length) ? 
+            // Empty list
+            <p>{t('automation.account.subscriptions.credits.empty_list')}</p>
+            :
+            // Content
+            <Table>
+              <Table.Header>
                 <Table.Row key={v4()}>
-                  <Table.Col>
-                    <AutomationTaskResultStatus status={node.status} />
-                  </Table.Col>
-                  <Table.Col>
-                    {moment(node.dateDone).format(dateTimeFormatMoment)}
-                  </Table.Col>
-                  <Table.Col>
-                    {node.taskKwargs}
-                  </Table.Col>
-                  <Table.Col>
-                    {node.result}
-                  </Table.Col>
-                  <Table.Col>
-
-                  </Table.Col>
+                  <Table.ColHeader>{t('automation.general.status.title')}</Table.ColHeader>
+                  <Table.ColHeader>{t('automation.general.time_completed')}</Table.ColHeader>
+                  <Table.ColHeader>{t('automation.general.task_kwargs')}</Table.ColHeader>
+                  <Table.ColHeader>{t('automation.general.task_result')}</Table.ColHeader>
+                  <Table.ColHeader></Table.ColHeader>
                 </Table.Row>
-              ))}
-            </Table.Body>
-          </Table>
+              </Table.Header>
+              <Table.Body>
+                {taskResults.edges.map(({ node }) => (
+                  <Table.Row key={v4()}>
+                    <Table.Col>
+                      <AutomationTaskResultStatus status={node.status} />
+                    </Table.Col>
+                    <Table.Col>
+                      {moment(node.dateDone).format(dateTimeFormatMoment)}
+                    </Table.Col>
+                    <Table.Col>
+                      {node.taskKwargs}
+                    </Table.Col>
+                    <Table.Col>
+                      {node.result}
+                    </Table.Col>
+                    <Table.Col>
+
+                    </Table.Col>
+                  </Table.Row>
+                ))}
+              </Table.Body>
+            </Table>
+          }
         </ContentCard>
     </AutomationAccountSubscriptionCreditsBase>
   )
