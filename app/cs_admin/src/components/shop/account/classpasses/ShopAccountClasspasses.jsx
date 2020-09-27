@@ -8,6 +8,7 @@ import { v4 } from "uuid"
 import moment from 'moment'
 
 import AppSettingsContext from '../../../context/AppSettingsContext'
+import GET_USER_PROFILE from "../../../../queries/system/get_user_profile"
 
 import {
   Card,
@@ -23,15 +24,21 @@ import ContentCard from "../../../general/ContentCard"
 function ShopAccountClasspasses({t, match, history}) {
   const appSettings = useContext(AppSettingsContext)
   const dateFormat = appSettings.dateFormat
-  const { loading, error, data, fetchMore } = useQuery(QUERY_ACCOUNT_CLASSPASSES)
+  const { loading: loadingUser, error: errorUser, data: dataUser } = useQuery(GET_USER_PROFILE)
+  const { loading, error, data, fetchMore } = useQuery(QUERY_ACCOUNT_CLASSPASSES, {
+    skip: loadingUser || errorUser || !dataUser,
+    variables: {
+      account: dataUser && dataUser.user ? dataUser.user.accountId : null
+    }
+  })
   
 
-  if (loading) return (
+  if (loading || loadingUser || !data) return (
     <ShopAccountClasspassesBase>
       {t("general.loading_with_dots")}
     </ShopAccountClasspassesBase>
   )
-  if (error) return (
+  if (error || errorUser) return (
     <ShopAccountClasspassesBase>
       {t("shop.account.classpasses.error_loading_data")}
     </ShopAccountClasspassesBase>

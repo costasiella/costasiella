@@ -77,7 +77,7 @@ class AccountSubscriptionQuery(graphene.ObjectType):
     account_subscriptions = DjangoFilterConnectionField(AccountSubscriptionNode)
     account_subscription = graphene.relay.Node.Field(AccountSubscriptionNode)
 
-    def resolve_account_subscriptions(self, info, account, **kwargs):
+    def resolve_account_subscriptions(self, info, **kwargs):
         user = info.context.user
         require_login(user)
         # require_login_and_permission(user, 'costasiella.view_accountsubscription')

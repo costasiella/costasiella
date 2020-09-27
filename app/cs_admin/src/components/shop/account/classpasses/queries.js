@@ -2,8 +2,8 @@ import gql from "graphql-tag"
 
 
 export const QUERY_ACCOUNT_CLASSPASSES = gql`
-  query AccountClasspass($before: String, $after: String) {
-    accountClasspasses(first: 100, before: $before, after: $after) {
+  query AccountClasspass($before: String, $after: String, $account: ID!) {
+    accountClasspasses(first: 100, before: $before, after: $after, account: $account) {
       pageInfo {
         hasNextPage
         hasPreviousPage
