@@ -38,6 +38,16 @@ function AutomationHome({ t, match, params }) {
                 </Card.Body>
               </Card>
             </Grid.Col>
+            <Grid.Col md={3}>
+              <Card>
+                <Card.Body>
+                  <h5>{t("automation.account.subscriptions.mollie_collection.title")}</h5>
+                  {t("automation.account.subscriptions.mollie_collection.explanation")}
+                  <br /><br />
+                  <AutomationHomeItemButton link="/automation/account/subscriptions/mollie_collections" />
+                </Card.Body>
+              </Card>
+            </Grid.Col>
           </Grid.Row>
         </Container>
       </div>
