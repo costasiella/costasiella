@@ -78,6 +78,9 @@ class SalesDude:
         # set date end & save
         account_subscription.save()
 
+        # Add credits
+        account_subscription.create_credits_for_month(date_start.year, date_start.month)
+
         print('creating invoice...')
 
         finance_invoice_item = None
