@@ -2,8 +2,8 @@ import gql from "graphql-tag"
 
 
 export const QUERY_ACCOUNT_SUBSCRIPTIONS = gql`
-  query AccountSubscriptions($before: String, $after: String) {
-    accountSubscriptions(first: 100, before: $before, after: $after) {
+  query AccountSubscriptions($before: String, $after: String, $account: ID!) {
+    accountSubscriptions(first: 100, before: $before, after: $after, account: $account) {
       pageInfo {
         hasNextPage
         hasPreviousPage
@@ -22,7 +22,6 @@ export const QUERY_ACCOUNT_SUBSCRIPTIONS = gql`
           }
           dateStart
           dateEnd
-          classesRemainingDisplay
         }
       }
     }

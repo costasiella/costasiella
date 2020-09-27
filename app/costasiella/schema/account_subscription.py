@@ -102,7 +102,7 @@ class CreateAccountSubscription(graphene.relay.ClientIDMutation):
         date_end = graphene.types.datetime.Date(required=False, default_value=None)
         note = graphene.String(required=False, default_value="")
         registration_fee_paid = graphene.Boolean(required=False, default_value=False)        
-        
+
     account_subscription = graphene.Field(AccountSubscriptionNode)
 
     @classmethod
