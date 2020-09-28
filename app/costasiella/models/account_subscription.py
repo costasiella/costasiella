@@ -285,7 +285,6 @@ class AccountSubscription(models.Model):
             date_sent=date_created,
             terms=finance_invoice_group.terms,
             footer=finance_invoice_group.footer
-
         )
         finance_invoice.save()
         finance_invoice_item = finance_invoice.item_add_subscription(self, year, month)

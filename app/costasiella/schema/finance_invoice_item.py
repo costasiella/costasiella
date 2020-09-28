@@ -29,7 +29,8 @@ class FinanceInvoiceItemFilter(FilterSet):
         model = FinanceInvoiceItem
         fields = [ 
             'id', 
-            'finance_invoice', 
+            'finance_invoice',
+            'account_subscription'
         ]
         
         order_by = OrderingFilter(
@@ -42,7 +43,7 @@ class FinanceInvoiceItemFilter(FilterSet):
 class FinanceInvoiceItemNode(DjangoObjectType):
     class Meta:
         model = FinanceInvoiceItem
-        filter_fields = [ 'id', 'finance_invoice' ]
+        filter_fields = ['id', 'finance_invoice']
         interfaces = (graphene.relay.Node, FinanceInvoiceItemInterface, )
 
     def resolve_price_display(self, info):
@@ -78,7 +79,6 @@ class FinanceInvoiceItemQuery(graphene.ObjectType):
         filterset_class=FinanceInvoiceItemFilter
     )
     finance_invoice_item = graphene.relay.Node.Field(FinanceInvoiceItemNode)
-
 
     def resolve_finance_invoice_items(self, info, **kwargs):
         user = info.context.user
