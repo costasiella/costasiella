@@ -697,6 +697,9 @@
                     "edit": "Edit alt. price",
                     "title_list": "Alt. prices",
                     "empty_list": "No alternative prices have been defined for this subscription."
+                },
+                "invoices": {
+                    "title_list": "Invoices"
                 }
             },
             "classpasses": {
@@ -1408,7 +1411,7 @@
                 "title": "My class passes",
                 "explanation": "View your current and past classpasses",
                 "error_loading_data": "Error loading classpasses :(",
-                "empty_list": "No current classpasses"
+                "empty_list": "No classpasses found."
             },
             "btn_text_view": "View",
             "orders": {
@@ -1441,7 +1444,9 @@
             },
             "subscriptions": {
                 "title": "Subscriptions",
-                "explanation": "View your current and past subscriptions"
+                "explanation": "View your current and past subscriptions",
+                "error_loading_data": "Error loading subscriptions... :(",
+                "empty_list": "No subcsriptions found."
             }
         },
         "accounts": {

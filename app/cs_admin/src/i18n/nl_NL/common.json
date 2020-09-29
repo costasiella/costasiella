@@ -576,7 +576,9 @@
             },
             "subscriptions": {
                 "title": "__STRING_NOT_TRANSLATED__",
-                "explanation": "__STRING_NOT_TRANSLATED__"
+                "explanation": "__STRING_NOT_TRANSLATED__",
+                "error_loading_data": "__STRING_NOT_TRANSLATED__",
+                "empty_list": "__STRING_NOT_TRANSLATED__"
             }
         },
         "accounts": {
@@ -981,6 +983,9 @@
                     "edit": "__STRING_NOT_TRANSLATED__",
                     "title_list": "__STRING_NOT_TRANSLATED__",
                     "empty_list": "__STRING_NOT_TRANSLATED__"
+                },
+                "invoices": {
+                    "title_list": "__STRING_NOT_TRANSLATED__"
                 }
             },
             "teacher_profile": {
