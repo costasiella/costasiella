@@ -5,10 +5,12 @@ from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
 from graphql import GraphQLError
 
-from ..models import Account, FinanceInvoice, FinanceInvoiceGroup, FinancePaymentMethod
+from ..models import Account, AccountSubscription, FinanceInvoice, FinanceInvoiceGroup, FinancePaymentMethod
 from ..modules.gql_tools import require_login, require_login_and_permission, get_rid
 from ..modules.messages import Messages
 from ..modules.finance_tools import display_float_as_amount
+
+from .custom_schema_validators import is_year, is_month
 
 m = Messages()
 
@@ -107,6 +109,23 @@ def validate_create_update_input(input, update=False):
         if not account:
             raise Exception(_('Invalid Account ID!'))
 
+        # Check account_subscription
+        if 'account_subscription' in input:
+            if input['account_subscription']:
+                rid = get_rid(input['account_subscription'])
+                account_subscription = AccountSubscription.objects.filter(id=rid.id).first()
+                result['account_subscription'] = account_subscription
+                if not account_subscription:
+                    raise Exception(_('Invalid Account Subscription ID!'))
+
+        if 'subscription_year' in input:
+            is_year(input['subscription_year'])
+            result['subscription_year'] = input['subscription_year']
+
+        if 'subscription_month' in input:
+            is_month(input['subscription_month'])
+            result['subscription_month'] = input['subscription_month']
+
     # Check finance payment method
     if 'finance_payment_method' in input:
         if input['finance_payment_method']:
@@ -124,6 +143,9 @@ class CreateFinanceInvoice(graphene.relay.ClientIDMutation):
         account = graphene.ID(required=True)
         finance_invoice_group = graphene.ID(required=True)
         summary = graphene.String(required=False, default_value="")
+        account_subscription = graphene.ID(required=False)
+        subscription_year = graphene.Int(required=False)
+        subscription_month = graphene.Int(required=False)
         
     finance_invoice = graphene.Field(FinanceInvoiceNode)
 
@@ -148,6 +170,15 @@ class CreateFinanceInvoice(graphene.relay.ClientIDMutation):
 
         # Save invoice
         finance_invoice.save()
+
+        if ('account_subscription' in validation_result
+                and 'subscription_year' in validation_result
+                and 'subscription_month' in validation_result):
+            finance_invoice.item_add_subscription(
+                validation_result['account_subscription'],
+                validation_result['subscription_year'],
+                validation_result['subscription_month']
+            )
 
         return CreateFinanceInvoice(finance_invoice=finance_invoice)
 
