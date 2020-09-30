@@ -139,6 +139,7 @@ import AccountSubscriptionEditCredits from './components/relations/accounts/subs
 import AccountSubscriptionEditCreditAdd from './components/relations/accounts/subscriptions/edit/credits/AccountSubscriptionEditCreditAdd'
 import AccountSubscriptionEditCreditEdit from './components/relations/accounts/subscriptions/edit/credits/AccountSubscriptionEditCreditEdit'
 import AccountSubscriptionEditInvoices from './components/relations/accounts/subscriptions/edit/invoices/AccountSubscriptionEditInvoices'
+import AccountSubscriptionEditInvoiceAdd from './components/relations/accounts/subscriptions/edit/invoices/AccountSubscriptionEditInvoiceAdd'
 import AccountSubscriptionEditPauses from './components/relations/accounts/subscriptions/edit/pauses/AccountSubscriptionEditPauses'
 import AccountSubscriptionEditPauseAdd from './components/relations/accounts/subscriptions/edit/pauses/AccountSubscriptionEditPauseAdd'
 import AccountSubscriptionEditPauseEdit from './components/relations/accounts/subscriptions/edit/pauses/AccountSubscriptionEditPauseEdit'
@@ -407,6 +408,8 @@ function AppRoot({ t }) {
                         component={AccountSubscriptionEditCreditEdit} />
           <PrivateRoute exact path="/relations/accounts/:account_id/subscriptions/edit/:subscription_id/invoices" 
             component={AccountSubscriptionEditInvoices} />
+          <PrivateRoute exact path="/relations/accounts/:account_id/subscriptions/edit/:subscription_id/invoices/add" 
+            component={AccountSubscriptionEditInvoiceAdd} />
           <PrivateRoute exact path="/relations/accounts/:account_id/subscriptions/edit/:subscription_id/pauses" component={AccountSubscriptionEditPauses} />
           <PrivateRoute exact path="/relations/accounts/:account_id/subscriptions/edit/:subscription_id/pauses/add" component={AccountSubscriptionEditPauseAdd} />
           <PrivateRoute exact path="/relations/accounts/:account_id/subscriptions/edit/:subscription_id/pauses/edit/:id" 
