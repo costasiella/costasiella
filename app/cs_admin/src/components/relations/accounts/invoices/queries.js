@@ -131,7 +131,7 @@ export const GET_INPUT_VALUES_QUERY = gql`
   }
 `
 
-const CREATE_ACCOUNT_INVOICE= gql`
+export const CREATE_ACCOUNT_INVOICE = gql`
   mutation CreateFinanceInvoice($input: CreateFinanceInvoiceInput!) {
     createFinanceInvoice(input: $input) {
       financeInvoice {
