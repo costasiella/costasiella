@@ -5,6 +5,7 @@ import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
 import { Form as FoForm, Field, ErrorMessage } from 'formik'
 import { v4 } from 'uuid'
+import { Link } from 'react-router-dom'
 
 import {
   Button,
@@ -91,7 +92,7 @@ function AccountSubscriptionEditInvoiceAddForm ({
           >
             {t('general.submit')}
           </Button>
-          <Link to={return_url}>
+          <Link to={returnUrl}>
             <Button
               type="button" 
               color="link" 

@@ -28,9 +28,26 @@ query financeInvoiceItem($before: String, $after: String, $accountSubscription: 
     }
   }
 }
-
 `
 
+export const GET_INPUT_VALUES_QUERY = gql`
+  query InvoiceInputValues($after: String, $before: String) {
+    financeInvoiceGroups(first: 100, before: $before, after: $after, archived: false) {
+      pageInfo {
+        startCursor
+        endCursor
+        hasNextPage
+        hasPreviousPage
+      }
+      edges {
+        node {
+          id
+          name
+        }
+      }
+    }
+  }
+`
 // export const GET_ACCOUNT_SUBSCRIPTION_CREDIT_QUERY = gql`
 // query AccountSubscriptionCredit($id: ID!) {
 //   accountSubscriptionCredit(id:$id) {
