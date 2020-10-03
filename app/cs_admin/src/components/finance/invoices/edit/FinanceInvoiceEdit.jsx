@@ -24,6 +24,8 @@ import HasPermissionWrapper from "../../../HasPermissionWrapper"
 
 import FinanceMenu from "../../FinanceMenu"
 
+import CSLS from "../../../../tools/cs_local_storage"
+
 import FinanceInvoiceEditItems from "./FinanceInvoiceEditItems"
 import FinanceInvoiceEditAdditional from "./FinanceInvoiceEditAdditional"
 import FinanceInvoiceEditBalance from "./FinanceInvoiceEditBalance"
@@ -45,7 +47,12 @@ class FinanceInvoiceEdit extends Component {
     const match = this.props.match
     const history = this.props.history
     const id = match.params.id
-    const return_url = "/finance/invoices"
+    // Fetch back location from localStorage, if no value set, default back to /finance/invoices
+    let return_url = localStorage.getItem(CSLS.FINANCE_INVOICES_EDIT_RETURN)
+    if (!return_url) {
+      return_url = "/finance/invoices"
+    }
+
     const export_url = "/d/export/invoice/pdf/" + id
     const payment_add_url = "/finance/invoices/" + id + "/payment/add"
 

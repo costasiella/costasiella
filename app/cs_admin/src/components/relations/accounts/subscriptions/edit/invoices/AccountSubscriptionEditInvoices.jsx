@@ -27,6 +27,8 @@ import {
   Text
 } from "tabler-react";
 // import HasPermissionWrapper from "../../../../HasPermissionWrapper"
+
+import CSLS from "../../../../../../tools/cs_local_storage"
 import AccountSubscriptionEditInvoiceDelete from "./AccountSubscriptionEditInvoiceDelete"
 import AccountSubscriptionEditListBase from "../AccountSubscriptionEditListBase"
 import AccountSubscriptionEditButtonAdd from "../AccountSubscriptionEditButtonAdd"
@@ -34,7 +36,7 @@ import AccountSubscriptionEditButtonAdd from "../AccountSubscriptionEditButtonAd
 import moment from 'moment';
 
 
-function AccountSubscriptionEditInvoices({t, match, history}) {
+function AccountSubscriptionEditInvoices({t, location, match, history}) {
   const appSettings = useContext(AppSettingsContext)
   const dateFormat = appSettings.dateFormat
   const timeFormat = appSettings.timeFormatMoment
@@ -70,6 +72,8 @@ function AccountSubscriptionEditInvoices({t, match, history}) {
 
   console.log('query data')
   console.log(data)
+  // Set back location for edit invoice
+  localStorage.setItem(CSLS.FINANCE_INVOICES_EDIT_RETURN, location.pathname)
 
   const financeInvoiceItems = data.financeInvoiceItems
   const pageInfo = data.financeInvoiceItems.pageInfo

@@ -34,11 +34,12 @@ import ProfileMenu from "../ProfileMenu"
 import ProfileCardSmall from "../../../ui/ProfileCardSmall"
 
 import { GET_ACCOUNT_INVOICES_QUERY } from "./queries"
+import CSLS from "../../../../tools/cs_local_storage"
 import { DELETE_FINANCE_INVOICE } from "../../../finance/invoices/queries"
 import FinanceInvoiceStatus from "../../../ui/FinanceInvoiceStatus"
 
 
-function AccountInvoices({ t, match, history }) {
+function AccountInvoices({ t, location, match, history }) {
   const account_id = match.params.account_id
   const { loading, error, data, fetchMore } = useQuery(GET_ACCOUNT_INVOICES_QUERY, {
     variables: {'account': account_id},
@@ -52,6 +53,9 @@ function AccountInvoices({ t, match, history }) {
     console.log(error)
     return <p>{t('general.error_sad_smiley')}</p>
   }
+
+  // Set back location for edit invoice
+  localStorage.setItem(CSLS.FINANCE_INVOICES_EDIT_RETURN, location.pathname)
 
   let financeInvoices = data.financeInvoices
   const account = data.account
