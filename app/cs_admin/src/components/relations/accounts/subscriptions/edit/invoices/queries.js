@@ -2,7 +2,7 @@ import gql from "graphql-tag"
 
 export const GET_FINANCE_INVOICE_ITEM_QUERY = gql`
 query financeInvoiceItem($before: String, $after: String, $accountSubscription: ID!) {
-  financeInvoiceItems(before: $before, after: $after, accountSubscription:$accountSubscription) {
+  financeInvoiceItems(before: $before, after: $after, accountSubscription:$accountSubscription, orderBy: ["-finance_invoice__date_sent"]) {
     pageInfo {
       hasNextPage
       hasPreviousPage
