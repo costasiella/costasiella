@@ -10,7 +10,7 @@ import { toast } from 'react-toastify'
 // import { GET_ACCOUNT_SUBSCRIPTION_QUERY } from "../../queries"
 import { GET_FINANCE_INVOICE_ITEM_QUERY, GET_INPUT_VALUES_QUERY } from "./queries"
 import { CREATE_ACCOUNT_INVOICE } from "../../../invoices/queries"
-import { ACCOUNT_SUBSCRIPTION_CREDIT_SCHEMA } from './yupSchema'
+import { ACCOUNT_SUBSCRIPTION_INVOICE_SCHEMA } from './yupSchema'
 
 import AccountSubscriptionEditInvoiceAddBase from "./AccountSubscriptionEditInvoiceAddBase"
 import AccountSubscriptionEditInvoiceAddForm from "./AccountSubscriptionEditInvoiceAddForm"
@@ -54,7 +54,7 @@ function AccountSubscriptionEditInvoiceAdd({ t, history, match }) {
           subscriptionYear: new Date().getFullYear(), 
           subscriptionMonth: new Date().getMonth() + 1,
         }}
-        // validationSchema={ACCOUNT_SUBSCRIPTION_CREDIT_SCHEMA}
+        validationSchema={ACCOUNT_SUBSCRIPTION_INVOICE_SCHEMA}
         onSubmit={(values, { setSubmitting }) => {
           console.log("submit values")
           console.log(values)
