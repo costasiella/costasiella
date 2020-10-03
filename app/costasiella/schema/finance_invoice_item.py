@@ -27,8 +27,8 @@ class FinanceInvoiceItemInterface(graphene.Interface):
 class FinanceInvoiceItemFilter(FilterSet):
     class Meta:
         model = FinanceInvoiceItem
-        fields = [ 
-            'id', 
+        fields = [
+            'id',
             'finance_invoice',
             'account_subscription'
         ]
@@ -76,7 +76,8 @@ class FinanceInvoiceItemNode(DjangoObjectType):
 class FinanceInvoiceItemQuery(graphene.ObjectType):  
     finance_invoice_items = DjangoFilterConnectionField(
         FinanceInvoiceItemNode,
-        filterset_class=FinanceInvoiceItemFilter
+        filterset_class=FinanceInvoiceItemFilter,
+        orderBy=graphene.List(of_type=graphene.String)
     )
     finance_invoice_item = graphene.relay.Node.Field(FinanceInvoiceItemNode)
 
@@ -84,7 +85,12 @@ class FinanceInvoiceItemQuery(graphene.ObjectType):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.view_financeinvoiceitem')
 
-        return FinanceInvoiceItemFilter(kwargs).qs.order_by('line_number')
+        order_by = kwargs.get('orderBy', ['line_number'])
+
+        # example gql
+        # financeInvoiceItems(..., orderBy: ["-finance_invoice__date_sent"]) {
+        # return FinanceInvoiceItemFilter(kwargs).qs.order_by('line_number')
+        return FinanceInvoiceItemFilter(kwargs).qs.order_by(*order_by)
 
 
 def validate_create_update_input(input, update=False):
