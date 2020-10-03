@@ -49,6 +49,8 @@ function AccountSubscriptionEditInvoiceAdd({ t, history, match }) {
     <AccountSubscriptionEditInvoiceAddBase>
       <Formik
         initialValues={{ 
+          financeInvoiceGroup: "",
+          summary: "",
           subscriptionYear: new Date().getFullYear(), 
           subscriptionMonth: new Date().getMonth() + 1,
         }}
@@ -76,7 +78,7 @@ function AccountSubscriptionEditInvoiceAdd({ t, history, match }) {
           ]})
           .then(({ data }) => {
               console.log('got data', data);
-              toast.success((t('relations.account.subscriptions.credits.toast_add_success')), {
+              toast.success((t('relations.account.subscriptions.invoices.toast_add_success')), {
                   position: toast.POSITION.BOTTOM_RIGHT
                 })
             }).catch((error) => {
