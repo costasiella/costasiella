@@ -8,7 +8,7 @@ import AccountSubscriptionEditBase from "../AccountSubscriptionEditBase"
 
 
 function AccountSubscriptionEditInvoiceAddBase({ t, history, match, children}) {
-  const activeTab = "credits"
+  const activeTab = "invoices"
   const accountId = match.params.account_id
   const subscriptionId = match.params.subscription_id
   const returnUrl = `/relations/accounts/${accountId}/subscriptions/edit/${subscriptionId}/invoices/`
