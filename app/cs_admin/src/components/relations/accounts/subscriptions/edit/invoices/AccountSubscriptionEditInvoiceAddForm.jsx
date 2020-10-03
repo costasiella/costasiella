@@ -32,12 +32,7 @@ function AccountSubscriptionEditInvoiceAddForm ({
   formTitle="create" })   
 {
 
-  let title
-  if ( formTitle == "create" ) {
-    title = t('relations.account.subscriptions.credits.add')
-  } else {
-    title = t('relations.account.subscriptions.credits.edit')
-  }
+  const title = t('relations.account.subscriptions.invoices.add')
 
   return (
     <FoForm>
