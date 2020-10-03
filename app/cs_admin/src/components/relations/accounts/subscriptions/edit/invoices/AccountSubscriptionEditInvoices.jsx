@@ -27,6 +27,7 @@ import {
   Text
 } from "tabler-react";
 // import HasPermissionWrapper from "../../../../HasPermissionWrapper"
+import AccountSubscriptionEditInvoiceDelete from "./AccountSubscriptionEditInvoiceDelete"
 import AccountSubscriptionEditListBase from "../AccountSubscriptionEditListBase"
 import AccountSubscriptionEditButtonAdd from "../AccountSubscriptionEditButtonAdd"
 // import AccountSubscriptionEditCreditDelete from "./AccountSubscriptionEditCreditDelete"
@@ -151,7 +152,7 @@ function AccountSubscriptionEditInvoices({t, match, history}) {
                   </Button>
                 </Table.Col>
                 <Table.Col>
-                  del...
+                  <AccountSubscriptionEditInvoiceDelete id={node.financeInvoice.id} />
                 </Table.Col>
                 {/* <Table.Col>
                   {moment(node.createdAt).format(dateTimeFormatMoment)}
