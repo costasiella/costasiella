@@ -54,13 +54,14 @@ function AccountSubscriptionEditInvoiceAdd({ t, history, match }) {
           subscriptionYear: new Date().getFullYear(), 
           subscriptionMonth: new Date().getMonth() + 1,
         }}
-        validationSchema={ACCOUNT_SUBSCRIPTION_CREDIT_SCHEMA}
+        // validationSchema={ACCOUNT_SUBSCRIPTION_CREDIT_SCHEMA}
         onSubmit={(values, { setSubmitting }) => {
           console.log("submit values")
           console.log(values)
 
           addFinanceInvoice({ variables: {
             input: {
+              account: accountId,
               accountSubscription: subscriptionId,
               financeInvoiceGroup: values.financeInvoiceGroup,
               subscriptionYear: values.subscriptionYear,
@@ -77,10 +78,15 @@ function AccountSubscriptionEditInvoiceAdd({ t, history, match }) {
               // }}
           ]})
           .then(({ data }) => {
-              console.log('got data', data);
+              console.log('got data', data)
+              const financeInvoiceId = data.createFinanceInvoice.financeInvoice.id
+              history.push(`/finance/invoices/edit/${financeInvoiceId}`)
               toast.success((t('relations.account.subscriptions.invoices.toast_add_success')), {
-                  position: toast.POSITION.BOTTOM_RIGHT
-                })
+                position: toast.POSITION.BOTTOM_RIGHT
+              })
+              toast.success((t('relations.account.subscriptions.invoices.toast_you_are_now_editing')), {
+                position: toast.POSITION.BOTTOM_RIGHT
+              })
             }).catch((error) => {
               toast.error((t('general.toast_server_error')) + ': ' +  error, {
                   position: toast.POSITION.BOTTOM_RIGHT
