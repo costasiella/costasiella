@@ -261,7 +261,7 @@ class OrganizationSubscriptionFactory(factory.DjangoModelFactory):
     archived = False
     display_public = True
     display_shop = True
-    name = "First class pass"
+    name = "First subscription"
     description = "The first one..."
     sort_order = 1
     min_duration = 1
@@ -281,7 +281,14 @@ class OrganizationSubscriptionPriceFactory(factory.DjangoModelFactory):
     class Meta:
         model = models.OrganizationSubscriptionPrice
 
-    organization_subscription = factory.SubFactory(OrganizationSubscriptionFactory)
+    class Params:
+        initial_organization_subscription = factory.SubFactory(OrganizationSubscriptionFactory)
+
+    organization_subscription = factory.LazyAttribute(
+        lambda o: o.initial_organization_subscription if o.initial_organization_subscription else factory.SubFactory(
+            OrganizationSubscriptionFactory
+        )
+    )
     price = 12345
     finance_tax_rate = factory.SubFactory(FinanceTaxRateFactory)
     date_start = '2010-01-01'

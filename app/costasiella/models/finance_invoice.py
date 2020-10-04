@@ -272,7 +272,7 @@ class FinanceInvoice(models.Model):
         if qs.exists():
             return
         else:
-            fee_to_be_paid = account_subscription.organization_subcription.registration_fee
+            fee_to_be_paid = account_subscription.organization_subscription.registration_fee
             if fee_to_be_paid:
                 # Add registration fee to invoice
                 finance_invoice_item = FinanceInvoiceItem(
