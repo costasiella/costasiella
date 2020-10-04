@@ -497,7 +497,6 @@ class GQLFinanceInvoice(TestCase):
         """ Create an account invoice with a subscription item"""
         query = self.invoice_create_mutation
 
-        # account = f.RegularUserFactory.create()
         account_subscription = f.AccountSubscriptionFactory.create()
         account = account_subscription.account
         organization_subscription_price = f.OrganizationSubscriptionPriceFactory(
