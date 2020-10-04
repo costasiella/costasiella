@@ -433,10 +433,12 @@ class AccountSubscriptionCreditAddFactory(factory.DjangoModelFactory):
         model = models.AccountSubscriptionCredit
 
     class Params:
-        account_subscription = factory.SubFactory(AccountSubscriptionFactory)
+        initial_account_subscription = factory.SubFactory(AccountSubscriptionFactory)
 
     account_subscription = factory.LazyAttribute(
-        lambda o: o.account_subscription if o.account_subscription else factory.SubFactory(AccountSubscriptionFactory)
+        lambda o: o.initial_account_subscription if o.initial_account_subscription else factory.SubFactory(
+            AccountSubscriptionFactory
+        )
     )
     mutation_type = "ADD"
     mutation_amount = 10
