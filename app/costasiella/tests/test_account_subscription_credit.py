@@ -139,58 +139,57 @@ class GQLAccountSubscriptionCredit(TestCase):
         self.assertEqual(data['accountSubscriptionCredits']['edges'][0]['node']['description'],
                          subscription_credit.description)
 
-    #
-    # def test_query_permission_denied(self):
-    #     """ Query list of account subscriptions - check permission denied """
-    #     query = self.subscriptions_query
-    #     subscription = f.AccountSubscriptionFactory.create()
-    #     variables = {
-    #         'accountId': to_global_id('AccountSubscriptionNode', subscription.account.id)
-    #     }
-    #
-    #     # Create regular user
-    #     user = get_user_model().objects.get(pk=subscription.account.id)
-    #     executed = execute_test_client_api_query(query, user, variables=variables)
-    #     errors = executed.get('errors')
-    #
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
-    #
-    #
-    # def test_query_permission_granted(self):
-    #     """ Query list of account subscriptions with view permission """
-    #     query = self.subscriptions_query
-    #     subscription = f.AccountSubscriptionFactory.create()
-    #     variables = {
-    #         'accountId': to_global_id('AccountSubscriptionNode', subscription.account.id)
-    #     }
-    #
-    #     # Create regular user
-    #     user = get_user_model().objects.get(pk=subscription.account.id)
-    #     permission = Permission.objects.get(codename='view_accountsubscriptioncredit')
-    #     user.user_permissions.add(permission)
-    #     user.save()
-    #
-    #     executed = execute_test_client_api_query(query, user, variables=variables)
-    #     data = executed.get('data')
-    #
-    #     # List all subscriptions
-    #     self.assertEqual(
-    #         data['accountSubscriptions']['edges'][0]['node']['organizationSubscription']['id'],
-    #         to_global_id("OrganizationSubscriptionNode", subscription.organization_subscription.id)
-    #     )
-    #
-    #
-    # def test_query_anon_user(self):
-    #     """ Query list of account subscriptions - anon user """
-    #     query = self.subscriptions_query
-    #     subscription = f.AccountSubscriptionFactory.create()
-    #     variables = {
-    #         'accountId': to_global_id('AccountSubscriptionNode', subscription.account.id)
-    #     }
-    #
-    #     executed = execute_test_client_api_query(query, self.anon_user, variables=variables)
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
+    def test_query_permission_denied(self):
+        """ Query list of account subscriptions - check permission denied """
+        query = self.subscription_credits_query
+        subscription_credit = f.AccountSubscriptionCreditAddFactory.create()
+        variables = {
+            'accountSubscription': to_global_id('AccountSubscriptionNode', subscription_credit.account_subscription.id)
+        }
+
+        # Create regular user
+        user_id = subscription_credit.account_subscription.account.id
+        user = get_user_model().objects.get(pk=user_id)
+        executed = execute_test_client_api_query(query, user, variables=variables)
+        errors = executed.get('errors')
+
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
+
+    def test_query_permission_granted(self):
+        """ Query list of account subscriptions with view permission """
+        query = self.subscription_credits_query
+        subscription_credit = f.AccountSubscriptionCreditAddFactory.create()
+        variables = {
+            'accountSubscription': to_global_id('AccountSubscriptionNode', subscription_credit.account_subscription.id)
+        }
+
+        # Create regular user
+        user_id = subscription_credit.account_subscription.account.id
+        user = get_user_model().objects.get(pk=user_id)
+        permission = Permission.objects.get(codename='view_accountsubscriptioncredit')
+        user.user_permissions.add(permission)
+        user.save()
+
+        executed = execute_test_client_api_query(query, user, variables=variables)
+        data = executed.get('data')
+
+        # List all subscription credit mutations
+        self.assertEqual(
+            data['accountSubscriptionCredits']['edges'][0]['node']['accountSubscription']['id'],
+            to_global_id("AccountSubscriptionNode", subscription_credit.account_subscription.id)
+        )
+
+    def test_query_anon_user(self):
+        """ Query list of account subscriptions - anon user """
+        query = self.subscription_credits_query
+        subscription_credit = f.AccountSubscriptionCreditAddFactory.create()
+        variables = {
+            'accountSubscription': to_global_id('AccountSubscriptionNode', subscription_credit.account_subscription.id)
+        }
+
+        executed = execute_test_client_api_query(query, self.anon_user, variables=variables)
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
     #
     #
     # def test_query_one(self):
