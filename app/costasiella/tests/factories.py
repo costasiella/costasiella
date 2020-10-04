@@ -426,7 +426,22 @@ class AccountSubscriptionFactory(factory.DjangoModelFactory):
     date_end = None
     note = "Subscription note here"
     registration_fee_paid = False
-    
+
+
+class AccountSubscriptionCreditAddFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.AccountSubscriptionCredit
+
+    class Params:
+        account_subscription = factory.SubFactory(AccountSubscriptionFactory)
+
+    account_subscription = factory.LazyAttribute(
+        lambda o: o.account_subscription if o.account_subscription else factory.SubFactory(AccountSubscriptionFactory)
+    )
+    mutation_type = "ADD"
+    mutation_amount = 10
+    description = "Test add mutation"
+
 
 class AccountMembershipFactory(factory.DjangoModelFactory):
     class Meta:
