@@ -37,10 +37,8 @@ class GQLAccountSubscriptionCredit(TestCase):
 
         self.variables_update = {
             "input": {
-                "dateStart": "2017-01-01",
-                "dateEnd": "2020-12-31",
-                "note": "Update note",
-                "registrationFeePaid": True
+                "mutationType": "SUB",
+                "mutationAmount": 2
             }
         }
 
@@ -294,9 +292,6 @@ class GQLAccountSubscriptionCredit(TestCase):
         )
         data = executed.get('data')
 
-        print("#################")
-        print(executed)
-
         self.assertEqual(
             data['createAccountSubscriptionCredit']['accountSubscriptionCredit']['accountSubscription']['id'],
             variables['input']['accountSubscription']
@@ -376,108 +371,95 @@ class GQLAccountSubscriptionCredit(TestCase):
         data = executed.get('data')
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Permission denied!')
-    #
-    #
-    # def test_update_subscription(self):
-    #     """ Update a subscription """
-    #     query = self.subscription_update_mutation
-    #     subscription = f.AccountSubscriptionFactory.create()
-    #     organization_subscription = f.OrganizationSubscriptionFactory.create()
-    #     finance_payment_method = f.FinancePaymentMethodFactory.create()
-    #     variables = self.variables_update
-    #     variables['input']['id'] = to_global_id('AccountSubscriptionNode', subscription.id)
-    #     variables['input']['organizationSubscription'] = to_global_id('OrganizationSubscriptionNode', organization_subscription.id)
-    #     variables['input']['financePaymentMethod'] = to_global_id('FinancePaymentMethodNode', finance_payment_method.id)
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.admin_user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #
-    #     self.assertEqual(
-    #       data['updateAccountSubscription']['accountSubscription']['organizationSubscription']['id'],
-    #       variables['input']['organizationSubscription']
-    #     )
-    #     self.assertEqual(
-    #       data['updateAccountSubscription']['accountSubscription']['financePaymentMethod']['id'],
-    #       variables['input']['financePaymentMethod']
-    #     )
-    #     self.assertEqual(data['updateAccountSubscription']['accountSubscription']['dateStart'], variables['input']['dateStart'])
-    #     self.assertEqual(data['updateAccountSubscription']['accountSubscription']['dateEnd'], variables['input']['dateEnd'])
-    #     self.assertEqual(data['updateAccountSubscription']['accountSubscription']['note'], variables['input']['note'])
-    #     self.assertEqual(data['updateAccountSubscription']['accountSubscription']['registrationFeePaid'], variables['input']['registrationFeePaid'])
-    #
-    #
-    # def test_update_subscription_anon_user(self):
-    #     """ Don't allow updating subscriptions for non-logged in users """
-    #     query = self.subscription_update_mutation
-    #     subscription = f.AccountSubscriptionFactory.create()
-    #     organization_subscription = f.OrganizationSubscriptionFactory.create()
-    #     finance_payment_method = f.FinancePaymentMethodFactory.create()
-    #     variables = self.variables_update
-    #     variables['input']['id'] = to_global_id('AccountSubscriptionNode', subscription.id)
-    #     variables['input']['organizationSubscription'] = to_global_id('OrganizationSubscriptionNode', organization_subscription.id)
-    #     variables['input']['financePaymentMethod'] = to_global_id('FinancePaymentMethodNode', finance_payment_method.id)
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.anon_user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
-    #
-    #
-    # def test_update_subscription_permission_granted(self):
-    #     """ Allow updating subscriptions for users with permissions """
-    #     query = self.subscription_update_mutation
-    #     subscription = f.AccountSubscriptionFactory.create()
-    #     organization_subscription = f.OrganizationSubscriptionFactory.create()
-    #     finance_payment_method = f.FinancePaymentMethodFactory.create()
-    #     variables = self.variables_update
-    #     variables['input']['id'] = to_global_id('AccountSubscriptionNode', subscription.id)
-    #     variables['input']['organizationSubscription'] = to_global_id('OrganizationSubscriptionNode', organization_subscription.id)
-    #     variables['input']['financePaymentMethod'] = to_global_id('FinancePaymentMethodNode', finance_payment_method.id)
-    #
-    #     user = subscription.account
-    #     permission = Permission.objects.get(codename=self.permission_change)
-    #     user.user_permissions.add(permission)
-    #     user.save()
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['updateAccountSubscription']['accountSubscription']['dateStart'], variables['input']['dateStart'])
-    #
-    #
-    # def test_update_subscription_permission_denied(self):
-    #     """ Check update subscription permission denied error message """
-    #     query = self.subscription_update_mutation
-    #     subscription = f.AccountSubscriptionFactory.create()
-    #     organization_subscription = f.OrganizationSubscriptionFactory.create()
-    #     finance_payment_method = f.FinancePaymentMethodFactory.create()
-    #     variables = self.variables_update
-    #     variables['input']['id'] = to_global_id('AccountSubscriptionNode', subscription.id)
-    #     variables['input']['organizationSubscription'] = to_global_id('OrganizationSubscriptionNode', organization_subscription.id)
-    #     variables['input']['financePaymentMethod'] = to_global_id('FinancePaymentMethodNode', finance_payment_method.id)
-    #
-    #     user = subscription.account
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
-    #
+
+    def test_update_subscription_credit(self):
+        """ Update a subscription credit """
+        query = self.subscription_credit_update_mutation
+        subscription_credit = f.AccountSubscriptionCreditAddFactory.create()
+
+        variables = self.variables_update
+        variables['input']['id'] = to_global_id('AccountSubscriptionCreditNode', subscription_credit.id)
+
+        executed = execute_test_client_api_query(
+            query,
+            self.admin_user,
+            variables=variables
+        )
+        data = executed.get('data')
+
+        self.assertEqual(
+          data['updateAccountSubscriptionCredit']['accountSubscriptionCredit']['accountSubscription']['id'],
+          to_global_id('AccountSubscriptionNode', subscription_credit.account_subscription.id)
+        )
+        self.assertEqual(
+          data['updateAccountSubscriptionCredit']['accountSubscriptionCredit']['mutationType'],
+          variables['input']['mutationType']
+        )
+        self.assertEqual(
+          data['updateAccountSubscriptionCredit']['accountSubscriptionCredit']['mutationAmount'],
+          variables['input']['mutationAmount']
+        )
+
+    def test_update_subscription_credit_anon_user(self):
+        """ Don't allow updating subscription credits for non-logged in users """
+        query = self.subscription_credit_update_mutation
+        subscription_credit = f.AccountSubscriptionCreditAddFactory.create()
+
+        variables = self.variables_update
+        variables['input']['id'] = to_global_id('AccountSubscriptionCreditNode', subscription_credit.id)
+
+        executed = execute_test_client_api_query(
+            query,
+            self.anon_user,
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
+
+    def test_update_subscription_credit_permission_granted(self):
+        """ Allow updating subscriptions for users with permissions """
+        query = self.subscription_credit_update_mutation
+        subscription_credit = f.AccountSubscriptionCreditAddFactory.create()
+
+        variables = self.variables_update
+        variables['input']['id'] = to_global_id('AccountSubscriptionCreditNode', subscription_credit.id)
+
+        user = subscription_credit.account_subscription.account
+        permission = Permission.objects.get(codename=self.permission_change)
+        user.user_permissions.add(permission)
+        user.save()
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(
+          data['updateAccountSubscriptionCredit']['accountSubscriptionCredit']['accountSubscription']['id'],
+          to_global_id('AccountSubscriptionNode', subscription_credit.account_subscription.id)
+        )
+
+    def test_update_subscription_credit_permission_denied(self):
+        """ Check update subscription permission denied error message """
+        query = self.subscription_credit_update_mutation
+        subscription_credit = f.AccountSubscriptionCreditAddFactory.create()
+
+        variables = self.variables_update
+        variables['input']['id'] = to_global_id('AccountSubscriptionCreditNode', subscription_credit.id)
+
+        user = subscription_credit.account_subscription.account
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
+
     #
     # def test_delete_subscription(self):
     #     """ Delete an account subscription """
