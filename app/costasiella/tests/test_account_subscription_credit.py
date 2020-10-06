@@ -30,10 +30,8 @@ class GQLAccountSubscriptionCredit(TestCase):
 
         self.variables_create = {
             "input": {
-                "dateStart": "2019-01-01",
-                "dateEnd": "2019-12-31",
-                "note": "creation note",
-                "registrationFeePaid": True
+                "mutationType": "ADD",
+                "mutationAmount": 1
             }
         }
 
@@ -86,27 +84,41 @@ class GQLAccountSubscriptionCredit(TestCase):
     }
 '''
 
-        self.subscription_create_mutation = ''' 
+        self.subscription_credit_create_mutation = ''' 
   mutation CreateAccountSubscriptionCredit($input:CreateAccountSubscriptionCreditInput!) {
     createAccountSubscriptionCredit(input: $input) {
       accountSubscriptionCredit {
         id
+        accountSubscription {
+          id
+        }
+        mutationType
+        mutationAmount
+        description
+        createdAt
       }
     }
   }
 '''
 
-        self.subscription_update_mutation = '''
+        self.subscription_credit_update_mutation = '''
   mutation UpdateAccountSubscriptionCredit($input:UpdateAccountSubscriptionCreditInput!) {
     updateAccountSubscriptionCredit(input: $input) {
       accountSubscriptionCredit {
         id
+        accountSubscription {
+          id
+        }
+        mutationType
+        mutationAmount
+        description
+        createdAt
       }
     }
   }
 '''
 
-        self.subscription_delete_mutation = '''
+        self.subscription_credit_delete_mutation = '''
   mutation DeleteAccountSubscriptionCredit($input: DeleteAccountSubscriptionCreditInput!) {
     deleteAccountSubscriptionCredit(input: $input) {
       ok
@@ -264,119 +276,106 @@ class GQLAccountSubscriptionCredit(TestCase):
             data['accountSubscriptionCredit']['id'],
             to_global_id('AccountSubscriptionCreditNode', subscription_credit.id)
         )
-    #
-    #
-    # def test_create_subscription(self):
-    #     """ Create an account subscription """
-    #     query = self.subscription_create_mutation
-    #
-    #     account = f.RegularUserFactory.create()
-    #     organization_subscription = f.OrganizationSubscriptionFactory.create()
-    #     finance_payment_method = f.FinancePaymentMethodFactory.create()
-    #     variables = self.variables_create
-    #     variables['input']['account'] = to_global_id('AccountNode', account.id)
-    #     variables['input']['organizationSubscription'] = to_global_id('OrganizationSubscriptionNode', organization_subscription.id)
-    #     variables['input']['financePaymentMethod'] = to_global_id('FinancePaymentMethodNode', finance_payment_method.id)
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.admin_user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #
-    #     self.assertEqual(
-    #         data['createAccountSubscription']['accountSubscription']['account']['id'],
-    #         variables['input']['account']
-    #     )
-    #     self.assertEqual(
-    #         data['createAccountSubscription']['accountSubscription']['organizationSubscription']['id'],
-    #         variables['input']['organizationSubscription']
-    #     )
-    #     self.assertEqual(
-    #         data['createAccountSubscription']['accountSubscription']['financePaymentMethod']['id'],
-    #         variables['input']['financePaymentMethod']
-    #     )
-    #     self.assertEqual(data['createAccountSubscription']['accountSubscription']['dateStart'], variables['input']['dateStart'])
-    #     self.assertEqual(data['createAccountSubscription']['accountSubscription']['dateEnd'], variables['input']['dateEnd'])
-    #     self.assertEqual(data['createAccountSubscription']['accountSubscription']['note'], variables['input']['note'])
-    #     self.assertEqual(data['createAccountSubscription']['accountSubscription']['registrationFeePaid'], variables['input']['registrationFeePaid'])
-    #
-    #
-    # def test_create_subscription_anon_user(self):
-    #     """ Don't allow creating account subscriptions for non-logged in users """
-    #     query = self.subscription_create_mutation
-    #
-    #     account = f.RegularUserFactory.create()
-    #     organization_subscription = f.OrganizationSubscriptionFactory.create()
-    #     finance_payment_method = f.FinancePaymentMethodFactory.create()
-    #     variables = self.variables_create
-    #     variables['input']['account'] = to_global_id('AccountNode', account.id)
-    #     variables['input']['organizationSubscription'] = to_global_id('OrganizationSubscriptionNode', organization_subscription.id)
-    #     variables['input']['financePaymentMethod'] = to_global_id('FinancePaymentMethodNode', finance_payment_method.id)
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.anon_user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
-    #
-    #
-    # def test_create_location_permission_granted(self):
-    #     """ Allow creating subscriptions for users with permissions """
-    #     query = self.subscription_create_mutation
-    #
-    #     account = f.RegularUserFactory.create()
-    #     organization_subscription = f.OrganizationSubscriptionFactory.create()
-    #     finance_payment_method = f.FinancePaymentMethodFactory.create()
-    #     variables = self.variables_create
-    #     variables['input']['account'] = to_global_id('AccountNode', account.id)
-    #     variables['input']['organizationSubscription'] = to_global_id('OrganizationSubscriptionNode', organization_subscription.id)
-    #     variables['input']['financePaymentMethod'] = to_global_id('FinancePaymentMethodNode', finance_payment_method.id)
-    #
-    #     # Create regular user
-    #     user = account
-    #     permission = Permission.objects.get(codename=self.permission_add)
-    #     user.user_permissions.add(permission)
-    #     user.save()
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(
-    #         data['createAccountSubscription']['accountSubscription']['organizationSubscription']['id'],
-    #         variables['input']['organizationSubscription']
-    #     )
-    #
-    #
-    # def test_create_subscription_permission_denied(self):
-    #     """ Check create subscription permission denied error message """
-    #     query = self.subscription_create_mutation
-    #     account = f.RegularUserFactory.create()
-    #     organization_subscription = f.OrganizationSubscriptionFactory.create()
-    #     finance_payment_method = f.FinancePaymentMethodFactory.create()
-    #     variables = self.variables_create
-    #     variables['input']['account'] = to_global_id('AccountNode', account.id)
-    #     variables['input']['organizationSubscription'] = to_global_id('OrganizationSubscriptionNode', organization_subscription.id)
-    #     variables['input']['financePaymentMethod'] = to_global_id('FinancePaymentMethodNode', finance_payment_method.id)
-    #
-    #     # Create regular user
-    #     user = account
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
+
+    def test_create_subscription_credit(self):
+        """ Create an account subscription credit """
+        query = self.subscription_credit_create_mutation
+
+        account_subscription = f.AccountSubscriptionFactory.create()
+        variables = self.variables_create
+        variables['input']['accountSubscription'] = to_global_id(
+            'AccountSubscriptionNode', account_subscription.id
+        )
+
+        executed = execute_test_client_api_query(
+            query,
+            self.admin_user,
+            variables=variables
+        )
+        data = executed.get('data')
+
+        print("#################")
+        print(executed)
+
+        self.assertEqual(
+            data['createAccountSubscriptionCredit']['accountSubscriptionCredit']['accountSubscription']['id'],
+            variables['input']['accountSubscription']
+        )
+        self.assertEqual(
+            data['createAccountSubscriptionCredit']['accountSubscriptionCredit']['mutationType'],
+            variables['input']['mutationType']
+        )
+        self.assertEqual(
+            data['createAccountSubscriptionCredit']['accountSubscriptionCredit']['mutationAmount'],
+            variables['input']['mutationAmount']
+        )
+
+    def test_create_subscription_anon_user(self):
+        """ Don't allow creating account subscription credit for non-logged in users """
+        query = self.subscription_credit_create_mutation
+
+        account_subscription = f.AccountSubscriptionFactory.create()
+        variables = self.variables_create
+        variables['input']['accountSubscription'] = to_global_id(
+            'AccountSubscriptionNode', account_subscription.id
+        )
+
+        executed = execute_test_client_api_query(
+            query,
+            self.anon_user,
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
+
+    def test_create_subscription_credit_permission_granted(self):
+        """ Allow creating subscription credits for users with permissions """
+        query = self.subscription_credit_create_mutation
+
+        account_subscription = f.AccountSubscriptionFactory.create()
+        account = account_subscription.account
+        variables = self.variables_create
+        variables['input']['accountSubscription'] = to_global_id(
+            'AccountSubscriptionNode', account_subscription.id
+        )
+
+        # Create regular user
+        user = account
+        permission = Permission.objects.get(codename=self.permission_add)
+        user.user_permissions.add(permission)
+        user.save()
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(
+            data['createAccountSubscriptionCredit']['accountSubscriptionCredit']['accountSubscription']['id'],
+            variables['input']['accountSubscription']
+        )
+
+    def test_create_subscription_credit_permission_denied(self):
+        """ Check create subscription permission denied error message """
+        query = self.subscription_credit_create_mutation
+
+        account_subscription = f.AccountSubscriptionFactory.create()
+        account = account_subscription.account
+        variables = self.variables_create
+        variables['input']['accountSubscription'] = to_global_id(
+            'AccountSubscriptionNode', account_subscription.id
+        )
+
+        executed = execute_test_client_api_query(
+            query,
+            account,
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
     #
     #
     # def test_update_subscription(self):
