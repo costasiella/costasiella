@@ -460,78 +460,74 @@ class GQLAccountSubscriptionCredit(TestCase):
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Permission denied!')
 
-    #
-    # def test_delete_subscription(self):
-    #     """ Delete an account subscription """
-    #     query = self.subscription_delete_mutation
-    #     subscription = f.AccountSubscriptionFactory.create()
-    #     variables = {"input":{}}
-    #     variables['input']['id'] = to_global_id('AccountSubscriptionNode', subscription.id)
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.admin_user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     print(data)
-    #     self.assertEqual(data['deleteAccountSubscription']['ok'], True)
-    #
-    #
-    # def test_delete_subscription_anon_user(self):
-    #     """ Delete subscription denied for anon user """
-    #     query = self.subscription_delete_mutation
-    #     subscription = f.AccountSubscriptionFactory.create()
-    #     variables = {"input":{}}
-    #     variables['input']['id'] = to_global_id('AccountSubscriptionNode', subscription.id)
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.anon_user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
-    #
-    #
-    # def test_delete_subscription_permission_granted(self):
-    #     """ Allow deleting subscriptions for users with permissions """
-    #     query = self.subscription_delete_mutation
-    #     subscription = f.AccountSubscriptionFactory.create()
-    #     variables = {"input":{}}
-    #     variables['input']['id'] = to_global_id('AccountSubscriptionNode', subscription.id)
-    #
-    #     # Give permissions
-    #     user = subscription.account
-    #     permission = Permission.objects.get(codename=self.permission_delete)
-    #     user.user_permissions.add(permission)
-    #     user.save()
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['deleteAccountSubscription']['ok'], True)
-    #
-    #
-    # def test_delete_subscription_permission_denied(self):
-    #     """ Check delete subscription permission denied error message """
-    #     query = self.subscription_delete_mutation
-    #     subscription = f.AccountSubscriptionFactory.create()
-    #     variables = {"input":{}}
-    #     variables['input']['id'] = to_global_id('AccountSubscriptionNode', subscription.id)
-    #
-    #     user = subscription.account
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
-    #
+    def test_delete_subscription_credit(self):
+        """ Delete an account subscription credit"""
+        query = self.subscription_credit_delete_mutation
+        subscription_credit = f.AccountSubscriptionCreditAddFactory.create()
+        variables = {"input": {}}
+        variables['input']['id'] = to_global_id('AccountSubscriptionCreditNode', subscription_credit.id)
+
+        executed = execute_test_client_api_query(
+            query,
+            self.admin_user,
+            variables=variables
+        )
+        data = executed.get('data')
+        # print(data)
+        self.assertEqual(data['deleteAccountSubscriptionCredit']['ok'], True)
+
+    def test_delete_subscription_credit_anon_user(self):
+        """ Delete subscription credit denied for anon user """
+        query = self.subscription_credit_delete_mutation
+        subscription_credit = f.AccountSubscriptionCreditAddFactory.create()
+        variables = {"input": {}}
+        variables['input']['id'] = to_global_id('AccountSubscriptionCreditNode', subscription_credit.id)
+
+        executed = execute_test_client_api_query(
+            query,
+            self.anon_user,
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
+
+    def test_delete_subscription_credit_permission_granted(self):
+        """ Allow deleting subscription credits for users with permissions """
+        query = self.subscription_credit_delete_mutation
+        subscription_credit = f.AccountSubscriptionCreditAddFactory.create()
+        variables = {"input": {}}
+        variables['input']['id'] = to_global_id('AccountSubscriptionCreditNode', subscription_credit.id)
+
+        # Give permissions
+        user = subscription_credit.account_subscription.account
+        permission = Permission.objects.get(codename=self.permission_delete)
+        user.user_permissions.add(permission)
+        user.save()
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['deleteAccountSubscriptionCredit']['ok'], True)
+
+    def test_delete_subscription_credit_permission_denied(self):
+        """ Check delete subscription credit permission denied error message """
+        query = self.subscription_credit_delete_mutation
+        subscription_credit = f.AccountSubscriptionCreditAddFactory.create()
+        variables = {"input": {}}
+        variables['input']['id'] = to_global_id('AccountSubscriptionCreditNode', subscription_credit.id)
+
+        user = subscription_credit.account_subscription.account
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
+
