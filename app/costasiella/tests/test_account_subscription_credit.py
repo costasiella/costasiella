@@ -190,95 +190,80 @@ class GQLAccountSubscriptionCredit(TestCase):
         executed = execute_test_client_api_query(query, self.anon_user, variables=variables)
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Not logged in!')
-    #
-    #
-    # def test_query_one(self):
-    #     """ Query one account subscription as admin """
-    #     subscription = f.AccountSubscriptionFactory.create()
-    #
-    #     variables = {
-    #         "id": to_global_id("AccountSubscriptionNode", subscription.id),
-    #         "accountId": to_global_id("AccountNode", subscription.account.id),
-    #         "archived": False,
-    #     }
-    #
-    #     # Now query single subscription and check
-    #     executed = execute_test_client_api_query(self.subscription_query, self.admin_user, variables=variables)
-    #     data = executed.get('data')
-    #     self.assertEqual(
-    #         data['accountSubscription']['account']['id'],
-    #         to_global_id('AccountNode', subscription.account.id)
-    #     )
-    #     self.assertEqual(
-    #         data['accountSubscription']['organizationSubscription']['id'],
-    #         to_global_id('OrganizationSubscriptionNode', subscription.organization_subscription.id)
-    #     )
-    #     self.assertEqual(
-    #         data['accountSubscription']['financePaymentMethod']['id'],
-    #         to_global_id('FinancePaymentMethodNode', subscription.finance_payment_method.id)
-    #     )
-    #     self.assertEqual(data['accountSubscription']['dateStart'], str(subscription.date_start))
-    #     self.assertEqual(data['accountSubscription']['dateEnd'], subscription.date_end)
-    #     self.assertEqual(data['accountSubscription']['note'], subscription.note)
-    #     self.assertEqual(data['accountSubscription']['registrationFeePaid'], subscription.registration_fee_paid)
-    #
-    #
-    # def test_query_one_anon_user(self):
-    #     """ Deny permission for anon users Query one account subscription """
-    #     subscription = f.AccountSubscriptionFactory.create()
-    #
-    #     variables = {
-    #         "id": to_global_id("AccountSubscriptionNode", subscription.id),
-    #         "accountId": to_global_id("AccountNode", subscription.account.id),
-    #         "archived": False,
-    #     }
-    #
-    #     # Now query single subscription and check
-    #     executed = execute_test_client_api_query(self.subscription_query, self.anon_user, variables=variables)
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
-    #
-    #
-    # def test_query_one_permission_denied(self):
-    #     """ Permission denied message when user lacks authorization """
-    #     # Create regular user
-    #     subscription = f.AccountSubscriptionFactory.create()
-    #     user = subscription.account
-    #
-    #     variables = {
-    #         "id": to_global_id("AccountSubscriptionNode", subscription.id),
-    #         "accountId": to_global_id("AccountNode", subscription.account.id),
-    #         "archived": False,
-    #     }
-    #
-    #     # Now query single subscription and check
-    #     executed = execute_test_client_api_query(self.subscription_query, user, variables=variables)
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
-    #
-    #
-    # def test_query_one_permission_granted(self):
-    #     """ Respond with data when user has permission """
-    #     subscription = f.AccountSubscriptionFactory.create()
-    #     user = subscription.account
-    #     permission = Permission.objects.get(codename='view_accountsubscriptioncredit')
-    #     user.user_permissions.add(permission)
-    #     user.save()
-    #
-    #
-    #     variables = {
-    #         "id": to_global_id("AccountSubscriptionNode", subscription.id),
-    #         "accountId": to_global_id("AccountNode", subscription.account.id),
-    #         "archived": False,
-    #     }
-    #
-    #     # Now query single subscription and check
-    #     executed = execute_test_client_api_query(self.subscription_query, user, variables=variables)
-    #     data = executed.get('data')
-    #     self.assertEqual(
-    #         data['accountSubscription']['organizationSubscription']['id'],
-    #         to_global_id('OrganizationSubscriptionNode', subscription.organization_subscription.id)
-    #     )
+
+    def test_query_one(self):
+        """ Query one account subscription credit as admin """
+        subscription_credit = f.AccountSubscriptionCreditAddFactory.create()
+        variables = {
+            "id": to_global_id("AccountSubscriptionCreditNode", subscription_credit.id),
+        }
+
+        # Now query single subscription and check
+        executed = execute_test_client_api_query(self.subscription_credit_query,
+                                                 self.admin_user,
+                                                 variables=variables)
+        data = executed.get('data')
+        self.assertEqual(
+            data['accountSubscriptionCredit']['id'],
+            to_global_id('AccountSubscriptionCreditNode', subscription_credit.id)
+        )
+        self.assertEqual(data['accountSubscriptionCredit']['mutationType'],
+                         subscription_credit.mutation_type)
+        self.assertEqual(data['accountSubscriptionCredit']['mutationAmount'],
+                         subscription_credit.mutation_amount)
+        self.assertEqual(data['accountSubscriptionCredit']['description'],
+                         subscription_credit.description)
+
+    def test_query_one_anon_user(self):
+        """ Deny permission for anon users Query one account subscription """
+        subscription_credit = f.AccountSubscriptionCreditAddFactory.create()
+        variables = {
+            "id": to_global_id("AccountSubscriptionCreditNode", subscription_credit.id),
+        }
+
+        # Now query single subscription and check
+        executed = execute_test_client_api_query(self.subscription_credit_query,
+                                                 self.anon_user,
+                                                 variables=variables)
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
+
+    def test_query_one_permission_denied(self):
+        """ Permission denied message when user lacks authorization """
+        subscription_credit = f.AccountSubscriptionCreditAddFactory.create()
+        user = subscription_credit.account_subscription.account
+        variables = {
+            "id": to_global_id("AccountSubscriptionCreditNode", subscription_credit.id),
+        }
+
+        # Now query single subscription and check
+        executed = execute_test_client_api_query(self.subscription_credit_query,
+                                                 user,
+                                                 variables=variables)
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
+
+    def test_query_one_permission_granted(self):
+        """ Respond with data when user has permission """
+        subscription_credit = f.AccountSubscriptionCreditAddFactory.create()
+        user = subscription_credit.account_subscription.account
+        permission = Permission.objects.get(codename='view_accountsubscriptioncredit')
+        user.user_permissions.add(permission)
+        user.save()
+
+        variables = {
+            "id": to_global_id("AccountSubscriptionCreditNode", subscription_credit.id),
+        }
+
+        # Now query single subscription and check
+        executed = execute_test_client_api_query(self.subscription_credit_query,
+                                                 user,
+                                                 variables=variables)
+        data = executed.get('data')
+        self.assertEqual(
+            data['accountSubscriptionCredit']['id'],
+            to_global_id('AccountSubscriptionCreditNode', subscription_credit.id)
+        )
     #
     #
     # def test_create_subscription(self):
