@@ -430,7 +430,7 @@ class AccountSubscriptionFactory(factory.DjangoModelFactory):
 
 class AccountSubscriptionBlockFactory(factory.DjangoModelFactory):
     class Meta:
-        model = models.AccountSubscriptionCredit
+        model = models.AccountSubscriptionBlock
 
     class Params:
         initial_account_subscription = factory.SubFactory(AccountSubscriptionFactory)

@@ -56,7 +56,7 @@ class AccountSubscriptionBlockQuery(graphene.ObjectType):
     account_subscription_blocks = DjangoFilterConnectionField(AccountSubscriptionBlockNode)
     account_subscription_block = graphene.relay.Node.Field(AccountSubscriptionBlockNode)
 
-    def resolve_account_subscription_block(self, info, account_subscription, **kwargs):
+    def resolve_account_subscription_blocks(self, info, account_subscription, **kwargs):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.view_accountsubscriptionblock')
         rid = get_rid(account_subscription)
