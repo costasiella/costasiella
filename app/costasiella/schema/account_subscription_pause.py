@@ -56,7 +56,7 @@ class AccountSubscriptionPauseQuery(graphene.ObjectType):
     account_subscription_pauses = DjangoFilterConnectionField(AccountSubscriptionPauseNode)
     account_subscription_pause = graphene.relay.Node.Field(AccountSubscriptionPauseNode)
 
-    def resolve_account_subscription_pause(self, info, account_subscription, **kwargs):
+    def resolve_account_subscription_pauses(self, info, account_subscription, **kwargs):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.view_accountsubscriptionpause')
         rid = get_rid(account_subscription)

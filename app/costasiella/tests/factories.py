@@ -445,6 +445,23 @@ class AccountSubscriptionBlockFactory(factory.DjangoModelFactory):
     description = "Block test description"
 
 
+class AccountSubscriptionPauseFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.AccountSubscriptionPause
+
+    class Params:
+        initial_account_subscription = factory.SubFactory(AccountSubscriptionFactory)
+
+    account_subscription = factory.LazyAttribute(
+        lambda o: o.initial_account_subscription if o.initial_account_subscription else factory.SubFactory(
+            AccountSubscriptionFactory
+        )
+    )
+    date_start = "2019-01-01"
+    date_end = "2019-01-31"
+    description = "Block test description"
+
+
 class AccountSubscriptionCreditAddFactory(factory.DjangoModelFactory):
     class Meta:
         model = models.AccountSubscriptionCredit
