@@ -317,9 +317,6 @@ class GQLAccountSubscriptionAltPrice(TestCase):
         )
         data = executed.get('data')
 
-        print("###############")
-        print(executed)
-
         self.assertEqual(
             data['createAccountSubscriptionAltPrice']['accountSubscriptionAltPrice']['accountSubscription']['id'],
             variables['input']['accountSubscription']
@@ -341,11 +338,12 @@ class GQLAccountSubscriptionAltPrice(TestCase):
             variables['input']['description']
         )
 
-    def test_create_subscription_anon_user(self):
-        """ Don't allow creating account subscription alt_price for non-logged in users """
+    def test_create_subscription_alt_price_permission_denied(self):
+        """ Check create subscription permission denied error message """
         query = self.subscription_alt_price_create_mutation
 
         account_subscription = f.AccountSubscriptionFactory.create()
+        account = account_subscription.account
         variables = self.variables_create
         variables['input']['accountSubscription'] = to_global_id(
             'AccountSubscriptionNode', account_subscription.id
@@ -353,12 +351,12 @@ class GQLAccountSubscriptionAltPrice(TestCase):
 
         executed = execute_test_client_api_query(
             query,
-            self.anon_user,
+            account,
             variables=variables
         )
         data = executed.get('data')
         errors = executed.get('errors')
-        self.assertEqual(errors[0]['message'], 'Not logged in!')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
 
     def test_create_subscription_alt_price_permission_granted(self):
         """ Allow creating subscription alt_prices for users with permissions """
@@ -388,12 +386,11 @@ class GQLAccountSubscriptionAltPrice(TestCase):
             variables['input']['accountSubscription']
         )
 
-    def test_create_subscription_alt_price_permission_denied(self):
-        """ Check create subscription permission denied error message """
+    def test_create_subscription_alt_price_anon_user(self):
+        """ Don't allow creating account subscription alt_price for non-logged in users """
         query = self.subscription_alt_price_create_mutation
 
         account_subscription = f.AccountSubscriptionFactory.create()
-        account = account_subscription.account
         variables = self.variables_create
         variables['input']['accountSubscription'] = to_global_id(
             'AccountSubscriptionNode', account_subscription.id
@@ -401,172 +398,176 @@ class GQLAccountSubscriptionAltPrice(TestCase):
 
         executed = execute_test_client_api_query(
             query,
-            account,
+            self.anon_user,
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
+
+    def test_update_subscription_alt_price(self):
+        """ Update a subscription alt_price """
+        query = self.subscription_alt_price_update_mutation
+        subscription_alt_price = f.AccountSubscriptionAltPriceFactory.create()
+
+        variables = self.variables_update
+        variables['input']['id'] = to_global_id('AccountSubscriptionAltPriceNode', subscription_alt_price.id)
+
+        executed = execute_test_client_api_query(
+            query,
+            self.admin_user,
+            variables=variables
+        )
+        data = executed.get('data')
+
+        self.assertEqual(
+            data['updateAccountSubscriptionAltPrice']['accountSubscriptionAltPrice']['accountSubscription']['id'],
+            to_global_id('AccountSubscriptionNode', subscription_alt_price.account_subscription.id)
+        )
+        self.assertEqual(
+            data['updateAccountSubscriptionAltPrice']['accountSubscriptionAltPrice']['subscriptionYear'],
+            variables['input']['subscriptionYear']
+        )
+        self.assertEqual(
+            data['updateAccountSubscriptionAltPrice']['accountSubscriptionAltPrice']['subscriptionMonth'],
+            variables['input']['subscriptionMonth']
+        )
+        self.assertEqual(
+            data['updateAccountSubscriptionAltPrice']['accountSubscriptionAltPrice']['note'],
+            variables['input']['note']
+        )
+        self.assertEqual(
+            data['updateAccountSubscriptionAltPrice']['accountSubscriptionAltPrice']['description'],
+            variables['input']['description']
+        )
+
+    def test_update_subscription_alt_price_anon_user(self):
+        """ Don't allow updating subscription alt_prices for non-logged in users """
+        query = self.subscription_alt_price_update_mutation
+        subscription_alt_price = f.AccountSubscriptionAltPriceFactory.create()
+
+        variables = self.variables_update
+        variables['input']['id'] = to_global_id('AccountSubscriptionAltPriceNode', subscription_alt_price.id)
+
+        executed = execute_test_client_api_query(
+            query,
+            self.anon_user,
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
+
+    def test_update_subscription_alt_price_permission_granted(self):
+        """ Allow updating subscriptions for users with permissions """
+        query = self.subscription_alt_price_update_mutation
+        subscription_alt_price = f.AccountSubscriptionAltPriceFactory.create()
+
+        variables = self.variables_update
+        variables['input']['id'] = to_global_id('AccountSubscriptionAltPriceNode', subscription_alt_price.id)
+
+        user = subscription_alt_price.account_subscription.account
+        permission = Permission.objects.get(codename=self.permission_change)
+        user.user_permissions.add(permission)
+        user.save()
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(
+          data['updateAccountSubscriptionAltPrice']['accountSubscriptionAltPrice']['accountSubscription']['id'],
+          to_global_id('AccountSubscriptionNode', subscription_alt_price.account_subscription.id)
+        )
+
+    def test_update_subscription_alt_price_permission_denied(self):
+        """ Check update subscription permission denied error message """
+        query = self.subscription_alt_price_update_mutation
+        subscription_alt_price = f.AccountSubscriptionAltPriceFactory.create()
+
+        variables = self.variables_update
+        variables['input']['id'] = to_global_id('AccountSubscriptionAltPriceNode', subscription_alt_price.id)
+
+        user = subscription_alt_price.account_subscription.account
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
             variables=variables
         )
         data = executed.get('data')
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Permission denied!')
-    #
-    # def test_update_subscription_alt_price(self):
-    #     """ Update a subscription alt_price """
-    #     query = self.subscription_alt_price_update_mutation
-    #     subscription_alt_price = f.AccountSubscriptionAltPriceFactory.create()
-    #
-    #     variables = self.variables_update
-    #     variables['input']['id'] = to_global_id('AccountSubscriptionAltPriceNode', subscription_alt_price.id)
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.admin_user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #
-    #     self.assertEqual(
-    #         data['updateAccountSubscriptionAltPrice']['accountSubscriptionAltPrice']['accountSubscription']['id'],
-    #         to_global_id('AccountSubscriptionNode', subscription_alt_price.account_subscription.id)
-    #     )
-    #     self.assertEqual(
-    #         data['updateAccountSubscriptionAltPrice']['accountSubscriptionAltPrice']['dateStart'],
-    #         variables['input']['dateStart']
-    #     )
-    #     self.assertEqual(
-    #         data['updateAccountSubscriptionAltPrice']['accountSubscriptionAltPrice']['dateEnd'],
-    #         variables['input']['dateEnd']
-    #     )
-    #     self.assertEqual(
-    #         data['updateAccountSubscriptionAltPrice']['accountSubscriptionAltPrice']['description'],
-    #         variables['input']['description']
-    #     )
-    #
-    # def test_update_subscription_alt_price_anon_user(self):
-    #     """ Don't allow updating subscription alt_prices for non-logged in users """
-    #     query = self.subscription_alt_price_update_mutation
-    #     subscription_alt_price = f.AccountSubscriptionAltPriceFactory.create()
-    #
-    #     variables = self.variables_update
-    #     variables['input']['id'] = to_global_id('AccountSubscriptionAltPriceNode', subscription_alt_price.id)
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.anon_user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
-    #
-    # def test_update_subscription_alt_price_permission_granted(self):
-    #     """ Allow updating subscriptions for users with permissions """
-    #     query = self.subscription_alt_price_update_mutation
-    #     subscription_alt_price = f.AccountSubscriptionAltPriceFactory.create()
-    #
-    #     variables = self.variables_update
-    #     variables['input']['id'] = to_global_id('AccountSubscriptionAltPriceNode', subscription_alt_price.id)
-    #
-    #     user = subscription_alt_price.account_subscription.account
-    #     permission = Permission.objects.get(codename=self.permission_change)
-    #     user.user_permissions.add(permission)
-    #     user.save()
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(
-    #       data['updateAccountSubscriptionAltPrice']['accountSubscriptionAltPrice']['accountSubscription']['id'],
-    #       to_global_id('AccountSubscriptionNode', subscription_alt_price.account_subscription.id)
-    #     )
-    #
-    # def test_update_subscription_alt_price_permission_denied(self):
-    #     """ Check update subscription permission denied error message """
-    #     query = self.subscription_alt_price_update_mutation
-    #     subscription_alt_price = f.AccountSubscriptionAltPriceFactory.create()
-    #
-    #     variables = self.variables_update
-    #     variables['input']['id'] = to_global_id('AccountSubscriptionAltPriceNode', subscription_alt_price.id)
-    #
-    #     user = subscription_alt_price.account_subscription.account
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
-    #
-    # def test_delete_subscription_alt_price(self):
-    #     """ Delete an account subscription alt_price"""
-    #     query = self.subscription_alt_price_delete_mutation
-    #     subscription_alt_price = f.AccountSubscriptionAltPriceFactory.create()
-    #     variables = {"input": {}}
-    #     variables['input']['id'] = to_global_id('AccountSubscriptionAltPriceNode', subscription_alt_price.id)
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.admin_user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     # print(data)
-    #     self.assertEqual(data['deleteAccountSubscriptionAltPrice']['ok'], True)
-    #
-    # def test_delete_subscription_alt_price_anon_user(self):
-    #     """ Delete subscription alt_price denied for anon user """
-    #     query = self.subscription_alt_price_delete_mutation
-    #     subscription_alt_price = f.AccountSubscriptionAltPriceFactory.create()
-    #     variables = {"input": {}}
-    #     variables['input']['id'] = to_global_id('AccountSubscriptionAltPriceNode', subscription_alt_price.id)
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.anon_user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
-    #
-    # def test_delete_subscription_alt_price_permission_granted(self):
-    #     """ Allow deleting subscription alt_prices for users with permissions """
-    #     query = self.subscription_alt_price_delete_mutation
-    #     subscription_alt_price = f.AccountSubscriptionAltPriceFactory.create()
-    #     variables = {"input": {}}
-    #     variables['input']['id'] = to_global_id('AccountSubscriptionAltPriceNode', subscription_alt_price.id)
-    #
-    #     # Give permissions
-    #     user = subscription_alt_price.account_subscription.account
-    #     permission = Permission.objects.get(codename=self.permission_delete)
-    #     user.user_permissions.add(permission)
-    #     user.save()
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['deleteAccountSubscriptionAltPrice']['ok'], True)
-    #
-    # def test_delete_subscription_alt_price_permission_denied(self):
-    #     """ Check delete subscription alt_price permission denied error message """
-    #     query = self.subscription_alt_price_delete_mutation
-    #     subscription_alt_price = f.AccountSubscriptionAltPriceFactory.create()
-    #     variables = {"input": {}}
-    #     variables['input']['id'] = to_global_id('AccountSubscriptionAltPriceNode', subscription_alt_price.id)
-    #
-    #     user = subscription_alt_price.account_subscription.account
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
+
+    def test_delete_subscription_alt_price(self):
+        """ Delete an account subscription alt_price"""
+        query = self.subscription_alt_price_delete_mutation
+        subscription_alt_price = f.AccountSubscriptionAltPriceFactory.create()
+        variables = {"input": {}}
+        variables['input']['id'] = to_global_id('AccountSubscriptionAltPriceNode', subscription_alt_price.id)
+
+        executed = execute_test_client_api_query(
+            query,
+            self.admin_user,
+            variables=variables
+        )
+        data = executed.get('data')
+        # print(data)
+        self.assertEqual(data['deleteAccountSubscriptionAltPrice']['ok'], True)
+
+    def test_delete_subscription_alt_price_anon_user(self):
+        """ Delete subscription alt_price denied for anon user """
+        query = self.subscription_alt_price_delete_mutation
+        subscription_alt_price = f.AccountSubscriptionAltPriceFactory.create()
+        variables = {"input": {}}
+        variables['input']['id'] = to_global_id('AccountSubscriptionAltPriceNode', subscription_alt_price.id)
+
+        executed = execute_test_client_api_query(
+            query,
+            self.anon_user,
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
+
+    def test_delete_subscription_alt_price_permission_granted(self):
+        """ Allow deleting subscription alt_prices for users with permissions """
+        query = self.subscription_alt_price_delete_mutation
+        subscription_alt_price = f.AccountSubscriptionAltPriceFactory.create()
+        variables = {"input": {}}
+        variables['input']['id'] = to_global_id('AccountSubscriptionAltPriceNode', subscription_alt_price.id)
+
+        # Give permissions
+        user = subscription_alt_price.account_subscription.account
+        permission = Permission.objects.get(codename=self.permission_delete)
+        user.user_permissions.add(permission)
+        user.save()
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['deleteAccountSubscriptionAltPrice']['ok'], True)
+
+    def test_delete_subscription_alt_price_permission_denied(self):
+        """ Check delete subscription alt_price permission denied error message """
+        query = self.subscription_alt_price_delete_mutation
+        subscription_alt_price = f.AccountSubscriptionAltPriceFactory.create()
+        variables = {"input": {}}
+        variables['input']['id'] = to_global_id('AccountSubscriptionAltPriceNode', subscription_alt_price.id)
+
+        user = subscription_alt_price.account_subscription.account
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
