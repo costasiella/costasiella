@@ -440,8 +440,8 @@ class AccountSubscriptionAltPriceFactory(factory.DjangoModelFactory):
             AccountSubscriptionFactory
         )
     )
-    subscriptionYear = 2019
-    subscriptionMonth = 1
+    subscription_year = 2019
+    subscription_month = 1
     amount = 1
     description = "Test alt price for 2019-01"
     note = "Test alt price note"
