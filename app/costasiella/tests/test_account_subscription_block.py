@@ -374,163 +374,166 @@ class GQLAccountSubscriptionBlock(TestCase):
         data = executed.get('data')
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Permission denied!')
-    #
-    # def test_update_subscription_block(self):
-    #     """ Update a subscription block """
-    #     query = self.subscription_block_update_mutation
-    #     subscription_block = f.AccountSubscriptionBlockFactory.create()
-    #
-    #     variables = self.variables_update
-    #     variables['input']['id'] = to_global_id('AccountSubscriptionBlockNode', subscription_block.id)
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.admin_user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #
-    #     self.assertEqual(
-    #       data['updateAccountSubscriptionBlock']['accountSubscriptionBlock']['accountSubscription']['id'],
-    #       to_global_id('AccountSubscriptionNode', subscription_block.account_subscription.id)
-    #     )
-    #     self.assertEqual(
-    #       data['updateAccountSubscriptionBlock']['accountSubscriptionBlock']['mutationType'],
-    #       variables['input']['mutationType']
-    #     )
-    #     self.assertEqual(
-    #       data['updateAccountSubscriptionBlock']['accountSubscriptionBlock']['mutationAmount'],
-    #       variables['input']['mutationAmount']
-    #     )
-    #
-    # def test_update_subscription_block_anon_user(self):
-    #     """ Don't allow updating subscription blocks for non-logged in users """
-    #     query = self.subscription_block_update_mutation
-    #     subscription_block = f.AccountSubscriptionBlockFactory.create()
-    #
-    #     variables = self.variables_update
-    #     variables['input']['id'] = to_global_id('AccountSubscriptionBlockNode', subscription_block.id)
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.anon_user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
-    #
-    # def test_update_subscription_block_permission_granted(self):
-    #     """ Allow updating subscriptions for users with permissions """
-    #     query = self.subscription_block_update_mutation
-    #     subscription_block = f.AccountSubscriptionBlockFactory.create()
-    #
-    #     variables = self.variables_update
-    #     variables['input']['id'] = to_global_id('AccountSubscriptionBlockNode', subscription_block.id)
-    #
-    #     user = subscription_block.account_subscription.account
-    #     permission = Permission.objects.get(codename=self.permission_change)
-    #     user.user_permissions.add(permission)
-    #     user.save()
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(
-    #       data['updateAccountSubscriptionBlock']['accountSubscriptionBlock']['accountSubscription']['id'],
-    #       to_global_id('AccountSubscriptionNode', subscription_block.account_subscription.id)
-    #     )
-    #
-    # def test_update_subscription_block_permission_denied(self):
-    #     """ Check update subscription permission denied error message """
-    #     query = self.subscription_block_update_mutation
-    #     subscription_block = f.AccountSubscriptionBlockFactory.create()
-    #
-    #     variables = self.variables_update
-    #     variables['input']['id'] = to_global_id('AccountSubscriptionBlockNode', subscription_block.id)
-    #
-    #     user = subscription_block.account_subscription.account
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
-    #
-    # def test_delete_subscription_block(self):
-    #     """ Delete an account subscription block"""
-    #     query = self.subscription_block_delete_mutation
-    #     subscription_block = f.AccountSubscriptionBlockFactory.create()
-    #     variables = {"input": {}}
-    #     variables['input']['id'] = to_global_id('AccountSubscriptionBlockNode', subscription_block.id)
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.admin_user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     # print(data)
-    #     self.assertEqual(data['deleteAccountSubscriptionBlock']['ok'], True)
-    #
-    # def test_delete_subscription_block_anon_user(self):
-    #     """ Delete subscription block denied for anon user """
-    #     query = self.subscription_block_delete_mutation
-    #     subscription_block = f.AccountSubscriptionBlockFactory.create()
-    #     variables = {"input": {}}
-    #     variables['input']['id'] = to_global_id('AccountSubscriptionBlockNode', subscription_block.id)
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.anon_user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
-    #
-    # def test_delete_subscription_block_permission_granted(self):
-    #     """ Allow deleting subscription blocks for users with permissions """
-    #     query = self.subscription_block_delete_mutation
-    #     subscription_block = f.AccountSubscriptionBlockFactory.create()
-    #     variables = {"input": {}}
-    #     variables['input']['id'] = to_global_id('AccountSubscriptionBlockNode', subscription_block.id)
-    #
-    #     # Give permissions
-    #     user = subscription_block.account_subscription.account
-    #     permission = Permission.objects.get(codename=self.permission_delete)
-    #     user.user_permissions.add(permission)
-    #     user.save()
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['deleteAccountSubscriptionBlock']['ok'], True)
-    #
-    # def test_delete_subscription_block_permission_denied(self):
-    #     """ Check delete subscription block permission denied error message """
-    #     query = self.subscription_block_delete_mutation
-    #     subscription_block = f.AccountSubscriptionBlockFactory.create()
-    #     variables = {"input": {}}
-    #     variables['input']['id'] = to_global_id('AccountSubscriptionBlockNode', subscription_block.id)
-    #
-    #     user = subscription_block.account_subscription.account
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
-    #
+
+    def test_update_subscription_block(self):
+        """ Update a subscription block """
+        query = self.subscription_block_update_mutation
+        subscription_block = f.AccountSubscriptionBlockFactory.create()
+
+        variables = self.variables_update
+        variables['input']['id'] = to_global_id('AccountSubscriptionBlockNode', subscription_block.id)
+
+        executed = execute_test_client_api_query(
+            query,
+            self.admin_user,
+            variables=variables
+        )
+        data = executed.get('data')
+
+        self.assertEqual(
+            data['updateAccountSubscriptionBlock']['accountSubscriptionBlock']['accountSubscription']['id'],
+            to_global_id('AccountSubscriptionNode', subscription_block.account_subscription.id)
+        )
+        self.assertEqual(
+            data['updateAccountSubscriptionBlock']['accountSubscriptionBlock']['dateStart'],
+            variables['input']['dateStart']
+        )
+        self.assertEqual(
+            data['updateAccountSubscriptionBlock']['accountSubscriptionBlock']['dateEnd'],
+            variables['input']['dateEnd']
+        )
+        self.assertEqual(
+            data['updateAccountSubscriptionBlock']['accountSubscriptionBlock']['description'],
+            variables['input']['description']
+        )
+
+    def test_update_subscription_block_anon_user(self):
+        """ Don't allow updating subscription blocks for non-logged in users """
+        query = self.subscription_block_update_mutation
+        subscription_block = f.AccountSubscriptionBlockFactory.create()
+
+        variables = self.variables_update
+        variables['input']['id'] = to_global_id('AccountSubscriptionBlockNode', subscription_block.id)
+
+        executed = execute_test_client_api_query(
+            query,
+            self.anon_user,
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
+
+    def test_update_subscription_block_permission_granted(self):
+        """ Allow updating subscriptions for users with permissions """
+        query = self.subscription_block_update_mutation
+        subscription_block = f.AccountSubscriptionBlockFactory.create()
+
+        variables = self.variables_update
+        variables['input']['id'] = to_global_id('AccountSubscriptionBlockNode', subscription_block.id)
+
+        user = subscription_block.account_subscription.account
+        permission = Permission.objects.get(codename=self.permission_change)
+        user.user_permissions.add(permission)
+        user.save()
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(
+          data['updateAccountSubscriptionBlock']['accountSubscriptionBlock']['accountSubscription']['id'],
+          to_global_id('AccountSubscriptionNode', subscription_block.account_subscription.id)
+        )
+
+    def test_update_subscription_block_permission_denied(self):
+        """ Check update subscription permission denied error message """
+        query = self.subscription_block_update_mutation
+        subscription_block = f.AccountSubscriptionBlockFactory.create()
+
+        variables = self.variables_update
+        variables['input']['id'] = to_global_id('AccountSubscriptionBlockNode', subscription_block.id)
+
+        user = subscription_block.account_subscription.account
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
+
+    def test_delete_subscription_block(self):
+        """ Delete an account subscription block"""
+        query = self.subscription_block_delete_mutation
+        subscription_block = f.AccountSubscriptionBlockFactory.create()
+        variables = {"input": {}}
+        variables['input']['id'] = to_global_id('AccountSubscriptionBlockNode', subscription_block.id)
+
+        executed = execute_test_client_api_query(
+            query,
+            self.admin_user,
+            variables=variables
+        )
+        data = executed.get('data')
+        # print(data)
+        self.assertEqual(data['deleteAccountSubscriptionBlock']['ok'], True)
+
+    def test_delete_subscription_block_anon_user(self):
+        """ Delete subscription block denied for anon user """
+        query = self.subscription_block_delete_mutation
+        subscription_block = f.AccountSubscriptionBlockFactory.create()
+        variables = {"input": {}}
+        variables['input']['id'] = to_global_id('AccountSubscriptionBlockNode', subscription_block.id)
+
+        executed = execute_test_client_api_query(
+            query,
+            self.anon_user,
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
+
+    def test_delete_subscription_block_permission_granted(self):
+        """ Allow deleting subscription blocks for users with permissions """
+        query = self.subscription_block_delete_mutation
+        subscription_block = f.AccountSubscriptionBlockFactory.create()
+        variables = {"input": {}}
+        variables['input']['id'] = to_global_id('AccountSubscriptionBlockNode', subscription_block.id)
+
+        # Give permissions
+        user = subscription_block.account_subscription.account
+        permission = Permission.objects.get(codename=self.permission_delete)
+        user.user_permissions.add(permission)
+        user.save()
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['deleteAccountSubscriptionBlock']['ok'], True)
+
+    def test_delete_subscription_block_permission_denied(self):
+        """ Check delete subscription block permission denied error message """
+        query = self.subscription_block_delete_mutation
+        subscription_block = f.AccountSubscriptionBlockFactory.create()
+        variables = {"input": {}}
+        variables['input']['id'] = to_global_id('AccountSubscriptionBlockNode', subscription_block.id)
+
+        user = subscription_block.account_subscription.account
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
