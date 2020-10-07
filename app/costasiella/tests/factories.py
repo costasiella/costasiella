@@ -428,6 +428,25 @@ class AccountSubscriptionFactory(factory.DjangoModelFactory):
     registration_fee_paid = False
 
 
+class AccountSubscriptionAltPriceFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.AccountSubscriptionAltPrice
+
+    class Params:
+        initial_account_subscription = factory.SubFactory(AccountSubscriptionFactory)
+
+    account_subscription = factory.LazyAttribute(
+        lambda o: o.initial_account_subscription if o.initial_account_subscription else factory.SubFactory(
+            AccountSubscriptionFactory
+        )
+    )
+    subscriptionYear = 2019
+    subscriptionMonth = 1
+    amount = 1
+    description = "Test alt price for 2019-01"
+    note = "Test alt price note"
+
+
 class AccountSubscriptionBlockFactory(factory.DjangoModelFactory):
     class Meta:
         model = models.AccountSubscriptionBlock
