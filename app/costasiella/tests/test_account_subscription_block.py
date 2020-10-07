@@ -195,80 +195,80 @@ class GQLAccountSubscriptionBlock(TestCase):
         executed = execute_test_client_api_query(query, self.anon_user, variables=variables)
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Not logged in!')
-    #
-    # def test_query_one(self):
-    #     """ Query one account subscription block as admin """
-    #     subscription_block = f.AccountSubscriptionBlockFactory.create()
-    #     variables = {
-    #         "id": to_global_id("AccountSubscriptionBlockNode", subscription_block.id),
-    #     }
-    #
-    #     # Now query single subscription and check
-    #     executed = execute_test_client_api_query(self.subscription_block_query,
-    #                                              self.admin_user,
-    #                                              variables=variables)
-    #     data = executed.get('data')
-    #     self.assertEqual(
-    #         data['accountSubscriptionBlock']['id'],
-    #         to_global_id('AccountSubscriptionBlockNode', subscription_block.id)
-    #     )
-    #     self.assertEqual(data['accountSubscriptionBlock']['mutationType'],
-    #                      subscription_block.mutation_type)
-    #     self.assertEqual(data['accountSubscriptionBlock']['mutationAmount'],
-    #                      subscription_block.mutation_amount)
-    #     self.assertEqual(data['accountSubscriptionBlock']['description'],
-    #                      subscription_block.description)
-    #
-    # def test_query_one_anon_user(self):
-    #     """ Deny permission for anon users Query one account subscription """
-    #     subscription_block = f.AccountSubscriptionBlockFactory.create()
-    #     variables = {
-    #         "id": to_global_id("AccountSubscriptionBlockNode", subscription_block.id),
-    #     }
-    #
-    #     # Now query single subscription and check
-    #     executed = execute_test_client_api_query(self.subscription_block_query,
-    #                                              self.anon_user,
-    #                                              variables=variables)
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
-    #
-    # def test_query_one_permission_denied(self):
-    #     """ Permission denied message when user lacks authorization """
-    #     subscription_block = f.AccountSubscriptionBlockFactory.create()
-    #     user = subscription_block.account_subscription.account
-    #     variables = {
-    #         "id": to_global_id("AccountSubscriptionBlockNode", subscription_block.id),
-    #     }
-    #
-    #     # Now query single subscription and check
-    #     executed = execute_test_client_api_query(self.subscription_block_query,
-    #                                              user,
-    #                                              variables=variables)
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
-    #
-    # def test_query_one_permission_granted(self):
-    #     """ Respond with data when user has permission """
-    #     subscription_block = f.AccountSubscriptionBlockFactory.create()
-    #     user = subscription_block.account_subscription.account
-    #     permission = Permission.objects.get(codename='view_accountsubscriptionblock')
-    #     user.user_permissions.add(permission)
-    #     user.save()
-    #
-    #     variables = {
-    #         "id": to_global_id("AccountSubscriptionBlockNode", subscription_block.id),
-    #     }
-    #
-    #     # Now query single subscription and check
-    #     executed = execute_test_client_api_query(self.subscription_block_query,
-    #                                              user,
-    #                                              variables=variables)
-    #     data = executed.get('data')
-    #     self.assertEqual(
-    #         data['accountSubscriptionBlock']['id'],
-    #         to_global_id('AccountSubscriptionBlockNode', subscription_block.id)
-    #     )
+
+    def test_query_one(self):
+        """ Query one account subscription block as admin """
+        subscription_block = f.AccountSubscriptionBlockFactory.create()
+        variables = {
+            "id": to_global_id("AccountSubscriptionBlockNode", subscription_block.id),
+        }
+
+        # Now query single subscription and check
+        executed = execute_test_client_api_query(self.subscription_block_query,
+                                                 self.admin_user,
+                                                 variables=variables)
+        data = executed.get('data')
+        self.assertEqual(
+            data['accountSubscriptionBlock']['id'],
+            to_global_id('AccountSubscriptionBlockNode', subscription_block.id)
+        )
+        self.assertEqual(data['accountSubscriptionBlock']['dateStart'],
+                         subscription_block.date_start)
+        self.assertEqual(data['accountSubscriptionBlock']['dateEnd'],
+                         subscription_block.date_end)
+        self.assertEqual(data['accountSubscriptionBlock']['description'],
+                         subscription_block.description)
+
+    def test_query_one_anon_user(self):
+        """ Deny permission for anon users Query one account subscription """
+        subscription_block = f.AccountSubscriptionBlockFactory.create()
+        variables = {
+            "id": to_global_id("AccountSubscriptionBlockNode", subscription_block.id),
+        }
+
+        # Now query single subscription and check
+        executed = execute_test_client_api_query(self.subscription_block_query,
+                                                 self.anon_user,
+                                                 variables=variables)
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
+
+    def test_query_one_permission_denied(self):
+        """ Permission denied message when user lacks authorization """
+        subscription_block = f.AccountSubscriptionBlockFactory.create()
+        user = subscription_block.account_subscription.account
+        variables = {
+            "id": to_global_id("AccountSubscriptionBlockNode", subscription_block.id),
+        }
+
+        # Now query single subscription and check
+        executed = execute_test_client_api_query(self.subscription_block_query,
+                                                 user,
+                                                 variables=variables)
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
+
+    def test_query_one_permission_granted(self):
+        """ Respond with data when user has permission """
+        subscription_block = f.AccountSubscriptionBlockFactory.create()
+        user = subscription_block.account_subscription.account
+        permission = Permission.objects.get(codename='view_accountsubscriptionblock')
+        user.user_permissions.add(permission)
+        user.save()
+
+        variables = {
+            "id": to_global_id("AccountSubscriptionBlockNode", subscription_block.id),
+        }
+
+        # Now query single subscription and check
+        executed = execute_test_client_api_query(self.subscription_block_query,
+                                                 user,
+                                                 variables=variables)
+        data = executed.get('data')
+        self.assertEqual(
+            data['accountSubscriptionBlock']['id'],
+            to_global_id('AccountSubscriptionBlockNode', subscription_block.id)
+        )
     #
     # def test_create_subscription_block(self):
     #     """ Create an account subscription block """
