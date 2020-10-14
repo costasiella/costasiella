@@ -263,6 +263,14 @@
                     "help_description": "__STRING_NOT_TRANSLATED__",
                     "help_content": "__STRING_NOT_TRANSLATED__",
                     "help_comments": "__STRING_NOT_TRANSLATED__"
+                },
+                "recurring_payment_failed": {
+                    "title": "__STRING_NOT_TRANSLATED__",
+                    "help_subject": "__STRING_NOT_TRANSLATED__",
+                    "help_title": "__STRING_NOT_TRANSLATED__",
+                    "help_description": "__STRING_NOT_TRANSLATED__",
+                    "help_content": "__STRING_NOT_TRANSLATED__",
+                    "help_comments": "__STRING_NOT_TRANSLATED__"
                 }
             }
         },
@@ -985,7 +993,10 @@
                     "empty_list": "__STRING_NOT_TRANSLATED__"
                 },
                 "invoices": {
-                    "title_list": "__STRING_NOT_TRANSLATED__"
+                    "title_list": "__STRING_NOT_TRANSLATED__",
+                    "toast_add_success": "__STRING_NOT_TRANSLATED__",
+                    "toast_you_are_now_editing": "__STRING_NOT_TRANSLATED__",
+                    "add": "__STRING_NOT_TRANSLATED__"
                 }
             },
             "teacher_profile": {

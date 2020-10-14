@@ -699,7 +699,10 @@
                     "empty_list": "No alternative prices have been defined for this subscription."
                 },
                 "invoices": {
-                    "title_list": "Invoices"
+                    "title_list": "Invoices",
+                    "toast_add_success": "Added invoice",
+                    "toast_you_are_now_editing": "You're now editing the added invoice",
+                    "add": "Add invoice"
                 }
             },
             "classpasses": {
@@ -1213,6 +1216,14 @@
                     "help_description": "",
                     "help_content": "",
                     "help_comments": ""
+                },
+                "recurring_payment_failed": {
+                    "title": "__STRING_NOT_TRANSLATED__",
+                    "help_subject": "__STRING_NOT_TRANSLATED__",
+                    "help_title": "__STRING_NOT_TRANSLATED__",
+                    "help_description": "__STRING_NOT_TRANSLATED__",
+                    "help_content": "__STRING_NOT_TRANSLATED__",
+                    "help_comments": "__STRING_NOT_TRANSLATED__"
                 }
             }
         },
