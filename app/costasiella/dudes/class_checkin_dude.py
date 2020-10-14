@@ -354,9 +354,7 @@ class ClassCheckinDude:
 
         schedule_item_attendance.save()
 
-        self.class_checkin_subscription_subtract_credit(
-            schedule_item_attendance,
-        )
+        self.class_checkin_subscription_subtract_credit(schedule_item_attendance)
 
         self._send_info_mail(
             account=account,

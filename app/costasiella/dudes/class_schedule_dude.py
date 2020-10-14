@@ -1,5 +1,6 @@
 from django.utils.translation import gettext as _
 
+
 class ClassScheduleDude:
     def schedule_item_takes_place_on_day(self, schedule_item, date):
         """
