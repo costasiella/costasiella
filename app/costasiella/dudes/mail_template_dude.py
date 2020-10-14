@@ -7,7 +7,6 @@ from django.template import Template, Context
 from django.utils.translation import gettext as _
 from django.core.mail import send_mail
 
-from ..models import SystemMailTemplate, ScheduleItemWeeklyOTC
 from ..dudes.app_settings_dude import AppSettingsDude
 
 # https://docs.djangoproject.com/en/2.2/topics/email/
@@ -42,6 +41,8 @@ class MailTemplateDude:
         Switch render functions and return render function output
         :return: HTML message
         """
+        from ..models import SystemMailTemplate
+
         functions = {
             "class_info_mail": self._render_class_info_mail,
             "order_received": self._render_template_order_received
@@ -82,6 +83,8 @@ class MailTemplateDude:
         Render info mail for a class
         :return: HTML message
         """
+        from ..models import ScheduleItemWeeklyOTC
+        
         # Check if we have the required arguments
         error = False
         error_message = ""

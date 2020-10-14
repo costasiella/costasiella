@@ -204,7 +204,7 @@ def account_subscription_invoices_add_for_month_mollie_collection(year, month):
                         print(e)
                         # send mail to ask customer to pay manually
                         send_mail_recurring_payment_failed(account)
-                        
+
                         failed += 1
             else:
                 # send mail to ask customer to pay manually
