@@ -42,7 +42,6 @@ def account_subscription_invoices_add_for_month(year, month, description='', inv
     return _("There are %s subscription invoices in %s-%s") % (invoices_found, year, month)
 
 
-
     ########### OpenStudio reference code below ###########
 
     # from .os_customer_subscription import CustomerSubscription
@@ -79,6 +78,18 @@ def account_subscription_invoices_add_for_month(year, month, description='', inv
     # db.commit()
     #
     # return T("Invoices in month") + ': ' + str(invoices_count)
+
+def send_mail_recurring_payment_failed(account):
+    """
+    Send mail to account to notify a failed recurring payment
+    :param account: models.Account object
+    :return: None
+    """
+    from .....dudes import MailDude
+
+    mail_dude = MailDude(account=account,
+                         email_template="recurring_payment_failed")
+    mail_dude.send()
 
 
 @shared_task
@@ -192,16 +203,12 @@ def account_subscription_invoices_add_for_month_mollie_collection(year, month):
                     except MollieError as e:
                         print(e)
                         # send mail to ask customer to pay manually
-                        #TODO: Implement send mail failed.
-                        # send_mail_failed(cs.auth_customer_id)
-
+                        send_mail_recurring_payment_failed(account)
+                        
                         failed += 1
-                        # return error
-                        # return 'API call failed: ' + e.message
             else:
                 # send mail to ask customer to pay manually
-                # TODO: Implement send mail failed.
-                # send_mail_failed(cs.auth_customer_id)
+                send_mail_recurring_payment_failed(account)
 
                 failed += 1
 
