@@ -217,3 +217,38 @@ class MailTemplateDude:
             content=content,
             comments=mail_template.comments
         )
+
+    def _render_template_recurring_payment_failed(self):
+        """
+        Render recurring payment failed template
+        :return: HTML message
+        """
+        from .system_setting_dude import SystemSettingDude
+
+        system_setting_dude = SystemSettingDude()
+        # Check if we have the required arguments
+        finance_invoice = self.kwargs.get('finance_invoice', None)
+
+        # Throw a spectacular error if finance_invoice is not found :)
+        if not finance_invoice:
+            raise Exception(_("Finance invoice not found!"))
+
+        # Fetch template
+        mail_template = SystemMailTemplate.objects.get(pk=70000)
+
+        # Render template content
+        system_hostname = system_setting_dude.get('system_hostname')
+        link_profile_invoices = "https://%s/#/shop/account/invoices" % system_hostname
+        content_context = Context({
+            "link_profile_invoices": link_profile_invoices
+        })
+        content_template = Template(mail_template.content)
+        content = content_template.render(content_context)
+
+        return dict(
+            subject=mail_template.subject,
+            title=mail_template.title,
+            description=mail_template.description,
+            content=content,
+            comments=mail_template.comments
+        )
