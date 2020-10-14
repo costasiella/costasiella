@@ -79,7 +79,7 @@ def account_subscription_invoices_add_for_month(year, month, description='', inv
     #
     # return T("Invoices in month") + ': ' + str(invoices_count)
 
-def send_mail_recurring_payment_failed(account):
+def send_mail_recurring_payment_failed(account, finance_invoice):
     """
     Send mail to account to notify a failed recurring payment
     :param account: models.Account object
@@ -87,8 +87,9 @@ def send_mail_recurring_payment_failed(account):
     """
     from .....dudes import MailDude
 
-    mail_dude = MailDude(account=account,
-                         email_template="recurring_payment_failed")
+    mail_dude = MailDude(email_template="recurring_payment_failed",
+                         account=account,
+                         finance_invoice=finance_invoice)
     mail_dude.send()
 
 
@@ -162,7 +163,7 @@ def account_subscription_invoices_add_for_month_mollie_collection(year, month):
 
             valid_mandate = False
             # set default recurring type, change to recurring if a valid mandate is found.
-            if mandates['count'] > 0:
+            if mandates and mandates['count'] > 0:
                 # background payment
                 for mandate in mandates['_embedded']['mandates']:
                     if mandate['status'] == 'valid':
@@ -203,12 +204,14 @@ def account_subscription_invoices_add_for_month_mollie_collection(year, month):
                     except MollieError as e:
                         print(e)
                         # send mail to ask customer to pay manually
-                        send_mail_recurring_payment_failed(account)
+                        send_mail_recurring_payment_failed(account=account,
+                                                           finance_invoice=finance_invoice)
 
                         failed += 1
             else:
                 # send mail to ask customer to pay manually
-                send_mail_recurring_payment_failed(account)
+                send_mail_recurring_payment_failed(account=account,
+                                                   finance_invoice=finance_invoice)
 
                 failed += 1
 

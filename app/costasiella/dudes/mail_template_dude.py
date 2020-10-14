@@ -45,7 +45,8 @@ class MailTemplateDude:
 
         functions = {
             "class_info_mail": self._render_class_info_mail,
-            "order_received": self._render_template_order_received
+            "order_received": self._render_template_order_received,
+            "recurring_payment_failed": self._render_template_recurring_payment_failed,
         }
 
         func = functions.get(self.email_template, lambda: None)
@@ -83,8 +84,8 @@ class MailTemplateDude:
         Render info mail for a class
         :return: HTML message
         """
-        from ..models import ScheduleItemWeeklyOTC
-        
+        from ..models import SystemMailTemplate, ScheduleItemWeeklyOTC
+
         # Check if we have the required arguments
         error = False
         error_message = ""
@@ -168,6 +169,7 @@ class MailTemplateDude:
         Render order received template
         :return: HTML message
         """
+        from ..models import SystemMailTemplate
         # Check if we have the required arguments
         finance_order = self.kwargs.get('finance_order', None)
 
@@ -226,6 +228,7 @@ class MailTemplateDude:
         Render recurring payment failed template
         :return: HTML message
         """
+        from ..models import SystemMailTemplate
         from .system_setting_dude import SystemSettingDude
 
         system_setting_dude = SystemSettingDude()
