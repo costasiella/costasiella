@@ -38,6 +38,8 @@ class ScheduleClassBookingClasspassType(graphene.ObjectType):
 class ScheduleClassBookingSubscriptionType(graphene.ObjectType):
     booking_type = graphene.String()
     allowed = graphene.Boolean()  
+    blocked = graphene.Boolean()
+    paused = graphene.Boolean()
     account_subscription = graphene.Field(AccountSubscriptionNode)
 
     
@@ -155,7 +157,7 @@ class ScheduleClassBookingOptionsType(graphene.ObjectType):
             elif self.list_type == "SHOP_BOOK":
                 if checkin_dude.subscription_shop_book_allowed_for_class(subscription, schedule_item):
                     allowed = True
-                    
+
             subscriptions_list.append(
                 ScheduleClassBookingSubscriptionType(
                     booking_type="SUBSCRIPTION",
