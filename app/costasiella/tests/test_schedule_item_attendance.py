@@ -908,8 +908,6 @@ class GQLScheduleItemAttendance(TestCase):
             user, 
             variables=variables
         )
-        print("###########")
-        print(executed)
 
         data = executed.get('data')
         self.assertEqual(
