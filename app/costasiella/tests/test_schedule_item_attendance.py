@@ -656,7 +656,7 @@ class GQLScheduleItemAttendance(TestCase):
                          variables['input']['bookingStatus'])
 
     def test_create_schedule_class_subscription_attendance_take_one_credit(self):
-        """ Check in to a class using a subscription """
+        """ Is a credit taken when checkin in to a class using a subscription? """
         query = self.schedule_item_attendance_create_mutation
 
         # Create subscription
@@ -843,7 +843,6 @@ class GQLScheduleItemAttendance(TestCase):
 
         self.assertEqual(classes_remaining_before_checkin - 1, classes_remaining_after_checkin)
 
-
     def test_update_schedule_item_attendance_classpass_return_class_on_cancel(self):
         """ Update a class attendance status to attending and check that 1 class is taken from the pass """
         query = self.schedule_item_attendance_update_mutation
@@ -869,9 +868,35 @@ class GQLScheduleItemAttendance(TestCase):
           variables['input']['bookingStatus']
         )
         self.assertEqual(classes_remaining + 1,
-          models.AccountClasspass.objects.get(pk=schedule_item_attendance.account_classpass.pk).classes_remaining
-        )
+          models.AccountClasspass.objects.get(pk=schedule_item_attendance.account_classpass.pk).classes_remaining)
 
+    def test_update_schedule_item_attendance_subscription_return_credit_on_cancel(self):
+        """ Update a class attendance status to cancelled and check that 1 credit is returned """
+        query = self.schedule_item_attendance_update_mutation
+
+        account_subscription_credit = f.AccountSubscriptionCreditAttendanceSubFactory.create()
+        schedule_item_attendance = account_subscription_credit.schedule_item_attendance
+        account_subscription = schedule_item_attendance.account_subscription
+        credits_total_before = account_subscription.get_credits_total()
+
+        variables = self.variables_update_classpass
+        variables['input']['id'] = to_global_id('ScheduleItemAttendanceNode', schedule_item_attendance.id)
+        variables['input']['bookingStatus'] = "CANCELLED"
+
+        executed = execute_test_client_api_query(
+            query,
+            self.admin_user,
+            variables=variables
+        )
+        data = executed.get('data')
+
+        credits_total_after = account_subscription.get_credits_total()
+
+        self.assertEqual(
+          data['updateScheduleItemAttendance']['scheduleItemAttendance']['bookingStatus'],
+          variables['input']['bookingStatus']
+        )
+        self.assertEqual(credits_total_before + 1, credits_total_after)
 
     def test_update_schedule_item_attendance_anon_user(self):
         """ Don't allow updating attendances for non-logged in users """

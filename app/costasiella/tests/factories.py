@@ -678,6 +678,30 @@ class ScheduleItemAttendanceClasspassFactory(factory.DjangoModelFactory):
     online_booking = False
     booking_status = "ATTENDING"
 
+
+class ScheduleItemAttendanceSubscriptionFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.ScheduleItemAttendance
+
+    account_subscription = factory.SubFactory(AccountSubscriptionFactory)
+    account = factory.SelfAttribute('account_subscription.account')
+    schedule_item = factory.SubFactory(SchedulePublicWeeklyClassFactory)
+    attendance_type = 'SUBSCRIPTION'
+    date = datetime.date(2030, 12, 30)
+    online_booking = False
+    booking_status = "ATTENDING"
+
+
+class AccountSubscriptionCreditAttendanceSubFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.AccountSubscriptionCredit
+
+    schedule_item_attendance = factory.SubFactory(ScheduleItemAttendanceSubscriptionFactory)
+    account_subscription = factory.SelfAttribute('schedule_item_attendance.account_subscription')
+    mutation_type = "SUB"
+    mutation_amount = 1
+    description = "Test subscription SUB mutation"
+
     
 class ScheduleItemTeacherFactory(factory.DjangoModelFactory):
     class Meta:
