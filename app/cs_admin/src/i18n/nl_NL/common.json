@@ -1116,7 +1116,9 @@
                     "classpass_not_allowed": "__STRING_NOT_TRANSLATED__",
                     "dropin_pay_and_book": "__STRING_NOT_TRANSLATED__",
                     "trial_pay_and_book": "__STRING_NOT_TRANSLATED__",
-                    "subscription_not_allowed": "__STRING_NOT_TRANSLATED__"
+                    "subscription_not_allowed": "__STRING_NOT_TRANSLATED__",
+                    "subscription_blocked": "__STRING_NOT_TRANSLATED__",
+                    "subscription_paused": "__STRING_NOT_TRANSLATED__"
                 },
                 "edit": {
                     "toast_edit_success": "__STRING_NOT_TRANSLATED__",

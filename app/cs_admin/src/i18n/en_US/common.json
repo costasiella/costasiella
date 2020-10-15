@@ -843,7 +843,9 @@
                     "classpass_not_allowed": "Not allowed for this class",
                     "subscription_not_allowed": "Not allowed for this class",
                     "dropin_pay_and_book": "Pay and book class",
-                    "trial_pay_and_book": "Pay and book class"
+                    "trial_pay_and_book": "Pay and book class",
+                    "subscription_blocked": "This subscription is blocked",
+                    "subscription_paused": "This subscription is paused"
                 },
                 "edit": {
                     "toast_edit_success": "Saved",
