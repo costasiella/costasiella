@@ -55,7 +55,7 @@ function SubscriptionCheckinButton({t, match, history, subscription, returnTo, l
   if (subscription.blocked) {
     return (
       <p className="text-muted">
-        <Icon name="x" />
+        <Icon name="alert-triangle" />
         {t("schedule.classes.class.book.subscription_blocked")}
       </p>
     )
