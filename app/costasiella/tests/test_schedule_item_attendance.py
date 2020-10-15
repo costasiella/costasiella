@@ -976,7 +976,6 @@ class GQLScheduleItemAttendance(TestCase):
         data = executed.get('data')
         self.assertEqual(data['deleteScheduleItemAttendance']['ok'], True)
 
-
     def test_delete_schedule_item_attendance_return_class_to_pass(self):
         """ Delete schedule item attendance and check the number of classes remaining 
         the pass += 1
@@ -1002,6 +1001,30 @@ class GQLScheduleItemAttendance(TestCase):
           models.AccountClasspass.objects.get(pk=schedule_item_attendance.account_classpass.pk).classes_remaining
         )
 
+    def test_delete_schedule_item_attendance_return_credit_to_subscription(self):
+        """ Delete schedule item attendance and check that the number of credits goes +1
+        """
+        query = self.schedule_item_attendance_delete_mutation
+
+        account_subscription_credit = f.AccountSubscriptionCreditAttendanceSubFactory.create()
+        schedule_item_attendance = account_subscription_credit.schedule_item_attendance
+        account_subscription = schedule_item_attendance.account_subscription
+        credits_total_before = account_subscription.get_credits_total()
+
+        variables = self.variables_delete
+        variables['input']['id'] = to_global_id('ScheduleItemAttendanceNode', schedule_item_attendance.id)
+
+        executed = execute_test_client_api_query(
+            query,
+            self.admin_user,
+            variables=variables
+        )
+        data = executed.get('data')
+
+        credits_total_after = account_subscription.get_credits_total()
+        
+        self.assertEqual(data['deleteScheduleItemAttendance']['ok'], True)
+        self.assertEqual(credits_total_before + 1, credits_total_after)
 
     def test_delete_schedule_item_attendance_anon_user(self):
         """ Delete schedule item attendance denied for anon user """
@@ -1019,7 +1042,6 @@ class GQLScheduleItemAttendance(TestCase):
         data = executed.get('data')
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Not logged in!')
-
 
     def test_delete_schedule_item_attendance_permission_granted(self):
         """ Allow deleting schedule item attendances for users with permissions """
@@ -1042,7 +1064,6 @@ class GQLScheduleItemAttendance(TestCase):
         )
         data = executed.get('data')
         self.assertEqual(data['deleteScheduleItemAttendance']['ok'], True)
-
 
     def test_delete_schedule_item_attendance_permission_denied(self):
         """ Check delete schedule item attendance permission denied error message """
