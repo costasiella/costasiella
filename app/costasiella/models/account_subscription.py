@@ -138,6 +138,36 @@ class AccountSubscription(models.Model):
 
         return account_subscription_credit
 
+    def get_blocked_on_date(self, date):
+        """
+
+        :param date:
+        :return:
+        """
+        from .account_subscription_block import AccountSubscriptionBlock
+
+        qs = AccountSubscriptionBlock.objects.filter(
+            Q(date_start__lte=date) &
+            (Q(date_end__gte=date) | Q(date_end__isnull=True))
+        )
+
+        return qs.exists()
+
+    def get_paused_on_date(self, date):
+        """
+
+        :param date:
+        :return:
+        """
+        from .account_subscription_pause import AccountSubscriptionPause
+
+        qs = AccountSubscriptionPause.objects.filter(
+            Q(date_start__lte=date) &
+            (Q(date_end__gte=date) | Q(date_end__isnull=True))
+        )
+
+        return qs.exists()
+
     def get_credits_total(self):
         """
 

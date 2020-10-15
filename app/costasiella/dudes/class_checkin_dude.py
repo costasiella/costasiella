@@ -324,14 +324,21 @@ class ClassCheckinDude:
             # else:
             #TODO: Write review check-ins code
 
+        # Check for correct account
         if account_subscription.account != account:
             raise Exception(_("This subscription doesn't belong to this account"))
 
+        # Check credits remaining
         if (account_subscription.get_usable_credits_total() - 1) < 0:
             raise Exception(_("Insufficient credits available to book this class"))
 
-        # if not credits_available:
-        #     raise Exception(_('No credits left for this subscription.'))
+        # Check blocked:
+        if account_subscription.get_blocked_on_date(date):
+            raise Exception(_("This subscription is blocked on %s") % date)
+
+        # Check paused:
+        if account_subscription.get_paused_on_date(date):
+            raise Exception(_("This subscription is paused on %s") % date)
 
         # Subscription valid on date
         if account_subscription.date_end:

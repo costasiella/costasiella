@@ -697,6 +697,66 @@ class GQLScheduleItemAttendance(TestCase):
             self.assertEqual(account_subscription_credit.mutation_amount, 1)
             self.assertEqual(account_subscription_credit.mutation_type, "SUB")
 
+    def test_create_schedule_class_subscription_attendance_blocked(self):
+        """ Shouldn't be able to check-in with a blocked subscription """
+        query = self.schedule_item_attendance_create_mutation
+
+        # Create subscription block
+        account_subscription_block = f.AccountSubscriptionBlockFactory.create()
+        account_subscription = account_subscription_block.account_subscription
+        account = account_subscription.account
+
+        # Create organization subscription group
+        schedule_item_organization_subscription_group = f.ScheduleItemOrganizationSubscriptionGroupAllowFactory.create()
+        schedule_item = schedule_item_organization_subscription_group.schedule_item
+
+        # Add subscription to group
+        organization_subscription_group = schedule_item_organization_subscription_group.organization_subscription_group
+        organization_subscription_group.organization_subscriptions.add(account_subscription.organization_subscription)
+
+        variables = self.variables_create_subscription
+        variables['input']['account'] = to_global_id('AccountNode', account.id)
+        variables['input']['accountSubscription'] = to_global_id('AccountSubscriptionNode', account_subscription.id)
+        variables['input']['scheduleItem'] = to_global_id('ScheduleItemNode', schedule_item.id)
+
+        executed = execute_test_client_api_query(
+            query,
+            self.admin_user,
+            variables=variables
+        )
+        errors = executed['errors']
+        self.assertEqual("This subscription is blocked" in errors[0]['message'], True)
+
+    def test_create_schedule_class_subscription_attendance_paused(self):
+        """ Shouldn't be able to check-in with a paused subscription """
+        query = self.schedule_item_attendance_create_mutation
+
+        # Create subscription pause
+        account_subscription_block = f.AccountSubscriptionPauseFactory.create()
+        account_subscription = account_subscription_block.account_subscription
+        account = account_subscription.account
+
+        # Create organization subscription group
+        schedule_item_organization_subscription_group = f.ScheduleItemOrganizationSubscriptionGroupAllowFactory.create()
+        schedule_item = schedule_item_organization_subscription_group.schedule_item
+
+        # Add subscription to group
+        organization_subscription_group = schedule_item_organization_subscription_group.organization_subscription_group
+        organization_subscription_group.organization_subscriptions.add(account_subscription.organization_subscription)
+
+        variables = self.variables_create_subscription
+        variables['input']['account'] = to_global_id('AccountNode', account.id)
+        variables['input']['accountSubscription'] = to_global_id('AccountSubscriptionNode', account_subscription.id)
+        variables['input']['scheduleItem'] = to_global_id('ScheduleItemNode', schedule_item.id)
+
+        executed = execute_test_client_api_query(
+            query,
+            self.admin_user,
+            variables=variables
+        )
+        errors = executed['errors']
+        self.assertEqual("This subscription is paused" in errors[0]['message'], True)
+
     def test_create_schedule_item_attendance_anon_user(self):
         """ Don't allow creating account attendances for non-logged in users """
         query = self.schedule_item_attendance_create_mutation
@@ -1022,7 +1082,7 @@ class GQLScheduleItemAttendance(TestCase):
         data = executed.get('data')
 
         credits_total_after = account_subscription.get_credits_total()
-        
+
         self.assertEqual(data['deleteScheduleItemAttendance']['ok'], True)
         self.assertEqual(credits_total_before + 1, credits_total_after)
 

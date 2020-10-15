@@ -478,7 +478,7 @@ class AccountSubscriptionPauseFactory(factory.DjangoModelFactory):
     )
     date_start = "2019-01-01"
     date_end = "2019-01-31"
-    description = "Block test description"
+    description = "Pause test description"
 
 
 class AccountSubscriptionCreditAddFactory(factory.DjangoModelFactory):
