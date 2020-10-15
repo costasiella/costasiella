@@ -8,6 +8,7 @@ import { withRouter } from "react-router"
 
 import {
   Button,
+  Icon
 } from "tabler-react";
 import { toast } from 'react-toastify'
 
@@ -53,13 +54,19 @@ function SubscriptionCheckinButton({t, match, history, subscription, returnTo, l
 
   if (subscription.blocked) {
     return (
-      <p className="text-muted">{t("schedule.classes.class.book.subscription_blocked")}</p>
+      <p className="text-muted">
+        <Icon name="x" />
+        {t("schedule.classes.class.book.subscription_blocked")}
+      </p>
     )
   }
 
   if (subscription.paused) {
     return (
-      <p className="text-muted">{t("schedule.classes.class.book.subscription_paused")}</p>
+      <p className="text-muted">
+        <Icon name="pause" />
+        {t("schedule.classes.class.book.subscription_paused")}
+      </p>
     )
   }
 
