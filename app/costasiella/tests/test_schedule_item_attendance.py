@@ -655,6 +655,48 @@ class GQLScheduleItemAttendance(TestCase):
         self.assertEqual(data['createScheduleItemAttendance']['scheduleItemAttendance']['bookingStatus'],
                          variables['input']['bookingStatus'])
 
+    def test_create_schedule_class_subscription_attendance_take_one_credit(self):
+        """ Check in to a class using a subscription """
+        query = self.schedule_item_attendance_create_mutation
+
+        # Create subscription
+        account_subscription = f.AccountSubscriptionFactory.create()
+        account = account_subscription.account
+
+        # Create organization subscription group
+        schedule_item_organization_subscription_group = f.ScheduleItemOrganizationSubscriptionGroupAllowFactory.create()
+        schedule_item = schedule_item_organization_subscription_group.schedule_item
+
+        # Add subscription to group
+        organization_subscription_group = schedule_item_organization_subscription_group.organization_subscription_group
+        organization_subscription_group.organization_subscriptions.add(account_subscription.organization_subscription)
+
+        variables = self.variables_create_subscription
+        variables['input']['account'] = to_global_id('AccountNode', account.id)
+        variables['input']['accountSubscription'] = to_global_id('AccountSubscriptionNode', account_subscription.id)
+        variables['input']['scheduleItem'] = to_global_id('ScheduleItemNode', schedule_item.id)
+
+        executed = execute_test_client_api_query(
+            query,
+            self.admin_user,
+            variables=variables
+        )
+        data = executed.get('data')
+
+        # Check successful query; correct data returned.
+        self.assertEqual(
+            data['createScheduleItemAttendance']['scheduleItemAttendance']['accountSubscription']['id'],
+            variables['input']['accountSubscription']
+        )
+
+        # Check that one credit is subtracted with a subscription check-in
+        qs = models.AccountSubscriptionCredit.objects.filter(
+            account_subscription=account_subscription
+        )
+        for account_subscription_credit in qs:
+            self.assertEqual(account_subscription_credit.mutation_amount, 1)
+            self.assertEqual(account_subscription_credit.mutation_type, "SUB")
+
     def test_create_schedule_item_attendance_anon_user(self):
         """ Don't allow creating account attendances for non-logged in users """
         query = self.schedule_item_attendance_create_mutation
