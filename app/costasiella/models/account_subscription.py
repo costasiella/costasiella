@@ -147,6 +147,7 @@ class AccountSubscription(models.Model):
         from .account_subscription_block import AccountSubscriptionBlock
 
         qs = AccountSubscriptionBlock.objects.filter(
+            Q(account_subscription=self) &
             Q(date_start__lte=date) &
             (Q(date_end__gte=date) | Q(date_end__isnull=True))
         )
@@ -162,6 +163,7 @@ class AccountSubscription(models.Model):
         from .account_subscription_pause import AccountSubscriptionPause
 
         qs = AccountSubscriptionPause.objects.filter(
+            Q(account_subscription=self) &
             Q(date_start__lte=date) &
             (Q(date_end__gte=date) | Q(date_end__isnull=True))
         )

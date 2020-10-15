@@ -51,6 +51,18 @@ function SubscriptionCheckinButton({t, match, history, subscription, returnTo, l
     locationId: locationId
   })
 
+  if (subscription.blocked) {
+    return (
+      <p className="text-muted">{t("schedule.classes.class.book.subscription_blocked")}</p>
+    )
+  }
+
+  if (subscription.paused) {
+    return (
+      <p className="text-muted">{t("schedule.classes.class.book.subscription_paused")}</p>
+    )
+  }
+
   return (
     <Button 
       block 
