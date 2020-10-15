@@ -16,7 +16,6 @@ from .. import models
 from .. import schema
 
 
-
 class GQLScheduleItemAttendance(TestCase):
     # https://docs.djangoproject.com/en/2.1/topics/testing/overview/
     fixtures = [
@@ -399,7 +398,6 @@ class GQLScheduleItemAttendance(TestCase):
     #         to_global_id('OrganizationSubscriptionNode', subscription.organization_subscription.id)
     #     )
 
-
     def test_create_schedule_class_classpass_attendance(self):
         """ Check in to a class using a class pass """
         query = self.schedule_item_attendance_create_mutation
@@ -507,50 +505,6 @@ class GQLScheduleItemAttendance(TestCase):
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'This pass is not valid on this date.')
 
-    def test_create_schedule_class_subscription_attendance(self):
-        """ Check in to a class using a subscription """
-        query = self.schedule_item_attendance_create_mutation
-
-        # Create class pass
-        account_subscription = f.AccountSubscriptionFactory.create()
-        account = account_subscription.account
-
-        # Create organization subscription group
-        schedule_item_organization_subscription_group = f.ScheduleItemOrganizationSubscriptionGroupAllowFactory.create()
-        schedule_item = schedule_item_organization_subscription_group.schedule_item
-        
-        # Add subscription to group
-        organization_subscription_group = schedule_item_organization_subscription_group.organization_subscription_group
-        organization_subscription_group.organization_subscriptions.add(account_subscription.organization_subscription)
-
-        variables = self.variables_create_subscription
-        variables['input']['account'] = to_global_id('AccountNode', account.id)
-        variables['input']['accountSubscription'] = to_global_id('AccountSubscriptionNode', account_subscription.id)
-        variables['input']['scheduleItem'] = to_global_id('ScheduleItemNode', schedule_item.id)
-
-        executed = execute_test_client_api_query(
-            query, 
-            self.admin_user, 
-            variables=variables
-        )
-        data = executed.get('data')
-
-        self.assertEqual(
-            data['createScheduleItemAttendance']['scheduleItemAttendance']['account']['id'], 
-            variables['input']['account']
-        )
-        self.assertEqual(
-            data['createScheduleItemAttendance']['scheduleItemAttendance']['accountSubscription']['id'], 
-            variables['input']['accountSubscription']
-        )
-        self.assertEqual(
-            data['createScheduleItemAttendance']['scheduleItemAttendance']['scheduleItem']['id'], 
-            variables['input']['scheduleItem']
-        )
-        self.assertEqual(data['createScheduleItemAttendance']['scheduleItemAttendance']['date'], variables['input']['date'])
-        self.assertEqual(data['createScheduleItemAttendance']['scheduleItemAttendance']['attendanceType'], variables['input']['attendanceType'])
-        self.assertEqual(data['createScheduleItemAttendance']['scheduleItemAttendance']['bookingStatus'], variables['input']['bookingStatus'])
-
 
     def test_create_schedule_class_classpass_buy_and_book_dropin_attendance(self):
         """ Check in to a class using the organization class pass
@@ -603,7 +557,6 @@ class GQLScheduleItemAttendance(TestCase):
             variables['input']['bookingStatus']
         )
 
-
     def test_create_schedule_class_classpass_buy_and_book_trial_attendance(self):
         """ Check in to a class using the organization class pass
             set for trial classes """
@@ -655,6 +608,52 @@ class GQLScheduleItemAttendance(TestCase):
             variables['input']['bookingStatus']
         )
 
+    def test_create_schedule_class_subscription_attendance(self):
+        """ Check in to a class using a subscription """
+        query = self.schedule_item_attendance_create_mutation
+
+        # Create subscription
+        account_subscription = f.AccountSubscriptionFactory.create()
+        account = account_subscription.account
+
+        # Create organization subscription group
+        schedule_item_organization_subscription_group = f.ScheduleItemOrganizationSubscriptionGroupAllowFactory.create()
+        schedule_item = schedule_item_organization_subscription_group.schedule_item
+
+        # Add subscription to group
+        organization_subscription_group = schedule_item_organization_subscription_group.organization_subscription_group
+        organization_subscription_group.organization_subscriptions.add(account_subscription.organization_subscription)
+
+        variables = self.variables_create_subscription
+        variables['input']['account'] = to_global_id('AccountNode', account.id)
+        variables['input']['accountSubscription'] = to_global_id('AccountSubscriptionNode', account_subscription.id)
+        variables['input']['scheduleItem'] = to_global_id('ScheduleItemNode', schedule_item.id)
+
+        executed = execute_test_client_api_query(
+            query,
+            self.admin_user,
+            variables=variables
+        )
+        data = executed.get('data')
+
+        self.assertEqual(
+            data['createScheduleItemAttendance']['scheduleItemAttendance']['account']['id'],
+            variables['input']['account']
+        )
+        self.assertEqual(
+            data['createScheduleItemAttendance']['scheduleItemAttendance']['accountSubscription']['id'],
+            variables['input']['accountSubscription']
+        )
+        self.assertEqual(
+            data['createScheduleItemAttendance']['scheduleItemAttendance']['scheduleItem']['id'],
+            variables['input']['scheduleItem']
+        )
+        self.assertEqual(data['createScheduleItemAttendance']['scheduleItemAttendance']['date'],
+                         variables['input']['date'])
+        self.assertEqual(data['createScheduleItemAttendance']['scheduleItemAttendance']['attendanceType'],
+                         variables['input']['attendanceType'])
+        self.assertEqual(data['createScheduleItemAttendance']['scheduleItemAttendance']['bookingStatus'],
+                         variables['input']['bookingStatus'])
 
     def test_create_schedule_item_attendance_anon_user(self):
         """ Don't allow creating account attendances for non-logged in users """
