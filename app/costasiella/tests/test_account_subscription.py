@@ -219,7 +219,6 @@ class GQLAccountSubscription(TestCase):
         # This is run after every test
         pass
 
-
     def test_query(self):
         """ Query list of account subscriptions """
         query = self.subscriptions_query
@@ -231,11 +230,11 @@ class GQLAccountSubscription(TestCase):
         executed = execute_test_client_api_query(query, self.admin_user, variables=variables)
         data = executed.get('data')
         self.assertEqual(
-            data['accountSubscriptions']['edges'][0]['node']['organizationSubscription']['id'], 
+            data['accountSubscriptions']['edges'][0]['node']['organizationSubscription']['id'],
             to_global_id("OrganizationSubscriptionNode", subscription.organization_subscription.id)
         )
         self.assertEqual(
-            data['accountSubscriptions']['edges'][0]['node']['financePaymentMethod']['id'], 
+            data['accountSubscriptions']['edges'][0]['node']['financePaymentMethod']['id'],
             to_global_id("FinancePaymentMethodNode", subscription.finance_payment_method.id)
         )
         self.assertEqual(data['accountSubscriptions']['edges'][0]['node']['dateStart'], str(subscription.date_start))
@@ -243,13 +242,12 @@ class GQLAccountSubscription(TestCase):
         self.assertEqual(data['accountSubscriptions']['edges'][0]['node']['note'], subscription.note)
         self.assertEqual(data['accountSubscriptions']['edges'][0]['node']['registrationFeePaid'], subscription.registration_fee_paid)
 
-
     def test_query_permission_denied(self):
         """ Query list of account subscriptions - check permission denied """
         query = self.subscriptions_query
         subscription = f.AccountSubscriptionFactory.create()
         variables = {
-            'accountId': to_global_id('AccountSubscriptionNode', subscription.account.id)
+            'accountId': to_global_id('AccountNode', subscription.account.id)
         }
 
         # Create regular user
@@ -258,7 +256,6 @@ class GQLAccountSubscription(TestCase):
         errors = executed.get('errors')
 
         self.assertEqual(errors[0]['message'], 'Permission denied!')
-
 
     def test_query_permission_granted(self):
         """ Query list of account subscriptions with view permission """
@@ -279,10 +276,9 @@ class GQLAccountSubscription(TestCase):
 
         # List all subscriptions
         self.assertEqual(
-            data['accountSubscriptions']['edges'][0]['node']['organizationSubscription']['id'], 
+            data['accountSubscriptions']['edges'][0]['node']['organizationSubscription']['id'],
             to_global_id("OrganizationSubscriptionNode", subscription.organization_subscription.id)
         )
-
 
     def test_query_anon_user(self):
         """ Query list of account subscriptions - anon user """
@@ -296,11 +292,10 @@ class GQLAccountSubscription(TestCase):
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Not logged in!')
 
-
     def test_query_one(self):
-        """ Query one account subscription as admin """   
+        """ Query one account subscription as admin """
         subscription = f.AccountSubscriptionFactory.create()
-        
+
         variables = {
             "id": to_global_id("AccountSubscriptionNode", subscription.id),
             "accountId": to_global_id("AccountNode", subscription.account.id),
@@ -311,15 +306,15 @@ class GQLAccountSubscription(TestCase):
         executed = execute_test_client_api_query(self.subscription_query, self.admin_user, variables=variables)
         data = executed.get('data')
         self.assertEqual(
-            data['accountSubscription']['account']['id'], 
+            data['accountSubscription']['account']['id'],
             to_global_id('AccountNode', subscription.account.id)
         )
         self.assertEqual(
-            data['accountSubscription']['organizationSubscription']['id'], 
+            data['accountSubscription']['organizationSubscription']['id'],
             to_global_id('OrganizationSubscriptionNode', subscription.organization_subscription.id)
         )
         self.assertEqual(
-            data['accountSubscription']['financePaymentMethod']['id'], 
+            data['accountSubscription']['financePaymentMethod']['id'],
             to_global_id('FinancePaymentMethodNode', subscription.finance_payment_method.id)
         )
         self.assertEqual(data['accountSubscription']['dateStart'], str(subscription.date_start))
@@ -327,9 +322,8 @@ class GQLAccountSubscription(TestCase):
         self.assertEqual(data['accountSubscription']['note'], subscription.note)
         self.assertEqual(data['accountSubscription']['registrationFeePaid'], subscription.registration_fee_paid)
 
-
     def test_query_one_anon_user(self):
-        """ Deny permission for anon users Query one account subscription """   
+        """ Deny permission for anon users Query one account subscription """
         subscription = f.AccountSubscriptionFactory.create()
 
         variables = {
@@ -343,9 +337,8 @@ class GQLAccountSubscription(TestCase):
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Not logged in!')
 
-
     def test_query_one_permission_denied(self):
-        """ Permission denied message when user lacks authorization """   
+        """ Permission denied message when user lacks authorization """
         # Create regular user
         subscription = f.AccountSubscriptionFactory.create()
         user = subscription.account
@@ -361,15 +354,14 @@ class GQLAccountSubscription(TestCase):
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Permission denied!')
 
-
     def test_query_one_permission_granted(self):
-        """ Respond with data when user has permission """   
+        """ Respond with data when user has permission """
         subscription = f.AccountSubscriptionFactory.create()
         user = subscription.account
         permission = Permission.objects.get(codename='view_accountsubscription')
         user.user_permissions.add(permission)
         user.save()
-        
+
 
         variables = {
             "id": to_global_id("AccountSubscriptionNode", subscription.id),
@@ -377,14 +369,13 @@ class GQLAccountSubscription(TestCase):
             "archived": False,
         }
 
-        # Now query single subscription and check   
+        # Now query single subscription and check
         executed = execute_test_client_api_query(self.subscription_query, user, variables=variables)
         data = executed.get('data')
         self.assertEqual(
-            data['accountSubscription']['organizationSubscription']['id'], 
+            data['accountSubscription']['organizationSubscription']['id'],
             to_global_id('OrganizationSubscriptionNode', subscription.organization_subscription.id)
         )
-
 
     def test_create_subscription(self):
         """ Create an account subscription """
@@ -399,22 +390,22 @@ class GQLAccountSubscription(TestCase):
         variables['input']['financePaymentMethod'] = to_global_id('FinancePaymentMethodNode', finance_payment_method.id)
 
         executed = execute_test_client_api_query(
-            query, 
-            self.admin_user, 
+            query,
+            self.admin_user,
             variables=variables
         )
         data = executed.get('data')
 
         self.assertEqual(
-            data['createAccountSubscription']['accountSubscription']['account']['id'], 
+            data['createAccountSubscription']['accountSubscription']['account']['id'],
             variables['input']['account']
         )
         self.assertEqual(
-            data['createAccountSubscription']['accountSubscription']['organizationSubscription']['id'], 
+            data['createAccountSubscription']['accountSubscription']['organizationSubscription']['id'],
             variables['input']['organizationSubscription']
         )
         self.assertEqual(
-            data['createAccountSubscription']['accountSubscription']['financePaymentMethod']['id'], 
+            data['createAccountSubscription']['accountSubscription']['financePaymentMethod']['id'],
             variables['input']['financePaymentMethod']
         )
         self.assertEqual(data['createAccountSubscription']['accountSubscription']['dateStart'], variables['input']['dateStart'])
@@ -422,11 +413,10 @@ class GQLAccountSubscription(TestCase):
         self.assertEqual(data['createAccountSubscription']['accountSubscription']['note'], variables['input']['note'])
         self.assertEqual(data['createAccountSubscription']['accountSubscription']['registrationFeePaid'], variables['input']['registrationFeePaid'])
 
-
     def test_create_subscription_anon_user(self):
         """ Don't allow creating account subscriptions for non-logged in users """
         query = self.subscription_create_mutation
-        
+
         account = f.RegularUserFactory.create()
         organization_subscription = f.OrganizationSubscriptionFactory.create()
         finance_payment_method = f.FinancePaymentMethodFactory.create()
@@ -436,14 +426,13 @@ class GQLAccountSubscription(TestCase):
         variables['input']['financePaymentMethod'] = to_global_id('FinancePaymentMethodNode', finance_payment_method.id)
 
         executed = execute_test_client_api_query(
-            query, 
-            self.anon_user, 
+            query,
+            self.anon_user,
             variables=variables
         )
         data = executed.get('data')
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Not logged in!')
-
 
     def test_create_location_permission_granted(self):
         """ Allow creating subscriptions for users with permissions """
@@ -464,16 +453,15 @@ class GQLAccountSubscription(TestCase):
         user.save()
 
         executed = execute_test_client_api_query(
-            query, 
-            user, 
+            query,
+            user,
             variables=variables
         )
         data = executed.get('data')
         self.assertEqual(
-            data['createAccountSubscription']['accountSubscription']['organizationSubscription']['id'], 
+            data['createAccountSubscription']['accountSubscription']['organizationSubscription']['id'],
             variables['input']['organizationSubscription']
         )
-
 
     def test_create_subscription_permission_denied(self):
         """ Check create subscription permission denied error message """
@@ -490,14 +478,13 @@ class GQLAccountSubscription(TestCase):
         user = account
 
         executed = execute_test_client_api_query(
-            query, 
-            user, 
+            query,
+            user,
             variables=variables
         )
         data = executed.get('data')
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Permission denied!')
-
 
     def test_update_subscription(self):
         """ Update a subscription """
@@ -511,25 +498,24 @@ class GQLAccountSubscription(TestCase):
         variables['input']['financePaymentMethod'] = to_global_id('FinancePaymentMethodNode', finance_payment_method.id)
 
         executed = execute_test_client_api_query(
-            query, 
-            self.admin_user, 
+            query,
+            self.admin_user,
             variables=variables
         )
         data = executed.get('data')
 
         self.assertEqual(
-          data['updateAccountSubscription']['accountSubscription']['organizationSubscription']['id'], 
+          data['updateAccountSubscription']['accountSubscription']['organizationSubscription']['id'],
           variables['input']['organizationSubscription']
         )
         self.assertEqual(
-          data['updateAccountSubscription']['accountSubscription']['financePaymentMethod']['id'], 
+          data['updateAccountSubscription']['accountSubscription']['financePaymentMethod']['id'],
           variables['input']['financePaymentMethod']
         )
         self.assertEqual(data['updateAccountSubscription']['accountSubscription']['dateStart'], variables['input']['dateStart'])
         self.assertEqual(data['updateAccountSubscription']['accountSubscription']['dateEnd'], variables['input']['dateEnd'])
         self.assertEqual(data['updateAccountSubscription']['accountSubscription']['note'], variables['input']['note'])
         self.assertEqual(data['updateAccountSubscription']['accountSubscription']['registrationFeePaid'], variables['input']['registrationFeePaid'])
-
 
     def test_update_subscription_anon_user(self):
         """ Don't allow updating subscriptions for non-logged in users """
@@ -543,14 +529,13 @@ class GQLAccountSubscription(TestCase):
         variables['input']['financePaymentMethod'] = to_global_id('FinancePaymentMethodNode', finance_payment_method.id)
 
         executed = execute_test_client_api_query(
-            query, 
-            self.anon_user, 
+            query,
+            self.anon_user,
             variables=variables
         )
         data = executed.get('data')
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Not logged in!')
-
 
     def test_update_subscription_permission_granted(self):
         """ Allow updating subscriptions for users with permissions """
@@ -569,13 +554,12 @@ class GQLAccountSubscription(TestCase):
         user.save()
 
         executed = execute_test_client_api_query(
-            query, 
-            user, 
+            query,
+            user,
             variables=variables
         )
         data = executed.get('data')
         self.assertEqual(data['updateAccountSubscription']['accountSubscription']['dateStart'], variables['input']['dateStart'])
-
 
     def test_update_subscription_permission_denied(self):
         """ Check update subscription permission denied error message """
@@ -591,14 +575,13 @@ class GQLAccountSubscription(TestCase):
         user = subscription.account
 
         executed = execute_test_client_api_query(
-            query, 
-            user, 
+            query,
+            user,
             variables=variables
         )
         data = executed.get('data')
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Permission denied!')
-
 
     def test_delete_subscription(self):
         """ Delete an account subscription """
@@ -608,14 +591,13 @@ class GQLAccountSubscription(TestCase):
         variables['input']['id'] = to_global_id('AccountSubscriptionNode', subscription.id)
 
         executed = execute_test_client_api_query(
-            query, 
-            self.admin_user, 
+            query,
+            self.admin_user,
             variables=variables
         )
         data = executed.get('data')
         print(data)
         self.assertEqual(data['deleteAccountSubscription']['ok'], True)
-
 
     def test_delete_subscription_anon_user(self):
         """ Delete subscription denied for anon user """
@@ -625,14 +607,13 @@ class GQLAccountSubscription(TestCase):
         variables['input']['id'] = to_global_id('AccountSubscriptionNode', subscription.id)
 
         executed = execute_test_client_api_query(
-            query, 
-            self.anon_user, 
+            query,
+            self.anon_user,
             variables=variables
         )
         data = executed.get('data')
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Not logged in!')
-
 
     def test_delete_subscription_permission_granted(self):
         """ Allow deleting subscriptions for users with permissions """
@@ -648,13 +629,12 @@ class GQLAccountSubscription(TestCase):
         user.save()
 
         executed = execute_test_client_api_query(
-            query, 
+            query,
             user,
             variables=variables
         )
         data = executed.get('data')
         self.assertEqual(data['deleteAccountSubscription']['ok'], True)
-
 
     def test_delete_subscription_permission_denied(self):
         """ Check delete subscription permission denied error message """
@@ -662,15 +642,14 @@ class GQLAccountSubscription(TestCase):
         subscription = f.AccountSubscriptionFactory.create()
         variables = {"input":{}}
         variables['input']['id'] = to_global_id('AccountSubscriptionNode', subscription.id)
-        
+
         user = subscription.account
 
         executed = execute_test_client_api_query(
-            query, 
-            user, 
+            query,
+            user,
             variables=variables
         )
         data = executed.get('data')
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Permission denied!')
-
