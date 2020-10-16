@@ -8,6 +8,7 @@ from .organization_location_room import OrganizationLocationRoom
 from .organization_level import OrganizationLevel
 from .organization_classpass_group import OrganizationClasspassGroup
 from .organization_subscription_group import OrganizationSubscriptionGroup
+from .schedule_event import ScheduleEvent
 
 from .choices.teacher_roles import get_teacher_roles
 from .choices.schedule_item_otc_statuses import get_schedule_item_otc_statuses
@@ -49,6 +50,7 @@ class ScheduleItem(models.Model):
     TEACHER_ROLES = get_teacher_roles()
     STATUSES = get_schedule_item_otc_statuses()
 
+    schedule_event = models.ForeignKey(ScheduleEvent, on_delete=models.CASCADE, null=True)
     schedule_item_type = models.CharField(max_length=50, choices=SCHEDULE_ITEM_TYPES)
     frequency_type = models.CharField(max_length=50, choices=FREQUENCY_TYPES)
     frequency_interval = models.PositiveSmallIntegerField(choices=FREQUENCY_INTERVAL_OPTIONS)
