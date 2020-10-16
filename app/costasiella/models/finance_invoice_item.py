@@ -4,6 +4,7 @@ from django.utils import timezone
 from django.db import models
 
 from .account_classpass import AccountClasspass
+from .account_subscription import AccountSubscription
 from .finance_costcenter import FinanceCostCenter
 from .finance_glaccount import FinanceGLAccount
 from .finance_invoice import FinanceInvoice
@@ -17,6 +18,13 @@ class FinanceInvoiceItem(models.Model):
                                           null=True,
                                           default=None,
                                           related_name="invoice_items")
+    account_subscription = models.ForeignKey(AccountSubscription,
+                                             on_delete=models.SET_NULL,
+                                             null=True,
+                                             default=None,
+                                             related_name="invoice_items")
+    subscription_year = models.IntegerField(null=True)
+    subscription_month = models.IntegerField(null=True)
     line_number = models.PositiveSmallIntegerField(default=0)
     product_name = models.CharField(max_length=255)
     description = models.TextField(default="")
@@ -35,14 +43,12 @@ class FinanceInvoiceItem(models.Model):
     def __str__(self):
         return self.finance_invoice.invoice_number + " line: " + self.line_number + " " + self.product_name
 
-
     def save(self, *args, **kwargs):
         self.subtotal = self._calculate_subtotal()
         self.tax = self._calculate_tax()
         self.total = self._calculate_total()
 
         super(FinanceInvoiceItem, self).save(*args, **kwargs)
-
     
     def _calculate_subtotal(self):
         # If tax is included in price, first remove it.
@@ -56,7 +62,6 @@ class FinanceInvoiceItem(models.Model):
 
         return float(price) * float(self.quantity)
 
-
     def _calculate_tax(self):
         tax_rate = self.finance_tax_rate
         if tax_rate:
@@ -65,7 +70,6 @@ class FinanceInvoiceItem(models.Model):
             return float(self.subtotal) * float(percentage)
         else:
             return 0
-        
-    
+
     def _calculate_total(self):
         return self.subtotal + self.tax

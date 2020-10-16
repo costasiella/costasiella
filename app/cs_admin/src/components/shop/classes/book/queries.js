@@ -71,6 +71,7 @@ export const GET_BOOKING_OPTIONS_QUERY = gql`
             id
             name
           }
+          creditTotal
         }
       }
     }

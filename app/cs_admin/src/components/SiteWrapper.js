@@ -115,7 +115,7 @@ const getNavBarItems = (t, user) => {
     })
   }
 
-  // Insights
+  // Insight
   if (
     (has_permission(permissions, 'view', 'insight'))
    ){
@@ -123,6 +123,18 @@ const getNavBarItems = (t, user) => {
       value: t("insight.title"),
       to: "/insight",
       icon: "bar-chart-2",
+      LinkComponent: withRouter(NavLink),
+    })
+  }
+
+  // Automation
+  if (
+    (has_permission(permissions, 'view', 'automation'))
+   ){
+    items.push({
+      value: t("automation.title"),
+      to: "/automation",
+      icon: "loader",
       LinkComponent: withRouter(NavLink),
     })
   }
@@ -143,7 +155,7 @@ const getNavBarItems = (t, user) => {
    ){
     items.push({
       value: t("goto.title"),
-      icon: "zap",
+      icon: "link",
       subItems: goToSubItems,
     })
   }

@@ -60,7 +60,9 @@ function ScheduleClassBookSubscriptions({
           title={t("general.subscription")} >
         <Card.Body>
           <b>{subscription.accountSubscription.organizationSubscription.name}</b><br />
-          details here
+          <span className="text-muted">
+            {t("general.credits_remaining")}: {subscription.accountSubscription.creditTotal}
+          </span>
         </Card.Body>
         <Card.Footer>
           {(!subscription.allowed) ? t('schedule.classes.class.book.subscription_not_allowed') :

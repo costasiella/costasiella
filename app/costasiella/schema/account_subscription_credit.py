@@ -27,7 +27,7 @@ def validate_create_update_input(input, update=False):
 
     # Fetch & check account subscription
     if not update:
-        rid = get_rid(input['organization_subscription'])
+        rid = get_rid(input['account_subscription'])
         account_subscription = AccountSubscription.objects.get(pk=rid.id)
         result['account_subscription'] = account_subscription
         if not account_subscription:
@@ -39,7 +39,9 @@ def validate_create_update_input(input, update=False):
 class AccountSubscriptionCreditNode(DjangoObjectType):
     class Meta:
         model = AccountSubscriptionCredit
-        filter_fields = ['account_subscription']
+        filter_fields = {
+            'account_subscription': ['exact'],
+        }
         interfaces = (graphene.relay.Node, )
 
     @classmethod
@@ -57,11 +59,10 @@ class AccountSubscriptionCreditQuery(graphene.ObjectType):
     def resolve_account_subscription_credits(self, info, account_subscription, **kwargs):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.view_accountsubscriptioncredit')
-
         rid = get_rid(account_subscription)
 
         # return everything:
-        return AccountSubscription.objects.filter(account_subscription=rid.id).order_by('created_at')
+        return AccountSubscriptionCredit.objects.filter(account_subscription__id=rid.id).order_by('-created_at')
 
 
 class CreateAccountSubscriptionCredit(graphene.relay.ClientIDMutation):
@@ -116,7 +117,7 @@ class UpdateAccountSubscriptionCredit(graphene.relay.ClientIDMutation):
 
         account_subscription_credit.mutation_type = input['mutation_type']
         account_subscription_credit.mutation_amount = input['mutation_amount']
-        account_subscription_credit.description = input['mutation_description']
+        account_subscription_credit.description = input['description']
 
         account_subscription_credit.save()
 
@@ -144,7 +145,41 @@ class DeleteAccountSubscriptionCredit(graphene.relay.ClientIDMutation):
         return DeleteAccountSubscriptionCredit(ok=ok)
 
 
+def create_account_subscription_credit_for_month_validation(input):
+    """
+    Validate input for create subscription credits for month task
+    """
+    from .custom_schema_validators import is_month, is_year
+
+    is_month(input['month'])
+    is_year(input['year'])
+
+
+class CreateAccountSubscriptionCreditForMonth(graphene.relay.ClientIDMutation):
+    class Input:
+        year = graphene.Int()
+        month = graphene.Int()
+
+    ok = graphene.Boolean()
+
+    @classmethod
+    def mutate_and_get_payload(self, root, info, **input):
+        from costasiella.tasks import account_subscription_credits_add_for_month
+
+        user = info.context.user
+        require_login_and_permission(user, 'costasiella.add_accountsubscriptioncredit')
+
+        year = input['year']
+        month = input['month']
+
+        task = account_subscription_credits_add_for_month.delay(year=year, month=month)
+        ok = True
+
+        return CreateAccountSubscriptionCreditForMonth(ok=ok)
+
+
 class AccountSubscriptionCreditMutation(graphene.ObjectType):
     create_account_subscription_credit = CreateAccountSubscriptionCredit.Field()
+    create_account_subscription_credit_for_month = CreateAccountSubscriptionCreditForMonth.Field()
     delete_account_subscription_credit = DeleteAccountSubscriptionCredit.Field()
     update_account_subscription_credit = UpdateAccountSubscriptionCredit.Field()

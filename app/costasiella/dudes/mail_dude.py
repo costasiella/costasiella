@@ -30,7 +30,6 @@ class MailDude:
             **self.kwargs,
         )
         template = template_dude.render()
-        print(template)
         message = html2text.html2text(template['html_message'])
 
         if template.get('error', False):

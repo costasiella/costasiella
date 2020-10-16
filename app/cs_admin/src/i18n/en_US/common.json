@@ -351,7 +351,16 @@
         "continue": "Continue",
         "info_mail": "Info mail",
         "license": "License",
-        "license_text": "License text"
+        "license_info": "License Info",
+        "credits": "Credits",
+        "mutation": "Mutation",
+        "add": "Add",
+        "subscription_year": "Subscription year",
+        "subscription_month": "Subscription month",
+        "subtract": "Subtract",
+        "new_task": "New task",
+        "credits_remaining": "Credits remaining",
+        "month": "Month"
     },
     "yup": {
         "min_len_3": "Please input at least 3 characters",
@@ -640,7 +649,61 @@
                 "deleted": "Deleted subscription",
                 "add": "Add subscription",
                 "title_edit": "Edit subscription",
-                "registration_fee_paid": "Registration fee paid"
+                "registration_fee_paid": "Registration fee paid",
+                "credits": {
+                    "title_list": "Credit mutations",
+                    "toast_add_success": "Added credit mutation",
+                    "delete_confirm_msg": "Are you sure you wish to delete this credit mutation?",
+                    "delete_success": "Deleted credit mutation",
+                    "toast_edit_success": "Saved",
+                    "add": "Add credit mutation",
+                    "edit": "Edit credit mutation",
+                    "mutationType": "Mutation type"
+                },
+                "pauses": {
+                    "empty_list": "This subscription hasn't been paused before.",
+                    "title_list": "Pauses",
+                    "toast_add_success": "Added pause",
+                    "delete_confirm_msg": "Are you sure you wish to delete this pause?",
+                    "delete_success": "Deleted pause",
+                    "toast_edit_success": "Saved",
+                    "add": "Add pause",
+                    "edit": "Edit pause"
+                },
+                "menu": {
+                    "general": "General",
+                    "pauses": "Pauses",
+                    "blocks": "Blocks",
+                    "credits": "Credits",
+                    "alt_prices": "Alt. prices",
+                    "invoices": "Invoices"
+                },
+                "blocks": {
+                    "toast_add_success": "Added block",
+                    "delete_confirm_msg": "Are you sure you wish to delete this blocked period?",
+                    "delete_success": "Deleted blocked period",
+                    "toast_edit_success": "Saved",
+                    "add": "Add block",
+                    "edit": "Edit block",
+                    "title_list": "Blocked periods",
+                    "empty_list": "This subscription hasn't been blocked before."
+                },
+                "alt_prices": {
+                    "toast_add_success": "Added alt. price",
+                    "delete_confirm_msg": "Are you sure you with to delete this alt. price?",
+                    "delete_success": "Deleted alt. price",
+                    "toast_edit_success": "Saved",
+                    "add": "Add alt. price",
+                    "edit": "Edit alt. price",
+                    "title_list": "Alt. prices",
+                    "empty_list": "No alternative prices have been defined for this subscription."
+                },
+                "invoices": {
+                    "title_list": "Invoices",
+                    "toast_add_success": "Added invoice",
+                    "toast_you_are_now_editing": "You're now editing the added invoice",
+                    "add": "Add invoice"
+                }
             },
             "classpasses": {
                 "title_add": "Add class pass",
@@ -780,7 +843,9 @@
                     "classpass_not_allowed": "Not allowed for this class",
                     "subscription_not_allowed": "Not allowed for this class",
                     "dropin_pay_and_book": "Pay and book class",
-                    "trial_pay_and_book": "Pay and book class"
+                    "trial_pay_and_book": "Pay and book class",
+                    "subscription_blocked": "This subscription is blocked",
+                    "subscription_paused": "This subscription is paused"
                 },
                 "edit": {
                     "toast_edit_success": "Saved",
@@ -1103,6 +1168,11 @@
             "date_time": {
                 "title": "Date and time",
                 "explanation": "Date and time format"
+            },
+            "system": {
+                "title": "System",
+                "system_hostname": "Hostname of this installation (eg. demo.costasiella.com without http:// or https://)",
+                "explanation": "System settings"
             }
         },
         "error_loading": "Error loading settings :(",
@@ -1120,7 +1190,7 @@
                 "explanation": "Set the currency and currency symbol"
             },
             "currency_symbol": "Currency symbol",
-            "title": "Currency"
+            "title": "Finance"
         },
         "mail": {
             "title": "Mail",
@@ -1148,6 +1218,14 @@
                     "help_description": "",
                     "help_content": "",
                     "help_comments": ""
+                },
+                "recurring_payment_failed": {
+                    "title": "Recurring payment failed",
+                    "help_subject": "No variabled available",
+                    "help_title": "No variables available",
+                    "help_description": "No variables available",
+                    "help_content": "{{link_profile_invoices}} (Link to customer profile invoices)",
+                    "help_comments": "No variables available"
                 }
             }
         },
@@ -1346,7 +1424,7 @@
                 "title": "My class passes",
                 "explanation": "View your current and past classpasses",
                 "error_loading_data": "Error loading classpasses :(",
-                "empty_list": "No current classpasses"
+                "empty_list": "No classpasses found."
             },
             "btn_text_view": "View",
             "orders": {
@@ -1376,6 +1454,12 @@
             "class_info": {
                 "error_loading_data": "Error loading class info... :(",
                 "title": "Class information"
+            },
+            "subscriptions": {
+                "title": "Subscriptions",
+                "explanation": "View your current and past subscriptions",
+                "error_loading_data": "Error loading subscriptions... :(",
+                "empty_list": "No subcsriptions found."
             }
         },
         "accounts": {
@@ -1403,8 +1487,62 @@
         },
         "contact": {
             "title": "Contact"
+        },
+        "subscriptions": {
+            "title": "Subscriptions",
+            "choose": "Choose",
+            "error_loading": "Error loading subscriptions...:("
+        },
+        "subscription": {
+            "error_loading": "Error loading subscription information...:(",
+            "additional_information": "Additional information"
         }
     },
     "You've already booked this class ": "You've already booked this class",
-    "View info": "View info"
+    "View info": "View info",
+    "automation": {
+        "title": "Automation",
+        "account": {
+            "subscriptions": {
+                "title": "Account subscriptions",
+                "credits": {
+                    "title": "Add credits",
+                    "explanation": "Add monthly credits for all active subscriptions.",
+                    "empty_list": "This task hasn't run before.",
+                    "toast_add_success": "Started adding credits...",
+                    "title_card": "Add credit task result",
+                    "title_add": "Add subscription credits for month"
+                },
+                "mollie_collection": {
+                    "title": "Mollie payment collection",
+                    "explanation": "Collect payments for mollie subscriptions.",
+                    "title_add": "Collect mollie subscription payements for month",
+                    "toast_add_success": "Started collecting subscription payments...",
+                    "title_card": "Mollie subscription payment collection result",
+                    "empty_list": "This task hasn't run before."
+                }
+            }
+        },
+        "home": {
+            "link_edit": "View"
+        },
+        "general": {
+            "time_completed": "Completed on",
+            "task_result": "Result",
+            "status": {
+                "title": "Status"
+            },
+            "task_kwargs": "Task arguments"
+        },
+        "tasks": {
+            "result_statuses": {
+                "pending": "Pending...",
+                "started": "Started...",
+                "success": "Success",
+                "failure": "Failure",
+                "retry": "Retry",
+                "revoked": "Revoked"
+            }
+        }
+    }
 }

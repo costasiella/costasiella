@@ -23,6 +23,14 @@ import { AppSettingsProvider } from "./components/context/AppSettingsContext"
 
 import HomeHome from './components/home/home/HomeHome'
 
+import AutomationHome from './components/automation/home/AutomationHome'
+import AutomationAccountSubscriptionCredits from './components/automation/account/subscription/credits/AutomationAccountSubscriptionCredits'
+import AutomationAccountSubscriptionCreditAdd from './components/automation/account/subscription/credits/AutomationAccountSubscriptionCreditAdd'
+import AutomationAccountSubscriptionMollieCollections 
+  from './components/automation/account/subscription/mollie_collection/AutomationAccountSubscriptionMollieCollections'
+import AutomationAccountSubscriptionMollieCollectionAdd
+  from './components/automation/account/subscription/mollie_collection/AutomationAccountSubscriptionMollieCollectionAdd'
+
 import FinanceHome from './components/finance/home/FinanceHome'
 import FinanceCostCenters from './components/finance/costcenters/FinanceCostCenters'
 import FinanceCostCenterAdd from './components/finance/costcenters/FinanceCostCenterAdd'
@@ -120,7 +128,21 @@ import AccountMembershipEdit from './components/relations/accounts/memberships/A
 import AccountOrders from './components/relations/accounts/orders/AccountOrders'
 import AccountSubscriptions from './components/relations/accounts/subscriptions/AccountSubscriptions'
 import AccountSubscriptionAdd from './components/relations/accounts/subscriptions/AccountSubscriptionAdd'
-import AccountSubscriptionEdit from './components/relations/accounts/subscriptions/AccountSubscriptionEdit'
+import AccountSubscriptionEdit from './components/relations/accounts/subscriptions/edit/AccountSubscriptionEdit'
+import AccountSubscriptionEditAltPrices from './components/relations/accounts/subscriptions/edit/alt_prices/AccountSubscriptionEditAltPrices'
+import AccountSubscriptionEditAltPriceAdd from './components/relations/accounts/subscriptions/edit/alt_prices/AccountSubscriptionEditAltPriceAdd'
+import AccountSubscriptionEditAltPriceEdit from './components/relations/accounts/subscriptions/edit/alt_prices/AccountSubscriptionEditAltPriceEdit'
+import AccountSubscriptionEditBlocks from './components/relations/accounts/subscriptions/edit/blocks/AccountSubscriptionEditBlocks'
+import AccountSubscriptionEditBlockAdd from './components/relations/accounts/subscriptions/edit/blocks/AccountSubscriptionEditBlockAdd'
+import AccountSubscriptionEditBlockEdit from './components/relations/accounts/subscriptions/edit/blocks/AccountSubscriptionEditBlockEdit'
+import AccountSubscriptionEditCredits from './components/relations/accounts/subscriptions/edit/credits/AccountSubscriptionEditCredits'
+import AccountSubscriptionEditCreditAdd from './components/relations/accounts/subscriptions/edit/credits/AccountSubscriptionEditCreditAdd'
+import AccountSubscriptionEditCreditEdit from './components/relations/accounts/subscriptions/edit/credits/AccountSubscriptionEditCreditEdit'
+import AccountSubscriptionEditInvoices from './components/relations/accounts/subscriptions/edit/invoices/AccountSubscriptionEditInvoices'
+import AccountSubscriptionEditInvoiceAdd from './components/relations/accounts/subscriptions/edit/invoices/AccountSubscriptionEditInvoiceAdd'
+import AccountSubscriptionEditPauses from './components/relations/accounts/subscriptions/edit/pauses/AccountSubscriptionEditPauses'
+import AccountSubscriptionEditPauseAdd from './components/relations/accounts/subscriptions/edit/pauses/AccountSubscriptionEditPauseAdd'
+import AccountSubscriptionEditPauseEdit from './components/relations/accounts/subscriptions/edit/pauses/AccountSubscriptionEditPauseEdit'
 import RelationsAccountTeacherProfile from './components/relations/accounts/teacher_profile/RelationsAccountTeacherProfile'
 
 import ScheduleHome from './components/schedule/home/ScheduleHome'
@@ -150,6 +172,7 @@ import SelfCheckinLocationClasses from './components/selfcheckin/LocationClasses
 import SettingsAbout from './components/settings/about/SettingsAbout'
 import SettingsFinanceCurrency from './components/settings/finance/currency/SettingsFinanceCurrency'
 import SettingsGeneralDateTime from './components/settings/general/date_time/SettingsGeneralDateTime'
+import SettingsGeneralSystem from './components/settings/general/system/SettingsGeneralSystem'
 import SettingsHome from './components/settings/home/SettingsHome'
 import SettingsIntegrationMollie from './components/settings/integration/mollie/SettingsIntegrationMollie'
 import SettingsMailTemplates from './components/settings/mail/SettingsMailTemplates'
@@ -161,6 +184,7 @@ import ShopAccountClasspasses from './components/shop/account/classpasses/ShopAc
 import ShopAccountInvoices from './components/shop/account/invoices/ShopAccountInvoices'
 import ShopAccountOrders from './components/shop/account/orders/ShopAccountOrders'
 import ShopAccountProfile from './components/shop/account/profile/ShopAccountProfile'
+import ShopAccountSubscriptions from './components/shop/account/subscriptions/ShopAccountSubscriptions'
 import ShopClassBook from './components/shop/classes/book/ShopClassBook'
 import ShopClassBooked from './components/shop/classes/booked/ShopClassBooked'
 import ShopClassesSchedule from './components/shop/classes/schedule/ShopClassesSchedule'
@@ -171,6 +195,8 @@ import ShopCheckoutComplete from './components/shop/checkout/complete/ShopChecko
 import ShopClasses from './components/shop/account/classes/ShopAccountClasses'
 import ShopClasspasses from './components/shop/classpasses/ShopClasspasses'
 import ShopClasspass from './components/shop/classpass/ShopClasspass'
+import ShopSubscriptions from './components/shop/subscriptions/ShopSubscriptions'
+import ShopSubscription from './components/shop/subscription/ShopSubscription'
 
 import UserChangePassword from './components/user/password/UserPasswordChange'
 import UserLogin from './components/user/login/UserLogin'
@@ -247,17 +273,25 @@ function AppRoot({ t }) {
   // moment.locale('en-US')
   let appSettings = data.appSettings
   console.log(appSettings)
-  if (appSettings.timeFormat == 24) {
-    appSettings.timeFormatMoment = "HH:mm"
-  } else {
-    appSettings.timeFormatMoment = "hh:mm a"
-  }
 
   return (
     <AppSettingsProvider value={appSettings}>
       <HashRouter>
         <Switch>
+          {/* HOME */}
           <PrivateRoute exact path="/" component={HomeHome} />
+
+          {/* AUTOMATION */}
+          <PrivateRoute exact path="/automation" component={AutomationHome} />
+          <PrivateRoute exact path="/automation/account/subscriptions/credits" 
+                              component={AutomationAccountSubscriptionCredits} />
+          <PrivateRoute exact path="/automation/account/subscriptions/credits/add" 
+                              component={AutomationAccountSubscriptionCreditAdd} />
+          <PrivateRoute exact path="/automation/account/subscriptions/mollie_collections" 
+                              component={AutomationAccountSubscriptionMollieCollections} />
+          <PrivateRoute exact path="/automation/account/subscriptions/mollie_collections/add" 
+                              component={AutomationAccountSubscriptionMollieCollectionAdd} />
+
           
           {/* FINANCE */}
           <PrivateRoute exact path="/finance" component={FinanceHome} />
@@ -358,7 +392,28 @@ function AppRoot({ t }) {
           <PrivateRoute exact path="/relations/accounts/:account_id/orders" component={AccountOrders} />
           <PrivateRoute exact path="/relations/accounts/:account_id/subscriptions" component={AccountSubscriptions} />
           <PrivateRoute exact path="/relations/accounts/:account_id/subscriptions/add" component={AccountSubscriptionAdd} />
-          <PrivateRoute exact path="/relations/accounts/:account_id/subscriptions/edit/:id" component={AccountSubscriptionEdit} />
+          <PrivateRoute exact path="/relations/accounts/:account_id/subscriptions/edit/:subscription_id" component={AccountSubscriptionEdit} />
+          <PrivateRoute exact path="/relations/accounts/:account_id/subscriptions/edit/:subscription_id/alt_prices" component={AccountSubscriptionEditAltPrices} />
+          <PrivateRoute exact path="/relations/accounts/:account_id/subscriptions/edit/:subscription_id/alt_prices/add" 
+                        component={AccountSubscriptionEditAltPriceAdd} />
+          <PrivateRoute exact path="/relations/accounts/:account_id/subscriptions/edit/:subscription_id/alt_prices/edit/:id" 
+                        component={AccountSubscriptionEditAltPriceEdit} />
+          <PrivateRoute exact path="/relations/accounts/:account_id/subscriptions/edit/:subscription_id/blocks" component={AccountSubscriptionEditBlocks} />
+          <PrivateRoute exact path="/relations/accounts/:account_id/subscriptions/edit/:subscription_id/blocks/add" component={AccountSubscriptionEditBlockAdd} />
+          <PrivateRoute exact path="/relations/accounts/:account_id/subscriptions/edit/:subscription_id/blocks/edit/:id" 
+                        component={AccountSubscriptionEditBlockEdit} />
+          <PrivateRoute exact path="/relations/accounts/:account_id/subscriptions/edit/:subscription_id/credits" component={AccountSubscriptionEditCredits} />
+          <PrivateRoute exact path="/relations/accounts/:account_id/subscriptions/edit/:subscription_id/credits/add" component={AccountSubscriptionEditCreditAdd} />
+          <PrivateRoute exact path="/relations/accounts/:account_id/subscriptions/edit/:subscription_id/credits/edit/:id" 
+                        component={AccountSubscriptionEditCreditEdit} />
+          <PrivateRoute exact path="/relations/accounts/:account_id/subscriptions/edit/:subscription_id/invoices" 
+            component={AccountSubscriptionEditInvoices} />
+          <PrivateRoute exact path="/relations/accounts/:account_id/subscriptions/edit/:subscription_id/invoices/add" 
+            component={AccountSubscriptionEditInvoiceAdd} />
+          <PrivateRoute exact path="/relations/accounts/:account_id/subscriptions/edit/:subscription_id/pauses" component={AccountSubscriptionEditPauses} />
+          <PrivateRoute exact path="/relations/accounts/:account_id/subscriptions/edit/:subscription_id/pauses/add" component={AccountSubscriptionEditPauseAdd} />
+          <PrivateRoute exact path="/relations/accounts/:account_id/subscriptions/edit/:subscription_id/pauses/edit/:id" 
+                        component={AccountSubscriptionEditPauseEdit} />
           <PrivateRoute exact path="/relations/accounts/:account_id/teacher_profile" component={RelationsAccountTeacherProfile} />
 
           {/* SCHEDULE */}
@@ -402,6 +457,7 @@ function AppRoot({ t }) {
           <PrivateRoute exact path = "/shop/account/invoices" component={ShopAccountInvoices} />
           <PrivateRoute exact path = "/shop/account/orders" component={ShopAccountOrders} />
           <PrivateRoute exact path = "/shop/account/profile" component={ShopAccountProfile} />
+          <PrivateRoute exact path = "/shop/account/subscriptions" component={ShopAccountSubscriptions} />
           <PrivateRoute exact path = "/shop/checkout/payment/:id" component={ShopCheckoutPayment} />
           <PrivateRoute exact path = "/shop/checkout/complete/:id" component={ShopCheckoutComplete} />
           <Route exact path = "/shop/classes" component={ShopClassesSchedule} />
@@ -411,12 +467,15 @@ function AppRoot({ t }) {
           <Route exact path = "/shop/classpass/:id" component={ShopClasspass} />
           <Route exact path = "/shop/classpass/:id/:class_id/:date" component={ShopClasspass} />
           <Route exact path = "/shop/contact" component={ShopContact} />
+          <Route exact path = "/shop/subscriptions" component={ShopSubscriptions} />
+          <Route exact path = "/shop/subscription/:id" component={ShopSubscription} />
 
           {/* Settings */}
           <PrivateRoute exact path="/settings" component={SettingsHome} />
           <PrivateRoute exact path="/settings/about" component={SettingsAbout} />
           <PrivateRoute exact path="/settings/finance/currency" component={SettingsFinanceCurrency} />
           <PrivateRoute exact path="/settings/general/datetime" component={SettingsGeneralDateTime} />
+          <PrivateRoute exact path="/settings/general/system" component={SettingsGeneralSystem} />
           <PrivateRoute exact path="/settings/integration/mollie" component={SettingsIntegrationMollie} />
           <PrivateRoute exact path="/settings/mail/templates" component={SettingsMailTemplates} />
           <PrivateRoute exact path="/settings/mail/templates/edit/:id" component={SettingsMailTemplateEdit} />

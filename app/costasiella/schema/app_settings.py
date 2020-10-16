@@ -12,17 +12,36 @@ from ..modules.messages import Messages
 m = Messages()
 
 
+class AppSettingsNodeInterface(graphene.Interface):
+    time_format_moment = graphene.String()
+    date_time_format_moment = graphene.String()
+
+
 class AppSettingsNode(DjangoObjectType):
     # Prevent formats from changing (all uppercase or dashes changed to underscores in formats)
     # More info here:
     # http://docs.graphene-python.org/en/latest/types/schema/#auto-camelcase-field-names
-
     date_format = graphene.Field(graphene.String, source='date_format')
     time_format = graphene.Field(graphene.String, source='time_format')
 
     class Meta:
         model = AppSettings
-        interfaces = (graphene.relay.Node, )
+        interfaces = (graphene.relay.Node, AppSettingsNodeInterface,)
+
+    def resolve_time_format_moment(self, info):
+        if self.time_format == 24:
+            return "HH:mm"
+        else:
+            return "hh:mm a"
+
+    def resolve_date_time_format_moment(self, info):
+        if self.time_format == 24:
+            time_format_moment = "HH:mm"
+        else:
+            time_format_moment = "hh:mm a"
+
+        return self.date_format + " " + time_format_moment
+
 
     @classmethod
     def get_node(self, info, id):

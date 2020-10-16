@@ -110,7 +110,7 @@ class DeleteScheduleItemOrganizationSubscriptionGroup(graphene.relay.ClientIDMut
         id = graphene.ID(required=True)
 
     ok = graphene.Boolean()
-    deleted_schedule_item_organization_subcription_group_id = graphene.ID()
+    deleted_schedule_item_organization_subscription_group_id = graphene.ID()
 
     @classmethod
     def mutate_and_get_payload(self, root, info, **input):

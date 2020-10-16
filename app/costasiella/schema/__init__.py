@@ -6,9 +6,15 @@ from .account_accepted_document import AccountAcceptedDocumentQuery
 from .account_classpass import AccountClasspassQuery, AccountClasspassMutation
 from .account_membership import AccountMembershipQuery, AccountMembershipMutation
 from .account_subscription import AccountSubscriptionQuery, AccountSubscriptionMutation
+from .account_subscription_alt_price import AccountSubscriptionAltPriceQuery, AccountSubscriptionAltPriceMutation
+from .account_subscription_block import AccountSubscriptionBlockQuery, AccountSubscriptionBlockMutation
+from .account_subscription_credit import AccountSubscriptionCreditQuery, AccountSubscriptionCreditMutation
+from .account_subscription_pause import AccountSubscriptionPauseQuery, AccountSubscriptionPauseMutation
 from .account_teacher_profile import AccountTeacherProfileQuery, AccountTeacherProfileMutation
 
 from .app_settings import AppSettingsQuery, AppSettingsMutation
+
+from .django_celery_result_task_result import DjangoCeleryResultTaskResultQuery
 
 from .finance_costcenter import FinanceCostCenterQuery, FinanceCostCenterMutation
 from .finance_glaccount import FinanceGLAccountQuery, FinanceGLAccountMutation
@@ -66,8 +72,13 @@ class Query(AccountQuery,
             AccountClasspassQuery,
             AccountMembershipQuery,
             AccountSubscriptionQuery,
+            AccountSubscriptionAltPriceQuery,
+            AccountSubscriptionBlockQuery,
+            AccountSubscriptionCreditQuery,
+            AccountSubscriptionPauseQuery,
             AccountTeacherProfileQuery,
             AppSettingsQuery,
+            DjangoCeleryResultTaskResultQuery,
             FinanceCostCenterQuery,
             FinanceGLAccountQuery,
             FinanceInvoiceQuery,
@@ -118,6 +129,10 @@ class Mutation(AccountMutation,
                AccountClasspassMutation,
                AccountMembershipMutation,
                AccountSubscriptionMutation,
+               AccountSubscriptionAltPriceMutation,
+               AccountSubscriptionBlockMutation,
+               AccountSubscriptionCreditMutation,
+               AccountSubscriptionPauseMutation,
                AccountTeacherProfileMutation,
                AppSettingsMutation,
                FinanceCostCenterMutation,

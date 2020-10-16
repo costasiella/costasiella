@@ -18,15 +18,16 @@ class AccountSubscriptionCredit(models.Model):
         ('SUB', _("Subtract")),
     ]
 
-    # account = models.ForeignKey(Account, on_delete=models.CASCADE, related_name="subscriptions")
-    account_subscription = models.ForeignKey(AccountSubscription, on_delete=models.CASCADE)
+    account_subscription = models.ForeignKey(AccountSubscription,
+                                             on_delete=models.CASCADE,
+                                             related_name="credits")
     schedule_item_attendance = models.ForeignKey(ScheduleItemAttendance,
                                                  on_delete=models.CASCADE,
                                                  null=True)
     mutation_type = models.CharField(max_length=255, choices=MUTATION_TYPES, default="ADD")
     mutation_amount = models.DecimalField(max_digits=20, decimal_places=1)
     description = models.TextField(default="")
-    subscription_year = models.IntegerField(null=True),
+    subscription_year = models.IntegerField(null=True)
     subscription_month = models.IntegerField(null=True)
     created_at = models.DateTimeField(auto_now_add=True, editable=False)  # can be used at mutation_datetime
     updated_at = models.DateTimeField(auto_now=True, editable=False)

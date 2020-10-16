@@ -25,6 +25,18 @@
   },
   {
     "model": "costasiella.SystemMailTemplate",
+    "pk": 70000,
+    "fields": {
+      "name": "recurring_payment_failed",
+      "subject": "A recurring payment was unsuccessful",
+      "title": "A recurring payment was unsuccessful",
+      "description": "",
+      "content": "Please review the invoices in your profile and pay any open invoices. <br> To view your invoices you can click <a href=\"{{link_profile_invoices}}\"> here</a>.",
+      "comments": ""
+    }
+  },
+  {
+    "model": "costasiella.SystemMailTemplate",
     "pk": 100000,
     "fields": {
       "name": "system_footer",

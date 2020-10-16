@@ -18,16 +18,15 @@ import { CREATE_SCHEDULE_ITEM_ATTENDANCE } from "../../../schedule/classes/class
 
 function ShopClassBookClasspassBtn({t, match, history, classpass}) {
   console.log(classpass)
-  const account_id = match.params.account_id
   const schedule_item_id = match.params.class_id
   const class_date = match.params.date
 
   const createInput = {
-    "account": account_id,
     "scheduleItem": schedule_item_id,
     "accountClasspass": classpass.accountClasspass.id,
     "date": class_date,
     "attendanceType": "CLASSPASS",
+    "onlineBooking": true,
     "bookingStatus": "BOOKED"
   }
 

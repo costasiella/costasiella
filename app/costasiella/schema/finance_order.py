@@ -7,7 +7,9 @@ from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
 from graphql import GraphQLError
 
-from ..models import AccountAcceptedDocument, FinanceOrder, OrganizationClasspass, OrganizationDocument, ScheduleItem
+from ..models import AccountAcceptedDocument, FinanceOrder, OrganizationClasspass, \
+    OrganizationSubscription, \
+    OrganizationDocument, ScheduleItem
 from ..models.choices.finance_order_statuses import get_finance_order_statuses
 from ..modules.gql_tools import require_login, require_login_and_permission, get_rid, get_error_code
 from ..modules.finance_tools import display_float_as_amount
@@ -102,6 +104,13 @@ def validate_create_update_input(input, update=False):
             if not organization_classpass:
                 raise Exception(_('Invalid Organization Classpass ID!'))
 
+        if 'organization_subscription' in input:
+            rid = get_rid(input["organization_subscription"])
+            organization_subscription = OrganizationSubscription.objects.get(id=rid.id)
+            result['organization_subscription'] = organization_subscription
+            if not organization_subscription:
+                raise Exception(_('Invalid Organization Subscription ID!'))
+
         if 'schedule_item' in input:
             if 'attendance_date' not in input:
                 raise Exception(_('Date is required when specifying Schedule Item ID!'))
@@ -160,6 +169,7 @@ class CreateFinanceOrder(graphene.relay.ClientIDMutation):
     class Input:
         message = graphene.String(required=False, default_value="")
         organization_classpass = graphene.ID(required=False)
+        organization_subscription = graphene.ID(required=False)
         schedule_item = graphene.ID(required=False)
         attendance_date = graphene.types.datetime.Date(required=False)
         
@@ -190,6 +200,9 @@ class CreateFinanceOrder(graphene.relay.ClientIDMutation):
             finance_order.item_add_classpass(validation_result['organization_classpass'],
                                              schedule_item=validation_result.get('schedule_item', None),
                                              attendance_date=attendance_date)
+
+        if 'organization_subscription' in validation_result:
+            finance_order.item_add_subscription(validation_result['organization_subscription'])
 
         # Accept terms and privacy policy
         create_finance_order_log_accepted_documents(info)

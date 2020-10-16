@@ -18,4 +18,3 @@ class OrganizationSubscriptionPrice(models.Model):
     
     def __str__(self):
         return self.organization_subscription.name + ' ' + self.date_start + ' - ' + self.price
-    

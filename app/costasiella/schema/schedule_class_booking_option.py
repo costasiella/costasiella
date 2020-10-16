@@ -38,6 +38,8 @@ class ScheduleClassBookingClasspassType(graphene.ObjectType):
 class ScheduleClassBookingSubscriptionType(graphene.ObjectType):
     booking_type = graphene.String()
     allowed = graphene.Boolean()  
+    blocked = graphene.Boolean()
+    paused = graphene.Boolean()
     account_subscription = graphene.Field(AccountSubscriptionNode)
 
     
@@ -145,16 +147,24 @@ class ScheduleClassBookingOptionsType(graphene.ObjectType):
 
         subscriptions_list = []
         for subscription in subscriptions:
+            blocked = subscription.get_blocked_on_date(self.date)
+            paused = subscription.get_paused_on_date(self.date)
+
             allowed = False
             if self.list_type == "ATTEND":
                 if checkin_dude.subscription_attend_allowed_for_class(subscription, schedule_item):
                     allowed = True
+            elif self.list_type == "SHOP_BOOK":
+                if checkin_dude.subscription_shop_book_allowed_for_class(subscription, schedule_item):
+                    allowed = True
 
             subscriptions_list.append(
                 ScheduleClassBookingSubscriptionType(
-                    booking_type = "SUBSCRIPTION",
-                    allowed = allowed,
-                    account_subscription = subscription,
+                    booking_type="SUBSCRIPTION",
+                    allowed=allowed,
+                    blocked=blocked,
+                    paused=paused,
+                    account_subscription=subscription,
                 )
             )
 

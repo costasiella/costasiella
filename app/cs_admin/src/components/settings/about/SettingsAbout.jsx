@@ -93,9 +93,9 @@ function SettingsAbout({ t, match, history }) {
         <h2>
           {t("settings.about.about.this_is_costasiella")} {`${version}.${patch}`}
         </h2>
-        <h3>{t("general.license")}</h3>
+        <h3>{t("general.license_info")}</h3>
         {t("settings.about.about.license_version")} <br /><br />
-        <h3>{t("general.license_text")}</h3>
+        <h3>{t("general.license")}</h3>
 This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. <br /><br />
 This program is distributed in the hope that it will be useful, but <b>WITHOUT ANY WARRANTY</b>; without even the implied warranty of <b>MERCHANTABILITY</b> or <b>FITNESS FOR A PARTICULAR PURPOSE</b>. See the GNU General Public License for more details. <br /><br />
 You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA. <br />

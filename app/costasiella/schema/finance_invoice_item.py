@@ -27,9 +27,10 @@ class FinanceInvoiceItemInterface(graphene.Interface):
 class FinanceInvoiceItemFilter(FilterSet):
     class Meta:
         model = FinanceInvoiceItem
-        fields = [ 
-            'id', 
-            'finance_invoice', 
+        fields = [
+            'id',
+            'finance_invoice',
+            'account_subscription'
         ]
         
         order_by = OrderingFilter(
@@ -42,11 +43,11 @@ class FinanceInvoiceItemFilter(FilterSet):
 class FinanceInvoiceItemNode(DjangoObjectType):
     class Meta:
         model = FinanceInvoiceItem
-        filter_fields = [ 'id', 'finance_invoice' ]
+        filter_fields = ['id', 'finance_invoice']
         interfaces = (graphene.relay.Node, FinanceInvoiceItemInterface, )
 
     def resolve_price_display(self, info):
-        return display_float_as_amount(self.subtotal)
+        return display_float_as_amount(self.price)
 
     def resolve_subtotal_display(self, info):
         return display_float_as_amount(self.subtotal)
@@ -75,16 +76,21 @@ class FinanceInvoiceItemNode(DjangoObjectType):
 class FinanceInvoiceItemQuery(graphene.ObjectType):  
     finance_invoice_items = DjangoFilterConnectionField(
         FinanceInvoiceItemNode,
-        filterset_class=FinanceInvoiceItemFilter
+        filterset_class=FinanceInvoiceItemFilter,
+        orderBy=graphene.List(of_type=graphene.String)
     )
     finance_invoice_item = graphene.relay.Node.Field(FinanceInvoiceItemNode)
-
 
     def resolve_finance_invoice_items(self, info, **kwargs):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.view_financeinvoiceitem')
 
-        return FinanceInvoiceItemFilter(kwargs).qs.order_by('line_number')
+        order_by = kwargs.get('orderBy', ['line_number'])
+
+        # example gql
+        # financeInvoiceItems(..., orderBy: ["-finance_invoice__date_sent"]) {
+        # return FinanceInvoiceItemFilter(kwargs).qs.order_by('line_number')
+        return FinanceInvoiceItemFilter(kwargs).qs.order_by(*order_by)
 
 
 def validate_create_update_input(input, update=False):

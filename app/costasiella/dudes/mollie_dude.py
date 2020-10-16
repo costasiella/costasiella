@@ -1,25 +1,33 @@
 from django.utils.translation import gettext as _
-
-from ..models import SystemSetting
-
+from .system_setting_dude import SystemSettingDude
 
 class MollieDude:
     def get_api_key(self):
         """
         Fetch & return mollie api key, if any
         """
-        mollie_api_key = None
-        qs = SystemSetting.objects.filter(setting="integration_mollie_api_key")
-        if qs.exists():
-            mollie_api_key = qs.first().value
+        system_setting_dude = SystemSettingDude()
+        mollie_api_key = system_setting_dude.get("integration_mollie_api_key")
 
         return mollie_api_key
 
-    def get_webhook_url(self, request):
+    def get_webhook_url_from_request(self, request):
         """
         :param request: Django request
         """
         host = request.get_host()
+        webhook_url = "https://" + host + "/d/mollie/webhook"
+
+        return webhook_url
+
+    def get_webhook_url_from_db(self):
+        """
+        get_webhook_url is preferred as it doesn't depend on a database entry.
+        :return:
+        """
+        system_setting_dude = SystemSettingDude()
+        host = system_setting_dude.get("system_hostname")
+
         webhook_url = "https://" + host + "/d/mollie/webhook"
 
         return webhook_url
@@ -61,3 +69,18 @@ class MollieDude:
                 return True
             except Exception as e:
                 return False
+
+    def get_account_mollie_mandates(self, account, mollie):
+        """
+        Get mollie mandates for account
+        :param account: Account object
+        :param mollie: mollie client object
+        :return:
+        """
+        # check if we have a mollie customer id
+        if not account.mollie_customer_id:
+            return
+
+        mandates = mollie.customer_mandates.with_parent_id(account.mollie_customer_id).list()
+
+        return mandates

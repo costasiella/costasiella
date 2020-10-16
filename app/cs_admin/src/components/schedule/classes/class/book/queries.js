@@ -63,6 +63,8 @@ export const GET_BOOKING_OPTIONS_QUERY = gql`
       subscriptions {
         bookingType
         allowed
+        blocked
+        paused
         accountSubscription {
           id
           dateStart
@@ -71,6 +73,7 @@ export const GET_BOOKING_OPTIONS_QUERY = gql`
             id
             name
           }
+          creditTotal
         }
       }
     }

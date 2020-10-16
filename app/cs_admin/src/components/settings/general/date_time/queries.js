@@ -6,6 +6,8 @@ export const GET_APP_SETTINGS_QUERY = gql`
     appSettings(id: "QXBwU2V0dGluZ3NOb2RlOjE=") {
       dateFormat
       timeFormat
+      timeFormatMoment
+      dateTimeFormatMoment
     }
   }
 `

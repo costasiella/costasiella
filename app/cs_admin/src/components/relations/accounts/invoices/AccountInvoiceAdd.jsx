@@ -10,7 +10,7 @@ import { Link } from 'react-router-dom'
 import { Formik } from 'formik'
 import { toast } from 'react-toastify'
 
-import { GET_ACCOUNT_SUBSCRIPTIONS_QUERY, GET_INPUT_VALUES_QUERY } from './queries'
+import { GET_ACCOUNT_SUBSCRIPTIONS_QUERY, GET_INPUT_VALUES_QUERY, CREATE_ACCOUNT_INVOICE } from './queries'
 import { SUBSCRIPTION_SCHEMA } from './yupSchema'
 import AccountInvoiceAddForm from './AccountInvoiceAddForm'
 
@@ -28,16 +28,6 @@ import { dateToLocalISO } from '../../../../tools/date_tools'
 
 import ProfileMenu from "../ProfileMenu"
 
-
-const CREATE_ACCOUNT_INVOICE= gql`
-  mutation CreateFinanceInvoice($input: CreateFinanceInvoiceInput!) {
-    createFinanceInvoice(input: $input) {
-      financeInvoice {
-        id
-      }
-    }
-  }
-`
 
 
 function AccountInvoiceAdd({ t, match, history }) {

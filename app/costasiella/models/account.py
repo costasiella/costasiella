@@ -14,6 +14,7 @@ class Account(AbstractUser):
 
     class Meta:
         permissions = [
+            ('view_automation', _("Can view automation menu")),
             ('view_insight', _("Can view insight menu")),
             ('view_insightclasspassesactive', _("Can view insight classpasses active")),
             ('view_insightclasspassessold', _("Can view insight classpasses sold")),

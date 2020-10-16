@@ -7,7 +7,6 @@ from django.template import Template, Context
 from django.utils.translation import gettext as _
 from django.core.mail import send_mail
 
-from ..models import SystemMailTemplate, ScheduleItemWeeklyOTC
 from ..dudes.app_settings_dude import AppSettingsDude
 
 # https://docs.djangoproject.com/en/2.2/topics/email/
@@ -42,9 +41,12 @@ class MailTemplateDude:
         Switch render functions and return render function output
         :return: HTML message
         """
+        from ..models import SystemMailTemplate
+
         functions = {
             "class_info_mail": self._render_class_info_mail,
-            "order_received": self._render_template_order_received
+            "order_received": self._render_template_order_received,
+            "recurring_payment_failed": self._render_template_recurring_payment_failed,
         }
 
         func = functions.get(self.email_template, lambda: None)
@@ -82,6 +84,8 @@ class MailTemplateDude:
         Render info mail for a class
         :return: HTML message
         """
+        from ..models import SystemMailTemplate, ScheduleItemWeeklyOTC
+
         # Check if we have the required arguments
         error = False
         error_message = ""
@@ -165,6 +169,7 @@ class MailTemplateDude:
         Render order received template
         :return: HTML message
         """
+        from ..models import SystemMailTemplate
         # Check if we have the required arguments
         finance_order = self.kwargs.get('finance_order', None)
 
@@ -214,6 +219,42 @@ class MailTemplateDude:
             subject=mail_template.subject,
             title=mail_template.title,
             description=description,
+            content=content,
+            comments=mail_template.comments
+        )
+
+    def _render_template_recurring_payment_failed(self):
+        """
+        Render recurring payment failed template
+        :return: HTML message
+        """
+        from ..models import SystemMailTemplate
+        from .system_setting_dude import SystemSettingDude
+
+        system_setting_dude = SystemSettingDude()
+        # Check if we have the required arguments
+        finance_invoice = self.kwargs.get('finance_invoice', None)
+
+        # Throw a spectacular error if finance_invoice is not found :)
+        if not finance_invoice:
+            raise Exception(_("Finance invoice not found!"))
+
+        # Fetch template
+        mail_template = SystemMailTemplate.objects.get(pk=70000)
+
+        # Render template content
+        system_hostname = system_setting_dude.get('system_hostname')
+        link_profile_invoices = "https://%s/#/shop/account/invoices" % system_hostname
+        content_context = Context({
+            "link_profile_invoices": link_profile_invoices
+        })
+        content_template = Template(mail_template.content)
+        content = content_template.render(content_context)
+
+        return dict(
+            subject=mail_template.subject,
+            title=mail_template.title,
+            description=mail_template.description,
             content=content,
             comments=mail_template.comments
         )

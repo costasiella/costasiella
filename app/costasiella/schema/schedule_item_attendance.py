@@ -5,7 +5,7 @@ from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
 from graphql import GraphQLError
 
-from ..models import Account, AccountClasspass, AccountSubscription, \
+from ..models import Account, AccountClasspass, AccountSubscription, AccountSubscriptionCredit, \
                      FinanceInvoiceItem, OrganizationClasspass, ScheduleItem, ScheduleItemAttendance
 from ..modules.gql_tools import require_login, require_login_and_permission, \
                                 require_login_and_one_of_permissions, get_rid
@@ -14,6 +14,7 @@ from ..modules.messages import Messages
 from ..dudes import ClassCheckinDude, ClassScheduleDude
 
 m = Messages()
+
 
 class ScheduleItemAttendanceNode(DjangoObjectType):
     # Disable output like "A_3" by graphene automatically converting model choices
@@ -194,6 +195,8 @@ class CreateScheduleItemAttendance(graphene.relay.ClientIDMutation):
             if not validation_result['account_subscription']:
                 raise Exception(_('accountSubscription field is mandatory when doing a subscription check-in'))
 
+            print("SUBSCRIPTION checkin")
+
             account_subscription = validation_result['account_subscription']
             schedule_item_attendance = class_checkin_dude.class_checkin_subscription(
                 account=validation_result['account'],
@@ -203,8 +206,6 @@ class CreateScheduleItemAttendance(graphene.relay.ClientIDMutation):
                 booking_status=input['booking_status'],
                 online_booking=input['online_booking'],
             )
-
-            #TODO: add code to update available credits for a subscription
 
         elif attendance_type == "CLASSPASS_BUY_AND_BOOK":
             if not validation_result['organization_classpass']:
@@ -258,6 +259,21 @@ class UpdateScheduleItemAttendance(graphene.relay.ClientIDMutation):
         # Update classpass classes remaining
         if schedule_item_attendance.account_classpass:
              schedule_item_attendance.account_classpass.update_classes_remaining()
+
+        # Refund subscription credit (remove it)
+        if schedule_item_attendance.account_subscription:
+            if input['booking_status'] == 'CANCELLED':
+                AccountSubscriptionCredit.objects.filter(
+                    schedule_item_attendance=schedule_item_attendance,
+                ).delete()
+            if input['booking_status'] == 'BOOKED' or input['booking_status'] == 'ATTENDING':
+                qs = AccountSubscriptionCredit.objects.filter(
+                    schedule_item_attendance=schedule_item_attendance
+                )
+                if not qs.exists():
+                    from ..dudes import ClassCheckinDude
+                    class_checkin_dude = ClassCheckinDude()
+                    class_checkin_dude.class_checkin_subscription_subtract_credit(schedule_item_attendance)
 
         return UpdateScheduleItemAttendance(schedule_item_attendance=schedule_item_attendance)
 

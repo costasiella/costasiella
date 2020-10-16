@@ -261,7 +261,7 @@ class OrganizationSubscriptionFactory(factory.DjangoModelFactory):
     archived = False
     display_public = True
     display_shop = True
-    name = "First class pass"
+    name = "First subscription"
     description = "The first one..."
     sort_order = 1
     min_duration = 1
@@ -281,7 +281,14 @@ class OrganizationSubscriptionPriceFactory(factory.DjangoModelFactory):
     class Meta:
         model = models.OrganizationSubscriptionPrice
 
-    organization_subscription = factory.SubFactory(OrganizationSubscriptionFactory)
+    class Params:
+        initial_organization_subscription = factory.SubFactory(OrganizationSubscriptionFactory)
+
+    organization_subscription = factory.LazyAttribute(
+        lambda o: o.initial_organization_subscription if o.initial_organization_subscription else factory.SubFactory(
+            OrganizationSubscriptionFactory
+        )
+    )
     price = 12345
     finance_tax_rate = factory.SubFactory(FinanceTaxRateFactory)
     date_start = '2010-01-01'
@@ -419,7 +426,77 @@ class AccountSubscriptionFactory(factory.DjangoModelFactory):
     date_end = None
     note = "Subscription note here"
     registration_fee_paid = False
-    
+
+
+class AccountSubscriptionAltPriceFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.AccountSubscriptionAltPrice
+
+    class Params:
+        initial_account_subscription = factory.SubFactory(AccountSubscriptionFactory)
+
+    account_subscription = factory.LazyAttribute(
+        lambda o: o.initial_account_subscription if o.initial_account_subscription else factory.SubFactory(
+            AccountSubscriptionFactory
+        )
+    )
+    subscription_year = 2019
+    subscription_month = 1
+    amount = 1
+    description = "Test alt price for 2019-01"
+    note = "Test alt price note"
+
+
+class AccountSubscriptionBlockFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.AccountSubscriptionBlock
+
+    class Params:
+        initial_account_subscription = factory.SubFactory(AccountSubscriptionFactory)
+
+    account_subscription = factory.LazyAttribute(
+        lambda o: o.initial_account_subscription if o.initial_account_subscription else factory.SubFactory(
+            AccountSubscriptionFactory
+        )
+    )
+    date_start = "2019-01-01"
+    date_end = "2019-01-31"
+    description = "Block test description"
+
+
+class AccountSubscriptionPauseFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.AccountSubscriptionPause
+
+    class Params:
+        initial_account_subscription = factory.SubFactory(AccountSubscriptionFactory)
+
+    account_subscription = factory.LazyAttribute(
+        lambda o: o.initial_account_subscription if o.initial_account_subscription else factory.SubFactory(
+            AccountSubscriptionFactory
+        )
+    )
+    date_start = "2019-01-01"
+    date_end = "2019-01-31"
+    description = "Pause test description"
+
+
+class AccountSubscriptionCreditAddFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.AccountSubscriptionCredit
+
+    class Params:
+        initial_account_subscription = factory.SubFactory(AccountSubscriptionFactory)
+
+    account_subscription = factory.LazyAttribute(
+        lambda o: o.initial_account_subscription if o.initial_account_subscription else factory.SubFactory(
+            AccountSubscriptionFactory
+        )
+    )
+    mutation_type = "ADD"
+    mutation_amount = 10
+    description = "Test add mutation"
+
 
 class AccountMembershipFactory(factory.DjangoModelFactory):
     class Meta:
@@ -600,6 +677,30 @@ class ScheduleItemAttendanceClasspassFactory(factory.DjangoModelFactory):
     date = datetime.date(2030, 12, 30)
     online_booking = False
     booking_status = "ATTENDING"
+
+
+class ScheduleItemAttendanceSubscriptionFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.ScheduleItemAttendance
+
+    account_subscription = factory.SubFactory(AccountSubscriptionFactory)
+    account = factory.SelfAttribute('account_subscription.account')
+    schedule_item = factory.SubFactory(SchedulePublicWeeklyClassFactory)
+    attendance_type = 'SUBSCRIPTION'
+    date = datetime.date(2030, 12, 30)
+    online_booking = False
+    booking_status = "ATTENDING"
+
+
+class AccountSubscriptionCreditAttendanceSubFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.AccountSubscriptionCredit
+
+    schedule_item_attendance = factory.SubFactory(ScheduleItemAttendanceSubscriptionFactory)
+    account_subscription = factory.SelfAttribute('schedule_item_attendance.account_subscription')
+    mutation_type = "SUB"
+    mutation_amount = 1
+    description = "Test subscription SUB mutation"
 
     
 class ScheduleItemTeacherFactory(factory.DjangoModelFactory):

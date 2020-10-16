@@ -30,8 +30,7 @@ import AppSettingsContext from '../../../context/AppSettingsContext'
 import ShopClassBookBack from "./ShopClassBookBack"
 import ShopClassBookBase from "./ShopClassBookBase"
 import ShopClassBookClasspasses from './ShopClassBookClasspasses'
-// import ScheduleClassBookClasspasses from "./ScheduleClassBookClasspasses"
-// import ScheduleClassBookSubscriptions from "./ScheduleClassBookSubscriptions"
+import ShopClassBookSubscriptions from "./ShopClassBookSubscriptions"
 import ShopClassBookPriceDropin from "./ShopClassBookPriceDropin"
 import ShopClassBookPriceTrial from "./ShopClassBookPriceTrial"
 
@@ -110,6 +109,7 @@ function ShopClassBook({ t, match, history }) {
               t("You've already booked this class ")
               : 
               <Grid.Row cards deck>
+                <ShopClassBookSubscriptions subscriptions={subscriptions} />
                 <ShopClassBookClasspasses classpasses={classpasses} />
                 {(prices) ?
                   (prices.organizationClasspassDropin) ? 
