@@ -6,8 +6,8 @@ from django.db import models
 from .schedule_item import ScheduleItem
 from .organization_classpass import OrganizationClasspass
 
-# Create your models here.
 
+# Create your models here.
 class ScheduleItemPrice(models.Model):
 
     schedule_item = models.ForeignKey(ScheduleItem, on_delete=models.CASCADE)

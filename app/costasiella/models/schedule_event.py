@@ -8,11 +8,6 @@ from .organization_level import OrganizationLevel
 
 
 class ScheduleEvent(models.Model):
-    SCHEDULE_ITEM_TYPES = (
-        ('CLASS', _("Class")),
-        ('APPOINTMENT', _("Appointment"))
-    )
-
     archived = models.BooleanField(default=False)
     display_public = models.BooleanField(default=True)
     auto_send_info_mail = models.BooleanField(default=False)
