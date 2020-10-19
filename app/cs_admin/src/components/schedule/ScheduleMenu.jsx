@@ -11,11 +11,13 @@ import {
 import HasPermissionWrapper from "../HasPermissionWrapper"
 
 let appointments_active
+let events_active
 let classes_active
 
 const ScheduleMenu = ({ t, active_link }) => (
   <List.Group transparent={true}>
     {(active_link === 'appointments') ? appointments_active = true: appointments_active = false}
+    {(active_link === 'events') ? events_active = true: events_active = false}
     {(active_link === 'classes') ? classes_active = true: classes_active = false}
     
 
@@ -31,6 +33,20 @@ const ScheduleMenu = ({ t, active_link }) => (
           active={classes_active}
           >
           {t('schedule.classes.title')}
+      </List.GroupItem>
+    </HasPermissionWrapper>
+    <HasPermissionWrapper 
+        resource="scheduleevent"
+        permission="view" 
+    >
+      <List.GroupItem
+          key={v4()}
+          className="d-flex align-items-center"
+          to="#/schedule/events"
+          icon="briefcase"
+          active={events_active}
+          >
+          {t('schedule.events.title')}
       </List.GroupItem>
     </HasPermissionWrapper>
     <HasPermissionWrapper 
