@@ -5,7 +5,7 @@ from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
 from graphql import GraphQLError
 
-from ..models import ScheduleEvent
+from ..models import OrganizationLevel, OrganizationLocation, ScheduleEvent
 from ..modules.gql_tools import require_login, require_login_and_permission, get_rid
 from ..modules.messages import Messages
 
@@ -41,29 +41,74 @@ class ScheduleEventQuery(graphene.ObjectType):
         return ScheduleEvent.objects.filter(display_public=True, archived=False).order_by('name')
 
 
-class CreateOrganizationLevel(graphene.relay.ClientIDMutation):
-    class Input:
-        name = graphene.String(required=True)
+def validate_create_update_input(input, update=False):
+    """
+    Validate input
+    """
+    result = {}
 
-    organization_level = graphene.Field(OrganizationLevelNode)
+    # Fetch & check account
+    # if not update:
+    #     # Create only
+    #     rid = get_rid(input['organization_location'])
+    #     organization_location = OrganizationLocation.objects.filter(id=rid.id).first()
+    #     result['organization_location'] = organization_location
+    #     if not organization_location:
+    #         raise Exception(_('Invalid Organization Location ID!'))
+
+    # Fetch & check organization classpass
+    # rid = get_rid(input['organization_classpass'])
+    # organization_classpass = OrganizationClasspass.objects.get(pk=rid.id)
+    # result['organization_classpass'] = organization_classpass
+    # if not organization_classpass:
+    #     raise Exception(_('Invalid Organization Classpass ID!'))
+
+    # Fetch & check organization location
+    rid = get_rid(input['organization_location'])
+    organization_location = OrganizationLocation.objects.filter(id=rid.id).first()
+    result['organization_location'] = organization_location
+    if not organization_location:
+        raise Exception(_('Invalid Organization Location ID!'))
+
+    # Fetch & check organization level
+    rid = get_rid(input['organization_level'])
+    organization_level = OrganizationLevel.objects.filter(id=rid.id).first()
+    result['organization_level'] = organization_level
+    if not organization_level:
+        raise Exception(_('Invalid Organization Level ID!'))
+
+    return result
+
+
+class CreateScheduleEvent(graphene.relay.ClientIDMutation):
+    class Input:
+        display_public = graphene.Boolean(required=False, default_value=False)
+        display_shop = graphene.Boolean(required=False, default_value=False)
+        auto_send_info_mail = graphene.Boolean(required=False, default_value=False)
+        organization_location = graphene.ID(required=True)
+        name = graphene.String(required=True)
+        tagline = graphene.String(required=False, default_value="")
+        preview = graphene.String(required=False, default_value="")
+        description = graphene.String(required=False, default_value="")
+        organization_level = graphene.ID(required=False)
+
+    schedule_event = graphene.Field(ScheduleEventNode)
 
     @classmethod
     def mutate_and_get_payload(self, root, info, **input):
         user = info.context.user
-        require_login_and_permission(user, 'costasiella.add_organizationlevel')
+        require_login_and_permission(user, 'costasiella.add_schedule_event')
 
-        errors = []
-        if not len(input['name']):
-            print('validation error found')
-            raise GraphQLError(_('Name is required'))
+        # Validate input
+        result = validate_create_update_input(input, update=False)
 
-        organization_level = OrganizationLevel(
+        schedule_event = ScheduleEvent(
             name=input['name'], 
         )
 
-        organization_level.save()
+        schedule_event.save()
 
-        return CreateOrganizationLevel(organization_level=organization_level)
+        return CreateScheduleEvent(schedule_event=schedule_event)
 
 
 class UpdateOrganizationLevel(graphene.relay.ClientIDMutation):
