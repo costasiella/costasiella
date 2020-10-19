@@ -43,7 +43,7 @@ const ScheduleMenu = ({ t, active_link }) => (
           key={v4()}
           className="d-flex align-items-center"
           to="#/schedule/events"
-          icon="briefcase"
+          icon="clipboard"
           active={events_active}
           >
           {t('schedule.events.title')}
