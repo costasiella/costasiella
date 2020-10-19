@@ -52,6 +52,16 @@ class ScheduleHome extends Component {
                     </Grid.Col>
                   </HasPermissionWrapper>
                   <HasPermissionWrapper
+                    resource="scheduleevent"
+                    permission="view"
+                  >
+                    <Grid.Col md={4} lg={4}>
+                      <div onClick={() => history.push('/schedule/events')}>
+                        <StampCard header={<small>{t('schedule.events.title')}</small>} footer={t('')} color="blue" icon="book" />
+                      </div>
+                    </Grid.Col>
+                  </HasPermissionWrapper>
+                  <HasPermissionWrapper
                     resource="scheduleappointment"
                     permission="view"
                   >
