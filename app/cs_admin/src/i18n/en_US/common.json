@@ -894,6 +894,9 @@
             "select_weekly": "__STRING_NOT_TRANSLATED__",
             "frequencyInterval": "__STRING_NOT_TRANSLATED__",
             "placeholder_enddate": "__STRING_NOT_TRANSLATED__"
+        },
+        "events": {
+            "title": "Events"
         }
     },
     "countries": {

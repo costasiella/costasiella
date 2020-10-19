@@ -1171,6 +1171,9 @@
             "add": "__STRING_NOT_TRANSLATED__",
             "filter_all_locations": "__STRING_NOT_TRANSLATED__",
             "filter_all_appointments": "__STRING_NOT_TRANSLATED__"
+        },
+        "events": {
+            "title": "__STRING_NOT_TRANSLATED__"
         }
     },
     "genders": {
