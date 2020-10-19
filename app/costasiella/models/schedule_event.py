@@ -9,7 +9,8 @@ from .organization_level import OrganizationLevel
 
 class ScheduleEvent(models.Model):
     archived = models.BooleanField(default=False)
-    display_public = models.BooleanField(default=True)
+    display_public = models.BooleanField(default=False)
+    display_shop = models.BooleanField(default=False)
     auto_send_info_mail = models.BooleanField(default=False)
     organization_location = models.ForeignKey(OrganizationLocation, on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
