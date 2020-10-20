@@ -5,7 +5,7 @@ from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
 from graphql import GraphQLError
 
-from ..models import OrganizationLevel, OrganizationLocation, ScheduleEvent
+from ..models import Account, OrganizationLevel, OrganizationLocation, ScheduleEvent
 from ..modules.gql_tools import require_login, require_login_and_permission, get_rid
 from ..modules.messages import Messages
 
@@ -77,6 +77,20 @@ def validate_create_update_input(input, update=False):
     if not organization_level:
         raise Exception(_('Invalid Organization Level ID!'))
 
+    # Fetch & check teacher (account)
+    rid = get_rid(input['teacher'])
+    teacher = Account.objects.filter(id=rid.id).first()
+    result['teacher'] = account
+    if not teacher:
+        raise Exception(_('Invalid Account ID (teacher)!'))
+
+    # Fetch & check teacher_2 (account)
+    rid = get_rid(input['teacher_2'])
+    teacher_2 = Account.objects.filter(id=rid.id).first()
+    result['teacher_2'] = teacher_2
+    if not teacher_2:
+        raise Exception(_('Invalid Account ID (teacher2)!'))
+
     return result
 
 
@@ -86,11 +100,14 @@ class CreateScheduleEvent(graphene.relay.ClientIDMutation):
         display_shop = graphene.Boolean(required=False, default_value=False)
         auto_send_info_mail = graphene.Boolean(required=False, default_value=False)
         organization_location = graphene.ID(required=True)
+        organization_level = graphene.ID(required=False)
         name = graphene.String(required=True)
         tagline = graphene.String(required=False, default_value="")
         preview = graphene.String(required=False, default_value="")
         description = graphene.String(required=False, default_value="")
-        organization_level = graphene.ID(required=False)
+        teacher = graphene.ID(required=False)
+        teacher_2 = graphene.ID(required=False)
+        info_mail_content = graphene.String(required=False, default_value="")
 
     schedule_event = graphene.Field(ScheduleEventNode)
 
@@ -103,8 +120,24 @@ class CreateScheduleEvent(graphene.relay.ClientIDMutation):
         result = validate_create_update_input(input, update=False)
 
         schedule_event = ScheduleEvent(
-            name=input['name'], 
+            display_public=input['display_public'],
+            display_shop=input['display_shop'],
+            auto_send_info_mail=input['auto_send_info_mail'],
+            organization_location=result['organization_location'],
+            name=input['name'],
+            tagline=input['tagline'],
+            description=input['description'],
+            info_mail_content=input['info_mail_content']
         )
+
+        if 'organization_level' in result:
+            schedule_event.organization_level = result['organization_level']
+
+        if 'teacher' in result:
+            schedule_event.teacher = result['teacher']
+
+        if 'teacher_' in result:
+            schedule_event.teacher_2 = result['teacher_2']
 
         schedule_event.save()
 
