@@ -144,28 +144,65 @@ class CreateScheduleEvent(graphene.relay.ClientIDMutation):
         return CreateScheduleEvent(schedule_event=schedule_event)
 
 
-class UpdateOrganizationLevel(graphene.relay.ClientIDMutation):
+class UpdateScheduleEvent(graphene.relay.ClientIDMutation):
     class Input:
         id = graphene.ID(required=True)
-        name = graphene.String(required=True)
+        display_public = graphene.Boolean(required=False)
+        display_shop = graphene.Boolean(required=False)
+        auto_send_info_mail = graphene.Boolean(required=False)
+        organization_location = graphene.ID(required=False)
+        organization_level = graphene.ID(required=False)
+        name = graphene.String(required=False)
+        tagline = graphene.String(required=False)
+        preview = graphene.String(required=False)
+        description = graphene.String(required=False)
+        teacher = graphene.ID(required=False)
+        teacher_2 = graphene.ID(required=False)
+        info_mail_content = graphene.String(required=False)
         
-    organization_level = graphene.Field(OrganizationLevelNode)
+    schedule_event = graphene.Field(ScheduleEventNode)
 
     @classmethod
     def mutate_and_get_payload(self, root, info, **input):
         user = info.context.user
-        require_login_and_permission(user, 'costasiella.change_organizationlevel')
+        require_login_and_permission(user, 'costasiella.change_scheduleevent')
 
         rid = get_rid(input['id'])
+        schedule_event = ScheduleEvent.objects.filter(id=rid.id).first()
+        if not schedule_event:
+            raise Exception('Invalid Schedule Event ID!')
 
-        organization_level = OrganizationLevel.objects.filter(id=rid.id).first()
-        if not organization_level:
-            raise Exception('Invalid Organization Level ID!')
+        # Validate input
+        result = validate_create_update_input(input, update=True)
 
-        organization_level.name = input['name']
-        organization_level.save(force_update=True)
+        if 'display_public' in input:
+            schedule_event.display_public = input['display_public']
+        if 'display_shop' in input:
+            schedule_event.display_shop = input['display_shop']
+        if 'auto_send_info_mail' in input:
+            schedule_event.display_shop = input['auto_send_info_mail']
+        if 'organization_location' in result:
+            schedule_event.organization_location = result['organization_location']
+        if 'organization_level' in result:
+            schedule_event.organization_level = result['organization_level']
+        if 'name' in input:
+            schedule_event.name = input['name']
+        if 'tagline' in input:
+            schedule_event.tagline = input['tagline']
+        if 'preview' in input:
+            schedule_event.preview = input['preview']
+        if 'description' in input:
+            schedule_event.description = input['description']
+        if 'teacher' in result:
+            schedule_event.teacher = result['teacher']
+        if 'teacher_2' in result:
+            schedule_event.teacher_2 = result['teacher_2']
+        if 'info_mail_content' in input:
+            schedule_event.info_mail_content = input['info_mail_content']
 
-        return UpdateOrganizationLevel(organization_level=organization_level)
+        schedule_event.save()
+
+        return UpdateScheduleEvent(schedule_event=schedule_event)
 
 
 class ArchiveOrganizationLevel(graphene.relay.ClientIDMutation):
