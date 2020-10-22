@@ -71,25 +71,28 @@ def validate_create_update_input(input, update=False):
         raise Exception(_('Invalid Organization Location ID!'))
 
     # Fetch & check organization level
-    rid = get_rid(input['organization_level'])
-    organization_level = OrganizationLevel.objects.filter(id=rid.id).first()
-    result['organization_level'] = organization_level
-    if not organization_level:
-        raise Exception(_('Invalid Organization Level ID!'))
+    if 'organization_level' in input:
+        rid = get_rid(input['organization_level'])
+        organization_level = OrganizationLevel.objects.filter(id=rid.id).first()
+        result['organization_level'] = organization_level
+        if not organization_level:
+            raise Exception(_('Invalid Organization Level ID!'))
 
     # Fetch & check teacher (account)
-    rid = get_rid(input['teacher'])
-    teacher = Account.objects.filter(id=rid.id).first()
-    result['teacher'] = account
-    if not teacher:
-        raise Exception(_('Invalid Account ID (teacher)!'))
+    if 'teacher' in input:
+        rid = get_rid(input['teacher'])
+        teacher = Account.objects.filter(id=rid.id).first()
+        result['teacher'] = teacher
+        if not teacher:
+            raise Exception(_('Invalid Account ID (teacher)!'))
 
     # Fetch & check teacher_2 (account)
-    rid = get_rid(input['teacher_2'])
-    teacher_2 = Account.objects.filter(id=rid.id).first()
-    result['teacher_2'] = teacher_2
-    if not teacher_2:
-        raise Exception(_('Invalid Account ID (teacher2)!'))
+    if 'teacher_2' in input:
+        rid = get_rid(input['teacher_2'])
+        teacher_2 = Account.objects.filter(id=rid.id).first()
+        result['teacher_2'] = teacher_2
+        if not teacher_2:
+            raise Exception(_('Invalid Account ID (teacher2)!'))
 
     return result
 
@@ -114,7 +117,7 @@ class CreateScheduleEvent(graphene.relay.ClientIDMutation):
     @classmethod
     def mutate_and_get_payload(self, root, info, **input):
         user = info.context.user
-        require_login_and_permission(user, 'costasiella.add_schedule_event')
+        require_login_and_permission(user, 'costasiella.add_scheduleevent')
 
         # Validate input
         result = validate_create_update_input(input, update=False)
@@ -228,7 +231,7 @@ class ArchiveScheduleEvent(graphene.relay.ClientIDMutation):
         return ArchiveScheduleEvent(schedule_event=schedule_event)
 
 
-class OrganizationLevelMutation(graphene.ObjectType):
+class ScheduleEventMutation(graphene.ObjectType):
     archive_schedule_event = ArchiveScheduleEvent.Field()
     create_schedule_event = CreateScheduleEvent.Field()
     update_schedule_event = UpdateScheduleEvent.Field()

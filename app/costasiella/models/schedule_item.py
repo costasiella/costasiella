@@ -50,7 +50,8 @@ class ScheduleItem(models.Model):
     TEACHER_ROLES = get_teacher_roles()
     STATUSES = get_schedule_item_otc_statuses()
 
-    schedule_event = models.ForeignKey(ScheduleEvent, on_delete=models.CASCADE, null=True)
+    schedule_event = models.ForeignKey(ScheduleEvent, on_delete=models.CASCADE, null=True,
+                                       related_name="schedule_items")
     schedule_item_type = models.CharField(max_length=50, choices=SCHEDULE_ITEM_TYPES)
     frequency_type = models.CharField(max_length=50, choices=FREQUENCY_TYPES)
     frequency_interval = models.PositiveSmallIntegerField(choices=FREQUENCY_INTERVAL_OPTIONS)
