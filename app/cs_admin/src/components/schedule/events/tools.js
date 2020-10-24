@@ -1,13 +1,13 @@
 import CSLS from "../../../tools/cs_local_storage"
 
 export function get_list_query_variables() {
-  let isActive = localStorage.getItem(CSLS.SCHEDULE_EVENTS_IS_ACTIVE)
-  if (isActive === null) {
-    isActive = true
+  let archived = localStorage.getItem(CSLS.SCHEDULE_EVENTS_ARCHIVED)
+  if (archived === null) {
+    archived = false
   }
 
   let queryVars = {
-    isActive: (isActive === "true") ? true : false,
+    archived: (archived === "true") ? true : false,
   }
 
   console.log(queryVars)

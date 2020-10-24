@@ -56,20 +56,20 @@ function ScheduleEvents({t, history, archived=false}) {
   </HasPermissionWrapper>
 
   const cardHeaderContent = <Card.Options>
-  <Button color={(localStorage.getItem(CSLS.SCHEDULE_EVENTS_IS_ACTIVE) === "true") ? 'primary': 'secondary'}  
+  <Button color={(localStorage.getItem(CSLS.SCHEDULE_EVENTS_ARCHIVED) === "false") ? 'primary': 'secondary'}  
           size="sm"
           onClick={() => {
-            localStorage.setItem(CSLS.SCHEDULE_EVENTS_IS_ACTIVE, true)
+            localStorage.setItem(CSLS.SCHEDULE_EVENTS_ARCHIVED, false)
             refetch(get_list_query_variables())
           }
   }>
     {t('general.active')}
   </Button>
-  <Button color={(localStorage.getItem(CSLS.SCHEDULE_EVENTS_IS_ACTIVE) === "false") ? 'primary': 'secondary'} 
+  <Button color={(localStorage.getItem(CSLS.SCHEDULE_EVENTS_ARCHIVED) === "true") ? 'primary': 'secondary'} 
           size="sm" 
           className="ml-2" 
           onClick={() => {
-            localStorage.setItem(CSLS.SCHEDULE_EVENTS_IS_ACTIVE, false)
+            localStorage.setItem(CSLS.SCHEDULE_EVENTS_ARCHIVED, true)
             refetch(get_list_query_variables())
           }
   }>
@@ -107,13 +107,78 @@ function ScheduleEvents({t, history, archived=false}) {
 
   console.log(data)
 
+  const scheduleEvents = data.scheduleEvents
+
   return (
     <ScheduleEventsBase sidebarContent={sidebarContent}>
       <ContentCard 
         cardTitle={t('schedule.events.title')}
         headerContent={cardHeaderContent}
+        pageInfo={scheduleEvents.pageInfo}
+            onLoadMore={() => {
+              fetchMore({
+                variables: {
+                  after: scheduleEvents.pageInfo.endCursor
+                },
+                updateQuery: (previousResult, { fetchMoreResult }) => {
+                  const newEdges = fetchMoreResult.scheduleEvents.edges
+                  const pageInfo = fetchMoreResult.scheduleEvents.pageInfo
+
+                  return newEdges.length
+                    ? {
+                        // Put the new subscriptions at the end of the list and update `pageInfo`
+                        // so we have the new `endCursor` and `hasNextPage` values
+                        scheduleEvents: {
+                          __typename: previousResult.scheduleEvents.__typename,
+                          edges: [ ...previousResult.scheduleEvents.edges, ...newEdges ],
+                          pageInfo
+                        }
+                      }
+                    : previousResult
+                }
+              })
+            }} 
       >
-        hello world
+        <Table>
+          <Table.Header>
+            <Table.Row key={v4()}>
+              <Table.ColHeader>{t('general.name')}</Table.ColHeader>
+              <Table.ColHeader>{t('general.start')}</Table.ColHeader>
+              <Table.ColHeader>{t('general.location')}</Table.ColHeader>
+              <Table.ColHeader></Table.ColHeader>  
+            </Table.Row>
+          </Table.Header>
+          <Table.Body>
+            { scheduleEvents.edges.map(({ node }) => (
+              <Table.Row key={v4()}>
+                {/* <Table.Col>
+                  { moment(node.date).format(dateFormat) } <br />
+                  <span className="text-muted">
+                    {moment(node.date + ' ' + node.scheduleItem.timeStart).format(timeFormat)}
+                  </span>
+                </Table.Col> */}
+                <Table.Col>
+                  { node.name }
+                </Table.Col>
+                <Table.Col>
+
+                </Table.Col>
+                <Table.Col>
+                  { node.organizationLocation.name }
+                </Table.Col>
+                {/* <Table.Col>
+                  { node.scheduleItem.organizationLocationRoom.organizationLocation.name } <br />
+                  <span className="text-muted">
+                    { node.scheduleItem.organizationLocationRoom.name }
+                  </span> 
+                </Table.Col> */}
+                <Table.Col>
+                  actions here
+                </Table.Col>
+              </Table.Row>
+            ))}
+          </Table.Body>
+        </Table>
       </ContentCard>
     </ScheduleEventsBase>
   )
