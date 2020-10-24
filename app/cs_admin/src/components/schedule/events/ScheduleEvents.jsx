@@ -42,8 +42,15 @@ import { GET_LEVELS_QUERY } from "./queries"
 
 function ScheduleEvents({t, history, archived=false}) {
 
+  const sidebarContent = <HasPermissionWrapper permission="add" resource="scheduleevent">
+    <Button color="primary btn-block mb-1"
+            onClick={() => history.push("/schedule/events/add")}>
+      <Icon prefix="fe" name="plus-circle" /> {t('schedule.events.add')}
+    </Button>
+  </HasPermissionWrapper>
+
   return (
-    <ScheduleEventsBase>
+    <ScheduleEventsBase sidebarContent={sidebarContent}>
       hello world
     </ScheduleEventsBase>
   )
