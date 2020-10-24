@@ -68,14 +68,18 @@ function ScheduleEvents({t, history, archived=false}) {
   if (error) {
     return (
       <ScheduleEventsBase sidebarContent={sidebarContent}>
-        {t("schedle.events.error_loading_data")}
+        <ContentCard cardTitle={t('schedule.events.title')}>
+          {t("schedle.events.error_loading_data")}
+        </ContentCard>
       </ScheduleEventsBase>
     )
   }
 
   return (
     <ScheduleEventsBase sidebarContent={sidebarContent}>
-      hello world
+      <ContentCard cardTitle={t('schedule.events.title')}>
+        hello world
+      </ContentCard>
     </ScheduleEventsBase>
   )
 }
