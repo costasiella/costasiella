@@ -896,7 +896,8 @@
             "placeholder_enddate": "__STRING_NOT_TRANSLATED__"
         },
         "events": {
-            "title": "Events"
+            "title": "Events",
+            "add": "Add event"
         }
     },
     "countries": {
