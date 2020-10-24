@@ -24,6 +24,8 @@ import HasPermissionWrapper from "../../HasPermissionWrapper"
 // import { confirmAlert } from 'react-confirm-alert'; // Import
 import { toast } from 'react-toastify'
 
+import CSLS from "../../../tools/cs_local_storage"
+
 import ContentCard from "../../general/ContentCard"
 import ScheduleEventsBase from "./ScheduleEventsBase"
 
@@ -42,7 +44,7 @@ import { get_list_query_variables } from "./tools"
 // `
 
 function ScheduleEvents({t, history, archived=false}) {
-  const { loading, error, data, fetchMore } = useQuery(GET_SCHEDULE_EVENTS_QUERY, {
+  const { loading, error, data, refetch, fetchMore } = useQuery(GET_SCHEDULE_EVENTS_QUERY, {
     variables: get_list_query_variables()
   })
 
@@ -53,10 +55,35 @@ function ScheduleEvents({t, history, archived=false}) {
     </Button>
   </HasPermissionWrapper>
 
+  const cardHeaderContent = <Card.Options>
+  <Button color={(localStorage.getItem(CSLS.SCHEDULE_EVENTS_IS_ACTIVE) === "true") ? 'primary': 'secondary'}  
+          size="sm"
+          onClick={() => {
+            localStorage.setItem(CSLS.SCHEDULE_EVENTS_IS_ACTIVE, true)
+            refetch(get_list_query_variables())
+          }
+  }>
+    {t('general.active')}
+  </Button>
+  <Button color={(localStorage.getItem(CSLS.SCHEDULE_EVENTS_IS_ACTIVE) === "false") ? 'primary': 'secondary'} 
+          size="sm" 
+          className="ml-2" 
+          onClick={() => {
+            localStorage.setItem(CSLS.SCHEDULE_EVENTS_IS_ACTIVE, false)
+            refetch(get_list_query_variables())
+          }
+  }>
+    {t('general.archive')}
+  </Button>
+  </Card.Options>
+
   if (loading) {
     return (
       <ScheduleEventsBase sidebarContent={sidebarContent}>
-        <ContentCard cardTitle={t('schedule.events.title')}>
+        <ContentCard 
+          cardTitle={t('schedule.events.title')}
+          headerContent={cardHeaderContent}
+        >
           <Dimmer active={true}
                   loader={true}>
           </Dimmer>
@@ -68,16 +95,24 @@ function ScheduleEvents({t, history, archived=false}) {
   if (error) {
     return (
       <ScheduleEventsBase sidebarContent={sidebarContent}>
-        <ContentCard cardTitle={t('schedule.events.title')}>
+        <ContentCard 
+          cardTitle={t('schedule.events.title')}
+          headerContent={cardHeaderContent}
+        >
           {t("schedle.events.error_loading_data")}
         </ContentCard>
       </ScheduleEventsBase>
     )
   }
 
+  console.log(data)
+
   return (
     <ScheduleEventsBase sidebarContent={sidebarContent}>
-      <ContentCard cardTitle={t('schedule.events.title')}>
+      <ContentCard 
+        cardTitle={t('schedule.events.title')}
+        headerContent={cardHeaderContent}
+      >
         hello world
       </ContentCard>
     </ScheduleEventsBase>
