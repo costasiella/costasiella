@@ -25,6 +25,7 @@ import HasPermissionWrapper from "../../HasPermissionWrapper"
 import { toast } from 'react-toastify'
 
 import CSLS from "../../../tools/cs_local_storage"
+import BadgeBoolean from "../../ui/BadgeBoolean"
 
 import ContentCard from "../../general/ContentCard"
 import ScheduleEventsBase from "./ScheduleEventsBase"
@@ -144,7 +145,9 @@ function ScheduleEvents({t, history, archived=false}) {
             <Table.Row key={v4()}>
               <Table.ColHeader>{t('general.name')}</Table.ColHeader>
               <Table.ColHeader>{t('general.start')}</Table.ColHeader>
+              <Table.ColHeader>{t('general.teacher')}</Table.ColHeader>
               <Table.ColHeader>{t('general.location')}</Table.ColHeader>
+              <Table.ColHeader>{t('general.shop')}</Table.ColHeader>
               <Table.ColHeader></Table.ColHeader>  
             </Table.Row>
           </Table.Header>
@@ -161,10 +164,18 @@ function ScheduleEvents({t, history, archived=false}) {
                   { node.name }
                 </Table.Col>
                 <Table.Col>
-
+                  Date here...
+                </Table.Col>
+                <Table.Col>
+                  {
+                    (node.teacher) ? node.teacher.fullName : ""
+                  }
                 </Table.Col>
                 <Table.Col>
                   { node.organizationLocation.name }
+                </Table.Col>
+                <Table.Col>
+                  <BadgeBoolean value={node.displayShop} />
                 </Table.Col>
                 {/* <Table.Col>
                   { node.scheduleItem.organizationLocationRoom.organizationLocation.name } <br />
