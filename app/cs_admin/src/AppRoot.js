@@ -163,6 +163,7 @@ import ScheduleClassEdit from './components/schedule/classes/class/edit/Schedule
 import ScheduleClassPrices from './components/schedule/classes/all/prices/ScheduleClassPrices'
 import ScheduleClassPriceAdd from './components/schedule/classes/all/prices/ScheduleClassPriceAdd'
 import ScheduleClassPriceEdit from './components/schedule/classes/all/prices/ScheduleClassPriceEdit'
+import ScheduleEvents from './components/schedule/events/ScheduleEvents'
 
 import SelfCheckinCheckin from './components/selfcheckin/Checkin/Checkin'
 import SelfCheckinBookingOptions from './components/selfcheckin/BookingOptions/BookingOptions'
@@ -435,6 +436,7 @@ function AppRoot({ t }) {
           <PrivateRoute exact path="/schedule/classes/class/attendance/:class_id/:date" component={ScheduleClassAttendance} />
           <PrivateRoute exact path="/schedule/classes/class/book/:class_id/:date/:account_id" component={ScheduleClassBook} />
           <PrivateRoute exact path="/schedule/classes/class/edit/:class_id/:date" component={ScheduleClassEdit} />
+          <PrivateRoute exact path="/schedule/events" component={ScheduleEvents} />
 
           {/* Insight */}
           <PrivateRoute exact path="/insight" component={InsightHome} />
