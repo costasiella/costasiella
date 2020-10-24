@@ -1,6 +1,6 @@
 import gql from "graphql-tag"
 
-export const GET_EVENTS_QUERY = gql`
+export const GET_SCHEDULE_EVENTS_QUERY = gql`
   query ScheduleEvents($before:String, $after:String) {
     scheduleEvents(first: 100, before: $before, after:$after) {
       pageInfo {
