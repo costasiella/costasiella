@@ -27,7 +27,8 @@ import { toast } from 'react-toastify'
 import ContentCard from "../../general/ContentCard"
 import ScheduleEventsBase from "./ScheduleEventsBase"
 
-import { GET_LEVELS_QUERY } from "./queries"
+import { GET_SCHEDULE_EVENTS_QUERY } from "./queries"
+import { get_list_query_variables } from "./tools"
 
 // const ARCHIVE_EVENT = gql`
 //   mutation ArchiveOrganizationLevel($input: ArchiveOrganizationLevelInput!) {
@@ -41,6 +42,9 @@ import { GET_LEVELS_QUERY } from "./queries"
 // `
 
 function ScheduleEvents({t, history, archived=false}) {
+  const { loading, error, data, fetchMore } = useQuery(GET_SCHEDULE_EVENTS_QUERY, {
+    variables: get_list_query_variables()
+  })
 
   const sidebarContent = <HasPermissionWrapper permission="add" resource="scheduleevent">
     <Button color="primary btn-block mb-1"
@@ -48,6 +52,26 @@ function ScheduleEvents({t, history, archived=false}) {
       <Icon prefix="fe" name="plus-circle" /> {t('schedule.events.add')}
     </Button>
   </HasPermissionWrapper>
+
+  if (loading) {
+    return (
+      <ScheduleEventsBase sidebarContent={sidebarContent}>
+        <ContentCard cardTitle={t('schedule.events.title')}>
+          <Dimmer active={true}
+                  loader={true}>
+          </Dimmer>
+        </ContentCard>
+      </ScheduleEventsBase>
+    )
+  }
+
+  if (error) {
+    return (
+      <ScheduleEventsBase sidebarContent={sidebarContent}>
+        {t("schedle.events.error_loading_data")}
+      </ScheduleEventsBase>
+    )
+  }
 
   return (
     <ScheduleEventsBase sidebarContent={sidebarContent}>
