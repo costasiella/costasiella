@@ -21,9 +21,7 @@ function ScheduleEventsBase({ t, match, history, children, sidebarContent="" }) 
           <Container>
             <Page.Header title={t("schedule.events.title")} >
               <div className="page-options d-flex">
-                {/* TODO: Add back button ? */}
-                Back here...
-                {/* <ShopAccountBack /> */}
+                {/* Page options can go here... */}
               </div>
             </Page.Header>
             <Grid.Row>
@@ -32,13 +30,6 @@ function ScheduleEventsBase({ t, match, history, children, sidebarContent="" }) 
             </Grid.Col>
             <Grid.Col md={3}>
               { sidebarContent }
-              {/* <HasPermissionWrapper permission="add"
-                                    resource="scheduleevent">
-                <Button color="primary btn-block mb-1"
-                        onClick={() => history.push("/schedule/events/add")}>
-                  <Icon prefix="fe" name="plus-circle" /> {t('schedule.events.add')}
-                </Button>
-              </HasPermissionWrapper> */}
                   {/* <div>
                     <Button
                       className="pull-right"
