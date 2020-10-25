@@ -2,6 +2,7 @@ import React from 'react'
 import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
 import { v4 } from 'uuid'
+import { Link } from 'react-router-dom'
 
 import {
     Button,
@@ -14,7 +15,7 @@ import {
 import { Editor } from '@tinymce/tinymce-react'
 import { tinymceBasicConf } from "../../../plugin_config/tinymce"
 
-const ScheduleEventForm = ({ t, history, inputData, isSubmitting, setFieldValue, setFieldTouched, values, errors, return_url }) => (
+const ScheduleEventForm = ({ t, history, inputData, isSubmitting, setFieldValue, setFieldTouched, values, errors, returnUrl }) => (
   <FoForm>
     <Card.Body>
       <Grid.Row>
@@ -165,9 +166,11 @@ const ScheduleEventForm = ({ t, history, inputData, isSubmitting, setFieldValue,
       >
         {t('general.submit')}
       </Button>
-      <Button color="link" onClick={() => history.push(return_url)}>
+      <Link to={returnUrl}>
+        <Button color="link">
           {t('general.cancel')}
-      </Button>
+        </Button>
+      </Link>
     </Card.Footer>
   </FoForm>
 )
