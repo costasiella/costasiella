@@ -1,6 +1,7 @@
 import React from 'react'
 import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
+import { v4 } from 'uuid'
 
 import {
     Button,
@@ -13,7 +14,7 @@ import {
 import { Editor } from '@tinymce/tinymce-react'
 import { tinymceBasicConf } from "../../../plugin_config/tinymce"
 
-const ScheduleEventForm = ({ t, history, inputData, isSubmitting, setFieldValue, setFieldTouched, errors, return_url }) => (
+const ScheduleEventForm = ({ t, history, inputData, isSubmitting, setFieldValue, setFieldTouched, values, errors, return_url }) => (
   <FoForm>
     <Card.Body>
       <Grid.Row>
