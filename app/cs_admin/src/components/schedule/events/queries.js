@@ -99,5 +99,19 @@ export const GET_INPUT_VALUES_QUERY = gql`
         }
       }
     }
+    accounts(first: 100, before: $before, after: $after, isActive: true, teacher: true) {
+      pageInfo {
+        startCursor
+        endCursor
+        hasNextPage
+        hasPreviousPage
+      }
+      edges {
+        node {
+          id
+          fullName
+        }
+      }
+    }
   }
 `
