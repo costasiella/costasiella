@@ -69,7 +69,7 @@ export const GET_EVENT_QUERY = gql`
 
 export const GET_INPUT_VALUES_QUERY = gql`
   query ScheduleEventInputValues($after: String, $before: String) {
-    organizationLocations(first: 100, before: $before, after: $after, archived: False) {
+    organizationLocations(first: 100, before: $before, after: $after, archived: false) {
       pageInfo {
         startCursor
         endCursor
@@ -84,7 +84,7 @@ export const GET_INPUT_VALUES_QUERY = gql`
         }
       }
     }
-    organizationLevels(first: 100, before: $before, after: $after, archived: False) {
+    organizationLevels(first: 100, before: $before, after: $after, archived: false) {
       pageInfo {
         startCursor
         endCursor
