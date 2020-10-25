@@ -70,7 +70,7 @@ const ScheduleEventForm = ({ t, history, inputData, isSubmitting, setFieldValue,
                   className={(errors.organizationLocation) ? "form-control is-invalid" : "form-control"} 
                   autoComplete="off">
               <option value="" key={v4()}>{t("schedule.event.location_please_select")}</option>
-              {inputData.organizationLocation.edges.map(({ node }) =>
+              {inputData.organizationLocations.edges.map(({ node }) =>
                 <option value={node.id} key={v4()}>{node.name}</option>
               )}
             </Field>
@@ -83,8 +83,8 @@ const ScheduleEventForm = ({ t, history, inputData, isSubmitting, setFieldValue,
                   name="organizationLevel" 
                   className={(errors.organizationLevel) ? "form-control is-invalid" : "form-control"} 
                   autoComplete="off">
-              <option value="" key={v4()}>{t("schedule.event.level_please_select")}</option>
-              {inputData.organizationLevel.edges.map(({ node }) =>
+              <option value="" key={v4()}></option>
+              {inputData.organizationLevels.edges.map(({ node }) =>
                 <option value={node.id} key={v4()}>{node.name}</option>
               )}
             </Field>
