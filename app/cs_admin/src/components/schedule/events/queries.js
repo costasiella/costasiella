@@ -65,3 +65,39 @@ export const GET_EVENT_QUERY = gql`
     }
   }
 `
+
+
+export const GET_INPUT_VALUES_QUERY = gql`
+  query ScheduleEventInputValues($after: String, $before: String) {
+    organizationLocations(first: 100, before: $before, after: $after, archived: False) {
+      pageInfo {
+        startCursor
+        endCursor
+        hasNextPage
+        hasPreviousPage
+      }
+      edges {
+        node {
+          id
+          archived
+          name
+        }
+      }
+    }
+    organizationLevels(first: 100, before: $before, after: $after, archived: False) {
+      pageInfo {
+        startCursor
+        endCursor
+        hasNextPage
+        hasPreviousPage
+      }
+      edges {
+        node {
+          id
+          archived
+          name
+        }
+      }
+    }
+  }
+`
