@@ -118,6 +118,7 @@ function ScheduleEventAdd({ t, history }) {
               ]})
               .then(({ data }) => {
                   console.log('got data', data)
+                  history.push(returnUrl)
                   toast.success((t('schedule.events.toast_add_success')), {
                       position: toast.POSITION.BOTTOM_RIGHT
                     })
