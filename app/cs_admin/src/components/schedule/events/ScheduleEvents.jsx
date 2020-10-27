@@ -29,6 +29,7 @@ import BadgeBoolean from "../../ui/BadgeBoolean"
 
 import ContentCard from "../../general/ContentCard"
 import ScheduleEventsBase from "./ScheduleEventsBase"
+import ScheduleEventArchive from "./ScheduleEventArchive"
 
 import { GET_SCHEDULE_EVENTS_QUERY } from "./queries"
 import { get_list_query_variables } from "./tools"
@@ -183,8 +184,18 @@ function ScheduleEvents({t, history, archived=false}) {
                     { node.scheduleItem.organizationLocationRoom.name }
                   </span> 
                 </Table.Col> */}
+                <Table.Col className="text-right" key={v4()}>
+                  {(node.archived) ? 
+                    <span className='text-muted'>{t('general.unarchive_to_edit')}</span> :
+                    <Button className='btn-sm' 
+                            onClick={() => history.push("/schedule/events/edit/" + node.id)}
+                            color="secondary">
+                      {t('general.edit')}
+                    </Button>
+                  }
+                </Table.Col>
                 <Table.Col>
-                  actions here
+                  <ScheduleEventArchive node={node} />
                 </Table.Col>
               </Table.Row>
             ))}
