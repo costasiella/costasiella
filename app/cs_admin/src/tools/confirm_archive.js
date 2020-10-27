@@ -6,7 +6,7 @@ import {
 } from "tabler-react";
 
 
-const confirm_archive = ({t, msgConfirm, msgDescription, msgSuccess, deleteFunction, functionVariables}) => {
+const confirm_archive = ({t, msgConfirm, msgDescription, msgSuccess, archiveFunction, functionVariables}) => {
     confirmAlert({
       customUI: ({ onClose }) => {
         return (
@@ -16,9 +16,9 @@ const confirm_archive = ({t, msgConfirm, msgDescription, msgSuccess, deleteFunct
             {msgDescription}
             <button className="btn btn-link pull-right" onClick={onClose}>{t('general.confirm_archive_no')}</button>
             <button
-              className="btn btn-primary"
+              className="btn btn-warning"
               onClick={() => {
-                deleteFunction(functionVariables)
+                archiveFunction(functionVariables)
                   .then(({ data }) => {
                     console.log('got data', data);
                     toast.success(
