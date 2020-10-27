@@ -115,3 +115,11 @@ export const GET_INPUT_VALUES_QUERY = gql`
     }
   }
 `
+
+export const ARCHIVE_SCHEDULE_EVENT = gql`
+  mutation ArchiveScheduleEvent($id: ID!) {
+    scheduleEvent {
+      id
+    }
+  }
+`
