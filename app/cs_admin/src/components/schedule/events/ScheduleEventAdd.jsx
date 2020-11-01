@@ -142,7 +142,7 @@ function ScheduleEventAdd({ t, history }) {
               returnUrl={returnUrl}
             />
           )}
-      </Formik>
+        </Formik>
       </Card>
 
     </ScheduleEventsBase>
