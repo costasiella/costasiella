@@ -57,7 +57,7 @@ export const GET_SCHEDULE_EVENTS_QUERY = gql`
 `
 
 export const GET_SCHEDULE_EVENT_QUERY = gql`
-  query ScheduleEvent($id: ID!, before: String, after: String) {
+  query ScheduleEvent($id: ID!, $before: String, $after: String) {
     scheduleEvent(id: $id) {
       id
       archived
