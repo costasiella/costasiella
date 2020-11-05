@@ -5,7 +5,7 @@ from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
 from graphql import GraphQLError
 
-from ..models import Account, OrganizationLevel, OrganizationLocation, ScheduleEvent
+from ..models import Account, OrganizationLevel, OrganizationLocation, ScheduleEvent, ScheduleEventTicket
 from ..modules.gql_tools import require_login, require_login_and_permission, get_rid
 from ..modules.messages import Messages
 
@@ -143,6 +143,18 @@ class CreateScheduleEvent(graphene.relay.ClientIDMutation):
             schedule_event.teacher_2 = result['teacher_2']
 
         schedule_event.save()
+
+        schedule_event_ticket = ScheduleEventTicket(
+            schedule_event=schedule_event,
+            display_public=True,
+            full_event=True,
+            deletable=False,
+            name=_("Full event"),
+            description="",
+            price=0
+        )
+        schedule_event_ticket.save()
+
 
         return CreateScheduleEvent(schedule_event=schedule_event)
 
