@@ -53,12 +53,12 @@ const ScheduleEventForm = ({ t, history, inputData, isSubmitting, setFieldValue,
                 <Field 
                 className="custom-switch-input"
                 type="checkbox" 
-                name="autoSentInfoMail" 
-                checked={values.autoSentInfoMail} />
+                name="autoSendInfoMail" 
+                checked={values.autoSendInfoMail} />
                 <span className="custom-switch-indicator" ></span>
                 <span className="custom-switch-description">{t('schedule.events.auto_send_info_mail')}</span>
             </Form.Label>
-            <ErrorMessage name="autoSentInfoMail" component="div" />   
+            <ErrorMessage name="autoSendInfoMail" component="div" />   
           </Form.Group>  
         </Grid.Col>
       </Grid.Row>
