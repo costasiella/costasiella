@@ -139,7 +139,7 @@ class CreateScheduleEventTicket(graphene.relay.ClientIDMutation):
     @classmethod
     def mutate_and_get_payload(self, root, info, **input):
         user = info.context.user
-        require_login_and_permission(user, 'costasiella.add_scheduleevent')
+        require_login_and_permission(user, 'costasiella.add_scheduleeventticket')
 
         # Validate input
         result = validate_create_update_input(input, update=False)
@@ -166,91 +166,73 @@ class CreateScheduleEventTicket(graphene.relay.ClientIDMutation):
         return CreateScheduleEventTicket(schedule_event_ticket=schedule_event_ticket)
 
 
-class UpdateScheduleEvent(graphene.relay.ClientIDMutation):
+class UpdateScheduleEventTicket(graphene.relay.ClientIDMutation):
     class Input:
         id = graphene.ID(required=True)
-        display_public = graphene.Boolean(required=False)
-        display_shop = graphene.Boolean(required=False)
-        auto_send_info_mail = graphene.Boolean(required=False)
-        organization_location = graphene.ID(required=False)
-        organization_level = graphene.ID(required=False)
-        name = graphene.String(required=False)
-        tagline = graphene.String(required=False)
-        preview = graphene.String(required=False)
-        description = graphene.String(required=False)
-        teacher = graphene.ID(required=False)
-        teacher_2 = graphene.ID(required=False)
-        info_mail_content = graphene.String(required=False)
+        name = graphene.String(required=True)
+        description = graphene.String(required=False, default_value="")
+        price = graphene.Float(required=True, default_value=0)
+        finance_tax_rate = graphene.ID(required=False)
+        finance_glaccount = graphene.ID(required=False)
+        finance_costcenter = graphene.ID(required=False)
         
-    schedule_event = graphene.Field(ScheduleEventNode)
+    schedule_event_ticket = graphene.Field(ScheduleEventTicketNode)
 
     @classmethod
     def mutate_and_get_payload(self, root, info, **input):
         user = info.context.user
-        require_login_and_permission(user, 'costasiella.change_scheduleevent')
+        require_login_and_permission(user, 'costasiella.change_scheduleeventticket')
 
         rid = get_rid(input['id'])
-        schedule_event = ScheduleEvent.objects.filter(id=rid.id).first()
-        if not schedule_event:
-            raise Exception('Invalid Schedule Event ID!')
+        schedule_event_ticket = ScheduleEventTicket.objects.filter(id=rid.id).first()
+        if not schedule_event_ticket:
+            raise Exception('Invalid Schedule Event Ticket ID!')
 
         # Validate input
         result = validate_create_update_input(input, update=True)
 
         if 'display_public' in input:
-            schedule_event.display_public = input['display_public']
-        if 'display_shop' in input:
-            schedule_event.display_shop = input['display_shop']
-        if 'auto_send_info_mail' in input:
-            schedule_event.display_shop = input['auto_send_info_mail']
-        if 'organization_location' in result:
-            schedule_event.organization_location = result['organization_location']
-        if 'organization_level' in result:
-            schedule_event.organization_level = result['organization_level']
+            schedule_event_ticket.display_public = input['display_public']
         if 'name' in input:
-            schedule_event.name = input['name']
-        if 'tagline' in input:
-            schedule_event.tagline = input['tagline']
-        if 'preview' in input:
-            schedule_event.preview = input['preview']
+            schedule_event_ticket.name = input['name']
         if 'description' in input:
-            schedule_event.description = input['description']
-        if 'teacher' in result:
-            schedule_event.teacher = result['teacher']
-        if 'teacher_2' in result:
-            schedule_event.teacher_2 = result['teacher_2']
-        if 'info_mail_content' in input:
-            schedule_event.info_mail_content = input['info_mail_content']
+            schedule_event_ticket.description = input['description']
+        if 'price' in input:
+            schedule_event_ticket.price = input['price']
+        if 'finance_tax_rate' in result:
+            schedule_event_ticket.finance_tax_rate = result['finance_tax_rate']
+        if 'finance_glaccount' in result:
+            schedule_event_ticket.finance_glaccount = result['finance_glaccount']
+        if 'finance_costcenter' in result:
+            schedule_event_ticket.finance_costcenter = result['finance_costcenter']
 
-        schedule_event.save()
+        schedule_event_ticket.save()
 
-        return UpdateScheduleEvent(schedule_event=schedule_event)
+        return UpdateScheduleEventTicket(schedule_event_ticket=schedule_event_ticket)
 
 
-class ArchiveScheduleEvent(graphene.relay.ClientIDMutation):
+class DeleteScheduleEventTicket(graphene.relay.ClientIDMutation):
     class Input:
         id = graphene.ID(required=True)
-        archived = graphene.Boolean(required=True)
 
-    schedule_event = graphene.Field(ScheduleEventNode)
+    ok = graphene.Boolean()
 
     @classmethod
     def mutate_and_get_payload(self, root, info, **input):
         user = info.context.user
-        require_login_and_permission(user, 'costasiella.delete_scheduleevent')
+        require_login_and_permission(user, 'costasiella.delete_scheduleeventticket')
 
         rid = get_rid(input['id'])
-        schedule_event = ScheduleEvent.objects.filter(id=rid.id).first()
-        if not schedule_event:
-            raise Exception('Invalid Schedule Event ID!')
+        schedule_event_ticket = ScheduleEventTicket.objects.filter(id=rid.id).first()
+        if not schedule_event_ticket:
+            raise Exception('Invalid Schedule Event Ticket ID!')
 
-        schedule_event.archived = input['archived']
-        schedule_event.save()
+        ok = schedule_event_ticket.delete()
 
-        return ArchiveScheduleEvent(schedule_event=schedule_event)
+        return DeleteScheduleEventTicket(ok=ok)
 
 
 class ScheduleEventMutation(graphene.ObjectType):
-    archive_schedule_event = ArchiveScheduleEvent.Field()
-    create_schedule_event = CreateScheduleEvent.Field()
-    update_schedule_event = UpdateScheduleEvent.Field()
+    delete_schedule_event_ticket = DeleteScheduleEventTicket.Field()
+    create_schedule_event_ticket = CreateScheduleEventTicket.Field()
+    update_schedule_event_ticket = UpdateScheduleEventTicket.Field()
