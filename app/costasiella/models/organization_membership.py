@@ -20,7 +20,7 @@ class OrganizationMembership(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField()
     price = models.DecimalField(max_digits=20, decimal_places=2)
-    finance_tax_rate = models.ForeignKey(FinanceTaxRate, on_delete=models.SET_NULL)
+    finance_tax_rate = models.ForeignKey(FinanceTaxRate, on_delete=models.SET_NULL, null=True)
     validity = models.PositiveIntegerField()
     validity_unit = models.CharField(max_length=10, choices=VALIDITY_UNITS, default="DAYS")
     terms_and_conditions = models.TextField()
