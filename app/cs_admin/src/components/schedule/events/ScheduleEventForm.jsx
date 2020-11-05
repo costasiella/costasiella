@@ -206,4 +206,4 @@ const ScheduleEventForm = ({ t, history, inputData, isSubmitting, setFieldValue,
 )
   
   
-  export default withTranslation()(withRouter(ScheduleEventForm))
+export default withTranslation()(withRouter(ScheduleEventForm))

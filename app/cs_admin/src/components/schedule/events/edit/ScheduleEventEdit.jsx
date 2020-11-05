@@ -28,6 +28,7 @@ import HasPermissionWrapper from "../../../HasPermissionWrapper"
 import ScheduleEventEditBase from "./ScheduleEventEditBase"
 import ScheduleEventForm from "../ScheduleEventForm"
 import { get_list_query_variables } from "../tools"
+import { SCHEDULE_EVENT_EDIT_SCHEMA } from '../yupSchema'
 
 
 const UPDATE_SCHEDULE_EVENT = gql`
@@ -107,7 +108,7 @@ function ScheduleEventEdit({t, match, history}) {
             teacher2: initialTeacher2,
             infoMailContent: initialData.infoMailContent,
           }}
-          // validationSchema={SUBSCRIPTION_SCHEMA}
+          validationSchema={SCHEDULE_EVENT_EDIT_SCHEMA}
           onSubmit={(values, { setSubmitting }) => {
               console.log('submit values:')
               console.log(values)

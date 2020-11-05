@@ -26,7 +26,7 @@ import { get_list_query_variables } from "./tools"
 
 
 import { GET_SCHEDULE_EVENTS_QUERY, GET_INPUT_VALUES_QUERY } from './queries'
-// import { LEVEL_SCHEMA } from './yupSchema'
+import { SCHEDULE_EVENT_EDIT_SCHEMA } from './yupSchema'
 import ScheduleEventForm from './ScheduleEventForm'
 import ScheduleEventsBase from './ScheduleEventsBase'
 import formatISODateStr from '../../ui/ISODateString';
@@ -93,7 +93,7 @@ function ScheduleEventAdd({ t, history }) {
             name: "",
             description: "",
           }}
-          // validationSchema={SUBSCRIPTION_SCHEMA}
+          validationSchema={SCHEDULE_EVENT_EDIT_SCHEMA}
           onSubmit={(values, { setSubmitting }) => {
               console.log('submit values:')
               console.log(values)
