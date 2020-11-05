@@ -1,6 +1,6 @@
 // @flow
 
-import React, {Component } from 'react'
+import React from 'react'
 import gql from "graphql-tag"
 import { useQuery, useMutation } from "react-apollo";
 import { withTranslation } from 'react-i18next'
@@ -10,7 +10,7 @@ import { Link } from 'react-router-dom'
 import { toast } from 'react-toastify'
 
 import { GET_SCHEDULE_EVENTS_QUERY, GET_SCHEDULE_EVENT_QUERY } from '../queries'
-// import { LEVEL_SCHEMA } from '../yupSchema'
+import { SCHEDULE_EVENT_EDIT_SCHEMA } from '../yupSchema'
 
 
 import {
@@ -25,10 +25,9 @@ import {
 import SiteWrapper from "../../../SiteWrapper"
 import HasPermissionWrapper from "../../../HasPermissionWrapper"
 
-import ScheduleEventEditBase from "./ScheduleEventEditBase"
+import ScheduleEventEditBase from "../ScheduleEventEditBase"
 import ScheduleEventForm from "../ScheduleEventForm"
 import { get_list_query_variables } from "../tools"
-import { SCHEDULE_EVENT_EDIT_SCHEMA } from '../yupSchema'
 
 
 const UPDATE_SCHEDULE_EVENT = gql`

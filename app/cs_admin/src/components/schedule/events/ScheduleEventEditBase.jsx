@@ -9,9 +9,9 @@ import { Formik } from 'formik'
 import { Link } from 'react-router-dom'
 import { toast } from 'react-toastify'
 
-import AppSettingsContext from '../../../context/AppSettingsContext'
+import AppSettingsContext from '../../context/AppSettingsContext'
 
-import { GET_SCHEDULE_EVENT_QUERY } from '../queries'
+import { GET_SCHEDULE_EVENT_QUERY } from './queries'
 import ScheduleEventEditTabs from "./ScheduleEventEditTabs"
 
 import moment from 'moment'
@@ -26,10 +26,9 @@ import {
   Card,
   Container
 } from "tabler-react";
-import SiteWrapper from "../../../SiteWrapper"
-import HasPermissionWrapper from "../../../HasPermissionWrapper"
+import HasPermissionWrapper from "../../HasPermissionWrapper"
 
-import ScheduleEventsBase from "../ScheduleEventsBase"
+import ScheduleEventsBase from "./ScheduleEventsBase"
 
 
 function ScheduleEventEditBase({t, match, history, activeTab, children}) {
