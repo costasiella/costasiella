@@ -11,12 +11,16 @@ from ..modules.messages import Messages
 
 m = Messages()
 
+class ScheduleEventTicketNodeInterface(graphene.Interface):
+    id = graphene.GlobalID()
+    price_display = graphene.String()
+
 
 class ScheduleEventTicketNode(DjangoObjectType):
     class Meta:
         model = ScheduleEventTicket
         filter_fields = ['schedule_event']
-        interfaces = (graphene.relay.Node, )
+        interfaces = (graphene.relay.Node, ScheduleEventTicketNodeInterface,)
 
     @classmethod
     def get_node(self, info, id):
@@ -24,6 +28,10 @@ class ScheduleEventTicketNode(DjangoObjectType):
         require_login_and_permission(user, 'costasiella.view_scheduleevent')
 
         return self._meta.model.objects.get(id=id)
+
+    def resolve_price_display(self, info):
+        from ..modules.finance_tools import display_float_as_amount
+        return display_float_as_amount(self.price)
 
 
 class ScheduleEventTicketQuery(graphene.ObjectType):
@@ -35,7 +43,8 @@ class ScheduleEventTicketQuery(graphene.ObjectType):
         require_login(user)
         # Has permission: return everything requested
         if user.has_perm('costasiella.view_scheduleeventticket'):
-            return ScheduleEventTicket.objects.filter(schedule_event=schedule_event).order_by('-full_event', 'name')
+            rid = get_rid(schedule_event)
+            return ScheduleEventTicket.objects.filter(schedule_event=rid.id).order_by('-full_event', 'name')
 
         # Return only public non-archived locations
         return ScheduleEventTicket.objects.filter(display_public=True).order_by('-full_event', 'name')
