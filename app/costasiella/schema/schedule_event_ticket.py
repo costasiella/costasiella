@@ -72,11 +72,13 @@ def validate_create_update_input(input, update=False):
             raise Exception(_('Invalid Schedule Event ID!'))
 
     # Fetch & check tax rate
-    rid = get_rid(input['finance_tax_rate'])
-    finance_tax_rate = FinanceTaxRate.objects.filter(id=rid.id).first()
-    result['finance_tax_rate'] = finance_tax_rate
-    if not finance_tax_rate:
-        raise Exception(_('Invalid Finance Tax Rate ID!'))
+    if 'finance_tax_rate' in input:
+        if input['finance_tax_rate']:
+            rid = get_rid(input['finance_tax_rate'])
+            finance_tax_rate = FinanceTaxRate.objects.filter(id=rid.id).first()
+            result['finance_tax_rate'] = finance_tax_rate
+            if not finance_tax_rate:
+                raise Exception(_('Invalid Finance Tax Rate ID!'))
 
     # Check GLAccount
     if 'finance_glaccount' in input:
