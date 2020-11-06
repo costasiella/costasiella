@@ -112,17 +112,20 @@ function ScheduleEventTickets({t, match, history}) {
         <Table.Body>
             {scheduleEventTickets.edges.map(({ node }) => (
               <Table.Row key={v4()}>
-                <Table.Col>
+                {/* <Table.Col>
                   {moment(node.dateStart).format(dateFormat)}
                 </Table.Col>
                 <Table.Col>
                   {moment(node.dateEnd).format(dateFormat)}
+                </Table.Col> */}
+                <Table.Col>
+                  {node.name}
                 </Table.Col>
                 <Table.Col>
                   <div dangerouslySetInnerHTML={{__html: node.description}} />
                 </Table.Col>
                 <Table.Col className="text-right">
-                  <Link to={`/relations/accounts/${accountId}/subscriptions/edit/${subscriptionId}/blocks/edit/${node.id}`}>
+                  <Link to={`/schedule/events/edit/${eventId}/tickets/edit/${node.id}`}>
                     <Button className='btn-sm' 
                             color="secondary">
                       {t('general.edit')}
@@ -130,7 +133,9 @@ function ScheduleEventTickets({t, match, history}) {
                   </Link>
                 </Table.Col>
                 <Table.Col className="text-right">
-                  <AccountSubscriptionEditBlockDelete id={node.id} />
+                  {/* Check for fullEvent / deletable before showing delete button */}
+                  delete here...
+                  {/* <AccountSubscriptionEditBlockDelete id={node.id} /> */}
                 </Table.Col>
               </Table.Row>
             ))}
