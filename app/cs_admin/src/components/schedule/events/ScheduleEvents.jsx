@@ -101,7 +101,7 @@ function ScheduleEvents({t, history, archived=false}) {
           cardTitle={t('schedule.events.title')}
           headerContent={cardHeaderContent}
         >
-          {t("schedle.events.error_loading_data")}
+          {t("schedule.events.error_loading_data")}
         </ContentCard>
       </ScheduleEventsBase>
     )
