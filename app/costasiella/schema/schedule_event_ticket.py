@@ -238,7 +238,11 @@ class DeleteScheduleEventTicket(graphene.relay.ClientIDMutation):
         if not schedule_event_ticket:
             raise Exception('Invalid Schedule Event Ticket ID!')
 
-        ok = schedule_event_ticket.delete()
+        if not schedule_event_ticket.deletable or schedule_event_ticket.full_event:
+            #  Don't delete the full event ticket; it should always be there.
+            ok = False
+        else:
+            ok = schedule_event_ticket.delete()
 
         return DeleteScheduleEventTicket(ok=ok)
 
