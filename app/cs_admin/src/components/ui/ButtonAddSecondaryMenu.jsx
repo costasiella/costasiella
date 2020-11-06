@@ -10,7 +10,7 @@ import {
 } from "tabler-react";
 
 
-function AccountSubscriptionEditButtonAdd({t, match, history, linkTo}) {
+function ButtonAddSecondaryMenu({t, match, history, linkTo}) {
   return (
     <Link to={linkTo}>
       <Button
@@ -24,4 +24,4 @@ function AccountSubscriptionEditButtonAdd({t, match, history, linkTo}) {
   )
 }
 
-export default withTranslation()(withRouter(AccountSubscriptionEditButtonAdd))
+export default withTranslation()(withRouter(ButtonAddSecondaryMenu))
