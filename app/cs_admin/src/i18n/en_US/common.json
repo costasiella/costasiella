@@ -361,17 +361,17 @@
         "new_task": "New task",
         "credits_remaining": "Credits remaining",
         "month": "Month",
-        "unarchive": "__STRING_NOT_TRANSLATED__",
-        "tagline": "__STRING_NOT_TRANSLATED__",
-        "preview": "__STRING_NOT_TRANSLATED__",
-        "infoMailContent": "__STRING_NOT_TRANSLATED__",
-        "start": "__STRING_NOT_TRANSLATED__",
-        "confirm_archive": "__STRING_NOT_TRANSLATED__",
-        "confirm_archive_no": "__STRING_NOT_TRANSLATED__",
-        "confirm_archive_yes": "__STRING_NOT_TRANSLATED__",
-        "confirm_unarchive": "__STRING_NOT_TRANSLATED__",
-        "confirm_unarchive_no": "__STRING_NOT_TRANSLATED__",
-        "confirm_unarchive_yes": "__STRING_NOT_TRANSLATED__"
+        "unarchive": "Restore",
+        "tagline": "Tagline",
+        "preview": "Preview",
+        "infoMailContent": "Info mail content",
+        "start": "start",
+        "confirm_archive": "Confirm archival",
+        "confirm_archive_no": "No, keep it here",
+        "confirm_archive_yes": "Yes, archive it",
+        "confirm_unarchive": "Confirm restore",
+        "confirm_unarchive_no": "No, keep it here",
+        "confirm_unarchive_yes": "Yes, restore it"
     },
     "yup": {
         "min_len_3": "Please input at least 3 characters",
@@ -920,7 +920,8 @@
             },
             "public": "This is a public ticket",
             "shop": "Show in shop",
-            "auto_send_info_mail": "Auto send info mail"
+            "auto_send_info_mail": "Auto send info mail",
+            "error_loading_data": "Error loading event info :("
         },
         "event": {
             "location_please_select": "Please select...",
@@ -1574,11 +1575,6 @@
                 "retry": "Retry",
                 "revoked": "Revoked"
             }
-        }
-    },
-    "schedle": {
-        "events": {
-            "error_loading_data": "__STRING_NOT_TRANSLATED__"
         }
     }
 }
