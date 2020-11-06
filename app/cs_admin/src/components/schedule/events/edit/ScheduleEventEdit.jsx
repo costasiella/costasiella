@@ -54,7 +54,7 @@ function ScheduleEventEdit({t, match, history}) {
 
   if (loading) {
     return (
-      <ScheduleEventEditBase activeTab={activeTab} cardTitle={t("schedule.events.edit")}>
+      <ScheduleEventEditBase activeTab={activeTab}>
         <Card.Body>
           <Dimmer loading={true} active={true} />
         </Card.Body>
@@ -64,7 +64,7 @@ function ScheduleEventEdit({t, match, history}) {
 
   if (error) {
     return (
-      <ScheduleEventEditBase activeTab={activeTab} cardTitle={t("schedule.events.edit")}>
+      <ScheduleEventEditBase activeTab={activeTab}>
         <Card.Body>
           {t("schedule.events.error_loading")}
         </Card.Body>
@@ -91,7 +91,7 @@ function ScheduleEventEdit({t, match, history}) {
   }
 
   return (
-    <ScheduleEventEditBase activeTab={activeTab} cardTitle={t("schedule.events.edit")}>
+    <ScheduleEventEditBase activeTab={activeTab}>
         <Formik
           initialValues={{ 
             displayPublic: initialData.displayPublic,

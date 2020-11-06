@@ -31,9 +31,10 @@ import HasPermissionWrapper from "../../HasPermissionWrapper"
 import ScheduleEventsBase from "./ScheduleEventsBase"
 
 
-function ScheduleEventEditBase({t, match, history, cardTitle, activeTab, children}) {
+function ScheduleEventEditBase({t, match, history, activeTab, children}) {
   const appSettings = useContext(AppSettingsContext)
   const dateFormat = appSettings.dateFormat
+  const cardTitle = t("schedule.events.edit")
 
   const id = match.params.id
   const returnUrl = "/schedule/events"
