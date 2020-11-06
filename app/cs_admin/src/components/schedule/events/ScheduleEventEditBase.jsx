@@ -31,7 +31,7 @@ import HasPermissionWrapper from "../../HasPermissionWrapper"
 import ScheduleEventsBase from "./ScheduleEventsBase"
 
 
-function ScheduleEventEditBase({t, match, history, activeTab, children}) {
+function ScheduleEventEditBase({t, match, history, cardTitle, activeTab, children}) {
   const appSettings = useContext(AppSettingsContext)
   const dateFormat = appSettings.dateFormat
 
@@ -51,7 +51,7 @@ function ScheduleEventEditBase({t, match, history, activeTab, children}) {
 if (loading) {
   return (
     <ScheduleEventsBase sidebarContent={sidebarContent}>
-      <Card title={t("schedule.events.edit")}>
+      <Card title={cardTitle}>
         <ScheduleEventEditTabs active={activeTab} />
         <Card.Body>
           <Dimmer loading={true} active={true} />
@@ -64,7 +64,7 @@ if (loading) {
 if (error) {
   return (
     <ScheduleEventsBase sidebarContent={sidebarContent}>
-      <Card title={t("schedule.events.edit")}>
+      <Card title={cardTitle}>
         <ScheduleEventEditTabs active={activeTab} />
         <Card.Body>
           {t("schedule.events.error_loading")}
@@ -76,7 +76,7 @@ if (error) {
 
 const event = data.scheduleEvent
 const dateStart = (event.dateStart) ? moment(event.dateStart).format(dateFormat) : ""
-const cardTitle = (event) ? 
+const cardSubTitle = (event) ? 
 <span className="text-muted">
   - {event.name + " " + dateStart}
 </span> : ""
@@ -85,7 +85,7 @@ return (
   <ScheduleEventsBase sidebarContent={sidebarContent}>
     <Card>
       <Card.Header>
-        <Card.Title>{t('schedule.events.edit')} {cardTitle}</Card.Title>
+        <Card.Title>{cardTitle} {cardSubTitle}</Card.Title>
       </Card.Header>
       <ScheduleEventEditTabs active={activeTab} />
       {children}
