@@ -360,7 +360,18 @@
         "subtract": "Subtract",
         "new_task": "New task",
         "credits_remaining": "Credits remaining",
-        "month": "Month"
+        "month": "Month",
+        "unarchive": "__STRING_NOT_TRANSLATED__",
+        "tagline": "__STRING_NOT_TRANSLATED__",
+        "preview": "__STRING_NOT_TRANSLATED__",
+        "infoMailContent": "__STRING_NOT_TRANSLATED__",
+        "start": "__STRING_NOT_TRANSLATED__",
+        "confirm_archive": "__STRING_NOT_TRANSLATED__",
+        "confirm_archive_no": "__STRING_NOT_TRANSLATED__",
+        "confirm_archive_yes": "__STRING_NOT_TRANSLATED__",
+        "confirm_unarchive": "__STRING_NOT_TRANSLATED__",
+        "confirm_unarchive_no": "__STRING_NOT_TRANSLATED__",
+        "confirm_unarchive_yes": "__STRING_NOT_TRANSLATED__"
     },
     "yup": {
         "min_len_3": "Please input at least 3 characters",
@@ -865,8 +876,6 @@
                 "error_loading": "Error loading prices for this class :(",
                 "empty_list": "No prices have been defined for this class yet.",
                 "delete_confirm_msg": "Are you sure you wish to delete this price?",
-                "delete_confirm_description": "",
-                "deleted": "Deleted price",
                 "delete_success": "Deleted price"
             },
             "classpass_dropin": "Drop-in classpass",
@@ -897,7 +906,25 @@
         },
         "events": {
             "title": "Events",
-            "add": "Add event"
+            "add": "Add event",
+            "edit": "Edit event",
+            "error_loading": "Error loading event info :(",
+            "toast_edit_success": "Saved",
+            "toast_add_success": "Added new event",
+            "unarchive_confirm_msg": "Do you wish to restore this event?",
+            "archive_confirm_msg": "Do you wish to archive this event?",
+            "edit_menu": {
+                "general": "General",
+                "tickets": "Tickets",
+                "activities": "Activities"
+            },
+            "public": "This is a public ticket",
+            "shop": "Show in shop",
+            "auto_send_info_mail": "Auto send info mail"
+        },
+        "event": {
+            "location_please_select": "Please select...",
+            "teacher_please_select": "Please select"
         }
     },
     "countries": {
@@ -1547,6 +1574,11 @@
                 "retry": "Retry",
                 "revoked": "Revoked"
             }
+        }
+    },
+    "schedle": {
+        "events": {
+            "error_loading_data": "__STRING_NOT_TRANSLATED__"
         }
     }
 }
