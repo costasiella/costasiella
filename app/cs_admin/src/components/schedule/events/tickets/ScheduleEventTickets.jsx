@@ -7,8 +7,8 @@ import { withRouter } from "react-router"
 import { Link } from 'react-router-dom'
 import { v4 } from 'uuid'
 
-import AppSettingsContext from '../../../../../context/AppSettingsContext'
-import ButtonAddSecondaryMenu from '../../../../../ui/ButtonAddSecondaryMenu'
+import AppSettingsContext from '../../../context/AppSettingsContext'
+import ButtonAddSecondaryMenu from '../../../ui/ButtonAddSecondaryMenu'
 
 import { GET_SCHEDULE_EVENT_TICKETS_QUERY } from './queries'
 
@@ -22,8 +22,8 @@ import {
   Table,
 } from "tabler-react";
 // import HasPermissionWrapper from "../../../../HasPermissionWrapper"
-import ScheduleEventEditBase from "../ScheduleEventEditBase"
-import AccountSubscriptionEditBlockDelete from "./AccountSubscriptionEditBlockDelete"
+import ScheduleEventEditListBase from "../ScheduleEventEditListBase"
+// import AccountSubscriptionEditBlockDelete from "./AccountSubscriptionEditBlockDelete"
 import moment from 'moment';
 
 
@@ -45,15 +45,15 @@ function ScheduleEventTickets({t, match, history}) {
   })
   
   if (loading) return (
-    <ScheduleEventEditBase active_tab={activeTab}>
+    <ScheduleEventEditListBase active_tab={activeTab}>
       {t("general.loading_with_dots")}
-    </ScheduleEventEditBase>
+    </ScheduleEventEditListBase>
   )
   if (error) return (
-    <ScheduleEventEditBase active_tab={activeTab}>
+    <ScheduleEventEditListBase active_tab={activeTab}>
       <p>{t('general.error_sad_smiley')}</p>
       <p>{error.message}</p>
-    </ScheduleEventEditBase>
+    </ScheduleEventEditListBase>
   )
 
   console.log('query data')
@@ -64,11 +64,11 @@ function ScheduleEventTickets({t, match, history}) {
 
     // Empty list
     if (!scheduleEventTickets.edges.length) { return (
-      <ScheduleEventEditBase active_tab={activeTab}>
+      <ScheduleEventEditListBase active_tab={activeTab}>
         <div className="pull-right">{buttonAdd}</div>
         <h5>{t('schedule.events.tickets.title_list')}</h5>
         <p>{t('schedule.events.tickets.empty_list')}</p>
-      </ScheduleEventEditBase>
+      </ScheduleEventEditListBase>
     )}
 
   const onLoadMore = () => {
@@ -96,7 +96,7 @@ function ScheduleEventTickets({t, match, history}) {
   }
 
   return (
-    <ScheduleEventEditBase active_tab={activeTab} pageInfo={pageInfo} onLoadMore={onLoadMore}>
+    <ScheduleEventEditListBase active_tab={activeTab} pageInfo={pageInfo} onLoadMore={onLoadMore}>
       <div className="pull-right">{buttonAdd}</div>
       <h5>{t('schedule.events.tickets.title_list')}</h5>
       <Table>
@@ -141,7 +141,7 @@ function ScheduleEventTickets({t, match, history}) {
             ))}
         </Table.Body>
       </Table>
-    </ScheduleEventEditBase>
+    </ScheduleEventEditListBase>
   )
 }
 
