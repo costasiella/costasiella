@@ -40,18 +40,30 @@ class Command(BaseCommand):
             help="OpenStudio database port (default: 3306)"
         )
 
-    def _yes_or_no(self, question):
+    def _yes_or_no(self, question, exit_on_no=True):
+        """
+        A simple yes or no confirmation question
+        :param question: String - question text
+        :return: input asking a y/n question
+        """
         reply = str(input(question+' (y/n): ')).lower().strip()
         if reply[0] == 'y':
             return True
         if reply[0] == 'n':
-            self.stdout.write("Import command stopped.")
-            sys.exit(1)
+            if exit_on_no:
+                self.stdout.write("OpenStudio import stopped.")
+                sys.exit(1)
+            else:
+                return False
         else:
             return self._yes_or_no("Uhhhh... please enter ")
 
-    @no_translations
-    def handle(self, *args, **options):
+    def _confirm_args(self, **options):
+        """
+        Confirm passed options
+        :param options: parser options
+        :return: result of _yes_or_no
+        """
         self.stdout.write("OpenStudio DB connection info:")
         self.stdout.write("-----")
         self.stdout.write("name: %s" % options['db_name'])
@@ -62,13 +74,19 @@ class Command(BaseCommand):
         self.stdout.write("-----")
         self.stdout.write("")
 
-        response = self._yes_or_no("Is the above information correct?")
+        return self._yes_or_no("Is the above information correct?")
 
-        if response:
+    @no_translations
+    def handle(self, *args, **options):
+        """
+
+        :param args:
+        :param options:
+        :return:
+        """
+        options_confirmation = self._confirm_args(**options)
+        if options_confirmation:
             print("hello world!")
-
-
-
 
         # for poll_id in options['poll_ids']:
         #     try:
