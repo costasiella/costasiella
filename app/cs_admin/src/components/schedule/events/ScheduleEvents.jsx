@@ -34,17 +34,6 @@ import ScheduleEventArchive from "./ScheduleEventArchive"
 import { GET_SCHEDULE_EVENTS_QUERY } from "./queries"
 import { get_list_query_variables } from "./tools"
 
-// const ARCHIVE_EVENT = gql`
-//   mutation ArchiveOrganizationLevel($input: ArchiveOrganizationLevelInput!) {
-//     archiveOrganizationLevel(input: $input) {
-//       organizationLevel {
-//         id
-//         archived
-//       }
-//     }
-//   }
-// `
-
 function ScheduleEvents({t, history, archived=false}) {
   const { loading, error, data, refetch, fetchMore } = useQuery(GET_SCHEDULE_EVENTS_QUERY, {
     variables: get_list_query_variables()
