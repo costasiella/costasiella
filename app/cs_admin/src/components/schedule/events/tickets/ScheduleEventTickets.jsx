@@ -124,6 +124,9 @@ function ScheduleEventTickets({t, match, history}) {
                 <Table.Col>
                   <div dangerouslySetInnerHTML={{__html: node.description}} />
                 </Table.Col>
+                <Table.Col>
+                  {node.priceDisplay}
+                </Table.Col>
                 <Table.Col className="text-right">
                   <Link to={`/schedule/events/edit/${eventId}/tickets/edit/${node.id}`}>
                     <Button className='btn-sm' 
