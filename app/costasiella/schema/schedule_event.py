@@ -150,7 +150,7 @@ class CreateScheduleEvent(graphene.relay.ClientIDMutation):
             full_event=True,
             deletable=False,
             name=_("Full event"),
-            description="",
+            description=_("Full event"),
             price=0
         )
         schedule_event_ticket.save()
