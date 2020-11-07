@@ -56,22 +56,6 @@ def validate_create_update_input(input, update=False):
     """
     result = {}
 
-    # Fetch & check account
-    # if not update:
-    #     # Create only
-    #     rid = get_rid(input['organization_location'])
-    #     organization_location = OrganizationLocation.objects.filter(id=rid.id).first()
-    #     result['organization_location'] = organization_location
-    #     if not organization_location:
-    #         raise Exception(_('Invalid Organization Location ID!'))
-
-    # Fetch & check organization classpass
-    # rid = get_rid(input['organization_classpass'])
-    # organization_classpass = OrganizationClasspass.objects.get(pk=rid.id)
-    # result['organization_classpass'] = organization_classpass
-    # if not organization_classpass:
-    #     raise Exception(_('Invalid Organization Classpass ID!'))
-
     if not update:
         # Fetch & check schedule event (insert only)
         rid = get_rid(input['schedule_event'])
@@ -106,30 +90,6 @@ def validate_create_update_input(input, update=False):
             result['finance_costcenter'] = finance_costcenter
             if not finance_costcenter:
                 raise Exception(_('Invalid Finance Costcenter ID!'))
-
-    # # Fetch & check organization level
-    # if 'organization_level' in input:
-    #     rid = get_rid(input['organization_level'])
-    #     organization_level = OrganizationLevel.objects.filter(id=rid.id).first()
-    #     result['organization_level'] = organization_level
-    #     if not organization_level:
-    #         raise Exception(_('Invalid Organization Level ID!'))
-    #
-    # # Fetch & check teacher (account)
-    # if 'teacher' in input:
-    #     rid = get_rid(input['teacher'])
-    #     teacher = Account.objects.filter(id=rid.id).first()
-    #     result['teacher'] = teacher
-    #     if not teacher:
-    #         raise Exception(_('Invalid Account ID (teacher)!'))
-    #
-    # # Fetch & check teacher_2 (account)
-    # if 'teacher_2' in input:
-    #     rid = get_rid(input['teacher_2'])
-    #     teacher_2 = Account.objects.filter(id=rid.id).first()
-    #     result['teacher_2'] = teacher_2
-    #     if not teacher_2:
-    #         raise Exception(_('Invalid Account ID (teacher2)!'))
 
     return result
 
