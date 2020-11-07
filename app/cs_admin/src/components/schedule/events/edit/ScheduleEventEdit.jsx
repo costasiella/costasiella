@@ -42,7 +42,7 @@ const UPDATE_SCHEDULE_EVENT = gql`
 `
 
 function ScheduleEventEdit({t, match, history}) {
-  const id = match.params.id
+  const id = match.params.event_id
   const returnUrl = "/schedule/events"
   const activeTab = "general"
 

@@ -36,11 +36,11 @@ function ScheduleEventEditBase({t, match, history, activeTab, children}) {
   const dateFormat = appSettings.dateFormat
   const cardTitle = t("schedule.events.edit")
 
-  const id = match.params.id
+  const eventId = match.params.event_id
   const returnUrl = "/schedule/events"
 
   const { loading, error, data } = useQuery(GET_SCHEDULE_EVENT_QUERY, {
-    variables: { id: id }
+    variables: { id: eventId }
   })
 
   const sidebarContent = <Link to={returnUrl}>
@@ -53,7 +53,7 @@ if (loading) {
   return (
     <ScheduleEventsBase sidebarContent={sidebarContent}>
       <Card title={cardTitle}>
-        <ScheduleEventEditTabs active={activeTab} />
+        <ScheduleEventEditTabs active={activeTab} eventId={eventId}/>
         <Card.Body>
           <Dimmer loading={true} active={true} />
         </Card.Body>
@@ -66,7 +66,7 @@ if (error) {
   return (
     <ScheduleEventsBase sidebarContent={sidebarContent}>
       <Card title={cardTitle}>
-        <ScheduleEventEditTabs active={activeTab} />
+        <ScheduleEventEditTabs active={activeTab} eventId={eventId}/>
         <Card.Body>
           {t("schedule.events.error_loading")}
         </Card.Body>
@@ -88,7 +88,7 @@ return (
       <Card.Header>
         <Card.Title>{cardTitle} {cardSubTitle}</Card.Title>
       </Card.Header>
-      <ScheduleEventEditTabs active={activeTab} />
+      <ScheduleEventEditTabs active={activeTab} eventId={eventId}/>
       {children}
     </Card>
   </ScheduleEventsBase>
