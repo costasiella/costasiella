@@ -68,9 +68,10 @@ class Command(BaseCommand):
         :param options: parser options
         :return: result of _yes_or_no
         """
+        self.stdout.write("")
         self.stdout.write("OpenStudio DB connection info:")
         self.stdout.write("-----")
-        self.stdout.write("name: %s" % options['db_name'])
+        self.stdout.write("db: %s" % options['db_name'])
         self.stdout.write("user: %s" % options['db_user'])
         self.stdout.write("password: %s" % options['db_password'])
         self.stdout.write("host: %s" % options['db_host'])
@@ -78,7 +79,7 @@ class Command(BaseCommand):
         self.stdout.write("-----")
         self.stdout.write("")
 
-        return self._yes_or_no("Is the above information correct?")
+        return self._yes_or_no("Test connection & start import using the settings above?")
 
     def _connect_to_db_and_get_cursor(self, host, user, password, db, port):
         """
