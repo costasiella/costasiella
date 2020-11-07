@@ -127,17 +127,7 @@ class Command(BaseCommand):
         """
         query = ("SELECT * from auth_user")
         cursor.execute(query)
-        # result = db.use_result()
-
-        # print(cursor.fetchone())
         print(cursor.fetchall())
-
-        # print(result)
-        # print(result.fetch_row())
-        # # print(result.fetch_row(maxrows=0))
-
-
-
 
     @no_translations
     def handle(self, *args, **options):
@@ -147,6 +137,7 @@ class Command(BaseCommand):
         :param options: command options
         :return:
         """
+        cursor = None
         options_confirmation = self._confirm_args(**options)
         if options_confirmation:
             self.stdout.write("")
@@ -158,6 +149,10 @@ class Command(BaseCommand):
                 db=options['db_name'],
                 port=options['db_port']
             )
+
+        if not cursor:
+            self.stdout.write("Error setting up MySQL connection, exiting...")
+            sys.exit(1)
 
         self._import_os_users(cursor)
 
