@@ -15,17 +15,17 @@ function ScheduleEventEditTabs({ t, active, eventId}) {
           {
             name: "general", 
             title: t("schedule.events.edit_menu.general"), 
-            link: `/events/edit/${eventId}/`
+            link: `/schedule/events/edit/${eventId}/`
           },
           {
             name: "tickets", 
             title: t("schedule.events.edit_menu.tickets"), 
-            link: `/events/edit/${eventId}/tickets`
+            link: `/schedule/events/edit/${eventId}/tickets`
           },
           {
             name: "activities", 
             title: t("schedule.events.edit_menu.activities"), 
-            link: `/events/edit/${eventId}/activities`
+            link: `/schedule/events/edit/${eventId}/activities`
           },
       ]}
       active={active}
