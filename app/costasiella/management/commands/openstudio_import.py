@@ -3,7 +3,8 @@ import sys
 from django.core.management.base import BaseCommand, CommandError, no_translations
 import costasiella.models as models
 
-
+from MySQLdb import _mysql
+from MySQLdb._exceptions import OperationalError
 
 class Command(BaseCommand):
     help = 'Import from OpenStudio. Provide at least --db_name, --db_user and --db_password.'
@@ -76,17 +77,47 @@ class Command(BaseCommand):
 
         return self._yes_or_no("Is the above information correct?")
 
+    def _connect_to_db_and_get_cursor(self, host, user, password, db, port):
+        """
+
+        :return:
+        """
+        try:
+            db = _mysql.connect(
+                host=host,
+                user=user,
+                passwd=password,
+                db=db,
+                port=port
+            )
+        except OperationalError as e:
+            self.stdout.write("Error connecting to OpenStudio MySQL database:")
+            self.stdout.write(str(e))
+            self.stdout.write("")
+            self.stdout.write("Exiting...")
+            sys.exit(1)
+
+        return db.cursor()
+
     @no_translations
     def handle(self, *args, **options):
         """
-
-        :param args:
-        :param options:
+        Main command function (options defined in add_arguments)
+        :param args: command args
+        :param options: command options
         :return:
         """
         options_confirmation = self._confirm_args(**options)
         if options_confirmation:
-            print("hello world!")
+            self.stdout.write("")
+            self.stdout.write("Testing OpenStudio MySQL connection...")
+            c = self._connect_to_db_and_get_cursor(
+                host=options['db_host'],
+                user=options['db_user'],
+                password=options['db_password'],
+                db=options['db_name'],
+                port=options['db_port']
+            )
 
         # for poll_id in options['poll_ids']:
         #     try:
