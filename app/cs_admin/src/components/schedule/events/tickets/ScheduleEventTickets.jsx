@@ -132,10 +132,10 @@ function ScheduleEventTickets({t, match, history}) {
                   <BadgeBoolean value={node.displayPublic} />
                 </Table.Col>
                 <Table.Col>
-                  
+                  {(node.financeGlaccount) ? node.financeGlaccount.name : ""}
                 </Table.Col>
                 <Table.Col>
-
+                  {(node.financeCostcenter) ? node.financeCostcenter.name : ""}
                 </Table.Col>
                 <Table.Col className="text-right">
                   <Link to={`/schedule/events/edit/${eventId}/tickets/edit/${node.id}`}>
