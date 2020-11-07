@@ -8,6 +8,7 @@ import MySQLdb
 from MySQLdb._exceptions import OperationalError
 import MySQLdb.converters
 
+
 class Command(BaseCommand):
     help = 'Import from OpenStudio. Provide at least --db_name, --db_user and --db_password.'
 
