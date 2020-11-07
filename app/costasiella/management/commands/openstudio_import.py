@@ -111,7 +111,8 @@ class Command(BaseCommand):
                 # conv=convert
             )
         except OperationalError as e:
-            self.stdout.write("Error connecting to OpenStudio MySQL database:")
+            self.stdout.write("OpenStudio MySQL connection: " + self.style.ERROR("FAILED"))
+            self.stdout.write("The following error message was received:")
             self.stdout.write(str(e))
             self.stdout.write("")
             self.stdout.write("Exiting...")
@@ -125,9 +126,10 @@ class Command(BaseCommand):
         :param c: MySQL db cursor
         :return:
         """
-        query = ("SELECT * from auth_user")
+        query = "SELECT * from auth_user"
         cursor.execute(query)
-        print(cursor.fetchall())
+        print(cursor.fetchone())
+        # print(cursor.fetchall())
 
     @no_translations
     def handle(self, *args, **options):
@@ -149,6 +151,8 @@ class Command(BaseCommand):
                 db=options['db_name'],
                 port=options['db_port']
             )
+            self.stdout.write("OpenStudio MySQL connection: " + self.style.SUCCESS("SUCCESS"))
+            self.stdout.write("Starting import...")
 
         if not cursor:
             self.stdout.write("Error setting up MySQL connection, exiting...")
@@ -156,15 +160,17 @@ class Command(BaseCommand):
 
         self._import_os_users(cursor)
 
+        """
+        Example code;
+        #####
+        for poll_id in options['poll_ids']:
+            try:
+                poll = Poll.objects.get(pk=poll_id)
+            except Poll.DoesNotExist:
+                raise CommandError('Poll "%s" does not exist' % poll_id)
 
+            poll.opened = False
+            poll.save()
 
-        # for poll_id in options['poll_ids']:
-        #     try:
-        #         poll = Poll.objects.get(pk=poll_id)
-        #     except Poll.DoesNotExist:
-        #         raise CommandError('Poll "%s" does not exist' % poll_id)
-        #
-        #     poll.opened = False
-        #     poll.save()
-        #
-        #     self.stdout.write(self.style.SUCCESS('Successfully closed poll "%s"' % poll_id))
+            self.stdout.write(self.style.SUCCESS('Successfully closed poll "%s"' % poll_id))        
+        """
