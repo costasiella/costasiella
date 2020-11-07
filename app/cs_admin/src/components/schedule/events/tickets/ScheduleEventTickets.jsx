@@ -33,7 +33,7 @@ function ScheduleEventTickets({t, match, history}) {
   console.log(appSettings)
   
   const eventId = match.params.event_id
-  const activeTab = "blocks"
+  const activeTab = "tickets"
 
   const buttonAdd = <ButtonAddSecondaryMenu 
                       linkTo={`/schedule/events/edit/${eventId}/tickets/add`} />
@@ -45,12 +45,12 @@ function ScheduleEventTickets({t, match, history}) {
   })
   
   if (loading) return (
-    <ScheduleEventEditListBase active_tab={activeTab}>
+    <ScheduleEventEditListBase activeTab={activeTab}>
       {t("general.loading_with_dots")}
     </ScheduleEventEditListBase>
   )
   if (error) return (
-    <ScheduleEventEditListBase active_tab={activeTab}>
+    <ScheduleEventEditListBase activeTab={activeTab}>
       <p>{t('general.error_sad_smiley')}</p>
       <p>{error.message}</p>
     </ScheduleEventEditListBase>
@@ -62,14 +62,14 @@ function ScheduleEventTickets({t, match, history}) {
   const scheduleEventTickets = data.scheduleEventTickets
   const pageInfo = data.scheduleEventTickets.pageInfo
 
-    // Empty list
-    if (!scheduleEventTickets.edges.length) { return (
-      <ScheduleEventEditListBase active_tab={activeTab}>
-        <div className="pull-right">{buttonAdd}</div>
-        <h5>{t('schedule.events.tickets.title_list')}</h5>
-        <p>{t('schedule.events.tickets.empty_list')}</p>
-      </ScheduleEventEditListBase>
-    )}
+  // Empty list
+  if (!scheduleEventTickets.edges.length) { return (
+    <ScheduleEventEditListBase activeTab={activeTab}>
+      <div className="pull-right">{buttonAdd}</div>
+      <h5>{t('schedule.events.tickets.title_list')}</h5>
+      <p>{t('schedule.events.tickets.empty_list')}</p>
+    </ScheduleEventEditListBase>
+  )}
 
   const onLoadMore = () => {
     fetchMore({
@@ -96,15 +96,17 @@ function ScheduleEventTickets({t, match, history}) {
   }
 
   return (
-    <ScheduleEventEditListBase active_tab={activeTab} pageInfo={pageInfo} onLoadMore={onLoadMore}>
+    <ScheduleEventEditListBase activeTab={activeTab} pageInfo={pageInfo} onLoadMore={onLoadMore}>
       <div className="pull-right">{buttonAdd}</div>
       <h5>{t('schedule.events.tickets.title_list')}</h5>
       <Table>
         <Table.Header>
           <Table.Row key={v4()}>
             <Table.ColHeader>{t('general.name')}</Table.ColHeader>
-            <Table.ColHeader>{t('general.description')}</Table.ColHeader>
             <Table.ColHeader>{t('general.price')}</Table.ColHeader>
+            <Table.ColHeader>{t('general.public')}</Table.ColHeader>
+            <Table.ColHeader>{t('general.glaccount')}</Table.ColHeader>
+            <Table.ColHeader>{t('general.costcenter')}</Table.ColHeader>
             <Table.ColHeader></Table.ColHeader>
             <Table.ColHeader></Table.ColHeader>
           </Table.Row>
@@ -119,13 +121,20 @@ function ScheduleEventTickets({t, match, history}) {
                   {moment(node.dateEnd).format(dateFormat)}
                 </Table.Col> */}
                 <Table.Col>
-                  {node.name}
-                </Table.Col>
-                <Table.Col>
-                  <div dangerouslySetInnerHTML={{__html: node.description}} />
+                  {node.name} <br />
+                  <div dangerouslySetInnerHTML={{__html: node.description}} className="text-muted"/>
                 </Table.Col>
                 <Table.Col>
                   {node.priceDisplay}
+                </Table.Col>
+                <Table.Col>
+                  
+                </Table.Col>
+                <Table.Col>
+                  
+                </Table.Col>
+                <Table.Col>
+
                 </Table.Col>
                 <Table.Col className="text-right">
                   <Link to={`/schedule/events/edit/${eventId}/tickets/edit/${node.id}`}>
