@@ -1198,7 +1198,11 @@
             "public": "__STRING_NOT_TRANSLATED__",
             "shop": "__STRING_NOT_TRANSLATED__",
             "auto_send_info_mail": "__STRING_NOT_TRANSLATED__",
-            "error_loading_data": "__STRING_NOT_TRANSLATED__"
+            "error_loading_data": "__STRING_NOT_TRANSLATED__",
+            "tickets": {
+                "title_list": "__STRING_NOT_TRANSLATED__",
+                "empty_list": "__STRING_NOT_TRANSLATED__"
+            }
         },
         "event": {
             "location_please_select": "__STRING_NOT_TRANSLATED__",

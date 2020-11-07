@@ -921,7 +921,11 @@
             "public": "This is a public ticket",
             "shop": "Show in shop",
             "auto_send_info_mail": "Auto send info mail",
-            "error_loading_data": "Error loading event info :("
+            "error_loading_data": "Error loading event info :(",
+            "tickets": {
+                "title_list": "Event tickets",
+                "empty_list": "No tickets have been defined yet for this event..."
+            }
         },
         "event": {
             "location_please_select": "Please select...",
