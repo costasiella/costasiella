@@ -1,10 +1,12 @@
 import sys
+import datetime
 
 from django.core.management.base import BaseCommand, CommandError, no_translations
 import costasiella.models as models
 
-from MySQLdb import _mysql
+import MySQLdb
 from MySQLdb._exceptions import OperationalError
+import MySQLdb.converters
 
 class Command(BaseCommand):
     help = 'Import from OpenStudio. Provide at least --db_name, --db_user and --db_password.'
@@ -82,13 +84,31 @@ class Command(BaseCommand):
 
         :return:
         """
+        # Conversion mapping
+        # https://mysqlclient.readthedocs.io/user_guide.html#some-examples
+        # os_db_conv = {
+        #     FIELD_TYPE.: int,
+        #     FIELD_TYPE.LONG: int,
+        #     FIELD_TYPE.VARCHAR: str,
+        #     FIELD_TYPE.CHAR: str,
+        #     FIELD_TYPE.FLOAT: float,
+        #     FIELD_TYPE.DOUBLE: float,
+        #     # FIELD_TYPE.DATE: datetime.date,
+        #     # FIELD_TYPE.DATETIME: datetime.datetime,
+        # }
+        orig_conv = MySQLdb.converters.conversions
+        conv_iter = iter(orig_conv)
+        convert = dict(zip(conv_iter, [str,] * len(orig_conv.keys())))
+
         try:
-            db = _mysql.connect(
+            conn = MySQLdb.connect(
                 host=host,
                 user=user,
                 passwd=password,
                 db=db,
-                port=port
+                port=port,
+                charset="latin1",
+                # conv=convert
             )
         except OperationalError as e:
             self.stdout.write("Error connecting to OpenStudio MySQL database:")
@@ -97,7 +117,27 @@ class Command(BaseCommand):
             self.stdout.write("Exiting...")
             sys.exit(1)
 
-        return db.cursor()
+        return conn.cursor()
+
+    def _import_os_users(self, cursor):
+        """
+        Fetch OpenStudio users
+        :param c: MySQL db cursor
+        :return:
+        """
+        query = ("SELECT * from auth_user")
+        cursor.execute(query)
+        # result = db.use_result()
+
+        # print(cursor.fetchone())
+        print(cursor.fetchall())
+
+        # print(result)
+        # print(result.fetch_row())
+        # # print(result.fetch_row(maxrows=0))
+
+
+
 
     @no_translations
     def handle(self, *args, **options):
@@ -111,13 +151,17 @@ class Command(BaseCommand):
         if options_confirmation:
             self.stdout.write("")
             self.stdout.write("Testing OpenStudio MySQL connection...")
-            c = self._connect_to_db_and_get_cursor(
+            cursor = self._connect_to_db_and_get_cursor(
                 host=options['db_host'],
                 user=options['db_user'],
                 password=options['db_password'],
                 db=options['db_name'],
                 port=options['db_port']
             )
+
+        self._import_os_users(cursor)
+
+
 
         # for poll_id in options['poll_ids']:
         #     try:
