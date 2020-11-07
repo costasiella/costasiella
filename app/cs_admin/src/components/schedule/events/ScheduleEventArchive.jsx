@@ -26,15 +26,15 @@ function ScheduleEventArchive({t, match, history, node}) {
           onClick={() => {
             confirm_archive({
               t: t,
-              msgConfirm: t("schedule.events.unarchive_confirm_msg"),
+              msgConfirm: t("schedule.events.archive_confirm_msg"),
               msgDescription: <p></p>,
-              msgSuccess: t('general.unarchived'),
+              msgSuccess: t('general.archived'),
               archiveFunction: archiveScheduleEvent,
               functionVariables: { 
                 variables: {
                   input: {
                     id: node.id,
-                    archived: false
+                    archived: true
                   },
                 }, 
                 refetchQueries: refetchQueries,
@@ -52,15 +52,15 @@ function ScheduleEventArchive({t, match, history, node}) {
         onClick={() => {
           confirm_unarchive({
             t: t,
-            msgConfirm: t("schedule.events.archive_confirm_msg"),
+            msgConfirm: t("schedule.events.unarchive_confirm_msg"),
             msgDescription: <p></p>,
-            msgSuccess: t('general.archived'),
+            msgSuccess: t('general.unarchived'),
             archiveFunction: archiveScheduleEvent,
             functionVariables: { 
               variables: {
                 input: {
                   id: node.id,
-                  archived: true
+                  archived: false
                 },
               }, 
               refetchQueries: refetchQueries,
