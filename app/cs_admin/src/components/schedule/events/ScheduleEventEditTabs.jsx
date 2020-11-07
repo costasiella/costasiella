@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom'
 
 import CardTabs from "../../ui/CardTabs"
 
-function ScheduleEventEditTabs({ t, active, event_id}) {
+function ScheduleEventEditTabs({ t, active, eventId}) {
 
   return (
     <CardTabs 
@@ -15,17 +15,17 @@ function ScheduleEventEditTabs({ t, active, event_id}) {
           {
             name: "general", 
             title: t("schedule.events.edit_menu.general"), 
-            link: `/events/edit/${event_id}/`
+            link: `/events/edit/${eventId}/`
           },
           {
             name: "tickets", 
             title: t("schedule.events.edit_menu.tickets"), 
-            link: `/events/edit/${event_id}/tickets`
+            link: `/events/edit/${eventId}/tickets`
           },
           {
             name: "activities", 
             title: t("schedule.events.edit_menu.activities"), 
-            link: `/events/edit/${event_id}/activities`
+            link: `/events/edit/${eventId}/activities`
           },
       ]}
       active={active}
