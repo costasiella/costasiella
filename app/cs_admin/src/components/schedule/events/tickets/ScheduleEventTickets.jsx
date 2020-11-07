@@ -9,6 +9,7 @@ import { v4 } from 'uuid'
 
 import AppSettingsContext from '../../../context/AppSettingsContext'
 import ButtonAddSecondaryMenu from '../../../ui/ButtonAddSecondaryMenu'
+import BadgeBoolean from "../../../ui/BadgeBoolean"
 
 import { GET_SCHEDULE_EVENT_TICKETS_QUERY } from './queries'
 
@@ -128,7 +129,7 @@ function ScheduleEventTickets({t, match, history}) {
                   {node.priceDisplay}
                 </Table.Col>
                 <Table.Col>
-                  
+                  <BadgeBoolean value={node.displayPublic} />
                 </Table.Col>
                 <Table.Col>
                   
