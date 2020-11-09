@@ -40,6 +40,33 @@ query ScheduleEventTickets($before:String, $after:String, $schedule_event:ID!) {
 }
 `
 
+export const GET_SCHEDULE_EVENT_TICKET_QUERY = gql`
+query ScheduleEventTicket($before:String, $after:String, $schedule_event_ticket:ID!) {
+  scheduleEventTicket(schedule_event_ticket: $schedule_event_ticket) {
+    scheduleEventTicket {
+      id
+      displayPublic
+      name
+      description
+      price
+      financeTaxRate {
+        id
+        name
+      }
+      financeGlaccount {
+        id
+        name
+      }
+      financeCostcenter {
+        id
+        name
+      }
+
+    }
+  }
+}
+`
+
 // export const GET_ACCOUNT_SUBSCRIPTION_BLOCK_QUERY = gql`
 // query AccountSubscriptionBlock($id: ID!) {
 //   accountSubscriptionBlock(id:$id) {
