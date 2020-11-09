@@ -24,7 +24,7 @@ import {
 } from "tabler-react";
 // import HasPermissionWrapper from "../../../../HasPermissionWrapper"
 import ScheduleEventEditListBase from "../ScheduleEventEditListBase"
-// import AccountSubscriptionEditBlockDelete from "./AccountSubscriptionEditBlockDelete"
+import ScheduleEventTicketDelete from "./ScheduleEventTicketDelete"
 import moment from 'moment';
 
 
@@ -147,8 +147,7 @@ function ScheduleEventTickets({t, match, history}) {
                 </Table.Col>
                 <Table.Col className="text-right">
                   {/* Check for fullEvent / deletable before showing delete button */}
-                  delete here...
-                  {/* <AccountSubscriptionEditBlockDelete id={node.id} /> */}
+                  {(node.deletable) ? <ScheduleEventTicketDelete id={node.id} /> : ""}
                 </Table.Col>
               </Table.Row>
             ))}
