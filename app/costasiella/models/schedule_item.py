@@ -30,6 +30,7 @@ class ScheduleItem(models.Model):
 
     SCHEDULE_ITEM_TYPES = (
         ('CLASS', _("Class")),
+        ('EVENT_ACTIVITY', _("Event Activity")),
         ('APPOINTMENT', _("Appointment"))
     )
 
@@ -57,7 +58,7 @@ class ScheduleItem(models.Model):
     frequency_interval = models.PositiveSmallIntegerField(choices=FREQUENCY_INTERVAL_OPTIONS)
     organization_location_room = models.ForeignKey(OrganizationLocationRoom, on_delete=models.CASCADE)
     organization_classtype = models.ForeignKey(OrganizationClasstype, on_delete=models.CASCADE, null=True)
-    organization_level = models.ForeignKey(OrganizationLevel, on_delete=models.CASCADE, null=True)
+    organization_level = models.ForeignKey(OrganizationLevel, on_delete=models.SET_NULL, null=True)
     date_start = models.DateField()
     date_end = models.DateField(default=None, null=True)
     time_start = models.TimeField()
