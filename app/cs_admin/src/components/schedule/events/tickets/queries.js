@@ -106,28 +106,13 @@ query ScheduleEventTicket($before:String, $after:String, $id:ID!) {
 }
 `
 
-// export const GET_ACCOUNT_SUBSCRIPTION_BLOCK_QUERY = gql`
-// query AccountSubscriptionBlock($id: ID!) {
-//   accountSubscriptionBlock(id:$id) {
-//     id
-//     accountSubscription {
-//       id
-//     }
-//     dateStart
-//     dateEnd
-//     description
-//   }
-// }
-// `
-
-
-// export const DELETE_ACCOUNT_SUBSCRIPTION_BLOCK = gql`
-//   mutation DeleteAccountSubscriptionBlock($input: DeleteAccountSubscriptionBlockInput!) {
-//     deleteAccountSubscriptionBlock(input: $input) {
-//       ok
-//     }
-//   }
-// `
+export const DELETE_SCHEDULE_EVENT_TICKET = gql`
+  mutation DeleteScheduleEventTicket($input: DeleteScheduleEventTicketInput!) {
+    deleteScheduleEventTicket(input: $input) {
+      ok
+    }
+  }
+`
 
 
 export const GET_INPUT_VALUES_QUERY = gql`
