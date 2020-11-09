@@ -140,6 +140,7 @@ class CreateScheduleEventTicket(graphene.relay.ClientIDMutation):
 class UpdateScheduleEventTicket(graphene.relay.ClientIDMutation):
     class Input:
         id = graphene.ID(required=True)
+        display_public = graphene.Boolean(required=False)
         name = graphene.String(required=True)
         description = graphene.String(required=False, default_value="")
         price = graphene.Float(required=True, default_value=0)
