@@ -1201,7 +1201,14 @@
             "error_loading_data": "__STRING_NOT_TRANSLATED__",
             "tickets": {
                 "title_list": "__STRING_NOT_TRANSLATED__",
-                "empty_list": "__STRING_NOT_TRANSLATED__"
+                "empty_list": "__STRING_NOT_TRANSLATED__",
+                "toast_add_success": "__STRING_NOT_TRANSLATED__",
+                "delete_confirm_msg": "__STRING_NOT_TRANSLATED__",
+                "delete_success": "__STRING_NOT_TRANSLATED__",
+                "toast_edit_success": "__STRING_NOT_TRANSLATED__",
+                "add": "__STRING_NOT_TRANSLATED__",
+                "edit": "__STRING_NOT_TRANSLATED__",
+                "public": "__STRING_NOT_TRANSLATED__"
             }
         },
         "event": {

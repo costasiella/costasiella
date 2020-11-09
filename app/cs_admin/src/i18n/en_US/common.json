@@ -924,7 +924,14 @@
             "error_loading_data": "Error loading event info :(",
             "tickets": {
                 "title_list": "Event tickets",
-                "empty_list": "No tickets have been defined yet for this event..."
+                "empty_list": "No tickets have been defined yet for this event...",
+                "toast_add_success": "Added ticket",
+                "delete_confirm_msg": "Are you sure you wish to delete this ticket?",
+                "delete_success": "Deleted ticket",
+                "toast_edit_success": "Saved",
+                "add": "Add ticket",
+                "edit": "Edit ticket",
+                "public": "This is a public ticket"
             }
         },
         "event": {
