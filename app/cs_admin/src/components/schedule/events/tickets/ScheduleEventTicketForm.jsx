@@ -14,8 +14,8 @@ import {
 } from "tabler-react"
 
 import { Editor } from '@tinymce/tinymce-react'
-import { tinymceBasicConf } from "../../../../../../plugin_config/tinymce"
-import CSDatePicker from "../../../../../ui/CSDatePicker"
+import { tinymceBasicConf } from "../../../../plugin_config/tinymce"
+// import CSDatePicker from "../../../../../ui/CSDatePicker"
 
 function ScheduleEventTicketForm ({ 
   t, 
@@ -33,9 +33,9 @@ function ScheduleEventTicketForm ({
 
   let title
   if ( formTitle == "create" ) {
-    title = t('relations.account.subscriptions.blocks.add')
+    title = t('schedule.events.tickets.add')
   } else {
-    title = t('relations.account.subscriptions.blocks.edit')
+    title = t('schedule.events.tickets.edit')
   }
 
   return (
