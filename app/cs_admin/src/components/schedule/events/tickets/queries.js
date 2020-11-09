@@ -62,3 +62,51 @@ query ScheduleEventTickets($before:String, $after:String, $schedule_event:ID!) {
 //     }
 //   }
 // `
+
+
+export const GET_INPUT_VALUES_QUERY = gql`
+  query ScheduleEventTicketInputValues($after: String, $before: String) {
+    financeTaxRates(first: 100, before: $before, after: $after, archived: false) {
+      pageInfo {
+        startCursor
+        endCursor
+        hasNextPage
+        hasPreviousPage
+      }
+      edges {
+        node {
+          id
+          name
+        }
+      }
+    }
+    financeGlaccounts(first: 100, before: $before, after: $after, archived: false) {
+      pageInfo {
+        startCursor
+        endCursor
+        hasNextPage
+        hasPreviousPage
+      }
+      edges {
+        node {
+          id
+          name
+        }
+      }
+    }
+    financeCostcenters(first: 100, before: $before, after: $after, archived: false) {
+      pageInfo {
+        startCursor
+        endCursor
+        hasNextPage
+        hasPreviousPage
+      }
+      edges {
+        node {
+          id
+          name
+        }
+      }
+    }
+  }
+`
