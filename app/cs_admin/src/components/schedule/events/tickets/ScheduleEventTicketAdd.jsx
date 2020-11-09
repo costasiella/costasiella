@@ -9,8 +9,7 @@ import { Formik } from 'formik'
 import { toast } from 'react-toastify'
 
 import { GET_SCHEDULE_EVENT_TICKETS_QUERY, GET_INPUT_VALUES_QUERY } from "./queries"
-// import { ACCOUNT_SUBSCRIPTION_BLOCK_SCHEMA } from './yupSchema'
-// import { dateToLocalISO } from '../../../../../../tools/date_tools'
+import { SCHEDULE_EVENT_TICKET_SCHEMA } from './yupSchema'
 
 import ScheduleEventEditBase from "../ScheduleEventEditBase"
 import ScheduleEventTicketForm from "./ScheduleEventTicketForm"
@@ -58,7 +57,7 @@ function ScheduleEventTicketAdd({ t, history, match }) {
           name: '',
           description: '',
         }}
-        // validationSchema={ACCOUNT_SUBSCRIPTION_BLOCK_SCHEMA}
+        validationSchema={SCHEDULE_EVENT_TICKET_SCHEMA}
         onSubmit={(values, { setSubmitting }) => {
           console.log("submit values")
           console.log(values)
