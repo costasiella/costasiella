@@ -41,27 +41,66 @@ query ScheduleEventTickets($before:String, $after:String, $schedule_event:ID!) {
 `
 
 export const GET_SCHEDULE_EVENT_TICKET_QUERY = gql`
-query ScheduleEventTicket($before:String, $after:String, $schedule_event_ticket:ID!) {
-  scheduleEventTicket(schedule_event_ticket: $schedule_event_ticket) {
-    scheduleEventTicket {
+query ScheduleEventTicket($before:String, $after:String, $id:ID!) {
+  scheduleEventTicket(id: $id) {
+    id
+    displayPublic
+    name
+    description
+    price
+    financeTaxRate {
       id
-      displayPublic
       name
-      description
-      price
-      financeTaxRate {
+    }
+    financeGlaccount {
+      id
+      name
+    }
+    financeCostcenter {
+      id
+      name
+    }
+  }
+  financeTaxRates(first: 100, before: $before, after: $after, archived: false) {
+    pageInfo {
+      startCursor
+      endCursor
+      hasNextPage
+      hasPreviousPage
+    }
+    edges {
+      node {
         id
         name
       }
-      financeGlaccount {
+    }
+  }
+  financeGlaccounts(first: 100, before: $before, after: $after, archived: false) {
+    pageInfo {
+      startCursor
+      endCursor
+      hasNextPage
+      hasPreviousPage
+    }
+    edges {
+      node {
         id
         name
       }
-      financeCostcenter {
+    }
+  }
+  financeCostcenters(first: 100, before: $before, after: $after, archived: false) {
+    pageInfo {
+      startCursor
+      endCursor
+      hasNextPage
+      hasPreviousPage
+    }
+    edges {
+      node {
         id
         name
       }
-
     }
   }
 }
