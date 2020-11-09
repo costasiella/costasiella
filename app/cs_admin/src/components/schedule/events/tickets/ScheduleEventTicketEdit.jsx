@@ -43,12 +43,12 @@ function ScheduleEventTicketEdit({ t, history, match }) {
   })
 
   if (loading) return (
-    <ScheduleEventEditBase activeTab={activeTab}>
+    <ScheduleEventEditBase activeTab={activeTab} returnUrl={returnUrl}>
       {t("general.loading_with_dots")}
     </ScheduleEventEditBase>
   )
   if (error) return (
-    <ScheduleEventEditBase activeTab={activeTab}>
+    <ScheduleEventEditBase activeTab={activeTab} returnUrl={returnUrl}>
       <p>{t('general.error_sad_smiley')}</p>
       <p>{error.message}</p>
     </ScheduleEventEditBase>
@@ -78,7 +78,7 @@ function ScheduleEventTicketEdit({ t, history, match }) {
 
 
   return (
-    <ScheduleEventEditBase activeTab={activeTab}>
+    <ScheduleEventEditBase activeTab={activeTab} returnUrl={returnUrl}>
       <Formik
         initialValues={{ 
           displayPublic: scheduleEventTicket.displayPublic,

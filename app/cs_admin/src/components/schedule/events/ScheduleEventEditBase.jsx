@@ -31,13 +31,12 @@ import HasPermissionWrapper from "../../HasPermissionWrapper"
 import ScheduleEventsBase from "./ScheduleEventsBase"
 
 
-function ScheduleEventEditBase({t, match, history, activeTab, children}) {
+function ScheduleEventEditBase({t, match, history, activeTab, children,returnUrl="/schedule/events"}) {
   const appSettings = useContext(AppSettingsContext)
   const dateFormat = appSettings.dateFormat
   const cardTitle = t("schedule.events.edit")
 
   const eventId = match.params.event_id
-  const returnUrl = "/schedule/events"
 
   const { loading, error, data } = useQuery(GET_SCHEDULE_EVENT_QUERY, {
     variables: { id: eventId }

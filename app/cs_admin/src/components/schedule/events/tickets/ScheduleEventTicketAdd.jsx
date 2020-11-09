@@ -36,12 +36,12 @@ function ScheduleEventTicketAdd({ t, history, match }) {
   const { loading, error, data, fetchMore } = useQuery(GET_INPUT_VALUES_QUERY)
   
   if (loading) return (
-    <ScheduleEventEditBase activeTab={activeTab}>
+    <ScheduleEventEditBase activeTab={activeTab} returnUrl={returnUrl}>
       {t("general.loading_with_dots")}
     </ScheduleEventEditBase>
   )
   if (error) return (
-    <ScheduleEventEditBase activeTab={activeTab}>
+    <ScheduleEventEditBase activeTab={activeTab} returnUrl={returnUrl}>
       <p>{t('general.error_sad_smiley')}</p>
       <p>{error.message}</p>
     </ScheduleEventEditBase>
@@ -50,7 +50,7 @@ function ScheduleEventTicketAdd({ t, history, match }) {
   const inputData = data
 
   return (
-    <ScheduleEventEditBase activeTab={activeTab}>
+    <ScheduleEventEditBase activeTab={activeTab} returnUrl={returnUrl}>
       <Formik
         initialValues={{ 
           displayPublic: true,
