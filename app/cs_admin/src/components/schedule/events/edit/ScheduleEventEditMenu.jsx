@@ -60,7 +60,7 @@ const ScheduleEventMenu = ({ t, eventId, active_link }) => (
           icon="calendar"
           active={activities_active}
           >
-          {t('schedule.events.activitities.title')}
+          {t('schedule.events.activities.title')}
       </List.GroupItem>
     </HasPermissionWrapper>
   </List.Group>

@@ -34,7 +34,7 @@ import ScheduleEventsBase from "../ScheduleEventsBase"
 function ScheduleEventEditBase({t, match, history, activeTab, children,returnUrl="/schedule/events"}) {
   const appSettings = useContext(AppSettingsContext)
   const dateFormat = appSettings.dateFormat
-  const cardTitle = t("schedule.events.edit")
+  const cardTitle = t("schedule.events.edit.title")
 
   const eventId = match.params.event_id
 

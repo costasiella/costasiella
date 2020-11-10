@@ -361,17 +361,17 @@
         "new_task": "New task",
         "credits_remaining": "Credits remaining",
         "month": "Month",
-        "unarchive": "Restore",
-        "tagline": "Tagline",
-        "preview": "Preview",
-        "infoMailContent": "Info mail content",
-        "start": "start",
         "confirm_archive": "Confirm archival",
         "confirm_archive_no": "No, keep it here",
         "confirm_archive_yes": "Yes, archive it",
         "confirm_unarchive": "Confirm restore",
         "confirm_unarchive_no": "No, keep it here",
-        "confirm_unarchive_yes": "Yes, restore it"
+        "confirm_unarchive_yes": "Yes, restore it",
+        "unarchive": "Restore",
+        "tagline": "Tagline",
+        "preview": "Preview",
+        "infoMailContent": "Info mail content",
+        "start": "Start"
     },
     "yup": {
         "min_len_3": "Please input at least 3 characters",
@@ -906,37 +906,43 @@
         },
         "events": {
             "title": "Events",
-            "add": "Add event",
-            "edit": "Edit event",
-            "error_loading": "Error loading event info :(",
-            "toast_edit_success": "Saved",
-            "toast_add_success": "Added new event",
-            "unarchive_confirm_msg": "Do you wish to restore this event?",
+            "add": "Add",
+            "error_loading": "Error loading events :(",
+            "toast_add_success": "Added event",
             "archive_confirm_msg": "Do you wish to archive this event?",
+            "unarchive_confirm_msg": "Do you wish to restore this event?",
+            "public": "This is a public event",
+            "shop": "This event is shown in the shop",
+            "auto_send_info_mail": "Auto send info mail",
+            "error_loading_data": "Error loading event data :(",
             "edit_menu": {
                 "general": "General",
                 "tickets": "Tickets",
                 "activities": "Activities"
             },
-            "public": "This is a public ticket",
-            "shop": "Show in shop",
-            "auto_send_info_mail": "Auto send info mail",
-            "error_loading_data": "Error loading event info :(",
             "tickets": {
-                "title_list": "Event tickets",
-                "empty_list": "No tickets have been defined yet for this event...",
                 "toast_add_success": "Added ticket",
-                "delete_confirm_msg": "Are you sure you wish to delete this ticket?",
+                "delete_confirm_msg": "Do you wish to delete this ticket?",
                 "delete_success": "Deleted ticket",
                 "toast_edit_success": "Saved",
                 "add": "Add ticket",
                 "edit": "Edit ticket",
-                "public": "This is a public ticket"
+                "public": "This is a public ticket",
+                "title_list": "Tickets",
+                "empty_list": "No tickets have been created yet for this event.",
+                "title": "Tickets"
+            },
+            "edit": {
+                "title": "Edit event"
+            },
+            "toast_edit_success": "Saved",
+            "activities": {
+                "title": "Activities"
             }
         },
         "event": {
             "location_please_select": "Please select...",
-            "teacher_please_select": "Please select"
+            "teacher_please_select": "Please select..."
         }
     },
     "countries": {

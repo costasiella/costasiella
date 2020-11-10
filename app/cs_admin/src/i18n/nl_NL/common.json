@@ -191,17 +191,17 @@
         "new_task": "__STRING_NOT_TRANSLATED__",
         "credits_remaining": "__STRING_NOT_TRANSLATED__",
         "month": "__STRING_NOT_TRANSLATED__",
-        "unarchive": "__STRING_NOT_TRANSLATED__",
-        "tagline": "__STRING_NOT_TRANSLATED__",
-        "preview": "__STRING_NOT_TRANSLATED__",
-        "infoMailContent": "__STRING_NOT_TRANSLATED__",
-        "start": "__STRING_NOT_TRANSLATED__",
         "confirm_archive": "__STRING_NOT_TRANSLATED__",
         "confirm_archive_no": "__STRING_NOT_TRANSLATED__",
         "confirm_archive_yes": "__STRING_NOT_TRANSLATED__",
         "confirm_unarchive": "__STRING_NOT_TRANSLATED__",
         "confirm_unarchive_no": "__STRING_NOT_TRANSLATED__",
-        "confirm_unarchive_yes": "__STRING_NOT_TRANSLATED__"
+        "confirm_unarchive_yes": "__STRING_NOT_TRANSLATED__",
+        "unarchive": "__STRING_NOT_TRANSLATED__",
+        "tagline": "__STRING_NOT_TRANSLATED__",
+        "preview": "__STRING_NOT_TRANSLATED__",
+        "infoMailContent": "__STRING_NOT_TRANSLATED__",
+        "start": "__STRING_NOT_TRANSLATED__"
     },
     "settings": {
         "error_loading": "__STRING_NOT_TRANSLATED__",
@@ -1184,31 +1184,37 @@
         "events": {
             "title": "__STRING_NOT_TRANSLATED__",
             "add": "__STRING_NOT_TRANSLATED__",
-            "edit": "__STRING_NOT_TRANSLATED__",
             "error_loading": "__STRING_NOT_TRANSLATED__",
-            "toast_edit_success": "__STRING_NOT_TRANSLATED__",
             "toast_add_success": "__STRING_NOT_TRANSLATED__",
-            "unarchive_confirm_msg": "__STRING_NOT_TRANSLATED__",
             "archive_confirm_msg": "__STRING_NOT_TRANSLATED__",
+            "unarchive_confirm_msg": "__STRING_NOT_TRANSLATED__",
+            "public": "__STRING_NOT_TRANSLATED__",
+            "shop": "__STRING_NOT_TRANSLATED__",
+            "auto_send_info_mail": "__STRING_NOT_TRANSLATED__",
+            "error_loading_data": "__STRING_NOT_TRANSLATED__",
             "edit_menu": {
                 "general": "__STRING_NOT_TRANSLATED__",
                 "tickets": "__STRING_NOT_TRANSLATED__",
                 "activities": "__STRING_NOT_TRANSLATED__"
             },
-            "public": "__STRING_NOT_TRANSLATED__",
-            "shop": "__STRING_NOT_TRANSLATED__",
-            "auto_send_info_mail": "__STRING_NOT_TRANSLATED__",
-            "error_loading_data": "__STRING_NOT_TRANSLATED__",
             "tickets": {
-                "title_list": "__STRING_NOT_TRANSLATED__",
-                "empty_list": "__STRING_NOT_TRANSLATED__",
                 "toast_add_success": "__STRING_NOT_TRANSLATED__",
                 "delete_confirm_msg": "__STRING_NOT_TRANSLATED__",
                 "delete_success": "__STRING_NOT_TRANSLATED__",
                 "toast_edit_success": "__STRING_NOT_TRANSLATED__",
                 "add": "__STRING_NOT_TRANSLATED__",
                 "edit": "__STRING_NOT_TRANSLATED__",
-                "public": "__STRING_NOT_TRANSLATED__"
+                "public": "__STRING_NOT_TRANSLATED__",
+                "title_list": "__STRING_NOT_TRANSLATED__",
+                "empty_list": "__STRING_NOT_TRANSLATED__",
+                "title": "__STRING_NOT_TRANSLATED__"
+            },
+            "edit": {
+                "title": "__STRING_NOT_TRANSLATED__"
+            },
+            "toast_edit_success": "__STRING_NOT_TRANSLATED__",
+            "activities": {
+                "title": "__STRING_NOT_TRANSLATED__"
             }
         },
         "event": {
