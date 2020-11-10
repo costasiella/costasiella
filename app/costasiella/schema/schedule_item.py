@@ -28,7 +28,7 @@ class ScheduleItemNode(DjangoObjectType):
 
     class Meta:
         model = ScheduleItem
-        filter_fields = ['schedule_item_type']
+        filter_fields = ['schedule_item_type', 'schedule_event']
         interfaces = (graphene.relay.Node, )
 
     @classmethod
@@ -36,7 +36,8 @@ class ScheduleItemNode(DjangoObjectType):
         user = info.context.user
         permissions = [
             'costasiella.view_scheduleitem',
-            'costasiella.view_scheduleclass'
+            'costasiella.view_scheduleclass',
+            'costasiella.view_scheduleevent',
         ]
         require_login_and_one_of_permissions(user, permissions)
 

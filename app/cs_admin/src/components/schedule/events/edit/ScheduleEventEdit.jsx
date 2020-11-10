@@ -25,7 +25,7 @@ import {
 import SiteWrapper from "../../../SiteWrapper"
 import HasPermissionWrapper from "../../../HasPermissionWrapper"
 
-import ScheduleEventEditBase from "../ScheduleEventEditBase"
+import ScheduleEventEditBase from "./ScheduleEventEditBase"
 import ScheduleEventForm from "../ScheduleEventForm"
 import { get_list_query_variables } from "../tools"
 
@@ -44,7 +44,7 @@ const UPDATE_SCHEDULE_EVENT = gql`
 function ScheduleEventEdit({t, match, history}) {
   const id = match.params.event_id
   const returnUrl = "/schedule/events"
-  const activeTab = "general"
+  const activeLink = "general"
 
   const { loading, error, data } = useQuery(GET_SCHEDULE_EVENT_QUERY, {
     variables: { id: id }
@@ -54,7 +54,7 @@ function ScheduleEventEdit({t, match, history}) {
 
   if (loading) {
     return (
-      <ScheduleEventEditBase activeTab={activeTab}>
+      <ScheduleEventEditBase activeLink={activeLink}>
         <Card.Body>
           <Dimmer loading={true} active={true} />
         </Card.Body>
@@ -64,7 +64,7 @@ function ScheduleEventEdit({t, match, history}) {
 
   if (error) {
     return (
-      <ScheduleEventEditBase activeTab={activeTab}>
+      <ScheduleEventEditBase activeLink={activeLink}>
         <Card.Body>
           {t("schedule.events.error_loading")}
         </Card.Body>
@@ -91,7 +91,7 @@ function ScheduleEventEdit({t, match, history}) {
   }
 
   return (
-    <ScheduleEventEditBase activeTab={activeTab}>
+    <ScheduleEventEditBase activeLink={activeLink}>
         <Formik
           initialValues={{ 
             displayPublic: initialData.displayPublic,

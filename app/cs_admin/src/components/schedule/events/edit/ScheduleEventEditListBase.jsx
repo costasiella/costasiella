@@ -10,6 +10,7 @@ import { Link } from 'react-router-dom'
 import { toast } from 'react-toastify'
 
 import AppSettingsContext from '../../context/AppSettingsContext'
+import ContentCard from "../../general/ContentCard"
 
 import { GET_SCHEDULE_EVENT_QUERY } from './queries'
 import ScheduleEventEditTabs from "./ScheduleEventEditTabs"
@@ -28,15 +29,16 @@ import {
 } from "tabler-react";
 import HasPermissionWrapper from "../../HasPermissionWrapper"
 
-import ScheduleEventsBase from "./ScheduleEventsBase"
+import ScheduleEventEditBaseBase from "./ScheduleEventEditBaseBase"
 
 
-function ScheduleEventEditBase({t, match, history, activeTab, children,returnUrl="/schedule/events"}) {
+function ScheduleEventEditListBase({t, match, history, activeTab, pageInfo, onLoadMore, children}) {
   const appSettings = useContext(AppSettingsContext)
   const dateFormat = appSettings.dateFormat
   const cardTitle = t("schedule.events.edit")
 
   const eventId = match.params.event_id
+  const returnUrl = "/schedule/events"
 
   const { loading, error, data } = useQuery(GET_SCHEDULE_EVENT_QUERY, {
     variables: { id: eventId }
@@ -50,27 +52,25 @@ function ScheduleEventEditBase({t, match, history, activeTab, children,returnUrl
 
 if (loading) {
   return (
-    <ScheduleEventsBase sidebarContent={sidebarContent}>
+    <ScheduleEventEditBaseBase sidebarContent={sidebarContent}>
       <Card title={cardTitle}>
-        <ScheduleEventEditTabs active={activeTab} eventId={eventId}/>
         <Card.Body>
           <Dimmer loading={true} active={true} />
         </Card.Body>
       </Card>
-    </ScheduleEventsBase>
+    </ScheduleEventEditBaseBase>
   )
 }
 
 if (error) {
   return (
-    <ScheduleEventsBase sidebarContent={sidebarContent}>
+    <ScheduleEventEditBaseBase sidebarContent={sidebarContent}>
       <Card title={cardTitle}>
-        <ScheduleEventEditTabs active={activeTab} eventId={eventId}/>
         <Card.Body>
           {t("schedule.events.error_loading")}
         </Card.Body>
       </Card>
-    </ScheduleEventsBase>
+    </ScheduleEventEditBaseBase>
   )
 }
 
@@ -82,16 +82,16 @@ const cardSubTitle = (event) ?
 </span> : ""
 
 return (
-  <ScheduleEventsBase sidebarContent={sidebarContent}>
-    <Card>
-      <Card.Header>
-        <Card.Title>{cardTitle} {cardSubTitle}</Card.Title>
-      </Card.Header>
-      <ScheduleEventEditTabs active={activeTab} eventId={eventId}/>
+  <ScheduleEventEditBaseBase sidebarContent={sidebarContent}>
+    <ContentCard 
+      cardTitle={<span>{cardTitle} {cardSubTitle}</span>}
+      pageInfo={pageInfo}
+      onLoadMore={onLoadMore}
+    >
       {children}
-    </Card>
-  </ScheduleEventsBase>
+    </ContentCard>
+  </ScheduleEventEditBaseBase>
   )
 }
 
-export default withTranslation()(withRouter(ScheduleEventEditBase))
+export default withTranslation()(withRouter(ScheduleEventEditListBase))

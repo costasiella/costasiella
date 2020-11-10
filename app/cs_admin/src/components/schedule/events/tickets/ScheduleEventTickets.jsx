@@ -23,7 +23,7 @@ import {
   Table,
 } from "tabler-react";
 // import HasPermissionWrapper from "../../../../HasPermissionWrapper"
-import ScheduleEventEditListBase from "../ScheduleEventEditListBase"
+import ScheduleEventTicketListBase from "./ScheduleEventTicketListBase"
 import ScheduleEventTicketDelete from "./ScheduleEventTicketDelete"
 import moment from 'moment';
 
@@ -46,15 +46,15 @@ function ScheduleEventTickets({t, match, history}) {
   })
   
   if (loading) return (
-    <ScheduleEventEditListBase activeTab={activeTab}>
+    <ScheduleEventTicketListBase activeTab={activeTab}>
       {t("general.loading_with_dots")}
-    </ScheduleEventEditListBase>
+    </ScheduleEventTicketListBase>
   )
   if (error) return (
-    <ScheduleEventEditListBase activeTab={activeTab}>
+    <ScheduleEventTicketListBase activeTab={activeTab}>
       <p>{t('general.error_sad_smiley')}</p>
       <p>{error.message}</p>
-    </ScheduleEventEditListBase>
+    </ScheduleEventTicketListBase>
   )
 
   console.log('query data')
@@ -65,11 +65,11 @@ function ScheduleEventTickets({t, match, history}) {
 
   // Empty list
   if (!scheduleEventTickets.edges.length) { return (
-    <ScheduleEventEditListBase activeTab={activeTab}>
+    <ScheduleEventTicketListBase activeTab={activeTab}>
       <div className="pull-right">{buttonAdd}</div>
       <h5>{t('schedule.events.tickets.title_list')}</h5>
       <p>{t('schedule.events.tickets.empty_list')}</p>
-    </ScheduleEventEditListBase>
+    </ScheduleEventTicketListBase>
   )}
 
   const onLoadMore = () => {
@@ -97,7 +97,7 @@ function ScheduleEventTickets({t, match, history}) {
   }
 
   return (
-    <ScheduleEventEditListBase activeTab={activeTab} pageInfo={pageInfo} onLoadMore={onLoadMore}>
+    <ScheduleEventTicketListBase activeTab={activeTab} pageInfo={pageInfo} onLoadMore={onLoadMore}>
       <div className="pull-right">{buttonAdd}</div>
       <h5>{t('schedule.events.tickets.title_list')}</h5>
       <Table>
@@ -153,7 +153,7 @@ function ScheduleEventTickets({t, match, history}) {
             ))}
         </Table.Body>
       </Table>
-    </ScheduleEventEditListBase>
+    </ScheduleEventTicketListBase>
   )
 }
 
