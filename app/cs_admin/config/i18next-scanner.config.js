@@ -12,7 +12,7 @@ module.exports = {
             '!**/node_modules/**'
         ],
         dest: './src/i18n',
-        debug: true,
+        debug: false,
         removeUnusedKeys: true,
         sort: false,
         func: {
