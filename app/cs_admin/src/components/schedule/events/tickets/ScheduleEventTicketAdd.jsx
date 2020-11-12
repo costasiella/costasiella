@@ -7,6 +7,13 @@ import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
 import { Formik } from 'formik'
 import { toast } from 'react-toastify'
+import { Link } from 'react-router-dom'
+
+
+import {
+  Button,
+  Icon
+} from "tabler-react"
 
 import { GET_SCHEDULE_EVENT_TICKETS_QUERY, GET_INPUT_VALUES_QUERY } from "./queries"
 import { SCHEDULE_EVENT_TICKET_SCHEMA } from './yupSchema'
@@ -36,14 +43,31 @@ function ScheduleEventTicketAdd({ t, history, match }) {
     onCompleted: () => history.push(returnUrl),
   })
   const { loading, error, data, fetchMore } = useQuery(GET_INPUT_VALUES_QUERY)
+
+    const sidebarContent = <Link to={returnUrl}>
+      <Button color="primary btn-block mb-6">
+        <Icon prefix="fe" name="chevrons-left" /> {t('general.back')}
+      </Button>
+    </Link>
+
   
   if (loading) return (
-    <ScheduleEventEditBase cardTitle={cardTitle} activeLink={activeLink} returnUrl={returnUrl}>
+    <ScheduleEventEditBase 
+      sidebarContent={sidebarContent} 
+      cardTitle={cardTitle} 
+      activeLink={activeLink} 
+      returnUrl={returnUrl}
+    >
       {t("general.loading_with_dots")}
     </ScheduleEventEditBase>
   )
   if (error) return (
-    <ScheduleEventEditBase cardTitle={cardTitle} activeLink={activeLink} returnUrl={returnUrl}>
+    <ScheduleEventEditBase 
+      sidebarContent={sidebarContent} 
+      cardTitle={cardTitle} 
+      activeLink={activeLink} 
+      returnUrl={returnUrl}
+    >
       <p>{t('general.error_sad_smiley')}</p>
       <p>{error.message}</p>
     </ScheduleEventEditBase>
@@ -52,7 +76,12 @@ function ScheduleEventTicketAdd({ t, history, match }) {
   const inputData = data
 
   return (
-    <ScheduleEventEditBase cardTitle={cardTitle} activeLink={activeLink} returnUrl={returnUrl}>
+    <ScheduleEventEditBase 
+      sidebarContent={sidebarContent} 
+      cardTitle={cardTitle} 
+      activeLink={activeLink} 
+      returnUrl={returnUrl}
+    >
       <Formik
         initialValues={{ 
           displayPublic: true,
