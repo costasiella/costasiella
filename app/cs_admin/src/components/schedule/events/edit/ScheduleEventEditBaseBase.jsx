@@ -11,9 +11,12 @@ import {
 import HasPermissionWrapper from "../../../HasPermissionWrapper"
 import SiteWrapper from "../../../SiteWrapper"
 import ScheduleEventEditMenu from "./ScheduleEventEditMenu"
+import ScheduleEventEditBack from "./ScheduleEventEditBack"
 
 
-function ScheduleEventEditBaseBase({ t, match, history, children, sidebarContent="", activeLink, eventId }) {
+function ScheduleEventEditBaseBase({ t, match, history, children, sidebarContent="", activeLink }) {
+  const eventId = match.params.event_id
+
   return (
       <SiteWrapper>
         <div className="my-3 my-md-5">
@@ -21,6 +24,7 @@ function ScheduleEventEditBaseBase({ t, match, history, children, sidebarContent
             <Page.Header title={t("schedule.events.title")} >
               <div className="page-options d-flex">
                 {/* Page options can go here... */}
+                <ScheduleEventEditBack />
               </div>
             </Page.Header>
             <Grid.Row>
@@ -29,7 +33,7 @@ function ScheduleEventEditBaseBase({ t, match, history, children, sidebarContent
             </Grid.Col>
             <Grid.Col md={3}>
               { sidebarContent }
-              <h5>{t("general.menu")}</h5>
+              <h5>{t("general.edit_menu")}</h5>
               <ScheduleEventEditMenu active_link={activeLink} eventId={eventId}/>
             </Grid.Col>
             </Grid.Row>
