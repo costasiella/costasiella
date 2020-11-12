@@ -41,9 +41,7 @@ function ScheduleEventTicketEdit({ t, history, match }) {
     }
   })
 
-  const [updateScheduleEventTicket] = useMutation(UPDATE_SCHEDULE_EVENT_TICKET, {
-    onCompleted: () => history.push(returnUrl),
-  })
+  const [updateScheduleEventTicket] = useMutation(UPDATE_SCHEDULE_EVENT_TICKET)
 
   if (loading) return (
     <ScheduleEventTicketEditBase 
@@ -89,7 +87,6 @@ function ScheduleEventTicketEdit({ t, history, match }) {
   }
 
 
-
   return (
     <ScheduleEventTicketEditBase 
       sidebarContent={sidebarContent} 
@@ -133,6 +130,7 @@ function ScheduleEventTicketEdit({ t, history, match }) {
               toast.success((t('schedule.events.tickets.toast_edit_success')), {
                   position: toast.POSITION.BOTTOM_RIGHT
                 })
+              setSubmitting(false)
             }).catch((error) => {
               toast.error((t('general.toast_server_error')) + ': ' +  error, {
                   position: toast.POSITION.BOTTOM_RIGHT
