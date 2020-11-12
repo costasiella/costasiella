@@ -42,53 +42,55 @@ function ScheduleEventEditBase({t, match, history, activeTab, children, activeLi
     variables: { id: eventId }
   })
 
-  const sidebarContent = <Link to={returnUrl}>
-      <Button color="primary btn-block mb-6">
-        <Icon prefix="fe" name="chevrons-left" /> {t('general.back')}
-      </Button>
-    </Link>
+  // const sidebarContent = <Link to={returnUrl}>
+  //     <Button color="primary btn-block mb-6">
+  //       <Icon prefix="fe" name="chevrons-left" /> {t('general.back')}
+  //     </Button>
+  //   </Link>
+  
+  const sidebarContent = ""
 
-if (loading) {
+  if (loading) {
+    return (
+      <ScheduleEventEditBaseBase sidebarContent={sidebarContent} activeLink={activeLink}>
+        <Card title={cardTitle}>
+          <Card.Body>
+            <Dimmer loading={true} active={true} />
+          </Card.Body>
+        </Card>
+      </ScheduleEventEditBaseBase>
+    )
+  }
+
+  if (error) {
+    return (
+      <ScheduleEventEditBaseBase sidebarContent={sidebarContent} activeLink={activeLink}>
+        <Card title={cardTitle}>
+          <Card.Body>
+            {t("schedule.events.error_loading")}
+          </Card.Body>
+        </Card>
+      </ScheduleEventEditBaseBase>
+    )
+  }
+
+  const event = data.scheduleEvent
+  const dateStart = (event.dateStart) ? moment(event.dateStart).format(dateFormat) : ""
+  const cardSubTitle = (event) ? 
+  <span className="text-muted">
+    - {event.name + " " + dateStart}
+  </span> : ""
+
   return (
-    <ScheduleEventEditBaseBase sidebarContent={sidebarContent} eventId={eventId} activeLink={activeLink}>
-      <Card title={cardTitle}>
-        <Card.Body>
-          <Dimmer loading={true} active={true} />
-        </Card.Body>
+    <ScheduleEventEditBaseBase sidebarContent={sidebarContent} activeLink={activeLink}>
+      <Card>
+        <Card.Header>
+          <Card.Title>{cardTitle} {cardSubTitle}</Card.Title>
+        </Card.Header>
+        {children}
       </Card>
     </ScheduleEventEditBaseBase>
-  )
-}
-
-if (error) {
-  return (
-    <ScheduleEventEditBaseBase sidebarContent={sidebarContent} eventId={eventId} activeLink={activeLink}>
-      <Card title={cardTitle}>
-        <Card.Body>
-          {t("schedule.events.error_loading")}
-        </Card.Body>
-      </Card>
-    </ScheduleEventEditBaseBase>
-  )
-}
-
-const event = data.scheduleEvent
-const dateStart = (event.dateStart) ? moment(event.dateStart).format(dateFormat) : ""
-const cardSubTitle = (event) ? 
-<span className="text-muted">
-  - {event.name + " " + dateStart}
-</span> : ""
-
-return (
-  <ScheduleEventEditBaseBase sidebarContent={sidebarContent} eventId={eventId} activeLink={activeLink}>
-    <Card>
-      <Card.Header>
-        <Card.Title>{cardTitle} {cardSubTitle}</Card.Title>
-      </Card.Header>
-      {children}
-    </Card>
-  </ScheduleEventEditBaseBase>
-  )
-}
+    )
+  }
 
 export default withTranslation()(withRouter(ScheduleEventEditBase))
