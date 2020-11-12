@@ -9,11 +9,9 @@ import { Formik } from 'formik'
 import { Link } from 'react-router-dom'
 import { toast } from 'react-toastify'
 
-import AppSettingsContext from '../../context/AppSettingsContext'
-import ContentCard from "../../general/ContentCard"
-
-import { GET_SCHEDULE_EVENT_QUERY } from './queries'
-import ScheduleEventEditTabs from "./ScheduleEventEditTabs"
+import AppSettingsContext from '../../../context/AppSettingsContext'
+import ContentCard from "../../../general/ContentCard"
+import { GET_SCHEDULE_EVENT_QUERY } from '../queries'
 
 import moment from 'moment'
 
@@ -27,12 +25,12 @@ import {
   Card,
   Container
 } from "tabler-react";
-import HasPermissionWrapper from "../../HasPermissionWrapper"
+import HasPermissionWrapper from "../../../HasPermissionWrapper"
 
 import ScheduleEventEditBaseBase from "./ScheduleEventEditBaseBase"
 
 
-function ScheduleEventEditListBase({t, match, history, activeTab, pageInfo, onLoadMore, children}) {
+function ScheduleEventEditListBase({t, match, history, activeTab, pageInfo, onLoadMore, activeLink, children, sidebarContent=""}) {
   const appSettings = useContext(AppSettingsContext)
   const dateFormat = appSettings.dateFormat
   const cardTitle = t("schedule.events.edit.title")
@@ -44,15 +42,10 @@ function ScheduleEventEditListBase({t, match, history, activeTab, pageInfo, onLo
     variables: { id: eventId }
   })
 
-  const sidebarContent = <Link to={returnUrl}>
-      <Button color="primary btn-block mb-6">
-        <Icon prefix="fe" name="chevrons-left" /> {t('general.back')}
-      </Button>
-    </Link>
 
 if (loading) {
   return (
-    <ScheduleEventEditBaseBase sidebarContent={sidebarContent}>
+    <ScheduleEventEditBaseBase sidebarContent={sidebarContent} activeLink={activeLink}>
       <Card title={cardTitle}>
         <Card.Body>
           <Dimmer loading={true} active={true} />
@@ -64,7 +57,7 @@ if (loading) {
 
 if (error) {
   return (
-    <ScheduleEventEditBaseBase sidebarContent={sidebarContent}>
+    <ScheduleEventEditBaseBase sidebarContent={sidebarContent} activeLink={activeLink}>
       <Card title={cardTitle}>
         <Card.Body>
           {t("schedule.events.error_loading")}
@@ -82,7 +75,7 @@ const cardSubTitle = (event) ?
 </span> : ""
 
 return (
-  <ScheduleEventEditBaseBase sidebarContent={sidebarContent}>
+  <ScheduleEventEditBaseBase sidebarContent={sidebarContent} activeLink={activeLink}>
     <ContentCard 
       cardTitle={<span>{cardTitle} {cardSubTitle}</span>}
       pageInfo={pageInfo}
