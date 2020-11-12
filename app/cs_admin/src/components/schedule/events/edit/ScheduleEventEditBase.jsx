@@ -31,7 +31,7 @@ import HasPermissionWrapper from "../../../HasPermissionWrapper"
 import ScheduleEventEditBaseBase from "./ScheduleEventEditBaseBase"
 
 
-function ScheduleEventEditBase({t, match, history, activeTab, children, activeLink, cardTitle, returnUrl="/schedule/events"}) {
+function ScheduleEventEditBase({t, match, history, activeTab, children, activeLink, cardTitle, sidebarContent, returnUrl="/schedule/events"}) {
   const appSettings = useContext(AppSettingsContext)
   const dateFormat = appSettings.dateFormat
 
@@ -45,14 +45,6 @@ function ScheduleEventEditBase({t, match, history, activeTab, children, activeLi
   const { loading, error, data } = useQuery(GET_SCHEDULE_EVENT_QUERY, {
     variables: { id: eventId }
   })
-
-  // const sidebarContent = <Link to={returnUrl}>
-  //     <Button color="primary btn-block mb-6">
-  //       <Icon prefix="fe" name="chevrons-left" /> {t('general.back')}
-  //     </Button>
-  //   </Link>
-  
-  const sidebarContent = ""
 
   if (loading) {
     return (
