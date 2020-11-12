@@ -23,6 +23,7 @@ import {
   Table,
 } from "tabler-react";
 // import HasPermissionWrapper from "../../../../HasPermissionWrapper"
+import ScheduleEventEditListBase from "../edit/ScheduleEventEditListBase"
 import ScheduleEventTicketListBase from "./ScheduleEventTicketListBase"
 import ScheduleEventTicketDelete from "./ScheduleEventTicketDelete"
 import moment from 'moment';
@@ -34,10 +35,16 @@ function ScheduleEventTickets({t, match, history}) {
   console.log(appSettings)
   
   const eventId = match.params.event_id
-  const activeTab = "tickets"
+  const activeLink = "tickets"
 
-  const buttonAdd = <ButtonAddSecondaryMenu 
-                      linkTo={`/schedule/events/edit/${eventId}/tickets/add`} />
+  const sidebarContent = <Link to={`/schedule/events/edit/${eventId}/tickets/add`}>
+    <Button color="primary btn-block mb-6">
+      <Icon prefix="fe" name="plus-circle" /> {t('schedule.events.tickets.add')}
+    </Button>
+  </Link>
+
+  // const buttonAdd = <ButtonAddSecondaryMenu 
+  //                     linkTo={ />
 
   const { loading, error, data, fetchMore } = useQuery(GET_SCHEDULE_EVENT_TICKETS_QUERY, {
     variables: {
@@ -46,15 +53,15 @@ function ScheduleEventTickets({t, match, history}) {
   })
   
   if (loading) return (
-    <ScheduleEventTicketListBase activeTab={activeTab}>
+    <ScheduleEventEditListBase activeLink={activeLink} sidebarContent={sidebarContent}>
       {t("general.loading_with_dots")}
-    </ScheduleEventTicketListBase>
+    </ScheduleEventEditListBase>
   )
   if (error) return (
-    <ScheduleEventTicketListBase activeTab={activeTab}>
+    <ScheduleEventEditListBase activeLink={activeLink} sidebarContent={sidebarContent}>
       <p>{t('general.error_sad_smiley')}</p>
       <p>{error.message}</p>
-    </ScheduleEventTicketListBase>
+    </ScheduleEventEditListBase>
   )
 
   console.log('query data')
@@ -65,11 +72,9 @@ function ScheduleEventTickets({t, match, history}) {
 
   // Empty list
   if (!scheduleEventTickets.edges.length) { return (
-    <ScheduleEventTicketListBase activeTab={activeTab}>
-      <div className="pull-right">{buttonAdd}</div>
-      <h5>{t('schedule.events.tickets.title_list')}</h5>
+    <ScheduleEventEditListBase activeLink={activeLink} sidebarContent={sidebarContent}>
       <p>{t('schedule.events.tickets.empty_list')}</p>
-    </ScheduleEventTicketListBase>
+    </ScheduleEventEditListBase>
   )}
 
   const onLoadMore = () => {
@@ -97,9 +102,7 @@ function ScheduleEventTickets({t, match, history}) {
   }
 
   return (
-    <ScheduleEventTicketListBase activeTab={activeTab} pageInfo={pageInfo} onLoadMore={onLoadMore}>
-      <div className="pull-right">{buttonAdd}</div>
-      <h5>{t('schedule.events.tickets.title_list')}</h5>
+    <ScheduleEventEditListBase activeLink={activeLink} pageInfo={pageInfo} onLoadMore={onLoadMore} sidebarContent={sidebarContent}>
       <Table>
         <Table.Header>
           <Table.Row key={v4()}>
@@ -153,7 +156,7 @@ function ScheduleEventTickets({t, match, history}) {
             ))}
         </Table.Body>
       </Table>
-    </ScheduleEventTicketListBase>
+    </ScheduleEventEditListBase>
   )
 }
 
