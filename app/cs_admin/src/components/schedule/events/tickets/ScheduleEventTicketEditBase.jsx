@@ -12,7 +12,7 @@ import { toast } from 'react-toastify'
 import AppSettingsContext from '../../../context/AppSettingsContext'
 
 import { GET_SCHEDULE_EVENT_QUERY } from '../queries'
-import ScheduleEventEditTabs from "../ScheduleEventEditTabs"
+import ScheduleEventTicketTabs from "./ScheduleEventTicketTabs"
 
 import moment from 'moment'
 
@@ -28,49 +28,48 @@ import {
 } from "tabler-react";
 import HasPermissionWrapper from "../../../HasPermissionWrapper"
 
-import ScheduleEventsBase from "../ScheduleEventsBase"
+import ScheduleEventTicketBack from "./ScheduleEventTicketBack"
+import ScheduleEventEditBaseBase from "../edit/ScheduleEventEditBaseBase"
 
 
-function ScheduleEventEditBase({t, match, history, activeTab, children,returnUrl="/schedule/events"}) {
+function ScheduleEventTicketEditBase({t, match, history, activeTab, children}) {
   const appSettings = useContext(AppSettingsContext)
   const dateFormat = appSettings.dateFormat
   const cardTitle = t("schedule.events.edit.title")
+  const activeLink = "tickets"
 
   const eventId = match.params.event_id
+  const ticketId = match.params.id
 
   const { loading, error, data } = useQuery(GET_SCHEDULE_EVENT_QUERY, {
     variables: { id: eventId }
   })
 
-  const sidebarContent = <Link to={returnUrl}>
-      <Button color="primary btn-block mb-6">
-        <Icon prefix="fe" name="chevrons-left" /> {t('general.back')}
-      </Button>
-    </Link>
+  const sidebarContent = <ScheduleEventTicketBack />
 
 if (loading) {
   return (
-    <ScheduleEventsBase sidebarContent={sidebarContent}>
+    <ScheduleEventEditBaseBase sidebarContent={sidebarContent}>
       <Card title={cardTitle}>
-        <ScheduleEventEditTabs active={activeTab} eventId={eventId}/>
+        <ScheduleEventTicketTabs active={activeTab} eventId={eventId}  ticketId={ticketId}/>
         <Card.Body>
           <Dimmer loading={true} active={true} />
         </Card.Body>
       </Card>
-    </ScheduleEventsBase>
+    </ScheduleEventEditBaseBase>
   )
 }
 
 if (error) {
   return (
-    <ScheduleEventsBase sidebarContent={sidebarContent}>
+    <ScheduleEventEditBaseBase sidebarContent={sidebarContent}>
       <Card title={cardTitle}>
-        <ScheduleEventEditTabs active={activeTab} eventId={eventId}/>
+        <ScheduleEventTicketTabs active={activeTab} eventId={eventId} ticketId={ticketId}/>
         <Card.Body>
           {t("schedule.events.error_loading")}
         </Card.Body>
       </Card>
-    </ScheduleEventsBase>
+    </ScheduleEventEditBaseBase>
   )
 }
 
@@ -82,16 +81,16 @@ const cardSubTitle = (event) ?
 </span> : ""
 
 return (
-  <ScheduleEventsBase sidebarContent={sidebarContent}>
+  <ScheduleEventEditBaseBase activeLink={activeLink} sidebarContent={sidebarContent}>
     <Card>
       <Card.Header>
         <Card.Title>{cardTitle} {cardSubTitle}</Card.Title>
       </Card.Header>
-      <ScheduleEventEditTabs active={activeTab} eventId={eventId}/>
+      <ScheduleEventTicketTabs active={activeTab} eventId={eventId} ticketId={ticketId}/>
       {children}
     </Card>
-  </ScheduleEventsBase>
+  </ScheduleEventEditBaseBase>
   )
 }
 
-export default withTranslation()(withRouter(ScheduleEventEditBase))
+export default withTranslation()(withRouter(ScheduleEventTicketEditBase))

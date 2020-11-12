@@ -12,7 +12,7 @@ import { GET_SCHEDULE_EVENT_TICKETS_QUERY, GET_SCHEDULE_EVENT_TICKET_QUERY } fro
 import { SCHEDULE_EVENT_TICKET_SCHEMA } from './yupSchema'
 
 import ScheduleEventTicketBack from "./ScheduleEventTicketBack"
-import ScheduleEventEditBase from "../edit/ScheduleEventEditBase"
+import ScheduleEventTicketEditBase from "./ScheduleEventTicketEditBase"
 import ScheduleEventTicketForm from "./ScheduleEventTicketForm"
 
 
@@ -31,6 +31,7 @@ function ScheduleEventTicketEdit({ t, history, match }) {
   const id = match.params.id
   const eventId = match.params.event_id
   const returnUrl = `/schedule/events/edit/${eventId}/tickets/`
+  const activeTab = "general"
   const activeLink = 'tickets'
   const sidebarContent = <ScheduleEventTicketBack />
 
@@ -45,23 +46,25 @@ function ScheduleEventTicketEdit({ t, history, match }) {
   })
 
   if (loading) return (
-    <ScheduleEventEditBase 
+    <ScheduleEventTicketEditBase 
       sidebarContent={sidebarContent} 
+      activeTab={activeTab} 
       activeLink={activeLink} 
       returnUrl={returnUrl}
     >
       {t("general.loading_with_dots")}
-    </ScheduleEventEditBase>
+    </ScheduleEventTicketEditBase>
   )
   if (error) return (
-    <ScheduleEventEditBase 
+    <ScheduleEventTicketEditBase 
       sidebarContent={sidebarContent} 
+      activeTab={activeTab} 
       activeLink={activeLink} 
       returnUrl={returnUrl}
     >
       <p>{t('general.error_sad_smiley')}</p>
       <p>{error.message}</p>
-    </ScheduleEventEditBase>
+    </ScheduleEventTicketEditBase>
   )
 
   console.log('query data')
@@ -88,8 +91,9 @@ function ScheduleEventTicketEdit({ t, history, match }) {
 
 
   return (
-    <ScheduleEventEditBase 
+    <ScheduleEventTicketEditBase 
       sidebarContent={sidebarContent} 
+      activeTab={activeTab} 
       activeLink={activeLink} 
       returnUrl={returnUrl}
     >
@@ -151,7 +155,7 @@ function ScheduleEventTicketEdit({ t, history, match }) {
           />
         )}
       </Formik>
-    </ScheduleEventEditBase>
+    </ScheduleEventTicketEditBase>
   )
 }
 
