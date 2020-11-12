@@ -31,17 +31,9 @@ function ScheduleEventTicketForm ({
   formTitle="create" })   
 {
 
-  let title
-  if ( formTitle == "create" ) {
-    title = t('schedule.events.tickets.add')
-  } else {
-    title = t('schedule.events.tickets.edit')
-  }
-
   return (
     <FoForm>
       <Card.Body>
-        <h5>{title}</h5>
         <Grid.Row>
           <Grid.Col>
             <Form.Group>
