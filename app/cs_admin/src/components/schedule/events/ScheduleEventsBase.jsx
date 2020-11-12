@@ -14,7 +14,7 @@ import SiteWrapper from "../../SiteWrapper"
 import ScheduleMenu from "../ScheduleMenu"
 
 
-function ScheduleEventsBase({ t, match, history, children, sidebarContent="" }) {
+function ScheduleEventsBase({ t, match, history, children, sidebarContent="", displayMenu=true }) {
   return (
       <SiteWrapper>
         <div className="my-3 my-md-5">
@@ -47,8 +47,12 @@ function ScheduleEventsBase({ t, match, history, children, sidebarContent="" }) 
                   </div> */}
                   {/* <h5 className="mt-2 pt-1">{t("general.filter")}</h5>
                   <ScheduleClassesFilter data={data} refetch={refetch} /> */}
-              <h5>{t("general.menu")}</h5>
-              <ScheduleMenu active_link='events'/>
+              {(displayMenu) ?
+                <span>
+                  <h5>{t("general.menu")}</h5>
+                  <ScheduleMenu active_link='events'/>
+                </span>
+                : "" }
             </Grid.Col>
             </Grid.Row>
           </Container>
