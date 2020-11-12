@@ -18,6 +18,7 @@ import {
 import { GET_SCHEDULE_EVENT_TICKETS_QUERY, GET_INPUT_VALUES_QUERY } from "./queries"
 import { SCHEDULE_EVENT_TICKET_SCHEMA } from './yupSchema'
 
+import ScheduleEventTicketBack from "./ScheduleEventTicketBack"
 import ScheduleEventEditBase from "../edit/ScheduleEventEditBase"
 import ScheduleEventTicketForm from "./ScheduleEventTicketForm"
 
@@ -44,13 +45,8 @@ function ScheduleEventTicketAdd({ t, history, match }) {
   })
   const { loading, error, data, fetchMore } = useQuery(GET_INPUT_VALUES_QUERY)
 
-    const sidebarContent = <Link to={returnUrl}>
-      <Button color="primary btn-block mb-6">
-        <Icon prefix="fe" name="chevrons-left" /> {t('general.back')}
-      </Button>
-    </Link>
+  const sidebarContent = <ScheduleEventTicketBack />
 
-  
   if (loading) return (
     <ScheduleEventEditBase 
       sidebarContent={sidebarContent} 
