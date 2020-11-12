@@ -31,10 +31,14 @@ import HasPermissionWrapper from "../../../HasPermissionWrapper"
 import ScheduleEventEditBaseBase from "./ScheduleEventEditBaseBase"
 
 
-function ScheduleEventEditBase({t, match, history, activeTab, children, activeLink, returnUrl="/schedule/events"}) {
+function ScheduleEventEditBase({t, match, history, activeTab, children, activeLink, cardTitle, returnUrl="/schedule/events"}) {
   const appSettings = useContext(AppSettingsContext)
   const dateFormat = appSettings.dateFormat
-  const cardTitle = t("schedule.events.edit.title")
+
+  // Set default card title
+  if (!cardTitle) {
+    cardTitle = t("schedule.events.edit.title")
+  }
 
   const eventId = match.params.event_id
 
@@ -82,7 +86,7 @@ function ScheduleEventEditBase({t, match, history, activeTab, children, activeLi
   </span> : ""
 
   return (
-    <ScheduleEventEditBaseBase sidebarContent={sidebarContent} activeLink={activeLink}>
+    <ScheduleEventEditBaseBase cardTitle={cardTitle} sidebarContent={sidebarContent} activeLink={activeLink}>
       <Card>
         <Card.Header>
           <Card.Title>{cardTitle} {cardSubTitle}</Card.Title>

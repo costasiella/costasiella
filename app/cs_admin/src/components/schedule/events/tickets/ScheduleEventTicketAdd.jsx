@@ -11,7 +11,7 @@ import { toast } from 'react-toastify'
 import { GET_SCHEDULE_EVENT_TICKETS_QUERY, GET_INPUT_VALUES_QUERY } from "./queries"
 import { SCHEDULE_EVENT_TICKET_SCHEMA } from './yupSchema'
 
-import ScheduleEventEditBase from "../ScheduleEventEditBase"
+import ScheduleEventEditBase from "../edit/ScheduleEventEditBase"
 import ScheduleEventTicketForm from "./ScheduleEventTicketForm"
 
 
@@ -29,19 +29,21 @@ const ADD_SCHEDULE_EVENT_TICKET = gql`
 function ScheduleEventTicketAdd({ t, history, match }) {
   const eventId = match.params.event_id
   const returnUrl = `/schedule/events/edit/${eventId}/tickets/`
-  const activeTab = 'tickets'
+  const activeLink = 'tickets'
+  const cardTitle = t("schedule.events.tickets.add")
+
   const [addScheduleEventTicket] = useMutation(ADD_SCHEDULE_EVENT_TICKET, {
     onCompleted: () => history.push(returnUrl),
   })
   const { loading, error, data, fetchMore } = useQuery(GET_INPUT_VALUES_QUERY)
   
   if (loading) return (
-    <ScheduleEventEditBase activeTab={activeTab} returnUrl={returnUrl}>
+    <ScheduleEventEditBase cardTitle={cardTitle} activeLink={activeLink} returnUrl={returnUrl}>
       {t("general.loading_with_dots")}
     </ScheduleEventEditBase>
   )
   if (error) return (
-    <ScheduleEventEditBase activeTab={activeTab} returnUrl={returnUrl}>
+    <ScheduleEventEditBase cardTitle={cardTitle} activeLink={activeLink} returnUrl={returnUrl}>
       <p>{t('general.error_sad_smiley')}</p>
       <p>{error.message}</p>
     </ScheduleEventEditBase>
@@ -50,7 +52,7 @@ function ScheduleEventTicketAdd({ t, history, match }) {
   const inputData = data
 
   return (
-    <ScheduleEventEditBase activeTab={activeTab} returnUrl={returnUrl}>
+    <ScheduleEventEditBase cardTitle={cardTitle} activeLink={activeLink} returnUrl={returnUrl}>
       <Formik
         initialValues={{ 
           displayPublic: true,
