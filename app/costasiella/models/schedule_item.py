@@ -16,6 +16,19 @@ from .choices.schedule_item_frequency_types import get_schedule_item_frequency_t
 
 
 class ScheduleItem(models.Model):
+    """
+    WEEKLY RECURRING items:
+    frequency_type = WEEKLY
+    frequency_interval = 1..7 (1 = Monday)
+    date_start = datetime.date (recurring start)
+    date_end = datetime.date (recurring end)
+
+    SINGLE item:
+    frequency_type = SPECIFIC
+    frequency_interval = 0 (unused)
+    date_start = datetime.date (of item)
+    date_end = None (unused)
+    """
     class Meta:
         permissions = [
             ('view_scheduleclass', _("Can view schedule class")),
@@ -45,7 +58,6 @@ class ScheduleItem(models.Model):
         (5, _("Friday")),
         (6, _("Saturday")),
         (7, _("Sunday")),
-        (7, _("Sunday")),
     )
 
     TEACHER_ROLES = get_teacher_roles()
@@ -59,6 +71,8 @@ class ScheduleItem(models.Model):
     organization_location_room = models.ForeignKey(OrganizationLocationRoom, on_delete=models.CASCADE)
     organization_classtype = models.ForeignKey(OrganizationClasstype, on_delete=models.CASCADE, null=True)
     organization_level = models.ForeignKey(OrganizationLevel, on_delete=models.SET_NULL, null=True)
+    name = models.CharField(max_length=255, null=True)
+    spaces = models.IntegerField(null=True, default=0),
     date_start = models.DateField()
     date_end = models.DateField(default=None, null=True)
     time_start = models.TimeField()
