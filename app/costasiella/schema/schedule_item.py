@@ -7,13 +7,10 @@ from graphene_django.filter import DjangoFilterConnectionField
 from graphql import GraphQLError
 from graphql_relay import to_global_id
 
-from ..models import ScheduleItem, OrganizationClasstype, OrganizationLevel, OrganizationLocationRoom
+from ..models import ScheduleEvent, ScheduleItem, OrganizationClasstype, OrganizationLevel, OrganizationLocationRoom
 from ..modules.gql_tools import require_login_and_permission, require_login_and_one_of_permissions, get_rid
 from ..modules.messages import Messages
 from ..modules.model_helpers.schedule_item_helper import ScheduleItemHelper
-from .organization_classtype import OrganizationClasstypeNode
-from .organization_level import OrganizationLevelNode
-from .organization_location_room import OrganizationLocationRoomNode
 
 
 m = Messages()
@@ -48,7 +45,6 @@ class ScheduleItemQuery(graphene.ObjectType):
     schedule_items = DjangoFilterConnectionField(ScheduleItemNode)
     schedule_item = graphene.relay.Node.Field(ScheduleItemNode)
 
-
     def resolve_schedule_items(self, info, **kwargs):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.view_scheduleitem')
@@ -63,6 +59,32 @@ def validate_create_update_input(input, update=False):
     """ 
     result = {}
 
+    # Check ScheduleEvent
+    if 'schedule_event' in input:
+        if input['schedule_event']:
+            rid = get_rid(input['schedule_event'])
+            schedule_event = ScheduleEvent.objects.filter(id=rid.id).first()
+            result['schedule_event'] = schedule_event
+            if not schedule_event:
+                raise Exception(_('Invalid Schedule Event ID!'))
+
+            # Do some basic checks for schedule event activity input
+            if schedule_event:
+                if 'name' not in input or input['name'] is None or input['name'] == "":
+                    raise Exception(_('name should be set for event activities!'))
+
+                if 'spaces' not in input or input['spaces'] is None or input['spaces'] == "":
+                    raise Exception(_('spaces should be set for event activities!'))
+
+                if 'schedule_item_type' not in input or input['schedule_item_type'] != "EVENT_ACTIVITY":
+                    raise Exception(_('scheduleEventType should be set to "EVENT_ACTIVITY" for event activities!'))
+
+                if 'frequency_type' not in input or input['frequency_type'] != "SPECIFIC":
+                    raise Exception(_('frequencyType should be set to "SPECIFIC" for event activities!'))
+
+                if 'frequency_interval' not in input or input['frequency_interval'] != 0:
+                    raise Exception(_('frequencyInterval should be set to 0 for event activities!'))
+
     # Check OrganizationLocationRoom
     if 'organization_location_room' in input:
         if input['organization_location_room']:
@@ -70,7 +92,7 @@ def validate_create_update_input(input, update=False):
             organization_location_room = OrganizationLocationRoom.objects.filter(id=rid.id).first()
             result['organization_location_room'] = organization_location_room
             if not organization_location_room:
-                raise Exception(_('Invalid Organization Location Room ID!'))            
+                raise Exception(_('Invalid Organization Location Room ID!'))
 
     # Check OrganizationClasstype
     if 'organization_classtype' in input:
@@ -81,12 +103,14 @@ def validate_create_update_input(input, update=False):
             if not organization_classtype:
                 raise Exception(_('Invalid Organization Classtype ID!'))  
 
-
     return result
 
 
 class CreateScheduleItem(graphene.relay.ClientIDMutation):
     class Input:
+        name = graphene.String(required=False)
+        spaces = graphene.Int(required=False)
+        schedule_event = graphene.ID(required=False)
         schedule_item_type = graphene.String(required=True)
         frequency_type = graphene.String(required=True)
         frequency_interval = graphene.Int(required=True)
@@ -108,6 +132,7 @@ class CreateScheduleItem(graphene.relay.ClientIDMutation):
         print(input)
 
         schedule_item = ScheduleItem(
+            organization_location_room=result['organization_location_room'],
             schedule_item_type=input['schedule_item_type'], 
             frequency_type=input['frequency_type'], 
             frequency_interval=input['frequency_interval'],
@@ -117,13 +142,18 @@ class CreateScheduleItem(graphene.relay.ClientIDMutation):
         )
 
         # Optional fields
-        date_end = input.get('date_end', None)
-        if date_end:
-            schedule_item.date_end = date_end
+        if "schedule_event" in result:
+            schedule_item.schedule_event = result['schedule_event']
 
-        # Fields requiring additional validation
-        if result['organization_location_room']:
-            schedule_item.organization_location_room = result['organization_location_room']
+        if "name" in input:
+            schedule_item.name = input['name']
+
+        if "spaces" in input:
+            schedule_item.spaces = input['spaces']
+
+        date_end = input.get('date_end', None)
+        if "date_end" in input:
+            schedule_item.date_end = input['date_end']
 
         # ALl done, save it :).
         schedule_item.save()
