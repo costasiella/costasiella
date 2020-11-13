@@ -72,7 +72,7 @@ class ScheduleItem(models.Model):
     organization_classtype = models.ForeignKey(OrganizationClasstype, on_delete=models.CASCADE, null=True)
     organization_level = models.ForeignKey(OrganizationLevel, on_delete=models.SET_NULL, null=True)
     name = models.CharField(max_length=255, null=True)
-    spaces = models.IntegerField(null=True, default=0),
+    spaces = models.IntegerField(null=True, default=0)
     date_start = models.DateField()
     date_end = models.DateField(default=None, null=True)
     time_start = models.TimeField()
