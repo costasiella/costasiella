@@ -13,6 +13,7 @@ from ..dudes import ClassScheduleDude
 
 m = Messages()
 
+
 class ScheduleClassWeeklyOTCNode(DjangoObjectType):
     status = graphene.Field(graphene.String, source="status")
     role = graphene.Field(graphene.String, source="role")
@@ -189,6 +190,8 @@ class UpdateScheduleClassWeeklyOTC(graphene.relay.ClientIDMutation):
         organization_level = graphene.ID(required=False)        
         time_start = graphene.types.datetime.Time(required=False)
         time_end = graphene.types.datetime.Time(required=False)
+        spaces = graphene.Int(required=False)
+        walk_in_spaces = graphene.Int(required=False)
         info_mail_content = graphene.String()
         
     schedule_class_weekly_otc = graphene.Field(ScheduleClassWeeklyOTCNode)
@@ -241,6 +244,12 @@ class UpdateScheduleClassWeeklyOTC(graphene.relay.ClientIDMutation):
         if 'time_end' in input:
             schedule_class_weekly_otc.time_end = input['time_end']
 
+        if 'spaces' in input:
+            schedule_class_weekly_otc.spaces = input['spaces']
+
+        if 'walk_in_spaces' in input:
+            schedule_class_weekly_otc.walk_in_spaces = input['walk_in_spaces']
+
         if 'info_mail_content' in input:
             schedule_class_weekly_otc.info_mail_content = input['info_mail_content']
 
@@ -279,4 +288,3 @@ class ScheduleClassWeeklyOTCMutation(graphene.ObjectType):
     delete_schedule_class_weekly_otc = DeleteScheduleClassWeeklyOTC.Field()
     # create_schedule_class_weekly_otc = CreateScheduleClassWeeklyOTC.Field()
     update_schedule_class_weekly_otc = UpdateScheduleClassWeeklyOTC.Field()
-    
