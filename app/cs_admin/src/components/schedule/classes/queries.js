@@ -153,6 +153,8 @@ export const GET_CLASS_QUERY = gql`
       dateEnd
       timeStart
       timeEnd
+      spaces
+      walkInSpaces
       displayPublic
       infoMailContent
     }
