@@ -880,7 +880,9 @@
                 "delete_success": "Deleted price"
             },
             "classpass_dropin": "Drop-in classpass",
-            "classpass_trial": "Trial classpass"
+            "classpass_trial": "Trial classpass",
+            "spaces": "Total spaces",
+            "spaces_walk_in": "Walk-in spaces (Not bookable online)"
         },
         "appointments": {
             "title": "Appointments",
@@ -924,7 +926,6 @@
                 "add": "Add ticket",
                 "edit": "Edit ticket",
                 "public": "This is a public ticket",
-                "title_list": "Tickets",
                 "empty_list": "No tickets have been created yet for this event.",
                 "title": "Tickets",
                 "edit_menu": {

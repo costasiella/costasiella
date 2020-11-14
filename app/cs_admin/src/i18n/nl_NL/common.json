@@ -1156,7 +1156,9 @@
             "frequencyType": "__STRING_NOT_TRANSLATED__",
             "select_specific": "__STRING_NOT_TRANSLATED__",
             "select_weekly": "__STRING_NOT_TRANSLATED__",
-            "frequencyInterval": "__STRING_NOT_TRANSLATED__"
+            "frequencyInterval": "__STRING_NOT_TRANSLATED__",
+            "spaces": "__STRING_NOT_TRANSLATED__",
+            "spaces_walk_in": "__STRING_NOT_TRANSLATED__"
         },
         "title": "__STRING_NOT_TRANSLATED__",
         "appointments": {
@@ -1201,7 +1203,6 @@
                 "add": "__STRING_NOT_TRANSLATED__",
                 "edit": "__STRING_NOT_TRANSLATED__",
                 "public": "__STRING_NOT_TRANSLATED__",
-                "title_list": "__STRING_NOT_TRANSLATED__",
                 "empty_list": "__STRING_NOT_TRANSLATED__",
                 "title": "__STRING_NOT_TRANSLATED__",
                 "edit_menu": {
