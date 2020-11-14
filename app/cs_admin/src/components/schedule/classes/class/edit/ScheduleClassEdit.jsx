@@ -82,7 +82,7 @@ function ScheduleClassEdit({ t, match, history }) {
     showDelete = true
 
     initialData = queryData.scheduleClassWeeklyOtcs.edges[0].node
-    
+
     initialValues.status = initialData.status
     initialValues.description = initialData.description
     if (initialData.account) {
@@ -108,6 +108,12 @@ function ScheduleClassEdit({ t, match, history }) {
     if (initialData.timeEnd) {
       initialValues.timeEnd = TimeStringToJSDateOBJ(initialData.timeEnd)
     }
+    if (initialData.spaces) {
+      initialValues.spaces = initialData.spaces
+    }
+    if (initialData.walkInSpaces) {
+      initialValues.walkInSpaces = initialData.walkInSpaces
+    }
     if (initialData.infoMailContent) {
       initialValues.infoMailContent = initialData.infoMailContent
     }
@@ -125,6 +131,8 @@ function ScheduleClassEdit({ t, match, history }) {
     initialValues.organizationLevel = ""
     initialValues.timeStart = ""
     initialValues.timeEnd = ""
+    initialValues.spaces = null
+    initialValues.walkInSpaces = null
     initialValues.infoMailContent = ""
   }
 
@@ -185,6 +193,8 @@ function ScheduleClassEdit({ t, match, history }) {
                             organizationLevel: values.organizationLevel,
                             timeStart: timeStart,
                             timeEnd: timeEnd,
+                            spaces: values.spaces,
+                            walkInSpaces: values.walkInSpaces,
                             infoMailContent: values.infoMailContent
                           }
                         }, refetchQueries: [
