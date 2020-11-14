@@ -1,7 +1,10 @@
 from django.utils.translation import gettext as _
+from django.utils import timezone
+from django.conf import settings
 from django.db.models import Q, FilteredRelation, OuterRef, Subquery
 
 import datetime
+import pytz
 
 import graphene
 from graphene_django import DjangoObjectType
@@ -337,7 +340,7 @@ class ScheduleClassesDayType(graphene.ObjectType):
             order_by_sql=order_by_sql
         )
 
-        print(query)
+        # print(query)
 
         ## 
         # At this time 27 Aug 2019, params don't seem to be working from a dictionary
@@ -358,12 +361,42 @@ class ScheduleClassesDayType(graphene.ObjectType):
 
             print("#############")
             print(item)
+            print(item.date_start)
+            print(item.date_end)
+            print(item.time_start)
+            print(item.time_end)
             print(item.status)
-            print(item.description)
-            print(item.account)
-            print(item.account_id)
-            print(item.role)
-            print(item.count_attendance)
+            # print(item.description)
+            # print(item.account)
+            # print(item.account_id)
+            # print(item.role)
+            # print(item.count_attendance)
+
+            ## Start test for class booking status
+
+            # https://docs.djangoproject.com/en/3.1/topics/i18n/timezones/#usage
+            local_tz = pytz.timezone(settings.TIME_ZONE)
+            print(local_tz)
+
+            # now = timezone.now()
+            print(timezone.localtime(timezone.now()))
+
+            dt_start = datetime.datetime(self.date.year,
+                                         self.date.month,
+                                         self.date.day,
+                                         int(item.time_start.hour),
+                                         int(item.time_start.minute))
+            print(dt_start)
+            dt_start = local_tz.localize(dt_start)
+            print(dt_start)
+            # dt_end = datetime.datetime(self.date.year,
+            #                            self.date.month,
+            #                            self.date.day,
+            #                            int(row.classes.Endtime.hour),
+            #                            int(row.classes.Endtime.minute))
+            # dt_end = local_tz.localize(dt_end)
+
+            ## End test for class booking status
 
             total_spaces = item.spaces or 0
             walk_in_spaces = item.walk_in_spaces or 0
