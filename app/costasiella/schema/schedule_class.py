@@ -1,6 +1,8 @@
 from django.utils.translation import gettext as _
 from django.db.models import Q, FilteredRelation, OuterRef, Subquery
 
+import datetime
+
 import graphene
 from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
@@ -19,8 +21,6 @@ from .schedule_item import ScheduleItemNode
 
 
 m = Messages()
-
-import datetime
 
 
 def _get_resolve_classes_filter_query(self):
