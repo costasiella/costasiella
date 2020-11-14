@@ -295,6 +295,8 @@ class ScheduleClassesDayType(graphene.ObjectType):
                     otc.organization_level_id,
                     otc.time_start,
                     otc.time_end,
+                    otc.spaces,
+                    otc.walk_in_spaces,
                     otc_olr.organization_location_id,
                     otc_ol.name as organization_location_name
                   FROM costasiella_scheduleitemweeklyotc otc 
