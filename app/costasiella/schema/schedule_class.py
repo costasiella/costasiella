@@ -577,6 +577,8 @@ class CreateScheduleClass(graphene.relay.ClientIDMutation):
         date_end = graphene.types.datetime.Date(required=False, default_value=None)
         time_start = graphene.types.datetime.Time(required=True)
         time_end = graphene.types.datetime.Time(required=True)
+        spaces = graphene.types.Int(required=True)
+        walk_in_spaces = graphene.Int(required=True)
         display_public = graphene.Boolean(required=True, default_value=False)
         info_mail_content = graphene.String()
 
@@ -598,7 +600,9 @@ class CreateScheduleClass(graphene.relay.ClientIDMutation):
             date_start=input['date_start'],
             time_start=input['time_start'],
             time_end=input['time_end'],   
-            display_public=input['display_public']
+            display_public=input['display_public'],
+            spaces=input['spaces'],
+            walk_in_spaces=input['walk_in_spaces']
         )
 
         # Optional fields
@@ -642,6 +646,8 @@ class UpdateScheduleClass(graphene.relay.ClientIDMutation):
         date_end = graphene.types.datetime.Date(required=False, default_value=None)
         time_start = graphene.types.datetime.Time(required=True)
         time_end = graphene.types.datetime.Time(required=True)
+        spaces = graphene.types.Int(required=False)
+        walk_in_spaces = graphene.Int(required=False)
         display_public = graphene.Boolean(required=True, default_value=False)
         info_mail_content = graphene.String(default_value="")
 
@@ -673,6 +679,12 @@ class UpdateScheduleClass(graphene.relay.ClientIDMutation):
         date_end = input.get('date_end', None)
         if date_end:
             schedule_item.date_end = date_end
+
+        if 'spaces' in input:
+            schedule_item.spaces = input['spaces']
+
+        if 'walk_in_spaces' in input:
+            schedule_item.walk_in_spaces = input['walk_in_spaces']
 
         if 'info_mail_content' in input:
             schedule_item.info_mail_content = input['info_mail_content']
