@@ -430,6 +430,51 @@ class ScheduleClassesDayType(graphene.ObjectType):
     
         return classes_list
 
+# OpenStudio function to be ported
+    # def _get_day_list_booking_status(self, row):
+    #     """
+    #         :param row: ClassSchedule.get_day_rows() row
+    #         :return: booking status
+    #     """
+    #     pytz = current.globalenv['pytz']
+    #     TIMEZONE = current.TIMEZONE
+    #     NOW_LOCAL = current.NOW_LOCAL
+    #     TODAY_LOCAL = current.TODAY_LOCAL
+    #
+    #     local_tz = pytz.timezone(TIMEZONE)
+    #
+    #     dt_start = datetime.datetime(self.date.year,
+    #                                  self.date.month,
+    #                                  self.date.day,
+    #                                  int(row.classes.Starttime.hour),
+    #                                  int(row.classes.Starttime.minute))
+    #     dt_start = local_tz.localize(dt_start)
+    #     dt_end = datetime.datetime(self.date.year,
+    #                                self.date.month,
+    #                                self.date.day,
+    #                                int(row.classes.Endtime.hour),
+    #                                int(row.classes.Endtime.minute))
+    #     dt_end = local_tz.localize(dt_end)
+    #
+    #     status = 'finished'
+    #     if row.classes_otc.Status == 'cancelled' or row.school_holidays.id:
+    #         status = 'cancelled'
+    #     elif dt_start <= NOW_LOCAL and dt_end >= NOW_LOCAL:
+    #         # check start time
+    #         status = 'ongoing'
+    #     elif dt_start >= NOW_LOCAL:
+    #         if not self.bookings_open == False and TODAY_LOCAL < self.bookings_open:
+    #             status = 'not_yet_open'
+    #         else:
+    #             # check spaces for online bookings
+    #             spaces = self._get_day_list_booking_spaces(row)
+    #             if spaces < 1:
+    #                 status = 'full'
+    #             else:
+    #                 status = 'ok'
+    #
+    #     return status
+
 
 def calculate_available_spaces_online(total_spaces, walk_in_spaces, count_attendance):
     # Spaces available for online booking
