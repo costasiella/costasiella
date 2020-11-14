@@ -619,7 +619,6 @@ def validate_schedule_class_create_update_input(input, update=False):
             if not organization_level:
                 raise Exception(_('Invalid Organization Level ID!'))            
 
-
     return result
 
 
