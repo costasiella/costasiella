@@ -267,8 +267,14 @@ class ScheduleClassesDayType(graphene.ObjectType):
                         THEN csiotc.role_2
                     ELSE csit.role_2
                     END AS role_2,
-               csi.spaces,
-               csi.walk_in_spaces,
+               CASE WHEN csiotc.spaces IS NOT NULL
+                     THEN csiotc.spaces
+                     ELSE csi.spaces
+                     END AS spaces,
+               CASE WHEN csiotc.walk_in_spaces IS NOT NULL
+                     THEN csiotc.walk_in_spaces
+                     ELSE csi.walk_in_spaces
+                     END AS walk_in_spaces,
                {attendance_count_sql}
             FROM costasiella_scheduleitem csi
             LEFT JOIN costasiella_organizationlocationroom csi_olr ON csi.organization_location_room_id = csi_olr.id
