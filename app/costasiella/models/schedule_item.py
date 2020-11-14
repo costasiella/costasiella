@@ -105,6 +105,7 @@ class ScheduleItem(models.Model):
     role = models.CharField(default="", max_length=50, choices=TEACHER_ROLES)
     account_2 = models.ForeignKey(Account, on_delete=models.SET_NULL, null=True, related_name="si_account_2")
     role_2 = models.CharField(default="", max_length=50, choices=TEACHER_ROLES)
+    count_attendance = models.IntegerField(null=True)
     ################ END EMPTY FIELDS ##################
 
     def __str__(self):
