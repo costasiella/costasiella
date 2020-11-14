@@ -162,6 +162,26 @@ const ScheduleClassForm = ({ t, history, inputData, isSubmitting, setFieldValue,
             </Form.Group>
           </Grid.Col>
         </Grid.Row>
+        <Grid.Row>
+          <Grid.Col>
+            <Form.Group label={t('schedule.classes.spaces')}>
+              <Field type="text" 
+                    name="spaces" 
+                    className={(errors.spaces) ? "form-control is-invalid" : "form-control"} 
+                    autoComplete="off" />
+              <ErrorMessage name="spaces" component="span" className="invalid-feedback" />
+            </Form.Group> 
+          </Grid.Col>
+          <Grid.Col>
+            <Form.Group label={t('schedule.classes.spaces_walk_in')}>
+              <Field type="text" 
+                    name="walkInSpaces" 
+                    className={(errors.walkInSpaces) ? "form-control is-invalid" : "form-control"} 
+                    autoComplete="off" />
+              <ErrorMessage name="walkInSpaces" component="span" className="invalid-feedback" />
+            </Form.Group> 
+          </Grid.Col>
+        </Grid.Row>
         <Form.Group label={t('general.note')}>
           <Editor
               textareaName="note"

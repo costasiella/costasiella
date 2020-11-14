@@ -113,7 +113,7 @@ class ScheduleClassAdd extends Component {
                           <Card.Title>{t('schedule.classes.title_add')}</Card.Title>
                         </Card.Header>
                         <Mutation mutation={CREATE_CLASS} onCompleted={() => history.push(return_url)}> 
-                  {(createSubscription, { data }) => (
+                  {(createScheduleClass, { data }) => (
                     <Formik
                       initialValues={{ 
                         displayPublic: true,
@@ -125,6 +125,8 @@ class ScheduleClassAdd extends Component {
                         dateStart: new Date(),
                         timeStart: new Date(),
                         timeEnd: new Date(),
+                        spaces: "",
+                        walkInSpaces: ""
                       }}
                       validationSchema={CLASS_SCHEMA}
                       onSubmit={(values, { setSubmitting }) => {
@@ -142,7 +144,7 @@ class ScheduleClassAdd extends Component {
                               dateEnd = values.dateEnd
                             }
                           
-                          createSubscription({ variables: {
+                          createScheduleClass({ variables: {
                             input: {
                               displayPublic: values.displayPublic,
                               frequencyType: values.frequencyType,
@@ -153,7 +155,9 @@ class ScheduleClassAdd extends Component {
                               dateStart: dateToLocalISO(values.dateStart),
                               dateEnd: dateEnd,
                               timeStart: dateToLocalISOTime(values.timeStart),
-                              timeEnd: dateToLocalISOTime(values.timeEnd)
+                              timeEnd: dateToLocalISOTime(values.timeEnd),
+                              spaces: values.spaces,
+                              walkInSpaces: values.walkInSpaces
                             }
                           }, refetchQueries: [
                               {query: GET_CLASSES_QUERY, variables: get_list_query_variables()}
