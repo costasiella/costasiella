@@ -185,31 +185,29 @@ class UpdateScheduleItem(graphene.relay.ClientIDMutation):
         return UpdateScheduleItem(schedule_item=schedule_item)
 
 
-# class ArchiveScheduleItem(graphene.relay.ClientIDMutation):
-#     class Input:
-#         id = graphene.ID(required=True)
-#         archived = graphene.Boolean(required=True)
+class DeleteScheduleItem(graphene.relay.ClientIDMutation):
+    class Input:
+        id = graphene.ID(required=True)
+        archived = graphene.Boolean(required=True)
 
-#     schedule_item = graphene.Field(ScheduleItemNode)
+    ok = graphene.Boolean()
 
-#     @classmethod
-#     def mutate_and_get_payload(self, root, info, **input):
-#         user = info.context.user
-#         require_login_and_permission(user, 'costasiella.delete_scheduleitem')
+    @classmethod
+    def mutate_and_get_payload(self, root, info, **input):
+        user = info.context.user
+        require_login_and_permission(user, 'costasiella.delete_scheduleitem')
 
-#         rid = get_rid(input['id'])
+        rid = get_rid(input['id'])
+        schedule_item = ScheduleItem.objects.filter(id=rid.id).first()
+        if not schedule_item:
+            raise Exception('Invalid Organization Level ID!')
 
-#         schedule_item = ScheduleItem.objects.filter(id=rid.id).first()
-#         if not schedule_item:
-#             raise Exception('Invalid Organization Level ID!')
+        ok = schedule_item.delete()
 
-#         schedule_item.archived = input['archived']
-#         schedule_item.save(force_update=True)
-
-#         return ArchiveScheduleItem(schedule_item=schedule_item)
+        return DeleteScheduleItem(ok=ok)
 
 
 class ScheduleItemMutation(graphene.ObjectType):
-    # archive_schedule_item = ArchiveScheduleItem.Field()
     create_schedule_item = CreateScheduleItem.Field()
     update_schedule_item = UpdateScheduleItem.Field()
+    delete_schedule_item = DeleteScheduleItem.Field()
