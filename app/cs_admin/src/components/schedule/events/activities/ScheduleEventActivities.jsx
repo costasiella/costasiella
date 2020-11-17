@@ -39,7 +39,7 @@ function scheduleItems({t, match, history}) {
 
   const sidebarContent = <Link to={`/schedule/events/edit/${eventId}/activities/add`}>
     <Button color="primary btn-block mb-6">
-      <Icon prefix="fe" name="plus-circle" /> {t('schedule.events.activitiess.add')}
+      <Icon prefix="fe" name="plus-circle" /> {t('schedule.events.activities.add')}
     </Button>
   </Link>
 
