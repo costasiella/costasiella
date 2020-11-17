@@ -24,12 +24,12 @@ import {
 } from "tabler-react";
 // import HasPermissionWrapper from "../../../../HasPermissionWrapper"
 import ScheduleEventEditListBase from "../edit/ScheduleEventEditListBase"
-import ScheduleEventTicketListBase from "./ScheduleEventTicketListBase"
-import ScheduleEventTicketDelete from "./ScheduleEventActivityDelete"
+// import ScheduleEventTicketListBase from "./ScheduleEventTicketListBase"
+import ScheduleEventActivityDelete from "./ScheduleEventActivityDelete"
 import moment from 'moment';
 
 
-function ScheduleEventActivities({t, match, history}) {
+function scheduleItems({t, match, history}) {
   const appSettings = useContext(AppSettingsContext)
   const dateFormat = appSettings.dateFormat
   console.log(appSettings)
@@ -64,11 +64,11 @@ function ScheduleEventActivities({t, match, history}) {
   console.log('query data')
   console.log(data)
 
-  const scheduleEventActivities = data.scheduleEventActivities
-  const pageInfo = data.scheduleEventActivities.pageInfo
+  const scheduleItems = data.scheduleItems
+  const pageInfo = data.scheduleItems.pageInfo
 
   // Empty list
-  if (!scheduleEventActivities.edges.length) { return (
+  if (!scheduleItems.edges.length) { return (
     <ScheduleEventEditListBase activeLink={activeLink} sidebarContent={sidebarContent}>
       <p>{t('schedule.events.tickets.empty_list')}</p>
     </ScheduleEventEditListBase>
@@ -77,19 +77,19 @@ function ScheduleEventActivities({t, match, history}) {
   const onLoadMore = () => {
     fetchMore({
       variables: {
-        after: scheduleEventActivities.pageInfo.endCursor
+        after: scheduleItems.pageInfo.endCursor
       },
       updateQuery: (previousResult, { fetchMoreResult }) => {
-        const newEdges = fetchMoreResult.scheduleEventActivities.edges
-        const pageInfo = fetchMoreResult.scheduleEventActivities.pageInfo
+        const newEdges = fetchMoreResult.scheduleItems.edges
+        const pageInfo = fetchMoreResult.scheduleItems.pageInfo
 
         return newEdges.length
           ? {
               // Put the new invoices at the end of the list and update `pageInfo`
               // so we have the new `endCursor` and `hasNextPage` values
-              scheduleEventActivities: {
-                __typename: previousResult.scheduleEventActivities.__typename,
-                edges: [ ...previousResult.scheduleEventActivities.edges, ...newEdges ],
+              scheduleItems: {
+                __typename: previousResult.scheduleItems.__typename,
+                edges: [ ...previousResult.scheduleItems.edges, ...newEdges ],
                 pageInfo
               }
             }
@@ -113,7 +113,7 @@ function ScheduleEventActivities({t, match, history}) {
           </Table.Row>
         </Table.Header>
         <Table.Body>
-            {scheduleEventActivities.edges.map(({ node }) => (
+            {scheduleItems.edges.map(({ node }) => (
               <Table.Row key={v4()}>
                 {/* <Table.Col>
                   {moment(node.dateStart).format(dateFormat)}
@@ -157,4 +157,4 @@ function ScheduleEventActivities({t, match, history}) {
   )
 }
 
-export default withTranslation()(withRouter(ScheduleEventActivities))
+export default withTranslation()(withRouter(scheduleItems))
