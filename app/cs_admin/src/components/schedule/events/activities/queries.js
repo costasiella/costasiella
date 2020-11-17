@@ -103,13 +103,14 @@ query ScheduleItem($before:String, $after:String, $schedule_event:ID!) {
 // }
 // `
 
-// export const DELETE_SCHEDULE_EVENT_TICKET = gql`
-//   mutation DeleteScheduleEventTicket($input: DeleteScheduleEventTicketInput!) {
-//     deleteScheduleEventTicket(input: $input) {
-//       ok
-//     }
-//   }
-// `
+
+export const DELETE_SCHEDULE_EVENT_ACTIVITIES = gql`
+  mutation DeleteScheduleEventActivity($input: DeleteScheduleEventActivityInput!) {
+    deleteScheduleEventActivity(input: $input) {
+      ok
+    }
+  }
+`
 
 
 // export const GET_INPUT_VALUES_QUERY = gql`
