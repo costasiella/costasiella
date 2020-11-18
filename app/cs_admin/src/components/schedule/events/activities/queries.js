@@ -112,49 +112,35 @@ export const DELETE_SCHEDULE_EVENT_ACTIVITY = gql`
 `
 
 
-// export const GET_INPUT_VALUES_QUERY = gql`
-//   query ScheduleEventTicketInputValues($after: String, $before: String) {
-//     financeTaxRates(first: 100, before: $before, after: $after, archived: false) {
-//       pageInfo {
-//         startCursor
-//         endCursor
-//         hasNextPage
-//         hasPreviousPage
-//       }
-//       edges {
-//         node {
-//           id
-//           name
-//         }
-//       }
-//     }
-//     financeGlaccounts(first: 100, before: $before, after: $after, archived: false) {
-//       pageInfo {
-//         startCursor
-//         endCursor
-//         hasNextPage
-//         hasPreviousPage
-//       }
-//       edges {
-//         node {
-//           id
-//           name
-//         }
-//       }
-//     }
-//     financeCostcenters(first: 100, before: $before, after: $after, archived: false) {
-//       pageInfo {
-//         startCursor
-//         endCursor
-//         hasNextPage
-//         hasPreviousPage
-//       }
-//       edges {
-//         node {
-//           id
-//           name
-//         }
-//       }
-//     }
-//   }
-// `
+export const GET_INPUT_VALUES_QUERY = gql`
+  query ScheduleEventActivityInputValues($after: String, $before: String) {
+    accounts(first: 100, before: $before, after: $after, teacher: true) {
+      pageInfo {
+        startCursor
+        endCursor
+        hasNextPage
+        hasPreviousPage
+      }
+      edges {
+        node {
+          id
+          fullName
+        }
+      }
+    }
+    organizationLocationRooms(first: 100, before: $before, after: $after, archived: false) {
+      pageInfo {
+        startCursor
+        endCursor
+        hasNextPage
+        hasPreviousPage
+      }
+      edges {
+        node {
+          id
+          name
+        }
+      }
+    }
+  }
+`
