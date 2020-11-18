@@ -26,7 +26,6 @@ query ScheduleItem($before:String, $after:String, $schedule_event:ID!) {
         }
         name
         spaces
-        walkInSpaces
         dateStart
         timeStart
         timeEnd
