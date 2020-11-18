@@ -133,6 +133,8 @@ def validate_create_update_input(input, update=False):
 
 class CreateScheduleItem(graphene.relay.ClientIDMutation):
     class Input:
+        account = graphene.ID(required=False)
+        account_2 = graphene.ID(required=False)
         name = graphene.String(required=False)
         spaces = graphene.Int(required=False)
         schedule_event = graphene.ID(required=False)
@@ -153,7 +155,6 @@ class CreateScheduleItem(graphene.relay.ClientIDMutation):
         require_login_and_permission(user, 'costasiella.add_scheduleitem')
 
         result = validate_create_update_input(input)
-
         print(input)
 
         schedule_item = ScheduleItem(
@@ -167,6 +168,12 @@ class CreateScheduleItem(graphene.relay.ClientIDMutation):
         )
 
         # Optional fields
+        if "account" in result:
+            schedule_item.account = result['account']
+
+        if "account_2" in result:
+            schedule_item.account_2 = result['account_2']
+
         if "schedule_event" in result:
             schedule_item.schedule_event = result['schedule_event']
 
@@ -176,7 +183,6 @@ class CreateScheduleItem(graphene.relay.ClientIDMutation):
         if "spaces" in input:
             schedule_item.spaces = input['spaces']
 
-        date_end = input.get('date_end', None)
         if "date_end" in input:
             schedule_item.date_end = input['date_end']
 
@@ -189,7 +195,9 @@ class CreateScheduleItem(graphene.relay.ClientIDMutation):
 class UpdateScheduleItem(graphene.relay.ClientIDMutation):
     class Input:
         id = graphene.ID(required=True)
-        name = graphene.String(required=True)
+        account = graphene.ID(required=False)
+        account_2 = graphene.ID(required=False)
+        name = graphene.String(required=False)
         
     schedule_item = graphene.Field(ScheduleItemNode)
 
@@ -199,12 +207,34 @@ class UpdateScheduleItem(graphene.relay.ClientIDMutation):
         require_login_and_permission(user, 'costasiella.change_scheduleitem')
 
         rid = get_rid(input['id'])
-
         schedule_item = ScheduleItem.objects.filter(id=rid.id).first()
         if not schedule_item:
             raise Exception('Invalid Schedule Item ID!')
 
-        schedule_item.name = input['name']
+        result = validate_create_update_input(input)
+        print(input)
+
+        if "name" in result:
+            schedule_item.name = input['name']
+
+        if "account" in result:
+            schedule_item.account = result['account']
+
+        if "account_2" in result:
+            schedule_item.account_2 = result['account_2']
+
+        if "schedule_event" in result:
+            schedule_item.schedule_event = result['schedule_event']
+
+        if "name" in input:
+            schedule_item.name = input['name']
+
+        if "spaces" in input:
+            schedule_item.spaces = input['spaces']
+
+        if "date_end" in input:
+            schedule_item.date_end = input['date_end']
+
         schedule_item.save(force_update=True)
 
         return UpdateScheduleItem(schedule_item=schedule_item)
