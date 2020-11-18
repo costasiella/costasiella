@@ -148,22 +148,6 @@ function ScheduleEventActivityForm ({
             </Form.Group>
           </Grid.Col>
           <Grid.Col>
-            <Form.Group label={t('general.teacher_role')}>
-              <Field component="select" 
-                      name="role" 
-                      className={(errors.role) ? "form-control is-invalid" : "form-control"} 
-                      autoComplete="off">
-                <option value="" key={v4()}></option>
-                <option value="SUB" key={v4()}>{t('schedule.classes.teacher_roles.sub')}</option>
-                <option value="ASSISTANT" key={v4()}>{t('schedule.classes.teacher_roles.assistant')}</option>
-                <option value="KARMA" key={v4()}>{t('schedule.classes.teacher_roles.karma')}</option>
-              </Field>
-              <ErrorMessage name="role" component="span" className="invalid-feedback" />
-            </Form.Group>
-          </Grid.Col>
-        </Grid.Row>
-        <Grid.Row>
-          <Grid.Col>
             <Form.Group label={t('general.teacher2')}>
               <Field component="select" 
                       name="account2" 
@@ -177,51 +161,7 @@ function ScheduleEventActivityForm ({
               <ErrorMessage name="account2" component="span" className="invalid-feedback" />
             </Form.Group>
           </Grid.Col>
-          <Grid.Col>
-            <Form.Group label={t('general.teacher_role2')}>
-              <Field component="select" 
-                      name="role2" 
-                      className={(errors.role2) ? "form-control is-invalid" : "form-control"} 
-                      autoComplete="off">
-                <option value="" key={v4()}></option>
-                <option value="SUB" key={v4()}>{t('schedule.classes.teacher_roles.sub')}</option>
-                <option value="ASSISTANT" key={v4()}>{t('schedule.classes.teacher_roles.assistant')}</option>
-                <option value="KARMA" key={v4()}>{t('schedule.classes.teacher_roles.karma')}</option>
-              </Field>
-              <ErrorMessage name="role2" component="span" className="invalid-feedback" />
-            </Form.Group>
-          </Grid.Col>
         </Grid.Row>
-        {/* <Grid.Row>
-          <Grid.Col>
-            <Form.Group label={t('general.glaccount')}>
-              <Field component="select" 
-                    name="financeGlaccount" 
-                    className={(errors.financeGlaccount) ? "form-control is-invalid" : "form-control"} 
-                    autoComplete="off">
-                <option value="" key={v4()}></option>
-                {inputData.financeGlaccounts.edges.map(({ node }) =>
-                  <option value={node.id} key={v4()}>{node.name} ({node.code})</option>
-                )}
-              </Field>
-              <ErrorMessage name="financeGlaccount" component="span" className="invalid-feedback" />
-            </Form.Group>
-          </Grid.Col>
-          <Grid.Col>
-            <Form.Group label={t('general.costcenter')}>
-              <Field component="select" 
-                    name="financeCostcenter" 
-                    className={(errors.financeCostcenter) ? "form-control is-invalid" : "form-control"} 
-                    autoComplete="off">
-                <option value="" key={v4()}></option>
-                {inputData.financeCostcenters.edges.map(({ node }) =>
-                  <option value={node.id} key={v4()}>{node.name} ({node.code})</option>
-                )}
-              </Field>
-              <ErrorMessage name="financeCostcenter" component="span" className="invalid-feedback" />
-            </Form.Group>
-          </Grid.Col>
-        </Grid.Row> */}
       </Card.Body>
       <Card.Footer>
           <Button 
