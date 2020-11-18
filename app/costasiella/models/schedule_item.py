@@ -93,9 +93,7 @@ class ScheduleItem(models.Model):
     )
     info_mail_content = models.TextField(default="")
     account = models.ForeignKey(Account, on_delete=models.SET_NULL, null=True, related_name="si_account")
-    role = models.CharField(default="", max_length=50, choices=TEACHER_ROLES)
     account_2 = models.ForeignKey(Account, on_delete=models.SET_NULL, null=True, related_name="si_account_2")
-    role_2 = models.CharField(default="", max_length=50, choices=TEACHER_ROLES)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     ################ BEGIN EMPTY FIELDS ################
@@ -104,6 +102,8 @@ class ScheduleItem(models.Model):
     # into these fields
     ####################################################
     status = models.CharField(max_length=255, default="", choices=STATUSES)
+    role = models.CharField(default="", max_length=50, choices=TEACHER_ROLES)
+    role_2 = models.CharField(default="", max_length=50, choices=TEACHER_ROLES)
     description = models.CharField(max_length=255, default="")
     count_attendance = models.IntegerField(null=True)
     ################ END EMPTY FIELDS ##################

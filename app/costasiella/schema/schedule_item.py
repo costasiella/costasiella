@@ -7,7 +7,13 @@ from graphene_django.filter import DjangoFilterConnectionField
 from graphql import GraphQLError
 from graphql_relay import to_global_id
 
-from ..models import ScheduleEvent, ScheduleItem, OrganizationClasstype, OrganizationLevel, OrganizationLocationRoom
+from ..models import \
+    Account, \
+    ScheduleEvent, \
+    ScheduleItem, \
+    OrganizationClasstype, \
+    OrganizationLevel, \
+    OrganizationLocationRoom
 from ..modules.gql_tools import require_login_and_permission, require_login_and_one_of_permissions, get_rid
 from ..modules.messages import Messages
 from ..modules.model_helpers.schedule_item_helper import ScheduleItemHelper
@@ -69,6 +75,7 @@ def validate_create_update_input(input, update=False):
                 raise Exception(_('Invalid Schedule Event ID!'))
 
             # Do some basic checks for schedule event activity input
+            # account and account_2 fields are allowed to be empty
             if schedule_event:
                 if 'name' not in input or input['name'] is None or input['name'] == "":
                     raise Exception(_('name should be set for event activities!'))
@@ -84,6 +91,24 @@ def validate_create_update_input(input, update=False):
 
                 if 'frequency_interval' not in input or input['frequency_interval'] != 0:
                     raise Exception(_('frequencyInterval should be set to 0 for event activities!'))
+
+    # Check account
+    if 'account' in input:
+        if input['account']:
+            rid = get_rid(input['account'])
+            account = Account.objects.filter(id=rid.id).first()
+            result['account'] = account
+            if not account:
+                raise Exception(_('Invalid Account ID!'))
+
+    # Check account
+    if 'account_2' in input:
+        if input['account_2']:
+            rid = get_rid(input['account_2'])
+            account_2 = Account.objects.filter(id=rid.id).first()
+            result['account_2'] = account_2
+            if not account_2:
+                raise Exception(_('Invalid Account ID (account2)!'))
 
     # Check OrganizationLocationRoom
     if 'organization_location_room' in input:
