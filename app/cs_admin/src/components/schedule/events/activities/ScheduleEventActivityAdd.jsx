@@ -20,7 +20,7 @@ import { GET_SCHEDULE_EVENT_ACTIVITIES_QUERY, GET_INPUT_VALUES_QUERY } from "./q
 
 import ScheduleEventActivityBack from "./ScheduleEventActivityBack"
 import ScheduleEventEditBase from "../edit/ScheduleEventEditBase"
-import ScheduleEventTicketForm from "./ScheduleEventTicketForm"
+import ScheduleEventActivityForm from "./ScheduleEventActivityForm"
 
 
 const ADD_SCHEDULE_EVENT_ACTIVITY = gql`
@@ -126,7 +126,7 @@ function ScheduleEventActivityAdd({ t, history, match }) {
         }}
         >
         {({ isSubmitting, errors, values, setFieldTouched, setFieldValue }) => (
-          <ScheduleEventTicketForm
+          <ScheduleEventActivityForm
             isSubmitting={isSubmitting}
             setFieldTouched={setFieldTouched}
             setFieldValue={setFieldValue}
@@ -134,7 +134,6 @@ function ScheduleEventActivityAdd({ t, history, match }) {
             values={values}
             inputData={inputData}
             returnUrl={returnUrl}
-            formTitle="create"
           />
         )}
       </Formik>
