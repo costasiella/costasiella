@@ -108,7 +108,7 @@ const ScheduleClassForm = ({ t, history, inputData, isSubmitting, setFieldValue,
                 selected={values.dateStart}
                 onChange={(date) => {
                   setFieldValue("dateStart", date)
-                  setFieldTouched("dateEnd", true)
+                  setFieldTouched("dateStart", true)
                 }}
                 onBlur={() => setFieldTouched("dateStart", true)}
               />
