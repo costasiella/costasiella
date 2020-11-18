@@ -17,9 +17,6 @@ query ScheduleItem($before:String, $after:String, $schedule_event:ID!) {
           id
           name
         }
-      	scheduleItemType
-        frequencyType
-        scheduleItemType
         organizationLocationRoom {
           id
           name
@@ -29,78 +26,60 @@ query ScheduleItem($before:String, $after:String, $schedule_event:ID!) {
         dateStart
         timeStart
         timeEnd
-      	description
+        account
+        account2
       }
     }
   }
 }
 `
 
-// export const GET_SCHEDULE_EVENT_TICKET_QUERY = gql`
-// query ScheduleEventTicket($before:String, $after:String, $id:ID!) {
-//   scheduleEventTicket(id: $id) {
-//     id
-//     displayPublic
-//     name
-//     description
-//     price
-//     financeTaxRate {
-//       id
-//       name
-//     }
-//     financeGlaccount {
-//       id
-//       name
-//     }
-//     financeCostcenter {
-//       id
-//       name
-//     }
-//   }
-//   financeTaxRates(first: 100, before: $before, after: $after, archived: false) {
-//     pageInfo {
-//       startCursor
-//       endCursor
-//       hasNextPage
-//       hasPreviousPage
-//     }
-//     edges {
-//       node {
-//         id
-//         name
-//       }
-//     }
-//   }
-//   financeGlaccounts(first: 100, before: $before, after: $after, archived: false) {
-//     pageInfo {
-//       startCursor
-//       endCursor
-//       hasNextPage
-//       hasPreviousPage
-//     }
-//     edges {
-//       node {
-//         id
-//         name
-//       }
-//     }
-//   }
-//   financeCostcenters(first: 100, before: $before, after: $after, archived: false) {
-//     pageInfo {
-//       startCursor
-//       endCursor
-//       hasNextPage
-//       hasPreviousPage
-//     }
-//     edges {
-//       node {
-//         id
-//         name
-//       }
-//     }
-//   }
-// }
-// `
+
+export const GET_SCHEDULE_EVENT_ACTIVITY_QUERY = gql`
+query ScheduleEventActivity($before:String, $after:String, $id:ID!) {
+  scheduleItem(id: $id) {
+    id
+    displayPublic
+    name
+    spaces
+    dateStart
+    timeStart
+    timeEnd
+    organizationLocationRoom {
+      id
+      name
+    }
+  }
+  accounts(first: 100, before: $before, after: $after, teacher: true) {
+    pageInfo {
+      startCursor
+      endCursor
+      hasNextPage
+      hasPreviousPage
+    }
+    edges {
+      node {
+        id
+        fullName
+      }
+    }
+  }
+  organizationLocationRooms(first: 100, before: $before, after: $after, archived: false) {
+    pageInfo {
+      startCursor
+      endCursor
+      hasNextPage
+      hasPreviousPage
+    }
+    edges {
+      node {
+        id
+        name
+      }
+    }
+  }
+}
+`
 
 
 export const DELETE_SCHEDULE_EVENT_ACTIVITY = gql`
