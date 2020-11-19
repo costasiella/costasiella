@@ -20,6 +20,10 @@ query ScheduleItem($before:String, $after:String, $schedule_event:ID!) {
         organizationLocationRoom {
           id
           name
+          organizationLocation {
+            id
+            name
+          }
         }
         name
         spaces
@@ -54,6 +58,10 @@ query ScheduleEventActivity($before:String, $after:String, $id:ID!) {
     organizationLocationRoom {
       id
       name
+      organizationLocation {
+        id
+        Name
+      }
     }
     account {
       id
@@ -107,7 +115,7 @@ export const DELETE_SCHEDULE_EVENT_ACTIVITY = gql`
 
 export const GET_INPUT_VALUES_QUERY = gql`
   query ScheduleEventActivityInputValues($after: String, $before: String) {
-    accounts(first: 100, before: $before, after: $after, teacher: true) {
+    accounts(first: 100, before: $before, after: $after, isActive: true, teacher: true) {
       pageInfo {
         startCursor
         endCursor
@@ -132,6 +140,10 @@ export const GET_INPUT_VALUES_QUERY = gql`
         node {
           id
           name
+          organizationLocation {
+            id
+            name
+          }
         }
       }
     }
