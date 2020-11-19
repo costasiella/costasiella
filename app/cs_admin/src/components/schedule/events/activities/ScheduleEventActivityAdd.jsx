@@ -15,6 +15,8 @@ import {
   Icon
 } from "tabler-react"
 
+import { dateToLocalISO, dateToLocalISOTime } from '../../../../tools/date_tools'
+
 import { GET_SCHEDULE_EVENT_ACTIVITIES_QUERY, GET_INPUT_VALUES_QUERY } from "./queries"
 // import { SCHEDULE_EVENT_TICKET_SCHEMA } from './yupSchema'
 
@@ -24,7 +26,7 @@ import ScheduleEventActivityForm from "./ScheduleEventActivityForm"
 
 
 const ADD_SCHEDULE_EVENT_ACTIVITY = gql`
-  mutation CreateScheduleEventActivity($input:CreateScheduleEventActivityInput!) {
+  mutation CreateScheduleItem($input:CreateScheduleItemInput!) {
     createScheduleItem(input: $input) {
       scheduleItem {
         id
@@ -70,6 +72,7 @@ function ScheduleEventActivityAdd({ t, history, match }) {
   )
 
   const inputData = data
+  console.log(inputData)
 
   return (
     <ScheduleEventEditBase 
@@ -90,7 +93,7 @@ function ScheduleEventActivityAdd({ t, history, match }) {
           account: '',
           account2: ''
         }}
-        validationSchema={SCHEDULE_EVENT_TICKET_SCHEMA}
+        // validationSchema={SCHEDULE_EVENT_TICKET_SCHEMA}
         onSubmit={(values, { setSubmitting }) => {
           console.log("submit values")
           console.log(values)
@@ -98,13 +101,18 @@ function ScheduleEventActivityAdd({ t, history, match }) {
           addScheduleEventTicket({ variables: {
             input: {
               scheduleEvent: eventId,
+              frequencyType: "SPECIFIC",
+              frequencyInterval: 0,
+              scheduleItemType: "EVENT_ACTIVITY",
               displayPublic: values.displayPublic,
               name: values.name,
+              spaces: values.spaces,
+              organizationLocationRoom: values.organizationLocationRoom,
               account: values.account,
               account2: values.account2,
-              timeStart: values.timeStart,
-              timeEnd: values.timeEnd,
-              dateStart: values.dateStart
+              dateStart: dateToLocalISO(values.dateStart),
+              timeStart: dateToLocalISOTime(values.timeStart),
+              timeEnd: dateToLocalISOTime(values.timeEnd),
             }
           }, refetchQueries: [
               {query: GET_SCHEDULE_EVENT_ACTIVITIES_QUERY, variables: {
