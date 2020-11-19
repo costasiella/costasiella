@@ -39,3 +39,8 @@ This is a rough list of the technoligies used in this project.
 - i18next
 - Apollo Client
 - Webpack
+
+
+## Docs
+
+https://costasiella-docs.readthedocs.io/
