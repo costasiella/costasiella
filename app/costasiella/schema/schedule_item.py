@@ -135,6 +135,7 @@ class CreateScheduleItem(graphene.relay.ClientIDMutation):
     class Input:
         account = graphene.ID(required=False)
         account_2 = graphene.ID(required=False)
+        display_public = graphene.Boolean(required=False)
         name = graphene.String(required=False)
         spaces = graphene.Int(required=False)
         schedule_event = graphene.ID(required=False)
@@ -168,6 +169,9 @@ class CreateScheduleItem(graphene.relay.ClientIDMutation):
         )
 
         # Optional fields
+        if "display_public" in result:
+            schedule_item.display_public = input['display_public']
+
         if "account" in result:
             schedule_item.account = result['account']
 
