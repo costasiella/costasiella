@@ -201,7 +201,15 @@ class UpdateScheduleItem(graphene.relay.ClientIDMutation):
         id = graphene.ID(required=True)
         account = graphene.ID(required=False)
         account_2 = graphene.ID(required=False)
+        display_public = graphene.Boolean(required=False)
         name = graphene.String(required=False)
+        spaces = graphene.Int(required=False)
+        schedule_event = graphene.ID(required=False)
+        organization_location_room = graphene.ID(required=False)
+        date_start = graphene.types.datetime.Date(required=False)
+        date_end = graphene.types.datetime.Date(required=False)
+        time_start = graphene.types.datetime.Time(required=False)
+        time_end = graphene.types.datetime.Time(required=False)
         
     schedule_item = graphene.Field(ScheduleItemNode)
 
@@ -227,17 +235,29 @@ class UpdateScheduleItem(graphene.relay.ClientIDMutation):
         if "account_2" in result:
             schedule_item.account_2 = result['account_2']
 
+        if "display_public" in result:
+            schedule_item.display_public = result['display_public']
+
         if "schedule_event" in result:
             schedule_item.schedule_event = result['schedule_event']
 
-        if "name" in input:
-            schedule_item.name = input['name']
+        if "organization_location_room" in result:
+            schedule_item.organization_location_room = result['organization_location_room']
 
         if "spaces" in input:
             schedule_item.spaces = input['spaces']
 
+        if "date_start" in input:
+            schedule_item.date_start = input['date_start']
+
         if "date_end" in input:
             schedule_item.date_end = input['date_end']
+
+        if "time_start" in input:
+            schedule_item.time_start = input['time_start']
+
+        if "time_end" in input:
+            schedule_item.time_end = input['time_end']
 
         schedule_item.save(force_update=True)
 
