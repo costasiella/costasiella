@@ -26,8 +26,14 @@ query ScheduleItem($before:String, $after:String, $schedule_event:ID!) {
         dateStart
         timeStart
         timeEnd
-        account
-        account2
+        account {
+          id
+          fullName
+        }
+        account2 {
+          id
+          fullName
+        }
       }
     }
   }
@@ -46,6 +52,14 @@ query ScheduleEventActivity($before:String, $after:String, $id:ID!) {
     timeStart
     timeEnd
     organizationLocationRoom {
+      id
+      name
+    }
+    account {
+      id
+      name
+    }
+    account2 {
       id
       name
     }
