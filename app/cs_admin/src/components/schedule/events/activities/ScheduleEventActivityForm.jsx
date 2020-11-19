@@ -15,7 +15,8 @@ import {
 
 import { Editor } from '@tinymce/tinymce-react'
 import { tinymceBasicConf } from "../../../../plugin_config/tinymce"
-// import CSDatePicker from "../../../../../ui/CSDatePicker"
+import CSDatePicker from "../../../ui/CSDatePicker"
+import CSTimePicker from "../../../ui/CSTimePicker"
 
 function ScheduleEventActivityForm ({ 
   t, 
