@@ -60,19 +60,19 @@ query ScheduleEventActivity($before:String, $after:String, $id:ID!) {
       name
       organizationLocation {
         id
-        Name
+        name
       }
     }
     account {
       id
-      name
+      fullName
     }
     account2 {
       id
-      name
+      fullName
     }
   }
-  accounts(first: 100, before: $before, after: $after, teacher: true) {
+  accounts(first: 100, before: $before, after: $after, isActive:true, teacher: true) {
     pageInfo {
       startCursor
       endCursor
@@ -97,6 +97,10 @@ query ScheduleEventActivity($before:String, $after:String, $id:ID!) {
       node {
         id
         name
+        organizationLocation {
+          id 
+          name
+        }
       }
     }
   }
