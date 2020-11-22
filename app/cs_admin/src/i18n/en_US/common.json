@@ -373,7 +373,7 @@
         "infoMailContent": "Info mail content",
         "start": "Start",
         "edit_menu": "Edit menu",
-        "spaces": "__STRING_NOT_TRANSLATED__"
+        "spaces": "Spaces"
     },
     "yup": {
         "min_len_3": "Please input at least 3 characters",
