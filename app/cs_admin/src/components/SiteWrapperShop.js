@@ -86,6 +86,14 @@ const getNavBarItems = (t, user) => {
   })
 
   items.push({
+    value: t("shop.events.title"),
+    to: "/shop/events",
+    icon: "calendar",
+    LinkComponent: withRouter(NavLink),
+    useExact: true,
+  })
+
+  items.push({
     value: t("shop.account.title"),
     to: "/shop/account",
     icon: "user",
