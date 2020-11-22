@@ -46,6 +46,7 @@ from .organization_subscription_price import OrganizationSubscriptionPrice
 
 from .schedule_event import ScheduleEvent
 from .schedule_event_ticket import ScheduleEventTicket
+from .schedule_event_ticket_schedule_item import ScheduleEventTicketScheduleItem
 from .schedule_item import ScheduleItem
 from .schedule_item_attendance import ScheduleItemAttendance
 from .schedule_item_teacher import ScheduleItemTeacher
