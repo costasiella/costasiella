@@ -372,7 +372,8 @@
         "preview": "Preview",
         "infoMailContent": "Info mail content",
         "start": "Start",
-        "edit_menu": "Edit menu"
+        "edit_menu": "Edit menu",
+        "spaces": "__STRING_NOT_TRANSLATED__"
     },
     "yup": {
         "min_len_3": "Please input at least 3 characters",
@@ -938,7 +939,13 @@
             },
             "toast_edit_success": "Saved",
             "activities": {
-                "title": "Activities"
+                "title": "Activities",
+                "add": "Add activity",
+                "toast_add_success": "Added activity",
+                "delete_confirm_msg": "Are you sure you wish to delete this activity?",
+                "delete_success": "Deleted activity",
+                "edit": "Edit activity",
+                "toast_edit_success": "Saved"
             }
         },
         "event": {

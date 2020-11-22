@@ -202,7 +202,8 @@
         "preview": "__STRING_NOT_TRANSLATED__",
         "infoMailContent": "__STRING_NOT_TRANSLATED__",
         "start": "__STRING_NOT_TRANSLATED__",
-        "edit_menu": "__STRING_NOT_TRANSLATED__"
+        "edit_menu": "__STRING_NOT_TRANSLATED__",
+        "spaces": "__STRING_NOT_TRANSLATED__"
     },
     "settings": {
         "error_loading": "__STRING_NOT_TRANSLATED__",
@@ -1215,7 +1216,13 @@
             },
             "toast_edit_success": "__STRING_NOT_TRANSLATED__",
             "activities": {
-                "title": "__STRING_NOT_TRANSLATED__"
+                "title": "__STRING_NOT_TRANSLATED__",
+                "add": "__STRING_NOT_TRANSLATED__",
+                "toast_add_success": "__STRING_NOT_TRANSLATED__",
+                "delete_confirm_msg": "__STRING_NOT_TRANSLATED__",
+                "delete_success": "__STRING_NOT_TRANSLATED__",
+                "edit": "__STRING_NOT_TRANSLATED__",
+                "toast_edit_success": "__STRING_NOT_TRANSLATED__"
             }
         },
         "event": {
