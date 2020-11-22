@@ -146,8 +146,7 @@ function scheduleItems({t, match, history}) {
                   </Link>
                 </Table.Col>
                 <Table.Col className="text-right">
-                  {/* Check for fullEvent / deletable before showing delete button */}
-                  {(node.deletable) ? <ScheduleEventActivityDelete id={node.id} /> : ""}
+                  <ScheduleEventActivityDelete id={node.id} />
                 </Table.Col>
               </Table.Row>
             ))}

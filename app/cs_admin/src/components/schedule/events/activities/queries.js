@@ -109,8 +109,8 @@ query ScheduleEventActivity($before:String, $after:String, $id:ID!) {
 
 
 export const DELETE_SCHEDULE_EVENT_ACTIVITY = gql`
-  mutation DeleteScheduleEventActivity($input: DeleteScheduleEventActivityInput!) {
-    deleteScheduleEventActivity(input: $input) {
+  mutation DeleteScheduleItem($input: DeleteScheduleItemInput!) {
+    deleteScheduleItem(input: $input) {
       ok
     }
   }

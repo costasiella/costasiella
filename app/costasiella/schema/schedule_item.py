@@ -264,7 +264,6 @@ class UpdateScheduleItem(graphene.relay.ClientIDMutation):
 class DeleteScheduleItem(graphene.relay.ClientIDMutation):
     class Input:
         id = graphene.ID(required=True)
-        archived = graphene.Boolean(required=True)
 
     ok = graphene.Boolean()
 
