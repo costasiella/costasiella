@@ -24,7 +24,7 @@ class OrganizationSubscriptionGroupHelper:
                 ids.append(obj.schedule_item.id)
 
         # Simple filter, don't filter on dates, as users might re-use old classes
-        classes_filter = Q(schedule_item_type = 'CLASS') & ~Q(id__in=ids)
+        classes_filter = Q(schedule_item_type='CLASS') & ~Q(id__in=ids)
                          
         schedule_items = ScheduleItem.objects.filter(
             classes_filter
@@ -33,12 +33,13 @@ class OrganizationSubscriptionGroupHelper:
         for schedule_item in schedule_items:
             schedule_item_organization_subscription_group = \
                 ScheduleItemOrganizationSubscriptionGroup(
-                    schedule_item = schedule_item,
-                    organization_subscription_group = OrganizationSubscriptionGroup.objects.get(id=organization_subscription_group_id)
+                    schedule_item=schedule_item,
+                    organization_subscription_group=OrganizationSubscriptionGroup.objects.get(
+                        id=organization_subscription_group_id
+                    )
                 )
             schedule_item_organization_subscription_group.save()
 
-    
     def remove_from_all_classes(self, organization_subscription_group_id):
         """
         Remove an organization subscription group from all classes when archived
@@ -46,4 +47,3 @@ class OrganizationSubscriptionGroupHelper:
         ScheduleItemOrganizationSubscriptionGroup.objects.filter(
             Q(organization_subscription_group = organization_subscription_group_id)
         ).delete()
-    
