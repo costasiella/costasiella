@@ -83,14 +83,15 @@ def validate_create_update_input(input, update=False):
                 if 'spaces' not in input or input['spaces'] is None or input['spaces'] == "":
                     raise Exception(_('spaces should be set for event activities!'))
 
-                if 'schedule_item_type' not in input or input['schedule_item_type'] != "EVENT_ACTIVITY":
-                    raise Exception(_('scheduleEventType should be set to "EVENT_ACTIVITY" for event activities!'))
+                if not update:
+                    if 'schedule_item_type' not in input or input['schedule_item_type'] != "EVENT_ACTIVITY":
+                        raise Exception(_('scheduleEventType should be set to "EVENT_ACTIVITY" for event activities!'))
 
-                if 'frequency_type' not in input or input['frequency_type'] != "SPECIFIC":
-                    raise Exception(_('frequencyType should be set to "SPECIFIC" for event activities!'))
+                    if 'frequency_type' not in input or input['frequency_type'] != "SPECIFIC":
+                        raise Exception(_('frequencyType should be set to "SPECIFIC" for event activities!'))
 
-                if 'frequency_interval' not in input or input['frequency_interval'] != 0:
-                    raise Exception(_('frequencyInterval should be set to 0 for event activities!'))
+                    if 'frequency_interval' not in input or input['frequency_interval'] != 0:
+                        raise Exception(_('frequencyInterval should be set to 0 for event activities!'))
 
     # Check account
     if 'account' in input:
@@ -204,7 +205,6 @@ class UpdateScheduleItem(graphene.relay.ClientIDMutation):
         display_public = graphene.Boolean(required=False)
         name = graphene.String(required=False)
         spaces = graphene.Int(required=False)
-        schedule_event = graphene.ID(required=False)
         organization_location_room = graphene.ID(required=False)
         date_start = graphene.types.datetime.Date(required=False)
         date_end = graphene.types.datetime.Date(required=False)
@@ -223,7 +223,7 @@ class UpdateScheduleItem(graphene.relay.ClientIDMutation):
         if not schedule_item:
             raise Exception('Invalid Schedule Item ID!')
 
-        result = validate_create_update_input(input)
+        result = validate_create_update_input(input, update=True)
         print(input)
 
         if "name" in result:
@@ -237,9 +237,6 @@ class UpdateScheduleItem(graphene.relay.ClientIDMutation):
 
         if "display_public" in result:
             schedule_item.display_public = result['display_public']
-
-        if "schedule_event" in result:
-            schedule_item.schedule_event = result['schedule_event']
 
         if "organization_location_room" in result:
             schedule_item.organization_location_room = result['organization_location_room']
