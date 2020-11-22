@@ -15,7 +15,7 @@ import {
   Icon
 } from "tabler-react"
 
-import { dateToLocalISO, dateToLocalISOTime } from '../../../../tools/date_tools'
+import { dateToLocalISO, dateToLocalISOTime, TimeStringToJSDateOBJ } from '../../../../tools/date_tools'
 
 import { GET_SCHEDULE_EVENT_ACTIVITIES_QUERY, GET_SCHEDULE_EVENT_ACTIVITY_QUERY } from "./queries"
 // import { SCHEDULE_EVENT_TICKET_SCHEMA } from './yupSchema'
@@ -25,7 +25,7 @@ import ScheduleEventEditBase from "../edit/ScheduleEventEditBase"
 import ScheduleEventActivityForm from "./ScheduleEventActivityForm"
 
 
-const UUPDATE_SCHEDULE_EVENT_ACTIVITY = gql`
+const UPDATE_SCHEDULE_EVENT_ACTIVITY = gql`
   mutation UpdateScheduleItem($input:UpdateScheduleItemInput!) {
     updateScheduleItem(input: $input) {
       scheduleItem {
@@ -43,9 +43,7 @@ function ScheduleEventActivityEdit({ t, history, match }) {
   const activeLink = 'activities'
   const cardTitle = t("schedule.events.activities.edit")
 
-  const [addScheduleEventTicket] = useMutation(ADD_SCHEDULE_EVENT_ACTIVITY, {
-    onCompleted: () => history.push(returnUrl),
-  })
+  const [updateScheduleEventTicket] = useMutation(UPDATE_SCHEDULE_EVENT_ACTIVITY)
   const { loading, error, data, fetchMore } = useQuery(GET_SCHEDULE_EVENT_ACTIVITY_QUERY, {
     variables: {
       id: scheduleItemId
@@ -79,6 +77,14 @@ function ScheduleEventActivityEdit({ t, history, match }) {
   const scheduleItem = data.scheduleItem
   console.log(inputData)
 
+  let initialTimeStart = null
+  if (scheduleItem.timeStart) {
+    initialTimeStart = TimeStringToJSDateOBJ(scheduleItem.timeStart)
+  }
+  let initialTimeEnd = null
+  if (scheduleItem.timeEnd) {
+    initialTimeEnd = TimeStringToJSDateOBJ(scheduleItem.timeEnd)
+  }
 
 
   return (
@@ -95,19 +101,19 @@ function ScheduleEventActivityEdit({ t, history, match }) {
           spaces: scheduleItem.spaces,
           organizationLocationRoom: scheduleItem.organizationLocationRoom.id,
           dateStart: scheduleItem.dateStart,
-          timeStart: scheduleItem.timeStart,
-          timeEnd: scheduleItem.timeEnd,
+          timeStart: initialTimeStart,
+          timeEnd: initialTimeEnd,
           account: (scheduleItem.account) ? scheduleItem.account.id : '',
           account2: (scheduleItem.account2) ? scheduleItem.account2.id : ''
         }}
-        // validationSchema={SCHEDULE_EVENT_TICKET_SCHEMA}
+        // validationSchema={SCHEDULE_EVENT_ACTIVITY_SCHEMA}
         onSubmit={(values, { setSubmitting }) => {
           console.log("submit values")
           console.log(values)
 
-          addScheduleEventTicket({ variables: {
+          updateScheduleEventTicket({ variables: {
             input: {
-              scheduleEvent: eventId,
+              id: scheduleItemId,
               displayPublic: values.displayPublic,
               name: values.name,
               spaces: values.spaces,
