@@ -18,7 +18,7 @@ import {
 import { dateToLocalISO, dateToLocalISOTime } from '../../../../tools/date_tools'
 
 import { GET_SCHEDULE_EVENT_ACTIVITIES_QUERY, GET_INPUT_VALUES_QUERY } from "./queries"
-// import { SCHEDULE_EVENT_TICKET_SCHEMA } from './yupSchema'
+import { SCHEDULE_EVENT_ACTIVITY_SCHEMA } from './yupSchema'
 
 import ScheduleEventActivityBack from "./ScheduleEventActivityBack"
 import ScheduleEventEditBase from "../edit/ScheduleEventEditBase"
@@ -93,7 +93,7 @@ function ScheduleEventActivityAdd({ t, history, match }) {
           account: '',
           account2: ''
         }}
-        // validationSchema={SCHEDULE_EVENT_TICKET_SCHEMA}
+        validationSchema={SCHEDULE_EVENT_ACTIVITY_SCHEMA}
         onSubmit={(values, { setSubmitting }) => {
           console.log("submit values")
           console.log(values)
