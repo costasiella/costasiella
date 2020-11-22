@@ -34,13 +34,12 @@ import ScheduleEventEditBaseBase from "./ScheduleEventEditBaseBase"
 function ScheduleEventEditBase({t, match, history, activeTab, children, activeLink, cardTitle, sidebarContent, returnUrl="/schedule/events"}) {
   const appSettings = useContext(AppSettingsContext)
   const dateFormat = appSettings.dateFormat
+  const eventId = match.params.event_id
 
   // Set default card title
   if (!cardTitle) {
     cardTitle = t("schedule.events.edit.title")
   }
-
-  const eventId = match.params.event_id
 
   const { loading, error, data } = useQuery(GET_SCHEDULE_EVENT_QUERY, {
     variables: { id: eventId }
