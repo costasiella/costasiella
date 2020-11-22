@@ -1553,6 +1553,9 @@
         "subscription": {
             "error_loading": "Error loading subscription information...:(",
             "additional_information": "Additional information"
+        },
+        "events": {
+            "title": "Events"
         }
     },
     "You've already booked this class ": "You've already booked this class",

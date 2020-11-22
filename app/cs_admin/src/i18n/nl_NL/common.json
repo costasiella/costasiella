@@ -636,6 +636,9 @@
         "subscription": {
             "error_loading": "__STRING_NOT_TRANSLATED__",
             "additional_information": "__STRING_NOT_TRANSLATED__"
+        },
+        "events": {
+            "title": "__STRING_NOT_TRANSLATED__"
         }
     },
     "home": {
