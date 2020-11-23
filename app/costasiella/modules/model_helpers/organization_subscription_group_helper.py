@@ -16,7 +16,7 @@ class OrganizationSubscriptionGroupHelper:
         """
         # Get all classes to which this group is added
         schedule_items_already_added = ScheduleItemOrganizationSubscriptionGroup.objects.filter(
-            organization_subscription_group = organization_subscription_group_id
+            organization_subscription_group=organization_subscription_group_id
         )
         ids = []
         for obj in schedule_items_already_added:
@@ -45,5 +45,5 @@ class OrganizationSubscriptionGroupHelper:
         Remove an organization subscription group from all classes when archived
         """
         ScheduleItemOrganizationSubscriptionGroup.objects.filter(
-            Q(organization_subscription_group = organization_subscription_group_id)
+            Q(organization_subscription_group=organization_subscription_group_id)
         ).delete()

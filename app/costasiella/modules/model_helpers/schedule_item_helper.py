@@ -41,13 +41,14 @@ class ScheduleItemHelper:
                 organization_classpass_group=group
             ).save()
 
-    def add_all_event_schedule_item_to_event_tickets(self, schedule_item, schedule_event):
+    def add_schedule_item_to_all_event_tickets(self, schedule_item):
         """
         Add all tickets for an event to this schedule_item
         :param schedule_item: models.ScheduleItem object
         :param schedule_event: models.ScheduleEvent object
         :return: None
         """
+        schedule_event = schedule_item.schedule_event
         schedule_event_tickets = ScheduleEventTicket.objects.filter(
             schedule_event=schedule_event
         )

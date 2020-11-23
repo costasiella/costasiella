@@ -194,6 +194,10 @@ class CreateScheduleItem(graphene.relay.ClientIDMutation):
         # ALl done, save it :).
         schedule_item.save()
 
+        if schedule_item.schedule_item_type == "EVENT_ACTIVITY":
+            sih = ScheduleItemHelper()
+            sih.add_schedule_item_to_all_event_tickets(schedule_item)
+
         return CreateScheduleItem(schedule_item=schedule_item)
 
 
