@@ -8,7 +8,7 @@ This helper file is added to allow functions to add all schedule items to a new 
 
 
 class ScheduleEventTicketScheduleItemHelper:
-    def add_schdule_items_to_ticket(self, schedule_event_ticket):
+    def add_schedule_items_to_ticket(self, schedule_event_ticket):
         """
         Add a new schedule item to all tickets
         """
@@ -27,10 +27,14 @@ class ScheduleEventTicketScheduleItemHelper:
             ~Q(id__in=ids)
         )
 
+        # Set included to true for full event ticket
+        included = schedule_event_ticket.full_event
+
         for schedule_item in schedule_items:
             schedule_event_ticket_schedule_item = ScheduleEventTicketScheduleItem(
                 schedule_item=schedule_item,
-                schedule_event_ticket=schedule_event_ticket
+                schedule_event_ticket=schedule_event_ticket,
+                included=included
             )
             schedule_event_ticket_schedule_item.save()
 

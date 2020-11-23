@@ -6,6 +6,7 @@ from graphene_django.filter import DjangoFilterConnectionField
 from graphql import GraphQLError
 
 from ..models import Account, ScheduleEvent, ScheduleEventTicket, FinanceTaxRate, FinanceGLAccount, FinanceCostCenter
+from ..modules.model_helpers.schedule_event_ticket_schedule_item_helper import ScheduleEventTicketScheduleItemHelper
 from ..modules.gql_tools import require_login, require_login_and_permission, get_rid
 from ..modules.messages import Messages
 
@@ -133,6 +134,10 @@ class CreateScheduleEventTicket(graphene.relay.ClientIDMutation):
             schedule_event_ticket.finance_costcenter = result['finance_costcenter']
 
         schedule_event_ticket.save()
+
+        # Add activities to ticket
+        helper = ScheduleEventTicketScheduleItemHelper()
+        helper.add_schedule_items_to_ticket(schedule_event_ticket)
 
         return CreateScheduleEventTicket(schedule_event_ticket=schedule_event_ticket)
 
