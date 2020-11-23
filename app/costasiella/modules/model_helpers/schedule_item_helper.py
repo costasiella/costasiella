@@ -1,6 +1,7 @@
 from django.db.models import Q
 
 from ...models import OrganizationClasspassGroup, OrganizationSubscriptionGroup, \
+                        ScheduleEventTicket, ScheduleEventTicketScheduleItem, \
                         ScheduleItem, ScheduleItemWeeklyOTC, \
                         ScheduleItemOrganizationSubscriptionGroup, ScheduleItemOrganizationClasspassGroup
 
@@ -17,28 +18,46 @@ class ScheduleItemHelper:
         Add all non-archived subscription groups to this schedule item
         """
         groups = OrganizationSubscriptionGroup.objects.filter(
-            archived = False
+            archived=False
         )
 
         for group in groups:
             schedule_item_subscription_group = ScheduleItemOrganizationSubscriptionGroup(
-                schedule_item = ScheduleItem.objects.get(id=schedule_item_id),
-                organization_subscription_group = group
+                schedule_item=ScheduleItem.objects.get(id=schedule_item_id),
+                organization_subscription_group=group
             ).save()
-            
+
     def add_all_classpass_groups(self, schedule_item_id):
         """
         Add all non-archived classpass groups to this schedule item
         """
         groups = OrganizationClasspassGroup.objects.filter(
-            archived = False
+            archived=False
         )
 
         for group in groups:
             schedule_item_classpass_group = ScheduleItemOrganizationClasspassGroup(
-                schedule_item = ScheduleItem.objects.get(id=schedule_item_id),
-                organization_classpass_group = group
+                schedule_item=ScheduleItem.objects.get(id=schedule_item_id),
+                organization_classpass_group=group
             ).save()
+
+    def add_all_event_schedule_item_to_event_tickets(self, schedule_item, schedule_event):
+        """
+        Add all tickets for an event to this schedule_item
+        :param schedule_item: models.ScheduleItem object
+        :param schedule_event: models.ScheduleEvent object
+        :return: None
+        """
+        schedule_event_tickets = ScheduleEventTicket.objects.filter(
+            schedule_event=schedule_event
+        )
+
+        for schedule_event_ticket in schedule_event_tickets:
+            schedule_event_ticket_schdule_item = ScheduleEventTicketScheduleItem(
+                schedule_event_ticket=schedule_event_ticket,
+                schedule_item=schedule_item
+            ).save()
+
 
     def schedule_item_with_otc_data(self, schedule_item, date):
         """
