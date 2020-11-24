@@ -56,7 +56,8 @@ class ScheduleItemHelper:
         for schedule_event_ticket in schedule_event_tickets:
             schedule_event_ticket_schdule_item = ScheduleEventTicketScheduleItem(
                 schedule_event_ticket=schedule_event_ticket,
-                schedule_item=schedule_item
+                schedule_item=schedule_item,
+                included=schedule_event.full_event
             ).save()
 
 
