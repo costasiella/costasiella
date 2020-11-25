@@ -205,7 +205,6 @@ class ScheduleClassSubscriptions extends Component {
                                       >
                                         {console.log(errors)}
                                         {console.log(values)}
-                                        test
                                       </ScheduleClassSubscriptionForm>
                                     )}
                                 </Formik>
