@@ -10,15 +10,12 @@ import { toast } from 'react-toastify'
 import { v4 } from 'uuid'
 
 import {
-  Page,
-  Grid,
-  Icon,
-  Button,
   Card,
   Table,
 } from "tabler-react";
 
-import { GET_SCHEDULE_EVENT_TICKET_SCHEDULE_ITEMS_QUERY, GET_SCHEDULE_EVENT_TICKET_QUERY } from "./queries"
+import { GET_SCHEDULE_EVENT_TICKET_SCHEDULE_ITEMS_QUERY } from "./queries"
+import { SCHEDULE_EVENT_TICKET_SCHEDLE_ITEM_SCHEMA } from "./yupSchema"
 
 import ScheduleEventTicketBack from "../ScheduleEventTicketBack"
 import ScheduleEventTicketEditBase from "../ScheduleEventTicketEditBase"
@@ -107,7 +104,7 @@ function ScheduleEventTicketEditActivities({ t, history, match }) {
                     initialValues={{ 
                       included: node.included,
                     }}
-                    // validationSchema={SCHEDULE_EVENT_TICKET_SCHEMA}
+                    validationSchema={SCHEDULE_EVENT_TICKET_SCHEDLE_ITEM_SCHEMA}
                     onSubmit={(values, { setSubmitting }) => {
                       console.log("submit values")
                       console.log(values)
@@ -150,8 +147,8 @@ function ScheduleEventTicketEditActivities({ t, history, match }) {
                         setSubmitting={setSubmitting}
                         submitForm={submitForm}
                       >
-                        {console.log(errors)}
-                        {console.log(values)}
+                        {/* {console.log(errors)}
+                        {console.log(values)} */}
                       </ScheduleEventTicketEditActivityForm>
                     )}
                   </Formik>
