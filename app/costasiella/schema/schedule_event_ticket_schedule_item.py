@@ -152,7 +152,7 @@ class DeleteScheduleEventTicketScheduleItem(graphene.relay.ClientIDMutation):
         return DeleteScheduleEventTicketScheduleItem(ok=ok)
 
 
-class ScheduleEventTicketMutation(graphene.ObjectType):
+class ScheduleEventTicketScheduleItemMutation(graphene.ObjectType):
     delete_schedule_event_ticket_schedule_item = DeleteScheduleEventTicketScheduleItem.Field()
     create_schedule_event_ticket_schedule_item = CreateScheduleEventTicketScheduleItem.Field()
     update_schedule_event_ticket_schedule_item = UpdateScheduleEventTicketScheduleItem.Field()
