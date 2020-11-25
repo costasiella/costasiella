@@ -31,16 +31,20 @@ class ScheduleEventTicketScheduleItemQuery(graphene.ObjectType):
     schedule_event_ticket_schedule_items = DjangoFilterConnectionField(ScheduleEventTicketScheduleItemNode)
     schedule_event_ticket_schedule_item = graphene.relay.Node.Field(ScheduleEventTicketScheduleItemNode)
 
-    def resolve_schedule_event_ticket_schedule_items(self, info, schedule_event, **kwargs):
+    def resolve_schedule_event_ticket_schedule_items(self, info, schedule_event_ticket, **kwargs):
         user = info.context.user
         require_login(user)
         # Has permission: return everything requested
         if user.has_perm('costasiella.view_scheduleeventticket'):
-            rid = get_rid(schedule_event)
-            return ScheduleEventTicketScheduleItem.objects.filter(schedule_event=rid.id)
+            rid = get_rid(schedule_event_ticket)
+            return ScheduleEventTicketScheduleItem.objects.filter(
+                schedule_event_ticket=rid.id
+            )
 
         # Return only public non-archived locations
-        return ScheduleEventTicketScheduleItem.objects.filter(schedule_event_ticket__display_public=True)
+        return ScheduleEventTicketScheduleItem.objects.filter(
+            schedule_event_ticket__display_public=True
+        )
 
 
 def validate_create_update_input(input, update=False):
