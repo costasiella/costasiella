@@ -203,7 +203,8 @@
         "infoMailContent": "__STRING_NOT_TRANSLATED__",
         "start": "__STRING_NOT_TRANSLATED__",
         "edit_menu": "__STRING_NOT_TRANSLATED__",
-        "spaces": "__STRING_NOT_TRANSLATED__"
+        "spaces": "__STRING_NOT_TRANSLATED__",
+        "included": "__STRING_NOT_TRANSLATED__"
     },
     "settings": {
         "error_loading": "__STRING_NOT_TRANSLATED__",
@@ -1212,6 +1213,9 @@
                 "edit_menu": {
                     "general": "__STRING_NOT_TRANSLATED__",
                     "activities": "__STRING_NOT_TRANSLATED__"
+                },
+                "activities": {
+                    "toast_edit_success": "__STRING_NOT_TRANSLATED__"
                 }
             },
             "edit": {

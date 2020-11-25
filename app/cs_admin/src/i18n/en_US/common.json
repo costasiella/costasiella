@@ -373,7 +373,8 @@
         "infoMailContent": "Info mail content",
         "start": "Start",
         "edit_menu": "Edit menu",
-        "spaces": "Spaces"
+        "spaces": "Spaces",
+        "included": "Included"
     },
     "yup": {
         "min_len_3": "Please input at least 3 characters",
@@ -932,6 +933,9 @@
                 "edit_menu": {
                     "general": "General",
                     "activities": "Activities"
+                },
+                "activities": {
+                    "toast_edit_success": "Saved"
                 }
             },
             "edit": {
