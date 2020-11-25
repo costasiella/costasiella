@@ -113,44 +113,44 @@ function ScheduleEventTickets({t, match, history}) {
           </Table.Row>
         </Table.Header>
         <Table.Body>
-            {scheduleEventTickets.edges.map(({ node }) => (
-              <Table.Row key={v4()}>
-                {/* <Table.Col>
-                  {moment(node.dateStart).format(dateFormat)}
-                </Table.Col>
-                <Table.Col>
-                  {moment(node.dateEnd).format(dateFormat)}
-                </Table.Col> */}
-                <Table.Col>
-                  {node.name} <br />
-                  <div dangerouslySetInnerHTML={{__html: node.description}} className="text-muted"/>
-                </Table.Col>
-                <Table.Col>
-                  {node.priceDisplay}
-                </Table.Col>
-                <Table.Col>
-                  <BadgeBoolean value={node.displayPublic} />
-                </Table.Col>
-                <Table.Col>
-                  {(node.financeGlaccount) ? node.financeGlaccount.name : ""}
-                </Table.Col>
-                <Table.Col>
-                  {(node.financeCostcenter) ? node.financeCostcenter.name : ""}
-                </Table.Col>
-                <Table.Col className="text-right">
-                  <Link to={`/schedule/events/edit/${eventId}/tickets/edit/${node.id}`}>
-                    <Button className='btn-sm' 
-                            color="secondary">
-                      {t('general.edit')}
-                    </Button>
-                  </Link>
-                </Table.Col>
-                <Table.Col className="text-right">
-                  {/* Check for fullEvent / deletable before showing delete button */}
-                  {(node.deletable) ? <ScheduleEventTicketDelete id={node.id} /> : ""}
-                </Table.Col>
-              </Table.Row>
-            ))}
+          {scheduleEventTickets.edges.map(({ node }) => (
+            <Table.Row key={v4()}>
+              {/* <Table.Col>
+                {moment(node.dateStart).format(dateFormat)}
+              </Table.Col>
+              <Table.Col>
+                {moment(node.dateEnd).format(dateFormat)}
+              </Table.Col> */}
+              <Table.Col>
+                {node.name} <br />
+                <div dangerouslySetInnerHTML={{__html: node.description}} className="text-muted"/>
+              </Table.Col>
+              <Table.Col>
+                {node.priceDisplay}
+              </Table.Col>
+              <Table.Col>
+                <BadgeBoolean value={node.displayPublic} />
+              </Table.Col>
+              <Table.Col>
+                {(node.financeGlaccount) ? node.financeGlaccount.name : ""}
+              </Table.Col>
+              <Table.Col>
+                {(node.financeCostcenter) ? node.financeCostcenter.name : ""}
+              </Table.Col>
+              <Table.Col className="text-right">
+                <Link to={`/schedule/events/edit/${eventId}/tickets/edit/${node.id}`}>
+                  <Button className='btn-sm' 
+                          color="secondary">
+                    {t('general.edit')}
+                  </Button>
+                </Link>
+              </Table.Col>
+              <Table.Col className="text-right">
+                {/* Check for fullEvent / deletable before showing delete button */}
+                {(node.deletable) ? <ScheduleEventTicketDelete id={node.id} /> : ""}
+              </Table.Col>
+            </Table.Row>
+          ))}
         </Table.Body>
       </Table>
     </ScheduleEventEditListBase>
