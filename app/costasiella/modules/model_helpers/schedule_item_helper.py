@@ -60,7 +60,6 @@ class ScheduleItemHelper:
                 included=schedule_event.full_event
             ).save()
 
-
     def schedule_item_with_otc_data(self, schedule_item, date):
         """
         Overwrite schedule_item object data with weekly otc data
