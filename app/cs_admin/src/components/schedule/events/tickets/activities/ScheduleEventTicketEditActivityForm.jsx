@@ -13,34 +13,28 @@ import {
 } from "tabler-react"
 
 
-const ScheduleEventTicketEditActivityForm = ({ t, history, match, isSubmitting, submitForm, errors, values, setFieldTouched, setFieldValue }) => (
+const ScheduleEventTicketEditActivityForm = ({ t, history, match, isSubmitting, setSubmitting, submitForm, errors, values, setFieldTouched, setFieldValue }) => (
   <FoForm>
     <Dimmer active={isSubmitting} loader={isSubmitting} >
-      <Grid.Row>
-        <Grid.Col>
-          <Form.Group className='mb-0'>
-            <Form.Label className="custom-switch">
-              <Field 
-                className="custom-switch-input"
-                type="checkbox" 
-                name="included" 
-                onChange={() => {
-                  setFieldValue('included', !values.included)
-                  setFieldTouched('included', true)
-                  if (!values.included) {
-                    setFieldValue('attend', true)
-                    setFieldTouched('attend', true)
-                  }
-                  setTimeout(() => {submitForm()}, 200)
-                }}
-                checked={values.included} />
-              <span className="custom-switch-indicator" ></span>
-              <span className="custom-switch-description">{t('general.included')}</span>
-            </Form.Label>
-            <ErrorMessage name="included" component="div" />   
-          </Form.Group>  
-        </Grid.Col>
-      </Grid.Row>
+      <Form.Group className='mb-0'>
+        <Form.Label className="custom-switch">
+          <Field 
+            className="custom-switch-input"
+            type="checkbox" 
+            name="included" 
+            onChange={() => {
+              setFieldValue('included', !values.included)
+              setFieldTouched('included', true)
+              setSubmitting(true)
+              setTimeout(() => {submitForm()}, 200)
+            }}
+            checked={values.included} 
+          />
+          <span className="custom-switch-indicator" ></span>
+          <span className="custom-switch-description">{t('general.included')}</span>
+        </Form.Label>
+        <ErrorMessage name="included" component="div" />   
+      </Form.Group>  
     </Dimmer>
   </FoForm>
 )
