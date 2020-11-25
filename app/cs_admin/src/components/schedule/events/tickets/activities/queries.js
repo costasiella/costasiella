@@ -15,6 +15,7 @@ query ScheduleEventTicketScheduleItem($before:String, $after:String, $schedule_e
         scheduleEventTicket {
           id
           name
+          fullEvent
         }
         scheduleItem {
           id
