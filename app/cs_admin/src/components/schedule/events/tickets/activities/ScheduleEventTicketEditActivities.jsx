@@ -30,7 +30,7 @@ function ScheduleEventTicketEditActivities({ t, history, match }) {
   const id = match.params.id
   const eventId = match.params.event_id
   const returnUrl = `/schedule/events/edit/${eventId}/tickets/`
-  const activeTab = "general"
+  const activeTab = "activities"
   const activeLink = 'tickets'
   const sidebarContent = <ScheduleEventTicketBack />
 
