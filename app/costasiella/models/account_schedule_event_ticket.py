@@ -6,9 +6,6 @@ from .schedule_event_ticket import ScheduleEventTicket
 
 class AccountScheduleEventTicket(models.Model):
     # add additional fields in here
-    # teacher and employee will use OneToOne fields. An account can optionally be a teacher or employee.
-    # Editable parameter docs
-    # https://docs.djangoproject.com/en/2.2/ref/models/fields/#editable
 
     account = models.ForeignKey(Account, on_delete=models.CASCADE, related_name="schedule_event_tickets")
     schedule_event_ticket = models.ForeignKey(ScheduleEventTicket, on_delete=models.CASCADE)
