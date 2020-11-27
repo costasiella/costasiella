@@ -2,6 +2,7 @@ from .account import Account
 from .account_accepted_document import AccountAcceptedDocument
 from .account_classpass import AccountClasspass
 from .account_membership import AccountMembership
+from .account_schedule_event_ticket import AccountScheduleEventTicket
 from .account_subscription import AccountSubscription
 from .account_subscription_alt_price import AccountSubscriptionAltPrice
 from .account_subscription_block import AccountSubscriptionBlock
