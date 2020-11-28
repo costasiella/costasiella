@@ -15,7 +15,7 @@ m = Messages()
 
 class AccountScheduleEventTicketNode(DjangoObjectType):
     class Meta:
-        model = ScheduleEventTicket
+        model = AccountScheduleEventTicket
         filter_fields = ['account', 'schedule_event_ticket']
         interfaces = (graphene.relay.Node, )
 
@@ -31,23 +31,23 @@ class AccountScheduleEventTicketQuery(graphene.ObjectType):
     account_schedule_event_tickets = DjangoFilterConnectionField(AccountScheduleEventTicketNode)
     account_schedule_event_ticket = graphene.relay.Node.Field(AccountScheduleEventTicketNode)
 
-    def resolve_account_schedule_event_tickets(self, info, schedule_event_ticket=None, account=None, **kwargs):
+    def resolve_account_schedule_event_tickets(self, info, **kwargs):
         user = info.context.user
         # TODO: add permissions for users to view their own tickets.
         require_login_and_permission(user, 'costasiella.view_accountscheduleeventticket')
         # Has permission: check params
 
-        if not schedule_event_ticket and not account:
+        if not "schedule_event_ticket" in kwargs and not "account" in kwargs:
             raise Exception(_("schedule_event_ticket or account is a required parameter"))
 
-        if schedule_event_ticket:
-            rid = get_rid(schedule_event_ticket)
+        if "schedule_event_ticket" in kwargs:
+            rid = get_rid(kwargs["schedule_event_ticket"])
             return AccountScheduleEventTicket.objects.filter(
                 schedule_event_ticket=rid.id
             ).order_by('account__full_name')
 
-        if account:
-            rid = get_rid(schedule_event_ticket)
+        if "account" in kwargs:
+            rid = get_rid(kwargs["schedule_event_ticket"])
             return AccountScheduleEventTicket.objects.filter(
                 account=rid.id
             ).order_by('schedule_event_ticket__schedule_event__date_start')
