@@ -13,7 +13,7 @@ import {
 } from "tabler-react"
 
 
-const ScheduleEventTicketEditActivityForm = ({ t, history, match, isSubmitting, setSubmitting, submitForm, errors, values, setFieldTouched, setFieldValue }) => (
+const ScheduleEventTicketEditActivityForm = ({ t, history, match, disabled, isSubmitting, setSubmitting, submitForm, errors, values, setFieldTouched, setFieldValue }) => (
   <FoForm>
     <Dimmer active={isSubmitting} loader={isSubmitting} >
       <Form.Group className='mb-0'>
@@ -29,6 +29,7 @@ const ScheduleEventTicketEditActivityForm = ({ t, history, match, isSubmitting, 
               setTimeout(() => {submitForm()}, 200)
             }}
             checked={values.included} 
+            disabled={disabled} 
           />
           <span className="custom-switch-indicator" ></span>
           <span className="custom-switch-description">{t('general.included')}</span>
