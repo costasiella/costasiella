@@ -122,6 +122,9 @@ class UpdateScheduleEventTicketScheduleItem(graphene.relay.ClientIDMutation):
         if not schedule_event_ticket_schedule_item:
             raise Exception('Invalid Schedule Event Ticket Schedule Item ID!')
 
+        if schedule_event_ticket_schedule_item.schedule_event_ticket.full_event:
+            raise Exception('For a full event ticket, all schedule items for this event are included!')
+
         if 'included' in input:
             schedule_event_ticket_schedule_item.included = input['included']
 
