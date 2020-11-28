@@ -54,10 +54,10 @@ class ScheduleItemHelper:
         )
 
         for schedule_event_ticket in schedule_event_tickets:
-            schedule_event_ticket_schdule_item = ScheduleEventTicketScheduleItem(
+            schedule_event_ticket_schedule_item = ScheduleEventTicketScheduleItem(
                 schedule_event_ticket=schedule_event_ticket,
                 schedule_item=schedule_item,
-                included=schedule_event.full_event
+                included=schedule_event_ticket.full_event
             ).save()
 
     def schedule_item_with_otc_data(self, schedule_item, date):
