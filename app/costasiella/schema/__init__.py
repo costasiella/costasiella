@@ -5,6 +5,7 @@ from .account import AccountQuery, AccountMutation
 from .account_accepted_document import AccountAcceptedDocumentQuery
 from .account_classpass import AccountClasspassQuery, AccountClasspassMutation
 from .account_membership import AccountMembershipQuery, AccountMembershipMutation
+from .account_schedule_event_ticket import AccountScheduleEventTicketQuery, AccountScheduleEventTicketMutation
 from .account_subscription import AccountSubscriptionQuery, AccountSubscriptionMutation
 from .account_subscription_alt_price import AccountSubscriptionAltPriceQuery, AccountSubscriptionAltPriceMutation
 from .account_subscription_block import AccountSubscriptionBlockQuery, AccountSubscriptionBlockMutation
@@ -74,6 +75,7 @@ class Query(AccountQuery,
             AccountAcceptedDocumentQuery,
             AccountClasspassQuery,
             AccountMembershipQuery,
+            AccountScheduleEventTicketQuery,
             AccountSubscriptionQuery,
             AccountSubscriptionAltPriceQuery,
             AccountSubscriptionBlockQuery,
@@ -135,6 +137,7 @@ class Mutation(AccountMutation,
                AccountClasspassMutation,
                AccountMembershipMutation,
                AccountSubscriptionMutation,
+               AccountScheduleEventTicketMutation,
                AccountSubscriptionAltPriceMutation,
                AccountSubscriptionBlockMutation,
                AccountSubscriptionCreditMutation,
