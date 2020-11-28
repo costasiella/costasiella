@@ -1213,7 +1213,8 @@
                 "title": "__STRING_NOT_TRANSLATED__",
                 "edit_menu": {
                     "general": "__STRING_NOT_TRANSLATED__",
-                    "activities": "__STRING_NOT_TRANSLATED__"
+                    "activities": "__STRING_NOT_TRANSLATED__",
+                    "customers": "__STRING_NOT_TRANSLATED__"
                 },
                 "activities": {
                     "toast_edit_success": "__STRING_NOT_TRANSLATED__"

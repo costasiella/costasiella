@@ -21,6 +21,11 @@ function ScheduleEventTicketTabs({ t, active, eventId, ticketId}) {
             title: t("schedule.events.tickets.edit_menu.activities"), 
             link: `/schedule/events/edit/${eventId}/tickets/edit/${ticketId}/activities`
           },
+          {
+            name: "customers", 
+            title: t("schedule.events.tickets.edit_menu.customers"), 
+            link: `/schedule/events/edit/${eventId}/tickets/edit/${ticketId}/customers`
+          },
       ]}
       active={active}
     />

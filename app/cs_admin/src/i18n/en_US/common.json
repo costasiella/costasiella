@@ -933,7 +933,8 @@
                 "title": "Tickets",
                 "edit_menu": {
                     "general": "General",
-                    "activities": "Activities"
+                    "activities": "Activities",
+                    "customers": "Customers"
                 },
                 "activities": {
                     "toast_edit_success": "Saved"
