@@ -32,6 +32,7 @@ import moment from 'moment';
 function scheduleItems({t, match, history}) {
   const appSettings = useContext(AppSettingsContext)
   const dateFormat = appSettings.dateFormat
+  const timeFormat = appSettings.timeFormatMoment
   console.log(appSettings)
   
   const eventId = match.params.event_id
@@ -103,11 +104,12 @@ function scheduleItems({t, match, history}) {
       <Table>
         <Table.Header>
           <Table.Row key={v4()}>
+            <Table.ColHeader>{t('general.time')}</Table.ColHeader>
             <Table.ColHeader>{t('general.name')}</Table.ColHeader>
-            {/* <Table.ColHeader>{t('general.price')}</Table.ColHeader> */}
+            <Table.ColHeader>{t('general.location')}</Table.ColHeader>
+            <Table.ColHeader>{t('general.teacher')}</Table.ColHeader>
+            <Table.ColHeader>{t('general.filled')}</Table.ColHeader>
             <Table.ColHeader>{t('general.public')}</Table.ColHeader>
-            {/* <Table.ColHeader>{t('general.glaccount')}</Table.ColHeader> */}
-            {/* <Table.ColHeader>{t('general.costcenter')}</Table.ColHeader> */}
             <Table.ColHeader></Table.ColHeader>
             <Table.ColHeader></Table.ColHeader>
           </Table.Row>
@@ -115,28 +117,30 @@ function scheduleItems({t, match, history}) {
         <Table.Body>
             {scheduleItems.edges.map(({ node }) => (
               <Table.Row key={v4()}>
-                {/* <Table.Col>
-                  {moment(node.dateStart).format(dateFormat)}
-                </Table.Col>
                 <Table.Col>
-                  {moment(node.dateEnd).format(dateFormat)}
-                </Table.Col> */}
+                  {moment(node.dateStart).format(dateFormat)} <br />
+                  {/* Start & end time */}
+                  {moment(node.dateStart + ' ' + node.timeStart).format(timeFormat)} {' - '}
+                  {moment(node.dateStart + ' ' + node.timeEnd).format(timeFormat)} { ' ' }
+                </Table.Col>
                 <Table.Col>
                   {node.name} <br />
                   <div dangerouslySetInnerHTML={{__html: node.description}} className="text-muted"/>
                 </Table.Col>
-                {/* <Table.Col>
-                  {node.priceDisplay}
-                </Table.Col> */}
+                <Table.Col>
+                  {node.organizationLocationRoom.organizationLocation.name} <br />
+                  <span className="text-muted">{node.organizationLocationRoom.name}</span>
+                </Table.Col>
+                <Table.Col>
+                  {node.account.fullName} 
+                  {(node.account2) ? <span className="text-muted"><br />{node.account2.fullName}</span> : ""}
+                </Table.Col>
+                <Table.Col>
+                  {node.countAttendance}/{node.spaces}
+                </Table.Col>
                 <Table.Col>
                   <BadgeBoolean value={node.displayPublic} />
                 </Table.Col>
-                {/* <Table.Col>
-                  {(node.financeGlaccount) ? node.financeGlaccount.name : ""}
-                </Table.Col>
-                <Table.Col>
-                  {(node.financeCostcenter) ? node.financeCostcenter.name : ""}
-                </Table.Col> */}
                 <Table.Col className="text-right">
                   <Link to={`/schedule/events/edit/${eventId}/activities/edit/${node.id}`}>
                     <Button className='btn-sm' 
