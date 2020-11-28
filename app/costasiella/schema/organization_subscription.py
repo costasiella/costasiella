@@ -73,16 +73,13 @@ class OrganizationSubscriptionNode(DjangoObjectType):
         filter_fields = ['archived']
         interfaces = (graphene.relay.Node, OrganizationSubscriptionNodeInterface)
 
-
     def resolve_subscription_unit_display(self, info):
         return display_subscription_unit(self.subscription_unit)
-
 
     def resolve_price_today_display(self, info):
         today = timezone.now().date()
 
         return self.get_price_on_date(today, display=True)
-
 
     def resolve_price_today(self, info):
         today = timezone.now().date()

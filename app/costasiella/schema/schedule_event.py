@@ -155,7 +155,6 @@ class CreateScheduleEvent(graphene.relay.ClientIDMutation):
         )
         schedule_event_ticket.save()
 
-
         return CreateScheduleEvent(schedule_event=schedule_event)
 
 

@@ -12,6 +12,7 @@ from ..modules.messages import Messages
 
 m = Messages()
 
+
 class ScheduleEventTicketNodeInterface(graphene.Interface):
     id = graphene.GlobalID()
     price_display = graphene.String()

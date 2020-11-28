@@ -1,6 +1,7 @@
 from django.utils.translation import gettext as _
-from django.db.models import Q
+from django.db.models import Count, Q
 
+import datetime
 import graphene
 from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
@@ -11,6 +12,7 @@ from ..models import \
     Account, \
     ScheduleEvent, \
     ScheduleItem, \
+    ScheduleItemAttendance, \
     OrganizationClasstype, \
     OrganizationLevel, \
     OrganizationLocationRoom
@@ -21,7 +23,10 @@ from ..modules.model_helpers.schedule_item_helper import ScheduleItemHelper
 
 m = Messages()
 
-import datetime
+
+class ScheduleItemNodeInterface(graphene.Interface):
+    id = graphene.GlobalID()
+    count_attendance = graphene.Int()
 
 
 class ScheduleItemNode(DjangoObjectType):
@@ -45,6 +50,12 @@ class ScheduleItemNode(DjangoObjectType):
         require_login_and_one_of_permissions(user, permissions)
 
         return self._meta.model.objects.get(id=id)
+
+    def resolve_count_attendance(self, info):
+        filter = Q(schedule_item_id=self.id) & ~Q(booking_status="cancelled")
+        count_attendance = ScheduleItemAttendance.objects.filter(filter).count()
+
+        return count_attendance
 
 
 class ScheduleItemQuery(graphene.ObjectType):
@@ -198,6 +209,9 @@ class CreateScheduleItem(graphene.relay.ClientIDMutation):
             sih = ScheduleItemHelper()
             sih.add_schedule_item_to_all_event_tickets(schedule_item)
 
+            # update event dates & times
+            schedule_item.schedule_event.update_dates_and_times()
+
         return CreateScheduleItem(schedule_item=schedule_item)
 
 
@@ -260,7 +274,11 @@ class UpdateScheduleItem(graphene.relay.ClientIDMutation):
         if "time_end" in input:
             schedule_item.time_end = input['time_end']
 
-        schedule_item.save(force_update=True)
+        schedule_item.save()
+
+        if schedule_item.schedule_event:
+            # update event dates & times
+            schedule_item.schedule_event.update_dates_and_times()
 
         return UpdateScheduleItem(schedule_item=schedule_item)
 
