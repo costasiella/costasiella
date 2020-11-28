@@ -30,3 +30,36 @@ class ScheduleEvent(models.Model):
 
     def __str__(self):
         return self.name + ' [' + str(self.date_start) + ']'
+
+    def update_dates_and_times(self):
+        """
+        Set dates & times based on activities.
+        After adding/editing/deleting a event schedule item, call this function to update the dates & times
+        :return:
+        """
+        from .schedule_item import ScheduleItem
+
+        schedule_items = ScheduleItem.objects.filter(
+            schedule_event=self
+        ).order_by("date_start", "time_start")
+
+        time_from = None
+        time_until = None
+        date_from = None
+        date_until = None
+        if len(schedule_items) > 0:
+            date_from = schedule_items[0].date_start
+            date_until = schedule_items[0].date_start
+            time_from = schedule_items[0].time_start
+            time_until = schedule_items[0].time_end
+
+        if len(schedule_items) > 1:
+            date_until = schedule_items[len(schedule_items) - 1].date_start
+            time_until = schedule_items[len(schedule_items) - 1].time_end
+
+        self.date_start = date_from
+        self.date_end = date_until
+        self.time_start = time_from
+        self.time_end = time_until
+
+        self.save()
