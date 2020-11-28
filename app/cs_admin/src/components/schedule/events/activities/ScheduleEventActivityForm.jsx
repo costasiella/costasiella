@@ -45,7 +45,7 @@ function ScheduleEventActivityForm ({
                     name="displayPublic" 
                     checked={values.displayPublic} />
                   <span className="custom-switch-indicator" ></span>
-                  <span className="custom-switch-description">{t('schedule.events.tickets.public')}</span>
+                  <span className="custom-switch-description">{t('schedule.events.activities.public')}</span>
               </Form.Label>
               <ErrorMessage name="displayPublic" component="div" />   
             </Form.Group>  

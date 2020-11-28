@@ -374,7 +374,8 @@
         "start": "Start",
         "edit_menu": "Edit menu",
         "spaces": "Spaces",
-        "included": "Included"
+        "included": "Included",
+        "filled": "Filled"
     },
     "yup": {
         "min_len_3": "Please input at least 3 characters",
@@ -949,7 +950,8 @@
                 "delete_confirm_msg": "Are you sure you wish to delete this activity?",
                 "delete_success": "Deleted activity",
                 "edit": "Edit activity",
-                "toast_edit_success": "Saved"
+                "toast_edit_success": "Saved",
+                "public": "This is a public activity"
             }
         },
         "event": {
