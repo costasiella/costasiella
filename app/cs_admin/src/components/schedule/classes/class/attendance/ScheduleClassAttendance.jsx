@@ -40,7 +40,8 @@ import BadgeBookingStatus from "../../../../ui/BadgeBookingStatus"
 import ScheduleClassAttendanceDelete from "./ScheduleClassAttendanceDelete"
 // import ClassEditBase from "../ClassEditBase"
 
-import { GET_ACCOUNTS_QUERY, GET_SCHEDULE_CLASS_ATTENDANCE_QUERY, UPDATE_SCHEDULE_ITEM_ATTENDANCE } from "./queries"
+import { GET_ACCOUNTS_QUERY } from "../../../../../queries/accounts/account_search_queries"
+import { GET_SCHEDULE_CLASS_ATTENDANCE_QUERY, UPDATE_SCHEDULE_ITEM_ATTENDANCE } from "./queries"
 import CSLS from "../../../../../tools/cs_local_storage"
 
 
