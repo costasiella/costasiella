@@ -29,7 +29,7 @@ const ScheduleEventTicketEditActivityForm = ({ t, history, match, disabled, isSu
               setTimeout(() => {submitForm()}, 200)
             }}
             checked={values.included} 
-            // disabled={disabled} 
+            disabled={disabled} 
           />
           <span className="custom-switch-indicator" ></span>
           <span className="custom-switch-description">{t('general.included')}</span>
