@@ -33,7 +33,7 @@ import ScheduleEventTicketBack from "./ScheduleEventTicketBack"
 import ScheduleEventEditBaseBase from "../edit/ScheduleEventEditBaseBase"
 
 
-function ScheduleEventTicketEditBase({t, match, history, activeTab, children, SearchResults=""}) {
+function ScheduleEventTicketEditBase({t, match, history, activeTab, children, searchResults=""}) {
   const appSettings = useContext(AppSettingsContext)
   const dateFormat = appSettings.dateFormat
   const cardTitle = t("schedule.events.tickets.edit")
@@ -95,7 +95,7 @@ function ScheduleEventTicketEditBase({t, match, history, activeTab, children, Se
 
   return (
     <ScheduleEventEditBaseBase activeLink={activeLink} sidebarContent={sidebarContent}>
-      {(SearchResults) ? <SearchResults /> : ""}
+      {searchResults}
       <Card>
         <Card.Header>
           <Card.Title>{cardTitle} {cardSubTitle} {cardTicketSubtitle}</Card.Title>

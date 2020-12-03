@@ -92,8 +92,8 @@ function ScheduleEventTicketEditCustomers({ t, history, match }) {
   console.log('query data')
   console.log(data)
   const inputData = data
-  const scheduleEventTicketActivities = data.scheduleEventTicketScheduleItems
-  console.log(scheduleEventTicketActivities)
+  const accountScheduleEventTickets = data.accountScheduleEventTickets
+  console.log(accountScheduleEventTickets)
 
   const pageHeaderOptions = <InputSearch 
     initialValueKey={CSLS.SCHEDULE_EVENTS_TICKETS_CUSTOMERS_SEARCH}
@@ -112,8 +112,41 @@ function ScheduleEventTicketEditCustomers({ t, history, match }) {
     }}
   />
 
-  const searchResults = "hello world for search results"
+  const searchResults = <div>hello world for search results</div>
 
+  // Empty list
+  // if (!accountScheduleEventTickets.edges.length) {
+  //   <ScheduleEventTicketEditBase 
+  //     sidebarContent={sidebarContent} 
+  //     activeTab={activeTab} 
+  //     activeLink={activeLink} 
+  //     returnUrl={returnUrl}
+  //     pageHeaderOptions={pageHeaderOptions}
+  //     SearchResults={searchResults}
+  //   >
+  //     <Card.Body>
+  //       <Table>
+  //         <Table.Header>
+  //           <Table.Row>
+  //             <Table.ColHeader>{t('general.name')}</Table.ColHeader>
+  //             <Table.ColHeader>{t('general.included')}</Table.ColHeader>
+  //           </Table.Row>
+  //         </Table.Header>
+  //         <Table.Body>
+  //           {accountScheduleEventTickets.edges.map(({ node }) => (
+  //             <Table.Row key={v4()}>
+  //               <Table.Col>
+  //                 {node.scheduleItem.name}
+  //               </Table.Col>  
+  //             </Table.Row>
+  //           ))}
+  //         </Table.Body>
+  //       </Table>
+  //     </Card.Body>
+  //   </ScheduleEventTicketEditBase>
+  // }
+
+  // Data
   return (
     <ScheduleEventTicketEditBase 
       sidebarContent={sidebarContent} 
@@ -121,18 +154,18 @@ function ScheduleEventTicketEditCustomers({ t, history, match }) {
       activeLink={activeLink} 
       returnUrl={returnUrl}
       pageHeaderOptions={pageHeaderOptions}
-      SearchResults={searchResults}
+      searchResults={searchResults}
     >
       <Card.Body>
         <Table>
           <Table.Header>
             <Table.Row>
               <Table.ColHeader>{t('general.name')}</Table.ColHeader>
-              <Table.ColHeader>{t('general.included')}</Table.ColHeader>
+              <Table.ColHeader>{t('general.invoice')}</Table.ColHeader>
             </Table.Row>
           </Table.Header>
           <Table.Body>
-            {scheduleEventTicketActivities.edges.map(({ node }) => (
+            {accountScheduleEventTickets.edges.map(({ node }) => (
               <Table.Row key={v4()}>
                 <Table.Col>
                   {node.scheduleItem.name}
