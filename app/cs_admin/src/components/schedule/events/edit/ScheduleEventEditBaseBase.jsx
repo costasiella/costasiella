@@ -14,7 +14,7 @@ import ScheduleEventEditMenu from "./ScheduleEventEditMenu"
 import ScheduleEventEditBack from "./ScheduleEventEditBack"
 
 
-function ScheduleEventEditBaseBase({ t, match, history, children, sidebarContent="", activeLink }) {
+function ScheduleEventEditBaseBase({ t, match, history, children, pageHeaderOptions, sidebarContent="", activeLink }) {
   const eventId = match.params.event_id
 
   return (
@@ -25,6 +25,7 @@ function ScheduleEventEditBaseBase({ t, match, history, children, sidebarContent
               <div className="page-options d-flex">
                 {/* Page options can go here... */}
                 <ScheduleEventEditBack />
+                { pageHeaderOptions }
               </div>
             </Page.Header>
             <Grid.Row>
