@@ -31,7 +31,18 @@ import HasPermissionWrapper from "../../../HasPermissionWrapper"
 import ScheduleEventEditBaseBase from "./ScheduleEventEditBaseBase"
 
 
-function ScheduleEventEditBase({t, match, history, activeTab, children, activeLink, cardTitle, sidebarContent, returnUrl="/schedule/events"}) {
+function ScheduleEventEditBase({
+    t, 
+    match, 
+    history, 
+    activeTab, 
+    children, 
+    activeLink, 
+    cardTitle, 
+    pageHeaderOptions,
+    sidebarContent, 
+    returnUrl="/schedule/events"}) 
+  {
   const appSettings = useContext(AppSettingsContext)
   const dateFormat = appSettings.dateFormat
   const eventId = match.params.event_id
@@ -47,7 +58,7 @@ function ScheduleEventEditBase({t, match, history, activeTab, children, activeLi
 
   if (loading) {
     return (
-      <ScheduleEventEditBaseBase sidebarContent={sidebarContent} activeLink={activeLink}>
+      <ScheduleEventEditBaseBase pageHeaderOptions={pageHeaderOptions} sidebarContent={sidebarContent} activeLink={activeLink}>
         <Card title={cardTitle}>
           <Card.Body>
             <Dimmer loading={true} active={true} />
@@ -59,7 +70,7 @@ function ScheduleEventEditBase({t, match, history, activeTab, children, activeLi
 
   if (error) {
     return (
-      <ScheduleEventEditBaseBase sidebarContent={sidebarContent} activeLink={activeLink}>
+      <ScheduleEventEditBaseBase pageHeaderOptions={pageHeaderOptions} sidebarContent={sidebarContent} activeLink={activeLink}>
         <Card title={cardTitle}>
           <Card.Body>
             {t("schedule.events.error_loading")}
@@ -77,7 +88,7 @@ function ScheduleEventEditBase({t, match, history, activeTab, children, activeLi
   </span> : ""
 
   return (
-    <ScheduleEventEditBaseBase cardTitle={cardTitle} sidebarContent={sidebarContent} activeLink={activeLink}>
+    <ScheduleEventEditBaseBase cardTitle={cardTitle} pageHeaderOptions={pageHeaderOptions} sidebarContent={sidebarContent} activeLink={activeLink}>
       <Card>
         <Card.Header>
           <Card.Title>{cardTitle} {cardSubTitle}</Card.Title>
