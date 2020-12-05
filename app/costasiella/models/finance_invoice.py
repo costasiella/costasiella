@@ -143,6 +143,34 @@ class FinanceInvoice(models.Model):
 
         return qs.count()
 
+    def item_add_schedule_event_ticket(self, account_schedule_event_ticket):
+        """
+        Add account classpass invoice item
+        """
+        from .finance_invoice_item import FinanceInvoiceItem
+        # add item to invoice
+        schedule_event_ticket = account_schedule_event_ticket.schedule_event_ticket
+        # finance_invoice = FinanceInvoice.objects.get(pk=self.id)
+
+        finance_invoice_item = FinanceInvoiceItem(
+            finance_invoice=self,
+            schedule_event_ticket=schedule_event_ticket,
+            line_number=self._get_item_next_line_nr(),
+            product_name=_('Event ticket'),
+            description=_('Ticket %s\n%s' % (schedule_event_ticket.schedule_event.name, schedule_event_ticket.name)),
+            quantity=1,
+            price=schedule_event_ticket.price,
+            finance_tax_rate=schedule_event_ticket.finance_tax_rate,
+            finance_glaccount=schedule_event_ticket.finance_glaccount,
+            finance_costcenter=schedule_event_ticket.finance_costcenter,
+        )
+
+        finance_invoice_item.save()
+
+        self.update_amounts()
+
+        return finance_invoice_item
+
     def item_add_classpass(self, account_classpass):
         """
         Add account classpass invoice item
