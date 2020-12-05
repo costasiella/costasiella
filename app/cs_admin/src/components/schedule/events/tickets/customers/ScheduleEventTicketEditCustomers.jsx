@@ -110,6 +110,12 @@ function ScheduleEventTicketEditCustomers({ t, history, match }) {
   const accountScheduleEventTickets = data.accountScheduleEventTickets
   console.log(accountScheduleEventTickets)
 
+  let accountIdsWithTickets = []
+  accountScheduleEventTickets.edges.map(({ node }) => (
+    accountIdsWithTickets.push(node.account.id)
+  ))
+  console.log(accountIdsWithTickets)
+
   const pageHeaderOptions = <InputSearch 
     initialValueKey={CSLS.SCHEDULE_EVENTS_TICKETS_CUSTOMERS_SEARCH}
     placeholder="Search..."
@@ -127,12 +133,11 @@ function ScheduleEventTicketEditCustomers({ t, history, match }) {
     }}
   />
 
-  let searchResults = ""
 
   // const searchResults = <div>hello world for search results</div>
 
   // Search results
-  searchResults = (showSearch && (queryAccountsData) && (!queryAccountsLoading) && (!queryAccountsError)) ?
+  const searchResults = (showSearch && (queryAccountsData) && (!queryAccountsLoading) && (!queryAccountsError)) ?
     <ContentCard cardTitle={t('general.search_results')}
                 pageInfo={queryAccountsData.accounts.pageInfo}
                 onLoadMore={() => {
@@ -179,16 +184,17 @@ function ScheduleEventTicketEditCustomers({ t, history, match }) {
                 <Table.Col key={v4()}>
                   {node.email}
                 </Table.Col>
-                {/* <Table.Col key={v4()}>
-                  {(checkedInIds.includes(node.id)) ? 
-                   <span className="pull-right">{t("schedule.classes.class.attendance.search_results_already_checked_in")}</span> :
-                    <Link to={"/schedule/classes/class/book/" + schedule_item_id + "/" + class_date + "/" + node.id}>
-                      <Button color="secondary pull-right">
-                        {t('general.checkin')} <Icon name="chevron-right" />
-                      </Button>
-                    </Link>       
+                <Table.Col key={v4()}>
+                  {(accountIdsWithTickets.includes(node.id)) ? 
+                   <span className="pull-right">{t("schedule.events.tickets.customers.search_results_already_bought")}</span> :
+                   "buy"
+                    // <Link to={"/schedule/classes/class/book/" + schedule_item_id + "/" + class_date + "/" + node.id}>
+                    //   <Button color="secondary pull-right">
+                    //     {t('general.checkin')} <Icon name="chevron-right" />
+                    //   </Button>
+                    // </Link>       
                   }   
-                </Table.Col> */}
+                </Table.Col>
               </Table.Row>
             ))}
           </Table.Body>
