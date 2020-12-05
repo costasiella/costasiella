@@ -4,6 +4,7 @@ from django.utils import timezone
 from django.db import models
 
 from .account_classpass import AccountClasspass
+from .account_schedule_event_ticket import AccountScheduleEventTicket
 from .account_subscription import AccountSubscription
 from .finance_costcenter import FinanceCostCenter
 from .finance_glaccount import FinanceGLAccount
@@ -13,6 +14,11 @@ from .finance_tax_rate import FinanceTaxRate
 
 class FinanceInvoiceItem(models.Model):
     finance_invoice = models.ForeignKey(FinanceInvoice, on_delete=models.CASCADE, related_name="items")
+    schedule_event_ticket = models.ForeignKey(AccountScheduleEventTicket,
+                                              on_delete=models.SET_NULL,
+                                              null=True,
+                                              default=None,
+                                              related_name="schedule_event_tickets")
     account_classpass = models.ForeignKey(AccountClasspass,
                                           on_delete=models.SET_NULL,
                                           null=True,
