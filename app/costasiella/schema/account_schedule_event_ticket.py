@@ -5,6 +5,7 @@ from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
 from graphql import GraphQLError
 
+from ..dudes import SalesDude
 from ..models import Account, AccountScheduleEventTicket, ScheduleEventTicket
 from ..modules.model_helpers.schedule_event_ticket_schedule_item_helper import ScheduleEventTicketScheduleItemHelper
 from ..modules.gql_tools import require_login, require_login_and_permission, get_rid
@@ -81,9 +82,6 @@ class CreateAccountScheduleEventTicket(graphene.relay.ClientIDMutation):
     class Input:
         account = graphene.ID(required=True)
         schedule_event_ticket = graphene.ID(required=True)
-        cancelled = graphene.Boolean(required=False)
-        payment_confirmation = graphene.Boolean(required=False)
-        info_mail_sent = graphene.Boolean(required=False)
 
     account_schedule_event_ticket = graphene.Field(AccountScheduleEventTicketNode)
 
@@ -95,23 +93,14 @@ class CreateAccountScheduleEventTicket(graphene.relay.ClientIDMutation):
         # Validate input
         result = validate_create_update_input(input, update=False)
 
-        account_schedule_event_ticket = AccountScheduleEventTicket(
+        sales_dude = SalesDude()
+        sales_result = sales_dude.sell_schedule_event_ticket(
             account=result['account'],
             schedule_event_ticket=result['schedule_event_ticket'],
+            create_invoice=True
         )
 
-        if 'cancelled' in result:
-            account_schedule_event_ticket.cancelled = result['cancelled']
-
-        if 'payment_confirmation' in result:
-            account_schedule_event_ticket.payment_confirmation = result['payment_confirmation']
-
-        if 'info_mail_sent' in result:
-            account_schedule_event_ticket.info_mail_sent = result['info_mail_sent']
-
-        account_schedule_event_ticket.save()
-
-        #TODO: use a dude to sell a ticket and use the dude to create an invoice
+        account_schedule_event_ticket = sales_result['account_schedule_event_ticket']
 
         return CreateAccountScheduleEventTicket(account_schedule_event_ticket=account_schedule_event_ticket)
 
