@@ -33,7 +33,7 @@ import ScheduleEventTicketBack from "./ScheduleEventTicketBack"
 import ScheduleEventEditBaseBase from "../edit/ScheduleEventEditBaseBase"
 
 
-function ScheduleEventTicketEditBase({t, match, history, activeTab, children, searchResults=""}) {
+function ScheduleEventTicketEditBase({t, match, history, activeTab, children, pageHeaderOptions="", searchResults=""}) {
   const appSettings = useContext(AppSettingsContext)
   const dateFormat = appSettings.dateFormat
   const cardTitle = t("schedule.events.tickets.edit")
@@ -56,7 +56,7 @@ function ScheduleEventTicketEditBase({t, match, history, activeTab, children, se
 
   if (loading || loadingTicket) {
     return (
-      <ScheduleEventEditBaseBase sidebarContent={sidebarContent}>
+      <ScheduleEventEditBaseBase pageHeaderOptions={pageHeaderOptions} sidebarContent={sidebarContent}>
         <Card title={cardTitle}>
           <ScheduleEventTicketTabs active={activeTab} eventId={eventId}  ticketId={ticketId}/>
           <Card.Body>
@@ -69,7 +69,7 @@ function ScheduleEventTicketEditBase({t, match, history, activeTab, children, se
 
   if (error || errorTicket) {
     return (
-      <ScheduleEventEditBaseBase sidebarContent={sidebarContent}>
+      <ScheduleEventEditBaseBase pageHeaderOptions={pageHeaderOptions} sidebarContent={sidebarContent}>
         <Card title={cardTitle}>
           <ScheduleEventTicketTabs active={activeTab} eventId={eventId} ticketId={ticketId}/>
           <Card.Body>
@@ -94,7 +94,7 @@ function ScheduleEventTicketEditBase({t, match, history, activeTab, children, se
   </span> : ""
 
   return (
-    <ScheduleEventEditBaseBase activeLink={activeLink} sidebarContent={sidebarContent}>
+    <ScheduleEventEditBaseBase pageHeaderOptions={pageHeaderOptions} activeLink={activeLink} sidebarContent={sidebarContent}>
       {searchResults}
       <Card>
         <Card.Header>

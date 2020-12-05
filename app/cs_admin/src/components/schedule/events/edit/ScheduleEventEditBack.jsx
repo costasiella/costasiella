@@ -11,8 +11,8 @@ import {
 const ScheduleEventEditBack = ({ t }) => (
   <div className="page-options d-flex">
     <Link to="/schedule/events" 
-          className='btn btn-outline-secondary btn-sm'>
-        <Icon prefix="fe" name="arrow-left" /> {t('general.back_to')} {t('schedule.events.title')}
+          className='btn btn-link btn-sm mr-2'>
+        <Icon prefix="fe" name="chevrons-left" /> {t('general.back_to')} {t('schedule.events.title')}
     </Link>
   </div>
 )

@@ -10,6 +10,7 @@ import { toast } from 'react-toastify'
 import { v4 } from 'uuid'
 
 import {
+  Badge,
   Card,
   Table,
 } from "tabler-react";
@@ -19,12 +20,24 @@ import { GET_ACCOUNT_SCHEDULE_EVENT_TICKETS_QUERY } from "./queries"
 // import { SCHEDULE_EVENT_TICKET_SCHEDLE_ITEM_SCHEMA } from "./yupSchema"
 import { get_accounts_query_variables } from "./tools"
 
+import BadgeBoolean from "../../../../ui/BadgeBoolean"
 import InputSearch from "../../../../general/InputSearch"
 import ScheduleEventTicketBack from "../ScheduleEventTicketBack"
 import ScheduleEventTicketEditBase from "../ScheduleEventTicketEditBase"
 // import ScheduleEventTicketEditActivityForm from "./ScheduleEventTicketEditActivityForm"
 
 import CSLS from "../../../../../tools/cs_local_storage"
+
+
+const ADD_ACCOUNT_SCHEDULE_EVENT_TICKET = gql`
+mutation CreateAccountScheduleEventTicket($input:CreateAccountScheduleEventTicketInput!) {
+  createAccountScheduleEventTicket(input: $input) {
+    accountScheduleEventTicket {
+      id
+    }
+  }
+}
+`
 
 
 const UPDATE_SCHEDULE_EVENT_TICKET_SCHEDULE_ITEM = gql`
@@ -112,7 +125,76 @@ function ScheduleEventTicketEditCustomers({ t, history, match }) {
     }}
   />
 
-  const searchResults = <div>hello world for search results</div>
+  let searchResults = ""
+
+  // const searchResults = <div>hello world for search results</div>
+
+  // Search results
+  // {(showSearch && (queryAccountsData) && (!queryAccountsLoading) && (!queryAccountsError)) ?
+  //   <ContentCard cardTitle={t('general.search_results')}
+  //               pageInfo={queryAccountsData.accounts.pageInfo}
+  //               onLoadMore={() => {
+  //                 fetchMoreAccounts({
+  //                   variables: {
+  //                   after: queryAccountsData.accounts.pageInfo.endCursor
+  //                 },
+  //                 updateQuery: (previousResult, { fetchMoreResult }) => {
+  //                   const newEdges = fetchMoreResult.accounts.edges
+  //                   const pageInfo = fetchMoreResult.accounts.pageInfo 
+
+  //                   return newEdges.length
+  //                     ? {
+  //                         // Put the new accounts at the end of the list and update `pageInfo`
+  //                         // so we have the new `endCursor` and `hasNextPage` values
+  //                         queryAccountsData: {
+  //                           accounts: {
+  //                             __typename: previousResult.accounts.__typename,
+  //                             edges: [ ...previousResult.accounts.edges, ...newEdges ],
+  //                             pageInfo
+  //                           }
+  //                         }
+  //                       }
+  //                     : previousResult
+  //                 }
+  //               })
+  //             }} >
+  //     { (!queryAccountsData.accounts.edges.length) ? 
+  //       t('schedule.classes.class.attendance.search_result_empty') : 
+  //       <Table>
+  //         <Table.Header>
+  //           <Table.Row key={v4()}>
+  //             <Table.ColHeader>{t('general.name')}</Table.ColHeader>
+  //             <Table.ColHeader>{t('general.email')}</Table.ColHeader>
+  //             <Table.ColHeader></Table.ColHeader>
+  //           </Table.Row>
+  //         </Table.Header>
+  //         <Table.Body>
+  //           {queryAccountsData.accounts.edges.map(({ node }) => (
+  //             <Table.Row key={v4()}>
+  //               <Table.Col key={v4()}>
+  //                 {node.fullName}
+  //               </Table.Col>
+  //               <Table.Col key={v4()}>
+  //                 {node.email}
+  //               </Table.Col>
+  //               <Table.Col key={v4()}>
+  //                 {(checkedInIds.includes(node.id)) ? 
+  //                  <span className="pull-right">{t("schedule.classes.class.attendance.search_results_already_checked_in")}</span> :
+  //                   <Link to={"/schedule/classes/class/book/" + schedule_item_id + "/" + class_date + "/" + node.id}>
+  //                     <Button color="secondary pull-right">
+  //                       {t('general.checkin')} <Icon name="chevron-right" />
+  //                     </Button>
+  //                   </Link>       
+  //                 }   
+  //               </Table.Col>
+  //             </Table.Row>
+  //           ))}
+  //         </Table.Body>
+  //       </Table>
+  //     }
+  //   </ContentCard>
+  //   : ""
+  // }
 
   // Empty list
   // if (!accountScheduleEventTickets.edges.length) {
@@ -162,14 +244,28 @@ function ScheduleEventTicketEditCustomers({ t, history, match }) {
             <Table.Row>
               <Table.ColHeader>{t('general.name')}</Table.ColHeader>
               <Table.ColHeader>{t('general.invoice')}</Table.ColHeader>
+              <Table.ColHeader>{t('schedule.events.tickets.info_mail_sent')}</Table.ColHeader> 
+              <Table.ColHeader></Table.ColHeader> 
+              <Table.ColHeader></Table.ColHeader>
             </Table.Row>
           </Table.Header>
           <Table.Body>
             {accountScheduleEventTickets.edges.map(({ node }) => (
               <Table.Row key={v4()}>
                 <Table.Col>
-                  {node.scheduleItem.name}
+                  {node.account.fullName} <br />
+                  {(node.cancelled) ? <Badge color="warning">{t("general.cancelled")}</Badge> : ""}
                 </Table.Col>  
+                <Table.Col>
+
+                </Table.Col>
+                <Table.Col>
+                  <BadgeBoolean value={node.infoMailSent} /> <br />
+                  TODO: resend link here
+                </Table.Col>
+                <Table.Col>
+
+                </Table.Col>
               </Table.Row>
             ))}
           </Table.Body>

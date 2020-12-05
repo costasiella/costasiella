@@ -111,6 +111,8 @@ class CreateAccountScheduleEventTicket(graphene.relay.ClientIDMutation):
 
         account_schedule_event_ticket.save()
 
+        #TODO: use a dude to sell a ticket and use the dude to create an invoice
+
         return CreateAccountScheduleEventTicket(account_schedule_event_ticket=account_schedule_event_ticket)
 
 
