@@ -63,3 +63,17 @@ class ScheduleEvent(models.Model):
         self.time_end = time_until
 
         self.save()
+
+    def get_full_schedule_event_ticket(self):
+        """
+        Get full event ticket for this event
+        :return: models.EventTicket instance
+        """
+        from .schedule_event_ticket import ScheduleEventTicket
+
+        schedule_event_ticket = ScheduleEventTicket.objects.filter(
+            schedule_event=self,
+            full_event=True
+        ).first()
+
+        return schedule_event_ticket
