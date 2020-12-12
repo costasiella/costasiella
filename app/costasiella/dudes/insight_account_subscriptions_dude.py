@@ -13,8 +13,8 @@ class InsightAccountSubscriptionsDude:
         from ..models import AccountSubscription
 
         count = AccountSubscription.objects.filter(
-            date_start__gte = date_from,
-            date_start__lte = date_until
+            date_start__gte=date_from,
+            date_start__lte=date_until
         ).count()
 
         print(count)
