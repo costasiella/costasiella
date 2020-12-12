@@ -140,8 +140,14 @@ class UpdateAccountScheduleEventTicket(graphene.relay.ClientIDMutation):
 
         account_schedule_event_ticket.save()
 
-        #TODO: Cancel all attendance items for ticket if cancelled == True
-        #TODO: Uncancel all attendance items for ticket in case was_cancelled == True & cancelled = False
+        if 'cancelled' in input:
+            # Cancel all attendance items for ticket
+            if not was_cancelled and account_schedule_event_ticket.cancelled:
+                account_schedule_event_ticket.set_booking_status_schedule_item_attendances('CANCELLED')
+
+            # Un-cancel all attendance items for ticket
+            if was_cancelled and not account_schedule_event_ticket.cancelled:
+                account_schedule_event_ticket.set_booking_status_schedule_item_attendances('BOOKED')
 
         return UpdateAccountScheduleEventTicket(account_schedule_event_ticket=account_schedule_event_ticket)
 

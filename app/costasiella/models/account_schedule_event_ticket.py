@@ -17,3 +17,18 @@ class AccountScheduleEventTicket(models.Model):
 
     def __str__(self):
         return self.schedule_event.name + ' ticket for: ' + self.account.name
+
+    def set_booking_status_schedule_item_attendances(self, status):
+        """
+        Cancel all attendance records associated with this ticket
+        :return:
+        """
+        from .schedule_item_attendance import ScheduleItemAttendance
+
+        schedule_item_attendances = ScheduleItemAttendance.objects.filter(
+            account_schedule_event_ticket=self
+        )
+
+        for schedule_item_attendance in schedule_item_attendances:
+            schedule_item_attendance.booking_status = status
+            schedule_item_attendance.save()
