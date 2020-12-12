@@ -7,6 +7,7 @@ from .schedule_item import ScheduleItem
 from .account import Account
 from .account_classpass import AccountClasspass
 from .account_subscription import AccountSubscription
+from .account_schedule_event_ticket import AccountScheduleEventTicket
 from .finance_invoice_item import FinanceInvoiceItem
 
 from .choices.schedule_item_attendance_types import get_schedule_item_attendance_types
@@ -27,6 +28,7 @@ class ScheduleItemAttendance(models.Model):
     schedule_item = models.ForeignKey(ScheduleItem, on_delete=models.CASCADE)
     account_classpass = models.ForeignKey(AccountClasspass, on_delete=models.CASCADE, null=True)
     account_subscription = models.ForeignKey(AccountSubscription, on_delete=models.CASCADE, null=True)
+    account_schedule_event_ticket = models.ForeignKey(AccountScheduleEventTicket, on_delete=models.CASCADE, null=True)
     finance_invoice_item = models.ForeignKey(FinanceInvoiceItem, on_delete=models.SET_NULL, null=True)
     # Set to True when account has membership at time of check-in
     account_has_membership = models.BooleanField(default=False)
