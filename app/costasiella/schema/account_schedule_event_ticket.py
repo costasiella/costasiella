@@ -127,6 +127,8 @@ class UpdateAccountScheduleEventTicket(graphene.relay.ClientIDMutation):
         # Validate input
         result = validate_create_update_input(input, update=True)
 
+        # Store previous cancelled status
+        was_cancelled = account_schedule_event_ticket.cancelled
         if 'cancelled' in input:
             account_schedule_event_ticket.cancelled = input['cancelled']
 
@@ -137,6 +139,9 @@ class UpdateAccountScheduleEventTicket(graphene.relay.ClientIDMutation):
             account_schedule_event_ticket.info_mail_sent = input['info_mail_sent']
 
         account_schedule_event_ticket.save()
+
+        #TODO: Cancel all attendance items for ticket if cancelled == True
+        #TODO: Uncancel all attendance items for ticket in case was_cancelled == True & cancelled = False
 
         return UpdateAccountScheduleEventTicket(account_schedule_event_ticket=account_schedule_event_ticket)
 
