@@ -141,6 +141,7 @@ class SalesDude:
         Sell subscription to account
         """
         from ..models.account_schedule_event_ticket import AccountScheduleEventTicket
+        from ..models.schedule_item_attendance import ScheduleItemAttendance
 
         account_schedule_event_ticket = AccountScheduleEventTicket(
             account=account,
@@ -151,11 +152,23 @@ class SalesDude:
         account_schedule_event_ticket.save()
 
         print('creating invoice...')
-
         finance_invoice_item = None
         if create_invoice:
             print('still alive')
             finance_invoice_item = self._sell_schedule_event_ticket_create_invoice(account_schedule_event_ticket)
+
+        # Add account to schedule_item_attendance
+        for schedule_item in schedule_event_ticket.schedule_items:
+            schedule_item_attendance = ScheduleItemAttendance(
+                account=account,
+                schedule_item=schedule_item,
+                account_schedule_event_ticket=account_schedule_event_ticket,
+                finance_invoice_item=finance_invoice_item,
+                attendance_type="SCHEDULE_EVENT_TICKET",
+                booking_status="BOOKED",
+                date=schedule_item.date_start
+            )
+            schedule_item_attendance.save()
 
         return {
             "account_schedule_event_ticket": account_schedule_event_ticket,
