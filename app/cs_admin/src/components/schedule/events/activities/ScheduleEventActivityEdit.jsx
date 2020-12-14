@@ -21,7 +21,8 @@ import { GET_SCHEDULE_EVENT_ACTIVITIES_QUERY, GET_SCHEDULE_EVENT_ACTIVITY_QUERY 
 import { SCHEDULE_EVENT_ACTIVITY_SCHEMA } from './yupSchema'
 
 import ScheduleEventActivityBack from "./ScheduleEventActivityBack"
-import ScheduleEventEditBase from "../edit/ScheduleEventEditBase"
+import ScheduleEventActivityEditBase from "./ScheduleEventActivityEditBase"
+// import ScheduleEventEditBase from "../edit/ScheduleEventEditBase"
 import ScheduleEventActivityForm from "./ScheduleEventActivityForm"
 
 
@@ -52,17 +53,17 @@ function ScheduleEventActivityEdit({ t, history, match }) {
   const sidebarContent = <ScheduleEventActivityBack />
 
   if (loading) return (
-    <ScheduleEventEditBase 
+    <ScheduleEventActivityEditBase 
       sidebarContent={sidebarContent} 
       cardTitle={cardTitle} 
       activeLink={activeLink} 
       returnUrl={returnUrl}
     >
       {t("general.loading_with_dots")}
-    </ScheduleEventEditBase>
+    </ScheduleEventActivityEditBase>
   )
   if (error) return (
-    <ScheduleEventEditBase 
+    <ScheduleEventActivityEditBase 
       sidebarContent={sidebarContent} 
       cardTitle={cardTitle} 
       activeLink={activeLink} 
@@ -70,7 +71,7 @@ function ScheduleEventActivityEdit({ t, history, match }) {
     >
       <p>{t('general.error_sad_smiley')}</p>
       <p>{error.message}</p>
-    </ScheduleEventEditBase>
+    </ScheduleEventActivityEditBase>
   )
 
   const inputData = data
@@ -88,7 +89,7 @@ function ScheduleEventActivityEdit({ t, history, match }) {
 
 
   return (
-    <ScheduleEventEditBase 
+    <ScheduleEventActivityEditBase 
       sidebarContent={sidebarContent} 
       cardTitle={cardTitle} 
       activeLink={activeLink} 
@@ -155,7 +156,7 @@ function ScheduleEventActivityEdit({ t, history, match }) {
           />
         )}
       </Formik>
-    </ScheduleEventEditBase>
+    </ScheduleEventActivityEditBase>
   )
 }
 

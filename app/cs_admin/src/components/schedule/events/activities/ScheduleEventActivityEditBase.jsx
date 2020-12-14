@@ -30,16 +30,17 @@ import HasPermissionWrapper from "../../../HasPermissionWrapper"
 
 import ScheduleEventActivityBack from "./ScheduleEventActivityBack"
 import ScheduleEventEditBaseBase from "../edit/ScheduleEventEditBaseBase"
+import ScheduleEventActivityTabs from "./ScheduleEventActivityTabs"
 
 
 function ScheduleEventActivityEditBase({t, match, history, activeTab, children}) {
   const appSettings = useContext(AppSettingsContext)
   const dateFormat = appSettings.dateFormat
   const cardTitle = t("schedule.events.activities.edit")
-  const activeLink = "tickets"
+  const activeLink = "activities"
 
   const eventId = match.params.event_id
-  const activityId = match.params.id
+  const scheduleItemId = match.params.id
 
   const { loading, error, data } = useQuery(GET_SCHEDULE_EVENT_QUERY, {
     variables: { id: eventId }
@@ -47,7 +48,7 @@ function ScheduleEventActivityEditBase({t, match, history, activeTab, children})
 
   const { loading: loadingActivity, error: errorActivity, data: dataActivity } = useQuery(GET_SCHEDULE_EVENT_ACTIVITY_QUERY, {
     variables: {
-      id: activityId
+      id: scheduleItemId
     }
   })
 
@@ -57,6 +58,7 @@ function ScheduleEventActivityEditBase({t, match, history, activeTab, children})
     return (
       <ScheduleEventEditBaseBase sidebarContent={sidebarContent}>
         <Card title={cardTitle}>
+          <ScheduleEventActivityTabs active={activeTab} eventId={eventId} scheduleItemId={scheduleItemId}/>
           <Card.Body>
             <Dimmer loading={true} active={true} />
           </Card.Body>
@@ -69,6 +71,7 @@ function ScheduleEventActivityEditBase({t, match, history, activeTab, children})
     return (
       <ScheduleEventEditBaseBase sidebarContent={sidebarContent}>
         <Card title={cardTitle}>
+          <ScheduleEventActivityTabs active={activeTab} eventId={eventId} scheduleItemId={scheduleItemId}/>
           <Card.Body>
             {t("schedule.events.error_loading")}
           </Card.Body>
@@ -80,12 +83,12 @@ function ScheduleEventActivityEditBase({t, match, history, activeTab, children})
   const event = data.scheduleEvent
   const scheduleItem = dataActivity.scheduleItem
   const dateStart = (event.dateStart) ? moment(event.dateStart).format(dateFormat) : ""
-  const cardSubTitle = (event) ? 
+  const cardSubTitle = (scheduleItem) ? 
   <span className="text-muted">
     - {event.name + " " + dateStart}
   </span> : ""
 
-  const cardActivitySubtitle = (ticket) ?
+  const cardActivitySubtitle = (scheduleItem) ?
   <span className="text-muted">
     - {scheduleItem.name}
   </span> : ""
@@ -96,6 +99,7 @@ function ScheduleEventActivityEditBase({t, match, history, activeTab, children})
         <Card.Header>
           <Card.Title>{cardTitle} {cardSubTitle} {cardActivitySubtitle}</Card.Title>
         </Card.Header>
+        <ScheduleEventActivityTabs active={activeTab} eventId={eventId} scheduleItemId={scheduleItemId}/>
         {children}
       </Card>
     </ScheduleEventEditBaseBase>
