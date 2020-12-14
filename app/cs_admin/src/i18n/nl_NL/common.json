@@ -205,7 +205,8 @@
         "edit_menu": "__STRING_NOT_TRANSLATED__",
         "spaces": "__STRING_NOT_TRANSLATED__",
         "included": "__STRING_NOT_TRANSLATED__",
-        "filled": "__STRING_NOT_TRANSLATED__"
+        "filled": "__STRING_NOT_TRANSLATED__",
+        "invoice": "__STRING_NOT_TRANSLATED__"
     },
     "settings": {
         "error_loading": "__STRING_NOT_TRANSLATED__",
@@ -1214,11 +1215,16 @@
                 "edit_menu": {
                     "general": "__STRING_NOT_TRANSLATED__",
                     "activities": "__STRING_NOT_TRANSLATED__",
-                    "customers": "__STRING_NOT_TRANSLATED__"
+                    "customers": "__STRING_NOT_TRANSLATED__",
+                    "attendance": "__STRING_NOT_TRANSLATED__"
                 },
                 "activities": {
                     "toast_edit_success": "__STRING_NOT_TRANSLATED__"
-                }
+                },
+                "customers": {
+                    "search_results_already_bought": "__STRING_NOT_TRANSLATED__"
+                },
+                "info_mail_sent": "__STRING_NOT_TRANSLATED__"
             },
             "edit": {
                 "title": "__STRING_NOT_TRANSLATED__"

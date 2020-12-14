@@ -375,7 +375,8 @@
         "edit_menu": "Edit menu",
         "spaces": "Spaces",
         "included": "Included",
-        "filled": "Filled"
+        "filled": "Filled",
+        "invoice": "Invoice"
     },
     "yup": {
         "min_len_3": "Please input at least 3 characters",
@@ -934,11 +935,16 @@
                 "edit_menu": {
                     "general": "General",
                     "activities": "Activities",
-                    "customers": "Customers"
+                    "customers": "Customers",
+                    "attendance": "Attendance"
                 },
                 "activities": {
                     "toast_edit_success": "Saved"
-                }
+                },
+                "customers": {
+                    "search_results_already_bought": "Already bought this ticket"
+                },
+                "info_mail_sent": "Info mail sent"
             },
             "edit": {
                 "title": "Edit event"
