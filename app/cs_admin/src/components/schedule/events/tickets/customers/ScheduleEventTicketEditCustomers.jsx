@@ -12,6 +12,7 @@ import { v4 } from 'uuid'
 
 import {
   Badge,
+  Button,
   Card,
   Table,
 } from "tabler-react";
@@ -42,14 +43,14 @@ mutation CreateAccountScheduleEventTicket($input:CreateAccountScheduleEventTicke
 `
 
 
-const UPDATE_SCHEDULE_EVENT_TICKET_SCHEDULE_ITEM = gql`
-  mutation UpdateScheduleEventTicketScheduleItem($input:UpdateScheduleEventTicketScheduleItemInput!) {
-    updateScheduleEventTicketScheduleItem(input: $input) {
-      scheduleEventTicketScheduleItem {
-        id
-      }
+const UPDATE_ACCOUNT_SCHEDULE_EVENT_TICKET = gql`
+mutation UpdateAccountScheduleEventTicket($input:UpdateAccountScheduleEventTicketInput!) {
+  updateAccountScheduleEventTicket(input: $input) {
+    accountScheduleEventTicket {
+      id
     }
   }
+}
 `
 
 
@@ -68,6 +69,8 @@ function ScheduleEventTicketEditCustomers({ t, history, match }) {
     }
   })
 
+  const [addAccountScheduleEventTicket] = useMutation(ADD_ACCOUNT_SCHEDULE_EVENT_TICKET)
+  const [updateAccountScheduleEventTicket] = useMutation(UPDATE_ACCOUNT_SCHEDULE_EVENT_TICKET)
   // const [updateScheduleEventTicketScheduleItem] = useMutation(UPDATE_SCHEDULE_EVENT_TICKET_SCHEDULE_ITEM)
 
 
@@ -186,8 +189,36 @@ function ScheduleEventTicketEditCustomers({ t, history, match }) {
                 </Table.Col>
                 <Table.Col key={v4()}>
                   {(accountIdsWithTickets.includes(node.id)) ? 
-                   <span className="pull-right">{t("schedule.events.tickets.customers.search_results_already_bought")}</span> :
-                   "buy"
+                    <span className="pull-right">{t("schedule.events.tickets.customers.search_results_already_bought")}</span> :
+                    <Button 
+                      onClick={() =>
+                        addAccountScheduleEventTicket({ variables: {
+                          input: {
+                            account: node.id,
+                            scheduleEventTicket: id
+                          }                            
+                        }, refetchQueries: [
+                            {query: GET_ACCOUNT_SCHEDULE_EVENT_TICKETS_QUERY, variables: {
+                              schedule_event_ticket: id
+                            }},
+                        ]})
+                        .then(({ data }) => {
+                            console.log('got data', data);
+                            toast.success((t('schedule.events.tickets.customers.toast_add_success')), {
+                                position: toast.POSITION.BOTTOM_RIGHT
+                              })
+                            setShowSearch(false)
+                          }).catch((error) => {
+                            toast.error((t('general.toast_server_error')) + ': ' +  error, {
+                                position: toast.POSITION.BOTTOM_RIGHT
+                              })
+                            console.log('there was an error sending the query', error)
+                            setShowSearch(false)
+                          })
+                      }
+                    >
+                      Add
+                    </Button>
                     // <Link to={"/schedule/classes/class/book/" + schedule_item_id + "/" + class_date + "/" + node.id}>
                     //   <Button color="secondary pull-right">
                     //     {t('general.checkin')} <Icon name="chevron-right" />
@@ -271,7 +302,72 @@ function ScheduleEventTicketEditCustomers({ t, history, match }) {
                   TODO: resend link here
                 </Table.Col>
                 <Table.Col>
-
+                  {(node.cancelled) ?
+                    <Button 
+                      className="pull-right"
+                      color="warning"
+                      onClick={() =>
+                        updateAccountScheduleEventTicket({ variables: {
+                          input: {
+                            id: node.id,
+                            cancelled: false
+                          }
+                        }, refetchQueries: [
+                            {query: GET_ACCOUNT_SCHEDULE_EVENT_TICKETS_QUERY, variables: {
+                              schedule_event_ticket: id
+                            }},
+                        ]})
+                        .then(({ data }) => {
+                            console.log('got data', data);
+                            toast.success((t('schedule.events.tickets.customers.uncancelled')), {
+                                position: toast.POSITION.BOTTOM_RIGHT
+                              })
+                            setShowSearch(false)
+                          }).catch((error) => {
+                            toast.error((t('general.toast_server_error')) + ': ' +  error, {
+                                position: toast.POSITION.BOTTOM_RIGHT
+                              })
+                            console.log('there was an error sending the query', error)
+                            setShowSearch(false)
+                          }
+                        )
+                      }
+                    >
+                      {t("general.uncancel")}
+                    </Button>
+                  :
+                    <Button 
+                      className="pull-right"
+                      color="warning"
+                      onClick={() =>
+                        updateAccountScheduleEventTicket({ variables: {
+                          input: {
+                            id: node.id,
+                            cancelled: true
+                          }
+                        }, refetchQueries: [
+                            {query: GET_ACCOUNT_SCHEDULE_EVENT_TICKETS_QUERY, variables: {
+                              schedule_event_ticket: id
+                            }},
+                        ]})
+                        .then(({ data }) => {
+                            console.log('got data', data);
+                            toast.success((t('schedule.events.tickets.customers.cancelled')), {
+                                position: toast.POSITION.BOTTOM_RIGHT
+                              })
+                            setShowSearch(false)
+                          }).catch((error) => {
+                            toast.error((t('general.toast_server_error')) + ': ' +  error, {
+                                position: toast.POSITION.BOTTOM_RIGHT
+                              })
+                            console.log('there was an error sending the query', error)
+                            setShowSearch(false)
+                          })
+                        }
+                      >
+                        {t("general.cancel")}
+                      </Button>
+                  }
                 </Table.Col>
               </Table.Row>
             ))}
