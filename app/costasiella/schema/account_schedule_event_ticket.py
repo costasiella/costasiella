@@ -18,7 +18,7 @@ class AccountScheduleEventTicketNode(DjangoObjectType):
     class Meta:
         model = AccountScheduleEventTicket
         filter_fields = ['account', 'schedule_event_ticket']
-        interfaces = (graphene.relay.Node, )
+        interfaces = (graphene.relay.Node, AccountScheduleEventTicketNodeInterface,)
 
     @classmethod
     def get_node(self, info, id):
@@ -74,6 +74,9 @@ def validate_create_update_input(input, update=False):
         result['schedule_event_ticket'] = schedule_event_ticket
         if not schedule_event_ticket:
             raise Exception(_('Invalid Schedule Event Ticket ID!'))
+        else:
+            if schedule_event_ticket.is_sold_out():
+                raise Exception(_("This ticket is sold out"))
 
     return result
 
