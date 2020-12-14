@@ -16,6 +16,7 @@ m = Messages()
 class ScheduleEventTicketNodeInterface(graphene.Interface):
     id = graphene.GlobalID()
     price_display = graphene.String()
+    is_sold_out = graphene.Boolean
 
 
 class ScheduleEventTicketNode(DjangoObjectType):
@@ -34,6 +35,9 @@ class ScheduleEventTicketNode(DjangoObjectType):
     def resolve_price_display(self, info):
         from ..modules.finance_tools import display_float_as_amount
         return display_float_as_amount(self.price)
+
+    def resolve_is_sold_out(self, info):
+        return self.is_sold_out()
 
 
 class ScheduleEventTicketQuery(graphene.ObjectType):
