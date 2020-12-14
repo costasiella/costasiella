@@ -147,7 +147,11 @@ class UpdateAccountScheduleEventTicket(graphene.relay.ClientIDMutation):
 
             # Un-cancel all attendance items for ticket
             if was_cancelled and not account_schedule_event_ticket.cancelled:
-                account_schedule_event_ticket.set_booking_status_schedule_item_attendances('BOOKED')
+                # Check if the ticket isn't sold out
+                if account_schedule_event_ticket.schedule_event_ticket.is_sold_out():
+                    raise Exception(_("This ticket is sold out"))
+                else:
+                    account_schedule_event_ticket.set_booking_status_schedule_item_attendances('BOOKED')
 
         return UpdateAccountScheduleEventTicket(account_schedule_event_ticket=account_schedule_event_ticket)
 
