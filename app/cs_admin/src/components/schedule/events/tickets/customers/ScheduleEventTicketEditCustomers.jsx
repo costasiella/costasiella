@@ -136,7 +136,6 @@ function ScheduleEventTicketEditCustomers({ t, history, match }) {
     }}
   />
 
-
   // const searchResults = <div>hello world for search results</div>
 
   // Search results

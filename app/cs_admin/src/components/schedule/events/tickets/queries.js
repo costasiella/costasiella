@@ -22,6 +22,7 @@ export const GET_SCHEDULE_EVENT_TICKETS_QUERY = gql`
           description
           price
           priceDisplay
+          isSoldOut
           financeTaxRate {
             id
             name
