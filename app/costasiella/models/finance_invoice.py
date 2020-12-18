@@ -154,7 +154,7 @@ class FinanceInvoice(models.Model):
 
         finance_invoice_item = FinanceInvoiceItem(
             finance_invoice=self,
-            schedule_event_ticket=schedule_event_ticket,
+            account_schedule_event_ticket=account_schedule_event_ticket,
             line_number=self._get_item_next_line_nr(),
             product_name=_('Event ticket'),
             description=_('Ticket %s\n%s' % (schedule_event_ticket.schedule_event.name, schedule_event_ticket.name)),
