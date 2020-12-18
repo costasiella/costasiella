@@ -14,11 +14,11 @@ from .finance_tax_rate import FinanceTaxRate
 
 class FinanceInvoiceItem(models.Model):
     finance_invoice = models.ForeignKey(FinanceInvoice, on_delete=models.CASCADE, related_name="items")
-    schedule_event_ticket = models.ForeignKey(AccountScheduleEventTicket,
-                                              on_delete=models.SET_NULL,
-                                              null=True,
-                                              default=None,
-                                              related_name="schedule_event_tickets")
+    account_schedule_event_ticket = models.ForeignKey(AccountScheduleEventTicket,
+                                                      on_delete=models.SET_NULL,
+                                                      null=True,
+                                                      default=None,
+                                                      related_name="invoice_items")
     account_classpass = models.ForeignKey(AccountClasspass,
                                           on_delete=models.SET_NULL,
                                           null=True,
