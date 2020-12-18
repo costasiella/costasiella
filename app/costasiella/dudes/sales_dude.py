@@ -158,7 +158,7 @@ class SalesDude:
             finance_invoice_item = self._sell_schedule_event_ticket_create_invoice(account_schedule_event_ticket)
 
         # Add account to schedule_item_attendance
-        for schedule_item in schedule_event_ticket.schedule_items:
+        for schedule_item in schedule_event_ticket.schedule_items.all():
             schedule_item_attendance = ScheduleItemAttendance(
                 account=account,
                 schedule_item=schedule_item,
