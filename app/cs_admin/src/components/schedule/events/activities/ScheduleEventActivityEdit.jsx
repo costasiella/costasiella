@@ -41,7 +41,7 @@ function ScheduleEventActivityEdit({ t, history, match }) {
   const eventId = match.params.event_id
   const scheduleItemId = match.params.id
   const returnUrl = `/schedule/events/edit/${eventId}/activities/`
-  const activeLink = 'activities'
+  const activeTab = 'general'
   const cardTitle = t("schedule.events.activities.edit")
 
   const [updateScheduleEventTicket] = useMutation(UPDATE_SCHEDULE_EVENT_ACTIVITY)
@@ -56,7 +56,7 @@ function ScheduleEventActivityEdit({ t, history, match }) {
     <ScheduleEventActivityEditBase 
       sidebarContent={sidebarContent} 
       cardTitle={cardTitle} 
-      activeLink={activeLink} 
+      activeTab={activeTab} 
       returnUrl={returnUrl}
     >
       {t("general.loading_with_dots")}
@@ -66,7 +66,7 @@ function ScheduleEventActivityEdit({ t, history, match }) {
     <ScheduleEventActivityEditBase 
       sidebarContent={sidebarContent} 
       cardTitle={cardTitle} 
-      activeLink={activeLink} 
+      activeTab={activeTab} 
       returnUrl={returnUrl}
     >
       <p>{t('general.error_sad_smiley')}</p>
@@ -92,7 +92,7 @@ function ScheduleEventActivityEdit({ t, history, match }) {
     <ScheduleEventActivityEditBase 
       sidebarContent={sidebarContent} 
       cardTitle={cardTitle} 
-      activeLink={activeLink} 
+      activeTab={activeTab} 
       returnUrl={returnUrl}
     >
       <Formik

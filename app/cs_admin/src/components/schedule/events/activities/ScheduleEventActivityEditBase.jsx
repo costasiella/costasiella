@@ -37,7 +37,7 @@ function ScheduleEventActivityEditBase({t, match, history, activeTab, children})
   const appSettings = useContext(AppSettingsContext)
   const dateFormat = appSettings.dateFormat
   const cardTitle = t("schedule.events.activities.edit")
-  const activeLink = "activities"
+  const activeLink = "general"
 
   const eventId = match.params.event_id
   const scheduleItemId = match.params.id
