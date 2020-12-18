@@ -18,7 +18,7 @@ class AccountScheduleEventTicketNode(DjangoObjectType):
     class Meta:
         model = AccountScheduleEventTicket
         filter_fields = ['account', 'schedule_event_ticket']
-        interfaces = (graphene.relay.Node, AccountScheduleEventTicketNodeInterface,)
+        interfaces = (graphene.relay.Node,)
 
     @classmethod
     def get_node(self, info, id):

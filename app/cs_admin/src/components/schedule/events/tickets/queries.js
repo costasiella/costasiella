@@ -1,43 +1,43 @@
 import gql from "graphql-tag"
 
 export const GET_SCHEDULE_EVENT_TICKETS_QUERY = gql`
-query ScheduleEventTickets($before:String, $after:String, $schedule_event:ID!) {
-  scheduleEventTickets(first: 100, before:$before, after:$after, scheduleEvent:$schedule_event) {
-    pageInfo {
-      hasNextPage
-      hasPreviousPage
-      startCursor
-      endCursor
-    }
-    edges {
-      node {
-        id
-        scheduleEvent {
+  query ScheduleEventTickets($before:String, $after:String, $schedule_event:ID!) {
+    scheduleEventTickets(first: 100, before:$before, after:$after, scheduleEvent:$schedule_event) {
+      pageInfo {
+        hasNextPage
+        hasPreviousPage
+        startCursor
+        endCursor
+      }
+      edges {
+        node {
           id
-        }
-        fullEvent
-        deletable
-        displayPublic
-        name
-        description
-        price
-        priceDisplay
-        financeTaxRate {
-          id
+          scheduleEvent {
+            id
+          }
+          fullEvent
+          deletable
+          displayPublic
           name
-        }
-        financeGlaccount {
-          id
-          name
-        }
-        financeCostcenter {
-          id
-          name
+          description
+          price
+          priceDisplay
+          financeTaxRate {
+            id
+            name
+          }
+          financeGlaccount {
+            id
+            name
+          }
+          financeCostcenter {
+            id
+            name
+          }
         }
       }
     }
   }
-}
 `
 
 export const GET_SCHEDULE_EVENT_TICKET_QUERY = gql`

@@ -16,7 +16,7 @@ m = Messages()
 class ScheduleEventTicketNodeInterface(graphene.Interface):
     id = graphene.GlobalID()
     price_display = graphene.String()
-    is_sold_out = graphene.Boolean
+    is_sold_out = graphene.Boolean()
 
 
 class ScheduleEventTicketNode(DjangoObjectType):

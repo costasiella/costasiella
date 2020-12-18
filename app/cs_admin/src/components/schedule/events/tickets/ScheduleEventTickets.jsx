@@ -27,6 +27,7 @@ import ScheduleEventEditListBase from "../edit/ScheduleEventEditListBase"
 import ScheduleEventTicketListBase from "./ScheduleEventTicketListBase"
 import ScheduleEventTicketDelete from "./ScheduleEventTicketDelete"
 import moment from 'moment';
+import BadgeSoldOut from '../../../ui/BadgeSoldOut';
 
 
 function ScheduleEventTickets({t, match, history}) {
@@ -126,7 +127,8 @@ function ScheduleEventTickets({t, match, history}) {
                 <div dangerouslySetInnerHTML={{__html: node.description}} className="text-muted"/>
               </Table.Col>
               <Table.Col>
-                {node.priceDisplay}
+                {node.priceDisplay} <br />
+                {(node.isSoldOut) ? <BadgeSoldOut /> : ""}
               </Table.Col>
               <Table.Col>
                 <BadgeBoolean value={node.displayPublic} />
