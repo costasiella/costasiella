@@ -74,35 +74,35 @@ def validate_create_update_input(input, update=False):
     return result
 
 
-class CreateScheduleEventTicketScheduleItem(graphene.relay.ClientIDMutation):
-    class Input:
-        schedule_event_ticket = graphene.ID(required=True)
-        schedule_item = graphene.ID(required=True)
-        included = graphene.ID(required=False)
-
-    schedule_event_ticket_schedule_item = graphene.Field(ScheduleEventTicketScheduleItemNode)
-
-    @classmethod
-    def mutate_and_get_payload(self, root, info, **input):
-        user = info.context.user
-        require_login_and_permission(user, 'costasiella.add_scheduleeventticketscheduleitem')
-
-        # Validate input
-        result = validate_create_update_input(input, update=False)
-
-        schedule_event_ticket_schedule_item = ScheduleEventTicketScheduleItem(
-            schedule_event_ticket=result['schedule_event_ticket'],
-            schedule_item=result['schedule_item'],
-        )
-
-        if 'included' in result:
-            schedule_event_ticket_schedule_item.included = result['included']
-
-        schedule_event_ticket_schedule_item.save()
-
-        return CreateScheduleEventTicketScheduleItem(
-            schedule_event_ticket_schedule_item=schedule_event_ticket_schedule_item
-        )
+# class CreateScheduleEventTicketScheduleItem(graphene.relay.ClientIDMutation):
+#     class Input:
+#         schedule_event_ticket = graphene.ID(required=True)
+#         schedule_item = graphene.ID(required=True)
+#         included = graphene.ID(required=False)
+#
+#     schedule_event_ticket_schedule_item = graphene.Field(ScheduleEventTicketScheduleItemNode)
+#
+#     @classmethod
+#     def mutate_and_get_payload(self, root, info, **input):
+#         user = info.context.user
+#         require_login_and_permission(user, 'costasiella.add_scheduleeventticketscheduleitem')
+#
+#         # Validate input
+#         result = validate_create_update_input(input, update=False)
+#
+#         schedule_event_ticket_schedule_item = ScheduleEventTicketScheduleItem(
+#             schedule_event_ticket=result['schedule_event_ticket'],
+#             schedule_item=result['schedule_item'],
+#         )
+#
+#         if 'included' in result:
+#             schedule_event_ticket_schedule_item.included = result['included']
+#
+#         schedule_event_ticket_schedule_item.save()
+#
+#         return CreateScheduleEventTicketScheduleItem(
+#             schedule_event_ticket_schedule_item=schedule_event_ticket_schedule_item
+#         )
 
 
 class UpdateScheduleEventTicketScheduleItem(graphene.relay.ClientIDMutation):
@@ -135,28 +135,28 @@ class UpdateScheduleEventTicketScheduleItem(graphene.relay.ClientIDMutation):
         )
 
 
-class DeleteScheduleEventTicketScheduleItem(graphene.relay.ClientIDMutation):
-    class Input:
-        id = graphene.ID(required=True)
-
-    ok = graphene.Boolean()
-
-    @classmethod
-    def mutate_and_get_payload(self, root, info, **input):
-        user = info.context.user
-        require_login_and_permission(user, 'costasiella.delete_scheduleeventticketscheduleitem')
-
-        rid = get_rid(input['id'])
-        schedule_event_ticket_schedule_item = ScheduleEventTicketScheduleItem.objects.filter(id=rid.id).first()
-        if not schedule_event_ticket_schedule_item:
-            raise Exception('Invalid Schedule Event Ticket Schedule Item ID!')
-
-        ok = schedule_event_ticket_schedule_item.delete()
-
-        return DeleteScheduleEventTicketScheduleItem(ok=ok)
+# class DeleteScheduleEventTicketScheduleItem(graphene.relay.ClientIDMutation):
+#     class Input:
+#         id = graphene.ID(required=True)
+#
+#     ok = graphene.Boolean()
+#
+#     @classmethod
+#     def mutate_and_get_payload(self, root, info, **input):
+#         user = info.context.user
+#         require_login_and_permission(user, 'costasiella.delete_scheduleeventticketscheduleitem')
+#
+#         rid = get_rid(input['id'])
+#         schedule_event_ticket_schedule_item = ScheduleEventTicketScheduleItem.objects.filter(id=rid.id).first()
+#         if not schedule_event_ticket_schedule_item:
+#             raise Exception('Invalid Schedule Event Ticket Schedule Item ID!')
+#
+#         ok = schedule_event_ticket_schedule_item.delete()
+#
+#         return DeleteScheduleEventTicketScheduleItem(ok=ok)
 
 
 class ScheduleEventTicketScheduleItemMutation(graphene.ObjectType):
-    delete_schedule_event_ticket_schedule_item = DeleteScheduleEventTicketScheduleItem.Field()
-    create_schedule_event_ticket_schedule_item = CreateScheduleEventTicketScheduleItem.Field()
+    # delete_schedule_event_ticket_schedule_item = DeleteScheduleEventTicketScheduleItem.Field()
+    # create_schedule_event_ticket_schedule_item = CreateScheduleEventTicketScheduleItem.Field()
     update_schedule_event_ticket_schedule_item = UpdateScheduleEventTicketScheduleItem.Field()
