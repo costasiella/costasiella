@@ -77,7 +77,7 @@ class ScheduleItemHelper:
             schedule_event_ticket=full_event_ticket
         )
         for account_schedule_event_ticket in account_schedule_event_tickets:
-            FinanceInvoiceItem.objects.filter(
+            finance_invoice_item = FinanceInvoiceItem.objects.filter(
                 account_schedule_event_ticket=account_schedule_event_ticket
             ).first()
 
