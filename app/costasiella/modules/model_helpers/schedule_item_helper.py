@@ -45,7 +45,6 @@ class ScheduleItemHelper:
         """
         Add all tickets for an event to this schedule_item
         :param schedule_item: models.ScheduleItem object
-        :param schedule_event: models.ScheduleEvent object
         :return: None
         """
         schedule_event = schedule_item.schedule_event
@@ -59,6 +58,44 @@ class ScheduleItemHelper:
                 schedule_item=schedule_item,
                 included=schedule_event_ticket.full_event
             ).save()
+
+    def add_attendance_from_full_event_ticket(self, schedule_item):
+        """
+        Add all tickets for an event to this schedule_item
+        :param schedule_item: models.ScheduleItem object
+        :return: None
+        """
+        from ...models import AccountScheduleEventTicket, \
+            FinanceInvoiceItem, \
+            ScheduleItemAttendance
+
+        schedule_event = schedule_item.schedule_event
+        full_event_ticket = schedule_event.get_full_schedule_event_ticket()
+
+        # Fetch customers who bought the ticket
+        account_schedule_event_tickets = AccountScheduleEventTicket.objects.filter(
+            schedule_event_ticket=full_event_ticket
+        )
+        for account_schedule_event_ticket in account_schedule_event_tickets:
+            FinanceInvoiceItem.objects.filter(
+                account_schedule_event_ticket=account_schedule_event_ticket
+            ).first()
+
+            booking_status = "BOOKED"
+            if account_schedule_event_ticket.cancelled:
+                booking_status = "CANCELLED"
+
+            schedule_item_attendance = ScheduleItemAttendance(
+                account=account_schedule_event_ticket.account,
+                schedule_item=schedule_item,
+                account_schedule_event_ticket=account_schedule_event_ticket,
+                finance_invoice_item=finance_invoice_item,
+                attendance_type="SCHEDULE_EVENT_TICKET",
+                booking_status=booking_status,
+                date=schedule_item.date_start
+            )
+            schedule_item_attendance.save()
+
 
     def schedule_item_with_otc_data(self, schedule_item, date):
         """
