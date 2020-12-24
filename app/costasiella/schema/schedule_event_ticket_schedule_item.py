@@ -6,6 +6,7 @@ from graphene_django.filter import DjangoFilterConnectionField
 from graphql import GraphQLError
 
 from ..models import Account, ScheduleEvent, ScheduleEventTicketScheduleItem
+from ..modules.model_helpers.schedule_item_helper import ScheduleItemHelper
 from ..modules.model_helpers.schedule_event_ticket_schedule_item_helper import ScheduleEventTicketScheduleItemHelper
 from ..modules.gql_tools import require_login, require_login_and_permission, get_rid
 from ..modules.messages import Messages
@@ -129,6 +130,18 @@ class UpdateScheduleEventTicketScheduleItem(graphene.relay.ClientIDMutation):
             schedule_event_ticket_schedule_item.included = input['included']
 
         schedule_event_ticket_schedule_item.save()
+
+        # Add or remove attendance rows
+        schedule_item_helper = ScheduleItemHelper()
+
+        if schedule_event_ticket_schedule_item.included:
+            schedule_event = schedule_event_ticket_schedule_item.schedule_event_ticket.schedule_event
+            schedule_item_helper.create_attendance_records_for_event_schedule_items(schedule_event)
+        else:
+            schedule_item_helper.remove_attendance_from_event_ticket(
+                schedule_item=schedule_event_ticket_schedule_item.schedule_item,
+                schedule_event_ticket=schedule_event_ticket_schedule_item.schedule_event_ticket
+            )
 
         return UpdateScheduleEventTicketScheduleItem(
             schedule_event_ticket_schedule_item=schedule_event_ticket_schedule_item
