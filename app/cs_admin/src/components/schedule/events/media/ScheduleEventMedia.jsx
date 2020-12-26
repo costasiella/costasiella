@@ -14,6 +14,7 @@ import BadgeBoolean from "../../../ui/BadgeBoolean"
 import { GET_SCHEDULE_EVENT_MEDIAS_QUERY } from './queries'
 
 import {
+  Avatar,
   Page,
   Grid,
   Icon,
@@ -36,7 +37,7 @@ function ScheduleEventMedia({t, match, history}) {
   console.log(appSettings)
   
   const eventId = match.params.event_id
-  const activeLink = "activities"
+  const activeLink = "media"
 
   const sidebarContent = <Link to={`/schedule/events/edit/${eventId}/media/add`}>
     <Button color="primary btn-block mb-6">
@@ -115,7 +116,7 @@ function ScheduleEventMedia({t, match, history}) {
             {scheduleEventMedias.edges.map(({ node }) => (
               <Table.Row key={v4()}>
                 <Table.Col>
-                  image here
+                  <Avatar size="lg" imageURL={node.urlImageThumbnailSmall} />
                 </Table.Col>
                 <Table.Col>
                   {node.description}
