@@ -8,7 +8,7 @@ from .schedule_event import ScheduleEvent
 class ScheduleEventMedia(models.Model):
     schedule_event = models.ForeignKey(ScheduleEvent, on_delete=models.CASCADE)
     sort_order = models.PositiveIntegerField(default=0)
-    description = models.TextField()
+    description = models.CharField(max_length=255)
     image = ImageField(upload_to='schedule_event_media', default=None)
 
     def __str__(self):
