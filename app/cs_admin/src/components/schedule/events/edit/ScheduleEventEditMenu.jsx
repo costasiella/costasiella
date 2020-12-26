@@ -13,12 +13,14 @@ import HasPermissionWrapper from "../../../HasPermissionWrapper"
 let general_active
 let tickets_active
 let activities_active
+let media_active
 
 const ScheduleEventMenu = ({ t, eventId, active_link }) => (
   <List.Group transparent={true}>
     {(active_link === 'general') ? general_active = true: general_active = false}
     {(active_link === 'tickets') ? tickets_active = true: tickets_active = false}
     {(active_link === 'activities') ? activities_active = true: activities_active = false}
+    {(active_link === 'media') ? media_active = true: media_active = false}
     
 
     <HasPermissionWrapper 
@@ -61,6 +63,20 @@ const ScheduleEventMenu = ({ t, eventId, active_link }) => (
           active={activities_active}
           >
           {t('schedule.events.activities.title')}
+      </List.GroupItem>
+    </HasPermissionWrapper>
+    <HasPermissionWrapper 
+        resource="scheduleeventmedia"
+        permission="view" 
+    >
+      <List.GroupItem
+          key={v4()}
+          className="d-flex align-items-center"
+          to={`#/schedule/events/edit/${eventId}/media`}
+          icon="image"
+          active={media_active}
+          >
+          {t('schedule.events.media.title')}
       </List.GroupItem>
     </HasPermissionWrapper>
   </List.Group>
