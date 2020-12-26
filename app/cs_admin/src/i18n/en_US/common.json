@@ -376,7 +376,9 @@
         "spaces": "Spaces",
         "included": "Included",
         "filled": "Filled",
-        "invoice": "Invoice"
+        "invoice": "Invoice",
+        "uncancel": "Uncancel",
+        "sold_out": "Sold out"
     },
     "yup": {
         "min_len_3": "Please input at least 3 characters",
@@ -942,7 +944,10 @@
                     "toast_edit_success": "Saved"
                 },
                 "customers": {
-                    "search_results_already_bought": "Already bought this ticket"
+                    "search_results_already_bought": "Already bought this ticket",
+                    "toast_add_success": "Added customer",
+                    "uncancelled": "Uncancelled",
+                    "cancelled": "Cancelled"
                 },
                 "info_mail_sent": "Info mail sent"
             },
@@ -959,6 +964,12 @@
                 "edit": "Edit activity",
                 "toast_edit_success": "Saved",
                 "public": "This is a public activity"
+            },
+            "media": {
+                "title": "Event media",
+                "add": "Add media",
+                "empty_list": "No media has been added yet for this event",
+                "toast_add_success": "Added media"
             }
         },
         "event": {

@@ -206,7 +206,9 @@
         "spaces": "__STRING_NOT_TRANSLATED__",
         "included": "__STRING_NOT_TRANSLATED__",
         "filled": "__STRING_NOT_TRANSLATED__",
-        "invoice": "__STRING_NOT_TRANSLATED__"
+        "invoice": "__STRING_NOT_TRANSLATED__",
+        "uncancel": "__STRING_NOT_TRANSLATED__",
+        "sold_out": "__STRING_NOT_TRANSLATED__"
     },
     "settings": {
         "error_loading": "__STRING_NOT_TRANSLATED__",
@@ -1222,7 +1224,10 @@
                     "toast_edit_success": "__STRING_NOT_TRANSLATED__"
                 },
                 "customers": {
-                    "search_results_already_bought": "__STRING_NOT_TRANSLATED__"
+                    "search_results_already_bought": "__STRING_NOT_TRANSLATED__",
+                    "toast_add_success": "__STRING_NOT_TRANSLATED__",
+                    "uncancelled": "__STRING_NOT_TRANSLATED__",
+                    "cancelled": "__STRING_NOT_TRANSLATED__"
                 },
                 "info_mail_sent": "__STRING_NOT_TRANSLATED__"
             },
@@ -1239,6 +1244,12 @@
                 "edit": "__STRING_NOT_TRANSLATED__",
                 "toast_edit_success": "__STRING_NOT_TRANSLATED__",
                 "public": "__STRING_NOT_TRANSLATED__"
+            },
+            "media": {
+                "title": "__STRING_NOT_TRANSLATED__",
+                "add": "__STRING_NOT_TRANSLATED__",
+                "empty_list": "__STRING_NOT_TRANSLATED__",
+                "toast_add_success": "__STRING_NOT_TRANSLATED__"
             }
         },
         "event": {
