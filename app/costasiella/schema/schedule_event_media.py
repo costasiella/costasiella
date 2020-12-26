@@ -52,7 +52,7 @@ class ScheduleEventMediaQuery(graphene.ObjectType):
     schedule_event_medias = DjangoFilterConnectionField(ScheduleEventMediaNode)
     schedule_event_media = graphene.relay.Node.Field(ScheduleEventMediaNode)
 
-    def resolve_schedule_event_medias(self, info, archived, **kwargs):
+    def resolve_schedule_event_medias(self, info, **kwargs):
         user = info.context.user
         if user.is_anonymous:
             raise Exception(m.user_not_logged_in)
