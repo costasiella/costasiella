@@ -75,6 +75,7 @@ function ScheduleEventMediaAdd({ t, history, match }) {
           console.log(fileName)
 
           let inputVars = {
+            scheduleEvent: eventId,
             description: values.description,
             sortOrder: values.sortOrder,
             imageFileName: fileName,
