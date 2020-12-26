@@ -74,7 +74,7 @@ def get_content_file_from_base64_str(data_str, file_name):
     file_name, ext = os.path.splitext(file_name)
 
     # Add UUID to file name to prevent guessing of file names in media
-    file_name = '-'.join([ file_name, str(uuid.uuid4()) ])
+    file_name = '-'.join([file_name, str(uuid.uuid4())])
 
     return ContentFile(base64.b64decode(file_str), name='{}{}'.format(file_name, ext))
 
