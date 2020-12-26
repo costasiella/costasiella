@@ -7,7 +7,7 @@ from graphql import GraphQLError
 
 import validators
 
-from ..models import ScheduleEventMedia
+from ..models import ScheduleEvent, ScheduleEventMedia
 from ..modules.gql_tools import require_login_and_permission, get_rid, get_content_file_from_base64_str
 from ..modules.messages import Messages
 
@@ -60,9 +60,29 @@ class ScheduleEventMediaQuery(graphene.ObjectType):
         return ScheduleEventMedia.objects.order_by('sort_order')
 
 
+def validate_create_update_input(input, update=False):
+    """
+    Validate input
+    """
+    result = {}
+
+    if not update:
+        # Check schedule_event
+        if 'schedule_event' in input:
+            if input['schedule_event']:
+                rid = get_rid(input['schedule_event'])
+                schedule_event = ScheduleEvent.objects.filter(id=rid.id).first()
+                result['schedule_event'] = schedule_event
+                if not schedule_event:
+                    raise Exception(_('Invalid Schedule Event ID!'))
+
+    return result
+
+
 # Reference OrganizationDocument components in front-end for implementation reference
 class CreateScheduleEventMedia(graphene.relay.ClientIDMutation):
     class Input:
+        schedule_event = graphene.ID(required=True)
         sort_order = graphene.Int(required=False, default_value=0)
         description = graphene.String(required=False, default_value="")
         image = graphene.String(required=True)
@@ -75,7 +95,11 @@ class CreateScheduleEventMedia(graphene.relay.ClientIDMutation):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.add_scheduleeventmedia')
 
+        result = validate_create_update_input(input)
+        print(input)
+
         schedule_event_media = ScheduleEventMedia(
+            schedule_event=result['schedule_event'],
             sort_order=input['sort_order'],
             description=input['description'],
             image=get_content_file_from_base64_str(data_str=input['image'], file_name=input['image_file_name'])
