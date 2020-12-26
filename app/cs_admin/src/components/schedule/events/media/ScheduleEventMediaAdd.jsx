@@ -18,7 +18,7 @@ import {
 import { GET_SCHEDULE_EVENT_MEDIAS_QUERY } from "./queries"
 import { SCHEDULE_EVENT_ACTIVITY_SCHEMA } from './yupSchema'
 
-import ScheduleEventActivityBack from "./ScheduleEventActivityBack"
+import ScheduleEventMediaBack from "./ScheduleEventMediaBack"
 import ScheduleEventEditBase from "../edit/ScheduleEventEditBase"
 import ScheduleEventMediaForm from "./ScheduleEventMediaForm"
 
@@ -54,7 +54,7 @@ function ScheduleEventMediaAdd({ t, history, match }) {
     setFileName(event.target.files[0].name)
   }
 
-  const sidebarContent = <ScheduleEventActivityBack />
+  const sidebarContent = <ScheduleEventMediaBack />
 
   return (
     <ScheduleEventEditBase 
