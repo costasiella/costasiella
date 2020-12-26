@@ -145,7 +145,7 @@ class DeleteScheduleEventMedia(graphene.relay.ClientIDMutation):
         return DeleteScheduleEventMedia(ok=ok)
 
 
-class OrganizationClasstypeMutation(graphene.ObjectType):
+class ScheduleEventMediaMutation(graphene.ObjectType):
     create_schedule_event_media = CreateScheduleEventMedia.Field()
     update_schedule_event_media = CreateScheduleEventMedia.Field()
     delete_schedule_event_media = DeleteScheduleEventMedia.Field()

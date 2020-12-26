@@ -57,6 +57,7 @@ from .schedule_class import ScheduleClassQuery, ScheduleClassMutation
 from .schedule_class_booking_option import ScheduleClassBookingOptionsQuery
 from .schedule_class_weekly_otc import ScheduleClassWeeklyOTCQuery, ScheduleClassWeeklyOTCMutation
 from .schedule_event import ScheduleEventQuery, ScheduleEventMutation
+from .schedule_event_media import ScheduleEventMediaQuery, ScheduleEventMediaMutation
 from .schedule_event_ticket import ScheduleEventTicketQuery, ScheduleEventTicketMutation
 from .schedule_event_ticket_schedule_item import ScheduleEventTicketScheduleItemQuery, ScheduleEventTicketScheduleItemMutation
 from .schedule_item import ScheduleItemQuery, ScheduleItemMutation
@@ -118,6 +119,7 @@ class Query(AccountQuery,
             ScheduleClassBookingOptionsQuery,
             ScheduleClassWeeklyOTCQuery,
             ScheduleEventQuery,
+            ScheduleEventMediaQuery,
             ScheduleEventTicketQuery,
             ScheduleEventTicketScheduleItemQuery,
             ScheduleItemQuery,
@@ -177,6 +179,7 @@ class Mutation(AccountMutation,
                ScheduleClassMutation,
                ScheduleClassWeeklyOTCMutation,
                ScheduleEventMutation,
+               ScheduleEventMediaMutation,
                ScheduleEventTicketMutation,
                ScheduleEventTicketScheduleItemMutation,
                ScheduleItemMutation,
