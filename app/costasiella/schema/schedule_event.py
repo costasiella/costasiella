@@ -34,11 +34,11 @@ class ScheduleEventQuery(graphene.ObjectType):
         user = info.context.user
         require_login(user)
         # Has permission: return everything requested
-        if user.has_perm('costasiella.view_organizationsubscription'):
-            return ScheduleEvent.objects.filter(archived=archived).order_by('-date_start')
+        if user.has_perm('costasiella.view_scheduleevent'):
+            return ScheduleEvent.objects.filter(archived=archived).order_by('date_start')
 
-        # Return only public non-archived locations
-        return ScheduleEvent.objects.filter(display_public=True, archived=False).order_by('name')
+        # Return only public non-archived events
+        return ScheduleEvent.objects.filter(display_public=True, archived=False).order_by('date_start')
 
 
 def validate_create_update_input(input, update=False):
@@ -72,11 +72,12 @@ def validate_create_update_input(input, update=False):
 
     # Fetch & check organization level
     if 'organization_level' in input:
-        rid = get_rid(input['organization_level'])
-        organization_level = OrganizationLevel.objects.filter(id=rid.id).first()
-        result['organization_level'] = organization_level
-        if not organization_level:
-            raise Exception(_('Invalid Organization Level ID!'))
+        if input['organization_level']:
+            rid = get_rid(input['organization_level'])
+            organization_level = OrganizationLevel.objects.filter(id=rid.id).first()
+            result['organization_level'] = organization_level
+            if not organization_level:
+                raise Exception(_('Invalid Organization Level ID!'))
 
     # Fetch & check teacher (account)
     if 'teacher' in input:
@@ -180,6 +181,8 @@ class UpdateScheduleEvent(graphene.relay.ClientIDMutation):
     def mutate_and_get_payload(self, root, info, **input):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.change_scheduleevent')
+
+        print(input)
 
         rid = get_rid(input['id'])
         schedule_event = ScheduleEvent.objects.filter(id=rid.id).first()

@@ -5,12 +5,14 @@ import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
 import { useQuery } from '@apollo/react-hooks'
 import { Link } from 'react-router-dom'
+import { v4 } from 'uuid'
 
 import {
+  Button,
   Grid,
   Icon,
   List,
-  PricingCard
+  GalleryCard
 } from "tabler-react";
 import ShopEventsBase from "./ShopEventsBase"
 // import ShopClasspassPricingCard from "../classpass/ShopClasspassPricingCard"
@@ -44,8 +46,41 @@ function ShopEvents({ t, match, history }) {
     <ShopEventsBase title={title}>
         <Grid.Row>
           {scheduleEvents.edges.map(({ node }) => (
-            <Grid.Col md={3}>
-              {node.name}
+            <Grid.Col md={4} key={v4()}>
+              <GalleryCard>
+                <GalleryCard.Image 
+                  src={(node.media.edges.length) ? node.media.edges[0].node.urlImage: ""} 
+                  href={`/shop/events/${node.id}`}
+                />
+                <GalleryCard.Footer>
+                  <h4>{node.name}</h4>
+                </GalleryCard.Footer>
+                <GalleryCard.Footer>                  
+                  <GalleryCard.Details
+                    fullName={<span className="">{(node.teacher) ? node.teacher.fullName: ""}</span>}
+                    dateString={node.organizationLocation.name}
+                  />
+                  <GalleryCard.IconGroup>
+                  <GalleryCard.IconItem 
+                    name="calendar"
+                    label={node.dateStart}
+                    right={false}
+                    RootComponent="span"
+                  />
+                  </GalleryCard.IconGroup>
+                <br/><br/>
+                </GalleryCard.Footer>
+                <Link to={`/shop/events/${node.id}`}>
+                  <GalleryCard.Footer pt={10}>
+                    <Button
+                      block
+                      color="link"
+                    >
+                      {t("shop.events.tell_me_more")} <Icon name="chevron-right" />
+                    </Button>
+                  </GalleryCard.Footer>
+                </Link>
+              </GalleryCard>
               {/* <ShopClasspassPricingCard
                 classpass={node}
                 btnLink={"/shop/classpass/" + node.id}
