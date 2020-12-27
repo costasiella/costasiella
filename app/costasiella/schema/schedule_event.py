@@ -15,7 +15,7 @@ m = Messages()
 class ScheduleEventNode(DjangoObjectType):
     class Meta:
         model = ScheduleEvent
-        filter_fields = ['archived']
+        filter_fields = ['archived', 'display_public', 'display_shop']
         interfaces = (graphene.relay.Node, )
 
     @classmethod
