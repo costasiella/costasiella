@@ -171,6 +171,7 @@ import ScheduleEventActivityAdd from './components/schedule/events/activities/Sc
 import ScheduleEventActivityEdit from './components/schedule/events/activities/ScheduleEventActivityEdit'
 import ScheduleEventMedia from './components/schedule/events/media/ScheduleEventMedia'
 import ScheduleEventMediaAdd from './components/schedule/events/media/ScheduleEventMediaAdd'
+import ScheduleEventMediaEdit from './components/schedule/events/media/ScheduleEventMediaEdit'
 import ScheduleEventTickets from './components/schedule/events/tickets/ScheduleEventTickets'
 import ScheduleEventTicketAdd from './components/schedule/events/tickets/ScheduleEventTicketAdd'
 import ScheduleEventTicketEdit from './components/schedule/events/tickets/ScheduleEventTicketEdit'
@@ -456,6 +457,7 @@ function AppRoot({ t }) {
           <PrivateRoute exact path="/schedule/events/edit/:event_id/activities/edit/:id" component={ScheduleEventActivityEdit} />
           <PrivateRoute exact path="/schedule/events/edit/:event_id/media" component={ScheduleEventMedia} />
           <PrivateRoute exact path="/schedule/events/edit/:event_id/media/add" component={ScheduleEventMediaAdd} />
+          <PrivateRoute exact path="/schedule/events/edit/:event_id/media/edit/:id" component={ScheduleEventMediaEdit} />
           <PrivateRoute exact path="/schedule/events/edit/:event_id/tickets" component={ScheduleEventTickets} />
           <PrivateRoute exact path="/schedule/events/edit/:event_id/tickets/add" component={ScheduleEventTicketAdd} />
           <PrivateRoute exact path="/schedule/events/edit/:event_id/tickets/edit/:id" component={ScheduleEventTicketEdit} />
