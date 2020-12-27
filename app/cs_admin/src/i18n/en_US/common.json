@@ -378,7 +378,8 @@
         "filled": "Filled",
         "invoice": "Invoice",
         "uncancel": "Uncancel",
-        "sold_out": "Sold out"
+        "sold_out": "Sold out",
+        "please_select_a_file": "Please select a file"
     },
     "yup": {
         "min_len_3": "Please input at least 3 characters",

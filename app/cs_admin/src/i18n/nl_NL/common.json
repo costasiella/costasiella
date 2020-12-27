@@ -208,7 +208,8 @@
         "filled": "__STRING_NOT_TRANSLATED__",
         "invoice": "__STRING_NOT_TRANSLATED__",
         "uncancel": "__STRING_NOT_TRANSLATED__",
-        "sold_out": "__STRING_NOT_TRANSLATED__"
+        "sold_out": "__STRING_NOT_TRANSLATED__",
+        "please_select_a_file": "__STRING_NOT_TRANSLATED__"
     },
     "settings": {
         "error_loading": "__STRING_NOT_TRANSLATED__",
