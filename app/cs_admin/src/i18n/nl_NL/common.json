@@ -644,7 +644,8 @@
             "additional_information": "__STRING_NOT_TRANSLATED__"
         },
         "events": {
-            "title": "__STRING_NOT_TRANSLATED__"
+            "title": "__STRING_NOT_TRANSLATED__",
+            "tell_me_more": "__STRING_NOT_TRANSLATED__"
         }
     },
     "home": {

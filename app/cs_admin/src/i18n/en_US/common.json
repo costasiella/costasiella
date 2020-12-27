@@ -1584,7 +1584,8 @@
             "additional_information": "Additional information"
         },
         "events": {
-            "title": "Events"
+            "title": "Events",
+            "tell_me_more": "Tell me more"
         }
     },
     "You've already booked this class ": "You've already booked this class",
