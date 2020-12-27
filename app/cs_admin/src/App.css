@@ -10,7 +10,6 @@
 
 /* font classes end */
 
-
 /* Tabler changes begin */
 a:hover {
   text-decoration: none;
@@ -23,6 +22,15 @@ table .btn {
 .btn-link:hover {
   text-decoration: none !important;
 }
+
+/* Add missing xs column media definition */
+@media (max-width: 575px) {
+  .col {
+    flex: 0 0 100%;
+    max-width: 100%
+  }
+}
+
 
 /* Tabler changes end */
 
