@@ -969,7 +969,11 @@
                 "title": "Event media",
                 "add": "Add media",
                 "empty_list": "No media has been added yet for this event",
-                "toast_add_success": "Added media"
+                "toast_add_success": "Added media",
+                "delete_confirm_msg": "Are you sure you wish to delete this event image?",
+                "delete_success": "Deleted event image",
+                "edit": "Edit event image",
+                "toast_edit_success": "Saved"
             }
         },
         "event": {
