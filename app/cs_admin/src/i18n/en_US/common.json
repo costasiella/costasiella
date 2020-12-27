@@ -967,8 +967,8 @@
                 "public": "This is a public activity"
             },
             "media": {
-                "title": "Event media",
-                "add": "Add media",
+                "title": "Images",
+                "add": "Add event image",
                 "empty_list": "No media has been added yet for this event",
                 "toast_add_success": "Added media",
                 "delete_confirm_msg": "Are you sure you wish to delete this event image?",

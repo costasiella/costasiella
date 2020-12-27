@@ -137,5 +137,4 @@ function ScheduleEventMediaAdd({ t, history, match }) {
   )
 }
 
-
 export default withTranslation()(withRouter(ScheduleEventMediaAdd))
