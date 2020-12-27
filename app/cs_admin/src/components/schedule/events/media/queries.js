@@ -28,66 +28,15 @@ export const GET_SCHEDULE_EVENT_MEDIAS_QUERY = gql`
 `
 
 
-export const GET_SCHEDULE_EVENT_ACTIVITY_QUERY = gql`
-query ScheduleEventActivity($before:String, $after:String, $id:ID!) {
-  scheduleItem(id: $id) {
-    id
-    displayPublic
-    name
-    spaces
-    dateStart
-    timeStart
-    timeEnd
-    organizationLocationRoom {
+export const GET_SCHEDULE_EVENT_MEDIA_QUERY = gql`
+  query ScheduleEventMedia($id:ID!) {
+    scheduleEventMedia(id: $id) {
       id
-      name
-      organizationLocation {
-        id
-        name
-      }
-    }
-    account {
-      id
-      fullName
-    }
-    account2 {
-      id
-      fullName
+      sortOrder
+      description
+      image
     }
   }
-  accounts(first: 100, before: $before, after: $after, isActive:true, teacher: true) {
-    pageInfo {
-      startCursor
-      endCursor
-      hasNextPage
-      hasPreviousPage
-    }
-    edges {
-      node {
-        id
-        fullName
-      }
-    }
-  }
-  organizationLocationRooms(first: 100, before: $before, after: $after, archived: false) {
-    pageInfo {
-      startCursor
-      endCursor
-      hasNextPage
-      hasPreviousPage
-    }
-    edges {
-      node {
-        id
-        name
-        organizationLocation {
-          id 
-          name
-        }
-      }
-    }
-  }
-}
 `
 
 
