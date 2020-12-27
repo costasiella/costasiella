@@ -26,7 +26,7 @@ import {
 // import HasPermissionWrapper from "../../../../HasPermissionWrapper"
 import ScheduleEventEditListBase from "../edit/ScheduleEventEditListBase"
 // import ScheduleEventTicketListBase from "./ScheduleEventTicketListBase"
-// import ScheduleEventActivityDelete from "./ScheduleEventActivityDelete"
+import ScheduleEventMediaDelete from "./ScheduleEventMediaDelete"
 import moment from 'moment';
 
 
@@ -133,8 +133,7 @@ function ScheduleEventMedia({t, match, history}) {
                   </Link>
                 </Table.Col>
                 <Table.Col className="text-right">
-                  delete here...
-                  {/* <ScheduleEventActivityDelete id={node.id} /> */}
+                  <ScheduleEventMediaDelete id={node.id} />
                 </Table.Col>
               </Table.Row>
             ))}
