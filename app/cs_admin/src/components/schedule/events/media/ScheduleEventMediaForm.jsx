@@ -21,19 +21,21 @@ const customFileInputLabelStyle = {
 }  
 
 
-function ScheduleEventActivityForm ({ 
+function ScheduleEventMediaForm ({ 
   t, 
   history, 
   match, 
   isSubmitting, 
   errors, 
   values, 
+  fileName,
   inputFileName, 
   returnUrl,
   fileInputLabel,
   handleFileInputChange=f=>f
 })   
 {
+  console.log(fileName)
 
   return (
     <FoForm>
@@ -67,6 +69,7 @@ function ScheduleEventActivityForm ({
                   {fileInputLabel}
                 </label>
               </div>
+              {(fileName) ? "": <small className="sm text-red">{t('yup.field_required')}</small>}
             </Form.Group>
           </Grid.Col>
         </Grid.Row>
@@ -88,4 +91,4 @@ function ScheduleEventActivityForm ({
   )
 }
 
-export default withTranslation()(withRouter(ScheduleEventActivityForm))
+export default withTranslation()(withRouter(ScheduleEventMediaForm))

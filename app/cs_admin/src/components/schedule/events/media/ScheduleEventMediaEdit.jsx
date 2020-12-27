@@ -15,7 +15,7 @@ import {
 } from "tabler-react"
 
 import { GET_SCHEDULE_EVENT_MEDIAS_QUERY, GET_SCHEDULE_EVENT_MEDIA_QUERY } from "./queries"
-import { SCHEDULE_EVENT_ACTIVITY_SCHEMA } from './yupSchema'
+import { SCHEDULE_EVENT_MEDIA_SCHEMA } from './yupSchema'
 
 import ScheduleEventMediaBack from "./ScheduleEventMediaBack"
 import ScheduleEventMediaEditBase from "./ScheduleEventMediaEditBase"
@@ -96,7 +96,7 @@ function ScheduleEventMediaEdit({ t, history, match }) {
           description: scheduleEventMedia.description,
           sortOrder: scheduleEventMedia.sortOrder
         }}
-        // validationSchema={SCHEDULE_EVENT_ACTIVITY_SCHEMA}
+        validationSchema={SCHEDULE_EVENT_MEDIA_SCHEMA}
         onSubmit={(values, { setSubmitting }) => {
           console.log("Submit values")
           console.log(values)
@@ -138,7 +138,14 @@ function ScheduleEventMediaEdit({ t, history, match }) {
           }
           
           let file = inputFileName.current.files[0]
-          reader.readAsDataURL(file)
+          if (file) {
+            reader.readAsDataURL(file)
+          } else {
+            toast.error(t("general.please_select_a_file"), {
+              position: toast.POSITION.BOTTOM_RIGHT
+            })
+            setSubmitting(false)
+          }
         }}
         >
         {({ isSubmitting, errors, values }) => (
@@ -146,6 +153,7 @@ function ScheduleEventMediaEdit({ t, history, match }) {
             isSubmitting={isSubmitting}
             errors={errors}
             values={values}
+            fileName={fileName}
             inputFileName={inputFileName}
             fileInputLabel={fileInputLabel}
             handleFileInputChange={handleFileInputChange}
