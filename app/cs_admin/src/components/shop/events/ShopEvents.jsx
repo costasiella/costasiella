@@ -68,7 +68,6 @@ function ShopEvents({ t, match, history }) {
                     RootComponent="span"
                   />
                   </GalleryCard.IconGroup>
-                <br/><br/>
                 </GalleryCard.Footer>
                 <Link to={`/shop/events/${node.id}`}>
                   <GalleryCard.Footer pt={10}>
