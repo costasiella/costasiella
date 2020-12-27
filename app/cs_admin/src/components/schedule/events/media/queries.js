@@ -1,5 +1,6 @@
 import gql from "graphql-tag"
 
+
 export const GET_SCHEDULE_EVENT_MEDIAS_QUERY = gql`
   query ScheduleEventMedias($before:String, $after:String, $schedule_event:ID!) {
     scheduleEventMedias(first: 100, before:$before, after:$after, scheduleEvent:$schedule_event) {
@@ -90,9 +91,9 @@ query ScheduleEventActivity($before:String, $after:String, $id:ID!) {
 `
 
 
-export const DELETE_SCHEDULE_EVENT_ACTIVITY = gql`
-  mutation DeleteScheduleItem($input: DeleteScheduleItemInput!) {
-    deleteScheduleItem(input: $input) {
+export const DELETE_SCHEDULE_EVENT_MEDIA   = gql`
+  mutation DeleteScheduleEventMedia($input: DeleteScheduleEventMediaInput!) {
+    deleteScheduleEventMedia(input: $input) {
       ok
     }
   }
