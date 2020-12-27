@@ -46,7 +46,7 @@ function ShopEvents({ t, match, history }) {
     <ShopEventsBase title={title}>
         <Grid.Row>
           {scheduleEvents.edges.map(({ node }) => (
-            <Grid.Col sm={12} md={4} key={v4()}>
+            <Grid.Col xs={12} sm={12} md={4} key={v4()}>
               <GalleryCard>
                 <GalleryCard.Image 
                   src={(node.media.edges.length) ? node.media.edges[0].node.urlImage: ""} 
