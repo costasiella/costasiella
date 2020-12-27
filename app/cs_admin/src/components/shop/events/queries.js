@@ -48,6 +48,19 @@ export const GET_SCHEDULE_EVENTS_QUERY = gql`
               }
             }
           }
+          media(first: 1) {
+            pageInfo {
+              hasNextPage
+              hasPreviousPage
+              startCursor
+              endCursor
+            }
+            edges {
+              node {
+                urlImage
+              }
+            }
+          }
           createdAt
           updatedAt
         }
