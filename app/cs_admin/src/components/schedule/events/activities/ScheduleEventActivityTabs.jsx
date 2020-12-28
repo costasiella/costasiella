@@ -19,7 +19,7 @@ function ScheduleEventActivityTabs({ t, active, eventId, scheduleItemId}) {
           {
             name: "attendance", 
             title: t("schedule.events.tickets.edit_menu.attendance"), 
-            link: `/schedule/events/edit/${eventId}/tickets/edit/${scheduleItemId}/attendance`
+            link: `/schedule/events/edit/${eventId}/activities/edit/${scheduleItemId}/attendance`
           },
       ]}
       active={active}
