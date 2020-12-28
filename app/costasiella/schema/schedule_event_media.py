@@ -20,6 +20,7 @@ class ScheduleEventMediaNodeInterface(graphene.Interface):
     id = graphene.GlobalID()
     url_image = graphene.String()
     url_image_thumbnail_small = graphene.String()
+    url_image_thumbnail_large = graphene.String()
 
 
 class ScheduleEventMediaNode(DjangoObjectType):
@@ -32,6 +33,12 @@ class ScheduleEventMediaNode(DjangoObjectType):
     def resolve_url_image_thumbnail_small(self, info):
         if self.image:
             return get_thumbnail(self.image, '50x50', crop='center', quality=99).url
+        else:
+            return ''
+
+    def resolve_url_image_thumbnail_large(self, info):
+        if self.image:
+            return get_thumbnail(self.image, '400x400', crop='center', quality=99).url
         else:
             return ''
     
