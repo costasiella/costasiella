@@ -45,7 +45,8 @@ const DELETE_ACCOUNT_CLASSPASS = gql`
 const AccountClasspasses = ({ t, history, match, archived=false }) => (
   <SiteWrapper>
     <div className="my-3 my-md-5">
-      <Query query={GET_ACCOUNT_CLASSPASSES_QUERY} variables={{ archived: archived, accountId: match.params.account_id }} pollInterval={5000}> 
+      <Query query={GET_ACCOUNT_CLASSPASSES_QUERY} variables={{ archived: archived, accountId: match.params.account_id }} 
+        fetchPolicy="network-only"> 
         {({ loading, error, data, refetch, fetchMore }) => {
           // Loading
           if (loading) return <p>{t('general.loading_with_dots')}</p>
