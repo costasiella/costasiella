@@ -11,7 +11,7 @@ from .finance_glaccount import FinanceGLAccount
 
 
 class ScheduleEventTicket(models.Model):
-    schedule_event = models.ForeignKey(ScheduleEvent, on_delete=models.CASCADE)
+    schedule_event = models.ForeignKey(ScheduleEvent, on_delete=models.CASCADE, related_name="tickets")
     full_event = models.BooleanField(default=False)
     deletable = models.BooleanField(default=True)
     display_public = models.BooleanField(default=True)
