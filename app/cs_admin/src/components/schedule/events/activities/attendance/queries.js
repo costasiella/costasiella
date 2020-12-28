@@ -12,6 +12,7 @@ query ScheduleItemAttendances($before:String, $after:String, $schedule_item:ID!)
     edges {
       node {
         id
+        bookingStatus
         account {
           id
           fullName
