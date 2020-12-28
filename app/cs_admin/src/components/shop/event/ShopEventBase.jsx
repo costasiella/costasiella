@@ -6,13 +6,13 @@ import { withRouter } from "react-router"
 
 import ShopBase from "../ShopBase"
 
-function ShopEventsBase({ t, match, history, children }) {
+function ShopEventBase({ t, match, history, children }) {
   
   return (
     <ShopBase 
       title={t("shop.title")}
       return_url="/shop/events"
-      checkoutProgress="order"
+      // checkoutProgress="order"
     >
       {children}
     </ShopBase>
@@ -20,4 +20,4 @@ function ShopEventsBase({ t, match, history, children }) {
 }
 
 
-export default withTranslation()(withRouter(ShopEventsBase))
+export default withTranslation()(withRouter(ShopEventBase))
