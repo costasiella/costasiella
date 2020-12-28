@@ -13,7 +13,7 @@ import AppSettingsContext from '../../../../context/AppSettingsContext'
 import ContentCard from "../../../../general/ContentCard"
 
 import { GET_SCHEDULE_EVENT_ACTIVITY_QUERY } from '../queries'
-// import { GET_SCHEDULE_EVENT_QUERY } from '../queries'
+import { GET_SCHEDULE_EVENT_QUERY } from '../../queries'
 
 import moment from 'moment'
 
@@ -43,7 +43,7 @@ function ScheduleEventActivityAttendanceBase({t, match, history, activeTab, onLo
   const eventId = match.params.event_id
   const scheduleItemId = match.params.id
 
-  const { loading, error, data } = useQuery(GET_SCHEDULE_EVENT_ACTIVITY_QUERY, {
+  const { loading, error, data } = useQuery(GET_SCHEDULE_EVENT_QUERY, {
     variables: { id: eventId }
   })
 
@@ -74,7 +74,7 @@ function ScheduleEventActivityAttendanceBase({t, match, history, activeTab, onLo
         <Card title={cardTitle}>
           <ScheduleEventActivityTabs active={activeTab} eventId={eventId} scheduleItemId={scheduleItemId}/>
           <Card.Body>
-            {t("schedule.events.error_loading")}
+            {t("schedule.event.error_loading")}
           </Card.Body>
         </Card>
       </ScheduleEventEditBaseBase>
@@ -98,10 +98,11 @@ function ScheduleEventActivityAttendanceBase({t, match, history, activeTab, onLo
     <ScheduleEventEditBaseBase activeLink={activeLink} sidebarContent={sidebarContent}>
       <ContentCard 
         cardTitle={<span>{cardTitle} {cardSubTitle} {cardActivitySubtitle}</span>}
+        cardTabs={<ScheduleEventActivityTabs active={activeTab} eventId={eventId} scheduleItemId={scheduleItemId}/>}
         pageInfo={pageInfo}
         onLoadMore={onLoadMore}
       >
-        <ScheduleEventActivityTabs active={activeTab} eventId={eventId} scheduleItemId={scheduleItemId}/>
+        
         {children}
       </ContentCard>
       {/* <Card>
