@@ -43,6 +43,7 @@ query ScheduleEvent($id: ID!) {
       }
       edges {
         node {
+          description
           urlImageThumbnailSmall
           urlImageThumbnailLarge
         }
