@@ -43,13 +43,12 @@ query ScheduleEvent($id: ID!) {
       }
       edges {
         node {
-          description
           urlImageThumbnailSmall
           urlImageThumbnailLarge
         }
       }
     }
-    tickets {
+    tickets(first: 100) {
       pageInfo {
         hasNextPage
         hasPreviousPage
@@ -61,26 +60,23 @@ query ScheduleEvent($id: ID!) {
           name
           price
           description
-          scheduleItems {
-            pageInfo {
-              hasNextPage
-              hasPreviousPage
-              startCursor
-              endCursor
+          ticketScheduleItems(included: true) {
+           pageInfo{
+            hasNextPage
+            hasPreviousPage
+            startCursor
+            endCursor
             }
             edges {
               node {
-                name
-                description
-                organizationLocationRoom {
+                id
+                included
+                scheduleItem {
                   name
-                  organizationLocation {
-                    name
-                  }
+                  dateStart
+                  timeStart
+                  timeEnd
                 }
-                dateStart
-                timeStart
-                timeEnd
               }
             }
           }
