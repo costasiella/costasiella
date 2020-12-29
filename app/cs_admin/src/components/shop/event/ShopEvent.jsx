@@ -21,7 +21,7 @@ import { TimeStringToJSDateOBJ } from '../../../tools/date_tools'
 import AppSettingsContext from '../../context/AppSettingsContext'
 
 import ShopEventBase from "./ShopEventBase"
-// import ShopClasspassesPricingCard from "./ShopClasspassPricingCard"
+import ShopEventTicketPricingCard from "./ShopEventTicketPricingCard"
 
 import { GET_SCHEDULE_EVENT_QUERY } from "./queries"
 
@@ -51,12 +51,14 @@ function ShopEvent({ t, match, history }) {
 
   console.log(data)
   const event = data.scheduleEvent
+  const tickets = event.tickets
   console.log(event)
 
   return (
     <ShopEventBase title={title}>
       <Grid.Row>
         <Grid.Col xs={12} sm={12} md={12} lg={12}>
+          <small className="pull-right">{moment(event.dateStart).format(dateFormat)}</small>
           <h3>{event.name}</h3>
           <h5>{event.tagline}</h5>
         </Grid.Col>
@@ -83,6 +85,11 @@ function ShopEvent({ t, match, history }) {
         <Grid.Col xs={12} sm={12} md={12} lg={12}>
           <h3>{t("shop.event.tickets")}</h3>
         </Grid.Col>
+        {tickets.edges.map(({ node }) => (
+          <Grid.Col xs={12} sm={12} md={6} lg={4}>
+            <ShopEventTicketPricingCard eventTicket={node} />
+          </Grid.Col>
+        ))}
       </Grid.Row>
     </ShopEventBase>
   )
