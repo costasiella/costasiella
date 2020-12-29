@@ -21,13 +21,13 @@ import AppSettingsContext from '../../context/AppSettingsContext'
 // https://github.com/tabler/tabler-react/blob/master/example/src/interface/PricingCardsPage.react.js
 
 
-function ShopEventTicketPricingCard({ t, eventTicket, btnLink, active=false }) {
+function ShopEventTicketPricingCard({ t, eventTicket, active=false }) {
   // eventTicket should be an object with at least the following values from an organizationClasspass object:
   // id, name, priceDisplay, 
   const appSettings = useContext(AppSettingsContext)
   const dateFormat = appSettings.dateFormat
   const timeFormat = appSettings.timeFormatMoment
-  const scheduleItems = eventTicket.scheduleItems
+  const ticketScheduleItems = eventTicket.ticketScheduleItems
 
   return (
     <PricingCard active={active}>
@@ -38,26 +38,23 @@ function ShopEventTicketPricingCard({ t, eventTicket, btnLink, active=false }) {
         {eventTicket.priceDisplay}
       </PricingCard.Price>
       <PricingCard.AttributeList>
-        {scheduleItems.edges.map(({ node }) => (
+        {ticketScheduleItems.edges.map(({ node }) => (
           <PricingCard.AttributeItem>
-            <b>
-              {moment(node.dateStart).format(dateFormat)} {" "}
+            <b> 
+              {moment(node.scheduleItem.dateStart).format(dateFormat)} {" "}
               {/* Start & end time */}
-              {moment(node.dateStart + ' ' + node.timeStart).format(timeFormat)} {' - '}
-              {moment(node.dateStart + ' ' + node.timeEnd).format(timeFormat)} { ' ' }
+              {moment(node.scheduleItem.dateStart + ' ' + node.scheduleItem.timeStart).format(timeFormat)} {' - '}
+              {moment(node.scheduleItem.dateStart + ' ' + node.scheduleItem.timeEnd).format(timeFormat)} { ' ' }
             </b><br />
-            {node.name} {t("general.at").toLowerCase()} {node.organizationLocationRoom.organizationLocation.name}
+            {node.scheduleItem.name} {t("general.at").toLowerCase()} {node.scheduleItem.organizationLocationRoom.organizationLocation.name}
           </PricingCard.AttributeItem>
         ))}
       </PricingCard.AttributeList>
-      {/* {(btnLink) ?
-        <Link to={btnLink}>
-          <PricingCard.Button >
-            {t("shop.classpasses.choose")} <Icon name="chevron-right" />
-          </PricingCard.Button>
-        </Link>
-        : ""
-      } */}
+      <Link to={`/shop/event/ticket/${eventTicket.id}`}>
+        <PricingCard.Button >
+          {t("shop.event.ticket.choose")} <Icon name="chevron-right" />
+        </PricingCard.Button>
+      </Link>
     </PricingCard>
   )
 }
