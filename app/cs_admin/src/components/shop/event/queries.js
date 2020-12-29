@@ -57,8 +57,10 @@ query ScheduleEvent($id: ID!) {
       }
       edges {
         node {
+          id
           name
           price
+          priceDisplay
           description
           ticketScheduleItems(included: true) {
            pageInfo{
@@ -76,6 +78,11 @@ query ScheduleEvent($id: ID!) {
                   dateStart
                   timeStart
                   timeEnd
+                  organizationLocationRoom {
+                    organizationLocation {
+                      name
+                    }
+                  }
                 }
               }
             }
