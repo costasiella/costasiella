@@ -1594,7 +1594,10 @@
         "event": {
             "error_loading": "Error loading event... :(",
             "info_header": "Event info",
-            "tickets": "Tickets"
+            "tickets": "Tickets",
+            "ticket": {
+                "choose": "Choose"
+            }
         }
     },
     "You've already booked this class ": "You've already booked this class",

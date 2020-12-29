@@ -650,7 +650,10 @@
         "event": {
             "error_loading": "__STRING_NOT_TRANSLATED__",
             "info_header": "__STRING_NOT_TRANSLATED__",
-            "tickets": "__STRING_NOT_TRANSLATED__"
+            "tickets": "__STRING_NOT_TRANSLATED__",
+            "ticket": {
+                "choose": "__STRING_NOT_TRANSLATED__"
+            }
         }
     },
     "home": {
