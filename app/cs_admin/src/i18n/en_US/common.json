@@ -964,7 +964,10 @@
                 "delete_success": "Deleted activity",
                 "edit": "Edit activity",
                 "toast_edit_success": "Saved",
-                "public": "This is a public activity"
+                "public": "This is a public activity",
+                "attendance": {
+                    "empty_list": "__STRING_NOT_TRANSLATED__"
+                }
             },
             "media": {
                 "title": "Images",
@@ -979,7 +982,8 @@
         },
         "event": {
             "location_please_select": "Please select...",
-            "teacher_please_select": "Please select..."
+            "teacher_please_select": "Please select...",
+            "error_loading": "__STRING_NOT_TRANSLATED__"
         }
     },
     "countries": {
@@ -1586,6 +1590,11 @@
         "events": {
             "title": "Events",
             "tell_me_more": "Tell me more"
+        },
+        "event": {
+            "error_loading": "Error loading event... :(",
+            "info_header": "About this event",
+            "tickets": "Tickets"
         }
     },
     "You've already booked this class ": "You've already booked this class",

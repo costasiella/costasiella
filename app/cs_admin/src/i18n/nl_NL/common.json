@@ -646,6 +646,11 @@
         "events": {
             "title": "__STRING_NOT_TRANSLATED__",
             "tell_me_more": "__STRING_NOT_TRANSLATED__"
+        },
+        "event": {
+            "error_loading": "__STRING_NOT_TRANSLATED__",
+            "info_header": "__STRING_NOT_TRANSLATED__",
+            "tickets": "__STRING_NOT_TRANSLATED__"
         }
     },
     "home": {
@@ -1245,7 +1250,10 @@
                 "delete_success": "__STRING_NOT_TRANSLATED__",
                 "edit": "__STRING_NOT_TRANSLATED__",
                 "toast_edit_success": "__STRING_NOT_TRANSLATED__",
-                "public": "__STRING_NOT_TRANSLATED__"
+                "public": "__STRING_NOT_TRANSLATED__",
+                "attendance": {
+                    "empty_list": "__STRING_NOT_TRANSLATED__"
+                }
             },
             "media": {
                 "title": "__STRING_NOT_TRANSLATED__",
@@ -1260,7 +1268,8 @@
         },
         "event": {
             "location_please_select": "__STRING_NOT_TRANSLATED__",
-            "teacher_please_select": "__STRING_NOT_TRANSLATED__"
+            "teacher_please_select": "__STRING_NOT_TRANSLATED__",
+            "error_loading": "__STRING_NOT_TRANSLATED__"
         }
     },
     "genders": {
