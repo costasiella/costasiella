@@ -1593,7 +1593,7 @@
         },
         "event": {
             "error_loading": "Error loading event... :(",
-            "info_header": "About this event",
+            "info_header": "Event info",
             "tickets": "Tickets"
         }
     },
