@@ -379,7 +379,8 @@
         "invoice": "Invoice",
         "uncancel": "Uncancel",
         "sold_out": "Sold out",
-        "please_select_a_file": "Please select a file"
+        "please_select_a_file": "Please select a file",
+        "end": "End"
     },
     "yup": {
         "min_len_3": "Please input at least 3 characters",
@@ -1593,7 +1594,6 @@
         },
         "event": {
             "error_loading": "Error loading event... :(",
-            "info_header": "Event info",
             "tickets": "Tickets",
             "ticket": {
                 "choose": "Choose"
