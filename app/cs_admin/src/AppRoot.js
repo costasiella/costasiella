@@ -206,6 +206,7 @@ import ShopClassesSchedule from './components/shop/classes/schedule/ShopClassesS
 import ShopContact from './components/shop/contact/ShopContact'
 import ShopEvents from './components/shop/events/ShopEvents'
 import ShopEvent from './components/shop/event/ShopEvent'
+import ShopEventTicket from './components/shop/event_ticket/ShopEventTicket'
 import ShopHome from './components/shop/home/ShopHome'
 import ShopCheckoutPayment from './components/shop/checkout/payment/ShopCheckoutPayment'
 import ShopCheckoutComplete from './components/shop/checkout/complete/ShopCheckoutComplete'
@@ -501,7 +502,8 @@ function AppRoot({ t }) {
           <Route exact path = "/shop/classpass/:id/:class_id/:date" component={ShopClasspass} />
           <Route exact path = "/shop/contact" component={ShopContact} />
           <Route exact path = "/shop/events" component={ShopEvents} />
-          <Route exact path = "/shop/events/:id" component={ShopEvent} />
+          <Route exact path = "/shop/events/:event_id" component={ShopEvent} />
+          <Route exact path = "/shop/events/:event_id/ticket/:id" component={ShopEventTicket} />
           <Route exact path = "/shop/subscriptions" component={ShopSubscriptions} />
           <Route exact path = "/shop/subscription/:id" component={ShopSubscription} />
 
