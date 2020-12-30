@@ -104,7 +104,10 @@ def validate_create_update_input(input, update=False):
             schedule_event_ticket = ScheduleEventTicket.objects.get(id=rid.id)
             result['schedule_event_ticket'] = schedule_event_ticket
             if not schedule_event_ticket:
-                raise Exception(_('Invalid Organization Classpass ID!'))
+                raise Exception(_('Invalid Schedule Event Ticket ID!'))
+
+            if schedule_event_ticket.is_sold_out():
+                raise Exception(_("Unable to create order: This ticket has sold out."))
 
         if 'organization_classpass' in input:
             rid = get_rid(input["organization_classpass"])
