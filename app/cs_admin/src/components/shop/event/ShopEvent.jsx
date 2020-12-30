@@ -32,7 +32,7 @@ function ShopEvent({ t, match, history }) {
   const timeFormat = appSettings.timeFormatMoment
 
   const title = t("shop.home.title")
-  const eventId = match.params.id
+  const eventId = match.params.event_id
 
   const { loading, error, data } = useQuery(GET_SCHEDULE_EVENT_QUERY, {
     variables: { id: eventId }
@@ -58,7 +58,6 @@ function ShopEvent({ t, match, history }) {
     <ShopEventBase title={title}>
       <Grid.Row>
         <Grid.Col xs={12} sm={12} md={12} lg={12}>
-          <small className="pull-right">{moment(event.dateStart).format(dateFormat)}</small>
           <h3>{event.name}</h3>
           <h5>{event.tagline}</h5>
         </Grid.Col>
@@ -72,10 +71,18 @@ function ShopEvent({ t, match, history }) {
               {(event.media.edges.length) ? event.media.edges[0].node.description : ""}
             </GalleryCard.Details>
           </GalleryCard>
+          <Card title={t("general.info")}>
+            <Card.Body>
+              <h6>{t('general.teacher')}: {event.teacher.fullName}</h6>
+              <h6>{t('general.start')}: {moment(event.dateStart).format(dateFormat)}</h6>
+              <h6>{t('general.end')}: {moment(event.dateEnd).format(dateFormat)}</h6>
+            </Card.Body>
+          </Card>
         </Grid.Col>
         <Grid.Col xs={12} sm={12} md={6} lg={8}>
-          <Card title={t("shop.event.info_header")}>
+          <Card title={t("general.description")}>
             <Card.Body>
+              <h5>{t('general.description')}</h5>
               <div dangerouslySetInnerHTML={{ __html: event.description}} />
             </Card.Body>
           </Card>
@@ -87,7 +94,7 @@ function ShopEvent({ t, match, history }) {
         </Grid.Col>
         {tickets.edges.map(({ node }) => (
           <Grid.Col xs={12} sm={12} md={6} lg={4}>
-            <ShopEventTicketPricingCard eventTicket={node} />
+            <ShopEventTicketPricingCard eventID={eventId} eventTicket={node} />
           </Grid.Col>
         ))}
       </Grid.Row>
