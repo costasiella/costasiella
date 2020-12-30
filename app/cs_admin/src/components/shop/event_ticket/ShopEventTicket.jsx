@@ -84,7 +84,9 @@ function ShopEventTicket({ t, match, history }) {
         <Grid.Col md={4}>
           <Card title={t("shop.events.ticket.additional_info")}>
             <Card.Body>
-              <div dangerouslySetInnerHTML={{ __html: eventTicket.description}} />
+              {(eventTicket.description) ?
+                <div dangerouslySetInnerHTML={{ __html: eventTicket.description}} />
+              : t("shop.events.ticket.no_additional_info")}
             </Card.Body>
           </Card> 
         </Grid.Col>
