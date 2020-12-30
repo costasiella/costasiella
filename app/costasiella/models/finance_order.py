@@ -58,6 +58,31 @@ class FinanceOrder(models.Model):
 
         return finance_order_item
 
+    def item_add_schedule_event_ticket(self, schedule_event_ticket):
+        """
+        Add organization classpass order item
+        """
+        from .finance_order_item import FinanceOrderItem
+
+        # add item to order
+        finance_order_item = FinanceOrderItem(
+            finance_order=self,
+            schedule_event_ticket=schedule_event_ticket,
+            product_name=_('Event ticket'),
+            description=schedule_event_ticket.schedule_event.name + " [" + schedule_event_ticket.name + "]",
+            quantity=1,
+            price=schedule_event_ticket.price,
+            finance_tax_rate=schedule_event_ticket.finance_tax_rate,
+            finance_glaccount=schedule_event_ticket.finance_glaccount,
+            finance_costcenter=schedule_event_ticket.finance_costcenter,
+        )
+
+        finance_order_item.save()
+
+        self.update_amounts()
+
+        return finance_order_item
+
     def item_add_classpass(self, organization_classpass, schedule_item=None, attendance_date=None):
         """
         Add organization classpass order item
