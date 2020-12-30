@@ -10,6 +10,7 @@ from .finance_order import FinanceOrder
 from .finance_tax_rate import FinanceTaxRate
 from .organization_classpass import OrganizationClasspass
 from .organization_subscription import OrganizationSubscription
+from .schedule_event_ticket import ScheduleEventTicket
 from .schedule_item import ScheduleItem
 from .choices.schedule_item_attendance_types import get_schedule_item_attendance_types
 
@@ -20,6 +21,8 @@ class FinanceOrderItem(models.Model):
     ATTENDANCE_TYPES = get_schedule_item_attendance_types()
 
     finance_order = models.ForeignKey(FinanceOrder, on_delete=models.CASCADE, related_name="items")
+    # Event ticket fields
+    schedule_event_ticket = models.ForeignKey(ScheduleEventTicket, on_delete=models.CASCADE, null=True)
     # Subscription fields
     organization_subscription = models.ForeignKey(OrganizationSubscription, on_delete=models.CASCADE, null=True)
     # Class pass fields
