@@ -53,15 +53,20 @@ function ShopEventTicketPricingCard({ t, match, eventTicket, showButton=true, ac
           </PricingCard.AttributeItem>
         ))}
       </PricingCard.AttributeList>
-      // TODO: Chceck sold out
-      {(showButton) ?
+      {(showButton && !eventTicket.isSoldOut) ?
         <Link to={`/shop/events/${eventId}/ticket/${eventTicket.id}`}>
-          <PricingCard.Button >
+          <PricingCard.Button>
             {t("shop.event.ticket.choose")} <Icon name="chevron-right" />
           </PricingCard.Button>
         </Link>
         : "" 
       }
+      {(showButton && eventTicket.isSoldOut) ? 
+        <PricingCard.Button 
+          className="disabled"
+        >
+          {t('general.sold_out')}
+        </PricingCard.Button> : ""}
     </PricingCard>
   )
 }

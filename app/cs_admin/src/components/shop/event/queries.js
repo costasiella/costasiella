@@ -62,6 +62,7 @@ query ScheduleEvent($id: ID!) {
           price
           priceDisplay
           description
+          isSoldOut
           ticketScheduleItems(included: true) {
            pageInfo{
             hasNextPage
