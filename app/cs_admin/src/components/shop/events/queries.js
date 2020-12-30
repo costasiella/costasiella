@@ -57,7 +57,8 @@ export const GET_SCHEDULE_EVENTS_QUERY = gql`
             }
             edges {
               node {
-                urlImage
+                urlImageThumbnailSmall
+                urlImageThumbnailLarge
               }
             }
           }

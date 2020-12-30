@@ -50,7 +50,7 @@ function ShopEvents({ t, match, history }) {
               <GalleryCard>
                 {(node.media.edges.length) ?
                   <GalleryCard.Image 
-                    src={(node.media.edges.length) ? node.media.edges[0].node.urlImage: ""} 
+                    src={(node.media.edges.length) ? node.media.edges[0].node.urlImageThumbnailLarge: ""} 
                     href={`/shop/events/${node.id}`}
                   /> : "" }
                 <GalleryCard.Footer>
