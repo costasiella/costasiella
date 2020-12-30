@@ -20,5 +20,4 @@ function ShopEventTicketBase({ t, match, history, children }) {
   )
 }
 
-
 export default withTranslation()(withRouter(ShopEventTicketBase))

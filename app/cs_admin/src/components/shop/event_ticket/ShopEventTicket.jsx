@@ -59,6 +59,8 @@ function ShopEventTicket({ t, match, history }) {
   const eventTicket = data.scheduleEventTicket
   console.log(eventTicket)
 
+  // TODO: Chceck sold out
+
   return (
     <ShopEventTicketBase title={title}>
       <Grid.Row>

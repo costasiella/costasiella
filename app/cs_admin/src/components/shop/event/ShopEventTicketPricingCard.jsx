@@ -53,6 +53,7 @@ function ShopEventTicketPricingCard({ t, match, eventTicket, showButton=true, ac
           </PricingCard.AttributeItem>
         ))}
       </PricingCard.AttributeList>
+      // TODO: Chceck sold out
       {(showButton) ?
         <Link to={`/shop/events/${eventId}/ticket/${eventTicket.id}`}>
           <PricingCard.Button >

@@ -9,7 +9,9 @@ from graphql import GraphQLError
 
 from ..models import AccountAcceptedDocument, FinanceOrder, OrganizationClasspass, \
     OrganizationSubscription, \
-    OrganizationDocument, ScheduleItem
+    OrganizationDocument, \
+    ScheduleEventTicket, \
+    ScheduleItem
 from ..models.choices.finance_order_statuses import get_finance_order_statuses
 from ..modules.gql_tools import require_login, require_login_and_permission, get_rid, get_error_code
 from ..modules.finance_tools import display_float_as_amount

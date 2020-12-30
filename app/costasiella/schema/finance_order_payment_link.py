@@ -25,7 +25,7 @@ class FinanceOrderPaymentLinkType(graphene.ObjectType):
 
 class CreateFinanceOrderPaymentLink(graphene.Mutation):
     class Arguments:
-        id = graphene.ID() # FinanceOrderID
+        id = graphene.ID()  # FinanceOrderID
 
     finance_order_payment_link = graphene.Field(FinanceOrderPaymentLinkType)
 

@@ -69,8 +69,9 @@ class FinanceOrder(models.Model):
             finance_order=self,
             schedule_event_ticket=schedule_event_ticket,
             product_name=_('Event ticket'),
-            description=schedule_event_ticket.schedule_event.name + " [" + schedule_event_ticket.name + "]",
+            description='%s\n[%s]' % (schedule_event_ticket.schedule_event.name, schedule_event_ticket.name),
             quantity=1,
+            # TODO: Add "get price for account" fn to schedule event ticket to allow for earlybirds and discounts
             price=schedule_event_ticket.price,
             finance_tax_rate=schedule_event_ticket.finance_tax_rate,
             finance_glaccount=schedule_event_ticket.finance_glaccount,
@@ -173,6 +174,13 @@ class FinanceOrder(models.Model):
         items = FinanceOrderItem.objects.filter(finance_order=self)
 
         for item in items:
+            if item.schedule_event_ticket:
+                account_schedule_event_ticket = self._deliver_schedule_event_ticket(
+                    item.schedule_event_ticket,
+                    finance_invoice,
+                    create_invoice
+                )
+
             if item.organization_classpass:
                 account_classpass = self._deliver_classpass(
                     item.organization_classpass,
@@ -194,6 +202,8 @@ class FinanceOrder(models.Model):
                     finance_invoice,
                     create_invoice
                 )
+
+                #TODO: Check for class when delivering a subscription
 
         self.status = "DELIVERED"
         self.save()
@@ -221,6 +231,32 @@ class FinanceOrder(models.Model):
         self.finance_invoice = finance_invoice
 
         return finance_invoice
+
+    def _deliver_schedule_event_ticket(self,
+                                       schedule_event_ticket,
+                                       finance_invoice,
+                                       create_invoice):
+        """
+        :param schedule_event_ticket: models.schedule_event_ticket object
+        :param finance_invoice: models.finance_invoice object
+        :param create_invoice: Boolean
+        :return:
+        """
+        from ..dudes.sales_dude import SalesDude
+
+        sales_dude = SalesDude()
+        today = timezone.now().date()
+        result = sales_dude.sell_schedule_event_ticket(
+            self.account,
+            schedule_event_ticket,
+            create_invoice=False
+        )
+        account_schedule_event_ticket = result['account_schedule_event_ticket']
+
+        if create_invoice:
+            finance_invoice.item_add_schedule_event_ticket(account_schedule_event_ticket)
+
+        return account_schedule_event_ticket
 
     def _deliver_classpass(self,
                            organization_classpass,
