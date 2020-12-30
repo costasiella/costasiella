@@ -59,7 +59,16 @@ function ShopEventTicket({ t, match, history }) {
   const eventTicket = data.scheduleEventTicket
   console.log(eventTicket)
 
-  // TODO: Chceck sold out
+  // Chceck sold out
+  if (eventTicket.isSoldOut) {
+    return (
+      <ShopEventTicketBase title={title}>
+        <Card title={t("shop.events.ticket.sold_out_title")}>
+          <Card.Body>{t("shop.events.ticket.sold_out")}</Card.Body>
+        </Card>
+      </ShopEventTicketBase>
+    )
+  }
 
   return (
     <ShopEventTicketBase title={title}>

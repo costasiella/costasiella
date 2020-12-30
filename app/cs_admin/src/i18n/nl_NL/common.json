@@ -648,7 +648,9 @@
             "title": "__STRING_NOT_TRANSLATED__",
             "tell_me_more": "__STRING_NOT_TRANSLATED__",
             "ticket": {
-                "additional_info": "__STRING_NOT_TRANSLATED__"
+                "additional_info": "__STRING_NOT_TRANSLATED__",
+                "sold_out": "__STRING_NOT_TRANSLATED__",
+                "sold_out_title": "__STRING_NOT_TRANSLATED__"
             }
         },
         "event": {
