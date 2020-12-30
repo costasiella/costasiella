@@ -21,13 +21,16 @@ import AppSettingsContext from '../../context/AppSettingsContext'
 // https://github.com/tabler/tabler-react/blob/master/example/src/interface/PricingCardsPage.react.js
 
 
-function ShopEventTicketPricingCard({ t, eventTicket, active=false }) {
+function ShopEventTicketPricingCard({ t, match, eventTicket, showButton=true, active=false }) {
   // eventTicket should be an object with at least the following values from an organizationClasspass object:
   // id, name, priceDisplay, 
   const appSettings = useContext(AppSettingsContext)
   const dateFormat = appSettings.dateFormat
   const timeFormat = appSettings.timeFormatMoment
+  console.log(eventTicket)
   const ticketScheduleItems = eventTicket.ticketScheduleItems
+
+  const eventId = match.params.event_id
 
   return (
     <PricingCard active={active}>
@@ -50,11 +53,14 @@ function ShopEventTicketPricingCard({ t, eventTicket, active=false }) {
           </PricingCard.AttributeItem>
         ))}
       </PricingCard.AttributeList>
-      <Link to={`/shop/event/ticket/${eventTicket.id}`}>
-        <PricingCard.Button >
-          {t("shop.event.ticket.choose")} <Icon name="chevron-right" />
-        </PricingCard.Button>
-      </Link>
+      {(showButton) ?
+        <Link to={`/shop/events/${eventId}/ticket/${eventTicket.id}`}>
+          <PricingCard.Button >
+            {t("shop.event.ticket.choose")} <Icon name="chevron-right" />
+          </PricingCard.Button>
+        </Link>
+        : "" 
+      }
     </PricingCard>
   )
 }
