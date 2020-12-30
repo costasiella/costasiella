@@ -48,10 +48,11 @@ function ShopEvents({ t, match, history }) {
           {scheduleEvents.edges.map(({ node }) => (
             <Grid.Col xs={12} sm={12} md={6} lg={4} key={v4()}>
               <GalleryCard>
-                <GalleryCard.Image 
-                  src={(node.media.edges.length) ? node.media.edges[0].node.urlImage: ""} 
-                  href={`/shop/events/${node.id}`}
-                />
+                {(node.media.edges.length) ?
+                  <GalleryCard.Image 
+                    src={(node.media.edges.length) ? node.media.edges[0].node.urlImage: ""} 
+                    href={`/shop/events/${node.id}`}
+                  /> : "" }
                 <GalleryCard.Footer>
                   <h4>{node.name}</h4>
                 </GalleryCard.Footer>

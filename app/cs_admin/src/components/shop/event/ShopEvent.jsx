@@ -64,18 +64,19 @@ function ShopEvent({ t, match, history }) {
       </Grid.Row>
       <Grid.Row>
         <Grid.Col xs={12} sm={12} md={6} lg={4}>
-          {/* Add galery image here... */}
-          <GalleryCard>
-            <GalleryCard.Image src={(event.media.edges.length) ? event.media.edges[0].node.urlImageThumbnailLarge : ""} />
-            <GalleryCard.Details>
-              {(event.media.edges.length) ? event.media.edges[0].node.description : ""}
-            </GalleryCard.Details>
-          </GalleryCard>
+          {((event.media.edges.length) ? 
+            <GalleryCard>
+              <GalleryCard.Image src={(event.media.edges.length) ? event.media.edges[0].node.urlImageThumbnailLarge : ""} />
+              <GalleryCard.Details>
+                {(event.media.edges.length) ? event.media.edges[0].node.description : ""}
+              </GalleryCard.Details>
+            </GalleryCard>
+          : "" )}
           <Card title={t("general.info")}>
             <Card.Body>
-              <h6>{t('general.teacher')}: {event.teacher.fullName}</h6>
-              <h6>{t('general.start')}: {moment(event.dateStart).format(dateFormat)}</h6>
-              <h6>{t('general.end')}: {moment(event.dateEnd).format(dateFormat)}</h6>
+              <h6>{t('general.teacher')}: {(event.teacher) ? event.teacher.fullName: ""}</h6>
+              <h6>{t('general.start')}: {(event.dateStart) ? moment(event.dateStart).format(dateFormat): ""}</h6>
+              <h6>{t('general.end')}: {(event.dateEnd) ? moment(event.dateEnd).format(dateFormat): ""}</h6>
             </Card.Body>
           </Card>
         </Grid.Col>
