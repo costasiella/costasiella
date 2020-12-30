@@ -97,6 +97,13 @@ def validate_create_update_input(input, update=False):
     # Fetch & check organization classpass
     if not update:
         # Create checks
+        if 'schedule_event_ticket' in input:
+            rid = get_rid(input["schedule_event_ticket"])
+            schedule_event_ticket = ScheduleEventTicket.objects.get(id=rid.id)
+            result['schedule_event_ticket'] = schedule_event_ticket
+            if not schedule_event_ticket:
+                raise Exception(_('Invalid Organization Classpass ID!'))
+
         if 'organization_classpass' in input:
             rid = get_rid(input["organization_classpass"])
             organization_classpass = OrganizationClasspass.objects.get(id=rid.id)
@@ -168,6 +175,7 @@ def create_finance_order_log_accepted_documents(info):
 class CreateFinanceOrder(graphene.relay.ClientIDMutation):
     class Input:
         message = graphene.String(required=False, default_value="")
+        schedule_event_ticket = graphene.ID(required=False)
         organization_classpass = graphene.ID(required=False)
         organization_subscription = graphene.ID(required=False)
         schedule_item = graphene.ID(required=False)
@@ -196,6 +204,11 @@ class CreateFinanceOrder(graphene.relay.ClientIDMutation):
 
         attendance_date = input.get('attendance_date', None)
         # Process items
+        if 'schedule_event_ticket' in validation_result:
+            finance_order.item_add_schedule_event_ticket(
+                validation_result['schedule_event_ticket']
+            )
+
         if 'organization_classpass' in validation_result:
             finance_order.item_add_classpass(validation_result['organization_classpass'],
                                              schedule_item=validation_result.get('schedule_item', None),
