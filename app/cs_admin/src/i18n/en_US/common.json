@@ -967,7 +967,7 @@
                 "toast_edit_success": "Saved",
                 "public": "This is a public activity",
                 "attendance": {
-                    "empty_list": "__STRING_NOT_TRANSLATED__"
+                    "empty_list": "No attendance has been registered for this activity yet."
                 }
             },
             "media": {
@@ -984,7 +984,7 @@
         "event": {
             "location_please_select": "Please select...",
             "teacher_please_select": "Please select...",
-            "error_loading": "__STRING_NOT_TRANSLATED__"
+            "error_loading": "Error loading event... :("
         }
     },
     "countries": {
@@ -1590,7 +1590,10 @@
         },
         "events": {
             "title": "Events",
-            "tell_me_more": "Tell me more"
+            "tell_me_more": "Tell me more",
+            "ticket": {
+                "additional_info": "Additional info"
+            }
         },
         "event": {
             "error_loading": "Error loading event... :(",

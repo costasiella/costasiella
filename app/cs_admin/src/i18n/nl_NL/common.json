@@ -646,7 +646,10 @@
         },
         "events": {
             "title": "__STRING_NOT_TRANSLATED__",
-            "tell_me_more": "__STRING_NOT_TRANSLATED__"
+            "tell_me_more": "__STRING_NOT_TRANSLATED__",
+            "ticket": {
+                "additional_info": "__STRING_NOT_TRANSLATED__"
+            }
         },
         "event": {
             "error_loading": "__STRING_NOT_TRANSLATED__",
