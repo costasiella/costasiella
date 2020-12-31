@@ -120,7 +120,7 @@ const ProfileMenu = ({ t, account_id, active_link }) => (
                 <List.GroupItem
                     key={v4()}
                     className="d-flex align-items-center"
-                    to={"#/relations/accounts/" + account_id + "/tickets"}
+                    to={"#/relations/accounts/" + account_id + "/event_tickets"}
                     icon="clipboard"
                     active={tickets_active}
                     >
