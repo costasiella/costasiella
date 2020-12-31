@@ -228,6 +228,15 @@ import CSLS from "./tools/cs_local_storage"
 import { CSAuth } from './tools/authentication'
 
 
+function SetCurrentUrlAsNext() {
+  console.log("Storing current location as next in local storage")
+  const currentUrl = window.location.href
+  const next = currentUrl.split("#")[1]
+  console.log(next)
+  localStorage.setItem(CSLS.AUTH_LOGIN_NEXT, next)
+}
+
+
 const PrivateRoute = ({ component: Component, ...rest }) => {
   const [doTokenRefresh] = useMutation(TOKEN_REFRESH)
   let authTokenExpired = false
@@ -248,6 +257,7 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
       console.log("refresh token expired or not found")
       console.log(new Date() / 1000)
       console.log(refreshTokenExp)
+      SetCurrentUrlAsNext()
 
       return SessionExpired
     } else {
@@ -265,6 +275,7 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
           position: toast.POSITION.BOTTOM_RIGHT
         })
         console.log('there was an error refreshing the token', error) 
+        SetCurrentUrlAsNext()
         console.log("REDIRECT BACK TO LOGIN")
         window.location.href = "/#/user/login"
         window.location.reload()

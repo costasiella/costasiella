@@ -238,14 +238,14 @@ AUTH_USER_MODEL = 'costasiella.Account'
 # https://django-allauth.readthedocs.io/en/latest/configuration.html
 
 ACCOUNT_PRESERVE_USERNAME_CASING = False
-ACCOUNT_USERNAME_REQUIRED = False # Don't use usernames
+ACCOUNT_USERNAME_REQUIRED = False  # Don't use usernames
 ACCOUNT_UNIQUE_EMAIL = True
 ACCOUNT_USER_MODEL_USERNAME_FIELD = None
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_AUTHENTICATION_METHOD = 'email'  # Use email as the primary identifier
 ACCOUNT_EMAIL_VERIFICATION = "mandatory"  # Make email verification mandatory to avoid junk email accounts
 ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = False
-ACCOUNT_CONFIRM_EMAIL_ON_GET = True # Confirm email by simply going to the link
+ACCOUNT_CONFIRM_EMAIL_ON_GET = True  # Confirm email by simply going to the link
 ACCOUNT_EMAIL_CONFIRMATION_ANONYMOUS_REDIRECT_URL = "email_verified"
 ACCOUNT_EMAIL_CONFIRMATION_AUTHENTICATED_REDIRECT_URL = "email_verified"
 ACCOUNT_EMAIL_SUBJECT_PREFIX = ""  # Don't prefix the email subjects
