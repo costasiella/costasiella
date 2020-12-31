@@ -124,7 +124,7 @@ const ProfileMenu = ({ t, account_id, active_link }) => (
                     icon="clipboard"
                     active={tickets_active}
                     >
-                {t('relations.account.tickets.title')}
+                {t('relations.account.event_tickets.title')}
                 </List.GroupItem>
             </HasPermissionWrapper>
             <HasPermissionWrapper 

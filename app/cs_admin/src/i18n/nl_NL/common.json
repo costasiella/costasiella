@@ -1055,6 +1055,9 @@
                 "delete_confirm_msg": "__STRING_NOT_TRANSLATED__",
                 "delete_success": "__STRING_NOT_TRANSLATED__",
                 "empty_list": "__STRING_NOT_TRANSLATED__"
+            },
+            "event_tickets": {
+                "title": "__STRING_NOT_TRANSLATED__"
             }
         },
         "accounts": {

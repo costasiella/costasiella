@@ -773,6 +773,9 @@
                 "delete_confirm_msg": "Are you sure you with to delete this order?",
                 "delete_success": "Order deleted",
                 "empty_list": "No orders placed yet..."
+            },
+            "event_tickets": {
+                "title": "Event tickets"
             }
         }
     },
