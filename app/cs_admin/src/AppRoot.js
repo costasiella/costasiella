@@ -126,6 +126,7 @@ import AccountMemberships from './components/relations/accounts/memberships/Acco
 import AccountMembershipAdd from './components/relations/accounts/memberships/AccountMembershipAdd'
 import AccountMembershipEdit from './components/relations/accounts/memberships/AccountMembershipEdit'
 import AccountOrders from './components/relations/accounts/orders/AccountOrders'
+import AccountScheduleEventTickets from './components/relations/accounts/schedule_event_tickets/AccountScheduleEventTickets'
 import AccountSubscriptions from './components/relations/accounts/subscriptions/AccountSubscriptions'
 import AccountSubscriptionAdd from './components/relations/accounts/subscriptions/AccountSubscriptionAdd'
 import AccountSubscriptionEdit from './components/relations/accounts/subscriptions/edit/AccountSubscriptionEdit'
@@ -408,10 +409,13 @@ function AppRoot({ t }) {
           <PrivateRoute exact path="/relations/accounts/:account_id/memberships/add" component={AccountMembershipAdd} />
           <PrivateRoute exact path="/relations/accounts/:account_id/memberships/edit/:id" component={AccountMembershipEdit} />
           <PrivateRoute exact path="/relations/accounts/:account_id/orders" component={AccountOrders} />
+          <PrivateRoute exact path="/relations/accounts/:account_id/event_tickets" component={AccountScheduleEventTickets} />
           <PrivateRoute exact path="/relations/accounts/:account_id/subscriptions" component={AccountSubscriptions} />
           <PrivateRoute exact path="/relations/accounts/:account_id/subscriptions/add" component={AccountSubscriptionAdd} />
-          <PrivateRoute exact path="/relations/accounts/:account_id/subscriptions/edit/:subscription_id" component={AccountSubscriptionEdit} />
-          <PrivateRoute exact path="/relations/accounts/:account_id/subscriptions/edit/:subscription_id/alt_prices" component={AccountSubscriptionEditAltPrices} />
+          <PrivateRoute exact path="/relations/accounts/:account_id/subscriptions/edit/:subscription_id" 
+                        component={AccountSubscriptionEdit} />
+          <PrivateRoute exact path="/relations/accounts/:account_id/subscriptions/edit/:subscription_id/alt_prices" 
+                        component={AccountSubscriptionEditAltPrices} />
           <PrivateRoute exact path="/relations/accounts/:account_id/subscriptions/edit/:subscription_id/alt_prices/add" 
                         component={AccountSubscriptionEditAltPriceAdd} />
           <PrivateRoute exact path="/relations/accounts/:account_id/subscriptions/edit/:subscription_id/alt_prices/edit/:id" 
