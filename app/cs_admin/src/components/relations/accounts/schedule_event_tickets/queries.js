@@ -12,24 +12,15 @@ export const GET_ACCOUNT_SCHEDULE_EVENT_TICKETS_QUERY = gql`
       edges {
         node {
           id
-          scheduleEvent {
-            id
-            name
-          }
           scheduleEventTicket {
             name
+            scheduleEvent {
+              id
+              name
+            }
           }
         }
       }
-    }
-    account(id:$accountId) {
-      id
-      firstName
-      lastName
-      email
-      phone
-      mobile
-      isActive
     }
   }
 `
