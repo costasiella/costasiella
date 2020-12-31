@@ -38,6 +38,8 @@ class AccountScheduleEventTicketQuery(graphene.ObjectType):
         require_login_and_permission(user, 'costasiella.view_accountscheduleeventticket')
         # Has permission: check params
 
+        print(kwargs)
+
         if not "schedule_event_ticket" in kwargs and not "account" in kwargs:
             raise Exception(_("schedule_event_ticket or account is a required parameter"))
 
@@ -48,7 +50,7 @@ class AccountScheduleEventTicketQuery(graphene.ObjectType):
             ).order_by('account__full_name')
 
         if "account" in kwargs:
-            rid = get_rid(kwargs["schedule_event_ticket"])
+            rid = get_rid(kwargs["account"])
             return AccountScheduleEventTicket.objects.filter(
                 account=rid.id
             ).order_by('schedule_event_ticket__schedule_event__date_start')
