@@ -1,6 +1,6 @@
 // @flow
 
-import React from 'react'
+import React, { useContext } from 'react'
 import { useQuery } from '@apollo/react-hooks'
 import gql from "graphql-tag"
 import { v4 } from "uuid"
@@ -8,8 +8,10 @@ import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
 import { Link } from 'react-router-dom'
 
+import moment from 'moment'
 
 import {
+  Badge,
   Page,
   Grid,
   Icon,
@@ -23,13 +25,12 @@ import SiteWrapper from "../../../SiteWrapper"
 import HasPermissionWrapper from "../../../HasPermissionWrapper"
 import { toast } from 'react-toastify'
 
+import AppSettingsContext from '../../../context/AppSettingsContext'
 import BadgeBoolean from "../../../ui/BadgeBoolean"
 import RelationsAccountsBack from "../RelationsAccountsBack"
 import confirm_delete from "../../../../tools/confirm_delete"
 
 import ContentCard from "../../../general/ContentCard"
-import ProfileMenu from "../ProfileMenu"
-import ProfileCardSmall from "../../../ui/ProfileCardSmall"
 
 import AccountScheduleEventTicketsBase from "./AccountScheduleEventTicketsBase"
 
@@ -47,8 +48,12 @@ import { GET_ACCOUNT_SCHEDULE_EVENT_TICKETS_QUERY } from "./queries"
 
 function AccountScheduleEventTickets({t, history, match}) {
   // const title = t("relations.account.event_tickets.title")
+  const appSettings = useContext(AppSettingsContext)
+  const dateFormat = appSettings.dateFormat
+  const timeFormat = appSettings.timeFormatMoment
+
   const accountId = match.params.account_id
-  const { loading, error, data } = useQuery(GET_ACCOUNT_SCHEDULE_EVENT_TICKETS_QUERY, { variables: {
+  const { loading, error, data, fetchMore } = useQuery(GET_ACCOUNT_SCHEDULE_EVENT_TICKETS_QUERY, { variables: {
     accountId: accountId
   }})
 
@@ -64,13 +69,88 @@ function AccountScheduleEventTickets({t, history, match}) {
   )
 
   console.log(data)
-  const scheduleEvents = data.scheduleEvents
-  console.log(scheduleEvents)
+  const accountScheduleEventTickets = data.accountScheduleEventTickets
+  console.log(accountScheduleEventTickets)
 
 
   return (
     <AccountScheduleEventTicketsBase>
-      hello world
+      <ContentCard 
+        cardTitle={t('relations.account.classpasses.title')}
+        pageInfo={accountScheduleEventTickets.pageInfo}
+        onLoadMore={() => {
+          fetchMore({
+            variables: {
+              after: accountScheduleEventTickets.pageInfo.endCursor
+            },
+            updateQuery: (previousResult, { fetchMoreResult }) => {
+              const newEdges = fetchMoreResult.accountScheduleEventTickets.edges
+              const pageInfo = fetchMoreResult.accountScheduleEventTickets.pageInfo
+
+              return newEdges.length
+                ? {
+                    // Put the new accountScheduleEventTickets at the end of the list and update `pageInfo`
+                    // so we have the new `endCursor` and `hasNextPage` values
+                    accountScheduleEventTickets: {
+                      __typename: previousResult.accountScheduleEventTickets.__typename,
+                      edges: [ ...previousResult.accountScheduleEventTickets.edges, ...newEdges ],
+                      pageInfo
+                    }
+                  }
+                : previousResult
+            }
+          })
+        }} 
+      >
+        <Table>
+          <Table.Header>
+            <Table.Row key={v4()}>
+              <Table.ColHeader>{t('general.ticket')}</Table.ColHeader>
+              <Table.ColHeader>{t('general.start')}</Table.ColHeader>
+              <Table.ColHeader>{t('general.invoice')}</Table.ColHeader>
+              <Table.ColHeader></Table.ColHeader> 
+            </Table.Row>
+          </Table.Header>
+          <Table.Body>
+              {accountScheduleEventTickets.edges.map(({ node }) => (
+                <Table.Row key={v4()}>
+                  <Table.Col key={v4()}>
+                    {node.scheduleEventTicket.scheduleEvent.name} <br />
+                    <Badge>
+                      {node.scheduleEventTicket.name}
+                    </Badge>
+                  </Table.Col>
+                  <Table.Col key={v4()}>
+                    {moment(node.scheduleEventTicket.scheduleEvent.dateStart).format(dateFormat)}
+                  </Table.Col>
+                  <Table.Col>
+                    Invoice here
+                  </Table.Col>
+                  {/* <Table.Col key={v4()}>
+                    {node.dateStart}
+                  </Table.Col>
+                  <Table.Col key={v4()}>
+                    {node.dateEnd}
+                  </Table.Col>
+                  <Table.Col key={v4()}>
+                    {node.classesRemainingDisplay}
+                  </Table.Col>
+                  <Table.Col className="text-right" key={v4()}>
+                    <Link to={"/relations/accounts/" + match.params.account_id + "/classpasses/edit/" + node.id}>
+                      <Button className='btn-sm' 
+                              color="secondary">
+                        {t('general.edit')}
+                      </Button>
+                    </Link>
+                  </Table.Col> */}
+                  <Table.Col>
+                    Cancel here
+                  </Table.Col>
+                </Table.Row>
+              ))}
+          </Table.Body>
+        </Table>
+      </ContentCard>
     </AccountScheduleEventTicketsBase>
   )
 }
