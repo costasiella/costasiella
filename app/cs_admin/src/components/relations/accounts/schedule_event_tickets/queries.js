@@ -19,7 +19,20 @@ export const GET_ACCOUNT_SCHEDULE_EVENT_TICKETS_QUERY = gql`
               name
             }
           }
+          infoMailSent
+          invoiceItems(first:1) {
+            edges {
+              node {
+                financeInvoice {
+                  id
+                  invoiceNumber
+                  status
+                }
+              }
+            }
+          }
         }
+        
       }
     }
   }
