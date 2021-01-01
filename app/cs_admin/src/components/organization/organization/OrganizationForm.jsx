@@ -23,9 +23,6 @@ const OrganizationForm = ({
   values, 
   setFieldTouched, 
   setFieldValue,
-  refLogoLoginInputFileName, 
-  logoLoginfileInputLabel,
-  handleLogoLoginFileInputChange=f=>f
 }) => (
     <FoForm>
       <Card.Body>
@@ -83,18 +80,6 @@ const OrganizationForm = ({
                       className={(errors.taxRegistration) ? "form-control is-invalid" : "form-control"} 
                       autoComplete="off" />
               <ErrorMessage name="taxRegistration" component="span" className="invalid-feedback" />
-            </Form.Group>
-          </Grid.Col>
-        </Grid.Row>
-        <Grid.Row>
-          <Grid.Col>
-            <Form.Group label={t('organization.organization.logo_login_custom_file_input_label')}>
-              <div className="custom-file">
-                <input type="file" ref={refLogoLoginInputFileName} className="custom-file-input" onChange={handleLogoLoginFileInputChange} />
-                <label className="custom-file-label" style={customFileInputLabelStyle}>
-                  {logoLoginfileInputLabel}
-                </label>
-              </div>
             </Form.Group>
           </Grid.Col>
         </Grid.Row>
