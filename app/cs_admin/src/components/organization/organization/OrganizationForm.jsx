@@ -12,9 +12,21 @@ import {
 
 import { Editor } from '@tinymce/tinymce-react'
 import { tinymceBasicConf } from "../../../plugin_config/tinymce"
+import { customFileInputLabelStyle } from "../../../tools/custom_file_input_label_style"
 
 
-const OrganizationForm = ({ t, history, isSubmitting, errors, values, setFieldTouched, setFieldValue }) => (
+const OrganizationForm = ({ 
+  t, 
+  history, 
+  isSubmitting, 
+  errors, 
+  values, 
+  setFieldTouched, 
+  setFieldValue,
+  inputFileName, 
+  fileInputLabel,
+  handleFileInputChange=f=>f
+}) => (
     <FoForm>
       <Card.Body>
         <Form.Group label={t('general.name')}>
@@ -71,6 +83,18 @@ const OrganizationForm = ({ t, history, isSubmitting, errors, values, setFieldTo
                       className={(errors.taxRegistration) ? "form-control is-invalid" : "form-control"} 
                       autoComplete="off" />
               <ErrorMessage name="taxRegistration" component="span" className="invalid-feedback" />
+            </Form.Group>
+          </Grid.Col>
+        </Grid.Row>
+        <Grid.Row>
+          <Grid.Col>
+            <Form.Group label={t('organization.organization.logo_login_custom_file_input_label')}>
+              <div className="custom-file">
+                <input type="file" ref={inputFileName} className="custom-file-input" onChange={handleFileInputChange} />
+                <label className="custom-file-label" style={customFileInputLabelStyle}>
+                  {fileInputLabel}
+                </label>
+              </div>
             </Form.Group>
           </Grid.Col>
         </Grid.Row>
