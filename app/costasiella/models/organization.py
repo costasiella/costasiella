@@ -1,7 +1,5 @@
-from django.utils.translation import gettext as _
-from django.db.models import Q
-
 from django.db import models
+from sorl.thumbnail import ImageField
 
 
 class Organization(models.Model):
@@ -12,8 +10,7 @@ class Organization(models.Model):
     email = models.EmailField(default="")
     registration = models.CharField(max_length=255, default="")
     tax_registration = models.CharField(max_length=255, default="")
-
+    logo_login = ImageField(upload_to='organization', default=None)
 
     def __str__(self):
         return self.name
-    
