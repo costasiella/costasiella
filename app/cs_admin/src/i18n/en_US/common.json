@@ -380,7 +380,8 @@
         "uncancel": "Uncancel",
         "sold_out": "Sold out",
         "please_select_a_file": "Please select a file",
-        "end": "End"
+        "end": "End",
+        "ticket": "Ticket"
     },
     "yup": {
         "min_len_3": "Please input at least 3 characters",
@@ -608,7 +609,8 @@
             "title_edit": "Organization",
             "toast_edit_success": "Saved organization",
             "registration": "Registration ID",
-            "tax_registration": "Tax registration ID"
+            "tax_registration": "Tax registration ID",
+            "logo_login_custom_file_input_label": "Logo login"
         },
         "documents": {
             "title": "Documents",
@@ -776,7 +778,8 @@
             },
             "event_tickets": {
                 "title": "Event tickets"
-            }
+            },
+            "error_loading": "Error loading account info... :("
         }
     },
     "genders": {
