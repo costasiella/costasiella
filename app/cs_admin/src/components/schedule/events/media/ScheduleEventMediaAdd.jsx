@@ -125,7 +125,6 @@ function ScheduleEventMediaAdd({ t, history, match }) {
             isSubmitting={isSubmitting}
             errors={errors}
             values={values}
-            fileName={fileName}
             inputFileName={inputFileName}
             fileInputLabel={fileInputLabel}
             handleFileInputChange={handleFileInputChange}

@@ -14,12 +14,7 @@ import {
 } from "tabler-react"
 
 
-const customFileInputLabelStyle = {
-  whiteSpace: "nowrap",
-  display: "block",
-  overflow: "hidden"
-}  
-
+import { customFileInputLabelStyle } from "../../../../tools/custom_file_input_label_style"
 
 function ScheduleEventMediaForm ({ 
   t, 
@@ -28,15 +23,12 @@ function ScheduleEventMediaForm ({
   isSubmitting, 
   errors, 
   values, 
-  fileName,
-  inputFileName, 
   returnUrl,
-  fileInputLabel,
+  inputFileName, 
+  fileInputLabel, 
   handleFileInputChange=f=>f
 })   
 {
-  console.log(fileName)
-
   return (
     <FoForm>
       <Card.Body>
@@ -69,7 +61,6 @@ function ScheduleEventMediaForm ({
                   {fileInputLabel}
                 </label>
               </div>
-              {/* {(fileName) ? "": <small className="sm text-red">{t('yup.field_required')}</small>} */}
             </Form.Group>
           </Grid.Col>
         </Grid.Row>
