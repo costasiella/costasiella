@@ -31,6 +31,7 @@ import RelationsAccountsBack from "../RelationsAccountsBack"
 import confirm_delete from "../../../../tools/confirm_delete"
 
 import ContentCard from "../../../general/ContentCard"
+import FinanceInvoicesStatus from "../../../ui/FinanceInvoiceStatus"
 
 import AccountScheduleEventTicketsBase from "./AccountScheduleEventTicketsBase"
 
@@ -124,7 +125,17 @@ function AccountScheduleEventTickets({t, history, match}) {
                     {moment(node.scheduleEventTicket.scheduleEvent.dateStart).format(dateFormat)}
                   </Table.Col>
                   <Table.Col>
-                    Invoice here
+                    {(node.invoiceItems.edges.length) ? 
+                      <span>
+                        <Link to={`/finance/invoices/edit/${node.invoiceItems.edges[0].node.financeInvoice.id}`}>
+                          {node.invoiceItems.edges[0].node.financeInvoice.invoiceNumber}
+                        </Link> <br />
+                        <FinanceInvoicesStatus status={node.invoiceItems.edges[0].node.financeInvoice.status} />
+                        
+                      </span>
+                      : ""
+                    }
+                    
                   </Table.Col>
                   {/* <Table.Col key={v4()}>
                     {node.dateStart}
