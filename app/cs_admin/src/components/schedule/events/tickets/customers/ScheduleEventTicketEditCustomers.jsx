@@ -18,7 +18,7 @@ import {
 } from "tabler-react";
 
 import { GET_ACCOUNTS_QUERY } from "../../../../../queries/accounts/account_search_queries"
-import { GET_ACCOUNT_SCHEDULE_EVENT_TICKETS_QUERY } from "./queries"
+import { GET_ACCOUNT_SCHEDULE_EVENT_TICKETS_QUERY, UPDATE_ACCOUNT_SCHEDULE_EVENT_TICKET } from "./queries"
 // import { SCHEDULE_EVENT_TICKET_SCHEDLE_ITEM_SCHEMA } from "./yupSchema"
 import { get_accounts_query_variables } from "./tools"
 
@@ -35,17 +35,6 @@ import CSLS from "../../../../../tools/cs_local_storage"
 const ADD_ACCOUNT_SCHEDULE_EVENT_TICKET = gql`
 mutation CreateAccountScheduleEventTicket($input:CreateAccountScheduleEventTicketInput!) {
   createAccountScheduleEventTicket(input: $input) {
-    accountScheduleEventTicket {
-      id
-    }
-  }
-}
-`
-
-
-const UPDATE_ACCOUNT_SCHEDULE_EVENT_TICKET = gql`
-mutation UpdateAccountScheduleEventTicket($input:UpdateAccountScheduleEventTicketInput!) {
-  updateAccountScheduleEventTicket(input: $input) {
     accountScheduleEventTicket {
       id
     }
