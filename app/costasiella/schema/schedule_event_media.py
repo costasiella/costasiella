@@ -73,6 +73,10 @@ def validate_create_update_input(input, update=False):
     """
     result = {}
 
+    if 'image' in input or 'image_file_name' in input:
+        if not (input.get('image', None) and input.get('image_file_name', None)):
+            raise Exception(_('When setting "image" or "imageFileName", both fields need to be present and set'))
+
     if not update:
         # Check schedule_event
         if 'schedule_event' in input:
@@ -121,8 +125,8 @@ class UpdateScheduleEventMedia(graphene.relay.ClientIDMutation):
         id = graphene.ID(required=True)
         sort_order = graphene.Int(required=False)
         description = graphene.String(required=False)
-        image = graphene.String(required=True)
-        image_file_name = graphene.String(required=True)
+        image = graphene.String(required=False)
+        image_file_name = graphene.String(required=False)
 
     schedule_event_media = graphene.Field(ScheduleEventMediaNode)
 
@@ -136,9 +140,7 @@ class UpdateScheduleEventMedia(graphene.relay.ClientIDMutation):
         if not schedule_event_media:
             raise Exception('Invalid Schedule Event Media ID!')
 
-        image = input['image']
-        if image and not input['image_file_name']:
-            raise GraphQLError(_('imageFileName should be set when image is set'))
+        validate_create_update_input(input)
 
         if 'sort_order' in input:
             schedule_event_media.sort_order = input['sort_order']

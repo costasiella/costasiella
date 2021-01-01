@@ -69,7 +69,7 @@ function ScheduleEventMediaForm ({
                   {fileInputLabel}
                 </label>
               </div>
-              {(fileName) ? "": <small className="sm text-red">{t('yup.field_required')}</small>}
+              {/* {(fileName) ? "": <small className="sm text-red">{t('yup.field_required')}</small>} */}
             </Form.Group>
           </Grid.Col>
         </Grid.Row>

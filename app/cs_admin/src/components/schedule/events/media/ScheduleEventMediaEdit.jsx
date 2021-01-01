@@ -105,18 +105,10 @@ function ScheduleEventMediaEdit({ t, history, match }) {
           let inputVars = {
             id: scheduleEventMediaId,
             description: values.description,
-            sortOrder: values.sortOrder,
-            imageFileName: fileName,
+            sortOrder: values.sortOrder
           }
 
-          let reader = new FileReader()
-          reader.onload = function(reader_event) {
-            console.log(reader_event.target.result)
-            let b64_enc_file = reader_event.target.result
-            console.log(b64_enc_file)
-            // Add uploaded document b64 encoded blob to input vars
-            inputVars.image = b64_enc_file
-
+          function updateMedia() {
             updateScheduleEventMedia({ variables: {
               input: inputVars
             }, refetchQueries: [
@@ -136,15 +128,24 @@ function ScheduleEventMediaEdit({ t, history, match }) {
                 setSubmitting(false)
               })
           }
+
+          let reader = new FileReader()
+          reader.onload = function(reader_event) {
+            console.log(reader_event.target.result)
+            let b64_enc_file = reader_event.target.result
+            console.log(b64_enc_file)
+            // Add uploaded document b64 encoded blob to input vars
+            inputVars.image = b64_enc_file
+            inputVars.imageFileName = fileName
+
+            updateMedia()
+          }
           
           let file = inputFileName.current.files[0]
           if (file) {
             reader.readAsDataURL(file)
           } else {
-            toast.error(t("general.please_select_a_file"), {
-              position: toast.POSITION.BOTTOM_RIGHT
-            })
-            setSubmitting(false)
+            updateMedia()
           }
         }}
         >
