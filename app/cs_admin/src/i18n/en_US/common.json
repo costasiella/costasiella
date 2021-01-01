@@ -610,7 +610,7 @@
             "toast_edit_success": "Saved organization",
             "registration": "Registration ID",
             "tax_registration": "Tax registration ID",
-            "logo_login_custom_file_input_label": "Logo login"
+            "logo_login_custom_file_input_label": "Choose a new logo for the login screen"
         },
         "documents": {
             "title": "Documents",

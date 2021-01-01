@@ -23,9 +23,9 @@ const OrganizationForm = ({
   values, 
   setFieldTouched, 
   setFieldValue,
-  inputFileName, 
-  fileInputLabel,
-  handleFileInputChange=f=>f
+  refLogoLoginInputFileName, 
+  logoLoginfileInputLabel,
+  handleLogoLoginFileInputChange=f=>f
 }) => (
     <FoForm>
       <Card.Body>
@@ -90,9 +90,9 @@ const OrganizationForm = ({
           <Grid.Col>
             <Form.Group label={t('organization.organization.logo_login_custom_file_input_label')}>
               <div className="custom-file">
-                <input type="file" ref={inputFileName} className="custom-file-input" onChange={handleFileInputChange} />
+                <input type="file" ref={refLogoLoginInputFileName} className="custom-file-input" onChange={handleLogoLoginFileInputChange} />
                 <label className="custom-file-label" style={customFileInputLabelStyle}>
-                  {fileInputLabel}
+                  {logoLoginfileInputLabel}
                 </label>
               </div>
             </Form.Group>
