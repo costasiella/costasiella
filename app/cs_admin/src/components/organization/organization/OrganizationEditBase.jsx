@@ -20,6 +20,8 @@ import OrganizationMenu from "../OrganizationMenu"
 
 
 function OrganizationEditBase({t, match, history, children}) {
+  const id = match.params.id
+
   return (
     <SiteWrapper>
       <div className="my-3 my-md-5">
