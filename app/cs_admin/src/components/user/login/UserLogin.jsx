@@ -44,10 +44,11 @@ function UserLogin({t, match, history}) {
         <Container>
           <Grid.Row>
             <div className="col col-login mx-auto">            
-              <div className="text-center mb-6">
+              <div className="text-center mb-5">
                 <img src={organization.urlLogoLogin} className="h-9" alt="logo" />
               </div>
-              <div className="text-center">
+              <div className="text-center text-muted mb-1">
+                {organization ? organization.name : ""}
               </div>
               <Formik
                 initialValues={{ 
@@ -103,13 +104,10 @@ function UserLogin({t, match, history}) {
                       })
                 }}
                 >
-                {({ isSubmitting, errors, values, setFieldTouched, setFieldValue }) => (
+                {({ isSubmitting, errors }) => (
                   <UserLoginForm
                     isSubmitting={isSubmitting}
-                    etFieldValue={setFieldValue}
-                    esetFieldTouched={setFieldTouched}
                     errors={errors}
-                    values={values}
                   />
                 )}
               </Formik>    
