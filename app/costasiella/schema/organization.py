@@ -12,11 +12,29 @@ from ..modules.messages import Messages
 m = Messages()
 
 
+class OrganizationNodeInterface(graphene.Interface):
+    id = graphene.GlobalID()
+    url_logo_login = graphene.String()
+    # url_logo_login_thumbnail_small = graphene.String()
+
+
 class OrganizationNode(DjangoObjectType):
+    def resolve_url_logo_login(self, info):
+        if self.logo_login:
+            return self.logo_login.url
+        else:
+            return ''
+    #
+    # def resolve_url_logo_login_thumbnail_small(self, info):
+    #     if self.logo_login:
+    #         return get_thumbnail(self.logo_login, '50x50', crop='center', quality=99).url
+    #     else:
+    #         return ''
+
     class Meta:
         model = Organization
         filter_fields = ['archived', 'id']
-        interfaces = (graphene.relay.Node, )
+        interfaces = (graphene.relay.Node, OrganizationNodeInterface,)
 
     @classmethod
     def get_node(self, info, id):
