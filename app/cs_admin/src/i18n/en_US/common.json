@@ -1559,7 +1559,9 @@
             },
             "event_tickets": {
                 "title": "Event tickets",
-                "explanation": "View your upcoming and past event tickets"
+                "explanation": "View your upcoming and past event tickets",
+                "error_loading_data": "Error loading your tickets... :(",
+                "empty_list": "No tickets found"
             }
         },
         "accounts": {
