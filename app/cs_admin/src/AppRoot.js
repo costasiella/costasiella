@@ -62,6 +62,7 @@ import InsightSubscriptions from './components/insight/subscriptions/InsightSubs
 import OrganizationHome from './components/organization/home/OrganizationHome'
 import OrganizationEdit from './components/organization/organization/OrganizationEdit'
 import OrganizationBranding from './components/organization/organization/branding/OrganizationBranding'
+import OrganizationBrandingEdit from './components/organization/organization/branding/OrganizationBrandingEdit'
 import OrganizationAppointments from './components/organization/appointment_categories/appointments/OrganizationAppointments'
 import OrganizationAppointmentAdd from './components/organization/appointment_categories/appointments/OrganizationAppointmentAdd'
 import OrganizationAppointmentEdit from './components/organization/appointment_categories/appointments/OrganizationAppointmentEdit'
@@ -354,6 +355,7 @@ function AppRoot({ t }) {
           <PrivateRoute exact path="/organization" component={OrganizationHome} />
           <PrivateRoute exact path="/organization/edit/:id" component={OrganizationEdit} />
           <PrivateRoute exact path="/organization/edit/:id/branding" component={OrganizationBranding} />
+          <PrivateRoute exact path="/organization/edit/:id/branding/:update_field" component={OrganizationBrandingEdit} />
           <PrivateRoute exact path="/organization/documents/:organization_id" component={OrganizationDocuments} />
           <PrivateRoute exact path="/organization/documents/:organization_id/:document_type" component={OrganizationListDocuments} />
           <PrivateRoute exact path="/organization/documents/:organization_id/:document_type/add" component={OrganizationDocumentAdd} />
