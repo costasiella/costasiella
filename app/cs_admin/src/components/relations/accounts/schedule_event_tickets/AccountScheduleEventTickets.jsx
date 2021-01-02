@@ -77,7 +77,7 @@ function AccountScheduleEventTickets({t, history, match}) {
   return (
     <AccountScheduleEventTicketsBase>
       <ContentCard 
-        cardTitle={t('relations.account.classpasses.title')}
+        cardTitle={t('relations.account.event_tickets.title')}
         pageInfo={accountScheduleEventTickets.pageInfo}
         onLoadMore={() => {
           fetchMore({
