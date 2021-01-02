@@ -1556,6 +1556,10 @@
                 "explanation": "View your current and past subscriptions",
                 "error_loading_data": "Error loading subscriptions... :(",
                 "empty_list": "No subcsriptions found."
+            },
+            "event_tickets": {
+                "title": "Event tickets",
+                "explanation": "View your upcoming and past event tickets"
             }
         },
         "accounts": {

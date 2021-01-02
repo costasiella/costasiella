@@ -608,6 +608,10 @@
                 "explanation": "__STRING_NOT_TRANSLATED__",
                 "error_loading_data": "__STRING_NOT_TRANSLATED__",
                 "empty_list": "__STRING_NOT_TRANSLATED__"
+            },
+            "event_tickets": {
+                "title": "__STRING_NOT_TRANSLATED__",
+                "explanation": "__STRING_NOT_TRANSLATED__"
             }
         },
         "accounts": {
