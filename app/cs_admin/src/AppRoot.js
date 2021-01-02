@@ -13,6 +13,7 @@ import { useQuery, useMutation } from "react-apollo"
 import { toast } from 'react-toastify'
 
 import { GET_APP_SETTINGS_QUERY } from "./components/settings/general/date_time/queries"
+import { GET_ORGANIZATION_QUERY } from "./components/organization/organization/queries"
 import { TOKEN_REFRESH } from "./queries/system/auth"
 
 // Import moment locale
@@ -20,6 +21,7 @@ import moment from 'moment'
 import 'moment/locale/nl'
 
 import { AppSettingsProvider } from "./components/context/AppSettingsContext"
+import { OrganizationProvider } from "./components/context/OrganizationContext"
 
 import HomeHome from './components/home/home/HomeHome'
 
@@ -292,261 +294,269 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
 
 
 function AppRoot({ t }) {
-  const { loading, error, data } = useQuery(GET_APP_SETTINGS_QUERY)
+  const { loading: loadingAppSettings, error: errorAppSettings, data: dataAppSettings } = useQuery(GET_APP_SETTINGS_QUERY)
+  const { loading: loadingOrganization, error: errorOrganization, data: dataOrganization } = useQuery(GET_ORGANIZATION_QUERY, {
+    variables: {id: "T3JnYW5pemF0aW9uTm9kZToxMDA="}
+  })
 
-  if (loading) return t('general.loading_with_dots')
-  if (error) return (
+  if (loadingAppSettings || loadingOrganization) return t('general.loading_with_dots')
+  if (errorAppSettings || errorOrganization) return (
     <div>
       { t('settings.error_loading') } <br />
-      { error.message }
+      { errorAppSettings.message } <br /><br />
+      { errorOrganization.message}
     </div>
   )
 
   // Register "US" locale for moment
   // moment.locale('en-US')
-  let appSettings = data.appSettings
+  let appSettings = dataAppSettings.appSettings
   console.log(appSettings)
+  let organization = dataOrganization.organization
+  console.log(organization)
 
   return (
     <AppSettingsProvider value={appSettings}>
-      <HashRouter>
-        <Switch>
-          {/* HOME */}
-          <PrivateRoute exact path="/" component={HomeHome} />
+      <OrganizationProvider value={organization}>
+        <HashRouter>
+          <Switch>
+            {/* HOME */}
+            <PrivateRoute exact path="/" component={HomeHome} />
 
-          {/* AUTOMATION */}
-          <PrivateRoute exact path="/automation" component={AutomationHome} />
-          <PrivateRoute exact path="/automation/account/subscriptions/credits" 
-                              component={AutomationAccountSubscriptionCredits} />
-          <PrivateRoute exact path="/automation/account/subscriptions/credits/add" 
-                              component={AutomationAccountSubscriptionCreditAdd} />
-          <PrivateRoute exact path="/automation/account/subscriptions/mollie_collections" 
-                              component={AutomationAccountSubscriptionMollieCollections} />
-          <PrivateRoute exact path="/automation/account/subscriptions/mollie_collections/add" 
-                              component={AutomationAccountSubscriptionMollieCollectionAdd} />
+            {/* AUTOMATION */}
+            <PrivateRoute exact path="/automation" component={AutomationHome} />
+            <PrivateRoute exact path="/automation/account/subscriptions/credits" 
+                                component={AutomationAccountSubscriptionCredits} />
+            <PrivateRoute exact path="/automation/account/subscriptions/credits/add" 
+                                component={AutomationAccountSubscriptionCreditAdd} />
+            <PrivateRoute exact path="/automation/account/subscriptions/mollie_collections" 
+                                component={AutomationAccountSubscriptionMollieCollections} />
+            <PrivateRoute exact path="/automation/account/subscriptions/mollie_collections/add" 
+                                component={AutomationAccountSubscriptionMollieCollectionAdd} />
 
-          
-          {/* FINANCE */}
-          <PrivateRoute exact path="/finance" component={FinanceHome} />
-          <PrivateRoute exact path="/finance/costcenters" component={FinanceCostCenters} />
-          <PrivateRoute exact path="/finance/costcenters/add" component={FinanceCostCenterAdd} />
-          <PrivateRoute exact path="/finance/costcenters/edit/:id" component={FinanceCostCenterEdit} />
-          <PrivateRoute exact path="/finance/invoices" component={FinanceInvoices} />
-          <PrivateRoute exact path="/finance/invoices/edit/:id" component={FinanceInvoiceEdit} />
-          <PrivateRoute exact path="/finance/invoices/groups" component={FinanceInvoiceGroups} />
-          <PrivateRoute exact path="/finance/invoices/groups/add" component={FinanceInvoiceGroupAdd} />
-          <PrivateRoute exact path="/finance/invoices/groups/edit/:id" component={FinanceInvoiceGroupEdit} />
-          <PrivateRoute exact path="/finance/invoices/groups/defaults" component={FinanceInvoiceGroupDefaults} />
-          <PrivateRoute exact path="/finance/invoices/:invoice_id/payment/add" component={FinanceInvoicePaymentAdd} />
-          <PrivateRoute exact path="/finance/invoices/:invoice_id/payment/edit/:id" component={FinanceInvoicePaymentEdit} />
-          <PrivateRoute exact path="/finance/glaccounts" component={FinanceGLAccounts} />
-          <PrivateRoute exact path="/finance/glaccounts/add" component={FinanceGLAccountAdd} />
-          <PrivateRoute exact path="/finance/glaccounts/edit/:id" component={FinanceGLAccountEdit} />
-          <PrivateRoute exact path="/finance/orders" component={FinanceOrders} />
-          <PrivateRoute exact path="/finance/orders/edit/:id" component={FinanceOrderEdit} />
-          <PrivateRoute exact path="/finance/paymentmethods" component={FinancePaymentMethods} />
-          <PrivateRoute exact path="/finance/paymentmethods/add" component={FinancePaymentMethodAdd} />
-          <PrivateRoute exact path="/finance/paymentmethods/edit/:id" component={FinancePaymentMethodEdit} />
-          <PrivateRoute exact path="/finance/taxrates" component={FinanceTaxRates} />
-          <PrivateRoute exact path="/finance/taxrates/add" component={FinanceTaxRatesAdd} />
-          <PrivateRoute exact path="/finance/taxrates/edit/:id" component={FinanceTaxRatesEdit} />
-          
-          {/* ORGANIZATION */}
-          <PrivateRoute exact path="/organization" component={OrganizationHome} />
-          <PrivateRoute exact path="/organization/edit/:id" component={OrganizationEdit} />
-          <PrivateRoute exact path="/organization/edit/:id/branding" component={OrganizationBranding} />
-          <PrivateRoute exact path="/organization/edit/:id/branding/:update_field" component={OrganizationBrandingEdit} />
-          <PrivateRoute exact path="/organization/documents/:organization_id" component={OrganizationDocuments} />
-          <PrivateRoute exact path="/organization/documents/:organization_id/:document_type" component={OrganizationListDocuments} />
-          <PrivateRoute exact path="/organization/documents/:organization_id/:document_type/add" component={OrganizationDocumentAdd} />
-          <PrivateRoute exact path="/organization/documents/:organization_id/:document_type/edit/:id" component={OrganizationDocumentEdit} />
-          <PrivateRoute exact path="/organization/appointment_categories" component={OrganizationAppointmentCategories} />
-          <PrivateRoute exact path="/organization/appointment_categories/add" component={OrganizationAppointmentCategoryAdd} />
-          <PrivateRoute exact path="/organization/appointment_categories/edit/:id" component={OrganizationAppointmentCategoryEdit} />
-          <PrivateRoute exact path="/organization/appointment_categories/:category_id/appointments" component={OrganizationAppointments} />
-          <PrivateRoute exact path="/organization/appointment_categories/:category_id/appointments/add/" component={OrganizationAppointmentAdd} />
-          <PrivateRoute exact path="/organization/appointment_categories/:category_id/appointments/edit/:id" component={OrganizationAppointmentEdit} />
-          <PrivateRoute exact path="/organization/appointment_categories/:category_id/appointments/prices/:appointment_id" 
-                component={OrganizationAppointmentPrices} />
-          <PrivateRoute exact path="/organization/appointment_categories/:category_id/appointments/prices/:appointment_id/add" 
-                component={OrganizationAppointmentPriceAdd} />
-          <PrivateRoute exact path="/organization/appointment_categories/:category_id/appointments/prices/:appointment_id/edit/:id" 
-                component={OrganizationAppointmentPriceEdit} />
-          <PrivateRoute exact path="/organization/classpasses" component={OrganizationClasspasses} />
-          <PrivateRoute exact path="/organization/classpasses/add" component={OrganizationClasspassAdd} />
-          <PrivateRoute exact path="/organization/classpasses/edit/:id" component={OrganizationClasspassEdit} />    
-          <PrivateRoute exact path="/organization/classpasses/groups" component={OrganizationClasspassesGroups} />
-          <PrivateRoute exact path="/organization/classpasses/groups/add" component={OrganizationClasspassesGroupAdd} />
-          <PrivateRoute exact path="/organization/classpasses/groups/edit/:id" component={OrganizationClasspassesGroupEdit} />
-          <PrivateRoute exact path="/organization/classpasses/groups/edit/passes/:id" component={OrganizationClasspassesGroupEditPasses} />
-          <PrivateRoute exact path="/organization/classtypes" component={OrganizationClasstypes} />
-          <PrivateRoute exact path="/organization/classtypes/add" component={OrganizationClasstypeAdd} />
-          <PrivateRoute exact path="/organization/classtypes/edit/:id" component={OrganizationClasstypeEdit} />
-          <PrivateRoute exact path="/organization/classtypes/edit_image/:id" component={OrganizationClasstypeEditImage} />
-          <PrivateRoute exact path="/organization/discoveries" component={OrganizationDiscoveries} />
-          <PrivateRoute exact path="/organization/discoveries/add" component={OrganizationDiscoveryAdd} /> 
-          <PrivateRoute exact path="/organization/discoveries/edit/:id" component={OrganizationDiscoveryEdit} /> 
-          <PrivateRoute exact path="/organization/levels" component={OrganizationLevels} />
-          <PrivateRoute exact path="/organization/levels/add" component={OrganizationLevelAdd} />
-          <PrivateRoute exact path="/organization/levels/edit/:id" component={OrganizationLevelEdit} />
-          <PrivateRoute exact path="/organization/locations" component={OrganizationLocations} />
-          <PrivateRoute exact path="/organization/locations/add" component={OrganizationLocationAdd} />
-          <PrivateRoute exact path="/organization/locations/edit/:id" component={OrganizationLocationEdit} />
-          <PrivateRoute exact path="/organization/locations/rooms/:location_id" component={OrganizationLocationRooms} />
-          <PrivateRoute exact path="/organization/locations/rooms/add/:location_id" component={OrganizationLocationRoomAdd} />
-          <PrivateRoute exact path="/organization/locations/rooms/edit/:location_id/:id" component={OrganizationLocationRoomEdit} />
-          <PrivateRoute exact path="/organization/memberships" component={OrganizationMemberships} />
-          <PrivateRoute exact path="/organization/memberships/add" component={OrganizationMembershipAdd} />
-          <PrivateRoute exact path="/organization/memberships/edit/:id" component={OrganizationMembershipEdit} /> 
-          <PrivateRoute exact path="/organization/subscriptions" component={OrganizationSubscriptions} />
-          <PrivateRoute exact path="/organization/subscriptions/add" component={OrganizationSubscriptionAdd} />
-          <PrivateRoute exact path="/organization/subscriptions/edit/:id" component={OrganizationSubscriptionEdit} />
-          <PrivateRoute exact path="/organization/subscriptions/groups" component={OrganizationSubscriptionsGroups} />
-          <PrivateRoute exact path="/organization/subscriptions/groups/add" component={OrganizationSubscriptionsGroupAdd} />
-          <PrivateRoute exact path="/organization/subscriptions/groups/edit/:id" component={OrganizationSubscriptionsGroupEdit} />
-          <PrivateRoute exact path="/organization/subscriptions/groups/edit/subscriptions/:id" component={OrganizationSubscriptionsGroupEditSubscriptions} />
-          <PrivateRoute exact path="/organization/subscriptions/prices/:subscription_id" component={OrganizationSubscriptionsPrices} />
-          <PrivateRoute exact path="/organization/subscriptions/prices/add/:subscription_id" component={OrganizationSubscriptionPriceAdd} />
-          <PrivateRoute exact path="/organization/subscriptions/prices/edit/:subscription_id/:id" component={OrganizationSubscriptionPriceEdit} />
+            
+            {/* FINANCE */}
+            <PrivateRoute exact path="/finance" component={FinanceHome} />
+            <PrivateRoute exact path="/finance/costcenters" component={FinanceCostCenters} />
+            <PrivateRoute exact path="/finance/costcenters/add" component={FinanceCostCenterAdd} />
+            <PrivateRoute exact path="/finance/costcenters/edit/:id" component={FinanceCostCenterEdit} />
+            <PrivateRoute exact path="/finance/invoices" component={FinanceInvoices} />
+            <PrivateRoute exact path="/finance/invoices/edit/:id" component={FinanceInvoiceEdit} />
+            <PrivateRoute exact path="/finance/invoices/groups" component={FinanceInvoiceGroups} />
+            <PrivateRoute exact path="/finance/invoices/groups/add" component={FinanceInvoiceGroupAdd} />
+            <PrivateRoute exact path="/finance/invoices/groups/edit/:id" component={FinanceInvoiceGroupEdit} />
+            <PrivateRoute exact path="/finance/invoices/groups/defaults" component={FinanceInvoiceGroupDefaults} />
+            <PrivateRoute exact path="/finance/invoices/:invoice_id/payment/add" component={FinanceInvoicePaymentAdd} />
+            <PrivateRoute exact path="/finance/invoices/:invoice_id/payment/edit/:id" component={FinanceInvoicePaymentEdit} />
+            <PrivateRoute exact path="/finance/glaccounts" component={FinanceGLAccounts} />
+            <PrivateRoute exact path="/finance/glaccounts/add" component={FinanceGLAccountAdd} />
+            <PrivateRoute exact path="/finance/glaccounts/edit/:id" component={FinanceGLAccountEdit} />
+            <PrivateRoute exact path="/finance/orders" component={FinanceOrders} />
+            <PrivateRoute exact path="/finance/orders/edit/:id" component={FinanceOrderEdit} />
+            <PrivateRoute exact path="/finance/paymentmethods" component={FinancePaymentMethods} />
+            <PrivateRoute exact path="/finance/paymentmethods/add" component={FinancePaymentMethodAdd} />
+            <PrivateRoute exact path="/finance/paymentmethods/edit/:id" component={FinancePaymentMethodEdit} />
+            <PrivateRoute exact path="/finance/taxrates" component={FinanceTaxRates} />
+            <PrivateRoute exact path="/finance/taxrates/add" component={FinanceTaxRatesAdd} />
+            <PrivateRoute exact path="/finance/taxrates/edit/:id" component={FinanceTaxRatesEdit} />
+            
+            {/* ORGANIZATION */}
+            <PrivateRoute exact path="/organization" component={OrganizationHome} />
+            <PrivateRoute exact path="/organization/edit/:id" component={OrganizationEdit} />
+            <PrivateRoute exact path="/organization/edit/:id/branding" component={OrganizationBranding} />
+            <PrivateRoute exact path="/organization/edit/:id/branding/:update_field" component={OrganizationBrandingEdit} />
+            <PrivateRoute exact path="/organization/documents/:organization_id" component={OrganizationDocuments} />
+            <PrivateRoute exact path="/organization/documents/:organization_id/:document_type" component={OrganizationListDocuments} />
+            <PrivateRoute exact path="/organization/documents/:organization_id/:document_type/add" component={OrganizationDocumentAdd} />
+            <PrivateRoute exact path="/organization/documents/:organization_id/:document_type/edit/:id" component={OrganizationDocumentEdit} />
+            <PrivateRoute exact path="/organization/appointment_categories" component={OrganizationAppointmentCategories} />
+            <PrivateRoute exact path="/organization/appointment_categories/add" component={OrganizationAppointmentCategoryAdd} />
+            <PrivateRoute exact path="/organization/appointment_categories/edit/:id" component={OrganizationAppointmentCategoryEdit} />
+            <PrivateRoute exact path="/organization/appointment_categories/:category_id/appointments" component={OrganizationAppointments} />
+            <PrivateRoute exact path="/organization/appointment_categories/:category_id/appointments/add/" component={OrganizationAppointmentAdd} />
+            <PrivateRoute exact path="/organization/appointment_categories/:category_id/appointments/edit/:id" component={OrganizationAppointmentEdit} />
+            <PrivateRoute exact path="/organization/appointment_categories/:category_id/appointments/prices/:appointment_id" 
+                  component={OrganizationAppointmentPrices} />
+            <PrivateRoute exact path="/organization/appointment_categories/:category_id/appointments/prices/:appointment_id/add" 
+                  component={OrganizationAppointmentPriceAdd} />
+            <PrivateRoute exact path="/organization/appointment_categories/:category_id/appointments/prices/:appointment_id/edit/:id" 
+                  component={OrganizationAppointmentPriceEdit} />
+            <PrivateRoute exact path="/organization/classpasses" component={OrganizationClasspasses} />
+            <PrivateRoute exact path="/organization/classpasses/add" component={OrganizationClasspassAdd} />
+            <PrivateRoute exact path="/organization/classpasses/edit/:id" component={OrganizationClasspassEdit} />    
+            <PrivateRoute exact path="/organization/classpasses/groups" component={OrganizationClasspassesGroups} />
+            <PrivateRoute exact path="/organization/classpasses/groups/add" component={OrganizationClasspassesGroupAdd} />
+            <PrivateRoute exact path="/organization/classpasses/groups/edit/:id" component={OrganizationClasspassesGroupEdit} />
+            <PrivateRoute exact path="/organization/classpasses/groups/edit/passes/:id" component={OrganizationClasspassesGroupEditPasses} />
+            <PrivateRoute exact path="/organization/classtypes" component={OrganizationClasstypes} />
+            <PrivateRoute exact path="/organization/classtypes/add" component={OrganizationClasstypeAdd} />
+            <PrivateRoute exact path="/organization/classtypes/edit/:id" component={OrganizationClasstypeEdit} />
+            <PrivateRoute exact path="/organization/classtypes/edit_image/:id" component={OrganizationClasstypeEditImage} />
+            <PrivateRoute exact path="/organization/discoveries" component={OrganizationDiscoveries} />
+            <PrivateRoute exact path="/organization/discoveries/add" component={OrganizationDiscoveryAdd} /> 
+            <PrivateRoute exact path="/organization/discoveries/edit/:id" component={OrganizationDiscoveryEdit} /> 
+            <PrivateRoute exact path="/organization/levels" component={OrganizationLevels} />
+            <PrivateRoute exact path="/organization/levels/add" component={OrganizationLevelAdd} />
+            <PrivateRoute exact path="/organization/levels/edit/:id" component={OrganizationLevelEdit} />
+            <PrivateRoute exact path="/organization/locations" component={OrganizationLocations} />
+            <PrivateRoute exact path="/organization/locations/add" component={OrganizationLocationAdd} />
+            <PrivateRoute exact path="/organization/locations/edit/:id" component={OrganizationLocationEdit} />
+            <PrivateRoute exact path="/organization/locations/rooms/:location_id" component={OrganizationLocationRooms} />
+            <PrivateRoute exact path="/organization/locations/rooms/add/:location_id" component={OrganizationLocationRoomAdd} />
+            <PrivateRoute exact path="/organization/locations/rooms/edit/:location_id/:id" component={OrganizationLocationRoomEdit} />
+            <PrivateRoute exact path="/organization/memberships" component={OrganizationMemberships} />
+            <PrivateRoute exact path="/organization/memberships/add" component={OrganizationMembershipAdd} />
+            <PrivateRoute exact path="/organization/memberships/edit/:id" component={OrganizationMembershipEdit} /> 
+            <PrivateRoute exact path="/organization/subscriptions" component={OrganizationSubscriptions} />
+            <PrivateRoute exact path="/organization/subscriptions/add" component={OrganizationSubscriptionAdd} />
+            <PrivateRoute exact path="/organization/subscriptions/edit/:id" component={OrganizationSubscriptionEdit} />
+            <PrivateRoute exact path="/organization/subscriptions/groups" component={OrganizationSubscriptionsGroups} />
+            <PrivateRoute exact path="/organization/subscriptions/groups/add" component={OrganizationSubscriptionsGroupAdd} />
+            <PrivateRoute exact path="/organization/subscriptions/groups/edit/:id" component={OrganizationSubscriptionsGroupEdit} />
+            <PrivateRoute exact path="/organization/subscriptions/groups/edit/subscriptions/:id" component={OrganizationSubscriptionsGroupEditSubscriptions} />
+            <PrivateRoute exact path="/organization/subscriptions/prices/:subscription_id" component={OrganizationSubscriptionsPrices} />
+            <PrivateRoute exact path="/organization/subscriptions/prices/add/:subscription_id" component={OrganizationSubscriptionPriceAdd} />
+            <PrivateRoute exact path="/organization/subscriptions/prices/edit/:subscription_id/:id" component={OrganizationSubscriptionPriceEdit} />
 
-          {/* RELATIONS */}
-          <PrivateRoute exact path="/relations" component={RelationsHome} />
-          <PrivateRoute exact path="/relations/accounts" component={RelationsAccounts} />
-          <PrivateRoute exact path="/relations/accounts/add" component={RelationsAccountAdd} />
-          <PrivateRoute exact path="/relations/accounts/:account_id/profile" component={RelationsAccountProfile} />
-          <PrivateRoute exact path="/relations/accounts/:account_id/accepted_documents" component={AccountAcceptedDocuments} />
-          <PrivateRoute exact path="/relations/accounts/:account_id/classes" component={RelationsAccountClasses} />
-          <PrivateRoute exact path="/relations/accounts/:account_id/classpasses" component={AccountClasspasses} />
-          <PrivateRoute exact path="/relations/accounts/:account_id/classpasses/add" component={AccountClasspassAdd} />
-          <PrivateRoute exact path="/relations/accounts/:account_id/classpasses/edit/:id" component={AccountClasspassEdit} />
-          <PrivateRoute exact path="/relations/accounts/:account_id/invoices" component={AccountInvoices} />
-          <PrivateRoute exact path="/relations/accounts/:account_id/invoices/add" component={AccountInvoiceAdd} />
-          <PrivateRoute exact path="/relations/accounts/:account_id/memberships" component={AccountMemberships} />
-          <PrivateRoute exact path="/relations/accounts/:account_id/memberships/add" component={AccountMembershipAdd} />
-          <PrivateRoute exact path="/relations/accounts/:account_id/memberships/edit/:id" component={AccountMembershipEdit} />
-          <PrivateRoute exact path="/relations/accounts/:account_id/orders" component={AccountOrders} />
-          <PrivateRoute exact path="/relations/accounts/:account_id/event_tickets" component={AccountScheduleEventTickets} />
-          <PrivateRoute exact path="/relations/accounts/:account_id/subscriptions" component={AccountSubscriptions} />
-          <PrivateRoute exact path="/relations/accounts/:account_id/subscriptions/add" component={AccountSubscriptionAdd} />
-          <PrivateRoute exact path="/relations/accounts/:account_id/subscriptions/edit/:subscription_id" 
-                        component={AccountSubscriptionEdit} />
-          <PrivateRoute exact path="/relations/accounts/:account_id/subscriptions/edit/:subscription_id/alt_prices" 
-                        component={AccountSubscriptionEditAltPrices} />
-          <PrivateRoute exact path="/relations/accounts/:account_id/subscriptions/edit/:subscription_id/alt_prices/add" 
-                        component={AccountSubscriptionEditAltPriceAdd} />
-          <PrivateRoute exact path="/relations/accounts/:account_id/subscriptions/edit/:subscription_id/alt_prices/edit/:id" 
-                        component={AccountSubscriptionEditAltPriceEdit} />
-          <PrivateRoute exact path="/relations/accounts/:account_id/subscriptions/edit/:subscription_id/blocks" component={AccountSubscriptionEditBlocks} />
-          <PrivateRoute exact path="/relations/accounts/:account_id/subscriptions/edit/:subscription_id/blocks/add" component={AccountSubscriptionEditBlockAdd} />
-          <PrivateRoute exact path="/relations/accounts/:account_id/subscriptions/edit/:subscription_id/blocks/edit/:id" 
-                        component={AccountSubscriptionEditBlockEdit} />
-          <PrivateRoute exact path="/relations/accounts/:account_id/subscriptions/edit/:subscription_id/credits" component={AccountSubscriptionEditCredits} />
-          <PrivateRoute exact path="/relations/accounts/:account_id/subscriptions/edit/:subscription_id/credits/add" component={AccountSubscriptionEditCreditAdd} />
-          <PrivateRoute exact path="/relations/accounts/:account_id/subscriptions/edit/:subscription_id/credits/edit/:id" 
-                        component={AccountSubscriptionEditCreditEdit} />
-          <PrivateRoute exact path="/relations/accounts/:account_id/subscriptions/edit/:subscription_id/invoices" 
-            component={AccountSubscriptionEditInvoices} />
-          <PrivateRoute exact path="/relations/accounts/:account_id/subscriptions/edit/:subscription_id/invoices/add" 
-            component={AccountSubscriptionEditInvoiceAdd} />
-          <PrivateRoute exact path="/relations/accounts/:account_id/subscriptions/edit/:subscription_id/pauses" component={AccountSubscriptionEditPauses} />
-          <PrivateRoute exact path="/relations/accounts/:account_id/subscriptions/edit/:subscription_id/pauses/add" component={AccountSubscriptionEditPauseAdd} />
-          <PrivateRoute exact path="/relations/accounts/:account_id/subscriptions/edit/:subscription_id/pauses/edit/:id" 
-                        component={AccountSubscriptionEditPauseEdit} />
-          <PrivateRoute exact path="/relations/accounts/:account_id/teacher_profile" component={RelationsAccountTeacherProfile} />
+            {/* RELATIONS */}
+            <PrivateRoute exact path="/relations" component={RelationsHome} />
+            <PrivateRoute exact path="/relations/accounts" component={RelationsAccounts} />
+            <PrivateRoute exact path="/relations/accounts/add" component={RelationsAccountAdd} />
+            <PrivateRoute exact path="/relations/accounts/:account_id/profile" component={RelationsAccountProfile} />
+            <PrivateRoute exact path="/relations/accounts/:account_id/accepted_documents" component={AccountAcceptedDocuments} />
+            <PrivateRoute exact path="/relations/accounts/:account_id/classes" component={RelationsAccountClasses} />
+            <PrivateRoute exact path="/relations/accounts/:account_id/classpasses" component={AccountClasspasses} />
+            <PrivateRoute exact path="/relations/accounts/:account_id/classpasses/add" component={AccountClasspassAdd} />
+            <PrivateRoute exact path="/relations/accounts/:account_id/classpasses/edit/:id" component={AccountClasspassEdit} />
+            <PrivateRoute exact path="/relations/accounts/:account_id/invoices" component={AccountInvoices} />
+            <PrivateRoute exact path="/relations/accounts/:account_id/invoices/add" component={AccountInvoiceAdd} />
+            <PrivateRoute exact path="/relations/accounts/:account_id/memberships" component={AccountMemberships} />
+            <PrivateRoute exact path="/relations/accounts/:account_id/memberships/add" component={AccountMembershipAdd} />
+            <PrivateRoute exact path="/relations/accounts/:account_id/memberships/edit/:id" component={AccountMembershipEdit} />
+            <PrivateRoute exact path="/relations/accounts/:account_id/orders" component={AccountOrders} />
+            <PrivateRoute exact path="/relations/accounts/:account_id/event_tickets" component={AccountScheduleEventTickets} />
+            <PrivateRoute exact path="/relations/accounts/:account_id/subscriptions" component={AccountSubscriptions} />
+            <PrivateRoute exact path="/relations/accounts/:account_id/subscriptions/add" component={AccountSubscriptionAdd} />
+            <PrivateRoute exact path="/relations/accounts/:account_id/subscriptions/edit/:subscription_id" 
+                          component={AccountSubscriptionEdit} />
+            <PrivateRoute exact path="/relations/accounts/:account_id/subscriptions/edit/:subscription_id/alt_prices" 
+                          component={AccountSubscriptionEditAltPrices} />
+            <PrivateRoute exact path="/relations/accounts/:account_id/subscriptions/edit/:subscription_id/alt_prices/add" 
+                          component={AccountSubscriptionEditAltPriceAdd} />
+            <PrivateRoute exact path="/relations/accounts/:account_id/subscriptions/edit/:subscription_id/alt_prices/edit/:id" 
+                          component={AccountSubscriptionEditAltPriceEdit} />
+            <PrivateRoute exact path="/relations/accounts/:account_id/subscriptions/edit/:subscription_id/blocks" component={AccountSubscriptionEditBlocks} />
+            <PrivateRoute exact path="/relations/accounts/:account_id/subscriptions/edit/:subscription_id/blocks/add" component={AccountSubscriptionEditBlockAdd} />
+            <PrivateRoute exact path="/relations/accounts/:account_id/subscriptions/edit/:subscription_id/blocks/edit/:id" 
+                          component={AccountSubscriptionEditBlockEdit} />
+            <PrivateRoute exact path="/relations/accounts/:account_id/subscriptions/edit/:subscription_id/credits" component={AccountSubscriptionEditCredits} />
+            <PrivateRoute exact path="/relations/accounts/:account_id/subscriptions/edit/:subscription_id/credits/add" component={AccountSubscriptionEditCreditAdd} />
+            <PrivateRoute exact path="/relations/accounts/:account_id/subscriptions/edit/:subscription_id/credits/edit/:id" 
+                          component={AccountSubscriptionEditCreditEdit} />
+            <PrivateRoute exact path="/relations/accounts/:account_id/subscriptions/edit/:subscription_id/invoices" 
+              component={AccountSubscriptionEditInvoices} />
+            <PrivateRoute exact path="/relations/accounts/:account_id/subscriptions/edit/:subscription_id/invoices/add" 
+              component={AccountSubscriptionEditInvoiceAdd} />
+            <PrivateRoute exact path="/relations/accounts/:account_id/subscriptions/edit/:subscription_id/pauses" component={AccountSubscriptionEditPauses} />
+            <PrivateRoute exact path="/relations/accounts/:account_id/subscriptions/edit/:subscription_id/pauses/add" component={AccountSubscriptionEditPauseAdd} />
+            <PrivateRoute exact path="/relations/accounts/:account_id/subscriptions/edit/:subscription_id/pauses/edit/:id" 
+                          component={AccountSubscriptionEditPauseEdit} />
+            <PrivateRoute exact path="/relations/accounts/:account_id/teacher_profile" component={RelationsAccountTeacherProfile} />
 
-          {/* SCHEDULE */}
-          <PrivateRoute exact path="/schedule" component={ScheduleHome} />
-          <PrivateRoute exact path="/schedule/appointments" component={ScheduleAppointments} />
-          <PrivateRoute exact path="/schedule/appointments/add" component={ScheduleAppointmentAdd} />
-          <PrivateRoute exact path="/schedule/appointments/all/edit/:appointment_id" component={ScheduleAppointmentEditAll} />
-          <PrivateRoute exact path="/schedule/classes" component={ScheduleClasses} />
-          <PrivateRoute exact path="/schedule/classes/add/" component={ScheduleClassAdd} />
-          <PrivateRoute exact path="/schedule/classes/all/edit/:class_id/" component={ScheduleClassEditAll} />
-          <PrivateRoute exact path="/schedule/classes/all/classpasses/:class_id/" component={ScheduleClassClasspasses} />
-          <PrivateRoute exact path="/schedule/classes/all/prices/:class_id/" component={ScheduleClassPrices} />
-          <PrivateRoute exact path="/schedule/classes/all/prices/:class_id/add" component={ScheduleClassPriceAdd} />
-          <PrivateRoute exact path="/schedule/classes/all/prices/:class_id/edit/:id" component={ScheduleClassPriceEdit} />
-          <PrivateRoute exact path="/schedule/classes/all/subscriptions/:class_id/" component={ScheduleClassSubscriptions} />
-          <PrivateRoute exact path="/schedule/classes/all/teachers/:class_id/" component={ScheduleClassTeachers} />
-          <PrivateRoute exact path="/schedule/classes/all/teachers/:class_id/add" component={ScheduleClassTeacherAdd} />
-          <PrivateRoute exact path="/schedule/classes/all/teachers/:class_id/edit/:id" component={ScheduleClassTeacherEdit} />
-          <PrivateRoute exact path="/schedule/classes/class/attendance/:class_id/:date" component={ScheduleClassAttendance} />
-          <PrivateRoute exact path="/schedule/classes/class/book/:class_id/:date/:account_id" component={ScheduleClassBook} />
-          <PrivateRoute exact path="/schedule/classes/class/edit/:class_id/:date" component={ScheduleClassEdit} />
-          <PrivateRoute exact path="/schedule/events" component={ScheduleEvents} />
-          <PrivateRoute exact path="/schedule/events/add" component={ScheduleEventAdd} />
-          <PrivateRoute exact path="/schedule/events/edit/:event_id" component={ScheduleEventEdit} />
-          <PrivateRoute exact path="/schedule/events/edit/:event_id/activities" component={ScheduleEventActivities} />
-          <PrivateRoute exact path="/schedule/events/edit/:event_id/activities/add" component={ScheduleEventActivityAdd} />
-          <PrivateRoute exact path="/schedule/events/edit/:event_id/activities/edit/:id" component={ScheduleEventActivityEdit} />
-          <PrivateRoute exact path="/schedule/events/edit/:event_id/activities/edit/:id/attendance" 
-                        component={ScheduleEventActivityAttendance} />
-          <PrivateRoute exact path="/schedule/events/edit/:event_id/media" component={ScheduleEventMedia} />
-          <PrivateRoute exact path="/schedule/events/edit/:event_id/media/add" component={ScheduleEventMediaAdd} />
-          <PrivateRoute exact path="/schedule/events/edit/:event_id/media/edit/:id" component={ScheduleEventMediaEdit} />
-          <PrivateRoute exact path="/schedule/events/edit/:event_id/tickets" component={ScheduleEventTickets} />
-          <PrivateRoute exact path="/schedule/events/edit/:event_id/tickets/add" component={ScheduleEventTicketAdd} />
-          <PrivateRoute exact path="/schedule/events/edit/:event_id/tickets/edit/:id" component={ScheduleEventTicketEdit} />
-          <PrivateRoute exact path="/schedule/events/edit/:event_id/tickets/edit/:id/activities" component={ScheduleEventTicketEditActivities} />
-          <PrivateRoute exact path="/schedule/events/edit/:event_id/tickets/edit/:id/customers" component={ScheduleEventTicketEditCustomers} />
+            {/* SCHEDULE */}
+            <PrivateRoute exact path="/schedule" component={ScheduleHome} />
+            <PrivateRoute exact path="/schedule/appointments" component={ScheduleAppointments} />
+            <PrivateRoute exact path="/schedule/appointments/add" component={ScheduleAppointmentAdd} />
+            <PrivateRoute exact path="/schedule/appointments/all/edit/:appointment_id" component={ScheduleAppointmentEditAll} />
+            <PrivateRoute exact path="/schedule/classes" component={ScheduleClasses} />
+            <PrivateRoute exact path="/schedule/classes/add/" component={ScheduleClassAdd} />
+            <PrivateRoute exact path="/schedule/classes/all/edit/:class_id/" component={ScheduleClassEditAll} />
+            <PrivateRoute exact path="/schedule/classes/all/classpasses/:class_id/" component={ScheduleClassClasspasses} />
+            <PrivateRoute exact path="/schedule/classes/all/prices/:class_id/" component={ScheduleClassPrices} />
+            <PrivateRoute exact path="/schedule/classes/all/prices/:class_id/add" component={ScheduleClassPriceAdd} />
+            <PrivateRoute exact path="/schedule/classes/all/prices/:class_id/edit/:id" component={ScheduleClassPriceEdit} />
+            <PrivateRoute exact path="/schedule/classes/all/subscriptions/:class_id/" component={ScheduleClassSubscriptions} />
+            <PrivateRoute exact path="/schedule/classes/all/teachers/:class_id/" component={ScheduleClassTeachers} />
+            <PrivateRoute exact path="/schedule/classes/all/teachers/:class_id/add" component={ScheduleClassTeacherAdd} />
+            <PrivateRoute exact path="/schedule/classes/all/teachers/:class_id/edit/:id" component={ScheduleClassTeacherEdit} />
+            <PrivateRoute exact path="/schedule/classes/class/attendance/:class_id/:date" component={ScheduleClassAttendance} />
+            <PrivateRoute exact path="/schedule/classes/class/book/:class_id/:date/:account_id" component={ScheduleClassBook} />
+            <PrivateRoute exact path="/schedule/classes/class/edit/:class_id/:date" component={ScheduleClassEdit} />
+            <PrivateRoute exact path="/schedule/events" component={ScheduleEvents} />
+            <PrivateRoute exact path="/schedule/events/add" component={ScheduleEventAdd} />
+            <PrivateRoute exact path="/schedule/events/edit/:event_id" component={ScheduleEventEdit} />
+            <PrivateRoute exact path="/schedule/events/edit/:event_id/activities" component={ScheduleEventActivities} />
+            <PrivateRoute exact path="/schedule/events/edit/:event_id/activities/add" component={ScheduleEventActivityAdd} />
+            <PrivateRoute exact path="/schedule/events/edit/:event_id/activities/edit/:id" component={ScheduleEventActivityEdit} />
+            <PrivateRoute exact path="/schedule/events/edit/:event_id/activities/edit/:id/attendance" 
+                          component={ScheduleEventActivityAttendance} />
+            <PrivateRoute exact path="/schedule/events/edit/:event_id/media" component={ScheduleEventMedia} />
+            <PrivateRoute exact path="/schedule/events/edit/:event_id/media/add" component={ScheduleEventMediaAdd} />
+            <PrivateRoute exact path="/schedule/events/edit/:event_id/media/edit/:id" component={ScheduleEventMediaEdit} />
+            <PrivateRoute exact path="/schedule/events/edit/:event_id/tickets" component={ScheduleEventTickets} />
+            <PrivateRoute exact path="/schedule/events/edit/:event_id/tickets/add" component={ScheduleEventTicketAdd} />
+            <PrivateRoute exact path="/schedule/events/edit/:event_id/tickets/edit/:id" component={ScheduleEventTicketEdit} />
+            <PrivateRoute exact path="/schedule/events/edit/:event_id/tickets/edit/:id/activities" component={ScheduleEventTicketEditActivities} />
+            <PrivateRoute exact path="/schedule/events/edit/:event_id/tickets/edit/:id/customers" component={ScheduleEventTicketEditCustomers} />
 
-          {/* Insight */}
-          <PrivateRoute exact path="/insight" component={InsightHome} />
-          <PrivateRoute exact path="/insight/classpasses" component={InsightClasspasses} />
-          <PrivateRoute exact path="/insight/subscriptions" component={InsightSubscriptions} />
+            {/* Insight */}
+            <PrivateRoute exact path="/insight" component={InsightHome} />
+            <PrivateRoute exact path="/insight/classpasses" component={InsightClasspasses} />
+            <PrivateRoute exact path="/insight/subscriptions" component={InsightSubscriptions} />
 
-          {/* Self Check-in */}
-          <PrivateRoute exact path="/selfcheckin/checkin/:location_id/:class_id/:date" component={SelfCheckinCheckin} />
-          <PrivateRoute exact path="/selfcheckin/book/:location_id/:class_id/:date/:account_id" 
-                              component={SelfCheckinBookingOptions} />
-          <PrivateRoute exact path="/selfcheckin" component={SelfCheckinLocations} />
-          <PrivateRoute exact path="/selfcheckin/location/:location_id" component={SelfCheckinLocationClasses} />
+            {/* Self Check-in */}
+            <PrivateRoute exact path="/selfcheckin/checkin/:location_id/:class_id/:date" component={SelfCheckinCheckin} />
+            <PrivateRoute exact path="/selfcheckin/book/:location_id/:class_id/:date/:account_id" 
+                                component={SelfCheckinBookingOptions} />
+            <PrivateRoute exact path="/selfcheckin" component={SelfCheckinLocations} />
+            <PrivateRoute exact path="/selfcheckin/location/:location_id" component={SelfCheckinLocationClasses} />
 
-          {/* Shop */}
-          <Route exact path = "/shop" component={ShopHome} />
-          <PrivateRoute exact path = "/shop/account" component={ShopAccountHome} />
-          <PrivateRoute exact path = "/shop/account/class_info/:class_id/:date" component={ShopAccountClassInfo} />
-          <PrivateRoute exact path = "/shop/account/classes" component={ShopClasses} />
-          <PrivateRoute exact path = "/shop/account/classpasses" component={ShopAccountClasspasses} />
-          <PrivateRoute exact path = "/shop/account/event_tickets" component={ShopAccountEventTickets} />
-          <PrivateRoute exact path = "/shop/account/invoices" component={ShopAccountInvoices} />
-          <PrivateRoute exact path = "/shop/account/orders" component={ShopAccountOrders} />
-          <PrivateRoute exact path = "/shop/account/profile" component={ShopAccountProfile} />
-          <PrivateRoute exact path = "/shop/account/subscriptions" component={ShopAccountSubscriptions} />
-          <PrivateRoute exact path = "/shop/checkout/payment/:id" component={ShopCheckoutPayment} />
-          <PrivateRoute exact path = "/shop/checkout/complete/:id" component={ShopCheckoutComplete} />
-          <Route exact path = "/shop/classes" component={ShopClassesSchedule} />
-          <PrivateRoute exact path = "/shop/classes/book/:class_id/:date" component={ShopClassBook} />
-          <PrivateRoute exact path = "/shop/classes/booked/:class_id/:date" component={ShopClassBooked} />
-          <Route exact path = "/shop/classpasses" component={ShopClasspasses} />
-          <Route exact path = "/shop/classpass/:id" component={ShopClasspass} />
-          <Route exact path = "/shop/classpass/:id/:class_id/:date" component={ShopClasspass} />
-          <Route exact path = "/shop/contact" component={ShopContact} />
-          <Route exact path = "/shop/events" component={ShopEvents} />
-          <Route exact path = "/shop/events/:event_id" component={ShopEvent} />
-          <Route exact path = "/shop/events/:event_id/ticket/:id" component={ShopEventTicket} />
-          <Route exact path = "/shop/subscriptions" component={ShopSubscriptions} />
-          <Route exact path = "/shop/subscription/:id" component={ShopSubscription} />
+            {/* Shop */}
+            <Route exact path = "/shop" component={ShopHome} />
+            <PrivateRoute exact path = "/shop/account" component={ShopAccountHome} />
+            <PrivateRoute exact path = "/shop/account/class_info/:class_id/:date" component={ShopAccountClassInfo} />
+            <PrivateRoute exact path = "/shop/account/classes" component={ShopClasses} />
+            <PrivateRoute exact path = "/shop/account/classpasses" component={ShopAccountClasspasses} />
+            <PrivateRoute exact path = "/shop/account/event_tickets" component={ShopAccountEventTickets} />
+            <PrivateRoute exact path = "/shop/account/invoices" component={ShopAccountInvoices} />
+            <PrivateRoute exact path = "/shop/account/orders" component={ShopAccountOrders} />
+            <PrivateRoute exact path = "/shop/account/profile" component={ShopAccountProfile} />
+            <PrivateRoute exact path = "/shop/account/subscriptions" component={ShopAccountSubscriptions} />
+            <PrivateRoute exact path = "/shop/checkout/payment/:id" component={ShopCheckoutPayment} />
+            <PrivateRoute exact path = "/shop/checkout/complete/:id" component={ShopCheckoutComplete} />
+            <Route exact path = "/shop/classes" component={ShopClassesSchedule} />
+            <PrivateRoute exact path = "/shop/classes/book/:class_id/:date" component={ShopClassBook} />
+            <PrivateRoute exact path = "/shop/classes/booked/:class_id/:date" component={ShopClassBooked} />
+            <Route exact path = "/shop/classpasses" component={ShopClasspasses} />
+            <Route exact path = "/shop/classpass/:id" component={ShopClasspass} />
+            <Route exact path = "/shop/classpass/:id/:class_id/:date" component={ShopClasspass} />
+            <Route exact path = "/shop/contact" component={ShopContact} />
+            <Route exact path = "/shop/events" component={ShopEvents} />
+            <Route exact path = "/shop/events/:event_id" component={ShopEvent} />
+            <Route exact path = "/shop/events/:event_id/ticket/:id" component={ShopEventTicket} />
+            <Route exact path = "/shop/subscriptions" component={ShopSubscriptions} />
+            <Route exact path = "/shop/subscription/:id" component={ShopSubscription} />
 
-          {/* Settings */}
-          <PrivateRoute exact path="/settings" component={SettingsHome} />
-          <PrivateRoute exact path="/settings/about" component={SettingsAbout} />
-          <PrivateRoute exact path="/settings/finance/currency" component={SettingsFinanceCurrency} />
-          <PrivateRoute exact path="/settings/general/datetime" component={SettingsGeneralDateTime} />
-          <PrivateRoute exact path="/settings/general/system" component={SettingsGeneralSystem} />
-          <PrivateRoute exact path="/settings/integration/mollie" component={SettingsIntegrationMollie} />
-          <PrivateRoute exact path="/settings/mail/templates" component={SettingsMailTemplates} />
-          <PrivateRoute exact path="/settings/mail/templates/edit/:id" component={SettingsMailTemplateEdit} />
+            {/* Settings */}
+            <PrivateRoute exact path="/settings" component={SettingsHome} />
+            <PrivateRoute exact path="/settings/about" component={SettingsAbout} />
+            <PrivateRoute exact path="/settings/finance/currency" component={SettingsFinanceCurrency} />
+            <PrivateRoute exact path="/settings/general/datetime" component={SettingsGeneralDateTime} />
+            <PrivateRoute exact path="/settings/general/system" component={SettingsGeneralSystem} />
+            <PrivateRoute exact path="/settings/integration/mollie" component={SettingsIntegrationMollie} />
+            <PrivateRoute exact path="/settings/mail/templates" component={SettingsMailTemplates} />
+            <PrivateRoute exact path="/settings/mail/templates/edit/:id" component={SettingsMailTemplateEdit} />
 
-          {/* User */}
-          <PrivateRoute exact path="/user/password/change" component={UserChangePassword} />
-          <Route exact path="/user/login" component={UserLogin} />
-          <Route exact path="/user/logout" component={UserLogout} />
-          <Route exact path="/user/session/expired" component={UserSessionExpired} />
+            {/* User */}
+            <PrivateRoute exact path="/user/password/change" component={UserChangePassword} />
+            <Route exact path="/user/login" component={UserLogin} />
+            <Route exact path="/user/logout" component={UserLogout} />
+            <Route exact path="/user/session/expired" component={UserSessionExpired} />
 
-          <Route component={Error404} />
-        </Switch>
-      </HashRouter>
+            <Route component={Error404} />
+          </Switch>
+        </HashRouter>
+      </OrganizationProvider>
     </AppSettingsProvider>
   )
 }

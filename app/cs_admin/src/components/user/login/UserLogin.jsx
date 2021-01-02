@@ -1,8 +1,7 @@
 // @flow
 
-import React, {Component } from 'react'
-import gql from "graphql-tag"
-import { useQuery, useMutation } from "react-apollo"
+import React, { useContext } from 'react'
+import { useMutation } from "react-apollo"
 import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
 import { Formik } from 'formik'
@@ -14,109 +13,128 @@ import { toast } from 'react-toastify'
 
 import {
   Button,
-  Card,
+  Container,
+  Grid,
   Icon,
-  StandaloneFormPage,
+  Page
 } from "tabler-react"
 import HasPermissionWrapper from "../../HasPermissionWrapper"
+
+import OrganizationContext from '../../context/OrganizationContext'
 
 import { TOKEN_AUTH, TOKEN_REFRESH } from "../../../queries/system/auth"
 import { CSAuth } from "../../../tools/authentication"
 import CSLS from "../../../tools/cs_local_storage"
 
 import UserLoginForm from "./UserLoginForm"
+import { GET_ORDER_QUERY } from '../../finance/orders/queries'
 
 
 function UserLogin({t, match, history}) {
+  const organization = useContext(OrganizationContext)
+  console.log(organization)
+
   let errorMessage
   const [ doTokenAuth ] = useMutation(TOKEN_AUTH)
   const [ doTokenRefresh ] = useMutation(TOKEN_REFRESH)
 
   return (
-    <StandaloneFormPage imageURL="">
-      {/* TODO: point imageURL to logo */}
-      <Formik
-        initialValues={{ 
-          email: "",
-          password: ""
-        }}
-        // validationSchema={ACCOUNT_SCHEMA}
-        onSubmit={(values, { setSubmitting }) => {
-            let vars = {
-              username: values.email,
-              password: values.password,
-            }
+    <Page>
+      <div className="page-single">
+        <Container>
+          <Grid.Row>
+            <div className="col col-login mx-auto">            
+              <div className="text-center mb-6">
+                <img src={organization.urlLogoLogin} className="h-9" alt="logo" />
+              </div>
+              <div className="text-center">
+              </div>
+              <Formik
+                initialValues={{ 
+                  email: "",
+                  password: ""
+                }}
+                // validationSchema={ACCOUNT_SCHEMA}
+                onSubmit={(values, { setSubmitting }) => {
+                    let vars = {
+                      username: values.email,
+                      password: values.password,
+                    }
 
-            doTokenAuth({ variables: vars,
-              refetchQueries: [
-                // // Refetch list
-                // {query: GET_ACCOUNTS_QUERY, variables: get_list_query_variables()},
-                // // Refresh local cached results for this account
-                // {query: GET_ACCOUNT_QUERY, variables: {"id": match.params.account_id}}
-            ]})
-            .then(({ data }) => {
-                console.log('got data', data)
-                const next = localStorage.getItem(CSLS.AUTH_LOGIN_NEXT) || "/"
-                CSAuth.login(data.tokenAuth.token)
-                doTokenRefresh({
-                  variables: { token: data.tokenAuth.token }
-                }).then(({ data }) => {
-                  console.log('got refresh data', data)
-                  CSAuth.updateTokenInfo(data.refreshToken)
-                  // Login success!
-                  setTimeout(() => history.push(next), 500)
-                }).catch((error) => {
-                  toast.error((t('general.toast_server_error')) + ': ' +  error, {
-                    position: toast.POSITION.BOTTOM_RIGHT
-                  })
-                  console.log('there was an error verifying the login', error)
-                  setSubmitting(false)
-                })
-              }).catch((error) => {
-                if ( error.message.includes('credentials') ) {
-                  // Request user to input valid credentials
-                  toast.info((t('user.login.invalid_credentials')), {
-                    position: toast.POSITION.BOTTOM_RIGHT
-                  })
-                } else {
-                  // Show general error message
-                  toast.error((t('general.toast_server_error')) + ': ' +  error, {
-                    position: toast.POSITION.BOTTOM_RIGHT
-                  })
-                }
-                console.log('there was an error sending the query', error)
-                setSubmitting(false)
-              })
-        }}
-        >
-        {({ isSubmitting, errors, values, setFieldTouched, setFieldValue }) => (
-          <UserLoginForm
-            isSubmitting={isSubmitting}
-            etFieldValue={setFieldValue}
-            esetFieldTouched={setFieldTouched}
-            errors={errors}
-            values={values}
-          />
-        )}
-      </Formik>    
-      <div className="text-center">
-        <h5>{t('user.register.create_account')}</h5>
-        {t('user.register.create_account_msg')} <br />
-        {t('user.register.create_account_msg_click_below')} <br />
+                    doTokenAuth({ variables: vars,
+                      refetchQueries: [
+                        // // Refetch list
+                        // {query: GET_ACCOUNTS_QUERY, variables: get_list_query_variables()},
+                        // // Refresh local cached results for this account
+                        // {query: GET_ACCOUNT_QUERY, variables: {"id": match.params.account_id}}
+                    ]})
+                    .then(({ data }) => {
+                        console.log('got data', data)
+                        const next = localStorage.getItem(CSLS.AUTH_LOGIN_NEXT) || "/"
+                        CSAuth.login(data.tokenAuth.token)
+                        doTokenRefresh({
+                          variables: { token: data.tokenAuth.token }
+                        }).then(({ data }) => {
+                          console.log('got refresh data', data)
+                          CSAuth.updateTokenInfo(data.refreshToken)
+                          // Login success!
+                          setTimeout(() => history.push(next), 500)
+                        }).catch((error) => {
+                          toast.error((t('general.toast_server_error')) + ': ' +  error, {
+                            position: toast.POSITION.BOTTOM_RIGHT
+                          })
+                          console.log('there was an error verifying the login', error)
+                          setSubmitting(false)
+                        })
+                      }).catch((error) => {
+                        if ( error.message.includes('credentials') ) {
+                          // Request user to input valid credentials
+                          toast.info((t('user.login.invalid_credentials')), {
+                            position: toast.POSITION.BOTTOM_RIGHT
+                          })
+                        } else {
+                          // Show general error message
+                          toast.error((t('general.toast_server_error')) + ': ' +  error, {
+                            position: toast.POSITION.BOTTOM_RIGHT
+                          })
+                        }
+                        console.log('there was an error sending the query', error)
+                        setSubmitting(false)
+                      })
+                }}
+                >
+                {({ isSubmitting, errors, values, setFieldTouched, setFieldValue }) => (
+                  <UserLoginForm
+                    isSubmitting={isSubmitting}
+                    etFieldValue={setFieldValue}
+                    esetFieldTouched={setFieldTouched}
+                    errors={errors}
+                    values={values}
+                  />
+                )}
+              </Formik>    
+              <div className="text-center">
+                <h5>{t('user.register.create_account')}</h5>
+                {t('user.register.create_account_msg')} <br />
+                {t('user.register.create_account_msg_click_below')} <br />
+              </div>
+              <Button 
+                block
+                color="link"
+                RootComponent="a"
+                href={(window.location.hostname === "localhost" || window.location.hostname === "dev.costasiella.com") ? 
+                  "http://localhost:8000/d/accounts/signup/" :
+                  "/d/accounts/signup/"
+                } 
+              >
+                {t('user.register.create_account')} <Icon name="chevron-right" />
+              </Button>
+              <ToastContainer autoClose={5000}/>
+            </div>
+          </Grid.Row>
+        </Container>
       </div>
-      <Button 
-        block
-        color="link"
-        RootComponent="a"
-        href={(window.location.hostname === "localhost" || window.location.hostname === "dev.costasiella.com") ? 
-          "http://localhost:8000/d/accounts/signup/" :
-          "/d/accounts/signup/"
-        } 
-      >
-        {t('user.register.create_account')} <Icon name="chevron-right" />
-      </Button>
-      <ToastContainer autoClose={5000}/>
-    </StandaloneFormPage>
+    </Page>
   )
 }
 

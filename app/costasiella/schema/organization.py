@@ -23,6 +23,7 @@ class OrganizationNode(DjangoObjectType):
         if self.logo_login:
             return self.logo_login.url
         else:
+            # TODO: Set a default url with the costasiella logo
             return ''
     #
     # def resolve_url_logo_login_thumbnail_small(self, info):
@@ -38,8 +39,8 @@ class OrganizationNode(DjangoObjectType):
 
     @classmethod
     def get_node(self, info, id):
-        user = info.context.user
-        require_login_and_permission(user, 'costasiella.view_organization')
+        # user = info.context.user
+        # require_login_and_permission(user, 'costasiella.view_organization')
 
         return self._meta.model.objects.get(id=id)
 
@@ -49,12 +50,12 @@ class OrganizationQuery(graphene.ObjectType):
     organization = graphene.relay.Node.Field(OrganizationNode)
 
     def resolve_organization(self, info, archived=False, **kwargs):
-        user = info.context.user
-        require_login_and_permission(user, 'costasiella.view_organization')
+        # user = info.context.user
+        # require_login_and_permission(user, 'costasiella.view_organization')
 
         ## return everything:
         # if user.has_perm('costasiella.view_organization'):
-        return Organization.objects.filter(archived = archived).order_by('name')
+        return Organization.objects.filter(archived=archived).order_by('name')
 
         # return None
 
