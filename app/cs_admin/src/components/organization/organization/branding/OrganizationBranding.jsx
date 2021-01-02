@@ -63,13 +63,11 @@ function OrganizationBranding({t, match, history}) {
         <Grid.Row>
           <Grid.Col md={4}>
             <GalleryCard>
+              <h5>{t('organization.branding.logo_login')}</h5>
               <GalleryCard.Image
                 src={organization.urlLogoLogin}
               >
               </GalleryCard.Image>
-              <GalleryCard.Details>
-                {t('organization.branding.logo_login')}
-              </GalleryCard.Details>
               <GalleryCard.Details>
                 <Link to={`/organization/edit/${id}/branding/logoLogin`}>
                   <Button block color="secondary">

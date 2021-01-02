@@ -940,7 +940,9 @@
             "add": "__STRING_NOT_TRANSLATED__"
         },
         "branding": {
-            "link_change": "__STRING_NOT_TRANSLATED__"
+            "link_change": "__STRING_NOT_TRANSLATED__",
+            "logo_login": "__STRING_NOT_TRANSLATED__",
+            "toast_edit_success": "__STRING_NOT_TRANSLATED__"
         }
     },
     "validity": {

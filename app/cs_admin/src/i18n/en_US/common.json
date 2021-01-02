@@ -625,7 +625,9 @@
             "toast_edit_success": "Saved document"
         },
         "branding": {
-            "link_change": "Change"
+            "link_change": "Change",
+            "logo_login": "Logo login",
+            "toast_edit_success": "Saved"
         }
     },
     "validity": {
