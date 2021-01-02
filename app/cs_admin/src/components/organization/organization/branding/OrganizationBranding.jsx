@@ -10,9 +10,6 @@ import { Formik } from 'formik'
 import { toast } from 'react-toastify'
 
 import { GET_ORGANIZATION_QUERY } from '../queries'
-// import { ORGANIZATION_SCHEMA } from './yupSchema'
-import OrganizationEditBrandingForm from './OrganizationEditBrandingForm'
-
 
 import {
   Button,
