@@ -12,6 +12,8 @@ export const GET_ACCOUNT_SCHEDULE_EVENT_TICKETS_QUERY = gql`
       edges {
         node {
           id
+          cancelled
+          infoMailSent
           scheduleEventTicket {
             name
             scheduleEvent {
@@ -19,7 +21,6 @@ export const GET_ACCOUNT_SCHEDULE_EVENT_TICKETS_QUERY = gql`
               name
             }
           }
-          infoMailSent
           invoiceItems(first:1) {
             edges {
               node {

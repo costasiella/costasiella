@@ -1,7 +1,7 @@
 // @flow
 
 import React, { useContext } from 'react'
-import { useQuery } from '@apollo/react-hooks'
+import { useQuery, useMutation } from '@apollo/react-hooks'
 import gql from "graphql-tag"
 import { v4 } from "uuid"
 import { withTranslation } from 'react-i18next'
@@ -12,23 +12,15 @@ import moment from 'moment'
 
 import {
   Badge,
-  Page,
-  Grid,
-  Icon,
-  Dimmer,
   Button,
-  Card,
-  Container,
   Table
 } from "tabler-react";
-import SiteWrapper from "../../../SiteWrapper"
 import HasPermissionWrapper from "../../../HasPermissionWrapper"
 import { toast } from 'react-toastify'
 
 import AppSettingsContext from '../../../context/AppSettingsContext'
 import BadgeBoolean from "../../../ui/BadgeBoolean"
 import RelationsAccountsBack from "../RelationsAccountsBack"
-import confirm_delete from "../../../../tools/confirm_delete"
 
 import ContentCard from "../../../general/ContentCard"
 import FinanceInvoicesStatus from "../../../ui/FinanceInvoiceStatus"
@@ -36,15 +28,9 @@ import FinanceInvoicesStatus from "../../../ui/FinanceInvoiceStatus"
 import AccountScheduleEventTicketsBase from "./AccountScheduleEventTicketsBase"
 
 
+import { UPDATE_ACCOUNT_SCHEDULE_EVENT_TICKET } from "../../../schedule/events/tickets/customers/queries"
 import { GET_ACCOUNT_SCHEDULE_EVENT_TICKETS_QUERY } from "./queries"
 
-// const CANCEL_SCHEDULE_EVENT_TICKET = gql`
-//   mutation DeleteAccountClasspass($input: DeleteAccountClasspassInput!) {
-//     deleteAccountClasspass(input: $input) {
-//       ok
-//     }
-//   }
-// `
 
 
 function AccountScheduleEventTickets({t, history, match}) {
@@ -57,6 +43,8 @@ function AccountScheduleEventTickets({t, history, match}) {
   const { loading, error, data, fetchMore } = useQuery(GET_ACCOUNT_SCHEDULE_EVENT_TICKETS_QUERY, { variables: {
     accountId: accountId
   }})
+  const [updateAccountScheduleEventTicket] = useMutation(UPDATE_ACCOUNT_SCHEDULE_EVENT_TICKET)
+
 
   if (loading) return (
     <AccountScheduleEventTicketsBase>
@@ -118,9 +106,8 @@ function AccountScheduleEventTickets({t, history, match}) {
                 <Table.Row key={v4()}>
                   <Table.Col key={v4()}>
                     {node.scheduleEventTicket.scheduleEvent.name} <br />
-                    <Badge>
-                      {node.scheduleEventTicket.name}
-                    </Badge>
+                    <Badge>{node.scheduleEventTicket.name}</Badge> {" "}
+                    {(node.cancelled) ? <Badge color="warning">{t("general.cancelled")}</Badge> : ""}
                   </Table.Col>
                   <Table.Col key={v4()}>
                     {moment(node.scheduleEventTicket.scheduleEvent.dateStart).format(dateFormat)}
@@ -159,7 +146,70 @@ function AccountScheduleEventTickets({t, history, match}) {
                     <BadgeBoolean value={node.infoMailSent} />
                   </Table.Col>
                   <Table.Col>
-                    Cancel here
+                    {(node.cancelled) ?
+                      <Button 
+                        className="pull-right"
+                        color="warning"
+                        onClick={() =>
+                          updateAccountScheduleEventTicket({ variables: {
+                            input: {
+                              id: node.id,
+                              cancelled: false
+                            }
+                          }, refetchQueries: [
+                            { 
+                              query: GET_ACCOUNT_SCHEDULE_EVENT_TICKETS_QUERY, 
+                              variables: { accountId: accountId }
+                            },
+                          ]})
+                          .then(({ data }) => {
+                              console.log('got data', data);
+                              toast.success((t('schedule.events.tickets.customers.uncancelled')), {
+                                  position: toast.POSITION.BOTTOM_RIGHT
+                                })
+                            }).catch((error) => {
+                              toast.error((t('general.toast_server_error')) + ': ' +  error, {
+                                  position: toast.POSITION.BOTTOM_RIGHT
+                                })
+                              console.log('there was an error sending the query', error)
+                            }
+                          )
+                        }
+                      >
+                        {t("general.uncancel")}
+                      </Button>
+                    :
+                      <Button 
+                        className="pull-right"
+                        color="warning"
+                        onClick={() =>
+                          updateAccountScheduleEventTicket({ variables: {
+                            input: {
+                              id: node.id,
+                              cancelled: true
+                            }
+                          }, refetchQueries: [
+                              { 
+                                query: GET_ACCOUNT_SCHEDULE_EVENT_TICKETS_QUERY, 
+                                variables: { accountId: accountId }
+                              },
+                          ]})
+                          .then(({ data }) => {
+                              console.log('got data', data);
+                              toast.success((t('schedule.events.tickets.customers.cancelled')), {
+                                  position: toast.POSITION.BOTTOM_RIGHT
+                                })
+                            }).catch((error) => {
+                              toast.error((t('general.toast_server_error')) + ': ' +  error, {
+                                  position: toast.POSITION.BOTTOM_RIGHT
+                                })
+                              console.log('there was an error sending the query', error)
+                            })
+                          }
+                        >
+                          {t("general.cancel")}
+                        </Button>
+                    }
                   </Table.Col>
                 </Table.Row>
               ))}
