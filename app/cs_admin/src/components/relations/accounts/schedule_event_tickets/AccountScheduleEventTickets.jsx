@@ -109,6 +109,7 @@ function AccountScheduleEventTickets({t, history, match}) {
               <Table.ColHeader>{t('general.ticket')}</Table.ColHeader>
               <Table.ColHeader>{t('general.start')}</Table.ColHeader>
               <Table.ColHeader>{t('general.invoice')}</Table.ColHeader>
+              <Table.ColHeader>{t('schedule.events.tickets.info_mail_sent')}</Table.ColHeader>
               <Table.ColHeader></Table.ColHeader> 
             </Table.Row>
           </Table.Header>
@@ -154,6 +155,9 @@ function AccountScheduleEventTickets({t, history, match}) {
                       </Button>
                     </Link>
                   </Table.Col> */}
+                  <Table.Col>
+                    <BadgeBoolean value={node.infoMailSent} />
+                  </Table.Col>
                   <Table.Col>
                     Cancel here
                   </Table.Col>
