@@ -68,11 +68,11 @@ function OrganizationBranding({t, match, history}) {
               >
               </GalleryCard.Image>
               <GalleryCard.Details>
-                Logo login
+                {t('organization.branding.logo_login')}
               </GalleryCard.Details>
               <GalleryCard.Details>
                 <Link to={`/organization/edit/${id}/branding/logoLogin`}>
-                  <Button block color="link">
+                  <Button block color="secondary">
                     {t("organization.branding.link_change")} <Icon name="chevron-right" />
                   </Button>
                 </Link>
