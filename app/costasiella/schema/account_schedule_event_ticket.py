@@ -39,6 +39,7 @@ class AccountScheduleEventTicketQuery(graphene.ObjectType):
         # Has permission: check params
 
         print(kwargs)
+        print('hello world')
 
         if not "schedule_event_ticket" in kwargs and not "account" in kwargs:
             raise Exception(_("schedule_event_ticket or account is a required parameter"))

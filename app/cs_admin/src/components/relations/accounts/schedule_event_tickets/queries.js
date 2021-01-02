@@ -15,10 +15,15 @@ export const GET_ACCOUNT_SCHEDULE_EVENT_TICKETS_QUERY = gql`
           cancelled
           infoMailSent
           scheduleEventTicket {
+            id
             name
             scheduleEvent {
               id
               name
+              dateStart
+              organizationLocation {
+                name
+              }
             }
           }
           invoiceItems(first:1) {

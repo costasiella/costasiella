@@ -104,12 +104,12 @@ function AccountScheduleEventTickets({t, history, match}) {
           <Table.Body>
               {accountScheduleEventTickets.edges.map(({ node }) => (
                 <Table.Row key={v4()}>
-                  <Table.Col key={v4()}>
+                  <Table.Col>
                     {node.scheduleEventTicket.scheduleEvent.name} <br />
                     <Badge>{node.scheduleEventTicket.name}</Badge> {" "}
                     {(node.cancelled) ? <Badge color="warning">{t("general.cancelled")}</Badge> : ""}
                   </Table.Col>
-                  <Table.Col key={v4()}>
+                  <Table.Col>
                     {moment(node.scheduleEventTicket.scheduleEvent.dateStart).format(dateFormat)}
                   </Table.Col>
                   <Table.Col>

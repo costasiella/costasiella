@@ -197,6 +197,7 @@ import SettingsMailTemplateEdit from './components/settings/mail/SettingsMailTem
 import ShopAccountHome from './components/shop/account/home/ShopAccountHome'
 import ShopAccountClassInfo from './components/shop/account/class_info/ShopAccountClassInfo'
 import ShopAccountClasspasses from './components/shop/account/classpasses/ShopAccountClasspasses'
+import ShopAccountEventTickets from './components/shop/account/event_tickets/ShopAccountEventTickets'
 import ShopAccountInvoices from './components/shop/account/invoices/ShopAccountInvoices'
 import ShopAccountOrders from './components/shop/account/orders/ShopAccountOrders'
 import ShopAccountProfile from './components/shop/account/profile/ShopAccountProfile'
@@ -503,6 +504,7 @@ function AppRoot({ t }) {
           <PrivateRoute exact path = "/shop/account/class_info/:class_id/:date" component={ShopAccountClassInfo} />
           <PrivateRoute exact path = "/shop/account/classes" component={ShopClasses} />
           <PrivateRoute exact path = "/shop/account/classpasses" component={ShopAccountClasspasses} />
+          <PrivateRoute exact path = "/shop/account/event_tickets" component={ShopAccountEventTickets} />
           <PrivateRoute exact path = "/shop/account/invoices" component={ShopAccountInvoices} />
           <PrivateRoute exact path = "/shop/account/orders" component={ShopAccountOrders} />
           <PrivateRoute exact path = "/shop/account/profile" component={ShopAccountProfile} />
