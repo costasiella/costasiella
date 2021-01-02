@@ -23,6 +23,12 @@ table .btn {
   text-decoration: none !important;
 }
 
+.page-subtitle {
+  font-size: 1rem;
+  color: #6e7687;
+  margin-left: 0.7rem;
+}
+
 /* Add missing xs column media definition */
 @media (max-width: 575px) {
   .col-xs-12 {
