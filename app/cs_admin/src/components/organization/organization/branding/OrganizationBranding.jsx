@@ -22,7 +22,7 @@ import {
 } from "tabler-react";
 import HasPermissionWrapper from "../../../HasPermissionWrapper"
 
-import OrganizationEditBrandingBase from "./OrganizationEditBrandingBase"
+import OrganizationBrandingBase from "./OrganizationBrandingBase"
 
 
 const UPDATE_ORGANIZATION = gql`
@@ -37,7 +37,7 @@ const UPDATE_ORGANIZATION = gql`
 `
 
 
-function OrganizationEdit({t, match, history}) {
+function OrganizationBranding({t, match, history}) {
   const id = match.params.id
 
   const [updateOrganization] = useMutation(UPDATE_ORGANIZATION)
@@ -47,22 +47,22 @@ function OrganizationEdit({t, match, history}) {
   }})
 
   if (loading) return (
-    <OrganizationEditBrandingBase>
+    <OrganizationBrandingBase>
       {t("general.loading_with_dots")}
-    </OrganizationEditBrandingBase>
+    </OrganizationBrandingBase>
   )
   if (error) return (
-    <OrganizationEditBrandingBase>
+    <OrganizationBrandingBase>
       <p>{t('general.error_sad_smiley')}</p>
       <p>{error.message}</p>
-    </OrganizationEditBrandingBase>
+    </OrganizationBrandingBase>
   )
 
   const organization = data.organization
 
   return (
  
-    <OrganizationEditBrandingBase>
+    <OrganizationBrandingBase>
         <Grid.Row>
           <Grid.Col md={4}>
             <GalleryCard>
@@ -83,9 +83,9 @@ function OrganizationEdit({t, match, history}) {
             </GalleryCard>
           </Grid.Col>
         </Grid.Row>
-    </OrganizationEditBrandingBase>
+    </OrganizationBrandingBase>
   )
 }
 
 
-export default withTranslation()(withRouter(OrganizationEdit))
+export default withTranslation()(withRouter(OrganizationBranding))

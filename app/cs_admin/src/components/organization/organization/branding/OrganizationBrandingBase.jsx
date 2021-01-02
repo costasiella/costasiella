@@ -19,7 +19,7 @@ import HasPermissionWrapper from "../../../HasPermissionWrapper"
 import OrganizationMenu from "../../OrganizationMenu"
 
 
-function OrganizationEditBrandingBase({t, match, history, children}) {
+function OrganizationBrandingBase({t, match, history, children}) {
   const id = match.params.id
 
   return (
@@ -44,4 +44,4 @@ function OrganizationEditBrandingBase({t, match, history, children}) {
 }
 
 
-export default withTranslation()(withRouter(OrganizationEditBrandingBase))
+export default withTranslation()(withRouter(OrganizationBrandingBase))
