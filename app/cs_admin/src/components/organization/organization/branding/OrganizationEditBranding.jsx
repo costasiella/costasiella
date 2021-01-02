@@ -15,12 +15,10 @@ import OrganizationEditBrandingForm from './OrganizationEditBrandingForm'
 
 
 import {
-  Page,
-  Grid,
-  Icon,
   Button,
-  Card,
-  Container
+  GalleryCard,
+  Grid,
+  Icon
 } from "tabler-react";
 import HasPermissionWrapper from "../../../HasPermissionWrapper"
 
@@ -65,7 +63,26 @@ function OrganizationEdit({t, match, history}) {
   return (
  
     <OrganizationEditBrandingBase>
-        hello world
+        <Grid.Row>
+          <Grid.Col md={4}>
+            <GalleryCard>
+              <GalleryCard.Image
+                src={organization.urlLogoLogin}
+              >
+              </GalleryCard.Image>
+              <GalleryCard.Details>
+                Logo login
+              </GalleryCard.Details>
+              <GalleryCard.Details>
+                <Link to={`/organization/edit/${id}/branding/logoLogin`}>
+                  <Button block color="link">
+                    {t("organization.branding.link_change")} <Icon name="chevron-right" />
+                  </Button>
+                </Link>
+              </GalleryCard.Details>
+            </GalleryCard>
+          </Grid.Col>
+        </Grid.Row>
     </OrganizationEditBrandingBase>
   )
 }
