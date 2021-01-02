@@ -609,7 +609,10 @@
             "title_edit": "Organization",
             "toast_edit_success": "Saved organization",
             "registration": "Registration ID",
-            "tax_registration": "Tax registration ID"
+            "tax_registration": "Tax registration ID",
+            "branding": {
+                "title": "Branding"
+            }
         },
         "documents": {
             "title": "Documents",
