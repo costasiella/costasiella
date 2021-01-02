@@ -125,7 +125,7 @@ def validate_create_update_input(input):
 class UpdateOrganization(graphene.relay.ClientIDMutation):
     class Input:
         id = graphene.ID(required=True)
-        name = graphene.String(required=True)
+        name = graphene.String(required=False)
         address = graphene.String(required=False)
         phone = graphene.String(required=False)
         email = graphene.String(required=False)
