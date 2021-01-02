@@ -110,8 +110,13 @@ function ScheduleEventMediaAdd({ t, history, match }) {
           }
           
           let file = inputFileName.current.files[0]
-          if (file) {
+          if (file && file.size < 5242880) {
             reader.readAsDataURL(file)
+          } else if (file && file.size > 5242880) { 
+            toast.error(t("error_messages.selected_file_exceeds_max_filesize"), {
+              position: toast.POSITION.BOTTOM_RIGHT
+            })
+            setSubmitting(false)
           } else {
             toast.error(t("general.please_select_a_file"), {
               position: toast.POSITION.BOTTOM_RIGHT

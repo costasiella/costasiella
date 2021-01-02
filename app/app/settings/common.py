@@ -255,8 +255,9 @@ ACCOUNT_SIGNUP_FORM_CLASS = 'costasiella.forms.SignupForm'
 ACCOUNT_SIGNUP_PASSWORD_ENTER_TWICE = False
 ACCOUNT_LOGIN_ON_PASSWORD_RESET = False  # Log in users after password reset instead of showing a "done" page.
 
-# Allow Base64 encoded uploads of up to 5MB
-DATA_UPLOAD_MAX_MEMORY_SIZE = 5242880
+# Allow Base64 encoded uploads of up to 10MB
+DATA_UPLOAD_MAX_MEMORY_SIZE = 10485760
+# 5242880 (5MB)
 
 # Vault configuration
 # https://www.vaultproject.io/

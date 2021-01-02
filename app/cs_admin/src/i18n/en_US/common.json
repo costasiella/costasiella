@@ -1663,5 +1663,8 @@
                 "revoked": "Revoked"
             }
         }
+    },
+    "error_messages": {
+        "selected_file_exceeds_max_filesize": "The chosen file exceeds the size limit. Please select a file that's < 5MB"
     }
 }

@@ -1663,5 +1663,8 @@
                 "revoked": "__STRING_NOT_TRANSLATED__"
             }
         }
+    },
+    "error_messages": {
+        "selected_file_exceeds_max_filesize": "__STRING_NOT_TRANSLATED__"
     }
 }
