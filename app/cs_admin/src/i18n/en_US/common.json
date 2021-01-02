@@ -623,6 +623,9 @@
             "deleted": "Deleted document",
             "edit": "Edit document",
             "toast_edit_success": "Saved document"
+        },
+        "branding": {
+            "link_change": "Change"
         }
     },
     "validity": {

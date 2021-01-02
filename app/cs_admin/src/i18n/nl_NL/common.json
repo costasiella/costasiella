@@ -938,6 +938,9 @@
             "empty_list": "__STRING_NOT_TRANSLATED__",
             "empty_archive": "__STRING_NOT_TRANSLATED__",
             "add": "__STRING_NOT_TRANSLATED__"
+        },
+        "branding": {
+            "link_change": "__STRING_NOT_TRANSLATED__"
         }
     },
     "validity": {
