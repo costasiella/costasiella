@@ -94,25 +94,25 @@ class GQLOrganization(TestCase):
         self.assertEqual(data['organization']['registration'], organization.registration)
         self.assertEqual(data['organization']['taxRegistration'], organization.tax_registration)
 
+    # Organizations are public, so no need to test this anymore
+    # def test_query_one_anon_user(self):
+    #     """ Deny permission for anon users Query one  """
+    #     query = self.organization_query
+    #
+    #     executed = execute_test_client_api_query(query, self.anon_user, variables={"id": self.organization_id})
+    #     errors = executed.get('errors')
+    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
 
-    def test_query_one_anon_user(self):
-        """ Deny permission for anon users Query one  """   
-        query = self.organization_query
-        
-        executed = execute_test_client_api_query(query, self.anon_user, variables={"id": self.organization_id})
-        errors = executed.get('errors')
-        self.assertEqual(errors[0]['message'], 'Not logged in!')
-
-
-    def test_query_one_permission_denied(self):
-        """ Permission denied message when user lacks authorization """   
-        query = self.organization_query
-        
-        user = f.RegularUserFactory.create()
-
-        executed = execute_test_client_api_query(query, user, variables={"id": self.organization_id})
-        errors = executed.get('errors')
-        self.assertEqual(errors[0]['message'], 'Permission denied!')
+    # Organizations are public, so no need to test this anymore
+    # def test_query_one_permission_denied(self):
+    #     """ Permission denied message when user lacks authorization """
+    #     query = self.organization_query
+    #
+    #     user = f.RegularUserFactory.create()
+    #
+    #     executed = execute_test_client_api_query(query, user, variables={"id": self.organization_id})
+    #     errors = executed.get('errors')
+    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
     def test_query_one_permission_granted(self):
