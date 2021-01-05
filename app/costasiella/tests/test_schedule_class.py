@@ -60,6 +60,8 @@ class GQLScheduleClass(TestCase):
                 "dateEnd": "2999-12-31",
                 "timeStart": "11:00:00",
                 "timeEnd": "12:30:00",
+                "spaces": 20,
+                "walkInSpaces": 5,
                 "displayPublic": True
             }
         }
@@ -75,6 +77,8 @@ class GQLScheduleClass(TestCase):
                 "dateEnd": "2999-12-31",
                 "timeStart": "16:00:00",
                 "timeEnd": "17:30:00",
+                "spaces": 20,
+                "walkInSpaces": 5,
                 "displayPublic": True
             }
         }
@@ -581,6 +585,8 @@ class GQLScheduleClass(TestCase):
             self.admin_user,
             variables=variables
         )
+        print("@@@@@@@@@@@@@")
+        print(executed)
 
         data = executed.get('data')
         self.assertEqual(data['createScheduleClass']['scheduleItem']['frequencyType'], variables['input']['frequencyType'])
@@ -594,256 +600,264 @@ class GQLScheduleClass(TestCase):
         self.assertEqual(data['createScheduleClass']['scheduleItem']['timeEnd'], variables['input']['timeEnd'])
         self.assertEqual(data['createScheduleClass']['scheduleItem']['displayPublic'], variables['input']['displayPublic'])
 
-    # def test_create_schedule_class_add_all_non_archived_organization_subscription_groups(self):
-    #   """
-    #   Create a schedule class and check whether a subscription group is added
-    #   """
-    #   subscription_group = f.OrganizationSubscriptionGroupFactory.create()
-    #
-    #   query = self.scheduleclass_create_mutation
-    #   variables = self.variables_create
-    #
-    #   executed = execute_test_client_api_query(
-    #       query,
-    #       self.admin_user,
-    #       variables=variables
-    #   )
-    #
-    #   data = executed.get('data')
-    #   schedule_item_id = data['createScheduleClass']['scheduleItem']['id']
-    #
-    #   schedule_item = models.ScheduleItem.objects.get(id=get_rid(schedule_item_id).id)
-    #
-    #   self.assertEqual(models.ScheduleItemOrganizationSubscriptionGroup.objects.filter(
-    #       schedule_item=schedule_item
-    #   ).exists(), True)
-    #
-    # def test_create_schedule_class_add_all_non_archived_organization_classpass_groups(self):
-    #   """
-    #   Create a schedule class and check whether a classpass group is added
-    #   """
-    #   classpass_group = f.OrganizationClasspassGroupFactory.create()
-    #
-    #   query = self.scheduleclass_create_mutation
-    #   variables = self.variables_create
-    #
-    #   executed = execute_test_client_api_query(
-    #       query,
-    #       self.admin_user,
-    #       variables=variables
-    #   )
-    #
-    #   data = executed.get('data')
-    #   schedule_item_id = data['createScheduleClass']['scheduleItem']['id']
-    #
-    #   schedule_item = models.ScheduleItem.objects.get(id=get_rid(schedule_item_id).id)
-    #
-    #   self.assertEqual(models.ScheduleItemOrganizationClasspassGroup.objects.filter(
-    #       schedule_item = schedule_item
-    #   ).exists(), True)
-    #
-    # def test_create_scheduleclass_anon_user(self):
-    #     """ Don't allow creating scheduleclasses for non-logged in users """
-    #     query = self.scheduleclass_create_mutation
-    #     variables = self.variables_create
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.anon_user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
-    #
-    # def test_create_location_permission_granted(self):
-    #     """ Allow creating scheduleclasses for users with permissions """
-    #     query = self.scheduleclass_create_mutation
-    #     variables = self.variables_create
-    #
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename=self.permission_add)
-    #     user.user_permissions.add(permission)
-    #     user.save()
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['createScheduleClass']['scheduleItem']['frequencyType'], variables['input']['frequencyType'])
-    #     self.assertEqual(data['createScheduleClass']['scheduleItem']['frequencyInterval'], variables['input']['frequencyInterval'])
-    #
-    # def test_create_scheduleclass_permission_denied(self):
-    #     """ Check create scheduleclass permission denied error message """
-    #     query = self.scheduleclass_create_mutation
-    #     variables = self.variables_create
-    #
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
-    #
-    # def test_update_scheduleclass(self):
-    #     """ Update a scheduleclass """
-    #     query = self.scheduleclass_update_mutation
-    #     scheduleclass = f.SchedulePublicWeeklyClassFactory.create()
-    #     variables = self.variables_update
-    #     variables['input']['id'] = to_global_id('ScheduleItemNode', scheduleclass.pk)
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.admin_user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['updateScheduleClass']['scheduleItem']['id'], variables['input']['id'])
-    #     self.assertEqual(data['updateScheduleClass']['scheduleItem']['frequencyType'], variables['input']['frequencyType'])
-    #     self.assertEqual(data['updateScheduleClass']['scheduleItem']['frequencyInterval'], variables['input']['frequencyInterval'])
-    #     self.assertEqual(data['updateScheduleClass']['scheduleItem']['organizationLocationRoom']['id'], variables['input']['organizationLocationRoom'])
-    #     self.assertEqual(data['updateScheduleClass']['scheduleItem']['organizationClasstype']['id'], variables['input']['organizationClasstype'])
-    #     self.assertEqual(data['updateScheduleClass']['scheduleItem']['organizationLevel']['id'], variables['input']['organizationLevel'])
-    #     self.assertEqual(data['updateScheduleClass']['scheduleItem']['dateStart'], variables['input']['dateStart'])
-    #     self.assertEqual(data['updateScheduleClass']['scheduleItem']['dateEnd'], variables['input']['dateEnd'])
-    #     self.assertEqual(data['updateScheduleClass']['scheduleItem']['timeStart'], variables['input']['timeStart'])
-    #     self.assertEqual(data['updateScheduleClass']['scheduleItem']['timeEnd'], variables['input']['timeEnd'])
-    #     self.assertEqual(data['updateScheduleClass']['scheduleItem']['displayPublic'], variables['input']['displayPublic'])
-    #
-    # def test_update_scheduleclass_anon_user(self):
-    #     """ Don't allow updating scheduleclasses for non-logged in users """
-    #     query = self.scheduleclass_update_mutation
-    #     scheduleclass = f.SchedulePublicWeeklyClassFactory.create()
-    #     variables = self.variables_update
-    #     variables['input']['id'] = to_global_id('ScheduleItemNode', scheduleclass.pk)
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.anon_user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
-    #
-    # def test_update_scheduleclass_permission_granted(self):
-    #     """ Allow updating scheduleclasses for users with permissions """
-    #     query = self.scheduleclass_update_mutation
-    #     scheduleclass = f.SchedulePublicWeeklyClassFactory.create()
-    #     variables = self.variables_update
-    #     variables['input']['id'] = to_global_id('ScheduleItemNode', scheduleclass.pk)
-    #
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename=self.permission_change)
-    #     user.user_permissions.add(permission)
-    #     user.save()
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['updateScheduleClass']['scheduleItem']['id'], variables['input']['id'])
-    #     self.assertEqual(data['updateScheduleClass']['scheduleItem']['frequencyType'], variables['input']['frequencyType'])
-    #
-    # def test_update_scheduleclass_permission_denied(self):
-    #     """ Check update scheduleclass permission denied error message """
-    #     query = self.scheduleclass_update_mutation
-    #     scheduleclass = f.SchedulePublicWeeklyClassFactory.create()
-    #     variables = self.variables_update
-    #     variables['input']['id'] = to_global_id('ScheduleItemNode', scheduleclass.pk)
-    #
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
-    #
-    # def test_delete_scheduleclass(self):
-    #     """ Delete a scheduleclass """
-    #     query = self.scheduleclass_delete_mutation
-    #     scheduleclass = f.SchedulePublicWeeklyClassFactory.create()
-    #     variables = self.variables_delete
-    #     variables['input']['id'] = to_global_id('ScheduleItemNode', scheduleclass.pk)
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.admin_user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['deleteScheduleClass']['ok'], True)
-    #
-    # def test_delete_scheduleclass_anon_user(self):
-    #     """ Delete scheduleclass denied for anon user """
-    #     query = self.scheduleclass_delete_mutation
-    #     scheduleclass = f.SchedulePublicWeeklyClassFactory.create()
-    #     variables = self.variables_delete
-    #     variables['input']['id'] = to_global_id('ScheduleItemNode', scheduleclass.pk)
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.anon_user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
-    #
-    # def test_delete_scheduleclass_permission_granted(self):
-    #     """ Allow deleting scheduleclasses for users with permissions """
-    #     query = self.scheduleclass_delete_mutation
-    #     scheduleclass = f.SchedulePublicWeeklyClassFactory.create()
-    #     variables = self.variables_delete
-    #     variables['input']['id'] = to_global_id('ScheduleItemNode', scheduleclass.pk)
-    #
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename=self.permission_delete)
-    #     user.user_permissions.add(permission)
-    #     user.save()
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['deleteScheduleClass']['ok'], True)
-    #
-    # def test_delete_scheduleclass_permission_denied(self):
-    #     """ Check delete scheduleclass permission denied error message """
-    #     query = self.scheduleclass_delete_mutation
-    #     scheduleclass = f.SchedulePublicWeeklyClassFactory.create()
-    #     variables = self.variables_delete
-    #     variables['input']['id'] = to_global_id('ScheduleItemNode', scheduleclass.pk)
-    #
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=variables
-    #     )
-    #
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
+    def test_create_schedule_class_add_all_non_archived_organization_subscription_groups(self):
+      """
+      Create a schedule class and check whether a subscription group is added
+      """
+      subscription_group = f.OrganizationSubscriptionGroupFactory.create()
+
+      query = self.scheduleclass_create_mutation
+      variables = self.variables_create
+
+      executed = execute_test_client_api_query(
+          query,
+          self.admin_user,
+          variables=variables
+      )
+
+      data = executed.get('data')
+      schedule_item_id = data['createScheduleClass']['scheduleItem']['id']
+
+      schedule_item = models.ScheduleItem.objects.get(id=get_rid(schedule_item_id).id)
+
+      self.assertEqual(models.ScheduleItemOrganizationSubscriptionGroup.objects.filter(
+          schedule_item=schedule_item
+      ).exists(), True)
+
+    def test_create_schedule_class_add_all_non_archived_organization_classpass_groups(self):
+      """
+      Create a schedule class and check whether a classpass group is added
+      """
+      classpass_group = f.OrganizationClasspassGroupFactory.create()
+
+      query = self.scheduleclass_create_mutation
+      variables = self.variables_create
+
+      executed = execute_test_client_api_query(
+          query,
+          self.admin_user,
+          variables=variables
+      )
+
+      data = executed.get('data')
+      schedule_item_id = data['createScheduleClass']['scheduleItem']['id']
+
+      schedule_item = models.ScheduleItem.objects.get(id=get_rid(schedule_item_id).id)
+
+      self.assertEqual(models.ScheduleItemOrganizationClasspassGroup.objects.filter(
+          schedule_item = schedule_item
+      ).exists(), True)
+
+    def test_create_scheduleclass_anon_user(self):
+        """ Don't allow creating scheduleclasses for non-logged in users """
+        query = self.scheduleclass_create_mutation
+        variables = self.variables_create
+
+        executed = execute_test_client_api_query(
+            query,
+            self.anon_user,
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
+
+    def test_create_location_permission_granted(self):
+        """ Allow creating scheduleclasses for users with permissions """
+        query = self.scheduleclass_create_mutation
+        variables = self.variables_create
+
+        # Create regular user
+        user = f.RegularUserFactory.create()
+        permission = Permission.objects.get(codename=self.permission_add)
+        user.user_permissions.add(permission)
+        user.save()
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['createScheduleClass']['scheduleItem']['frequencyType'],
+                         variables['input']['frequencyType'])
+        self.assertEqual(data['createScheduleClass']['scheduleItem']['frequencyInterval'],
+                         variables['input']['frequencyInterval'])
+
+    def test_create_scheduleclass_permission_denied(self):
+        """ Check create scheduleclass permission denied error message """
+        query = self.scheduleclass_create_mutation
+        variables = self.variables_create
+
+        # Create regular user
+        user = f.RegularUserFactory.create()
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
+
+    def test_update_scheduleclass(self):
+        """ Update a scheduleclass """
+        query = self.scheduleclass_update_mutation
+        scheduleclass = f.SchedulePublicWeeklyClassFactory.create()
+        variables = self.variables_update
+        variables['input']['id'] = to_global_id('ScheduleItemNode', scheduleclass.pk)
+
+        executed = execute_test_client_api_query(
+            query,
+            self.admin_user,
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['updateScheduleClass']['scheduleItem']['id'], variables['input']['id'])
+        self.assertEqual(data['updateScheduleClass']['scheduleItem']['frequencyType'],
+                         variables['input']['frequencyType'])
+        self.assertEqual(data['updateScheduleClass']['scheduleItem']['frequencyInterval'],
+                         variables['input']['frequencyInterval'])
+        self.assertEqual(data['updateScheduleClass']['scheduleItem']['organizationLocationRoom']['id'],
+                         variables['input']['organizationLocationRoom'])
+        self.assertEqual(data['updateScheduleClass']['scheduleItem']['organizationClasstype']['id'],
+                         variables['input']['organizationClasstype'])
+        self.assertEqual(data['updateScheduleClass']['scheduleItem']['organizationLevel']['id'],
+                         variables['input']['organizationLevel'])
+        self.assertEqual(data['updateScheduleClass']['scheduleItem']['dateStart'], variables['input']['dateStart'])
+        self.assertEqual(data['updateScheduleClass']['scheduleItem']['dateEnd'], variables['input']['dateEnd'])
+        self.assertEqual(data['updateScheduleClass']['scheduleItem']['timeStart'], variables['input']['timeStart'])
+        self.assertEqual(data['updateScheduleClass']['scheduleItem']['timeEnd'], variables['input']['timeEnd'])
+        self.assertEqual(data['updateScheduleClass']['scheduleItem']['displayPublic'],
+                         variables['input']['displayPublic'])
+
+    def test_update_scheduleclass_anon_user(self):
+        """ Don't allow updating scheduleclasses for non-logged in users """
+        query = self.scheduleclass_update_mutation
+        scheduleclass = f.SchedulePublicWeeklyClassFactory.create()
+        variables = self.variables_update
+        variables['input']['id'] = to_global_id('ScheduleItemNode', scheduleclass.pk)
+
+        executed = execute_test_client_api_query(
+            query,
+            self.anon_user,
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
+
+    def test_update_scheduleclass_permission_granted(self):
+        """ Allow updating scheduleclasses for users with permissions """
+        query = self.scheduleclass_update_mutation
+        scheduleclass = f.SchedulePublicWeeklyClassFactory.create()
+        variables = self.variables_update
+        variables['input']['id'] = to_global_id('ScheduleItemNode', scheduleclass.pk)
+
+        # Create regular user
+        user = f.RegularUserFactory.create()
+        permission = Permission.objects.get(codename=self.permission_change)
+        user.user_permissions.add(permission)
+        user.save()
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['updateScheduleClass']['scheduleItem']['id'], variables['input']['id'])
+        self.assertEqual(data['updateScheduleClass']['scheduleItem']['frequencyType'], variables['input']['frequencyType'])
+
+    def test_update_scheduleclass_permission_denied(self):
+        """ Check update scheduleclass permission denied error message """
+        query = self.scheduleclass_update_mutation
+        scheduleclass = f.SchedulePublicWeeklyClassFactory.create()
+        variables = self.variables_update
+        variables['input']['id'] = to_global_id('ScheduleItemNode', scheduleclass.pk)
+
+        # Create regular user
+        user = f.RegularUserFactory.create()
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
+
+    def test_delete_scheduleclass(self):
+        """ Delete a scheduleclass """
+        query = self.scheduleclass_delete_mutation
+        scheduleclass = f.SchedulePublicWeeklyClassFactory.create()
+        variables = self.variables_delete
+        variables['input']['id'] = to_global_id('ScheduleItemNode', scheduleclass.pk)
+
+        executed = execute_test_client_api_query(
+            query,
+            self.admin_user,
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['deleteScheduleClass']['ok'], True)
+
+    def test_delete_scheduleclass_anon_user(self):
+        """ Delete scheduleclass denied for anon user """
+        query = self.scheduleclass_delete_mutation
+        scheduleclass = f.SchedulePublicWeeklyClassFactory.create()
+        variables = self.variables_delete
+        variables['input']['id'] = to_global_id('ScheduleItemNode', scheduleclass.pk)
+
+        executed = execute_test_client_api_query(
+            query,
+            self.anon_user,
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
+
+    def test_delete_scheduleclass_permission_granted(self):
+        """ Allow deleting scheduleclasses for users with permissions """
+        query = self.scheduleclass_delete_mutation
+        scheduleclass = f.SchedulePublicWeeklyClassFactory.create()
+        variables = self.variables_delete
+        variables['input']['id'] = to_global_id('ScheduleItemNode', scheduleclass.pk)
+
+        # Create regular user
+        user = f.RegularUserFactory.create()
+        permission = Permission.objects.get(codename=self.permission_delete)
+        user.user_permissions.add(permission)
+        user.save()
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['deleteScheduleClass']['ok'], True)
+
+    def test_delete_scheduleclass_permission_denied(self):
+        """ Check delete scheduleclass permission denied error message """
+        query = self.scheduleclass_delete_mutation
+        scheduleclass = f.SchedulePublicWeeklyClassFactory.create()
+        variables = self.variables_delete
+        variables['input']['id'] = to_global_id('ScheduleItemNode', scheduleclass.pk)
+
+        # Create regular user
+        user = f.RegularUserFactory.create()
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=variables
+        )
+
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
 
