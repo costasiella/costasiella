@@ -702,6 +702,25 @@ class AccountSubscriptionCreditAttendanceSubFactory(factory.DjangoModelFactory):
     mutation_amount = 1
     description = "Test subscription SUB mutation"
 
+
+class ScheduleEventFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.ScheduleEvent
+
+    archived = False
+    display_public = True
+    display_shop = True
+    auto_send_info_mail = False
+    organization_location = factory.SubFactory(OrganizationLocationFactory)
+    name = "Test event"
+    tagline = "A catching tagline"
+    preview = "Beautiful event preview"
+    description = "Extensive description"
+    organization_level = factory.SubFactory(OrganizationLevelFactory)
+    teacher = factory.SubFactory(TeacherFactory)
+    teacher_2 = factory.SubFactory(Teacher2Factory)
+    info_mail_content = "Hello world from the info mail field"
+
     
 class ScheduleItemTeacherFactory(factory.DjangoModelFactory):
     class Meta:

@@ -244,7 +244,6 @@ class GQLFinanceInvoice(TestCase):
         # This is run after every test
         pass
 
-
     def test_query(self):
         """ Query list of account invoices """
         query = self.invoices_query
