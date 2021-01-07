@@ -2,7 +2,7 @@ amqp==5.0.2
 aniso8601==3.0.2
 anyjson==0.3.3
 argon2-cffi==19.1.0
-asgiref==3.2.3
+asgiref==3.3.1
 billiard==3.6.3.0
 cairocffi==1.1.0
 CairoSVG==2.4.2
@@ -17,13 +17,12 @@ click-repl==0.1.6
 cssselect2==0.2.2
 decorator==4.3.2
 defusedxml==0.5.0
-Django==3.0.8
+Django==3.1.5
 django-allauth==0.41.0
-django-celery==3.3.1
 django-celery-beat==2.0.0
 django-celery-results==2.0.0
 django-cors-headers==3.2.0
-django-defender==0.7.0
+django-defender==0.8.0
 django-filter==2.1.0
 django-graphiql==0.4.4
 django-graphql-jwt==0.3.1
