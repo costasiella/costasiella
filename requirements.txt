@@ -23,7 +23,7 @@ django-celery-beat==2.0.0
 django-celery-results==2.0.0
 django-cors-headers==3.2.0
 django-defender==0.8.0
-django-filter==2.1.0
+django-filter==2.4.0
 django-graphiql==0.4.4
 django-graphql-jwt==0.3.1
 django-timezone-field==4.0
