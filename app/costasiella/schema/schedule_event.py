@@ -30,9 +30,9 @@ class ScheduleEventQuery(graphene.ObjectType):
     schedule_events = DjangoFilterConnectionField(ScheduleEventNode)
     schedule_event = graphene.relay.Node.Field(ScheduleEventNode)
 
+    # Login is not required, public schedule events are well... public
     def resolve_schedule_events(self, info, archived=False, **kwargs):
         user = info.context.user
-        require_login(user)
         # Has permission: return everything requested
         if user.has_perm('costasiella.view_scheduleevent'):
             return ScheduleEvent.objects.filter(archived=archived).order_by('date_start')
