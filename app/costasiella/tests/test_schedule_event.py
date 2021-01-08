@@ -169,45 +169,11 @@ class GQLScheduleEvent(TestCase):
   }
 '''
 
-        self.invoice_create_mutation = ''' 
-  mutation CreateFinanceInvoice($input: CreateFinanceInvoiceInput!) {
-    createFinanceInvoice(input: $input) {
-      financeInvoice {
+        self.event_create_mutation = ''' 
+  mutation CreateScheduleEvent($input:CreateScheduleEventInput!) {
+    createScheduleEvent(input: $input) {
+      scheduleEvent{
         id
-        account {
-          id
-          fullName
-        }
-        financeInvoiceGroup {
-          id 
-          name
-        }
-        financePaymentMethod {
-          id
-          name
-        }
-        relationCompany
-        relationCompanyRegistration
-        relationCompanyTaxRegistration
-        relationContactName
-        relationAddress
-        relationPostcode
-        relationCity
-        relationCountry
-        status
-        summary
-        invoiceNumber
-        dateSent
-        dateDue
-        terms
-        footer
-        note
-        subtotalDisplay
-        taxDisplay
-        totalDisplay
-        paidDisplay
-        balanceDisplay
-        updatedAt
       }
     }
   }
@@ -440,39 +406,38 @@ class GQLScheduleEvent(TestCase):
         self.assertEqual(data['scheduleEvent']['organizationLocation']['id'],
                          to_global_id("OrganizationLocationNode", schedule_event.organization_location.id))
 
-    #
-    # def test_create_invoice(self):
-    #     """ Create an account invoice """
-    #     query = self.invoice_create_mutation
-    #
-    #     account = f.RegularUserFactory.create()
-    #     variables = self.variables_create
-    #     variables['input']['account'] = to_global_id('AccountNode', account.id)
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.admin_user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #
-    #     # Get invoice
-    #     rid = get_rid(data['createFinanceInvoice']['financeInvoice']['id'])
-    #     invoice = models.FinanceInvoice.objects.get(pk=rid.id)
-    #
-    #     self.assertEqual(
-    #         data['createFinanceInvoice']['financeInvoice']['account']['id'],
-    #         variables['input']['account']
-    #     )
-    #     self.assertEqual(
-    #         data['createFinanceInvoice']['financeInvoice']['financeInvoiceGroup']['id'],
-    #         variables['input']['financeInvoiceGroup']
-    #     )
-    #     self.assertEqual(data['createFinanceInvoice']['financeInvoice']['dateSent'], str(timezone.now().date()))
-    #     self.assertEqual(data['createFinanceInvoice']['financeInvoice']['dateDue'],
-    #         str(timezone.now().date() + datetime.timedelta(days=invoice.finance_invoice_group.due_after_days))
-    #     )
-    #     self.assertEqual(data['createFinanceInvoice']['financeInvoice']['summary'], variables['input']['summary'])
+    def test_create_schedule_event(self):
+        """ Create a schedule event """
+        query = self.invoice_create_mutation
+
+        account = f.RegularUserFactory.create()
+        variables = self.variables_create
+        variables['input']['account'] = to_global_id('AccountNode', account.id)
+
+        executed = execute_test_client_api_query(
+            query,
+            self.admin_user,
+            variables=variables
+        )
+        data = executed.get('data')
+
+        # Get invoice
+        rid = get_rid(data['createFinanceInvoice']['financeInvoice']['id'])
+        invoice = models.FinanceInvoice.objects.get(pk=rid.id)
+
+        self.assertEqual(
+            data['createFinanceInvoice']['financeInvoice']['account']['id'],
+            variables['input']['account']
+        )
+        self.assertEqual(
+            data['createFinanceInvoice']['financeInvoice']['financeInvoiceGroup']['id'],
+            variables['input']['financeInvoiceGroup']
+        )
+        self.assertEqual(data['createFinanceInvoice']['financeInvoice']['dateSent'], str(timezone.now().date()))
+        self.assertEqual(data['createFinanceInvoice']['financeInvoice']['dateDue'],
+            str(timezone.now().date() + datetime.timedelta(days=invoice.finance_invoice_group.due_after_days))
+        )
+        self.assertEqual(data['createFinanceInvoice']['financeInvoice']['summary'], variables['input']['summary'])
     #
     # def test_create_invoice_group_id_plus_one(self):
     #     """ Create an account invoice and check whether the FinanceInoiceGroup next id field increated by 1 """
