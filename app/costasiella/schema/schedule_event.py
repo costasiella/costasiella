@@ -21,9 +21,12 @@ class ScheduleEventNode(DjangoObjectType):
     @classmethod
     def get_node(self, info, id):
         user = info.context.user
-        require_login_and_permission(user, 'costasiella.view_scheduleevent')
-
-        return self._meta.model.objects.get(id=id)
+        schedule_event = self._meta.model.objects.get(id=id)
+        if not schedule_event.display_public and not schedule_event.display_shop:
+            require_login_and_permission(user, 'costasiella.view_scheduleevent')
+            return schedule_event
+        else:
+            return schedule_event
 
 
 class ScheduleEventQuery(graphene.ObjectType):

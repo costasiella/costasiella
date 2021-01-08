@@ -123,39 +123,47 @@ class GQLScheduleEvent(TestCase):
   }
 '''
 
-        self.invoice_query = '''
-  query FinanceInvoice($id: ID!) {
-    financeInvoice(id:$id) {
+        self.event_query = '''
+  query ScheduleEvent($id: ID!) {
+    scheduleEvent(id: $id) {
       id
-      account {
-        id
-        fullName
-      }
-      financePaymentMethod {
+      archived
+      displayPublic
+      displayShop
+      autoSendInfoMail
+      organizationLocation {
         id
         name
       }
-      relationCompany
-      relationCompanyRegistration
-      relationCompanyTaxRegistration
-      relationContactName
-      relationAddress
-      relationPostcode
-      relationCity
-      relationCountry
-      status
-      summary
-      invoiceNumber
-      dateSent
-      dateDue
-      terms
-      footer
-      note
-      subtotalDisplay
-      taxDisplay
-      totalDisplay
-      paidDisplay
-      balanceDisplay
+      name
+      tagline
+      preview
+      description
+      organizationLevel {
+        id
+        name
+      }
+      teacher {
+        id 
+        fullName
+      }
+      teacher2 {
+        id
+        fullName
+      }
+      dateStart
+      dateEnd
+      timeStart
+      timeEnd
+      infoMailContent
+      scheduleItems {
+        edges {
+          node {
+            id
+          }
+        }
+      }
+      createdAt
       updatedAt
     }
   }
@@ -301,116 +309,137 @@ class GQLScheduleEvent(TestCase):
 
         # No items should be listed
         self.assertEqual(len(data['scheduleEvents']['edges']), 0)
-    #
-    # def test_query_permission_granted_show_nonpublic_events(self):
-    #     """ Query list of account invoices with view permission """
-    #     query = self.invoices_query
-    #     invoice = f.FinanceInvoiceFactory.create()
-    #
-    #     # Create regular user
-    #     user = get_user_model().objects.get(pk=invoice.account.id)
-    #     permission = Permission.objects.get(codename='view_financeinvoice')
-    #     user.user_permissions.add(permission)
-    #     user.save()
-    #
-    #     executed = execute_test_client_api_query(query, user)
-    #     data = executed.get('data')
-    #
-    #     # List all invoices
-    #     self.assertEqual(
-    #         data['financeInvoices']['edges'][0]['node']['account']['id'],
-    #         to_global_id("AccountNode", invoice.account.id)
-    #     )
-    #
-    # def test_query_anon_user(self):
-    #     """ Query list of account invoices - anon user """
-    #     query = self.invoices_query
-    #     invoice = f.FinanceInvoiceFactory.create()
-    #
-    #     executed = execute_test_client_api_query(query, self.anon_user)
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
-    #
-    # def test_query_one(self):
-    #     """ Query one account invoice as admin """
-    #     invoice = f.FinanceInvoiceFactory.create()
-    #
-    #     variables = {
-    #         "id": to_global_id("FinanceInvoiceNode", invoice.id),
-    #     }
-    #
-    #     # Now query single invoice and check
-    #     executed = execute_test_client_api_query(self.invoice_query, self.admin_user, variables=variables)
-    #     data = executed.get('data')
-    #
-    #     self.assertEqual(
-    #         data['financeInvoice']['account']['id'],
-    #         to_global_id("AccountNode", invoice.account.id)
-    #     )
-    #     self.assertEqual(data['financeInvoice']['invoiceNumber'], invoice.invoice_number)
-    #     self.assertEqual(data['financeInvoice']['dateSent'], str(timezone.now().date()))
-    #     self.assertEqual(data['financeInvoice']['dateDue'],
-    #       str(timezone.now().date() + datetime.timedelta(days=invoice.finance_invoice_group.due_after_days))
-    #     )
-    #     self.assertEqual(data['financeInvoice']['summary'], invoice.summary)
-    #     self.assertEqual(data['financeInvoice']['relationCompany'], invoice.relation_company)
-    #     self.assertEqual(data['financeInvoice']['relationCompanyRegistration'], invoice.relation_company_registration)
-    #     self.assertEqual(data['financeInvoice']['relationCompanyTaxRegistration'], invoice.relation_company_tax_registration)
-    #     self.assertEqual(data['financeInvoice']['relationContactName'], invoice.relation_contact_name)
-    #     self.assertEqual(data['financeInvoice']['relationAddress'], invoice.relation_address)
-    #     self.assertEqual(data['financeInvoice']['relationPostcode'], invoice.relation_postcode)
-    #     self.assertEqual(data['financeInvoice']['relationCity'], invoice.relation_city)
-    #     self.assertEqual(data['financeInvoice']['relationCountry'], invoice.relation_country)
-    #     self.assertEqual(data['financeInvoice']['status'], invoice.status)
-    #
-    # def test_query_one_anon_user(self):
-    #     """ Deny permission for anon users Query one account invoice """
-    #     invoice = f.FinanceInvoiceFactory.create()
-    #
-    #     variables = {
-    #         "id": to_global_id("FinanceInvoiceNode", invoice.id),
-    #     }
-    #
-    #     # Now query single invoice and check
-    #     executed = execute_test_client_api_query(self.invoice_query, self.anon_user, variables=variables)
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
-    #
-    # def test_query_one_permission_denied(self):
-    #     """ Permission denied message when user lacks authorization """
-    #     # Create regular user
-    #     invoice = f.FinanceInvoiceFactory.create()
-    #     user = invoice.account
-    #
-    #     variables = {
-    #         "id": to_global_id("FinanceInvoiceNode", invoice.id),
-    #     }
-    #
-    #     # Now query single invoice and check
-    #     executed = execute_test_client_api_query(self.invoice_query, user, variables=variables)
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
-    #
-    # def test_query_one_permission_granted(self):
-    #     """ Respond with data when user has permission """
-    #     invoice = f.FinanceInvoiceFactory.create()
-    #     user = invoice.account
-    #     permission = Permission.objects.get(codename='view_financeinvoice')
-    #     user.user_permissions.add(permission)
-    #     user.save()
-    #
-    #
-    #     variables = {
-    #         "id": to_global_id("FinanceInvoiceNode", invoice.id),
-    #     }
-    #
-    #     # Now query single invoice and check
-    #     executed = execute_test_client_api_query(self.invoice_query, user, variables=variables)
-    #     data = executed.get('data')
-    #     self.assertEqual(
-    #         data['financeInvoice']['account']['id'],
-    #         to_global_id('AccountNode', invoice.account.id)
-    #     )
+
+    def test_query_permission_granted_show_nonpublic_events(self):
+        """ Query list of schedule events with view permission """
+        query = self.events_query
+        schedule_event = f.ScheduleEventFactory.create()
+        schedule_event.display_public = False
+        schedule_event.save()
+
+        # Create regular user
+        user = f.RegularUserFactory()
+        permission = Permission.objects.get(codename='view_scheduleevent')
+        user.user_permissions.add(permission)
+        user.save()
+
+        executed = execute_test_client_api_query(query, user, variables=self.variables_query)
+        data = executed.get('data')
+
+        # List all events
+        self.assertEqual(data['scheduleEvents']['edges'][0]['node']['organizationLocation']['id'],
+                         to_global_id("OrganizationLocationNode", schedule_event.organization_location.id))
+
+    def test_query_anon_user(self):
+        """ Query list of schedule events - anon user """
+        query = self.events_query
+        schedule_event = f.ScheduleEventFactory.create()
+
+        executed = execute_test_client_api_query(query, self.anon_user, variables=self.variables_query)
+        print(executed)
+        data = executed.get('data')
+
+        # List all events
+        self.assertEqual(data['scheduleEvents']['edges'][0]['node']['organizationLocation']['id'],
+                         to_global_id("OrganizationLocationNode", schedule_event.organization_location.id))
+
+    def test_query_one(self):
+        """ Query one schedule event as admin """
+        schedule_event = f.ScheduleEventFactory.create()
+
+        variables = {
+            "id": to_global_id("ScheduleEventNode", schedule_event.id),
+        }
+
+        # Now query single invoice and check
+        executed = execute_test_client_api_query(self.event_query, self.admin_user, variables=variables)
+        data = executed.get('data')
+
+        self.assertEqual(data['scheduleEvent']['organizationLocation']['id'],
+                         to_global_id("OrganizationLocationNode", schedule_event.organization_location.id))
+        self.assertEqual(data['scheduleEvent']['name'], schedule_event.name)
+        self.assertEqual(data['scheduleEvent']['tagline'], schedule_event.tagline)
+        self.assertEqual(data['scheduleEvent']['preview'], schedule_event.preview)
+        self.assertEqual(data['scheduleEvent']['description'], schedule_event.description)
+        self.assertEqual(data['scheduleEvent']['infoMailContent'],
+                         schedule_event.info_mail_content)
+        self.assertEqual(data['scheduleEvent']['organizationLevel']['id'],
+                         to_global_id("OrganizationLevelNode", schedule_event.organization_level.id))
+        self.assertEqual(data['scheduleEvent']['teacher']['id'],
+                         to_global_id("AccountNode", schedule_event.teacher.id))
+        self.assertEqual(data['scheduleEvent']['teacher2']['id'],
+                         to_global_id("AccountNode", schedule_event.teacher_2.id))
+
+    def test_query_one_anon_user_nonpublic_not_allowed(self):
+        """ Deny permission for anon users Query one schedule event """
+        schedule_event = f.ScheduleEventFactory.create()
+        schedule_event.display_public = False
+        schedule_event.display_shop = False
+        schedule_event.save()
+
+        variables = {
+            "id": to_global_id("ScheduleEventNode", schedule_event.id),
+        }
+
+        # Now query single invoice and check
+        executed = execute_test_client_api_query(self.event_query, self.anon_user, variables=variables)
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
+
+    def test_query_one_anon_user_public_allowed(self):
+        """ Deny permission for anon users Query one schedule event """
+        schedule_event = f.ScheduleEventFactory.create()
+
+        variables = {
+            "id": to_global_id("ScheduleEventNode", schedule_event.id),
+        }
+
+        # Now query single invoice and check
+        executed = execute_test_client_api_query(self.event_query, self.anon_user, variables=variables)
+        data = executed['data']
+        self.assertEqual(data['scheduleEvent']['organizationLocation']['id'],
+                         to_global_id("OrganizationLocationNode", schedule_event.organization_location.id))
+
+    def test_query_one_display_nonpublic_permission_denied(self):
+        """ Don't list non-public events when user lacks authorization """
+        schedule_event = f.ScheduleEventFactory.create()
+        schedule_event.display_public = False
+        schedule_event.display_shop = False
+        schedule_event.save()
+        # Create regular user
+        user = f.RegularUserFactory()
+
+        variables = {
+            "id": to_global_id("ScheduleEventNode", schedule_event.id),
+        }
+
+        # Now query single event and check
+        executed = execute_test_client_api_query(self.event_query, user, variables=variables)
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
+
+    def test_query_one_display_nonpublic_permission_granted(self):
+        """ Respond with data when user has permission """
+        schedule_event = f.ScheduleEventFactory.create()
+        schedule_event.display_public = False
+        schedule_event.display_shop = False
+        schedule_event.save()
+        # Create regular user
+        user = f.RegularUserFactory()
+        permission = Permission.objects.get(codename=self.permission_view)
+        user.user_permissions.add(permission)
+        user.save()
+
+        variables = {
+            "id": to_global_id("ScheduleEventNode", schedule_event.id),
+        }
+
+        # Now query single schedule event and check
+        executed = execute_test_client_api_query(self.event_query, user, variables=variables)
+        data = executed.get('data')
+        self.assertEqual(data['scheduleEvent']['organizationLocation']['id'],
+                         to_global_id("OrganizationLocationNode", schedule_event.organization_location.id))
+
     #
     # def test_create_invoice(self):
     #     """ Create an account invoice """
