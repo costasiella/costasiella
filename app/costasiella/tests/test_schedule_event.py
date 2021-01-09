@@ -55,22 +55,13 @@ class GQLScheduleEvent(TestCase):
 
         self.variables_update = {
             "input": {
-              "summary": "create summary",
-              "relationCompany": "ACME INC.",
-              "relationCompanyRegistration": "ACME 4312",
-              "relationCompanyTaxRegistration": "ACME TAX 99",
-              "relationContactName": "Contact person",
-              "relationAddress": "Street 1",
-              "relationPostcode": "1233434 545",
-              "relationCity": "Amsterdam",
-              "relationCountry": "NL",
-              "invoiceNumber": "INVT0001",
-              "dateSent": "2019-01-03",
-              "dateDue": "2019-02-28",
-              "status": "SENT",
-              "terms": "Terms go there",
-              "footer": "Footer here",
-              "note": "Notes here"
+                "organizationLocation": to_global_id("OrganizationLocationNode", self.organization_location.id),
+                "organizationLevel": to_global_id("OrganizationLevelNode", self.organization_level.id),
+                "name": "Updated event",
+                "tagline": "Tagline for updated event",
+                "preview": "Event preview updated",
+                "description": "Event description updated",
+                "infoMailContent": "hello world updated"
             }
         }
 
@@ -207,7 +198,7 @@ class GQLScheduleEvent(TestCase):
 '''
 
         self.event_update_mutation = '''
-  mutation UpdateScheduleEvent($input:CreateScheduleEventInput!) {
+  mutation UpdateScheduleEvent($input:UpdateScheduleEventInput!) {
     updateScheduleEvent(input: $input) {
       scheduleEvent{
         id
@@ -436,8 +427,6 @@ class GQLScheduleEvent(TestCase):
             variables=self.variables_create
         )
         data = executed.get('data')
-        print("@@@@@@@@@@@@@")
-        print(data)
 
         self.assertEqual(data['createScheduleEvent']['scheduleEvent']['name'],
                          self.variables_create['input']['name'])
@@ -515,94 +504,84 @@ class GQLScheduleEvent(TestCase):
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Permission denied!')
 
-    # def test_update_event(self):
-    #     """ Update an event """
-    #     query = self.invoice_update_mutation
-    #
-    #     invoice = f.FinanceInvoiceFactory.create()
-    #     variables = self.variables_update
-    #     variables['input']['id'] = to_global_id('FinanceInvoiceNode', invoice.id)
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.admin_user,
-    #         variables=variables
-    #     )
-    #
-    #     data = executed.get('data')
-    #
-    #     self.assertEqual(data['updateFinanceInvoice']['financeInvoice']['relationCompany'], variables['input']['relationCompany'])
-    #     self.assertEqual(data['updateFinanceInvoice']['financeInvoice']['relationCompanyRegistration'], variables['input']['relationCompanyRegistration'])
-    #     self.assertEqual(data['updateFinanceInvoice']['financeInvoice']['relationContactName'], variables['input']['relationContactName'])
-    #     self.assertEqual(data['updateFinanceInvoice']['financeInvoice']['relationAddress'], variables['input']['relationAddress'])
-    #     self.assertEqual(data['updateFinanceInvoice']['financeInvoice']['relationPostcode'], variables['input']['relationPostcode'])
-    #     self.assertEqual(data['updateFinanceInvoice']['financeInvoice']['relationCity'], variables['input']['relationCity'])
-    #     self.assertEqual(data['updateFinanceInvoice']['financeInvoice']['relationCountry'], variables['input']['relationCountry'])
-    #     self.assertEqual(data['updateFinanceInvoice']['financeInvoice']['invoiceNumber'], variables['input']['invoiceNumber'])
-    #     self.assertEqual(data['updateFinanceInvoice']['financeInvoice']['dateSent'], variables['input']['dateSent'])
-    #     self.assertEqual(data['updateFinanceInvoice']['financeInvoice']['dateDue'], variables['input']['dateDue'])
-    #     self.assertEqual(data['updateFinanceInvoice']['financeInvoice']['status'], variables['input']['status'])
-    #     self.assertEqual(data['updateFinanceInvoice']['financeInvoice']['summary'], variables['input']['summary'])
-    #     self.assertEqual(data['updateFinanceInvoice']['financeInvoice']['terms'], variables['input']['terms'])
-    #     self.assertEqual(data['updateFinanceInvoice']['financeInvoice']['footer'], variables['input']['footer'])
-    #     self.assertEqual(data['updateFinanceInvoice']['financeInvoice']['note'], variables['input']['note'])
-    #
-    # def test_update_invoice_anon_user(self):
-    #     """ Don't allow updating invoices for non-logged in users """
-    #     query = self.invoice_update_mutation
-    #     invoice = f.FinanceInvoiceFactory.create()
-    #     variables = self.variables_update
-    #     variables['input']['id'] = to_global_id('FinanceInvoiceNode', invoice.id)
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.anon_user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
-    #
-    # def test_update_invoice_permission_granted(self):
-    #     """ Allow updating invoices for users with permissions """
-    #     query = self.invoice_update_mutation
-    #     invoice = f.FinanceInvoiceFactory.create()
-    #     variables = self.variables_update
-    #     variables['input']['id'] = to_global_id('FinanceInvoiceNode', invoice.id)
-    #
-    #     user = invoice.account
-    #     permission = Permission.objects.get(codename=self.permission_change)
-    #     user.user_permissions.add(permission)
-    #     user.save()
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['updateFinanceInvoice']['financeInvoice']['dateSent'], variables['input']['dateSent'])
-    #
-    # def test_update_invoice_permission_denied(self):
-    #     """ Check update invoice permission denied error message """
-    #     query = self.invoice_update_mutation
-    #     invoice = f.FinanceInvoiceFactory.create()
-    #     variables = self.variables_update
-    #     variables['input']['id'] = to_global_id('FinanceInvoiceNode', invoice.id)
-    #
-    #     user = invoice.account
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
-    #
-    # def test_delete_invoice(self):
-    #     """ Delete an account invoice """
+    def test_update_event(self):
+        """ Update an event """
+        query = self.event_update_mutation
+        schedule_event = f.ScheduleEventFactory.create()
+        self.variables_update['input']['id'] = to_global_id('ScheduleEventNode', schedule_event.id)
+
+        executed = execute_test_client_api_query(
+            query,
+            self.admin_user,
+            variables=self.variables_update
+        )
+        data = executed.get('data')
+        
+        self.assertEqual(data['updateScheduleEvent']['scheduleEvent']['name'],
+                         self.variables_update['input']['name'])
+        self.assertEqual(data['updateScheduleEvent']['scheduleEvent']['tagline'],
+                         self.variables_update['input']['tagline'])
+        self.assertEqual(data['updateScheduleEvent']['scheduleEvent']['preview'],
+                         self.variables_update['input']['preview'])
+        self.assertEqual(data['updateScheduleEvent']['scheduleEvent']['description'],
+                         self.variables_update['input']['description'])
+        self.assertEqual(data['updateScheduleEvent']['scheduleEvent']['infoMailContent'],
+                         self.variables_update['input']['infoMailContent'])
+
+    def test_update_event_anon_user(self):
+        """ Don't allow updating events for non-logged in users """
+        query = self.event_update_mutation
+        schedule_event = f.ScheduleEventFactory.create()
+        self.variables_update['input']['id'] = to_global_id('ScheduleEventNode', schedule_event.id)
+
+        executed = execute_test_client_api_query(
+            query,
+            self.anon_user,
+            variables=self.variables_update
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
+
+    def test_update_event_permission_granted(self):
+        """ Allow updating event for users with permissions """
+        query = self.event_update_mutation
+        schedule_event = f.ScheduleEventFactory.create()
+        self.variables_update['input']['id'] = to_global_id('ScheduleEventNode', schedule_event.id)
+
+        user = f.RegularUserFactory.create()
+        permission = Permission.objects.get(codename=self.permission_change)
+        user.user_permissions.add(permission)
+        user.save()
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=self.variables_update
+        )
+        data = executed.get('data')
+        self.assertEqual(data['updateScheduleEvent']['scheduleEvent']['name'],
+                         self.variables_update['input']['name'])
+
+    def test_update_invoice_permission_denied(self):
+        """ Check update event permission denied error message """
+        query = self.event_update_mutation
+        schedule_event = f.ScheduleEventFactory.create()
+        self.variables_update['input']['id'] = to_global_id('ScheduleEventNode', schedule_event.id)
+
+        user = f.RegularUserFactory.create()
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=self.variables_update
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
+
+    # def test_archive_event(self):
+    #     """ Archive an event """
     #     query = self.invoice_delete_mutation
     #     invoice = f.FinanceInvoiceFactory.create()
     #     variables = {"input":{}}
