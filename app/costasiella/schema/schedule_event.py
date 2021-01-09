@@ -133,6 +133,7 @@ class CreateScheduleEvent(graphene.relay.ClientIDMutation):
             organization_location=result['organization_location'],
             name=input['name'],
             tagline=input['tagline'],
+            preview=input['preview'],
             description=input['description'],
             info_mail_content=input['info_mail_content']
         )
@@ -143,7 +144,7 @@ class CreateScheduleEvent(graphene.relay.ClientIDMutation):
         if 'teacher' in result:
             schedule_event.teacher = result['teacher']
 
-        if 'teacher_' in result:
+        if 'teacher_2' in result:
             schedule_event.teacher_2 = result['teacher_2']
 
         schedule_event.save()

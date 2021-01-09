@@ -23,7 +23,6 @@ class GQLAccount(TransactionTestCase):
     # use TransActionTestCase to db is reset after each query
     # https://docs.djangoproject.com/en/2.2/topics/testing/overview/
 
-
     def setUp(self):
         # This is run before every test
         self.admin_user = f.AdminUserFactory.create()
