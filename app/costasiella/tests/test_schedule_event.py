@@ -65,6 +65,12 @@ class GQLScheduleEvent(TestCase):
             }
         }
 
+        self.variables_archive = {
+            "input": {
+                "archived": True
+            }
+        }
+
         self.events_query = '''
   query ScheduleEvents($before:String, $after:String, $archived:Boolean!) {
     scheduleEvents(first: 100, before: $before, after:$after, archived:$archived) {
@@ -580,73 +586,72 @@ class GQLScheduleEvent(TestCase):
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Permission denied!')
 
-    # def test_archive_event(self):
-    #     """ Archive an event """
-    #     query = self.invoice_delete_mutation
-    #     invoice = f.FinanceInvoiceFactory.create()
-    #     variables = {"input":{}}
-    #     variables['input']['id'] = to_global_id('FinanceInvoiceNode', invoice.id)
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.admin_user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['deleteFinanceInvoice']['ok'], True)
-    #
-    # def test_delete_invoice_anon_user(self):
-    #     """ Delete invoice denied for anon user """
-    #     query = self.invoice_delete_mutation
-    #     invoice = f.FinanceInvoiceFactory.create()
-    #     variables = {"input":{}}
-    #     variables['input']['id'] = to_global_id('FinanceInvoiceNode', invoice.id)
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.anon_user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
-    #
-    # def test_delete_invoice_permission_granted(self):
-    #     """ Allow deleting invoices for users with permissions """
-    #     query = self.invoice_delete_mutation
-    #     invoice = f.FinanceInvoiceFactory.create()
-    #     variables = {"input":{}}
-    #     variables['input']['id'] = to_global_id('FinanceInvoiceNode', invoice.id)
-    #
-    #     # Give permissions
-    #     user = invoice.account
-    #     permission = Permission.objects.get(codename=self.permission_delete)
-    #     user.user_permissions.add(permission)
-    #     user.save()
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['deleteFinanceInvoice']['ok'], True)
-    #
-    # def test_delete_invoice_permission_denied(self):
-    #     """ Check delete invoice permission denied error message """
-    #     query = self.invoice_delete_mutation
-    #     invoice = f.FinanceInvoiceFactory.create()
-    #     variables = {"input":{}}
-    #     variables['input']['id'] = to_global_id('FinanceInvoiceNode', invoice.id)
-    #
-    #     user = invoice.account
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
-    #
+    def test_archive_event(self):
+        """ Archive an event """
+        query = self.event_archive_mutation
+        schedule_event = f.ScheduleEventFactory.create()
+        self.variables_archive['input']['id'] = to_global_id('ScheduleEventNode', schedule_event.id)
+
+        executed = execute_test_client_api_query(
+            query,
+            self.admin_user,
+            variables=self.variables_archive
+        )
+        data = executed.get('data')
+        self.assertEqual(data['archiveScheduleEvent']['scheduleEvent']['id'],
+                         to_global_id('ScheduleEventNode', schedule_event.id))
+        self.assertEqual(data['archiveScheduleEvent']['scheduleEvent']['archived'],
+                         self.variables_archive['input']['archived'])
+
+    def test_archive_event_anon_user(self):
+        """ Archive event denied for anon user """
+        query = self.event_archive_mutation
+        schedule_event = f.ScheduleEventFactory.create()
+        self.variables_archive['input']['id'] = to_global_id('ScheduleEventNode', schedule_event.id)
+
+        executed = execute_test_client_api_query(
+            query,
+            self.anon_user,
+            variables=self.variables_archive
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
+
+    def test_archive_event_permission_granted(self):
+        """ Allow archive events for users with permissions """
+        query = self.event_archive_mutation
+        schedule_event = f.ScheduleEventFactory.create()
+        self.variables_archive['input']['id'] = to_global_id('ScheduleEventNode', schedule_event.id)
+
+        # Give permissions
+        user = f.RegularUserFactory.create()
+        permission = Permission.objects.get(codename=self.permission_delete)
+        user.user_permissions.add(permission)
+        user.save()
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=self.variables_archive
+        )
+        data = executed.get('data')
+        self.assertEqual(data['archiveScheduleEvent']['scheduleEvent']['archived'],
+                         self.variables_archive['input']['archived'])
+
+    def test_archive_event_permission_denied(self):
+        """ Check archive event permission denied error message """
+        query = self.event_archive_mutation
+        schedule_event = f.ScheduleEventFactory.create()
+        self.variables_archive['input']['id'] = to_global_id('ScheduleEventNode', schedule_event.id)
+
+        user = f.RegularUserFactory.create()
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=self.variables_archive
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
