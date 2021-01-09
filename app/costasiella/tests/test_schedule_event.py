@@ -174,50 +174,56 @@ class GQLScheduleEvent(TestCase):
     createScheduleEvent(input: $input) {
       scheduleEvent{
         id
+        displayPublic
+        displayShop
+        autoSendInfoMail
+        organizationLocation {
+          id
+        }
+        organizationLevel {
+          id
+        }
+        name
+        tagline
+        preview
+        description
+        infoMailContent
+        teacher {
+          id
+        }
+        teacher2 {
+          id 
+        }
       }
     }
   }
 '''
 
-        self.invoice_update_mutation = '''
-  mutation UpdateFinanceInvoice($input: UpdateFinanceInvoiceInput!) {
-    updateFinanceInvoice(input: $input) {
-      financeInvoice {
+        self.event_update_mutation = '''
+  mutation UpdateScheduleEvent($input:CreateScheduleEventInput!) {
+    updateScheduleEvent(input: $input) {
+      scheduleEvent{
         id
-        account {
+        displayPublic
+        displayShop
+        autoSendInfoMail
+        organizationLocation {
           id
-          fullName
         }
-        financeInvoiceGroup {
+        organizationLevel {
+          id
+        }
+        name
+        tagline
+        preview
+        description
+        infoMailContent
+        teacher {
+          id
+        }
+        teacher2 {
           id 
-          name
         }
-        financePaymentMethod {
-          id
-          name
-        }
-        relationCompany
-        relationCompanyRegistration
-        relationCompanyTaxRegistration
-        relationContactName
-        relationAddress
-        relationPostcode
-        relationCity
-        relationCountry
-        status
-        summary
-        invoiceNumber
-        dateSent
-        dateDue
-        terms
-        footer
-        note
-        subtotalDisplay
-        taxDisplay
-        totalDisplay
-        paidDisplay
-        balanceDisplay
-        updatedAt
       }
     }
   }
