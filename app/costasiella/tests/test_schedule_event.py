@@ -229,10 +229,13 @@ class GQLScheduleEvent(TestCase):
   }
 '''
 
-        self.invoice_delete_mutation = '''
-  mutation DeleteFinanceInvoice($input: DeleteFinanceInvoiceInput!) {
-    deleteFinanceInvoice(input: $input) {
-      ok
+        self.event_archive_mutation = '''
+  mutation ArchiveScheduleEvent($input: ArchiveScheduleEventInput!) {
+    archiveScheduleEvent(input: $input) {
+      scheduleEvent {
+        id
+        archived
+      }
     }
   }
 '''
