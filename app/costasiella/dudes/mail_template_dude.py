@@ -43,8 +43,11 @@ class MailTemplateDude:
         """
         from ..models import SystemMailTemplate
 
+        print("mail template render called")
+
         functions = {
             "class_info_mail": self._render_class_info_mail,
+            "event_info_mail": self._render_event_info_mail,
             "order_received": self._render_template_order_received,
             "recurring_payment_failed": self._render_template_recurring_payment_failed,
         }
@@ -164,7 +167,6 @@ class MailTemplateDude:
             error_message=error_message
         )
 
-
     def _render_event_info_mail(self):
         """
         Render info mail for an event
@@ -178,15 +180,13 @@ class MailTemplateDude:
         error = False
         error_message = ""
 
-        account_schedule_event_ticket = self.kwargs.get('schedule_item', None)
+        account_schedule_event_ticket = self.kwargs.get('account_schedule_event_ticket', None)
 
         if account_schedule_event_ticket is None:
             raise Exception(
                 _("account_schedule_event_ticket is a required parameter \
                 for the class_info_mail template render function"))
 
-        print("##############")
-        print(account_schedule_event_ticket)
         schedule_event_ticket = account_schedule_event_ticket.schedule_event_ticket
         schedule_event = schedule_event_ticket.schedule_event
 
@@ -197,7 +197,7 @@ class MailTemplateDude:
 
         schedule_event_time_info = \
             schedule_event.date_start.strftime(date_format) + " " + \
-            schedule_event.time_start.strftime(time_format) + " " + \
+            schedule_event.time_start.strftime(time_format) + " - " + \
             schedule_event.date_end.strftime(date_format) + " " + \
             schedule_event.time_end.strftime(time_format)
 

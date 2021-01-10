@@ -133,6 +133,20 @@ class SalesDude:
 
         return finance_invoice_item
 
+    def _sell_schedule_event_ticket_send_info_mail(self, account, account_schedule_event_ticket):
+        """
+        Send info mail to customer, if configured.
+        :param account: models.Account object
+        :param account_schedule_event_ticket: models.AccountScheduleEventTicket object
+        :return:
+        """
+        from ..dudes.mail_dude import MailDude
+
+        mail_dude = MailDude(account=account,
+                             email_template="event_info_mail",
+                             account_schedule_event_ticket=account_schedule_event_ticket)
+        mail_dude.send()
+
     def sell_schedule_event_ticket(self,
                                    account,
                                    schedule_event_ticket,
@@ -143,6 +157,7 @@ class SalesDude:
         from ..models.account_schedule_event_ticket import AccountScheduleEventTicket
         from ..models.schedule_item_attendance import ScheduleItemAttendance
 
+        schedule_event = schedule_event_ticket.schedule_event
         account_schedule_event_ticket = AccountScheduleEventTicket(
             account=account,
             schedule_event_ticket=schedule_event_ticket
@@ -150,6 +165,14 @@ class SalesDude:
 
         # set date end & save
         account_schedule_event_ticket.save()
+
+        # Send info mail... if auto send mail is enabled
+        print("sending mail")
+        if schedule_event.auto_send_info_mail:
+            self._sell_schedule_event_ticket_send_info_mail(
+                account=account,
+                account_schedule_event_ticket=account_schedule_event_ticket
+            )
 
         print('creating invoice...')
         finance_invoice_item = None

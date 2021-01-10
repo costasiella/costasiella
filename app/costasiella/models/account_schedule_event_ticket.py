@@ -16,7 +16,8 @@ class AccountScheduleEventTicket(models.Model):
     updated_at = models.DateTimeField(auto_now=True, editable=False)
 
     def __str__(self):
-        return self.schedule_event.name + ' ticket for: ' + self.account.name
+        return self.schedule_event_ticket.schedule_event.name + " " + \
+               self.schedule_event_ticket.name + ' ticket for: ' + self.account.full_name
 
     def set_booking_status_schedule_item_attendances(self, status):
         """
