@@ -96,7 +96,7 @@ function ScheduleEventEdit({t, match, history}) {
           initialValues={{ 
             displayPublic: initialData.displayPublic,
             displayShop: initialData.displayShop,
-            autoSentInfoMail: initialData.autoSentInfoMail,
+            autoSendInfoMail: initialData.autoSendInfoMail,
             organizationLocation: initialData.organizationLocation.id,
             organizationLevel: initialOrgranizationlevel,
             name: initialData.name,
@@ -116,7 +116,7 @@ function ScheduleEventEdit({t, match, history}) {
                 id: id,
                 displayPublic: values.displayPublic,
                 displayShop: values.displayShop,
-                autoSentInfoMail: values.autoSentInfoMail,
+                autoSendInfoMail: values.autoSendInfoMail,
                 organizationLocation: values.organizationLocation,
                 organizationLevel: values.organizationLevel,
                 name: values.name,

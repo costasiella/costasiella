@@ -201,7 +201,7 @@ class UpdateScheduleEvent(graphene.relay.ClientIDMutation):
         if 'display_shop' in input:
             schedule_event.display_shop = input['display_shop']
         if 'auto_send_info_mail' in input:
-            schedule_event.display_shop = input['auto_send_info_mail']
+            schedule_event.auto_send_info_mail = input['auto_send_info_mail']
         if 'organization_location' in result:
             schedule_event.organization_location = result['organization_location']
         if 'organization_level' in result:
