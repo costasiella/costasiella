@@ -24,6 +24,10 @@ class MailDude:
         Actually send mail
         :return:
         """
+        # Fetch organization for organization email
+        from ..models import Organization
+        organization = Organization.objects.get(pk=100)
+
         # Get rendered template
         template_dude = MailTemplateDude(
             email_template=self.email_template,
@@ -41,7 +45,7 @@ class MailDude:
             subject=template['subject'],  # Later from template
             message=message,
             html_message=template['html_message'],
-            from_email="info@openstudioproject.com",
+            from_email=organization.email,
             recipient_list=[self.account.email],
             fail_silently=False
         )
