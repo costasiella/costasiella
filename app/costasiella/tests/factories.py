@@ -721,6 +721,22 @@ class ScheduleEventFactory(factory.DjangoModelFactory):
     teacher_2 = factory.SubFactory(Teacher2Factory)
     info_mail_content = "Hello world from the info mail field"
 
+
+class ScheduleEventFullTicketFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.ScheduleEventTicket
+
+    schedule_event = factory.SubFactory(ScheduleEventFactory)
+    full_event = True
+    deletable = False
+    display_public = True
+    name = "Full event"
+    description = "Full event ticket"
+    price = 100
+    finance_tax_rate = factory.SubFactory(FinanceTaxRateFactory)
+    finance_glaccount = factory.SubFactory(FinanceGLAccountFactory)
+    finance_costcenter = factory.SubFactory(FinanceCostCenterFactory)
+
     
 class ScheduleItemTeacherFactory(factory.DjangoModelFactory):
     class Meta:
