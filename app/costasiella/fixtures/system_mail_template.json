@@ -17,7 +17,7 @@
       "name": "event_info_mail",
       "subject": "Event info",
       "title": "{{schedule_event.name}}",
-      "description": "<ul><li>Ticket: {{schedule_event_ticket.name}}</li><li>Date: {{schedule_event_time_info}}</li></ul>",
+      "description": "<ul><li>Event: {{schedule_event.name}}</li><li>Ticket: {{schedule_event_ticket.name}}</li><li>Date: {{schedule_event_time_info}}</li></ul>",
       "content": "{{mail_content}}",
       "comments": ""
     }
