@@ -203,86 +203,88 @@ query ScheduleEventTicket($before:String, $after:String, $id:ID!) {
             to_global_id('FinanceCostCenterNode', schedule_event_ticket.finance_costcenter.id)
         )
 
-        # self.assertEqual(data['organizationLocationRooms']['edges'][0]['node']['name'], location_room.name)
-        # self.assertEqual(data['organizationLocationRooms']['edges'][0]['node']['archived'], location_room.archived)
-        # self.assertEqual(data['organizationLocationRooms']['edges'][0]['node']['displayPublic'], location_room.display_public)
+    def test_query_permission_denied(self):
+        """ Query list of event tickets """
+        query = self.event_tickets_query
+        schedule_event_ticket = f.ScheduleEventFullTicketFactory.create()
 
-    # def test_query_permission_denied(self):
-    #     """ Query list of location rooms """
-    #     query = self.location_rooms_query
-    #     location_room = f.OrganizationLocationRoomFactory.create()
-    #     non_public_location_room = f.OrganizationLocationRoomFactory.build()
-    #     non_public_location_room.organization_location = location_room.organization_location
-    #     non_public_location_room.display_public = False
-    #     non_public_location_room.save()
-    #
-    #     variables = {
-    #         'organizationLocation': to_global_id('OrganizationLocationNode', location_room.organization_location.pk),
-    #         'archived': False
-    #     }
-    #
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     executed = execute_test_client_api_query(query, user, variables=variables)
-    #     data = executed.get('data')
-    #
-    #     print(data)
-    #
-    #     # Public locations only
-    #     non_public_found = False
-    #     for item in data['organizationLocationRooms']['edges']:
-    #         if not item['node']['displayPublic']:
-    #             non_public_found = True
-    #
-    #     self.assertEqual(non_public_found, False)
-    #
-    #
-    # def test_query_permission_granted(self):
-    #     """ Query list of location rooms """
-    #     query = self.location_rooms_query
-    #     location_room = f.OrganizationLocationRoomFactory.create()
-    #     non_public_location_room = f.OrganizationLocationRoomFactory.build()
-    #     non_public_location_room.organization_location = location_room.organization_location
-    #     non_public_location_room.display_public = False
-    #     non_public_location_room.save()
-    #
-    #     variables = {
-    #         'organizationLocation': to_global_id('OrganizationLocationNode', location_room.organization_location.pk),
-    #         'archived': False
-    #     }
-    #
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename='view_scheduleeventticket')
-    #     user.user_permissions.add(permission)
-    #     user.save()
-    #
-    #     executed = execute_test_client_api_query(query, user, variables=variables)
-    #     data = executed.get('data')
-    #
-    #     # List all locations, including non public
-    #     non_public_found = False
-    #     for item in data['organizationLocationRooms']['edges']:
-    #         if not item['node']['displayPublic']:
-    #             non_public_found = True
-    #
-    #     # Assert non public locations are listed
-    #     self.assertEqual(non_public_found, True)
-    #
-    #
-    # def test_query_anon_user(self):
-    #     """ Query list of location rooms """
-    #     query = self.location_rooms_query
-    #     location_room = f.OrganizationLocationRoomFactory.create()
-    #     variables = {
-    #         'organizationLocation': to_global_id('OrganizationLocationNode', location_room.organization_location.pk),
-    #         'archived': False
-    #     }
-    #
-    #     executed = execute_test_client_api_query(query, self.anon_user, variables=variables)
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
-    #
+        variables = {
+            'scheduleEvent': to_global_id('ScheduleEventNode', schedule_event_ticket.schedule_event.pk)
+        }
+
+        # Create regular user
+        user = f.RegularUserFactory.create()
+        executed = execute_test_client_api_query(query, user, variables=variables)
+        data = executed.get('data')
+
+        # Public tickets only
+        non_public_found = False
+        for item in data['scheduleEventTickets']['edges']:
+            if not item['node']['displayPublic']:
+                non_public_found = True
+
+        self.assertEqual(non_public_found, False)
+
+    def test_query_permission_granted(self):
+        """ Query list of public & non public tickets with permission """
+        query = self.event_tickets_query
+        schedule_event_ticket = f.ScheduleEventFullTicketFactory.create()
+        non_public_schedule_event_ticket = f.ScheduleEventFullTicketFactory.build()
+        non_public_schedule_event_ticket.schedule_event = schedule_event_ticket.schedule_event
+        non_public_schedule_event_ticket.finance_tax_rate = None
+        non_public_schedule_event_ticket.finance_costcenter = None
+        non_public_schedule_event_ticket.finance_glaccount = None
+        non_public_schedule_event_ticket.display_public = False
+        non_public_schedule_event_ticket.save()
+
+        variables = {
+            'scheduleEvent': to_global_id('ScheduleEventNode', schedule_event_ticket.schedule_event.pk)
+        }
+
+        # Create regular user
+        user = f.RegularUserFactory.create()
+        permission = Permission.objects.get(codename=self.permission_view)
+        user.user_permissions.add(permission)
+        user.save()
+
+        executed = execute_test_client_api_query(query, user, variables=variables)
+        data = executed.get('data')
+
+        # List all locations, including non public
+        non_public_found = False
+        for item in data['scheduleEventTickets']['edges']:
+            if not item['node']['displayPublic']:
+                non_public_found = True
+
+        # Assert non public locations are listed
+        self.assertEqual(non_public_found, True)
+
+    def test_query_anon_user(self):
+        """ Query list of public  """
+        query = self.event_tickets_query
+        schedule_event_ticket = f.ScheduleEventFullTicketFactory.create()
+        non_public_schedule_event_ticket = f.ScheduleEventFullTicketFactory.build()
+        non_public_schedule_event_ticket.schedule_event = schedule_event_ticket.schedule_event
+        non_public_schedule_event_ticket.finance_tax_rate = None
+        non_public_schedule_event_ticket.finance_costcenter = None
+        non_public_schedule_event_ticket.finance_glaccount = None
+        non_public_schedule_event_ticket.display_public = False
+        non_public_schedule_event_ticket.save()
+
+        variables = {
+            'scheduleEvent': to_global_id('ScheduleEventNode', schedule_event_ticket.schedule_event.pk)
+        }
+
+        executed = execute_test_client_api_query(query, self.anon_user, variables=variables)
+        data = executed.get('data')
+
+        # Ensure only public tickets are found
+        non_public_found = False
+        for item in data['scheduleEventTickets']['edges']:
+            if not item['node']['displayPublic']:
+                non_public_found = True
+
+        self.assertEqual(non_public_found, False)
     #
     # def test_query_one(self):
     #     """ Query one location room """

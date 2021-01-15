@@ -46,14 +46,15 @@ class ScheduleEventTicketQuery(graphene.ObjectType):
 
     def resolve_schedule_event_tickets(self, info, schedule_event, **kwargs):
         user = info.context.user
-        require_login(user)
+        rid = get_rid(schedule_event)
+
         # Has permission: return everything requested
         if user.has_perm('costasiella.view_scheduleeventticket'):
-            rid = get_rid(schedule_event)
             return ScheduleEventTicket.objects.filter(schedule_event=rid.id).order_by('-full_event', 'name')
 
-        # Return only public non-archived locations
-        return ScheduleEventTicket.objects.filter(display_public=True).order_by('-full_event', 'name')
+        # Return only public non-archived tickets
+        return ScheduleEventTicket.objects.filter(schedule_event=rid.id,
+                                                  display_public=True).order_by('-full_event', 'name')
 
 
 def validate_create_update_input(input, update=False):
