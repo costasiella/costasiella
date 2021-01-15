@@ -42,69 +42,69 @@ export const GET_SCHEDULE_EVENT_TICKETS_QUERY = gql`
 `
 
 export const GET_SCHEDULE_EVENT_TICKET_QUERY = gql`
-query ScheduleEventTicket($before:String, $after:String, $id:ID!) {
-  scheduleEventTicket(id: $id) {
-    id
-    displayPublic
-    name
-    description
-    price
-    financeTaxRate {
+  query ScheduleEventTicket($before:String, $after:String, $id:ID!) {
+    scheduleEventTicket(id: $id) {
       id
+      displayPublic
       name
-    }
-    financeGlaccount {
-      id
-      name
-    }
-    financeCostcenter {
-      id
-      name
-    }
-  }
-  financeTaxRates(first: 100, before: $before, after: $after, archived: false) {
-    pageInfo {
-      startCursor
-      endCursor
-      hasNextPage
-      hasPreviousPage
-    }
-    edges {
-      node {
+      description
+      price
+      financeTaxRate {
+        id
+        name
+      }
+      financeGlaccount {
+        id
+        name
+      }
+      financeCostcenter {
         id
         name
       }
     }
-  }
-  financeGlaccounts(first: 100, before: $before, after: $after, archived: false) {
-    pageInfo {
-      startCursor
-      endCursor
-      hasNextPage
-      hasPreviousPage
+    financeTaxRates(first: 100, before: $before, after: $after, archived: false) {
+      pageInfo {
+        startCursor
+        endCursor
+        hasNextPage
+        hasPreviousPage
+      }
+      edges {
+        node {
+          id
+          name
+        }
+      }
     }
-    edges {
-      node {
-        id
-        name
+    financeGlaccounts(first: 100, before: $before, after: $after, archived: false) {
+      pageInfo {
+        startCursor
+        endCursor
+        hasNextPage
+        hasPreviousPage
+      }
+      edges {
+        node {
+          id
+          name
+        }
+      }
+    }
+    financeCostcenters(first: 100, before: $before, after: $after, archived: false) {
+      pageInfo {
+        startCursor
+        endCursor
+        hasNextPage
+        hasPreviousPage
+      }
+      edges {
+        node {
+          id
+          name
+        }
       }
     }
   }
-  financeCostcenters(first: 100, before: $before, after: $after, archived: false) {
-    pageInfo {
-      startCursor
-      endCursor
-      hasNextPage
-      hasPreviousPage
-    }
-    edges {
-      node {
-        id
-        name
-      }
-    }
-  }
-}
 `
 
 export const DELETE_SCHEDULE_EVENT_TICKET = gql`
