@@ -15,7 +15,7 @@ function ScheduleEventMediaDelete({t, match, history, id}) {
   const eventId = match.params.event_id
   const [deleteScheduleEventMedia, { data }] = useMutation(DELETE_SCHEDULE_EVENT_MEDIA)
   const query_vars = {
-    schedule_event: eventId
+    scheduleEvent: eventId
   }
 
   return (

@@ -54,7 +54,7 @@ function ScheduleEventTicketEditCustomers({ t, history, match }) {
 
   const { loading, error, data } = useQuery(GET_ACCOUNT_SCHEDULE_EVENT_TICKETS_QUERY, {
     variables: {
-      schedule_event_ticket: id
+      scheduleEventTicket: id
     }
   })
 
@@ -187,7 +187,7 @@ function ScheduleEventTicketEditCustomers({ t, history, match }) {
                           }                            
                         }, refetchQueries: [
                             {query: GET_ACCOUNT_SCHEDULE_EVENT_TICKETS_QUERY, variables: {
-                              schedule_event_ticket: id
+                              scheduleEventTicket: id
                             }},
                         ]})
                         .then(({ data }) => {
@@ -302,7 +302,7 @@ function ScheduleEventTicketEditCustomers({ t, history, match }) {
                           }
                         }, refetchQueries: [
                             {query: GET_ACCOUNT_SCHEDULE_EVENT_TICKETS_QUERY, variables: {
-                              schedule_event_ticket: id
+                              scheduleEventTicket: id
                             }},
                         ]})
                         .then(({ data }) => {
@@ -335,7 +335,7 @@ function ScheduleEventTicketEditCustomers({ t, history, match }) {
                           }
                         }, refetchQueries: [
                             {query: GET_ACCOUNT_SCHEDULE_EVENT_TICKETS_QUERY, variables: {
-                              schedule_event_ticket: id
+                              scheduleEventTicket: id
                             }},
                         ]})
                         .then(({ data }) => {

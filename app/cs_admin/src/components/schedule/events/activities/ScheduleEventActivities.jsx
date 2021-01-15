@@ -46,7 +46,7 @@ function scheduleItems({t, match, history}) {
 
   const { loading, error, data, fetchMore } = useQuery(GET_SCHEDULE_EVENT_ACTIVITIES_QUERY, {
     variables: {
-      schedule_event: eventId
+      scheduleEvent: eventId
     }
   })
   

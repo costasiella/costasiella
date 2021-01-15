@@ -92,7 +92,7 @@ function ScheduleEventMediaAdd({ t, history, match }) {
             addScheduleEventMedia({ variables: {
               input: inputVars
             }, refetchQueries: [
-                {query: GET_SCHEDULE_EVENT_MEDIAS_QUERY, variables: {schedule_event: eventId}}
+                {query: GET_SCHEDULE_EVENT_MEDIAS_QUERY, variables: {scheduleEvent: eventId}}
             ]})
             .then(({ data }) => {
                 console.log('got data', data);

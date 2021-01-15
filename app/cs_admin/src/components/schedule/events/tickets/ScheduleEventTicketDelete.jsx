@@ -15,7 +15,7 @@ function ScheduleEventTicketDelete({t, match, history, id}) {
   const eventId = match.params.event_id
   const [deleteScheduleEventTicket, { data }] = useMutation(DELETE_SCHEDULE_EVENT_TICKET)
   const query_vars = {
-    schedule_event: eventId
+    scheduleEvent: eventId
   }
 
   return (

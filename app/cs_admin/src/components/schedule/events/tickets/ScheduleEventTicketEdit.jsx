@@ -122,7 +122,7 @@ function ScheduleEventTicketEdit({ t, history, match }) {
             }
           }, refetchQueries: [
               {query: GET_SCHEDULE_EVENT_TICKETS_QUERY, variables: {
-                schedule_event: eventId
+                scheduleEvent: eventId
               }},
           ]})
           .then(({ data }) => {

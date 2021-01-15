@@ -46,7 +46,7 @@ function ScheduleEventTickets({t, match, history}) {
 
   const { loading, error, data, fetchMore } = useQuery(GET_SCHEDULE_EVENT_TICKETS_QUERY, {
     variables: {
-      schedule_event: eventId
+      scheduleEvent: eventId
     }
   })
   

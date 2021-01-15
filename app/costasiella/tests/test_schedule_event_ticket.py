@@ -57,8 +57,8 @@ class GQLScheduleEventTicket(TestCase):
         }
 
         self.event_tickets_query = '''
-  query ScheduleEventTickets($before:String, $after:String, $schedule_event:ID!) {
-    scheduleEventTickets(first: 100, before:$before, after:$after, scheduleEvent:$schedule_event) {
+  query ScheduleEventTickets($before:String, $after:String, $scheduleEvent:ID!) {
+    scheduleEventTickets(first: 100, before:$before, after:$after, scheduleEvent:$scheduleEvent) {
       pageInfo {
         hasNextPage
         hasPreviousPage
@@ -153,14 +153,13 @@ query ScheduleEventTicket($before:String, $after:String, $id:ID!) {
         # This is run after every test
         pass
 
-
     def test_query(self):
-        """ Query list of locations """
-        query = self.location_rooms_query
-        location_room = f.OrganizationLocationRoomFactory.create()
+        """ Query list of event tickets """
+        query = self.event_tickets_query
+        schedule_event_ticket = f.ScheduleEventFullTicketFactory.create()
 
         variables = {
-            'organizationLocation': to_global_id('OrganizationLocationNode', location_room.organization_location.pk),
+            'scheduleEvent': to_global_id('OrganizationLocationNode', location_room.organization_location.pk),
             'archived': False
         }
 

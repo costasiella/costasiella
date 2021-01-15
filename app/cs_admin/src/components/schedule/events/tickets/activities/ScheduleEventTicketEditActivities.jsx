@@ -43,7 +43,7 @@ function ScheduleEventTicketEditActivities({ t, history, match }) {
 
   const { loading, error, data } = useQuery(GET_SCHEDULE_EVENT_TICKET_SCHEDULE_ITEMS_QUERY, {
     variables: {
-      schedule_event_ticket: id
+      scheduleEventTicket: id
     }
   })
 
@@ -117,7 +117,7 @@ function ScheduleEventTicketEditActivities({ t, history, match }) {
                         }, 
                         refetchQueries: [
                             {query: GET_SCHEDULE_EVENT_TICKET_SCHEDULE_ITEMS_QUERY, variables: {
-                              schedule_event_ticket: id
+                              scheduleEventTicket: id
                             }},
                           ]
                         })
