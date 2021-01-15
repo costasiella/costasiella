@@ -449,6 +449,33 @@ class GQLScheduleEvent(TestCase):
         self.assertEqual(data['createScheduleEvent']['scheduleEvent']['teacher2']['id'],
                          self.variables_create['input']['teacher2'])
 
+    def test_create_schedule_event_full_ticket_added(self):
+        """ Create a schedule event and check if the full event ticket is added """
+        query = self.event_create_mutation
+        teacher = f.TeacherFactory.create()
+        teacher2 = f.Teacher2Factory.create()
+        self.variables_create['input']['teacher'] = to_global_id('AccountNode', teacher.id)
+        self.variables_create['input']['teacher2'] = to_global_id('AccountNode', teacher2.id)
+
+        executed = execute_test_client_api_query(
+            query,
+            self.admin_user,
+            variables=self.variables_create
+        )
+        data = executed.get('data')
+
+        self.assertEqual(data['createScheduleEvent']['scheduleEvent']['name'],
+                         self.variables_create['input']['name'])
+
+        gql_id = data['createScheduleEvent']['scheduleEvent']['id']
+        rid = get_rid(gql_id)
+
+        schedule_event = models.ScheduleEvent.objects.get(pk=rid.id)
+        schedule_event_ticket = models.ScheduleEventTicket.objects.filter(schedule_event=schedule_event).first()
+
+        self.assertEqual(schedule_event_ticket.schedule_event, schedule_event)
+        self.assertEqual(schedule_event_ticket.name, "Full event")
+
     def test_create_event_anon_user(self):
         """ Don't allow creating schedule events for non-logged in users """
         query = self.event_create_mutation
