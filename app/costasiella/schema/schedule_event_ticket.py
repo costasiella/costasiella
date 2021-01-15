@@ -28,9 +28,11 @@ class ScheduleEventTicketNode(DjangoObjectType):
     @classmethod
     def get_node(self, info, id):
         user = info.context.user
-        require_login_and_permission(user, 'costasiella.view_scheduleevent')
+        schedule_event_ticket = self._meta.model.objects.get(id=id)
+        if not schedule_event_ticket.display_public:
+            require_login_and_permission(user, 'costasiella.view_scheduleevent')
 
-        return self._meta.model.objects.get(id=id)
+        return schedule_event_ticket
 
     def resolve_price_display(self, info):
         from ..modules.finance_tools import display_float_as_amount

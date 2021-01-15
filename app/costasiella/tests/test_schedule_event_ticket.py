@@ -95,13 +95,18 @@ class GQLScheduleEventTicket(TestCase):
 '''
 
         self.event_ticket_query = '''
-query ScheduleEventTicket($before:String, $after:String, $id:ID!) {
+query ScheduleEventTicket($id:ID!) {
   scheduleEventTicket(id: $id) {
     id
+    deletable
+    fullEvent
     displayPublic
     name
     description
     price
+    scheduleEvent {
+      id
+    }
     financeTaxRate {
       id
       name
@@ -260,7 +265,7 @@ query ScheduleEventTicket($before:String, $after:String, $id:ID!) {
         self.assertEqual(non_public_found, True)
 
     def test_query_anon_user(self):
-        """ Query list of public  """
+        """ Query list of public event tickets for anon users """
         query = self.event_tickets_query
         schedule_event_ticket = f.ScheduleEventFullTicketFactory.create()
         non_public_schedule_event_ticket = f.ScheduleEventFullTicketFactory.build()
@@ -285,38 +290,68 @@ query ScheduleEventTicket($before:String, $after:String, $id:ID!) {
                 non_public_found = True
 
         self.assertEqual(non_public_found, False)
-    #
-    # def test_query_one(self):
-    #     """ Query one location room """
-    #     location_room = f.OrganizationLocationRoomFactory.create()
-    #
-    #     # First query locations to get node id easily
-    #     node_id = to_global_id('OrganizationLocationRoomNode', location_room.pk)
-    #
-    #     # Now query single location and check
-    #     query = self.location_room_query
-    #     executed = execute_test_client_api_query(query, self.admin_user, variables={"id": node_id})
-    #     data = executed.get('data')
-    #     self.assertEqual(data['organizationLocationRoom']['organizationLocation']['id'],
-    #       to_global_id('OrganizationLocationNode', location_room.organization_location.pk))
-    #     self.assertEqual(data['organizationLocationRoom']['name'], location_room.name)
-    #     self.assertEqual(data['organizationLocationRoom']['archived'], location_room.archived)
-    #     self.assertEqual(data['organizationLocationRoom']['displayPublic'], location_room.display_public)
-    #
-    #
-    # def test_query_one_anon_user(self):
-    #     """ Deny permission for anon users Query one location room """
-    #     location_room = f.OrganizationLocationRoomFactory.create()
-    #
-    #     # First query locations to get node id easily
-    #     node_id = to_global_id('OrganizationLocationRoomNode', location_room.pk)
-    #
-    #     # Now query single location and check
-    #     query = self.location_room_query
-    #     executed = execute_test_client_api_query(query, self.anon_user, variables={"id": node_id})
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
-    #
+
+    def test_query_one(self):
+        """ Query one schedule event ticket """
+        schedule_event_ticket = f.ScheduleEventFullTicketFactory.create()
+
+        # First query locations to get node id easily
+        node_id = to_global_id('ScheduleEventTicketNode', schedule_event_ticket.pk)
+
+        # Now query single location and check
+        query = self.event_ticket_query
+        executed = execute_test_client_api_query(query, self.admin_user, variables={"id": node_id})
+        data = executed.get('data')
+        self.assertEqual(data['scheduleEventTicket']['scheduleEvent']['id'],
+                         to_global_id('ScheduleEventNode', schedule_event_ticket.schedule_event.pk))
+        self.assertEqual(data['scheduleEventTicket']['fullEvent'], schedule_event_ticket.full_event)
+        self.assertEqual(data['scheduleEventTicket']['deletable'], schedule_event_ticket.deletable)
+        self.assertEqual(data['scheduleEventTicket']['displayPublic'], schedule_event_ticket.display_public)
+        self.assertEqual(data['scheduleEventTicket']['name'], schedule_event_ticket.name)
+        self.assertEqual(data['scheduleEventTicket']['description'], schedule_event_ticket.description)
+        self.assertEqual(data['scheduleEventTicket']['price'], schedule_event_ticket.price)
+        self.assertEqual(data['scheduleEventTicket']['financeTaxRate']['id'],
+                         to_global_id('FinanceTaxRateNode', schedule_event_ticket.finance_tax_rate.pk))
+        self.assertEqual(data['scheduleEventTicket']['financeGlaccount']['id'],
+                         to_global_id('FinanceGLAccountNode', schedule_event_ticket.finance_glaccount.pk))
+        self.assertEqual(data['scheduleEventTicket']['financeCostcenter']['id'],
+                         to_global_id('FinanceCostCenterNode', schedule_event_ticket.finance_costcenter.pk))
+
+    def test_query_one_anon_user_public(self):
+        """ Grant permission for anon users Query public ticket """
+        schedule_event_ticket = f.ScheduleEventFullTicketFactory.create()
+        node_id = to_global_id('ScheduleEventTicketNode', schedule_event_ticket.pk)
+
+        # Now query single location and check
+        query = self.event_ticket_query
+        executed = execute_test_client_api_query(query, self.admin_user, variables={"id": node_id})
+        data = executed.get('data')
+
+        # Now query single location and check
+        query = self.event_ticket_query
+        executed = execute_test_client_api_query(query, self.anon_user, variables={"id": node_id})
+        data = executed.get('data')
+        self.assertEqual(data['scheduleEventTicket']['scheduleEvent']['id'],
+                         to_global_id('ScheduleEventNode', schedule_event_ticket.schedule_event.pk))
+
+    def test_query_one_anon_user_nonpublic(self):
+        """ Deny permission for anon users Query non-public ticket """
+        schedule_event_ticket = f.ScheduleEventFullTicketFactory.create()
+        schedule_event_ticket.display_public = False
+        schedule_event_ticket.save()
+        node_id = to_global_id('ScheduleEventTicketNode', schedule_event_ticket.pk)
+
+        # Now query single location and check
+        query = self.event_ticket_query
+        executed = execute_test_client_api_query(query, self.admin_user, variables={"id": node_id})
+        data = executed.get('data')
+
+        # Now query single location and check
+        query = self.event_ticket_query
+        executed = execute_test_client_api_query(query, self.anon_user, variables={"id": node_id})
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
+
     #
     # def test_query_one_permission_denied(self):
     #     """ Permission denied message when user lacks authorization """
