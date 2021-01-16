@@ -30,7 +30,7 @@ class ScheduleEventTicketNode(DjangoObjectType):
         user = info.context.user
         schedule_event_ticket = self._meta.model.objects.get(id=id)
         if not schedule_event_ticket.display_public:
-            require_login_and_permission(user, 'costasiella.view_scheduleevent')
+            require_login_and_permission(user, 'costasiella.view_scheduleeventticket')
 
         return schedule_event_ticket
 
