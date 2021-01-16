@@ -50,7 +50,12 @@ class GQLScheduleEventTicket(TestCase):
         self.variables_update = {
             "input": {
                 "displayPublic": True,
-                "name": "Updated room",
+                "name": "Updated ticket",
+                "description": "Ticket description here",
+                "price": 100,
+                "financeTaxRate": to_global_id("FinanceTaxRateNode", self.finance_tax_rate.pk),
+                "financeGlaccount": to_global_id("FinanceGLAccountNode", self.finance_glaccount.pk),
+                "financeCostcenter": to_global_id("FinanceCostCenterNode", self.finance_costcenter.pk)
             }
         }
 
@@ -546,77 +551,117 @@ query ScheduleEventTicket($id:ID!) {
         data = executed.get('data')
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Permission denied!')
-    #
-    # def test_update_location_room(self):
-    #     """ Update a location room """
-    #     query = self.location_room_update_mutation
-    #     variables = self.variables_update
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.admin_user,
-    #         variables=variables
-    #     )
-    #
-    #     data = executed.get('data')
-    #     self.assertEqual(data['updateOrganizationLocationRoom']['organizationLocationRoom']['name'], variables['input']['name'])
-    #     self.assertEqual(data['updateOrganizationLocationRoom']['organizationLocationRoom']['displayPublic'], variables['input']['displayPublic'])
-    #
-    #
-    # def test_update_location_room_anon_user(self):
-    #     """ Don't allow updating location rooms for non-logged in users """
-    #     query = self.location_room_update_mutation
-    #     variables = self.variables_update
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.anon_user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
-    #
-    #
-    # def test_update_location_room_permission_granted(self):
-    #     """ Allow updating location rooms for users with permissions """
-    #     query = self.location_room_update_mutation
-    #     variables = self.variables_update
-    #
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename=self.permission_change)
-    #     user.user_permissions.add(permission)
-    #     user.save()
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['updateOrganizationLocationRoom']['organizationLocationRoom']['name'], variables['input']['name'])
-    #     self.assertEqual(data['updateOrganizationLocationRoom']['organizationLocationRoom']['displayPublic'], variables['input']['displayPublic'])
-    #
-    #
-    # def test_update_location_room_permission_denied(self):
-    #     """ Check update location room permission denied error message """
-    #     query = self.location_room_update_mutation
-    #     variables = self.variables_update
-    #
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
-    #
-    #
+
+    def test_update_event_ticket(self):
+        """ Update event ticket """
+        query = self.event_ticket_update_mutation
+        schedule_event_ticket = f.ScheduleEventFullTicketFactory.create()
+
+        variables = self.variables_update
+        variables['input']['id'] = to_global_id("ScheduleEventTicketNode", schedule_event_ticket.pk)
+
+        executed = execute_test_client_api_query(
+            query,
+            self.admin_user,
+            variables=variables
+        )
+
+        data = executed.get('data')
+        self.assertEqual(
+          data['updateScheduleEventTicket']['scheduleEventTicket']['id'],
+          variables['input']['id']
+        )
+        self.assertEqual(
+          data['updateScheduleEventTicket']['scheduleEventTicket']['name'],
+          variables['input']['name']
+        )
+        self.assertEqual(
+          data['updateScheduleEventTicket']['scheduleEventTicket']['displayPublic'],
+          variables['input']['displayPublic']
+        )
+        self.assertEqual(
+          data['updateScheduleEventTicket']['scheduleEventTicket']['description'],
+          variables['input']['description']
+        )
+        self.assertEqual(
+          data['updateScheduleEventTicket']['scheduleEventTicket']['price'],
+          variables['input']['price']
+        )
+        self.assertEqual(
+          data['updateScheduleEventTicket']['scheduleEventTicket']['financeTaxRate']['id'],
+          variables['input']['financeTaxRate']
+        )
+        self.assertEqual(
+          data['updateScheduleEventTicket']['scheduleEventTicket']['financeGlaccount']['id'],
+          variables['input']['financeGlaccount']
+        )
+        self.assertEqual(
+          data['updateScheduleEventTicket']['scheduleEventTicket']['financeCostcenter']['id'],
+          variables['input']['financeCostcenter']
+        )
+
+    def test_update_event_ticket_anon_user(self):
+        """ Don't allow updating event tickets for non-logged in users """
+        query = self.event_ticket_update_mutation
+        schedule_event_ticket = f.ScheduleEventFullTicketFactory.create()
+
+        variables = self.variables_update
+        variables['input']['id'] = to_global_id("ScheduleEventTicketNode", schedule_event_ticket.pk)
+
+        executed = execute_test_client_api_query(
+            query,
+            self.anon_user,
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
+
+    def test_update_event_ticket_permission_granted(self):
+        """ Allow updating event tickets for users with permissions """
+        query = self.event_ticket_update_mutation
+        schedule_event_ticket = f.ScheduleEventFullTicketFactory.create()
+
+        variables = self.variables_update
+        variables['input']['id'] = to_global_id("ScheduleEventTicketNode", schedule_event_ticket.pk)
+
+        # Create regular user
+        user = f.RegularUserFactory.create()
+        permission = Permission.objects.get(codename=self.permission_change)
+        user.user_permissions.add(permission)
+        user.save()
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(
+          data['updateScheduleEventTicket']['scheduleEventTicket']['id'],
+          variables['input']['id']
+        )
+
+    def test_update_event_ticket_permission_denied(self):
+        """ Check update event ticket permission denied error message """
+        query = self.event_ticket_update_mutation
+        schedule_event_ticket = f.ScheduleEventFullTicketFactory.create()
+
+        variables = self.variables_update
+        variables['input']['id'] = to_global_id("ScheduleEventTicketNode", schedule_event_ticket.pk)
+
+        # Create regular user
+        user = f.RegularUserFactory.create()
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
+
     # def test_archive_location_room(self):
     #     """ Archive a location room"""
     #     query = self.location_room_archive_mutation
