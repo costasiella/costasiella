@@ -737,6 +737,25 @@ class ScheduleEventFullTicketFactory(factory.DjangoModelFactory):
     finance_glaccount = factory.SubFactory(FinanceGLAccountFactory)
     finance_costcenter = factory.SubFactory(FinanceCostCenterFactory)
 
+
+class ScheduleItemEventActivityFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.ScheduleItem
+
+    schedule_item_type = "EVENT_ACTIVITY"
+    frequency_type = "SPECIFIC"
+    frequency_interval = 0
+    organization_location_room = factory.SubFactory(OrganizationLocationRoomFactory)
+    schedule_event = factory.SubFactory(ScheduleEventFactory)
+    date_start = datetime.date(2014, 1, 1)
+    time_start = datetime.time(6, 0)
+    time_end = datetime.time(9, 0)
+    display_public = True
+    account = factory.SubFactory(TeacherFactory)
+    account2 = factory.SubFactory(Teacher2Factory)
+    name = "Event activity 1"
+    spaces = 20
+
     
 class ScheduleItemTeacherFactory(factory.DjangoModelFactory):
     class Meta:
