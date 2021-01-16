@@ -60,9 +60,7 @@ class GQLScheduleEventTicket(TestCase):
         }
 
         self.variables_delete = {
-            "input": {
-                "archived": True,
-            }
+            "input": {}
         }
 
         self.event_tickets_query = '''
@@ -662,69 +660,102 @@ query ScheduleEventTicket($id:ID!) {
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Permission denied!')
 
-    # def test_archive_location_room(self):
-    #     """ Archive a location room"""
-    #     query = self.location_room_archive_mutation
-    #     variables = self.variables_archive
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.admin_user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['archiveOrganizationLocationRoom']['organizationLocationRoom']['archived'], variables['input']['archived'])
-    #
-    #
-    # def test_archive_location_room_anon_user(self):
-    #     """ Archive a location room """
-    #     query = self.location_room_archive_mutation
-    #     variables = self.variables_archive
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.anon_user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
-    #
-    #
-    # def test_archive_location_room_permission_granted(self):
-    #     """ Allow archiving locations for users with permissions """
-    #     query = self.location_room_archive_mutation
-    #     variables = self.variables_archive
-    #
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename=self.permission_delete)
-    #     user.user_permissions.add(permission)
-    #     user.save()
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['archiveOrganizationLocationRoom']['organizationLocationRoom']['archived'], variables['input']['archived'])
-    #
-    #
-    # def test_archive_location_room_permission_denied(self):
-    #     """ Check archive location room permission denied error message """
-    #     query = self.location_room_archive_mutation
-    #     variables = self.variables_archive
-    #
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
-    #
+    def test_delete_event_ticket_not_deletable(self):
+        """ Event tickets with deletable set to false shouldn't be deletable """
+        query = self.event_ticket_delete_mutation
+        schedule_event_ticket = f.ScheduleEventFullTicketFactory.create()
+
+        variables = self.variables_delete
+        variables['input']['id'] = to_global_id("ScheduleEventTicketNode", schedule_event_ticket.pk)
+
+        executed = execute_test_client_api_query(
+            query,
+            self.admin_user,
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['deleteScheduleEventTicket']['ok'], False)
+
+    def test_delete_event_ticket_deletable(self):
+        """ Event tickets with deletable set to false shouldn't be deletable """
+        query = self.event_ticket_delete_mutation
+        schedule_event_ticket = f.ScheduleEventFullTicketFactory.create()
+        schedule_event_ticket.deletable = True
+        schedule_event_ticket.full_event = False
+        schedule_event_ticket.save()
+
+        variables = self.variables_delete
+        variables['input']['id'] = to_global_id("ScheduleEventTicketNode", schedule_event_ticket.pk)
+
+        executed = execute_test_client_api_query(
+            query,
+            self.admin_user,
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['deleteScheduleEventTicket']['ok'], True)
+
+    def test_delete_event_ticket_anon_user(self):
+        """ Not possible to delete tickets as anon user """
+        query = self.event_ticket_delete_mutation
+        schedule_event_ticket = f.ScheduleEventFullTicketFactory.create()
+
+        variables = self.variables_delete
+        variables['input']['id'] = to_global_id("ScheduleEventTicketNode", schedule_event_ticket.pk)
+
+        executed = execute_test_client_api_query(
+            query,
+            self.anon_user,
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
+
+    def test_delete_event_ticket_permission_granted(self):
+        """ Allow deleting tickets for users with permissions """
+        query = self.event_ticket_delete_mutation
+        schedule_event_ticket = f.ScheduleEventFullTicketFactory.create()
+        schedule_event_ticket.deletable = True
+        schedule_event_ticket.full_event = False
+        schedule_event_ticket.save()
+
+        variables = self.variables_delete
+        variables['input']['id'] = to_global_id("ScheduleEventTicketNode", schedule_event_ticket.pk)
+
+        # Create regular user
+        user = f.RegularUserFactory.create()
+        permission = Permission.objects.get(codename=self.permission_delete)
+        user.user_permissions.add(permission)
+        user.save()
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['deleteScheduleEventTicket']['ok'], True)
+
+    def test_delete_event_ticket_permission_denied(self):
+        """ Check delete ticket permission denied error message """
+        query = self.event_ticket_delete_mutation
+        schedule_event_ticket = f.ScheduleEventFullTicketFactory.create()
+        schedule_event_ticket.deletable = True
+        schedule_event_ticket.full_event = False
+        schedule_event_ticket.save()
+
+        variables = self.variables_delete
+        variables['input']['id'] = to_global_id("ScheduleEventTicketNode", schedule_event_ticket.pk)
+
+        # Create regular user
+        user = f.RegularUserFactory.create()
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
