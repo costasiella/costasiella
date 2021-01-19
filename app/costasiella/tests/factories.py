@@ -725,8 +725,13 @@ class ScheduleEventFactory(factory.DjangoModelFactory):
 class ScheduleEventFullTicketFactory(factory.DjangoModelFactory):
     class Meta:
         model = models.ScheduleEventTicket
+        
+    class Params:
+        initial_schedule_event = factory.SubFactory(ScheduleEventFactory)
 
-    schedule_event = factory.SubFactory(ScheduleEventFactory)
+    scheduleEvent = factory.LazyAttribute(
+        lambda o: o.initial_schedule_event if o.initial_schedule_event else factory.SubFactory(ScheduleEventFactory)
+    )
     full_event = True
     deletable = False
     display_public = True
@@ -742,11 +747,16 @@ class ScheduleItemEventActivityFactory(factory.DjangoModelFactory):
     class Meta:
         model = models.ScheduleItem
 
+    class Params:
+        initial_schedule_event = factory.SubFactory(ScheduleEventFactory)
+
+    scheduleEvent = factory.LazyAttribute(
+        lambda o: o.initial_schedule_event if o.initial_schedule_event else factory.SubFactory(ScheduleEventFactory)
+    )
     schedule_item_type = "EVENT_ACTIVITY"
     frequency_type = "SPECIFIC"
     frequency_interval = 0
     organization_location_room = factory.SubFactory(OrganizationLocationRoomFactory)
-    schedule_event = factory.SubFactory(ScheduleEventFactory)
     date_start = datetime.date(2014, 1, 1)
     time_start = datetime.time(6, 0)
     time_end = datetime.time(9, 0)
