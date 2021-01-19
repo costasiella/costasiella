@@ -725,7 +725,7 @@ class ScheduleEventFactory(factory.DjangoModelFactory):
 class ScheduleEventFullTicketFactory(factory.DjangoModelFactory):
     class Meta:
         model = models.ScheduleEventTicket
-        
+
     class Params:
         initial_schedule_event = factory.SubFactory(ScheduleEventFactory)
 
