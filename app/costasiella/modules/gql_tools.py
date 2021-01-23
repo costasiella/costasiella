@@ -8,7 +8,7 @@ m = Messages()
 
 
 # Auth
-def _check_if_user_has_permission(user, permissions):
+def check_if_user_has_permission(user, permissions):
     has_permission = False
     for p in permissions:
         if user.has_perm(p):
@@ -36,7 +36,7 @@ def require_login_and_permission(user, permission):
 def require_login_and_one_of_permissions(user, permissions):
     require_login(user)
     
-    has_permission = _check_if_user_has_permission(user, permissions)
+    has_permission = check_if_user_has_permission(user, permissions)
     if not has_permission:
         raise GraphQLError(m.user_permission_denied, extensions={'code': get_error_code('USER_PERMISSION_DENIED')})
 
@@ -44,7 +44,7 @@ def require_login_and_one_of_permissions(user, permissions):
 def require_login_and_one_of_permission_or_own_account(user, user_model, record_id, permissions):
     require_login(user)
 
-    has_permission = _check_if_user_has_permission(user, permissions)
+    has_permission = check_if_user_has_permission(user, permissions)
     # Check user permission
     record = user_model.objects.get(pk=record_id)
     if record.id == user.id:

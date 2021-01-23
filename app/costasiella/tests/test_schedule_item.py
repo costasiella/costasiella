@@ -233,23 +233,22 @@ query ScheduleEventActivity($before:String, $after:String, $id:ID!) {
         self.assertEqual(data['scheduleItems']['edges'][0]['node']['account2']['id'],
                          to_global_id('AccountNode', schedule_event_activity.account_2.id))
 
-    # def test_query_permission_denied_dont_show_nonpublic_events(self):
-    #     """ Query list of events - check permission denied
-    #     A user can query the invoices linked to their account, so an error will never be thrown
-    #     But a user shouldn't be able to view orders from other accounts without additional permission
-    #     """
-    #     query = self.events_query
-    #     schedule_event = f.ScheduleEventFactory.create()
-    #     schedule_event.display_public = False
-    #     schedule_event.save()
-    #
-    #     # Create regular user
-    #     user = f.RegularUserFactory()
-    #     executed = execute_test_client_api_query(query, user, variables=self.variables_query)
-    #     data = executed.get('data')
-    #
-    #     # No items should be listed
-    #     self.assertEqual(len(data['scheduleEvents']['edges']), 0)
+    def test_query_permission_denied_dont_show_nonpublic_events(self):
+        """ Query list of event activities - check permission denied
+        """
+        query = self.events_activities_query
+        schedule_event_activity = f.ScheduleItemEventActivityFactory.create()
+        variables = {
+            'scheduleEvent': to_global_id('ScheduleEventNode', schedule_event_activity.schedule_event.id)
+        }
+
+        # Create regular user
+        user = schedule_event_activity.account
+        executed = execute_test_client_api_query(query, user, variables=variables)
+        data = executed.get('data')
+
+        # No items should be listed
+        self.assertEqual(len(data['scheduleEvents']['edges']), 0)
     #
     # def test_query_permission_granted_show_nonpublic_events(self):
     #     """ Query list of schedule events with view permission """

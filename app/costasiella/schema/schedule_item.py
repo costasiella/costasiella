@@ -16,7 +16,11 @@ from ..models import \
     OrganizationClasstype, \
     OrganizationLevel, \
     OrganizationLocationRoom
-from ..modules.gql_tools import require_login_and_permission, require_login_and_one_of_permissions, get_rid
+from ..modules.gql_tools import \
+    check_if_user_has_permission, \
+    require_login_and_permission, \
+    require_login_and_one_of_permissions, \
+    get_rid
 from ..modules.messages import Messages
 from ..modules.model_helpers.schedule_item_helper import ScheduleItemHelper
 
@@ -42,14 +46,18 @@ class ScheduleItemNode(DjangoObjectType):
     @classmethod
     def get_node(self, info, id):
         user = info.context.user
-        permissions = [
-            'costasiella.view_scheduleitem',
-            'costasiella.view_scheduleclass',
-            'costasiella.view_scheduleevent',
-        ]
-        require_login_and_one_of_permissions(user, permissions)
 
-        return self._meta.model.objects.get(id=id)
+        schedule_item = self._meta.model.objects.get(id=id)
+        if schedule_item.display_public:
+            return schedule_item
+        else:
+            permissions = [
+                'costasiella.view_scheduleitem',
+                'costasiella.view_scheduleclass',
+                'costasiella.view_scheduleevent',
+            ]
+            require_login_and_one_of_permissions(user, permissions)
+            return schedule_item
 
     def resolve_count_attendance(self, info):
         filter = Q(schedule_item_id=self.id) & ~Q(booking_status="cancelled")
@@ -64,10 +72,19 @@ class ScheduleItemQuery(graphene.ObjectType):
 
     def resolve_schedule_items(self, info, **kwargs):
         user = info.context.user
-        require_login_and_permission(user, 'costasiella.view_scheduleitem')
+
+        if user:
+            permissions = [
+                'costasiella.view_scheduleitem',
+                'costasiella.view_scheduleclass',
+                'costasiella.view_scheduleevent',
+            ]
+            permission = check_if_user_has_permission(user, permissions)
+            if permission:
+                ScheduleItem.objects.filter().order_by('date_start', 'time_start')
 
         ## return everything:
-        return ScheduleItem.objects.filter()
+        return ScheduleItem.objects.filter(display_public=True).order_by('date_start', 'time_start')
 
 
 def validate_create_update_input(input, update=False):
