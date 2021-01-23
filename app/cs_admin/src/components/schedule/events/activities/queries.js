@@ -1,8 +1,8 @@
 import gql from "graphql-tag"
 
 export const GET_SCHEDULE_EVENT_ACTIVITIES_QUERY = gql`
-query ScheduleItem($before:String, $after:String, $schedule_event:ID!) {
-  scheduleItems(first:100, before:$before, after:$after, scheduleEvent:$schedule_event) {
+query ScheduleItem($before:String, $after:String, $scheduleEvent:ID!) {
+  scheduleItems(first:100, before:$before, after:$after, scheduleEvent:$scheduleEvent) {
     pageInfo {
       hasNextPage
       hasPreviousPage

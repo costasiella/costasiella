@@ -750,7 +750,7 @@ class ScheduleItemEventActivityFactory(factory.DjangoModelFactory):
     class Params:
         initial_schedule_event = factory.SubFactory(ScheduleEventFactory)
 
-    scheduleEvent = factory.LazyAttribute(
+    schedule_event = factory.LazyAttribute(
         lambda o: o.initial_schedule_event if o.initial_schedule_event else factory.SubFactory(ScheduleEventFactory)
     )
     schedule_item_type = "EVENT_ACTIVITY"
@@ -761,8 +761,8 @@ class ScheduleItemEventActivityFactory(factory.DjangoModelFactory):
     time_start = datetime.time(6, 0)
     time_end = datetime.time(9, 0)
     display_public = True
-    account = factory.SubFactory(TeacherFactory)
-    account2 = factory.SubFactory(Teacher2Factory)
+    account = factory.SelfAttribute('schedule_event.teacher')
+    account_2 = factory.SelfAttribute('schedule_event.teacher_2')
     name = "Event activity 1"
     spaces = 20
 
