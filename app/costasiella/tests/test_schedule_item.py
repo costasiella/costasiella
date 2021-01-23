@@ -275,18 +275,37 @@ query ScheduleEventActivity($before:String, $after:String, $id:ID!) {
         self.assertEqual(data['scheduleItems']['edges'][0]['node']['scheduleEvent']['id'],
                          to_global_id("ScheduleEventNode", schedule_event_activity.schedule_event.id))
 
-    # def test_query_anon_user(self):
-    #     """ Query list of schedule events - anon user """
-    #     query = self.events_query
-    #     schedule_event = f.ScheduleEventFactory.create()
-    #
-    #     executed = execute_test_client_api_query(query, self.anon_user, variables=self.variables_query)
-    #     print(executed)
-    #     data = executed.get('data')
-    #
-    #     # List all events
-    #     self.assertEqual(data['scheduleEvents']['edges'][0]['node']['organizationLocation']['id'],
-    #                      to_global_id("OrganizationLocationNode", schedule_event.organization_location.id))
+    def test_query_anon_user_show_public(self):
+        """ Query list of schedule event activities - anon user """
+        query = self.events_activities_query
+        schedule_event_activity = f.ScheduleItemEventActivityFactory.create()
+        variables = {
+            'scheduleEvent': to_global_id('ScheduleEventNode', schedule_event_activity.schedule_event.id)
+        }
+
+        executed = execute_test_client_api_query(query, self.anon_user, variables=variables)
+        data = executed.get('data')
+
+        # We should have some data
+        self.assertEqual(data['scheduleItems']['edges'][0]['node']['scheduleEvent']['id'],
+                         to_global_id("ScheduleEventNode", schedule_event_activity.schedule_event.id))
+
+    def test_query_anon_user_dont_show_nonpublic(self):
+        """ Query list of schedule event activities - anon user """
+        query = self.events_activities_query
+        schedule_event_activity = f.ScheduleItemEventActivityFactory.create()
+        schedule_event_activity.display_public = False
+        schedule_event_activity.save()
+        variables = {
+            'scheduleEvent': to_global_id('ScheduleEventNode', schedule_event_activity.schedule_event.id)
+        }
+
+        executed = execute_test_client_api_query(query, self.anon_user, variables=variables)
+        data = executed.get('data')
+
+        # No items should be listed
+        self.assertEqual(len(data['scheduleItems']['edges']), 0)
+
     #
     # def test_query_one(self):
     #     """ Query one schedule event as admin """
