@@ -81,7 +81,7 @@ class ScheduleItemQuery(graphene.ObjectType):
             ]
             permission = check_if_user_has_permission(user, permissions)
             if permission:
-                ScheduleItem.objects.filter().order_by('date_start', 'time_start')
+                return ScheduleItem.objects.filter().order_by('date_start', 'time_start')
 
         ## return everything:
         return ScheduleItem.objects.filter(display_public=True).order_by('date_start', 'time_start')
