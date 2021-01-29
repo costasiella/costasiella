@@ -35,23 +35,28 @@ class GQLScheduleItem(TestCase):
 
         # self.account = f.RegularUserFactory.create()
         self.organization_level = f.OrganizationLevelFactory.create()
-        self.organization_location = f.OrganizationLocationFactory.create()
+        self.organization_location_room = f.OrganizationLocationRoomFactory.create()
 
         self.variables_create = {
             "input": {
-                "organizationLocation": to_global_id("OrganizationLocationNode", self.organization_location.id),
-                "organizationLevel": to_global_id("OrganizationLevelNode", self.organization_level.id),
+                "organizationLocationRoom": to_global_id("OrganizationLocationRoomNode",
+                                                         self.organization_location_room.id),
                 "name": "Created event",
-                "tagline": "Tagline for event",
-                "preview": "Event preview",
-                "description": "Event description",
-                "infoMailContent": "hello world"
+                "spaces": 20,
+                "dateStart": "2021-01-01",
+                "timeStart": "09:00:00",
+                "timeEnd": "09:00:00",
+                "frequencyType": "SPECIFIC",
+                "frequencyInterval": 0,
+                "scheduleItemType": "EVENT_ACTIVITY",
+                "displayPublic": True
             }
         }
 
         self.variables_update = {
             "input": {
-                "organizationLocation": to_global_id("OrganizationLocationNode", self.organization_location.id),
+                "organizationLocationRoom": to_global_id("OrganizationLocationRoomNode",
+                                                         self.organization_location_room.id),
                 "organizationLevel": to_global_id("OrganizationLevelNode", self.organization_level.id),
                 "name": "Updated event",
                 "tagline": "Tagline for updated event",
@@ -148,7 +153,7 @@ query ScheduleEventActivity($id:ID!) {
         self.event_activity_create_mutation = ''' 
   mutation CreateScheduleItem($input:CreateScheduleItemInput!) {
     createScheduleItem(input: $input) {
-      scheduleItem(id: $id) {
+      scheduleItem {
         id
         scheduleEvent {
           id
@@ -183,7 +188,7 @@ query ScheduleEventActivity($id:ID!) {
         self.event_activity_update_mutation = '''
   mutation UpdateScheduleItem($input:UpdateScheduleItemInput!) {
     updateScheduleItem(input: $input) {
-      scheduleItem(id: $id) {
+      scheduleItem {
         id
         scheduleEvent {
           id
@@ -420,36 +425,40 @@ query ScheduleEventActivity($id:ID!) {
         data = executed.get('data')
         self.assertEqual(data['scheduleItem']['scheduleEvent']['id'],
                          to_global_id("ScheduleEventNode", schedule_event_activity.schedule_event.id))
-    #
-    # def test_create_schedule_event(self):
-    #     """ Create a schedule event """
-    #     query = self.event_create_mutation
-    #     teacher = f.TeacherFactory.create()
-    #     teacher2 = f.Teacher2Factory.create()
-    #     self.variables_create['input']['teacher'] = to_global_id('AccountNode', teacher.id)
-    #     self.variables_create['input']['teacher2'] = to_global_id('AccountNode', teacher2.id)
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.admin_user,
-    #         variables=self.variables_create
-    #     )
-    #     data = executed.get('data')
-    #
-    #     self.assertEqual(data['createScheduleEvent']['scheduleEvent']['name'],
-    #                      self.variables_create['input']['name'])
-    #     self.assertEqual(data['createScheduleEvent']['scheduleEvent']['tagline'],
-    #                      self.variables_create['input']['tagline'])
-    #     self.assertEqual(data['createScheduleEvent']['scheduleEvent']['preview'],
-    #                      self.variables_create['input']['preview'])
-    #     self.assertEqual(data['createScheduleEvent']['scheduleEvent']['description'],
-    #                      self.variables_create['input']['description'])
-    #     self.assertEqual(data['createScheduleEvent']['scheduleEvent']['infoMailContent'],
-    #                      self.variables_create['input']['infoMailContent'])
-    #     self.assertEqual(data['createScheduleEvent']['scheduleEvent']['teacher']['id'],
-    #                      self.variables_create['input']['teacher'])
-    #     self.assertEqual(data['createScheduleEvent']['scheduleEvent']['teacher2']['id'],
-    #                      self.variables_create['input']['teacher2'])
+
+    def test_create_schedule_event_activity(self):
+        """ Create a schedule event activity """
+        query = self.event_activity_create_mutation
+        schedule_event = f.ScheduleEventFactory.create()
+        self.variables_create['input']['scheduleEvent'] = to_global_id('ScheduleEventNode', schedule_event.id)
+        self.variables_create['input']['account'] = to_global_id('AccountNode', schedule_event.teacher.id)
+        self.variables_create['input']['account2'] = to_global_id('AccountNode', schedule_event.teacher_2.id)
+
+        executed = execute_test_client_api_query(
+            query,
+            self.admin_user,
+            variables=self.variables_create
+        )
+        data = executed.get('data')
+
+        self.assertEqual(data['createScheduleItem']['scheduleItem']['scheduleEvent']['id'],
+                         self.variables_create['input']['scheduleEvent'])
+        self.assertEqual(data['createScheduleItem']['scheduleItem']['organizationLocationRoom']['id'],
+                         self.variables_create['input']['organizationLocationRoom'])
+        self.assertEqual(data['createScheduleItem']['scheduleItem']['account']['id'],
+                         self.variables_create['input']['account'])
+        self.assertEqual(data['createScheduleItem']['scheduleItem']['account2']['id'],
+                         self.variables_create['input']['account2'])
+        self.assertEqual(data['createScheduleItem']['scheduleItem']['displayPublic'],
+                         self.variables_create['input']['displayPublic'])
+        self.assertEqual(data['createScheduleItem']['scheduleItem']['name'],
+                         self.variables_create['input']['name'])
+        self.assertEqual(data['createScheduleItem']['scheduleItem']['spaces'],
+                         self.variables_create['input']['spaces'])
+        self.assertEqual(data['createScheduleItem']['scheduleItem']['dateStart'],
+                         self.variables_create['input']['dateStart'])
+        self.assertEqual(data['createScheduleItem']['scheduleItem']['timeStart'],
+                         self.variables_create['input']['timeStart'])
     #
     # def test_create_schedule_event_full_ticket_added(self):
     #     """ Create a schedule event and check if the full event ticket is added """

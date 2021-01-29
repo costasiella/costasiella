@@ -185,6 +185,7 @@ class CreateScheduleItem(graphene.relay.ClientIDMutation):
         require_login_and_permission(user, 'costasiella.add_scheduleitem')
 
         result = validate_create_update_input(input)
+        print("Schedule item create input:")
         print(input)
 
         schedule_item = ScheduleItem(
@@ -198,7 +199,7 @@ class CreateScheduleItem(graphene.relay.ClientIDMutation):
         )
 
         # Optional fields
-        if "display_public" in result:
+        if "display_public" in input:
             schedule_item.display_public = input['display_public']
 
         if "account" in result:
