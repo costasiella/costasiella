@@ -113,9 +113,12 @@ query ScheduleItem($before:String, $after:String, $scheduleEvent:ID!) {
 '''
 
         self.event_activity_query = '''
-query ScheduleEventActivity($before:String, $after:String, $id:ID!) {
+query ScheduleEventActivity($id:ID!) {
   scheduleItem(id: $id) {
     id
+    scheduleEvent {
+      id
+    }
     displayPublic
     name
     spaces
@@ -137,38 +140,6 @@ query ScheduleEventActivity($before:String, $after:String, $id:ID!) {
     account2 {
       id
       fullName
-    }
-  }
-  accounts(first: 100, before: $before, after: $after, isActive:true, teacher: true) {
-    pageInfo {
-      startCursor
-      endCursor
-      hasNextPage
-      hasPreviousPage
-    }
-    edges {
-      node {
-        id
-        fullName
-      }
-    }
-  }
-  organizationLocationRooms(first: 100, before: $before, after: $after, archived: false) {
-    pageInfo {
-      startCursor
-      endCursor
-      hasNextPage
-      hasPreviousPage
-    }
-    edges {
-      node {
-        id
-        name
-        organizationLocation {
-          id 
-          name
-        }
-      }
     }
   }
 }
@@ -306,33 +277,33 @@ query ScheduleEventActivity($before:String, $after:String, $id:ID!) {
         # No items should be listed
         self.assertEqual(len(data['scheduleItems']['edges']), 0)
 
-    #
-    # def test_query_one(self):
-    #     """ Query one schedule event as admin """
-    #     schedule_event = f.ScheduleEventFactory.create()
-    #
-    #     variables = {
-    #         "id": to_global_id("ScheduleEventNode", schedule_event.id),
-    #     }
-    #
-    #     # Now query single invoice and check
-    #     executed = execute_test_client_api_query(self.event_query, self.admin_user, variables=variables)
-    #     data = executed.get('data')
-    #
-    #     self.assertEqual(data['scheduleEvent']['organizationLocation']['id'],
-    #                      to_global_id("OrganizationLocationNode", schedule_event.organization_location.id))
-    #     self.assertEqual(data['scheduleEvent']['name'], schedule_event.name)
-    #     self.assertEqual(data['scheduleEvent']['tagline'], schedule_event.tagline)
-    #     self.assertEqual(data['scheduleEvent']['preview'], schedule_event.preview)
-    #     self.assertEqual(data['scheduleEvent']['description'], schedule_event.description)
-    #     self.assertEqual(data['scheduleEvent']['infoMailContent'],
-    #                      schedule_event.info_mail_content)
-    #     self.assertEqual(data['scheduleEvent']['organizationLevel']['id'],
-    #                      to_global_id("OrganizationLevelNode", schedule_event.organization_level.id))
-    #     self.assertEqual(data['scheduleEvent']['teacher']['id'],
-    #                      to_global_id("AccountNode", schedule_event.teacher.id))
-    #     self.assertEqual(data['scheduleEvent']['teacher2']['id'],
-    #                      to_global_id("AccountNode", schedule_event.teacher_2.id))
+    def test_query_one(self):
+        """ Query one schedule event activity as admin """
+        schedule_event_activity = f.ScheduleItemEventActivityFactory.create()
+
+        variables = {
+            "id": to_global_id("ScheduleItemNode", schedule_event_activity.schedule_event.id),
+        }
+
+        # Now query single invoice and check
+        executed = execute_test_client_api_query(self.event_activity_query, self.admin_user, variables=variables)
+        data = executed.get('data')
+
+        print(executed)
+
+        self.assertEqual(data['scheduleItem']['scheduleEvent']['id'],
+                         to_global_id("ScheduleEventNode", schedule_event_activity.schedule_event.id))
+        self.assertEqual(data['scheduleItem']['organizationLocationRoom']['id'],
+                         to_global_id("OrganizationLocationRoomNode",
+                                      schedule_event_activity.organization_location_room.id))
+        self.assertEqual(data['scheduleItem']['name'], schedule_event_activity.name)
+        self.assertEqual(data['scheduleItem']['spaces'], schedule_event_activity.spaces)
+        self.assertEqual(data['scheduleItem']['dateStart'], str(schedule_event_activity.date_start))
+        self.assertEqual(data['scheduleItem']['timeStart'], str(schedule_event_activity.time_start))
+        self.assertEqual(data['scheduleItem']['account']['id'],
+                         to_global_id("AccountNode", schedule_event_activity.account.id))
+        self.assertEqual(data['scheduleItem']['account2']['id'],
+                         to_global_id("AccountNode", schedule_event_activity.account_2.id))
     #
     # def test_query_one_anon_user_nonpublic_not_allowed(self):
     #     """ Deny permission for anon users Query one schedule event """
