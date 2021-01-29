@@ -109,4 +109,4 @@ class ScheduleItem(models.Model):
     ################ END EMPTY FIELDS ##################
 
     def __str__(self):
-        return self.schedule_item_type + ' [' + str(self.date_start) + ']'
+        return str(self.id) + ": " + self.schedule_item_type + ' [' + str(self.date_start) + ']'

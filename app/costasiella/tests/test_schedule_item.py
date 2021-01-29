@@ -3,7 +3,7 @@ import graphql
 import datetime
 
 from django.contrib.auth import get_user_model
-from django.test import TestCase
+from django.test import TestCase, TransactionTestCase
 from django.utils import timezone
 from graphene.test import Client
 from graphql_relay import to_global_id
@@ -34,7 +34,7 @@ class GQLScheduleItem(TestCase):
         self.permission_delete = 'delete_scheduleitem'
 
         # self.account = f.RegularUserFactory.create()
-        self.organization_level = f.OrganizationLevelFactory.create()
+        # self.organization_level = f.OrganizationLevelFactory.create()
         self.organization_location_room = f.OrganizationLocationRoomFactory.create()
 
         self.variables_create = {
@@ -55,9 +55,7 @@ class GQLScheduleItem(TestCase):
 
         self.variables_update = {
             "input": {
-                "organizationLocationRoom": to_global_id("OrganizationLocationRoomNode",
-                                                         self.organization_location_room.id),
-                "organizationLevel": to_global_id("OrganizationLevelNode", self.organization_level.id),
+                # "organizationLevel": to_global_id("OrganizationLevelNode", self.organization_level.id),
                 "name": "Updated event",
                 "tagline": "Tagline for updated event",
                 "preview": "Event preview updated",
@@ -337,7 +335,7 @@ query ScheduleEventActivity($id:ID!) {
         schedule_event_activity = f.ScheduleItemEventActivityFactory.create()
 
         variables = {
-            "id": to_global_id("ScheduleItemNode", schedule_event_activity.schedule_event.id),
+            "id": to_global_id("ScheduleItemNode", schedule_event_activity.id),
         }
 
         # Now query single invoice and check
@@ -367,7 +365,7 @@ query ScheduleEventActivity($id:ID!) {
         schedule_event_activity.save()
 
         variables = {
-            "id": to_global_id("ScheduleItemNode", schedule_event_activity.schedule_event.id),
+            "id": to_global_id("ScheduleItemNode", schedule_event_activity.id),
         }
 
         # Now query single invoice and check
@@ -380,7 +378,7 @@ query ScheduleEventActivity($id:ID!) {
         schedule_event_activity = f.ScheduleItemEventActivityFactory.create()
 
         variables = {
-            "id": to_global_id("ScheduleItemNode", schedule_event_activity.schedule_event.id),
+            "id": to_global_id("ScheduleItemNode", schedule_event_activity.id),
         }
 
         executed = execute_test_client_api_query(self.event_activity_query, self.anon_user, variables=variables)
@@ -397,7 +395,7 @@ query ScheduleEventActivity($id:ID!) {
         user = f.RegularUserFactory()
 
         variables = {
-            "id": to_global_id("ScheduleItemNode", schedule_event_activity.schedule_event.id),
+            "id": to_global_id("ScheduleItemNode", schedule_event_activity.id),
         }
 
         # Now query single event and check
@@ -417,7 +415,7 @@ query ScheduleEventActivity($id:ID!) {
         user.save()
 
         variables = {
-            "id": to_global_id("ScheduleItemNode", schedule_event_activity.schedule_event.id),
+            "id": to_global_id("ScheduleItemNode", schedule_event_activity.id),
         }
 
         # Now query single schedule event and check
@@ -459,58 +457,36 @@ query ScheduleEventActivity($id:ID!) {
                          self.variables_create['input']['dateStart'])
         self.assertEqual(data['createScheduleItem']['scheduleItem']['timeStart'],
                          self.variables_create['input']['timeStart'])
-    #
-    # def test_create_schedule_event_full_ticket_added(self):
-    #     """ Create a schedule event and check if the full event ticket is added """
-    #     query = self.event_create_mutation
-    #     teacher = f.TeacherFactory.create()
-    #     teacher2 = f.Teacher2Factory.create()
-    #     self.variables_create['input']['teacher'] = to_global_id('AccountNode', teacher.id)
-    #     self.variables_create['input']['teacher2'] = to_global_id('AccountNode', teacher2.id)
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.admin_user,
-    #         variables=self.variables_create
-    #     )
-    #     data = executed.get('data')
-    #
-    #     self.assertEqual(data['createScheduleEvent']['scheduleEvent']['name'],
-    #                      self.variables_create['input']['name'])
-    #
-    #     gql_id = data['createScheduleEvent']['scheduleEvent']['id']
-    #     rid = get_rid(gql_id)
-    #
-    #     schedule_event = models.ScheduleEvent.objects.get(pk=rid.id)
-    #     schedule_event_ticket = models.ScheduleEventTicket.objects.filter(schedule_event=schedule_event).first()
-    #
-    #     self.assertEqual(schedule_event_ticket.schedule_event, schedule_event)
-    #     self.assertEqual(schedule_event_ticket.name, "Full event")
-    #
-    # def test_create_event_anon_user(self):
+
+    # def test_create_event_activity_anon_user(self):
     #     """ Don't allow creating schedule events for non-logged in users """
-    #     query = self.event_create_mutation
-    #     teacher = f.TeacherFactory.create()
-    #     teacher2 = f.Teacher2Factory.create()
-    #     self.variables_create['input']['teacher'] = to_global_id('AccountNode', teacher.id)
-    #     self.variables_create['input']['teacher2'] = to_global_id('AccountNode', teacher2.id)
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.anon_user,
-    #         variables=self.variables_create
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
-    #
-    # def test_create_location_permission_granted(self):
-    #     """ Allow creating events for users with permissions """
-    #     query = self.event_create_mutation
-    #     teacher = f.TeacherFactory.create()
-    #     teacher2 = f.Teacher2Factory.create()
-    #     self.variables_create['input']['teacher'] = to_global_id('AccountNode', teacher.id)
-    #     self.variables_create['input']['teacher2'] = to_global_id('AccountNode', teacher2.id)
+    #     query = self.event_activity_create_mutation
+    #     schedule_event = f.ScheduleEventFactory.create()
+        # "organizationLocationRoom": to_global_id("OrganizationLocationRoomNode",
+        #                                          self.organization_location_room.id),
+        # self.variables_create['input']['scheduleEvent'] = to_global_id('ScheduleEventNode', schedule_event.id)
+        # self.variables_create['input']['account'] = to_global_id('AccountNode', schedule_event.teacher.id)
+        # self.variables_create['input']['account2'] = to_global_id('AccountNode', schedule_event.teacher_2.id)
+        #
+        # executed = execute_test_client_api_query(
+        #     query,
+        #     self.anon_user,
+        #     variables=self.variables_create
+        # )
+        # print("#############")
+        # print(executed)
+        # print("&&&&&&&&&&&")
+        # data = executed.get('data')
+        # errors = executed.get('errors')
+        # self.assertEqual(errors[0]['message'], 'Not logged in!')
+
+    # def test_create_schedule_event_activity_permission_granted(self):
+    #     """ Allow creating event activity for users with permissions """
+    #     query = self.event_activity_create_mutation
+    #     schedule_event = f.ScheduleEventFactory.create()
+    #     self.variables_create['input']['scheduleEvent'] = to_global_id('ScheduleEventNode', schedule_event.id)
+    #     self.variables_create['input']['account'] = to_global_id('AccountNode', schedule_event.teacher.id)
+    #     self.variables_create['input']['account2'] = to_global_id('AccountNode', schedule_event.teacher_2.id)
     #
     #     account = f.RegularUserFactory.create()
     #     # Create regular user
@@ -525,16 +501,16 @@ query ScheduleEventActivity($id:ID!) {
     #         variables=self.variables_create
     #     )
     #     data = executed.get('data')
-    #     self.assertEqual(data['createScheduleEvent']['scheduleEvent']['name'],
-    #                      self.variables_create['input']['name'])
+    #     self.assertEqual(data['createScheduleItem']['scheduleItem']['scheduleEvent']['id'],
+    #                      self.variables_create['input']['scheduleEvent'])
     #
     # def test_create_event_permission_denied(self):
-    #     """ Check create event permission denied error message """
-    #     query = self.event_create_mutation
-    #     teacher = f.TeacherFactory.create()
-    #     teacher2 = f.Teacher2Factory.create()
-    #     self.variables_create['input']['teacher'] = to_global_id('AccountNode', teacher.id)
-    #     self.variables_create['input']['teacher2'] = to_global_id('AccountNode', teacher2.id)
+    #     """ Check create event activity permission denied error message """
+    #     query = self.event_activity_create_mutation
+    #     schedule_event = f.ScheduleEventFactory.create()
+    #     self.variables_create['input']['scheduleEvent'] = to_global_id('ScheduleEventNode', schedule_event.id)
+    #     self.variables_create['input']['account'] = to_global_id('AccountNode', schedule_event.teacher.id)
+    #     self.variables_create['input']['account2'] = to_global_id('AccountNode', schedule_event.teacher_2.id)
     #
     #     account = f.RegularUserFactory.create()
     #     # Create regular user
