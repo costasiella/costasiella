@@ -304,76 +304,72 @@ query ScheduleEventActivity($id:ID!) {
                          to_global_id("AccountNode", schedule_event_activity.account.id))
         self.assertEqual(data['scheduleItem']['account2']['id'],
                          to_global_id("AccountNode", schedule_event_activity.account_2.id))
-    #
-    # def test_query_one_anon_user_nonpublic_not_allowed(self):
-    #     """ Deny permission for anon users Query one schedule event """
-    #     schedule_event = f.ScheduleEventFactory.create()
-    #     schedule_event.display_public = False
-    #     schedule_event.display_shop = False
-    #     schedule_event.save()
-    #
-    #     variables = {
-    #         "id": to_global_id("ScheduleEventNode", schedule_event.id),
-    #     }
-    #
-    #     # Now query single invoice and check
-    #     executed = execute_test_client_api_query(self.event_query, self.anon_user, variables=variables)
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
-    #
-    # def test_query_one_anon_user_public_allowed(self):
-    #     """ Deny permission for anon users Query one schedule event """
-    #     schedule_event = f.ScheduleEventFactory.create()
-    #
-    #     variables = {
-    #         "id": to_global_id("ScheduleEventNode", schedule_event.id),
-    #     }
-    #
-    #     # Now query single invoice and check
-    #     executed = execute_test_client_api_query(self.event_query, self.anon_user, variables=variables)
-    #     data = executed['data']
-    #     self.assertEqual(data['scheduleEvent']['organizationLocation']['id'],
-    #                      to_global_id("OrganizationLocationNode", schedule_event.organization_location.id))
-    #
-    # def test_query_one_display_nonpublic_permission_denied(self):
-    #     """ Don't list non-public events when user lacks authorization """
-    #     schedule_event = f.ScheduleEventFactory.create()
-    #     schedule_event.display_public = False
-    #     schedule_event.display_shop = False
-    #     schedule_event.save()
-    #     # Create regular user
-    #     user = f.RegularUserFactory()
-    #
-    #     variables = {
-    #         "id": to_global_id("ScheduleEventNode", schedule_event.id),
-    #     }
-    #
-    #     # Now query single event and check
-    #     executed = execute_test_client_api_query(self.event_query, user, variables=variables)
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
-    #
-    # def test_query_one_display_nonpublic_permission_granted(self):
-    #     """ Respond with data when user has permission """
-    #     schedule_event = f.ScheduleEventFactory.create()
-    #     schedule_event.display_public = False
-    #     schedule_event.display_shop = False
-    #     schedule_event.save()
-    #     # Create regular user
-    #     user = f.RegularUserFactory()
-    #     permission = Permission.objects.get(codename=self.permission_view)
-    #     user.user_permissions.add(permission)
-    #     user.save()
-    #
-    #     variables = {
-    #         "id": to_global_id("ScheduleEventNode", schedule_event.id),
-    #     }
-    #
-    #     # Now query single schedule event and check
-    #     executed = execute_test_client_api_query(self.event_query, user, variables=variables)
-    #     data = executed.get('data')
-    #     self.assertEqual(data['scheduleEvent']['organizationLocation']['id'],
-    #                      to_global_id("OrganizationLocationNode", schedule_event.organization_location.id))
+
+    def test_query_one_anon_user_nonpublic_not_allowed(self):
+        """ Deny permission for anon users Query one schedule event activity """
+        schedule_event_activity = f.ScheduleItemEventActivityFactory.create()
+        schedule_event_activity.display_public = False
+        schedule_event_activity.save()
+
+        variables = {
+            "id": to_global_id("ScheduleItemNode", schedule_event_activity.schedule_event.id),
+        }
+
+        # Now query single invoice and check
+        executed = execute_test_client_api_query(self.event_activity_query, self.anon_user, variables=variables)
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
+
+    def test_query_one_anon_user_public_allowed(self):
+        """ Deny permission for anon users Query one schedule event activity """
+        schedule_event_activity = f.ScheduleItemEventActivityFactory.create()
+
+        variables = {
+            "id": to_global_id("ScheduleItemNode", schedule_event_activity.schedule_event.id),
+        }
+
+        executed = execute_test_client_api_query(self.event_activity_query, self.anon_user, variables=variables)
+        data = executed['data']
+        self.assertEqual(data['scheduleItem']['scheduleEvent']['id'],
+                         to_global_id("ScheduleEventNode", schedule_event_activity.schedule_event.id))
+
+    def test_query_one_display_nonpublic_permission_denied(self):
+        """ Don't list non-public event activity when user lacks authorization """
+        schedule_event_activity = f.ScheduleItemEventActivityFactory.create()
+        schedule_event_activity.display_public = False
+        schedule_event_activity.save()
+        # Create regular user
+        user = f.RegularUserFactory()
+
+        variables = {
+            "id": to_global_id("ScheduleItemNode", schedule_event_activity.schedule_event.id),
+        }
+
+        # Now query single event and check
+        executed = execute_test_client_api_query(self.event_activity_query, user, variables=variables)
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
+
+    def test_query_one_display_nonpublic_permission_granted(self):
+        """ Respond with data when user has permission """
+        schedule_event_activity = f.ScheduleItemEventActivityFactory.create()
+        schedule_event_activity.display_public = False
+        schedule_event_activity.save()
+        # Create regular user
+        user = f.RegularUserFactory()
+        permission = Permission.objects.get(codename=self.permission_view)
+        user.user_permissions.add(permission)
+        user.save()
+
+        variables = {
+            "id": to_global_id("ScheduleItemNode", schedule_event_activity.schedule_event.id),
+        }
+
+        # Now query single schedule event and check
+        executed = execute_test_client_api_query(self.event_activity_query, user, variables=variables)
+        data = executed.get('data')
+        self.assertEqual(data['scheduleItem']['scheduleEvent']['id'],
+                         to_global_id("ScheduleEventNode", schedule_event_activity.schedule_event.id))
     #
     # def test_create_schedule_event(self):
     #     """ Create a schedule event """
