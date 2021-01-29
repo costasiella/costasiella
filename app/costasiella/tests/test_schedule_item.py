@@ -148,8 +148,33 @@ query ScheduleEventActivity($id:ID!) {
         self.event_activity_create_mutation = ''' 
   mutation CreateScheduleItem($input:CreateScheduleItemInput!) {
     createScheduleItem(input: $input) {
-      scheduleItem {
+      scheduleItem(id: $id) {
         id
+        scheduleEvent {
+          id
+        }
+        displayPublic
+        name
+        spaces
+        dateStart
+        timeStart
+        timeEnd
+        organizationLocationRoom {
+          id
+          name
+          organizationLocation {
+            id
+            name
+          }
+        }
+        account {
+          id
+          fullName
+        }
+        account2 {
+          id
+          fullName
+        }
       }
     }
   }
@@ -158,8 +183,33 @@ query ScheduleEventActivity($id:ID!) {
         self.event_activity_update_mutation = '''
   mutation UpdateScheduleItem($input:UpdateScheduleItemInput!) {
     updateScheduleItem(input: $input) {
-      scheduleItem {
+      scheduleItem(id: $id) {
         id
+        scheduleEvent {
+          id
+        }
+        displayPublic
+        name
+        spaces
+        dateStart
+        timeStart
+        timeEnd
+        organizationLocationRoom {
+          id
+          name
+          organizationLocation {
+            id
+            name
+          }
+        }
+        account {
+          id
+          fullName
+        }
+        account2 {
+          id
+          fullName
+        }
       }
     }
   }
