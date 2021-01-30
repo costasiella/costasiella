@@ -41,11 +41,11 @@ class GQLScheduleItem(TestCase):
             "input": {
                 "organizationLocationRoom": to_global_id("OrganizationLocationRoomNode",
                                                          self.organization_location_room.id),
-                "name": "Created event",
+                "name": "Created event activity",
                 "spaces": 20,
                 "dateStart": "2021-01-01",
                 "timeStart": "09:00:00",
-                "timeEnd": "09:00:00",
+                "timeEnd": "11:00:00",
                 "frequencyType": "SPECIFIC",
                 "frequencyInterval": 0,
                 "scheduleItemType": "EVENT_ACTIVITY",
@@ -55,12 +55,14 @@ class GQLScheduleItem(TestCase):
 
         self.variables_update = {
             "input": {
-                # "organizationLevel": to_global_id("OrganizationLevelNode", self.organization_level.id),
-                "name": "Updated event",
-                "tagline": "Tagline for updated event",
-                "preview": "Event preview updated",
-                "description": "Event description updated",
-                "infoMailContent": "hello world updated"
+                "organizationLocationRoom": to_global_id("OrganizationLocationRoomNode",
+                                                         self.organization_location_room.id),
+                "name": "Updated event activity",
+                "spaces": 20,
+                "dateStart": "2021-01-01",
+                "timeStart": "10:00:00",
+                "timeEnd": "12:00:00",
+                "displayPublic": True
             }
         }
 
@@ -458,147 +460,142 @@ query ScheduleEventActivity($id:ID!) {
         self.assertEqual(data['createScheduleItem']['scheduleItem']['timeStart'],
                          self.variables_create['input']['timeStart'])
 
-    # def test_create_event_activity_anon_user(self):
-    #     """ Don't allow creating schedule events for non-logged in users """
-    #     query = self.event_activity_create_mutation
-    #     schedule_event = f.ScheduleEventFactory.create()
-        # "organizationLocationRoom": to_global_id("OrganizationLocationRoomNode",
-        #                                          self.organization_location_room.id),
-        # self.variables_create['input']['scheduleEvent'] = to_global_id('ScheduleEventNode', schedule_event.id)
-        # self.variables_create['input']['account'] = to_global_id('AccountNode', schedule_event.teacher.id)
-        # self.variables_create['input']['account2'] = to_global_id('AccountNode', schedule_event.teacher_2.id)
-        #
-        # executed = execute_test_client_api_query(
-        #     query,
-        #     self.anon_user,
-        #     variables=self.variables_create
-        # )
-        # print("#############")
-        # print(executed)
-        # print("&&&&&&&&&&&")
-        # data = executed.get('data')
-        # errors = executed.get('errors')
-        # self.assertEqual(errors[0]['message'], 'Not logged in!')
+    def test_create_event_activity_anon_user(self):
+        """ Don't allow creating schedule events for non-logged in users """
+        query = self.event_activity_create_mutation
+        schedule_event = f.ScheduleEventFactory.create()
+        self.variables_create['input']['scheduleEvent'] = to_global_id('ScheduleEventNode', schedule_event.id)
+        self.variables_create['input']['account'] = to_global_id('AccountNode', schedule_event.teacher.id)
+        self.variables_create['input']['account2'] = to_global_id('AccountNode', schedule_event.teacher_2.id)
 
-    # def test_create_schedule_event_activity_permission_granted(self):
-    #     """ Allow creating event activity for users with permissions """
-    #     query = self.event_activity_create_mutation
-    #     schedule_event = f.ScheduleEventFactory.create()
-    #     self.variables_create['input']['scheduleEvent'] = to_global_id('ScheduleEventNode', schedule_event.id)
-    #     self.variables_create['input']['account'] = to_global_id('AccountNode', schedule_event.teacher.id)
-    #     self.variables_create['input']['account2'] = to_global_id('AccountNode', schedule_event.teacher_2.id)
-    #
-    #     account = f.RegularUserFactory.create()
-    #     # Create regular user
-    #     user = account
-    #     permission = Permission.objects.get(codename=self.permission_add)
-    #     user.user_permissions.add(permission)
-    #     user.save()
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=self.variables_create
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['createScheduleItem']['scheduleItem']['scheduleEvent']['id'],
-    #                      self.variables_create['input']['scheduleEvent'])
-    #
-    # def test_create_event_permission_denied(self):
-    #     """ Check create event activity permission denied error message """
-    #     query = self.event_activity_create_mutation
-    #     schedule_event = f.ScheduleEventFactory.create()
-    #     self.variables_create['input']['scheduleEvent'] = to_global_id('ScheduleEventNode', schedule_event.id)
-    #     self.variables_create['input']['account'] = to_global_id('AccountNode', schedule_event.teacher.id)
-    #     self.variables_create['input']['account2'] = to_global_id('AccountNode', schedule_event.teacher_2.id)
-    #
-    #     account = f.RegularUserFactory.create()
-    #     # Create regular user
-    #     user = account
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=self.variables_create
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
-    #
-    # def test_update_event(self):
-    #     """ Update an event """
-    #     query = self.event_update_mutation
-    #     schedule_event = f.ScheduleEventFactory.create()
-    #     self.variables_update['input']['id'] = to_global_id('ScheduleEventNode', schedule_event.id)
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.admin_user,
-    #         variables=self.variables_update
-    #     )
-    #     data = executed.get('data')
-    #
-    #     self.assertEqual(data['updateScheduleEvent']['scheduleEvent']['name'],
-    #                      self.variables_update['input']['name'])
-    #     self.assertEqual(data['updateScheduleEvent']['scheduleEvent']['tagline'],
-    #                      self.variables_update['input']['tagline'])
-    #     self.assertEqual(data['updateScheduleEvent']['scheduleEvent']['preview'],
-    #                      self.variables_update['input']['preview'])
-    #     self.assertEqual(data['updateScheduleEvent']['scheduleEvent']['description'],
-    #                      self.variables_update['input']['description'])
-    #     self.assertEqual(data['updateScheduleEvent']['scheduleEvent']['infoMailContent'],
-    #                      self.variables_update['input']['infoMailContent'])
-    #
-    # def test_update_event_anon_user(self):
-    #     """ Don't allow updating events for non-logged in users """
-    #     query = self.event_update_mutation
-    #     schedule_event = f.ScheduleEventFactory.create()
-    #     self.variables_update['input']['id'] = to_global_id('ScheduleEventNode', schedule_event.id)
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.anon_user,
-    #         variables=self.variables_update
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
-    #
-    # def test_update_event_permission_granted(self):
-    #     """ Allow updating event for users with permissions """
-    #     query = self.event_update_mutation
-    #     schedule_event = f.ScheduleEventFactory.create()
-    #     self.variables_update['input']['id'] = to_global_id('ScheduleEventNode', schedule_event.id)
-    #
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename=self.permission_change)
-    #     user.user_permissions.add(permission)
-    #     user.save()
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=self.variables_update
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['updateScheduleEvent']['scheduleEvent']['name'],
-    #                      self.variables_update['input']['name'])
-    #
-    # def test_update_invoice_permission_denied(self):
-    #     """ Check update event permission denied error message """
-    #     query = self.event_update_mutation
-    #     schedule_event = f.ScheduleEventFactory.create()
-    #     self.variables_update['input']['id'] = to_global_id('ScheduleEventNode', schedule_event.id)
-    #
-    #     user = f.RegularUserFactory.create()
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=self.variables_update
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
+        executed = execute_test_client_api_query(
+            query,
+            self.anon_user,
+            variables=self.variables_create
+        )
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
+
+    def test_create_schedule_event_activity_permission_granted(self):
+        """ Allow creating event activity for users with permissions """
+        query = self.event_activity_create_mutation
+        schedule_event = f.ScheduleEventFactory.create()
+        self.variables_create['input']['scheduleEvent'] = to_global_id('ScheduleEventNode', schedule_event.id)
+        self.variables_create['input']['account'] = to_global_id('AccountNode', schedule_event.teacher.id)
+        self.variables_create['input']['account2'] = to_global_id('AccountNode', schedule_event.teacher_2.id)
+
+        account = f.RegularUserFactory.create()
+        # Create regular user
+        user = account
+        permission = Permission.objects.get(codename=self.permission_add)
+        user.user_permissions.add(permission)
+        user.save()
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=self.variables_create
+        )
+        data = executed.get('data')
+        self.assertEqual(data['createScheduleItem']['scheduleItem']['scheduleEvent']['id'],
+                         self.variables_create['input']['scheduleEvent'])
+
+    def test_create_event_permission_denied(self):
+        """ Check create event activity permission denied error message """
+        query = self.event_activity_create_mutation
+        schedule_event = f.ScheduleEventFactory.create()
+        self.variables_create['input']['scheduleEvent'] = to_global_id('ScheduleEventNode', schedule_event.id)
+        self.variables_create['input']['account'] = to_global_id('AccountNode', schedule_event.teacher.id)
+        self.variables_create['input']['account2'] = to_global_id('AccountNode', schedule_event.teacher_2.id)
+
+        account = f.RegularUserFactory.create()
+        # Create regular user
+        user = account
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=self.variables_create
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
+
+    def test_update_event(self):
+        """ Update an event activity """
+        query = self.event_activity_update_mutation
+        schedule_event_activity = f.ScheduleItemEventActivityFactory.create()
+        self.variables_update['input']['id'] = to_global_id('ScheduleItemNode', schedule_event_activity.id)
+        self.variables_update['input']['account'] = to_global_id('AccountNode',
+                                                                 schedule_event_activity.schedule_event.teacher.id)
+        self.variables_update['input']['account2'] = to_global_id('AccountNode',
+                                                                  schedule_event_activity.schedule_event.teacher_2.id)
+
+        executed = execute_test_client_api_query(
+            query,
+            self.admin_user,
+            variables=self.variables_update
+        )
+        data = executed.get('data')
+
+        self.assertEqual(data['updateScheduleItem']['scheduleItem']['organizationLocationRoom']['id'],
+                         self.variables_update['input']['organizationLocationRoom'])
+        self.assertEqual(data['updateScheduleItem']['scheduleItem']['account']['id'],
+                         self.variables_update['input']['account'])
+        self.assertEqual(data['updateScheduleItem']['scheduleItem']['account2']['id'],
+                         self.variables_update['input']['account2'])
+        self.assertEqual(data['updateScheduleItem']['scheduleItem']['displayPublic'],
+                         self.variables_update['input']['displayPublic'])
+        self.assertEqual(data['updateScheduleItem']['scheduleItem']['name'],
+                         self.variables_update['input']['name'])
+        self.assertEqual(data['updateScheduleItem']['scheduleItem']['spaces'],
+                         self.variables_update['input']['spaces'])
+        self.assertEqual(data['updateScheduleItem']['scheduleItem']['dateStart'],
+                         self.variables_update['input']['dateStart'])
+        self.assertEqual(data['updateScheduleItem']['scheduleItem']['timeStart'],
+                         self.variables_update['input']['timeStart'])
+
+    def test_update_event_anon_user(self):
+        """ Don't allow updating event activities for non-logged in users """
+        query = self.event_activity_update_mutation
+        schedule_event_activity = f.ScheduleItemEventActivityFactory.create()
+        self.variables_update['input']['id'] = to_global_id('ScheduleItemNode', schedule_event_activity.id)
+        self.variables_update['input']['account'] = to_global_id('AccountNode',
+                                                                 schedule_event_activity.schedule_event.teacher.id)
+        self.variables_update['input']['account2'] = to_global_id('AccountNode',
+                                                                  schedule_event_activity.schedule_event.teacher_2.id)
+
+        executed = execute_test_client_api_query(
+            query,
+            self.anon_user,
+            variables=self.variables_update
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
+
+    def test_update_event_permission_granted(self):
+        """ Allow updating event activity for users with permissions """
+        query = self.event_activity_update_mutation
+        schedule_event_activity = f.ScheduleItemEventActivityFactory.create()
+        self.variables_update['input']['id'] = to_global_id('ScheduleItemNode', schedule_event_activity.id)
+        self.variables_update['input']['account'] = to_global_id('AccountNode',
+                                                                 schedule_event_activity.schedule_event.teacher.id)
+        self.variables_update['input']['account2'] = to_global_id('AccountNode',
+                                                                  schedule_event_activity.schedule_event.teacher_2.id)
+
+        user = f.RegularUserFactory.create()
+        permission = Permission.objects.get(codename=self.permission_change)
+        user.user_permissions.add(permission)
+        user.save()
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=self.variables_update
+        )
+        data = executed.get('data')
+        self.assertEqual(data['updateScheduleItem']['scheduleItem']['organizationLocationRoom']['id'],
+                         self.variables_update['input']['organizationLocationRoom'])
     #
     # def test_archive_event(self):
     #     """ Archive an event """
