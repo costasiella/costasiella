@@ -185,8 +185,6 @@ class CreateScheduleItem(graphene.relay.ClientIDMutation):
         require_login_and_permission(user, 'costasiella.add_scheduleitem')
 
         result = validate_create_update_input(input)
-        print("Schedule item create input:")
-        print(input)
 
         schedule_item = ScheduleItem(
             organization_location_room=result['organization_location_room'],
@@ -255,15 +253,12 @@ class UpdateScheduleItem(graphene.relay.ClientIDMutation):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.change_scheduleitem')
 
-        print(input)
-
         rid = get_rid(input['id'])
         schedule_item = ScheduleItem.objects.filter(id=rid.id).first()
         if not schedule_item:
             raise Exception('Invalid Schedule Item ID!')
 
         result = validate_create_update_input(input, update=True)
-        print(input)
 
         if "name" in input:
             schedule_item.name = input['name']

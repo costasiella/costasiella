@@ -66,10 +66,8 @@ class GQLScheduleItem(TestCase):
             }
         }
 
-        self.variables_archive = {
-            "input": {
-                "archived": True
-            }
+        self.variables_delete = {
+            "input": {}
         }
 
         self.events_activities_query = '''
@@ -344,8 +342,6 @@ query ScheduleEventActivity($id:ID!) {
         executed = execute_test_client_api_query(self.event_activity_query, self.admin_user, variables=variables)
         data = executed.get('data')
 
-        print(executed)
-
         self.assertEqual(data['scheduleItem']['scheduleEvent']['id'],
                          to_global_id("ScheduleEventNode", schedule_event_activity.schedule_event.id))
         self.assertEqual(data['scheduleItem']['organizationLocationRoom']['id'],
@@ -596,73 +592,69 @@ query ScheduleEventActivity($id:ID!) {
         data = executed.get('data')
         self.assertEqual(data['updateScheduleItem']['scheduleItem']['organizationLocationRoom']['id'],
                          self.variables_update['input']['organizationLocationRoom'])
-    #
-    # def test_archive_event(self):
-    #     """ Archive an event """
-    #     query = self.event_archive_mutation
-    #     schedule_event = f.ScheduleEventFactory.create()
-    #     self.variables_archive['input']['id'] = to_global_id('ScheduleEventNode', schedule_event.id)
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.admin_user,
-    #         variables=self.variables_archive
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['archiveScheduleEvent']['scheduleEvent']['id'],
-    #                      to_global_id('ScheduleEventNode', schedule_event.id))
-    #     self.assertEqual(data['archiveScheduleEvent']['scheduleEvent']['archived'],
-    #                      self.variables_archive['input']['archived'])
-    #
-    # def test_archive_event_anon_user(self):
-    #     """ Archive event denied for anon user """
-    #     query = self.event_archive_mutation
-    #     schedule_event = f.ScheduleEventFactory.create()
-    #     self.variables_archive['input']['id'] = to_global_id('ScheduleEventNode', schedule_event.id)
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.anon_user,
-    #         variables=self.variables_archive
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
-    #
-    # def test_archive_event_permission_granted(self):
-    #     """ Allow archive events for users with permissions """
-    #     query = self.event_archive_mutation
-    #     schedule_event = f.ScheduleEventFactory.create()
-    #     self.variables_archive['input']['id'] = to_global_id('ScheduleEventNode', schedule_event.id)
-    #
-    #     # Give permissions
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename=self.permission_delete)
-    #     user.user_permissions.add(permission)
-    #     user.save()
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=self.variables_archive
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['archiveScheduleEvent']['scheduleEvent']['archived'],
-    #                      self.variables_archive['input']['archived'])
-    #
-    # def test_archive_event_permission_denied(self):
-    #     """ Check archive event permission denied error message """
-    #     query = self.event_archive_mutation
-    #     schedule_event = f.ScheduleEventFactory.create()
-    #     self.variables_archive['input']['id'] = to_global_id('ScheduleEventNode', schedule_event.id)
-    #
-    #     user = f.RegularUserFactory.create()
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=self.variables_archive
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
+
+    def test_delete_event_activity(self):
+        """ Delete schedule event acivity (schedule item) """
+        query = self.event_activity_delete_mutation
+        schedule_event_activity = f.ScheduleItemEventActivityFactory.create()
+        self.variables_delete['input']['id'] = to_global_id('ScheduleItemNode', schedule_event_activity.id)
+
+        executed = execute_test_client_api_query(
+            query,
+            self.admin_user,
+            variables=self.variables_delete
+        )
+        data = executed.get('data')
+        self.assertEqual(data['deleteScheduleItem']['ok'], True)
+
+    def test_delete_event_activity_anon_user(self):
+        """ Delete schedule event acivity (schedule item) for anon user """
+        query = self.event_activity_delete_mutation
+        schedule_event_activity = f.ScheduleItemEventActivityFactory.create()
+        self.variables_delete['input']['id'] = to_global_id('ScheduleItemNode', schedule_event_activity.id)
+
+        executed = execute_test_client_api_query(
+            query,
+            self.anon_user,
+            variables=self.variables_delete
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
+
+    def test_delete_event_activity_permission_granted(self):
+        """ Allow archive event activity for users with permissions """
+        query = self.event_activity_delete_mutation
+        schedule_event_activity = f.ScheduleItemEventActivityFactory.create()
+        self.variables_delete['input']['id'] = to_global_id('ScheduleItemNode', schedule_event_activity.id)
+
+        # Give permissions
+        user = f.RegularUserFactory.create()
+        permission = Permission.objects.get(codename=self.permission_delete)
+        user.user_permissions.add(permission)
+        user.save()
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=self.variables_delete
+        )
+        data = executed.get('data')
+        self.assertEqual(data['deleteScheduleItem']['ok'], True)
+
+    def test_delete_event_activity_permission_denied(self):
+        """ Check delete event activity permission denied error message """
+        query = self.event_activity_delete_mutation
+        schedule_event_activity = f.ScheduleItemEventActivityFactory.create()
+        self.variables_delete['input']['id'] = to_global_id('ScheduleItemNode', schedule_event_activity.id)
+
+        user = f.RegularUserFactory.create()
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=self.variables_delete
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
