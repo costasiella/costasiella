@@ -18,8 +18,6 @@ from .helpers import clean_media, execute_test_client_api_query
 from .. import models
 from .. import schema
 
-from app.settings.development import MEDIA_ROOT
-
 
 class GQLOrganizationDocument(TestCase):
     # https://docs.djangoproject.com/en/2.1/topics/testing/overview/
