@@ -40,3 +40,10 @@ def clean_media():
                 os.unlink(os.path.join(root, f))
             for d in dirs:
                 shutil.rmtree(os.path.join(root, d))
+
+        # write gitignore for media root
+        with open(os.path.join(MEDIA_ROOT, ".gitignore"), 'w') as file_writer:
+            file_writer.write("# Ignore everything in this directory\n")
+            file_writer.write("*\n")
+            file_writer.write("# Except this file\n")
+            file_writer.write("!.gitignore\n")
