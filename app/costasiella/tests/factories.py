@@ -743,6 +743,22 @@ class ScheduleEventFullTicketFactory(factory.DjangoModelFactory):
     finance_costcenter = factory.SubFactory(FinanceCostCenterFactory)
 
 
+class ScheduleEventMediaFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.ScheduleEventMedia
+
+    schedule_event = factory.LazyAttribute(
+        lambda o: o.initial_schedule_event if o.initial_schedule_event else factory.SubFactory(ScheduleEventFactory)
+    )
+    sort_order = 0
+    description = "Test image"
+    # https://factoryboy.readthedocs.io/en/latest/orms.html
+    # Refer to the part "Extra Fields (class dactory.django.FileField)"
+    image = factory.django.FileField(
+        from_path=os.path.join(os.getcwd(), "costasiella", "tests", "files", "test_image.jpg"),
+    )
+
+
 class ScheduleItemEventActivityFactory(factory.DjangoModelFactory):
     class Meta:
         model = models.ScheduleItem
