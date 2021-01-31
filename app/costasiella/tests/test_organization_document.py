@@ -14,7 +14,7 @@ from graphql_relay import to_global_id
 from django.contrib.auth.models import AnonymousUser
 
 from . import factories as f
-from .helpers import execute_test_client_api_query
+from .helpers import clean_media, execute_test_client_api_query
 from .. import models
 from .. import schema
 
@@ -145,16 +145,7 @@ class GQLOrganizationDocument(TestCase):
 
     def tearDown(self):
         # This is run after every test
-        if 'TRAVIS' not in os.environ:
-          # Clean test media root after each test to prevent stray files after testing
-          # But don't run on Travis-CI, as we don't seem to be allowed to remove stuff from dirs
-          # in the tests
-          for root, dirs, files in os.walk(MEDIA_ROOT):
-            for f in files:
-              os.unlink(os.path.join(root, f))
-            for d in dirs:
-              shutil.rmtree(os.path.join(root, d))
-
+        clean_media()
 
     def test_query(self):
         """ Query list of organization documents """
