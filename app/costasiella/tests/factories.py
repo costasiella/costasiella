@@ -766,12 +766,7 @@ class ScheduleItemEventActivityFactory(factory.DjangoModelFactory):
     class Meta:
         model = models.ScheduleItem
 
-    class Params:
-        initial_schedule_event = factory.SubFactory(ScheduleEventFactory)
-
-    schedule_event = factory.LazyAttribute(
-        lambda o: o.initial_schedule_event if o.initial_schedule_event else factory.SubFactory(ScheduleEventFactory)
-    )
+    schedule_event = factory.SubFactory(ScheduleEventFactory)
     schedule_item_type = "EVENT_ACTIVITY"
     frequency_type = "SPECIFIC"
     frequency_interval = 0
@@ -784,6 +779,13 @@ class ScheduleItemEventActivityFactory(factory.DjangoModelFactory):
     account_2 = factory.SelfAttribute('schedule_event.teacher_2')
     name = "Event activity 1"
     spaces = 20
+
+
+class ScheduleEventTicketScheduleItemIncludedFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.ScheduleEventTicketScheduleItem
+
+    included = True
 
     
 class ScheduleItemTeacherFactory(factory.DjangoModelFactory):
