@@ -10,12 +10,15 @@ from graphene.test import Client
 # Create your tests here.
 from django.contrib.auth.models import AnonymousUser
 
+from graphql_relay import to_global_id
+
 from . import factories as f
 from .helpers import execute_test_client_api_query
 from .. import models
 from .. import schema
+from ..modules.gql_tools import get_rid
 
-from graphql_relay import to_global_id
+
 
 
 class GQLScheduleEventTicket(TestCase):
@@ -487,6 +490,34 @@ query ScheduleEventTicket($id:ID!) {
           data['createScheduleEventTicket']['scheduleEventTicket']['financeCostcenter']['id'],
           variables['input']['financeCostcenter']
         )
+
+    def test_create_event_ticket_and_add_to_all_schedule_items(self):
+        """ Create event ticket and check if entries in ScheduleEventTicketScheduleItem are created """
+        query = self.event_ticket_create_mutation
+        schedule_event_activity = f.ScheduleItemEventActivityFactory.create()
+        schedule_event = schedule_event_activity.schedule_event
+
+        variables = self.variables_create
+        variables['input']['scheduleEvent'] = to_global_id("ScheduleEventNode", schedule_event.pk)
+
+        executed = execute_test_client_api_query(
+            query,
+            self.admin_user,
+            variables=variables
+        )
+
+        data = executed.get('data')
+        self.assertEqual(
+          data['createScheduleEventTicket']['scheduleEventTicket']['scheduleEvent']['id'],
+          variables['input']['scheduleEvent']
+        )
+
+        # Check line is added to ScheduleEventTicketScheduleItem model
+        rid = get_rid(data['createScheduleEventTicket']['scheduleEventTicket']['id'])
+        schedule_event_ticket = models.ScheduleEventTicket.objects.get(pk=rid.id)
+        schedule_event_ticket_schedule_item = models.ScheduleEventTicketScheduleItem.objects.last()
+        self.assertEqual(schedule_event_ticket_schedule_item.schedule_event_ticket, schedule_event_ticket)
+        self.assertEqual(schedule_event_ticket_schedule_item.schedule_item, schedule_event_activity)
 
     def test_create_event_ticket_anon_user(self):
         """ Don't allow creating event tickets for non-logged in users """
