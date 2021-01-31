@@ -2,8 +2,8 @@ import gql from "graphql-tag"
 
 
 export const GET_SCHEDULE_EVENT_MEDIAS_QUERY = gql`
-  query ScheduleEventMedias($before:String, $after:String, $schedule_event:ID!) {
-    scheduleEventMedias(first: 100, before:$before, after:$after, scheduleEvent:$schedule_event) {
+  query ScheduleEventMedias($before:String, $after:String, $scheduleEvent:ID!) {
+    scheduleEventMedias(first: 100, before:$before, after:$after, scheduleEvent:$scheduleEvent) {
       pageInfo {
         hasNextPage
         hasPreviousPage
