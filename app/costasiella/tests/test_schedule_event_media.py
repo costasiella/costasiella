@@ -47,11 +47,11 @@ class GQLScheduleEventMedia(TestCase):
         with open(os.path.join(os.getcwd(), "costasiella", "tests", "files", "test_image.txt"), 'r') as input_file:
             self.variables_create = {
                 "input": {
-                  "documentFileName": "test_image.jpgf",
-                  "documentType": "TERMS_AND_CONDITIONS",
-                  "version": "1.1",
-                  "dateStart": "2019-12-01",
-                  "document": input_file.read().replace("\n", "")
+                  "scheduleEvent": to_global_id("ScheduleEventNode", self.schedule_event_media.schedule_event.id),
+                  "sortOrder": 0,
+                  "description": "test_image.jpg",
+                  "imageFileName": "test_image.jpg",
+                  "image": input_file.read().replace("\n", "")
                 }
             }
 
@@ -112,6 +112,9 @@ class GQLScheduleEventMedia(TestCase):
     createScheduleEventMedia(input: $input) {
       scheduleEventMedia {
         id
+        sortOrder
+        description
+        image
       }
     }
   }
@@ -172,23 +175,23 @@ class GQLScheduleEventMedia(TestCase):
 
         self.assertEqual(data['scheduleEventMedia']['id'], self.variables_query_one['id'])
 
-    #
-    # def test_create_schedule_event_media(self):
-    #     """ Create an organization document """
-    #     query = self.schedule_event_media_create_mutation
-    #     variables = self.variables_create
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.admin_user,
-    #         variables=variables
-    #     )
-    #
-    #     data = executed.get('data')
-    #     self.assertEqual(data['createOrganizationDocument']['organizationDocument']['documentType'], variables['input']['documentType'])
-    #     self.assertEqual(data['createOrganizationDocument']['organizationDocument']['version'], variables['input']['version'])
-    #     self.assertEqual(data['createOrganizationDocument']['organizationDocument']['dateStart'], variables['input']['dateStart'])
-    #     # self.assertEqual(data['createOrganizationDocument']['organizationDocument']['document'], variables['input']['document'])
+    def test_create_schedule_event_media(self):
+        """ Create schedule event media """
+        query = self.schedule_event_media_create_mutation
+        variables = self.variables_create
+
+        executed = execute_test_client_api_query(
+            query,
+            self.admin_user,
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['createScheduleEventMedia']['scheduleEventMedia']['sortOrder'],
+                         variables['input']['sortOrder'])
+        # self.assertEqual(data['createOrganizationDocument']['organizationDocument']['documentType'], variables['input']['documentType'])
+        # self.assertEqual(data['createOrganizationDocument']['organizationDocument']['version'], variables['input']['version'])
+        # self.assertEqual(data['createOrganizationDocument']['organizationDocument']['dateStart'], variables['input']['dateStart'])
+        # self.assertEqual(data['createOrganizationDocument']['organizationDocument']['document'], variables['input']['document'])
     #
     #
     # def test_create_schedule_event_media_anon_user(self):
