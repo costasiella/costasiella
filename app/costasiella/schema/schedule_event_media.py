@@ -107,7 +107,6 @@ class CreateScheduleEventMedia(graphene.relay.ClientIDMutation):
         require_login_and_permission(user, 'costasiella.add_scheduleeventmedia')
 
         result = validate_create_update_input(input)
-        print(input)
 
         schedule_event_media = ScheduleEventMedia(
             schedule_event=result['schedule_event'],
