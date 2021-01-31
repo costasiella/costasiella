@@ -49,8 +49,8 @@ class ScheduleEventMediaNode(DjangoObjectType):
 
     @classmethod
     def get_node(self, info, id):
-        user = info.context.user
-        require_login_and_permission(user, 'costasiella.view_scheduleeventmedia')
+        # user = info.context.user
+        # require_login_and_permission(user, 'costasiella.view_scheduleeventmedia')
 
         return self._meta.model.objects.get(id=id)
 
@@ -60,9 +60,9 @@ class ScheduleEventMediaQuery(graphene.ObjectType):
     schedule_event_media = graphene.relay.Node.Field(ScheduleEventMediaNode)
 
     def resolve_schedule_event_medias(self, info, **kwargs):
-        user = info.context.user
-        if user.is_anonymous:
-            raise Exception(m.user_not_logged_in)
+        # user = info.context.user
+        # if user.is_anonymous:
+        #     raise Exception(m.user_not_logged_in)
 
         return ScheduleEventMedia.objects.order_by('sort_order')
 
