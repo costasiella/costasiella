@@ -437,6 +437,7 @@ query ScheduleEventActivity($id:ID!) {
         )
         data = executed.get('data')
 
+        # Check general data for schedule item
         self.assertEqual(data['createScheduleItem']['scheduleItem']['scheduleEvent']['id'],
                          self.variables_create['input']['scheduleEvent'])
         self.assertEqual(data['createScheduleItem']['scheduleItem']['organizationLocationRoom']['id'],
@@ -455,6 +456,32 @@ query ScheduleEventActivity($id:ID!) {
                          self.variables_create['input']['dateStart'])
         self.assertEqual(data['createScheduleItem']['scheduleItem']['timeStart'],
                          self.variables_create['input']['timeStart'])
+
+    def test_create_schedule_event_activity_set_event_dates_and_times(self):
+        """ Check of activity dates & times are set on schedule event """
+        query = self.event_activity_create_mutation
+        schedule_event = f.ScheduleEventFactory.create()
+        self.variables_create['input']['scheduleEvent'] = to_global_id('ScheduleEventNode', schedule_event.id)
+        self.variables_create['input']['account'] = to_global_id('AccountNode', schedule_event.teacher.id)
+        self.variables_create['input']['account2'] = to_global_id('AccountNode', schedule_event.teacher_2.id)
+
+        executed = execute_test_client_api_query(
+            query,
+            self.admin_user,
+            variables=self.variables_create
+        )
+        data = executed.get('data')
+
+        # Check general data for schedule item
+        self.assertEqual(data['createScheduleItem']['scheduleItem']['scheduleEvent']['id'],
+                         self.variables_create['input']['scheduleEvent'])
+
+        # Check event dates & times after refetching schedule event
+        schedule_event = models.ScheduleEvent.objects.get(pk=schedule_event.pk)
+        self.assertEqual(str(schedule_event.date_start), self.variables_create['input']['dateStart'])
+        self.assertEqual(str(schedule_event.time_start), self.variables_create['input']['timeStart'])
+        self.assertEqual(str(schedule_event.date_end), self.variables_create['input']['dateStart'])
+        self.assertEqual(str(schedule_event.time_end), self.variables_create['input']['timeEnd'])
 
     def test_create_event_activity_anon_user(self):
         """ Don't allow creating schedule events for non-logged in users """

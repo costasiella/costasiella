@@ -223,7 +223,9 @@ class CreateScheduleItem(graphene.relay.ClientIDMutation):
 
         if schedule_item.schedule_item_type == "EVENT_ACTIVITY":
             sih = ScheduleItemHelper()
+            # Add Schedule item to all tickets
             sih.add_schedule_item_to_all_event_tickets(schedule_item)
+            # Add attendance records (eg. full event ticket customers should always be added).
             sih.create_attendance_records_for_event_schedule_items(schedule_item.schedule_event)
 
             # update event dates & times
