@@ -37,23 +37,23 @@ class GQLScheduleEventMedia(TestCase):
         self.schedule_event_media = f.ScheduleEventMediaFactory.create()
 
         self.variables_query_list = {
-          "scheduleEvent": to_global_id("ScheduleEventNode", self.schedule_event_media.schedule_event.id)
+            "scheduleEvent": to_global_id("ScheduleEventNode", self.schedule_event_media.schedule_event.id)
         }
 
         self.variables_query_one = {
-          "id": to_global_id("OrganizationDocumentNode", self.schedule_event_media.id)
+            "id": to_global_id("ScheduleEventMediaNode", self.schedule_event_media.id)
         }
 
-        with open(os.path.join(os.getcwd(), "costasiella", "tests", "files", "test_pdf.txt"), 'r') as input_file:
-          self.variables_create = {
-              "input": {
-                  "documentFileName": "test.pdf",
+        with open(os.path.join(os.getcwd(), "costasiella", "tests", "files", "test_image.txt"), 'r') as input_file:
+            self.variables_create = {
+                "input": {
+                  "documentFileName": "test_image.jpgf",
                   "documentType": "TERMS_AND_CONDITIONS",
                   "version": "1.1",
                   "dateStart": "2019-12-01",
                   "document": input_file.read().replace("\n", "")
-              }
-          }
+                }
+            }
 
         self.variables_update = {
             "input": {
@@ -162,16 +162,16 @@ class GQLScheduleEventMedia(TestCase):
     # No permission tests are required in this test, as there are no permission checks in the schema.
     # The listing of these documents is public, so users also don't need to be logged in.
     ##
-    #
-    # def test_query_one(self):
-    #     """ Query one organization document """
-    #     query = self.schedule_event_media_query
-    #
-    #     executed = execute_test_client_api_query(query, self.admin_user, variables=self.variables_query_one)
-    #     data = executed.get('data')
-    #
-    #     self.assertEqual(data['organizationDocument']['id'], self.variables_query_one['id'])
-    #
+
+    def test_query_one(self):
+        """ Query one organization document """
+        query = self.schedule_event_media_query
+
+        executed = execute_test_client_api_query(query, self.admin_user, variables=self.variables_query_one)
+        data = executed.get('data')
+
+        self.assertEqual(data['scheduleEventMedia']['id'], self.variables_query_one['id'])
+
     #
     # def test_create_schedule_event_media(self):
     #     """ Create an organization document """
