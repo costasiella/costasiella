@@ -577,6 +577,34 @@ query ScheduleEventActivity($id:ID!) {
         self.assertEqual(data['updateScheduleItem']['scheduleItem']['timeStart'],
                          self.variables_update['input']['timeStart'])
 
+    def test_update_schedule_event_activity_set_event_dates_and_times(self):
+        """ Check of activity dates & times are set on schedule event """
+        query = self.event_activity_update_mutation
+        schedule_event_activity = f.ScheduleItemEventActivityFactory.create()
+        self.variables_update['input']['id'] = to_global_id('ScheduleItemNode', schedule_event_activity.id)
+        self.variables_update['input']['account'] = to_global_id('AccountNode',
+                                                                 schedule_event_activity.schedule_event.teacher.id)
+        self.variables_update['input']['account2'] = to_global_id('AccountNode',
+                                                                  schedule_event_activity.schedule_event.teacher_2.id)
+
+        executed = execute_test_client_api_query(
+            query,
+            self.admin_user,
+            variables=self.variables_update
+        )
+        data = executed.get('data')
+
+        # Check general data for schedule item
+        self.assertEqual(data['updateScheduleItem']['scheduleItem']['organizationLocationRoom']['id'],
+                         self.variables_update['input']['organizationLocationRoom'])
+
+        # Check event dates & times after refetching schedule event
+        schedule_event = models.ScheduleEvent.objects.get(pk=schedule_event_activity.schedule_event.pk)
+        self.assertEqual(str(schedule_event.date_start), self.variables_update['input']['dateStart'])
+        self.assertEqual(str(schedule_event.time_start), self.variables_update['input']['timeStart'])
+        self.assertEqual(str(schedule_event.date_end), self.variables_update['input']['dateStart'])
+        self.assertEqual(str(schedule_event.time_end), self.variables_update['input']['timeEnd'])
+
     def test_update_event_anon_user(self):
         """ Don't allow updating event activities for non-logged in users """
         query = self.event_activity_update_mutation
