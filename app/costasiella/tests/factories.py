@@ -729,7 +729,7 @@ class ScheduleEventFullTicketFactory(factory.DjangoModelFactory):
     class Params:
         initial_schedule_event = factory.SubFactory(ScheduleEventFactory)
 
-    scheduleEvent = factory.LazyAttribute(
+    schedule_event = factory.LazyAttribute(
         lambda o: o.initial_schedule_event if o.initial_schedule_event else factory.SubFactory(ScheduleEventFactory)
     )
     full_event = True

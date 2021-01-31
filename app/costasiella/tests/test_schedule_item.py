@@ -457,6 +457,59 @@ query ScheduleEventActivity($id:ID!) {
         self.assertEqual(data['createScheduleItem']['scheduleItem']['timeStart'],
                          self.variables_create['input']['timeStart'])
 
+    def test_create_schedule_event_activity_set_included_true_for_full_event_ticket(self):
+        """ Create a schedule event activity and check if an object with includes set to true is created in
+         the ScheduleEventTicketScheduleItem model """
+        query = self.event_activity_create_mutation
+        schedule_event_ticket = f.ScheduleEventFullTicketFactory.create()
+        schedule_event = schedule_event_ticket.schedule_event
+        self.variables_create['input']['scheduleEvent'] = to_global_id('ScheduleEventNode', schedule_event.id)
+        self.variables_create['input']['account'] = to_global_id('AccountNode', schedule_event.teacher.id)
+        self.variables_create['input']['account2'] = to_global_id('AccountNode', schedule_event.teacher_2.id)
+
+        executed = execute_test_client_api_query(
+            query,
+            self.admin_user,
+            variables=self.variables_create
+        )
+        data = executed.get('data')
+
+        # Check general data for schedule item
+        self.assertEqual(data['createScheduleItem']['scheduleItem']['scheduleEvent']['id'],
+                         self.variables_create['input']['scheduleEvent'])
+
+        # Check that "included" was set to true
+        schedule_event_ticket_schedule_item = models.ScheduleEventTicketScheduleItem.objects.last()
+        self.assertEqual(schedule_event_ticket_schedule_item.included, True)
+
+    def test_create_schedule_event_activity_check_added_to_schedule_event_ticket_schedule_item_model(self):
+        """ Create a schedule event activity and check if an object with includes set to true is created in
+         the ScheduleEventTicketScheduleItem model """
+        query = self.event_activity_create_mutation
+        schedule_event_ticket = f.ScheduleEventFullTicketFactory.create()
+        schedule_event = schedule_event_ticket.schedule_event
+        self.variables_create['input']['scheduleEvent'] = to_global_id('ScheduleEventNode', schedule_event.id)
+        self.variables_create['input']['account'] = to_global_id('AccountNode', schedule_event.teacher.id)
+        self.variables_create['input']['account2'] = to_global_id('AccountNode', schedule_event.teacher_2.id)
+
+        executed = execute_test_client_api_query(
+            query,
+            self.admin_user,
+            variables=self.variables_create
+        )
+        data = executed.get('data')
+
+        # Check general data for schedule item
+        self.assertEqual(data['createScheduleItem']['scheduleItem']['scheduleEvent']['id'],
+                         self.variables_create['input']['scheduleEvent'])
+
+        # Check line is added to ScheduleEventTicketScheduleItem model
+        rid = get_rid(data['createScheduleItem']['scheduleItem']['id'])
+        schedule_item = models.ScheduleItem.objects.get(pk=rid.id)
+        schedule_event_ticket_schedule_item = models.ScheduleEventTicketScheduleItem.objects.last()
+        self.assertEqual(schedule_event_ticket_schedule_item.schedule_event_ticket, schedule_event_ticket)
+        self.assertEqual(schedule_event_ticket_schedule_item.schedule_item, schedule_item)
+
     def test_create_schedule_event_activity_set_event_dates_and_times(self):
         """ Check of activity dates & times are set on schedule event """
         query = self.event_activity_create_mutation
@@ -523,7 +576,7 @@ query ScheduleEventActivity($id:ID!) {
         self.assertEqual(data['createScheduleItem']['scheduleItem']['scheduleEvent']['id'],
                          self.variables_create['input']['scheduleEvent'])
 
-    def test_create_event_permission_denied(self):
+    def test_create_event_activity_permission_denied(self):
         """ Check create event activity permission denied error message """
         query = self.event_activity_create_mutation
         schedule_event = f.ScheduleEventFactory.create()
@@ -543,7 +596,7 @@ query ScheduleEventActivity($id:ID!) {
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Permission denied!')
 
-    def test_update_event(self):
+    def test_update_schedule_event_activity(self):
         """ Update an event activity """
         query = self.event_activity_update_mutation
         schedule_event_activity = f.ScheduleItemEventActivityFactory.create()
