@@ -743,6 +743,17 @@ class ScheduleEventFullTicketFactory(factory.DjangoModelFactory):
     finance_costcenter = factory.SubFactory(FinanceCostCenterFactory)
 
 
+class AccountScheduleEventTicketFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.AccountScheduleEventTicket
+
+    account = factory.SubFactory(RegularUserFactory)
+    schedule_event_ticket = factory.SubFactory(ScheduleEventFullTicketFactory)
+    cancelled = False
+    payment_confirmation = False
+    info_mail_sent = False
+
+
 class ScheduleEventMediaFactory(factory.DjangoModelFactory):
     class Meta:
         model = models.ScheduleEventMedia
