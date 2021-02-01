@@ -51,7 +51,7 @@ class GQLScheduleEventTicketScheduleItem(TestCase):
             }
         }
 
-        self.event_tickets_query = '''
+        self.event_ticket_activities_query = '''
     query ScheduleEventTicketScheduleItem($before:String, $after:String, $scheduleEventTicket:ID!) {
       scheduleEventTicketScheduleItems(first: 100, before: $before, after: $after, scheduleEventTicket:$scheduleEventTicket) {
         pageInfo {
@@ -95,8 +95,8 @@ class GQLScheduleEventTicketScheduleItem(TestCase):
         pass
 
     def test_query(self):
-        """ Query list of event tickets """
-        query = self.event_tickets_query
+        """ Query list of schedule items for event ticket """
+        query = self.event_ticket_activities_query
 
         executed = execute_test_client_api_query(query, self.admin_user, variables=self.variables_query_list)
         data = executed.get('data')
@@ -115,89 +115,47 @@ class GQLScheduleEventTicketScheduleItem(TestCase):
             data['scheduleEventTicketScheduleItems']['edges'][0]['node']['included'],
             self.schedule_event_ticket_schedule_item.included
         )
-    #
-    # def test_query_permission_denied(self):
-    #     """ Query list of event tickets """
-    #     query = self.event_tickets_query
-    #     schedule_event_ticket = f.ScheduleEventFullTicketFactory.create()
-    #
-    #     variables = {
-    #         'scheduleEvent': to_global_id('ScheduleEventNode', schedule_event_ticket.schedule_event.pk)
-    #     }
-    #
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     executed = execute_test_client_api_query(query, user, variables=variables)
-    #     data = executed.get('data')
-    #
-    #     # Public tickets only
-    #     non_public_found = False
-    #     for item in data['scheduleEventTickets']['edges']:
-    #         if not item['node']['displayPublic']:
-    #             non_public_found = True
-    #
-    #     self.assertEqual(non_public_found, False)
-    #
-    # def test_query_permission_granted(self):
-    #     """ Query list of public & non public tickets with permission """
-    #     query = self.event_tickets_query
-    #     schedule_event_ticket = f.ScheduleEventFullTicketFactory.create()
-    #     non_public_schedule_event_ticket = f.ScheduleEventFullTicketFactory.build()
-    #     non_public_schedule_event_ticket.schedule_event = schedule_event_ticket.schedule_event
-    #     non_public_schedule_event_ticket.finance_tax_rate = None
-    #     non_public_schedule_event_ticket.finance_costcenter = None
-    #     non_public_schedule_event_ticket.finance_glaccount = None
-    #     non_public_schedule_event_ticket.display_public = False
-    #     non_public_schedule_event_ticket.save()
-    #
-    #     variables = {
-    #         'scheduleEvent': to_global_id('ScheduleEventNode', schedule_event_ticket.schedule_event.pk)
-    #     }
-    #
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename=self.permission_view)
-    #     user.user_permissions.add(permission)
-    #     user.save()
-    #
-    #     executed = execute_test_client_api_query(query, user, variables=variables)
-    #     data = executed.get('data')
-    #
-    #     # List all locations, including non public
-    #     non_public_found = False
-    #     for item in data['scheduleEventTickets']['edges']:
-    #         if not item['node']['displayPublic']:
-    #             non_public_found = True
-    #
-    #     # Assert non public locations are listed
-    #     self.assertEqual(non_public_found, True)
-    #
-    # def test_query_anon_user(self):
-    #     """ Query list of public event tickets for anon users """
-    #     query = self.event_tickets_query
-    #     schedule_event_ticket = f.ScheduleEventFullTicketFactory.create()
-    #     non_public_schedule_event_ticket = f.ScheduleEventFullTicketFactory.build()
-    #     non_public_schedule_event_ticket.schedule_event = schedule_event_ticket.schedule_event
-    #     non_public_schedule_event_ticket.finance_tax_rate = None
-    #     non_public_schedule_event_ticket.finance_costcenter = None
-    #     non_public_schedule_event_ticket.finance_glaccount = None
-    #     non_public_schedule_event_ticket.display_public = False
-    #     non_public_schedule_event_ticket.save()
-    #
-    #     variables = {
-    #         'scheduleEvent': to_global_id('ScheduleEventNode', schedule_event_ticket.schedule_event.pk)
-    #     }
-    #
-    #     executed = execute_test_client_api_query(query, self.anon_user, variables=variables)
-    #     data = executed.get('data')
-    #
-    #     # Ensure only public tickets are found
-    #     non_public_found = False
-    #     for item in data['scheduleEventTickets']['edges']:
-    #         if not item['node']['displayPublic']:
-    #             non_public_found = True
-    #
-    #     self.assertEqual(non_public_found, False)
+
+    def test_query_permission_denied(self):
+        """ Query list of schedule items for event ticket - permission denied for non public tickets"""
+        query = self.event_ticket_activities_query
+        self.schedule_event_ticket.display_public = False
+        self.schedule_event_ticket.save()
+
+        # Create regular user
+        user = f.RegularUserFactory.create()
+        executed = execute_test_client_api_query(query, user, variables=self.variables_query_list)
+        data = executed.get('data')
+
+        self.assertEqual(len(data['scheduleEventTicketScheduleItems']['edges']), 0)
+
+    def test_query_permission_granted(self):
+        """ Query list of activities for non-public ticket tickets with permission """
+        query = self.event_ticket_activities_query
+        self.schedule_event_ticket.display_public = False
+        self.schedule_event_ticket.save()
+
+        # Create regular user
+        user = f.RegularUserFactory.create()
+        permission = Permission.objects.get(codename="view_scheduleeventticket")
+        user.user_permissions.add(permission)
+        user.save()
+
+        executed = execute_test_client_api_query(query, user, variables=self.variables_query_list)
+        data = executed.get('data')
+
+        self.assertEqual(
+            data['scheduleEventTicketScheduleItems']['edges'][0]['node']['included'],
+            self.schedule_event_ticket_schedule_item.included
+        )
+
+    def test_query_anon_user(self):
+        """ Permission denied when listing activities for ticket as anon user """
+        query = self.event_ticket_activities_query
+
+        executed = execute_test_client_api_query(query, self.anon_user, variables=self.variables_query_list)
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
     #
     # def test_query_one(self):
     #     """ Query one schedule event ticket """

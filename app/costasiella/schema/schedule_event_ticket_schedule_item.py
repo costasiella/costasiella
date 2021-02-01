@@ -42,7 +42,7 @@ class ScheduleEventTicketScheduleItemQuery(graphene.ObjectType):
                 schedule_event_ticket=rid.id
             )
 
-        # Return only public non-archived locations
+        # Return only activities related to public tickets
         return ScheduleEventTicketScheduleItem.objects.filter(
             schedule_event_ticket__display_public=True
         )
