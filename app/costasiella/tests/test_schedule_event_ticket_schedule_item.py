@@ -41,6 +41,10 @@ class GQLScheduleEventTicketScheduleItem(TestCase):
             schedule_event_ticket=self.schedule_event_ticket
         )
 
+        self.variables_query_list = {
+            "scheduleEventTicket": to_global_id('ScheduleEventTicketNode', self.schedule_event_ticket.id)
+        }
+
         self.variables_update = {
             "input": {
                 "included": False
@@ -48,141 +52,40 @@ class GQLScheduleEventTicketScheduleItem(TestCase):
         }
 
         self.event_tickets_query = '''
-  query ScheduleEventTickets($before:String, $after:String, $scheduleEvent:ID!) {
-    scheduleEventTickets(first: 100, before:$before, after:$after, scheduleEvent:$scheduleEvent) {
-      pageInfo {
-        hasNextPage
-        hasPreviousPage
-        startCursor
-        endCursor
-      }
-      edges {
-        node {
-          id
-          scheduleEvent {
+    query ScheduleEventTicketScheduleItem($before:String, $after:String, $scheduleEventTicket:ID!) {
+      scheduleEventTicketScheduleItems(first: 100, before: $before, after: $after, scheduleEventTicket:$scheduleEventTicket) {
+        pageInfo {
+          hasNextPage
+          hasPreviousPage
+          startCursor
+          endCursor
+        }
+        edges {
+          node {
             id
-          }
-          fullEvent
-          deletable
-          displayPublic
-          name
-          description
-          price
-          priceDisplay
-          isSoldOut
-          financeTaxRate {
-            id
-            name
-          }
-          financeGlaccount {
-            id
-            name
-          }
-          financeCostcenter {
-            id
-            name
+            scheduleEventTicket {
+              id
+              name
+              fullEvent
+            }
+            scheduleItem {
+              id
+              name
+            }
+            included
           }
         }
       }
     }
-  }
 '''
 
-        self.event_ticket_query = '''
-query ScheduleEventTicket($id:ID!) {
-  scheduleEventTicket(id: $id) {
-    id
-    deletable
-    fullEvent
-    displayPublic
-    name
-    description
-    price
-    scheduleEvent {
-      id
-    }
-    financeTaxRate {
-      id
-      name
-    }
-    financeGlaccount {
-      id
-      name
-    }
-    financeCostcenter {
-      id
-      name
-    }
-  }
-}
-'''
-
-        self.event_ticket_create_mutation = ''' 
-  mutation CreateScheduleEventTicket($input:CreateScheduleEventTicketInput!) {
-    createScheduleEventTicket(input: $input) {
-      scheduleEventTicket {
+        self.event_ticket_schedule_item_update_mutation = '''
+  mutation UpdateScheduleEventTicketScheduleItem($input:UpdateScheduleEventTicketScheduleItemInput!) {
+    updateScheduleEventTicketScheduleItem(input: $input) {
+      scheduleEventTicketScheduleItem {
         id
-        deletable
-        fullEvent
-        displayPublic
-        name
-        description
-        price
-        scheduleEvent {
-          id
-        }
-        financeTaxRate {
-          id
-          name
-        }
-        financeGlaccount {
-          id
-          name
-        }
-        financeCostcenter {
-          id
-          name
-        }
+        included
       }
-    }
-  }
-'''
-
-        self.event_ticket_update_mutation = '''
-  mutation UpdateScheduleEventTicket($input:UpdateScheduleEventTicketInput!) {
-    updateScheduleEventTicket(input: $input) {
-      scheduleEventTicket {
-        id
-        deletable
-        fullEvent
-        displayPublic
-        name
-        description
-        price
-        scheduleEvent {
-          id
-        }
-        financeTaxRate {
-          id
-          name
-        }
-        financeGlaccount {
-          id
-          name
-        }
-        financeCostcenter {
-          id
-          name
-        }
-      }
-    }
-  }
-'''
-
-        self.event_ticket_delete_mutation = '''
-  mutation DeleteScheduleEventTicket($input: DeleteScheduleEventTicketInput!) {
-    deleteScheduleEventTicket(input: $input) {
-      ok
     }
   }
 '''
@@ -194,62 +97,24 @@ query ScheduleEventTicket($id:ID!) {
     def test_query(self):
         """ Query list of event tickets """
         query = self.event_tickets_query
-        schedule_event_ticket = f.ScheduleEventFullTicketFactory.create()
-        schedule_event_activity = f.ScheduleItemEventActivityFactory.create(
-            schedule_event=schedule_event_ticket.schedule_event
-        )
-        schedule_event_ticket_schedule_item = f.ScheduleEventTicketScheduleItemIncludedFactory.create(
-            schedule_item=schedule_event_activity,
-            schedule_event_ticket=schedule_event_ticket
-        )
 
-        # variables = {
-        #     'scheduleEvent': to_global_id('ScheduleEventNode', schedule_event_ticket.schedule_event.pk)
-        # }
+        executed = execute_test_client_api_query(query, self.admin_user, variables=self.variables_query_list)
+        data = executed.get('data')
+        print("########")
+        print(executed)
 
-    #     executed = execute_test_client_api_query(query, self.admin_user, variables=variables)
-    #     data = executed.get('data')
-    #
-    #     self.assertEqual(
-    #         data['scheduleEventTickets']['edges'][0]['node']['scheduleEvent']['id'],
-    #         variables['scheduleEvent']
-    #     )
-    #     self.assertEqual(
-    #         data['scheduleEventTickets']['edges'][0]['node']['fullEvent'],
-    #         schedule_event_ticket.full_event
-    #     )
-    #     self.assertEqual(
-    #         data['scheduleEventTickets']['edges'][0]['node']['deletable'],
-    #         schedule_event_ticket.deletable
-    #     )
-    #     self.assertEqual(
-    #         data['scheduleEventTickets']['edges'][0]['node']['displayPublic'],
-    #         schedule_event_ticket.display_public
-    #     )
-    #     self.assertEqual(
-    #         data['scheduleEventTickets']['edges'][0]['node']['name'],
-    #         schedule_event_ticket.name
-    #     )
-    #     self.assertEqual(
-    #         data['scheduleEventTickets']['edges'][0]['node']['description'],
-    #         schedule_event_ticket.description
-    #     )
-    #     self.assertEqual(
-    #         data['scheduleEventTickets']['edges'][0]['node']['price'],
-    #         schedule_event_ticket.price
-    #     )
-    #     self.assertEqual(
-    #         data['scheduleEventTickets']['edges'][0]['node']['financeTaxRate']['id'],
-    #         to_global_id('FinanceTaxRateNode', schedule_event_ticket.finance_tax_rate.id)
-    #     )
-    #     self.assertEqual(
-    #         data['scheduleEventTickets']['edges'][0]['node']['financeGlaccount']['id'],
-    #         to_global_id('FinanceGLAccountNode', schedule_event_ticket.finance_glaccount.id)
-    #     )
-    #     self.assertEqual(
-    #         data['scheduleEventTickets']['edges'][0]['node']['financeCostcenter']['id'],
-    #         to_global_id('FinanceCostCenterNode', schedule_event_ticket.finance_costcenter.id)
-    #     )
+        self.assertEqual(
+            data['scheduleEventTicketScheduleItems']['edges'][0]['node']['scheduleItem']['id'],
+            to_global_id("ScheduleItemNode", self.schedule_event_activity.id)
+        )
+        self.assertEqual(
+            data['scheduleEventTicketScheduleItems']['edges'][0]['node']['scheduleEventTicket']['id'],
+            self.variables_query_list['scheduleEventTicket']
+        )
+        self.assertEqual(
+            data['scheduleEventTicketScheduleItems']['edges'][0]['node']['included'],
+            self.schedule_event_ticket_schedule_item.included
+        )
     #
     # def test_query_permission_denied(self):
     #     """ Query list of event tickets """
