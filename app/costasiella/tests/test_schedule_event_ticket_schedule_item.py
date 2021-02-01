@@ -47,6 +47,7 @@ class GQLScheduleEventTicketScheduleItem(TestCase):
 
         self.variables_update = {
             "input": {
+                "id": to_global_id("ScheduleEventTicketScheduleItemNode", self.schedule_event_ticket_schedule_item.id),
                 "included": False
             }
         }
@@ -156,448 +157,100 @@ class GQLScheduleEventTicketScheduleItem(TestCase):
         executed = execute_test_client_api_query(query, self.anon_user, variables=self.variables_query_list)
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Not logged in!')
-    #
-    # def test_query_one(self):
-    #     """ Query one schedule event ticket """
-    #     schedule_event_ticket = f.ScheduleEventFullTicketFactory.create()
-    #
-    #     # First query locations to get node id easily
-    #     node_id = to_global_id('ScheduleEventTicketNode', schedule_event_ticket.pk)
-    #
-    #     # Now query single location and check
-    #     query = self.event_ticket_query
-    #     executed = execute_test_client_api_query(query, self.admin_user, variables={"id": node_id})
-    #     data = executed.get('data')
-    #     self.assertEqual(data['scheduleEventTicket']['scheduleEvent']['id'],
-    #                      to_global_id('ScheduleEventNode', schedule_event_ticket.schedule_event.pk))
-    #     self.assertEqual(data['scheduleEventTicket']['fullEvent'], schedule_event_ticket.full_event)
-    #     self.assertEqual(data['scheduleEventTicket']['deletable'], schedule_event_ticket.deletable)
-    #     self.assertEqual(data['scheduleEventTicket']['displayPublic'], schedule_event_ticket.display_public)
-    #     self.assertEqual(data['scheduleEventTicket']['name'], schedule_event_ticket.name)
-    #     self.assertEqual(data['scheduleEventTicket']['description'], schedule_event_ticket.description)
-    #     self.assertEqual(data['scheduleEventTicket']['price'], schedule_event_ticket.price)
-    #     self.assertEqual(data['scheduleEventTicket']['financeTaxRate']['id'],
-    #                      to_global_id('FinanceTaxRateNode', schedule_event_ticket.finance_tax_rate.pk))
-    #     self.assertEqual(data['scheduleEventTicket']['financeGlaccount']['id'],
-    #                      to_global_id('FinanceGLAccountNode', schedule_event_ticket.finance_glaccount.pk))
-    #     self.assertEqual(data['scheduleEventTicket']['financeCostcenter']['id'],
-    #                      to_global_id('FinanceCostCenterNode', schedule_event_ticket.finance_costcenter.pk))
-    #
-    # def test_query_one_anon_user_public(self):
-    #     """ Grant permission for anon users Query public ticket """
-    #     schedule_event_ticket = f.ScheduleEventFullTicketFactory.create()
-    #     node_id = to_global_id('ScheduleEventTicketNode', schedule_event_ticket.pk)
-    #
-    #     # Now query single location and check
-    #     query = self.event_ticket_query
-    #     executed = execute_test_client_api_query(query, self.admin_user, variables={"id": node_id})
-    #     data = executed.get('data')
-    #
-    #     # Now query single location and check
-    #     query = self.event_ticket_query
-    #     executed = execute_test_client_api_query(query, self.anon_user, variables={"id": node_id})
-    #     data = executed.get('data')
-    #     self.assertEqual(data['scheduleEventTicket']['scheduleEvent']['id'],
-    #                      to_global_id('ScheduleEventNode', schedule_event_ticket.schedule_event.pk))
-    #
-    # def test_query_one_anon_user_nonpublic(self):
-    #     """ Deny permission for anon users Query non-public ticket """
-    #     schedule_event_ticket = f.ScheduleEventFullTicketFactory.create()
-    #     schedule_event_ticket.display_public = False
-    #     schedule_event_ticket.save()
-    #     node_id = to_global_id('ScheduleEventTicketNode', schedule_event_ticket.pk)
-    #
-    #     # Now query single location and check
-    #     query = self.event_ticket_query
-    #     executed = execute_test_client_api_query(query, self.admin_user, variables={"id": node_id})
-    #     data = executed.get('data')
-    #
-    #     # Now query single location and check
-    #     query = self.event_ticket_query
-    #     executed = execute_test_client_api_query(query, self.anon_user, variables={"id": node_id})
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
-    #
-    # def test_query_one_permission_denied(self):
-    #     """ Permission denied message when user lacks authorization """
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     schedule_event_ticket = f.ScheduleEventFullTicketFactory.create()
-    #     schedule_event_ticket.display_public = False
-    #     schedule_event_ticket.save()
-    #     node_id = to_global_id('ScheduleEventTicketNode', schedule_event_ticket.pk)
-    #
-    #     # Now query single ticket and check
-    #     query = self.event_ticket_query
-    #     executed = execute_test_client_api_query(query, user, variables={"id": node_id})
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
-    #
-    # def test_query_one_permission_granted(self):
-    #     """ Respond with data when user has permission """
-    #     schedule_event_ticket = f.ScheduleEventFullTicketFactory.create()
-    #     schedule_event_ticket.display_public = False
-    #     schedule_event_ticket.save()
-    #     node_id = to_global_id('ScheduleEventTicketNode', schedule_event_ticket.pk)
-    #
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename=self.permission_view)
-    #     user.user_permissions.add(permission)
-    #     user.save()
-    #
-    #     # Now query single ticket and check
-    #     query = self.event_ticket_query
-    #     executed = execute_test_client_api_query(query, user, variables={"id": node_id})
-    #     data = executed.get('data')
-    #     self.assertEqual(data['scheduleEventTicket']['scheduleEvent']['id'],
-    #                      to_global_id('ScheduleEventNode', schedule_event_ticket.schedule_event.pk))
-    #
-    # def test_create_event_ticket(self):
-    #     """ Create event ticket """
-    #     query = self.event_ticket_create_mutation
-    #     schedule_event = f.ScheduleEventFactory.create()
-    #
-    #     variables = self.variables_create
-    #     variables['input']['scheduleEvent'] = to_global_id("ScheduleEventNode", schedule_event.pk)
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.admin_user,
-    #         variables=variables
-    #     )
-    #     print("########")
-    #     print(executed)
-    #
-    #     data = executed.get('data')
-    #     self.assertEqual(
-    #       data['createScheduleEventTicket']['scheduleEventTicket']['scheduleEvent']['id'],
-    #       variables['input']['scheduleEvent']
-    #     )
-    #     self.assertEqual(
-    #       data['createScheduleEventTicket']['scheduleEventTicket']['name'],
-    #       variables['input']['name']
-    #     )
-    #     self.assertEqual(
-    #       data['createScheduleEventTicket']['scheduleEventTicket']['displayPublic'],
-    #       variables['input']['displayPublic']
-    #     )
-    #     self.assertEqual(
-    #       data['createScheduleEventTicket']['scheduleEventTicket']['description'],
-    #       variables['input']['description']
-    #     )
-    #     self.assertEqual(
-    #       data['createScheduleEventTicket']['scheduleEventTicket']['price'],
-    #       variables['input']['price']
-    #     )
-    #     self.assertEqual(
-    #       data['createScheduleEventTicket']['scheduleEventTicket']['financeTaxRate']['id'],
-    #       variables['input']['financeTaxRate']
-    #     )
-    #     self.assertEqual(
-    #       data['createScheduleEventTicket']['scheduleEventTicket']['financeGlaccount']['id'],
-    #       variables['input']['financeGlaccount']
-    #     )
-    #     self.assertEqual(
-    #       data['createScheduleEventTicket']['scheduleEventTicket']['financeCostcenter']['id'],
-    #       variables['input']['financeCostcenter']
-    #     )
-    #
-    # def test_create_event_ticket_and_add_to_all_schedule_items(self):
-    #     """ Create event ticket and check if entries in ScheduleEventTicketScheduleItem are created """
-    #     query = self.event_ticket_create_mutation
-    #     schedule_event_activity = f.ScheduleItemEventActivityFactory.create()
-    #     schedule_event = schedule_event_activity.schedule_event
-    #
-    #     variables = self.variables_create
-    #     variables['input']['scheduleEvent'] = to_global_id("ScheduleEventNode", schedule_event.pk)
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.admin_user,
-    #         variables=variables
-    #     )
-    #
-    #     data = executed.get('data')
-    #     self.assertEqual(
-    #       data['createScheduleEventTicket']['scheduleEventTicket']['scheduleEvent']['id'],
-    #       variables['input']['scheduleEvent']
-    #     )
-    #
-    #     # Check line is added to ScheduleEventTicketScheduleItem model
-    #     rid = get_rid(data['createScheduleEventTicket']['scheduleEventTicket']['id'])
-    #     schedule_event_ticket = models.ScheduleEventTicket.objects.get(pk=rid.id)
-    #     schedule_event_ticket_schedule_item = models.ScheduleEventTicketScheduleItem.objects.last()
-    #     self.assertEqual(schedule_event_ticket_schedule_item.schedule_event_ticket, schedule_event_ticket)
-    #     self.assertEqual(schedule_event_ticket_schedule_item.schedule_item, schedule_event_activity)
-    #
-    # def test_create_event_ticket_anon_user(self):
-    #     """ Don't allow creating event tickets for non-logged in users """
-    #     query = self.event_ticket_create_mutation
-    #     schedule_event = f.ScheduleEventFactory.create()
-    #
-    #     variables = self.variables_create
-    #     variables['input']['scheduleEvent'] = to_global_id("ScheduleEventNode", schedule_event.pk)
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.anon_user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
-    #
-    # def test_create_event_ticket_permission_granted(self):
-    #     """ Allow creating event tickets for users with permissions """
-    #     query = self.event_ticket_create_mutation
-    #     schedule_event = f.ScheduleEventFactory.create()
-    #
-    #     variables = self.variables_create
-    #     variables['input']['scheduleEvent'] = to_global_id("ScheduleEventNode", schedule_event.pk)
-    #
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename=self.permission_add)
-    #     user.user_permissions.add(permission)
-    #     user.save()
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(
-    #       data['createScheduleEventTicket']['scheduleEventTicket']['scheduleEvent']['id'],
-    #       variables['input']['scheduleEvent']
-    #     )
-    #
-    # def test_create_event_ticket_permission_denied(self):
-    #     """ Check create event ticket permission denied error message """
-    #     query = self.event_ticket_create_mutation
-    #     schedule_event = f.ScheduleEventFactory.create()
-    #
-    #     variables = self.variables_create
-    #     variables['input']['scheduleEvent'] = to_global_id("ScheduleEventNode", schedule_event.pk)
-    #
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
-    #
-    # def test_update_event_ticket(self):
-    #     """ Update event ticket """
-    #     query = self.event_ticket_update_mutation
-    #     schedule_event_ticket = f.ScheduleEventFullTicketFactory.create()
-    #
-    #     variables = self.variables_update
-    #     variables['input']['id'] = to_global_id("ScheduleEventTicketNode", schedule_event_ticket.pk)
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.admin_user,
-    #         variables=variables
-    #     )
-    #
-    #     data = executed.get('data')
-    #     self.assertEqual(
-    #       data['updateScheduleEventTicket']['scheduleEventTicket']['id'],
-    #       variables['input']['id']
-    #     )
-    #     self.assertEqual(
-    #       data['updateScheduleEventTicket']['scheduleEventTicket']['name'],
-    #       variables['input']['name']
-    #     )
-    #     self.assertEqual(
-    #       data['updateScheduleEventTicket']['scheduleEventTicket']['displayPublic'],
-    #       variables['input']['displayPublic']
-    #     )
-    #     self.assertEqual(
-    #       data['updateScheduleEventTicket']['scheduleEventTicket']['description'],
-    #       variables['input']['description']
-    #     )
-    #     self.assertEqual(
-    #       data['updateScheduleEventTicket']['scheduleEventTicket']['price'],
-    #       variables['input']['price']
-    #     )
-    #     self.assertEqual(
-    #       data['updateScheduleEventTicket']['scheduleEventTicket']['financeTaxRate']['id'],
-    #       variables['input']['financeTaxRate']
-    #     )
-    #     self.assertEqual(
-    #       data['updateScheduleEventTicket']['scheduleEventTicket']['financeGlaccount']['id'],
-    #       variables['input']['financeGlaccount']
-    #     )
-    #     self.assertEqual(
-    #       data['updateScheduleEventTicket']['scheduleEventTicket']['financeCostcenter']['id'],
-    #       variables['input']['financeCostcenter']
-    #     )
-    #
-    # def test_update_event_ticket_anon_user(self):
-    #     """ Don't allow updating event tickets for non-logged in users """
-    #     query = self.event_ticket_update_mutation
-    #     schedule_event_ticket = f.ScheduleEventFullTicketFactory.create()
-    #
-    #     variables = self.variables_update
-    #     variables['input']['id'] = to_global_id("ScheduleEventTicketNode", schedule_event_ticket.pk)
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.anon_user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
-    #
-    # def test_update_event_ticket_permission_granted(self):
-    #     """ Allow updating event tickets for users with permissions """
-    #     query = self.event_ticket_update_mutation
-    #     schedule_event_ticket = f.ScheduleEventFullTicketFactory.create()
-    #
-    #     variables = self.variables_update
-    #     variables['input']['id'] = to_global_id("ScheduleEventTicketNode", schedule_event_ticket.pk)
-    #
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename=self.permission_change)
-    #     user.user_permissions.add(permission)
-    #     user.save()
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(
-    #       data['updateScheduleEventTicket']['scheduleEventTicket']['id'],
-    #       variables['input']['id']
-    #     )
-    #
-    # def test_update_event_ticket_permission_denied(self):
-    #     """ Check update event ticket permission denied error message """
-    #     query = self.event_ticket_update_mutation
-    #     schedule_event_ticket = f.ScheduleEventFullTicketFactory.create()
-    #
-    #     variables = self.variables_update
-    #     variables['input']['id'] = to_global_id("ScheduleEventTicketNode", schedule_event_ticket.pk)
-    #
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
-    #
-    # def test_delete_event_ticket_not_deletable(self):
-    #     """ Event tickets with deletable set to false shouldn't be deletable """
-    #     query = self.event_ticket_delete_mutation
-    #     schedule_event_ticket = f.ScheduleEventFullTicketFactory.create()
-    #
-    #     variables = self.variables_delete
-    #     variables['input']['id'] = to_global_id("ScheduleEventTicketNode", schedule_event_ticket.pk)
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.admin_user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['deleteScheduleEventTicket']['ok'], False)
-    #
-    # def test_delete_event_ticket_deletable(self):
-    #     """ Event tickets with deletable set to false shouldn't be deletable """
-    #     query = self.event_ticket_delete_mutation
-    #     schedule_event_ticket = f.ScheduleEventFullTicketFactory.create()
-    #     schedule_event_ticket.deletable = True
-    #     schedule_event_ticket.full_event = False
-    #     schedule_event_ticket.save()
-    #
-    #     variables = self.variables_delete
-    #     variables['input']['id'] = to_global_id("ScheduleEventTicketNode", schedule_event_ticket.pk)
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.admin_user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['deleteScheduleEventTicket']['ok'], True)
-    #
-    # def test_delete_event_ticket_anon_user(self):
-    #     """ Not possible to delete tickets as anon user """
-    #     query = self.event_ticket_delete_mutation
-    #     schedule_event_ticket = f.ScheduleEventFullTicketFactory.create()
-    #
-    #     variables = self.variables_delete
-    #     variables['input']['id'] = to_global_id("ScheduleEventTicketNode", schedule_event_ticket.pk)
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.anon_user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
-    #
-    # def test_delete_event_ticket_permission_granted(self):
-    #     """ Allow deleting tickets for users with permissions """
-    #     query = self.event_ticket_delete_mutation
-    #     schedule_event_ticket = f.ScheduleEventFullTicketFactory.create()
-    #     schedule_event_ticket.deletable = True
-    #     schedule_event_ticket.full_event = False
-    #     schedule_event_ticket.save()
-    #
-    #     variables = self.variables_delete
-    #     variables['input']['id'] = to_global_id("ScheduleEventTicketNode", schedule_event_ticket.pk)
-    #
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename=self.permission_delete)
-    #     user.user_permissions.add(permission)
-    #     user.save()
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['deleteScheduleEventTicket']['ok'], True)
-    #
-    # def test_delete_event_ticket_permission_denied(self):
-    #     """ Check delete ticket permission denied error message """
-    #     query = self.event_ticket_delete_mutation
-    #     schedule_event_ticket = f.ScheduleEventFullTicketFactory.create()
-    #     schedule_event_ticket.deletable = True
-    #     schedule_event_ticket.full_event = False
-    #     schedule_event_ticket.save()
-    #
-    #     variables = self.variables_delete
-    #     variables['input']['id'] = to_global_id("ScheduleEventTicketNode", schedule_event_ticket.pk)
-    #
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
+
+    def test_update_event_ticket_schedule_item_remove_included_from_full_event_error(self):
+        """ Update event ticket schedule item not possible for full event ticket"""
+        query = self.event_ticket_schedule_item_update_mutation
+        variables = self.variables_update
+
+        executed = execute_test_client_api_query(
+            query,
+            self.admin_user,
+            variables=variables
+        )
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'],
+                         'For a full event ticket, all schedule items for this event are included!')
+
+    def test_update_event_ticket_schedule_item(self):
+        """ Update event ticket schedule item """
+        query = self.event_ticket_schedule_item_update_mutation
+        self.schedule_event_ticket.full_event = False
+        self.schedule_event_ticket.save()
+
+        variables = self.variables_update
+
+        executed = execute_test_client_api_query(
+            query,
+            self.admin_user,
+            variables=variables
+        )
+
+        data = executed.get('data')
+        self.assertEqual(
+            data['updateScheduleEventTicketScheduleItem']['scheduleEventTicketScheduleItem']['included'],
+            variables['input']['included']
+        )
+
+    def test_update_event_ticket_schedule_item_anon_user(self):
+        """ Don't allow updating event ticket schedule items for non-logged in users """
+        query = self.event_ticket_schedule_item_update_mutation
+        self.schedule_event_ticket.full_event = False
+        self.schedule_event_ticket.save()
+
+        variables = self.variables_update
+
+        executed = execute_test_client_api_query(
+            query,
+            self.anon_user,
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
+
+    def test_update_event_ticket_permission_granted(self):
+        """ Allow updating event ticket schedule items for users with permissions """
+        query = self.event_ticket_schedule_item_update_mutation
+        self.schedule_event_ticket.full_event = False
+        self.schedule_event_ticket.save()
+
+        variables = self.variables_update
+
+        # Create regular user
+        user = f.RegularUserFactory.create()
+        permission = Permission.objects.get(codename=self.permission_change)
+        user.user_permissions.add(permission)
+        user.save()
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=variables
+        )
+
+        data = executed.get('data')
+        self.assertEqual(
+            data['updateScheduleEventTicketScheduleItem']['scheduleEventTicketScheduleItem']['included'],
+            variables['input']['included']
+        )
+
+    def test_update_event_ticket_scheudle_item_permission_denied(self):
+        """ Check update event ticket schedule item permission denied error message """
+        query = self.event_ticket_schedule_item_update_mutation
+        self.schedule_event_ticket.full_event = False
+        self.schedule_event_ticket.save()
+
+        variables = self.variables_update
+
+        # Create regular user
+        user = f.RegularUserFactory.create()
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
