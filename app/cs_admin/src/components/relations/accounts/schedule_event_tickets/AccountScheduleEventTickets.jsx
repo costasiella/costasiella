@@ -41,7 +41,7 @@ function AccountScheduleEventTickets({t, history, match}) {
 
   const accountId = match.params.account_id
   const { loading, error, data, fetchMore } = useQuery(GET_ACCOUNT_SCHEDULE_EVENT_TICKETS_QUERY, { variables: {
-    accountId: accountId
+    account: accountId
   }})
   const [updateAccountScheduleEventTicket] = useMutation(UPDATE_ACCOUNT_SCHEDULE_EVENT_TICKET)
 
@@ -159,7 +159,7 @@ function AccountScheduleEventTickets({t, history, match}) {
                           }, refetchQueries: [
                             { 
                               query: GET_ACCOUNT_SCHEDULE_EVENT_TICKETS_QUERY, 
-                              variables: { accountId: accountId }
+                              variables: { account: accountId }
                             },
                           ]})
                           .then(({ data }) => {
@@ -191,7 +191,7 @@ function AccountScheduleEventTickets({t, history, match}) {
                           }, refetchQueries: [
                               { 
                                 query: GET_ACCOUNT_SCHEDULE_EVENT_TICKETS_QUERY, 
-                                variables: { accountId: accountId }
+                                variables: { account: accountId }
                               },
                           ]})
                           .then(({ data }) => {

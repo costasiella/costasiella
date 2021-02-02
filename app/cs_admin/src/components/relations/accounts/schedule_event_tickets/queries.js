@@ -1,8 +1,8 @@
 import gql from "graphql-tag"
 
 export const GET_ACCOUNT_SCHEDULE_EVENT_TICKETS_QUERY = gql`
-  query AccountScheduleEventTickets($after: String, $before: String, $accountId: ID!) {
-    accountScheduleEventTickets(first: 15, before: $before, after: $after, account: $accountId) {
+  query AccountScheduleEventTickets($after: String, $before: String, $account: ID!) {
+    accountScheduleEventTickets(first: 15, before: $before, after: $after, account: $account) {
       pageInfo {
         startCursor
         endCursor
