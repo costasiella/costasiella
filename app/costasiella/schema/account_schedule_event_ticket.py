@@ -34,26 +34,31 @@ class AccountScheduleEventTicketQuery(graphene.ObjectType):
 
     def resolve_account_schedule_event_tickets(self, info, **kwargs):
         user = info.context.user
-        # TODO: add permissions for users to view their own tickets.
-        require_login_and_permission(user, 'costasiella.view_accountscheduleeventticket')
-        # Has permission: check params
+        require_login(user)
 
         print(kwargs)
         print('hello world')
 
-        if not "schedule_event_ticket" in kwargs and not "account" in kwargs:
+        if "schedule_event_ticket" not in kwargs and "account" not in kwargs:
             raise Exception(_("schedule_event_ticket or account is a required parameter"))
 
         if "schedule_event_ticket" in kwargs:
+            require_login_and_permission(user, 'costasiella.view_accountscheduleeventticket')
             rid = get_rid(kwargs["schedule_event_ticket"])
             return AccountScheduleEventTicket.objects.filter(
                 schedule_event_ticket=rid.id
             ).order_by('account__full_name')
 
         if "account" in kwargs:
-            rid = get_rid(kwargs["account"])
+            if user.has_perm('costasiella.view_accountscheduleevent') and 'account' in kwargs:
+                rid = get_rid(kwargs["account"])
+                account_id = rid.id
+            else:
+                # Default to logged in user, if the user doesn't have permission to view account schedule event
+                account_id = user.id
+
             return AccountScheduleEventTicket.objects.filter(
-                account=rid.id
+                account=account_id
             ).order_by('schedule_event_ticket__schedule_event__date_start')
 
 
