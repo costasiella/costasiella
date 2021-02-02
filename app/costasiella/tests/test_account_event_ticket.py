@@ -257,43 +257,42 @@ class GQLAccountScheduleEventTicket(TestCase):
             self.account_schedule_event_ticket.info_mail_sent
         )
 
-    # def test_query_permission_denied(self):
-    #     """ Query list of account account_schedule_events - check permission denied """
-    #     query = self.account_schedule_events_query
-    #     account_schedule_event = f.AccountSubscriptionFactory.create()
-    #     variables = {
-    #         'accountId': to_global_id('AccountNode', account_schedule_event.account.id)
-    #     }
-    #
-    #     # Create regular user
-    #     user = get_user_model().objects.get(pk=account_schedule_event.account.id)
-    #     executed = execute_test_client_api_query(query, user, variables=variables)
-    #     errors = executed.get('errors')
-    #
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
-    #
-    # def test_query_permission_granted(self):
-    #     """ Query list of account account_schedule_events with view permission """
-    #     query = self.account_schedule_events_query
-    #     account_schedule_event = f.AccountSubscriptionFactory.create()
-    #     variables = {
-    #         'accountId': to_global_id('AccountSubscriptionNode', account_schedule_event.account.id)
-    #     }
-    #
-    #     # Create regular user
-    #     user = get_user_model().objects.get(pk=account_schedule_event.account.id)
-    #     permission = Permission.objects.get(codename='view_accounteventticket')
-    #     user.user_permissions.add(permission)
-    #     user.save()
-    #
-    #     executed = execute_test_client_api_query(query, user, variables=variables)
-    #     data = executed.get('data')
-    #
-    #     # List all account_schedule_events
-    #     self.assertEqual(
-    #         data['accountSubscriptions']['edges'][0]['node']['organizationSubscription']['id'],
-    #         to_global_id("OrganizationSubscriptionNode", account_schedule_event.organization_account_schedule_event.id)
-    #     )
+    def test_query_not_listed_for_other_account_without_permission(self):
+        """ Query list of account account_schedule_events - check permission denied """
+        query = self.account_schedule_events_query
+        other_user = self.account_schedule_event_ticket.schedule_event_ticket.schedule_event.teacher
+
+        # Create regular user
+        # user = get_user_model().objects.get(pk=self.account_schedule_event_ticket.account.id)
+        executed = execute_test_client_api_query(query, other_user, variables=self.variables_query)
+        data = executed.get('data')
+        self.assertEqual(len(data['accountScheduleEventTickets']['edges']), 0)
+
+    def test_query_not_listed_for_other_account_with_permission(self):
+        """ Query list of account account_schedule_events - check permission denied """
+        query = self.account_schedule_events_query
+        other_user = self.account_schedule_event_ticket.schedule_event_ticket.schedule_event.teacher
+
+        # Create regular user
+        permission = Permission.objects.get(codename=self.permission_view)
+        other_user.user_permissions.add(permission)
+        other_user.save()
+        executed = execute_test_client_api_query(query, other_user, variables=self.variables_query)
+        data = executed.get('data')
+        self.assertEqual(len(data['accountScheduleEventTickets']['edges']), 0)
+
+    def test_query_not_list_for_own_account(self):
+        """ Query list of account account_schedule_events - allow listing of event tickets for own account """
+        query = self.account_schedule_events_query
+        user = self.account_schedule_event_ticket.account
+
+        # Create regular user
+        executed = execute_test_client_api_query(query, user, variables=self.variables_query)
+        data = executed.get('data')
+        self.assertEqual(
+            data['accountScheduleEventTickets']['edges'][0]['node']['account']['id'],
+            to_global_id("AccountNode", self.account_schedule_event_ticket.account.id)
+        )
     #
     # def test_query_anon_user(self):
     #     """ Query list of account account_schedule_events - anon user """
