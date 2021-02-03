@@ -117,6 +117,7 @@ query ScheduleEventTicket($id:ID!) {
     name
     description
     price
+    isSoldOut
     scheduleEvent {
       id
     }
@@ -371,6 +372,70 @@ query ScheduleEventTicket($id:ID!) {
                          to_global_id('FinanceGLAccountNode', schedule_event_ticket.finance_glaccount.pk))
         self.assertEqual(data['scheduleEventTicket']['financeCostcenter']['id'],
                          to_global_id('FinanceCostCenterNode', schedule_event_ticket.finance_costcenter.pk))
+
+    def test_query_one_sold_out(self):
+        """ Query one schedule event ticket - sold out """
+
+        account_schedule_event_ticket = f.AccountScheduleEventTicketFactory.create()
+        schedule_event_ticket = account_schedule_event_ticket.schedule_event_ticket
+        schedule_event_activity = f.ScheduleItemEventActivityFactory.create(
+            schedule_event=schedule_event_ticket.schedule_event,
+            spaces=1
+        )
+        schedule_event_ticket_schedule_item = f.ScheduleEventTicketScheduleItemIncludedFactory.create(
+            schedule_item=schedule_event_activity,
+            schedule_event_ticket=schedule_event_ticket,
+        )
+
+        schedule_item_attendance = f.ScheduleItemAttendanceScheduleEventFactory.create(
+            account_schedule_event_ticket=account_schedule_event_ticket,
+            schedule_item=schedule_event_activity
+        )
+
+        # account = schedule_item_attendance.account
+
+        # First query locations to get node id easily
+        node_id = to_global_id('ScheduleEventTicketNode', schedule_event_ticket.pk)
+
+        # Now query single ticket and check
+        query = self.event_ticket_query
+        executed = execute_test_client_api_query(query, self.admin_user, variables={"id": node_id})
+        data = executed.get('data')
+        self.assertEqual(data['scheduleEventTicket']['scheduleEvent']['id'],
+                         to_global_id('ScheduleEventNode', schedule_event_ticket.schedule_event.pk))
+        self.assertEqual(data['scheduleEventTicket']['isSoldOut'], True)
+
+    def test_query_one_not_sold_out(self):
+        """ Query one schedule event ticket - not sold out """
+
+        account_schedule_event_ticket = f.AccountScheduleEventTicketFactory.create()
+        schedule_event_ticket = account_schedule_event_ticket.schedule_event_ticket
+        schedule_event_activity = f.ScheduleItemEventActivityFactory.create(
+            schedule_event=schedule_event_ticket.schedule_event,
+            spaces=10
+        )
+        schedule_event_ticket_schedule_item = f.ScheduleEventTicketScheduleItemIncludedFactory.create(
+            schedule_item=schedule_event_activity,
+            schedule_event_ticket=schedule_event_ticket,
+        )
+
+        schedule_item_attendance = f.ScheduleItemAttendanceScheduleEventFactory.create(
+            account_schedule_event_ticket=account_schedule_event_ticket,
+            schedule_item=schedule_event_activity
+        )
+
+        # account = schedule_item_attendance.account
+
+        # First query locations to get node id easily
+        node_id = to_global_id('ScheduleEventTicketNode', schedule_event_ticket.pk)
+
+        # Now query single ticket and check
+        query = self.event_ticket_query
+        executed = execute_test_client_api_query(query, self.admin_user, variables={"id": node_id})
+        data = executed.get('data')
+        self.assertEqual(data['scheduleEventTicket']['scheduleEvent']['id'],
+                         to_global_id('ScheduleEventNode', schedule_event_ticket.schedule_event.pk))
+        self.assertEqual(data['scheduleEventTicket']['isSoldOut'], False)
 
     def test_query_one_anon_user_public(self):
         """ Grant permission for anon users Query public ticket """

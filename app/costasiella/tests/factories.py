@@ -792,6 +792,20 @@ class ScheduleItemEventActivityFactory(factory.DjangoModelFactory):
     spaces = 20
 
 
+class ScheduleItemAttendanceScheduleEventFactory(factory.DjangoModelFactory):
+    """ Usage
+    account_schedule_event_ticket and schedule_item have to be specified when using factory
+    """
+    class Meta:
+        model = models.ScheduleItemAttendance
+
+    account = factory.SelfAttribute('account_schedule_event_ticket.account')
+    attendance_type = 'SCHEDULE_EVENT_TICKET'
+    date = factory.SelfAttribute('schedule_item.date_start')
+    online_booking = False
+    booking_status = "ATTENDING"
+
+
 class ScheduleEventTicketScheduleItemIncludedFactory(factory.DjangoModelFactory):
     class Meta:
         model = models.ScheduleEventTicketScheduleItem

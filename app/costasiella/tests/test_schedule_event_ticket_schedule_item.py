@@ -31,7 +31,6 @@ class GQLScheduleEventTicketScheduleItem(TestCase):
         self.permission_change = 'change_scheduleeventticketscheduleitem'
         self.permission_delete = 'delete_scheduleeventticketscheduleitem'
 
-        # self.organization_location_room = f.OrganizationLocationRoomFactory.create()
         self.schedule_event_ticket = f.ScheduleEventFullTicketFactory.create()
         self.schedule_event_activity = f.ScheduleItemEventActivityFactory.create(
             schedule_event=self.schedule_event_ticket.schedule_event
