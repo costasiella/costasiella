@@ -293,18 +293,14 @@ class GQLAccountScheduleEventTicket(TestCase):
             data['accountScheduleEventTickets']['edges'][0]['node']['account']['id'],
             to_global_id("AccountNode", self.account_schedule_event_ticket.account.id)
         )
-    #
-    # def test_query_anon_user(self):
-    #     """ Query list of account account_schedule_events - anon user """
-    #     query = self.account_schedule_events_query
-    #     account_schedule_event = f.AccountSubscriptionFactory.create()
-    #     variables = {
-    #         'accountId': to_global_id('AccountSubscriptionNode', account_schedule_event.account.id)
-    #     }
-    #
-    #     executed = execute_test_client_api_query(query, self.anon_user, variables=variables)
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
+
+    def test_query_anon_user(self):
+        """ Query list of account account_schedule_events - anon user """
+        query = self.account_schedule_events_query
+
+        executed = execute_test_client_api_query(query, self.anon_user, variables=self.variables_query)
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
     #
     # def test_query_one(self):
     #     """ Query one account account_schedule_event as admin """
