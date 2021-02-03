@@ -19,6 +19,13 @@ from .. import schema
 
 class GQLAccountScheduleEventTicket(TestCase):
     # https://docs.djangoproject.com/en/2.1/topics/testing/overview/
+    fixtures = [
+        'app_settings.json',
+        'finance_invoice_group.json',
+        'finance_invoice_group_defaults.json',
+        'finance_payment_methods.json'
+    ]
+
     def setUp(self):
         # This is run before every test
         self.admin_user = f.AdminUserFactory.create()
@@ -177,7 +184,7 @@ class GQLAccountScheduleEventTicket(TestCase):
           }
           cancelled
           paymentConfirmation
-          InfoMailSent
+          infoMailSent
         }
       }
     }
@@ -196,7 +203,7 @@ class GQLAccountScheduleEventTicket(TestCase):
         }
         cancelled
         paymentConfirmation
-        InfoMailSent
+        infoMailSent
       }
     }
   }
@@ -388,83 +395,62 @@ class GQLAccountScheduleEventTicket(TestCase):
         data = executed.get('data')
 
         self.assertEqual(
-            data['createAccountSubscription']['accountSubscription']['account']['id'],
-            variables['input']['account']
+            data['createAccountScheduleEventTicket']['accountScheduleEventTicket']['account']['id'],
+            self.variables_create['input']['account']
+        )
+        self.assertEqual(
+            data['createAccountScheduleEventTicket']['accountScheduleEventTicket']['scheduleEventTicket']['id'],
+            self.variables_create['input']['scheduleEventTicket']
         )
 
-    #
-    # def test_create_account_schedule_event_anon_user(self):
-    #     """ Don't allow creating account account_schedule_events for non-logged in users """
-    #     query = self.account_schedule_event_create_mutation
-    #
-    #     account = f.RegularUserFactory.create()
-    #     organization_account_schedule_event = f.OrganizationSubscriptionFactory.create()
-    #     finance_payment_method = f.FinancePaymentMethodFactory.create()
-    #     variables = self.variables_create
-    #     variables['input']['account'] = to_global_id('AccountNode', account.id)
-    #     variables['input']['organizationSubscription'] = to_global_id('OrganizationSubscriptionNode', organization_account_schedule_event.id)
-    #     variables['input']['financePaymentMethod'] = to_global_id('FinancePaymentMethodNode', finance_payment_method.id)
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.anon_user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
-    #
-    # def test_create_account_schedule_event_permission_granted(self):
-    #     """ Allow creating account_schedule_events for users with permissions """
-    #     query = self.account_schedule_event_create_mutation
-    #
-    #     account = f.RegularUserFactory.create()
-    #     organization_account_schedule_event = f.OrganizationSubscriptionFactory.create()
-    #     finance_payment_method = f.FinancePaymentMethodFactory.create()
-    #     variables = self.variables_create
-    #     variables['input']['account'] = to_global_id('AccountNode', account.id)
-    #     variables['input']['organizationSubscription'] = to_global_id('OrganizationSubscriptionNode', organization_account_schedule_event.id)
-    #     variables['input']['financePaymentMethod'] = to_global_id('FinancePaymentMethodNode', finance_payment_method.id)
-    #
-    #     # Create regular user
-    #     user = account
-    #     permission = Permission.objects.get(codename=self.permission_add)
-    #     user.user_permissions.add(permission)
-    #     user.save()
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(
-    #         data['createAccountSubscription']['accountSubscription']['organizationSubscription']['id'],
-    #         variables['input']['organizationSubscription']
-    #     )
-    #
-    # def test_create_account_schedule_event_permission_denied(self):
-    #     """ Check create account_schedule_event permission denied error message """
-    #     query = self.account_schedule_event_create_mutation
-    #     account = f.RegularUserFactory.create()
-    #     organization_account_schedule_event = f.OrganizationSubscriptionFactory.create()
-    #     finance_payment_method = f.FinancePaymentMethodFactory.create()
-    #     variables = self.variables_create
-    #     variables['input']['account'] = to_global_id('AccountNode', account.id)
-    #     variables['input']['organizationSubscription'] = to_global_id('OrganizationSubscriptionNode', organization_account_schedule_event.id)
-    #     variables['input']['financePaymentMethod'] = to_global_id('FinancePaymentMethodNode', finance_payment_method.id)
-    #
-    #     # Create regular user
-    #     user = account
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
+    def test_create_account_schedule_event_anon_user(self):
+        """ Don't allow creating account account_schedule_events for non-logged in users """
+        query = self.account_schedule_event_create_mutation
+
+        executed = execute_test_client_api_query(
+            query,
+            self.anon_user,
+            variables=self.variables_create
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
+
+    def test_create_account_schedule_event_permission_granted(self):
+        """ Allow creating account_schedule_events for users with permissions """
+        query = self.account_schedule_event_create_mutation
+
+        # Create regular user
+        user = self.account_schedule_event_ticket.account
+        permission = Permission.objects.get(codename=self.permission_add)
+        user.user_permissions.add(permission)
+        user.save()
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=self.variables_create
+        )
+        data = executed.get('data')
+        self.assertEqual(
+            data['createAccountScheduleEventTicket']['accountScheduleEventTicket']['account']['id'],
+            self.variables_create['input']['account']
+        )
+
+    def test_create_account_schedule_event_permission_denied(self):
+        """ Check create account_schedule_event permission denied error message """
+        query = self.account_schedule_event_create_mutation
+
+        # Create regular user
+        user = self.account_schedule_event_ticket.account
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=self.variables_create
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
     #
     # def test_update_account_schedule_event(self):
     #     """ Update a account_schedule_event """
