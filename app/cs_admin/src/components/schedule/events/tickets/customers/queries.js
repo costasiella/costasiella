@@ -92,13 +92,13 @@ query ScheduleEventTicket($before:String, $after:String, $id:ID!) {
 `
 
 export const UPDATE_ACCOUNT_SCHEDULE_EVENT_TICKET = gql`
-mutation UpdateAccountScheduleEventTicket($input:UpdateAccountScheduleEventTicketInput!) {
-  updateAccountScheduleEventTicket(input: $input) {
-    accountScheduleEventTicket {
-      id
+  mutation UpdateAccountScheduleEventTicket($input:UpdateAccountScheduleEventTicketInput!) {
+    updateAccountScheduleEventTicket(input: $input) {
+      accountScheduleEventTicket {
+        id
+      }
     }
   }
-}
 `
 
 export const DELETE_SCHEDULE_EVENT_TICKET = gql`

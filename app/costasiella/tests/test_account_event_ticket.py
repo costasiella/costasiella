@@ -37,16 +37,18 @@ class GQLAccountScheduleEventTicket(TestCase):
 
         self.variables_create = {
             "input": {
-
+                "account": to_global_id("AccountNode", self.account_schedule_event_ticket.account.id),
+                "scheduleEventTicket": to_global_id("ScheduleEventTicketNode",
+                                                    self.account_schedule_event_ticket.schedule_event_ticket.id)
             }
         }
 
         self.variables_update = {
             "input": {
-                "dateStart": "2017-01-01",
-                "dateEnd": "2020-12-31",
-                "note": "Update note",
-                "registrationFeePaid": True
+                "id": to_global_id("AccountScheduleEventTicketNode", self.account_schedule_event_ticket.id),
+                "cancelled": True,
+                "paymentConfirmation": True,
+                "infoMailSent": True
             }
         }
 
@@ -97,130 +99,112 @@ class GQLAccountScheduleEventTicket(TestCase):
     }
   }
 '''
-
-        self.account_schedule_event_query = '''
-  query AccountSubscription($id: ID!, $accountId: ID!, $after: String, $before: String, $archived: Boolean!) {
-    accountSubscription(id:$id) {
-      id
-      account {
-          id
-      }
-      organizationSubscription {
-        id
-        name
-      }
-      financePaymentMethod {
-        id
-        name
-      }
-      dateStart
-      dateEnd
-      note
-      registrationFeePaid
-      createdAt
-    }
-    organizationSubscriptions(first: 100, before: $before, after: $after, archived: $archived) {
-      pageInfo {
-        startCursor
-        endCursor
-        hasNextPage
-        hasPreviousPage
-      }
-      edges {
-        node {
-          id
-          archived
-          name
-        }
-      }
-    }
-    financePaymentMethods(first: 100, before: $before, after: $after, archived: $archived) {
-      pageInfo {
-        startCursor
-        endCursor
-        hasNextPage
-        hasPreviousPage
-      }
-      edges {
-        node {
-          id
-          archived
-          name
-          code
-        }
-      }
-    }
-    account(id:$accountId) {
-      id
-      firstName
-      lastName
-      email
-      phone
-      mobile
-      isActive
-    }
-  }
-'''
+#
+#         self.account_schedule_event_query = '''
+#   query AccountSubscription($id: ID!, $accountId: ID!, $after: String, $before: String, $archived: Boolean!) {
+#     accountSubscription(id:$id) {
+#       id
+#       account {
+#           id
+#       }
+#       organizationSubscription {
+#         id
+#         name
+#       }
+#       financePaymentMethod {
+#         id
+#         name
+#       }
+#       dateStart
+#       dateEnd
+#       note
+#       registrationFeePaid
+#       createdAt
+#     }
+#     organizationSubscriptions(first: 100, before: $before, after: $after, archived: $archived) {
+#       pageInfo {
+#         startCursor
+#         endCursor
+#         hasNextPage
+#         hasPreviousPage
+#       }
+#       edges {
+#         node {
+#           id
+#           archived
+#           name
+#         }
+#       }
+#     }
+#     financePaymentMethods(first: 100, before: $before, after: $after, archived: $archived) {
+#       pageInfo {
+#         startCursor
+#         endCursor
+#         hasNextPage
+#         hasPreviousPage
+#       }
+#       edges {
+#         node {
+#           id
+#           archived
+#           name
+#           code
+#         }
+#       }
+#     }
+#     account(id:$accountId) {
+#       id
+#       firstName
+#       lastName
+#       email
+#       phone
+#       mobile
+#       isActive
+#     }
+#   }
+# '''
 
         self.account_schedule_event_create_mutation = ''' 
-  mutation CreateAccountSubscription($input: CreateAccountSubscriptionInput!) {
-    createAccountSubscription(input: $input) {
-      accountSubscription {
-        id
-        account {
+    mutation CreateAccountScheduleEventTicket($input:CreateAccountScheduleEventTicketInput!) {
+      createAccountScheduleEventTicket(input: $input) {
+        accountScheduleEventTicket {
           id
-          firstName
-          lastName
-          email
+          account {
+            id
+          }
+          scheduleEventTicket {
+            id
+          }
+          cancelled
+          paymentConfirmation
+          InfoMailSent
         }
-        organizationSubscription {
-          id
-          name
-        }
-        financePaymentMethod {
-          id
-          name
-        }
-        dateStart
-        dateEnd
-        note
-        registrationFeePaid        
       }
     }
-  }
 '''
 
         self.account_schedule_event_update_mutation = '''
-  mutation UpdateAccountSubscription($input: UpdateAccountSubscriptionInput!) {
-    updateAccountSubscription(input: $input) {
-      accountSubscription {
+  mutation UpdateAccountScheduleEventTicket($input:UpdateAccountScheduleEventTicketInput!) {
+    updateAccountScheduleEventTicket(input: $input) {
+      accountScheduleEventTicket {
         id
         account {
           id
-          firstName
-          lastName
-          email
         }
-        organizationSubscription {
+        scheduleEventTicket {
           id
-          name
         }
-        financePaymentMethod {
-          id
-          name
-        }
-        dateStart
-        dateEnd
-        note
-        registrationFeePaid        
+        cancelled
+        paymentConfirmation
+        InfoMailSent
       }
     }
   }
 '''
 
         self.account_schedule_event_delete_mutation = '''
-  mutation DeleteAccountSubscription($input: DeleteAccountSubscriptionInput!) {
-    deleteAccountSubscription(input: $input) {
+  mutation DeleteScheduleEventTicket($input: DeleteScheduleEventTicketInput!) {
+    deleteScheduleEventTicket(input: $input) {
       ok
     }
   }
@@ -301,6 +285,9 @@ class GQLAccountScheduleEventTicket(TestCase):
         executed = execute_test_client_api_query(query, self.anon_user, variables=self.variables_query)
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Not logged in!')
+
+    # Query one is currently not implemented.
+
     #
     # def test_query_one(self):
     #     """ Query one account account_schedule_event as admin """
@@ -387,41 +374,24 @@ class GQLAccountScheduleEventTicket(TestCase):
     #         to_global_id('OrganizationSubscriptionNode', account_schedule_event.organization_account_schedule_event.id)
     #     )
     #
-    # def test_create_account_schedule_event(self):
-    #     """ Create an account account_schedule_event """
-    #     query = self.account_schedule_event_create_mutation
-    #
-    #     account = f.RegularUserFactory.create()
-    #     organization_account_schedule_event = f.OrganizationSubscriptionFactory.create()
-    #     finance_payment_method = f.FinancePaymentMethodFactory.create()
-    #     variables = self.variables_create
-    #     variables['input']['account'] = to_global_id('AccountNode', account.id)
-    #     variables['input']['organizationSubscription'] = to_global_id('OrganizationSubscriptionNode', organization_account_schedule_event.id)
-    #     variables['input']['financePaymentMethod'] = to_global_id('FinancePaymentMethodNode', finance_payment_method.id)
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.admin_user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #
-    #     self.assertEqual(
-    #         data['createAccountSubscription']['accountSubscription']['account']['id'],
-    #         variables['input']['account']
-    #     )
-    #     self.assertEqual(
-    #         data['createAccountSubscription']['accountSubscription']['organizationSubscription']['id'],
-    #         variables['input']['organizationSubscription']
-    #     )
-    #     self.assertEqual(
-    #         data['createAccountSubscription']['accountSubscription']['financePaymentMethod']['id'],
-    #         variables['input']['financePaymentMethod']
-    #     )
-    #     self.assertEqual(data['createAccountSubscription']['accountSubscription']['dateStart'], variables['input']['dateStart'])
-    #     self.assertEqual(data['createAccountSubscription']['accountSubscription']['dateEnd'], variables['input']['dateEnd'])
-    #     self.assertEqual(data['createAccountSubscription']['accountSubscription']['note'], variables['input']['note'])
-    #     self.assertEqual(data['createAccountSubscription']['accountSubscription']['registrationFeePaid'], variables['input']['registrationFeePaid'])
+    def test_create_account_schedule_event(self):
+        """ Create an account account_schedule_event """
+        query = self.account_schedule_event_create_mutation
+
+        executed = execute_test_client_api_query(
+            query,
+            self.admin_user,
+            variables=self.variables_create
+        )
+        print("**************")
+        print(executed)
+        data = executed.get('data')
+
+        self.assertEqual(
+            data['createAccountSubscription']['accountSubscription']['account']['id'],
+            variables['input']['account']
+        )
+
     #
     # def test_create_account_schedule_event_anon_user(self):
     #     """ Don't allow creating account account_schedule_events for non-logged in users """
