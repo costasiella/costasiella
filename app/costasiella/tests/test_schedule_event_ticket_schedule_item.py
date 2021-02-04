@@ -191,6 +191,60 @@ class GQLScheduleEventTicketScheduleItem(TestCase):
             variables['input']['included']
         )
 
+    # def test_update_event_ticket_schedule_item_add_attendance(self):
+    #     """ Update event ticket schedule item """
+    #     query = self.event_ticket_schedule_item_update_mutation
+    #     self.schedule_event_ticket.full_event = False
+    #     self.schedule_event_ticket.save()
+    #
+    #     variables = self.variables_update
+    #
+    #     executed = execute_test_client_api_query(
+    #         query,
+    #         self.admin_user,
+    #         variables=variables
+    #     )
+    #
+    #     data = executed.get('data')
+    #     self.assertEqual(
+    #         data['updateScheduleEventTicketScheduleItem']['scheduleEventTicketScheduleItem']['included'],
+    #         variables['input']['included']
+    #     )
+
+    def test_update_event_ticket_schedule_item_remove_attendance(self):
+        """ Update event ticket schedule item """
+        query = self.event_ticket_schedule_item_update_mutation
+
+        account_schedule_event_ticket = f.AccountScheduleEventTicketFactory.create(
+            schedule_event_ticket=self.schedule_event_ticket
+        )
+        schedule_event_ticket = account_schedule_event_ticket.schedule_event_ticket
+        schedule_event_ticket.full_event = False
+        schedule_event_ticket.save()
+
+        schedule_item_attendance = f.ScheduleItemAttendanceScheduleEventFactory.create(
+            account_schedule_event_ticket=account_schedule_event_ticket,
+            schedule_item=self.schedule_event_activity
+        )
+
+        variables = self.variables_update
+
+        executed = execute_test_client_api_query(
+            query,
+            self.admin_user,
+            variables=variables
+        )
+
+        data = executed.get('data')
+        self.assertEqual(
+            data['updateScheduleEventTicketScheduleItem']['scheduleEventTicketScheduleItem']['included'],
+            variables['input']['included']
+        )
+
+        # Check attendance was removed
+        qs = models.ScheduleItemAttendance.objects.filter(schedule_item=self.schedule_event_activity)
+        self.assertEqual(qs.count(), 0)
+
     def test_update_event_ticket_schedule_item_anon_user(self):
         """ Don't allow updating event ticket schedule items for non-logged in users """
         query = self.event_ticket_schedule_item_update_mutation
