@@ -43,7 +43,11 @@
                     <div class="row">
                         <div class="col col-login mx-auto">
                             <div class="text-center mb-6">
-                                <img src="{% static 'logos/stock/logo_stock_backend.svg' %}" class="h-6" alt="">
+                                {% if organization.logo_login %}
+                                    <img src="{{ organization.logo_login.url }}" class="h-9" alt="">
+                                {% else %} 
+                                    <img src="{% static 'logos/stock/logo_stock_backend.svg' %}" class="h-6" alt="">
+                                {% endif %}
                             </div>
                             <div class="card">
                                 <div class="card-body">

@@ -34,6 +34,8 @@ urlpatterns = [
     # path('', TemplateView.as_view(template_name="backend.html"), name="home"),
     path('d/admin/', admin.site.urls),
     path('d/admin/defender/', include('defender.urls')),  # defender admin
+    # override of email view to add user profile context data
+    path('d/accounts/signup/', views.CSSignUpView.as_view(), name="account_signup"),
     path('d/accounts/', include('allauth.urls')),  # allauth
     path('d/csrf/', views.csrf, name="csrf"),
     path('d/email/verified/', TemplateView.as_view(template_name="email_verfied.html"), name="email_verified"),
