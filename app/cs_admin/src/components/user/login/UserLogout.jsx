@@ -1,6 +1,6 @@
 // @flow
 
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import gql from "graphql-tag"
 import { useQuery, useMutation } from "react-apollo";
 import { withTranslation } from 'react-i18next'
@@ -12,6 +12,8 @@ import { toast } from 'react-toastify'
 // import { GET_ACCOUNTS_QUERY, GET_ACCOUNT_QUERY } from './queries'
 // import { ACCOUNT_SCHEMA } from './yupSchema'
 
+import OrganizationContext from '../../context/OrganizationContext'
+
 import {
   Card,
   Button,
@@ -22,14 +24,19 @@ import HasPermissionWrapper from "../../HasPermissionWrapper"
 import { CSAuth } from "../../../tools/authentication"
 import { TOKEN_COOKIE_DELETE, TOKEN_REFRESH_COOKIE_DELETE } from "../../../queries/system/auth"
 
+import CSStandaloneFormPage from "../../ui/CSStandaloneFormPage"
+
 
 function UserLogout({t, match, history}) {
   const [ deleteCookie ] = useMutation(TOKEN_COOKIE_DELETE)
   const [ deleteRefreshCookie ] = useMutation(TOKEN_REFRESH_COOKIE_DELETE)
   const [active, setActive] = useState(false)
 
+  const organization = useContext(OrganizationContext)
+  console.log(organization)
+
   return (
-    <StandaloneFormPage imageURL="">
+    <CSStandaloneFormPage urlLogo={organization.urlLogoLogin}>
       {/* TODO: point imageURL to logo */}
       <Card>
         <Card.Body>
@@ -78,8 +85,7 @@ function UserLogout({t, match, history}) {
       >
         {t('general.cancel')}
       </Button>
-      <ToastContainer autoClose={5000}/>
-    </StandaloneFormPage>
+    </CSStandaloneFormPage>
   )
 }
 
