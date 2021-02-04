@@ -151,9 +151,6 @@ class UpdateAccountScheduleEventTicket(graphene.relay.ClientIDMutation):
         account_schedule_event_ticket.save()
 
         if 'cancelled' in input:
-            print("$$$$$$$$$$$$$$$$$$$$$$$")
-            print("cancel in input")
-
             # Cancel all attendance items for ticket (Compare previous to current state)
             if account_schedule_event_ticket.cancelled:
                 account_schedule_event_ticket.set_booking_status_schedule_item_attendances('CANCELLED')
