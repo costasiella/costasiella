@@ -163,8 +163,7 @@ class GQLScheduleEventMedia(TestCase):
                          self.schedule_event_media.sort_order)
         self.assertEqual(data['scheduleEventMedias']['edges'][0]['node']['description'],
                          self.schedule_event_media.description)
-        self.assertEqual(data['scheduleEventMedias']['edges'][0]['node']['urlImage'],
-                         "/d/media/schedule_event_media/test_image.jpg")
+        self.assertNotEqual(data['scheduleEventMedias']['edges'][0]['node']['urlImage'], False)
         self.assertNotEqual(data['scheduleEventMedias']['edges'][0]['node']['urlImageThumbnailSmall'], False)
 
     ##
