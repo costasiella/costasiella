@@ -1,7 +1,7 @@
 # CSRF token
 from .csrf_token import csrf
 
-from .cs_allauth import CSSignUpView
+from .cs_allauth import CSPasswordResetView, CSSignUpView
 
 # Document exports
 from .organization_document import privacy_policy, terms_and_conditions

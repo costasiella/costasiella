@@ -35,6 +35,7 @@ urlpatterns = [
     path('d/admin/', admin.site.urls),
     path('d/admin/defender/', include('defender.urls')),  # defender admin
     # override of email view to add user profile context data
+    path('d/accounts/password/reset/', views.CSPasswordResetView.as_view(), name="account_passwordreset"),
     path('d/accounts/signup/', views.CSSignUpView.as_view(), name="account_signup"),
     path('d/accounts/', include('allauth.urls')),  # allauth
     path('d/csrf/', views.csrf, name="csrf"),
