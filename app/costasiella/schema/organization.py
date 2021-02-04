@@ -16,12 +16,44 @@ class OrganizationNodeInterface(graphene.Interface):
     id = graphene.GlobalID()
     url_logo_login = graphene.String()
     # url_logo_login_thumbnail_small = graphene.String()
+    url_logo_invoice = graphene.String()
+    url_logo_email = graphene.String()
+    url_logo_shop_header = graphene.String()
+    url_logo_self_checkin = graphene.String()
 
 
 class OrganizationNode(DjangoObjectType):
     def resolve_url_logo_login(self, info):
         if self.logo_login:
             return self.logo_login.url
+        else:
+            # TODO: Set a default url with the costasiella logo
+            return ''
+
+    def resolve_url_logo_invoice(self, info):
+        if self.logo_invoice:
+            return self.logo_invoice.url
+        else:
+            # TODO: Set a default url with the costasiella logo
+            return ''
+
+    def resolve_url_logo_email(self, info):
+        if self.logo_email:
+            return self.logo_email.url
+        else:
+            # TODO: Set a default url with the costasiella logo
+            return ''
+
+    def resolve_url_logo_shop_header(self, info):
+        if self.logo_shop_header:
+            return self.logo_shop_header.url
+        else:
+            # TODO: Set a default url with the costasiella logo
+            return ''
+
+    def resolve_url_logo_self_checkin(self, info):
+        if self.logo_self_checkin:
+            return self.logo_self_checkin.url
         else:
             # TODO: Set a default url with the costasiella logo
             return ''
@@ -70,6 +102,26 @@ def validate_create_update_input(input):
         if not (input.get('logo_login', None) and input.get('logo_login_file_name', None)):
             raise Exception(
                 _('When setting "logoLogin" or "logoLoginFileName", both fields need to be present and set.')
+            )
+    if 'logo_invoice' in input or 'logo_invoice_file_name' in input:
+        if not (input.get('logo_invoice', None) and input.get('logo_invoice_file_name', None)):
+            raise Exception(
+                _('When setting "logoInvoice" or "logoInvoiceFileName", both fields need to be present and set.')
+            )
+    if 'logo_email' in input or 'logo_email_file_name' in input:
+        if not (input.get('logo_email', None) and input.get('logo_email_file_name', None)):
+            raise Exception(
+                _('When setting "logoEmail" or "logoEmailFileName", both fields need to be present and set.')
+            )
+    if 'logo_shop_header' in input or 'logo_shop_header_file_name' in input:
+        if not (input.get('logo_shop_header', None) and input.get('logo_shop_header_file_name', None)):
+            raise Exception(
+                _('When setting "logoShopHeader" or "logoShopHeaderFileName", both fields need to be present and set.')
+            )
+    if 'logo_self_checkin' in input or 'logo_self_checkin_file_name' in input:
+        if not (input.get('logo_self_checkin', None) and input.get('logo_self_checkin_file_name', None)):
+            raise Exception(
+                _('When setting "logoSelfCheckin" or "logoSelfCheckinFileName", both fields need to be present and set.')
             )
 
     return result
@@ -134,6 +186,14 @@ class UpdateOrganization(graphene.relay.ClientIDMutation):
         tax_registration = graphene.String(required=False)
         logo_login = graphene.String(required=False)
         logo_login_file_name = graphene.String(required=False)
+        logo_invoice = graphene.String(required=False)
+        logo_invoice_file_name = graphene.String(required=False)
+        logo_email = graphene.String(required=False)
+        logo_email_file_name = graphene.String(required=False)
+        logo_shop_header = graphene.String(required=False)
+        logo_shop_header_file_name = graphene.String(required=False)
+        logo_self_checkin = graphene.String(required=False)
+        logo_self_checkin_file_name = graphene.String(required=False)
         
     organization = graphene.Field(OrganizationNode)
 
@@ -171,6 +231,18 @@ class UpdateOrganization(graphene.relay.ClientIDMutation):
         if 'logo_login' in input:
             organization.logo_login = get_content_file_from_base64_str(data_str=input['logo_login'],
                                                                        file_name=input['logo_login_file_name'])
+        if 'logo_invoice' in input:
+            organization.logo_invoice = get_content_file_from_base64_str(data_str=input['logo_invoice'],
+                                                                       file_name=input['logo_invoice_file_name'])
+        if 'logo_email' in input:
+            organization.logo_email = get_content_file_from_base64_str(data_str=input['logo_email'],
+                                                                       file_name=input['logo_email_file_name'])
+        if 'logo_shop_header' in input:
+            organization.logo_shop_header = get_content_file_from_base64_str(data_str=input['logo_shop_header'],
+                                                                       file_name=input['logo_shop_header_file_name'])
+        if 'logo_self_checkin' in input:
+            organization.logo_self_checkin = get_content_file_from_base64_str(data_str=input['logo_self_checkin'],
+                                                                       file_name=input['logo_self_checkin_file_name'])
 
         organization.save()
 
