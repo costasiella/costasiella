@@ -22,7 +22,7 @@ function CSStandalonePage({ t, urlLogo="", children}) {
           <Grid.Row>
             <div className="col col-login mx-auto">            
               <div className="text-center mb-5">
-                <img src={urlLogo} className="h-9" alt="logo" />
+                { (urlLogo) ? <img src={urlLogo} className="h-9" alt="logo" /> : "" }
               </div>
               {children}
               <ToastContainer autoClose={5000}/>
