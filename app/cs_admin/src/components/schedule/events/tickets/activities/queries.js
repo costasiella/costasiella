@@ -26,7 +26,7 @@ query ScheduleEventTicketScheduleItem($before:String, $after:String, $scheduleEv
     }
   }
 }
-// `
+`
 
 // export const GET_SCHEDULE_EVENT_TICKET_SCHEDULE_ITEM_QUERY = gql`
 // query ScheduleEventTicket($before:String, $after:String, $id:ID!) {
