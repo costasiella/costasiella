@@ -77,6 +77,70 @@ function OrganizationBranding({t, match, history}) {
               </GalleryCard.Details>
             </GalleryCard>
           </Grid.Col>
+          <Grid.Col md={4}>
+            <GalleryCard>
+              <h5>{t('organization.branding.logo_invoice')}</h5>
+              <GalleryCard.Image
+                src={organization.urlLogoInvoice}
+              >
+              </GalleryCard.Image>
+              <GalleryCard.Details>
+                <Link to={`/organization/edit/${id}/branding/logoInvoice`}>
+                  <Button block color="secondary">
+                    {t("organization.branding.link_change")} <Icon name="chevron-right" />
+                  </Button>
+                </Link>
+              </GalleryCard.Details>
+            </GalleryCard>
+          </Grid.Col>
+          <Grid.Col md={4}>
+            <GalleryCard>
+              <h5>{t('organization.branding.logo_email')}</h5>
+              <GalleryCard.Image
+                src={organization.urlLogoEmail}
+              >
+              </GalleryCard.Image>
+              <GalleryCard.Details>
+                <Link to={`/organization/edit/${id}/branding/logoEmail`}>
+                  <Button block color="secondary">
+                    {t("organization.branding.link_change")} <Icon name="chevron-right" />
+                  </Button>
+                </Link>
+              </GalleryCard.Details>
+            </GalleryCard>
+          </Grid.Col>
+          <Grid.Col md={4}>
+            <GalleryCard>
+              <h5>{t('organization.branding.logo_shop_header')}</h5>
+              <GalleryCard.Image
+                src={organization.urlLogoShopHeader}
+              >
+              </GalleryCard.Image>
+              <GalleryCard.Details>
+                <Link to={`/organization/edit/${id}/branding/logoShopHeader`}>
+                  <Button block color="secondary">
+                    {t("organization.branding.link_change")} <Icon name="chevron-right" />
+                  </Button>
+                </Link>
+              </GalleryCard.Details>
+            </GalleryCard>
+          </Grid.Col>
+          <Grid.Col md={4}>
+            <GalleryCard>
+              <h5>{t('organization.branding.logo_self_checkin')}</h5>
+              <GalleryCard.Image
+                src={organization.urlLogoSelfCheckin}
+              >
+              </GalleryCard.Image>
+              <GalleryCard.Details>
+                <Link to={`/organization/edit/${id}/branding/logoSelfCheckin`}>
+                  <Button block color="secondary">
+                    {t("organization.branding.link_change")} <Icon name="chevron-right" />
+                  </Button>
+                </Link>
+              </GalleryCard.Details>
+            </GalleryCard>
+          </Grid.Col>
         </Grid.Row>
     </OrganizationBrandingBase>
   )

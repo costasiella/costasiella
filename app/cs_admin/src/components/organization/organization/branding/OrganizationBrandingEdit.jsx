@@ -90,6 +90,22 @@ function OrganizationBrandingEdit({t, match, history}) {
                 inputVars.logoLoginFileName = fileName
                 inputVars.logoLogin = b64_enc_file
                 break
+              case "logoInvoice":
+                inputVars.logoInvoiceFileName = fileName
+                inputVars.logoInvoice = b64_enc_file
+                break
+              case "logoEmail":
+                inputVars.logoEmailFileName = fileName
+                inputVars.logoEmail = b64_enc_file
+                break
+              case "logoShopHeader":
+                inputVars.logoShopHeaderFileName = fileName
+                inputVars.logoShopHeader = b64_enc_file
+                break
+              case "logoSelfCheckin":
+                inputVars.logoSelfCheckinFileName = fileName
+                inputVars.logoSelfCheckin = b64_enc_file
+                break
               default:
                 break              
             }
