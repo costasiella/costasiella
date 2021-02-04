@@ -21,7 +21,7 @@ from ..modules.gql_tools import get_rid
 
 class GQLFinanceOrder(TestCase):
     # https://docs.djangoproject.com/en/2.1/topics/testing/overview/
-    fixtures = ['app_settings.json', 'system_mail_template.json']
+    fixtures = ['app_settings.json', 'organization.json', 'system_mail_template.json']
 
     def setUp(self):
         # This is run before every test
@@ -368,7 +368,6 @@ class GQLFinanceOrder(TestCase):
         )
         self.assertEqual(qs_privacy.exists(), True)
 
-
     def test_create_order_anon_user(self):
         """ Don't allow creating finance orders for non-logged in users """
         query = self.order_create_mutation
@@ -409,6 +408,9 @@ class GQLFinanceOrder(TestCase):
             user,
             variables=variables
         )
+        print("$$$$$$$$$$$$$$$$$")
+        print(executed)
+
         data = executed.get('data')
         self.assertEqual(
             data['createFinanceOrder']['financeOrder']['account']['id'],
