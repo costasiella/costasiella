@@ -49,10 +49,5 @@ class ScheduleItemAttendance(models.Model):
         values.append("-----")
         return "\n".join(values)
 
-
-
-
-
-
         # return str(self.schedule_item.id) + ' [' + self.account.full_name + " - " + str(self.date) + '] ' + \
         #        self.attendance_type
