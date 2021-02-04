@@ -942,7 +942,11 @@
         "branding": {
             "link_change": "__STRING_NOT_TRANSLATED__",
             "logo_login": "__STRING_NOT_TRANSLATED__",
-            "toast_edit_success": "__STRING_NOT_TRANSLATED__"
+            "toast_edit_success": "__STRING_NOT_TRANSLATED__",
+            "logo_invoice": "__STRING_NOT_TRANSLATED__",
+            "logo_email": "__STRING_NOT_TRANSLATED__",
+            "logo_shop_header": "__STRING_NOT_TRANSLATED__",
+            "logo_self_checkin": "__STRING_NOT_TRANSLATED__"
         }
     },
     "validity": {

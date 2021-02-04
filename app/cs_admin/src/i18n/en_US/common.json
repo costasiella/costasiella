@@ -627,7 +627,11 @@
         "branding": {
             "link_change": "Change",
             "logo_login": "Logo login",
-            "toast_edit_success": "Saved"
+            "toast_edit_success": "Saved",
+            "logo_invoice": "Logo Invoice",
+            "logo_email": "Logo email",
+            "logo_shop_header": "Logo shop header",
+            "logo_self_checkin": "Logo self check-in"
         }
     },
     "validity": {
