@@ -537,9 +537,9 @@ class GQLScheduleClass(TestCase):
         self.assertEqual(data['scheduleItem']['timeEnd'], str(schedule_class.time_end))
         self.assertEqual(data['scheduleItem']['displayPublic'], schedule_class.display_public)
 
-    def test_query_one_anon_user(self):
-        """ Deny permission for anon users Query one glacount """
-        schedule_class = f.SchedulePublicWeeklyClassFactory.create()
+    def test_query_one_anon_user_non_public(self):
+        """ Deny permission for anon users Query one class """
+        schedule_class = f.SchedulePublicWeeklyClassFactory.create(display_public=False)
         node_id = to_global_id('ScheduleItemNode', schedule_class.id)
 
         # Now query single scheduleclass and check
@@ -547,12 +547,37 @@ class GQLScheduleClass(TestCase):
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Not logged in!')
 
-    def test_query_one_permission_denied(self):
-        """ Permission denied message when user lacks authorization """
+    def test_query_one_anon_user_public(self):
+        """ Allow anon users to query a public class """
+        schedule_class = f.SchedulePublicWeeklyClassFactory.create()
+        node_id = to_global_id('ScheduleItemNode', schedule_class.id)
+
+        # Now query single scheduleclass and check
+        executed = execute_test_client_api_query(self.scheduleclass_query, self.anon_user, variables={"id": node_id})
+        data = executed.get('data')
+        self.assertEqual(data['scheduleItem']['id'], node_id)
+
+    def test_query_one_public(self):
+        """ View public classes as user lacking authorization """
         # Create regular user
         user = f.RegularUserFactory.create()
 
         schedule_class = f.SchedulePublicWeeklyClassFactory.create()
+        node_id = to_global_id('ScheduleItemNode', schedule_class.id)
+
+        # Now query single scheduleclass and check
+        executed = execute_test_client_api_query(self.scheduleclass_query, user, variables={"id": node_id})
+        data = executed.get('data')
+        self.assertEqual(data['scheduleItem']['id'], node_id)
+
+    def test_query_one_permission_denied_non_public(self):
+        """ Permission denied message when user lacks authorization """
+        # Create regular user
+        user = f.RegularUserFactory.create()
+
+        schedule_class = f.SchedulePublicWeeklyClassFactory.create(
+            display_public=False
+        )
         node_id = to_global_id('ScheduleItemNode', schedule_class.id)
 
         # Now query single scheduleclass and check
