@@ -40,5 +40,19 @@ class ScheduleItemAttendance(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return str(self.schedule_item.id) + ' [' + self.account.full_name + " - " + str(self.date) + '] ' + \
-               self.attendance_type
+        from django.forms.models import model_to_dict
+        data = model_to_dict(self)
+        values = ["-----", str(type(self)), "-----"]
+        for key, value in data.items():
+            values.append(f'{key}: {value}')
+
+        values.append("-----")
+        return "\n".join(values)
+
+
+
+
+
+
+        # return str(self.schedule_item.id) + ' [' + self.account.full_name + " - " + str(self.date) + '] ' + \
+        #        self.attendance_type
