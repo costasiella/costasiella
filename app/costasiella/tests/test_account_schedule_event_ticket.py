@@ -16,7 +16,6 @@ from .. import models
 from .. import schema
 
 
-
 class GQLAccountScheduleEventTicket(TestCase):
     # https://docs.djangoproject.com/en/2.1/topics/testing/overview/
     fixtures = [
@@ -488,6 +487,55 @@ class GQLAccountScheduleEventTicket(TestCase):
             data['updateAccountScheduleEventTicket']['accountScheduleEventTicket']['infoMailSent'],
             self.variables_update['input']['infoMailSent']
         )
+
+    def test_update_account_schedule_event_cancel_attendances_related_to_ticket(self):
+        """ Update a account_schedule_event """
+        query = self.account_schedule_event_update_mutation
+
+        schedule_event_ticket = self.account_schedule_event_ticket.schedule_event_ticket
+        schedule_event_ticket.full_event = False
+        schedule_event_ticket.save()
+
+        schedule_event_activity = f.ScheduleItemEventActivityFactory.create(
+            schedule_event=schedule_event_ticket.schedule_event
+        )
+
+        schedule_item_attendance = f.ScheduleItemAttendanceScheduleEventFactory.create(
+            account_schedule_event_ticket=self.account_schedule_event_ticket,
+            schedule_item=schedule_event_activity
+        )
+
+        executed = execute_test_client_api_query(
+            query,
+            self.admin_user,
+            variables=self.variables_update
+        )
+        data = executed.get('data')
+
+        self.assertEqual(
+            data['updateAccountScheduleEventTicket']['accountScheduleEventTicket']['id'],
+            self.variables_update['input']['id']
+        )
+
+        # Refresh attendance object
+        schedule_item_attendance = models.ScheduleItemAttendance.objects.get(id=schedule_item_attendance.id)
+        self.assertEqual(schedule_item_attendance.booking_status, "CANCELLED")
+
+    # def test_update_account_schedule_event_uncancel_attendances_related_to_ticket(self):
+    #     """ Update a account_schedule_event """
+    #     query = self.account_schedule_event_update_mutation
+    #
+    #     executed = execute_test_client_api_query(
+    #         query,
+    #         self.admin_user,
+    #         variables=self.variables_update
+    #     )
+    #     data = executed.get('data')
+    #
+    #     self.assertEqual(
+    #         data['updateAccountScheduleEventTicket']['accountScheduleEventTicket']['id'],
+    #         self.variables_update['input']['id']
+    #     )
 
     def test_update_account_schedule_event_anon_user(self):
         """ Don't allow updating account_schedule_events for non-logged in users """
