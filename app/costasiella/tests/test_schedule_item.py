@@ -457,6 +457,37 @@ query ScheduleEventActivity($id:ID!) {
         self.assertEqual(data['createScheduleItem']['scheduleItem']['timeStart'],
                          self.variables_create['input']['timeStart'])
 
+    def test_create_schedule_event_activity_add_attendance_full_event(self):
+        """ Create a schedule event activity - add attendance """
+        query = self.event_activity_create_mutation
+
+        account_schedule_event_ticket = f.AccountScheduleEventTicketFactory.create()
+        schedule_event_ticket = account_schedule_event_ticket.schedule_event_ticket
+        schedule_event = schedule_event_ticket.schedule_event
+
+        self.variables_create['input']['scheduleEvent'] = to_global_id('ScheduleEventNode', schedule_event.id)
+        self.variables_create['input']['account'] = to_global_id('AccountNode', schedule_event.teacher.id)
+        self.variables_create['input']['account2'] = to_global_id('AccountNode', schedule_event.teacher_2.id)
+
+        executed = execute_test_client_api_query(
+            query,
+            self.admin_user,
+            variables=self.variables_create
+        )
+        data = executed.get('data')
+
+        # Check general data for schedule item
+        self.assertEqual(data['createScheduleItem']['scheduleItem']['scheduleEvent']['id'],
+                         self.variables_create['input']['scheduleEvent'])
+
+        # Check an attendance record was added
+        rid = get_rid(data['createScheduleItem']['scheduleItem']['id'])
+        schedule_item = models.ScheduleItem.objects.get(pk=rid.id)
+        schedule_item_attendance = models.ScheduleItemAttendance.objects.first()
+
+        self.assertEqual(schedule_item_attendance.account_schedule_event_ticket, account_schedule_event_ticket)
+        self.assertEqual(schedule_item_attendance.schedule_item, schedule_item)
+
     def test_create_schedule_event_activity_set_included_true_for_full_event_ticket(self):
         """ Create a schedule event activity and check if an object with includes set to true is created in
          the ScheduleEventTicketScheduleItem model """
