@@ -746,6 +746,33 @@ query ScheduleEventActivity($id:ID!) {
         data = executed.get('data')
         self.assertEqual(data['deleteScheduleItem']['ok'], True)
 
+    def test_delete_event_activity_check_delete_attendance(self):
+        """ Delete schedule event acivity (schedule item)
+        Check attendance linked to activity is deleted as well"""
+        query = self.event_activity_delete_mutation
+        account_schedule_event_ticket = f.AccountScheduleEventTicketFactory.create()
+        schedule_event_activity = f.ScheduleItemEventActivityFactory.create(
+            schedule_event=account_schedule_event_ticket.schedule_event_ticket.schedule_event
+        )
+
+        schedule_item_attendance = f.ScheduleItemAttendanceScheduleEventFactory.create(
+            account_schedule_event_ticket=account_schedule_event_ticket,
+            schedule_item=schedule_event_activity
+        )
+
+        self.variables_delete['input']['id'] = to_global_id('ScheduleItemNode', schedule_event_activity.id)
+
+        executed = execute_test_client_api_query(
+            query,
+            self.admin_user,
+            variables=self.variables_delete
+        )
+        data = executed.get('data')
+        self.assertEqual(data['deleteScheduleItem']['ok'], True)
+
+        qs = models.ScheduleItemAttendance.objects.filter(schedule_item=schedule_event_activity)
+        self.assertEqual(qs.count(), 0)
+
     def test_delete_event_activity_anon_user(self):
         """ Delete schedule event acivity (schedule item) for anon user """
         query = self.event_activity_delete_mutation
