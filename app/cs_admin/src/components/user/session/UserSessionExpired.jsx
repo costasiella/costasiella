@@ -1,6 +1,6 @@
 // @flow
 
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import gql from "graphql-tag"
 import { useQuery, useMutation } from "react-apollo";
 import { withTranslation } from 'react-i18next'
@@ -20,14 +20,18 @@ import {
 } from "tabler-react"
 import HasPermissionWrapper from "../../HasPermissionWrapper"
 
+import OrganizationContext from '../../context/OrganizationContext'
 import { CSAuth } from "../../../tools/authentication"
-
+import CSStandaloneFormPage from "../../ui/CSStandaloneFormPage"
 
 function UserSessionExpired({t, match, history}) {
+  const organization = useContext(OrganizationContext)
+  console.log(organization)
+
   const [active, setActive] = useState(false);
 
   return (
-    <StandaloneFormPage imageURL="">
+    <CSStandaloneFormPage>
       {/* TODO: point imageURL to logo */}
       <Card>
         <Card.Body>
@@ -51,7 +55,7 @@ function UserSessionExpired({t, match, history}) {
         </Card.Body>
       </Card>
       <ToastContainer autoClose={5000}/>
-    </StandaloneFormPage>
+    </CSStandaloneFormPage>
   )
 }
 
