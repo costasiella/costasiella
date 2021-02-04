@@ -395,8 +395,6 @@ class GQLAccountScheduleEventTicket(TestCase):
             self.admin_user,
             variables=self.variables_create
         )
-        print("**************")
-        print(executed)
         data = executed.get('data')
 
         self.assertEqual(
@@ -489,7 +487,7 @@ class GQLAccountScheduleEventTicket(TestCase):
         )
 
     def test_update_account_schedule_event_cancel_attendances_related_to_ticket(self):
-        """ Update a account_schedule_event """
+        """ Update a account_schedule_event - cancel attendanced related to ticket """
         query = self.account_schedule_event_update_mutation
 
         schedule_event_ticket = self.account_schedule_event_ticket.schedule_event_ticket
@@ -502,7 +500,8 @@ class GQLAccountScheduleEventTicket(TestCase):
 
         schedule_item_attendance = f.ScheduleItemAttendanceScheduleEventFactory.create(
             account_schedule_event_ticket=self.account_schedule_event_ticket,
-            schedule_item=schedule_event_activity
+            schedule_item=schedule_event_activity,
+            booking_status="BOOKED"
         )
 
         executed = execute_test_client_api_query(
@@ -521,21 +520,80 @@ class GQLAccountScheduleEventTicket(TestCase):
         schedule_item_attendance = models.ScheduleItemAttendance.objects.get(id=schedule_item_attendance.id)
         self.assertEqual(schedule_item_attendance.booking_status, "CANCELLED")
 
-    # def test_update_account_schedule_event_uncancel_attendances_related_to_ticket(self):
-    #     """ Update a account_schedule_event """
-    #     query = self.account_schedule_event_update_mutation
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.admin_user,
-    #         variables=self.variables_update
-    #     )
-    #     data = executed.get('data')
-    #
-    #     self.assertEqual(
-    #         data['updateAccountScheduleEventTicket']['accountScheduleEventTicket']['id'],
-    #         self.variables_update['input']['id']
-    #     )
+    def test_update_account_schedule_event_uncancel_attendances_related_to_ticket(self):
+        """ Update a account_schedule_event - uncancel attendances related to ticket """
+        query = self.account_schedule_event_update_mutation
+
+        schedule_event_ticket = self.account_schedule_event_ticket.schedule_event_ticket
+        schedule_event_ticket.full_event = False
+        schedule_event_ticket.save()
+
+        schedule_event_activity = f.ScheduleItemEventActivityFactory.create(
+            schedule_event=schedule_event_ticket.schedule_event
+        )
+
+        schedule_item_attendance = f.ScheduleItemAttendanceScheduleEventFactory.create(
+            account_schedule_event_ticket=self.account_schedule_event_ticket,
+            schedule_item=schedule_event_activity,
+            booking_status="CANCELLED"
+        )
+
+        self.variables_update['input']['cancelled'] = False
+
+        executed = execute_test_client_api_query(
+            query,
+            self.admin_user,
+            variables=self.variables_update
+        )
+        data = executed.get('data')
+
+        self.assertEqual(
+            data['updateAccountScheduleEventTicket']['accountScheduleEventTicket']['id'],
+            self.variables_update['input']['id']
+        )
+        self.assertEqual(
+            data['updateAccountScheduleEventTicket']['accountScheduleEventTicket']['cancelled'],
+            self.variables_update['input']['cancelled']
+        )
+
+        # Refresh attendance object
+        schedule_item_attendance = models.ScheduleItemAttendance.objects.get(id=schedule_item_attendance.id)
+        self.assertEqual(schedule_item_attendance.booking_status, "BOOKED")
+
+    def test_update_account_schedule_event_uncancel_attendances_related_to_ticket_error_sold_out(self):
+        """ Update a account_schedule_event - uncancel attendances related to ticket - error when sold out"""
+        query = self.account_schedule_event_update_mutation
+
+        schedule_event_ticket = self.account_schedule_event_ticket.schedule_event_ticket
+        schedule_event_ticket.full_event = False
+        schedule_event_ticket.save()
+
+        schedule_event_activity = f.ScheduleItemEventActivityFactory.create(
+            schedule_event=schedule_event_ticket.schedule_event,
+            spaces=0
+        )
+
+        schedule_event_ticket_schedule_item = f.ScheduleEventTicketScheduleItemIncludedFactory.create(
+            schedule_item=schedule_event_activity,
+            schedule_event_ticket=schedule_event_ticket
+        )
+
+        schedule_item_attendance = f.ScheduleItemAttendanceScheduleEventFactory.create(
+            account_schedule_event_ticket=self.account_schedule_event_ticket,
+            schedule_item=schedule_event_activity,
+            booking_status="CANCELLED"
+        )
+
+        self.variables_update['input']['cancelled'] = False
+
+        executed = execute_test_client_api_query(
+            query,
+            self.admin_user,
+            variables=self.variables_update
+        )
+        errors = executed.get('errors')
+
+        self.assertEqual(errors[0]['message'], 'This ticket is sold out')
 
     def test_update_account_schedule_event_anon_user(self):
         """ Don't allow updating account_schedule_events for non-logged in users """
