@@ -191,25 +191,35 @@ class GQLScheduleEventTicketScheduleItem(TestCase):
             variables['input']['included']
         )
 
-    # def test_update_event_ticket_schedule_item_add_attendance(self):
-    #     """ Update event ticket schedule item """
-    #     query = self.event_ticket_schedule_item_update_mutation
-    #     self.schedule_event_ticket.full_event = False
-    #     self.schedule_event_ticket.save()
-    #
-    #     variables = self.variables_update
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.admin_user,
-    #         variables=variables
-    #     )
-    #
-    #     data = executed.get('data')
-    #     self.assertEqual(
-    #         data['updateScheduleEventTicketScheduleItem']['scheduleEventTicketScheduleItem']['included'],
-    #         variables['input']['included']
-    #     )
+    def test_update_event_ticket_schedule_item_add_attendance(self):
+        """ Update event ticket schedule item """
+        query = self.event_ticket_schedule_item_update_mutation
+        self.schedule_event_ticket.full_event = False
+        self.schedule_event_ticket.save()
+        account_schedule_event_ticket = f.AccountScheduleEventTicketFactory.create(
+            schedule_event_ticket=self.schedule_event_ticket
+        )
+
+        variables = self.variables_update
+        variables['input']['included'] = True
+
+        executed = execute_test_client_api_query(
+            query,
+            self.admin_user,
+            variables=variables
+        )
+
+        data = executed.get('data')
+        self.assertEqual(
+            data['updateScheduleEventTicketScheduleItem']['scheduleEventTicketScheduleItem']['included'],
+            variables['input']['included']
+        )
+
+        # Was an attendance item created?
+        schedule_item_attendance = models.ScheduleItemAttendance.objects.last()
+        self.assertEqual(schedule_item_attendance.account_schedule_event_ticket,
+                         account_schedule_event_ticket)
+        self.assertEqual(schedule_item_attendance.schedule_item, self.schedule_event_activity)
 
     def test_update_event_ticket_schedule_item_remove_attendance(self):
         """ Update event ticket schedule item """
