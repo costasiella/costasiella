@@ -23,7 +23,7 @@ import { CSAuth } from "../../../tools/authentication"
 import CSLS from "../../../tools/cs_local_storage"
 
 import UserLoginForm from "./UserLoginForm"
-import CSStandalonePage from "../../ui/CSStandaloneFormPage"
+import CSStandaloneFormPage from "../../ui/CSStandaloneFormPage"
 
 
 function UserLogin({t, match, history}) {
@@ -35,7 +35,7 @@ function UserLogin({t, match, history}) {
   const [ doTokenRefresh ] = useMutation(TOKEN_REFRESH)
 
   return (
-    <CSStandalonePage urlLogo={organization.urlLogoLogin} >
+    <CSStandaloneFormPage urlLogo={organization.urlLogoLogin} >
       <div className="text-center text-muted mb-1">
         {organization ? organization.name : ""}
       </div>
@@ -116,7 +116,7 @@ function UserLogin({t, match, history}) {
       >
         {t('user.register.create_account')} <Icon name="chevron-right" />
       </Button>
-    </CSStandalonePage>
+    </CSStandaloneFormPage>
 
 
     // <Page>
