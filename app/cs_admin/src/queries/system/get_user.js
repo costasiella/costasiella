@@ -1,7 +1,7 @@
 import gql from "graphql-tag"
 
 const GET_USER = gql`
-  query User($permissionsBefore:String, $permissionsAfter:String)  {
+  query User($before: String, $after: String)  {
     user {
       id
       isActive
@@ -15,7 +15,7 @@ const GET_USER = gql`
           node {
             id
             name
-            permissions(first: 100, before: $permissionsBefore, after: $permissionsAfter) {
+            permissions(first: 100, before: $before, after: $after) {
               pageInfo {
                 hasNextPage
                 hasPreviousPage
