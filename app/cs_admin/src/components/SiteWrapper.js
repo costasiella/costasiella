@@ -75,7 +75,8 @@ const getNavBarItems = (t, user) => {
 
   // Schedule
   if (
-    (has_permission(permissions, 'view', 'scheduleclass'))
+    (has_permission(permissions, 'view', 'scheduleclass')) ||
+    (has_permission(permissions, 'view', 'scheduleevent'))
   ){
     items.push({
       value: t("schedule.title"),
@@ -105,7 +106,8 @@ const getNavBarItems = (t, user) => {
     (has_permission(permissions, 'view', 'organizationclasstype')) ||
     (has_permission(permissions, 'view', 'organizationdiscovery')) ||
     (has_permission(permissions, 'view', 'organizationlocation')) ||
-    (has_permission(permissions, 'view', 'organizationmembership')) 
+    (has_permission(permissions, 'view', 'organizationmembership')) ||  
+    (has_permission(permissions, 'view', 'organization')) 
    ){
    items.push({
       value: t("organization.title"),
