@@ -212,7 +212,8 @@
         "please_select_a_file": "__STRING_NOT_TRANSLATED__",
         "end": "__STRING_NOT_TRANSLATED__",
         "ticket": "__STRING_NOT_TRANSLATED__",
-        "welcome": "__STRING_NOT_TRANSLATED__"
+        "welcome": "__STRING_NOT_TRANSLATED__",
+        "backend": "__STRING_NOT_TRANSLATED__"
     },
     "settings": {
         "error_loading": "__STRING_NOT_TRANSLATED__",
@@ -1379,7 +1380,13 @@
             "go_to_login": "__STRING_NOT_TRANSLATED__"
         },
         "welcome": {
-            "where_next_question": "__STRING_NOT_TRANSLATED__"
+            "where_next_question": "__STRING_NOT_TRANSLATED__",
+            "shop_explanation": "__STRING_NOT_TRANSLATED__",
+            "shop_to": "__STRING_NOT_TRANSLATED__",
+            "backend_explantion": "__STRING_NOT_TRANSLATED__",
+            "backend_to": "__STRING_NOT_TRANSLATED__",
+            "selfcheckin_explantion": "__STRING_NOT_TRANSLATED__",
+            "selfcheckin_to": "__STRING_NOT_TRANSLATED__"
         }
     },
     "countries": {

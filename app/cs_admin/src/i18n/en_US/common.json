@@ -382,7 +382,8 @@
         "please_select_a_file": "Please select a file",
         "end": "End",
         "ticket": "Ticket",
-        "welcome": "Welcome"
+        "welcome": "Welcome",
+        "backend": "Back end"
     },
     "yup": {
         "min_len_3": "Please input at least 3 characters",
@@ -1388,7 +1389,13 @@
             "password_new_repeat": "New password (again)"
         },
         "welcome": {
-            "where_next_question": "Where would you like to go next?"
+            "where_next_question": "Where would you like to go next?",
+            "shop_explanation": "Shop and your personal profile.",
+            "shop_to": "Go to shop",
+            "backend_explantion": "Organization management.",
+            "backend_to": "Go to back end",
+            "selfcheckin_explantion": "Customer self service check-in.",
+            "selfcheckin_to": "Go to self check-in"
         }
     },
     "insight": {

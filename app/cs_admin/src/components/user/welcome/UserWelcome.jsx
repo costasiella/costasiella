@@ -60,7 +60,8 @@ function Welcome({t, match, history}) {
         <Grid.Col md={3} offsetMd={3}>
           <Card>
             <Card.Body>
-              <h5>Shop</h5>
+              <h5>{t("shop.title")}</h5>
+              {t("user.welcome.shop_explanation")}
               Shop and your personal profile. <br /><br />
               <Link to="/shop">
                 <Button 
@@ -68,7 +69,7 @@ function Welcome({t, match, history}) {
                   outline
                   color="primary"
                 >
-                  To shop <Icon name="chevron-right" />
+                  {t("user.welcome.shop_to")} <Icon name="chevron-right" />
                 </Button>
               </Link>
             </Card.Body>
@@ -77,7 +78,8 @@ function Welcome({t, match, history}) {
         <Grid.Col md={3}>
           <Card>
             <Card.Body>
-              <h5>Back end</h5>
+              <h5>{t("general.backend")}</h5>
+              {t("user.welcome.backend_explantion")}
               Organization management. <br /><br />
               <Link to="/">
                 <Button 
@@ -85,7 +87,7 @@ function Welcome({t, match, history}) {
                   outline
                   color="primary"
                 >
-                  To back end <Icon name="chevron-right" />
+                  {t("user.welcome.backend_to")} <Icon name="chevron-right" />
                 </Button>
               </Link>
             </Card.Body>
@@ -95,7 +97,8 @@ function Welcome({t, match, history}) {
           <Grid.Col md={3} offsetMd={3}>
             <Card>
               <Card.Body>
-                <h5>Self check-in</h5>
+                <h5>{t("selfcheckin.home.title")}</h5>
+                {t("user.welcome.selfcheckin_explantion")}
                 Customer self service check-in. <br /><br />
                 <Link to="/">
                   <Button 
@@ -103,7 +106,7 @@ function Welcome({t, match, history}) {
                     outline
                     color="primary"
                   >
-                    To self check-in <Icon name="chevron-right" />
+                    {t("user.welcome.selfcheckin_to")} <Icon name="chevron-right" />
                   </Button>
                 </Link>
               </Card.Body>
