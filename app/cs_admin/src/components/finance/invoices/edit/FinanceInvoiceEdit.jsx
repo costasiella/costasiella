@@ -107,8 +107,6 @@ class FinanceInvoiceEdit extends Component {
                           <FinanceInvoiceEditTo initialData={data} />
                         </Grid.Col>
                       </Grid.Row>
-                      <FinanceInvoiceEditItems inputData={data} refetchInvoice={refetch} />
-                      <FinanceInvoiceEditAdditional initialData={data} />
 
 {/*                             
                             <Mutation mutation={UPDATE_COSTCENTER} onCompleted={() => history.push(return_url)}> 
@@ -192,6 +190,12 @@ class FinanceInvoiceEdit extends Component {
                       <FinanceInvoiceEditOptions
                         initialData={data}
                       />
+                    </Grid.Col>
+                  </Grid.Row>
+                  <Grid.Row>
+                    <Grid.Col md={12}>
+                      <FinanceInvoiceEditItems inputData={data} refetchInvoice={refetch} />
+                      <FinanceInvoiceEditAdditional initialData={data} />
                     </Grid.Col>
                   </Grid.Row>
                 </Container>
