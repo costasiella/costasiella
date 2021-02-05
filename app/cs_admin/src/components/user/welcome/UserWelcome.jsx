@@ -61,8 +61,7 @@ function Welcome({t, match, history}) {
           <Card>
             <Card.Body>
               <h5>{t("shop.title")}</h5>
-              {t("user.welcome.shop_explanation")}
-              Shop and your personal profile. <br /><br />
+              {t("user.welcome.shop_explanation")} <br /><br />
               <Link to="/shop">
                 <Button 
                   block
@@ -79,8 +78,7 @@ function Welcome({t, match, history}) {
           <Card>
             <Card.Body>
               <h5>{t("general.backend")}</h5>
-              {t("user.welcome.backend_explantion")}
-              Organization management. <br /><br />
+              {t("user.welcome.backend_explantion")} <br /><br />
               <Link to="/">
                 <Button 
                   block
@@ -98,8 +96,7 @@ function Welcome({t, match, history}) {
             <Card>
               <Card.Body>
                 <h5>{t("selfcheckin.home.title")}</h5>
-                {t("user.welcome.selfcheckin_explantion")}
-                Customer self service check-in. <br /><br />
+                {t("user.welcome.selfcheckin_explantion")} <br /><br />
                 <Link to="/">
                   <Button 
                     block
