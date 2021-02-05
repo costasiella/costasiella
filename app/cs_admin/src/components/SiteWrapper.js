@@ -139,26 +139,26 @@ const getNavBarItems = (t, user) => {
     })
   }
 
-  let goToSubItems = []
-  if (has_permission(permissions, 'view', 'selfcheckin')) {
-    goToSubItems.push(
-      { value: t("selfcheckin.home.title"), to: "/selfcheckin", LinkComponent: withRouter(NavLink) }
-    )
-  }
-  goToSubItems.push(
-    { value: t("shop.title"), to: "/shop", LinkComponent: withRouter(NavLink) }
-  )
+  // let goToSubItems = []
+  // if (has_permission(permissions, 'view', 'selfcheckin')) {
+  //   goToSubItems.push(
+  //     { value: t("selfcheckin.home.title"), to: "/selfcheckin", LinkComponent: withRouter(NavLink) }
+  //   )
+  // }
+  // goToSubItems.push(
+  //   { value: t("shop.title"), to: "/shop", LinkComponent: withRouter(NavLink) }
+  // )
 
-  // Go to
-  if (
-    (has_permission(permissions, 'view', 'selfcheckin'))
-   ){
-    items.push({
-      value: t("goto.title"),
-      icon: "link",
-      subItems: goToSubItems,
-    })
-  }
+  // // Go to
+  // if (
+  //   (has_permission(permissions, 'view', 'selfcheckin'))
+  //  ){
+  //   items.push({
+  //     value: t("goto.title"),
+  //     icon: "link",
+  //     subItems: goToSubItems,
+  //   })
+  // }
 
 
   return items
@@ -189,12 +189,24 @@ class SiteWrapper extends React.Component<Props, State> {
                   <Nav.Item type="div" className="d-none d-md-flex">
                     <Link to="/settings">
                       <Button
+                        className="mr-2"
                         icon="settings"
                         outline
                         size="sm"
                         color="primary"
                       >
                         {this.props.t('general.settings')}
+                      </Button>
+                    </Link>
+                    <Link to="/user/welcome">
+                      <Button
+                        className="mr-2"
+                        icon="link"
+                        outline
+                        size="sm"
+                        color="primary"
+                      >
+                        {this.props.t('goto.title')}
                       </Button>
                     </Link>
                   </Nav.Item>

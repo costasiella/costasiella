@@ -21,7 +21,7 @@ import {
   Grid,
   Icon
 } from "tabler-react"
-// import HasPermissionWrapper from "../../HasPermissionWrapper"
+import HasPermissionWrapper from "../../HasPermissionWrapper"
 
 import CSStandalonePageWide from "../../ui/CSStandalonePageWide"
 
@@ -91,23 +91,25 @@ function Welcome({t, match, history}) {
             </Card.Body>
           </Card>
         </Grid.Col>
-        <Grid.Col md={3} offsetMd={3}>
-          <Card>
-            <Card.Body>
-              <h5>Self check-in</h5>
-              Customer self service check-in. <br /><br />
-              <Link to="/">
-                <Button 
-                  block
-                  outline
-                  color="primary"
-                >
-                  To self check-in <Icon name="chevron-right" />
-                </Button>
-              </Link>
-            </Card.Body>
-          </Card>
-        </Grid.Col>
+        <HasPermissionWrapper resource="selfcheckin" permission="view">
+          <Grid.Col md={3} offsetMd={3}>
+            <Card>
+              <Card.Body>
+                <h5>Self check-in</h5>
+                Customer self service check-in. <br /><br />
+                <Link to="/">
+                  <Button 
+                    block
+                    outline
+                    color="primary"
+                  >
+                    To self check-in <Icon name="chevron-right" />
+                  </Button>
+                </Link>
+              </Card.Body>
+            </Card>
+          </Grid.Col>
+        </HasPermissionWrapper>
       </Grid.Row>
     </CSStandalonePageWide>
   )
