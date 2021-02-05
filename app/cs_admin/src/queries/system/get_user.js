@@ -8,6 +8,8 @@ const GET_USER = gql`
       email
       firstName
       lastName
+      employee
+      teacher
       groups {
         edges {
           node {
