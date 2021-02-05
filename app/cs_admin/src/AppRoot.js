@@ -226,6 +226,8 @@ import UserChangePassword from './components/user/password/UserPasswordChange'
 import UserLogin from './components/user/login/UserLogin'
 import UserLogout from './components/user/login/UserLogout'
 import UserSessionExpired from './components/user/session/UserSessionExpired'
+import UserWelcome from './components/user/welcome/UserWelcome'
+
 
 import Error404 from "./components/Error404"
 
@@ -552,7 +554,8 @@ function AppRoot({ t }) {
             <Route exact path="/user/login" component={UserLogin} />
             <Route exact path="/user/logout" component={UserLogout} />
             <Route exact path="/user/session/expired" component={UserSessionExpired} />
-
+            <Route exact path="/user/welcome" component={UserWelcome} />
+            
             <Route component={Error404} />
           </Switch>
         </HashRouter>

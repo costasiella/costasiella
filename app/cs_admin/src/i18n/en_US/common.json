@@ -381,7 +381,8 @@
         "sold_out": "Sold out",
         "please_select_a_file": "Please select a file",
         "end": "End",
-        "ticket": "Ticket"
+        "ticket": "Ticket",
+        "welcome": "Welcome"
     },
     "yup": {
         "min_len_3": "Please input at least 3 characters",
@@ -1385,6 +1386,9 @@
             "password_current": "Current password",
             "password_new": "New password",
             "password_new_repeat": "New password (again)"
+        },
+        "welcome": {
+            "where_next_question": "Where would you like to go next?"
         }
     },
     "insight": {

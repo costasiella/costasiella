@@ -60,7 +60,8 @@ function UserLogin({t, match, history}) {
             ]})
             .then(({ data }) => {
                 console.log('got data', data)
-                const next = localStorage.getItem(CSLS.AUTH_LOGIN_NEXT) || "/"
+                // TODO: Add link to "feature switcher" here
+                const next = localStorage.getItem(CSLS.AUTH_LOGIN_NEXT) || "/user/welcome"
                 CSAuth.login(data.tokenAuth.token)
                 doTokenRefresh({
                   variables: { token: data.tokenAuth.token }

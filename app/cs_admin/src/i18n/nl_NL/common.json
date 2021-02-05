@@ -211,7 +211,8 @@
         "sold_out": "__STRING_NOT_TRANSLATED__",
         "please_select_a_file": "__STRING_NOT_TRANSLATED__",
         "end": "__STRING_NOT_TRANSLATED__",
-        "ticket": "__STRING_NOT_TRANSLATED__"
+        "ticket": "__STRING_NOT_TRANSLATED__",
+        "welcome": "__STRING_NOT_TRANSLATED__"
     },
     "settings": {
         "error_loading": "__STRING_NOT_TRANSLATED__",
@@ -1376,6 +1377,9 @@
             "title": "__STRING_NOT_TRANSLATED__",
             "message": "__STRING_NOT_TRANSLATED__",
             "go_to_login": "__STRING_NOT_TRANSLATED__"
+        },
+        "welcome": {
+            "where_next_question": "__STRING_NOT_TRANSLATED__"
         }
     },
     "countries": {
