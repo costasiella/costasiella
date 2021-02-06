@@ -176,34 +176,6 @@ function SiteWrapper({t, match, history, children}) {
   if (error) return <p>{t('system.user.error_loading')}</p>; 
 
   console.log(data)
-  let user = data.user
-
-  fetchMore({
-    variables: {
-      after: user.groups.edges[0].node.permissions.pageInfo.endCursor
-    },
-    updateQuery: (previousResult, { fetchMoreResult }) => {
-      const newEdges = fetchMoreResult.user.groups.edges[0].node.permissions.edges
-      const pageInfo = fetchMoreResult.user.groups.edges[0].node.permissions.pageInfo
-
-      console.log("$$$$$$$$$$")
-      console.log(newEdges)
-
-      // return newEdges.length
-      //   ? {
-      //       // Put the new locations at the end of the list and update `pageInfo`
-      //       // so we have the new `endCursor` and `hasNextPage` values
-      //       organizationLocations: {
-      //         __typename: previousResult.organizationLocations.__typename,
-      //         edges: [ ...previousResult.organizationLocations.edges, ...newEdges ],
-      //         pageInfo
-      //       }
-      //     }
-      //   : previousResult
-    }
-  })
-
-
 
   return (
     <Site.Wrapper

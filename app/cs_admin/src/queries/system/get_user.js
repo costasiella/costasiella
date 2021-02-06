@@ -15,7 +15,7 @@ const GET_USER = gql`
           node {
             id
             name
-            permissions(first: 100, before: $before, after: $after) {
+            permissions(first: 1000, before: $before, after: $after) {
               pageInfo {
                 hasNextPage
                 hasPreviousPage
