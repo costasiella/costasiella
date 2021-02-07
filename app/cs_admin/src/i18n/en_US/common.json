@@ -142,7 +142,8 @@
                 "toast_edit_success": "Saved payment",
                 "add": "Add payment",
                 "edit": "Edit payment"
-            }
+            },
+            "cancel_and_create_credit_invoice": "Cancel and create credit invoice"
         },
         "orders": {
             "title": "Orders",

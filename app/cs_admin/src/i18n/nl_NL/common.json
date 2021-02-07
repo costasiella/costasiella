@@ -460,7 +460,8 @@
             "toast_edit_item_financeTaxRate_success": "__STRING_NOT_TRANSLATED__",
             "toast_edit_item_price_success": "__STRING_NOT_TRANSLATED__",
             "toast_edit_item_product_name_success": "__STRING_NOT_TRANSLATED__",
-            "toast_edit_item_quantity_success": "__STRING_NOT_TRANSLATED__"
+            "toast_edit_item_quantity_success": "__STRING_NOT_TRANSLATED__",
+            "cancel_and_create_credit_invoice": "__STRING_NOT_TRANSLATED__"
         },
         "invoice_groups_defaults": {
             "MEMBERSHIPS": "__STRING_NOT_TRANSLATED__",

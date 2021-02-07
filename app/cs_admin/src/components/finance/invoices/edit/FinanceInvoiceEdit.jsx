@@ -6,6 +6,7 @@ import { Query, Mutation } from "react-apollo";
 import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
 import { Link } from 'react-router-dom'
+import { v4 } from 'uuid'
 
 import { GET_INVOICES_QUERY, GET_INVOICE_QUERY } from '../queries'
 
@@ -101,7 +102,22 @@ class FinanceInvoiceEdit extends Component {
                         color="secondary"
                         triggerContent={t("general.tools")}
                         items={[
-
+                          <HasPermissionWrapper permission="change" resource="financeinvoice">
+                            <Dropdown.Item
+                              key={v4()}
+                              icon="slash"
+                              onClick={() => {
+                                // setAttendanceStatus({
+                                //   t: t, 
+                                //   match: match,
+                                //   updateAttendance: updateAttendance,
+                                //   node: node,
+                                //   status: 'BOOKED'
+                                // })
+                              }}>
+                                {t('finance.invoice.cancel_and_create_credit_invoice')}
+                            </Dropdown.Item>
+                          </HasPermissionWrapper>
                         ]}>
                       </Dropdown>
                     </div>
