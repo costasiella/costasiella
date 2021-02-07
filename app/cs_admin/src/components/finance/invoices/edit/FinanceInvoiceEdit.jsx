@@ -11,6 +11,7 @@ import { GET_INVOICES_QUERY, GET_INVOICE_QUERY } from '../queries'
 
 
 import {
+  Dropdown,
   Page,
   Grid,
   Icon,
@@ -88,10 +89,21 @@ class FinanceInvoiceEdit extends Component {
                       </Link>
                       {/* Export as PDF */}
                       <a href={export_url} 
-                         className='btn btn-secondary'>
+                         className='btn btn-secondary mr-2'>
                          <Icon prefix="fe" name="printer" /> {t('general.pdf')} 
                       </a>
+                      {/* Tools */}
+                      <Dropdown
+                        className=""
+                        type="button"
+                        toggle
+                        icon="tool"
+                        color="secondary"
+                        triggerContent={t("general.tools")}
+                        items={[
 
+                        ]}>
+                      </Dropdown>
                     </div>
                   </Page.Header>
                   <Grid.Row>

@@ -213,7 +213,8 @@
         "end": "__STRING_NOT_TRANSLATED__",
         "ticket": "__STRING_NOT_TRANSLATED__",
         "welcome": "__STRING_NOT_TRANSLATED__",
-        "backend": "__STRING_NOT_TRANSLATED__"
+        "backend": "__STRING_NOT_TRANSLATED__",
+        "tools": "__STRING_NOT_TRANSLATED__"
     },
     "settings": {
         "error_loading": "__STRING_NOT_TRANSLATED__",

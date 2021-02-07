@@ -383,7 +383,8 @@
         "end": "End",
         "ticket": "Ticket",
         "welcome": "Welcome",
-        "backend": "Back end"
+        "backend": "Back end",
+        "tools": "Tools"
     },
     "yup": {
         "min_len_3": "Please input at least 3 characters",
