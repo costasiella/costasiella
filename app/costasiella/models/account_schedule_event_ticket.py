@@ -33,3 +33,7 @@ class AccountScheduleEventTicket(models.Model):
         for schedule_item_attendance in schedule_item_attendances:
             schedule_item_attendance.booking_status = status
             schedule_item_attendance.save()
+
+        # Cancel invoice if status = CANCELLED
+        if status == "CANCELLED":
+            print("Cancelling invoice")

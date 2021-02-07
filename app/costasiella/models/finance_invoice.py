@@ -45,6 +45,7 @@ class FinanceInvoice(models.Model):
     total = models.DecimalField(max_digits=20, decimal_places=2, default=0)
     paid = models.DecimalField(max_digits=20, decimal_places=2, default=0)
     balance = models.DecimalField(max_digits=20, decimal_places=2, default=0)
+    credit_invoice_for = models.IntegerField(default=None, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -559,3 +560,59 @@ class FinanceInvoice(models.Model):
             self.status = "SENT"
             self.save()
             return False
+
+    def cancel(self):
+        """
+        Set status to cancelled
+        :return:
+        """
+        self.status = "cancelled"
+        self.save()
+
+    def cancel_and_create_credit_invoice(self):
+        """
+        Cancel invoice and create a credit invoice, linked to this one
+        :return: credit invoice object
+        """
+        from .finance_invoice_item import FinanceInvoiceItem
+
+        self.cancel()
+
+        credit_invoice = FinanceInvoice(
+            account=self.account,
+            finance_invoice_group=self.finance_invoice_group,
+            finance_payment_method=self.finance_payment_method,
+            teacher_payment=self.teacher_payment,
+            employee_claim=self.employee_claim,
+            status=self.status,
+            summary=self.summary,
+            note=self.note,
+            credit_invoice_for=self.id,
+        )
+        credit_invoice.save()
+
+        # Duplicate items with negative amount
+        qs = FinanceInvoiceItem.objects.filter(finance_invoice=self)
+        for finance_invoice_item in qs:
+            credit_finance_invoice_item = FinanceInvoiceItem(
+                finance_invoice=credit_invoice,
+                account_schedule_event_ticket=finance_invoice_item.account_schedule_event_ticket,
+                account_classpass=finance_invoice_item.account_classpass,
+                account_subscription=finance_invoice_item.account_subscription,
+                subscription_year=finance_invoice_item.subscription_year,
+                subscription_month=finance_invoice_item.subscription_month,
+                line_number=finance_invoice_item.line_number,
+                product_name=finance_invoice_item.product_name,
+                description=finance_invoice_item.description,
+                quantity=finance_invoice_item.quantity,
+                price=finance_invoice_item.price * -1,
+                finance_tax_rate=finance_invoice_item.finance_tax_rate,
+                finance_glaccount=finance_invoice_item.finance_glaccount,
+                finance_costcenter=finance_invoice_item.finance_costcenter
+            )
+            credit_finance_invoice_item.save()
+
+        # Set amounts on credit invoice
+        credit_invoice.update_amounts()
+
+        return credit_invoice
