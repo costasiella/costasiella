@@ -272,10 +272,42 @@ class UpdateFinanceInvoice(graphene.relay.ClientIDMutation):
         if 'finance_payment_method' in validation_result:
             finance_invoice.finance_payment_method = validation_result['finance_payment_method']
 
-
         finance_invoice.save()
 
         return UpdateFinanceInvoice(finance_invoice=finance_invoice)
+
+
+class CancelAndCreateCreditFinanceInvoice(graphene.relay.ClientIDMutation):
+    """
+    Mutation to cancel an invoice and create a credit invoice.
+    Returns credit invoice
+    """
+    class Input:
+        id = graphene.ID(required=True)
+
+    finance_invoice = graphene.Field(FinanceInvoiceNode)
+
+    @classmethod
+    def mutate_and_get_payload(self, root, info, **input):
+        user = info.context.user
+        require_login_and_permission(user, 'costasiella.change_financeinvoice')
+
+        print(input)
+        rid = get_rid(input['id'])
+
+        finance_invoice = FinanceInvoice.objects.filter(id=rid.id).first()
+        if not finance_invoice:
+            raise Exception('Invalid Finance Invoice  ID!')
+
+        credit_finance_invoice = None
+        # Check if a credit invoice already exists for this invoice. If so, fetch and return that without doing anything
+        qs = FinanceInvoice.objects.filter(credit_invoice_for=rid.id)
+        if qs.exists():
+            credit_finance_invoice = qs.first()
+        else:
+            credit_finance_invoice = finance_invoice.cancel_and_create_credit_invoice()
+
+        return CancelAndCreateCreditFinanceInvoice(finance_invoice=credit_finance_invoice)
 
 
 class DeleteFinanceInvoice(graphene.relay.ClientIDMutation):
@@ -304,3 +336,4 @@ class FinanceInvoiceMutation(graphene.ObjectType):
     delete_finance_invoice = DeleteFinanceInvoice.Field()
     create_finance_invoice = CreateFinanceInvoice.Field()
     update_finance_invoice = UpdateFinanceInvoice.Field()
+    CancelAndCreateCreditFinanceInvoice = CancelAndCreateCreditFinanceInvoice.Field()
