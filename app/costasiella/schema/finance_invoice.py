@@ -14,6 +14,7 @@ from .custom_schema_validators import is_year, is_month
 
 m = Messages()
 
+
 class FinanceInvoiceInterface(graphene.Interface):
     id = graphene.GlobalID()
     subtotal_display = graphene.String()
@@ -21,6 +22,7 @@ class FinanceInvoiceInterface(graphene.Interface):
     total_display = graphene.String()
     paid_display = graphene.String()
     balance_display = graphene.String()
+    credit_invoice_number = graphene.String()
 
 
 class FinanceInvoiceNode(DjangoObjectType):
@@ -48,7 +50,15 @@ class FinanceInvoiceNode(DjangoObjectType):
         return display_float_as_amount(self.paid)
 
     def resolve_balance_display(self, info):
-        return display_float_as_amount(self.balance)        
+        return display_float_as_amount(self.balance)
+
+    def resolve_credit_invoice_number(self, info):
+        return_value = ""
+        if self.credit_invoice_for:
+            credit_finance_invoice = FinanceInvoice.objects.get(id=self.credit_invoice_for)
+            return_value = credit_finance_invoice.invoice_number
+
+        return return_value
 
 
     @classmethod

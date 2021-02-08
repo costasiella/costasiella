@@ -68,6 +68,7 @@ export const GET_INVOICE_QUERY = gql`
       paidDisplay
       balance
       balanceDisplay
+      creditInvoiceNumber
       updatedAt
       items {
         edges {

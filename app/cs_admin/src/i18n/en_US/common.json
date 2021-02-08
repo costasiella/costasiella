@@ -143,7 +143,9 @@
                 "add": "Add payment",
                 "edit": "Edit payment"
             },
-            "cancel_and_create_credit_invoice": "Cancel and create credit invoice"
+            "cancel_and_create_credit_invoice": "Cancel and create credit invoice",
+            "now_editing_credit_invoice": "You're now editing the credit invoice",
+            "credit_invoice_for": "Credit invoice for"
         },
         "orders": {
             "title": "Orders",
