@@ -232,6 +232,47 @@ class GQLFinanceInvoice(TestCase):
   }
 '''
 
+        self.invoice_cancel_and_create_credit_invoice_mutation = '''
+  mutation CancelAndCreateCreditFinanceInvoice($input: CancelAndCreateCreditFinanceInvoiceInput!) {
+    cancelAndCreateCreditFinanceInvoice(input: $input) {
+      financeInvoice {
+        id
+        creditInvoiceFor
+        account {
+          id
+          fullName
+        }
+        financePaymentMethod {
+          id
+          name
+        }
+        relationCompany
+        relationCompanyRegistration
+        relationCompanyTaxRegistration
+        relationContactName
+        relationAddress
+        relationPostcode
+        relationCity
+        relationCountry
+        status
+        summary
+        invoiceNumber
+        dateSent
+        dateDue
+        terms
+        footer
+        note
+        subtotalDisplay
+        taxDisplay
+        totalDisplay
+        paidDisplay
+        balanceDisplay
+        updatedAt
+      }
+    }
+  }
+'''
+
         self.invoice_delete_mutation = '''
   mutation DeleteFinanceInvoice($input: DeleteFinanceInvoiceInput!) {
     deleteFinanceInvoice(input: $input) {

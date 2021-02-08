@@ -60,13 +60,12 @@ class FinanceInvoiceNode(DjangoObjectType):
 
         return return_value
 
-
     @classmethod
-    def get_node(self, info, id):
+    def get_node(cls, info, id):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.view_financeinvoice')
 
-        return self._meta.model.objects.get(id=id)
+        return cls._meta.model.objects.get(id=id)
 
 
 class FinanceInvoiceQuery(graphene.ObjectType):
