@@ -307,7 +307,7 @@ class CancelAndCreateCreditFinanceInvoice(graphene.relay.ClientIDMutation):
         else:
             credit_finance_invoice = finance_invoice.cancel_and_create_credit_invoice()
 
-        return CancelAndCreateCreditFinanceInvoice(credit_finance_invoice=credit_finance_invoice)
+        return CancelAndCreateCreditFinanceInvoice(finance_invoice=credit_finance_invoice)
 
 
 class DeleteFinanceInvoice(graphene.relay.ClientIDMutation):
@@ -336,4 +336,4 @@ class FinanceInvoiceMutation(graphene.ObjectType):
     delete_finance_invoice = DeleteFinanceInvoice.Field()
     create_finance_invoice = CreateFinanceInvoice.Field()
     update_finance_invoice = UpdateFinanceInvoice.Field()
-    CancelAndCreateCreditFinanceInvoice = CancelAndCreateCreditFinanceInvoice.Field()
+    cancel_and_create_credit_finance_invoice = CancelAndCreateCreditFinanceInvoice.Field()

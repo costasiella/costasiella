@@ -179,7 +179,7 @@ export const UPDATE_INVOICE = gql`
 export const CANCEL_AND_CREATE_CREDIT_INVOICE = gql`
   mutation CancelAndCreateCreditFinanceInvoice($input: CancelAndCreateCreditFinanceInvoiceInput!) {
     cancelAndCreateCreditFinanceInvoice(input: $input) {
-      creditFinanceInvoice {
+      financeInvoice {
         id
       }
     }

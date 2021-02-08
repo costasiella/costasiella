@@ -566,7 +566,7 @@ class FinanceInvoice(models.Model):
         Set status to cancelled
         :return:
         """
-        self.status = "cancelled"
+        self.status = "CANCELLED"
         self.save()
 
     def cancel_and_create_credit_invoice(self):
@@ -584,7 +584,7 @@ class FinanceInvoice(models.Model):
             finance_payment_method=self.finance_payment_method,
             teacher_payment=self.teacher_payment,
             employee_claim=self.employee_claim,
-            status=self.status,
+            status="SENT",
             summary=self.summary,
             note=self.note,
             credit_invoice_for=self.id,

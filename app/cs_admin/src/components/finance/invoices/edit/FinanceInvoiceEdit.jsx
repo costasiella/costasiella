@@ -7,6 +7,7 @@ import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
 import { Link } from 'react-router-dom'
 import { v4 } from 'uuid'
+import { toast } from 'react-toastify'
 
 import { GET_INVOICES_QUERY, GET_INVOICE_QUERY, CANCEL_AND_CREATE_CREDIT_INVOICE } from '../queries'
 
@@ -45,6 +46,8 @@ function FinanceInvoiceEdit({t, match, history}) {
       id: id
     }
   })
+
+  const [cancelAndCreateCreditInvoice] = useMutation(CANCEL_AND_CREATE_CREDIT_INVOICE)
   
   // Loading
   if (loading) return <FinanceInvoiceEditBase>{t('general.loading_with_dots')}</FinanceInvoiceEditBase>
@@ -96,13 +99,25 @@ function FinanceInvoiceEdit({t, match, history}) {
                   key={v4()}
                   icon="slash"
                   onClick={() => {
-                    // setAttendanceStatus({
-                    //   t: t, 
-                    //   match: match,
-                    //   updateAttendance: updateAttendance,
-                    //   node: node,
-                    //   status: 'BOOKED'
-                    // })
+                    cancelAndCreateCreditInvoice({ variables: {
+                      input: {
+                        id: id,
+                      }
+                    }, refetchQueries: []
+                    })
+                    .then(({ data }) => {
+                        console.log('got data', data)
+                        const creditInvoiceId = data.cancelAndCreateCreditFinanceInvoice.financeInvoice.id
+                        history.push(`/finance/invoices/edit/${creditInvoiceId}`)
+                        toast.success((t('finance.invoice.now_editing_credit_invoice')), {
+                            position: toast.POSITION.BOTTOM_RIGHT
+                          })
+                      }).catch((error) => {
+                        toast.error((t('general.toast_server_error')) + ': ' +  error, {
+                            position: toast.POSITION.BOTTOM_RIGHT
+                          })
+                        console.log('there was an error sending the query', error)
+                      })
                   }}>
                     {t('finance.invoice.cancel_and_create_credit_invoice')}
                 </Dropdown.Item>
