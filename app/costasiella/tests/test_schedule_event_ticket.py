@@ -1,6 +1,7 @@
 # from graphql.error.located_error import GraphQLLocatedError
 import graphql
 import base64
+from decimal import Decimal
 
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Permission
@@ -17,8 +18,6 @@ from .helpers import execute_test_client_api_query
 from .. import models
 from .. import schema
 from ..modules.gql_tools import get_rid
-
-
 
 
 class GQLScheduleEventTicket(TestCase):
@@ -43,7 +42,7 @@ class GQLScheduleEventTicket(TestCase):
                 "displayPublic": True,
                 "name": "New ticket",
                 "description": "Ticket description here",
-                "price": 100,
+                "price": "100",
                 "financeTaxRate": to_global_id("FinanceTaxRateNode", self.finance_tax_rate.pk),
                 "financeGlaccount": to_global_id("FinanceGLAccountNode", self.finance_glaccount.pk),
                 "financeCostcenter": to_global_id("FinanceCostCenterNode", self.finance_costcenter.pk)
@@ -55,7 +54,7 @@ class GQLScheduleEventTicket(TestCase):
                 "displayPublic": True,
                 "name": "Updated ticket",
                 "description": "Ticket description here",
-                "price": 100,
+                "price": "100",
                 "financeTaxRate": to_global_id("FinanceTaxRateNode", self.finance_tax_rate.pk),
                 "financeGlaccount": to_global_id("FinanceGLAccountNode", self.finance_glaccount.pk),
                 "financeCostcenter": to_global_id("FinanceCostCenterNode", self.finance_costcenter.pk)
@@ -249,7 +248,7 @@ query ScheduleEventTicket($id:ID!) {
         )
         self.assertEqual(
             data['scheduleEventTickets']['edges'][0]['node']['price'],
-            schedule_event_ticket.price
+            format(schedule_event_ticket.price, ".2f")
         )
         self.assertEqual(
             data['scheduleEventTickets']['edges'][0]['node']['financeTaxRate']['id'],
@@ -365,7 +364,7 @@ query ScheduleEventTicket($id:ID!) {
         self.assertEqual(data['scheduleEventTicket']['displayPublic'], schedule_event_ticket.display_public)
         self.assertEqual(data['scheduleEventTicket']['name'], schedule_event_ticket.name)
         self.assertEqual(data['scheduleEventTicket']['description'], schedule_event_ticket.description)
-        self.assertEqual(data['scheduleEventTicket']['price'], schedule_event_ticket.price)
+        self.assertEqual(data['scheduleEventTicket']['price'], format(schedule_event_ticket.price, ".2f"))
         self.assertEqual(data['scheduleEventTicket']['financeTaxRate']['id'],
                          to_global_id('FinanceTaxRateNode', schedule_event_ticket.finance_tax_rate.pk))
         self.assertEqual(data['scheduleEventTicket']['financeGlaccount']['id'],
@@ -730,6 +729,8 @@ query ScheduleEventTicket($id:ID!) {
             user,
             variables=variables
         )
+        print("******")
+        print(executed)
         data = executed.get('data')
         self.assertEqual(
           data['updateScheduleEventTicket']['scheduleEventTicket']['id'],
