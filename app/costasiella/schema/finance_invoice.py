@@ -301,9 +301,7 @@ class CancelAndCreateCreditFinanceInvoice(graphene.relay.ClientIDMutation):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.change_financeinvoice')
 
-        print(input)
         rid = get_rid(input['id'])
-
         finance_invoice = FinanceInvoice.objects.filter(id=rid.id).first()
         if not finance_invoice:
             raise Exception('Invalid Finance Invoice  ID!')

@@ -63,6 +63,10 @@ class GQLFinanceInvoice(TestCase):
             }
         }
 
+        self.variables_cancel = {
+            "input": {}
+        }
+
         self.invoices_query = '''
   query FinanceInvoices($after: String, $before: String, $status: String) {
     financeInvoices(first: 15, before: $before, after: $after, status: $status) {
@@ -226,7 +230,7 @@ class GQLFinanceInvoice(TestCase):
         totalDisplay
         paidDisplay
         balanceDisplay
-        updatedAt
+        updatedAt 
       }
     }
   }
@@ -268,6 +272,38 @@ class GQLFinanceInvoice(TestCase):
         paidDisplay
         balanceDisplay
         updatedAt
+        items {
+          edges {
+            node {
+              id
+              lineNumber
+              productName
+              description
+              quantity
+              price
+              financeTaxRate {
+                id
+                name
+                percentage
+                rateType
+              }
+              subtotal
+              subtotalDisplay
+              tax
+              taxDisplay
+              total
+              totalDisplay
+              financeGlaccount {
+                id
+                name
+              }
+              financeCostcenter {
+                id
+                name
+              }
+            }
+          }
+        }
       }
     }
   }
@@ -722,6 +758,122 @@ class GQLFinanceInvoice(TestCase):
         executed = execute_test_client_api_query(
             query, 
             user, 
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
+
+    def test_cancel_and_create_credit_invoice(self):
+        """ Cancel invoice and create credit invoice """
+        query = self.invoice_cancel_and_create_credit_invoice_mutation
+
+        invoice_item = f.FinanceInvoiceItemFactory.create()
+        invoice = invoice_item.finance_invoice
+        variables = self.variables_cancel
+        variables['input']['id'] = to_global_id('FinanceInvoiceNode', invoice.id)
+
+        executed = execute_test_client_api_query(
+            query,
+            self.admin_user,
+            variables=variables
+        )
+        data = executed.get('data')
+
+        self.assertEqual(data['cancelAndCreateCreditFinanceInvoice']['financeInvoice']['account']['id'],
+                         to_global_id('AccountNode', invoice.account.id))
+        self.assertEqual(data['cancelAndCreateCreditFinanceInvoice']['financeInvoice']['creditInvoiceFor'],
+                         invoice.id)
+        self.assertEqual(data['cancelAndCreateCreditFinanceInvoice']['financeInvoice']['summary'],
+                         invoice.summary)
+        self.assertEqual(data['cancelAndCreateCreditFinanceInvoice']['financeInvoice']['note'],
+                         invoice.note)
+        self.assertEqual(data['cancelAndCreateCreditFinanceInvoice']['financeInvoice']['note'],
+                         invoice.note)
+        self.assertNotEqual(data['cancelAndCreateCreditFinanceInvoice']['financeInvoice']['invoiceNumber'],
+                            invoice.invoice_number)
+
+        # Check item
+        credit_item = data['cancelAndCreateCreditFinanceInvoice']['financeInvoice']['items']['edges'][0]['node']
+        self.assertEqual(credit_item['productName'],
+                         invoice_item.product_name)
+        self.assertEqual(credit_item['description'],
+                         invoice_item.description)
+        self.assertEqual(credit_item['lineNumber'],
+                         invoice_item.line_number)
+        self.assertEqual(credit_item['price'],
+                         format(invoice_item.price * -1, ".2f"))
+        self.assertEqual(credit_item['subtotal'],
+                         format(invoice_item.subtotal * -1, ".2f"))
+        self.assertEqual(credit_item['total'],
+                         format(invoice_item.total * -1, ".2f"))
+        self.assertEqual(credit_item['quantity'],
+                         format(invoice_item.quantity, ".2f"))
+        self.assertEqual(credit_item['price'],
+                         format(invoice_item.price * -1, ".2f"))
+        self.assertEqual(credit_item['financeTaxRate']['id'],
+                         to_global_id('FinanceTaxRateNode', invoice_item.finance_tax_rate.id))
+        self.assertEqual(credit_item['financeCostcenter']['id'],
+                         to_global_id('FinanceCostCenterNode', invoice_item.finance_costcenter.id))
+        self.assertEqual(credit_item['financeGlaccount']['id'],
+                         to_global_id('FinanceGLAccountNode', invoice_item.finance_glaccount.id))
+
+    def test_cancel_and_create_credit_invoice_anon_user(self):
+        """ Don't allow crediting credit invoices for non-logged in users """
+        query = self.invoice_cancel_and_create_credit_invoice_mutation
+
+        invoice_item = f.FinanceInvoiceItemFactory.create()
+        invoice = invoice_item.finance_invoice
+        variables = self.variables_cancel
+        variables['input']['id'] = to_global_id('FinanceInvoiceNode', invoice.id)
+
+        executed = execute_test_client_api_query(
+            query,
+            self.anon_user,
+            variables=variables
+        )
+
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
+
+    def test_cancel_and_create_credit_invoice_permission_granted(self):
+        """ Allow updating invoices for users with permissions """
+        query = self.invoice_cancel_and_create_credit_invoice_mutation
+
+        invoice_item = f.FinanceInvoiceItemFactory.create()
+        invoice = invoice_item.finance_invoice
+        variables = self.variables_cancel
+        variables['input']['id'] = to_global_id('FinanceInvoiceNode', invoice.id)
+
+        user = invoice.account
+        permission = Permission.objects.get(codename=self.permission_change)
+        user.user_permissions.add(permission)
+        user.save()
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['cancelAndCreateCreditFinanceInvoice']['financeInvoice']['account']['id'],
+                         to_global_id('AccountNode', invoice.account.id))
+
+    def test_cancel_and_create_credit_invoice_permission_denied(self):
+        """ Check update invoice permission denied error message """
+        query = self.invoice_cancel_and_create_credit_invoice_mutation
+
+        invoice_item = f.FinanceInvoiceItemFactory.create()
+        invoice = invoice_item.finance_invoice
+        variables = self.variables_cancel
+        variables['input']['id'] = to_global_id('FinanceInvoiceNode', invoice.id)
+
+        user = invoice.account
+        permission = Permission.objects.get(codename=self.permission_change)
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
             variables=variables
         )
         data = executed.get('data')

@@ -552,7 +552,7 @@ class FinanceInvoiceFactory(factory.DjangoModelFactory):
     relation_city = "City"
     relation_country = "NL"
     status = "DRAFT"
-    summary = "models.CharField(max_length=255, default="")"
+    summary = "Invoice summary"
     note = "Invoice note here"
 
 
