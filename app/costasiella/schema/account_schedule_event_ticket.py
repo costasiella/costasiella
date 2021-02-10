@@ -6,7 +6,7 @@ from graphene_django.filter import DjangoFilterConnectionField
 from graphql import GraphQLError
 
 from ..dudes import SalesDude
-from ..models import Account, AccountScheduleEventTicket, ScheduleEventTicket
+from ..models import Account, AccountScheduleEventTicket, FinanceInvoiceItem, ScheduleEventTicket
 from ..modules.model_helpers.schedule_event_ticket_schedule_item_helper import ScheduleEventTicketScheduleItemHelper
 from ..modules.gql_tools import require_login, require_login_and_permission, get_rid
 from ..modules.messages import Messages
@@ -163,6 +163,14 @@ class UpdateAccountScheduleEventTicket(graphene.relay.ClientIDMutation):
                 else:
                     print("set attendances to booked")
                     account_schedule_event_ticket.set_booking_status_schedule_item_attendances('BOOKED')
+
+            # Cancel invoice
+            finance_invoice_items = FinanceInvoiceItem.objects.filter(
+                account_schedule_event_ticket=account_schedule_event_ticket
+            )
+            for finance_invoice_item in finance_invoice_items:
+                finance_invoice = finance_invoice_item.finance_invoice
+                finance_invoice.cancel()
 
         return UpdateAccountScheduleEventTicket(account_schedule_event_ticket=account_schedule_event_ticket)
 

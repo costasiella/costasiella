@@ -185,13 +185,13 @@ class GQLOrganizationSubscriptionPrice(TestCase):
         # This is run after every test
         pass
 
-
     def test_query(self):
         """ Query list of locations """
         query = self.subscription_prices_query
 
         variables = {
-            'organizationSubscription': to_global_id('OrganizationSubscriptionNode', self.organization_subscription_price.organization_subscription.pk),
+            'organizationSubscription': to_global_id('OrganizationSubscriptionNode',
+                                                     self.organization_subscription_price.organization_subscription.pk),
             'archived': False
         }
 
@@ -202,19 +202,22 @@ class GQLOrganizationSubscriptionPrice(TestCase):
             data['organizationSubscriptionPrices']['edges'][0]['node']['organizationSubscription']['id'], 
             variables['organizationSubscription']
         )
-        self.assertEqual(data['organizationSubscriptionPrices']['edges'][0]['node']['price'], self.organization_subscription_price.price)
+        self.assertEqual(data['organizationSubscriptionPrices']['edges'][0]['node']['price'],
+                         format(self.organization_subscription_price.price, ".2f"))
         self.assertEqual(data['organizationSubscriptionPrices']['edges'][0]['node']['financeTaxRate']['id'], 
           to_global_id('FinanceTaxRateNode', self.organization_subscription_price.finance_tax_rate.pk))
-        self.assertEqual(data['organizationSubscriptionPrices']['edges'][0]['node']['dateStart'], self.organization_subscription_price.date_start)
-        self.assertEqual(data['organizationSubscriptionPrices']['edges'][0]['node']['dateEnd'], self.organization_subscription_price.date_end)
-
+        self.assertEqual(data['organizationSubscriptionPrices']['edges'][0]['node']['dateStart'],
+                         self.organization_subscription_price.date_start)
+        self.assertEqual(data['organizationSubscriptionPrices']['edges'][0]['node']['dateEnd'],
+                         self.organization_subscription_price.date_end)
 
     def test_query_permission_denied(self):
         """ Query list of location rooms """
         query = self.subscription_prices_query
 
         variables = {
-            'organizationSubscription': to_global_id('OrganizationSubscriptionNode', self.organization_subscription_price.organization_subscription.pk),
+            'organizationSubscription': to_global_id('OrganizationSubscriptionNode',
+                                                     self.organization_subscription_price.organization_subscription.pk),
             'archived': False
         }
 
@@ -224,7 +227,6 @@ class GQLOrganizationSubscriptionPrice(TestCase):
         errors = executed.get('errors')
 
         self.assertEqual(errors[0]['message'], 'Permission denied!')
-
 
     def test_query_permission_granted(self):
         """ Query list of location rooms """
@@ -244,7 +246,8 @@ class GQLOrganizationSubscriptionPrice(TestCase):
         executed = execute_test_client_api_query(query, user, variables=variables)
         data = executed.get('data')
 
-        self.assertEqual(data['organizationSubscriptionPrices']['edges'][0]['node']['price'], self.organization_subscription_price.price)
+        self.assertEqual(data['organizationSubscriptionPrices']['edges'][0]['node']['price'],
+                         format(self.organization_subscription_price.price, ".2f"))
 
 
     def test_query_anon_user(self):
