@@ -536,12 +536,7 @@ class FinanceInvoiceFactory(factory.DjangoModelFactory):
     class Meta:
         model = models.FinanceInvoice
 
-    class Params:
-        initial_account = factory.SubFactory(RegularUserFactory)
-
-    account = factory.LazyAttribute(
-        lambda o: o.initial_account if o.initial_account else factory.SubFactory(RegularUserFactory)
-    )
+    account = factory.SubFactory(RegularUserFactory)
     finance_invoice_group = factory.SubFactory(FinanceInvoiceGroupFactory)
     relation_company = "Company"
     relation_company_registration = "123545ABC"
@@ -560,13 +555,7 @@ class FinanceInvoiceItemFactory(factory.DjangoModelFactory):
     class Meta:
         model = models.FinanceInvoiceItem
 
-    # finance_invoice = factory.SubFactory(FinanceInvoiceFactory)
-    class Params:
-        initial_invoice = factory.SubFactory(FinanceInvoiceFactory)
-
-    finance_invoice = factory.LazyAttribute(
-        lambda o: o.initial_invoice if o.initial_invoice else factory.SubFactory(FinanceInvoiceFactory)
-    )
+    finance_invoice = factory.SubFactory(FinanceInvoiceFactory)
     product_name = "Product"
     description = "Description"
     quantity = 1

@@ -486,6 +486,33 @@ class GQLAccountScheduleEventTicket(TestCase):
             self.variables_update['input']['infoMailSent']
         )
 
+    def test_update_account_schedule_event_cancel_should_cancel_related_invoice(self):
+        """ Update a account_schedule_event """
+        query = self.account_schedule_event_update_mutation
+        finance_invoice = f.FinanceInvoiceFactory.create(
+            account=self.account_schedule_event_ticket.account
+        )
+        finance_invoice_item = f.FinanceInvoiceItemFactory.create(
+            account_schedule_event_ticket=self.account_schedule_event_ticket,
+            finance_invoice=finance_invoice
+        )
+
+        executed = execute_test_client_api_query(
+            query,
+            self.admin_user,
+            variables=self.variables_update
+        )
+        data = executed.get('data')
+
+        self.assertEqual(
+            data['updateAccountScheduleEventTicket']['accountScheduleEventTicket']['id'],
+            self.variables_update['input']['id']
+        )
+
+        # Check invoice was cancelled
+        finance_invoice = models.FinanceInvoice.objects.get(id=finance_invoice.id)
+        self.assertEqual(finance_invoice.status, 'CANCELLED')
+
     def test_update_account_schedule_event_cancel_attendances_related_to_ticket(self):
         """ Update a account_schedule_event - cancel attendanced related to ticket """
         query = self.account_schedule_event_update_mutation
