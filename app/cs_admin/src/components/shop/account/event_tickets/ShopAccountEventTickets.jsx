@@ -29,7 +29,7 @@ function ShopAccountEventTickets({t, match, history}) {
   const { loading, error, data, fetchMore } = useQuery(GET_ACCOUNT_SCHEDULE_EVENT_TICKETS_QUERY, {
     skip: loadingUser || errorUser || !dataUser,
     variables: {
-      accountId: dataUser && dataUser.user ? dataUser.user.accountId : null
+      account: dataUser && dataUser.user ? dataUser.user.accountId : null
     }
   })  
 
