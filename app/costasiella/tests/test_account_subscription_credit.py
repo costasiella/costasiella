@@ -31,14 +31,14 @@ class GQLAccountSubscriptionCredit(TestCase):
         self.variables_create = {
             "input": {
                 "mutationType": "ADD",
-                "mutationAmount": 1
+                "mutationAmount": "1"
             }
         }
 
         self.variables_update = {
             "input": {
                 "mutationType": "SUB",
-                "mutationAmount": 2
+                "mutationAmount": "2"
             }
         }
 
@@ -145,7 +145,7 @@ class GQLAccountSubscriptionCredit(TestCase):
         self.assertEqual(data['accountSubscriptionCredits']['edges'][0]['node']['mutationType'],
                          subscription_credit.mutation_type)
         self.assertEqual(data['accountSubscriptionCredits']['edges'][0]['node']['mutationAmount'],
-                         subscription_credit.mutation_amount)
+                         format(subscription_credit.mutation_amount, ".1f"))
         self.assertEqual(data['accountSubscriptionCredits']['edges'][0]['node']['description'],
                          subscription_credit.description)
 
@@ -220,7 +220,7 @@ class GQLAccountSubscriptionCredit(TestCase):
         self.assertEqual(data['accountSubscriptionCredit']['mutationType'],
                          subscription_credit.mutation_type)
         self.assertEqual(data['accountSubscriptionCredit']['mutationAmount'],
-                         subscription_credit.mutation_amount)
+                         format(subscription_credit.mutation_amount, ".1f"))
         self.assertEqual(data['accountSubscriptionCredit']['description'],
                          subscription_credit.description)
 
