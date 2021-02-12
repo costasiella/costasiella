@@ -12,6 +12,7 @@ from ..modules.finance_tools import display_float_as_amount
 
 m = Messages()
 
+
 class FinanceInvoicePaymentInterface(graphene.Interface):
     id = graphene.GlobalID()
     amount_display = graphene.String()
@@ -82,7 +83,7 @@ class CreateFinanceInvoicePayment(graphene.relay.ClientIDMutation):
     class Input:
         finance_invoice = graphene.ID(required=True)
         date = graphene.types.datetime.Date(required=True)    
-        amount = graphene.Float(required=True)
+        amount = graphene.Decimal(required=True)
         finance_payment_method = graphene.ID(required=False, default_value=None)
         note = graphene.String(required=False, default_value="")
   
@@ -119,7 +120,7 @@ class UpdateFinanceInvoicePayment(graphene.relay.ClientIDMutation):
     class Input:
         id = graphene.ID(required=True)
         date = graphene.types.datetime.Date(required=False)
-        amount = graphene.Float(required=False)
+        amount = graphene.Decimal(required=False)
         finance_payment_method = graphene.ID(required=False)
         note = graphene.String(required=False)
         
