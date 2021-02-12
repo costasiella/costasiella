@@ -8,6 +8,7 @@ import { Link } from 'react-router-dom'
 import { v4 } from 'uuid'
 
 import AppSettingsContext from '../../../../../context/AppSettingsContext'
+import ButtonAddSecondaryMenu from '../../../../../ui/ButtonAddSecondaryMenu'
 
 import { GET_ACCOUNT_SUBSCRIPTION_BLOCKS_QUERY } from './queries'
 
@@ -22,7 +23,6 @@ import {
 } from "tabler-react";
 // import HasPermissionWrapper from "../../../../HasPermissionWrapper"
 import AccountSubscriptionEditListBase from "../AccountSubscriptionEditListBase"
-import AccountSubscriptionEditButtonAdd from "../AccountSubscriptionEditButtonAdd"
 import AccountSubscriptionEditBlockDelete from "./AccountSubscriptionEditBlockDelete"
 import moment from 'moment';
 
@@ -38,7 +38,7 @@ function AccountSubscriptionEditBlocks({t, match, history}) {
   const returnUrl = `/relations/accounts/${accountId}/subscriptions`
   const activeTab = "blocks"
 
-  const buttonAdd = <AccountSubscriptionEditButtonAdd 
+  const buttonAdd = <ButtonAddSecondaryMenu 
                       linkTo={`/relations/accounts/${accountId}/subscriptions/edit/${subscriptionId}/blocks/add`} />
 
   const { loading, error, data, fetchMore } = useQuery(GET_ACCOUNT_SUBSCRIPTION_BLOCKS_QUERY, {

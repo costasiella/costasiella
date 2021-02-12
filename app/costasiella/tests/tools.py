@@ -1,5 +1,6 @@
 import datetime
 
+
 def next_weekday(date, isoweekday):
     """ Return next weekday after given date 
     :param: weekday : int 0 - 6

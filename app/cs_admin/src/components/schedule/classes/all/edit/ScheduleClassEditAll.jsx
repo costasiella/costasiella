@@ -130,6 +130,8 @@ class ScheduleClassEditAll extends Component {
                         dateEnd: initialValues.dateEnd,
                         timeStart: initialTimeStart,
                         timeEnd: initialTimeEnd,
+                        spaces: initialValues.spaces,
+                        walkInSpaces: initialValues.walkInSpaces,
                         infoMailContent: initialValues.infoMailContent
                       }}
                       validationSchema={CLASS_SCHEMA}
@@ -161,6 +163,8 @@ class ScheduleClassEditAll extends Component {
                               dateEnd: dateEnd,
                               timeStart: dateToLocalISOTime(values.timeStart),
                               timeEnd: dateToLocalISOTime(values.timeEnd),
+                              spaces: values.spaces,
+                              walkInSpaces: values.walkInSpaces,
                               infoMailContent: values.infoMailContent
                             }
                           }, refetchQueries: [

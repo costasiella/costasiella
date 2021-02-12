@@ -205,6 +205,7 @@ GRAPHENE = {
     'MIDDLEWARE': [
         'graphql_jwt.middleware.JSONWebTokenMiddleware',
     ],
+    'RELAY_CONNECTION_MAX_LIMIT': 1000,
 }
 
 # GraphQL JWT settings
@@ -213,7 +214,7 @@ GRAPHQL_JWT = {
     'JWT_VERIFY_EXPIRATION': True,
     'JWT_EXPIRATION_DELTA': timedelta(minutes=2),  # Default = 5 minutes
     'JWT_REFRESH_EXPIRATION_DELTA': timedelta(minutes=120),  # Default = 7 days
-    'JWT_LONG_RUNNING_REFRESH_TOKEN': True
+    'JWT_LONG_RUNNING_REFRESH_TOKEN': True,
     # 'JWT_COOKIE_SECURE': True # Set this to true for production
 }
 
@@ -238,14 +239,14 @@ AUTH_USER_MODEL = 'costasiella.Account'
 # https://django-allauth.readthedocs.io/en/latest/configuration.html
 
 ACCOUNT_PRESERVE_USERNAME_CASING = False
-ACCOUNT_USERNAME_REQUIRED = False # Don't use usernames
+ACCOUNT_USERNAME_REQUIRED = False  # Don't use usernames
 ACCOUNT_UNIQUE_EMAIL = True
 ACCOUNT_USER_MODEL_USERNAME_FIELD = None
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_AUTHENTICATION_METHOD = 'email'  # Use email as the primary identifier
 ACCOUNT_EMAIL_VERIFICATION = "mandatory"  # Make email verification mandatory to avoid junk email accounts
 ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = False
-ACCOUNT_CONFIRM_EMAIL_ON_GET = True # Confirm email by simply going to the link
+ACCOUNT_CONFIRM_EMAIL_ON_GET = True  # Confirm email by simply going to the link
 ACCOUNT_EMAIL_CONFIRMATION_ANONYMOUS_REDIRECT_URL = "email_verified"
 ACCOUNT_EMAIL_CONFIRMATION_AUTHENTICATED_REDIRECT_URL = "email_verified"
 ACCOUNT_EMAIL_SUBJECT_PREFIX = ""  # Don't prefix the email subjects
@@ -255,8 +256,9 @@ ACCOUNT_SIGNUP_FORM_CLASS = 'costasiella.forms.SignupForm'
 ACCOUNT_SIGNUP_PASSWORD_ENTER_TWICE = False
 ACCOUNT_LOGIN_ON_PASSWORD_RESET = False  # Log in users after password reset instead of showing a "done" page.
 
-# Allow Base64 encoded uploads of up to 5MB
-DATA_UPLOAD_MAX_MEMORY_SIZE = 5242880
+# Allow Base64 encoded uploads of up to 10MB
+DATA_UPLOAD_MAX_MEMORY_SIZE = 10485760
+# 5242880 (5MB)
 
 # Vault configuration
 # https://www.vaultproject.io/

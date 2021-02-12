@@ -1,5 +1,10 @@
 from django.utils.translation import gettext as _
+from django.utils import timezone
+from django.conf import settings
 from django.db.models import Q, FilteredRelation, OuterRef, Subquery
+
+import datetime
+import pytz
 
 import graphene
 from graphene_django import DjangoObjectType
@@ -19,8 +24,6 @@ from .schedule_item import ScheduleItemNode
 
 
 m = Messages()
-
-import datetime
 
 
 def _get_resolve_classes_filter_query(self):
@@ -84,6 +87,8 @@ class ScheduleClassType(graphene.ObjectType):
     time_end = graphene.types.datetime.Time()
     display_public = graphene.Boolean()
     info_mail_content = graphene.String()
+    available_spaces_online = graphene.Int()
+    available_spaces_total = graphene.Int()
 
 
 # ScheduleClassDayType
@@ -95,6 +100,7 @@ class ScheduleClassesDayType(graphene.ObjectType):
     filter_id_organization_level = graphene.String()
     filter_id_organization_location = graphene.String()
     classes = graphene.List(ScheduleClassType)
+    attendance_count_type = graphene.String()
 
     def resolve_iso_week_day(self, info):
         return self.date.isoweekday()
@@ -103,6 +109,27 @@ class ScheduleClassesDayType(graphene.ObjectType):
         return self.order_by
 
     def resolve_classes(self, info):
+        def _get_attendance_count_sql():
+            """
+
+            :return:
+            """
+            attendance_count_sql = """( SELECT COUNT(csia.id) as count_sia 
+                    FROM costasiella_scheduleitemattendance csia 
+                    WHERE csia.schedule_item_id = csi.id AND
+                          csia.date = %(class_date)s AND """
+
+            if self.attendance_count_type == "ATTENDING":
+                attendance_count_sql += 'csia.booking_status = "ATTENDING" )'
+            if self.attendance_count_type == "BOOKED":
+                attendance_count_sql += 'csia.booking_status = "BOOKED" )'
+            if self.attendance_count_type == "ATTENDING_AND_BOOKED":
+                attendance_count_sql += 'csia.booking_status != "CANCELLED" )'
+
+            attendance_count_sql += " AS count_attendance"
+
+            return attendance_count_sql
+
         def _get_where_query():
             """
                 Returns the filter query for the schedule
@@ -242,7 +269,16 @@ class ScheduleClassesDayType(graphene.ObjectType):
                     WHEN csiotc.account_2_id IS NOT NULL
                         THEN csiotc.role_2
                     ELSE csit.role_2
-                    END AS role_2
+                    END AS role_2,
+               CASE WHEN csiotc.spaces IS NOT NULL
+                     THEN csiotc.spaces
+                     ELSE csi.spaces
+                     END AS spaces,
+               CASE WHEN csiotc.walk_in_spaces IS NOT NULL
+                     THEN csiotc.walk_in_spaces
+                     ELSE csi.walk_in_spaces
+                     END AS walk_in_spaces,
+               {attendance_count_sql}
             FROM costasiella_scheduleitem csi
             LEFT JOIN costasiella_organizationlocationroom csi_olr ON csi.organization_location_room_id = csi_olr.id
             LEFT JOIN costasiella_organizationlocation csi_ol ON csi_olr.organization_location_id = csi_ol.id
@@ -262,6 +298,8 @@ class ScheduleClassesDayType(graphene.ObjectType):
                     otc.organization_level_id,
                     otc.time_start,
                     otc.time_end,
+                    otc.spaces,
+                    otc.walk_in_spaces,
                     otc_olr.organization_location_id,
                     otc_ol.name as organization_location_name
                   FROM costasiella_scheduleitemweeklyotc otc 
@@ -298,6 +336,7 @@ class ScheduleClassesDayType(graphene.ObjectType):
             ORDER BY {order_by_sql}
         """.format(
             where_sql=_get_where_query(),
+            attendance_count_sql=_get_attendance_count_sql(),
             order_by_sql=order_by_sql
         )
 
@@ -315,38 +354,53 @@ class ScheduleClassesDayType(graphene.ObjectType):
             "filter_id_organization_location": self.filter_id_organization_location,
             "filter_id_organization_level": self.filter_id_organization_level,
         }
-
-        # TODO: add parameters here to prevent SQL injection: IMPORTANT!!!
-
         schedule_items = ScheduleItem.objects.raw(query, params=params)
-        # print(schedule_items.query)
-
-        # # Set sorting
-        # if sorting == "location":
-        #     # Location | Location room | Start time
-        #     schedule_items = schedule_items.order_by(
-        #         'organization_location_room__organization_location__name',
-        #         'organization_location_room__name',
-        #         'time_start'
-        #     )
-        # else:
-        #     # Start time | Location | Location room
-        #     schedule_items = schedule_items.order_by(
-        #         'time_start',
-        #         'organization_location_room__organization_location__name',
-        #         'organization_location_room__name',
-        #     )
 
         classes_list = []
         for item in schedule_items:
 
             print("#############")
             print(item)
+            print(item.date_start)
+            print(item.date_end)
+            print(item.time_start)
+            print(item.time_end)
             print(item.status)
-            print(item.description)
-            print(item.account)
-            print(item.account_id)
-            print(item.role)
+            # print(item.description)
+            # print(item.account)
+            # print(item.account_id)
+            # print(item.role)
+            # print(item.count_attendance)
+
+            ## Start test for class booking status
+
+            # https://docs.djangoproject.com/en/3.1/topics/i18n/timezones/#usage
+            local_tz = pytz.timezone(settings.TIME_ZONE)
+            print(local_tz)
+
+            # now = timezone.now()
+            print(timezone.localtime(timezone.now()))
+
+            dt_start = datetime.datetime(self.date.year,
+                                         self.date.month,
+                                         self.date.day,
+                                         int(item.time_start.hour),
+                                         int(item.time_start.minute))
+            print(dt_start)
+            dt_start = local_tz.localize(dt_start)
+            print(dt_start)
+            # dt_end = datetime.datetime(self.date.year,
+            #                            self.date.month,
+            #                            self.date.day,
+            #                            int(row.classes.Endtime.hour),
+            #                            int(row.classes.Endtime.minute))
+            # dt_end = local_tz.localize(dt_end)
+
+            ## End test for class booking status
+
+            total_spaces = item.spaces or 0
+            walk_in_spaces = item.walk_in_spaces or 0
+            count_attendance = item.count_attendance or 0
 
             classes_list.append(
                 ScheduleClassType(
@@ -364,11 +418,84 @@ class ScheduleClassesDayType(graphene.ObjectType):
                     organization_level=item.organization_level,
                     time_start=item.time_start,
                     time_end=item.time_end,
-                    display_public=item.display_public
+                    display_public=item.display_public,
+                    available_spaces_online=calculate_available_spaces_online(
+                        total_spaces, walk_in_spaces, count_attendance
+                    ),
+                    available_spaces_total=calculate_available_spaces_total(
+                        total_spaces, count_attendance
+                    )
                 )
             )
     
         return classes_list
+
+# OpenStudio function to be ported
+    # def _get_day_list_booking_status(self, row):
+    #     """
+    #         :param row: ClassSchedule.get_day_rows() row
+    #         :return: booking status
+    #     """
+    #     pytz = current.globalenv['pytz']
+    #     TIMEZONE = current.TIMEZONE
+    #     NOW_LOCAL = current.NOW_LOCAL
+    #     TODAY_LOCAL = current.TODAY_LOCAL
+    #
+    #     local_tz = pytz.timezone(TIMEZONE)
+    #
+    #     dt_start = datetime.datetime(self.date.year,
+    #                                  self.date.month,
+    #                                  self.date.day,
+    #                                  int(row.classes.Starttime.hour),
+    #                                  int(row.classes.Starttime.minute))
+    #     dt_start = local_tz.localize(dt_start)
+    #     dt_end = datetime.datetime(self.date.year,
+    #                                self.date.month,
+    #                                self.date.day,
+    #                                int(row.classes.Endtime.hour),
+    #                                int(row.classes.Endtime.minute))
+    #     dt_end = local_tz.localize(dt_end)
+    #
+    #     status = 'finished'
+    #     if row.classes_otc.Status == 'cancelled' or row.school_holidays.id:
+    #         status = 'cancelled'
+    #     elif dt_start <= NOW_LOCAL and dt_end >= NOW_LOCAL:
+    #         # check start time
+    #         status = 'ongoing'
+    #     elif dt_start >= NOW_LOCAL:
+    #         if not self.bookings_open == False and TODAY_LOCAL < self.bookings_open:
+    #             status = 'not_yet_open'
+    #         else:
+    #             # check spaces for online bookings
+    #             spaces = self._get_day_list_booking_spaces(row)
+    #             if spaces < 1:
+    #                 status = 'full'
+    #             else:
+    #                 status = 'ok'
+    #
+    #     return status
+
+
+def calculate_available_spaces_online(total_spaces, walk_in_spaces, count_attendance):
+    # Spaces available for online booking
+    online_spaces = total_spaces - walk_in_spaces
+
+    # Subtract attendance
+    available_spaces_online = online_spaces - count_attendance
+    # Never return negatives, just 0
+    if available_spaces_online < 1:
+        available_spaces_online = 0
+
+    return available_spaces_online
+
+
+def calculate_available_spaces_total(total_spaces, count_attendance):
+    available_spaces_total = total_spaces - count_attendance
+    # Never return negatives, just 0
+    if available_spaces_total < 1:
+        available_spaces_total = 0
+
+    return available_spaces_total
 
 
 def validate_schedule_classes_query_date_input(date_from, 
@@ -377,6 +504,7 @@ def validate_schedule_classes_query_date_input(date_from,
                                                organization_classtype,
                                                organization_level,
                                                organization_location,
+                                               attendance_count_type,
                                                ):
     """
     Check if date_until >= date_start
@@ -417,6 +545,10 @@ def validate_schedule_classes_query_date_input(date_from,
         organization_location_id = rid.id
         result['organization_location_id'] = organization_location_id
 
+    valid_attendance_count_types = ['ATTENDING', 'BOOKED', 'ATTENDING_AND_BOOKED']
+    if attendance_count_type not in valid_attendance_count_types:
+        raise Exception(_("attendance_count_type should be in ATTENDING, BOOKED or ATTENDING_AND_BOOKED"))
+
     return result
 
 
@@ -429,9 +561,11 @@ class ScheduleClassQuery(graphene.ObjectType):
         order_by=graphene.String(),
         organization_classtype=graphene.String(),
         organization_level=graphene.String(),
-        organization_location=graphene.String(),   
+        organization_location=graphene.String(),
+        attendance_count_type=graphene.String(),
     )
 
+    #TODO: Add spaces & attendance count code here
     def resolve_schedule_class(self,
                                info,
                                schedule_item_id,
@@ -478,6 +612,7 @@ class ScheduleClassQuery(graphene.ObjectType):
                                  organization_classtype=None,
                                  organization_level=None,
                                  organization_location=None,
+                                 attendance_count_type="attending_and_booked"
                                  ):
         user = info.context.user
         require_login_and_one_of_permissions(user, [
@@ -496,6 +631,7 @@ class ScheduleClassQuery(graphene.ObjectType):
             organization_classtype,
             organization_level,
             organization_location,
+            attendance_count_type
         )
 
         print(validation_result)
@@ -506,6 +642,7 @@ class ScheduleClassQuery(graphene.ObjectType):
         while date <= date_until:
             day = ScheduleClassesDayType()
             day.date = date
+            day.attendance_count_type = attendance_count_type
 
             if order_by:
                 day.order_by = order_by
@@ -562,7 +699,6 @@ def validate_schedule_class_create_update_input(input, update=False):
             if not organization_level:
                 raise Exception(_('Invalid Organization Level ID!'))            
 
-
     return result
 
 
@@ -577,6 +713,8 @@ class CreateScheduleClass(graphene.relay.ClientIDMutation):
         date_end = graphene.types.datetime.Date(required=False, default_value=None)
         time_start = graphene.types.datetime.Time(required=True)
         time_end = graphene.types.datetime.Time(required=True)
+        spaces = graphene.types.Int(required=True)
+        walk_in_spaces = graphene.Int(required=True)
         display_public = graphene.Boolean(required=True, default_value=False)
         info_mail_content = graphene.String()
 
@@ -598,7 +736,9 @@ class CreateScheduleClass(graphene.relay.ClientIDMutation):
             date_start=input['date_start'],
             time_start=input['time_start'],
             time_end=input['time_end'],   
-            display_public=input['display_public']
+            display_public=input['display_public'],
+            spaces=input['spaces'],
+            walk_in_spaces=input['walk_in_spaces']
         )
 
         # Optional fields
@@ -642,6 +782,8 @@ class UpdateScheduleClass(graphene.relay.ClientIDMutation):
         date_end = graphene.types.datetime.Date(required=False, default_value=None)
         time_start = graphene.types.datetime.Time(required=True)
         time_end = graphene.types.datetime.Time(required=True)
+        spaces = graphene.types.Int(required=False)
+        walk_in_spaces = graphene.Int(required=False)
         display_public = graphene.Boolean(required=True, default_value=False)
         info_mail_content = graphene.String(default_value="")
 
@@ -663,16 +805,22 @@ class UpdateScheduleClass(graphene.relay.ClientIDMutation):
             raise Exception('Unable to change weekly class into one time class')
 
         schedule_item.frequency_type = input['frequency_type']
-        schedule_item.frequency_interval=input['frequency_interval']
-        schedule_item.date_start=input['date_start']
-        schedule_item.time_start=input['time_start']
-        schedule_item.time_end=input['time_end']
-        schedule_item.display_public=input['display_public']
+        schedule_item.frequency_interval = input['frequency_interval']
+        schedule_item.date_start = input['date_start']
+        schedule_item.time_start = input['time_start']
+        schedule_item.time_end = input['time_end']
+        schedule_item.display_public = input['display_public']
 
         # Optional fields
         date_end = input.get('date_end', None)
         if date_end:
             schedule_item.date_end = date_end
+
+        if 'spaces' in input:
+            schedule_item.spaces = input['spaces']
+
+        if 'walk_in_spaces' in input:
+            schedule_item.walk_in_spaces = input['walk_in_spaces']
 
         if 'info_mail_content' in input:
             schedule_item.info_mail_content = input['info_mail_content']

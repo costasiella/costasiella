@@ -11,4 +11,4 @@ class SystemSetting(models.Model):
     value = EncryptedTextField(default="")
 
     def __str__(self):
-        return "system setting object"
+        return "%s [%s]" % (self.setting, self.value)

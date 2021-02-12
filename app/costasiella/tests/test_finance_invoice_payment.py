@@ -38,7 +38,7 @@ class GQLFinanceInvoicePayment(TestCase):
         self.variables_create = {
             "input": {
               "date": datetime.date(2019, 1, 1),
-              "amount": 12,
+              "amount": "12",
               "note": "test create note",
               # Fixed value for wire transfer (from fixtures)
               "financePaymentMethod": to_global_id("FinancePaymentMethodNode", 102) 
@@ -48,7 +48,7 @@ class GQLFinanceInvoicePayment(TestCase):
         self.variables_update = {
             "input": {
               "date": datetime.date(2019, 1, 1),
-              "amount": 12,
+              "amount": "12",
               "note": "test update note",
               # Fixed value for wire transfer (from fixtures)
               "financePaymentMethod": to_global_id("FinancePaymentMethodNode", 103) 
@@ -153,7 +153,6 @@ class GQLFinanceInvoicePayment(TestCase):
         # This is run after every test
         pass
 
-
     def test_query(self):
         """ Query list of account invoice payments """
         query = self.invoice_payments_query
@@ -175,13 +174,13 @@ class GQLFinanceInvoicePayment(TestCase):
           to_global_id('FinanceInvoiceNode', invoice_payment.finance_invoice.id)
         )
         self.assertEqual(data['financeInvoicePayments']['edges'][0]['node']['date'], str(invoice_payment.date))
-        self.assertEqual(data['financeInvoicePayments']['edges'][0]['node']['amount'], invoice_payment.amount)
+        self.assertEqual(data['financeInvoicePayments']['edges'][0]['node']['amount'],
+                         format(invoice_payment.amount, ".2f"))
         self.assertEqual(data['financeInvoicePayments']['edges'][0]['node']['note'], invoice_payment.note)
         self.assertEqual(
           data['financeInvoicePayments']['edges'][0]['node']['financePaymentMethod']['id'], 
           to_global_id('FinancePaymentMethodNode', invoice_payment.finance_payment_method.id)
         )
-
 
     def test_query_permission_denied(self):
         """ Query list of account invoice payments - check permission denied """
@@ -199,7 +198,6 @@ class GQLFinanceInvoicePayment(TestCase):
 
         self.assertEqual(errors[0]['message'], 'Permission denied!')
 
-
     def test_query_permission_granted(self):
         """ Query list of account invoice payments with view permission """
         query = self.invoice_payments_query
@@ -208,7 +206,6 @@ class GQLFinanceInvoicePayment(TestCase):
         variables = {
           "financeInvoice": to_global_id('FinanceInvoicePaymentNode', invoice_payment.finance_invoice.pk)
         }
-
 
         # Create regular user
         user = get_user_model().objects.get(pk=invoice_payment.finance_invoice.account.id)
@@ -225,7 +222,6 @@ class GQLFinanceInvoicePayment(TestCase):
           to_global_id('FinanceInvoicePaymentNode', invoice_payment.id)
         )
 
-
     def test_query_anon_user(self):
         """ Query list of account invoice payments - anon user """
         query = self.invoice_payments_query
@@ -238,7 +234,6 @@ class GQLFinanceInvoicePayment(TestCase):
         executed = execute_test_client_api_query(query, self.anon_user, variables=variables)
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Not logged in!')
-
 
     def test_query_one(self):
         """ Query one account invoice payment as admin """   
@@ -261,13 +256,12 @@ class GQLFinanceInvoicePayment(TestCase):
             to_global_id('FinanceInvoiceNode', invoice_payment.finance_invoice.id)
         )
         self.assertEqual(data['financeInvoicePayment']['date'], str(invoice_payment.date))
-        self.assertEqual(data['financeInvoicePayment']['amount'], invoice_payment.amount)
+        self.assertEqual(data['financeInvoicePayment']['amount'], format(invoice_payment.amount, ".2f"))
         self.assertEqual(data['financeInvoicePayment']['note'], invoice_payment.note)
         self.assertEqual(
             data['financeInvoicePayment']['financePaymentMethod']['id'],
             to_global_id('FinancePaymentMethodNode', invoice_payment.finance_payment_method.id)
         )
-
 
     def test_query_one_anon_user(self):
         """ Deny permission for anon users Query one account invoice """   
@@ -281,7 +275,6 @@ class GQLFinanceInvoicePayment(TestCase):
         executed = execute_test_client_api_query(self.invoice_payment_query, self.anon_user, variables=variables)
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Not logged in!')
-
 
     def test_query_one_permission_denied(self):
         """ Permission denied message when user lacks authorization """   
@@ -297,7 +290,6 @@ class GQLFinanceInvoicePayment(TestCase):
         executed = execute_test_client_api_query(self.invoice_payment_query, user, variables=variables)
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Permission denied!')
-
 
     def test_query_one_permission_granted(self):
         """ Respond with data when user has permission """   
@@ -318,7 +310,6 @@ class GQLFinanceInvoicePayment(TestCase):
             data['financeInvoicePayment']['id'],
             to_global_id('FinanceInvoicePaymentNode', invoice_payment.id)
         )
-
 
     def test_create_invoice_payment(self):
         """ Create an invoice payment """
@@ -357,7 +348,6 @@ class GQLFinanceInvoicePayment(TestCase):
             variables['input']['financePaymentMethod']
         )
 
-
     def test_create_invoice_payment_anon_user(self):
         """ Don't allow creating invoice payments for non-logged in users """
         query = self.invoice_payment_create_mutation
@@ -375,7 +365,6 @@ class GQLFinanceInvoicePayment(TestCase):
         data = executed.get('data')
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Not logged in!')
-
 
     def test_create_invoice_payment_permission_granted(self):
         """ Allow creating invoice payments for users with permissions """
@@ -403,7 +392,6 @@ class GQLFinanceInvoicePayment(TestCase):
             variables['input']['financeInvoice']
         )
 
-
     def test_create_invoice_payment_permission_denied(self):
         """ Check create invoice payment permission denied error message """
         query = self.invoice_payment_create_mutation
@@ -424,7 +412,6 @@ class GQLFinanceInvoicePayment(TestCase):
         data = executed.get('data')
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Permission denied!')
-
 
     def test_update_invoice_payment(self):
         """ Update an invoice payment """
@@ -449,7 +436,6 @@ class GQLFinanceInvoicePayment(TestCase):
           variables['input']['financePaymentMethod']
         )
 
-
     def test_update_invoice_payment_anon_user(self):
         """ Don't allow updating invoice payments for non-logged in users """
         query = self.invoice_payment_update_mutation
@@ -466,7 +452,6 @@ class GQLFinanceInvoicePayment(TestCase):
         data = executed.get('data')
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Not logged in!')
-
 
     def test_update_invoice_payment_permission_granted(self):
         """ Allow updating invoice payments for users with permissions """
@@ -489,7 +474,6 @@ class GQLFinanceInvoicePayment(TestCase):
         data = executed.get('data')
         self.assertEqual(data['updateFinanceInvoicePayment']['financeInvoicePayment']['note'], variables['input']['note'])
 
-
     def test_update_invoice_payment_permission_denied(self):
         """ Check update invoice payment permission denied error message """
         query = self.invoice_payment_update_mutation
@@ -509,7 +493,6 @@ class GQLFinanceInvoicePayment(TestCase):
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Permission denied!')
 
-
     def test_delete_invoice_payment(self):
         """ Delete an account invoice payment """
         query = self.invoice_payment_delete_mutation
@@ -524,7 +507,6 @@ class GQLFinanceInvoicePayment(TestCase):
         )
         data = executed.get('data')
         self.assertEqual(data['deleteFinanceInvoicePayment']['ok'], True)
-
 
     def test_delete_invoice_payment_anon_user(self):
         """ Delete invoice denied for anon user """
@@ -541,7 +523,6 @@ class GQLFinanceInvoicePayment(TestCase):
         data = executed.get('data')
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Not logged in!')
-
 
     def test_delete_invoice_payment_permission_granted(self):
         """ Allow deleting invoices for users with permissions """
@@ -564,7 +545,6 @@ class GQLFinanceInvoicePayment(TestCase):
         data = executed.get('data')
         self.assertEqual(data['deleteFinanceInvoicePayment']['ok'], True)
 
-
     def test_delete_invoice_payment_permission_denied(self):
         """ Check delete invoice permission denied error message """
         query = self.invoice_payment_delete_mutation
@@ -582,4 +562,3 @@ class GQLFinanceInvoicePayment(TestCase):
         data = executed.get('data')
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Permission denied!')
-

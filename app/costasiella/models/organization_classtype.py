@@ -3,8 +3,8 @@ import uuid
 from django.db import models
 from sorl.thumbnail import ImageField
 
-# Create your models here.
 
+# Create your models here.
 class OrganizationClasstype(models.Model):
     # id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     archived = models.BooleanField(default=False)
@@ -16,4 +16,3 @@ class OrganizationClasstype(models.Model):
 
     def __str__(self):
         return self.name
-    

@@ -18,6 +18,8 @@ const GET_USER_PROFILE = gql`
       phone
       mobile
       emergency
+      teacher
+      employee
     }
   }
 `

@@ -26,15 +26,15 @@ class OrganizationClasspass(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField()
     price = models.DecimalField(max_digits=20, decimal_places=2)
-    finance_tax_rate = models.ForeignKey(FinanceTaxRate, on_delete=models.CASCADE)
+    finance_tax_rate = models.ForeignKey(FinanceTaxRate, on_delete=models.SET_NULL, null=True)
     validity = models.PositiveIntegerField()
     validity_unit = models.CharField(max_length=10, choices=VALIDITY_UNITS, default="DAYS")
     classes = models.PositiveSmallIntegerField()
     unlimited = models.BooleanField(default=False)
     organization_membership = models.ForeignKey(OrganizationMembership, on_delete=models.CASCADE, null=True)
     quick_stats_amount = models.DecimalField(max_digits=10, decimal_places=2)
-    finance_glaccount = models.ForeignKey(FinanceGLAccount, on_delete=models.CASCADE, null=True)
-    finance_costcenter = models.ForeignKey(FinanceCostCenter, on_delete=models.CASCADE, null=True)
+    finance_glaccount = models.ForeignKey(FinanceGLAccount, on_delete=models.SET_NULL, null=True)
+    finance_costcenter = models.ForeignKey(FinanceCostCenter, on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
         return self.name

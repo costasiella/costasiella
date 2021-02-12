@@ -31,10 +31,10 @@ class OrganizationSubscription(models.Model):
     unlimited = models.BooleanField(default=False)
     terms_and_conditions = models.TextField()
     registration_fee = models.DecimalField(max_digits=20, decimal_places=2)
-    organization_membership = models.ForeignKey(OrganizationMembership, on_delete=models.CASCADE, null=True)
+    organization_membership = models.ForeignKey(OrganizationMembership, on_delete=models.SET_NULL, null=True)
     quick_stats_amount = models.DecimalField(default=0, max_digits=20, decimal_places=2)
-    finance_glaccount = models.ForeignKey(FinanceGLAccount, on_delete=models.CASCADE, null=True)
-    finance_costcenter = models.ForeignKey(FinanceCostCenter, on_delete=models.CASCADE, null=True)
+    finance_glaccount = models.ForeignKey(FinanceGLAccount, on_delete=models.SET_NULL, null=True)
+    finance_costcenter = models.ForeignKey(FinanceCostCenter, on_delete=models.SET_NULL, null=True)
 
     def get_price_on_date(self, date, raw_price=False, display=False):
         """

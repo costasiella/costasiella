@@ -5,6 +5,7 @@ from .account import AccountQuery, AccountMutation
 from .account_accepted_document import AccountAcceptedDocumentQuery
 from .account_classpass import AccountClasspassQuery, AccountClasspassMutation
 from .account_membership import AccountMembershipQuery, AccountMembershipMutation
+from .account_schedule_event_ticket import AccountScheduleEventTicketQuery, AccountScheduleEventTicketMutation
 from .account_subscription import AccountSubscriptionQuery, AccountSubscriptionMutation
 from .account_subscription_alt_price import AccountSubscriptionAltPriceQuery, AccountSubscriptionAltPriceMutation
 from .account_subscription_block import AccountSubscriptionBlockQuery, AccountSubscriptionBlockMutation
@@ -55,6 +56,10 @@ from .schedule_appointment import ScheduleAppointmentQuery, ScheduleAppointmentM
 from .schedule_class import ScheduleClassQuery, ScheduleClassMutation
 from .schedule_class_booking_option import ScheduleClassBookingOptionsQuery
 from .schedule_class_weekly_otc import ScheduleClassWeeklyOTCQuery, ScheduleClassWeeklyOTCMutation
+from .schedule_event import ScheduleEventQuery, ScheduleEventMutation
+from .schedule_event_media import ScheduleEventMediaQuery, ScheduleEventMediaMutation
+from .schedule_event_ticket import ScheduleEventTicketQuery, ScheduleEventTicketMutation
+from .schedule_event_ticket_schedule_item import ScheduleEventTicketScheduleItemQuery, ScheduleEventTicketScheduleItemMutation
 from .schedule_item import ScheduleItemQuery, ScheduleItemMutation
 from .schedule_item_attendance import ScheduleItemAttendanceQuery, ScheduleItemAttendanceMutation
 from .schedule_item_organization_classpass_group import ScheduleItemOrganizationClasspassGroupQuery, ScheduleItemOrganizationClasspassGroupMutation
@@ -71,6 +76,7 @@ class Query(AccountQuery,
             AccountAcceptedDocumentQuery,
             AccountClasspassQuery,
             AccountMembershipQuery,
+            AccountScheduleEventTicketQuery,
             AccountSubscriptionQuery,
             AccountSubscriptionAltPriceQuery,
             AccountSubscriptionBlockQuery,
@@ -112,6 +118,10 @@ class Query(AccountQuery,
             ScheduleClassQuery,
             ScheduleClassBookingOptionsQuery,
             ScheduleClassWeeklyOTCQuery,
+            ScheduleEventQuery,
+            ScheduleEventMediaQuery,
+            ScheduleEventTicketQuery,
+            ScheduleEventTicketScheduleItemQuery,
             ScheduleItemQuery,
             ScheduleItemAttendanceQuery,
             ScheduleItemOrganizationClasspassGroupQuery,
@@ -129,6 +139,7 @@ class Mutation(AccountMutation,
                AccountClasspassMutation,
                AccountMembershipMutation,
                AccountSubscriptionMutation,
+               AccountScheduleEventTicketMutation,
                AccountSubscriptionAltPriceMutation,
                AccountSubscriptionBlockMutation,
                AccountSubscriptionCreditMutation,
@@ -167,6 +178,10 @@ class Mutation(AccountMutation,
                ScheduleAppointmentMutation,
                ScheduleClassMutation,
                ScheduleClassWeeklyOTCMutation,
+               ScheduleEventMutation,
+               ScheduleEventMediaMutation,
+               ScheduleEventTicketMutation,
+               ScheduleEventTicketScheduleItemMutation,
                ScheduleItemMutation,
                ScheduleItemAttendanceMutation,
                ScheduleItemOrganizationClasspassGroupMutation,

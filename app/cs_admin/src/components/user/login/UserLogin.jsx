@@ -1,12 +1,10 @@
 // @flow
 
-import React, {Component } from 'react'
-import gql from "graphql-tag"
-import { useQuery, useMutation } from "react-apollo"
+import React, { useContext } from 'react'
+import { useMutation } from "react-apollo"
 import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
 import { Formik } from 'formik'
-import { ToastContainer } from 'react-toastify'
 import { toast } from 'react-toastify'
 
 // import { GET_ACCOUNTS_QUERY, GET_ACCOUNT_QUERY } from './queries'
@@ -14,27 +12,33 @@ import { toast } from 'react-toastify'
 
 import {
   Button,
-  Card,
   Icon,
-  StandaloneFormPage,
 } from "tabler-react"
 import HasPermissionWrapper from "../../HasPermissionWrapper"
+
+import OrganizationContext from '../../context/OrganizationContext'
 
 import { TOKEN_AUTH, TOKEN_REFRESH } from "../../../queries/system/auth"
 import { CSAuth } from "../../../tools/authentication"
 import CSLS from "../../../tools/cs_local_storage"
 
 import UserLoginForm from "./UserLoginForm"
+import CSStandaloneFormPage from "../../ui/CSStandaloneFormPage"
 
 
 function UserLogin({t, match, history}) {
+  const organization = useContext(OrganizationContext)
+  console.log(organization)
+
   let errorMessage
   const [ doTokenAuth ] = useMutation(TOKEN_AUTH)
   const [ doTokenRefresh ] = useMutation(TOKEN_REFRESH)
 
   return (
-    <StandaloneFormPage imageURL="">
-      {/* TODO: point imageURL to logo */}
+    <CSStandaloneFormPage urlLogo={organization.urlLogoLogin} >
+      <div className="text-center text-muted mb-1">
+        {organization ? organization.name : ""}
+      </div>
       <Formik
         initialValues={{ 
           email: "",
@@ -56,7 +60,8 @@ function UserLogin({t, match, history}) {
             ]})
             .then(({ data }) => {
                 console.log('got data', data)
-                const next = localStorage.getItem(CSLS.AUTH_LOGIN_NEXT) || "/"
+                // TODO: Add link to "feature switcher" here
+                const next = localStorage.getItem(CSLS.AUTH_LOGIN_NEXT) || "/user/welcome"
                 CSAuth.login(data.tokenAuth.token)
                 doTokenRefresh({
                   variables: { token: data.tokenAuth.token }
@@ -89,13 +94,10 @@ function UserLogin({t, match, history}) {
               })
         }}
         >
-        {({ isSubmitting, errors, values, setFieldTouched, setFieldValue }) => (
+        {({ isSubmitting, errors }) => (
           <UserLoginForm
             isSubmitting={isSubmitting}
-            etFieldValue={setFieldValue}
-            esetFieldTouched={setFieldTouched}
             errors={errors}
-            values={values}
           />
         )}
       </Formik>    
@@ -115,8 +117,23 @@ function UserLogin({t, match, history}) {
       >
         {t('user.register.create_account')} <Icon name="chevron-right" />
       </Button>
-      <ToastContainer autoClose={5000}/>
-    </StandaloneFormPage>
+    </CSStandaloneFormPage>
+
+
+    // <Page>
+    //   <div className="page-single">
+    //     <Container>
+    //       <Grid.Row>
+    //         <div className="col col-login mx-auto">            
+    //           <div className="text-center mb-5">
+    //             <img src={organization.urlLogoLogin} className="h-9" alt="logo" />
+    //           </div>
+              
+    //         </div>
+    //       </Grid.Row>
+    //     </Container>
+    //   </div>
+    // </Page>
   )
 }
 

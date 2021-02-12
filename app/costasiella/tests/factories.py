@@ -536,12 +536,7 @@ class FinanceInvoiceFactory(factory.DjangoModelFactory):
     class Meta:
         model = models.FinanceInvoice
 
-    class Params:
-        initial_account = factory.SubFactory(RegularUserFactory)
-
-    account = factory.LazyAttribute(
-        lambda o: o.initial_account if o.initial_account else factory.SubFactory(RegularUserFactory)
-    )
+    account = factory.SubFactory(RegularUserFactory)
     finance_invoice_group = factory.SubFactory(FinanceInvoiceGroupFactory)
     relation_company = "Company"
     relation_company_registration = "123545ABC"
@@ -552,7 +547,7 @@ class FinanceInvoiceFactory(factory.DjangoModelFactory):
     relation_city = "City"
     relation_country = "NL"
     status = "DRAFT"
-    summary = "models.CharField(max_length=255, default="")"
+    summary = "Invoice summary"
     note = "Invoice note here"
 
 
@@ -560,13 +555,7 @@ class FinanceInvoiceItemFactory(factory.DjangoModelFactory):
     class Meta:
         model = models.FinanceInvoiceItem
 
-    # finance_invoice = factory.SubFactory(FinanceInvoiceFactory)
-    class Params:
-        initial_invoice = factory.SubFactory(FinanceInvoiceFactory)
-
-    finance_invoice = factory.LazyAttribute(
-        lambda o: o.initial_invoice if o.initial_invoice else factory.SubFactory(FinanceInvoiceFactory)
-    )
+    finance_invoice = factory.SubFactory(FinanceInvoiceFactory)
     product_name = "Product"
     description = "Description"
     quantity = 1
@@ -701,6 +690,116 @@ class AccountSubscriptionCreditAttendanceSubFactory(factory.DjangoModelFactory):
     mutation_type = "SUB"
     mutation_amount = 1
     description = "Test subscription SUB mutation"
+
+
+class ScheduleEventFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.ScheduleEvent
+
+    archived = False
+    display_public = True
+    display_shop = True
+    auto_send_info_mail = False
+    organization_location = factory.SubFactory(OrganizationLocationFactory)
+    name = "Test event"
+    tagline = "A catching tagline"
+    preview = "Beautiful event preview"
+    description = "Extensive description"
+    organization_level = factory.SubFactory(OrganizationLevelFactory)
+    teacher = factory.SubFactory(TeacherFactory)
+    teacher_2 = factory.SubFactory(Teacher2Factory)
+    info_mail_content = "Hello world from the info mail field"
+
+
+class ScheduleEventFullTicketFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.ScheduleEventTicket
+
+    class Params:
+        initial_schedule_event = factory.SubFactory(ScheduleEventFactory)
+
+    schedule_event = factory.LazyAttribute(
+        lambda o: o.initial_schedule_event if o.initial_schedule_event else factory.SubFactory(ScheduleEventFactory)
+    )
+    full_event = True
+    deletable = False
+    display_public = True
+    name = "Full event"
+    description = "Full event ticket"
+    price = 100
+    finance_tax_rate = factory.SubFactory(FinanceTaxRateFactory)
+    finance_glaccount = factory.SubFactory(FinanceGLAccountFactory)
+    finance_costcenter = factory.SubFactory(FinanceCostCenterFactory)
+
+
+class AccountScheduleEventTicketFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.AccountScheduleEventTicket
+
+    account = factory.SubFactory(RegularUserFactory)
+    schedule_event_ticket = factory.SubFactory(ScheduleEventFullTicketFactory)
+    cancelled = False
+    payment_confirmation = False
+    info_mail_sent = False
+
+
+class ScheduleEventMediaFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.ScheduleEventMedia
+
+    class Params:
+        initial_schedule_event = factory.SubFactory(ScheduleEventFactory)
+
+    schedule_event = factory.LazyAttribute(
+        lambda o: o.initial_schedule_event if o.initial_schedule_event else factory.SubFactory(ScheduleEventFactory)
+    )
+    sort_order = 0
+    description = "Test image"
+    # https://factoryboy.readthedocs.io/en/latest/orms.html
+    # Refer to the part "Extra Fields (class dactory.django.FileField)"
+    image = factory.django.FileField(
+        from_path=os.path.join(os.getcwd(), "costasiella", "tests", "files", "test_image.jpg"),
+    )
+
+
+class ScheduleItemEventActivityFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.ScheduleItem
+
+    schedule_event = factory.SubFactory(ScheduleEventFactory)
+    schedule_item_type = "EVENT_ACTIVITY"
+    frequency_type = "SPECIFIC"
+    frequency_interval = 0
+    organization_location_room = factory.SubFactory(OrganizationLocationRoomFactory)
+    date_start = datetime.date(2014, 1, 1)
+    time_start = datetime.time(6, 0)
+    time_end = datetime.time(9, 0)
+    display_public = True
+    account = factory.SelfAttribute('schedule_event.teacher')
+    account_2 = factory.SelfAttribute('schedule_event.teacher_2')
+    name = "Event activity 1"
+    spaces = 20
+
+
+class ScheduleItemAttendanceScheduleEventFactory(factory.DjangoModelFactory):
+    """ Usage
+    account_schedule_event_ticket and schedule_item have to be specified when using factory
+    """
+    class Meta:
+        model = models.ScheduleItemAttendance
+
+    account = factory.SelfAttribute('account_schedule_event_ticket.account')
+    attendance_type = 'SCHEDULE_EVENT_TICKET'
+    date = factory.SelfAttribute('schedule_item.date_start')
+    online_booking = False
+    booking_status = "ATTENDING"
+
+
+class ScheduleEventTicketScheduleItemIncludedFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.ScheduleEventTicketScheduleItem
+
+    included = True
 
     
 class ScheduleItemTeacherFactory(factory.DjangoModelFactory):

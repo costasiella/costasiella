@@ -32,18 +32,18 @@ class GQLFinanceTaxRate(TestCase):
         self.variables_create = {
             "input": {
                 "name": "BTW 21%",
-                "percentage": 21,
+                "percentage": "21",
                 "rateType": "IN",
-                "code" : "8000"
+                "code": "8000"
             }
         }
 
         self.variables_update = {
             "input": {
                 "name": "BTW 9%",
-                "percentage": 9,
+                "percentage": "9",
                 "rateType": "IN",
-                "code" : "9000"
+                "code": "9000"
             }
         }
 
@@ -134,7 +134,6 @@ class GQLFinanceTaxRate(TestCase):
         # This is run after every test
         pass
 
-
     def get_node_id_of_first_taxrate(self):
         # query taxrates to get node id easily
         variables = {
@@ -144,7 +143,6 @@ class GQLFinanceTaxRate(TestCase):
         data = executed.get('data')
         
         return data['financeTaxRates']['edges'][0]['node']['id']
-
 
     def test_query(self):
         """ Query list of taxrates """
@@ -158,10 +156,10 @@ class GQLFinanceTaxRate(TestCase):
         data = executed.get('data')
         self.assertEqual(data['financeTaxRates']['edges'][0]['node']['name'], taxrate.name)
         self.assertEqual(data['financeTaxRates']['edges'][0]['node']['archived'], taxrate.archived)
-        self.assertEqual(data['financeTaxRates']['edges'][0]['node']['percentage'], taxrate.percentage)
+        self.assertEqual(data['financeTaxRates']['edges'][0]['node']['percentage'],
+                         format(taxrate.percentage, ".2f"))
         self.assertEqual(data['financeTaxRates']['edges'][0]['node']['rateType'], taxrate.rate_type)
         self.assertEqual(data['financeTaxRates']['edges'][0]['node']['code'], taxrate.code)
-
 
     def test_query_permission_denied(self):
         """ Query list of taxrates - check permission denied """
@@ -199,10 +197,10 @@ class GQLFinanceTaxRate(TestCase):
         # List all taxrates
         self.assertEqual(data['financeTaxRates']['edges'][0]['node']['name'], taxrate.name)
         self.assertEqual(data['financeTaxRates']['edges'][0]['node']['archived'], taxrate.archived)
-        self.assertEqual(data['financeTaxRates']['edges'][0]['node']['percentage'], taxrate.percentage)
+        self.assertEqual(data['financeTaxRates']['edges'][0]['node']['percentage'],
+                         format(taxrate.percentage, ".2f"))
         self.assertEqual(data['financeTaxRates']['edges'][0]['node']['rateType'], taxrate.rate_type)
         self.assertEqual(data['financeTaxRates']['edges'][0]['node']['code'], taxrate.code)
-
 
     def test_query_anon_user(self):
         """ Query list of taxrates - anon user """
@@ -216,7 +214,6 @@ class GQLFinanceTaxRate(TestCase):
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Not logged in!')
 
-
     def test_query_one(self):
         """ Query one taxrate as admin """   
         taxrate = f.FinanceTaxRateFactory.create()
@@ -229,10 +226,9 @@ class GQLFinanceTaxRate(TestCase):
         data = executed.get('data')
         self.assertEqual(data['financeTaxRate']['name'], taxrate.name)
         self.assertEqual(data['financeTaxRate']['archived'], taxrate.archived)
-        self.assertEqual(data['financeTaxRate']['percentage'], taxrate.percentage)
+        self.assertEqual(data['financeTaxRate']['percentage'], format(taxrate.percentage, ".2f"))
         self.assertEqual(data['financeTaxRate']['rateType'], taxrate.rate_type)
         self.assertEqual(data['financeTaxRate']['code'], taxrate.code)
-
 
     def test_query_one_anon_user(self):
         """ Deny permission for anon users Query one glacount """   
@@ -245,7 +241,6 @@ class GQLFinanceTaxRate(TestCase):
         executed = execute_test_client_api_query(self.taxrate_query, self.anon_user, variables={"id": node_id})
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Not logged in!')
-
 
     def test_query_one_permission_denied(self):
         """ Permission denied message when user lacks authorization """   

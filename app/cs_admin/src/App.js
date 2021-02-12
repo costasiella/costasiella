@@ -2,7 +2,7 @@ import Cookies from 'js-cookie'
 import React from 'react'
 import { ApolloProvider } from "react-apollo"
 import ApolloClient from "apollo-boost"
-import { Observable } from 'apollo-link';
+import { Observable } from 'apollo-link'
 
 import { TOKEN_REFRESH } from "./queries/system/auth"
 // Import moment locale
@@ -44,6 +44,12 @@ function processClientError({ networkError, graphQLErrors, operation, forward, r
   console.log(graphQLErrors)
   console.log(forward)
   console.log(response)
+  // request size check
+  if (graphQLErrors[0].message == "Request body exceeded settings.DATA_UPLOAD_MAX_MEMORY_SIZE.") {
+    console.error('CHOSEN FILE EXCEEDS SIZE LIMIT')
+  }
+
+  // Token refresh / re-auth check
   let i
   for (i = 0; i < response.errors.length; i++) {
     if (response.errors[i].extensions && response.errors[i].extensions.code === CSEC.USER_NOT_LOGGED_IN) {
@@ -125,7 +131,6 @@ async function getCsrfToken() {
 }
 
 // set up ApolloClient
-// TODO: Set up token expiration and auto refresh if possible and redirect to login if refresh token is expired.
 const client = new ApolloClient({
   // uri: "http://localhost:8000/graphql/",
   uri: "/d/graphql/",

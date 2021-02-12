@@ -104,10 +104,10 @@ class FinanceInvoiceEditOptions extends Component {
               </Formik>
             )}
           </Mutation>
-          <Form.Label>
+          {/* <Form.Label>
             {t('general.last_updated_at')}
           </Form.Label>
-            {moment(initialData.financeInvoice.updatedAt).format('LL')}
+            {moment(initialData.financeInvoice.updatedAt).format('LL')} */}
         </Card.Body>
       </Card>
     )

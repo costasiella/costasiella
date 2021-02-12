@@ -11,6 +11,11 @@ export const GET_ORGANIZATION_QUERY = gql`
       email
       registration
       taxRegistration
+      urlLogoLogin
+      urlLogoInvoice
+      urlLogoEmail
+      urlLogoShopHeader
+      urlLogoSelfCheckin
     }
   }
 `

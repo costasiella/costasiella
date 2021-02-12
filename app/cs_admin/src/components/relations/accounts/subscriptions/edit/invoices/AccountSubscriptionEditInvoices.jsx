@@ -11,6 +11,7 @@ import { v4 } from 'uuid'
 import { Formik } from 'formik'
 import { toast } from 'react-toastify'
 import FinanceInvoicesStatus from "../../../../../ui/FinanceInvoiceStatus"
+import ButtonAddSecondaryMenu from '../../../../../ui/ButtonAddSecondaryMenu'
 
 import AppSettingsContext from '../../../../../context/AppSettingsContext'
 
@@ -31,7 +32,6 @@ import {
 import CSLS from "../../../../../../tools/cs_local_storage"
 import AccountSubscriptionEditInvoiceDelete from "./AccountSubscriptionEditInvoiceDelete"
 import AccountSubscriptionEditListBase from "../AccountSubscriptionEditListBase"
-import AccountSubscriptionEditButtonAdd from "../AccountSubscriptionEditButtonAdd"
 // import AccountSubscriptionEditCreditDelete from "./AccountSubscriptionEditCreditDelete"
 import moment from 'moment';
 
@@ -49,7 +49,7 @@ function AccountSubscriptionEditInvoices({t, location, match, history}) {
   const returnUrl = `/relations/accounts/${accountId}/subscriptions`
   const activeTab = "invoices"
 
-  const buttonAdd = <AccountSubscriptionEditButtonAdd 
+  const buttonAdd = <ButtonAddSecondaryMenu 
                      linkTo={`/relations/accounts/${accountId}/subscriptions/edit/${subscriptionId}/invoices/add`} />
 
   const { loading, error, data, fetchMore } = useQuery(GET_FINANCE_INVOICE_ITEM_QUERY, {

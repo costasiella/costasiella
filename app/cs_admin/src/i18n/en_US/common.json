@@ -142,7 +142,10 @@
                 "toast_edit_success": "Saved payment",
                 "add": "Add payment",
                 "edit": "Edit payment"
-            }
+            },
+            "cancel_and_create_credit_invoice": "Cancel and create credit invoice",
+            "now_editing_credit_invoice": "You're now editing the credit invoice",
+            "credit_invoice_for": "Credit invoice for"
         },
         "orders": {
             "title": "Orders",
@@ -360,7 +363,31 @@
         "subtract": "Subtract",
         "new_task": "New task",
         "credits_remaining": "Credits remaining",
-        "month": "Month"
+        "month": "Month",
+        "confirm_archive": "Confirm archival",
+        "confirm_archive_no": "No, keep it here",
+        "confirm_archive_yes": "Yes, archive it",
+        "confirm_unarchive": "Confirm restore",
+        "confirm_unarchive_no": "No, keep it here",
+        "confirm_unarchive_yes": "Yes, restore it",
+        "unarchive": "Restore",
+        "tagline": "Tagline",
+        "preview": "Preview",
+        "infoMailContent": "Info mail content",
+        "start": "Start",
+        "edit_menu": "Edit menu",
+        "spaces": "Spaces",
+        "included": "Included",
+        "filled": "Filled",
+        "invoice": "Invoice",
+        "uncancel": "Uncancel",
+        "sold_out": "Sold out",
+        "please_select_a_file": "Please select a file",
+        "end": "End",
+        "ticket": "Ticket",
+        "welcome": "Welcome",
+        "backend": "Back end",
+        "tools": "Tools"
     },
     "yup": {
         "min_len_3": "Please input at least 3 characters",
@@ -588,7 +615,10 @@
             "title_edit": "Organization",
             "toast_edit_success": "Saved organization",
             "registration": "Registration ID",
-            "tax_registration": "Tax registration ID"
+            "tax_registration": "Tax registration ID",
+            "branding": {
+                "title": "Branding"
+            }
         },
         "documents": {
             "title": "Documents",
@@ -599,6 +629,15 @@
             "deleted": "Deleted document",
             "edit": "Edit document",
             "toast_edit_success": "Saved document"
+        },
+        "branding": {
+            "link_change": "Change",
+            "logo_login": "Logo login",
+            "toast_edit_success": "Saved",
+            "logo_invoice": "Logo Invoice",
+            "logo_email": "Logo email",
+            "logo_shop_header": "Logo shop header",
+            "logo_self_checkin": "Logo self check-in"
         }
     },
     "validity": {
@@ -753,7 +792,11 @@
                 "delete_confirm_msg": "Are you sure you with to delete this order?",
                 "delete_success": "Order deleted",
                 "empty_list": "No orders placed yet..."
-            }
+            },
+            "event_tickets": {
+                "title": "Event tickets"
+            },
+            "error_loading": "Error loading account info... :("
         }
     },
     "genders": {
@@ -865,12 +908,12 @@
                 "error_loading": "Error loading prices for this class :(",
                 "empty_list": "No prices have been defined for this class yet.",
                 "delete_confirm_msg": "Are you sure you wish to delete this price?",
-                "delete_confirm_description": "",
-                "deleted": "Deleted price",
                 "delete_success": "Deleted price"
             },
             "classpass_dropin": "Drop-in classpass",
-            "classpass_trial": "Trial classpass"
+            "classpass_trial": "Trial classpass",
+            "spaces": "Total spaces",
+            "spaces_walk_in": "Walk-in spaces (Not bookable online)"
         },
         "appointments": {
             "title": "Appointments",
@@ -894,6 +937,77 @@
             "select_weekly": "__STRING_NOT_TRANSLATED__",
             "frequencyInterval": "__STRING_NOT_TRANSLATED__",
             "placeholder_enddate": "__STRING_NOT_TRANSLATED__"
+        },
+        "events": {
+            "title": "Events",
+            "add": "Add event",
+            "error_loading": "Error loading events :(",
+            "toast_add_success": "Added event",
+            "archive_confirm_msg": "Do you wish to archive this event?",
+            "unarchive_confirm_msg": "Do you wish to restore this event?",
+            "public": "This is a public event",
+            "shop": "This event is shown in the shop",
+            "auto_send_info_mail": "Auto send info mail",
+            "error_loading_data": "Error loading event data :(",
+            "tickets": {
+                "toast_add_success": "Added ticket",
+                "delete_confirm_msg": "Do you wish to delete this ticket?",
+                "delete_success": "Deleted ticket",
+                "toast_edit_success": "Saved",
+                "add": "Add ticket",
+                "edit": "Edit ticket",
+                "public": "This is a public ticket",
+                "empty_list": "No tickets have been created yet for this event.",
+                "title": "Tickets",
+                "edit_menu": {
+                    "general": "General",
+                    "activities": "Activities",
+                    "customers": "Customers",
+                    "attendance": "Attendance"
+                },
+                "activities": {
+                    "toast_edit_success": "Saved"
+                },
+                "customers": {
+                    "search_results_already_bought": "Already bought this ticket",
+                    "toast_add_success": "Added customer",
+                    "uncancelled": "Uncancelled",
+                    "cancelled": "Cancelled"
+                },
+                "info_mail_sent": "Info mail sent"
+            },
+            "edit": {
+                "title": "Edit event"
+            },
+            "toast_edit_success": "Saved",
+            "activities": {
+                "title": "Activities",
+                "add": "Add activity",
+                "toast_add_success": "Added activity",
+                "delete_confirm_msg": "Are you sure you wish to delete this activity?",
+                "delete_success": "Deleted activity",
+                "edit": "Edit activity",
+                "toast_edit_success": "Saved",
+                "public": "This is a public activity",
+                "attendance": {
+                    "empty_list": "No attendance has been registered for this activity yet."
+                }
+            },
+            "media": {
+                "title": "Images",
+                "add": "Add event image",
+                "empty_list": "No media has been added yet for this event",
+                "toast_add_success": "Added media",
+                "delete_confirm_msg": "Are you sure you wish to delete this event image?",
+                "delete_success": "Deleted event image",
+                "edit": "Edit event image",
+                "toast_edit_success": "Saved"
+            }
+        },
+        "event": {
+            "location_please_select": "Please select...",
+            "teacher_please_select": "Please select...",
+            "error_loading": "Error loading event... :("
         }
     },
     "countries": {
@@ -1277,6 +1391,15 @@
             "password_current": "Current password",
             "password_new": "New password",
             "password_new_repeat": "New password (again)"
+        },
+        "welcome": {
+            "where_next_question": "Where would you like to go next?",
+            "shop_explanation": "Shop and your personal profile.",
+            "shop_to": "Go to shop",
+            "backend_explantion": "Organization management.",
+            "backend_to": "Go to back end",
+            "selfcheckin_explantion": "Customer self service check-in.",
+            "selfcheckin_to": "Go to self check-in"
         }
     },
     "insight": {
@@ -1460,6 +1583,12 @@
                 "explanation": "View your current and past subscriptions",
                 "error_loading_data": "Error loading subscriptions... :(",
                 "empty_list": "No subcsriptions found."
+            },
+            "event_tickets": {
+                "title": "Event tickets",
+                "explanation": "View your upcoming and past event tickets",
+                "error_loading_data": "Error loading your tickets... :(",
+                "empty_list": "No tickets found"
             }
         },
         "accounts": {
@@ -1496,6 +1625,23 @@
         "subscription": {
             "error_loading": "Error loading subscription information...:(",
             "additional_information": "Additional information"
+        },
+        "events": {
+            "title": "Events",
+            "tell_me_more": "Tell me more",
+            "ticket": {
+                "additional_info": "Additional info",
+                "sold_out": "Our apologies, this ticket is sold out. Please use the back button to see if other tickets are still available.",
+                "sold_out_title": "Ticket sold out",
+                "no_additional_info": "No additional info has been set for this ticket."
+            }
+        },
+        "event": {
+            "error_loading": "Error loading event... :(",
+            "tickets": "Tickets",
+            "ticket": {
+                "choose": "Choose"
+            }
         }
     },
     "You've already booked this class ": "You've already booked this class",
@@ -1544,5 +1690,8 @@
                 "revoked": "Revoked"
             }
         }
+    },
+    "error_messages": {
+        "selected_file_exceeds_max_filesize": "The chosen file exceeds the size limit. Please select a file that's < 5MB"
     }
 }

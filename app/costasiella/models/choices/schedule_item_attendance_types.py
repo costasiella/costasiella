@@ -8,4 +8,5 @@ def get_schedule_item_attendance_types():
         ['COMPLEMENTARY', _("Complementary")],
         ['REVIEW', _("To be reviewed")],
         ['RECONCILE_LATER', _("Reconcile later")],
+        ['SCHEDULE_EVENT_TICKET', _("Schedule event ticket")]
     ]

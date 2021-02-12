@@ -87,7 +87,7 @@ class CreateOrganizationAppointmentPrice(graphene.relay.ClientIDMutation):
     class Input:
         organization_appointment = graphene.ID(required=True)
         account = graphene.ID(required=True)
-        price = graphene.Float(required=True, default_value=0)
+        price = graphene.Decimal(required=True, default_value=0)
         finance_tax_rate = graphene.ID(required=True)
    
     organization_appointment_price = graphene.Field(OrganizationAppointmentPriceNode)
@@ -114,7 +114,7 @@ class UpdateOrganizationAppointmentPrice(graphene.relay.ClientIDMutation):
     class Input:
         id = graphene.ID(required=True)
         account = graphene.ID(required=True)
-        price = graphene.Float(required=True, default_value=0)
+        price = graphene.Decimal(required=True, default_value=0)
         finance_tax_rate = graphene.ID(required=True)
         
     organization_appointment_price = graphene.Field(OrganizationAppointmentPriceNode)

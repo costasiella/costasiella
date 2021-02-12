@@ -8,11 +8,10 @@ export function dateToLocalISO(date) {
     }
 }
 
-
 export function dateToLocalISOTime(date) {
     if (date instanceof Date) {
         return date.getHours() + ':' + 
-               date.getMinutes()
+               ('0' + date.getMinutes()).slice(-2)
     } else {
         return date
     }

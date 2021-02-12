@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 from django.utils.translation import gettext as _
 
 import graphene
@@ -138,7 +140,6 @@ def validate_create_update_input(input, update=False):
             if not finance_costcenter:
                 raise Exception(_('Invalid Finance Costcenter ID!'))
 
-
     return result
 
 
@@ -147,8 +148,8 @@ class CreateFinanceInvoiceItem(graphene.relay.ClientIDMutation):
         finance_invoice = graphene.ID(required=True)
         product_name = graphene.String(required=False, default_value="")
         description = graphene.String(required=False, default_value="")
-        quantity = graphene.Float(required=False, default_value=0)
-        price = graphene.Float(required=False, default_value=0)
+        quantity = graphene.Decimal(required=False, default_value=Decimal(0))
+        price = graphene.Decimal(required=False, default_value=Decimal(0))
         finance_tax_rate = graphene.ID(required=False, default_value=None)
         finance_glaccount = graphene.ID(required=False)
         finance_costcenter = graphene.ID(required=False)
@@ -164,8 +165,8 @@ class CreateFinanceInvoiceItem(graphene.relay.ClientIDMutation):
         finance_invoice = validation_result['finance_invoice']
 
         finance_invoice_item = FinanceInvoiceItem(
-            finance_invoice = finance_invoice,
-            line_number = finance_invoice._get_item_next_line_nr()
+            finance_invoice=finance_invoice,
+            line_number=finance_invoice._get_item_next_line_nr()
         )
 
         if 'product_name' in input:
@@ -201,8 +202,8 @@ class UpdateFinanceInvoiceItem(graphene.relay.ClientIDMutation):
         line_number = graphene.Int(required=False)
         product_name = graphene.String(required=False)
         description = graphene.String(required=False)
-        quantity = graphene.Float(required=False)
-        price = graphene.Float(required=False)
+        quantity = graphene.Decimal(required=False)
+        price = graphene.Decimal(required=False)
         finance_tax_rate = graphene.ID(required=False)
         finance_glaccount = graphene.ID(required=False)
         finance_costcenter = graphene.ID(required=False)

@@ -86,6 +86,14 @@ const getNavBarItems = (t, user) => {
   })
 
   items.push({
+    value: t("shop.events.title"),
+    to: "/shop/events",
+    icon: "calendar",
+    LinkComponent: withRouter(NavLink),
+    useExact: true,
+  })
+
+  items.push({
     value: t("shop.account.title"),
     to: "/shop/account",
     icon: "user",
@@ -102,7 +110,6 @@ const getNavBarItems = (t, user) => {
   })
 
   return items
-
 }
 
 const now = new Date()
@@ -119,27 +126,28 @@ class SiteWrapperShop extends React.Component<Props, State> {
           
           console.log('user data in site wrapper')
           console.log(data)
-      
+
           return <Site.Wrapper
             headerProps={{
                 href: "/",
                 alt: "Costasiella",
                 imageURL: "/d/static/logos/stock/logo_stock_backend.svg", // Set logo url here
-                // navItems: (
-                  // Perhaps optional nav item to backend when someone has a back-end permission?
-                  // <Nav.Item type="div" className="d-none d-md-flex">
-                  //   <Link to="/settings/general">
-                  //     <Button
-                  //       icon="settings"
-                  //       outline
-                  //       size="sm"
-                  //       color="primary"
-                  //     >
-                  //       {this.props.t('general.settings')}
-                  //     </Button>
-                  //   </Link>
-                  // </Nav.Item>
-                // ),
+                navItems: (
+                  <Nav.Item type="div" className="d-none d-md-flex">
+                    {(data.user) ? (data.user.teacher || data.user.employee) ? <Link to="/user/welcome">
+                      <Button
+                        className="mr-2"
+                        icon="link"
+                        outline
+                        size="sm"
+                        color="primary"
+                      >
+                        {this.props.t('goto.title')}
+                      </Button>
+                    </Link> : "" : ""}
+                  </Nav.Item>
+                ),
+                
                 // notificationsTray: {
                 //   notificationsObjects,
                 //   markAllAsRead: () =>

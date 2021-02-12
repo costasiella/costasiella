@@ -434,7 +434,7 @@ class GQLAccountSubscription(TestCase):
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Not logged in!')
 
-    def test_create_location_permission_granted(self):
+    def test_create_subscription_permission_granted(self):
         """ Allow creating subscriptions for users with permissions """
         query = self.subscription_create_mutation
 

@@ -42,14 +42,14 @@ class GQLOrganizationClasspass(TestCase):
                 "displayShop": True,
                 "name": "First classpass",
                 "description": "Description",
-                "price": 125,
+                "price": "125",
                 "financeTaxRate": to_global_id("FinanceTaxRateNode", self.finance_tax_rate.pk),
                 "validity": 1,
                 "validityUnit": "MONTHS",
                 "classes": 10,
                 "unlimited": False,
                 "organizationMembership": to_global_id("OrganizationMembershipNode", self.organization_membership.pk),
-                "quickStatsAmount": 12.5,
+                "quickStatsAmount": "12.5",
                 "financeGlaccount": to_global_id("FinanceGLAccountNode", self.finance_glaccount.pk),
                 "financeCostcenter": to_global_id("FinanceCostCenterNode", self.finance_costcenter.pk),
             }
@@ -63,14 +63,14 @@ class GQLOrganizationClasspass(TestCase):
                 "trialTimes": 1,
                 "name": "Trial pass",
                 "description": "Description",
-                "price": 15,
+                "price": "15",
                 "financeTaxRate": to_global_id("FinanceTaxRateNode", self.finance_tax_rate.pk),
                 "validity": 1,
                 "validityUnit": "DAYS",
                 "classes": 1,
                 "unlimited": False,
                 "organizationMembership": to_global_id("OrganizationMembershipNode", self.organization_membership.pk),
-                "quickStatsAmount": 15,
+                "quickStatsAmount": "15",
                 "financeGlaccount": to_global_id("FinanceGLAccountNode", self.finance_glaccount.pk),
                 "financeCostcenter": to_global_id("FinanceCostCenterNode", self.finance_costcenter.pk),
             }
@@ -84,14 +84,14 @@ class GQLOrganizationClasspass(TestCase):
                 "trialTimes": 1,
                 "name": "Updated classpass",
                 "description": "Description",
-                "price": 125,
+                "price": "125" ,
                 "financeTaxRate": to_global_id("FinanceTaxRateNode", self.finance_tax_rate.pk),
                 "validity": 1,
                 "validityUnit": "MONTHS",
                 "classes": 10,
                 "unlimited": False,
                 "organizationMembership": to_global_id("OrganizationMembershipNode", self.organization_membership.pk),
-                "quickStatsAmount": 12.5,
+                "quickStatsAmount": "12.5",
                 "financeGlaccount": to_global_id("FinanceGLAccountNode", self.finance_glaccount.pk),
                 "financeCostcenter": to_global_id("FinanceCostCenterNode", self.finance_costcenter.pk),
             }
@@ -367,7 +367,8 @@ class GQLOrganizationClasspass(TestCase):
         self.assertEqual(data['organizationClasspasses']['edges'][0]['node']['trialTimes'], classpass.trial_times)
         self.assertEqual(data['organizationClasspasses']['edges'][0]['node']['name'], classpass.name)
         self.assertEqual(data['organizationClasspasses']['edges'][0]['node']['description'], classpass.description)
-        self.assertEqual(data['organizationClasspasses']['edges'][0]['node']['price'], classpass.price)
+        self.assertEqual(data['organizationClasspasses']['edges'][0]['node']['price'],
+                         format(classpass.price, ".2f"))
         self.assertEqual(data['organizationClasspasses']['edges'][0]['node']['priceDisplay'],
                          display_float_as_amount(classpass.price))
         self.assertEqual(data['organizationClasspasses']['edges'][0]['node']['financeTaxRate']['id'], 
@@ -381,7 +382,7 @@ class GQLOrganizationClasspass(TestCase):
         self.assertEqual(data['organizationClasspasses']['edges'][0]['node']['organizationMembership']['id'], 
                          to_global_id("OrganizationMembershipNode", classpass.organization_membership.pk))
         self.assertEqual(data['organizationClasspasses']['edges'][0]['node']['quickStatsAmount'],
-                         classpass.quick_stats_amount)
+                         format(classpass.quick_stats_amount, '.2f'))
         self.assertEqual(data['organizationClasspasses']['edges'][0]['node']['financeGlaccount']['id'], 
                          to_global_id("FinanceGLAccountNode", classpass.finance_glaccount.pk))
         self.assertEqual(data['organizationClasspasses']['edges'][0]['node']['financeCostcenter']['id'], 
@@ -477,7 +478,7 @@ class GQLOrganizationClasspass(TestCase):
         self.assertEqual(data['organizationClasspass']['displayShop'], classpass.display_shop)
         self.assertEqual(data['organizationClasspass']['name'], classpass.name)
         self.assertEqual(data['organizationClasspass']['description'], classpass.description)
-        self.assertEqual(data['organizationClasspass']['price'], classpass.price)
+        self.assertEqual(data['organizationClasspass']['price'], format(classpass.price, ".2f"))
         self.assertEqual(data['organizationClasspass']['priceDisplay'], display_float_as_amount(classpass.price))
         self.assertEqual(data['organizationClasspass']['financeTaxRate']['id'], 
           to_global_id("FinanceTaxRateNode", classpass.finance_tax_rate.pk))
@@ -488,7 +489,7 @@ class GQLOrganizationClasspass(TestCase):
         self.assertEqual(data['organizationClasspass']['unlimited'], classpass.unlimited)
         self.assertEqual(data['organizationClasspass']['organizationMembership']['id'], 
           to_global_id("OrganizationMembershipNode", classpass.organization_membership.pk))
-        self.assertEqual(data['organizationClasspass']['quickStatsAmount'], classpass.quick_stats_amount)
+        self.assertEqual(data['organizationClasspass']['quickStatsAmount'], format(classpass.quick_stats_amount, ".2f"))
         self.assertEqual(data['organizationClasspass']['financeGlaccount']['id'], 
           to_global_id("FinanceGLAccountNode", classpass.finance_glaccount.pk))
         self.assertEqual(data['organizationClasspass']['financeCostcenter']['id'], 

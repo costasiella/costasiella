@@ -12,8 +12,8 @@ class OrganizationAppointment(models.Model):
     archived = models.BooleanField(default=False)
     display_public = models.BooleanField(default=True)
     name = models.CharField(max_length=255)
-    finance_glaccount = models.ForeignKey(FinanceGLAccount, on_delete=models.CASCADE, null=True)
-    finance_costcenter = models.ForeignKey(FinanceCostCenter, on_delete=models.CASCADE, null=True)
+    finance_glaccount = models.ForeignKey(FinanceGLAccount, on_delete=models.SET_NULL, null=True)
+    finance_costcenter = models.ForeignKey(FinanceCostCenter, on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
         return self.organization_appointment_category.name + ' ' + 'Appointment' + ': ' + self.name

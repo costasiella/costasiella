@@ -72,6 +72,10 @@ const FinanceInvoiceEditSummary = ({ t, history, match, initialData }) => (
           </Formik>
         )}
       </Mutation>
+      {console.log(initialData)}
+      {(initialData.financeInvoice.creditInvoiceNumber) ?
+        t("finance.invoice.credit_invoice_for") + ": " + initialData.financeInvoice.creditInvoiceNumber
+      : ""}
     </Card.Body>
   </Card>
 )

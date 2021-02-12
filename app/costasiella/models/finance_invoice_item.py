@@ -4,6 +4,7 @@ from django.utils import timezone
 from django.db import models
 
 from .account_classpass import AccountClasspass
+from .account_schedule_event_ticket import AccountScheduleEventTicket
 from .account_subscription import AccountSubscription
 from .finance_costcenter import FinanceCostCenter
 from .finance_glaccount import FinanceGLAccount
@@ -13,6 +14,11 @@ from .finance_tax_rate import FinanceTaxRate
 
 class FinanceInvoiceItem(models.Model):
     finance_invoice = models.ForeignKey(FinanceInvoice, on_delete=models.CASCADE, related_name="items")
+    account_schedule_event_ticket = models.ForeignKey(AccountScheduleEventTicket,
+                                                      on_delete=models.SET_NULL,
+                                                      null=True,
+                                                      default=None,
+                                                      related_name="invoice_items")
     account_classpass = models.ForeignKey(AccountClasspass,
                                           on_delete=models.SET_NULL,
                                           null=True,
@@ -30,12 +36,12 @@ class FinanceInvoiceItem(models.Model):
     description = models.TextField(default="")
     quantity = models.DecimalField(max_digits=20, decimal_places=2)
     price = models.DecimalField(max_digits=20, decimal_places=2)
-    finance_tax_rate = models.ForeignKey(FinanceTaxRate, on_delete=models.CASCADE, null=True)
+    finance_tax_rate = models.ForeignKey(FinanceTaxRate, on_delete=models.SET_NULL, null=True)
     subtotal = models.DecimalField(max_digits=20, decimal_places=2, default=0)
     tax = models.DecimalField(max_digits=20, decimal_places=2, default=0)
     total = models.DecimalField(max_digits=20, decimal_places=2, default=0)
-    finance_glaccount = models.ForeignKey(FinanceGLAccount, on_delete=models.CASCADE, null=True)
-    finance_costcenter = models.ForeignKey(FinanceCostCenter, on_delete=models.CASCADE, null=True)
+    finance_glaccount = models.ForeignKey(FinanceGLAccount, on_delete=models.SET_NULL, null=True)
+    finance_costcenter = models.ForeignKey(FinanceCostCenter, on_delete=models.SET_NULL, null=True)
 
     class Meta:
         ordering = ("finance_invoice", "line_number",)

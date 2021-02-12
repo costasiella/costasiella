@@ -1,6 +1,6 @@
 // @flow
 
-import React, {Component } from 'react'
+import React, { useContext } from 'react'
 import gql from "graphql-tag"
 import { useQuery, useMutation } from "react-apollo";
 import { withTranslation } from 'react-i18next'
@@ -10,6 +10,7 @@ import { ToastContainer } from 'react-toastify'
 import { toast } from 'react-toastify'
 
 import { PASSWORD_CHANGE_SCHEMA } from './yupSchema'
+import OrganizationContext from '../../context/OrganizationContext'
 
 import {
   Button,
@@ -24,13 +25,18 @@ import { UPDATE_ACCOUNT_PASSWORD } from "../../../queries/system/auth"
 import CSLS from "../../../tools/cs_local_storage"
 import UserPasswordChangeForm from './UserPasswordChangeForm';
 
+import CSStandaloneFormPage from "../../ui/CSStandaloneFormPage"
+
 
 function UserChangePassword({t, match, history}) {
+  const organization = useContext(OrganizationContext)
+  console.log(organization)
+
   let errorMessage
   const [updatePassword, { data }] = useMutation(UPDATE_ACCOUNT_PASSWORD)
 
   return (
-    <StandaloneFormPage imageURL="">
+    <CSStandaloneFormPage urlLogo={organization.urlLogoLogin} >
       {/* TODO: point imageURL to logo */}
       <Formik
         initialValues={{ 
@@ -114,8 +120,7 @@ function UserChangePassword({t, match, history}) {
       >
         {t('general.cancel')}
       </Button>
-      <ToastContainer autoClose={5000}/>
-    </StandaloneFormPage>
+    </CSStandaloneFormPage>
   )
 }
 

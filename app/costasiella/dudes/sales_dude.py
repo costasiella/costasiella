@@ -132,3 +132,102 @@ class SalesDude:
         finance_invoice_item = finance_invoice.item_add_subscription(account_subscription, year, month)
 
         return finance_invoice_item
+
+    def _sell_schedule_event_ticket_send_info_mail(self, account, account_schedule_event_ticket):
+        """
+        Send info mail to customer, if configured.
+        :param account: models.Account object
+        :param account_schedule_event_ticket: models.AccountScheduleEventTicket object
+        :return:
+        """
+        from ..dudes.mail_dude import MailDude
+
+        mail_dude = MailDude(account=account,
+                             email_template="event_info_mail",
+                             account_schedule_event_ticket=account_schedule_event_ticket)
+        mail_dude.send()
+
+    def sell_schedule_event_ticket(self,
+                                   account,
+                                   schedule_event_ticket,
+                                   create_invoice=True):
+        """
+        Sell subscription to account
+        """
+        from ..models.account_schedule_event_ticket import AccountScheduleEventTicket
+        from ..models.schedule_item_attendance import ScheduleItemAttendance
+
+        schedule_event = schedule_event_ticket.schedule_event
+        account_schedule_event_ticket = AccountScheduleEventTicket(
+            account=account,
+            schedule_event_ticket=schedule_event_ticket
+        )
+
+        # set date end & save
+        account_schedule_event_ticket.save()
+
+        # Send info mail... if auto send mail is enabled
+        print("sending mail")
+        if schedule_event.auto_send_info_mail:
+            self._sell_schedule_event_ticket_send_info_mail(
+                account=account,
+                account_schedule_event_ticket=account_schedule_event_ticket
+            )
+
+        print('creating invoice...')
+        finance_invoice_item = None
+        if create_invoice:
+            print('still alive')
+            finance_invoice_item = self._sell_schedule_event_ticket_create_invoice(account_schedule_event_ticket)
+
+        # Add account to schedule_item_attendance
+        for schedule_item in schedule_event_ticket.schedule_items.all():
+            schedule_item_attendance = ScheduleItemAttendance(
+                account=account,
+                schedule_item=schedule_item,
+                account_schedule_event_ticket=account_schedule_event_ticket,
+                finance_invoice_item=finance_invoice_item,
+                attendance_type="SCHEDULE_EVENT_TICKET",
+                booking_status="BOOKED",
+                date=schedule_item.date_start
+            )
+            schedule_item_attendance.save()
+
+        return {
+            "account_schedule_event_ticket": account_schedule_event_ticket,
+            "finance_invoice_item": finance_invoice_item
+        }
+
+    @staticmethod
+    def _sell_schedule_event_ticket_create_invoice(account_schedule_event_ticket):
+        """
+        Create an invoice for sold subscription.
+        This function should only be used for the 1st invoice for a subscription
+        """
+        from ..models.finance_invoice_group_default import FinanceInvoiceGroupDefault
+        from ..models.finance_invoice import FinanceInvoice
+
+        finance_invoice_group_default = FinanceInvoiceGroupDefault.objects.filter(item_type="EVENT_TICKETS").first()
+        finance_invoice_group = finance_invoice_group_default.finance_invoice_group
+        print("invoice group")
+        print(finance_invoice_group)
+
+        finance_invoice = FinanceInvoice(
+            account=account_schedule_event_ticket.account,
+            finance_invoice_group=finance_invoice_group,
+            summary=_("Event ticket: %s - %s" % (
+                account_schedule_event_ticket.schedule_event_ticket.schedule_event.name,
+                account_schedule_event_ticket.schedule_event_ticket.name
+            )),
+            status="SENT",
+            terms=finance_invoice_group.terms,
+            footer=finance_invoice_group.footer
+        )
+
+        # Save invoice
+        finance_invoice.save()
+
+        # Add invoice item
+        finance_invoice_item = finance_invoice.item_add_schedule_event_ticket(account_schedule_event_ticket)
+
+        return finance_invoice_item

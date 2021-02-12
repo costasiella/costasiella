@@ -20,7 +20,7 @@ import {
 // import ISO_COUNTRY_CODES from "../../../tools/iso_country_codes"
 
 
-const UserLoginForm = ({ t, history, isSubmitting, errors, values, return_url, setFieldTouched, setFieldValue }) => (
+const UserLoginForm = ({ t, history, isSubmitting, errors }) => (
   <FoForm className="card" autoComplete="off">
     <Card.Body className="p-6">
       <Card.Title>

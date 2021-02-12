@@ -2,6 +2,7 @@ from django.db import models
 
 from .organization_subscription import OrganizationSubscription
 
+
 class OrganizationSubscriptionGroup(models.Model):
     archived = models.BooleanField(default=False)
     name = models.CharField(max_length=255)
@@ -13,4 +14,3 @@ class OrganizationSubscriptionGroup(models.Model):
 
     def __str__(self):
         return self.name
-        

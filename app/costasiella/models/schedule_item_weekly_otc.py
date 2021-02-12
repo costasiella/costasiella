@@ -39,6 +39,10 @@ class ScheduleItemWeeklyOTC(models.Model):
     organization_level = models.ForeignKey(OrganizationLevel, on_delete=models.SET_NULL, null=True)   
     time_start = models.TimeField(null=True)
     time_end = models.TimeField(null=True)
+    spaces = models.IntegerField(null=True, default=0,
+                                 help_text="Total spaces for this class.")
+    walk_in_spaces = models.IntegerField(null=True, default=0,
+                                         help_text="Number of walk-in spaces (Can't be booked online).")
     info_mail_content = models.TextField(default="")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

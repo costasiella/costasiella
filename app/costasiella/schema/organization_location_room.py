@@ -42,10 +42,14 @@ class OrganizationLocationRoomQuery(graphene.ObjectType):
         ## return everything:
         if user.has_perm('costasiella.view_organizationlocationroom') or \
            user.has_perm('costasiella.view_selfcheckin'):
-            return OrganizationLocationRoom.objects.filter(archived = archived).order_by('organization_location__name', 'name')
+            return OrganizationLocationRoom.objects.filter(
+                archived=archived
+            ).order_by('organization_location__name', 'name')
 
         # Return only public non-archived rooms
-        return OrganizationLocationRoom.objects.filter(display_public = True, archived = False).order_by('organization_location__name', 'name')
+        return OrganizationLocationRoom.objects.filter(
+            display_public=True, archived=False
+        ).order_by('organization_location__name', 'name')
             
 
 class CreateOrganizationLocationRoom(graphene.relay.ClientIDMutation):

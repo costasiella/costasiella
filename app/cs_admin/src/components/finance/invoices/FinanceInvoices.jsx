@@ -55,7 +55,7 @@ function FinanceInvoices({ t, location, history }) {
                 </Link>
               </div>
           </Page.Header>
-              <Query query={GET_INVOICES_QUERY} variables={get_list_query_variables()} pollInterval={2000}>
+              <Query query={GET_INVOICES_QUERY} variables={get_list_query_variables()} fetchPolicy="network-only">
               {({ loading, error, data: {financeInvoices: invoices}, refetch, fetchMore }) => {
                   // Loading
                   if (loading) return (

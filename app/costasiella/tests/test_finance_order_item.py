@@ -140,13 +140,18 @@ class GQLFinanceOrderItem(TestCase):
         )
         self.assertEqual(data['financeOrderItems']['edges'][0]['node']['productName'], order_item.product_name)
         self.assertEqual(data['financeOrderItems']['edges'][0]['node']['description'], order_item.description)
-        self.assertEqual(data['financeOrderItems']['edges'][0]['node']['quantity'], order_item.quantity)
-        self.assertEqual(data['financeOrderItems']['edges'][0]['node']['price'], order_item.price)
+        self.assertEqual(data['financeOrderItems']['edges'][0]['node']['quantity'],
+                         format(order_item.quantity, ".2f"))
+        self.assertEqual(data['financeOrderItems']['edges'][0]['node']['price'],
+                         format(order_item.price, ".2f"))
         self.assertEqual(data['financeOrderItems']['edges'][0]['node']['financeTaxRate']['id'],
                          to_global_id('FinanceTaxRateNode', order_item.finance_tax_rate.id))
-        self.assertEqual(data['financeOrderItems']['edges'][0]['node']['subtotal'], round(order_item.subtotal, 2))
-        self.assertEqual(data['financeOrderItems']['edges'][0]['node']['tax'], round(order_item.tax, 2))
-        self.assertEqual(data['financeOrderItems']['edges'][0]['node']['total'], round(order_item.total, 2))
+        self.assertEqual(data['financeOrderItems']['edges'][0]['node']['subtotal'],
+                         format(order_item.subtotal, ".2f"))
+        self.assertEqual(data['financeOrderItems']['edges'][0]['node']['tax'],
+                         format(order_item.tax, ".2f"))
+        self.assertEqual(data['financeOrderItems']['edges'][0]['node']['total'],
+                         format(order_item.total, ".2f"))
         self.assertEqual(data['financeOrderItems']['edges'][0]['node']['financeGlaccount']['id'],
                          to_global_id('FinanceGLAccountNode', order_item.finance_glaccount.id))
         self.assertEqual(data['financeOrderItems']['edges'][0]['node']['financeCostcenter']['id'],

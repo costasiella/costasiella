@@ -10,9 +10,10 @@ import { v4 } from 'uuid'
 
 import { Formik } from 'formik'
 import { toast } from 'react-toastify'
-import SubscriptionCreditsMutationType from "../../../../../ui/SubscriptionCreditsMutationType"
+import ButtonAddSecondaryMenu from '../../../../../ui/ButtonAddSecondaryMenu'
 
 import AppSettingsContext from '../../../../../context/AppSettingsContext'
+
 
 import { GET_ACCOUNT_SUBSCRIPTION_PAUSES_QUERY } from './queries'
 
@@ -27,7 +28,6 @@ import {
 } from "tabler-react";
 // import HasPermissionWrapper from "../../../../HasPermissionWrapper"
 import AccountSubscriptionEditListBase from "../AccountSubscriptionEditListBase"
-import AccountSubscriptionEditButtonAdd from "../AccountSubscriptionEditButtonAdd"
 import AccountSubscriptionEditPauseDelete from "./AccountSubscriptionEditPauseDelete"
 import moment from 'moment';
 
@@ -45,7 +45,7 @@ function AccountSubscriptionEditPauses({t, match, history}) {
   const returnUrl = `/relations/accounts/${accountId}/subscriptions`
   const activeTab = "pauses"
 
-  const buttonAdd = <AccountSubscriptionEditButtonAdd 
+  const buttonAdd = <ButtonAddSecondaryMenu 
                       linkTo={`/relations/accounts/${accountId}/subscriptions/edit/${subscriptionId}/pauses/add`} />
 
   const { loading, error, data, fetchMore } = useQuery(GET_ACCOUNT_SUBSCRIPTION_PAUSES_QUERY, {

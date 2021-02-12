@@ -10,7 +10,6 @@
 
 /* font classes end */
 
-
 /* Tabler changes begin */
 a:hover {
   text-decoration: none;
@@ -22,6 +21,20 @@ table .btn {
 
 .btn-link:hover {
   text-decoration: none !important;
+}
+
+.page-subtitle {
+  font-size: 1rem;
+  color: #6e7687;
+  margin-left: 0.7rem;
+}
+
+/* Add missing xs column media definition */
+@media (max-width: 575px) {
+  .col-xs-12 {
+    flex: 0 0 100%;
+    max-width: 100%
+  }
 }
 
 /* Tabler changes end */

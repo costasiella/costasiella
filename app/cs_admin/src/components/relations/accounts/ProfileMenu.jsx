@@ -18,6 +18,7 @@ let memberships_active
 let subscriptions_active
 let classpasses_active
 let classes_active
+let tickets_active
 let teacher_profile_active
 let orders_active
 let invoices_active
@@ -45,6 +46,7 @@ const ProfileMenu = ({ t, account_id, active_link }) => (
             {(active_link === 'subscriptions') ? subscriptions_active = true: subscriptions_active = false}
             {(active_link === 'classpasses') ? classpasses_active = true: classpasses_active = false}
             {(active_link === 'classes') ? classes_active = true: classes_active = false}
+            {(active_link === 'tickets') ? tickets_active = true: tickets_active = false}
             {(active_link === 'teacher_profile') ? teacher_profile_active = true: teacher_profile_active = false}
             {(active_link === 'orderss') ? orders_active = true: orders_active = false}
             {(active_link === 'invoices') ? invoices_active = true: invoices_active = false}
@@ -110,6 +112,19 @@ const ProfileMenu = ({ t, account_id, active_link }) => (
                     active={classes_active}
                     >
                 {t('relations.account.classes.title')}
+                </List.GroupItem>
+            </HasPermissionWrapper>
+            <HasPermissionWrapper 
+                permission="view"
+                resource="accountscheduleeventticket">
+                <List.GroupItem
+                    key={v4()}
+                    className="d-flex align-items-center"
+                    to={"#/relations/accounts/" + account_id + "/event_tickets"}
+                    icon="clipboard"
+                    active={tickets_active}
+                    >
+                {t('relations.account.event_tickets.title')}
                 </List.GroupItem>
             </HasPermissionWrapper>
             <HasPermissionWrapper 

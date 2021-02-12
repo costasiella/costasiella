@@ -31,6 +31,7 @@ function AccountClasses({ t, match, history }) {
   const account_id = match.params.account_id
   const { loading, error, data, fetchMore } = useQuery(GET_ACCOUNT_CLASSES_QUERY, {
     variables: {'account': account_id},
+    fetchPolicy: "network-only"
   })
 
   // Loading
@@ -173,58 +174,5 @@ function AccountClasses({ t, match, history }) {
   )
 }
 
-
-
-
-// const scheduleItemAttendances = ({ t, history, match, archived=false }) => (
-//   <SiteWrapper>
-//     <div className="my-3 my-md-5">
-//       <Query query={GET_ACCOUNT_CLASSPASSES_QUERY} variables={{ archived: archived, accountId: match.params.account_id }} pollInterval={5000}> 
-//         {({ loading, error, data, refetch, fetchMore }) => {
-//           // Loading
-//           if (loading) return <p>{t('general.loading_with_dots')}</p>
-//           // Error
-//           if (error) {
-//             console.log(error)
-//             return <p>{t('general.error_sad_smiley')}</p>
-//           }
-
-//           const account = data.account
-//           const scheduleItemAttendances = data.scheduleItemAttendances
-
-//           return (
-//             <Container>
-//               <Page.Header title={account.firstName + " " + account.lastName} >
-//                 <RelationsAccountsBack />
-//               </Page.Header>
-//               <Grid.Row>
-//                 <Grid.Col md={9}>
-
-//                 </Grid.Col>
-//                 <Grid.Col md={3}>
-//                   <ProfileCardSmall user={account}/>
-//                   <HasPermissionWrapper permission="add"
-//                                         resource="accountclasspass">
-//                     <Link to={"/relations/accounts/" + match.params.account_id + "/classpasses/add"}>
-//                       <Button color="primary btn-block mb-6">
-//                               {/* //  onClick={() => history.push("/organization/classpasses/add")}> */}
-//                         <Icon prefix="fe" name="plus-circle" /> {t('relations.account.classpasses.add')}
-//                       </Button>
-//                     </Link>
-//                   </HasPermissionWrapper>
-//                   <ProfileMenu 
-//                     active_link='classpasses' 
-//                     account_id={match.params.account_id}
-//                   />
-//                 </Grid.Col>
-//               </Grid.Row>
-//             </Container>
-//           )
-//         }}
-//       </Query>
-//     </div>
-//   </SiteWrapper>
-// )
-      
         
 export default withTranslation()(withRouter(AccountClasses))

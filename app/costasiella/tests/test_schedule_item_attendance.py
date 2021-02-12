@@ -22,6 +22,7 @@ class GQLScheduleItemAttendance(TestCase):
         'app_settings.json',
         'finance_invoice_group.json',
         'finance_invoice_group_defaults.json',
+        'organization.json',
         'system_mail_template.json'
     ]
 

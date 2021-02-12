@@ -158,7 +158,6 @@ class GQLScheduleItemTeacher(TestCase):
         # This is run after every test
         pass
 
-
     def test_query(self):
         """ Query list of schedule item teachers """
         schedule_item_teacher = f.ScheduleItemTeacherFactory.create()

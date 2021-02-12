@@ -8,6 +8,7 @@ from .organization_location_room import OrganizationLocationRoom
 from .organization_level import OrganizationLevel
 from .organization_classpass_group import OrganizationClasspassGroup
 from .organization_subscription_group import OrganizationSubscriptionGroup
+from .schedule_event import ScheduleEvent
 
 from .choices.teacher_roles import get_teacher_roles
 from .choices.schedule_item_otc_statuses import get_schedule_item_otc_statuses
@@ -15,6 +16,19 @@ from .choices.schedule_item_frequency_types import get_schedule_item_frequency_t
 
 
 class ScheduleItem(models.Model):
+    """
+    WEEKLY RECURRING items:
+    frequency_type = WEEKLY
+    frequency_interval = 1..7 (1 = Monday)
+    date_start = datetime.date (recurring start)
+    date_end = datetime.date (recurring end)
+
+    SINGLE item:
+    frequency_type = SPECIFIC
+    frequency_interval = 0 (unused)
+    date_start = datetime.date (of item)
+    date_end = None (unused)
+    """
     class Meta:
         permissions = [
             ('view_scheduleclass', _("Can view schedule class")),
@@ -29,6 +43,7 @@ class ScheduleItem(models.Model):
 
     SCHEDULE_ITEM_TYPES = (
         ('CLASS', _("Class")),
+        ('EVENT_ACTIVITY', _("Event Activity")),
         ('APPOINTMENT', _("Appointment"))
     )
 
@@ -43,18 +58,24 @@ class ScheduleItem(models.Model):
         (5, _("Friday")),
         (6, _("Saturday")),
         (7, _("Sunday")),
-        (7, _("Sunday")),
     )
 
     TEACHER_ROLES = get_teacher_roles()
     STATUSES = get_schedule_item_otc_statuses()
 
+    schedule_event = models.ForeignKey(ScheduleEvent, on_delete=models.CASCADE, null=True,
+                                       related_name="schedule_items")
     schedule_item_type = models.CharField(max_length=50, choices=SCHEDULE_ITEM_TYPES)
     frequency_type = models.CharField(max_length=50, choices=FREQUENCY_TYPES)
     frequency_interval = models.PositiveSmallIntegerField(choices=FREQUENCY_INTERVAL_OPTIONS)
     organization_location_room = models.ForeignKey(OrganizationLocationRoom, on_delete=models.CASCADE)
     organization_classtype = models.ForeignKey(OrganizationClasstype, on_delete=models.CASCADE, null=True)
-    organization_level = models.ForeignKey(OrganizationLevel, on_delete=models.CASCADE, null=True)
+    organization_level = models.ForeignKey(OrganizationLevel, on_delete=models.SET_NULL, null=True)
+    name = models.CharField(max_length=255, null=True)
+    spaces = models.IntegerField(null=True, default=0,
+                                 help_text="Total spaces for this class.")
+    walk_in_spaces = models.IntegerField(null=True, default=0,
+                                         help_text="Number of walk-in spaces (Can't be booked online).")
     date_start = models.DateField()
     date_end = models.DateField(default=None, null=True)
     time_start = models.TimeField()
@@ -71,6 +92,8 @@ class ScheduleItem(models.Model):
         related_name='subscription_groups'
     )
     info_mail_content = models.TextField(default="")
+    account = models.ForeignKey(Account, on_delete=models.SET_NULL, null=True, related_name="si_account")
+    account_2 = models.ForeignKey(Account, on_delete=models.SET_NULL, null=True, related_name="si_account_2")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     ################ BEGIN EMPTY FIELDS ################
@@ -79,12 +102,11 @@ class ScheduleItem(models.Model):
     # into these fields
     ####################################################
     status = models.CharField(max_length=255, default="", choices=STATUSES)
-    description = models.CharField(max_length=255, default="")
-    account = models.ForeignKey(Account, on_delete=models.SET_NULL, null=True, related_name="si_account")
     role = models.CharField(default="", max_length=50, choices=TEACHER_ROLES)
-    account_2 = models.ForeignKey(Account, on_delete=models.SET_NULL, null=True, related_name="si_account_2")
     role_2 = models.CharField(default="", max_length=50, choices=TEACHER_ROLES)
+    description = models.CharField(max_length=255, default="")
+    count_attendance = models.IntegerField(null=True)
     ################ END EMPTY FIELDS ##################
 
     def __str__(self):
-        return self.schedule_item_type + ' [' + str(self.date_start) + ']'
+        return str(self.id) + ": " + self.schedule_item_type + ' [' + str(self.date_start) + ']'

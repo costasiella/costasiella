@@ -20,12 +20,12 @@ class OrganizationMembership(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField()
     price = models.DecimalField(max_digits=20, decimal_places=2)
-    finance_tax_rate = models.ForeignKey(FinanceTaxRate, on_delete=models.CASCADE)
+    finance_tax_rate = models.ForeignKey(FinanceTaxRate, on_delete=models.SET_NULL, null=True)
     validity = models.PositiveIntegerField()
     validity_unit = models.CharField(max_length=10, choices=VALIDITY_UNITS, default="DAYS")
     terms_and_conditions = models.TextField()
-    finance_glaccount = models.ForeignKey(FinanceGLAccount, on_delete=models.CASCADE, null=True)
-    finance_costcenter = models.ForeignKey(FinanceCostCenter, on_delete=models.CASCADE, null=True)
+    finance_glaccount = models.ForeignKey(FinanceGLAccount, on_delete=models.SET_NULL, null=True)
+    finance_costcenter = models.ForeignKey(FinanceCostCenter, on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
         return self.name

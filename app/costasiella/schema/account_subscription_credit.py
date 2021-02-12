@@ -69,7 +69,7 @@ class CreateAccountSubscriptionCredit(graphene.relay.ClientIDMutation):
     class Input:
         account_subscription = graphene.ID(required=True)
         mutation_type = graphene.String(required=True)
-        mutation_amount = graphene.Float(required=True)
+        mutation_amount = graphene.Decimal(required=True)
         description = graphene.String(required=False, default_value="")
 
     account_subscription_credit = graphene.Field(AccountSubscriptionCreditNode)
@@ -98,7 +98,7 @@ class UpdateAccountSubscriptionCredit(graphene.relay.ClientIDMutation):
     class Input:
         id = graphene.ID(required=True)
         mutation_type = graphene.String(required=True)
-        mutation_amount = graphene.Float(required=True)
+        mutation_amount = graphene.Decimal(required=True)
         description = graphene.String(required=False, default_value="")
         
     account_subscription_credit = graphene.Field(AccountSubscriptionCreditNode)

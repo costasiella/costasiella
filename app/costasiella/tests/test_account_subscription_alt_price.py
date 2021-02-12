@@ -32,7 +32,7 @@ class GQLAccountSubscriptionAltPrice(TestCase):
             "input": {
                 "subscriptionYear": 2019,
                 "subscriptionMonth": 1,
-                "amount": 1,
+                "amount": "1",
                 "description": "Test description",
                 "note": "Test note"
             }
@@ -42,7 +42,7 @@ class GQLAccountSubscriptionAltPrice(TestCase):
             "input": {
                 "subscriptionYear": 2019,
                 "subscriptionMonth": 1,
-                "amount": 1,
+                "amount": "1",
                 "description": "Test description",
                 "note": "Test note"
             }
@@ -161,7 +161,7 @@ class GQLAccountSubscriptionAltPrice(TestCase):
         self.assertEqual(data['accountSubscriptionAltPrices']['edges'][0]['node']['subscriptionMonth'],
                          subscription_alt_price.subscription_month)
         self.assertEqual(data['accountSubscriptionAltPrices']['edges'][0]['node']['amount'],
-                         subscription_alt_price.amount)
+                         format(subscription_alt_price.amount, ".2f"))
         self.assertEqual(data['accountSubscriptionAltPrices']['edges'][0]['node']['description'],
                          subscription_alt_price.description)
         self.assertEqual(data['accountSubscriptionAltPrices']['edges'][0]['node']['note'],
@@ -243,7 +243,7 @@ class GQLAccountSubscriptionAltPrice(TestCase):
         self.assertEqual(data['accountSubscriptionAltPrice']['subscriptionMonth'],
                          subscription_alt_price.subscription_month)
         self.assertEqual(data['accountSubscriptionAltPrice']['amount'],
-                         subscription_alt_price.amount)
+                         format(subscription_alt_price.amount, ".2f"))
         self.assertEqual(data['accountSubscriptionAltPrice']['description'],
                          subscription_alt_price.description)
         self.assertEqual(data['accountSubscriptionAltPrice']['note'],

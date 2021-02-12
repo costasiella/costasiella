@@ -474,7 +474,7 @@ class GQLAccountClasspass(TestCase):
         self.assertEqual(errors[0]['message'], 'Not logged in!')
 
 
-    def test_create_location_permission_granted(self):
+    def test_create_classpass_permission_granted(self):
         """ Allow creating classpasses for users with permissions """
         query = self.classpass_create_mutation
 

@@ -43,8 +43,11 @@ class MailTemplateDude:
         """
         from ..models import SystemMailTemplate
 
+        print("mail template render called")
+
         functions = {
             "class_info_mail": self._render_class_info_mail,
+            "event_info_mail": self._render_event_info_mail,
             "order_received": self._render_template_order_received,
             "recurring_payment_failed": self._render_template_recurring_payment_failed,
         }
@@ -143,6 +146,72 @@ class MailTemplateDude:
             "class_time": class_time.strftime(self.app_settings_dude.time_format),
             "class_classtype": classtype,
             "class_location": location
+        })
+        description_template = Template(mail_template.description)
+        description = description_template.render(description_context)
+
+        # Render content
+        content_context = Context({
+            "mail_content": mail_content
+        })
+        content_template = Template(mail_template.content)
+        content = content_template.render(content_context)
+
+        return dict(
+            subject=mail_template.subject,
+            title=mail_template.title,
+            description=description,
+            content=content,
+            comments=mail_template.comments,
+            error=error,
+            error_message=error_message
+        )
+
+    def _render_event_info_mail(self):
+        """
+        Render info mail for an event
+        :return: HTML message
+        """
+        from ..models import SystemMailTemplate
+
+        app_settings_dude = AppSettingsDude()
+        # date_dude = DateToolsDude()
+        # Check if we have the required arguments
+        error = False
+        error_message = ""
+
+        account_schedule_event_ticket = self.kwargs.get('account_schedule_event_ticket', None)
+
+        if account_schedule_event_ticket is None:
+            raise Exception(
+                _("account_schedule_event_ticket is a required parameter \
+                for the class_info_mail template render function"))
+
+        schedule_event_ticket = account_schedule_event_ticket.schedule_event_ticket
+        schedule_event = schedule_event_ticket.schedule_event
+
+        # Fetch template
+        mail_template = SystemMailTemplate.objects.get(name="event_info_mail")
+        date_format = app_settings_dude.date_format
+        time_format = app_settings_dude.time_format
+
+        schedule_event_time_info = \
+            schedule_event.date_start.strftime(date_format) + " " + \
+            schedule_event.time_start.strftime(time_format) + " - " + \
+            schedule_event.date_end.strftime(date_format) + " " + \
+            schedule_event.time_end.strftime(time_format)
+
+        mail_content = schedule_event.info_mail_content
+
+        if not mail_content:
+            error = True
+            error_message = _("No mail content defined, no need to send a mail.")
+
+        # Render description
+        description_context = Context({
+            "schedule_event": schedule_event,
+            "schedule_event_ticket": schedule_event_ticket,
+            "schedule_event_time_info": schedule_event_time_info
         })
         description_template = Template(mail_template.description)
         description = description_template.render(description_context)

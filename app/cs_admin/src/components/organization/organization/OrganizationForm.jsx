@@ -12,9 +12,18 @@ import {
 
 import { Editor } from '@tinymce/tinymce-react'
 import { tinymceBasicConf } from "../../../plugin_config/tinymce"
+import { customFileInputLabelStyle } from "../../../tools/custom_file_input_label_style"
 
 
-const OrganizationForm = ({ t, history, isSubmitting, errors, values, setFieldTouched, setFieldValue }) => (
+const OrganizationForm = ({ 
+  t, 
+  history, 
+  isSubmitting, 
+  errors, 
+  values, 
+  setFieldTouched, 
+  setFieldValue,
+}) => (
     <FoForm>
       <Card.Body>
         <Form.Group label={t('general.name')}>

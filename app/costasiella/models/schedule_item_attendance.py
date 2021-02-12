@@ -7,6 +7,7 @@ from .schedule_item import ScheduleItem
 from .account import Account
 from .account_classpass import AccountClasspass
 from .account_subscription import AccountSubscription
+from .account_schedule_event_ticket import AccountScheduleEventTicket
 from .finance_invoice_item import FinanceInvoiceItem
 
 from .choices.schedule_item_attendance_types import get_schedule_item_attendance_types
@@ -27,6 +28,7 @@ class ScheduleItemAttendance(models.Model):
     schedule_item = models.ForeignKey(ScheduleItem, on_delete=models.CASCADE)
     account_classpass = models.ForeignKey(AccountClasspass, on_delete=models.CASCADE, null=True)
     account_subscription = models.ForeignKey(AccountSubscription, on_delete=models.CASCADE, null=True)
+    account_schedule_event_ticket = models.ForeignKey(AccountScheduleEventTicket, on_delete=models.CASCADE, null=True)
     finance_invoice_item = models.ForeignKey(FinanceInvoiceItem, on_delete=models.SET_NULL, null=True)
     # Set to True when account has membership at time of check-in
     account_has_membership = models.BooleanField(default=False)
@@ -38,5 +40,14 @@ class ScheduleItemAttendance(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return str(self.schedule_item.id) + ' [' + self.account.full_name + " - " + str(self.date) + '] ' + \
-               self.attendance_type
+        from django.forms.models import model_to_dict
+        data = model_to_dict(self)
+        values = ["-----", str(type(self)), "-----"]
+        for key, value in data.items():
+            values.append(f'{key}: {value}')
+
+        values.append("-----")
+        return "\n".join(values)
+
+        # return str(self.schedule_item.id) + ' [' + self.account.full_name + " - " + str(self.date) + '] ' + \
+        #        self.attendance_type

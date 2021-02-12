@@ -41,7 +41,7 @@ class GQLOrganizationMembership(TestCase):
                 "displayShop": True,
                 "name": "First membership",
                 "description": "Description",
-                "price": 12.50,
+                "price": "12.50",
                 "financeTaxRate": to_global_id("FinanceTaxRateNode", self.finance_tax_rate.pk),
                 "validity": 1,
                 "validityUnit": "MONTHS",
@@ -57,7 +57,7 @@ class GQLOrganizationMembership(TestCase):
                 "displayShop": True,
                 "name": "Updated membership",
                 "description": "Description",
-                "price": 12.50,
+                "price": "12.50",
                 "financeTaxRate": to_global_id("FinanceTaxRateNode", self.finance_tax_rate.pk),
                 "validity": 1,
                 "validityUnit": "MONTHS",
@@ -271,7 +271,6 @@ class GQLOrganizationMembership(TestCase):
         # This is run after every test
         pass
 
-
     def test_query(self):
         """ Query list of memberships """
         query = self.memberships_query
@@ -288,8 +287,9 @@ class GQLOrganizationMembership(TestCase):
         self.assertEqual(data['organizationMemberships']['edges'][0]['node']['displayShop'], membership.display_shop)
         self.assertEqual(data['organizationMemberships']['edges'][0]['node']['name'], membership.name)
         self.assertEqual(data['organizationMemberships']['edges'][0]['node']['description'], membership.description)
-        self.assertEqual(data['organizationMemberships']['edges'][0]['node']['price'], membership.price)
-        self.assertEqual(data['organizationMemberships']['edges'][0]['node']['priceDisplay'], display_float_as_amount(membership.price))
+        self.assertEqual(data['organizationMemberships']['edges'][0]['node']['price'], format(membership.price, ".2f"))
+        self.assertEqual(data['organizationMemberships']['edges'][0]['node']['priceDisplay'],
+                         display_float_as_amount(membership.price))
         self.assertEqual(data['organizationMemberships']['edges'][0]['node']['financeTaxRate']['id'], 
           to_global_id("FinanceTaxRateNode", membership.finance_tax_rate.pk))
         self.assertEqual(data['organizationMemberships']['edges'][0]['node']['validity'], membership.validity)
@@ -300,7 +300,6 @@ class GQLOrganizationMembership(TestCase):
           to_global_id("FinanceGLAccountNode", membership.finance_glaccount.pk))
         self.assertEqual(data['organizationMemberships']['edges'][0]['node']['financeCostcenter']['id'], 
           to_global_id("FinanceCostCenterNode", membership.finance_costcenter.pk))
-
 
     def test_query_permission_denied(self):
         """ Query list of memberships - check permission denied """
@@ -341,7 +340,7 @@ class GQLOrganizationMembership(TestCase):
         self.assertEqual(data['organizationMemberships']['edges'][0]['node']['displayShop'], membership.display_shop)
         self.assertEqual(data['organizationMemberships']['edges'][0]['node']['name'], membership.name)
         self.assertEqual(data['organizationMemberships']['edges'][0]['node']['description'], membership.description)
-        self.assertEqual(data['organizationMemberships']['edges'][0]['node']['price'], membership.price)
+        self.assertEqual(data['organizationMemberships']['edges'][0]['node']['price'], format(membership.price, ".2f"))
         self.assertEqual(data['organizationMemberships']['edges'][0]['node']['priceDisplay'], display_float_as_amount(membership.price))
         self.assertEqual(data['organizationMemberships']['edges'][0]['node']['financeTaxRate']['id'], 
           to_global_id("FinanceTaxRateNode", membership.finance_tax_rate.pk))
@@ -353,7 +352,6 @@ class GQLOrganizationMembership(TestCase):
           to_global_id("FinanceGLAccountNode", membership.finance_glaccount.pk))
         self.assertEqual(data['organizationMemberships']['edges'][0]['node']['financeCostcenter']['id'], 
           to_global_id("FinanceCostCenterNode", membership.finance_costcenter.pk))
-
 
     def test_query_anon_user(self):
         """ Query list of memberships - anon user """
@@ -387,7 +385,7 @@ class GQLOrganizationMembership(TestCase):
         self.assertEqual(data['organizationMembership']['displayShop'], membership.display_shop)
         self.assertEqual(data['organizationMembership']['archived'], membership.archived)
         self.assertEqual(data['organizationMembership']['name'], membership.name)
-        self.assertEqual(data['organizationMembership']['price'], membership.price)
+        self.assertEqual(data['organizationMembership']['price'], format(membership.price, ".2f"))
         self.assertEqual(data['organizationMembership']['priceDisplay'], display_float_as_amount(membership.price))
         self.assertEqual(data['organizationMembership']['financeTaxRate']['id'], 
           to_global_id("FinanceTaxRateNode", membership.finance_tax_rate.pk))

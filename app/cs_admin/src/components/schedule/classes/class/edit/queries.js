@@ -34,6 +34,8 @@ export const GET_SCHEDULE_CLASS_WEEKLY_OTCS_QUERY = gql`
           }
           timeStart
           timeEnd
+          spaces
+          walkInSpaces
           infoMailContent
         }
       }

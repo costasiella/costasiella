@@ -166,35 +166,6 @@ function ScheduleClassPrices({t, match, history}) {
                     <Table.Col>
                       <ScheduleClassPriceDelete id={node.id} />
                     </Table.Col>
-                    {/* <Mutation mutation={DELETE_SCHEDULE_CLASS_TEACHER} key={v4()}>
-                      {(deleteScheduleItemPrice, { data }) => (
-                        <Table.Col className="text-right" key={v4()}>
-                          <button className="icon btn btn-link btn-sm" 
-                              title={t('general.delete')} 
-                              href=""
-                              onClick={() => {
-                                confirm_delete({
-                                  t: t,
-                                  msgConfirm: t('schedule.classes.prices.delete_confirm_msg'),
-                                  msgDescription: <p>{t('schedule.classes.prices.delete_confirm_description')}</p>,
-                                  msgSuccess: t('schedule.classes.prices.deleted'),
-                                  deleteFunction: deleteScheduleItemPrice,
-                                  functionVariables: { variables: {
-                                    input: {
-                                      id: node.id
-                                    }
-                                  }, refetchQueries: [
-                                    {query: GET_SCHEDULE_CLASS_TEACHERS_QUERY, variables: { scheduleItem: match.params.class_id }}
-                                  ]}
-                              })}}
-                          >
-                            <span className="text-red">
-                              <Icon prefix="fe" name="trash-2" />
-                            </span>
-                          </button>
-                        </Table.Col>
-                      )}
-                    </Mutation> */}
                   </Table.Row>
                 ))}
               </Table.Body>

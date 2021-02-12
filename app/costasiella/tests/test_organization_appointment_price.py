@@ -44,7 +44,7 @@ class GQLOrganizationAppointmentPrice(TestCase):
             "input": {
                 "account": to_global_id('AccountNode', self.teacher.pk),
                 "organizationAppointment": to_global_id('OrganizationAppointmentNode', self.organization_appointment.pk),
-                "price": 200,
+                "price": "200",
                 "financeTaxRate": to_global_id('FinanceTaxRateNode', self.finance_tax_rate.pk)
             }
         }
@@ -53,7 +53,7 @@ class GQLOrganizationAppointmentPrice(TestCase):
             "input": {
                 "id": to_global_id('OrganizationAppointmentPriceNode', self.organization_appointment_price.pk),
                 "account": to_global_id('AccountNode', self.teacher.pk),
-                "price": 9876,
+                "price": "9876",
                 "financeTaxRate": to_global_id('FinanceTaxRateNode', self.finance_tax_rate.pk)
             }
         }
@@ -177,7 +177,6 @@ class GQLOrganizationAppointmentPrice(TestCase):
         # This is run after every test
         pass
 
-
     def test_query(self):
         """ Query list of appointments """
         query = self.appointment_prices_query
@@ -193,12 +192,12 @@ class GQLOrganizationAppointmentPrice(TestCase):
             data['organizationAppointmentPrices']['edges'][0]['node']['account']['id'], 
             to_global_id('AccountNode', self.organization_appointment_price.account.id)
         )
-        self.assertEqual(data['organizationAppointmentPrices']['edges'][0]['node']['price'], self.organization_appointment_price.price)
+        self.assertEqual(data['organizationAppointmentPrices']['edges'][0]['node']['price'],
+                         format(self.organization_appointment_price.price, ".2f"))
         self.assertEqual(
             data['organizationAppointmentPrices']['edges'][0]['node']['financeTaxRate']['id'], 
             to_global_id('FinanceTaxRateNode', self.organization_appointment_price.finance_tax_rate.id)
         )
-
 
     def test_query_permission_denied(self):
         """ Query list of appointment prices """
@@ -210,7 +209,6 @@ class GQLOrganizationAppointmentPrice(TestCase):
         errors = executed.get('errors')
 
         self.assertEqual(errors[0]['message'], 'Permission denied!')
-
 
     def test_query_permission_granted(self):
         """ Query list of appointment prices """
@@ -232,7 +230,6 @@ class GQLOrganizationAppointmentPrice(TestCase):
             to_global_id('AccountNode', self.organization_appointment_price.account.id)
         )
 
-
     def test_query_anon_user(self):
         """ Query list of appointment prices """
         query = self.appointment_prices_query
@@ -240,7 +237,6 @@ class GQLOrganizationAppointmentPrice(TestCase):
         executed = execute_test_client_api_query(query, self.anon_user, variables=self.variables_query_list)
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Not logged in!')
-
 
     def test_query_one(self):
         """ Query one appointment price """   
@@ -250,19 +246,16 @@ class GQLOrganizationAppointmentPrice(TestCase):
         # Now query single appointment price and check
         query = self.appointment_price_query
         executed = execute_test_client_api_query(query, self.admin_user, variables={"id": node_id})
-        print(executed)
         data = executed.get('data')
-
-        print(data)
 
         self.assertEqual(data['organizationAppointmentPrice']['organizationAppointment']['id'], 
           to_global_id('OrganizationAppointmentNode', self.organization_appointment_price.organization_appointment.pk))
         self.assertEqual(data['organizationAppointmentPrice']['account']['id'], 
           to_global_id('AccountNode', self.organization_appointment_price.account.pk))
-        self.assertEqual(data['organizationAppointmentPrice']['price'], self.organization_appointment_price.price)
+        self.assertEqual(data['organizationAppointmentPrice']['price'],
+                         format(self.organization_appointment_price.price, ".2f"))
         self.assertEqual(data['organizationAppointmentPrice']['financeTaxRate']['id'], 
           to_global_id('FinanceTaxRateNode', self.organization_appointment_price.finance_tax_rate.id))
-
 
     def test_query_one_anon_user(self):
         """ Deny permission for anon users Query one appointment price """   
@@ -274,7 +267,6 @@ class GQLOrganizationAppointmentPrice(TestCase):
         executed = execute_test_client_api_query(query, self.anon_user, variables={"id": node_id})
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Not logged in!')
-
 
     def test_query_one_permission_denied(self):
         """ Permission denied message when user lacks authorization """   
@@ -290,7 +282,6 @@ class GQLOrganizationAppointmentPrice(TestCase):
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Permission denied!')
 
-
     def test_query_one_permission_granted(self):
         """ Respond with data when user has permission """   
         user = f.RegularUserFactory.create()
@@ -305,8 +296,8 @@ class GQLOrganizationAppointmentPrice(TestCase):
         query = self.appointment_price_query
         executed = execute_test_client_api_query(query, user, variables={"id": node_id})
         data = executed.get('data')
-        self.assertEqual(data['organizationAppointmentPrice']['price'], self.organization_appointment_price.price)
-
+        self.assertEqual(data['organizationAppointmentPrice']['price'],
+                         format(self.organization_appointment_price.price, ".2f"))
 
     def test_create_appointment_price(self):
         """ Create a appointment price """

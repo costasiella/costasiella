@@ -68,6 +68,7 @@ export const GET_INVOICE_QUERY = gql`
       paidDisplay
       balance
       balanceDisplay
+      creditInvoiceNumber
       updatedAt
       items {
         edges {
@@ -170,6 +171,17 @@ export const UPDATE_INVOICE = gql`
       financeInvoice {
         id
         summary
+      }
+    }
+  }
+`
+
+
+export const CANCEL_AND_CREATE_CREDIT_INVOICE = gql`
+  mutation CancelAndCreateCreditFinanceInvoice($input: CancelAndCreateCreditFinanceInvoiceInput!) {
+    cancelAndCreateCreditFinanceInvoice(input: $input) {
+      financeInvoice {
+        id
       }
     }
   }

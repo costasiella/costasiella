@@ -2,6 +2,7 @@ from .account import Account
 from .account_accepted_document import AccountAcceptedDocument
 from .account_classpass import AccountClasspass
 from .account_membership import AccountMembership
+from .account_schedule_event_ticket import AccountScheduleEventTicket
 from .account_subscription import AccountSubscription
 from .account_subscription_alt_price import AccountSubscriptionAltPrice
 from .account_subscription_block import AccountSubscriptionBlock
@@ -44,6 +45,9 @@ from .organization_subscription_group import OrganizationSubscriptionGroup
 from .organization_subscription_group_subscription import OrganizationSubscriptionGroupSubscription
 from .organization_subscription_price import OrganizationSubscriptionPrice
 
+from .schedule_event import ScheduleEvent
+from .schedule_event_ticket import ScheduleEventTicket
+from .schedule_event_ticket_schedule_item import ScheduleEventTicketScheduleItem
 from .schedule_item import ScheduleItem
 from .schedule_item_attendance import ScheduleItemAttendance
 from .schedule_item_teacher import ScheduleItemTeacher
@@ -52,6 +56,7 @@ from .schedule_item_organization_classpass_group import ScheduleItemOrganization
 from .schedule_item_organization_subscription_group import ScheduleItemOrganizationSubscriptionGroup
 from .schedule_item_price import ScheduleItemPrice
 from .schedule_item_weekly_otc import ScheduleItemWeeklyOTC
+from .schedule_event_media import ScheduleEventMedia
 
 from .system_mail_template import SystemMailTemplate
 from .system_setting import SystemSetting

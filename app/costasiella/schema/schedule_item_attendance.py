@@ -24,7 +24,13 @@ class ScheduleItemAttendanceNode(DjangoObjectType):
 
     class Meta:
         model = ScheduleItemAttendance
-        filter_fields = ['schedule_item', 'account', 'date']
+        # account_schedule_event_ticket_Isnull filter can be used to differentiate class & event attendance
+        filter_fields = {
+            'schedule_item': ['exact', 'isnull'],
+            'account': ['exact'],
+            'date': ['exact'],
+            'account_schedule_event_ticket': ['isnull']
+        }
         interfaces = (graphene.relay.Node, )
 
     @classmethod
