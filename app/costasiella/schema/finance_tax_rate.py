@@ -43,7 +43,7 @@ class FinanceTaxRateQuery(graphene.ObjectType):
 class CreateFinanceTaxRate(graphene.relay.ClientIDMutation):
     class Input:
         name = graphene.String(required=True)
-        percentage = graphene.Int(required=True)
+        percentage = graphene.Decimal(required=True)
         rateType = graphene.String(required=True)
         code = graphene.String(required=False, default_value="")
 
@@ -82,7 +82,7 @@ class UpdateFinanceTaxRate(graphene.relay.ClientIDMutation):
     class Input:
         id = graphene.ID(required=True)
         name = graphene.String(required=True)
-        percentage = graphene.Int(required=True)
+        percentage = graphene.Decimal(required=True)
         rateType = graphene.String(required=True)
         code = graphene.String(default_value="")
         
