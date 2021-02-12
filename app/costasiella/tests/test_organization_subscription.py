@@ -333,7 +333,8 @@ class GQLOrganizationSubscription(TestCase):
         self.assertEqual(data['organizationSubscriptions']['edges'][0]['node']['unlimited'], subscription.unlimited)
         self.assertEqual(data['organizationSubscriptions']['edges'][0]['node']['organizationMembership']['id'], 
           to_global_id("OrganizationMembershipNode", subscription.organization_membership.pk))
-        self.assertEqual(data['organizationSubscriptions']['edges'][0]['node']['quickStatsAmount'], subscription.quick_stats_amount)
+        self.assertEqual(data['organizationSubscriptions']['edges'][0]['node']['quickStatsAmount'],
+                         format(subscription.quick_stats_amount, ".2f"))
         self.assertEqual(data['organizationSubscriptions']['edges'][0]['node']['financeGlaccount']['id'], 
           to_global_id("FinanceGLAccountNode", subscription.finance_glaccount.pk))
         self.assertEqual(data['organizationSubscriptions']['edges'][0]['node']['financeCostcenter']['id'], 
@@ -444,7 +445,8 @@ class GQLOrganizationSubscription(TestCase):
         self.assertEqual(data['organizationSubscription']['unlimited'], subscription.unlimited)
         self.assertEqual(data['organizationSubscription']['organizationMembership']['id'], 
           to_global_id("OrganizationMembershipNode", subscription.organization_membership.pk))
-        self.assertEqual(data['organizationSubscription']['quickStatsAmount'], subscription.quick_stats_amount)
+        self.assertEqual(data['organizationSubscription']['quickStatsAmount'],
+                         format(subscription.quick_stats_amount, ".2f"))
         self.assertEqual(data['organizationSubscription']['financeGlaccount']['id'], 
           to_global_id("FinanceGLAccountNode", subscription.finance_glaccount.pk))
         self.assertEqual(data['organizationSubscription']['financeCostcenter']['id'], 
@@ -536,7 +538,8 @@ class GQLOrganizationSubscription(TestCase):
         self.assertEqual(data['createOrganizationSubscription']['organizationSubscription']['creditValidity'], variables['input']['creditValidity'])
         self.assertEqual(data['createOrganizationSubscription']['organizationSubscription']['unlimited'], variables['input']['unlimited'])
         self.assertEqual(data['createOrganizationSubscription']['organizationSubscription']['organizationMembership']['id'], variables['input']['organizationMembership'])
-        self.assertEqual(data['createOrganizationSubscription']['organizationSubscription']['quickStatsAmount'], variables['input']['quickStatsAmount'])
+        self.assertEqual(data['createOrganizationSubscription']['organizationSubscription']['quickStatsAmount'],
+                         str(variables['input']['quickStatsAmount']))
         self.assertEqual(data['createOrganizationSubscription']['organizationSubscription']['financeGlaccount']['id'], variables['input']['financeGlaccount'])
         self.assertEqual(data['createOrganizationSubscription']['organizationSubscription']['financeCostcenter']['id'], variables['input']['financeCostcenter'])
 
@@ -622,7 +625,8 @@ class GQLOrganizationSubscription(TestCase):
         self.assertEqual(data['updateOrganizationSubscription']['organizationSubscription']['creditValidity'], variables['input']['creditValidity'])
         self.assertEqual(data['updateOrganizationSubscription']['organizationSubscription']['unlimited'], variables['input']['unlimited'])
         self.assertEqual(data['updateOrganizationSubscription']['organizationSubscription']['organizationMembership']['id'], variables['input']['organizationMembership'])
-        self.assertEqual(data['updateOrganizationSubscription']['organizationSubscription']['quickStatsAmount'], variables['input']['quickStatsAmount'])
+        self.assertEqual(data['updateOrganizationSubscription']['organizationSubscription']['quickStatsAmount'],
+                         str(variables['input']['quickStatsAmount']))
         self.assertEqual(data['updateOrganizationSubscription']['organizationSubscription']['financeGlaccount']['id'], variables['input']['financeGlaccount'])
         self.assertEqual(data['updateOrganizationSubscription']['organizationSubscription']['financeCostcenter']['id'], variables['input']['financeCostcenter'])
 

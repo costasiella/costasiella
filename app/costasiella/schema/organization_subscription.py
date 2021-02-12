@@ -63,7 +63,7 @@ def validate_create_update_input(input, update=False):
 class OrganizationSubscriptionNodeInterface(graphene.Interface):
     id = graphene.GlobalID()
     subscription_unit_display = graphene.String()
-    price_today = graphene.Float()
+    price_today = graphene.Decimal()
     price_today_display = graphene.String()
 
 
@@ -126,9 +126,9 @@ class CreateOrganizationSubscription(graphene.relay.ClientIDMutation):
         credit_validity = graphene.Int(required=False, default_value=0)
         unlimited = graphene.Boolean(required=True, default_value=False)
         terms_and_conditions = graphene.String(required=False, default_value="")
-        registration_fee = graphene.Float(required=False, default_value=0)
+        registration_fee = graphene.Decimal(required=False, default_value=0)
         organization_membership = graphene.ID(required=False, default_value="")
-        quick_stats_amount = graphene.Float(required=False, default_value=0)
+        quick_stats_amount = graphene.Decimal(required=False, default_value=0)
         finance_glaccount = graphene.ID(required=False, default_value="")
         finance_costcenter = graphene.ID(required=False, default_value="")      
         
@@ -189,9 +189,9 @@ class UpdateOrganizationSubscription(graphene.relay.ClientIDMutation):
         credit_validity = graphene.Int(required=False, default_value=0)
         unlimited = graphene.Boolean(required=True, default_value=False)
         terms_and_conditions = graphene.String(required=False, default_value="")
-        registration_fee = graphene.Float(required=False, default_value=0)
+        registration_fee = graphene.Decimal(required=False, default_value=0)
         organization_membership = graphene.ID(required=False, default_value="")
-        quick_stats_amount = graphene.Float(required=False, default_value=0)
+        quick_stats_amount = graphene.Decimal(required=False, default_value=0)
         finance_glaccount = graphene.ID(required=False, default_value="")
         finance_costcenter = graphene.ID(required=False, default_value="")   
 
