@@ -1594,7 +1594,8 @@
                 "confirmation_question": "Are you sure you wish to cancel your booking for the class below?",
                 "title": "Cancel booking confirmation",
                 "confirm_yes": "Yes, cancel my booking",
-                "confirm_no": "No, don't cancel my booking"
+                "confirm_no": "No, don't cancel my booking",
+                "success": "Your class booking has been cancelled."
             }
         },
         "accounts": {
