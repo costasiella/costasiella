@@ -1354,6 +1354,13 @@
                 "this_is_costasiella": "This is Costasiella",
                 "license_version": "Costasiella is released under GPL-2.0-or-later."
             }
+        },
+        "workflow": {
+            "title": "Workflow",
+            "class_booking": {
+                "title": "Class booking",
+                "explanation": "Class advance booking and cancellation settings"
+            }
         }
     },
     "user": {

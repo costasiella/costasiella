@@ -309,6 +309,13 @@
                 "this_is_costasiella": "__STRING_NOT_TRANSLATED__",
                 "license_version": "__STRING_NOT_TRANSLATED__"
             }
+        },
+        "workflow": {
+            "title": "__STRING_NOT_TRANSLATED__",
+            "class_booking": {
+                "title": "__STRING_NOT_TRANSLATED__",
+                "explanation": "__STRING_NOT_TRANSLATED__"
+            }
         }
     },
     "yup": {
