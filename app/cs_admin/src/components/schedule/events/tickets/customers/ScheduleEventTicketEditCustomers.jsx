@@ -205,7 +205,7 @@ function ScheduleEventTicketEditCustomers({ t, history, match }) {
                           })
                       }
                     >
-                      Add
+                      {t("general.add")}
                     </Button>
                     // <Link to={"/schedule/classes/class/book/" + schedule_item_id + "/" + class_date + "/" + node.id}>
                     //   <Button color="secondary pull-right">
@@ -287,7 +287,7 @@ function ScheduleEventTicketEditCustomers({ t, history, match }) {
                 </Table.Col>
                 <Table.Col>
                   <BadgeBoolean value={node.infoMailSent} /> <br />
-                  TODO: resend link here
+                  {/* TODO: resend link here */}
                 </Table.Col>
                 <Table.Col>
                   {(node.cancelled) ?
