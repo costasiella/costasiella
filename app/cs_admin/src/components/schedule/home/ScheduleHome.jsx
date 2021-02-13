@@ -61,7 +61,7 @@ class ScheduleHome extends Component {
                       </div>
                     </Grid.Col>
                   </HasPermissionWrapper>
-                  <HasPermissionWrapper
+                  {/* <HasPermissionWrapper
                     resource="scheduleappointment"
                     permission="view"
                   >
@@ -70,7 +70,7 @@ class ScheduleHome extends Component {
                         <StampCard header={<small>{t('schedule.appointments.title')}</small>} footer={t('')} color="blue" icon="calendar" />
                       </div>
                     </Grid.Col>
-                  </HasPermissionWrapper>
+                  </HasPermissionWrapper> */}
                 </Grid.Row>
               </Grid.Col>
               <Grid.Col md={3}>
