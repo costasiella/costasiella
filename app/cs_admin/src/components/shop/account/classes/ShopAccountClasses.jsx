@@ -141,23 +141,27 @@ function ShopAccountClasses({t, match, history}) {
                       <BadgeBookingStatus status={node.bookingStatus} />
                     </Table.Col>
                     <Table.Col>
-                      <Link to={`/shop/account/class_cancel/${node.scheduleItem.id}/${node.date}/${node.id}`}>
-                        <Button 
-                          className="pull-right mr-r"
-                          color="warning"
-                          >
-                          {t("general.cancel")}
-                        </Button>
-                      </Link>
-                      <Link to={`/shop/account/class_info/${node.scheduleItem.id}/${node.date}`}>
-                        <Button
-                          className="pull-right"
-                          color="secondary"
-                          icon="info"
-                        >
-                          {t("general.info")}
-                        </Button>
-                      </Link>
+                      {(node.bookingStatus == "CANCELLED") ? "" : 
+                        <div>
+                          <Link to={`/shop/account/class_cancel/${node.scheduleItem.id}/${node.date}/${node.id}`}>
+                            <Button 
+                              className="pull-right mr-r"
+                              color="warning"
+                              >
+                              {t("general.cancel")}
+                            </Button>
+                          </Link>
+                          <Link to={`/shop/account/class_info/${node.scheduleItem.id}/${node.date}`}>
+                            <Button
+                              className="pull-right"
+                              color="secondary"
+                              icon="info"
+                            >
+                              {t("general.info")}
+                            </Button>
+                          </Link>
+                        </div>
+                      }
                     </Table.Col>
                   </Table.Row>
                 ))}

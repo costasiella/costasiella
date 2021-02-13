@@ -63,47 +63,47 @@ function ShopAccountClassCancel({t, match, history}) {
     <ShopAccountClassCancelBase accountName={user.fullName}>
       <Card title={t("shop.account.class_cancel.title")}>
         <Card.Body>
+          {/* TODO: Check if class already cancelled */}
           <h5>
             {t("shop.account.class_cancel.confirmation_question")}
           </h5>
-          
-          <DisplayClassInfo
-            t={t}
-            classDate={date}
-            classData={dataClass}
-            dateFormat={dateFormat}
-            timeFormat={timeFormat}
-          />
-          <br />
-          <Button
-            className="mr-4"
-            color="warning"
-            onClick={() =>
-              updateScheduleItemAttendance({ variables: {
-                input: {
-                  id: attendanceId,
-                  bookingStatus: "CANCELLED"
+            <DisplayClassInfo
+              t={t}
+              classDate={date}
+              classData={dataClass}
+              dateFormat={dateFormat}
+              timeFormat={timeFormat}
+            />
+            <br />
+            <Button
+              className="mr-4"
+              color="warning"
+              onClick={() =>
+                updateScheduleItemAttendance({ variables: {
+                  input: {
+                    id: attendanceId,
+                    bookingStatus: "CANCELLED"
+                  }
+                }})
+                .then(({ data }) => {
+                    console.log('got data', data)
+                    history.push("/shop/account/classes")
+                    toast.success((t('shop.account.class_cancel.success')), {
+                        position: toast.POSITION.BOTTOM_RIGHT
+                      })
+                  }).catch((error) => {
+                    toast.error((t('general.toast_server_error')) + ': ' +  error, {
+                        position: toast.POSITION.BOTTOM_RIGHT
+                      })
+                    console.log('there was an error sending the query', error)
+                  })
                 }
-              }})
-              .then(({ data }) => {
-                  console.log('got data', data)
-                  history.push("/shop/account/classes")
-                  toast.success((t('shop.account.class_cancel.success')), {
-                      position: toast.POSITION.BOTTOM_RIGHT
-                    })
-                }).catch((error) => {
-                  toast.error((t('general.toast_server_error')) + ': ' +  error, {
-                      position: toast.POSITION.BOTTOM_RIGHT
-                    })
-                  console.log('there was an error sending the query', error)
-                })
-              }
-          >
-            {t("shop.account.class_cancel.confirm_yes")}
-          </Button>
-          <Link to={"/shop/account/classes"}>
-            {t("shop.account.class_cancel.confirm_no")}
-          </Link>
+            >
+              {t("shop.account.class_cancel.confirm_yes")}
+            </Button>
+            <Link to={"/shop/account/classes"}>
+              {t("shop.account.class_cancel.confirm_no")}
+            </Link>
         </Card.Body>
       </Card>
     </ShopAccountClassCancelBase>
