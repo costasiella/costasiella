@@ -199,6 +199,7 @@ import SettingsMailTemplates from './components/settings/mail/SettingsMailTempla
 import SettingsMailTemplateEdit from './components/settings/mail/SettingsMailTemplateEdit'
 
 import ShopAccountHome from './components/shop/account/home/ShopAccountHome'
+import ShopAccountClassCancel from './components/shop/account/class_cancel/ShopAccountClassCancel'
 import ShopAccountClassInfo from './components/shop/account/class_info/ShopAccountClassInfo'
 import ShopAccountClasspasses from './components/shop/account/classpasses/ShopAccountClasspasses'
 import ShopAccountEventTickets from './components/shop/account/event_tickets/ShopAccountEventTickets'
@@ -516,6 +517,7 @@ function AppRoot({ t }) {
             {/* Shop */}
             <Route exact path = "/shop" component={ShopHome} />
             <PrivateRoute exact path = "/shop/account" component={ShopAccountHome} />
+            <PrivateRoute exact path = "/shop/account/class_cancel/:class_id/:date" component={ShopAccountClassCancel} />
             <PrivateRoute exact path = "/shop/account/class_info/:class_id/:date" component={ShopAccountClassInfo} />
             <PrivateRoute exact path = "/shop/account/classes" component={ShopClasses} />
             <PrivateRoute exact path = "/shop/account/classpasses" component={ShopAccountClasspasses} />
