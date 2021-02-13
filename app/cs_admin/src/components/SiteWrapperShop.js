@@ -1,6 +1,7 @@
 // @flow
 
 import * as React from "react"
+import { useContext } from 'react'
 import { withTranslation } from 'react-i18next'
 import { NavLink, withRouter } from "react-router-dom"
 import { useQuery } from "react-apollo"
@@ -10,7 +11,9 @@ import 'react-confirm-alert/src/react-confirm-alert.css'
 import { Link } from 'react-router-dom'
 
 import GET_USER from "../queries/system/get_user"
+import OrganizationContext from './context/OrganizationContext'
 import { get_all_permissions, has_permission } from "../tools/user_tools"
+
 
 import {
   Site,
@@ -112,9 +115,23 @@ const getNavBarItems = (t, user) => {
   return items
 }
 
+function getHeaderImageUrl(organization) {
+  let imageURL = "/d/static/logos/stock/logo_stock_backend.svg"
+
+  if (organization) {
+    if (organization.urlLogoShopHeader) {
+      imageURL = organization.urlLogoShopHeader
+    }
+  }
+
+  return imageURL
+}
+
 const now = new Date()
 
 function SiteWrapperShop({t, match, history, children}) {
+  const organization = useContext(OrganizationContext)
+  console.log(organization)
   const { error, loading, data, fetchMore } = useQuery(GET_USER)
 
   if (loading) return <p>{t('general.loading_with_dots')}</p>;
@@ -122,12 +139,14 @@ function SiteWrapperShop({t, match, history, children}) {
 
   console.log(data)
 
+  const headerImageUrl = getHeaderImageUrl(organization)
+
   return (
     <Site.Wrapper
       headerProps={{
           href: "/",
           alt: "Costasiella",
-          imageURL: "/d/static/logos/stock/logo_stock_backend.svg", // Set logo url here
+          imageURL: headerImageUrl, // Set logo url here
           navItems: (
             <Nav.Item type="div" className="d-none d-md-flex">
               {(data.user) ? (data.user.teacher || data.user.employee) ? <Link to="/user/welcome">
