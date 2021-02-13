@@ -1589,6 +1589,12 @@
                 "explanation": "View your upcoming and past event tickets",
                 "error_loading_data": "Error loading your tickets... :(",
                 "empty_list": "No tickets found"
+            },
+            "class_cancel": {
+                "confirmation_question": "Are you sure you wish to cancel your booking for the class below?",
+                "title": "Cancel booking confirmation",
+                "confirm_yes": "Yes, cancel my booking",
+                "confirm_no": "No, don't cancel my booking"
             }
         },
         "accounts": {
