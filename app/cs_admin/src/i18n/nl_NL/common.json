@@ -620,6 +620,13 @@
                 "explanation": "__STRING_NOT_TRANSLATED__",
                 "error_loading_data": "__STRING_NOT_TRANSLATED__",
                 "empty_list": "__STRING_NOT_TRANSLATED__"
+            },
+            "class_cancel": {
+                "confirmation_question": "__STRING_NOT_TRANSLATED__",
+                "title": "__STRING_NOT_TRANSLATED__",
+                "confirm_yes": "__STRING_NOT_TRANSLATED__",
+                "confirm_no": "__STRING_NOT_TRANSLATED__",
+                "success": "__STRING_NOT_TRANSLATED__"
             }
         },
         "accounts": {

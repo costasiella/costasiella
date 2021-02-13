@@ -35,11 +35,17 @@ urlpatterns = [
     path('d/admin/', admin.site.urls),
     path('d/admin/defender/', include('defender.urls')),  # defender admin
     # override of email view to add user profile context data
+    path('d/accounts/confirm-email/',
+         views.CSEmailVerificationSentView.as_view(),
+         name="account_emailverificationsent"),
     path('d/accounts/password/reset/', views.CSPasswordResetView.as_view(), name="account_passwordreset"),
     path('d/accounts/signup/', views.CSSignUpView.as_view(), name="account_signup"),
     path('d/accounts/', include('allauth.urls')),  # allauth
     path('d/csrf/', views.csrf, name="csrf"),
-    path('d/email/verified/', TemplateView.as_view(template_name="email_verfied.html"), name="email_verified"),
+    path('d/email/verified/', views.CSEmailVerifiedView.as_view(
+        template_name="email_verfied.html"),
+         name="email_verified"
+         ),
     path('d/export/terms-and-conditions', views.terms_and_conditions, name="terms_and_conditions"),
     path('d/export/privacy-policy', views.privacy_policy, name="privacy_policy"),
     path('d/export/insight/classpasses/active/<int:year>', 

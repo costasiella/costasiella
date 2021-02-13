@@ -49,7 +49,7 @@ const ScheduleMenu = ({ t, active_link }) => (
           {t('schedule.events.title')}
       </List.GroupItem>
     </HasPermissionWrapper>
-    <HasPermissionWrapper 
+    {/* <HasPermissionWrapper 
         resource="scheduleappointment"
         permission="view" 
     >
@@ -62,7 +62,7 @@ const ScheduleMenu = ({ t, active_link }) => (
           >
           {t('schedule.appointments.title')}
       </List.GroupItem>
-    </HasPermissionWrapper>
+    </HasPermissionWrapper> */}
   </List.Group>
 );
 
