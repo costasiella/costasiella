@@ -141,6 +141,7 @@ function ShopAccountClasses({t, match, history}) {
                       <BadgeBookingStatus status={node.bookingStatus} />
                     </Table.Col>
                     <Table.Col>
+                      {/* TODO: improve this by adding a "Can be cancelled field to GQL schema" */}
                       {(node.bookingStatus == "CANCELLED") ? "" : 
                         <div>
                           <Link to={`/shop/account/class_cancel/${node.scheduleItem.id}/${node.date}/${node.id}`}>
