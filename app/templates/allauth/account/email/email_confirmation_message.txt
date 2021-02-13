@@ -5,4 +5,4 @@ You're receiving this e-mail because an account has been requested for {{ user_d
 To confirm this is correct, please go to {{ activate_url }}
 {% endblocktrans %}{% endautoescape %}
 {% blocktrans with site_name=current_site.name site_domain=current_site.domain %}Thank you, 
-the {{ site_name}} team{% endblocktrans %}
+the {{ site_name }} team{% endblocktrans %}
