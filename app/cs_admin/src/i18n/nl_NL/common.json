@@ -315,7 +315,9 @@
             "class_booking": {
                 "title": "__STRING_NOT_TRANSLATED__",
                 "explanation": "__STRING_NOT_TRANSLATED__"
-            }
+            },
+            "workflow_class_book_days_advance": "__STRING_NOT_TRANSLATED__",
+            "workflow_class_cancel_until": "__STRING_NOT_TRANSLATED__"
         }
     },
     "yup": {

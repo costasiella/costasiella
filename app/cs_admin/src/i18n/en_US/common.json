@@ -1360,7 +1360,9 @@
             "class_booking": {
                 "title": "Class booking",
                 "explanation": "Class advance booking and cancellation settings"
-            }
+            },
+            "workflow_class_book_days_advance": "Number of days in advance customers will be able to book classes",
+            "workflow_class_cancel_until": "Number of hours before a class starts a booking can be cancelled while returning credit"
         }
     },
     "user": {
