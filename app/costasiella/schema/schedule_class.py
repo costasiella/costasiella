@@ -89,11 +89,13 @@ class ScheduleClassType(graphene.ObjectType):
     info_mail_content = graphene.String()
     available_spaces_online = graphene.Int()
     available_spaces_total = graphene.Int()
+    booking_status = graphene.String()
 
 
 # ScheduleClassDayType
 class ScheduleClassesDayType(graphene.ObjectType):
     date = graphene.types.datetime.Date()
+    booking_open = graphene.types.datetime.Date()
     iso_week_day = graphene.Int()
     order_by = graphene.String()
     filter_id_organization_classtype = graphene.String()
@@ -102,6 +104,23 @@ class ScheduleClassesDayType(graphene.ObjectType):
     classes = graphene.List(ScheduleClassType)
     attendance_count_type = graphene.String()
 
+    def resolve_booking_open(self):
+        """
+            Returns False if no booking limit is defined, otherwise it returns the date from which
+            bookings for this class will be accepted.
+        """
+        from ..dudes import SystemSettingDude
+
+        system_setting_dude = SystemSettingDude()
+        workflow_class_book_days_advance = system_setting_dude.get("workflow_class_book_days_advance")
+        if not workflow_class_book_days_advance:
+            # Set a default value of 30 days in advance to open class bookings
+            workflow_class_book_days_advance = 30
+
+        delta = datetime.timedelta(days=int(workflow_class_book_days_advance))
+
+        return self.date - delta
+
     def resolve_iso_week_day(self, info):
         return self.date.isoweekday()
 
@@ -109,6 +128,77 @@ class ScheduleClassesDayType(graphene.ObjectType):
         return self.order_by
 
     def resolve_classes(self, info):
+        def _get_booking_status(schedule_item):
+            """
+                :param row: ClassSchedule.get_day_rows() row
+                :return: booking status
+            """
+            ## Start test for class booking status
+
+            # https://docs.djangoproject.com/en/3.1/topics/i18n/timezones/#usage
+            local_tz = pytz.timezone(settings.TIME_ZONE)
+            print(local_tz)
+
+            # now = timezone.now()
+            print(timezone.localtime(timezone.now()))
+
+            dt_start = datetime.datetime(self.date.year,
+                                         self.date.month,
+                                         self.date.day,
+                                         int(item.time_start.hour),
+                                         int(item.time_start.minute))
+            print(dt_start)
+            dt_start = local_tz.localize(dt_start)
+            print(dt_start)
+            # dt_end = datetime.datetime(self.date.year,
+            #                            self.date.month,
+            #                            self.date.day,
+            #                            int(row.classes.Endtime.hour),
+            #                            int(row.classes.Endtime.minute))
+            # dt_end = local_tz.localize(dt_end)
+
+            ## End test for class booking status
+
+            # Everything below here in this fn is OpenStudio code to be ported
+            pytz = current.globalenv['pytz']
+            TIMEZONE = current.TIMEZONE
+            NOW_LOCAL = current.NOW_LOCAL
+            TODAY_LOCAL = current.TODAY_LOCAL
+
+            local_tz = pytz.timezone(TIMEZONE)
+
+            dt_start = datetime.datetime(self.date.year,
+                                         self.date.month,
+                                         self.date.day,
+                                         int(row.classes.Starttime.hour),
+                                         int(row.classes.Starttime.minute))
+            dt_start = local_tz.localize(dt_start)
+            dt_end = datetime.datetime(self.date.year,
+                                       self.date.month,
+                                       self.date.day,
+                                       int(row.classes.Endtime.hour),
+                                       int(row.classes.Endtime.minute))
+            dt_end = local_tz.localize(dt_end)
+
+            status = 'finished'
+            if row.classes_otc.Status == 'cancelled' or row.school_holidays.id:
+                status = 'cancelled'
+            elif dt_start <= NOW_LOCAL and dt_end >= NOW_LOCAL:
+                # check start time
+                status = 'ongoing'
+            elif dt_start >= NOW_LOCAL:
+                if not self.bookings_open == False and TODAY_LOCAL < self.bookings_open:
+                    status = 'not_yet_open'
+                else:
+                    # check spaces for online bookings
+                    spaces = self._get_day_list_booking_spaces(row)
+                    if spaces < 1:
+                        status = 'full'
+                    else:
+                        status = 'ok'
+
+            return status
+
         def _get_attendance_count_sql():
             """
 
@@ -372,31 +462,7 @@ class ScheduleClassesDayType(graphene.ObjectType):
             # print(item.role)
             # print(item.count_attendance)
 
-            ## Start test for class booking status
 
-            # https://docs.djangoproject.com/en/3.1/topics/i18n/timezones/#usage
-            local_tz = pytz.timezone(settings.TIME_ZONE)
-            print(local_tz)
-
-            # now = timezone.now()
-            print(timezone.localtime(timezone.now()))
-
-            dt_start = datetime.datetime(self.date.year,
-                                         self.date.month,
-                                         self.date.day,
-                                         int(item.time_start.hour),
-                                         int(item.time_start.minute))
-            print(dt_start)
-            dt_start = local_tz.localize(dt_start)
-            print(dt_start)
-            # dt_end = datetime.datetime(self.date.year,
-            #                            self.date.month,
-            #                            self.date.day,
-            #                            int(row.classes.Endtime.hour),
-            #                            int(row.classes.Endtime.minute))
-            # dt_end = local_tz.localize(dt_end)
-
-            ## End test for class booking status
 
             total_spaces = item.spaces or 0
             walk_in_spaces = item.walk_in_spaces or 0
@@ -424,11 +490,13 @@ class ScheduleClassesDayType(graphene.ObjectType):
                     ),
                     available_spaces_total=calculate_available_spaces_total(
                         total_spaces, count_attendance
-                    )
+                    ),
+                    booking_status=_get_booking_status(item)
                 )
             )
     
         return classes_list
+
 
 # OpenStudio function to be ported
     # def _get_day_list_booking_status(self, row):

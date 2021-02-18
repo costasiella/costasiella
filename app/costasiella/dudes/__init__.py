@@ -13,3 +13,5 @@ from .mail_dude import MailDude
 from .mollie_dude import MollieDude
 
 from .sales_dude import SalesDude
+
+from .system_setting_dude import SystemSettingDude
