@@ -104,7 +104,7 @@ class ScheduleClassesDayType(graphene.ObjectType):
     classes = graphene.List(ScheduleClassType)
     attendance_count_type = graphene.String()
 
-    def resolve_booking_open(self):
+    def resolve_booking_open(self, info=None):
         """
             Returns False if no booking limit is defined, otherwise it returns the date from which
             bookings for this class will be accepted.
@@ -395,6 +395,7 @@ class ScheduleClassesDayType(graphene.ObjectType):
             walk_in_spaces = item.walk_in_spaces or 0
             count_attendance = item.count_attendance or 0
             available_online_spaces = calculate_available_spaces_online(total_spaces, walk_in_spaces, count_attendance)
+            booking_open = self.resolve_booking_open()
 
             classes_list.append(
                 ScheduleClassType(
@@ -415,7 +416,7 @@ class ScheduleClassesDayType(graphene.ObjectType):
                     display_public=item.display_public,
                     available_spaces_online=available_online_spaces,
                     available_spaces_total=calculate_available_spaces_total(total_spaces, count_attendance),
-                    booking_status=get_booking_status(item, self.date, self.booking_open, available_online_spaces)
+                    booking_status=get_booking_status(item, self.date, booking_open, available_online_spaces)
                 )
             )
     
@@ -480,7 +481,9 @@ def get_booking_status(schedule_item, date, booking_open, available_online_space
     print(local_tz)
 
     now = timezone.localtime(timezone.now())
+    print("#### now ########")
     print(now)
+    print(now.date())
 
     dt_start = datetime.datetime(date.year,
                                  date.month,
@@ -507,7 +510,7 @@ def get_booking_status(schedule_item, date, booking_open, available_online_space
         # check start time
         status = 'ongoing'
     elif dt_start >= now:
-        if now.date < bookings_open:
+        if now.date() < booking_open:
             status = 'not_yet_open'
         else:
             # check spaces for online bookings
