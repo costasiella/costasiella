@@ -17,11 +17,19 @@ import {
 } from "tabler-react";
 
 
-function ShopClassesScheduleButtonBook({ t, match, history, scheduleItemId, classDate, bookingOpen, bookingStatus }) {
+function ShopClassesScheduleButtonBook({ t, match, history, scheduleItemId, classDate, bookingOpenToday, bookingOpenOn, bookingStatus }) {
   const appSettings = useContext(AppSettingsContext)
   const dateFormat = appSettings.dateFormat
   const timeFormat = appSettings.timeFormatMoment
 
+  if (!bookingOpenToday) {
+    return (
+      <span className="pull-right">
+        {t("shop.classes.class_booking_open_on") + " " + moment(bookingOpenOn).format(dateFormat)}
+      </span>
+    )
+  }
+  
 
   return (
     <Link to={`/shop/classes/book/${scheduleItemId}/${classDate}`}>

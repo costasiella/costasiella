@@ -63,7 +63,7 @@ function ShopClassesSchedule({ t, match, history }) {
   )
   if (error) return (
     <ShopClassesScheduleBase title={title}>
-      {t("shop.classpasses.error_loading")}
+      {t("shop.classes.error_loading")}
     </ShopClassesScheduleBase>
   )
 
@@ -118,7 +118,7 @@ function ShopClassesSchedule({ t, match, history }) {
     >
       
       <ShopClassesScheduleFilter data={data} refetch={refetch} />
-      {data.scheduleClasses.map(({ date, bookingOpen, classes }) =>
+      {data.scheduleClasses.map(({ date, bookingOpenToday, bookingOpenOn, classes }) =>
         <Grid.Row key={v4()}>
           <Grid.Col md={12}>
               <Card>
@@ -165,7 +165,8 @@ function ShopClassesSchedule({ t, match, history }) {
                               <ShopClassesScheduleButtonBook
                                 scheduleItemId={scheduleItemId}
                                 classDate={date}
-                                bookingOpen={bookingOpen}
+                                bookingOpenToday={bookingOpenToday}
+                                bookingOpenOn={bookingOpenOn}
                               />
                             </Table.Col>
                           </Table.Row>

@@ -95,7 +95,8 @@ class ScheduleClassType(graphene.ObjectType):
 # ScheduleClassDayType
 class ScheduleClassesDayType(graphene.ObjectType):
     date = graphene.types.datetime.Date()
-    booking_open = graphene.types.datetime.Date()
+    booking_open_today = graphene.Boolean()
+    booking_open_on = graphene.types.datetime.Date()
     iso_week_day = graphene.Int()
     order_by = graphene.String()
     filter_id_organization_classtype = graphene.String()
@@ -104,7 +105,23 @@ class ScheduleClassesDayType(graphene.ObjectType):
     classes = graphene.List(ScheduleClassType)
     attendance_count_type = graphene.String()
 
-    def resolve_booking_open(self, info=None):
+    def resolve_booking_open_today(self, info=None):
+        """
+        Returns True if online bookings are open for this day, false otherwise
+        :param info:
+        :return:
+        """
+        booking_open_on = self.resolve_booking_open_on()
+        now = timezone.localtime(timezone.now())
+        today = now.date()
+
+        print("%%%%%%%%%%%5")
+        print(booking_open_on)
+        print(today)
+
+        return today >= booking_open_on
+
+    def resolve_booking_open_on(self, info=None):
         """
             Returns False if no booking limit is defined, otherwise it returns the date from which
             bookings for this class will be accepted.
@@ -395,7 +412,7 @@ class ScheduleClassesDayType(graphene.ObjectType):
             walk_in_spaces = item.walk_in_spaces or 0
             count_attendance = item.count_attendance or 0
             available_online_spaces = calculate_available_spaces_online(total_spaces, walk_in_spaces, count_attendance)
-            booking_open = self.resolve_booking_open()
+            booking_open_on = self.resolve_booking_open_on()
 
             classes_list.append(
                 ScheduleClassType(
@@ -416,7 +433,7 @@ class ScheduleClassesDayType(graphene.ObjectType):
                     display_public=item.display_public,
                     available_spaces_online=available_online_spaces,
                     available_spaces_total=calculate_available_spaces_total(total_spaces, count_attendance),
-                    booking_status=get_booking_status(item, self.date, booking_open, available_online_spaces)
+                    booking_status=get_booking_status(item, self.date, booking_open_on, available_online_spaces)
                 )
             )
     
@@ -469,7 +486,7 @@ class ScheduleClassesDayType(graphene.ObjectType):
     #     return status
 
 
-def get_booking_status(schedule_item, date, booking_open, available_online_spaces):
+def get_booking_status(schedule_item, date, booking_open_on, available_online_spaces):
     """
         :param schedule_item: schedule_item object
         :return: String: booking status
@@ -510,7 +527,7 @@ def get_booking_status(schedule_item, date, booking_open, available_online_space
         # check start time
         status = 'ongoing'
     elif dt_start >= now:
-        if now.date() < booking_open:
+        if now.date() < booking_open_on:
             status = 'not_yet_open'
         else:
             # check spaces for online bookings

@@ -659,7 +659,9 @@
             },
             "filter_all_locations": "__STRING_NOT_TRANSLATED__",
             "filter_all_classtypes": "__STRING_NOT_TRANSLATED__",
-            "filter_all_levels": "__STRING_NOT_TRANSLATED__"
+            "filter_all_levels": "__STRING_NOT_TRANSLATED__",
+            "error_loading": "__STRING_NOT_TRANSLATED__",
+            "class_booking_open_on": "__STRING_NOT_TRANSLATED__"
         },
         "contact": {
             "title": "__STRING_NOT_TRANSLATED__"

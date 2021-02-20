@@ -1628,7 +1628,9 @@
             },
             "filter_all_locations": "All locations",
             "filter_all_classtypes": "All classtypes",
-            "filter_all_levels": "All levels"
+            "filter_all_levels": "All levels",
+            "error_loading": "Error loading classes... :(",
+            "class_booking_open_on": "Booking open from"
         },
         "contact": {
             "title": "Contact"
