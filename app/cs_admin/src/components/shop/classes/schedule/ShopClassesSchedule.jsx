@@ -22,6 +22,7 @@ import {
 } from "tabler-react";
 import ShopClassesScheduleBase from "./ShopClassesScheduleBase"
 import ShopClassesScheduleFilter from "./ShopClassesScheduleFilter"
+import ShopClassesScheduleButtonBook from "./ShopClassesScheduleButtonBook"
 import CSDatePicker from "../../../ui/CSDatePicker"
 
 import { GET_CLASSES_QUERY } from "../../../schedule/classes/queries"
@@ -117,7 +118,7 @@ function ShopClassesSchedule({ t, match, history }) {
     >
       
       <ShopClassesScheduleFilter data={data} refetch={refetch} />
-      {data.scheduleClasses.map(({ date, classes }) =>
+      {data.scheduleClasses.map(({ date, bookingOpen, classes }) =>
         <Grid.Row key={v4()}>
           <Grid.Col md={12}>
               <Card>
@@ -161,11 +162,11 @@ function ShopClassesSchedule({ t, match, history }) {
                             <span className="text-muted">{ organizationLocationRoom.organizationLocation.name }</span>
                             </Table.Col>
                             <Table.Col>
-                              <Link to={`/shop/classes/book/${scheduleItemId}/${date}`}>
-                                <Button className="pull-right" color="primary" outline>
-                                  {t("general.book")} <Icon name="chevron-right" />
-                                </Button>
-                              </Link>
+                              <ShopClassesScheduleButtonBook
+                                scheduleItemId={scheduleItemId}
+                                classDate={date}
+                                bookingOpen={bookingOpen}
+                              />
                             </Table.Col>
                           </Table.Row>
                         )
