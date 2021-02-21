@@ -20,7 +20,6 @@ export const GET_CLASSES_QUERY = gql`
         attendanceCountType: $attendanceCountType
     ){
       date
-      bookingOpenToday
       bookingOpenOn
       classes {
         scheduleItemId

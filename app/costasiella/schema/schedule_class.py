@@ -95,7 +95,6 @@ class ScheduleClassType(graphene.ObjectType):
 # ScheduleClassDayType
 class ScheduleClassesDayType(graphene.ObjectType):
     date = graphene.types.datetime.Date()
-    booking_open_today = graphene.Boolean()
     booking_open_on = graphene.types.datetime.Date()
     iso_week_day = graphene.Int()
     order_by = graphene.String()
@@ -104,22 +103,6 @@ class ScheduleClassesDayType(graphene.ObjectType):
     filter_id_organization_location = graphene.String()
     classes = graphene.List(ScheduleClassType)
     attendance_count_type = graphene.String()
-
-    def resolve_booking_open_today(self, info=None):
-        """
-        Returns True if online bookings are open for this day, false otherwise
-        :param info:
-        :return:
-        """
-        booking_open_on = self.resolve_booking_open_on()
-        now = timezone.localtime(timezone.now())
-        today = now.date()
-
-        print("%%%%%%%%%%%5")
-        print(booking_open_on)
-        print(today)
-
-        return today >= booking_open_on
 
     def resolve_booking_open_on(self, info=None):
         """
@@ -520,21 +503,21 @@ def get_booking_status(schedule_item, date, booking_open_on, available_online_sp
     dt_end = local_tz.localize(dt_end)
     print(dt_end)
 
-    status = "finished"
+    status = "FINISHED"
     if schedule_item.status == "CANCELLED":
         status = 'CANCELLED'
     elif dt_start <= now and dt_end >= now:
         # check start time
-        status = 'ongoing'
+        status = 'ONGOING'
     elif dt_start >= now:
         if now.date() < booking_open_on:
-            status = 'not_yet_open'
+            status = 'NOT_YET_OPEN'
         else:
             # check spaces for online bookings
             if available_online_spaces < 1:
-                status = 'full'
+                status = 'FULL'
             else:
-                status = 'ok'
+                status = 'OK'
 
     return status
 

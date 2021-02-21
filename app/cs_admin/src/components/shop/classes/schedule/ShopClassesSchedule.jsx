@@ -118,7 +118,7 @@ function ShopClassesSchedule({ t, match, history }) {
     >
       
       <ShopClassesScheduleFilter data={data} refetch={refetch} />
-      {data.scheduleClasses.map(({ date, bookingOpenToday, bookingOpenOn, classes }) =>
+      {data.scheduleClasses.map(({ date, classes }) =>
         <Grid.Row key={v4()}>
           <Grid.Col md={12}>
               <Card>
@@ -151,7 +151,8 @@ function ShopClassesSchedule({ t, match, history }) {
                         organizationLevel,
                         timeStart, 
                         timeEnd,
-                        displayPublic }) => (
+                        displayPublic,
+                        bookingStatus }) => (
                           <Table.Row>
                             <Table.Col>
                             <h4>
@@ -165,8 +166,7 @@ function ShopClassesSchedule({ t, match, history }) {
                               <ShopClassesScheduleButtonBook
                                 scheduleItemId={scheduleItemId}
                                 classDate={date}
-                                bookingOpenToday={bookingOpenToday}
-                                bookingOpenOn={bookingOpenOn}
+                                bookingStatus={bookingStatus}
                               />
                             </Table.Col>
                           </Table.Row>
