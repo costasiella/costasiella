@@ -1630,7 +1630,13 @@
             "filter_all_classtypes": "All classtypes",
             "filter_all_levels": "All levels",
             "error_loading": "Error loading classes... :(",
-            "class_booking_open_on": "Booking open from"
+            "class_booking_status": {
+                "open_on": "Booking opens on",
+                "cancelled": "Cancelled",
+                "finished": "Finished",
+                "ongoing": "Ongoing",
+                "full": "Full"
+            }
         },
         "contact": {
             "title": "Contact"

@@ -17,7 +17,7 @@ import {
 } from "tabler-react";
 
 
-function ShopClassesScheduleButtonBook({ t, match, history, scheduleItemId, classDate, bookingStatus }) {
+function ShopClassesScheduleButtonBook({ t, match, history, scheduleItemId, classDate, bookingOpenOn, bookingStatus }) {
   const appSettings = useContext(AppSettingsContext)
   const dateFormat = appSettings.dateFormat
   const timeFormat = appSettings.timeFormatMoment
