@@ -649,7 +649,16 @@
                 "title": "__STRING_NOT_TRANSLATED__",
                 "dropin_pay_and_book": "__STRING_NOT_TRANSLATED__",
                 "pay_and_book": "__STRING_NOT_TRANSLATED__",
-                "trial_pay_and_book": "__STRING_NOT_TRANSLATED__"
+                "trial_pay_and_book": "__STRING_NOT_TRANSLATED__",
+                "class_booking_status": {
+                    "open_on": "__STRING_NOT_TRANSLATED__",
+                    "cancelled": "__STRING_NOT_TRANSLATED__",
+                    "finished": "__STRING_NOT_TRANSLATED__",
+                    "ongoing": "__STRING_NOT_TRANSLATED__",
+                    "full": "__STRING_NOT_TRANSLATED__"
+                },
+                "unable_to_show_booking_options": "__STRING_NOT_TRANSLATED__",
+                "already_booked": "__STRING_NOT_TRANSLATED__"
             },
             "booked": {
                 "class": "__STRING_NOT_TRANSLATED__",
@@ -1668,7 +1677,6 @@
         "Zambia": "__STRING_NOT_TRANSLATED__",
         "Zimbabwe": "__STRING_NOT_TRANSLATED__"
     },
-    "You've already booked this class ": "__STRING_NOT_TRANSLATED__",
     "View info": "__STRING_NOT_TRANSLATED__",
     "automation": {
         "title": "__STRING_NOT_TRANSLATED__",

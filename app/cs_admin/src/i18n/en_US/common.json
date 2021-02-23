@@ -1618,7 +1618,16 @@
                 "title": "Booking options for class",
                 "dropin_pay_and_book": "Buy a drop in class",
                 "pay_and_book": "Pay and book",
-                "trial_pay_and_book": "Buy a trial class"
+                "trial_pay_and_book": "Buy a trial class",
+                "class_booking_status": {
+                    "open_on": "Bookings for this class are accepted from",
+                    "cancelled": "This class has been cancelled",
+                    "finished": "This class has already finished",
+                    "ongoing": "This class has already started",
+                    "full": "This class is fully booked"
+                },
+                "unable_to_show_booking_options": "Unable to show booking options",
+                "already_booked": "You're already booked this class"
             },
             "booked": {
                 "class": "Selected class",
@@ -1668,7 +1677,6 @@
             }
         }
     },
-    "You've already booked this class ": "You've already booked this class",
     "View info": "View info",
     "automation": {
         "title": "Automation",

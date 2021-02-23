@@ -89,6 +89,7 @@ class ScheduleClassType(graphene.ObjectType):
     info_mail_content = graphene.String()
     available_spaces_online = graphene.Int()
     available_spaces_total = graphene.Int()
+    booking_open_on = graphene.types.datetime.Date()
     booking_status = graphene.String()
 
 
@@ -109,17 +110,7 @@ class ScheduleClassesDayType(graphene.ObjectType):
             Returns False if no booking limit is defined, otherwise it returns the date from which
             bookings for this class will be accepted.
         """
-        from ..dudes import SystemSettingDude
-
-        system_setting_dude = SystemSettingDude()
-        workflow_class_book_days_advance = system_setting_dude.get("workflow_class_book_days_advance")
-        if not workflow_class_book_days_advance:
-            # Set a default value of 30 days in advance to open class bookings
-            workflow_class_book_days_advance = 30
-
-        delta = datetime.timedelta(days=int(workflow_class_book_days_advance))
-
-        return self.date - delta
+        return calculate_booking_open_on(self.date)
 
     def resolve_iso_week_day(self, info):
         return self.date.isoweekday()
@@ -416,6 +407,7 @@ class ScheduleClassesDayType(graphene.ObjectType):
                     display_public=item.display_public,
                     available_spaces_online=available_online_spaces,
                     available_spaces_total=calculate_available_spaces_total(total_spaces, count_attendance),
+                    booking_open_on=booking_open_on,
                     booking_status=get_booking_status(item, self.date, booking_open_on, available_online_spaces)
                 )
             )
@@ -571,6 +563,25 @@ def get_booking_status(schedule_item, date, booking_open_on, available_online_sp
     # return status
 
 
+def calculate_booking_open_on(date):
+    """
+    Calculate when bookings for a class should open
+    :param date: datetime.date
+    :return: date
+    """
+    from ..dudes import SystemSettingDude
+
+    system_setting_dude = SystemSettingDude()
+    workflow_class_book_days_advance = system_setting_dude.get("workflow_class_book_days_advance")
+    if not workflow_class_book_days_advance:
+        # Set a default value of 30 days in advance to open class bookings
+        workflow_class_book_days_advance = 30
+
+    delta = datetime.timedelta(days=int(workflow_class_book_days_advance))
+
+    return date - delta
+
+
 def calculate_available_spaces_online(total_spaces, walk_in_spaces, count_attendance):
     # Spaces available for online booking
     online_spaces = total_spaces - walk_in_spaces
@@ -648,7 +659,9 @@ def validate_schedule_classes_query_date_input(date_from,
 
 
 class ScheduleClassQuery(graphene.ObjectType):
-    schedule_class = graphene.Field(ScheduleClassType, schedule_item_id=graphene.ID(), date=graphene.types.datetime.Date())
+    schedule_class = graphene.Field(ScheduleClassType,
+                                    schedule_item_id=graphene.ID(),
+                                    date=graphene.types.datetime.Date())
     schedule_classes = graphene.List(
         ScheduleClassesDayType,
         date_from=graphene.types.datetime.Date(), 
@@ -680,6 +693,12 @@ class ScheduleClassQuery(graphene.ObjectType):
         sih = ScheduleItemHelper()
         schedule_item = sih.schedule_item_with_otc_data(schedule_item, date)
 
+        booking_open_on = calculate_booking_open_on(date)
+        total_spaces = schedule_item.spaces or 0
+        walk_in_spaces = schedule_item.walk_in_spaces or 0
+        count_attendance = schedule_item.count_attendance or 0
+        available_online_spaces = calculate_available_spaces_online(total_spaces, walk_in_spaces, count_attendance)
+
         schedule_class = ScheduleClassType(
             date=date,
             schedule_item_id=schedule_item.id,
@@ -694,7 +713,11 @@ class ScheduleClassQuery(graphene.ObjectType):
             organization_level=schedule_item.organization_level,
             time_start=schedule_item.time_start,
             time_end=schedule_item.time_end,
-            info_mail_content=schedule_item.info_mail_content
+            info_mail_content=schedule_item.info_mail_content,
+            available_spaces_online=available_online_spaces,
+            available_spaces_total=calculate_available_spaces_total(total_spaces, count_attendance),
+            booking_open_on=booking_open_on,
+            booking_status=get_booking_status(schedule_item, date, booking_open_on, available_online_spaces)
         )
 
         return schedule_class

@@ -23,6 +23,8 @@ function ShopClassesScheduleButtonBook({ t, match, history, scheduleItemId, clas
   const timeFormat = appSettings.timeFormatMoment
 
   let buttonBook
+  // Uncomment the line below when testing the book component statuses. (Development only)
+  // bookingStatus = "OK"
 
   switch(bookingStatus) {
     case "NOT_YET_OPEN":
