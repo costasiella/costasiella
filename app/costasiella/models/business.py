@@ -11,7 +11,7 @@ class Business(models.Model):
     city = EncryptedTextField(default="")
     country = EncryptedTextField(default="")
     phone = EncryptedTextField(default="")
-    mobile = EncryptedTextField(default="")
+    phone_2 = EncryptedTextField(default="")
     email = models.EmailField(default="")
     registration = models.CharField(max_length=255, default="")
     tax_registration = models.CharField(max_length=255, default="")

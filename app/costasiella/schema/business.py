@@ -55,7 +55,7 @@ class CreateBusiness(graphene.relay.ClientIDMutation):
         city = graphene.String(required=False)
         country = graphene.String(required=False)
         phone = graphene.String(required=False)
-        mobile = graphene.String(required=False)
+        phone_2 = graphene.String(required=False)
         email = graphene.String(required=False)
         registration = graphene.String(required=False)
         tax_registration = graphene.String(required=False)
@@ -88,8 +88,8 @@ class CreateBusiness(graphene.relay.ClientIDMutation):
         if 'phone' in input:
             business.phone = input['phone']
             
-        if 'mobile' in input:
-            business.mobile = input['mobile']
+        if 'phone_2' in input:
+            business.phone_2 = input['phone_2']
 
         if 'email' in input:
             business.email = input['email']
@@ -114,7 +114,7 @@ class UpdateBusiness(graphene.relay.ClientIDMutation):
         city = graphene.String(required=False)
         country = graphene.String(required=False)
         phone = graphene.String(required=False)
-        mobile = graphene.String(required=False)
+        phone_2 = graphene.String(required=False)
         email = graphene.String(required=False)
         registration = graphene.String(required=False)
         tax_registration = graphene.String(required=False)
@@ -152,8 +152,8 @@ class UpdateBusiness(graphene.relay.ClientIDMutation):
         if 'phone' in input:
             business.phone = input['phone']
 
-        if 'mobile' in input:
-            business.mobile = input['mobile']
+        if 'phone_2' in input:
+            business.phone_2 = input['phone_2']
 
         if 'email' in input:
             business.email = input['email']
