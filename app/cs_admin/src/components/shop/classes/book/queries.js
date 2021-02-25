@@ -3,6 +3,9 @@ import gql from "graphql-tag"
 
 export const GET_BOOKING_OPTIONS_QUERY = gql`
   query ScheduleClassBookingOptions($scheduleItem:ID!, $date:Date!, $listType:String!) {
+    scheduleClass(scheduleItemId: $scheduleItem, date:$date) {
+      bookingStatus
+    }
     scheduleClassBookingOptions(scheduleItem: $scheduleItem, date:$date, listType:$listType) {
       date
       alreadyBooked

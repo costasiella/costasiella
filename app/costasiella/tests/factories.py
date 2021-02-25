@@ -626,7 +626,7 @@ class SchedulePublicWeeklyClassFactory(factory.DjangoModelFactory):
 
     schedule_item_type = "CLASS"
     frequency_type = "WEEKLY"
-    frequency_interval = 1 # Monday
+    frequency_interval = 1  # Monday
     organization_location_room = factory.SubFactory(OrganizationLocationRoomFactory)
     organization_classtype = factory.SubFactory(OrganizationClasstypeFactory)
     organization_level = factory.SubFactory(OrganizationLevelFactory)

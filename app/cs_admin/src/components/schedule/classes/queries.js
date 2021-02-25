@@ -20,6 +20,7 @@ export const GET_CLASSES_QUERY = gql`
         attendanceCountType: $attendanceCountType
     ){
       date
+      bookingOpenOn
       classes {
         scheduleItemId
         frequencyType
@@ -57,6 +58,7 @@ export const GET_CLASSES_QUERY = gql`
         availableSpacesOnline
         availableSpacesTotal
         displayPublic
+        bookingStatus
       }
     }
     user {

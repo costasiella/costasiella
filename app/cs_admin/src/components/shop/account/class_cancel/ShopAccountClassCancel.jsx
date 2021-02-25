@@ -20,7 +20,8 @@ import {
 
 import { DisplayClassInfo } from "../../tools"
 import { UPDATE_SCHEDULE_ITEM_ATTENDANCE } from "../../../schedule/classes/class/attendance/queries"
-import { GET_SCHEDULE_CLASS_QUERY } from "../../checkout/class_info/queries"
+import { GET_ACCOUNT_CLASS_QUERY } from "./queries"
+// import { GET_SCHEDULE_CLASS_QUERY } from "../../checkout/class_info/queries"
 import GET_USER_PROFILE from "../../../../queries/system/get_user_profile"
 import ShopAccountClassCancelBase from "./ShopAccountClassCancelBase"
 
@@ -33,9 +34,10 @@ function ShopAccountClassCancel({t, match, history}) {
 
   const attendanceId = match.params.attendance_id
   const scheduleItemId = match.params.class_id
-  const date = match.params.date 
-  const { loading: loadingClass, error: errorClass, data: dataClass } = useQuery(GET_SCHEDULE_CLASS_QUERY, {
+  const date = match.params.date
+  const { loading: loadingAttendance, error: errorAttendance, data: dataAttendance } = useQuery(GET_ACCOUNT_CLASS_QUERY, {
     variables: { 
+      id: attendanceId,
       scheduleItemId: scheduleItemId,
       date: date
     }
@@ -43,12 +45,12 @@ function ShopAccountClassCancel({t, match, history}) {
   const { loading: loadingUser, error: errorUser, data: dataUser } = useQuery(GET_USER_PROFILE)
   const [updateScheduleItemAttendance] = useMutation(UPDATE_SCHEDULE_ITEM_ATTENDANCE)
 
-  if (loadingUser || loadingClass) return (
+  if (loadingUser || loadingAttendance) return (
     <ShopAccountClassCancelBase>
       {t("general.loading_with_dots")}
     </ShopAccountClassCancelBase>
   )
-  if (errorUser || errorClass) return (
+  if (errorUser || errorAttendance) return (
     <ShopAccountClassCancelBase>
       {t("shop.account.class_info.error_loading_data")}
     </ShopAccountClassCancelBase>
@@ -56,9 +58,36 @@ function ShopAccountClassCancel({t, match, history}) {
 
   const user = dataUser.user
   console.log(dataUser)
-  console.log(dataClass)
+  console.log(dataAttendance)
+  const scheduleItemAttendance = dataAttendance.scheduleItemAttendance
 
-  // Populated list
+  // Booking already cancelled
+  if (scheduleItemAttendance.bookingStatus == 'CANCELLED') {
+    return (
+      <ShopAccountClassCancelBase accountName={user.fullName}>
+        <Card title={t("shop.account.class_cancel.title_already_cancelled")}>
+          <Card.Body>
+            <h5>{t("shop.account.class_cancel.already_cancelled")}</h5>
+          </Card.Body>
+        </Card>
+      </ShopAccountClassCancelBase>
+    )
+  }
+
+  // Cancellation no longer possible
+  if (!scheduleItemAttendance.cancellationPossible) {
+    return (
+      <ShopAccountClassCancelBase accountName={user.fullName}>
+        <Card title={t("shop.account.class_cancel.title_cancelation_not_possible")}>
+          <Card.Body>
+            <h5>{t("shop.account.class_cancel.cancelation_not_possible")}</h5>
+          </Card.Body>
+        </Card>
+      </ShopAccountClassCancelBase>
+    )
+  }
+
+  // Show cancel option
   return (
     <ShopAccountClassCancelBase accountName={user.fullName}>
       <Card title={t("shop.account.class_cancel.title")}>
@@ -70,7 +99,7 @@ function ShopAccountClassCancel({t, match, history}) {
             <DisplayClassInfo
               t={t}
               classDate={date}
-              classData={dataClass}
+              classData={dataAttendance}
               dateFormat={dateFormat}
               timeFormat={timeFormat}
             />

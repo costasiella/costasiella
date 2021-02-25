@@ -52,6 +52,21 @@ function SettingsHome({ t, match, params }) {
           </Grid.Row>
           <Grid.Row>
             <Grid.Col md={12}>
+              <h4>{t("settings.workflow.title")}</h4>
+            </Grid.Col>
+            <Grid.Col md={3}>
+              <Card>
+                <Card.Body>
+                  <h5>{t("settings.workflow.class_booking.title")}</h5>
+                  {t("settings.workflow.class_booking.explanation")}
+                  <br /><br />
+                  <SettingsHomeItemButton link="/settings/workflow/class_booking" />
+                </Card.Body>
+              </Card>
+            </Grid.Col>
+          </Grid.Row>
+          <Grid.Row>
+            <Grid.Col md={12}>
               <h4>{t("settings.finance.title")}</h4>
             </Grid.Col>
             <Grid.Col md={3}>

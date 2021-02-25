@@ -22,6 +22,7 @@ import {
 } from "tabler-react";
 import ShopClassesScheduleBase from "./ShopClassesScheduleBase"
 import ShopClassesScheduleFilter from "./ShopClassesScheduleFilter"
+import ShopClassesScheduleButtonBook from "./ShopClassesScheduleButtonBook"
 import CSDatePicker from "../../../ui/CSDatePicker"
 
 import { GET_CLASSES_QUERY } from "../../../schedule/classes/queries"
@@ -62,7 +63,7 @@ function ShopClassesSchedule({ t, match, history }) {
   )
   if (error) return (
     <ShopClassesScheduleBase title={title}>
-      {t("shop.classpasses.error_loading")}
+      {t("shop.classes.error_loading")}
     </ShopClassesScheduleBase>
   )
 
@@ -117,7 +118,7 @@ function ShopClassesSchedule({ t, match, history }) {
     >
       
       <ShopClassesScheduleFilter data={data} refetch={refetch} />
-      {data.scheduleClasses.map(({ date, classes }) =>
+      {data.scheduleClasses.map(({ date, bookingOpenOn, classes }) =>
         <Grid.Row key={v4()}>
           <Grid.Col md={12}>
               <Card>
@@ -150,7 +151,8 @@ function ShopClassesSchedule({ t, match, history }) {
                         organizationLevel,
                         timeStart, 
                         timeEnd,
-                        displayPublic }) => (
+                        displayPublic,
+                        bookingStatus }) => (
                           <Table.Row>
                             <Table.Col>
                             <h4>
@@ -161,11 +163,12 @@ function ShopClassesSchedule({ t, match, history }) {
                             <span className="text-muted">{ organizationLocationRoom.organizationLocation.name }</span>
                             </Table.Col>
                             <Table.Col>
-                              <Link to={`/shop/classes/book/${scheduleItemId}/${date}`}>
-                                <Button className="pull-right" color="primary" outline>
-                                  {t("general.book")} <Icon name="chevron-right" />
-                                </Button>
-                              </Link>
+                              <ShopClassesScheduleButtonBook
+                                scheduleItemId={scheduleItemId}
+                                classDate={date}
+                                bookingOpenOn={bookingOpenOn}
+                                bookingStatus={bookingStatus}
+                              />
                             </Table.Col>
                           </Table.Row>
                         )

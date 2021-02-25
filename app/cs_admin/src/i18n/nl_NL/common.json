@@ -309,6 +309,15 @@
                 "this_is_costasiella": "__STRING_NOT_TRANSLATED__",
                 "license_version": "__STRING_NOT_TRANSLATED__"
             }
+        },
+        "workflow": {
+            "title": "__STRING_NOT_TRANSLATED__",
+            "class_booking": {
+                "title": "__STRING_NOT_TRANSLATED__",
+                "explanation": "__STRING_NOT_TRANSLATED__"
+            },
+            "workflow_class_book_days_advance": "__STRING_NOT_TRANSLATED__",
+            "workflow_class_cancel_until": "__STRING_NOT_TRANSLATED__"
         }
     },
     "yup": {
@@ -626,7 +635,11 @@
                 "title": "__STRING_NOT_TRANSLATED__",
                 "confirm_yes": "__STRING_NOT_TRANSLATED__",
                 "confirm_no": "__STRING_NOT_TRANSLATED__",
-                "success": "__STRING_NOT_TRANSLATED__"
+                "success": "__STRING_NOT_TRANSLATED__",
+                "title_already_cancelled": "__STRING_NOT_TRANSLATED__",
+                "title_cancelation_not_possible": "__STRING_NOT_TRANSLATED__",
+                "already_cancelled": "__STRING_NOT_TRANSLATED__",
+                "cancelation_not_possible": "__STRING_NOT_TRANSLATED__"
             }
         },
         "accounts": {
@@ -640,7 +653,16 @@
                 "title": "__STRING_NOT_TRANSLATED__",
                 "dropin_pay_and_book": "__STRING_NOT_TRANSLATED__",
                 "pay_and_book": "__STRING_NOT_TRANSLATED__",
-                "trial_pay_and_book": "__STRING_NOT_TRANSLATED__"
+                "trial_pay_and_book": "__STRING_NOT_TRANSLATED__",
+                "class_booking_status": {
+                    "open_on": "__STRING_NOT_TRANSLATED__",
+                    "cancelled": "__STRING_NOT_TRANSLATED__",
+                    "finished": "__STRING_NOT_TRANSLATED__",
+                    "ongoing": "__STRING_NOT_TRANSLATED__",
+                    "full": "__STRING_NOT_TRANSLATED__"
+                },
+                "unable_to_show_booking_options": "__STRING_NOT_TRANSLATED__",
+                "already_booked": "__STRING_NOT_TRANSLATED__"
             },
             "booked": {
                 "class": "__STRING_NOT_TRANSLATED__",
@@ -650,7 +672,15 @@
             },
             "filter_all_locations": "__STRING_NOT_TRANSLATED__",
             "filter_all_classtypes": "__STRING_NOT_TRANSLATED__",
-            "filter_all_levels": "__STRING_NOT_TRANSLATED__"
+            "filter_all_levels": "__STRING_NOT_TRANSLATED__",
+            "error_loading": "__STRING_NOT_TRANSLATED__",
+            "class_booking_status": {
+                "open_on": "__STRING_NOT_TRANSLATED__",
+                "cancelled": "__STRING_NOT_TRANSLATED__",
+                "finished": "__STRING_NOT_TRANSLATED__",
+                "ongoing": "__STRING_NOT_TRANSLATED__",
+                "full": "__STRING_NOT_TRANSLATED__"
+            }
         },
         "contact": {
             "title": "__STRING_NOT_TRANSLATED__"
@@ -1651,7 +1681,6 @@
         "Zambia": "__STRING_NOT_TRANSLATED__",
         "Zimbabwe": "__STRING_NOT_TRANSLATED__"
     },
-    "You've already booked this class ": "__STRING_NOT_TRANSLATED__",
     "View info": "__STRING_NOT_TRANSLATED__",
     "automation": {
         "title": "__STRING_NOT_TRANSLATED__",

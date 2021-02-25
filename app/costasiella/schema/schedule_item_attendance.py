@@ -1,6 +1,10 @@
 from django.utils.translation import gettext as _
 
+import datetime
+import pytz
 import graphene
+from django.utils import timezone
+from django.conf import settings
 from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
 from graphql import GraphQLError
@@ -14,6 +18,12 @@ from ..modules.messages import Messages
 from ..dudes import ClassCheckinDude, ClassScheduleDude
 
 m = Messages()
+
+
+class ScheduleItemAttendanceNodeInterface(graphene.Interface):
+    id = graphene.GlobalID()
+    cancellation_until = graphene.types.datetime.DateTime()
+    cancellation_possible = graphene.Boolean()
 
 
 class ScheduleItemAttendanceNode(DjangoObjectType):
@@ -31,10 +41,10 @@ class ScheduleItemAttendanceNode(DjangoObjectType):
             'date': ['exact'],
             'account_schedule_event_ticket': ['isnull']
         }
-        interfaces = (graphene.relay.Node, )
+        interfaces = (graphene.relay.Node, ScheduleItemAttendanceNodeInterface)
 
     @classmethod
-    def get_node(self, info, id):
+    def get_node(cls, info, id):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.view_scheduleitemattendance')
         require_login_and_one_of_permissions(user, [
@@ -43,7 +53,24 @@ class ScheduleItemAttendanceNode(DjangoObjectType):
         ])
 
         # Return only public non-archived location rooms
-        return self._meta.model.objects.get(id=id)
+        return cls._meta.model.objects.get(id=id)
+
+    def resolve_cancellation_until(self, info):
+        """
+            Calculates datetime of latest cancellation possibility
+        """
+        return self.get_cancel_before()
+    
+    def resolve_cancellation_possible(self, info):
+        local_tz = pytz.timezone(settings.TIME_ZONE)
+
+        now = timezone.localtime(timezone.now())
+        cancel_before = self.get_cancel_before()
+
+        if now < cancel_before and self.booking_status == 'BOOKED':
+            return True
+        else:
+            return False
 
 
 class ScheduleItemAttendanceQuery(graphene.ObjectType):

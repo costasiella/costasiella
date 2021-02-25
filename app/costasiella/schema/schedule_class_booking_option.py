@@ -16,6 +16,7 @@ from ..modules.model_helpers.schedule_item_helper import ScheduleItemHelper
 from .account import AccountNode
 from .account_classpass import AccountClasspassNode
 from .account_subscription import AccountSubscriptionNode
+from .schedule_class import ScheduleClassType
 from .schedule_item import ScheduleItemNode
 from .schedule_item_price import ScheduleItemPriceNode
 

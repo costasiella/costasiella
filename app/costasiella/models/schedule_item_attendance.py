@@ -1,7 +1,9 @@
 from django.utils.translation import gettext as _
 
-from django.db import models
+import datetime
+import pytz
 
+from django.db import models
 
 from .schedule_item import ScheduleItem
 from .account import Account
@@ -51,3 +53,29 @@ class ScheduleItemAttendance(models.Model):
 
         # return str(self.schedule_item.id) + ' [' + self.account.full_name + " - " + str(self.date) + '] ' + \
         #        self.attendance_type
+
+    def get_cancel_before(self):
+        """
+        Return "cancel before" datetime; Datetime after which this booking can no longer be cancelled
+        :return:
+        """
+        from ..dudes import SystemSettingDude
+
+        system_setting_dude = SystemSettingDude()
+        workflow_class_cancel_until = system_setting_dude.get("workflow_class_cancel_until")
+        if not workflow_class_cancel_until:
+            # Set a default value of 0 hours in advance to allow class cancellation; always allow
+            workflow_class_cancel_until = 0
+
+        # Fetch local start time
+        dt_start = datetime.datetime(self.date.year,
+                                     self.date.month,
+                                     self.date.day,
+                                     self.schedule_item.time_start.hour,
+                                     self.schedule_item.time_start.minute)
+        # Times in the DB are already local time, don't add or subtract anything
+        dt_start = pytz.utc.localize(dt_start).astimezone(pytz.timezone("Etc/UTC"))
+        # Check until when this class can be cancelled
+        delta = datetime.timedelta(hours=int(workflow_class_cancel_until))
+
+        return dt_start - delta

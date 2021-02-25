@@ -72,6 +72,8 @@ function ShopClassBook({ t, match, history }) {
   }
   
   console.log(data)
+  const scheduleClass = data.scheduleClass
+
   const alreadyBooked = data.scheduleClassBookingOptions.alreadyBooked
   const account = data.scheduleClassBookingOptions.account
   const classpasses = data.scheduleClassBookingOptions.classpasses
@@ -97,8 +99,60 @@ function ShopClassBook({ t, match, history }) {
   console.log(prices)
   console.log("ALREADY BOOKED")
   console.log(alreadyBooked)
-  
-  
+
+  let content
+
+  switch(scheduleClass.bookingStatus) {
+    case "NOT_YET_OPEN":
+      const bookingOpenOn = scheduleClass.bookingOpenOn
+      content = <Alert type="primary" hasExtraSpace>
+          <h5>{t("shop.classes.book.unable_to_show_booking_options")}</h5>
+          {t("shop.classes.book.class_booking_status.open_on") + " " + moment(bookingOpenOn).format(dateFormat)}
+        </Alert>
+      break
+    case "CANCELLED":
+      content = <Alert type="primary" hasExtraSpace>
+          <h5>{t("shop.classes.book.unable_to_show_booking_options")}</h5>
+          {t("shop.classes.book.class_booking_status.cancelled")}
+        </Alert>
+      break
+    case "FINISHED":
+      content = <Alert type="primary" hasExtraSpace>
+          <h5>{t("shop.classes.book.unable_to_show_booking_options")}</h5>
+          {t("shop.classes.book.class_booking_status.finished")}
+        </Alert>
+      break
+    case "ONGOING":
+      content = <Alert type="primary" hasExtraSpace>
+          <h5>{t("shop.classes.book.unable_to_show_booking_options")}</h5>
+          {t("shop.classes.book.class_booking_status.ongoing")}
+        </Alert>
+      break
+      break
+    case "FULL":
+      content = <Alert type="primary" hasExtraSpace>
+          <h5>{t("shop.classes.book.unable_to_show_booking_options")}</h5>
+          {t("shop.classes.book.class_booking_status.full")}
+        </Alert>
+      break
+    case "OK":
+      content = <Grid.Row cards deck>
+        <ShopClassBookSubscriptions subscriptions={subscriptions} />
+        <ShopClassBookClasspasses classpasses={classpasses} />
+        {(prices) ?
+          (prices.organizationClasspassDropin) ? 
+            <ShopClassBookPriceDropin priceDropin={prices.organizationClasspassDropin}/> : "" 
+        : "" }
+        {(prices) ?
+          (prices.organizationClasspassTrial) ? 
+            <ShopClassBookPriceTrial priceTrial={prices.organizationClasspassTrial}/> : "" 
+          : "" } 
+      </Grid.Row>
+      break
+    default:
+      content = ""
+  }
+
   return (
     <ShopClassBookBase pageHeaderOptions={<ShopClassBookBack />}>
       <Grid.Row>
@@ -106,30 +160,11 @@ function ShopClassBook({ t, match, history }) {
           { class_info }
           <div className="mt-6">
             {(alreadyBooked) ?
-              t("You've already booked this class ")
-              : 
-              <Grid.Row cards deck>
-                <ShopClassBookSubscriptions subscriptions={subscriptions} />
-                <ShopClassBookClasspasses classpasses={classpasses} />
-                {(prices) ?
-                  (prices.organizationClasspassDropin) ? 
-                    <ShopClassBookPriceDropin priceDropin={prices.organizationClasspassDropin}/> : "" 
-                : "" }
-                {(prices) ?
-                  (prices.organizationClasspassTrial) ? 
-                    <ShopClassBookPriceTrial priceTrial={prices.organizationClasspassTrial}/> : "" 
-                  : "" } 
-                {/* <ScheduleClassBookSubscriptions subscriptions={subscriptions} />
-                <ScheduleClassBookClasspasses classpasses={classpasses} />
-                {(prices) ?
-                  (prices.organizationClasspassDropin) ? 
-                    <ScheduleClassBookPriceDropin priceDropin={prices.organizationClasspassDropin}/> : "" 
-                  : "" }
-                {(prices) ?
-                  (prices.organizationClasspassTrial) ? 
-                    <ScheduleClassBookPriceTrial priceTrial={prices.organizationClasspassTrial}/> : "" 
-                  : "" } */}
-              </Grid.Row>
+              <Alert type="primary" hasExtraSpace>
+                <h5>{t("shop.classes.book.unable_to_show_booking_options")}</h5>
+                {t("shop.classes.book.already_booked")}
+              </Alert>
+              : content
             }
           </div>
         </Grid.Col>
@@ -140,4 +175,3 @@ function ShopClassBook({ t, match, history }) {
 
 
 export default withTranslation()(withRouter(ShopClassBook))
-

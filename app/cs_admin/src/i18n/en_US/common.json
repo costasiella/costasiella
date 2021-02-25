@@ -1354,6 +1354,15 @@
                 "this_is_costasiella": "This is Costasiella",
                 "license_version": "Costasiella is released under GPL-2.0-or-later."
             }
+        },
+        "workflow": {
+            "title": "Workflow",
+            "class_booking": {
+                "title": "Class booking",
+                "explanation": "Class advance booking and cancellation settings"
+            },
+            "workflow_class_book_days_advance": "Number of days in advance customers will be able to book classes",
+            "workflow_class_cancel_until": "Number of hours before a class starts a booking can be cancelled while returning credit"
         }
     },
     "user": {
@@ -1595,7 +1604,11 @@
                 "title": "Cancel booking confirmation",
                 "confirm_yes": "Yes, cancel my booking",
                 "confirm_no": "No, don't cancel my booking",
-                "success": "Your class booking has been cancelled."
+                "success": "Your class booking has been cancelled.",
+                "title_already_cancelled": "Already cancelled",
+                "title_cancelation_not_possible": "Cancellation not possible",
+                "already_cancelled": "Your booking for this class has already been cancelled.",
+                "cancelation_not_possible": "Your booking for this class can no longer be cancelled"
             }
         },
         "accounts": {
@@ -1609,7 +1622,16 @@
                 "title": "Booking options for class",
                 "dropin_pay_and_book": "Buy a drop in class",
                 "pay_and_book": "Pay and book",
-                "trial_pay_and_book": "Buy a trial class"
+                "trial_pay_and_book": "Buy a trial class",
+                "class_booking_status": {
+                    "open_on": "Bookings for this class are accepted from",
+                    "cancelled": "This class has been cancelled",
+                    "finished": "This class has already finished",
+                    "ongoing": "This class has already started",
+                    "full": "This class is fully booked"
+                },
+                "unable_to_show_booking_options": "Unable to show booking options",
+                "already_booked": "You're already booked this class"
             },
             "booked": {
                 "class": "Selected class",
@@ -1619,7 +1641,15 @@
             },
             "filter_all_locations": "All locations",
             "filter_all_classtypes": "All classtypes",
-            "filter_all_levels": "All levels"
+            "filter_all_levels": "All levels",
+            "error_loading": "Error loading classes... :(",
+            "class_booking_status": {
+                "open_on": "Booking opens on",
+                "cancelled": "Cancelled",
+                "finished": "Finished",
+                "ongoing": "Ongoing",
+                "full": "Full"
+            }
         },
         "contact": {
             "title": "Contact"
@@ -1651,7 +1681,6 @@
             }
         }
     },
-    "You've already booked this class ": "You've already booked this class",
     "View info": "View info",
     "automation": {
         "title": "Automation",

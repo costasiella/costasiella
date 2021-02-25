@@ -41,7 +41,7 @@ class ScheduleItemNode(DjangoObjectType):
     class Meta:
         model = ScheduleItem
         filter_fields = ['schedule_item_type', 'schedule_event']
-        interfaces = (graphene.relay.Node, )
+        interfaces = (graphene.relay.Node, ScheduleItemNodeInterface)
 
     @classmethod
     def get_node(self, info, id):
