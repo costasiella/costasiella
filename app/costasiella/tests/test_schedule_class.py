@@ -17,6 +17,8 @@ from .. import models
 from .. import schema
 from ..modules.gql_tools import get_rid
 
+from .tools import next_weekday
+
 
 class GQLScheduleClass(TestCase):
     # https://docs.djangoproject.com/en/2.1/topics/testing/overview/
@@ -138,11 +140,10 @@ class GQLScheduleClass(TestCase):
 '''
 
         self.scheduleclass_query = '''
-  query ScheduleItem($id: ID!) {
-    scheduleItem(id:$id) {
-      id
+  query ScheduleClass($scheduleItemId: ID!, $date: Date!) {
+    scheduleClass(scheduleItemId:$scheduleItemId, date: $date) {
+      scheduleItemId
       frequencyType
-      frequencyInterval
       organizationLocationRoom {
         id
         name
@@ -155,11 +156,11 @@ class GQLScheduleClass(TestCase):
         id
         name
       }
-      dateStart
-      dateEnd
       timeStart
       timeEnd
       displayPublic
+      bookingStatus
+      bookingOpenOn
     }
   }
 '''
@@ -508,97 +509,219 @@ class GQLScheduleClass(TestCase):
         self.assertEqual(errors[0]['message'], 'Not logged in!')
 
     def test_query_one(self):
-        """ Query one schedule_item as admin """
+        """ Query one schedule_class as admin """
         schedule_class = f.SchedulePublicWeeklyClassFactory.create()
-        node_id = to_global_id('ScheduleItemNode', schedule_class.id)
+        variables = {
+            "scheduleItemId": to_global_id('ScheduleItemNode', schedule_class.id),
+            "date": "2014-01-06"
+        }
 
         # Now query single schedule item and check
-        executed = execute_test_client_api_query(self.scheduleclass_query, self.admin_user, variables={"id": node_id})
+        executed = execute_test_client_api_query(self.scheduleclass_query, self.admin_user, variables=variables)
         data = executed.get('data')
 
-        self.assertEqual(data['scheduleItem']['id'], node_id)
-        self.assertEqual(data['scheduleItem']['frequencyType'], schedule_class.frequency_type)
-        self.assertEqual(data['scheduleItem']['frequencyInterval'], schedule_class.frequency_interval)
-        self.assertEqual(
-          data['scheduleItem']['organizationLocationRoom']['id'],
-          to_global_id('OrganizationLocationRoomNode', schedule_class.organization_location_room.id)
-        )
-        self.assertEqual(
-          data['scheduleItem']['organizationClasstype']['id'],
-          to_global_id('OrganizationClasstypeNode', schedule_class.organization_classtype.id)
-        )
-        self.assertEqual(
-          data['scheduleItem']['organizationLevel']['id'],
-          to_global_id('OrganizationLevelNode', schedule_class.organization_level.id)
-        )
-        self.assertEqual(data['scheduleItem']['dateStart'], str(schedule_class.date_start))
-        self.assertEqual(data['scheduleItem']['dateEnd'], str(schedule_class.date_end))
-        self.assertEqual(data['scheduleItem']['timeStart'], str(schedule_class.time_start))
-        self.assertEqual(data['scheduleItem']['timeEnd'], str(schedule_class.time_end))
-        self.assertEqual(data['scheduleItem']['displayPublic'], schedule_class.display_public)
+        self.assertEqual(data['scheduleClass']['scheduleItemId'], variables['scheduleItemId'])
+        self.assertEqual(data['scheduleClass']['displayPublic'], schedule_class.display_public)
+        self.assertEqual(data['scheduleClass']['frequencyType'], schedule_class.frequency_type)
+        self.assertEqual(data['scheduleClass']['timeStart'], str(schedule_class.time_start))
+        self.assertEqual(data['scheduleClass']['timeEnd'], str(schedule_class.time_end))
+        self.assertEqual(data['scheduleClass']['organizationLocationRoom']['id'],
+                         to_global_id('OrganizationLocationRoomNode', schedule_class.organization_location_room.id))
+        self.assertEqual(data['scheduleClass']['organizationClasstype']['id'],
+                         to_global_id('OrganizationClasstypeNode', schedule_class.organization_classtype.id))
+        self.assertEqual(data['scheduleClass']['organizationLevel']['id'],
+                         to_global_id('OrganizationLevelNode', schedule_class.organization_level.id))
 
-    def test_query_one_anon_user_non_public(self):
-        """ Deny permission for anon users Query one class """
-        schedule_class = f.SchedulePublicWeeklyClassFactory.create(display_public=False)
-        node_id = to_global_id('ScheduleItemNode', schedule_class.id)
-
-        # Now query single scheduleclass and check
-        executed = execute_test_client_api_query(self.scheduleclass_query, self.anon_user, variables={"id": node_id})
-        errors = executed.get('errors')
-        self.assertEqual(errors[0]['message'], 'Not logged in!')
-
-    def test_query_one_anon_user_public(self):
-        """ Allow anon users to query a public class """
+    def test_query_one_booking_status_ok(self):
+        """ Query one schedule_item as admin - booking status ok """
         schedule_class = f.SchedulePublicWeeklyClassFactory.create()
-        node_id = to_global_id('ScheduleItemNode', schedule_class.id)
+        schedule_class.spaces = 10
+        schedule_class.save()
 
-        # Now query single scheduleclass and check
-        executed = execute_test_client_api_query(self.scheduleclass_query, self.anon_user, variables={"id": node_id})
+        today = datetime.date.today()
+        next_monday = next_weekday(today, 1)
+
+        variables = {
+            "scheduleItemId": to_global_id('ScheduleItemNode', schedule_class.id),
+            "date": str(next_monday)
+        }
+
+        # Now query single schedule item and check
+        executed = execute_test_client_api_query(self.scheduleclass_query, self.admin_user, variables=variables)
         data = executed.get('data')
-        self.assertEqual(data['scheduleItem']['id'], node_id)
 
-    def test_query_one_public(self):
-        """ View public classes as user lacking authorization """
-        # Create regular user
-        user = f.RegularUserFactory.create()
+        self.assertEqual(data['scheduleClass']['scheduleItemId'], variables['scheduleItemId'])
+        self.assertEqual(data['scheduleClass']['bookingStatus'], "OK")
+
+    def test_query_one_booking_status_ongoing(self):
+        """ Query one schedule_item as admin - booking status ongoing """
+        now = datetime.datetime.now()
+        delta = datetime.timedelta(hours=1)
 
         schedule_class = f.SchedulePublicWeeklyClassFactory.create()
-        node_id = to_global_id('ScheduleItemNode', schedule_class.id)
+        schedule_class.frequency_interval = now.date().isoweekday()
+        schedule_class.time_start = now - delta
+        schedule_class.time_end = now + delta
+        schedule_class.spaces = 10
+        schedule_class.save()
 
-        # Now query single scheduleclass and check
-        executed = execute_test_client_api_query(self.scheduleclass_query, user, variables={"id": node_id})
+        today = datetime.date.today()
+        next_monday = next_weekday(today, 1)
+
+        variables = {
+            "scheduleItemId": to_global_id('ScheduleItemNode', schedule_class.id),
+            "date": str(now.date())
+        }
+
+        # Now query single schedule item and check
+        executed = execute_test_client_api_query(self.scheduleclass_query, self.admin_user, variables=variables)
         data = executed.get('data')
-        self.assertEqual(data['scheduleItem']['id'], node_id)
 
-    def test_query_one_permission_denied_non_public(self):
-        """ Permission denied message when user lacks authorization """
-        # Create regular user
-        user = f.RegularUserFactory.create()
+        self.assertEqual(data['scheduleClass']['scheduleItemId'], variables['scheduleItemId'])
+        self.assertEqual(data['scheduleClass']['bookingStatus'], "ONGOING")
 
-        schedule_class = f.SchedulePublicWeeklyClassFactory.create(
-            display_public=False
-        )
-        node_id = to_global_id('ScheduleItemNode', schedule_class.id)
-
-        # Now query single scheduleclass and check
-        executed = execute_test_client_api_query(self.scheduleclass_query, user, variables={"id": node_id})
-        errors = executed.get('errors')
-        self.assertEqual(errors[0]['message'], 'Permission denied!')
-
-    def test_query_one_permission_granted(self):
-        """ Respond with data when user has permission """
-        user = f.RegularUserFactory.create()
-        permission = Permission.objects.get(codename='view_scheduleclass')
-        user.user_permissions.add(permission)
-        user.save()
-
+    def test_query_one_booking_status_full(self):
+        """ Query one schedule_item as admin - booking status full """
         schedule_class = f.SchedulePublicWeeklyClassFactory.create()
-        node_id = to_global_id('ScheduleItemNode', schedule_class.id)
+        today = datetime.date.today()
+        next_monday = next_weekday(today, 1)
 
-        # Now query single location and check
-        executed = execute_test_client_api_query(self.scheduleclass_query, user, variables={"id": node_id})
+        variables = {
+            "scheduleItemId": to_global_id('ScheduleItemNode', schedule_class.id),
+            "date": str(next_monday)
+        }
+
+        # Now query single schedule item and check
+        executed = execute_test_client_api_query(self.scheduleclass_query, self.admin_user, variables=variables)
         data = executed.get('data')
-        self.assertEqual(data['scheduleItem']['id'], node_id)
+
+        self.assertEqual(data['scheduleClass']['scheduleItemId'], variables['scheduleItemId'])
+        self.assertEqual(data['scheduleClass']['bookingStatus'], "FULL")
+
+    def test_query_one_booking_status_cancelled(self):
+        """ Query one schedule_item as admin - booking status cancelled """
+        schedule_class = f.SchedulePublicWeeklyClassFactory.create()
+        schedule_class.status = 'CANCELLED'
+        schedule_class.save()
+        today = datetime.date.today()
+        next_monday = next_weekday(today, 1)
+
+        variables = {
+            "scheduleItemId": to_global_id('ScheduleItemNode', schedule_class.id),
+            "date": str(next_monday)
+        }
+
+        # Now query single schedule item and check
+        executed = execute_test_client_api_query(self.scheduleclass_query, self.admin_user, variables=variables)
+        data = executed.get('data')
+
+        self.assertEqual(data['scheduleClass']['scheduleItemId'], variables['scheduleItemId'])
+        self.assertEqual(data['scheduleClass']['bookingStatus'], "CANCELLED")
+
+    def test_query_one_booking_status_finished(self):
+        """ Query one schedule_item as admin - booking status ok """
+        schedule_class = f.SchedulePublicWeeklyClassFactory.create()
+        variables = {
+            "scheduleItemId": to_global_id('ScheduleItemNode', schedule_class.id),
+            "date": "2014-01-06"
+        }
+
+        # Now query single schedule item and check
+        executed = execute_test_client_api_query(self.scheduleclass_query, self.admin_user, variables=variables)
+        data = executed.get('data')
+
+        self.assertEqual(data['scheduleClass']['scheduleItemId'], variables['scheduleItemId'])
+        self.assertEqual(data['scheduleClass']['bookingStatus'], "FINISHED")
+
+    def test_query_one_booking_status_not_yet_open(self):
+        """ Query one schedule_item as admin - booking status ok """
+        schedule_class = f.SchedulePublicWeeklyClassFactory.create()
+        variables = {
+            "scheduleItemId": to_global_id('ScheduleItemNode', schedule_class.id),
+            "date": "2040-01-02"
+        }
+
+        # Now query single schedule item and check
+        executed = execute_test_client_api_query(self.scheduleclass_query, self.admin_user, variables=variables)
+        data = executed.get('data')
+
+        self.assertEqual(data['scheduleClass']['scheduleItemId'], variables['scheduleItemId'])
+        self.assertEqual(data['scheduleClass']['bookingStatus'], "NOT_YET_OPEN")
+    #
+    # # def test_query_one_booking_open_on(self):
+    # #     """ Query one schedule_item as admin - booking status ok """
+    # #     schedule_class = f.SchedulePublicWeeklyClassFactory.create()
+    # #     node_id = to_global_id('ScheduleItemNode', schedule_class.id)
+    # #
+    # #     # Now query single schedule item and check
+    # #     executed = execute_test_client_api_query(self.scheduleclass_query, self.admin_user, variables={"id": node_id})
+    # #     data = executed.get('data')
+    # #
+    # #     self.assertEqual(data['scheduleItem']['id'], node_id)
+    # #     self.assertEqual(data['scheduleItem']['frequencyType'], schedule_class.frequency_type)
+    #
+    # def test_query_one_anon_user_non_public(self):
+    #     """ Deny permission for anon users Query one class """
+    #     schedule_class = f.SchedulePublicWeeklyClassFactory.create(display_public=False)
+    #     node_id = to_global_id('ScheduleItemNode', schedule_class.id)
+    #
+    #     # Now query single scheduleclass and check
+    #     executed = execute_test_client_api_query(self.scheduleclass_query, self.anon_user, variables={"id": node_id})
+    #     errors = executed.get('errors')
+    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
+    #
+    # def test_query_one_anon_user_public(self):
+    #     """ Allow anon users to query a public class """
+    #     schedule_class = f.SchedulePublicWeeklyClassFactory.create()
+    #     node_id = to_global_id('ScheduleItemNode', schedule_class.id)
+    #
+    #     # Now query single scheduleclass and check
+    #     executed = execute_test_client_api_query(self.scheduleclass_query, self.anon_user, variables={"id": node_id})
+    #     data = executed.get('data')
+    #     self.assertEqual(data['scheduleItem']['id'], node_id)
+    #
+    # def test_query_one_public(self):
+    #     """ View public classes as user lacking authorization """
+    #     # Create regular user
+    #     user = f.RegularUserFactory.create()
+    #
+    #     schedule_class = f.SchedulePublicWeeklyClassFactory.create()
+    #     node_id = to_global_id('ScheduleItemNode', schedule_class.id)
+    #
+    #     # Now query single scheduleclass and check
+    #     executed = execute_test_client_api_query(self.scheduleclass_query, user, variables={"id": node_id})
+    #     data = executed.get('data')
+    #     self.assertEqual(data['scheduleItem']['id'], node_id)
+    #
+    # def test_query_one_permission_denied_non_public(self):
+    #     """ Permission denied message when user lacks authorization """
+    #     # Create regular user
+    #     user = f.RegularUserFactory.create()
+    #
+    #     schedule_class = f.SchedulePublicWeeklyClassFactory.create(
+    #         display_public=False
+    #     )
+    #     node_id = to_global_id('ScheduleItemNode', schedule_class.id)
+    #
+    #     # Now query single scheduleclass and check
+    #     executed = execute_test_client_api_query(self.scheduleclass_query, user, variables={"id": node_id})
+    #     errors = executed.get('errors')
+    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
+    #
+    # def test_query_one_permission_granted(self):
+    #     """ Respond with data when user has permission """
+    #     user = f.RegularUserFactory.create()
+    #     permission = Permission.objects.get(codename='view_scheduleclass')
+    #     user.user_permissions.add(permission)
+    #     user.save()
+    #
+    #     schedule_class = f.SchedulePublicWeeklyClassFactory.create()
+    #     node_id = to_global_id('ScheduleItemNode', schedule_class.id)
+    #
+    #     # Now query single location and check
+    #     executed = execute_test_client_api_query(self.scheduleclass_query, user, variables={"id": node_id})
+    #     data = executed.get('data')
+    #     self.assertEqual(data['scheduleItem']['id'], node_id)
 
     def test_create_scheduleclass(self):
         """ Create a scheduleclass """

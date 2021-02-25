@@ -631,10 +631,7 @@ def validate_schedule_classes_query_date_input(date_from,
             'starttime'
         ]  
         if order_by not in sort_options:
-            raise Exception(_("orderBy can only be 'location' or 'starttime'")) 
-
-    print("###########")
-    print(organization_location)
+            raise Exception(_("orderBy can only be 'location' or 'starttime'"))
 
     if organization_classtype:
         rid = get_rid(organization_classtype)
@@ -673,7 +670,6 @@ class ScheduleClassQuery(graphene.ObjectType):
         attendance_count_type=graphene.String(),
     )
 
-    #TODO: Add spaces & attendance count code here
     def resolve_schedule_class(self,
                                info,
                                schedule_item_id,
@@ -701,7 +697,8 @@ class ScheduleClassQuery(graphene.ObjectType):
 
         schedule_class = ScheduleClassType(
             date=date,
-            schedule_item_id=schedule_item.id,
+            schedule_item_id=to_global_id('ScheduleItemNode', schedule_item.pk),
+            display_public=schedule_item.display_public,
             frequency_type=schedule_item.frequency_type,
             status=schedule_item.status or "",
             description=schedule_item.description or "",
@@ -738,10 +735,6 @@ class ScheduleClassQuery(graphene.ObjectType):
             'costasiella.view_selfcheckin'
         ])
 
-        print('############ resolve')
-        print(locals())
-        print(organization_location)
-
         validation_result = validate_schedule_classes_query_date_input(
             date_from, 
             date_until, 
@@ -751,8 +744,6 @@ class ScheduleClassQuery(graphene.ObjectType):
             organization_location,
             attendance_count_type
         )
-
-        print(validation_result)
 
         delta = datetime.timedelta(days=1)
         date = date_from
