@@ -1,4 +1,5 @@
 # from graphql.error.located_error import GraphQLLocatedError
+import datetime
 import graphql
 import base64
 
@@ -95,69 +96,20 @@ class GQLScheduleItemAttendance(TestCase):
   }
 '''
 
-#         self.subscription_query = '''
-#   query AccountSubscription($id: ID!, $accountId: ID!, $after: String, $before: String, $archived: Boolean!) {
-#     accountSubscription(id:$id) {
-#       id
-#       account {
-#           id
-#       }
-#       organizationSubscription {
-#         id
-#         name
-#       }
-#       financePaymentMethod {
-#         id
-#         name
-#       }
-#       dateStart
-#       dateEnd
-#       note
-#       registrationFeePaid
-#       createdAt
-#     }
-#     organizationSubscriptions(first: 100, before: $before, after: $after, archived: $archived) {
-#       pageInfo {
-#         startCursor
-#         endCursor
-#         hasNextPage
-#         hasPreviousPage
-#       }
-#       edges {
-#         node {
-#           id
-#           archived
-#           name
-#         }
-#       }
-#     }
-#     financePaymentMethods(first: 100, before: $before, after: $after, archived: $archived) {
-#       pageInfo {
-#         startCursor
-#         endCursor
-#         hasNextPage
-#         hasPreviousPage
-#       }
-#       edges {
-#         node {
-#           id
-#           archived
-#           name
-#           code
-#         }
-#       }
-#     }
-#     account(id:$accountId) {
-#       id
-#       firstName
-#       lastName
-#       email
-#       phone
-#       mobile
-#       isActive
-#     }
-#   }
-# '''
+        self.schedule_item_attendance_query = '''
+  query ScheduleItemAttendance($id:ID!) {
+    scheduleItemAttendance(id: $id) {
+      id
+      cancellationPossible
+      attendanceType
+      date
+      bookingStatus
+      scheduleItem {
+        id
+      }
+    }
+  }
+'''
 
         self.schedule_item_attendance_create_mutation = ''' 
   mutation CreateScheduleItemAttendance($input: CreateScheduleItemAttendanceInput!) {
@@ -222,7 +174,6 @@ class GQLScheduleItemAttendance(TestCase):
     def tearDown(self):
         # This is run after every test
         pass
-
 
     def test_query(self):
         """ Query list of schedule item attendances """
@@ -296,7 +247,6 @@ class GQLScheduleItemAttendance(TestCase):
             to_global_id("ScheduleItemAttendanceNode", schedule_item_attendance.id)
         )
 
-
     def test_query_anon_user(self):
         """ Query list of schedule item attendances - anon user """
         query = self.attendances_query
@@ -310,37 +260,67 @@ class GQLScheduleItemAttendance(TestCase):
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Not logged in!')
 
+    def test_query_one(self):
+        """ Query one schedule item attendance """
+        query = self.schedule_item_attendance_query
+        schedule_item_attendance = f.ScheduleItemAttendanceClasspassFactory.create()
+        schedule_item_attendance.booking_status = "BOOKED"
+        schedule_item_attendance.save()
 
-    # def test_query_one(self):
-    #     """ Query one account subscription as admin """   
-    #     subscription = f.AccountSubscriptionFactory.create()
-        
-    #     variables = {
-    #         "id": to_global_id("AccountSubscriptionNode", subscription.id),
-    #         "accountId": to_global_id("AccountNode", subscription.account.id),
-    #         "archived": False,
-    #     }
+        variables = {
+            "id": to_global_id("ScheduleItemAttendanceNode", schedule_item_attendance.id),
+        }
 
-    #     # Now query single subscription and check
-    #     executed = execute_test_client_api_query(self.subscription_query, self.admin_user, variables=variables)
-    #     data = executed.get('data')
-    #     self.assertEqual(
-    #         data['accountSubscription']['account']['id'], 
-    #         to_global_id('AccountNode', subscription.account.id)
-    #     )
-    #     self.assertEqual(
-    #         data['accountSubscription']['organizationSubscription']['id'], 
-    #         to_global_id('OrganizationSubscriptionNode', subscription.organization_subscription.id)
-    #     )
-    #     self.assertEqual(
-    #         data['accountSubscription']['financePaymentMethod']['id'], 
-    #         to_global_id('FinancePaymentMethodNode', subscription.finance_payment_method.id)
-    #     )
-    #     self.assertEqual(data['accountSubscription']['dateStart'], str(subscription.date_start))
-    #     self.assertEqual(data['accountSubscription']['dateEnd'], subscription.date_end)
-    #     self.assertEqual(data['accountSubscription']['note'], subscription.note)
-    #     self.assertEqual(data['accountSubscription']['registrationFeePaid'], subscription.registration_fee_paid)
+        # Now query single subscription and check
+        executed = execute_test_client_api_query(query, self.admin_user, variables=variables)
+        data = executed.get('data')
 
+        self.assertEqual(data['scheduleItemAttendance']['id'],
+                         to_global_id("ScheduleItemAttendanceNode", schedule_item_attendance.id))
+        self.assertEqual(data['scheduleItemAttendance']['scheduleItem']['id'],
+                         to_global_id("ScheduleItemNode", schedule_item_attendance.schedule_item.id))
+        self.assertEqual(data['scheduleItemAttendance']['attendanceType'], schedule_item_attendance.attendance_type)
+        self.assertEqual(data['scheduleItemAttendance']['bookingStatus'], schedule_item_attendance.booking_status)
+        self.assertEqual(data['scheduleItemAttendance']['date'], str(schedule_item_attendance.date))
+        self.assertEqual(data['scheduleItemAttendance']['cancellationPossible'], True)
+
+    def test_query_one_cancellation_no_longer_possible_date(self):
+        """ Query one schedule item attendance - cancellation not possible for past class """
+        query = self.schedule_item_attendance_query
+        schedule_item_attendance = f.ScheduleItemAttendanceClasspassFactory.create()
+        schedule_item_attendance.date = datetime.date.today() - datetime.timedelta(days=1)
+        schedule_item_attendance.save()
+
+        variables = {
+            "id": to_global_id("ScheduleItemAttendanceNode", schedule_item_attendance.id),
+        }
+
+        # Now query single subscription and check
+        executed = execute_test_client_api_query(query, self.admin_user, variables=variables)
+        data = executed.get('data')
+
+        self.assertEqual(data['scheduleItemAttendance']['id'],
+                         to_global_id("ScheduleItemAttendanceNode", schedule_item_attendance.id))
+        self.assertEqual(data['scheduleItemAttendance']['cancellationPossible'], False)
+
+    def test_query_one_cancellation_no_longer_possible_status(self):
+        """ Query one schedule item attendance - cancellation not possible for status ATTENDING """
+        query = self.schedule_item_attendance_query
+        schedule_item_attendance = f.ScheduleItemAttendanceClasspassFactory.create()
+        schedule_item_attendance.booking_status = "ATTENDING"
+        schedule_item_attendance.save()
+
+        variables = {
+            "id": to_global_id("ScheduleItemAttendanceNode", schedule_item_attendance.id),
+        }
+
+        # Now query single subscription and check
+        executed = execute_test_client_api_query(query, self.admin_user, variables=variables)
+        data = executed.get('data')
+
+        self.assertEqual(data['scheduleItemAttendance']['id'],
+                         to_global_id("ScheduleItemAttendanceNode", schedule_item_attendance.id))
+        self.assertEqual(data['scheduleItemAttendance']['cancellationPossible'], False)
 
     # def test_query_one_anon_user(self):
     #     """ Deny permission for anon users Query one account subscription """   

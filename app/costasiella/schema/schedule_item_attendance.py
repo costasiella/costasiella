@@ -67,7 +67,7 @@ class ScheduleItemAttendanceNode(DjangoObjectType):
         now = timezone.localtime(timezone.now())
         cancel_before = self.get_cancel_before()
 
-        if now < cancel_before and not self.booking_status != 'ATTENDING':
+        if now < cancel_before and self.booking_status == 'BOOKED':
             return True
         else:
             return False
