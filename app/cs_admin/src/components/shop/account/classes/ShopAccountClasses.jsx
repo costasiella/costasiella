@@ -142,7 +142,7 @@ function ShopAccountClasses({t, match, history}) {
                     </Table.Col>
                     <Table.Col>
                       {/* TODO: improve this by adding a "Can be cancelled field to GQL schema" */}
-                      {(node.bookingStatus == "CANCELLED") ? "" : 
+                      {((node.bookingStatus != "CANCELLED") && node.cancellationPossible) ?  
                         <div>
                           <Link to={`/shop/account/class_cancel/${node.scheduleItem.id}/${node.date}/${node.id}`}>
                             <Button 
@@ -161,7 +161,7 @@ function ShopAccountClasses({t, match, history}) {
                               {t("general.info")}
                             </Button>
                           </Link>
-                        </div>
+                        </div> : ""
                       }
                     </Table.Col>
                   </Table.Row>

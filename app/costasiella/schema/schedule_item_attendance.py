@@ -1,6 +1,10 @@
 from django.utils.translation import gettext as _
 
+import datetime
+import pytz
 import graphene
+from django.utils import timezone
+from django.conf import settings
 from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
 from graphql import GraphQLError
@@ -14,6 +18,12 @@ from ..modules.messages import Messages
 from ..dudes import ClassCheckinDude, ClassScheduleDude
 
 m = Messages()
+
+
+class ScheduleItemAttendanceNodeInterface(graphene.Interface):
+    id = graphene.GlobalID()
+    cancellation_until = graphene.types.datetime.DateTime()
+    cancellation_possible = graphene.Boolean()
 
 
 class ScheduleItemAttendanceNode(DjangoObjectType):
@@ -31,10 +41,10 @@ class ScheduleItemAttendanceNode(DjangoObjectType):
             'date': ['exact'],
             'account_schedule_event_ticket': ['isnull']
         }
-        interfaces = (graphene.relay.Node, )
+        interfaces = (graphene.relay.Node, ScheduleItemAttendanceNodeInterface)
 
     @classmethod
-    def get_node(self, info, id):
+    def get_node(cls, info, id):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.view_scheduleitemattendance')
         require_login_and_one_of_permissions(user, [
@@ -43,7 +53,65 @@ class ScheduleItemAttendanceNode(DjangoObjectType):
         ])
 
         # Return only public non-archived location rooms
-        return self._meta.model.objects.get(id=id)
+        return cls._meta.model.objects.get(id=id)
+
+    def resolve_cancellation_until(self, info):
+        """
+            Calculates datetime of latest cancellation possibility
+        """
+        return self.get_cancel_before()
+
+
+        # def get_datetime_start(self):
+        #     """
+        #         Returns datetime object of class start
+        #     """
+        #     db = current.db
+        #
+        #     pytz = current.globalenv['pytz']
+        #     TIMEZONE = 'Etc/UTC'  # Class times in DB be considered local and shouldn't have extra hours added / subtracted
+        #
+        #     cls = db.classes(self.row.classes_id)
+        #     date = self.row.ClassDate
+        #     dt_start = datetime.datetime(date.year,
+        #                                  date.month,
+        #                                  date.day,
+        #                                  int(cls.Starttime.hour),
+        #                                  int(cls.Starttime.minute))
+        #     dt_start = pytz.utc.localize(dt_start).astimezone(pytz.timezone(TIMEZONE))
+        #
+        #     return dt_start
+
+        # OpenStudio code for reference
+        # db = current.db
+        #
+        # cls = db.classes(self.row.classes_id)
+        # date = self.row.ClassDate
+        #
+        # get_sys_property = current.globalenv['get_sys_property']
+        #
+        # shop_classes_cancellation_limit = get_sys_property('shop_classes_cancellation_limit') or 0
+        #
+        # dt_start = self.get_datetime_start()
+        # delta = datetime.timedelta(hours=int(shop_classes_cancellation_limit))
+        #
+        # return dt_start - delta
+    
+    def resolve_cancellation_possible(self, info):
+        local_tz = pytz.timezone(settings.TIME_ZONE)
+        print(local_tz)
+
+        now = timezone.localtime(timezone.now())
+        cancel_before = self.get_cancel_before()
+
+        if now < cancel_before and not self.booking_status != 'ATTENDING':
+            return True
+        else:
+            return False
+
+        # delta = datetime.timedelta(hours=int(workflow_class_cancel_until))
+        #
+        # return date - delta
 
 
 class ScheduleItemAttendanceQuery(graphene.ObjectType):

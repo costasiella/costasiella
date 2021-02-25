@@ -13,6 +13,7 @@ export const GET_ACCOUNT_CLASSES_QUERY = gql`
       edges {
         node {
           id
+          cancellationPossible
           attendanceType
           date
           bookingStatus
