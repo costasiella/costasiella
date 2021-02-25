@@ -12,6 +12,8 @@ from .account_teacher_profile import AccountTeacherProfile
 
 from .app_settings import AppSettings
 
+from .business import Business
+
 from .finance_costcenter import FinanceCostCenter
 from .finance_glaccount import FinanceGLAccount
 from .finance_invoice import FinanceInvoice
