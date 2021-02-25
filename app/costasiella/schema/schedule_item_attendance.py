@@ -60,46 +60,9 @@ class ScheduleItemAttendanceNode(DjangoObjectType):
             Calculates datetime of latest cancellation possibility
         """
         return self.get_cancel_before()
-
-
-        # def get_datetime_start(self):
-        #     """
-        #         Returns datetime object of class start
-        #     """
-        #     db = current.db
-        #
-        #     pytz = current.globalenv['pytz']
-        #     TIMEZONE = 'Etc/UTC'  # Class times in DB be considered local and shouldn't have extra hours added / subtracted
-        #
-        #     cls = db.classes(self.row.classes_id)
-        #     date = self.row.ClassDate
-        #     dt_start = datetime.datetime(date.year,
-        #                                  date.month,
-        #                                  date.day,
-        #                                  int(cls.Starttime.hour),
-        #                                  int(cls.Starttime.minute))
-        #     dt_start = pytz.utc.localize(dt_start).astimezone(pytz.timezone(TIMEZONE))
-        #
-        #     return dt_start
-
-        # OpenStudio code for reference
-        # db = current.db
-        #
-        # cls = db.classes(self.row.classes_id)
-        # date = self.row.ClassDate
-        #
-        # get_sys_property = current.globalenv['get_sys_property']
-        #
-        # shop_classes_cancellation_limit = get_sys_property('shop_classes_cancellation_limit') or 0
-        #
-        # dt_start = self.get_datetime_start()
-        # delta = datetime.timedelta(hours=int(shop_classes_cancellation_limit))
-        #
-        # return dt_start - delta
     
     def resolve_cancellation_possible(self, info):
         local_tz = pytz.timezone(settings.TIME_ZONE)
-        print(local_tz)
 
         now = timezone.localtime(timezone.now())
         cancel_before = self.get_cancel_before()
@@ -108,10 +71,6 @@ class ScheduleItemAttendanceNode(DjangoObjectType):
             return True
         else:
             return False
-
-        # delta = datetime.timedelta(hours=int(workflow_class_cancel_until))
-        #
-        # return date - delta
 
 
 class ScheduleItemAttendanceQuery(graphene.ObjectType):
