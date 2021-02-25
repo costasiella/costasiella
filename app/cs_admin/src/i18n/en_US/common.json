@@ -797,6 +797,12 @@
                 "title": "Event tickets"
             },
             "error_loading": "Error loading account info... :("
+        },
+        "b2b": {
+            "title": "Business-to-Business"
+        },
+        "suppliers": {
+            "title": "Suppliers"
         }
     },
     "genders": {

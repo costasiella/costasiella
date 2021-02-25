@@ -1139,7 +1139,13 @@
             "deleted": "__STRING_NOT_TRANSLATED__",
             "add": "__STRING_NOT_TRANSLATED__"
         },
-        "title": "__STRING_NOT_TRANSLATED__"
+        "title": "__STRING_NOT_TRANSLATED__",
+        "b2b": {
+            "title": "__STRING_NOT_TRANSLATED__"
+        },
+        "suppliers": {
+            "title": "__STRING_NOT_TRANSLATED__"
+        }
     },
     "schedule": {
         "classes": {

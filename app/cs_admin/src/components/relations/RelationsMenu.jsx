@@ -37,11 +37,11 @@ const RelationsMenu = ({ t, active_link }) => (
           <List.GroupItem
             key={v4()}
             className="d-flex align-items-center"
-            to="#/relations/b2b"
-            icon="briefcase"
-            active={b2b_active}
+            to="#/relations/suppliers"
+            icon="package"
+            active={suppliers_active}
           >
-            {t('relations.b2b.title')}
+            {t('relations.suppliers.title')}
           </List.GroupItem>
         </HasPermissionWrapper>
         <HasPermissionWrapper 
@@ -50,11 +50,11 @@ const RelationsMenu = ({ t, active_link }) => (
           <List.GroupItem
             key={v4()}
             className="d-flex align-items-center"
-            to="#/relations/suppliers"
-            icon="package"
-            active={suppliers_active}
+            to="#/relations/b2b"
+            icon="briefcase"
+            active={b2b_active}
           >
-            {t('relations.suppliers.title')}
+            {t('relations.b2b.title')}
           </List.GroupItem>
         </HasPermissionWrapper>
     </List.Group>
