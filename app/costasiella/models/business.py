@@ -5,17 +5,23 @@ from ..modules.encrypted_fields import EncryptedTextField
 
 class Business(models.Model):
     archived = models.BooleanField(default=False)
+    b2b_relation = models.BooleanField(default=False)
+    supplier = models.BooleanField(default=False)
+    vip = models.BooleanField(default=False)
     name = models.CharField(max_length=255)
-    address = EncryptedTextField(default="")
-    postcode = EncryptedTextField(default="")
-    city = EncryptedTextField(default="")
-    country = EncryptedTextField(default="")
-    phone = EncryptedTextField(default="")
-    phone_2 = EncryptedTextField(default="")
-    email = models.EmailField(default="")
+    address = models.CharField(max_length=255, default="")
+    postcode = models.CharField(max_length=255, default="")
+    city = models.CharField(max_length=255, default="")
+    country = models.CharField(max_length=255, default="")
+    phone = models.CharField(max_length=255, default="")
+    phone_2 = models.CharField(max_length=255, default="")
+    email_contact = models.EmailField(default="")
+    email_billing = models.EmailField(default="")
     registration = models.CharField(max_length=255, default="")
     tax_registration = models.CharField(max_length=255, default="")
     mollie_customer_id = models.CharField(max_length=255, default="", editable=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.name
