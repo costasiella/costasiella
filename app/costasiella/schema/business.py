@@ -15,7 +15,7 @@ m = Messages()
 class BusinessNode(DjangoObjectType):
     class Meta:
         model = Business
-        filter_fields = ['archived', 'id']
+        filter_fields = ['b2b', 'supplier', 'archived', 'id']
         interfaces = (graphene.relay.Node,)
 
     @classmethod
@@ -50,7 +50,7 @@ class BusinessQuery(graphene.ObjectType):
 class CreateBusiness(graphene.relay.ClientIDMutation):
     class Input:
         name = graphene.String()
-        b2b_relation = graphene.Boolean(required=False)
+        b2b = graphene.Boolean(required=False)
         supplier = graphene.Boolean(required=False)
         vip = graphene.Boolean(required=False)
         address = graphene.String(required=False)
@@ -77,8 +77,8 @@ class CreateBusiness(graphene.relay.ClientIDMutation):
             name=input['name'],
         )
 
-        if 'b2b_relation' in input:
-            business.b2b_relation = input['b2b_relation']
+        if 'b2b' in input:
+            business.b2b = input['b2b']
 
         if 'supplier' in input:
             business.supplier = input['supplier']
@@ -124,7 +124,7 @@ class CreateBusiness(graphene.relay.ClientIDMutation):
 class UpdateBusiness(graphene.relay.ClientIDMutation):
     class Input:
         id = graphene.ID(required=True)
-        b2b_relation = graphene.Boolean(required=False)
+        b2b = graphene.Boolean(required=False)
         supplier = graphene.Boolean(required=False)
         vip = graphene.Boolean(required=False)
         name = graphene.String(required=False)
@@ -153,8 +153,8 @@ class UpdateBusiness(graphene.relay.ClientIDMutation):
             raise Exception('Invalid Business ID!')
 
         # validate_create_update_input(input)
-        if 'b2b_relation' in input:
-            business.b2b_relation = input['b2b_relation']
+        if 'b2b' in input:
+            business.b2b = input['b2b']
 
         if 'supplier' in input:
             business.supplier = input['supplier']

@@ -5,7 +5,7 @@ from ..modules.encrypted_fields import EncryptedTextField
 
 class Business(models.Model):
     archived = models.BooleanField(default=False)
-    b2b_relation = models.BooleanField(default=False)
+    b2b = models.BooleanField(default=False)
     supplier = models.BooleanField(default=False)
     vip = models.BooleanField(default=False)
     name = models.CharField(max_length=255)
