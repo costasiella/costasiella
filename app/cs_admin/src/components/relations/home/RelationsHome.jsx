@@ -42,6 +42,22 @@ class RelationsHome extends Component {
                       <StampCard header={<small>{t('relations.accounts.title')}</small>} footer={t('')} color="blue" icon="users" />
                     </div>
                   </Grid.Col>
+                  <HasPermissionWrapper permission="view"
+                                        resource="business">
+                    <Grid.Col md={4} lg={4}>
+                      <div onClick={() => history.push('/relations/b2b')}>
+                        <StampCard header={<small>{t('relations.b2b.title')}</small>} footer={t('')} color="blue" icon="briefcase" />
+                      </div>
+                    </Grid.Col>
+                  </HasPermissionWrapper>
+                  <HasPermissionWrapper permission="view"
+                                        resource="business">
+                    <Grid.Col md={4} lg={4}>
+                      <div onClick={() => history.push('/relations/suppliers')}>
+                        <StampCard header={<small>{t('relations.suppliers.title')}</small>} footer={t('')} color="blue" icon="package" />
+                      </div>
+                    </Grid.Col>
+                  </HasPermissionWrapper>
                 </Grid.Row>
               </Grid.Col>
               <Grid.Col md={3}>
