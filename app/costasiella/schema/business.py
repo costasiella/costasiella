@@ -50,13 +50,17 @@ class BusinessQuery(graphene.ObjectType):
 class CreateBusiness(graphene.relay.ClientIDMutation):
     class Input:
         name = graphene.String()
+        b2b_relation = graphene.Boolean(required=False)
+        supplier = graphene.Boolean(required=False)
+        vip = graphene.Boolean(required=False)
         address = graphene.String(required=False)
         postcode = graphene.String(required=False)
         city = graphene.String(required=False)
         country = graphene.String(required=False)
         phone = graphene.String(required=False)
         phone_2 = graphene.String(required=False)
-        email = graphene.String(required=False)
+        email_contact = graphene.String(required=False)
+        email_billing = graphene.String(required=False)
         registration = graphene.String(required=False)
         tax_registration = graphene.String(required=False)
 
@@ -67,11 +71,20 @@ class CreateBusiness(graphene.relay.ClientIDMutation):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.add_business')
 
-        validate_create_update_input(input)
+        # validate_create_update_input(input)
 
         business = Business(
             name=input['name'],
         )
+
+        if 'b2b_relation' in input:
+            business.b2b_relation = input['b2b_relation']
+
+        if 'supplier' in input:
+            business.supplier = input['supplier']
+
+        if 'vip' in input:
+            business.vip = input['vip']
 
         if 'address' in input:
             business.address = input['address']
@@ -91,8 +104,11 @@ class CreateBusiness(graphene.relay.ClientIDMutation):
         if 'phone_2' in input:
             business.phone_2 = input['phone_2']
 
-        if 'email' in input:
-            business.email = input['email']
+        if 'email_contact' in input:
+            business.email_contact = input['email_contact']
+
+        if 'email_billing' in input:
+            business.email_billing = input['email_billing']
 
         if 'registration' in input:
             business.registration = input['registration']
@@ -108,6 +124,9 @@ class CreateBusiness(graphene.relay.ClientIDMutation):
 class UpdateBusiness(graphene.relay.ClientIDMutation):
     class Input:
         id = graphene.ID(required=True)
+        b2b_relation = graphene.Boolean(required=False)
+        supplier = graphene.Boolean(required=False)
+        vip = graphene.Boolean(required=False)
         name = graphene.String(required=False)
         address = graphene.String(required=False)
         postcode = graphene.String(required=False)
@@ -115,7 +134,8 @@ class UpdateBusiness(graphene.relay.ClientIDMutation):
         country = graphene.String(required=False)
         phone = graphene.String(required=False)
         phone_2 = graphene.String(required=False)
-        email = graphene.String(required=False)
+        email_contact = graphene.String(required=False)
+        email_billing = graphene.String(required=False)
         registration = graphene.String(required=False)
         tax_registration = graphene.String(required=False)
         
@@ -132,7 +152,15 @@ class UpdateBusiness(graphene.relay.ClientIDMutation):
         if not business:
             raise Exception('Invalid Business ID!')
 
-        validate_create_update_input(input)
+        # validate_create_update_input(input)
+        if 'b2b_relation' in input:
+            business.b2b_relation = input['b2b_relation']
+
+        if 'supplier' in input:
+            business.supplier = input['supplier']
+
+        if 'vip' in input:
+            business.vip = input['vip']
 
         if 'name' in input:
             business.name = input['name']
@@ -155,8 +183,11 @@ class UpdateBusiness(graphene.relay.ClientIDMutation):
         if 'phone_2' in input:
             business.phone_2 = input['phone_2']
 
-        if 'email' in input:
-            business.email = input['email']
+        if 'email_contact' in input:
+            business.email_contact = input['email_contact']
+
+        if 'email_billing' in input:
+            business.email_billing = input['email_billing']
 
         if 'registration' in input:
             business.registration = input['registration']
