@@ -1604,7 +1604,11 @@
                 "title": "Cancel booking confirmation",
                 "confirm_yes": "Yes, cancel my booking",
                 "confirm_no": "No, don't cancel my booking",
-                "success": "Your class booking has been cancelled."
+                "success": "Your class booking has been cancelled.",
+                "title_already_cancelled": "Already cancelled",
+                "title_cancelation_not_possible": "Cancellation not possible",
+                "already_cancelled": "Your booking for this class has already been cancelled.",
+                "cancelation_not_possible": "Your booking for this class can no longer be cancelled"
             }
         },
         "accounts": {

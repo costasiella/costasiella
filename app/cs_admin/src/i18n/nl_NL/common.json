@@ -635,7 +635,11 @@
                 "title": "__STRING_NOT_TRANSLATED__",
                 "confirm_yes": "__STRING_NOT_TRANSLATED__",
                 "confirm_no": "__STRING_NOT_TRANSLATED__",
-                "success": "__STRING_NOT_TRANSLATED__"
+                "success": "__STRING_NOT_TRANSLATED__",
+                "title_already_cancelled": "__STRING_NOT_TRANSLATED__",
+                "title_cancelation_not_possible": "__STRING_NOT_TRANSLATED__",
+                "already_cancelled": "__STRING_NOT_TRANSLATED__",
+                "cancelation_not_possible": "__STRING_NOT_TRANSLATED__"
             }
         },
         "accounts": {
