@@ -31,7 +31,7 @@ const RelationsMenu = ({ t, active_link }) => (
         >
           {t('relations.accounts.title')}
         </List.GroupItem>
-        <HasPermissionWrapper 
+        {/* <HasPermissionWrapper 
           permission="view"
           resource="business">
           <List.GroupItem
@@ -43,7 +43,7 @@ const RelationsMenu = ({ t, active_link }) => (
           >
             {t('relations.suppliers.title')}
           </List.GroupItem>
-        </HasPermissionWrapper>
+        </HasPermissionWrapper> */}
         <HasPermissionWrapper 
           permission="view"
           resource="business">
