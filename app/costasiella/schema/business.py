@@ -15,7 +15,13 @@ m = Messages()
 class BusinessNode(DjangoObjectType):
     class Meta:
         model = Business
-        filter_fields = ['b2b', 'supplier', 'archived', 'id']
+        filter_fields = {
+            'name': ['icontains', 'exact'],
+            'b2b': ['exact'],
+            'supplier': ['exact'],
+            'archived': ['exact'],
+            'id': ['exact'],
+        }
         interfaces = (graphene.relay.Node,)
 
     @classmethod
