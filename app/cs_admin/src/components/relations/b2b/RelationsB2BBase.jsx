@@ -42,7 +42,7 @@ const RelationsB2BBase = ({t, history, refetch, children }) => (
                                 resource="business">
             <Button color="primary btn-block mb-6"
                     onClick={() => history.push("/relations/business/add")}>
-              <Icon prefix="fe" name="plus-circle" /> {t('relations.business.add')}
+              <Icon prefix="fe" name="plus-circle" /> {t('relations.b2b.add')}
             </Button>
           </HasPermissionWrapper>
           <RelationsMenu active_link='b2b'/>
