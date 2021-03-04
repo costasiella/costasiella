@@ -1,0 +1,59 @@
+import gql from "graphql-tag"
+
+export const GET_BUSINESES_QUERY = gql`
+  query Businesses($before:String, $after:String, $searchName:String) {
+    businesses(first:100, before:$before, after:$after, b2b:true, name_Icontains:$searchName) {
+      pageInfo {
+        hasNextPage
+        hasPreviousPage
+        startCursor
+        endCursor
+      }
+      edges {
+        node {
+          id
+          archived
+          b2b
+          supplier
+          vip
+          name
+          address
+          postcode
+          city
+          country
+          phone
+          phone2
+          emailContact
+          emailBilling
+          registration
+          taxRegistration
+          mollieCustomerId
+        }
+      }
+    }
+  }
+`
+
+export const GET_BUSINESS_QUERY = gql`
+  query Business($id: ID!) {
+    business(id:$id) {
+      id
+      archived
+      b2b
+      supplier
+      vip
+      name
+      address
+      postcode
+      city
+      country
+      phone
+      phone2
+      emailContact
+      emailBilling
+      registration
+      taxRegistration
+      mollieCustomerId
+    }
+  }
+`
