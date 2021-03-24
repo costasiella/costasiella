@@ -119,6 +119,8 @@ function RelationsB2B({ t, history }) {
     </RelationsB2BBase>
   )}
 
+  console.log(data)
+
   return (
     <RelationsB2BBase refetch={refetch}>
       <ContentCard cardTitle={t('relations.b2b.title')}
@@ -162,7 +164,7 @@ function RelationsB2B({ t, history }) {
                     {node.name}
                   </Table.Col>
                   <Table.Col className="text-right" key={v4()}>
-                    {(!node.archived) ? 
+                    {(node.archived) ? 
                       <span className='text-muted'>{t('general.unarchive_to_edit')}</span> :
                       <Button className='btn-sm' 
                               onClick={() => history.push("/relations/businesses/" + node.id + "/edit")}
