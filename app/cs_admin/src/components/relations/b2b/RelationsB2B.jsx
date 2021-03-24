@@ -112,8 +112,8 @@ function RelationsB2B({ t, history }) {
                    headerContent={headerOptions}>
         <p>
           {(localStorage.getItem(CSLS.RELATIONS_BUSINESSES_SHOW_ARCHIVE) === "true") ? 
-            t('relations.b2b.empty_list') : 
-            t("relations.b2b.empty_archive")}
+            t('relations.b2b.empty_archive') : 
+            t("relations.b2b.empty_list")}
         </p>
       </ContentCard>
     </RelationsB2BBase>
