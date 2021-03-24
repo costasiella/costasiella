@@ -149,6 +149,7 @@ import AccountSubscriptionEditPauses from './components/relations/accounts/subsc
 import AccountSubscriptionEditPauseAdd from './components/relations/accounts/subscriptions/edit/pauses/AccountSubscriptionEditPauseAdd'
 import AccountSubscriptionEditPauseEdit from './components/relations/accounts/subscriptions/edit/pauses/AccountSubscriptionEditPauseEdit'
 import RelationsAccountTeacherProfile from './components/relations/accounts/teacher_profile/RelationsAccountTeacherProfile'
+import RelationsB2B from './components/relations/b2b/RelationsB2B'
 
 import ScheduleHome from './components/schedule/home/ScheduleHome'
 import ScheduleAppointments from './components/schedule/appointments/ScheduleAppointments'
@@ -466,6 +467,7 @@ function AppRoot({ t }) {
             <PrivateRoute exact path="/relations/accounts/:account_id/subscriptions/edit/:subscription_id/pauses/edit/:id" 
                           component={AccountSubscriptionEditPauseEdit} />
             <PrivateRoute exact path="/relations/accounts/:account_id/teacher_profile" component={RelationsAccountTeacherProfile} />
+            <PrivateRoute exact path="/relations/b2b" component={RelationsB2B} />
 
             {/* SCHEDULE */}
             <PrivateRoute exact path="/schedule" component={ScheduleHome} />
