@@ -15,6 +15,7 @@ import CSLS from "../../../tools/cs_local_storage"
 import InputSearch from "../../general/InputSearch"
 import RelationsMenu from "../RelationsMenu"
 import { get_list_query_variables } from "./tools"
+import SiteWrapper from "../../SiteWrapper"
 import HasPermissionWrapper from "../../HasPermissionWrapper"
 
 
