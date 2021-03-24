@@ -69,20 +69,20 @@ function RelationsB2B({ t, history }) {
   const [deleteBusiness] = useMutation(DELETE_BUSINESS)
 
   const headerOptions = <Card.Options>
-    <Button color={(localStorage.getItem(CSLS.RELATIONS_BUSINESSES_SHOW_ARCHIVE) === "true") ? 'primary': 'secondary'}  
+    <Button color={(localStorage.getItem(CSLS.RELATIONS_BUSINESSES_SHOW_ARCHIVE) === "false") ? 'primary': 'secondary'}  
             size="sm"
             onClick={() => {
-              localStorage.setItem(CSLS.RELATIONS_BUSINESSES_SHOW_ARCHIVE, true)
+              localStorage.setItem(CSLS.RELATIONS_BUSINESSES_SHOW_ARCHIVE, false)
               refetch(get_list_query_variables())
             }
     }>
       {t('general.active')}
     </Button>
-    <Button color={(localStorage.getItem(CSLS.RELATIONS_BUSINESSES_SHOW_ARCHIVE) === "false") ? 'primary': 'secondary'} 
+    <Button color={(localStorage.getItem(CSLS.RELATIONS_BUSINESSES_SHOW_ARCHIVE) === "true") ? 'primary': 'secondary'} 
             size="sm" 
             className="ml-2" 
             onClick={() => {
-              localStorage.setItem(CSLS.RELATIONS_BUSINESSES_SHOW_ARCHIVE, false)
+              localStorage.setItem(CSLS.RELATIONS_BUSINESSES_SHOW_ARCHIVE, true)
               refetch(get_list_query_variables())
             }
     }>
