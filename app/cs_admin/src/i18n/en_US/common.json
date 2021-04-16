@@ -799,7 +799,17 @@
             "error_loading": "Error loading account info... :("
         },
         "b2b": {
-            "title": "Business-to-Business"
+            "title": "Business-to-Business",
+            "error_loading": "Error loading business to business relations... :(",
+            "empty_archive": "No business to business relations have been archived yet.",
+            "empty_list": "No business to business relations have been added yet.",
+            "deactivated": "Deactivated b2b relation",
+            "restored": "Moved b2b relation to active",
+            "delete_confirm_msg": "Are you sure you with to delete this b2b relation?",
+            "deleted": "B2B relation deleted",
+            "title_add": "Add Business-to-Business relation",
+            "toast_add_success": "Added Business-to-Business relation",
+            "add": "Add"
         },
         "suppliers": {
             "title": "Suppliers"
