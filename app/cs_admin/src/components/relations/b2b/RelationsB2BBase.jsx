@@ -44,7 +44,7 @@ const RelationsB2BBase = ({t, history, refetch, children }) => (
             <HasPermissionWrapper permission="add"
                                   resource="business">
               <Button color="primary btn-block mb-6"
-                      onClick={() => history.push("/relations/business/add")}>
+                      onClick={() => history.push("/relations/b2b/add")}>
                 <Icon prefix="fe" name="plus-circle" /> {t('relations.b2b.add')}
               </Button>
             </HasPermissionWrapper>
