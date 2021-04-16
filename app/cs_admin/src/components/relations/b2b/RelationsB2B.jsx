@@ -167,7 +167,7 @@ function RelationsB2B({ t, history }) {
                     {(node.archived) ? 
                       <span className='text-muted'>{t('general.unarchive_to_edit')}</span> :
                       <Button className='btn-sm' 
-                              onClick={() => history.push("/relations/businesses/" + node.id + "/edit")}
+                              onClick={() => history.push("/relations/b2b/" + node.id + "/edit")}
                               color="secondary">
                         {t('general.edit')}
                       </Button>
