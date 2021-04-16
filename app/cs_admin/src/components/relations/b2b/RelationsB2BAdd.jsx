@@ -40,7 +40,7 @@ const ADD_BUSINESS = gql`
   }
 `
 
-const return_url = "/relations/accounts"
+const return_url = "/relations/b2b"
 
 function RelationsB2BAdd({ t, history }) {
   const [addBusiness] = useMutation(ADD_BUSINESS)
@@ -94,7 +94,7 @@ function RelationsB2BAdd({ t, history }) {
             </Grid.Col>
             <Grid.Col md={3}>
               <HasPermissionWrapper permission="add"
-                                    resource="account">
+                                    resource="business">
                 <Button color="primary btn-block mb-6"
                         onClick={() => history.push(return_url)}>
                   <Icon prefix="fe" name="chevrons-left" /> {t('general.back')}
