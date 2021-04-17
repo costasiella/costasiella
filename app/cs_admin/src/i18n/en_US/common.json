@@ -387,7 +387,10 @@
         "ticket": "Ticket",
         "welcome": "Welcome",
         "backend": "Back end",
-        "tools": "Tools"
+        "tools": "Tools",
+        "email_contact": "Email contact",
+        "email_billing": "Email billing",
+        "phone2": "Phone 2"
     },
     "yup": {
         "min_len_3": "Please input at least 3 characters",

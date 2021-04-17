@@ -214,7 +214,10 @@
         "ticket": "__STRING_NOT_TRANSLATED__",
         "welcome": "__STRING_NOT_TRANSLATED__",
         "backend": "__STRING_NOT_TRANSLATED__",
-        "tools": "__STRING_NOT_TRANSLATED__"
+        "tools": "__STRING_NOT_TRANSLATED__",
+        "email_contact": "__STRING_NOT_TRANSLATED__",
+        "email_billing": "__STRING_NOT_TRANSLATED__",
+        "phone2": "__STRING_NOT_TRANSLATED__"
     },
     "settings": {
         "error_loading": "__STRING_NOT_TRANSLATED__",

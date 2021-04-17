@@ -121,7 +121,7 @@ function RelationsB2BEditForm({ t, history, isSubmitting, errors, values, return
         </Grid.Row>
         <Grid.Row>
           <Grid.Col>
-            <Form.Group label={t('general.registration')}>
+            <Form.Group label={t('finance.invoices.relation_company_registration')}>
               <Field type="text" 
                       name="registration" 
                       className={(errors.registration) ? "form-control is-invalid" : "form-control"} 
@@ -130,7 +130,7 @@ function RelationsB2BEditForm({ t, history, isSubmitting, errors, values, return
             </Form.Group>
           </Grid.Col>
           <Grid.Col>
-          <Form.Group label={t('general.tax_registration')}>
+          <Form.Group label={t('finance.invoices.relation_company_tax_registration')}>
               <Field type="text" 
                       name="tax_registration" 
                       className={(errors.tax_registration) ? "form-control is-invalid" : "form-control"} 
