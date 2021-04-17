@@ -38,19 +38,19 @@ function RelationsB2BEditForm({ t, history, isSubmitting, errors, values, return
           <Grid.Col>
             <Form.Group label={t('general.email_contact')}>
               <Field type="text" 
-                      name="email" 
-                      className={(errors.email_contact) ? "form-control is-invalid" : "form-control"} 
+                      name="emailContact" 
+                      className={(errors.emailContact) ? "form-control is-invalid" : "form-control"} 
                       autoComplete="off" />
-              <ErrorMessage name="email_contact" component="span" className="invalid-feedback" />
+              <ErrorMessage name="emailContact" component="span" className="invalid-feedback" />
             </Form.Group>
           </Grid.Col>
           <Grid.Col>
             <Form.Group label={t('general.email_billing')}>
               <Field type="text" 
-                      name="email" 
-                      className={(errors.email_billing) ? "form-control is-invalid" : "form-control"} 
+                      name="emailBilling" 
+                      className={(errors.emailBilling) ? "form-control is-invalid" : "form-control"} 
                       autoComplete="off" />
-              <ErrorMessage name="email_billing" component="span" className="invalid-feedback" />
+              <ErrorMessage name="emailBilling" component="span" className="invalid-feedback" />
             </Form.Group>
           </Grid.Col>
         </Grid.Row>
@@ -132,10 +132,10 @@ function RelationsB2BEditForm({ t, history, isSubmitting, errors, values, return
           <Grid.Col>
           <Form.Group label={t('finance.invoices.relation_company_tax_registration')}>
               <Field type="text" 
-                      name="tax_registration" 
-                      className={(errors.tax_registration) ? "form-control is-invalid" : "form-control"} 
+                      name="taxRegistration" 
+                      className={(errors.taxRegistration) ? "form-control is-invalid" : "form-control"} 
                       autoComplete="off" />
-              <ErrorMessage name="tax_registration" component="span" className="invalid-feedback" />
+              <ErrorMessage name="taxRegistration" component="span" className="invalid-feedback" />
             </Form.Group>
           </Grid.Col>
         </Grid.Row>

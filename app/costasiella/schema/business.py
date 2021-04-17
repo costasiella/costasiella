@@ -77,7 +77,7 @@ class CreateBusiness(graphene.relay.ClientIDMutation):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.add_business')
 
-        # validate_create_update_input(input)
+        # validate_create_update_input(input))
 
         business = Business(
             name=input['name'],

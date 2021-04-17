@@ -64,12 +64,23 @@ function RelationsB2BEdit({ t, match, history}) {
   }
 
   const initialData = data.business
+  console.log(initialData)
 
   return (
     <RelationsB2BEditBase cardTitle={t('relations.b2b.title_edit')}>
       <Formik
         initialValues={{ 
-          name: initialData.name
+          name: initialData.name,
+          phone: initialData.phone,
+          phone2: initialData.phone2,
+          address: initialData.address,
+          postcode: initialData.postcode,
+          city: initialData.city,
+          country: initialData.country,
+          emailBilling: initialData.emailBilling,
+          emailContact: initialData.emailContact,
+          registration: initialData.registration,
+          taxRegistration: initialData.taxRegistration
         }}
         // validationSchema={ACCOUNT_SCHEMA}
         onSubmit={(values, { setSubmitting }) => {
@@ -78,7 +89,17 @@ function RelationsB2BEdit({ t, match, history}) {
 
             let input_vars = {
               id: businessId,
-              name: values.name
+              name: values.name,
+              phone: values.phone,
+              phone2: values.phone2,
+              address: values.address,
+              postcode: values.postcode,
+              city: values.city,
+              country: values.country,
+              emailBilling: values.emailBilling,
+              emailContact: values.emailContact,
+              registration: values.registration,
+              taxRegistration: values.taxRegistration
             }
 
             updateBusiness({ variables: {
