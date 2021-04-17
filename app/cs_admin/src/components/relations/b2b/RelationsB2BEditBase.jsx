@@ -3,9 +3,12 @@
 import React from 'react'
 import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
+import { Link } from "react-router-dom"
 
 
 import {
+  Button,
+  Icon,
   Page,
   Grid,
   Card,
@@ -21,11 +24,13 @@ import HasPermissionWrapper from "../../HasPermissionWrapper"
 
 
 function RelationsB2BEditBase({ t, match, history, children, cardTitle="" }) {
+  const returnUrl = "/relations/b2b"
+
   return (
     <SiteWrapper>
       <div className="my-3 my-md-5">
         <Container>
-          <Page.Header title={t("relations.b2b.title_edit")}>
+          <Page.Header title={t("relations.title")}>
             {/* <RelationsAccountsBack /> */}
           </Page.Header>
           <Grid.Row>
@@ -39,6 +44,15 @@ function RelationsB2BEditBase({ t, match, history, children, cardTitle="" }) {
             </Grid.Col>                                    
             <Grid.Col md={3}>
               {/* B2B relation menu goes here */}
+              <HasPermissionWrapper permission="change"
+                                    resource="business">
+                <Link to={returnUrl}>
+                  <Button color="primary btn-block mb-6">
+                    <Icon prefix="fe" name="chevrons-left" /> {t('general.back')}
+                  </Button>
+                </Link>
+              </HasPermissionWrapper>
+              {/* <RelationsMenu active_link='b2b'/> */}
               {/* <ProfileMenu 
                 active_link='profile'
                 account_id={account_id}
