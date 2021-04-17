@@ -6,6 +6,7 @@ import gql from "graphql-tag"
 import { v4 } from "uuid"
 import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
+import { Link } from "react-router-dom"
 
 
 import {
@@ -28,7 +29,7 @@ import CSLS from "../../../tools/cs_local_storage"
 
 import ContentCard from "../../general/ContentCard"
 import RelationsB2BBase from "./RelationsB2BBase"
-import { GET_BUSINESES_QUERY } from "./queries"
+import { GET_BUSINESSES_QUERY } from "./queries"
 import { get_list_query_variables } from "./tools"
 import confirm_archive from "../../../tools/confirm_archive"
 import confirm_unarchive from "../../../tools/confirm_unarchive"
@@ -62,7 +63,7 @@ function RelationsB2B({ t, history }) {
     localStorage.setItem(CSLS.RELATIONS_BUSINESSES_SHOW_ARCHIVE, false) 
   }
 
-  const { loading, error, data, fetchMore, refetch } = useQuery(GET_BUSINESES_QUERY, { 
+  const { loading, error, data, fetchMore, refetch } = useQuery(GET_BUSINESSES_QUERY, { 
     variables: get_list_query_variables()
   })
   const [updateBusiness] = useMutation(UPDATE_BUSINESS)
@@ -166,11 +167,12 @@ function RelationsB2B({ t, history }) {
                   <Table.Col className="text-right" key={v4()}>
                     {(node.archived) ? 
                       <span className='text-muted'>{t('general.unarchive_to_edit')}</span> :
-                      <Button className='btn-sm' 
-                              onClick={() => history.push("/relations/b2b/" + node.id + "/edit")}
-                              color="secondary">
-                        {t('general.edit')}
-                      </Button>
+                      <Link to={`/relations/b2b/${node.id}/edit`}>
+                        <Button className='btn-sm' 
+                                color="secondary">
+                          {t('general.edit')}
+                        </Button>
+                      </Link>
                     }
                   </Table.Col>
                 </Table.Row>

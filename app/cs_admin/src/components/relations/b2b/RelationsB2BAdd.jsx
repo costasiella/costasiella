@@ -9,7 +9,7 @@ import { Formik, Form as FoForm, Field, ErrorMessage } from 'formik'
 import { toast } from 'react-toastify'
 
 
-import { GET_BUSINESES_QUERY } from './queries'
+import { GET_BUSINESSES_QUERY } from './queries'
 // import { ACCOUNT_SCHEMA } from './yupSchema'
 
 
@@ -66,7 +66,7 @@ function RelationsB2BAdd({ t, history }) {
                             b2b: true
                           }
                         }, refetchQueries: [
-                            {query: GET_BUSINESES_QUERY, variables: get_list_query_variables()}
+                            {query: GET_BUSINESSES_QUERY, variables: get_list_query_variables()}
                         ]})
                         .then(({ data }) => {
                             console.log('got data', data);
