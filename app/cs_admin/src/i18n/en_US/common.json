@@ -809,7 +809,9 @@
             "deleted": "B2B relation deleted",
             "title_add": "Add Business-to-Business relation",
             "toast_add_success": "Added Business-to-Business relation",
-            "add": "Add"
+            "add": "Add",
+            "title_edit": "Edit Business-to-Business relation",
+            "toast_edit_success": "Saved"
         },
         "suppliers": {
             "title": "Suppliers"
