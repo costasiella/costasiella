@@ -33,59 +33,24 @@ function RelationsB2BEditForm({ t, history, isSubmitting, errors, values, return
               <ErrorMessage name="name" component="span" className="invalid-feedback" />
             </Form.Group>
           </Grid.Col>
-          {/* <Grid.Col>
-            <Form.Group label={t('general.last_name')}>
-              <Field type="text" 
-                      name="lastName" 
-                      className={(errors.lastName) ? "form-control is-invalid" : "form-control"} 
-                      autoComplete="off" />
-              <ErrorMessage name="lastName" component="span" className="invalid-feedback" />
-            </Form.Group>
-          </Grid.Col> */}
-        </Grid.Row>
-        {/* <Grid.Row>
-        <Grid.Col>
-            <Form.Group label={t('general.date_of_birth')}>
-              <CSDatePicker 
-                selected={values.dateOfBirth}
-                onChange={(date) => setFieldValue("dateOfBirth", date)}
-                onBlur={() => setFieldTouched("dateOfBirth", true)}
-              />
-              <ErrorMessage name="dateOfBirth" component="span" className="invalid-feedback" />
-            </Form.Group>
-          </Grid.Col>
-          <Grid.Col>
-            <Form.Group label={t('general.gender')}>
-              <Field component="select" 
-                    name="gender" 
-                    className={(errors.organizationMembership) ? "form-control is-invalid" : "form-control"} 
-                    autoComplete="off">
-                <option value=""></option>
-                <option value="F">{t("genders.female")}</option>
-                <option value="M">{t("genders.male")}</option>
-                <option value="X">{t("genders.other")}</option>
-              </Field>
-              <ErrorMessage name="gender" component="span" className="invalid-feedback" />
-            </Form.Group> 
-          </Grid.Col>
         </Grid.Row>
         <Grid.Row>
           <Grid.Col>
-            <Form.Group label={t('general.email')}>
+            <Form.Group label={t('general.email_contact')}>
               <Field type="text" 
                       name="email" 
-                      className={(errors.email) ? "form-control is-invalid" : "form-control"} 
+                      className={(errors.email_contact) ? "form-control is-invalid" : "form-control"} 
                       autoComplete="off" />
-              <ErrorMessage name="email" component="span" className="invalid-feedback" />
+              <ErrorMessage name="email_contact" component="span" className="invalid-feedback" />
             </Form.Group>
           </Grid.Col>
           <Grid.Col>
-            <Form.Group label={t('relations.accounts.emergency')}>
+            <Form.Group label={t('general.email_billing')}>
               <Field type="text" 
-                    name="emergency" 
-                    className={(errors.emergency) ? "form-control is-invalid" : "form-control"} 
-                    autoComplete="off" />
-              <ErrorMessage name="emergency" component="span" className="invalid-feedback" />
+                      name="email" 
+                      className={(errors.email_billing) ? "form-control is-invalid" : "form-control"} 
+                      autoComplete="off" />
+              <ErrorMessage name="email_billing" component="span" className="invalid-feedback" />
             </Form.Group>
           </Grid.Col>
         </Grid.Row>
@@ -100,12 +65,12 @@ function RelationsB2BEditForm({ t, history, isSubmitting, errors, values, return
             </Form.Group>
           </Grid.Col>
           <Grid.Col>
-            <Form.Group label={t('general.mobile')}>
+          <Form.Group label={t('general.phone2')}>
               <Field type="text" 
-                    name="mobile" 
-                    className={(errors.mobile) ? "form-control is-invalid" : "form-control"} 
-                    autoComplete="off" />
-              <ErrorMessage name="mobile" component="span" className="invalid-feedback" />
+                      name="phone2" 
+                      className={(errors.phone2) ? "form-control is-invalid" : "form-control"} 
+                      autoComplete="off" />
+              <ErrorMessage name="phone2" component="span" className="invalid-feedback" />
             </Form.Group>
           </Grid.Col>
         </Grid.Row>
@@ -122,9 +87,9 @@ function RelationsB2BEditForm({ t, history, isSubmitting, errors, values, return
           <Grid.Col>
             <Form.Group label={t('general.postcode')}>
               <Field type="text" 
-                    name="postcode" 
-                    className={(errors.postcode) ? "form-control is-invalid" : "form-control"} 
-                    autoComplete="off" />
+                      name="postcode" 
+                      className={(errors.postcode) ? "form-control is-invalid" : "form-control"} 
+                      autoComplete="off" />
               <ErrorMessage name="postcode" component="span" className="invalid-feedback" />
             </Form.Group>
           </Grid.Col>
@@ -150,10 +115,30 @@ function RelationsB2BEditForm({ t, history, isSubmitting, errors, values, return
                     country => <option value={country.Code} key={v4()}>{country.Name}</option>
                 )}
               </Field>
-              <ErrorMessage name="gender" component="span" className="invalid-feedback" />
+              <ErrorMessage name="country" component="span" className="invalid-feedback" />
             </Form.Group> 
           </Grid.Col>
-        </Grid.Row> */}
+        </Grid.Row>
+        <Grid.Row>
+          <Grid.Col>
+            <Form.Group label={t('general.registration')}>
+              <Field type="text" 
+                      name="registration" 
+                      className={(errors.registration) ? "form-control is-invalid" : "form-control"} 
+                      autoComplete="off" />
+              <ErrorMessage name="registration" component="span" className="invalid-feedback" />
+            </Form.Group>
+          </Grid.Col>
+          <Grid.Col>
+          <Form.Group label={t('general.tax_registration')}>
+              <Field type="text" 
+                      name="tax_registration" 
+                      className={(errors.tax_registration) ? "form-control is-invalid" : "form-control"} 
+                      autoComplete="off" />
+              <ErrorMessage name="tax_registration" component="span" className="invalid-feedback" />
+            </Form.Group>
+          </Grid.Col>
+        </Grid.Row>
       </Card.Body>
       <Card.Footer>
           <Button 
