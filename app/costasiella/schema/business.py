@@ -130,6 +130,7 @@ class CreateBusiness(graphene.relay.ClientIDMutation):
 class UpdateBusiness(graphene.relay.ClientIDMutation):
     class Input:
         id = graphene.ID(required=True)
+        archived = graphene.Boolean(required=False)
         b2b = graphene.Boolean(required=False)
         supplier = graphene.Boolean(required=False)
         vip = graphene.Boolean(required=False)
@@ -159,6 +160,9 @@ class UpdateBusiness(graphene.relay.ClientIDMutation):
             raise Exception('Invalid Business ID!')
 
         # validate_create_update_input(input)
+        if 'archived' in input:
+            business.archived = input['archived']
+
         if 'b2b' in input:
             business.b2b = input['b2b']
 

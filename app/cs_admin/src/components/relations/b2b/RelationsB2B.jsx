@@ -156,6 +156,8 @@ function RelationsB2B({ t, history }) {
           <Table.Header>
             <Table.Row key={v4()}>
               <Table.ColHeader>{t('general.name')}</Table.ColHeader>
+              <Table.ColHeader></Table.ColHeader>
+              <Table.ColHeader></Table.ColHeader>
             </Table.Row>
           </Table.Header>
           <Table.Body>
@@ -175,6 +177,77 @@ function RelationsB2B({ t, history }) {
                       </Link>
                     }
                   </Table.Col>
+                  {/* Archive / restore buttons */}
+                  <Table.Col className="text-right" key={v4()}>
+                    <button className="icon btn btn-link btn-sm" 
+                      title={t('general.deactivate')} 
+                      href=""
+                      onClick={() => {
+                        console.log("clicked isActive")
+                        let id = node.id
+                        let show_archive
+                        if (localStorage.getItem(CSLS.RELATIONS_BUSINESSES_SHOW_ARCHIVE) == "true") {
+                          show_archive = true
+                        } else {
+                          show_archive = false
+                        }
+
+                        updateBusiness({ variables: {
+                          input: {
+                            id,
+                            archived: !node.archived // invert, as we need the opposite from the list currently displayed
+                          }
+                    }, refetchQueries: [
+                        {query: GET_BUSINESSES_QUERY, variables: get_list_query_variables()}
+                    ]}).then(({ data }) => {
+                      console.log('got data', data);
+                      toast.success(
+                        (!show_archive) ? t('relations.b2b.deactivated'): t('relations.b2b.restored'), {
+                          position: toast.POSITION.BOTTOM_RIGHT
+                        })
+                    }).catch((error) => {
+                      toast.error((t('general.toast_server_error')) + ': ' +  error, {
+                          position: toast.POSITION.BOTTOM_RIGHT
+                        })
+                      console.log('there was an error sending the query', error);
+                    })
+                    }}>
+                      {
+                        (!node.archived) ?
+                          <Icon prefix="fe" name="trash-2" /> :
+                          t("general.restore")
+                      }
+                    </button>
+                  </Table.Col>
+
+                  {/* Delete button shown when archived */}
+                    {
+                      (!node.archived) ? '' :
+                        <Table.Col className="text-right" key={v4()}>
+                        <button className="icon btn btn-link btn-sm" 
+                          title={t('general.delete')} 
+                          href=""
+                          onClick={() => {
+                            confirm_delete({
+                              t: t,
+                              msgConfirm: t("relations.accounts.delete_confirm_msg"),
+                              msgDescription: <p>{node.first_name} {node.last_name}</p>,
+                              msgSuccess: t('relations.accounts.deleted'),
+                              deleteFunction: deleteBusiness,
+                              functionVariables: { variables: {
+                                input: {
+                                  id: node.id
+                                }
+                              }, refetchQueries: [
+                                {query: GET_BUSINESSES_QUERY, variables: get_list_query_variables()}
+                              ]}
+                            })
+                          }}
+                        >
+                          <span className="text-red"><Icon prefix="fe" name="trash-2" /></span>
+                        </button>
+                      </Table.Col>
+                    }
                 </Table.Row>
               ))}
           </Table.Body>
