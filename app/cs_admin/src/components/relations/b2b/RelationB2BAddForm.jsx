@@ -19,7 +19,7 @@ const RelationsB2BAddFrom = ({ t, history, isSubmitting, errors, return_url }) =
       <Card.Body>
           <Grid.Row>
             <Grid.Col>
-              <Form.Group label={t('general.first_name')}>
+              <Form.Group label={t('general.name')}>
                 <Field type="text" 
                         name="name" 
                         className={(errors.name) ? "form-control is-invalid" : "form-control"} 

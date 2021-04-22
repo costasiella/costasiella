@@ -230,9 +230,9 @@ function RelationsB2B({ t, history }) {
                           onClick={() => {
                             confirm_delete({
                               t: t,
-                              msgConfirm: t("relations.accounts.delete_confirm_msg"),
-                              msgDescription: <p>{node.first_name} {node.last_name}</p>,
-                              msgSuccess: t('relations.accounts.deleted'),
+                              msgConfirm: t("relations.b2b.delete_confirm_msg"),
+                              msgDescription: <span><br /><br /><ul><li>{node.name}</li></ul></span>,
+                              msgSuccess: t('relations.b2b.deleted'),
                               deleteFunction: deleteBusiness,
                               functionVariables: { variables: {
                                 input: {
