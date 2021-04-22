@@ -811,7 +811,7 @@
             "delete_confirm_msg": "Are you sure you with to delete this b2b relation?",
             "deleted": "B2B relation deleted",
             "title_add": "Add Business-to-Business relation",
-            "toast_add_success": "Added Business-to-Business relation",
+            "toast_add_success": "Added Business-to-Business relation. You're now editing the new relation.",
             "add": "Add",
             "title_edit": "Edit Business-to-Business relation",
             "toast_edit_success": "Saved"

@@ -69,7 +69,9 @@ function RelationsB2BAdd({ t, history }) {
                             {query: GET_BUSINESSES_QUERY, variables: get_list_query_variables()}
                         ]})
                         .then(({ data }) => {
-                            console.log('got data', data);
+                            console.log('got data', data)
+                            const businessId = data.createBusiness.business.id
+                            history.push(`/relations/b2b/${businessId}/edit`)
                             toast.success((t('relations.b2b.toast_add_success')), {
                                 position: toast.POSITION.BOTTOM_RIGHT
                               })
