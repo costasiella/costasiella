@@ -206,12 +206,11 @@ class UpdateBusiness(graphene.relay.ClientIDMutation):
         return UpdateBusiness(business=business)
 
 
-class ArchiveBusiness(graphene.relay.ClientIDMutation):
+class DeleteBusiness(graphene.relay.ClientIDMutation):
     class Input:
         id = graphene.ID(required=True)
-        archived = graphene.Boolean(required=True)
 
-    business = graphene.Field(BusinessNode)
+    ok = graphene.Boolean()
 
     @classmethod
     def mutate_and_get_payload(self, root, info, **input):
@@ -219,18 +218,16 @@ class ArchiveBusiness(graphene.relay.ClientIDMutation):
         require_login_and_permission(user, 'costasiella.delete_business')
 
         rid = get_rid(input['id'])
-
         business = Business.objects.filter(id=rid.id).first()
         if not business:
-            raise Exception('Invalid Business ID!')
+            raise Exception('Invalid Account ID!')
 
-        business.archived = input['archived']
-        business.save()
+        ok = business.delete()
 
-        return ArchiveBusiness(business=business)
+        return DeleteBusiness(ok=ok)
 
 
 class BusinessMutation(graphene.ObjectType):
     create_business = CreateBusiness.Field()
     update_business = UpdateBusiness.Field()
-    archive_business = ArchiveBusiness.Field()
+    delete_business = DeleteBusiness.Field()
