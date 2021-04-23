@@ -36,7 +36,7 @@ class BusinessQuery(graphene.ObjectType):
     businesses = DjangoFilterConnectionField(BusinessNode)
     business = graphene.relay.Node.Field(BusinessNode)
 
-    def resolve_business(self, info, archived=False, **kwargs):
+    def resolve_businesses(self, info, archived=False, **kwargs):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.view_business')
 
