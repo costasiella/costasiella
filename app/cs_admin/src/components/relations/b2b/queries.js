@@ -55,3 +55,15 @@ export const GET_BUSINESS_QUERY = gql`
     }
   }
 `
+
+const UPDATE_BUSINESS = gql`
+  mutation UpdateBusiness($input: UpdateBusinessInput!) {
+    updateBusiness(input: $input) {
+      business {
+        id
+        archived
+      }
+    }
+  }
+`
+

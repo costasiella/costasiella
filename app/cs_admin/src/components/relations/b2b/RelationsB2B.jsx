@@ -29,23 +29,13 @@ import CSLS from "../../../tools/cs_local_storage"
 
 import ContentCard from "../../general/ContentCard"
 import RelationsB2BBase from "./RelationsB2BBase"
-import { GET_BUSINESSES_QUERY } from "./queries"
+import { GET_BUSINESSES_QUERY, UPDATE_BUSINESS } from "./queries"
 import { get_list_query_variables } from "./tools"
 import confirm_archive from "../../../tools/confirm_archive"
 import confirm_unarchive from "../../../tools/confirm_unarchive"
 import confirm_delete from "../../../tools/confirm_delete"
 
 
-const UPDATE_BUSINESS = gql`
-  mutation UpdateBusiness($input: UpdateBusinessInput!) {
-    updateBusiness(input: $input) {
-      business {
-        id
-        archived
-      }
-    }
-  }
-`
 
 
 const DELETE_BUSINESS = gql`

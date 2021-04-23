@@ -8,7 +8,7 @@ import { withRouter } from "react-router"
 import { Formik } from 'formik'
 import { toast } from 'react-toastify'
 
-import { GET_BUSINESSES_QUERY, GET_BUSINESS_QUERY } from './queries'
+import { GET_BUSINESSES_QUERY, GET_BUSINESS_QUERY, UPDATE_BUSINESS } from './queries'
 // import { ACCOUNT_SCHEMA } from './yupSchema'
 
 import {
@@ -30,17 +30,6 @@ import RelationsB2BEditForm from "./RelationsB2BEditForm"
 
 // import OrganizationMenu from "../OrganizationMenu"
 // import ProfileMenu from "./ProfileMenu"
-
-
-const UPDATE_BUSINESS = gql`
-  mutation UpdateBusiness($input:UpdateBusinessInput!) {
-    updateBusiness(input: $input) {
-      business {
-        id
-      }
-    }
-  }
-`
 
 function RelationsB2BEdit({ t, match, history}) {
   const businessId = match.params.business_id
