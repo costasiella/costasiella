@@ -1726,7 +1726,9 @@
                 },
                 "invoices": {
                     "title": "Subscription invoices",
-                    "explanation": "Create monthly invoices for all active subscriptions."
+                    "explanation": "Create monthly invoices for all active subscriptions.",
+                    "title_card": "Monthly invoice creation result",
+                    "empty_list": "This task hasn't run before."
                 }
             }
         },

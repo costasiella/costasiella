@@ -1726,7 +1726,9 @@
                 },
                 "invoices": {
                     "title": "__STRING_NOT_TRANSLATED__",
-                    "explanation": "__STRING_NOT_TRANSLATED__"
+                    "explanation": "__STRING_NOT_TRANSLATED__",
+                    "title_card": "__STRING_NOT_TRANSLATED__",
+                    "empty_list": "__STRING_NOT_TRANSLATED__"
                 }
             }
         },
