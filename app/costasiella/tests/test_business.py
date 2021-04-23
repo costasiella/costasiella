@@ -52,6 +52,7 @@ class GQLBusiness(TestCase):
 
         self.variables_update = {
             "input": {
+                "archived": True,
                 "name": "New name",
                 "address": "Street 1",
                 "postcode": "5433BB",
@@ -66,10 +67,8 @@ class GQLBusiness(TestCase):
             }
         }
 
-        self.variables_archive = {
-            "input": {
-                "archived": True
-            }
+        self.variables_delete = {
+            "input": {}
         }
 
         self.businesses_query = '''
@@ -425,10 +424,10 @@ class GQLBusiness(TestCase):
     def test_update_businesses(self):
         """ Update a businesses """
         query = self.business_update_mutation
-        business = f.OrganizationClasspassFactory.create()
+        business = f.BusinessB2BFactory.create()
 
         variables = self.variables_update
-        variables['input']['id'] = to_global_id("OrganizationClasspassNode", business.pk)
+        variables['input']['id'] = to_global_id("BusinessNode", business.pk)
 
         executed = execute_test_client_api_query(
             query,
@@ -437,185 +436,156 @@ class GQLBusiness(TestCase):
         )
         data = executed.get('data')
 
-        self.assertEqual(data['updateOrganizationClasspass']['organizationClasspass']['displayPublic'],
-                         variables['input']['displayPublic'])
-        self.assertEqual(data['updateOrganizationClasspass']['organizationClasspass']['displayShop'],
-                         variables['input']['displayShop'])
-        self.assertEqual(data['updateOrganizationClasspass']['organizationClasspass']['trialPass'],
-                         variables['input']['trialPass'])
-        self.assertEqual(data['updateOrganizationClasspass']['organizationClasspass']['trialTimes'],
-                         variables['input']['trialTimes'])
-        self.assertEqual(data['updateOrganizationClasspass']['organizationClasspass']['archived'], False)
-        self.assertEqual(data['updateOrganizationClasspass']['organizationClasspass']['name'],
+        self.assertEqual(data['updateBusiness']['business']['archived'],
+                         variables['input']['archived'])
+        self.assertEqual(data['updateBusiness']['business']['b2b'], True)
+        self.assertEqual(data['updateBusiness']['business']['name'],
                          variables['input']['name'])
-        self.assertEqual(data['updateOrganizationClasspass']['organizationClasspass']['description'],
-                         variables['input']['description'])
-        self.assertEqual(data['updateOrganizationClasspass']['organizationClasspass']['price'],
-                         variables['input']['price'])
-        self.assertEqual(data['updateOrganizationClasspass']['organizationClasspass']['financeTaxRate']['id'],
-                         variables['input']['financeTaxRate'])
-        self.assertEqual(data['updateOrganizationClasspass']['organizationClasspass']['validity'],
-                         variables['input']['validity'])
-        self.assertEqual(data['updateOrganizationClasspass']['organizationClasspass']['validityUnit'],
-                         variables['input']['validityUnit'])
-        self.assertEqual(data['updateOrganizationClasspass']['organizationClasspass']['classes'],
-                         variables['input']['classes'])
-        self.assertEqual(data['updateOrganizationClasspass']['organizationClasspass']['unlimited'],
-                         variables['input']['unlimited'])
-        self.assertEqual(data['updateOrganizationClasspass']['organizationClasspass']['organizationMembership']['id'],
-                         variables['input']['organizationMembership'])
-        self.assertEqual(data['updateOrganizationClasspass']['organizationClasspass']['quickStatsAmount'],
-                         variables['input']['quickStatsAmount'])
-        self.assertEqual(data['updateOrganizationClasspass']['organizationClasspass']['financeGlaccount']['id'],
-                         variables['input']['financeGlaccount'])
-        self.assertEqual(data['updateOrganizationClasspass']['organizationClasspass']['financeCostcenter']['id'],
-                         variables['input']['financeCostcenter'])
-    #
-    # def test_update_businesses_anon_user(self):
-    #     """ Don't allow updating businesses for non-logged in users """
-    #     query = self.business_update_mutation
-    #     business = f.OrganizationClasspassFactory.create()
-    #     variables = self.variables_update
-    #     variables['input']['id'] = to_global_id("OrganizationClasspassNode", business.pk)
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.anon_user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
-    #
-    #
-    # def test_update_businesses_permission_granted(self):
-    #     """ Allow updating businesses for users with permissions """
-    #     query = self.business_update_mutation
-    #     business = f.OrganizationClasspassFactory.create()
-    #     variables = self.variables_update
-    #     variables['input']['id'] = to_global_id("OrganizationClasspassNode", business.pk)
-    #
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename=self.permission_change)
-    #     user.user_permissions.add(permission)
-    #     user.save()
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['updateOrganizationClasspass']['organizationClasspass']['displayPublic'], variables['input']['displayPublic'])
-    #     self.assertEqual(data['updateOrganizationClasspass']['organizationClasspass']['displayShop'], variables['input']['displayShop'])
-    #     self.assertEqual(data['updateOrganizationClasspass']['organizationClasspass']['archived'], False)
-    #     self.assertEqual(data['updateOrganizationClasspass']['organizationClasspass']['name'], variables['input']['name'])
-    #     self.assertEqual(data['updateOrganizationClasspass']['organizationClasspass']['description'], variables['input']['description'])
-    #     self.assertEqual(data['updateOrganizationClasspass']['organizationClasspass']['price'], variables['input']['price'])
-    #     self.assertEqual(data['updateOrganizationClasspass']['organizationClasspass']['financeTaxRate']['id'], variables['input']['financeTaxRate'])
-    #     self.assertEqual(data['updateOrganizationClasspass']['organizationClasspass']['validity'], variables['input']['validity'])
-    #     self.assertEqual(data['updateOrganizationClasspass']['organizationClasspass']['validityUnit'], variables['input']['validityUnit'])
-    #     self.assertEqual(data['updateOrganizationClasspass']['organizationClasspass']['classes'], variables['input']['classes'])
-    #     self.assertEqual(data['updateOrganizationClasspass']['organizationClasspass']['unlimited'], variables['input']['unlimited'])
-    #     self.assertEqual(data['updateOrganizationClasspass']['organizationClasspass']['organizationMembership']['id'], variables['input']['organizationMembership'])
-    #     self.assertEqual(data['updateOrganizationClasspass']['organizationClasspass']['quickStatsAmount'], variables['input']['quickStatsAmount'])
-    #     self.assertEqual(data['updateOrganizationClasspass']['organizationClasspass']['financeGlaccount']['id'], variables['input']['financeGlaccount'])
-    #     self.assertEqual(data['updateOrganizationClasspass']['organizationClasspass']['financeCostcenter']['id'], variables['input']['financeCostcenter'])
-    #
-    #
-    # def test_update_businesses_permission_denied(self):
-    #     """ Check update businesses permission denied error message """
-    #     query = self.business_update_mutation
-    #     business = f.OrganizationClasspassFactory.create()
-    #     variables = self.variables_update
-    #     variables['input']['id'] = to_global_id("OrganizationClasspassNode", business.pk)
-    #
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
-    #
-    #
-    # def test_archive_businesses(self):
-    #     """ Archive a businesses """
-    #     query = self.business_archive_mutation
-    #     business = f.OrganizationClasspassFactory.create()
-    #     variables = self.variables_archive
-    #     variables['input']['id'] = to_global_id("OrganizationClasspassNode", business.pk)
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.admin_user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     print(data)
-    #     self.assertEqual(data['archiveOrganizationClasspass']['organizationClasspass']['archived'], variables['input']['archived'])
-    #
-    #
-    # def test_archive_businesses_anon_user(self):
-    #     """ Archive businesses denied for anon user """
-    #     query = self.business_archive_mutation
-    #     business = f.OrganizationClasspassFactory.create()
-    #     variables = self.variables_archive
-    #     variables['input']['id'] = to_global_id("OrganizationClasspassNode", business.pk)
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.anon_user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
-    #
-    #
-    # def test_archive_businesses_permission_granted(self):
-    #     """ Allow archiving businesses for users with permissions """
-    #     query = self.business_archive_mutation
-    #     business = f.OrganizationClasspassFactory.create()
-    #     variables = self.variables_archive
-    #     variables['input']['id'] = to_global_id("OrganizationClasspassNode", business.pk)
-    #
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename=self.permission_delete)
-    #     user.user_permissions.add(permission)
-    #     user.save()
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['archiveOrganizationClasspass']['organizationClasspass']['archived'], variables['input']['archived'])
-    #
-    #
-    # def test_archive_businesses_permission_denied(self):
-    #     """ Check archive businesses permission denied error message """
-    #     query = self.business_archive_mutation
-    #     business = f.OrganizationClasspassFactory.create()
-    #     variables = self.variables_archive
-    #     variables['input']['id'] = to_global_id("OrganizationClasspassNode", business.pk)
-    #
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
-    #
+        self.assertEqual(data['updateBusiness']['business']['address'],
+                         variables['input']['address'])
+        self.assertEqual(data['updateBusiness']['business']['postcode'],
+                         variables['input']['postcode'])
+        self.assertEqual(data['updateBusiness']['business']['city'],
+                         variables['input']['city'])
+        self.assertEqual(data['updateBusiness']['business']['country'],
+                         variables['input']['country'])
+        self.assertEqual(data['updateBusiness']['business']['phone'],
+                         variables['input']['phone'])
+        self.assertEqual(data['updateBusiness']['business']['phone2'],
+                         variables['input']['phone2'])
+        self.assertEqual(data['updateBusiness']['business']['emailContact'],
+                         variables['input']['emailContact'])
+        self.assertEqual(data['updateBusiness']['business']['emailBilling'],
+                         variables['input']['emailBilling'])
+        self.assertEqual(data['updateBusiness']['business']['registration'],
+                         variables['input']['registration'])
+        self.assertEqual(data['updateBusiness']['business']['taxRegistration'],
+                         variables['input']['taxRegistration'])
+
+    def test_update_businesses_anon_user(self):
+        """ Don't allow updating businesses for non-logged in users """
+        query = self.business_update_mutation
+        business = f.BusinessB2BFactory.create()
+        variables = self.variables_update
+        variables['input']['id'] = to_global_id("BusinessNode", business.pk)
+
+        executed = execute_test_client_api_query(
+            query,
+            self.anon_user,
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
+
+    def test_update_businesses_permission_granted(self):
+        """ Allow updating businesses for users with permissions """
+        query = self.business_update_mutation
+        business = f.BusinessB2BFactory.create()
+        variables = self.variables_update
+        variables['input']['id'] = to_global_id("BusinessNode", business.pk)
+
+        # Create regular user
+        user = f.RegularUserFactory.create()
+        permission = Permission.objects.get(codename=self.permission_change)
+        user.user_permissions.add(permission)
+        user.save()
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['updateBusiness']['business']['name'], variables['input']['name'])
+
+    def test_update_businesses_permission_denied(self):
+        """ Check update businesses permission denied error message """
+        query = self.business_update_mutation
+        business = f.BusinessB2BFactory.create()
+        variables = self.variables_update
+        variables['input']['id'] = to_global_id("BusinessNode", business.pk)
+
+        # Create regular user
+        user = f.RegularUserFactory.create()
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
+
+    def test_delete_businesses(self):
+        """ Archive a businesses """
+        query = self.business_delete_mutation
+        business = f.BusinessB2BFactory.create()
+        variables = self.variables_delete
+        variables['input']['id'] = to_global_id("BusinessNode", business.pk)
+
+        executed = execute_test_client_api_query(
+            query,
+            self.admin_user,
+            variables=variables
+        )
+        data = executed.get('data')
+        print(data)
+        self.assertEqual(data['deleteBusiness']['ok'], True)
+        
+    def test_delete_businesses_anon_user(self):
+        """ Archive businesses denied for anon user """
+        query = self.business_delete_mutation
+        business = f.BusinessB2BFactory.create()
+        variables = self.variables_delete
+        variables['input']['id'] = to_global_id("BusinessNode", business.pk)
+
+        executed = execute_test_client_api_query(
+            query,
+            self.anon_user,
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
+
+    def test_delete_businesses_permission_granted(self):
+        """ Allow archiving businesses for users with permissions """
+        query = self.business_delete_mutation
+        business = f.BusinessB2BFactory.create()
+        variables = self.variables_delete
+        variables['input']['id'] = to_global_id("BusinessNode", business.pk)
+
+        # Create regular user
+        user = f.RegularUserFactory.create()
+        permission = Permission.objects.get(codename=self.permission_delete)
+        user.user_permissions.add(permission)
+        user.save()
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['deleteBusiness']['ok'], True)
+
+    def test_delete_businesses_permission_denied(self):
+        """ Check archive businesses permission denied error message """
+        query = self.business_delete_mutation
+        business = f.BusinessB2BFactory.create()
+        variables = self.variables_delete
+        variables['input']['id'] = to_global_id("BusinessNode", business.pk)
+
+        # Create regular user
+        user = f.RegularUserFactory.create()
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
