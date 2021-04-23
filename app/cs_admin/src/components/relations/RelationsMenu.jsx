@@ -11,35 +11,52 @@ import HasPermissionWrapper from "../HasPermissionWrapper"
 
 
 let accounts_active
+let b2b_active
+let suppliers_active
 
 
 const RelationsMenu = ({ t, active_link }) => (
     <List.Group transparent={true}>
         {(active_link === 'accounts') ? accounts_active = true: accounts_active = false}
+        {(active_link === 'b2b') ? b2b_active = true: b2b_active = false}
+        {(active_link === 'suppliers') ? suppliers_active = true: suppliers_active = false}
         
 
         <List.GroupItem
-            key={v4()}
-            className="d-flex align-items-center"
-            to="#/relations/accounts"
-            icon="users"
-            active={accounts_active}
-            >
-            {t('relations.accounts.title')}
+          key={v4()}
+          className="d-flex align-items-center"
+          to="#/relations/accounts"
+          icon="users"
+          active={accounts_active}
+        >
+          {t('relations.accounts.title')}
         </List.GroupItem>
         {/* <HasPermissionWrapper 
-            permission="view"
-            resource="organizationlocation">
-            <List.GroupItem
-                key={v4()}
-                className="d-flex align-items-center"
-                to="#/organization/locations"
-                icon="home"
-                active={location_active}
-                >
-            Locations
-            </List.GroupItem>
+          permission="view"
+          resource="business">
+          <List.GroupItem
+            key={v4()}
+            className="d-flex align-items-center"
+            to="#/relations/suppliers"
+            icon="package"
+            active={suppliers_active}
+          >
+            {t('relations.suppliers.title')}
+          </List.GroupItem>
         </HasPermissionWrapper> */}
+        <HasPermissionWrapper 
+          permission="view"
+          resource="business">
+          <List.GroupItem
+            key={v4()}
+            className="d-flex align-items-center"
+            to="#/relations/b2b"
+            icon="briefcase"
+            active={b2b_active}
+          >
+            {t('relations.b2b.title')}
+          </List.GroupItem>
+        </HasPermissionWrapper>
     </List.Group>
 );
 

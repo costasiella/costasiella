@@ -37,7 +37,7 @@ class FinanceTaxRateQuery(graphene.ObjectType):
 
         ## return everything:
         # if user.has_perm('costasiella.view_financetaxrate'):
-        return FinanceTaxRate.objects.filter(archived = archived).order_by('name')
+        return FinanceTaxRate.objects.filter(archived=archived).order_by('name')
 
 
 class CreateFinanceTaxRate(graphene.relay.ClientIDMutation):

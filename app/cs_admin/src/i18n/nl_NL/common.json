@@ -214,7 +214,10 @@
         "ticket": "__STRING_NOT_TRANSLATED__",
         "welcome": "__STRING_NOT_TRANSLATED__",
         "backend": "__STRING_NOT_TRANSLATED__",
-        "tools": "__STRING_NOT_TRANSLATED__"
+        "tools": "__STRING_NOT_TRANSLATED__",
+        "email_contact": "__STRING_NOT_TRANSLATED__",
+        "email_billing": "__STRING_NOT_TRANSLATED__",
+        "phone2": "__STRING_NOT_TRANSLATED__"
     },
     "settings": {
         "error_loading": "__STRING_NOT_TRANSLATED__",
@@ -1139,7 +1142,25 @@
             "deleted": "__STRING_NOT_TRANSLATED__",
             "add": "__STRING_NOT_TRANSLATED__"
         },
-        "title": "__STRING_NOT_TRANSLATED__"
+        "title": "__STRING_NOT_TRANSLATED__",
+        "b2b": {
+            "title": "__STRING_NOT_TRANSLATED__",
+            "error_loading": "__STRING_NOT_TRANSLATED__",
+            "empty_archive": "__STRING_NOT_TRANSLATED__",
+            "empty_list": "__STRING_NOT_TRANSLATED__",
+            "deactivated": "__STRING_NOT_TRANSLATED__",
+            "restored": "__STRING_NOT_TRANSLATED__",
+            "delete_confirm_msg": "__STRING_NOT_TRANSLATED__",
+            "deleted": "__STRING_NOT_TRANSLATED__",
+            "title_add": "__STRING_NOT_TRANSLATED__",
+            "toast_add_success": "__STRING_NOT_TRANSLATED__",
+            "add": "__STRING_NOT_TRANSLATED__",
+            "title_edit": "__STRING_NOT_TRANSLATED__",
+            "toast_edit_success": "__STRING_NOT_TRANSLATED__"
+        },
+        "suppliers": {
+            "title": "__STRING_NOT_TRANSLATED__"
+        }
     },
     "schedule": {
         "classes": {

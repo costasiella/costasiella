@@ -193,7 +193,7 @@ const RelationsAccountProfileForm = ({ t, history, isSubmitting, errors, values,
                     country => <option value={country.Code} key={v4()}>{country.Name}</option>
                 )}
               </Field>
-              <ErrorMessage name="gender" component="span" className="invalid-feedback" />
+              <ErrorMessage name="country" component="span" className="invalid-feedback" />
             </Form.Group> 
           </Grid.Col>
         </Grid.Row>

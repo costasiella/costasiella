@@ -12,7 +12,6 @@ from .. import models
 from ..modules.date_tools import last_day_month
 
 
-
 class FinanceCostCenterFactory(factory.DjangoModelFactory):
     class Meta:
         model = models.FinanceCostCenter
@@ -379,6 +378,24 @@ class TeacherProfileFactory(factory.DjangoModelFactory):
     classes = True
     appointments = True
     events = True
+
+
+class BusinessB2BFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.Business
+
+    b2b = True
+    name = "Great business"
+    address = "Businessroad 101"
+    postcode = "1234DB"
+    city = "B-Town"
+    country = "NL"
+    phone = "+31612345678"
+    phone_2 = "+31612345678"
+    email_contact = "contact@business.com"
+    email_billing = "billing@business.com"
+    registration = "1234DB56"
+    tax_registration = "Chamber of Commerce: 1234DB56"
 
 
 class OrganizationAppointmentPriceFactory(factory.DjangoModelFactory):
@@ -897,3 +914,5 @@ class SystemSettingFinanceCurrencyFactory(factory.DjangoModelFactory):
 
     setting = "finance_currency"
     value = "EUR"
+
+
