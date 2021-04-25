@@ -45,13 +45,18 @@ function AutomationAccountSubscriptionCreditAdd({ t, history }) {
         <Formik
           initialValues={{ 
             subscriptionYear: new Date().getFullYear(), 
-            subscriptionMonth: new Date().getMonth() + 1 }}
+            subscriptionMonth: new Date().getMonth() + 1 ,
+            description: '',
+            invoiceDate: 'today'
+          }}
           validationSchema={AUTOMATION_ACCOUNT_SUBSCRIPTION_INVOICES_SCHEMA}
           onSubmit={(values, { setSubmitting }) => {
               addTask({ variables: {
                 input: {
                   month: values.subscriptionMonth,
-                  year: values.subscriptionYear
+                  year: values.subscriptionYear,
+                  description: values.description,
+                  invoiceDate: values.invoiceDate
                 }
               }, refetchQueries: [
                   {query: GET_TASK_RESULT_QUERY, 
