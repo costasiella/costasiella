@@ -296,18 +296,11 @@ class AccountSubscription(models.Model):
         if not description:
             description = _("Subscription")
 
-        #TODO: Add a setting that allows invoices to be created with the 1st of the month as date
-
-        # if invoice_date == 'first_of_month':
-        #     date_created = datetime.date(
-        #         int(SubscriptionYear),
-        #         int(SubscriptionMonth),
-        #         1
-        #     )
-        # else:
-        #     date_created = TODAY_LOCAL
-
-        date_created = timezone.now().date()
+        # Check what to set as invoice date
+        if invoice_date == 'first_of_month':
+            date_created = datetime.date(int(year), int(month), 1)
+        else:
+            date_created = today_local
 
         finance_invoice = FinanceInvoice(
             account=self.account,
