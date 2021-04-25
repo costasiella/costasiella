@@ -136,7 +136,9 @@ function FinanceInvoices({ t, location, history }) {
                                     <FinanceInvoicesStatus status={node.status} />
                                   </Table.Col>
                                   <Table.Col key={v4()}>
-                                    {node.invoiceNumber}
+                                    <Link to={"/finance/invoices/edit/" + node.id}>
+                                      {node.invoiceNumber}
+                                    </Link>
                                   </Table.Col>
                                   <Table.Col key={v4()}>
                                     {(node.account) ? 
