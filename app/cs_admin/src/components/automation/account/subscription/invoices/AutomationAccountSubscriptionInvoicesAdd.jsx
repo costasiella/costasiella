@@ -10,8 +10,8 @@ import { toast } from 'react-toastify'
 
 
 import { GET_TASK_RESULT_QUERY } from "../../../queries"
-import { AUTOMATION_ACCOUNT_SUBSCRIPTION_CREDIT_SCHEMA } from './yupSchema'
-import AutomationAccountSubscriptionCreditForm from './AutomationAccountSubscriptionCreditForm'
+import { AUTOMATION_ACCOUNT_SUBSCRIPTION_INVOICES_SCHEMA } from './yupSchema'
+import AutomationAccountSubscriptionInvoicesForm from './AutomationAccountSubscriptionInvoicesForm'
 
 
 import {
@@ -46,7 +46,7 @@ function AutomationAccountSubscriptionCreditAdd({ t, history }) {
           initialValues={{ 
             subscriptionYear: new Date().getFullYear(), 
             subscriptionMonth: new Date().getMonth() + 1 }}
-          validationSchema={AUTOMATION_ACCOUNT_SUBSCRIPTION_CREDIT_SCHEMA}
+          validationSchema={AUTOMATION_ACCOUNT_SUBSCRIPTION_INVOICES_SCHEMA}
           onSubmit={(values, { setSubmitting }) => {
               addTask({ variables: {
                 input: {
@@ -75,7 +75,7 @@ function AutomationAccountSubscriptionCreditAdd({ t, history }) {
           }}
           >
           {({ isSubmitting, errors }) => (
-              <AutomationAccountSubscriptionCreditForm 
+              <AutomationAccountSubscriptionInvoicesForm 
                 isSubmitting={isSubmitting}
                 errors={errors}
                 returnUrl={returnUrl}

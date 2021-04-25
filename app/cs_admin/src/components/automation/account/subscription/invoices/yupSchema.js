@@ -1,7 +1,7 @@
 import { t } from 'i18next'
 import * as Yup from 'yup'
 
-export const AUTOMATION_ACCOUNT_SUBSCRIPTION_CREDIT_SCHEMA = Yup.object().shape({
+export const AUTOMATION_ACCOUNT_SUBSCRIPTION_INVOICES_SCHEMA = Yup.object().shape({
   subscriptionYear: Yup.number()
     .required()
     .positive()
