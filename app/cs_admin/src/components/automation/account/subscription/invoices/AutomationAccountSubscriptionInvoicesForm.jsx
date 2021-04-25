@@ -55,7 +55,7 @@ function AutomationAccountSubscriptionInvoicesForm({ t, history, isSubmitting, e
         <Grid.Row>
           <Grid.Col>
             <Form.Group label={t('general.description')}>
-              <Field type="number" 
+              <Field type="text" 
                       name="description" 
                       className={(errors.description) ? "form-control is-invalid" : "form-control"} 
                       autoComplete="off" />
