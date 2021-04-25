@@ -7,6 +7,7 @@ from django.db.models import Q
 from .....models import AccountSubscription, AccountSubscriptionCredit
 from .....dudes import DateToolsDude
 
+
 @shared_task
 def account_subscription_invoices_add_for_month(year, month, description='', invoice_date="today"):
     """
