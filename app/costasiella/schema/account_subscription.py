@@ -238,6 +238,8 @@ class CreateAccountSubscriptionInvoicesForMonth(graphene.relay.ClientIDMutation)
     class Input:
         year = graphene.Int()
         month = graphene.Int()
+        description = graphene.String()
+        invoice_date = graphene.String()
 
     ok = graphene.Boolean()
 
@@ -251,8 +253,15 @@ class CreateAccountSubscriptionInvoicesForMonth(graphene.relay.ClientIDMutation)
         print(input)
         year = input['year']
         month = input['month']
+        description = input['description']
+        invoice_date = input['invoice_date']
 
-        task = account_subscription_invoices_add_for_month.delay(year=year, month=month)
+        task = account_subscription_invoices_add_for_month.delay(
+            year=year,
+            month=month,
+            invoice_date=invoice_date,
+            description=description
+        )
         print(task)
         ok = True
 
