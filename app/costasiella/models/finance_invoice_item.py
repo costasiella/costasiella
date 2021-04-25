@@ -47,7 +47,12 @@ class FinanceInvoiceItem(models.Model):
         ordering = ("finance_invoice", "line_number",)
 
     def __str__(self):
-        return self.finance_invoice.invoice_number + " line: " + self.line_number + " " + self.product_name
+        field_values = ["FinanceInvoiceItem:", "--------"]
+        for field in self._meta.get_fields():
+            field_values.append(": ".join([field.name, str(getattr(self, field.name, ''))]))
+            # field_values.append(str(getattr(self, field.name, '')))
+        field_values.append("--------")
+        return '\n'.join(field_values)
 
     def save(self, *args, **kwargs):
         self.subtotal = self._calculate_subtotal()

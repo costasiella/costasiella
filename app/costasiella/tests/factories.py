@@ -280,14 +280,15 @@ class OrganizationSubscriptionPriceFactory(factory.DjangoModelFactory):
     class Meta:
         model = models.OrganizationSubscriptionPrice
 
-    class Params:
-        initial_organization_subscription = factory.SubFactory(OrganizationSubscriptionFactory)
-
-    organization_subscription = factory.LazyAttribute(
-        lambda o: o.initial_organization_subscription if o.initial_organization_subscription else factory.SubFactory(
-            OrganizationSubscriptionFactory
-        )
-    )
+    # class Params:
+    #     initial_organization_subscription =factory.SubFactory(OrganizationSubscriptionFactory)
+    #
+    # organization_subscription = factory.LazyAttribute(
+    #     lambda o: o.initial_organization_subscription if o.initial_organization_subscription else factory.SubFactory(
+    #         OrganizationSubscriptionFactory
+    #     )
+    # )
+    organization_subscription = factory.SubFactory(OrganizationSubscriptionFactory)
     price = 12345
     finance_tax_rate = factory.SubFactory(FinanceTaxRateFactory)
     date_start = '2010-01-01'

@@ -237,6 +237,9 @@ class AccountSubscription(models.Model):
         from .finance_invoice_item import FinanceInvoiceItem
         from .finance_invoice_group_default import FinanceInvoiceGroupDefault
 
+        print("$$$$$$$$$$")
+        print("Creating invoices for month")
+
         app_settings_dude = AppSettingsDude()
         date_dude = DateToolsDude()
 
@@ -254,17 +257,26 @@ class AccountSubscription(models.Model):
             subscription_month=month
         )
 
+        print("#### invoice items already found:")
+        print(qs)
+
         if qs.exists():
             # An invoice item already exists for this month. Return the existing invoice item.
+            print("already found")
             return qs.first()
 
         # Check if there are billable days in this month
         billable_period = self.get_billable_period_in_month(year, month)
+        print(billable_period)
+
         if not billable_period['billable_days']:
+            print("no billable days")
             return
 
         # Check if the account is active
+        print(self.account.is_active)
         if not self.account.is_active:
+            print("account_not_active")
             return
 
         # Fetch alt. price for this month (if any)
@@ -274,10 +286,14 @@ class AccountSubscription(models.Model):
             subscription_month=month
         )
 
+        print("alt price")
+        print(qs)
+
         alt_price = None
         if qs.exists():
             alt_price = qs.first()
             if alt_price.amount == 0:
+                print("alt price 0")
                 # A 0 amount has been set in an alt. price. We don't need an invoice this month
                 return
 
@@ -285,6 +301,7 @@ class AccountSubscription(models.Model):
         subscription_price = self.organization_subscription.get_price_on_date(first_day_month,
                                                                               raw_price=True)
         if not subscription_price:
+            print("subscription price 0")
             # No price is set, or the price is set to 0.
             return
 
@@ -293,11 +310,15 @@ class AccountSubscription(models.Model):
             item_type="SUBSCRIPTIONS"
         ).first().finance_invoice_group
 
+        print(finance_invoice_group)
+
         # Check what to set as invoice date
         if invoice_date == 'first_of_month':
             date_created = datetime.date(int(year), int(month), 1)
         else:
             date_created = today_local
+
+        print(date_created)
 
         finance_invoice = FinanceInvoice(
             account=self.account,
@@ -309,7 +330,12 @@ class AccountSubscription(models.Model):
             footer=finance_invoice_group.footer
         )
         finance_invoice.save()
+        print("invoice")
+        print(finance_invoice)
         finance_invoice_item = finance_invoice.item_add_subscription(self, year, month, description=description)
+
+        print("&&&")
+        print(finance_invoice_item)
 
         return finance_invoice_item
 
