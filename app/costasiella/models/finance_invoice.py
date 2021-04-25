@@ -250,6 +250,7 @@ class FinanceInvoice(models.Model):
 
         finance_tax_rate = organization_subscription.get_finance_tax_rate_on_date(first_day_month)
 
+        # Set default description
         if not description:
             description = "{subscription_name} [{p_start} - {p_end}]".format(
                 subscription_name=organization_subscription.name,

@@ -224,7 +224,7 @@ class AccountSubscription(models.Model):
 
         return qs
 
-    def create_invoice_for_month(self, year, month, description=None, invoice_date='today'):
+    def create_invoice_for_month(self, year, month, description="", invoice_date='today'):
         """
             :param year: Year of subscription
             :param month: Month of subscription
@@ -293,9 +293,6 @@ class AccountSubscription(models.Model):
             item_type="SUBSCRIPTIONS"
         ).first().finance_invoice_group
 
-        if not description:
-            description = _("Subscription")
-
         # Check what to set as invoice date
         if invoice_date == 'first_of_month':
             date_created = datetime.date(int(year), int(month), 1)
@@ -312,7 +309,7 @@ class AccountSubscription(models.Model):
             footer=finance_invoice_group.footer
         )
         finance_invoice.save()
-        finance_invoice_item = finance_invoice.item_add_subscription(self, year, month)
+        finance_invoice_item = finance_invoice.item_add_subscription(self, year, month, description=description)
 
         return finance_invoice_item
 
