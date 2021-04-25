@@ -39,45 +39,11 @@ def account_subscription_invoices_add_for_month(year, month, description='', inv
         if result:
             invoices_found += 1
 
-    return _("There are %s subscription invoices in %s-%s") % (invoices_found, year, month)
+    if invoices_found == 1:
+        return _("There is %s subscription invoice for %s-%s") % (invoices_found, year, month)
+    else:
+        return _("There are %s subscription invoices for %s-%s") % (invoices_found, year, month)
 
-
-    ########### OpenStudio reference code below ###########
-
-    # from .os_customer_subscription import CustomerSubscription
-    # from general_helpers import get_last_day_month
-    # from .os_invoice import Invoice
-    #
-    # T = current.T
-    # db = current.db
-    # DATE_FORMAT = current.DATE_FORMAT
-    #
-    # year = int(year)
-    # month = int(month)
-    #
-    # firstdaythismonth = datetime.date(year, month, 1)
-    # lastdaythismonth = get_last_day_month(firstdaythismonth)
-    #
-    # invoices_count = 0
-    #
-    # # get all active subscriptions in month
-    # query = (db.customers_subscriptions.Startdate <= lastdaythismonth) & \
-    #         ((db.customers_subscriptions.Enddate >= firstdaythismonth) |
-    #          (db.customers_subscriptions.Enddate == None))
-    #
-    # rows = db(query).select(db.customers_subscriptions.ALL)
-    # for row in rows:
-    #     cs = CustomerSubscription(row.id)
-    #     cs.create_invoice_for_month(year, month, description, invoice_date)
-    #
-    #     invoices_count += 1
-    #
-    # ##
-    # # For scheduled tasks db connection has to be committed manually
-    # ##
-    # db.commit()
-    #
-    # return T("Invoices in month") + ': ' + str(invoices_count)
 
 def send_mail_recurring_payment_failed(account, finance_invoice):
     """
