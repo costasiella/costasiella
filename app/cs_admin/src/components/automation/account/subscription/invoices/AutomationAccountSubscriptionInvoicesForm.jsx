@@ -46,7 +46,7 @@ function AutomationAccountSubscriptionInvoicesForm({ t, history, isSubmitting, e
                     className={(errors.invoiceDate) ? "form-control is-invalid" : "form-control"} 
                     autoComplete="off">
                 <option value="today" key={v4()}>{t('automation.account.subscriptions.invoices.today')}</option>
-                <option value="first_day" key={v4()}>{t('automation.account.subscriptions.invoices.invoice_date_first_day_month')}</option>                
+                <option value="first_of_month" key={v4()}>{t('automation.account.subscriptions.invoices.invoice_date_first_day_month')}</option>                
               </Field>
               <ErrorMessage name="invoiceDate" component="span" className="invalid-feedback" />
             </Form.Group>
