@@ -14,12 +14,11 @@ def account_subscription_invoices_add_for_month(year, month, description='', inv
     Add subscription credits for a given month
     :param year: YYYY
     :param month: 1 ... 2
+    :param description: invoices description,
+    :param invoice_date: invoice date
     :return:
     """
     date_dude = DateToolsDude()
-
-    # print("###############")
-    # print("Start adding credits")
 
     first_day_month = datetime.date(year, month, 1)
     last_day_month = date_dude.get_last_day_month(first_day_month)

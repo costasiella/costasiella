@@ -2,6 +2,7 @@ import React from 'react'
 import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
 import { Link } from "react-router-dom"
+import { v4 } from "uuid"
 
 import {
     Button,
@@ -10,7 +11,9 @@ import {
     Grid,
     Icon
   } from "tabler-react"
-  import { Form as FoForm, Field, ErrorMessage } from 'formik'
+import { Form as FoForm, Field, ErrorMessage } from 'formik'
+
+import CSDatePicker from "../../../../ui/CSDatePicker"
 
 
 function AutomationAccountSubscriptionInvoicesForm({ t, history, isSubmitting, errors, returnUrl}) {
@@ -34,6 +37,29 @@ function AutomationAccountSubscriptionInvoicesForm({ t, history, isSubmitting, e
                       className={(errors.subscriptionMonth) ? "form-control is-invalid" : "form-control"} 
                       autoComplete="off" />
               <ErrorMessage name="subscriptionMonth" component="span" className="invalid-feedback" />
+            </Form.Group>
+          </Grid.Col>
+          <Grid.Col>
+            <Form.Group label={t('automation.account.subscriptions.invoices.invoice_date')}>
+              <Field component="select" 
+                    name="invoiceDate" 
+                    className={(errors.invoiceDate) ? "form-control is-invalid" : "form-control"} 
+                    autoComplete="off">
+                <option value="today" key={v4()}>{t('automation.account.subscriptions.invoices.today')}</option>
+                <option value="first_day" key={v4()}>{t('automation.account.subscriptions.invoices.invoice_date_first_day_month')}</option>                
+              </Field>
+              <ErrorMessage name="invoiceDate" component="span" className="invalid-feedback" />
+            </Form.Group>
+          </Grid.Col>
+        </Grid.Row>
+        <Grid.Row>
+          <Grid.Col>
+            <Form.Group label={t('general.description')}>
+              <Field type="number" 
+                      name="description" 
+                      className={(errors.description) ? "form-control is-invalid" : "form-control"} 
+                      autoComplete="off" />
+              <ErrorMessage name="description" component="span" className="invalid-feedback" />
             </Form.Group>
           </Grid.Col>
         </Grid.Row>

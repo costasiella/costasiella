@@ -12,4 +12,6 @@ export const AUTOMATION_ACCOUNT_SUBSCRIPTION_INVOICES_SCHEMA = Yup.object().shap
     .positive()
     .min(1)
     .max(12),
+  description: Yup.string()
+    .required(),
   })
