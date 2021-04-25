@@ -79,14 +79,6 @@ function AccountSubscriptionEditAltPriceForm ({
                     className={(errors.description) ? "form-control is-invalid" : "form-control"} 
                     autoComplete="off" />
             <ErrorMessage name="description" component="span" className="invalid-feedback" />
-            {/* <Editor
-                textareaName="description"
-                initialValue={values.description}
-                init={tinymceBasicConf}
-                onChange={(e) => setFieldValue("description", e.target.getContent())}
-                onBlur={() => setFieldTouched("description", true)}
-              />
-            <ErrorMessage name="description" component="span" className="invalid-feedback" /> */}
           </Form.Group>
           </Grid.Col>
         </Grid.Row>
