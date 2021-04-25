@@ -1728,7 +1728,12 @@
                     "title": "__STRING_NOT_TRANSLATED__",
                     "explanation": "__STRING_NOT_TRANSLATED__",
                     "title_card": "__STRING_NOT_TRANSLATED__",
-                    "empty_list": "__STRING_NOT_TRANSLATED__"
+                    "empty_list": "__STRING_NOT_TRANSLATED__",
+                    "title_add": "__STRING_NOT_TRANSLATED__",
+                    "toast_add_success": "__STRING_NOT_TRANSLATED__",
+                    "invoice_date": "__STRING_NOT_TRANSLATED__",
+                    "today": "__STRING_NOT_TRANSLATED__",
+                    "invoice_date_first_day_month": "__STRING_NOT_TRANSLATED__"
                 }
             }
         },
