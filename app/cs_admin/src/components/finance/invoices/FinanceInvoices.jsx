@@ -159,11 +159,12 @@ function FinanceInvoices({ t, location, history }) {
                                     {node.balanceDisplay}
                                   </Table.Col>
                                   <Table.Col className="text-right" key={v4()}>
-                                    <Button className='btn-sm' 
-                                            onClick={() => history.push("/finance/invoices/edit/" + node.id)}
-                                            color="secondary">
-                                      {t('general.edit')}
-                                    </Button>
+                                    <Link to={"/finance/invoices/edit/" + node.id}>
+                                      <Button className='btn-sm' 
+                                              color="secondary">
+                                        {t('general.edit')}
+                                      </Button>
+                                    </Link>
                                   </Table.Col>
                                   <Mutation mutation={DELETE_FINANCE_INVOICE} key={v4()}>
                                     {(deleteFinanceInvoice, { data }) => (
