@@ -52,20 +52,13 @@ class TaskAccountSubscriptionInvoices(TestCase):
             invoice_date="first_of_month"
         )
 
-        # Check if invoice was created
-        invoices = models.FinanceInvoice.objects.all()
-        print("###")
-        print(invoices)
-        print("!!!")
+        # Check that an invoice was created
+        invoice = models.FinanceInvoice.objects.all().first()
+        self.assertEqual(invoice.date_sent, date_start)
 
-
-
-# Subscription should be created when subscription is blocked
-
-# No subscription should be created when subscription is paused
-
-# Alt. price should be applied
-
-# Other description should be applied
-
-# Check invoice creation date (today or first_of_month)
+        # Assert main points of invoice item are correct
+        first_item = invoice.items.all().first()
+        self.assertEqual(first_item.price, price.price)
+        self.assertEqual(first_item.account_subscription, account_subscription)
+        self.assertEqual(first_item.subscription_year, date_start.year)
+        self.assertEqual(first_item.subscription_month, date_start.month)
