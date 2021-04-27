@@ -50,7 +50,12 @@ class FinanceInvoice(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.invoice_number
+        field_values = ["FinanceInvoice:", "--------"]
+        for field in self._meta.get_fields():
+            field_values.append(": ".join([field.name, str(getattr(self, field.name, ''))]))
+            # field_values.append(str(getattr(self, field.name, '')))
+        field_values.append("--------")
+        return '\n'.join(field_values)
 
     def _set_relation_info(self):
         """ Set relation info from linked account """
