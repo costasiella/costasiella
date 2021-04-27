@@ -1,0 +1,121 @@
+# This file holds tests for the finance invoice model as it has code to create invoice items
+# These invoice items will change depending on values set in the database and should therefore be tested to be sure
+# that the correct values are being set for the new invoice items.
+
+# from graphql.error.located_error import GraphQLLocatedError
+import graphql
+import base64
+import datetime
+
+from django.contrib.auth import get_user_model
+from django.test import TestCase
+from graphene.test import Client
+from graphql_relay import to_global_id
+from ..modules.date_tools import last_day_month
+
+# Create your tests here.
+from django.db.models import Sum
+from django.contrib.auth.models import AnonymousUser, Permission
+from django.utils import timezone
+
+from . import factories as f
+from .helpers import execute_test_client_api_query
+from .. import models
+from .. import schema
+
+from ..tasks.account.subscription.invoices.tasks import account_subscription_invoices_add_for_month
+
+
+class TestModelAccountSubscription(TestCase):
+    fixtures = [
+        'app_settings.json',
+        'finance_invoice_group.json',
+        'finance_invoice_group_defaults.json',
+        'finance_payment_methods.json'
+    ]
+
+    # https://docs.djangoproject.com/en/2.1/topics/testing/overview/
+    def setUp(self):
+        # This is run before every test
+        self.admin_user = f.AdminUserFactory.create()
+        self.anon_user = AnonymousUser()
+
+    def tearDown(self):
+        # This is run after every test
+        pass
+
+    def test_create_invoice_for_month(self):
+        """ Test Add regular subscription item - default values"""
+        today = timezone.now().date()
+
+        account_subscription = f.AccountSubscriptionFactory.create()
+        account = account_subscription.account
+        organization_subscription = account_subscription.organization_subscription
+        price = f.OrganizationSubscriptionPriceFactory(organization_subscription=organization_subscription)
+        finance_invoice_group = models.FinanceInvoiceGroup.objects.get(pk=100)  # 100 = default
+
+        date_start = account_subscription.date_start
+
+        # Create an invoice with date today for first month of subscription
+        account_subscription.create_invoice_for_month(
+            year=date_start.year,
+            month=date_start.month,
+        )
+
+        # Check if invoice was created
+        invoice = models.FinanceInvoice.objects.all().first()
+        sums = models.FinanceInvoiceItem.objects.filter(finance_invoice=invoice).aggregate(
+            Sum('subtotal'), Sum('tax'), Sum('total')
+        )
+
+        subtotal = sums['subtotal__sum'] or 0
+        tax = sums['tax__sum'] or 0
+        total = sums['total__sum'] or 0
+
+        # Check invoice fields
+        self.assertEqual(invoice.summary, "Subscription invoice %s-%s" % (date_start.year, date_start.month))
+        self.assertEqual(invoice.relation_contact_name, account.full_name)
+        self.assertEqual(invoice.status, "SENT")
+        self.assertEqual(invoice.invoice_number, "INV%s1" % today.year)
+        self.assertEqual(invoice.date_sent, today)
+        self.assertEqual(invoice.date_due, today + datetime.timedelta(days=finance_invoice_group.due_after_days))
+        self.assertEqual(invoice.total, total)
+        self.assertEqual(invoice.tax, tax)
+        self.assertEqual(invoice.subtotal, subtotal)
+        self.assertEqual(invoice.balance, total)
+
+        # Check invoice item
+        invoice_item = invoice.items.all().first()
+
+        self.assertEqual(invoice_item.account_subscription, account_subscription)
+        self.assertEqual(invoice_item.subscription_year, date_start.year)
+        self.assertEqual(invoice_item.subscription_month, date_start.month)
+        self.assertEqual(invoice_item.line_number, 0)
+        self.assertEqual(invoice_item.product_name, "Subscription %s" % account_subscription.id)
+        self.assertEqual(invoice_item.description, "%s [%s - %s]" % (
+            organization_subscription.name,
+            date_start,
+            str(datetime.date(date_start.year, date_start.month, last_day_month(date_start)))
+        ))
+        self.assertEqual(invoice_item.quantity, 1)
+        self.assertEqual(invoice_item.price, price.price)
+        self.assertEqual(float(invoice_item.tax), round(invoice_item._calculate_tax(), 2))
+        self.assertEqual(float(invoice_item.subtotal), round(invoice_item._calculate_subtotal(), 2))
+        self.assertEqual(float(invoice_item.total), round(invoice_item._calculate_total(), 2))
+        self.assertEqual(invoice_item.finance_tax_rate, price.finance_tax_rate)
+        self.assertEqual(invoice_item.finance_costcenter, organization_subscription.finance_costcenter)
+        self.assertEqual(invoice_item.finance_glaccount, organization_subscription.finance_glaccount)
+
+# Check registration fee was added, if set for subscription
+
+# Invoice should be created when subscription is blocked
+
+# No subscription should be created when subscription is paused
+
+# Alt. price should be applied
+
+# Other description should be applied
+
+# Check invoice creation date (today or first_of_month)
+
+# Test billable period
