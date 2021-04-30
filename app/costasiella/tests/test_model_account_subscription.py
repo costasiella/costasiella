@@ -106,7 +106,73 @@ class TestModelAccountSubscription(TestCase):
         self.assertEqual(invoice_item.finance_costcenter, organization_subscription.finance_costcenter)
         self.assertEqual(invoice_item.finance_glaccount, organization_subscription.finance_glaccount)
 
-# Check registration fee was added, if set for subscription
+    def test_create_invoice_for_month_add_registration_fee(self):
+        """ Check registration fee was added, if set for subscription """
+        today = timezone.now().date()
+
+        account_subscription = f.AccountSubscriptionFactory.create()
+        account = account_subscription.account
+        organization_subscription = account_subscription.organization_subscription
+        price = f.OrganizationSubscriptionPriceFactory(organization_subscription=organization_subscription)
+        finance_invoice_group = models.FinanceInvoiceGroup.objects.get(pk=100)  # 100 = default
+
+        date_start = account_subscription.date_start
+
+        # Create an invoice with date today for first month of subscription
+        account_subscription.create_invoice_for_month(
+            year=date_start.year,
+            month=date_start.month,
+        )
+
+        # Check if invoice was created
+        invoice = models.FinanceInvoice.objects.all().first()
+
+        # Check invoice fields
+        self.assertEqual(invoice.summary, "Subscription invoice %s-%s" % (date_start.year, date_start.month))
+
+        # Check invoice item
+        invoice_item = invoice.items.all()[1]
+        print(invoice_item)
+
+        self.assertEqual(invoice_item.line_number, 1)
+        self.assertEqual(invoice_item.product_name, "Registration fee")
+        self.assertEqual(invoice_item.description, "One time registration fee")
+        self.assertEqual(invoice_item.quantity, 1)
+        self.assertEqual(invoice_item.price, organization_subscription.registration_fee)
+
+        # Re-fetch account subscription and check registration fee is set to paid
+        account_subscription = models.AccountSubscription.objects.get(pk=account_subscription.id)
+        self.assertEqual(account_subscription.registration_fee_paid, True)
+
+    def test_create_invoice_for_month_add_registration_fee_not_added(self):
+        """ Check registration fee was added, if set for subscription, but already paid """
+        today = timezone.now().date()
+
+        account_subscription = f.AccountSubscriptionFactory.create()
+        account_subscription.registration_fee_paid = True
+        account_subscription.save()
+        account = account_subscription.account
+        organization_subscription = account_subscription.organization_subscription
+        price = f.OrganizationSubscriptionPriceFactory(organization_subscription=organization_subscription)
+        finance_invoice_group = models.FinanceInvoiceGroup.objects.get(pk=100)  # 100 = default
+
+        date_start = account_subscription.date_start
+
+        # Create an invoice with date today for first month of subscription
+        account_subscription.create_invoice_for_month(
+            year=date_start.year,
+            month=date_start.month,
+        )
+
+        # Check if invoice was created
+        invoice = models.FinanceInvoice.objects.all().first()
+
+        # Check invoice fields
+        self.assertEqual(invoice.summary, "Subscription invoice %s-%s" % (date_start.year, date_start.month))
+
+        # Check only one invoice item (no item for registration fee)
+        self.assertEqual(len(invoice.items.all()), 1)
+
 
 # Invoice should be created when subscription is blocked
 
