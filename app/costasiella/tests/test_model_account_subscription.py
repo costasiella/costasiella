@@ -320,8 +320,55 @@ class TestModelAccountSubscription(TestCase):
         self.assertEqual(first_item.description, alt_price.description)
         self.assertEqual(first_item.total, alt_price.amount)
 
-# Other description should be applied
+    def test_create_invoice_description(self):
+        """ An invoice should apply an alt price if defined """
+        account_subscription = f.AccountSubscriptionFactory.create()
+        account = account_subscription.account
+        organization_subscription = account_subscription.organization_subscription
+        price = f.OrganizationSubscriptionPriceFactory(organization_subscription=organization_subscription)
+        finance_invoice_group = models.FinanceInvoiceGroup.objects.get(pk=100)  # 100 = default
 
-# Check invoice creation date (today or first_of_month)
+        date_start = account_subscription.date_start
 
-# Test billable period
+        # Create an invoice with date today for first month of subscription
+        description = "description"
+        account_subscription.create_invoice_for_month(
+            year=date_start.year,
+            month=date_start.month,
+            description=description
+        )
+
+        # Check if invoice was created
+        invoice = models.FinanceInvoice.objects.all().first()
+        sums = models.FinanceInvoiceItem.objects.filter(finance_invoice=invoice).aggregate(
+            Sum('subtotal'), Sum('tax'), Sum('total')
+        )
+
+        # Check invoice fields
+        self.assertEqual(invoice.summary, "Subscription invoice %s-%s" % (date_start.year, date_start.month))
+
+        # Check item description
+        first_item = invoice.items.all().first()
+        self.assertEqual(first_item.description, description)
+
+    def test_create_invoice_description(self):
+        """ An invoice should apply an alt price if defined """
+        account_subscription = f.AccountSubscriptionFactory.create()
+        account = account_subscription.account
+        organization_subscription = account_subscription.organization_subscription
+        price = f.OrganizationSubscriptionPriceFactory(organization_subscription=organization_subscription)
+        finance_invoice_group = models.FinanceInvoiceGroup.objects.get(pk=100)  # 100 = default
+
+        date_start = account_subscription.date_start
+
+        # Create an invoice with date today for first month of subscription
+        description = "description"
+        account_subscription.create_invoice_for_month(
+            year=date_start.year,
+            month=date_start.month,
+            invoice_date="first_of_month"
+        )
+
+        # Check if invoice was created
+        invoice = models.FinanceInvoice.objects.all().first()
+        self.assertEqual(invoice.date_sent, date_start)
