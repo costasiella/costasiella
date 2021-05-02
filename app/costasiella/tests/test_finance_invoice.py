@@ -576,7 +576,7 @@ class GQLFinanceInvoice(TestCase):
         account_subscription = f.AccountSubscriptionFactory.create()
         account = account_subscription.account
         organization_subscription_price = f.OrganizationSubscriptionPriceFactory(
-            initial_organization_subscription=account_subscription.organization_subscription
+            organization_subscription=account_subscription.organization_subscription
         )
         variables = self.variables_create
         variables['input']['account'] = to_global_id('AccountNode', account.id)
