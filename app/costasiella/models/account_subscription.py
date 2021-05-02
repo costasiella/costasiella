@@ -52,7 +52,7 @@ class AccountSubscription(models.Model):
 
         # Check pause
         qs_pause = AccountSubscriptionPause.objects.filter(
-            Q(id=self.id) &
+            Q(account_subscription=self) &
             Q(date_start__lte=last_day_month) &
             (Q(date_end__gte=first_day_month) | Q(date_end__isnull=True)),
         )
