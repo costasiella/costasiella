@@ -85,4 +85,9 @@ class OrganizationSubscription(models.Model):
             return None
 
     def __str__(self):
-        return self.name
+        field_values = ["OrganizationSubscription:", "--------"]
+        for field in self._meta.get_fields():
+            field_values.append(": ".join([field.name, str(getattr(self, field.name, ''))]))
+            # field_values.append(str(getattr(self, field.name, '')))
+        field_values.append("--------")
+        return '\n'.join(field_values)

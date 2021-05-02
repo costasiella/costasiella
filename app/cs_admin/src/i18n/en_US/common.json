@@ -1709,7 +1709,7 @@
             "subscriptions": {
                 "title": "Account subscriptions",
                 "credits": {
-                    "title": "Add credits",
+                    "title": "Subscription credits",
                     "explanation": "Add monthly credits for all active subscriptions.",
                     "empty_list": "This task hasn't run before.",
                     "toast_add_success": "Started adding credits...",
@@ -1723,6 +1723,17 @@
                     "toast_add_success": "Started collecting subscription payments...",
                     "title_card": "Mollie subscription payment collection result",
                     "empty_list": "This task hasn't run before."
+                },
+                "invoices": {
+                    "title": "Subscription invoices",
+                    "explanation": "Create monthly invoices for all active subscriptions.",
+                    "title_card": "Monthly invoice creation result",
+                    "empty_list": "This task hasn't run before.",
+                    "title_add": "Create subscription invoices for month",
+                    "toast_add_success": "Started creating susbcription invoices...",
+                    "invoice_date": "Invoice date",
+                    "today": "Today",
+                    "invoice_date_first_day_month": "1st of chosen month"
                 }
             }
         },

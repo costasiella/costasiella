@@ -27,6 +27,8 @@ import HomeHome from './components/home/home/HomeHome'
 
 import AutomationHome from './components/automation/home/AutomationHome'
 import AutomationAccountSubscriptionCredits from './components/automation/account/subscription/credits/AutomationAccountSubscriptionCredits'
+import AutomationAccountSubscriptionInvoices from './components/automation/account/subscription/invoices/AutomationAccountSubscriptionInvoices'
+import AutomationAccountSubscriptionInvoicesAdd from './components/automation/account/subscription/invoices/AutomationAccountSubscriptionInvoicesAdd'
 import AutomationAccountSubscriptionCreditAdd from './components/automation/account/subscription/credits/AutomationAccountSubscriptionCreditAdd'
 import AutomationAccountSubscriptionMollieCollections 
   from './components/automation/account/subscription/mollie_collection/AutomationAccountSubscriptionMollieCollections'
@@ -336,6 +338,10 @@ function AppRoot({ t }) {
                                 component={AutomationAccountSubscriptionCredits} />
             <PrivateRoute exact path="/automation/account/subscriptions/credits/add" 
                                 component={AutomationAccountSubscriptionCreditAdd} />
+            <PrivateRoute exact path="/automation/account/subscriptions/invoices" 
+                                component={AutomationAccountSubscriptionInvoices} />    
+            <PrivateRoute exact path="/automation/account/subscriptions/invoices/add" 
+                                component={AutomationAccountSubscriptionInvoicesAdd} />    
             <PrivateRoute exact path="/automation/account/subscriptions/mollie_collections" 
                                 component={AutomationAccountSubscriptionMollieCollections} />
             <PrivateRoute exact path="/automation/account/subscriptions/mollie_collections/add" 

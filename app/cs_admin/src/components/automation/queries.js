@@ -22,7 +22,6 @@ query TaskResults($before: String, $after: String, $taskName:String) {
         result
         dateDone
         traceback
-        hidden
         meta
       }
     }

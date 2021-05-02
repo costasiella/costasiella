@@ -234,6 +234,40 @@ class CreateAccountSubscriptionInvoicesMonth(graphene.relay.ClientIDMutation):
         return CreateAccountSubscriptionInvoicesMonth(ok=ok)
 
 
+class CreateAccountSubscriptionInvoicesForMonth(graphene.relay.ClientIDMutation):
+    class Input:
+        year = graphene.Int()
+        month = graphene.Int()
+        description = graphene.String()
+        invoice_date = graphene.String()
+
+    ok = graphene.Boolean()
+
+    @classmethod
+    def mutate_and_get_payload(self, root, info, **input):
+        from costasiella.tasks import account_subscription_invoices_add_for_month
+
+        user = info.context.user
+        require_login_and_permission(user, 'costasiella.add_financeinvoice')
+
+        print(input)
+        year = input['year']
+        month = input['month']
+        description = input['description']
+        invoice_date = input['invoice_date']
+
+        task = account_subscription_invoices_add_for_month.delay(
+            year=year,
+            month=month,
+            invoice_date=invoice_date,
+            description=description
+        )
+        print(task)
+        ok = True
+
+        return CreateAccountSubscriptionInvoicesForMonth(ok=ok)
+
+
 class CreateAccountSubscriptionInvoicesMollieCollectionForMonth(graphene.relay.ClientIDMutation):
     class Input:
         year = graphene.Int()
@@ -261,6 +295,8 @@ class CreateAccountSubscriptionInvoicesMollieCollectionForMonth(graphene.relay.C
 
 class AccountSubscriptionMutation(graphene.ObjectType):
     create_account_subscription = CreateAccountSubscription.Field()
+    create_account_subscription_invoices_for_month = \
+        CreateAccountSubscriptionInvoicesForMonth.Field()
     create_account_subscription_invoices_mollie_collection_for_month = \
         CreateAccountSubscriptionInvoicesMollieCollectionForMonth.Field()
     delete_account_subscription = DeleteAccountSubscription.Field()

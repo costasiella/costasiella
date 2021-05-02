@@ -50,7 +50,12 @@ class FinanceInvoice(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.invoice_number
+        field_values = ["FinanceInvoice:", "--------"]
+        for field in self._meta.get_fields():
+            field_values.append(": ".join([field.name, str(getattr(self, field.name, ''))]))
+            # field_values.append(str(getattr(self, field.name, '')))
+        field_values.append("--------")
+        return '\n'.join(field_values)
 
     def _set_relation_info(self):
         """ Set relation info from linked account """
@@ -67,7 +72,9 @@ class FinanceInvoice(models.Model):
         from .finance_invoice_payment import FinanceInvoicePayment
         from django.db.models import Sum
 
-        sums = FinanceInvoiceItem.objects.filter(finance_invoice = self).aggregate(Sum('subtotal'), Sum('tax'), Sum('total'))
+        sums = FinanceInvoiceItem.objects.filter(finance_invoice=self).aggregate(
+            Sum('subtotal'), Sum('tax'), Sum('total')
+        )
 
         self.subtotal = sums['subtotal__sum'] or 0
         self.tax = sums['tax__sum'] or 0
@@ -250,6 +257,7 @@ class FinanceInvoice(models.Model):
 
         finance_tax_rate = organization_subscription.get_finance_tax_rate_on_date(first_day_month)
 
+        # Set default description
         if not description:
             description = "{subscription_name} [{p_start} - {p_end}]".format(
                 subscription_name=organization_subscription.name,

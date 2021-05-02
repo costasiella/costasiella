@@ -30,10 +30,10 @@ import { toast } from 'react-toastify'
 import ContentCard from "../../../../general/ContentCard"
 
 import { GET_TASK_RESULT_QUERY } from "../../../queries"
-import AutomationAccountSubscriptionCreditsBase from './AutomationAccountSubscriptionCreditsBase'
+import AutomationAccountSubscriptionInvoicesBase from './AutomationAccountSubscriptionInvoicesBase'
 import AutomationTaskResultStatus from "../../../AutomationTaskResultStatus"
 
-// const ARCHIVE_LEVEL = gql`
+// const ARCHIVE_LEVEL = gql`h
 //   mutation ArchiveOrganizationLevel($input: ArchiveOrganizationLevelInput!) {
 //     archiveOrganizationLevel(input: $input) {
 //       organizationLevel {
@@ -44,18 +44,18 @@ import AutomationTaskResultStatus from "../../../AutomationTaskResultStatus"
 //   }
 // `
 
-function AutomationAccountSubscriptionCredits({t, history, match}) {
+function AutomationAccountSubscriptionInvoices({t, history, match}) {
   const appSettings = useContext(AppSettingsContext)
   const dateTimeFormatMoment = appSettings.dateTimeFormatMoment
 
   const { error, loading, data, fetchMore } = useQuery(GET_TASK_RESULT_QUERY, {
     variables: {
-      taskName: "costasiella.tasks.account.subscription.credits.tasks.account_subscription_credits_add_for_month"
+      taskName: "costasiella.tasks.account.subscription.invoices.tasks.account_subscription_invoices_add_for_month"
     }
   })
 
   const headerOptions = <Card.Options>
-    <Link to={"/automation/account/subscriptions/credits/add"}>
+    <Link to={"/automation/account/subscriptions/invoices/add"}>
       <Button color="primary" 
               size="sm"
       >
@@ -67,21 +67,21 @@ function AutomationAccountSubscriptionCredits({t, history, match}) {
 
   // Loading
   if (loading) return (
-    <AutomationAccountSubscriptionCreditsBase>
+    <AutomationAccountSubscriptionInvoicesBase>
       <p>{t('general.loading_with_dots')}</p>
-    </AutomationAccountSubscriptionCreditsBase>
+    </AutomationAccountSubscriptionInvoicesBase>
   )
   // Error
   if (error) {
     console.log(error)
     return (
-      <AutomationAccountSubscriptionCreditsBase>
+      <AutomationAccountSubscriptionInvoicesBase>
         <p>{t('general.error_sad_smiley')}</p>
-      </AutomationAccountSubscriptionCreditsBase>
+      </AutomationAccountSubscriptionInvoicesBase>
     )
   }
 
-  console.log("Automation credits data:")
+  console.log("Automation invoices data:")
   console.log(data)
   const taskResults = data.djangoCeleryResultTaskResults
   // const account = data.account
@@ -89,9 +89,9 @@ function AutomationAccountSubscriptionCredits({t, history, match}) {
   
 
   return (
-    <AutomationAccountSubscriptionCreditsBase>
+    <AutomationAccountSubscriptionInvoicesBase>
       <ContentCard 
-        cardTitle={t('automation.account.subscriptions.credits.title_card')}
+        cardTitle={t('automation.account.subscriptions.invoices.title_card')}
         pageInfo={taskResults.pageInfo}
         headerContent={headerOptions}
         onLoadMore={() => {
@@ -120,7 +120,7 @@ function AutomationAccountSubscriptionCredits({t, history, match}) {
         >
           { (!taskResults.edges.length) ? 
             // Empty list
-            <p>{t('automation.account.subscriptions.credits.empty_list')}</p>
+            <p>{t('automation.account.subscriptions.invoices.empty_list')}</p>
             :
             // Content
             <Table>
@@ -157,8 +157,8 @@ function AutomationAccountSubscriptionCredits({t, history, match}) {
             </Table>
           }
         </ContentCard>
-    </AutomationAccountSubscriptionCreditsBase>
+    </AutomationAccountSubscriptionInvoicesBase>
   )
 }
 
-export default withTranslation()(withRouter(AutomationAccountSubscriptionCredits))
+export default withTranslation()(withRouter(AutomationAccountSubscriptionInvoices))

@@ -16,7 +16,6 @@ from .. import models
 from .. import schema
 
 
-
 class GQLAccountSubscription(TestCase):
     # https://docs.djangoproject.com/en/2.1/topics/testing/overview/
     def setUp(self):
