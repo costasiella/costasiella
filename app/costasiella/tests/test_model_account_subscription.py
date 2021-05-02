@@ -173,10 +173,43 @@ class TestModelAccountSubscription(TestCase):
         # Check only one invoice item (no item for registration fee)
         self.assertEqual(len(invoice.items.all()), 1)
 
+    def test_create_invoice_for_month_blocked(self):
+        """ Check invoice is created when subscription is blocked """
+        subscription_block = f.AccountSubscriptionBlockFactory.create()
+        account_subscription = subscription_block.account_subscription
+        account = account_subscription.account
+        organization_subscription = account_subscription.organization_subscription
+        price = f.OrganizationSubscriptionPriceFactory(organization_subscription=organization_subscription)
+        finance_invoice_group = models.FinanceInvoiceGroup.objects.get(pk=100)  # 100 = default
 
-# Invoice should be created when subscription is blocked
+        date_start = account_subscription.date_start
 
-# No subscription should be created when subscription is paused
+        # Create an invoice with date today for first month of subscription
+        account_subscription.create_invoice_for_month(
+            year=date_start.year,
+            month=date_start.month,
+        )
+
+        # Check if invoice was created
+        invoice = models.FinanceInvoice.objects.all().first()
+        sums = models.FinanceInvoiceItem.objects.filter(finance_invoice=invoice).aggregate(
+            Sum('subtotal'), Sum('tax'), Sum('total')
+        )
+
+        subtotal = sums['subtotal__sum'] or 0
+        tax = sums['tax__sum'] or 0
+        total = sums['total__sum'] or 0
+
+        # Check invoice fields
+        self.assertEqual(invoice.summary, "Subscription invoice %s-%s" % (date_start.year, date_start.month))
+        self.assertEqual(invoice.relation_contact_name, account.full_name)
+        self.assertEqual(invoice.status, "SENT")
+        self.assertEqual(invoice.total, total)
+        self.assertEqual(invoice.tax, tax)
+        self.assertEqual(invoice.subtotal, subtotal)
+        self.assertEqual(invoice.balance, total)
+
+# No invoice should be created when subscription is paused
 
 # Alt. price should be applied
 
