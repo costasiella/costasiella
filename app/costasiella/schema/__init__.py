@@ -29,6 +29,7 @@ from .finance_invoice_payment import FinanceInvoicePaymentQuery, FinanceInvoiceP
 from .finance_order import FinanceOrderQuery, FinanceOrderMutation
 from .finance_order_payment_link import FinanceOrderPaymentLinkMutation
 from .finance_order_item import FinanceOrderItemQuery
+from .finance_payment_batch_category import FinancePaymentBatchCategoryQuery, FinancePaymentBatchCategoryMutation
 from .finance_payment_method import FinancePaymentMethodQuery, FinancePaymentMethodMutation
 from .finance_tax_rate import FinanceTaxRateQuery, FinanceTaxRateMutation
 
@@ -97,6 +98,7 @@ class Query(AccountQuery,
             FinanceInvoicePaymentQuery,
             FinanceOrderQuery,
             FinanceOrderItemQuery,
+            FinancePaymentBatchCategoryQuery,
             FinancePaymentMethodQuery,
             FinanceTaxRateQuery,
             InsightClasspassesQuery,
@@ -159,6 +161,7 @@ class Mutation(AccountMutation,
                FinanceInvoicePaymentMutation,
                FinanceOrderMutation,
                FinanceOrderPaymentLinkMutation,
+               FinancePaymentBatchCategoryMutation,
                FinancePaymentMethodMutation,
                FinanceTaxRateMutation,
                OrganizationMutation,
