@@ -170,6 +170,9 @@
             "toast_edit_success": "Saved status",
             "customer_message": "Customer message",
             "set_status_to_delivered_to_deliver_manually": "Change the status to 'Delivered' to manually deliver the order and create an invoice."
+        },
+        "payment_batch_categories": {
+            "title": "Payment Batch Categories"
         }
     },
     "general": {

@@ -509,6 +509,9 @@
             "empty_list": "__STRING_NOT_TRANSLATED__",
             "empty_archive": "__STRING_NOT_TRANSLATED__",
             "add": "__STRING_NOT_TRANSLATED__"
+        },
+        "payment_batch_categories": {
+            "title": "__STRING_NOT_TRANSLATED__"
         }
     },
     "shop": {
