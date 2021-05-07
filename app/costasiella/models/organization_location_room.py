@@ -1,8 +1,8 @@
 from django.db import models
 from .organization_location import OrganizationLocation
 
-# Create your models here.
 
+# Create your models here.
 class OrganizationLocationRoom(models.Model):
     organization_location = models.ForeignKey(OrganizationLocation, on_delete=models.CASCADE)
     archived = models.BooleanField(default=False)
@@ -11,4 +11,3 @@ class OrganizationLocationRoom(models.Model):
 
     def __str__(self):
         return self.organization_location.name + ' ' + 'Room' + ': ' + self.name
-    
