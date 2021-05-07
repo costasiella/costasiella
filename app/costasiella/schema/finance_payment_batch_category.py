@@ -15,7 +15,7 @@ m = Messages()
 class FinancePaymentBatchCategoryNode(DjangoObjectType):
     class Meta:
         model = FinancePaymentBatchCategory
-        filter_fields = ['archived']
+        filter_fields = ['archived', 'batch_category_type']
         interfaces = (graphene.relay.Node, )
 
     @classmethod
