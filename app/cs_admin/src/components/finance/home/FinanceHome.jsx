@@ -3,6 +3,7 @@
 import React, {Component } from 'react'
 import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
+import { Link } from "react-router-dom"
 
 import {
   Page,
@@ -74,9 +75,9 @@ class FinanceHome extends Component {
                   <HasPermissionWrapper permission="view"
                               resource="financepaymentbatchcategory">
                     <Grid.Col md={4} lg={4}>
-                      <div onClick={() => history.push('/finance/paymentbatchcategory')}>
+                      <Link to={'/finance/paymentbatchcategories'}>
                         <StampCard header={<small>{t('finance.payment_batch_categories.title')}</small>} footer={t('')} color="blue" icon="list" />
-                      </div>
+                      </Link>
                     </Grid.Col>
                   </HasPermissionWrapper>
                 </Grid.Row>
