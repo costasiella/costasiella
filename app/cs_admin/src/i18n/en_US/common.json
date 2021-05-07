@@ -172,7 +172,7 @@
             "set_status_to_delivered_to_deliver_manually": "Change the status to 'Delivered' to manually deliver the order and create an invoice."
         },
         "payment_batch_categories": {
-            "title": "Payment Batch Categories"
+            "title": "Payment batch categories"
         }
     },
     "general": {
