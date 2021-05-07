@@ -16,6 +16,7 @@ let costcenters_active
 let glaccounts_active
 let taxrates_active
 let payment_methods_active
+let payment_batch_categories_active
 
 const FinanceMenu = ({ t, active_link }) => (
     <List.Group transparent={true}>
@@ -25,6 +26,7 @@ const FinanceMenu = ({ t, active_link }) => (
         {(active_link === 'glaccounts') ? glaccounts_active = true: glaccounts_active = false}
         {(active_link === 'taxrates') ? taxrates_active = true: taxrates_active = false}
         {(active_link === 'payment_methods') ? payment_methods_active = true: payment_methods_active = false}
+        {(active_link === 'payment_batch_categories') ? payment_batch_categories_active = true: payment_batch_categories_active = false}
         
 
         <List.GroupItem
@@ -81,6 +83,18 @@ const FinanceMenu = ({ t, active_link }) => (
             >
             {t('finance.payment_methods.title')}
         </List.GroupItem>
+        <HasPermissionWrapper permission="view"
+                              resource="financepaymentbatchcategory">
+          <List.GroupItem
+              key={v4()}
+              className="d-flex align-items-center"
+              to="#/finance/paymentbatchcategories"
+              icon="list"
+              active={payment_batch_categories_active}
+              >
+              {t('finance.payment_batch_categories.title')}
+          </List.GroupItem>
+        </HasPermissionWrapper>
     </List.Group>
 );
 
