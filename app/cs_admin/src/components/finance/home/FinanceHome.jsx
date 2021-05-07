@@ -71,6 +71,14 @@ class FinanceHome extends Component {
                       <StampCard header={<small>{t('finance.payment_methods.title')}</small>} footer={t('')} color="blue" icon="credit-card" />
                     </div>
                   </Grid.Col>
+                  <HasPermissionWrapper permission="view"
+                              resource="financepaymentbatchcategory">
+                    <Grid.Col md={4} lg={4}>
+                      <div onClick={() => history.push('/finance/paymentbatchcategory')}>
+                        <StampCard header={<small>{t('finance.payment_batch_categories.title')}</small>} footer={t('')} color="blue" icon="list" />
+                      </div>
+                    </Grid.Col>
+                  </HasPermissionWrapper>
                 </Grid.Row>
               </Grid.Col>
               <Grid.Col md={3}>
