@@ -52,6 +52,7 @@ import FinanceInvoicePaymentAdd from './components/finance/invoices/payments/Fin
 import FinanceInvoicePaymentEdit from './components/finance/invoices/payments/FinanceInvoicePaymentEdit'
 import FinanceOrders from './components/finance/orders/FinanceOrders'
 import FinancePaymentBatchCategories from './components/finance/payment_batch_categories/FinancePaymentBatchCategories'
+import FinancePaymentBatchCategoryAdd from './components/finance/payment_batch_categories/FinancePaymentBatchCategoryAdd'
 import FinanceOrderEdit from './components/finance/orders/edit/FinanceOrderEdit'
 import FinancePaymentMethods from './components/finance/payment_methods/FinancePaymentMethods'
 import FinancePaymentMethodAdd from './components/finance/payment_methods/FinancePaymentMethodAdd'
@@ -368,6 +369,7 @@ function AppRoot({ t }) {
             <PrivateRoute exact path="/finance/orders" component={FinanceOrders} />
             <PrivateRoute exact path="/finance/orders/edit/:id" component={FinanceOrderEdit} />
             <PrivateRoute exact path="/finance/paymentbatchcategories" component={FinancePaymentBatchCategories} />
+            <PrivateRoute exact path="/finance/paymentbatchcategories/add" component={FinancePaymentBatchCategoryAdd} />
             <PrivateRoute exact path="/finance/paymentmethods" component={FinancePaymentMethods} />
             <PrivateRoute exact path="/finance/paymentmethods/add" component={FinancePaymentMethodAdd} />
             <PrivateRoute exact path="/finance/paymentmethods/edit/:id" component={FinancePaymentMethodEdit} />
