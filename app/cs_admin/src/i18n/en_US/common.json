@@ -172,7 +172,17 @@
             "set_status_to_delivered_to_deliver_manually": "Change the status to 'Delivered' to manually deliver the order and create an invoice."
         },
         "payment_batch_categories": {
-            "title": "Payment batch categories"
+            "title": "Payment batch categories",
+            "error_loading": "Error loading payment batch categories... :(",
+            "empty_archive": "No payment batch categories have been archived yet",
+            "empty_list": "No payment batch categories found...",
+            "batch_category_type": "Category type",
+            "add": "Add payment batch category",
+            "payment_batch_category_type": {
+                "COLLECTION": "Collection",
+                "PAYMENT": "Payment",
+                "NOT_FOUND": "Not found"
+            }
         }
     },
     "general": {
@@ -393,7 +403,9 @@
         "tools": "Tools",
         "email_contact": "Email contact",
         "email_billing": "Email billing",
-        "phone2": "Phone 2"
+        "phone2": "Phone 2",
+        "collection": "__STRING_NOT_TRANSLATED__",
+        "payment": "__STRING_NOT_TRANSLATED__"
     },
     "yup": {
         "min_len_3": "Please input at least 3 characters",

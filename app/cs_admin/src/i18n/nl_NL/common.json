@@ -217,7 +217,9 @@
         "tools": "__STRING_NOT_TRANSLATED__",
         "email_contact": "__STRING_NOT_TRANSLATED__",
         "email_billing": "__STRING_NOT_TRANSLATED__",
-        "phone2": "__STRING_NOT_TRANSLATED__"
+        "phone2": "__STRING_NOT_TRANSLATED__",
+        "collection": "__STRING_NOT_TRANSLATED__",
+        "payment": "__STRING_NOT_TRANSLATED__"
     },
     "settings": {
         "error_loading": "__STRING_NOT_TRANSLATED__",
@@ -511,7 +513,17 @@
             "add": "__STRING_NOT_TRANSLATED__"
         },
         "payment_batch_categories": {
-            "title": "__STRING_NOT_TRANSLATED__"
+            "title": "__STRING_NOT_TRANSLATED__",
+            "error_loading": "__STRING_NOT_TRANSLATED__",
+            "empty_archive": "__STRING_NOT_TRANSLATED__",
+            "empty_list": "__STRING_NOT_TRANSLATED__",
+            "batch_category_type": "__STRING_NOT_TRANSLATED__",
+            "add": "__STRING_NOT_TRANSLATED__",
+            "payment_batch_category_type": {
+                "COLLECTION": "__STRING_NOT_TRANSLATED__",
+                "PAYMENT": "__STRING_NOT_TRANSLATED__",
+                "NOT_FOUND": "__STRING_NOT_TRANSLATED__"
+            }
         }
     },
     "shop": {
