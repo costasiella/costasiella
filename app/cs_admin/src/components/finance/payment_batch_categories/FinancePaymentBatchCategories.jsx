@@ -24,10 +24,13 @@ import HasPermissionWrapper from "../../HasPermissionWrapper"
 // import { confirmAlert } from 'react-confirm-alert'; // Import
 import { toast } from 'react-toastify'
 
+import { get_list_query_variables } from "./tools"
+
 import FinancePaymentBatchCategory from "../../ui/FinancePaymentBatchCategory"
 import ContentCard from "../../general/ContentCard"
 import FinanceMenu from "../FinanceMenu"
 import FinancePaymentBatchCategoriesBase from "./FinancePaymentBatchCategoriesBase"
+import CSLS from "../../../tools/cs_local_storage"
 
 import { GET_PAYMENT_BATCH_CATEGORIES_QUERY } from "./queries"
 
@@ -42,24 +45,47 @@ const ARCHIVE_PAYMENT_BATCH_CATEGORY = gql`
   }
 `
 
-function FinancePaymentBatchCategories({t, history, archived=false}) {
+function FinancePaymentBatchCategories({t, history}) {
   const { loading, error, data, fetchMore, refetch } = useQuery(GET_PAYMENT_BATCH_CATEGORIES_QUERY, {
-    variables: {'archived': archived},
+    variables: get_list_query_variables(),
   })
 
+  // TODO: use local storage for archive buttons
   const headerOptions = <Card.Options>
-    <Button color={(!archived) ? 'primary': 'secondary'}  
+    <Button color={(localStorage.getItem(CSLS.FINANCE_PAYMENT_BATCH_CATEGORIES_SHOW_ARCHIVE) != "true") ? 'primary': 'secondary'}  
             size="sm"
-            onClick={() => {archived=false; refetch({archived});}}>
+            onClick={() => {
+              localStorage.setItem(CSLS.FINANCE_PAYMENT_BATCH_CATEGORIES_SHOW_ARCHIVE, false)
+              refetch(get_list_query_variables())
+            }
+    }>
       {t('general.current')}
     </Button>
-    <Button color={(archived) ? 'primary': 'secondary'} 
+    <Button color={(localStorage.getItem(CSLS.FINANCE_PAYMENT_BATCH_CATEGORIES_SHOW_ARCHIVE) === "true") ? 'primary': 'secondary'} 
             size="sm" 
             className="ml-2" 
-            onClick={() => {archived=true; refetch({archived});}}>
+            onClick={() => {
+              localStorage.setItem(CSLS.FINANCE_PAYMENT_BATCH_CATEGORIES_SHOW_ARCHIVE, true)
+              refetch(get_list_query_variables())
+            }
+    }>
       {t('general.archive')}
     </Button>
   </Card.Options>
+
+  // const headerOptions = <Card.Options>
+  //   <Button color={(!archived) ? 'primary': 'secondary'}  
+  //           size="sm"
+  //           onClick={() => {archived=false; refetch({'archived': archived});}}>
+  //     {t('general.current')}
+  //   </Button>
+  //   <Button color={(archived) ? 'primary': 'secondary'} 
+  //           size="sm" 
+  //           className="ml-2" 
+  //           onClick={() => {archived=true; refetch({'archived': archived});}}>
+  //     {t('general.archive')}
+  //   </Button>
+  // </Card.Options>
 
   // Loading
   if (loading) return (
@@ -87,7 +113,10 @@ function FinancePaymentBatchCategories({t, history, archived=false}) {
       <ContentCard cardTitle={t('finance.payment_batch_categories.title')}
                     headerContent={headerOptions}>
         <p>
-          {(!archived) ? t('finance.payment_batch_categories.empty_list') : t("finance.payment_batch_categories.empty_archive")}
+          { (localStorage.getItem(CSLS.FINANCE_PAYMENT_BATCH_CATEGORIES_SHOW_ARCHIVE === "true")) ? 
+              t("finance.payment_batch_categories.empty_archive") :
+              t('finance.payment_batch_categories.empty_list')
+          }
         </p>
       </ContentCard>
     </FinancePaymentBatchCategoriesBase>
@@ -126,7 +155,8 @@ function FinancePaymentBatchCategories({t, history, archived=false}) {
             <Table.Row key={v4()}>
               <Table.ColHeader>{t('general.name')}</Table.ColHeader>
               <Table.ColHeader>{t('finance.payment_batch_categories.batch_category_type')}</Table.ColHeader>
-              <Table.ColHeader>{t('general.description')}</Table.ColHeader>
+              <Table.ColHeader></Table.ColHeader>
+              <Table.ColHeader></Table.ColHeader>
             </Table.Row>
           </Table.Header>
           <Table.Body>
@@ -138,11 +168,16 @@ function FinancePaymentBatchCategories({t, history, archived=false}) {
                 <Table.Col key={v4()}>
                   <FinancePaymentBatchCategory categoryType={node.batchCategoryType} />
                 </Table.Col>
+                <Table.Col>
+                  Edit
+                </Table.Col>
+                <Table.Col>
+                  Delete
+                </Table.Col>
               </Table.Row>
             ))}
           </Table.Body>
         </Table>
-
       </ContentCard>
     </FinancePaymentBatchCategoriesBase>
   )
