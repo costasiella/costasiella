@@ -32,11 +32,11 @@ function FinancePaymentBatchCategoriesBase({t, history, children}) {
               <HasPermissionWrapper permission="add"
                                     resource="financepaymentmethod">
                 <Button color="primary btn-block mb-6"
-                        onClick={() => history.push("/finance/paymentmethods/add")}>
-                  <Icon prefix="fe" name="plus-circle" /> {t('finance.payment_methods.add')}
+                        onClick={() => history.push("/finance/paymentbatchcategories/add")}>
+                  <Icon prefix="fe" name="plus-circle" /> {t('finance.payment_batch_categories.add')}
                 </Button>
               </HasPermissionWrapper>
-              <FinanceMenu active_link='payment_methods'/>
+              <FinanceMenu active_link='payment_batch_categories'/>
             </Grid.Col>
           </Grid.Row>
         </Container>
