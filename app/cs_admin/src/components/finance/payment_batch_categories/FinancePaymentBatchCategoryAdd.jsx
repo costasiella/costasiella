@@ -1,7 +1,7 @@
 // @flow
 
 import React from 'react'
-import { Mutation } from "react-apollo";
+import { useMutation } from "react-apollo";
 import gql from "graphql-tag"
 import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
@@ -39,9 +39,12 @@ const ADD_PAYMENT_BATCH_CATEGORY = gql`
   }
 `
 
-const returnUrl = "/finance/paymentbatchcategories"
-
 function FinancePaymentBatchCategoryAdd({ t, history }) {
+  const returnUrl = "/finance/paymentbatchcategories"
+  const [addFinancePaymentBatchCategory] = useMutation(ADD_PAYMENT_BATCH_CATEGORY, {
+    onCompleted: () => history.push(returnUrl),
+  })
+
   return (
     <FinancePaymentBatchCategoriesBase>
       <Card>
@@ -49,13 +52,13 @@ function FinancePaymentBatchCategoryAdd({ t, history }) {
           <Card.Title>{t('finance.payment_methods.title_add')}</Card.Title>
         </Card.Header>
         <Formik
-          initialValues={{ name: '', code: '' }}
+          initialValues={{ name: '', batchCategoryType: "COLLECTION", description: '' }}
           // validationSchema={PAYMENT_METHOD_SCHEMA}
           onSubmit={(values, { setSubmitting }) => {
-            addLocation({ variables: {
+            addFinancePaymentBatchCategory({ variables: {
               input: {
                 name: values.name, 
-                paymentBatchType: values.paymentBatchType,
+                batchCategoryType: values.batchCategoryType,
                 description: values.description
               }
             }, refetchQueries: [
