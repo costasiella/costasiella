@@ -73,20 +73,6 @@ function FinancePaymentBatchCategories({t, history}) {
     </Button>
   </Card.Options>
 
-  // const headerOptions = <Card.Options>
-  //   <Button color={(!archived) ? 'primary': 'secondary'}  
-  //           size="sm"
-  //           onClick={() => {archived=false; refetch({'archived': archived});}}>
-  //     {t('general.current')}
-  //   </Button>
-  //   <Button color={(archived) ? 'primary': 'secondary'} 
-  //           size="sm" 
-  //           className="ml-2" 
-  //           onClick={() => {archived=true; refetch({'archived': archived});}}>
-  //     {t('general.archive')}
-  //   </Button>
-  // </Card.Options>
-
   // Loading
   if (loading) return (
     <FinancePaymentBatchCategoriesBase>
