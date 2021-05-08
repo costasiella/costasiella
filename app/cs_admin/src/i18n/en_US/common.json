@@ -182,7 +182,8 @@
                 "COLLECTION": "Collection",
                 "PAYMENT": "Payment",
                 "NOT_FOUND": "Not found"
-            }
+            },
+            "toast_add_success": "Added payment batch category"
         }
     },
     "general": {
@@ -404,8 +405,8 @@
         "email_contact": "Email contact",
         "email_billing": "Email billing",
         "phone2": "Phone 2",
-        "collection": "__STRING_NOT_TRANSLATED__",
-        "payment": "__STRING_NOT_TRANSLATED__"
+        "collection": "Collection",
+        "payment": "Payment"
     },
     "yup": {
         "min_len_3": "Please input at least 3 characters",
