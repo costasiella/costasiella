@@ -30,7 +30,7 @@ function FinancePaymentBatchCategoriesBase({t, history, children}) {
             </Grid.Col>
             <Grid.Col md={3}>
               <HasPermissionWrapper permission="add"
-                                    resource="financepaymentmethod">
+                                    resource="financepaymentbatchcategory">
                 <Button color="primary btn-block mb-6"
                         onClick={() => history.push("/finance/paymentbatchcategories/add")}>
                   <Icon prefix="fe" name="plus-circle" /> {t('finance.payment_batch_categories.add')}
