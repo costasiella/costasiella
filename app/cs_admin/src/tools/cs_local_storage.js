@@ -7,6 +7,7 @@ const cs_local_storage_keys = {
     FINANCE_INVOICES_FILTER_STATUS: 'costasiella:financeInvoicesFilterStatus',
     FINANCE_INVOICES_EDIT_RETURN: 'costasiella:financeInvoiceEditReturn',
     FINANCE_ORDERS_FILTER_STATUS: 'costasiella:financeOrdersFilterStatus',
+    FINANCE_PAYMENT_BATCH_CATEGORIES_SHOW_ARCHIVE: 'costasiella:financePaymentBatchCategoriesShowArchive',
     INSIGHT_CLASSPASSES_YEAR: 'costasiella:insightClasspassesYear',
     INSIGHT_SUBSCRIPTIONS_YEAR: 'costasiella:insightSubscriptionsYear',
     RELATIONS_ACCOUNTS_FILTER_TYPE: 'costasiella:relationsAccountsFilterType',
