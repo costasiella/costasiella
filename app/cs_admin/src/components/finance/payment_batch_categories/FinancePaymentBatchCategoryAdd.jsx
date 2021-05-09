@@ -49,7 +49,7 @@ function FinancePaymentBatchCategoryAdd({ t, history }) {
     <FinancePaymentBatchCategoriesBase>
       <Card>
         <Card.Header>
-          <Card.Title>{t('finance.payment_methods.title_add')}</Card.Title>
+          <Card.Title>{t('finance.payment_batch_categories.title_add')}</Card.Title>
         </Card.Header>
         <Formik
           initialValues={{ name: '', batchCategoryType: "COLLECTION", description: '' }}
