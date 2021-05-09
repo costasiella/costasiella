@@ -6,6 +6,7 @@ import gql from "graphql-tag"
 import { v4 } from "uuid"
 import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
+import { Link } from 'react-router-dom'
 
 
 import {
@@ -75,7 +76,7 @@ function FinancePaymentBatchCategories({t, history}) {
 
   // Loading
   if (loading) return (
-    <FinancePaymentBatchCategoriesBase>
+    <FinancePaymentBatchCategoriesBase showAdd={true}>
       <ContentCard cardTitle={t('finance.payment_batch_categories.title')}>
         <Dimmer active={true}
                 loader={true}>
@@ -85,7 +86,7 @@ function FinancePaymentBatchCategories({t, history}) {
   )
   // Error
   if (error) return (
-    <FinancePaymentBatchCategoriesBase>
+    <FinancePaymentBatchCategoriesBase showAdd={true}>
       <ContentCard cardTitle={t('finance.payment_batch_categories.title')}>
         <p>{t('finance.payment_batch_categories.error_loading')}</p>
       </ContentCard>
@@ -95,7 +96,7 @@ function FinancePaymentBatchCategories({t, history}) {
   let payment_batch_categories = data.financePaymentBatchCategories
   // Empty list
   if (!payment_batch_categories.edges.length) { return (
-    <FinancePaymentBatchCategoriesBase>
+    <FinancePaymentBatchCategoriesBase showAdd={true}>
       <ContentCard cardTitle={t('finance.payment_batch_categories.title')}
                     headerContent={headerOptions}>
         <p>
@@ -109,7 +110,7 @@ function FinancePaymentBatchCategories({t, history}) {
   )}
 
   return (
-    <FinancePaymentBatchCategoriesBase>
+    <FinancePaymentBatchCategoriesBase showAdd={true}>
       <ContentCard cardTitle={t('finance.payment_batch_categories.title')}
         headerContent={headerOptions}
         pageInfo={payment_batch_categories.pageInfo}
@@ -155,7 +156,12 @@ function FinancePaymentBatchCategories({t, history}) {
                   <FinancePaymentBatchCategory categoryType={node.batchCategoryType} />
                 </Table.Col>
                 <Table.Col>
-                  Edit
+                  <Link to={`/finance/paymentbatchcategories/edit/${node.id}`}>
+                    <Button className='btn-sm' 
+                            color="secondary">
+                      {t('general.edit')}
+                    </Button>
+                  </Link>
                 </Table.Col>
                 <Table.Col>
                   Delete
