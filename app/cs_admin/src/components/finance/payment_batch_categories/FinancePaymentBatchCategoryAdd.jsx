@@ -46,7 +46,7 @@ function FinancePaymentBatchCategoryAdd({ t, history }) {
   })
 
   return (
-    <FinancePaymentBatchCategoriesBase>
+    <FinancePaymentBatchCategoriesBase showBack={true}>
       <Card>
         <Card.Header>
           <Card.Title>{t('finance.payment_batch_categories.title_add')}</Card.Title>
@@ -80,6 +80,7 @@ function FinancePaymentBatchCategoryAdd({ t, history }) {
           >
           {({ isSubmitting, errors }) => (
               <FinancePaymentBatchCategoryForm
+                create={true}
                 isSubmitting={isSubmitting}
                 errors={errors}
                 returnUrl={returnUrl}
