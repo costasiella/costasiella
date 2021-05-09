@@ -16,7 +16,7 @@ import {
 } from "tabler-react"
 
 
-const FinancePaymentBatchCategoryForm = ({ t, history, isSubmitting, errors, values, returnUrl }) => (
+const FinancePaymentBatchCategoryForm = ({ t, history, isSubmitting, errors, values, returnUrl, create=false }) => (
   <FoForm>
       <Card.Body>
         <Grid.Row>
@@ -30,20 +30,23 @@ const FinancePaymentBatchCategoryForm = ({ t, history, isSubmitting, errors, val
             </Form.Group>
           </Grid.Col>
         </Grid.Row>
-        <Grid.Row>
-          <Grid.Col>
-            <Form.Group label={t('finance.payment_batch_categories.batch_category_type')}>
-              <Field component="select" 
-                      name="batchCategoryType" 
-                      className={(errors.batchCategoryType) ? "form-control is-invalid" : "form-control"} 
-                      autoComplete="off">
-                <option value="COLLECTION" key={v4()}>{t('general.collection')}</option>
-                <option value="PAYMENT" key={v4()}>{t('general.payment')}</option>
-              </Field>
-              <ErrorMessage name="batchCategoryType" component="span" className="invalid-feedback" />
-            </Form.Group>
-          </Grid.Col>
-        </Grid.Row>
+        {(create) ?
+          <Grid.Row>
+            <Grid.Col>
+              <Form.Group label={t('finance.payment_batch_categories.batch_category_type')}>
+                <Field component="select" 
+                        name="batchCategoryType" 
+                        className={(errors.batchCategoryType) ? "form-control is-invalid" : "form-control"} 
+                        autoComplete="off">
+                  <option value="COLLECTION" key={v4()}>{t('general.collection')}</option>
+                  <option value="PAYMENT" key={v4()}>{t('general.payment')}</option>
+                </Field>
+                <ErrorMessage name="batchCategoryType" component="span" className="invalid-feedback" />
+              </Form.Group>
+            </Grid.Col>
+          </Grid.Row> 
+          : ""
+        }
         <Grid.Row>
           <Grid.Col>
             <Form.Group label={t('general.description')}>
