@@ -9,17 +9,19 @@ import { Formik } from 'formik'
 import { toast } from 'react-toastify'
 
 import { GET_PAYMENT_BATCH_CATEGORIES_QUERY, GET_PAYMENT_BATCH_CATEGORY_QUERY } from './queries'
+import { get_list_query_variables } from './tools'
 // import { PAYMENT_METHOD_SCHEMA } from './yupSchema'
 
 
 
 import {
   Card,
+  Dimmer,
 } from "tabler-react";
 import HasPermissionWrapper from "../../HasPermissionWrapper"
 
 import FinancePaymentBatchCategoriesBase from './FinancePaymentBatchCategoriesBase'
-import FinancePaymentBatchCategoriesForm from './FinancePaymentBatchCategoriesForm'
+import FinancePaymentBatchCategoryForm from './FinancePaymentBatchCategoryForm'
 
 
 const UPDATE_PAYMENT_BATCH_CATEGORY = gql`
@@ -46,29 +48,32 @@ function FinancePaymentBatchCategoryEdit({ t, history, match }) {
   // Loading
   if (loading) return (
     <FinancePaymentBatchCategoriesBase>
-      <ContentCard cardTitle={t('finance.payment_batch_categories.title')}>
-        <Dimmer active={true}
-                loader={true}>
-        </Dimmer>
-      </ContentCard>
+      <Card cardTitle={t('finance.payment_batch_categories.title')}>
+        <Card.Body>
+          <Dimmer active={true}
+                  loader={true} />
+        </Card.Body>
+      </Card>
     </FinancePaymentBatchCategoriesBase>
   )
   // Error
   if (error) return (
     <FinancePaymentBatchCategoriesBase>
-      <ContentCard cardTitle={t('finance.payment_batch_categories.title')}>
-        <p>{t('finance.payment_batch_categories.error_loading')}</p>
-      </ContentCard>
-      </FinancePaymentBatchCategoriesBase>
+      <Card cardTitle={t('finance.payment_batch_categories.title')}>
+        <Card.Body>
+          <p>{t('finance.payment_batch_categories.error_loading')}</p>
+        </Card.Body>
+      </Card>
+    </FinancePaymentBatchCategoriesBase>
   )
 
-  initialData = data.financePaymentBatchCategory
+  const initialData = data.financePaymentBatchCategory
 
   return (
     <FinancePaymentBatchCategoriesBase>
       <Card>
         <Card.Header>
-          <Card.Title>{t('finance.payment_methods.title_add')}</Card.Title>
+          <Card.Title>{t('finance.payment_batch_categories.title_add')}</Card.Title>
         </Card.Header>
           <Formik
             initialValues={{ 
@@ -106,7 +111,7 @@ function FinancePaymentBatchCategoryEdit({ t, history, match }) {
               }}
             >
             {({ isSubmitting, errors, values }) => (
-                <FinancePaymentBatchCategoriesForm
+                <FinancePaymentBatchCategoryForm
                   isSubmitting={isSubmitting}
                   errors={errors}
                   values={values}
