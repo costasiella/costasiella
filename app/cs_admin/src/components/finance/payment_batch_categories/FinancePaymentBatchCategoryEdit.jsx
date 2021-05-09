@@ -26,11 +26,9 @@ import FinancePaymentBatchCategoryForm from './FinancePaymentBatchCategoryForm'
 
 const UPDATE_PAYMENT_BATCH_CATEGORY = gql`
   mutation UpdateFinancePaymentBatchCategory($input: UpdateFinancePaymentBatchCategoryInput!) {
-    updateFinancePaymentMethod(input: $input) {
-      financePaymentMethod {
+    updateFinancePaymentBatchCategory(input: $input) {
+      financePaymentBatchCategory {
         id
-        name
-        code
       }
     }
   }
@@ -47,7 +45,7 @@ function FinancePaymentBatchCategoryEdit({ t, history, match }) {
 
   // Loading
   if (loading) return (
-    <FinancePaymentBatchCategoriesBase>
+    <FinancePaymentBatchCategoriesBase showBack={true}>
       <Card cardTitle={t('finance.payment_batch_categories.title')}>
         <Card.Body>
           <Dimmer active={true}
@@ -58,7 +56,7 @@ function FinancePaymentBatchCategoryEdit({ t, history, match }) {
   )
   // Error
   if (error) return (
-    <FinancePaymentBatchCategoriesBase>
+    <FinancePaymentBatchCategoriesBase showBack={true}>
       <Card cardTitle={t('finance.payment_batch_categories.title')}>
         <Card.Body>
           <p>{t('finance.payment_batch_categories.error_loading')}</p>
@@ -70,7 +68,7 @@ function FinancePaymentBatchCategoryEdit({ t, history, match }) {
   const initialData = data.financePaymentBatchCategory
 
   return (
-    <FinancePaymentBatchCategoriesBase>
+    <FinancePaymentBatchCategoriesBase showBack={true}>
       <Card>
         <Card.Header>
           <Card.Title>{t('finance.payment_batch_categories.title_add')}</Card.Title>
@@ -99,8 +97,9 @@ function FinancePaymentBatchCategoryEdit({ t, history, match }) {
               .then(({ data }) => {
                   console.log('got data', data)
                   toast.success((t('finance.payment_batch_categories.toast_edit_success')), {
-                      position: toast.POSITION.BOTTOM_RIGHT
-                    })
+                    position: toast.POSITION.BOTTOM_RIGHT
+                  })
+                  setSubmitting(false)
                 }).catch((error) => {
                   toast.error((t('general.toast_server_error')) + ': ' +  error, {
                       position: toast.POSITION.BOTTOM_RIGHT
