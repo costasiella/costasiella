@@ -83,7 +83,7 @@ class UpdateFinancePaymentBatchCategory(graphene.relay.ClientIDMutation):
             raise Exception('Invalid Finance Payment Batch Category ID!')
 
         finance_payment_batch_category.name = input['name']
-        if input['descriptin']:
+        if input['description']:
             finance_payment_batch_category.description = input['description']
 
         finance_payment_batch_category.save()
