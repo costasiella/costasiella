@@ -32,14 +32,16 @@ class GQLFinancePaymentBatchCategory(TestCase):
         self.variables_create = {
             "input": {
                 "name": "New paymentbatchcategory",
-                "code": "123"
+                "description": "hello",
+                "batchCategoryType": "COLLECTION"
+                
             }
         }
 
         self.variables_update = {
             "input": {
                 "name": "Updated paymentbatchcategory",
-                "code": "987"
+                "description": "hello",
             }
         }
 
@@ -248,78 +250,77 @@ class GQLFinancePaymentBatchCategory(TestCase):
         executed = execute_test_client_api_query(self.paymentbatchcategory_query, user, variables={"id": node_id})
         data = executed.get('data')
         self.assertEqual(data['financePaymentBatchCategory']['name'], payment_batch_category.name)
-    #
-    #
-    # def test_create_paymentbatchcategory(self):
-    #     """ Create a paymentbatchcategory """
-    #     query = self.paymentbatchcategory_create_mutation
-    #     variables = self.variables_create
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.admin_user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['createFinancePaymentMethod']['financePaymentBatchCategory']['name'], variables['input']['name'])
-    #     self.assertEqual(data['createFinancePaymentMethod']['financePaymentBatchCategory']['archived'], False)
-    #     self.assertEqual(data['createFinancePaymentMethod']['financePaymentBatchCategory']['code'], variables['input']['code'])
-    #
-    #
-    # def test_create_paymentbatchcategory_anon_user(self):
-    #     """ Don't allow creating paymentbatchcategories for non-logged in users """
-    #     query = self.paymentbatchcategory_create_mutation
-    #     variables = self.variables_create
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.anon_user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
-    #
-    #
-    # def test_create_location_permission_granted(self):
-    #     """ Allow creating paymentbatchcategories for users with permissions """
-    #     query = self.paymentbatchcategory_create_mutation
-    #     variables = self.variables_create
-    #
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename=self.permission_add)
-    #     user.user_permissions.add(permission)
-    #     user.save()
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['createFinancePaymentMethod']['financePaymentBatchCategory']['name'], variables['input']['name'])
-    #     self.assertEqual(data['createFinancePaymentMethod']['financePaymentBatchCategory']['archived'], False)
-    #     self.assertEqual(data['createFinancePaymentMethod']['financePaymentBatchCategory']['code'], variables['input']['code'])
-    #
-    #
-    # def test_create_paymentbatchcategory_permission_denied(self):
-    #     """ Check create paymentbatchcategory permission denied error message """
-    #     query = self.paymentbatchcategory_create_mutation
-    #     variables = self.variables_create
-    #
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
-    #
+
+    def test_create_paymentbatchcategory(self):
+        """ Create a paymentbatchcategory """
+        query = self.paymentbatchcategory_create_mutation
+        variables = self.variables_create
+
+        executed = execute_test_client_api_query(
+            query,
+            self.admin_user,
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['createFinancePaymentBatchCategory']['financePaymentBatchCategory']['name'],
+                         variables['input']['name'])
+        self.assertEqual(data['createFinancePaymentBatchCategory']['financePaymentBatchCategory']['archived'],
+                         False)
+        self.assertEqual(data['createFinancePaymentBatchCategory']['financePaymentBatchCategory']['description'],
+                         variables['input']['description'])
+        self.assertEqual(data['createFinancePaymentBatchCategory']['financePaymentBatchCategory']['batchCategoryType'],
+                         variables['input']['batchCategoryType'])
+
+    def test_create_paymentbatchcategory_anon_user(self):
+        """ Don't allow creating paymentbatchcategories for non-logged in users """
+        query = self.paymentbatchcategory_create_mutation
+        variables = self.variables_create
+
+        executed = execute_test_client_api_query(
+            query,
+            self.anon_user,
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
+
+    def test_create_paymentbatchcategory_permission_granted(self):
+        """ Allow creating paymentbatchcategories for users with permissions """
+        query = self.paymentbatchcategory_create_mutation
+        variables = self.variables_create
+
+        # Create regular user
+        user = f.RegularUserFactory.create()
+        permission = Permission.objects.get(codename=self.permission_add)
+        user.user_permissions.add(permission)
+        user.save()
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['createFinancePaymentBatchCategory']['financePaymentBatchCategory']['name'],
+                         variables['input']['name'])
+
+    def test_create_paymentbatchcategory_permission_denied(self):
+        """ Check create paymentbatchcategory permission denied error message """
+        query = self.paymentbatchcategory_create_mutation
+        variables = self.variables_create
+
+        # Create regular user
+        user = f.RegularUserFactory.create()
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
     #
     # def test_update_paymentbatchcategory(self):
     #     """ Update a paymentbatchcategory """
