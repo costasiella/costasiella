@@ -33,23 +33,13 @@ import FinanceMenu from "../FinanceMenu"
 import FinancePaymentBatchCategoriesBase from "./FinancePaymentBatchCategoriesBase"
 import CSLS from "../../../tools/cs_local_storage"
 
-import { GET_PAYMENT_BATCH_CATEGORIES_QUERY } from "./queries"
-
-const ARCHIVE_PAYMENT_BATCH_CATEGORY = gql`
-  mutation ArchiveFinancePaymentBatchCategory($input: ArchiveFinancePaymentBatchCategoryInput!) {
-    archiveFinancePaymentBatchCategory(input: $input) {
-      financePaymentBatchCategory {
-        id
-        archived
-      }
-    }
-  }
-`
+import { GET_PAYMENT_BATCH_CATEGORIES_QUERY, ARCHIVE_PAYMENT_BATCH_CATEGORY } from "./queries"
 
 function FinancePaymentBatchCategories({t, history}) {
   const { loading, error, data, fetchMore, refetch } = useQuery(GET_PAYMENT_BATCH_CATEGORIES_QUERY, {
     variables: get_list_query_variables(),
   })
+  const [archivePaymentBatchCategory] = useMutation(ARCHIVE_PAYMENT_BATCH_CATEGORY)
 
   // TODO: use local storage for archive buttons
   const headerOptions = <Card.Options>
@@ -155,7 +145,7 @@ function FinancePaymentBatchCategories({t, history}) {
                 <Table.Col key={v4()}>
                   <FinancePaymentBatchCategory categoryType={node.batchCategoryType} />
                 </Table.Col>
-                <Table.Col>
+                <Table.Col className="text-right">
                   <Link to={`/finance/paymentbatchcategories/edit/${node.id}`}>
                     <Button className='btn-sm' 
                             color="secondary">
@@ -163,8 +153,34 @@ function FinancePaymentBatchCategories({t, history}) {
                     </Button>
                   </Link>
                 </Table.Col>
-                <Table.Col>
-                  Delete
+                <Table.Col className="text-right" key={v4()}>
+                  <button className="icon btn btn-link btn-sm" 
+                      title={t('general.archive')} 
+                      onClick={() => {
+                        console.log("clicked archived")
+                        let id = node.id
+                        archivePaymentBatchCategory({ variables: {
+                          input: {
+                          id,
+                          archived: !node.archived
+                        }
+                      }, refetchQueries: [
+                          {query: GET_PAYMENT_BATCH_CATEGORIES_QUERY, variables: get_list_query_variables()}
+                      ]}).then(({ data }) => {
+                        console.log('got data', data);
+                        toast.success(
+                          (archived) ? t('general.unarchived'): t('general.archived'), {
+                            position: toast.POSITION.BOTTOM_RIGHT
+                          })
+                      }).catch((error) => {
+                        toast.error((t('general.toast_server_error')) + ': ' +  error, {
+                            position: toast.POSITION.BOTTOM_RIGHT
+                          })
+                        console.log('there was an error sending the query', error);
+                        })
+                      }}>
+                    <Icon prefix="fa" name="inbox" />
+                  </button>
                 </Table.Col>
               </Table.Row>
             ))}
