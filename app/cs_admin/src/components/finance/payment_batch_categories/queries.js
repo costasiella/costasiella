@@ -32,3 +32,15 @@ export const GET_PAYMENT_BATCH_CATEGORY_QUERY = gql`
     }
   }
 `
+
+
+export const ARCHIVE_PAYMENT_BATCH_CATEGORY = gql`
+  mutation ArchiveFinancePaymentBatchCategory($input: ArchiveFinancePaymentBatchCategoryInput!) {
+    archiveFinancePaymentBatchCategory(input: $input) {
+      financePaymentBatchCategory {
+        id
+        archived
+      }
+    }
+  }
+`
