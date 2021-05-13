@@ -47,12 +47,23 @@ class FinanceGLAccountFactory(factory.DjangoModelFactory):
     code = "8000"
 
 
-class FinancePaymentBatchCategoryFactory(factory.DjangoModelFactory):
+class FinancePaymentBatchCategoryCollectionFactory(factory.DjangoModelFactory):
     class Meta:
         model = models.FinancePaymentBatchCategory
 
     archived = False
-    name = "First payment batch category"
+    name = "First collection payment batch category"
+    batch_category_type = "COLLECTION"
+    description = "hello world"
+
+
+class FinancePaymentBatchCategoryPaymentFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.FinancePaymentBatchCategory
+
+    archived = False
+    name = "First payment payment batch category"
+    batch_category_type = "PAYMENT"
     description = "hello world"
 
 
