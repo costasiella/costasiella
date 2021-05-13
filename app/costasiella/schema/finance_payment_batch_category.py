@@ -30,7 +30,7 @@ class FinancePaymentBatchCategoryQuery(graphene.ObjectType):
     finance_payment_batch_categories = DjangoFilterConnectionField(FinancePaymentBatchCategoryNode)
     finance_payment_batch_category = graphene.relay.Node.Field(FinancePaymentBatchCategoryNode)
 
-    def resolve_finance_payment_batch_categoriess(self, info, archived=False, **kwargs):
+    def resolve_finance_payment_batch_categories(self, info, archived=False, **kwargs):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.view_financepaymentbatchcategory')
 
