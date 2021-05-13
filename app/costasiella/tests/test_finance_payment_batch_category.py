@@ -397,97 +397,75 @@ class GQLFinancePaymentBatchCategory(TestCase):
         data = executed.get('data')
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Permission denied!')
-    #
-    #
-    # def test_archive_paymentbatchcategory(self):
-    #     """ Archive a paymentbatchcategory """
-    #     query = self.paymentbatchcategory_archive_mutation
-    #     paymentbatchcategory = f.FinancePaymentMethodFactory.create()
-    #     variables = self.variables_archive
-    #     variables['input']['id'] = to_global_id('FinancePaymentBatchCategoryNode', paymentbatchcategory.pk)
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.admin_user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['archiveFinancePaymentMethod']['financePaymentBatchCategory']['archived'], variables['input']['archived'])
-    #
-    #
-    # def test_unable_to_archive_system_paymentbatchcategory(self):
-    #     """ Test that we can't archive a sytem payment method """
-    #     query = self.paymentbatchcategory_archive_mutation
-    #     # This is the "Cash" system payment method from the fixtures
-    #     paymentbatchcategory = models.FinancePaymentMethod.objects.get(pk=payment_batch_category.id)
-    #     variables = self.variables_archive
-    #     variables['input']['id'] = to_global_id('FinancePaymentBatchCategoryNode', paymentbatchcategory.pk)
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.admin_user,
-    #         variables=variables
-    #     )
-    #
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Unable to archive, this is a system method!')
-    #
-    #
-    # def test_archive_paymentbatchcategory_anon_user(self):
-    #     """ Archive paymentbatchcategory denied for anon user """
-    #     query = self.paymentbatchcategory_archive_mutation
-    #     paymentbatchcategory = f.FinancePaymentMethodFactory.create()
-    #     variables = self.variables_archive
-    #     variables['input']['id'] = to_global_id('FinancePaymentBatchCategoryNode', paymentbatchcategory.pk)
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.anon_user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
-    #
-    #
-    # def test_archive_paymentbatchcategory_permission_granted(self):
-    #     """ Allow archiving paymentbatchcategories for users with permissions """
-    #     query = self.paymentbatchcategory_archive_mutation
-    #     paymentbatchcategory = f.FinancePaymentMethodFactory.create()
-    #     variables = self.variables_archive
-    #     variables['input']['id'] = to_global_id('FinancePaymentBatchCategoryNode', paymentbatchcategory.pk)
-    #
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename=self.permission_delete)
-    #     user.user_permissions.add(permission)
-    #     user.save()
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['archiveFinancePaymentMethod']['financePaymentBatchCategory']['archived'], variables['input']['archived'])
-    #
-    #
-    # def test_archive_paymentbatchcategory_permission_denied(self):
-    #     """ Check archive paymentbatchcategory permission denied error message """
-    #     query = self.paymentbatchcategory_archive_mutation
-    #     paymentbatchcategory = f.FinancePaymentMethodFactory.create()
-    #     variables = self.variables_archive
-    #     variables['input']['id'] = to_global_id('FinancePaymentBatchCategoryNode', paymentbatchcategory.pk)
-    #
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
-    #
+
+    def test_archive_paymentbatchcategory(self):
+        """ Archive a paymentbatchcategory """
+        query = self.paymentbatchcategory_archive_mutation
+        paymentbatchcategory = f.FinancePaymentBatchCategoryCollectionFactory.create()
+        variables = self.variables_archive
+        variables['input']['id'] = to_global_id('FinancePaymentBatchCategoryNode', paymentbatchcategory.pk)
+
+        executed = execute_test_client_api_query(
+            query,
+            self.admin_user,
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['archiveFinancePaymentBatchCategory']['financePaymentBatchCategory']['archived'],
+                         variables['input']['archived'])
+
+    def test_archive_paymentbatchcategory_anon_user(self):
+        """ Archive paymentbatchcategory denied for anon user """
+        query = self.paymentbatchcategory_archive_mutation
+        paymentbatchcategory = f.FinancePaymentBatchCategoryCollectionFactory.create()
+        variables = self.variables_archive
+        variables['input']['id'] = to_global_id('FinancePaymentBatchCategoryNode', paymentbatchcategory.pk)
+
+        executed = execute_test_client_api_query(
+            query,
+            self.anon_user,
+            variables=variables
+        )
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
+
+    def test_archive_paymentbatchcategory_permission_granted(self):
+        """ Allow archiving paymentbatchcategories for users with permissions """
+        query = self.paymentbatchcategory_archive_mutation
+        paymentbatchcategory = f.FinancePaymentBatchCategoryCollectionFactory.create()
+        variables = self.variables_archive
+        variables['input']['id'] = to_global_id('FinancePaymentBatchCategoryNode', paymentbatchcategory.pk)
+
+        # Create regular user
+        user = f.RegularUserFactory.create()
+        permission = Permission.objects.get(codename=self.permission_delete)
+        user.user_permissions.add(permission)
+        user.save()
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['archiveFinancePaymentBatchCategory']['financePaymentBatchCategory']['archived'],
+                         variables['input']['archived'])
+
+    def test_archive_paymentbatchcategory_permission_denied(self):
+        """ Check archive paymentbatchcategory permission denied error message """
+        query = self.paymentbatchcategory_archive_mutation
+        paymentbatchcategory = f.FinancePaymentBatchCategoryCollectionFactory.create()
+        variables = self.variables_archive
+        variables['input']['id'] = to_global_id('FinancePaymentBatchCategoryNode', paymentbatchcategory.pk)
+
+        # Create regular user
+        user = f.RegularUserFactory.create()
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
+
