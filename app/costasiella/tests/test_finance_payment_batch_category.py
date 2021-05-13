@@ -321,82 +321,82 @@ class GQLFinancePaymentBatchCategory(TestCase):
         data = executed.get('data')
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Permission denied!')
-    #
-    # def test_update_paymentbatchcategory(self):
-    #     """ Update a paymentbatchcategory """
-    #     query = self.paymentbatchcategory_update_mutation
-    #     paymentbatchcategory = f.FinancePaymentMethodFactory.create()
-    #     variables = self.variables_update
-    #     variables['input']['id'] = to_global_id('FinancePaymentBatchCategoryNode', paymentbatchcategory.pk)
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.admin_user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['updateFinancePaymentMethod']['financePaymentBatchCategory']['name'], variables['input']['name'])
-    #     self.assertEqual(data['updateFinancePaymentMethod']['financePaymentBatchCategory']['code'], variables['input']['code'])
-    #
-    #
-    # def test_update_paymentbatchcategory_anon_user(self):
-    #     """ Don't allow updating paymentbatchcategories for non-logged in users """
-    #     query = self.paymentbatchcategory_update_mutation
-    #     paymentbatchcategory = f.FinancePaymentMethodFactory.create()
-    #     variables = self.variables_update
-    #     variables['input']['id'] = to_global_id('FinancePaymentBatchCategoryNode', paymentbatchcategory.pk)
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.anon_user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
-    #
-    #
-    # def test_update_paymentbatchcategory_permission_granted(self):
-    #     """ Allow updating paymentbatchcategories for users with permissions """
-    #     query = self.paymentbatchcategory_update_mutation
-    #     paymentbatchcategory = f.FinancePaymentMethodFactory.create()
-    #     variables = self.variables_update
-    #     variables['input']['id'] = to_global_id('FinancePaymentBatchCategoryNode', paymentbatchcategory.pk)
-    #
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename=self.permission_change)
-    #     user.user_permissions.add(permission)
-    #     user.save()
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['updateFinancePaymentMethod']['financePaymentBatchCategory']['name'], variables['input']['name'])
-    #     self.assertEqual(data['updateFinancePaymentMethod']['financePaymentBatchCategory']['code'], variables['input']['code'])
-    #
-    #
-    # def test_update_paymentbatchcategory_permission_denied(self):
-    #     """ Check update paymentbatchcategory permission denied error message """
-    #     query = self.paymentbatchcategory_update_mutation
-    #     paymentbatchcategory = f.FinancePaymentMethodFactory.create()
-    #     variables = self.variables_update
-    #     variables['input']['id'] = to_global_id('FinancePaymentBatchCategoryNode', paymentbatchcategory.pk)
-    #
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
+
+    def test_update_paymentbatchcategory(self):
+        """ Update a paymentbatchcategory """
+        query = self.paymentbatchcategory_update_mutation
+        paymentbatchcategory = f.FinancePaymentBatchCategoryCollectionFactory.create()
+        variables = self.variables_update
+        variables['input']['id'] = to_global_id('FinancePaymentBatchCategoryNode', paymentbatchcategory.pk)
+
+        executed = execute_test_client_api_query(
+            query,
+            self.admin_user,
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['updateFinancePaymentBatchCategory']['financePaymentBatchCategory']['name'],
+                         variables['input']['name'])
+        self.assertEqual(data['updateFinancePaymentBatchCategory']['financePaymentBatchCategory']['archived'],
+                         False)
+        self.assertEqual(data['updateFinancePaymentBatchCategory']['financePaymentBatchCategory']['description'],
+                         variables['input']['description'])
+
+    def test_update_paymentbatchcategory_anon_user(self):
+        """ Don't allow updating paymentbatchcategories for non-logged in users """
+        query = self.paymentbatchcategory_update_mutation
+        paymentbatchcategory = f.FinancePaymentBatchCategoryCollectionFactory.create()
+        variables = self.variables_update
+        variables['input']['id'] = to_global_id('FinancePaymentBatchCategoryNode', paymentbatchcategory.pk)
+
+        executed = execute_test_client_api_query(
+            query,
+            self.anon_user,
+            variables=variables
+        )
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
+
+    def test_update_paymentbatchcategory_permission_granted(self):
+        """ Allow updating paymentbatchcategories for users with permissions """
+        query = self.paymentbatchcategory_update_mutation
+        paymentbatchcategory = f.FinancePaymentBatchCategoryCollectionFactory.create()
+        variables = self.variables_update
+        variables['input']['id'] = to_global_id('FinancePaymentBatchCategoryNode', paymentbatchcategory.pk)
+
+        # Create regular user
+        user = f.RegularUserFactory.create()
+        permission = Permission.objects.get(codename=self.permission_change)
+        user.user_permissions.add(permission)
+        user.save()
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['updateFinancePaymentBatchCategory']['financePaymentBatchCategory']['name'],
+                         variables['input']['name'])
+
+    def test_update_paymentbatchcategory_permission_denied(self):
+        """ Check update paymentbatchcategory permission denied error message """
+        query = self.paymentbatchcategory_update_mutation
+        paymentbatchcategory = f.FinancePaymentBatchCategoryCollectionFactory.create()
+        variables = self.variables_update
+        variables['input']['id'] = to_global_id('FinancePaymentBatchCategoryNode', paymentbatchcategory.pk)
+
+        # Create regular user
+        user = f.RegularUserFactory.create()
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
     #
     #
     # def test_archive_paymentbatchcategory(self):
