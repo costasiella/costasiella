@@ -169,7 +169,7 @@ function FinancePaymentBatchCategories({t, history}) {
                       ]}).then(({ data }) => {
                         console.log('got data', data);
                         toast.success(
-                          (archived) ? t('general.unarchived'): t('general.archived'), {
+                          (node.archived) ? t('general.unarchived'): t('general.archived'), {
                             position: toast.POSITION.BOTTOM_RIGHT
                           })
                       }).catch((error) => {
