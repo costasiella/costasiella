@@ -10,7 +10,7 @@ import { toast } from 'react-toastify'
 
 import { GET_PAYMENT_BATCH_CATEGORIES_QUERY, GET_PAYMENT_BATCH_CATEGORY_QUERY } from './queries'
 import { get_list_query_variables } from './tools'
-// import { PAYMENT_METHOD_SCHEMA } from './yupSchema'
+import { PAYMENT_BATCH_CATEGORY_SCHEMA } from './yupSchema'
 
 
 
@@ -79,7 +79,7 @@ function FinancePaymentBatchCategoryEdit({ t, history, match }) {
               batchCategoryType: initialData.batchCategoryType,
               description: initialData.description,
             }}
-            // validationSchema={PAYMENT_METHOD_SCHEMA}
+            validationSchema={PAYMENT_BATCH_CATEGORY_SCHEMA}
             onSubmit={(values, { setSubmitting }) => {
               console.log('submit values:')
               console.log(values)

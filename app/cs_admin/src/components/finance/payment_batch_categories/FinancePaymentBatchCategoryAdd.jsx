@@ -10,7 +10,7 @@ import { toast } from 'react-toastify'
 
 
 import { GET_PAYMENT_BATCH_CATEGORIES_QUERY } from './queries'
-// import { PAYMENT_METHOD_SCHEMA } from './yupSchema'
+import { PAYMENT_BATCH_CATEGORY_SCHEMA } from './yupSchema'
 import { get_list_query_variables } from "./tools"
 
 
@@ -53,7 +53,7 @@ function FinancePaymentBatchCategoryAdd({ t, history }) {
         </Card.Header>
         <Formik
           initialValues={{ name: '', batchCategoryType: "COLLECTION", description: '' }}
-          // validationSchema={PAYMENT_METHOD_SCHEMA}
+          validationSchema={PAYMENT_BATCH_CATEGORY_SCHEMA}
           onSubmit={(values, { setSubmitting }) => {
             addFinancePaymentBatchCategory({ variables: {
               input: {
