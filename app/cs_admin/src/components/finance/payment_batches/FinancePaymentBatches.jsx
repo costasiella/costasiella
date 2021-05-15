@@ -54,7 +54,7 @@ function FinancePaymentBatches({t, history, match }) {
 
   // Loading
   if (loading) return (
-    <FinancePaymentBatchesBase>
+    <FinancePaymentBatchesBase showAdd={true}>
       <ContentCard cardTitle={cardTitle}>
         <Dimmer active={true}
                 loader={true}>
@@ -64,7 +64,7 @@ function FinancePaymentBatches({t, history, match }) {
   )
   // Error
   if (error) return (
-    <FinancePaymentBatchesBase>
+    <FinancePaymentBatchesBase showAdd={true}>
       <ContentCard cardTitle={cardTitle}>
         <p>{t('finance.payment_batches.error_loading')}</p>
       </ContentCard>
@@ -74,7 +74,7 @@ function FinancePaymentBatches({t, history, match }) {
   let financePaymentBatches = data.financePaymentBatches
   // Empty list
   if (!financePaymentBatches.edges.length) { return (
-    <FinancePaymentBatchesBase>
+    <FinancePaymentBatchesBase showAdd={true}>
       <ContentCard cardTitle={cardTitle} >
         <p>{msgEmptyList}</p>
       </ContentCard>
@@ -82,7 +82,7 @@ function FinancePaymentBatches({t, history, match }) {
   )}
 
   return (
-    <FinancePaymentBatchesBase>
+    <FinancePaymentBatchesBase showAdd={true}>
       <ContentCard cardTitle={cardTitle}
         pageInfo={financePaymentBatches.pageInfo}
         onLoadMore={() => {
