@@ -11,10 +11,8 @@ from .helpers import model_string
 
 class FinancePaymentBatch(models.Model):
     BATCH_TYPES = (
-        ('DRAFT', _("Draft")),
-        ('SENT', _("Sent")),
-        ('PAID', _("Paid")),
-        ('CANCELLED', _("Cancelled"))
+        ('COLLECTION', _("Collection")),
+        ('PAYMENT', _("Payment")),
     )
 
     STATUSES = (
