@@ -92,7 +92,7 @@ const FinanceMenu = ({ t, active_link }) => (
           <List.GroupItem
               key={v4()}
               className="d-flex align-items-center"
-              to="#/finance/paymentbatchcollections"
+              to="#/finance/paymentbatches/collection"
               icon="download"
               active={payment_batch_collections_active}
               >
@@ -104,7 +104,7 @@ const FinanceMenu = ({ t, active_link }) => (
           <List.GroupItem
               key={v4()}
               className="d-flex align-items-center"
-              to="#/finance/paymentbatchpayments"
+              to="#/finance/paymentbatches/payments"
               icon="upload"
               active={payment_batch_payments_active}
               >
