@@ -183,7 +183,15 @@
                 "PAYMENT": "Payment",
                 "NOT_FOUND": "Not found"
             },
-            "toast_add_success": "Added payment batch category"
+            "toast_add_success": "Added payment batch category",
+            "title_add": "Add payment batch category",
+            "toast_edit_success": "Save"
+        },
+        "payment_batch_collections": {
+            "title": "Collection batches"
+        },
+        "payment_batch_payments": {
+            "title": "Payment batches"
         }
     },
     "general": {

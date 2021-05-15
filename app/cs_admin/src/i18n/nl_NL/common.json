@@ -524,7 +524,15 @@
                 "PAYMENT": "__STRING_NOT_TRANSLATED__",
                 "NOT_FOUND": "__STRING_NOT_TRANSLATED__"
             },
-            "toast_add_success": "__STRING_NOT_TRANSLATED__"
+            "toast_add_success": "__STRING_NOT_TRANSLATED__",
+            "title_add": "__STRING_NOT_TRANSLATED__",
+            "toast_edit_success": "__STRING_NOT_TRANSLATED__"
+        },
+        "payment_batch_collections": {
+            "title": "__STRING_NOT_TRANSLATED__"
+        },
+        "payment_batch_payments": {
+            "title": "__STRING_NOT_TRANSLATED__"
         }
     },
     "shop": {
