@@ -7,20 +7,13 @@ from .organization_location import OrganizationLocation
 from .finance_payment_batch_category import FinancePaymentBatchCategory
 
 from .helpers import model_string
+from .choices.finance_payment_batch_statuses import get_finance_payment_batch_statuses
+from .choices.finance_payment_batch_types import get_finance_payment_batch_types
 
 
 class FinancePaymentBatch(models.Model):
-    BATCH_TYPES = (
-        ('COLLECTION', _("Collection")),
-        ('PAYMENT', _("Payment")),
-    )
-
-    STATUSES = (
-        ('SENT_TO_BANK', _("Sent to Bank")),
-        ('APPROVED', _("Approved")),
-        ('AWAITING_APPROVAL', _("Awaiting approval")),
-        ('REJECTED', _("Rejected")),
-    )
+    BATCH_TYPES = get_finance_payment_batch_types()
+    STATUSES = get_finance_payment_batch_statuses()
 
     name = models.CharField(max_length=255)
     batch_type = models.CharField(max_length=255, choices=BATCH_TYPES)
