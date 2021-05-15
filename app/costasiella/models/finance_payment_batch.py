@@ -22,6 +22,7 @@ class FinancePaymentBatch(models.Model):
         ('REJECTED', _("Rejected")),
     )
 
+    name = models.CharField(max_length=255)
     batch_type = models.CharField(max_length=255, choices=BATCH_TYPES)
     finance_payment_batch_category = models.ForeignKey(FinancePaymentBatchCategory, null=True, on_delete=models.CASCADE)
     status = models.CharField(max_length=255, choices=STATUSES, default="AWAITING_APPROVAL")
