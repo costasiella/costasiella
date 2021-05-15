@@ -2,7 +2,7 @@ import gql from "graphql-tag"
 
 export const GET_PAYMENT_BATCHES_QUERY = gql`
   query FinancePaymentBatches($after: String, $before: String, $archived: Boolean) {
-    financePaymentBatch(first: 15, before: $before, after: $after, archived: $archived) {
+    financePaymentBatches(first: 15, before: $before, after: $after, archived: $archived) {
       pageInfo {
         startCursor
         endCursor
