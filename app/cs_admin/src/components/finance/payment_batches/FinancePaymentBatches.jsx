@@ -66,7 +66,7 @@ function FinancePaymentBatches({t, history, match }) {
   if (error) return (
     <FinancePaymentBatchesBase>
       <ContentCard cardTitle={cardTitle}>
-        <p>{t('finance.payment_batch_categories.error_loading')}</p>
+        <p>{t('finance.payment_batches.error_loading')}</p>
       </ContentCard>
       </FinancePaymentBatchesBase>
   )
@@ -84,8 +84,7 @@ function FinancePaymentBatches({t, history, match }) {
   return (
     <FinancePaymentBatchesBase>
       <ContentCard cardTitle={cardTitle}
-        headerContent={headerOptions}
-        pageInfo={payment_batches.pageInfo}
+        pageInfo={financePaymentBatches.pageInfo}
         onLoadMore={() => {
         fetchMore({
           variables: {
@@ -173,4 +172,4 @@ function FinancePaymentBatches({t, history, match }) {
   )
 }
 
-export default withTranslation()(withRouter(FinancePaymentBatchCategories))
+export default withTranslation()(withRouter(FinancePaymentBatches))
