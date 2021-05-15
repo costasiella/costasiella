@@ -180,31 +180,29 @@ class UpdateFinancePaymentBatch(graphene.relay.ClientIDMutation):
         return UpdateFinancePaymentBatch(finance_payment_batch=finance_payment_batch)
 
 
-# class ArchiveFinancePaymentBatch(graphene.relay.ClientIDMutation):
-#     class Input:
-#         id = graphene.ID(required=True)
-#         archived = graphene.Boolean(required=True)
-#
-#     finance_payment_batch_category = graphene.Field(FinancePaymentBatchNode)
-#
-#     @classmethod
-#     def mutate_and_get_payload(self, root, info, **input):
-#         user = info.context.user
-#         require_login_and_permission(user, 'costasiella.delete_financepaymentbatch')
-#
-#         rid = get_rid(input['id'])
-#
-#         finance_payment_batch_category = FinancePaymentBatch.objects.filter(id=rid.id).first()
-#         if not finance_payment_batch_category:
-#             raise Exception(_('Invalid Finance Payment BatchCategory ID!'))
-#
-#         finance_payment_batch_category.archived = input['archived']
-#         finance_payment_batch_category.save()
-#
-#         return ArchiveFinancePaymentBatch(finance_payment_batch_category=finance_payment_batch_category)
+class DeleteFinancePaymentBatch(graphene.relay.ClientIDMutation):
+    class Input:
+        id = graphene.ID(required=True)
+
+    finance_payment_batch = graphene.Field(FinancePaymentBatchNode)
+
+    @classmethod
+    def mutate_and_get_payload(self, root, info, **input):
+        user = info.context.user
+        require_login_and_permission(user, 'costasiella.delete_financepaymentbatch')
+
+        rid = get_rid(input['id'])
+
+        finance_payment_batch = FinancePaymentBatch.objects.filter(id=rid.id).first()
+        if not finance_payment_batch:
+            raise Exception(_('Invalid Finance Payment Batch ID!'))
+
+        ok = finance_payment_batch.delete()
+
+        return DeleteFinancePaymentBatch(ok=ok)
 
 
 class FinancePaymentBatchMutation(graphene.ObjectType):
-    # archive_finance_payment_batch_category = ArchiveFinancePaymentBatch.Field()
+    delete_finance_payment_batch_category = DeleteFinancePaymentBatch.Field()
     create_finance_payment_batch_category = CreateFinancePaymentBatch.Field()
     update_finance_payment_batch_category = UpdateFinancePaymentBatch.Field()
