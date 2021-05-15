@@ -16,6 +16,8 @@ let costcenters_active
 let glaccounts_active
 let taxrates_active
 let payment_methods_active
+let payment_batch_collections_active
+let payment_batch_payments_active
 let payment_batch_categories_active
 
 const FinanceMenu = ({ t, active_link }) => (
@@ -26,6 +28,8 @@ const FinanceMenu = ({ t, active_link }) => (
         {(active_link === 'glaccounts') ? glaccounts_active = true: glaccounts_active = false}
         {(active_link === 'taxrates') ? taxrates_active = true: taxrates_active = false}
         {(active_link === 'payment_methods') ? payment_methods_active = true: payment_methods_active = false}
+        {(active_link === 'payment_batch_collections') ? payment_batch_collections_active = true: payment_batch_collections_active = false}
+        {(active_link === 'payment_batch_payments') ? payment_batch_payments_active = true: payment_batch_payments_active = false}
         {(active_link === 'payment_batch_categories') ? payment_batch_categories_active = true: payment_batch_categories_active = false}
         
 
@@ -83,6 +87,30 @@ const FinanceMenu = ({ t, active_link }) => (
             >
             {t('finance.payment_methods.title')}
         </List.GroupItem>
+        <HasPermissionWrapper permission="view"
+                              resource="financepaymentbatch">
+          <List.GroupItem
+              key={v4()}
+              className="d-flex align-items-center"
+              to="#/finance/paymentbatchcollections"
+              icon="download"
+              active={payment_batch_collections_active}
+              >
+              {t('finance.payment_batch_collections.title')}
+          </List.GroupItem>
+        </HasPermissionWrapper>
+        <HasPermissionWrapper permission="view"
+                              resource="financepaymentbatch">
+          <List.GroupItem
+              key={v4()}
+              className="d-flex align-items-center"
+              to="#/finance/paymentbatchpayments"
+              icon="upload"
+              active={payment_batch_payments_active}
+              >
+              {t('finance.payment_batch_payments.title')}
+          </List.GroupItem>
+        </HasPermissionWrapper>
         <HasPermissionWrapper permission="view"
                               resource="financepaymentbatchcategory">
           <List.GroupItem
