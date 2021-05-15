@@ -6,6 +6,8 @@ from graphene_django.filter import DjangoFilterConnectionField
 from graphql import GraphQLError
 
 from ..models import FinancePaymentBatch, FinancePaymentBatchCategory, OrganizationLocation
+from ..models.choices.finance_payment_batch_statuses import get_finance_payment_batch_statuses
+from ..models.choices.finance_payment_batch_types import get_finance_payment_batch_types
 from ..modules.gql_tools import require_login_and_permission, get_rid
 from ..modules.messages import Messages
 
@@ -70,11 +72,28 @@ def validate_create_update_input(input, update=False):
             is_month(input['subscription_month'])
             result['subscription_month'] = input['subscription_month']
 
+        if 'batch_type' in input:
+            batch_types = []
+            for item in get_finance_payment_batch_types():
+                batch_types.append(item[0])
+
+            if input['batch_type'] not in batch_types:
+                raise Exception(_('Invalid Finance Payment Batch Type!'))
+    else:
+        if 'status' in input:
+            statuses = []
+            for item in get_finance_payment_batch_statuses():
+                statuses.append(item[0])
+
+            if input['status'] not in statuses:
+                raise Exception(_('Invalid Finance Payment Batch Status!'))
+
     return result
 
 
 class CreateFinancePaymentBatch(graphene.relay.ClientIDMutation):
     class Input:
+        name = graphene.String(required=True)
         batch_type = graphene.String(required=True)
         finance_payment_batch_category = graphene.ID(required=False)
         description = graphene.String(required=False)
@@ -92,7 +111,10 @@ class CreateFinancePaymentBatch(graphene.relay.ClientIDMutation):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.add_financepaymentbatch')
 
+        validation_result = validate_create_update_input(input)
+
         finance_payment_batch = FinancePaymentBatch(
+            name=input['name'],
             batch_type=input['batch_type'],
             execution_date=input['execution_date'],
             year=input['year'],
@@ -102,7 +124,24 @@ class CreateFinancePaymentBatch(graphene.relay.ClientIDMutation):
         if 'include_zero_amounts' in input:
             finance_payment_batch.include_zero_amounts = input['include_zero_amounts']
 
+        if 'note' in input:
+            finance_payment_batch.note = input['note']
+
+        if 'finance_payment_batch_category' in validation_result:
+            finance_payment_batch.finance_payment_batch_category = validation_result['finance_payment_batch_category']
+
+        if 'organization_location' in validation_result:
+            finance_payment_batch.organization_location = validation_result['organization_location']
+
+        if 'year' in validation_result:
+            finance_payment_batch.year = validation_result['year']
+
+        if 'month' in validation_result:
+            finance_payment_batch.month = validation_result['month']
+
         finance_payment_batch.save()
+
+        # Call background task to create batch items
 
         return CreateFinancePaymentBatch(finance_payment_batch=finance_payment_batch)
 
@@ -110,8 +149,9 @@ class CreateFinancePaymentBatch(graphene.relay.ClientIDMutation):
 class UpdateFinancePaymentBatch(graphene.relay.ClientIDMutation):
     class Input:
         id = graphene.ID(required=True)
-        name = graphene.String(required=True)
-        description = graphene.String(required=False)
+        name = graphene.String(required=False)
+        status = graphene.String(required=False)
+        note = graphene.String(required=False)
 
     finance_payment_batch_category = graphene.Field(FinancePaymentBatchNode)
 
@@ -121,45 +161,50 @@ class UpdateFinancePaymentBatch(graphene.relay.ClientIDMutation):
         require_login_and_permission(user, 'costasiella.change_financepaymentbatch')
 
         rid = get_rid(input['id'])
-
-        finance_payment_batch_category = FinancePaymentBatch.objects.filter(id=rid.id).first()
-        if not finance_payment_batch_category:
+        finance_payment_batch = FinancePaymentBatch.objects.filter(id=rid.id).first()
+        if not finance_payment_batch:
             raise Exception('Invalid Finance Payment Batch Category ID!')
 
-        finance_payment_batch_category.name = input['name']
-        if input['description']:
-            finance_payment_batch_category.description = input['description']
+        validation_result = validate_create_update_input(input, update=True)
 
-        finance_payment_batch_category.save()
+        finance_payment_batch.name = input['name']
 
-        return UpdateFinancePaymentBatch(finance_payment_batch_category=finance_payment_batch_category)
+        if input['note']:
+            finance_payment_batch.note = input['note']
+
+        if input['status']:
+            finance_payment_batch.status = input['status']
+
+        finance_payment_batch.save()
+
+        return UpdateFinancePaymentBatch(finance_payment_batch=finance_payment_batch)
 
 
-class ArchiveFinancePaymentBatch(graphene.relay.ClientIDMutation):
-    class Input:
-        id = graphene.ID(required=True)
-        archived = graphene.Boolean(required=True)
-
-    finance_payment_batch_category = graphene.Field(FinancePaymentBatchNode)
-
-    @classmethod
-    def mutate_and_get_payload(self, root, info, **input):
-        user = info.context.user
-        require_login_and_permission(user, 'costasiella.delete_financepaymentbatch')
-
-        rid = get_rid(input['id'])
-
-        finance_payment_batch_category = FinancePaymentBatch.objects.filter(id=rid.id).first()
-        if not finance_payment_batch_category:
-            raise Exception(_('Invalid Finance Payment BatchCategory ID!'))
-
-        finance_payment_batch_category.archived = input['archived']
-        finance_payment_batch_category.save()
-
-        return ArchiveFinancePaymentBatch(finance_payment_batch_category=finance_payment_batch_category)
+# class ArchiveFinancePaymentBatch(graphene.relay.ClientIDMutation):
+#     class Input:
+#         id = graphene.ID(required=True)
+#         archived = graphene.Boolean(required=True)
+#
+#     finance_payment_batch_category = graphene.Field(FinancePaymentBatchNode)
+#
+#     @classmethod
+#     def mutate_and_get_payload(self, root, info, **input):
+#         user = info.context.user
+#         require_login_and_permission(user, 'costasiella.delete_financepaymentbatch')
+#
+#         rid = get_rid(input['id'])
+#
+#         finance_payment_batch_category = FinancePaymentBatch.objects.filter(id=rid.id).first()
+#         if not finance_payment_batch_category:
+#             raise Exception(_('Invalid Finance Payment BatchCategory ID!'))
+#
+#         finance_payment_batch_category.archived = input['archived']
+#         finance_payment_batch_category.save()
+#
+#         return ArchiveFinancePaymentBatch(finance_payment_batch_category=finance_payment_batch_category)
 
 
 class FinancePaymentBatchMutation(graphene.ObjectType):
-    archive_finance_payment_batch_category = ArchiveFinancePaymentBatch.Field()
+    # archive_finance_payment_batch_category = ArchiveFinancePaymentBatch.Field()
     create_finance_payment_batch_category = CreateFinancePaymentBatch.Field()
     update_finance_payment_batch_category = UpdateFinancePaymentBatch.Field()
