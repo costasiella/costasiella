@@ -46,6 +46,26 @@ export const GET_PAYMENT_BATCHES_QUERY = gql`
 // `
 
 
+export const GET_INPUT_VALUES = gql`
+  query InputValues($after: String, $before: String) {
+    financePaymentBatchCategories(first: 1000, before:$before, after:$after, archived:false) {
+      pageInfo {
+        startCursor
+        endCursor
+        hasNextPage
+        hasPreviousPage
+      }
+      edges {
+        node {
+          id
+          name
+        }
+      }
+    }
+  }
+`
+
+
 export const DELETE_PAYMENT_BATCH_CATEGORY = gql`
   mutation DeleteFinancePaymentBatch($input: DeleteFinancePaymentBatchInput!) {
     deleteFinancePaymentBatch(input: $input) {
