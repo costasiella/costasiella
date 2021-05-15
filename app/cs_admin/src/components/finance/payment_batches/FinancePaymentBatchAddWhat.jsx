@@ -34,7 +34,6 @@ function FinancePaymentBatchAddWhat({t, history, match }) {
   const returnUrl = `/finance/paymentbatches/${batchType}`
 
   let cardTitle
-  let options
   if (batchType == "collection") {
     cardTitle = t('finance.payment_batch_collections.title_add_what')
   } else {
@@ -43,7 +42,10 @@ function FinancePaymentBatchAddWhat({t, history, match }) {
 
   return (
     <FinancePaymentBatchesBase showBack={true} returnUrl={returnUrl}>
-      <Card cardTitle={cardTitle}>
+      <Card>
+        <Card.Header>
+          <Card.Title>{cardTitle}</Card.Title>
+        </Card.Header>
         <Card.Body>
           Hello World
         </Card.Body>
