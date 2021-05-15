@@ -529,10 +529,16 @@
             "toast_edit_success": "__STRING_NOT_TRANSLATED__"
         },
         "payment_batch_collections": {
-            "title": "__STRING_NOT_TRANSLATED__"
+            "title": "__STRING_NOT_TRANSLATED__",
+            "empty_list": "__STRING_NOT_TRANSLATED__"
         },
         "payment_batch_payments": {
-            "title": "__STRING_NOT_TRANSLATED__"
+            "title": "__STRING_NOT_TRANSLATED__",
+            "empty_list": "__STRING_NOT_TRANSLATED__"
+        },
+        "payment_batches": {
+            "error_loading": "__STRING_NOT_TRANSLATED__",
+            "add": "__STRING_NOT_TRANSLATED__"
         }
     },
     "shop": {

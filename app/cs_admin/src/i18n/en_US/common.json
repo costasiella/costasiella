@@ -188,10 +188,16 @@
             "toast_edit_success": "Save"
         },
         "payment_batch_collections": {
-            "title": "Collection batches"
+            "title": "Collection batches",
+            "empty_list": "No collection batches found"
         },
         "payment_batch_payments": {
-            "title": "Payment batches"
+            "title": "Payment batches",
+            "empty_list": "No payment batches found"
+        },
+        "payment_batches": {
+            "error_loading": "Error loading batches... :(",
+            "add": "Add batch"
         }
     },
     "general": {
