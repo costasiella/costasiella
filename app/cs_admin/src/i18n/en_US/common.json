@@ -192,7 +192,9 @@
             "empty_list": "No collection batches found",
             "title_add_what": "Choose type of collection batch to add",
             "invoices_batch": "Invoices",
-            "invoices_batch_description": "Create a batch containing all invoices with status 'sent' and payment method 'direct debit'."
+            "invoices_batch_description": "Create a batch containing all invoices with status 'sent' and payment method 'direct debit'.",
+            "category_batch": "Payment batch category",
+            "category_batch_description": "Create a batch containing items in a chosen month for a payment batch category."
         },
         "payment_batch_payments": {
             "title": "Payment batches",

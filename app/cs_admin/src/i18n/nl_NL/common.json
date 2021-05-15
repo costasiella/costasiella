@@ -533,7 +533,9 @@
             "empty_list": "__STRING_NOT_TRANSLATED__",
             "title_add_what": "__STRING_NOT_TRANSLATED__",
             "invoices_batch": "__STRING_NOT_TRANSLATED__",
-            "invoices_batch_description": "__STRING_NOT_TRANSLATED__"
+            "invoices_batch_description": "__STRING_NOT_TRANSLATED__",
+            "category_batch": "__STRING_NOT_TRANSLATED__",
+            "category_batch_description": "__STRING_NOT_TRANSLATED__"
         },
         "payment_batch_payments": {
             "title": "__STRING_NOT_TRANSLATED__",
