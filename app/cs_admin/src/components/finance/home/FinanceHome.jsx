@@ -73,6 +73,22 @@ class FinanceHome extends Component {
                     </div>
                   </Grid.Col>
                   <HasPermissionWrapper permission="view"
+                              resource="financepaymentbatch">
+                    <Grid.Col md={4} lg={4}>
+                      <Link to={'/finance/paymentbatchcollections'}>
+                        <StampCard header={<small>{t('finance.payment_batch_collections.title')}</small>} footer={t('')} color="blue" icon="download" />
+                      </Link>
+                    </Grid.Col>
+                  </HasPermissionWrapper>
+                  <HasPermissionWrapper permission="view"
+                              resource="financepaymentbatch">
+                    <Grid.Col md={4} lg={4}>
+                      <Link to={'/finance/paymentbatchpayments'}>
+                        <StampCard header={<small>{t('finance.payment_batch_payments.title')}</small>} footer={t('')} color="blue" icon="upload" />
+                      </Link>
+                    </Grid.Col>
+                  </HasPermissionWrapper>
+                  <HasPermissionWrapper permission="view"
                               resource="financepaymentbatchcategory">
                     <Grid.Col md={4} lg={4}>
                       <Link to={'/finance/paymentbatchcategories'}>
