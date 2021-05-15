@@ -34,11 +34,11 @@ class FinancePaymentBatchQuery(graphene.ObjectType):
     finance_payment_batches = DjangoFilterConnectionField(FinancePaymentBatchNode)
     finance_payment_batch = graphene.relay.Node.Field(FinancePaymentBatchNode)
 
-    def resolve_finance_payment_batches(self, info, archived=False, **kwargs):
+    def resolve_finance_payment_batches(self, info, **kwargs):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.view_financepaymentbatch')
 
-        return FinancePaymentBatch.objects.filter(archived=archived).order_by('created_at')
+        return FinancePaymentBatch.objects.order_by('created_at')
 
 
 def validate_create_update_input(input, update=False):
