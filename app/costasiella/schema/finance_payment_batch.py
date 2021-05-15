@@ -19,7 +19,7 @@ m = Messages()
 class FinancePaymentBatchNode(DjangoObjectType):
     class Meta:
         model = FinancePaymentBatch
-        filter_fields = ['archived']
+        filter_fields = ['batch_type']
         interfaces = (graphene.relay.Node, )
 
     @classmethod
