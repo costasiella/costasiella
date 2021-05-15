@@ -530,11 +530,15 @@
         },
         "payment_batch_collections": {
             "title": "__STRING_NOT_TRANSLATED__",
-            "empty_list": "__STRING_NOT_TRANSLATED__"
+            "empty_list": "__STRING_NOT_TRANSLATED__",
+            "title_add_what": "__STRING_NOT_TRANSLATED__",
+            "invoices_batch": "__STRING_NOT_TRANSLATED__",
+            "invoices_batch_description": "__STRING_NOT_TRANSLATED__"
         },
         "payment_batch_payments": {
             "title": "__STRING_NOT_TRANSLATED__",
-            "empty_list": "__STRING_NOT_TRANSLATED__"
+            "empty_list": "__STRING_NOT_TRANSLATED__",
+            "title_add_what": "__STRING_NOT_TRANSLATED__"
         },
         "payment_batches": {
             "error_loading": "__STRING_NOT_TRANSLATED__",
