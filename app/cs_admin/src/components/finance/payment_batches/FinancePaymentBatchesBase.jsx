@@ -18,7 +18,7 @@ import HasPermissionWrapper from "../../HasPermissionWrapper"
 import FinanceMenu from "../FinanceMenu"
 
 
-function FinancePaymentBatchesBase({t, history, match, children}) {
+function FinancePaymentBatchesBase({t, history, match, children, showAdd=false, showBack=false, returnUrl=""}) {
   const batchType = match.params.batch_type
 
   let activeLink
@@ -38,14 +38,28 @@ function FinancePaymentBatchesBase({t, history, match, children}) {
               {children}
             </Grid.Col>
             <Grid.Col md={3}>
+              {(showAdd) ?
                 <HasPermissionWrapper permission="add"
                                       resource="financepaymentbatch">
-                  <Link to={`/finance/paymentbatches/${batchType}/add`}>
+                  <Link to={`/finance/paymentbatches/${batchType}/add_what`}>
                     <Button color="primary btn-block mb-6">
                       <Icon prefix="fe" name="plus-circle" /> {t('finance.payment_batches.add')}
                     </Button>
                   </Link>
                 </HasPermissionWrapper>
+                : "" 
+              }
+              {(showBack) ?
+                <HasPermissionWrapper permission="view"
+                                      resource="financepaymentbatch">
+                  <Link to={returnUrl}>
+                    <Button color="primary btn-block mb-6">
+                      <Icon prefix="fe" name="chevrons-left" /> {t('general.back')}
+                    </Button>
+                  </Link>
+                </HasPermissionWrapper>
+                : "" 
+              }
               <FinanceMenu active_link={activeLink} />
             </Grid.Col>
           </Grid.Row>
