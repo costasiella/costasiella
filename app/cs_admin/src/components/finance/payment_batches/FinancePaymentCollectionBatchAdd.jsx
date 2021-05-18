@@ -100,7 +100,7 @@ function FinancePaymentCollectionBatchAdd({ t, history, match }) {
                 name: values.name, 
                 executionDate: dateToLocalISO(values.executionDate),
                 description: values.description,
-                note:values.note,
+                note: values.note,
                 includeZeroAmounts: values.includeZeroAmounts
             }
 

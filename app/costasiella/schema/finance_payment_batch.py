@@ -121,12 +121,6 @@ class CreateFinancePaymentBatch(graphene.relay.ClientIDMutation):
             execution_date=input['execution_date'],
         )
 
-        if 'year' in input:
-            finance_payment_batch.year = input['year']
-
-        if 'month' in input:
-            finance_payment_batch.month = input['month']
-
         if 'include_zero_amounts' in input:
             finance_payment_batch.include_zero_amounts = input['include_zero_amounts']
 
@@ -147,7 +141,7 @@ class CreateFinancePaymentBatch(graphene.relay.ClientIDMutation):
 
         finance_payment_batch.save()
 
-        # Call background task to create batch items
+        #TODO: Call background task to create batch items
 
         return CreateFinancePaymentBatch(finance_payment_batch=finance_payment_batch)
 
