@@ -50,19 +50,21 @@ def validate_create_update_input(input, update=False):
     # Fetch & check invoice group
     if not update:
         # Create only
-        # invoice group
-        rid = get_rid(input['finance_payment_batch_category'])
-        finance_payment_batch_category = FinancePaymentBatchCategory.objects.filter(id=rid.id).first()
-        result['finance_payment_batch_category'] = finance_payment_batch_category
-        if not finance_payment_batch_category:
-            raise Exception(_('Invalid Finance Payment Batch Category ID!'))
+        # batch category
+        if 'finance_payment_batch_category' in input:
+            rid = get_rid(input['finance_payment_batch_category'])
+            finance_payment_batch_category = FinancePaymentBatchCategory.objects.filter(id=rid.id).first()
+            result['finance_payment_batch_category'] = finance_payment_batch_category
+            if not finance_payment_batch_category:
+                raise Exception(_('Invalid Finance Payment Batch Category ID!'))
 
-        # account
-        rid = get_rid(input['organization_location'])
-        organization_location = OrganizationLocation.objects.filter(id=rid.id).first()
-        result['organization_location'] = organization_location
-        if not organization_location:
-            raise Exception(_('Invalid Organization Location ID!'))
+        # location
+        if 'organization_location' in input:
+            rid = get_rid(input['organization_location'])
+            organization_location = OrganizationLocation.objects.filter(id=rid.id).first()
+            result['organization_location'] = organization_location
+            if not organization_location:
+                raise Exception(_('Invalid Organization Location ID!'))
 
         if 'year' in input:
             is_year(input['subscription_year'])
@@ -97,8 +99,8 @@ class CreateFinancePaymentBatch(graphene.relay.ClientIDMutation):
         batch_type = graphene.String(required=True)
         finance_payment_batch_category = graphene.ID(required=False)
         description = graphene.String(required=False)
-        year = graphene.Int(required=True)
-        month = graphene.Int(required=True)
+        year = graphene.Int(required=False)
+        month = graphene.Int(required=False)
         execution_date = graphene.types.datetime.Date(required=True)
         include_zero_amounts = graphene.Boolean(required=False, default_value=False)
         organization_location = graphene.ID(required=False)
@@ -117,9 +119,13 @@ class CreateFinancePaymentBatch(graphene.relay.ClientIDMutation):
             name=input['name'],
             batch_type=input['batch_type'],
             execution_date=input['execution_date'],
-            year=input['year'],
-            month=input['month'],
         )
+
+        if 'year' in input:
+            finance_payment_batch.year = input['year']
+
+        if 'month' in input:
+            finance_payment_batch.month = input['month']
 
         if 'include_zero_amounts' in input:
             finance_payment_batch.include_zero_amounts = input['include_zero_amounts']
@@ -203,6 +209,6 @@ class DeleteFinancePaymentBatch(graphene.relay.ClientIDMutation):
 
 
 class FinancePaymentBatchMutation(graphene.ObjectType):
-    delete_finance_payment_batch_category = DeleteFinancePaymentBatch.Field()
-    create_finance_payment_batch_category = CreateFinancePaymentBatch.Field()
-    update_finance_payment_batch_category = UpdateFinancePaymentBatch.Field()
+    delete_finance_payment_batch = DeleteFinancePaymentBatch.Field()
+    create_finance_payment_batch = CreateFinancePaymentBatch.Field()
+    update_finance_payment_batch = UpdateFinancePaymentBatch.Field()
