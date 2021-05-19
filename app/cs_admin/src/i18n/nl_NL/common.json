@@ -219,7 +219,9 @@
         "email_billing": "__STRING_NOT_TRANSLATED__",
         "phone2": "__STRING_NOT_TRANSLATED__",
         "collection": "__STRING_NOT_TRANSLATED__",
-        "payment": "__STRING_NOT_TRANSLATED__"
+        "payment": "__STRING_NOT_TRANSLATED__",
+        "view": "__STRING_NOT_TRANSLATED__",
+        "invoices": "__STRING_NOT_TRANSLATED__"
     },
     "settings": {
         "error_loading": "__STRING_NOT_TRANSLATED__",
@@ -544,7 +546,19 @@
         },
         "payment_batches": {
             "error_loading": "__STRING_NOT_TRANSLATED__",
-            "add": "__STRING_NOT_TRANSLATED__"
+            "add": "__STRING_NOT_TRANSLATED__",
+            "execution_date": "__STRING_NOT_TRANSLATED__",
+            "batch_category": "__STRING_NOT_TRANSLATED__",
+            "error_loading_input_values": "__STRING_NOT_TRANSLATED__",
+            "include_zero_amounts": "__STRING_NOT_TRANSLATED__",
+            "toast_add_success": "__STRING_NOT_TRANSLATED__",
+            "status": {
+                "SENT_TO_BANK": "__STRING_NOT_TRANSLATED__",
+                "APPROVED": "__STRING_NOT_TRANSLATED__",
+                "AWAITING_APPROVAL": "__STRING_NOT_TRANSLATED__",
+                "REJECTED": "__STRING_NOT_TRANSLATED__",
+                "invalid_type": "__STRING_NOT_TRANSLATED__"
+            }
         }
     },
     "shop": {

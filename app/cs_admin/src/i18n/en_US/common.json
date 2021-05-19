@@ -203,7 +203,19 @@
         },
         "payment_batches": {
             "error_loading": "Error loading batches... :(",
-            "add": "Add batch"
+            "add": "Add batch",
+            "execution_date": "Execution date",
+            "batch_category": "Category",
+            "error_loading_input_values": "Error loading input values... :(",
+            "include_zero_amounts": "Include zero amounts",
+            "toast_add_success": "Added payment batch",
+            "status": {
+                "SENT_TO_BANK": "Sent to bank",
+                "APPROVED": "Approved",
+                "AWAITING_APPROVAL": "Awaiting Approval",
+                "REJECTED": "Rejected",
+                "invalid_type": "Invalid status"
+            }
         }
     },
     "general": {
@@ -426,7 +438,9 @@
         "email_billing": "Email billing",
         "phone2": "Phone 2",
         "collection": "Collection",
-        "payment": "Payment"
+        "payment": "Payment",
+        "view": "View",
+        "invoices": "Invoices"
     },
     "yup": {
         "min_len_3": "Please input at least 3 characters",
