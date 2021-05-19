@@ -558,7 +558,17 @@
                 "AWAITING_APPROVAL": "__STRING_NOT_TRANSLATED__",
                 "REJECTED": "__STRING_NOT_TRANSLATED__",
                 "invalid_type": "__STRING_NOT_TRANSLATED__"
-            }
+            },
+            "delete_confirm_msg": "__STRING_NOT_TRANSLATED__",
+            "deleted": "__STRING_NOT_TRANSLATED__"
+        },
+        "payment_batch": {
+            "error_loading": "__STRING_NOT_TRANSLATED__",
+            "title_batch_info": "__STRING_NOT_TRANSLATED__",
+            "title_batch_totals": "__STRING_NOT_TRANSLATED__",
+            "title_batch_note": "__STRING_NOT_TRANSLATED__",
+            "title_batch_exports": "__STRING_NOT_TRANSLATED__",
+            "title_batch_items": "__STRING_NOT_TRANSLATED__"
         }
     },
     "shop": {
