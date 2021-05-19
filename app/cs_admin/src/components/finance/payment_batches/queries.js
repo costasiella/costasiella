@@ -66,6 +66,17 @@ export const GET_INPUT_VALUES = gql`
 `
 
 
+export const ADD_PAYMENT_BATCH = gql`
+  mutation CreateFinancePaymentBatch($input:CreateFinancePaymentBatchInput!) {
+    createFinancePaymentBatch(input: $input) {
+      financePaymentBatch {
+        id
+      }
+    }
+  }
+`
+
+
 export const DELETE_PAYMENT_BATCH = gql`
   mutation DeleteFinancePaymentBatch($input: DeleteFinancePaymentBatchInput!) {
     deleteFinancePaymentBatch(input: $input) {

@@ -9,7 +9,7 @@ import { Formik } from 'formik'
 import { toast } from 'react-toastify'
 
 
-import { GET_PAYMENT_BATCHES_QUERY, GET_INPUT_VALUES } from './queries'
+import { ADD_PAYMENT_BATCH, GET_PAYMENT_BATCHES_QUERY, GET_INPUT_VALUES } from './queries'
 // import { PAYMENT_BATCH_CATEGORY_SCHEMA } from './yupSchema'
 import { get_list_query_variables } from "./tools"
 
@@ -31,19 +31,10 @@ import FinanceMenu from '../FinanceMenu'
 import FinancePaymentBatchesBase from './FinancePaymentBatchesBase'
 import FinancePaymentCollectionBatchForm from './FinancePaymentCollectionBatchForm'
 
-const ADD_PAYMENT_BATCH = gql`
-  mutation CreateFinancePaymentBatch($input:CreateFinancePaymentBatchInput!) {
-    createFinancePaymentBatch(input: $input) {
-      financePaymentBatch {
-        id
-      }
-    }
-  }
-`
 
 function FinancePaymentCollectionBatchAdd({ t, history, match }) {
-  const returnUrl = "/finance/paymentbatchcategories"
   const batchType = match.params.batch_type
+  const returnUrl = `/finance/paymentbatches/${dataType}`
   const categoryType = match.params.category_type
   const cardTitle = t('finance.payment_batch_categories.title_add')
 
