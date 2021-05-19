@@ -184,7 +184,7 @@ class DeleteFinancePaymentBatch(graphene.relay.ClientIDMutation):
     class Input:
         id = graphene.ID(required=True)
 
-    finance_payment_batch = graphene.Field(FinancePaymentBatchNode)
+    ok = graphene.Boolean()
 
     @classmethod
     def mutate_and_get_payload(self, root, info, **input):
