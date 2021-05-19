@@ -34,16 +34,29 @@ export const GET_PAYMENT_BATCHES_QUERY = gql`
   }
 `
 
-// export const GET_PAYMENT_BATCH_CATEGORY_QUERY = gql`
-//   query FinancePaymentBatchCategory($id: ID!) {
-//     financePaymentBatchCategory(id:$id) {
-//       id
-//       name
-//       description
-//       archived
-//     }
-//   }
-// `
+export const GET_PAYMENT_BATCH_QUERY = gql`
+  query FinancePaymentBatch($id: ID!) {
+    financePaymentBatch(id:$id) {
+      id
+      name
+      status
+      financePaymentBatchCategory {
+        id
+        name
+      }
+      description
+      batchType
+      year
+      month
+      includeZeroAmounts
+      organizationLocation {
+        id
+        name
+      }
+      note
+    }
+  }
+`
 
 
 export const GET_INPUT_VALUES = gql`
