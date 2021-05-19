@@ -568,7 +568,8 @@
             "title_batch_totals": "__STRING_NOT_TRANSLATED__",
             "title_batch_note": "__STRING_NOT_TRANSLATED__",
             "title_batch_exports": "__STRING_NOT_TRANSLATED__",
-            "title_batch_items": "__STRING_NOT_TRANSLATED__"
+            "title_batch_items": "__STRING_NOT_TRANSLATED__",
+            "title_view": "__STRING_NOT_TRANSLATED__"
         }
     },
     "shop": {

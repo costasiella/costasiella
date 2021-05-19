@@ -24,7 +24,7 @@ function FinancePaymentBatchViewBase({t, history, match, children}) {
     <SiteWrapper>
       <div className="my-3 my-md-5">
         <Container>
-          <Page.Header title={t("finance.title")}>
+          <Page.Header title={t("finance.title")} subTitle={t('finance.payment_batch.title_view')}>
             <div className="page-options d-flex">
                 <Link to={returnUrl} 
                       className='btn btn-secondary'>

@@ -225,7 +225,8 @@
             "title_batch_totals": "Totals",
             "title_batch_note": "Note",
             "title_batch_exports": "Exports",
-            "title_batch_items": "Items"
+            "title_batch_items": "Items",
+            "title_view": "Payment batch"
         }
     },
     "general": {
