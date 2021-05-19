@@ -49,11 +49,11 @@ function FinanceInvoices({ t, location, history }) {
         <Container>
           <Page.Header title={t("finance.title")}>
             <div className="page-options d-flex">
-                <Link to="/finance/invoices/groups" 
-                      className='btn btn-outline-secondary btn-sm'>
-                  <Icon prefix="fe" name="folder" /> {t('general.groups')}
-                </Link>
-              </div>
+              <Link to="/finance/invoices/groups" 
+                    className='btn btn-outline-secondary btn-sm'>
+                <Icon prefix="fe" name="folder" /> {t('general.groups')}
+              </Link>
+            </div>
           </Page.Header>
               <Query query={GET_INVOICES_QUERY} variables={get_list_query_variables()} fetchPolicy="network-only">
               {({ loading, error, data: {financeInvoices: invoices}, refetch, fetchMore }) => {
