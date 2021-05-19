@@ -142,7 +142,7 @@ function FinancePaymentBatches({t, history, match }) {
                   {(node.financePaymentBatchCategory) ? node.financePaymentBatchCategory.name : t("general.invoices")}
                 </Table.Col>
                 <Table.Col>
-                  <Link to={`/finance/paymentbatches/view/${node.id}`}>
+                  <Link to={`/finance/paymentbatches/${batchType}/view/${node.id}`}>
                     <Button className='btn-sm' 
                             color="secondary">
                       {t('general.view')}
