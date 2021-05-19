@@ -66,12 +66,10 @@ export const GET_INPUT_VALUES = gql`
 `
 
 
-export const DELETE_PAYMENT_BATCH_CATEGORY = gql`
+export const DELETE_PAYMENT_BATCH = gql`
   mutation DeleteFinancePaymentBatch($input: DeleteFinancePaymentBatchInput!) {
     deleteFinancePaymentBatch(input: $input) {
-      financePaymentBatch {
-        id
-      }
+      ok
     }
   }
 `
