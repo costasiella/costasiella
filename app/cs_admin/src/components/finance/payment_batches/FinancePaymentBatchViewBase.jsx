@@ -18,7 +18,7 @@ import HasPermissionWrapper from "../../HasPermissionWrapper"
 
 function FinancePaymentBatchViewBase({t, history, match, children}) {
   const batchType = match.params.batch_type
-  const returnUrl = `/finance/payment_batches/${batchType}`
+  const returnUrl = `/finance/paymentbatches/${batchType}`
 
   return (
     <SiteWrapper>
@@ -27,8 +27,8 @@ function FinancePaymentBatchViewBase({t, history, match, children}) {
           <Page.Header title={t("finance.title")}>
             <div className="page-options d-flex">
                 <Link to={returnUrl} 
-                      className='btn btn-outline-secondary btn-sm'>
-                  <Icon prefix="fe" name="folder" /> {t('general.groups')}
+                      className='btn btn-secondary'>
+                  <Icon prefix="fe" name="arrow-left" /> {t('general.back')}
                 </Link>
             </div>
           </Page.Header>
