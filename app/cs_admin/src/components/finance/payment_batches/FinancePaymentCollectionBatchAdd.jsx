@@ -34,7 +34,7 @@ import FinancePaymentCollectionBatchForm from './FinancePaymentCollectionBatchFo
 
 function FinancePaymentCollectionBatchAdd({ t, history, match }) {
   const batchType = match.params.batch_type
-  const returnUrl = `/finance/paymentbatches/${dataType}`
+  const returnUrl = `/finance/paymentbatches/${batchType}`
   const categoryType = match.params.category_type
   const cardTitle = t('finance.payment_batch_categories.title_add')
 
