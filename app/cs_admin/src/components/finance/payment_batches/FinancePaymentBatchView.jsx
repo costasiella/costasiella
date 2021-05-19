@@ -1,6 +1,6 @@
 // @flow
 
-import React from 'react'
+import React, { useContext } from 'react'
 import { useQuery, useMutation } from "react-apollo";
 import gql from "graphql-tag"
 import { withTranslation } from 'react-i18next'
@@ -8,6 +8,7 @@ import { withRouter } from "react-router"
 import { Formik } from 'formik'
 import { toast } from 'react-toastify'
 
+import moment from 'moment'
 
 import { GET_PAYMENT_BATCHES_QUERY, GET_PAYMENT_BATCH_QUERY } from './queries'
 // import { PAYMENT_BATCH_CATEGORY_SCHEMA } from './yupSchema'
@@ -22,16 +23,23 @@ import {
   Button,
   Card,
   Container,
+  Table,
 } from "tabler-react"
 import SiteWrapper from "../../SiteWrapper"
 import HasPermissionWrapper from "../../HasPermissionWrapper"
 import { dateToLocalISO } from '../../../tools/date_tools'
+import BooleanBadge from "../../ui/BadgeBoolean"
+import FinancePaymentBatchCategory from "../../ui/FinancePaymentBatchCategory"
+import AppSettingsContext from '../../context/AppSettingsContext'
 
 import FinanceMenu from '../FinanceMenu'
 import FinancePaymentBatchViewBase from './FinancePaymentBatchViewBase'
 import FinancePaymentCollectionBatchForm from './FinancePaymentCollectionBatchForm'
+import BadgeBoolean from '../../ui/BadgeBoolean';
 
 function FinancePaymentBatchView({ t, history, match }) {
+  const appSettings = useContext(AppSettingsContext)
+  const dateFormat = appSettings.dateFormat
   const batchType = match.params.batch_type
   const batchId = match.params.id
   const returnUrl = `/finance/paymentbatches/${batchType}`
@@ -61,9 +69,54 @@ function FinancePaymentBatchView({ t, history, match }) {
       <Grid.Row>
         <Grid.Col md={3}>
           <Card title={t("finance.payment_batch.title_batch_info")}>
-            <Card.Body>
-              Batch info
-            </Card.Body>
+            <Table cards>
+              <Table.Body>
+                <Table.Row>
+                  <Table.Col>
+                    {t("general.name")}
+                  </Table.Col>
+                  <Table.Col>
+                    {financePaymentBatch.name}
+                  </Table.Col>
+                </Table.Row>
+                <Table.Row>
+                  <Table.Col>
+                    {t('finance.payment_batch_categories.batch_category_type')}
+                  </Table.Col>
+                  <Table.Col>
+                    <FinancePaymentBatchCategory categoryType={financePaymentBatch.batchType} />
+                  </Table.Col>
+                </Table.Row>
+                <Table.Row>
+                  <Table.Col>
+                    {t('finance.payment_batches.batch_category')}
+                  </Table.Col>
+                  <Table.Col>
+                    {
+                      (financePaymentBatch.financePaymentBatchCategory) ? 
+                        financePaymentBatch.financePaymentBatchCategory.name : 
+                        t("general.invoices")
+                    }
+                  </Table.Col>
+                </Table.Row>
+                <Table.Row>
+                  <Table.Col>
+                    {t('finance.payment_batches.execution_date')}
+                  </Table.Col>
+                  <Table.Col>
+                    {moment(financePaymentBatch.executionDate).format(dateFormat)}
+                  </Table.Col>
+                </Table.Row>
+                <Table.Row>
+                  <Table.Col>
+                    {t('finance.payment_batches.include_zero_amounts')}
+                  </Table.Col>
+                  <Table.Col>
+                    <BadgeBoolean value={financePaymentBatch.includeZeroAmounts} />
+                  </Table.Col>
+                </Table.Row>
+              </Table.Body>
+            </Table>
           </Card>
         </Grid.Col>
         <Grid.Col md={3}>
