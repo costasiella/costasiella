@@ -27,8 +27,12 @@ function FinancePaymentBatchViewBase({t, history, match, children}) {
           <Page.Header title={t("finance.title")} subTitle={t('finance.payment_batch.title_view')}>
             <div className="page-options d-flex">
                 <Link to={returnUrl} 
-                      className='btn btn-secondary'>
+                      className='btn btn-secondary mr-2'>
                   <Icon prefix="fe" name="arrow-left" /> {t('general.back')}
+                </Link>
+                <Link to={`/finance/paymentbatches/${batchType}/edit/:id`} 
+                      className='btn btn-secondary'>
+                  {t('general.edit')}
                 </Link>
             </div>
           </Page.Header>
