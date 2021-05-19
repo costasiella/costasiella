@@ -90,6 +90,17 @@ export const ADD_PAYMENT_BATCH = gql`
 `
 
 
+export const UPDATE_PAYMENT_BATCH = gql`
+  mutation UpdateFinancePaymentBatch($input:UpdateFinancePaymentBatchInput!) {
+    updateFinancePaymentBatch(input: $input) {
+      financePaymentBatch {
+        id
+      }
+    }
+  }
+`
+
+
 export const DELETE_PAYMENT_BATCH = gql`
   mutation DeleteFinancePaymentBatch($input: DeleteFinancePaymentBatchInput!) {
     deleteFinancePaymentBatch(input: $input) {
