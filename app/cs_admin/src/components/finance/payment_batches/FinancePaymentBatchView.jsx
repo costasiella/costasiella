@@ -33,9 +33,12 @@ import FinancePaymentCollectionBatchForm from './FinancePaymentCollectionBatchFo
 
 function FinancePaymentBatchView({ t, history, match }) {
   const batchType = match.params.batch_type
+  const batchId = match.params.id
   const returnUrl = `/finance/paymentbatches/${batchType}`
 
-  const { loading, error, data } = useQuery(GET_PAYMENT_BATCH_QUERY)
+  const { loading, error, data } = useQuery(GET_PAYMENT_BATCH_QUERY, {
+    variables: { id: batchId }
+  })
   // const [updateFinancePaymentBatch] = useMutation(UPDATE_PAYMENT_BATCH)
 
   // Loading
@@ -55,7 +58,45 @@ function FinancePaymentBatchView({ t, history, match }) {
 
   return (
     <FinancePaymentBatchViewBase>
-      Hello world!
+      <Grid.Row>
+        <Grid.Col md={3}>
+          <Card title={t("finance.payment_batch.title_batch_info")}>
+            <Card.Body>
+              Batch info
+            </Card.Body>
+          </Card>
+        </Grid.Col>
+        <Grid.Col md={3}>
+          <Card title={t("finance.payment_batch.title_batch_totals")}>
+            <Card.Body>
+              Totals
+            </Card.Body>
+          </Card>
+        </Grid.Col>
+        <Grid.Col md={3}>
+          <Card title={t("finance.payment_batch.title_batch_note")}>
+            <Card.Body>
+              Note
+            </Card.Body>
+          </Card>
+        </Grid.Col>
+        <Grid.Col md={3}>
+          <Card title={t("finance.payment_batch.title_batch_exports")}>
+            <Card.Body>
+              Exports
+            </Card.Body>
+          </Card>
+        </Grid.Col>
+      </Grid.Row>
+      <Grid.Row>
+        <Grid.Col>
+          <Card title={t("finance.payment_batch.title_batch_items")}>
+            <Card.Body>
+              Items
+            </Card.Body>
+          </Card>
+        </Grid.Col>
+      </Grid.Row>
       {/* <Card>
         <Card.Header>
           <Card.Title>{cardTitle}</Card.Title>
