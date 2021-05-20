@@ -5,22 +5,22 @@ import { useQuery } from "react-apollo";
 import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
 
-import { GET_ACCOUNT_QUERY } from './queries'
+import { GET_ACCOUNT_QUERY } from '../queries'
 
 import {
   Page,
   Grid,
   Container
 } from "tabler-react"
-import SiteWrapper from "../../SiteWrapper"
-import HasPermissionWrapper from "../../HasPermissionWrapper"
-import ProfileCardSmall from "../../ui/ProfileCardSmall"
+import SiteWrapper from "../../../SiteWrapper"
+import HasPermissionWrapper from "../../../HasPermissionWrapper"
+import ProfileCardSmall from "../../../ui/ProfileCardSmall"
 
-import RelationsAccountsBack from "./RelationsAccountsBack"
-import ProfileMenu from "./ProfileMenu"
+import RelationsAccountsBack from "../RelationsAccountsBack"
+import ProfileMenu from "../ProfileMenu"
 
 
-function RelationsAccountBankAccountBase({ t, match, history }) {
+function RelationsAccountBankAccountBase({ t, match, history, children }) {
   const accountId = match.params.account_id
 
   const { loading, error, data } = useQuery(GET_ACCOUNT_QUERY, {
@@ -50,7 +50,7 @@ function RelationsAccountBankAccountBase({ t, match, history }) {
             <Grid.Col md={3}>
               <ProfileCardSmall user={account}/>
               <ProfileMenu 
-                active_link='profile'
+                active_link='bank_account'
                 account_id={accountId}
               /> 
             </Grid.Col>
