@@ -122,21 +122,21 @@ function FinancePaymentBatchView({ t, history, match }) {
         <Grid.Col md={3}>
           <Card title={t("finance.payment_batch.title_batch_totals")}>
             <Card.Body>
-              Totals
+              ...
             </Card.Body>
           </Card>
         </Grid.Col>
         <Grid.Col md={3}>
           <Card title={t("finance.payment_batch.title_batch_note")}>
             <Card.Body>
-              Note
+              {financePaymentBatch.note}
             </Card.Body>
           </Card>
         </Grid.Col>
         <Grid.Col md={3}>
           <Card title={t("finance.payment_batch.title_batch_exports")}>
             <Card.Body>
-              Exports
+              ...
             </Card.Body>
           </Card>
         </Grid.Col>
