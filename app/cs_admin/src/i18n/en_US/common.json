@@ -217,7 +217,8 @@
                 "invalid_type": "Invalid status"
             },
             "delete_confirm_msg": "Are you sure you with to delete this batch?",
-            "deleted": "Deleted batch"
+            "deleted": "Deleted batch",
+            "toast_edit_success": "Saved"
         },
         "payment_batch": {
             "error_loading": "Error loading payment batch... :(",
@@ -226,7 +227,8 @@
             "title_batch_note": "Note",
             "title_batch_exports": "Exports",
             "title_batch_items": "Items",
-            "title_view": "Payment batch"
+            "title_view": "Payment batch",
+            "title_edit": "Edit payment batch"
         }
     },
     "general": {
