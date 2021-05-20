@@ -77,7 +77,7 @@ function RelationsAccountBankAccount({ t, match, history }) {
               ]})
               .then(({ data }) => {
                   console.log('got data', data)
-                  toast.success((t('relations.account.bank_account.toast_edit_success')), {
+                  toast.success((t('relations.account.bank_accounts.toast_edit_success')), {
                       position: toast.POSITION.BOTTOM_RIGHT
                     })
                   setSubmitting(false)

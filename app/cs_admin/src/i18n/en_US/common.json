@@ -864,7 +864,11 @@
             },
             "error_loading": "Error loading account info... :(",
             "bank_accounts": {
-                "title": "Bank account"
+                "title": "Bank account",
+                "holder": "Account holder",
+                "number": "Account number",
+                "bic": "BIC",
+                "toast_edit_success": "__STRING_NOT_TRANSLATED__"
             }
         },
         "b2b": {

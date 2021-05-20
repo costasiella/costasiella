@@ -1194,7 +1194,11 @@
             },
             "error_loading": "__STRING_NOT_TRANSLATED__",
             "bank_accounts": {
-                "title": "__STRING_NOT_TRANSLATED__"
+                "title": "__STRING_NOT_TRANSLATED__",
+                "holder": "__STRING_NOT_TRANSLATED__",
+                "number": "__STRING_NOT_TRANSLATED__",
+                "bic": "__STRING_NOT_TRANSLATED__",
+                "toast_edit_success": "__STRING_NOT_TRANSLATED__"
             }
         },
         "accounts": {
