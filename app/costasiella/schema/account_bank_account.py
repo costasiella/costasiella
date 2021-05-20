@@ -1,4 +1,5 @@
 import graphene
+import validators
 
 from django.utils.translation import gettext as _
 from graphene_django import DjangoObjectType
@@ -8,9 +9,7 @@ from graphql import GraphQLError
 from ..models import Account, AccountBankAccount
 from ..modules.gql_tools import require_login, require_login_and_permission, get_rid
 from ..modules.messages import Messages
-from ..dudes.sales_dude import SalesDude
-
-from sorl.thumbnail import get_thumbnail
+from ..dudes.system_setting_dude import SystemSettingDude
 
 m = Messages()
 
@@ -30,7 +29,16 @@ def validate_create_update_input(input, update=False):
         if not account:
             raise Exception(_('Invalid Account ID!'))
 
-    #TODO: Add IBAN check for number of setting to check for IBAN is enabled
+    if 'number' in input:
+        system_setting_dude = SystemSettingDude()
+        finance_bank_accounts_iban = system_setting_dude.get('finance_bank_accounts_iban')
+        print(finance_bank_accounts_iban)
+        print(type(finance_bank_accounts_iban))
+
+        #TODO: Execute this when the setting == True
+        number = input['number']
+        if not validators.iban(number):
+            raise Exception(_('Number is not a valid IBAN!'))
 
     return result
 
