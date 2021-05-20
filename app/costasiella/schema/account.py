@@ -179,11 +179,16 @@ class CreateAccount(graphene.relay.ClientIDMutation):
         )
         email_address.save()
 
-        # Insert Teacher profile
+        # Create Teacher profile
         account_teacher_profile = AccountTeacherProfile(
-            account = account
+            account=account
         )
         account_teacher_profile.save()
+
+        # Create Bank account record
+        account_bank_account = AccountBankAccount(
+            account=account
+        )
 
         return CreateAccount(account=account)
 #         return CreateAccount(user=user)
