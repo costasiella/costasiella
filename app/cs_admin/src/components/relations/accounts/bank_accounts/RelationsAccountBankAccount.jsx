@@ -46,7 +46,6 @@ function RelationsAccountBankAccount({ t, match, history }) {
   }
 
   const accountBankAccounts = data.accountBankAccounts
-  const accountBankAccounts = data.accountBankAccounts
   const accountBankAccount = accountBankAccounts.edges[0].node
 
   return (
