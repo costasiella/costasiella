@@ -868,7 +868,7 @@
                 "holder": "Account holder",
                 "number": "Account number",
                 "bic": "BIC",
-                "toast_edit_success": "__STRING_NOT_TRANSLATED__"
+                "toast_edit_success": "Saved"
             }
         },
         "b2b": {
