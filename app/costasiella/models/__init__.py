@@ -1,6 +1,7 @@
 from .account import Account
 from .account_accepted_document import AccountAcceptedDocument
 from .account_bank_account import AccountBankAccount
+from .account_bank_account_mandate import AccountBankAccountMandate
 from .account_classpass import AccountClasspass
 from .account_membership import AccountMembership
 from .account_schedule_event_ticket import AccountScheduleEventTicket
