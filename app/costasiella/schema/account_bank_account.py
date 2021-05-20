@@ -34,7 +34,7 @@ def validate_create_update_input(input, update=False):
         finance_bank_accounts_iban = system_setting_dude.get('finance_bank_accounts_iban')
 
         if finance_bank_accounts_iban == 'true':
-            number = input['number']
+            number = input['number'].strip()
             if not validators.iban(number):
                 raise Exception(_('Number is not a valid IBAN!'))
 
