@@ -203,6 +203,7 @@ import SelfCheckinLocations from './components/selfcheckin/Locations/Locations'
 import SelfCheckinLocationClasses from './components/selfcheckin/LocationClasses/LocationClasses'
 
 import SettingsAbout from './components/settings/about/SettingsAbout'
+import SettingsFinanceBankAccounts from './components/settings/finance/bank_accounts/SettingsFinanceBankAccounts'
 import SettingsFinanceCurrency from './components/settings/finance/currency/SettingsFinanceCurrency'
 import SettingsGeneralDateTime from './components/settings/general/date_time/SettingsGeneralDateTime'
 import SettingsGeneralSystem from './components/settings/general/system/SettingsGeneralSystem'
@@ -574,6 +575,7 @@ function AppRoot({ t }) {
             {/* Settings */}
             <PrivateRoute exact path="/settings" component={SettingsHome} />
             <PrivateRoute exact path="/settings/about" component={SettingsAbout} />
+            <PrivateRoute exact path="/settings/finance/bank_accounts" component={SettingsFinanceBankAccounts} />
             <PrivateRoute exact path="/settings/finance/currency" component={SettingsFinanceCurrency} />
             <PrivateRoute exact path="/settings/general/datetime" component={SettingsGeneralDateTime} />
             <PrivateRoute exact path="/settings/general/system" component={SettingsGeneralSystem} />
