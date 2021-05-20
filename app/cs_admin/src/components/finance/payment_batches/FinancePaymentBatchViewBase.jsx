@@ -17,6 +17,7 @@ import HasPermissionWrapper from "../../HasPermissionWrapper"
 
 
 function FinancePaymentBatchViewBase({t, history, match, children}) {
+  const batchId = match.params.id
   const batchType = match.params.batch_type
   const returnUrl = `/finance/paymentbatches/${batchType}`
 
@@ -30,7 +31,7 @@ function FinancePaymentBatchViewBase({t, history, match, children}) {
                       className='btn btn-secondary mr-2'>
                   <Icon prefix="fe" name="arrow-left" /> {t('general.back')}
                 </Link>
-                <Link to={`/finance/paymentbatches/${batchType}/edit/:id`} 
+                <Link to={`/finance/paymentbatches/${batchType}/edit/${batchId}`} 
                       className='btn btn-secondary'>
                   {t('general.edit')}
                 </Link>
