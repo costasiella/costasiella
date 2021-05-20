@@ -3,6 +3,7 @@ import graphql_jwt
 
 from .account import AccountQuery, AccountMutation
 from .account_accepted_document import AccountAcceptedDocumentQuery
+from .account_bank_account import AccountBankAccountQuery, AccountBankAccountMutation
 from .account_classpass import AccountClasspassQuery, AccountClasspassMutation
 from .account_membership import AccountMembershipQuery, AccountMembershipMutation
 from .account_schedule_event_ticket import AccountScheduleEventTicketQuery, AccountScheduleEventTicketMutation
@@ -78,6 +79,7 @@ from .system_setting import SystemSettingQuery, SystemSettingMutation
 
 class Query(AccountQuery,
             AccountAcceptedDocumentQuery,
+            AccountBankAccountQuery,
             AccountClasspassQuery,
             AccountMembershipQuery,
             AccountScheduleEventTicketQuery,
@@ -143,6 +145,7 @@ class Query(AccountQuery,
 
 
 class Mutation(AccountMutation,
+               AccountBankAccountMutation,
                AccountClasspassMutation,
                AccountMembershipMutation,
                AccountSubscriptionMutation,
