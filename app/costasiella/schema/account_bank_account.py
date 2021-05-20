@@ -82,7 +82,7 @@ class AccountBankAccountQuery(graphene.ObjectType):
             account_id = user.id
 
         # Allow user to specify account
-        return AccountBankAccount.objects.filter(account=account_id).order_by('-date_start')
+        return AccountBankAccount.objects.filter(account=account_id)
 
 
 class CreateAccountBankAccount(graphene.relay.ClientIDMutation):
