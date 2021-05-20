@@ -33,20 +33,23 @@ const FinancePaymentCollectionBatchForm = (
               <ErrorMessage name="name" component="span" className="invalid-feedback" />
             </Form.Group>
           </Grid.Col>
-          <Grid.Col>
-            <Form.Group label={t('finance.payment_batches.execution_date')}>
-              <CSDatePicker 
-                selected={values.executionDate}
-                onChange={(executionDate) => {
-                  setFieldValue("executionDate", executionDate)
-                  setFieldTouched("executionDate", true)
-                }}
-                onBlur={() => setFieldTouched("executionDate", true)}
-                placeholderText={t('')}
-              />
-              <ErrorMessage name="executionDate" component="span" className="invalid-feedback" />
-            </Form.Group>
-          </Grid.Col>
+          {(create) ? 
+            <Grid.Col>
+              <Form.Group label={t('finance.payment_batches.execution_date')}>
+                <CSDatePicker 
+                  selected={values.executionDate}
+                  onChange={(executionDate) => {
+                    setFieldValue("executionDate", executionDate)
+                    setFieldTouched("executionDate", true)
+                  }}
+                  onBlur={() => setFieldTouched("executionDate", true)}
+                  placeholderText={t('')}
+                />
+                <ErrorMessage name="executionDate" component="span" className="invalid-feedback" />
+              </Form.Group>
+            </Grid.Col>
+            : "" 
+          }
         </Grid.Row>
         {(create && category) ?
           <Grid.Row>
@@ -77,22 +80,25 @@ const FinancePaymentCollectionBatchForm = (
             </Form.Group>
           </Grid.Col>
         </Grid.Row>
-        <Grid.Row>
-          <Grid.Col>
-            <Form.Group>
-              <Form.Label className="custom-switch">
-                <Field 
-                className="custom-switch-input"
-                type="checkbox" 
-                name="includeZeroAmounts" 
-                checked={values.includeZeroAmounts} />
-                <span className="custom-switch-indicator" ></span>
-                <span className="custom-switch-description">{t('finance.payment_batches.include_zero_amounts')}</span>
-              </Form.Label>
-              <ErrorMessage name="includeZeroAmounts" component="div" />   
-            </Form.Group>  
-          </Grid.Col>
-        </Grid.Row>
+        {(create) ? 
+          <Grid.Row>
+            <Grid.Col>
+              <Form.Group>
+                <Form.Label className="custom-switch">
+                  <Field 
+                  className="custom-switch-input"
+                  type="checkbox" 
+                  name="includeZeroAmounts" 
+                  checked={values.includeZeroAmounts} />
+                  <span className="custom-switch-indicator" ></span>
+                  <span className="custom-switch-description">{t('finance.payment_batches.include_zero_amounts')}</span>
+                </Form.Label>
+                <ErrorMessage name="includeZeroAmounts" component="div" />   
+              </Form.Group>  
+            </Grid.Col>
+          </Grid.Row>
+          : "" 
+        }
       </Card.Body>
       <Card.Footer>
           <Button 
