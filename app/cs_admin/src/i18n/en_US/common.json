@@ -862,7 +862,10 @@
             "event_tickets": {
                 "title": "Event tickets"
             },
-            "error_loading": "Error loading account info... :("
+            "error_loading": "Error loading account info... :(",
+            "bank_accounts": {
+                "title": "Bank account"
+            }
         },
         "b2b": {
             "title": "Business-to-Business",
@@ -1388,7 +1391,12 @@
                 "explanation": "Set the currency and currency symbol"
             },
             "currency_symbol": "Currency symbol",
-            "title": "Finance"
+            "title": "Finance",
+            "bank_accounts": {
+                "title": "Bank accounts",
+                "iban": "All bank accounts should be a valid IBAN",
+                "explanation": "Configure bank account behavior like IBAN checking"
+            }
         },
         "mail": {
             "title": "Mail",
