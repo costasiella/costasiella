@@ -16,7 +16,7 @@ from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
 
 from allauth.account.models import EmailAddress
-from ..models import AccountTeacherProfile
+from ..models import AccountBankAccount, AccountTeacherProfile
 
 from ..modules.gql_tools import require_login, \
     require_permission, \
@@ -163,10 +163,10 @@ class CreateAccount(graphene.relay.ClientIDMutation):
             raise Exception(_('An account is already registered with this e-mail address'))
 
         account = get_user_model()(
-            first_name = input['first_name'],
-            last_name = input['last_name'],
-            email = input['email'],
-            username = input['email']
+            first_name=input['first_name'],
+            last_name=input['last_name'],
+            email=input['email'],
+            username=input['email']
         )
         account.save()
 
@@ -189,6 +189,7 @@ class CreateAccount(graphene.relay.ClientIDMutation):
         account_bank_account = AccountBankAccount(
             account=account
         )
+        account_bank_account.save()
 
         return CreateAccount(account=account)
 #         return CreateAccount(user=user)
