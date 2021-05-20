@@ -19,7 +19,7 @@ const RelationsAccountBankAccountForm = ({ t, history, isSubmitting, errors, val
       <Card.Body>
         <Grid.Row>
           <Grid.Col>
-            <Form.Group label={t('relations.accounts.bank_accounts.holder')}>
+            <Form.Group label={t('relations.account.bank_accounts.holder')}>
               <Field type="text" 
                       name="holder" 
                       className={(errors.holder) ? "form-control is-invalid" : "form-control"} 
@@ -30,7 +30,7 @@ const RelationsAccountBankAccountForm = ({ t, history, isSubmitting, errors, val
         </Grid.Row>
         <Grid.Row>
           <Grid.Col>
-            <Form.Group label={t('relations.accounts.bank_accounts.number')}>
+            <Form.Group label={t('relations.account.bank_accounts.number')}>
               <Field type="text" 
                       name="number" 
                       className={(errors.number) ? "form-control is-invalid" : "form-control"} 
@@ -39,7 +39,7 @@ const RelationsAccountBankAccountForm = ({ t, history, isSubmitting, errors, val
             </Form.Group>
           </Grid.Col>
           <Grid.Col>
-            <Form.Group label={t('relations.accounts.bank_accounts.bic')}>
+            <Form.Group label={t('relations.account.bank_accounts.bic')}>
               <Field type="text" 
                       name="bic" 
                       className={(errors.bic) ? "form-control is-invalid" : "form-control"} 
