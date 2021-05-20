@@ -153,7 +153,7 @@ class UpdateFinancePaymentBatch(graphene.relay.ClientIDMutation):
         status = graphene.String(required=False)
         note = graphene.String(required=False)
 
-    finance_payment_batch_category = graphene.Field(FinancePaymentBatchNode)
+    finance_payment_batch = graphene.Field(FinancePaymentBatchNode)
 
     @classmethod
     def mutate_and_get_payload(self, root, info, **input):
@@ -166,14 +166,13 @@ class UpdateFinancePaymentBatch(graphene.relay.ClientIDMutation):
             raise Exception('Invalid Finance Payment Batch Category ID!')
 
         validation_result = validate_create_update_input(input, update=True)
-
         finance_payment_batch.name = input['name']
 
-        if input['note']:
+        if 'note' in input:
             finance_payment_batch.note = input['note']
 
-        if input['status']:
-            finance_payment_batch.status = input['status']
+        if 'status' in validation_result:
+            finance_payment_batch.status = validation_result['status']
 
         finance_payment_batch.save()
 
