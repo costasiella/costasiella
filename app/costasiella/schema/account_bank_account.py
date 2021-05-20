@@ -32,13 +32,11 @@ def validate_create_update_input(input, update=False):
     if 'number' in input:
         system_setting_dude = SystemSettingDude()
         finance_bank_accounts_iban = system_setting_dude.get('finance_bank_accounts_iban')
-        print(finance_bank_accounts_iban)
-        print(type(finance_bank_accounts_iban))
 
-        #TODO: Execute this when the setting == True
-        number = input['number']
-        if not validators.iban(number):
-            raise Exception(_('Number is not a valid IBAN!'))
+        if finance_bank_accounts_iban == 'true':
+            number = input['number']
+            if not validators.iban(number):
+                raise Exception(_('Number is not a valid IBAN!'))
 
     return result
 
@@ -75,7 +73,7 @@ class AccountBankAccountQuery(graphene.ObjectType):
         user = info.context.user
         require_login(user)
 
-        if user.has_perm('costasiella.view_accountbankacount') and 'account' in kwargs:
+        if user.has_perm('costasiella.view_accountbankaccount') and 'account' in kwargs:
             rid = get_rid(kwargs.get('account', user.id))
             account_id = rid.id
         else:
