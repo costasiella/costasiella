@@ -119,7 +119,11 @@ class BaseEncryptedField(models.Field):
                     # Transform return value into datetime.date
                     [year, month, day] = retval.split('-')
                     retval = datetime.date(int(year), int(month), int(day))
-                
+            else:
+                # We have an unencrypted string in the DB.
+                # It'll be encrypted the next time it's saved
+                # This allows migrating unencrypted fields to encrypted fields
+                retval = value
         else:
             retval = value
         return retval
