@@ -171,6 +171,6 @@ class DeleteAccountBankAccount(graphene.relay.ClientIDMutation):
 
 
 class AccountBankAccountMutation(graphene.ObjectType):
-    create_account_bank_account = CreateAccountBankAccount.Field()
-    delete_account_bank_account = DeleteAccountBankAccount.Field()
+    # create_account_bank_account = CreateAccountBankAccount.Field()
+    # delete_account_bank_account = DeleteAccountBankAccount.Field()
     update_account_bank_account = UpdateAccountBankAccount.Field()
