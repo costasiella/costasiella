@@ -66,5 +66,5 @@ const RelationsAccountBankAccountForm = ({ t, history, isSubmitting, errors, val
   </FoForm>
 )
 
-export default withTranslation()(withRouter(RelationsAccountProfileForm))
+export default withTranslation()(withRouter(RelationsAccountBankAccountForm))
 
