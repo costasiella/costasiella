@@ -130,6 +130,7 @@ import RelationsAccounts from './components/relations/accounts/RelationsAccounts
 import RelationsAccountAdd from './components/relations/accounts/RelationsAccountAdd'
 import RelationsAccountProfile from './components/relations/accounts/RelationsAccountProfile'
 import AccountAcceptedDocuments from './components/relations/accounts/accepted_documents/AcceptedDocuments.jsx'
+import RelationsAccountBankAccount from './components/relations/accounts/bank_accounts/RelationsAccountBankAccount'
 import RelationsAccountClasses from './components/relations/accounts/classes/AccountClasses'
 import AccountClasspasses from './components/relations/accounts/classpasses/AccountClasspasses'
 import AccountClasspassAdd from './components/relations/accounts/classpasses/AccountClasspassAdd'
@@ -454,6 +455,7 @@ function AppRoot({ t }) {
             <PrivateRoute exact path="/relations/accounts/add" component={RelationsAccountAdd} />
             <PrivateRoute exact path="/relations/accounts/:account_id/profile" component={RelationsAccountProfile} />
             <PrivateRoute exact path="/relations/accounts/:account_id/accepted_documents" component={AccountAcceptedDocuments} />
+            <PrivateRoute exact path="/relations/accounts/:account_id/bank_accounts" component={RelationsAccountBankAccount} />
             <PrivateRoute exact path="/relations/accounts/:account_id/classes" component={RelationsAccountClasses} />
             <PrivateRoute exact path="/relations/accounts/:account_id/classpasses" component={AccountClasspasses} />
             <PrivateRoute exact path="/relations/accounts/:account_id/classpasses/add" component={AccountClasspassAdd} />
