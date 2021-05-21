@@ -1,17 +1,20 @@
 // @flow
 
-import React from 'react'
+import React, { useContext } from 'react'
 import { useQuery, useMutation } from "react-apollo";
 import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
 import { Formik } from 'formik'
 import { toast } from 'react-toastify'
 
+import AppSettingsContext from '../../../context/AppSettingsContext'
+import moment from 'moment'
+
 import { GET_ACCOUNT_BANK_ACCOUNTS_QUERY, UPDATE_ACCOUNT_BANK_ACCOUNT } from './queries'
 // import { ACCOUNT_SCHEMA } from './yupSchema'
 
 import {
-  Card,
+  Card, Grid,
 } from "tabler-react"
 import HasPermissionWrapper from "../../../HasPermissionWrapper"
 
@@ -21,6 +24,9 @@ import RelationsAccountBankAccountForm from "./RelationsAccountBankAccountForm"
 
 
 function RelationsAccountBankAccount({ t, match, history }) {
+  const appSettings = useContext(AppSettingsContext)
+  const dateFormat = appSettings.dateFormat
+  
   const accountId = match.params.account_id
   const returnUrl = "/relations/accounts"
 
@@ -47,6 +53,8 @@ function RelationsAccountBankAccount({ t, match, history }) {
 
   const accountBankAccounts = data.accountBankAccounts
   const accountBankAccount = accountBankAccounts.edges[0].node
+  const mandates = accountBankAccount.mandates
+  console.log(accountBankAccount)
 
   return (
     <RelationsAccountBankAccountBase bankAccountId={accountBankAccount.id}>
@@ -99,6 +107,19 @@ function RelationsAccountBankAccount({ t, match, history }) {
           )}
         </Formik>
       </Card>
+      {(mandates.edges.length) ? <h5>{t("relations.account.bank_accounts.mandates.title")}</h5> : ""}
+      <Grid.Row>
+      {mandates.edges.map(({ node }) => (
+        <Grid.Col md={6}>
+          <Card title={node.reference}>
+            <Card.Body>
+              {t("relations.account.bank_accounts.mandates.signature_date")} {moment(node.signatureDate).format(dateFormat)}
+              <div dangerouslySetInnerHTML={{ __html: node.content}} />
+            </Card.Body>
+          </Card>
+        </Grid.Col>
+      ))}
+      </Grid.Row>
     </RelationsAccountBankAccountBase>
   )
 }
