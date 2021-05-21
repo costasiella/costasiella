@@ -875,7 +875,9 @@
                     "reference_placeholder": "In case left empty, a unique reference will be generated.",
                     "signature_date": "Signed on",
                     "content": "content",
-                    "title": "Mandates"
+                    "title": "Mandates",
+                    "toast_add_success": "Added mandate",
+                    "toast_edit_success": "Saved"
                 }
             },
             "babk_accounts": {
