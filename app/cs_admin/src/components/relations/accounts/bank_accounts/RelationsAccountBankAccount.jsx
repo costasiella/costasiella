@@ -128,7 +128,7 @@ function RelationsAccountBankAccount({ t, match, history }) {
               >
                 <Icon name="trash-2" />
               </Button>
-              <Link to={""}>
+              <Link to={`/relations/accounts/${accountId}/bank_accounts/${accountBankAccount}/mandates/edit/${node.id}`}>
                 <Button
                   type="button" 
                   color="secondary" 
