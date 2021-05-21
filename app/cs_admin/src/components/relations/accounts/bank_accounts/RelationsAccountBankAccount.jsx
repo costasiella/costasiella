@@ -12,6 +12,7 @@ import AppSettingsContext from '../../../context/AppSettingsContext'
 import moment from 'moment'
 
 import { GET_ACCOUNT_BANK_ACCOUNTS_QUERY, UPDATE_ACCOUNT_BANK_ACCOUNT } from './queries'
+import { DELETE_ACCOUNT_BANK_ACCOUNT_MANDATE } from './mandates/queries'
 // import { ACCOUNT_SCHEMA } from './yupSchema'
 
 import {
@@ -21,6 +22,7 @@ import {
   Icon
 } from "tabler-react"
 import HasPermissionWrapper from "../../../HasPermissionWrapper"
+import confirm_delete from "../../../../tools/confirm_delete"
 
 import RelationsAccountBankAccountBase from "./RelationsAccountBankAccountBase"
 import RelationsAccountBankAccountForm from "./RelationsAccountBankAccountForm"
@@ -39,6 +41,7 @@ function RelationsAccountBankAccount({ t, match, history }) {
   })
 
   const [ updateAccountBankAccount ] = useMutation(UPDATE_ACCOUNT_BANK_ACCOUNT)
+  const [ deleteAccountBankAccountMandate ] = useMutation(DELETE_ACCOUNT_BANK_ACCOUNT_MANDATE)
 
   if (loading) return (
     <RelationsAccountBankAccountBase>
@@ -125,6 +128,25 @@ function RelationsAccountBankAccount({ t, match, history }) {
                 className="pull-right"
                 color="danger"
                 type="button"
+                onClick={() => {
+                  confirm_delete({
+                    t: t,
+                    msgConfirm: t("relations.account.bank_accounts.mandates.delete_confirm_msg"),
+                    msgDescription: <p>{node.reference}</p>,
+                    msgSuccess: t('relations.account.bank_accounts.mandates.deleted'),
+                    deleteFunction: deleteAccountBankAccountMandate,
+                    functionVariables: { 
+                      variables: {
+                        input: {
+                          id: node.id
+                        }
+                      }, 
+                      refetchQueries: [
+                        {query: GET_ACCOUNT_BANK_ACCOUNTS_QUERY, variables: { account: accountId} } 
+                      ]
+                    }
+                  })
+                }}
               >
                 <Icon name="trash-2" />
               </Button>
