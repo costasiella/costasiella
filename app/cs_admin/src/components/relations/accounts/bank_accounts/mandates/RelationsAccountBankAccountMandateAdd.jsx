@@ -33,7 +33,7 @@ import RelationsAccountBankAccountBase from '../RelationsAccountBankAccountBase'
 function RelationsAccountBankAccountMandateAdd({ t, match, history }) {
   const accountId = match.params.account_id
   const bankAccountId = match.params.bank_account_id
-  const return_url = `/relations/accounts/${accountId}/bank_accounts`
+  const returnUrl = `/relations/accounts/${accountId}/bank_accounts`
 
   const [createAccountBankAccountMandate] = useMutation(CREATE_ACCOUNT_BANK_ACCOUNT_MANDATE) 
  
@@ -67,10 +67,10 @@ function RelationsAccountBankAccountMandateAdd({ t, match, history }) {
             ]})
             .then(({ data }) => {
                 console.log('got data', data)
+                history.push(returnUrl)
                 toast.success((t('relations.account.bank_accounts.mandates.toast_add_success')), {
                     position: toast.POSITION.BOTTOM_RIGHT
                   })
-                // history.push('/finance/invoices/edit/' + data.createFinanceInvoice.financeInvoice.id)
                 setSubmitting(false)
               }).catch((error) => {
                 toast.error((t('general.toast_server_error')) + ': ' +  error, {
@@ -89,7 +89,7 @@ function RelationsAccountBankAccountMandateAdd({ t, match, history }) {
               submitForm={submitForm}
               setFieldTouched={setFieldTouched}
               setFieldValue={setFieldValue}
-              return_url={return_url}
+              returnUrl={returnUrl}
             >
             </RelationsAccountBankAccountMandateForm>   
           )}

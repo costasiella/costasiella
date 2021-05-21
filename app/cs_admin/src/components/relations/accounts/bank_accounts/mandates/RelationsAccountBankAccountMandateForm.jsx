@@ -19,7 +19,7 @@ import { Editor } from '@tinymce/tinymce-react'
 import { tinymceBasicConf } from "../../../../../plugin_config/tinymce"
 
 
-const RelationsAccountBankAccountMandateForm = ({ t, history, inputData, isSubmitting, setFieldValue, setFieldTouched, errors, values, return_url }) => (
+const RelationsAccountBankAccountMandateForm = ({ t, history, inputData, isSubmitting, setFieldValue, setFieldTouched, errors, values, returnUrl }) => (
   <FoForm>
     <Card.Body>
       <Grid.Row>
@@ -68,7 +68,7 @@ const RelationsAccountBankAccountMandateForm = ({ t, history, inputData, isSubmi
         >
           {t('general.submit')}
         </Button>
-        <Link to={return_url}>
+        <Link to={returnUrl}>
           <Button
             type="button" 
             color="link" 

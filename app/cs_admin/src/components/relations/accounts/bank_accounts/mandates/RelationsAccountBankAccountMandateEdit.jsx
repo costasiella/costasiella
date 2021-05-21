@@ -34,7 +34,7 @@ function RelationsAccountBankAccountMandateEdit({ t, match, history }) {
   const accountId = match.params.account_id
   const bankAccountId = match.params.bank_account_id
   const mandateId = match.params.id
-  const return_url = `/relations/accounts/${accountId}/bank_accounts`
+  const returnUrl = `/relations/accounts/${accountId}/bank_accounts`
 
   const { loading, error, data } = useQuery(GET_ACCOUNT_BANK_ACCOUNT_MANDATE_QUERY, {
     variables: {'id': mandateId},
@@ -91,7 +91,7 @@ function RelationsAccountBankAccountMandateEdit({ t, match, history }) {
                 toast.success((t('relations.account.bank_accounts.mandates.toast_edit_success')), {
                     position: toast.POSITION.BOTTOM_RIGHT
                   })
-                // history.push('/finance/invoices/edit/' + data.createFinanceInvoice.financeInvoice.id)
+                history.push(returnUrl)
                 setSubmitting(false)
               }).catch((error) => {
                 toast.error((t('general.toast_server_error')) + ': ' +  error, {
@@ -110,7 +110,7 @@ function RelationsAccountBankAccountMandateEdit({ t, match, history }) {
               submitForm={submitForm}
               setFieldTouched={setFieldTouched}
               setFieldValue={setFieldValue}
-              return_url={return_url}
+              returnUrl={returnUrl}
             >
             </RelationsAccountBankAccountMandateForm>   
           )}
