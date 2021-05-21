@@ -52,7 +52,7 @@ function RelationsAccountBankAccountBase({ t, match, history, children, bankAcco
             </Grid.Col>
             <Grid.Col md={3}>
               <ProfileCardSmall user={account}/>
-              {((bankAccountId) && (!showBack)) ?
+              {((bankAccountId) && !(showBack)) ?
                 <HasPermissionWrapper permission="add"
                                       resource="accountbankaccountmandate">
                   <Link to={`/relations/accounts/${match.params.account_id}/bank_accounts/${bankAccountId}/mandates/add`}>

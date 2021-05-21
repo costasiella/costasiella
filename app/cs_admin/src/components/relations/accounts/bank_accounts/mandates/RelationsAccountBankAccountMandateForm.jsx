@@ -27,7 +27,8 @@ const RelationsAccountBankAccountMandateForm = ({ t, history, inputData, isSubmi
           <Form.Group label={t('relations.account.bank_accounts.mandates.reference')}>
             <Field type="text" 
                     name="reference" 
-                    className={(errors.reference) ? "form-control is-invalid" : "form-control"} 
+                    className={(errors.reference) ? "form-control is-invalid" : "form-control"}
+                    placeholder={t('relations.account.bank_accounts.mandates.reference_placeholder')}
                     autoComplete="off" />
             <ErrorMessage name="reference" component="span" className="invalid-feedback" />
           </Form.Group>
