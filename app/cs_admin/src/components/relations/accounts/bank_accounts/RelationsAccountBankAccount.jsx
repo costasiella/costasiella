@@ -5,6 +5,7 @@ import { useQuery, useMutation } from "react-apollo";
 import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
 import { Formik } from 'formik'
+import { Link } from 'react-router-dom'
 import { toast } from 'react-toastify'
 
 import AppSettingsContext from '../../../context/AppSettingsContext'
@@ -14,7 +15,10 @@ import { GET_ACCOUNT_BANK_ACCOUNTS_QUERY, UPDATE_ACCOUNT_BANK_ACCOUNT } from './
 // import { ACCOUNT_SCHEMA } from './yupSchema'
 
 import {
-  Card, Grid,
+  Button,
+  Card, 
+  Grid,
+  Icon
 } from "tabler-react"
 import HasPermissionWrapper from "../../../HasPermissionWrapper"
 
@@ -116,6 +120,23 @@ function RelationsAccountBankAccount({ t, match, history }) {
               {t("relations.account.bank_accounts.mandates.signature_date")} {moment(node.signatureDate).format(dateFormat)}
               <div dangerouslySetInnerHTML={{ __html: node.content}} />
             </Card.Body>
+            <Card.Footer>
+              <Button 
+                className="pull-right"
+                color="danger"
+                type="button"
+              >
+                <Icon name="trash-2" />
+              </Button>
+              <Link to={""}>
+                <Button
+                  type="button" 
+                  color="secondary" 
+                >
+                    {t('general.edit')}
+                </Button>
+              </Link>
+            </Card.Footer>
           </Card>
         </Grid.Col>
       ))}
