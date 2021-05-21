@@ -868,7 +868,15 @@
                 "holder": "Account holder",
                 "number": "Account number",
                 "bic": "BIC",
-                "toast_edit_success": "Saved"
+                "toast_edit_success": "Saved",
+                "mandates": {
+                    "title_add": "Add mandate",
+                    "reference": "Reference",
+                    "reference_placeholder": "In case left empty, a unique reference will be generated.",
+                    "signature_date": "Signed on",
+                    "content": "content",
+                    "title": "Mandates"
+                }
             },
             "babk_accounts": {
                 "mandates": {
