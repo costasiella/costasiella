@@ -21,6 +21,22 @@ export const GET_ACCOUNT_BANK_ACCOUNTS_QUERY = gql`
           number
           holder
           bic
+          mandates(first: 100) {
+            pageInfo {
+              hasNextPage
+              hasPreviousPage
+              startCursor
+              endCursor
+            }
+            edges {
+              node {
+                id
+                reference
+                content
+                signatureDate
+              }
+            }
+          }
         }
       }
     }
