@@ -16,7 +16,7 @@ import {
 
 import CSDatePicker from "../../../../ui/CSDatePicker"
 import { Editor } from '@tinymce/tinymce-react'
-import { tinymceBasicConf } from "../../../plugin_config/tinymce"
+import { tinymceBasicConf } from "../../../../../plugin_config/tinymce"
 
 
 const RelationsAccountBankAccountMandateForm = ({ t, history, inputData, isSubmitting, setFieldValue, setFieldTouched, errors, values, return_url }) => (

@@ -23,9 +23,9 @@ import {
   Card,
   Container,
 } from "tabler-react";
-import SiteWrapper from "../../../SiteWrapper"
-import HasPermissionWrapper from "../../../HasPermissionWrapper"
-import { dateToLocalISO } from '../../../../tools/date_tools'
+
+import HasPermissionWrapper from "../../../../HasPermissionWrapper"
+import { dateToLocalISO } from '../../../../../tools/date_tools'
 
 import RelationsAccountBankAccountBase from '../RelationsAccountBankAccountBase'
 
@@ -55,7 +55,7 @@ function RelationsAccountBankAccountMandateAdd({ t, match, history }) {
             console.log('submit values:')
             console.log(values)
 
-            createInvoice({ variables: {
+            createAccountBankAccountMandate({ variables: {
               input: {
                 accountBankAccount: bankAccountId,
                 reference: values.refrence, 
