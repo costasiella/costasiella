@@ -67,7 +67,7 @@ function RelationsAccountBankAccountMandateAdd({ t, match, history }) {
             ]})
             .then(({ data }) => {
                 console.log('got data', data)
-                toast.success((t('relations.account.bank_accounts.mandates.title_add')), {
+                toast.success((t('relations.account.bank_accounts.mandates.toast_add_success')), {
                     position: toast.POSITION.BOTTOM_RIGHT
                   })
                 // history.push('/finance/invoices/edit/' + data.createFinanceInvoice.financeInvoice.id)
