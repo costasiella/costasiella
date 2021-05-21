@@ -33,3 +33,12 @@ export const UPDATE_ACCOUNT_BANK_ACCOUNT_MANDATE = gql`
     }
   }
 `
+
+
+export const DELETE_ACCOUNT_BANK_ACCOUNT_MANDATE = gql`
+  mutation DeleteAccountBankAccountMandate($input:DeleteAccountBankAccountMandateInput!) {
+    deleteAccountBankAccountMandate(input: $input) {
+      ok
+    }
+  }
+`
