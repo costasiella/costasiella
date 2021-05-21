@@ -143,7 +143,7 @@ class UpdateAccountBankAccountMandate(graphene.relay.ClientIDMutation):
         return UpdateAccountBankAccountMandate(account_bank_account_mandate=account_bank_account_mandate)
 
 
-class DeleteAccountBankAccountManate(graphene.relay.ClientIDMutation):
+class DeleteAccountBankAccountMandate(graphene.relay.ClientIDMutation):
     class Input:
         id = graphene.ID(required=True)
 
@@ -161,10 +161,10 @@ class DeleteAccountBankAccountManate(graphene.relay.ClientIDMutation):
 
         ok = account_bank_account_mandate.delete()
 
-        return DeleteAccountBankAccountManate(ok=ok)
+        return DeleteAccountBankAccountMandate(ok=ok)
 
 
 class AccountBankAccountMandateMutation(graphene.ObjectType):
-    create_account_bank_account_mandate = UpdateAccountBankAccountMandate.Field()
-    delete_account_bank_account_mandate = UpdateAccountBankAccountMandate.Field()
+    create_account_bank_account_mandate = CreateAccountBankAccountMandate.Field()
+    delete_account_bank_account_mandate = DeleteAccountBankAccountMandate.Field()
     update_account_bank_account_mandate = UpdateAccountBankAccountMandate.Field()
