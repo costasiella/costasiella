@@ -107,6 +107,8 @@ class CreateAccountBankAccountMandate(graphene.relay.ClientIDMutation):
         if 'signature_date' in input:
             account_bank_account_mandate.signature_date = input['signature_date']
 
+        account_bank_account_mandate.save()
+
         return CreateAccountBankAccountMandate(account_bank_account_mandate=account_bank_account_mandate)
 
 
