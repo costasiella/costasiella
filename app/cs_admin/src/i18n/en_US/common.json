@@ -877,7 +877,9 @@
                     "content": "content",
                     "title": "Mandates",
                     "toast_add_success": "Added mandate",
-                    "toast_edit_success": "Saved"
+                    "toast_edit_success": "Saved",
+                    "delete_confirm_msg": "Are you sure you wish to delete this mandate?",
+                    "deleted": "Deleted mandate"
                 }
             },
             "babk_accounts": {
