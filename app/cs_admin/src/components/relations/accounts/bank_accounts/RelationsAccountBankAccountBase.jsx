@@ -4,10 +4,13 @@ import React from 'react'
 import { useQuery } from "react-apollo";
 import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
+import { Link } from "react-router-dom"
 
 import { GET_ACCOUNT_QUERY } from '../queries'
 
 import {
+  Button,
+  Icon,
   Page,
   Grid,
   Container
@@ -20,7 +23,7 @@ import RelationsAccountsBack from "../RelationsAccountsBack"
 import ProfileMenu from "../ProfileMenu"
 
 
-function RelationsAccountBankAccountBase({ t, match, history, children }) {
+function RelationsAccountBankAccountBase({ t, match, history, children, bankAccountId="" }) {
   const accountId = match.params.account_id
 
   const { loading, error, data } = useQuery(GET_ACCOUNT_QUERY, {
@@ -49,6 +52,18 @@ function RelationsAccountBankAccountBase({ t, match, history, children }) {
             </Grid.Col>
             <Grid.Col md={3}>
               <ProfileCardSmall user={account}/>
+              {(bankAccountId) ?
+                <HasPermissionWrapper permission="add"
+                                      resource="financeinvoice">
+                  <Link to={`/relations/accounts/${match.params.account_id}/bank_accounts/${bankAccountId}/add`}>
+                    <Button color="primary btn-block mb-6">
+                            {/* //  onClick={() => history.push("/organization/invoices/add")}> */}
+                      <Icon prefix="fe" name="plus-circle" /> {t('relations.account.babk_accounts.mandates.add')}
+                    </Button>
+                  </Link>
+                </HasPermissionWrapper>
+                : "" 
+              }
               <ProfileMenu 
                 active_link='bank_account'
                 account_id={accountId}

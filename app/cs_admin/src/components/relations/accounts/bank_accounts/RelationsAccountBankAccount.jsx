@@ -49,7 +49,7 @@ function RelationsAccountBankAccount({ t, match, history }) {
   const accountBankAccount = accountBankAccounts.edges[0].node
 
   return (
-    <RelationsAccountBankAccountBase>
+    <RelationsAccountBankAccountBase bankAccountId={accountBankAccount.id}>
       <Card title={t('relations.account.bank_accounts.title')}>
         <Formik
           initialValues={{ 
