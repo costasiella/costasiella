@@ -453,7 +453,8 @@
         "collection": "Collection",
         "payment": "Payment",
         "view": "View",
-        "invoices": "Invoices"
+        "invoices": "Invoices",
+        "ID": "ID"
     },
     "yup": {
         "min_len_3": "Please input at least 3 characters",

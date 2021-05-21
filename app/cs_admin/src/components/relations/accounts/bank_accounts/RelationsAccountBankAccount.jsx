@@ -118,7 +118,7 @@ function RelationsAccountBankAccount({ t, match, history }) {
       <Grid.Row>
       {mandates.edges.map(({ node }) => (
         <Grid.Col md={6}>
-          <Card title={node.reference}>
+          <Card title={t("general.ID") + ": " + node.reference}>
             <Card.Body>
               {t("relations.account.bank_accounts.mandates.signature_date")} {moment(node.signatureDate).format(dateFormat)}
               <div dangerouslySetInnerHTML={{ __html: node.content}} />
