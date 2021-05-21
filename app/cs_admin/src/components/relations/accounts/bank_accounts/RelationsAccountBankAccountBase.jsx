@@ -23,7 +23,7 @@ import RelationsAccountsBack from "../RelationsAccountsBack"
 import ProfileMenu from "../ProfileMenu"
 
 
-function RelationsAccountBankAccountBase({ t, match, history, children, bankAccountId="" }) {
+function RelationsAccountBankAccountBase({ t, match, history, children, bankAccountId="", showBack=false }) {
   const accountId = match.params.account_id
 
   const { loading, error, data } = useQuery(GET_ACCOUNT_QUERY, {
@@ -52,17 +52,27 @@ function RelationsAccountBankAccountBase({ t, match, history, children, bankAcco
             </Grid.Col>
             <Grid.Col md={3}>
               <ProfileCardSmall user={account}/>
-              {(bankAccountId) ?
+              {((bankAccountId) && (!showBack)) ?
                 <HasPermissionWrapper permission="add"
-                                      resource="financeinvoice">
-                  <Link to={`/relations/accounts/${match.params.account_id}/bank_accounts/${bankAccountId}/add`}>
+                                      resource="accountbankaccountmandate">
+                  <Link to={`/relations/accounts/${match.params.account_id}/bank_accounts/${bankAccountId}/mandates/add`}>
                     <Button color="primary btn-block mb-6">
-                            {/* //  onClick={() => history.push("/organization/invoices/add")}> */}
                       <Icon prefix="fe" name="plus-circle" /> {t('relations.account.babk_accounts.mandates.add')}
                     </Button>
                   </Link>
                 </HasPermissionWrapper>
                 : "" 
+              }
+              {(showBack) ?
+                <HasPermissionWrapper permission="view"
+                                      resource="accountbankaccount">
+                  <Link to={`/relations/accounts/${match.params.account_id}/bank_accounts/`}>
+                    <Button color="primary btn-block mb-6">
+                      <Icon prefix="fe" name="chevrons-left" /> {t('general.back')}
+                    </Button>
+                  </Link>
+                </HasPermissionWrapper>
+                : ""
               }
               <ProfileMenu 
                 active_link='bank_account'
