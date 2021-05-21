@@ -22,3 +22,14 @@ export const CREATE_ACCOUNT_BANK_ACCOUNT_MANDATE = gql`
     }
   }
 `
+
+
+export const UPDATE_ACCOUNT_BANK_ACCOUNT_MANDATE = gql`
+  mutation UpdateAccountBankAccountMandate($input:UpdateAccountBankAccountMandateInput!) {
+    updateAccountBankAccountMandate(input: $input) {
+      accountBankAccountMandate {
+        id
+      }
+    }
+  }
+`
