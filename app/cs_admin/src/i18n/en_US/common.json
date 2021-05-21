@@ -869,6 +869,11 @@
                 "number": "Account number",
                 "bic": "BIC",
                 "toast_edit_success": "Saved"
+            },
+            "babk_accounts": {
+                "mandates": {
+                    "add": "Add mandate"
+                }
             }
         },
         "b2b": {

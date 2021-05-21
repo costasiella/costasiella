@@ -1199,6 +1199,11 @@
                 "number": "__STRING_NOT_TRANSLATED__",
                 "bic": "__STRING_NOT_TRANSLATED__",
                 "toast_edit_success": "__STRING_NOT_TRANSLATED__"
+            },
+            "babk_accounts": {
+                "mandates": {
+                    "add": "__STRING_NOT_TRANSLATED__"
+                }
             }
         },
         "accounts": {
