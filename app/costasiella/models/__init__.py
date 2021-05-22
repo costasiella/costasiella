@@ -27,6 +27,7 @@ from .finance_order import FinanceOrder
 from .finance_order_item import FinanceOrderItem
 from .finance_payment_batch import FinancePaymentBatch
 from .finance_payment_batch_category import FinancePaymentBatchCategory
+from .finance_payment_batch_item import FinancePaymentBatchItem
 from .finance_payment_method import FinancePaymentMethod
 from .finance_tax_rate import FinanceTaxRate
 
