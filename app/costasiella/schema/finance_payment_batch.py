@@ -13,6 +13,9 @@ from ..modules.messages import Messages
 
 from .custom_schema_validators import is_year, is_month
 
+from ..tasks import finance_payment_batch_generate_items_invoices
+
+
 m = Messages()
 
 
@@ -141,7 +144,8 @@ class CreateFinancePaymentBatch(graphene.relay.ClientIDMutation):
 
         finance_payment_batch.save()
 
-        #TODO: Call background task to create batch items
+        # Call background task to create batch items
+        task = finance_payment_batch_generate_items_invoices.delay(finance_payment_batch.id)
 
         return CreateFinancePaymentBatch(finance_payment_batch=finance_payment_batch)
 
