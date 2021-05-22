@@ -1,14 +1,18 @@
 from django.utils.translation import gettext as _
 from django.utils import timezone
 from django.db import models
+from django.db.models import Q
 
 from ..modules.encrypted_fields import EncryptedTextField
+from .finance_invoice import FinanceInvoice
 from .organization_location import OrganizationLocation
 from .finance_payment_batch_category import FinancePaymentBatchCategory
 
 from .helpers import model_string
 from .choices.finance_payment_batch_statuses import get_finance_payment_batch_statuses
 from .choices.finance_payment_batch_types import get_finance_payment_batch_types
+
+from ..dudes import SystemSettingDude
 
 
 class FinancePaymentBatch(models.Model):
@@ -31,3 +35,66 @@ class FinancePaymentBatch(models.Model):
 
     def __str__(self):
         return model_string(self)
+
+    def generate_items(self):
+        """ generate batch items """
+        result = ""
+        if not self.finance_payment_batch_category:
+            result = self._generate_items_invoices()
+
+        return result
+
+    def _generate_items_invoices(self):
+        """
+        Generate items for invoices batch (finance_payment_batch_category not set)
+        :return:
+        """
+        from .finance_payment_batch_item import FinancePaymentBatchItem
+
+        system_setting_dude = SystemSettingDude()
+        currency = system_setting_dude.get('finance_currency') or "EUR"
+
+        invoices = FinanceInvoice.objects.filter(
+            status="SENT",
+            finance_payment_method=103  # 103 = Direct Debit
+        )
+
+        # Filter by location
+        if self.organization_location:
+            invoices = invoices.filter(organization_location=self.organization_location)
+
+        # Check for zero amounts
+        if not self.include_zero_amounts:
+            invoices = invoices.filter(total__gt=0)
+
+        for invoice in invoices:
+            # Get bank account
+            account = invoice.account
+            bank_account = account.bank_accounts.all().first()
+            mandate = bank_account.mandates.all().first()
+            if mandate:
+                mandate_signature_date = mandate.signature_date
+                mandate_reference = mandate.reference
+            else:
+                mandate_signature_date = None
+                mandate_reference = None
+
+            finance_payment_batch_item = FinancePaymentBatchItem(
+                finance_payment_batch=self,
+                account=account,
+                finance_invoice=invoice,
+                account_holder=bank_account.holder,
+                account_number=bank_account.number,
+                account_bic=bank_account.bic,
+                mandate_signature_date=mandate_signature_date,
+                mandate_reference=mandate_reference,
+                amount=invoice.total,
+                currency=currency,
+                description=invoice.summary
+            )
+            finance_payment_batch_item.save()
+
+        return {
+            'success': True,
+            'message': _("Generated %s batch items") % len(invoices)
+        }
