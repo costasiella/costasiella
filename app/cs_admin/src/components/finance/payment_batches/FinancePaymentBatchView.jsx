@@ -123,9 +123,24 @@ function FinancePaymentBatchView({ t, history, match }) {
         </Grid.Col>
         <Grid.Col md={3}>
           <Card title={t("finance.payment_batch.title_batch_totals")}>
-            <Card.Body>
-              ...
-            </Card.Body>
+            <Table cards>
+              <Table.Row>
+                <Table.Col>
+                  {t('general.total')}
+                </Table.Col>
+                <Table.Col>
+                  {financePaymentBatch.totalDisplay}
+                </Table.Col>
+              </Table.Row>
+              <Table.Row>
+                <Table.Col>
+                  {t('general.items')}
+                </Table.Col>
+                <Table.Col>
+                  {financePaymentBatch.countItems}
+                </Table.Col>
+              </Table.Row>
+            </Table>
           </Card>
         </Grid.Col>
         <Grid.Col md={3}>

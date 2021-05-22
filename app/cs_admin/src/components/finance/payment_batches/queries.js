@@ -54,6 +54,8 @@ export const GET_PAYMENT_BATCH_QUERY = gql`
         name
       }
       note
+      totalDisplay
+      countItems
       items {
         pageInfo {
           startCursor
