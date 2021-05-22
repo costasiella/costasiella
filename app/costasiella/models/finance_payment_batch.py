@@ -30,17 +30,42 @@ class FinancePaymentBatch(models.Model):
     include_zero_amounts = models.BooleanField(default=False)
     organization_location = models.ForeignKey(OrganizationLocation, on_delete=models.CASCADE, null=True)
     note = models.TextField(default="")
+    total = models.DecimalField(max_digits=20, decimal_places=2, default=0)
+    count_items = models.IntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return model_string(self)
 
+    def update_totals(self):
+        """
+        Update total fields
+        :return: None
+        """
+        from django.db.models import Sum
+        from .finance_payment_batch_item import FinancePaymentBatchItem
+
+        qs = FinancePaymentBatchItem.objects.filter(finance_payment_batch=self)
+        self.count_items = qs.count()
+        sums = qs.aggregate(
+            Sum('amount')
+        )
+
+        self.total = sums['amount__sum'] or 0
+
+        self.save(update_fields=[
+            "total",
+            "count_items"
+        ])
+
     def generate_items(self):
         """ generate batch items """
         result = ""
         if not self.finance_payment_batch_category:
             result = self._generate_items_invoices()
+
+        self.update_totals()
 
         return result
 
