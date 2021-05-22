@@ -455,7 +455,8 @@
         "payment": "Payment",
         "view": "View",
         "invoices": "Invoices",
-        "ID": "ID"
+        "ID": "ID",
+        "line": "Line"
     },
     "yup": {
         "min_len_3": "Please input at least 3 characters",
