@@ -577,7 +577,8 @@
             "title_batch_exports": "__STRING_NOT_TRANSLATED__",
             "title_batch_items": "__STRING_NOT_TRANSLATED__",
             "title_view": "__STRING_NOT_TRANSLATED__",
-            "title_edit": "__STRING_NOT_TRANSLATED__"
+            "title_edit": "__STRING_NOT_TRANSLATED__",
+            "title_add": "__STRING_NOT_TRANSLATED__"
         }
     },
     "shop": {

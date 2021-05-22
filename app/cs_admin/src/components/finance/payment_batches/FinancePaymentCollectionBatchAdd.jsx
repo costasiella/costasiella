@@ -36,7 +36,7 @@ function FinancePaymentCollectionBatchAdd({ t, history, match }) {
   const batchType = match.params.batch_type
   const returnUrl = `/finance/paymentbatches/${batchType}`
   const categoryType = match.params.category_type
-  const cardTitle = t('finance.payment_batch_categories.title_add')
+  const cardTitle = t('finance.payment_batch.title_add')
 
 
   let invoices = false
@@ -108,6 +108,8 @@ function FinancePaymentCollectionBatchAdd({ t, history, match }) {
             ]})
             .then(({ data }) => {
                 console.log('got data', data);
+                const id = data.createFinancePaymentBatch.financePaymentBatch.id
+                history.push(`/finance/paymentbatches/${batchType}/view/${id}`)
                 toast.success((t('finance.payment_batches.toast_add_success')), {
                     position: toast.POSITION.BOTTOM_RIGHT
                   })
