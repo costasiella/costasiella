@@ -54,6 +54,36 @@ export const GET_PAYMENT_BATCH_QUERY = gql`
         name
       }
       note
+      items {
+        pageInfo {
+          startCursor
+          endCursor
+          hasNextPage
+          hasPreviousPage
+        }
+        edges {
+          node {
+            id
+            account {
+              id
+              fullName
+            }
+            financeInvoice {
+              id
+              invoiceNumber
+            }
+            accountHolder
+            accountNumber
+            accountBic
+            mandateReference
+            mandateSignatureDate
+            amount
+            amountDisplay
+            currency
+            description
+          }
+        }
+      }
     }
   }
 `
