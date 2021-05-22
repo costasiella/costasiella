@@ -36,6 +36,7 @@ class FinancePaymentBatchItemQuery(graphene.ObjectType):
 
         return FinancePaymentBatchItem.objects.all()
 #
+# NOTE: Items are generated, no user interaction is implemented.
 #
 # def validate_create_update_input(input, update=False):
 #     """
