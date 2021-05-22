@@ -20,7 +20,9 @@ from ..modules.encrypted_fields import EncryptedTextField
 class FinancePaymentBatchItem(models.Model):
     # BATCH_TYPES = get_finance_payment_batch_types()
     # STATUSES = get_finance_payment_batch_statuses()
-    finance_payment_batch = models.ForeignKey(FinancePaymentBatch, on_delete=models.CASCADE)
+    finance_payment_batch = models.ForeignKey(FinancePaymentBatch,
+                                              on_delete=models.CASCADE,
+                                              related_name="items")
     account = models.ForeignKey(Account, on_delete=models.SET_NULL, related_name="payment_batch_items", null=True)
     # account_subscription = models.ForeignKey(AccountSubscription, on_delete=models.SET_NULL, null=True)
     finance_invoice = models.ForeignKey(FinanceInvoice, on_delete=models.CASCADE, null=True)
