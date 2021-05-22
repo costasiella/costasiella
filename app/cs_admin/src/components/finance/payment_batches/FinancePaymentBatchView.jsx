@@ -5,6 +5,7 @@ import { useQuery, useMutation } from "react-apollo";
 import gql from "graphql-tag"
 import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
+import { Link } from "react-router-dom"
 import { Formik } from 'formik'
 import { toast } from 'react-toastify'
 
@@ -63,6 +64,7 @@ function FinancePaymentBatchView({ t, history, match }) {
   )
 
   const financePaymentBatch = data.financePaymentBatch
+  console.log(financePaymentBatch)
 
   return (
     <FinancePaymentBatchViewBase>
@@ -144,9 +146,70 @@ function FinancePaymentBatchView({ t, history, match }) {
       <Grid.Row>
         <Grid.Col>
           <Card title={t("finance.payment_batch.title_batch_items")}>
-            <Card.Body>
-              Items
-            </Card.Body>
+            <small>
+              <Table cards >
+                <Table.Header>
+                  <Table.Row>
+                    <Table.ColHeader>
+                      {t("general.line")}
+                    </Table.ColHeader>
+                    <Table.ColHeader>
+                      {t("general.account")}
+                    </Table.ColHeader>
+                    <Table.ColHeader>
+                      {t("relations.account.bank_accounts.holder")}
+                    </Table.ColHeader>
+                    <Table.ColHeader>
+                      {t("relations.account.bank_accounts.number")}
+                    </Table.ColHeader>
+                    <Table.ColHeader>
+                      {t("general.description")}
+                    </Table.ColHeader>
+                    <Table.ColHeader>
+                      {t("settings.finance.currency.title")}
+                    </Table.ColHeader>
+                    <Table.ColHeader>
+                      {t("general.amount")}
+                    </Table.ColHeader>
+                    <Table.ColHeader>
+                      {t("finance.invoices.invoice_number")}
+                    </Table.ColHeader>
+                  </Table.Row>
+                </Table.Header>
+                <Table.Body>
+                  {financePaymentBatch.items.edges.map(({ node }, index) => (
+                    <Table.Row>
+                      <Table.Col>{index + 1}</Table.Col>
+                      <Table.Col>
+                        <Link to={`/relations/accounts/${node.account.id}/profile`}>
+                          {node.account.fullName}
+                        </Link>
+                      </Table.Col>
+                      <Table.Col>
+                        {node.accountHolder}
+                      </Table.Col>
+                      <Table.Col>
+                        {node.accountNumber} {(node.accountBic) ? <div>{node.accountBic}</div> : ""}
+                      </Table.Col>
+                      <Table.Col>
+                        {node.description}
+                      </Table.Col>
+                      <Table.Col>
+                        {node.currency}
+                      </Table.Col>
+                      <Table.Col>
+                        {node.amountDisplay}
+                      </Table.Col>
+                      <Table.Col>
+                        <Link to={`/finance/invoices/edit/${node.financeInvoice.id}`}>
+                          {node.financeInvoice.invoiceNumber}
+                        </Link>
+                      </Table.Col>
+                    </Table.Row>
+                  ))}
+                </Table.Body>
+              </Table>
+            </small>
           </Card>
         </Grid.Col>
       </Grid.Row>
