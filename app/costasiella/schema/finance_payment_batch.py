@@ -19,11 +19,20 @@ from ..tasks import finance_payment_batch_generate_items_invoices
 m = Messages()
 
 
+class FinancePaymentBatchNodeInterface(graphene.Interface):
+    id = graphene.GlobalID()
+    total_display = graphene.String()
+
+
 class FinancePaymentBatchNode(DjangoObjectType):
     class Meta:
         model = FinancePaymentBatch
         filter_fields = ['batch_type']
-        interfaces = (graphene.relay.Node, )
+        interfaces = (graphene.relay.Node, FinancePaymentBatchNodeInterface,)
+
+    def resolve_total_display(self, info):
+        from ..modules.finance_tools import display_float_as_amount
+        return display_float_as_amount(self.total)
 
     @classmethod
     def get_node(self, info, id):
