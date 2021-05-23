@@ -25,6 +25,7 @@ import {
   Card,
   Container,
   Table,
+  List,
 } from "tabler-react"
 import SiteWrapper from "../../SiteWrapper"
 import HasPermissionWrapper from "../../HasPermissionWrapper"
@@ -41,6 +42,8 @@ import BadgeBoolean from '../../ui/BadgeBoolean';
 function FinancePaymentBatchView({ t, history, match }) {
   const appSettings = useContext(AppSettingsContext)
   const dateFormat = appSettings.dateFormat
+  const timeFormat = appSettings.timeFormatMoment
+  const dateTimeFormat = dateFormat + ' ' + timeFormat
   const batchType = match.params.batch_type
   const batchId = match.params.id
   const returnUrl = `/finance/paymentbatches/${batchType}`
@@ -153,7 +156,14 @@ function FinancePaymentBatchView({ t, history, match }) {
         <Grid.Col md={3}>
           <Card title={t("finance.payment_batch.title_batch_exports")}>
             <Card.Body>
-              ...
+              <List unstyled>
+              {financePaymentBatch.exports.edges.map(({ node }) => (
+                <List.Item>
+                  {moment(node.createdAt).format(dateTimeFormat)} <br /> 
+                  <small>{node.account.fullName}</small>
+                </List.Item>
+              ))}
+              </List>
             </Card.Body>
           </Card>
         </Grid.Col>

@@ -35,7 +35,7 @@ function FinancePaymentBatchViewBase({t, history, match, children}) {
                 {/* Export as PDF */}
                 <a href={exportUrl} 
                     className='btn btn-secondary mr-2'>
-                    <Icon prefix="fe" name="printer" /> {t('general.pdf')} 
+                    <Icon prefix="fe" name="download" /> {t('general.export')} 
                 </a>
                 <Link to={`/finance/paymentbatches/${batchType}/edit/${batchId}`} 
                       className='btn btn-secondary'>

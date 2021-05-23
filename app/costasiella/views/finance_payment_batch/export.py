@@ -12,7 +12,7 @@ from django.template.loader import get_template, render_to_string
 # from django.template.loader import render_to_string
 # rendered = render_to_string('my_template.html', {'foo': 'bar'})
 
-from ...models import AppSettings, FinancePaymentBatch
+from ...models import AppSettings, FinancePaymentBatch, FinancePaymentBatchExport
 from ...modules.gql_tools import require_login_and_permission, get_rid
 
 # Django-graphql-jwt imports begin
@@ -29,6 +29,15 @@ from ..jwt_settings import jwt_settings
 # Django-graphql-jwt imports end
 
 
+def _get_user(request, **kwargs):
+    user = None
+    token = get_credentials(request, **kwargs)
+    if token is not None:
+        user = get_user_by_token(token, request)
+
+    return user
+
+
 def _verifiy_permission(request, **kwargs):
     """
 
@@ -38,14 +47,9 @@ def _verifiy_permission(request, **kwargs):
     """
     # user = request.user # This should work, but doesn't at 05-02-2012 for some reason. Check again later
     # Fetch token using some code from djan-graphql-jwt
-    user = None
-    token = get_credentials(request, **kwargs)
-    if token is not None:
-        user = get_user_by_token(token, request)
+    print(request.user)
 
-    print("user:")
-    print(user)
-
+    user = _get_user(request)
     if not user:
         return False
 
@@ -67,6 +71,14 @@ def export_csv_finance_payment_batch(request, node_id, **kwargs):
     finance_payment_batch = FinancePaymentBatch.objects.get(id=rid.id)
     if not _verifiy_permission(request):
         raise Http404(_("Finance Payment Batch not found..."))
+
+    # Log export into exports table
+    user = _get_user(request)
+    finance_payment_batch_export = FinancePaymentBatchExport(
+        finance_payment_batch=finance_payment_batch,
+        account=user
+    )
+    finance_payment_batch_export.save()
 
     # Create a file-like buffer to receive csv data.
     buffer = io.StringIO()

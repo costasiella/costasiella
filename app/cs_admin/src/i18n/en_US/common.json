@@ -456,7 +456,8 @@
         "view": "View",
         "invoices": "Invoices",
         "ID": "ID",
-        "line": "Line"
+        "line": "Line",
+        "export": "Export"
     },
     "yup": {
         "min_len_3": "Please input at least 3 characters",
