@@ -4,7 +4,7 @@ from .account_bank_account import AccountBankAccount
 from .account_bank_account_mandate import AccountBankAccountMandate
 from .account_classpass import AccountClasspass
 from .account_membership import AccountMembership
-from .account_payment_batch_category_item import AccountPaymentBatchCategoryItem
+from .account_finance_payment_batch_category_item import AccountFinancePaymentBatchCategoryItem
 from .account_schedule_event_ticket import AccountScheduleEventTicket
 from .account_subscription import AccountSubscription
 from .account_subscription_alt_price import AccountSubscriptionAltPrice
