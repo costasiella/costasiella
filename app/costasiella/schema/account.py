@@ -155,7 +155,7 @@ class CreateAccount(graphene.relay.ClientIDMutation):
 
         # verify email unique
         query_set = get_user_model().objects.filter(
-            email = input['email']
+            email=input['email']
         )
 
         # Don't insert duplicate records in the DB. If this records exist, fetch and return it

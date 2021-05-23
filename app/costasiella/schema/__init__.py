@@ -6,6 +6,9 @@ from .account_accepted_document import AccountAcceptedDocumentQuery
 from .account_bank_account import AccountBankAccountQuery, AccountBankAccountMutation
 from .account_bank_account_mandate import AccountBankAccountMandateQuery, AccountBankAccountMandateMutation
 from .account_classpass import AccountClasspassQuery, AccountClasspassMutation
+from .account_finance_payment_batch_category_item import \
+    AccountFinancePaymentBatchCategoryItemQuery,\
+    AccountFinancePaymentBatchCategoryItemMutation
 from .account_membership import AccountMembershipQuery, AccountMembershipMutation
 from .account_schedule_event_ticket import AccountScheduleEventTicketQuery, AccountScheduleEventTicketMutation
 from .account_subscription import AccountSubscriptionQuery, AccountSubscriptionMutation
