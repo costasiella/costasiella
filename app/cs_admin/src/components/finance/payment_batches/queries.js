@@ -86,6 +86,24 @@ export const GET_PAYMENT_BATCH_QUERY = gql`
           }
         }
       }
+      exports {
+        pageInfo {
+          startCursor
+          endCursor
+          hasNextPage
+          hasPreviousPage
+        }
+        edges {
+          node {
+            id
+            account {
+              id
+              fullName
+            }
+            createdAt
+          }
+        }
+      }
     }
   }
 `
