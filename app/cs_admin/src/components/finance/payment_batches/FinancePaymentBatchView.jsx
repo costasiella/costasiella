@@ -72,7 +72,7 @@ function FinancePaymentBatchView({ t, history, match }) {
   return (
     <FinancePaymentBatchViewBase>
       <Grid.Row>
-        <Grid.Col md={3}>
+        <Grid.Col md={4}>
           <Card title={t("finance.payment_batch.title_batch_info")}>
             <Table cards>
               <Table.Body>
@@ -124,7 +124,7 @@ function FinancePaymentBatchView({ t, history, match }) {
             </Table>
           </Card>
         </Grid.Col>
-        <Grid.Col md={3}>
+        <Grid.Col md={4}>
           <Card title={t("finance.payment_batch.title_batch_totals")}>
             <Table cards>
               <Table.Row>
@@ -146,14 +146,7 @@ function FinancePaymentBatchView({ t, history, match }) {
             </Table>
           </Card>
         </Grid.Col>
-        <Grid.Col md={3}>
-          <Card title={t("finance.payment_batch.title_batch_note")}>
-            <Card.Body>
-              {financePaymentBatch.note}
-            </Card.Body>
-          </Card>
-        </Grid.Col>
-        <Grid.Col md={3}>
+        <Grid.Col md={4}>
           <Card title={t("finance.payment_batch.title_batch_exports")}>
             <Card.Body>
               <List unstyled>
@@ -168,6 +161,17 @@ function FinancePaymentBatchView({ t, history, match }) {
           </Card>
         </Grid.Col>
       </Grid.Row>
+      {(financePaymentBatch.note) ?
+        <Grid.Row>
+          <Grid.Col md={12}>
+              <Card title={t("finance.payment_batch.title_batch_note")}>
+                <Card.Body>
+                  {financePaymentBatch.note}
+                </Card.Body>
+              </Card>
+            </Grid.Col>
+          </Grid.Row>
+      : "" }
       <Grid.Row>
         <Grid.Col>
           <Card title={t("finance.payment_batch.title_batch_items")}>
