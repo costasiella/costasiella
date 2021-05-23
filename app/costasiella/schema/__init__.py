@@ -33,6 +33,7 @@ from .finance_order_payment_link import FinanceOrderPaymentLinkMutation
 from .finance_order_item import FinanceOrderItemQuery
 from .finance_payment_batch import FinancePaymentBatchQuery, FinancePaymentBatchMutation
 from .finance_payment_batch_category import FinancePaymentBatchCategoryQuery, FinancePaymentBatchCategoryMutation
+from .finance_payment_batch_export import FinancePaymentBatchExportQuery
 from .finance_payment_batch_item import FinancePaymentBatchItemQuery
 from .finance_payment_method import FinancePaymentMethodQuery, FinancePaymentMethodMutation
 from .finance_tax_rate import FinanceTaxRateQuery, FinanceTaxRateMutation
@@ -106,6 +107,7 @@ class Query(AccountQuery,
             FinanceOrderItemQuery,
             FinancePaymentBatchQuery,
             FinancePaymentBatchCategoryQuery,
+            FinancePaymentBatchExportQuery,
             FinancePaymentBatchItemQuery,
             FinancePaymentMethodQuery,
             FinanceTaxRateQuery,
