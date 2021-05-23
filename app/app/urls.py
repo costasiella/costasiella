@@ -46,6 +46,9 @@ urlpatterns = [
         template_name="email_verfied.html"),
          name="email_verified"
          ),
+    path('d/export/finance_payment_batch/csv/<str:node_id>',
+         views.export_csv_finance_payment_batch,
+         name="export_csv_finance_payment_batch"),
     path('d/export/terms-and-conditions', views.terms_and_conditions, name="terms_and_conditions"),
     path('d/export/privacy-policy', views.privacy_policy, name="privacy_policy"),
     path('d/export/insight/classpasses/active/<int:year>', 

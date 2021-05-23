@@ -60,7 +60,7 @@ def export_excel_insight_classpasses_sold(request, year):
 
             ws.append(data_list)
 
-    # # Create a file-like buffer to receive PDF data.
+    # # Create a file-like buffer to receive xlsx data.
     buffer = io.BytesIO()
     wb.save(buffer)
 

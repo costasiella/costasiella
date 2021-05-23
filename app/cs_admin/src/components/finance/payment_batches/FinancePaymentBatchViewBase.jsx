@@ -20,6 +20,7 @@ function FinancePaymentBatchViewBase({t, history, match, children}) {
   const batchId = match.params.id
   const batchType = match.params.batch_type
   const returnUrl = `/finance/paymentbatches/${batchType}`
+  const exportUrl = `/d/export/finance_payment_batch/csv/${batchId}`
 
   return (
     <SiteWrapper>
@@ -31,9 +32,14 @@ function FinancePaymentBatchViewBase({t, history, match, children}) {
                       className='btn btn-secondary mr-2'>
                   <Icon prefix="fe" name="arrow-left" /> {t('general.back')}
                 </Link>
+                {/* Export as PDF */}
+                <a href={exportUrl} 
+                    className='btn btn-secondary mr-2'>
+                    <Icon prefix="fe" name="printer" /> {t('general.pdf')} 
+                </a>
                 <Link to={`/finance/paymentbatches/${batchType}/edit/${batchId}`} 
                       className='btn btn-secondary'>
-                  {t('general.edit')}
+                  <Icon name="edit-2" /> {t('general.edit')}
                 </Link>
             </div>
           </Page.Header>
