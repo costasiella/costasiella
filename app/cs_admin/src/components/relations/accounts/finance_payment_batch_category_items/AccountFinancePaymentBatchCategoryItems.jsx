@@ -45,7 +45,7 @@ const DELETE_ACCOUNT_CLASSPASS = gql`
 function AccountFinancePaymentBatchCategoryItems({ t, history, match }) {
   const accountId = match.params.account_id
 
-  const { loading, error, data } = useQuery(GET_ACCOUNT_QUERY, {
+  const { loading, error, data, fetchMore } = useQuery(GET_ACCOUNT_FINANCE_PAYMENT_BATCH_CATEGORY_ITEMS_QUERY, {
     variables: { account: accountId }
   })
 
@@ -95,7 +95,7 @@ function AccountFinancePaymentBatchCategoryItems({ t, history, match }) {
           })
         }} 
       >
-        <Table>
+        <Table cards>
           <Table.Header>
             <Table.Row key={v4()}>
               <Table.ColHeader>{t('general.category')}</Table.ColHeader>
