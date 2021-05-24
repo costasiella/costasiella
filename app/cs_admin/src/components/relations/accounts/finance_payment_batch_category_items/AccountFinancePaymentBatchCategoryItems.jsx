@@ -70,6 +70,7 @@ function AccountFinancePaymentBatchCategoryItems({ t, history, match }) {
     <AccountFinancePaymentBatchCategoryItemsBase>
       <ContentCard 
         cardTitle={t('relations.account.finance_payment_batch_category_items.title')}
+        hasCardBody={false}
         pageInfo={batchCategoryItems.pageInfo}
         onLoadMore={() => {
           fetchMore({
