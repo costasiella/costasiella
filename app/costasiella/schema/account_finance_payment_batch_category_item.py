@@ -39,11 +39,20 @@ def validate_create_update_input(input, update=False):
     return result
 
 
+class AccountFinancePaymentBatchCategoryItemNodeInterface(graphene.Interface):
+    id = graphene.GlobalID()
+    amount_display = graphene.String()
+
+
 class AccountFinancePaymentBatchCategoryItemNode(DjangoObjectType):
     class Meta:
         model = AccountFinancePaymentBatchCategoryItem
         filter_fields = ['account']
-        interfaces = (graphene.relay.Node, )
+        interfaces = (graphene.relay.Node, AccountFinancePaymentBatchCategoryItemNodeInterface, )
+
+    def resolve_amount_display(self, info):
+        from ..modules.finance_tools import display_float_as_amount
+        return display_float_as_amount(self.amount)
 
     @classmethod
     def get_node(self, info, id):
