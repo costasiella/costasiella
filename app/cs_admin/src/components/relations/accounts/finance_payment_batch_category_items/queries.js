@@ -1,8 +1,8 @@
 import gql from "graphql-tag"
 
 export const GET_ACCOUNT_FINANCE_PAYMENT_BATCH_CATEGORY_ITEMS_QUERY = gql`
-  query AccountFinancePaymentBatchCategoryItems($after: String, $before: String, $accountId: ID!) {
-    accountFinancePaymentBatchCategoryItems(first: 15, before: $before, after: $after, account: $accountId) {
+  query AccountFinancePaymentBatchCategoryItems($after: String, $before: String, $account: ID!) {
+    accountFinancePaymentBatchCategoryItems(first: 15, before: $before, after: $after, account: $account) {
       pageInfo {
         startCursor
         endCursor
@@ -22,15 +22,6 @@ export const GET_ACCOUNT_FINANCE_PAYMENT_BATCH_CATEGORY_ITEMS_QUERY = gql`
           description
         }
       }
-    }
-    account(id:$accountId) {
-      id
-      firstName
-      lastName
-      email
-      phone
-      mobile
-      isActive
     }
   }
 `
