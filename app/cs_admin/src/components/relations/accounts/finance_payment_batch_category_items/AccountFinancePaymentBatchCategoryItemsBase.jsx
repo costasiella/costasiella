@@ -25,7 +25,7 @@ import ProfileCardSmall from "../../../ui/ProfileCardSmall"
 import { GET_ACCOUNT_QUERY } from '../queries'
 
 
-function AccountFinancePaymentBatchcAtegoryItemsBase({ t, history, match }) {
+function AccountFinancePaymentBatchcAtegoryItemsBase({ t, history, match, children, showBack=false }) {
   const accountId = match.params.account_id
 
   const { loading, error, data } = useQuery(GET_ACCOUNT_QUERY, {
