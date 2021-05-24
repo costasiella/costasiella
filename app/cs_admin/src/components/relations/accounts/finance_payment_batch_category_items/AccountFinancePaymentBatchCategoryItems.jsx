@@ -99,7 +99,12 @@ function AccountFinancePaymentBatchCategoryItems({ t, history, match }) {
         <Table cards>
           <Table.Header>
             <Table.Row key={v4()}>
+              <Table.ColHeader>{t('general.year')}</Table.ColHeader>
+              <Table.ColHeader>{t('general.month')}</Table.ColHeader>
+              <Table.ColHeader>{t('general.amount')}</Table.ColHeader>
               <Table.ColHeader>{t('general.category')}</Table.ColHeader>
+              <Table.ColHeader>{t('general.description')}</Table.ColHeader>
+              <Table.ColHeader></Table.ColHeader> 
               <Table.ColHeader></Table.ColHeader> 
             </Table.Row>
           </Table.Header>
@@ -107,17 +112,35 @@ function AccountFinancePaymentBatchCategoryItems({ t, history, match }) {
               {batchCategoryItems.edges.map(({ node }) => (
                 <Table.Row key={v4()}>
                   <Table.Col key={v4()}>
+                    {node.year}
+                  </Table.Col>
+                  <Table.Col key={v4()}>
+                    {node.month}
+                  </Table.Col>
+                  <Table.Col key={v4()}>
+                    {node.amountDisplay}
+                  </Table.Col>
+                  <Table.Col key={v4()}>
                     {node.financePaymentBatchCategory.name}
                   </Table.Col>
-                  {/* <Table.Col key={v4()}>
-                    {node.dateStart}
+                  <Table.Col key={v4()}>
+                    {node.amountDisplay}
                   </Table.Col>
                   <Table.Col key={v4()}>
-                    {node.dateEnd}
+                    {node.description.replace(/(.{30})..+/, "$1&hellip;")}
                   </Table.Col>
-                  <Table.Col key={v4()}>
-                    {node.classesRemainingDisplay}
+                  <Table.Col className="text-right" key={v4()}>
+                    <Link to={`/relations/accounts/${match.params.account_id}/finance_payment_batch_category_items/edit/${node.id}`}>
+                      <Button className='btn-sm' 
+                              color="secondary">
+                        {t('general.edit')}
+                      </Button>
+                    </Link>
                   </Table.Col>
+                  <Table.Col>
+                    delete
+                  </Table.Col>
+                  {/* 
                   <Table.Col className="text-right" key={v4()}>
                     <Link to={"/relations/accounts/" + match.params.account_id + "/classpasses/edit/" + node.id}>
                       <Button className='btn-sm' 
