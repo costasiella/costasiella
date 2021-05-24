@@ -224,7 +224,8 @@
         "invoices": "__STRING_NOT_TRANSLATED__",
         "ID": "__STRING_NOT_TRANSLATED__",
         "line": "__STRING_NOT_TRANSLATED__",
-        "export": "__STRING_NOT_TRANSLATED__"
+        "export": "__STRING_NOT_TRANSLATED__",
+        "category": "__STRING_NOT_TRANSLATED__"
     },
     "settings": {
         "error_loading": "__STRING_NOT_TRANSLATED__",

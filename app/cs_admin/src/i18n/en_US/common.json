@@ -457,7 +457,8 @@
         "invoices": "Invoices",
         "ID": "ID",
         "line": "Line",
-        "export": "Export"
+        "export": "Export",
+        "category": "Category"
     },
     "yup": {
         "min_len_3": "Please input at least 3 characters",
