@@ -887,8 +887,9 @@
                     "add": "Add mandate"
                 }
             },
-            "finance_payment_batch_category_item": {
-                "title": "Payment batch items"
+            "finance_payment_batch_category_items": {
+                "title": "Payment batch items",
+                "add": "Add batch item"
             }
         },
         "b2b": {

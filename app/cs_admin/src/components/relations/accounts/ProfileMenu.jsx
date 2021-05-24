@@ -178,11 +178,11 @@ const ProfileMenu = ({ t, account_id, active_link }) => (
                 <List.GroupItem
                     key={v4()}
                     className="d-flex align-items-center"
-                    to={"#/relations/accounts/" + account_id + "/finance_payment_batch_category_item"}
+                    to={"#/relations/accounts/" + account_id + "/finance_payment_batch_category_items"}
                     icon="list"
                     active={finance_payment_batch_category_item_active}
                     >
-                {t('relations.account.finance_payment_batch_category_item.title')}
+                {t('relations.account.finance_payment_batch_category_items.title')}
                 </List.GroupItem>
             </HasPermissionWrapper>
             { (account.teacher) ?

@@ -1217,8 +1217,9 @@
                     "add": "__STRING_NOT_TRANSLATED__"
                 }
             },
-            "finance_payment_batch_category_item": {
-                "title": "__STRING_NOT_TRANSLATED__"
+            "finance_payment_batch_category_items": {
+                "title": "__STRING_NOT_TRANSLATED__",
+                "add": "__STRING_NOT_TRANSLATED__"
             }
         },
         "accounts": {
