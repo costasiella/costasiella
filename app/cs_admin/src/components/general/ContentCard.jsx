@@ -45,6 +45,7 @@ class ContentCard extends Component {
       const pageInfo = this.props.pageInfo
       const children = this.props.children
       const cardTabs = this.props.cardTabs
+      const hasCardBody = this.props.hasCardBody 
 
 
       return(
@@ -54,9 +55,10 @@ class ContentCard extends Component {
             {headerContent}
           </Card.Header>
           {cardTabs}
-          <Card.Body>
-            {children}
-          </Card.Body>
+          {(hasCardBody) ? 
+            <Card.Body>{children}</Card.Body> :
+            children
+          }
           <Card.Footer>
             {(!pageInfo) ? '':
               (pageInfo.hasNextPage) ? 
@@ -75,7 +77,8 @@ class ContentCard extends Component {
 }
 
 ContentCard.defaultProps = {
-  onLoadMore: f=>f
+  onLoadMore: f=>f,
+  hasCardBody: true
 }
   
 export default withTranslation()(ContentCard)
