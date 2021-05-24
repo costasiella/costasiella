@@ -883,13 +883,12 @@
                     "toast_add_success": "Added mandate",
                     "toast_edit_success": "Saved",
                     "delete_confirm_msg": "Are you sure you wish to delete this mandate?",
-                    "deleted": "Deleted mandate"
-                }
-            },
-            "babk_accounts": {
-                "mandates": {
+                    "deleted": "Deleted mandate",
                     "add": "Add mandate"
                 }
+            },
+            "finance_payment_batch_category_item": {
+                "title": "Payment batch items"
             }
         },
         "b2b": {

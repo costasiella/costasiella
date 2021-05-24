@@ -57,7 +57,7 @@ function RelationsAccountBankAccountBase({ t, match, history, children, bankAcco
                                       resource="accountbankaccountmandate">
                   <Link to={`/relations/accounts/${match.params.account_id}/bank_accounts/${bankAccountId}/mandates/add`}>
                     <Button color="primary btn-block mb-6">
-                      <Icon prefix="fe" name="plus-circle" /> {t('relations.account.babk_accounts.mandates.add')}
+                      <Icon prefix="fe" name="plus-circle" /> {t('relations.account.bank_accounts.mandates.add')}
                     </Button>
                   </Link>
                 </HasPermissionWrapper>
