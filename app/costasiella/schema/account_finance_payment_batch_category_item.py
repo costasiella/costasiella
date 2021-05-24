@@ -83,7 +83,8 @@ class AccountFinancePaymentBatchCategoryItemQuery(graphene.ObjectType):
         require_login_and_permission(user, 'costasiella.view_accountfinancepaymentbatchcategoryitem')
 
         # Allow user to specify account
-        return AccountFinancePaymentBatchCategoryItem.objects.filter(account=account).order_by('year', 'month')
+        rid = get_rid(account)
+        return AccountFinancePaymentBatchCategoryItem.objects.filter(account=rid.id).order_by('year', 'month')
 
 
 class CreateAccountFinancePaymentBatchCategoryItem(graphene.relay.ClientIDMutation):
