@@ -84,7 +84,7 @@ class AccountFinancePaymentBatchCategoryItemQuery(graphene.ObjectType):
 
         # Allow user to specify account
         rid = get_rid(account)
-        return AccountFinancePaymentBatchCategoryItem.objects.filter(account=rid.id).order_by('year', 'month')
+        return AccountFinancePaymentBatchCategoryItem.objects.filter(account=rid.id).order_by('-year', '-month')
 
 
 class CreateAccountFinancePaymentBatchCategoryItem(graphene.relay.ClientIDMutation):
@@ -116,6 +116,8 @@ class CreateAccountFinancePaymentBatchCategoryItem(graphene.relay.ClientIDMutati
 
         if 'description' in input:
             account_finance_payment_batch_category_item.description = input['description']
+
+        account_finance_payment_batch_category_item.save()
 
         return CreateAccountFinancePaymentBatchCategoryItem(
             account_finance_payment_batch_category_item=account_finance_payment_batch_category_item
