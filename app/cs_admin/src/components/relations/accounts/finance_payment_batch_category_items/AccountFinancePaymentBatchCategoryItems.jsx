@@ -124,10 +124,7 @@ function AccountFinancePaymentBatchCategoryItems({ t, history, match }) {
                     {node.financePaymentBatchCategory.name}
                   </Table.Col>
                   <Table.Col key={v4()}>
-                    {node.amountDisplay}
-                  </Table.Col>
-                  <Table.Col key={v4()}>
-                    {node.description.replace(/(.{30})..+/, "$1&hellip;")}
+                    {node.description.replace(/(.{28})..+/, "$1...")}
                   </Table.Col>
                   <Table.Col className="text-right" key={v4()}>
                     <Link to={`/relations/accounts/${match.params.account_id}/finance_payment_batch_category_items/edit/${node.id}`}>
