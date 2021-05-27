@@ -85,3 +85,13 @@ export const GET_INPUT_VALUES_QUERY = gql`
     }
   }
 `
+
+export const CREATE_ACCOUNT_FINANCE_PAYMENT_BATCH_CATEGORY_ITEM = gql`
+  mutation CreateAccountFinancePaymentBatchCategoryItem($input: CreateAccountFinancePaymentBatchCategoryInput!) {
+    createAccountFinancePaymentBatchCategoryItem(input: $input) {
+      accountFinancePaymentBatchCategoryItem {
+        id
+      }
+    }
+  }
+`
