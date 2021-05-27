@@ -68,7 +68,7 @@ export const GET_ACCOUNT_CLASSPASS_QUERY = gql`
 
 export const GET_INPUT_VALUES_QUERY = gql`
   query AccountPaymentBatchCategoryItemInputValues($after: String, $before: String) {
-    accountPaymentBatchCategories(first: 100, before: $before, after: $after, archived: false) {
+    financePaymentBatchCategories(first: 100, before: $before, after: $after, archived: false) {
       pageInfo {
         startCursor
         endCursor
@@ -87,7 +87,7 @@ export const GET_INPUT_VALUES_QUERY = gql`
 `
 
 export const CREATE_ACCOUNT_FINANCE_PAYMENT_BATCH_CATEGORY_ITEM = gql`
-  mutation CreateAccountFinancePaymentBatchCategoryItem($input: CreateAccountFinancePaymentBatchCategoryInput!) {
+  mutation CreateAccountFinancePaymentBatchCategoryItem($input: CreateAccountFinancePaymentBatchCategoryItemInput!) {
     createAccountFinancePaymentBatchCategoryItem(input: $input) {
       accountFinancePaymentBatchCategoryItem {
         id
