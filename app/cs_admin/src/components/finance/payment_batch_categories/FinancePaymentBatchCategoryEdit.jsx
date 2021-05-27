@@ -71,7 +71,7 @@ function FinancePaymentBatchCategoryEdit({ t, history, match }) {
     <FinancePaymentBatchCategoriesBase showBack={true}>
       <Card>
         <Card.Header>
-          <Card.Title>{t('finance.payment_batch_categories.title_add')}</Card.Title>
+          <Card.Title>{t('finance.payment_batch_categories.title_edit')}</Card.Title>
         </Card.Header>
           <Formik
             initialValues={{ 
