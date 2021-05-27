@@ -67,8 +67,8 @@ export const GET_ACCOUNT_CLASSPASS_QUERY = gql`
 `
 
 export const GET_INPUT_VALUES_QUERY = gql`
-  query ClasspassInputValues($after: String, $before: String, $archived: Boolean!, $accountId: ID!) {
-    organizationClasspasses(first: 100, before: $before, after: $after, archived: $archived) {
+  query AccountPaymentBatchCategoryItemInputValues($after: String, $before: String) {
+    accountPaymentBatchCategories(first: 100, before: $before, after: $after, archived: false) {
       pageInfo {
         startCursor
         endCursor
@@ -78,19 +78,10 @@ export const GET_INPUT_VALUES_QUERY = gql`
       edges {
         node {
           id
-          archived
           name
+          batchCategoryType
         }
       }
-    }
-    account(id:$accountId) {
-      id
-      firstName
-      lastName
-      email
-      phone
-      mobile
-      isActive
     }
   }
 `
