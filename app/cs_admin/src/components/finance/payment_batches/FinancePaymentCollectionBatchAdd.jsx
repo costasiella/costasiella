@@ -78,6 +78,12 @@ function FinancePaymentCollectionBatchAdd({ t, history, match }) {
 
   const inputData = data
 
+  let initialValues = { name: '', description: '', executionDate: new Date() }
+  if (categoryType == "category") {
+    initialValues.year = new Date().getFullYear()
+    initialValues.month = new Date().getMonth() + 1
+  }
+
   return (
     <FinancePaymentBatchesBase showBack={true}>
       <Card>
@@ -85,7 +91,7 @@ function FinancePaymentCollectionBatchAdd({ t, history, match }) {
           <Card.Title>{cardTitle}</Card.Title>
         </Card.Header>
         <Formik
-          initialValues={{ name: '', description: '', executionDate: new Date() }}
+          initialValues={initialValues}
           // validationSchema={PAYMENT_BATCH_CATEGORY_SCHEMA}
           onSubmit={(values, { setSubmitting }) => {
             let input = {
