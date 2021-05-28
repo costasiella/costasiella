@@ -19,7 +19,7 @@ import CSDatePicker from "../../ui/CSDatePicker"
 
 
 const FinancePaymentCollectionBatchForm = (
-  { t, history, isSubmitting, setFieldTouched, setFieldValue, errors, values, returnUrl, create=false, category=false, invoices=true }
+  { t, history, isSubmitting, setFieldTouched, setFieldValue, errors, values, inputData, returnUrl, create=false, category=false }
   ) => (
   <FoForm>
       <Card.Body>
@@ -54,15 +54,17 @@ const FinancePaymentCollectionBatchForm = (
         {(create && category) ?
           <Grid.Row>
             <Grid.Col>
-              <Form.Group label={t('finance.payment_batch_categories.batch_category_type')}>
+              <Form.Group label={t('general')}>
                 <Field component="select" 
-                        name="batchCategoryType" 
-                        className={(errors.batchCategoryType) ? "form-control is-invalid" : "form-control"} 
+                        name="financePaymentBatchCategory" 
+                        className={(errors.financePaymentBatchCategory) ? "form-control is-invalid" : "form-control"} 
                         autoComplete="off">
-                  <option value="COLLECTION" key={v4()}>{t('general.collection')}</option>
-                  <option value="PAYMENT" key={v4()}>{t('general.payment')}</option>
+                  <option value="" key={v4()}>{t('general.please_select')}</option>
+                  {inputData.financePaymentBatchCategories.edges.map(({ node }) =>
+                    <option value={node.id} key={v4()}>{node.name}</option>
+                  )}
                 </Field>
-                <ErrorMessage name="batchCategoryType" component="span" className="invalid-feedback" />
+                <ErrorMessage name="financePaymentBatchCategory" component="span" className="invalid-feedback" />
               </Form.Group>
             </Grid.Col>
           </Grid.Row> 

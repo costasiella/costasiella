@@ -52,7 +52,9 @@ function FinancePaymentCollectionBatchAdd({ t, history, match }) {
       break
   }
 
-  const { loading, error, data } = useQuery(GET_INPUT_VALUES)
+  const { loading, error, data } = useQuery(GET_INPUT_VALUES, { variables: {
+    batchCategoryType: "COLLECTION"
+  }})
   const [addFinancePaymentBatch] = useMutation(ADD_PAYMENT_BATCH)
 
   // Loading
@@ -74,7 +76,7 @@ function FinancePaymentCollectionBatchAdd({ t, history, match }) {
       </FinancePaymentBatchesBase>
   )
 
-  const inputValues = data
+  const inputData = data
 
   return (
     <FinancePaymentBatchesBase showBack={true}>
@@ -124,7 +126,7 @@ function FinancePaymentCollectionBatchAdd({ t, history, match }) {
           >
           {({ isSubmitting, errors, values, setFieldValue, setFieldTouched }) => (
               <FinancePaymentCollectionBatchForm
-                inputValues={inputValues}
+                inputData={inputData}
                 create={true}
                 invoices={invoices}
                 category={category}
