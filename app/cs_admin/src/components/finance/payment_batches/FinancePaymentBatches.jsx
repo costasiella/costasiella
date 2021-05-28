@@ -133,13 +133,13 @@ function FinancePaymentBatches({t, history, match }) {
                 </Table.Col>
                 <Table.Col key={v4()}>
                   {node.name}
-                  {(node.year) ? <small className="text-muted">{node.year} - {node.month}</small> : ""}
                 </Table.Col>
                 <Table.Col>
                   {moment(node.executionDate).format(dateFormat)}
                 </Table.Col>
                 <Table.Col>
                   {(node.financePaymentBatchCategory) ? node.financePaymentBatchCategory.name : t("general.invoices")}
+                  {(node.year) ? <div><small className="text-muted">{node.year} - {node.month}</small></div> : ""}
                 </Table.Col>
                 <Table.Col>
                   <Link to={`/finance/paymentbatches/${batchType}/view/${node.id}`}>
