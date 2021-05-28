@@ -13,7 +13,7 @@ from ..modules.messages import Messages
 
 from .custom_schema_validators import is_year, is_month
 
-from ..tasks import finance_payment_batch_generate_items_invoices
+from ..tasks import finance_payment_batch_generate_items
 
 
 m = Messages()
@@ -79,12 +79,12 @@ def validate_create_update_input(input, update=False):
                 raise Exception(_('Invalid Organization Location ID!'))
 
         if 'year' in input:
-            is_year(input['subscription_year'])
-            result['subscription_year'] = input['subscription_year']
+            is_year(input['year'])
+            result['year'] = input['year']
 
         if 'month' in input:
-            is_month(input['subscription_month'])
-            result['subscription_month'] = input['subscription_month']
+            is_month(input['month'])
+            result['month'] = input['month']
 
         if 'batch_type' in input:
             batch_types = []
@@ -154,7 +154,7 @@ class CreateFinancePaymentBatch(graphene.relay.ClientIDMutation):
         finance_payment_batch.save()
 
         # Call background task to create batch items
-        task = finance_payment_batch_generate_items_invoices.delay(finance_payment_batch.id)
+        task = finance_payment_batch_generate_items.delay(finance_payment_batch.id)
 
         return CreateFinancePaymentBatch(finance_payment_batch=finance_payment_batch)
 
