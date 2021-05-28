@@ -894,7 +894,11 @@
                 "add": "Add batch item",
                 "title_add": "Add batch item",
                 "error_loading": "Error loading payment batch item...",
-                "toast_add_success": "Added batch item"
+                "toast_add_success": "Added batch item",
+                "title_edit": "Edit batch item",
+                "toast_edit_success": "Saved",
+                "delete_confirm_msg": "Are you sure you wish to delete this batch item?",
+                "deleted": "Deleted batch item"
             }
         },
         "b2b": {
