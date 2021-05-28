@@ -52,8 +52,20 @@ function FinancePaymentCollectionBatchAdd({ t, history, match }) {
       break
   }
 
+  let batchCategoryType
+  switch (batchType) {
+    case "collection":
+      batchCategoryType = "COLLECTION"
+      break
+    case "payment":
+      batchCategoryType = "PAYMENT"
+      break
+    default:
+      break
+  }
+
   const { loading, error, data } = useQuery(GET_INPUT_VALUES, { variables: {
-    batchCategoryType: "COLLECTION"
+    batchCategoryType: batchCategoryType
   }})
   const [addFinancePaymentBatch] = useMutation(ADD_PAYMENT_BATCH)
 
