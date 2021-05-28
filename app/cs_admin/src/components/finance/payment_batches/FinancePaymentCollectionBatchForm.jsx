@@ -54,7 +54,7 @@ const FinancePaymentCollectionBatchForm = (
         {(create && category) ?
           <Grid.Row>
             <Grid.Col>
-              <Form.Group label={t('general')}>
+              <Form.Group label={t('general.category')}>
                 <Field component="select" 
                         name="financePaymentBatchCategory" 
                         className={(errors.financePaymentBatchCategory) ? "form-control is-invalid" : "form-control"} 
@@ -65,6 +65,24 @@ const FinancePaymentCollectionBatchForm = (
                   )}
                 </Field>
                 <ErrorMessage name="financePaymentBatchCategory" component="span" className="invalid-feedback" />
+              </Form.Group>
+            </Grid.Col>
+            <Grid.Col>
+              <Form.Group label={t('general.year')} >
+                <Field type="text" 
+                      name="year" 
+                      className={(errors.year) ? "form-control is-invalid" : "form-control"} 
+                      autoComplete="off" />
+                <ErrorMessage name="year" component="span" className="invalid-feedback" />
+              </Form.Group>
+            </Grid.Col>
+            <Grid.Col>
+              <Form.Group label={t('general.month')} >
+                <Field type="text" 
+                      name="month" 
+                      className={(errors.month) ? "form-control is-invalid" : "form-control"} 
+                      autoComplete="off" />
+                <ErrorMessage name="month" component="span" className="invalid-feedback" />
               </Form.Group>
             </Grid.Col>
           </Grid.Row> 
