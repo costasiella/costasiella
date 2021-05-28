@@ -10,7 +10,7 @@ import { toast } from 'react-toastify'
 
 
 import { UPDATE_PAYMENT_BATCH, GET_PAYMENT_BATCH_QUERY, GET_PAYMENT_BATCHES_QUERY } from './queries'
-// import { PAYMENT_BATCH_CATEGORY_SCHEMA } from './yupSchema'
+import { PAYMENT_BATCH_EDIT_SCHEMA } from './yupSchema'
 import { get_list_query_variables } from "./tools"
 
 
@@ -73,7 +73,7 @@ function FinancePaymentCollectionBatchEdit({ t, history, match }) {
         </Card.Header>
         <Formik
           initialValues={{ name: inputValues.name , note: inputValues.note }}
-          // validationSchema={PAYMENT_BATCH_CATEGORY_SCHEMA}
+          validationSchema={PAYMENT_BATCH_EDIT_SCHEMA}
           onSubmit={(values, { setSubmitting }) => {
             let input = {
                 id: batchId,
