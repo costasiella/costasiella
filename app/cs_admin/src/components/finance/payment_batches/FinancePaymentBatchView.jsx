@@ -230,9 +230,10 @@ function FinancePaymentBatchView({ t, history, match }) {
                         {node.amountDisplay}
                       </Table.Col>
                       <Table.Col>
-                        <Link to={`/finance/invoices/edit/${node.financeInvoice.id}`}>
-                          {node.financeInvoice.invoiceNumber}
-                        </Link>
+                        {(node.financeInvoice) ?
+                          <Link to={`/finance/invoices/edit/${node.financeInvoice.id}`}>
+                            {node.financeInvoice.invoiceNumber}
+                          </Link> : "" }
                       </Table.Col>
                     </Table.Row>
                   ))}
