@@ -65,7 +65,7 @@ function AccountFinancePaymentBatchCategoryItemAdd({ t, history, match }) {
           initialValues={{ 
             financePaymentBatchCategory: "",
             year: new Date().getFullYear(),
-            month: new Date().getMonth(),
+            month: new Date().getMonth() + 1,
             amount: "",
             description: ""
           }}

@@ -42,7 +42,7 @@ function AccountSubscriptionEditAltPriceAdd({ t, history, match }) {
       <Formik
         initialValues={{ 
           subscriptionYear: new Date().getFullYear(),
-          subscriptionMonth: new Date().getMonth(),
+          subscriptionMonth: new Date().getMonth() + 1,
           amount: 0,
           description: "",
           note: ""
