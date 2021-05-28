@@ -28,7 +28,7 @@ import FinancePaymentBatchCategory from "../../ui/FinancePaymentBatchCategory"
 import ContentCard from "../../general/ContentCard"
 import FinancePaymentBatchesBase from "./FinancePaymentBatchesBase"
 
-import { get_add_options_collection } from './tools'
+import { get_add_options_collection, get_add_options_payment } from './tools'
 
 
 function FinancePaymentBatchAddWhat({t, history, match }) {
@@ -42,6 +42,7 @@ function FinancePaymentBatchAddWhat({t, history, match }) {
     options = get_add_options_collection(t, batchType)
   } else {
     cardTitle = t('finance.payment_batch_payments.title_add_what')
+    options = get_add_options_payment(t, batchType)
   }
 
   return (

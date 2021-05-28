@@ -36,3 +36,17 @@ export function get_add_options_collection(t, batchType) {
     </List>
   )
 }
+
+
+export function get_add_options_payment(t, batchType) {
+  return (
+    <List unstyled>
+      <List.Item>
+        <Link to={`/finance/paymentbatches/${batchType}/add/category`}>
+          <b>{t("finance.payment_batch_payments.category_batch")} <Icon name="chevron-right" /></b>
+        </Link><br />
+        <p>{t("finance.payment_batch_payments.category_batch_description")}</p>
+      </List.Item>
+    </List>
+  )
+}
