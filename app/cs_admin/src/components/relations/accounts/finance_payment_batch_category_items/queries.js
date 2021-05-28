@@ -96,3 +96,11 @@ export const UPDATE_ACCOUNT_FINANCE_PAYMENT_BATCH_CATEGORY_ITEM = gql`
     }
   }
 `
+
+export const DELETE_ACCOUNT_FINANCE_PAYMENT_BATCH_CATEGORY_ITEM = gql`
+  mutation DeleteAccountFinancePaymentBatchCategoryItem($input: DeleteAccountFinancePaymentBatchCategoryItemInput!) {
+    deleteAccountFinancePaymentBatchCategoryItem(input: $input) {
+      ok
+    }
+  }
+`
