@@ -10,37 +10,24 @@ import { Link } from 'react-router-dom'
 
 
 import {
-  Page,
-  Grid,
-  Icon,
-  Dimmer,
   Button,
-  Card,
-  Container,
+  Icon,
   Table
 } from "tabler-react";
-import SiteWrapper from "../../../SiteWrapper"
 import HasPermissionWrapper from "../../../HasPermissionWrapper"
 import { toast } from 'react-toastify'
 
-import BadgeBoolean from "../../../ui/BadgeBoolean"
-import RelationsAccountsBack from "../RelationsAccountsBack"
 import confirm_delete from "../../../../tools/confirm_delete"
 
 import ContentCard from "../../../general/ContentCard"
-import ProfileMenu from "../ProfileMenu"
-import ProfileCardSmall from "../../../ui/ProfileCardSmall"
 import AccountFinancePaymentBatchCategoryItemsBase from "./AccountFinancePaymentBatchCategoryItemsBase"
 
-import { GET_ACCOUNT_FINANCE_PAYMENT_BATCH_CATEGORY_ITEMS_QUERY } from "./queries"
+import { 
+  GET_ACCOUNT_FINANCE_PAYMENT_BATCH_CATEGORY_ITEMS_QUERY,
+  DELETE_ACCOUNT_FINANCE_PAYMENT_BATCH_CATEGORY_ITEM
+} from "./queries"
 
-const DELETE_ACCOUNT_CLASSPASS = gql`
-  mutation DeleteAccountClasspass($input: DeleteAccountClasspassInput!) {
-    deleteAccountClasspass(input: $input) {
-      ok
-    }
-  }
-`
+
 
 function AccountFinancePaymentBatchCategoryItems({ t, history, match }) {
   const accountId = match.params.account_id
@@ -48,6 +35,7 @@ function AccountFinancePaymentBatchCategoryItems({ t, history, match }) {
   const { loading, error, data, fetchMore } = useQuery(GET_ACCOUNT_FINANCE_PAYMENT_BATCH_CATEGORY_ITEMS_QUERY, {
     variables: { account: accountId }
   })
+  const [deleteAccountFinancePaymentBatchCategoryItem] = useMutation(DELETE_ACCOUNT_FINANCE_PAYMENT_BATCH_CATEGORY_ITEM)
 
   if (loading) return (
     <AccountFinancePaymentBatchCategoryItemsBase>
@@ -135,44 +123,31 @@ function AccountFinancePaymentBatchCategoryItems({ t, history, match }) {
                     </Link>
                   </Table.Col>
                   <Table.Col>
-                    delete
+                    <button 
+                      className="icon btn btn-link btn-sm" 
+                      title={t('general.delete')} 
+                      href=""
+                      onClick={() => {
+                        confirm_delete({
+                          t: t,
+                          msgConfirm: t("relations.account.finance_payment_batch_category_items.delete_confirm_msg"),
+                          msgDescription: <p><br />{node.financePaymentBatchCategory.name} {node.amountDisplay} <br/>{node.description}</p>,
+                          msgSuccess: t('relations.account.finance_payment_batch_category_items.deleted'),
+                          deleteFunction: deleteAccountFinancePaymentBatchCategoryItem,
+                          functionVariables: { variables: {
+                            input: {
+                              id: node.id
+                            }
+                          }, refetchQueries: [
+                            {query: GET_ACCOUNT_FINANCE_PAYMENT_BATCH_CATEGORY_ITEMS_QUERY, variables: { 
+                              account: accountId
+                            }} 
+                          ]}
+                        })
+                    }}>
+                      <span className="text-red"><Icon prefix="fe" name="trash-2" /></span>
+                    </button>
                   </Table.Col>
-                  {/* 
-                  <Table.Col className="text-right" key={v4()}>
-                    <Link to={"/relations/accounts/" + match.params.account_id + "/classpasses/edit/" + node.id}>
-                      <Button className='btn-sm' 
-                              color="secondary">
-                        {t('general.edit')}
-                      </Button>
-                    </Link>
-                  </Table.Col>
-                  <Mutation mutation={DELETE_ACCOUNT_CLASSPASS} key={v4()}>
-                    {(deleteAccountClasspass, { data }) => (
-                      <Table.Col className="text-right" key={v4()}>
-                        <button className="icon btn btn-link btn-sm" 
-                          title={t('general.delete')} 
-                          href=""
-                          onClick={() => {
-                            confirm_delete({
-                              t: t,
-                              msgConfirm: t("relations.account.classpasses.delete_confirm_msg"),
-                              msgDescription: <p>{node.organizationClasspass.name} {node.dateStart}</p>,
-                              msgSuccess: t('relations.account.classpasses.deleted'),
-                              deleteFunction: deleteAccountClasspass,
-                              functionVariables: { variables: {
-                                input: {
-                                  id: node.id
-                                }
-                              }, refetchQueries: [
-                                {query: GET_ACCOUNT_CLASSPASSES_QUERY, variables: { archived: archived, accountId: match.params.account_id }} 
-                              ]}
-                            })
-                        }}>
-                          <span className="text-red"><Icon prefix="fe" name="trash-2" /></span>
-                        </button>
-                      </Table.Col>
-                    )}
-                  </Mutation> */}
                 </Table.Row>
               ))}
           </Table.Body>
