@@ -96,12 +96,12 @@ def export_csv_finance_payment_batch(request, node_id, **kwargs):
         'Amount',
         'Description',
         'Execution Date',
-        'Location'
+        # 'Location'
     ])
 
-    organization_location = ""
-    if finance_payment_batch.organization_location:
-        organization_location = finance_payment_batch.organization_location.name
+    # organization_location = ""
+    # if finance_payment_batch.organization_location:
+    #     organization_location = finance_payment_batch.organization_location.name
     batch_items = finance_payment_batch.items.all()
     for item in batch_items:
 
@@ -116,7 +116,7 @@ def export_csv_finance_payment_batch(request, node_id, **kwargs):
             item.amount,
             item.description,
             finance_payment_batch.execution_date,
-            organization_location
+            # organization_location
         ])
 
     buffer.seek(0)
