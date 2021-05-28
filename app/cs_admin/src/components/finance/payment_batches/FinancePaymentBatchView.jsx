@@ -99,7 +99,10 @@ function FinancePaymentBatchView({ t, history, match }) {
                   <Table.Col>
                     {
                       (financePaymentBatch.financePaymentBatchCategory) ? 
-                        financePaymentBatch.financePaymentBatchCategory.name : 
+                        <div>
+                          {financePaymentBatch.financePaymentBatchCategory.name}
+                          <div><small className="text-muted">{financePaymentBatch.year} - {financePaymentBatch.month}</small></div>
+                        </div> : 
                         t("general.invoices")
                     }
                   </Table.Col>
