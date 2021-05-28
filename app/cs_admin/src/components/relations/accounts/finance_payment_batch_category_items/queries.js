@@ -26,20 +26,20 @@ export const GET_ACCOUNT_FINANCE_PAYMENT_BATCH_CATEGORY_ITEMS_QUERY = gql`
   }
 `
 
-export const GET_ACCOUNT_CLASSPASS_QUERY = gql`
-  query AccountClasspass($id: ID!, $accountId: ID!, $after: String, $before: String, $archived: Boolean!) {
-    accountClasspass(id:$id) {
+export const GET_ACCOUNT_FINANCE_PAYMENT_BATCH_CATEGORY_ITEM_QUERY = gql`
+  query AccountFinancePaymentBatchCategoryItem($id: ID!) {
+    accountFinancePaymentBatchCategoryItem(id: $id) {
       id
-      organizationClasspass {
+      financePaymentBatchCategory {
         id
         name
       }
-      dateStart
-      dateEnd
-      note
-      createdAt
+      year
+      month
+      amount
+      description
     }
-    organizationClasspasses(first: 100, before: $before, after: $after, archived: $archived) {
+    financePaymentBatchCategories(first: 100, archived: false) {
       pageInfo {
         startCursor
         endCursor
@@ -49,19 +49,10 @@ export const GET_ACCOUNT_CLASSPASS_QUERY = gql`
       edges {
         node {
           id
-          archived
           name
+          batchCategoryType
         }
       }
-    }
-    account(id:$accountId) {
-      id
-      firstName
-      lastName
-      email
-      phone
-      mobile
-      isActive
     }
   }
 `
@@ -89,6 +80,16 @@ export const GET_INPUT_VALUES_QUERY = gql`
 export const CREATE_ACCOUNT_FINANCE_PAYMENT_BATCH_CATEGORY_ITEM = gql`
   mutation CreateAccountFinancePaymentBatchCategoryItem($input: CreateAccountFinancePaymentBatchCategoryItemInput!) {
     createAccountFinancePaymentBatchCategoryItem(input: $input) {
+      accountFinancePaymentBatchCategoryItem {
+        id
+      }
+    }
+  }
+`
+
+export const UPDATE_ACCOUNT_FINANCE_PAYMENT_BATCH_CATEGORY_ITEM = gql`
+  mutation UpdateAccountFinancePaymentBatchCategoryItem($input: UpdateAccountFinancePaymentBatchCategoryItemInput!) {
+    updateAccountFinancePaymentBatchCategoryItem(input: $input) {
       accountFinancePaymentBatchCategoryItem {
         id
       }
