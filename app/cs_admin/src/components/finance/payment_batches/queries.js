@@ -110,8 +110,8 @@ export const GET_PAYMENT_BATCH_QUERY = gql`
 
 
 export const GET_INPUT_VALUES = gql`
-  query InputValues($after: String, $before: String) {
-    financePaymentBatchCategories(first: 1000, before:$before, after:$after, archived:false) {
+  query InputValues($after: String, $before: String, $batchCategoryType: String!) {
+    financePaymentBatchCategories(first: 1000, before:$before, after:$after, archived:false, batchCategoryType: $batchCategoryType) {
       pageInfo {
         startCursor
         endCursor
