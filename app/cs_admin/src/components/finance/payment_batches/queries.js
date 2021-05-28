@@ -23,10 +23,6 @@ export const GET_PAYMENT_BATCHES_QUERY = gql`
           year
           month
           includeZeroAmounts
-          organizationLocation {
-            id
-            name
-          }
           note
         }
       }
@@ -49,10 +45,6 @@ export const GET_PAYMENT_BATCH_QUERY = gql`
       year
       month
       includeZeroAmounts
-      organizationLocation {
-        id
-        name
-      }
       note
       totalDisplay
       countItems
