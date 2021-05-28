@@ -8,7 +8,7 @@ from ....models import AccountSubscription, FinanceInvoice, FinancePaymentBatch,
 from ....dudes import DateToolsDude
 
 @shared_task
-def finance_payment_batch_generate_items_invoices(finance_payment_batch_id):
+def finance_payment_batch_generate_items(finance_payment_batch_id):
     """
 
     :param finance_payment_batch:
