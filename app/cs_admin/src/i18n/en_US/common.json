@@ -200,7 +200,9 @@
         "payment_batch_payments": {
             "title": "Payment batches",
             "empty_list": "No payment batches found",
-            "title_add_what": "Choose type of payment batch to add"
+            "title_add_what": "Choose type of payment batch to add",
+            "category_batch": "Payment batch category",
+            "category_batch_description": "Create a batch containing items in a chosen month for a payment batch category."
         },
         "payment_batches": {
             "error_loading": "Error loading batches... :(",
