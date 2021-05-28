@@ -4,6 +4,7 @@ from django.db import models
 from django.db.models import Q
 
 from ..modules.encrypted_fields import EncryptedTextField
+from .account_finance_payment_batch_category_item import AccountFinancePaymentBatchCategoryItem
 from .finance_invoice import FinanceInvoice
 from .organization_location import OrganizationLocation
 from .finance_payment_batch_category import FinancePaymentBatchCategory
@@ -71,6 +72,11 @@ class FinancePaymentBatch(models.Model):
 
         return result
 
+    @staticmethod
+    def _get_currency():
+        system_setting_dude = SystemSettingDude()
+        return system_setting_dude.get('finance_currency') or "EUR"
+
     def _generate_items_invoices(self):
         """
         Generate items for invoices batch (finance_payment_batch_category not set)
@@ -78,17 +84,16 @@ class FinancePaymentBatch(models.Model):
         """
         from .finance_payment_batch_item import FinancePaymentBatchItem
 
-        system_setting_dude = SystemSettingDude()
-        currency = system_setting_dude.get('finance_currency') or "EUR"
+        currency = self._get_currency()
 
         invoices = FinanceInvoice.objects.filter(
             status="SENT",
             finance_payment_method=103  # 103 = Direct Debit
         )
 
-        # Filter by location
-        if self.organization_location:
-            invoices = invoices.filter(organization_location=self.organization_location)
+        # # Filter by location
+        # if self.organization_location:
+        #     invoices = invoices.filter(organization_location=self.organization_location)
 
         # Check for zero amounts
         if not self.include_zero_amounts:
@@ -133,9 +138,50 @@ class FinancePaymentBatch(models.Model):
         """
         from .finance_payment_batch_item import FinancePaymentBatchItem
 
-        system_setting_dude = SystemSettingDude()
-        currency = system_setting_dude.get('finance_currency') or "EUR"
+        currency = self._get_currency()
 
+        account_batch_items = AccountFinancePaymentBatchCategoryItem.objects.filter(
+            year=self.year,
+            month=self.month,
+            finance_payment_batch_category=self.finance_payment_batch_category
+        )
+
+        # Check for zero amounts
+        if not self.include_zero_amounts:
+            account_batch_items = account_batch_items.filter(amount__gt=0)
+
+        print(account_batch_items)
+
+        for item in account_batch_items:
+            # Get bank account
+            account = item.account
+            bank_account = account.bank_accounts.all().first()
+            mandate = bank_account.mandates.all().first()
+            if mandate:
+                mandate_signature_date = mandate.signature_date
+                mandate_reference = mandate.reference
+            else:
+                mandate_signature_date = None
+                mandate_reference = None
+
+            finance_payment_batch_item = FinancePaymentBatchItem(
+                finance_payment_batch=self,
+                account=account,
+                account_holder=bank_account.holder,
+                account_number=bank_account.number,
+                account_bic=bank_account.bic,
+                mandate_signature_date=mandate_signature_date,
+                mandate_reference=mandate_reference,
+                amount=item.amount,
+                currency=currency,
+                description=item.description
+            )
+            finance_payment_batch_item.save()
+
+        return {
+            'success': True,
+            'message': _("Generated %s batch items") % len(account_batch_items)
+        }
 
 
 # OPENSTUDIO REFERENCE BELOW
