@@ -141,6 +141,8 @@ import AccountFinancePaymentBatchCategoryItems from
   './components/relations/accounts/finance_payment_batch_category_items/AccountFinancePaymentBatchCategoryItems'
 import AccountFinancePaymentBatchCategoryItemAdd from 
 './components/relations/accounts/finance_payment_batch_category_items/AccountFinancePaymentBatchCategoryItemAdd'
+import AccountFinancePaymentBatchCategoryItemEdit from 
+'./components/relations/accounts/finance_payment_batch_category_items/AccountFinancePaymentBatchCategoryItemEdit'
 import AccountInvoices from './components/relations/accounts/invoices/AccountInvoices'
 import AccountInvoiceAdd from './components/relations/accounts/invoices/AccountInvoiceAdd'
 import AccountMemberships from './components/relations/accounts/memberships/AccountMemberships'
@@ -474,6 +476,8 @@ function AppRoot({ t }) {
                           component={AccountFinancePaymentBatchCategoryItems} />
             <PrivateRoute exact path="/relations/accounts/:account_id/finance_payment_batch_category_items/add" 
                           component={AccountFinancePaymentBatchCategoryItemAdd} />
+            <PrivateRoute exact path="/relations/accounts/:account_id/finance_payment_batch_category_items/edit/:id" 
+                          component={AccountFinancePaymentBatchCategoryItemEdit} />
             <PrivateRoute exact path="/relations/accounts/:account_id/invoices" component={AccountInvoices} />
             <PrivateRoute exact path="/relations/accounts/:account_id/invoices/add" component={AccountInvoiceAdd} />
             <PrivateRoute exact path="/relations/accounts/:account_id/memberships" component={AccountMemberships} />
