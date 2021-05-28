@@ -115,7 +115,7 @@ class CreateFinancePaymentBatch(graphene.relay.ClientIDMutation):
         month = graphene.Int(required=False)
         execution_date = graphene.types.datetime.Date(required=True)
         include_zero_amounts = graphene.Boolean(required=False, default_value=False)
-        organization_location = graphene.ID(required=False)
+        # organization_location = graphene.ID(required=False)
         note = graphene.String(required=False)
 
     finance_payment_batch = graphene.Field(FinancePaymentBatchNode)
@@ -142,8 +142,8 @@ class CreateFinancePaymentBatch(graphene.relay.ClientIDMutation):
         if 'finance_payment_batch_category' in validation_result:
             finance_payment_batch.finance_payment_batch_category = validation_result['finance_payment_batch_category']
 
-        if 'organization_location' in validation_result:
-            finance_payment_batch.organization_location = validation_result['organization_location']
+        # if 'organization_location' in validation_result:
+        #     finance_payment_batch.organization_location = validation_result['organization_location']
 
         if 'year' in validation_result:
             finance_payment_batch.year = validation_result['year']

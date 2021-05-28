@@ -28,7 +28,7 @@ class FinancePaymentBatch(models.Model):
     month = models.IntegerField(null=True)
     execution_date = models.DateField()
     include_zero_amounts = models.BooleanField(default=False)
-    organization_location = models.ForeignKey(OrganizationLocation, on_delete=models.CASCADE, null=True)
+    # organization_location = models.ForeignKey(OrganizationLocation, on_delete=models.CASCADE, null=True)
     note = models.TextField(default="")
     total = models.DecimalField(max_digits=20, decimal_places=2, default=0)
     count_items = models.IntegerField(default=0)
@@ -64,6 +64,8 @@ class FinancePaymentBatch(models.Model):
         result = ""
         if not self.finance_payment_batch_category:
             result = self._generate_items_invoices()
+        else:
+            result = self._generate_items_category()
 
         self.update_totals()
 
@@ -123,3 +125,106 @@ class FinancePaymentBatch(models.Model):
             'success': True,
             'message': _("Generated %s batch items") % len(invoices)
         }
+
+    def _generate_items_category(self):
+        """
+        Generate items for category batch (finance_payment_batch_category is set)
+        :return:
+        """
+        from .finance_payment_batch_item import FinancePaymentBatchItem
+
+        system_setting_dude = SystemSettingDude()
+        currency = system_setting_dude.get('finance_currency') or "EUR"
+
+
+
+# OPENSTUDIO REFERENCE BELOW
+    # def generate_batch_items_category(pbID,
+    #                                   pb,
+    #                                   firstdaythismonth,
+    #                                   lastdaythismonth,
+    #                                   currency):
+    #     """
+    #         Generates batch items for a category
+    #     """
+    #     category_id = pb.payment_categories_id
+    #     query = (db.alternativepayments.payment_categories_id == category_id) & \
+    #             (db.alternativepayments.PaymentYear == pb.ColYear) & \
+    #             (db.alternativepayments.PaymentMonth == pb.ColMonth)
+    #
+    #     if not pb.school_locations_id is None and pb.school_locations_id != '':
+    #         query &= (db.auth_user.school_locations_id == pb.school_locations_id)
+    #
+    #     left = [
+    #         db.auth_user.on(
+    #             db.auth_user.id ==
+    #             db.alternativepayments.auth_customer_id
+    #         ),
+    #         db.school_locations.on(
+    #             db.school_locations.id ==
+    #             db.auth_user.school_locations_id
+    #         ),
+    #         db.customers_payment_info.on(
+    #             db.customers_payment_info.auth_customer_id ==
+    #             db.alternativepayments.auth_customer_id
+    #         ),
+    #         db.customers_payment_info_mandates.on(
+    #             db.customers_payment_info_mandates.customers_payment_info_id ==
+    #             db.customers_payment_info.id
+    #         )
+    #     ]
+    #
+    #     rows = db(query).select(db.alternativepayments.Amount,
+    #                             db.alternativepayments.Description,
+    #                             db.alternativepayments.auth_customer_id,
+    #                             db.auth_user.id,
+    #                             db.auth_user.first_name,
+    #                             db.auth_user.last_name,
+    #                             db.school_locations.Name,
+    #                             db.customers_payment_info.ALL,
+    #                             db.customers_payment_info_mandates.ALL,
+    #                             left=left,
+    #                             orderby=db.auth_user.id)
+    #     for row in rows:
+    #         # check for 0 amount, skip if it's not supposed to be included
+    #         if row.alternativepayments.Amount == 0 and not pb.IncludeZero:
+    #             continue
+    #         cuID = row.auth_user.id
+    #         amount = format(row.alternativepayments.Amount, '.2f')
+    #         description = row.alternativepayments.Description
+    #
+    #         try:
+    #             description = description.strip()
+    #         except:
+    #             pass
+    #
+    #         # end alternative payments
+    #
+    #         try:
+    #             accountnr = row.customers_payment_info.AccountNumber.strip()
+    #         except AttributeError:
+    #             accountnr = ''
+    #         try:
+    #             bic = row.customers_payment_info.BIC.strip()
+    #         except AttributeError:
+    #             bic = ''
+    #
+    #         msdate = row.customers_payment_info_mandates.MandateSignatureDate
+    #
+    #         if row.customers_payment_info.BankName == '':
+    #             row.customers_payment_info.BankName = None
+    #
+    #         db.payment_batches_items.insert(
+    #             payment_batches_id=pbID,
+    #             auth_customer_id=row.auth_user.id,
+    #             AccountHolder=row.customers_payment_info.AccountHolder,
+    #             BIC=bic,
+    #             AccountNumber=accountnr,
+    #             MandateSignatureDate=msdate,
+    #             MandateReference=row.customers_payment_info_mandates.MandateReference,
+    #             Amount=amount,
+    #             Currency=currency,
+    #             Description=description,
+    #             BankName=row.customers_payment_info.BankName,
+    #             BankLocation=row.customers_payment_info.BankLocation
+    #         )
