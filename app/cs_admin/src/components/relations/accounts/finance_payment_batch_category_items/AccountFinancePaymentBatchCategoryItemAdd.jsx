@@ -1,11 +1,9 @@
 // @flow
 
-import React, {Component } from 'react'
-import gql from "graphql-tag"
+import React from 'react'
 import { useQuery, useMutation } from "react-apollo";
 import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
-import { Link } from 'react-router-dom'
 
 import { Formik } from 'formik'
 import { toast } from 'react-toastify'
@@ -15,22 +13,14 @@ import {
   CREATE_ACCOUNT_FINANCE_PAYMENT_BATCH_CATEGORY_ITEM,
   GET_INPUT_VALUES_QUERY 
 } from './queries'
-import { CLASSPASS_SCHEMA } from './yupSchema'
+import { ACCOUNT_FINANCE_PAYMENT_BATCH_CATEGORY_ITEM_SCHEMA } from './yupSchema'
 import AccountFinancePaymentBatchCategoryItemsForm from './AccountFinancePaymentBatchCategoryItemsForm'
 
 import {
-  Page,
-  Grid,
-  Icon,
-  Button,
   Card,
-  Container,
 } from "tabler-react";
-import SiteWrapper from "../../../SiteWrapper"
-import HasPermissionWrapper from "../../../HasPermissionWrapper"
-import { dateToLocalISO } from '../../../../tools/date_tools'
 
-import ProfileMenu from "../ProfileMenu"
+import HasPermissionWrapper from "../../../HasPermissionWrapper"
 import AccountFinancePaymentBatchCategoryItemsBase from "./AccountFinancePaymentBatchCategoryItemsBase"
 
 function AccountFinancePaymentBatchCategoryItemAdd({ t, history, match }) {
@@ -79,7 +69,7 @@ function AccountFinancePaymentBatchCategoryItemAdd({ t, history, match }) {
             amount: "",
             description: ""
           }}
-          // validationSchema={CLASSPASS_SCHEMA}
+          validationSchema={ACCOUNT_FINANCE_PAYMENT_BATCH_CATEGORY_ITEM_SCHEMA}
           onSubmit={(values, { setSubmitting }, errors) => {
               console.log('submit values:')
               console.log(values)
