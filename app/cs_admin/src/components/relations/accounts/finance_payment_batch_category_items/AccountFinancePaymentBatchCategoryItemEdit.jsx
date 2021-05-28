@@ -28,7 +28,6 @@ import {
 } from "tabler-react";
 import SiteWrapper from "../../../SiteWrapper"
 import HasPermissionWrapper from "../../../HasPermissionWrapper"
-import { dateToLocalISO } from '../../../../tools/date_tools'
 
 import ProfileMenu from "../ProfileMenu"
 import AccountFinancePaymentBatchCategoryItemsBase from "./AccountFinancePaymentBatchCategoryItemsBase"
@@ -72,7 +71,7 @@ function AccountFinancePaymentBatchCategoryItemEdit({ t, history, match }) {
 
   const inputData = data
   const initialValues = data.accountFinancePaymentBatchCategoryItem
-  
+
   return (
     <AccountFinancePaymentBatchCategoryItemsBase showBack={true}>
       <Card title={cardTitle}>
