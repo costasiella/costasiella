@@ -72,9 +72,7 @@ function AccountFinancePaymentBatchCategoryItemEdit({ t, history, match }) {
 
   const inputData = data
   const initialValues = data.accountFinancePaymentBatchCategoryItem
-
-  console.log(initialValues)
-
+  
   return (
     <AccountFinancePaymentBatchCategoryItemsBase showBack={true}>
       <Card title={cardTitle}>
