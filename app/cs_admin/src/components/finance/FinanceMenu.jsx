@@ -104,7 +104,7 @@ const FinanceMenu = ({ t, active_link }) => (
           <List.GroupItem
               key={v4()}
               className="d-flex align-items-center"
-              to="#/finance/paymentbatches/payments"
+              to="#/finance/paymentbatches/payment"
               icon="upload"
               active={payment_batch_payments_active}
               >
