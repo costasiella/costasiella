@@ -13,7 +13,7 @@ from ..modules.messages import Messages
 
 from .custom_schema_validators import is_year, is_month
 
-from ..tasks import finance_payment_batch_generate_items
+from ..tasks import finance_payment_batch_generate_items, finance_payment_batch_add_invoice_payments
 
 
 m = Messages()
@@ -198,7 +198,7 @@ class UpdateFinancePaymentBatch(graphene.relay.ClientIDMutation):
             if finance_payment_batch.status == "SENT_TO_BANK" and \
                     not finance_payment_batch.finance_payment_batch_category:
                 # First time batch status has been changed to SENT_TO_BANK; generate items
-                print("generate invoice payments")
+                task = finance_payment_batch_add_invoice_payments.delay(finance_payment_batch.id)
 
         finance_payment_batch.save()
 

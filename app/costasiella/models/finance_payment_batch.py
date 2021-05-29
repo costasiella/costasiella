@@ -141,20 +141,27 @@ class FinancePaymentBatch(models.Model):
         :return:
         """
         from .finance_payment_batch_item import FinancePaymentBatchItem
+        from .finance_payment_method import FinancePaymentMethod
 
         if not self.is_invoice_batch():
             return
 
+        direct_debit = FinancePaymentMethod.objects.get(pk=103)  # 103 = Direct debit (see fixtures)
         items = FinancePaymentBatchItem.objects.filter(finance_payment_batch=self)
         for item in items:
+            finance_invoice = item.finance_invoice
+
             finance_invoice_payment = FinanceInvoicePayment(
-                finance_invoice=item.finance_invoice,
+                finance_invoice=finance_invoice,
                 date=self.execution_date,
                 amount=item.amount,
-                finance_invoice_payment=103,  # 103 = Direct debit (see fixtures)
+                finance_payment_method=direct_debit,
                 note=_("Paid in batch: %s") % self.name
             )
             finance_invoice_payment.save()
+            # Check if they invoice is paid in full, and the status should be set to paid
+            finance_invoice.update_amounts()
+            finance_invoice.is_paid()
 
         return _("Added %s invoice payments") % len(items)
 
