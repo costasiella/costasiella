@@ -70,7 +70,7 @@ function FinancePaymentBatchView({ t, history, match }) {
   console.log(financePaymentBatch)
 
   return (
-    <FinancePaymentBatchViewBase>
+    <FinancePaymentBatchViewBase status={financePaymentBatch.status}>
       <Grid.Row>
         <Grid.Col md={4}>
           <Card title={t("finance.payment_batch.title_batch_info")}>
