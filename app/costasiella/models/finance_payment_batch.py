@@ -135,7 +135,7 @@ class FinancePaymentBatch(models.Model):
     def is_invoice_batch(self):
         return True if not self.finance_payment_batch_category else False
 
-    def add_batch_invoice_payments(self):
+    def add_invoice_payments(self):
         """
         Once a batch has gotten the status "SENT_TO_BANK"; Add invoice payments
         :return:
