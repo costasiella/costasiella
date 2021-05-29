@@ -26,13 +26,7 @@ function FinancePaymentBatchViewBase({t, history, match, children, status}) {
   const batchType = match.params.batch_type
   const returnUrl = `/finance/paymentbatches/${batchType}`
   const exportUrl = `/d/export/finance_payment_batch/csv/${batchId}`
-  let initialDisabled
-  if (status == "SENT_TO_BANK") {
-    initialDisabled = true
-  } else {
-    initialDisabled = false
-  }
-  const [disabled, setDisabled] = useState(initialDisabled)
+  const [disabled, setDisabled] = useState(false)
 
   const [updateFinancePaymentBatch] = useMutation(UPDATE_PAYMENT_BATCH)
 
@@ -58,11 +52,11 @@ function FinancePaymentBatchViewBase({t, history, match, children, status}) {
       break
   }
 
-  function onClickStatusButton(status) {
-    setDisabled(false)
+  function onClickStatusButton(newStatus) {
+    setDisabled(true)
 
     updateFinancePaymentBatch({ 
-      variables: { input: {id: batchId, status: status} }, 
+      variables: { input: {id: batchId, status: newStatus} }, 
       refetchQueries: [
         {query: GET_PAYMENT_BATCHES_QUERY, variables: get_list_query_variables(batchType)}
     ]})
@@ -72,6 +66,7 @@ function FinancePaymentBatchViewBase({t, history, match, children, status}) {
             position: toast.POSITION.BOTTOM_RIGHT
           })
         if (status != "SENT_TO_BANK") {
+          console.log(status)
           setDisabled(false)
         }
       }).catch((error) => {
@@ -79,7 +74,10 @@ function FinancePaymentBatchViewBase({t, history, match, children, status}) {
             position: toast.POSITION.BOTTOM_RIGHT
           })
         console.log('there was an error sending the query', error)
-        setDisabled(false)
+        if (status != "SENT_TO_BANK") {
+          console.log(status)
+          setDisabled(false)
+        }
       })
   }
 
@@ -103,6 +101,18 @@ function FinancePaymentBatchViewBase({t, history, match, children, status}) {
                   <Icon name="edit-2" /> {t('general.edit')}
                 </Link>
                 {(status) ? 
+                  (status == "SENT_TO_BANK") ?
+                    <Button.List>
+                      <Button 
+                        icon="mail"
+                        disabled={true}
+                        color={sentToBankColor}
+                        onClick={() => onClickStatusButton("SENT_TO_BANK")}
+                      >
+                        {t('finance.payment_batch.status.SENT_TO_BANK')}
+                      </Button>
+                    </Button.List>
+                  :
                     <Button.List>
                       <Button 
                         icon="mail"
