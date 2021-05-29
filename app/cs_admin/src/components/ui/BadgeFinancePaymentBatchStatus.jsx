@@ -12,13 +12,13 @@ function BadgeFinancePaymentBatchStatus({ t, status }) {
       return <Badge color="success">{t('finance.payment_batches.status.SENT_TO_BANK')}</Badge> 
       break
     case "APPROVED":
-      return <Badge color="primary">{t('finance.payment_batches.status.APPROVED')}</Badge> 
+      return <Badge color="success">{t('finance.payment_batches.status.APPROVED')}</Badge> 
       break
     case "AWAITING_APPROVAL":
-      return <Badge color="warning">{t('finance.payment_batches.status.AWAITING_APPROVAL')}</Badge> 
+      return <Badge color="primary">{t('finance.payment_batches.status.AWAITING_APPROVAL')}</Badge> 
       break
     case "REJECTED":
-      return <Badge color="warning">{t('finance.payment_batches.status.REJECTED')}</Badge> 
+      return <Badge color="danger">{t('finance.payment_batches.status.REJECTED')}</Badge> 
       break
     default:
       return t("finance.payment_batches.status.invalid_type")

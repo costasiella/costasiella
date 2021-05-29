@@ -221,7 +221,8 @@
             },
             "delete_confirm_msg": "Are you sure you with to delete this batch?",
             "deleted": "Deleted batch",
-            "toast_edit_success": "Saved"
+            "toast_edit_success": "Saved",
+            "toast_edit_status_success": "Updated batch status"
         },
         "payment_batch": {
             "error_loading": "Error loading payment batch... :(",

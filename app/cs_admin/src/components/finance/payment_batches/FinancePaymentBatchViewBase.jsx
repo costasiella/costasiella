@@ -1,10 +1,11 @@
 // @flow
 
-import React from 'react'
+import React, {useState} from 'react'
 import { withTranslation } from 'react-i18next'
 import { useMutation } from "react-apollo"
 import { withRouter } from "react-router"
 import { Link } from "react-router-dom"
+import { toast } from 'react-toastify'
 
 import {
   Page,
@@ -16,8 +17,8 @@ import {
 import SiteWrapper from "../../SiteWrapper"
 import HasPermissionWrapper from "../../HasPermissionWrapper"
 
-import { UPDATE_PAYMENT_BATCH } from "./queries"
-import { getDefaultLocale } from 'react-datepicker'
+import { UPDATE_PAYMENT_BATCH, GET_PAYMENT_BATCHES_QUERY } from "./queries"
+import { get_list_query_variables } from "./tools"
 
 
 function FinancePaymentBatchViewBase({t, history, match, children, status}) {
@@ -25,6 +26,13 @@ function FinancePaymentBatchViewBase({t, history, match, children, status}) {
   const batchType = match.params.batch_type
   const returnUrl = `/finance/paymentbatches/${batchType}`
   const exportUrl = `/d/export/finance_payment_batch/csv/${batchId}`
+  let initialDisabled
+  if (status == "SENT_TO_BANK") {
+    initialDisabled = true
+  } else {
+    initialDisabled = false
+  }
+  const [disabled, setDisabled] = useState(initialDisabled)
 
   const [updateFinancePaymentBatch] = useMutation(UPDATE_PAYMENT_BATCH)
 
@@ -32,8 +40,6 @@ function FinancePaymentBatchViewBase({t, history, match, children, status}) {
   let approvedColor = "secondary"
   let awaitingApprovalColor = "secondary"
   let rejectedColor = "secondary"
-
-  let sent_to_bank_on
 
   switch (status) {
     case "SENT_TO_BANK":
@@ -50,6 +56,31 @@ function FinancePaymentBatchViewBase({t, history, match, children, status}) {
       break
     default:
       break
+  }
+
+  function onClickStatusButton(status) {
+    setDisabled(false)
+
+    updateFinancePaymentBatch({ 
+      variables: { input: {id: batchId, status: status} }, 
+      refetchQueries: [
+        {query: GET_PAYMENT_BATCHES_QUERY, variables: get_list_query_variables(batchType)}
+    ]})
+    .then(({ data }) => {
+        console.log('got data', data);
+        toast.success((t('finance.payment_batches.toast_edit_status_success')), {
+            position: toast.POSITION.BOTTOM_RIGHT
+          })
+        if (status != "SENT_TO_BANK") {
+          setDisabled(false)
+        }
+      }).catch((error) => {
+        toast.error((t('general.toast_server_error')) + ': ' +  error, {
+            position: toast.POSITION.BOTTOM_RIGHT
+          })
+        console.log('there was an error sending the query', error)
+        setDisabled(false)
+      })
   }
 
   return (
@@ -74,22 +105,34 @@ function FinancePaymentBatchViewBase({t, history, match, children, status}) {
                 {(status) ? 
                     <Button.List>
                       <Button 
+                        icon="mail"
+                        disabled={disabled}
                         color={sentToBankColor}
+                        onClick={() => onClickStatusButton("SENT_TO_BANK")}
                       >
                         {t('finance.payment_batch.status.SENT_TO_BANK')}
                       </Button>
                       <Button 
+                        icon="check"
+                        disabled={disabled}
                         color={approvedColor}
+                        onClick={() => onClickStatusButton("APPROVED")}
                       >
                         {t('finance.payment_batch.status.APPROVED')}
                       </Button>
                       <Button 
+                        icon="clock"
+                        disabled={disabled}
                         color={awaitingApprovalColor}
+                        onClick={() => onClickStatusButton("AWAITING_APPROVAL")}
                       >
                         {t('finance.payment_batch.status.AWAITING_APPROVAL')}
                       </Button>
                       <Button 
+                        icon="x"
+                        disabled={disabled}
                         color={rejectedColor}
+                        onClick={() => onClickStatusButton("REJECTED")}
                       >
                         {t('finance.payment_batch.status.REJECTED')}
                       </Button>

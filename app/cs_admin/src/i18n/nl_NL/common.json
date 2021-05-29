@@ -573,7 +573,8 @@
             },
             "delete_confirm_msg": "__STRING_NOT_TRANSLATED__",
             "deleted": "__STRING_NOT_TRANSLATED__",
-            "toast_edit_success": "__STRING_NOT_TRANSLATED__"
+            "toast_edit_success": "__STRING_NOT_TRANSLATED__",
+            "toast_edit_status_success": "__STRING_NOT_TRANSLATED__"
         },
         "payment_batch": {
             "error_loading": "__STRING_NOT_TRANSLATED__",

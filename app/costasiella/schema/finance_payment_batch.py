@@ -102,6 +102,8 @@ def validate_create_update_input(input, update=False):
             if input['status'] not in statuses:
                 raise Exception(_('Invalid Finance Payment Batch Status!'))
 
+            result['status'] = input['status']
+
     return result
 
 
@@ -173,19 +175,30 @@ class UpdateFinancePaymentBatch(graphene.relay.ClientIDMutation):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.change_financepaymentbatch')
 
+        print(input)
+
         rid = get_rid(input['id'])
         finance_payment_batch = FinancePaymentBatch.objects.filter(id=rid.id).first()
         if not finance_payment_batch:
             raise Exception('Invalid Finance Payment Batch Category ID!')
 
         validation_result = validate_create_update_input(input, update=True)
-        finance_payment_batch.name = input['name']
+        if 'name' in input:
+            finance_payment_batch.name = input['name']
 
         if 'note' in input:
             finance_payment_batch.note = input['note']
 
         if 'status' in validation_result:
+            if finance_payment_batch.status == 'SENT_TO_BANK':
+                raise Exception(_("Unable to change status from sent to bank"))
+
             finance_payment_batch.status = validation_result['status']
+
+            if finance_payment_batch.status == "SENT_TO_BANK" and \
+                    not finance_payment_batch.finance_payment_batch_category:
+                # First time batch status has been changed to SENT_TO_BANK; generate items
+                print("generate invoice payments")
 
         finance_payment_batch.save()
 
