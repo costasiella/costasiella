@@ -584,7 +584,13 @@
             "title_batch_items": "__STRING_NOT_TRANSLATED__",
             "title_view": "__STRING_NOT_TRANSLATED__",
             "title_edit": "__STRING_NOT_TRANSLATED__",
-            "title_add": "__STRING_NOT_TRANSLATED__"
+            "title_add": "__STRING_NOT_TRANSLATED__",
+            "status": {
+                "SENT_TO_BANK": "__STRING_NOT_TRANSLATED__",
+                "APPROVED": "__STRING_NOT_TRANSLATED__",
+                "AWAITING_APPROVAL": "__STRING_NOT_TRANSLATED__",
+                "REJECTED": "__STRING_NOT_TRANSLATED__"
+            }
         }
     },
     "shop": {

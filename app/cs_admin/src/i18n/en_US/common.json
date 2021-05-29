@@ -232,7 +232,13 @@
             "title_batch_items": "Items",
             "title_view": "Payment batch",
             "title_edit": "Edit payment batch",
-            "title_add": "Add payment batch"
+            "title_add": "Add payment batch",
+            "status": {
+                "SENT_TO_BANK": "Sent to bank",
+                "APPROVED": "Approved",
+                "AWAITING_APPROVAL": "Awaiting Approval",
+                "REJECTED": "Rejected"
+            }
         }
     },
     "general": {
