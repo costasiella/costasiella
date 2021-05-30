@@ -38,20 +38,17 @@ class GQLAccountBankAccountMandate(TestCase):
             }
         }
 
-        # self.variables_update = {
-        #     "input": {
-        #         "id": to_global_id('OrganizationLocationRoomNode', self.organization_account_bank_account_mandate.pk),
-        #         "displayPublic": True,
-        #         "name": "Updated room",
-        #     }
-        # }
-        #
-        # self.variables_archive = {
-        #     "input": {
-        #         "id": to_global_id('OrganizationLocationRoomNode', self.organization_account_bank_account_mandate.pk),
-        #         "archived": True,
-        #     }
-        # }
+        self.variables_update = {
+            "input": {
+                "reference": "987878-dvg",
+                "content": "Content here",
+                "signatureDate": "2020-01-01"
+            }
+        }
+
+        self.variables_delete = {
+            "input": {}
+        }
 
         self.account_bank_account_mandates_query = '''
   query AccountBankAccountMandates($after: String, $before: String, $accountBankAccount: ID!) {
@@ -350,7 +347,6 @@ class GQLAccountBankAccountMandate(TestCase):
         user.user_permissions.add(permission)
         user.save()
 
-
         executed = execute_test_client_api_query(
             query,
             user,
@@ -380,140 +376,155 @@ class GQLAccountBankAccountMandate(TestCase):
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Permission denied!')
 
-    #
-    # def test_update_account_bank_account_mandate(self):
-    #     """ Update a location room """
-    #     query = self.account_bank_account_mandate_update_mutation
-    #     variables = self.variables_update
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.admin_user,
-    #         variables=variables
-    #     )
-    #
-    #     data = executed.get('data')
-    #     self.assertEqual(data['updateOrganizationLocationRoom']['organizationLocationRoom']['name'], variables['input']['name'])
-    #     self.assertEqual(data['updateOrganizationLocationRoom']['organizationLocationRoom']['displayPublic'], variables['input']['displayPublic'])
-    #
-    #
-    # def test_update_account_bank_account_mandate_anon_user(self):
-    #     """ Don't allow updating location rooms for non-logged in users """
-    #     query = self.account_bank_account_mandate_update_mutation
-    #     variables = self.variables_update
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.anon_user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
-    #
-    #
-    # def test_update_account_bank_account_mandate_permission_granted(self):
-    #     """ Allow updating location rooms for users with permissions """
-    #     query = self.account_bank_account_mandate_update_mutation
-    #     variables = self.variables_update
-    #
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename=self.permission_change)
-    #     user.user_permissions.add(permission)
-    #     user.save()
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['updateOrganizationLocationRoom']['organizationLocationRoom']['name'], variables['input']['name'])
-    #     self.assertEqual(data['updateOrganizationLocationRoom']['organizationLocationRoom']['displayPublic'], variables['input']['displayPublic'])
-    #
-    #
-    # def test_update_account_bank_account_mandate_permission_denied(self):
-    #     """ Check update location room permission denied error message """
-    #     query = self.account_bank_account_mandate_update_mutation
-    #     variables = self.variables_update
-    #
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
-    #
-    #
-    # def test_archive_account_bank_account_mandate(self):
-    #     """ Archive a location room"""
-    #     query = self.account_bank_account_mandate_archive_mutation
-    #     variables = self.variables_archive
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.admin_user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['archiveOrganizationLocationRoom']['organizationLocationRoom']['archived'], variables['input']['archived'])
-    #
-    #
-    # def test_archive_account_bank_account_mandate_anon_user(self):
-    #     """ Archive a location room """
-    #     query = self.account_bank_account_mandate_archive_mutation
-    #     variables = self.variables_archive
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.anon_user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
-    #
-    #
-    # def test_archive_account_bank_account_mandate_permission_granted(self):
-    #     """ Allow archiving locations for users with permissions """
-    #     query = self.account_bank_account_mandate_archive_mutation
-    #     variables = self.variables_archive
-    #
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename=self.permission_delete)
-    #     user.user_permissions.add(permission)
-    #     user.save()
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['archiveOrganizationLocationRoom']['organizationLocationRoom']['archived'], variables['input']['archived'])
-    #
-    #
-    # def test_archive_account_bank_account_mandate_permission_denied(self):
-    #     """ Check archive location room permission denied error message """
-    #     query = self.account_bank_account_mandate_archive_mutation
-    #     variables = self.variables_archive
-    #
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
-    #
+    def test_update_account_bank_account_mandate(self):
+        """ Update a bank account mandate """
+        query = self.account_bank_account_mandate_update_mutation
+        account_bank_account_mandate = f.AccountBankAccountMandateFactory.create()
+        variables = self.variables_update
+        variables['input']['id'] = to_global_id("AccountBankAccountMandateNode", account_bank_account_mandate.pk)
+
+        executed = execute_test_client_api_query(
+            query,
+            self.admin_user,
+            variables=variables
+        )
+
+        data = executed.get('data')
+        self.assertEqual(
+          data['updateAccountBankAccountMandate']['accountBankAccountMandate']['reference'],
+          variables['input']['reference'])
+        self.assertEqual(
+          data['updateAccountBankAccountMandate']['accountBankAccountMandate']['content'],
+          variables['input']['content'])
+        self.assertEqual(
+          data['updateAccountBankAccountMandate']['accountBankAccountMandate']['signatureDate'],
+          variables['input']['signatureDate'])
+
+    def test_update_account_bank_account_mandate_anon_user(self):
+        """ Don't allow updating bank account mandates for non-logged in users """
+        query = self.account_bank_account_mandate_update_mutation
+        account_bank_account_mandate = f.AccountBankAccountMandateFactory.create()
+        variables = self.variables_update
+        variables['input']['id'] = to_global_id("AccountBankAccountMandateNode", account_bank_account_mandate.pk)
+
+        executed = execute_test_client_api_query(
+            query,
+            self.anon_user,
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
+
+    def test_update_account_bank_account_mandate_permission_granted(self):
+        """ Allow updating bank account mandate for users with permissions """
+        query = self.account_bank_account_mandate_update_mutation
+        account_bank_account_mandate = f.AccountBankAccountMandateFactory.create()
+        variables = self.variables_update
+        variables['input']['id'] = to_global_id("AccountBankAccountMandateNode", account_bank_account_mandate.pk)
+
+        # Create regular user
+        user = account_bank_account_mandate.account_bank_account.account
+        permission = Permission.objects.get(codename=self.permission_change)
+        user.user_permissions.add(permission)
+        user.save()
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(
+          data['updateAccountBankAccountMandate']['accountBankAccountMandate']['reference'],
+          variables['input']['reference'])
+
+    def test_update_account_bank_account_mandate_permission_denied(self):
+        """ Check update bank account mandate permission denied error message """
+        query = self.account_bank_account_mandate_update_mutation
+        account_bank_account_mandate = f.AccountBankAccountMandateFactory.create()
+        variables = self.variables_update
+        variables['input']['id'] = to_global_id("AccountBankAccountMandateNode", account_bank_account_mandate.pk)
+
+        # Create regular user
+        user = account_bank_account_mandate.account_bank_account.account
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
+
+    def test_delete_account_bank_account_mandate(self):
+        """ Archive a account bank account mandate"""
+        query = self.account_bank_account_mandate_archive_mutation
+        account_bank_account_mandate = f.AccountBankAccountMandateFactory.create()
+        variables = self.variables_delete
+        variables['input']['id'] = to_global_id("AccountBankAccountMandateNode", account_bank_account_mandate.pk)
+
+        executed = execute_test_client_api_query(
+            query,
+            self.admin_user,
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['deleteAccountBankAccountMandate']['ok'], True)
+
+    def test_delete_account_bank_account_mandate_anon_user(self):
+        """ Anon users shouldn't be able to delete a account bank account mandate """
+        query = self.account_bank_account_mandate_archive_mutation
+        account_bank_account_mandate = f.AccountBankAccountMandateFactory.create()
+        variables = self.variables_delete
+        variables['input']['id'] = to_global_id("AccountBankAccountMandateNode", account_bank_account_mandate.pk)
+
+        executed = execute_test_client_api_query(
+            query,
+            self.anon_user,
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
+
+    def test_delete_account_bank_account_mandate_permission_granted(self):
+        """ Allow deleting bank account mandates for users with permissions """
+        query = self.account_bank_account_mandate_archive_mutation
+        account_bank_account_mandate = f.AccountBankAccountMandateFactory.create()
+        variables = self.variables_delete
+        variables['input']['id'] = to_global_id("AccountBankAccountMandateNode", account_bank_account_mandate.pk)
+
+        # Create regular user
+        user = f.TeacherFactory.create()
+        permission = Permission.objects.get(codename=self.permission_delete)
+        user.user_permissions.add(permission)
+        user.save()
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['deleteAccountBankAccountMandate']['ok'], True)
+
+    def test_delete_account_bank_account_mandate_permission_denied(self):
+        """ Check delete mandate permission denied error message """
+        query = self.account_bank_account_mandate_archive_mutation
+        account_bank_account_mandate = f.AccountBankAccountMandateFactory.create()
+        variables = self.variables_delete
+        variables['input']['id'] = to_global_id("AccountBankAccountMandateNode", account_bank_account_mandate.pk)
+
+        # Create regular user
+        user = f.TeacherFactory.create()
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=variables
+        )
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
+
