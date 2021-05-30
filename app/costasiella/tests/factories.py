@@ -448,6 +448,16 @@ class AccountAcceptedDocumentFactory(factory.DjangoModelFactory):
     date_accepted = datetime.date(2019, 1, 1)
 
 
+class AccountBankAccountFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.AccountBankAccount
+
+    account = factory.SubFactory(RegularUserFactory)
+    number = "123456"
+    holder = "First regular user"
+    bic = "INGBNL2A"
+    
+
 class AccountSubscriptionFactory(factory.DjangoModelFactory):
     class Meta:
         model = models.AccountSubscription
