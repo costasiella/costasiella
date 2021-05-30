@@ -65,7 +65,7 @@ class AccountBankAccountMandateQuery(graphene.ObjectType):
         require_login(user)
 
         if user.has_perm('costasiella.view_accountbankaccountmandate') and 'account_bank_account' in kwargs:
-            rid = get_rid(kwargs.get('account', user.id))
+            rid = get_rid(kwargs['account_bank_account'])
             account_bank_account_id = rid.id
         else:
             # Fetch bank account for user

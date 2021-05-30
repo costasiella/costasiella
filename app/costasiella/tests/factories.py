@@ -463,7 +463,7 @@ class AccountBankAccountMandateFactory(factory.DjangoModelFactory):
         model = models.AccountBankAccountMandate
 
     account_bank_account = factory.SubFactory(AccountBankAccountFactory)
-    reference = "1234"
+    reference = "1234-abcd"
     content = "hello world"
     signature_date = datetime.date(2020, 1, 1)
 
