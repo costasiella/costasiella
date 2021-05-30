@@ -89,6 +89,9 @@ class GQLAccountBankAccountMandate(TestCase):
   query AccountBankAccountMandate($id: ID!) {
     accountBankAccountMandate(id:$id) {
       id
+      accountBankAccount {
+        id
+      }
       reference
       content
       signatureDate
@@ -189,7 +192,7 @@ class GQLAccountBankAccountMandate(TestCase):
         )
 
     def test_query_permission_granted(self):
-        """ Query list of location rooms """
+        """ With permissions, other users' mandates should be visible """
         query = self.account_bank_account_mandates_query
         account_bank_account_mandate = f.AccountBankAccountMandateFactory.create()
 
@@ -213,7 +216,7 @@ class GQLAccountBankAccountMandate(TestCase):
         )
 
     def test_query_anon_user(self):
-        """ Query list of location rooms """
+        """ Anon users shouldn't be able to view mandates """
         query = self.account_bank_account_mandates_query
         account_bank_account_mandate = f.AccountBankAccountMandateFactory.create()
         variables = {
@@ -224,72 +227,69 @@ class GQLAccountBankAccountMandate(TestCase):
         executed = execute_test_client_api_query(query, self.anon_user, variables=variables)
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Not logged in!')
-    #
-    #
-    # def test_query_one(self):
-    #     """ Query one location room """
-    #     account_bank_account_mandate = f.AccountBankAccountMandateFactory.create()
-    #
-    #     # First query locations to get node id easily
-    #     node_id = to_global_id('OrganizationLocationRoomNode', account_bank_account_mandate.pk)
-    #
-    #     # Now query single location and check
-    #     query = self.account_bank_account_mandate_query
-    #     executed = execute_test_client_api_query(query, self.admin_user, variables={"id": node_id})
-    #     data = executed.get('data')
-    #     self.assertEqual(data['organizationLocationRoom']['organizationLocation']['id'],
-    #       to_global_id('OrganizationLocationNode', account_bank_account_mandate.account_bank_account.pk))
-    #     self.assertEqual(data['organizationLocationRoom']['name'], account_bank_account_mandate.name)
-    #     self.assertEqual(data['organizationLocationRoom']['archived'], account_bank_account_mandate.archived)
-    #     self.assertEqual(data['organizationLocationRoom']['displayPublic'], account_bank_account_mandate.display_public)
-    #
-    #
-    # def test_query_one_anon_user(self):
-    #     """ Deny permission for anon users Query one location room """
-    #     account_bank_account_mandate = f.AccountBankAccountMandateFactory.create()
-    #
-    #     # First query locations to get node id easily
-    #     node_id = to_global_id('OrganizationLocationRoomNode', account_bank_account_mandate.pk)
-    #
-    #     # Now query single location and check
-    #     query = self.account_bank_account_mandate_query
-    #     executed = execute_test_client_api_query(query, self.anon_user, variables={"id": node_id})
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
-    #
-    #
-    # def test_query_one_permission_denied(self):
-    #     """ Permission denied message when user lacks authorization """
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     account_bank_account_mandate = f.AccountBankAccountMandateFactory.create()
-    #
-    #     # First query locations to get node id easily
-    #     node_id = to_global_id('OrganizationLocationRoomNode', account_bank_account_mandate.pk)
-    #
-    #     # Now query single location and check
-    #     query = self.account_bank_account_mandate_query
-    #     executed = execute_test_client_api_query(query, user, variables={"id": node_id})
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
-    #
-    #
-    # def test_query_one_permission_granted(self):
-    #     """ Respond with data when user has permission """
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename='view_accountbankaccountmandate')
-    #     user.user_permissions.add(permission)
-    #     user.save()
-    #     account_bank_account_mandate = f.AccountBankAccountMandateFactory.create()
-    #
-    #     # First query locations to get node id easily
-    #     node_id = to_global_id('OrganizationLocationRoomNode', account_bank_account_mandate.pk)
-    #
-    #     # Now query single location and check
-    #     query = self.account_bank_account_mandate_query
-    #     executed = execute_test_client_api_query(query, user, variables={"id": node_id})
-    #     data = executed.get('data')
-    #     self.assertEqual(data['organizationLocationRoom']['name'], account_bank_account_mandate.name)
+
+    def test_query_one(self):
+        """ Query one account bank account mandate """
+        account_bank_account_mandate = f.AccountBankAccountMandateFactory.create()
+
+        # First query locations to get node id easily
+        node_id = to_global_id('AccountBankAccountMandateNode', account_bank_account_mandate.pk)
+
+        # Now query single location and check
+        query = self.account_bank_account_mandate_query
+        executed = execute_test_client_api_query(query, self.admin_user, variables={"id": node_id})
+        data = executed.get('data')
+        self.assertEqual(data['accountBankAccountMandate']['accountBankAccount']['id'],
+          to_global_id('AccountBankAccountNode', account_bank_account_mandate.account_bank_account.pk))
+        self.assertEqual(data['accountBankAccountMandate']['reference'], account_bank_account_mandate.reference)
+        self.assertEqual(data['accountBankAccountMandate']['content'], account_bank_account_mandate.content)
+        self.assertEqual(data['accountBankAccountMandate']['signatureDate'],
+                         str(account_bank_account_mandate.signature_date))
+
+    def test_query_one_anon_user(self):
+        """ Deny permission for anon users Query one location room """
+        account_bank_account_mandate = f.AccountBankAccountMandateFactory.create()
+
+        # First query locations to get node id easily
+        node_id = to_global_id('AccountBankAccountMandateNode', account_bank_account_mandate.pk)
+
+        # Now query single location and check
+        query = self.account_bank_account_mandate_query
+        executed = execute_test_client_api_query(query, self.anon_user, variables={"id": node_id})
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
+
+    def test_query_one_permission_denied(self):
+        """ Permission denied message when user lacks authorization """
+        account_bank_account_mandate = f.AccountBankAccountMandateFactory.create()
+        user = account_bank_account_mandate.account_bank_account.account
+
+        # First query locations to get node id easily
+        node_id = to_global_id('AccountBankAccountMandateNode', account_bank_account_mandate.pk)
+
+        # Now query single location and check
+        query = self.account_bank_account_mandate_query
+        executed = execute_test_client_api_query(query, user, variables={"id": node_id})
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
+
+    def test_query_one_permission_granted(self):
+        """ Respond with data when user has permission """
+        user = f.TeacherFactory.create()
+        permission = Permission.objects.get(codename='view_accountbankaccountmandate')
+        user.user_permissions.add(permission)
+        user.save()
+        account_bank_account_mandate = f.AccountBankAccountMandateFactory.create()
+
+        # First query locations to get node id easily
+        node_id = to_global_id('AccountBankAccountMandateNode', account_bank_account_mandate.pk)
+
+        # Now query single location and check
+        query = self.account_bank_account_mandate_query
+        executed = execute_test_client_api_query(query, user, variables={"id": node_id})
+        data = executed.get('data')
+        self.assertEqual(data['accountBankAccountMandate']['accountBankAccount']['id'],
+          to_global_id('AccountBankAccountNode', account_bank_account_mandate.account_bank_account.pk))
     #
     #
     # def test_create_account_bank_account_mandate(self):
