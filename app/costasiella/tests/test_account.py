@@ -142,13 +142,11 @@ class GQLAccount(TransactionTestCase):
   }
   '''
 
-
     def tearDown(self):
         # This is run after every test
         # pass
         # Clean up accounts in costasiella_account table
         get_user_model().objects.all().delete()
-
 
     def test_query(self):
         """ Query list of accounts """
@@ -164,7 +162,6 @@ class GQLAccount(TransactionTestCase):
         self.assertEqual(data['accounts']['edges'][0]['node']['lastName'], account.last_name)
         self.assertEqual(data['accounts']['edges'][0]['node']['email'], account.email)
 
-
     def test_query_permission_denied(self):
         """ Query list of accounts - check permission denied """
         query = self.accounts_query
@@ -175,7 +172,6 @@ class GQLAccount(TransactionTestCase):
         errors = executed.get('errors')
 
         self.assertEqual(errors[0]['message'], 'Permission denied!')
-
 
     def test_query_permission_granted(self):
         """ Query list of accounts with view permission """
@@ -196,7 +192,6 @@ class GQLAccount(TransactionTestCase):
         self.assertEqual(data['accounts']['edges'][0]['node']['lastName'], account.last_name)
         self.assertEqual(data['accounts']['edges'][0]['node']['email'], account.email)
 
-
     def test_query_anon_user(self):
         """ Query list of accounts - anon user """
         query = self.accounts_query
@@ -204,7 +199,6 @@ class GQLAccount(TransactionTestCase):
         executed = execute_test_client_api_query(query, self.anon_user, variables=self.variables_query_list)
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Not logged in!')
-
 
     def test_query_one(self):
         """ Query one account as admin """   
@@ -219,7 +213,6 @@ class GQLAccount(TransactionTestCase):
         self.assertEqual(data['account']['email'], account.email)
         self.assertEqual(data['account']['isActive'], account.is_active)
 
-
     def test_query_one_anon_user(self):
         """ Deny permission for anon users Query one glacount """   
         account = f.RegularUserFactory.create()
@@ -229,7 +222,6 @@ class GQLAccount(TransactionTestCase):
         executed = execute_test_client_api_query(self.account_query, self.anon_user, variables={"id": node_id})
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Not logged in!')
-
 
     def test_query_one_permission_denied(self):
         """ Permission denied message when user lacks authorization """   
@@ -241,7 +233,6 @@ class GQLAccount(TransactionTestCase):
         executed = execute_test_client_api_query(self.account_query, account, variables={"id": node_id})
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Permission denied!')
-
 
     def test_query_one_permission_granted(self):
         """ Respond with data when user has permission """   
@@ -256,7 +247,6 @@ class GQLAccount(TransactionTestCase):
         executed = execute_test_client_api_query(self.account_query, account, variables={"id": node_id})
         data = executed.get('data')
         self.assertEqual(data['account']['firstName'], account.first_name)
-
 
     def test_create_account(self):
         """ Create a account """
@@ -287,6 +277,12 @@ class GQLAccount(TransactionTestCase):
             True
         )
 
+        # Check bank account record
+        rid = get_rid(data['createAccount']['account']['id'])
+        self.assertEqual(
+            models.AccountBankAccount.objects.filter(account=rid.id).exists(),
+            True
+        )
 
     def test_create_account_anon_user(self):
         """ Don't allow creating accounts for non-logged in users """
