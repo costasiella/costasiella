@@ -470,7 +470,7 @@ class AccountBankAccountMandateFactory(factory.DjangoModelFactory):
 
 class AccountFinancePaymentBatchCategoryItemFactory(factory.DjangoModelFactory):
     class Meta:
-        model = models.AccountBankAccountMandate
+        model = models.AccountFinancePaymentBatchCategoryItem
 
     account = factory.SubFactory(RegularUserFactory)
     finance_payment_batch_category = factory.SubFactory(FinancePaymentBatchCategoryCollectionFactory)
