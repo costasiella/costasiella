@@ -25,23 +25,16 @@ class GQLAccountBankAccount(TestCase):
         self.admin_user = f.AdminUserFactory.create()
         self.anon_user = AnonymousUser()
 
-        self.permission_view = 'view_accountaccountbankaccount'
-        self.permission_add = 'add_accountaccountbankaccount'
-        self.permission_change = 'change_accountaccountbankaccount'
-        self.permission_delete = 'delete_accountaccountbankaccount'
-
-        self.variables_create = {
-            "input": {
-                "dateStart": "2019-01-01",
-                "note": "creation note",
-            }
-        }
+        self.permission_view = 'view_accountbankaccount'
+        self.permission_add = 'add_accountbankaccount'
+        self.permission_change = 'change_accountbankaccount'
+        self.permission_delete = 'delete_accountbankaccount'
 
         self.variables_update = {
             "input": {
-                "dateStart": "2017-01-01",
-                "dateEnd": "2020-12-31",
-                "note": "Update note",
+                "number": "12345AB",
+                "holder": "Account Holder",
+                "bic": "ABNANL2A"
             }
         }
 
@@ -141,7 +134,7 @@ class GQLAccountBankAccount(TestCase):
 
         # Create regular user
         user = get_user_model().objects.get(pk=account_bank_account.account.id)
-        permission = Permission.objects.get(codename='view_accountbankaccount')
+        permission = Permission.objects.get(codename=self.permission_view)
         user.user_permissions.add(permission)
         user.save()
 
@@ -166,426 +159,140 @@ class GQLAccountBankAccount(TestCase):
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Not logged in!')
 
-    # 
-    # def test_query_one(self):
-    #     """ Query one account account_bank_account as admin """   
-    #     account_bank_account = f.AccountBankAccountFactory.create()
-    #     
-    #     variables = {
-    #         "id": to_global_id("AccountBankAccountNode", account_bank_account.id),
-    #         "archived": False,
-    #     }
-    # 
-    #     # Now query single account_bank_account and check
-    #     executed = execute_test_client_api_query(self.account_bank_account_query, self.admin_user, variables=variables)
-    #     data = executed.get('data')
-    #     self.assertEqual(
-    #         data['accountClasspass']['account']['id'], 
-    #         to_global_id('AccountNode', account_bank_account.account.id)
-    #     )
-    #     self.assertEqual(
-    #         data['accountClasspass']['organizationClasspass']['id'], 
-    #         to_global_id('OrganizationClasspassNode', account_bank_account.organization_account_bank_account.id)
-    #     )
-    #     self.assertEqual(data['accountClasspass']['dateStart'], str(account_bank_account.date_start))
-    #     self.assertEqual(data['accountClasspass']['dateEnd'], str(account_bank_account.date_end))
-    #     self.assertEqual(data['accountClasspass']['note'], account_bank_account.note)
-    # 
-    # 
-    # def test_query_one_anon_user(self):
-    #     """ Deny permission for anon users Query one account account_bank_account """   
-    #     account_bank_account = f.AccountBankAccountFactory.create()
-    # 
-    #     variables = {
-    #         "id": to_global_id("AccountBankAccountNode", account_bank_account.id),
-    #         "archived": False,
-    #     }
-    # 
-    #     # Now query single account_bank_account and check
-    #     executed = execute_test_client_api_query(self.account_bank_account_query, self.anon_user, variables=variables)
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
-    # 
-    # 
-    # def test_query_one_permission_denied(self):
-    #     """ Permission denied message when user lacks authorization """   
-    #     # Create regular user
-    #     account_bank_account = f.AccountBankAccountFactory.create()
-    #     user = account_bank_account.account
-    # 
-    #     variables = {
-    #         "id": to_global_id("AccountBankAccountNode", account_bank_account.id),
-    #         "archived": False,
-    #     }
-    # 
-    #     # Now query single account_bank_account and check
-    #     executed = execute_test_client_api_query(self.account_bank_account_query, user, variables=variables)
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
-    # 
-    # 
-    # def test_query_one_permission_granted(self):
-    #     """ Respond with data when user has permission """   
-    #     account_bank_account = f.AccountBankAccountFactory.create()
-    #     user = account_bank_account.account
-    #     permission = Permission.objects.get(codename='view_accountaccount_bank_account')
-    #     user.user_permissions.add(permission)
-    #     user.save()
-    #     
-    # 
-    #     variables = {
-    #         "id": to_global_id("AccountBankAccountNode", account_bank_account.id),
-    #         "archived": False,
-    #     }
-    # 
-    #     # Now query single account_bank_account and check   
-    #     executed = execute_test_client_api_query(self.account_bank_account_query, user, variables=variables)
-    #     data = executed.get('data')
-    #     self.assertEqual(
-    #         data['accountClasspass']['organizationClasspass']['id'], 
-    #         to_global_id('OrganizationClasspassNode', account_bank_account.organization_account_bank_account.id)
-    #     )
-    # 
-    # 
-    # def test_create_account_bank_account(self):
-    #     """ Create an account account_bank_account """
-    #     query = self.account_bank_account_create_mutation
-    # 
-    #     account = f.RegularUserFactory.create()
-    #     organization_account_bank_account = f.OrganizationClasspassFactory.create()
-    #     variables = self.variables_create
-    #     variables['input']['account'] = to_global_id('AccountNode', account.id)
-    #     variables['input']['organizationClasspass'] = to_global_id('OrganizationClasspassNode', organization_account_bank_account.id)
-    # 
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         self.admin_user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    # 
-    #     self.assertEqual(
-    #         data['createAccountClasspass']['accountClasspass']['account']['id'], 
-    #         variables['input']['account']
-    #     )
-    #     self.assertEqual(
-    #         data['createAccountClasspass']['accountClasspass']['organizationClasspass']['id'], 
-    #         variables['input']['organizationClasspass']
-    #     )
-    #     self.assertEqual(data['createAccountClasspass']['accountClasspass']['dateStart'], variables['input']['dateStart'])
-    #     self.assertEqual(data['createAccountClasspass']['accountClasspass']['note'], variables['input']['note'])
-    # 
-    # 
-    # def test_create_account_bank_account_valid_3_days(self):
-    #     """ End date should be set 3 days from start """
-    #     query = self.account_bank_account_create_mutation
-    # 
-    #     account = f.RegularUserFactory.create()
-    #     organization_account_bank_account = f.OrganizationClasspassFactory.create()
-    #     organization_account_bank_account.validity_unit = 'DAYS'
-    #     organization_account_bank_account.validity = 3
-    #     organization_account_bank_account.save()
-    # 
-    #     variables = self.variables_create
-    #     variables['input']['account'] = to_global_id('AccountNode', account.id)
-    #     variables['input']['organizationClasspass'] = to_global_id('OrganizationClasspassNode', organization_account_bank_account.id)
-    # 
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         self.admin_user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    # 
-    #     self.assertEqual(
-    #         data['createAccountClasspass']['accountClasspass']['dateEnd'], 
-    #         str(datetime.date(2019, 1, 1) + datetime.timedelta(days=2))
-    #     )
-    # 
-    # 
-    # def test_create_account_bank_account_valid_2_weeks(self):
-    #     """ End date should be set 2 weeks from start """
-    #     query = self.account_bank_account_create_mutation
-    # 
-    #     account = f.RegularUserFactory.create()
-    #     organization_account_bank_account = f.OrganizationClasspassFactory.create()
-    #     organization_account_bank_account.validity_unit = 'WEEKS'
-    #     organization_account_bank_account.validity = 2
-    #     organization_account_bank_account.save()
-    # 
-    #     variables = self.variables_create
-    #     variables['input']['account'] = to_global_id('AccountNode', account.id)
-    #     variables['input']['organizationClasspass'] = to_global_id('OrganizationClasspassNode', organization_account_bank_account.id)
-    # 
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         self.admin_user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    # 
-    #     self.assertEqual(
-    #         data['createAccountClasspass']['accountClasspass']['dateEnd'], 
-    #         str(datetime.date(2019, 1, 1) + datetime.timedelta(days=13))
-    #     )
-    # 
-    # 
-    # def test_create_account_bank_account_valid_2_months(self):
-    #     """ End date should be set 2 weeks from start """
-    #     query = self.account_bank_account_create_mutation
-    # 
-    #     account = f.RegularUserFactory.create()
-    #     organization_account_bank_account = f.OrganizationClasspassFactory.create()
-    #     organization_account_bank_account.validity_unit = 'MONTHS'
-    #     organization_account_bank_account.validity = 2
-    #     organization_account_bank_account.save()
-    # 
-    #     variables = self.variables_create
-    #     variables['input']['account'] = to_global_id('AccountNode', account.id)
-    #     variables['input']['organizationClasspass'] = to_global_id('OrganizationClasspassNode', organization_account_bank_account.id)
-    # 
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         self.admin_user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    # 
-    #     self.assertEqual(
-    #         data['createAccountClasspass']['accountClasspass']['dateEnd'], 
-    #         str(datetime.date(2019, 2, 28))
-    #     )
-    # 
-    # 
-    # def test_create_account_bank_account_anon_user(self):
-    #     """ Don't allow creating account accountbankaccounts for non-logged in users """
-    #     query = self.account_bank_account_create_mutation
-    #     
-    #     account = f.RegularUserFactory.create()
-    #     organization_account_bank_account = f.OrganizationClasspassFactory.create()
-    #     variables = self.variables_create
-    #     variables['input']['account'] = to_global_id('AccountNode', account.id)
-    #     variables['input']['organizationClasspass'] = to_global_id('OrganizationClasspassNode', organization_account_bank_account.id)
-    # 
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         self.anon_user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
-    # 
-    # 
-    # def test_create_account_bank_account_permission_granted(self):
-    #     """ Allow creating accountbankaccounts for users with permissions """
-    #     query = self.account_bank_account_create_mutation
-    # 
-    #     account = f.RegularUserFactory.create()
-    #     organization_account_bank_account = f.OrganizationClasspassFactory.create()
-    #     variables = self.variables_create
-    #     variables['input']['account'] = to_global_id('AccountNode', account.id)
-    #     variables['input']['organizationClasspass'] = to_global_id('OrganizationClasspassNode', organization_account_bank_account.id)
-    # 
-    #     # Create regular user
-    #     user = account
-    #     permission = Permission.objects.get(codename=self.permission_add)
-    #     user.user_permissions.add(permission)
-    #     user.save()
-    # 
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(
-    #         data['createAccountClasspass']['accountClasspass']['organizationClasspass']['id'], 
-    #         variables['input']['organizationClasspass']
-    #     )
-    # 
-    # 
-    # def test_create_account_bank_account_permission_denied(self):
-    #     """ Check create account_bank_account permission denied error message """
-    #     query = self.account_bank_account_create_mutation
-    #     account = f.RegularUserFactory.create()
-    #     organization_account_bank_account = f.OrganizationClasspassFactory.create()
-    #     variables = self.variables_create
-    #     variables['input']['account'] = to_global_id('AccountNode', account.id)
-    #     variables['input']['organizationClasspass'] = to_global_id('OrganizationClasspassNode', organization_account_bank_account.id)
-    # 
-    #     # Create regular user
-    #     user = account
-    # 
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
-    # 
-    # 
-    # def test_update_account_bank_account(self):
-    #     """ Update a account_bank_account """
-    #     query = self.account_bank_account_update_mutation
-    #     account_bank_account = f.AccountBankAccountFactory.create()
-    #     organization_account_bank_account = f.OrganizationClasspassFactory.create()
-    #     variables = self.variables_update
-    #     variables['input']['id'] = to_global_id('AccountBankAccountNode', account_bank_account.id)
-    #     variables['input']['organizationClasspass'] = to_global_id('OrganizationClasspassNode', organization_account_bank_account.id)
-    # 
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         self.admin_user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    # 
-    #     self.assertEqual(
-    #       data['updateAccountClasspass']['accountClasspass']['organizationClasspass']['id'], 
-    #       variables['input']['organizationClasspass']
-    #     )
-    #     self.assertEqual(data['updateAccountClasspass']['accountClasspass']['dateStart'], variables['input']['dateStart'])
-    #     self.assertEqual(data['updateAccountClasspass']['accountClasspass']['dateEnd'], variables['input']['dateEnd'])
-    #     self.assertEqual(data['updateAccountClasspass']['accountClasspass']['note'], variables['input']['note'])
-    # 
-    # 
-    # def test_update_account_bank_account_anon_user(self):
-    #     """ Don't allow updating accountbankaccounts for non-logged in users """
-    #     query = self.account_bank_account_update_mutation
-    #     account_bank_account = f.AccountBankAccountFactory.create()
-    #     organization_account_bank_account = f.OrganizationClasspassFactory.create()
-    #     variables = self.variables_update
-    #     variables['input']['id'] = to_global_id('AccountBankAccountNode', account_bank_account.id)
-    #     variables['input']['organizationClasspass'] = to_global_id('OrganizationClasspassNode', organization_account_bank_account.id)
-    # 
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         self.anon_user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
-    # 
-    # 
-    # def test_update_account_bank_account_permission_granted(self):
-    #     """ Allow updating accountbankaccounts for users with permissions """
-    #     query = self.account_bank_account_update_mutation
-    #     account_bank_account = f.AccountBankAccountFactory.create()
-    #     organization_account_bank_account = f.OrganizationClasspassFactory.create()
-    #     variables = self.variables_update
-    #     variables['input']['id'] = to_global_id('AccountBankAccountNode', account_bank_account.id)
-    #     variables['input']['organizationClasspass'] = to_global_id('OrganizationClasspassNode', organization_account_bank_account.id)
-    # 
-    #     user = account_bank_account.account
-    #     permission = Permission.objects.get(codename=self.permission_change)
-    #     user.user_permissions.add(permission)
-    #     user.save()
-    # 
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['updateAccountClasspass']['accountClasspass']['dateStart'], variables['input']['dateStart'])
-    # 
-    # 
-    # def test_update_account_bank_account_permission_denied(self):
-    #     """ Check update account_bank_account permission denied error message """
-    #     query = self.account_bank_account_update_mutation
-    #     account_bank_account = f.AccountBankAccountFactory.create()
-    #     organization_account_bank_account = f.OrganizationClasspassFactory.create()
-    #     variables = self.variables_update
-    #     variables['input']['id'] = to_global_id('AccountBankAccountNode', account_bank_account.id)
-    #     variables['input']['organizationClasspass'] = to_global_id('OrganizationClasspassNode', organization_account_bank_account.id)
-    # 
-    #     user = account_bank_account.account
-    # 
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
-    # 
-    # 
-    # def test_delete_account_bank_account(self):
-    #     """ Delete an account account_bank_account """
-    #     query = self.account_bank_account_delete_mutation
-    #     account_bank_account = f.AccountBankAccountFactory.create()
-    #     variables = {"input":{}}
-    #     variables['input']['id'] = to_global_id('AccountBankAccountNode', account_bank_account.id)
-    # 
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         self.admin_user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     print(data)
-    #     self.assertEqual(data['deleteAccountClasspass']['ok'], True)
-    # 
-    # 
-    # def test_delete_account_bank_account_anon_user(self):
-    #     """ Delete account_bank_account denied for anon user """
-    #     query = self.account_bank_account_delete_mutation
-    #     account_bank_account = f.AccountBankAccountFactory.create()
-    #     variables = {"input":{}}
-    #     variables['input']['id'] = to_global_id('AccountBankAccountNode', account_bank_account.id)
-    # 
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         self.anon_user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
-    # 
-    # 
-    # def test_delete_account_bank_account_permission_granted(self):
-    #     """ Allow deleting accountbankaccounts for users with permissions """
-    #     query = self.account_bank_account_delete_mutation
-    #     account_bank_account = f.AccountBankAccountFactory.create()
-    #     variables = {"input":{}}
-    #     variables['input']['id'] = to_global_id('AccountBankAccountNode', account_bank_account.id)
-    # 
-    #     # Give permissions
-    #     user = account_bank_account.account
-    #     permission = Permission.objects.get(codename=self.permission_delete)
-    #     user.user_permissions.add(permission)
-    #     user.save()
-    # 
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['deleteAccountClasspass']['ok'], True)
-    # 
-    # 
-    # def test_delete_account_bank_account_permission_denied(self):
-    #     """ Check delete account_bank_account permission denied error message """
-    #     query = self.account_bank_account_delete_mutation
-    #     account_bank_account = f.AccountBankAccountFactory.create()
-    #     variables = {"input":{}}
-    #     variables['input']['id'] = to_global_id('AccountBankAccountNode', account_bank_account.id)
-    #     
-    #     user = account_bank_account.account
-    # 
-    #     executed = execute_test_client_api_query(
-    #         query, 
-    #         user, 
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
-    # 
+    def test_update_account_bank_account(self):
+        """ Update a account_bank_account """
+        query = self.account_bank_account_update_mutation
+        account_bank_account = f.AccountBankAccountFactory.create()
+        organization_account_bank_account = f.OrganizationClasspassFactory.create()
+        variables = self.variables_update
+        variables['input']['id'] = to_global_id('AccountBankAccountNode', account_bank_account.id)
+
+        executed = execute_test_client_api_query(
+            query,
+            self.admin_user,
+            variables=variables
+        )
+        data = executed.get('data')
+
+        self.assertEqual(
+          data['updateAccountBankAccount']['accountBankAccount']['number'],
+          variables['input']['number']
+        )
+        self.assertEqual(
+          data['updateAccountBankAccount']['accountBankAccount']['holder'],
+          variables['input']['holder']
+        )
+        self.assertEqual(
+          data['updateAccountBankAccount']['accountBankAccount']['bic'],
+          variables['input']['bic']
+        )
+
+    def test_update_account_bank_account_number_has_to_be_iban_fail(self):
+        """ Update a account_bank_account """
+        from ..dudes.system_setting_dude import SystemSettingDude
+
+        system_setting_dude = SystemSettingDude()
+        system_setting_dude.set(
+            setting="finance_bank_accounts_iban",
+            value="true"
+        )
+
+        query = self.account_bank_account_update_mutation
+        account_bank_account = f.AccountBankAccountFactory.create()
+        organization_account_bank_account = f.OrganizationClasspassFactory.create()
+        variables = self.variables_update
+        variables['input']['id'] = to_global_id('AccountBankAccountNode', account_bank_account.id)
+
+        executed = execute_test_client_api_query(
+            query,
+            self.admin_user,
+            variables=variables
+        )
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Number is not a valid IBAN!')
+
+    def test_update_account_bank_account_number_has_to_be_iban_success(self):
+        """ Update a account_bank_account """
+        from ..dudes.system_setting_dude import SystemSettingDude
+
+        system_setting_dude = SystemSettingDude()
+        system_setting_dude.set(
+            setting="finance_bank_accounts_iban",
+            value="true"
+        )
+
+        query = self.account_bank_account_update_mutation
+        account_bank_account = f.AccountBankAccountFactory.create()
+        organization_account_bank_account = f.OrganizationClasspassFactory.create()
+        variables = self.variables_update
+        variables['input']['id'] = to_global_id('AccountBankAccountNode', account_bank_account.id)
+        variables['input']['number'] = "GB33BUKB20201555555555"
+
+        executed = execute_test_client_api_query(
+            query,
+            self.admin_user,
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(
+          data['updateAccountBankAccount']['accountBankAccount']['number'],
+          variables['input']['number']
+        )
+
+    def test_update_account_bank_account_anon_user(self):
+        """ Don't allow updating accountbankaccounts for non-logged in users """
+        query = self.account_bank_account_update_mutation
+        account_bank_account = f.AccountBankAccountFactory.create()
+        organization_account_bank_account = f.OrganizationClasspassFactory.create()
+        variables = self.variables_update
+        variables['input']['id'] = to_global_id('AccountBankAccountNode', account_bank_account.id)
+
+        executed = execute_test_client_api_query(
+            query,
+            self.anon_user,
+            variables=variables
+        )
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
+
+    def test_update_account_bank_account_permission_granted(self):
+        """ Allow updating accountbankaccounts for users with permissions """
+        query = self.account_bank_account_update_mutation
+        account_bank_account = f.AccountBankAccountFactory.create()
+        organization_account_bank_account = f.OrganizationClasspassFactory.create()
+        variables = self.variables_update
+        variables['input']['id'] = to_global_id('AccountBankAccountNode', account_bank_account.id)
+
+        user = account_bank_account.account
+        permission = Permission.objects.get(codename=self.permission_change)
+        user.user_permissions.add(permission)
+        user.save()
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(
+          data['updateAccountBankAccount']['accountBankAccount']['number'],
+          variables['input']['number']
+        )
+
+    def test_update_account_bank_account_permission_denied(self):
+        """ Check update account_bank_account permission denied error message """
+        query = self.account_bank_account_update_mutation
+        account_bank_account = f.AccountBankAccountFactory.create()
+        organization_account_bank_account = f.OrganizationClasspassFactory.create()
+        variables = self.variables_update
+        variables['input']['id'] = to_global_id('AccountBankAccountNode', account_bank_account.id)
+
+        user = account_bank_account.account
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=variables
+        )
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
