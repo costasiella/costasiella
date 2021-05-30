@@ -468,6 +468,18 @@ class AccountBankAccountMandateFactory(factory.DjangoModelFactory):
     signature_date = datetime.date(2020, 1, 1)
 
 
+class AccountFinancePaymentBatchCategoryItemFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.AccountBankAccountMandate
+
+    account = factory.SubFactory(RegularUserFactory)
+    finance_payment_batch_category = factory.SubFactory(FinancePaymentBatchCategoryCollectionFactory)
+    year = 2020
+    month = 1
+    amount = 1234
+    description = "hello world"
+
+
 class AccountSubscriptionFactory(factory.DjangoModelFactory):
     class Meta:
         model = models.AccountSubscription
