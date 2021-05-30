@@ -458,6 +458,16 @@ class AccountBankAccountFactory(factory.DjangoModelFactory):
     bic = "INGBNL2A"
 
 
+class AccountBankAccountMandateFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.AccountBankAccountMandate
+
+    account_bank_account = factory.SubFactory(AccountBankAccountFactory)
+    reference = "1234"
+    content = "hello world"
+    signature_date = datetime.date(2020, 1, 1)
+
+
 class AccountSubscriptionFactory(factory.DjangoModelFactory):
     class Meta:
         model = models.AccountSubscription
