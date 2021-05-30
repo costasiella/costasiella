@@ -30,14 +30,14 @@ class GQLAccountBankAccountMandate(TestCase):
         self.permission_change = 'change_accountbankaccountmandate'
         self.permission_delete = 'delete_accountbankaccountmandate'
 
-        # self.variables_create = {
-        #     "input": {
-        #         "organizationLocation": to_global_id('OrganizationLocationNode', self.account_bank_account.pk),
-        #         "displayPublic": True,
-        #         "name": "First room",
-        #     }
-        # }
-        #
+        self.variables_create = {
+            "input": {
+                "reference": "987878-dvg",
+                "content": "Content here",
+                "signatureDate": "2020-01-01"
+            }
+        }
+
         # self.variables_update = {
         #     "input": {
         #         "id": to_global_id('OrganizationLocationRoomNode', self.organization_account_bank_account_mandate.pk),
@@ -103,7 +103,13 @@ class GQLAccountBankAccountMandate(TestCase):
   mutation CreateAccountBankAccountMandate($input:CreateAccountBankAccountMandateInput!) {
     createAccountBankAccountMandate(input: $input) {
       accountBankAccountMandate {
-        id
+          id
+          accountBankAccount {
+            id
+          }
+          reference
+          content
+          signatureDate
       }
     }
   }
@@ -113,7 +119,13 @@ class GQLAccountBankAccountMandate(TestCase):
   mutation UpdateAccountBankAccountMandate($input:UpdateAccountBankAccountMandateInput!) {
     updateAccountBankAccountMandate(input: $input) {
       accountBankAccountMandate {
-        id
+          id
+          accountBankAccount {
+            id
+          }
+          reference
+          content
+          signatureDate
       }
     }
   }
@@ -290,86 +302,84 @@ class GQLAccountBankAccountMandate(TestCase):
         data = executed.get('data')
         self.assertEqual(data['accountBankAccountMandate']['accountBankAccount']['id'],
           to_global_id('AccountBankAccountNode', account_bank_account_mandate.account_bank_account.pk))
-    #
-    #
-    # def test_create_account_bank_account_mandate(self):
-    #     """ Create a location room """
-    #     query = self.account_bank_account_mandate_create_mutation
-    #     variables = self.variables_create
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.admin_user,
-    #         variables=variables
-    #     )
-    #
-    #     data = executed.get('data')
-    #     self.assertEqual(
-    #       data['createOrganizationLocationRoom']['organizationLocationRoom']['organizationLocation']['id'],
-    #       variables['input']['organizationLocation'])
-    #     self.assertEqual(data['createOrganizationLocationRoom']['organizationLocationRoom']['name'], variables['input']['name'])
-    #     self.assertEqual(data['createOrganizationLocationRoom']['organizationLocationRoom']['archived'], False)
-    #     self.assertEqual(data['createOrganizationLocationRoom']['organizationLocationRoom']['displayPublic'], variables['input']['displayPublic'])
-    #
-    #
-    # def test_create_account_bank_account_mandate_anon_user(self):
-    #     """ Don't allow creating locations rooms for non-logged in users """
-    #     query = self.account_bank_account_mandate_create_mutation
-    #     variables = self.variables_create
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.anon_user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
-    #
-    #
-    # def test_create_account_bank_account_mandate_permission_granted(self):
-    #     """ Allow creating location rooms for users with permissions """
-    #     query = self.account_bank_account_mandate_create_mutation
-    #
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename=self.permission_add)
-    #     user.user_permissions.add(permission)
-    #     user.save()
-    #
-    #     variables = self.variables_create
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(
-    #       data['createOrganizationLocationRoom']['organizationLocationRoom']['organizationLocation']['id'],
-    #       variables['input']['organizationLocation'])
-    #     self.assertEqual(data['createOrganizationLocationRoom']['organizationLocationRoom']['name'], variables['input']['name'])
-    #     self.assertEqual(data['createOrganizationLocationRoom']['organizationLocationRoom']['archived'], False)
-    #     self.assertEqual(data['createOrganizationLocationRoom']['organizationLocationRoom']['displayPublic'], variables['input']['displayPublic'])
-    #
-    #
-    # def test_create_account_bank_account_mandate_permission_denied(self):
-    #     """ Check create location room permission denied error message """
-    #     query = self.account_bank_account_mandate_create_mutation
-    #     variables = self.variables_create
-    #
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
-    #
+
+    def test_create_account_bank_account_mandate(self):
+        """ Create a location room """
+        query = self.account_bank_account_mandate_create_mutation
+        account_bank_account = f.AccountBankAccountFactory.create()
+        variables = self.variables_create
+        variables['input']['accountBankAccount'] = to_global_id('AccountBankAccountNode', account_bank_account.pk)
+
+        executed = execute_test_client_api_query(
+            query,
+            self.admin_user,
+            variables=variables
+        )
+
+        data = executed.get('data')
+        self.assertEqual(
+          data['createAccountBankAccountMandate']['accountBankAccountMandate']['accountBankAccount']['id'],
+          variables['input']['accountBankAccount'])
+
+    def test_create_account_bank_account_mandate_anon_user(self):
+        """ Don't allow creating locations rooms for non-logged in users """
+        query = self.account_bank_account_mandate_create_mutation
+        account_bank_account = f.AccountBankAccountFactory.create()
+        variables = self.variables_create
+        variables['input']['accountBankAccount'] = to_global_id('AccountBankAccountNode', account_bank_account.pk)
+
+        executed = execute_test_client_api_query(
+            query,
+            self.anon_user,
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
+
+    def test_create_account_bank_account_mandate_permission_granted(self):
+        """ Allow creating location rooms for users with permissions """
+        query = self.account_bank_account_mandate_create_mutation
+        account_bank_account = f.AccountBankAccountFactory.create()
+        variables = self.variables_create
+        variables['input']['accountBankAccount'] = to_global_id('AccountBankAccountNode', account_bank_account.pk)
+
+        # Create regular user
+        user = account_bank_account.account
+        permission = Permission.objects.get(codename=self.permission_add)
+        user.user_permissions.add(permission)
+        user.save()
+
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(
+          data['createAccountBankAccountMandate']['accountBankAccountMandate']['accountBankAccount']['id'],
+          variables['input']['accountBankAccount'])
+
+    def test_create_account_bank_account_mandate_permission_denied(self):
+        """ Check create location room permission denied error message """
+        query = self.account_bank_account_mandate_create_mutation
+        account_bank_account = f.AccountBankAccountFactory.create()
+        variables = self.variables_create
+        variables['input']['accountBankAccount'] = to_global_id('AccountBankAccountNode', account_bank_account.pk)
+
+        # Create regular user
+        user = account_bank_account.account
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
+
     #
     # def test_update_account_bank_account_mandate(self):
     #     """ Update a location room """
