@@ -12,6 +12,7 @@ import { Link } from 'react-router-dom'
 
 import GET_USER from "../queries/system/get_user"
 import OrganizationContext from './context/OrganizationContext'
+import CSLS from "../tools/cs_local_storage"
 import { get_all_permissions, has_permission } from "../tools/user_tools"
 
 
@@ -57,7 +58,7 @@ const getNavBarItems = (t, user) => {
   // let permissions = get_all_permissions(user)
 
   items.push({
-    value: t("shop.title"),
+    value: t("shop.home.title"),
     to: "/",
     icon: "home",
     LinkComponent: withRouter(NavLink),
@@ -104,9 +105,18 @@ const getNavBarItems = (t, user) => {
     useExact: true,
   })
 
+  // Check if refresh token is present and if so, hasn't expired
+  const refreshTokenExp = localStorage.getItem(CSLS.AUTH_TOKEN_REFRESH_EXP)
+  let accountTitle = t("shop.account.title")
+  let accountLink = "/shop/account"
+  if (new Date() / 1000 >= refreshTokenExp || refreshTokenExp == null ) {
+    accountTitle = t("general.sign_in")
+    accountLink = "/user/login"
+  }
+
   items.push({
-    value: t("shop.account.title"),
-    to: "/shop/account",
+    value: accountTitle,
+    to: accountLink,
     icon: "user",
     LinkComponent: withRouter(NavLink),
     useExact: true,
