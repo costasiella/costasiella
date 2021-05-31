@@ -1729,13 +1729,13 @@
                 "title": "Class information"
             },
             "subscriptions": {
-                "title": "Subscriptions",
+                "title": "My Subscriptions",
                 "explanation": "View your current and past subscriptions",
                 "error_loading_data": "Error loading subscriptions... :(",
                 "empty_list": "No subcsriptions found."
             },
             "event_tickets": {
-                "title": "Event tickets",
+                "title": "My Event tickets",
                 "explanation": "View your upcoming and past event tickets",
                 "error_loading_data": "Error loading your tickets... :(",
                 "empty_list": "No tickets found"
@@ -1752,7 +1752,7 @@
                 "cancelation_not_possible": "Your booking for this class can no longer be cancelled"
             },
             "goto": {
-                "explanation": "Go to other features like the backend or selfcheckin."
+                "explanation": "Use other features like the backend or selfcheckin."
             },
             "btn_go_to": "Choose where to go",
             "change_password": {
