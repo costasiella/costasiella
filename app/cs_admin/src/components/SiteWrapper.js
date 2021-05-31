@@ -55,7 +55,7 @@ const getNavBarItems = (t, user) => {
 
   items.push({
     value: t("home.title"),
-    to: "/",
+    to: "/backend",
     icon: "home",
     LinkComponent: withRouter(NavLink),
     useExact: true,

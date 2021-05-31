@@ -54,11 +54,11 @@ type navItem = {|
 
 const getNavBarItems = (t, user) => {
   let items: Array<navItem> = []
-  let permissions = get_all_permissions(user)
+  // let permissions = get_all_permissions(user)
 
   items.push({
     value: t("shop.title"),
-    to: "/shop",
+    to: "/",
     icon: "home",
     LinkComponent: withRouter(NavLink),
     useExact: true,
@@ -97,17 +97,17 @@ const getNavBarItems = (t, user) => {
   })
 
   items.push({
-    value: t("shop.account.title"),
-    to: "/shop/account",
-    icon: "user",
+    value: t("shop.contact.title"),
+    to: "/shop/contact",
+    icon: "message-square",
     LinkComponent: withRouter(NavLink),
     useExact: true,
   })
 
   items.push({
-    value: t("shop.contact.title"),
-    to: "/shop/contact",
-    icon: "message-square",
+    value: t("shop.account.title"),
+    to: "/shop/account",
+    icon: "user",
     LinkComponent: withRouter(NavLink),
     useExact: true,
   })
@@ -132,11 +132,12 @@ const now = new Date()
 function SiteWrapperShop({t, match, history, children}) {
   const organization = useContext(OrganizationContext)
   console.log(organization)
-  const { error, loading, data, fetchMore } = useQuery(GET_USER)
+  // const { error, loading, data, fetchMore } = useQuery(GET_USER)
 
-  if (loading) return <p>{t('general.loading_with_dots')}</p>;
-  if (error) return <p>{t('system.user.error_loading')}</p>; 
+  // if (loading) return <p>{t('general.loading_with_dots')}</p>;
+  // if (error) return <p>{t('system.user.error_loading')}</p>; 
 
+  const data = ""
   console.log(data)
 
   const headerImageUrl = getHeaderImageUrl(organization)

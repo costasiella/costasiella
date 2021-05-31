@@ -62,7 +62,7 @@ function Welcome({t, match, history}) {
             <Card.Body>
               <h5>{t("shop.title")}</h5>
               {t("user.welcome.shop_explanation")} <br /><br />
-              <Link to="/shop">
+              <Link to="/">
                 <Button 
                   block
                   outline
@@ -79,7 +79,7 @@ function Welcome({t, match, history}) {
             <Card.Body>
               <h5>{t("general.backend")}</h5>
               {t("user.welcome.backend_explantion")} <br /><br />
-              <Link to="/">
+              <Link to="/backend">
                 <Button 
                   block
                   outline

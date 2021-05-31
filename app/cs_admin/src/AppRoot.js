@@ -347,8 +347,8 @@ function AppRoot({ t }) {
       <OrganizationProvider value={organization}>
         <HashRouter>
           <Switch>
-            {/* HOME */}
-            <PrivateRoute exact path="/" component={HomeHome} />
+            {/* BACKEND HOME */}
+            <PrivateRoute exact path="/backend" component={HomeHome} />
 
             {/* AUTOMATION */}
             <PrivateRoute exact path="/automation" component={AutomationHome} />
@@ -565,7 +565,7 @@ function AppRoot({ t }) {
             <PrivateRoute exact path="/selfcheckin/location/:location_id" component={SelfCheckinLocationClasses} />
 
             {/* Shop */}
-            <Route exact path = "/shop" component={ShopHome} />
+            <Route exact path = "/" component={ShopHome} />
             <PrivateRoute exact path = "/shop/account" component={ShopAccountHome} />
             <PrivateRoute exact path = "/shop/account/class_cancel/:class_id/:date/:attendance_id" 
                                 component={ShopAccountClassCancel} />

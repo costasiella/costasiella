@@ -105,8 +105,7 @@ function processClientError({ networkError, graphQLErrors, operation, forward, r
                 observer.error(error);
                 window.location.href = "/#/user/login"
                 window.location.reload()
-              });
-
+              })
           })
         }
       } else {
