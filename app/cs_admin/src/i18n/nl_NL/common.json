@@ -726,7 +726,21 @@
                 "title_cancelation_not_possible": "__STRING_NOT_TRANSLATED__",
                 "already_cancelled": "__STRING_NOT_TRANSLATED__",
                 "cancelation_not_possible": "__STRING_NOT_TRANSLATED__"
-            }
+            },
+            "goto": {
+                "explanation": "__STRING_NOT_TRANSLATED__"
+            },
+            "btn_go_to": "__STRING_NOT_TRANSLATED__",
+            "change_password": {
+                "title": "__STRING_NOT_TRANSLATED__",
+                "explanation": "__STRING_NOT_TRANSLATED__"
+            },
+            "btn_text_change_password": "__STRING_NOT_TRANSLATED__",
+            "sign_out": {
+                "title": "__STRING_NOT_TRANSLATED__",
+                "explanation": "__STRING_NOT_TRANSLATED__"
+            },
+            "btn_text_sign_out": "__STRING_NOT_TRANSLATED__"
         },
         "accounts": {
             "profile": {

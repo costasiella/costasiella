@@ -1749,7 +1749,21 @@
                 "title_cancelation_not_possible": "Cancellation not possible",
                 "already_cancelled": "Your booking for this class has already been cancelled.",
                 "cancelation_not_possible": "Your booking for this class can no longer be cancelled"
-            }
+            },
+            "goto": {
+                "explanation": "Go to other features like the backend or selfcheckin."
+            },
+            "btn_go_to": "Choose where to go",
+            "change_password": {
+                "title": "Change password",
+                "explanation": "Click the button below to change your password."
+            },
+            "btn_text_change_password": "Change password",
+            "sign_out": {
+                "title": "Sign out",
+                "explanation": "Click the button below to sign out."
+            },
+            "btn_text_sign_out": "To sign out"
         },
         "accounts": {
             "profile": {
