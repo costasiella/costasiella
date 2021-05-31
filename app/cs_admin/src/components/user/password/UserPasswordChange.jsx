@@ -6,7 +6,6 @@ import { useQuery, useMutation } from "react-apollo";
 import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
 import { Formik } from 'formik'
-import { ToastContainer } from 'react-toastify'
 import { toast } from 'react-toastify'
 
 import { PASSWORD_CHANGE_SCHEMA } from './yupSchema'

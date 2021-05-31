@@ -4,7 +4,7 @@ import React from 'react'
 import { withTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 import { v4 } from 'uuid'
-import { ToastContainer } from 'react-toastify'
+import { ToastContainer, Slide } from 'react-toastify'
 
 import {
   Container,
@@ -25,7 +25,10 @@ function CSStandalonePageWide({ t, urlLogo="", children}) {
                 { (urlLogo) ? <img src={urlLogo} className="h-9" alt="logo" /> : "" }
               </div>
               {children}
-              <ToastContainer autoClose={5000}/>
+              <ToastContainer 
+                autoClose={5000} 
+                transition={Slide}
+              />
             </div>
           </Grid.Row>
         </Container>

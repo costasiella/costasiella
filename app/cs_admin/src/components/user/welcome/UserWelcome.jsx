@@ -1,13 +1,9 @@
 // @flow
 
-import React, { useContext, useState } from 'react'
-import gql from "graphql-tag"
-import { useQuery, useMutation } from "react-apollo";
+import React, { useContext } from 'react'
+import { useQuery } from "react-apollo";
 import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
-import { Formik } from 'formik'
-import { ToastContainer } from 'react-toastify'
-import { toast } from 'react-toastify'
 import { Link } from "react-router-dom"
 
 import GET_USER_PROFILE from "../../../queries/system/get_user_profile"

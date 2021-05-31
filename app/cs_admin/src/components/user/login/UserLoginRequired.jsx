@@ -6,7 +6,7 @@ import { useQuery, useMutation } from "react-apollo";
 import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
 import { Formik } from 'formik'
-import { ToastContainer } from 'react-toastify'
+import { ToastContainer, Slide} from 'react-toastify'
 import { toast } from 'react-toastify'
 
 // import { GET_ACCOUNTS_QUERY, GET_ACCOUNT_QUERY } from './queries'
@@ -54,7 +54,10 @@ function UserLoginRequired({t, match, history}) {
           </Button>
         </Card.Body>
       </Card>
-      <ToastContainer autoClose={5000}/>
+      <ToastContainer 
+          autoClose={5000} 
+          transition={Slide}
+      />
     </CSStandaloneFormPage>
   )
 }

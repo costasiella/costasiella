@@ -5,7 +5,7 @@ import { useContext } from 'react'
 import { withTranslation } from 'react-i18next'
 import { NavLink, withRouter } from "react-router-dom"
 import { useQuery } from "react-apollo"
-import { ToastContainer } from 'react-toastify'
+import { ToastContainer, Slide } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import 'react-confirm-alert/src/react-confirm-alert.css'
 import { Link } from 'react-router-dom'
@@ -266,7 +266,10 @@ function SiteWrapperShop({t, match, history, children}) {
         }}
       >
       {children}
-      <ToastContainer autoClose={5000}/>
+      <ToastContainer 
+        autoClose={5000} 
+        transition={Slide}
+      />
     </Site.Wrapper>    
   )
 }
