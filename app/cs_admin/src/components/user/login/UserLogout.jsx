@@ -68,7 +68,7 @@ function UserLogout({t, match, history}) {
               setTimeout(() => toast.info((t('user.logout.success')), {
                 position: toast.POSITION.BOTTOM_RIGHT
               }), 350)
-              setTimeout(() => history.push('/user/login'), 250)
+              setTimeout(() => history.push('/'), 250)
             }}
           >
             {t('general.logout')}
