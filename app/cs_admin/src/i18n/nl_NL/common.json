@@ -1563,6 +1563,11 @@
             "backend_to": "__STRING_NOT_TRANSLATED__",
             "selfcheckin_explantion": "__STRING_NOT_TRANSLATED__",
             "selfcheckin_to": "__STRING_NOT_TRANSLATED__"
+        },
+        "login_required": {
+            "title": "__STRING_NOT_TRANSLATED__",
+            "message": "__STRING_NOT_TRANSLATED__",
+            "go_to_login": "__STRING_NOT_TRANSLATED__"
         }
     },
     "countries": {

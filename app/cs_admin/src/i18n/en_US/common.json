@@ -1544,6 +1544,11 @@
             "backend_to": "Go to back end",
             "selfcheckin_explantion": "Customer self service check-in.",
             "selfcheckin_to": "Go to self check-in"
+        },
+        "login_required": {
+            "title": "Login Required",
+            "message": "You need to be signed in to view this page.",
+            "go_to_login": "To login"
         }
     },
     "insight": {

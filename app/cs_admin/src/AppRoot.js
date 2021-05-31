@@ -249,6 +249,7 @@ import ShopSubscription from './components/shop/subscription/ShopSubscription'
 
 import UserChangePassword from './components/user/password/UserPasswordChange'
 import UserLogin from './components/user/login/UserLogin'
+import UserLoginRequired from './components/user/login/UserLoginRequired'
 import UserLogout from './components/user/login/UserLogout'
 import UserSessionExpired from './components/user/session/UserSessionExpired'
 import UserWelcome from './components/user/welcome/UserWelcome'
@@ -275,6 +276,7 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
   console.log(rest.path)
 
   const ContinueAsYouAre = <Route {...rest} render={(props) => ( <Component {...props} /> )} />
+  const LoginRequired = <Route {...rest} render={(props) => ( <Redirect to='/user/login/required' /> )} />
   const SessionExpired = <Route {...rest} render={(props) => ( <Redirect to='/user/session/expired' /> )} />
   
   // Check expiration
@@ -285,7 +287,11 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
 
   if (authTokenExpired) {
     const refreshTokenExp = localStorage.getItem(CSLS.AUTH_TOKEN_REFRESH_EXP)
-    if ((new Date() / 1000) >= refreshTokenExp || (refreshTokenExp == null)) {
+    if (refreshTokenExp == null) {
+      SetCurrentUrlAsNext()
+      
+      return LoginRequired
+    } else if ((new Date() / 1000) >= refreshTokenExp) {
       console.log("refresh token expired or not found")
       console.log(new Date() / 1000)
       console.log(refreshTokenExp)
@@ -607,6 +613,7 @@ function AppRoot({ t }) {
             {/* User */}
             <PrivateRoute exact path="/user/password/change" component={UserChangePassword} />
             <Route exact path="/user/login" component={UserLogin} />
+            <Route exact path="/user/login/required" component={UserLoginRequired} />
             <Route exact path="/user/logout" component={UserLogout} />
             <Route exact path="/user/session/expired" component={UserSessionExpired} />
             <Route exact path="/user/welcome" component={UserWelcome} />

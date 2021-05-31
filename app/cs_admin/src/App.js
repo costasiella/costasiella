@@ -65,16 +65,18 @@ function processClientError({ networkError, graphQLErrors, operation, forward, r
 
       if (authTokenExpired) {
         const refreshTokenExp = localStorage.getItem(CSLS.AUTH_TOKEN_REFRESH_EXP)
-        if ((new Date() / 1000) >= refreshTokenExp || (refreshTokenExp == null)) {
+        if (refreshTokenExp == null) {
+          // User hasn't logged in before
+          window.location.href = "#/user/login/required"
+          window.location.reload()
+        } else if ((new Date() / 1000) >= refreshTokenExp) {
           // Session expired
           console.log("refresh token expired or not found")
           console.log(new Date() / 1000)
           console.log(refreshTokenExp)
-
-          console.log('HERE')
     
-          // window.location.href = "#/user/session/expired"
-          // window.location.reload()
+          window.location.href = "#/user/session/expired"
+          window.location.reload()
         } else {
           // Refresh token... no idea how this observable & subscriber stuff works... but it does :).
           // https://stackoverflow.com/questions/50965347/how-to-execute-an-async-fetch-request-and-then-retry-last-failed-request/51321068#51321068
@@ -107,7 +109,7 @@ function processClientError({ networkError, graphQLErrors, operation, forward, r
                 observer.error(error);
                 window.location.href = "/#/user/login"
                 window.location.reload()
-              })
+              });
           })
         }
       } else {
