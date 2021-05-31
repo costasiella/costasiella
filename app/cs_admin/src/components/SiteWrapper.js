@@ -237,9 +237,11 @@ function SiteWrapper({t, match, history, children}) {
           description: "",
           options: [
             // { icon: "user", value: "Profile" },
-            { icon: "lock", value: "Change password", to: "/#/user/password/change/" },
+            { icon: "lock", value: t("user.change_password.title"), to: "/#/user/password/change/" },
             { isDivider: true },
-            { icon: "log-out", value: "Sign out", to: "/#/user/logout/" },
+            { icon: "user", value: t("shop.account.title"), to: "/#/shop/account/" },
+            { isDivider: true },
+            { icon: "log-out", value: t("user.logout.title"), to: "/#/user/logout/" },
           ],
         },
         }}
