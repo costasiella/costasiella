@@ -468,7 +468,8 @@
         "ID": "ID",
         "line": "Line",
         "export": "Export",
-        "category": "Category"
+        "category": "Category",
+        "sign_in": "Sign in"
     },
     "yup": {
         "min_len_3": "Please input at least 3 characters",
