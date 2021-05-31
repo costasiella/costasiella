@@ -42,10 +42,11 @@ class OrganizationClasstypeNode(DjangoObjectType):
     @classmethod
     def get_node(self, info, id):
         user = info.context.user
-        require_login_and_permission(user, 'costasiella.view_organizationclasstype')
-
-        # Return only public non-archived classtypes
-        return self._meta.model.objects.get(id=id)
+        # require_login_and_permission(user, 'costasiella.view_organizationclasstype')
+        organization_classtype = self._meta.model.objects.get(id=id)
+        if user.has_perm('costasiella.view_organizationclasstype') or \
+           (organization_classtype.display_public is True and organization_classtype.archived is False):
+            return organization_classtype
 
 
 class OrganizationClasstypeQuery(graphene.ObjectType):
@@ -54,16 +55,14 @@ class OrganizationClasstypeQuery(graphene.ObjectType):
 
     def resolve_organization_classtypes(self, info, archived, **kwargs):
         user = info.context.user
-        if user.is_anonymous:
-            raise Exception(m.user_not_logged_in)
 
         # Has permission: return everything
         if user.has_perm('costasiella.view_organizationclasstype'):
             print('user has view permission')
-            return OrganizationClasstype.objects.filter(archived = archived).order_by('name')
+            return OrganizationClasstype.objects.filter(archived=archived).order_by('name')
 
         # Return only public non-archived locations
-        return OrganizationClasstype.objects.filter(display_public = True, archived = False).order_by('name')
+        return OrganizationClasstype.objects.filter(display_public=True, archived=False).order_by('name')
 
 
 class CreateOrganizationClasstype(graphene.relay.ClientIDMutation):

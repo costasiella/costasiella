@@ -13,7 +13,11 @@ from graphql import GraphQLError
 from graphql_relay import to_global_id
 
 from ..models import ScheduleItem, ScheduleItemWeeklyOTC, OrganizationClasstype, OrganizationLevel, OrganizationLocationRoom
-from ..modules.gql_tools import require_login_and_permission, require_login_and_one_of_permissions, get_rid
+from ..modules.gql_tools import \
+    check_if_user_has_permission, \
+    require_login_and_permission, \
+    require_login_and_one_of_permissions, \
+    get_rid
 from ..modules.messages import Messages
 from ..modules.model_helpers.schedule_item_helper import ScheduleItemHelper
 from .account import AccountNode
@@ -102,6 +106,7 @@ class ScheduleClassesDayType(graphene.ObjectType):
     filter_id_organization_classtype = graphene.String()
     filter_id_organization_level = graphene.String()
     filter_id_organization_location = graphene.String()
+    filter_public = graphene.Boolean()
     classes = graphene.List(ScheduleClassType)
     attendance_count_type = graphene.String()
 
@@ -170,8 +175,8 @@ class ScheduleClassesDayType(graphene.ObjectType):
                                 THEN csi.organization_level_id  \
                                 ELSE csiotc.organization_level_id END) = '
                 where += '%(filter_id_organization_level)s '
-            # if self.filter_public:
-            #     where += "AND csi.display_public = 1 "
+            if self.filter_public:
+                where += "AND csi.display_public = 1 "
                 # where += "AND sl.AllowAPI = 'T' "
                 # where += "AND sct.AllowAPI = 'T' "
             # if self.filter_starttime_from:
@@ -350,6 +355,7 @@ class ScheduleClassesDayType(graphene.ObjectType):
             order_by_sql=order_by_sql
         )
 
+        #
         # print(query)
 
         ## 
@@ -730,7 +736,9 @@ class ScheduleClassQuery(graphene.ObjectType):
                                  attendance_count_type="attending_and_booked"
                                  ):
         user = info.context.user
-        require_login_and_one_of_permissions(user, [
+        print("RESOLVE SCHEDULE CLASSES")
+        print(user)
+        user_has_view_permission = check_if_user_has_permission(user, [
             'costasiella.view_scheduleclass',
             'costasiella.view_selfcheckin'
         ])
@@ -767,6 +775,9 @@ class ScheduleClassQuery(graphene.ObjectType):
             if 'organization_location_id' in validation_result:
                 day.filter_id_organization_location = \
                     validation_result['organization_location_id']
+
+            if not user_has_view_permission:
+                day.filter_public = True
 
             return_list.append(day)
             date += delta

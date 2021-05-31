@@ -96,10 +96,8 @@ class OrganizationClasspassQuery(graphene.ObjectType):
     organization_classpasses = DjangoFilterConnectionField(OrganizationClasspassNode)
     organization_classpass = graphene.relay.Node.Field(OrganizationClasspassNode)
 
-
     def resolve_organization_classpasses(self, info, **kwargs):
         user = info.context.user
-        require_login(user)
         # Has permission: return everything
 
         order_by = 'name'
@@ -109,24 +107,23 @@ class OrganizationClasspassQuery(graphene.ObjectType):
         archived = kwargs.get('archived', False)
         display_shop = kwargs.get('display_shop', None)
 
-
         objects = OrganizationClasspass.objects
 
         if display_shop:
             # Only show public passes in the shop... always!
             return objects.filter(
-                display_shop = True, 
-                display_public = True, 
-                archived = False
+                display_shop=True,
+                display_public=True,
+                archived=False
             ).order_by(order_by)
 
         # Check if user has view permission; if not; only show active passes
         if user.has_perm('costasiella.view_organizationclasspass'): 
             objects = OrganizationClasspass.objects.filter(
-                archived = archived
+                archived=archived
             )
 
-            if not display_shop is None:
+            if display_shop is not None:
                 objects = objects.filter(display_shop = display_shop)
 
         else:

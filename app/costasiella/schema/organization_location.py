@@ -26,10 +26,15 @@ class OrganizationLocationNode(DjangoObjectType):
         print(user.is_authenticated)
         print(user)
         print(user.is_anonymous)
-        require_login_and_permission(user, 'costasiella.view_organizationlocation')
+        # require_login_and_permission(user, 'costasiella.view_organizationlocation')
 
-        # Return only public non-archived locations
-        return self._meta.model.objects.get(id=id)
+        organization_location = self._meta.model.objects.get(id=id)
+        if user.has_perm('costasiella.view_organizationlocation') or \
+           (organization_location.display_public is True and organization_location.archived is False):
+            return organization_location
+
+        # # Return only public non-archived locations
+        # return self._meta.model.objects.get(id=id)
 
 
 # class ValidationErrorMessage(graphene.ObjectType):
@@ -50,8 +55,8 @@ class OrganizationLocationQuery(graphene.ObjectType):
         user = info.context.user
         print('user authenticated:')
         print(user.is_authenticated)
-        if user.is_anonymous:
-            raise Exception(m.user_not_logged_in)
+        # if user.is_anonymous:
+        #     raise Exception(m.user_not_logged_in)
         # if not info.context.user.is_authenticated:
             # return OrganizationLocation.objects.none()
         # else:
@@ -60,10 +65,10 @@ class OrganizationLocationQuery(graphene.ObjectType):
         if user.has_perm('costasiella.view_organizationlocation') or \
            user.has_perm('costasiella.view_selfcheckin'):
             print('user has view permission')
-            return OrganizationLocation.objects.filter(archived = archived).order_by('name')
+            return OrganizationLocation.objects.filter(archived=archived).order_by('name')
 
         # Return only public non-archived locations
-        return OrganizationLocation.objects.filter(display_public = True, archived = False).order_by('name')
+        return OrganizationLocation.objects.filter(display_public=True, archived=False).order_by('name')
 
 
     # def resolve_organization_location(self, info, id):

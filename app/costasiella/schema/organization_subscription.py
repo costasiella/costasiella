@@ -102,7 +102,6 @@ class OrganizationSubscriptionQuery(graphene.ObjectType):
 
     def resolve_organization_subscriptions(self, info, archived, **kwargs):
         user = info.context.user
-        require_login(user)
         # Has permission: return everything
         if user.has_perm('costasiella.view_organizationsubscription'):
             print('user has view permission')
