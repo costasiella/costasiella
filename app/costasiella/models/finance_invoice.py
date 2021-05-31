@@ -81,7 +81,7 @@ class FinanceInvoice(models.Model):
         self.total = sums['total__sum'] or 0
 
         payment_sum = FinanceInvoicePayment.objects.filter(
-            finance_invoice = self
+            finance_invoice=self
         ).aggregate(Sum('amount'))
 
         self.paid = payment_sum['amount__sum'] or 0

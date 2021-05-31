@@ -16,3 +16,19 @@ class SystemSettingDude:
             setting_value = qs.first().value
 
         return setting_value
+
+    def set(self, setting, value):
+        """
+        Return a setting if found, otherwise return None
+        :return:
+        """
+        from ..models import SystemSetting
+
+        system_setting = self.get(setting)
+        if not system_setting:
+            system_setting = SystemSetting(
+                setting=setting,
+                value=value
+            )
+
+        system_setting.save()

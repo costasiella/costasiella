@@ -1,7 +1,10 @@
 from .account import Account
 from .account_accepted_document import AccountAcceptedDocument
+from .account_bank_account import AccountBankAccount
+from .account_bank_account_mandate import AccountBankAccountMandate
 from .account_classpass import AccountClasspass
 from .account_membership import AccountMembership
+from .account_finance_payment_batch_category_item import AccountFinancePaymentBatchCategoryItem
 from .account_schedule_event_ticket import AccountScheduleEventTicket
 from .account_subscription import AccountSubscription
 from .account_subscription_alt_price import AccountSubscriptionAltPrice
@@ -23,6 +26,10 @@ from .finance_invoice_item import FinanceInvoiceItem
 from .finance_invoice_payment import FinanceInvoicePayment
 from .finance_order import FinanceOrder
 from .finance_order_item import FinanceOrderItem
+from .finance_payment_batch import FinancePaymentBatch
+from .finance_payment_batch_category import FinancePaymentBatchCategory
+from .finance_payment_batch_export import FinancePaymentBatchExport
+from .finance_payment_batch_item import FinancePaymentBatchItem
 from .finance_payment_method import FinancePaymentMethod
 from .finance_tax_rate import FinanceTaxRate
 

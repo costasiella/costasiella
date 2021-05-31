@@ -22,6 +22,8 @@ let tickets_active
 let teacher_profile_active
 let orders_active
 let invoices_active
+let bank_account_active
+let finance_payment_batch_category_item_active
 let accepted_documents_active
 
 const ProfileMenu = ({ t, account_id, active_link }) => (
@@ -50,6 +52,10 @@ const ProfileMenu = ({ t, account_id, active_link }) => (
             {(active_link === 'teacher_profile') ? teacher_profile_active = true: teacher_profile_active = false}
             {(active_link === 'orderss') ? orders_active = true: orders_active = false}
             {(active_link === 'invoices') ? invoices_active = true: invoices_active = false}
+            {(active_link === 'bank_account') ? bank_account_active = true: bank_account_active = false}
+            {(active_link === 'finance_payment_batch_category_item') ? 
+                finance_payment_batch_category_item_active = true : 
+                finance_payment_batch_category_item_active = false }
             {(active_link === 'accepted_documents') ? accepted_documents_active = true: accepted_documents_active = false}
             
 
@@ -151,6 +157,32 @@ const ProfileMenu = ({ t, account_id, active_link }) => (
                     active={invoices_active}
                     >
                 {t('relations.account.invoices.title')}
+                </List.GroupItem>
+            </HasPermissionWrapper>
+            <HasPermissionWrapper 
+                permission="view"
+                resource="accountbankaccount">
+                <List.GroupItem
+                    key={v4()}
+                    className="d-flex align-items-center"
+                    to={"#/relations/accounts/" + account_id + "/bank_accounts"}
+                    icon="briefcase"
+                    active={bank_account_active}
+                    >
+                {t('relations.account.bank_accounts.title')}
+                </List.GroupItem>
+            </HasPermissionWrapper>
+            <HasPermissionWrapper 
+                permission="view"
+                resource="accountfinancepaymentbatchcategoryitem">
+                <List.GroupItem
+                    key={v4()}
+                    className="d-flex align-items-center"
+                    to={"#/relations/accounts/" + account_id + "/finance_payment_batch_category_items"}
+                    icon="list"
+                    active={finance_payment_batch_category_item_active}
+                    >
+                {t('relations.account.finance_payment_batch_category_items.title')}
                 </List.GroupItem>
             </HasPermissionWrapper>
             { (account.teacher) ?

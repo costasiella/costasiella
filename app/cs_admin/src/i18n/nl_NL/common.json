@@ -217,7 +217,15 @@
         "tools": "__STRING_NOT_TRANSLATED__",
         "email_contact": "__STRING_NOT_TRANSLATED__",
         "email_billing": "__STRING_NOT_TRANSLATED__",
-        "phone2": "__STRING_NOT_TRANSLATED__"
+        "phone2": "__STRING_NOT_TRANSLATED__",
+        "collection": "__STRING_NOT_TRANSLATED__",
+        "payment": "__STRING_NOT_TRANSLATED__",
+        "view": "__STRING_NOT_TRANSLATED__",
+        "invoices": "__STRING_NOT_TRANSLATED__",
+        "ID": "__STRING_NOT_TRANSLATED__",
+        "line": "__STRING_NOT_TRANSLATED__",
+        "export": "__STRING_NOT_TRANSLATED__",
+        "category": "__STRING_NOT_TRANSLATED__"
     },
     "settings": {
         "error_loading": "__STRING_NOT_TRANSLATED__",
@@ -254,7 +262,12 @@
                 "explanation": "__STRING_NOT_TRANSLATED__"
             },
             "currency_symbol": "__STRING_NOT_TRANSLATED__",
-            "title": "__STRING_NOT_TRANSLATED__"
+            "title": "__STRING_NOT_TRANSLATED__",
+            "bank_accounts": {
+                "title": "__STRING_NOT_TRANSLATED__",
+                "iban": "__STRING_NOT_TRANSLATED__",
+                "explanation": "__STRING_NOT_TRANSLATED__"
+            }
         },
         "integration": {
             "title": "__STRING_NOT_TRANSLATED__",
@@ -509,6 +522,76 @@
             "empty_list": "__STRING_NOT_TRANSLATED__",
             "empty_archive": "__STRING_NOT_TRANSLATED__",
             "add": "__STRING_NOT_TRANSLATED__"
+        },
+        "payment_batch_categories": {
+            "title": "__STRING_NOT_TRANSLATED__",
+            "error_loading": "__STRING_NOT_TRANSLATED__",
+            "empty_archive": "__STRING_NOT_TRANSLATED__",
+            "empty_list": "__STRING_NOT_TRANSLATED__",
+            "batch_category_type": "__STRING_NOT_TRANSLATED__",
+            "add": "__STRING_NOT_TRANSLATED__",
+            "payment_batch_category_type": {
+                "COLLECTION": "__STRING_NOT_TRANSLATED__",
+                "PAYMENT": "__STRING_NOT_TRANSLATED__",
+                "NOT_FOUND": "__STRING_NOT_TRANSLATED__"
+            },
+            "toast_add_success": "__STRING_NOT_TRANSLATED__",
+            "title_add": "__STRING_NOT_TRANSLATED__",
+            "toast_edit_success": "__STRING_NOT_TRANSLATED__",
+            "title_edit": "__STRING_NOT_TRANSLATED__"
+        },
+        "payment_batch_collections": {
+            "title": "__STRING_NOT_TRANSLATED__",
+            "empty_list": "__STRING_NOT_TRANSLATED__",
+            "title_add_what": "__STRING_NOT_TRANSLATED__",
+            "invoices_batch": "__STRING_NOT_TRANSLATED__",
+            "invoices_batch_description": "__STRING_NOT_TRANSLATED__",
+            "category_batch": "__STRING_NOT_TRANSLATED__",
+            "category_batch_description": "__STRING_NOT_TRANSLATED__"
+        },
+        "payment_batch_payments": {
+            "title": "__STRING_NOT_TRANSLATED__",
+            "empty_list": "__STRING_NOT_TRANSLATED__",
+            "title_add_what": "__STRING_NOT_TRANSLATED__",
+            "category_batch": "__STRING_NOT_TRANSLATED__",
+            "category_batch_description": "__STRING_NOT_TRANSLATED__"
+        },
+        "payment_batches": {
+            "error_loading": "__STRING_NOT_TRANSLATED__",
+            "add": "__STRING_NOT_TRANSLATED__",
+            "execution_date": "__STRING_NOT_TRANSLATED__",
+            "batch_category": "__STRING_NOT_TRANSLATED__",
+            "error_loading_input_values": "__STRING_NOT_TRANSLATED__",
+            "include_zero_amounts": "__STRING_NOT_TRANSLATED__",
+            "toast_add_success": "__STRING_NOT_TRANSLATED__",
+            "status": {
+                "SENT_TO_BANK": "__STRING_NOT_TRANSLATED__",
+                "APPROVED": "__STRING_NOT_TRANSLATED__",
+                "AWAITING_APPROVAL": "__STRING_NOT_TRANSLATED__",
+                "REJECTED": "__STRING_NOT_TRANSLATED__",
+                "invalid_type": "__STRING_NOT_TRANSLATED__"
+            },
+            "delete_confirm_msg": "__STRING_NOT_TRANSLATED__",
+            "deleted": "__STRING_NOT_TRANSLATED__",
+            "toast_edit_success": "__STRING_NOT_TRANSLATED__",
+            "toast_edit_status_success": "__STRING_NOT_TRANSLATED__"
+        },
+        "payment_batch": {
+            "error_loading": "__STRING_NOT_TRANSLATED__",
+            "title_batch_info": "__STRING_NOT_TRANSLATED__",
+            "title_batch_totals": "__STRING_NOT_TRANSLATED__",
+            "title_batch_note": "__STRING_NOT_TRANSLATED__",
+            "title_batch_exports": "__STRING_NOT_TRANSLATED__",
+            "title_batch_items": "__STRING_NOT_TRANSLATED__",
+            "title_view": "__STRING_NOT_TRANSLATED__",
+            "title_edit": "__STRING_NOT_TRANSLATED__",
+            "title_add": "__STRING_NOT_TRANSLATED__",
+            "status": {
+                "SENT_TO_BANK": "__STRING_NOT_TRANSLATED__",
+                "APPROVED": "__STRING_NOT_TRANSLATED__",
+                "AWAITING_APPROVAL": "__STRING_NOT_TRANSLATED__",
+                "REJECTED": "__STRING_NOT_TRANSLATED__"
+            }
         }
     },
     "shop": {
@@ -1124,7 +1207,38 @@
             "event_tickets": {
                 "title": "__STRING_NOT_TRANSLATED__"
             },
-            "error_loading": "__STRING_NOT_TRANSLATED__"
+            "error_loading": "__STRING_NOT_TRANSLATED__",
+            "bank_accounts": {
+                "title": "__STRING_NOT_TRANSLATED__",
+                "holder": "__STRING_NOT_TRANSLATED__",
+                "number": "__STRING_NOT_TRANSLATED__",
+                "bic": "__STRING_NOT_TRANSLATED__",
+                "toast_edit_success": "__STRING_NOT_TRANSLATED__",
+                "mandates": {
+                    "title_add": "__STRING_NOT_TRANSLATED__",
+                    "reference": "__STRING_NOT_TRANSLATED__",
+                    "reference_placeholder": "__STRING_NOT_TRANSLATED__",
+                    "signature_date": "__STRING_NOT_TRANSLATED__",
+                    "content": "__STRING_NOT_TRANSLATED__",
+                    "title": "__STRING_NOT_TRANSLATED__",
+                    "toast_add_success": "__STRING_NOT_TRANSLATED__",
+                    "toast_edit_success": "__STRING_NOT_TRANSLATED__",
+                    "delete_confirm_msg": "__STRING_NOT_TRANSLATED__",
+                    "deleted": "__STRING_NOT_TRANSLATED__",
+                    "add": "__STRING_NOT_TRANSLATED__"
+                }
+            },
+            "finance_payment_batch_category_items": {
+                "title": "__STRING_NOT_TRANSLATED__",
+                "add": "__STRING_NOT_TRANSLATED__",
+                "title_add": "__STRING_NOT_TRANSLATED__",
+                "error_loading": "__STRING_NOT_TRANSLATED__",
+                "toast_add_success": "__STRING_NOT_TRANSLATED__",
+                "title_edit": "__STRING_NOT_TRANSLATED__",
+                "toast_edit_success": "__STRING_NOT_TRANSLATED__",
+                "delete_confirm_msg": "__STRING_NOT_TRANSLATED__",
+                "deleted": "__STRING_NOT_TRANSLATED__"
+            }
         },
         "accounts": {
             "profile": "__STRING_NOT_TRANSLATED__",

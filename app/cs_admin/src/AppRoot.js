@@ -51,6 +51,14 @@ import FinanceInvoiceGroupDefaults from './components/finance/invoices/groups/de
 import FinanceInvoicePaymentAdd from './components/finance/invoices/payments/FinanceInvoicePaymentAdd'
 import FinanceInvoicePaymentEdit from './components/finance/invoices/payments/FinanceInvoicePaymentEdit'
 import FinanceOrders from './components/finance/orders/FinanceOrders'
+import FinancePaymentBatches from './components/finance/payment_batches/FinancePaymentBatches'
+import FinancePaymentBatchAddWhat from './components/finance/payment_batches/FinancePaymentBatchAddWhat'
+import FinancePaymentBatchView from './components/finance/payment_batches/FinancePaymentBatchView'
+import FinancePaymentCollectionBatchAdd from './components/finance/payment_batches/FinancePaymentCollectionBatchAdd'
+import FinancePaymentCollectionBatchEdit from './components/finance/payment_batches/FinancePaymentCollectionBatchEdit'
+import FinancePaymentBatchCategories from './components/finance/payment_batch_categories/FinancePaymentBatchCategories'
+import FinancePaymentBatchCategoryAdd from './components/finance/payment_batch_categories/FinancePaymentBatchCategoryAdd'
+import FinancePaymentBatchCategoryEdit from './components/finance/payment_batch_categories/FinancePaymentBatchCategoryEdit'
 import FinanceOrderEdit from './components/finance/orders/edit/FinanceOrderEdit'
 import FinancePaymentMethods from './components/finance/payment_methods/FinancePaymentMethods'
 import FinancePaymentMethodAdd from './components/finance/payment_methods/FinancePaymentMethodAdd'
@@ -122,10 +130,19 @@ import RelationsAccounts from './components/relations/accounts/RelationsAccounts
 import RelationsAccountAdd from './components/relations/accounts/RelationsAccountAdd'
 import RelationsAccountProfile from './components/relations/accounts/RelationsAccountProfile'
 import AccountAcceptedDocuments from './components/relations/accounts/accepted_documents/AcceptedDocuments.jsx'
+import RelationsAccountBankAccount from './components/relations/accounts/bank_accounts/RelationsAccountBankAccount'
+import RelationsAccountBankAccountMandateAdd from './components/relations/accounts/bank_accounts/mandates/RelationsAccountBankAccountMandateAdd'
+import RelationsAccountBankAccountMandateEdit from './components/relations/accounts/bank_accounts/mandates/RelationsAccountBankAccountMandateEdit'
 import RelationsAccountClasses from './components/relations/accounts/classes/AccountClasses'
 import AccountClasspasses from './components/relations/accounts/classpasses/AccountClasspasses'
 import AccountClasspassAdd from './components/relations/accounts/classpasses/AccountClasspassAdd'
 import AccountClasspassEdit from './components/relations/accounts/classpasses/AccountClasspassEdit'
+import AccountFinancePaymentBatchCategoryItems from 
+  './components/relations/accounts/finance_payment_batch_category_items/AccountFinancePaymentBatchCategoryItems'
+import AccountFinancePaymentBatchCategoryItemAdd from 
+'./components/relations/accounts/finance_payment_batch_category_items/AccountFinancePaymentBatchCategoryItemAdd'
+import AccountFinancePaymentBatchCategoryItemEdit from 
+'./components/relations/accounts/finance_payment_batch_category_items/AccountFinancePaymentBatchCategoryItemEdit'
 import AccountInvoices from './components/relations/accounts/invoices/AccountInvoices'
 import AccountInvoiceAdd from './components/relations/accounts/invoices/AccountInvoiceAdd'
 import AccountMemberships from './components/relations/accounts/memberships/AccountMemberships'
@@ -195,6 +212,7 @@ import SelfCheckinLocations from './components/selfcheckin/Locations/Locations'
 import SelfCheckinLocationClasses from './components/selfcheckin/LocationClasses/LocationClasses'
 
 import SettingsAbout from './components/settings/about/SettingsAbout'
+import SettingsFinanceBankAccounts from './components/settings/finance/bank_accounts/SettingsFinanceBankAccounts'
 import SettingsFinanceCurrency from './components/settings/finance/currency/SettingsFinanceCurrency'
 import SettingsGeneralDateTime from './components/settings/general/date_time/SettingsGeneralDateTime'
 import SettingsGeneralSystem from './components/settings/general/system/SettingsGeneralSystem'
@@ -366,6 +384,14 @@ function AppRoot({ t }) {
             <PrivateRoute exact path="/finance/glaccounts/edit/:id" component={FinanceGLAccountEdit} />
             <PrivateRoute exact path="/finance/orders" component={FinanceOrders} />
             <PrivateRoute exact path="/finance/orders/edit/:id" component={FinanceOrderEdit} />
+            <PrivateRoute exact path="/finance/paymentbatches/:batch_type" component={FinancePaymentBatches} />
+            <PrivateRoute exact path="/finance/paymentbatches/:batch_type/add_what" component={FinancePaymentBatchAddWhat} />
+            <PrivateRoute exact path="/finance/paymentbatches/:batch_type/view/:id" component={FinancePaymentBatchView} />
+            <PrivateRoute exact path="/finance/paymentbatches/:batch_type/add/:category_type" component={FinancePaymentCollectionBatchAdd} />
+            <PrivateRoute exact path="/finance/paymentbatches/:batch_type/edit/:id" component={FinancePaymentCollectionBatchEdit} />
+            <PrivateRoute exact path="/finance/paymentbatchcategories" component={FinancePaymentBatchCategories} />
+            <PrivateRoute exact path="/finance/paymentbatchcategories/add" component={FinancePaymentBatchCategoryAdd} />
+            <PrivateRoute exact path="/finance/paymentbatchcategories/edit/:id" component={FinancePaymentBatchCategoryEdit} />
             <PrivateRoute exact path="/finance/paymentmethods" component={FinancePaymentMethods} />
             <PrivateRoute exact path="/finance/paymentmethods/add" component={FinancePaymentMethodAdd} />
             <PrivateRoute exact path="/finance/paymentmethods/edit/:id" component={FinancePaymentMethodEdit} />
@@ -437,10 +463,21 @@ function AppRoot({ t }) {
             <PrivateRoute exact path="/relations/accounts/add" component={RelationsAccountAdd} />
             <PrivateRoute exact path="/relations/accounts/:account_id/profile" component={RelationsAccountProfile} />
             <PrivateRoute exact path="/relations/accounts/:account_id/accepted_documents" component={AccountAcceptedDocuments} />
+            <PrivateRoute exact path="/relations/accounts/:account_id/bank_accounts" component={RelationsAccountBankAccount} />
+            <PrivateRoute exact path="/relations/accounts/:account_id/bank_accounts/:bank_account_id/mandates/add" 
+                          component={RelationsAccountBankAccountMandateAdd} />
+            <PrivateRoute exact path="/relations/accounts/:account_id/bank_accounts/:bank_account_id/mandates/edit/:id" 
+                          component={RelationsAccountBankAccountMandateEdit} />
             <PrivateRoute exact path="/relations/accounts/:account_id/classes" component={RelationsAccountClasses} />
             <PrivateRoute exact path="/relations/accounts/:account_id/classpasses" component={AccountClasspasses} />
             <PrivateRoute exact path="/relations/accounts/:account_id/classpasses/add" component={AccountClasspassAdd} />
             <PrivateRoute exact path="/relations/accounts/:account_id/classpasses/edit/:id" component={AccountClasspassEdit} />
+            <PrivateRoute exact path="/relations/accounts/:account_id/finance_payment_batch_category_items" 
+                          component={AccountFinancePaymentBatchCategoryItems} />
+            <PrivateRoute exact path="/relations/accounts/:account_id/finance_payment_batch_category_items/add" 
+                          component={AccountFinancePaymentBatchCategoryItemAdd} />
+            <PrivateRoute exact path="/relations/accounts/:account_id/finance_payment_batch_category_items/edit/:id" 
+                          component={AccountFinancePaymentBatchCategoryItemEdit} />
             <PrivateRoute exact path="/relations/accounts/:account_id/invoices" component={AccountInvoices} />
             <PrivateRoute exact path="/relations/accounts/:account_id/invoices/add" component={AccountInvoiceAdd} />
             <PrivateRoute exact path="/relations/accounts/:account_id/memberships" component={AccountMemberships} />
@@ -558,6 +595,7 @@ function AppRoot({ t }) {
             {/* Settings */}
             <PrivateRoute exact path="/settings" component={SettingsHome} />
             <PrivateRoute exact path="/settings/about" component={SettingsAbout} />
+            <PrivateRoute exact path="/settings/finance/bank_accounts" component={SettingsFinanceBankAccounts} />
             <PrivateRoute exact path="/settings/finance/currency" component={SettingsFinanceCurrency} />
             <PrivateRoute exact path="/settings/general/datetime" component={SettingsGeneralDateTime} />
             <PrivateRoute exact path="/settings/general/system" component={SettingsGeneralSystem} />

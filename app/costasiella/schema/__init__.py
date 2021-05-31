@@ -3,7 +3,12 @@ import graphql_jwt
 
 from .account import AccountQuery, AccountMutation
 from .account_accepted_document import AccountAcceptedDocumentQuery
+from .account_bank_account import AccountBankAccountQuery, AccountBankAccountMutation
+from .account_bank_account_mandate import AccountBankAccountMandateQuery, AccountBankAccountMandateMutation
 from .account_classpass import AccountClasspassQuery, AccountClasspassMutation
+from .account_finance_payment_batch_category_item import \
+    AccountFinancePaymentBatchCategoryItemQuery,\
+    AccountFinancePaymentBatchCategoryItemMutation
 from .account_membership import AccountMembershipQuery, AccountMembershipMutation
 from .account_schedule_event_ticket import AccountScheduleEventTicketQuery, AccountScheduleEventTicketMutation
 from .account_subscription import AccountSubscriptionQuery, AccountSubscriptionMutation
@@ -29,6 +34,10 @@ from .finance_invoice_payment import FinanceInvoicePaymentQuery, FinanceInvoiceP
 from .finance_order import FinanceOrderQuery, FinanceOrderMutation
 from .finance_order_payment_link import FinanceOrderPaymentLinkMutation
 from .finance_order_item import FinanceOrderItemQuery
+from .finance_payment_batch import FinancePaymentBatchQuery, FinancePaymentBatchMutation
+from .finance_payment_batch_category import FinancePaymentBatchCategoryQuery, FinancePaymentBatchCategoryMutation
+from .finance_payment_batch_export import FinancePaymentBatchExportQuery
+from .finance_payment_batch_item import FinancePaymentBatchItemQuery
 from .finance_payment_method import FinancePaymentMethodQuery, FinancePaymentMethodMutation
 from .finance_tax_rate import FinanceTaxRateQuery, FinanceTaxRateMutation
 
@@ -76,7 +85,10 @@ from .system_setting import SystemSettingQuery, SystemSettingMutation
 
 class Query(AccountQuery,
             AccountAcceptedDocumentQuery,
+            AccountBankAccountQuery,
+            AccountBankAccountMandateQuery,
             AccountClasspassQuery,
+            AccountFinancePaymentBatchCategoryItemQuery,
             AccountMembershipQuery,
             AccountScheduleEventTicketQuery,
             AccountSubscriptionQuery,
@@ -97,6 +109,10 @@ class Query(AccountQuery,
             FinanceInvoicePaymentQuery,
             FinanceOrderQuery,
             FinanceOrderItemQuery,
+            FinancePaymentBatchQuery,
+            FinancePaymentBatchCategoryQuery,
+            FinancePaymentBatchExportQuery,
+            FinancePaymentBatchItemQuery,
             FinancePaymentMethodQuery,
             FinanceTaxRateQuery,
             InsightClasspassesQuery,
@@ -139,7 +155,10 @@ class Query(AccountQuery,
 
 
 class Mutation(AccountMutation,
+               AccountBankAccountMutation,
+               AccountBankAccountMandateMutation,
                AccountClasspassMutation,
+               AccountFinancePaymentBatchCategoryItemMutation,
                AccountMembershipMutation,
                AccountSubscriptionMutation,
                AccountScheduleEventTicketMutation,
@@ -159,6 +178,8 @@ class Mutation(AccountMutation,
                FinanceInvoicePaymentMutation,
                FinanceOrderMutation,
                FinanceOrderPaymentLinkMutation,
+               FinancePaymentBatchMutation,
+               FinancePaymentBatchCategoryMutation,
                FinancePaymentMethodMutation,
                FinanceTaxRateMutation,
                OrganizationMutation,

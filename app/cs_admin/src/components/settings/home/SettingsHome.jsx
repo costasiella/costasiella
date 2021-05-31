@@ -79,6 +79,16 @@ function SettingsHome({ t, match, params }) {
                 </Card.Body>
               </Card>
             </Grid.Col>
+            <Grid.Col md={3}>
+              <Card>
+                <Card.Body>
+                  <h5>{t("settings.finance.bank_accounts.title")}</h5>
+                  {t("settings.finance.bank_accounts.explanation")}
+                  <br /><br />
+                  <SettingsHomeItemButton link="/settings/finance/bank_accounts" />
+                </Card.Body>
+              </Card>
+            </Grid.Col>
           </Grid.Row>
           <Grid.Row>
             <Grid.Col md={12}>

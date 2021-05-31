@@ -170,6 +170,76 @@
             "toast_edit_success": "Saved status",
             "customer_message": "Customer message",
             "set_status_to_delivered_to_deliver_manually": "Change the status to 'Delivered' to manually deliver the order and create an invoice."
+        },
+        "payment_batch_categories": {
+            "title": "Payment batch categories",
+            "error_loading": "Error loading payment batch categories... :(",
+            "empty_archive": "No payment batch categories have been archived yet",
+            "empty_list": "No payment batch categories found...",
+            "batch_category_type": "Category type",
+            "add": "Add payment batch category",
+            "payment_batch_category_type": {
+                "COLLECTION": "Collection",
+                "PAYMENT": "Payment",
+                "NOT_FOUND": "Not found"
+            },
+            "toast_add_success": "Added payment batch category",
+            "title_add": "Add payment batch category",
+            "toast_edit_success": "Save",
+            "title_edit": "Edit payment batch category"
+        },
+        "payment_batch_collections": {
+            "title": "Collection batches",
+            "empty_list": "No collection batches found",
+            "title_add_what": "Choose type of collection batch to add",
+            "invoices_batch": "Invoices",
+            "invoices_batch_description": "Create a batch containing all invoices with status 'sent' and payment method 'direct debit'.",
+            "category_batch": "Payment batch category",
+            "category_batch_description": "Create a batch containing items in a chosen month for a payment batch category."
+        },
+        "payment_batch_payments": {
+            "title": "Payment batches",
+            "empty_list": "No payment batches found",
+            "title_add_what": "Choose type of payment batch to add",
+            "category_batch": "Payment batch category",
+            "category_batch_description": "Create a batch containing items in a chosen month for a payment batch category."
+        },
+        "payment_batches": {
+            "error_loading": "Error loading batches... :(",
+            "add": "Add batch",
+            "execution_date": "Execution date",
+            "batch_category": "Category",
+            "error_loading_input_values": "Error loading input values... :(",
+            "include_zero_amounts": "Include zero amounts",
+            "toast_add_success": "Added payment batch",
+            "status": {
+                "SENT_TO_BANK": "Sent to bank",
+                "APPROVED": "Approved",
+                "AWAITING_APPROVAL": "Awaiting Approval",
+                "REJECTED": "Rejected",
+                "invalid_type": "Invalid status"
+            },
+            "delete_confirm_msg": "Are you sure you with to delete this batch?",
+            "deleted": "Deleted batch",
+            "toast_edit_success": "Saved",
+            "toast_edit_status_success": "Updated batch status"
+        },
+        "payment_batch": {
+            "error_loading": "Error loading payment batch... :(",
+            "title_batch_info": "Batch info",
+            "title_batch_totals": "Totals",
+            "title_batch_note": "Note",
+            "title_batch_exports": "Exports",
+            "title_batch_items": "Items",
+            "title_view": "Payment batch",
+            "title_edit": "Edit payment batch",
+            "title_add": "Add payment batch",
+            "status": {
+                "SENT_TO_BANK": "Sent to bank",
+                "APPROVED": "Approved",
+                "AWAITING_APPROVAL": "Awaiting Approval",
+                "REJECTED": "Rejected"
+            }
         }
     },
     "general": {
@@ -390,7 +460,15 @@
         "tools": "Tools",
         "email_contact": "Email contact",
         "email_billing": "Email billing",
-        "phone2": "Phone 2"
+        "phone2": "Phone 2",
+        "collection": "Collection",
+        "payment": "Payment",
+        "view": "View",
+        "invoices": "Invoices",
+        "ID": "ID",
+        "line": "Line",
+        "export": "Export",
+        "category": "Category"
     },
     "yup": {
         "min_len_3": "Please input at least 3 characters",
@@ -799,7 +877,38 @@
             "event_tickets": {
                 "title": "Event tickets"
             },
-            "error_loading": "Error loading account info... :("
+            "error_loading": "Error loading account info... :(",
+            "bank_accounts": {
+                "title": "Bank account",
+                "holder": "Account holder",
+                "number": "Account number",
+                "bic": "BIC",
+                "toast_edit_success": "Saved",
+                "mandates": {
+                    "title_add": "Add mandate",
+                    "reference": "Reference",
+                    "reference_placeholder": "In case left empty, a unique reference will be generated.",
+                    "signature_date": "Signed on",
+                    "content": "content",
+                    "title": "Mandates",
+                    "toast_add_success": "Added mandate",
+                    "toast_edit_success": "Saved",
+                    "delete_confirm_msg": "Are you sure you wish to delete this mandate?",
+                    "deleted": "Deleted mandate",
+                    "add": "Add mandate"
+                }
+            },
+            "finance_payment_batch_category_items": {
+                "title": "Payment batch items",
+                "add": "Add batch item",
+                "title_add": "Add batch item",
+                "error_loading": "Error loading payment batch item...",
+                "toast_add_success": "Added batch item",
+                "title_edit": "Edit batch item",
+                "toast_edit_success": "Saved",
+                "delete_confirm_msg": "Are you sure you wish to delete this batch item?",
+                "deleted": "Deleted batch item"
+            }
         },
         "b2b": {
             "title": "Business-to-Business",
@@ -1325,7 +1434,12 @@
                 "explanation": "Set the currency and currency symbol"
             },
             "currency_symbol": "Currency symbol",
-            "title": "Finance"
+            "title": "Finance",
+            "bank_accounts": {
+                "title": "Bank accounts",
+                "iban": "All bank accounts should be a valid IBAN",
+                "explanation": "Configure bank account behavior like IBAN checking"
+            }
         },
         "mail": {
             "title": "Mail",

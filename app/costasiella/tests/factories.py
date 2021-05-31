@@ -47,6 +47,26 @@ class FinanceGLAccountFactory(factory.DjangoModelFactory):
     code = "8000"
 
 
+class FinancePaymentBatchCategoryCollectionFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.FinancePaymentBatchCategory
+
+    archived = False
+    name = "First collection payment batch category"
+    batch_category_type = "COLLECTION"
+    description = "hello world"
+
+
+class FinancePaymentBatchCategoryPaymentFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.FinancePaymentBatchCategory
+
+    archived = False
+    name = "First payment payment batch category"
+    batch_category_type = "PAYMENT"
+    description = "hello world"
+
+
 class FinancePaymentMethodFactory(factory.DjangoModelFactory):
     class Meta:
         model = models.FinancePaymentMethod
@@ -426,6 +446,38 @@ class AccountAcceptedDocumentFactory(factory.DjangoModelFactory):
     account = factory.SubFactory(RegularUserFactory)
     document = factory.SubFactory(OrganizationDocumentFactory)
     date_accepted = datetime.date(2019, 1, 1)
+
+
+class AccountBankAccountFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.AccountBankAccount
+
+    account = factory.SubFactory(RegularUserFactory)
+    number = "123456"
+    holder = "First regular user"
+    bic = "INGBNL2A"
+
+
+class AccountBankAccountMandateFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.AccountBankAccountMandate
+
+    account_bank_account = factory.SubFactory(AccountBankAccountFactory)
+    reference = "1234-abcd"
+    content = "hello world"
+    signature_date = datetime.date(2020, 1, 1)
+
+
+class AccountFinancePaymentBatchCategoryItemFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.AccountFinancePaymentBatchCategoryItem
+
+    account = factory.SubFactory(RegularUserFactory)
+    finance_payment_batch_category = factory.SubFactory(FinancePaymentBatchCategoryCollectionFactory)
+    year = 2020
+    month = 1
+    amount = 1234
+    description = "hello world"
 
 
 class AccountSubscriptionFactory(factory.DjangoModelFactory):
