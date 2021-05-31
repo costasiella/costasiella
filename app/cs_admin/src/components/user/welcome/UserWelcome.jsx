@@ -46,7 +46,7 @@ function Welcome({t, match, history}) {
   console.log(user)
 
   if (!user.employee && !user.teacher) {
-    history.push("/shop")
+    history.push("/")
   } 
 
 
@@ -97,7 +97,7 @@ function Welcome({t, match, history}) {
               <Card.Body>
                 <h5>{t("selfcheckin.home.title")}</h5>
                 {t("user.welcome.selfcheckin_explantion")} <br /><br />
-                <Link to="/">
+                <Link to="/selfcheckin">
                   <Button 
                     block
                     outline
