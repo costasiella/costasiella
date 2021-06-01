@@ -469,7 +469,8 @@
         "line": "Line",
         "export": "Export",
         "category": "Category",
-        "sign_in": "Sign in"
+        "sign_in": "Sign in",
+        "injury": "Injury"
     },
     "yup": {
         "min_len_3": "Please input at least 3 characters",
@@ -909,6 +910,14 @@
                 "toast_edit_success": "Saved",
                 "delete_confirm_msg": "Are you sure you wish to delete this batch item?",
                 "deleted": "Deleted batch item"
+            },
+            "notes": {
+                "title": "Notes",
+                "add": "Add note",
+                "title_add": "Add note",
+                "toast_add_success": "Added note",
+                "backoffice": "Backoffice",
+                "teachers": "Teachers"
             }
         },
         "b2b": {
