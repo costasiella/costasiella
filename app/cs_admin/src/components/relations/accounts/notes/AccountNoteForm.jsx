@@ -23,6 +23,20 @@ const AccountNoteForm = ({ t, history, isSubmitting, values, errors, setFieldTou
     <Card.Body> 
       <Grid.Row>
         <Grid.Col>
+          <Form.Group label={t('general.note')}>
+          <Editor
+              textareaName="note"
+              initialValue={values.note}
+              init={tinymceBasicConf}
+              onChange={(e) => setFieldValue("note", e.target.getContent())}
+              onBlur={() => setFieldTouched("note", true)}
+            />
+           <ErrorMessage name="note" component="span" className="invalid-feedback" />
+          </Form.Group>
+        </Grid.Col>
+      </Grid.Row>
+      <Grid.Row>
+        <Grid.Col>
           <Form.Group>
             <Form.Label className="custom-switch">
                 <Field 
@@ -35,20 +49,6 @@ const AccountNoteForm = ({ t, history, isSubmitting, values, errors, setFieldTou
             </Form.Label>
             <ErrorMessage name="injury" component="div" />   
           </Form.Group>  
-        </Grid.Col>
-      </Grid.Row>
-      <Grid.Row>
-        <Grid.Col>
-          <Form.Group label={t('general.note')}>
-          <Editor
-              textareaName="note"
-              initialValue={values.note}
-              init={tinymceBasicConf}
-              onChange={(e) => setFieldValue("note", e.target.getContent())}
-              onBlur={() => setFieldTouched("note", true)}
-            />
-           <ErrorMessage name="note" component="span" className="invalid-feedback" />
-          </Form.Group>
         </Grid.Col>
       </Grid.Row>
     </Card.Body>
