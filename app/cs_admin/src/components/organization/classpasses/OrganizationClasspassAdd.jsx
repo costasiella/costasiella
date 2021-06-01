@@ -9,9 +9,6 @@ import { Formik, Form as FoForm, Field, ErrorMessage } from 'formik'
 import { toast } from 'react-toastify'
 import { v4 } from "uuid"
 
-import { Editor } from '@tinymce/tinymce-react'
-import { tinymceBasicConf } from "../../../plugin_config/tinymce"
-
 import { GET_CLASSPASSES_QUERY, GET_INPUT_VALUES_QUERY } from './queries'
 import { CLASSPASS_SCHEMA } from './yupSchema'
 
