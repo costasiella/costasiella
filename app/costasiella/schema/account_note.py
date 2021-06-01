@@ -7,6 +7,7 @@ from graphene_django.filter import DjangoFilterConnectionField
 from graphql import GraphQLError
 
 from ..models import Account, AccountNote
+from ..models.choices.account_note_types import get_account_note_types
 from ..modules.gql_tools import require_login, require_login_and_permission, get_rid
 from ..modules.messages import Messages
 from ..dudes.system_setting_dude import SystemSettingDude
@@ -29,8 +30,14 @@ def validate_create_update_input(input, update=False):
         if not account:
             raise Exception(_('Invalid Account ID!'))
 
-    if 'teacher_note' not in input and 'backoffice_note' not in input:
-        raise Exception(_('Either teacherNote or backofficeNote has to be set!'))
+        note_types = []
+        for item in get_account_note_types():
+            note_types.append(item[0])
+
+        if input['note_type'] not in note_types:
+            raise Exception(_('noteType should be TEACHERS or BACKOFFICE!'))
+
+        result['note_type'] = input['note_type']
 
     return result
 
@@ -38,7 +45,7 @@ def validate_create_update_input(input, update=False):
 class AccountNoteNode(DjangoObjectType):
     class Meta:
         model = AccountNote
-        filter_fields = ['account', 'teacher_note', 'backoffice_note']
+        filter_fields = ['account', 'note_type']
         interfaces = (graphene.relay.Node, )
 
     @classmethod
@@ -46,7 +53,11 @@ class AccountNoteNode(DjangoObjectType):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.view_accountnote')
 
-        return self._meta.model.objects.get(id=id)
+        note = self._meta.model.objects.get(id=id)
+        if user.has_perm('costasiella.view_accountnoteteachers') and note.note_type == 'TEACHERS':
+            return note
+        elif user.has_perm('costasiella.view_accountnotebackoffice') and note.note_type == 'BACKOFFICE':
+            return note
 
 
 class AccountNoteQuery(graphene.ObjectType):
@@ -67,6 +78,8 @@ class AccountNoteQuery(graphene.ObjectType):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.view_account_note')
 
+        # Apply requested filter of user has the permission for it, if not don't return anything
+
         rid = get_rid(kwargs.get('account', user.id))
         account_id = rid.id
 
@@ -76,8 +89,7 @@ class AccountNoteQuery(graphene.ObjectType):
 class CreateAccountNote(graphene.relay.ClientIDMutation):
     class Input:
         account = graphene.ID(required=True)
-        backoffice_note = graphene.Boolean(required=False)
-        teacher_note = graphene.Boolean(required=False)
+        note_type = graphene.String(required=True)
         injury = graphene.Boolean(required=False)
         note = graphene.String(required=True)
 
@@ -94,14 +106,9 @@ class CreateAccountNote(graphene.relay.ClientIDMutation):
         account_note = AccountNote(
             account=result['account'],
             note=input['note'],
+            note_type=result['note_type'],
             note_by=user
         )
-
-        if 'teacher_note' in input:
-            account_note.teacher_note = input['teacher_note']
-            
-        if 'backoffice_note' in input:
-            account_note.backoffice_note = input['backoffice_note']
             
         if 'injury' in input:
             account_note.injury = input['injury']
