@@ -913,7 +913,9 @@
             },
             "notes": {
                 "title": "Notes",
-                "add": "Add note"
+                "add": "Add note",
+                "title_add": "Add note",
+                "toast_add_success": "Added note"
             }
         },
         "b2b": {
