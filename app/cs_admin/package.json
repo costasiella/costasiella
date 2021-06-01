@@ -57,7 +57,7 @@
     "react-c3js": "^0.1.20",
     "react-confirm-alert": "^2.4.1",
     "react-datepicker": "^2.4.0",
-    "react-dev-utils": "^7.0.3",
+    "react-dev-utils": "^7.0.5",
     "react-dom": "^16.8.6",
     "react-i18next": "^10.11.5",
     "react-router-dom": "^4.3.1",
