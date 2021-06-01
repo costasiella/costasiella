@@ -915,7 +915,9 @@
                 "title": "Notes",
                 "add": "Add note",
                 "title_add": "Add note",
-                "toast_add_success": "Added note"
+                "toast_add_success": "Added note",
+                "backoffice": "Backoffice",
+                "teachers": "Teachers"
             }
         },
         "b2b": {
