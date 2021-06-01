@@ -909,6 +909,9 @@
                 "toast_edit_success": "Saved",
                 "delete_confirm_msg": "Are you sure you wish to delete this batch item?",
                 "deleted": "Deleted batch item"
+            },
+            "notes": {
+                "title": "Notes"
             }
         },
         "b2b": {

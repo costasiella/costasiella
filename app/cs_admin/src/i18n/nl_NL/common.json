@@ -1253,6 +1253,9 @@
                 "toast_edit_success": "__STRING_NOT_TRANSLATED__",
                 "delete_confirm_msg": "__STRING_NOT_TRANSLATED__",
                 "deleted": "__STRING_NOT_TRANSLATED__"
+            },
+            "notes": {
+                "title": "__STRING_NOT_TRANSLATED__"
             }
         },
         "accounts": {
