@@ -82,7 +82,7 @@ function AccountNotes({ t, history, match }) {
                   ? {
                       // Put the new accountClasspasses at the end of the list and update `pageInfo`
                       // so we have the new `endCursor` and `hasNextPage` values
-                      notes: {
+                      accountNotes: {
                         __typename: previousResult.accountNotes.__typename,
                         edges: [ ...previousResult.accountNotes.edges, ...newEdges ],
                         pageInfo
