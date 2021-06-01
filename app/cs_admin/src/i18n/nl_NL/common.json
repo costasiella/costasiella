@@ -226,7 +226,8 @@
         "line": "__STRING_NOT_TRANSLATED__",
         "export": "__STRING_NOT_TRANSLATED__",
         "category": "__STRING_NOT_TRANSLATED__",
-        "sign_in": "__STRING_NOT_TRANSLATED__"
+        "sign_in": "__STRING_NOT_TRANSLATED__",
+        "injury": "__STRING_NOT_TRANSLATED__"
     },
     "settings": {
         "error_loading": "__STRING_NOT_TRANSLATED__",
@@ -1255,7 +1256,8 @@
                 "deleted": "__STRING_NOT_TRANSLATED__"
             },
             "notes": {
-                "title": "__STRING_NOT_TRANSLATED__"
+                "title": "__STRING_NOT_TRANSLATED__",
+                "add": "__STRING_NOT_TRANSLATED__"
             }
         },
         "accounts": {

@@ -469,7 +469,8 @@
         "line": "Line",
         "export": "Export",
         "category": "Category",
-        "sign_in": "Sign in"
+        "sign_in": "Sign in",
+        "injury": "Injury"
     },
     "yup": {
         "min_len_3": "Please input at least 3 characters",
@@ -911,7 +912,8 @@
                 "deleted": "Deleted batch item"
             },
             "notes": {
-                "title": "Notes"
+                "title": "Notes",
+                "add": "Add note"
             }
         },
         "b2b": {
