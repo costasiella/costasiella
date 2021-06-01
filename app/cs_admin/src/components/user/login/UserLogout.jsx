@@ -5,8 +5,8 @@ import gql from "graphql-tag"
 import { useQuery, useMutation } from "react-apollo";
 import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
+import { Link } from "react-router-dom"
 import { Formik } from 'formik'
-import { ToastContainer } from 'react-toastify'
 import { toast } from 'react-toastify'
 
 // import { GET_ACCOUNTS_QUERY, GET_ACCOUNT_QUERY } from './queries'
@@ -65,10 +65,10 @@ function UserLogout({t, match, history}) {
               .catch((error) => {
                 console.log(error)
               })
-              setTimeout(() => toast.info((t('user.logout.success')), {
+              setTimeout(() => toast.info(t('user.logout.success'), {
                 position: toast.POSITION.BOTTOM_RIGHT
               }), 350)
-              setTimeout(() => history.push('/user/login'), 250)
+              setTimeout(() => history.push('/'), 250)
             }}
           >
             {t('general.logout')}

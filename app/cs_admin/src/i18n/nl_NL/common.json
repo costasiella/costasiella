@@ -225,7 +225,8 @@
         "ID": "__STRING_NOT_TRANSLATED__",
         "line": "__STRING_NOT_TRANSLATED__",
         "export": "__STRING_NOT_TRANSLATED__",
-        "category": "__STRING_NOT_TRANSLATED__"
+        "category": "__STRING_NOT_TRANSLATED__",
+        "sign_in": "__STRING_NOT_TRANSLATED__"
     },
     "settings": {
         "error_loading": "__STRING_NOT_TRANSLATED__",
@@ -726,7 +727,21 @@
                 "title_cancelation_not_possible": "__STRING_NOT_TRANSLATED__",
                 "already_cancelled": "__STRING_NOT_TRANSLATED__",
                 "cancelation_not_possible": "__STRING_NOT_TRANSLATED__"
-            }
+            },
+            "goto": {
+                "explanation": "__STRING_NOT_TRANSLATED__"
+            },
+            "btn_go_to": "__STRING_NOT_TRANSLATED__",
+            "change_password": {
+                "title": "__STRING_NOT_TRANSLATED__",
+                "explanation": "__STRING_NOT_TRANSLATED__"
+            },
+            "btn_text_change_password": "__STRING_NOT_TRANSLATED__",
+            "sign_out": {
+                "title": "__STRING_NOT_TRANSLATED__",
+                "explanation": "__STRING_NOT_TRANSLATED__"
+            },
+            "btn_text_sign_out": "__STRING_NOT_TRANSLATED__"
         },
         "accounts": {
             "profile": {
@@ -1563,6 +1578,11 @@
             "backend_to": "__STRING_NOT_TRANSLATED__",
             "selfcheckin_explantion": "__STRING_NOT_TRANSLATED__",
             "selfcheckin_to": "__STRING_NOT_TRANSLATED__"
+        },
+        "login_required": {
+            "title": "__STRING_NOT_TRANSLATED__",
+            "message": "__STRING_NOT_TRANSLATED__",
+            "go_to_login": "__STRING_NOT_TRANSLATED__"
         }
     },
     "countries": {

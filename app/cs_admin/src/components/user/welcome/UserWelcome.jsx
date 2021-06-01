@@ -1,13 +1,9 @@
 // @flow
 
-import React, { useContext, useState } from 'react'
-import gql from "graphql-tag"
-import { useQuery, useMutation } from "react-apollo";
+import React, { useContext } from 'react'
+import { useQuery } from "react-apollo";
 import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
-import { Formik } from 'formik'
-import { ToastContainer } from 'react-toastify'
-import { toast } from 'react-toastify'
 import { Link } from "react-router-dom"
 
 import GET_USER_PROFILE from "../../../queries/system/get_user_profile"
@@ -46,7 +42,7 @@ function Welcome({t, match, history}) {
   console.log(user)
 
   if (!user.employee && !user.teacher) {
-    history.push("/shop")
+    history.push("/")
   } 
 
 
@@ -62,7 +58,7 @@ function Welcome({t, match, history}) {
             <Card.Body>
               <h5>{t("shop.title")}</h5>
               {t("user.welcome.shop_explanation")} <br /><br />
-              <Link to="/shop">
+              <Link to="/">
                 <Button 
                   block
                   outline
@@ -79,7 +75,7 @@ function Welcome({t, match, history}) {
             <Card.Body>
               <h5>{t("general.backend")}</h5>
               {t("user.welcome.backend_explantion")} <br /><br />
-              <Link to="/">
+              <Link to="/backend">
                 <Button 
                   block
                   outline
@@ -97,7 +93,7 @@ function Welcome({t, match, history}) {
               <Card.Body>
                 <h5>{t("selfcheckin.home.title")}</h5>
                 {t("user.welcome.selfcheckin_explantion")} <br /><br />
-                <Link to="/">
+                <Link to="/selfcheckin">
                   <Button 
                     block
                     outline

@@ -38,7 +38,24 @@ function ShopAccountHome({t, match, history}) {
 
   return (
     <ShopAccountHomeBase subTitle={user.fullName}>
-      {/* Above this line will be things like classes, class passe, etc. */}
+      {(user.teacher || user.employee) ?
+        <div>
+          <Grid.Row>
+            <Grid.Col md={4} lg={4}>
+              <Card>
+                <Card.Body>
+                  <h5>{t("goto.title")}</h5>
+                  {t("shop.account.goto.explanation")}
+                  <br /><br />
+                  <ShopAccountHomeButton link="/user/welcome" buttonText={t("shop.account.btn_go_to")} />
+                </Card.Body>
+              </Card>
+            </Grid.Col>
+          </Grid.Row> 
+          <hr />
+        </div>
+        : ""
+      } 
       <Grid.Row>
         <Grid.Col md={4} lg={4}>
           <Card>
@@ -111,6 +128,26 @@ function ShopAccountHome({t, match, history}) {
               {t("shop.account.invoices.explanation")}
               <br /><br />
               <ShopAccountHomeButton link="/shop/account/invoices" buttonText={t("shop.account.btn_text_view")} />
+            </Card.Body>
+          </Card>
+        </Grid.Col>
+        <Grid.Col md={4} lg={4}>
+          <Card>
+            <Card.Body>
+              <h5>{t("shop.account.change_password.title")}</h5>
+              {t("shop.account.change_password.explanation")}
+              <br /><br />
+              <ShopAccountHomeButton link="/user/password/change/" buttonText={t("shop.account.btn_text_change_password")} />
+            </Card.Body>
+          </Card>
+        </Grid.Col>
+        <Grid.Col md={4} lg={4}>
+          <Card>
+            <Card.Body>
+              <h5>{t("shop.account.sign_out.title")}</h5>
+              {t("shop.account.sign_out.explanation")}
+              <br /><br />
+              <ShopAccountHomeButton link="/user/logout/" buttonText={t("shop.account.btn_text_sign_out")} />
             </Card.Body>
           </Card>
         </Grid.Col>

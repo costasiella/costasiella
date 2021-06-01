@@ -64,6 +64,7 @@ def invoice_html(node_id):
 
     app_settings = AppSettings.objects.get(id=1)
     organization = Organization.objects.get(id=100)
+    logo_url = organization.logo_invoice.url if organization.logo_invoice else ""
     items = FinanceInvoiceItem.objects.filter(
         finance_invoice=finance_invoice
     )
@@ -79,7 +80,7 @@ def invoice_html(node_id):
     rendered_template = render_to_string(
         template_path,
         {
-            "logo": "logo",
+            "logo_url": logo_url,
             "studio": {
                 "name": "studio name",
             },
@@ -133,7 +134,7 @@ def invoice_pdf(request, node_id, **kwargs):
 
     # Create a file-like buffer to receive PDF data.
     buffer = io.BytesIO()
-    pdf = weasyprint.HTML(string=html).write_pdf(buffer)
+    pdf = weasyprint.HTML(string=html, base_url=request.build_absolute_uri()).write_pdf(buffer)
 
     # FileResponse sets the Content-Disposition header so that browsers
     # present the option to save the file.

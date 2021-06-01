@@ -61,30 +61,6 @@ export const GET_CLASSES_QUERY = gql`
         bookingStatus
       }
     }
-    user {
-      id
-      isActive
-      email
-      firstName
-      lastName
-      groups {
-        edges {
-          node {
-            id
-            name
-            permissions {
-              edges {
-                node {
-                  id
-                  name
-                  codename
-                }
-              }
-            }
-          }
-        }
-      }
-    }
     organizationLocations(first: 100, archived: false) {
       pageInfo {
         startCursor

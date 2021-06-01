@@ -5,13 +5,14 @@ import { useContext } from 'react'
 import { withTranslation } from 'react-i18next'
 import { NavLink, withRouter } from "react-router-dom"
 import { useQuery } from "react-apollo"
-import { ToastContainer } from 'react-toastify'
+import { ToastContainer, Slide } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import 'react-confirm-alert/src/react-confirm-alert.css'
 import { Link } from 'react-router-dom'
 
 import GET_USER from "../queries/system/get_user"
 import OrganizationContext from './context/OrganizationContext'
+import CSLS from "../tools/cs_local_storage"
 import { get_all_permissions, has_permission } from "../tools/user_tools"
 
 
@@ -54,11 +55,11 @@ type navItem = {|
 
 const getNavBarItems = (t, user) => {
   let items: Array<navItem> = []
-  let permissions = get_all_permissions(user)
+  // let permissions = get_all_permissions(user)
 
   items.push({
-    value: t("shop.title"),
-    to: "/shop",
+    value: t("shop.home.title"),
+    to: "/",
     icon: "home",
     LinkComponent: withRouter(NavLink),
     useExact: true,
@@ -97,17 +98,26 @@ const getNavBarItems = (t, user) => {
   })
 
   items.push({
-    value: t("shop.account.title"),
-    to: "/shop/account",
-    icon: "user",
+    value: t("shop.contact.title"),
+    to: "/shop/contact",
+    icon: "message-square",
     LinkComponent: withRouter(NavLink),
     useExact: true,
   })
 
+  // Check if refresh token is present and if so, hasn't expired
+  const refreshTokenExp = localStorage.getItem(CSLS.AUTH_TOKEN_REFRESH_EXP)
+  let accountTitle = t("shop.account.title")
+  let accountLink = "/shop/account"
+  if (new Date() / 1000 >= refreshTokenExp || refreshTokenExp == null ) {
+    accountTitle = t("general.sign_in")
+    accountLink = "/user/login"
+  }
+
   items.push({
-    value: t("shop.contact.title"),
-    to: "/shop/contact",
-    icon: "message-square",
+    value: accountTitle,
+    to: accountLink,
+    icon: "user",
     LinkComponent: withRouter(NavLink),
     useExact: true,
   })
@@ -132,11 +142,12 @@ const now = new Date()
 function SiteWrapperShop({t, match, history, children}) {
   const organization = useContext(OrganizationContext)
   console.log(organization)
-  const { error, loading, data, fetchMore } = useQuery(GET_USER)
+  // const { error, loading, data, fetchMore } = useQuery(GET_USER)
 
-  if (loading) return <p>{t('general.loading_with_dots')}</p>;
-  if (error) return <p>{t('system.user.error_loading')}</p>; 
+  // if (loading) return <p>{t('general.loading_with_dots')}</p>;
+  // if (error) return <p>{t('system.user.error_loading')}</p>; 
 
+  const data = ""
   console.log(data)
 
   const headerImageUrl = getHeaderImageUrl(organization)
@@ -255,7 +266,10 @@ function SiteWrapperShop({t, match, history, children}) {
         }}
       >
       {children}
-      <ToastContainer autoClose={5000}/>
+      <ToastContainer 
+        autoClose={5000} 
+        transition={Slide}
+      />
     </Site.Wrapper>    
   )
 }

@@ -468,7 +468,8 @@
         "ID": "ID",
         "line": "Line",
         "export": "Export",
-        "category": "Category"
+        "category": "Category",
+        "sign_in": "Sign in"
     },
     "yup": {
         "min_len_3": "Please input at least 3 characters",
@@ -1544,6 +1545,11 @@
             "backend_to": "Go to back end",
             "selfcheckin_explantion": "Customer self service check-in.",
             "selfcheckin_to": "Go to self check-in"
+        },
+        "login_required": {
+            "title": "Login Required",
+            "message": "You need to be signed in to view this page.",
+            "go_to_login": "To login"
         }
     },
     "insight": {
@@ -1723,13 +1729,13 @@
                 "title": "Class information"
             },
             "subscriptions": {
-                "title": "Subscriptions",
+                "title": "My Subscriptions",
                 "explanation": "View your current and past subscriptions",
                 "error_loading_data": "Error loading subscriptions... :(",
                 "empty_list": "No subcsriptions found."
             },
             "event_tickets": {
-                "title": "Event tickets",
+                "title": "My Event tickets",
                 "explanation": "View your upcoming and past event tickets",
                 "error_loading_data": "Error loading your tickets... :(",
                 "empty_list": "No tickets found"
@@ -1744,7 +1750,21 @@
                 "title_cancelation_not_possible": "Cancellation not possible",
                 "already_cancelled": "Your booking for this class has already been cancelled.",
                 "cancelation_not_possible": "Your booking for this class can no longer be cancelled"
-            }
+            },
+            "goto": {
+                "explanation": "Use other features like the backend or selfcheckin."
+            },
+            "btn_go_to": "Choose where to go",
+            "change_password": {
+                "title": "Change password",
+                "explanation": "Click the button below to change your password."
+            },
+            "btn_text_change_password": "Change password",
+            "sign_out": {
+                "title": "Sign out",
+                "explanation": "Click the button below to sign out."
+            },
+            "btn_text_sign_out": "To sign out"
         },
         "accounts": {
             "profile": {

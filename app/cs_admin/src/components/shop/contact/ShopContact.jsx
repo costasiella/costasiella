@@ -47,12 +47,13 @@ function ShopContact({ t, match, history }) {
 
   return (
     <ShopContactBase>
-      <h3>{organization.name}</h3>
-      <div dangerouslySetInnerHTML={{ __html: organization.address}} />
-      <p>{organization.email}</p>
-      <p>{organization.phone}</p>
-      <p>{organization.registration}</p>
-      <p>{organization.taxRegistration}</p>
+      <Card title={organization.name}>
+        <Card.Body>
+          <div dangerouslySetInnerHTML={{ __html: organization.address}} />
+          <p>{organization.email} <br /> {organization.phone}</p>
+          <p>{organization.registration} <br /> {organization.taxRegistration}</p>
+        </Card.Body>
+      </Card>
     </ShopContactBase>
   )
 }

@@ -65,7 +65,11 @@ function processClientError({ networkError, graphQLErrors, operation, forward, r
 
       if (authTokenExpired) {
         const refreshTokenExp = localStorage.getItem(CSLS.AUTH_TOKEN_REFRESH_EXP)
-        if ((new Date() / 1000) >= refreshTokenExp || (refreshTokenExp == null)) {
+        if (refreshTokenExp == null) {
+          // User hasn't logged in before
+          window.location.href = "#/user/login/required"
+          window.location.reload()
+        } else if ((new Date() / 1000) >= refreshTokenExp) {
           // Session expired
           console.log("refresh token expired or not found")
           console.log(new Date() / 1000)
@@ -106,7 +110,6 @@ function processClientError({ networkError, graphQLErrors, operation, forward, r
                 window.location.href = "/#/user/login"
                 window.location.reload()
               });
-
           })
         }
       } else {

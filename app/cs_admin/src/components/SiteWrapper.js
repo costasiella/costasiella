@@ -4,7 +4,7 @@ import * as React from "react"
 import { withTranslation } from 'react-i18next'
 import { NavLink, withRouter } from "react-router-dom"
 import { useQuery, Query } from "react-apollo"
-import { ToastContainer } from 'react-toastify'
+import { ToastContainer, Slide } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import 'react-confirm-alert/src/react-confirm-alert.css'
 import { Link } from 'react-router-dom'
@@ -55,7 +55,7 @@ const getNavBarItems = (t, user) => {
 
   items.push({
     value: t("home.title"),
-    to: "/",
+    to: "/backend",
     icon: "home",
     LinkComponent: withRouter(NavLink),
     useExact: true,
@@ -237,9 +237,11 @@ function SiteWrapper({t, match, history, children}) {
           description: "",
           options: [
             // { icon: "user", value: "Profile" },
-            { icon: "lock", value: "Change password", to: "/#/user/password/change/" },
+            { icon: "lock", value: t("user.change_password.title"), to: "/#/user/password/change/" },
             { isDivider: true },
-            { icon: "log-out", value: "Sign out", to: "/#/user/logout/" },
+            { icon: "user", value: t("shop.account.title"), to: "/#/shop/account/" },
+            { isDivider: true },
+            { icon: "log-out", value: t("user.logout.title"), to: "/#/user/logout/" },
           ],
         },
         }}
@@ -301,7 +303,10 @@ function SiteWrapper({t, match, history, children}) {
         }}
       >
         {children}
-        <ToastContainer autoClose={5000}/>
+        <ToastContainer 
+          autoClose={5000} 
+          transition={Slide}
+        />
       </Site.Wrapper>
   )
 }
