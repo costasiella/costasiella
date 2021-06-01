@@ -97,7 +97,7 @@ function AccountNotes({ t, history, match }) {
               <Card>
                 <Card.Body>
                   {(node.injury) ? <Badge color="danger" className="float-right">{t("general.injury")}</Badge> : ""}
-                  {node.note}
+                  <div dangerouslySetInnerHTML={{__html: node.note}} />
                 </Card.Body>
                 <Card.Footer>
                   <small className="float-right">delete</small>
