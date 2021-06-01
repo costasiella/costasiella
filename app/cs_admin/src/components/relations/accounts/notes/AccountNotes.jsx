@@ -41,13 +41,18 @@ import { get_list_query_variables } from "./tools"
 
 
 function AccountNotes({ t, history, match }) {
+  // Set some initial value for noteType, if not found
+  if (!localStorage.getItem(CSLS.RELATIONS_ACCOUNT_NOTES_NOTE_TYPE)) {
+    localStorage.setItem(CSLS.RELATIONS_ACCOUNT_NOTES_NOTE_TYPE, "BACKOFFICE") 
+  }
+
   const appSettings = useContext(AppSettingsContext)
   const dateTimeFormatMoment = appSettings.dateTimeFormatMoment
 
   const accountId = match.params.account_id
 
   const { loading, error, data, fetchMore, refetch } = useQuery(GET_ACCOUNT_NOTES_QUERY, {
-    variables: { account: accountId, noteType: "BACKOFFICE" }
+    variables: get_list_query_variables(accountId)
   })
   const [deleteAccountFinancePaymentBatchCategoryItem] = useMutation(DELETE_ACCOUNT_NOTE)
 
@@ -74,21 +79,21 @@ function AccountNotes({ t, history, match }) {
         <Grid.Col>
           <div className="float-right mb-4">
             <Button.List>
-              <Button color={(localStorage.getItem(CSLS.RELATIONS_BUSINESSES_SHOW_ARCHIVE) === "false") ? 'primary': 'secondary'}  
+              <Button color={(localStorage.getItem(CSLS.RELATIONS_ACCOUNT_NOTES_NOTE_TYPE) === "BACKOFFICE") ? 'primary': 'secondary'}  
                       size=""
                       onClick={() => {
-                        localStorage.setItem(CSLS.RELATIONS_BUSINESSES_SHOW_ARCHIVE, false)
-                        refetch(get_list_query_variables())
+                        localStorage.setItem(CSLS.RELATIONS_ACCOUNT_NOTES_NOTE_TYPE, "BACKOFFICE")
+                        refetch(get_list_query_variables(accountId))
                       }
               }>
                 {t('relations.account.notes.backoffice')}
               </Button>
-              <Button color={(localStorage.getItem(CSLS.RELATIONS_BUSINESSES_SHOW_ARCHIVE) === "true") ? 'primary': 'secondary'} 
+              <Button color={(localStorage.getItem(CSLS.RELATIONS_ACCOUNT_NOTES_NOTE_TYPE) === "TEACHERS") ? 'primary': 'secondary'} 
                       size="" 
                       className="ml-2" 
                       onClick={() => {
-                        localStorage.setItem(CSLS.RELATIONS_BUSINESSES_SHOW_ARCHIVE, true)
-                        refetch(get_list_query_variables())
+                        localStorage.setItem(CSLS.RELATIONS_ACCOUNT_NOTES_NOTE_TYPE, "TEACHERS")
+                        refetch(get_list_query_variables(accountId))
                       }
               }>
                 {t('relations.account.notes.teachers')}
