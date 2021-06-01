@@ -1,3 +1,4 @@
+from django.utils.translation import gettext as _
 from django.db import models
 
 from .account import Account
@@ -7,6 +8,12 @@ from ..modules.encrypted_fields import EncryptedTextField
 
 
 class AccountNote(models.Model):
+    class Meta:
+        permissions = [
+            ('view_accountnoteteachers', _("Can view teacher notes")),
+            ('view_accountnotebackoffice', _("Can view backoffice notes")),
+        ]
+
     account = models.ForeignKey(Account, on_delete=models.CASCADE, related_name="notes")
     note_by = models.ForeignKey(Account, on_delete=models.CASCADE, related_name="notes_made")
     backoffice_note = models.BooleanField(default=False)
