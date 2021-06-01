@@ -76,7 +76,7 @@ class AccountNoteQuery(graphene.ObjectType):
         :return:
         """
         user = info.context.user
-        require_login_and_permission(user, 'costasiella.view_account_note')
+        require_login_and_permission(user, 'costasiella.view_accountnote')
 
         # Apply requested filter of user has the permission for it, if not don't return anything
 
@@ -112,6 +112,8 @@ class CreateAccountNote(graphene.relay.ClientIDMutation):
             
         if 'injury' in input:
             account_note.injury = input['injury']
+
+        account_note.save()
 
         return CreateAccountNote(account_note=account_note)
 
