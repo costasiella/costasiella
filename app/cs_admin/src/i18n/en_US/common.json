@@ -1142,6 +1142,9 @@
                 "delete_success": "Deleted event image",
                 "edit": "Edit event image",
                 "toast_edit_success": "Saved"
+            },
+            "earlybirds": {
+                "title": "Earlybird discounts"
             }
         },
         "event": {
