@@ -7,7 +7,6 @@ from graphene_django.filter import DjangoFilterConnectionField
 from graphql import GraphQLError
 
 from ..models import ScheduleEvent, ScheduleEventEarlybird
-from ..modules.model_helpers.schedule_event_earlybird_schedule_item_helper import ScheduleEventEarlybirdScheduleItemHelper
 from ..modules.gql_tools import require_login, require_login_and_permission, get_rid
 from ..modules.messages import Messages
 
