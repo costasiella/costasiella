@@ -24,9 +24,9 @@ function ScheduleEventEarlybirdDelete({t, match, history, id}) {
       onClick={() => {
         confirm_delete({
           t: t,
-          msgConfirm: t("schedule.events.earlybird.delete_confirm_msg"),
+          msgConfirm: t("schedule.events.earlybirds.delete_confirm_msg"),
           msgDescription: <p></p>,
-          msgSuccess: t('schedule.events.earlybird.delete_success'),
+          msgSuccess: t('schedule.events.earlybirds.delete_success'),
           deleteFunction: deleteScheduleEventEarlybird,
           functionVariables: { 
             variables: {
