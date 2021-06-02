@@ -1,4 +1,5 @@
 from django.utils.translation import gettext as _
+from django.utils import timezone
 
 import graphene
 from graphene_django import DjangoObjectType
@@ -17,6 +18,11 @@ class ScheduleEventTicketNodeInterface(graphene.Interface):
     id = graphene.GlobalID()
     price_display = graphene.String()
     is_sold_out = graphene.Boolean()
+    is_earlybird_price = graphene.Boolean()
+    earlybird_discount = graphene.types.Decimal()
+    earlybird_discount_display = graphene.String()
+    total_price = graphene.types.Decimal()
+    total_price_display = graphene.String()
 
 
 class ScheduleEventTicketNode(DjangoObjectType):
@@ -40,6 +46,33 @@ class ScheduleEventTicketNode(DjangoObjectType):
 
     def resolve_is_sold_out(self, info):
         return self.is_sold_out()
+
+    def resolve_earlybird_discount(self, info):
+        now = timezone.now()
+        date = now.date()
+        return self.get_earlybird_discount_on_date(date)
+
+    def resolve_earlybird_discount_display(self, info):
+        from ..modules.finance_tools import display_float_as_amount
+        now = timezone.now()
+        date = now.date()
+        return display_float_as_amount(self.get_earlybird_discount_on_date(date))
+
+    def resolve_total_price(self, info):
+        now = timezone.now()
+        date = now.date()
+        return self.total_price_on_date(date)
+
+    def resolve_user_price_display(self, info):
+        from ..modules.finance_tools import display_float_as_amount
+        now = timezone.now()
+        date = now.date()
+        return display_float_as_amount(self.total_price_on_date(date))
+
+    def resolve_is_earlybird_price(self, info):
+        now = timezone.now()
+        date = now.date()
+        return self.is_earlybird_price_on_date(date)
 
 
 class ScheduleEventTicketQuery(graphene.ObjectType):

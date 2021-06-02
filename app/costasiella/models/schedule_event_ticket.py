@@ -9,6 +9,8 @@ from .finance_tax_rate import FinanceTaxRate
 from .finance_costcenter import FinanceCostCenter
 from .finance_glaccount import FinanceGLAccount
 
+from .helpers import model_string
+
 
 class ScheduleEventTicket(models.Model):
     schedule_event = models.ForeignKey(ScheduleEvent, on_delete=models.CASCADE, related_name="tickets")
@@ -30,7 +32,7 @@ class ScheduleEventTicket(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.name + ' [' + str(self.price) + ']'
+        return model_string(self)
 
     def is_sold_out(self):
         """
@@ -58,3 +60,44 @@ class ScheduleEventTicket(models.Model):
                 break
 
         return sold_out
+
+    def _get_earlybird_qs(self, date):
+        from .schedule_event_earlybird import ScheduleEventEarlybird
+
+        earlybird_qs = ScheduleEventEarlybird.objects.filter(
+            Q(schedule_event=self.schedule_event),
+            Q(date_start__lte=date),
+            Q(date_end__gte=date)
+        ).order_by('-discount_percentage')
+
+        return earlybird_qs
+
+    def is_earlybird_price_on_date(self, date):
+        earlybirds = self._get_earlybird_qs(date)
+
+        # Check if discounts exit
+        if earlybirds.exists():
+            return True
+        else:
+            return False
+
+    def get_earlybird_discount_on_date(self, date):
+        from decimal import Decimal, ROUND_HALF_UP
+        discount = 0
+        earlybirds = self._get_earlybird_qs(date)
+
+        # Check if discounts exit
+        if earlybirds.exists():
+            # If so, get the first one (with the highest discount)
+            earlybird = earlybirds.first()
+
+            discount_percentage = earlybird.discount_percentage
+            discount = Decimal(self.price * Decimal(discount_percentage / 100))
+
+        return Decimal(discount.quantize(Decimal('.01'), rounding=ROUND_HALF_UP))
+
+    def total_price_on_date(self, date):
+        # Process earlybird discount
+        price = self.price - self.get_earlybird_discount_on_date(date)
+
+        return price
