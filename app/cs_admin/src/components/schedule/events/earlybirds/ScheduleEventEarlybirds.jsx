@@ -125,7 +125,7 @@ function ScheduleEventEarlybirds({t, match, history}) {
                   {node.discountPercentage} %
                 </Table.Col>
                 <Table.Col className="text-right">
-                  <Link to={`/schedule/events/edit/${eventId}/earlybird/edit/${node.id}`}>
+                  <Link to={`/schedule/events/edit/${eventId}/earlybirds/edit/${node.id}`}>
                     <Button className='btn-sm' 
                             color="secondary">
                       {t('general.edit')}

@@ -28,7 +28,7 @@ export const GET_SCHEDULE_EVENT_EARLYBIRDS_QUERY = gql`
 
 export const GET_SCHEDULE_EVENT_EARLYBIRD_QUERY = gql`
   query ScheduleEventEarlybird($id:ID!) {
-    scheduleEventEearlybird(id: $id) {
+    scheduleEventEarlybird(id: $id) {
       id
       discountPercentage
       dateStart
