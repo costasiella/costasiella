@@ -107,7 +107,7 @@ function ScheduleEventEarlybirds({t, match, history}) {
           <Table.Row key={v4()}>
             <Table.ColHeader>{t('general.date_start')}</Table.ColHeader>
             <Table.ColHeader>{t('general.date_end')}</Table.ColHeader>
-            <Table.ColHeader>{t('general.discount')}</Table.ColHeader>
+            <Table.ColHeader>{t('schedule.events.earlybirds.discountPercentage')}</Table.ColHeader>
             <Table.ColHeader></Table.ColHeader>
             <Table.ColHeader></Table.ColHeader>
           </Table.Row>
@@ -116,10 +116,10 @@ function ScheduleEventEarlybirds({t, match, history}) {
             {scheduleEventEarlybirds.edges.map(({ node }) => (
               <Table.Row key={v4()}>
                 <Table.Col>
-                  {moment(node.date_start).format(dateFormat)}
+                  {moment(node.dateStart).format(dateFormat)}
                 </Table.Col>
                 <Table.Col>
-                  {moment(node.date_end).format(dateFormat)}
+                  {moment(node.dateEnd).format(dateFormat)}
                 </Table.Col>
                 <Table.Col>
                   {node.discountPercentage} %
