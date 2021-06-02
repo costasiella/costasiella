@@ -4,7 +4,7 @@ import React from 'react'
 import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
 import { Form as FoForm, Field, ErrorMessage } from 'formik'
-import { v4 } from 'uuid'
+import { Link } from "react-router-dom"
 
 import {
   Button,
@@ -13,8 +13,7 @@ import {
   Form,
 } from "tabler-react"
 
-
-import { customFileInputLabelStyle } from "../../../../tools/custom_file_input_label_style"
+import CSDatePicker from "../../../ui/CSDatePicker"
 
 function ScheduleEventMediaForm ({ 
   t, 
@@ -24,9 +23,8 @@ function ScheduleEventMediaForm ({
   errors, 
   values, 
   returnUrl,
-  inputFileName, 
-  fileInputLabel, 
-  handleFileInputChange=f=>f
+  setFieldTouched,
+  setFieldValue,
 })   
 {
   return (
@@ -62,7 +60,7 @@ function ScheduleEventMediaForm ({
             </Form.Group>
           </Grid.Col>
           <Grid.Col>
-            <Form.Group label={t('schedule.events.earlybird.discountPercentage')}>
+            <Form.Group label={t('schedule.events.earlybirds.discountPercentage')}>
               <Field type="text" 
                     name="discountPercentage" 
                     className={(errors.discountPercentage) ? "form-control is-invalid" : "form-control"} 
