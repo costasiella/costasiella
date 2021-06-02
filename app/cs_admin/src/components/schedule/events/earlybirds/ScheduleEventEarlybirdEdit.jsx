@@ -21,7 +21,7 @@ import {
   GET_SCHEDULE_EVENT_EARLYBIRD_QUERY,
   UPDATE_SCHEDULE_EVENT_EARLYBIRD
  } from "./queries"
-// import { SCHEDULE_EVENT_EARLYBIRD_SCHEMA } from './yupSchema'
+import { SCHEDULE_EVENT_EARLYBIRDS_SCHEMA } from './yupSchema'
 
 import ScheduleEventEarlybirdBack from "./ScheduleEventEarlybirdsBack"
 import ScheduleEventEditBase from "../edit/ScheduleEventEditBase"
@@ -82,7 +82,7 @@ function ScheduleEventEarlybirdEdit({ t, history, match }) {
           dateEnd: scheduleEventEarlybird.dateEnd,
           discountPercentage: scheduleEventEarlybird.discountPercentage
         }}
-        // validationSchema={SCHEDULE_EVENT_EARLYBIRD_SCHEMA}
+        validationSchema={SCHEDULE_EVENT_EARLYBIRDS_SCHEMA}
         onSubmit={(values, { setSubmitting }) => {
           console.log("Submit values")
           console.log(values)

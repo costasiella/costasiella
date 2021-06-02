@@ -1151,8 +1151,8 @@
                 "delete_success": "Deleted earlybird discount",
                 "discountPercentage": "Discount percentage",
                 "empty_list": "No earlybird discounts have been defined yet for this event",
-                "edit": "__STRING_NOT_TRANSLATED__",
-                "toast_edit_success": "__STRING_NOT_TRANSLATED__"
+                "edit": "Edit earlybird discount",
+                "toast_edit_success": "Saved"
             }
         },
         "event": {

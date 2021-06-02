@@ -18,7 +18,7 @@ import {
 } from "tabler-react"
 
 import { ADD_SCHEDULE_EVENT_EARLYBIRD, GET_SCHEDULE_EVENT_EARLYBIRDS_QUERY } from "./queries"
-import { SCHEDULE_EVENT_EARLYBIRD_SCHEMA } from './yupSchema'
+import { SCHEDULE_EVENT_EARLYBIRDS_SCHEMA } from './yupSchema'
 
 import ScheduleEventEarlybirdBack from "./ScheduleEventEarlybirdsBack"
 import ScheduleEventEditBase from "../edit/ScheduleEventEditBase"
@@ -48,7 +48,7 @@ function ScheduleEventEarlybirdAdd({ t, history, match }) {
           dateEnd: "",
           discountPercentage: 0,
         }}
-        // validationSchema={SCHEDULE_EVENT_EARLYBIRD_SCHEMA}
+        validationSchema={SCHEDULE_EVENT_EARLYBIRDS_SCHEMA}
         onSubmit={(values, { setSubmitting }) => {
           console.log("Submit values")
           console.log(values)
