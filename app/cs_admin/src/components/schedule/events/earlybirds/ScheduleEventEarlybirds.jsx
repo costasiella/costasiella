@@ -72,7 +72,7 @@ function ScheduleEventEarlybirds({t, match, history}) {
   // Empty list
   if (!scheduleEventEarlybirds.edges.length) { return (
     <ScheduleEventEditListBase activeLink={activeLink} sidebarContent={sidebarContent}>
-      <p>{t('schedule.events.earlybird.empty_list')}</p>
+      <p>{t('schedule.events.earlybirds.empty_list')}</p>
     </ScheduleEventEditListBase>
   )}
 
@@ -122,7 +122,7 @@ function ScheduleEventEarlybirds({t, match, history}) {
                   {moment(node.date_end).format(dateFormat)}
                 </Table.Col>
                 <Table.Col>
-                  {node.percentage} %
+                  {node.discountPercentage} %
                 </Table.Col>
                 <Table.Col className="text-right">
                   <Link to={`/schedule/events/edit/${eventId}/earlybird/edit/${node.id}`}>
