@@ -227,7 +227,8 @@
         "export": "__STRING_NOT_TRANSLATED__",
         "category": "__STRING_NOT_TRANSLATED__",
         "sign_in": "__STRING_NOT_TRANSLATED__",
-        "injury": "__STRING_NOT_TRANSLATED__"
+        "injury": "__STRING_NOT_TRANSLATED__",
+        "discount": "__STRING_NOT_TRANSLATED__"
     },
     "settings": {
         "error_loading": "__STRING_NOT_TRANSLATED__",
@@ -1500,7 +1501,13 @@
                 "toast_edit_success": "__STRING_NOT_TRANSLATED__"
             },
             "earlybirds": {
-                "title": "__STRING_NOT_TRANSLATED__"
+                "title": "__STRING_NOT_TRANSLATED__",
+                "add": "__STRING_NOT_TRANSLATED__",
+                "toast_add_success": "__STRING_NOT_TRANSLATED__",
+                "delete_confirm_msg": "__STRING_NOT_TRANSLATED__",
+                "delete_success": "__STRING_NOT_TRANSLATED__",
+                "discountPercentage": "__STRING_NOT_TRANSLATED__",
+                "empty_list": "__STRING_NOT_TRANSLATED__"
             }
         },
         "event": {
