@@ -64,7 +64,7 @@ def validate_create_update_input(input, update=False):
 class CreateScheduleEventEarlybird(graphene.relay.ClientIDMutation):
     class Input:
         schedule_event = graphene.ID(required=True)
-        percentage = graphene.Decimal(required=True)
+        discount_percentage = graphene.Decimal(required=True)
         date_start = graphene.types.datetime.Date(required=True)
         date_end = graphene.types.datetime.Date(required=True)
 
@@ -80,7 +80,7 @@ class CreateScheduleEventEarlybird(graphene.relay.ClientIDMutation):
 
         schedule_event_earlybird = ScheduleEventEarlybird(
             schedule_event=result['schedule_event'],
-            percentage=input['percentage'],
+            discount_percentage=input['discount_percentage'],
             date_start=input['date_start'],
             date_end=input['date_end']
         )
@@ -93,7 +93,7 @@ class CreateScheduleEventEarlybird(graphene.relay.ClientIDMutation):
 class UpdateScheduleEventEarlybird(graphene.relay.ClientIDMutation):
     class Input:
         id = graphene.ID(required=True)
-        percentage = graphene.Decimal(required=True)
+        discount_percentage = graphene.Decimal(required=True)
         date_start = graphene.types.datetime.Date(required=True)
         date_end = graphene.types.datetime.Date(required=True)
         
@@ -112,8 +112,8 @@ class UpdateScheduleEventEarlybird(graphene.relay.ClientIDMutation):
         # Validate input
         result = validate_create_update_input(input, update=True)
 
-        if 'percentage' in input:
-            schedule_event_earlybird.percentage = input['percentage']
+        if 'discount_percentage' in input:
+            schedule_event_earlybird.discount_percentage = input['discount_percentage']
         if 'date_start' in input:
             schedule_event_earlybird.date_start = input['date_start']
         if 'date_end' in input:
