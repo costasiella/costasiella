@@ -26,7 +26,7 @@ import {
 // import HasPermissionWrapper from "../../../../HasPermissionWrapper"
 import ScheduleEventEditListBase from "../edit/ScheduleEventEditListBase"
 // import ScheduleEventTicketListBase from "./ScheduleEventTicketListBase"
-import ScheduleEventMediaDelete from "./ScheduleEventMediaDelete"
+import ScheduleEventEarlybirdDelete from "./ScheduleEventEarlybirdDelete"
 import moment from 'moment';
 
 
@@ -37,7 +37,7 @@ function ScheduleEventEarlybirds({t, match, history}) {
   console.log(appSettings)
   
   const eventId = match.params.event_id
-  const activeLink = "media"
+  const activeLink = "earlybirds"
 
   const sidebarContent = <Link to={`/schedule/events/edit/${eventId}/earlybirds/add`}>
     <Button color="primary btn-block mb-6">
@@ -45,7 +45,7 @@ function ScheduleEventEarlybirds({t, match, history}) {
     </Button>
   </Link>
 
-  const { loading, error, data, fetchMore } = useQuery(GET_SCHEDULE_EVENT_MEDIAS_QUERY, {
+  const { loading, error, data, fetchMore } = useQuery(GET_SCHEDULE_EVENT_EARLYBIRDS_QUERY, {
     variables: {
       scheduleEvent: eventId
     }
@@ -66,32 +66,32 @@ function ScheduleEventEarlybirds({t, match, history}) {
   console.log('query data')
   console.log(data)
 
-  const scheduleEventMedias = data.scheduleEventMedias
-  const pageInfo = data.scheduleEventMedias.pageInfo
+  const scheduleEventEarlybirds = data.scheduleEventEarlybirds
+  const pageInfo = data.scheduleEventEarlybirds.pageInfo
 
   // Empty list
-  if (!scheduleEventMedias.edges.length) { return (
+  if (!scheduleEventEarlybirds.edges.length) { return (
     <ScheduleEventEditListBase activeLink={activeLink} sidebarContent={sidebarContent}>
-      <p>{t('schedule.events.media.empty_list')}</p>
+      <p>{t('schedule.events.earlybird.empty_list')}</p>
     </ScheduleEventEditListBase>
   )}
 
   const onLoadMore = () => {
     fetchMore({
       variables: {
-        after: scheduleEventMedias.pageInfo.endCursor
+        after: scheduleEventEarlybirds.pageInfo.endCursor
       },
       updateQuery: (previousResult, { fetchMoreResult }) => {
-        const newEdges = fetchMoreResult.scheduleEventMedias.edges
-        const pageInfo = fetchMoreResult.scheduleEventMedias.pageInfo
+        const newEdges = fetchMoreResult.scheduleEventEarlybirds.edges
+        const pageInfo = fetchMoreResult.scheduleEventEarlybirds.pageInfo
 
         return newEdges.length
           ? {
               // Put the new invoices at the end of the list and update `pageInfo`
               // so we have the new `endCursor` and `hasNextPage` values
-              scheduleEventMedias: {
-                __typename: previousResult.scheduleEventMedias.__typename,
-                edges: [ ...previousResult.scheduleEventMedias.edges, ...newEdges ],
+              scheduleEventEarlybirds: {
+                __typename: previousResult.scheduleEventEarlybirds.__typename,
+                edges: [ ...previousResult.scheduleEventEarlybirds.edges, ...newEdges ],
                 pageInfo
               }
             }
@@ -105,27 +105,27 @@ function ScheduleEventEarlybirds({t, match, history}) {
       <Table>
         <Table.Header>
           <Table.Row key={v4()}>
-            <Table.ColHeader></Table.ColHeader> 
-            <Table.ColHeader>{t('general.description')}</Table.ColHeader>
-            <Table.ColHeader>{t('general.sort_order')}</Table.ColHeader>
+            <Table.ColHeader>{t('general.date_start')}</Table.ColHeader>
+            <Table.ColHeader>{t('general.date_end')}</Table.ColHeader>
+            <Table.ColHeader>{t('general.discount')}</Table.ColHeader>
             <Table.ColHeader></Table.ColHeader>
             <Table.ColHeader></Table.ColHeader>
           </Table.Row>
         </Table.Header>
         <Table.Body>
-            {scheduleEventMedias.edges.map(({ node }) => (
+            {scheduleEventEarlybirds.edges.map(({ node }) => (
               <Table.Row key={v4()}>
                 <Table.Col>
-                  <Avatar size="lg" imageURL={node.urlImageThumbnailSmall} />
+                  {moment(node.date_start).format(dateFormat)}
                 </Table.Col>
                 <Table.Col>
-                  {node.description}
+                  {moment(node.date_end).format(dateFormat)}
                 </Table.Col>
                 <Table.Col>
-                  {node.sortOrder}
+                  {node.percentage} %
                 </Table.Col>
                 <Table.Col className="text-right">
-                  <Link to={`/schedule/events/edit/${eventId}/media/edit/${node.id}`}>
+                  <Link to={`/schedule/events/edit/${eventId}/earlybird/edit/${node.id}`}>
                     <Button className='btn-sm' 
                             color="secondary">
                       {t('general.edit')}
@@ -133,7 +133,7 @@ function ScheduleEventEarlybirds({t, match, history}) {
                   </Link>
                 </Table.Col>
                 <Table.Col className="text-right">
-                  <ScheduleEventMediaDelete id={node.id} />
+                  <ScheduleEventEarlybirdDelete id={node.id} />
                 </Table.Col>
               </Table.Row>
             ))}

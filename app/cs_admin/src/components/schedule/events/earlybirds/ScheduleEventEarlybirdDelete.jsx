@@ -3,7 +3,7 @@ import { useMutation } from '@apollo/react-hooks';
 import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
 
-import { DELETE_SCHEDULE_EVENT_MEDIA, GET_SCHEDULE_EVENT_MEDIAS_QUERY } from "./queries"
+import { DELETE_SCHEDULE_EVENT_EARLYBIRD, GET_SCHEDULE_EVENT_EARLYBIRDS_QUERY } from "./queries"
 import confirm_delete from "../../../../tools/confirm_delete"
 
 import {
@@ -11,9 +11,9 @@ import {
 } from "tabler-react"
 
 
-function ScheduleEventMediaDelete({t, match, history, id}) {
+function ScheduleEventEarlybirdDelete({t, match, history, id}) {
   const eventId = match.params.event_id
-  const [deleteScheduleEventMedia, { data }] = useMutation(DELETE_SCHEDULE_EVENT_MEDIA)
+  const [deleteScheduleEventEarlybird, { data }] = useMutation(DELETE_SCHEDULE_EVENT_EARLYBIRD)
   const query_vars = {
     scheduleEvent: eventId
   }
@@ -24,10 +24,10 @@ function ScheduleEventMediaDelete({t, match, history, id}) {
       onClick={() => {
         confirm_delete({
           t: t,
-          msgConfirm: t("schedule.events.media.delete_confirm_msg"),
+          msgConfirm: t("schedule.events.earlybird.delete_confirm_msg"),
           msgDescription: <p></p>,
-          msgSuccess: t('schedule.events.media.delete_success'),
-          deleteFunction: deleteScheduleEventMedia,
+          msgSuccess: t('schedule.events.earlybird.delete_success'),
+          deleteFunction: deleteScheduleEventEarlybird,
           functionVariables: { 
             variables: {
               input: {
@@ -35,7 +35,7 @@ function ScheduleEventMediaDelete({t, match, history, id}) {
               },
             }, 
             refetchQueries: [
-              { query: GET_SCHEDULE_EVENT_MEDIAS_QUERY, variables: query_vars },
+              { query: GET_SCHEDULE_EVENT_EARLYBIRDS_QUERY, variables: query_vars },
             ]
           }
         })
@@ -46,4 +46,4 @@ function ScheduleEventMediaDelete({t, match, history, id}) {
 }
 
 
-export default withTranslation()(withRouter(ScheduleEventMediaDelete))
+export default withTranslation()(withRouter(ScheduleEventEarlybirdDelete))
