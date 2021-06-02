@@ -470,8 +470,7 @@
         "export": "Export",
         "category": "Category",
         "sign_in": "Sign in",
-        "injury": "Injury",
-        "discount": "__STRING_NOT_TRANSLATED__"
+        "injury": "Injury"
     },
     "yup": {
         "min_len_3": "Please input at least 3 characters",
@@ -1151,7 +1150,9 @@
                 "delete_confirm_msg": "Are you sure you wish to delete this earlybird discount?",
                 "delete_success": "Deleted earlybird discount",
                 "discountPercentage": "Discount percentage",
-                "empty_list": "No earlybird discounts have been defined yet for this event"
+                "empty_list": "No earlybird discounts have been defined yet for this event",
+                "edit": "__STRING_NOT_TRANSLATED__",
+                "toast_edit_success": "__STRING_NOT_TRANSLATED__"
             }
         },
         "event": {
