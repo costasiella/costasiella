@@ -63,7 +63,7 @@ class ScheduleEventTicketNode(DjangoObjectType):
         date = now.date()
         return self.total_price_on_date(date)
 
-    def resolve_user_price_display(self, info):
+    def resolve_total_price_display(self, info):
         from ..modules.finance_tools import display_float_as_amount
         now = timezone.now()
         date = now.date()

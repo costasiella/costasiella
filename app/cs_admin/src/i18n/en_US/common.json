@@ -1852,7 +1852,9 @@
             "error_loading": "Error loading event... :(",
             "tickets": "Tickets",
             "ticket": {
-                "choose": "Choose"
+                "choose": "Choose",
+                "earlybird_price": "Earlybird",
+                "regular_price": "Regular price"
             }
         }
     },

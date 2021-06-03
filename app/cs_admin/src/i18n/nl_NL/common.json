@@ -810,7 +810,9 @@
             "error_loading": "__STRING_NOT_TRANSLATED__",
             "tickets": "__STRING_NOT_TRANSLATED__",
             "ticket": {
-                "choose": "__STRING_NOT_TRANSLATED__"
+                "choose": "__STRING_NOT_TRANSLATED__",
+                "earlybird_price": "__STRING_NOT_TRANSLATED__",
+                "regular_price": "__STRING_NOT_TRANSLATED__"
             }
         }
     },
