@@ -832,6 +832,16 @@ class ScheduleEventMediaFactory(factory.DjangoModelFactory):
     )
 
 
+class ScheduleEventEarlybirdFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.ScheduleEventEarlybird
+
+    schedule_event = factory.SubFactory(ScheduleEventFactory)
+    date_start = "2020-01-01"
+    date_end = "2999-12-31"
+    discount_percentage = 10
+
+
 class ScheduleItemEventActivityFactory(factory.DjangoModelFactory):
     class Meta:
         model = models.ScheduleItem
