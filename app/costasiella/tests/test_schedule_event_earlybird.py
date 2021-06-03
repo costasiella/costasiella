@@ -14,7 +14,7 @@ from graphql_relay import to_global_id
 from django.contrib.auth.models import AnonymousUser
 
 from . import factories as f
-from .helpers import clean_earlybird, execute_test_client_api_query
+from .helpers import execute_test_client_api_query
 from .. import models
 from .. import schema
 
@@ -34,14 +34,14 @@ class GQLScheduleEventEarlybird(TestCase):
         self.permission_change = 'change_scheduleeventearlybird'
         self.permission_delete = 'delete_scheduleeventearlybird'
 
-        self.schedule_event_earlybird = f.ScheduleEventMediaFactory.create()
+        self.schedule_event_earlybird = f.ScheduleEventEarlybirdFactory.create()
 
         self.variables_query_list = {
             "scheduleEvent": to_global_id("ScheduleEventNode", self.schedule_event_earlybird.schedule_event.id)
         }
 
         self.variables_query_one = {
-            "id": to_global_id("ScheduleEventMediaNode", self.schedule_event_earlybird.id)
+            "id": to_global_id("ScheduleEventEarlybirdNode", self.schedule_event_earlybird.id)
         }
 
         self.variables_create = {
@@ -55,7 +55,7 @@ class GQLScheduleEventEarlybird(TestCase):
 
         self.variables_update = {
             "input": {
-                "id": to_global_id("ScheduleEventMediaNode", self.schedule_event_earlybird.id),
+                "id": to_global_id("ScheduleEventEarlybirdNode", self.schedule_event_earlybird.id),
                 "sortOrder": 2,
                 "description": "test_image.jpg",
                 "imageFileName": "test_image.jpg",
@@ -69,8 +69,8 @@ class GQLScheduleEventEarlybird(TestCase):
         }
 
         self.schedule_event_earlybirds_query = '''
-  query ScheduleEventEarlybirdss($before:String, $after:String, $scheduleEvent:ID!) {
-    scheduleEventEarlybirdss(first: 100, before:$before, after:$after, scheduleEvent:$scheduleEvent) {
+  query ScheduleEventEarlybirds($before:String, $after:String, $scheduleEvent:ID!) {
+    scheduleEventEarlybirds(first: 100, before:$before, after:$after, scheduleEvent:$scheduleEvent) {
       pageInfo {
         hasNextPage
         hasPreviousPage
@@ -93,8 +93,8 @@ class GQLScheduleEventEarlybird(TestCase):
 '''
 
         self.schedule_event_earlybird_query = '''
-  query ScheduleEventMedia($id:ID!) {
-    scheduleEventMedia(id: $id) {
+  query ScheduleEventEarlybird($id:ID!) {
+    scheduleEventEarlybird(id: $id) {
       id
       sortOrder
       description
@@ -104,9 +104,9 @@ class GQLScheduleEventEarlybird(TestCase):
 '''
 
         self.schedule_event_earlybird_create_mutation = ''' 
-  mutation CreateScheduleEventMedia($input:CreateScheduleEventMediaInput!) {
-    createScheduleEventMedia(input: $input) {
-      scheduleEventMedia {
+  mutation CreateScheduleEventEarlybird($input:CreateScheduleEventEarlybirdInput!) {
+    createScheduleEventEarlybird(input: $input) {
+      scheduleEventEarlybird {
         id
         sortOrder
         description
@@ -117,9 +117,9 @@ class GQLScheduleEventEarlybird(TestCase):
 '''
 
         self.schedule_event_earlybird_update_mutation = '''
-  mutation UpdateScheduleEventMedia($input:UpdateScheduleEventMediaInput!) {
-    updateScheduleEventMedia(input: $input) {
-      scheduleEventMedia {
+  mutation UpdateScheduleEventEarlybird($input:UpdateScheduleEventEarlybirdInput!) {
+    updateScheduleEventEarlybird(input: $input) {
+      scheduleEventEarlybird {
         id
         sortOrder
         description
@@ -130,8 +130,8 @@ class GQLScheduleEventEarlybird(TestCase):
 '''
 
         self.schedule_event_earlybird_delete_mutation = '''
-  mutation DeleteScheduleEventMedia($input: DeleteScheduleEventMediaInput!) {
-    deleteScheduleEventMedia(input: $input) {
+  mutation DeleteScheduleEventEarlybird($input: DeleteScheduleEventEarlybirdInput!) {
+    deleteScheduleEventEarlybird(input: $input) {
       ok
     }
   }
@@ -139,7 +139,7 @@ class GQLScheduleEventEarlybird(TestCase):
 
     def tearDown(self):
         # This is run after every test
-        clean_earlybird()
+        pass
 
     def test_query(self):
         """ Query list of schedule event earlybirds """
@@ -149,238 +149,291 @@ class GQLScheduleEventEarlybird(TestCase):
         data = executed.get('data')
 
         self.assertEqual(
-            data['scheduleEventMedias']['edges'][0]['node']['id'],
-            to_global_id('ScheduleEventMediaNode', self.schedule_event_earlybird.id)
+            data['scheduleEventEarlybirds']['edges'][0]['node']['id'],
+            to_global_id('ScheduleEventEarlybirdNode', self.schedule_event_earlybird.id)
         )
-        self.assertEqual(data['scheduleEventMedias']['edges'][0]['node']['sortOrder'],
-                         self.schedule_event_earlybird.sort_order)
-        self.assertEqual(data['scheduleEventMedias']['edges'][0]['node']['description'],
-                         self.schedule_event_earlybird.description)
-        self.assertNotEqual(data['scheduleEventMedias']['edges'][0]['node']['urlImage'], False)
-        self.assertNotEqual(data['scheduleEventMedias']['edges'][0]['node']['urlImageThumbnailSmall'], False)
-
-    ##
-    # No permission tests are required in this test, as there are no permission checks in the schema.
-    # The listing of these documents is public, so users also don't need to be logged in.
-    ##
-
-    def test_query_one(self):
-        """ Query one schedule event earlybird """
-        query = self.schedule_event_earlybird_query
-
-        executed = execute_test_client_api_query(query, self.admin_user, variables=self.variables_query_one)
-        data = executed.get('data')
-
-        self.assertEqual(data['scheduleEventMedia']['id'], self.variables_query_one['id'])
-
-    def test_create_schedule_event_earlybird(self):
-        """ Create schedule event earlybird """
-        query = self.schedule_event_earlybird_create_mutation
-        variables = self.variables_create
-
-        executed = execute_test_client_api_query(
-            query,
-            self.admin_user,
-            variables=variables
+        self.assertEqual(
+            data['scheduleEventEarlybirds']['edges'][0]['node']['scheduleEvent']['id'],
+            to_global_id('ScheduleEventNode', self.schedule_event_earlybird.schedule_event.id)
         )
-        data = executed.get('data')
+        self.assertEqual(data['scheduleEventEarlybirds']['edges'][0]['node']['dateStart'],
+                         str(self.schedule_event_earlybird.date_start))
+        self.assertEqual(data['scheduleEventEarlybirds']['edges'][0]['node']['dateEnd'],
+                         str(self.schedule_event_earlybird.date_end))
 
-        self.assertEqual(data['createScheduleEventMedia']['scheduleEventMedia']['sortOrder'],
-                         variables['input']['sortOrder'])
-        self.assertEqual(data['createScheduleEventMedia']['scheduleEventMedia']['description'],
-                         variables['input']['description'])
-        self.assertNotEqual(data['createScheduleEventMedia']['scheduleEventMedia']['urlImage'], "")
 
-        schedule_event_earlybird = models.ScheduleEventMedia.objects.last()
-        self.assertNotEqual(schedule_event_earlybird.image, None)
-
-    def test_create_schedule_event_earlybird_anon_user(self):
-        """ Don't allow creating schedule event earlybird for non-logged in users """
-        query = self.schedule_event_earlybird_create_mutation
-        variables = self.variables_create
-
-        executed = execute_test_client_api_query(
-            query,
-            self.anon_user,
-            variables=variables
-        )
-        data = executed.get('data')
-        errors = executed.get('errors')
-        self.assertEqual(errors[0]['message'], 'Not logged in!')
-
-    def test_create_schedule_event_earlybird_permission_granted(self):
-        """ Allow creating schedule event earlybird for users with permissions """
-        query = self.schedule_event_earlybird_create_mutation
+    def test_query_permission_denied(self):
+        """ Query list of taxrates - check permission denied """
+        query = self.taxrates_query
+        taxrate = f.FinanceTaxRateFactory.create()
+        variables = {
+            'archived': False
+        }
 
         # Create regular user
         user = f.RegularUserFactory.create()
-        permission = Permission.objects.get(codename=self.permission_add)
+        executed = execute_test_client_api_query(query, user, variables=variables)
+        errors = executed.get('errors')
+
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
+
+    def test_query_permission_granted(self):
+        """ Query list of taxrates with view permission """
+        query = self.taxrates_query
+        taxrate = f.FinanceTaxRateFactory.create()
+        variables = {
+            'archived': False
+        }
+
+        # Create regular user
+        user = f.RegularUserFactory.create()
+        permission = Permission.objects.get(codename='view_financetaxrate')
         user.user_permissions.add(permission)
         user.save()
 
-        variables = self.variables_create
-
-        executed = execute_test_client_api_query(
-            query,
-            user,
-            variables=variables
-        )
+        executed = execute_test_client_api_query(query, user, variables=variables)
         data = executed.get('data')
-        self.assertEqual(data['createScheduleEventMedia']['scheduleEventMedia']['sortOrder'],
-                         variables['input']['sortOrder'])
 
-    def test_create_schedule_event_earlybird_permission_denied(self):
-        """ Check create schedule event earlybird permission denied error message """
-        query = self.schedule_event_earlybird_create_mutation
-        variables = self.variables_create
+        # List all taxrates
+        self.assertEqual(data['financeTaxRates']['edges'][0]['node']['name'], taxrate.name)
+        self.assertEqual(data['financeTaxRates']['edges'][0]['node']['archived'], taxrate.archived)
+        self.assertEqual(data['financeTaxRates']['edges'][0]['node']['percentage'],
+                         format(taxrate.percentage, ".2f"))
+        self.assertEqual(data['financeTaxRates']['edges'][0]['node']['rateType'], taxrate.rate_type)
+        self.assertEqual(data['financeTaxRates']['edges'][0]['node']['code'], taxrate.code)
 
-        # Create regular user
-        user = f.RegularUserFactory.create()
+    def test_query_anon_user(self):
+        """ Query list of taxrates - anon user """
+        query = self.taxrates_query
+        taxrate = f.FinanceTaxRateFactory.create()
+        variables = {
+            'archived': False
+        }
 
-        executed = execute_test_client_api_query(
-            query,
-            user,
-            variables=variables
-        )
-        data = executed.get('data')
-        errors = executed.get('errors')
-        self.assertEqual(errors[0]['message'], 'Permission denied!')
-
-    def test_update_schedule_event_earlybird(self):
-        """ Update schedule event earlybird """
-        query = self.schedule_event_earlybird_update_mutation
-        variables = self.variables_update
-
-        executed = execute_test_client_api_query(
-            query,
-            self.admin_user,
-            variables=variables
-        )
-
-        data = executed.get('data')
-        self.assertEqual(data['updateScheduleEventMedia']['scheduleEventMedia']['sortOrder'],
-                         variables['input']['sortOrder'])
-        self.assertEqual(data['updateScheduleEventMedia']['scheduleEventMedia']['description'],
-                         variables['input']['description'])
-        self.assertNotEqual(data['updateScheduleEventMedia']['scheduleEventMedia']['urlImage'], "")
-
-        schedule_event_earlybird = models.ScheduleEventMedia.objects.last()
-        self.assertNotEqual(schedule_event_earlybird.image, None)
-
-    def test_update_schedule_event_earlybird_anon_user(self):
-        """ Don't allow updating schedule event earlybird for non-logged in users """
-        query = self.schedule_event_earlybird_update_mutation
-        variables = self.variables_update
-
-        executed = execute_test_client_api_query(
-            query,
-            self.anon_user,
-            variables=variables
-        )
-        data = executed.get('data')
+        executed = execute_test_client_api_query(query, self.anon_user, variables=variables)
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Not logged in!')
 
-    def test_update_schedule_event_earlybird_permission_granted(self):
-        """ Allow updating schedule event earlybird for users with permissions """
-        query = self.schedule_event_earlybird_update_mutation
-        variables = self.variables_update
+    #
+    # def test_query_one(self):
+    #     """ Query one schedule event earlybird """
+    #     query = self.schedule_event_earlybird_query
+    #
+    #     executed = execute_test_client_api_query(query, self.admin_user, variables=self.variables_query_one)
+    #     data = executed.get('data')
+    #
+    #     self.assertEqual(data['scheduleEventEarlybird']['id'], self.variables_query_one['id'])
+    #
+    #TODO: Add query one permission checks; anybody can query as long as the schedule_event is public or in the shop
 
-        # Create regular user
-        user = f.RegularUserFactory.create()
-        permission = Permission.objects.get(codename=self.permission_change)
-        user.user_permissions.add(permission)
-        user.save()
-
-        executed = execute_test_client_api_query(
-            query,
-            user,
-            variables=variables
-        )
-        data = executed.get('data')
-        self.assertEqual(data['updateScheduleEventMedia']['scheduleEventMedia']['sortOrder'],
-                         variables['input']['sortOrder'])
-
-    def test_update_schedule_event_earlybird_permission_denied(self):
-        """ Check update schedule event earlybird permission denied error message """
-        query = self.schedule_event_earlybird_update_mutation
-        variables = self.variables_update
-
-        # Create regular user
-        user = f.RegularUserFactory.create()
-
-        executed = execute_test_client_api_query(
-            query,
-            user,
-            variables=variables
-        )
-        data = executed.get('data')
-        errors = executed.get('errors')
-        self.assertEqual(errors[0]['message'], 'Permission denied!')
-
-    def test_delete_schedule_event_earlybird(self):
-        """ Delete a schedule event earlybird """
-        query = self.schedule_event_earlybird_delete_mutation
-        variables = self.variables_delete
-
-        executed = execute_test_client_api_query(
-            query,
-            self.admin_user,
-            variables=variables
-        )
-        data = executed.get('data')
-
-        self.assertEqual(data['deleteScheduleEventMedia']['ok'], True)
-
-        exists = models.OrganizationDocument.objects.exists()
-        self.assertEqual(exists, False)
-
-    def test_delete_schedule_event_earlybird_anon_user(self):
-        """ Delete a schedule event earlybird """
-        query = self.schedule_event_earlybird_delete_mutation
-        variables = self.variables_delete
-
-        executed = execute_test_client_api_query(
-            query,
-            self.anon_user,
-            variables=variables
-        )
-        data = executed.get('data')
-        errors = executed.get('errors')
-        self.assertEqual(errors[0]['message'], 'Not logged in!')
-
-    def test_delete_schedule_event_earlybird_permission_granted(self):
-        """ Allow deleting schedule event earlybirds for users with permissions """
-        query = self.schedule_event_earlybird_delete_mutation
-        variables = self.variables_delete
-
-        # Create regular user
-        user = f.RegularUserFactory.create()
-        permission = Permission.objects.get(codename=self.permission_delete)
-        user.user_permissions.add(permission)
-        user.save()
-
-        executed = execute_test_client_api_query(
-            query,
-            user,
-            variables=variables
-        )
-        data = executed.get('data')
-        self.assertEqual(data['deleteScheduleEventMedia']['ok'], True)
-
-    def test_delete_schedule_event_earlybird_permission_denied(self):
-        """ Check delete schedule event earlybird permission denied error message """
-        query = self.schedule_event_earlybird_delete_mutation
-        variables = self.variables_delete
-
-        # Create regular user
-        user = f.RegularUserFactory.create()
-
-        executed = execute_test_client_api_query(
-            query,
-            user,
-            variables=variables
-        )
-        data = executed.get('data')
-        errors = executed.get('errors')
-        self.assertEqual(errors[0]['message'], 'Permission denied!')
+    # def test_create_schedule_event_earlybird(self):
+    #     """ Create schedule event earlybird """
+    #     query = self.schedule_event_earlybird_create_mutation
+    #     variables = self.variables_create
+    #
+    #     executed = execute_test_client_api_query(
+    #         query,
+    #         self.admin_user,
+    #         variables=variables
+    #     )
+    #     data = executed.get('data')
+    #
+    #     self.assertEqual(data['createScheduleEventEarlybird']['scheduleEventEarlybird']['sortOrder'],
+    #                      variables['input']['sortOrder'])
+    #     self.assertEqual(data['createScheduleEventEarlybird']['scheduleEventEarlybird']['description'],
+    #                      variables['input']['description'])
+    #     self.assertNotEqual(data['createScheduleEventEarlybird']['scheduleEventEarlybird']['urlImage'], "")
+    #
+    #     schedule_event_earlybird = models.ScheduleEventEarlybird.objects.last()
+    #     self.assertNotEqual(schedule_event_earlybird.image, None)
+    #
+    # def test_create_schedule_event_earlybird_anon_user(self):
+    #     """ Don't allow creating schedule event earlybird for non-logged in users """
+    #     query = self.schedule_event_earlybird_create_mutation
+    #     variables = self.variables_create
+    #
+    #     executed = execute_test_client_api_query(
+    #         query,
+    #         self.anon_user,
+    #         variables=variables
+    #     )
+    #     data = executed.get('data')
+    #     errors = executed.get('errors')
+    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
+    #
+    # def test_create_schedule_event_earlybird_permission_granted(self):
+    #     """ Allow creating schedule event earlybird for users with permissions """
+    #     query = self.schedule_event_earlybird_create_mutation
+    #
+    #     # Create regular user
+    #     user = f.RegularUserFactory.create()
+    #     permission = Permission.objects.get(codename=self.permission_add)
+    #     user.user_permissions.add(permission)
+    #     user.save()
+    #
+    #     variables = self.variables_create
+    #
+    #     executed = execute_test_client_api_query(
+    #         query,
+    #         user,
+    #         variables=variables
+    #     )
+    #     data = executed.get('data')
+    #     self.assertEqual(data['createScheduleEventEarlybird']['scheduleEventEarlybird']['sortOrder'],
+    #                      variables['input']['sortOrder'])
+    #
+    # def test_create_schedule_event_earlybird_permission_denied(self):
+    #     """ Check create schedule event earlybird permission denied error message """
+    #     query = self.schedule_event_earlybird_create_mutation
+    #     variables = self.variables_create
+    #
+    #     # Create regular user
+    #     user = f.RegularUserFactory.create()
+    #
+    #     executed = execute_test_client_api_query(
+    #         query,
+    #         user,
+    #         variables=variables
+    #     )
+    #     data = executed.get('data')
+    #     errors = executed.get('errors')
+    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
+    #
+    # def test_update_schedule_event_earlybird(self):
+    #     """ Update schedule event earlybird """
+    #     query = self.schedule_event_earlybird_update_mutation
+    #     variables = self.variables_update
+    #
+    #     executed = execute_test_client_api_query(
+    #         query,
+    #         self.admin_user,
+    #         variables=variables
+    #     )
+    #
+    #     data = executed.get('data')
+    #     self.assertEqual(data['updateScheduleEventEarlybird']['scheduleEventEarlybird']['sortOrder'],
+    #                      variables['input']['sortOrder'])
+    #     self.assertEqual(data['updateScheduleEventEarlybird']['scheduleEventEarlybird']['description'],
+    #                      variables['input']['description'])
+    #     self.assertNotEqual(data['updateScheduleEventEarlybird']['scheduleEventEarlybird']['urlImage'], "")
+    #
+    #     schedule_event_earlybird = models.ScheduleEventEarlybird.objects.last()
+    #     self.assertNotEqual(schedule_event_earlybird.image, None)
+    #
+    # def test_update_schedule_event_earlybird_anon_user(self):
+    #     """ Don't allow updating schedule event earlybird for non-logged in users """
+    #     query = self.schedule_event_earlybird_update_mutation
+    #     variables = self.variables_update
+    #
+    #     executed = execute_test_client_api_query(
+    #         query,
+    #         self.anon_user,
+    #         variables=variables
+    #     )
+    #     data = executed.get('data')
+    #     errors = executed.get('errors')
+    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
+    #
+    # def test_update_schedule_event_earlybird_permission_granted(self):
+    #     """ Allow updating schedule event earlybird for users with permissions """
+    #     query = self.schedule_event_earlybird_update_mutation
+    #     variables = self.variables_update
+    #
+    #     # Create regular user
+    #     user = f.RegularUserFactory.create()
+    #     permission = Permission.objects.get(codename=self.permission_change)
+    #     user.user_permissions.add(permission)
+    #     user.save()
+    #
+    #     executed = execute_test_client_api_query(
+    #         query,
+    #         user,
+    #         variables=variables
+    #     )
+    #     data = executed.get('data')
+    #     self.assertEqual(data['updateScheduleEventEarlybird']['scheduleEventEarlybird']['sortOrder'],
+    #                      variables['input']['sortOrder'])
+    #
+    # def test_update_schedule_event_earlybird_permission_denied(self):
+    #     """ Check update schedule event earlybird permission denied error message """
+    #     query = self.schedule_event_earlybird_update_mutation
+    #     variables = self.variables_update
+    #
+    #     # Create regular user
+    #     user = f.RegularUserFactory.create()
+    #
+    #     executed = execute_test_client_api_query(
+    #         query,
+    #         user,
+    #         variables=variables
+    #     )
+    #     data = executed.get('data')
+    #     errors = executed.get('errors')
+    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
+    #
+    # def test_delete_schedule_event_earlybird(self):
+    #     """ Delete a schedule event earlybird """
+    #     query = self.schedule_event_earlybird_delete_mutation
+    #     variables = self.variables_delete
+    #
+    #     executed = execute_test_client_api_query(
+    #         query,
+    #         self.admin_user,
+    #         variables=variables
+    #     )
+    #     data = executed.get('data')
+    #
+    #     self.assertEqual(data['deleteScheduleEventEarlybird']['ok'], True)
+    #
+    #     exists = models.OrganizationDocument.objects.exists()
+    #     self.assertEqual(exists, False)
+    #
+    # def test_delete_schedule_event_earlybird_anon_user(self):
+    #     """ Delete a schedule event earlybird """
+    #     query = self.schedule_event_earlybird_delete_mutation
+    #     variables = self.variables_delete
+    #
+    #     executed = execute_test_client_api_query(
+    #         query,
+    #         self.anon_user,
+    #         variables=variables
+    #     )
+    #     data = executed.get('data')
+    #     errors = executed.get('errors')
+    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
+    #
+    # def test_delete_schedule_event_earlybird_permission_granted(self):
+    #     """ Allow deleting schedule event earlybirds for users with permissions """
+    #     query = self.schedule_event_earlybird_delete_mutation
+    #     variables = self.variables_delete
+    #
+    #     # Create regular user
+    #     user = f.RegularUserFactory.create()
+    #     permission = Permission.objects.get(codename=self.permission_delete)
+    #     user.user_permissions.add(permission)
+    #     user.save()
+    #
+    #     executed = execute_test_client_api_query(
+    #         query,
+    #         user,
+    #         variables=variables
+    #     )
+    #     data = executed.get('data')
+    #     self.assertEqual(data['deleteScheduleEventEarlybird']['ok'], True)
+    #
+    # def test_delete_schedule_event_earlybird_permission_denied(self):
+    #     """ Check delete schedule event earlybird permission denied error message """
+    #     query = self.schedule_event_earlybird_delete_mutation
+    #     variables = self.variables_delete
+    #
+    #     # Create regular user
+    #     user = f.RegularUserFactory.create()
+    #
+    #     executed = execute_test_client_api_query(
+    #         query,
+    #         user,
+    #         variables=variables
+    #     )
+    #     data = executed.get('data')
+    #     errors = executed.get('errors')
+    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
