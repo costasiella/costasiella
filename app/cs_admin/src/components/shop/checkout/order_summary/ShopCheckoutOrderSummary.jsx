@@ -93,10 +93,10 @@ function ShopCheckoutOrderSummary({ t, id, complete=false }) {
             <h5><Icon name="message-square" /> {t("shop.checkout.order_summary.message")}</h5> 
             {/* Order message */}
             {order.message}
+            <br /><br />
           </span> 
           : ""
         }
-        <br /><br />
         {(scheduleItemId && classDate) ?
           <ShopCheckoutClassInfo 
             scheduleItemId={scheduleItemId}
