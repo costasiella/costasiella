@@ -8,8 +8,11 @@ export const GET_SCHEDULE_EVENT_TICKET_QUERY = gql`
       name
       price
       priceDisplay
+      totalPrice
+      totalPriceDisplay
       description
       isSoldOut
+      isEarlybirdPrice
       ticketScheduleItems(included: true) {
         pageInfo{
         hasNextPage
