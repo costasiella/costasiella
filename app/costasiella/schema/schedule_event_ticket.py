@@ -50,13 +50,15 @@ class ScheduleEventTicketNode(DjangoObjectType):
     def resolve_earlybird_discount(self, info):
         now = timezone.now()
         date = now.date()
-        return self.get_earlybird_discount_on_date(date)
+        result = self.get_earlybird_discount_on_date(date)
+        return result.get('discount', 0)
 
     def resolve_earlybird_discount_display(self, info):
         from ..modules.finance_tools import display_float_as_amount
         now = timezone.now()
         date = now.date()
-        return display_float_as_amount(self.get_earlybird_discount_on_date(date))
+        result = self.get_earlybird_discount_on_date(date)
+        return display_float_as_amount(result.get('discount', 0))
 
     def resolve_total_price(self, info):
         now = timezone.now()

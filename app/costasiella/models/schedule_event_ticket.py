@@ -84,6 +84,7 @@ class ScheduleEventTicket(models.Model):
     def get_earlybird_discount_on_date(self, date):
         from decimal import Decimal, ROUND_HALF_UP
         discount = 0
+        earlybird = None
         earlybirds = self._get_earlybird_qs(date)
 
         # Check if discounts exit
@@ -94,10 +95,15 @@ class ScheduleEventTicket(models.Model):
             discount_percentage = earlybird.discount_percentage
             discount = Decimal(self.price * Decimal(discount_percentage / 100))
 
-        return Decimal(discount.quantize(Decimal('.01'), rounding=ROUND_HALF_UP))
+        return {
+            "discount": Decimal(discount.quantize(Decimal('.01'), rounding=ROUND_HALF_UP)),
+            "earlybird": earlybird
+        }
 
     def total_price_on_date(self, date):
         # Process earlybird discount
-        price = self.price - self.get_earlybird_discount_on_date(date)
+        earlybird_result = self.get_earlybird_discount_on_date(date)
+
+        price = self.price - earlybird_result.get('discount', 0)
 
         return price

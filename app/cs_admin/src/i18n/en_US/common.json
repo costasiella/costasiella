@@ -1845,7 +1845,8 @@
                 "additional_info": "Additional info",
                 "sold_out": "Our apologies, this ticket is sold out. Please use the back button to see if other tickets are still available.",
                 "sold_out_title": "Ticket sold out",
-                "no_additional_info": "No additional info has been set for this ticket."
+                "no_additional_info": "No additional info has been set for this ticket.",
+                "error_loading": "Error loading ticket information... :("
             }
         },
         "event": {

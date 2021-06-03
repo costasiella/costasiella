@@ -803,7 +803,8 @@
                 "additional_info": "__STRING_NOT_TRANSLATED__",
                 "sold_out": "__STRING_NOT_TRANSLATED__",
                 "sold_out_title": "__STRING_NOT_TRANSLATED__",
-                "no_additional_info": "__STRING_NOT_TRANSLATED__"
+                "no_additional_info": "__STRING_NOT_TRANSLATED__",
+                "error_loading": "__STRING_NOT_TRANSLATED__"
             }
         },
         "event": {
