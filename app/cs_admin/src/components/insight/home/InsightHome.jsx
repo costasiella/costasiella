@@ -3,6 +3,7 @@
 import React, {Component } from 'react'
 import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
+import { Link } from "react-router-dom"
 
 import {
   Page,
@@ -37,14 +38,14 @@ class InsightHome extends Component {
               <Grid.Col md={9}>
                 <Grid.Row>
                   <Grid.Col md={4} lg={4}>
-                    <div onClick={() => history.push('/insight/classpasses')}>
+                    <Link to='/insight/classpasses'>
                       <StampCard header={<small>{t('insight.classpasses.title')}</small>} footer={t('')} color="blue" icon="credit-card" />
-                    </div>
+                    </Link>
                   </Grid.Col>
                   <Grid.Col md={4} lg={4}>
-                    <div onClick={() => history.push('/insight/subscriptions')}>
+                    <Link to='/insight/subscriptions'>
                       <StampCard header={<small>{t('insight.subscriptions.title')}</small>} footer={t('')} color="blue" icon="edit" />
-                    </div>
+                    </Link>
                   </Grid.Col>
                 </Grid.Row>
               </Grid.Col>
