@@ -84,7 +84,7 @@ function processClientError({ networkError, graphQLErrors, operation, forward, r
           console.log(new Date() / 1000)
           console.log(refreshTokenExp)
 
-          console.log("refresh token.... somehow....")
+          console.log("refresh token... somehow...")
 
           return new Observable(observer => {
             client.mutate({

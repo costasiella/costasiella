@@ -10,7 +10,8 @@ import { v4 } from 'uuid'
 import { toast } from 'react-toastify'
 
 import { GET_INVOICES_QUERY, GET_INVOICE_QUERY, CANCEL_AND_CREATE_CREDIT_INVOICE } from '../queries'
-
+import { TOKEN_REFRESH } from "../../../../queries/system/auth"
+import { refreshTokenAndOpenExportLinkInNewTab } from "../../../../tools/refresh_token_and_open_export_link"
 
 import {
   Dropdown,
@@ -47,6 +48,7 @@ function FinanceInvoiceEdit({t, match, history}) {
     }
   })
 
+  const [doTokenRefresh] = useMutation(TOKEN_REFRESH)
   const [cancelAndCreateCreditInvoice] = useMutation(CANCEL_AND_CREATE_CREDIT_INVOICE)
   
   // Loading
@@ -81,10 +83,16 @@ function FinanceInvoiceEdit({t, match, history}) {
               <Icon prefix="fe" name="dollar-sign" /> {t('finance.invoice.payments.add')} 
           </Link>
           {/* Export as PDF */}
-          <a href={export_url} 
-              className='btn btn-secondary mr-2'>
-              <Icon prefix="fe" name="printer" /> {t('general.pdf')} 
-          </a>
+          <Button
+            color="secondary"
+            icon="printer"
+            className="mr-2"
+            onClick={() => refreshTokenAndOpenExportLinkInNewTab(
+              doTokenRefresh, history, export_url
+            )}
+          >
+            {t('general.pdf')} 
+          </Button>
           {/* Tools */}
           <Dropdown
             className=""
