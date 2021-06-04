@@ -67,7 +67,7 @@ function RelationsB2B({ t, history }) {
               refetch(get_list_query_variables())
             }
     }>
-      {t('general.active')}
+      {t('general.current')}
     </Button>
     <Button color={(localStorage.getItem(CSLS.RELATIONS_BUSINESSES_SHOW_ARCHIVE) === "true") ? 'primary': 'secondary'} 
             size="sm" 
@@ -77,7 +77,7 @@ function RelationsB2B({ t, history }) {
               refetch(get_list_query_variables())
             }
     }>
-      {t('general.deleted')}
+      {t('general.archive')}
     </Button>
   </Card.Options>
 
@@ -170,7 +170,7 @@ function RelationsB2B({ t, history }) {
                   {/* Archive / restore buttons */}
                   <Table.Col className="text-right" key={v4()}>
                     <button className="icon btn btn-link btn-sm" 
-                      title={t('general.deactivate')} 
+                      title={t('general.archive')} 
                       href=""
                       onClick={() => {
                         console.log("clicked isActive")
@@ -186,25 +186,25 @@ function RelationsB2B({ t, history }) {
                           input: {
                             id,
                             archived: !node.archived // invert, as we need the opposite from the list currently displayed
-                          }
-                    }, refetchQueries: [
+                          }}, 
+                          refetchQueries: [
                         {query: GET_BUSINESSES_QUERY, variables: get_list_query_variables()}
-                    ]}).then(({ data }) => {
-                      console.log('got data', data);
-                      toast.success(
-                        (!show_archive) ? t('relations.b2b.deactivated'): t('relations.b2b.restored'), {
-                          position: toast.POSITION.BOTTOM_RIGHT
+                        ]}).then(({ data }) => {
+                          console.log('got data', data);
+                          toast.success(
+                            (!show_archive) ? t('relations.b2b.archived'): t('relations.b2b.restored'), {
+                              position: toast.POSITION.BOTTOM_RIGHT
+                            })
+                        }).catch((error) => {
+                          toast.error((t('general.toast_server_error')) + ': ' +  error, {
+                              position: toast.POSITION.BOTTOM_RIGHT
+                            })
+                          console.log('there was an error sending the query', error);
                         })
-                    }).catch((error) => {
-                      toast.error((t('general.toast_server_error')) + ': ' +  error, {
-                          position: toast.POSITION.BOTTOM_RIGHT
-                        })
-                      console.log('there was an error sending the query', error);
-                    })
-                    }}>
+                        }}>
                       {
                         (!node.archived) ?
-                          <Icon prefix="fe" name="trash-2" /> :
+                          <Icon prefix="fa" name="inbox" /> :
                           t("general.restore")
                       }
                     </button>
