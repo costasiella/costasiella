@@ -1264,7 +1264,9 @@
                 "title_add": "__STRING_NOT_TRANSLATED__",
                 "toast_add_success": "__STRING_NOT_TRANSLATED__",
                 "backoffice": "__STRING_NOT_TRANSLATED__",
-                "teachers": "__STRING_NOT_TRANSLATED__"
+                "teachers": "__STRING_NOT_TRANSLATED__",
+                "delete_confirm_msg": "__STRING_NOT_TRANSLATED__",
+                "deleted": "__STRING_NOT_TRANSLATED__"
             }
         },
         "accounts": {

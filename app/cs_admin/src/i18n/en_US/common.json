@@ -917,7 +917,9 @@
                 "title_add": "Add note",
                 "toast_add_success": "Added note",
                 "backoffice": "Backoffice",
-                "teachers": "Teachers"
+                "teachers": "Teachers",
+                "delete_confirm_msg": "Are you sure you wish to delete this note?",
+                "deleted": "Deleted note"
             }
         },
         "b2b": {
