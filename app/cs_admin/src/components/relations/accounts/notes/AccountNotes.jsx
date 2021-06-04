@@ -162,9 +162,16 @@ function AccountNotes({ t, history, match }) {
               >
                 <Icon name="trash-2" />
               </Button>
-              <small className="float-right mr-4">edit</small>
-
-              
+              <Link to={`/relations/accounts/${match.params.account_id}/notes/edit/${node.id}`}>
+                <Button
+                  color="secondary"
+                  size="sm"
+                  className="float-right mr-4"
+                  outline
+                >
+                  {t("general.edit")}
+                </Button>
+              </Link>              
               <small className="text-muted float-right mr-4">{moment(node.createdAt).format(dateTimeFormatMoment)}</small>
               {node.noteBy.fullName} <br />
             </Card.Footer>
