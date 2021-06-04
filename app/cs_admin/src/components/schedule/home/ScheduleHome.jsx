@@ -46,9 +46,9 @@ class ScheduleHome extends Component {
                     permission="view"
                   >
                     <Grid.Col md={4} lg={4}>
-                      <div onClick={() => history.push('/schedule/classes')}>
+                      <Link to='/schedule/classes'>
                         <StampCard header={<small>{t('schedule.classes.title')}</small>} footer={t('')} color="blue" icon="book" />
-                      </div>
+                      </Link>
                     </Grid.Col>
                   </HasPermissionWrapper>
                   <HasPermissionWrapper
@@ -56,9 +56,9 @@ class ScheduleHome extends Component {
                     permission="view"
                   >
                     <Grid.Col md={4} lg={4}>
-                      <div onClick={() => history.push('/schedule/events')}>
+                      <Link to='/schedule/events'>
                         <StampCard header={<small>{t('schedule.events.title')}</small>} footer={t('')} color="blue" icon="clipboard" />
-                      </div>
+                      </Link>
                     </Grid.Col>
                   </HasPermissionWrapper>
                   {/* <HasPermissionWrapper
@@ -66,7 +66,7 @@ class ScheduleHome extends Component {
                     permission="view"
                   >
                     <Grid.Col md={4} lg={4}>
-                      <div onClick={() => history.push('/schedule/appointments')}>
+                      <Link to='/schedule/appointments')}>
                         <StampCard header={<small>{t('schedule.appointments.title')}</small>} footer={t('')} color="blue" icon="calendar" />
                       </div>
                     </Grid.Col>
