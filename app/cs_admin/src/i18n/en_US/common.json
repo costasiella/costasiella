@@ -919,7 +919,9 @@
                 "backoffice": "Backoffice",
                 "teachers": "Teachers",
                 "delete_confirm_msg": "Are you sure you wish to delete this note?",
-                "deleted": "Deleted note"
+                "deleted": "Deleted note",
+                "title_edit": "Edit note",
+                "toast_edit_success": "Saved"
             }
         },
         "b2b": {
