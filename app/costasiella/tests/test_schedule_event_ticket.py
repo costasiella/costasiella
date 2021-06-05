@@ -88,6 +88,11 @@ class GQLScheduleEventTicket(TestCase):
           price
           priceDisplay
           isSoldOut
+          isEarlybirdPrice
+          earlybirdDiscount
+          earlybirdDiscountDisplay
+          totalPrice
+          totalPriceDisplay
           financeTaxRate {
             id
             name
@@ -261,6 +266,38 @@ query ScheduleEventTicket($id:ID!) {
         self.assertEqual(
             data['scheduleEventTickets']['edges'][0]['node']['financeCostcenter']['id'],
             to_global_id('FinanceCostCenterNode', schedule_event_ticket.finance_costcenter.id)
+        )
+
+    def test_query_earlybird_fields(self):
+        """ Query list of event tickets - earlybird fields"""
+        query = self.event_tickets_query
+        schedule_event_ticket = f.ScheduleEventFullTicketFactory.create()
+        schedule_event_earlybird = f.ScheduleEventEarlybirdFactory.create(
+            schedule_event=schedule_event_ticket.schedule_event
+        )
+
+        variables = {
+            'scheduleEvent': to_global_id('ScheduleEventNode', schedule_event_ticket.schedule_event.pk)
+        }
+
+        executed = execute_test_client_api_query(query, self.admin_user, variables=variables)
+        data = executed.get('data')
+
+        self.assertEqual(
+            data['scheduleEventTickets']['edges'][0]['node']['scheduleEvent']['id'],
+            variables['scheduleEvent']
+        )
+        self.assertEqual(
+            data['scheduleEventTickets']['edges'][0]['node']['isEarlybirdPrice'],
+            True
+        )
+        self.assertEqual(
+            data['scheduleEventTickets']['edges'][0]['node']['earlybirdDiscount'],
+            "10.00"
+        )
+        self.assertEqual(
+            data['scheduleEventTickets']['edges'][0]['node']['totalPrice'],
+            "90.00"
         )
 
     def test_query_permission_denied(self):
@@ -518,8 +555,6 @@ query ScheduleEventTicket($id:ID!) {
             self.admin_user,
             variables=variables
         )
-        print("########")
-        print(executed)
 
         data = executed.get('data')
         self.assertEqual(
@@ -729,8 +764,6 @@ query ScheduleEventTicket($id:ID!) {
             user,
             variables=variables
         )
-        print("******")
-        print(executed)
         data = executed.get('data')
         self.assertEqual(
           data['updateScheduleEventTicket']['scheduleEventTicket']['id'],
