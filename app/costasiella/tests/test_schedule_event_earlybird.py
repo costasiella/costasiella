@@ -111,9 +111,12 @@ class GQLScheduleEventEarlybird(TestCase):
     createScheduleEventEarlybird(input: $input) {
       scheduleEventEarlybird {
         id
-        sortOrder
-        description
-        urlImage
+        scheduleEvent {
+          id
+        }
+        dateStart
+        dateEnd
+        discountPercentage
       }
     }
   }
@@ -124,9 +127,12 @@ class GQLScheduleEventEarlybird(TestCase):
     updateScheduleEventEarlybird(input: $input) {
       scheduleEventEarlybird {
         id
-        sortOrder
-        description
-        urlImage
+        scheduleEvent {
+          id
+        }
+        dateStart
+        dateEnd
+        discountPercentage
       }
     }
   }
