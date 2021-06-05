@@ -161,59 +161,33 @@ class GQLScheduleEventEarlybird(TestCase):
         self.assertEqual(data['scheduleEventEarlybirds']['edges'][0]['node']['dateEnd'],
                          str(self.schedule_event_earlybird.date_end))
 
-
-    def test_query_permission_denied(self):
-        """ Query list of taxrates - check permission denied """
-        query = self.taxrates_query
-        taxrate = f.FinanceTaxRateFactory.create()
-        variables = {
-            'archived': False
-        }
-
-        # Create regular user
-        user = f.RegularUserFactory.create()
-        executed = execute_test_client_api_query(query, user, variables=variables)
-        errors = executed.get('errors')
-
-        self.assertEqual(errors[0]['message'], 'Permission denied!')
-
-    def test_query_permission_granted(self):
-        """ Query list of taxrates with view permission """
-        query = self.taxrates_query
-        taxrate = f.FinanceTaxRateFactory.create()
-        variables = {
-            'archived': False
-        }
+    def test_query_non_public_not_displayed(self):
+        """ Query list of earlybird discounts - check non public """
+        query = self.schedule_event_earlybirds_query
+        schedule_event = self.schedule_event_earlybird.schedule_event
+        schedule_event.display_public = False
+        schedule_event.display_shop = False
+        schedule_event.save()
 
         # Create regular user
         user = f.RegularUserFactory.create()
-        permission = Permission.objects.get(codename='view_financetaxrate')
-        user.user_permissions.add(permission)
-        user.save()
-
-        executed = execute_test_client_api_query(query, user, variables=variables)
+        executed = execute_test_client_api_query(query, user, variables=self.variables_query_list)
         data = executed.get('data')
 
-        # List all taxrates
-        self.assertEqual(data['financeTaxRates']['edges'][0]['node']['name'], taxrate.name)
-        self.assertEqual(data['financeTaxRates']['edges'][0]['node']['archived'], taxrate.archived)
-        self.assertEqual(data['financeTaxRates']['edges'][0]['node']['percentage'],
-                         format(taxrate.percentage, ".2f"))
-        self.assertEqual(data['financeTaxRates']['edges'][0]['node']['rateType'], taxrate.rate_type)
-        self.assertEqual(data['financeTaxRates']['edges'][0]['node']['code'], taxrate.code)
+        self.assertEqual(len(data['scheduleEventEarlybirds']['edges']), 0)
 
-    def test_query_anon_user(self):
-        """ Query list of taxrates - anon user """
-        query = self.taxrates_query
-        taxrate = f.FinanceTaxRateFactory.create()
-        variables = {
-            'archived': False
-        }
+    def test_query_anon_user_can_query_public_discounts(self):
+        """ Query list of earlybird discounts as anon user """
+        query = self.schedule_event_earlybirds_query
 
-        executed = execute_test_client_api_query(query, self.anon_user, variables=variables)
+        executed = execute_test_client_api_query(query, self.anon_user, variables=self.variables_query_list)
         errors = executed.get('errors')
-        self.assertEqual(errors[0]['message'], 'Not logged in!')
+        data = executed.get('data')
 
+        self.assertEqual(
+            data['scheduleEventEarlybirds']['edges'][0]['node']['id'],
+            to_global_id('ScheduleEventEarlybirdNode', self.schedule_event_earlybird.id)
+        )
     #
     # def test_query_one(self):
     #     """ Query one schedule event earlybird """
