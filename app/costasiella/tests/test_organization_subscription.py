@@ -303,7 +303,6 @@ class GQLOrganizationSubscription(TestCase):
         # This is run after every test
         pass
 
-
     def test_query(self):
         """ Query list of subscriptions """
         query = self.subscriptions_query
@@ -340,7 +339,6 @@ class GQLOrganizationSubscription(TestCase):
         self.assertEqual(data['organizationSubscriptions']['edges'][0]['node']['financeCostcenter']['id'], 
           to_global_id("FinanceCostCenterNode", subscription.finance_costcenter.pk))
 
-
     def test_query_permission_denied(self):
         """ Query list of subscriptions - check permission denied """
         query = self.subscriptions_query
@@ -365,7 +363,6 @@ class GQLOrganizationSubscription(TestCase):
                 non_public_found = True
 
         self.assertEqual(non_public_found, False)
-
 
     def test_query_permission_granted(self):
         """ Query list of subscriptions with view permission """
@@ -397,19 +394,33 @@ class GQLOrganizationSubscription(TestCase):
         # Assert non public classtypes are listed
         self.assertEqual(non_public_found, True)
 
-
     def test_query_anon_user(self):
-        """ Query list of subscriptions - anon user """
+        """ Query list of subscriptions - anon user shouldn't see non public """
         query = self.subscriptions_query
         subscription = f.OrganizationSubscriptionFactory.create()
+        subscription.display_public = False
+        subscription.save()
+
         variables = {
             'archived': False
         }
 
         executed = execute_test_client_api_query(query, self.anon_user, variables=variables)
-        errors = executed.get('errors')
-        self.assertEqual(errors[0]['message'], 'Not logged in!')
+        data = executed.get('data')
+        self.assertEqual(len(data['organizationSubscriptions']['edges']), 0)
 
+    def test_query_anon_user_public(self):
+        """ Query list of subscriptions - anon user should see public """
+        query = self.subscriptions_query
+        subscription = f.OrganizationSubscriptionFactory.create()
+
+        variables = {
+            'archived': False
+        }
+
+        executed = execute_test_client_api_query(query, self.anon_user, variables=variables)
+        data = executed.get('data')
+        self.assertEqual(data['organizationSubscriptions']['edges'][0]['node']['name'], subscription.name)
 
     def test_query_one(self):
         """ Query one subscriptions as admin """   
@@ -451,7 +462,6 @@ class GQLOrganizationSubscription(TestCase):
           to_global_id("FinanceGLAccountNode", subscription.finance_glaccount.pk))
         self.assertEqual(data['organizationSubscription']['financeCostcenter']['id'], 
           to_global_id("FinanceCostCenterNode", subscription.finance_costcenter.pk))
-        
 
     def test_query_one_anon_user(self):
         """ Deny permission for anon users Query one subscription """   
@@ -469,7 +479,6 @@ class GQLOrganizationSubscription(TestCase):
         executed = execute_test_client_api_query(self.subscription_query, self.anon_user, variables=variables)
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Not logged in!')
-
 
     def test_query_one_permission_denied(self):
         """ Permission denied message when user lacks authorization """   
@@ -489,7 +498,6 @@ class GQLOrganizationSubscription(TestCase):
         executed = execute_test_client_api_query(self.subscription_query, user, variables=variables)
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Permission denied!')
-
 
     def test_query_one_permission_granted(self):
         """ Respond with data when user has permission """   
@@ -511,7 +519,6 @@ class GQLOrganizationSubscription(TestCase):
         executed = execute_test_client_api_query(self.subscription_query, user, variables=variables)
         data = executed.get('data')
         self.assertEqual(data['organizationSubscription']['name'], subscription.name)
-
 
     def test_create_subscriptions(self):
         """ Create a subscriptions """
@@ -543,7 +550,6 @@ class GQLOrganizationSubscription(TestCase):
         self.assertEqual(data['createOrganizationSubscription']['organizationSubscription']['financeGlaccount']['id'], variables['input']['financeGlaccount'])
         self.assertEqual(data['createOrganizationSubscription']['organizationSubscription']['financeCostcenter']['id'], variables['input']['financeCostcenter'])
 
-
     def test_create_subscriptions_anon_user(self):
         """ Don't allow creating subscriptions for non-logged in users """
         query = self.subscription_create_mutation
@@ -557,7 +563,6 @@ class GQLOrganizationSubscription(TestCase):
         data = executed.get('data')
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Not logged in!')
-
 
     def test_create_location_permission_granted(self):
         """ Allow creating subscriptions for users with permissions """
@@ -578,7 +583,6 @@ class GQLOrganizationSubscription(TestCase):
         data = executed.get('data')
         self.assertEqual(data['createOrganizationSubscription']['organizationSubscription']['name'], variables['input']['name'])
 
-
     def test_create_subscriptions_permission_denied(self):
         """ Check create subscriptions permission denied error message """
         query = self.subscription_create_mutation
@@ -595,7 +599,6 @@ class GQLOrganizationSubscription(TestCase):
         data = executed.get('data')
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Permission denied!')
-
 
     def test_update_subscriptions(self):
         """ Update a subscriptions """
@@ -630,7 +633,6 @@ class GQLOrganizationSubscription(TestCase):
         self.assertEqual(data['updateOrganizationSubscription']['organizationSubscription']['financeGlaccount']['id'], variables['input']['financeGlaccount'])
         self.assertEqual(data['updateOrganizationSubscription']['organizationSubscription']['financeCostcenter']['id'], variables['input']['financeCostcenter'])
 
-
     def test_update_subscriptions_anon_user(self):
         """ Don't allow updating subscriptions for non-logged in users """
         query = self.subscription_update_mutation
@@ -646,7 +648,6 @@ class GQLOrganizationSubscription(TestCase):
         data = executed.get('data')
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Not logged in!')
-
 
     def test_update_subscriptions_permission_granted(self):
         """ Allow updating subscriptions for users with permissions """
@@ -671,7 +672,6 @@ class GQLOrganizationSubscription(TestCase):
         self.assertEqual(data['updateOrganizationSubscription']['organizationSubscription']['name'], variables['input']['name'])
         self.assertEqual(data['updateOrganizationSubscription']['organizationSubscription']['description'], variables['input']['description'])
 
-
     def test_update_subscriptions_permission_denied(self):
         """ Check update subscriptions permission denied error message """
         query = self.subscription_update_mutation
@@ -691,7 +691,6 @@ class GQLOrganizationSubscription(TestCase):
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Permission denied!')
 
-
     def test_archive_subscriptions(self):
         """ Archive a subscriptions """
         query = self.subscription_archive_mutation
@@ -705,9 +704,7 @@ class GQLOrganizationSubscription(TestCase):
             variables=variables
         )
         data = executed.get('data')
-        print(data)
         self.assertEqual(data['archiveOrganizationSubscription']['organizationSubscription']['archived'], variables['input']['archived'])
-
 
     def test_archive_subscriptions_anon_user(self):
         """ Archive subscriptions denied for anon user """
@@ -724,7 +721,6 @@ class GQLOrganizationSubscription(TestCase):
         data = executed.get('data')
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Not logged in!')
-
 
     def test_archive_subscriptions_permission_granted(self):
         """ Allow archiving subscriptions for users with permissions """
@@ -747,7 +743,6 @@ class GQLOrganizationSubscription(TestCase):
         data = executed.get('data')
         self.assertEqual(data['archiveOrganizationSubscription']['organizationSubscription']['archived'], variables['input']['archived'])
 
-
     def test_archive_subscriptions_permission_denied(self):
         """ Check archive subscriptions permission denied error message """
         query = self.subscription_archive_mutation
@@ -766,4 +761,3 @@ class GQLOrganizationSubscription(TestCase):
         data = executed.get('data')
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Permission denied!')
-

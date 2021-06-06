@@ -92,7 +92,7 @@ class OrganizationSubscriptionNode(DjangoObjectType):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.view_organizationsubscription')
 
-        # Return only public non-archived memberships
+        # Return only public non-archived subscriptions
         return self._meta.model.objects.get(id=id)
 
 
@@ -102,12 +102,12 @@ class OrganizationSubscriptionQuery(graphene.ObjectType):
 
     def resolve_organization_subscriptions(self, info, archived, **kwargs):
         user = info.context.user
-        # Has permission: return everything
+        # Has permission: return everything the user asked for
         if user.has_perm('costasiella.view_organizationsubscription'):
             print('user has view permission')
-            return OrganizationSubscription.objects.filter(archived = archived).order_by('name')
+            return OrganizationSubscription.objects.filter(archived=archived).order_by('name')
 
-        # Return only public non-archived locations
+        # Return only public non-archived subscriptions
         return OrganizationSubscription.objects.filter(display_public=True, archived=False).order_by('name')
 
 
