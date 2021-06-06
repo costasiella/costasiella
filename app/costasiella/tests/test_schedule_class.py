@@ -395,22 +395,26 @@ class GQLScheduleClass(TestCase):
             schedule_class_otc.status
         )
 
-    def test_query_permission_denied(self):
+    def test_query_permission_denied_dont_show_nonpublic_classes(self):
         """ Query list of scheduleclasses - check permission denied """
         query = self.scheduleclasses_query
         schedule_class = f.SchedulePublicWeeklyClassFactory.create()
+        schedule_class.display_public = False
+        schedule_class.save()
 
         # Create regular user
         user = f.RegularUserFactory.create()
         executed = execute_test_client_api_query(query, user, variables=self.variables_query_list)
-        errors = executed.get('errors')
-
-        self.assertEqual(errors[0]['message'], 'Permission denied!')
+        data = executed['data']
+        for day in data['scheduleClasses']:
+            self.assertEqual(len(day['classes']), 0)
 
     def test_query_permission_granted(self):
-        """ Query list of scheduleclasses with view permission """
+        """ Query list of non public scheduleclasses with view permission """
         query = self.scheduleclasses_query
         schedule_class = f.SchedulePublicWeeklyClassFactory.create()
+        schedule_class.display_public = False
+        schedule_class.save()
 
         # Create regular user
         user = f.RegularUserFactory.create()
@@ -500,13 +504,28 @@ class GQLScheduleClass(TestCase):
                 self.assertEqual('Second' not in day_class['organizationLocationRoom']['name'], True)
 
     def test_query_anon_user(self):
-        """ Query list of scheduleclasses - anon user """
+        """ Query list of scheduleclasses - anon users can only list public classes """
+        query = self.scheduleclasses_query
+        schedule_class = f.SchedulePublicWeeklyClassFactory.create()
+        schedule_class.display_public = False
+        schedule_class.save()
+
+        executed = execute_test_client_api_query(query, self.anon_user, variables=self.variables_query_list)
+        data = executed['data']
+        for day in data['scheduleClasses']:
+            self.assertEqual(len(day['classes']), 0)
+
+    def test_query_anon_user_list_public_classes(self):
+        """ Query list of scheduleclasses - anon users can only list public classes """
         query = self.scheduleclasses_query
         schedule_class = f.SchedulePublicWeeklyClassFactory.create()
 
         executed = execute_test_client_api_query(query, self.anon_user, variables=self.variables_query_list)
-        errors = executed.get('errors')
-        self.assertEqual(errors[0]['message'], 'Not logged in!')
+        data = executed['data']
+        self.assertEqual(
+            data['scheduleClasses'][0]['classes'][0]['scheduleItemId'],
+            to_global_id('ScheduleItemNode', schedule_class.id)
+        )
 
     def test_query_one(self):
         """ Query one schedule_class as admin """
