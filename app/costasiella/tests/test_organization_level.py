@@ -5,6 +5,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Permission
 from django.test import TestCase
 from graphene.test import Client
+from graphql_relay import to_global_id
 
 # Create your tests here.
 from django.contrib.auth.models import AnonymousUser
@@ -43,7 +44,6 @@ class GQLOrganizationLevel(TestCase):
                 "archived": True
             }
         }
-
 
         self.levels_query = '''
 query OrganizationLevels($after: String, $before: String, $archived: Boolean) {
@@ -114,7 +114,6 @@ mutation ArchiveOrganizationLevel($input: ArchiveOrganizationLevelInput!) {
         # This is run after every test
         pass
 
-
     def get_node_id_of_first_level(self):
         # query levels to get node id easily
         variables = {
@@ -124,7 +123,6 @@ mutation ArchiveOrganizationLevel($input: ArchiveOrganizationLevelInput!) {
         data = executed.get('data')
         
         return data['organizationLevels']['edges'][0]['node']['id']
-        
 
     def test_query(self):
         """ Query list of levels """
@@ -139,27 +137,22 @@ mutation ArchiveOrganizationLevel($input: ArchiveOrganizationLevelInput!) {
         item = data['organizationLevels']['edges'][0]['node']
         self.assertEqual(item['name'], level.name)
 
-
-
     def test_query_permission_denied(self):
-        """ Query list of levels as user without permissions """
+        """ Query list of levels as user without permissions (Archived shouldn't be listed) """
         query = self.levels_query
         level = f.OrganizationLevelFactory.create()
-        non_public_level = f.OrganizationLevelFactory.build()
-        non_public_level.display_public = False
-        non_public_level.save()
+        level.archived = True
+        level.save()
 
         variables = {
-            'archived': False
+            'archived': True
         }
 
         # Create regular user
         user = f.RegularUserFactory.create()
         executed = execute_test_client_api_query(query, user, variables=variables)
-        errors = executed.get('errors')
-
-        self.assertEqual(errors[0]['message'], 'Permission denied!')
-
+        data = executed.get('data')
+        self.assertEqual(len(data['organizationLevels']['edges']), 0)
 
     def test_query_permission_granted(self):
         """ Query list of levels with view permission """
@@ -184,19 +177,20 @@ mutation ArchiveOrganizationLevel($input: ArchiveOrganizationLevelInput!) {
         item = data['organizationLevels']['edges'][0]['node']
         self.assertEqual(item['name'], level.name)
 
-
     def test_query_anon_user(self):
-        """ Query list of levels as anon user """
+        """ Query list of levels as anon user - archived shouldn't be visible"""
         query = self.levels_query
         level = f.OrganizationLevelFactory.create()
+        level.archived = True
+        level.save()
+
         variables = {
-            'archived': False
+            'archived': True
         }
 
         executed = execute_test_client_api_query(query, self.anon_user, variables=variables)
-        errors = executed.get('errors')
-        self.assertEqual(errors[0]['message'], 'Not logged in!')
-
+        data = executed.get('data')
+        self.assertEqual(len(data['organizationLevels']['edges']), 0)
 
     def test_query_one(self):
         """ Query one level """   
@@ -209,33 +203,33 @@ mutation ArchiveOrganizationLevel($input: ArchiveOrganizationLevelInput!) {
         query = self.level_query
         executed = execute_test_client_api_query(query, self.admin_user, variables={"id": node_id})
         data = executed.get('data')
-        print(data)
         self.assertEqual(data['organizationLevel']['name'], level.name)
         self.assertEqual(data['organizationLevel']['archived'], level.archived)
 
-
     def test_query_one_anon_user(self):
-        """ Deny permission for anon users Query one level """   
+        """ Deny permission to view archived levels for anon users Query one level """
         query = self.level_query
         level = f.OrganizationLevelFactory.create()
-        node_id = self.get_node_id_of_first_level()
+        level.archived = True
+        level.save()
+        node_id = to_global_id("OrganizationLevelNode", level.id)
         executed = execute_test_client_api_query(query, self.anon_user, variables={"id": node_id})
-        errors = executed.get('errors')
-        self.assertEqual(errors[0]['message'], 'Not logged in!')
+        data = executed.get('data')
+        self.assertEqual(data['organizationLevel'], None)
 
-
-    def test_query_one_permission_denied(self):
-        """ Permission denied message when user lacks authorization """   
+    def test_query_one_archived_without_permission(self):
+        """ None returned when user lacks authorization to view archived levels """
         query = self.level_query
         
         user = f.RegularUserFactory.create()
         level = f.OrganizationLevelFactory.create()
-        node_id = self.get_node_id_of_first_level()
+        level.archived = True
+        level.save()
+        node_id = to_global_id("OrganizationLevelNode", level.id)
 
         executed = execute_test_client_api_query(query, user, variables={"id": node_id})
-        errors = executed.get('errors')
-        self.assertEqual(errors[0]['message'], 'Permission denied!')
-
+        data = executed.get('data')
+        self.assertEqual(data['organizationLevel'], None)
 
     def test_query_one_permission_granted(self):
         """ Respond with data when user has permission """   
@@ -252,7 +246,6 @@ mutation ArchiveOrganizationLevel($input: ArchiveOrganizationLevelInput!) {
         executed = execute_test_client_api_query(query, user, variables={"id": node_id})
         data = executed.get('data')
         self.assertEqual(data['organizationLevel']['name'], level.name)
-
 
     def test_create_level(self):
         """ Create a level """

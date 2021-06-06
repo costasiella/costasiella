@@ -23,11 +23,11 @@ class OrganizationLevelNode(DjangoObjectType):
         user = info.context.user
         # require_login_and_permission(user, 'costasiella.view_organizationlevel')
         organization_level = self._meta.model.objects.get(id=id)
-        if user.has_perm('costasiella.view_organizationlocation') or \
-           (organization_level.display_public is True and organization_level.archived is False):
+        if user.has_perm('costasiella.view_organizationlevel'):
             return organization_level
-
-        return self._meta.model.objects.get(id=id)
+        else:
+            if organization_level.archived is False:
+                return organization_level
 
 
 class OrganizationLevelQuery(graphene.ObjectType):
@@ -39,10 +39,10 @@ class OrganizationLevelQuery(graphene.ObjectType):
         # require_login_and_permission(user, 'costasiella.view_organizationlevel')
 
         ## return everything:
-        # if user.has_perm('costasiella.view_organizationlevel'):
-        return OrganizationLevel.objects.filter(archived=archived).order_by('name')
-
-        # return None
+        if user.has_perm('costasiella.view_organizationlevel'):
+            return OrganizationLevel.objects.filter(archived=archived).order_by('name')
+        else:
+            return OrganizationLevel.objects.filter(archived=False).order_by('name')
 
 
 class CreateOrganizationLevel(graphene.relay.ClientIDMutation):
