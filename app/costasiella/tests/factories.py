@@ -600,7 +600,19 @@ class AccountClasspassFactory(factory.DjangoModelFactory):
     date_end = datetime.date(2019, 3, 31)
     note = "Subscription note here"
     classes_remaining = 10
-    
+
+
+class AccountNoteBackofficeFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.AccountNote
+
+    account = factory.SubFactory(RegularUserFactory)
+    note_by = factory.SubFactory(TeacherFactory)
+    note_type = "BACKOFFICE"
+    note = "Backoffice note"
+    injury = False
+    processed = False
+
 
 class FinanceInvoiceFactory(factory.DjangoModelFactory):
     class Meta:
