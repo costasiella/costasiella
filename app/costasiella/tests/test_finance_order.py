@@ -426,7 +426,6 @@ class GQLFinanceOrder(TestCase):
         self.assertEqual(second_item.finance_glaccount, schedule_event_ticket.finance_glaccount)
         self.assertEqual(second_item.finance_costcenter, schedule_event_ticket.finance_costcenter)
 
-
     def test_create_order_anon_user(self):
         """ Don't allow creating finance orders for non-logged in users """
         query = self.order_create_mutation
