@@ -177,57 +177,59 @@ class GQLAccountNote(TestCase):
         self.assertEqual(data['accountNotes']['edges'][0]['node']['injury'], account_note.injury)
         self.assertEqual(data['accountNotes']['edges'][0]['node']['processed'], account_note.processed)
 
+    def test_query_permission_denied(self):
+        """ Query list of account account_notes - check permission denied """
+        query = self.account_notes_query
+        account_note = f.AccountNoteBackofficeFactory.create()
+        variables = {
+            'account': to_global_id('AccountSubscriptionNode', account_note.account.id),
+            'noteType': "BACKOFFICE"
+        }
 
-    # def test_query_permission_denied(self):
-    #     """ Query list of account account_notes - check permission denied """
-    #     query = self.account_notes_query
-    #     account_note = f.AccountNoteBackofficeFactory.create()
-    #     variables = {
-    #         'accountId': to_global_id('AccountNode', account_note.account.id)
-    #     }
-    # 
-    #     # Create regular user
-    #     user = get_user_model().objects.get(pk=account_note.account.id)
-    #     executed = execute_test_client_api_query(query, user, variables=variables)
-    #     errors = executed.get('errors')
-    # 
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
-    # 
-    # def test_query_permission_granted(self):
-    #     """ Query list of account account_notes with view permission """
-    #     query = self.account_notes_query
-    #     account_note = f.AccountNoteBackofficeFactory.create()
-    #     variables = {
-    #         'accountId': to_global_id('AccountSubscriptionNode', account_note.account.id)
-    #     }
-    # 
-    #     # Create regular user
-    #     user = get_user_model().objects.get(pk=account_note.account.id)
-    #     permission = Permission.objects.get(codename='view_accountnote')
-    #     user.user_permissions.add(permission)
-    #     user.save()
-    # 
-    #     executed = execute_test_client_api_query(query, user, variables=variables)
-    #     data = executed.get('data')
-    # 
-    #     # List all account_notes
-    #     self.assertEqual(
-    #         data['accountSubscriptions']['edges'][0]['node']['organizationSubscription']['id'],
-    #         to_global_id("OrganizationSubscriptionNode", account_note.organization_account_note.id)
-    #     )
-    # 
-    # def test_query_anon_user(self):
-    #     """ Query list of account account_notes - anon user """
-    #     query = self.account_notes_query
-    #     account_note = f.AccountNoteBackofficeFactory.create()
-    #     variables = {
-    #         'accountId': to_global_id('AccountSubscriptionNode', account_note.account.id)
-    #     }
-    # 
-    #     executed = execute_test_client_api_query(query, self.anon_user, variables=variables)
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
-    # 
+        # Create regular user
+        user = get_user_model().objects.get(pk=account_note.account.id)
+        executed = execute_test_client_api_query(query, user, variables=variables)
+        errors = executed.get('errors')
+
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
+
+    def test_query_permission_granted(self):
+        """ Query list of account account_notes with view permission """
+        query = self.account_notes_query
+        account_note = f.AccountNoteBackofficeFactory.create()
+        variables = {
+            'account': to_global_id('AccountSubscriptionNode', account_note.account.id),
+            'noteType': "BACKOFFICE"
+        }
+
+        # Create regular user
+        user = get_user_model().objects.get(pk=account_note.account.id)
+        permission = Permission.objects.get(codename='view_accountnote')
+        user.user_permissions.add(permission)
+        user.save()
+
+        executed = execute_test_client_api_query(query, user, variables=variables)
+        data = executed.get('data')
+
+        # List account_notes
+        self.assertEqual(
+            data['accountNotes']['edges'][0]['node']['account']['id'],
+            to_global_id("AccountNode", account_note.account.id)
+        )
+
+    def test_query_anon_user(self):
+        """ Query list of account account_notes - anon user """
+        query = self.account_notes_query
+        account_note = f.AccountNoteBackofficeFactory.create()
+        variables = {
+            'account': to_global_id('AccountSubscriptionNode', account_note.account.id),
+            'noteType': "BACKOFFICE"
+        }
+
+        executed = execute_test_client_api_query(query, self.anon_user, variables=variables)
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
+
     # def test_query_one(self):
     #     """ Query one account account_note as admin """
     #     account_note = f.AccountNoteBackofficeFactory.create()
