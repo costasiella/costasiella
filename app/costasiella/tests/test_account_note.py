@@ -24,6 +24,8 @@ class GQLAccountNote(TestCase):
         self.anon_user = AnonymousUser()
 
         self.permission_view = 'view_accountnote'
+        self.permission_view_backoffice = 'view_accountnotebackoffice'
+        self.permission_view_teachers = 'view_accountnoteteachers'
         self.permission_add = 'add_accountnote'
         self.permission_change = 'change_accountnote'
         self.permission_delete = 'delete_accountnote'
@@ -157,7 +159,7 @@ class GQLAccountNote(TestCase):
         query = self.account_notes_query
         account_note = f.AccountNoteBackofficeFactory.create()
         variables = {
-            'account': to_global_id('AccountSubscriptionNode', account_note.account.id),
+            'account': to_global_id('AccountNoteNode', account_note.account.id),
             'noteType': "BACKOFFICE"
         }
 
@@ -182,7 +184,7 @@ class GQLAccountNote(TestCase):
         query = self.account_notes_query
         account_note = f.AccountNoteBackofficeFactory.create()
         variables = {
-            'account': to_global_id('AccountSubscriptionNode', account_note.account.id),
+            'account': to_global_id('AccountNoteNode', account_note.account.id),
             'noteType': "BACKOFFICE"
         }
 
@@ -198,7 +200,7 @@ class GQLAccountNote(TestCase):
         query = self.account_notes_query
         account_note = f.AccountNoteBackofficeFactory.create()
         variables = {
-            'account': to_global_id('AccountSubscriptionNode', account_note.account.id),
+            'account': to_global_id('AccountNoteNode', account_note.account.id),
             'noteType': "BACKOFFICE"
         }
 
@@ -222,7 +224,7 @@ class GQLAccountNote(TestCase):
         query = self.account_notes_query
         account_note = f.AccountNoteBackofficeFactory.create()
         variables = {
-            'account': to_global_id('AccountSubscriptionNode', account_note.account.id),
+            'account': to_global_id('AccountNoteNode', account_note.account.id),
             'noteType': "BACKOFFICE"
         }
 
@@ -230,91 +232,85 @@ class GQLAccountNote(TestCase):
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Not logged in!')
 
-    # def test_query_one(self):
-    #     """ Query one account account_note as admin """
-    #     account_note = f.AccountNoteBackofficeFactory.create()
-    # 
-    #     variables = {
-    #         "id": to_global_id("AccountSubscriptionNode", account_note.id),
-    #         "accountId": to_global_id("AccountNode", account_note.account.id),
-    #         "archived": False,
-    #     }
-    # 
-    #     # Now query single account_note and check
-    #     executed = execute_test_client_api_query(self.account_note_query, self.admin_user, variables=variables)
-    #     data = executed.get('data')
-    #     self.assertEqual(
-    #         data['accountSubscription']['account']['id'],
-    #         to_global_id('AccountNode', account_note.account.id)
-    #     )
-    #     self.assertEqual(
-    #         data['accountSubscription']['organizationSubscription']['id'],
-    #         to_global_id('OrganizationSubscriptionNode', account_note.organization_account_note.id)
-    #     )
-    #     self.assertEqual(
-    #         data['accountSubscription']['financePaymentMethod']['id'],
-    #         to_global_id('FinancePaymentMethodNode', account_note.finance_payment_method.id)
-    #     )
-    #     self.assertEqual(data['accountSubscription']['dateStart'], str(account_note.date_start))
-    #     self.assertEqual(data['accountSubscription']['dateEnd'], account_note.date_end)
-    #     self.assertEqual(data['accountSubscription']['note'], account_note.note)
-    #     self.assertEqual(data['accountSubscription']['registrationFeePaid'], account_note.registration_fee_paid)
-    # 
-    # def test_query_one_anon_user(self):
-    #     """ Deny permission for anon users Query one account account_note """
-    #     account_note = f.AccountNoteBackofficeFactory.create()
-    # 
-    #     variables = {
-    #         "id": to_global_id("AccountSubscriptionNode", account_note.id),
-    #         "accountId": to_global_id("AccountNode", account_note.account.id),
-    #         "archived": False,
-    #     }
-    # 
-    #     # Now query single account_note and check
-    #     executed = execute_test_client_api_query(self.account_note_query, self.anon_user, variables=variables)
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
-    # 
-    # def test_query_one_permission_denied(self):
-    #     """ Permission denied message when user lacks authorization """
-    #     # Create regular user
-    #     account_note = f.AccountNoteBackofficeFactory.create()
-    #     user = account_note.account
-    # 
-    #     variables = {
-    #         "id": to_global_id("AccountSubscriptionNode", account_note.id),
-    #         "accountId": to_global_id("AccountNode", account_note.account.id),
-    #         "archived": False,
-    #     }
-    # 
-    #     # Now query single account_note and check
-    #     executed = execute_test_client_api_query(self.account_note_query, user, variables=variables)
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
-    # 
-    # def test_query_one_permission_granted(self):
-    #     """ Respond with data when user has permission """
-    #     account_note = f.AccountNoteBackofficeFactory.create()
-    #     user = account_note.account
-    #     permission = Permission.objects.get(codename='view_accountnote')
-    #     user.user_permissions.add(permission)
-    #     user.save()
-    # 
-    # 
-    #     variables = {
-    #         "id": to_global_id("AccountSubscriptionNode", account_note.id),
-    #         "accountId": to_global_id("AccountNode", account_note.account.id),
-    #         "archived": False,
-    #     }
-    # 
-    #     # Now query single account_note and check
-    #     executed = execute_test_client_api_query(self.account_note_query, user, variables=variables)
-    #     data = executed.get('data')
-    #     self.assertEqual(
-    #         data['accountSubscription']['organizationSubscription']['id'],
-    #         to_global_id('OrganizationSubscriptionNode', account_note.organization_account_note.id)
-    #     )
-    # 
+    def test_query_one(self):
+        """ Query one account account_note as admin """
+        account_note = f.AccountNoteBackofficeFactory.create()
+
+        variables = {
+            "id": to_global_id("AccountNoteNode", account_note.id),
+        }
+
+        # Now query single account_note and check
+        executed = execute_test_client_api_query(self.account_note_query, self.admin_user, variables=variables)
+        data = executed.get('data')
+        self.assertEqual(
+            data['accountNote']['account']['id'],
+            to_global_id('AccountNode', account_note.account.id)
+        )
+        self.assertEqual(
+            data['accountNote']['noteBy']['id'],
+            to_global_id('AccountNode', account_note.note_by.id)
+        )
+        self.assertEqual(data['accountNote']['note'], account_note.note)
+        self.assertEqual(data['accountNote']['noteType'], account_note.note_type)
+        self.assertEqual(data['accountNote']['injury'], account_note.injury)
+        self.assertEqual(data['accountNote']['processed'], account_note.processed)
+
+    def test_query_one_anon_user(self):
+        """ Deny permission for anon users Query one account account_note """
+        account_note = f.AccountNoteBackofficeFactory.create()
+
+        variables = {
+            "id": to_global_id("AccountNoteNode", account_note.id),
+        }
+
+        # Now query single account_note and check
+        executed = execute_test_client_api_query(self.account_note_query, self.anon_user, variables=variables)
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
+
+    def test_query_one_permission_denied(self):
+        """ Permission denied message when user lacks authorization """
+        # Create regular user
+        account_note = f.AccountNoteBackofficeFactory.create()
+        user = account_note.account
+
+        variables = {
+            "id": to_global_id("AccountNoteNode", account_note.id),
+        }
+
+        # Now query single account_note and check
+        executed = execute_test_client_api_query(self.account_note_query, user, variables=variables)
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
+
+    def test_query_one_permission_granted(self):
+        """ Respond with data when user has permission """
+        account_note = f.AccountNoteBackofficeFactory.create()
+        user = account_note.account
+        # General view permission
+        permission = Permission.objects.get(codename=self.permission_view)
+        user.user_permissions.add(permission)
+        # View backoffice notes permission
+        permission = Permission.objects.get(codename=self.permission_view_backoffice)
+        user.user_permissions.add(permission)
+        user.save()
+
+        variables = {
+            "id": to_global_id("AccountNoteNode", account_note.id),
+        }
+
+        # Now query single account_note and check
+        executed = execute_test_client_api_query(self.account_note_query, user, variables=variables)
+        print("$$$$$$$$$$$")
+        print(executed)
+
+        data = executed.get('data')
+        self.assertEqual(
+            data['accountNote']['account']['id'],
+            to_global_id('AccountNode', account_note.account.id)
+        )
+
     # def test_create_account_note(self):
     #     """ Create an account account_note """
     #     query = self.account_note_create_mutation
@@ -431,7 +427,7 @@ class GQLAccountNote(TestCase):
     #     organization_account_note = f.OrganizationSubscriptionFactory.create()
     #     finance_payment_method = f.FinancePaymentMethodFactory.create()
     #     variables = self.variables_update
-    #     variables['input']['id'] = to_global_id('AccountSubscriptionNode', account_note.id)
+    #     variables['input']['id'] = to_global_id('AccountNoteNode', account_note.id)
     #     variables['input']['organizationSubscription'] = to_global_id('OrganizationSubscriptionNode', organization_account_note.id)
     #     variables['input']['financePaymentMethod'] = to_global_id('FinancePaymentMethodNode', finance_payment_method.id)
     # 
@@ -462,7 +458,7 @@ class GQLAccountNote(TestCase):
     #     organization_account_note = f.OrganizationSubscriptionFactory.create()
     #     finance_payment_method = f.FinancePaymentMethodFactory.create()
     #     variables = self.variables_update
-    #     variables['input']['id'] = to_global_id('AccountSubscriptionNode', account_note.id)
+    #     variables['input']['id'] = to_global_id('AccountNoteNode', account_note.id)
     #     variables['input']['organizationSubscription'] = to_global_id('OrganizationSubscriptionNode', organization_account_note.id)
     #     variables['input']['financePaymentMethod'] = to_global_id('FinancePaymentMethodNode', finance_payment_method.id)
     # 
@@ -482,7 +478,7 @@ class GQLAccountNote(TestCase):
     #     organization_account_note = f.OrganizationSubscriptionFactory.create()
     #     finance_payment_method = f.FinancePaymentMethodFactory.create()
     #     variables = self.variables_update
-    #     variables['input']['id'] = to_global_id('AccountSubscriptionNode', account_note.id)
+    #     variables['input']['id'] = to_global_id('AccountNoteNode', account_note.id)
     #     variables['input']['organizationSubscription'] = to_global_id('OrganizationSubscriptionNode', organization_account_note.id)
     #     variables['input']['financePaymentMethod'] = to_global_id('FinancePaymentMethodNode', finance_payment_method.id)
     # 
@@ -506,7 +502,7 @@ class GQLAccountNote(TestCase):
     #     organization_account_note = f.OrganizationSubscriptionFactory.create()
     #     finance_payment_method = f.FinancePaymentMethodFactory.create()
     #     variables = self.variables_update
-    #     variables['input']['id'] = to_global_id('AccountSubscriptionNode', account_note.id)
+    #     variables['input']['id'] = to_global_id('AccountNoteNode', account_note.id)
     #     variables['input']['organizationSubscription'] = to_global_id('OrganizationSubscriptionNode', organization_account_note.id)
     #     variables['input']['financePaymentMethod'] = to_global_id('FinancePaymentMethodNode', finance_payment_method.id)
     # 
@@ -526,7 +522,7 @@ class GQLAccountNote(TestCase):
     #     query = self.account_note_delete_mutation
     #     account_note = f.AccountNoteBackofficeFactory.create()
     #     variables = {"input":{}}
-    #     variables['input']['id'] = to_global_id('AccountSubscriptionNode', account_note.id)
+    #     variables['input']['id'] = to_global_id('AccountNoteNode', account_note.id)
     # 
     #     executed = execute_test_client_api_query(
     #         query,
@@ -542,7 +538,7 @@ class GQLAccountNote(TestCase):
     #     query = self.account_note_delete_mutation
     #     account_note = f.AccountNoteBackofficeFactory.create()
     #     variables = {"input":{}}
-    #     variables['input']['id'] = to_global_id('AccountSubscriptionNode', account_note.id)
+    #     variables['input']['id'] = to_global_id('AccountNoteNode', account_note.id)
     # 
     #     executed = execute_test_client_api_query(
     #         query,
@@ -558,7 +554,7 @@ class GQLAccountNote(TestCase):
     #     query = self.account_note_delete_mutation
     #     account_note = f.AccountNoteBackofficeFactory.create()
     #     variables = {"input":{}}
-    #     variables['input']['id'] = to_global_id('AccountSubscriptionNode', account_note.id)
+    #     variables['input']['id'] = to_global_id('AccountNoteNode', account_note.id)
     # 
     #     # Give permissions
     #     user = account_note.account
@@ -579,7 +575,7 @@ class GQLAccountNote(TestCase):
     #     query = self.account_note_delete_mutation
     #     account_note = f.AccountNoteBackofficeFactory.create()
     #     variables = {"input":{}}
-    #     variables['input']['id'] = to_global_id('AccountSubscriptionNode', account_note.id)
+    #     variables['input']['id'] = to_global_id('AccountNoteNode', account_note.id)
     # 
     #     user = account_note.account
     # 
