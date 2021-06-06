@@ -32,20 +32,21 @@ class GQLAccountNote(TestCase):
 
         self.variables_create = {
             "input": {
-                "dateStart": "2019-01-01",
-                "dateEnd": "2019-12-31",
-                "note": "creation note",
-                "registrationFeePaid": True
+                "noteType": "BACKOFFICE",
+                "note": "hello world",
+                "injury": False,
             }
         }
 
         self.variables_update = {
             "input": {
-                "dateStart": "2017-01-01",
-                "dateEnd": "2020-12-31",
-                "note": "Update note",
-                "registrationFeePaid": True
+                "note": "hello world",
+                "injury": False,
             }
+        }
+
+        self.variables_delete = {
+            "input": {}
         }
 
         self.account_notes_query = '''
@@ -302,288 +303,253 @@ class GQLAccountNote(TestCase):
 
         # Now query single account_note and check
         executed = execute_test_client_api_query(self.account_note_query, user, variables=variables)
-        print("$$$$$$$$$$$")
-        print(executed)
-
         data = executed.get('data')
         self.assertEqual(
             data['accountNote']['account']['id'],
             to_global_id('AccountNode', account_note.account.id)
         )
 
-    # def test_create_account_note(self):
-    #     """ Create an account account_note """
-    #     query = self.account_note_create_mutation
-    # 
-    #     account = f.RegularUserFactory.create()
-    #     organization_account_note = f.OrganizationSubscriptionFactory.create()
-    #     finance_payment_method = f.FinancePaymentMethodFactory.create()
-    #     variables = self.variables_create
-    #     variables['input']['account'] = to_global_id('AccountNode', account.id)
-    #     variables['input']['organizationSubscription'] = to_global_id('OrganizationSubscriptionNode', organization_account_note.id)
-    #     variables['input']['financePaymentMethod'] = to_global_id('FinancePaymentMethodNode', finance_payment_method.id)
-    # 
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.admin_user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    # 
-    #     self.assertEqual(
-    #         data['createAccountSubscription']['accountSubscription']['account']['id'],
-    #         variables['input']['account']
-    #     )
-    #     self.assertEqual(
-    #         data['createAccountSubscription']['accountSubscription']['organizationSubscription']['id'],
-    #         variables['input']['organizationSubscription']
-    #     )
-    #     self.assertEqual(
-    #         data['createAccountSubscription']['accountSubscription']['financePaymentMethod']['id'],
-    #         variables['input']['financePaymentMethod']
-    #     )
-    #     self.assertEqual(data['createAccountSubscription']['accountSubscription']['dateStart'], variables['input']['dateStart'])
-    #     self.assertEqual(data['createAccountSubscription']['accountSubscription']['dateEnd'], variables['input']['dateEnd'])
-    #     self.assertEqual(data['createAccountSubscription']['accountSubscription']['note'], variables['input']['note'])
-    #     self.assertEqual(data['createAccountSubscription']['accountSubscription']['registrationFeePaid'], variables['input']['registrationFeePaid'])
-    # 
-    # def test_create_account_note_anon_user(self):
-    #     """ Don't allow creating account account_notes for non-logged in users """
-    #     query = self.account_note_create_mutation
-    # 
-    #     account = f.RegularUserFactory.create()
-    #     organization_account_note = f.OrganizationSubscriptionFactory.create()
-    #     finance_payment_method = f.FinancePaymentMethodFactory.create()
-    #     variables = self.variables_create
-    #     variables['input']['account'] = to_global_id('AccountNode', account.id)
-    #     variables['input']['organizationSubscription'] = to_global_id('OrganizationSubscriptionNode', organization_account_note.id)
-    #     variables['input']['financePaymentMethod'] = to_global_id('FinancePaymentMethodNode', finance_payment_method.id)
-    # 
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.anon_user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
-    # 
-    # def test_create_account_note_permission_granted(self):
-    #     """ Allow creating account_notes for users with permissions """
-    #     query = self.account_note_create_mutation
-    # 
-    #     account = f.RegularUserFactory.create()
-    #     organization_account_note = f.OrganizationSubscriptionFactory.create()
-    #     finance_payment_method = f.FinancePaymentMethodFactory.create()
-    #     variables = self.variables_create
-    #     variables['input']['account'] = to_global_id('AccountNode', account.id)
-    #     variables['input']['organizationSubscription'] = to_global_id('OrganizationSubscriptionNode', organization_account_note.id)
-    #     variables['input']['financePaymentMethod'] = to_global_id('FinancePaymentMethodNode', finance_payment_method.id)
-    # 
-    #     # Create regular user
-    #     user = account
-    #     permission = Permission.objects.get(codename=self.permission_add)
-    #     user.user_permissions.add(permission)
-    #     user.save()
-    # 
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(
-    #         data['createAccountSubscription']['accountSubscription']['organizationSubscription']['id'],
-    #         variables['input']['organizationSubscription']
-    #     )
-    # 
-    # def test_create_account_note_permission_denied(self):
-    #     """ Check create account_note permission denied error message """
-    #     query = self.account_note_create_mutation
-    #     account = f.RegularUserFactory.create()
-    #     organization_account_note = f.OrganizationSubscriptionFactory.create()
-    #     finance_payment_method = f.FinancePaymentMethodFactory.create()
-    #     variables = self.variables_create
-    #     variables['input']['account'] = to_global_id('AccountNode', account.id)
-    #     variables['input']['organizationSubscription'] = to_global_id('OrganizationSubscriptionNode', organization_account_note.id)
-    #     variables['input']['financePaymentMethod'] = to_global_id('FinancePaymentMethodNode', finance_payment_method.id)
-    # 
-    #     # Create regular user
-    #     user = account
-    # 
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
-    # 
-    # def test_update_account_note(self):
-    #     """ Update a account_note """
-    #     query = self.account_note_update_mutation
-    #     account_note = f.AccountNoteBackofficeFactory.create()
-    #     organization_account_note = f.OrganizationSubscriptionFactory.create()
-    #     finance_payment_method = f.FinancePaymentMethodFactory.create()
-    #     variables = self.variables_update
-    #     variables['input']['id'] = to_global_id('AccountNoteNode', account_note.id)
-    #     variables['input']['organizationSubscription'] = to_global_id('OrganizationSubscriptionNode', organization_account_note.id)
-    #     variables['input']['financePaymentMethod'] = to_global_id('FinancePaymentMethodNode', finance_payment_method.id)
-    # 
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.admin_user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    # 
-    #     self.assertEqual(
-    #       data['updateAccountSubscription']['accountSubscription']['organizationSubscription']['id'],
-    #       variables['input']['organizationSubscription']
-    #     )
-    #     self.assertEqual(
-    #       data['updateAccountSubscription']['accountSubscription']['financePaymentMethod']['id'],
-    #       variables['input']['financePaymentMethod']
-    #     )
-    #     self.assertEqual(data['updateAccountSubscription']['accountSubscription']['dateStart'], variables['input']['dateStart'])
-    #     self.assertEqual(data['updateAccountSubscription']['accountSubscription']['dateEnd'], variables['input']['dateEnd'])
-    #     self.assertEqual(data['updateAccountSubscription']['accountSubscription']['note'], variables['input']['note'])
-    #     self.assertEqual(data['updateAccountSubscription']['accountSubscription']['registrationFeePaid'], variables['input']['registrationFeePaid'])
-    # 
-    # def test_update_account_note_anon_user(self):
-    #     """ Don't allow updating account_notes for non-logged in users """
-    #     query = self.account_note_update_mutation
-    #     account_note = f.AccountNoteBackofficeFactory.create()
-    #     organization_account_note = f.OrganizationSubscriptionFactory.create()
-    #     finance_payment_method = f.FinancePaymentMethodFactory.create()
-    #     variables = self.variables_update
-    #     variables['input']['id'] = to_global_id('AccountNoteNode', account_note.id)
-    #     variables['input']['organizationSubscription'] = to_global_id('OrganizationSubscriptionNode', organization_account_note.id)
-    #     variables['input']['financePaymentMethod'] = to_global_id('FinancePaymentMethodNode', finance_payment_method.id)
-    # 
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.anon_user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
-    # 
-    # def test_update_account_note_permission_granted(self):
-    #     """ Allow updating account_notes for users with permissions """
-    #     query = self.account_note_update_mutation
-    #     account_note = f.AccountNoteBackofficeFactory.create()
-    #     organization_account_note = f.OrganizationSubscriptionFactory.create()
-    #     finance_payment_method = f.FinancePaymentMethodFactory.create()
-    #     variables = self.variables_update
-    #     variables['input']['id'] = to_global_id('AccountNoteNode', account_note.id)
-    #     variables['input']['organizationSubscription'] = to_global_id('OrganizationSubscriptionNode', organization_account_note.id)
-    #     variables['input']['financePaymentMethod'] = to_global_id('FinancePaymentMethodNode', finance_payment_method.id)
-    # 
-    #     user = account_note.account
-    #     permission = Permission.objects.get(codename=self.permission_change)
-    #     user.user_permissions.add(permission)
-    #     user.save()
-    # 
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['updateAccountSubscription']['accountSubscription']['dateStart'], variables['input']['dateStart'])
-    # 
-    # def test_update_account_note_permission_denied(self):
-    #     """ Check update account_note permission denied error message """
-    #     query = self.account_note_update_mutation
-    #     account_note = f.AccountNoteBackofficeFactory.create()
-    #     organization_account_note = f.OrganizationSubscriptionFactory.create()
-    #     finance_payment_method = f.FinancePaymentMethodFactory.create()
-    #     variables = self.variables_update
-    #     variables['input']['id'] = to_global_id('AccountNoteNode', account_note.id)
-    #     variables['input']['organizationSubscription'] = to_global_id('OrganizationSubscriptionNode', organization_account_note.id)
-    #     variables['input']['financePaymentMethod'] = to_global_id('FinancePaymentMethodNode', finance_payment_method.id)
-    # 
-    #     user = account_note.account
-    # 
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
-    # 
-    # def test_delete_account_note(self):
-    #     """ Delete an account account_note """
-    #     query = self.account_note_delete_mutation
-    #     account_note = f.AccountNoteBackofficeFactory.create()
-    #     variables = {"input":{}}
-    #     variables['input']['id'] = to_global_id('AccountNoteNode', account_note.id)
-    # 
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.admin_user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     print(data)
-    #     self.assertEqual(data['deleteAccountSubscription']['ok'], True)
-    # 
-    # def test_delete_account_note_anon_user(self):
-    #     """ Delete account_note denied for anon user """
-    #     query = self.account_note_delete_mutation
-    #     account_note = f.AccountNoteBackofficeFactory.create()
-    #     variables = {"input":{}}
-    #     variables['input']['id'] = to_global_id('AccountNoteNode', account_note.id)
-    # 
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.anon_user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
-    # 
-    # def test_delete_account_note_permission_granted(self):
-    #     """ Allow deleting account_notes for users with permissions """
-    #     query = self.account_note_delete_mutation
-    #     account_note = f.AccountNoteBackofficeFactory.create()
-    #     variables = {"input":{}}
-    #     variables['input']['id'] = to_global_id('AccountNoteNode', account_note.id)
-    # 
-    #     # Give permissions
-    #     user = account_note.account
-    #     permission = Permission.objects.get(codename=self.permission_delete)
-    #     user.user_permissions.add(permission)
-    #     user.save()
-    # 
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['deleteAccountSubscription']['ok'], True)
-    # 
-    # def test_delete_account_note_permission_denied(self):
-    #     """ Check delete account_note permission denied error message """
-    #     query = self.account_note_delete_mutation
-    #     account_note = f.AccountNoteBackofficeFactory.create()
-    #     variables = {"input":{}}
-    #     variables['input']['id'] = to_global_id('AccountNoteNode', account_note.id)
-    # 
-    #     user = account_note.account
-    # 
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
+    def test_create_account_note(self):
+        """ Create an account account_note """
+        query = self.account_note_create_mutation
+
+        account = f.RegularUserFactory.create()
+        variables = self.variables_create
+        variables['input']['account'] = to_global_id('AccountNode', account.id)
+
+        executed = execute_test_client_api_query(
+            query,
+            self.admin_user,
+            variables=variables
+        )
+        data = executed.get('data')
+
+        self.assertEqual(
+            data['createAccountNote']['accountNote']['account']['id'],
+            variables['input']['account']
+        )
+        self.assertEqual(
+            data['createAccountNote']['accountNote']['noteBy']['id'],
+            to_global_id("AccountNode", self.admin_user.id)
+        )
+        self.assertEqual(
+            data['createAccountNote']['accountNote']['note'],
+            variables['input']['note']
+        )
+        self.assertEqual(
+            data['createAccountNote']['accountNote']['injury'],
+            variables['input']['injury']
+        )
+
+    def test_create_account_note_anon_user(self):
+        """ Don't allow creating account account_notes for non-logged in users """
+        query = self.account_note_create_mutation
+
+        account = f.RegularUserFactory.create()
+        variables = self.variables_create
+        variables['input']['account'] = to_global_id('AccountNode', account.id)
+
+        executed = execute_test_client_api_query(
+            query,
+            self.anon_user,
+            variables=variables
+        )
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
+
+    def test_create_account_note_permission_granted(self):
+        """ Allow creating account_notes for users with permissions """
+        query = self.account_note_create_mutation
+
+        account = f.RegularUserFactory.create()
+        variables = self.variables_create
+        variables['input']['account'] = to_global_id('AccountNode', account.id)
+
+        # Create regular user
+        user = account
+        permission = Permission.objects.get(codename=self.permission_add)
+        user.user_permissions.add(permission)
+        user.save()
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(
+            data['createAccountNote']['accountNote']['account']['id'],
+            variables['input']['account']
+        )
+
+    def test_create_account_note_permission_denied(self):
+        """ Check create account_note permission denied error message """
+        query = self.account_note_create_mutation
+        account = f.RegularUserFactory.create()
+        variables = self.variables_create
+        variables['input']['account'] = to_global_id('AccountNode', account.id)
+
+        # Create regular user
+        user = account
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=variables
+        )
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
+
+    def test_update_account_note(self):
+        """ Update a account_note """
+        query = self.account_note_update_mutation
+        account_note = f.AccountNoteBackofficeFactory.create()
+        variables = self.variables_update
+        variables['input']['id'] = to_global_id('AccountNoteNode', account_note.id)
+
+        executed = execute_test_client_api_query(
+            query,
+            self.admin_user,
+            variables=variables
+        )
+        print("$$$$$$$")
+        print(executed)
+
+        data = executed.get('data')
+
+        self.assertEqual(
+            data['updateAccountNote']['accountNote']['account']['id'],
+            to_global_id("AccountNode", account_note.account.id)
+        )
+        self.assertEqual(
+            data['updateAccountNote']['accountNote']['note'],
+            variables['input']['note']
+        )
+        self.assertEqual(
+            data['updateAccountNote']['accountNote']['injury'],
+            variables['input']['injury']
+        )
+
+    def test_update_account_note_anon_user(self):
+        """ Don't allow updating account_notes for non-logged in users """
+        query = self.account_note_update_mutation
+        account_note = f.AccountNoteBackofficeFactory.create()
+        variables = self.variables_update
+        variables['input']['id'] = to_global_id('AccountNoteNode', account_note.id)
+
+        executed = execute_test_client_api_query(
+            query,
+            self.anon_user,
+            variables=variables
+        )
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
+
+    def test_update_account_note_permission_granted(self):
+        """ Allow updating account_notes for users with permissions """
+        query = self.account_note_update_mutation
+        account_note = f.AccountNoteBackofficeFactory.create()
+        variables = self.variables_update
+        variables['input']['id'] = to_global_id('AccountNoteNode', account_note.id)
+
+        user = account_note.account
+        permission = Permission.objects.get(codename=self.permission_change)
+        user.user_permissions.add(permission)
+        user.save()
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(
+            data['updateAccountNote']['accountNote']['account']['id'],
+            to_global_id("AccountNode", account_note.account.id)
+        )
+
+    def test_update_account_note_permission_denied(self):
+        """ Check update account_note permission denied error message """
+        query = self.account_note_update_mutation
+        account_note = f.AccountNoteBackofficeFactory.create()
+        variables = self.variables_update
+        variables['input']['id'] = to_global_id('AccountNoteNode', account_note.id)
+
+        user = account_note.account
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=variables
+        )
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
+
+    def test_delete_account_note(self):
+        """ Delete an account account_note """
+        query = self.account_note_delete_mutation
+        account_note = f.AccountNoteBackofficeFactory.create()
+        variables = self.variables_delete
+        variables['input']['id'] = to_global_id('AccountNoteNode', account_note.id)
+
+        executed = execute_test_client_api_query(
+            query,
+            self.admin_user,
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['deleteAccountNote']['ok'], True)
+
+    def test_delete_account_note_anon_user(self):
+        """ Delete account_note denied for anon user """
+        query = self.account_note_delete_mutation
+        account_note = f.AccountNoteBackofficeFactory.create()
+        variables = self.variables_delete
+        variables['input']['id'] = to_global_id('AccountNoteNode', account_note.id)
+
+        executed = execute_test_client_api_query(
+            query,
+            self.anon_user,
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
+
+    def test_delete_account_note_permission_granted(self):
+        """ Allow deleting account_notes for users with permissions """
+        query = self.account_note_delete_mutation
+        account_note = f.AccountNoteBackofficeFactory.create()
+        variables = self.variables_delete
+        variables['input']['id'] = to_global_id('AccountNoteNode', account_note.id)
+
+        # Give permissions
+        user = account_note.account
+        permission = Permission.objects.get(codename=self.permission_delete)
+        user.user_permissions.add(permission)
+        user.save()
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['deleteAccountNote']['ok'], True)
+
+    def test_delete_account_note_permission_denied(self):
+        """ Check delete account_note permission denied error message """
+        query = self.account_note_delete_mutation
+        account_note = f.AccountNoteBackofficeFactory.create()
+        variables = self.variables_delete
+        variables['input']['id'] = to_global_id('AccountNoteNode', account_note.id)
+
+        user = account_note.account
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=variables
+        )
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
