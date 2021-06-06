@@ -56,6 +56,7 @@ from .organization_subscription_group_subscription import OrganizationSubscripti
 from .organization_subscription_price import OrganizationSubscriptionPrice
 
 from .schedule_event import ScheduleEvent
+from .schedule_event_earlybird import ScheduleEventEarlybird
 from .schedule_event_ticket import ScheduleEventTicket
 from .schedule_event_ticket_schedule_item import ScheduleEventTicketScheduleItem
 from .schedule_item import ScheduleItem

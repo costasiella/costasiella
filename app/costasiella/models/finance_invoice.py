@@ -167,7 +167,6 @@ class FinanceInvoice(models.Model):
             product_name=_('Event ticket'),
             description='%s\n[%s]' % (schedule_event_ticket.schedule_event.name, schedule_event_ticket.name),
             quantity=1,
-            # TODO: Add "get price for account" fn to schedule event ticket to allow for earlybirds and discounts
             price=schedule_event_ticket.price,
             finance_tax_rate=schedule_event_ticket.finance_tax_rate,
             finance_glaccount=schedule_event_ticket.finance_glaccount,
@@ -175,6 +174,26 @@ class FinanceInvoice(models.Model):
         )
 
         finance_invoice_item.save()
+
+        # Check if an earlybird discount should be added
+        now = timezone.now()
+        date = now.date()
+        schedule_event_ticket = account_schedule_event_ticket.schedule_event_ticket
+        earlybird_result = schedule_event_ticket.get_earlybird_discount_on_date(date)
+        if earlybird_result.get('discount', 0):
+            discount_percentage = earlybird_result['earlybird'].discount_percentage
+            earlybird_finance_invoice_item = FinanceInvoiceItem(
+                finance_invoice=self,
+                line_number=self._get_item_next_line_nr(),
+                product_name=_('Event ticket earlybird discount'),
+                description=str(discount_percentage) + _('% discount'),
+                quantity=1,
+                price=earlybird_result['discount'] * -1,
+                finance_tax_rate=schedule_event_ticket.finance_tax_rate,
+                finance_glaccount=schedule_event_ticket.finance_glaccount,
+                finance_costcenter=schedule_event_ticket.finance_costcenter,
+            )
+            earlybird_finance_invoice_item.save()
 
         self.update_amounts()
 

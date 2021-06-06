@@ -51,7 +51,7 @@ const ProfileMenu = ({ t, account_id, active_link }) => (
             {(active_link === 'classes') ? classes_active = true: classes_active = false}
             {(active_link === 'tickets') ? tickets_active = true: tickets_active = false}
             {(active_link === 'teacher_profile') ? teacher_profile_active = true: teacher_profile_active = false}
-            {(active_link === 'orderss') ? orders_active = true: orders_active = false}
+            {(active_link === 'orders') ? orders_active = true: orders_active = false}
             {(active_link === 'invoices') ? invoices_active = true: invoices_active = false}
             {(active_link === 'bank_account') ? bank_account_active = true: bank_account_active = false}
             {(active_link === 'notes') ? notes_active = true: notes_active = false}

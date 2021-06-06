@@ -3,6 +3,7 @@
 import React, {Component } from 'react'
 import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
+import { Link } from "react-router-dom"
 
 import {
   Page,
@@ -38,24 +39,24 @@ class RelationsHome extends Component {
               <Grid.Col md={9}>
                 <Grid.Row>
                   <Grid.Col md={4} lg={4}>
-                    <div onClick={() => history.push('/relations/accounts')}>
+                    <Link to='/relations/accounts'>
                       <StampCard header={<small>{t('relations.accounts.title')}</small>} footer={t('')} color="blue" icon="users" />
-                    </div>
+                    </Link>
                   </Grid.Col>
                   {/* <HasPermissionWrapper permission="view"
                                         resource="business">
                     <Grid.Col md={4} lg={4}>
-                      <div onClick={() => history.push('/relations/suppliers')}>
+                      <Link to='/relations/suppliers')}>
                         <StampCard header={<small>{t('relations.suppliers.title')}</small>} footer={t('')} color="blue" icon="package" />
-                      </div>
+                      </Link>
                     </Grid.Col>
                   </HasPermissionWrapper> */}
                   <HasPermissionWrapper permission="view"
                                         resource="business">
                     <Grid.Col md={4} lg={4}>
-                      <div onClick={() => history.push('/relations/b2b')}>
+                      <Link to='/relations/b2b'>
                         <StampCard header={<small>{t('relations.b2b.title')}</small>} footer={t('')} color="blue" icon="briefcase" />
-                      </div>
+                      </Link>
                     </Grid.Col>
                   </HasPermissionWrapper>
                 </Grid.Row>

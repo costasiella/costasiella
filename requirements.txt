@@ -58,7 +58,7 @@ python-dateutil==2.8.0
 python3-openid==3.1.0
 pytz==2018.9
 redis==3.2.1
-requests==2.22.0
+requests==2.25.1
 requests-oauthlib==1.2.0
 Rx==1.6.1
 singledispatch==3.4.0.3
@@ -67,7 +67,7 @@ sorl-thumbnail==12.6.3
 sqlparse==0.3.0
 text-unidecode==1.2
 tinycss2==1.0.2
-urllib3==1.25.8
+urllib3==1.26.5
 validators==0.18.2
 vine==5.0.0
 wcwidth==0.2.5

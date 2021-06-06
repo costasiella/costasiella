@@ -803,14 +803,17 @@
                 "additional_info": "__STRING_NOT_TRANSLATED__",
                 "sold_out": "__STRING_NOT_TRANSLATED__",
                 "sold_out_title": "__STRING_NOT_TRANSLATED__",
-                "no_additional_info": "__STRING_NOT_TRANSLATED__"
+                "no_additional_info": "__STRING_NOT_TRANSLATED__",
+                "error_loading": "__STRING_NOT_TRANSLATED__"
             }
         },
         "event": {
             "error_loading": "__STRING_NOT_TRANSLATED__",
             "tickets": "__STRING_NOT_TRANSLATED__",
             "ticket": {
-                "choose": "__STRING_NOT_TRANSLATED__"
+                "choose": "__STRING_NOT_TRANSLATED__",
+                "earlybird_price": "__STRING_NOT_TRANSLATED__",
+                "regular_price": "__STRING_NOT_TRANSLATED__"
             }
         }
     },
@@ -1261,7 +1264,11 @@
                 "title_add": "__STRING_NOT_TRANSLATED__",
                 "toast_add_success": "__STRING_NOT_TRANSLATED__",
                 "backoffice": "__STRING_NOT_TRANSLATED__",
-                "teachers": "__STRING_NOT_TRANSLATED__"
+                "teachers": "__STRING_NOT_TRANSLATED__",
+                "delete_confirm_msg": "__STRING_NOT_TRANSLATED__",
+                "deleted": "__STRING_NOT_TRANSLATED__",
+                "title_edit": "__STRING_NOT_TRANSLATED__",
+                "toast_edit_success": "__STRING_NOT_TRANSLATED__"
             }
         },
         "accounts": {
@@ -1294,7 +1301,8 @@
             "toast_add_success": "__STRING_NOT_TRANSLATED__",
             "add": "__STRING_NOT_TRANSLATED__",
             "title_edit": "__STRING_NOT_TRANSLATED__",
-            "toast_edit_success": "__STRING_NOT_TRANSLATED__"
+            "toast_edit_success": "__STRING_NOT_TRANSLATED__",
+            "archived": "__STRING_NOT_TRANSLATED__"
         },
         "suppliers": {
             "title": "__STRING_NOT_TRANSLATED__"
@@ -1496,6 +1504,17 @@
                 "toast_add_success": "__STRING_NOT_TRANSLATED__",
                 "delete_confirm_msg": "__STRING_NOT_TRANSLATED__",
                 "delete_success": "__STRING_NOT_TRANSLATED__",
+                "edit": "__STRING_NOT_TRANSLATED__",
+                "toast_edit_success": "__STRING_NOT_TRANSLATED__"
+            },
+            "earlybirds": {
+                "title": "__STRING_NOT_TRANSLATED__",
+                "add": "__STRING_NOT_TRANSLATED__",
+                "toast_add_success": "__STRING_NOT_TRANSLATED__",
+                "delete_confirm_msg": "__STRING_NOT_TRANSLATED__",
+                "delete_success": "__STRING_NOT_TRANSLATED__",
+                "discountPercentage": "__STRING_NOT_TRANSLATED__",
+                "empty_list": "__STRING_NOT_TRANSLATED__",
                 "edit": "__STRING_NOT_TRANSLATED__",
                 "toast_edit_success": "__STRING_NOT_TRANSLATED__"
             }

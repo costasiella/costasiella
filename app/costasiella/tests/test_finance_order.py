@@ -1,4 +1,6 @@
 # from graphql.error.located_error import GraphQLLocatedError
+
+from django.utils.translation import gettext as _
 import graphql
 import datetime
 
@@ -16,7 +18,6 @@ from .helpers import execute_test_client_api_query
 from .. import models
 from .. import schema
 from ..modules.gql_tools import get_rid
-
 
 
 class GQLFinanceOrder(TestCase):
@@ -332,9 +333,6 @@ class GQLFinanceOrder(TestCase):
             variables=variables
         )
         data = executed.get('data')
-        print("#######")
-        print(executed)
-        print("!!!!!!!!!")
 
         # Get order
         rid = get_rid(data['createFinanceOrder']['financeOrder']['id'])
@@ -367,6 +365,66 @@ class GQLFinanceOrder(TestCase):
             document=privacy_policy
         )
         self.assertEqual(qs_privacy.exists(), True)
+
+    def test_create_order_schedule_event_ticket_with_earlybird_discount(self):
+        """ Create finance order with event ticket """
+        query = self.order_create_mutation
+
+        schedule_event_ticket = f.ScheduleEventFullTicketFactory.create()
+        schedule_event_earlybird = f.ScheduleEventEarlybirdFactory.create(
+            schedule_event=schedule_event_ticket.schedule_event
+        )
+
+        variables = self.variables_create
+        variables['input']['scheduleEventTicket'] = to_global_id(
+            'ScheduleEventTicketNode', schedule_event_ticket.id
+        )
+
+        executed = execute_test_client_api_query(
+            query,
+            self.admin_user,
+            variables=variables
+        )
+        data = executed.get('data')
+
+        # Get order
+        rid = get_rid(data['createFinanceOrder']['financeOrder']['id'])
+        order = models.FinanceOrder.objects.get(pk=rid.id)
+
+        self.assertEqual(
+            data['createFinanceOrder']['financeOrder']['account']['id'],
+            to_global_id('AccountNode', self.admin_user.pk)
+        )
+        self.assertEqual(data['createFinanceOrder']['financeOrder']['message'], variables['input']['message'])
+        self.assertEqual(data['createFinanceOrder']['financeOrder']['status'], 'AWAITING_PAYMENT')
+
+        # Verify that event ticket item was added to the order
+        first_item = order.items.first()
+        self.assertEqual(first_item.product_name, "Event ticket")
+        self.assertEqual(first_item.price, schedule_event_ticket.price)
+        self.assertEqual(first_item.total, schedule_event_ticket.price)
+        self.assertEqual(first_item.description,
+                         '%s\n[%s]' % (schedule_event_ticket.schedule_event.name, schedule_event_ticket.name))
+        self.assertEqual(first_item.quantity, 1)
+        self.assertEqual(first_item.finance_tax_rate, schedule_event_ticket.finance_tax_rate)
+        self.assertEqual(first_item.finance_glaccount, schedule_event_ticket.finance_glaccount)
+        self.assertEqual(first_item.finance_costcenter, schedule_event_ticket.finance_costcenter)
+
+        # Verify that the earlybird discount was added
+        second_item = order.items.all()[1]
+        now = timezone.now()
+        today = now.date()
+        earlybird_result = schedule_event_ticket.get_earlybird_discount_on_date(today)
+        discount_price = format(earlybird_result['discount'] * -1, ".2f")
+        self.assertEqual(second_item.product_name, "Event ticket earlybird discount")
+        self.assertEqual(format(second_item.price, ".2f"), discount_price)
+        self.assertEqual(format(second_item.total, ".2f"), discount_price)
+        self.assertEqual(second_item.description,
+                         format(schedule_event_earlybird.discount_percentage, ".2f") + _('% discount'))
+        self.assertEqual(second_item.quantity, 1)
+        self.assertEqual(second_item.finance_tax_rate, schedule_event_ticket.finance_tax_rate)
+        self.assertEqual(second_item.finance_glaccount, schedule_event_ticket.finance_glaccount)
+        self.assertEqual(second_item.finance_costcenter, schedule_event_ticket.finance_costcenter)
 
     def test_create_order_anon_user(self):
         """ Don't allow creating finance orders for non-logged in users """

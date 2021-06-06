@@ -150,6 +150,7 @@ import AccountMembershipAdd from './components/relations/accounts/memberships/Ac
 import AccountMembershipEdit from './components/relations/accounts/memberships/AccountMembershipEdit'
 import AccountNotes from './components/relations/accounts/notes/AccountNotes.jsx'
 import AccountNoteAdd from './components/relations/accounts/notes/AccountNoteAdd.jsx'
+import AccountNoteEdit from './components/relations/accounts/notes/AccountNoteEdit.jsx'
 import AccountOrders from './components/relations/accounts/orders/AccountOrders'
 import AccountScheduleEventTickets from './components/relations/accounts/schedule_event_tickets/AccountScheduleEventTickets'
 import AccountSubscriptions from './components/relations/accounts/subscriptions/AccountSubscriptions'
@@ -199,6 +200,9 @@ import ScheduleEventActivities from './components/schedule/events/activities/Sch
 import ScheduleEventActivityAdd from './components/schedule/events/activities/ScheduleEventActivityAdd'
 import ScheduleEventActivityEdit from './components/schedule/events/activities/ScheduleEventActivityEdit'
 import ScheduleEventActivityAttendance from './components/schedule/events/activities/attendance/ScheduleEventActivityAttendance'
+import ScheduleEventEarlybirds from './components/schedule/events/earlybirds/ScheduleEventEarlybirds'
+import ScheduleEventEarlybirdAdd from './components/schedule/events/earlybirds/ScheduleEventEarlybirdAdd'
+import ScheduleEventEarlybirdEdit from './components/schedule/events/earlybirds/ScheduleEventEarlybirdEdit'
 import ScheduleEventMedia from './components/schedule/events/media/ScheduleEventMedia'
 import ScheduleEventMediaAdd from './components/schedule/events/media/ScheduleEventMediaAdd'
 import ScheduleEventMediaEdit from './components/schedule/events/media/ScheduleEventMediaEdit'
@@ -493,6 +497,7 @@ function AppRoot({ t }) {
             <PrivateRoute exact path="/relations/accounts/:account_id/memberships/edit/:id" component={AccountMembershipEdit} />
             <PrivateRoute exact path="/relations/accounts/:account_id/notes" component={AccountNotes} />
             <PrivateRoute exact path="/relations/accounts/:account_id/notes/add" component={AccountNoteAdd} />
+            <PrivateRoute exact path="/relations/accounts/:account_id/notes/edit/:id" component={AccountNoteEdit} />
             <PrivateRoute exact path="/relations/accounts/:account_id/orders" component={AccountOrders} />
             <PrivateRoute exact path="/relations/accounts/:account_id/event_tickets" component={AccountScheduleEventTickets} />
             <PrivateRoute exact path="/relations/accounts/:account_id/subscriptions" component={AccountSubscriptions} />
@@ -553,6 +558,9 @@ function AppRoot({ t }) {
             <PrivateRoute exact path="/schedule/events/edit/:event_id/activities/edit/:id" component={ScheduleEventActivityEdit} />
             <PrivateRoute exact path="/schedule/events/edit/:event_id/activities/edit/:id/attendance" 
                           component={ScheduleEventActivityAttendance} />
+            <PrivateRoute exact path="/schedule/events/edit/:event_id/earlybirds" component={ScheduleEventEarlybirds} />
+            <PrivateRoute exact path="/schedule/events/edit/:event_id/earlybirds/add" component={ScheduleEventEarlybirdAdd} />
+            <PrivateRoute exact path="/schedule/events/edit/:event_id/earlybirds/edit/:id" component={ScheduleEventEarlybirdEdit} />
             <PrivateRoute exact path="/schedule/events/edit/:event_id/media" component={ScheduleEventMedia} />
             <PrivateRoute exact path="/schedule/events/edit/:event_id/media/add" component={ScheduleEventMediaAdd} />
             <PrivateRoute exact path="/schedule/events/edit/:event_id/media/edit/:id" component={ScheduleEventMediaEdit} />

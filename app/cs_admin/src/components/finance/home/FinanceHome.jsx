@@ -43,34 +43,34 @@ class FinanceHome extends Component {
               <Grid.Col md={9}>
                 <Grid.Row>
                   <Grid.Col md={4} lg={4}>
-                    <div onClick={() => history.push('/finance/invoices')}>
+                    <Link to='/finance/invoices'>
                       <StampCard header={<small>{t('finance.invoices.title')}</small>} footer={t('')} color="blue" icon="file-text" />
-                    </div>
+                    </Link>
                   </Grid.Col>
                   <Grid.Col md={4} lg={4}>
-                    <div onClick={() => history.push('/finance/orders')}>
+                    <Link to='/finance/orders'>
                       <StampCard header={<small>{t('finance.orders.title')}</small>} footer={t('')} color="blue" icon="file-plus" />
-                    </div>
+                      </Link>
                   </Grid.Col>
                   <Grid.Col md={4} lg={4}>
-                    <div onClick={() => history.push('/finance/glaccounts')}>
+                    <Link to='/finance/glaccounts'>
                       <StampCard header={<small>{t('finance.glaccounts.title')}</small>} footer={t('')} color="blue" icon="book" />
-                    </div>
+                    </Link>
                   </Grid.Col>
                   <Grid.Col md={4} lg={4}>
-                    <div onClick={() => history.push('/finance/costcenters')}>
+                    <Link to='/finance/costcenters'>
                       <StampCard header={<small>{t('finance.costcenters.title')}</small>} footer={t('')} color="blue" icon="compass" />
-                    </div>
+                    </Link>
                   </Grid.Col>
                   <Grid.Col md={4} lg={4}>
-                    <div onClick={() => history.push('/finance/taxrates')}>
+                    <Link to='/finance/taxrates'>
                       <StampCard header={<small>{t('finance.taxrates.title')}</small>} footer={t('')} color="blue" icon="briefcase" />
-                    </div>
+                    </Link>
                   </Grid.Col>
                   <Grid.Col md={4} lg={4}>
-                    <div onClick={() => history.push('/finance/paymentmethods')}>
+                    <Link to='/finance/paymentmethods'>
                       <StampCard header={<small>{t('finance.payment_methods.title')}</small>} footer={t('')} color="blue" icon="credit-card" />
-                    </div>
+                    </Link>
                   </Grid.Col>
                   <HasPermissionWrapper permission="view"
                               resource="financepaymentbatch">

@@ -9,6 +9,7 @@ import { Link } from 'react-router-dom'
 import moment from 'moment'
 
 import {
+  Badge,
   Grid,
   Icon,
   List,
@@ -36,11 +37,18 @@ function ShopEventTicketPricingCard({ t, match, eventTicket, showButton=true, ac
     <PricingCard active={active}>
       <PricingCard.Category>
         {eventTicket.name}
+        {(eventTicket.isEarlybirdPrice) ? <div><Badge color="primary">{t("shop.event.ticket.earlybird_price")}</Badge></div> : ""}
       </PricingCard.Category>
       <PricingCard.Price>
-        {eventTicket.priceDisplay}
+        {eventTicket.totalPriceDisplay}
       </PricingCard.Price>
       <PricingCard.AttributeList>
+        {(eventTicket.isEarlybirdPrice) ? 
+          <PricingCard.AttributeItem>
+            {t("shop.event.ticket.regular_price")} {eventTicket.priceDisplay}
+          </PricingCard.AttributeItem>
+          : "" 
+        }
         {ticketScheduleItems.edges.map(({ node }) => (
           <PricingCard.AttributeItem>
             <b> 

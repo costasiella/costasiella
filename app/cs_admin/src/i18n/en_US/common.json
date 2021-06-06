@@ -917,7 +917,11 @@
                 "title_add": "Add note",
                 "toast_add_success": "Added note",
                 "backoffice": "Backoffice",
-                "teachers": "Teachers"
+                "teachers": "Teachers",
+                "delete_confirm_msg": "Are you sure you wish to delete this note?",
+                "deleted": "Deleted note",
+                "title_edit": "Edit note",
+                "toast_edit_success": "Saved"
             }
         },
         "b2b": {
@@ -926,14 +930,15 @@
             "empty_archive": "No business to business relations have been archived yet.",
             "empty_list": "No business to business relations have been added yet.",
             "deactivated": "Deactivated b2b relation",
-            "restored": "Moved b2b relation to active",
+            "restored": "Moved b2b relation to current",
             "delete_confirm_msg": "Are you sure you with to delete this b2b relation?",
             "deleted": "B2B relation deleted",
             "title_add": "Add Business-to-Business relation",
             "toast_add_success": "Added Business-to-Business relation. You're now editing the new relation.",
             "add": "Add",
             "title_edit": "Edit Business-to-Business relation",
-            "toast_edit_success": "Saved"
+            "toast_edit_success": "Saved",
+            "archived": "Archived B2B relation"
         },
         "suppliers": {
             "title": "Suppliers"
@@ -1141,6 +1146,17 @@
                 "delete_confirm_msg": "Are you sure you wish to delete this event image?",
                 "delete_success": "Deleted event image",
                 "edit": "Edit event image",
+                "toast_edit_success": "Saved"
+            },
+            "earlybirds": {
+                "title": "Earlybird discounts",
+                "add": "Add earlybird discount",
+                "toast_add_success": "Added earlybird discount",
+                "delete_confirm_msg": "Are you sure you wish to delete this earlybird discount?",
+                "delete_success": "Deleted earlybird discount",
+                "discountPercentage": "Discount percentage",
+                "empty_list": "No earlybird discounts have been defined yet for this event",
+                "edit": "Edit earlybird discount",
                 "toast_edit_success": "Saved"
             }
         },
@@ -1834,14 +1850,17 @@
                 "additional_info": "Additional info",
                 "sold_out": "Our apologies, this ticket is sold out. Please use the back button to see if other tickets are still available.",
                 "sold_out_title": "Ticket sold out",
-                "no_additional_info": "No additional info has been set for this ticket."
+                "no_additional_info": "No additional info has been set for this ticket.",
+                "error_loading": "Error loading ticket information... :("
             }
         },
         "event": {
             "error_loading": "Error loading event... :(",
             "tickets": "Tickets",
             "ticket": {
-                "choose": "Choose"
+                "choose": "Choose",
+                "earlybird_price": "Earlybird",
+                "regular_price": "Regular price"
             }
         }
     },

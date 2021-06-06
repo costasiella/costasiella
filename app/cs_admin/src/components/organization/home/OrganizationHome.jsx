@@ -3,6 +3,7 @@
 import React, {Component } from 'react'
 import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
+import { Link } from "react-router-dom"
 
 import {
   Page,
@@ -39,54 +40,54 @@ class OrganizationHome extends Component {
               <Grid.Col md={9}>
                 <Grid.Row>
                   <Grid.Col md={4} lg={4}>
-                    <div onClick={() => history.push('/organization/locations')}>
+                    <Link to='/organization/locations'>
                       <StampCard header={<small>{t('organization.locations.title')}</small>} footer={t('')} color="blue" icon="home" />
-                    </div>
+                    </Link>
                   </Grid.Col>
                   <Grid.Col md={4} lg={4}>
-                    <div onClick={() => history.push('/organization/levels')}>
+                    <Link to='/organization/levels'>
                       <StampCard header={<small>{t('organization.levels.title')}</small>} footer={t('')} color="blue" icon="tag" />
-                    </div>
+                    </Link>
                   </Grid.Col>
                   <Grid.Col md={4} lg={4}>
-                    <div onClick={() => history.push('/organization/classtypes')}>
+                    <Link to='/organization/classtypes'>
                       <StampCard header={<small>{t('organization.classtypes.title')}</small>} footer={t('')} color="blue" icon="book-open" />
-                    </div>
+                    </Link>
                   </Grid.Col>
                   <Grid.Col md={4} lg={4}>
-                    <div onClick={() => history.push('/organization/discoveries')}>
+                    <Link to='/organization/discoveries'>
                       <StampCard header={<small>{t('organization.discoveries.title')}</small>} footer={t('')} color="blue" icon="compass" />
-                    </div>
+                    </Link>
                   </Grid.Col>
                   <Grid.Col md={4} lg={4}>
-                    <div onClick={() => history.push('/organization/classpasses')}>
+                    <Link to='/organization/classpasses'>
                       <StampCard header={<small>{t('organization.classpasses.title')}</small>} footer={t('')} color="blue" icon="credit-card" />
-                    </div>
+                    </Link>
                   </Grid.Col>
                   <Grid.Col md={4} lg={4}>
-                    <div onClick={() => history.push('/organization/memberships')}>
+                    <Link to='/organization/memberships'>
                       <StampCard header={<small>{t('organization.memberships.title')}</small>} footer={t('')} color="blue" icon="clipboard" />
-                    </div>
+                    </Link>
                   </Grid.Col>
                   <Grid.Col md={4} lg={4}>
-                    <div onClick={() => history.push('/organization/subscriptions')}>
+                    <Link to='/organization/subscriptions'>
                       <StampCard header={<small>{t('organization.subscriptions.title')}</small>} footer={t('')} color="blue" icon="edit" />
-                    </div>
+                    </Link>
                   </Grid.Col>
                   <Grid.Col md={4} lg={4}>
-                    <div onClick={() => history.push('/organization/appointment_categories')}>
+                    <Link to='/organization/appointment_categories'>
                       <StampCard header={<small>{t('organization.appointments.title')}</small>} footer={t('')} color="blue" icon="calendar" />
-                    </div>
+                    </Link>
                   </Grid.Col>
                   <Grid.Col md={4} lg={4}>
-                    <div onClick={() => history.push('/organization/edit/T3JnYW5pemF0aW9uTm9kZToxMDA=')}>
+                    <Link to='/organization/edit/T3JnYW5pemF0aW9uTm9kZToxMDA='>
                       <StampCard header={<small>{t('organization.organization.title')}</small>} footer={t('')} color="blue" icon="layout" />
-                    </div>
+                    </Link>
                   </Grid.Col>
                   <Grid.Col md={4} lg={4}>
-                    <div onClick={() => history.push('/organization/edit/T3JnYW5pemF0aW9uTm9kZToxMDA=/branding')}>
+                    <Link to='/organization/edit/T3JnYW5pemF0aW9uTm9kZToxMDA=/branding'>
                       <StampCard header={<small>{t('organization.organization.branding.title')}</small>} footer={t('')} color="blue" icon="image" />
-                    </div>
+                    </Link>
                   </Grid.Col>
                 </Grid.Row>
               </Grid.Col>

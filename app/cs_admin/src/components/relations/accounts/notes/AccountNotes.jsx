@@ -54,7 +54,7 @@ function AccountNotes({ t, history, match }) {
   const { loading, error, data, fetchMore, refetch } = useQuery(GET_ACCOUNT_NOTES_QUERY, {
     variables: get_list_query_variables(accountId)
   })
-  const [deleteAccountFinancePaymentBatchCategoryItem] = useMutation(DELETE_ACCOUNT_NOTE)
+  const [deleteAccountNote] = useMutation(DELETE_ACCOUNT_NOTE)
 
   if (loading) return (
     <AccountNotesBase>
@@ -135,9 +135,43 @@ function AccountNotes({ t, history, match }) {
               <div dangerouslySetInnerHTML={{__html: node.note}} />
             </Card.Body>
             <Card.Footer>
-              <small className="float-right">delete</small>
-              <small className="float-right mr-4">edit</small>
-              
+              <Button 
+                color="danger"
+                size="sm"
+                className="float-right"
+                outline
+                onClick={() => {
+                  confirm_delete({
+                    t: t,
+                    msgConfirm: t("relations.account.notes.delete_confirm_msg"),
+                    msgDescription: <p><div dangerouslySetInnerHTML={{__html: node.note}} /></p>,
+                    msgSuccess: t('relations.account.notes.deleted'),
+                    deleteFunction: deleteAccountNote,
+                    functionVariables: { 
+                      variables: {
+                        input: {
+                          id: node.id
+                        }
+                      }, 
+                      refetchQueries: [
+                        {query: GET_ACCOUNT_NOTES_QUERY, variables: get_list_query_variables(accountId) },
+                      ]
+                    }
+                  })
+                }}
+              >
+                <Icon name="trash-2" />
+              </Button>
+              <Link to={`/relations/accounts/${match.params.account_id}/notes/edit/${node.id}`}>
+                <Button
+                  color="secondary"
+                  size="sm"
+                  className="float-right mr-4"
+                  outline
+                >
+                  {t("general.edit")}
+                </Button>
+              </Link>              
               <small className="text-muted float-right mr-4">{moment(node.createdAt).format(dateTimeFormatMoment)}</small>
               {node.noteBy.fullName} <br />
             </Card.Footer>

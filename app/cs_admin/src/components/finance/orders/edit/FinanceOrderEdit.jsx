@@ -173,7 +173,7 @@ function FinanceOrderEdit({t, match, history}) {
                       {node.priceDisplay}
                     </Table.Col>
                     <Table.Col>
-                      {node.financeTaxRate.name}
+                      {(node.financeTaxRate) ? node.financeTaxRate.name : ""}
                     </Table.Col>
                     <Table.Col>
                       {node.totalDisplay}
