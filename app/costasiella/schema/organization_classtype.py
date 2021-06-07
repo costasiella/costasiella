@@ -15,6 +15,7 @@ from sorl.thumbnail import get_thumbnail
 
 m = Messages()
 
+
 class OrganizationClasstypeNodeInterface(graphene.Interface):
     id = graphene.GlobalID()
     url_image = graphene.String()
@@ -61,7 +62,7 @@ class OrganizationClasstypeQuery(graphene.ObjectType):
             print('user has view permission')
             return OrganizationClasstype.objects.filter(archived=archived).order_by('name')
 
-        # Return only public non-archived locations
+        # Return only public non-archived classtypes
         return OrganizationClasstype.objects.filter(display_public=True, archived=False).order_by('name')
 
 

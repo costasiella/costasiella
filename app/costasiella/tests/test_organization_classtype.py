@@ -5,6 +5,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Permission
 from django.test import TestCase
 from graphene.test import Client
+from graphql_relay import to_global_id
 
 # Create your tests here.
 from django.contrib.auth.models import AnonymousUser
@@ -25,7 +26,6 @@ class GQLOrganizationClasstype(TestCase):
         self.permission_add = 'add_organizationclasstype'
         self.permission_change = 'change_organizationclasstype'
         self.permission_delete = 'delete_organizationclasstype'
-        
 
         self.classtypes_query = '''
 query OrganizationClasstypes($after: String, $before: String, $archived: Boolean) {
@@ -161,7 +161,6 @@ mutation ArchiveOrganizationClasstype($input: ArchiveOrganizationClasstypeInput!
 
         self.assertEqual(non_public_found, False)
 
-
     def test_query_permission_granted(self):
         """ Query list of classtypes with view permission """
         query = self.classtypes_query
@@ -192,19 +191,36 @@ mutation ArchiveOrganizationClasstype($input: ArchiveOrganizationClasstypeInput!
         # Assert non public classtypes are listed
         self.assertEqual(non_public_found, True)
 
-
-    def test_query_anon_user(self):
+    def test_query_anon_user_dont_list_archived(self):
         """ Query list of classtypes as anon user """
         query = self.classtypes_query
         classtype = f.OrganizationClasstypeFactory.create()
+        classtype.archived = True
+        classtype.save()
+
+        variables = {
+            'archived': True
+        }
+
+        executed = execute_test_client_api_query(query, self.anon_user, variables=variables)
+        data = executed.get('data')
+
+        self.assertEqual(len(data['organizationClasstypes']['edges']), 0)
+
+    def test_query_anon_user_list_public_and_not_archived(self):
+        """ Query list of classtypes as anon user """
+        query = self.classtypes_query
+        classtype = f.OrganizationClasstypeFactory.create()
+
         variables = {
             'archived': False
         }
 
         executed = execute_test_client_api_query(query, self.anon_user, variables=variables)
-        errors = executed.get('errors')
-        self.assertEqual(errors[0]['message'], 'Not logged in!')
+        data = executed.get('data')
 
+        item = data['organizationClasstypes']['edges'][0]['node']
+        self.assertEqual(item['name'], classtype.name)
 
     def test_query_one(self):
         """ Query one classtype """   
@@ -217,36 +233,61 @@ mutation ArchiveOrganizationClasstype($input: ArchiveOrganizationClasstypeInput!
         query = self.classtype_query
         executed = execute_test_client_api_query(query, self.admin_user, variables={"id": node_id})
         data = executed.get('data')
-        print(data)
         self.assertEqual(data['organizationClasstype']['name'], classtype.name)
         self.assertEqual(data['organizationClasstype']['archived'], classtype.archived)
         self.assertEqual(data['organizationClasstype']['description'], classtype.description)
         self.assertEqual(data['organizationClasstype']['displayPublic'], classtype.display_public)
         self.assertEqual(data['organizationClasstype']['urlWebsite'], classtype.url_website)
 
-
-    def test_query_one_anon_user(self):
-        """ Deny permission for anon users Query one classtype """   
+    def test_query_one_anon_user_allow_current_and_public(self):
+        """ Allow permission for anon users Query one classtype """
         query = self.classtype_query
         classtype = f.OrganizationClasstypeFactory.create()
         node_id = self.get_node_id_of_first_classtype()
         executed = execute_test_client_api_query(query, self.anon_user, variables={"id": node_id})
-        errors = executed.get('errors')
-        self.assertEqual(errors[0]['message'], 'Not logged in!')
+        data = executed.get('data')
 
+        self.assertEqual(data['organizationClasstype']['name'], classtype.name)
 
-    def test_query_one_permission_denied(self):
-        """ Permission denied message when user lacks authorization """   
+    def test_query_one_anon_user_dont_list_archived_or_non_public(self):
+        """ Deny permission for anon users Query one classtype """
+        query = self.classtype_query
+        classtype = f.OrganizationClasstypeFactory.create()
+        classtype.archived = True
+        classtype.save()
+        node_id = to_global_id('OrganizationClasstypeNode', classtype.id)
+        executed = execute_test_client_api_query(query, self.anon_user, variables={"id": node_id})
+        data = executed.get('data')
+
+        self.assertEqual(data['organizationClasstype'], None)
+
+    def test_query_one_no_permission_display_public_and_current(self):
+        """ Only list public and current when user lacks authorization """
         query = self.classtype_query
         
         user = f.RegularUserFactory.create()
         classtype = f.OrganizationClasstypeFactory.create()
-        node_id = self.get_node_id_of_first_classtype()
+        node_id = to_global_id('OrganizationClasstypeNode', classtype.id)
 
         executed = execute_test_client_api_query(query, user, variables={"id": node_id})
-        errors = executed.get('errors')
-        self.assertEqual(errors[0]['message'], 'Permission denied!')
+        data = executed.get('data')
 
+        self.assertEqual(data['organizationClasstype']['name'], classtype.name)
+
+    def test_query_one_no_permission_dont_list_archived(self):
+        """ Only list public and current when user lacks authorization """
+        query = self.classtype_query
+
+        user = f.RegularUserFactory.create()
+        classtype = f.OrganizationClasstypeFactory.create()
+        classtype.archived = True
+        classtype.save()
+        node_id = to_global_id('OrganizationClasstypeNode', classtype.id)
+
+        executed = execute_test_client_api_query(query, user, variables={"id": node_id})
+        data = executed.get('data')
+
+        self.assertEqual(data['organizationClasstype'], None)
 
     def test_query_one_permission_granted(self):
         """ Respond with data when user has permission """   
