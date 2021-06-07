@@ -32,9 +32,10 @@ class GQLAccountFinancePaymentBatchCategoryItem(TestCase):
 
         self.variables_create = {
             "input": {
-                "reference": "987878-dvg",
-                "content": "Content here",
-                "signatureDate": "2020-01-01"
+                "year": 2020,
+                "month": 1,
+                "amount": "20",
+                "description": "test description"
             }
         }
 
@@ -104,6 +105,17 @@ class GQLAccountFinancePaymentBatchCategoryItem(TestCase):
     createAccountFinancePaymentBatchCategoryItem(input: $input) {
       accountFinancePaymentBatchCategoryItem {
         id
+        account {
+          id 
+        }
+        financePaymentBatchCategory {
+          id
+          name
+        }
+        year
+        month
+        amount
+        description
       }
     }
   }
@@ -114,6 +126,17 @@ class GQLAccountFinancePaymentBatchCategoryItem(TestCase):
     updateAccountFinancePaymentBatchCategoryItem(input: $input) {
       accountFinancePaymentBatchCategoryItem {
         id
+        account {
+          id 
+        }
+        financePaymentBatchCategory {
+          id
+          name
+        }
+        year
+        month
+        amount
+        description
       }
     }
   }
@@ -304,82 +327,99 @@ class GQLAccountFinancePaymentBatchCategoryItem(TestCase):
             to_global_id("AccountNode", account_finance_payment_batch_category_item.account.id)
         )
 
-    # def test_create_account_finance_payment_batch_category_item(self):
-    #     """ Create a location room """
-    #     query = self.account_finance_payment_batch_category_item_create_mutation
-    #     account_bank_account = f.AccountBankAccountFactory.create()
-    #     variables = self.variables_create
-    #     variables['input']['accountBankAccount'] = to_global_id('AccountBankAccountNode', account_bank_account.pk)
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.admin_user,
-    #         variables=variables
-    #     )
-    #
-    #     data = executed.get('data')
-    #     self.assertEqual(
-    #       data['createAccountBankAccountMandate']['accountBankAccountMandate']['accountBankAccount']['id'],
-    #       variables['input']['accountBankAccount'])
-    #
-    # def test_create_account_finance_payment_batch_category_item_anon_user(self):
-    #     """ Don't allow creating locations rooms for non-logged in users """
-    #     query = self.account_finance_payment_batch_category_item_create_mutation
-    #     account_bank_account = f.AccountBankAccountFactory.create()
-    #     variables = self.variables_create
-    #     variables['input']['accountBankAccount'] = to_global_id('AccountBankAccountNode', account_bank_account.pk)
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.anon_user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
-    #
-    # def test_create_account_finance_payment_batch_category_item_permission_granted(self):
-    #     """ Allow creating location rooms for users with permissions """
-    #     query = self.account_finance_payment_batch_category_item_create_mutation
-    #     account_bank_account = f.AccountBankAccountFactory.create()
-    #     variables = self.variables_create
-    #     variables['input']['accountBankAccount'] = to_global_id('AccountBankAccountNode', account_bank_account.pk)
-    #
-    #     # Create regular user
-    #     user = account_bank_account.account
-    #     permission = Permission.objects.get(codename=self.permission_add)
-    #     user.user_permissions.add(permission)
-    #     user.save()
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(
-    #       data['createAccountBankAccountMandate']['accountBankAccountMandate']['accountBankAccount']['id'],
-    #       variables['input']['accountBankAccount'])
-    #
-    # def test_create_account_finance_payment_batch_category_item_permission_denied(self):
-    #     """ Check create location room permission denied error message """
-    #     query = self.account_finance_payment_batch_category_item_create_mutation
-    #     account_bank_account = f.AccountBankAccountFactory.create()
-    #     variables = self.variables_create
-    #     variables['input']['accountBankAccount'] = to_global_id('AccountBankAccountNode', account_bank_account.pk)
-    #
-    #     # Create regular user
-    #     user = account_bank_account.account
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
-    #
+    def test_create_account_finance_payment_batch_category_item(self):
+        """ Create a account finance payment batch category item  """
+        query = self.account_finance_payment_batch_category_item_create_mutation
+        account = f.RegularUserFactory.create()
+        finance_payment_batch_category = f.FinancePaymentBatchCategoryCollectionFactory.create()
+        variables = self.variables_create
+        variables['input']['account'] = to_global_id("AccountNode", account.id)
+        variables['input']['financePaymentBatchCategory'] = to_global_id('FinancePaymentBatchCategoryNode',
+                                                                         finance_payment_batch_category.pk)
+
+        executed = execute_test_client_api_query(
+            query,
+            self.admin_user,
+            variables=variables
+        )
+
+        data = executed.get('data')
+        item = data['createAccountFinancePaymentBatchCategoryItem']['accountFinancePaymentBatchCategoryItem']
+        self.assertEqual(
+          item['financePaymentBatchCategory']['id'], variables['input']['financePaymentBatchCategory']
+        )
+        self.assertEqual(
+          item['account']['id'], variables['input']['account']
+        )
+        self.assertEqual(item['year'], variables['input']['year'])
+        self.assertEqual(item['month'], variables['input']['month'])
+        self.assertEqual(item['description'], variables['input']['description'])
+        self.assertEqual(item['amount'], str(variables['input']['amount']))
+
+    def test_create_account_finance_payment_batch_category_item_anon_user(self):
+        """ Don't allow creating account finance payment batch items for non-logged in users """
+        query = self.account_finance_payment_batch_category_item_create_mutation
+        account = f.RegularUserFactory.create()
+        finance_payment_batch_category = f.FinancePaymentBatchCategoryCollectionFactory.create()
+        variables = self.variables_create
+        variables['input']['account'] = to_global_id("AccountNode", account.id)
+        variables['input']['financePaymentBatchCategory'] = to_global_id('FinancePaymentBatchCategoryNode',
+                                                                         finance_payment_batch_category.pk)
+        executed = execute_test_client_api_query(
+            query,
+            self.anon_user,
+            variables=variables
+        )
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
+
+    def test_create_account_finance_payment_batch_category_item_permission_granted(self):
+        """ Allow creating account finance payment batch category items for users with permissions """
+        query = self.account_finance_payment_batch_category_item_create_mutation
+        account = f.RegularUserFactory.create()
+        finance_payment_batch_category = f.FinancePaymentBatchCategoryCollectionFactory.create()
+        variables = self.variables_create
+        variables['input']['account'] = to_global_id("AccountNode", account.id)
+        variables['input']['financePaymentBatchCategory'] = to_global_id('FinancePaymentBatchCategoryNode',
+                                                                         finance_payment_batch_category.pk)
+
+        # Create regular user
+        user = account
+        permission = Permission.objects.get(codename=self.permission_add)
+        user.user_permissions.add(permission)
+        user.save()
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=variables
+        )
+        data = executed.get('data')
+        item = data['createAccountFinancePaymentBatchCategoryItem']['accountFinancePaymentBatchCategoryItem']
+        self.assertEqual(
+          item['financePaymentBatchCategory']['id'], variables['input']['financePaymentBatchCategory']
+        )
+
+    def test_create_account_finance_payment_batch_category_item_permission_denied(self):
+        """ Check create location room permission denied error message """
+        query = self.account_finance_payment_batch_category_item_create_mutation
+        account = f.RegularUserFactory.create()
+        finance_payment_batch_category = f.FinancePaymentBatchCategoryCollectionFactory.create()
+        variables = self.variables_create
+        variables['input']['account'] = to_global_id("AccountNode", account.id)
+        variables['input']['financePaymentBatchCategory'] = to_global_id('FinancePaymentBatchCategoryNode',
+                                                                         finance_payment_batch_category.pk)
+        # Create regular user
+        user = account
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
+
     # def test_update_account_finance_payment_batch_category_item(self):
     #     """ Update a bank account mandate """
     #     query = self.account_finance_payment_batch_category_item_update_mutation
