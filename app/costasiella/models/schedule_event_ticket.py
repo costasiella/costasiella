@@ -83,7 +83,7 @@ class ScheduleEventTicket(models.Model):
 
     def get_earlybird_discount_on_date(self, date):
         from decimal import Decimal, ROUND_HALF_UP
-        discount = 0
+        discount = Decimal(0)
         earlybird = None
         earlybirds = self._get_earlybird_qs(date)
 

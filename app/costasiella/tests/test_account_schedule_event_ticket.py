@@ -395,7 +395,10 @@ class GQLAccountScheduleEventTicket(TestCase):
             self.admin_user,
             variables=self.variables_create
         )
+        print("$$$$$$$$$")
+        print(executed)
         data = executed.get('data')
+
 
         self.assertEqual(
             data['createAccountScheduleEventTicket']['accountScheduleEventTicket']['account']['id'],
