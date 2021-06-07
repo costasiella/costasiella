@@ -179,79 +179,52 @@ class GQLAccountFinancePaymentBatchCategoryItem(TestCase):
             account_finance_payment_batch_category_item.description
         )
 
-    # def test_query_permission_denied_other_account_mandates(self):
-    #     """ Only users's own mandates should be shown """
-    #     query = self.account_finance_payment_batch_category_items_query
-    #     account_finance_payment_batch_category_item = f.AccountBankAccountMandateFactory.create()
-    #
-    #     variables = {
-    #         'accountBankAccount': to_global_id('AccountBankAccountNode',
-    #                                            account_finance_payment_batch_category_item.account_bank_account.pk),
-    #     }
-    #
-    #     # Create regular user
-    #     user = f.TeacherFactory.create()
-    #     executed = execute_test_client_api_query(query, user, variables=variables)
-    #     data = executed.get('data')
-    #
-    #     self.assertEqual(data['accountBankAccountMandates'], None)
-    #
-    # def test_query_permission_denied_own_account_mandates(self):
-    #     """ Only users's own mandates should be shown """
-    #     query = self.account_finance_payment_batch_category_items_query
-    #     account_finance_payment_batch_category_item = f.AccountBankAccountMandateFactory.create()
-    #
-    #     variables = {
-    #         'accountBankAccount': to_global_id('AccountBankAccountNode',
-    #                                            account_finance_payment_batch_category_item.account_bank_account.pk),
-    #     }
-    #
-    #     # Create regular user
-    #     user = account_finance_payment_batch_category_item.account_bank_account.account
-    #     executed = execute_test_client_api_query(query, user, variables=variables)
-    #     data = executed.get('data')
-    #
-    #     self.assertEqual(
-    #         data['accountBankAccountMandates']['edges'][0]['node']['accountBankAccount']['id'],
-    #         variables['accountBankAccount']
-    #     )
-    #
-    # def test_query_permission_granted(self):
-    #     """ With permissions, other users' mandates should be visible """
-    #     query = self.account_finance_payment_batch_category_items_query
-    #     account_finance_payment_batch_category_item = f.AccountBankAccountMandateFactory.create()
-    #
-    #     variables = {
-    #         'accountBankAccount': to_global_id('AccountBankAccountNode',
-    #                                            account_finance_payment_batch_category_item.account_bank_account.pk),
-    #     }
-    #
-    #     # Create regular user
-    #     user = f.TeacherFactory.create()
-    #     permission = Permission.objects.get(codename='view_accountfinancepaymentbatchcategoryitem')
-    #     user.user_permissions.add(permission)
-    #     user.save()
-    #     executed = execute_test_client_api_query(query, user, variables=variables)
-    #     data = executed.get('data')
-    #
-    #     # The mandate of another use should be listed
-    #     self.assertEqual(
-    #         data['accountBankAccountMandates']['edges'][0]['node']['accountBankAccount']['id'],
-    #         variables['accountBankAccount']
-    #     )
-    #
-    # def test_query_anon_user(self):
-    #     """ Anon users shouldn't be able to view mandates """
-    #     query = self.account_finance_payment_batch_category_items_query
-    #     account_finance_payment_batch_category_item = f.AccountBankAccountMandateFactory.create()
-    #     variables = {
-    #         'accountBankAccount': to_global_id('AccountBankAccountNode',
-    #                                            account_finance_payment_batch_category_item.account_bank_account.pk),
-    #     }
-    #
-    #     executed = execute_test_client_api_query(query, self.anon_user, variables=variables)
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
+    def test_query_permission_denied(self):
+        """ Show permission denied message when a user without permission tries to query the list  """
+        query = self.account_finance_payment_batch_category_items_query
+        account_finance_payment_batch_category_item = f.AccountFinancePaymentBatchCategoryItemFactory.create()
+        variables = {
+            'account': to_global_id('AccountNode', account_finance_payment_batch_category_item.account.pk),
+        }
+
+        # Create regular user
+        user = account_finance_payment_batch_category_item.account
+        executed = execute_test_client_api_query(query, user, variables=variables)
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
+
+    def test_query_permission_granted(self):
+        """ With permissions, listing should be possible """
+        query = self.account_finance_payment_batch_category_items_query
+        account_finance_payment_batch_category_item = f.AccountFinancePaymentBatchCategoryItemFactory.create()
+        variables = {
+            'account': to_global_id('AccountNode', account_finance_payment_batch_category_item.account.pk),
+        }
+
+        # Create regular user
+        user = account_finance_payment_batch_category_item.account
+        permission = Permission.objects.get(codename='view_accountfinancepaymentbatchcategoryitem')
+        user.user_permissions.add(permission)
+        user.save()
+        executed = execute_test_client_api_query(query, user, variables=variables)
+        data = executed.get('data')
+
+        self.assertEqual(
+            data['accountFinancePaymentBatchCategoryItems']['edges'][0]['node']['description'],
+            account_finance_payment_batch_category_item.description
+        )
+
+    def test_query_anon_user(self):
+        """ Anon users shouldn't be able to view mandates """
+        query = self.account_finance_payment_batch_category_items_query
+        account_finance_payment_batch_category_item = f.AccountFinancePaymentBatchCategoryItemFactory.create()
+        variables = {
+            'account': to_global_id('AccountNode', account_finance_payment_batch_category_item.account.pk),
+        }
+
+        executed = execute_test_client_api_query(query, self.anon_user, variables=variables)
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
     #
     # def test_query_one(self):
     #     """ Query one account bank account mandate """
