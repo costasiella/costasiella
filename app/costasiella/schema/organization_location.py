@@ -11,6 +11,7 @@ from ..modules.messages import Messages
 
 m = Messages()
 
+
 class OrganizationLocationNode(DjangoObjectType):
     class Meta:
         model = OrganizationLocation
@@ -53,8 +54,8 @@ class OrganizationLocationQuery(graphene.ObjectType):
 
     def resolve_organization_locations(self, info, archived=False, **kwargs):
         user = info.context.user
-        print('user authenticated:')
-        print(user.is_authenticated)
+        # print('user authenticated:')
+        # print(user.is_authenticated)
         # if user.is_anonymous:
         #     raise Exception(m.user_not_logged_in)
         # if not info.context.user.is_authenticated:

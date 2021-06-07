@@ -6,6 +6,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Permission
 from django.test import TestCase
 from graphene.test import Client
+from graphql_relay import to_global_id
 
 # Create your tests here.
 from django.contrib.auth.models import AnonymousUser
@@ -15,8 +16,6 @@ from .helpers import execute_test_client_api_query
 from ..modules.gql_tools import get_rid
 from .. import models
 from .. import schema
-
-
 
 
 class GQLOrganizationLocation(TestCase):
@@ -103,7 +102,6 @@ query getOrganizationLocation($id: ID!) {
         # This is run after every test
         pass
 
-
     def get_node_id_of_first_location(self):
         # query locations to get node id easily
         variables = {
@@ -113,7 +111,6 @@ query getOrganizationLocation($id: ID!) {
         data = executed.get('data')
         
         return data['organizationLocations']['edges'][0]['node']['id']
-
 
     def test_query(self):
         """ Query list of locations """
@@ -128,7 +125,6 @@ query getOrganizationLocation($id: ID!) {
         self.assertEqual(data['organizationLocations']['edges'][0]['node']['name'], location.name)
         self.assertEqual(data['organizationLocations']['edges'][0]['node']['archived'], location.archived)
         self.assertEqual(data['organizationLocations']['edges'][0]['node']['displayPublic'], location.display_public)
-
 
     def test_query_permission_denied(self):
         """ Query list of locations """
@@ -154,7 +150,6 @@ query getOrganizationLocation($id: ID!) {
                 non_public_found = True
 
         self.assertEqual(non_public_found, False)
-
 
     def test_query_permission_granted(self):
         """ Query list of locations """
@@ -186,8 +181,7 @@ query getOrganizationLocation($id: ID!) {
         # Assert non public locations are listed
         self.assertEqual(non_public_found, True)
 
-
-    def test_query_anon_user(self):
+    def test_query_anon_user_show_public_non_archived_locations(self):
         """ Query list of locations """
         query = self.locations_query
         location = f.OrganizationLocationFactory.create()
@@ -196,9 +190,23 @@ query getOrganizationLocation($id: ID!) {
         }
 
         executed = execute_test_client_api_query(query, self.anon_user, variables=variables)
-        errors = executed.get('errors')
-        self.assertEqual(errors[0]['message'], 'Not logged in!')
+        data = executed.get('data')
+        self.assertEqual(data['organizationLocations']['edges'][0]['node']['name'], location.name)
 
+    def test_query_anon_user_dont_show_non_public_archived_locations(self):
+        """ Query list of locations """
+        query = self.locations_query
+        location = f.OrganizationLocationFactory.create()
+        location.archived = True
+        location.save()
+
+        variables = {
+            'archived': False
+        }
+
+        executed = execute_test_client_api_query(query, self.anon_user, variables=variables)
+        data = executed.get('data')
+        self.assertEqual(len(data['organizationLocations']['edges']), 0)
 
     def test_query_one(self):
         """ Query one location """   
@@ -215,9 +223,8 @@ query getOrganizationLocation($id: ID!) {
         self.assertEqual(data['organizationLocation']['archived'], location.archived)
         self.assertEqual(data['organizationLocation']['displayPublic'], location.display_public)
 
-
-    def test_query_one_anon_user(self):
-        """ Deny permission for anon users Query one location """   
+    def test_query_one_anon_user_show_public_non_archived_location(self):
+        """ Check permission for anon users Query one location """
         location = f.OrganizationLocationFactory.create()
 
         # First query locations to get node id easily
@@ -226,12 +233,26 @@ query getOrganizationLocation($id: ID!) {
         # Now query single location and check
         query = self.location_query
         executed = execute_test_client_api_query(query, self.anon_user, variables={"id": node_id})
-        errors = executed.get('errors')
-        self.assertEqual(errors[0]['message'], 'Not logged in!')
+        data = executed.get('data')
+        self.assertEqual(data['organizationLocation']['name'], location.name)
 
+    def test_query_one_anon_user_dont_show_non_public_archived_location(self):
+        """ Check permission for anon users Query one location """
+        location = f.OrganizationLocationFactory.create()
+        location.archived = True
+        location.save()
 
-    def test_query_one_permission_denied(self):
-        """ Permission denied message when user lacks authorization """   
+        # First query locations to get node id easily
+        node_id = to_global_id('OrganizationLocationNode', location.id)
+
+        # Now query single location and check
+        query = self.location_query
+        executed = execute_test_client_api_query(query, self.anon_user, variables={"id": node_id})
+        data = executed.get('data')
+        self.assertEqual(data['organizationLocation'], None)
+
+    def test_query_one_user_no_permissions_only_public_non_archived(self):
+        """ Only list public, non archived locations when user lacks authorization """
         # Create regular user
         user = f.RegularUserFactory.create()
         location = f.OrganizationLocationFactory.create()
@@ -242,9 +263,25 @@ query getOrganizationLocation($id: ID!) {
         # Now query single location and check
         query = self.location_query
         executed = execute_test_client_api_query(query, user, variables={"id": node_id})
-        errors = executed.get('errors')
-        self.assertEqual(errors[0]['message'], 'Permission denied!')
+        data = executed.get('data')
+        self.assertEqual(data['organizationLocation']['name'], location.name)
 
+    def test_query_one_user_no_permissions_hide_nonpublic_archived(self):
+        """ Only list public, non archived locations when user lacks authorization """
+        # Create regular user
+        user = f.RegularUserFactory.create()
+        location = f.OrganizationLocationFactory.create()
+        location.archived = True
+        location.save()
+
+        # First query locations to get node id easily
+        node_id = to_global_id('OrganizationLocationNode', location.id)
+
+        # Now query single location and check
+        query = self.location_query
+        executed = execute_test_client_api_query(query, user, variables={"id": node_id})
+        data = executed.get('data')
+        self.assertEqual(data['organizationLocation'], None)
 
     def test_query_one_permission_granted(self):
         """ Respond with data when user has permission """   
