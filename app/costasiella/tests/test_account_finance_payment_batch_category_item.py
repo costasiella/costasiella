@@ -279,30 +279,31 @@ class GQLAccountFinancePaymentBatchCategoryItem(TestCase):
         # Now query single location and check
         query = self.account_finance_payment_batch_category_item_query
         executed = execute_test_client_api_query(query, user, variables={"id": node_id})
-        print("$$$$$$$$$4")
-        print(executed)
 
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Permission denied!')
-    #
-    # def test_query_one_permission_granted(self):
-    #     """ Respond with data when user has permission """
-    #     user = f.TeacherFactory.create()
-    #     permission = Permission.objects.get(codename='view_accountfinancepaymentbatchcategoryitem')
-    #     user.user_permissions.add(permission)
-    #     user.save()
-    #     account_finance_payment_batch_category_item = f.AccountFinancePaymentBatchCategoryItemFactory.create()
-    #
-    #     # First query locations to get node id easily
-    #     node_id = to_global_id('AccountFinancePaymentBatchCategoryItemNode', account_finance_payment_batch_category_item.pk)
-    #
-    #     # Now query single location and check
-    #     query = self.account_finance_payment_batch_category_item_query
-    #     executed = execute_test_client_api_query(query, user, variables={"id": node_id})
-    #     data = executed.get('data')
-    #     self.assertEqual(data['accountBankAccountMandate']['accountBankAccount']['id'],
-    #       to_global_id('AccountBankAccountNode', account_finance_payment_batch_category_item.account_bank_account.pk))
-    #
+
+    def test_query_one_permission_granted(self):
+        """ Respond with data when user has permission """
+        user = f.TeacherFactory.create()
+        permission = Permission.objects.get(codename=self.permission_view)
+        user.user_permissions.add(permission)
+        user.save()
+        account_finance_payment_batch_category_item = f.AccountFinancePaymentBatchCategoryItemFactory.create()
+
+        # First query locations to get node id easily
+        node_id = to_global_id('AccountFinancePaymentBatchCategoryItemNode',
+                               account_finance_payment_batch_category_item.pk)
+
+        # Now query single location and check
+        query = self.account_finance_payment_batch_category_item_query
+        executed = execute_test_client_api_query(query, user, variables={"id": node_id})
+        data = executed.get('data')
+        self.assertEqual(
+            data['accountFinancePaymentBatchCategoryItem']['account']['id'],
+            to_global_id("AccountNode", account_finance_payment_batch_category_item.account.id)
+        )
+
     # def test_create_account_finance_payment_batch_category_item(self):
     #     """ Create a location room """
     #     query = self.account_finance_payment_batch_category_item_create_mutation
