@@ -84,6 +84,9 @@ class GQLAccountFinancePaymentBatchCategoryItem(TestCase):
   query AccountFinancePaymentBatchCategoryItem($id: ID!) {
     accountFinancePaymentBatchCategoryItem(id: $id) {
       id
+      account {
+        id
+      }
       financePaymentBatchCategory {
         id
         name
@@ -92,21 +95,6 @@ class GQLAccountFinancePaymentBatchCategoryItem(TestCase):
       month
       amount
       description
-    }
-    financePaymentBatchCategories(first: 100, archived: false) {
-      pageInfo {
-        startCursor
-        endCursor
-        hasNextPage
-        hasPreviousPage
-      }
-      edges {
-        node {
-          id
-          name
-          batchCategoryType
-        }
-      }
     }
   }
 '''
@@ -225,51 +213,77 @@ class GQLAccountFinancePaymentBatchCategoryItem(TestCase):
         executed = execute_test_client_api_query(query, self.anon_user, variables=variables)
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Not logged in!')
-    #
-    # def test_query_one(self):
-    #     """ Query one account bank account mandate """
-    #     account_finance_payment_batch_category_item = f.AccountBankAccountMandateFactory.create()
-    #
-    #     # First query locations to get node id easily
-    #     node_id = to_global_id('AccountBankAccountMandateNode', account_finance_payment_batch_category_item.pk)
-    #
-    #     # Now query single location and check
-    #     query = self.account_finance_payment_batch_category_item_query
-    #     executed = execute_test_client_api_query(query, self.admin_user, variables={"id": node_id})
-    #     data = executed.get('data')
-    #     self.assertEqual(data['accountBankAccountMandate']['accountBankAccount']['id'],
-    #       to_global_id('AccountBankAccountNode', account_finance_payment_batch_category_item.account_bank_account.pk))
-    #     self.assertEqual(data['accountBankAccountMandate']['reference'], account_finance_payment_batch_category_item.reference)
-    #     self.assertEqual(data['accountBankAccountMandate']['content'], account_finance_payment_batch_category_item.content)
-    #     self.assertEqual(data['accountBankAccountMandate']['signatureDate'],
-    #                      str(account_finance_payment_batch_category_item.signature_date))
-    #
-    # def test_query_one_anon_user(self):
-    #     """ Deny permission for anon users Query one location room """
-    #     account_finance_payment_batch_category_item = f.AccountBankAccountMandateFactory.create()
-    #
-    #     # First query locations to get node id easily
-    #     node_id = to_global_id('AccountBankAccountMandateNode', account_finance_payment_batch_category_item.pk)
-    #
-    #     # Now query single location and check
-    #     query = self.account_finance_payment_batch_category_item_query
-    #     executed = execute_test_client_api_query(query, self.anon_user, variables={"id": node_id})
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
-    #
-    # def test_query_one_permission_denied(self):
-    #     """ Permission denied message when user lacks authorization """
-    #     account_finance_payment_batch_category_item = f.AccountBankAccountMandateFactory.create()
-    #     user = account_finance_payment_batch_category_item.account_bank_account.account
-    #
-    #     # First query locations to get node id easily
-    #     node_id = to_global_id('AccountBankAccountMandateNode', account_finance_payment_batch_category_item.pk)
-    #
-    #     # Now query single location and check
-    #     query = self.account_finance_payment_batch_category_item_query
-    #     executed = execute_test_client_api_query(query, user, variables={"id": node_id})
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
+
+    def test_query_one(self):
+        """ Query one account finance payment batch category item """
+        account_finance_payment_batch_category_item = f.AccountFinancePaymentBatchCategoryItemFactory.create()
+
+        # First query locations to get node id easily
+        node_id = to_global_id('AccountFinancePaymentBatchCategoryItemNode',
+                               account_finance_payment_batch_category_item.pk)
+
+        # Now query single item and check
+        query = self.account_finance_payment_batch_category_item_query
+        executed = execute_test_client_api_query(query, self.admin_user, variables={"id": node_id})
+
+        data = executed.get('data')
+        self.assertEqual(
+            data['accountFinancePaymentBatchCategoryItem']['account']['id'],
+            to_global_id("AccountNode", account_finance_payment_batch_category_item.account.id)
+        )
+        self.assertEqual(
+            data['accountFinancePaymentBatchCategoryItem']['financePaymentBatchCategory']['id'],
+            to_global_id("FinancePaymentBatchCategoryNode",
+                         account_finance_payment_batch_category_item.finance_payment_batch_category.id)
+        )
+        self.assertEqual(
+            data['accountFinancePaymentBatchCategoryItem']['year'],
+            account_finance_payment_batch_category_item.year
+        )
+        self.assertEqual(
+            data['accountFinancePaymentBatchCategoryItem']['month'],
+            account_finance_payment_batch_category_item.month
+        )
+        self.assertEqual(
+            data['accountFinancePaymentBatchCategoryItem']['amount'],
+            format(account_finance_payment_batch_category_item.amount, ".2f")
+        )
+        self.assertEqual(
+            data['accountFinancePaymentBatchCategoryItem']['description'],
+            account_finance_payment_batch_category_item.description
+        )
+
+    def test_query_one_anon_user(self):
+        """ Deny permission for anon users Query one account finance payment batch category item """
+        account_finance_payment_batch_category_item = f.AccountFinancePaymentBatchCategoryItemFactory.create()
+
+        # First query locations to get node id easily
+        node_id = to_global_id('AccountFinancePaymentBatchCategoryItemNode',
+                               account_finance_payment_batch_category_item.pk)
+
+        # Now query single location and check
+        query = self.account_finance_payment_batch_category_item_query
+        executed = execute_test_client_api_query(query, self.anon_user, variables={"id": node_id})
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
+
+    def test_query_one_permission_denied(self):
+        """ Permission denied message when user lacks authorization """
+        account_finance_payment_batch_category_item = f.AccountFinancePaymentBatchCategoryItemFactory.create()
+        user = account_finance_payment_batch_category_item.account
+
+        # First query locations to get node id easily
+        node_id = to_global_id('AccountFinancePaymentBatchCategoryItemNode',
+                               account_finance_payment_batch_category_item.pk)
+
+        # Now query single location and check
+        query = self.account_finance_payment_batch_category_item_query
+        executed = execute_test_client_api_query(query, user, variables={"id": node_id})
+        print("$$$$$$$$$4")
+        print(executed)
+
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
     #
     # def test_query_one_permission_granted(self):
     #     """ Respond with data when user has permission """
@@ -277,10 +291,10 @@ class GQLAccountFinancePaymentBatchCategoryItem(TestCase):
     #     permission = Permission.objects.get(codename='view_accountfinancepaymentbatchcategoryitem')
     #     user.user_permissions.add(permission)
     #     user.save()
-    #     account_finance_payment_batch_category_item = f.AccountBankAccountMandateFactory.create()
+    #     account_finance_payment_batch_category_item = f.AccountFinancePaymentBatchCategoryItemFactory.create()
     #
     #     # First query locations to get node id easily
-    #     node_id = to_global_id('AccountBankAccountMandateNode', account_finance_payment_batch_category_item.pk)
+    #     node_id = to_global_id('AccountFinancePaymentBatchCategoryItemNode', account_finance_payment_batch_category_item.pk)
     #
     #     # Now query single location and check
     #     query = self.account_finance_payment_batch_category_item_query
@@ -368,9 +382,9 @@ class GQLAccountFinancePaymentBatchCategoryItem(TestCase):
     # def test_update_account_finance_payment_batch_category_item(self):
     #     """ Update a bank account mandate """
     #     query = self.account_finance_payment_batch_category_item_update_mutation
-    #     account_finance_payment_batch_category_item = f.AccountBankAccountMandateFactory.create()
+    #     account_finance_payment_batch_category_item = f.AccountFinancePaymentBatchCategoryItemFactory.create()
     #     variables = self.variables_update
-    #     variables['input']['id'] = to_global_id("AccountBankAccountMandateNode", account_finance_payment_batch_category_item.pk)
+    #     variables['input']['id'] = to_global_id("AccountFinancePaymentBatchCategoryItemNode", account_finance_payment_batch_category_item.pk)
     #
     #     executed = execute_test_client_api_query(
     #         query,
@@ -392,9 +406,9 @@ class GQLAccountFinancePaymentBatchCategoryItem(TestCase):
     # def test_update_account_finance_payment_batch_category_item_anon_user(self):
     #     """ Don't allow updating bank account mandates for non-logged in users """
     #     query = self.account_finance_payment_batch_category_item_update_mutation
-    #     account_finance_payment_batch_category_item = f.AccountBankAccountMandateFactory.create()
+    #     account_finance_payment_batch_category_item = f.AccountFinancePaymentBatchCategoryItemFactory.create()
     #     variables = self.variables_update
-    #     variables['input']['id'] = to_global_id("AccountBankAccountMandateNode", account_finance_payment_batch_category_item.pk)
+    #     variables['input']['id'] = to_global_id("AccountFinancePaymentBatchCategoryItemNode", account_finance_payment_batch_category_item.pk)
     #
     #     executed = execute_test_client_api_query(
     #         query,
@@ -408,9 +422,9 @@ class GQLAccountFinancePaymentBatchCategoryItem(TestCase):
     # def test_update_account_finance_payment_batch_category_item_permission_granted(self):
     #     """ Allow updating bank account mandate for users with permissions """
     #     query = self.account_finance_payment_batch_category_item_update_mutation
-    #     account_finance_payment_batch_category_item = f.AccountBankAccountMandateFactory.create()
+    #     account_finance_payment_batch_category_item = f.AccountFinancePaymentBatchCategoryItemFactory.create()
     #     variables = self.variables_update
-    #     variables['input']['id'] = to_global_id("AccountBankAccountMandateNode", account_finance_payment_batch_category_item.pk)
+    #     variables['input']['id'] = to_global_id("AccountFinancePaymentBatchCategoryItemNode", account_finance_payment_batch_category_item.pk)
     #
     #     # Create regular user
     #     user = account_finance_payment_batch_category_item.account_bank_account.account
@@ -431,9 +445,9 @@ class GQLAccountFinancePaymentBatchCategoryItem(TestCase):
     # def test_update_account_finance_payment_batch_category_item_permission_denied(self):
     #     """ Check update bank account mandate permission denied error message """
     #     query = self.account_finance_payment_batch_category_item_update_mutation
-    #     account_finance_payment_batch_category_item = f.AccountBankAccountMandateFactory.create()
+    #     account_finance_payment_batch_category_item = f.AccountFinancePaymentBatchCategoryItemFactory.create()
     #     variables = self.variables_update
-    #     variables['input']['id'] = to_global_id("AccountBankAccountMandateNode", account_finance_payment_batch_category_item.pk)
+    #     variables['input']['id'] = to_global_id("AccountFinancePaymentBatchCategoryItemNode", account_finance_payment_batch_category_item.pk)
     #
     #     # Create regular user
     #     user = account_finance_payment_batch_category_item.account_bank_account.account
@@ -450,9 +464,9 @@ class GQLAccountFinancePaymentBatchCategoryItem(TestCase):
     # def test_delete_account_finance_payment_batch_category_item(self):
     #     """ Archive a account bank account mandate"""
     #     query = self.account_finance_payment_batch_category_item_archive_mutation
-    #     account_finance_payment_batch_category_item = f.AccountBankAccountMandateFactory.create()
+    #     account_finance_payment_batch_category_item = f.AccountFinancePaymentBatchCategoryItemFactory.create()
     #     variables = self.variables_delete
-    #     variables['input']['id'] = to_global_id("AccountBankAccountMandateNode", account_finance_payment_batch_category_item.pk)
+    #     variables['input']['id'] = to_global_id("AccountFinancePaymentBatchCategoryItemNode", account_finance_payment_batch_category_item.pk)
     #
     #     executed = execute_test_client_api_query(
     #         query,
@@ -465,9 +479,9 @@ class GQLAccountFinancePaymentBatchCategoryItem(TestCase):
     # def test_delete_account_finance_payment_batch_category_item_anon_user(self):
     #     """ Anon users shouldn't be able to delete a account bank account mandate """
     #     query = self.account_finance_payment_batch_category_item_archive_mutation
-    #     account_finance_payment_batch_category_item = f.AccountBankAccountMandateFactory.create()
+    #     account_finance_payment_batch_category_item = f.AccountFinancePaymentBatchCategoryItemFactory.create()
     #     variables = self.variables_delete
-    #     variables['input']['id'] = to_global_id("AccountBankAccountMandateNode", account_finance_payment_batch_category_item.pk)
+    #     variables['input']['id'] = to_global_id("AccountFinancePaymentBatchCategoryItemNode", account_finance_payment_batch_category_item.pk)
     #
     #     executed = execute_test_client_api_query(
     #         query,
@@ -481,9 +495,9 @@ class GQLAccountFinancePaymentBatchCategoryItem(TestCase):
     # def test_delete_account_finance_payment_batch_category_item_permission_granted(self):
     #     """ Allow deleting bank account mandates for users with permissions """
     #     query = self.account_finance_payment_batch_category_item_archive_mutation
-    #     account_finance_payment_batch_category_item = f.AccountBankAccountMandateFactory.create()
+    #     account_finance_payment_batch_category_item = f.AccountFinancePaymentBatchCategoryItemFactory.create()
     #     variables = self.variables_delete
-    #     variables['input']['id'] = to_global_id("AccountBankAccountMandateNode", account_finance_payment_batch_category_item.pk)
+    #     variables['input']['id'] = to_global_id("AccountFinancePaymentBatchCategoryItemNode", account_finance_payment_batch_category_item.pk)
     #
     #     # Create regular user
     #     user = f.TeacherFactory.create()
@@ -502,9 +516,9 @@ class GQLAccountFinancePaymentBatchCategoryItem(TestCase):
     # def test_delete_account_finance_payment_batch_category_item_permission_denied(self):
     #     """ Check delete mandate permission denied error message """
     #     query = self.account_finance_payment_batch_category_item_archive_mutation
-    #     account_finance_payment_batch_category_item = f.AccountBankAccountMandateFactory.create()
+    #     account_finance_payment_batch_category_item = f.AccountFinancePaymentBatchCategoryItemFactory.create()
     #     variables = self.variables_delete
-    #     variables['input']['id'] = to_global_id("AccountBankAccountMandateNode", account_finance_payment_batch_category_item.pk)
+    #     variables['input']['id'] = to_global_id("AccountFinancePaymentBatchCategoryItemNode", account_finance_payment_batch_category_item.pk)
     #
     #     # Create regular user
     #     user = f.TeacherFactory.create()
