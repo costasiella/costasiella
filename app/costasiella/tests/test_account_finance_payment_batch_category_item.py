@@ -520,73 +520,75 @@ class GQLAccountFinancePaymentBatchCategoryItem(TestCase):
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Permission denied!')
 
-    # def test_delete_account_finance_payment_batch_category_item(self):
-    #     """ Archive a account bank account mandate"""
-    #     query = self.account_finance_payment_batch_category_item_archive_mutation
-    #     account_finance_payment_batch_category_item = f.AccountFinancePaymentBatchCategoryItemFactory.create()
-    #     variables = self.variables_delete
-    #     variables['input']['id'] = to_global_id("AccountFinancePaymentBatchCategoryItemNode", account_finance_payment_batch_category_item.pk)
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.admin_user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['deleteAccountBankAccountMandate']['ok'], True)
-    #
-    # def test_delete_account_finance_payment_batch_category_item_anon_user(self):
-    #     """ Anon users shouldn't be able to delete a account bank account mandate """
-    #     query = self.account_finance_payment_batch_category_item_archive_mutation
-    #     account_finance_payment_batch_category_item = f.AccountFinancePaymentBatchCategoryItemFactory.create()
-    #     variables = self.variables_delete
-    #     variables['input']['id'] = to_global_id("AccountFinancePaymentBatchCategoryItemNode", account_finance_payment_batch_category_item.pk)
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.anon_user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
-    #
-    # def test_delete_account_finance_payment_batch_category_item_permission_granted(self):
-    #     """ Allow deleting bank account mandates for users with permissions """
-    #     query = self.account_finance_payment_batch_category_item_archive_mutation
-    #     account_finance_payment_batch_category_item = f.AccountFinancePaymentBatchCategoryItemFactory.create()
-    #     variables = self.variables_delete
-    #     variables['input']['id'] = to_global_id("AccountFinancePaymentBatchCategoryItemNode", account_finance_payment_batch_category_item.pk)
-    #
-    #     # Create regular user
-    #     user = f.TeacherFactory.create()
-    #     permission = Permission.objects.get(codename=self.permission_delete)
-    #     user.user_permissions.add(permission)
-    #     user.save()
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['deleteAccountBankAccountMandate']['ok'], True)
-    #
-    # def test_delete_account_finance_payment_batch_category_item_permission_denied(self):
-    #     """ Check delete mandate permission denied error message """
-    #     query = self.account_finance_payment_batch_category_item_archive_mutation
-    #     account_finance_payment_batch_category_item = f.AccountFinancePaymentBatchCategoryItemFactory.create()
-    #     variables = self.variables_delete
-    #     variables['input']['id'] = to_global_id("AccountFinancePaymentBatchCategoryItemNode", account_finance_payment_batch_category_item.pk)
-    #
-    #     # Create regular user
-    #     user = f.TeacherFactory.create()
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=variables
-    #     )
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
-    #
+    def test_delete_account_finance_payment_batch_category_item(self):
+        """ Delete an account finance payment batch category item """
+        query = self.account_finance_payment_batch_category_item_delete_mutation
+        account_finance_payment_batch_category_item = f.AccountFinancePaymentBatchCategoryItemFactory.create()
+        variables = self.variables_delete
+        variables['input']['id'] = to_global_id("AccountFinancePaymentBatchCategoryItemNode",
+                                                account_finance_payment_batch_category_item.pk)
+
+        executed = execute_test_client_api_query(
+            query,
+            self.admin_user,
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['deleteAccountFinancePaymentBatchCategoryItem']['ok'], True)
+
+    def test_delete_account_finance_payment_batch_category_item_anon_user(self):
+        """ Anon users shouldn't be able to delete an account finance payment batch category item """
+        query = self.account_finance_payment_batch_category_item_delete_mutation
+        account_finance_payment_batch_category_item = f.AccountFinancePaymentBatchCategoryItemFactory.create()
+        variables = self.variables_delete
+        variables['input']['id'] = to_global_id("AccountFinancePaymentBatchCategoryItemNode",
+                                                account_finance_payment_batch_category_item.pk)
+
+        executed = execute_test_client_api_query(
+            query,
+            self.anon_user,
+            variables=variables
+        )
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
+
+    def test_delete_account_finance_payment_batch_category_item_permission_granted(self):
+        """ Allow deleting account finance payment batch category items for users with permissions """
+        query = self.account_finance_payment_batch_category_item_delete_mutation
+        account_finance_payment_batch_category_item = f.AccountFinancePaymentBatchCategoryItemFactory.create()
+        variables = self.variables_delete
+        variables['input']['id'] = to_global_id("AccountFinancePaymentBatchCategoryItemNode",
+                                                account_finance_payment_batch_category_item.pk)
+
+        # Create regular user
+        user = f.TeacherFactory.create()
+        permission = Permission.objects.get(codename=self.permission_delete)
+        user.user_permissions.add(permission)
+        user.save()
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['deleteAccountFinancePaymentBatchCategoryItem']['ok'], True)
+
+    def test_delete_account_finance_payment_batch_category_item_permission_denied(self):
+        """ Check delete mandate permission denied error message """
+        query = self.account_finance_payment_batch_category_item_delete_mutation
+        account_finance_payment_batch_category_item = f.AccountFinancePaymentBatchCategoryItemFactory.create()
+        variables = self.variables_delete
+        variables['input']['id'] = to_global_id("AccountFinancePaymentBatchCategoryItemNode",
+                                                account_finance_payment_batch_category_item.pk)
+
+        # Create regular user
+        user = f.TeacherFactory.create()
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=variables
+        )
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
