@@ -413,7 +413,6 @@ class GQLOrganizationClasspass(TestCase):
 
         self.assertEqual(non_public_found, False)
 
-
     def test_query_permission_granted(self):
         """ Query list of classpasses with view permission """
         query = self.classpasses_query
@@ -444,19 +443,33 @@ class GQLOrganizationClasspass(TestCase):
         # Assert non public classtypes are listed
         self.assertEqual(non_public_found, True)
 
-
-    def test_query_anon_user(self):
+    def test_query_anon_user_dont_show_archived_for_anon_users(self):
         """ Query list of classpasses - anon user """
         query = self.classpasses_query
         classpass = f.OrganizationClasspassFactory.create()
+        classpass.archived = True
+        classpass.save()
+
+        variables = {
+            'archived': True
+        }
+
+        executed = execute_test_client_api_query(query, self.anon_user, variables=variables)
+        data = executed.get('data')
+        self.assertEqual(len(data['organizationClasspasses']['edges']), 0)
+
+    def test_query_anon_user_show_non_archived_for_anon_users(self):
+        """ Query list of classpasses - anon user """
+        query = self.classpasses_query
+        classpass = f.OrganizationClasspassFactory.create()
+
         variables = {
             'archived': False
         }
 
         executed = execute_test_client_api_query(query, self.anon_user, variables=variables)
-        errors = executed.get('errors')
-        self.assertEqual(errors[0]['message'], 'Not logged in!')
-
+        data = executed.get('data')
+        self.assertEqual(data['organizationClasspasses']['edges'][0]['node']['name'], classpass.name)
 
     def test_query_one(self):
         """ Query one classpasses as admin """   

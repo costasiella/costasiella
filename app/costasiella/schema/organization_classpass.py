@@ -101,9 +101,6 @@ class OrganizationClasspassQuery(graphene.ObjectType):
         # Has permission: return everything
 
         order_by = 'name'
-
-        # kwargs
-        print(locals())
         archived = kwargs.get('archived', False)
         display_shop = kwargs.get('display_shop', None)
 
@@ -113,7 +110,6 @@ class OrganizationClasspassQuery(graphene.ObjectType):
             # Only show public passes in the shop... always!
             return objects.filter(
                 display_shop=True,
-                display_public=True,
                 archived=False
             ).order_by(order_by)
 
@@ -124,16 +120,15 @@ class OrganizationClasspassQuery(graphene.ObjectType):
             )
 
             if display_shop is not None:
-                objects = objects.filter(display_shop = display_shop)
+                objects = objects.filter(display_shop=display_shop)
 
         else:
             # Non logged in user or user without permission
             # only display public classpasses
             objects = OrganizationClasspass.objects.filter(
-                archived = False,
-                display_public = True,
-                display_shop = display_shop
-            )  
+                archived=False,
+                display_public=True
+            )
 
         return objects.order_by('name')
 
