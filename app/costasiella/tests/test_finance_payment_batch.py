@@ -78,6 +78,7 @@ class GQLFinancePaymentBatch(TestCase):
           year
           month
           includeZeroAmounts
+          executionDate
           note
         }
       }
@@ -151,6 +152,18 @@ class GQLFinancePaymentBatch(TestCase):
 
         data = executed.get('data')
         self.assertEqual(data['financePaymentBatches']['edges'][0]['node']['name'], finance_payment_batch.name)
+        self.assertEqual(data['financePaymentBatches']['edges'][0]['node']['batchType'],
+                         finance_payment_batch.batch_type)
+        self.assertEqual(data['financePaymentBatches']['edges'][0]['node']['status'],
+                         finance_payment_batch.status)
+        self.assertEqual(data['financePaymentBatches']['edges'][0]['node']['description'],
+                         finance_payment_batch.description)
+        self.assertEqual(data['financePaymentBatches']['edges'][0]['node']['note'],
+                         finance_payment_batch.note)
+        self.assertEqual(data['financePaymentBatches']['edges'][0]['node']['executionDate'],
+                         str(finance_payment_batch.execution_date))
+
+
 
     # def test_query_permission_denied(self):
     #     """ Query list of financefinance_payment_batches - check permission denied """
