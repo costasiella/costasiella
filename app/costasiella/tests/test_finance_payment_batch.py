@@ -29,6 +29,10 @@ class GQLFinancePaymentBatch(TestCase):
         self.permission_change = 'change_financefinance_payment_batch'
         self.permission_delete = 'delete_financefinance_payment_batch'
 
+        self.variables_query_list = {
+            "batchType": "COLLECTION"
+        }
+
         self.variables_create = {
             "input": {
                 "name": "New finance_payment_batch",
@@ -140,21 +144,13 @@ class GQLFinancePaymentBatch(TestCase):
         finance_payment_batch = f.FinancePaymentBatchCollectionInvoicesFactory.create()
         query = self.financefinance_payment_batches_query
 
-        variables = {
-            'archived': False
-        }
+        variables = self.variables_query_list
 
         executed = execute_test_client_api_query(query, self.admin_user, variables=variables)
         print(executed)
 
         data = executed.get('data')
         self.assertEqual(data['financePaymentBatches']['edges'][0]['node']['name'], finance_payment_batch.name)
-        self.assertEqual(data['financePaymentBatches']['edges'][0]['node']['archived'],
-                         finance_payment_batch.archived)
-        self.assertEqual(data['financePaymentBatches']['edges'][0]['node']['description'],
-                         finance_payment_batch.description)
-        self.assertEqual(data['financePaymentBatches']['edges'][0]['node']['batchCategoryType'],
-                         finance_payment_batch.batch_category_type)
 
     # def test_query_permission_denied(self):
     #     """ Query list of financefinance_payment_batches - check permission denied """
