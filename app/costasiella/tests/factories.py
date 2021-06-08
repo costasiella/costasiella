@@ -47,6 +47,20 @@ class FinanceGLAccountFactory(factory.DjangoModelFactory):
     code = "8000"
 
 
+class FinancePaymentBatchCollectionInvoicesFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.FinancePaymentBatch
+
+    name = "First invoices batch"
+    batch_type = "COLLECTION"
+    finance_payment_batch_category = None
+    status = "AWAITING_APPROVAL"
+    description = "Invoices batch description"
+    execution_date = datetime.date(2020, 1, 1)
+    include_zero_amounts = False
+    note = "Batch note"
+
+
 class FinancePaymentBatchCategoryCollectionFactory(factory.DjangoModelFactory):
     class Meta:
         model = models.FinancePaymentBatchCategory
