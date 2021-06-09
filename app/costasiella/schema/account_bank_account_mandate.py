@@ -1,5 +1,5 @@
 import graphene
-import validators
+import uuid
 
 from django.utils.translation import gettext as _
 from graphene_django import DjangoObjectType
@@ -80,7 +80,7 @@ class AccountBankAccountMandateQuery(graphene.ObjectType):
 class CreateAccountBankAccountMandate(graphene.relay.ClientIDMutation):
     class Input:
         account_bank_account = graphene.ID(required=True)
-        reference = graphene.String(required=False)
+        reference = graphene.String(required=False, default_value=str(uuid.uuid4()))
         content = graphene.String(required=False)
         signature_date = graphene.types.datetime.Date()
 
