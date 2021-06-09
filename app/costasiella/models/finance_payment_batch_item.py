@@ -26,10 +26,10 @@ class FinancePaymentBatchItem(models.Model):
     account_number = EncryptedTextField(default="")
     account_bic = EncryptedTextField(default="")
     mandate_signature_date = models.DateField(null=True)
-    mandate_reference = models.DateField(null=True)
+    mandate_reference = EncryptedTextField(default="")
     amount = models.DecimalField(max_digits=20, decimal_places=2)
     currency = models.CharField(max_length=255, default="")
-    description = models.CharField(max_length=255)
+    description = EncryptedTextField(default="")
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

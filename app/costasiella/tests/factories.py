@@ -687,6 +687,7 @@ class FinancePaymentBatchItemFactory(factory.DjangoModelFactory):
     account_holder = "Test user"
     account_number = "123456"
     account_bic = "NLINGB2A"
+    amount = 10
     mandate_signature_date = datetime.date(2020, 1, 1)
     mandate_reference = "Mandate code"
     currency = "EUR"
