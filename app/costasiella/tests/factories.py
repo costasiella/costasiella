@@ -61,6 +61,22 @@ class FinancePaymentBatchCollectionInvoicesFactory(factory.DjangoModelFactory):
     note = "Batch note"
 
 
+class FinancePaymentBatchItemFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.FinancePaymentBatchItem
+
+    finance_payment_batch = factory.SubFactory(FinancePaymentBatchCollectionInvoicesFactory)
+    finance_invoice = factory.SubFactory(FinanceInvoiceFactory)
+    account = factory.SelfAttribute('finance_invoice.account')
+    account_holder = "Test user"
+    account_number = "123456"
+    account_bic = "NLINGB2A"
+    mandate_signature_date = datetime.date(2020, 1, 1)
+    mandate_reference = "Mandate code"
+    currency = "EUR"
+    description = "Item description"
+
+
 class FinancePaymentBatchCategoryCollectionFactory(factory.DjangoModelFactory):
     class Meta:
         model = models.FinancePaymentBatchCategory
