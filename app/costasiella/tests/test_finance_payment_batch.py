@@ -92,6 +92,7 @@ class GQLFinancePaymentBatch(TestCase):
       id
       name
       status
+      executionDate
       financePaymentBatchCategory {
         id
         name
@@ -203,61 +204,67 @@ class GQLFinancePaymentBatch(TestCase):
         executed = execute_test_client_api_query(query, self.anon_user, variables=variables)
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Not logged in!')
-    # 
-    # def test_query_one(self):
-    #     """ Query one finance_payment_batch as admin """
-    #     finance_payment_batch = f.FinancePaymentBatchCollectionInvoicesFactory.create()
-    #     node_id = to_global_id('FinancePaymentBatchCategoryNode', finance_payment_batch.id)
-    # 
-    #     # Now query single finance_payment_batch and check
-    #     executed = execute_test_client_api_query(
-    #         self.finance_payment_batch_query, self.admin_user, variables={"id": node_id}
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['financePaymentBatchCategory']['name'], finance_payment_batch.name)
-    #     self.assertEqual(data['financePaymentBatchCategory']['archived'], finance_payment_batch.archived)
-    #     self.assertEqual(data['financePaymentBatchCategory']['description'], finance_payment_batch.description)
-    #     self.assertEqual(data['financePaymentBatchCategory']['batchCategoryType'],
-    #                      finance_payment_batch.batch_category_type)
-    # 
-    # def test_query_one_anon_user(self):
-    #     """ Deny permission for anon users Query one glacount """
-    #     finance_payment_batch = f.FinancePaymentBatchCollectionInvoicesFactory.create()
-    #     node_id = to_global_id('FinancePaymentBatchCategoryNode', finance_payment_batch.id)
-    # 
-    #     # Now query single finance_payment_batch and check
-    #     executed = execute_test_client_api_query(
-    #         self.finance_payment_batch_query, self.anon_user, variables={"id": node_id}
-    #     )
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
-    # 
-    # def test_query_one_permission_denied(self):
-    #     """ Permission denied message when user lacks authorization """
-    #     # Create regular user
-    #     finance_payment_batch = f.FinancePaymentBatchCollectionInvoicesFactory.create()
-    #     user = f.RegularUserFactory.create()
-    #     node_id = to_global_id('FinancePaymentBatchCategoryNode', finance_payment_batch.id)
-    # 
-    #     # Now query single finance_payment_batch and check
-    #     executed = execute_test_client_api_query(self.finance_payment_batch_query, user, variables={"id": node_id})
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
-    # 
-    # def test_query_one_permission_granted(self):
-    #     """ Respond with data when user has permission """
-    #     finance_payment_batch = f.FinancePaymentBatchCollectionInvoicesFactory.create()
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename='view_finance_payment_batch')
-    #     user.user_permissions.add(permission)
-    #     user.save()
-    #     # Payment method Cash from fixtures
-    #     node_id = to_global_id('FinancePaymentBatchCategoryNode', finance_payment_batch.id)
-    # 
-    #     # Now query single location and check
-    #     executed = execute_test_client_api_query(self.finance_payment_batch_query, user, variables={"id": node_id})
-    #     data = executed.get('data')
-    #     self.assertEqual(data['financePaymentBatchCategory']['name'], finance_payment_batch.name)
+
+    def test_query_one(self):
+        """ Query one finance_payment_batch as admin """
+        finance_payment_batch = f.FinancePaymentBatchCollectionInvoicesFactory.create()
+        node_id = to_global_id('FinancePaymentBatchNode', finance_payment_batch.id)
+
+        # Now query single finance_payment_batch and check
+        executed = execute_test_client_api_query(
+            self.finance_payment_batch_query, self.admin_user, variables={"id": node_id}
+        )
+        data = executed.get('data')
+        self.assertEqual(data['financePaymentBatch']['name'], finance_payment_batch.name)
+        self.assertEqual(data['financePaymentBatch']['batchType'],
+                         finance_payment_batch.batch_type)
+        self.assertEqual(data['financePaymentBatch']['status'],
+                         finance_payment_batch.status)
+        self.assertEqual(data['financePaymentBatch']['description'],
+                         finance_payment_batch.description)
+        self.assertEqual(data['financePaymentBatch']['note'],
+                         finance_payment_batch.note)
+        self.assertEqual(data['financePaymentBatch']['executionDate'],
+                         str(finance_payment_batch.execution_date))
+
+    def test_query_one_anon_user(self):
+        """ Deny permission for anon users Query one finance payment batch """
+        finance_payment_batch = f.FinancePaymentBatchCollectionInvoicesFactory.create()
+        node_id = to_global_id('FinancePaymentBatchNode', finance_payment_batch.id)
+
+        # Now query single finance_payment_batch and check
+        executed = execute_test_client_api_query(
+            self.finance_payment_batch_query, self.anon_user, variables={"id": node_id}
+        )
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
+
+    def test_query_one_permission_denied(self):
+        """ Permission denied message when user lacks authorization """
+        # Create regular user
+        finance_payment_batch = f.FinancePaymentBatchCollectionInvoicesFactory.create()
+        user = f.RegularUserFactory.create()
+        node_id = to_global_id('FinancePaymentBatchNode', finance_payment_batch.id)
+
+        # Now query single finance_payment_batch and check
+        executed = execute_test_client_api_query(self.finance_payment_batch_query, user, variables={"id": node_id})
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
+
+    def test_query_one_permission_granted(self):
+        """ Respond with data when user has permission """
+        finance_payment_batch = f.FinancePaymentBatchCollectionInvoicesFactory.create()
+        user = f.RegularUserFactory.create()
+        permission = Permission.objects.get(codename=self.permission_view)
+        user.user_permissions.add(permission)
+        user.save()
+        # Payment method Cash from fixtures
+        node_id = to_global_id('FinancePaymentBatchNode', finance_payment_batch.id)
+
+        # Now query single location and check
+        executed = execute_test_client_api_query(self.finance_payment_batch_query, user, variables={"id": node_id})
+        data = executed.get('data')
+        self.assertEqual(data['financePaymentBatch']['name'], finance_payment_batch.name)
     # 
     # def test_create_finance_payment_batch(self):
     #     """ Create a finance_payment_batch """
@@ -335,7 +342,7 @@ class GQLFinancePaymentBatch(TestCase):
     #     query = self.finance_payment_batch_update_mutation
     #     finance_payment_batch = f.FinancePaymentBatchCollectionInvoicesFactory.create()
     #     variables = self.variables_update
-    #     variables['input']['id'] = to_global_id('FinancePaymentBatchCategoryNode', finance_payment_batch.pk)
+    #     variables['input']['id'] = to_global_id('FinancePaymentBatchNode', finance_payment_batch.pk)
     # 
     #     executed = execute_test_client_api_query(
     #         query,
@@ -355,7 +362,7 @@ class GQLFinancePaymentBatch(TestCase):
     #     query = self.finance_payment_batch_update_mutation
     #     finance_payment_batch = f.FinancePaymentBatchCollectionInvoicesFactory.create()
     #     variables = self.variables_update
-    #     variables['input']['id'] = to_global_id('FinancePaymentBatchCategoryNode', finance_payment_batch.pk)
+    #     variables['input']['id'] = to_global_id('FinancePaymentBatchNode', finance_payment_batch.pk)
     # 
     #     executed = execute_test_client_api_query(
     #         query,
@@ -370,7 +377,7 @@ class GQLFinancePaymentBatch(TestCase):
     #     query = self.finance_payment_batch_update_mutation
     #     finance_payment_batch = f.FinancePaymentBatchCollectionInvoicesFactory.create()
     #     variables = self.variables_update
-    #     variables['input']['id'] = to_global_id('FinancePaymentBatchCategoryNode', finance_payment_batch.pk)
+    #     variables['input']['id'] = to_global_id('FinancePaymentBatchNode', finance_payment_batch.pk)
     # 
     #     # Create regular user
     #     user = f.RegularUserFactory.create()
@@ -392,7 +399,7 @@ class GQLFinancePaymentBatch(TestCase):
     #     query = self.finance_payment_batch_update_mutation
     #     finance_payment_batch = f.FinancePaymentBatchCollectionInvoicesFactory.create()
     #     variables = self.variables_update
-    #     variables['input']['id'] = to_global_id('FinancePaymentBatchCategoryNode', finance_payment_batch.pk)
+    #     variables['input']['id'] = to_global_id('FinancePaymentBatchNode', finance_payment_batch.pk)
     # 
     #     # Create regular user
     #     user = f.RegularUserFactory.create()
@@ -411,7 +418,7 @@ class GQLFinancePaymentBatch(TestCase):
     #     query = self.finance_payment_batch_archive_mutation
     #     finance_payment_batch = f.FinancePaymentBatchCollectionInvoicesFactory.create()
     #     variables = self.variables_archive
-    #     variables['input']['id'] = to_global_id('FinancePaymentBatchCategoryNode', finance_payment_batch.pk)
+    #     variables['input']['id'] = to_global_id('FinancePaymentBatchNode', finance_payment_batch.pk)
     # 
     #     executed = execute_test_client_api_query(
     #         query,
@@ -427,7 +434,7 @@ class GQLFinancePaymentBatch(TestCase):
     #     query = self.finance_payment_batch_archive_mutation
     #     finance_payment_batch = f.FinancePaymentBatchCollectionInvoicesFactory.create()
     #     variables = self.variables_archive
-    #     variables['input']['id'] = to_global_id('FinancePaymentBatchCategoryNode', finance_payment_batch.pk)
+    #     variables['input']['id'] = to_global_id('FinancePaymentBatchNode', finance_payment_batch.pk)
     # 
     #     executed = execute_test_client_api_query(
     #         query,
@@ -442,7 +449,7 @@ class GQLFinancePaymentBatch(TestCase):
     #     query = self.finance_payment_batch_archive_mutation
     #     finance_payment_batch = f.FinancePaymentBatchCollectionInvoicesFactory.create()
     #     variables = self.variables_archive
-    #     variables['input']['id'] = to_global_id('FinancePaymentBatchCategoryNode', finance_payment_batch.pk)
+    #     variables['input']['id'] = to_global_id('FinancePaymentBatchNode', finance_payment_batch.pk)
     # 
     #     # Create regular user
     #     user = f.RegularUserFactory.create()
@@ -464,7 +471,7 @@ class GQLFinancePaymentBatch(TestCase):
     #     query = self.finance_payment_batch_archive_mutation
     #     finance_payment_batch = f.FinancePaymentBatchCollectionInvoicesFactory.create()
     #     variables = self.variables_archive
-    #     variables['input']['id'] = to_global_id('FinancePaymentBatchCategoryNode', finance_payment_batch.pk)
+    #     variables['input']['id'] = to_global_id('FinancePaymentBatchNode', finance_payment_batch.pk)
     # 
     #     # Create regular user
     #     user = f.RegularUserFactory.create()
