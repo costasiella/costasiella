@@ -163,65 +163,71 @@ class GQLFinancePaymentBatchItem(TestCase):
         executed = execute_test_client_api_query(query, self.anon_user, variables=variables)
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Not logged in!')
-    # 
-    # def test_query_one(self):
-    #     """ Query one finance_payment_batch as admin """
-    #     finance_payment_batch = f.FinancePaymentBatchCollectionInvoicesFactory.create()
-    #     node_id = to_global_id('FinancePaymentBatchNode', finance_payment_batch.id)
-    # 
-    #     # Now query single finance_payment_batch and check
-    #     executed = execute_test_client_api_query(
-    #         self.finance_payment_batch_query, self.admin_user, variables={"id": node_id}
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['financePaymentBatch']['name'], finance_payment_batch.name)
-    #     self.assertEqual(data['financePaymentBatch']['batchType'],
-    #                      finance_payment_batch.batch_type)
-    #     self.assertEqual(data['financePaymentBatch']['status'],
-    #                      finance_payment_batch.status)
-    #     self.assertEqual(data['financePaymentBatch']['description'],
-    #                      finance_payment_batch.description)
-    #     self.assertEqual(data['financePaymentBatch']['note'],
-    #                      finance_payment_batch.note)
-    #     self.assertEqual(data['financePaymentBatch']['executionDate'],
-    #                      str(finance_payment_batch.execution_date))
-    # 
-    # def test_query_one_anon_user(self):
-    #     """ Deny permission for anon users Query one finance payment batch """
-    #     finance_payment_batch = f.FinancePaymentBatchCollectionInvoicesFactory.create()
-    #     node_id = to_global_id('FinancePaymentBatchNode', finance_payment_batch.id)
-    # 
-    #     # Now query single finance_payment_batch and check
-    #     executed = execute_test_client_api_query(
-    #         self.finance_payment_batch_query, self.anon_user, variables={"id": node_id}
-    #     )
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
-    # 
-    # def test_query_one_permission_denied(self):
-    #     """ Permission denied message when user lacks authorization """
-    #     # Create regular user
-    #     finance_payment_batch = f.FinancePaymentBatchCollectionInvoicesFactory.create()
-    #     user = f.RegularUserFactory.create()
-    #     node_id = to_global_id('FinancePaymentBatchNode', finance_payment_batch.id)
-    # 
-    #     # Now query single finance_payment_batch and check
-    #     executed = execute_test_client_api_query(self.finance_payment_batch_query, user, variables={"id": node_id})
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
-    # 
-    # def test_query_one_permission_granted(self):
-    #     """ Respond with data when user has permission """
-    #     finance_payment_batch = f.FinancePaymentBatchCollectionInvoicesFactory.create()
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename=self.permission_view)
-    #     user.user_permissions.add(permission)
-    #     user.save()
-    #     # Payment method Cash from fixtures
-    #     node_id = to_global_id('FinancePaymentBatchNode', finance_payment_batch.id)
-    # 
-    #     # Now query single location and check
-    #     executed = execute_test_client_api_query(self.finance_payment_batch_query, user, variables={"id": node_id})
-    #     data = executed.get('data')
-    #     self.assertEqual(data['financePaymentBatch']['name'], finance_payment_batch.name)
-    # 
+
+    def test_query_one(self):
+        """ Query one finance_payment_batch_item as admin """
+        node_id = to_global_id('FinancePaymentBatchItemNode', self.finance_payment_batch_item.id)
+
+        # Now query single finance_payment_batch and check
+        executed = execute_test_client_api_query(
+            self.finance_payment_batch_item_query, self.admin_user, variables={"id": node_id}
+        )
+        data = executed.get('data')
+        self.assertEqual(data['financePaymentBatchItem']['financePaymentBatch']['id'],
+                         to_global_id('FinancePaymentBatchNode',
+                                      self.finance_payment_batch_item.finance_payment_batch.id))
+        self.assertEqual(data['financePaymentBatchItem']['account']['id'],
+                         to_global_id('AccountNode',
+                                      self.finance_payment_batch_item.account.id))
+        self.assertEqual(data['financePaymentBatchItem']['accountHolder'],
+                         self.finance_payment_batch_item.account_holder)
+        self.assertEqual(data['financePaymentBatchItem']['accountNumber'],
+                         self.finance_payment_batch_item.account_number)
+        self.assertEqual(data['financePaymentBatchItem']['accountBic'],
+                         self.finance_payment_batch_item.account_bic)
+        self.assertEqual(data['financePaymentBatchItem']['mandateSignatureDate'],
+                         str(self.finance_payment_batch_item.mandate_signature_date))
+        self.assertEqual(data['financePaymentBatchItem']['mandateReference'],
+                         self.finance_payment_batch_item.mandate_reference)
+        self.assertEqual(data['financePaymentBatchItem']['currency'],
+                         self.finance_payment_batch_item.currency)
+        self.assertEqual(data['financePaymentBatchItem']['description'],
+                         self.finance_payment_batch_item.description)
+
+    def test_query_one_anon_user(self):
+        """ Deny permission for anon users Query one finance payment batch """
+        node_id = to_global_id('FinancePaymentBatchItemNode', self.finance_payment_batch_item.id)
+
+        # Now query single finance_payment_batch and check
+        executed = execute_test_client_api_query(
+            self.finance_payment_batch_item_query, self.anon_user, variables={"id": node_id}
+        )
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
+
+    def test_query_one_permission_denied(self):
+        """ Permission denied message when user lacks authorization """
+        # Create regular user
+        user = self.finance_payment_batch_item.account
+        node_id = to_global_id('FinancePaymentBatchItemNode', self.finance_payment_batch_item.id)
+
+        # Now query single finance_payment_batch and check
+        executed = execute_test_client_api_query(self.finance_payment_batch_item_query, user, variables={"id": node_id})
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
+
+    def test_query_one_permission_granted(self):
+        """ Respond with data when user has permission """
+        user = self.finance_payment_batch_item.account
+        permission = Permission.objects.get(codename=self.permission_view)
+        user.user_permissions.add(permission)
+        user.save()
+        # Payment method Cash from fixtures
+        node_id = to_global_id('FinancePaymentBatchItemNode', self.finance_payment_batch_item.id)
+
+        # Now query single location and check
+        executed = execute_test_client_api_query(self.finance_payment_batch_item_query, user, variables={"id": node_id})
+        data = executed.get('data')
+        self.assertEqual(data['financePaymentBatchItem']['financePaymentBatch']['id'],
+                         to_global_id('FinancePaymentBatchNode',
+                                      self.finance_payment_batch_item.finance_payment_batch.id))
