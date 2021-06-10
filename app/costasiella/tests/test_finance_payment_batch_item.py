@@ -24,7 +24,7 @@ class GQLFinancePaymentBatchItem(TestCase):
         self.admin_user = f.AdminUserFactory.create()
         self.anon_user = AnonymousUser()
 
-        self.permission_view = 'view_financepaymentbatch'
+        self.permission_view = 'view_financepaymentbatchitem'
 
         self.finance_payment_batch_item = f.FinancePaymentBatchItemFactory.create()
 
@@ -96,9 +96,8 @@ class GQLFinancePaymentBatchItem(TestCase):
         pass
 
     def test_query(self):
-        """ Query list of finance_payment_batches """
+        """ Query list of finance_payment_batch items """
         query = self.finance_payment_batch_items_query
-
         variables = self.variables_query_list
 
         executed = execute_test_client_api_query(query, self.admin_user, variables=variables)
@@ -125,46 +124,45 @@ class GQLFinancePaymentBatchItem(TestCase):
         self.assertEqual(data['financePaymentBatchItems']['edges'][0]['node']['description'],
                          self.finance_payment_batch_item.description)
 
-    # def test_query_permission_denied(self):
-    #     """ Query list of finance_payment_batches - check permission denied """
-    #     finance_payment_batch = f.FinancePaymentBatchCollectionInvoicesFactory.create()
-    #     query = self.finance_payment_batches_query
-    #     variables = self.variables_query_list
-    # 
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     executed = execute_test_client_api_query(query, user, variables=variables)
-    #     errors = executed.get('errors')
-    # 
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
-    # 
-    # def test_query_permission_granted(self):
-    #     """ Query list of finance_payment_batches with view permission """
-    #     finance_payment_batch = f.FinancePaymentBatchCollectionInvoicesFactory.create()
-    #     query = self.finance_payment_batches_query
-    #     variables = self.variables_query_list
-    # 
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename=self.permission_view)
-    #     user.user_permissions.add(permission)
-    #     user.save()
-    # 
-    #     executed = execute_test_client_api_query(query, user, variables=variables)
-    #     data = executed.get('data')
-    # 
-    #     # List all finance_payment_batches
-    #     self.assertEqual(data['financePaymentBatchItems']['edges'][0]['node']['name'], finance_payment_batch.name)
-    # 
-    # def test_query_anon_user(self):
-    #     """ Query list of finance_payment_batches - anon user """
-    #     finance_payment_batch = f.FinancePaymentBatchCollectionInvoicesFactory.create()
-    #     query = self.finance_payment_batches_query
-    #     variables = self.variables_query_list
-    # 
-    #     executed = execute_test_client_api_query(query, self.anon_user, variables=variables)
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
+    def test_query_permission_denied(self):
+        """ Query list of finance_payment_batch items - check permission denied """
+        query = self.finance_payment_batch_items_query
+        variables = self.variables_query_list
+
+        # Create regular user
+        user = self.finance_payment_batch_item.account
+        executed = execute_test_client_api_query(query, user, variables=variables)
+        errors = executed.get('errors')
+
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
+
+    def test_query_permission_granted(self):
+        """ Query list of finance_payment_batch items with view permission """
+        query = self.finance_payment_batch_items_query
+        variables = self.variables_query_list
+
+        # Create regular user
+        user = self.finance_payment_batch_item.account
+        permission = Permission.objects.get(codename=self.permission_view)
+        user.user_permissions.add(permission)
+        user.save()
+
+        executed = execute_test_client_api_query(query, user, variables=variables)
+        data = executed.get('data')
+
+        # List all finance_payment_batch items
+        self.assertEqual(data['financePaymentBatchItems']['edges'][0]['node']['financePaymentBatch']['id'],
+                         to_global_id('FinancePaymentBatchNode',
+                                      self.finance_payment_batch_item.finance_payment_batch.id))
+
+    def test_query_anon_user(self):
+        """ Query list of finance_payment_batch items - anon user """
+        query = self.finance_payment_batch_items_query
+        variables = self.variables_query_list
+
+        executed = execute_test_client_api_query(query, self.anon_user, variables=variables)
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
     # 
     # def test_query_one(self):
     #     """ Query one finance_payment_batch as admin """
