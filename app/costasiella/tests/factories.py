@@ -699,7 +699,7 @@ class FinancePaymentBatchExportFactory(factory.DjangoModelFactory):
         model = models.FinancePaymentBatchExport
 
     finance_payment_batch = factory.SubFactory(FinancePaymentBatchCollectionInvoicesFactory)
-    account = factory.SelfAttribute('finance_invoice.account')
+    account = factory.SubFactory(RegularUserFactory)
 
 
 class FinanceOrderFactory(factory.DjangoModelFactory):
