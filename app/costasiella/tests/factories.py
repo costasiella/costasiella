@@ -694,6 +694,14 @@ class FinancePaymentBatchItemFactory(factory.DjangoModelFactory):
     description = "Item description"
 
 
+class FinancePaymentBatchExportFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.FinancePaymentBatchExport
+
+    finance_payment_batch = factory.SubFactory(FinancePaymentBatchCollectionInvoicesFactory)
+    account = factory.SelfAttribute('finance_invoice.account')
+
+
 class FinanceOrderFactory(factory.DjangoModelFactory):
     class Meta:
         model = models.FinanceOrder
