@@ -1496,10 +1496,18 @@
                 },
                 "recurring_payment_failed": {
                     "title": "Recurring payment failed",
-                    "help_subject": "No variabled available",
+                    "help_subject": "No variables available",
                     "help_title": "No variables available",
                     "help_description": "No variables available",
                     "help_content": "{{link_profile_invoices}} (Link to customer profile invoices)",
+                    "help_comments": "No variables available"
+                },
+                "class_info_mail": {
+                    "title": "Class info mail",
+                    "help_subject": "No variables available",
+                    "help_title": "No variables available",
+                    "help_description": "{{ class_date }} (Date of the class), {{ class_time }} (Time of class), {{ class_classtype }} (Type of class), {{ class_location }} (Location of class)",
+                    "help_content": "{{ mail_content }} ( Content as set in class edit pages )",
                     "help_comments": "No variables available"
                 }
             }
