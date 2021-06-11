@@ -1507,7 +1507,15 @@
                     "help_subject": "No variables available",
                     "help_title": "No variables available",
                     "help_description": "{{ class_date }} (Date of the class), {{ class_time }} (Time of class), {{ class_classtype }} (Type of class), {{ class_location }} (Location of class)",
-                    "help_content": "{{ mail_content }} ( Content as set in class edit pages )",
+                    "help_content": "{{ mail_content }} ( Content as set in class edit pages in info mail fields )",
+                    "help_comments": "No variables available"
+                },
+                "event_info_mail": {
+                    "title": "Event info mail",
+                    "help_subject": "No variables available",
+                    "help_title": "No variables available",
+                    "help_description": "{{ schedule_event }} (Schedule event object), {{ schedule_event_ticket }} (Schedule event ticket object), {{ schedule_event_time_info }} (Schedule event time info)",
+                    "help_content": "{{ mail_content }} ( Content as set in event info mail field )",
                     "help_comments": "No variables available"
                 }
             }
