@@ -58,12 +58,9 @@ class TestModelFinancePaymentBatch(TestCase):
         finance_invoice.update_amounts()
 
         finance_payment_batch = f.FinancePaymentBatchCollectionInvoicesFactory.create()
-
-        finance_payment_batch._generate_items_invoices()
+        finance_payment_batch.generate_items()
 
         qs = models.FinancePaymentBatchItem.objects.all()
-        print(qs)
-
         finance_payment_batch_item = qs.first()
 
         self.assertEqual(finance_payment_batch_item.finance_payment_batch, finance_payment_batch)
@@ -77,3 +74,31 @@ class TestModelFinancePaymentBatch(TestCase):
         self.assertEqual(finance_payment_batch_item.amount, finance_invoice.total)
         self.assertEqual(finance_payment_batch_item.currency, "EUR")
         self.assertEqual(finance_payment_batch_item.description, finance_invoice.summary)
+
+    def test_generate_items_category(self):
+        """ Test generating batch items for an category batch """
+        account_bank_account_mandate = f.AccountBankAccountMandateFactory.create()
+        account_bank_account = account_bank_account_mandate.account_bank_account
+        account = account_bank_account.account
+
+        finance_payment_batch = f.FinancePaymentBatchCollectionCategoryFactory.create()
+        account_batch_item = f.AccountFinancePaymentBatchCategoryItemFactory.create(
+            account=account,
+            finance_payment_batch_category = finance_payment_batch.finance_payment_batch_category,
+        )
+
+        finance_payment_batch.generate_items()
+
+        qs = models.FinancePaymentBatchItem.objects.all()
+        finance_payment_batch_item = qs.first()
+
+        self.assertEqual(finance_payment_batch_item.finance_payment_batch, finance_payment_batch)
+        self.assertEqual(finance_payment_batch_item.account, account)
+        self.assertEqual(finance_payment_batch_item.account_holder, account_bank_account.holder)
+        self.assertEqual(finance_payment_batch_item.account_number, account_bank_account.number)
+        self.assertEqual(finance_payment_batch_item.account_bic, account_bank_account.bic)
+        self.assertEqual(finance_payment_batch_item.mandate_signature_date, account_bank_account_mandate.signature_date)
+        self.assertEqual(finance_payment_batch_item.mandate_reference, account_bank_account_mandate.reference)
+        self.assertEqual(finance_payment_batch_item.amount, account_batch_item.amount)
+        self.assertEqual(finance_payment_batch_item.currency, "EUR")
+        self.assertEqual(finance_payment_batch_item.description, account_batch_item.description)
