@@ -1,5 +1,3 @@
-import uuid
-
 from django.db import models
 
 from .account_bank_account import AccountBankAccount
@@ -10,7 +8,7 @@ from ..modules.encrypted_fields import EncryptedTextField
 
 class AccountBankAccountMandate(models.Model):
     account_bank_account = models.ForeignKey(AccountBankAccount, on_delete=models.CASCADE, related_name="mandates")
-    reference = EncryptedTextField(default=str(uuid.uuid4()))
+    reference = EncryptedTextField(default="")
     content = EncryptedTextField(default="")  # Text in OpenStudio
     signature_date = models.DateField(null=True)
     created_at = models.DateTimeField(auto_now_add=True, editable=False)

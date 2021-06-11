@@ -141,6 +141,9 @@ class CreateFinancePaymentBatch(graphene.relay.ClientIDMutation):
         if 'note' in input:
             finance_payment_batch.note = input['note']
 
+        if 'description' in input:
+            finance_payment_batch.description = input['description']
+
         if 'finance_payment_batch_category' in validation_result:
             finance_payment_batch.finance_payment_batch_category = validation_result['finance_payment_batch_category']
 

@@ -67,6 +67,36 @@ class FinancePaymentBatchCategoryPaymentFactory(factory.DjangoModelFactory):
     description = "hello world"
 
 
+class FinancePaymentBatchCollectionInvoicesFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.FinancePaymentBatch
+
+    name = "First invoices batch"
+    batch_type = "COLLECTION"
+    finance_payment_batch_category = None
+    status = "AWAITING_APPROVAL"
+    description = "Invoices batch description"
+    execution_date = datetime.date(2020, 1, 1)
+    include_zero_amounts = False
+    note = "Batch note"
+
+
+class FinancePaymentBatchCollectionCategoryFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.FinancePaymentBatch
+
+    name = "First invoices batch"
+    batch_type = "COLLECTION"
+    finance_payment_batch_category = factory.SubFactory(FinancePaymentBatchCategoryCollectionFactory)
+    status = "AWAITING_APPROVAL"
+    description = "Category batch description"
+    year = 2020
+    month = 1
+    execution_date = datetime.date(2020, 1, 1)
+    include_zero_amounts = False
+    note = "Batch note"
+
+
 class FinancePaymentMethodFactory(factory.DjangoModelFactory):
     class Meta:
         model = models.FinancePaymentMethod
@@ -661,6 +691,31 @@ class FinanceInvoicePaymentFactory(factory.DjangoModelFactory):
     amount = 12
     finance_payment_method = factory.SubFactory(FinancePaymentMethodFactory)
     note = "Payment note here!"
+
+
+class FinancePaymentBatchItemFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.FinancePaymentBatchItem
+
+    finance_payment_batch = factory.SubFactory(FinancePaymentBatchCollectionInvoicesFactory)
+    finance_invoice = factory.SubFactory(FinanceInvoiceFactory)
+    account = factory.SelfAttribute('finance_invoice.account')
+    account_holder = "Test user"
+    account_number = "123456"
+    account_bic = "NLINGB2A"
+    amount = 10
+    mandate_signature_date = datetime.date(2020, 1, 1)
+    mandate_reference = "Mandate code"
+    currency = "EUR"
+    description = "Item description"
+
+
+class FinancePaymentBatchExportFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.FinancePaymentBatchExport
+
+    finance_payment_batch = factory.SubFactory(FinancePaymentBatchCollectionInvoicesFactory)
+    account = factory.SubFactory(RegularUserFactory)
 
 
 class FinanceOrderFactory(factory.DjangoModelFactory):

@@ -7,6 +7,34 @@ export function getTemplateInfo(t, template_name) {
 
 
   switch(template_name) {
+    case "class_info_mail":
+      cardTitle = t("settings.mail.templates.class_info_mail.title")
+      helpTexts = {
+        subject: t("settings.mail.templates.class_info_mail.help_subject"),
+        title: t("settings.mail.templates.class_info_mail.help_title"),
+        description: t("settings.mail.templates.class_info_mail.help_description", {
+          interpolation: { prefix: "%%", suffix: "%%" }
+        }),
+        content: t("settings.mail.templates.class_info_mail.help_content", {
+          interpolation: { prefix: "%%", suffix: "%%" }
+        }),
+        comments: t("settings.mail.templates.class_info_mail.help_comments"), 
+      }
+      break
+    case "event_info_mail":
+      cardTitle = t("settings.mail.templates.event_info_mail.title")
+      helpTexts = {
+        subject: t("settings.mail.templates.event_info_mail.help_subject"),
+        title: t("settings.mail.templates.event_info_mail.help_title"),
+        description: t("settings.mail.templates.event_info_mail.help_description", {
+          interpolation: { prefix: "%%", suffix: "%%" }
+        }),
+        content: t("settings.mail.templates.event_info_mail.help_content", {
+          interpolation: { prefix: "%%", suffix: "%%" }
+        }),
+        comments: t("settings.mail.templates.event_info_mail.help_comments"), 
+      }
+      break
     case "order_received":
       cardTitle = t("settings.mail.templates.order_received.title")
       helpTexts = {
@@ -33,6 +61,21 @@ export function getTemplateInfo(t, template_name) {
           interpolation: { prefix: "%%", suffix: "%%" }
         }),
         comments: t("settings.mail.templates.recurring_payment_failed.help_comments"), 
+      }
+      break
+      break
+    case "system_footer":
+      cardTitle = t("settings.mail.templates.system_footer.title")
+      helpTexts = {
+        subject: t("settings.mail.templates.system_footer.help_subject"),
+        title: t("settings.mail.templates.system_footer.help_title"),
+        description: t("settings.mail.templates.system_footer.help_description", {
+          interpolation: { prefix: "%%", suffix: "%%" }
+        }),
+        content: t("settings.mail.templates.system_footer.help_content", {
+          interpolation: { prefix: "%%", suffix: "%%" }
+        }),
+        comments: t("settings.mail.templates.system_footer.help_comments"), 
       }
       break
     default:

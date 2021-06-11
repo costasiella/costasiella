@@ -11,15 +11,11 @@ from .finance_invoice import FinanceInvoice
 from .finance_payment_batch import FinancePaymentBatch
 
 from .helpers import model_string
-from .choices.finance_payment_batch_statuses import get_finance_payment_batch_statuses
-from .choices.finance_payment_batch_types import get_finance_payment_batch_types
 
 from ..modules.encrypted_fields import EncryptedTextField
 
 
 class FinancePaymentBatchItem(models.Model):
-    # BATCH_TYPES = get_finance_payment_batch_types()
-    # STATUSES = get_finance_payment_batch_statuses()
     finance_payment_batch = models.ForeignKey(FinancePaymentBatch,
                                               on_delete=models.CASCADE,
                                               related_name="items")
@@ -30,10 +26,10 @@ class FinancePaymentBatchItem(models.Model):
     account_number = EncryptedTextField(default="")
     account_bic = EncryptedTextField(default="")
     mandate_signature_date = models.DateField(null=True)
-    mandate_reference = models.DateField(null=True)
+    mandate_reference = EncryptedTextField(default="")
     amount = models.DecimalField(max_digits=20, decimal_places=2)
     currency = models.CharField(max_length=255, default="")
-    description = models.CharField(max_length=255)
+    description = EncryptedTextField(default="")
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
