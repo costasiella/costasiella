@@ -47,7 +47,8 @@ class TestModelFinancePaymentBatch(TestCase):
         """ Test generating batch items for an invoices batch """
         direct_debit = models.FinancePaymentMethod.objects.get(pk=103)
         account_bank_account_mandate = f.AccountBankAccountMandateFactory.create()
-        account = account_bank_account_mandate.account_bank_account.account
+        account_bank_account = account_bank_account_mandate.account_bank_account
+        account = account_bank_account.account
         finance_invoice = f.FinanceInvoiceFactory(account=account)
         finance_invoice.account = account
         finance_invoice.status = 'SENT'
@@ -62,3 +63,17 @@ class TestModelFinancePaymentBatch(TestCase):
 
         qs = models.FinancePaymentBatchItem.objects.all()
         print(qs)
+
+        finance_payment_batch_item = qs.first()
+
+        self.assertEqual(finance_payment_batch_item.finance_payment_batch, finance_payment_batch)
+        self.assertEqual(finance_payment_batch_item.account, account)
+        self.assertEqual(finance_payment_batch_item.finance_invoice, finance_invoice)
+        self.assertEqual(finance_payment_batch_item.account_holder, account_bank_account.holder)
+        self.assertEqual(finance_payment_batch_item.account_number, account_bank_account.number)
+        self.assertEqual(finance_payment_batch_item.account_bic, account_bank_account.bic)
+        self.assertEqual(finance_payment_batch_item.mandate_signature_date, account_bank_account_mandate.signature_date)
+        self.assertEqual(finance_payment_batch_item.mandate_reference, account_bank_account_mandate.reference)
+        self.assertEqual(finance_payment_batch_item.amount, finance_invoice.total)
+        self.assertEqual(finance_payment_batch_item.currency, "EUR")
+        self.assertEqual(finance_payment_batch_item.description, finance_invoice.summary)
