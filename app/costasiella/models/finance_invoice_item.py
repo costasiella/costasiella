@@ -11,6 +11,8 @@ from .finance_glaccount import FinanceGLAccount
 from .finance_invoice import FinanceInvoice
 from .finance_tax_rate import FinanceTaxRate
 
+from .helpers import model_string
+
 
 class FinanceInvoiceItem(models.Model):
     finance_invoice = models.ForeignKey(FinanceInvoice, on_delete=models.CASCADE, related_name="items")
@@ -47,12 +49,7 @@ class FinanceInvoiceItem(models.Model):
         ordering = ("finance_invoice", "line_number",)
 
     def __str__(self):
-        field_values = ["FinanceInvoiceItem:", "--------"]
-        for field in self._meta.get_fields():
-            field_values.append(": ".join([field.name, str(getattr(self, field.name, ''))]))
-            # field_values.append(str(getattr(self, field.name, '')))
-        field_values.append("--------")
-        return '\n'.join(field_values)
+        return model_string(self)
 
     def save(self, *args, **kwargs):
         self.subtotal = self._calculate_subtotal()

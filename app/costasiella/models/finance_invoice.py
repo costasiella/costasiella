@@ -10,6 +10,8 @@ from .account import Account
 from .finance_invoice_group import FinanceInvoiceGroup
 from .finance_payment_method import FinancePaymentMethod
 
+from .helpers import model_string
+
 
 class FinanceInvoice(models.Model):
     STATUSES = (
@@ -50,12 +52,7 @@ class FinanceInvoice(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        field_values = ["FinanceInvoice:", "--------"]
-        for field in self._meta.get_fields():
-            field_values.append(": ".join([field.name, str(getattr(self, field.name, ''))]))
-            # field_values.append(str(getattr(self, field.name, '')))
-        field_values.append("--------")
-        return '\n'.join(field_values)
+        return model_string(self)
 
     def _set_relation_info(self):
         """ Set relation info from linked account """
