@@ -329,6 +329,14 @@
                     "help_description": "__STRING_NOT_TRANSLATED__",
                     "help_content": "__STRING_NOT_TRANSLATED__",
                     "help_comments": "__STRING_NOT_TRANSLATED__"
+                },
+                "system_footer": {
+                    "title": "__STRING_NOT_TRANSLATED__",
+                    "help_subject": "__STRING_NOT_TRANSLATED__",
+                    "help_title": "__STRING_NOT_TRANSLATED__",
+                    "help_description": "__STRING_NOT_TRANSLATED__",
+                    "help_content": "__STRING_NOT_TRANSLATED__",
+                    "help_comments": "__STRING_NOT_TRANSLATED__"
                 }
             }
         },

@@ -1517,6 +1517,14 @@
                     "help_description": "{{ schedule_event }} (Schedule event object), {{ schedule_event_ticket }} (Schedule event ticket object), {{ schedule_event_time_info }} (Schedule event time info)",
                     "help_content": "{{ mail_content }} ( Content as set in event info mail field )",
                     "help_comments": "No variables available"
+                },
+                "system_footer": {
+                    "title": "System footer",
+                    "help_subject": "This field is not used",
+                    "help_title": "This field is not used",
+                    "help_description": "This field is not used",
+                    "help_content": "Footer content for all automated mails here",
+                    "help_comments": "This field is not used"
                 }
             }
         },

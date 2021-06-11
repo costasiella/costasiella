@@ -63,6 +63,21 @@ export function getTemplateInfo(t, template_name) {
         comments: t("settings.mail.templates.recurring_payment_failed.help_comments"), 
       }
       break
+      break
+    case "system_footer":
+      cardTitle = t("settings.mail.templates.system_footer.title")
+      helpTexts = {
+        subject: t("settings.mail.templates.system_footer.help_subject"),
+        title: t("settings.mail.templates.system_footer.help_title"),
+        description: t("settings.mail.templates.system_footer.help_description", {
+          interpolation: { prefix: "%%", suffix: "%%" }
+        }),
+        content: t("settings.mail.templates.system_footer.help_content", {
+          interpolation: { prefix: "%%", suffix: "%%" }
+        }),
+        comments: t("settings.mail.templates.system_footer.help_comments"), 
+      }
+      break
     default:
       cardTitle = t("settings.mail.templates.not_found.title")
       helpTexts = {
