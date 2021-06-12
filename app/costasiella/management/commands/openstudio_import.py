@@ -166,6 +166,13 @@ class Command(BaseCommand):
             self.stdout.write(self.style.SUCCESS('Successfully closed poll "%s"' % poll_id))        
         """
 
+    @staticmethod
+    def _web2py_bool_to_python(w2p_bool):
+        if w2p_bool == "T":
+            return True
+        else:
+            return False
+
     def _import(self, cursor):
         """
         Main import function
@@ -176,22 +183,31 @@ class Command(BaseCommand):
 
     def _import_os_sys_organization_to_organization(self, cursor):
         """
-        Fetch os_sys_organizations and save to organization model
+        Fetch the default organization and import it in Costasiella.
+        Other organizations can't be imported at this time.
         :param cursor: MySQL db cursor
         :return: None
         """
-        query = "SELECT * from sys_organizations"
+        query = "SELECT * from sys_organizations WHERE DefaultOrganization = 'T'"
         cursor.execute(query)
-        records = cursor.fetchall()
+        record = cursor.fetchone()
 
-        for record in records:
-            print(record)
+        if record:
+            organization = m.Organization.objects.get(pk = 100)
+            organization.archived = self._web2py_bool_to_python(record['Archived'])
+            organization.name = record['Name'] or ""
+            organization.address = record['Address'] or ""
+            organization.phone = record['Phone'] or ""
+            organization.email = record['Email'] or ""
+            organization.registration = record['Registration'] or ""
+            organization.tax_registration = record['TaxRegistration'] or ""
+            organization.save()
 
-
-
-
-
-
+            self.stdout.write("Import default organization data: " + self.style.SUCCESS("OK"))
+        else:
+            self.stdout.write("Import default organization data: " + self.style.ERROR("No default organization found."))
+            
+        # TODO: Log result
 
 
     def _import_os_auth_user(self, cursor):
