@@ -99,6 +99,8 @@ class CreateAccountMembership(graphene.relay.ClientIDMutation):
         # Validate input
         result = validate_create_update_input(input, update=False)
 
+        #TODO: move this to sales dude and add invoice item reference
+
         account_membership = AccountMembership(
             account=result['account'],
             organization_membership=result['organization_membership'],
