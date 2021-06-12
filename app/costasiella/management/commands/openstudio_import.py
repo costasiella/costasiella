@@ -2,7 +2,7 @@ import sys
 import datetime
 
 from django.core.management.base import BaseCommand, CommandError, no_translations
-import costasiella.models as models
+import costasiella.models as m
 
 import MySQLdb
 from MySQLdb._exceptions import OperationalError
@@ -120,18 +120,7 @@ class Command(BaseCommand):
             self.stdout.write("Exiting...")
             sys.exit(1)
 
-        return conn.cursor()
-
-    def _import_os_users(self, cursor):
-        """
-        Fetch OpenStudio users
-        :param c: MySQL db cursor
-        :return:
-        """
-        query = "SELECT * from auth_user"
-        cursor.execute(query)
-        print(cursor.fetchone())
-        # print(cursor.fetchall())
+        return conn.cursor(MySQLdb.cursors.DictCursor)
 
     @no_translations
     def handle(self, *args, **options):
@@ -160,7 +149,7 @@ class Command(BaseCommand):
             self.stdout.write("Error setting up MySQL connection, exiting...")
             sys.exit(1)
 
-        self._import_os_users(cursor)
+        self._import(cursor)
 
         """
         Example code;
@@ -176,3 +165,42 @@ class Command(BaseCommand):
 
             self.stdout.write(self.style.SUCCESS('Successfully closed poll "%s"' % poll_id))        
         """
+
+    def _import(self, cursor):
+        """
+        Main import function
+        :param cursor: MySQLdb connection cursor
+        :return:
+        """
+        self._import_os_sys_organization_to_organization(cursor)
+
+    def _import_os_sys_organization_to_organization(self, cursor):
+        """
+        Fetch os_sys_organizations and save to organization model
+        :param cursor: MySQL db cursor
+        :return: None
+        """
+        query = "SELECT * from sys_organizations"
+        cursor.execute(query)
+        records = cursor.fetchall()
+
+        for record in records:
+            print(record)
+
+
+
+
+
+
+
+
+    def _import_os_auth_user(self, cursor):
+        """
+        Fetch OpenStudio users
+        :param cursor: MySQL db cursor
+        :return:
+        """
+        query = "SELECT * from auth_user"
+        cursor.execute(query)
+        print(cursor.fetchone())
+        # print(cursor.fetchall())
