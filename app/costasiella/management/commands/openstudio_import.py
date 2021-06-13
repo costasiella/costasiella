@@ -200,6 +200,7 @@ class Command(BaseCommand):
         self._import_os_sys_organization_to_organization(cursor)
         self._import_accounting_costcenters(cursor)
         self._import_accounting_glaccounts(cursor)
+        self._import_tax_rates(cursor)
 
     def _import_os_sys_organization_to_organization(self, cursor):
         """
@@ -274,6 +275,32 @@ class Command(BaseCommand):
             records_imported += 1
 
         log_message = "Import accounting_costcenters: "
+        self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
+        logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
+
+    def _import_tax_rates(self, cursor):
+        """
+        Fetch tax rates and import it in Costasiella.
+        :param cursor: MySQL db cursor
+        :return: None
+        """
+        query = "SELECT * from tax_rates"
+        cursor.execute(query)
+        records = cursor.fetchall()
+
+        records_imported = 0
+        for record in records:
+            finance_tax_rate = m.FinanceTaxRate(
+                archived=self._web2py_bool_to_python(record['Archived']),
+                name=record['Name'],
+                percentage=record['Percentage'],
+                rate_type="IN",
+                code=record['VATCodeID'] or ""
+            )
+            finance_tax_rate.save()
+            records_imported += 1
+
+        log_message = "Import tax_rates: "
         self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
         logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
 
