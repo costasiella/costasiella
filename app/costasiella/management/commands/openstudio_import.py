@@ -1,12 +1,19 @@
 import sys
+import os
 import datetime
 
 from django.core.management.base import BaseCommand, CommandError, no_translations
+from django.utils import timezone
 import costasiella.models as m
 
 import MySQLdb
 from MySQLdb._exceptions import OperationalError
 import MySQLdb.converters
+
+import logging
+
+logfile = os.path.join('logs', "openstudio_import_%s.log" % timezone.now().strftime("%Y-%m-%d_%H:%M"))
+logging.basicConfig(filename=logfile, level=logging.DEBUG)
 
 
 class Command(BaseCommand):
@@ -60,7 +67,7 @@ class Command(BaseCommand):
             else:
                 return False
         else:
-            return self._yes_or_no("Uhhhh... please enter ")
+            return self._yes_or_no("Uhhhh... please enter y or n")
 
     def _confirm_args(self, **options):
         """
@@ -204,9 +211,11 @@ class Command(BaseCommand):
             organization.save()
 
             self.stdout.write("Import default organization data: " + self.style.SUCCESS("OK"))
+            logging.info("Import default organization data: OK")
         else:
             self.stdout.write("Import default organization data: " + self.style.ERROR("No default organization found."))
-            
+            logging.error("Import default organization data: No default organization found")
+
         # TODO: Log result
 
 
