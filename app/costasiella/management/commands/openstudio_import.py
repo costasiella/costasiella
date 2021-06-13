@@ -22,12 +22,19 @@ class Command(BaseCommand):
         self.help = 'Import from OpenStudio. Provide at least --db_name, --db_user and --db_password.'
         self.cursor = None  # Set later on from handle
 
+        self.map_validity_units_cards_and_memberships = {
+            'days': 'DAYS',
+            'weeks': 'WEEKS',
+            'months': 'MONTHS'
+        }
+
         # Define maps
         self.accounting_costcenters_map = None
         self.accounting_glaccounts_map = None
         self.tax_rates_map = None
         self.payment_methods_map = None
         self.school_memberships_map = None
+        self.school_classcards_map = None
 
     def add_arguments(self, parser):
         parser.add_argument(
@@ -212,6 +219,7 @@ class Command(BaseCommand):
         self.tax_rates_map = self._import_tax_rates()
         self.payment_methods_map = self._import_payment_methods()
         self.school_memberships_map = self._import_school_memberships()
+        self.school_classcards_map = self._import_school_classcards()
 
     def _import_os_sys_organization_to_organization(self):
         """
@@ -364,12 +372,6 @@ class Command(BaseCommand):
         self.cursor.execute(query)
         records = self.cursor.fetchall()
 
-        map_validity_units = {
-            'days': 'DAYS',
-            'weeks': 'WEEKS',
-            'months': 'MONTHS'
-        }
-
         id_map = {}
         records_imported = 0
         for record in records:
@@ -382,7 +384,7 @@ class Command(BaseCommand):
                 price=record['Price'] or 0,
                 finance_tax_rate=self.tax_rates_map.get(record['tax_rates_id'], None),
                 validity=record['Validity'],
-                validity_unit=map_validity_units.get(record['ValidityUnit']),
+                validity_unit=self.map_validity_units_cards_and_memberships.get(record['ValidityUnit']),
                 terms_and_conditions=record['Terms'] or "",
                 finance_glaccount=self.accounting_glaccounts_map.get(record['accounting_glaccounts_id'], None),
                 finance_costcenter=self.accounting_costcenters_map.get(record['accounting_costcenters_id'], None)
@@ -393,6 +395,55 @@ class Command(BaseCommand):
             id_map[record['id']] = organization_membership
 
         log_message = "Import organization memberships: "
+        self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
+        logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
+
+        return id_map
+
+    def _import_school_classcards(self):
+        """
+        Fetch school classcards and import it in Costasiella.
+        :param cursor: MySQL db cursor
+        :return: None
+        """
+        query = "SELECT * from school_classcards"
+        self.cursor.execute(query)
+        records = self.cursor.fetchall()
+
+        map_validity_units = {
+            'days': 'DAYS',
+            'weeks': 'WEEKS',
+            'months': 'MONTHS'
+        }
+
+        id_map = {}
+        records_imported = 0
+        for record in records:
+            organization_classpass = m.OrganizationClasspass(
+                archived=self._web2py_bool_to_python(record['Archived']),
+                display_public=self._web2py_bool_to_python(record['PublicCard']),
+                display_shop=self._web2py_bool_to_python(record['PublicCard']),
+                trial_pass=self._web2py_bool_to_python(record['Trialcard']),
+                trial_times=record['TrialTimes'],
+                name=record['Name'],
+                description=record['Description'] or "",
+                price=record['Price'],
+                finance_tax_rate=self.tax_rates_map.get(record['tax_rates_id'], None),
+                validity=record['Validity'],
+                validity_unit=self.map_validity_units_cards_and_memberships.get(record['ValidityUnit']),
+                classes=record['Classes'] or 0,
+                unlimited=self._web2py_bool_to_python(record['Unlimited']),
+                organization_membership=self.school_memberships_map.get(record['school_memberships_id'], None),
+                quick_stats_amount=record['QuickStatsAmount'] or 0,
+                finance_glaccount=self.accounting_glaccounts_map.get(record['accounting_glaccounts_id'], None),
+                finance_costcenter=self.accounting_costcenters_map.get(record['accounting_costcenters_id'], None)
+            )
+            organization_classpass.save()
+            records_imported += 1
+
+            id_map[record['id']] = organization_classpass
+
+        log_message = "Import organization classpasses: "
         self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
         logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
 
