@@ -283,30 +283,30 @@ class GQLFinancePaymentBatch(TestCase):
         executed = execute_test_client_api_query(self.finance_payment_batch_query, user, variables={"id": node_id})
         data = executed.get('data')
         self.assertEqual(data['financePaymentBatch']['name'], finance_payment_batch.name)
-    #
-    # def test_create_finance_payment_batch(self):
-    #     """ Create a finance_payment_batch """
-    #     query = self.finance_payment_batch_create_mutation
-    #     variables = self.variables_create
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.admin_user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['createFinancePaymentBatch']['financePaymentBatch']['name'],
-    #                      variables['input']['name'])
-    #     self.assertEqual(data['createFinancePaymentBatch']['financePaymentBatch']['description'],
-    #                      variables['input']['description'])
-    #     self.assertEqual(data['createFinancePaymentBatch']['financePaymentBatch']['batchType'],
-    #                      variables['input']['batchType'])
-    #     self.assertEqual(data['createFinancePaymentBatch']['financePaymentBatch']['note'],
-    #                      variables['input']['note'])
-    #     self.assertEqual(data['createFinancePaymentBatch']['financePaymentBatch']['executionDate'],
-    #                      variables['input']['executionDate'])
-    #     self.assertEqual(data['createFinancePaymentBatch']['financePaymentBatch']['status'],
-    #                      'AWAITING_APPROVAL')
+
+    def test_create_finance_payment_batch(self):
+        """ Create a finance_payment_batch """
+        query = self.finance_payment_batch_create_mutation
+        variables = self.variables_create
+
+        executed = execute_test_client_api_query(
+            query,
+            self.admin_user,
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['createFinancePaymentBatch']['financePaymentBatch']['name'],
+                         variables['input']['name'])
+        self.assertEqual(data['createFinancePaymentBatch']['financePaymentBatch']['description'],
+                         variables['input']['description'])
+        self.assertEqual(data['createFinancePaymentBatch']['financePaymentBatch']['batchType'],
+                         variables['input']['batchType'])
+        self.assertEqual(data['createFinancePaymentBatch']['financePaymentBatch']['note'],
+                         variables['input']['note'])
+        self.assertEqual(data['createFinancePaymentBatch']['financePaymentBatch']['executionDate'],
+                         variables['input']['executionDate'])
+        self.assertEqual(data['createFinancePaymentBatch']['financePaymentBatch']['status'],
+                         'AWAITING_APPROVAL')
     #
     # def test_create_finance_payment_batch_anon_user(self):
     #     """ Don't allow creating finance_payment_batches for non-logged in users """
