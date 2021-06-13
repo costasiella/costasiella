@@ -143,7 +143,10 @@ const OrganizationMemberships = ({ t, history, archived=false }) => (
                                   </Table.Col>
                                   <Table.Col key={v4()}>
                                     {node.priceDisplay} <br />
-                                    <span className="text-muted">{node.financeTaxRate.name}</span>
+                                    {(node.financeTaxRate) ? 
+                                      <span className="text-muted">{node.financeTaxRate.name}</span>
+                                      : ""
+                                    }
                                   </Table.Col>
                                   <Table.Col key={v4()}>
                                     {node.validity} <br />
