@@ -1,5 +1,6 @@
 from django.utils.translation import gettext as _
 
+import os
 import graphene
 from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
@@ -158,8 +159,9 @@ class CreateFinancePaymentBatch(graphene.relay.ClientIDMutation):
 
         finance_payment_batch.save()
 
-        # Call background task to create batch items
-        task = finance_payment_batch_generate_items.delay(finance_payment_batch.id)
+        # Call background task to create batch items when we're not in CI test mode
+        if 'TRAVIS' not in os.environ:
+            task = finance_payment_batch_generate_items.delay(finance_payment_batch.id)
 
         return CreateFinancePaymentBatch(finance_payment_batch=finance_payment_batch)
 
