@@ -1,5 +1,6 @@
 from django.utils.translation import gettext as _
 
+import os
 import graphene
 from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
