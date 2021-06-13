@@ -180,6 +180,17 @@ class Command(BaseCommand):
         else:
             return False
 
+    def get_records_import_status_display(self, records_imported, records_total, raw=False):
+        records_display = "%s/%s" % (records_imported, records_total)
+
+        if not raw:
+            if records_imported == records_total:
+                records_display = self.style.SUCCESS(records_display)
+            else:
+                records_display = self.style.ERROR(records_display)
+
+        return records_display
+
     def _import(self, cursor):
         """
         Main import function
@@ -187,6 +198,7 @@ class Command(BaseCommand):
         :return:
         """
         self._import_os_sys_organization_to_organization(cursor)
+        self._import_accounting_glaccounts(cursor)
 
     def _import_os_sys_organization_to_organization(self, cursor):
         """
@@ -210,13 +222,35 @@ class Command(BaseCommand):
             organization.tax_registration = record['TaxRegistration'] or ""
             organization.save()
 
-            self.stdout.write("Import default organization data: " + self.style.SUCCESS("OK"))
-            logging.info("Import default organization data: OK")
+            self.stdout.write("Import default organization: " + self.style.SUCCESS("OK"))
+            logging.info("Import default organization: OK")
         else:
-            self.stdout.write("Import default organization data: " + self.style.ERROR("No default organization found."))
-            logging.error("Import default organization data: No default organization found")
+            self.stdout.write("Import default organization: " + self.style.ERROR("No default organization found."))
+            logging.error("Import default organization: No default organization found")
 
-        # TODO: Log result
+    def _import_accounting_glaccounts(self, cursor):
+        """
+        Fetch the glaccounts and import it in Costasiella.
+        :param cursor: MySQL db cursor
+        :return: None
+        """
+        query = "SELECT * from accounting_glaccounts"
+        cursor.execute(query)
+        records = cursor.fetchall()
+
+        records_imported = 0
+        for record in records:
+            finance_glaccount = m.FinanceGLAccount(
+                archived=self._web2py_bool_to_python(record['Archived']),
+                name=record['Name'],
+                code=record['AccountingCode']
+            )
+            finance_glaccount.save()
+            records_imported += 1
+
+        log_message = "Import accounting_glaccounts: "
+        self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
+        logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
 
 
     def _import_os_auth_user(self, cursor):
