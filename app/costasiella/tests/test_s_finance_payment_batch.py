@@ -307,200 +307,200 @@ class GQLFinancePaymentBatch(TestCase):
                          variables['input']['executionDate'])
         self.assertEqual(data['createFinancePaymentBatch']['financePaymentBatch']['status'],
                          'AWAITING_APPROVAL')
-    #
-    # def test_create_finance_payment_batch_anon_user(self):
-    #     """ Don't allow creating finance_payment_batches for non-logged in users """
-    #     query = self.finance_payment_batch_create_mutation
-    #     variables = self.variables_create
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.anon_user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
-    #
-    # def test_create_finance_payment_batch_permission_granted(self):
-    #     """ Allow creating finance_payment_batches for users with permissions """
-    #     query = self.finance_payment_batch_create_mutation
-    #     variables = self.variables_create
-    #
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename=self.permission_add)
-    #     user.user_permissions.add(permission)
-    #     user.save()
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['createFinancePaymentBatch']['financePaymentBatch']['name'],
-    #                      variables['input']['name'])
-    #
-    # def test_create_finance_payment_batch_permission_denied(self):
-    #     """ Check create finance_payment_batch permission denied error message """
-    #     query = self.finance_payment_batch_create_mutation
-    #     variables = self.variables_create
-    #
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=variables
-    #     )
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
-    #
-    # def test_update_finance_payment_batch(self):
-    #     """ Update a finance_payment_batch """
-    #     query = self.finance_payment_batch_update_mutation
-    #     finance_payment_batch = f.FinancePaymentBatchCollectionInvoicesFactory.create()
-    #     variables = self.variables_update
-    #     variables['input']['id'] = to_global_id('FinancePaymentBatchNode', finance_payment_batch.id)
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.admin_user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['updateFinancePaymentBatch']['financePaymentBatch']['id'],
-    #                      variables['input']['id'])
-    #     self.assertEqual(data['updateFinancePaymentBatch']['financePaymentBatch']['name'],
-    #                      variables['input']['name'])
-    #     self.assertEqual(data['updateFinancePaymentBatch']['financePaymentBatch']['note'],
-    #                      variables['input']['note'])
-    #     self.assertEqual(data['updateFinancePaymentBatch']['financePaymentBatch']['status'],
-    #                      variables['input']['status'])
-    #
-    # def test_update_finance_payment_batch_anon_user(self):
-    #     """ Don't allow updating finance_payment_batches for non-logged in users """
-    #     query = self.finance_payment_batch_update_mutation
-    #     finance_payment_batch = f.FinancePaymentBatchCollectionInvoicesFactory.create()
-    #     variables = self.variables_update
-    #     variables['input']['id'] = to_global_id('FinancePaymentBatchNode', finance_payment_batch.pk)
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.anon_user,
-    #         variables=variables
-    #     )
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
-    #
-    # def test_update_finance_payment_batch_permission_granted(self):
-    #     """ Allow updating finance_payment_batches for users with permissions """
-    #     query = self.finance_payment_batch_update_mutation
-    #     finance_payment_batch = f.FinancePaymentBatchCollectionInvoicesFactory.create()
-    #     variables = self.variables_update
-    #     variables['input']['id'] = to_global_id('FinancePaymentBatchNode', finance_payment_batch.pk)
-    #
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename=self.permission_change)
-    #     user.user_permissions.add(permission)
-    #     user.save()
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['updateFinancePaymentBatch']['financePaymentBatch']['name'],
-    #                      variables['input']['name'])
-    #
-    # def test_update_finance_payment_batch_permission_denied(self):
-    #     """ Check update finance_payment_batch permission denied error message """
-    #     query = self.finance_payment_batch_update_mutation
-    #     finance_payment_batch = f.FinancePaymentBatchCollectionInvoicesFactory.create()
-    #     variables = self.variables_update
-    #     variables['input']['id'] = to_global_id('FinancePaymentBatchNode', finance_payment_batch.pk)
-    #
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=variables
-    #     )
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
-    #
-    # def test_delete_finance_payment_batch(self):
-    #     """ Archive a finance_payment_batch """
-    #     query = self.finance_payment_batch_delete_mutation
-    #     finance_payment_batch = f.FinancePaymentBatchCollectionInvoicesFactory.create()
-    #     variables = self.variables_delete
-    #     variables['input']['id'] = to_global_id('FinancePaymentBatchNode', finance_payment_batch.pk)
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.admin_user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['deleteFinancePaymentBatch']['ok'], True)
-    #
-    # def test_delete_finance_payment_batch_anon_user(self):
-    #     """ Archive finance_payment_batch denied for anon user """
-    #     query = self.finance_payment_batch_delete_mutation
-    #     finance_payment_batch = f.FinancePaymentBatchCollectionInvoicesFactory.create()
-    #     variables = self.variables_delete
-    #     variables['input']['id'] = to_global_id('FinancePaymentBatchNode', finance_payment_batch.pk)
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.anon_user,
-    #         variables=variables
-    #     )
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
-    #
-    # def test_delete_finance_payment_batch_permission_granted(self):
-    #     """ Allow archiving finance_payment_batches for users with permissions """
-    #     query = self.finance_payment_batch_delete_mutation
-    #     finance_payment_batch = f.FinancePaymentBatchCollectionInvoicesFactory.create()
-    #     variables = self.variables_delete
-    #     variables['input']['id'] = to_global_id('FinancePaymentBatchNode', finance_payment_batch.pk)
-    #
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename=self.permission_delete)
-    #     user.user_permissions.add(permission)
-    #     user.save()
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['deleteFinancePaymentBatch']['ok'], True)
-    #
-    # def test_delete_finance_payment_batch_permission_denied(self):
-    #     """ Check delete finance_payment_batch permission denied error message """
-    #     query = self.finance_payment_batch_delete_mutation
-    #     finance_payment_batch = f.FinancePaymentBatchCollectionInvoicesFactory.create()
-    #     variables = self.variables_delete
-    #     variables['input']['id'] = to_global_id('FinancePaymentBatchNode', finance_payment_batch.pk)
-    #
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
-    #
+
+    def test_create_finance_payment_batch_anon_user(self):
+        """ Don't allow creating finance_payment_batches for non-logged in users """
+        query = self.finance_payment_batch_create_mutation
+        variables = self.variables_create
+
+        executed = execute_test_client_api_query(
+            query,
+            self.anon_user,
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
+
+    def test_create_finance_payment_batch_permission_granted(self):
+        """ Allow creating finance_payment_batches for users with permissions """
+        query = self.finance_payment_batch_create_mutation
+        variables = self.variables_create
+
+        # Create regular user
+        user = f.RegularUserFactory.create()
+        permission = Permission.objects.get(codename=self.permission_add)
+        user.user_permissions.add(permission)
+        user.save()
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['createFinancePaymentBatch']['financePaymentBatch']['name'],
+                         variables['input']['name'])
+
+    def test_create_finance_payment_batch_permission_denied(self):
+        """ Check create finance_payment_batch permission denied error message """
+        query = self.finance_payment_batch_create_mutation
+        variables = self.variables_create
+
+        # Create regular user
+        user = f.RegularUserFactory.create()
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=variables
+        )
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
+
+    def test_update_finance_payment_batch(self):
+        """ Update a finance_payment_batch """
+        query = self.finance_payment_batch_update_mutation
+        finance_payment_batch = f.FinancePaymentBatchCollectionInvoicesFactory.create()
+        variables = self.variables_update
+        variables['input']['id'] = to_global_id('FinancePaymentBatchNode', finance_payment_batch.id)
+
+        executed = execute_test_client_api_query(
+            query,
+            self.admin_user,
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['updateFinancePaymentBatch']['financePaymentBatch']['id'],
+                         variables['input']['id'])
+        self.assertEqual(data['updateFinancePaymentBatch']['financePaymentBatch']['name'],
+                         variables['input']['name'])
+        self.assertEqual(data['updateFinancePaymentBatch']['financePaymentBatch']['note'],
+                         variables['input']['note'])
+        self.assertEqual(data['updateFinancePaymentBatch']['financePaymentBatch']['status'],
+                         variables['input']['status'])
+
+    def test_update_finance_payment_batch_anon_user(self):
+        """ Don't allow updating finance_payment_batches for non-logged in users """
+        query = self.finance_payment_batch_update_mutation
+        finance_payment_batch = f.FinancePaymentBatchCollectionInvoicesFactory.create()
+        variables = self.variables_update
+        variables['input']['id'] = to_global_id('FinancePaymentBatchNode', finance_payment_batch.pk)
+
+        executed = execute_test_client_api_query(
+            query,
+            self.anon_user,
+            variables=variables
+        )
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
+
+    def test_update_finance_payment_batch_permission_granted(self):
+        """ Allow updating finance_payment_batches for users with permissions """
+        query = self.finance_payment_batch_update_mutation
+        finance_payment_batch = f.FinancePaymentBatchCollectionInvoicesFactory.create()
+        variables = self.variables_update
+        variables['input']['id'] = to_global_id('FinancePaymentBatchNode', finance_payment_batch.pk)
+
+        # Create regular user
+        user = f.RegularUserFactory.create()
+        permission = Permission.objects.get(codename=self.permission_change)
+        user.user_permissions.add(permission)
+        user.save()
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['updateFinancePaymentBatch']['financePaymentBatch']['name'],
+                         variables['input']['name'])
+
+    def test_update_finance_payment_batch_permission_denied(self):
+        """ Check update finance_payment_batch permission denied error message """
+        query = self.finance_payment_batch_update_mutation
+        finance_payment_batch = f.FinancePaymentBatchCollectionInvoicesFactory.create()
+        variables = self.variables_update
+        variables['input']['id'] = to_global_id('FinancePaymentBatchNode', finance_payment_batch.pk)
+
+        # Create regular user
+        user = f.RegularUserFactory.create()
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=variables
+        )
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
+
+    def test_delete_finance_payment_batch(self):
+        """ Archive a finance_payment_batch """
+        query = self.finance_payment_batch_delete_mutation
+        finance_payment_batch = f.FinancePaymentBatchCollectionInvoicesFactory.create()
+        variables = self.variables_delete
+        variables['input']['id'] = to_global_id('FinancePaymentBatchNode', finance_payment_batch.pk)
+
+        executed = execute_test_client_api_query(
+            query,
+            self.admin_user,
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['deleteFinancePaymentBatch']['ok'], True)
+
+    def test_delete_finance_payment_batch_anon_user(self):
+        """ Archive finance_payment_batch denied for anon user """
+        query = self.finance_payment_batch_delete_mutation
+        finance_payment_batch = f.FinancePaymentBatchCollectionInvoicesFactory.create()
+        variables = self.variables_delete
+        variables['input']['id'] = to_global_id('FinancePaymentBatchNode', finance_payment_batch.pk)
+
+        executed = execute_test_client_api_query(
+            query,
+            self.anon_user,
+            variables=variables
+        )
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
+
+    def test_delete_finance_payment_batch_permission_granted(self):
+        """ Allow archiving finance_payment_batches for users with permissions """
+        query = self.finance_payment_batch_delete_mutation
+        finance_payment_batch = f.FinancePaymentBatchCollectionInvoicesFactory.create()
+        variables = self.variables_delete
+        variables['input']['id'] = to_global_id('FinancePaymentBatchNode', finance_payment_batch.pk)
+
+        # Create regular user
+        user = f.RegularUserFactory.create()
+        permission = Permission.objects.get(codename=self.permission_delete)
+        user.user_permissions.add(permission)
+        user.save()
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['deleteFinancePaymentBatch']['ok'], True)
+
+    def test_delete_finance_payment_batch_permission_denied(self):
+        """ Check delete finance_payment_batch permission denied error message """
+        query = self.finance_payment_batch_delete_mutation
+        finance_payment_batch = f.FinancePaymentBatchCollectionInvoicesFactory.create()
+        variables = self.variables_delete
+        variables['input']['id'] = to_global_id('FinancePaymentBatchNode', finance_payment_batch.pk)
+
+        # Create regular user
+        user = f.RegularUserFactory.create()
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
+
