@@ -32,8 +32,6 @@ const ADD_SUBSCRIPTION_GROUP = gql`
     createOrganizationSubscriptionGroup(input: $input) {
       organizationSubscriptionGroup{
         id
-        archived
-        name
       }
     }
   }
@@ -55,15 +53,16 @@ const OrganizationSubscriptionGroupAdd = ({ t, history }) => (
             <Mutation mutation={ADD_SUBSCRIPTION_GROUP} onCompleted={() => history.push(return_url)}> 
                 {(addLocation, { data }) => (
                     <Formik
-                        initialValues={{ name: '', code: '' }}
+                        initialValues={{ name: '', description: '' }}
                         validationSchema={SUBSCRIPTION_GROUP_SCHEMA}
                         onSubmit={(values, { setSubmitting }) => {
                             addLocation({ variables: {
                               input: {
                                 name: values.name, 
+                                description: values.description,
                               }
                             }, refetchQueries: [
-                                {query: GET_SUBSCRIPTION_GROUPS_QUERY, variables: {"archived": false }}
+                                {query: GET_SUBSCRIPTION_GROUPS_QUERY}
                             ]})
                             .then(({ data }) => {
                                 console.log('got data', data);
