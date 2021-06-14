@@ -29,18 +29,7 @@ import ContentCard from "../../general/ContentCard"
 import CardHeaderSeparator from "../../general/CardHeaderSeparator"
 import OrganizationMenu from "../OrganizationMenu"
 
-import { GET_SUBSCRIPTION_GROUPS_QUERY } from "./queries"
-
-const ARCHIVE_SUBSCRIPTION_GROUP = gql`
-  mutation ArchiveSubscriptionGroup($input: ArchiveOrganizationSubscriptionGroupInput!) {
-    archiveOrganizationSubscriptionGroup(input: $input) {
-      organizationSubscriptionGroup {
-        id
-        archived
-      }
-    }
-  }
-`
+import { GET_SUBSCRIPTION_GROUPS_QUERY, DELETE_SUBSCRIPTION_GROUP } from "./queries"
 
 
 const OrganizationSubscriptionsGroups = ({ t, history, archived=false }) => (
