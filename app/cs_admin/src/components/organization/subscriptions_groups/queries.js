@@ -12,8 +12,8 @@ export const GET_SUBSCRIPTION_GROUPS_QUERY = gql`
       edges {
         node {
           id
-          archived
           name
+          description
         }
       }
     }
@@ -26,7 +26,7 @@ export const GET_SUBSCRIPTION_GROUP_QUERY = gql`
     organizationSubscriptionGroup(id:$id) {
       id
       name
-      archived
+      description
     }
   }
 `
@@ -51,6 +51,7 @@ export const GET_SUBSCRIPTION_GROUP_PASSES_QUERY = gql`
     organizationSubscriptionGroup(id: $id) {
       id
       name
+      description
       organizationSubscriptions {
         edges {
           node {
