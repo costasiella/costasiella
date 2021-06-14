@@ -99,7 +99,7 @@ class OrganizationClasspassGroupEdit extends Component {
                                       name: values.name,
                                     }
                                   }, refetchQueries: [
-                                      {query: GET_CLASSPASS_GROUPS_QUERY, variables: {"archived": false }}
+                                      {query: GET_CLASSPASS_GROUPS_QUERY}
                                   ]})
                                   .then(({ data }) => {
                                       console.log('got data', data)

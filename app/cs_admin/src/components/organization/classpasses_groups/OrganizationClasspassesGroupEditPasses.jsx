@@ -79,7 +79,7 @@ class OrganizationClasspassGroupEditPasses extends Component {
                   <Card.Header>
                     <Card.Title>{t('organization.classpass_group_classpasses.title_edit')}</Card.Title>
                   </Card.Header>
-                  <Query query={GET_CLASSPASS_GROUP_PASSES_QUERY} variables={{ id, archived: false }} >
+                  <Query query={GET_CLASSPASS_GROUP_PASSES_QUERY} variables={{ id }} >
                     {({ loading, error, data, refetch }) => {
                       // Loading
                       if (loading) return <p>{t('general.loading_with_dots')}</p>

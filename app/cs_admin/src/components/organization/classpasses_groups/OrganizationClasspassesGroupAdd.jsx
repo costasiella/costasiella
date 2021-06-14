@@ -31,8 +31,6 @@ const ADD_CLASSPASS_GROUP = gql`
     createOrganizationClasspassGroup(input: $input) {
       organizationClasspassGroup{
         id
-        archived
-        name
       }
     }
   }
@@ -62,7 +60,7 @@ const OrganizationClasspassGroupAdd = ({ t, history }) => (
                                 name: values.name, 
                               }
                             }, refetchQueries: [
-                                {query: GET_CLASSPASS_GROUPS_QUERY, variables: {"archived": false }}
+                                {query: GET_CLASSPASS_GROUPS_QUERY}
                             ]})
                             .then(({ data }) => {
                                 console.log('got data', data);
