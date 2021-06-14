@@ -16,7 +16,7 @@ m = Messages()
 class OrganizationClasspassGroupNode(DjangoObjectType):
     class Meta:
         model = OrganizationClasspassGroup
-        filter_fields = ['archived']
+        filter_fields = []
         interfaces = (graphene.relay.Node, )
 
     @classmethod
@@ -31,18 +31,18 @@ class OrganizationClasspassGroupQuery(graphene.ObjectType):
     organization_classpass_groups = DjangoFilterConnectionField(OrganizationClasspassGroupNode)
     organization_classpass_group = graphene.relay.Node.Field(OrganizationClasspassGroupNode)
 
-    def resolve_organization_classpass_groups(self, info, archived=False, **kwargs):
+    def resolve_organization_classpass_groups(self, info, **kwargs):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.view_organizationclasspassgroup')
 
         ## return everything:
-        return OrganizationClasspassGroup.objects.filter(archived = archived).order_by('name')
+        return OrganizationClasspassGroup.objects.all().order_by('name')
 
 
 class CreateOrganizationClasspassGroup(graphene.relay.ClientIDMutation):
     class Input:
         name = graphene.String(required=True)
-        description = graphene.String(default="")
+        description = graphene.String(default_value="")
 
     organization_classpass_group = graphene.Field(OrganizationClasspassGroupNode)
 
@@ -51,10 +51,7 @@ class CreateOrganizationClasspassGroup(graphene.relay.ClientIDMutation):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.add_organizationclasspassgroup')
 
-        errors = []
-        if not len(input['name']):
-            print('validation error found')
-            raise GraphQLError(_('Name is required'))
+        print(input)
 
         organization_classpass_group = OrganizationClasspassGroup(
             name=input['name'],
