@@ -21,6 +21,13 @@ const OrganizationSubscriptionGroupForm = ({ t, history, isSubmitting, errors, r
                     autoComplete="off" />
             <ErrorMessage name="name" component="span" className="invalid-feedback" />
           </Form.Group>
+          <Form.Group label={t('general.description')}>
+            <Field type="text" 
+                    name="description" 
+                    className={(errors.description) ? "form-control is-invalid" : "form-control"} 
+                    autoComplete="off" />
+            <ErrorMessage name="description" component="span" className="invalid-feedback" />
+          </Form.Group>
       </Card.Body>
       <Card.Footer>
           <Button 
