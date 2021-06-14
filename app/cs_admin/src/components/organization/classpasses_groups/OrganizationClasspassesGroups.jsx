@@ -25,27 +25,18 @@ import HasPermissionWrapper from "../../HasPermissionWrapper"
 // import { confirmAlert } from 'react-confirm-alert'; // Import
 import { toast } from 'react-toastify'
 
+import confirm_delete from "../../../tools/confirm_delete"
 import ContentCard from "../../general/ContentCard"
 import CardHeaderSeparator from "../../general/CardHeaderSeparator"
 import OrganizationMenu from "../OrganizationMenu"
 import OrganizationClasspassesGroupsBase from "./OrganizationClasspassesGroupsBase"
 
-import { GET_CLASSPASS_GROUPS_QUERY } from "./queries"
-
-const ARCHIVE_CLASSPASS_GROUP = gql`
-  mutation ArchiveClasspassGroup($input: ArchiveOrganizationClasspassGroupInput!) {
-    archiveOrganizationClasspassGroup(input: $input) {
-      organizationClasspassGroup {
-        id
-        archived
-      }
-    }
-  }
-`
+import { GET_CLASSPASS_GROUPS_QUERY, DELETE_CLASSPASS_GROUP } from "./queries"
 
 
 function OrganizationClasspassesGroups({ t, history}) {
   const { loading, error, data, fetchMore } = useQuery(GET_CLASSPASS_GROUPS_QUERY)
+  const [deleteClasspassGroup] = useMutation(DELETE_CLASSPASS_GROUP)
 
   // Loading
   if (loading) return (
@@ -130,40 +121,29 @@ function OrganizationClasspassesGroups({ t, history}) {
                           {t('organization.classpasses.groups.edit_passes')}
                         </Button>
                     </Table.Col>
-                    {/* <Mutation mutation={ARCHIVE_CLASSPASS_GROUP} key={v4()}>
-                      {(archiveCostcenter, { data }) => (
-                        <Table.Col className="text-right" key={v4()}>
-                          <button className="icon btn btn-link btn-sm" 
-                              title={t('general.archive')} 
-                              href=""
-                              onClick={() => {
-                                console.log("clicked archived")
-                                let id = node.id
-                                archiveCostcenter({ variables: {
-                                  input: {
-                                  id,
-                                  archived: !archived
-                                  }
-                          }, refetchQueries: [
-                              {query: GET_CLASSPASS_GROUPS_QUERY, variables: {"archived": archived }}
-                          ]}).then(({ data }) => {
-                            console.log('got data', data);
-                            toast.success(
-                              (archived) ? t('general.unarchived'): t('general.archived'), {
-                                position: toast.POSITION.BOTTOM_RIGHT
-                              })
-                          }).catch((error) => {
-                            toast.error((t('general.toast_server_error')) + ': ' +  error, {
-                                position: toast.POSITION.BOTTOM_RIGHT
-                              })
-                            console.log('there was an error sending the query', error);
+                    <Table.Col>
+                      <button className="icon btn btn-link btn-sm float-right" 
+                        title={t('general.delete')} 
+                        href=""
+                        onClick={() => {
+                          confirm_delete({
+                            t: t,
+                            msgConfirm: t("organization.classpasses.groups.delete_confirm_msg"),
+                            msgDescription: <p>{node.name}</p>,
+                            msgSuccess: t('organization.classpasses.groups.deleted'),
+                            deleteFunction: deleteClasspassGroup,
+                            functionVariables: { variables: {
+                              input: {
+                                id: node.id
+                              }
+                            }, refetchQueries: [
+                              {query: GET_CLASSPASS_GROUPS_QUERY} 
+                            ]}
                           })
-                          }}>
-                            <Icon prefix="fa" name="inbox" />
-                          </button>
-                        </Table.Col>
-                      )}
-                    </Mutation> */}
+                      }}>
+                        <span className="text-red"><Icon prefix="fe" name="trash-2" /></span>
+                      </button>
+                    </Table.Col>
                   </Table.Row>
                 ))}
               </Table.Body>
