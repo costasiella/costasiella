@@ -1,8 +1,8 @@
 import gql from "graphql-tag"
 
 export const GET_SUBSCRIPTION_GROUPS_QUERY = gql`
-  query OrganizationSubscriptionGroups($after: String, $before: String, $archived: Boolean) {
-    organizationSubscriptionGroups(first: 15, before: $before, after: $after, archived: $archived) {
+  query OrganizationSubscriptionGroups($after: String, $before: String) {
+    organizationSubscriptionGroups(first: 15, before: $before, after: $after) {
       pageInfo {
         startCursor
         endCursor
@@ -33,8 +33,8 @@ export const GET_SUBSCRIPTION_GROUP_QUERY = gql`
 
 
 export const GET_SUBSCRIPTION_GROUP_PASSES_QUERY = gql`
-  query GetPassesAndGroupMembership($after: String, $before: String, $archived: Boolean, $id:ID!) {
-    organizationSubscriptions(first: 15, before: $before, after: $after, archived: $archived) {
+  query GetPassesAndGroupMembership($after: String, $before: String, $id:ID!) {
+    organizationSubscriptions(first: 15, before: $before, after: $after) {
       pageInfo {
         startCursor
         endCursor
