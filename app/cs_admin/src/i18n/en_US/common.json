@@ -621,7 +621,9 @@
             "empty_archive": "No subscriptions have been archived yet",
             "add": "Add subscription",
             "groups": {
-                "edit_subscriptions": "Subscriptions in group"
+                "edit_subscriptions": "Subscriptions in group",
+                "delete_confirm_msg": "Are you sure you wish to delete this subscriptions group?",
+                "deleted": "Deleted subscriptions group"
             }
         },
         "subscription": {
@@ -636,7 +638,6 @@
             "title": "Subscription groups",
             "error_loading": "Error loading subscription groups :(",
             "empty_list": "No subscription groups found",
-            "empty_archive": "No subscription groups have been archived yet",
             "add": "Add subscription group"
         },
         "subscription_group_subscriptions": {

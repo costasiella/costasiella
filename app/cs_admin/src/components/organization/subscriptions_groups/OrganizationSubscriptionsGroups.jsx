@@ -123,40 +123,29 @@ function OrganizationSubscriptionsGroups({ t, history }) {
                     </Button>
                   </span>
                 </Table.Col>
-                {/* <Mutation mutation={ARCHIVE_SUBSCRIPTION_GROUP} key={v4()}>
-                  {(archiveCostcenter, { data }) => (
-                    <Table.Col className="text-right" key={v4()}>
-                      <button className="icon btn btn-link btn-sm" 
-                          title={t('general.archive')} 
-                          href=""
-                          onClick={() => {
-                            console.log("clicked archived")
-                            let id = node.id
-                            archiveCostcenter({ variables: {
-                              input: {
-                              id,
-                              archived: !archived
-                              }
-                      }, refetchQueries: [
-                          {query: GET_SUBSCRIPTION_GROUPS_QUERY, variables: {"archived": archived }}
-                      ]}).then(({ data }) => {
-                        console.log('got data', data);
-                        toast.success(
-                          (archived) ? t('general.unarchived'): t('general.archived'), {
-                            position: toast.POSITION.BOTTOM_RIGHT
-                          })
-                      }).catch((error) => {
-                        toast.error((t('general.toast_server_error')) + ': ' +  error, {
-                            position: toast.POSITION.BOTTOM_RIGHT
-                          })
-                        console.log('there was an error sending the query', error);
+                <Table.Col>
+                  <button className="icon btn btn-link btn-sm float-right" 
+                    title={t('general.delete')} 
+                    href=""
+                    onClick={() => {
+                      confirm_delete({
+                        t: t,
+                        msgConfirm: t("organization.subscriptions.groups.delete_confirm_msg"),
+                        msgDescription: <p>{node.name}</p>,
+                        msgSuccess: t('organization.subscriptions.groups.deleted'),
+                        deleteFunction: deleteSubscriptionGroup,
+                        functionVariables: { variables: {
+                          input: {
+                            id: node.id
+                          }
+                        }, refetchQueries: [
+                          {query: GET_SUBSCRIPTION_GROUPS_QUERY} 
+                        ]}
                       })
-                      }}>
-                        <Icon prefix="fa" name="inbox" />
-                      </button>
-                    </Table.Col>
-                  )}
-                </Mutation> */}
+                  }}>
+                    <span className="text-red"><Icon prefix="fe" name="trash-2" /></span>
+                  </button>
+                </Table.Col>
               </Table.Row>
             ))}
           </Table.Body>
