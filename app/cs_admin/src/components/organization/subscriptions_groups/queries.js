@@ -63,3 +63,11 @@ export const GET_SUBSCRIPTION_GROUP_PASSES_QUERY = gql`
     }
   }
 `
+
+export const DELETE_SUBSCRIPTION_GROUP = gql`
+  mutation DeleteSubscriptionGroup($input: DeleteOrganizationSubscriptionGroupInput!) {
+    deleteOrganizationSubscriptionGroup(input: $input) {
+      ok
+    }
+  }
+`
