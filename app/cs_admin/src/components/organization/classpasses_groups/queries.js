@@ -63,3 +63,11 @@ export const GET_CLASSPASS_GROUP_PASSES_QUERY = gql`
     }
   }
 `
+
+export const DELETE_CLASSPASS_GROUP = gql`
+  mutation DeleteClasspassGroup($input: DeleteOrganizationClasspassGroupInput!) {
+    deleteOrganizationClasspassGroup(input: $input) {
+      ok
+    }
+  }
+`
