@@ -20,7 +20,7 @@ import HasPermissionWrapper from "../../HasPermissionWrapper"
 import OrganizationMenu from "../OrganizationMenu"
 
 
-function OrganizationClasspassesGroupsBase({ t, history }) {
+function OrganizationClasspassesGroupsBase({ t, history, children }) {
   return (
     <SiteWrapper>
       <div className="my-3 my-md-5">
@@ -35,7 +35,7 @@ function OrganizationClasspassesGroupsBase({ t, history }) {
           </Page.Header>
           <Grid.Row>
             <Grid.Col md={9}>
-              {Children}
+              {children}
             </Grid.Col>
             <Grid.Col md={3}>
               <HasPermissionWrapper permission="add"
