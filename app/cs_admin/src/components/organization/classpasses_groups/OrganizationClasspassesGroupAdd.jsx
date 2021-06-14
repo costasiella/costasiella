@@ -52,12 +52,13 @@ const OrganizationClasspassGroupAdd = ({ t, history }) => (
             <Mutation mutation={ADD_CLASSPASS_GROUP} onCompleted={() => history.push(return_url)}> 
                 {(addLocation, { data }) => (
                     <Formik
-                        initialValues={{ name: '', code: '' }}
+                        initialValues={{ name: '', description: '' }}
                         validationSchema={CLASSPASS_GROUP_SCHEMA}
                         onSubmit={(values, { setSubmitting }) => {
                             addLocation({ variables: {
                               input: {
                                 name: values.name, 
+                                description: values.description, 
                               }
                             }, refetchQueries: [
                                 {query: GET_CLASSPASS_GROUPS_QUERY}
@@ -79,13 +80,20 @@ const OrganizationClasspassGroupAdd = ({ t, history }) => (
                         {({ isSubmitting, errors }) => (
                             <FoForm>
                                 <Card.Body>
-                                    <Form.Group label={t('general.name')}>
-                                      <Field type="text" 
-                                              name="name" 
-                                              className={(errors.name) ? "form-control is-invalid" : "form-control"} 
-                                              autoComplete="off" />
-                                      <ErrorMessage name="name" component="span" className="invalid-feedback" />
-                                    </Form.Group>
+                                  <Form.Group label={t('general.name')}>
+                                    <Field type="text" 
+                                            name="name" 
+                                            className={(errors.name) ? "form-control is-invalid" : "form-control"} 
+                                            autoComplete="off" />
+                                    <ErrorMessage name="name" component="span" className="invalid-feedback" />
+                                  </Form.Group>
+                                  <Form.Group label={t('general.description')}>
+                                    <Field type="text" 
+                                            name="description" 
+                                            className={(errors.description) ? "form-control is-invalid" : "form-control"} 
+                                            autoComplete="off" />
+                                    <ErrorMessage name="name" component="span" className="invalid-feedback" />
+                                  </Form.Group>
                                 </Card.Body>
                                 <Card.Footer>
                                     <Button 

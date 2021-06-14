@@ -101,6 +101,7 @@ function OrganizationClasspassesGroups({ t, history}) {
               <Table.Header>
                 <Table.Row key={v4()}>
                   <Table.ColHeader>{t('general.name')}</Table.ColHeader>
+                  <Table.ColHeader>{t('general.description')}</Table.ColHeader>
                 </Table.Row>
               </Table.Header>
               <Table.Body>
@@ -108,6 +109,9 @@ function OrganizationClasspassesGroups({ t, history}) {
                   <Table.Row key={v4()}>
                     <Table.Col key={v4()}>
                       {node.name}
+                    </Table.Col>
+                    <Table.Col key={v4()}>
+                      {node.description.substring(0, 24)}
                     </Table.Col>
                     <Table.Col className="text-right" key={v4()}>
                         <Button className='btn-sm' 

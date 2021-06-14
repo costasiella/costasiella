@@ -87,6 +87,7 @@ class OrganizationClasspassGroupEdit extends Component {
                           <Formik
                               initialValues={{ 
                                 name: initialData.name, 
+                                description: initialData.description,
                               }}
                               validationSchema={CLASSPASS_GROUP_SCHEMA}
                               onSubmit={(values, { setSubmitting }) => {
@@ -97,6 +98,7 @@ class OrganizationClasspassGroupEdit extends Component {
                                     input: {
                                       id: match.params.id,
                                       name: values.name,
+                                      description: values.description,
                                     }
                                   }, refetchQueries: [
                                       {query: GET_CLASSPASS_GROUPS_QUERY}
@@ -123,6 +125,13 @@ class OrganizationClasspassGroupEdit extends Component {
                                                   name="name" 
                                                   className={(errors.name) ? "form-control is-invalid" : "form-control"} 
                                                   autoComplete="off" />
+                                            <ErrorMessage name="name" component="span" className="invalid-feedback" />
+                                          </Form.Group>
+                                          <Form.Group label={t('general.description')}>
+                                            <Field type="text" 
+                                                    name="description" 
+                                                    className={(errors.description) ? "form-control is-invalid" : "form-control"} 
+                                                    autoComplete="off" />
                                             <ErrorMessage name="name" component="span" className="invalid-feedback" />
                                           </Form.Group>
                                       </Card.Body>
