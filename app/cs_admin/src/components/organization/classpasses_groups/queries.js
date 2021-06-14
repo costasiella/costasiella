@@ -12,7 +12,7 @@ export const GET_CLASSPASS_GROUPS_QUERY = gql`
       edges {
         node {
           id
-          archived
+          name
           description
         }
       }
@@ -33,7 +33,7 @@ export const GET_CLASSPASS_GROUP_QUERY = gql`
 
 
 export const GET_CLASSPASS_GROUP_PASSES_QUERY = gql`
-  query GetPassesAndGroupMembership($after: String, $before: String, id:ID!) {
+  query GetPassesAndGroupMembership($after: String, $before: String, $id:ID!) {
     organizationClasspasses(first: 15, before: $before, after: $after) {
       pageInfo {
         startCursor
@@ -51,12 +51,12 @@ export const GET_CLASSPASS_GROUP_PASSES_QUERY = gql`
     organizationClasspassGroup(id: $id) {
       id
       name
+      description
       organizationClasspasses {
         edges {
           node {
             id
             name
-            discription
           }
         }
       }
