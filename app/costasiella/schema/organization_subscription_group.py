@@ -31,12 +31,12 @@ class OrganizationSubscriptionGroupQuery(graphene.ObjectType):
     organization_subscription_groups = DjangoFilterConnectionField(OrganizationSubscriptionGroupNode)
     organization_subscription_group = graphene.relay.Node.Field(OrganizationSubscriptionGroupNode)
 
-    def resolve_organization_subscription_groups(self, info, archived=False, **kwargs):
+    def resolve_organization_subscription_groups(self, info, **kwargs):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.view_organizationsubscriptiongroup')
 
         ## return everything:
-        return OrganizationSubscriptionGroup.objects.filter(archived = archived).order_by('name')
+        return OrganizationSubscriptionGroup.objects.all().order_by('name')
 
 
 class CreateOrganizationSubscriptionGroup(graphene.relay.ClientIDMutation):
