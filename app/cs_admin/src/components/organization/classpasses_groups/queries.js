@@ -1,8 +1,8 @@
 import gql from "graphql-tag"
 
 export const GET_CLASSPASS_GROUPS_QUERY = gql`
-  query OrganizationClasspassGroups($after: String, $before: String, $archived: Boolean) {
-    organizationClasspassGroups(first: 15, before: $before, after: $after, archived: $archived) {
+  query OrganizationClasspassGroups($after: String, $before: String) {
+    organizationClasspassGroups(first: 15, before: $before, after: $after) {
       pageInfo {
         startCursor
         endCursor
@@ -13,7 +13,7 @@ export const GET_CLASSPASS_GROUPS_QUERY = gql`
         node {
           id
           archived
-          name
+          description
         }
       }
     }
@@ -26,15 +26,15 @@ export const GET_CLASSPASS_GROUP_QUERY = gql`
     organizationClasspassGroup(id:$id) {
       id
       name
-      archived
+      description
     }
   }
 `
 
 
 export const GET_CLASSPASS_GROUP_PASSES_QUERY = gql`
-  query GetPassesAndGroupMembership($after: String, $before: String, $archived: Boolean, $id:ID!) {
-    organizationClasspasses(first: 15, before: $before, after: $after, archived: $archived) {
+  query GetPassesAndGroupMembership($after: String, $before: String, id:ID!) {
+    organizationClasspasses(first: 15, before: $before, after: $after) {
       pageInfo {
         startCursor
         endCursor
@@ -56,6 +56,7 @@ export const GET_CLASSPASS_GROUP_PASSES_QUERY = gql`
           node {
             id
             name
+            discription
           }
         }
       }
