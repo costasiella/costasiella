@@ -51,8 +51,6 @@ class CreateOrganizationClasspassGroup(graphene.relay.ClientIDMutation):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.add_organizationclasspassgroup')
 
-        print(input)
-
         organization_classpass_group = OrganizationClasspassGroup(
             name=input['name'],
             description=input['description']
