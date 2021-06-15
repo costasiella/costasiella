@@ -93,7 +93,7 @@ class OrganizationHome extends Component {
                                         resource="organizationannouncement">
                     <Grid.Col md={4} lg={4}>
                       <Link to='/organization/announcements'>
-                        <StampCard header={<small>{t('organization.announcements.title')}</small>} footer={t('')} color="blue" icon="edit" />
+                        <StampCard header={<small>{t('organization.announcements.title')}</small>} footer={t('')} color="blue" icon="message-square" />
                       </Link>
                     </Grid.Col>
                   </HasPermissionWrapper>

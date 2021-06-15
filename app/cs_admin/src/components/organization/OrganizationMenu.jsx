@@ -139,19 +139,6 @@ const OrganizationMenu = ({ t, active_link }) => (
                 {t('organization.announcements.title')}
             </List.GroupItem>
         </HasPermissionWrapper>
-        {/* <HasPermissionWrapper 
-            permission="view"
-            resource="organizationlocation">
-            <List.GroupItem
-                key={v4()}
-                className="d-flex align-items-center"
-                to="#/organization/locations"
-                icon="home"
-                active={location_active}
-                >
-            Locations
-            </List.GroupItem>
-        </HasPermissionWrapper> */}
     </List.Group>
 );
 
