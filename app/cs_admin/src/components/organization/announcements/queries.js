@@ -52,6 +52,16 @@ export const ADD_ANNOUNCEMENT = gql`
   }
 `
 
+export const UPDATE_ANNOUNCEMENT = gql`
+  mutation UpdateOrganizationAnnouncement($input: UpdateOrganizationAnnouncementInput!) {
+    updateOrganizationAnnouncement(input: $input) {
+      organizationAnnouncement {
+        id
+      }
+    }
+  }
+`
+
 export const DELETE_ANNOUNCEMENT = gql`
 mutation DeleteOrganizationAnnouncement($input: DeleteOrganizationAnnouncementInput!) {
   deleteOrganizationAnnouncement(input: $input) {
