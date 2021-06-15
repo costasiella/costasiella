@@ -1121,6 +1121,9 @@
             "logo_email": "__STRING_NOT_TRANSLATED__",
             "logo_shop_header": "__STRING_NOT_TRANSLATED__",
             "logo_self_checkin": "__STRING_NOT_TRANSLATED__"
+        },
+        "announcements": {
+            "title": "__STRING_NOT_TRANSLATED__"
         }
     },
     "validity": {

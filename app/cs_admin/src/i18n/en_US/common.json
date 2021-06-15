@@ -723,6 +723,9 @@
             "logo_email": "Logo email",
             "logo_shop_header": "Logo shop header",
             "logo_self_checkin": "Logo self check-in"
+        },
+        "announcements": {
+            "title": "Announcements"
         }
     },
     "validity": {
