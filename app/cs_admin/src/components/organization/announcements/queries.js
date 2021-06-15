@@ -2,7 +2,7 @@ import gql from "graphql-tag"
 
 export const GET_ANNOUNCEMENTS_QUERY = gql`
   query OrganizationAnnouncements($after: String, $before: String) {
-    organizationLevels(first: 15, before: $before, after: $after) {
+    organizationAnnouncements(first: 15, before: $before, after: $after) {
       pageInfo {
         startCursor
         endCursor
@@ -15,7 +15,7 @@ export const GET_ANNOUNCEMENTS_QUERY = gql`
           displayPublic
           displayShop
           displayBackend
-          name
+          title
           content
           dateStart
           dateEnd
@@ -33,7 +33,7 @@ export const GET_ANNOUNCEMENT_QUERY = gql`
       displayPublic
       displayShop
       displayBackend
-      name
+      title
       content
       dateStart
       dateEnd

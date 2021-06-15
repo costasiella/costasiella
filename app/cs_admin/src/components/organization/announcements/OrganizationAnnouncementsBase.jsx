@@ -18,7 +18,7 @@ import HasPermissionWrapper from "../../HasPermissionWrapper"
 import OrganizationMenu from "../OrganizationMenu"
 
 
-function OrganizationAnnouncementsBase({t, history}) {
+function OrganizationAnnouncementsBase({t, history, children}) {
   return (
     <SiteWrapper>
     <div className="my-3 my-md-5">
@@ -26,7 +26,7 @@ function OrganizationAnnouncementsBase({t, history}) {
         <Page.Header title={t("organization.title")} />
         <Grid.Row>
           <Grid.Col md={9}>
-            {chilren}
+            {children}
           </Grid.Col>
           <Grid.Col md={3}>
             <HasPermissionWrapper permission="add"
