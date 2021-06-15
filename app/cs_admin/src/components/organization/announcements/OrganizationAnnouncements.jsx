@@ -1,11 +1,12 @@
 // @flow
 
-import React from 'react'
+import React, { useContext } from 'react'
 import { useQuery, useMutation } from "react-apollo"
 import { v4 } from "uuid"
 import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
 import { Link } from "react-router-dom"
+import moment from 'moment'
 
 import {
   Dimmer,
@@ -16,12 +17,17 @@ import HasPermissionWrapper from "../../HasPermissionWrapper"
 // import { confirmAlert } from 'react-confirm-alert'; // Import
 import { toast } from 'react-toastify'
 
+import AppSettingsContext from '../../context/AppSettingsContext'
 import ContentCard from "../../general/ContentCard"
+import BadgeBoolean from "../../ui/BadgeBoolean"
 import OrganizationAnnouncementsBase from "./OrganizationAnnouncementsBase"
 
 import { GET_ANNOUNCEMENTS_QUERY, DELETE_ANNOUNCEMENT } from "./queries"
 
 function OrganizationAnnouncements({ t, history }) {
+  const appSettings = useContext(AppSettingsContext)
+  const dateFormat = appSettings.dateFormat
+
   const { loading, error, data, fetchMore } = useQuery(GET_ANNOUNCEMENTS_QUERY)
   const [deleteClasspassGroup] = useMutation(DELETE_ANNOUNCEMENT)
 
@@ -88,6 +94,14 @@ function OrganizationAnnouncements({ t, history }) {
               <Table.Header>
                 <Table.Row key={v4()}>
                   <Table.ColHeader>{t('general.title')}</Table.ColHeader>
+                  <Table.ColHeader>{t('general.display_public')}</Table.ColHeader>
+                  <Table.ColHeader>{t('general.shop')}</Table.ColHeader>
+                  <Table.ColHeader>{t('general.backend')}</Table.ColHeader>
+                  <Table.ColHeader>{t('general.date_start')}</Table.ColHeader>
+                  <Table.ColHeader>{t('general.date_end')}</Table.ColHeader>
+                  <Table.ColHeader>{t('general.priority')}</Table.ColHeader>
+                  <Table.ColHeader></Table.ColHeader>
+                  <Table.ColHeader></Table.ColHeader>
                 </Table.Row>
               </Table.Header>
               <Table.Body>
@@ -96,6 +110,12 @@ function OrganizationAnnouncements({ t, history }) {
                       <Table.Col key={v4()}>
                         {node.title}
                       </Table.Col>
+                      <Table.Col><BadgeBoolean value={node.displayPublic} /></Table.Col>
+                      <Table.Col><BadgeBoolean value={node.displayShop} /></Table.Col>
+                      <Table.Col><BadgeBoolean value={node.displayBackend} /></Table.Col>
+                      <Table.Col>{moment(node.dateStart).format(dateFormat)}</Table.Col>
+                      <Table.Col>{(node.dateEnd) ? moment(node.dateEnd).format(dateFormat): ""}</Table.Col>
+                      <Table.Col>{node.priority}</Table.Col>
                       <Table.Col className="text-right" key={v4()}>
                         <Link to={`/organization/announcements/edit/${node.id}`}>
                           <Button className='btn-sm' 
