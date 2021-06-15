@@ -11,6 +11,6 @@ export const ANNOUNCEMENT_SCHEMA = Yup.object().shape({
     dateStart: Yup.date()
       .required(t('yup.field_required')),
     dateEnd: Yup.date()
-      .nullable(),
+      .required(t('yup.field_required')),
     priority: Yup.number()
   })

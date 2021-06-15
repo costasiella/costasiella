@@ -51,7 +51,7 @@ function OrganizationAnnouncementAdd({t, history}) {
                       title: '', 
                       content: '',
                       dateStart: new Date(),
-                      dateEnd: undefined,
+                      dateEnd: new Date(),
                       priority: 100,
                     }}
                     validationSchema={ANNOUNCEMENT_SCHEMA}
@@ -63,31 +63,28 @@ function OrganizationAnnouncementAdd({t, history}) {
                         title: values.title, 
                         content: values.content,
                         dateStart: dateToLocalISO(values.dateStart),
+                        dateEnd: dateToLocalISO(values.dateEnd),
                         priority: values.priority
                       }
 
-                      if (values.dateEnd) {
-                        inputValues.dateEnd = dateToLocalISO(values.dateEnd)
-                      }
-
-                        addAnnouncement({ variables: {
-                          input: inputValues
-                        }, refetchQueries: [
-                            {query: GET_ANNOUNCEMENTS_QUERY}
-                        ]})
-                        .then(({ data }) => {
-                            console.log('got data', data)
-                            history.push(returnUrl)
-                            toast.success((t('organization.announcements.toast_add_success')), {
-                                position: toast.POSITION.BOTTOM_RIGHT
-                              })
-                          }).catch((error) => {
-                            toast.error((t('general.toast_server_error')) + ': ' +  error, {
-                                position: toast.POSITION.BOTTOM_RIGHT
-                              })
-                            console.log('there was an error sending the query', error)
-                            setSubmitting(false)
-                          })
+                      addAnnouncement({ variables: {
+                        input: inputValues
+                      }, refetchQueries: [
+                          {query: GET_ANNOUNCEMENTS_QUERY}
+                      ]})
+                      .then(({ data }) => {
+                          console.log('got data', data)
+                          history.push(returnUrl)
+                          toast.success((t('organization.announcements.toast_add_success')), {
+                              position: toast.POSITION.BOTTOM_RIGHT
+                            })
+                        }).catch((error) => {
+                          toast.error((t('general.toast_server_error')) + ': ' +  error, {
+                              position: toast.POSITION.BOTTOM_RIGHT
+                            })
+                          console.log('there was an error sending the query', error)
+                          setSubmitting(false)
+                        })
                     }}
                     >
                     {({ isSubmitting, errors, values, setFieldTouched, setFieldValue }) => (
