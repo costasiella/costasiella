@@ -471,7 +471,8 @@
         "category": "Category",
         "sign_in": "Sign in",
         "injury": "Injury",
-        "priority": "Priority"
+        "priority": "Priority",
+        "display_public": "Public"
     },
     "yup": {
         "min_len_3": "Please input at least 3 characters",
@@ -735,7 +736,9 @@
             "empty_list": "No announcements have been created yet.",
             "add": "Add announcement",
             "content": "Announcement text",
-            "title_add": "Add announcement"
+            "title_add": "Add announcement",
+            "toast_edit_success": "Saved",
+            "title_edit": "Edit announcement"
         }
     },
     "validity": {

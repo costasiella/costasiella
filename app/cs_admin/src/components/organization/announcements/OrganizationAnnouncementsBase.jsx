@@ -18,7 +18,7 @@ import HasPermissionWrapper from "../../HasPermissionWrapper"
 import OrganizationMenu from "../OrganizationMenu"
 
 
-function OrganizationAnnouncementsBase({t, history, children}) {
+function OrganizationAnnouncementsBase({t, history, children, showEditBack=false}) {
   return (
     <SiteWrapper>
     <div className="my-3 my-md-5">
@@ -29,14 +29,22 @@ function OrganizationAnnouncementsBase({t, history, children}) {
             {children}
           </Grid.Col>
           <Grid.Col md={3}>
-            <HasPermissionWrapper permission="add"
-                                  resource="organizationlevel">
-              <Link to="/organization/announcements/add">
+            {(showEditBack) ?
+              <Link to="/organization/announcements">
                 <Button color="primary btn-block mb-6">
-                  <Icon prefix="fe" name="plus-circle" /> {t('organization.announcements.add')}
+                  <Icon prefix="fe" name="chevrons-left" /> {t('general.back')}
                 </Button>
               </Link>
-            </HasPermissionWrapper>
+            :
+              <HasPermissionWrapper permission="add"
+                          resource="organizationlevel">
+                <Link to="/organization/announcements/add">
+                  <Button color="primary btn-block mb-6">
+                    <Icon prefix="fe" name="plus-circle" /> {t('organization.announcements.add')}
+                  </Button>
+                </Link>
+                </HasPermissionWrapper>
+            }
             <OrganizationMenu active_link='announcements'/>
           </Grid.Col>
         </Grid.Row>
