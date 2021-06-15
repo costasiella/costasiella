@@ -20,6 +20,7 @@ let subscriptions_active
 let appointments_active
 let organization_active
 let organization_branding_active
+let announcements_active
 
 const OrganizationMenu = ({ t, active_link }) => (
     <List.Group transparent={true}>
@@ -33,6 +34,7 @@ const OrganizationMenu = ({ t, active_link }) => (
         {(active_link === 'appointments') ? appointments_active = true: appointments_active = false}
         {(active_link === 'organization') ? organization_active = true: organization_active = false}
         {(active_link === 'organization_branding') ? organization_branding_active = true: organization_branding_active = false}
+        {(active_link === 'announcements') ? announcements_active = true: announcements_active = false}
         
 
         <List.GroupItem
@@ -125,6 +127,18 @@ const OrganizationMenu = ({ t, active_link }) => (
             >
             {t('organization.organization.branding.title')}
         </List.GroupItem>
+        <HasPermissionWrapper permission="view"
+                              resource="organizationannouncement">
+            <List.GroupItem
+                key={v4()}
+                className="d-flex align-items-center"
+                to="#/organization/announcements"
+                icon="message-square"
+                active={announcements_active}
+                >
+                {t('organization.announcements.title')}
+            </List.GroupItem>
+        </HasPermissionWrapper>
         {/* <HasPermissionWrapper 
             permission="view"
             resource="organizationlocation">
