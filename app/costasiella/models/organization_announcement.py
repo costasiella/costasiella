@@ -6,7 +6,7 @@ from .helpers import model_string
 from ..modules.encrypted_fields import EncryptedTextField
 
 
-class Announcement(models.Model):
+class OrganizationAnnouncement(models.Model):
     display_public = models.BooleanField(default=False)
     display_shop = models.BooleanField(default=False)
     display_backend = models.BooleanField(default=False)

@@ -14,8 +14,6 @@ from .account_subscription_credit import AccountSubscriptionCredit
 from .account_subscription_pause import AccountSubscriptionPause
 from .account_teacher_profile import AccountTeacherProfile
 
-from .announcement import Announcement
-
 from .app_settings import AppSettings
 
 from .business import Business
@@ -39,6 +37,7 @@ from .finance_tax_rate import FinanceTaxRate
 from .integration_log_mollie import IntegrationLogMollie
 
 from .organization import Organization
+from .organization_announcement import OrganizationAnnouncement
 from .organization_appointment import OrganizationAppointment
 from .organization_appointment_category import OrganizationAppointmentCategory
 from .organization_appointment_price import OrganizationAppointmentPrice
