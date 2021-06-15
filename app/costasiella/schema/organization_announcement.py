@@ -64,7 +64,7 @@ class CreateOrganizationAnnouncement(graphene.relay.ClientIDMutation):
         title = graphene.String(required=True)
         content = graphene.String(required=True)
         date_start = graphene.types.datetime.Date(required=True)
-        date_end = graphene.types.datetime.Date(required=False)
+        date_end = graphene.types.datetime.Date(required=True)
         priority = graphene.Int(required=False)
 
     organization_announcement = graphene.Field(OrganizationAnnouncementNode)
@@ -78,6 +78,7 @@ class CreateOrganizationAnnouncement(graphene.relay.ClientIDMutation):
             title=input['title'],
             content=input['content'],
             date_start=input['date_start'],
+            date_end=input['date_end']
         )
 
         if 'display_public' in input:
@@ -88,9 +89,6 @@ class CreateOrganizationAnnouncement(graphene.relay.ClientIDMutation):
 
         if 'display_backend' in input:
             organization_announcement.display_backend = input['display_backend']
-
-        if 'date_end' in input:
-            organization_announcement.date_end = input['date_end']
 
         if 'priority' in input:
             organization_announcement.priority = input['priority']
