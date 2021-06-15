@@ -87,14 +87,14 @@ function OrganizationAnnouncements({ t, history }) {
         <Table>
               <Table.Header>
                 <Table.Row key={v4()}>
-                  <Table.ColHeader>{t('general.name')}</Table.ColHeader>
+                  <Table.ColHeader>{t('general.title')}</Table.ColHeader>
                 </Table.Row>
               </Table.Header>
               <Table.Body>
                   {organizationAnnouncements.edges.map(({ node }) => (
                     <Table.Row key={v4()}>
                       <Table.Col key={v4()}>
-                        {node.name}
+                        {node.title}
                       </Table.Col>
                       <Table.Col className="text-right" key={v4()}>
                         <Link to={`/organization/announcements/edit/${node.id}`}>

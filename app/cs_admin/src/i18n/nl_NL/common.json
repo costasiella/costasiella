@@ -1132,7 +1132,8 @@
             "error_loading": "__STRING_NOT_TRANSLATED__",
             "empty_list": "__STRING_NOT_TRANSLATED__",
             "add": "__STRING_NOT_TRANSLATED__",
-            "content": "__STRING_NOT_TRANSLATED__"
+            "content": "__STRING_NOT_TRANSLATED__",
+            "title_add": "__STRING_NOT_TRANSLATED__"
         }
     },
     "validity": {

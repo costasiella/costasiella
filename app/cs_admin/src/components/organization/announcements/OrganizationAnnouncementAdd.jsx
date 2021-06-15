@@ -26,6 +26,7 @@ import SiteWrapper from "../../SiteWrapper"
 import HasPermissionWrapper from "../../HasPermissionWrapper"
 
 import OrganizationMenu from '../OrganizationMenu'
+import { dateToLocalISO } from '../../../tools/date_tools'
 
 function OrganizationAnnouncementAdd({t, history}) {
   const returnUrl = "/organization/announcements"
@@ -40,7 +41,7 @@ function OrganizationAnnouncementAdd({t, history}) {
             <Grid.Col md={9}>
             <Card>
               <Card.Header>
-                <Card.Title>{t('organization.levels.title_add')}</Card.Title>
+                <Card.Title>{t('organization.announcements.title_add')}</Card.Title>
               </Card.Header>
                 <Formik
                     initialValues={{ 
@@ -55,15 +56,28 @@ function OrganizationAnnouncementAdd({t, history}) {
                     }}
                     // validationSchema={LEVEL_SCHEMA}
                     onSubmit={(values, { setSubmitting }) => {
+                      let inputValues = {
+                        displayPublic: values.displayPublic,
+                        displayBackend: values.displayBackend,
+                        displayShop: values.displayShop,
+                        title: values.title, 
+                        content: values.content,
+                        dateStart: dateToLocalISO(values.dateStart),
+                        priority: values.priority
+                      }
+
+                      if (values.dateEnd) {
+                        inputValues.dateEnd = dateToLocalISO(values.dateEnd)
+                      }
+
                         addAnnouncement({ variables: {
-                          input: {
-                            title: values.title, 
-                          }
+                          input: inputValues
                         }, refetchQueries: [
                             {query: GET_ANNOUNCEMENTS_QUERY}
                         ]})
                         .then(({ data }) => {
-                            console.log('got data', data);
+                            console.log('got data', data)
+                            history.push(returnUrl)
                             toast.success((t('organization.announcements.toast_add_success')), {
                                 position: toast.POSITION.BOTTOM_RIGHT
                               })

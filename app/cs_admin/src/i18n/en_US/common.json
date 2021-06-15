@@ -471,7 +471,7 @@
         "category": "Category",
         "sign_in": "Sign in",
         "injury": "Injury",
-        "priority": "__STRING_NOT_TRANSLATED__"
+        "priority": "Priority"
     },
     "yup": {
         "min_len_3": "Please input at least 3 characters",
@@ -734,7 +734,8 @@
             "error_loading": "Error loading announcements... :(",
             "empty_list": "No announcements have been created yet.",
             "add": "Add announcement",
-            "content": "Announcement text"
+            "content": "Announcement text",
+            "title_add": "Add announcement"
         }
     },
     "validity": {
