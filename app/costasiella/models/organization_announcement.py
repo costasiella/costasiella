@@ -13,7 +13,7 @@ class OrganizationAnnouncement(models.Model):
     title = EncryptedTextField(default="")
     content = EncryptedTextField(default="")
     date_start = models.DateField()
-    date_end = models.DateField(default=None, null=True)
+    date_end = models.DateField()
     priority = models.IntegerField(default=100)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
