@@ -470,7 +470,8 @@
         "export": "Export",
         "category": "Category",
         "sign_in": "Sign in",
-        "injury": "Injury"
+        "injury": "Injury",
+        "priority": "__STRING_NOT_TRANSLATED__"
     },
     "yup": {
         "min_len_3": "Please input at least 3 characters",
@@ -725,7 +726,15 @@
             "logo_self_checkin": "Logo self check-in"
         },
         "announcements": {
-            "title": "Announcements"
+            "title": "Announcements",
+            "toast_add_success": "Added announcement",
+            "display_public": "Display announcement",
+            "display_shop": "Show in shop home",
+            "display_backend": "Show in backend home",
+            "error_loading": "Error loading announcements... :(",
+            "empty_list": "No announcements have been created yet.",
+            "add": "Add announcement",
+            "content": "Announcement text"
         }
     },
     "validity": {
