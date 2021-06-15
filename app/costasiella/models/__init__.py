@@ -14,6 +14,8 @@ from .account_subscription_credit import AccountSubscriptionCredit
 from .account_subscription_pause import AccountSubscriptionPause
 from .account_teacher_profile import AccountTeacherProfile
 
+from .announcement import Announcement
+
 from .app_settings import AppSettings
 
 from .business import Business
