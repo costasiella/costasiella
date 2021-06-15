@@ -42,6 +42,16 @@ export const GET_ANNOUNCEMENT_QUERY = gql`
   }
 `
 
+export const ADD_ANNOUNCEMENT = gql`
+  mutation CreateOrganizationAnnouncement($input:CreateOrganizationAnnouncementInput!) {
+    createOrganizationAnnouncement(input: $input) {
+      organizationAnnouncement {
+        id
+      }
+    }
+  }
+`
+
 export const DELETE_ANNOUNCEMENT = gql`
 mutation DeleteOrganizationAnnouncement($input: DeleteOrganizationAnnouncementInput!) {
   deleteOrganizationAnnouncement(input: $input) {
