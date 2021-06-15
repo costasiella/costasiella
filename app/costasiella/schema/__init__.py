@@ -46,6 +46,7 @@ from .insight_classpasses import InsightClasspassesQuery
 from .insight_subscriptions import InsightSubscriptionsQuery
 
 from .organization import OrganizationQuery, OrganizationMutation
+from .organization_announcement import OrganizationAnnouncementQuery, OrganizationAnnouncementMutation
 from .organization_appointment import OrganizationAppointmentQuery, OrganizationAppointmentMutation
 from .organization_appointment_category import OrganizationAppointmentCategoryQuery, OrganizationAppointmentCategoryMutation
 from .organization_appointment_price import OrganizationAppointmentPriceQuery, OrganizationAppointmentPriceMutation
@@ -121,6 +122,7 @@ class Query(AccountQuery,
             InsightClasspassesQuery,
             InsightSubscriptionsQuery,
             OrganizationQuery,
+            OrganizationAnnouncementQuery,
             OrganizationAppointmentQuery,
             OrganizationAppointmentCategoryQuery,
             OrganizationAppointmentPriceQuery,
@@ -188,6 +190,7 @@ class Mutation(AccountMutation,
                FinancePaymentMethodMutation,
                FinanceTaxRateMutation,
                OrganizationMutation,
+               OrganizationAnnouncementMutation,
                OrganizationAppointmentMutation,
                OrganizationAppointmentCategoryMutation,
                OrganizationAppointmentPriceMutation,

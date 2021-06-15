@@ -206,4 +206,3 @@ class ScheduleItemPriceMutation(graphene.ObjectType):
     delete_schedule_item_price = DeleteScheduleItemPrice.Field()
     create_schedule_item_price = CreateScheduleItemPrice.Field()
     update_schedule_item_price = UpdateScheduleItemPrice.Field()
-    
