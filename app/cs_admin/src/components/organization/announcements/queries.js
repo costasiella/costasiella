@@ -41,3 +41,11 @@ export const GET_ANNOUNCEMENT_QUERY = gql`
     }
   }
 `
+
+export const DELETE_ANNOUNCEMENT = gql`
+mutation DeleteOrganizationAnnouncement($input: DeleteOrganizationAnnouncementInput!) {
+  deleteOrganizationAnnouncement(input: $input) {
+    ok
+  }
+}
+`
