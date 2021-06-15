@@ -9,7 +9,7 @@ import { toast } from 'react-toastify'
 import { Link } from 'react-router-dom'
 
 import { GET_ANNOUNCEMENTS_QUERY, ADD_ANNOUNCEMENT } from './queries'
-// import { LEVEL_SCHEMA } from './yupSchema'
+import { ANNOUNCEMENT_SCHEMA } from './yupSchema'
 import OrganizationAnnouncementForm from './OrganizationAnnouncementForm'
 
 
@@ -54,7 +54,7 @@ function OrganizationAnnouncementAdd({t, history}) {
                       dateEnd: undefined,
                       priority: 100,
                     }}
-                    // validationSchema={LEVEL_SCHEMA}
+                    validationSchema={ANNOUNCEMENT_SCHEMA}
                     onSubmit={(values, { setSubmitting }) => {
                       let inputValues = {
                         displayPublic: values.displayPublic,

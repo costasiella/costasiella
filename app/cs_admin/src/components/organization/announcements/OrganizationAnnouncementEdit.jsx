@@ -6,23 +6,15 @@ import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
 import { Formik } from 'formik'
 import { toast } from 'react-toastify'
-import { Link } from 'react-router-dom'
 
 import { GET_ANNOUNCEMENTS_QUERY, GET_ANNOUNCEMENT_QUERY, UPDATE_ANNOUNCEMENT } from './queries'
-// import { LEVEL_SCHEMA } from './yupSchema'
+import { ANNOUNCEMENT_SCHEMA } from './yupSchema'
 import OrganizationAnnouncementForm from './OrganizationAnnouncementForm'
 
 
 import {
-  Page,
-  Grid,
-  Icon,
-  Button,
   Card,
-  Container,
-  Form,
 } from "tabler-react"
-import SiteWrapper from "../../SiteWrapper"
 import HasPermissionWrapper from "../../HasPermissionWrapper"
 
 import OrganizationAnnouncementsBase from "./OrganizationAnnouncementsBase"
@@ -77,7 +69,7 @@ function OrganizationAnnouncementEdit({t, history, match}) {
                 dateEnd: organizationAnnouncement.dateEnd,
                 priority: organizationAnnouncement.priority,
               }}
-              // validationSchema={LEVEL_SCHEMA}
+              validationSchema={ANNOUNCEMENT_SCHEMA}
               onSubmit={(values, { setSubmitting }) => {
                 let inputValues = {
                   id: announcementId,
