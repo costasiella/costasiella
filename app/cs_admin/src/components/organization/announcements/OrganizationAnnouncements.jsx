@@ -11,12 +11,14 @@ import moment from 'moment'
 import {
   Dimmer,
   Button,
+  Icon,
   Table
 } from "tabler-react";
 import HasPermissionWrapper from "../../HasPermissionWrapper"
 // import { confirmAlert } from 'react-confirm-alert'; // Import
 import { toast } from 'react-toastify'
 
+import confirm_delete from "../../../tools/confirm_delete"
 import AppSettingsContext from '../../context/AppSettingsContext'
 import ContentCard from "../../general/ContentCard"
 import BadgeBoolean from "../../ui/BadgeBoolean"
@@ -29,7 +31,7 @@ function OrganizationAnnouncements({ t, history }) {
   const dateFormat = appSettings.dateFormat
 
   const { loading, error, data, fetchMore } = useQuery(GET_ANNOUNCEMENTS_QUERY)
-  const [deleteClasspassGroup] = useMutation(DELETE_ANNOUNCEMENT)
+  const [ deleteAnnouncement ] = useMutation(DELETE_ANNOUNCEMENT)
 
   const cardTitle = t('organization.announcements.title')
 
@@ -123,6 +125,30 @@ function OrganizationAnnouncements({ t, history }) {
                             {t('general.edit')}
                           </Button>
                         </Link>
+                      </Table.Col>
+                      <Table.Col>
+                        <button 
+                          className="icon btn btn-link btn-sm" 
+                          title={t('general.delete')} 
+                          href=""
+                          onClick={() => {
+                            confirm_delete({
+                              t: t,
+                              msgConfirm: t("organization.announcements.delete_confirm_msg"),
+                              msgDescription: <p><br />{node.title}</p>,
+                              msgSuccess: t('organization.announcements.deleted'),
+                              deleteFunction: deleteAnnouncement,
+                              functionVariables: { variables: {
+                                input: {
+                                  id: node.id
+                                }
+                              }, refetchQueries: [
+                                {query: GET_ANNOUNCEMENTS_QUERY} 
+                              ]}
+                            })
+                        }}>
+                          <span className="text-red"><Icon prefix="fe" name="trash-2" /></span>
+                        </button>
                       </Table.Col>
                       {/* <Mutation mutation={ARCHIVE_LEVEL} key={v4()}>
                         {(archiveCostcenter, { data }) => (

@@ -738,7 +738,9 @@
             "content": "Announcement text",
             "title_add": "Add announcement",
             "toast_edit_success": "Saved",
-            "title_edit": "Edit announcement"
+            "title_edit": "Edit announcement",
+            "delete_confirm_msg": "Are you sure you with to delete this announcement?",
+            "deleted": "Deleted announcement"
         }
     },
     "validity": {
