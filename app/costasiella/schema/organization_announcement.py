@@ -53,7 +53,7 @@ class OrganizationAnnouncementQuery(graphene.ObjectType):
         if not user.has_perm('costasiella.view_organizationannouncement'):
             objects.filter(display_public=True)
 
-        return objects.order_by('date_start', 'priority')
+        return objects.order_by('-date_start', 'priority')
 
 
 class CreateOrganizationAnnouncement(graphene.relay.ClientIDMutation):
