@@ -45,13 +45,13 @@ class OrganizationAnnouncementQuery(graphene.ObjectType):
         objects = OrganizationAnnouncement.objects
 
         if display_shop:
-            objects.filter(display_shop=True)
+            objects = objects.filter(display_shop=True)
 
         if display_backend:
-            objects.filter(display_backend=True)
+            objects = objects.filter(display_backend=True)
 
         if not user.has_perm('costasiella.view_organizationannouncement'):
-            objects.filter(display_public=True)
+            objects = objects.filter(display_public=True)
 
         return objects.order_by('priority', '-date_start')
 
