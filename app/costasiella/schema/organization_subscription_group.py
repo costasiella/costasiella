@@ -104,7 +104,7 @@ class DeleteOrganizationSubscriptionGroup(graphene.relay.ClientIDMutation):
     @classmethod
     def mutate_and_get_payload(self, root, info, **input):
         user = info.context.user
-        require_login_and_permission(user, 'costasiella.delete_organizationclasspassgroup')
+        require_login_and_permission(user, 'costasiella.delete_organizationsubscriptiongroup')
 
         rid = get_rid(input['id'])
         organization_subscription_group = OrganizationSubscriptionGroup.objects.filter(id=rid.id).first()
