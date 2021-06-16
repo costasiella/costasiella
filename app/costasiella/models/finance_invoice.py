@@ -224,6 +224,33 @@ class FinanceInvoice(models.Model):
 
         return finance_invoice_item
 
+    def item_add_membership(self, account_membership):
+        """
+        Add account membership invoice item
+        """
+        from .finance_invoice_item import FinanceInvoiceItem
+        # add item to invoice
+        organization_membership = account_membership.organization_membership
+
+        finance_invoice_item = FinanceInvoiceItem(
+            finance_invoice=self,
+            account_membership=account_membership,
+            line_number=self._get_item_next_line_nr(),
+            product_name=_('Membership'),
+            description=_('Membership %s\n%s' % (str(account_membership.pk), organization_membership.name)),
+            quantity=1,
+            price=organization_membership.price,
+            finance_tax_rate=organization_membership.finance_tax_rate,
+            finance_glaccount=organization_membership.finance_glaccount,
+            finance_costcenter=organization_membership.finance_costcenter,
+        )
+
+        finance_invoice_item.save()
+
+        self.update_amounts()
+
+        return finance_invoice_item
+
     def item_add_subscription(self, account_subscription, year, month, description=''):
         """
         Add account subscription invoice item
