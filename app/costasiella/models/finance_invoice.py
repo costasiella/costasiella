@@ -2,8 +2,6 @@ from django.utils.translation import gettext as _
 from django.utils import timezone
 import datetime
 
-now = timezone.now()
-
 from django.db import models
 
 from .account import Account
@@ -11,6 +9,8 @@ from .finance_invoice_group import FinanceInvoiceGroup
 from .finance_payment_method import FinancePaymentMethod
 
 from .helpers import model_string
+
+now = timezone.now()
 
 
 class FinanceInvoice(models.Model):
