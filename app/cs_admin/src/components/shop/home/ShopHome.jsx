@@ -4,40 +4,49 @@ import React, {Component } from 'react'
 import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
 import { useQuery } from '@apollo/react-hooks'
-import { Link } from 'react-router-dom'
 
 import {
-  Icon,
-  List
+  Card,
+  Grid,
 } from "tabler-react";
-import ShopBase from "../ShopBase"
 
 import HasPermissionWrapper from "../../HasPermissionWrapper"
-// import { GET_ORGANIZATION_LOCATIONS_QUERY } from "./queries"
+import { GET_SHOP_ANNOUNCEMENTS_QUERY } from "./queries"
 
+import ShopHomeBase from "./ShopHomeBase"
 
 function ShopHome({ t, match, history }) {
-  // const { loading, error, data } = useQuery(GET_ORGANIZATION_LOCATIONS_QUERY);
+  
+  const { loading, error, data } = useQuery(GET_SHOP_ANNOUNCEMENTS_QUERY);
 
-  // if (loading) return (
-  //   <SelfCheckinBase>
-  //     {t("general.loading_with_dots")}
-  //   </SelfCheckinBase>
-  // )
-  // if (error) return (
-  //   <SelfCheckinBase>
-  //     {t("selfcheckin.locations.error_loading")}
-  //   </SelfCheckinBase>
-  // )
+  if (loading) return (
+    <ShopHomeBase>
+      {t("general.loading_with_dots")}
+    </ShopHomeBase>
+  )
+  if (error) return (
+    <ShopHomeBase>
+      {t("shop.home.announcements.error_loading")}
+    </ShopHomeBase>
+  )
 
+  const announcements = data.organizationAnnouncements
 
   return (
-    <ShopBase title={t("shop.home.title")}>
-      <h4>{t("shop.home.welcome")}</h4>
-      
-        hello world!
-      
-    </ShopBase>
+    <ShopHomeBase title={t("shop.home.title")}>
+      <Grid.Row>
+        {(announcements.edges.length) ? announcements.edges.map(({ node }) => (
+          <Grid.Col md={6}>
+            <Card title={node.title}>
+              <Card.Body>
+                <div dangerouslySetInnerHTML={{ __html:node.content }}></div>
+              </Card.Body>
+            </Card> 
+          </Grid.Col>
+        )) : ""
+        }
+      </Grid.Row>
+    </ShopHomeBase>
   )
 }
 

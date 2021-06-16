@@ -15,7 +15,7 @@ m = Messages()
 class OrganizationAnnouncementNode(DjangoObjectType):
     class Meta:
         model = OrganizationAnnouncement
-        filter_fields = ['display_shop', 'display_backend']
+        filter_fields = ['display_public', 'display_shop', 'display_backend']
         interfaces = (graphene.relay.Node, )
 
     @classmethod
@@ -53,7 +53,7 @@ class OrganizationAnnouncementQuery(graphene.ObjectType):
         if not user.has_perm('costasiella.view_organizationannouncement'):
             objects.filter(display_public=True)
 
-        return objects.order_by('-date_start', 'priority')
+        return objects.order_by('priority', '-date_start')
 
 
 class CreateOrganizationAnnouncement(graphene.relay.ClientIDMutation):
