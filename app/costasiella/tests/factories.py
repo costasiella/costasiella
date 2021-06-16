@@ -217,6 +217,20 @@ class OrganizationAppointmentFactory(factory.DjangoModelFactory):
     name = "First appointment"
 
 
+class OrganizationAnnouncementFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.OrganizationAnnouncement
+
+    display_public = True
+    display_shop = True
+    display_backend = True
+    title = "Welcome"
+    content = "Welcome to Costasiella!"
+    date_start = datetime.date(2020, 1, 1)
+    date_end = datetime.date(2999, 12, 31)
+    priority = 100
+
+
 class OrganizationLevelFactory(factory.DjangoModelFactory):
     class Meta:
         model = models.OrganizationLevel
