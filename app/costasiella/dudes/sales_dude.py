@@ -2,7 +2,13 @@ from django.utils.translation import gettext as _
 
 
 class SalesDude:
-    def sell_membership(self, account, organization_membership, date_start, note="", create_invoice=True):
+    def sell_membership(self,
+                        account,
+                        organization_membership,
+                        finance_payment_method,
+                        date_start,
+                        note="",
+                        create_invoice=True):
         """
         Sell classpass to account
         """
@@ -11,6 +17,7 @@ class SalesDude:
         account_membership = AccountMembership(
             account=account,
             organization_membership=organization_membership,
+            finance_payment_method=finance_payment_method,
             date_start=date_start,
             note=note
         )

@@ -48,7 +48,6 @@ def validate_create_update_input(input, update=False):
             if not finance_payment_method:
                 raise Exception(_('Invalid Finance Payment Method ID!'))
 
-
     return result
 
 
@@ -84,7 +83,7 @@ class CreateAccountMembership(graphene.relay.ClientIDMutation):
     class Input:
         account = graphene.ID(required=True)
         organization_membership = graphene.ID(required=True)
-        finance_payment_method = graphene.ID(required=False, default_value="")
+        finance_payment_method = graphene.ID(required=False, default_value=None)
         date_start = graphene.types.datetime.Date(required=True)
         note = graphene.String(required=False, default_value="")
 
@@ -103,8 +102,9 @@ class CreateAccountMembership(graphene.relay.ClientIDMutation):
             account=result['account'],
             organization_membership=result['organization_membership'],
             date_start=input['date_start'],
+            finance_payment_method=result.get('finance_payment_method', None),
+            note=input['note'],
             create_invoice=True,
-            note=input['note']
         )
 
         account_membership = sales_result['account_membership']
