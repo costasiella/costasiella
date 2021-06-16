@@ -16,7 +16,7 @@ m = Messages()
 class OrganizationSubscriptionGroupNode(DjangoObjectType):
     class Meta:
         model = OrganizationSubscriptionGroup
-        filter_fields = ['archived']
+        filter_fields = []
         interfaces = (graphene.relay.Node, )
 
     @classmethod
@@ -31,17 +31,18 @@ class OrganizationSubscriptionGroupQuery(graphene.ObjectType):
     organization_subscription_groups = DjangoFilterConnectionField(OrganizationSubscriptionGroupNode)
     organization_subscription_group = graphene.relay.Node.Field(OrganizationSubscriptionGroupNode)
 
-    def resolve_organization_subscription_groups(self, info, archived=False, **kwargs):
+    def resolve_organization_subscription_groups(self, info, **kwargs):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.view_organizationsubscriptiongroup')
 
         ## return everything:
-        return OrganizationSubscriptionGroup.objects.filter(archived = archived).order_by('name')
+        return OrganizationSubscriptionGroup.objects.all().order_by('name')
 
 
 class CreateOrganizationSubscriptionGroup(graphene.relay.ClientIDMutation):
     class Input:
         name = graphene.String(required=True)
+        description = graphene.String(default_value="")
 
     organization_subscription_group = graphene.Field(OrganizationSubscriptionGroupNode)
 
@@ -50,14 +51,12 @@ class CreateOrganizationSubscriptionGroup(graphene.relay.ClientIDMutation):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.add_organizationsubscriptiongroup')
 
-        errors = []
-        if not len(input['name']):
-            print('validation error found')
-            raise GraphQLError(_('Name is required'))
-
         organization_subscription_group = OrganizationSubscriptionGroup(
             name=input['name'], 
         )
+
+        if 'description' in input:
+            organization_subscription_group.description = input['description']
 
         organization_subscription_group.save()
         helper = OrganizationSubscriptionGroupHelper()
@@ -69,8 +68,9 @@ class CreateOrganizationSubscriptionGroup(graphene.relay.ClientIDMutation):
 class UpdateOrganizationSubscriptionGroup(graphene.relay.ClientIDMutation):
     class Input:
         id = graphene.ID(required=True)
-        name = graphene.String(required=True)
-        
+        name = graphene.String(required=False)
+        description = graphene.String(required=False)
+
     organization_subscription_group = graphene.Field(OrganizationSubscriptionGroupNode)
 
     @classmethod
@@ -84,18 +84,22 @@ class UpdateOrganizationSubscriptionGroup(graphene.relay.ClientIDMutation):
         if not organization_subscription_group:
             raise Exception('Invalid Organization Subscription Group ID!')
 
-        organization_subscription_group.name = input['name']
-        organization_subscription_group.save(force_update=True)
+        if 'name' in input:
+            organization_subscription_group.name = input['name']
+
+        if 'description' in input:
+            organization_subscription_group.description = input['description']
+
+        organization_subscription_group.save()
 
         return UpdateOrganizationSubscriptionGroup(organization_subscription_group=organization_subscription_group)
 
 
-class ArchiveOrganizationSubscriptionGroup(graphene.relay.ClientIDMutation):
+class DeleteOrganizationSubscriptionGroup(graphene.relay.ClientIDMutation):
     class Input:
         id = graphene.ID(required=True)
-        archived = graphene.Boolean(required=True)
 
-    organization_subscription_group = graphene.Field(OrganizationSubscriptionGroupNode)
+    ok = graphene.Boolean()
 
     @classmethod
     def mutate_and_get_payload(self, root, info, **input):
@@ -103,26 +107,48 @@ class ArchiveOrganizationSubscriptionGroup(graphene.relay.ClientIDMutation):
         require_login_and_permission(user, 'costasiella.delete_organizationsubscriptiongroup')
 
         rid = get_rid(input['id'])
-
         organization_subscription_group = OrganizationSubscriptionGroup.objects.filter(id=rid.id).first()
         if not organization_subscription_group:
             raise Exception('Invalid Organization Subscription Group ID!')
 
-        organization_subscription_group.archived = input['archived']
-        organization_subscription_group.save(force_update=True)
+        ok = organization_subscription_group.delete()
 
-        # Add (un-archive) or remove (archive) from all classes
-        helper = OrganizationSubscriptionGroupHelper()
-        if organization_subscription_group.archived:
-            helper.remove_from_all_classes(organization_subscription_group.id)
-        else:
-            helper.add_to_all_classes(organization_subscription_group.id)
-            
+        return DeleteOrganizationSubscriptionGroup(ok=ok)
 
-        return ArchiveOrganizationSubscriptionGroup(organization_subscription_group=organization_subscription_group)
+
+# class ArchiveOrganizationSubscriptionGroup(graphene.relay.ClientIDMutation):
+#     class Input:
+#         id = graphene.ID(required=True)
+#         archived = graphene.Boolean(required=True)
+#
+#     organization_subscription_group = graphene.Field(OrganizationSubscriptionGroupNode)
+#
+#     @classmethod
+#     def mutate_and_get_payload(self, root, info, **input):
+#         user = info.context.user
+#         require_login_and_permission(user, 'costasiella.delete_organizationsubscriptiongroup')
+#
+#         rid = get_rid(input['id'])
+#
+#         organization_subscription_group = OrganizationSubscriptionGroup.objects.filter(id=rid.id).first()
+#         if not organization_subscription_group:
+#             raise Exception('Invalid Organization Subscription Group ID!')
+#
+#         organization_subscription_group.archived = input['archived']
+#         organization_subscription_group.save(force_update=True)
+#
+#         # Add (un-archive) or remove (archive) from all classes
+#         helper = OrganizationSubscriptionGroupHelper()
+#         if organization_subscription_group.archived:
+#             helper.remove_from_all_classes(organization_subscription_group.id)
+#         else:
+#             helper.add_to_all_classes(organization_subscription_group.id)
+#
+#
+#         return ArchiveOrganizationSubscriptionGroup(organization_subscription_group=organization_subscription_group)
 
 
 class OrganizationSubscriptionGroupMutation(graphene.ObjectType):
-    archive_organization_subscription_group = ArchiveOrganizationSubscriptionGroup.Field()
+    delete_organization_subscription_group = DeleteOrganizationSubscriptionGroup.Field()
     create_organization_subscription_group = CreateOrganizationSubscriptionGroup.Field()
     update_organization_subscription_group = UpdateOrganizationSubscriptionGroup.Field()

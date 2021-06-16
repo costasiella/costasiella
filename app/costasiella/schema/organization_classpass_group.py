@@ -16,7 +16,7 @@ m = Messages()
 class OrganizationClasspassGroupNode(DjangoObjectType):
     class Meta:
         model = OrganizationClasspassGroup
-        filter_fields = ['archived']
+        filter_fields = []
         interfaces = (graphene.relay.Node, )
 
     @classmethod
@@ -31,17 +31,18 @@ class OrganizationClasspassGroupQuery(graphene.ObjectType):
     organization_classpass_groups = DjangoFilterConnectionField(OrganizationClasspassGroupNode)
     organization_classpass_group = graphene.relay.Node.Field(OrganizationClasspassGroupNode)
 
-    def resolve_organization_classpass_groups(self, info, archived=False, **kwargs):
+    def resolve_organization_classpass_groups(self, info, **kwargs):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.view_organizationclasspassgroup')
 
         ## return everything:
-        return OrganizationClasspassGroup.objects.filter(archived = archived).order_by('name')
+        return OrganizationClasspassGroup.objects.all().order_by('name')
 
 
 class CreateOrganizationClasspassGroup(graphene.relay.ClientIDMutation):
     class Input:
         name = graphene.String(required=True)
+        description = graphene.String(default_value="")
 
     organization_classpass_group = graphene.Field(OrganizationClasspassGroupNode)
 
@@ -50,13 +51,9 @@ class CreateOrganizationClasspassGroup(graphene.relay.ClientIDMutation):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.add_organizationclasspassgroup')
 
-        errors = []
-        if not len(input['name']):
-            print('validation error found')
-            raise GraphQLError(_('Name is required'))
-
         organization_classpass_group = OrganizationClasspassGroup(
-            name=input['name'], 
+            name=input['name'],
+            description=input['description']
         )
 
         organization_classpass_group.save()
@@ -69,8 +66,9 @@ class CreateOrganizationClasspassGroup(graphene.relay.ClientIDMutation):
 class UpdateOrganizationClasspassGroup(graphene.relay.ClientIDMutation):
     class Input:
         id = graphene.ID(required=True)
-        name = graphene.String(required=True)
-        
+        name = graphene.String(required=False)
+        description = graphene.String(required=False)
+
     organization_classpass_group = graphene.Field(OrganizationClasspassGroupNode)
 
     @classmethod
@@ -84,18 +82,22 @@ class UpdateOrganizationClasspassGroup(graphene.relay.ClientIDMutation):
         if not organization_classpass_group:
             raise Exception('Invalid Organization Classpass Group ID!')
 
-        organization_classpass_group.name = input['name']
-        organization_classpass_group.save(force_update=True)
+        if 'name' in input:
+            organization_classpass_group.name = input['name']
+
+        if 'description' in input:
+            organization_classpass_group.description = input['description']
+
+        organization_classpass_group.save()
 
         return UpdateOrganizationClasspassGroup(organization_classpass_group=organization_classpass_group)
 
 
-class ArchiveOrganizationClasspassGroup(graphene.relay.ClientIDMutation):
+class DeleteOrganizationClasspassGroup(graphene.relay.ClientIDMutation):
     class Input:
         id = graphene.ID(required=True)
-        archived = graphene.Boolean(required=True)
 
-    organization_classpass_group = graphene.Field(OrganizationClasspassGroupNode)
+    ok = graphene.Boolean()
 
     @classmethod
     def mutate_and_get_payload(self, root, info, **input):
@@ -103,25 +105,16 @@ class ArchiveOrganizationClasspassGroup(graphene.relay.ClientIDMutation):
         require_login_and_permission(user, 'costasiella.delete_organizationclasspassgroup')
 
         rid = get_rid(input['id'])
-
         organization_classpass_group = OrganizationClasspassGroup.objects.filter(id=rid.id).first()
         if not organization_classpass_group:
             raise Exception('Invalid Organization Classpass Group ID!')
 
-        organization_classpass_group.archived = input['archived']
-        organization_classpass_group.save(force_update=True)
+        ok = organization_classpass_group.delete()
 
-        # Add (un-archive) or remove (archive) from all classes
-        helper = OrganizationClasspassGroupHelper()
-        if organization_classpass_group.archived:
-            helper.remove_from_all_classes(organization_classpass_group.id)
-        else:
-            helper.add_to_all_classes(organization_classpass_group.id)
-
-        return ArchiveOrganizationClasspassGroup(organization_classpass_group=organization_classpass_group)
+        return DeleteOrganizationClasspassGroup(ok=ok)
 
 
 class OrganizationClasspassGroupMutation(graphene.ObjectType):
-    archive_organization_classpass_group = ArchiveOrganizationClasspassGroup.Field()
+    delete_organization_classpass_group = DeleteOrganizationClasspassGroup.Field()
     create_organization_classpass_group = CreateOrganizationClasspassGroup.Field()
     update_organization_classpass_group = UpdateOrganizationClasspassGroup.Field()

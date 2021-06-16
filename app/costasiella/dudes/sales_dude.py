@@ -2,6 +2,72 @@ from django.utils.translation import gettext as _
 
 
 class SalesDude:
+    def sell_membership(self,
+                        account,
+                        organization_membership,
+                        finance_payment_method,
+                        date_start,
+                        note="",
+                        create_invoice=True):
+        """
+        Sell classpass to account
+        """
+        from ..models.account_membership import AccountMembership
+
+        account_membership = AccountMembership(
+            account=account,
+            organization_membership=organization_membership,
+            finance_payment_method=finance_payment_method,
+            date_start=date_start,
+            note=note
+        )
+
+        # set date end & save
+        account_membership.set_date_end()
+        account_membership.save()
+
+        print('creating invoice...')
+
+        finance_invoice_item = None
+        if create_invoice:
+            print('still alive')
+            finance_invoice_item = self._sell_membership_create_invoice(account_membership)
+
+        return {
+            "account_membership": account_membership,
+            "finance_invoice_item": finance_invoice_item
+        }
+
+    @staticmethod
+    def _sell_membership_create_invoice(account_membership):
+        """
+        Create an invoice for sold membership
+        """
+        from ..models.finance_invoice_group_default import FinanceInvoiceGroupDefault
+        from ..models.finance_invoice import FinanceInvoice
+
+        finance_invoice_group_default = FinanceInvoiceGroupDefault.objects.filter(item_type="MEMBERSHIPS").first()
+        finance_invoice_group = finance_invoice_group_default.finance_invoice_group
+        print("invoice group")
+        print(finance_invoice_group)
+
+        finance_invoice = FinanceInvoice(
+            account=account_membership.account,
+            finance_invoice_group=finance_invoice_group,
+            summary=_("Membership %s" % account_membership.id),
+            status="SENT",
+            terms=finance_invoice_group.terms,
+            footer=finance_invoice_group.footer
+        )
+
+        # Save invoice
+        finance_invoice.save()
+
+        # Add invoice item
+        finance_invoice_item = finance_invoice.item_add_membership(account_membership)
+
+        return finance_invoice_item
+
     def sell_classpass(self, account, organization_classpass, date_start, note="", create_invoice=True):
         """
         Sell classpass to account
@@ -11,7 +77,7 @@ class SalesDude:
         account_classpass = AccountClasspass(
             account=account,
             organization_classpass=organization_classpass,
-            date_start=date_start, 
+            date_start=date_start,
             note=note
         )
 

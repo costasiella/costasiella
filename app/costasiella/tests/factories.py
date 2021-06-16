@@ -217,6 +217,20 @@ class OrganizationAppointmentFactory(factory.DjangoModelFactory):
     name = "First appointment"
 
 
+class OrganizationAnnouncementFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.OrganizationAnnouncement
+
+    display_public = True
+    display_shop = True
+    display_backend = True
+    title = "Welcome"
+    content = "Welcome to Costasiella!"
+    date_start = datetime.date(2020, 1, 1)
+    date_end = datetime.date(2999, 12, 31)
+    priority = 100
+
+
 class OrganizationLevelFactory(factory.DjangoModelFactory):
     class Meta:
         model = models.OrganizationLevel
@@ -291,8 +305,8 @@ class OrganizationClasspassGroupFactory(factory.DjangoModelFactory):
     class Meta:
         model = models.OrganizationClasspassGroup
 
-    archived = False
     name = "First class pass group"
+    description = "Description of classpass group here"
 
 
 class OrganizationClasspassGroupClasspassFactory(factory.DjangoModelFactory):
@@ -349,8 +363,8 @@ class OrganizationSubscriptionGroupFactory(factory.DjangoModelFactory):
     class Meta:
         model = models.OrganizationSubscriptionGroup
 
-    archived = False
     name = "First subscription group"
+    description = "Description here"
 
 
 class OrganizationSubscriptionGroupSubscriptionFactory(factory.DjangoModelFactory):

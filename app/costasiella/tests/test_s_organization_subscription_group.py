@@ -31,25 +31,24 @@ class GQLOrganizationSubscriptionGroup(TestCase):
         self.variables_create = {
             "input": {
                 "name": "New subscriptiongroup",
+                "description": "Description"
             }
         }
         
         self.variables_update = {
             "input": {
                 "name": "Updated subscriptiongroup",
+                "description": "Description"
             }
         }
 
-        self.variables_archive = {
-            "input": {
-                "archived": True
-            }
+        self.variables_delete = {
+            "input": {}
         }
-
 
         self.subscriptiongroups_query = '''
-query OrganizationSubscriptionGroups($after: String, $before: String, $archived: Boolean) {
-  organizationSubscriptionGroups(first: 15, before: $before, after: $after, archived: $archived) {
+query OrganizationSubscriptionGroups($after: String, $before: String) {
+  organizationSubscriptionGroups(first: 15, before: $before, after: $after) {
     pageInfo {
       startCursor
       endCursor
@@ -59,8 +58,8 @@ query OrganizationSubscriptionGroups($after: String, $before: String, $archived:
     edges {
       node {
         id
-        archived
         name
+        description
       }
     }
   }
@@ -71,8 +70,8 @@ query OrganizationSubscriptionGroups($after: String, $before: String, $archived:
 query getOrganizationSubscriptionGroup($id: ID!) {
     organizationSubscriptionGroup(id:$id) {
       id
-      archived
       name
+      description
     }
   }
 '''
@@ -82,8 +81,8 @@ mutation CreateOrganizationSubscriptionGroup($input: CreateOrganizationSubscript
   createOrganizationSubscriptionGroup(input: $input) {
     organizationSubscriptionGroup {
       id
-      archived
       name
+      description
     }
   }
 }
@@ -94,20 +93,17 @@ mutation CreateOrganizationSubscriptionGroup($input: CreateOrganizationSubscript
     updateOrganizationSubscriptionGroup(input: $input) {
       organizationSubscriptionGroup {
         id
-        archived
         name
+        description
       }
     }
   }
 '''
 
-        self.subscriptiongroup_archive_mutation = '''
-mutation ArchiveOrganizationSubscriptionGroup($input: ArchiveOrganizationSubscriptionGroupInput!) {
-    archiveOrganizationSubscriptionGroup(input: $input) {
-        organizationSubscriptionGroup {
-        id
-        archived
-        }
+        self.subscriptiongroup_delete_mutation = '''
+mutation DeleteOrganizationSubscriptionGroup($input: DeleteOrganizationSubscriptionGroupInput!) {
+    deleteOrganizationSubscriptionGroup(input: $input) {
+        ok
     }
 }
 '''
@@ -116,47 +112,33 @@ mutation ArchiveOrganizationSubscriptionGroup($input: ArchiveOrganizationSubscri
         # This is run after every test
         pass
 
-
     def test_query(self):
         """ Query list of subscriptiongroups """
         query = self.subscriptiongroups_query
         subscriptiongroup = f.OrganizationSubscriptionGroupFactory.create()
-        variables = {
-            "archived": False
-        }
 
-        executed = execute_test_client_api_query(query, self.admin_user, variables=variables)
+        executed = execute_test_client_api_query(query, self.admin_user)
         data = executed.get('data')
         item = data['organizationSubscriptionGroups']['edges'][0]['node']
         self.assertEqual(item['name'], subscriptiongroup.name)
-
-
+        self.assertEqual(item['description'], subscriptiongroup.description)
 
     def test_query_permission_denied(self):
         """ Query list of subscriptiongroups as user without permissions """
         query = self.subscriptiongroups_query
         subscriptiongroup = f.OrganizationSubscriptionGroupFactory.create()
 
-        variables = {
-            'archived': False
-        }
-
         # Create regular user
         user = f.RegularUserFactory.create()
-        executed = execute_test_client_api_query(query, user, variables=variables)
+        executed = execute_test_client_api_query(query, user)
         errors = executed.get('errors')
 
         self.assertEqual(errors[0]['message'], 'Permission denied!')
-
 
     def test_query_permission_granted(self):
         """ Query list of subscriptiongroups with view permission """
         query = self.subscriptiongroups_query
         subscriptiongroup = f.OrganizationSubscriptionGroupFactory.create()
-
-        variables = {
-            'archived': False
-        }
 
         # Create regular user
         user = f.RegularUserFactory.create()
@@ -164,24 +146,19 @@ mutation ArchiveOrganizationSubscriptionGroup($input: ArchiveOrganizationSubscri
         user.user_permissions.add(permission)
         user.save()
 
-        executed = execute_test_client_api_query(query, user, variables=variables)
+        executed = execute_test_client_api_query(query, user)
         data = executed.get('data')
         item = data['organizationSubscriptionGroups']['edges'][0]['node']
         self.assertEqual(item['name'], subscriptiongroup.name)
-
 
     def test_query_anon_user(self):
         """ Query list of subscriptiongroups as anon user """
         query = self.subscriptiongroups_query
         subscriptiongroup = f.OrganizationSubscriptionGroupFactory.create()
-        variables = {
-            'archived': False
-        }
 
-        executed = execute_test_client_api_query(query, self.anon_user, variables=variables)
+        executed = execute_test_client_api_query(query, self.anon_user)
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Not logged in!')
-
 
     def test_query_one(self):
         """ Query one subscriptiongroup """   
@@ -196,8 +173,7 @@ mutation ArchiveOrganizationSubscriptionGroup($input: ArchiveOrganizationSubscri
         data = executed.get('data')
         print(data)
         self.assertEqual(data['organizationSubscriptionGroup']['name'], subscriptiongroup.name)
-        self.assertEqual(data['organizationSubscriptionGroup']['archived'], subscriptiongroup.archived)
-
+        self.assertEqual(data['organizationSubscriptionGroup']['description'], subscriptiongroup.description)
 
     def test_query_one_anon_user(self):
         """ Deny permission for anon users Query one subscriptiongroup """   
@@ -207,7 +183,6 @@ mutation ArchiveOrganizationSubscriptionGroup($input: ArchiveOrganizationSubscri
         executed = execute_test_client_api_query(query, self.anon_user, variables={"id": node_id})
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Not logged in!')
-
 
     def test_query_one_permission_denied(self):
         """ Permission denied message when user lacks authorization """   
@@ -220,7 +195,6 @@ mutation ArchiveOrganizationSubscriptionGroup($input: ArchiveOrganizationSubscri
         executed = execute_test_client_api_query(query, user, variables={"id": node_id})
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Permission denied!')
-
 
     def test_query_one_permission_granted(self):
         """ Respond with data when user has permission """   
@@ -238,7 +212,6 @@ mutation ArchiveOrganizationSubscriptionGroup($input: ArchiveOrganizationSubscri
         data = executed.get('data')
         self.assertEqual(data['organizationSubscriptionGroup']['name'], subscriptiongroup.name)
 
-
     def test_create_subscriptiongroup(self):
         """ Create a subscriptiongroup """
         query = self.subscriptiongroup_create_mutation
@@ -250,9 +223,10 @@ mutation ArchiveOrganizationSubscriptionGroup($input: ArchiveOrganizationSubscri
             variables=variables
         )
         data = executed.get('data')
-        self.assertEqual(data['createOrganizationSubscriptionGroup']['organizationSubscriptionGroup']['name'], variables['input']['name'])
-        self.assertEqual(data['createOrganizationSubscriptionGroup']['organizationSubscriptionGroup']['archived'], False)
-
+        self.assertEqual(data['createOrganizationSubscriptionGroup']['organizationSubscriptionGroup']['name'], 
+                         variables['input']['name'])
+        self.assertEqual(data['createOrganizationSubscriptionGroup']['organizationSubscriptionGroup']['description'], 
+                         variables['input']['description'])
 
     def test_create_subscriptiongroup_add_to_schedule_item(self):
         """ Is the subscription group added to all schedule items on creation? """
@@ -267,9 +241,10 @@ mutation ArchiveOrganizationSubscriptionGroup($input: ArchiveOrganizationSubscri
             variables=variables
         )
         data = executed.get('data')
-        self.assertEqual(data['createOrganizationSubscriptionGroup']['organizationSubscriptionGroup']['name'], variables['input']['name'])
-        self.assertEqual(data['createOrganizationSubscriptionGroup']['organizationSubscriptionGroup']['archived'], False)
-
+        self.assertEqual(data['createOrganizationSubscriptionGroup']['organizationSubscriptionGroup']['name'],
+                         variables['input']['name'])
+        self.assertEqual(data['createOrganizationSubscriptionGroup']['organizationSubscriptionGroup']['description'],
+                         variables['input']['description'])
 
         schedule_item_organization_subscription_group = models.ScheduleItemOrganizationSubscriptionGroup.objects.all().first()
         self.assertEqual(
@@ -279,7 +254,6 @@ mutation ArchiveOrganizationSubscriptionGroup($input: ArchiveOrganizationSubscri
         self.assertEqual(schedule_item_organization_subscription_group.enroll, False)
         self.assertEqual(schedule_item_organization_subscription_group.shop_book, False)
         self.assertEqual(schedule_item_organization_subscription_group.attend, False)
-
 
     def test_create_subscriptiongroup_anon_user(self):
         """ Create a subscriptiongroup with anonymous user, check error message """
@@ -293,7 +267,6 @@ mutation ArchiveOrganizationSubscriptionGroup($input: ArchiveOrganizationSubscri
         data = executed.get('data')
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Not logged in!')
-
 
     def test_create_subscriptiongroup_permission_granted(self):
         """ Create a subscriptiongroup with a user having the add permission """
@@ -312,9 +285,10 @@ mutation ArchiveOrganizationSubscriptionGroup($input: ArchiveOrganizationSubscri
             variables=variables
         )
         data = executed.get('data')
-        self.assertEqual(data['createOrganizationSubscriptionGroup']['organizationSubscriptionGroup']['name'], variables['input']['name'])
-        self.assertEqual(data['createOrganizationSubscriptionGroup']['organizationSubscriptionGroup']['archived'], False)
-
+        self.assertEqual(data['createOrganizationSubscriptionGroup']['organizationSubscriptionGroup']['name'],
+                         variables['input']['name'])
+        self.assertEqual(data['createOrganizationSubscriptionGroup']['organizationSubscriptionGroup']['description'],
+                         variables['input']['description'])
 
     def test_create_subscriptiongroup_permission_denied(self):
         """ Create a subscriptiongroup with a user not having the add permission """
@@ -331,7 +305,6 @@ mutation ArchiveOrganizationSubscriptionGroup($input: ArchiveOrganizationSubscri
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Permission denied!')
 
-
     def test_update_subscriptiongroup(self):
         """ Update a subscriptiongroup as admin user """
         query = self.subscriptiongroup_update_mutation
@@ -339,16 +312,16 @@ mutation ArchiveOrganizationSubscriptionGroup($input: ArchiveOrganizationSubscri
         variables = self.variables_update
         variables['input']['id'] = to_global_id("OrganizationSubscriptionGroupNode", subscriptiongroup.pk)
         
-
         executed = execute_test_client_api_query(
             query, 
             self.admin_user, 
             variables=variables
         )
         data = executed.get('data')
-        self.assertEqual(data['updateOrganizationSubscriptionGroup']['organizationSubscriptionGroup']['name'], variables['input']['name'])
-        self.assertEqual(data['updateOrganizationSubscriptionGroup']['organizationSubscriptionGroup']['archived'], False)
-
+        self.assertEqual(data['updateOrganizationSubscriptionGroup']['organizationSubscriptionGroup']['name'],
+                         variables['input']['name'])
+        self.assertEqual(data['updateOrganizationSubscriptionGroup']['organizationSubscriptionGroup']['description'],
+                         variables['input']['description'])
 
     def test_update_subscriptiongroup_anon_user(self):
         """ Update a subscriptiongroup as anonymous user """
@@ -365,7 +338,6 @@ mutation ArchiveOrganizationSubscriptionGroup($input: ArchiveOrganizationSubscri
         data = executed.get('data')
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Not logged in!')
-
 
     def test_update_subscriptiongroup_permission_granted(self):
         """ Update a subscriptiongroup as user with permission """
@@ -385,9 +357,10 @@ mutation ArchiveOrganizationSubscriptionGroup($input: ArchiveOrganizationSubscri
             variables=variables
         )
         data = executed.get('data')
-        self.assertEqual(data['updateOrganizationSubscriptionGroup']['organizationSubscriptionGroup']['name'], variables['input']['name'])
-        self.assertEqual(data['updateOrganizationSubscriptionGroup']['organizationSubscriptionGroup']['archived'], False)
-
+        self.assertEqual(data['updateOrganizationSubscriptionGroup']['organizationSubscriptionGroup']['name'],
+                         variables['input']['name'])
+        self.assertEqual(data['updateOrganizationSubscriptionGroup']['organizationSubscriptionGroup']['description'],
+                         variables['input']['description'])
 
     def test_update_subscriptiongroup_permission_denied(self):
         """ Update a subscriptiongroup as user without permissions """
@@ -407,12 +380,11 @@ mutation ArchiveOrganizationSubscriptionGroup($input: ArchiveOrganizationSubscri
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Permission denied!')
 
-
-    def test_archive_subscriptiongroup(self):
-        """ Archive a subscriptiongroup """
-        query = self.subscriptiongroup_archive_mutation
+    def test_delete_subscriptiongroup(self):
+        """ Delete a subscriptiongroup """
+        query = self.subscriptiongroup_delete_mutation
         subscriptiongroup = f.OrganizationSubscriptionGroupFactory.create()
-        variables = self.variables_archive
+        variables = self.variables_delete
         variables['input']['id'] = to_global_id("OrganizationSubscriptionGroupNode", subscriptiongroup.pk)
 
         executed = execute_test_client_api_query(
@@ -421,76 +393,49 @@ mutation ArchiveOrganizationSubscriptionGroup($input: ArchiveOrganizationSubscri
             variables=variables
         )
         data = executed.get('data')
-        self.assertEqual(data['archiveOrganizationSubscriptionGroup']['organizationSubscriptionGroup']['archived'], variables['input']['archived'])
+        self.assertEqual(data['deleteOrganizationSubscriptionGroup']['ok'], True)
 
-
-    def test_archive_subscriptiongroup_remove_from_schedule_item_class(self):
-        """ Does archiving a subscriptiongroup remove it from a schedule item """
-        query = self.subscriptiongroup_archive_mutation
+    def test_delete_subscriptiongroup_remove_from_schedule_item_class(self):
+        """ Does deleting a subscriptiongroup remove it from a schedule item """
+        query = self.subscriptiongroup_delete_mutation
         schedule_item_subscriptiongroup = f.ScheduleItemOrganizationSubscriptionGroupAllowFactory.create()
         subscriptiongroup = schedule_item_subscriptiongroup.organization_subscription_group
-        variables = self.variables_archive
+        variables = self.variables_delete
         variables['input']['id'] = to_global_id("OrganizationSubscriptionGroupNode", subscriptiongroup.pk)
 
         executed = execute_test_client_api_query(
-            query, 
-            self.admin_user, 
+            query,
+            self.admin_user,
             variables=variables
         )
         data = executed.get('data')
-        self.assertEqual(data['archiveOrganizationSubscriptionGroup']['organizationSubscriptionGroup']['archived'], variables['input']['archived'])
+        self.assertEqual(data['deleteOrganizationSubscriptionGroup']['ok'], True)
 
         self.assertEqual(models.ScheduleItemOrganizationSubscriptionGroup.objects.filter(
-            id=schedule_item_subscriptiongroup.id).exists(), 
+            id=schedule_item_subscriptiongroup.id).exists(),
             False
         )
 
-
-    def test_unarchive_subscriptiongroup_add_to_schedule_item_class(self):
-        """ Does archiving a subscriptiongroup add it to a schedule item """
-        query = self.subscriptiongroup_archive_mutation
-        schedule_item = f.SchedulePublicWeeklyClassFactory.create()
+    def test_delete_subscriptiongroup_anon_user(self):
+        """ Delete a subscriptiongroup as an anon user shouldn't be allowed"""
+        query = self.subscriptiongroup_delete_mutation
         subscriptiongroup = f.OrganizationSubscriptionGroupFactory.create()
-        variables = self.variables_archive
-        variables['input']['id'] = to_global_id("OrganizationSubscriptionGroupNode", subscriptiongroup.pk)
-        variables['input']['archived'] = False
-
-        executed = execute_test_client_api_query(
-            query, 
-            self.admin_user, 
-            variables=variables
-        )
-        data = executed.get('data')
-        self.assertEqual(data['archiveOrganizationSubscriptionGroup']['organizationSubscriptionGroup']['archived'], variables['input']['archived'])
-
-        self.assertEqual(models.ScheduleItemOrganizationSubscriptionGroup.objects.filter(
-            schedule_item=schedule_item).exists(), 
-            True
-        )
-
-
-    def test_archive_subscriptiongroup_anon_user(self):
-        """ Archive a subscriptiongroup """
-        query = self.subscriptiongroup_archive_mutation
-        subscriptiongroup = f.OrganizationSubscriptionGroupFactory.create()
-        variables = self.variables_archive
+        variables = self.variables_delete
         variables['input']['id'] = to_global_id("OrganizationSubscriptionGroupNode", subscriptiongroup.pk)
 
         executed = execute_test_client_api_query(
-            query, 
-            self.anon_user, 
+            query,
+            self.anon_user,
             variables=variables
         )
-        data = executed.get('data')
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Not logged in!')
 
-
-    def test_archive_subscriptiongroup_permission_granted(self):
-        """ Allow archiving subscriptiongroups for users with permissions """
-        query = self.subscriptiongroup_archive_mutation
+    def test_delete_subscriptiongroup_permission_granted(self):
+        """ Allow deleting subscriptiongroups for users with permissions """
+        query = self.subscriptiongroup_delete_mutation
         subscriptiongroup = f.OrganizationSubscriptionGroupFactory.create()
-        variables = self.variables_archive
+        variables = self.variables_delete
         variables['input']['id'] = to_global_id("OrganizationSubscriptionGroupNode", subscriptiongroup.pk)
 
         # Create regular user
@@ -500,31 +445,29 @@ mutation ArchiveOrganizationSubscriptionGroup($input: ArchiveOrganizationSubscri
         user.save()
 
         executed = execute_test_client_api_query(
-            query, 
+            query,
             user,
             variables=variables
         )
+        print("************")
+        print(executed)
         data = executed.get('data')
-        self.assertEqual(data['archiveOrganizationSubscriptionGroup']['organizationSubscriptionGroup']['archived'], variables['input']['archived'])
+        self.assertEqual(data['deleteOrganizationSubscriptionGroup']['ok'], True)
 
-
-    def test_archive_subscriptiongroup_permission_denied(self):
-        """ Check archive subscriptiongroup permission denied error message """
-        query = self.subscriptiongroup_archive_mutation
+    def test_delete_subscriptiongroup_permission_denied(self):
+        """ Check delete subscriptiongroup permission denied error message """
+        query = self.subscriptiongroup_delete_mutation
         subscriptiongroup = f.OrganizationSubscriptionGroupFactory.create()
-        variables = self.variables_archive
+        variables = self.variables_delete
         variables['input']['id'] = to_global_id("OrganizationSubscriptionGroupNode", subscriptiongroup.pk)
 
         # Create regular user
         user = f.RegularUserFactory.create()
 
         executed = execute_test_client_api_query(
-            query, 
-            user, 
+            query,
+            user,
             variables=variables
         )
-        data = executed.get('data')
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Permission denied!')
-
-

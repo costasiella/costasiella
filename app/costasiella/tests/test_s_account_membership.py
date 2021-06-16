@@ -16,9 +16,12 @@ from .. import models
 from .. import schema
 
 
-
 class GQLAccountMembership(TestCase):
     # https://docs.djangoproject.com/en/2.1/topics/testing/overview/
+    fixtures = ['app_settings.json',
+                'finance_invoice_group.json',
+                'finance_invoice_group_defaults.json']
+
     def setUp(self):
         # This is run before every test
         self.admin_user = f.AdminUserFactory.create()
@@ -212,7 +215,6 @@ class GQLAccountMembership(TestCase):
         # This is run after every test
         pass
 
-
     def test_query(self):
         """ Query list of account memberships """
         query = self.memberships_query
@@ -235,7 +237,6 @@ class GQLAccountMembership(TestCase):
         self.assertEqual(data['accountMemberships']['edges'][0]['node']['dateEnd'], str(membership.date_end))
         self.assertEqual(data['accountMemberships']['edges'][0]['node']['note'], membership.note)
 
-
     def test_query_permission_denied(self):
         """ Query list of account memberships - check permission denied """
         query = self.memberships_query
@@ -250,7 +251,6 @@ class GQLAccountMembership(TestCase):
         errors = executed.get('errors')
 
         self.assertEqual(errors[0]['message'], 'Permission denied!')
-
 
     def test_query_permission_granted(self):
         """ Query list of account memberships with view permission """
@@ -275,7 +275,6 @@ class GQLAccountMembership(TestCase):
             to_global_id("OrganizationMembershipNode", membership.organization_membership.id)
         )
 
-
     def test_query_anon_user(self):
         """ Query list of account memberships - anon user """
         query = self.memberships_query
@@ -287,7 +286,6 @@ class GQLAccountMembership(TestCase):
         executed = execute_test_client_api_query(query, self.anon_user, variables=variables)
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Not logged in!')
-
 
     def test_query_one(self):
         """ Query one account membership as admin """   
@@ -318,7 +316,6 @@ class GQLAccountMembership(TestCase):
         self.assertEqual(data['accountMembership']['dateEnd'], str(membership.date_end))
         self.assertEqual(data['accountMembership']['note'], membership.note)
 
-
     def test_query_one_anon_user(self):
         """ Deny permission for anon users Query one account membership """   
         membership = f.AccountMembershipFactory.create()
@@ -333,7 +330,6 @@ class GQLAccountMembership(TestCase):
         executed = execute_test_client_api_query(self.membership_query, self.anon_user, variables=variables)
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Not logged in!')
-
 
     def test_query_one_permission_denied(self):
         """ Permission denied message when user lacks authorization """   
@@ -351,7 +347,6 @@ class GQLAccountMembership(TestCase):
         executed = execute_test_client_api_query(self.membership_query, user, variables=variables)
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Permission denied!')
-
 
     def test_query_one_permission_granted(self):
         """ Respond with data when user has permission """   
@@ -376,7 +371,6 @@ class GQLAccountMembership(TestCase):
             to_global_id('OrganizationMembershipNode', membership.organization_membership.id)
         )
 
-
     def test_create_membership(self):
         """ Create an account membership """
         query = self.membership_create_mutation
@@ -386,7 +380,8 @@ class GQLAccountMembership(TestCase):
         finance_payment_method = f.FinancePaymentMethodFactory.create()
         variables = self.variables_create
         variables['input']['account'] = to_global_id('AccountNode', account.id)
-        variables['input']['organizationMembership'] = to_global_id('OrganizationMembershipNode', organization_membership.id)
+        variables['input']['organizationMembership'] = to_global_id('OrganizationMembershipNode',
+                                                                    organization_membership.id)
         variables['input']['financePaymentMethod'] = to_global_id('FinancePaymentMethodNode', finance_payment_method.id)
 
         executed = execute_test_client_api_query(
@@ -411,7 +406,6 @@ class GQLAccountMembership(TestCase):
         self.assertEqual(data['createAccountMembership']['accountMembership']['dateStart'], variables['input']['dateStart'])
         self.assertEqual(data['createAccountMembership']['accountMembership']['note'], variables['input']['note'])
 
-
     def test_create_membership_valid_3_days(self):
         """ End date should be set 3 days from start """
         query = self.membership_create_mutation
@@ -424,7 +418,8 @@ class GQLAccountMembership(TestCase):
 
         variables = self.variables_create
         variables['input']['account'] = to_global_id('AccountNode', account.id)
-        variables['input']['organizationMembership'] = to_global_id('OrganizationMembershipNode', organization_membership.id)
+        variables['input']['organizationMembership'] = to_global_id('OrganizationMembershipNode',
+                                                                    organization_membership.id)
 
         executed = execute_test_client_api_query(
             query, 
@@ -437,7 +432,6 @@ class GQLAccountMembership(TestCase):
             data['createAccountMembership']['accountMembership']['dateEnd'], 
             str(datetime.date(2019, 1, 1) + datetime.timedelta(days=2))
         )
-
 
     def test_create_membership_valid_2_weeks(self):
         """ End date should be set 2 weeks from start """
@@ -454,17 +448,16 @@ class GQLAccountMembership(TestCase):
         variables['input']['organizationMembership'] = to_global_id('OrganizationMembershipNode', organization_membership.id)
 
         executed = execute_test_client_api_query(
-            query, 
-            self.admin_user, 
+            query,
+            self.admin_user,
             variables=variables
         )
         data = executed.get('data')
 
         self.assertEqual(
-            data['createAccountMembership']['accountMembership']['dateEnd'], 
+            data['createAccountMembership']['accountMembership']['dateEnd'],
             str(datetime.date(2019, 1, 1) + datetime.timedelta(days=13))
         )
-
 
     def test_create_membership_valid_2_months(self):
         """ End date should be set 2 weeks from start """
@@ -481,23 +474,21 @@ class GQLAccountMembership(TestCase):
         variables['input']['organizationMembership'] = to_global_id('OrganizationMembershipNode', organization_membership.id)
 
         executed = execute_test_client_api_query(
-            query, 
-            self.admin_user, 
+            query,
+            self.admin_user,
             variables=variables
         )
         data = executed.get('data')
 
         self.assertEqual(
-            data['createAccountMembership']['accountMembership']['dateEnd'], 
+            data['createAccountMembership']['accountMembership']['dateEnd'],
             str(datetime.date(2019, 2, 28))
         )
-
-
 
     def test_create_membership_anon_user(self):
         """ Don't allow creating account memberships for non-logged in users """
         query = self.membership_create_mutation
-        
+
         account = f.RegularUserFactory.create()
         organization_membership = f.OrganizationMembershipFactory.create()
         finance_payment_method = f.FinancePaymentMethodFactory.create()
@@ -507,14 +498,13 @@ class GQLAccountMembership(TestCase):
         variables['input']['financePaymentMethod'] = to_global_id('FinancePaymentMethodNode', finance_payment_method.id)
 
         executed = execute_test_client_api_query(
-            query, 
-            self.anon_user, 
+            query,
+            self.anon_user,
             variables=variables
         )
         data = executed.get('data')
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Not logged in!')
-
 
     def test_create_membership_permission_granted(self):
         """ Allow creating memberships for users with permissions """
@@ -535,17 +525,16 @@ class GQLAccountMembership(TestCase):
         user.save()
 
         executed = execute_test_client_api_query(
-            query, 
-            user, 
+            query,
+            user,
             variables=variables
         )
         data = executed.get('data')
 
         self.assertEqual(
-            data['createAccountMembership']['accountMembership']['organizationMembership']['id'], 
+            data['createAccountMembership']['accountMembership']['organizationMembership']['id'],
             variables['input']['organizationMembership']
         )
-
 
     def test_create_membership_permission_denied(self):
         """ Check create membership permission denied error message """
@@ -562,14 +551,13 @@ class GQLAccountMembership(TestCase):
         user = account
 
         executed = execute_test_client_api_query(
-            query, 
-            user, 
+            query,
+            user,
             variables=variables
         )
         data = executed.get('data')
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Permission denied!')
-
 
     def test_update_membership(self):
         """ Update a membership """
@@ -583,24 +571,23 @@ class GQLAccountMembership(TestCase):
         variables['input']['financePaymentMethod'] = to_global_id('FinancePaymentMethodNode', finance_payment_method.id)
 
         executed = execute_test_client_api_query(
-            query, 
-            self.admin_user, 
+            query,
+            self.admin_user,
             variables=variables
         )
         data = executed.get('data')
 
         self.assertEqual(
-          data['updateAccountMembership']['accountMembership']['organizationMembership']['id'], 
+          data['updateAccountMembership']['accountMembership']['organizationMembership']['id'],
           variables['input']['organizationMembership']
         )
         self.assertEqual(
-          data['updateAccountMembership']['accountMembership']['financePaymentMethod']['id'], 
+          data['updateAccountMembership']['accountMembership']['financePaymentMethod']['id'],
           variables['input']['financePaymentMethod']
         )
         self.assertEqual(data['updateAccountMembership']['accountMembership']['dateStart'], variables['input']['dateStart'])
         self.assertEqual(data['updateAccountMembership']['accountMembership']['dateEnd'], variables['input']['dateEnd'])
         self.assertEqual(data['updateAccountMembership']['accountMembership']['note'], variables['input']['note'])
-
 
     def test_update_membership_anon_user(self):
         """ Don't allow updating memberships for non-logged in users """
@@ -614,14 +601,13 @@ class GQLAccountMembership(TestCase):
         variables['input']['financePaymentMethod'] = to_global_id('FinancePaymentMethodNode', finance_payment_method.id)
 
         executed = execute_test_client_api_query(
-            query, 
-            self.anon_user, 
+            query,
+            self.anon_user,
             variables=variables
         )
         data = executed.get('data')
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Not logged in!')
-
 
     def test_update_membership_permission_granted(self):
         """ Allow updating memberships for users with permissions """
@@ -640,13 +626,12 @@ class GQLAccountMembership(TestCase):
         user.save()
 
         executed = execute_test_client_api_query(
-            query, 
-            user, 
+            query,
+            user,
             variables=variables
         )
         data = executed.get('data')
         self.assertEqual(data['updateAccountMembership']['accountMembership']['dateStart'], variables['input']['dateStart'])
-
 
     def test_update_membership_permission_denied(self):
         """ Check update membership permission denied error message """
@@ -662,14 +647,13 @@ class GQLAccountMembership(TestCase):
         user = membership.account
 
         executed = execute_test_client_api_query(
-            query, 
-            user, 
+            query,
+            user,
             variables=variables
         )
         data = executed.get('data')
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Permission denied!')
-
 
     def test_delete_membership(self):
         """ Delete an account membership """
@@ -679,14 +663,13 @@ class GQLAccountMembership(TestCase):
         variables['input']['id'] = to_global_id('AccountMembershipNode', membership.id)
 
         executed = execute_test_client_api_query(
-            query, 
-            self.admin_user, 
+            query,
+            self.admin_user,
             variables=variables
         )
         data = executed.get('data')
         print(data)
         self.assertEqual(data['deleteAccountMembership']['ok'], True)
-
 
     def test_delete_membership_anon_user(self):
         """ Delete membership denied for anon user """
@@ -696,14 +679,13 @@ class GQLAccountMembership(TestCase):
         variables['input']['id'] = to_global_id('AccountMembershipNode', membership.id)
 
         executed = execute_test_client_api_query(
-            query, 
-            self.anon_user, 
+            query,
+            self.anon_user,
             variables=variables
         )
         data = executed.get('data')
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Not logged in!')
-
 
     def test_delete_membership_permission_granted(self):
         """ Allow deleting memberships for users with permissions """
@@ -719,13 +701,12 @@ class GQLAccountMembership(TestCase):
         user.save()
 
         executed = execute_test_client_api_query(
-            query, 
+            query,
             user,
             variables=variables
         )
         data = executed.get('data')
         self.assertEqual(data['deleteAccountMembership']['ok'], True)
-
 
     def test_delete_membership_permission_denied(self):
         """ Check delete membership permission denied error message """
@@ -733,15 +714,14 @@ class GQLAccountMembership(TestCase):
         membership = f.AccountMembershipFactory.create()
         variables = {"input":{}}
         variables['input']['id'] = to_global_id('AccountMembershipNode', membership.id)
-        
+
         user = membership.account
 
         executed = execute_test_client_api_query(
-            query, 
-            user, 
+            query,
+            user,
             variables=variables
         )
         data = executed.get('data')
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Permission denied!')
-

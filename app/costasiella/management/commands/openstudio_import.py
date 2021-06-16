@@ -1,16 +1,40 @@
 import sys
+import os
 import datetime
 
 from django.core.management.base import BaseCommand, CommandError, no_translations
-import costasiella.models as models
+from django.utils import timezone
+import costasiella.models as m
 
 import MySQLdb
 from MySQLdb._exceptions import OperationalError
 import MySQLdb.converters
 
+import logging
+
+logfile = os.path.join('logs', "openstudio_import_%s.log" % timezone.now().strftime("%Y-%m-%d_%H:%M"))
+logging.basicConfig(filename=logfile, level=logging.DEBUG)
+
 
 class Command(BaseCommand):
-    help = 'Import from OpenStudio. Provide at least --db_name, --db_user and --db_password.'
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.help = 'Import from OpenStudio. Provide at least --db_name, --db_user and --db_password.'
+        self.cursor = None  # Set later on from handle
+
+        self.map_validity_units_cards_and_memberships = {
+            'days': 'DAYS',
+            'weeks': 'WEEKS',
+            'months': 'MONTHS'
+        }
+
+        # Define maps
+        self.accounting_costcenters_map = None
+        self.accounting_glaccounts_map = None
+        self.tax_rates_map = None
+        self.payment_methods_map = None
+        self.school_memberships_map = None
+        self.school_classcards_map = None
 
     def add_arguments(self, parser):
         parser.add_argument(
@@ -60,7 +84,7 @@ class Command(BaseCommand):
             else:
                 return False
         else:
-            return self._yes_or_no("Uhhhh... please enter ")
+            return self._yes_or_no("Uhhhh... please enter y or n")
 
     def _confirm_args(self, **options):
         """
@@ -81,7 +105,7 @@ class Command(BaseCommand):
 
         return self._yes_or_no("Test connection & start import using the settings above?")
 
-    def _connect_to_db_and_get_cursor(self, host, user, password, db, port):
+    def _connect_to_db_and_set_cursor(self, host, user, password, db, port):
         """
 
         :return:
@@ -120,18 +144,7 @@ class Command(BaseCommand):
             self.stdout.write("Exiting...")
             sys.exit(1)
 
-        return conn.cursor()
-
-    def _import_os_users(self, cursor):
-        """
-        Fetch OpenStudio users
-        :param c: MySQL db cursor
-        :return:
-        """
-        query = "SELECT * from auth_user"
-        cursor.execute(query)
-        print(cursor.fetchone())
-        # print(cursor.fetchall())
+        return conn.cursor(MySQLdb.cursors.DictCursor)
 
     @no_translations
     def handle(self, *args, **options):
@@ -141,12 +154,11 @@ class Command(BaseCommand):
         :param options: command options
         :return:
         """
-        cursor = None
         options_confirmation = self._confirm_args(**options)
         if options_confirmation:
             self.stdout.write("")
             self.stdout.write("Testing OpenStudio MySQL connection...")
-            cursor = self._connect_to_db_and_get_cursor(
+            self.cursor = self._connect_to_db_and_set_cursor(
                 host=options['db_host'],
                 user=options['db_user'],
                 password=options['db_password'],
@@ -156,11 +168,11 @@ class Command(BaseCommand):
             self.stdout.write("OpenStudio MySQL connection: " + self.style.SUCCESS("SUCCESS"))
             self.stdout.write("Starting import...")
 
-        if not cursor:
+        if not self.cursor:
             self.stdout.write("Error setting up MySQL connection, exiting...")
             sys.exit(1)
 
-        self._import_os_users(cursor)
+        self._import()
 
         """
         Example code;
@@ -176,3 +188,274 @@ class Command(BaseCommand):
 
             self.stdout.write(self.style.SUCCESS('Successfully closed poll "%s"' % poll_id))        
         """
+
+    @staticmethod
+    def _web2py_bool_to_python(w2p_bool):
+        if w2p_bool == "T":
+            return True
+        else:
+            return False
+
+    def get_records_import_status_display(self, records_imported, records_total, raw=False):
+        records_display = "%s/%s" % (records_imported, records_total)
+
+        if not raw:
+            if records_imported == records_total:
+                records_display = self.style.SUCCESS(records_display)
+            else:
+                records_display = self.style.ERROR(records_display)
+
+        return records_display
+
+    def _import(self):
+        """
+        Main import function
+        :param cursor: MySQLdb connection cursor
+        :return:
+        """
+        self._import_os_sys_organization_to_organization()
+        self.accounting_costcenters_map = self._import_accounting_costcenters()
+        self.accounting_glaccounts_map = self._import_accounting_glaccounts()
+        self.tax_rates_map = self._import_tax_rates()
+        self.payment_methods_map = self._import_payment_methods()
+        self.school_memberships_map = self._import_school_memberships()
+        self.school_classcards_map = self._import_school_classcards()
+
+    def _import_os_sys_organization_to_organization(self):
+        """
+        Fetch the default organization and import it in Costasiella.
+        Other organizations can't be imported at this time.
+        :param cursor: MySQL db cursor
+        :return: None
+        """
+        query = "SELECT * from sys_organizations WHERE DefaultOrganization = 'T'"
+        self.cursor.execute(query)
+        record = self.cursor.fetchone()
+
+        if record:
+            organization = m.Organization.objects.get(pk = 100)
+            organization.archived = self._web2py_bool_to_python(record['Archived'])
+            organization.name = record['Name'] or ""
+            organization.address = record['Address'] or ""
+            organization.phone = record['Phone'] or ""
+            organization.email = record['Email'] or ""
+            organization.registration = record['Registration'] or ""
+            organization.tax_registration = record['TaxRegistration'] or ""
+            organization.save()
+
+            self.stdout.write("Import default organization: " + self.style.SUCCESS("OK"))
+            logging.info("Import default organization: OK")
+        else:
+            self.stdout.write("Import default organization: " + self.style.ERROR("No default organization found."))
+            logging.error("Import default organization: No default organization found")
+
+    def _import_accounting_glaccounts(self):
+        """
+        Fetch the glaccounts and import it in Costasiella.
+        :param cursor: MySQL db cursor
+        :return: None
+        """
+        query = "SELECT * from accounting_glaccounts"
+        self.cursor.execute(query)
+        records = self.cursor.fetchall()
+
+        id_map = {}
+        records_imported = 0
+        for record in records:
+            finance_glaccount = m.FinanceGLAccount(
+                archived=self._web2py_bool_to_python(record['Archived']),
+                name=record['Name'],
+                code=record['AccountingCode']
+            )
+            finance_glaccount.save()
+            records_imported += 1
+
+            id_map[record['id']] = finance_glaccount
+
+        log_message = "Import accounting_glaccounts: "
+        self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
+        logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
+
+        return id_map
+
+    def _import_accounting_costcenters(self):
+        """
+        Fetch the costcenters and import it in Costasiella.
+        :param cursor: MySQL db cursor
+        :return: None
+        """
+        query = "SELECT * from accounting_costcenters"
+        self.cursor.execute(query)
+        records = self.cursor.fetchall()
+
+        id_map = {}
+        records_imported = 0
+        for record in records:
+            finance_costcenter = m.FinanceCostCenter(
+                archived=self._web2py_bool_to_python(record['Archived']),
+                name=record['Name'],
+                code=record['AccountingCode']
+            )
+            finance_costcenter.save()
+            records_imported += 1
+
+            id_map[record['id']] = finance_costcenter
+
+        log_message = "Import accounting_costcenters: "
+        self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
+        logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
+
+        return id_map
+
+    def _import_tax_rates(self):
+        """
+        Fetch tax rates and import it in Costasiella.
+        :param cursor: MySQL db cursor
+        :return: None
+        """
+        query = "SELECT * from tax_rates"
+        self.cursor.execute(query)
+        records = self.cursor.fetchall()
+
+        id_map = {}
+        records_imported = 0
+        for record in records:
+            finance_tax_rate = m.FinanceTaxRate(
+                archived=self._web2py_bool_to_python(record['Archived']),
+                name=record['Name'],
+                percentage=record['Percentage'],
+                rate_type="IN",
+                code=record['VATCodeID'] or ""
+            )
+            finance_tax_rate.save()
+            records_imported += 1
+
+            id_map[record['id']] = finance_tax_rate
+
+        log_message = "Import tax_rates: "
+        self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
+        logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
+
+        return id_map
+
+    def _import_payment_methods(self):
+        """
+        Fetch payment methods and import it in Costasiella.
+        :param cursor: MySQL db cursor
+        :return: None
+        """
+        query = "SELECT * from payment_methods where SystemMethod = 'F'"
+        self.cursor.execute(query)
+        records = self.cursor.fetchall()
+
+        records_imported = 0
+        for record in records:
+            finance_payment_method = m.FinancePaymentMethod(
+                archived=self._web2py_bool_to_python(record['Archived']),
+                name=record['Name'],
+                code=record['AccountingCode'] or ""
+            )
+            finance_payment_method.save()
+            records_imported += 1
+
+        log_message = "Import payment methods: "
+        self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
+        logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
+
+    def _import_school_memberships(self):
+        """
+        Fetch school memberships and import it in Costasiella.
+        :param cursor: MySQL db cursor
+        :return: None
+        """
+        query = "SELECT * from school_memberships"
+        self.cursor.execute(query)
+        records = self.cursor.fetchall()
+
+        id_map = {}
+        records_imported = 0
+        for record in records:
+            organization_membership = m.OrganizationMembership(
+                archived=self._web2py_bool_to_python(record['Archived']),
+                display_public=self._web2py_bool_to_python(record['PublicMembership']),
+                display_shop=self._web2py_bool_to_python(record['PublicMembership']),
+                name=record['Name'],
+                description=record['Description'] or "",
+                price=record['Price'] or 0,
+                finance_tax_rate=self.tax_rates_map.get(record['tax_rates_id'], None),
+                validity=record['Validity'],
+                validity_unit=self.map_validity_units_cards_and_memberships.get(record['ValidityUnit']),
+                terms_and_conditions=record['Terms'] or "",
+                finance_glaccount=self.accounting_glaccounts_map.get(record['accounting_glaccounts_id'], None),
+                finance_costcenter=self.accounting_costcenters_map.get(record['accounting_costcenters_id'], None)
+            )
+            organization_membership.save()
+            records_imported += 1
+
+            id_map[record['id']] = organization_membership
+
+        log_message = "Import organization memberships: "
+        self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
+        logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
+
+        return id_map
+
+    def _import_school_classcards(self):
+        """
+        Fetch school classcards and import it in Costasiella.
+        :param cursor: MySQL db cursor
+        :return: None
+        """
+        query = "SELECT * from school_classcards"
+        self.cursor.execute(query)
+        records = self.cursor.fetchall()
+
+        map_validity_units = {
+            'days': 'DAYS',
+            'weeks': 'WEEKS',
+            'months': 'MONTHS'
+        }
+
+        id_map = {}
+        records_imported = 0
+        for record in records:
+            organization_classpass = m.OrganizationClasspass(
+                archived=self._web2py_bool_to_python(record['Archived']),
+                display_public=self._web2py_bool_to_python(record['PublicCard']),
+                display_shop=self._web2py_bool_to_python(record['PublicCard']),
+                trial_pass=self._web2py_bool_to_python(record['Trialcard']),
+                trial_times=record['TrialTimes'],
+                name=record['Name'],
+                description=record['Description'] or "",
+                price=record['Price'],
+                finance_tax_rate=self.tax_rates_map.get(record['tax_rates_id'], None),
+                validity=record['Validity'],
+                validity_unit=self.map_validity_units_cards_and_memberships.get(record['ValidityUnit']),
+                classes=record['Classes'] or 0,
+                unlimited=self._web2py_bool_to_python(record['Unlimited']),
+                organization_membership=self.school_memberships_map.get(record['school_memberships_id'], None),
+                quick_stats_amount=record['QuickStatsAmount'] or 0,
+                finance_glaccount=self.accounting_glaccounts_map.get(record['accounting_glaccounts_id'], None),
+                finance_costcenter=self.accounting_costcenters_map.get(record['accounting_costcenters_id'], None)
+            )
+            organization_classpass.save()
+            records_imported += 1
+
+            id_map[record['id']] = organization_classpass
+
+        log_message = "Import organization classpasses: "
+        self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
+        logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
+
+        return id_map
+
+    def _import_os_auth_user(self):
+        """
+        Fetch OpenStudio users
+        :param cursor: MySQL db cursor
+        :return:
+        """
+        query = "SELECT * from auth_user"
+        self.cursor.execute(query)
+        print(self.cursor.fetchone())
+        # print(self.cursor.fetchall())

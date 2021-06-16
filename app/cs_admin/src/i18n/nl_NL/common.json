@@ -227,7 +227,9 @@
         "export": "__STRING_NOT_TRANSLATED__",
         "category": "__STRING_NOT_TRANSLATED__",
         "sign_in": "__STRING_NOT_TRANSLATED__",
-        "injury": "__STRING_NOT_TRANSLATED__"
+        "injury": "__STRING_NOT_TRANSLATED__",
+        "priority": "__STRING_NOT_TRANSLATED__",
+        "display_public": "__STRING_NOT_TRANSLATED__"
     },
     "settings": {
         "error_loading": "__STRING_NOT_TRANSLATED__",
@@ -937,7 +939,6 @@
             "title": "__STRING_NOT_TRANSLATED__",
             "error_loading": "__STRING_NOT_TRANSLATED__",
             "empty_list": "__STRING_NOT_TRANSLATED__",
-            "empty_archive": "__STRING_NOT_TRANSLATED__",
             "add": "__STRING_NOT_TRANSLATED__"
         },
         "classpass_group_classpasses": {
@@ -946,7 +947,9 @@
         "classpasses": {
             "title": "__STRING_NOT_TRANSLATED__",
             "groups": {
-                "edit_passes": "__STRING_NOT_TRANSLATED__"
+                "edit_passes": "__STRING_NOT_TRANSLATED__",
+                "delete_confirm_msg": "__STRING_NOT_TRANSLATED__",
+                "deleted": "__STRING_NOT_TRANSLATED__"
             },
             "title_add": "__STRING_NOT_TRANSLATED__",
             "toast_add_success": "__STRING_NOT_TRANSLATED__",
@@ -1028,7 +1031,9 @@
         "subscriptions": {
             "title": "__STRING_NOT_TRANSLATED__",
             "groups": {
-                "edit_subscriptions": "__STRING_NOT_TRANSLATED__"
+                "edit_subscriptions": "__STRING_NOT_TRANSLATED__",
+                "delete_confirm_msg": "__STRING_NOT_TRANSLATED__",
+                "deleted": "__STRING_NOT_TRANSLATED__"
             },
             "title_add": "__STRING_NOT_TRANSLATED__",
             "toast_add_success": "__STRING_NOT_TRANSLATED__",
@@ -1088,7 +1093,6 @@
             "title": "__STRING_NOT_TRANSLATED__",
             "error_loading": "__STRING_NOT_TRANSLATED__",
             "empty_list": "__STRING_NOT_TRANSLATED__",
-            "empty_archive": "__STRING_NOT_TRANSLATED__",
             "add": "__STRING_NOT_TRANSLATED__"
         },
         "subscription_group_subscriptions": {
@@ -1119,6 +1123,22 @@
             "logo_email": "__STRING_NOT_TRANSLATED__",
             "logo_shop_header": "__STRING_NOT_TRANSLATED__",
             "logo_self_checkin": "__STRING_NOT_TRANSLATED__"
+        },
+        "announcements": {
+            "title": "__STRING_NOT_TRANSLATED__",
+            "toast_add_success": "__STRING_NOT_TRANSLATED__",
+            "display_public": "__STRING_NOT_TRANSLATED__",
+            "display_shop": "__STRING_NOT_TRANSLATED__",
+            "display_backend": "__STRING_NOT_TRANSLATED__",
+            "error_loading": "__STRING_NOT_TRANSLATED__",
+            "empty_list": "__STRING_NOT_TRANSLATED__",
+            "add": "__STRING_NOT_TRANSLATED__",
+            "content": "__STRING_NOT_TRANSLATED__",
+            "title_add": "__STRING_NOT_TRANSLATED__",
+            "toast_edit_success": "__STRING_NOT_TRANSLATED__",
+            "title_edit": "__STRING_NOT_TRANSLATED__",
+            "delete_confirm_msg": "__STRING_NOT_TRANSLATED__",
+            "deleted": "__STRING_NOT_TRANSLATED__"
         }
     },
     "validity": {

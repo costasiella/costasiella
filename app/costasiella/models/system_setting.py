@@ -5,8 +5,6 @@ from ..modules.encrypted_fields import EncryptedTextField
 
 
 class SystemSetting(models.Model):
-    # add additional fields in here
-
     setting = models.CharField(max_length=255)
     value = EncryptedTextField(default="")
 

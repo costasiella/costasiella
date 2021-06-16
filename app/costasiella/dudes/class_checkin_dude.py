@@ -219,7 +219,7 @@ class ClassCheckinDude:
 
         # Get groups for class pass
         group_ids = OrganizationClasspassGroupClasspass.objects.filter(
-            organization_classpass = organization_classpass
+            organization_classpass=organization_classpass
         ).values_list('organization_classpass_group__id', flat=True)
         # group_ids = []
         # for group in qs_groups:

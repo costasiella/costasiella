@@ -7,6 +7,7 @@ from .finance_glaccount import FinanceGLAccount
 from .finance_tax_rate import FinanceTaxRate
 # Create your models here.
 
+
 class OrganizationMembership(models.Model):
     VALIDITY_UNITS = (
         ("DAYS", _("Days")),
@@ -29,4 +30,3 @@ class OrganizationMembership(models.Model):
 
     def __str__(self):
         return self.name
-    

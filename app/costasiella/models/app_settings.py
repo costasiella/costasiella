@@ -3,6 +3,7 @@ from django.db import models
 
 from ..modules.encrypted_fields import EncryptedTextField
 
+
 class AppSettings(models.Model):
     # add additional fields in here
 
@@ -21,9 +22,4 @@ class AppSettings(models.Model):
     time_format = models.CharField(max_length=255, default="24", choices=TIME_FORMATS)
 
     def __str__(self):
-        return "system setting object"
-
-    # def save(self, *args, **kwargs):
-    #     name = [self.first_name, self.last_name]
-    #     self.full_name = " ".join(name)
-    #     super(Account, self).save(*args, **kwargs)
+        return "App setting object"

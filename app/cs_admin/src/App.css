@@ -29,6 +29,11 @@ table .btn {
   margin-left: 0.7rem;
 }
 
+/* Show error messages under <Editor> components */
+.invalid-feedback {
+  display: block;
+}
+
 /* Add missing xs column media definition */
 @media (max-width: 575px) {
   .col-xs-12 {

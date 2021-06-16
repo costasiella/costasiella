@@ -470,7 +470,9 @@
         "export": "Export",
         "category": "Category",
         "sign_in": "Sign in",
-        "injury": "Injury"
+        "injury": "Injury",
+        "priority": "Priority",
+        "display_public": "Public"
     },
     "yup": {
         "min_len_3": "Please input at least 3 characters",
@@ -502,7 +504,9 @@
             "empty_archive": "Class pass archive is empty",
             "add": "Add class pass",
             "groups": {
-                "edit_passes": "Passes in group"
+                "edit_passes": "Passes in group",
+                "delete_confirm_msg": "Are you sure you with to delete this group?",
+                "deleted": "Deleted group"
             },
             "trial_pass": "Trial"
         },
@@ -520,7 +524,6 @@
             "title": "Class pass groups",
             "error_loading": "Error loading class pass groups :(",
             "empty_list": "No class pass groups found",
-            "empty_archive": "Class pass groups archive is empty",
             "add": "Add class pass group"
         },
         "classtypes": {
@@ -620,7 +623,9 @@
             "empty_archive": "No subscriptions have been archived yet",
             "add": "Add subscription",
             "groups": {
-                "edit_subscriptions": "Subscriptions in group"
+                "edit_subscriptions": "Subscriptions in group",
+                "delete_confirm_msg": "Are you sure you wish to delete this subscriptions group?",
+                "deleted": "Deleted subscriptions group"
             }
         },
         "subscription": {
@@ -635,7 +640,6 @@
             "title": "Subscription groups",
             "error_loading": "Error loading subscription groups :(",
             "empty_list": "No subscription groups found",
-            "empty_archive": "No subscription groups have been archived yet",
             "add": "Add subscription group"
         },
         "subscription_group_subscriptions": {
@@ -721,6 +725,22 @@
             "logo_email": "Logo email",
             "logo_shop_header": "Logo shop header",
             "logo_self_checkin": "Logo self check-in"
+        },
+        "announcements": {
+            "title": "Announcements",
+            "toast_add_success": "Added announcement",
+            "display_public": "Display announcement",
+            "display_shop": "Show in shop home",
+            "display_backend": "Show in backend home",
+            "error_loading": "Error loading announcements... :(",
+            "empty_list": "No announcements have been created yet.",
+            "add": "Add announcement",
+            "content": "Announcement text",
+            "title_add": "Add announcement",
+            "toast_edit_success": "Saved",
+            "title_edit": "Edit announcement",
+            "delete_confirm_msg": "Are you sure you with to delete this announcement?",
+            "deleted": "Deleted announcement"
         }
     },
     "validity": {

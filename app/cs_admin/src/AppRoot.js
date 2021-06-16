@@ -75,6 +75,9 @@ import OrganizationHome from './components/organization/home/OrganizationHome'
 import OrganizationEdit from './components/organization/organization/OrganizationEdit'
 import OrganizationBranding from './components/organization/organization/branding/OrganizationBranding'
 import OrganizationBrandingEdit from './components/organization/organization/branding/OrganizationBrandingEdit'
+import OrganizationAnnouncements from './components/organization/announcements/OrganizationAnnouncements'
+import OrganizationAnnouncementAdd from './components/organization/announcements/OrganizationAnnouncementAdd'
+import OrganizationAnnouncementEdit from './components/organization/announcements/OrganizationAnnouncementEdit'
 import OrganizationAppointments from './components/organization/appointment_categories/appointments/OrganizationAppointments'
 import OrganizationAppointmentAdd from './components/organization/appointment_categories/appointments/OrganizationAppointmentAdd'
 import OrganizationAppointmentEdit from './components/organization/appointment_categories/appointments/OrganizationAppointmentEdit'
@@ -420,6 +423,9 @@ function AppRoot({ t }) {
             <PrivateRoute exact path="/organization/documents/:organization_id/:document_type" component={OrganizationListDocuments} />
             <PrivateRoute exact path="/organization/documents/:organization_id/:document_type/add" component={OrganizationDocumentAdd} />
             <PrivateRoute exact path="/organization/documents/:organization_id/:document_type/edit/:id" component={OrganizationDocumentEdit} />
+            <PrivateRoute exact path="/organization/announcements" component={OrganizationAnnouncements} />
+            <PrivateRoute exact path="/organization/announcements/add" component={OrganizationAnnouncementAdd} />
+            <PrivateRoute exact path="/organization/announcements/edit/:id" component={OrganizationAnnouncementEdit} />
             <PrivateRoute exact path="/organization/appointment_categories" component={OrganizationAppointmentCategories} />
             <PrivateRoute exact path="/organization/appointment_categories/add" component={OrganizationAppointmentCategoryAdd} />
             <PrivateRoute exact path="/organization/appointment_categories/edit/:id" component={OrganizationAppointmentCategoryEdit} />

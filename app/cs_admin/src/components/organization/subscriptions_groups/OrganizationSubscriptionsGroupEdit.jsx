@@ -33,7 +33,6 @@ const UPDATE_SUBSCRIPTION_GROUP = gql`
     updateOrganizationSubscriptionGroup(input: $input) {
       organizationSubscriptionGroup {
         id
-        name
       }
     }
   }
@@ -87,6 +86,7 @@ class OrganizationSubscriptionGroupEdit extends Component {
                           <Formik
                               initialValues={{ 
                                 name: initialData.name, 
+                                description: initialData.description,
                               }}
                               validationSchema={SUBSCRIPTION_GROUP_SCHEMA}
                               onSubmit={(values, { setSubmitting }) => {
@@ -97,9 +97,10 @@ class OrganizationSubscriptionGroupEdit extends Component {
                                     input: {
                                       id: match.params.id,
                                       name: values.name,
+                                      description: values.description,
                                     }
                                   }, refetchQueries: [
-                                      {query: GET_SUBSCRIPTION_GROUPS_QUERY, variables: {"archived": false }}
+                                      {query: GET_SUBSCRIPTION_GROUPS_QUERY}
                                   ]})
                                   .then(({ data }) => {
                                       console.log('got data', data)

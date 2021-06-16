@@ -31,25 +31,24 @@ class GQLOrganizationClasspassGroup(TestCase):
         self.variables_create = {
             "input": {
                 "name": "New classpassgroup",
+                "description": "Classpass group description"
             }
         }
         
         self.variables_update = {
             "input": {
                 "name": "Updated classpassgroup",
+                "description": "Updated description for group"
             }
         }
 
-        self.variables_archive = {
-            "input": {
-                "archived": True
-            }
+        self.variable_delete = {
+            "input": {}
         }
-
 
         self.classpassgroups_query = '''
-query OrganizationClasspassGroups($after: String, $before: String, $archived: Boolean) {
-  organizationClasspassGroups(first: 15, before: $before, after: $after, archived: $archived) {
+query OrganizationClasspassGroups($after: String, $before: String) {
+  organizationClasspassGroups(first: 15, before: $before, after: $after) {
     pageInfo {
       startCursor
       endCursor
@@ -59,8 +58,8 @@ query OrganizationClasspassGroups($after: String, $before: String, $archived: Bo
     edges {
       node {
         id
-        archived
         name
+        description
       }
     }
   }
@@ -71,8 +70,8 @@ query OrganizationClasspassGroups($after: String, $before: String, $archived: Bo
 query getOrganizationClasspassGroup($id: ID!) {
     organizationClasspassGroup(id:$id) {
       id
-      archived
       name
+      description
     }
   }
 '''
@@ -82,8 +81,8 @@ mutation CreateOrganizationClasspassGroup($input: CreateOrganizationClasspassGro
   createOrganizationClasspassGroup(input: $input) {
     organizationClasspassGroup {
       id
-      archived
       name
+      description
     }
   }
 }
@@ -94,20 +93,17 @@ mutation CreateOrganizationClasspassGroup($input: CreateOrganizationClasspassGro
     updateOrganizationClasspassGroup(input: $input) {
       organizationClasspassGroup {
         id
-        archived
         name
+        description
       }
     }
   }
 '''
 
-        self.classpassgroup_archive_mutation = '''
-mutation ArchiveOrganizationClasspassGroup($input: ArchiveOrganizationClasspassGroupInput!) {
-    archiveOrganizationClasspassGroup(input: $input) {
-        organizationClasspassGroup {
-        id
-        archived
-        }
+        self.classpassgroup_delete_mutation = '''
+mutation DeleteOrganizationClasspassGroup($input: DeleteOrganizationClasspassGroupInput!) {
+    deleteOrganizationClasspassGroup(input: $input) {
+        ok
     }
 }
 '''
@@ -116,47 +112,33 @@ mutation ArchiveOrganizationClasspassGroup($input: ArchiveOrganizationClasspassG
         # This is run after every test
         pass
 
-
     def test_query(self):
         """ Query list of classpassgroups """
         query = self.classpassgroups_query
         classpassgroup = f.OrganizationClasspassGroupFactory.create()
-        variables = {
-            "archived": False
-        }
 
-        executed = execute_test_client_api_query(query, self.admin_user, variables=variables)
+        executed = execute_test_client_api_query(query, self.admin_user)
         data = executed.get('data')
         item = data['organizationClasspassGroups']['edges'][0]['node']
         self.assertEqual(item['name'], classpassgroup.name)
-
-
+        self.assertEqual(item['description'], classpassgroup.description)
 
     def test_query_permission_denied(self):
         """ Query list of classpassgroups as user without permissions """
         query = self.classpassgroups_query
         classpassgroup = f.OrganizationClasspassGroupFactory.create()
 
-        variables = {
-            'archived': False
-        }
-
         # Create regular user
         user = f.RegularUserFactory.create()
-        executed = execute_test_client_api_query(query, user, variables=variables)
+        executed = execute_test_client_api_query(query, user)
         errors = executed.get('errors')
 
         self.assertEqual(errors[0]['message'], 'Permission denied!')
-
 
     def test_query_permission_granted(self):
         """ Query list of classpassgroups with view permission """
         query = self.classpassgroups_query
         classpassgroup = f.OrganizationClasspassGroupFactory.create()
-
-        variables = {
-            'archived': False
-        }
 
         # Create regular user
         user = f.RegularUserFactory.create()
@@ -164,24 +146,19 @@ mutation ArchiveOrganizationClasspassGroup($input: ArchiveOrganizationClasspassG
         user.user_permissions.add(permission)
         user.save()
 
-        executed = execute_test_client_api_query(query, user, variables=variables)
+        executed = execute_test_client_api_query(query, user)
         data = executed.get('data')
         item = data['organizationClasspassGroups']['edges'][0]['node']
         self.assertEqual(item['name'], classpassgroup.name)
-
 
     def test_query_anon_user(self):
         """ Query list of classpassgroups as anon user """
         query = self.classpassgroups_query
         classpassgroup = f.OrganizationClasspassGroupFactory.create()
-        variables = {
-            'archived': False
-        }
 
-        executed = execute_test_client_api_query(query, self.anon_user, variables=variables)
+        executed = execute_test_client_api_query(query, self.anon_user)
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Not logged in!')
-
 
     def test_query_one(self):
         """ Query one classpassgroup """   
@@ -194,10 +171,8 @@ mutation ArchiveOrganizationClasspassGroup($input: ArchiveOrganizationClasspassG
         query = self.classpassgroup_query
         executed = execute_test_client_api_query(query, self.admin_user, variables={"id": node_id})
         data = executed.get('data')
-        print(data)
         self.assertEqual(data['organizationClasspassGroup']['name'], classpassgroup.name)
-        self.assertEqual(data['organizationClasspassGroup']['archived'], classpassgroup.archived)
-
+        self.assertEqual(data['organizationClasspassGroup']['description'], classpassgroup.description)
 
     def test_query_one_anon_user(self):
         """ Deny permission for anon users Query one classpassgroup """   
@@ -207,7 +182,6 @@ mutation ArchiveOrganizationClasspassGroup($input: ArchiveOrganizationClasspassG
         executed = execute_test_client_api_query(query, self.anon_user, variables={"id": node_id})
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Not logged in!')
-
 
     def test_query_one_permission_denied(self):
         """ Permission denied message when user lacks authorization """   
@@ -220,7 +194,6 @@ mutation ArchiveOrganizationClasspassGroup($input: ArchiveOrganizationClasspassG
         executed = execute_test_client_api_query(query, user, variables={"id": node_id})
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Permission denied!')
-
 
     def test_query_one_permission_granted(self):
         """ Respond with data when user has permission """   
@@ -238,7 +211,6 @@ mutation ArchiveOrganizationClasspassGroup($input: ArchiveOrganizationClasspassG
         data = executed.get('data')
         self.assertEqual(data['organizationClasspassGroup']['name'], classpassgroup.name)
 
-
     def test_create_classpassgroup(self):
         """ Create a classpassgroup """
         query = self.classpassgroup_create_mutation
@@ -250,9 +222,10 @@ mutation ArchiveOrganizationClasspassGroup($input: ArchiveOrganizationClasspassG
             variables=variables
         )
         data = executed.get('data')
-        self.assertEqual(data['createOrganizationClasspassGroup']['organizationClasspassGroup']['name'], variables['input']['name'])
-        self.assertEqual(data['createOrganizationClasspassGroup']['organizationClasspassGroup']['archived'], False)
-
+        self.assertEqual(data['createOrganizationClasspassGroup']['organizationClasspassGroup']['name'],
+                         variables['input']['name'])
+        self.assertEqual(data['createOrganizationClasspassGroup']['organizationClasspassGroup']['description'],
+                         variables['input']['description'])
 
     def test_create_classpassgroup_add_to_schedule_item(self):
         """ Is the classpass group added to all schedule items on creation? """
@@ -267,18 +240,19 @@ mutation ArchiveOrganizationClasspassGroup($input: ArchiveOrganizationClasspassG
             variables=variables
         )
         data = executed.get('data')
-        self.assertEqual(data['createOrganizationClasspassGroup']['organizationClasspassGroup']['name'], variables['input']['name'])
-        self.assertEqual(data['createOrganizationClasspassGroup']['organizationClasspassGroup']['archived'], False)
-
+        self.assertEqual(data['createOrganizationClasspassGroup']['organizationClasspassGroup']['name'],
+                         variables['input']['name'])
+        self.assertEqual(data['createOrganizationClasspassGroup']['organizationClasspassGroup']['description'],
+                         variables['input']['description'])
 
         schedule_item_organization_classpass_group = models.ScheduleItemOrganizationClasspassGroup.objects.all().first()
         self.assertEqual(
-            to_global_id("OrganizationClasspassGroupNode", schedule_item_organization_classpass_group.organization_classpass_group.id),
+            to_global_id("OrganizationClasspassGroupNode",
+                         schedule_item_organization_classpass_group.organization_classpass_group.id),
             data['createOrganizationClasspassGroup']['organizationClasspassGroup']['id']
         )
         self.assertEqual(schedule_item_organization_classpass_group.shop_book, False)
         self.assertEqual(schedule_item_organization_classpass_group.attend, False)
-
 
     def test_create_classpassgroup_anon_user(self):
         """ Create a classpassgroup with anonymous user, check error message """
@@ -292,7 +266,6 @@ mutation ArchiveOrganizationClasspassGroup($input: ArchiveOrganizationClasspassG
         data = executed.get('data')
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Not logged in!')
-
 
     def test_create_classpassgroup_permission_granted(self):
         """ Create a classpassgroup with a user having the add permission """
@@ -311,9 +284,8 @@ mutation ArchiveOrganizationClasspassGroup($input: ArchiveOrganizationClasspassG
             variables=variables
         )
         data = executed.get('data')
-        self.assertEqual(data['createOrganizationClasspassGroup']['organizationClasspassGroup']['name'], variables['input']['name'])
-        self.assertEqual(data['createOrganizationClasspassGroup']['organizationClasspassGroup']['archived'], False)
-
+        self.assertEqual(data['createOrganizationClasspassGroup']['organizationClasspassGroup']['name'],
+                         variables['input']['name'])
 
     def test_create_classpassgroup_permission_denied(self):
         """ Create a classpassgroup with a user not having the add permission """
@@ -330,14 +302,12 @@ mutation ArchiveOrganizationClasspassGroup($input: ArchiveOrganizationClasspassG
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Permission denied!')
 
-
     def test_update_classpassgroup(self):
         """ Update a classpassgroup as admin user """
         query = self.classpassgroup_update_mutation
         classpassgroup = f.OrganizationClasspassGroupFactory.create()
         variables = self.variables_update
         variables['input']['id'] = to_global_id("OrganizationClasspassGroupNode", classpassgroup.pk)
-        
 
         executed = execute_test_client_api_query(
             query, 
@@ -345,9 +315,10 @@ mutation ArchiveOrganizationClasspassGroup($input: ArchiveOrganizationClasspassG
             variables=variables
         )
         data = executed.get('data')
-        self.assertEqual(data['updateOrganizationClasspassGroup']['organizationClasspassGroup']['name'], variables['input']['name'])
-        self.assertEqual(data['updateOrganizationClasspassGroup']['organizationClasspassGroup']['archived'], False)
-
+        self.assertEqual(data['updateOrganizationClasspassGroup']['organizationClasspassGroup']['name'],
+                         variables['input']['name'])
+        self.assertEqual(data['updateOrganizationClasspassGroup']['organizationClasspassGroup']['description'],
+                         variables['input']['description'])
 
     def test_update_classpassgroup_anon_user(self):
         """ Update a classpassgroup as anonymous user """
@@ -361,10 +332,8 @@ mutation ArchiveOrganizationClasspassGroup($input: ArchiveOrganizationClasspassG
             self.anon_user, 
             variables=variables
         )
-        data = executed.get('data')
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Not logged in!')
-
 
     def test_update_classpassgroup_permission_granted(self):
         """ Update a classpassgroup as user with permission """
@@ -384,9 +353,8 @@ mutation ArchiveOrganizationClasspassGroup($input: ArchiveOrganizationClasspassG
             variables=variables
         )
         data = executed.get('data')
-        self.assertEqual(data['updateOrganizationClasspassGroup']['organizationClasspassGroup']['name'], variables['input']['name'])
-        self.assertEqual(data['updateOrganizationClasspassGroup']['organizationClasspassGroup']['archived'], False)
-
+        self.assertEqual(data['updateOrganizationClasspassGroup']['organizationClasspassGroup']['name'],
+                         variables['input']['name'])
 
     def test_update_classpassgroup_permission_denied(self):
         """ Update a classpassgroup as user without permissions """
@@ -407,89 +375,63 @@ mutation ArchiveOrganizationClasspassGroup($input: ArchiveOrganizationClasspassG
         self.assertEqual(errors[0]['message'], 'Permission denied!')
 
 
-    def test_archive_classpassgroup(self):
-        """ Archive a classpassgroup """
-        query = self.classpassgroup_archive_mutation
+    def test_delete_classpassgroup(self):
+        """ Delete a classpassgroup """
+        query = self.classpassgroup_delete_mutation
         classpassgroup = f.OrganizationClasspassGroupFactory.create()
-        variables = self.variables_archive
+        variables = self.variable_delete
         variables['input']['id'] = to_global_id("OrganizationClasspassGroupNode", classpassgroup.pk)
 
         executed = execute_test_client_api_query(
-            query, 
-            self.admin_user, 
+            query,
+            self.admin_user,
             variables=variables
         )
         data = executed.get('data')
-        self.assertEqual(data['archiveOrganizationClasspassGroup']['organizationClasspassGroup']['archived'], variables['input']['archived'])
+        self.assertEqual(data['deleteOrganizationClasspassGroup']['ok'], True)
 
-
-    def test_archive_classpassgroup_remove_from_schedule_item_class(self):
-        """ Does archiving a classpassgroup remove it from a schedule item """
-        query = self.classpassgroup_archive_mutation
+    def test_delete_classpassgroup_remove_from_schedule_item_class(self):
+        """ Does deleting a classpassgroup remove it from a schedule item """
+        query = self.classpassgroup_delete_mutation
         schedule_item_classpassgroup = f.ScheduleItemOrganizationClasspassGroupAllowFactory.create()
         classpassgroup = schedule_item_classpassgroup.organization_classpass_group
-        variables = self.variables_archive
+        variables = self.variable_delete
         variables['input']['id'] = to_global_id("OrganizationClasspassGroupNode", classpassgroup.pk)
 
         executed = execute_test_client_api_query(
-            query, 
-            self.admin_user, 
+            query,
+            self.admin_user,
             variables=variables
         )
         data = executed.get('data')
-        self.assertEqual(data['archiveOrganizationClasspassGroup']['organizationClasspassGroup']['archived'], variables['input']['archived'])
+        self.assertEqual(data['deleteOrganizationClasspassGroup']['ok'], True)
 
         self.assertEqual(models.ScheduleItemOrganizationClasspassGroup.objects.filter(
-            id=schedule_item_classpassgroup.id).exists(), 
+            id=schedule_item_classpassgroup.id).exists(),
             False
         )
 
-
-    def test_unarchive_classpassgroup_add_to_schedule_item_class(self):
-        """ Does archiving a classpassgroup add it to a schedule item """
-        query = self.classpassgroup_archive_mutation
-        schedule_item = f.SchedulePublicWeeklyClassFactory.create()
+    def test_delete_classpassgroup_anon_user(self):
+        """ Delete a classpassgroup """
+        query = self.classpassgroup_delete_mutation
         classpassgroup = f.OrganizationClasspassGroupFactory.create()
-        variables = self.variables_archive
-        variables['input']['id'] = to_global_id("OrganizationClasspassGroupNode", classpassgroup.pk)
-        variables['input']['archived'] = False
-
-        executed = execute_test_client_api_query(
-            query, 
-            self.admin_user, 
-            variables=variables
-        )
-        data = executed.get('data')
-        self.assertEqual(data['archiveOrganizationClasspassGroup']['organizationClasspassGroup']['archived'], variables['input']['archived'])
-
-        self.assertEqual(models.ScheduleItemOrganizationClasspassGroup.objects.filter(
-            schedule_item=schedule_item).exists(), 
-            True
-        )
-
-
-    def test_archive_classpassgroup_anon_user(self):
-        """ Archive a classpassgroup """
-        query = self.classpassgroup_archive_mutation
-        classpassgroup = f.OrganizationClasspassGroupFactory.create()
-        variables = self.variables_archive
+        variables = self.variable_delete
         variables['input']['id'] = to_global_id("OrganizationClasspassGroupNode", classpassgroup.pk)
 
         executed = execute_test_client_api_query(
-            query, 
-            self.anon_user, 
+            query,
+            self.anon_user,
             variables=variables
         )
         data = executed.get('data')
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Not logged in!')
 
-
-    def test_archive_classpassgroup_permission_granted(self):
-        """ Allow archiving classpassgroups for users with permissions """
-        query = self.classpassgroup_archive_mutation
+    def test_delete_classpassgroup_permission_granted(self):
+        """ Allow deleting classpassgroups for users with permissions """
+        query = self.classpassgroup_delete_mutation
         classpassgroup = f.OrganizationClasspassGroupFactory.create()
-        variables = self.variables_archive
+        variables = self.variable_delete
         variables['input']['id'] = to_global_id("OrganizationClasspassGroupNode", classpassgroup.pk)
 
         # Create regular user
@@ -499,31 +441,27 @@ mutation ArchiveOrganizationClasspassGroup($input: ArchiveOrganizationClasspassG
         user.save()
 
         executed = execute_test_client_api_query(
-            query, 
+            query,
             user,
             variables=variables
         )
         data = executed.get('data')
-        self.assertEqual(data['archiveOrganizationClasspassGroup']['organizationClasspassGroup']['archived'], variables['input']['archived'])
+        self.assertEqual(data['deleteOrganizationClasspassGroup']['ok'], True)
 
-
-    def test_archive_classpassgroup_permission_denied(self):
-        """ Check archive classpassgroup permission denied error message """
-        query = self.classpassgroup_archive_mutation
+    def test_delete_classpassgroup_permission_denied(self):
+        """ Check delete classpassgroup permission denied error message """
+        query = self.classpassgroup_delete_mutation
         classpassgroup = f.OrganizationClasspassGroupFactory.create()
-        variables = self.variables_archive
+        variables = self.variable_delete
         variables['input']['id'] = to_global_id("OrganizationClasspassGroupNode", classpassgroup.pk)
 
         # Create regular user
         user = f.RegularUserFactory.create()
 
         executed = execute_test_client_api_query(
-            query, 
-            user, 
+            query,
+            user,
             variables=variables
         )
-        data = executed.get('data')
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Permission denied!')
-
-

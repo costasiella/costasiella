@@ -1,8 +1,8 @@
 import gql from "graphql-tag"
 
 export const GET_SUBSCRIPTION_GROUPS_QUERY = gql`
-  query OrganizationSubscriptionGroups($after: String, $before: String, $archived: Boolean) {
-    organizationSubscriptionGroups(first: 15, before: $before, after: $after, archived: $archived) {
+  query OrganizationSubscriptionGroups($after: String, $before: String) {
+    organizationSubscriptionGroups(first: 15, before: $before, after: $after) {
       pageInfo {
         startCursor
         endCursor
@@ -12,8 +12,8 @@ export const GET_SUBSCRIPTION_GROUPS_QUERY = gql`
       edges {
         node {
           id
-          archived
           name
+          description
         }
       }
     }
@@ -26,15 +26,15 @@ export const GET_SUBSCRIPTION_GROUP_QUERY = gql`
     organizationSubscriptionGroup(id:$id) {
       id
       name
-      archived
+      description
     }
   }
 `
 
 
 export const GET_SUBSCRIPTION_GROUP_PASSES_QUERY = gql`
-  query GetPassesAndGroupMembership($after: String, $before: String, $archived: Boolean, $id:ID!) {
-    organizationSubscriptions(first: 15, before: $before, after: $after, archived: $archived) {
+  query GetPassesAndGroupMembership($after: String, $before: String, $id:ID!) {
+    organizationSubscriptions(first: 15, before: $before, after: $after) {
       pageInfo {
         startCursor
         endCursor
@@ -51,6 +51,7 @@ export const GET_SUBSCRIPTION_GROUP_PASSES_QUERY = gql`
     organizationSubscriptionGroup(id: $id) {
       id
       name
+      description
       organizationSubscriptions {
         edges {
           node {
@@ -59,6 +60,14 @@ export const GET_SUBSCRIPTION_GROUP_PASSES_QUERY = gql`
           }
         }
       }
+    }
+  }
+`
+
+export const DELETE_SUBSCRIPTION_GROUP = gql`
+  mutation DeleteSubscriptionGroup($input: DeleteOrganizationSubscriptionGroupInput!) {
+    deleteOrganizationSubscriptionGroup(input: $input) {
+      ok
     }
   }
 `
