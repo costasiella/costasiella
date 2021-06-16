@@ -10,6 +10,7 @@ import validators
 from ..models import Account, AccountMembership, FinancePaymentMethod, OrganizationMembership
 from ..modules.gql_tools import require_login_and_permission, get_rid
 from ..modules.messages import Messages
+from ..dudes.sales_dude import SalesDude
 
 from sorl.thumbnail import get_thumbnail
 
@@ -69,7 +70,6 @@ class AccountMembershipQuery(graphene.ObjectType):
     account_memberships = DjangoFilterConnectionField(AccountMembershipNode)
     account_membership = graphene.relay.Node.Field(AccountMembershipNode)
 
-
     def resolve_account_memberships(self, info, account, **kwargs):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.view_accountmembership')
@@ -87,7 +87,6 @@ class CreateAccountMembership(graphene.relay.ClientIDMutation):
         finance_payment_method = graphene.ID(required=False, default_value="")
         date_start = graphene.types.datetime.Date(required=True)
         note = graphene.String(required=False, default_value="")
-        
 
     account_membership = graphene.Field(AccountMembershipNode)
 
@@ -99,23 +98,16 @@ class CreateAccountMembership(graphene.relay.ClientIDMutation):
         # Validate input
         result = validate_create_update_input(input, update=False)
 
-        #TODO: move this to sales dude and add invoice item reference
-
-        account_membership = AccountMembership(
+        sales_dude = SalesDude()
+        sales_result = sales_dude.sell_membership(
             account=result['account'],
             organization_membership=result['organization_membership'],
-            date_start=input['date_start'], 
+            date_start=input['date_start'],
+            create_invoice=True,
+            note=input['note']
         )
 
-        account_membership.set_date_end()
-
-        if 'note' in input:
-            account_membership.note = input['note']
-
-        if 'finance_payment_method' in result:
-            account_membership.finance_payment_method = result['finance_payment_method']
-
-        account_membership.save()
+        account_membership = sales_result['account_membership']
 
         return CreateAccountMembership(account_membership=account_membership)
 
@@ -135,7 +127,6 @@ class UpdateAccountMembership(graphene.relay.ClientIDMutation):
     def mutate_and_get_payload(self, root, info, **input):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.change_accountmembership')
-
     
         rid = get_rid(input['id'])
         account_membership = AccountMembership.objects.filter(id=rid.id).first()
@@ -156,7 +147,6 @@ class UpdateAccountMembership(graphene.relay.ClientIDMutation):
 
         if 'finance_payment_method' in result:
             account_membership.finance_payment_method = result['finance_payment_method']
-
         
         account_membership.save(force_update=True)
 
