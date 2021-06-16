@@ -29,20 +29,32 @@ class GQLOrganizationAnnouncement(TestCase):
 
         self.variables_create = {
             "input": {
-                "name": "New announcement",
+                "displayPublic": True,
+                "displayShop": True,
+                "displayBackend": True,
+                "title": "New announcement",
+                "content": "hello world",
+                "dateStart": "2020-01-01",
+                "dateEnd": "2999-12-31",
+                "priority": 1000
             }
         }
         
         self.variables_update = {
             "input": {
-                "name": "Updated announcement",
+                "displayPublic": True,
+                "displayShop": True,
+                "displayBackend": True,
+                "title": "New announcement",
+                "content": "hello world",
+                "dateStart": "2020-01-01",
+                "dateEnd": "2999-12-31",
+                "priority": 1000
             }
         }
 
-        self.variables_archive = {
-            "input": {
-                "archived": True
-            }
+        self.variables_delete = {
+            "input": {}
         }
 
         self.announcements_query = '''
@@ -92,6 +104,14 @@ class GQLOrganizationAnnouncement(TestCase):
     createOrganizationAnnouncement(input: $input) {
       organizationAnnouncement {
         id
+        displayPublic
+        displayShop
+        displayBackend
+        title
+        content
+        dateStart
+        dateEnd
+        priority
       }
     }
   }
@@ -102,6 +122,14 @@ class GQLOrganizationAnnouncement(TestCase):
     updateOrganizationAnnouncement(input: $input) {
       organizationAnnouncement {
         id
+        displayPublic
+        displayShop
+        displayBackend
+        title
+        content
+        dateStart
+        dateEnd
+        priority
       }
     }
   }
@@ -239,221 +267,234 @@ mutation DeleteOrganizationAnnouncement($input: DeleteOrganizationAnnouncementIn
         executed = execute_test_client_api_query(query, user, variables={"id": node_id})
         data = executed.get('data')
         self.assertEqual(data['organizationAnnouncement']['title'], announcement.title)
-    #
-    # def test_create_announcement(self):
-    #     """ Create a announcement """
-    #     query = self.announcement_create_mutation
-    #     variables = self.variables_create
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.admin_user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['createOrganizationAnnouncement']['organizationAnnouncement']['name'], variables['input']['name'])
-    #     self.assertEqual(data['createOrganizationAnnouncement']['organizationAnnouncement']['archived'], False)
-    #
-    #
-    # def test_create_announcement_anon_user(self):
-    #     """ Create a announcement with anonymous user, check error message """
-    #     query = self.announcement_create_mutation
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.anon_user,
-    #         variables=self.variables_create
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
-    #
-    #
-    # def test_create_announcement_permission_granted(self):
-    #     """ Create a announcement with a user having the add permission """
-    #     query = self.announcement_create_mutation
-    #     variables = self.variables_create
-    #
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename=self.permission_add)
-    #     user.user_permissions.add(permission)
-    #     user.save()
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['createOrganizationAnnouncement']['organizationAnnouncement']['name'], variables['input']['name'])
-    #     self.assertEqual(data['createOrganizationAnnouncement']['organizationAnnouncement']['archived'], False)
-    #
-    #
-    # def test_create_announcement_permission_denied(self):
-    #     """ Create a announcement with a user not having the add permission """
-    #     query = self.announcement_create_mutation
-    #
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=self.variables_create
-    #     )
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
-    #
-    #
-    # def test_update_announcement(self):
-    #     """ Update a announcement as admin user """
-    #     query = self.announcement_update_mutation
-    #     announcement = f.OrganizationAnnouncementFactory.create()
-    #     variables = self.variables_update
-    #     variables['input']['id'] = self.get_node_id_of_first_announcement()
-    #
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.admin_user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['updateOrganizationAnnouncement']['organizationAnnouncement']['name'], variables['input']['name'])
-    #     self.assertEqual(data['updateOrganizationAnnouncement']['organizationAnnouncement']['archived'], False)
-    #
-    #
-    # def test_update_announcement_anon_user(self):
-    #     """ Update a announcement as anonymous user """
-    #     query = self.announcement_update_mutation
-    #     announcement = f.OrganizationAnnouncementFactory.create()
-    #     variables = self.variables_update
-    #     variables['input']['id'] = self.get_node_id_of_first_announcement()
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.anon_user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
-    #
-    #
-    # def test_update_announcement_permission_granted(self):
-    #     """ Update a announcement as user with permission """
-    #     query = self.announcement_update_mutation
-    #     announcement = f.OrganizationAnnouncementFactory.create()
-    #     variables = self.variables_update
-    #     variables['input']['id'] = self.get_node_id_of_first_announcement()
-    #
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename=self.permission_change)
-    #     user.user_permissions.add(permission)
-    #     user.save()
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['updateOrganizationAnnouncement']['organizationAnnouncement']['name'], variables['input']['name'])
-    #     self.assertEqual(data['updateOrganizationAnnouncement']['organizationAnnouncement']['archived'], False)
-    #
-    #
-    # def test_update_announcement_permission_denied(self):
-    #     """ Update a announcement as user without permissions """
-    #     query = self.announcement_update_mutation
-    #     announcement = f.OrganizationAnnouncementFactory.create()
-    #     variables = self.variables_update
-    #     variables['input']['id'] = self.get_node_id_of_first_announcement()
-    #
-    #     user = f.RegularUserFactory.create()
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
-    #
-    #
-    # def test_archive_announcement(self):
-    #     """ Archive a announcement """
-    #     query = self.announcement_delete_mutation
-    #     announcement = f.OrganizationAnnouncementFactory.create()
-    #     variables = self.variables_archive
-    #     variables['input']['id'] = self.get_node_id_of_first_announcement()
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.admin_user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['archiveOrganizationAnnouncement']['organizationAnnouncement']['archived'], variables['input']['archived'])
-    #
-    #
-    # def test_archive_announcement_anon_user(self):
-    #     """ Archive a announcement """
-    #     query = self.announcement_delete_mutation
-    #     announcement = f.OrganizationAnnouncementFactory.create()
-    #     variables = self.variables_archive
-    #     variables['input']['id'] = self.get_node_id_of_first_announcement()
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.anon_user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
-    #
-    #
-    # def test_archive_announcement_permission_granted(self):
-    #     """ Allow archiving announcements for users with permissions """
-    #     query = self.announcement_delete_mutation
-    #     announcement = f.OrganizationAnnouncementFactory.create()
-    #     variables = self.variables_archive
-    #     variables['input']['id'] = self.get_node_id_of_first_announcement()
-    #
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename=self.permission_delete)
-    #     user.user_permissions.add(permission)
-    #     user.save()
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['archiveOrganizationAnnouncement']['organizationAnnouncement']['archived'], variables['input']['archived'])
-    #
-    #
-    # def test_archive_announcement_permission_denied(self):
-    #     """ Check archive announcement permission denied error message """
-    #     query = self.announcement_delete_mutation
-    #     announcement = f.OrganizationAnnouncementFactory.create()
-    #     variables = self.variables_archive
-    #     variables['input']['id'] = self.get_node_id_of_first_announcement()
-    #
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
-    #
-    #
+
+    def test_create_announcement(self):
+        """ Create a announcement """
+        query = self.announcement_create_mutation
+        variables = self.variables_create
+
+        executed = execute_test_client_api_query(
+            query,
+            self.admin_user,
+            variables=variables
+        )
+        data = executed.get('data')
+
+        self.assertEqual(data['createOrganizationAnnouncement']['organizationAnnouncement']['displayPublic'],
+                         variables['input']['displayPublic'])
+        self.assertEqual(data['createOrganizationAnnouncement']['organizationAnnouncement']['displayShop'],
+                         variables['input']['displayShop'])
+        self.assertEqual(data['createOrganizationAnnouncement']['organizationAnnouncement']['displayBackend'],
+                         variables['input']['displayBackend'])
+        self.assertEqual(data['createOrganizationAnnouncement']['organizationAnnouncement']['title'],
+                         variables['input']['title'])
+        self.assertEqual(data['createOrganizationAnnouncement']['organizationAnnouncement']['content'],
+                         variables['input']['content'])
+        self.assertEqual(data['createOrganizationAnnouncement']['organizationAnnouncement']['dateStart'],
+                         variables['input']['dateStart'])
+        self.assertEqual(data['createOrganizationAnnouncement']['organizationAnnouncement']['dateEnd'],
+                         variables['input']['dateEnd'])
+        self.assertEqual(data['createOrganizationAnnouncement']['organizationAnnouncement']['priority'],
+                         variables['input']['priority'])
+
+    def test_create_announcement_anon_user(self):
+        """ Create a announcement with anonymous user, check error message """
+        query = self.announcement_create_mutation
+
+        executed = execute_test_client_api_query(
+            query,
+            self.anon_user,
+            variables=self.variables_create
+        )
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
+
+    def test_create_announcement_permission_granted(self):
+        """ Create a announcement with a user having the add permission """
+        query = self.announcement_create_mutation
+        variables = self.variables_create
+
+        # Create regular user
+        user = f.RegularUserFactory.create()
+        permission = Permission.objects.get(codename=self.permission_add)
+        user.user_permissions.add(permission)
+        user.save()
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['createOrganizationAnnouncement']['organizationAnnouncement']['title'],
+                         variables['input']['title'])
+
+    def test_create_announcement_permission_denied(self):
+        """ Create a announcement with a user not having the add permission """
+        query = self.announcement_create_mutation
+
+        # Create regular user
+        user = f.RegularUserFactory.create()
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=self.variables_create
+        )
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
+
+    def test_update_announcement(self):
+        """ Update a announcement as admin user """
+        query = self.announcement_update_mutation
+        announcement = f.OrganizationAnnouncementFactory.create()
+        variables = self.variables_update
+        variables['input']['id'] = to_global_id("OrganizationAnnouncementNode", announcement.id)
+
+        executed = execute_test_client_api_query(
+            query,
+            self.admin_user,
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['updateOrganizationAnnouncement']['organizationAnnouncement']['displayPublic'],
+                         variables['input']['displayPublic'])
+        self.assertEqual(data['updateOrganizationAnnouncement']['organizationAnnouncement']['displayShop'],
+                         variables['input']['displayShop'])
+        self.assertEqual(data['updateOrganizationAnnouncement']['organizationAnnouncement']['displayBackend'],
+                         variables['input']['displayBackend'])
+        self.assertEqual(data['updateOrganizationAnnouncement']['organizationAnnouncement']['title'],
+                         variables['input']['title'])
+        self.assertEqual(data['updateOrganizationAnnouncement']['organizationAnnouncement']['content'],
+                         variables['input']['content'])
+        self.assertEqual(data['updateOrganizationAnnouncement']['organizationAnnouncement']['dateStart'],
+                         variables['input']['dateStart'])
+        self.assertEqual(data['updateOrganizationAnnouncement']['organizationAnnouncement']['dateEnd'],
+                         variables['input']['dateEnd'])
+        self.assertEqual(data['updateOrganizationAnnouncement']['organizationAnnouncement']['priority'],
+                         variables['input']['priority'])
+
+    def test_update_announcement_anon_user(self):
+        """ Update a announcement as anonymous user """
+        query = self.announcement_update_mutation
+        announcement = f.OrganizationAnnouncementFactory.create()
+        variables = self.variables_update
+        variables['input']['id'] = to_global_id("OrganizationAnnouncementNode", announcement.id)
+
+        executed = execute_test_client_api_query(
+            query,
+            self.anon_user,
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
+
+    def test_update_announcement_permission_granted(self):
+        """ Update a announcement as user with permission """
+        query = self.announcement_update_mutation
+        announcement = f.OrganizationAnnouncementFactory.create()
+        variables = self.variables_update
+        variables['input']['id'] = to_global_id("OrganizationAnnouncementNode", announcement.id)
+
+        user = f.RegularUserFactory.create()
+        permission = Permission.objects.get(codename=self.permission_change)
+        user.user_permissions.add(permission)
+        user.save()
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['updateOrganizationAnnouncement']['organizationAnnouncement']['title'],
+                         variables['input']['title'])
+
+    def test_update_announcement_permission_denied(self):
+        """ Update a announcement as user without permissions """
+        query = self.announcement_update_mutation
+        announcement = f.OrganizationAnnouncementFactory.create()
+        variables = self.variables_update
+        variables['input']['id'] = to_global_id("OrganizationAnnouncementNode", announcement.id)
+
+        user = f.RegularUserFactory.create()
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
+
+    def test_delete_announcement(self):
+        """ Delete an announcement """
+        query = self.announcement_delete_mutation
+        announcement = f.OrganizationAnnouncementFactory.create()
+        variables = self.variables_delete
+        variables['input']['id'] = to_global_id("OrganizationAnnouncementNode", announcement.id)
+
+        executed = execute_test_client_api_query(
+            query,
+            self.admin_user,
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['deleteOrganizationAnnouncement']['ok'], True)
+
+    def test_delete_announcement_anon_user(self):
+        """ Anon users can't delete an announcement """
+        query = self.announcement_delete_mutation
+        announcement = f.OrganizationAnnouncementFactory.create()
+        variables = self.variables_delete
+        variables['input']['id'] = to_global_id("OrganizationAnnouncementNode", announcement.id)
+
+        executed = execute_test_client_api_query(
+            query,
+            self.anon_user,
+            variables=variables
+        )
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
+
+    def test_delete_announcement_permission_granted(self):
+        """ Allow deleting announcements for users with permissions """
+        query = self.announcement_delete_mutation
+        announcement = f.OrganizationAnnouncementFactory.create()
+        variables = self.variables_delete
+        variables['input']['id'] = to_global_id("OrganizationAnnouncementNode", announcement.id)
+
+        # Create regular user
+        user = f.RegularUserFactory.create()
+        permission = Permission.objects.get(codename=self.permission_delete)
+        user.user_permissions.add(permission)
+        user.save()
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['deleteOrganizationAnnouncement']['ok'], True)
+
+    def test_archive_announcement_permission_denied(self):
+        """ Check archive announcement permission denied error message """
+        query = self.announcement_delete_mutation
+        announcement = f.OrganizationAnnouncementFactory.create()
+        variables = self.variables_delete
+        variables['input']['id'] = to_global_id("OrganizationAnnouncementNode", announcement.id)
+
+        # Create regular user
+        user = f.RegularUserFactory.create()
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')

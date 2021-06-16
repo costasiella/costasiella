@@ -161,7 +161,7 @@ class DeleteOrganizationAnnouncement(graphene.relay.ClientIDMutation):
     @classmethod
     def mutate_and_get_payload(self, root, info, **input):
         user = info.context.user
-        require_login_and_permission(user, 'costasiella.delete_scheduleitemprice')
+        require_login_and_permission(user, 'costasiella.delete_organizationannouncement')
 
         rid = get_rid(input['id'])
         organization_announcement = OrganizationAnnouncement.objects.filter(id=rid.id).first()
