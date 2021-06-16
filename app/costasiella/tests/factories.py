@@ -291,8 +291,8 @@ class OrganizationClasspassGroupFactory(factory.DjangoModelFactory):
     class Meta:
         model = models.OrganizationClasspassGroup
 
-    archived = False
     name = "First class pass group"
+    description = "Description of classpass group here"
 
 
 class OrganizationClasspassGroupClasspassFactory(factory.DjangoModelFactory):
@@ -349,8 +349,8 @@ class OrganizationSubscriptionGroupFactory(factory.DjangoModelFactory):
     class Meta:
         model = models.OrganizationSubscriptionGroup
 
-    archived = False
     name = "First subscription group"
+    description = "Description here"
 
 
 class OrganizationSubscriptionGroupSubscriptionFactory(factory.DjangoModelFactory):
