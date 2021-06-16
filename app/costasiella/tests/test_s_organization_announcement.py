@@ -179,60 +179,66 @@ mutation DeleteOrganizationAnnouncement($input: DeleteOrganizationAnnouncementIn
         data = executed.get('data')
         self.assertEqual(len(data['organizationAnnouncements']['edges']), 0)
 
-    # def test_query_one(self):
-    #     """ Query one announcement """
-    #     announcement = f.OrganizationAnnouncementFactory.create()
-    #
-    #     # First query announcements to get node id easily
-    #     node_id = self.get_node_id_of_first_announcement()
-    #
-    #     # Now query single announcement and check
-    #     query = self.announcement_query
-    #     executed = execute_test_client_api_query(query, self.admin_user, variables={"id": node_id})
-    #     data = executed.get('data')
-    #     self.assertEqual(data['organizationAnnouncement']['name'], announcement.name)
-    #     self.assertEqual(data['organizationAnnouncement']['archived'], announcement.archived)
-    #
-    # def test_query_one_anon_user(self):
-    #     """ Deny permission to view archived announcements for anon users Query one announcement """
-    #     query = self.announcement_query
-    #     announcement = f.OrganizationAnnouncementFactory.create()
-    #     announcement.archived = True
-    #     announcement.save()
-    #     node_id = to_global_id("OrganizationAnnouncementNode", announcement.id)
-    #     executed = execute_test_client_api_query(query, self.anon_user, variables={"id": node_id})
-    #     data = executed.get('data')
-    #     self.assertEqual(data['organizationAnnouncement'], None)
-    #
-    # def test_query_one_archived_without_permission(self):
-    #     """ None returned when user lacks authorization to view archived announcements """
-    #     query = self.announcement_query
-    #
-    #     user = f.RegularUserFactory.create()
-    #     announcement = f.OrganizationAnnouncementFactory.create()
-    #     announcement.archived = True
-    #     announcement.save()
-    #     node_id = to_global_id("OrganizationAnnouncementNode", announcement.id)
-    #
-    #     executed = execute_test_client_api_query(query, user, variables={"id": node_id})
-    #     data = executed.get('data')
-    #     self.assertEqual(data['organizationAnnouncement'], None)
-    #
-    # def test_query_one_permission_granted(self):
-    #     """ Respond with data when user has permission """
-    #     query = self.announcement_query
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename='view_organizationannouncement')
-    #     user.user_permissions.add(permission)
-    #     user.save()
-    #
-    #     announcement = f.OrganizationAnnouncementFactory.create()
-    #     node_id = self.get_node_id_of_first_announcement()
-    #
-    #     executed = execute_test_client_api_query(query, user, variables={"id": node_id})
-    #     data = executed.get('data')
-    #     self.assertEqual(data['organizationAnnouncement']['name'], announcement.name)
+    def test_query_one(self):
+        """ Query one announcement """
+        announcement = f.OrganizationAnnouncementFactory.create()
+
+        # First query announcements to get node id easily
+        node_id = to_global_id("OrganizationAnnouncementNode", announcement.id)
+
+        # Now query single announcement and check
+        query = self.announcement_query
+        executed = execute_test_client_api_query(query, self.admin_user, variables={"id": node_id})
+        data = executed.get('data')
+        self.assertEqual(data['organizationAnnouncement']['displayPublic'], announcement.display_public)
+        self.assertEqual(data['organizationAnnouncement']['displayShop'], announcement.display_shop)
+        self.assertEqual(data['organizationAnnouncement']['displayBackend'], announcement.display_backend)
+        self.assertEqual(data['organizationAnnouncement']['title'], announcement.title)
+        self.assertEqual(data['organizationAnnouncement']['content'], announcement.content)
+        self.assertEqual(data['organizationAnnouncement']['dateStart'], str(announcement.date_start))
+        self.assertEqual(data['organizationAnnouncement']['dateEnd'], str(announcement.date_end))
+        self.assertEqual(data['organizationAnnouncement']['priority'], announcement.priority)
+
+    def test_query_one_anon_user(self):
+        """ Deny permission to view archived announcements for anon users Query one announcement """
+        query = self.announcement_query
+        announcement = f.OrganizationAnnouncementFactory.create()
+        announcement.display_public = False
+        announcement.save()
+        node_id = to_global_id("OrganizationAnnouncementNode", announcement.id)
+        executed = execute_test_client_api_query(query, self.anon_user, variables={"id": node_id})
+        data = executed.get('data')
+        self.assertEqual(data['organizationAnnouncement'], None)
+
+    def test_query_one_non_public_without_permission(self):
+        """ None returned when user lacks authorization to view archived announcements """
+        query = self.announcement_query
+
+        user = f.RegularUserFactory.create()
+        announcement = f.OrganizationAnnouncementFactory.create()
+        announcement.display_public = False
+        announcement.save()
+        node_id = to_global_id("OrganizationAnnouncementNode", announcement.id)
+
+        executed = execute_test_client_api_query(query, user, variables={"id": node_id})
+        data = executed.get('data')
+        self.assertEqual(data['organizationAnnouncement'], None)
+
+    def test_query_one_permission_granted(self):
+        """ Respond with data when user has permission """
+        query = self.announcement_query
+        # Create regular user
+        user = f.RegularUserFactory.create()
+        permission = Permission.objects.get(codename='view_organizationannouncement')
+        user.user_permissions.add(permission)
+        user.save()
+
+        announcement = f.OrganizationAnnouncementFactory.create()
+        node_id = to_global_id("OrganizationAnnouncementNode", announcement.id)
+
+        executed = execute_test_client_api_query(query, user, variables={"id": node_id})
+        data = executed.get('data')
+        self.assertEqual(data['organizationAnnouncement']['title'], announcement.title)
     #
     # def test_create_announcement(self):
     #     """ Create a announcement """
