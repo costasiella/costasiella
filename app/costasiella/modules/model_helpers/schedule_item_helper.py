@@ -17,9 +17,7 @@ class ScheduleItemHelper:
         """
         Add all non-archived subscription groups to this schedule item
         """
-        groups = OrganizationSubscriptionGroup.objects.filter(
-            archived=False
-        )
+        groups = OrganizationSubscriptionGroup.objects.all()
 
         for group in groups:
             schedule_item_subscription_group = ScheduleItemOrganizationSubscriptionGroup(
@@ -31,10 +29,7 @@ class ScheduleItemHelper:
         """
         Add all non-archived classpass groups to this schedule item
         """
-        groups = OrganizationClasspassGroup.objects.filter(
-            archived=False
-        )
-
+        groups = OrganizationClasspassGroup.objects.all()
         for group in groups:
             schedule_item_classpass_group = ScheduleItemOrganizationClasspassGroup(
                 schedule_item=ScheduleItem.objects.get(id=schedule_item_id),
