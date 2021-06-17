@@ -4,7 +4,7 @@
 name: Django CI
 
 # Trigger on every push on every branch
-on: [push]
+on: [push, pull_request]
 
 jobs:
   build:
