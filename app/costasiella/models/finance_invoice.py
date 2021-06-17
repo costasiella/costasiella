@@ -237,7 +237,7 @@ class FinanceInvoice(models.Model):
             account_membership=account_membership,
             line_number=self._get_item_next_line_nr(),
             product_name=_('Membership'),
-            description=_('Membership %s\n%s' % (str(account_membership.pk), organization_membership.name)),
+            description=organization_membership.name,
             quantity=1,
             price=organization_membership.price,
             finance_tax_rate=organization_membership.finance_tax_rate,
