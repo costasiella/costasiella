@@ -17,7 +17,7 @@ import {
 const SettingsShopFeaturesForm = ({ t, history, isSubmitting, errors, values, return_url }) => (
   <FoForm>
       <Card.Body>
-        <Form.Group>
+        {/* <Form.Group>
           <Form.Label className="custom-switch">
               <Field 
               className="custom-switch-input"
@@ -28,7 +28,7 @@ const SettingsShopFeaturesForm = ({ t, history, isSubmitting, errors, values, re
               <span className="custom-switch-description">{t('general.memberships')}</span>
           </Form.Label>
           <ErrorMessage name="memberships" component="div" />   
-        </Form.Group>  
+        </Form.Group>   */}
         <Form.Group>
           <Form.Label className="custom-switch">
               <Field 
