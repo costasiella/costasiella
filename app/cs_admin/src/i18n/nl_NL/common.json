@@ -229,7 +229,9 @@
         "sign_in": "__STRING_NOT_TRANSLATED__",
         "injury": "__STRING_NOT_TRANSLATED__",
         "priority": "__STRING_NOT_TRANSLATED__",
-        "display_public": "__STRING_NOT_TRANSLATED__"
+        "display_public": "__STRING_NOT_TRANSLATED__",
+        "memberships": "__STRING_NOT_TRANSLATED__",
+        "events": "__STRING_NOT_TRANSLATED__"
     },
     "settings": {
         "error_loading": "__STRING_NOT_TRANSLATED__",

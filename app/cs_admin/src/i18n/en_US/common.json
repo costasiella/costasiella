@@ -472,7 +472,9 @@
         "sign_in": "Sign in",
         "injury": "Injury",
         "priority": "Priority",
-        "display_public": "Public"
+        "display_public": "Public",
+        "memberships": "Memberships",
+        "events": "Events"
     },
     "yup": {
         "min_len_3": "Please input at least 3 characters",
@@ -1572,7 +1574,7 @@
         "shop": {
             "title": "Shop",
             "features": {
-                "title": "Features",
+                "title": "Shop features",
                 "explanation": "Choose which shop features to use"
             }
         }
@@ -1698,7 +1700,7 @@
         "home": {
             "title": "Home",
             "announcements": {
-                "error_loading": "__STRING_NOT_TRANSLATED__"
+                "error_loading": "Error loading home messages... :("
             }
         },
         "classpasses": {
