@@ -120,7 +120,7 @@ if 'GITHUB_WORKFLOW' in os.environ:
             'ENGINE': 'django.db.backends.mysql',
             'NAME': 'cs_test',
             'USER': 'root',
-            'PASSWORD': '',
+            'PASSWORD': 'root',
             'HOST': '127.0.0.1',
             'PORT': 3306
         }
