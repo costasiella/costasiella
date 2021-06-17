@@ -11,6 +11,11 @@ jobs:
 
     runs-on: ubuntu-20.04
     
+    env:
+      DB_DATABASE: cs_test
+      DB_USER: root
+      DB_PASSWORD: root
+    
 #     services:
 #       mysql:
 #           image: mysql:8.0
@@ -34,6 +39,8 @@ jobs:
     # https://github.blog/changelog/2020-02-21-github-actions-breaking-change-ubuntu-virtual-environments-will-no-longer-start-the-mysql-service-automatically/
     - name: Start MySQL
       run: sudo systemctl start mysql.service
+    - name: Create test DB
+      run: mysql -e 'CREATE DATABASE ${{ env.DB_DATABASE }};' -u${{ env.DB_USER }} -p${{ env.DB_PASSWORD }}
     - name: Run migrations
       run: python app/manage.py migrate
     - name: Run tests
