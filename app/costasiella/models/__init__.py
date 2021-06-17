@@ -70,5 +70,6 @@ from .schedule_item_price import ScheduleItemPrice
 from .schedule_item_weekly_otc import ScheduleItemWeeklyOTC
 from .schedule_event_media import ScheduleEventMedia
 
+from .system_feature_shop import SystemFeatureShop
 from .system_mail_template import SystemMailTemplate
 from .system_setting import SystemSetting

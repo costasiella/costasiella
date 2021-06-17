@@ -10,7 +10,7 @@ import 'react-toastify/dist/ReactToastify.css'
 import 'react-confirm-alert/src/react-confirm-alert.css'
 import { Link } from 'react-router-dom'
 
-import GET_USER from "../queries/system/get_user"
+import { GET_SHOP_FEATURES_QUERY } from "../components/settings/shop/features/queries"
 import OrganizationContext from './context/OrganizationContext'
 import CSLS from "../tools/cs_local_storage"
 import { get_all_permissions, has_permission } from "../tools/user_tools"
@@ -53,9 +53,35 @@ type navItem = {|
 |};
 
 
-const getNavBarItems = (t, user) => {
+const getNavBarItems = (t, loading, error, data) => {
+  const shopFeatures = data.systemFeatureShop
+
   let items: Array<navItem> = []
   // let permissions = get_all_permissions(user)
+
+  if (loading) {
+    items.push({
+      value: t("general.loading"),
+      to: "/",
+      icon: "",
+      LinkComponent: withRouter(NavLink),
+      useExact: true, 
+    })
+
+    return items
+  }
+
+  if (error) {
+    items.push({
+      value: t("general.error_sad_smiley"),
+      to: "/",
+      icon: "",
+      LinkComponent: withRouter(NavLink),
+      useExact: true, 
+    })
+
+    return items
+  }
 
   items.push({
     value: t("shop.home.title"),
@@ -65,37 +91,46 @@ const getNavBarItems = (t, user) => {
     useExact: true,
   })
 
-  items.push({
-    value: t("shop.subscriptions.title"),
-    to: "/shop/subscriptions",
-    icon: "edit",
-    LinkComponent: withRouter(NavLink),
-    useExact: true,
-  })
 
-  items.push({
-    value: t("shop.classpasses.title"),
-    to: "/shop/classpasses",
-    icon: "credit-card",
-    LinkComponent: withRouter(NavLink),
-    useExact: true,
-  })
+  if (shopFeatures.subscriptions) {
+    items.push({
+      value: t("shop.subscriptions.title"),
+      to: "/shop/subscriptions",
+      icon: "edit",
+      LinkComponent: withRouter(NavLink),
+      useExact: true,
+    })
+  }
 
-  items.push({
-    value: t("shop.classes.title"),
-    to: "/shop/classes",
-    icon: "book",
-    LinkComponent: withRouter(NavLink),
-    useExact: true,
-  })
+  if (shopFeatures.classpasses) {
+    items.push({
+      value: t("shop.classpasses.title"),
+      to: "/shop/classpasses",
+      icon: "credit-card",
+      LinkComponent: withRouter(NavLink),
+      useExact: true,
+    })
+  }
 
-  items.push({
-    value: t("shop.events.title"),
-    to: "/shop/events",
-    icon: "calendar",
-    LinkComponent: withRouter(NavLink),
-    useExact: true,
-  })
+  if (shopFeatures.classes) {
+    items.push({
+      value: t("shop.classes.title"),
+      to: "/shop/classes",
+      icon: "book",
+      LinkComponent: withRouter(NavLink),
+      useExact: true,
+    })
+  }
+
+  if (shopFeatures.events) {
+    items.push({
+      value: t("shop.events.title"),
+      to: "/shop/events",
+      icon: "calendar",
+      LinkComponent: withRouter(NavLink),
+      useExact: true,
+    })
+  }
 
   items.push({
     value: t("shop.contact.title"),
@@ -140,6 +175,7 @@ function getHeaderImageUrl(organization) {
 const now = new Date()
 
 function SiteWrapperShop({t, match, history, children}) {
+  const { loading, error, data } = useQuery(GET_SHOP_FEATURES_QUERY)
   const organization = useContext(OrganizationContext)
   console.log(organization)
   // const { error, loading, data, fetchMore } = useQuery(GET_USER)
@@ -147,7 +183,6 @@ function SiteWrapperShop({t, match, history, children}) {
   // if (loading) return <p>{t('general.loading_with_dots')}</p>;
   // if (error) return <p>{t('system.user.error_loading')}</p>; 
 
-  const data = ""
   console.log(data)
 
   const headerImageUrl = getHeaderImageUrl(organization)
@@ -209,7 +244,7 @@ function SiteWrapperShop({t, match, history, children}) {
         // },
         }}
         // navProps={{ itemsObjects: navBarItems }}
-        navProps={{ itemsObjects: getNavBarItems(t, data.user) }}
+        navProps={{ itemsObjects: getNavBarItems(t, loading, error, data) }}
         routerContextComponentType={withRouter(RouterContextProvider)}
         footerProps={{
           // links: [

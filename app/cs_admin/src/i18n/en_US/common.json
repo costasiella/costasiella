@@ -472,7 +472,9 @@
         "sign_in": "Sign in",
         "injury": "Injury",
         "priority": "Priority",
-        "display_public": "Public"
+        "display_public": "Public",
+        "memberships": "Memberships",
+        "events": "Events"
     },
     "yup": {
         "min_len_3": "Please input at least 3 characters",
@@ -1568,6 +1570,13 @@
             },
             "workflow_class_book_days_advance": "Number of days in advance customers will be able to book classes",
             "workflow_class_cancel_until": "Number of hours before a class starts a booking can be cancelled while returning credit"
+        },
+        "shop": {
+            "title": "Shop",
+            "features": {
+                "title": "Shop features",
+                "explanation": "Choose which shop features to use"
+            }
         }
     },
     "user": {
@@ -1690,7 +1699,9 @@
     "shop": {
         "home": {
             "title": "Home",
-            "welcome": "Welcome"
+            "announcements": {
+                "error_loading": "Error loading home messages... :("
+            }
         },
         "classpasses": {
             "error_loading": "Error loading class passes :(",

@@ -82,6 +82,7 @@ from .schedule_item_price import ScheduleItemPriceQuery, ScheduleItemPriceMutati
 from .schedule_item_teacher import ScheduleItemTeacherQuery, ScheduleItemTeacherMutation
 from .schedule_item_teacher_available import ScheduleItemTeacherAvailableQuery, ScheduleItemTeacherAvailableMutation
 
+from .system_feature_shop import SystemFeatureShopQuery, SystemFeatureShopMutation
 from .system_mail_template import SystemMailTemplateQuery, SystemMailTemplateMutation
 from .system_setting import SystemSettingQuery, SystemSettingMutation
 
@@ -154,6 +155,7 @@ class Query(AccountQuery,
             ScheduleItemPriceQuery,
             ScheduleItemTeacherQuery,
             ScheduleItemTeacherAvailableQuery,
+            SystemFeatureShopQuery,
             SystemMailTemplateQuery,
             SystemSettingQuery,
             graphene.ObjectType):
@@ -223,6 +225,7 @@ class Mutation(AccountMutation,
                ScheduleItemPriceMutation,
                ScheduleItemTeacherMutation,
                ScheduleItemTeacherAvailableMutation,
+               SystemFeatureShopMutation,
                SystemMailTemplateMutation,
                SystemSettingMutation,
                graphene.ObjectType):

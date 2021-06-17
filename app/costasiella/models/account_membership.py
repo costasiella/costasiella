@@ -1,9 +1,10 @@
 from django.db import models
 
-
 from .account import Account
 from .organization_membership import OrganizationMembership
 from .finance_payment_method import FinancePaymentMethod
+
+from .helpers import model_string
 
 
 class AccountMembership(models.Model):
@@ -22,7 +23,7 @@ class AccountMembership(models.Model):
     updated_at = models.DateTimeField(auto_now=True, editable=False)
 
     def __str__(self):
-        return self.organization_membership.name + ' [' + unicode(date_start) + ']'
+        return model_string(self)
 
     def set_date_end(self):
         """

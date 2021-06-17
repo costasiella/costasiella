@@ -1,0 +1,13 @@
+[
+  {
+    "model": "costasiella.SystemFeatureShop",
+    "pk": 1,
+    "fields": {
+      "memberships": true,
+      "subscriptions": true,
+      "classpasses": true,
+      "classes": true,
+      "events": true
+    }
+  }
+]

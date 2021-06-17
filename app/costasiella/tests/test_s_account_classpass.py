@@ -16,7 +16,6 @@ from .. import models
 from .. import schema
 
 
-
 class GQLAccountClasspass(TestCase):
     # https://docs.djangoproject.com/en/2.1/topics/testing/overview/
     fixtures = ['finance_invoice_group.json', 'finance_invoice_group_defaults.json']
@@ -250,7 +249,6 @@ class GQLAccountClasspass(TestCase):
             to_global_id("OrganizationClasspassNode", classpass.organization_classpass.id)
         )
 
-
     def test_query_anon_user(self):
         """ Query list of account classpasses - anon user """
         query = self.classpasses_query
@@ -262,7 +260,6 @@ class GQLAccountClasspass(TestCase):
         executed = execute_test_client_api_query(query, self.anon_user, variables=variables)
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Not logged in!')
-
 
     def test_query_one(self):
         """ Query one account classpass as admin """   
@@ -288,7 +285,6 @@ class GQLAccountClasspass(TestCase):
         self.assertEqual(data['accountClasspass']['dateEnd'], str(classpass.date_end))
         self.assertEqual(data['accountClasspass']['note'], classpass.note)
 
-
     def test_query_one_anon_user(self):
         """ Deny permission for anon users Query one account classpass """   
         classpass = f.AccountClasspassFactory.create()
@@ -302,7 +298,6 @@ class GQLAccountClasspass(TestCase):
         executed = execute_test_client_api_query(self.classpass_query, self.anon_user, variables=variables)
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Not logged in!')
-
 
     def test_query_one_permission_denied(self):
         """ Permission denied message when user lacks authorization """   
@@ -320,7 +315,6 @@ class GQLAccountClasspass(TestCase):
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Permission denied!')
 
-
     def test_query_one_permission_granted(self):
         """ Respond with data when user has permission """   
         classpass = f.AccountClasspassFactory.create()
@@ -328,7 +322,6 @@ class GQLAccountClasspass(TestCase):
         permission = Permission.objects.get(codename='view_accountclasspass')
         user.user_permissions.add(permission)
         user.save()
-        
 
         variables = {
             "id": to_global_id("AccountClasspassNode", classpass.id),
@@ -342,7 +335,6 @@ class GQLAccountClasspass(TestCase):
             data['accountClasspass']['organizationClasspass']['id'], 
             to_global_id('OrganizationClasspassNode', classpass.organization_classpass.id)
         )
-
 
     def test_create_classpass(self):
         """ Create an account classpass """
@@ -372,6 +364,20 @@ class GQLAccountClasspass(TestCase):
         self.assertEqual(data['createAccountClasspass']['accountClasspass']['dateStart'], variables['input']['dateStart'])
         self.assertEqual(data['createAccountClasspass']['accountClasspass']['note'], variables['input']['note'])
 
+        account_classpass = models.AccountClasspass.objects.all().first()
+        finance_invoice = models.FinanceInvoice.objects.all().first()
+        self.assertEqual(finance_invoice.summary, "Class pass %s" % account_classpass.id)
+
+        first_invoice_item = finance_invoice.items.all().first()
+        self.assertEqual(first_invoice_item.product_name, "Class pass")
+        self.assertEqual(first_invoice_item.description,
+                         'Class pass %s\n%s' % (str(account_classpass.pk), organization_classpass.name))
+        self.assertEqual(int(first_invoice_item.quantity), 1)
+        self.assertEqual(first_invoice_item.total, organization_classpass.price)
+        self.assertEqual(first_invoice_item.account_classpass, account_classpass)
+        self.assertEqual(first_invoice_item.finance_tax_rate, organization_classpass.finance_tax_rate)
+        self.assertEqual(first_invoice_item.finance_glaccount, organization_classpass.finance_glaccount)
+        self.assertEqual(first_invoice_item.finance_costcenter, organization_classpass.finance_costcenter)
 
     def test_create_classpass_valid_3_days(self):
         """ End date should be set 3 days from start """
@@ -399,7 +405,6 @@ class GQLAccountClasspass(TestCase):
             str(datetime.date(2019, 1, 1) + datetime.timedelta(days=2))
         )
 
-
     def test_create_classpass_valid_2_weeks(self):
         """ End date should be set 2 weeks from start """
         query = self.classpass_create_mutation
@@ -425,7 +430,6 @@ class GQLAccountClasspass(TestCase):
             data['createAccountClasspass']['accountClasspass']['dateEnd'], 
             str(datetime.date(2019, 1, 1) + datetime.timedelta(days=13))
         )
-
 
     def test_create_classpass_valid_2_months(self):
         """ End date should be set 2 weeks from start """
@@ -453,7 +457,6 @@ class GQLAccountClasspass(TestCase):
             str(datetime.date(2019, 2, 28))
         )
 
-
     def test_create_classpass_anon_user(self):
         """ Don't allow creating account classpasses for non-logged in users """
         query = self.classpass_create_mutation
@@ -472,7 +475,6 @@ class GQLAccountClasspass(TestCase):
         data = executed.get('data')
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Not logged in!')
-
 
     def test_create_classpass_permission_granted(self):
         """ Allow creating classpasses for users with permissions """
@@ -501,7 +503,6 @@ class GQLAccountClasspass(TestCase):
             variables['input']['organizationClasspass']
         )
 
-
     def test_create_classpass_permission_denied(self):
         """ Check create classpass permission denied error message """
         query = self.classpass_create_mutation
@@ -522,7 +523,6 @@ class GQLAccountClasspass(TestCase):
         data = executed.get('data')
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Permission denied!')
-
 
     def test_update_classpass(self):
         """ Update a classpass """
@@ -548,7 +548,6 @@ class GQLAccountClasspass(TestCase):
         self.assertEqual(data['updateAccountClasspass']['accountClasspass']['dateEnd'], variables['input']['dateEnd'])
         self.assertEqual(data['updateAccountClasspass']['accountClasspass']['note'], variables['input']['note'])
 
-
     def test_update_classpass_anon_user(self):
         """ Don't allow updating classpasses for non-logged in users """
         query = self.classpass_update_mutation
@@ -566,7 +565,6 @@ class GQLAccountClasspass(TestCase):
         data = executed.get('data')
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Not logged in!')
-
 
     def test_update_classpass_permission_granted(self):
         """ Allow updating classpasses for users with permissions """
@@ -590,7 +588,6 @@ class GQLAccountClasspass(TestCase):
         data = executed.get('data')
         self.assertEqual(data['updateAccountClasspass']['accountClasspass']['dateStart'], variables['input']['dateStart'])
 
-
     def test_update_classpass_permission_denied(self):
         """ Check update classpass permission denied error message """
         query = self.classpass_update_mutation
@@ -611,7 +608,6 @@ class GQLAccountClasspass(TestCase):
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Permission denied!')
 
-
     def test_delete_classpass(self):
         """ Delete an account classpass """
         query = self.classpass_delete_mutation
@@ -628,7 +624,6 @@ class GQLAccountClasspass(TestCase):
         print(data)
         self.assertEqual(data['deleteAccountClasspass']['ok'], True)
 
-
     def test_delete_classpass_anon_user(self):
         """ Delete classpass denied for anon user """
         query = self.classpass_delete_mutation
@@ -644,7 +639,6 @@ class GQLAccountClasspass(TestCase):
         data = executed.get('data')
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Not logged in!')
-
 
     def test_delete_classpass_permission_granted(self):
         """ Allow deleting classpasses for users with permissions """
@@ -667,7 +661,6 @@ class GQLAccountClasspass(TestCase):
         data = executed.get('data')
         self.assertEqual(data['deleteAccountClasspass']['ok'], True)
 
-
     def test_delete_classpass_permission_denied(self):
         """ Check delete classpass permission denied error message """
         query = self.classpass_delete_mutation
@@ -685,4 +678,3 @@ class GQLAccountClasspass(TestCase):
         data = executed.get('data')
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Permission denied!')
-

@@ -229,7 +229,9 @@
         "sign_in": "__STRING_NOT_TRANSLATED__",
         "injury": "__STRING_NOT_TRANSLATED__",
         "priority": "__STRING_NOT_TRANSLATED__",
-        "display_public": "__STRING_NOT_TRANSLATED__"
+        "display_public": "__STRING_NOT_TRANSLATED__",
+        "memberships": "__STRING_NOT_TRANSLATED__",
+        "events": "__STRING_NOT_TRANSLATED__"
     },
     "settings": {
         "error_loading": "__STRING_NOT_TRANSLATED__",
@@ -362,6 +364,13 @@
             },
             "workflow_class_book_days_advance": "__STRING_NOT_TRANSLATED__",
             "workflow_class_cancel_until": "__STRING_NOT_TRANSLATED__"
+        },
+        "shop": {
+            "title": "__STRING_NOT_TRANSLATED__",
+            "features": {
+                "title": "__STRING_NOT_TRANSLATED__",
+                "explanation": "__STRING_NOT_TRANSLATED__"
+            }
         }
     },
     "yup": {
@@ -625,7 +634,9 @@
     "shop": {
         "home": {
             "title": "__STRING_NOT_TRANSLATED__",
-            "welcome": "__STRING_NOT_TRANSLATED__"
+            "announcements": {
+                "error_loading": "__STRING_NOT_TRANSLATED__"
+            }
         },
         "classpass": {
             "error_loading": "__STRING_NOT_TRANSLATED__",

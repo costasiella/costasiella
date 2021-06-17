@@ -403,8 +403,23 @@ class GQLAccountMembership(TestCase):
             data['createAccountMembership']['accountMembership']['financePaymentMethod']['id'], 
             variables['input']['financePaymentMethod']
         )
-        self.assertEqual(data['createAccountMembership']['accountMembership']['dateStart'], variables['input']['dateStart'])
+        self.assertEqual(data['createAccountMembership']['accountMembership']['dateStart'],
+                         variables['input']['dateStart'])
         self.assertEqual(data['createAccountMembership']['accountMembership']['note'], variables['input']['note'])
+
+        account_membership = models.AccountMembership.objects.all().first()
+        finance_invoice = models.FinanceInvoice.objects.all().first()
+        self.assertEqual(finance_invoice.summary, organization_membership.name)
+
+        first_invoice_item = finance_invoice.items.all().first()
+        self.assertEqual(first_invoice_item.product_name, "Membership")
+        self.assertEqual(first_invoice_item.description, organization_membership.name)
+        self.assertEqual(int(first_invoice_item.quantity), 1)
+        self.assertEqual(first_invoice_item.total, organization_membership.price)
+        self.assertEqual(first_invoice_item.account_membership, account_membership)
+        self.assertEqual(first_invoice_item.finance_tax_rate, organization_membership.finance_tax_rate)
+        self.assertEqual(first_invoice_item.finance_glaccount, organization_membership.finance_glaccount)
+        self.assertEqual(first_invoice_item.finance_costcenter, organization_membership.finance_costcenter)
 
     def test_create_membership_valid_3_days(self):
         """ End date should be set 3 days from start """
