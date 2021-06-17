@@ -8,7 +8,7 @@ import { Formik } from 'formik'
 import { toast } from 'react-toastify'
 
 import { GET_SHOP_FEATURES_QUERY, UPDATE_SHOP_FEATURES } from './queries'
-import { DATETIME_SCHEMA } from './yupSchema'
+import { SHOP_FEATURES_SCHEMA } from './yupSchema'
 
 
 import {
@@ -76,7 +76,7 @@ function SettingsShopFeatures({ t, match, history }) {
         classes: shopFeatures.classes,
         events: shopFeatures.events,
       }}
-      // validationSchema={DATETIME_SCHEMA}
+      validationSchema={SHOP_FEATURES_SCHEMA}
       onSubmit={(values, { setSubmitting }, errors) => {
           console.log('submit values:')
           console.log(values)
