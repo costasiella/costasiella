@@ -17,7 +17,7 @@ click-repl==0.1.6
 cssselect2==0.2.2
 decorator==4.3.2
 defusedxml==0.5.0
-Django==3.1.9
+Django==3.1.12
 django-allauth==0.41.0
 django-celery-beat==2.0.0
 django-celery-results==2.0.0
