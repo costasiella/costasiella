@@ -1,6 +1,6 @@
 # Costasiella
 
-[![Build Status]https://github.com/costasiella/costasiella/actions/workflows/django_ci.yml/badge.svg]
+![Build Status](https://github.com/costasiella/costasiella/actions/workflows/django_ci.yml/badge.svg)
 
 ## About
 
