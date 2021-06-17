@@ -15,6 +15,7 @@ jobs:
       DB_DATABASE: cs_test
       DB_USER: root
       DB_PASSWORD: root
+      WORKING_DIRECTORY: ./app
     
 #     services:
 #       mysql:
@@ -42,6 +43,8 @@ jobs:
     - name: Create test DB
       run: mysql -e 'CREATE DATABASE ${{ env.DB_DATABASE }};' -u${{ env.DB_USER }} -p${{ env.DB_PASSWORD }}
     - name: Run migrations
-      run: python app/manage.py migrate
+      run: python manage.py migrate
+      working-directory: ${{env.WORKING_DIRECTORY}}
     - name: Run tests
       run: python app/manage.py test
+      working-directory: ${{env.WORKING_DIRECTORY}}
