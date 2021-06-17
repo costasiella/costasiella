@@ -113,13 +113,14 @@ WSGI_APPLICATION = 'app.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 
+# https://docs.github.com/en/actions/reference/environment-variables
 if 'GITHUB_WORKFLOW' in os.environ:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.mysql',
-            'NAME': 'test',
+            'NAME': 'cs_test',
             'USER': 'root',
-            'PASSWORD': 'password',
+            'PASSWORD': '',
             'HOST': '127.0.0.1',
             # 'PORT': 3306
         }
