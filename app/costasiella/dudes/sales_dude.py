@@ -54,7 +54,7 @@ class SalesDude:
         finance_invoice = FinanceInvoice(
             account=account_membership.account,
             finance_invoice_group=finance_invoice_group,
-            summary=_("Membership %s" % account_membership.id),
+            summary=account_membership.organization_membership.name,
             status="SENT",
             terms=finance_invoice_group.terms,
             footer=finance_invoice_group.footer
