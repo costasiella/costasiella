@@ -12,7 +12,7 @@ TESTING = len(sys.argv) > 1 and sys.argv[1] == 'test'
 
 # Media files (User uploads)
 # https://docs.djangoproject.com/en/2.1/topics/files/
-if 'TRAVIS' in os.environ:
+if 'GITHUB_WORKFLOW' in os.environ:
     MEDIA_ROOT = os.path.join(os.getcwd(), "costasiella", "media_test")
 
 ## Email settings for development
