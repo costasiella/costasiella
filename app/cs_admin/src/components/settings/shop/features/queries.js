@@ -2,8 +2,8 @@ import gql from "graphql-tag"
 
 
 export const GET_SHOP_FEATURES_QUERY = gql`
-  query ShopFeatures {
-    systemShopFeature(id: "U3lzdGVtU2hvcEZlYXR1cmVOb2RlOjE=") {
+  query SystemFeatureShop {
+    systemFeatureShop(id: "U3lzdGVtRmVhdHVyZVNob3BOb2RlOjE=") {
       memberships
       subscriptions
       classpasses
@@ -15,9 +15,9 @@ export const GET_SHOP_FEATURES_QUERY = gql`
 
 
 export const UPDATE_SHOP_FEATURES = gql`
-  mutation UpdateSystemShopFeature($input: UpdateSystemShopFeatureInput!) {
-    updateSystemShopFeature(input: $input) {
-      systemShopFeature {
+  mutation UpdateSystemFeatureShop($input: UpdateSystemFeatureShopInput!) {
+    updateSystemFeatureShop(input: $input) {
+      systemFeatureShop {
         id
       }
     }
