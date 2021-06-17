@@ -31,7 +31,7 @@ def execute_test_client_api_query(query, user=None, variables=None, **kwargs):
 
 def clean_media():
     """ Clean up media files """
-    if 'TRAVIS' not in os.environ:
+    if 'GITHUB_WORKFLOW' not in os.environ:
         # Clean test media root after each test to prevent stray files after testing
         # But don't run on Travis-CI, as we don't seem to be allowed to remove stuff from dirs
         # in the tests

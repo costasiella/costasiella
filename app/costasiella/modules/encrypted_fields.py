@@ -32,7 +32,7 @@ class BaseEncryptedField(models.Field):
         # crypt_class = self.get_crypt_class()
         # self.crypt = crypt_class.Read(settings.ENCRYPTED_FIELD_KEYS_DIR)
         self.running_as_test = False
-        if 'TRAVIS' in os.environ or getattr(settings, 'TESTING', False):
+        if 'GITHUB_WORKFLOW' in os.environ or getattr(settings, 'TESTING', False):
             self.running_as_test = True
 
         vault_url = getattr(settings, 'VAULT_URL', None)
