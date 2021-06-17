@@ -15,27 +15,26 @@ m = Messages()
 class SystemFeatureShopNode(DjangoObjectType):   
     class Meta:
         model = SystemFeatureShop
-        filter_fields = {
-            'setting': ['exact'],
-        }
+        filter_fields = {}
         interfaces = (graphene.relay.Node, )
 
     @classmethod
     def get_node(self, info, id):
         user = info.context.user
-        require_login_and_permission(user, 'costasiella.view_systemfeatureshop')
+        # All users should be able to query this, including anon
 
         return self._meta.model.objects.get(id=id)
 
 
 class SystemFeatureShopQuery(graphene.ObjectType):
     system_feature_shop = graphene.relay.Node.Field(SystemFeatureShopNode)
+    # system_features_shop = DjangoFilterConnectionField(SystemFeatureShopNode)
 
-    # def resolve_system_settings(self, info, **kwargs):
-    #     user = info.context.user
-    #     require_login_and_permission(user, 'costasiella.view_systemfeatureshop')
-    #
-    #     return SystemSetting.objects.all()
+    def resolve_system_features_shop(self, info, **kwargs):
+        user = info.context.user
+        # All users should be able to query this, including anon
+
+        return SystemFeatureShop.objects.all()
 
 
 class UpdateSystemFeatureShop(graphene.relay.ClientIDMutation):
