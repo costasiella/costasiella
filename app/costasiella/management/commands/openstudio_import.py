@@ -35,6 +35,7 @@ class Command(BaseCommand):
         self.payment_methods_map = None
         self.school_memberships_map = None
         self.school_classcards_map = None
+        self.school_classcards_groups_map = None
 
     def add_arguments(self, parser):
         parser.add_argument(
@@ -220,6 +221,7 @@ class Command(BaseCommand):
         self.payment_methods_map = self._import_payment_methods()
         self.school_memberships_map = self._import_school_memberships()
         self.school_classcards_map = self._import_school_classcards()
+        self.school_classcards_groups_map = self._import_school_classcards_groups()
 
     def _import_os_sys_organization_to_organization(self):
         """
@@ -410,12 +412,6 @@ class Command(BaseCommand):
         self.cursor.execute(query)
         records = self.cursor.fetchall()
 
-        map_validity_units = {
-            'days': 'DAYS',
-            'weeks': 'WEEKS',
-            'months': 'MONTHS'
-        }
-
         id_map = {}
         records_imported = 0
         for record in records:
@@ -444,6 +440,34 @@ class Command(BaseCommand):
             id_map[record['id']] = organization_classpass
 
         log_message = "Import organization classpasses: "
+        self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
+        logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
+
+        return id_map
+
+    def _import_school_classcards_groups(self):
+        """
+        Fetch school classcards groups and import it in Costasiella.
+        :param cursor: MySQL db cursor
+        :return: None
+        """
+        query = "SELECT * from school_classcards_groups"
+        self.cursor.execute(query)
+        records = self.cursor.fetchall()
+
+        id_map = {}
+        records_imported = 0
+        for record in records:
+            organization_classpass_group = m.OrganizationClasspassGroup(
+                name=record['Name'],
+                description=record['Description'],
+            )
+            organization_classpass_group.save()
+            records_imported += 1
+
+            id_map[record['id']] = organization_classpass_group
+
+        log_message = "Import organization classpass groups: "
         self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
         logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
 
