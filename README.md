@@ -1,6 +1,6 @@
 # Costasiella
 
-[![Build Status](https://travis-ci.com/costasiella/costasiella.svg?branch=master)](https://travis-ci.com/costasiella/costasiella)
+[![Build Status]https://github.com/costasiella/costasiella/actions/workflows/django_ci.yml/badge.svg]
 
 ## About
 
