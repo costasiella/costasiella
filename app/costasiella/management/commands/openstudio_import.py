@@ -43,6 +43,7 @@ class Command(BaseCommand):
         self.school_classcards_groups_map = None
         self.school_classcards_groups_classcards_map = None
         self.school_subscriptions_map = None
+        self.school_subscriptions_groups_map = None
 
     def add_arguments(self, parser):
         parser.add_argument(
@@ -231,6 +232,7 @@ class Command(BaseCommand):
         self.school_classcards_groups_map = self._import_school_classcards_groups()
         self.school_classcards_groups_classcards_map = self._import_school_classcards_groups_classcards()
         self.school_subscriptions_map = self._import_school_subscriptions()
+        self.school_subscriptions_groups_map = self._import_school_subscriptions_groups()
 
     def _import_os_sys_organization_to_organization(self):
         """
@@ -549,6 +551,34 @@ class Command(BaseCommand):
             id_map[record['id']] = organization_subscription
 
         log_message = "Import organization subscriptions: "
+        self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
+        logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
+
+        return id_map
+
+    def _import_school_subscriptions_groups(self):
+        """
+        Fetch school subscriptions groups and import it in Costasiella.
+        :param cursor: MySQL db cursor
+        :return: None
+        """
+        query = "SELECT * from school_subscriptions_groups"
+        self.cursor.execute(query)
+        records = self.cursor.fetchall()
+
+        id_map = {}
+        records_imported = 0
+        for record in records:
+            organization_subscription_group = m.OrganizationSubscriptionGroup(
+                name=record['Name'],
+                description=record['Description'],
+            )
+            organization_subscription_group.save()
+            records_imported += 1
+
+            id_map[record['id']] = organization_subscription_group
+
+        log_message = "Import organization subscription groups: "
         self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
         logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
 
