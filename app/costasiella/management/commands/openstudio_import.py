@@ -45,6 +45,7 @@ class Command(BaseCommand):
         self.school_subscriptions_map = None
         self.school_subscriptions_groups_map = None
         self.school_subscriptions_groups_subscriptions_map = None
+        self.school_subscriptions_price_map = None
 
     def add_arguments(self, parser):
         parser.add_argument(
@@ -235,6 +236,7 @@ class Command(BaseCommand):
         self.school_subscriptions_map = self._import_school_subscriptions()
         self.school_subscriptions_groups_map = self._import_school_subscriptions_groups()
         self.school_subscriptions_groups_subscriptions_map = self._import_school_subscriptions_groups_subscriptions()
+        self.school_subscriptions_price_map = self._import_school_subscriptions_price()
 
     def _import_os_sys_organization_to_organization(self):
         """
@@ -627,6 +629,38 @@ class Command(BaseCommand):
             id_map[record['id']] = organization_subscription_group_subscription
 
         log_message = "Import organization subscription groups subscriptions: "
+        self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
+        logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
+
+        return id_map
+
+    def _import_school_subscriptions_price(self):
+        """
+        Fetch school subscriptions prices and import it in Costasiella.
+        :param cursor: MySQL db cursor
+        :return: None
+        """
+        query = "SELECT * from school_subscriptions_price"
+        self.cursor.execute(query)
+        records = self.cursor.fetchall()
+
+        id_map = {}
+        records_imported = 0
+        for record in records:
+            record = {k.lower(): v for k, v in record.items()}
+            organization_subscription_price = m.OrganizationSubscriptionPrice(
+                organization_subscription=self.school_subscriptions_map.get(record['school_subscriptions_id']),
+                price=record['price'],
+                finance_tax_rate=self.tax_rates_map.get(record['tax_rates_id']),
+                date_start=record['startdate'],
+                date_end=record['enddate']
+            )
+            organization_subscription_price.save()
+            records_imported += 1
+
+            id_map[record['id']] = organization_subscription_price
+
+        log_message = "Import organization subscription prices: "
         self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
         logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
 
