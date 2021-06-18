@@ -46,6 +46,7 @@ class Command(BaseCommand):
         self.school_subscriptions_groups_map = None
         self.school_subscriptions_groups_subscriptions_map = None
         self.school_subscriptions_price_map = None
+        self.school_classtypes_map = None
 
     def add_arguments(self, parser):
         parser.add_argument(
@@ -237,6 +238,7 @@ class Command(BaseCommand):
         self.school_subscriptions_groups_map = self._import_school_subscriptions_groups()
         self.school_subscriptions_groups_subscriptions_map = self._import_school_subscriptions_groups_subscriptions()
         self.school_subscriptions_price_map = self._import_school_subscriptions_price()
+        self.school_classtypes_map = self._import_school_classtypes()
 
     def _import_os_sys_organization_to_organization(self):
         """
@@ -661,6 +663,39 @@ class Command(BaseCommand):
             id_map[record['id']] = organization_subscription_price
 
         log_message = "Import organization subscription prices: "
+        self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
+        logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
+
+        return id_map
+
+    def _import_school_classtypes(self):
+        """
+        Fetch school classtypes and import it in Costasiella.
+        :param cursor: MySQL db cursor
+        :return: None
+        """
+        query = "SELECT * from school_classtypes"
+        self.cursor.execute(query)
+        records = self.cursor.fetchall()
+
+        id_map = {}
+        records_imported = 0
+        for record in records:
+            record = {k.lower(): v for k, v in record.items()}
+
+            organization_classtype = m.OrganizationClasstype(
+                archived=self._web2py_bool_to_python(record['archived']),
+                display_public=self._web2py_bool_to_python(record['allowapi']),
+                name=record['name'],
+                description=record['description'] or "",
+                url_website=record['link'] or ""
+            )
+            organization_classtype.save()
+            records_imported += 1
+
+            id_map[record['id']] = organization_classtype
+
+        log_message = "Import organization classtypes: "
         self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
         logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
 
