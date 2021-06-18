@@ -44,6 +44,7 @@ class Command(BaseCommand):
         self.school_classcards_groups_classcards_map = None
         self.school_subscriptions_map = None
         self.school_subscriptions_groups_map = None
+        self.school_subscriptions_groups_subscriptions_map = None
 
     def add_arguments(self, parser):
         parser.add_argument(
@@ -233,6 +234,7 @@ class Command(BaseCommand):
         self.school_classcards_groups_classcards_map = self._import_school_classcards_groups_classcards()
         self.school_subscriptions_map = self._import_school_subscriptions()
         self.school_subscriptions_groups_map = self._import_school_subscriptions_groups()
+        self.school_subscriptions_groups_subscriptions_map = self._import_school_subscriptions_groups_subscriptions()
 
     def _import_os_sys_organization_to_organization(self):
         """
@@ -246,14 +248,15 @@ class Command(BaseCommand):
         record = self.cursor.fetchone()
 
         if record:
-            organization = m.Organization.objects.get(pk = 100)
-            organization.archived = self._web2py_bool_to_python(record['Archived'])
-            organization.name = record['Name'] or ""
-            organization.address = record['Address'] or ""
-            organization.phone = record['Phone'] or ""
-            organization.email = record['Email'] or ""
-            organization.registration = record['Registration'] or ""
-            organization.tax_registration = record['TaxRegistration'] or ""
+            record = {k.lower(): v for k, v in record.items()}
+            organization = m.Organization.objects.get(pk=100)
+            organization.archived = self._web2py_bool_to_python(record['archived'])
+            organization.name = record['name'] or ""
+            organization.address = record['address'] or ""
+            organization.phone = record['phone'] or ""
+            organization.email = record['email'] or ""
+            organization.registration = record['registration'] or ""
+            organization.tax_registration = record['taxregistration'] or ""
             organization.save()
 
             self.stdout.write("Import default organization: " + self.style.SUCCESS("OK"))
@@ -275,10 +278,11 @@ class Command(BaseCommand):
         id_map = {}
         records_imported = 0
         for record in records:
+            record = {k.lower(): v for k, v in record.items()}
             finance_glaccount = m.FinanceGLAccount(
-                archived=self._web2py_bool_to_python(record['Archived']),
-                name=record['Name'],
-                code=record['AccountingCode']
+                archived=self._web2py_bool_to_python(record['archived']),
+                name=record['name'],
+                code=record['accountingcode']
             )
             finance_glaccount.save()
             records_imported += 1
@@ -304,10 +308,11 @@ class Command(BaseCommand):
         id_map = {}
         records_imported = 0
         for record in records:
+            record = {k.lower(): v for k, v in record.items()}
             finance_costcenter = m.FinanceCostCenter(
-                archived=self._web2py_bool_to_python(record['Archived']),
-                name=record['Name'],
-                code=record['AccountingCode']
+                archived=self._web2py_bool_to_python(record['archived']),
+                name=record['name'],
+                code=record['accountingcode']
             )
             finance_costcenter.save()
             records_imported += 1
@@ -333,12 +338,13 @@ class Command(BaseCommand):
         id_map = {}
         records_imported = 0
         for record in records:
+            record = {k.lower(): v for k, v in record.items()}
             finance_tax_rate = m.FinanceTaxRate(
-                archived=self._web2py_bool_to_python(record['Archived']),
-                name=record['Name'],
-                percentage=record['Percentage'],
-                rate_type="IN",
-                code=record['VATCodeID'] or ""
+                archived=self._web2py_bool_to_python(record['archived']),
+                name=record['name'],
+                percentage=record['percentage'],
+                rate_type="in",
+                code=record['vatcodeid'] or ""
             )
             finance_tax_rate.save()
             records_imported += 1
@@ -363,10 +369,12 @@ class Command(BaseCommand):
 
         records_imported = 0
         for record in records:
+            record = {k.lower(): v for k, v in record.items()}
+
             finance_payment_method = m.FinancePaymentMethod(
-                archived=self._web2py_bool_to_python(record['Archived']),
-                name=record['Name'],
-                code=record['AccountingCode'] or ""
+                archived=self._web2py_bool_to_python(record['archived']),
+                name=record['name'],
+                code=record['accountingcode'] or ""
             )
             finance_payment_method.save()
             records_imported += 1
@@ -388,17 +396,18 @@ class Command(BaseCommand):
         id_map = {}
         records_imported = 0
         for record in records:
+            record = {k.lower(): v for k, v in record.items()}
             organization_membership = m.OrganizationMembership(
-                archived=self._web2py_bool_to_python(record['Archived']),
-                display_public=self._web2py_bool_to_python(record['PublicMembership']),
-                display_shop=self._web2py_bool_to_python(record['PublicMembership']),
-                name=record['Name'],
-                description=record['Description'] or "",
-                price=record['Price'] or 0,
+                archived=self._web2py_bool_to_python(record['archived']),
+                display_public=self._web2py_bool_to_python(record['publicmembership']),
+                display_shop=self._web2py_bool_to_python(record['publicmembership']),
+                name=record['name'],
+                description=record['description'] or "",
+                price=record['price'] or 0,
                 finance_tax_rate=self.tax_rates_map.get(record['tax_rates_id'], None),
-                validity=record['Validity'],
-                validity_unit=self.map_validity_units_cards_and_memberships.get(record['ValidityUnit']),
-                terms_and_conditions=record['Terms'] or "",
+                validity=record['validity'],
+                validity_unit=self.map_validity_units_cards_and_memberships.get(record['validityunit']),
+                terms_and_conditions=record['terms'] or "",
                 finance_glaccount=self.accounting_glaccounts_map.get(record['accounting_glaccounts_id'], None),
                 finance_costcenter=self.accounting_costcenters_map.get(record['accounting_costcenters_id'], None)
             )
@@ -426,22 +435,25 @@ class Command(BaseCommand):
         id_map = {}
         records_imported = 0
         for record in records:
+            # Make all items lowercase
+            record = {k.lower(): v for k, v in record.items()}
+
             organization_classpass = m.OrganizationClasspass(
-                archived=self._web2py_bool_to_python(record['Archived']),
-                display_public=self._web2py_bool_to_python(record['PublicCard']),
-                display_shop=self._web2py_bool_to_python(record['PublicCard']),
-                trial_pass=self._web2py_bool_to_python(record['Trialcard']),
-                trial_times=record['TrialTimes'],
-                name=record['Name'],
-                description=record['Description'] or "",
-                price=record['Price'],
+                archived=self._web2py_bool_to_python(record['archived']),
+                display_public=self._web2py_bool_to_python(record['publiccard']),
+                display_shop=self._web2py_bool_to_python(record['publiccard']),
+                trial_pass=self._web2py_bool_to_python(record['trialcard']),
+                trial_times=record['trialtimes'] or 0,
+                name=record['name'],
+                description=record['description'] or "",
+                price=record['price'],
                 finance_tax_rate=self.tax_rates_map.get(record['tax_rates_id'], None),
-                validity=record['Validity'],
-                validity_unit=self.map_validity_units_cards_and_memberships.get(record['ValidityUnit']),
-                classes=record['Classes'] or 0,
-                unlimited=self._web2py_bool_to_python(record['Unlimited']),
+                validity=record['validity'],
+                validity_unit=self.map_validity_units_cards_and_memberships.get(record['validityunit']),
+                classes=record['classes'] or 0,
+                unlimited=self._web2py_bool_to_python(record['unlimited']),
                 organization_membership=self.school_memberships_map.get(record['school_memberships_id'], None),
-                quick_stats_amount=record['QuickStatsAmount'] or 0,
+                quick_stats_amount=record['quickstatsamount'] or 0,
                 finance_glaccount=self.accounting_glaccounts_map.get(record['accounting_glaccounts_id'], None),
                 finance_costcenter=self.accounting_costcenters_map.get(record['accounting_costcenters_id'], None)
             )
@@ -469,9 +481,10 @@ class Command(BaseCommand):
         id_map = {}
         records_imported = 0
         for record in records:
+            record = {k.lower(): v for k, v in record.items()}
             organization_classpass_group = m.OrganizationClasspassGroup(
-                name=record['Name'],
-                description=record['Description'],
+                name=record['name'],
+                description=record['description'],
             )
             organization_classpass_group.save()
             records_imported += 1
@@ -497,6 +510,7 @@ class Command(BaseCommand):
         id_map = {}
         records_imported = 0
         for record in records:
+            record = {k.lower(): v for k, v in record.items()}
             organization_classpass_group_classpass = m.OrganizationClasspassGroupClasspass(
                 organization_classpass_group=self.school_classcards_groups_map.get(
                     record['school_classcards_groups_id']
@@ -527,23 +541,25 @@ class Command(BaseCommand):
         id_map = {}
         records_imported = 0
         for record in records:
+            record = {k.lower(): v for k, v in record.items()}
+
             organization_subscription = m.OrganizationSubscription(
-                archived=self._web2py_bool_to_python(record['Archived']),
-                display_public=self._web2py_bool_to_python(record['PublicSubscription']),
-                display_shop=self._web2py_bool_to_python(record['ShopSubscription']),
-                name=record['Name'],
-                description=record['Description'] or "",
-                sort_order=record['SortOrder'],
-                min_duration=record['MinDuration'],
-                classes=record['Classes'],
-                subscription_unit=self.map_validity_units_subscriptions.get(record['SubscriptionUnit'], 'MONTH'),
-                reconciliation_classes=record['ReconciliationClasses'],
-                credit_validity=record['CreditValidity'] or 1,
-                unlimited=self._web2py_bool_to_python(record['Unlimited']),
-                terms_and_conditions=record['Terms'] or "",
-                registration_fee=record['RegistrationFee'] or 0,
+                archived=self._web2py_bool_to_python(record['archived']),
+                display_public=self._web2py_bool_to_python(record['publicsubscription']),
+                display_shop=self._web2py_bool_to_python(record['shopsubscription']),
+                name=record['name'],
+                description=record['description'] or "",
+                sort_order=record['sortorder'],
+                min_duration=record['minduration'],
+                classes=record['classes'] or 0,
+                subscription_unit=self.map_validity_units_subscriptions.get(record['subscriptionunit'], 'month'),
+                reconciliation_classes=record['reconciliationclasses'],
+                credit_validity=record['creditvalidity'] or 1,
+                unlimited=self._web2py_bool_to_python(record['unlimited']),
+                terms_and_conditions=record['terms'] or "",
+                registration_fee=record['registrationfee'] or 0,
                 organization_membership=self.school_memberships_map.get(record['school_memberships_id'], None),
-                quick_stats_amount=record['QuickStatsAmount'] or 0,
+                quick_stats_amount=record['quickstatsamount'] or 0,
             )
             organization_subscription.save()
             records_imported += 1
@@ -569,9 +585,11 @@ class Command(BaseCommand):
         id_map = {}
         records_imported = 0
         for record in records:
+            record = {k.lower(): v for k, v in record.items()}
+
             organization_subscription_group = m.OrganizationSubscriptionGroup(
-                name=record['Name'],
-                description=record['Description'],
+                name=record['name'],
+                description=record['description'],
             )
             organization_subscription_group.save()
             records_imported += 1
@@ -579,6 +597,36 @@ class Command(BaseCommand):
             id_map[record['id']] = organization_subscription_group
 
         log_message = "Import organization subscription groups: "
+        self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
+        logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
+
+        return id_map
+
+    def _import_school_subscriptions_groups_subscriptions(self):
+        """
+        Fetch school subscriptions groups subscriptions and import it in Costasiella.
+        :param cursor: MySQL db cursor
+        :return: None
+        """
+        query = "SELECT * from school_subscriptions_groups_subscriptions"
+        self.cursor.execute(query)
+        records = self.cursor.fetchall()
+
+        id_map = {}
+        records_imported = 0
+        for record in records:
+            organization_subscription_group_subscription = m.OrganizationSubscriptionGroupSubscription(
+                organization_subscription_group=self.school_subscriptions_groups_map.get(
+                    record['school_subscriptions_groups_id']
+                ),
+                organization_subscription=self.school_subscriptions_map.get(record['school_subscriptions_id'])
+            )
+            organization_subscription_group_subscription.save()
+            records_imported += 1
+
+            id_map[record['id']] = organization_subscription_group_subscription
+
+        log_message = "Import organization subscription groups subscriptions: "
         self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
         logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
 
