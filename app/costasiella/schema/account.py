@@ -170,14 +170,8 @@ class CreateAccount(graphene.relay.ClientIDMutation):
         )
         account.save()
 
-        # Insert Allauth email address 
-        email_address = EmailAddress(
-            user = account,
-            email = account.email,
-            verified = True,
-            primary = True
-        )
-        email_address.save()
+        # Insert Allauth email address
+        account.create_allauth_email()
 
         # Create Teacher profile
         account_teacher_profile = AccountTeacherProfile(
@@ -311,7 +305,7 @@ class UpdateAccount(graphene.relay.ClientIDMutation):
 
         account.save()
 
-        # Update allauth email address
+        # Update allauth email address after saving account, to ensure it's in sync
         email_address = EmailAddress.objects.filter(user=account).first()
         email_address.email = account.email
         email_address.save()

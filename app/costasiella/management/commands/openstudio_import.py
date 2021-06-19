@@ -2,6 +2,7 @@ import sys
 import os
 import datetime
 
+import django.db.utils
 from django.core.management.base import BaseCommand, CommandError, no_translations
 from django.utils import timezone
 import costasiella.models as m
@@ -13,7 +14,7 @@ import MySQLdb.converters
 import logging
 
 logfile = os.path.join('logs', "openstudio_import_%s.log" % timezone.now().strftime("%Y-%m-%d_%H:%M"))
-logging.basicConfig(filename=logfile, level=logging.DEBUG)
+logging.basicConfig(filename=logfile, level=logging.INFO)
 
 
 class Command(BaseCommand):
@@ -51,6 +52,7 @@ class Command(BaseCommand):
         self.school_levels_map = None
         self.school_locations_map = None
         self.school_locations_rooms_map = None
+        self.auth_user_map = None
 
     def add_arguments(self, parser):
         parser.add_argument(
@@ -248,6 +250,8 @@ class Command(BaseCommand):
         locations_import_result = self._import_school_locations()
         self.school_locations_map = locations_import_result['id_map_locations']
         self.school_locations_rooms_map = locations_import_result['id_map_rooms']
+        auth_user_result = self._import_auth_user()
+        self.auth_user_map = auth_user_result['id_map_auth_user']
 
     def _import_os_sys_organization_to_organization(self):
         """
@@ -812,6 +816,68 @@ class Command(BaseCommand):
         return {
             'id_map_locations': id_map_locations,
             'id_map_rooms': id_map_rooms
+        }
+
+    def _import_auth_user(self):
+        """
+        Fetch auth users and import it in Costasiella.
+        :param cursor: MySQL db cursor
+        :return: None
+        """
+        query = "SELECT * FROM auth_user WHERE business='F'"
+        self.cursor.execute(query)
+        records = self.cursor.fetchall()
+
+        id_map_auth_user = {}
+        id_map_auth_user_business = {}
+        id_map_auth_user_teacher_profile = {}
+        records_imported = 0
+        for record in records:
+            record = {k.lower(): v for k, v in record.items()}
+
+            try:
+                account = m.Account(
+                    is_active=self._web2py_bool_to_python(record['trashed']),
+                    customer=self._web2py_bool_to_python(record['customer']),
+                    teacher=self._web2py_bool_to_python(record['teacher']),
+                    employee=self._web2py_bool_to_python(record['teacher']),
+                    first_name=record['first_name'],
+                    last_name=record['last_name'],
+                    full_name=record['full_name'] or "",
+                    email=record['email'],
+                    username=record['email'],
+                    gender=record['gender'] or "",
+                    date_of_birth=record['date_of_birth'] or "",
+                    address=record['address'] or "",
+                    postcode=record['postcode'] or "",
+                    city=record['city'] or "",
+                    country=record['country'] or "",
+                    phone=record['phone'] or "",
+                    mobile=record['mobile'] or "",
+                    emergency=record['emergency'] or ""
+                )
+                account.save()
+                # Create allauth email
+                account.create_allauth_email()
+
+                id_map_auth_user[record['id']] = account
+
+                #TODO Create teacher profile is account is a teacher
+
+                records_imported += 1
+            except django.db.utils.IntegrityError as e:
+                logging.error("Import auth_user error for user id: %s %s : %s" % (
+                    record['id'],
+                    record['email'],
+                    e
+                ))
+
+        log_message = "Import auth_user: "
+        self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
+        logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
+
+        return {
+            'id_map_auth_user': id_map_auth_user,
         }
 
 
