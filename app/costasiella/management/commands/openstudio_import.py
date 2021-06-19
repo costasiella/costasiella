@@ -49,6 +49,8 @@ class Command(BaseCommand):
         self.school_classtypes_map = None
         self.school_discovery_map = None
         self.school_levels_map = None
+        self.school_locations_map = None
+        self.school_locations_rooms_map = None
 
     def add_arguments(self, parser):
         parser.add_argument(
@@ -243,6 +245,9 @@ class Command(BaseCommand):
         self.school_classtypes_map = self._import_school_classtypes()
         self.school_discovery_map = self._import_school_discovery()
         self.school_levels_map = self._import_school_levels()
+        locations_import_result = self._import_school_locations()
+        self.school_locations_map = locations_import_result['id_map_locations']
+        self.school_locations_rooms_map = locations_import_result['id_map_rooms']
 
     def _import_os_sys_organization_to_organization(self):
         """
@@ -764,6 +769,50 @@ class Command(BaseCommand):
         logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
 
         return id_map
+
+    def _import_school_locations(self):
+        """
+        Fetch school locations and import it in Costasiella.
+        :param cursor: MySQL db cursor
+        :return: None
+        """
+        query = "SELECT * from school_locations"
+        self.cursor.execute(query)
+        records = self.cursor.fetchall()
+
+        id_map_locations = {}
+        id_map_rooms = {}
+        records_imported = 0
+        for record in records:
+            record = {k.lower(): v for k, v in record.items()}
+
+            organization_location = m.OrganizationLocation(
+                archived=self._web2py_bool_to_python(record['archived']),
+                display_public=self._web2py_bool_to_python(record['allowapi']),
+                name=record['name'],
+            )
+            organization_location.save()
+            id_map_locations[record['id']] = organization_location
+
+            organization_location_room = m.OrganizationLocationRoom(
+                organization_location=organization_location,
+                archived=organization_location.archived,
+                display_public=organization_location.display_public,
+                name="Room 1"
+            )
+            organization_location_room.save()
+            id_map_rooms[record['id']] = organization_location_room
+
+            records_imported += 1
+
+        log_message = "Import organization locations: "
+        self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
+        logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
+
+        return {
+            'id_map_locations': id_map_locations,
+            'id_map_rooms': id_map_rooms
+        }
 
 
     def _import_os_auth_user(self):
