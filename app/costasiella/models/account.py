@@ -4,6 +4,7 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 
 from ..modules.encrypted_fields import EncryptedTextField
+from .choices.account_country_codes import get_account_country_codes
 from .choices.account_genders import get_account_genders
 
 
@@ -25,6 +26,7 @@ class Account(AbstractUser):
         ]
 
     gender_choices = get_account_genders()
+    country_choices = get_account_country_codes()
 
     customer = models.BooleanField(default=True)
     teacher = models.BooleanField(default=False)
@@ -35,7 +37,7 @@ class Account(AbstractUser):
     address = EncryptedTextField(default="")
     postcode = EncryptedTextField(default="")
     city = EncryptedTextField(default="")
-    country = EncryptedTextField(default="")
+    country = EncryptedTextField(default="", choices=country_choices)
     phone = EncryptedTextField(default="")
     mobile = EncryptedTextField(default="")
     emergency = EncryptedTextField(default="")
