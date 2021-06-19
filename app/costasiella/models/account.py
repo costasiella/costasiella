@@ -4,6 +4,7 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 
 from ..modules.encrypted_fields import EncryptedTextField
+from .choices.account_genders import get_account_genders
 
 
 class Account(AbstractUser):
@@ -23,11 +24,13 @@ class Account(AbstractUser):
             ('view_selfcheckin', _("Can use the selfcheckin feature")),
         ]
 
+    gender_choices = get_account_genders()
+
     customer = models.BooleanField(default=True)
     teacher = models.BooleanField(default=False)
     employee = models.BooleanField(default=False)
     full_name = models.CharField(max_length=255, default="", editable=False)
-    gender = EncryptedTextField(default="")
+    gender = EncryptedTextField(default="", choices=gender_choices)
     date_of_birth = EncryptedTextField(data_type="date", default="")
     address = EncryptedTextField(default="")
     postcode = EncryptedTextField(default="")
