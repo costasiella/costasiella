@@ -860,9 +860,13 @@ class Command(BaseCommand):
                 # Create allauth email
                 account.create_allauth_email()
 
-                id_map_auth_user[record['id']] = account
+                # Create teacher profile
+                self._import_auth_user_create_teacher_profile(account, record)
 
-                #TODO Create teacher profile is account is a teacher
+                # Create account bank account record
+                account.create_bank_account()
+
+                id_map_auth_user[record['id']] = account
 
                 records_imported += 1
             except django.db.utils.IntegrityError as e:
@@ -879,6 +883,22 @@ class Command(BaseCommand):
         return {
             'id_map_auth_user': id_map_auth_user,
         }
+
+    def _import_auth_user_create_teacher_profile(self, account, record):
+        # Create teacher profile for account
+        account_teacher_profile = account.create_teacher_profile()
+
+        # Fill fields
+        account_teacher_profile.classes = self._web2py_bool_to_python(record['teaches_classes'])
+        account_teacher_profile.appointments = False
+        account_teacher_profile.events = self._web2py_bool_to_python(record['teaches_workshops'])
+        account_teacher_profile.role = record['teacher_role'] or ""
+        account_teacher_profile.education = record['education'] or ""
+        account_teacher_profile.bio = record['teacher_bio'] or ""
+        account_teacher_profile.url_bio = record['teacher_bio_link'] or ""
+        account_teacher_profile.url_website = record['teacher_website'] or ""
+
+        account_teacher_profile.save()
 
 
     def _import_os_auth_user(self):

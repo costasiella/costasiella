@@ -79,3 +79,5 @@ class Account(AbstractUser):
             account=self
         )
         account_teacher_profile.save()
+
+        return account_teacher_profile
