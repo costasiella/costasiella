@@ -63,3 +63,19 @@ class Account(AbstractUser):
             primary=True
         )
         email_address.save()
+
+    def create_bank_account(self):
+        from .account_bank_account import AccountBankAccount
+
+        account_bank_account = AccountBankAccount(
+            account=self
+        )
+        account_bank_account.save()
+
+    def create_teacher_profile(self):
+        from .account_teacher_profile import AccountTeacherProfile
+
+        account_teacher_profile = AccountTeacherProfile(
+            account=self
+        )
+        account_teacher_profile.save()
