@@ -569,7 +569,7 @@ class Command(BaseCommand):
                 sort_order=record['sortorder'],
                 min_duration=record['minduration'],
                 classes=record['classes'] or 0,
-                subscription_unit=self.map_validity_units_subscriptions.get(record['subscriptionunit'], 'month'),
+                subscription_unit=self.map_validity_units_subscriptions.get(record['subscriptionunit'], 'MONTH'),
                 reconciliation_classes=record['reconciliationclasses'],
                 credit_validity=record['creditvalidity'] or 1,
                 unlimited=self._web2py_bool_to_python(record['unlimited']),
@@ -837,7 +837,7 @@ class Command(BaseCommand):
 
             try:
                 account = m.Account(
-                    is_active=self._web2py_bool_to_python(record['trashed']),
+                    is_active=not self._web2py_bool_to_python(record['trashed']), # We need to invert this
                     customer=self._web2py_bool_to_python(record['customer']),
                     teacher=self._web2py_bool_to_python(record['teacher']),
                     employee=self._web2py_bool_to_python(record['teacher']),
