@@ -102,8 +102,8 @@ const RelationsAccounts = ({ t, history }) => (
       <Query query={GET_ACCOUNTS_QUERY} variables={get_list_query_variables()} notifyOnNetworkStatusChange>
         {({ loading, error, data, refetch, fetchMore, variables}) => {
           // Loading
-          if (loading) return (
-            <RelationsAccountsBase refetch={refetch}>
+          if (loading && !data.accounts) return (
+            <RelationsAccountsBase>
               <ContentCard cardTitle={t('relations.accounts.title')}>
                 <Dimmer active={true}
                         loader={true}>
@@ -142,9 +142,11 @@ const RelationsAccounts = ({ t, history }) => (
               {t('general.deleted')}
             </Button>
           </Card.Options>
+
+          let accounts = data.accounts
           
           // Empty list
-          if (!data.accounts.edges.length) { return (
+          if (!accounts.edges.length) { return (
             <RelationsAccountsBase refetch={refetch}>
               <ContentCard cardTitle={t('relations.accounts.title')}
                             headerContent={headerOptions}>
@@ -174,13 +176,10 @@ const RelationsAccounts = ({ t, history }) => (
                                  return newEdges.length
                                    ? {
                                        // Put the new accounts at the end of the list and update `pageInfo`
-                                       // so we have the new `endCursor` and `hasNextPage` values
-                                      data: {
-                                        accounts: {
-                                          __typename: previousResult.accounts.__typename,
-                                          edges: [ ...previousResult.accounts.edges, ...newEdges ],
-                                          pageInfo
-                                        }
+                                      accounts: {
+                                        __typename: previousResult.accounts.__typename,
+                                        edges: [ ...previousResult.accounts.edges, ...newEdges ],
+                                        pageInfo
                                       }
                                     }
                                   : previousResult
@@ -196,7 +195,7 @@ const RelationsAccounts = ({ t, history }) => (
                     </Table.Row>
                   </Table.Header>
                   <Table.Body>
-                      {data.accounts.edges.map(({ node }) => (
+                      {accounts.edges.map(({ node }) => (
                         <Table.Row key={v4()}>
                           <Table.Col key={v4()}>
                             {node.firstName} {node.lastName}
