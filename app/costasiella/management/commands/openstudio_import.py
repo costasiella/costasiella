@@ -53,6 +53,7 @@ class Command(BaseCommand):
         self.school_locations_map = None
         self.school_locations_rooms_map = None
         self.auth_user_map = None
+        self.auth_user_business_map = None
 
     def add_arguments(self, parser):
         parser.add_argument(
@@ -252,6 +253,7 @@ class Command(BaseCommand):
         self.school_locations_rooms_map = locations_import_result['id_map_rooms']
         auth_user_result = self._import_auth_user()
         self.auth_user_map = auth_user_result['id_map_auth_user']
+        self.auth_user_business_map = self._import_auth_user_business()
 
     def _import_os_sys_organization_to_organization(self):
         """
@@ -883,6 +885,49 @@ class Command(BaseCommand):
         return {
             'id_map_auth_user': id_map_auth_user,
         }
+
+    def _import_auth_user_business(self):
+        """
+        Fetch business auth_user records and import it in Costasiella.
+        :param cursor: MySQL db cursor
+        :return: None
+        """
+        query = "SELECT * from auth_user where business = 'T'"
+        self.cursor.execute(query)
+        records = self.cursor.fetchall()
+
+        id_map = {}
+        records_imported = 0
+        for record in records:
+            record = {k.lower(): v for k, v in record.items()}
+
+            business = m.Business(
+                archived=self._web2py_bool_to_python(record['trashed']),
+                b2b=True,
+                supplier=False,
+                vip=False,
+                name=record['company'] or record['full_name'],
+                address=record['address'] or "",
+                postcode=record['postcode'] or "",
+                city=record['city'] or "",
+                country=record['country'] or "",
+                phone=record['phone'] or "",
+                phone_2=record['mobile'] or "",
+                email_contact=record['email'] or "",
+                email_billing=record['email'] or "",
+                registration=record['company_registration'] or "",
+                tax_registration=record['company_tax_registration'] or ""
+            )
+            business.save()
+            records_imported += 1
+
+            id_map[record['id']] = business
+
+        log_message = "Import businesses: "
+        self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
+        logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
+
+        return id_map
 
     def _import_auth_user_create_teacher_profile(self, account, record):
         # Create teacher profile for account

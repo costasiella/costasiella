@@ -96,8 +96,10 @@ function RelationsB2B({ t, history }) {
     </RelationsB2BBase>
   )
 
+  let businesses = data.businesses
+
   // Empty list
-  if (!data.businesses.edges.length) { return (
+  if (!businesses.edges.length) { return (
     <RelationsB2BBase refetch={refetch}>
       <ContentCard cardTitle={t('relations.b2b.title')}
                    headerContent={headerOptions}>
@@ -112,15 +114,17 @@ function RelationsB2B({ t, history }) {
 
   console.log(data)
 
+  
+
   return (
     <RelationsB2BBase refetch={refetch}>
       <ContentCard cardTitle={t('relations.b2b.title')}
                     headerContent={headerOptions}
-                    pageInfo={data.businesses.pageInfo}
+                    pageInfo={businesses.pageInfo}
                     onLoadMore={() => {
                       fetchMore({
                         variables: {
-                          after: data.businesses.pageInfo.endCursor
+                          after: businesses.pageInfo.endCursor
                         },
                         updateQuery: (previousResult, { fetchMoreResult }) => {
                           const newEdges = fetchMoreResult.businesses.edges
@@ -130,13 +134,11 @@ function RelationsB2B({ t, history }) {
                             ? {
                                 // Put the new businesses at the end of the list and update `pageInfo`
                                 // so we have the new `endCursor` and `hasNextPage` values
-                              data: {
                                 businesses: {
                                   __typename: previousResult.businesses.__typename,
                                   edges: [ ...previousResult.businesses.edges, ...newEdges ],
                                   pageInfo
                                 }
-                              }
                             }
                           : previousResult
                       }
