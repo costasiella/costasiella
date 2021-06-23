@@ -5,6 +5,7 @@ import datetime
 import django.db.utils
 from django.core.management.base import BaseCommand, CommandError, no_translations
 from django.utils import timezone
+from django.conf import settings
 import costasiella.models as m
 
 import MySQLdb
@@ -33,6 +34,8 @@ class Command(BaseCommand):
             'week': 'WEEK',
             'month': 'MONTH'
         }
+
+        self.cs_media_root = settings.MEDIA_ROOT
 
         # Define maps
         self.accounting_costcenters_map = None
@@ -86,6 +89,12 @@ class Command(BaseCommand):
             default=3306,
             help="OpenStudio database port (default: 3306)"
         )
+        parser.add_argument(
+            '--os_uploads_folder',
+            type=str,
+            default="",
+            help="OpenStudio uploads folder (default: '')"
+        )
 
     def _yes_or_no(self, question, exit_on_no=True):
         """
@@ -119,6 +128,12 @@ class Command(BaseCommand):
         self.stdout.write("password: %s" % options['db_password'])
         self.stdout.write("host: %s" % options['db_host'])
         self.stdout.write("port: %s" % options['db_port'])
+        self.stdout.write("-----")
+        self.stdout.write("")
+        self.stdout.write("-----")
+        self.stdout.write("Media folders:")
+        self.stdout.write("Costasiella: %s" % self.cs_media_root)
+        self.stdout.write("OpenStudio: %s" % options['os_uploads_folder'])
         self.stdout.write("-----")
         self.stdout.write("")
 
