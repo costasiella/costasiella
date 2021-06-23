@@ -36,6 +36,7 @@ class Command(BaseCommand):
         }
 
         self.cs_media_root = settings.MEDIA_ROOT
+        self.os_media_root = None
 
         # Define maps
         self.accounting_costcenters_map = None
@@ -190,6 +191,10 @@ class Command(BaseCommand):
         """
         options_confirmation = self._confirm_args(**options)
         if options_confirmation:
+            # Set openstudio media folder (if any set)
+            if options['os_uploads_folder']:
+                self.os_media_root = options['os_uploads_folder']
+            # Setup db connection
             self.stdout.write("")
             self.stdout.write("Testing OpenStudio MySQL connection...")
             self.cursor = self._connect_to_db_and_set_cursor(
