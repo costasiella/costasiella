@@ -3,6 +3,7 @@ import os
 import datetime
 
 import django.db.utils
+from django.core.files.base import ContentFile
 from django.core.management.base import BaseCommand, CommandError, no_translations
 from django.utils import timezone
 from django.conf import settings
@@ -718,14 +719,30 @@ class Command(BaseCommand):
         for record in records:
             record = {k.lower(): v for k, v in record.items()}
 
+            os_file = None
+            if record.get('picture', None):
+                os_file = os.path.join(self.os_media_root, record['picture'])
+
             organization_classtype = m.OrganizationClasstype(
                 archived=self._web2py_bool_to_python(record['archived']),
                 display_public=self._web2py_bool_to_python(record['allowapi']),
                 name=record['name'],
                 description=record['description'] or "",
-                url_website=record['link'] or ""
+                url_website=record['link'] or "",
             )
+            try:
+                with open(os_file, 'rb') as fh:
+                    # Get the content of the file, we also need to close the content file
+                    with ContentFile(fh.read()) as file_content:
+                        # Set the media attribute of the article, but under an other path/filename
+                        organization_classtype.image.save(record['picture'], file_content)
+            except FileNotFoundError:
+                logging.error("Could not find classtype image: %s" % os_file)
+            except TypeError:
+                pass
+
             organization_classtype.save()
+
             records_imported += 1
 
             id_map[record['id']] = organization_classtype
@@ -851,7 +868,6 @@ class Command(BaseCommand):
         records = self.cursor.fetchall()
 
         id_map_auth_user = {}
-        id_map_auth_user_business = {}
         id_map_auth_user_teacher_profile = {}
         records_imported = 0
         for record in records:

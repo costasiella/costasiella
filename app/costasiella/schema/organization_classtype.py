@@ -141,7 +141,6 @@ class UploadOrganizationClasstypeImage(graphene.relay.ClientIDMutation):
         id = graphene.ID(required=True)
         image = graphene.String(required=True)
 
-
     organization_classtype = graphene.Field(OrganizationClasstypeNode)
 
     @classmethod
@@ -169,7 +168,6 @@ class UploadOrganizationClasstypeImage(graphene.relay.ClientIDMutation):
         (image_type, image_file) = b64_enc_image.split(',')
         # print(image_type)
 
-        
         classtype.image = base64_file(data=b64_enc_image)
         classtype.save()
 
