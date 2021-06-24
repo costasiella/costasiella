@@ -62,6 +62,7 @@ class Command(BaseCommand):
         self.customers_classcards_map = None
         self.customers_subscriptions_map = None
         self.customers_subscriptions_alt_prices_map = None
+        self.customers_subscriptions_blocks_map = None
 
     def add_arguments(self, parser):
         parser.add_argument(
@@ -281,6 +282,7 @@ class Command(BaseCommand):
         self.customers_classcards_map = self._import_customers_classcards()
         self.customers_subscriptions_map = self._import_customers_subscriptions()
         self.customers_subscriptions_alt_prices_map = self._import_customers_subscriptions_alt_prices()
+        self.customers_subscriptions_blocks_map = self._import_customers_subscriptions_blocks()
 
     def _import_os_sys_organization_to_organization(self):
         """
@@ -1103,6 +1105,45 @@ class Command(BaseCommand):
             id_map[record['id']] = account_subscription_alt_price
 
         log_message = "Import customer subscriptions alt prices: "
+        self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
+        logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
+
+        return id_map
+
+    def _import_customers_subscriptions_blocks(self):
+        """
+        Fetch customer subscriptions blocks and import it in Costasiella.
+        :param cursor: MySQL db cursor
+        :return: None
+        """
+        query = "SELECT * FROM customers_subscriptions_blocked"
+        self.cursor.execute(query)
+        records = self.cursor.fetchall()
+
+        id_map = {}
+        records_imported = 0
+        for record in records:
+            record = {k.lower(): v for k, v in record.items()}
+
+            try:
+                account_subscription_block = m.AccountSubscriptionBlock(
+                    account_subscription=self.customers_subscriptions_map.get(record['customers_subscriptions_id'], None),
+                    date_start=record['startdate'],
+                    date_end=record['enddate'],
+                    description=record['description'] or "",
+                )
+                account_subscription_block.save()
+                records_imported += 1
+
+                id_map[record['id']] = account_subscription_block
+            except django.db.utils.IntegrityError as e:
+                logging.error("Import customer subscription block error for subscription id: %s : %s: %s" % (
+                    record['customers_subscriptions_id'],
+                    record['id'],
+                    e
+                ))
+
+        log_message = "Import customer subscriptions block: "
         self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
         logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
 
