@@ -287,6 +287,7 @@ class Command(BaseCommand):
         self.customers_subscriptions_blocks_map = self._import_customers_subscriptions_blocks()
         self.customers_subscriptions_pauses_map = self._import_customers_subscriptions_pauses()
         self.customers_notes_map = self._import_customers_notes()
+        self._import_customers_payment_info()
 
     def _import_os_sys_organization_to_organization(self):
         """
@@ -1231,11 +1232,46 @@ class Command(BaseCommand):
                     e
                 ))
 
-        log_message = "Import customes notes: "
+        log_message = "Import customers notes: "
         self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
         logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
 
         return id_map
+
+    def _import_customers_payment_info(self):
+        """
+        Fetch customers payment info and import it in Costasiella.
+        :param cursor: MySQL db cursor
+        :return: None
+        """
+        query = "SELECT * FROM customers_payment_info"
+        self.cursor.execute(query)
+        records = self.cursor.fetchall()
+
+        records_imported = 0
+        for record in records:
+            record = {k.lower(): v for k, v in record.items()}
+
+            account = self.auth_user_map.get(record['auth_customer_id'], None)
+            if not account:
+                logging.error("Import customer payment info error for user id: %s" % (
+                    record['auth_customer_id'],
+                ))
+                continue
+
+            account_bank_account = m.AccountBankAccount.objects.filter(account=account).first()
+            account_bank_account.number = record['accountnumber'] or ""
+            account_bank_account.holder = record['accountholder'] or ""
+            account_bank_account.bic = record['bic'] or ""
+            account_bank_account.save()
+
+            records_imported += 1
+
+        log_message = "Import customers payment info (bank accounts): "
+        self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
+        logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
+
+        return None
 
     def _update_account_classpasses_remaining(self):
         """
