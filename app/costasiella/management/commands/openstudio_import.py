@@ -61,6 +61,7 @@ class Command(BaseCommand):
         self.auth_user_business_map = None
         self.customers_classcards_map = None
         self.customers_subscriptions_map = None
+        self.customers_subscriptions_alt_prices_map = None
 
     def add_arguments(self, parser):
         parser.add_argument(
@@ -279,6 +280,7 @@ class Command(BaseCommand):
         self.auth_user_business_map = self._import_auth_user_business()
         self.customers_classcards_map = self._import_customers_classcards()
         self.customers_subscriptions_map = self._import_customers_subscriptions()
+        self.customers_subscriptions_alt_prices_map = self._import_customers_subscriptions_alt_prices()
 
     def _import_os_sys_organization_to_organization(self):
         """
@@ -1045,8 +1047,6 @@ class Command(BaseCommand):
         for record in records:
             record = {k.lower(): v for k, v in record.items()}
 
-            print(record)
-
             try:
                 account_subscription = m.AccountSubscription(
                     account=self.auth_user_map.get(record['auth_customer_id'], None),
@@ -1069,6 +1069,40 @@ class Command(BaseCommand):
                 ))
 
         log_message = "Import customer subscriptions: "
+        self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
+        logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
+
+        return id_map
+
+    def _import_customers_subscriptions_alt_prices(self):
+        """
+        Fetch customer subscriptions alt prices and import it in Costasiella.
+        :param cursor: MySQL db cursor
+        :return: None
+        """
+        query = "SELECT * FROM customers_subscriptions_alt_prices"
+        self.cursor.execute(query)
+        records = self.cursor.fetchall()
+
+        id_map = {}
+        records_imported = 0
+        for record in records:
+            record = {k.lower(): v for k, v in record.items()}
+
+            account_subscription_alt_price = m.AccountSubscriptionAltPrice(
+                account_subscription=self.customers_subscriptions_map.get(record['customers_subscriptions_id'], None),
+                subscription_year=record['subscriptionyear'],
+                subscription_month=record['subscriptionmonth'],
+                amount=record['amount'],
+                description=record['description'] or "",
+                note=record['note'] or ""
+            )
+            account_subscription_alt_price.save()
+            records_imported += 1
+
+            id_map[record['id']] = account_subscription_alt_price
+
+        log_message = "Import customer subscriptions alt prices: "
         self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
         logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
 
