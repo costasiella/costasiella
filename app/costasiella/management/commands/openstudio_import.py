@@ -59,6 +59,7 @@ class Command(BaseCommand):
         self.school_locations_rooms_map = None
         self.auth_user_map = None
         self.auth_user_business_map = None
+        self.customers_classcards_map = None
 
     def add_arguments(self, parser):
         parser.add_argument(
@@ -275,6 +276,7 @@ class Command(BaseCommand):
         auth_user_result = self._import_auth_user()
         self.auth_user_map = auth_user_result['id_map_auth_user']
         self.auth_user_business_map = self._import_auth_user_business()
+        self.customers_classcards_map = self._import_customers_classcards()
 
     def _import_os_sys_organization_to_organization(self):
         """
@@ -383,7 +385,7 @@ class Command(BaseCommand):
                 archived=self._web2py_bool_to_python(record['archived']),
                 name=record['name'],
                 percentage=record['percentage'],
-                rate_type="in",
+                rate_type="IN",
                 code=record['vatcodeid'] or ""
             )
             finance_tax_rate.save()
@@ -863,7 +865,8 @@ class Command(BaseCommand):
         :param cursor: MySQL db cursor
         :return: None
         """
-        query = "SELECT * FROM auth_user WHERE business='F'"
+        # Import all users, as also business accounts might have cards or subscriptions attached to them
+        query = "SELECT * FROM auth_user"
         self.cursor.execute(query)
         records = self.cursor.fetchall()
 
@@ -980,6 +983,49 @@ class Command(BaseCommand):
         account_teacher_profile.url_website = record['teacher_website'] or ""
 
         account_teacher_profile.save()
+
+    def _import_customers_classcards(self):
+        """
+        Fetch customer classcards and import it in Costasiella.
+        :param cursor: MySQL db cursor
+        :return: None
+        """
+        query = "SELECT * from customers_classcards"
+        self.cursor.execute(query)
+        records = self.cursor.fetchall()
+
+        id_map = {}
+        records_imported = 0
+        for record in records:
+            record = {k.lower(): v for k, v in record.items()}
+
+            print(record)
+
+            account_classpass = m.AccountClasspass(
+                account=self.auth_user_map.get(record['auth_customer_id'], None),
+                organization_classpass=self.school_classcards_map.get(record['school_classcards_id']),
+                date_start=record['startdate'],
+                date_end=record['enddate'],
+                note=record['note'] or "",
+                classes_remaining=0
+            )
+            account_classpass.save()
+            records_imported += 1
+
+            id_map[record['id']] = account_classpass
+
+        log_message = "Import customer class cards: "
+        self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
+        logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
+
+        return id_map
+
+    def _update_account_classpasses_remaining(self):
+        """
+        Update remaining classes for all class passes, now that the attendance has been imported.
+        :return:
+        """
+        #TODO: Write function
 
 
     def _import_os_auth_user(self):
