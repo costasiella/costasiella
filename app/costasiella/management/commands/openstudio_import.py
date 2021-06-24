@@ -64,6 +64,7 @@ class Command(BaseCommand):
         self.customers_subscriptions_alt_prices_map = None
         self.customers_subscriptions_blocks_map = None
         self.customers_subscriptions_pauses_map = None
+        self.customers_notes_map = None
 
     def add_arguments(self, parser):
         parser.add_argument(
@@ -285,6 +286,7 @@ class Command(BaseCommand):
         self.customers_subscriptions_alt_prices_map = self._import_customers_subscriptions_alt_prices()
         self.customers_subscriptions_blocks_map = self._import_customers_subscriptions_blocks()
         self.customers_subscriptions_pauses_map = self._import_customers_subscriptions_pauses()
+        self.customers_notes_map = self._import_customers_notes()
 
     def _import_os_sys_organization_to_organization(self):
         """
@@ -1185,6 +1187,51 @@ class Command(BaseCommand):
                 ))
 
         log_message = "Import customer subscriptions pause: "
+        self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
+        logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
+
+        return id_map
+
+    def _import_customers_notes(self):
+        """
+        Fetch customer notes and import it in Costasiella.
+        :param cursor: MySQL db cursor
+        :return: None
+        """
+        query = "SELECT * from customers_notes"
+        self.cursor.execute(query)
+        records = self.cursor.fetchall()
+
+        id_map = {}
+        records_imported = 0
+        for record in records:
+            record = {k.lower(): v for k, v in record.items()}
+
+            note_type = "BACKOFFICE"
+            if record['teachernote']:
+                note_type = "TEACHERS"
+
+            try:
+                account_note = m.AccountNote(
+                    account=self.auth_user_map.get(record['auth_customer_id'], None),
+                    note_by=self.auth_user_map.get(record['auth_user_id'], None),
+                    note_type=note_type,
+                    note=record['note'] or "",
+                    injury=self._web2py_bool_to_python(record['injury']),
+                    processed=self._web2py_bool_to_python(record['processed']),
+                )
+                account_note.save()
+                records_imported += 1
+
+                id_map[record['id']] = account_note
+            except django.db.utils.IntegrityError as e:
+                logging.error("Import customer note error for user id: %s note id: %s : %s" % (
+                    record['auth_customer_id'],
+                    record['id'],
+                    e
+                ))
+
+        log_message = "Import customes notes: "
         self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
         logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
 
