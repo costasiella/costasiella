@@ -65,6 +65,8 @@ class Command(BaseCommand):
         self.customers_subscriptions_blocks_map = None
         self.customers_subscriptions_pauses_map = None
         self.customers_notes_map = None
+        self.customers_payment_info_map = None
+        self.customers_payment_info_mandates_map = None
 
     def add_arguments(self, parser):
         parser.add_argument(
@@ -287,7 +289,8 @@ class Command(BaseCommand):
         self.customers_subscriptions_blocks_map = self._import_customers_subscriptions_blocks()
         self.customers_subscriptions_pauses_map = self._import_customers_subscriptions_pauses()
         self.customers_notes_map = self._import_customers_notes()
-        self._import_customers_payment_info()
+        self.customers_payment_info_map = self._import_customers_payment_info()
+        self.customers_payment_info_mandates_map = self._import_customers_payment_mandates()
 
     def _import_os_sys_organization_to_organization(self):
         """
@@ -1209,7 +1212,7 @@ class Command(BaseCommand):
             record = {k.lower(): v for k, v in record.items()}
 
             note_type = "BACKOFFICE"
-            if record['teachernote']:
+            if record['teachernote'] == "T":
                 note_type = "TEACHERS"
 
             try:
@@ -1248,6 +1251,7 @@ class Command(BaseCommand):
         self.cursor.execute(query)
         records = self.cursor.fetchall()
 
+        id_map = {}
         records_imported = 0
         for record in records:
             record = {k.lower(): v for k, v in record.items()}
@@ -1265,13 +1269,58 @@ class Command(BaseCommand):
             account_bank_account.bic = record['bic'] or ""
             account_bank_account.save()
 
+            id_map[record['id']] = account_bank_account
+
             records_imported += 1
 
         log_message = "Import customers payment info (bank accounts): "
         self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
         logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
 
-        return None
+        return id_map
+
+    def _import_customers_payment_mandates(self):
+        """
+        Fetch customers payment info mandates and import it in Costasiella.
+        :param cursor: MySQL db cursor
+        :return: None
+        """
+        query = "SELECT * FROM customers_payment_info_mandates"
+        self.cursor.execute(query)
+        records = self.cursor.fetchall()
+
+        id_map = {}
+        records_imported = 0
+        for record in records:
+            record = {k.lower(): v for k, v in record.items()}
+
+            try:
+                content = ""
+                if record['mandatetext']:
+                    content = record['mandatetext'][:250]
+
+                account_bank_account_mandate = m.AccountBankAccountMandate(
+                    account_bank_account=self.customers_payment_info_map.get(record['customers_payment_info_id'], None),
+                    reference=record['mandatereference'] or "",
+                    content=content,
+                    signature_date=record['mandatesignaturedate']
+                )
+                account_bank_account_mandate.save()
+                records_imported += 1
+
+                id_map[record['id']] = account_bank_account_mandate
+            except django.db.utils.IntegrityError as e:
+                logging.error("Import customer payment info mandate error for payment info id: %s note id: %s : %s" % (
+                    record['customers_payment_info_id'],
+                    record['id'],
+                    e
+                ))
+
+        log_message = "Import customers payment info (bank accounts) mandates: "
+        self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
+        logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
+
+        return id_map
 
     def _update_account_classpasses_remaining(self):
         """
