@@ -60,6 +60,7 @@ class Command(BaseCommand):
         self.auth_user_map = None
         self.auth_user_business_map = None
         self.customers_classcards_map = None
+        self.customers_subscriptions_map = None
 
     def add_arguments(self, parser):
         parser.add_argument(
@@ -277,6 +278,7 @@ class Command(BaseCommand):
         self.auth_user_map = auth_user_result['id_map_auth_user']
         self.auth_user_business_map = self._import_auth_user_business()
         self.customers_classcards_map = self._import_customers_classcards()
+        self.customers_subscriptions_map = self._import_customers_subscriptions()
 
     def _import_os_sys_organization_to_organization(self):
         """
@@ -409,6 +411,12 @@ class Command(BaseCommand):
         self.cursor.execute(query)
         records = self.cursor.fetchall()
 
+        id_map = {
+            1: m.FinancePaymentMethod.objects.get(id=101),
+            2: m.FinancePaymentMethod.objects.get(id=102),
+            3: m.FinancePaymentMethod.objects.get(id=103),
+            100: m.FinancePaymentMethod.objects.get(id=100),
+        }
         records_imported = 0
         for record in records:
             record = {k.lower(): v for k, v in record.items()}
@@ -419,11 +427,15 @@ class Command(BaseCommand):
                 code=record['accountingcode'] or ""
             )
             finance_payment_method.save()
+
+            id_map[record['id']] = finance_payment_method
             records_imported += 1
 
         log_message = "Import payment methods: "
         self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
         logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
+
+        return id_map
 
     def _import_school_memberships(self):
         """
@@ -866,7 +878,7 @@ class Command(BaseCommand):
         :return: None
         """
         # Import all users, as also business accounts might have cards or subscriptions attached to them
-        query = "SELECT * FROM auth_user"
+        query = "SELECT * FROM auth_user WHERE id > 1"
         self.cursor.execute(query)
         records = self.cursor.fetchall()
 
@@ -931,7 +943,7 @@ class Command(BaseCommand):
         :param cursor: MySQL db cursor
         :return: None
         """
-        query = "SELECT * from auth_user where business = 'T'"
+        query = "SELECT * from auth_user WHERE business = 'T' AND id > 1"
         self.cursor.execute(query)
         records = self.cursor.fetchall()
 
@@ -999,8 +1011,6 @@ class Command(BaseCommand):
         for record in records:
             record = {k.lower(): v for k, v in record.items()}
 
-            print(record)
-
             account_classpass = m.AccountClasspass(
                 account=self.auth_user_map.get(record['auth_customer_id'], None),
                 organization_classpass=self.school_classcards_map.get(record['school_classcards_id']),
@@ -1015,6 +1025,50 @@ class Command(BaseCommand):
             id_map[record['id']] = account_classpass
 
         log_message = "Import customer class cards: "
+        self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
+        logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
+
+        return id_map
+
+    def _import_customers_subscriptions(self):
+        """
+        Fetch customer subscriptins and import it in Costasiella.
+        :param cursor: MySQL db cursor
+        :return: None
+        """
+        query = "SELECT * from customers_subscriptions"
+        self.cursor.execute(query)
+        records = self.cursor.fetchall()
+
+        id_map = {}
+        records_imported = 0
+        for record in records:
+            record = {k.lower(): v for k, v in record.items()}
+
+            print(record)
+
+            try:
+                account_subscription = m.AccountSubscription(
+                    account=self.auth_user_map.get(record['auth_customer_id'], None),
+                    organization_subscription=self.school_subscriptions_map.get(record['school_subscriptions_id'], None),
+                    finance_payment_method=self.payment_methods_map.get(record['payment_methods_id'], None),
+                    date_start=record['startdate'],
+                    date_end=record['enddate'],
+                    note=record['note'] or "",
+                    registration_fee_paid=self._web2py_bool_to_python(record['registrationfeepaid'])
+                )
+                account_subscription.save()
+                records_imported += 1
+
+                id_map[record['id']] = account_subscription
+            except django.db.utils.IntegrityError as e:
+                logging.error("Import customer subscription error for user id: %s subscription id: %s : %s" % (
+                    record['auth_customer_id'],
+                    record['id'],
+                    e
+                ))
+
+        log_message = "Import customer subscriptions: "
         self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
         logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
 
