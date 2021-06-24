@@ -64,11 +64,11 @@ class OrganizationHome extends Component {
                       <StampCard header={<small>{t('organization.classpasses.title')}</small>} footer={t('')} color="blue" icon="credit-card" />
                     </Link>
                   </Grid.Col>
-                  <Grid.Col md={4} lg={4}>
+                  {/* <Grid.Col md={4} lg={4}>
                     <Link to='/organization/memberships'>
                       <StampCard header={<small>{t('organization.memberships.title')}</small>} footer={t('')} color="blue" icon="clipboard" />
                     </Link>
-                  </Grid.Col>
+                  </Grid.Col> */}
                   <Grid.Col md={4} lg={4}>
                     <Link to='/organization/subscriptions'>
                       <StampCard header={<small>{t('organization.subscriptions.title')}</small>} footer={t('')} color="blue" icon="edit" />

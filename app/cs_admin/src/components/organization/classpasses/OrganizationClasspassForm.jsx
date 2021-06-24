@@ -180,7 +180,7 @@ class OrganizationClasspassForm extends Component {
                         autoComplete="off" />
                 <ErrorMessage name="classes" component="span" className="invalid-feedback" />
             </Form.Group> } 
-            <Form.Group label={t('general.membership')}>
+            {/* <Form.Group label={t('general.membership')}>
                 <Field component="select" 
                         name="organizationMembership" 
                         className={(errors.organizationMembership) ? "form-control is-invalid" : "form-control"} 
@@ -191,7 +191,7 @@ class OrganizationClasspassForm extends Component {
                 )}
                 </Field>
                 <ErrorMessage name="organizationMembership" component="span" className="invalid-feedback" />
-            </Form.Group> 
+            </Form.Group>  */}
             { (values.unlimited) ? 
                     <Form.Group label={t('general.quickStatsAmount')}>
                     <Field type="text" 

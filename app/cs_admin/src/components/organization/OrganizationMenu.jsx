@@ -73,7 +73,7 @@ const OrganizationMenu = ({ t, active_link }) => (
             >
             {t('organization.discoveries.title')}
         </List.GroupItem>
-        <List.GroupItem
+        {/* <List.GroupItem
             key={v4()}
             className="d-flex align-items-center"
             to="#/organization/memberships"
@@ -81,7 +81,7 @@ const OrganizationMenu = ({ t, active_link }) => (
             active={memberships_active}
             >
             {t('organization.memberships.title')}
-        </List.GroupItem>
+        </List.GroupItem> */}
         <List.GroupItem
             key={v4()}
             className="d-flex align-items-center"

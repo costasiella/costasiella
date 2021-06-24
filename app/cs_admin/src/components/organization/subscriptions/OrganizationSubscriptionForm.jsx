@@ -135,7 +135,7 @@ const OrganizationSubscriptionForm = ({ t, history, inputData, isSubmitting, set
           />
         <ErrorMessage name="termsAndConditions" component="span" className="invalid-feedback" />
       </Form.Group>
-      <Form.Group label={t('general.membership')}>
+      {/* <Form.Group label={t('general.membership')}>
         <Field component="select" 
               name="organizationMembership" 
               className={(errors.organizationMembership) ? "form-control is-invalid" : "form-control"} 
@@ -146,7 +146,7 @@ const OrganizationSubscriptionForm = ({ t, history, inputData, isSubmitting, set
           )}
         </Field>
         <ErrorMessage name="organizationMembership" component="span" className="invalid-feedback" />
-      </Form.Group> 
+      </Form.Group>  */}
       <Form.Group label={t('general.glaccount')}>
         <Field component="select" 
               name="financeGlaccount" 
