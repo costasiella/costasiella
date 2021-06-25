@@ -143,7 +143,8 @@ function ScheduleClasses ({ t, history }) {
             // Empty list
             if (!data.scheduleClasses.length) { return (
               <ContentCard cardTitle={t('schedule.classes.title')}
-                            headerContent={headerOptions}>
+                            headerContent={headerOptions}
+                            hasCardBody={true}>
                 <p>
                   {t('schedule.classes.empty_list')}
                 </p>
@@ -256,7 +257,7 @@ function ScheduleClasses ({ t, history }) {
                               </span>
                             </Card.Title>
                           </Card.Header>
-                          {!(classes.length) ? t('schedule.classes.empty_list') :
+                          {!(classes.length) ? <Card.Body>{t('schedule.classes.empty_list')}</Card.Body> :
                             <Table cards>
                               <Table.Header>
                                 <Table.Row key={v4()}>
