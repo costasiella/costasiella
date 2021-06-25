@@ -67,6 +67,7 @@ class Command(BaseCommand):
         self.customers_notes_map = None
         self.customers_payment_info_map = None
         self.customers_payment_info_mandates_map = None
+        self.classes_map = None
 
     def add_arguments(self, parser):
         parser.add_argument(
@@ -291,6 +292,7 @@ class Command(BaseCommand):
         self.customers_notes_map = self._import_customers_notes()
         self.customers_payment_info_map = self._import_customers_payment_info()
         self.customers_payment_info_mandates_map = self._import_customers_payment_mandates()
+        self.classes_map = self._import_classes()
 
     def _import_os_sys_organization_to_organization(self):
         """
@@ -1317,6 +1319,54 @@ class Command(BaseCommand):
                 ))
 
         log_message = "Import customers payment info (bank accounts) mandates: "
+        self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
+        logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
+
+        return id_map
+
+    def _import_classes(self):
+        """
+        Fetch classes and import it in Costasiella.
+        :param cursor: MySQL db cursor
+        :return: None
+        """
+        query = "SELECT * FROM classes"
+        self.cursor.execute(query)
+        records = self.cursor.fetchall()
+
+        id_map = {}
+        records_imported = 0
+        for record in records:
+            record = {k.lower(): v for k, v in record.items()}
+
+            try:
+                schedule_item = m.ScheduleItem(
+                    schedule_event=None,
+                    schedule_item_type="CLASS",
+                    frequency_type="WEEKLY",
+                    frequency_interval=record['week_day'],
+                    organization_location_room=self.school_locations_rooms_map.get(record['school_locations_id'], None),
+                    organization_classtype=self.school_classtypes_map.get(record['school_classtypes_id'], None),
+                    organization_level=self.school_levels_map.get(record['school_levels_id'], None),
+                    spaces=record['maxstudents'],
+                    walk_in_spaces=record['walkinspaces'],
+                    date_start=record['startdate'],
+                    date_end=record['enddate'],
+                    time_start=str(record['starttime']),
+                    time_end=str(record['endtime']),
+                    display_public=self._web2py_bool_to_python(record['allowapi']),
+                )
+                schedule_item.save()
+                records_imported += 1
+
+                id_map[record['id']] = schedule_item
+            except django.db.utils.IntegrityError as e:
+                logging.error("Import error for class id: %s: %s" % (
+                    record['id'],
+                    e
+                ))
+
+        log_message = "Import classes: "
         self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
         logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
 
