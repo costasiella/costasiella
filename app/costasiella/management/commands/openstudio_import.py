@@ -1330,7 +1330,7 @@ class Command(BaseCommand):
         :param cursor: MySQL db cursor
         :return: None
         """
-        query = "SELECT * FROM classes"
+        query = "SELECT cla.*, clm.* FROM classes cla LEFT JOIN classes_mail clm ON cla.id = clm.classes_id"
         self.cursor.execute(query)
         records = self.cursor.fetchall()
 
@@ -1338,6 +1338,8 @@ class Command(BaseCommand):
         records_imported = 0
         for record in records:
             record = {k.lower(): v for k, v in record.items()}
+
+            print(record)
 
             try:
                 schedule_item = m.ScheduleItem(
@@ -1355,6 +1357,7 @@ class Command(BaseCommand):
                     time_start=str(record['starttime']),
                     time_end=str(record['endtime']),
                     display_public=self._web2py_bool_to_python(record['allowapi']),
+                    info_mail_content=record['mailcontent'] or ""
                 )
                 schedule_item.save()
                 records_imported += 1
