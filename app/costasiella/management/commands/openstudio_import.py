@@ -25,6 +25,10 @@ class Command(BaseCommand):
         self.help = 'Import from OpenStudio. Provide at least --db_name, --db_user and --db_password.'
         self.cursor = None  # Set later on from handle
 
+        self.cs_media_root = settings.MEDIA_ROOT
+        self.os_media_root = None
+
+        # Fixed maps
         self.map_validity_units_cards_and_memberships = {
             'days': 'DAYS',
             'weeks': 'WEEKS',
@@ -36,10 +40,23 @@ class Command(BaseCommand):
             'month': 'MONTH'
         }
 
-        self.cs_media_root = settings.MEDIA_ROOT
-        self.os_media_root = None
+        self.map_attendance_types = {
+            None: 'SUBSCRIPTION',
+            1: 'CLASSPASS', # Trial
+            2: 'CLASSPASS', # Drop in
+            3: 'CLASSPASS',
+            4: 'COMPLEMENTARY',
+            5: 'REVIEW',
+            6: 'RECONCILE_LATER'
+        }
 
-        # Define maps
+        self.map_booking_statuses = {
+            'booked': 'BOOKED',
+            'attending': 'ATTENDING',
+            'cancelled': 'CANCELLED'
+        }
+
+        # Define dynamic maps
         self.accounting_costcenters_map = None
         self.accounting_glaccounts_map = None
         self.tax_rates_map = None
@@ -68,6 +85,7 @@ class Command(BaseCommand):
         self.customers_payment_info_map = None
         self.customers_payment_info_mandates_map = None
         self.classes_map = None
+        self.classes_attendance_map = None
 
     def add_arguments(self, parser):
         parser.add_argument(
@@ -293,6 +311,7 @@ class Command(BaseCommand):
         self.customers_payment_info_map = self._import_customers_payment_info()
         self.customers_payment_info_mandates_map = self._import_customers_payment_mandates()
         self.classes_map = self._import_classes()
+        self.classes_attendance_map = self._import_classes_attendance()
 
     def _import_os_sys_organization_to_organization(self):
         """
@@ -1339,8 +1358,6 @@ class Command(BaseCommand):
         for record in records:
             record = {k.lower(): v for k, v in record.items()}
 
-            print(record)
-
             try:
                 schedule_item = m.ScheduleItem(
                     schedule_event=None,
@@ -1370,6 +1387,51 @@ class Command(BaseCommand):
                 ))
 
         log_message = "Import classes: "
+        self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
+        logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
+
+        return id_map
+
+    def _import_classes_attendance(self):
+        """
+        Fetch classes attendance and import it in Costasiella.
+        :param cursor: MySQL db cursor
+        :return: None
+        """
+        query = "SELECT * FROM classes_attendance"
+        self.cursor.execute(query)
+        records = self.cursor.fetchall()
+
+        id_map = {}
+        records_imported = 0
+        for record in records:
+            record = {k.lower(): v for k, v in record.items()}
+
+            try:
+                schedule_item_attendance = m.ScheduleItemAttendance(
+                    account=self.auth_user_map.get(record['auth_customer_id'], None),
+                    schedule_item=self.classes_map.get(record['classes_id'], None),
+                    account_classpass=self.customers_classcards_map.get(record['customers_classcards_id'], None),
+                    account_subscription=self.customers_subscriptions_map.get(record['customers_subscriptions_id'],
+                                                                              None),
+                    finance_invoice_item=None,
+                    # Set to True when account has membership at time of check-in
+                    attendance_type=self.map_attendance_types.get(record['attendancetype'], None),
+                    date=record['classdate'],
+                    online_booking=self._web2py_bool_to_python(record['online_booking']),
+                    booking_status=self.map_booking_statuses.get(record['bookingstatus'])
+                )
+                schedule_item_attendance.save()
+                records_imported += 1
+
+                id_map[record['id']] = schedule_item_attendance
+            except django.db.utils.IntegrityError as e:
+                logging.error("Import error for class attendance: %s: %s" % (
+                    record['id'],
+                    e
+                ))
+
+        log_message = "Import classes attendance: "
         self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
         logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
 
