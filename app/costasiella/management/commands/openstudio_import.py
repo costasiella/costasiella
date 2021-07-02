@@ -56,6 +56,19 @@ class Command(BaseCommand):
             'cancelled': 'CANCELLED'
         }
 
+        self.map_classes_otc_statuses = {
+            "normal": "",
+            "open": "OPEN",
+            "cancelled": "CANCELLED"
+        }
+
+        self.map_classes_teacher_roles = {
+            0: "",
+            1: "SUB",
+            2: "ASSISTANT",
+            3: "KARMA"
+        }
+
         # Define dynamic maps
         self.accounting_costcenters_map = None
         self.accounting_glaccounts_map = None
@@ -86,6 +99,7 @@ class Command(BaseCommand):
         self.customers_payment_info_mandates_map = None
         self.classes_map = None
         self.classes_attendance_map = None
+        self.classes_otc_map = None
 
     def add_arguments(self, parser):
         parser.add_argument(
@@ -312,6 +326,7 @@ class Command(BaseCommand):
         self.customers_payment_info_mandates_map = self._import_customers_payment_mandates()
         self.classes_map = self._import_classes()
         self.classes_attendance_map = self._import_classes_attendance()
+        self.classes_map = self._import_classes_otc()
 
     def _import_os_sys_organization_to_organization(self):
         """
@@ -1437,6 +1452,62 @@ class Command(BaseCommand):
 
         return id_map
 
+    def _import_classes_otc(self):
+        """
+        Fetch classes and import it in Costasiella.
+        :param cursor: MySQL db cursor
+        :return: None
+        """
+        query = "SELECT * FROM classes_otc"
+        self.cursor.execute(query)
+        records = self.cursor.fetchall()
+
+        id_map = {}
+        records_imported = 0
+        for record in records:
+            record = {k.lower(): v for k, v in record.items()}
+
+            try:
+                startime = None
+                endtime = None
+                if record['starttime']:
+                    startime = str(record['starttime'])
+                if record['endtime']:
+                    endtime = str(record['endtime'])
+
+                schedule_item_weekly_otc = m.ScheduleItemWeeklyOTC(
+                    schedule_item=self.classes_map.get(record['classes_id'], None),
+                    date=record['classdate'],
+                    status=self.map_classes_otc_statuses.get(record['status'], ""),
+                    description=record['description'] or '',
+                    account=self.auth_user_map.get(record['auth_teacher_id'], None),
+                    role=self.map_classes_teacher_roles.get(record['teacher_role'], None),
+                    account_2=self.auth_user_map.get(record['auth_teacher_id2'], None),
+                    role_2=self.map_classes_teacher_roles.get(record['teacher_role2'], ""),
+                    organization_location_room=self.school_locations_rooms_map.get(record['school_locations_id'], None),
+                    organization_classtype=self.school_classtypes_map.get(record['school_classtypes_id'], None),
+                    time_start=startime,
+                    time_end=endtime,
+                    spaces=record['maxstudents'] or None,
+                    walk_in_spaces=record['walkinspaces'] or None,
+                    info_mail_content=""
+                )
+                schedule_item_weekly_otc.save()
+                records_imported += 1
+
+                id_map[record['id']] = schedule_item_weekly_otc
+            except django.db.utils.IntegrityError as e:
+                logging.error("Import error for class otc id: %s: %s" % (
+                    record['id'],
+                    e
+                ))
+
+        log_message = "Import classes otc: "
+        self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
+        logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
+
+        return id_map
+
     def _update_account_classpasses_remaining(self):
         """
         Update remaining classes for all class passes, now that the attendance has been imported.
@@ -1444,14 +1515,3 @@ class Command(BaseCommand):
         """
         #TODO: Write function
 
-
-    def _import_os_auth_user(self):
-        """
-        Fetch OpenStudio users
-        :param cursor: MySQL db cursor
-        :return:
-        """
-        query = "SELECT * from auth_user"
-        self.cursor.execute(query)
-        print(self.cursor.fetchone())
-        # print(self.cursor.fetchall())
