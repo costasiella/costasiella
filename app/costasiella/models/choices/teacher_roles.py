@@ -2,7 +2,7 @@ from django.utils.translation import gettext as _
 
 
 def get_teacher_roles():
-    return  [
+    return [
         ['', _("Regular")],
         ['SUB', _("Subteacher")],
         ['ASSISTANT', _("Assistant")],
