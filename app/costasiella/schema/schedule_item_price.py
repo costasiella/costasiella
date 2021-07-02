@@ -93,7 +93,6 @@ def validate_schedule_item_price_create_update_input(input):
             if not organization_classpass:
                 raise Exception(_('Invalid Organization Classpass ID!'))   
 
-
     return result
 
 
