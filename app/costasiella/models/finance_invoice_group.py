@@ -3,6 +3,7 @@ from django.utils import timezone
 
 from django.db import models
 
+
 class FinanceInvoiceGroup(models.Model):
     archived = models.BooleanField(default=False)
     display_public = models.BooleanField(default=True)
@@ -19,13 +20,11 @@ class FinanceInvoiceGroup(models.Model):
     def __str__(self):
         return self.name
 
-
     def _next_invoice_number_new_year(self, first_invoice_this_year):
         """ Reset numbering to 1 for first invoice in year """
         if first_invoice_this_year and self.auto_reset_prefix_year:
             self.next_id = 1
             self.save()
-
 
     def next_invoice_number(self, year, first_invoice_this_year):
         """ Get next invoice number """
@@ -40,4 +39,3 @@ class FinanceInvoiceGroup(models.Model):
         invoice_number += str(self.next_id)
 
         return invoice_number
-    

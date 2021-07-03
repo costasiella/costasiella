@@ -103,6 +103,9 @@ class Command(BaseCommand):
         self.classes_school_classcards_groups_map = None
         self.classes_school_subscriptions_groups_map = None
         self.classes_teachers_map = None
+        self.invoices_groups_map = None
+        self.invoices_map = None
+        self.customers_orders_map = None
 
     def add_arguments(self, parser):
         parser.add_argument(
@@ -333,6 +336,9 @@ class Command(BaseCommand):
         self.classes_school_classcards_groups_map = self._import_classes_school_classcards_groups()
         self.classes_school_subscriptions_groups_map = self._import_classes_school_subscriptions_groups()
         self.classes_teachers_map = self._import_classes_teachers()
+        self.invoices_groups_map = self._import_invoices_groups()
+        # self.finance_invoices_map = self._import_invoices()
+        # self.customers_orders_map = self._impport_customers_orders()
 
     def _import_os_sys_organization_to_organization(self):
         """
@@ -1547,7 +1553,7 @@ class Command(BaseCommand):
                     e
                 ))
 
-        log_message = "Import classes school classcards group id: "
+        log_message = "Import classes school classcards groups: "
         self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
         logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
 
@@ -1587,7 +1593,7 @@ class Command(BaseCommand):
                     e
                 ))
 
-        log_message = "Import classes school subscriptions group id: "
+        log_message = "Import classes school subscriptions groups: "
         self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
         logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
 
@@ -1628,16 +1634,175 @@ class Command(BaseCommand):
                     e
                 ))
 
-        log_message = "Import classes teacher id: "
+        log_message = "Import classes teachers: "
         self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
         logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
 
         return id_map
 
-    def _update_account_classpasses_remaining(self):
+    def _import_invoices_groups(self):
         """
-        Update remaining classes for all class passes, now that the attendance has been imported.
-        :return:
+        Fetch invoices groups and import it in Costasiella.
+        :param cursor: MySQL db cursor
+        :return: None
         """
-        #TODO: Write function
+        # Don't import default group
+        query = "SELECT * FROM invoices_groups where id <> 100"
+        self.cursor.execute(query)
+        records = self.cursor.fetchall()
 
+        id_map = {}
+        # Add default group
+        id_map[100] = m.FinanceInvoiceGroup.objects.get(id=100)
+
+        records_imported = 0
+        for record in records:
+            record = {k.lower(): v for k, v in record.items()}
+
+            try:
+                finance_invoice_group = m.FinanceInvoiceGroup(
+                    archived=self._web2py_bool_to_python(record['archived']),
+                    display_public=self._web2py_bool_to_python(record['publicgroup']),
+                    name=record['name'],
+                    next_id=record['nextid'],
+                    due_after_days=record['duedays'],
+                    prefix=record['invoiceprefix'] or "",
+                    prefix_year=self._web2py_bool_to_python(record['prefixyear']),
+                    auto_reset_prefix_year=self._web2py_bool_to_python(record['autoresetprefixyear']),
+                    terms=record['terms'] or "",
+                    footer=record['footer'] or "",
+                    code=record['journalid'] or ""
+                )
+                finance_invoice_group.save()
+                records_imported += 1
+
+                id_map[record['id']] = finance_invoice_group
+            except django.db.utils.IntegrityError as e:
+                logging.error("Import error for invoice group: %s: %s" % (
+                    record['id'],
+                    e
+                ))
+
+        log_message = "Import invoice groups: "
+        self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
+        logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
+
+        return id_map
+
+#     def _import_invoices(self):
+#         """
+#         Fetch customers orders and import it in Costasiella.
+#         :param cursor: MySQL db cursor
+#         :return: None
+#         """
+#         query = """
+# SELECT * FROM invoices i
+# LEFT JOIN invoices_customers ic  ON ic.invoices_id = i.id
+# LEFT JOIN invoices_amounts ia ON ia.invoices_id = i.id
+# """
+#         self.cursor.execute(query)
+#         records = self.cursor.fetchall()
+#
+#         id_map = {}
+#         records_imported = 0
+#         for record in records:
+#             record = {k.lower(): v for k, v in record.items()}
+#
+#             try:
+#                 finance_invoice = m.FinanceInvoice(
+#                     account=self.auth_user_map.get(record['auth_customer_id'], None),
+#                     finance_invoice_group = models.ForeignKey(FinanceInvoiceGroup, on_delete=models.CASCADE)
+#                     finance_payment_method = models.ForeignKey(FinancePaymentMethod, on_delete=models.CASCADE, null=True)
+#                     teacher_payment = models.BooleanField(default=False)
+#                     employee_claim = models.BooleanField(default=False)
+#                     relation_company = models.CharField(max_length=255, default="")
+#                     relation_company_registration = models.CharField(max_length=255, default="")
+#                     relation_company_tax_registration = models.CharField(max_length=255, default="")
+#                     relation_contact_name = models.CharField(max_length=255, default="")
+#                     relation_address = models.CharField(max_length=255, default="")
+#                     relation_postcode = models.CharField(max_length=255, default="")
+#                     relation_city = models.CharField(max_length=255, default="")
+#                     relation_country = models.CharField(max_length=255, default="")
+#                     status = models.CharField(max_length=255, choices=STATUSES, default="DRAFT")
+#                     summary = models.CharField(max_length=255, default="")
+#                     invoice_number = models.CharField(max_length=255, default="")  # Invoice #
+#                     date_sent = models.DateField()
+#                     date_due = models.DateField()
+#                     terms = models.TextField(default="")
+#                     footer = models.TextField(default="")
+#                     note = models.TextField(default="")
+#                     subtotal = models.DecimalField(max_digits=20, decimal_places=2, default=0)
+#                     tax = models.DecimalField(max_digits=20, decimal_places=2, default=0)
+#                     total = models.DecimalField(max_digits=20, decimal_places=2, default=0)
+#                     paid = models.DecimalField(max_digits=20, decimal_places=2, default=0)
+#                     balance = models.DecimalField(max_digits=20, decimal_places=2, default=0)
+#                     credit_invoice_for = models.IntegerField(default=None, null=True)
+#                 )
+#                 finance_invoice.save()
+#                 records_imported += 1
+#
+#                 id_map[record['id']] = finance_invoice
+#             except django.db.utils.IntegrityError as e:
+#                 logging.error("Import error for finance invoice: %s: %s" % (
+#                     record['id'],
+#                     e
+#                 ))
+#
+#         log_message = "Import finance invoices: "
+#         self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
+#         logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
+#
+#         return id_map
+#
+#     def _import_customers_orders(self):
+#         """
+#         Fetch customers orders and import it in Costasiella.
+#         :param cursor: MySQL db cursor
+#         :return: None
+#         """
+#         query = """
+# SELECT * FROM customers_orders co
+# LEFT JOIN customers_orders_amounts coa ON coa.customers_orders_id = co.id
+# """
+#         self.cursor.execute(query)
+#         records = self.cursor.fetchall()
+#
+#         id_map = {}
+#         records_imported = 0
+#         for record in records:
+#             record = {k.lower(): v for k, v in record.items()}
+#
+#             try:
+#                 finance_order = m.FinanceOrder(
+#                     finance_invoice=models.ForeignKey(FinanceInvoice, on_delete=models.SET_NULL, null=True,
+#                                                       related_name="orders")
+#                     account = models.ForeignKey(Account, on_delete=models.SET_NULL, null=True)
+#                     status = models.CharField(max_length=255, choices=STATUSES, default="RECEIVED")
+#                     message = models.TextField(default="")
+#                     subtotal = models.DecimalField(max_digits=20, decimal_places=2, default=0)
+#                     tax = models.DecimalField(max_digits=20, decimal_places=2, default=0)
+#                     total = models.DecimalField(max_digits=20, decimal_places=2, default=0)
+#                 )
+#                 finance_order.save()
+#                 records_imported += 1
+#
+#                 id_map[record['id']] = finance_order
+#             except django.db.utils.IntegrityError as e:
+#                 logging.error("Import error for finance order: %s: %s" % (
+#                     record['id'],
+#                     e
+#                 ))
+#
+#         log_message = "Import finance order id: "
+#         self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
+#         logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
+#
+#         return id_map
+#
+#     def _update_account_classpasses_remaining(self):
+#         """
+#         Update remaining classes for all class passes, now that the attendance has been imported.
+#         :return:
+#         """
+#         #TODO: Write function
+#
