@@ -100,6 +100,8 @@ class Command(BaseCommand):
         self.classes_map = None
         self.classes_attendance_map = None
         self.classes_otc_map = None
+        self.classes_school_classcards_groups_map = None
+        self.classes_school_subscriptions_groups_map = None
 
     def add_arguments(self, parser):
         parser.add_argument(
@@ -327,6 +329,8 @@ class Command(BaseCommand):
         self.classes_map = self._import_classes()
         self.classes_attendance_map = self._import_classes_attendance()
         self.classes_map = self._import_classes_otc()
+        self.classes_school_classcards_groups_map = self._import_classes_school_classcards_groups()
+        self.classes_school_subscriptions_groups_map = self._import_classes_school_subscriptions_groups()
 
     def _import_os_sys_organization_to_organization(self):
         """
@@ -1503,6 +1507,85 @@ class Command(BaseCommand):
                 ))
 
         log_message = "Import classes otc: "
+        self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
+        logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
+
+        return id_map
+
+    def _import_classes_school_classcards_groups(self):
+        """
+        Fetch classes school classcards groups and import it in Costasiella.
+        :param cursor: MySQL db cursor
+        :return: None
+        """
+        query = "SELECT * FROM classes_school_classcards_groups"
+        self.cursor.execute(query)
+        records = self.cursor.fetchall()
+
+        id_map = {}
+        records_imported = 0
+        for record in records:
+            record = {k.lower(): v for k, v in record.items()}
+
+            try:
+                siocg = m.ScheduleItemOrganizationClasspassGroup(
+                    schedule_item=self.classes_map.get(record['classes_id'], None),
+                    organization_classpass_group=self.school_classcards_groups_map.get(
+                        record['school_classcards_groups_id'], None),
+                    shop_book=self._web2py_bool_to_python(record['shopbook']),
+                    attend=self._web2py_bool_to_python(record['attend'])
+                )
+                siocg.save()
+                records_imported += 1
+
+                id_map[record['id']] = siocg
+            except django.db.utils.IntegrityError as e:
+                logging.error("Import error for class school classcards group id: %s: %s" % (
+                    record['id'],
+                    e
+                ))
+
+        log_message = "Import classes school classcards group id: "
+        self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
+        logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
+
+        return id_map
+
+    def _import_classes_school_subscriptions_groups(self):
+        """
+        Fetch classes school classcards groups and import it in Costasiella.
+        :param cursor: MySQL db cursor
+        :return: None
+        """
+        query = "SELECT * FROM classes_school_subscriptions_groups"
+        self.cursor.execute(query)
+        records = self.cursor.fetchall()
+
+        id_map = {}
+        records_imported = 0
+        for record in records:
+            record = {k.lower(): v for k, v in record.items()}
+
+            try:
+                siosg = m.ScheduleItemOrganizationSubscriptionGroup(
+                    schedule_item=self.classes_map.get(record['classes_id'], None),
+                    organization_subscription_group=self.school_subscriptions_groups_map.get(
+                        record['school_subscriptions_groups_id'], None),
+                    enroll=self._web2py_bool_to_python(record['enroll']),
+                    shop_book=self._web2py_bool_to_python(record['shopbook']),
+                    attend=self._web2py_bool_to_python(record['attend'])
+                )
+                siosg.save()
+                records_imported += 1
+
+                id_map[record['id']] = siosg
+            except django.db.utils.IntegrityError as e:
+                logging.error("Import error for class school subscriptions group id: %s: %s" % (
+                    record['id'],
+                    e
+                ))
+
+        log_message = "Import classes school subscriptions group id: "
         self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
         logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
 
