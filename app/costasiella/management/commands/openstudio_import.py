@@ -69,6 +69,18 @@ class Command(BaseCommand):
             3: "KARMA"
         }
 
+        self.map_invoices_product_types = {
+            'membership': 'MEMBERSHIPS',
+            'subscription': 'SUBSCRIPTIONS',
+            'classcard': 'CLASSPASSES',
+            'dropin': 'DROPINCLASSES',
+            'trial': 'TRIALCLASSES',
+            'wsp': 'EVENT_TICKETS',
+            'shop': 'SHOP_SALES',
+            'teacher_payments': 'TEACHER_PAYMENTS',
+            'employee_expenses': 'EMPLOYEE_EXPENSES'
+        }
+
         # Define dynamic maps
         self.accounting_costcenters_map = None
         self.accounting_glaccounts_map = None
@@ -104,6 +116,7 @@ class Command(BaseCommand):
         self.classes_school_subscriptions_groups_map = None
         self.classes_teachers_map = None
         self.invoices_groups_map = None
+        self.invoices_groups_product_types_map = None
         self.invoices_map = None
         self.customers_orders_map = None
 
@@ -337,6 +350,7 @@ class Command(BaseCommand):
         self.classes_school_subscriptions_groups_map = self._import_classes_school_subscriptions_groups()
         self.classes_teachers_map = self._import_classes_teachers()
         self.invoices_groups_map = self._import_invoices_groups()
+        self.invoices_groups_product_types_map = self._import_invoices_groups_product_types()
         # self.finance_invoices_map = self._import_invoices()
         # self.customers_orders_map = self._impport_customers_orders()
 
@@ -1647,7 +1661,7 @@ class Command(BaseCommand):
         :return: None
         """
         # Don't import default group
-        query = "SELECT * FROM invoices_groups where id <> 100"
+        query = "SELECT * FROM invoices_groups"
         self.cursor.execute(query)
         records = self.cursor.fetchall()
 
@@ -1659,31 +1673,92 @@ class Command(BaseCommand):
         for record in records:
             record = {k.lower(): v for k, v in record.items()}
 
-            try:
-                finance_invoice_group = m.FinanceInvoiceGroup(
-                    archived=self._web2py_bool_to_python(record['archived']),
-                    display_public=self._web2py_bool_to_python(record['publicgroup']),
-                    name=record['name'],
-                    next_id=record['nextid'],
-                    due_after_days=record['duedays'],
-                    prefix=record['invoiceprefix'] or "",
-                    prefix_year=self._web2py_bool_to_python(record['prefixyear']),
-                    auto_reset_prefix_year=self._web2py_bool_to_python(record['autoresetprefixyear']),
-                    terms=record['terms'] or "",
-                    footer=record['footer'] or "",
-                    code=record['journalid'] or ""
-                )
+            if record['id'] == 100:
+                print("Importing default group settings")
+
+                finance_invoice_group = id_map[100]
+                finance_invoice_group.archived = self._web2py_bool_to_python(record['archived'])
+                finance_invoice_group.display_public = self._web2py_bool_to_python(record['publicgroup'])
+                finance_invoice_group.name = record['name']
+                finance_invoice_group.next_id = record['nextid']
+                finance_invoice_group.due_after_days = record['duedays']
+                finance_invoice_group.prefix = record['invoiceprefix'] or ""
+                finance_invoice_group.prefix_year = self._web2py_bool_to_python(record['prefixyear'])
+                finance_invoice_group.auto_reset_prefix_year = \
+                    self._web2py_bool_to_python(record['autoresetprefixyear'])
+                finance_invoice_group.terms = record['terms'] or ""
+                finance_invoice_group.footer = record['footer'] or ""
+                finance_invoice_group.code = record['journalid'] or ""
                 finance_invoice_group.save()
                 records_imported += 1
 
-                id_map[record['id']] = finance_invoice_group
+                logging.info("Imported default finance invoice group info")
+            else:
+                # Import non-default group
+                try:
+                    finance_invoice_group = m.FinanceInvoiceGroup(
+                        archived=self._web2py_bool_to_python(record['archived']),
+                        display_public=self._web2py_bool_to_python(record['publicgroup']),
+                        name=record['name'],
+                        next_id=record['nextid'],
+                        due_after_days=record['duedays'],
+                        prefix=record['invoiceprefix'] or "",
+                        prefix_year=self._web2py_bool_to_python(record['prefixyear']),
+                        auto_reset_prefix_year=self._web2py_bool_to_python(record['autoresetprefixyear']),
+                        terms=record['terms'] or "",
+                        footer=record['footer'] or "",
+                        code=record['journalid'] or ""
+                    )
+                    finance_invoice_group.save()
+                    records_imported += 1
+
+                    id_map[record['id']] = finance_invoice_group
+                except django.db.utils.IntegrityError as e:
+                    logging.error("Import error for invoice group: %s: %s" % (
+                        record['id'],
+                        e
+                    ))
+
+        log_message = "Import invoice groups: "
+        self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
+        logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
+
+        return id_map
+
+    def _import_invoices_groups_product_types(self):
+        """
+        Fetch invoices groups prouct types and import it in Costasiella.
+        :param cursor: MySQL db cursor
+        :return: None
+        """
+        # Don't import default group
+        query = "SELECT * FROM invoices_groups_product_types"
+        self.cursor.execute(query)
+        records = self.cursor.fetchall()
+
+        id_map = {}
+        records_imported = 0
+        for record in records:
+            record = {k.lower(): v for k, v in record.items()}
+
+            try:
+                finance_invoice_group_default = m.FinanceInvoiceGroupDefault.objects.filter(
+                    item_type=self.map_invoices_product_types.get(record['producttype'])
+                ).first()
+                finance_invoice_group_default.finance_invoice_group = self.invoices_groups_map.get(
+                    record['invoices_groups_id'], 100
+                )  # Set to default (100) if the group is not found
+                finance_invoice_group_default.save()
+                records_imported += 1
+
+                id_map[record['id']] = finance_invoice_group_default
             except django.db.utils.IntegrityError as e:
-                logging.error("Import error for invoice group: %s: %s" % (
+                logging.error("Import error for invoice group default: %s: %s" % (
                     record['id'],
                     e
                 ))
 
-        log_message = "Import invoice groups: "
+        log_message = "Import invoice group defaults: "
         self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
         logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
 
