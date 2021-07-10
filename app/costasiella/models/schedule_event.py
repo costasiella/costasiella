@@ -14,7 +14,7 @@ class ScheduleEvent(models.Model):
     auto_send_info_mail = models.BooleanField(default=False)
     organization_location = models.ForeignKey(OrganizationLocation, on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
-    tagline = models.CharField(max_length=255)
+    tagline = models.CharField(max_length=255, default="")
     preview = models.TextField(default="")
     description = models.TextField(default="")
     organization_level = models.ForeignKey(OrganizationLevel, on_delete=models.CASCADE, null=True)
