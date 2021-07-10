@@ -838,7 +838,7 @@ class Command(BaseCommand):
                         # Set the media attribute of the article, but under an other path/filename
                         organization_classtype.image.save(record['picture'], file_content)
             except FileNotFoundError:
-                logging.error("Could not find classtype image: %s" % os_file)
+                logging.error("Could not locate classtype image: %s" % os_file)
             except TypeError:
                 pass
 
@@ -1668,6 +1668,35 @@ class Command(BaseCommand):
 
         return id_map
 
+    def _import_workshop_picture(self, schedule_event, os_picture_file_name, sort_order):
+        """
+        Save openstudio workshop picture as schedule_event_media
+        :param schedule_event:
+        :param picture:
+        :return:
+        """
+        os_file = os.path.join(self.os_media_root, os_picture_file_name)
+
+        try:
+            with open(os_file, 'rb') as fh:
+                # Get the content of the file, we also need to close the content file
+                with ContentFile(fh.read()) as file_content:
+                    # Set the media attribute of the article, but under an other path/filename
+                    schedule_event_media = m.ScheduleEventMedia(
+                        schedule_event=schedule_event,
+                        sort_order=sort_order,
+                        description="OpenStudio image %s" % str(sort_order + 1),
+                    )
+                    schedule_event_media.save()
+                    print(schedule_event_media)
+                    schedule_event_media.image.save(os_picture_file_name, file_content)
+                    schedule_event_media.save()
+
+        except FileNotFoundError:
+            logging.error("Could not locate schedule event image: %s" % os_file)
+        except TypeError as e:
+            logging.error("Caught a type error when importing schedule event image: %s : %s" % (os_file, e))
+
     def _import_workshops(self):
         """
         Fetch workshops and import it in Costasiella.
@@ -1714,6 +1743,19 @@ LEFT JOIN workshops_mail wm ON wm.workshops_id = w.id
                 records_imported += 1
 
                 id_map[record['id']] = schedule_event
+
+                # Import images
+                if record.get('picture', None):
+                    self._import_workshop_picture(schedule_event, record['picture'], 0)
+                if record.get('picture_2', None):
+                    self._import_workshop_picture(schedule_event, record['picture_2'], 1)
+                if record.get('picture_3', None):
+                    self._import_workshop_picture(schedule_event, record['picture_3'], 2)
+                if record.get('picture_4', None):
+                    self._import_workshop_picture(schedule_event, record['picture_4'], 3)
+                if record.get('picture_5', None):
+                    self._import_workshop_picture(schedule_event, record['picture_5'], 4)
+
             except django.db.utils.IntegrityError as e:
                 logging.error("Import error for schedule event id: %s: %s" % (
                     record['id'],
