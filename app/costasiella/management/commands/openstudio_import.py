@@ -124,6 +124,7 @@ class Command(BaseCommand):
         self.classes_teachers_map = None
         self.workshops_map = None
         self.workshops_activities_map = None
+        self.workshops_products_map = None
         self.invoices_groups_map = None
         self.invoices_groups_product_types_map = None
         self.invoices_map = None
@@ -360,6 +361,7 @@ class Command(BaseCommand):
         # self.classes_teachers_map = self._import_classes_teachers()
         self.workshops_map = self._import_workshops()
         self.workshops_activities_map = self._import_workshops_activities()
+        self.workshops_products_map = self._import_workshops_products()
 
         # Done
         # self.invoices_groups_map = self._import_invoices_groups()
@@ -947,6 +949,7 @@ class Command(BaseCommand):
                 name="Room 1"
             )
             organization_location_room.save()
+            # os school_locations_id maps to cs room id
             id_map_rooms[record['id']] = organization_location_room
 
             records_imported += 1
@@ -1690,7 +1693,6 @@ class Command(BaseCommand):
                         description="OpenStudio image %s" % str(sort_order + 1),
                     )
                     schedule_event_media.save()
-                    print(schedule_event_media)
                     schedule_event_media.image.save(os_picture_file_name, file_content)
                     schedule_event_media.save()
 
@@ -1812,6 +1814,50 @@ LEFT JOIN workshops_mail wm ON wm.workshops_id = w.id
                 ))
 
         log_message = "Import workshops activities: "
+        self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
+        logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
+
+        return id_map
+
+    def _import_workshops_products(self):
+        """
+        Fetch workshops products and import it in Costasiella.
+        :return: None
+        """
+        query = """SELECT * FROM workshops_products"""
+        self.cursor.execute(query)
+        records = self.cursor.fetchall()
+
+        id_map = {}
+        records_imported = 0
+        for record in records:
+            record = {k.lower(): v for k, v in record.items()}
+
+            try:
+                schedule_event_ticket = m.ScheduleEventTicket(
+                    schedule_event=self.workshops_map.get(record['workshops_id']),
+                    full_event=self._web2py_bool_to_python(record['fullworkshop']),
+                    deletable=self._web2py_bool_to_python(record['deletable']),
+                    display_public=self._web2py_bool_to_python(record['publicproduct']),
+                    name=record['name'],
+                    description=record['description'] or "",
+                    price=record['price'],
+                    finance_tax_rate=self.tax_rates_map.get(record['tax_rates_id']),
+                    finance_glaccount=self.accounting_glaccounts_map.get(record['accounting_glaccounts_id'], None),
+                    finance_costcenter=self.accounting_costcenters_map.get(record['accounting_costcenters_id'], None)
+                )
+                schedule_event_ticket.save()
+                records_imported += 1
+
+                id_map[record['id']] = schedule_event_ticket
+
+            except django.db.utils.IntegrityError as e:
+                logging.error("Import error for workshop product id: %s: %s" % (
+                    record['id'],
+                    e
+                ))
+
+        log_message = "Import workshops products: "
         self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
         logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
 
