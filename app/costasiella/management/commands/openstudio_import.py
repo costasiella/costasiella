@@ -123,6 +123,7 @@ class Command(BaseCommand):
         self.classes_school_subscriptions_groups_map = None
         self.classes_teachers_map = None
         self.workshops_map = None
+        self.workshops_activities_map = None
         self.invoices_groups_map = None
         self.invoices_groups_product_types_map = None
         self.invoices_map = None
@@ -358,6 +359,7 @@ class Command(BaseCommand):
         # self.classes_school_subscriptions_groups_map = self._import_classes_school_subscriptions_groups()
         # self.classes_teachers_map = self._import_classes_teachers()
         self.workshops_map = self._import_workshops()
+        self.workshops_activities_map = self._import_workshops_activities()
 
         # Done
         # self.invoices_groups_map = self._import_invoices_groups()
@@ -1757,12 +1759,59 @@ LEFT JOIN workshops_mail wm ON wm.workshops_id = w.id
                     self._import_workshop_picture(schedule_event, record['picture_5'], 4)
 
             except django.db.utils.IntegrityError as e:
-                logging.error("Import error for schedule event id: %s: %s" % (
+                logging.error("Import error for workshop id: %s: %s" % (
                     record['id'],
                     e
                 ))
 
-        log_message = "Import schedule event: "
+        log_message = "Import workshops: "
+        self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
+        logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
+
+        return id_map
+
+    def _import_workshops_activities(self):
+        """
+        Fetch workshops activities and import it in Costasiella.
+        :return: None
+        """
+        query = """SELECT * FROM workshops_activities"""
+        self.cursor.execute(query)
+        records = self.cursor.fetchall()
+
+        id_map = {}
+        records_imported = 0
+        for record in records:
+            record = {k.lower(): v for k, v in record.items()}
+
+            try:
+                schedule_item = m.ScheduleItem(
+                    schedule_event=self.workshops_map.get(record['workshops_id']),
+                    schedule_item_type='EVENT_ACTIVITY',
+                    frequency_type='SPECIFIC',
+                    frequency_interval=0,
+                    organization_location_room=self.school_locations_rooms_map.get(record['school_locations_id']),
+                    name=record['activity'],
+                    spaces=record['spaces'],
+                    date_start=record['activitydate'],
+                    time_start=str(record['starttime']),
+                    time_end=str(record['endtime']),
+                    display_public=True,
+                    account=self.auth_user_map.get(record['auth_teacher_id']),
+                    account_2=self.auth_user_map.get(record['auth_teacher_id2'], None)
+                )
+                schedule_item.save()
+                records_imported += 1
+
+                id_map[record['id']] = schedule_item
+
+            except django.db.utils.IntegrityError as e:
+                logging.error("Import error for workshop activity id: %s: %s" % (
+                    record['id'],
+                    e
+                ))
+
+        log_message = "Import workshops activities: "
         self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
         logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
 
