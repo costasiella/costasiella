@@ -10,7 +10,7 @@ This helper file is added to allow functions to add all schedule items to a new 
 class ScheduleEventTicketScheduleItemHelper:
     def add_schedule_items_to_ticket(self, schedule_event_ticket):
         """
-        Add a new schedule item to all tickets
+        Add schedule items to given ticket
         """
         # Get all tickets to which this group is added
         schedule_items_already_added = ScheduleEventTicketScheduleItem.objects.filter(

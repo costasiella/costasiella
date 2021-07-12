@@ -8,6 +8,8 @@ from django.core.management.base import BaseCommand, CommandError, no_translatio
 from django.utils import timezone
 from django.conf import settings
 import costasiella.models as m
+from costasiella.modules.model_helpers.schedule_event_ticket_schedule_item_helper import \
+    ScheduleEventTicketScheduleItemHelper
 
 import MySQLdb
 from MySQLdb._exceptions import OperationalError
@@ -1830,6 +1832,7 @@ LEFT JOIN workshops_mail wm ON wm.workshops_id = w.id
 
         id_map = {}
         records_imported = 0
+        helper = ScheduleEventTicketScheduleItemHelper()
         for record in records:
             record = {k.lower(): v for k, v in record.items()}
 
@@ -1847,6 +1850,9 @@ LEFT JOIN workshops_mail wm ON wm.workshops_id = w.id
                     finance_costcenter=self.accounting_costcenters_map.get(record['accounting_costcenters_id'], None)
                 )
                 schedule_event_ticket.save()
+                # Add all schedule items for this event to this ticket
+                helper.add_schedule_items_to_ticket(schedule_event_ticket)
+                # Increase counter
                 records_imported += 1
 
                 id_map[record['id']] = schedule_event_ticket
@@ -1862,6 +1868,52 @@ LEFT JOIN workshops_mail wm ON wm.workshops_id = w.id
         logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
 
         return id_map
+    #
+    # def _import_workshops_products_activities(self):
+    #     """
+    #     Fetch workshops products activities and import it in Costasiella.
+    #     :return: None
+    #     """
+    #     query = """SELECT * FROM workshops_products_activities"""
+    #     self.cursor.execute(query)
+    #     records = self.cursor.fetchall()
+    #
+    #     id_map = {}
+    #     records_imported = 0
+    #     for record in records:
+    #         record = {k.lower(): v for k, v in record.items()}
+    #
+    #         try:
+    #             schedule_event_ticket = m.ScheduleEventTicket(
+    #                 schedule_event=self.workshops_map.get(record['workshops_id']),
+    #                 full_event=self._web2py_bool_to_python(record['fullworkshop']),
+    #                 deletable=self._web2py_bool_to_python(record['deletable']),
+    #                 display_public=self._web2py_bool_to_python(record['publicproduct']),
+    #                 name=record['name'],
+    #                 description=record['description'] or "",
+    #                 price=record['price'],
+    #                 finance_tax_rate=self.tax_rates_map.get(record['tax_rates_id']),
+    #                 finance_glaccount=self.accounting_glaccounts_map.get(record['accounting_glaccounts_id'], None),
+    #                 finance_costcenter=self.accounting_costcenters_map.get(record['accounting_costcenters_id'], None)
+    #             )
+    #             schedule_event_ticket.save()
+    #             records_imported += 1
+    #
+    #             id_map[record['id']] = schedule_event_ticket
+    #
+    #         except django.db.utils.IntegrityError as e:
+    #             logging.error("Import error for workshop product id: %s: %s" % (
+    #                 record['id'],
+    #                 e
+    #             ))
+    #
+    #     log_message = "Import workshops products: "
+    #     self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
+    #     logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
+    #
+    #     return id_map
+
+
 
     def _import_invoices_groups(self):
         """
