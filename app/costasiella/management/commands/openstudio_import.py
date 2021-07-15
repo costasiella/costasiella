@@ -127,6 +127,7 @@ class Command(BaseCommand):
         self.workshops_map = None
         self.workshops_activities_map = None
         self.workshops_products_map = None
+        self.workshops_products_activities_map = None
         self.invoices_groups_map = None
         self.invoices_groups_product_types_map = None
         self.invoices_map = None
@@ -364,6 +365,7 @@ class Command(BaseCommand):
         self.workshops_map = self._import_workshops()
         self.workshops_activities_map = self._import_workshops_activities()
         self.workshops_products_map = self._import_workshops_products()
+        self.workshops_products_activities_map = self._import_workshops_products_activities()
 
         # Done
         # self.invoices_groups_map = self._import_invoices_groups()
@@ -1868,50 +1870,70 @@ LEFT JOIN workshops_mail wm ON wm.workshops_id = w.id
         logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
 
         return id_map
-    #
-    # def _import_workshops_products_activities(self):
-    #     """
-    #     Fetch workshops products activities and import it in Costasiella.
-    #     :return: None
-    #     """
-    #     query = """SELECT * FROM workshops_products_activities"""
-    #     self.cursor.execute(query)
-    #     records = self.cursor.fetchall()
-    #
-    #     id_map = {}
-    #     records_imported = 0
-    #     for record in records:
-    #         record = {k.lower(): v for k, v in record.items()}
-    #
-    #         try:
-    #             schedule_event_ticket = m.ScheduleEventTicket(
-    #                 schedule_event=self.workshops_map.get(record['workshops_id']),
-    #                 full_event=self._web2py_bool_to_python(record['fullworkshop']),
-    #                 deletable=self._web2py_bool_to_python(record['deletable']),
-    #                 display_public=self._web2py_bool_to_python(record['publicproduct']),
-    #                 name=record['name'],
-    #                 description=record['description'] or "",
-    #                 price=record['price'],
-    #                 finance_tax_rate=self.tax_rates_map.get(record['tax_rates_id']),
-    #                 finance_glaccount=self.accounting_glaccounts_map.get(record['accounting_glaccounts_id'], None),
-    #                 finance_costcenter=self.accounting_costcenters_map.get(record['accounting_costcenters_id'], None)
-    #             )
-    #             schedule_event_ticket.save()
-    #             records_imported += 1
-    #
-    #             id_map[record['id']] = schedule_event_ticket
-    #
-    #         except django.db.utils.IntegrityError as e:
-    #             logging.error("Import error for workshop product id: %s: %s" % (
-    #                 record['id'],
-    #                 e
-    #             ))
-    #
-    #     log_message = "Import workshops products: "
-    #     self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
-    #     logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
-    #
-    #     return id_map
+
+    def _import_workshops_products_activities(self):
+        """
+        Fetch workshops products activities and import it in Costasiella.
+        :return: None
+        """
+        query = """SELECT * FROM workshops_products_activities"""
+        self.cursor.execute(query)
+        records = self.cursor.fetchall()
+
+        id_map = {}
+        records_imported = 0
+        for record in records:
+            record = {k.lower(): v for k, v in record.items()}
+
+            # Find corresponding record in Costasiella
+            qs = m.ScheduleEventTicketScheduleItem.objects.filter(
+                schedule_event_ticket=self.workshops_products_map.get(record['workshops_products_id'], None),
+                schedule_item=self.workshops_activities_map.get(record['workshops_activities_id'], None)
+            )
+            if qs.exists():
+                # OpenStudio has a record in case it's included
+                schedule_event_ticket_schedule_item = qs.first()
+                schedule_event_ticket_schedule_item.included = True
+                schedule_event_ticket_schedule_item.save()
+
+                records_imported += 1
+                id_map[record['id']] = schedule_event_ticket_schedule_item
+
+        log_message = "Import workshops products activities: "
+        self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
+        logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
+
+        return id_map
+
+        #     try:
+        #         schedule_event_ticket = m.ScheduleEventTicket(
+        #             schedule_event=self.workshops_map.get(record['workshops_id']),
+        #             full_event=self._web2py_bool_to_python(record['fullworkshop']),
+        #             deletable=self._web2py_bool_to_python(record['deletable']),
+        #             display_public=self._web2py_bool_to_python(record['publicproduct']),
+        #             name=record['name'],
+        #             description=record['description'] or "",
+        #             price=record['price'],
+        #             finance_tax_rate=self.tax_rates_map.get(record['tax_rates_id']),
+        #             finance_glaccount=self.accounting_glaccounts_map.get(record['accounting_glaccounts_id'], None),
+        #             finance_costcenter=self.accounting_costcenters_map.get(record['accounting_costcenters_id'], None)
+        #         )
+        #         schedule_event_ticket.save()
+        #         records_imported += 1
+        #
+        #         id_map[record['id']] = schedule_event_ticket
+        #
+        #     except django.db.utils.IntegrityError as e:
+        #         logging.error("Import error for workshop product id: %s: %s" % (
+        #             record['id'],
+        #             e
+        #         ))
+        #
+        # log_message = "Import workshops products: "
+        # self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
+        # logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
+        #
+        # return id_map
 
 
 
