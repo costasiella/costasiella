@@ -492,7 +492,13 @@
         "passwords_must_match": "New password fields should match"
     },
     "home": {
-        "title": "Home"
+        "title": "Home",
+        "home": {
+            "announcements": {
+                "error_loading": "Error loading announcements... :("
+            },
+            "announcements_empty_list": "No announcements to show at this time. Please check back again later."
+        }
     },
     "organization": {
         "classpasses": {

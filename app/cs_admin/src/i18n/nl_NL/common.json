@@ -855,7 +855,13 @@
         }
     },
     "home": {
-        "title": "__STRING_NOT_TRANSLATED__"
+        "title": "__STRING_NOT_TRANSLATED__",
+        "home": {
+            "announcements": {
+                "error_loading": "__STRING_NOT_TRANSLATED__"
+            },
+            "announcements_empty_list": "__STRING_NOT_TRANSLATED__"
+        }
     },
     "insight": {
         "classpasses": {

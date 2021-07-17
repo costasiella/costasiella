@@ -61,7 +61,7 @@ const getNavBarItems = (t, loading, error, data) => {
 
   if (loading) {
     items.push({
-      value: t("general.loading"),
+      value: t("general.loading_with_dots"),
       to: "/",
       icon: "",
       LinkComponent: withRouter(NavLink),

@@ -29,7 +29,7 @@ function HomeHome({ t, match }) {
   )
   if (error) return (
     <HomeHomeBase>
-      {t("shop.home.announcements.error_loading")}
+      {t("home.home.announcements.error_loading")}
     </HomeHomeBase>
   )
 
@@ -38,6 +38,14 @@ function HomeHome({ t, match }) {
 
   const announcements = data.organizationAnnouncements
 
+  // Empty list
+  if (!announcements.edges.length) return (
+    <HomeHomeBase>
+      {t("home.home.announcements_empty_list")}
+    </HomeHomeBase>
+  )
+
+  // Data
   return (
     <HomeHomeBase>
       <Grid.Row>
