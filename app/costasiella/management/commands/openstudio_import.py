@@ -129,6 +129,8 @@ class Command(BaseCommand):
         self.workshops_products_map = None
         self.workshops_products_activities_map = None
         self.workshops_products_customers_map = None
+        self.announcements_map = None
+        self.customers_profile_announcements_map = None
         self.invoices_groups_map = None
         self.invoices_groups_product_types_map = None
         self.invoices_map = None
@@ -368,6 +370,8 @@ class Command(BaseCommand):
         self.workshops_products_map = self._import_workshops_products()
         self.workshops_products_activities_map = self._import_workshops_products_activities()
         self.workshops_products_customers_map = self._import_workshops_products_customers()
+        self.announcements_map = self._import_announcements()
+        self.customers_profile_announcements_map = self._import_customers_profile_announcements()
 
         # Done
         # self.invoices_groups_map = self._import_invoices_groups()
@@ -1942,6 +1946,104 @@ LEFT JOIN workshops_mail wm ON wm.workshops_id = w.id
                 ))
 
         log_message = "Import workshops product customers: "
+        self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
+        logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
+
+        return id_map
+
+    def _import_announcements(self):
+        """
+        Fetch announcements and import it in Costasiella.
+        :return: None
+        """
+        query = """SELECT * FROM announcements"""
+        self.cursor.execute(query)
+        records = self.cursor.fetchall()
+
+        id_map = {}
+        records_imported = 0
+        for record in records:
+            record = {k.lower(): v for k, v in record.items()}
+
+            try:
+                date_end = datetime.date(2999, 12, 31)
+                if record['enddate']:
+                    date_end = record['enddate']
+
+                organization_announcement = m.OrganizationAnnouncement(
+                    display_public=self._web2py_bool_to_python(record['visible']),
+                    display_shop=False,
+                    display_backend=True,
+                    title=record['title'],
+                    content=record['note'],
+                    date_start=record['startdate'],
+                    date_end=date_end,
+                    priority=record['priority']
+                )
+                organization_announcement.save()
+                # Increase counter
+                records_imported += 1
+
+                id_map[record['id']] = organization_announcement
+
+            except django.db.utils.IntegrityError as e:
+                logging.error("Import error for announcement id: %s: %s" % (
+                    record['id'],
+                    e
+                ))
+
+        log_message = "Import announcements: "
+        self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
+        logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
+
+        return id_map
+
+    def _import_customers_profile_announcements(self):
+        """
+        Fetch customer profile announcements and import it in Costasiella.
+        :return: None
+        """
+        query = """SELECT * FROM customers_profile_announcements"""
+        self.cursor.execute(query)
+        records = self.cursor.fetchall()
+
+        id_map = {}
+        records_imported = 0
+        for record in records:
+            record = {k.lower(): v for k, v in record.items()}
+
+            try:
+                priority = 200
+                if record['sticky'] == 'T':
+                    priority = 100
+
+                date_end = datetime.date(2999, 12, 31)
+                if record['enddate']:
+                    date_end = record['enddate']
+
+                organization_announcement = m.OrganizationAnnouncement(
+                    display_public=self._web2py_bool_to_python(record['publicannouncement']),
+                    display_shop=True,
+                    display_backend=False,
+                    title=record['title'],
+                    content=record['announcement'],
+                    date_start=record['startdate'],
+                    date_end=date_end,
+                    priority=priority
+                )
+                organization_announcement.save()
+                # Increase counter
+                records_imported += 1
+
+                id_map[record['id']] = organization_announcement
+
+            except django.db.utils.IntegrityError as e:
+                logging.error("Import error for customer profile announcement id: %s: %s" % (
+                    record['id'],
+                    e
+                ))
+
+        log_message = "Import customer profile announcements: "
         self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
         logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
 
