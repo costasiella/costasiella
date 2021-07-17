@@ -5,10 +5,10 @@ import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
 import { Link } from 'react-router-dom'
 
-// import {
-//   Icon,
-//   List
-// } from "tabler-react";
+import {
+  Container,
+  Page
+} from "tabler-react";
 import SiteWrapper from "../../SiteWrapper"
 
 
@@ -18,7 +18,7 @@ function HomeHomeBase({ t, match, history, children }) {
     <SiteWrapper>
       <div className="my-3 my-md-5">
         <Container>
-          <Page.Header title={t("home.title")} />
+          <Page.Header title={t("organization.announcements.title")} />
           {children}
         </Container>
       </div>
