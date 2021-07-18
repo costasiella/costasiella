@@ -121,6 +121,7 @@ class Command(BaseCommand):
         self.classes_map = None
         self.classes_attendance_map = None
         self.classes_otc_map = None
+        self.classes_otc_mail_map = None
         self.classes_school_classcards_groups_map = None
         self.classes_school_subscriptions_groups_map = None
         self.classes_teachers_map = None
@@ -342,7 +343,7 @@ class Command(BaseCommand):
         # self.school_subscriptions_groups_map = self._import_school_subscriptions_groups()
         # self.school_subscriptions_groups_subscriptions_map = self._import_school_subscriptions_groups_subscriptions()
         # self.school_subscriptions_price_map = self._import_school_subscriptions_price()
-        # self.school_classtypes_map = self._import_school_classtypes()
+        self.school_classtypes_map = self._import_school_classtypes()
         # self.school_discovery_map = self._import_school_discovery()
         self.school_levels_map = self._import_school_levels()
         locations_import_result = self._import_school_locations()
@@ -359,9 +360,10 @@ class Command(BaseCommand):
         # self.customers_notes_map = self._import_customers_notes()
         # self.customers_payment_info_map = self._import_customers_payment_info()
         # self.customers_payment_info_mandates_map = self._import_customers_payment_mandates()
-        # self.classes_map = self._import_classes()
+        self.classes_map = self._import_classes()
         # self.classes_attendance_map = self._import_classes_attendance()
-        # self.classes_otc_map = self._import_classes_otc()
+        self.classes_otc_map = self._import_classes_otc()
+        self.classes_otc_mail_map = self._import_classes_otc_mail()
         # self.classes_school_classcards_groups_map = self._import_classes_school_classcards_groups()
         # self.classes_school_subscriptions_groups_map = self._import_classes_school_subscriptions_groups()
         # self.classes_teachers_map = self._import_classes_teachers()
@@ -1536,7 +1538,7 @@ class Command(BaseCommand):
                     status=self.map_classes_otc_statuses.get(record['status'], ""),
                     description=record['description'] or '',
                     account=self.auth_user_map.get(record['auth_teacher_id'], None),
-                    role=self.map_classes_teacher_roles.get(record['teacher_role'], None),
+                    role=self.map_classes_teacher_roles.get(record['teacher_role'], ""),
                     account_2=self.auth_user_map.get(record['auth_teacher_id2'], None),
                     role_2=self.map_classes_teacher_roles.get(record['teacher_role2'], ""),
                     organization_location_room=self.school_locations_rooms_map.get(record['school_locations_id'], None),
@@ -1558,6 +1560,45 @@ class Command(BaseCommand):
                 ))
 
         log_message = "Import classes otc: "
+        self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
+        logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
+
+        return id_map
+
+    def _import_classes_otc_mail(self):
+        """
+        Fetch classes otc mail and import it in Costasiella.
+        :param cursor: MySQL db cursor
+        :return: None
+        """
+        query = "SELECT * FROM classes_otc_mail"
+        self.cursor.execute(query)
+        records = self.cursor.fetchall()
+
+        id_map = {}
+        records_imported = 0
+        for record in records:
+            record = {k.lower(): v for k, v in record.items()}
+
+            qs = m.ScheduleItemWeeklyOTC.objects.filter(
+                schedule_item=self.classes_map.get(record['classes_id'], None),
+                date=record['classdate']
+            )
+
+            if qs.exists():
+                schedule_item_weekly_otc = qs.first()
+                schedule_item_weekly_otc.info_mail_content = record['mailcontent']
+                schedule_item_weekly_otc.save()
+
+                records_imported += 1
+
+                id_map[record['id']] = schedule_item_weekly_otc
+            else:
+                logging.error("Import error for class otc mail id: %s: Not found" % (
+                    record['id'],
+                ))
+
+        log_message = "Import classes otc mail: "
         self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
         logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
 
