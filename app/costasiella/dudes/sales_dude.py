@@ -221,7 +221,6 @@ class SalesDude:
         Sell subscription to account
         """
         from ..models.account_schedule_event_ticket import AccountScheduleEventTicket
-        from ..models.schedule_item_attendance import ScheduleItemAttendance
 
         schedule_event = schedule_event_ticket.schedule_event
         account_schedule_event_ticket = AccountScheduleEventTicket(
@@ -247,6 +246,27 @@ class SalesDude:
             finance_invoice_item = self._sell_schedule_event_ticket_create_invoice(account_schedule_event_ticket)
 
         # Add account to schedule_item_attendance
+        self._sell_schedule_event_ticket_add_attendance(
+            account_schedule_event_ticket=account_schedule_event_ticket,
+            finance_invoice_item=finance_invoice_item
+        )
+
+        return {
+            "account_schedule_event_ticket": account_schedule_event_ticket,
+            "finance_invoice_item": finance_invoice_item
+        }
+
+    @staticmethod
+    def _sell_schedule_event_ticket_add_attendance(account_schedule_event_ticket, finance_invoice_item):
+        """
+        Add an schedule_item_attendance record with status BOOKED for each schedule item linked to this ticket
+        :return: None
+        """
+        from ..models.schedule_item_attendance import ScheduleItemAttendance
+
+        account = account_schedule_event_ticket.account
+        schedule_event_ticket = account_schedule_event_ticket.schedule_event_ticket
+
         for schedule_item in schedule_event_ticket.schedule_items.all():
             schedule_item_attendance = ScheduleItemAttendance(
                 account=account,
@@ -258,11 +278,6 @@ class SalesDude:
                 date=schedule_item.date_start
             )
             schedule_item_attendance.save()
-
-        return {
-            "account_schedule_event_ticket": account_schedule_event_ticket,
-            "finance_invoice_item": finance_invoice_item
-        }
 
     @staticmethod
     def _sell_schedule_event_ticket_create_invoice(account_schedule_event_ticket):

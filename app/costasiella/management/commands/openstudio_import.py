@@ -10,6 +10,7 @@ from django.conf import settings
 import costasiella.models as m
 from costasiella.modules.model_helpers.schedule_event_ticket_schedule_item_helper import \
     ScheduleEventTicketScheduleItemHelper
+from costasiella.dudes.sales_dude import SalesDude
 
 import MySQLdb
 from MySQLdb._exceptions import OperationalError
@@ -130,6 +131,7 @@ class Command(BaseCommand):
         self.workshops_products_map = None
         self.workshops_products_activities_map = None
         self.workshops_products_customers_map = None
+        self.workshops_activities_customers_map = None
         self.announcements_map = None
         self.customers_profile_announcements_map = None
         self.invoices_groups_map = None
@@ -360,10 +362,10 @@ class Command(BaseCommand):
         # self.customers_notes_map = self._import_customers_notes()
         # self.customers_payment_info_map = self._import_customers_payment_info()
         # self.customers_payment_info_mandates_map = self._import_customers_payment_mandates()
-        self.classes_map = self._import_classes()
+        # self.classes_map = self._import_classes()
         # self.classes_attendance_map = self._import_classes_attendance()
-        self.classes_otc_map = self._import_classes_otc()
-        self.classes_otc_mail_map = self._import_classes_otc_mail()
+        # self.classes_otc_map = self._import_classes_otc()
+        # self.classes_otc_mail_map = self._import_classes_otc_mail()
         # self.classes_school_classcards_groups_map = self._import_classes_school_classcards_groups()
         # self.classes_school_subscriptions_groups_map = self._import_classes_school_subscriptions_groups()
         # self.classes_teachers_map = self._import_classes_teachers()
@@ -372,6 +374,7 @@ class Command(BaseCommand):
         self.workshops_products_map = self._import_workshops_products()
         self.workshops_products_activities_map = self._import_workshops_products_activities()
         self.workshops_products_customers_map = self._import_workshops_products_customers()
+        self.workshops_activities_customers_map = self._import_workshops_activities_customers()
         self.announcements_map = self._import_announcements()
         self.customers_profile_announcements_map = self._import_customers_profile_announcements()
 
@@ -1961,6 +1964,7 @@ LEFT JOIN workshops_mail wm ON wm.workshops_id = w.id
         self.cursor.execute(query)
         records = self.cursor.fetchall()
 
+        sales_dude = SalesDude()
         id_map = {}
         records_imported = 0
         for record in records:
@@ -1975,6 +1979,12 @@ LEFT JOIN workshops_mail wm ON wm.workshops_id = w.id
                     info_mail_sent=self._web2py_bool_to_python(record['workshopinfo'])
                 )
                 account_schedule_event_ticket.save()
+                # Add attendance items for customer
+                sales_dude._sell_schedule_event_ticket_add_attendance(
+                    account_schedule_event_ticket=account_schedule_event_ticket,
+                    finance_invoice_item=None
+                )
+
                 # Increase counter
                 records_imported += 1
 
@@ -1987,6 +1997,46 @@ LEFT JOIN workshops_mail wm ON wm.workshops_id = w.id
                 ))
 
         log_message = "Import workshops product customers: "
+        self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
+        logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
+
+        return id_map
+
+    def _import_workshops_activities_customers(self):
+        """
+        Fetch workshops activities customers and import it in Costasiella.
+        Set status to "ATTENDING" when a matching record is found
+        :return: None
+        """
+        query = """SELECT * FROM workshops_activities_customers"""
+        self.cursor.execute(query)
+        records = self.cursor.fetchall()
+
+        id_map = {}
+        records_imported = 0
+        for record in records:
+            record = {k.lower(): v for k, v in record.items()}
+
+            qs = m.ScheduleItemAttendance.objects.filter(
+                account=self.auth_user_map.get(record['auth_customer_id'], None),
+                schedule_item=self.workshops_activities_map.get(record['workshops_activities_id'], None)
+            )
+
+            if qs.exists():
+                schedule_item_attendance = qs.first()
+                schedule_item_attendance.booking_status = 'ATTENDING'
+                schedule_item_attendance.save()
+
+                # Increase counter
+                records_imported += 1
+
+                id_map[record['id']] = schedule_item_attendance
+            else:
+                logging.error("Import error for workshop activities customer id: %s" % (
+                    record['id'],
+                ))
+
+        log_message = "Import workshops activities customers: "
         self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
         logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
 
