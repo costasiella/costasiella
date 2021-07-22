@@ -139,6 +139,7 @@ class Command(BaseCommand):
         self.invoices_map = None
         self.invoices_items_map = None
         self.invoices_payments_map = None
+        self.invoices_mollie_payments_ids_map = None
         self.customers_orders_map = None
 
     def add_arguments(self, parser):
@@ -356,8 +357,8 @@ class Command(BaseCommand):
         auth_user_result = self._import_auth_user()
         self.auth_user_map = auth_user_result['id_map_auth_user']
         self.auth_user_business_map = self._import_auth_user_business()
-        self.customers_classcards_map = self._import_customers_classcards()
-        self.customers_subscriptions_map = self._import_customers_subscriptions()
+        # self.customers_classcards_map = self._import_customers_classcards()
+        # self.customers_subscriptions_map = self._import_customers_subscriptions()
         # self.customers_subscriptions_alt_prices_map = self._import_customers_subscriptions_alt_prices()
         # self.customers_subscriptions_blocks_map = self._import_customers_subscriptions_blocks()
         # self.customers_subscriptions_pauses_map = self._import_customers_subscriptions_pauses()
@@ -371,11 +372,11 @@ class Command(BaseCommand):
         # self.classes_school_classcards_groups_map = self._import_classes_school_classcards_groups()
         # self.classes_school_subscriptions_groups_map = self._import_classes_school_subscriptions_groups()
         # self.classes_teachers_map = self._import_classes_teachers()
-        self.workshops_map = self._import_workshops()
+        # self.workshops_map = self._import_workshops()
         # self.workshops_activities_map = self._import_workshops_activities()
-        self.workshops_products_map = self._import_workshops_products()
+        # self.workshops_products_map = self._import_workshops_products()
         # self.workshops_products_activities_map = self._import_workshops_products_activities()
-        self.workshops_products_customers_map = self._import_workshops_products_customers()
+        # self.workshops_products_customers_map = self._import_workshops_products_customers()
         # self.workshops_activities_customers_map = self._import_workshops_activities_customers()
         # self.announcements_map = self._import_announcements()
         # self.customers_profile_announcements_map = self._import_customers_profile_announcements()
@@ -384,8 +385,9 @@ class Command(BaseCommand):
         self.invoices_groups_map = self._import_invoices_groups()
         self.invoices_groups_product_types_map = self._import_invoices_groups_product_types()
         self.invoices_map = self._import_invoices()
-        self.invoices_items_map = self._import_invoices_items()
-        self.invoices_payments_map = self._import_invoices_payments()
+        # self.invoices_items_map = self._import_invoices_items()
+        # self.invoices_payments_map = self._import_invoices_payments()
+        self.invoices_mollie_payments_ids_map = self._import_invoices_mollie_payment_ids()
 
         # To do
         # self.customers_orders_map = self._impport_customers_orders()
@@ -2435,12 +2437,13 @@ LEFT JOIN invoices i ON ii.invoices_id = i.id
         logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
 
         return id_map
-    def _import_invoices_payments(self):
+
+    def _import_invoices_mollie_payment_ids(self):
         """
-        Fetch invoice payments and import it in Costasiella.
+        Fetch records from invoices mollie payment ids and import it in Costasiella.
         :return: None
         """
-        query = """SELECT * FROM invoices_payments"""
+        query = """SELECT * FROM invoices_mollie_payment_ids"""
         self.cursor.execute(query)
         records = self.cursor.fetchall()
 
@@ -2450,29 +2453,26 @@ LEFT JOIN invoices i ON ii.invoices_id = i.id
             record = {k.lower(): v for k, v in record.items()}
 
             try:
-                finance_invoice_payment = m.FinanceInvoicePayment(
-                    finance_invoice=self.invoices_map.get(record['invoices_id'], None),
-                    date=record['paymentdate'],
-                    amount=record['amount'],
-                    finance_payment_method=self.payment_methods_map.get(record['payment_methods_id'], None),
-                    note=record['note'] or "",
-                    online_payment_id=record['mollie_payment_id'],
-                    online_refund_id=record['mollie_refund_id'],
-                    online_chargeback_id=record['mollie_chargeback_id'],
+                integration_log_mollie = m.IntegrationLogMollie(
+                     log_source='INVOICE_PAY',
+                     mollie_payment_id=record['mollie_payment_id'],
+                     recurring_type=record['recurringtype'].upper() if record['recurringtype'] else None,
+                     webhook_url=record['webhookurl'],
+                     finance_invoice=self.invoices_map.get(record['invoices_id'], None)
                 )
-                finance_invoice_payment.save()
+                integration_log_mollie.save()
                 # Increase counter
                 records_imported += 1
 
-                id_map[record['id']] = finance_invoice_payment
+                id_map[record['id']] = integration_log_mollie
 
             except django.db.utils.IntegrityError as e:
-                logging.error("Import error for invoice payments id: %s: %s" % (
+                logging.error("Import error for invoices mollie payment id: %s: %s" % (
                     record['id'],
                     e
                 ))
 
-        log_message = "Import invoice payments: "
+        log_message = "Import invoice mollie payments: "
         self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
         logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
 
