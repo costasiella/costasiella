@@ -138,6 +138,7 @@ class Command(BaseCommand):
         self.invoices_groups_product_types_map = None
         self.invoices_map = None
         self.invoices_items_map = None
+        self.invoices_payments_map = None
         self.customers_orders_map = None
 
     def add_arguments(self, parser):
@@ -384,6 +385,7 @@ class Command(BaseCommand):
         self.invoices_groups_product_types_map = self._import_invoices_groups_product_types()
         self.invoices_map = self._import_invoices()
         self.invoices_items_map = self._import_invoices_items()
+        self.invoices_payments_map = self._import_invoices_payments()
 
         # To do
         # self.customers_orders_map = self._impport_customers_orders()
@@ -1175,7 +1177,7 @@ class Command(BaseCommand):
                 account_subscription.save()
                 records_imported += 1
                 id_map[record['id']] = account_subscription
-                
+
             except django.db.utils.IntegrityError as e:
                 logging.error("Import customer subscription error for user id: %s subscription id: %s : %s" % (
                     record['auth_customer_id'],
@@ -2386,6 +2388,91 @@ LEFT JOIN invoices i ON ii.invoices_id = i.id
                 ))
 
         log_message = "Import finance invoices items: "
+        self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
+        logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
+
+        return id_map
+
+    def _import_invoices_payments(self):
+        """
+        Fetch invoice payments and import it in Costasiella.
+        :return: None
+        """
+        query = """SELECT * FROM invoices_payments"""
+        self.cursor.execute(query)
+        records = self.cursor.fetchall()
+
+        id_map = {}
+        records_imported = 0
+        for record in records:
+            record = {k.lower(): v for k, v in record.items()}
+
+            try:
+                finance_invoice_payment = m.FinanceInvoicePayment(
+                    finance_invoice=self.invoices_map.get(record['invoices_id'], None),
+                    date=record['paymentdate'],
+                    amount=record['amount'],
+                    finance_payment_method=self.payment_methods_map.get(record['payment_methods_id'], None),
+                    note=record['note'] or "",
+                    online_payment_id=record['mollie_payment_id'],
+                    online_refund_id=record['mollie_refund_id'],
+                    online_chargeback_id=record['mollie_chargeback_id'],
+                )
+                finance_invoice_payment.save()
+                # Increase counter
+                records_imported += 1
+
+                id_map[record['id']] = finance_invoice_payment
+
+            except django.db.utils.IntegrityError as e:
+                logging.error("Import error for invoice payments id: %s: %s" % (
+                    record['id'],
+                    e
+                ))
+
+        log_message = "Import invoice payments: "
+        self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
+        logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
+
+        return id_map
+    def _import_invoices_payments(self):
+        """
+        Fetch invoice payments and import it in Costasiella.
+        :return: None
+        """
+        query = """SELECT * FROM invoices_payments"""
+        self.cursor.execute(query)
+        records = self.cursor.fetchall()
+
+        id_map = {}
+        records_imported = 0
+        for record in records:
+            record = {k.lower(): v for k, v in record.items()}
+
+            try:
+                finance_invoice_payment = m.FinanceInvoicePayment(
+                    finance_invoice=self.invoices_map.get(record['invoices_id'], None),
+                    date=record['paymentdate'],
+                    amount=record['amount'],
+                    finance_payment_method=self.payment_methods_map.get(record['payment_methods_id'], None),
+                    note=record['note'] or "",
+                    online_payment_id=record['mollie_payment_id'],
+                    online_refund_id=record['mollie_refund_id'],
+                    online_chargeback_id=record['mollie_chargeback_id'],
+                )
+                finance_invoice_payment.save()
+                # Increase counter
+                records_imported += 1
+
+                id_map[record['id']] = finance_invoice_payment
+
+            except django.db.utils.IntegrityError as e:
+                logging.error("Import error for invoice payments id: %s: %s" % (
+                    record['id'],
+                    e
+                ))
+
+        log_message = "Import invoice payments: "
         self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
         logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
 
