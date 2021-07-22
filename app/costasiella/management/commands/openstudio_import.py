@@ -137,6 +137,7 @@ class Command(BaseCommand):
         self.invoices_groups_map = None
         self.invoices_groups_product_types_map = None
         self.invoices_map = None
+        self.invoices_items_map = None
         self.customers_orders_map = None
 
     def add_arguments(self, parser):
@@ -338,10 +339,10 @@ class Command(BaseCommand):
         self.tax_rates_map = self._import_tax_rates()
         self.payment_methods_map = self._import_payment_methods()
         # self.school_memberships_map = self._import_school_memberships()
-        # self.school_classcards_map = self._import_school_classcards()
+        self.school_classcards_map = self._import_school_classcards()
         # self.school_classcards_groups_map = self._import_school_classcards_groups()
         # self.school_classcards_groups_classcards_map = self._import_school_classcards_groups_classcards()
-        # self.school_subscriptions_map = self._import_school_subscriptions()
+        self.school_subscriptions_map = self._import_school_subscriptions()
         # self.school_subscriptions_groups_map = self._import_school_subscriptions_groups()
         # self.school_subscriptions_groups_subscriptions_map = self._import_school_subscriptions_groups_subscriptions()
         # self.school_subscriptions_price_map = self._import_school_subscriptions_price()
@@ -354,8 +355,8 @@ class Command(BaseCommand):
         auth_user_result = self._import_auth_user()
         self.auth_user_map = auth_user_result['id_map_auth_user']
         self.auth_user_business_map = self._import_auth_user_business()
-        # self.customers_classcards_map = self._import_customers_classcards()
-        # self.customers_subscriptions_map = self._import_customers_subscriptions()
+        self.customers_classcards_map = self._import_customers_classcards()
+        self.customers_subscriptions_map = self._import_customers_subscriptions()
         # self.customers_subscriptions_alt_prices_map = self._import_customers_subscriptions_alt_prices()
         # self.customers_subscriptions_blocks_map = self._import_customers_subscriptions_blocks()
         # self.customers_subscriptions_pauses_map = self._import_customers_subscriptions_pauses()
@@ -370,18 +371,19 @@ class Command(BaseCommand):
         # self.classes_school_subscriptions_groups_map = self._import_classes_school_subscriptions_groups()
         # self.classes_teachers_map = self._import_classes_teachers()
         self.workshops_map = self._import_workshops()
-        self.workshops_activities_map = self._import_workshops_activities()
+        # self.workshops_activities_map = self._import_workshops_activities()
         self.workshops_products_map = self._import_workshops_products()
-        self.workshops_products_activities_map = self._import_workshops_products_activities()
+        # self.workshops_products_activities_map = self._import_workshops_products_activities()
         self.workshops_products_customers_map = self._import_workshops_products_customers()
-        self.workshops_activities_customers_map = self._import_workshops_activities_customers()
-        self.announcements_map = self._import_announcements()
-        self.customers_profile_announcements_map = self._import_customers_profile_announcements()
+        # self.workshops_activities_customers_map = self._import_workshops_activities_customers()
+        # self.announcements_map = self._import_announcements()
+        # self.customers_profile_announcements_map = self._import_customers_profile_announcements()
 
         # Done
-        # self.invoices_groups_map = self._import_invoices_groups()
-        # self.invoices_groups_product_types_map = self._import_invoices_groups_product_types()
-        # self.invoices_map = self._import_invoices()
+        self.invoices_groups_map = self._import_invoices_groups()
+        self.invoices_groups_product_types_map = self._import_invoices_groups_product_types()
+        self.invoices_map = self._import_invoices()
+        self.invoices_items_map = self._import_invoices_items()
 
         # To do
         # self.customers_orders_map = self._impport_customers_orders()
@@ -612,7 +614,7 @@ class Command(BaseCommand):
                 validity_unit=self.map_validity_units_cards_and_memberships.get(record['validityunit']),
                 classes=record['classes'] or 0,
                 unlimited=self._web2py_bool_to_python(record['unlimited']),
-                organization_membership=self.school_memberships_map.get(record['school_memberships_id'], None),
+                # organization_membership=self.school_memberships_map.get(record['school_memberships_id'], None),
                 quick_stats_amount=record['quickstatsamount'] or 0,
                 finance_glaccount=self.accounting_glaccounts_map.get(record['accounting_glaccounts_id'], None),
                 finance_costcenter=self.accounting_costcenters_map.get(record['accounting_costcenters_id'], None)
@@ -718,7 +720,7 @@ class Command(BaseCommand):
                 unlimited=self._web2py_bool_to_python(record['unlimited']),
                 terms_and_conditions=record['terms'] or "",
                 registration_fee=record['registrationfee'] or 0,
-                organization_membership=self.school_memberships_map.get(record['school_memberships_id'], None),
+                # organization_membership=self.school_memberships_map.get(record['school_memberships_id'], None),
                 quick_stats_amount=record['quickstatsamount'] or 0,
             )
             organization_subscription.save()
@@ -1119,18 +1121,25 @@ class Command(BaseCommand):
         for record in records:
             record = {k.lower(): v for k, v in record.items()}
 
-            account_classpass = m.AccountClasspass(
-                account=self.auth_user_map.get(record['auth_customer_id'], None),
-                organization_classpass=self.school_classcards_map.get(record['school_classcards_id']),
-                date_start=record['startdate'],
-                date_end=record['enddate'],
-                note=record['note'] or "",
-                classes_remaining=0
-            )
-            account_classpass.save()
-            records_imported += 1
+            try:
+                account_classpass = m.AccountClasspass(
+                    account=self.auth_user_map.get(record['auth_customer_id'], None),
+                    organization_classpass=self.school_classcards_map.get(record['school_classcards_id']),
+                    date_start=record['startdate'],
+                    date_end=record['enddate'],
+                    note=record['note'] or "",
+                    classes_remaining=0
+                )
+                account_classpass.save()
+                records_imported += 1
+                id_map[record['id']] = account_classpass
 
-            id_map[record['id']] = account_classpass
+            except django.db.utils.IntegrityError as e:
+                logging.error("Import customer classcard error for user id: %s classcard id: %s : %s" % (
+                    record['auth_customer_id'],
+                    record['id'],
+                    e
+                ))
 
         log_message = "Import customer class cards: "
         self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
@@ -1165,8 +1174,8 @@ class Command(BaseCommand):
                 )
                 account_subscription.save()
                 records_imported += 1
-
                 id_map[record['id']] = account_subscription
+                
             except django.db.utils.IntegrityError as e:
                 logging.error("Import customer subscription error for user id: %s subscription id: %s : %s" % (
                     record['auth_customer_id'],
@@ -2320,74 +2329,68 @@ ORDER BY i.id
         logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
 
         return id_map
-    #
-    # def _import_invoices_items(self):
-    #     """
-    #     Fetch customers orders and import it in Costasiella.
-    #     :param cursor: MySQL db cursor
-    #     :return: None
-    #     """
-    #     query = "SELECT * FROM invoices_items"
-    #     self.cursor.execute(query)
-    #     records = self.cursor.fetchall()
-    #
-    #     id_map = {}
-    #     records_imported = 0
-    #     for record in records:
-    #         record = {k.lower(): v for k, v in record.items()}
-    #
-    #         try:
-    #             finance_invoice_item = m.FinanceInvoiceItem(
-    #                 finance_invoice=self.invoices_map.get(record['invoices_id'], None),
-    #                 account_schedule_event_ticket=self.
-    #                 account_membership = models.ForeignKey(AccountMembership,
-    #                                                        on_delete=models.SET_NULL,
-    #                                                        null=True,
-    #                                                        default=None,
-    #                                                        related_name="invoice_items")
-    #                 account_classpass = models.ForeignKey(AccountClasspass,
-    #                                                       on_delete=models.SET_NULL,
-    #                                                       null=True,
-    #                                                       default=None,
-    #                                                       related_name="invoice_items")
-    #                 account_subscription = models.ForeignKey(AccountSubscription,
-    #                                                          on_delete=models.SET_NULL,
-    #                                                          null=True,
-    #                                                          default=None,
-    #                                                          related_name="invoice_items")
-    #                 subscription_year = models.IntegerField(null=True)
-    #                 subscription_month = models.IntegerField(null=True)
-    #                 line_number = models.PositiveSmallIntegerField(default=0)
-    #                 product_name = models.CharField(max_length=255)
-    #                 description = models.TextField(default="")
-    #                 quantity = models.DecimalField(max_digits=20, decimal_places=2)
-    #                 price = models.DecimalField(max_digits=20, decimal_places=2)
-    #                 finance_tax_rate = models.ForeignKey(FinanceTaxRate, on_delete=models.SET_NULL, null=True)
-    #                 subtotal = models.DecimalField(max_digits=20, decimal_places=2, default=0)
-    #                 tax = models.DecimalField(max_digits=20, decimal_places=2, default=0)
-    #                 total = models.DecimalField(max_digits=20, decimal_places=2, default=0)
-    #                 finance_glaccount = models.ForeignKey(FinanceGLAccount, on_delete=models.SET_NULL, null=True)
-    #                 finance_costcenter = models.ForeignKey(FinanceCostCenter, on_delete=models.SET_NULL, null=True)
-    #             )
-    #             finance_invoice_item.save()
-    #
-    #             finance_invoice_item.invoice_number = record['invoiceid']
-    #             finance_invoice_item.save()
-    #             records_imported += 1
-    #
-    #             id_map[record['id']] = finance_invoice_item
-    #         except django.db.utils.IntegrityError as e:
-    #             logging.error("Import error for finance invoice item: %s: %s" % (
-    #                 record['id'],
-    #                 e
-    #             ))
-    #
-    #     log_message = "Import finance invoices items: "
-    #     self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
-    #     logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
-    #
-    #     return id_map
-#
+
+    def _import_invoices_items(self):
+        """
+        Fetch customers orders and import it in Costasiella.
+        :param cursor: MySQL db cursor
+        :return: None
+        """
+        query = """
+SELECT * FROM invoices_items ii
+LEFT JOIN invoices_items_workshops_products_customers iiwpc ON iiwpc.invoices_items_id = ii.id
+LEFT JOIN invoices_items_classes_attendance iica ON iica.invoices_items_id = ii.id
+LEFT JOIN invoices_items_customers_classcards iicc ON iicc.invoices_items_id = ii.id
+LEFT JOIN invoices_items_customers_subscriptions iics ON iics.invoices_items_id = ii.id
+LEFT JOIN invoices i ON ii.invoices_id = i.id
+    """
+        self.cursor.execute(query)
+        records = self.cursor.fetchall()
+
+        id_map = {}
+        records_imported = 0
+        for record in records:
+            record = {k.lower(): v for k, v in record.items()}
+
+            try:
+                finance_invoice_item = m.FinanceInvoiceItem(
+                    finance_invoice=self.invoices_map.get(record['invoices_id'], None),
+                    account_schedule_event_ticket=self.workshops_products_customers_map.get(
+                        record['workshops_products_customers_id'], None
+                    ),
+                    account_classpass=self.customers_classcards_map.get(
+                        record['customers_classcards_id'], None
+                    ),
+                    account_subscription=self.customers_subscriptions_map.get(
+                        record['customers_subscriptions_id'], None
+                    ),
+                    subscription_year=record['subscriptionyear'],
+                    subscription_month=record['subscriptionmonth'],
+                    line_number=record['sorting'],
+                    product_name=record['productname'],
+                    description=record['description'],
+                    quantity=record['quantity'],
+                    price=record['price'],
+                    finance_tax_rate=self.tax_rates_map.get(record['tax_rates_id']),
+                    finance_glaccount=self.accounting_glaccounts_map.get(record['accounting_glaccounts_id'], None),
+                    finance_costcenter=self.accounting_costcenters_map.get(record['accounting_costcenters_id'], None)
+                )
+                finance_invoice_item.save()
+                records_imported += 1
+
+                id_map[record['id']] = finance_invoice_item
+            except django.db.utils.IntegrityError as e:
+                logging.error("Import error for finance invoice item: %s: %s" % (
+                    record['id'],
+                    e
+                ))
+
+        log_message = "Import finance invoices items: "
+        self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
+        logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
+
+        return id_map
+
 #     def _import_customers_orders(self):
 #         """
 #         Fetch customers orders and import it in Costasiella.
