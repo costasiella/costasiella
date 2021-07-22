@@ -357,26 +357,26 @@ class Command(BaseCommand):
         auth_user_result = self._import_auth_user()
         self.auth_user_map = auth_user_result['id_map_auth_user']
         self.auth_user_business_map = self._import_auth_user_business()
-        # self.customers_classcards_map = self._import_customers_classcards()
-        # self.customers_subscriptions_map = self._import_customers_subscriptions()
+        self.customers_classcards_map = self._import_customers_classcards()
+        self.customers_subscriptions_map = self._import_customers_subscriptions()
         # self.customers_subscriptions_alt_prices_map = self._import_customers_subscriptions_alt_prices()
         # self.customers_subscriptions_blocks_map = self._import_customers_subscriptions_blocks()
         # self.customers_subscriptions_pauses_map = self._import_customers_subscriptions_pauses()
         # self.customers_notes_map = self._import_customers_notes()
         # self.customers_payment_info_map = self._import_customers_payment_info()
         # self.customers_payment_info_mandates_map = self._import_customers_payment_mandates()
-        # self.classes_map = self._import_classes()
-        # self.classes_attendance_map = self._import_classes_attendance()
+        self.classes_map = self._import_classes()
+        self.classes_attendance_map = self._import_classes_attendance()
         # self.classes_otc_map = self._import_classes_otc()
         # self.classes_otc_mail_map = self._import_classes_otc_mail()
         # self.classes_school_classcards_groups_map = self._import_classes_school_classcards_groups()
         # self.classes_school_subscriptions_groups_map = self._import_classes_school_subscriptions_groups()
         # self.classes_teachers_map = self._import_classes_teachers()
-        # self.workshops_map = self._import_workshops()
+        self.workshops_map = self._import_workshops()
         # self.workshops_activities_map = self._import_workshops_activities()
-        # self.workshops_products_map = self._import_workshops_products()
+        self.workshops_products_map = self._import_workshops_products()
         # self.workshops_products_activities_map = self._import_workshops_products_activities()
-        # self.workshops_products_customers_map = self._import_workshops_products_customers()
+        self.workshops_products_customers_map = self._import_workshops_products_customers()
         # self.workshops_activities_customers_map = self._import_workshops_activities_customers()
         # self.announcements_map = self._import_announcements()
         # self.customers_profile_announcements_map = self._import_customers_profile_announcements()
@@ -385,7 +385,7 @@ class Command(BaseCommand):
         self.invoices_groups_map = self._import_invoices_groups()
         self.invoices_groups_product_types_map = self._import_invoices_groups_product_types()
         self.invoices_map = self._import_invoices()
-        # self.invoices_items_map = self._import_invoices_items()
+        self.invoices_items_map = self._import_invoices_items()
         # self.invoices_payments_map = self._import_invoices_payments()
         self.invoices_mollie_payments_ids_map = self._import_invoices_mollie_payment_ids()
 
@@ -2380,6 +2380,19 @@ LEFT JOIN invoices i ON ii.invoices_id = i.id
                     finance_costcenter=self.accounting_costcenters_map.get(record['accounting_costcenters_id'], None)
                 )
                 finance_invoice_item.save()
+
+                # This invoice item was linked to a classes_attendance record. There is no 1:1 equivalent in
+                # Costasiella as there are no prices for a class but passes are used.
+                # We can link the invoice item to an attendance record though.
+                if record['classes_attendance_id']:
+                    schedule_item_attendance = self.schedule_item_attendance_map.get(
+                        record['classes_attendance_id'],
+                        None
+                    )
+                    if schedule_item_attendance:
+                        schedule_item_attendance.finance_invoice_item = finance_invoice_item
+                        schedule_item_attendance.save()
+
                 records_imported += 1
 
                 id_map[record['id']] = finance_invoice_item
