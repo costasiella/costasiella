@@ -218,15 +218,6 @@ GRAPHQL_JWT = {
     # 'JWT_COOKIE_SECURE': True # Set this to true for production
 }
 
-# Webpack loader
-
-# WEBPACK_LOADER = {
-#     'DEFAULT': {
-#             'BUNDLE_DIR_NAME': 'bundles/',
-#             'STATS_FILE': os.path.join(BASE_DIR, 'webpack-stats.dev.json'),
-#         }
-# }
-
 # Where to go after login, well... let's just go home and take care of things from there :).
 
 LOGIN_URL = '/#/user/login'
