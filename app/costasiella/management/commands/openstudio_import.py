@@ -91,6 +91,15 @@ class Command(BaseCommand):
             'cancelled': 'CANCELLED'
         }
 
+        self.map_customers_orders_statuses = {
+            'received': 'RECEIVED',
+            'awaiting_payment': 'AWAITING_PAYMENT',
+            'paid': 'PAID',
+            'processing': 'PAID',
+            'delivered': 'DELIVERED',
+            'cancelled': 'CANCELLED'
+        }
+
         # Define dynamic maps
         self.accounting_costcenters_map = None
         self.accounting_glaccounts_map = None
@@ -380,17 +389,13 @@ class Command(BaseCommand):
         # self.workshops_activities_customers_map = self._import_workshops_activities_customers()
         # self.announcements_map = self._import_announcements()
         # self.customers_profile_announcements_map = self._import_customers_profile_announcements()
-
-        # Done
         self.invoices_groups_map = self._import_invoices_groups()
         self.invoices_groups_product_types_map = self._import_invoices_groups_product_types()
         self.invoices_map = self._import_invoices()
         self.invoices_items_map = self._import_invoices_items()
         # self.invoices_payments_map = self._import_invoices_payments()
         self.invoices_mollie_payments_ids_map = self._import_invoices_mollie_payment_ids()
-
-        # To do
-        # self.customers_orders_map = self._impport_customers_orders()
+        self.customers_orders_map = self._impport_customers_orders()
 
     def _import_os_sys_organization_to_organization(self):
         """
@@ -2491,50 +2496,50 @@ LEFT JOIN invoices i ON ii.invoices_id = i.id
 
         return id_map
 
-#     def _import_customers_orders(self):
-#         """
-#         Fetch customers orders and import it in Costasiella.
-#         :param cursor: MySQL db cursor
-#         :return: None
-#         """
-#         query = """
-# SELECT * FROM customers_orders co
-# LEFT JOIN customers_orders_amounts coa ON coa.customers_orders_id = co.id
-# """
-#         self.cursor.execute(query)
-#         records = self.cursor.fetchall()
-#
-#         id_map = {}
-#         records_imported = 0
-#         for record in records:
-#             record = {k.lower(): v for k, v in record.items()}
-#
-#             try:
-#                 finance_order = m.FinanceOrder(
-#                     finance_invoice=models.ForeignKey(FinanceInvoice, on_delete=models.SET_NULL, null=True,
-#                                                       related_name="orders")
-#                     account = models.ForeignKey(Account, on_delete=models.SET_NULL, null=True)
-#                     status = models.CharField(max_length=255, choices=STATUSES, default="RECEIVED")
-#                     message = models.TextField(default="")
-#                     subtotal = models.DecimalField(max_digits=20, decimal_places=2, default=0)
-#                     tax = models.DecimalField(max_digits=20, decimal_places=2, default=0)
-#                     total = models.DecimalField(max_digits=20, decimal_places=2, default=0)
-#                 )
-#                 finance_order.save()
-#                 records_imported += 1
-#
-#                 id_map[record['id']] = finance_order
-#             except django.db.utils.IntegrityError as e:
-#                 logging.error("Import error for finance order: %s: %s" % (
-#                     record['id'],
-#                     e
-#                 ))
-#
-#         log_message = "Import finance order id: "
-#         self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
-#         logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
-#
-#         return id_map
+    def _import_customers_orders(self):
+        """
+        Fetch customers orders and import it in Costasiella.
+        :param cursor: MySQL db cursor
+        :return: None
+        """
+        query = """
+SELECT * FROM customers_orders co
+LEFT JOIN customers_orders_amounts coa ON coa.customers_orders_id = co.id
+LEFT JOIN invoices_customers_orders ico ON ico.customers_orders_id = co.id
+"""
+        self.cursor.execute(query)
+        records = self.cursor.fetchall()
+
+        id_map = {}
+        records_imported = 0
+        for record in records:
+            record = {k.lower(): v for k, v in record.items()}
+
+            try:
+                finance_order = m.FinanceOrder(
+                    finance_invoice=self.invoices_map.get(record['invoices_id'], None),
+                    account=self.auth_user_map.get(record['auth_customer_id'], None),
+                    status=self.map_customers_orders_statuses.get(record['status'], None),
+                    message=record['customernote'] or '',
+                    subtotal=record['totalprice'],
+                    tax=record['vat'],
+                    total=record['totalpricevat']
+                )
+                finance_order.save()
+                records_imported += 1
+
+                id_map[record['id']] = finance_order
+            except django.db.utils.IntegrityError as e:
+                logging.error("Import error for finance order: %s: %s" % (
+                    record['id'],
+                    e
+                ))
+
+        log_message = "Import finance order id: "
+        self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
+        logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
+
+        return id_map
 #
 #     def _update_account_classpasses_remaining(self):
 #         """
