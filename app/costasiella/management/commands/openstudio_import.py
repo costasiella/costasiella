@@ -135,6 +135,7 @@ class Command(BaseCommand):
         self.classes_school_classcards_groups_map = None
         self.classes_school_subscriptions_groups_map = None
         self.classes_teachers_map = None
+        self.customers_subscriptions_credits_map = None
         self.workshops_map = None
         self.workshops_activities_map = None
         self.workshops_products_map = None
@@ -383,6 +384,7 @@ class Command(BaseCommand):
         # self.classes_school_classcards_groups_map = self._import_classes_school_classcards_groups()
         # self.classes_school_subscriptions_groups_map = self._import_classes_school_subscriptions_groups()
         # self.classes_teachers_map = self._import_classes_teachers()
+        self.customers_subscriptions_credits_map = self._import_customers_subscriptions_credits()
         self.workshops_map = self._import_workshops()
         # self.workshops_activities_map = self._import_workshops_activities()
         self.workshops_products_map = self._import_workshops_products()
@@ -1744,6 +1746,51 @@ class Command(BaseCommand):
                 ))
 
         log_message = "Import classes teachers: "
+        self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
+        logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
+
+        return id_map
+
+    def _import_customers_subscriptions_credits(self):
+        """
+        Fetch customers subscriptions credits and import it in Costasiella.
+        :param cursor: MySQL db cursor
+        :return: None
+        """
+        query = "SELECT * FROM customers_subscriptions_credits"
+        self.cursor.execute(query)
+        records = self.cursor.fetchall()
+
+        id_map = {}
+        records_imported = 0
+        for record in records:
+            record = {k.lower(): v for k, v in record.items()}
+
+            try:
+                account_subscription_credit = m.AccountSubscriptionCredit(
+                    account_subscription=self.customers_subscriptions_map.get(
+                        record['customers_subscriptions_id'], None
+                    ),
+                    schedule_item_attendance=self.classes_attendance_map.get(
+                        record['classes_attendance_id'], None
+                    ),
+                    mutation_type=record['mutationtype'].upper(),
+                    mutation_amount=record['mutationamount'],
+                    description=record['description'] or "",
+                    subscription_year=record['subscriptionyear'],
+                    subscription_month=record['subscriptionmonth']
+                )
+                account_subscription_credit.save()
+                records_imported += 1
+
+                id_map[record['id']] = account_subscription_credit
+            except django.db.utils.IntegrityError as e:
+                logging.error("Import error for customers subscriptions credits id: %s: %s" % (
+                    record['id'],
+                    e
+                ))
+
+        log_message = "Import customers subscriptions credits: "
         self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
         logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
 
