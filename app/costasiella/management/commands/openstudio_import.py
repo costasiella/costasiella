@@ -395,7 +395,7 @@ class Command(BaseCommand):
         self.invoices_items_map = self._import_invoices_items()
         # self.invoices_payments_map = self._import_invoices_payments()
         self.invoices_mollie_payments_ids_map = self._import_invoices_mollie_payment_ids()
-        self.customers_orders_map = self._impport_customers_orders()
+        self.customers_orders_map = self._import_customers_orders()
 
     def _import_os_sys_organization_to_organization(self):
         """
@@ -2521,9 +2521,9 @@ LEFT JOIN invoices_customers_orders ico ON ico.customers_orders_id = co.id
                     account=self.auth_user_map.get(record['auth_customer_id'], None),
                     status=self.map_customers_orders_statuses.get(record['status'], None),
                     message=record['customernote'] or '',
-                    subtotal=record['totalprice'],
-                    tax=record['vat'],
-                    total=record['totalpricevat']
+                    subtotal=record['totalprice'] or 0,
+                    tax=record['vat'] or 0,
+                    total=record['totalpricevat'] or 0
                 )
                 finance_order.save()
                 records_imported += 1
