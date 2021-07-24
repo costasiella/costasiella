@@ -154,6 +154,7 @@ class Command(BaseCommand):
         self.customers_orders_items_map = None
         self.customers_orders_mollie_payment_ids_map = None
         self.payment_categories_map = None
+        self.alternative_payments_map = None
 
     def add_arguments(self, parser):
         parser.add_argument(
@@ -349,26 +350,26 @@ class Command(BaseCommand):
         :return:
         """
         self._import_os_sys_organization_to_organization()
-        # self.accounting_costcenters_map = self._import_accounting_costcenters()
-        # self.accounting_glaccounts_map = self._import_accounting_glaccounts()
-        # self.tax_rates_map = self._import_tax_rates()
-        # self.payment_methods_map = self._import_payment_methods()
-        # # self.school_memberships_map = self._import_school_memberships()
-        # self.school_classcards_map = self._import_school_classcards()
-        # # self.school_classcards_groups_map = self._import_school_classcards_groups()
-        # # self.school_classcards_groups_classcards_map = self._import_school_classcards_groups_classcards()
-        # self.school_subscriptions_map = self._import_school_subscriptions()
-        # # self.school_subscriptions_groups_map = self._import_school_subscriptions_groups()
-        # # self.school_subscriptions_groups_subscriptions_map = self._import_school_subscriptions_groups_subscriptions()
-        # # self.school_subscriptions_price_map = self._import_school_subscriptions_price()
-        # self.school_classtypes_map = self._import_school_classtypes()
-        # # self.school_discovery_map = self._import_school_discovery()
-        # self.school_levels_map = self._import_school_levels()
-        # locations_import_result = self._import_school_locations()
-        # self.school_locations_map = locations_import_result['id_map_locations']
-        # self.school_locations_rooms_map = locations_import_result['id_map_rooms']
-        # auth_user_result = self._import_auth_user()
-        # self.auth_user_map = auth_user_result['id_map_auth_user']
+        self.accounting_costcenters_map = self._import_accounting_costcenters()
+        self.accounting_glaccounts_map = self._import_accounting_glaccounts()
+        self.tax_rates_map = self._import_tax_rates()
+        self.payment_methods_map = self._import_payment_methods()
+        # self.school_memberships_map = self._import_school_memberships()
+        self.school_classcards_map = self._import_school_classcards()
+        # self.school_classcards_groups_map = self._import_school_classcards_groups()
+        # self.school_classcards_groups_classcards_map = self._import_school_classcards_groups_classcards()
+        self.school_subscriptions_map = self._import_school_subscriptions()
+        # self.school_subscriptions_groups_map = self._import_school_subscriptions_groups()
+        # self.school_subscriptions_groups_subscriptions_map = self._import_school_subscriptions_groups_subscriptions()
+        # self.school_subscriptions_price_map = self._import_school_subscriptions_price()
+        self.school_classtypes_map = self._import_school_classtypes()
+        # self.school_discovery_map = self._import_school_discovery()
+        self.school_levels_map = self._import_school_levels()
+        locations_import_result = self._import_school_locations()
+        self.school_locations_map = locations_import_result['id_map_locations']
+        self.school_locations_rooms_map = locations_import_result['id_map_rooms']
+        auth_user_result = self._import_auth_user()
+        self.auth_user_map = auth_user_result['id_map_auth_user']
         # self.auth_user_business_map = self._import_auth_user_business()
         # self.customers_classcards_map = self._import_customers_classcards()
         # self.customers_subscriptions_map = self._import_customers_subscriptions()
@@ -404,6 +405,7 @@ class Command(BaseCommand):
         # # self.customers_orders_items_map = self._import_customers_orders_items()
         # self.customers_orders_mollie_payment_ids_map = self._import_customers_orders_mollie_payment_ids()
         self.payment_categories_map = self._import_payment_categories()
+        self.alternative_payments_map = self._import_alternative_payments()
 
     def _import_os_sys_organization_to_organization(self):
         """
@@ -2719,6 +2721,49 @@ SELECT * FROM customers_orders_items ii
                 ))
 
         log_message = "Import payment batch categories: "
+        self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
+        logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
+
+        return id_map
+
+    def _import_alternative_payments(self):
+        """
+        Fetch records from alternativepayments and import it in Costasiella.
+        :return: None
+        """
+        query = """SELECT * FROM alternativepayments"""
+        self.cursor.execute(query)
+        records = self.cursor.fetchall()
+
+        id_map = {}
+        records_imported = 0
+        for record in records:
+            record = {k.lower(): v for k, v in record.items()}
+
+            try:
+                account_finance_payment_batch_category_item = m.AccountFinancePaymentBatchCategoryItem(
+                    account=self.auth_user_map.get(record['auth_customer_id'], None),
+                    finance_payment_batch_category=self.payment_categories_map.get(
+                        record['payment_categories_id'], None
+                    ),
+                    year=record['paymentyear'],
+                    month=record['paymentmonth'],
+                    amount=record['amount'],
+                    description=record['description'] or ''
+                )
+                account_finance_payment_batch_category_item.save()
+                # Increase counter
+                records_imported += 1
+
+                id_map[record['id']] = account_finance_payment_batch_category_item
+
+            except django.db.utils.IntegrityError as e:
+                logging.error("Import error for alternativepayment: %s: %s" % (
+                    record['id'],
+                    e
+                ))
+
+        log_message = "Import alternativepayments: "
         self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
         logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
 
