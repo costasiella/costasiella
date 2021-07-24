@@ -150,6 +150,7 @@ class Command(BaseCommand):
         self.invoices_payments_map = None
         self.invoices_mollie_payments_ids_map = None
         self.customers_orders_map = None
+        self.customers_orders_items_map = None
 
     def add_arguments(self, parser):
         parser.add_argument(
@@ -396,6 +397,7 @@ class Command(BaseCommand):
         # self.invoices_payments_map = self._import_invoices_payments()
         self.invoices_mollie_payments_ids_map = self._import_invoices_mollie_payment_ids()
         self.customers_orders_map = self._import_customers_orders()
+        self.customers_orders_items_map = self._import_customers_orders_items()
 
     def _import_os_sys_organization_to_organization(self):
         """
@@ -2536,6 +2538,57 @@ LEFT JOIN invoices_customers_orders ico ON ico.customers_orders_id = co.id
                 ))
 
         log_message = "Import finance order id: "
+        self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
+        logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
+
+        return id_map
+
+    def _import_customers_orders_items(self):
+        """
+        Fetch customers orders items and import it in Costasiella.
+        :param cursor: MySQL db cursor
+        :return: None
+        """
+        query = """
+SELECT * FROM customers_orders_items ii
+    """
+        self.cursor.execute(query)
+        records = self.cursor.fetchall()
+
+        id_map = {}
+        records_imported = 0
+        for record in records:
+            record = {k.lower(): v for k, v in record.items()}
+
+            try:
+                finance_order_item = m.FinanceOrderItem(
+                    finance_order=self.customers_orders_map.get(record['customers_orders_id'], None),
+                    schedule_event_ticket=self.workshops_products_map.get(record['workshops_products_id'], None),
+                    organization_subscription=self.school_subscriptions_map.get(record['school_subscriptions_id'],
+                                                                                None),
+                    organization_classpass=self.school_classcards_map.get(record['school_classcards_id'], None),
+                    attendance_type=self.map_attendance_types.get(record['attendancetype'], None),
+                    attendance_date=record['classdate'],
+                    schedule_item=self.classes_map.get(record['classes_id'], None),
+                    product_name=record['productname'],
+                    description=record['description'] or '',
+                    quantity=record['quantity'],
+                    price=record['price'],
+                    finance_tax_rate=self.tax_rates_map.get(record['tax_rates_id']),
+                    finance_glaccount=self.accounting_glaccounts_map.get(record['accounting_glaccounts_id'], None),
+                    finance_costcenter=self.accounting_costcenters_map.get(record['accounting_costcenters_id'], None)
+                )
+                finance_order_item.save()
+                records_imported += 1
+                id_map[record['id']] = finance_order_item
+
+            except django.db.utils.IntegrityError as e:
+                logging.error("Import error for customer order item: %s: %s" % (
+                    record['id'],
+                    e
+                ))
+
+        log_message = "Import customer order items: "
         self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
         logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
 
