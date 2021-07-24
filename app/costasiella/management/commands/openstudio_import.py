@@ -151,6 +151,7 @@ class Command(BaseCommand):
         self.invoices_mollie_payments_ids_map = None
         self.customers_orders_map = None
         self.customers_orders_items_map = None
+        self.customers_orders_mollie_payment_ids_map = None
 
     def add_arguments(self, parser):
         parser.add_argument(
@@ -397,7 +398,8 @@ class Command(BaseCommand):
         # self.invoices_payments_map = self._import_invoices_payments()
         self.invoices_mollie_payments_ids_map = self._import_invoices_mollie_payment_ids()
         self.customers_orders_map = self._import_customers_orders()
-        self.customers_orders_items_map = self._import_customers_orders_items()
+        # self.customers_orders_items_map = self._import_customers_orders_items()
+        self.customers_orders_mollie_payment_ids_map = self._import_customers_orders_mollie_payment_ids()
 
     def _import_os_sys_organization_to_organization(self):
         """
@@ -2593,7 +2595,47 @@ SELECT * FROM customers_orders_items ii
         logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
 
         return id_map
-#
+
+    def _import_customers_orders_mollie_payment_ids(self):
+        """
+        Fetch records from customers orders mollie payment ids and import it in Costasiella.
+        :return: None
+        """
+        query = """SELECT * FROM customers_orders_mollie_payment_ids"""
+        self.cursor.execute(query)
+        records = self.cursor.fetchall()
+
+        id_map = {}
+        records_imported = 0
+        for record in records:
+            record = {k.lower(): v for k, v in record.items()}
+
+            try:
+                integration_log_mollie = m.IntegrationLogMollie(
+                     log_source='ORDER_PAY',
+                     mollie_payment_id=record['mollie_payment_id'],
+                     recurring_type=record['recurringtype'].upper() if record['recurringtype'] else None,
+                     webhook_url=record['webhookurl'],
+                     finance_order=self.customers_orders_map.get(record['customers_orders_id'], None)
+                )
+                integration_log_mollie.save()
+                # Increase counter
+                records_imported += 1
+
+                id_map[record['id']] = integration_log_mollie
+
+            except django.db.utils.IntegrityError as e:
+                logging.error("Import error for customers orders mollie payment id: %s: %s" % (
+                    record['id'],
+                    e
+                ))
+
+        log_message = "Import customers orders mollie payments: "
+        self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
+        logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
+
+        return id_map
+
 #     def _update_account_classpasses_remaining(self):
 #         """
 #         Update remaining classes for all class passes, now that the attendance has been imported.
