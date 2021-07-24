@@ -153,6 +153,7 @@ class Command(BaseCommand):
         self.customers_orders_map = None
         self.customers_orders_items_map = None
         self.customers_orders_mollie_payment_ids_map = None
+        self.payment_categories_map = None
 
     def add_arguments(self, parser):
         parser.add_argument(
@@ -348,60 +349,61 @@ class Command(BaseCommand):
         :return:
         """
         self._import_os_sys_organization_to_organization()
-        self.accounting_costcenters_map = self._import_accounting_costcenters()
-        self.accounting_glaccounts_map = self._import_accounting_glaccounts()
-        self.tax_rates_map = self._import_tax_rates()
-        self.payment_methods_map = self._import_payment_methods()
-        # self.school_memberships_map = self._import_school_memberships()
-        self.school_classcards_map = self._import_school_classcards()
-        # self.school_classcards_groups_map = self._import_school_classcards_groups()
-        # self.school_classcards_groups_classcards_map = self._import_school_classcards_groups_classcards()
-        self.school_subscriptions_map = self._import_school_subscriptions()
-        # self.school_subscriptions_groups_map = self._import_school_subscriptions_groups()
-        # self.school_subscriptions_groups_subscriptions_map = self._import_school_subscriptions_groups_subscriptions()
-        # self.school_subscriptions_price_map = self._import_school_subscriptions_price()
-        self.school_classtypes_map = self._import_school_classtypes()
-        # self.school_discovery_map = self._import_school_discovery()
-        self.school_levels_map = self._import_school_levels()
-        locations_import_result = self._import_school_locations()
-        self.school_locations_map = locations_import_result['id_map_locations']
-        self.school_locations_rooms_map = locations_import_result['id_map_rooms']
-        auth_user_result = self._import_auth_user()
-        self.auth_user_map = auth_user_result['id_map_auth_user']
-        self.auth_user_business_map = self._import_auth_user_business()
-        self.customers_classcards_map = self._import_customers_classcards()
-        self.customers_subscriptions_map = self._import_customers_subscriptions()
-        # self.customers_subscriptions_alt_prices_map = self._import_customers_subscriptions_alt_prices()
-        # self.customers_subscriptions_blocks_map = self._import_customers_subscriptions_blocks()
-        # self.customers_subscriptions_pauses_map = self._import_customers_subscriptions_pauses()
-        # self.customers_notes_map = self._import_customers_notes()
-        # self.customers_payment_info_map = self._import_customers_payment_info()
-        # self.customers_payment_info_mandates_map = self._import_customers_payment_mandates()
-        self.classes_map = self._import_classes()
-        self.classes_attendance_map = self._import_classes_attendance()
-        # self.classes_otc_map = self._import_classes_otc()
-        # self.classes_otc_mail_map = self._import_classes_otc_mail()
-        # self.classes_school_classcards_groups_map = self._import_classes_school_classcards_groups()
-        # self.classes_school_subscriptions_groups_map = self._import_classes_school_subscriptions_groups()
-        # self.classes_teachers_map = self._import_classes_teachers()
-        self.customers_subscriptions_credits_map = self._import_customers_subscriptions_credits()
-        self.workshops_map = self._import_workshops()
-        # self.workshops_activities_map = self._import_workshops_activities()
-        self.workshops_products_map = self._import_workshops_products()
-        # self.workshops_products_activities_map = self._import_workshops_products_activities()
-        self.workshops_products_customers_map = self._import_workshops_products_customers()
-        # self.workshops_activities_customers_map = self._import_workshops_activities_customers()
-        # self.announcements_map = self._import_announcements()
-        # self.customers_profile_announcements_map = self._import_customers_profile_announcements()
-        self.invoices_groups_map = self._import_invoices_groups()
-        self.invoices_groups_product_types_map = self._import_invoices_groups_product_types()
-        self.invoices_map = self._import_invoices()
-        self.invoices_items_map = self._import_invoices_items()
-        # self.invoices_payments_map = self._import_invoices_payments()
-        self.invoices_mollie_payments_ids_map = self._import_invoices_mollie_payment_ids()
-        self.customers_orders_map = self._import_customers_orders()
-        # self.customers_orders_items_map = self._import_customers_orders_items()
-        self.customers_orders_mollie_payment_ids_map = self._import_customers_orders_mollie_payment_ids()
+        # self.accounting_costcenters_map = self._import_accounting_costcenters()
+        # self.accounting_glaccounts_map = self._import_accounting_glaccounts()
+        # self.tax_rates_map = self._import_tax_rates()
+        # self.payment_methods_map = self._import_payment_methods()
+        # # self.school_memberships_map = self._import_school_memberships()
+        # self.school_classcards_map = self._import_school_classcards()
+        # # self.school_classcards_groups_map = self._import_school_classcards_groups()
+        # # self.school_classcards_groups_classcards_map = self._import_school_classcards_groups_classcards()
+        # self.school_subscriptions_map = self._import_school_subscriptions()
+        # # self.school_subscriptions_groups_map = self._import_school_subscriptions_groups()
+        # # self.school_subscriptions_groups_subscriptions_map = self._import_school_subscriptions_groups_subscriptions()
+        # # self.school_subscriptions_price_map = self._import_school_subscriptions_price()
+        # self.school_classtypes_map = self._import_school_classtypes()
+        # # self.school_discovery_map = self._import_school_discovery()
+        # self.school_levels_map = self._import_school_levels()
+        # locations_import_result = self._import_school_locations()
+        # self.school_locations_map = locations_import_result['id_map_locations']
+        # self.school_locations_rooms_map = locations_import_result['id_map_rooms']
+        # auth_user_result = self._import_auth_user()
+        # self.auth_user_map = auth_user_result['id_map_auth_user']
+        # self.auth_user_business_map = self._import_auth_user_business()
+        # self.customers_classcards_map = self._import_customers_classcards()
+        # self.customers_subscriptions_map = self._import_customers_subscriptions()
+        # # self.customers_subscriptions_alt_prices_map = self._import_customers_subscriptions_alt_prices()
+        # # self.customers_subscriptions_blocks_map = self._import_customers_subscriptions_blocks()
+        # # self.customers_subscriptions_pauses_map = self._import_customers_subscriptions_pauses()
+        # # self.customers_notes_map = self._import_customers_notes()
+        # # self.customers_payment_info_map = self._import_customers_payment_info()
+        # # self.customers_payment_info_mandates_map = self._import_customers_payment_mandates()
+        # self.classes_map = self._import_classes()
+        # self.classes_attendance_map = self._import_classes_attendance()
+        # # self.classes_otc_map = self._import_classes_otc()
+        # # self.classes_otc_mail_map = self._import_classes_otc_mail()
+        # # self.classes_school_classcards_groups_map = self._import_classes_school_classcards_groups()
+        # # self.classes_school_subscriptions_groups_map = self._import_classes_school_subscriptions_groups()
+        # # self.classes_teachers_map = self._import_classes_teachers()
+        # self.customers_subscriptions_credits_map = self._import_customers_subscriptions_credits()
+        # self.workshops_map = self._import_workshops()
+        # # self.workshops_activities_map = self._import_workshops_activities()
+        # self.workshops_products_map = self._import_workshops_products()
+        # # self.workshops_products_activities_map = self._import_workshops_products_activities()
+        # self.workshops_products_customers_map = self._import_workshops_products_customers()
+        # # self.workshops_activities_customers_map = self._import_workshops_activities_customers()
+        # # self.announcements_map = self._import_announcements()
+        # # self.customers_profile_announcements_map = self._import_customers_profile_announcements()
+        # self.invoices_groups_map = self._import_invoices_groups()
+        # self.invoices_groups_product_types_map = self._import_invoices_groups_product_types()
+        # self.invoices_map = self._import_invoices()
+        # self.invoices_items_map = self._import_invoices_items()
+        # # self.invoices_payments_map = self._import_invoices_payments()
+        # self.invoices_mollie_payments_ids_map = self._import_invoices_mollie_payment_ids()
+        # self.customers_orders_map = self._import_customers_orders()
+        # # self.customers_orders_items_map = self._import_customers_orders_items()
+        # self.customers_orders_mollie_payment_ids_map = self._import_customers_orders_mollie_payment_ids()
+        self.payment_categories_map = self._import_payment_categories()
 
     def _import_os_sys_organization_to_organization(self):
         """
@@ -2682,6 +2684,93 @@ SELECT * FROM customers_orders_items ii
         logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
 
         return id_map
+
+    def _import_payment_categories(self):
+        """
+        Fetch records from payment categories and import it in Costasiella.
+        :return: None
+        """
+        query = """SELECT * FROM payment_categories"""
+        self.cursor.execute(query)
+        records = self.cursor.fetchall()
+
+        id_map = {}
+        records_imported = 0
+        for record in records:
+            record = {k.lower(): v for k, v in record.items()}
+
+            try:
+                finance_payment_batch_category = m.FinancePaymentBatchCategory(
+                    archived=self._web2py_bool_to_python(record['archived']),
+                    name=record['name'],
+                    batch_category_type='COLLECTION' if record['categorytype'] == 0 else 'PAYMENT',
+                    description=""
+                )
+                finance_payment_batch_category.save()
+                # Increase counter
+                records_imported += 1
+
+                id_map[record['id']] = finance_payment_batch_category
+
+            except django.db.utils.IntegrityError as e:
+                logging.error("Import error for finance payment batch category: %s: %s" % (
+                    record['id'],
+                    e
+                ))
+
+        log_message = "Import payment batch categories: "
+        self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
+        logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
+
+        return id_map
+    #
+    # def _import_payment_batches(self):
+    #     """
+    #     Fetch records from payment batches and import it in Costasiella.
+    #     :return: None
+    #     """
+    #     query = """SELECT * FROM payment_batches"""
+    #     self.cursor.execute(query)
+    #     records = self.cursor.fetchall()
+    #
+    #     id_map = {}
+    #     records_imported = 0
+    #     for record in records:
+    #         record = {k.lower(): v for k, v in record.items()}
+    #
+    #         try:
+    #             finance_payment_batch = m.FinancePaymentBatch(
+    #                 name=record['name'],
+    #                 batch_type=record['batchtype'].upper(),
+    #                 finance_payment_batch_category = models.ForeignKey(FinancePaymentBatchCategory, null=True,
+    #                                                                    on_delete=models.CASCADE)
+    #                 status = models.CharField(max_length=255, choices=STATUSES, default="AWAITING_APPROVAL")
+    #                 description = models.CharField(max_length=255, null=False,
+    #                                                default="")  # default bankstatement description
+    #                 year = models.IntegerField(null=True)
+    #                 month = models.IntegerField(null=True)
+    #                 execution_date = models.DateField()
+    #                 include_zero_amounts = models.BooleanField(default=False)
+    #                 # organization_location = models.ForeignKey(OrganizationLocation, on_delete=models.CASCADE, null=True)
+    #                 note = models.TextField(default="")
+    #             )
+    #             finance_payment_batch.save()
+    #             # Increase counter
+    #             records_imported += 1
+    #
+    #             id_map[record['id']] = finance_payment_batch
+    #
+    #         except django.db.utils.IntegrityError as e:
+    #             logging.error("Import error for finance payment batch: %s: %s" % (
+    #                 record['id'],
+    #                 e
+    #             ))
+    #
+    #     log_message = "Import payment batches: "
+    #     self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
+    #     logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
+    #
+    #     return id_map
 
 #     def _update_account_classpasses_remaining(self):
 #         """
