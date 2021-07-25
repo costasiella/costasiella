@@ -374,7 +374,7 @@ class Command(BaseCommand):
         auth_user_result = self._import_auth_user()
         self.auth_user_map = auth_user_result['id_map_auth_user']
         # self.auth_user_business_map = self._import_auth_user_business()
-        # self.customers_classcards_map = self._import_customers_classcards()
+        self.customers_classcards_map = self._import_customers_classcards()
         # self.customers_subscriptions_map = self._import_customers_subscriptions()
         # # self.customers_subscriptions_alt_prices_map = self._import_customers_subscriptions_alt_prices()
         # # self.customers_subscriptions_blocks_map = self._import_customers_subscriptions_blocks()
@@ -382,8 +382,8 @@ class Command(BaseCommand):
         # # self.customers_notes_map = self._import_customers_notes()
         # # self.customers_payment_info_map = self._import_customers_payment_info()
         # # self.customers_payment_info_mandates_map = self._import_customers_payment_mandates()
-        # self.classes_map = self._import_classes()
-        # self.classes_attendance_map = self._import_classes_attendance()
+        self.classes_map = self._import_classes()
+        self.classes_attendance_map = self._import_classes_attendance()
         # # self.classes_otc_map = self._import_classes_otc()
         # # self.classes_otc_mail_map = self._import_classes_otc_mail()
         # # self.classes_school_classcards_groups_map = self._import_classes_school_classcards_groups()
@@ -398,20 +398,22 @@ class Command(BaseCommand):
         # # self.workshops_activities_customers_map = self._import_workshops_activities_customers()
         # # self.announcements_map = self._import_announcements()
         # # self.customers_profile_announcements_map = self._import_customers_profile_announcements()
-        self.invoices_groups_map = self._import_invoices_groups()
-        self.invoices_groups_product_types_map = self._import_invoices_groups_product_types()
-        self.invoices_map = self._import_invoices()
+        # self.invoices_groups_map = self._import_invoices_groups()
+        # self.invoices_groups_product_types_map = self._import_invoices_groups_product_types()
+        # self.invoices_map = self._import_invoices()
         # self.invoices_items_map = self._import_invoices_items()
         # # self.invoices_payments_map = self._import_invoices_payments()
         # self.invoices_mollie_payments_ids_map = self._import_invoices_mollie_payment_ids()
         # self.customers_orders_map = self._import_customers_orders()
         # # self.customers_orders_items_map = self._import_customers_orders_items()
         # self.customers_orders_mollie_payment_ids_map = self._import_customers_orders_mollie_payment_ids()
-        self.payment_categories_map = self._import_payment_categories()
-        self.alternative_payments_map = self._import_alternative_payments()
-        self.payment_batches_map = self._import_payment_batches()
-        self.payment_batches_exports_map = self._import_payment_batches_exports()
-        self.payment_batches_items_map = self._import_payment_batches_items()
+        # self.payment_categories_map = self._import_payment_categories()
+        # self.alternative_payments_map = self._import_alternative_payments()
+        # self.payment_batches_map = self._import_payment_batches()
+        # self.payment_batches_exports_map = self._import_payment_batches_exports()
+        # self.payment_batches_items_map = self._import_payment_batches_items()
+
+        self._update_account_classpasses_remaining()
 
     def _import_os_sys_organization_to_organization(self):
         """
@@ -2911,10 +2913,17 @@ SELECT * FROM customers_orders_items ii
 
         return id_map
 
-#     def _update_account_classpasses_remaining(self):
-#         """
-#         Update remaining classes for all class passes, now that the attendance has been imported.
-#         :return:
-#         """
-#         #TODO: Write function
-#
+    def _update_account_classpasses_remaining(self):
+        """
+        Update remaining classes for all class passes, now that the attendance has been imported.
+        :return:
+        """
+        records_updated = 0
+        classpasses = m.AccountClasspass.objects.all()
+        for classpass in classpasses:
+            classpass.update_classes_remaining()
+            records_updated += 1
+
+        log_message = "Calculate number of classes remaining on passes: "
+        self.stdout.write(log_message + self.get_records_import_status_display(records_updated, len(classpasses)))
+        logging.info(log_message + self.get_records_import_status_display(records_updated, len(classpasses), raw=True))
