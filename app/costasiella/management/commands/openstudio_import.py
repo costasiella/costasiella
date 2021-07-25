@@ -155,6 +155,9 @@ class Command(BaseCommand):
         self.customers_orders_mollie_payment_ids_map = None
         self.payment_categories_map = None
         self.alternative_payments_map = None
+        self.payment_batches_map = None
+        self.payment_batches_exports_map = None
+        self.payment_batches_items_map = None
 
     def add_arguments(self, parser):
         parser.add_argument(
@@ -395,9 +398,9 @@ class Command(BaseCommand):
         # # self.workshops_activities_customers_map = self._import_workshops_activities_customers()
         # # self.announcements_map = self._import_announcements()
         # # self.customers_profile_announcements_map = self._import_customers_profile_announcements()
-        # self.invoices_groups_map = self._import_invoices_groups()
-        # self.invoices_groups_product_types_map = self._import_invoices_groups_product_types()
-        # self.invoices_map = self._import_invoices()
+        self.invoices_groups_map = self._import_invoices_groups()
+        self.invoices_groups_product_types_map = self._import_invoices_groups_product_types()
+        self.invoices_map = self._import_invoices()
         # self.invoices_items_map = self._import_invoices_items()
         # # self.invoices_payments_map = self._import_invoices_payments()
         # self.invoices_mollie_payments_ids_map = self._import_invoices_mollie_payment_ids()
@@ -406,6 +409,9 @@ class Command(BaseCommand):
         # self.customers_orders_mollie_payment_ids_map = self._import_customers_orders_mollie_payment_ids()
         self.payment_categories_map = self._import_payment_categories()
         self.alternative_payments_map = self._import_alternative_payments()
+        self.payment_batches_map = self._import_payment_batches()
+        self.payment_batches_exports_map = self._import_payment_batches_exports()
+        self.payment_batches_items_map = self._import_payment_batches_items()
 
     def _import_os_sys_organization_to_organization(self):
         """
@@ -2784,13 +2790,17 @@ SELECT * FROM customers_orders_items ii
             record = {k.lower(): v for k, v in record.items()}
 
             try:
+                status = record['status'] or "AWAITING_APPROVAL"
+                if status:
+                    status = status.upper()
+
                 finance_payment_batch = m.FinancePaymentBatch(
                     name=record['name'],
                     batch_type=record['batchtype'].upper(),
                     finance_payment_batch_category=self.payment_categories_map.get(
                         record['payment_categories_id'], None
                     ),
-                    status=record['status'].upper(),
+                    status=status,
                     description=record['description'] or '',
                     year=record['colyear'],
                     month=record['colmonth'],
@@ -2835,7 +2845,7 @@ SELECT * FROM customers_orders_items ii
                 finance_payment_batch_export = m.FinancePaymentBatchExport(
                     finance_payment_batch=self.payment_batches_map.get(record['payment_batches_id'], None),
                     account=self.auth_user_map.get(record['auth_user_id'], None),
-                    created_at=self.record['created_at']
+                    created_at=record['created_at']
                 )
                 finance_payment_batch_export.save()
                 # Increase counter
@@ -2850,6 +2860,52 @@ SELECT * FROM customers_orders_items ii
                 ))
 
         log_message = "Import payment batches exports: "
+        self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
+        logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
+
+        return id_map
+
+    def _import_payment_batches_items(self):
+        """
+        Fetch records from payment batches items and import it in Costasiella.
+        :return: None
+        """
+        query = """SELECT * FROM payment_batches_items"""
+        self.cursor.execute(query)
+        records = self.cursor.fetchall()
+
+        id_map = {}
+        records_imported = 0
+        for record in records:
+            record = {k.lower(): v for k, v in record.items()}
+
+            try:
+                finance_payment_batch_item = m.FinancePaymentBatchItem(
+                    finance_payment_batch=self.payment_batches_map.get(record['payment_batches_id'], None),
+                    account=self.auth_user_map.get(record['auth_customer_id'], None),
+                    finance_invoice=self.invoices_map.get(record['invoices_id'], None),
+                    account_holder=record['accountholder'] or '',
+                    account_number=record['accountnumber'] or '',
+                    account_bic=record['bic'] or '',
+                    mandate_signature_date=record['mandatesignaturedate'],
+                    mandate_reference=record['mandatereference'] or '',
+                    amount=record['amount'] or 0,
+                    currency=record['currency'],
+                    description=record['description']
+                )
+                finance_payment_batch_item.save()
+                # Increase counter
+                records_imported += 1
+
+                id_map[record['id']] = finance_payment_batch_item
+
+            except django.db.utils.IntegrityError as e:
+                logging.error("Import error for finance payment batch item: %s: %s" % (
+                    record['id'],
+                    e
+                ))
+
+        log_message = "Import payment batches items: "
         self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
         logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
 
