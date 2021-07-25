@@ -2768,54 +2768,92 @@ SELECT * FROM customers_orders_items ii
         logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
 
         return id_map
-    #
-    # def _import_payment_batches(self):
-    #     """
-    #     Fetch records from payment batches and import it in Costasiella.
-    #     :return: None
-    #     """
-    #     query = """SELECT * FROM payment_batches"""
-    #     self.cursor.execute(query)
-    #     records = self.cursor.fetchall()
-    #
-    #     id_map = {}
-    #     records_imported = 0
-    #     for record in records:
-    #         record = {k.lower(): v for k, v in record.items()}
-    #
-    #         try:
-    #             finance_payment_batch = m.FinancePaymentBatch(
-    #                 name=record['name'],
-    #                 batch_type=record['batchtype'].upper(),
-    #                 finance_payment_batch_category = models.ForeignKey(FinancePaymentBatchCategory, null=True,
-    #                                                                    on_delete=models.CASCADE)
-    #                 status = models.CharField(max_length=255, choices=STATUSES, default="AWAITING_APPROVAL")
-    #                 description = models.CharField(max_length=255, null=False,
-    #                                                default="")  # default bankstatement description
-    #                 year = models.IntegerField(null=True)
-    #                 month = models.IntegerField(null=True)
-    #                 execution_date = models.DateField()
-    #                 include_zero_amounts = models.BooleanField(default=False)
-    #                 # organization_location = models.ForeignKey(OrganizationLocation, on_delete=models.CASCADE, null=True)
-    #                 note = models.TextField(default="")
-    #             )
-    #             finance_payment_batch.save()
-    #             # Increase counter
-    #             records_imported += 1
-    #
-    #             id_map[record['id']] = finance_payment_batch
-    #
-    #         except django.db.utils.IntegrityError as e:
-    #             logging.error("Import error for finance payment batch: %s: %s" % (
-    #                 record['id'],
-    #                 e
-    #             ))
-    #
-    #     log_message = "Import payment batches: "
-    #     self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
-    #     logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
-    #
-    #     return id_map
+
+    def _import_payment_batches(self):
+        """
+        Fetch records from payment batches and import it in Costasiella.
+        :return: None
+        """
+        query = """SELECT * FROM payment_batches"""
+        self.cursor.execute(query)
+        records = self.cursor.fetchall()
+
+        id_map = {}
+        records_imported = 0
+        for record in records:
+            record = {k.lower(): v for k, v in record.items()}
+
+            try:
+                finance_payment_batch = m.FinancePaymentBatch(
+                    name=record['name'],
+                    batch_type=record['batchtype'].upper(),
+                    finance_payment_batch_category=self.payment_categories_map.get(
+                        record['payment_categories_id'], None
+                    ),
+                    status=record['status'].upper(),
+                    description=record['description'] or '',
+                    year=record['colyear'],
+                    month=record['colmonth'],
+                    execution_date=record['exdate'],
+                    include_zero_amounts=self._web2py_bool_to_python(record['includezero']),
+                    # organization_location = models.ForeignKey(OrganizationLocation, on_delete=models.CASCADE, null=True)
+                    note=record['note'] or '',
+                )
+                finance_payment_batch.save()
+                # Increase counter
+                records_imported += 1
+
+                id_map[record['id']] = finance_payment_batch
+
+            except django.db.utils.IntegrityError as e:
+                logging.error("Import error for finance payment batch: %s: %s" % (
+                    record['id'],
+                    e
+                ))
+
+        log_message = "Import payment batches: "
+        self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
+        logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
+
+        return id_map
+
+    def _import_payment_batches_exports(self):
+        """
+        Fetch records from payment batches exports and import it in Costasiella.
+        :return: None
+        """
+        query = """SELECT * FROM payment_batches_exports"""
+        self.cursor.execute(query)
+        records = self.cursor.fetchall()
+
+        id_map = {}
+        records_imported = 0
+        for record in records:
+            record = {k.lower(): v for k, v in record.items()}
+
+            try:
+                finance_payment_batch_export = m.FinancePaymentBatchExport(
+                    finance_payment_batch=self.payment_batches_map.get(record['payment_batches_id'], None),
+                    account=self.auth_user_map.get(record['auth_user_id'], None),
+                    created_at=self.record['created_at']
+                )
+                finance_payment_batch_export.save()
+                # Increase counter
+                records_imported += 1
+
+                id_map[record['id']] = finance_payment_batch_export
+
+            except django.db.utils.IntegrityError as e:
+                logging.error("Import error for finance payment batch export: %s: %s" % (
+                    record['id'],
+                    e
+                ))
+
+        log_message = "Import payment batches exports: "
+        self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
+        logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
+
+        return id_map
 
 #     def _update_account_classpasses_remaining(self):
 #         """
