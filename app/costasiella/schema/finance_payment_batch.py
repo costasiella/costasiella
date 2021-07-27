@@ -1,4 +1,5 @@
 from django.utils.translation import gettext as _
+from django.conf import settings
 
 import os
 import graphene
@@ -160,7 +161,7 @@ class CreateFinancePaymentBatch(graphene.relay.ClientIDMutation):
         finance_payment_batch.save()
 
         # Call background task to create batch items when we're not in CI test mode
-        if 'GITHUB_WORKFLOW' not in os.environ:
+        if 'GITHUB_WORKFLOW' not in os.environ and not getattr(settings, 'TESTING', False):
             task = finance_payment_batch_generate_items.delay(finance_payment_batch.id)
 
         return CreateFinancePaymentBatch(finance_payment_batch=finance_payment_batch)
