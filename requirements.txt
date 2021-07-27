@@ -47,7 +47,7 @@ more-itertools==7.2.0
 mysqlclient==1.4.1
 oauthlib==3.0.1
 openpyxl==3.0.3
-Pillow==8.1.1
+Pillow==8.2.0
 promise==2.2.1
 prompt-toolkit==3.0.9
 pycparser==2.19
