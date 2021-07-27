@@ -73,7 +73,7 @@ const OrganizationMenu = ({ t, active_link }) => (
             >
             {t('organization.discoveries.title')}
         </List.GroupItem>
-        <List.GroupItem
+        {/* <List.GroupItem
             key={v4()}
             className="d-flex align-items-center"
             to="#/organization/memberships"
@@ -81,7 +81,7 @@ const OrganizationMenu = ({ t, active_link }) => (
             active={memberships_active}
             >
             {t('organization.memberships.title')}
-        </List.GroupItem>
+        </List.GroupItem> */}
         <List.GroupItem
             key={v4()}
             className="d-flex align-items-center"
@@ -100,7 +100,7 @@ const OrganizationMenu = ({ t, active_link }) => (
             >
             {t('organization.subscriptions.title')}
         </List.GroupItem>
-        <List.GroupItem
+        {/* <List.GroupItem
             key={v4()}
             className="d-flex align-items-center"
             to="#/organization/appointment_categories"
@@ -108,7 +108,7 @@ const OrganizationMenu = ({ t, active_link }) => (
             active={appointments_active}
             >
             {t('organization.appointments.title')}
-        </List.GroupItem>
+        </List.GroupItem> */}
         <List.GroupItem
             key={v4()}
             className="d-flex align-items-center"

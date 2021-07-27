@@ -32,9 +32,9 @@ export const GET_SUBSCRIPTION_GROUP_QUERY = gql`
 `
 
 
-export const GET_SUBSCRIPTION_GROUP_PASSES_QUERY = gql`
+export const GET_SUBSCRIPTION_GROUP_SUBSCRIPTIONS_QUERY = gql`
   query GetPassesAndGroupMembership($after: String, $before: String, $id:ID!) {
-    organizationSubscriptions(first: 15, before: $before, after: $after) {
+    organizationSubscriptions(first: 100, before: $before, after: $after, archived: false) {
       pageInfo {
         startCursor
         endCursor

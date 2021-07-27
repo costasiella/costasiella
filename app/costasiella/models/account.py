@@ -3,7 +3,11 @@ from django.utils.translation import gettext as _
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
+from allauth.account.models import EmailAddress
+
 from ..modules.encrypted_fields import EncryptedTextField
+from .choices.account_country_codes import get_account_country_codes
+from .choices.account_genders import get_account_genders
 
 
 class Account(AbstractUser):
@@ -22,6 +26,9 @@ class Account(AbstractUser):
             ('view_insightsubscriptionssold', _("Can view insight subscriptions sold")),
             ('view_selfcheckin', _("Can use the selfcheckin feature")),
         ]
+
+    gender_choices = get_account_genders()
+    country_choices = get_account_country_codes()
 
     customer = models.BooleanField(default=True)
     teacher = models.BooleanField(default=False)
@@ -47,3 +54,30 @@ class Account(AbstractUser):
         name = [self.first_name, self.last_name]
         self.full_name = " ".join(name)
         super(Account, self).save(*args, **kwargs)
+
+    def create_allauth_email(self):
+        email_address = EmailAddress(
+            user=self,
+            email=self.email,
+            verified=True,
+            primary=True
+        )
+        email_address.save()
+
+    def create_bank_account(self):
+        from .account_bank_account import AccountBankAccount
+
+        account_bank_account = AccountBankAccount(
+            account=self
+        )
+        account_bank_account.save()
+
+    def create_teacher_profile(self):
+        from .account_teacher_profile import AccountTeacherProfile
+
+        account_teacher_profile = AccountTeacherProfile(
+            account=self
+        )
+        account_teacher_profile.save()
+
+        return account_teacher_profile

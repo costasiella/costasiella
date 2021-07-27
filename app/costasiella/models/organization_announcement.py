@@ -7,7 +7,7 @@ from ..modules.encrypted_fields import EncryptedTextField
 
 
 class OrganizationAnnouncement(models.Model):
-    display_public = models.BooleanField(default=False)
+    display_public = models.BooleanField(default=False)  # Published
     display_shop = models.BooleanField(default=False)
     display_backend = models.BooleanField(default=False)
     title = EncryptedTextField(default="")

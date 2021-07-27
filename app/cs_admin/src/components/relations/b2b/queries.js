@@ -2,7 +2,7 @@ import gql from "graphql-tag"
 
 export const GET_BUSINESSES_QUERY = gql`
   query Businesses($before:String, $after:String, $name:String, $archived: Boolean!) {
-    businesses(first:100, before:$before, after:$after, b2b:true, name_Icontains:$name, archived:$archived) {
+    businesses(first:15, before:$before, after:$after, b2b:true, name_Icontains:$name, archived:$archived) {
       pageInfo {
         hasNextPage
         hasPreviousPage

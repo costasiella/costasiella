@@ -162,7 +162,7 @@ def account_subscription_invoices_add_for_month_mollie_collection(year, month):
                         log = IntegrationLogMollie(
                             log_source="TASK_ACCOUNT_SUBSCRIPTION_MOLLIE_COLLECT",
                             mollie_payment_id=payment['id'],
-                            recurring_type='recurring',
+                            recurring_type='RECURRING',
                             webhook_url=webhook_url,
                             finance_invoice=finance_invoice
                         )

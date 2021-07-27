@@ -8,7 +8,7 @@ import { withTranslation } from 'react-i18next'
 import { withRouter } from "react-router"
 import { toast } from 'react-toastify'
 
-import { GET_SUBSCRIPTION_GROUP_PASSES_QUERY } from './queries'
+import { GET_SUBSCRIPTION_GROUP_SUBSCRIPTIONS_QUERY } from './queries'
 
 
 import {
@@ -80,7 +80,7 @@ class OrganizationSubscriptionGroupEditSubscriptions extends Component {
                   <Card.Header>
                     <Card.Title>{t('organization.subscription_group_subscriptions.title_edit')}</Card.Title>
                   </Card.Header>
-                  <Query query={GET_SUBSCRIPTION_GROUP_PASSES_QUERY} variables={{ id, archived: false }} >
+                  <Query query={GET_SUBSCRIPTION_GROUP_SUBSCRIPTIONS_QUERY} variables={{ id, archived: false }} >
                     {({ loading, error, data, refetch }) => {
                       // Loading
                       if (loading) return <p>{t('general.loading_with_dots')}</p>
@@ -151,7 +151,7 @@ class OrganizationSubscriptionGroupEditSubscriptions extends Component {
                                                       organizationSubscriptionGroup: group_id
                                                     }
                                               }, refetchQueries: [
-                                                  {query: GET_SUBSCRIPTION_GROUP_PASSES_QUERY, variables: {"id": group_id, "archived": false }}
+                                                  {query: GET_SUBSCRIPTION_GROUP_SUBSCRIPTIONS_QUERY, variables: {"id": group_id, "archived": false }}
                                               ]}).then(({ data }) => {
                                                 console.log('got data', data);
                                                 toast.success(t('general.added_to_group'), {
@@ -189,7 +189,7 @@ class OrganizationSubscriptionGroupEditSubscriptions extends Component {
                                                       organizationSubscriptionGroup: group_id
                                                     }
                                               }, refetchQueries: [
-                                                  {query: GET_SUBSCRIPTION_GROUP_PASSES_QUERY, variables: {"id": group_id, "archived": false }}
+                                                  {query: GET_SUBSCRIPTION_GROUP_SUBSCRIPTIONS_QUERY, variables: {"id": group_id, "archived": false }}
                                               ]}).then(({ data }) => {
                                                 console.log('got data', data);
                                                 toast.success(t('general.deleted_from_group'), {

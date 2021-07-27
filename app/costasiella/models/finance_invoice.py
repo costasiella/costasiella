@@ -56,11 +56,12 @@ class FinanceInvoice(models.Model):
 
     def _set_relation_info(self):
         """ Set relation info from linked account """
-        self.relation_contact_name = self.account.full_name
-        self.relation_address = self.account.address
-        self.relation_postcode = self.account.postcode
-        self.relation_city = self.account.city
-        self.relation_country = self.account.country
+        if self.account:
+            self.relation_contact_name = self.account.full_name
+            self.relation_address = self.account.address
+            self.relation_postcode = self.account.postcode
+            self.relation_city = self.account.city
+            self.relation_country = self.account.country
 
     def update_amounts(self):
         """ Update total amounts fields (subtotal, tax, total, paid, balance) """

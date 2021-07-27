@@ -70,7 +70,7 @@ const ProfileMenu = ({ t, account_id, active_link }) => (
                 >
                 {t('relations.accounts.profile')}
             </List.GroupItem>
-            <HasPermissionWrapper 
+            {/* <HasPermissionWrapper 
                 permission="view"
                 resource="accountmembership">
                 <List.GroupItem
@@ -82,7 +82,7 @@ const ProfileMenu = ({ t, account_id, active_link }) => (
                     >
                 {t('relations.account.memberships.title')}
                 </List.GroupItem>
-            </HasPermissionWrapper>
+            </HasPermissionWrapper> */}
             <HasPermissionWrapper 
                 permission="view"
                 resource="accountsubscription">
