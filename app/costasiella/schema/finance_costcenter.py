@@ -36,7 +36,7 @@ class FinanceCostCenterQuery(graphene.ObjectType):
 
         ## return everything:
         # if user.has_perm('costasiella.view_financecostcenter'):
-        return FinanceCostCenter.objects.filter(archived = archived).order_by('name')
+        return FinanceCostCenter.objects.filter(archived = archived).order_by('code')
 
         # return None
 
