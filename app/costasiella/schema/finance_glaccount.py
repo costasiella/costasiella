@@ -36,7 +36,7 @@ class FinanceGLAccountQuery(graphene.ObjectType):
 
         ## return everything:
         # if user.has_perm('costasiella.view_financeglaccount'):
-        return FinanceGLAccount.objects.filter(archived = archived).order_by('name')
+        return FinanceGLAccount.objects.filter(archived = archived).order_by('code')
 
         # return None
 
