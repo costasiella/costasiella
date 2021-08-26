@@ -1,5 +1,6 @@
 from django.db import models
 from django.db.models import Q
+from django.utils import timezone
 
 from .account import Account
 from .organization_classpass import OrganizationClasspass
@@ -83,3 +84,12 @@ class AccountClasspass(models.Model):
         self.date_end = date_end
 
         return date_end
+
+    def is_expired(self):
+        today = timezone.now().date()
+        expired = False
+        if today > self.date_end:
+            expired = True
+
+        return expired
+        
