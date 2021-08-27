@@ -43,6 +43,7 @@ def validate_create_update_input(input, update=False):
 class AccountClasspassInterface(graphene.Interface):
     id = graphene.GlobalID()
     classes_remaining_display = graphene.String()
+    is_expired = graphene.Boolean()
 
 
 class AccountClasspassNode(DjangoObjectType):   
@@ -56,6 +57,9 @@ class AccountClasspassNode(DjangoObjectType):
             return _('Unlimited')
         else:
             return self.classes_remaining
+
+    def resolve_is_expired(self, info):
+        return self.is_expired()
 
     @classmethod
     def get_node(self, info, id):
