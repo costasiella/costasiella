@@ -215,18 +215,20 @@ def validate_create_update_input(account, input, update=False):
             raise Exception(_("Please specify the country as ISO country code, eg. 'NL'"))
 
     # Fetch & check organization discovery
-    rid = get_rid(input['organization_discovery'])
-    organization_discovery = OrganizationDiscovery.objects.get(pk=rid.id)
-    result['organization_discovery'] = organization_discovery
-    if not organization_discovery:
-        raise Exception(_('Invalid Organization Discovery ID!'))
+    if 'organization_discovery' in input:
+        rid = get_rid(input['organization_discovery'])
+        organization_discovery = OrganizationDiscovery.objects.get(pk=rid.id)
+        result['organization_discovery'] = organization_discovery
+        if not organization_discovery:
+            raise Exception(_('Invalid Organization Discovery ID!'))
 
     # Fetch & check organization language
-    rid = get_rid(input['organization_language'])
-    organization_language = OrganizationLanguage.objects.get(pk=rid.id)
-    result['organization_language'] = organization_language
-    if not organization_language:
-        raise Exception(_('Invalid Organization Language ID!'))
+    if 'organization_language' in input:
+        rid = get_rid(input['organization_language'])
+        organization_language = OrganizationLanguage.objects.get(pk=rid.id)
+        result['organization_language'] = organization_language
+        if not organization_language:
+            raise Exception(_('Invalid Organization Language ID!'))
 
     return result
 
