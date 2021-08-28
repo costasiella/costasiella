@@ -4,6 +4,8 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 
 from allauth.account.models import EmailAddress
+from .organization_discovery import OrganizationDiscovery
+from .organization_language import OrganizationLanguage
 
 from ..modules.encrypted_fields import EncryptedTextField
 from .choices.account_country_codes import get_account_country_codes
@@ -43,6 +45,12 @@ class Account(AbstractUser):
     phone = EncryptedTextField(default="")
     mobile = EncryptedTextField(default="")
     emergency = EncryptedTextField(default="")
+    organization_discovery = models.ForeignKey(
+        OrganizationDiscovery, null=True, on_delete=models.SET_NULL, related_name="accounts"
+    )
+    organization_language = models.ForeignKey(
+        OrganizationLanguage, null=True, on_delete=models.SET_NULL, related_name="accounts"
+    )
     mollie_customer_id = models.CharField(max_length=255, default="", editable=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
