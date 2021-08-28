@@ -65,6 +65,7 @@ class GQLAccountClasspass(TestCase):
           dateEnd
           note
           classesRemainingDisplay
+          isExpired
           createdAt
         }
       }
@@ -182,7 +183,9 @@ class GQLAccountClasspass(TestCase):
         self.assertEqual(data['accountClasspasses']['edges'][0]['node']['dateStart'], str(classpass.date_start))
         self.assertEqual(data['accountClasspasses']['edges'][0]['node']['dateEnd'], str(classpass.date_end))
         self.assertEqual(data['accountClasspasses']['edges'][0]['node']['note'], classpass.note)
-        self.assertEqual(data['accountClasspasses']['edges'][0]['node']['classesRemainingDisplay'], str(classpass.classes_remaining))
+        self.assertEqual(data['accountClasspasses']['edges'][0]['node']['classesRemainingDisplay'],
+                         str(classpass.classes_remaining))
+        self.assertEqual(data['accountClasspasses']['edges'][0]['node']['isExpired'], True)
 
 
     def test_query_unlimited(self):
