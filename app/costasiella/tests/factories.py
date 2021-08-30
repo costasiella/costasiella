@@ -239,6 +239,14 @@ class OrganizationLevelFactory(factory.DjangoModelFactory):
     name = "First level"
 
 
+class OrganizationLanguageFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.OrganizationLanguage
+
+    archived = False
+    name = "NL"
+
+
 class OrganizationMembershipFactory(factory.DjangoModelFactory):
     class Meta:
         model = models.OrganizationMembership
