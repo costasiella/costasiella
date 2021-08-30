@@ -58,6 +58,7 @@ from .organization_discovery import OrganizationDiscoveryQuery, OrganizationDisc
 from .organization_document import OrganizationDocumentQuery, OrganizationDocumentMutation
 from .organization_location import OrganizationLocationQuery, OrganizationLocationMutation
 from .organization_location_room import OrganizationLocationRoomQuery, OrganizationLocationRoomMutation
+from .organization_language import OrganizationLanguageQuery, OrganizationLanguageMutation
 from .organization_level import OrganizationLevelQuery, OrganizationLevelMutation
 from .organization_membership import OrganizationMembershipQuery, OrganizationMembershipMutation
 from .organization_subscription import OrganizationSubscriptionQuery, OrganizationSubscriptionMutation
@@ -133,7 +134,8 @@ class Query(AccountQuery,
             OrganizationDiscoveryQuery,
             OrganizationDocumentQuery,
             OrganizationLocationQuery, 
-            OrganizationLocationRoomQuery, 
+            OrganizationLocationRoomQuery,
+            OrganizationLanguageQuery,
             OrganizationLevelQuery, 
             OrganizationMembershipQuery,
             OrganizationSubscriptionQuery,
@@ -202,6 +204,7 @@ class Mutation(AccountMutation,
                OrganizationClasstypeMutation,
                OrganizationDiscoveryMutation,
                OrganizationDocumentMutation,
+               OrganizationLanguageMutation,
                OrganizationLocationMutation,
                OrganizationLocationRoomMutation,
                OrganizationLevelMutation,
