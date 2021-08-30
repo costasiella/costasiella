@@ -16,7 +16,7 @@ from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
 
 from allauth.account.models import EmailAddress
-from ..models import AccountBankAccount, AccountTeacherProfile
+from ..models import AccountBankAccount, AccountTeacherProfile, OrganizationDiscovery, OrganizationLanguage
 
 from ..modules.gql_tools import require_login, \
     require_permission, \
@@ -255,7 +255,6 @@ class UpdateAccount(graphene.relay.ClientIDMutation):
         organization_discovery = graphene.ID(required=False)
         organization_language = graphene.ID(required=False)
 
-
     account = graphene.Field(AccountNode)
 
     @classmethod
@@ -276,6 +275,7 @@ class UpdateAccount(graphene.relay.ClientIDMutation):
             require_permission(user, change_permission)
 
         result = validate_create_update_input(account, input, update=True)
+        print(result)
 
         # Only process these fields when a user has the "change_account" permission. Users shouldn't be able to
         # change this for their own account
