@@ -115,6 +115,7 @@ class Command(BaseCommand):
         self.school_subscriptions_price_map = None
         self.school_classtypes_map = None
         self.school_discovery_map = None
+        self.school_languages_map = None
         self.school_levels_map = None
         self.school_locations_map = None
         self.school_locations_rooms_map = None
@@ -367,6 +368,7 @@ class Command(BaseCommand):
         # self.school_subscriptions_price_map = self._import_school_subscriptions_price()
         self.school_classtypes_map = self._import_school_classtypes()
         # self.school_discovery_map = self._import_school_discovery()
+        self.school_languages_map = self._import_school_langauges()
         self.school_levels_map = self._import_school_levels()
         locations_import_result = self._import_school_locations()
         self.school_locations_map = locations_import_result['id_map_locations']
@@ -932,6 +934,36 @@ class Command(BaseCommand):
 
         return id_map
 
+    def _import_school_langauges(self):
+        """
+        Fetch school language and import it in Costasiella.
+        :param cursor: MySQL db cursor
+        :return: None
+        """
+        query = "SELECT * from school_languages"
+        self.cursor.execute(query)
+        records = self.cursor.fetchall()
+
+        id_map = {}
+        records_imported = 0
+        for record in records:
+            record = {k.lower(): v for k, v in record.items()}
+
+            organization_language = m.OrganizationLanguage(
+                archived=self._web2py_bool_to_python(record['archived']),
+                name=record['name'],
+            )
+            organization_language.save()
+            records_imported += 1
+
+            id_map[record['id']] = organization_language
+
+        log_message = "Import organization languages: "
+        self.stdout.write(log_message + self.get_records_import_status_display(records_imported, len(records)))
+        logging.info(log_message + self.get_records_import_status_display(records_imported, len(records), raw=True))
+
+        return id_map
+
     def _import_school_levels(self):
         """
         Fetch school levels and import it in Costasiella.
@@ -1044,7 +1076,9 @@ class Command(BaseCommand):
                     country=record['country'] or "",
                     phone=record['phone'] or "",
                     mobile=record['mobile'] or "",
-                    emergency=record['emergency'] or ""
+                    emergency=record['emergency'] or "",
+                    organization_discovery=self.school_discovery_map.get(record['school_discovery_id'], None),
+                    organization_language=self.school_language_map.get(record['school_languages_id'], None),
                 )
                 account.save()
                 # Create allauth email
