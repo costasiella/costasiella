@@ -45,6 +45,7 @@ class Account(AbstractUser):
     phone = EncryptedTextField(default="")
     mobile = EncryptedTextField(default="")
     emergency = EncryptedTextField(default="")
+    key_number = EncryptedTextField(default="")
     organization_discovery = models.ForeignKey(
         OrganizationDiscovery, null=True, on_delete=models.SET_NULL, related_name="accounts"
     )
