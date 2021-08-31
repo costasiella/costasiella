@@ -33,7 +33,7 @@ def export_excel_insight_classpasses_sold(request, year):
     data = iac_dude.get_classpasses_sold_year_data(year)
     print(data)
 
-    wb = openpyxl.workbook.Workbook(write_only=True)
+    wb = openpyxl.Workbook(write_only=True)
     ws_header = [
         _("Relation"),
         _("Classpass"),
@@ -46,7 +46,7 @@ def export_excel_insight_classpasses_sold(request, year):
         month_data = data[month]
         print(month_data)
         print(month)
-        ws = wb.create_sheet(title=_(str(year) + "-" + str(month)))
+        ws = wb.create_sheet(title=str(year) + "-" + str(month))
         ws.append(ws_header)
 
         for classpass in month_data:
@@ -64,11 +64,9 @@ def export_excel_insight_classpasses_sold(request, year):
     buffer = io.BytesIO()
     wb.save(buffer)
 
-
     # FileResponse sets the Content-Disposition header so that browsers
     # present the option to save the file.
     buffer.seek(0)
-
     filename = _('classpasses_sold') + '_' + str(year) + '.xlsx'
 
     return FileResponse(buffer, as_attachment=True, filename=filename)
