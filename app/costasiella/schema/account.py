@@ -252,6 +252,7 @@ class UpdateAccount(graphene.relay.ClientIDMutation):
         emergency = graphene.String(required=False)
         gender = graphene.String(required=False)
         date_of_birth = graphene.types.datetime.Date(required=False)
+        key_number = graphene.String(required=False)
         organization_discovery = graphene.ID(required=False)
         organization_language = graphene.ID(required=False)
 
@@ -317,6 +318,8 @@ class UpdateAccount(graphene.relay.ClientIDMutation):
             account.gender = input['gender']
         if 'date_of_birth' in input:
             account.date_of_birth = input['date_of_birth']
+        if 'key_number' in input:
+            account.key_number = input['key_number']
 
         if 'organization_discovery' in result:
             account.organization_discovery = result['organization_discovery']
