@@ -1046,8 +1046,7 @@ class Command(BaseCommand):
         :return: None
         """
         # Import all users, as also business accounts might have cards or subscriptions attached to them
-        # TODO: Remove teacher = "T" once workshops import testing has completed
-        query = "SELECT * FROM auth_user WHERE id > 1 and teacher = 'T'"
+        query = "SELECT * FROM auth_user WHERE id > 1"
         self.cursor.execute(query)
         records = self.cursor.fetchall()
 
@@ -1077,6 +1076,7 @@ class Command(BaseCommand):
                     phone=record['phone'] or "",
                     mobile=record['mobile'] or "",
                     emergency=record['emergency'] or "",
+                    key_number=record['keynr'] or "",
                     organization_discovery=self.school_discovery_map.get(record['school_discovery_id'], None),
                     organization_language=self.school_language_map.get(record['school_languages_id'], None),
                 )
