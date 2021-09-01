@@ -44,7 +44,7 @@ jdcal==1.4.1
 kombu==5.0.2
 mollie-api-python==2.3.1
 more-itertools==7.2.0
-mysqlclient==1.4.1
+mysqlclient==2.0.3
 oauthlib==3.0.1
 openpyxl==3.0.3
 Pillow==8.2.0
