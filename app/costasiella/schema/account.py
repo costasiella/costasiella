@@ -16,7 +16,7 @@ from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
 
 from allauth.account.models import EmailAddress
-from ..models import AccountBankAccount, AccountTeacherProfile
+from ..models import AccountBankAccount, AccountTeacherProfile, OrganizationDiscovery, OrganizationLanguage
 
 from ..modules.gql_tools import require_login, \
     require_permission, \
@@ -187,7 +187,7 @@ def validate_create_update_input(account, input, update=False):
     """
     Validate input
     """ 
-    # result = {}
+    result = {}
 
     # verify email unique
     if 'email' in input:
@@ -214,6 +214,24 @@ def validate_create_update_input(account, input, update=False):
         if not input['country'] in country_codes:
             raise Exception(_("Please specify the country as ISO country code, eg. 'NL'"))
 
+    # Fetch & check organization discovery
+    if 'organization_discovery' in input:
+        rid = get_rid(input['organization_discovery'])
+        organization_discovery = OrganizationDiscovery.objects.get(pk=rid.id)
+        result['organization_discovery'] = organization_discovery
+        if not organization_discovery:
+            raise Exception(_('Invalid Organization Discovery ID!'))
+
+    # Fetch & check organization language
+    if 'organization_language' in input:
+        rid = get_rid(input['organization_language'])
+        organization_language = OrganizationLanguage.objects.get(pk=rid.id)
+        result['organization_language'] = organization_language
+        if not organization_language:
+            raise Exception(_('Invalid Organization Language ID!'))
+
+    return result
+
 
 class UpdateAccount(graphene.relay.ClientIDMutation):
     class Input:
@@ -234,6 +252,9 @@ class UpdateAccount(graphene.relay.ClientIDMutation):
         emergency = graphene.String(required=False)
         gender = graphene.String(required=False)
         date_of_birth = graphene.types.datetime.Date(required=False)
+        key_number = graphene.String(required=False)
+        organization_discovery = graphene.ID(required=False)
+        organization_language = graphene.ID(required=False)
 
     account = graphene.Field(AccountNode)
 
@@ -254,7 +275,8 @@ class UpdateAccount(graphene.relay.ClientIDMutation):
         if not user.id == account.id:
             require_permission(user, change_permission)
 
-        validate_create_update_input(account, input, update=True)
+        result = validate_create_update_input(account, input, update=True)
+        print(result)
 
         # Only process these fields when a user has the "change_account" permission. Users shouldn't be able to
         # change this for their own account
@@ -296,6 +318,13 @@ class UpdateAccount(graphene.relay.ClientIDMutation):
             account.gender = input['gender']
         if 'date_of_birth' in input:
             account.date_of_birth = input['date_of_birth']
+        if 'key_number' in input:
+            account.key_number = input['key_number']
+
+        if 'organization_discovery' in result:
+            account.organization_discovery = result['organization_discovery']
+        if 'organization_language' in result:
+            account.organization_language = result['organization_language']
 
         account.save()
 

@@ -16,7 +16,7 @@ click-plugins==1.1.1
 click-repl==0.1.6
 cssselect2==0.2.2
 decorator==4.3.2
-defusedxml==0.5.0
+defusedxml==0.7.1
 Django==3.1.12
 django-allauth==0.41.0
 django-celery-beat==2.0.0
@@ -46,7 +46,7 @@ mollie-api-python==2.3.1
 more-itertools==7.2.0
 mysqlclient==2.0.3
 oauthlib==3.0.1
-openpyxl==3.0.3
+openpyxl==3.0.7
 Pillow==8.2.0
 promise==2.2.1
 prompt-toolkit==3.0.9

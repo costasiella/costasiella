@@ -239,6 +239,14 @@ class OrganizationLevelFactory(factory.DjangoModelFactory):
     name = "First level"
 
 
+class OrganizationLanguageFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.OrganizationLanguage
+
+    archived = False
+    name = "NL"
+
+
 class OrganizationMembershipFactory(factory.DjangoModelFactory):
     class Meta:
         model = models.OrganizationMembership
@@ -401,7 +409,8 @@ class RegularUserFactory(factory.DjangoModelFactory):
     first_name = 'user'
     last_name = 'regular user'
     password = factory.PostGenerationMethodCall('set_password', 'CSUser1#')
-
+    organization_discovery = factory.SubFactory(OrganizationDiscoveryFactory)
+    organization_language = factory.SubFactory(OrganizationLanguageFactory)
     is_active = True
 
 

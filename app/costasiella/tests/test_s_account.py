@@ -79,6 +79,12 @@ class GQLAccount(TransactionTestCase):
           lastName
           email
           isActive
+          organizationDiscovery {
+            id
+          }
+          organizationLanguage {
+            id
+          }
         }
       }
     }
@@ -161,6 +167,10 @@ class GQLAccount(TransactionTestCase):
         self.assertEqual(data['accounts']['edges'][0]['node']['firstName'], account.first_name)
         self.assertEqual(data['accounts']['edges'][0]['node']['lastName'], account.last_name)
         self.assertEqual(data['accounts']['edges'][0]['node']['email'], account.email)
+        self.assertEqual(data['accounts']['edges'][0]['node']['organizationDiscovery']['id'],
+                         to_global_id('OrganizationDiscoveryNode', account.organization_discovery.id))
+        self.assertEqual(data['accounts']['edges'][0]['node']['organizationLanguage']['id'],
+                         to_global_id('OrganizationLanguageNode', account.organization_language.id))
 
     def test_query_permission_denied(self):
         """ Query list of accounts - check permission denied """
