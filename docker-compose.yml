@@ -1,0 +1,11 @@
+version: '3'
+
+services:
+  backend:
+    restart: always
+    build: .
+    container_name: costasiella_backend
+    volumes:
+      - /opt/docker/mounts/costasiella/sockets:/opt/sockets
+      - /opt/docker/mounts/costasiella/static:/opt/static
+      - /opt/docker/mounts/costasiella/app:/opt/app
