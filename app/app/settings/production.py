@@ -9,3 +9,6 @@ DEBUG = False
 
 # Static files config
 STATIC_ROOT = "/opt/static"
+
+# Point to redis container instead of localhost for Django-defender
+DEFENDER_REDIS_URL = 'redis://redis:6379/0'
