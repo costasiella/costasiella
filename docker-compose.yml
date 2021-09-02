@@ -18,14 +18,14 @@ services:
     image: rabbitmq:3.8.22
   celery:
     build: .
-    command: celery -A app worker -l info
+    command: cd /opt/app && celery -A app worker -l info
     volumes:
       - /opt/docker/mounts/costasiella/app:/opt/app
     depends_on:
       - rabbitmq
   celery-beat:
     build: .
-    command: celery -A app beat -l info
+    command: cd /opt/app && celery -A app beat -l info
     volumes:
       - /opt/docker/mounts/costasiella/app:/opt/app
     depends_on:
