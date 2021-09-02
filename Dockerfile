@@ -29,4 +29,4 @@ ENV DJANGO_SETTINGS_MODULE=app.settings.production
 RUN pip install uwsgi
 
 RUN chmod a+x /opt/docker-entrypoint.sh
-ENTRYPOINT [ "/opt/docker-entrypoint.sh" ]
+#ENTRYPOINT [ "/opt/docker-entrypoint.sh" ]

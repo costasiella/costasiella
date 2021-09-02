@@ -4,6 +4,7 @@ services:
   backend:
     restart: always
     build: .
+    command: /opt/docker-entrypoint.sh
     container_name: costasiella_backend
     volumes:
       - /opt/docker/mounts/costasiella/sockets:/opt/sockets
