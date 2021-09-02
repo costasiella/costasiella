@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Set working directory
-cd /opt/costasiella/app
+cd /opt/app
 
 # Collect static files
 echo "Collect static files"
@@ -13,4 +13,4 @@ python manage.py migrate --no-input
 
 # Start server
 echo "Starting server"
-uwsgi --ini /opt/costasiella/app/deploy/app_uwsgi.ini
+uwsgi --ini /opt/app/deploy/app_uwsgi.ini
