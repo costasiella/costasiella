@@ -9,24 +9,22 @@ services:
     volumes:
       - /opt/docker/mounts/costasiella/sockets:/opt/sockets
       - /opt/docker/mounts/costasiella/static:/opt/static
-      - /opt/docker/mounts/costasiella/app:/opt/app
+      - /opt/docker/mounts/costasiella/costasiella/app:/opt/app
     depends_on:
       - redis
   redis: 
     image: redis:alpine
-  rabbitmq:
-    image: rabbitmq:3.8.22
   celery:
     build: .
     command: cd /opt/app && celery -A app worker -l info
     volumes:
-      - /opt/docker/mounts/costasiella/app:/opt/app
+      - /opt/docker/mounts/costasiella/costasiella/app:/opt/app
     depends_on:
-      - rabbitmq
+      - redis
   celery-beat:
     build: .
     command: cd /opt/app && celery -A app beat -l info
     volumes:
-      - /opt/docker/mounts/costasiella/app:/opt/app
+      - /opt/docker/mounts/costasiella/costasiella/app:/opt/app
     depends_on:
-      - rabbitmq
+      - redis
