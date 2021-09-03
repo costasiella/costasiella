@@ -10,8 +10,6 @@ DEBUG = False
 # Static files config
 STATIC_ROOT = "/opt/static"
 
-# Point to redis container instead of localhost for Django-defender
+# Point to redis container instead of localhost for Django-defender & celery
 DEFENDER_REDIS_URL = 'redis://redis:6379/0'
-
-# Point to rabbitMQ container insteaf of localhost for celery
-BROKER_URL = "amqp://guest:**@rabbitmq:5672//"
+CELERY_BROKER_URL = "redis://redis:6379/1"

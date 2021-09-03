@@ -31,3 +31,7 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 # EMAIL_PORT = 2525
 # EMAIL_HOST_USER = None
 # EMAIL_HOST_PASSWORD = None
+
+# Django-defender & celery use
+DEFENDER_REDIS_URL = 'redis://localhost:6379/0'
+CELERY_BROKER_URL = "redis://localhost:6379/1"
