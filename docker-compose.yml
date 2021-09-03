@@ -4,7 +4,7 @@ services:
   backend:
     restart: always
     build: .
-    command: /opt/docker-entrypoint.sh
+    command: /opt/docker-backend-entrypoint.sh
     container_name: costasiella_backend
     volumes:
       - /opt/docker/mounts/costasiella/sockets:/opt/sockets
@@ -16,14 +16,14 @@ services:
     image: redis:alpine
   celery:
     build: .
-    command: cd /opt/app && celery -A app worker -l info
+    command: /opt/docker-celery-entrypoint.sh
     volumes:
       - /opt/docker/mounts/costasiella/costasiella/app:/opt/app
     depends_on:
       - redis
   celery-beat:
     build: .
-    command: cd /opt/app && celery -A app beat -l info
+    command: /opt/docker-celery-beat-entrypoint.sh
     volumes:
       - /opt/docker/mounts/costasiella/costasiella/app:/opt/app
     depends_on:
