@@ -10,7 +10,9 @@ RUN apt-get update && \
 RUN apt-get install libffi-dev libmariadb-dev
 
 # Copy app into container
-COPY ./docker-entrypoint.sh /opt/
+COPY ./docker-backend-entrypoint.sh /opt/
+COPY ./docker-celery-entrypoint.sh /opt/
+COPY ./docker-celery-beat-entrypoint.sh /opt/
 COPY ./requirements.txt /opt/
 
 # Install required packages
@@ -28,5 +30,6 @@ ENV DJANGO_SETTINGS_MODULE=app.settings.production
 # Install uWSGI
 RUN pip install uwsgi
 
-RUN chmod a+x /opt/docker-entrypoint.sh
-#ENTRYPOINT [ "/opt/docker-entrypoint.sh" ]
+RUN chmod a+x /opt/docker-backend-entrypoint.sh
+RUN chmod a+x /opt/docker-celery-entrypoint.sh
+RUN chmod a+x /opt/docker-celery-beat-entrypoint.sh
