@@ -23,6 +23,9 @@ if 'GITHUB_WORKFLOW' in os.environ:
 # Uncomment below to print emails to the terminal
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
+## Media root
+MEDIA_ROOT = os.path.join(os.getcwd(), "costasiella", "media")
+
 # SMTP
 # Uncomment below to send emails using smtp
 # EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'

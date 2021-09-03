@@ -9,6 +9,7 @@ DEBUG = False
 
 # Static files config
 STATIC_ROOT = "/opt/static"
+MEDIA_ROOT = "/opt/media"
 
 # Point to redis container instead of localhost for Django-defender & celery
 DEFENDER_REDIS_URL = 'redis://redis:6379/0'
