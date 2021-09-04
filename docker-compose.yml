@@ -10,9 +10,10 @@ services:
       - /opt/docker/mounts/costasiella/media:/opt/media
       - /opt/docker/mounts/costasiella/static:/opt/static
       - /opt/docker/mounts/costasiella/costasiella/app:/opt/app
+      - /opt/docker/mounts/costasiella/settings:/opt/app/app/settings
     depends_on:
       - redis
-  redis: 
+  redis:
     restart: always
     image: redis:alpine
   celery:
@@ -21,6 +22,7 @@ services:
     command: /opt/docker-celery-entrypoint.sh
     volumes:
       - /opt/docker/mounts/costasiella/costasiella/app:/opt/app
+      - /opt/docker/mounts/costasiella/settings:/opt/app/app/settings
     depends_on:
       - redis
   celery-beat:
@@ -29,5 +31,7 @@ services:
     command: /opt/docker-celery-beat-entrypoint.sh
     volumes:
       - /opt/docker/mounts/costasiella/costasiella/app:/opt/app
+      - /opt/docker/mounts/costasiella/settings:/opt/app/app/settings
     depends_on:
       - redis
+
