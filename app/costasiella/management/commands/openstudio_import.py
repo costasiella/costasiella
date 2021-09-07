@@ -2495,7 +2495,7 @@ LEFT JOIN invoices i ON ii.invoices_id = i.id
                 # Costasiella as there are no prices for a class but passes are used.
                 # We can link the invoice item to an attendance record though.
                 if record['classes_attendance_id']:
-                    schedule_item_attendance = self.schedule_item_attendance_map.get(
+                    schedule_item_attendance = self.classes_attendance_map.get(
                         record['classes_attendance_id'],
                         None
                     )
