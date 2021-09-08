@@ -2,20 +2,30 @@
 
 ![Build Status](https://github.com/costasiella/costasiella/actions/workflows/django_ci.yml/badge.svg)
 
+## Project status
+
+Costasiella is currently in Beta status and shouldn't be used in a production environment yet. Around Q4 2021 / Q1 2022 a first production release is scheduled to be available. After that release, professional services like hosting and support will also be available.
+
 ## About
 
-Costasiella is a project aimed at re-create [OpenStudio](https://github.com/openstudioproject/openstudio) using more modern technologies with a wider userbase. At the moment the project is nowhere near feature parity or production ready. That being said, all major components are up and running. Work on the GraphQL API is progressing nicely, we can run background tasks, the auth workflow is nearing completion and considerable work has gone into the admin section of the frontend. 
+Costasiella is freely distributed open source web based software built for Yoga, Dance, Karate/Martial Arts, and Fitness Studios/Schools. Here just a sample of the types of organizations Costasiella serves:
 
-### When will it be done?
+- Yoga
+- Dance
+- Martial arts
+- Buddhist centers
 
-It'll be a good while before all features from OpenStudio have been ported. The current plan is to focus on building a MVP which will include accounts, class passes and subscriptions, a schedule for classes and an online shop. From here freatures will be added bit by bit as time and resources allow.
+Any organization dealing with subscriptions, classes and/or events could benefit from the use of Costasiella.
 
-Ok... that's all nice and well... but when can I expect it?
-The short answer is, when it's ready.
+Costasiella will help you manage customers, subscriptions, class passes, schedule classes and plan events.
 
-There's still a lot of code to be written and tested, so there is no commitment to a specific timeline. As OpenStudio is stable and contains many useful features, we prefer to take our time with this project to "get it right". So it's ready when it's ready.
+Online payments are provided through [Mollie](https://www.mollie.com/en). Please refer to their website & support for current rates and questions about availability in your region. The Costasiella Mollie integration handles single payments for classes, class passes and event tickets. Recurring payments are supported for subscriptions. 
 
-## Contributing
+## Setup
+
+Please refer to the manual found [here](https://costasiella-docs.readthedocs.io/en/latest/).
+
+## Getting involved
 
 *Ideas*
 In case you'd like to see improvements in the feature set provided by OpenStudio, please open an issue where you describe your idea in detail. 
@@ -23,11 +33,12 @@ In case you'd like to see improvements in the feature set provided by OpenStudio
 *Code*
 Any and all help coding is greatly appreciated, please use the [contact form](https://www.openstudioproject.com/contact/) on the OpenStudio website to get in touch. Perhaps you could tell a bit about yourself, your experience in other projects, if any and which languages and frameworks you're most comfortable with or would like to learn. 
 
-## Stack
+## Technology overview
 
-This is a rough list of the technoligies used in this project.
+This is a general list of the technoligies used in this project.
 
 ### Backend
+
 - Django
 - GraphQL
 - Celery
@@ -35,11 +46,11 @@ This is a rough list of the technoligies used in this project.
 - Redis
 
 ### Frontend
+
 - React
 - i18next
 - Apollo Client
 - Webpack
-
 
 ## Docs
 
