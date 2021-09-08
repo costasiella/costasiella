@@ -50,8 +50,8 @@ class AppSettingsNode(DjangoObjectType):
         mollie_configured = False
         qs = SystemSetting.objects.filter(setting='integration_mollie_api_key')
         if qs.exists():
-            mollie_api_key = qs.first()
-            if mollie_api_key:
+            system_setting = qs.first()
+            if system_setting.value:
                 mollie_configured = True
 
         return mollie_configured
