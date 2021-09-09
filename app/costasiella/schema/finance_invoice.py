@@ -63,9 +63,17 @@ class FinanceInvoiceNode(DjangoObjectType):
     @classmethod
     def get_node(cls, info, id):
         user = info.context.user
-        require_login_and_permission(user, 'costasiella.view_financeinvoice')
+        require_login(user)
 
-        return cls._meta.model.objects.get(id=id)
+        # Own invoice always ok
+        finance_invoice = cls._meta.model.objects.get(id=id)
+        if finance_invoice.account == user:
+            return finance_invoice
+
+        # Permission required to invoices belonging to other accounts
+        require_permission(user, 'costasiella.view_financeinvoice')
+
+        return finance_invoice
 
 
 class FinanceInvoiceQuery(graphene.ObjectType):

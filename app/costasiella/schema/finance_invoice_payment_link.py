@@ -67,7 +67,7 @@ class CreateFinanceInvoicePaymentLink(graphene.Mutation):
         description = _("Invoice #") + str(finance_invoice.invoice_number)
         
         # Gather mollie payment info
-        redirect_url = 'https://' + host + '/#/shop/account/invoice_payment/' + id
+        redirect_url = 'https://' + host + '/#/shop/account/invoice_payment_status/' + id
         print(redirect_url)
         mollie_customer_id = mollie_dude.get_account_mollie_customer_id(
           user,
