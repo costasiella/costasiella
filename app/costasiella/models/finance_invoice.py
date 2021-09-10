@@ -158,7 +158,7 @@ class FinanceInvoice(models.Model):
 
         qs = FinanceInvoiceItem.objects.filter(
             finance_invoice=self,
-            organization_subscription__isnull=False,
+            account_subscription__isnull=False,
         )
         return qs.exists()
 
