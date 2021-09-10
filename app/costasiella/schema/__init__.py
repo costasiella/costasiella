@@ -32,6 +32,7 @@ from .finance_invoice_group import FinanceInvoiceGroupQuery, FinanceInvoiceGroup
 from .finance_invoice_group_default import FinanceInvoiceGroupDefaultQuery, FinanceInvoiceGroupDefaultMutation
 from .finance_invoice_item import FinanceInvoiceItemQuery, FinanceInvoiceItemMutation
 from .finance_invoice_payment import FinanceInvoicePaymentQuery, FinanceInvoicePaymentMutation
+from .finance_invoice_payment_link import FinanceInvoicePaymentLinkMutation
 from .finance_order import FinanceOrderQuery, FinanceOrderMutation
 from .finance_order_payment_link import FinanceOrderPaymentLinkMutation
 from .finance_order_item import FinanceOrderItemQuery
@@ -187,6 +188,7 @@ class Mutation(AccountMutation,
                FinanceInvoiceGroupDefaultMutation,
                FinanceInvoiceItemMutation,
                FinanceInvoicePaymentMutation,
+               FinanceInvoicePaymentLinkMutation,
                FinanceOrderMutation,
                FinanceOrderPaymentLinkMutation,
                FinancePaymentBatchMutation,
