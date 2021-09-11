@@ -78,9 +78,13 @@ def mollie_webhook(request):
                     payment_id=id
                 )
 
-            # TODO: Process invoice payment
             if finance_invoice_id:
-                pass
+                webhook_invoice_paid(
+                    finance_invoice_id=finance_invoice_id,
+                    payment_amount=payment_amount,
+                    payment_date=payment_date,
+                    payment_id=id
+                )
 
             # Process refunds
             if payment.refunds:
@@ -144,6 +148,38 @@ def webhook_deliver_order(finance_order_id, payment_amount, payment_date, paymen
 
             # Check if the invoice has been paid in full and whether we should update it's status
             finance_invoice.is_paid()
+
+
+def webhook_invoice_paid(finance_invoice_id, payment_amount, payment_date, payment_id):
+    """
+    Process receiving payment for an invoice
+    :param finance_invoice_id: finance_invoice.id
+    :param payment_amount: amount paid
+    :param payment_date: date of payment
+    :param payment_id: mollie payment id
+    :return:
+    """
+    finance_invoice = FinanceInvoice.objects.get(id=finance_invoice_id)
+    # Check that the payment hasn't been added yet to prevent processing it twice
+    qs = FinanceInvoicePayment.objects.filter(
+        online_payment_id=payment_id
+    )
+
+    if not qs.exists() and finance_invoice:
+        finance_payment_method = FinancePaymentMethod.objects.get(pk=100) # Mollie
+
+        finance_invoice_payment = FinanceInvoicePayment(
+            finance_invoice=finance_invoice,
+            date=payment_date,
+            amount=payment_amount,
+            finance_payment_method=finance_payment_method,
+            note="",
+            online_payment_id=payment_id
+        )
+        finance_invoice_payment.save()
+
+        # Check if the status of the invoice should be changed
+        finance_invoice.is_paid()
 
 
 def webhook_payment_is_paid_process_refunds(finance_invoice_id, finance_order_id, payment):
@@ -293,6 +329,5 @@ def webhook_invoice_add_chargeback_payment(finance_invoice,
 
     finance_invoice_payment.save()
     finance_invoice.is_paid()
-
 
     #TODO: Notify customer of failed recurring payment
