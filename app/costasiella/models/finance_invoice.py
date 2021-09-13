@@ -149,6 +149,19 @@ class FinanceInvoice(models.Model):
 
         return qs.count()
 
+    def items_contain_subscription(self):
+        """
+        Check if there is a subscription item in the items for this order
+        :return:
+        """
+        from .finance_invoice_item import FinanceInvoiceItem
+
+        qs = FinanceInvoiceItem.objects.filter(
+            finance_invoice=self,
+            account_subscription__isnull=False,
+        )
+        return qs.exists()
+
     def item_add_schedule_event_ticket(self, account_schedule_event_ticket):
         """
         Add account classpass invoice item

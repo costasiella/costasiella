@@ -5,7 +5,7 @@ from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
 from graphql import GraphQLError
 
-from ..models import AppSettings
+from ..models import AppSettings, SystemSetting
 from ..modules.gql_tools import require_login, require_login_and_permission, get_rid
 from ..modules.messages import Messages
 
@@ -15,6 +15,7 @@ m = Messages()
 class AppSettingsNodeInterface(graphene.Interface):
     time_format_moment = graphene.String()
     date_time_format_moment = graphene.String()
+    online_payments_available = graphene.Boolean()
 
 
 class AppSettingsNode(DjangoObjectType):
@@ -42,6 +43,18 @@ class AppSettingsNode(DjangoObjectType):
 
         return self.date_format + " " + time_format_moment
 
+    def resolve_online_payments_available(self, info):
+        """
+        Check if online payments are available by checking if a payment provider API key is present
+        """
+        mollie_configured = False
+        qs = SystemSetting.objects.filter(setting='integration_mollie_api_key')
+        if qs.exists():
+            system_setting = qs.first()
+            if system_setting.value:
+                mollie_configured = True
+
+        return mollie_configured
 
     @classmethod
     def get_node(self, info, id):
