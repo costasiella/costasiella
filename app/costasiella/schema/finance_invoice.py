@@ -6,7 +6,7 @@ from graphene_django.filter import DjangoFilterConnectionField
 from graphql import GraphQLError
 
 from ..models import Account, AccountSubscription, FinanceInvoice, FinanceInvoiceGroup, FinancePaymentMethod
-from ..modules.gql_tools import require_login, require_login_and_permission, get_rid
+from ..modules.gql_tools import require_login, require_login_and_permission, require_permission, get_rid
 from ..modules.messages import Messages
 from ..modules.finance_tools import display_float_as_amount
 
