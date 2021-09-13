@@ -472,7 +472,7 @@ class GQLFinanceInvoice(TestCase):
         """ Permission denied message when user lacks authorization """   
         # Create regular user
         invoice = f.FinanceInvoiceFactory.create()
-        user = invoice.account
+        user = f.Teacher2Factory.create()
 
         variables = {
             "id": to_global_id("FinanceInvoiceNode", invoice.id),
