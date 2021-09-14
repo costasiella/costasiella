@@ -58,6 +58,7 @@ from .organization_classtype import OrganizationClasstypeQuery, OrganizationClas
 from .organization_discovery import OrganizationDiscoveryQuery, OrganizationDiscoveryMutation
 from .organization_document import OrganizationDocumentQuery, OrganizationDocumentMutation
 from .organization_holiday import OrganizationHolidayQuery, OrganizationHolidayMutation
+from .organization_holiday_location import OrganizationHolidayLocationMutation
 from .organization_location import OrganizationLocationQuery, OrganizationLocationMutation
 from .organization_location_room import OrganizationLocationRoomQuery, OrganizationLocationRoomMutation
 from .organization_language import OrganizationLanguageQuery, OrganizationLanguageMutation
@@ -209,6 +210,7 @@ class Mutation(AccountMutation,
                OrganizationDiscoveryMutation,
                OrganizationDocumentMutation,
                OrganizationHolidayMutation,
+               OrganizationHolidayLocationMutation,
                OrganizationLanguageMutation,
                OrganizationLocationMutation,
                OrganizationLocationRoomMutation,
