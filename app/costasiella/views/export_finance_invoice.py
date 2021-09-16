@@ -28,19 +28,22 @@ from .jwt_settings import jwt_settings
 # Django-graphql-jwt imports end
 
 
-def _verifiy_permission_or_account(request, finance_invoice, **kwargs):
+def _verifiy_permission_or_account(request, token, finance_invoice, **kwargs):
     """
 
     :param request:
     :param finance_invoice:
     :return:
     """
-    # user = request.user # This should work, but doesn't at 05-02-2012 for some reason. Check again later
-    # Fetch token using some code from djan-graphql-jwt
+    # user = request.user # This should work, but doesn't at 05-02-2021 for some reason. Check again later
+    # Fetch token using some code from djano-graphql-jwt
     user = None
-    token = get_credentials(request, **kwargs)
-    if token is not None:
-        user = get_user_by_token(token, request)
+    # token = get_credentials(request, **kwargs)
+    # print(token)
+    # if token is not None:
+    user = get_user_by_token(token, request)
+
+    print(user)
 
     if not user:
         return False
@@ -118,7 +121,7 @@ def invoice_html(node_id):
 
 
 # Create your views here.
-def invoice_pdf(request, node_id, **kwargs):
+def invoice_pdf(request, node_id, token, **kwargs):
     """
     Export invoice as PDF
 
@@ -127,9 +130,10 @@ def invoice_pdf(request, node_id, **kwargs):
     import weasyprint
     print("InvoiceID:")
     print(node_id)
+    print(token)
 
     finance_invoice, html = invoice_html(node_id)
-    if not _verifiy_permission_or_account(request, finance_invoice):
+    if not _verifiy_permission_or_account(request, token, finance_invoice):
         raise Http404(_("Invoice not found..."))
 
     # Create a file-like buffer to receive PDF data.
@@ -145,7 +149,7 @@ def invoice_pdf(request, node_id, **kwargs):
     return FileResponse(buffer, as_attachment=True, filename=filename)
 
 
-def invoice_pdf_preview(request, node_id):
+def invoice_pdf_preview(request, node_id, token):
     """
     Preview for invoice_pdf
 
@@ -156,7 +160,7 @@ def invoice_pdf_preview(request, node_id):
     # print(request.POST.node_id)
 
     finance_invoice, html = invoice_html(node_id)
-    if not _verifiy_permission_or_account(request, finance_invoice):
+    if not _verifiy_permission_or_account(request, token, finance_invoice):
         raise Http404(_("Invoice not found..."))
 
     return HttpResponse(html)
@@ -168,8 +172,6 @@ We probably don't need it, but for some reason the middleware doesn't seem to pa
 versions. So it can be here for now, until it's fixed upstream.
 Everything below here can be deleted again once request.user works again. 
 """
-
-
 
 def jwt_payload(user, context=None):
     username = user.get_username()
