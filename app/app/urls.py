@@ -66,7 +66,7 @@ urlpatterns = [
          name="export_excel_insight_subscriptions_sold"),
     path('d/export/invoice/pdf/<str:node_id>', views.invoice_pdf, name="export_invoice_pdf"),
     path('d/export/invoice/pdf/preview/<str:node_id>', views.invoice_pdf_preview, name="export_invoice_pdf_preview"),
-    path('d/graphql/', jwt_cookie(GraphQLView.as_view(graphiql=settings.DEBUG)), name="graphql"),
+    path('d/graphql/', csrf_exempt(GraphQLView.as_view(graphiql=settings.DEBUG)), name="graphql"),
     path('d/mollie/webhook/', csrf_exempt(views.mollie_webhook), name="mollie_webhook"),
     path('d/update/', views.update, name="update"),
     path('d/setup/', views.setup, name="setup"),
