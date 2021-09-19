@@ -95,6 +95,7 @@ class ScheduleClassType(graphene.ObjectType):
     available_spaces_total = graphene.Int()
     booking_open_on = graphene.types.datetime.Date()
     booking_status = graphene.String()
+    url_booking = graphene.String()
 
 
 # ScheduleClassDayType
@@ -393,10 +394,11 @@ class ScheduleClassesDayType(graphene.ObjectType):
             count_attendance = item.count_attendance or 0
             available_online_spaces = calculate_available_spaces_online(total_spaces, walk_in_spaces, count_attendance)
             booking_open_on = self.resolve_booking_open_on()
+            schedule_item_id = to_global_id('ScheduleItemNode', item.pk)
 
             classes_list.append(
                 ScheduleClassType(
-                    schedule_item_id=to_global_id('ScheduleItemNode', item.pk),
+                    schedule_item_id=schedule_item_id,
                     date=self.date,
                     status=item.status,
                     description=item.description,
@@ -414,57 +416,32 @@ class ScheduleClassesDayType(graphene.ObjectType):
                     available_spaces_online=available_online_spaces,
                     available_spaces_total=calculate_available_spaces_total(total_spaces, count_attendance),
                     booking_open_on=booking_open_on,
-                    booking_status=get_booking_status(item, self.date, booking_open_on, available_online_spaces)
+                    booking_status=get_booking_status(item, self.date, booking_open_on, available_online_spaces),
+                    url_booking=get_url_booking(info, schedule_item_id, self.date)
                 )
             )
     
         return classes_list
 
 
-# OpenStudio function to be ported
-    # def _get_day_list_booking_status(self, row):
-    #     """
-    #         :param row: ClassSchedule.get_day_rows() row
-    #         :return: booking status
-    #     """
-    #     pytz = current.globalenv['pytz']
-    #     TIMEZONE = current.TIMEZONE
-    #     NOW_LOCAL = current.NOW_LOCAL
-    #     TODAY_LOCAL = current.TODAY_LOCAL
-    #
-    #     local_tz = pytz.timezone(TIMEZONE)
-    #
-    #     dt_start = datetime.datetime(self.date.year,
-    #                                  self.date.month,
-    #                                  self.date.day,
-    #                                  int(row.classes.Starttime.hour),
-    #                                  int(row.classes.Starttime.minute))
-    #     dt_start = local_tz.localize(dt_start)
-    #     dt_end = datetime.datetime(self.date.year,
-    #                                self.date.month,
-    #                                self.date.day,
-    #                                int(row.classes.Endtime.hour),
-    #                                int(row.classes.Endtime.minute))
-    #     dt_end = local_tz.localize(dt_end)
-    #
-    #     status = 'finished'
-    #     if row.classes_otc.Status == 'cancelled' or row.school_holidays.id:
-    #         status = 'cancelled'
-    #     elif dt_start <= NOW_LOCAL and dt_end >= NOW_LOCAL:
-    #         # check start time
-    #         status = 'ongoing'
-    #     elif dt_start >= NOW_LOCAL:
-    #         if not self.bookings_open == False and TODAY_LOCAL < self.bookings_open:
-    #             status = 'not_yet_open'
-    #         else:
-    #             # check spaces for online bookings
-    #             spaces = self._get_day_list_booking_spaces(row)
-    #             if spaces < 1:
-    #                 status = 'full'
-    #             else:
-    #                 status = 'ok'
-    #
-    #     return status
+def get_url_booking(info, schedule_item_id, date):
+    """
+    Get URL pointing to shop booking
+    :param schedule_item_id: global ID of class
+    :param date: datetime.date object of class
+    :return: String - booking url
+    """
+    scheme = info.context.scheme
+    host = info.context.get_host()
+
+    url_booking = "{scheme}://{host}/#/shop/classes/book/{schedule_item_id}/{date}".format(
+        scheme=scheme,
+        host=host,
+        schedule_item_id=schedule_item_id,
+        date=str(date)
+    )
+
+    return url_booking
 
 
 def get_booking_status(schedule_item, date, booking_open_on, available_online_spaces):
