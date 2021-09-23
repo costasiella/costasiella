@@ -108,6 +108,7 @@ class DeleteOrganizationHoliday(graphene.relay.ClientIDMutation):
         user = info.context.user
         require_login_and_permission(user, 'costasiella.delete_organizationholiday')
 
+        rid = get_rid(input['id'])
         organization_holiday = OrganizationHoliday.objects.filter(id=rid.id).first()
         if not organization_holiday:
             raise Exception('Invalid Organization Holiday ID!')
