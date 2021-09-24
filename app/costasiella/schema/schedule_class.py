@@ -60,7 +60,7 @@ def _get_resolve_classes_filter_query(self):
                         THEN csi.organization_level_id  \
                         ELSE csiotc.organization_level_id END) = '
         where += str(self.filter_id_organization_level) + ' '
-    if self.filter_public:
+    if self.public_only:
         where += "AND csi.display_public = 1 "
         # where += "AND sl.AllowAPI = 'T' "
         # where += "AND sct.AllowAPI = 'T' "
@@ -107,7 +107,7 @@ class ScheduleClassesDayType(graphene.ObjectType):
     filter_id_organization_classtype = graphene.String()
     filter_id_organization_level = graphene.String()
     filter_id_organization_location = graphene.String()
-    filter_public = graphene.Boolean()
+    public_only = graphene.Boolean()
     classes = graphene.List(ScheduleClassType)
     attendance_count_type = graphene.String()
 
@@ -176,7 +176,7 @@ class ScheduleClassesDayType(graphene.ObjectType):
                                 THEN csi.organization_level_id  \
                                 ELSE csiotc.organization_level_id END) = '
                 where += '%(filter_id_organization_level)s '
-            if self.filter_public:
+            if self.public_only:
                 where += "AND csi.display_public = 1 "
                 # where += "AND sl.AllowAPI = 'T' "
                 # where += "AND sct.AllowAPI = 'T' "
@@ -192,22 +192,6 @@ class ScheduleClassesDayType(graphene.ObjectType):
         sorting = self.order_by
         if not sorting:  # Default to sort by location, then time
             sorting = "location"
-
-        # # Set sorting
-        # if sorting == "location":
-        #     # Location | Location room | Start time
-        #     schedule_items = schedule_items.order_by(
-        #         'organization_location_room__organization_location__name',
-        #         'organization_location_room__name',
-        #         'time_start'
-        #     )
-        # else:
-        #     # Start time | Location | Location room
-        #     schedule_items = schedule_items.order_by(
-        #         'time_start',
-        #         'organization_location_room__organization_location__name',
-        #         'organization_location_room__name',
-        #     )
 
         if sorting == 'location':
             order_by_sql = 'organization_location_name, time_start'
@@ -650,6 +634,7 @@ class ScheduleClassQuery(graphene.ObjectType):
         organization_classtype=graphene.String(),
         organization_level=graphene.String(),
         organization_location=graphene.String(),
+        public_only=graphene.Boolean(),
         attendance_count_type=graphene.String(),
     )
 
@@ -710,6 +695,7 @@ class ScheduleClassQuery(graphene.ObjectType):
                                  organization_classtype=None,
                                  organization_level=None,
                                  organization_location=None,
+                                 public_only=True,
                                  attendance_count_type="attending_and_booked"
                                  ):
         user = info.context.user
@@ -753,8 +739,9 @@ class ScheduleClassQuery(graphene.ObjectType):
                 day.filter_id_organization_location = \
                     validation_result['organization_location_id']
 
-            if not user_has_view_permission:
-                day.filter_public = True
+            day.public_only = True
+            if user_has_view_permission:
+                day.public_only = public_only
 
             return_list.append(day)
             date += delta
