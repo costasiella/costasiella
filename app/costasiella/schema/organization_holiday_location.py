@@ -40,8 +40,8 @@ class CreateOrganizationHolidayLocation(graphene.relay.ClientIDMutation):
         rid_holiday = get_rid(input['organization_holiday'])
         rid_location = get_rid(input['organization_location'])
 
-        organization_holiday = OrganizationSubscriptionGroup.objects.get(pk=rid_group.id)
-        organization_location = OrganizationSubscription.objects.get(pk=rid_pass.id)
+        organization_holiday = OrganizationHoliday.objects.get(pk=rid_holiday.id)
+        organization_location = OrganizationLocation.objects.get(pk=rid_location.id)
 
         query_set = OrganizationHolidayLocation.objects.filter(
             organization_holiday = organization_holiday,
@@ -79,10 +79,10 @@ class DeleteOrganizationHolidayLocation(graphene.relay.ClientIDMutation):
         rid_holiday = get_rid(input['organization_holiday'])
         rid_location = get_rid(input['organization_location'])
 
-        organization_holiday = OrganizationSubscriptionGroup.objects.get(pk=rid_group.id)
-        organization_location = OrganizationSubscription.objects.get(pk=rid_pass.id)
+        organization_holiday = OrganizationHoliday.objects.get(pk=rid_holiday.id)
+        organization_location = OrganizationLocation.objects.get(pk=rid_location.id)
 
-        organization_location = OrganizationHolidayLocation.objects.filter(
+        organization_holiday_location = OrganizationHolidayLocation.objects.filter(
             organization_holiday = organization_holiday,
             organization_location = organization_location
         ).first()
