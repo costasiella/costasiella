@@ -270,6 +270,8 @@ class ScheduleClassesDayType(graphene.ObjectType):
                         THEN csiotc.role_2
                     ELSE csit.role_2
                     END AS role_2,
+               coho.id,
+               coho.description,
                CASE WHEN csiotc.spaces IS NOT NULL
                      THEN csiotc.spaces
                      ELSE csi.spaces
@@ -323,6 +325,15 @@ class ScheduleClassesDayType(graphene.ObjectType):
                 LIMIT 2
                 ) csit
                 ON csit.schedule_item_id = csi.id
+            LEFT JOIN
+                ( SELECT oh.id, oh.description, ohl.school_locations_id
+                  FROM costasiella_organizationholiday coh
+                  LEFT JOIN
+                    costasiella_organizationholidaylocation cohl
+                    ON cohl.organization_holiday_id = coh.id
+                  WHERE coh.date_start <= %(class_date)s AND
+                        coh.date_end >= %(class_date)s) coho
+                ON coho.organization_location_id = csi_ol.organization_location_id
             WHERE csi.schedule_item_type = "CLASS" 
                 AND (
                         (csi.frequency_type = "SPECIFIC" AND csi.date_start = %(class_date)s ) OR

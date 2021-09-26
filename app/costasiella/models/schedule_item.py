@@ -106,6 +106,8 @@ class ScheduleItem(models.Model):
     role_2 = models.CharField(default="", max_length=50, choices=TEACHER_ROLES)
     description = models.CharField(max_length=255, default="")
     count_attendance = models.IntegerField(null=True)
+    organization_holiday_id = models.IntegerField(null=True)
+    organization_holiday_description = models.CharField(max_length=255, default="")
     ################ END EMPTY FIELDS ##################
 
     def __str__(self):
