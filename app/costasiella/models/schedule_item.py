@@ -107,7 +107,7 @@ class ScheduleItem(models.Model):
     description = models.CharField(max_length=255, default="")
     count_attendance = models.IntegerField(null=True)
     organization_holiday_id = models.IntegerField(null=True)
-    organization_holiday_description = models.CharField(max_length=255, default="")
+    organization_holiday_name = models.CharField(max_length=255, default="")
     ################ END EMPTY FIELDS ##################
 
     def __str__(self):
