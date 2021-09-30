@@ -28,7 +28,56 @@ class ClassScheduleDude:
                 # Wrong week day, the class isn't held on this day
                 return False
 
+        # check if cancelled
+        is_cancelled = self.schedule_item_is_cancelled_on_day(schedule_item, date)
+        if is_cancelled:
+            return False
+
+        # Check for holiday
+        within_holiday = self.schedule_item_is_within_holiday_on_day(schedule_item, date)
+        if within_holiday:
+            return False
+
         return True
+
+    def schedule_item_is_cancelled_on_day(self, schedule_item, date):
+        """
+
+        :param schedule_item:
+        :param date:
+        :return:
+        """
+        schedule_item_weekly_otc = None
+
+        qs = ScheduleItemWeeklyOTC.objects.filter(
+            schedule_item=schedule_item,
+            date=date,
+            status='CANCELLED'
+        )
+        if qs.exists:
+            schedule_item_weekly_otc = qs.first()
+
+        return schedule_item_weekly_otc
+
+    def schedule_item_is_within_holiday_on_day(self, schedule_item, date):
+        """
+        Check if the schedule item on given date falls within a holiday
+        :param schedule_item: schedule_item object
+        :param date: datetime.date
+        :return:
+        """
+        # Check if there's a holiday
+        organization_location = schedule_item.organization_location_room.organization_location
+        qs_holiday_locations = OrganizationHolidayLocation.objects.filter(
+            (Q(organization_holiday__date_start__lte = date) & Q(organization_holiday__date_end__gte = date)) &
+             Q(organization_location = organization_location)
+        )
+
+        holiday_location = None
+        if qs_holiday_locations.exists():
+            holiday_location = qs_holiday_locations.first()
+
+        return holiday_location
 
     def schedule_class_with_otc_data(self, schedule_item, date):
         """
