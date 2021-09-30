@@ -6,6 +6,8 @@ from ...models import OrganizationClasspassGroup, OrganizationSubscriptionGroup,
                         ScheduleItem, ScheduleItemWeeklyOTC, \
                         ScheduleItemOrganizationSubscriptionGroup, ScheduleItemOrganizationClasspassGroup
 
+from ...dudes import ClassScheduleDude
+
 """
 This helper file is added to allow function to add all subscription groups to a schedule item
 ScheduleItem is already imported in the ScheduleItemOrganizationSubscriptionGroup model. 
@@ -205,13 +207,10 @@ class ScheduleItemHelper:
         :return:
         """
         # Check if there's a holiday
-        organization_location = schedule_item.organization_location_room.organization_location
-        qs_holiday_locations = OrganizationHolidayLocation.objects.filter(
-            (Q(organization_holiday__date_start__lte = date) & Q(organization_holiday__date_end__gte = date)) &
-             Q(organization_location = organization_location)
-        )
-        if qs_holiday_locations.exists():
-            holiday_location = qs_holiday_locations.first()
+        class_schedule_dude = ClassScheduleDude()
+        holiday_location = class_schedule_dude.schedule_item_is_within_holiday_on_day(schedule_item, date)
+
+        if holiday_location:
             schedule_item.organization_holiday_id = holiday_location.organization_holiday.id
             schedule_item.organization_holiday_name = holiday_location.organization_holiday.name
 
