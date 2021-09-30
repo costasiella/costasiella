@@ -1,6 +1,7 @@
 from django.db.models import Q
 
 from ...models import OrganizationClasspassGroup, OrganizationSubscriptionGroup, \
+                        OrganizationHolidayLocation, \
                         ScheduleEventTicket, ScheduleEventTicketScheduleItem, \
                         ScheduleItem, ScheduleItemWeeklyOTC, \
                         ScheduleItemOrganizationSubscriptionGroup, ScheduleItemOrganizationClasspassGroup
@@ -196,16 +197,29 @@ class ScheduleItemHelper:
             account_schedule_event_ticket__schedule_event_ticket=schedule_event_ticket
         ).delete()
 
-    def schedule_item_with_otc_data(self, schedule_item, date):
+    def schedule_item_with_otc_and_holiday_data(self, schedule_item, date):
         """
         Overwrite schedule_item object data with weekly otc data
         :param schedule_item: models.ScheduleItem object
         :param date: datetime.date
         :return:
         """
+        # Check if there's a holiday
+        organization_location = schedule_item.organization_location_room.organization_location
+        qs_holiday_locations = OrganizationHolidayLocation.objects.filter(
+            (Q(organization_holiday__date_start__lte = date) & Q(organization_holiday__date_end__gte = date)) &
+             Q(organization_location = organization_location)
+        )
+        if qs_holiday_locations.exists():
+            holiday_location = qs_holiday_locations.first()
+            schedule_item.organization_holiday_id = holiday_location.organization_holiday.id
+            schedule_item.organization_holiday_name = holiday_location.organization_holiday.name
+
+        # No further processing required
         if schedule_item.schedule_item_type == 'SPECIFIC':
             return schedule_item
 
+        # Check One Time Change (OTC) data
         schedule_item_weekly_otc_qs = ScheduleItemWeeklyOTC.objects.filter(
             schedule_item=schedule_item,
             date=date

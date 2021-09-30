@@ -682,7 +682,7 @@ class ScheduleClassQuery(graphene.ObjectType):
             raise Exception('Invalid Schedule Item ID!')
 
         sih = ScheduleItemHelper()
-        schedule_item = sih.schedule_item_with_otc_data(schedule_item, date)
+        schedule_item = sih.schedule_item_with_otc_and_holiday_data(schedule_item, date)
 
         booking_open_on = calculate_booking_open_on(date)
         total_spaces = schedule_item.spaces or 0

@@ -105,7 +105,7 @@ class UpdateOrganizationHoliday(graphene.relay.ClientIDMutation):
 
         if 'classes' in input:
             organization_holiday.classes = input['classes']
-        
+
         organization_holiday.save()
 
         return UpdateOrganizationHoliday(organization_holiday=organization_holiday)
