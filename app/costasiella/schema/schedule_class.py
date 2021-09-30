@@ -78,6 +78,8 @@ class ScheduleClassType(graphene.ObjectType):
     schedule_item_id = graphene.ID()
     frequency_type = graphene.String()
     date = graphene.types.datetime.Date()
+    holiday = graphene.Boolean()
+    holiday_name = graphene.String()
     status = graphene.String()
     description = graphene.String()
     account = graphene.Field(AccountNode)
@@ -203,14 +205,16 @@ class ScheduleClassesDayType(graphene.ObjectType):
                 csi.id,
                 csi.frequency_type,
                 CASE
-                    WHEN csiotc.status = "CANCELLED" 
-                        THEN csiotc.status
+                    WHEN csiotc.status = "CANCELLED"
+                        THEN "CANCELLED"            
+                    WHEN coho.id IS NOT NULL
+                        THEN "CANCELLED"
                     WHEN csiotc.status = "OPEN" 
                         THEN csiotc.status
                     WHEN csiotc.account_id IS NOT NULL AND csiotc.role = "SUB" 
                         THEN "SUB"
                     WHEN csiotc.status 
-                        THEN csiotc.status                    
+                        THEN csiotc.status                
                     ELSE ""
                 END AS status,
                 csiotc.description as description,
@@ -270,8 +274,8 @@ class ScheduleClassesDayType(graphene.ObjectType):
                         THEN csiotc.role_2
                     ELSE csit.role_2
                     END AS role_2,
-               coho.id,
-               coho.description,
+               coho.id AS organization_holiday_id,
+               coho.name AS organization_holiday_name,
                CASE WHEN csiotc.spaces IS NOT NULL
                      THEN csiotc.spaces
                      ELSE csi.spaces
@@ -326,14 +330,14 @@ class ScheduleClassesDayType(graphene.ObjectType):
                 ) csit
                 ON csit.schedule_item_id = csi.id
             LEFT JOIN
-                ( SELECT oh.id, oh.description, ohl.school_locations_id
+                ( SELECT coh.id, coh.name, cohl.organization_location_id
                   FROM costasiella_organizationholiday coh
                   LEFT JOIN
                     costasiella_organizationholidaylocation cohl
                     ON cohl.organization_holiday_id = coh.id
                   WHERE coh.date_start <= %(class_date)s AND
                         coh.date_end >= %(class_date)s) coho
-                ON coho.organization_location_id = csi_ol.organization_location_id
+                ON coho.organization_location_id = csi_ol.id
             WHERE csi.schedule_item_type = "CLASS" 
                 AND (
                         (csi.frequency_type = "SPECIFIC" AND csi.date_start = %(class_date)s ) OR
@@ -378,11 +382,19 @@ class ScheduleClassesDayType(graphene.ObjectType):
             print(item.time_start)
             print(item.time_end)
             print(item.status)
+            # print(item.organization_holiday_id)
+            # print(item.organization_holiday_name)
             # print(item.description)
             # print(item.account)
             # print(item.account_id)
             # print(item.role)
             # print(item.count_attendance)
+
+            holiday = False
+            holiday_name = ""
+            if item.organization_holiday_id:
+                holiday = True
+                holiday_name = item.organization_holiday_name
 
             total_spaces = item.spaces or 0
             walk_in_spaces = item.walk_in_spaces or 0
@@ -396,6 +408,8 @@ class ScheduleClassesDayType(graphene.ObjectType):
                     schedule_item_id=schedule_item_id,
                     date=self.date,
                     status=item.status,
+                    holiday=holiday,
+                    holiday_name=holiday_name,
                     description=item.description,
                     frequency_type=item.frequency_type,
                     account=item.account,
