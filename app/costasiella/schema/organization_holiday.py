@@ -91,7 +91,21 @@ class UpdateOrganizationHoliday(graphene.relay.ClientIDMutation):
         if not organization_holiday:
             raise Exception('Invalid Organization Holiday ID!')
 
-        organization_holiday.name = input['name']
+        if 'name' in input:
+            organization_holiday.name = input['name']
+
+        if 'description' in input:
+            organization_holiday.description = input['description']
+
+        if 'date_start' in input:
+            organization_holiday.date_start = input['date_start']
+
+        if 'date_end' in input:
+            organization_holiday.date_end = input['date_end']
+
+        if 'classes' in input:
+            organization_holiday.classes = input['classes']
+        
         organization_holiday.save()
 
         return UpdateOrganizationHoliday(organization_holiday=organization_holiday)
