@@ -30,13 +30,13 @@ class AppSettingsNode(DjangoObjectType):
         interfaces = (graphene.relay.Node, AppSettingsNodeInterface,)
 
     def resolve_time_format_moment(self, info):
-        if self.time_format == 24:
+        if self.time_format == "24":
             return "HH:mm"
         else:
             return "hh:mm a"
 
     def resolve_date_time_format_moment(self, info):
-        if self.time_format == 24:
+        if self.time_format == "24":
             time_format_moment = "HH:mm"
         else:
             time_format_moment = "hh:mm a"
