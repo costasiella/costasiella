@@ -490,6 +490,8 @@ def get_booking_status(schedule_item, date, booking_open_on, available_online_sp
     status = "FINISHED"
     if schedule_item.status == "CANCELLED":
         status = 'CANCELLED'
+    if schedule_item.organization_holiday_id:
+        status = 'HOLIDAY'
     elif dt_start <= now and dt_end >= now:
         # check start time
         status = 'ONGOING'
