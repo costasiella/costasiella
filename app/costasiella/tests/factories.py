@@ -198,6 +198,17 @@ class OrganizationLocationRoomFactory(factory.DjangoModelFactory):
     name = "First location room"
 
 
+class OrganizationHolidayFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.OrganizationHoliday
+
+    name = "First holiday"
+    description = "Holiday description here"
+    date_start = "1950-01-01"
+    date_end = "2999-12-31"
+    classes = True
+
+
 class OrganizationAppointmentCategoryFactory(factory.DjangoModelFactory):
     class Meta:
         model = models.OrganizationAppointmentCategory
