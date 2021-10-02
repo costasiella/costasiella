@@ -1,4 +1,5 @@
 from django.utils.translation import gettext as _
+from django.db.models import Q
 
 
 class ClassScheduleDude:
@@ -47,6 +48,8 @@ class ClassScheduleDude:
         :param date:
         :return:
         """
+        from ..models import ScheduleItemWeeklyOTC
+
         schedule_item_weekly_otc = None
 
         qs = ScheduleItemWeeklyOTC.objects.filter(
@@ -66,6 +69,7 @@ class ClassScheduleDude:
         :param date: datetime.date
         :return:
         """
+        from ..models import OrganizationHolidayLocation
         # Check if there's a holiday
         organization_location = schedule_item.organization_location_room.organization_location
         qs_holiday_locations = OrganizationHolidayLocation.objects.filter(
