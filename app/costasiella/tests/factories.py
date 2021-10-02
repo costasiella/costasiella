@@ -209,6 +209,14 @@ class OrganizationHolidayFactory(factory.DjangoModelFactory):
     classes = True
 
 
+class OrganizationHolidayLocationFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = models.OrganizationHolidayLocation
+
+    organization_location = factory.SubFactory(OrganizationLocationFactory)
+    organization_holiday = factory.SubFactory(OrganizationHolidayFactory)
+
+
 class OrganizationAppointmentCategoryFactory(factory.DjangoModelFactory):
     class Meta:
         model = models.OrganizationAppointmentCategory
