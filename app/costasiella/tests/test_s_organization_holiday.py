@@ -390,95 +390,73 @@ class GQLOrganizationHoliday(TestCase):
         data = executed.get('data')
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Permission denied!')
-    #
-    #
-    # def test_delete_holiday(self):
-    #     """ Delete a holiday """
-    #     query = self.holiday_delete_mutation
-    #     holiday = f.OrganizationHolidayFactory.create()
-    #     variables = self.variable_delete
-    #     variables['input']['id'] = to_global_id("OrganizationHolidayNode", holiday.pk)
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.admin_user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['deleteOrganizationHoliday']['ok'], True)
-    #
-    # def test_delete_holiday_remove_from_schedule_item_class(self):
-    #     """ Does deleting a holiday remove it from a schedule item """
-    #     query = self.holiday_delete_mutation
-    #     schedule_item_holiday = f.ScheduleItemOrganizationHolidayAllowFactory.create()
-    #     holiday = schedule_item_holiday.organization_classpass_group
-    #     variables = self.variable_delete
-    #     variables['input']['id'] = to_global_id("OrganizationHolidayNode", holiday.pk)
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.admin_user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['deleteOrganizationHoliday']['ok'], True)
-    #
-    #     self.assertEqual(models.ScheduleItemOrganizationHoliday.objects.filter(
-    #         id=schedule_item_holiday.id).exists(),
-    #         False
-    #     )
-    #
-    # def test_delete_holiday_anon_user(self):
-    #     """ Delete a holiday """
-    #     query = self.holiday_delete_mutation
-    #     holiday = f.OrganizationHolidayFactory.create()
-    #     variables = self.variable_delete
-    #     variables['input']['id'] = to_global_id("OrganizationHolidayNode", holiday.pk)
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.anon_user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
-    #
-    # def test_delete_holiday_permission_granted(self):
-    #     """ Allow deleting holidays for users with permissions """
-    #     query = self.holiday_delete_mutation
-    #     holiday = f.OrganizationHolidayFactory.create()
-    #     variables = self.variable_delete
-    #     variables['input']['id'] = to_global_id("OrganizationHolidayNode", holiday.pk)
-    #
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename=self.permission_delete)
-    #     user.user_permissions.add(permission)
-    #     user.save()
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['deleteOrganizationHoliday']['ok'], True)
-    #
-    # def test_delete_holiday_permission_denied(self):
-    #     """ Check delete holiday permission denied error message """
-    #     query = self.holiday_delete_mutation
-    #     holiday = f.OrganizationHolidayFactory.create()
-    #     variables = self.variable_delete
-    #     variables['input']['id'] = to_global_id("OrganizationHolidayNode", holiday.pk)
-    #
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=variables
-    #     )
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
+
+    def test_delete_holiday(self):
+        """ Delete a holiday """
+        query = self.holiday_delete_mutation
+        holiday = f.OrganizationHolidayFactory.create()
+        variables = self.variable_delete
+        variables['input']['id'] = to_global_id("OrganizationHolidayNode", holiday.pk)
+
+        executed = execute_test_client_api_query(
+            query,
+            self.admin_user,
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['deleteOrganizationHoliday']['ok'], True)
+
+    def test_delete_holiday_anon_user(self):
+        """ Delete a holiday """
+        query = self.holiday_delete_mutation
+        holiday = f.OrganizationHolidayFactory.create()
+        variables = self.variable_delete
+        variables['input']['id'] = to_global_id("OrganizationHolidayNode", holiday.pk)
+
+        executed = execute_test_client_api_query(
+            query,
+            self.anon_user,
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
+
+    def test_delete_holiday_permission_granted(self):
+        """ Allow deleting holidays for users with permissions """
+        query = self.holiday_delete_mutation
+        holiday = f.OrganizationHolidayFactory.create()
+        variables = self.variable_delete
+        variables['input']['id'] = to_global_id("OrganizationHolidayNode", holiday.pk)
+
+        # Create regular user
+        user = f.RegularUserFactory.create()
+        permission = Permission.objects.get(codename=self.permission_delete)
+        user.user_permissions.add(permission)
+        user.save()
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['deleteOrganizationHoliday']['ok'], True)
+
+    def test_delete_holiday_permission_denied(self):
+        """ Check delete holiday permission denied error message """
+        query = self.holiday_delete_mutation
+        holiday = f.OrganizationHolidayFactory.create()
+        variables = self.variable_delete
+        variables['input']['id'] = to_global_id("OrganizationHolidayNode", holiday.pk)
+
+        # Create regular user
+        user = f.RegularUserFactory.create()
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=variables
+        )
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
