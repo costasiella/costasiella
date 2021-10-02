@@ -31,14 +31,20 @@ class GQLOrganizationHoliday(TestCase):
         self.variables_create = {
             "input": {
                 "name": "New holiday",
-                "description": "Classpass group description"
+                "description": "Holiday description",
+                "dateStart": "2020-01-01",
+                "dateEnd": "2050-01-01",
+                "classes": True
             }
         }
         
         self.variables_update = {
             "input": {
                 "name": "Updated holiday",
-                "description": "Updated description for group"
+                "description": "Updated description",
+                "dateStart": "2020-01-01",
+                "dateEnd": "2050-01-01",
+                "classes": True
             }
         }
 
@@ -227,22 +233,22 @@ class GQLOrganizationHoliday(TestCase):
         executed = execute_test_client_api_query(query, user, variables={"id": node_id})
         data = executed.get('data')
         self.assertEqual(data['organizationHoliday']['name'], holiday.name)
-    #
-    # def test_create_holiday(self):
-    #     """ Create a holiday """
-    #     query = self.holiday_create_mutation
-    #     variables = self.variables_create
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.admin_user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['createOrganizationHoliday']['organizationHoliday']['name'],
-    #                      variables['input']['name'])
-    #     self.assertEqual(data['createOrganizationHoliday']['organizationHoliday']['description'],
-    #                      variables['input']['description'])
+
+    def test_create_holiday(self):
+        """ Create a holiday """
+        query = self.holiday_create_mutation
+        variables = self.variables_create
+
+        executed = execute_test_client_api_query(
+            query,
+            self.admin_user,
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['createOrganizationHoliday']['organizationHoliday']['name'],
+                         variables['input']['name'])
+        self.assertEqual(data['createOrganizationHoliday']['organizationHoliday']['description'],
+                         variables['input']['description'])
     #
     # def test_create_holiday_add_to_schedule_item(self):
     #     """ Is the classpass group added to all schedule items on creation? """
