@@ -101,6 +101,11 @@ class GQLOrganizationHoliday(TestCase):
     createOrganizationHoliday(input: $input) {
       organizationHoliday {
         id
+        name
+        description
+        dateStart
+        dateEnd
+        classes
       }
     }
   }
@@ -112,6 +117,10 @@ class GQLOrganizationHoliday(TestCase):
       organizationHoliday {
         id
         name
+        description
+        dateStart
+        dateEnd
+        classes
       }
     }
   }
@@ -249,81 +258,60 @@ class GQLOrganizationHoliday(TestCase):
                          variables['input']['name'])
         self.assertEqual(data['createOrganizationHoliday']['organizationHoliday']['description'],
                          variables['input']['description'])
-    #
-    # def test_create_holiday_add_to_schedule_item(self):
-    #     """ Is the classpass group added to all schedule items on creation? """
-    #     schedule_item = f.SchedulePublicWeeklyClassFactory.create()
-    #
-    #     query = self.holiday_create_mutation
-    #     variables = self.variables_create
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.admin_user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['createOrganizationHoliday']['organizationHoliday']['name'],
-    #                      variables['input']['name'])
-    #     self.assertEqual(data['createOrganizationHoliday']['organizationHoliday']['description'],
-    #                      variables['input']['description'])
-    #
-    #     schedule_item_organization_classpass_group = models.ScheduleItemOrganizationHoliday.objects.all().first()
-    #     self.assertEqual(
-    #         to_global_id("OrganizationHolidayNode",
-    #                      schedule_item_organization_classpass_group.organization_classpass_group.id),
-    #         data['createOrganizationHoliday']['organizationHoliday']['id']
-    #     )
-    #     self.assertEqual(schedule_item_organization_classpass_group.shop_book, False)
-    #     self.assertEqual(schedule_item_organization_classpass_group.attend, False)
-    #
-    # def test_create_holiday_anon_user(self):
-    #     """ Create a holiday with anonymous user, check error message """
-    #     query = self.holiday_create_mutation
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         self.anon_user,
-    #         variables=self.variables_create
-    #     )
-    #     data = executed.get('data')
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
-    #
-    # def test_create_holiday_permission_granted(self):
-    #     """ Create a holiday with a user having the add permission """
-    #     query = self.holiday_create_mutation
-    #     variables = self.variables_create
-    #
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename=self.permission_add)
-    #     user.user_permissions.add(permission)
-    #     user.save()
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=variables
-    #     )
-    #     data = executed.get('data')
-    #     self.assertEqual(data['createOrganizationHoliday']['organizationHoliday']['name'],
-    #                      variables['input']['name'])
-    #
-    # def test_create_holiday_permission_denied(self):
-    #     """ Create a holiday with a user not having the add permission """
-    #     query = self.holiday_create_mutation
-    #
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #
-    #     executed = execute_test_client_api_query(
-    #         query,
-    #         user,
-    #         variables=self.variables_create
-    #     )
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
+        self.assertEqual(data['createOrganizationHoliday']['organizationHoliday']['dateStart'],
+                         variables['input']['dateStart'])
+        self.assertEqual(data['createOrganizationHoliday']['organizationHoliday']['dateEnd'],
+                         variables['input']['dateEnd'])
+        self.assertEqual(data['createOrganizationHoliday']['organizationHoliday']['classes'],
+                         variables['input']['classes'])
+
+    def test_create_holiday_anon_user(self):
+        """ Create a holiday with anonymous user, check error message """
+        query = self.holiday_create_mutation
+
+        executed = execute_test_client_api_query(
+            query,
+            self.anon_user,
+            variables=self.variables_create
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
+
+    def test_create_holiday_permission_granted(self):
+        """ Create a holiday with a user having the add permission """
+        query = self.holiday_create_mutation
+        variables = self.variables_create
+
+        # Create regular user
+        user = f.RegularUserFactory.create()
+        permission = Permission.objects.get(codename=self.permission_add)
+        user.user_permissions.add(permission)
+        user.save()
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=variables
+        )
+        data = executed.get('data')
+        self.assertEqual(data['createOrganizationHoliday']['organizationHoliday']['name'],
+                         variables['input']['name'])
+
+    def test_create_holiday_permission_denied(self):
+        """ Create a holiday with a user not having the add permission """
+        query = self.holiday_create_mutation
+
+        # Create regular user
+        user = f.RegularUserFactory.create()
+
+        executed = execute_test_client_api_query(
+            query,
+            user,
+            variables=self.variables_create
+        )
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
     #
     # def test_update_holiday(self):
     #     """ Update a holiday as admin user """
