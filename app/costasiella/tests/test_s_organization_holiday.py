@@ -173,57 +173,60 @@ class GQLOrganizationHoliday(TestCase):
         executed = execute_test_client_api_query(query, self.anon_user)
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Not logged in!')
-    #
-    # def test_query_one(self):
-    #     """ Query one holiday """
-    #     holiday = f.OrganizationHolidayFactory.create()
-    #
-    #     # First query holidays to get node id easily
-    #     node_id = to_global_id("OrganizationHolidayNode", holiday.pk)
-    #
-    #     # Now query single holiday and check
-    #     query = self.holiday_query
-    #     executed = execute_test_client_api_query(query, self.admin_user, variables={"id": node_id})
-    #     data = executed.get('data')
-    #     self.assertEqual(data['organizationHoliday']['name'], holiday.name)
-    #     self.assertEqual(data['organizationHoliday']['description'], holiday.description)
-    #
-    # def test_query_one_anon_user(self):
-    #     """ Deny permission for anon users Query one holiday """
-    #     query = self.holiday_query
-    #     holiday = f.OrganizationHolidayFactory.create()
-    #     node_id = to_global_id("OrganizationHolidayNode", holiday.pk)
-    #     executed = execute_test_client_api_query(query, self.anon_user, variables={"id": node_id})
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Not logged in!')
-    #
-    # def test_query_one_permission_denied(self):
-    #     """ Permission denied message when user lacks authorization """
-    #     query = self.holiday_query
-    #
-    #     user = f.RegularUserFactory.create()
-    #     holiday = f.OrganizationHolidayFactory.create()
-    #     node_id = to_global_id("OrganizationHolidayNode", holiday.pk)
-    #
-    #     executed = execute_test_client_api_query(query, user, variables={"id": node_id})
-    #     errors = executed.get('errors')
-    #     self.assertEqual(errors[0]['message'], 'Permission denied!')
-    #
-    # def test_query_one_permission_granted(self):
-    #     """ Respond with data when user has permission """
-    #     query = self.holiday_query
-    #     # Create regular user
-    #     user = f.RegularUserFactory.create()
-    #     permission = Permission.objects.get(codename='view_organizationholiday')
-    #     user.user_permissions.add(permission)
-    #     user.save()
-    #
-    #     holiday = f.OrganizationHolidayFactory.create()
-    #     node_id = to_global_id("OrganizationHolidayNode", holiday.pk)
-    #
-    #     executed = execute_test_client_api_query(query, user, variables={"id": node_id})
-    #     data = executed.get('data')
-    #     self.assertEqual(data['organizationHoliday']['name'], holiday.name)
+
+    def test_query_one(self):
+        """ Query one holiday """
+        holiday = f.OrganizationHolidayFactory.create()
+
+        # First query holidays to get node id easily
+        node_id = to_global_id("OrganizationHolidayNode", holiday.pk)
+
+        # Now query single holiday and check
+        query = self.holiday_query
+        executed = execute_test_client_api_query(query, self.admin_user, variables={"id": node_id})
+        data = executed.get('data')
+        self.assertEqual(data['organizationHoliday']['name'], holiday.name)
+        self.assertEqual(data['organizationHoliday']['description'], holiday.description)
+        self.assertEqual(data['organizationHoliday']['dateStart'], str(holiday.date_start))
+        self.assertEqual(data['organizationHoliday']['dateEnd'], str(holiday.date_end))
+        self.assertEqual(data['organizationHoliday']['classes'], holiday.classes)
+
+    def test_query_one_anon_user(self):
+        """ Deny permission for anon users Query one holiday """
+        query = self.holiday_query
+        holiday = f.OrganizationHolidayFactory.create()
+        node_id = to_global_id("OrganizationHolidayNode", holiday.pk)
+        executed = execute_test_client_api_query(query, self.anon_user, variables={"id": node_id})
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Not logged in!')
+
+    def test_query_one_permission_denied(self):
+        """ Permission denied message when user lacks authorization """
+        query = self.holiday_query
+
+        user = f.RegularUserFactory.create()
+        holiday = f.OrganizationHolidayFactory.create()
+        node_id = to_global_id("OrganizationHolidayNode", holiday.pk)
+
+        executed = execute_test_client_api_query(query, user, variables={"id": node_id})
+        errors = executed.get('errors')
+        self.assertEqual(errors[0]['message'], 'Permission denied!')
+
+    def test_query_one_permission_granted(self):
+        """ Respond with data when user has permission """
+        query = self.holiday_query
+        # Create regular user
+        user = f.RegularUserFactory.create()
+        permission = Permission.objects.get(codename='view_organizationholiday')
+        user.user_permissions.add(permission)
+        user.save()
+
+        holiday = f.OrganizationHolidayFactory.create()
+        node_id = to_global_id("OrganizationHolidayNode", holiday.pk)
+
+        executed = execute_test_client_api_query(query, user, variables={"id": node_id})
+        data = executed.get('data')
+        self.assertEqual(data['organizationHoliday']['name'], holiday.name)
     #
     # def test_create_holiday(self):
     #     """ Create a holiday """
