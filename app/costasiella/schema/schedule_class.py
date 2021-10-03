@@ -462,35 +462,35 @@ def get_booking_status(schedule_item, date, booking_open_on, available_online_sp
 
     # https://docs.djangoproject.com/en/3.1/topics/i18n/timezones/#usage
     local_tz = pytz.timezone(settings.TIME_ZONE)
-    print(local_tz)
+    # print(local_tz)
 
     now = timezone.localtime(timezone.now())
-    print("#### now ########")
-    print(now)
-    print(now.date())
+    # print("#### now ########")
+    # print(now)
+    # print(now.date())
 
     dt_start = datetime.datetime(date.year,
                                  date.month,
                                  date.day,
                                  int(schedule_item.time_start.hour),
                                  int(schedule_item.time_start.minute))
-    print(dt_start)
+    # print(dt_start)
     dt_start = local_tz.localize(dt_start)
-    print(dt_start)
+    # print(dt_start)
 
     dt_end = datetime.datetime(date.year,
                                date.month,
                                date.day,
                                int(schedule_item.time_end.hour),
                                int(schedule_item.time_end.minute))
-    print(dt_end)
+    # print(dt_end)
     dt_end = local_tz.localize(dt_end)
-    print(dt_end)
+    # print(dt_end)
 
     status = "FINISHED"
     if schedule_item.status == "CANCELLED":
         status = 'CANCELLED'
-    if schedule_item.organization_holiday_id:
+    elif schedule_item.organization_holiday_id:
         status = 'HOLIDAY'
     elif dt_start <= now and dt_end >= now:
         # check start time
