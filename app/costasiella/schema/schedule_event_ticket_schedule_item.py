@@ -72,7 +72,7 @@ class ScheduleEventTicketScheduleItemQuery(graphene.ObjectType):
 
         if not user.has_perm('costasiella.view_scheduleeventticket'):
             # Only items for public tickets
-            qs.filter(schedule_event_ticket__display_public=True)
+            qs = qs.filter(schedule_event_ticket__display_public=True)
 
         return qs.order_by('schedule_item__date_start', 'schedule_item__time_start')
 
