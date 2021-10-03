@@ -28,7 +28,9 @@ class CustomOrderingFilter(OrderingFilter):
 
     def filter(self, qs, value):
         # OrderingFilter is CSV-based, so `value` is a list
-        if any(v in ['date_start', '-date)start'] for v in value):
+        value = ['date_start'] if not value else value  # Set a default:
+
+        if any(v in ['date_start', '-date_start'] for v in value):
             # sort queryset by relevance
             return qs.order_by('schedule_item__date_start', 'schedule_item__time_start')
 
