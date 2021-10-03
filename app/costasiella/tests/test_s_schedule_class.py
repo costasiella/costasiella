@@ -106,7 +106,8 @@ class GQLScheduleClass(TestCase):
         organizationClasstype: $organizationClasstype,
         organizationLevel: $organizationLevel,
         organizationLocation: $organizationLocation,
-        attendanceCountType: $attendanceCountType
+        attendanceCountType: $attendanceCountType,
+        publicOnly: false
     ){
       date
       classes {
@@ -350,7 +351,7 @@ class GQLScheduleClass(TestCase):
 
         schedule_class_otc = f.SchedulePublicWeeklyClassOTCFactory.create()
         schedule_class_otc.status = 'CANCELLED'
-        schedule_class_otc.description = 'moonday'
+        schedule_class_otc.description = 'Moonday'
         schedule_class_otc.save()
         schedule_class = schedule_class_otc.schedule_item
 
@@ -425,6 +426,9 @@ class GQLScheduleClass(TestCase):
         variables = self.variables_query_list
         executed = execute_test_client_api_query(query, user, variables=variables)
         data = executed.get('data')
+
+        print("##############")
+        print(executed)
 
         # List all scheduleclasses
         self.assertEqual(data['scheduleClasses'][0]['date'], variables['dateFrom'])
