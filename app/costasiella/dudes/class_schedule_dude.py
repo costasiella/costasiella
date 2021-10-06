@@ -8,38 +8,54 @@ class ClassScheduleDude:
         :return: True if the schedule item takes place on given date
         False if not
         """
+        takes_place = True
+
         # Check dates for specific classes
-        if schedule_item.frequency_type == 'SPECIFIC':
-            if schedule_item.date_start != date:
-                # If dates don't match, the class isn't happening
-                return False
-
-        if schedule_item.frequency_type == 'WEEKLY':
-            # Class doesn't happen when date is before start date
-            if date < schedule_item.date_start:
-                print('date start')
-                return False
-
-            if schedule_item.date_end:
-                if date > schedule_item.date_end:
-                    print('date end')
-                    return False
-
-            if date.isoweekday() != schedule_item.frequency_interval:
-                # Wrong week day, the class isn't held on this day
-                return False
+        valid_date = self.schedule_item_is_valid_date(schedule_item, date)
+        if not valid_date:
+            takes_place = false
 
         # check if cancelled
         is_cancelled = self.schedule_item_is_cancelled_on_day(schedule_item, date)
         if is_cancelled:
-            return False
+            takes_place = False
 
         # Check for holiday
         within_holiday = self.schedule_item_is_within_holiday_on_day(schedule_item, date)
         if within_holiday:
-            return False
+            takes_place = False
 
-        return True
+        return takes_place
+
+    def schedule_item_is_valid_date(self, schedule_item, date):
+        """
+        Check if date is a correct day for the given schedule item
+        :param schedule_item:
+        :param date:
+        :return:
+        """
+        valid_date = True
+        # Check dates for specific classes
+        if schedule_item.frequency_type == 'SPECIFIC':
+            if schedule_item.date_start != date:
+                # If dates don't match, the class isn't happening
+                valid_date = False
+
+        if schedule_item.frequency_type == 'WEEKLY':
+            # Class doesn't happen when date is before start date
+            if date < schedule_item.date_start:
+                valid_date = False
+
+            if schedule_item.date_end:
+                if date > schedule_item.date_end:
+                    valid_date = False
+
+            if date.isoweekday() != schedule_item.frequency_interval:
+                # Wrong week day, the class isn't held on this day
+                valid_date = False
+
+        return valid_date
+
 
     def schedule_item_is_cancelled_on_day(self, schedule_item, date):
         """

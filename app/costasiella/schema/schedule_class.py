@@ -894,7 +894,7 @@ class UpdateScheduleClass(graphene.relay.ClientIDMutation):
         time_end = graphene.types.datetime.Time(required=True)
         spaces = graphene.types.Int(required=False)
         walk_in_spaces = graphene.Int(required=False)
-        display_public = graphene.Boolean(required=True, default_value=False)
+        display_public = graphene.Boolean(required=False)
         info_mail_content = graphene.String(default_value="")
 
     schedule_item = graphene.Field(ScheduleItemNode)
@@ -919,12 +919,14 @@ class UpdateScheduleClass(graphene.relay.ClientIDMutation):
         schedule_item.date_start = input['date_start']
         schedule_item.time_start = input['time_start']
         schedule_item.time_end = input['time_end']
-        schedule_item.display_public = input['display_public']
 
         # Optional fields
         date_end = input.get('date_end', None)
         if date_end:
             schedule_item.date_end = date_end
+
+        if 'display_public' in input:
+            schedule_item.display_public = input['display_public']
 
         if 'spaces' in input:
             schedule_item.spaces = input['spaces']
