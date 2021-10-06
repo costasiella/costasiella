@@ -137,6 +137,7 @@ class GQLScheduleClass(TestCase):
         timeStart
         timeEnd
         displayPublic
+        bookingStatus
       }
     }
   }
@@ -399,6 +400,10 @@ class GQLScheduleClass(TestCase):
         self.assertEqual(
             data['scheduleClasses'][0]['classes'][0]['status'],
             'CANCELLED'
+        )
+        self.assertEqual(
+            data['scheduleClasses'][0]['classes'][0]['bookingStatus'],
+            'HOLIDAY'
         )
         self.assertEqual(
             data['scheduleClasses'][0]['classes'][0]['holidayName'],

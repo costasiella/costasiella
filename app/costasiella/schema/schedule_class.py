@@ -374,14 +374,13 @@ class ScheduleClassesDayType(graphene.ObjectType):
 
         classes_list = []
         for item in schedule_items:
-
-            print("#############")
-            print(item)
-            print(item.date_start)
-            print(item.date_end)
-            print(item.time_start)
-            print(item.time_end)
-            print(item.status)
+            # print("#############")
+            # print(item)
+            # print(item.date_start)
+            # print(item.date_end)
+            # print(item.time_start)
+            # print(item.time_end)
+            # print(item.status)
             # print(item.organization_holiday_id)
             # print(item.organization_holiday_name)
             # print(item.description)
@@ -488,10 +487,10 @@ def get_booking_status(schedule_item, date, booking_open_on, available_online_sp
     # print(dt_end)
 
     status = "FINISHED"
-    if schedule_item.status == "CANCELLED":
-        status = 'CANCELLED'
-    elif schedule_item.organization_holiday_id:
+    if schedule_item.organization_holiday_id:
         status = 'HOLIDAY'
+    elif schedule_item.status == "CANCELLED":
+        status = 'CANCELLED'
     elif dt_start <= now and dt_end >= now:
         # check start time
         status = 'ONGOING'
