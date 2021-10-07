@@ -1,11 +1,9 @@
 import html2text
 
 from django.utils.translation import gettext as _
-from django.core.mail import send_mail
+from django.core.mail import EmailMessage
 
 # https://docs.djangoproject.com/en/2.2/topics/email/
-
-from django.core.mail import send_mail
 
 from .mail_template_dude import MailTemplateDude
 
