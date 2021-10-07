@@ -11,6 +11,7 @@ DEBUG = False
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'localhost'
 EMAIL_PORT = 25
+DEFAULT_FROM_EMAIL = 'My Name <my_from_email@domain.com>'
 
 # Static files config
 STATIC_ROOT = "/opt/static"
