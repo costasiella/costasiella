@@ -31,6 +31,7 @@ class SignupForm(forms.Form):
     )
 
     def signup(self, request, user):
+        # Username field is set in the save function of the account model
         user.first_name = self.cleaned_data['first_name']
         user.last_name = self.cleaned_data['last_name']
         user.save()
