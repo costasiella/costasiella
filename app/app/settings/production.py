@@ -7,6 +7,11 @@ from app.settings.common import *
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
+# Email configuration
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'localhost'
+EMAIL_PORT = 25
+
 # Static files config
 STATIC_ROOT = "/opt/static"
 MEDIA_ROOT = "/opt/media"

@@ -13,6 +13,9 @@ if len(sys.argv) >= 1:
     if sys.argv[1] == 'test':
         TESTING = True
 
+# Email configuration
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
 # Media files (User uploads)
 # https://docs.djangoproject.com/en/2.1/topics/files/
 if 'GITHUB_WORKFLOW' in os.environ:
