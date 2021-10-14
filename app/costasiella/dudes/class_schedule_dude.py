@@ -13,7 +13,7 @@ class ClassScheduleDude:
         # Check dates for specific classes
         valid_date = self.schedule_item_is_valid_date(schedule_item, date)
         if not valid_date:
-            takes_place = false
+            takes_place = False
 
         # check if cancelled
         is_cancelled = self.schedule_item_is_cancelled_on_day(schedule_item, date)
