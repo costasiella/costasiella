@@ -47,6 +47,8 @@ from .organization_classpass_group_classpass import OrganizationClasspassGroupCl
 from .organization_classtype import OrganizationClasstype
 from .organization_discovery import OrganizationDiscovery
 from .organization_document import OrganizationDocument
+from .organization_holiday import OrganizationHoliday
+from .organization_holiday_location import OrganizationHolidayLocation
 from .organization_language import OrganizationLanguage
 from .organization_level import OrganizationLevel
 from .organization_location import OrganizationLocation

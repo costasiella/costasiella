@@ -4,6 +4,7 @@ import graphene
 from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
 from graphql import GraphQLError
+from django_filters import FilterSet, OrderingFilter
 
 from ..models import Account, ScheduleEvent, ScheduleEventTicketScheduleItem
 from ..modules.model_helpers.schedule_item_helper import ScheduleItemHelper
@@ -14,10 +15,40 @@ from ..modules.messages import Messages
 m = Messages()
 
 
+class CustomOrderingFilter(OrderingFilter):
+    """
+    A Custom ordering filter to allow ordering by multiple fields
+    """
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.extra['choices'] += [
+            ('date_start', 'Date start'),
+            ('-date_start', 'Date start (descending)'),
+        ]
+
+    def filter(self, qs, value):
+        # OrderingFilter is CSV-based, so `value` is a list
+        value = ['date_start'] if not value else value  # Set a default:
+
+        if any(v in ['date_start', '-date_start'] for v in value):
+            # sort queryset by relevance
+            return qs.order_by('schedule_item__date_start', 'schedule_item__time_start')
+
+        return super().filter(qs, value)
+
+
+class ScheduleEventTicketScheduleItemFilter(FilterSet):
+    class Meta:
+        model = ScheduleEventTicketScheduleItem
+        fields = ['schedule_event_ticket', 'schedule_item', 'included']
+
+    order_by = CustomOrderingFilter()
+
+
 class ScheduleEventTicketScheduleItemNode(DjangoObjectType):
     class Meta:
         model = ScheduleEventTicketScheduleItem
-        filter_fields = ['schedule_event_ticket', 'schedule_item', 'included']
+        filterset_class = ScheduleEventTicketScheduleItemFilter
         interfaces = (graphene.relay.Node,)
 
     @classmethod
@@ -35,17 +66,15 @@ class ScheduleEventTicketScheduleItemQuery(graphene.ObjectType):
     def resolve_schedule_event_ticket_schedule_items(self, info, schedule_event_ticket, **kwargs):
         user = info.context.user
         require_login(user)
-        # Has permission: return everything requested
-        if user.has_perm('costasiella.view_scheduleeventticket'):
-            rid = get_rid(schedule_event_ticket)
-            return ScheduleEventTicketScheduleItem.objects.filter(
-                schedule_event_ticket=rid.id
-            )
 
-        # Return only activities related to public tickets
-        return ScheduleEventTicketScheduleItem.objects.filter(
-            schedule_event_ticket__display_public=True
-        )
+        rid = get_rid(schedule_event_ticket)
+        qs = ScheduleEventTicketScheduleItem.objects.filter(schedule_event_ticket=rid.id)
+
+        if not user.has_perm('costasiella.view_scheduleeventticket'):
+            # Only items for public tickets
+            qs = qs.filter(schedule_event_ticket__display_public=True)
+
+        return qs.order_by('schedule_item__date_start', 'schedule_item__time_start')
 
 
 def validate_create_update_input(input, update=False):

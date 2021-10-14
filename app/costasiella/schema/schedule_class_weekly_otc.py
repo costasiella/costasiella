@@ -58,12 +58,12 @@ def validate_update_input(input):
 
     # Check date
     class_schedule_dude = ClassScheduleDude()
-    class_takes_place = class_schedule_dude.schedule_item_takes_place_on_day(
+    valid_date = class_schedule_dude.schedule_item_is_valid_date(
         schedule_item = schedule_item,
         date = input['date']
     )
     
-    if not class_takes_place:
+    if not valid_date:
         raise Exception(
             _("This class doesn't take place on this date, please check for the correct date or any holidays.")
         )
@@ -192,7 +192,7 @@ class UpdateScheduleClassWeeklyOTC(graphene.relay.ClientIDMutation):
         time_end = graphene.types.datetime.Time(required=False)
         spaces = graphene.Int(required=False)
         walk_in_spaces = graphene.Int(required=False)
-        info_mail_content = graphene.String()
+        info_mail_content = graphene.String(required=False)
         
     schedule_class_weekly_otc = graphene.Field(ScheduleClassWeeklyOTCNode)
 

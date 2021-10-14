@@ -68,7 +68,6 @@ MIDDLEWARE = [
     'defender.middleware.FailedLoginMiddleware',
 
     # local apps
-    # 'costasiella.middleware.AuthRequiredMiddleware'
 ]
 
 # Add GraphQL JWT Tokens
@@ -191,12 +190,6 @@ STATICFILES_DIRS = [
 # https://docs.djangoproject.com/en/2.1/topics/files/
 MEDIA_URL = '/d/media/'
 
-# Email configuration
-
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-# EMAIL_HOST = 'localhost'
-# EMAIL_PORT = 2525
-
 # Graphene settings
 
 GRAPHENE = {
@@ -208,19 +201,14 @@ GRAPHENE = {
 }
 
 # GraphQL JWT settings
-# Tokens expire after 3 days
 GRAPHQL_JWT = {
     'JWT_VERIFY_EXPIRATION': True,
     'JWT_EXPIRATION_DELTA': timedelta(minutes=2),  # Default = 5 minutes
-    # 'JWT_EXPIRATION_DELTA': timedelta(seconds=5),  # Default = 5 minutes
     'JWT_REFRESH_EXPIRATION_DELTA': timedelta(minutes=120),  # Default = 7 days
-    # 'JWT_REFRESH_EXPIRATION_DELTA': timedelta(seconds=10),  # Default = 7 days
     'JWT_LONG_RUNNING_REFRESH_TOKEN': True,
-    # 'JWT_COOKIE_SECURE': True # Set this to true for production
 }
 
 # Where to go after login, well... let's just go home and take care of things from there :).
-
 LOGIN_URL = '/#/user/login'
 LOGIN_REDIRECT_URL = '/#/'
 
@@ -283,7 +271,11 @@ DJANGO_CELERY_RESULTS_TASK_ID_MAX_LENGTH = 191
 ##
 # Cors setttings
 ##
-CORS_ORIGIN_ALLOW_ALL = False
-# CORS_ORIGIN_WHITELIST = [
-#     "http://example.com"
-# ]
+
+# CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOWED_ORIGINS = [
+    # add your website domain here in case you'd like your website to be able to access the graphQL API
+    # "http://example.com",
+    # "http://www.example.com",
+]

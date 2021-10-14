@@ -1,9 +1,12 @@
 from django.db.models import Q
 
 from ...models import OrganizationClasspassGroup, OrganizationSubscriptionGroup, \
+                        OrganizationHolidayLocation, \
                         ScheduleEventTicket, ScheduleEventTicketScheduleItem, \
                         ScheduleItem, ScheduleItemWeeklyOTC, \
                         ScheduleItemOrganizationSubscriptionGroup, ScheduleItemOrganizationClasspassGroup
+
+from ...dudes import ClassScheduleDude
 
 """
 This helper file is added to allow function to add all subscription groups to a schedule item
@@ -196,16 +199,26 @@ class ScheduleItemHelper:
             account_schedule_event_ticket__schedule_event_ticket=schedule_event_ticket
         ).delete()
 
-    def schedule_item_with_otc_data(self, schedule_item, date):
+    def schedule_item_with_otc_and_holiday_data(self, schedule_item, date):
         """
         Overwrite schedule_item object data with weekly otc data
         :param schedule_item: models.ScheduleItem object
         :param date: datetime.date
         :return:
         """
+        # Check if there's a holiday
+        class_schedule_dude = ClassScheduleDude()
+        holiday_location = class_schedule_dude.schedule_item_is_within_holiday_on_day(schedule_item, date)
+
+        if holiday_location:
+            schedule_item.organization_holiday_id = holiday_location.organization_holiday.id
+            schedule_item.organization_holiday_name = holiday_location.organization_holiday.name
+
+        # No further processing required
         if schedule_item.schedule_item_type == 'SPECIFIC':
             return schedule_item
 
+        # Check One Time Change (OTC) data
         schedule_item_weekly_otc_qs = ScheduleItemWeeklyOTC.objects.filter(
             schedule_item=schedule_item,
             date=date
@@ -234,5 +247,5 @@ class ScheduleItemHelper:
                 schedule_item.time_end = schedule_item_weekly_otc.time_end
             if schedule_item_weekly_otc.info_mail_content:
                 schedule_item.info_mail_content = schedule_item_weekly_otc.info_mail_content
-                
+
         return schedule_item

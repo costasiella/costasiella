@@ -29,6 +29,8 @@ class Account(AbstractUser):
             ('view_selfcheckin', _("Can use the selfcheckin feature")),
         ]
 
+    # Ensure email is unique
+    email = models.EmailField(_('email address'), unique=True)
     gender_choices = get_account_genders()
     country_choices = get_account_country_codes()
 
@@ -62,6 +64,7 @@ class Account(AbstractUser):
     def save(self, *args, **kwargs):
         name = [self.first_name, self.last_name]
         self.full_name = " ".join(name)
+        self.username = self.email
         super(Account, self).save(*args, **kwargs)
 
     def create_allauth_email(self):

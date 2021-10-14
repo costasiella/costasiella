@@ -106,7 +106,8 @@ class GQLScheduleClass(TestCase):
         organizationClasstype: $organizationClasstype,
         organizationLevel: $organizationLevel,
         organizationLocation: $organizationLocation,
-        attendanceCountType: $attendanceCountType
+        attendanceCountType: $attendanceCountType,
+        publicOnly: false
     ){
       date
       classes {
@@ -115,6 +116,8 @@ class GQLScheduleClass(TestCase):
         date
         status
         description
+        holiday
+        holidayName
         organizationLocationRoom {
           id
           name
@@ -134,6 +137,7 @@ class GQLScheduleClass(TestCase):
         timeStart
         timeEnd
         displayPublic
+        bookingStatus
       }
     }
   }
@@ -350,7 +354,7 @@ class GQLScheduleClass(TestCase):
 
         schedule_class_otc = f.SchedulePublicWeeklyClassOTCFactory.create()
         schedule_class_otc.status = 'CANCELLED'
-        schedule_class_otc.description = 'moonday'
+        schedule_class_otc.description = 'Moonday'
         schedule_class_otc.save()
         schedule_class = schedule_class_otc.schedule_item
 
@@ -370,6 +374,44 @@ class GQLScheduleClass(TestCase):
         self.assertEqual(
             data['scheduleClasses'][0]['classes'][0]['description'],
             schedule_class_otc.description
+        )
+
+    def test_query_status_holiday(self):
+        """ Query list status holiday of scheduleclass """
+        query = self.scheduleclasses_query
+
+        schedule_class = f.SchedulePublicWeeklyClassFactory.create()
+        organization_holiday = f.OrganizationHolidayFactory.create()
+        organization_holiday_location = models.OrganizationHolidayLocation(
+            organization_holiday = organization_holiday,
+            organization_location = schedule_class.organization_location_room.organization_location
+        )
+        organization_holiday_location.save()
+
+        variables = self.variables_query_list_status
+        executed = execute_test_client_api_query(query, self.admin_user, variables=variables)
+        data = executed.get('data')
+
+        self.assertEqual(data['scheduleClasses'][0]['date'], variables['dateFrom'])
+        self.assertEqual(
+            data['scheduleClasses'][0]['classes'][0]['scheduleItemId'],
+            to_global_id('ScheduleItemNode', schedule_class.id)
+        )
+        self.assertEqual(
+            data['scheduleClasses'][0]['classes'][0]['status'],
+            'CANCELLED'
+        )
+        self.assertEqual(
+            data['scheduleClasses'][0]['classes'][0]['bookingStatus'],
+            'HOLIDAY'
+        )
+        self.assertEqual(
+            data['scheduleClasses'][0]['classes'][0]['holidayName'],
+            organization_holiday.name
+        )
+        self.assertEqual(
+            data['scheduleClasses'][0]['classes'][0]['holiday'],
+            True
         )
 
     def test_query_status_open(self):
@@ -425,6 +467,9 @@ class GQLScheduleClass(TestCase):
         variables = self.variables_query_list
         executed = execute_test_client_api_query(query, user, variables=variables)
         data = executed.get('data')
+
+        print("##############")
+        print(executed)
 
         # List all scheduleclasses
         self.assertEqual(data['scheduleClasses'][0]['date'], variables['dateFrom'])

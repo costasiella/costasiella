@@ -21,7 +21,7 @@ class VersionDude:
         except SystemSetting.DoesNotExist:
             self.version_patch_obj = SystemSetting.objects.create(
                 setting=self.setting_version_patch,
-                value="0"
+                value="2"
             )
 
         self.version = self.version_obj.value

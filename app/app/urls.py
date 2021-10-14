@@ -18,6 +18,7 @@ from django.urls import include, path
 from django.views.generic import TemplateView
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
+from django.conf import settings
 
 from graphene_django.views import GraphQLView
 from graphql_jwt.decorators import jwt_cookie
@@ -51,21 +52,21 @@ urlpatterns = [
          name="export_csv_finance_payment_batch"),
     path('d/export/terms-and-conditions', views.terms_and_conditions, name="terms_and_conditions"),
     path('d/export/privacy-policy', views.privacy_policy, name="privacy_policy"),
-    path('d/export/insight/classpasses/active/<int:year>', 
+    path('d/export/insight/classpasses/active/<int:year>/<str:token>',
          views.export_excel_insight_classpasses_active,
          name="export_excel_insight_classpasses_active"),
-    path('d/export/insight/classpasses/sold/<int:year>', 
+    path('d/export/insight/classpasses/sold/<int:year>/<str:token>',
          views.export_excel_insight_classpasses_sold,
          name="export_excel_insight_classpasses_sold"),
-    path('d/export/insight/subscriptions/active/<int:year>', 
+    path('d/export/insight/subscriptions/active/<int:year>/<str:token>',
          views.export_excel_insight_subscriptions_active,
          name="export_excel_insight_classpasses_active"),
-    path('d/export/insight/subscriptions/sold/<int:year>', 
+    path('d/export/insight/subscriptions/sold/<int:year>/<str:token>',
          views.export_excel_insight_subscriptions_sold,
          name="export_excel_insight_subscriptions_sold"),
-    path('d/export/invoice/pdf/<str:node_id>', views.invoice_pdf, name="export_invoice_pdf"),
+    path('d/export/invoice/pdf/<str:node_id>/<str:token>', views.invoice_pdf, name="export_invoice_pdf"),
     path('d/export/invoice/pdf/preview/<str:node_id>', views.invoice_pdf_preview, name="export_invoice_pdf_preview"),
-    path('d/graphql/', jwt_cookie(GraphQLView.as_view(graphiql=True)), name="graphql"),
+    path('d/graphql/', csrf_exempt(GraphQLView.as_view(graphiql=settings.DEBUG)), name="graphql"),
     path('d/mollie/webhook/', csrf_exempt(views.mollie_webhook), name="mollie_webhook"),
     path('d/update/', views.update, name="update"),
     path('d/setup/', views.setup, name="setup"),

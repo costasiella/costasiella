@@ -53,7 +53,13 @@ class GQLScheduleEventTicketScheduleItem(TestCase):
 
         self.event_ticket_activities_query = '''
     query ScheduleEventTicketScheduleItem($before:String, $after:String, $scheduleEventTicket:ID!) {
-      scheduleEventTicketScheduleItems(first: 100, before: $before, after: $after, scheduleEventTicket:$scheduleEventTicket) {
+      scheduleEventTicketScheduleItems(
+        first: 100, 
+        before: $before, 
+        after: $after, 
+        scheduleEventTicket:$scheduleEventTicket,
+        orderBy: "dateStart"        
+    ) {
         pageInfo {
           hasNextPage
           hasPreviousPage
@@ -63,6 +69,7 @@ class GQLScheduleEventTicketScheduleItem(TestCase):
         edges {
           node {
             id
+            included
             scheduleEventTicket {
               id
               name
@@ -72,7 +79,6 @@ class GQLScheduleEventTicketScheduleItem(TestCase):
               id
               name
             }
-            included
           }
         }
       }

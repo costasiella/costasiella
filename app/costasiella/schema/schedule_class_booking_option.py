@@ -74,7 +74,7 @@ class ScheduleClassBookingOptionsType(graphene.ObjectType):
             raise Exception('Invalid Schedule Item ID!')
 
         sih = ScheduleItemHelper()
-        schedule_item = sih.schedule_item_with_otc_data(schedule_item, self.date)
+        schedule_item = sih.schedule_item_with_otc_and_holiday_data(schedule_item, self.date)
 
         return schedule_item
 
