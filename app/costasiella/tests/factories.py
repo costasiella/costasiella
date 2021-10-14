@@ -4,6 +4,7 @@ from django.contrib.auth import get_user_model
 import os
 import datetime
 import factory
+import uuid
 
 # Models
 from allauth.account.models import EmailAddress
@@ -419,12 +420,13 @@ class AdminUserFactory(factory.DjangoModelFactory):
 
 
 class RegularUserFactory(factory.DjangoModelFactory):
+    """ Use a uuid in the email field in the tests, as the email address has to be unique.
+    This allows multiple calls to the this factory without having to reset the db.
+    """
     class Meta:
         model = get_user_model()
-    # FACTORY_FOR = get_user_model()
 
-    email = 'user@costasiellla.com'
-    username = 'regular_user'
+    email = '%s@costasiellla.com' % uuid.uuid4()
     first_name = 'user'
     last_name = 'regular user'
     password = factory.PostGenerationMethodCall('set_password', 'CSUser1#')
@@ -434,12 +436,13 @@ class RegularUserFactory(factory.DjangoModelFactory):
 
 
 class TeacherFactory(factory.DjangoModelFactory):
+    """ Use a uuid in the email field in the tests, as the email address has to be unique.
+    This allows multiple calls to the this factory without having to reset the db.
+    """
     class Meta:
         model = get_user_model()
-    # FACTORY_FOR = get_user_model()
 
-    email = 'user@costasiellla.com'
-    username = 'teacher'
+    email = '%s@costasiellla.com' % uuid.uuid4()
     first_name = 'teacher'
     last_name = 'account'
     teacher = True
@@ -449,12 +452,13 @@ class TeacherFactory(factory.DjangoModelFactory):
 
 
 class Teacher2Factory(factory.DjangoModelFactory):
+    """ Use a uuid in the email field in the tests, as the email address has to be unique.
+    This allows multiple calls to the this factory without having to reset the db.
+    """
     class Meta:
         model = get_user_model()
-    # FACTORY_FOR = get_user_model()
 
-    email = 'user@costasiellla.com'
-    username = 'teacher2'
+    email = '%s@costasiellla.com' % uuid.uuid4()
     first_name = 'teacher2'
     last_name = 'account'
     teacher = True
