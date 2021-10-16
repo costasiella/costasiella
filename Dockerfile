@@ -5,9 +5,9 @@ LABEL version="0.01"
 
 # Get the latest & greatest
 RUN apt-get update && \
-    apt-get install -y
+    apt-get upgrade -y
     
-RUN apt-get install libffi-dev libmariadb-dev
+RUN apt-get install -y libffi-dev libmariadb-dev
 
 # Copy app into container
 COPY ./docker-backend-entrypoint.sh /opt/
