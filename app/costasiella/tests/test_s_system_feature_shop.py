@@ -39,6 +39,7 @@ class GQLSystemFeatureShop(TestCase):
                 "classpasses": False,
                 "classes": False,
                 "events": False,
+                "accountDataDownload": False,
             }
         }
 
@@ -50,6 +51,7 @@ class GQLSystemFeatureShop(TestCase):
       classpasses
       classes
       events
+      accountDataDownload
     }
   }
 '''
@@ -64,6 +66,7 @@ class GQLSystemFeatureShop(TestCase):
         classpasses
         classes
         events
+        accountDataDownload
       }
     }
   }
@@ -85,6 +88,7 @@ class GQLSystemFeatureShop(TestCase):
         self.assertEqual(item['classpasses'], self.system_feature_shop.classpasses)
         self.assertEqual(item['classes'], self.system_feature_shop.classes)
         self.assertEqual(item['events'], self.system_feature_shop.events)
+        self.assertEqual(item['accountDataDownload'], self.system_feature_shop.account_data_download)
 
     def test_query_one_anon_user(self):
         """ Query shop features as anon user """
@@ -98,6 +102,7 @@ class GQLSystemFeatureShop(TestCase):
         self.assertEqual(item['classpasses'], self.system_feature_shop.classpasses)
         self.assertEqual(item['classes'], self.system_feature_shop.classes)
         self.assertEqual(item['events'], self.system_feature_shop.events)
+        self.assertEqual(item['accountDataDownload'], self.system_feature_shop.account_data_download)
 
     def test_update_setting(self):
         """ Update shop features record """
@@ -121,6 +126,8 @@ class GQLSystemFeatureShop(TestCase):
                          variables['input']['classes'])
         self.assertEqual(data['updateSystemFeatureShop']['systemFeatureShop']['events'],
                          variables['input']['events'])
+        self.assertEqual(data['updateSystemFeatureShop']['systemFeatureShop']['accountDataDownload'],
+                         variables['input']['accountDataDownload'])
 
         # Check db
         features = models.SystemFeatureShop.objects.get(id=1)
@@ -129,6 +136,7 @@ class GQLSystemFeatureShop(TestCase):
         self.assertEqual(features.classpasses, variables['input']['classpasses'])
         self.assertEqual(features.classes, variables['input']['classes'])
         self.assertEqual(features.events, variables['input']['events'])
+        self.assertEqual(features.account_data_download, variables['input']['accountDataDownload'])
 
     def test_update_shop_features_anon_user(self):
         """ Anon users can't update shop features """
