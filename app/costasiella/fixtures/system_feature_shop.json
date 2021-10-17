@@ -7,7 +7,8 @@
       "subscriptions": true,
       "classpasses": true,
       "classes": true,
-      "events": true
+      "events": true,
+      "account_data_download": true
     }
   }
 ]
