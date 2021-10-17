@@ -10,6 +10,7 @@ class SystemFeatureShop(models.Model):
     classpasses = models.BooleanField(default=False)
     classes = models.BooleanField(default=False)
     events = models.BooleanField(default=False)
+    account_data_download = models.BooleanField(default=True)
 
     def __str__(self):
         return model_string(self)
