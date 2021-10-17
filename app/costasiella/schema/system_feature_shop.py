@@ -44,6 +44,7 @@ class UpdateSystemFeatureShop(graphene.relay.ClientIDMutation):
         classpasses = graphene.Boolean(required=False)
         classes = graphene.Boolean(required=False)
         events = graphene.Boolean(required=False)
+        account_data_download = graphene.Boolean(required=False)
         
     system_feature_shop = graphene.Field(SystemFeatureShopNode)
 
@@ -68,6 +69,9 @@ class UpdateSystemFeatureShop(graphene.relay.ClientIDMutation):
 
         if 'events' in input:
             system_feature_shop.events = input['events']
+
+        if 'account_data_download' in input:
+            system_feature_shop.account_data_download = input['account_data_download']
 
         # Save
         system_feature_shop.save()
