@@ -40,6 +40,7 @@ def export_account_data(request, token, **kwargs):
 
     # Create a new workbook to hold the worksheets containing data
     wb = openpyxl.workbook.Workbook(write_only=True)
+    wb = _add_worksheet_account(user, wb)
 
     #TODO Add functions to add sheets to the workbook; 1 per table
 
@@ -47,18 +48,58 @@ def export_account_data(request, token, **kwargs):
     buffer = io.BytesIO()
     wb.save(buffer)
 
-    ws = wb.create_sheet(title="test")
-    ws.append(['hello', 'world'])
-
     buffer.seek(0)
     account_name = user.full_name.replace(" ", "_")
     filename = _('account_data') + '_' + account_name + ".xlsx"
 
     return FileResponse(buffer, as_attachment=True, filename=filename)
 
-    # response = StreamingHttpResponse(buffer, content_type="text/")
-    # response["Content-Disposition"] = (
-    #         "attachment; filename=%s.csv" % filename
-    # )
 
-    # return response
+def _add_worksheet_account(account, wb):
+    """
+    Add Account sheet to workbook data export
+    :param account: models.Account object
+    :param wb: openpyxl.workbook.Workbook object
+    :return: openpyxl.workbook.Workbook object (appended with Account worksheet)
+    """
+    ws = wb.create_sheet("Account")
+
+    # Write header
+    header = [
+        "First name",
+        "Last name",
+        "Email",
+        "Gender",
+        "Date of birth",
+        "Address",
+        "Postcode",
+        "City",
+        "Country",
+        "Phone",
+        "Mobile",
+        "Emergency",
+        "Key nr",
+        "Last login",
+    ]
+    ws.append(header)
+
+    # Write data
+    data = [
+        account.first_name,
+        account.last_name,
+        account.email,
+        account.gender,
+        account.date_of_birth,
+        account.address,
+        account.postcode,
+        account.city,
+        account.country,
+        account.phone,
+        account.mobile,
+        account.emergency,
+        account.key_number,
+        account.last_login,
+    ]
+    ws.append(data)
+
+    return wb
