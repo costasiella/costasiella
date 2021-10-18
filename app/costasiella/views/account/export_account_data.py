@@ -41,8 +41,7 @@ def export_account_data(request, token, **kwargs):
     # Create a new workbook to hold the worksheets containing data
     wb = openpyxl.workbook.Workbook(write_only=True)
     wb = _add_worksheet_account(user, wb)
-
-    #TODO Add functions to add sheets to the workbook; 1 per table
+    wb = _add_worksheet_account_accepted_documents(user, wb)
 
     # # Create a file-like buffer to receive XLSX data.
     buffer = io.BytesIO()
@@ -79,6 +78,7 @@ def _add_worksheet_account(account, wb):
         "Mobile",
         "Emergency",
         "Key nr",
+        "Joined",
         "Last login",
     ]
     ws.append(header)
@@ -98,8 +98,40 @@ def _add_worksheet_account(account, wb):
         account.mobile,
         account.emergency,
         account.key_number,
-        account.last_login,
+        account.date_joined.replace(tzinfo=None),
+        account.last_login.replace(tzinfo=None) if account.last_login else "",
     ]
     ws.append(data)
+
+    return wb
+
+
+def _add_worksheet_account_accepted_documents(account, wb):
+    """
+    Add Account accepted documents sheet to workbook data export
+    :param account: models.Account object
+    :param wb: openpyxl.workbook.Workbook object
+    :return: openpyxl.workbook.Workbook object (appended with Account worksheet)
+    """
+    ws = wb.create_sheet("Accepted documents")
+
+    # Write header
+    header = [
+        "Document",
+        "Version",
+        "From IP",
+        "On"
+    ]
+    ws.append(header)
+
+    for accepted_document in account.accepted_documents.all():
+        # Write data
+        data = [
+            accepted_document.document.document_type,
+            accepted_document.document.version,
+            accepted_document.client_ip,
+            accepted_document.date_accepted.replace(tzinfo=None),
+        ]
+        ws.append(data)
 
     return wb
