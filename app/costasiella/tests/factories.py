@@ -315,7 +315,6 @@ class OrganizationClasspassTrialFactory(factory.DjangoModelFactory):
     display_public = True
     display_shop = True
     trial_pass = True
-    trial_times = 1
     name = "One trial class"
     description = "A short description here..."
     price = 15

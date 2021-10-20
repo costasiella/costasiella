@@ -364,7 +364,6 @@ class GQLOrganizationClasspass(TestCase):
         self.assertEqual(data['organizationClasspasses']['edges'][0]['node']['displayPublic'], classpass.display_public)
         self.assertEqual(data['organizationClasspasses']['edges'][0]['node']['displayShop'], classpass.display_shop)
         self.assertEqual(data['organizationClasspasses']['edges'][0]['node']['trialPass'], classpass.trial_pass)
-        self.assertEqual(data['organizationClasspasses']['edges'][0]['node']['trialTimes'], classpass.trial_times)
         self.assertEqual(data['organizationClasspasses']['edges'][0]['node']['name'], classpass.name)
         self.assertEqual(data['organizationClasspasses']['edges'][0]['node']['description'], classpass.description)
         self.assertEqual(data['organizationClasspasses']['edges'][0]['node']['price'],
