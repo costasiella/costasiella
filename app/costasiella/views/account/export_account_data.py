@@ -12,7 +12,7 @@ import openpyxl
 # from django.template.loader import render_to_string
 # rendered = render_to_string('my_template.html', {'foo': 'bar'})
 
-from ...models import Account, AccountSubscriptionCredit
+from ...models import Account, AccountSubscriptionCredit, AccountTeacherProfile
 
 
 from calendar import timegm
@@ -47,6 +47,10 @@ def export_account_data(request, token, **kwargs):
     wb = _add_worksheet_account_classpass(user, wb)
     wb = _add_worksheet_account_subscription(user, wb)
     wb = _add_worksheet_account_subscription_credit(user, wb)
+    wb = _add_worksheet_account_event_tickets(user, wb)
+
+    if user.teacher:
+        wb = _add_worksheet_account_teacher_profile(user, wb)
 
     # # Create a file-like buffer to receive XLSX data.
     buffer = io.BytesIO()
@@ -107,6 +111,46 @@ def _add_worksheet_account(account, wb):
         account.last_login.replace(tzinfo=None) if account.last_login else "",
     ]
     ws.append(data)
+
+    return wb
+
+
+def _add_worksheet_account_teacher_profile(account, wb):
+    """
+    Add Account teacher profile sheet to workbook data export
+    :param account: models.Account object
+    :param wb: openpyxl.workbook.Workbook object
+    :return: openpyxl.workbook.Workbook object (appended with Account worksheet)
+    """
+    ws = wb.create_sheet("Teacher profile")
+
+    # Write header
+    header = [
+        "Teaches classes",
+        "Teaches events",
+        "Role",
+        "Education",
+        "Bio",
+        "Bio URL",
+        "Website URL"
+    ]
+    ws.append(header)
+
+    qs = AccountTeacherProfile.objects.filter(account=account)
+    if qs.exists():
+        account_teacher_profile = qs.first()
+
+        # Write data
+        data = [
+            account_teacher_profile.classes,
+            account_teacher_profile.events,
+            account_teacher_profile.role,
+            account_teacher_profile.education,
+            account_teacher_profile.bio,
+            account_teacher_profile.url_bio,
+            account_teacher_profile.url_website,
+        ]
+        ws.append(data)
 
     return wb
 
@@ -300,6 +344,33 @@ def _add_worksheet_account_subscription_credit(account, wb):
             subscription_credit.mutation_amount,
             subscription_credit.description,
             subscription_credit.account_subscription.id,
+        ]
+        ws.append(data)
+
+    return wb
+
+
+def _add_worksheet_account_event_tickets(account, wb):
+    """
+    Add Account event tickets sheet to workbook data export
+    :param account: models.Account object
+    :param wb: openpyxl.workbook.Workbook object
+    :return: openpyxl.workbook.Workbook object (appended with Account worksheet)
+    """
+    ws = wb.create_sheet("Tickets")
+
+    # Write header
+    header = [
+        "Event",
+        "Ticket",
+    ]
+    ws.append(header)
+
+    for ticket in account.schedule_event_tickets.all():
+        # Write data
+        data = [
+            ticket.schedule_event_ticket.schedule_event.name,
+            ticket.schedule_event_ticket.name,
         ]
         ws.append(data)
 
