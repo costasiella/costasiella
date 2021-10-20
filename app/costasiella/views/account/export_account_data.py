@@ -12,7 +12,7 @@ import openpyxl
 # from django.template.loader import render_to_string
 # rendered = render_to_string('my_template.html', {'foo': 'bar'})
 
-from ...models import Account
+from ...models import Account, AccountSubscriptionCredit
 
 
 from calendar import timegm
@@ -46,6 +46,7 @@ def export_account_data(request, token, **kwargs):
     wb = _add_worksheet_account_bank_account_mandate(user, wb)
     wb = _add_worksheet_account_classpass(user, wb)
     wb = _add_worksheet_account_subscription(user, wb)
+    wb = _add_worksheet_account_subscription_credit(user, wb)
 
     # # Create a file-like buffer to receive XLSX data.
     buffer = io.BytesIO()
@@ -262,6 +263,43 @@ def _add_worksheet_account_subscription(account, wb):
             subscription.date_start,
             subscription.date_end,
             subscription.note,
+        ]
+        ws.append(data)
+
+    return wb
+
+
+def _add_worksheet_account_subscription_credit(account, wb):
+    """
+    Add Account subscription credits sheet to workbook data export
+    :param account: models.Account object
+    :param wb: openpyxl.workbook.Workbook object
+    :return: openpyxl.workbook.Workbook object (appended with Account worksheet)
+    """
+    ws = wb.create_sheet("Subscription credits")
+
+    # Write header
+    header = [
+        "Time",
+        "Type",
+        "Amount",
+        "Description",
+        "Subscription #",
+    ]
+    ws.append(header)
+
+    qs = AccountSubscriptionCredit.objects.filter(
+        account_subscription__account = account
+    ).order_by("created_at")
+
+    for subscription_credit in qs:
+        # Write data
+        data = [
+            subscription_credit.created_at.replace(tzinfo=None),
+            subscription_credit.mutation_type,
+            subscription_credit.mutation_amount,
+            subscription_credit.description,
+            subscription_credit.account_subscription.id,
         ]
         ws.append(data)
 
