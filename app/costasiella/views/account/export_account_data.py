@@ -43,6 +43,7 @@ def export_account_data(request, token, **kwargs):
     wb = _add_worksheet_account(user, wb)
     wb = _add_worksheet_account_accepted_documents(user, wb)
     wb = _add_worksheet_account_bank_account(user, wb)
+    wb = _add_worksheet_account_bank_account_mandate(user, wb)
 
     # # Create a file-like buffer to receive XLSX data.
     buffer = io.BytesIO()
@@ -163,5 +164,35 @@ def _add_worksheet_account_bank_account(account, wb):
             bank_acount.bic,
         ]
         ws.append(data)
+
+    return wb
+
+
+def _add_worksheet_account_bank_account_mandate(account, wb):
+    """
+    Add Account bank account mandate sheet to workbook data export
+    :param account: models.Account object
+    :param wb: openpyxl.workbook.Workbook object
+    :return: openpyxl.workbook.Workbook object (appended with Account worksheet)
+    """
+    ws = wb.create_sheet("Mandates")
+
+    # Write header
+    header = [
+        "Reference",
+        "Content",
+        "Sign date"
+    ]
+    ws.append(header)
+
+    for bank_acount in account.bank_accounts.all():
+        for mandate in bank_acount.mandates.all():
+            # Write data
+            data = [
+                mandate.reference,
+                mandate.content,
+                mandate.signature_date
+            ]
+            ws.append(data)
 
     return wb
