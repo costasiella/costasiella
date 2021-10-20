@@ -42,6 +42,7 @@ def export_account_data(request, token, **kwargs):
     wb = openpyxl.workbook.Workbook(write_only=True)
     wb = _add_worksheet_account(user, wb)
     wb = _add_worksheet_account_accepted_documents(user, wb)
+    wb = _add_worksheet_account_bank_account(user, wb)
 
     # # Create a file-like buffer to receive XLSX data.
     buffer = io.BytesIO()
@@ -131,6 +132,35 @@ def _add_worksheet_account_accepted_documents(account, wb):
             accepted_document.document.version,
             accepted_document.client_ip,
             accepted_document.date_accepted.replace(tzinfo=None),
+        ]
+        ws.append(data)
+
+    return wb
+
+
+def _add_worksheet_account_bank_account(account, wb):
+    """
+    Add Account bank account sheet to workbook data export
+    :param account: models.Account object
+    :param wb: openpyxl.workbook.Workbook object
+    :return: openpyxl.workbook.Workbook object (appended with Account worksheet)
+    """
+    ws = wb.create_sheet("Bank account")
+
+    # Write header
+    header = [
+        "Accounr NR",
+        "Holder",
+        "BIC"
+    ]
+    ws.append(header)
+
+    for bank_acount in account.bank_accounts.all():
+        # Write data
+        data = [
+            bank_acount.number,
+            bank_acount.holder,
+            bank_acount.bic,
         ]
         ws.append(data)
 
