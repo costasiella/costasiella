@@ -48,6 +48,7 @@ def export_account_data(request, token, **kwargs):
     wb = _add_worksheet_account_subscription(user, wb)
     wb = _add_worksheet_account_subscription_credit(user, wb)
     wb = _add_worksheet_account_event_tickets(user, wb)
+    wb = _add_worksheet_account_note(user, wb)
 
     if user.teacher:
         wb = _add_worksheet_account_teacher_profile(user, wb)
@@ -371,6 +372,33 @@ def _add_worksheet_account_event_tickets(account, wb):
         data = [
             ticket.schedule_event_ticket.schedule_event.name,
             ticket.schedule_event_ticket.name,
+        ]
+        ws.append(data)
+
+    return wb
+
+
+def _add_worksheet_account_note(account, wb):
+    """
+    Add Account notes sheet to workbook data export
+    :param account: models.Account object
+    :param wb: openpyxl.workbook.Workbook object
+    :return: openpyxl.workbook.Workbook object (appended with Account worksheet)
+    """
+    ws = wb.create_sheet("Notes")
+
+    # Write header
+    header = [
+        "Time",
+        "Note",
+    ]
+    ws.append(header)
+
+    for note in account.notes.all():
+        # Write data
+        data = [
+            note.created_at.replace(tzinfo=None),
+            note.note
         ]
         ws.append(data)
 
