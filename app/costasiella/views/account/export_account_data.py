@@ -44,6 +44,8 @@ def export_account_data(request, token, **kwargs):
     wb = _add_worksheet_account_accepted_documents(user, wb)
     wb = _add_worksheet_account_bank_account(user, wb)
     wb = _add_worksheet_account_bank_account_mandate(user, wb)
+    wb = _add_worksheet_account_classpass(user, wb)
+    wb = _add_worksheet_account_subscription(user, wb)
 
     # # Create a file-like buffer to receive XLSX data.
     buffer = io.BytesIO()
@@ -194,5 +196,73 @@ def _add_worksheet_account_bank_account_mandate(account, wb):
                 mandate.signature_date
             ]
             ws.append(data)
+
+    return wb
+
+
+def _add_worksheet_account_classpass(account, wb):
+    """
+    Add Account classpass sheet to workbook data export
+    :param account: models.Account object
+    :param wb: openpyxl.workbook.Workbook object
+    :return: openpyxl.workbook.Workbook object (appended with Account worksheet)
+    """
+    ws = wb.create_sheet("Classpasses")
+
+    # Write header
+    header = [
+        "Classpass",
+        "Start",
+        "End",
+        "Note",
+        "Unlimited",
+        "Classes remaining"
+    ]
+    ws.append(header)
+
+    for classpass in account.classpasses.all():
+        # Write data
+        data = [
+            classpass.organization_classpass.name,
+            classpass.date_start,
+            classpass.date_end,
+            classpass.note,
+            classpass.organization_classpass.unlimited,
+            classpass.classes_remaining,
+        ]
+        ws.append(data)
+
+    return wb
+
+
+def _add_worksheet_account_subscription(account, wb):
+    """
+    Add Account subscription sheet to workbook data export
+    :param account: models.Account object
+    :param wb: openpyxl.workbook.Workbook object
+    :return: openpyxl.workbook.Workbook object (appended with Account worksheet)
+    """
+    ws = wb.create_sheet("Subscriptions")
+
+    # Write header
+    header = [
+        "Subscription #",
+        "Subscription",
+        "Start",
+        "End",
+        "Note",
+    ]
+    ws.append(header)
+
+    for subscription in account.subscriptions.all():
+        # Write data
+        data = [
+            subscription.id,
+            subscription.organization_subscription.name,
+            subscription.date_start,
+            subscription.date_end,
+            subscription.note,
+        ]
+        ws.append(data)
 
     return wb
