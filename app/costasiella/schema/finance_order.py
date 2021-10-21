@@ -90,7 +90,7 @@ class FinanceOrderQuery(graphene.ObjectType):
             return FinanceOrder.objects.all().order_by(order_by)
 
 
-def validate_create_update_input(input, update=False):
+def validate_create_update_input(input, user, update=False):
     """
     Validate input
     """ 
@@ -114,8 +114,10 @@ def validate_create_update_input(input, update=False):
             organization_classpass = OrganizationClasspass.objects.get(id=rid.id)
             result['organization_classpass'] = organization_classpass
 
-            #TODO Check if customer can buy class pass (verify trial pass limit)
-
+            # Don't create the order in case the user has reached the trial pass limit
+            if organization_classpass.trial_pass:
+                if user.has_reached_trial_limit():
+                    raise Exception(_("Unable to create order: Trial limit reached."))
 
             if not organization_classpass:
                 raise Exception(_('Invalid Organization Classpass ID!'))
@@ -199,7 +201,7 @@ class CreateFinanceOrder(graphene.relay.ClientIDMutation):
 
         print(input)
 
-        validation_result = validate_create_update_input(input)
+        validation_result = validate_create_update_input(input, user)
         finance_order = FinanceOrder(
             account=user,
             status="AWAITING_PAYMENT"
