@@ -74,6 +74,9 @@ class SalesDude:
         """
         from ..models.account_classpass import AccountClasspass
 
+        # Check if this is a trial pass and if so, if the customer isn't over the trial limit
+        self._sell_classpass_account_is_over_trial_pass_limit(account, organization_classpass)
+
         account_classpass = AccountClasspass(
             account=account,
             organization_classpass=organization_classpass,
@@ -97,6 +100,20 @@ class SalesDude:
             "account_classpass": account_classpass,
             "finance_invoice_item": finance_invoice_item
         }
+
+    @staticmethod
+    def _sell_classpass_account_is_over_trial_pass_limit(account, organization_classpass):
+        """
+        Check if this account is allowed to purchase another trial card.
+        """
+        from ..models import AccountClasspass
+
+        if not organization_classpass.trial_pass:
+            # Nothing to do
+            return
+
+        if account.has_reached_trial_limit():
+            raise Exception(_("Unable to sell classpass: Maximum number of trial passes reached for this account"))
 
     @staticmethod
     def _sell_classpass_create_invoice(account_classpass):
