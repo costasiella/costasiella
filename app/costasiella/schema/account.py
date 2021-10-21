@@ -36,12 +36,21 @@ def convert_json_field_to_string(field, registry=None):
 
 class UserType(DjangoObjectType):
     account_id = graphene.ID()
+    has_reached_trial_limit = graphene.Boolean()
 
     class Meta:
         model = get_user_model()
 
     def resolve_account_id(self, info):
         return to_global_id("AccountNode", info.context.user.id)
+
+    def resolve_has_reached_trial_limit(self, info):
+        return self.has_reached_trial_limit()
+
+
+class AccountInterface(graphene.Interface):
+    id = graphene.GlobalID()
+    has_reached_trial_limit = graphene.Boolean()
 
 
 class AccountNode(DjangoObjectType):
@@ -59,15 +68,18 @@ class AccountNode(DjangoObjectType):
         }
         interfaces = (graphene.relay.Node, )
 
+    def resolve_has_reached_trial_limit(self, info):
+        return self.has_reached_trial_limit()
+
     @classmethod
-    def get_node(self, info, id):
+    def get_node(cls, info, id):
         user = info.context.user
         require_login_and_one_of_permissions(user, [
             'costasiella.view_account',
             'costasiella.view_selfcheckin'
         ])
 
-        return self._meta.model.objects.get(id=id)
+        return cls._meta.model.objects.get(id=id)
 
 
 class GroupNode(DjangoObjectType):

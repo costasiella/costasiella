@@ -113,6 +113,10 @@ def validate_create_update_input(input, update=False):
             rid = get_rid(input["organization_classpass"])
             organization_classpass = OrganizationClasspass.objects.get(id=rid.id)
             result['organization_classpass'] = organization_classpass
+
+            #TODO Check if customer can buy class pass (verify trial pass limit)
+
+
             if not organization_classpass:
                 raise Exception(_('Invalid Organization Classpass ID!'))
 
