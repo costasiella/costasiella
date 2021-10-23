@@ -48,7 +48,7 @@ class UserType(DjangoObjectType):
         return self.has_reached_trial_limit()
 
 
-class AccountInterface(graphene.Interface):
+class AccountNodeInterface(graphene.Interface):
     id = graphene.GlobalID()
     has_reached_trial_limit = graphene.Boolean()
 
@@ -66,7 +66,7 @@ class AccountNode(DjangoObjectType):
             'teacher': ['exact'],
             'employee': ['exact'],
         }
-        interfaces = (graphene.relay.Node, )
+        interfaces = (graphene.relay.Node, AccountNodeInterface,)
 
     def resolve_has_reached_trial_limit(self, info):
         return self.has_reached_trial_limit()
