@@ -85,6 +85,7 @@ class GQLAccount(TransactionTestCase):
           organizationLanguage {
             id
           }
+          hasReachedTrialLimit
         }
       }
     }
@@ -171,6 +172,26 @@ class GQLAccount(TransactionTestCase):
                          to_global_id('OrganizationDiscoveryNode', account.organization_discovery.id))
         self.assertEqual(data['accounts']['edges'][0]['node']['organizationLanguage']['id'],
                          to_global_id('OrganizationLanguageNode', account.organization_language.id))
+
+    def test_query_has_reached_trial_limit(self):
+        """ Query list of accounts and check if trial limit field works """
+        query = self.accounts_query
+        account_classpass = f.AccountClasspassFactory.create()
+        account_classpass.organization_classpass.trial_pass = True
+        account_classpass.organization_classpass.save()
+        account = account_classpass.account
+
+        setting = models.SystemSetting(
+            setting="workflow_trial_pass_limit",
+            value="1"
+        )
+        setting.save()
+
+        executed = execute_test_client_api_query(query, self.admin_user, variables=self.variables_query_list)
+        data = executed.get('data')
+
+        self.assertEqual(len(data['accounts']['edges']), 1) # Ensure the Admin super use isn't listed
+        self.assertEqual(data['accounts']['edges'][0]['node']['hasReachedTrialLimit'], True)
 
     def test_query_permission_denied(self):
         """ Query list of accounts - check permission denied """
