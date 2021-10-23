@@ -122,9 +122,6 @@ class SalesDude:
 
         finance_invoice_group_default = FinanceInvoiceGroupDefault.objects.filter(item_type="CLASSPASSES").first()
         finance_invoice_group = finance_invoice_group_default.finance_invoice_group
-        print("invoice group")
-        print(finance_invoice_group)
-
         finance_invoice = FinanceInvoice(
             account=account_classpass.account,
             finance_invoice_group=finance_invoice_group,
@@ -167,12 +164,8 @@ class SalesDude:
 
         # Add credits
         account_subscription.create_credits_for_month(date_start.year, date_start.month)
-
-        print('creating invoice...')
-
         finance_invoice_item = None
         if create_invoice:
-            print('still alive')
             finance_invoice_item = self._sell_subscription_create_invoice(account_subscription)
 
         return {
@@ -191,8 +184,6 @@ class SalesDude:
 
         finance_invoice_group_default = FinanceInvoiceGroupDefault.objects.filter(item_type="SUBSCRIPTIONS").first()
         finance_invoice_group = finance_invoice_group_default.finance_invoice_group
-        print("invoice group")
-        print(finance_invoice_group)
 
         finance_invoice = FinanceInvoice(
             account=account_subscription.account,
@@ -246,17 +237,14 @@ class SalesDude:
         account_schedule_event_ticket.save()
 
         # Send info mail... if auto send mail is enabled
-        print("sending mail")
         if schedule_event.auto_send_info_mail:
             self._sell_schedule_event_ticket_send_info_mail(
                 account=account,
                 account_schedule_event_ticket=account_schedule_event_ticket
             )
 
-        print('creating invoice...')
         finance_invoice_item = None
         if create_invoice:
-            print('still alive')
             finance_invoice_item = self._sell_schedule_event_ticket_create_invoice(account_schedule_event_ticket)
 
         # Add account to schedule_item_attendance
@@ -304,9 +292,6 @@ class SalesDude:
 
         finance_invoice_group_default = FinanceInvoiceGroupDefault.objects.filter(item_type="EVENT_TICKETS").first()
         finance_invoice_group = finance_invoice_group_default.finance_invoice_group
-        print("invoice group")
-        print(finance_invoice_group)
-
         finance_invoice = FinanceInvoice(
             account=account_schedule_event_ticket.account,
             finance_invoice_group=finance_invoice_group,
