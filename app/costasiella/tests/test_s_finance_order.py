@@ -366,6 +366,41 @@ class GQLFinanceOrder(TestCase):
         )
         self.assertEqual(qs_privacy.exists(), True)
 
+    def test_create_order_classpass_trial_over_limit_shouldnt_work(self):
+        """ Don't create an order for a trial pass if the customer is over the trial limit """
+        query = self.order_create_mutation
+
+        account_classpass = f.AccountClasspassFactory.create()
+        account = account_classpass.account
+        organization_classpass = account_classpass.organization_classpass
+        organization_classpass.trial_pass = True
+        organization_classpass.save()
+
+        setting = models.SystemSetting(
+            setting="workflow_trial_pass_limit",
+            value="1"
+        )
+        setting.save()
+
+        organization_classpass = account_classpass.organization_classpass
+        variables = self.variables_create
+        variables['input']['organizationClasspass'] = to_global_id(
+            'OrganizationClasspassNode', organization_classpass.id
+        )
+
+        executed = execute_test_client_api_query(
+            query,
+            account,
+            variables=variables
+        )
+        data = executed.get('data')
+        errors = executed.get('errors')
+
+        print("#################")
+        print(executed)
+
+        self.assertEqual(errors[0]['message'], "Unable to create order: Trial limit reached.")
+
     def test_create_order_schedule_event_ticket_with_earlybird_discount(self):
         """ Create finance order with event ticket """
         query = self.order_create_mutation
@@ -466,9 +501,6 @@ class GQLFinanceOrder(TestCase):
             user,
             variables=variables
         )
-        print("$$$$$$$$$$$$$$$$$")
-        print(executed)
-
         data = executed.get('data')
         self.assertEqual(
             data['createFinanceOrder']['financeOrder']['account']['id'],
