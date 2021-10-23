@@ -89,11 +89,8 @@ class SalesDude:
         account_classpass.update_classes_remaining()
         account_classpass.save()
 
-        print('creating invoice...')
-
         finance_invoice_item = None
         if create_invoice:
-            print('still alive')
             finance_invoice_item = self._sell_classpass_create_invoice(account_classpass)
 
         return {
