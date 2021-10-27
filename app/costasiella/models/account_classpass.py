@@ -34,9 +34,10 @@ class AccountClasspass(models.Model):
             return
         else:
             total = self.organization_classpass.classes
-            classes_taken = ScheduleItemAttendance.objects.filter(
-                Q(account_classpass = self.id),
-                ~Q(booking_status = 'CANCELLED')
+            classes_taken = ScheduleItemAttendance.objects.exclude(
+                booking_status="CANCELLED"
+            ).filter(
+                account_classpass = self
             ).count()
             self.classes_remaining = total - classes_taken
             self.save()
