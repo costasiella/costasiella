@@ -86,6 +86,7 @@ class SalesDude:
 
         # set date end & save
         account_classpass.set_date_end()
+        account_classpass.save() # Save before running classes remaining update; otherwise it doesn't haven an ID yet.
         account_classpass.update_classes_remaining()
         account_classpass.save()
 
