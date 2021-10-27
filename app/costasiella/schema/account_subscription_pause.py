@@ -1,5 +1,6 @@
 from django.utils.translation import gettext as _
 
+import datetime
 import graphene
 from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
@@ -7,6 +8,7 @@ from graphql import GraphQLError
 
 import validators
 
+from ..dudes import SystemSettingDude
 from ..models import AccountSubscription, AccountSubscriptionPause
 from ..modules.gql_tools import require_login_and_permission, get_rid
 from ..modules.messages import Messages
@@ -19,19 +21,42 @@ m = Messages()
 def validate_create_update_input(input, update=False):
     """
     Validate input
-    """ 
+    """
+    system_setting_dude = SystemSettingDude()
     result = {}
 
     if input['date_start'] > input['date_end']:
         raise Exception(_("End date should be bigger than start date"))
 
-    # Fetch & check account subscription
+    # Check min. duration
+    min_pause_duration = system_setting_dude.get("workflow_subscription_pauses_min_duration_in_days") or 1
+    min_pause_duration = int(min_pause_duration)
+    delta = input['date_end'] - input['date_start']
+    if delta.days + 1 < min_pause_duration:
+        raise Exception(_("A pause should be at least %s day(s)") % min_pause_duration)
+
     if not update:
+        # Fetch & check account subscription
         rid = get_rid(input['account_subscription'])
         account_subscription = AccountSubscription.objects.get(pk=rid.id)
         result['account_subscription'] = account_subscription
         if not account_subscription:
             raise Exception(_('Invalid Account Subscription ID!'))
+
+        # Check if the maximum number of pauses hasn't been reached
+        max_pauses = system_setting_dude.get("workflow_subscription_pauses_max_pauses_in_year") or 1
+        max_pauses = int(max_pauses)
+        start_of_year = datetime.date(input['date_start'].year, 1 , 1)
+        end_of_year = datetime.date(input['date_start'].year, 12 , 31)
+        qs = AccountSubscriptionPause.objects.filter(
+            account_subscription=account_subscription,
+            date_start__gte=start_of_year,
+            date_start__lte=end_of_year
+        )
+        pauses_in_year = qs.count()
+
+        if pauses_in_year >= max_pauses:
+            raise Exception(_("Maximum number of pauses reached for year %s") % input['date_start'].year)
 
     return result
 
