@@ -1,6 +1,7 @@
 import datetime
 
 from celery import shared_task
+from django.utils import timezone
 from django.utils.translation import gettext as _
 from django.db.models import Q
 
@@ -81,7 +82,31 @@ def account_subscription_credits_expire():
     :return: String - result of task executed
     """
     #TODO: Implement this
-    pass
+
+    now = timezone.now()
+    today = now.date()
+    # Go over all subscriptions that are still valid today
+    account_subscriptions = AccountSubscription.objects.exclude(
+        date_end__lt=today
+    ).annotate(
+        total_added=Sum(credits__mutation_type="ADD"),
+        total_used=Sum(credits__mutation_type="SUB"),
+    )
+
+    for account_subscription in account_subscriptions:
+        credits_total = account_subscription.total_added - account_subscription.total_used
+        print("----")
+        print(account_subscription)
+        print(credits_total)
+
+
+    # - get the total sum of credits
+    # - get the amount of credits added within the accumulation period
+
+    # if total sum > accumulation period sum:
+    # Add a mutation of type sub to expire excess credits
+
+
 
 
 
