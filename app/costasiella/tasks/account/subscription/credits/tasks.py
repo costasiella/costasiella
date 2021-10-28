@@ -72,65 +72,115 @@ def account_subscription_credits_add_for_month(year, month):
 
     # Calculate number of credits to give
 
-# def add_credits(self, year, month):
-#     """
-#         Add subscription credits for month
-#     """
-#     from .os_customers import Customers
-#
-#     T = current.T
-#     db = current.db
-#
-#     first_day = datetime.date(year, month, 1)
-#     last_day = get_last_day_month(first_day)
-#
-#     # Get list of bookable classes for each customer, based on recurring reservations
-#
-#     self.add_credits_reservations = self._get_customers_list_classes_recurring_reservations(year, month)
-#     # Get list of total credits balance for each customer
-#     customers = Customers()
-#     self.add_credits_balance = customers.get_credits_balance(first_day, include_reconciliation_classes=True)
-#
-#     customers_credits_added = 0
-#
-#     rows = self.add_credits_get_subscription_rows_month(year, month)
-#
-#     for row in rows:
-#         if row.customers_subscriptions_credits.id:
-#             continue
-#         if row.customers_subscriptions_paused.id:
-#             continue
-#         if row.school_subscriptions.Classes == 0 or row.school_subscriptions.Classes is None:
-#             continue
-#         if row.school_subscriptions.SubscriptionUnit is None:
-#             # Don't do anything if this subscription already got credits for this month or is paused
-#             # or has no classes or subscription unit defined
-#             continue
-#
-#         # calculate number of credits
-#         # only add partial credits if startdate != first day, add full credits if startdate < first day
-#         if row.customers_subscriptions.Startdate <= first_day:
-#             p_start = first_day
-#         else:
-#             p_start = row.customers_subscriptions.Startdate
-#
-#         if row.customers_subscriptions.Enddate is None or row.customers_subscriptions.Enddate >= last_day:
-#             p_end = last_day
-#         else:
-#             p_end = row.customers_subscriptions.Enddate
-#
-#         self.add_subscription_credits_month(
-#             row.customers_subscriptions.id,
-#             row.customers_subscriptions.auth_customer_id,
-#             year,
-#             month,
-#             p_start,
-#             p_end,
-#             row.school_subscriptions.Classes,
-#             row.school_subscriptions.SubscriptionUnit,
-#         )
-#
-#         # Increase counter
-#         customers_credits_added += 1
-#
-#     return customers_credits_added or 0
+
+@shared_task
+def account_subscription_credits_expire():
+    """
+    Expire all credits that are over the accumulation limit today.
+    Credits are expired by creating a "SUB" mutation for the excessive amount.
+    :return: String - result of task executed
+    """
+    #TODO: Implement this
+    pass
+
+
+
+    # def expire_credits(self, date):
+    #     """
+    #     Check if there are any expired credits, if so, add a subtract mutation with the expired amount
+    #     where the 'Expired' field is set to True
+    #
+    #     :param date: datetime.date
+    #     :return: number of subscriptions for which credits were expired
+    #     """
+    #     T = current.T
+    #     db = current.db
+    #     NOW_LOCAL = current.NOW_LOCAL
+    #     web2pytest = current.globalenv['web2pytest']
+    #     request = current.request
+    #
+    #     # Create dictionary of expiration for school_subscriptions
+    #     subscriptions_count_expired = 0
+    #     query = (db.school_subscriptions.Archived == False)
+    #     rows = db(query).select(db.school_subscriptions.id,
+    #                             db.school_subscriptions.CreditValidity)
+    #
+    #     for row in rows:
+    #         if not row.CreditValidity:
+    #             continue
+    #
+    #         # Get list of all active subscriptions
+    #         fields = [
+    #             db.customers_subscriptions.id,
+    #             db.customers_subscriptions.auth_customer_id,
+    #             db.customers_subscriptions.Startdate,
+    #             db.customers_subscriptions.Enddate,
+    #             db.customers_subscriptions.payment_methods_id,
+    #             db.school_subscriptions.id,
+    #             db.school_subscriptions.Name,
+    #             db.customers_subscriptions.CreditsRemaining,
+    #             db.customers_subscriptions.PeriodCreditsAdded,
+    #         ]
+    #
+    #         if web2pytest.is_running_under_test(request, request.application):
+    #             # the test environment uses sqlite
+    #             mutation_date_sql = "date('{date}', '-{validity} day')".format(
+    #                 date=date,
+    #                 validity=row.CreditValidity
+    #             )
+    #         else:
+    #             # MySQL format
+    #             mutation_date_sql = "DATE_SUB('{date}', INTERVAL {validity} DAY)".format(
+    #                 date=date,
+    #                 validity=row.CreditValidity
+    #             )
+    #
+    #         sql = """SELECT cs.id,
+    #                         cs.auth_customer_id,
+    #                         cs.Startdate,
+    #                         cs.Enddate,
+    #                         cs.payment_methods_id,
+    #                         ssu.id,
+    #                         ssu.Name,
+    #                         ( IFNULL((SELECT SUM(csc.MutationAmount)
+    #                            FROM customers_subscriptions_credits csc
+    #                            WHERE csc.customers_subscriptions_id = cs.id AND
+    #                                  csc.MutationType = 'add'), 0) -
+    #                            IFNULL(( SELECT SUM(csc.MutationAmount)
+    #                            FROM customers_subscriptions_credits csc
+    #                            WHERE csc.customers_subscriptions_id = cs.id AND
+    #                                  csc.MutationType = 'sub'), 0)) AS credits,
+    #                         IFNULL(( SELECT SUM(csc.MutationAmount)
+    #                          FROM customers_subscriptions_credits csc
+    #                          WHERE csc.customers_subscriptions_id = cs.id AND
+    #                                csc.MutationType = 'add' AND
+    #                                csc.MutationDateTime >= {mutation_date}), 0) as c_add_in_period
+    #                         FROM customers_subscriptions cs
+    #                         LEFT JOIN
+    #                         school_subscriptions ssu ON cs.school_subscriptions_id = ssu.id
+    #                         WHERE ssu.id = {ssuID} AND
+    #                               (cs.Startdate <= '{date}' AND
+    #                               (cs.Enddate >= '{date}' OR cs.Enddate IS NULL))
+    #                         ORDER BY cs.Startdate
+    #                         """.format(date=date, ssuID=row.id, mutation_date=mutation_date_sql)
+    #
+    #         cs_rows = db.executesql(sql, fields=fields)
+    #
+    #         for row in cs_rows:
+    #
+    #             expired_credits = (float(row.customers_subscriptions.CreditsRemaining) -
+    #                                float(row.customers_subscriptions.PeriodCreditsAdded))
+    #
+    #             if expired_credits > 0 and row.customers_subscriptions.CreditsRemaining > 0:
+    #                 db.customers_subscriptions_credits.insert(
+    #                     customers_subscriptions_id=row.customers_subscriptions.id,
+    #                     MutationDateTime=NOW_LOCAL,
+    #                     MutationType='sub',
+    #                     MutationAmount=round(expired_credits, 1),
+    #                     Description=T('Credits expiration'),
+    #                     Expiration=True
+    #                 )
+    #
+    #                 subscriptions_count_expired += 1
+    #
+    #     return subscriptions_count_expired
