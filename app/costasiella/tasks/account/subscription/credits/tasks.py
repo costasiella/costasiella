@@ -3,7 +3,8 @@ import datetime
 from celery import shared_task
 from django.utils import timezone
 from django.utils.translation import gettext as _
-from django.db.models import Q
+from django.db import models
+from django.db.models import Q, Sum
 
 from .....models import AccountSubscription, AccountSubscriptionCredit
 from .....dudes import DateToolsDude
@@ -81,131 +82,56 @@ def account_subscription_credits_expire():
     Credits are expired by creating a "SUB" mutation for the excessive amount.
     :return: String - result of task executed
     """
-    #TODO: Implement this
-
+    print("Started credits expiration")
     now = timezone.now()
     today = now.date()
     # Go over all subscriptions that are still valid today
+    # Ref: https://docs.djangoproject.com/en/3.2/topics/db/aggregation/#filtering-on-annotation
+    add_mutations = Sum("credits__mutation_amount", filter=Q(credits__mutation_type="ADD"))
+    sub_mutations = Sum("credits__mutation_amount", filter=Q(credits__mutation_type="SUB"))
     account_subscriptions = AccountSubscription.objects.exclude(
         date_end__lt=today
     ).annotate(
-        total_added=Sum(credits__mutation_type="ADD"),
-        total_used=Sum(credits__mutation_type="SUB"),
+        total_added=add_mutations,
+        total_used=sub_mutations
     )
 
+    subscriptions_with_expired_credits = 0
     for account_subscription in account_subscriptions:
-        credits_total = account_subscription.total_added - account_subscription.total_used
-        print("----")
-        print(account_subscription)
-        print(credits_total)
+        if account_subscription.organization_subscription.unlimited:
+            # Don't do anything for unlimited subscriptions
+            continue
 
+        # Calculate total of credits
+        total_added = account_subscription.total_added or 0
+        total_used = account_subscription.total_used or 0
+        total_credits = total_added - total_used
 
-    # - get the total sum of credits
-    # - get the amount of credits added within the accumulation period
+        # Calculate maximum accumulation
+        accumulation_period = account_subscription.organization_subscription.credit_accumulation_days
+        total_in_accumulation_period = 0
+        qs = AccountSubscriptionCredit.objects.filter(
+            account_subscription=account_subscription,
+            mutation_type="ADD",
+            created_at__gte=(today-datetime.timedelta(days=accumulation_period))
+        )
 
-    # if total sum > accumulation period sum:
-    # Add a mutation of type sub to expire excess credits
+        for subscription_credit in qs:
+            total_in_accumulation_period += subscription_credit.mutation_amount
 
+        # Check if the total is over the maximum accumulation (expired)
+        expired_credits = total_credits - total_in_accumulation_period
+        if expired_credits:
+            # If so, expire the surplus credits
+            account_subscription_credit = AccountSubscriptionCredit(
+                account_subscription=account_subscription,
+                mutation_type="SUB",
+                mutation_amount=expired_credits,
+                description=_("Credit expiration")
+            )
+            account_subscription_credit.save()
 
+            subscriptions_with_expired_credits += 1
 
+    return _("Expired credits for %s subscriptions") % subscriptions_with_expired_credits
 
-
-    # def expire_credits(self, date):
-    #     """
-    #     Check if there are any expired credits, if so, add a subtract mutation with the expired amount
-    #     where the 'Expired' field is set to True
-    #
-    #     :param date: datetime.date
-    #     :return: number of subscriptions for which credits were expired
-    #     """
-    #     T = current.T
-    #     db = current.db
-    #     NOW_LOCAL = current.NOW_LOCAL
-    #     web2pytest = current.globalenv['web2pytest']
-    #     request = current.request
-    #
-    #     # Create dictionary of expiration for school_subscriptions
-    #     subscriptions_count_expired = 0
-    #     query = (db.school_subscriptions.Archived == False)
-    #     rows = db(query).select(db.school_subscriptions.id,
-    #                             db.school_subscriptions.CreditValidity)
-    #
-    #     for row in rows:
-    #         if not row.CreditValidity:
-    #             continue
-    #
-    #         # Get list of all active subscriptions
-    #         fields = [
-    #             db.customers_subscriptions.id,
-    #             db.customers_subscriptions.auth_customer_id,
-    #             db.customers_subscriptions.Startdate,
-    #             db.customers_subscriptions.Enddate,
-    #             db.customers_subscriptions.payment_methods_id,
-    #             db.school_subscriptions.id,
-    #             db.school_subscriptions.Name,
-    #             db.customers_subscriptions.CreditsRemaining,
-    #             db.customers_subscriptions.PeriodCreditsAdded,
-    #         ]
-    #
-    #         if web2pytest.is_running_under_test(request, request.application):
-    #             # the test environment uses sqlite
-    #             mutation_date_sql = "date('{date}', '-{validity} day')".format(
-    #                 date=date,
-    #                 validity=row.CreditValidity
-    #             )
-    #         else:
-    #             # MySQL format
-    #             mutation_date_sql = "DATE_SUB('{date}', INTERVAL {validity} DAY)".format(
-    #                 date=date,
-    #                 validity=row.CreditValidity
-    #             )
-    #
-    #         sql = """SELECT cs.id,
-    #                         cs.auth_customer_id,
-    #                         cs.Startdate,
-    #                         cs.Enddate,
-    #                         cs.payment_methods_id,
-    #                         ssu.id,
-    #                         ssu.Name,
-    #                         ( IFNULL((SELECT SUM(csc.MutationAmount)
-    #                            FROM customers_subscriptions_credits csc
-    #                            WHERE csc.customers_subscriptions_id = cs.id AND
-    #                                  csc.MutationType = 'add'), 0) -
-    #                            IFNULL(( SELECT SUM(csc.MutationAmount)
-    #                            FROM customers_subscriptions_credits csc
-    #                            WHERE csc.customers_subscriptions_id = cs.id AND
-    #                                  csc.MutationType = 'sub'), 0)) AS credits,
-    #                         IFNULL(( SELECT SUM(csc.MutationAmount)
-    #                          FROM customers_subscriptions_credits csc
-    #                          WHERE csc.customers_subscriptions_id = cs.id AND
-    #                                csc.MutationType = 'add' AND
-    #                                csc.MutationDateTime >= {mutation_date}), 0) as c_add_in_period
-    #                         FROM customers_subscriptions cs
-    #                         LEFT JOIN
-    #                         school_subscriptions ssu ON cs.school_subscriptions_id = ssu.id
-    #                         WHERE ssu.id = {ssuID} AND
-    #                               (cs.Startdate <= '{date}' AND
-    #                               (cs.Enddate >= '{date}' OR cs.Enddate IS NULL))
-    #                         ORDER BY cs.Startdate
-    #                         """.format(date=date, ssuID=row.id, mutation_date=mutation_date_sql)
-    #
-    #         cs_rows = db.executesql(sql, fields=fields)
-    #
-    #         for row in cs_rows:
-    #
-    #             expired_credits = (float(row.customers_subscriptions.CreditsRemaining) -
-    #                                float(row.customers_subscriptions.PeriodCreditsAdded))
-    #
-    #             if expired_credits > 0 and row.customers_subscriptions.CreditsRemaining > 0:
-    #                 db.customers_subscriptions_credits.insert(
-    #                     customers_subscriptions_id=row.customers_subscriptions.id,
-    #                     MutationDateTime=NOW_LOCAL,
-    #                     MutationType='sub',
-    #                     MutationAmount=round(expired_credits, 1),
-    #                     Description=T('Credits expiration'),
-    #                     Expiration=True
-    #                 )
-    #
-    #                 subscriptions_count_expired += 1
-    #
-    #     return subscriptions_count_expired
