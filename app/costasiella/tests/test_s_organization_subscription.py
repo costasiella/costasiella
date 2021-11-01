@@ -23,6 +23,7 @@ class GQLOrganizationSubscription(TestCase):
     # https://docs.djangoproject.com/en/2.1/topics/testing/overview/
     def setUp(self):
         # This is run before every test
+        self.maxDiff = None
         self.admin_user = f.AdminUserFactory.create()
         self.anon_user = AnonymousUser()
 
@@ -46,7 +47,7 @@ class GQLOrganizationSubscription(TestCase):
                 "classes": 1,
                 "subscriptionUnit": "WEEK",
                 "reconciliationClasses": 1,
-                "creditValidity": 1,               
+                "creditAccumulationDays": 1,               
                 "unlimited": False,
                 "termsAndConditions": "T and C here",
                 "registrationFee": 30,
@@ -68,7 +69,7 @@ class GQLOrganizationSubscription(TestCase):
                 "classes": 1,
                 "subscriptionUnit": "WEEK",
                 "reconciliationClasses": 1,
-                "creditValidity": 1,               
+                "creditAccumulationDays": 1,
                 "unlimited": False,
                 "termsAndConditions": "T and C here",
                 "registrationFee": 30,
@@ -108,7 +109,7 @@ class GQLOrganizationSubscription(TestCase):
           subscriptionUnit
           subscriptionUnitDisplay
           reconciliationClasses
-          creditValidity
+          creditAccumulationDays
           unlimited
           termsAndConditions
           registrationFee
@@ -146,7 +147,7 @@ class GQLOrganizationSubscription(TestCase):
       subscriptionUnit
       subscriptionUnitDisplay
       reconciliationClasses
-      creditValidity
+      creditAccumulationDays
       unlimited
       termsAndConditions
       registrationFee
@@ -230,7 +231,7 @@ class GQLOrganizationSubscription(TestCase):
         subscriptionUnit
         subscriptionUnitDisplay
         reconciliationClasses
-        creditValidity
+        creditAccumulationDays
         unlimited
         termsAndConditions
         organizationMembership {
@@ -267,7 +268,7 @@ class GQLOrganizationSubscription(TestCase):
         subscriptionUnit
         subscriptionUnitDisplay
         reconciliationClasses
-        creditValidity
+        creditAccumulationDays
         unlimited
         termsAndConditions
         organizationMembership {
@@ -327,8 +328,10 @@ class GQLOrganizationSubscription(TestCase):
           data['organizationSubscriptions']['edges'][0]['node']['subscriptionUnitDisplay'], 
           display_subscription_unit(subscription.subscription_unit)
         )
-        self.assertEqual(data['organizationSubscriptions']['edges'][0]['node']['reconciliationClasses'], subscription.reconciliation_classes)
-        self.assertEqual(data['organizationSubscriptions']['edges'][0]['node']['creditValidity'], subscription.credit_validity)
+        self.assertEqual(data['organizationSubscriptions']['edges'][0]['node']['reconciliationClasses'],
+                         subscription.reconciliation_classes)
+        self.assertEqual(data['organizationSubscriptions']['edges'][0]['node']['creditAccumulationDays'],
+                         subscription.credit_accumulation_days)
         self.assertEqual(data['organizationSubscriptions']['edges'][0]['node']['unlimited'], subscription.unlimited)
         self.assertEqual(data['organizationSubscriptions']['edges'][0]['node']['organizationMembership']['id'], 
           to_global_id("OrganizationMembershipNode", subscription.organization_membership.pk))
@@ -452,7 +455,8 @@ class GQLOrganizationSubscription(TestCase):
           display_subscription_unit(subscription.subscription_unit)
         )
         self.assertEqual(data['organizationSubscription']['reconciliationClasses'], subscription.reconciliation_classes)
-        self.assertEqual(data['organizationSubscription']['creditValidity'], subscription.credit_validity)
+        self.assertEqual(data['organizationSubscription']['creditAccumulationDays'],
+                         subscription.credit_accumulation_days)
         self.assertEqual(data['organizationSubscription']['unlimited'], subscription.unlimited)
         self.assertEqual(data['organizationSubscription']['organizationMembership']['id'], 
           to_global_id("OrganizationMembershipNode", subscription.organization_membership.pk))
@@ -542,7 +546,7 @@ class GQLOrganizationSubscription(TestCase):
         self.assertEqual(data['createOrganizationSubscription']['organizationSubscription']['classes'], variables['input']['classes'])
         self.assertEqual(data['createOrganizationSubscription']['organizationSubscription']['subscriptionUnit'], variables['input']['subscriptionUnit'])
         self.assertEqual(data['createOrganizationSubscription']['organizationSubscription']['reconciliationClasses'], variables['input']['reconciliationClasses'])
-        self.assertEqual(data['createOrganizationSubscription']['organizationSubscription']['creditValidity'], variables['input']['creditValidity'])
+        self.assertEqual(data['createOrganizationSubscription']['organizationSubscription']['creditAccumulationDays'], variables['input']['creditAccumulationDays'])
         self.assertEqual(data['createOrganizationSubscription']['organizationSubscription']['unlimited'], variables['input']['unlimited'])
         self.assertEqual(data['createOrganizationSubscription']['organizationSubscription']['organizationMembership']['id'], variables['input']['organizationMembership'])
         self.assertEqual(data['createOrganizationSubscription']['organizationSubscription']['quickStatsAmount'],
@@ -625,7 +629,7 @@ class GQLOrganizationSubscription(TestCase):
         self.assertEqual(data['updateOrganizationSubscription']['organizationSubscription']['classes'], variables['input']['classes'])
         self.assertEqual(data['updateOrganizationSubscription']['organizationSubscription']['subscriptionUnit'], variables['input']['subscriptionUnit'])
         self.assertEqual(data['updateOrganizationSubscription']['organizationSubscription']['reconciliationClasses'], variables['input']['reconciliationClasses'])
-        self.assertEqual(data['updateOrganizationSubscription']['organizationSubscription']['creditValidity'], variables['input']['creditValidity'])
+        self.assertEqual(data['updateOrganizationSubscription']['organizationSubscription']['creditAccumulationDays'], variables['input']['creditAccumulationDays'])
         self.assertEqual(data['updateOrganizationSubscription']['organizationSubscription']['unlimited'], variables['input']['unlimited'])
         self.assertEqual(data['updateOrganizationSubscription']['organizationSubscription']['organizationMembership']['id'], variables['input']['organizationMembership'])
         self.assertEqual(data['updateOrganizationSubscription']['organizationSubscription']['quickStatsAmount'],
@@ -687,6 +691,9 @@ class GQLOrganizationSubscription(TestCase):
             user, 
             variables=variables
         )
+        # print("###############")
+        # print(executed)
+
         data = executed.get('data')
         errors = executed.get('errors')
         self.assertEqual(errors[0]['message'], 'Permission denied!')
