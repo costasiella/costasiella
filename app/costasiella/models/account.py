@@ -2,6 +2,7 @@ from django.utils.translation import gettext as _
 
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from sorl.thumbnail import ImageField
 
 from allauth.account.models import EmailAddress
 from .organization_discovery import OrganizationDiscovery
@@ -54,6 +55,7 @@ class Account(AbstractUser):
     organization_language = models.ForeignKey(
         OrganizationLanguage, null=True, on_delete=models.SET_NULL, related_name="accounts"
     )
+    image = ImageField(upload_to='account', default=None)
     mollie_customer_id = models.CharField(max_length=255, default="", editable=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
