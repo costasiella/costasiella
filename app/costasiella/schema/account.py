@@ -26,7 +26,8 @@ from ..modules.gql_tools import require_login, \
     require_login_and_one_of_permissions, \
     require_login_and_one_of_permission_or_own_account, \
     get_rid, \
-    get_error_code
+    get_error_code, \
+    get_content_file_from_base64_str
 
 from ..modules.encrypted_fields import EncryptedTextField
 
@@ -217,6 +218,12 @@ def validate_create_update_input(account, input, update=False):
     """ 
     result = {}
 
+    if update:
+        # Check that image and image_file_name are both present in case one is set
+        if 'image' in input or 'image_file_name' in input:
+            if not (input.get('image', None) and input.get('image_file_name', None)):
+                raise Exception(_('When setting "image" or "imageFileName", both fields need to be present and set'))
+
     # verify email unique
     if 'email' in input:
         query_set = get_user_model().objects.filter(
@@ -283,6 +290,8 @@ class UpdateAccount(graphene.relay.ClientIDMutation):
         key_number = graphene.String(required=False)
         organization_discovery = graphene.ID(required=False)
         organization_language = graphene.ID(required=False)
+        image = graphene.String(required=False)
+        image_file_name = graphene.String(required=False)
 
     account = graphene.Field(AccountNode)
 
@@ -353,6 +362,10 @@ class UpdateAccount(graphene.relay.ClientIDMutation):
             account.organization_discovery = result['organization_discovery']
         if 'organization_language' in result:
             account.organization_language = result['organization_language']
+
+        if 'image' in input:
+            account.image = get_content_file_from_base64_str(data_str=input['image'],
+                                                             file_name=input['image_file_name'])
 
         account.save()
 
