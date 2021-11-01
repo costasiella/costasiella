@@ -357,7 +357,7 @@ class OrganizationSubscriptionFactory(factory.DjangoModelFactory):
     min_duration = 1
     classes = 1
     subscription_unit = "WEEK"
-    credit_validity = 1
+    credit_accumulation_days = 1
     reconciliation_classes = 1
     registration_fee = 20
     unlimited = False
