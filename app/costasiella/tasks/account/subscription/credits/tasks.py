@@ -82,7 +82,6 @@ def account_subscription_credits_expire():
     Credits are expired by creating a "SUB" mutation for the excessive amount.
     :return: String - result of task executed
     """
-    print("Started credits expiration")
     now = timezone.now()
     today = now.date()
     # Go over all subscriptions that are still valid today
