@@ -15,6 +15,8 @@ from graphene_django.converter import convert_django_field
 from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
 
+from sorl.thumbnail import get_thumbnail
+
 from allauth.account.models import EmailAddress
 from ..models import AccountBankAccount, AccountTeacherProfile, OrganizationDiscovery, OrganizationLanguage
 
@@ -51,6 +53,8 @@ class UserType(DjangoObjectType):
 class AccountNodeInterface(graphene.Interface):
     id = graphene.GlobalID()
     has_reached_trial_limit = graphene.Boolean()
+    url_image = graphene.String()
+    url_image_thumbnail_small = graphene.String()
 
 
 class AccountNode(DjangoObjectType):
@@ -70,6 +74,18 @@ class AccountNode(DjangoObjectType):
 
     def resolve_has_reached_trial_limit(self, info):
         return self.has_reached_trial_limit()
+
+    def resolve_url_image(self, info):
+        if self.image:
+            return self.image.url
+        else:
+            return ''
+
+    def resolve_url_image_thumbnail_small(self, info):
+        if self.image:
+            return get_thumbnail(self.image, '50x50', crop='center', quality=99).url
+        else:
+            return ''
 
     @classmethod
     def get_node(cls, info, id):
